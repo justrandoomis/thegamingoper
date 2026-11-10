@@ -13,9 +13,10 @@
 	"name": "tamtam-games",
 	"compatibility_date": "2026-11-09",
 	"main": "./workers/app.ts",
+	/** Production values. Local development overrides APP_ENV and PUBLIC_ORIGIN in .dev.vars. */
 	"vars": {
-		"APP_ENV": "development",
-		"PUBLIC_ORIGIN": "http://localhost:5173",
+		"APP_ENV": "production",
+		"PUBLIC_ORIGIN": "https://tamtamgames.com",
 		/** "demo" shows the demo-data ribbon, flags orders as demo and sends noindex. Switch to "live" in admin-controlled deploy config when real catalogue data is in. */
 		"STORE_MODE": "demo",
 		/** Seconds for the Strict-Transport-Security header; "0" keeps HSTS off until the owner opts in. */

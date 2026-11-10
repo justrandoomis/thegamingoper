@@ -5,3 +5,6 @@ SESSION_SECRET=
 DATA_KEY=
 # SETUP_TOKEN     one-time token required by /admin/setup to create the first owner account
 SETUP_TOKEN=
+# Local overrides of the production vars in wrangler.jsonc
+APP_ENV=development
+PUBLIC_ORIGIN=http://localhost:5173

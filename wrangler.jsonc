@@ -13,6 +13,12 @@
 	"name": "tamtam-games",
 	"compatibility_date": "2026-11-09",
 	"main": "./workers/app.ts",
+	/** The store's own domain (apex is canonical; www redirects to it in the app) plus the workers.dev preview URL. */
+	"routes": [
+		{ "pattern": "tamtamgames.com", "custom_domain": true },
+		{ "pattern": "www.tamtamgames.com", "custom_domain": true }
+	],
+	"workers_dev": true,
 	/** Production values. Local development overrides APP_ENV and PUBLIC_ORIGIN in .dev.vars. */
 	"vars": {
 		"APP_ENV": "production",
@@ -26,12 +32,14 @@
 		{
 			"binding": "DB",
 			"database_name": "tamtam-db",
+			"database_id": "e246c828-2982-4b44-a3df-785b1954e978",
 			"migrations_dir": "drizzle"
 		}
 	],
 	"kv_namespaces": [
 		{
-			"binding": "KV"
+			"binding": "KV",
+			"id": "e76bd2e1ea2c473191675f9104805024"
 		}
 	],
 	"observability": {

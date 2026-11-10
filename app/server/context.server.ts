@@ -10,7 +10,7 @@
  * Nothing request-specific may live in module scope (Workers reuse isolates across requests).
  */
 import { env } from "cloudflare:workers";
-import { createContext, data, type MiddlewareFunction, type RouterContextProvider } from "react-router";
+import { createContext, data, redirect, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import { DEFAULT_LOCALE, LOCALES, splitLocale, type Dir, type Locale } from "~/lib/locales";
 import { parsePrefs, PREFS_COOKIE, readCookie, type Prefs } from "~/lib/prefs";
 import { applySecurityHeaders, isSameOriginMutation } from "./security.server";
@@ -91,6 +91,13 @@ function newNonce(): string {
  */
 export const requestContextMiddleware: MiddlewareFunction<Response> = async ({ request, context }, next) => {
   const url = new URL(request.url);
+
+  // One canonical host: www.tamtamgames.com → tamtamgames.com (permanent, keeps path and query).
+  if (url.hostname.startsWith("www.") && (request.method === "GET" || request.method === "HEAD")) {
+    url.hostname = url.hostname.slice(4);
+    throw redirect(url.toString(), 301);
+  }
+
   const cookieHeader = request.headers.get("Cookie");
   const isDev = env.APP_ENV !== "production";
   const queued: string[] = [];

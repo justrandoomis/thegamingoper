@@ -74,5 +74,7 @@ export function applySecurityHeaders(response: Response, ctx: RequestCtx, url: U
   // Demo data must not be indexed; admin and account areas never are.
   const path = url.pathname;
   const isPrivateArea = /^\/(admin|api)(\/|$)/.test(path) || /\/(account|checkout|cart|order|track)(\/|$)/.test(path);
-  if (ctx.storeMode === "demo" || isPrivateArea) h.set("X-Robots-Tag", "noindex, nofollow");
+  // Preview hosts (*.workers.dev) are never indexed either — only the canonical domain is.
+  const isPreviewHost = url.hostname.endsWith(".workers.dev");
+  if (ctx.storeMode === "demo" || isPrivateArea || isPreviewHost) h.set("X-Robots-Tag", "noindex, nofollow");
 }

@@ -1,79 +1,49 @@
-# Welcome to React Router!
+# TamTam Games — طمطم
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Arabic-first gaming store for Iraq: storefront with guest checkout, used devices and trade-in, device knowledge hubs, a maintenance assistant and a 23-module admin system.
 
-## Features
+- **Live:** https://tamtamgames.com (preview host: https://tamtam-games.tamtam-zelda.workers.dev)
+- **Stack:** React Router 8 (SSR) · React 19.3 · Cloudflare Workers · D1 (SQLite) + Drizzle · KV · Tailwind 4 + design tokens · TamTam Motion Engine
+- **Languages:** Arabic (default, RTL), English (`/en`), Kurdish Sorani (`/ckb`)
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Where things are written down
 
-## Getting Started
+| File | What it is |
+|---|---|
+| `docs/ARCHITECTURE.md` | The contract: stack, folders, conventions, data model, business invariants |
+| `docs/DESIGN.md` | Design system: tokens, clay and glass materials, components |
+| `docs/MOTION.md` | Motion grammar and the motion engine API |
+| `docs/SECURITY.md` | Application security model and the Cloudflare edge configuration |
+| `docs/STATUS.md` | Truthful implementation status: implemented / partial / mocked / blocked |
+| `docs/admin-blueprint.json` | The 23 admin modules and 176 functions from the admin guide |
 
-### Installation
-
-Install the dependencies:
+## Run it locally
 
 ```bash
 npm install
+npm run db:reset     # creates the local database, loads reference + DEMO data
+npm run dev          # http://localhost:5173 — real Workers runtime, local D1 and KV
 ```
 
-### Development
+`.dev.vars` holds local secrets (see `.dev.vars.example`). Nothing local needs a Cloudflare account.
 
-Start the development server with HMR:
+## Check it
 
 ```bash
-npm run dev
+npm run typecheck
+npm test
+node scripts/shot.mjs http://localhost:5173/ .shots/home.png 390 844
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Previewing the Production Build
-
-Preview the production build locally:
+## Deploy
 
 ```bash
-npm run preview
+npm run db:migrate:remote   # apply new migrations to the production D1
+npm run deploy              # build + wrangler deploy (tamtamgames.com, www, workers.dev)
 ```
 
-## Building for Production
+Production secrets (`SESSION_SECRET`, `DATA_KEY`, `SETUP_TOKEN`) are set with `wrangler secret put`. The first owner account is created at `/admin/setup` using `SETUP_TOKEN`.
 
-Create a production build:
+## Demo mode
 
-```bash
-npm run build
-```
-
-## Deployment
-
-Deployment is done using the Wrangler CLI.
-
-To build and deploy directly to production:
-
-```sh
-npm run deploy
-```
-
-To deploy a preview URL:
-
-```sh
-npx wrangler versions upload
-```
-
-You can then promote a version to production after verification or roll it out progressively.
-
-```sh
-npx wrangler versions deploy
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+While `STORE_MODE` is `demo` (see `wrangler.jsonc`) the catalogue, prices, stock and exchange rate are placeholders, every seeded row is flagged `is_demo`, the storefront shows a demo ribbon and search engines are told not to index it. Switch to `live` once real catalogue data is in.

@@ -11,7 +11,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { messagesFor } from "~/i18n/i18n.server";
+import { listNamespaces, messagesFor } from "~/i18n/i18n.server";
 import { DEFAULT_LOCALE, LOCALES } from "~/lib/locales";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
@@ -31,7 +31,8 @@ export async function loader({ context }: Route.LoaderArgs) {
     origin: ctx.origin,
     nonce: ctx.nonce,
     ...shell,
-    i18n: messagesFor(ctx.locale, "common"),
+    // "common" plus every design-system namespace ("ui", "ui-*") is available on every page.
+    i18n: messagesFor(ctx.locale, ...listNamespaces().filter((ns) => ns === "common" || ns === "ui" || ns.startsWith("ui-"))),
   };
 }
 

@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>طمطم — Lens &amp; Clay 1.0 · النظام الموحّد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Kufam:wght@400..900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   TamTam Games — "Lens & Clay 1.0" (طين وعدسة) — unified design system mock
+   CLAY  is for the hand : anything you press. A face on a real front wall; a press
+                           is the face travelling down onto the wall. Selected = held down.
+   GLASS is for the eye  : chrome that floats over content (bars, sheets, toasts, tags).
+                           Frosted, never has a wall, never red.
+   LIGHT is for platform : Nintendo / PlayStation / Xbox / handheld exist only as a gel
+                           light on the stage and a 16x5 LED. Never a surface.
+   RED   is the commit   : cart keys, the cart bead, the logo. Nothing else.
+   FLAT  is for reading  : floor, niches, paper fields, prices. Money never bounces.
+   All product data in this file is DEMO data.
+   ========================================================================== */
+
+/* ---------- 1. tokens ---------- */
+:root{
+  /* type families: display = Kufam (Arabic + Latin + numerals), text = IBM Plex Sans Arabic */
+  --font-display:"Kufam Variable","Kufam","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --font-text:"IBM Plex Sans Arabic","Noto Sans Arabic",system-ui,sans-serif;
+  --font-head:var(--font-display);        /* swapped per locale, see :lang(ckb) */
+  --ds:1;                                  /* display scale for translated strings */
+  --lh-body:1.7;
+
+  --type-hero:600 calc(36px * var(--ds))/1.25 var(--font-head);
+  --type-title:600 calc(26px * var(--ds))/1.35 var(--font-head);
+  --type-section:600 calc(19px * var(--ds))/1.45 var(--font-head);
+  --type-sub:600 calc(17px * var(--ds))/1.45 var(--font-head);
+  --type-button:600 calc(16px * var(--ds))/1.25 var(--font-head);
+  --type-body:400 15px/var(--lh-body) var(--font-text);
+  --type-strong:600 14.5px/1.5 var(--font-text);
+  --type-label:500 13.5px/1.5 var(--font-text);
+  --type-caption:400 12.5px/1.6 var(--font-text);
+  --type-tab:500 12px/1.4 var(--font-text);
+  --type-tag:600 12px/1 var(--font-text);
+  /* utility (admin, order numbers, ledgers): always with tabular-nums lining-nums */
+  --type-data:500 13px/1.5 var(--font-text);
+  --type-data-sm:400 12px/1.5 var(--font-text);
+  --type-kpi:700 24px/1.2 var(--font-display);
+
+  /* spacing: 4px grid */
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;--s-16:64px;
+  --gutter:16px;
+
+  /* radius: one scale */
+  --r-xs:8px;--r-sm:12px;--r-md:16px;--r-lg:20px;--r-xl:28px;--r-full:999px;
+
+  /* z-index: one scale */
+  --z-raised:1;--z-sticky:100;--z-nav:200;--z-scrim:300;--z-sheet:310;--z-dialog:400;--z-toast:500;--z-fly:600;--z-intro:700;
+
+  /* motion */
+  --t-press:80ms;--t-release:180ms;--t-micro:160ms;--t-exit:140ms;--t-reveal:240ms;--t-sheet:280ms;--t-page:320ms;--t-fly:460ms;--t-theme:200ms;
+  --ease-settle:cubic-bezier(.2,.8,.2,1);
+  --ease-squish:cubic-bezier(.34,1.56,.64,1);
+  --ease-exit:cubic-bezier(.4,0,1,1);
+  --ease-water:cubic-bezier(.4,0,.2,1);
+  /* springs: {response, dampingRatio} sampled into linear(); each carries its own settle time */
+  --spring-press:linear(0, 0.104, 0.329, 0.575, 0.786, 0.939, 1.031, 1.074, 1.083, 1.072, 1.053, 1.032, 1.016, 1.004, 0.997, 0.994, 0.993, 0.994, 0.996, 0.998, 1);--spring-press-t:260ms;       /* {.16, .62} */
+  --spring-squish:linear(0, 0.152, 0.466, 0.783, 1.014, 1.134, 1.163, 1.133, 1.081, 1.03, 0.995, 0.977, 0.974, 0.979, 0.988, 0.996, 1.001, 1.004, 1.004, 1.003, 1);--spring-squish-t:510ms;      /* {.26, .50} */
+  --spring-inflate:linear(0, 0.093, 0.293, 0.515, 0.712, 0.862, 0.963, 1.022, 1.048, 1.054, 1.048, 1.037, 1.025, 1.015, 1.007, 1.002, 0.999, 0.997, 0.997, 0.997, 1);--spring-inflate-t:430ms;   /* {.28, .68} */
+  --spring-settle:linear(0, 0.07, 0.212, 0.369, 0.512, 0.632, 0.728, 0.802, 0.857, 0.898, 0.928, 0.949, 0.964, 0.975, 0.983, 0.988, 0.992, 0.994, 0.996, 0.997, 1);--spring-settle-t:410ms;      /* {.30, 1.0} */
+  --spring-sheet:linear(0, 0.066, 0.209, 0.373, 0.529, 0.662, 0.767, 0.847, 0.905, 0.945, 0.971, 0.987, 0.997, 1.002, 1.004, 1.005, 1.005, 1.004, 1.003, 1.002, 1);--spring-sheet-t:390ms;        /* {.30, .86} */
+}
+:lang(en){--ds:.91;--lh-body:1.55}
+:lang(ckb){--font-head:var(--font-text);--ds:.94}   /* Sorani headlines use the text face: Kufam's final ە is not accepted without native review */
+
+[data-theme="light"]{
+  color-scheme:light;
+  --ground:#F3EEEA;          /* kaolin floor */
+  --niche:#E9E2DC;           /* flat tonal panel */
+  --stage:#E9E2DC;           /* the surface behind every product render */
+  --well:#E6DED7;            /* pressed-in track */
+  --paper:#FCFAF8;           /* fields, receipts, table rows */
+  --ink:#1F2126;
+  --ink-2:#585A62;
+  --ink-3:#808188;           /* disabled / decorative only */
+  --line:rgb(84 56 44 / .14);
+  --line-strong:#857E78;     /* field borders: >= 3:1 on paper and on ground */
+  --red:#E0142B;
+  --red-ink:#C7102A;         /* red as text: validation only */
+  --ok:#17713F;--warn:#8A5200;--info:#0A5FB8;
+  --shade:84 56 44;          /* shadows are warm umber, never grey */
+
+  --gel-nintendo:255 81 64;--gel-playstation:47 107 242;--gel-xbox:31 166 80;--gel-handheld:123 91 239;
+  --gel-brand:224 20 43;     /* store-wide campaigns only */
+  --halo:.24;--pool:.40;--spot:0;
+
+  --clay-face:linear-gradient(180deg,#FFFFFF 0%,#FFFCFA 42%,#F1EAE4 100%);
+  --clay-wall:#CCC0B6;
+  --clay-lip:rgb(255 255 255 / 1);
+  --clay-belly:rgb(84 56 44 / .13);
+  --red-face:linear-gradient(180deg,#E8293D 0%,#E0142B 20%,#C80F25 100%);   /* the lighter red stays in the top fifth, above label height */
+  --red-wall:#A30C1F;
+  --red-lip:rgb(255 186 186 / .75);
+  --red-belly:rgb(112 0 16 / .40);
+  --sel-face:#1F2126;--sel-wall:#000000;--on-sel:#FFFCFA;--sel-in:rgb(0 0 0 / .55);
+  --well-shadow:inset 0 2px 4px rgb(84 56 44 / .20),inset 0 -1px 0 rgb(255 255 255 / .85);
+
+  --glass-bg:linear-gradient(180deg,rgb(250 251 253 / .82) 0%,rgb(241 243 248 / .72) 100%);
+  --glass-static:linear-gradient(180deg,rgb(255 255 255 / .80) 0%,rgb(250 251 253 / .54) 100%);
+  --glass-solid:#F7F8FA;
+  --glass-filter:blur(16px) saturate(1.7);
+  --glass-rim:inset 0 1.5px 0 rgb(255 255 255 / 1),inset 0 0 0 1px rgb(255 255 255 / .46),0 0 0 .5px rgb(40 48 66 / .12);
+  --on-glass-2:#3F4148;      /* secondary text on glass: 4.5:1 even over a black backdrop */
+
+  /* elevation: one scale, one blurred shadow per object */
+  --e-1:0 5px 8px -4px rgb(84 56 44 / .30);         /* small keys */
+  --e-2:0 9px 14px -7px rgb(84 56 44 / .34);        /* keys */
+  --e-3:0 6px 12px -6px rgb(84 56 44 / .30);        /* resting glass, tags */
+  --e-4:0 12px 24px -10px rgb(84 56 44 / .36);      /* floating glass: bars, toasts */
+  --e-4-up:0 -10px 24px -14px rgb(84 56 44 / .30);  /* bottom-anchored glass */
+  --e-5:0 -18px 40px -16px rgb(84 56 44 / .42);     /* sheets, dialogs */
+}
+[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#16171B;          /* charcoal, never pure black */
+  --niche:#202228;
+  --stage:#34363F;           /* lit: renders never sit on the darkest surface */
+  --well:#0E0F12;
+  --paper:#1D1F24;
+  --ink:#F5F1EC;
+  --ink-2:#B4B6BE;
+  --ink-3:#7C7E86;
+  --line:rgb(255 255 255 / .10);
+  --line-strong:#74767E;
+  --red:#E0142B;
+  --red-ink:#FF7C86;
+  --ok:#4CCB86;--warn:#F0B04A;--info:#6DB3FF;
+  --shade:0 0 0;
+
+  --gel-nintendo:255 106 90;--gel-playstation:90 140 255;--gel-xbox:53 196 106;--gel-handheld:154 125 255;
+  --gel-brand:255 70 88;
+  --halo:.34;--pool:.58;--spot:.10;
+
+  --clay-face:linear-gradient(180deg,#3B3E47 0%,#2B2D34 42%,#22242A 100%);
+  --clay-wall:#0B0C0F;
+  --clay-lip:rgb(255 255 255 / .17);
+  --clay-belly:rgb(0 0 0 / .34);
+  --red-face:linear-gradient(180deg,#EA2B40 0%,#E0142B 20%,#C40E24 100%);
+  --red-wall:#8C0A1B;
+  --red-lip:rgb(255 170 170 / .60);
+  --red-belly:rgb(96 0 14 / .45);
+  --sel-face:#F5F1EC;--sel-wall:#9B948E;--on-sel:#1F2126;--sel-in:rgb(84 56 44 / .40);
+  --well-shadow:inset 0 2px 5px rgb(0 0 0 / .70),inset 0 -1px 0 rgb(255 255 255 / .07);
+
+  --glass-bg:linear-gradient(180deg,rgb(62 66 78 / .82) 0%,rgb(30 32 39 / .76) 100%);
+  --glass-static:linear-gradient(180deg,rgb(76 80 92 / .80) 0%,rgb(50 52 61 / .68) 100%);
+  --glass-solid:#26282F;
+  --glass-filter:blur(16px) saturate(1.6) brightness(.8);
+  --glass-rim:inset 0 1.5px 0 rgb(255 255 255 / .34),inset 0 0 0 1px rgb(255 255 255 / .08),0 0 0 .5px rgb(0 0 0 / .5);
+  --on-glass-2:#DAD7D3;
+
+  --e-1:0 5px 8px -4px rgb(0 0 0 / .60);
+  --e-2:0 10px 16px -7px rgb(0 0 0 / .66);
+  --e-3:0 6px 12px -6px rgb(0 0 0 / .60);
+  --e-4:0 14px 28px -10px rgb(0 0 0 / .70);
+  --e-4-up:0 -12px 26px -14px rgb(0 0 0 / .60);
+  --e-5:0 -20px 44px -16px rgb(0 0 0 / .80);
+}
+
+/* ---------- 2. board (presentation only, not part of the system) ---------- */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#D8D2CC;font-family:var(--font-text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.board{display:flex;flex-direction:column;align-items:center;padding:28px 0 64px}
+.board__label{display:flex;align-items:center;justify-content:space-between;gap:12px;inline-size:390px;max-inline-size:100%;margin:36px 0 10px;padding:0 4px;font:500 12px/1.4 var(--font-text);color:#4C4E55}
+.board__label:first-child{margin-block-start:0}
+.board__label.is-wide{inline-size:1280px}
+.board__toggle{font:500 12px/1 var(--font-text);color:#1F2126;background:#EFEAE5;border:1px solid rgb(31 33 38 / .18);border-radius:999px;padding:6px 12px;cursor:pointer}
+.board__wide{max-inline-size:100%;overflow-x:auto}
+
+/* ---------- 3. base ---------- */
+.ui{position:relative;background:var(--ground);color:var(--ink);font:var(--type-body)}
+:where(.ui) *{margin:0}
+:where(.ui) :where(button){font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:where(.ui) :where(a){color:inherit;text-decoration:none}
+:where(.ui) :where(fieldset){border:0;padding:0;min-inline-size:0}
+:where(.ui) :focus-visible{outline:2.5px solid var(--ink);outline-offset:3px}
+.sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ico{inline-size:22px;block-size:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+[dir="ltr"] .ico.is-dir{transform:scaleX(-1)}
+
+/* ==========================================================================
+   4. MATERIAL — CLAY
+   .clay   the painted face (also for clay that never travels)
+   .key    a clay face on a static front wall; only the face moves (transform)
+   .well   clay pressed in: tracks that hold keys
+   ========================================================================== */
+.clay{background:var(--clay-face);box-shadow:inset 0 1.5px 0 var(--clay-lip),inset 0 -6px 8px -5px var(--clay-belly)}
+.clay--red{background:var(--red-face);color:#fff;box-shadow:inset 0 1.5px 0 var(--red-lip),inset 0 -6px 8px -5px var(--red-belly)}
+.clay--ink{background:var(--sel-face);color:var(--on-sel);box-shadow:inset 0 2px 3px var(--sel-in)}
+.clay--walled{box-shadow:inset 0 1.5px 0 var(--clay-lip),inset 0 -6px 8px -5px var(--clay-belly),0 3px 0 var(--clay-wall),var(--e-2)}   /* clay that never travels: admin decision cards */
+
+.key{
+  --wall:3px;--r:var(--r-md);--h:48px;--px:20px;
+  --face:var(--clay-face);--wall-c:var(--clay-wall);--on:var(--ink);--lip:var(--clay-lip);--belly:var(--clay-belly);--cast:var(--e-2);
+  position:relative;display:inline-flex;vertical-align:top;padding:0 0 var(--wall);border-radius:var(--r);
+  color:var(--on);font:var(--type-button);white-space:nowrap;min-inline-size:0;user-select:none;-webkit-user-select:none;
+}
+/* the wall never moves and owns the only blurred shadow */
+.key::before{content:"";position:absolute;inset:var(--wall) 0 0;border-radius:inherit;background:var(--wall-c);box-shadow:var(--cast)}
+.key__cap{
+  position:relative;flex:1;min-inline-size:0;display:flex;align-items:center;justify-content:center;gap:8px;
+  min-block-size:var(--h);padding-inline:var(--px);border-radius:inherit;background:var(--face);
+  box-shadow:inset 0 1.5px 0 var(--lip),inset 0 -6px 8px -5px var(--belly);
+  transition:transform var(--t-release) var(--ease-squish);
+}
+.key:active .key__cap{transform:translateY(calc(var(--wall) - 1px));transition-duration:var(--t-press);transition-timing-function:ease-out}
+@media (hover:hover){.key:not([aria-checked="true"]):not([aria-pressed="true"]):hover:not(:active) .key__cap{transform:translateY(-1px)}}   /* hover: the cap rises 1px, more wall shows */
+@supports (transition-timing-function:linear(0,1)){.key__cap{transition:transform var(--spring-press-t) var(--spring-press)}}   /* release on the press spring where linear() exists */
+.key .ico{inline-size:20px;block-size:20px;stroke-width:2.1}
+
+.key--red{--face:var(--red-face);--wall-c:var(--red-wall);--on:#fff;--lip:var(--red-lip);--belly:var(--red-belly)}
+.key--lg{--h:56px;--px:26px}
+.key--sm{--wall:2px;--h:40px;--px:14px;--r:var(--r-sm);--cast:var(--e-1);font:600 13.5px/1.25 var(--font-text)}
+.key--sm::after{content:"";position:absolute;inset:-2px 0}                 /* 44px hit area */
+.key--round{--wall:2px;--r:var(--r-full);--h:44px;--px:0;--cast:var(--e-1)}
+.key--round .key__cap{inline-size:44px}
+.key--chip{--wall:2px;--h:44px;--px:14px;--cast:var(--e-1);font:500 14px/1.25 var(--font-text)}
+/* every chip reserves its mark, so choosing never reflows the row: hollow ring = not chosen, check = chosen */
+.key--chip .ico{inline-size:16px;block-size:16px;stroke-width:2.6;display:none}
+.key--chip .key__cap::before{content:"";flex:none;inline-size:14px;block-size:14px;margin:1px;border-radius:50%;border:1.6px solid var(--ink-2)}
+
+/* selected / on = the same key held down. Text keys turn ink; picture keys take an ink ring. */
+.key[aria-checked="true"],.key[aria-pressed="true"]{--face:var(--sel-face);--wall-c:var(--sel-wall);--on:var(--on-sel)}
+.key[aria-checked="true"] .key__cap,.key[aria-pressed="true"] .key__cap{transform:translateY(calc(var(--wall) - 1px));box-shadow:inset 0 2px 3px var(--sel-in)}
+.key--chip[aria-checked="true"] .ico{display:block}
+.key--chip[aria-checked="true"] .key__cap::before{display:none}
+.key[aria-pressed="true"] .ico{fill:currentColor}
+
+.well{background:var(--well);box-shadow:var(--well-shadow)}
+
+/* ==========================================================================
+   5. MATERIAL — GLASS
+   .glass          live frost: only fixed chrome that content scrolls under (max two per viewport)
+   .glass--static  same pane, no backdrop-filter: only over smooth surfaces (floor, niche, light)
+   ========================================================================== */
+.glass{background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-filter);backdrop-filter:var(--glass-filter);box-shadow:var(--glass-rim),var(--e-4)}
+.glass--bottom{box-shadow:var(--glass-rim),var(--e-4-up)}
+.glass--static{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--glass-static);box-shadow:var(--glass-rim),var(--e-3)}
+.glass .is-2{color:var(--on-glass-2)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:var(--glass-solid)}}
+@media (prefers-reduced-transparency:reduce){.glass,.glass--static{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--glass-solid)}}
+.fx-low .glass{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--glass-solid)}   /* low-end tier, set by the Motion Engine */
+.fx-low .inflate{animation:none}
+@media (prefers-contrast:more){
+  .glass,.glass--static{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--ground);box-shadow:0 0 0 1.5px var(--ink)}
+  .key__cap{box-shadow:inset 0 0 0 1.5px var(--ink)}
+  .niche,.well{box-shadow:inset 0 0 0 1px var(--ink)}
+  .stage__light,.stage__pool{display:none}
+}
+@media (forced-colors:active){
+  .key__cap{border:1px solid ButtonText}
+  .key[aria-checked="true"] .key__cap,.key[aria-pressed="true"] .key__cap{outline:3px solid Highlight;outline-offset:-3px}
+}
+
+/* ---------- 6. primitives ---------- */
+/* LED: the platform cue. 16x5, always next to the platform name as text */
+.led{display:block;flex:none;inline-size:16px;block-size:5px;border-radius:var(--r-full);background:rgb(var(--gel));opacity:.5}
+.led--solid{opacity:1}
+.led.is-on,[aria-checked="true"] .led{opacity:1;box-shadow:0 0 0 3px rgb(var(--gel) / .18),0 0 8px rgb(var(--gel) / .8)}
+
+/* price: flat, ink, tabular. Never red, never animated except a digit roll on currency switch */
+.price{display:inline-flex;align-items:baseline;gap:.26em;font:700 17px/1.3 var(--font-display);font-variant-numeric:tabular-nums lining-nums;white-space:nowrap;color:var(--ink)}
+.price__cur{font:500 max(11px,.6em)/1 var(--font-text);color:var(--ink-2)}
+.price--lg{font-size:21px}
+.price--xl{font-size:28px}
+.glass .price__cur{color:var(--on-glass-2)}
+
+/* tags: one per object, state a fact, differ by shape not colour */
+.tag{display:inline-flex;align-items:center;gap:5px;block-size:24px;padding-inline:9px;padding-block-end:1px;border-radius:var(--r-xs);font:var(--type-tag);white-space:nowrap}
+.tag--new{background:var(--ink);color:var(--ground)}
+.tag--used{background:var(--ground);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+
+/* status: text + dot, AA in both themes */
+.status{display:inline-flex;align-items:center;gap:6px;font:500 12.5px/1.6 var(--font-text)}
+.status::before{content:"";inline-size:7px;block-size:7px;border-radius:50%;background:currentColor;flex:none}
+.status--ok{color:var(--ok)}.status--warn{color:var(--warn)}.status--info{color:var(--info)}.status--bad{color:var(--red-ink)}
+
+/* the cart bead: a small red clay bead, the landing target of the flight */
+.bead{display:grid;place-items:center;min-inline-size:20px;block-size:20px;padding:0 5px 1px;border-radius:var(--r-full);font:600 11.5px/1 var(--font-text);font-variant-numeric:tabular-nums;color:#fff;
+  background:var(--red-face);box-shadow:inset 0 1px 0 var(--red-lip),0 1.5px 0 var(--red-wall)}
+
+/* the one link look: ink, 600, with an arrow that follows the reading direction */
+.link{display:inline-flex;align-items:center;gap:4px;min-block-size:44px;margin-block:-4px;font:600 13.5px/1.4 var(--font-text);color:var(--ink)}
+.link .ico{inline-size:16px;block-size:16px;stroke-width:2.3}
+.link:hover span,.link--inline{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1.5px}
+.link--inline{display:inline;min-block-size:0;margin:0;font:inherit;font-weight:600}
+
+/* fields are flat paper with a real border */
+.field{display:flex;flex-direction:column;gap:6px;min-inline-size:0}
+.field__label{font:600 13.5px/1.5 var(--font-text)}
+.field__input{inline-size:100%;block-size:52px;padding-inline:16px;border:1.5px solid var(--line-strong);border-radius:var(--r-md);background:var(--paper);color:var(--ink);font:500 16px/1 var(--font-text);outline:0}
+.field__input::placeholder{color:var(--ink-2);opacity:1}
+.field__input:focus-visible{outline:2.5px solid var(--ink);outline-offset:2px}
+[dir="rtl"] .field__input[type="tel"]{direction:ltr;text-align:end}   /* numbers stay LTR but hug the start edge of an RTL form */
+.field__help{font:var(--type-caption);color:var(--ink-2)}
+.field.is-error .field__input{border-color:var(--red-ink);border-width:2px}
+.field__error{display:flex;align-items:center;gap:6px;font:500 12.5px/1.6 var(--font-text);color:var(--red-ink)}
+.field__error .ico{inline-size:16px;block-size:16px;stroke-width:2.2}
+
+/* stepper: two round keys in a well */
+.stepper{display:inline-flex;align-items:center;padding:5px 5px 4px;border-radius:var(--r-full)}
+.stepper output{min-inline-size:38px;text-align:center;font:700 17px/1 var(--font-display);font-variant-numeric:tabular-nums}
+
+/* the socket: a red key is seated in a flat well, so an empty socket can say "it left" */
+.socket{display:grid;place-items:center;flex:none;inline-size:52px;block-size:52px;border-radius:50%;background:var(--well)}
+.key .ico-ok{display:none}
+.key[data-state="added"] .ico-ok{display:block}
+.key[data-state="added"] .ico-add{display:none}
+
+/* ==========================================================================
+   7. THE LIT STAGE (signature): a render floating in one pool of platform light
+   ========================================================================== */
+.stage__light{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.stage__halo,.stage__spot{grid-area:1/1;border-radius:50%}
+.stage__halo{inline-size:var(--halo-w,420px);block-size:var(--halo-h,300px);background:radial-gradient(closest-side,rgb(var(--gel) / var(--halo)),rgb(var(--gel) / calc(var(--halo) * .3)) 58%,transparent)}
+.stage__spot{inline-size:calc(var(--halo-w,420px) * .62);block-size:calc(var(--halo-h,300px) * .62);background:radial-gradient(closest-side,rgb(255 255 255 / var(--spot)),transparent)}
+.stage__pool{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgb(var(--gel) / var(--pool)),rgb(var(--gel) / calc(var(--pool) * .38)) 56%,transparent)}
+.stage__slot{position:absolute;display:grid;place-items:end center}
+/* a render: one box, contained by aspect ratio; its contact shadow is a percentage of the image box */
+.render{position:relative;display:block;line-height:0;isolation:isolate}
+.render svg{display:block;inline-size:auto;block-size:auto;max-inline-size:var(--slot-w);max-block-size:var(--slot-h);overflow:visible;transform:rotate(var(--pose,-3deg))}
+.render::after{content:"";position:absolute;z-index:-1;inset-inline:6%;inset-block-end:-11%;block-size:15%;border-radius:50%;background:radial-gradient(closest-side,rgb(var(--shade) / .42),rgb(var(--shade) / .13) 60%,transparent)}
+.gtag{display:flex;flex-direction:column;gap:1px;padding:8px 14px 9px;border-radius:var(--r-md);min-inline-size:0}
+.gtag__name{font:500 12.5px/1.5 var(--font-text);color:var(--ink)}
+
+/* ==========================================================================
+   8. SCREEN A — home
+   ========================================================================== */
+.screen{inline-size:390px;max-inline-size:100%;block-size:844px;overflow:hidden}
+.top{display:flex;align-items:center;gap:12px;padding:10px var(--gutter) 0}
+.logo{flex:none;display:inline-flex;align-items:center;min-block-size:44px;font:800 28px/1 "Kufam",sans-serif;color:var(--red);padding-block-end:5px}
+.search{flex:1;min-inline-size:0;display:flex;align-items:center;gap:10px;block-size:44px;padding-inline:14px;border:1.5px solid var(--line-strong);border-radius:var(--r-md);background:var(--paper);color:var(--ink-2);font:400 14px/1 var(--font-text);text-align:start}
+.search .ico{inline-size:20px;block-size:20px;color:var(--ink)}
+.search span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-block-end:1px}
+
+.hero{position:relative;padding:12px var(--gutter) 0}
+.hero__title{position:relative;z-index:1;font:var(--type-hero);text-wrap:balance}
+.stage{position:relative;border-radius:var(--r-xl);background:var(--stage);overflow:hidden}
+.hero .stage{block-size:194px;margin-block-start:6px;--slot-w:240px;--slot-h:150px;--halo-w:400px;--halo-h:280px}
+.hero .stage__light{inset:0 0 14px}
+.hero .stage__pool{inset-inline:19%;inset-block-start:140px;block-size:46px}
+.hero .stage__slot{inset-inline:0;inset-block-start:10px;block-size:150px;z-index:1}
+/* the tag and the commit key hang off the rim of the stage: half on the stage, half on the floor */
+.stage__band{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-block-start:-30px;padding-inline:10px}
+.stage__band .key{--px:16px}
+
+.bank__label{font:var(--type-label);color:var(--ink-2);margin-block:9px 5px}
+.bank__label b{font-weight:600;color:var(--ink)}
+.bank{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:5px 5px 4px;border-radius:calc(var(--r-md) + 5px)}
+.key--plat{--h:58px;--px:2px;font:500 12.5px/1.3 var(--font-text)}
+.key--plat .key__cap{flex-direction:column;gap:2px;padding-block:6px 5px}
+.key--plat .led{margin-block-end:3px}
+.key--plat .ico{inline-size:22px;block-size:22px;stroke-width:1.7}
+.key--plat[aria-checked="true"]{font-weight:600}
+
+.rail{padding:12px var(--gutter) 0}
+.rail__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-block-end:2px}
+.rail__head h2{font:var(--type-section)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* the one card: a flat niche, the label on the floor, the red key at the bottom inline-end corner */
+.pcard{display:flex;flex-direction:column;min-inline-size:0}
+.niche{position:relative;display:block;aspect-ratio:3/2;border-radius:var(--r-lg);background:var(--stage);overflow:hidden;container-type:size;--pose:0deg}
+.niche__tag{position:absolute;inset-block-start:8px;inset-inline-start:8px;z-index:1}
+.niche__slot{position:absolute;inset:30px 14px 14px;display:grid;place-items:end center;--slot-w:calc(100cqi - 28px);--slot-h:calc(100cqb - 44px)}
+.pcard__text{min-block-size:calc(14.5px * 1.5 * 2 + 12.5px * 1.6);margin-block-start:8px}
+.pcard__name{font:var(--type-strong);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.pcard__meta{font:var(--type-caption);color:var(--ink-2)}
+.pcard__buy{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-block-start:auto;padding-block-start:2px}
+
+.tabbar{position:absolute;inset-inline:0;inset-block-end:0;z-index:var(--z-nav);display:flex;block-size:76px;padding:9px 6px 0;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.tab{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font:var(--type-tab);color:var(--ink)}
+.tab .ico{inline-size:24px;block-size:24px;stroke-width:1.7}
+.tab__ico{position:relative;display:block;line-height:0}
+.tab__ico .bead{position:absolute;inset-block-start:-6px;inset-inline-end:-11px}
+.tab[aria-current="page"]{font-weight:600}
+.tab[aria-current="page"] .ico{fill:currentColor;stroke-width:1.6}
+.tab[aria-current="page"]::before{content:"";position:absolute;inset-block-start:-9px;inset-inline:0;margin-inline:auto;inline-size:22px;block-size:3px;border-radius:0 0 3px 3px;background:var(--ink)}
+
+/* ==========================================================================
+   9. SCREEN B — product detail
+   ========================================================================== */
+.pstage{position:relative;block-size:318px;background:var(--stage);border-radius:0 0 var(--r-xl) var(--r-xl);overflow:hidden;--slot-w:292px;--slot-h:150px;--halo-w:460px;--halo-h:330px}
+.pstage .stage__light{inset-block:-10px 30px}
+.pstage .stage__pool{inset-inline:14%;inset-block-start:204px;block-size:50px}
+.pstage .stage__slot{inset-inline:0;inset-block-start:62px;block-size:150px;z-index:1}
+.chrome{position:absolute;inset-block-start:12px;inset-inline:var(--gutter);z-index:3;display:flex;justify-content:space-between}
+.cbtn{position:relative;display:grid;place-items:center;inline-size:44px;block-size:44px;border-radius:50%;color:var(--ink)}
+.cbtn .bead{position:absolute;inset-block-start:-4px;inset-inline-end:-6px}
+.gallery{position:absolute;inset-inline:var(--gutter);inset-block-end:13px;z-index:2;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;font:var(--type-caption);color:var(--ink-2)}
+.gallery > span{white-space:nowrap}
+.gallery__count{text-align:end}
+.thumbs{display:flex;gap:5px;padding:4px 4px 3px;border-radius:calc(var(--r-sm) + 4px)}   /* nested radius = inner radius + gap */
+.key--thumb{--wall:2px;--r:var(--r-sm);--h:42px;--px:0;--cast:var(--e-1);--pose:0deg;--slot-w:38px;--slot-h:24px}
+.key--thumb .key__cap{inline-size:50px}
+.key--thumb[aria-checked="true"]{--face:var(--clay-face);--wall-c:var(--clay-wall);--on:var(--ink)}
+.key--thumb[aria-checked="true"] .key__cap{box-shadow:inset 0 0 0 2px var(--ink)}
+.key--thumb .render::after{display:none}
+
+.pinfo{padding:12px var(--gutter) 0}
+.pinfo__meta{display:flex;align-items:center;gap:10px}
+.plat{display:inline-flex;align-items:center;gap:7px;font:500 13px/1.5 var(--font-text);color:var(--ink-2)}
+.pinfo__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-block-start:4px}
+.pinfo__title{font:var(--type-title);min-inline-size:0}
+.pinfo__line{color:var(--ink-2);margin-block-start:1px}
+.pinfo__price{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-block-start:10px}
+.pinfo__facts{display:flex;flex-direction:column;align-items:flex-end;font:var(--type-caption);color:var(--ink-2);text-align:end}
+.opts{margin-block-start:14px}
+.opts legend{padding:0;font:600 13px/1.5 var(--font-text);color:var(--ink-2);margin-block-end:7px}
+.opts__row{display:flex;flex-wrap:wrap;gap:10px}
+.specs{margin-block-start:18px}
+.specs h2{font:var(--type-sub);margin-block-end:2px}
+.specs dl{display:grid;grid-template-columns:auto 1fr;font:400 14px/1.6 var(--font-text)}
+.specs dt,.specs dd{padding-block:10px;border-block-end:1px solid var(--line)}
+.specs dt{color:var(--ink-2);padding-inline-end:20px}
+.specs dd{font-weight:500}
+.buybar{position:absolute;inset-inline:0;inset-block-end:0;z-index:var(--z-nav);display:flex;align-items:flex-start;gap:12px;block-size:92px;padding:14px var(--gutter) 0;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.buybar .key--red{flex:1;--h:52px}
+
+/* ==========================================================================
+   10. MATERIAL STRIPS
+   ========================================================================== */
+.strip{inline-size:390px;max-inline-size:100%;padding:22px var(--gutter) 0;overflow:hidden}
+.strip__h{font:var(--type-section);margin-block-start:24px}
+.strip__h:first-child{margin-block-start:0}
+.strip__h span{font:500 13px/1.5 var(--font-text);color:var(--ink-2);margin-inline-start:6px}
+.strip__grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin-block-start:12px;align-items:start}
+.cell{display:flex;flex-direction:column;gap:7px;min-inline-size:0}
+.cell--wide{grid-column:1 / -1}
+.cell__row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.cell__row--split{justify-content:space-between}
+.cap{font:500 12px/1.5 var(--font-text);color:var(--ink-2)}
+.strip .key:not(.key--round):not(.key--chip):not(.key--plat):not(.key--sm):not(.key--thumb){--px:12px}
+.strip .key--full{display:flex}
+.price-block{display:flex;flex-direction:column;gap:2px}
+.empty{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--r-lg);background:var(--niche)}
+.empty .socket{background:var(--well);box-shadow:var(--well-shadow)}
+.empty__text{flex:1;min-inline-size:0;display:flex;flex-direction:column;font:var(--type-caption);color:var(--ink-2)}
+.empty__text b{font:var(--type-strong);color:var(--ink)}
+.price--approx{font:500 13px/1.6 var(--font-text);color:var(--ink-2)}
+.scene{position:relative;block-size:452px;margin:12px calc(var(--gutter) * -1) 0;overflow:hidden}
+.scene__stage{position:absolute;inset-inline:var(--gutter);inset-block-start:44px;block-size:186px;border-radius:var(--r-lg);background:var(--stage);overflow:hidden;--slot-w:120px;--slot-h:128px;--halo-w:340px;--halo-h:250px}
+.scene__stage .stage__pool{inset-inline:22%;inset-block-start:128px;block-size:40px}
+.scene__stage .stage__slot{inset-inline:0;inset-block-start:16px;block-size:128px;z-index:1}
+.scene > .gtag{position:absolute;inset-inline-start:calc(var(--gutter) + 12px);inset-block-start:200px;z-index:2}
+.scene__row{position:absolute;inset-inline:var(--gutter);inset-block-start:242px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toast{position:absolute;inset-inline:var(--gutter);inset-block-start:8px;z-index:4;display:flex;align-items:center;gap:10px;min-block-size:60px;padding:8px;padding-inline-end:10px;border-radius:var(--r-md)}
+.toast__thumb{flex:none;display:grid;place-items:center;inline-size:44px;block-size:44px;border-radius:var(--r-sm);background:var(--stage);--slot-w:34px;--slot-h:30px;--pose:0deg}
+.toast__thumb .render::after{display:none}
+.toast__msg{flex:1;min-inline-size:0;display:flex;flex-direction:column;font:600 13.5px/1.45 var(--font-text)}
+.toast__msg .is-2{font-weight:400;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet{position:absolute;inset-inline:0;inset-block-end:0;z-index:5}
+.sheet__head{position:relative;padding:0 var(--gutter) 10px;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.sheet__grab{display:block;inline-size:40px;block-size:5px;border-radius:3px;margin:0 auto;position:relative;inset-block-start:9px;background:var(--ink);opacity:.28}
+.sheet__row{display:flex;align-items:center;justify-content:space-between;margin-block-start:16px}
+.sheet__title{font:var(--type-sub)}
+.sheet__body{background:var(--ground);padding:0 var(--gutter)}
+.sheet__item{display:flex;align-items:center;justify-content:space-between;min-block-size:52px;border-block-end:1px solid var(--line);font:500 15px/1.5 var(--font-text)}
+
+/* ==========================================================================
+   11. DESKTOP — header + home hero (1280)
+   ========================================================================== */
+.desk{inline-size:1280px;padding-block-end:30px;overflow:hidden;font:400 16px/1.75 var(--font-text);--gutter:40px}
+.util{display:flex;align-items:center;justify-content:space-between;gap:24px;block-size:38px;padding-inline:var(--gutter);border-block-end:1px solid var(--line);font:400 12.5px/1 var(--font-text);color:var(--ink-2)}
+.util__fact{display:inline-flex;align-items:center;gap:8px}
+.util .ico{inline-size:17px;block-size:17px;color:var(--ink)}
+.util__links{display:flex;align-items:center;gap:22px}
+.util__links a,.util__links button{display:inline-flex;align-items:center;min-block-size:38px}
+.langs{display:inline-flex;align-items:center;gap:12px;padding-inline-start:22px;border-inline-start:1px solid var(--line)}
+.langs [aria-current="true"]{color:var(--ink);font-weight:600}
+.dhead{display:flex;align-items:center;gap:22px;block-size:80px;padding-inline:var(--gutter)}
+.desk .logo{font-size:38px;padding-block-end:7px}
+.dnav{display:flex;align-items:center;gap:20px;font:500 15px/1 var(--font-text)}
+.dnav a{display:inline-flex;align-items:center;gap:8px;min-block-size:44px;white-space:nowrap}
+.dnav__sep{inline-size:1px;block-size:20px;background:var(--line)}
+.desk .search{flex:0 1 290px;min-inline-size:210px;margin-inline-start:auto;block-size:46px;font-size:14.5px}
+.dtools{display:flex;align-items:center;gap:6px}
+.tool{display:grid;place-items:center;inline-size:44px;block-size:44px;border-radius:50%;color:var(--ink)}
+.dhero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:center;block-size:522px;padding:8px var(--gutter) 0}
+.dhero__title{font:600 calc(68px * var(--ds))/1.15 var(--font-head);text-wrap:balance}
+.dhero__deck{font:400 18px/1.7 var(--font-text);color:var(--ink-2);max-inline-size:27em;margin-block-start:10px}
+.dhero__actions{display:flex;align-items:center;gap:14px;margin-block-start:26px}
+.dhero__ship{display:flex;align-items:center;gap:8px;margin-block-start:16px;font:400 13.5px/1.6 var(--font-text);color:var(--ink-2)}
+.dhero__ship .ico{inline-size:18px;block-size:18px;color:var(--ink)}
+.dhero .bank__label{margin-block:34px 8px;font-size:14px}
+.dhero .bank{max-inline-size:452px}
+.dhero .key--plat{--h:64px;font-size:13.5px}
+.dstage-wrap{position:relative;block-size:452px}
+.dstage{position:absolute;inset:0;border-radius:var(--r-xl);background:var(--stage);overflow:hidden;--slot-w:540px;--slot-h:300px;--halo-w:780px;--halo-h:560px;--pose:-4deg}
+.dstage .stage__light{inset:0 0 20px}
+.dstage .stage__pool{inset-inline:14%;inset-block-start:346px;block-size:80px}
+.dstage .stage__slot{inset-inline:0;inset-block-start:54px;block-size:300px;z-index:1}
+.dstage-wrap .gtag{position:absolute;inset-inline-start:28px;inset-block-end:-30px;z-index:2;padding:11px 18px 12px}
+.dstage-wrap .gtag__name{font-size:14px}
+.dstage-wrap .price--lg{font-size:28px}
+.drail{padding:6px var(--gutter) 0}
+.drail .rail__head{margin-block-end:6px}
+.drail .rail__head h2{font:600 calc(26px * var(--ds))/1.35 var(--font-head)}
+.drail .link{font-size:14.5px}
+.grid6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px}
+.desk .pcard__name{font-size:15px}
+.desk .pcard__text{min-block-size:calc(15px * 1.5 * 2 + 12.5px * 1.6)}
+
+/* ---------- 12. motion + preferences ---------- */
+@keyframes inflate{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+.inflate{animation:inflate var(--t-reveal) var(--ease-squish) both;animation-delay:calc(var(--i,0) * 45ms)}
+@supports (animation-timing-function:linear(0,1)){.inflate{animation-duration:var(--spring-inflate-t);animation-timing-function:var(--spring-inflate)}}
+.fly{position:absolute;inset-block-start:0;left:0;z-index:var(--z-fly);inline-size:22px;block-size:22px;margin:-11px 0 0 -11px;border-radius:50%;pointer-events:none;background:var(--red-face);box-shadow:inset 0 1.5px 0 var(--red-lip),0 2px 0 var(--red-wall)}
+@media (prefers-reduced-motion:reduce){
+  .key__cap{transition:none}
+  .inflate{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- shared drawings: stand-ins for TamTam's future pre-rendered clay models (no brand marks).
+     The SVG filters are mock-only; production ships AVIF/WebP renders with explicit dimensions. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="puffD" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="b"/>
+      <feComponentTransfer in="b" result="fat"><feFuncA type="linear" slope="1.9"/></feComponentTransfer>
+      <feOffset in="fat" dy="-5" result="up"/>
+      <feComposite in="SourceAlpha" in2="up" operator="out" result="bandB"/>
+      <feFlood flood-color="#000" flood-opacity=".42"/>
+      <feComposite in2="bandB" operator="in" result="shadeB"/>
+      <feOffset in="fat" dy="4" result="dn"/>
+      <feComposite in="SourceAlpha" in2="dn" operator="out" result="bandT"/>
+      <feFlood flood-color="#fff" flood-opacity=".24"/>
+      <feComposite in2="bandT" operator="in" result="shadeT"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shadeB"/><feMergeNode in="shadeT"/></feMerge>
+    </filter>
+    <filter id="puffL" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="b"/>
+      <feComponentTransfer in="b" result="fat"><feFuncA type="linear" slope="1.9"/></feComponentTransfer>
+      <feOffset in="fat" dy="-6" result="up"/>
+      <feComposite in="SourceAlpha" in2="up" operator="out" result="bandB"/>
+      <feFlood flood-color="#7A5A48" flood-opacity=".34"/>
+      <feComposite in2="bandB" operator="in" result="shadeB"/>
+      <feOffset in="fat" dy="4" result="dn"/>
+      <feComposite in="SourceAlpha" in2="dn" operator="out" result="bandT"/>
+      <feFlood flood-color="#fff" flood-opacity=".95"/>
+      <feComposite in2="bandT" operator="in" result="shadeT"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shadeB"/><feMergeNode in="shadeT"/></feMerge>
+    </filter>
+    <filter id="puffS" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="b"/>
+      <feComponentTransfer in="b" result="fat"><feFuncA type="linear" slope="1.9"/></feComponentTransfer>
+      <feOffset in="fat" dy="-2" result="up"/>
+      <feComposite in="SourceAlpha" in2="up" operator="out" result="bandB"/>
+      <feFlood flood-color="#000" flood-opacity=".45"/>
+      <feComposite in2="bandB" operator="in" result="shadeB"/>
+      <feOffset in="fat" dy="1.6" result="dn"/>
+      <feComposite in="SourceAlpha" in2="dn" operator="out" result="bandT"/>
+      <feFlood flood-color="#fff" flood-opacity=".30"/>
+      <feComposite in2="bandT" operator="in" result="shadeT"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shadeB"/><feMergeNode in="shadeT"/></feMerge>
+    </filter>
+
+    <linearGradient id="gGraphite" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4D56"/><stop offset="1" stop-color="#2B2D33"/></linearGradient>
+    <linearGradient id="gCore" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#383B43"/><stop offset="1" stop-color="#1B1C20"/></linearGradient>
+    <linearGradient id="gScreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2C2F37"/><stop offset=".55" stop-color="#17191D"/><stop offset="1" stop-color="#0F1013"/></linearGradient>
+    <linearGradient id="gWhite" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7E1DB"/></linearGradient>
+    <linearGradient id="gWhiteFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6F2EE"/><stop offset="1" stop-color="#DFD8D1"/></linearGradient>
+    <linearGradient id="gWingSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7A6254" stop-opacity="0"/><stop offset="1" stop-color="#7A6254" stop-opacity=".30"/></linearGradient>
+    <radialGradient id="gStick" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="#5A5D66"/><stop offset="1" stop-color="#2A2C32"/></radialGradient>
+    <linearGradient id="gXFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#40434B"/><stop offset="1" stop-color="#26282D"/></linearGradient>
+    <linearGradient id="gXSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C2E34"/><stop offset="1" stop-color="#17181B"/></linearGradient>
+    <radialGradient id="gVent" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3BD16F" stop-opacity=".75"/><stop offset="1" stop-color="#3BD16F" stop-opacity="0"/></radialGradient>
+    <pattern id="pDots" width="5" height="3.2" patternUnits="userSpaceOnUse"><circle cx="1.6" cy="1.6" r=".95" fill="#050506"/></pattern>
+    <clipPath id="cSwScreen"><rect x="55" y="20" width="190" height="110" rx="5"/></clipPath>
+    <clipPath id="cHhScreen"><rect x="70" y="22" width="160" height="80" rx="5"/></clipPath>
+
+    <!-- Switch 2-like hybrid · viewBox 0 0 300 150 -->
+    <g id="dev-switch2">
+      <path d="M28 4.5H272Q296 4.5 296 28V60H4V28Q4 4.5 28 4.5Z" fill="#62656F"/>
+      <path d="M42.8 5.6V11M257.2 5.6V11" stroke="#2B2D33" stroke-width="1.2"/>
+      <path d="M42 10H28Q4 10 4 34V116Q4 140 28 140H42Z" fill="url(#gGraphite)" filter="url(#puffD)"/>
+      <path d="M258 10H272Q296 10 296 34V116Q296 140 272 140H258Z" fill="url(#gGraphite)" filter="url(#puffD)"/>
+      <rect x="43.5" y="10" width="213" height="130" rx="4" fill="url(#gGraphite)" filter="url(#puffD)"/>
+      <rect x="41.4" y="16" width="2.8" height="118" rx="1.4" fill="#46AEF7"/>
+      <rect x="255.8" y="16" width="2.8" height="118" rx="1.4" fill="#FF5A47"/>
+      <rect x="55" y="20" width="190" height="110" rx="5" fill="url(#gScreen)"/>
+      <path d="M55 20H150L104 130H55Z" fill="#fff" opacity=".035" clip-path="url(#cSwScreen)"/>
+      <rect x="29" y="19" width="7.5" height="2.4" rx="1.2" fill="#17181B"/>
+      <circle cx="23" cy="47" r="12" fill="#46AEF7"/>
+      <circle cx="23" cy="47" r="9.2" fill="url(#gStick)" filter="url(#puffS)"/>
+      <g fill="#565962" filter="url(#puffS)"><circle cx="23" cy="77" r="3.9"/><circle cx="32" cy="86" r="3.9"/><circle cx="23" cy="95" r="3.9"/><circle cx="14" cy="86" r="3.9"/></g>
+      <rect x="26.5" y="112" width="7.6" height="7.6" rx="2.2" fill="#17181B"/>
+      <path d="M263.4 20.2h7.6M267.2 16.4v7.6" stroke="#17181B" stroke-width="2.4" stroke-linecap="round"/>
+      <g fill="#565962" filter="url(#puffS)"><circle cx="277" cy="38" r="3.9"/><circle cx="286" cy="47" r="3.9"/><circle cx="277" cy="56" r="3.9"/><circle cx="268" cy="47" r="3.9"/></g>
+      <circle cx="277" cy="86" r="12" fill="#FF5A47"/>
+      <circle cx="277" cy="86" r="9.2" fill="url(#gStick)" filter="url(#puffS)"/>
+      <circle cx="272.5" cy="116" r="4" fill="#17181B"/>
+    </g>
+
+    <!-- PS5-like tower · viewBox 0 0 140 270 -->
+    <g id="dev-ps5">
+      <ellipse cx="68" cy="259.5" rx="50" ry="8" fill="#17181B"/>
+      <ellipse cx="68" cy="257.8" rx="47" ry="6.4" fill="#30323A"/>
+      <path d="M14 253C12 180 6 92 5 32Q5 8 16 7Q26 7 27 27L29 253Q21 257 14 253Z" fill="url(#gWhite)" filter="url(#puffL)"/>
+      <path d="M25 255L24 50Q30 39 39.5 37Q49 39 55 50V257Q40 261 25 255Z" fill="url(#gCore)" filter="url(#puffD)"/>
+      <path d="M40 152V208" stroke="#0B0C0E" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="40" cy="220" r="1.8" fill="#0B0C0E"/><circle cx="40" cy="228" r="1.8" fill="#0B0C0E"/>
+      <path d="M29.4 56V104M50.6 56V104" stroke="#8DB9FF" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M53 259L51 27Q52 6 64 6L110 12Q133 16 131 40C129 110 124 200 120 246Q119 258 106 259Q78 262 53 259Z" fill="url(#gWhite)" filter="url(#puffL)"/>
+      <path d="M67 6.4L110 12Q133 16 131 40C129 110 124 200 120 246Q119 258 106 259L69 260.5Z" fill="url(#gWingSide)"/>
+      <path d="M66.4 10V257" stroke="#fff" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round"/>
+    </g>
+
+    <!-- Xbox Series X-like monolith · viewBox 0 0 170 300 -->
+    <g id="dev-xbox">
+      <g filter="url(#puffD)">
+        <path d="M22 44L92 60V286L22 270Z" fill="url(#gXFront)" stroke="url(#gXFront)" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M92 60L148 48V274L92 286Z" fill="url(#gXSide)" stroke="url(#gXSide)" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M22 44L78 32L148 48L92 60Z" fill="#4A4D56" stroke="#4A4D56" stroke-width="6" stroke-linejoin="round"/>
+      </g>
+      <ellipse cx="85" cy="46" rx="42" ry="8.2" fill="#101113"/>
+      <ellipse cx="85" cy="47" rx="34" ry="6" fill="url(#gVent)"/>
+      <ellipse cx="85" cy="46" rx="42" ry="8.2" fill="url(#pDots)"/>
+      <path d="M92 64V282" stroke="#fff" stroke-opacity=".13" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="33" cy="64" r="4.2" fill="#EDEAE6"/>
+      <path d="M33 196V244" stroke="#0C0D0F" stroke-width="2.8" stroke-linecap="round"/>
+      <circle cx="33" cy="254" r="1.9" fill="#0C0D0F"/>
+    </g>
+
+    <!-- handheld PC · viewBox 0 0 300 140 -->
+    <g id="dev-handheld">
+      <path d="M40 6.5H260Q292 6.5 294 36L295 70H5L6 36Q8 6.5 40 6.5Z" fill="#FFFFFF"/>
+      <path d="M40 6.5H260Q292 6.5 294 36L295 70H5L6 36Q8 6.5 40 6.5Z" fill="none" stroke="#B9AEA5" stroke-opacity=".55" stroke-width=".8"/>
+      <path d="M40 12H260Q292 12 294 42L296 98Q297 130 270 131Q251 132 241 119Q236 112 226 112H74Q64 112 59 119Q49 132 30 131Q3 130 4 98L6 42Q8 12 40 12Z" fill="url(#gWhiteFront)" filter="url(#puffL)"/>
+      <rect x="70" y="22" width="160" height="80" rx="5" fill="url(#gScreen)"/>
+      <path d="M70 22H150L116 102H70Z" fill="#fff" opacity=".035" clip-path="url(#cHhScreen)"/>
+      <circle cx="38" cy="46" r="12.2" fill="#8B6CF6"/>
+      <circle cx="38" cy="46" r="9.2" fill="url(#gStick)" filter="url(#puffS)"/>
+      <path d="M34 76h8v8h8v8h-8v8h-8v-8h-8v-8h8z" fill="#40434B" filter="url(#puffS)"/>
+      <g fill="#40434B" filter="url(#puffS)"><circle cx="262" cy="37.5" r="3.9"/><circle cx="270.5" cy="46" r="3.9"/><circle cx="262" cy="54.5" r="3.9"/><circle cx="253.5" cy="46" r="3.9"/></g>
+      <circle cx="262" cy="88" r="12.2" fill="#8B6CF6"/>
+      <circle cx="262" cy="88" r="9.2" fill="url(#gStick)" filter="url(#puffS)"/>
+    </g>
+    <!-- gallery stand-ins for the handheld · viewBox 0 0 300 140 -->
+    <g id="th-back">
+      <path d="M40 12H260Q292 12 294 42L296 98Q297 130 270 131Q251 132 241 119Q236 112 226 112H74Q64 112 59 119Q49 132 30 131Q3 130 4 98L6 42Q8 12 40 12Z" fill="url(#gWhiteFront)" filter="url(#puffL)"/>
+      <path d="M112 40h76M112 54h76M112 68h76" stroke="#B9AEA5" stroke-width="5" stroke-linecap="round"/>
+      <rect x="126" y="86" width="48" height="12" rx="6" fill="#CFC6BD"/>
+    </g>
+    <g id="th-top">
+      <rect x="30" y="38" width="48" height="20" rx="8" fill="#40434B"/><rect x="222" y="38" width="48" height="20" rx="8" fill="#40434B"/>
+      <rect x="12" y="48" width="276" height="48" rx="22" fill="url(#gWhiteFront)" filter="url(#puffL)"/>
+      <rect x="118" y="64" width="64" height="14" rx="7" fill="#2A2C32"/><circle cx="206" cy="71" r="6" fill="#2A2C32"/>
+    </g>
+    <g id="th-box">
+      <rect x="52" y="24" width="124" height="98" rx="18" fill="url(#gGraphite)" filter="url(#puffD)"/>
+      <path d="M222 54V30" stroke="#8B8C93" stroke-width="7" stroke-linecap="round"/>
+      <rect x="194" y="54" width="58" height="62" rx="13" fill="url(#gWhiteFront)" filter="url(#puffL)"/>
+    </g>
+
+    <!-- icons (24 grid, stroke) -->
+    <g id="i-search"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></g>
+    <g id="i-home"><path d="M4 11.2 12 4.6l8 6.6V19a1.4 1.4 0 0 1-1.4 1.4H15v-5.6H9v5.6H5.4A1.4 1.4 0 0 1 4 19z"/></g>
+    <g id="i-grid"><rect x="4" y="4" width="6.6" height="6.6" rx="2"/><rect x="13.4" y="4" width="6.6" height="6.6" rx="2"/><rect x="4" y="13.4" width="6.6" height="6.6" rx="2"/><rect x="13.4" y="13.4" width="6.6" height="6.6" rx="2"/></g>
+    <g id="i-bag"><path d="M5.6 8.2h12.8l-.9 10.4a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8z"/><path d="M9 8.2V7a3 3 0 0 1 6 0v1.2"/></g>
+    <g id="i-bag-plus"><path d="M5.6 8.2h12.8l-.9 10.4a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8z"/><path d="M9 8.2V7a3 3 0 0 1 6 0v1.2"/><path d="M12 11.5v5.4M9.3 14.2h5.4"/></g>
+    <g id="i-heart"><path d="M12 19.6s-7.2-4.4-7.2-9.6a4 4 0 0 1 7.2-2.4A4 4 0 0 1 19.2 10c0 5.2-7.2 9.6-7.2 9.6z"/></g>
+    <g id="i-user"><circle cx="12" cy="8.4" r="3.6"/><path d="M4.8 19.8c.9-3.4 3.7-5.2 7.2-5.2s6.3 1.8 7.2 5.2"/></g>
+    <g id="i-arrow"><path d="M19 12H5m6-6-6 6 6 6"/></g>
+    <g id="i-back"><path d="M5 12h14m-6-6 6 6-6 6"/></g>
+    <g id="i-plus"><path d="M12 5v14M5 12h14"/></g>
+    <g id="i-minus"><path d="M5 12h14"/></g>
+    <g id="i-check"><path d="M5 12.6l4.4 4.4L19 7.4"/></g>
+    <g id="i-close"><path d="M6 6l12 12M18 6 6 18"/></g>
+    <g id="i-truck"><path d="M2.8 6.6h10.8v9.6H2.8zM13.6 9.8h4l2.8 3v3.4h-6.8"/><circle cx="7" cy="17.4" r="1.9"/><circle cx="16.8" cy="17.4" r="1.9"/></g>
+    <g id="i-alert"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.6v5.2M12 16.2v.3"/></g>
+    <g id="i-moon"><path d="M19.4 14.4A7.8 7.8 0 0 1 9.6 4.6a7.8 7.8 0 1 0 9.8 9.8z"/></g>
+    <!-- device pictograms for platform keys (generic shapes, not logos) -->
+    <g id="p-switch"><rect x="2.6" y="6.8" width="18.8" height="10.4" rx="3.2"/><path d="M7.4 6.8v10.4M16.6 6.8v10.4"/></g>
+    <g id="p-tower"><path d="M8.9 20 8 5.9c-.1-1.4.6-2.4 1.8-2.4h4.4c1.2 0 1.9 1 1.8 2.4L15.1 20"/><path d="M12 3.5V20M6.2 20.4h11.6"/></g>
+    <g id="p-box"><path d="M7 6.4 12 4l5 2.4v11.4L12 20.4l-5-2.6z"/><path d="M7 6.4l5 2.5 5-2.5M12 8.9v11.5"/></g>
+    <g id="p-handheld"><rect x="2.4" y="6.9" width="19.2" height="10.2" rx="3.6"/><rect x="7.5" y="9.1" width="9" height="5.8" rx="1"/><path d="M4.9 10.6h.2M18.9 13.4h.2"/></g>
+  </defs>
+</svg>
+
+<main class="board">
+
+  <!-- ================================================================== A -->
+  <p class="board__label" lang="en" dir="ltr"><span>A · Home, first screen · 390 × 844</span><button class="board__toggle" id="theme-toggle" type="button" aria-pressed="false">Show dark</button></p>
+  <section id="screen-a" class="ui screen" data-theme="light" data-hero="playstation" aria-label="الرئيسية" style="--gel:var(--gel-playstation)">
+
+    <header class="top">
+      <a class="logo" href="#" lang="ar" aria-label="طمطم، الصفحة الرئيسية">طمطم</a>
+      <button class="search" type="button">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+        <span data-i18n="search">ابحث عن جهاز أو لعبة</span>
+      </button>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 class="hero__title" id="hero-title" data-slot="title">وصل <bdi>PS5 Pro</bdi></h1>
+
+      <div class="stage">
+        <div class="stage__light" data-slot="light" aria-hidden="true"><i class="stage__halo"></i><i class="stage__spot"></i></div>
+        <i class="stage__pool" aria-hidden="true"></i>
+        <a class="stage__slot" href="#screen-b" data-slot="device" aria-label="PlayStation 5 Pro">
+          <span class="render"><svg width="560" height="1080" viewBox="0 0 140 270" aria-hidden="true"><use href="#dev-ps5"/></svg></span>
+        </a>
+      </div>
+      <div class="stage__band">
+          <p class="gtag glass glass--static">
+            <span class="gtag__name"><bdi data-slot="name">PlayStation 5 Pro</bdi></span>
+            <span class="price price--lg"><bdi class="price__num" data-slot="price">1,099,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></span>
+          </p>
+          <button class="key key--red" type="button" data-add data-from="[data-slot=device] svg">
+            <span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="add">أضف إلى السلة</span></span>
+          </button>
+      </div>
+
+      <p class="bank__label" id="bank-a" data-i18n="turn"><b>دورك.</b> اختر منصّتك</p>
+      <div class="bank well" role="radiogroup" aria-labelledby="bank-a" data-bank>
+        <button class="key key--plat" type="button" role="radio" aria-checked="false" data-p="nintendo" style="--gel:var(--gel-nintendo)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-switch"/></svg><bdi>Nintendo</bdi></span></button>
+        <button class="key key--plat" type="button" role="radio" aria-checked="true" data-p="playstation" style="--gel:var(--gel-playstation)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-tower"/></svg><bdi>PlayStation</bdi></span></button>
+        <button class="key key--plat" type="button" role="radio" aria-checked="false" data-p="xbox" style="--gel:var(--gel-xbox)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-box"/></svg><bdi>Xbox</bdi></span></button>
+        <button class="key key--plat" type="button" role="radio" aria-checked="false" data-p="handheld" style="--gel:var(--gel-handheld)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-handheld"/></svg><span data-i18n="handheld">أجهزة محمولة</span></span></button>
+      </div>
+    </section>
+
+    <section class="rail" aria-labelledby="rail-a">
+      <div class="rail__head">
+        <h2 id="rail-a" data-i18n="rail">وصل حديثاً</h2>
+        <a class="link" href="#"><span data-slot="link">كل <bdi>PlayStation</bdi></span><svg class="ico is-dir" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="grid2">
+        <article class="pcard inflate" style="--i:0">
+          <a class="niche" href="#screen-b" aria-label="Nintendo Switch 2">
+            <span class="tag tag--new niche__tag" data-i18n="new">جديد</span>
+            <span class="niche__slot"><span class="render"><svg width="1200" height="600" viewBox="0 0 300 150" aria-hidden="true"><use href="#dev-switch2"/></svg></span></span>
+          </a>
+          <div class="pcard__text">
+            <h3 class="pcard__name"><bdi>Nintendo Switch 2</bdi></h3>
+            <p class="pcard__meta" data-i18n="meta1"><bdi>256GB</bdi> · ضمان سنة</p>
+          </div>
+          <div class="pcard__buy">
+            <p class="price"><bdi class="price__num">749,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p>
+            <span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف Nintendo Switch 2 إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span>
+          </div>
+        </article>
+        <article class="pcard inflate" style="--i:1">
+          <a class="niche" href="#" aria-label="Xbox Series X، مستعمل">
+            <span class="tag tag--used niche__tag" data-i18n="used">مستعمل</span>
+            <span class="niche__slot"><span class="render"><svg width="680" height="1200" viewBox="0 0 170 300" aria-hidden="true"><use href="#dev-xbox"/></svg></span></span>
+          </a>
+          <div class="pcard__text">
+            <h3 class="pcard__name" data-i18n="name2"><bdi>Xbox Series X</bdi> مع ذراع تحكم إضافي</h3>
+            <p class="pcard__meta" data-i18n="meta2">حالة ممتازة · <bdi>1TB</bdi></p>
+          </div>
+          <div class="pcard__buy">
+            <p class="price"><bdi class="price__num">485,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p>
+            <span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف Xbox Series X إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span>
+          </div>
+        </article>
+        <article class="pcard inflate" style="--i:2">
+          <a class="niche" href="#" aria-label="Legion Go S">
+            <span class="niche__slot"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#dev-handheld"/></svg></span></span>
+          </a>
+          <div class="pcard__text"><h3 class="pcard__name"><bdi>Lenovo Legion Go S</bdi></h3><p class="pcard__meta"><bdi>512GB · SteamOS</bdi></p></div>
+        </article>
+        <article class="pcard inflate" style="--i:3">
+          <a class="niche" href="#" aria-label="PlayStation 5 Slim">
+            <span class="niche__slot"><span class="render"><svg width="560" height="1080" viewBox="0 0 140 270" aria-hidden="true"><use href="#dev-ps5"/></svg></span></span>
+          </a>
+          <div class="pcard__text"><h3 class="pcard__name"><bdi>PlayStation 5 Slim</bdi></h3><p class="pcard__meta"><bdi>1TB</bdi></p></div>
+        </article>
+      </div>
+    </section>
+
+    <nav class="tabbar glass glass--bottom" aria-label="التنقل الرئيسي">
+      <a class="tab" href="#" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg><span data-i18n="tabHome">الرئيسية</span></a>
+      <a class="tab" href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-grid"/></svg><span data-i18n="tabCats">التصنيفات</span></a>
+      <a class="tab" href="#"><span class="tab__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag"/></svg><b class="bead" data-bead>2</b></span><span data-i18n="tabCart">السلة</span></a>
+      <a class="tab" href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg><span data-i18n="tabFav">المفضلة</span></a>
+      <a class="tab" href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n="tabMe">حسابي</span></a>
+    </nav>
+    <p class="sr-only" role="status" aria-live="polite" data-live></p>
+  </section>
+
+  <!-- ================================================================== B -->
+  <p class="board__label" lang="en" dir="ltr"><span>B · Product detail, top · 390 × 844</span></p>
+  <section id="screen-b" class="ui screen" data-theme="light" aria-label="صفحة المنتج" style="--gel:var(--gel-handheld)">
+
+    <div class="pstage">
+      <div class="stage__light" aria-hidden="true"><i class="stage__halo"></i><i class="stage__spot"></i></div>
+      <div class="chrome">
+        <a class="cbtn glass glass--static" href="#screen-a" data-i18n-aria="back" aria-label="رجوع"><svg class="ico is-dir" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-back"/></svg></a>
+        <a class="cbtn glass glass--static" href="#" data-i18n-aria="tabCart" aria-label="السلة"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag"/></svg><b class="bead" data-bead>2</b></a>
+      </div>
+      <i class="stage__pool" aria-hidden="true"></i>
+      <div class="stage__slot" id="pd-device" role="img" aria-label="Lenovo Legion Go S">
+        <span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#dev-handheld"/></svg></span>
+      </div>
+      <div class="gallery">
+        <span id="gal-cap" data-i18n="capFront">الواجهة</span>
+        <div class="thumbs well" role="radiogroup" data-i18n-aria="gallery" aria-label="صور المنتج">
+          <button class="key key--thumb" type="button" role="radio" aria-checked="true" data-view="#dev-handheld" data-cap="capFront" aria-label="1"><span class="key__cap"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#dev-handheld"/></svg></span></span></button>
+          <button class="key key--thumb" type="button" role="radio" aria-checked="false" data-view="#th-back" data-cap="capBack" aria-label="2"><span class="key__cap"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#th-back"/></svg></span></span></button>
+          <button class="key key--thumb" type="button" role="radio" aria-checked="false" data-view="#th-top" data-cap="capTop" aria-label="3"><span class="key__cap"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#th-top"/></svg></span></span></button>
+          <button class="key key--thumb" type="button" role="radio" aria-checked="false" data-view="#th-box" data-cap="capBox" aria-label="4"><span class="key__cap"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#th-box"/></svg></span></span></button>
+        </div>
+        <span class="gallery__count"><bdi id="gal-n">1</bdi> <span data-i18n="of">من</span> <bdi>4</bdi></span>
+      </div>
+    </div>
+
+    <div class="pinfo">
+      <div class="pinfo__meta">
+        <span class="plat"><i class="led led--solid"></i><span data-i18n="handheld">أجهزة محمولة</span></span>
+        <span class="tag tag--new" data-i18n="new">جديد</span>
+      </div>
+      <div class="pinfo__head">
+        <h1 class="pinfo__title"><bdi>Lenovo Legion Go S</bdi></h1>
+        <button class="key key--round" type="button" aria-pressed="false" data-fav data-i18n-aria="fav" aria-label="أضف إلى المفضلة"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg></span></button>
+      </div>
+      <p class="pinfo__line" data-i18n="pdLine">جهاز ألعاب محمول بشاشة 8 بوصة ونظام <bdi>SteamOS</bdi></p>
+
+      <div class="pinfo__price">
+        <p class="price price--xl"><bdi class="price__num">899,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p>
+        <p class="pinfo__facts"><span data-i18n="ship">التوصيل <bdi>5,000 د.ع</bdi> لكل المحافظات</span><span class="status status--ok" data-i18n="stock">متوفر · ضمان سنة</span></p>
+      </div>
+
+      <fieldset class="opts">
+        <legend data-i18n="storage">التخزين</legend>
+        <div class="opts__row" role="radiogroup" id="opts">
+          <button class="key key--chip" type="button" role="radio" aria-checked="true"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><bdi>512 GB</bdi></span></button>
+          <button class="key key--chip" type="button" role="radio" aria-checked="false"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><bdi>1 TB</bdi></span></button>
+        </div>
+      </fieldset>
+
+      <section class="specs" aria-labelledby="specs-h">
+        <h2 id="specs-h" data-i18n="specs">المواصفات</h2>
+        <dl>
+          <dt data-i18n="sDisplay">الشاشة</dt><dd data-i18n="sDisplayV">8 بوصة · <bdi>120Hz</bdi></dd>
+          <dt data-i18n="sCpu">المعالج</dt><dd><bdi>AMD Ryzen Z2 Go</bdi></dd>
+          <dt data-i18n="sBattery">البطارية</dt><dd><bdi>55.5Wh</bdi></dd>
+          <dt data-i18n="sBox">في العلبة</dt><dd data-i18n="sBoxV">الجهاز وشاحن <bdi>65W</bdi></dd>
+          <dt data-i18n="sOs">النظام</dt><dd><bdi>SteamOS</bdi></dd>
+        </dl>
+      </section>
+    </div>
+
+    <div class="buybar glass glass--bottom">
+      <div class="stepper well" role="group" data-i18n-aria="qty" aria-label="الكمية">
+        <button class="key key--round" type="button" data-step="-1" data-i18n-aria="less" aria-label="أنقص الكمية"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-minus"/></svg></span></button>
+        <output id="qty" aria-live="polite">1</output>
+        <button class="key key--round" type="button" data-step="1" data-i18n-aria="more" aria-label="زد الكمية"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></span></button>
+      </div>
+      <button class="key key--red" type="button" data-add data-qty data-from="#pd-device svg">
+        <span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="add">أضف إلى السلة</span></span>
+      </button>
+    </div>
+    <p class="sr-only" role="status" aria-live="polite" data-live></p>
+  </section>
+
+  <!-- ========================================================= materials -->
+  <p class="board__label" lang="en" dir="ltr"><span>Materials · light theme</span></p>
+  <section id="materials-light" class="ui strip" data-theme="light" aria-label="الخامات، الوضع الفاتح"></section>
+
+  <p class="board__label" lang="en" dir="ltr"><span>Materials · dark theme</span></p>
+  <section id="materials-dark" class="ui strip" data-theme="dark" aria-label="الخامات، الوضع الداكن"></section>
+
+  <!-- ============================================================ desktop -->
+  <p class="board__label is-wide" lang="en" dir="ltr"><span>Desktop · header and home hero · 1280</span></p>
+  <div class="board__wide">
+  <section id="desktop" class="ui desk" data-theme="light" data-hero="nintendo" aria-label="الرئيسية، سطح المكتب" style="--gel:var(--gel-nintendo)">
+
+    <div class="util">
+      <p class="util__fact"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg><span data-i18n="shipAll">التوصيل لكل محافظات العراق بـ <bdi>5,000 د.ع</bdi></span></p>
+      <nav class="util__links" aria-label="روابط مساعدة">
+        <a href="#" data-i18n="track">تتبّع طلبك</a>
+        <a href="#" data-i18n="navTrade">استبدل جهازك</a>
+        <a href="#" data-i18n="help">المساعدة</a>
+        <button type="button" data-i18n="curName">الدينار العراقي · د.ع</button>
+        <span class="langs" role="group" aria-label="اللغة"><a href="?lang=ar" lang="ar" data-lang="ar">العربية</a><a href="?lang=ckb" lang="ckb" data-lang="ckb">کوردی</a><a href="?lang=en" lang="en" data-lang="en">English</a></span>
+      </nav>
+    </div>
+
+    <header class="dhead">
+      <a class="logo" href="#" lang="ar" aria-label="طمطم، الصفحة الرئيسية">طمطم</a>
+      <nav class="dnav" aria-label="المنصات">
+        <a href="#" style="--gel:var(--gel-nintendo)"><i class="led led--solid"></i><bdi>Nintendo</bdi></a>
+        <a href="#" style="--gel:var(--gel-playstation)"><i class="led led--solid"></i><bdi>PlayStation</bdi></a>
+        <a href="#" style="--gel:var(--gel-xbox)"><i class="led led--solid"></i><bdi>Xbox</bdi></a>
+        <a href="#" style="--gel:var(--gel-handheld)"><i class="led led--solid"></i><span data-i18n="handheld">أجهزة محمولة</span></a>
+        <i class="dnav__sep" aria-hidden="true"></i>
+        <a href="#" data-i18n="navUsed">المستعمل</a>
+        <a href="#" data-i18n="navRepair">الصيانة</a>
+      </nav>
+      <button class="search" type="button">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+        <span data-i18n="search">ابحث عن جهاز أو لعبة</span>
+      </button>
+      <div class="dtools">
+        <button class="tool" type="button" data-i18n-aria="theme" aria-label="الوضع الداكن"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-moon"/></svg></button>
+        <a class="tool" href="#" data-i18n-aria="tabFav" aria-label="المفضلة"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg></a>
+        <a class="tool" href="#" data-i18n-aria="tabMe" aria-label="حسابي"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></a>
+        <a class="cbtn glass glass--static" href="#" data-i18n-aria="tabCart" aria-label="السلة"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag"/></svg><b class="bead" data-bead>2</b></a>
+      </div>
+    </header>
+
+    <div class="dhero">
+      <div class="dhero__copy">
+        <h1 class="dhero__title" data-slot="title">وصل <bdi>Switch 2</bdi></h1>
+        <p class="dhero__deck" data-slot="deck">شاشة 7.9 بوصة وذراعا <bdi>Joy-Con 2</bdi> مغناطيسيان.</p>
+        <div class="dhero__actions">
+          <button class="key key--red key--lg" type="button" data-add data-from="[data-slot=device] svg">
+            <span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="add">أضف إلى السلة</span></span>
+          </button>
+          <a class="key key--lg" href="#screen-b"><span class="key__cap" data-i18n="view">شاهد الجهاز</span></a>
+        </div>
+        <p class="dhero__ship"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg><span data-i18n="ship">التوصيل <bdi>5,000 د.ع</bdi> لكل المحافظات</span></p>
+
+        <p class="bank__label" id="bank-d" data-i18n="turn"><b>دورك.</b> اختر منصّتك</p>
+        <div class="bank well" role="radiogroup" aria-labelledby="bank-d" data-bank>
+          <button class="key key--plat" type="button" role="radio" aria-checked="true" data-p="nintendo" style="--gel:var(--gel-nintendo)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-switch"/></svg><bdi>Nintendo</bdi></span></button>
+          <button class="key key--plat" type="button" role="radio" aria-checked="false" data-p="playstation" style="--gel:var(--gel-playstation)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-tower"/></svg><bdi>PlayStation</bdi></span></button>
+          <button class="key key--plat" type="button" role="radio" aria-checked="false" data-p="xbox" style="--gel:var(--gel-xbox)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-box"/></svg><bdi>Xbox</bdi></span></button>
+          <button class="key key--plat" type="button" role="radio" aria-checked="false" data-p="handheld" style="--gel:var(--gel-handheld)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-handheld"/></svg><span data-i18n="handheld">أجهزة محمولة</span></span></button>
+        </div>
+      </div>
+
+      <div class="dstage-wrap">
+      <div class="dstage">
+        <div class="stage__light" data-slot="light" aria-hidden="true"><i class="stage__halo"></i><i class="stage__spot"></i></div>
+        <i class="stage__pool" aria-hidden="true"></i>
+        <a class="stage__slot" href="#screen-b" data-slot="device" aria-label="Nintendo Switch 2">
+          <span class="render"><svg width="1200" height="600" viewBox="0 0 300 150" aria-hidden="true"><use href="#dev-switch2"/></svg></span>
+        </a>
+      </div>
+        <p class="gtag glass glass--static">
+          <span class="gtag__name"><bdi data-slot="name">Nintendo Switch 2</bdi></span>
+          <span class="price price--lg"><bdi class="price__num" data-slot="price">749,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></span>
+        </p>
+      </div>
+    </div>
+
+    <section class="drail" aria-labelledby="rail-d">
+      <div class="rail__head">
+        <h2 id="rail-d" data-i18n="rail">وصل حديثاً</h2>
+        <a class="link" href="#"><span data-slot="link">كل <bdi>Nintendo</bdi></span><svg class="ico is-dir" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="grid6">
+        <article class="pcard inflate" style="--i:0">
+          <a class="niche" href="#" aria-label="Nintendo Switch 2"><span class="tag tag--new niche__tag" data-i18n="new">جديد</span><span class="niche__slot"><span class="render"><svg width="1200" height="600" viewBox="0 0 300 150" aria-hidden="true"><use href="#dev-switch2"/></svg></span></span></a>
+          <div class="pcard__text"><h3 class="pcard__name"><bdi>Nintendo Switch 2</bdi></h3><p class="pcard__meta" data-i18n="meta1"><bdi>256GB</bdi> · ضمان سنة</p></div>
+          <div class="pcard__buy"><p class="price"><bdi class="price__num">749,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p><span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف Nintendo Switch 2 إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span></div>
+        </article>
+        <article class="pcard inflate" style="--i:1">
+          <a class="niche" href="#" aria-label="PlayStation 5 Pro"><span class="tag tag--new niche__tag" data-i18n="new">جديد</span><span class="niche__slot"><span class="render"><svg width="560" height="1080" viewBox="0 0 140 270" aria-hidden="true"><use href="#dev-ps5"/></svg></span></span></a>
+          <div class="pcard__text"><h3 class="pcard__name"><bdi>PlayStation 5 Pro</bdi></h3><p class="pcard__meta" data-i18n="metaPro"><bdi>2TB</bdi> · بدون قارئ أقراص</p></div>
+          <div class="pcard__buy"><p class="price"><bdi class="price__num">1,099,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p><span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف PlayStation 5 Pro إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span></div>
+        </article>
+        <article class="pcard inflate" style="--i:2">
+          <a class="niche" href="#" aria-label="Xbox Series X"><span class="tag tag--used niche__tag" data-i18n="used">مستعمل</span><span class="niche__slot"><span class="render"><svg width="680" height="1200" viewBox="0 0 170 300" aria-hidden="true"><use href="#dev-xbox"/></svg></span></span></a>
+          <div class="pcard__text"><h3 class="pcard__name" data-i18n="name2"><bdi>Xbox Series X</bdi> مع ذراع تحكم إضافي</h3><p class="pcard__meta" data-i18n="meta2">حالة ممتازة · <bdi>1TB</bdi></p></div>
+          <div class="pcard__buy"><p class="price"><bdi class="price__num">485,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p><span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف Xbox Series X إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span></div>
+        </article>
+        <article class="pcard inflate" style="--i:3">
+          <a class="niche" href="#" aria-label="Lenovo Legion Go S"><span class="tag tag--new niche__tag" data-i18n="new">جديد</span><span class="niche__slot"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140" aria-hidden="true"><use href="#dev-handheld"/></svg></span></span></a>
+          <div class="pcard__text"><h3 class="pcard__name"><bdi>Lenovo Legion Go S</bdi></h3><p class="pcard__meta"><bdi>512GB · SteamOS</bdi></p></div>
+          <div class="pcard__buy"><p class="price"><bdi class="price__num">899,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p><span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف Lenovo Legion Go S إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span></div>
+        </article>
+        <article class="pcard inflate" style="--i:4">
+          <a class="niche" href="#" aria-label="PlayStation 5 Slim"><span class="tag tag--used niche__tag" data-i18n="used">مستعمل</span><span class="niche__slot"><span class="render"><svg width="560" height="1080" viewBox="0 0 140 270" aria-hidden="true"><use href="#dev-ps5"/></svg></span></span></a>
+          <div class="pcard__text"><h3 class="pcard__name"><bdi>PlayStation 5 Slim</bdi></h3><p class="pcard__meta" data-i18n="metaGood">حالة جيدة جداً · <bdi>1TB</bdi></p></div>
+          <div class="pcard__buy"><p class="price"><bdi class="price__num">445,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p><span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف PlayStation 5 Slim إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span></div>
+        </article>
+        <article class="pcard inflate" style="--i:5">
+          <a class="niche" href="#" aria-label="Nintendo Switch 2"><span class="niche__slot"><span class="render"><svg width="1200" height="600" viewBox="0 0 300 150" aria-hidden="true"><use href="#dev-switch2"/></svg></span></span></a>
+          <div class="pcard__text"><h3 class="pcard__name" data-i18n="nameBundle"><bdi>Nintendo Switch 2</bdi> حزمة <bdi>Mario Kart World</bdi></h3><p class="pcard__meta" data-i18n="meta1"><bdi>256GB</bdi> · ضمان سنة</p></div>
+          <div class="pcard__buy"><p class="price"><bdi class="price__num">819,000</bdi><span class="price__cur" data-i18n="cur">د.ع</span></p><span class="socket"><button class="key key--red key--round" type="button" data-add aria-label="أضف Nintendo Switch 2 إلى السلة"><span class="key__cap"><svg class="ico ico-add" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg><svg class="ico ico-ok" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span></div>
+        </article>
+      </div>
+    </section>
+    <p class="sr-only" role="status" aria-live="polite" data-live></p>
+  </section>
+  </div>
+
+</main>
+
+<!-- one template, rendered twice (light and dark), so the two strips can never drift apart -->
+<template id="tpl-materials">
+  <h2 class="strip__h">طين <span>لليد: كل ما تضغطه</span></h2>
+  <div class="strip__grid">
+    <div class="cell"><button class="key key--red key--full" type="button"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg>أضف إلى السلة</span></button><span class="cap">الأحمر: ما يذهب إلى الطلب فقط</span></div>
+    <div class="cell"><button class="key key--full" type="button"><span class="key__cap">تابع التسوّق</span></button><span class="cap">الزر الثاني: كل ما عدا ذلك</span></div>
+    <div class="cell cell--wide">
+      <div class="cell__row cell__row--split">
+        <div class="cell__row" role="radiogroup" aria-label="التخزين">
+          <button class="key key--chip" type="button" role="radio" aria-checked="true"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><bdi>512 GB</bdi></span></button>
+          <button class="key key--chip" type="button" role="radio" aria-checked="false"><span class="key__cap"><bdi>1 TB</bdi></span></button>
+        </div>
+        <div class="stepper well" role="group" aria-label="الكمية">
+          <button class="key key--round" type="button" aria-label="أنقص الكمية"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-minus"/></svg></span></button>
+          <output>1</output>
+          <button class="key key--round" type="button" aria-label="زد الكمية"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg></span></button>
+        </div>
+      </div>
+      <span class="cap">المحدَّد = مفتاح يبقى مضغوطاً (حبر + علامة) · العدّاد: مفتاحان في مجرى</span>
+    </div>
+    <div class="cell cell--wide">
+      <div class="bank well" role="radiogroup" aria-label="المنصة">
+        <button class="key key--plat" type="button" role="radio" aria-checked="false" style="--gel:var(--gel-nintendo)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-switch"/></svg><bdi>Nintendo</bdi></span></button>
+        <button class="key key--plat" type="button" role="radio" aria-checked="false" style="--gel:var(--gel-playstation)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-tower"/></svg><bdi>PlayStation</bdi></span></button>
+        <button class="key key--plat" type="button" role="radio" aria-checked="true" style="--gel:var(--gel-xbox)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-box"/></svg><bdi>Xbox</bdi></span></button>
+        <button class="key key--plat" type="button" role="radio" aria-checked="false" style="--gel:var(--gel-handheld)"><span class="key__cap"><i class="led"></i><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#p-handheld"/></svg>أجهزة محمولة</span></button>
+      </div>
+      <span class="cap">مفاتيح المنصات: المفتاح المضغوط يضيء المسرح بلون منصته</span>
+    </div>
+    <div class="cell cell--wide">
+      <div class="cell__row">
+        <span class="socket"><button class="key key--red key--round" type="button" aria-label="أضف إلى السلة"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bag-plus"/></svg></span></button></span>
+        <span class="socket"><button class="key key--red key--round" type="button" aria-label="أُضيف إلى السلة"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></span></button></span>
+        <span class="socket" aria-hidden="true"></span>
+        <button class="key key--round" type="button" aria-pressed="false" aria-label="أضف إلى المفضلة"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg></span></button>
+        <button class="key key--round" type="button" aria-pressed="true" aria-label="في المفضلة"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart"/></svg></span></button>
+        <button class="key key--sm" type="button"><span class="key__cap">تراجع</span></button>
+      </div>
+      <span class="cap">مفتاح السلة في مقعده: أضف · أُضيف · مقعد فارغ أثناء الطيران — ثم المفضلة ومفتاح صغير</span>
+    </div>
+  </div>
+
+  <h2 class="strip__h">مسطّح <span>للقراءة: حقول وأسعار وحالات</span></h2>
+  <div class="strip__grid">
+    <div class="cell">
+      <div class="field"><label class="field__label" for="f-phone">رقم الهاتف</label><input class="field__input" id="f-phone" type="tel" inputmode="tel" value="0770 123 4567" autocomplete="off"><span class="field__help">نتصل بك لتأكيد الطلب.</span></div>
+    </div>
+    <div class="cell">
+      <div class="field is-error"><label class="field__label" for="f-phone2">رقم الهاتف</label><input class="field__input" id="f-phone2" type="tel" inputmode="tel" value="0770 123" aria-invalid="true" aria-describedby="f-err" autocomplete="off"><span class="field__error" id="f-err"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-alert"/></svg>ينقص الرقم 4 أرقام.</span></div>
+    </div>
+    <div class="cell">
+      <div class="price-block">
+        <p class="price price--xl"><bdi class="price__num">749,000</bdi><span class="price__cur">د.ع</span></p>
+        <p class="price--approx">≈ <bdi>572 USD</bdi> · الدفع بالدينار</p>
+      </div>
+      <span class="cap">السعر: حبر، أرقام ثابتة العرض</span>
+    </div>
+    <div class="cell">
+      <div class="cell__row"><span class="tag tag--new">جديد</span><span class="tag tag--used">مستعمل · ممتاز</span></div>
+      <div class="cell__row"><span class="status status--ok">متوفر</span><span class="status status--warn">بقي 2</span><span class="status status--bad">نفد</span></div>
+      <span class="cap">وسم واحد لكل منتج، والحالة نص ونقطة</span>
+    </div>
+    <div class="cell cell--wide">
+      <div class="empty">
+        <span class="socket" aria-hidden="true"></span>
+        <p class="empty__text"><b>سلتك فارغة. دورك.</b><span>اختر منصّتك ونرتّب لك الرف.</span></p>
+        <a class="key key--sm" href="#"><span class="key__cap">تصفّح الأجهزة</span></a>
+      </div>
+      <span class="cap">حالة فارغة: مقعد بلا مفتاح، جملة واحدة، ومفتاح واحد يقول إلى أين</span>
+    </div>
+  </div>
+
+  <h2 class="strip__h">زجاج <span>للعين: ما يطفو فوق المحتوى</span></h2>
+  <div class="scene" style="--gel:var(--gel-xbox)">
+    <div class="scene__stage">
+      <div class="stage__light" aria-hidden="true"><i class="stage__halo"></i><i class="stage__spot"></i></div>
+      <i class="stage__pool" aria-hidden="true"></i>
+      <div class="stage__slot" role="img" aria-label="Xbox Series X"><span class="render"><svg width="680" height="1200" viewBox="0 0 170 300" aria-hidden="true"><use href="#dev-xbox"/></svg></span></div>
+    </div>
+    <p class="gtag glass glass--static"><span class="gtag__name"><bdi>Xbox Series X</bdi></span><span class="price price--lg"><bdi class="price__num">689,000</bdi><span class="price__cur">د.ع</span></span></p>
+    <div class="scene__row" aria-hidden="true">
+      <span class="niche"><span class="niche__slot"><span class="render"><svg width="1200" height="560" viewBox="0 0 300 140"><use href="#dev-handheld"/></svg></span></span></span>
+      <span class="niche"><span class="niche__slot"><span class="render"><svg width="1200" height="600" viewBox="0 0 300 150"><use href="#dev-switch2"/></svg></span></span></span>
+    </div>
+    <div class="toast glass" role="status">
+      <span class="toast__thumb"><span class="render"><svg width="680" height="1200" viewBox="0 0 170 300" aria-hidden="true"><use href="#dev-xbox"/></svg></span></span>
+      <span class="toast__msg">أُضيف إلى السلة<span class="is-2"><bdi>Xbox Series X</bdi> · <bdi>1TB</bdi></span></span>
+      <button class="key key--sm" type="button"><span class="key__cap">تراجع</span></button>
+    </div>
+    <div class="sheet" role="dialog" aria-label="اختر المحافظة">
+      <div class="sheet__head glass glass--bottom">
+        <i class="sheet__grab"></i>
+        <div class="sheet__row">
+          <h3 class="sheet__title">اختر المحافظة</h3>
+          <button class="key key--round" type="button" aria-label="أغلق"><span class="key__cap"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-close"/></svg></span></button>
+        </div>
+      </div>
+      <div class="sheet__body">
+        <p class="sheet__item"><span>بغداد</span><span class="price" style="font-size:15px"><bdi class="price__num">5,000</bdi><span class="price__cur">د.ع</span></span></p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+/* Motion + state sketch for the mock. Rules it follows: state changes first, animation is decoration;
+   transform and opacity only; every animation is skipped under prefers-reduced-motion. */
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const still = el => reduce.matches || !el || !el.animate;
+  const params = new URLSearchParams(location.search);
+
+  /* 0. materials: one template, two themes */
+  const tpl = $('#tpl-materials');
+  for (const theme of ['light', 'dark']) {
+    const frag = tpl.content.cloneNode(true);
+    $$('[id]', frag).forEach(n => { n.id += '-' + theme; });
+    $$('[for]', frag).forEach(n => { n.htmlFor += '-' + theme; });
+    $$('[aria-describedby]', frag).forEach(n => n.setAttribute('aria-describedby', n.getAttribute('aria-describedby') + '-' + theme));
+    $('#materials-' + theme).appendChild(frag);
+  }
+
+  /* 1. language: ?lang=en | ckb re-labels the three screens (proof that the layout mirrors and stretches) */
+  const T = {
+    ar: { dir: 'rtl' },
+    en: { dir: 'ltr', cur: 'IQD', search: 'Search TamTam', add: 'Add to cart', view: 'See the console', turn: '<b>Your turn.</b> Pick your platform', handheld: 'Handhelds',
+      rail: 'New arrivals', all: 'All {p}', new: 'New', used: 'Used', meta1: '256GB · 1-year warranty', name2: 'Xbox Series X with an extra controller', meta2: 'Excellent condition · 1TB', metaPro: '2TB · no disc drive', metaGood: 'Very good condition · 1TB', nameBundle: 'Nintendo Switch 2 Mario Kart World bundle',
+      tabHome: 'Home', tabCats: 'Categories', tabCart: 'Cart', tabFav: 'Favorites', tabMe: 'Account', back: 'Back', gallery: 'Product images', fav: 'Add to favorites', qty: 'Quantity', less: 'Decrease', more: 'Increase',
+      capFront: 'Front', capBack: 'Back', capTop: 'Top', capBox: 'Box', of: 'of', pdLine: '8-inch handheld gaming PC running SteamOS', ship: 'Delivery 5,000 IQD to every governorate', stock: 'In stock · 1-year warranty',
+      storage: 'Storage', specs: 'Specifications', sDisplay: 'Display', sDisplayV: '8 inch · 120Hz', sCpu: 'Processor', sBattery: 'Battery', sBox: 'In the box', sBoxV: 'Console and 65W charger', sOs: 'System',
+      shipAll: 'Delivery to every governorate in Iraq for 5,000 IQD', track: 'Track your order', help: 'Help', curName: 'Iraqi dinar · IQD', navUsed: 'Used', navTrade: 'Trade in', navRepair: 'Repair', theme: 'Dark mode',
+      added: 'Added to cart' },
+    ckb: { dir: 'rtl', cur: 'د.ع', search: 'بگەڕێ بۆ ئامێر یان یاری', add: 'بیخە ناو سەبەتە', view: 'ئامێرەکە ببینە', turn: '<b>نۆرەی تۆیە.</b> پلاتفۆرمەکەت هەڵبژێرە', handheld: 'ئامێری دەستی',
+      rail: 'تازە گەیشتوون', all: 'هەموو {p}', new: 'نوێ', used: 'بەکارهاتوو', meta1: '<bdi>256GB</bdi> · یەک ساڵ گەرەنتی', name2: '<bdi>Xbox Series X</bdi> لەگەڵ دەسکێکی زیادە', meta2: 'دۆخی نایاب · <bdi>1TB</bdi>', metaPro: '<bdi>2TB</bdi> · بێ دیسک درایڤ', metaGood: 'دۆخی زۆر باش · <bdi>1TB</bdi>', nameBundle: '<bdi>Nintendo Switch 2</bdi> لەگەڵ <bdi>Mario Kart World</bdi>',
+      tabHome: 'سەرەکی', tabCats: 'پۆلەکان', tabCart: 'سەبەتە', tabFav: 'دڵخوازەکان', tabMe: 'هەژمار', back: 'گەڕانەوە', gallery: 'وێنەکانی کاڵا', fav: 'بیخە ناو دڵخوازەکان', qty: 'دانە', less: 'کەمی بکە', more: 'زیادی بکە',
+      capFront: 'پێشەوە', capBack: 'پشتەوە', capTop: 'سەرەوە', capBox: 'پاکەت', of: 'لە', pdLine: 'ئامێری یاریی دەستی بە شاشەی 8 ئینچ و سیستەمی <bdi>SteamOS</bdi>', ship: 'گەیاندن <bdi>5,000 د.ع</bdi> بۆ هەموو پارێزگاکان', stock: 'بەردەستە · یەک ساڵ گەرەنتی',
+      storage: 'بیرگە', specs: 'تایبەتمەندییەکان', sDisplay: 'شاشە', sDisplayV: '8 ئینچ · <bdi>120Hz</bdi>', sCpu: 'پرۆسێسەر', sBattery: 'پاتری', sBox: 'ناو پاکەتەکە', sBoxV: 'ئامێرەکە و شەحنکەرەوەی <bdi>65W</bdi>', sOs: 'سیستەم',
+      shipAll: 'گەیاندن بۆ هەموو پارێزگاکانی عێراق بە <bdi>5,000 د.ع</bdi>', track: 'بەدواداچوونی داواکاری', help: 'یارمەتی', curName: 'دیناری عێراقی · د.ع', navUsed: 'بەکارهاتوو', navTrade: 'ئامێرەکەت بگۆڕەوە', navRepair: 'چاککردنەوە', theme: 'دۆخی تاریک',
+      added: 'خرایە ناو سەبەتە' },
+  };
+  const lang = T[params.get('lang')] ? params.get('lang') : 'ar';
+  const AR = { all: 'كل {p}', added: 'أُضيف إلى السلة' };
+  const t = key => (T[lang][key] ?? AR[key] ?? '');
+  if (lang !== 'ar') {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = T[lang].dir;
+    $$('#screen-a,#screen-b,#desktop').forEach(root => {
+      $$('[data-i18n]', root).forEach(n => { const v = T[lang][n.dataset.i18n]; if (v != null) n.innerHTML = v; });
+      $$('[data-i18n-aria]', root).forEach(n => { const v = T[lang][n.dataset.i18nAria]; if (v != null) n.setAttribute('aria-label', v); });
+    });
+  }
+  $$('[data-lang]').forEach(a => { if (a.dataset.lang === lang) a.setAttribute('aria-current', 'true'); });
+
+  /* 2. theme: ?theme=dark or the board toggle relights the screens (the strips always show both) */
+  const themed = $$('#screen-a,#screen-b,#desktop'), toggle = $('#theme-toggle');
+  let dark = params.get('theme') === 'dark';
+  const paint = () => {
+    themed.forEach(el => { el.dataset.theme = dark ? 'dark' : 'light'; });
+    toggle.textContent = dark ? 'Show light' : 'Show dark';
+    toggle.setAttribute('aria-pressed', String(dark));
+  };
+  toggle.addEventListener('click', () => {
+    dark = !dark;
+    if (document.startViewTransition && !reduce.matches) document.startViewTransition(paint); else paint();   /* snapshot cross-fade, no per-frame repaint */
+  });
+  paint();
+
+  /* 3. the lit stage: a pressed platform key stays down, relights the stage and swaps the render */
+  const P = {
+    nintendo: { gel: 'var(--gel-nintendo)', dev: '#dev-switch2', box: '0 0 300 150', name: 'Nintendo Switch 2', short: 'Nintendo', price: '749,000',
+      h: { ar: 'وصل <bdi>Switch 2</bdi>', en: '<bdi>Switch 2</bdi> is here', ckb: '<bdi>Switch 2</bdi> گەیشت' },
+      d: { ar: 'شاشة 7.9 بوصة وذراعا <bdi>Joy-Con 2</bdi> مغناطيسيان.', en: 'A 7.9-inch screen and magnetic Joy-Con 2 controllers.', ckb: 'شاشەی 7.9 ئینچ و دوو دەسکی موگناتیسیی <bdi>Joy-Con 2</bdi>.' } },
+    playstation: { gel: 'var(--gel-playstation)', dev: '#dev-ps5', box: '0 0 140 270', name: 'PlayStation 5 Pro', short: 'PlayStation', price: '1,099,000',
+      h: { ar: 'وصل <bdi>PS5 Pro</bdi>', en: '<bdi>PS5 Pro</bdi> is here', ckb: '<bdi>PS5 Pro</bdi> گەیشت' },
+      d: { ar: 'تخزين <bdi>2TB</bdi> بدون قارئ أقراص. القارئ يُباع منفصلاً.', en: '2TB of storage, no disc drive. The drive is sold separately.', ckb: '<bdi>2TB</bdi> بیرگە، بێ دیسک درایڤ. درایڤەکە بە جیا دەفرۆشرێت.' } },
+    xbox: { gel: 'var(--gel-xbox)', dev: '#dev-xbox', box: '0 0 170 300', name: 'Xbox Series X', short: 'Xbox', price: '689,000',
+      h: { ar: 'رجع <bdi>Series X</bdi>', en: '<bdi>Series X</bdi> is back', ckb: '<bdi>Series X</bdi> گەڕایەوە' },
+      d: { ar: 'تخزين <bdi>1TB</bdi> وقارئ أقراص <bdi>4K Blu-ray</bdi>.', en: '1TB of storage and a 4K Blu-ray drive.', ckb: '<bdi>1TB</bdi> بیرگە و دیسک درایڤی <bdi>4K Blu-ray</bdi>.' } },
+    handheld: { gel: 'var(--gel-handheld)', dev: '#dev-handheld', box: '0 0 300 140', name: 'Lenovo Legion Go S', short: null, price: '899,000',
+      h: { ar: 'خذ ألعاب <bdi>PC</bdi> معك', en: 'PC games to go', ckb: 'یاریی <bdi>PC</bdi> لەگەڵ خۆت ببە' },
+      d: { ar: '<bdi>Legion Go S</bdi> بشاشة 8 بوصة ونظام <bdi>SteamOS</bdi>.', en: 'Legion Go S with an 8-inch screen and SteamOS.', ckb: '<bdi>Legion Go S</bdi> بە شاشەی 8 ئینچ و سیستەمی <bdi>SteamOS</bdi>.' } },
+  };
+  const handheldName = { ar: 'الأجهزة المحمولة', en: 'handhelds', ckb: 'ئامێرە دەستییەکان' };
+  $$('[data-hero]').forEach(root => {
+    const slot = $('[data-slot="device"]', root), light = $('[data-slot="light"]', root);
+    const keys = $$('[data-bank] .key', root);
+    const show = id => {
+      const p = P[id], svg = $('svg', slot);
+      root.style.setProperty('--gel', p.gel);
+      svg.setAttribute('viewBox', p.box);
+      const [, , bw, bh] = p.box.split(' ').map(Number);
+      svg.setAttribute('width', bw * 4); svg.setAttribute('height', bh * 4);
+      $('use', svg).setAttribute('href', p.dev);
+      slot.setAttribute('aria-label', p.name);
+      $('[data-slot="title"]', root).innerHTML = p.h[lang];
+      const deck = $('[data-slot="deck"]', root); if (deck) deck.innerHTML = p.d[lang];
+      $('[data-slot="name"]', root).textContent = p.name;
+      $('[data-slot="price"]', root).textContent = p.price;
+      $('[data-slot="link"]', root).innerHTML = t('all').replace('{p}', p.short ? '<bdi>' + p.short + '</bdi>' : handheldName[lang]);
+    };
+    const select = key => {
+      if (key.getAttribute('aria-checked') === 'true') return;
+      keys.forEach(k => { const on = k === key; k.setAttribute('aria-checked', String(on)); k.tabIndex = on ? 0 : -1; });
+      if (still(slot)) { show(key.dataset.p); return; }
+      /* light fades, the render deflates and the new one inflates: opacity + transform only, interruptible */
+      light.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 110, easing: 'ease-in' });
+      slot.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(.9)', opacity: 0 }], { duration: 110, easing: 'cubic-bezier(.4,0,1,1)' })
+        .finished.then(() => {
+          show(key.dataset.p);
+          light.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: 'ease-out' });
+          slot.animate([{ transform: 'scale(.86)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+        });
+    };
+    keys.forEach((key, i) => {
+      key.tabIndex = key.getAttribute('aria-checked') === 'true' ? 0 : -1;
+      key.addEventListener('click', () => select(key));
+      key.addEventListener('keydown', e => {
+        const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        const dir = getComputedStyle(key).direction === 'rtl' ? -1 : 1;
+        const next = keys[(i + step * dir + keys.length) % keys.length];
+        next.focus(); select(next); e.preventDefault();
+      });
+    });
+    if (lang !== 'ar') show(root.dataset.hero);
+  });
+
+  /* 4. quantity, options, favourite, gallery */
+  const qty = $('#qty');
+  $$('#screen-b [data-step]').forEach(btn => btn.addEventListener('click', () => {
+    qty.textContent = String(Math.min(9, Math.max(1, (parseInt(qty.textContent, 10) || 1) + Number(btn.dataset.step))));
+  }));
+  const radio = group => { const items = $$('[role="radio"]', group); items.forEach(item => item.addEventListener('click', () => items.forEach(o => o.setAttribute('aria-checked', String(o === item))))); return items; };
+  radio($('#opts'));
+  $$('[data-fav]').forEach(btn => btn.addEventListener('click', () => btn.setAttribute('aria-pressed', String(btn.getAttribute('aria-pressed') !== 'true'))));
+  const capAR = { capFront: 'الواجهة', capBack: 'الخلف', capTop: 'الأعلى', capBox: 'العلبة' };
+  const thumbs = radio($('.thumbs'));
+  thumbs.forEach((th, i) => th.addEventListener('click', () => {
+    const stageRender = $('#pd-device');
+    $('use', stageRender).setAttribute('href', th.dataset.view);
+    $('#gal-cap').textContent = T[lang][th.dataset.cap] ?? capAR[th.dataset.cap];
+    $('#gal-n').textContent = String(i + 1);
+    if (!still(stageRender)) stageRender.animate([{ transform: 'scale(.94)', opacity: .4 }, { transform: 'scale(1)', opacity: 1 }], { duration: 220, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+  }));
+
+  /* 5. add to cart: the count and the announcement change at once; then a bead flies an arc and the cart bead squishes */
+  let count = 2, flying = 0;
+  const beads = $$('[data-bead]');
+  const squish = el => {
+    if (still(el)) return;
+    el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.4,.68)', offset: .3 }, { transform: 'scale(.88,1.16)', offset: .62 }, { transform: 'scale(1)' }], { duration: 340, easing: 'ease-out' });
+  };
+  $$('[data-add]').forEach(key => key.addEventListener('click', () => {
+    const host = key.closest('.ui'), bead = $('[data-bead]', host);
+    const n = key.hasAttribute('data-qty') ? (parseInt(qty.textContent, 10) || 1) : 1;
+    count += n;
+    beads.forEach(b => { b.textContent = String(count); });
+    $('[data-live]', host).textContent = t('added');
+    key.dataset.state = 'added';
+    clearTimeout(key._t); key._t = setTimeout(() => { delete key.dataset.state; }, 1200);
+    const from = key.dataset.from ? $(key.dataset.from, host) : $('.niche svg', key.closest('.pcard'));
+    if (still(from) || flying >= 3) { squish(bead); return; }           /* extra rapid taps go straight to the count */
+    const h = host.getBoundingClientRect(), a = from.getBoundingClientRect(), b = bead.getBoundingClientRect();
+    const x0 = a.left + a.width / 2 - h.left, y0 = a.top + a.height / 2 - h.top;
+    const dx = b.left + b.width / 2 - h.left - x0, dy = b.top + b.height / 2 - h.top - y0;
+    const lift = Math.min(dy, 0) - 70;
+    const dot = document.createElement('i');
+    dot.className = 'fly';
+    dot.style.left = x0 + 'px';
+    dot.style.top = y0 + 'px';
+    host.appendChild(dot);
+    const frames = Array.from({ length: 13 }, (_, i) => {
+      const u = i / 12, v = 1 - u;
+      const x = 2 * v * u * (dx * .5) + u * u * dx, y = 2 * v * u * lift + u * u * dy;
+      return { transform: 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + (1 - .45 * u).toFixed(2) + ')' };
+    });
+    flying++;
+    dot.animate(frames, { duration: Math.min(600, 420 + Math.hypot(dx, dy) * .3), easing: 'cubic-bezier(.4,0,.6,1)' })
+      .finished.then(() => { dot.remove(); flying--; squish(bead); });
+  }));
+})();
+</script>
+</body>
+</html>

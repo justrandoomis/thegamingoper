@@ -1,0 +1,141 @@
+import { useEffect } from "react";
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useRouteLoaderData,
+  type ShouldRevalidateFunctionArgs,
+} from "react-router";
+
+import type { Route } from "./+types/root";
+import { messagesFor } from "~/i18n/i18n.server";
+import { DEFAULT_LOCALE, LOCALES } from "~/lib/locales";
+import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
+import { getCtx, requestContextMiddleware } from "~/server/context.server";
+import { loadShell } from "~/server/shell.server";
+import "./app.css";
+
+export const middleware: Route.MiddlewareFunction[] = [requestContextMiddleware];
+
+export async function loader({ context }: Route.LoaderArgs) {
+  const ctx = getCtx(context);
+  const shell = await loadShell(ctx);
+  return {
+    locale: ctx.locale,
+    dir: ctx.dir,
+    prefs: ctx.prefs,
+    storeMode: ctx.storeMode,
+    origin: ctx.origin,
+    nonce: ctx.nonce,
+    ...shell,
+    i18n: messagesFor(ctx.locale, "common"),
+  };
+}
+
+export type RootLoaderData = Awaited<ReturnType<typeof loader>>;
+
+/** Root data is refreshed after mutations (cart badge, sign-in) but not on plain navigations. */
+export function shouldRevalidate({ formMethod, currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (formMethod && formMethod.toUpperCase() !== "GET") return true;
+  // Language is part of the path: reload shell strings when the locale prefix changes.
+  const localeOf = (pathname: string) => pathname.split("/")[1] ?? "";
+  if (localeOf(currentUrl.pathname) !== localeOf(nextUrl.pathname)) return defaultShouldRevalidate;
+  return false;
+}
+
+/** Sets data-theme before first paint when the shopper follows the system setting. */
+const THEME_SCRIPT = `(function(){try{var d=document.documentElement;if(d.dataset.theme==="system"){d.dataset.theme=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.themeSource="system"}}catch(e){}})()`;
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const locale = data?.locale ?? DEFAULT_LOCALE;
+  const theme = data?.prefs.theme ?? DEFAULT_PREFS.theme;
+  return (
+    <html lang={LOCALES[locale].bcp47} dir={LOCALES[locale].dir} data-theme={theme} data-store-mode={data?.storeMode} suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="color-scheme" content="light dark" />
+        <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} suppressHydrationWarning />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+export default function App({ loaderData }: Route.ComponentProps) {
+  return (
+    <PrefsProvider value={loaderData.prefs}>
+      <ThemeSync />
+      <Outlet />
+    </PrefsProvider>
+  );
+}
+
+/** Keeps <html data-theme> in step with the preference store after the shopper switches theme. */
+function ThemeSync() {
+  const { theme } = usePrefs();
+  useEffect(() => {
+    const root = document.documentElement;
+    const apply = () => {
+      if (theme === "system") {
+        root.dataset.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        root.dataset.themeSource = "system";
+      } else {
+        root.dataset.theme = theme;
+        delete root.dataset.themeSource;
+      }
+    };
+    apply();
+    if (theme !== "system") return;
+    const media = matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [theme]);
+  return null;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  // Deliberately dependency-free: this renders when anything above the storefront/admin shells fails.
+  let status = 500;
+  let title = "حدث خطأ غير متوقع";
+  let detail = "تعذّر تحميل الصفحة. حاول مرة أخرى بعد قليل.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    status = error.status;
+    if (error.status === 404) {
+      title = "الصفحة غير موجودة";
+      detail = "الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت.";
+    } else if (error.status === 403) {
+      title = "غير مسموح";
+      detail = "لا تملك صلاحية الوصول إلى هذه الصفحة.";
+    }
+  } else if (import.meta.env.DEV && error instanceof Error) {
+    detail = error.message;
+    stack = error.stack;
+  }
+
+  return (
+    <main className="root-error">
+      <p className="root-error__code" dir="ltr">{status}</p>
+      <h1>{title}</h1>
+      <p>{detail}</p>
+      <a href="/">العودة إلى الرئيسية</a>
+      {stack ? (
+        <pre dir="ltr">
+          <code>{stack}</code>
+        </pre>
+      ) : null}
+    </main>
+  );
+}

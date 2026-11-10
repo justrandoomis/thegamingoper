@@ -1,0 +1,35 @@
+@import "tailwindcss" source(".");
+
+/*
+ * Global stylesheet entry. The design system (tokens, materials, components) is imported here.
+ * Until it lands, only the dependency-free error surface is styled.
+ */
+
+.root-error {
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+}
+.root-error h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.root-error__code {
+  font-size: 3rem;
+  font-weight: 800;
+  opacity: 0.25;
+}
+.root-error a {
+  text-decoration: underline;
+}
+.root-error pre {
+  max-width: min(90vw, 60rem);
+  overflow-x: auto;
+  text-align: start;
+  font-size: 0.75rem;
+}

@@ -1,0 +1,40 @@
+/**
+ * TamTam Games — Cloudflare Worker configuration.
+ * Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+ *
+ * Bindings (all simulated locally by `npm run dev`, no cloud account needed):
+ *   DB  — D1 (SQLite) relational database, migrations in ./drizzle
+ *   KV  — private key/value store: uploaded payment proofs, used-device photos, rate-limit counters
+ * Secrets (set with `wrangler secret put`, local values live in .dev.vars — never commit them):
+ *   SESSION_SECRET, DATA_KEY, SETUP_TOKEN
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "tamtam-games",
+	"compatibility_date": "2026-11-09",
+	"main": "./workers/app.ts",
+	"vars": {
+		"APP_ENV": "development",
+		"PUBLIC_ORIGIN": "http://localhost:5173",
+		/** "demo" shows the demo-data ribbon, flags orders as demo and sends noindex. Switch to "live" in admin-controlled deploy config when real catalogue data is in. */
+		"STORE_MODE": "demo",
+		/** Seconds for the Strict-Transport-Security header; "0" keeps HSTS off until the owner opts in. */
+		"HSTS_MAX_AGE": "0"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "tamtam-db",
+			"migrations_dir": "drizzle"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "KV"
+		}
+	],
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true
+}

@@ -1,0 +1,587 @@
+/*
+ * TamTam Motion Engine — stylesheet. Imported by <MotionRoot> (app/motion/root.tsx).
+ *
+ * Rules of the house:
+ *  - Only transform (translate / scale / rotate) and opacity are ever animated. Nothing here animates blur,
+ *    box-shadow, width/height or layout. (Static shadows that ride along with a transform are fine.)
+ *  - Helper classes live in Tailwind's `components` layer so utilities can override them; the order statement
+ *    below is identical to Tailwind's, so it does not matter which stylesheet the browser sees first.
+ *  - Reduced motion: movement is replaced by short opacity changes or nothing. Before hydration the OS
+ *    setting is honoured through the media query; afterwards <html data-motion> is the source of truth
+ *    (it also carries the shopper's own override).
+ */
+@layer theme, base, components, utilities;
+
+/* @generated tokens:start — edit app/motion/tokens.ts, then run: npx tsx app/motion/__checks__/gen-css.mjs */
+:root {
+  --motion-duration-instant: 80ms;
+  --motion-duration-quick: 140ms;
+  --motion-duration-base: 220ms;
+  --motion-duration-page: 320ms;
+  --motion-duration-slow: 480ms;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-in: cubic-bezier(0.5, 0, 0.9, 0.5);
+  --motion-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --motion-press-clay-scale: 0.97;
+  --motion-press-clay-sink: 1px;
+  --motion-press-soft-scale: 0.98;
+  --motion-press-soft-sink: 0px;
+  --motion-press-icon-scale: 0.94;
+  --motion-press-icon-sink: 0px;
+  --motion-bubble-from: 0.92;
+  --motion-stagger-step: 45ms;
+  --motion-spring-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-spring-snappy-duration: 208ms;
+  --motion-spring-gentle: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-spring-gentle-duration: 408ms;
+  --motion-spring-bouncy: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-spring-bouncy-duration: 733ms;
+  --motion-spring-sheet: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-spring-sheet-duration: 442ms;
+  --motion-spring-fly: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-spring-fly-duration: 567ms;
+}
+@supports (animation-timing-function: linear(0, 1)) {
+  :root {
+    --motion-spring-snappy: linear(0, 0.006 1.9%, 0.0224 3.81%, 0.0472 5.71%, 0.0784 7.62%, 0.1146 9.52%, 0.1752 12.38%, 0.459 24.76%, 0.5384 28.57%, 0.5933 31.43%, 0.6597 35.24%, 0.7181 39.05%, 0.7688 42.86%, 0.8221 47.62%, 0.8651 52.38%, 0.8994 57.14%, 0.9309 62.86%, 0.9539 68.57%, 0.9725 75.24%, 0.9847 81.9%, 0.9932 89.52%, 1);
+    --motion-spring-gentle: linear(0, 0.0058 1.46%, 0.0155 2.44%, 0.0293 3.41%, 0.0672 5.37%, 0.1161 7.32%, 0.1581 8.78%, 0.2191 10.73%, 0.4649 18.05%, 0.5739 21.46%, 0.6725 24.88%, 0.7587 28.29%, 0.8219 31.22%, 0.8832 34.63%, 0.9258 37.56%, 0.9647 40.98%, 0.9935 44.39%, 1.0161 48.29%, 1.0309 52.68%, 1.0377 57.56%, 1.0358 65.37%, 1.0126 84.88%, 1);
+    --motion-spring-bouncy: linear(0, 0.0075 1.09%, 0.0287 2.18%, 0.0711 3.54%, 0.1278 4.9%, 0.181 5.99%, 0.2546 7.36%, 0.5606 12.53%, 0.683 14.71%, 0.7932 16.89%, 0.8427 17.98%, 0.8881 19.07%, 0.9293 20.16%, 0.9663 21.25%, 0.9989 22.34%, 1.0274 23.43%, 1.0723 25.61%, 1.0891 26.7%, 1.1052 28.07%, 1.1181 29.7%, 1.1248 31.34%, 1.126 33.24%, 1.1216 35.15%, 1.1032 38.69%, 1.0435 46.87%, 1.0182 50.95%, 0.9981 55.59%, 0.9874 60.22%, 0.9843 67.03%, 0.9998 87.19%, 1.002 97.28%, 1);
+    --motion-spring-sheet: linear(0, 0.0058 1.36%, 0.0217 2.71%, 0.0557 4.52%, 0.1006 6.33%, 0.1395 7.69%, 0.1961 9.5%, 0.4245 16.29%, 0.5256 19.46%, 0.6297 23.08%, 0.7089 26.24%, 0.7765 29.41%, 0.8328 32.58%, 0.8787 35.75%, 0.9199 39.37%, 0.954 43.44%, 0.9776 47.51%, 0.9946 52.04%, 1.0057 57.47%, 1.0103 62.9%, 1.011 69.23%, 1);
+    --motion-spring-fly: linear(0, 0.0038 1.06%, 0.019 2.46%, 0.0434 3.87%, 0.0835 5.63%, 0.1615 8.45%, 0.3673 15.14%, 0.4595 18.31%, 0.5521 21.83%, 0.6253 25%, 0.6954 28.52%, 0.7543 32.04%, 0.8031 35.56%, 0.8466 39.44%, 0.8866 44.01%, 0.9188 48.94%, 0.9449 54.58%, 0.9647 60.92%, 0.9782 67.61%, 0.9876 75.35%, 1);
+  }
+}
+/* @generated tokens:end */
+
+:root {
+  /* +1 when the inline axis runs left → right, −1 for RTL. Keyframes multiply sideways travel by it. */
+  --motion-dir: 1;
+}
+:root[dir="rtl"] {
+  --motion-dir: -1;
+}
+
+/* ───────────────────────────── press feedback ─────────────────────────────
+ * data-press="clay" compresses 3 % and sinks 1px, "soft" scales 2 %, "icon" 6 %.
+ * <MotionRoot> sets data-pressed on pointer-down and swaps it for data-released on release.
+ * Keyframe animations (not transitions) so a component's own `transition` list never fights them.
+ */
+@layer components {
+  [data-press] {
+    --press-scale: var(--motion-press-clay-scale);
+    --press-sink: var(--motion-press-clay-sink);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  [data-press="soft"] {
+    --press-scale: var(--motion-press-soft-scale);
+    --press-sink: var(--motion-press-soft-sink);
+  }
+  [data-press="icon"] {
+    --press-scale: var(--motion-press-icon-scale);
+    --press-sink: var(--motion-press-icon-sink);
+  }
+  [data-press][data-pressed] {
+    animation: tt-press-in var(--motion-duration-instant) var(--motion-ease-out) forwards;
+  }
+  [data-press][data-released] {
+    animation: tt-press-out var(--motion-spring-gentle-duration) var(--motion-spring-gentle);
+  }
+}
+@keyframes tt-press-in {
+  to {
+    scale: var(--press-scale);
+    translate: 0 var(--press-sink);
+  }
+}
+@keyframes tt-press-out {
+  from {
+    scale: var(--press-scale);
+    translate: 0 var(--press-sink);
+  }
+}
+
+/* ───────────────────────────── bubbles ─────────────────────────────
+ * <Bubble> content inflates into space that is already reserved: scale + opacity on the element itself,
+ * so nothing around it moves. <BubbleGroup> staggers its children; the total never exceeds 400 ms.
+ */
+@layer components {
+  .tt-bubble-in {
+    animation:
+      tt-bubble-scale var(--motion-spring-gentle-duration) var(--motion-spring-gentle) both,
+      tt-bubble-fade var(--motion-duration-quick) var(--motion-ease-out) both;
+  }
+  .tt-bubble-wave {
+    animation-delay: calc(var(--tt-i, 0) * var(--tt-step, 0ms));
+  }
+  .tt-bubbles > :nth-child(2) { --tt-i: 1; }
+  .tt-bubbles > :nth-child(3) { --tt-i: 2; }
+  .tt-bubbles > :nth-child(4) { --tt-i: 3; }
+  .tt-bubbles > :nth-child(5) { --tt-i: 4; }
+  .tt-bubbles > :nth-child(6) { --tt-i: 5; }
+  .tt-bubbles > :nth-child(7) { --tt-i: 6; }
+  .tt-bubbles > :nth-child(8) { --tt-i: 7; }
+  .tt-bubbles > :nth-child(9) { --tt-i: 8; }
+  .tt-bubbles > :nth-child(10) { --tt-i: 9; }
+  .tt-bubbles > :nth-child(11) { --tt-i: 10; }
+  .tt-bubbles > :nth-child(n + 12) { --tt-i: 11; }
+}
+@keyframes tt-bubble-scale {
+  from {
+    scale: var(--motion-bubble-from);
+  }
+}
+@keyframes tt-bubble-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ───────────────────────────── number morph ─────────────────────────────
+ * Digits sit in their own inline-block slots inside a left-to-right island, so they roll individually while
+ * currency text around them keeps its shaping and bidi order. Tabular figures keep every digit the same width.
+ */
+@layer components {
+  .tt-num {
+    position: relative;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .tt-num-sr {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    /* Read by assistive technology only; the visible glyphs are what gets selected and copied. */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .tt-num-run {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+  .tt-num-slot {
+    position: relative;
+    display: inline-block;
+  }
+  .tt-num-digit {
+    inline-size: 1ch;
+    text-align: center;
+  }
+  .tt-num-in {
+    display: inline-block;
+    animation: tt-num-in var(--motion-duration-base) var(--motion-ease-out) both;
+  }
+  .tt-num-out {
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    pointer-events: none;
+    /* The outgoing digit stays in the DOM (invisible) until the next change; never let it be copied. */
+    -webkit-user-select: none;
+    user-select: none;
+    animation: tt-num-out var(--motion-duration-quick) var(--motion-ease-in) both;
+  }
+  .tt-num-text-in {
+    animation: tt-fade-in var(--motion-duration-base) var(--motion-ease-out) both;
+  }
+}
+@keyframes tt-num-in {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--tt-num-dir, 1) * 0.5em);
+  }
+}
+@keyframes tt-num-out {
+  to {
+    opacity: 0;
+    translate: 0 calc(var(--tt-num-dir, 1) * -0.5em);
+  }
+}
+@keyframes tt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes tt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ───────────────────────────── page transitions ─────────────────────────────
+ * React runs the view transition; the engine marks <html> for its duration:
+ *   data-nav      = fade | zoom | push-forward | push-back | rise | direction
+ *   data-nav-dir  = forward | back
+ * The animated layers are the two viewport-sized root snapshots (old page, new page).
+ */
+@layer components {
+  .tt-nav-sentinel {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 1px;
+    block-size: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  [data-motion-page] {
+    display: block;
+  }
+}
+::view-transition-group(.tt-nav) {
+  display: none;
+}
+
+html[data-nav]::view-transition-group(root) {
+  animation: none;
+}
+html[data-nav]::view-transition-image-pair(root) {
+  isolation: auto;
+}
+html[data-nav]::view-transition-old(root),
+html[data-nav]::view-transition-new(root) {
+  mix-blend-mode: normal;
+  transform-origin: var(--nav-x, 50%) var(--nav-y, 50%);
+}
+
+/* fade and zoom are fade-throughs: the old page lets go first (100 ms), the new one arrives from 60 ms on, so two
+ * pages of text are never readable on top of each other. Opacity and transform are separate animations so each
+ * keeps its own clock.
+ *
+ * fade — the default: the new page settles in from 10px below. */
+html[data-nav="fade"]::view-transition-old(root) {
+  animation: tt-fade-out calc(var(--motion-duration-instant) * 1.25) var(--motion-ease-out) both;
+}
+html[data-nav="fade"]::view-transition-new(root) {
+  animation:
+    tt-fade-in var(--motion-duration-quick) var(--motion-ease-out) calc(var(--motion-duration-instant) * 0.75) both,
+    tt-settle-up var(--motion-duration-base) var(--motion-ease-out) both;
+}
+@keyframes tt-settle-up {
+  from {
+    transform: translateY(10px);
+  }
+}
+
+/* zoom — into the tapped card (forward), back out of it (back). The shared element morphs above this. */
+html[data-nav="zoom"][data-nav-dir="forward"]::view-transition-old(root) {
+  animation:
+    tt-fade-out calc(var(--motion-duration-instant) * 1.25) var(--motion-ease-out) both,
+    tt-grow-away var(--motion-duration-base) var(--motion-ease-in) both;
+}
+html[data-nav="zoom"][data-nav-dir="forward"]::view-transition-new(root) {
+  animation:
+    tt-fade-in var(--motion-duration-quick) var(--motion-ease-out) calc(var(--motion-duration-instant) * 0.75) both,
+    tt-grow-in var(--motion-duration-page) var(--motion-ease-out) both;
+}
+html[data-nav="zoom"][data-nav-dir="back"]::view-transition-old(root) {
+  animation:
+    tt-fade-out calc(var(--motion-duration-instant) * 1.25) var(--motion-ease-out) both,
+    tt-shrink-away var(--motion-duration-base) var(--motion-ease-in) both;
+}
+html[data-nav="zoom"][data-nav-dir="back"]::view-transition-new(root) {
+  animation:
+    tt-fade-in var(--motion-duration-quick) var(--motion-ease-out) calc(var(--motion-duration-instant) * 0.75) both,
+    tt-shrink-in var(--motion-duration-page) var(--motion-ease-out) both;
+}
+@keyframes tt-grow-away {
+  to {
+    transform: scale(1.06);
+  }
+}
+@keyframes tt-grow-in {
+  from {
+    transform: scale(0.94);
+  }
+}
+@keyframes tt-shrink-away {
+  to {
+    transform: scale(0.94);
+  }
+}
+@keyframes tt-shrink-in {
+  from {
+    transform: scale(1.06);
+  }
+}
+
+/* push — sideways between neighbours. Forward: the new page slides in over the old from the inline end. */
+html[data-nav="push-forward"]::view-transition-old(root) {
+  animation: tt-push-under-out var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+html[data-nav="push-forward"]::view-transition-new(root) {
+  animation: tt-push-over-in var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+/* Back: the page on top slides away to the inline end and uncovers the one beneath. */
+html[data-nav="push-back"]::view-transition-old(root) {
+  z-index: 1;
+  animation: tt-push-over-out var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+html[data-nav="push-back"]::view-transition-new(root) {
+  animation: tt-push-under-in var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+@keyframes tt-push-over-in {
+  from {
+    transform: translateX(calc(var(--motion-dir) * 100%));
+  }
+}
+@keyframes tt-push-under-out {
+  to {
+    opacity: 0.45;
+    transform: translateX(calc(var(--motion-dir) * -22%));
+  }
+}
+@keyframes tt-push-over-out {
+  to {
+    transform: translateX(calc(var(--motion-dir) * 100%));
+  }
+}
+@keyframes tt-push-under-in {
+  from {
+    opacity: 0.45;
+    transform: translateX(calc(var(--motion-dir) * -22%));
+  }
+}
+
+/* rise — a sheet-like child page lifts over its parent; going back it drops away. */
+html[data-nav="rise"][data-nav-dir="forward"]::view-transition-old(root) {
+  animation: tt-recede var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+html[data-nav="rise"][data-nav-dir="forward"]::view-transition-new(root) {
+  animation: tt-rise-in var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+html[data-nav="rise"][data-nav-dir="back"]::view-transition-old(root) {
+  z-index: 1;
+  animation: tt-rise-out var(--motion-duration-base) var(--motion-ease-in) both;
+}
+html[data-nav="rise"][data-nav-dir="back"]::view-transition-new(root) {
+  animation: tt-approach var(--motion-duration-page) var(--motion-ease-emphasized) both;
+}
+@keyframes tt-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18%);
+  }
+  25% {
+    opacity: 1;
+  }
+}
+@keyframes tt-rise-out {
+  to {
+    opacity: 0;
+    transform: translateY(18%);
+  }
+}
+@keyframes tt-recede {
+  to {
+    opacity: 0.4;
+    transform: scale(0.96);
+  }
+}
+@keyframes tt-approach {
+  from {
+    opacity: 0.4;
+    transform: scale(0.96);
+  }
+}
+
+/* direction — language switch. --nav-out / --nav-in are set by the engine: out toward the old reading
+ * direction's end, in from the new one's start, while <html dir> flips in between. */
+html[data-nav="direction"]::view-transition-old(root) {
+  animation: tt-dir-out calc(var(--motion-duration-instant) * 1.25) var(--motion-ease-out) both;
+}
+html[data-nav="direction"]::view-transition-new(root) {
+  animation: tt-dir-in var(--motion-duration-base) var(--motion-ease-out) var(--motion-duration-instant) both;
+}
+@keyframes tt-dir-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--nav-out, 1) * 14%));
+  }
+}
+@keyframes tt-dir-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--nav-in, 1) * 14%));
+  }
+}
+
+/* 'lite' keeps the primary mover and drops the layer beneath it (no parallax, no scale on the page underneath). */
+html[data-motion="lite"][data-nav][data-nav-dir="forward"]:not([data-nav="direction"])::view-transition-old(root) {
+  animation: tt-fade-out var(--motion-duration-instant) linear both;
+}
+html[data-motion="lite"][data-nav="zoom"][data-nav-dir="back"]::view-transition-old(root) {
+  animation: tt-fade-out var(--motion-duration-instant) linear both;
+}
+html[data-motion="lite"][data-nav="push-back"]::view-transition-new(root),
+html[data-motion="lite"][data-nav="rise"][data-nav-dir="back"]::view-transition-new(root) {
+  animation: none;
+}
+
+/* ───────────────────────────── shared elements ─────────────────────────────
+ * <SharedElement> pairs get the class tt-share. The group travels and resizes between the two boxes
+ * (browser-generated keyframes) on a soft spring; the snapshots are fitted, never stretched.
+ */
+::view-transition-group(.tt-share) {
+  animation-duration: var(--motion-duration-page);
+  animation-timing-function: var(--motion-spring-gentle);
+}
+::view-transition-old(.tt-share),
+::view-transition-new(.tt-share) {
+  animation-duration: var(--motion-duration-quick);
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+::view-transition-old(.tt-share-cover),
+::view-transition-new(.tt-share-cover) {
+  object-fit: cover;
+}
+
+/* ───────────────────────────── persistent chrome ─────────────────────────────
+ * Fixed chrome that must not travel with the page: data-motion-persist="header | nav | bar | float".
+ * Each becomes its own static layer above the page snapshots.
+ */
+[data-motion-persist="header"] {
+  view-transition-name: tt-persist-header;
+  view-transition-class: tt-persist;
+}
+[data-motion-persist="nav"] {
+  view-transition-name: tt-persist-nav;
+  view-transition-class: tt-persist;
+}
+[data-motion-persist="bar"] {
+  view-transition-name: tt-persist-bar;
+  view-transition-class: tt-persist;
+}
+[data-motion-persist="float"] {
+  view-transition-name: tt-persist-float;
+  view-transition-class: tt-persist;
+}
+::view-transition-group(.tt-persist) {
+  animation: none;
+}
+::view-transition-old(.tt-persist) {
+  display: none;
+}
+::view-transition-new(.tt-persist) {
+  animation: none;
+}
+
+/* (Theme reveal, the rail's depth tilt and the fly-to-cart layer are styled in extras.css, which loads with the
+ * on-demand chunk that drives them.) */
+
+/* ───────────────────────────── sheets ───────────────────────────── */
+@layer components {
+  .tt-sheet {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    max-block-size: 100dvh;
+    overscroll-behavior: contain;
+  }
+  [data-sheet-handle] {
+    touch-action: none;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  [data-sheet-dragging] [data-sheet-handle] {
+    cursor: grabbing;
+  }
+}
+
+/* ───────────────────────────── rails ─────────────────────────────
+ * Native horizontal scrolling with snap. Vertical gestures are never captured: the page scrolls as usual.
+ */
+@layer components {
+  .tt-rail {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tt-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .tt-rail > * {
+    flex: none;
+    scroll-snap-align: start;
+  }
+}
+/* ───────────────────────────── ambient motion ─────────────────────────────
+ * Idle animations opt in with data-ambient (useAmbient sets data-ambient="on" while the element is on screen).
+ * They run only at full tier, in a visible tab, on screen, and not on a nearly empty battery.
+ */
+/* !important on purpose: the element's own `animation:` shorthand resets play-state and would otherwise win. */
+[data-ambient] {
+  animation-play-state: paused !important;
+}
+html[data-motion="full"]:not([data-motion-hidden]):not([data-motion-lowpower]) [data-ambient="on"] {
+  animation-play-state: running !important;
+}
+html[data-motion="lite"] [data-ambient],
+html[data-motion="reduced"] [data-ambient] {
+  animation: none !important;
+}
+
+/* ───────────────────────────── lite ───────────────────────────── */
+html[data-motion="lite"] .tt-bubble-in {
+  animation: tt-bubble-fade var(--motion-duration-quick) var(--motion-ease-out) both;
+  animation-delay: 0s;
+}
+
+/* ───────────────────────────── reduced motion ─────────────────────────────
+ * Short opacity changes or nothing. Two selectors each: the attribute (after hydration, includes the shopper's
+ * override) and the media query for the moment before <MotionRoot> has set the attribute.
+ */
+html[data-motion="reduced"] [data-press][data-pressed] {
+  animation: none;
+  opacity: 0.72;
+}
+html[data-motion="reduced"] [data-press][data-released] {
+  animation: none;
+}
+html[data-motion="reduced"] .tt-bubble-in {
+  animation: tt-bubble-fade 120ms linear both;
+  animation-delay: 0s;
+}
+html[data-motion="reduced"] .tt-num-in {
+  animation: tt-fade-in 120ms linear both;
+}
+html[data-motion="reduced"] .tt-num-out {
+  animation: tt-fade-out 80ms linear both;
+}
+html[data-motion="reduced"]::view-transition-group(*),
+html[data-motion="reduced"]::view-transition-old(*),
+html[data-motion="reduced"]::view-transition-new(*) {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion]) [data-press][data-pressed] {
+    animation: none;
+    opacity: 0.72;
+  }
+  html:not([data-motion]) [data-press][data-released] {
+    animation: none;
+  }
+  html:not([data-motion]) .tt-bubble-in {
+    animation: tt-bubble-fade 120ms linear both;
+    animation-delay: 0s;
+  }
+  html:not([data-motion]) [data-ambient] {
+    animation: none !important;
+  }
+  html:not([data-motion])::view-transition-group(*),
+  html:not([data-motion])::view-transition-old(*),
+  html:not([data-motion])::view-transition-new(*) {
+    animation: none !important;
+  }
+}

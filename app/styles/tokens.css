@@ -1,0 +1,321 @@
+/*
+ * TamTam design tokens — Lens & Clay 1.0. Imported into the `theme` cascade layer by app/app.css.
+ *
+ * This file mirrors docs/DESIGN.md §5 one to one (same names, same values); it is the ONLY place a colour literal
+ * may be written. Component CSS and feature code reference tokens — through var(), the Tailwind utilities mapped in
+ * styles/theme.css, or the classes in styles/materials.css.
+ *
+ *   core     :root                          families, type, spacing, radius, z-index, motion
+ *   light    :root, [data-theme="light"]    the default; also what data-theme="system" shows until the inline
+ *                                           script in root.tsx has resolved it (before first paint)
+ *   dark     [data-theme="dark"]            on <html> or on any subtree
+ *   locale   :lang(en) / :lang(ckb)         display scale, line-height, headline face
+ *   density  [data-density="admin"]         the admin's compact type and gutter (docs/DESIGN.md §10)
+ *
+ * Tokens that are not in the spec are marked "ext" and listed in docs/UI.md.
+ */
+
+/* ───────────────────────────── core (theme independent) ───────────────────────────── */
+:root {
+  /* families: the metric-adjusted local fallbacks are declared in styles/fonts.css */
+  --font-display: "Kufam Variable", "Kufam", "IBM Plex Sans Arabic", "Kufam Fallback", system-ui, sans-serif;
+  --font-text: "IBM Plex Sans Arabic", "Plex Fallback", "Noto Sans Arabic", system-ui, sans-serif;
+  --font-head: var(--font-display); /* the headline face; swapped per locale */
+  --ds: 1; /* display scale for translated strings */
+  --lh-body: 1.7; /* Arabic and Sorani body line-height */
+
+  /* spacing: 4px grid */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --gutter: 16px; /* page side margin: 24px from 768, 40px from 1200 */
+  --gap-card: 12px; /* ext · grids and rails: 16px from 768, 20px from 1200 (§5.6) */
+  --gap-section: 24px; /* ext · between shelves: 40px from 1200 (§5.6) */
+  --page-max: 1280px; /* ext · content max-width (§5.6) */
+  --target: 44px; /* ext · minimum touch target (§5.6) */
+
+  /* radius: one scale */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 999px;
+
+  /* z-index: one scale */
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-nav: 200;
+  --z-scrim: 300;
+  --z-sheet: 310;
+  --z-dialog: 400;
+  --z-toast: 500;
+  --z-fly: 600;
+  --z-intro: 700;
+
+  /* motion: durations */
+  --t-press: 80ms;
+  --t-release: 180ms;
+  --t-micro: 160ms;
+  --t-exit: 140ms;
+  --t-reveal: 240ms;
+  --t-sheet: 280ms;
+  --t-page: 320ms;
+  --t-fly: 460ms;
+  --t-theme: 200ms;
+  /* motion: easing curves (fallbacks for the springs below) */
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-squish: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-water: cubic-bezier(0.4, 0, 0.2, 1);
+  /* motion: springs, {response, dampingRatio} sampled into linear(); each carries its settle time.
+     The Motion Engine (app/motion/tokens.ts) runs the same five springs under its own names:
+     press = snappy · squish = bouncy · inflate = gentle · settle = fly · sheet = sheet */
+  --spring-press: linear(0, 0.104, 0.329, 0.575, 0.786, 0.939, 1.031, 1.074, 1.083, 1.072, 1.053, 1.032, 1.016, 1.004, 0.997, 0.994, 0.993, 0.994, 0.996, 0.998, 1);
+  --spring-press-t: 260ms; /* {.16, .62} */
+  --spring-squish: linear(0, 0.152, 0.466, 0.783, 1.014, 1.134, 1.163, 1.133, 1.081, 1.03, 0.995, 0.977, 0.974, 0.979, 0.988, 0.996, 1.001, 1.004, 1.004, 1.003, 1);
+  --spring-squish-t: 510ms; /* {.26, .50} */
+  --spring-inflate: linear(0, 0.093, 0.293, 0.515, 0.712, 0.862, 0.963, 1.022, 1.048, 1.054, 1.048, 1.037, 1.025, 1.015, 1.007, 1.002, 0.999, 0.997, 0.997, 0.997, 1);
+  --spring-inflate-t: 430ms; /* {.28, .68} */
+  --spring-settle: linear(0, 0.07, 0.212, 0.369, 0.512, 0.632, 0.728, 0.802, 0.857, 0.898, 0.928, 0.949, 0.964, 0.975, 0.983, 0.988, 0.992, 0.994, 0.996, 0.997, 1);
+  --spring-settle-t: 410ms; /* {.30, 1.0} */
+  --spring-sheet: linear(0, 0.066, 0.209, 0.373, 0.529, 0.662, 0.767, 0.847, 0.905, 0.945, 0.971, 0.987, 0.997, 1.002, 1.004, 1.005, 1.005, 1.004, 1.003, 1.002, 1);
+  --spring-sheet-t: 390ms; /* {.30, .86} */
+
+  /* ext · +1 where the inline axis runs left → right, −1 in RTL: multiplies sideways travel (switch knob) */
+  --dir: 1;
+  /* ext · safe areas (bars pad for the home indicator, §8) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-inline: max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+
+  /* price sizes (§5.5 scale: product page / stage tag / card / inline) */
+  --price-xl: 28px;
+  --price-lg: 21px;
+  --price-md: 17px;
+  --price-sm: 15px;
+}
+[dir="rtl"] {
+  --dir: -1;
+}
+[dir="ltr"] {
+  --dir: 1;
+}
+
+/* type: weight size/line-height family. Declared on every element that names a language as well, so a
+   lang="en" island inside an Arabic page resolves its own --ds and --font-head. */
+:root,
+[lang] {
+  --type-hero: 600 calc(36px * var(--ds)) / 1.25 var(--font-head);
+  --type-title: 600 calc(26px * var(--ds)) / 1.35 var(--font-head);
+  --type-section: 600 calc(19px * var(--ds)) / 1.45 var(--font-head);
+  --type-sub: 600 calc(17px * var(--ds)) / 1.45 var(--font-head);
+  --type-button: 600 calc(16px * var(--ds)) / 1.25 var(--font-head);
+  --type-body: 400 15px / var(--lh-body) var(--font-text);
+  --type-strong: 600 14.5px/1.5 var(--font-text);
+  --type-label: 500 13.5px/1.5 var(--font-text);
+  --type-caption: 400 12.5px/1.6 var(--font-text);
+  --type-tab: 500 12px/1.4 var(--font-text);
+  --type-tag: 600 12px/1 var(--font-text);
+  /* utility (admin, order numbers, ledgers): always with tabular-nums lining-nums */
+  --type-data: 500 13px/1.5 var(--font-text);
+  --type-data-sm: 400 12px/1.5 var(--font-text);
+  --type-kpi: 700 24px/1.2 var(--font-display);
+}
+
+/* tablet */
+@media (min-width: 48rem) {
+  :root {
+    --gutter: 24px;
+    --gap-card: 16px;
+  }
+}
+/* desktop (≥1200): the second column of the §5.5 scale */
+@media (min-width: 75rem) {
+  :root {
+    --gutter: 40px;
+    --gap-card: 20px;
+    --gap-section: 40px;
+    --lh-body: 1.75;
+    --price-xl: 34px;
+    --price-lg: 28px;
+  }
+  :root,
+  [lang] {
+    --type-hero: 600 calc(68px * var(--ds)) / 1.15 var(--font-head);
+    --type-title: 600 calc(40px * var(--ds)) / 1.25 var(--font-head);
+    --type-section: 600 calc(26px * var(--ds)) / 1.35 var(--font-head);
+    --type-sub: 600 calc(20px * var(--ds)) / 1.4 var(--font-head);
+    --type-body: 400 16px / var(--lh-body) var(--font-text);
+    --type-strong: 600 15px/1.5 var(--font-text);
+    --type-label: 500 14px/1.5 var(--font-text);
+    --type-caption: 400 13px/1.6 var(--font-text);
+    --type-kpi: 700 28px/1.2 var(--font-display);
+  }
+}
+
+/* Latin, left-to-right */
+:lang(en) {
+  --ds: 0.91;
+  --lh-body: 1.55;
+}
+/* Kurdish Sorani: headlines use the text face until a native reader approves Kufam (DESIGN.md §5.5) */
+:lang(ckb) {
+  --font-head: var(--font-text);
+  --ds: 0.94;
+}
+
+/* ───────────────────────────── light theme ───────────────────────────── */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  /* surfaces */
+  --ground: #f3eeea; /* kaolin: the floor, every page background */
+  --niche: #e9e2dc; /* flat tonal panel: cards, info panels, table headers */
+  --stage: #e9e2dc; /* the surface behind every product render */
+  --well: #e6ded7; /* pressed-in track that holds keys */
+  --paper: #fcfaf8; /* fields, receipts, table rows, dialogs */
+  /* text and lines */
+  --ink: #1f2126; /* graphite: text, icons, prices, held-down keys */
+  --ink-2: #585a62; /* secondary text */
+  --ink-3: #808188; /* disabled and decorative only (3.4:1) */
+  --line: rgb(84 56 44 / 0.14);
+  --line-strong: #857e78; /* field borders: 3.8:1 on paper, 3.5:1 on the floor */
+  /* brand */
+  --red: #e0142b; /* TamTam red: commit keys, cart bead, logo */
+  --red-ink: #c7102a; /* red as text: validation and negative amounts only */
+  --on-red: #ffffff; /* ext · label on the red face (600 weight, ≥13.5px) */
+  /* state: text and dots, always with a label */
+  --ok: #17713f;
+  --warn: #8a5200;
+  --info: #0a5fb8;
+  --shade: 84 56 44; /* shadows are warm umber, never grey */
+  --lumen: 255 255 255; /* ext · the neutral rim light (triplet), see --spot */
+  --scrim: rgb(0 0 0 / 0.36); /* ext · behind sheets and dialogs (§7.2) */
+  --selection: rgb(31 33 38 / 0.16); /* ext · text selection: ink, never red */
+
+  /* platform light (RGB triplets; used only by .stage__* and .led) */
+  --gel-nintendo: 255 81 64;
+  --gel-playstation: 47 107 242;
+  --gel-xbox: 31 166 80;
+  --gel-handheld: 123 91 239;
+  --gel-brand: 224 20 43; /* store-wide campaigns only */
+  --halo: 0.24;
+  --pool: 0.4;
+  --spot: 0;
+
+  /* clay */
+  --clay-face: linear-gradient(180deg, #ffffff 0%, #fffcfa 42%, #f1eae4 100%);
+  --clay-wall: #ccc0b6;
+  --clay-lip: rgb(255 255 255 / 1);
+  --clay-belly: rgb(84 56 44 / 0.13);
+  --red-face: linear-gradient(180deg, #e8293d 0%, #e0142b 20%, #c80f25 100%); /* the lighter red stays in the top fifth, above label height */
+  --red-wall: #a30c1f;
+  --red-lip: rgb(255 186 186 / 0.75);
+  --red-belly: rgb(112 0 16 / 0.4);
+  --sel-face: #1f2126;
+  --sel-wall: #000000;
+  --on-sel: #fffcfa;
+  --sel-in: rgb(0 0 0 / 0.55);
+  --ink-lip: rgb(255 255 255 / 0.18); /* ext · the raised ink key (Key variant="ink") */
+  --ink-belly: rgb(0 0 0 / 0.5); /* ext */
+  --well-shadow: inset 0 2px 4px rgb(84 56 44 / 0.2), inset 0 -1px 0 rgb(255 255 255 / 0.85);
+
+  /* glass */
+  --glass-bg: linear-gradient(180deg, rgb(250 251 253 / 0.82) 0%, rgb(241 243 248 / 0.72) 100%);
+  --glass-static: linear-gradient(180deg, rgb(255 255 255 / 0.8) 0%, rgb(250 251 253 / 0.54) 100%);
+  --glass-solid: #f7f8fa;
+  --glass-filter: blur(16px) saturate(1.7);
+  --glass-rim: inset 0 1.5px 0 rgb(255 255 255 / 1), inset 0 0 0 1px rgb(255 255 255 / 0.46), 0 0 0 0.5px rgb(40 48 66 / 0.12);
+  --on-glass-2: #3f4148; /* secondary text on glass: 4.6:1 even over a black backdrop */
+
+  /* elevation: one blurred shadow per object, static */
+  --e-1: 0 5px 8px -4px rgb(84 56 44 / 0.3);
+  --e-2: 0 9px 14px -7px rgb(84 56 44 / 0.34);
+  --e-3: 0 6px 12px -6px rgb(84 56 44 / 0.3);
+  --e-4: 0 12px 24px -10px rgb(84 56 44 / 0.36);
+  --e-4-up: 0 -10px 24px -14px rgb(84 56 44 / 0.3);
+  --e-5: 0 -18px 40px -16px rgb(84 56 44 / 0.42);
+}
+
+/* ───────────────────────────── dark theme ─────────────────────────────
+ * Charcoal with deep translucent layers. The only near-black is inside wells. Renders always sit on --stage,
+ * which is lighter than the page. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #16171b; /* charcoal, never pure black */
+  --niche: #202228;
+  --stage: #34363f; /* lit: renders never sit on the darkest surface */
+  --well: #0e0f12;
+  --paper: #1d1f24;
+  --ink: #f5f1ec;
+  --ink-2: #b4b6be;
+  --ink-3: #7c7e86;
+  --line: rgb(255 255 255 / 0.1);
+  --line-strong: #74767e;
+  --red: #e0142b; /* the same red in both themes: the brand never shifts */
+  --red-ink: #ff7c86;
+  --on-red: #ffffff;
+  --ok: #4ccb86;
+  --warn: #f0b04a;
+  --info: #6db3ff;
+  --shade: 0 0 0;
+  --lumen: 255 255 255;
+  --scrim: rgb(0 0 0 / 0.36);
+  --selection: rgb(245 241 236 / 0.22);
+
+  --gel-nintendo: 255 106 90;
+  --gel-playstation: 90 140 255;
+  --gel-xbox: 53 196 106;
+  --gel-handheld: 154 125 255;
+  --gel-brand: 255 70 88;
+  --halo: 0.34;
+  --pool: 0.58;
+  --spot: 0.1; /* the light becomes the main colour source */
+
+  --clay-face: linear-gradient(180deg, #3b3e47 0%, #2b2d34 42%, #22242a 100%);
+  --clay-wall: #0b0c0f;
+  --clay-lip: rgb(255 255 255 / 0.17);
+  --clay-belly: rgb(0 0 0 / 0.34);
+  --red-face: linear-gradient(180deg, #ea2b40 0%, #e0142b 20%, #c40e24 100%);
+  --red-wall: #8c0a1b;
+  --red-lip: rgb(255 170 170 / 0.6);
+  --red-belly: rgb(96 0 14 / 0.45);
+  --sel-face: #f5f1ec;
+  --sel-wall: #9b948e;
+  --on-sel: #1f2126;
+  --sel-in: rgb(84 56 44 / 0.4);
+  --ink-lip: rgb(255 255 255 / 1);
+  --ink-belly: rgb(84 56 44 / 0.24);
+  --well-shadow: inset 0 2px 5px rgb(0 0 0 / 0.7), inset 0 -1px 0 rgb(255 255 255 / 0.07);
+
+  --glass-bg: linear-gradient(180deg, rgb(62 66 78 / 0.82) 0%, rgb(30 32 39 / 0.76) 100%);
+  --glass-static: linear-gradient(180deg, rgb(76 80 92 / 0.8) 0%, rgb(50 52 61 / 0.68) 100%);
+  --glass-solid: #26282f;
+  --glass-filter: blur(16px) saturate(1.6) brightness(0.8); /* bright consoles behind it cannot wash out light text */
+  --glass-rim: inset 0 1.5px 0 rgb(255 255 255 / 0.34), inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 0 0 0.5px rgb(0 0 0 / 0.5);
+  --on-glass-2: #dad7d3;
+
+  --e-1: 0 5px 8px -4px rgb(0 0 0 / 0.6);
+  --e-2: 0 10px 16px -7px rgb(0 0 0 / 0.66);
+  --e-3: 0 6px 12px -6px rgb(0 0 0 / 0.6);
+  --e-4: 0 14px 28px -10px rgb(0 0 0 / 0.7);
+  --e-4-up: 0 -12px 26px -14px rgb(0 0 0 / 0.6);
+  --e-5: 0 -20px 44px -16px rgb(0 0 0 / 0.8);
+}
+
+/* ───────────────────────────── admin density (DESIGN.md §10) ───────────────────────────── */
+[data-density="admin"] {
+  --gutter: 24px;
+  --type-body: 400 13px/1.5 var(--font-text);
+  --type-label: 600 12.5px/1.5 var(--font-text);
+  --type-caption: 400 12px/1.5 var(--font-text);
+  --row: 36px;
+}

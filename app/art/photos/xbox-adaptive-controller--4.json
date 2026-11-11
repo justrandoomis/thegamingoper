@@ -1,0 +1,65 @@
+{
+  "key": "xbox-adaptive-controller--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 437,
+  "aspect": 3.6613,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-adaptive-controller/4-240.c637e9d8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-adaptive-controller/4-480.18fa8c51.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-adaptive-controller/4-720.50a1281e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-adaptive-controller/4-960.ab8d9a89.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-adaptive-controller/4-1440.a4cc3280.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-adaptive-controller/4-240.e3855e77.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-adaptive-controller/4-480.e0559910.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-adaptive-controller/4-720.71122563.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-adaptive-controller/4-960.e4ae3722.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-adaptive-controller/4-1440.325bce31.webp"
+      }
+    ],
+    "png": "/products/xbox-adaptive-controller/4-720.15f6e706.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4WAoAAAAQAAAAEwAABAAAQUxQSDsAAAARR6CobSM2Vw79jVtALiIC4q8vBTUBgDTgujECVLHI/r2sAMUxQ0T/JwAAgCoLI3E7T820dHPL/SBxEQBWUDggUAAAAHADAJ0BKhQABQA/EXCwUCwmJKKwCAGAIglpAAA7ypBoZxbAAAD+xcX6X9puwPZe67G528WANAWDsKQiSC8T8U1srST2azeSSoDuqDTFQAAA",
+  "dominant": "#e3e3e3",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b03?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8"
+  },
+  "input": "bbb8a940e52ff4ae"
+}

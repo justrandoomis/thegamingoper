@@ -1,0 +1,65 @@
+{
+  "key": "sandisk-optimus-gx-pro-850p--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1156,
+  "aspect": 1.3841,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-240.cecd7740.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-480.53449d43.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-720.8b71a5b3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-960.37a37d29.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-1440.44b5b76b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-240.d517cdf4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-480.e162f0e4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-720.61ddf67d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-960.f4b77248.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sandisk-optimus-gx-pro-850p/3-1440.31f92714.webp"
+      }
+    ],
+    "png": "/products/sandisk-optimus-gx-pro-850p/3-720.81d69382.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAwCdASoUAA4APxF0sFCsJqSisAgBgCIJZQAAWq4De8NbtcvTmAAAAP7w02G98krEMqMmn5ZOJ4TEHU/5S24UXepeW+FrCanx+N4kDAkptNwj3cvr7JsAAAA=",
+  "dominant": "#181416",
+  "transparent": false,
+  "background": "#050304",
+  "kind": "detail",
+  "credit": "Sandisk",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/optimus-gx-pro-850p-internal-nvme-ssd/featured/optimus-gx-pro-850p-feature2.jpg",
+    "page": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd"
+  },
+  "input": "a8cc158ff5aebebe"
+}

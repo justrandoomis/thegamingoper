@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-pro-controller--3",
+  "view": "hero",
+  "width": 1587,
+  "height": 748,
+  "aspect": 2.1217,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/3-240.c41cd2de.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/3-480.78276ea7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/3-720.1406b190.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/3-960.28c4d697.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-pro-controller/3-1440.26df4efc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/3-240.046b89f8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/3-480.08692f58.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/3-720.3a14c006.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/3-960.0d85424f.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-pro-controller/3-1440.b56c0e22.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-pro-controller/3-720.5674f549.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsgAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSFgAAAART6CobSQ3uAz21fseg4uIgAoKex8TjGrbVnLwqRWABlbAbahzIjAigTfg54XfIaL/EwAB2ArfrfD6JlFhF78doZBqi8xcZdYq2mmeq11Y6aMC+K+Ow68DVlA4IEoAAACQAwCdASoUAAkAPxFysFAsJqSisAgBgCIJaQAAUvG+Z2OGobQAAP7jSioOsRBDmjileDmLmIdbyexCZulqAuSVPVatntHDbAQAAA==",
+  "dominant": "#343739",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Pro%20Controller/Frame_3473719.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "235ec8343d338610"
+}

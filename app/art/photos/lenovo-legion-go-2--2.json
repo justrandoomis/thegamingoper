@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go-2--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 1023,
+  "aspect": 1.564,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-2/2-240.8851cb1f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-2/2-480.03988768.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-2/2-720.ae5ccbab.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-2/2-960.89369cdd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-2/2-1440.f2806751.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-2/2-240.95d1e19c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-2/2-480.4b70f7a8.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-2/2-720.ec133368.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-2/2-960.a8af8016.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-2/2-1440.89a7ee21.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go-2/2-720.3bdcaa60.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuwAAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSFsAAAART6AmABI2RwgucBsRAfUzuG+wrbXtxSu3f6nMBmCBuIKjzalT0eocdTYvnxki+j8B+Mu8KE6a0QG251tgN6FoDyn7lJhRwkDxM7FyGdGDVcv9UgFAd6sp5V4kAFZQOCBqAAAA0AMAnQEqFAANAD8RcLBQLCYkorAIAYAiCUAKj9DdFBP/reI8bwQAAP7aenBB5IyazSQhrShlbcpriPx54EjezgK6M4wnXi8xhXu+eAzDhwLfv1V21evAi21POpnksYTqBJwyYl6Km0AAAA==",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_45_Degree_Front_Facing_Left_transparency.jpg",
+    "page": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/"
+  },
+  "input": "1aef087da8850a5b"
+}

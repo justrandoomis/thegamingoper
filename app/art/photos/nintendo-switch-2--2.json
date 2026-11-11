@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 899,
+  "aspect": 1.7798,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2/2-240.3fbb8b75.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2/2-480.e1d55d31.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2/2-720.babdedfa.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2/2-960.3c583e81.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2/2-1440.e1e893af.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2/2-240.ffde3b1c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2/2-480.4994bf75.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2/2-720.54478214.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2/2-960.e9a177e0.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2/2-1440.1cb06f18.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2/2-720.3a1d6a16.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtQAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSEUAAAARR6AmABI2zM8HrgS+9jAiAvPFPSUYRZLVaolncIAKzkhAQhKxOADh4QcFEf2fAPgjAo+yrKP9Tz4Z13dRIA2SnBqA3wIAVlA4IGgAAADQAwCdASoUAAsAPxFysVCsJqSisAgBgCIJZADKAGlgcUPX+YrlwYAA/t4xYX/Uajq3RQEs6pK0lQ5w0h0FLS/8GhGubvLCtssls0Nm+FesJXUcuFxf7Ukdg8zo+8z7flfz6DH4SQAAAA==",
+  "dominant": "#34363a",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-docked-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/"
+  },
+  "input": "74192dec43eade01"
+}

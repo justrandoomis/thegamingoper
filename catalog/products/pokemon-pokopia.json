@@ -1,0 +1,149 @@
+{
+  "slug": "pokemon-pokopia",
+  "group": "nintendo-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2026-03-05",
+  "name": { "ar": "Pokémon Pokopia", "en": "Pokémon Pokopia", "ckb": "Pokémon Pokopia" },
+  "short": {
+    "ar": "حصرية Nintendo Switch 2 · Game-Key Card (يتطلب تنزيل) · PEGI 3",
+    "en": "Nintendo Switch 2 exclusive · Game-Key Card (download required) · PEGI 3",
+    "ckb": "تایبەت بە Nintendo Switch 2 · Game-Key Card (داگرتنی پێویستە) · PEGI 3"
+  },
+  "description": {
+    "ar": "لعبة محاكاة حياة هادئة تتقمص فيها دور Ditto يعيد الحياة إلى أرض مهجورة. تجمع الموارد وتصنع الأثاث وتزرع الخضار وتبني بيوتاً للبوكيمون الذين تقابلهم، فيعلّمونك حركات تساعدك في البناء. يمكن لأربعة لاعبين بناء عالمهم معاً محلياً أو عبر الإنترنت.",
+    "en": "A relaxed life-simulation game in which you play as a Ditto bringing a deserted land back to life. Gather supplies, craft furniture, grow vegetables and build homes for the Pokémon you meet, who teach you moves that help you build. Up to four players can build together locally or online.",
+    "ckb": "یارییەکی هێمنی لاساییکردنەوەی ژیان کە تێیدا وەک Ditto یاری دەکەیت و ژیان دەگەڕێنیتەوە بۆ زەوییەکی چۆڵ. کەرەستە کۆدەکەیتەوە، کەلوپەل دروست دەکەیت، سەوزە دەچێنیت و خانوو بۆ ئەو پۆکیمۆنانە دروست دەکەیت کە دەیانبینیت، ئەوانیش جووڵەت فێر دەکەن کە لە بیناکردندا یارمەتیت دەدات. تا چوار یاریزان دەتوانن پێکەوە بە ناوخۆیی یان ئۆنلاین بنیات بنێن."
+  },
+  "highlights": [
+    { "ar": "النسخة الفعلية Game-Key Card: تحتاج إنترنت و10 GB مساحة فارغة على الأقل لتنزيل اللعبة قبل اللعب", "en": "The physical version is a Game-Key Card: you need internet and at least 10 GB free to download the game before playing", "ckb": "کۆپیی فیزیکی Game-Key Card ە: پێش یاریکردن ئینتەرنێت و لانیکەم 10 GB شوێنی بەتاڵت دەوێت بۆ داگرتنی یارییەکە" },
+    { "ar": "اصنع وازرع وابنِ عالماً للبوكيمون، مع تحكم Joy-Con 2 كفأرة في الديكور", "en": "Craft, farm and build a Pokémon paradise, with Joy-Con 2 mouse controls for decorating", "ckb": "دروستکردن، کشتوکاڵ و بیناکردنی بەهەشتێک بۆ پۆکیمۆن، لەگەڵ کۆنترۆڵی ماوسی Joy-Con 2 بۆ ڕازاندنەوە" },
+    { "ar": "حتى 4 لاعبين محلياً لاسلكياً أو عبر الإنترنت، ودعم GameShare", "en": "Up to 4 players over local wireless or online, plus GameShare", "ckb": "تا 4 یاریزان بە بێتەلی ناوخۆیی یان ئۆنلاین، لەگەڵ GameShare" },
+    { "ar": "Expansion Pass مدفوع من ثلاثة أجزاء متوفر منفصلاً", "en": "A three-part paid Expansion Pass is sold separately", "ckb": "Expansion Pass ی پارەداری سێ بەشی بە جیا دەفرۆشرێت" },
+    { "ar": "PEGI 3 · ESRB E · لا تدعم العربية", "en": "PEGI 3 · ESRB E · No Arabic", "ckb": "PEGI 3 · ESRB E · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "5 آذار 2026", "en": "5 March 2026", "ckb": "5ی ئازاری 2026" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "Game-Key Card — البطاقة مفتاح فقط واللعبة تُنزَّل من الإنترنت، وتبقى البطاقة مطلوبة داخل الجهاز للعب", "en": "Game-Key Card — the card is a key; the game downloads from the internet and the card must stay inserted to play", "ckb": "Game-Key Card — کارتەکە تەنها کلیلە؛ یارییەکە لە ئینتەرنێتەوە دادەگیرێت و بۆ یاریکردن دەبێت کارتەکە لە ناو ئامێرەکەدا بێت" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "6.8 GB (تطلب Nintendo توفر 10 GB على الأقل لنسخة Game-Key Card)", "en": "6.8 GB (Nintendo asks for at least 10 GB free for the Game-Key Card version)", "ckb": "6.8 GB (Nintendo داوای لانیکەم 10 GB شوێنی بەتاڵ دەکات بۆ وەشانی Game-Key Card)" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد على الجهاز؛ 2–4 محلياً لاسلكياً؛ 1–4 عبر الإنترنت", "en": "1 per system; 2–4 local wireless; 1–4 online", "ckb": "یەک یاریزان لەسەر ئامێر؛ 2–4 بێتەلی ناوخۆیی؛ 1–4 ئۆنلاین" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 3 · ESRB E (تفاعل المستخدمين، مشتريات داخل اللعبة)", "en": "PEGI 3 · ESRB E (Users Interact, In-Game Purchases)", "ckb": "PEGI 3 · ESRB E (کارلێکی بەکارهێنەران، کڕینی ناو یاری)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، ژاپۆنی، کۆری، چینی — بێ عەرەبی" } },
+    { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "اللعب عبر الإنترنت والحفظ السحابي يحتاجان Nintendo Switch Online", "en": "Online play and cloud saves need Nintendo Switch Online", "ckb": "یاریی ئۆنلاین و پاشەکەوتی هەوری پێویستیان بە Nintendo Switch Online هەیە" } },
+    { "key": "developer", "label": { "ar": "المطوّر / الناشر", "en": "Developer / publisher", "ckb": "پەرەپێدەر / بڵاوکەرەوە" }, "value": { "ar": "Game Freak و Omega Force / Nintendo (The Pokémon Company في اليابان)", "en": "Game Freak and Omega Force / Nintendo (The Pokémon Company in Japan)", "ckb": "Game Freak و Omega Force / Nintendo (The Pokémon Company لە ژاپۆن)" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة Game-Key Card داخل علبتها (اللعبة نفسها تُنزَّل من الإنترنت)", "en": "Game-Key Card in its case (the game itself downloads from the internet)", "ckb": "Game-Key Card لە ناو قوتووەکەیدا (خودی یارییەکە لە ئینتەرنێتەوە دادەگیرێت)" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2G-POKEMON-POKOPIA",
+      "title": { "ar": "Pokémon Pokopia — نسخة Game-Key Card لـ Nintendo Switch 2", "en": "Pokémon Pokopia — Nintendo Switch 2 Game-Key Card edition", "ckb": "Pokémon Pokopia — وەشانی Game-Key Card بۆ Nintendo Switch 2" },
+      "options": { "edition": "Standard", "format": "Game-Key Card", "platform": "Nintendo Switch 2" },
+      "barcodes": ["045496906047"],
+      "isDefault": true,
+      "images": ["pokemon-pokopia--1", "pokemon-pokopia--2", "pokemon-pokopia--3", "pokemon-pokopia--4", "pokemon-pokopia--5"],
+      "notes": { "ar": "الباركود للنسخة الأمريكية (UPC) من متجر Nintendo الأمريكي.", "en": "Barcode is the US edition's UPC from Nintendo's US store.", "ckb": "بارکۆدەکە UPC ی وەشانی ئەمریکییە لە فرۆشگای ئەمریکیی Nintendo." }
+    }
+  ],
+  "game": {
+    "platforms": ["switch-2"],
+    "genres": [
+      { "ar": "محاكاة حياة وصناعة وبناء", "en": "Life simulation and crafting", "ckb": "لاساییکردنەوەی ژیان و دروستکردن" }
+    ],
+    "players": "1, 2-4 local wireless, 1-4 online",
+    "online": {
+      "ar": "اللعب المشترك عبر الإنترنت حتى 4 لاعبين باشتراك Nintendo Switch Online. تنزيل اللعبة من بطاقة Game-Key Card يحتاج إنترنت.",
+      "en": "Online co-op for up to 4 players with Nintendo Switch Online. Downloading the game from the Game-Key Card needs an internet connection.",
+      "ckb": "یاریی هاوبەشی ئۆنلاین تا 4 یاریزان بە Nintendo Switch Online. داگرتنی یارییەکە لە Game-Key Card پێویستی بە ئینتەرنێتە."
+    },
+    "ageRating": { "pegi": 3, "esrb": "E" },
+    "arabic": "none",
+    "physicalFormat": "game-key-card",
+    "sizeGb": 6.8,
+    "developer": "Game Freak, Omega Force",
+    "publisher": "Nintendo / The Pokémon Company"
+  },
+  "compatibility": [
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "حصرية Nintendo Switch 2؛ تحتاج إنترنت للتنزيل الأول.", "en": "Nintendo Switch 2 exclusive; needs internet for the first download.", "ckb": "تایبەت بە Nintendo Switch 2؛ بۆ یەکەم داگرتن ئینتەرنێتی دەوێت." }, "source": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/" },
+    { "deviceModel": "switch", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch الأول.", "en": "Does not run on the original Nintendo Switch.", "ckb": "لەسەر Nintendo Switch ی یەکەم کار ناکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Pokemon-Pokopia-2915161.html" },
+    { "deviceModel": "switch-oled", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch – OLED Model.", "en": "Does not run on Nintendo Switch – OLED Model.", "ckb": "لەسەر Nintendo Switch – OLED Model کار ناکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Pokemon-Pokopia-2915161.html" },
+    { "deviceModel": "switch-lite", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch Lite.", "en": "Does not run on Nintendo Switch Lite.", "ckb": "لەسەر Nintendo Switch Lite کار ناکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Pokemon-Pokopia-2915161.html" }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "sandisk-microsd-express", "kind": "accessory" },
+    { "slug": "pokemon-legends-z-a", "kind": "alternative" },
+    { "slug": "tomodachi-life-living-the-dream", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "pokemon-pokopia--1",
+      "file": ".cache/product-images/pokemon-pokopia/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Pokemon%20Pokopia/121593-nintendo-pokemon-pokopia-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-pokopia-121593/",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Pokémon Pokopia مع علامة Game-Key Card", "en": "Pokémon Pokopia cover with the Game-Key Card label", "ckb": "بەرگی Pokémon Pokopia لەگەڵ نیشانەی Game-Key Card" },
+      "credit": "Nintendo / The Pokémon Company", "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "pokemon-pokopia--2",
+      "file": ".cache/product-images/pokemon-pokopia/2.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000107421/ccb2d70f7ad6878b78d366898a0f0baf94a2d3350b76725c88b591453a797502",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/",
+      "kind": "hero",
+      "alt": { "ar": "الصورة الرئيسية للعبة: بلدة بوكيمون من الأعلى مع الشعار", "en": "Key art: a Pokémon town seen from above, with the logo", "ckb": "وێنەی سەرەکی: شارۆچکەیەکی پۆکیمۆن لە سەرەوە لەگەڵ لۆگۆکە" },
+      "credit": "Nintendo / The Pokémon Company", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "pokemon-pokopia--3",
+      "file": ".cache/product-images/pokemon-pokopia/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000107421/2045c3f67f865d333b1995562ad6b2894473b8a869e4c8efa01572539ec86019",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "لاعبون يعتنون بحقل خضار", "en": "Players tending a vegetable field", "ckb": "یاریزانان ئاگایان لە کێڵگەیەکی سەوزەیە" },
+      "credit": "Nintendo / The Pokémon Company", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "pokemon-pokopia--4",
+      "file": ".cache/product-images/pokemon-pokopia/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000107421/ba24cf48fef976afa00230c5005f526c0dc5acaac260c99d378bd7d4d806e68f",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "استخدام حركة لإنبات العشب في مرج", "en": "Using a move to grow grass in a meadow", "ckb": "بەکارهێنانی جووڵەیەک بۆ ڕواندنی گژوگیا لە مێرگێکدا" },
+      "credit": "Nintendo / The Pokémon Company", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "pokemon-pokopia--5",
+      "file": ".cache/product-images/pokemon-pokopia/5.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000107421/3265e8eea231c87a7c9ff87890c235d25f7f21079fab68f3761dbd0bba922b04",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "بوكيمون يسبحان في البحر المفتوح", "en": "Two Pokémon swimming in the open sea", "ckb": "دوو پۆکیمۆن لە دەریای کراوەدا مەلە دەکەن" },
+      "credit": "Nintendo / The Pokémon Company", "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/", "title": "Pokémon Pokopia – Nintendo Switch 2 Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size 6.8 GB, players 1 / 2-4 local wireless / 1-4 online, GameShare, Online Play and Save Data Cloud, languages, ESRB descriptors, Expansion Pass DLC" },
+    { "url": "https://www.nintendo.com/us/store/products/pokemon-pokopia-121593/", "title": "Pokémon Pokopia – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906047, box art showing the Game-Key Card label and ESRB E" },
+    { "url": "https://pokopia.pokemon.com/en-us/buy-now/", "title": "Buy Now | Pokémon Pokopia", "publisher": "The Pokémon Company International", "retrieved": "2026-11-11", "supports": "sold as digital and game-key card versions; game-key card needs internet and at least 10 GB free; three-part Expansion Pass paid DLC" },
+    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Pokemon-Pokopia-2915161.html", "title": "Pokémon Pokopia | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 3, languages, download size 6.8 GB, Switch 2 only, play as Ditto, crafting and building, Joy-Con 2 mouse controls, up to four players online and local, GameShare, Expansion Pass release 09/06/2026" },
+    { "url": "https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pokopia", "title": "Pokémon Pokopia", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developers Game Freak and Omega Force, publishers Nintendo (worldwide) and The Pokémon Company (Japan), release March 5, 2026, social simulation genre" }
+  ],
+  "notes": {
+    "ar": "هذه ليست بطاقة لعبة كاملة: عند أول تشغيل تُنزَّل اللعبة كاملة من الإنترنت، ويجب إبقاء البطاقة في الجهاز في كل مرة تلعب. يُنصح ببطاقة microSD Express إذا كانت مساحة الجهاز ممتلئة.",
+    "en": "This is not a full game card: the whole game downloads on first use, and the card must be inserted every time you play. A microSD Express card helps if console storage is full.",
+    "ckb": "ئەمە کارتی یاریی تەواو نییە: لە یەکەم بەکارهێناندا هەموو یارییەکە دادەگیرێت، و هەموو جارێک کە یاری دەکەیت دەبێت کارتەکە لە ناو ئامێرەکەدا بێت. ئەگەر بیرگەی ئامێرەکە پڕ بێت کارتی microSD Express بەسوودە."
+  },
+  "verification": {
+    "checkedBy": "Claude (nintendo-games research pass)",
+    "secondSource": true,
+    "unverified": [
+      "Game-Key Card format confirmed for the US release (box art) and by the official Pokopia site; European packaging was not inspected",
+      "European EAN barcode not found on an official page"
+    ]
+  }
+}

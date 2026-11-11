@@ -127,10 +127,38 @@ export function hurryWhenAwaited(transition: ViewTransitionLike, rate: number): 
 }
 
 /**
+ * Count long frames while a transition animates (from `ready` to `finished`): the `limit`-th frame longer than
+ * `longMs` calls `onJank` once. One requestAnimationFrame loop for at most the length of the transition; nothing
+ * is counted in a hidden tab. This is how the low-end tier is reached at runtime (DESIGN.md §6.5).
+ */
+export function watchFrames(transition: Pick<ViewTransitionLike, "ready" | "finished">, longMs: number, limit: number, onJank: () => void): void {
+  if (typeof requestAnimationFrame !== "function") return;
+  let done = false;
+  const stop = () => {
+    done = true;
+  };
+  transition.finished.then(stop, stop);
+  transition.ready.then(() => {
+    let last = 0;
+    let long = 0;
+    const tick = (now: number) => {
+      if (done || document.visibilityState === "hidden") return;
+      if (last && now - last > longMs && ++long >= limit) {
+        onJank();
+        return;
+      }
+      last = now;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, stop);
+}
+
+/**
  * Run `update` inside a view transition that we own (theme and similar morphs — never navigation, which is React's).
  * Ends a transition that is already animating first; resolves when ours has finished. Falls back to a plain call.
  */
-export function runTransition(update: () => void, onReady?: () => void): Promise<void> {
+export function runTransition(update: () => void, onReady?: () => void, onStart?: (transition: ViewTransitionLike) => void): Promise<void> {
   const doc = document as TransitionDocument;
   if (!supportsViewTransitions() || (isTransitionActive() && !endActiveTransition())) {
     // Unsupported, or another transition is still preparing: do not fight it.
@@ -144,6 +172,7 @@ export function runTransition(update: () => void, onReady?: () => void): Promise
     update();
     return Promise.resolve();
   }
+  onStart?.(transition);
   transition.ready.then(
     () => onReady?.(),
     () => {}, // skipped (hidden tab, interrupted): the update still ran

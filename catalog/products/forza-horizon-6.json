@@ -1,0 +1,282 @@
+{
+  "slug": "forza-horizon-6",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "Xbox Game Studios",
+  "status": "available",
+  "releaseDate": "2026-05-19",
+  "name": { "ar": "Forza Horizon 6", "en": "Forza Horizon 6", "ckb": "Forza Horizon 6" },
+  "short": {
+    "ar": "Xbox Series X متوفرة · PS5 طلب مسبق ليوم 26 كانون الثاني 2027 · اليابان",
+    "en": "Xbox Series X out now · PS5 pre-order for 26 Jan 2027 · set in Japan",
+    "ckb": "Xbox Series X بەردەستە · PS5 داواکاری پێشوەخت بۆ 26ی کانوونی دووەمی 2027 · ژاپۆن"
+  },
+  "description": {
+    "ar": "لعبة سباقات بعالم مفتوح من Playground Games تدور في اليابان، مع أكثر من 550 سيارة حقيقية وطوكيو كأكبر مدينة في تاريخ السلسلة. تبدأ كسائح وتتقدم حتى تصبح أسطورة في مهرجان Horizon، وتستطيع اللعب منفرداً أو مع الأصدقاء. صدرت على Xbox Series X|S وPC في 19 أيار 2026، ونسخة PS5 تصدر في 26 كانون الثاني 2027 على قرص أيضاً.",
+    "en": "Playground Games' open-world racing game set in Japan, with more than 550 real-world cars and Tokyo as the series' biggest city yet. You start as a tourist and work your way up to Horizon Legend, solo or with friends. It came out on Xbox Series X|S and PC on 19 May 2026, and the PS5 version, also on disc, arrives on 26 January 2027.",
+    "ckb": "یارییەکی پێشبڕکێی جیهانی کراوە لە Playground Games لە ژاپۆن، لەگەڵ زیاتر لە 550 ئۆتۆمبێلی ڕاستەقینە و تۆکیۆ وەک گەورەترین شاری زنجیرەکە. وەک گەشتیارێک دەست پێدەکەیت و پلە بە پلە دەبیتە ئەفسانەی فێستیڤاڵی Horizon، بە تەنها یان لەگەڵ هاوڕێکانت. لە 19ی ئایاری 2026 لەسەر Xbox Series X|S و PC دەرچوو، و وەشانی PS5 کە ئەویش دیسکی هەیە لە 26ی کانوونی دووەمی 2027 دەردەچێت."
+  },
+  "highlights": [
+    {
+      "ar": "أكثر من 550 سيارة حقيقية في خريطة اليابان، مع طوكيو.",
+      "en": "550+ real-world cars across a Japan map that includes Tokyo.",
+      "ckb": "زیاتر لە 550 ئۆتۆمبێلی ڕاستەقینە لە نەخشەی ژاپۆن، لەگەڵ تۆکیۆ."
+    },
+    {
+      "ar": "نسخة PS5 على قرص في 26 كانون الثاني 2027 مع لعب مشترك وحفظ مشترك مع Xbox وPC.",
+      "en": "PS5 disc on 26 January 2027, with crossplay and cross-save with Xbox and PC.",
+      "ckb": "دیسکی PS5 لە 26ی کانوونی دووەمی 2027، لەگەڵ یاری هاوبەش و پاشەکەوتی هاوبەش لەگەڵ Xbox و PC."
+    },
+    {
+      "ar": "على PS5: طور جودة 4K بـ 30 إطاراً وطور أداء بـ 60 إطاراً.",
+      "en": "On PS5: a 4K 30 fps Quality mode and a 60 fps Performance mode.",
+      "ckb": "لەسەر PS5: شێوازی کوالیتی 4K بە 30 فرەیم و شێوازی ئەدا بە 60 فرەیم."
+    },
+    {
+      "ar": "اللعب الأونلاين يحتاج Game Pass Essential أو أعلى على Xbox وPlayStation Plus على PS5.",
+      "en": "Online play needs Game Pass Essential or higher on Xbox and PlayStation Plus on PS5.",
+      "ckb": "یاری ئۆنلاین پێویستی بە Game Pass Essential یان بەرزتر لەسەر Xbox و PlayStation Plus لەسەر PS5 هەیە."
+    },
+    {
+      "ar": "التصنيف PEGI 3 — مناسبة لكل العائلة.",
+      "en": "Rated PEGI 3 — fine for the whole family.",
+      "ckb": "پۆلێنی PEGI 3 — گونجاو بۆ هەموو خێزان."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": {
+        "ar": "Xbox Series X|S وPC: 19 أيار 2026؛ PS5: 26 كانون الثاني 2027",
+        "en": "Xbox Series X|S and PC: 19 May 2026; PS5: 26 January 2027",
+        "ckb": "Xbox Series X|S و PC: 19ی ئایاری 2026؛ PS5: 26ی کانوونی دووەمی 2027"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "Xbox Series X|S وPC وPS5", "en": "Xbox Series X|S, PC and PS5", "ckb": "Xbox Series X|S، PC و PS5" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص لـ Xbox Series X وقرص لـ PS5", "en": "Disc for Xbox Series X and disc for PS5", "ckb": "دیسک بۆ Xbox Series X و دیسک بۆ PS5" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "حتى نحو 172 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "Up to about 172 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "تا نزیکەی 172 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "1، وحتى 12 لاعباً أونلاين", "en": "1, up to 12 online", "ckb": "1، تا 12 یاریزان ئۆنلاین" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "Game Pass Essential أو Premium أو Ultimate على Xbox؛ PlayStation Plus على PS5؛ حساب Microsoft مطلوب على PS5 للحفظ المشترك",
+        "en": "Game Pass Essential, Premium or Ultimate on Xbox; PlayStation Plus on PS5; a Microsoft account links progress on PS5",
+        "ckb": "Game Pass Essential یان Premium یان Ultimate لەسەر Xbox؛ PlayStation Plus لەسەر PS5؛ هەژماری Microsoft لەسەر PS5 پێشکەوتن دەبەستێتەوە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "غير معروف — لم تذكره صفحات المتاجر الرسمية", "en": "Unknown — not stated on the official store pages", "ckb": "نەزانراو — لە پەڕە فەرمییەکانی فرۆشگا نەنووسراوە" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 3 / ESRB E", "en": "PEGI 3 / ESRB E", "ckb": "PEGI 3 / ESRB E" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": {
+        "ar": "Playground Games (نسخة PS5: Panic Button) / Xbox Game Studios",
+        "en": "Playground Games (PS5 version: Panic Button) / Xbox Game Studios",
+        "ckb": "Playground Games (وەشانی PS5: Panic Button) / Xbox Game Studios"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة (Standard Edition)", "en": "Game disc (Standard Edition)", "ckb": "دیسکی یارییەکە (Standard Edition)" }
+  ],
+  "variants": [
+    {
+      "sku": "FH6-XSX-STD",
+      "title": { "ar": "Forza Horizon 6 لجهاز Xbox Series X — Standard Edition", "en": "Forza Horizon 6 for Xbox Series X — Standard Edition", "ckb": "Forza Horizon 6 بۆ Xbox Series X — Standard Edition" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["forza-horizon-6--1", "forza-horizon-6--2", "forza-horizon-6--3", "forza-horizon-6--4"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات."
+      }
+    },
+    {
+      "sku": "FH6-PS5-STD",
+      "title": { "ar": "Forza Horizon 6 لجهاز PS5 — Standard Edition (طلب مسبق)", "en": "Forza Horizon 6 for PS5 — Standard Edition (pre-order)", "ckb": "Forza Horizon 6 بۆ PS5 — Standard Edition (داواکاری پێشوەخت)" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["forza-horizon-6--1", "forza-horizon-6--2", "forza-horizon-6--3"],
+      "notes": {
+        "ar": "تصدر في 26 كانون الثاني 2027. على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "Releases 26 January 2027. PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "لە 26ی کانوونی دووەمی 2027 دەردەچێت. PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["xbox-series-x", "ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "genres": [
+      { "ar": "سباقات", "en": "Racing", "ckb": "پێشبڕکێ" },
+      { "ar": "عالم مفتوح", "en": "Open world", "ckb": "جیهانی کراوە" }
+    ],
+    "players": "1, up to 12 online",
+    "online": {
+      "ar": "اللعب الأونلاين يحتاج Game Pass Essential أو أعلى على Xbox، وPlayStation Plus على PS5.",
+      "en": "Online play needs Game Pass Essential or higher on Xbox, and PlayStation Plus on PS5.",
+      "ckb": "یاری ئۆنلاین پێویستی بە Game Pass Essential یان بەرزتر لەسەر Xbox، و PlayStation Plus لەسەر PS5 هەیە."
+    },
+    "ageRating": { "pegi": 3, "esrb": "E" },
+    "arabic": "unknown",
+    "physicalFormat": "disc",
+    "sizeGb": 172,
+    "developer": "Playground Games",
+    "publisher": "Xbox Game Studios"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X متوفر الآن.", "en": "Xbox Series X disc, out now.", "ckb": "دیسکی Xbox Series X، ئێستا بەردەستە." },
+      "source": "https://www.ign.com/articles/xbox-forza-horizon-6-new-low-price"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5 ابتداءً من 26 كانون الثاني 2027.", "en": "PS5 disc from 26 January 2027.", "ckb": "دیسکی PS5 لە 26ی کانوونی دووەمی 2027ەوە." },
+      "source": "https://support.forza.net/hc/en-us/articles/56161269430675-Forza-Horizon-6-on-PlayStation-5-FAQ"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://support.forza.net/hc/en-us/articles/56161269430675-Forza-Horizon-6-on-PlayStation-5-FAQ"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي للقرص.", "en": "Needs the add-on Disc Drive for the disc.", "ckb": "بۆ دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    { "slug": "gran-turismo-7", "kind": "alternative" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "seagate-storage-expansion-card", "kind": "accessory" },
+    { "slug": "playstation-5-slim", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "forza-horizon-6--1",
+      "file": ".cache/product-images/forza-horizon-6/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.29856.14202278764680089.8e4c786a-0a1c-4737-a244-0bdfa34aab7b.64883cac-25a8-4715-a0dc-0dd42b0e5435",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Forza Horizon 6 مع جبل فوجي وطوكيو", "en": "Forza Horizon 6 cover art with Mount Fuji and Tokyo", "ckb": "وێنەی بەرگی Forza Horizon 6 لەگەڵ چیای فوجی و تۆکیۆ" },
+      "credit": "Xbox Game Studios",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "forza-horizon-6--2",
+      "file": ".cache/product-images/forza-horizon-6/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/forza-horizon-6-screenshot-01-en-12jan26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/forza-horizon-6/",
+      "kind": "screenshot",
+      "alt": { "ar": "سباق ليلي في شوارع طوكيو المضيئة", "en": "A night race through the neon streets of Tokyo", "ckb": "پێشبڕکێیەکی شەوانە لە شەقامە ڕووناکەکانی تۆکیۆ" },
+      "credit": "Xbox Game Studios",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "forza-horizon-6--3",
+      "file": ".cache/product-images/forza-horizon-6/3.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/forza-horizon-6-screenshot-03-en-12jan26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/forza-horizon-6/",
+      "kind": "screenshot",
+      "alt": { "ar": "سيارة رياضية بين أشجار الكرز المزهرة", "en": "A sports car among cherry blossom trees", "ckb": "ئۆتۆمبێلێکی وەرزشی لە نێوان دارە گوڵکردووەکانی گێلاس" },
+      "credit": "Xbox Game Studios",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "forza-horizon-6--4",
+      "file": ".cache/product-images/forza-horizon-6/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/forza-horizon-6-screenshot-05-en-12jan26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/forza-horizon-6/",
+      "kind": "screenshot",
+      "alt": { "ar": "سيارة زرقاء أمام منزل ياباني تقليدي", "en": "A blue car in front of a traditional Japanese house", "ckb": "ئۆتۆمبێلێکی شین لە بەردەم خانوویەکی کلاسیکی ژاپۆنی" },
+      "credit": "Xbox Game Studios",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://forza.net/forzahorizon6", "title": "Forza Horizon 6 — official site", "publisher": "Xbox Game Studios", "retrieved": "2026-11-11", "supports": "out now on Xbox Series X|S and PC, PS5 on 26 Jan 2027, 550+ cars, Japan and Tokyo, solo and co-op, multiplayer modes" },
+    { "url": "https://support.forza.net/hc/en-us/articles/56161269430675-Forza-Horizon-6-on-PlayStation-5-FAQ", "title": "Forza Horizon 6 on PlayStation 5 FAQ", "publisher": "Forza Support", "retrieved": "2026-11-11", "supports": "PS5 release 26 Jan 2027, PS5 disc at retailers, Panic Button, 4K30 Quality and 60 fps Performance modes, crossplay and cross-save via Microsoft account, editions" },
+    { "url": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8", "title": "Forza Horizon 6 Standard Edition — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Everyone, online multiplayer requires Game Pass Essential/Premium/Ultimate, Xbox Play Anywhere, max install about 172 GB, cover art" },
+    { "url": "https://www.playstation.com/en-ae/games/forza-horizon-6/", "title": "Forza Horizon 6 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 pre-order, PS Plus required online, up to 12 online players, 1 player, screenshots" },
+    { "url": "https://store.playstation.com/en-gb/concept/10016335", "title": "Forza Horizon 6 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 3, PS5 release date" },
+    { "url": "https://en.wikipedia.org/wiki/Forza_Horizon_6", "title": "Forza Horizon 6", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "release 19 May 2026 on Windows and Xbox Series X|S, PS5 26 Jan 2027, Playground Games, Xbox Game Studios, cover art description" },
+    { "url": "https://www.ign.com/articles/xbox-forza-horizon-6-new-low-price", "title": "The physical and digital Premium Editions of Forza Horizon 6 on Xbox", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "standard physical edition sold for Xbox" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "شراء اللعبة على منصة لا يمنحها على منصة أخرى، والمحتوى الإضافي المدفوع يُشترى لكل منصة. أول توسعة مدفوعة تصدر في 21 كانون الثاني 2027.",
+    "en": "Buying the game on one platform does not give it to you on another, and paid add-ons must be bought per platform. The first paid expansion arrives on 21 January 2027.",
+    "ckb": "کڕینی یارییەکە لەسەر پلاتفۆرمێک لەسەر پلاتفۆرمێکی تر نایداتێ، و ناوەڕۆکی زیادەی پارەدار بۆ هەر پلاتفۆرمێک جیا دەکڕدرێت. یەکەم فراوانکردنی پارەدار لە 21ی کانوونی دووەمی 2027 دەردەچێت."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support: neither the Microsoft Store nor the PlayStation Store lists languages for this game; a Steam page for Forza Horizon 6 content lists 23 languages without Arabic.",
+      "The Xbox Series X disc is confirmed by press and retailer listings (IGN, Amazon), not by an official Microsoft page.",
+      "PS5 install size not published yet.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

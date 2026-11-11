@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-mario-kart-world-bundle--1",
+  "view": "hero",
+  "width": 1556,
+  "height": 1600,
+  "aspect": 0.9725,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-240.f853a803.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-480.9969ca4c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-720.e3eb4072.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-960.6a74620a.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-1440.d3756476.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-240.d5f1487a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-480.d4ed372f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-720.eafc83f3.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-960.133b8a54.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/1-1440.d3969f9d.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-mario-kart-world-bundle/1-720.43f12b8f.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjIBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSE0AAAART6CokSQ1thLwx3AXEQGuaev3EWxi24rzwAIKGCSABQTsKGBSp0JChjYVT2+2LnVE/ycAr7XNfTSF/Vi8Tnny8ReERXJu3gBhVCfwEQBWUDggvgAAANAEAJ0BKhMAFAA/EX61VawnpKMoCAGAIglsAKwAD2S+H+5M/jIcJRmMYjrCHZIoAPpsPvRFnUrW5e+aLhlyd4KcJrT0fWJP7queBlxmOTWMj2OsMJ5s8SL65773KavJjRUSvfq4/NAqVkWp7506Zanv+0vtz2y3pZ5J/y2HvxXs+v9SqnHxlIgBc18S5qFTGfyLZjwVudfVcQl7XamdZsklEK7S0E6d2jfHmQHC20nvIcbF22JcDGRuMqygAAA=",
+  "dominant": "#c50119",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/128067-nintendo-switch-2-mario-kart-world-bundle-package-front-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-bundle-128067/"
+  },
+  "input": "4224fca5fc5267fc"
+}

@@ -1,0 +1,49 @@
+{
+  "key": "xbox-series-x-digital--2",
+  "view": "hero",
+  "width": 729,
+  "height": 1000,
+  "aspect": 0.729,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x-digital/2-240.2ee6624e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x-digital/2-480.3d220b75.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x-digital/2-720.db3913c2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x-digital/2-240.dc368756.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x-digital/2-480.03f08081.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x-digital/2-720.13ea3f04.webp"
+      }
+    ],
+    "png": "/products/xbox-series-x-digital/2-720.d33d428b.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAwCdASoPABQAPxF0tFAsJyUisAgBgCIJaQAD46oFJVCDQ1ZI6NAAAP5r8EQkiLU6ic7e7M6663igT5QbBltQJGCzihyfR0XWNlemOfEvBNcmjoS4GXGCegAAAA==",
+  "dominant": "#f8f8f8",
+  "transparent": false,
+  "background": "#737373",
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/66743890_Image-Buy-Box-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
+  },
+  "input": "e55d5a560849406c"
+}

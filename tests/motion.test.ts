@@ -1,24 +1,29 @@
 /**
  * TamTam Motion Engine — the pure parts: spring solver and its CSS/WAAPI output, gesture maths, flight path,
- * quality-tier resolution, the navigation grammar, and guards that keep motion.css honest
- * (tokens in sync with tokens.ts, keyframes limited to transform and opacity).
+ * quality-tier resolution (and the head script that repeats it), the navigation grammar, and guards that keep the
+ * stylesheets honest (tokens in sync with tokens.ts and with the design tokens of docs/DESIGN.md §7.1, keyframes
+ * limited to transform and opacity).
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { runInNewContext } from "node:vm";
 import { describe, expect, it } from "vitest";
 
 import messages from "~/i18n/messages/motion";
-import { resolveTier } from "~/motion/env";
-import { counterScaleKeyframes } from "~/motion/morph";
+import { resolveTier, type MotionTier, type TierSignals } from "~/motion/env";
 import { resolveNav, reverseNav, type NavDescriptor, type NavRecord, type ResolveInput } from "~/motion/nav-plan";
-import { arcControl, pickSnap, project, quadBezier, rubberBand, rubberBandClamp, samplePath, velocityFrom } from "~/motion/physics";
+import { arcControl, flightMs, pickSnap, project, quadBezier, rubberBand, rubberBandClamp, samplePath, velocityFrom } from "~/motion/physics";
 import { springDuration, springEasing, springKeyframes, springValue, springVelocity } from "~/motion/spring";
 import { staggerStep } from "~/motion/stagger";
-import { bubble, durations, fly, springs, type Spring } from "~/motion/tokens";
-import { renderTokenCss, replaceTokenBlock } from "~/motion/tokens-css";
+import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
+import { bubble, durations, easings, fly, SPRING_NAMES, springs, travel, type Spring } from "~/motion/tokens";
+import { canonicalSpring, renderTokenCss, replaceTokenBlock } from "~/motion/tokens-css";
 
-const motionCss = readFileSync(fileURLToPath(new URL("../app/motion/motion.css", import.meta.url)), "utf8");
-const extrasCss = readFileSync(fileURLToPath(new URL("../app/motion/extras.css", import.meta.url)), "utf8");
+const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), "utf8");
+const motionCss = read("../app/motion/motion.css");
+const extrasCss = read("../app/motion/extras.css");
+/** The design system's copy of the DESIGN.md §7.1 tokens (owner: design system). */
+const designTokens = read("../app/styles/tokens.css");
 
 describe("spring solver", () => {
   const all = Object.entries(springs) as Array<[string, Spring]>;
@@ -124,16 +129,21 @@ describe("spring → CSS linear()", () => {
     return 1;
   }
 
-  it("is a valid linear() from 0 to 1 with increasing stops", () => {
-    for (const spring of Object.values(springs)) {
+  it("is a valid linear() from 0 to 1 with increasing stops, lasting the published settle time", () => {
+    for (const spring of Object.values(springs) as Spring[]) {
       const { easing, duration } = springEasing(spring);
       const stops = parse(easing);
       expect(stops[0]).toEqual({ x: 0, y: 0 });
       expect(stops[stops.length - 1]).toEqual({ x: 1, y: 1 });
       for (let i = 1; i < stops.length; i++) expect(stops[i].x).toBeGreaterThan(stops[i - 1].x);
       expect(stops.length).toBeLessThanOrEqual(40);
-      expect(duration).toBe(Math.round(springDuration(spring) * 1000));
+      expect(duration).toBe(spring.settleMs);
+      // The published settle time is the solver's 0.2 % settle time rounded to 10 ms (DESIGN.md §7.1).
+      expect(Math.abs(spring.settleMs! - springDuration(spring) * 1000)).toBeLessThanOrEqual(10);
+      expect(Math.abs(springValue(spring, spring.settleMs! / 1000) - 1)).toBeLessThan(0.002);
     }
+    const computed = springEasing({ response: 0.3, dampingRatio: 0.7 });
+    expect(computed.duration).toBe(Math.round(springDuration({ response: 0.3, dampingRatio: 0.7 }) * 1000));
   });
 
   it("follows the spring curve to within half a percent everywhere", () => {
@@ -148,11 +158,18 @@ describe("spring → CSS linear()", () => {
     }
   });
 
-  it("keeps the overshoot of bouncy springs and has none for critically damped ones", () => {
+  it("keeps DESIGN.md's overshoot for each preset (8 %, 16 %, 5 %, none, 0.5 %)", () => {
     const peak = (spring: Spring) => Math.max(...parse(springEasing(spring).easing).map((s) => s.y));
-    expect(peak(springs.bouncy)).toBeGreaterThan(1.1);
-    expect(peak(springs.gentle)).toBeGreaterThan(1.02);
-    expect(peak(springs.fly)).toBeLessThanOrEqual(1);
+    expect(peak(springs.press)).toBeCloseTo(1.083, 2);
+    expect(peak(springs.squish)).toBeCloseTo(1.163, 2);
+    expect(peak(springs.inflate)).toBeCloseTo(1.054, 2);
+    expect(peak(springs.settle)).toBeLessThanOrEqual(1);
+    expect(peak(springs.sheet)).toBeCloseTo(1.005, 2);
+    // the earlier names are the same objects
+    expect(springs.snappy).toBe(springs.press);
+    expect(springs.gentle).toBe(springs.inflate);
+    expect(springs.bouncy).toBe(springs.squish);
+    expect(springs.fly).toBe(springs.settle);
   });
 
   it("samples WAAPI keyframes that end exactly on the target", () => {
@@ -234,14 +251,23 @@ describe("fly-to-cart path", () => {
     expect(mid.y).toBeCloseTo(0.25 * from.y + 0.5 * control.y + 0.25 * to.y, 10);
   });
 
-  it("arcs above both ends, higher for longer throws, within its limits", () => {
+  it("has its control point halfway across, 70px above the higher end (DESIGN.md §7.2)", () => {
     const control = arcControl(from, to);
-    expect(control.y).toBeLessThan(Math.min(from.y, to.y));
-    const near = arcControl({ x: 100, y: 100 }, { x: 130, y: 100 });
-    const far = arcControl({ x: 0, y: 800 }, { x: 390, y: 0 });
-    expect(100 - near.y).toBeCloseTo(fly.arcMin, 6);
-    expect(0 - far.y).toBeCloseTo(fly.arcMax, 6);
-    expect(Math.min(from.y, to.y) - arcControl(from, to, 0.5).y).toBeCloseTo((Math.min(from.y, to.y) - control.y) / 2, 6);
+    expect(control).toEqual({ x: (from.x + to.x) / 2, y: Math.min(from.y, to.y) - fly.lift });
+    expect(fly.lift).toBe(70);
+    // Going up into a cart at the top: the bead rises above the cart and drops into it.
+    const apex = Math.min(...samplePath(from, control, to, 200).map((p) => p.y));
+    expect(apex).toBeLessThan(to.y);
+    expect(arcControl({ x: 0, y: 0 }, { x: 100, y: 0 }, 0)).toEqual({ x: 50, y: 0 }); // no lift: a straight line
+  });
+
+  it("takes 420 ms + 0.3 ms per px, at most 600 ms", () => {
+    expect(flightMs(0)).toBe(420);
+    expect(flightMs(200)).toBe(480);
+    expect(flightMs(600)).toBe(600);
+    expect(flightMs(5000)).toBe(600);
+    expect(fly.maxConcurrent).toBe(3);
+    expect(fly.endScale).toBe(0.55);
   });
 
   it("samples the whole path and bows away from the straight line", () => {
@@ -259,12 +285,15 @@ describe("fly-to-cart path", () => {
 });
 
 describe("quality tier", () => {
-  const capable = { reducedMotion: false, saveData: false, deviceMemory: 8, hardwareConcurrency: 8 };
+  const capable: TierSignals = { reducedMotion: false, saveData: false, deviceMemory: 8, hardwareConcurrency: 8, smallScreen: true };
 
-  it("is full on a capable device and when nothing is known (Safari reports no memory)", () => {
+  it("is full on a capable device and when nothing is known", () => {
     expect(resolveTier(capable)).toBe("full");
     expect(resolveTier({ reducedMotion: false, saveData: false })).toBe("full");
-    expect(resolveTier({ reducedMotion: false, saveData: false, hardwareConcurrency: 4 })).toBe("full");
+  });
+
+  it("keeps every iPhone on full: WebKit reports 4 cores for any device below 8 and no deviceMemory", () => {
+    expect(resolveTier({ reducedMotion: false, saveData: false, hardwareConcurrency: 4, smallScreen: true })).toBe("full");
   });
 
   it("reduces for prefers-reduced-motion before anything else", () => {
@@ -272,21 +301,60 @@ describe("quality tier", () => {
     expect(resolveTier({ ...capable, reducedMotion: true, saveData: true })).toBe("reduced");
   });
 
-  it("goes lite for Save-Data and for low-memory or low-core devices", () => {
+  it("goes lite (DESIGN.md §6.5) for Save-Data, ≤ 2 GB, ≤ 4 cores on a phone, and after measured jank", () => {
     expect(resolveTier({ ...capable, saveData: true })).toBe("lite");
     expect(resolveTier({ ...capable, deviceMemory: 2 })).toBe("lite");
-    expect(resolveTier({ ...capable, deviceMemory: 1 })).toBe("lite");
-    expect(resolveTier({ ...capable, hardwareConcurrency: 2 })).toBe("lite");
+    expect(resolveTier({ ...capable, deviceMemory: 1, smallScreen: false })).toBe("lite");
     expect(resolveTier({ ...capable, deviceMemory: 4, hardwareConcurrency: 4 })).toBe("lite");
+    expect(resolveTier({ ...capable, deviceMemory: 4, hardwareConcurrency: 4, smallScreen: false })).toBe("full"); // a 4-core laptop
     expect(resolveTier({ ...capable, deviceMemory: 4, hardwareConcurrency: 8 })).toBe("full");
+    expect(resolveTier({ ...capable, janky: true })).toBe("lite");
   });
 
   it("lets the shopper's override win in both directions", () => {
     expect(resolveTier({ ...capable, reducedMotion: true, override: "full" })).toBe("full");
     expect(resolveTier({ ...capable, override: "reduced" })).toBe("reduced");
     expect(resolveTier({ ...capable, saveData: true, override: "full" })).toBe("full");
+    expect(resolveTier({ ...capable, janky: true, override: "full" })).toBe("full");
     expect(resolveTier({ ...capable, override: "lite" })).toBe("lite");
     expect(resolveTier({ ...capable, override: null })).toBe("full");
+  });
+
+  it("the head script (MOTION_TIER_SCRIPT) decides exactly like resolveTier for every combination", () => {
+    let combinations = 0;
+    for (const override of [null, "full", "lite", "reduced"] as const)
+      for (const reducedMotion of [false, true])
+        for (const saveData of [false, true])
+          for (const janky of [false, true])
+            for (const deviceMemory of [undefined, 1, 2, 4, 8])
+              for (const hardwareConcurrency of [undefined, 2, 4, 8])
+                for (const smallScreen of [false, true]) {
+                  const signals: TierSignals = { override, reducedMotion, saveData, janky, deviceMemory, hardwareConcurrency, smallScreen };
+                  const classes = new Set<string>();
+                  const attributes: Record<string, string> = {};
+                  runInNewContext(MOTION_TIER_SCRIPT, {
+                    document: {
+                      documentElement: {
+                        setAttribute: (name: string, value: string) => void (attributes[name] = value),
+                        classList: { toggle: (name: string, on: boolean) => void (on ? classes.add(name) : classes.delete(name)) },
+                      },
+                    },
+                    navigator: { connection: { saveData }, deviceMemory, hardwareConcurrency },
+                    screen: smallScreen ? { width: 390, height: 844 } : { width: 1440, height: 900 },
+                    localStorage: { getItem: (key: string) => (key === "tt:motion" ? override : null) },
+                    sessionStorage: { getItem: (key: string) => (key === "tt:motion-low" && janky ? "1" : null) },
+                    matchMedia: (query: string) => ({ matches: query === "(prefers-reduced-motion: reduce)" && reducedMotion }),
+                  });
+                  const expected: MotionTier = resolveTier(signals);
+                  expect(attributes["data-motion"], JSON.stringify(signals)).toBe(expected);
+                  expect(classes.has("fx-low")).toBe(expected === "lite");
+                  combinations++;
+                }
+    expect(combinations).toBe(4 * 2 * 2 * 2 * 5 * 4 * 2);
+    // and it never throws, even with no storage at all
+    expect(() =>
+      runInNewContext(MOTION_TIER_SCRIPT, { document: { documentElement: {} }, navigator: {}, matchMedia: () => ({ matches: false }) }),
+    ).not.toThrow();
   });
 });
 
@@ -360,24 +428,46 @@ describe("navigation grammar", () => {
   });
 });
 
-describe("theme reveal keyframes", () => {
-  it("keep the picture still: clip scale × picture scale is 1 at and between every stop", () => {
-    const { clip, picture } = counterScaleKeyframes(20 / 940);
-    expect(clip.length).toBe(picture.length);
-    expect(clip.length).toBeGreaterThan(20);
-    const scale = (frame: Keyframe) => Number(/scale\(([\d.]+)\)/.exec(String(frame.transform))![1]);
-    expect(clip[0].offset).toBe(0);
-    expect(clip[clip.length - 1].offset).toBe(1);
-    expect(scale(clip[clip.length - 1])).toBe(1);
-    for (let i = 0; i < clip.length; i++) {
-      expect(scale(clip[i]) * scale(picture[i])).toBeCloseTo(1, 3);
-      expect(clip[i].offset).toBe(picture[i].offset);
-      if (i === 0) continue;
-      expect(Number(clip[i].offset)).toBeGreaterThan(Number(clip[i - 1].offset));
-      // halfway between two stops both sides are linearly interpolated: the product may drift by < 0.1 %
-      const mid = ((scale(clip[i - 1]) + scale(clip[i])) / 2) * ((scale(picture[i - 1]) + scale(picture[i])) / 2);
-      expect(Math.abs(mid - 1)).toBeLessThan(0.001);
+describe("design tokens (docs/DESIGN.md §7.1, app/styles/tokens.css)", () => {
+  const value = (name: string) => {
+    const match = new RegExp(`${name}:\\s*([^;]+);`).exec(designTokens);
+    if (!match) throw new Error(`${name} is missing from app/styles/tokens.css`);
+    return match[1].trim();
+  };
+  const curve = (css: string) => css.replace(/\s+/g, "").replace(/(^|[(,])\./g, "$10");
+
+  it("has the same durations", () => {
+    for (const name of ["press", "release", "micro", "exit", "reveal", "sheet", "page", "fly", "theme"] as const) {
+      expect(value(`--t-${name}`), name).toBe(`${durations[name]}ms`);
     }
+  });
+
+  it("has the same curves", () => {
+    for (const name of ["settle", "squish", "exit", "water"] as const) expect(curve(value(`--ease-${name}`)), name).toBe(curve(easings[name]));
+  });
+
+  it("has the same five springs: {response, dampingRatio}, settle time, and the same curve", () => {
+    for (const name of SPRING_NAMES) {
+      const spring = springs[name];
+      expect(value(`--spring-${name}-t`), name).toBe(`${spring.settleMs}ms`);
+      // the pair is written beside the settle time: --spring-press-t: 260ms; /* {.16, .62} */
+      const pair = new RegExp(`--spring-${name}-t:[^;]+;\\s*/\\*\\s*\\{([\\d.]+),\\s*([\\d.]+)\\}`).exec(designTokens);
+      expect(pair, name).not.toBeNull();
+      expect(Number(pair![1])).toBe(spring.response);
+      expect(Number(pair![2])).toBe(spring.dampingRatio);
+      // DESIGN.md samples each spring at 21 equal steps; every sample sits on the engine's curve.
+      const samples = value(`--spring-${name}`).slice(7, -1).split(",").map(Number);
+      expect(samples).toHaveLength(21);
+      samples.forEach((sample, i) => expect(Math.abs(sample - springValue(spring, ((i / 20) * spring.settleMs) / 1000)), `${name}[${i}]`).toBeLessThan(0.003));
+    }
+  });
+
+  it("names every earlier alias after the design spring it now is", () => {
+    expect(canonicalSpring("snappy")).toBe("press");
+    expect(canonicalSpring("gentle")).toBe("inflate");
+    expect(canonicalSpring("bouncy")).toBe("squish");
+    expect(canonicalSpring("fly")).toBe("settle");
+    expect(canonicalSpring("sheet")).toBe("sheet");
   });
 });
 
@@ -385,9 +475,32 @@ describe("motion.css", () => {
   it("has the tokens generated from tokens.ts (run: npx tsx app/motion/__checks__/gen-css.mjs)", () => {
     expect(replaceTokenBlock(motionCss)).toBe(motionCss);
     const block = renderTokenCss();
-    for (const [name, ms] of Object.entries(durations)) expect(block).toContain(`--motion-duration-${name}: ${ms}ms;`);
-    for (const name of Object.keys(springs)) expect(block).toMatch(new RegExp(`--motion-spring-${name}: linear\\(`));
+    for (const name of ["press", "exit", "micro", "release", "theme", "base", "reveal", "sheet", "page", "fly", "slow"] as const) {
+      expect(block).toContain(`--motion-duration-${name}: ${durations[name]}ms;`);
+    }
+    expect(block).toContain("--motion-duration-instant: var(--motion-duration-press);");
+    expect(block).toContain("--motion-ease-in-out: var(--motion-ease-water);");
+    for (const name of SPRING_NAMES) {
+      expect(block).toMatch(new RegExp(`--motion-spring-${name}: linear\\(`));
+      expect(block).toContain(`--motion-spring-${name}-duration: ${springs[name].settleMs}ms;`);
+    }
+    // the earlier spring names point at the design spring they now are
+    expect(block).toContain("--motion-spring-gentle: var(--motion-spring-inflate);");
+    expect(block).toContain("--motion-spring-fly-duration: var(--motion-spring-settle-duration);");
+    // without linear(): DESIGN.md's fallback curve with its duration token
+    expect(block).toContain(`--motion-spring-press: ${easings.squish};\n  --motion-spring-press-duration: ${durations.release}ms;`);
+    expect(block).toContain(`--motion-spring-settle: ${easings.settle};\n  --motion-spring-settle-duration: ${durations.page}ms;`);
     expect(block).toContain(`--motion-bubble-from: ${bubble.fromScale};`);
+    for (const [name, px] of Object.entries(travel)) expect(block).toContain(`--motion-travel-${name}: ${px}px;`);
+  });
+
+  it("follows the grammar's numbers: push 24px, language 16px, reduced = 120 ms cross-fade", () => {
+    expect(travel.push).toBe(24);
+    expect(travel.direction).toBe(16);
+    expect(travel.menu).toBe(8);
+    expect(motionCss).toMatch(/html\[data-motion="reduced"\]\[data-nav\]::view-transition-old\(root\)\s*\{[^}]*tt-fade-out 120ms linear/);
+    expect(motionCss).toMatch(/html\[data-motion="reduced"\]\[data-nav\]::view-transition-new\(root\)\s*\{[^}]*tt-fade-in 120ms linear/);
+    expect(motionCss).toMatch(/::view-transition-group\(\.tt-share\)\s*\{[^}]*--motion-spring-settle/);
   });
 
   it("animates nothing but transform and opacity (both stylesheets)", () => {
@@ -416,17 +529,21 @@ describe("motion.css", () => {
     expect(new Set(names).size).toBe(names.length); // no keyframes name defined twice
   });
 
-  it("keeps the stagger cap: the last bubble of a wave never starts later than the maximum", () => {
+  it("keeps the stagger cap: six slots 45 ms apart, the last never later than the maximum", () => {
     for (const count of [0, 1, 2, 3, 6, 12, 40, 200]) {
       for (const requested of [0, 20, bubble.staggerStep, 120, 1000]) {
-        const step = staggerStep(count, requested, bubble.staggerMax);
-        const lastSlot = count > 1 ? Math.min(count, 12) - 1 : 11;
+        const step = staggerStep(count, requested, bubble.staggerMax, bubble.staggerSlots);
+        const lastSlot = count > 1 ? Math.min(count, bubble.staggerSlots) - 1 : bubble.staggerSlots - 1;
         expect(step * lastSlot).toBeLessThanOrEqual(bubble.staggerMax);
         expect(step).toBeLessThanOrEqual(Math.max(requested, 0));
       }
     }
-    expect(staggerStep(6, bubble.staggerStep, bubble.staggerMax)).toBe(bubble.staggerStep); // six items: 45 ms apart
-    expect(staggerStep(12, bubble.staggerStep, bubble.staggerMax)).toBe(36.3); // twelve: squeezed into 400 ms
+    expect(staggerStep(6, bubble.staggerStep, bubble.staggerMax)).toBe(45); // DESIGN.md: 45 ms apart
+    expect(staggerStep(40, bubble.staggerStep, bubble.staggerMax)).toBe(45); // the rest appear with the sixth
+    expect(staggerStep(40, 1000, bubble.staggerMax)).toBe(80); // a custom step is capped at 400 ms for the wave
+    // CSS: children 1–5 get slots 0–4 and every later child the sixth slot
+    expect(motionCss).toContain(".tt-bubbles > :nth-child(n + 6) { --tt-i: 5; }");
+    expect(bubble.fromScale).toBe(0.86);
   });
 });
 

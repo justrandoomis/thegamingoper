@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-sports-resort-bundle--2",
+  "view": "hero",
+  "width": 1555,
+  "height": 1600,
+  "aspect": 0.9719,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-240.5b2e552a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-480.01f83724.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-720.ed19721a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-960.9919cbb4.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-1440.5dc40949.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-240.3413556f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-480.fec07e97.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-720.90325bef.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-960.416d5fb8.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/2-1440.0aa0f543.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-sports-resort-bundle/2-720.18d218bb.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRloBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSEkAAAART6CgbRs2VRbt/omIgPi9dlZgG9s6pjdKoAKjA6MECvhXgRGL6MBIZeq1u+HGEf2fAHzmUpeeGdo8z2SfP2GvVY0A7EiK4jsAAFZQOCDqAAAAkAUAnQEqEwAUAD8RfrZVrCekoygIAYAiCWwAnTlBUt4qTAAGqReCer3OEzKQth7qBQni9oAA+i6+87rcm19gPy3W67iEbS0BOFlHnuLkags0CuaS6taew7+sTsK+6MyqfnoedwLqgprZ1MQJSYAS6UKu1H4gwlkVhKmsWdzBful+8Vg5ZxAi/IoLDJ+K5wNmV1/AVsXvzxb/Bf+ypjYkywhaTab6ZCnTPbtkT0XNfKEqNc2eTTfMAkoAkhb1qNDoa+kdaw+QSaHTEz7S7LkW7bw+wBC5s8I2qedPzdL1ca+qZp+8PfH2jpQA",
+  "dominant": "#f3f3f3",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/v1788046450/ncom/en_US/merchandising/Showrooms/2026%20Holiday/NSSR_bundle_product_shot.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/"
+  },
+  "input": "c02ff869d6cb91ba"
+}

@@ -37,14 +37,14 @@ export function attachRail(rail: HTMLElement): RailController {
     lastBump = now;
     // Content is pulled a little further the way it was pushed, then springs back.
     const pull = (forward ? -1 : 1) * (isRtl() ? -1 : 1) * 14;
-    const spring = springTiming("gentle");
+    const spring = springTiming("inflate");
     rail.animate(
       [
-        { translate: "0 0", easing: easings.out },
+        { translate: "0 0", easing: easings.settle },
         { translate: `${pull}px 0`, offset: 0.22, easing: spring.easing },
         { translate: "0 0" },
       ],
-      { duration: durations.quick + spring.duration },
+      { duration: durations.exit + spring.duration },
     );
   };
 

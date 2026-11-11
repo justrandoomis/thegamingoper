@@ -1,0 +1,65 @@
+{
+  "key": "wd-black-sn850x--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 611,
+  "aspect": 2.6187,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/wd-black-sn850x/3-240.4639aa00.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/wd-black-sn850x/3-480.37b510a1.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/wd-black-sn850x/3-720.605c720f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/wd-black-sn850x/3-960.599795da.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wd-black-sn850x/3-1440.7f71f7de.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/wd-black-sn850x/3-240.14dc0a2c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/wd-black-sn850x/3-480.59dca343.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/wd-black-sn850x/3-720.e19f7d9e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/wd-black-sn850x/3-960.14fd6a6b.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wd-black-sn850x/3-1440.211387e1.webp"
+      }
+    ],
+    "png": "/products/wd-black-sn850x/3-720.891f2338.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRroAAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSD0AAAARN6CYkSQ4OQQXwrxGYzE2IgL3zAqFAIA27Xl0DEpgRyCK+Tt8hIj+TwBc4rBVJfg8lvrFTxmNWZlVAlwCAFZQOCBWAAAAMAMAnQEqFAAIAD8RfLRRrCglIrAIAYAiCWUAAHpXThNzAAD+7SF4BIm35JpHclnpaRtiVYToir5Mf9gJuOlMlQkxAVCIaVIBPIp04ChBfbFlYfMD0AA=",
+  "dominant": "#1a181a",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sandisk (WD_BLACK)",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/wd-black-sn850x-nvme-ssd/gallery/wd-black-sn850x-nvme-ssd-heatsink-4tb-8tb-front.png",
+    "page": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd?sku=WDS400T2XHE-00BCA0"
+  },
+  "input": "7c9bef0de032e412"
+}

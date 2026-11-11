@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2-sports-resort-bundle--3",
+  "view": "hero",
+  "width": 1033,
+  "height": 868,
+  "aspect": 1.1901,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-240.67a6e130.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-480.4475a74b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-720.f0135f48.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-960.91acdda8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-240.02df1a67.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-480.655b805d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-720.dd5b2ad6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-sports-resort-bundle/3-960.ff86d2ca.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-sports-resort-bundle/3-720.67ede5f2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkoBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSEsAAAART6CokSQ1thoYj78XEQG485tHPzCpte3J8zfYftAAh14JZgMacCgwNYq8fBYf0f8JQNQAuqz79ZodPK9Y/Y4R7iVA3LeuMHy1QgQAVlA4INgAAABQBgCdASoUABEAPxF6tFOsJ6SiqAqpgCIJbACdOUFS2feyEl/5gBrHPoAfoAATKammfVa4kk3fVZg2AAD6Lr6IHzRJTJdeXXekjRL7McIegmsMpGWCr33eqySHrIdR2IKXZFQ5j8O6jjEBZLAVc9NtjkVizE+B0STIJn8hpFYlJQgknCKNA5dml7SjYE3esxfBMhwJx/q6HM1FBq2D5L/DvGoYeMYi+5joLdiabCu5VWAQWsUhQ0ByJwG8xA/XqXBj31E9pfnGATeEc8reMPgyn+wOC30SAAA=",
+  "dominant": "#f3f3f3",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-dock-joy-con-grip-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/"
+  },
+  "input": "6c980f326bd17bc6"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go-s--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 798,
+  "aspect": 2.005,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-s/5-240.ebb925eb.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-s/5-480.26e269ec.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-s/5-720.28d9abf5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-s/5-960.18f5d7a7.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-s/5-1440.fefcc54c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-s/5-240.3e6b034f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-s/5-480.5f28fa66.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-s/5-720.097b08f4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-s/5-960.b0d88e39.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-s/5-1440.cb28229b.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go-s/5-720.6c4592d1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvoAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEgAAAARP0A0YBnVRU21s0REyB8pYBvZtpKvuUJMCZ47sedOC/Q/8++vIaL/E0AC1Tr0fb9vFU1+yGokJiRPFB8BKRLq+bwjJUp7KQFWUDggjAAAADAEAJ0BKhQACgA/EXKwUCwmpKKwCAGAIgliAL85i8yWFPBEvuFh7HRiWADN70gaTQPObd+dSyOjT4JyUvDOs73C98QqvdBjBFh4ej2GcoKi+DB+4h6xfDdr4Jjr1tfKy0xDOzMUbD5cfSz83nbIKV2sgJTVWDruAnumloC+FJmaHrOWswWch/pvAAAA",
+  "dominant": "#d8d8d8",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2025/01/08040353/Legion-Go-S-8in-1.zip#01_Legion_Go_S_Front_facing.png",
+    "page": "https://news.lenovo.com/press-kits/ces-2025/"
+  },
+  "input": "cc3540858a7a160b"
+}

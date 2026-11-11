@@ -409,7 +409,7 @@ export async function changeCustomerPassword(ctx: AuthCtx, db: Db, raw: unknown)
  * Marks the signed-in customer's phone as verified, given a correct one-time code that was
  * requested for that phone with purpose "verify_phone". Throws `unauthorized` or `otp_invalid`.
  */
-export async function confirmCustomerPhone(ctx: AuthCtx, db: Db, input: { code: string; id?: string | null }, options: OtpOptions = {}): Promise<CustomerSession> {
+export async function confirmCustomerPhone(ctx: AuthCtx, db: Db, input: { code: string; id?: string | null }, options: OtpOptions): Promise<CustomerSession> {
   const current = await getCustomer(ctx, db);
   if (!current) throw unauthorized();
   await verifyOtp(ctx, db, { phone: current.customer.phoneE164, purpose: "verify_phone", code: input.code, id: input.id }, options);

@@ -1,0 +1,753 @@
+/*
+ * Core component styles — imported into the `components` cascade layer by app/app.css, after materials.css.
+ * One block per app/ui component; the React components are the API, these classes are their implementation.
+ * Logical properties only; tokens only; motion is transform/opacity only.
+ */
+
+/* ───────────────────────────── KeyBank (§2, §8.1): keys in a well, the chosen one stays down ───────────────────────────── */
+.bank {
+  display: grid;
+  grid-template-columns: repeat(var(--bank-n, 4), minmax(0, 1fr));
+  gap: 5px;
+  padding: 5px 5px 4px;
+  border-radius: calc(var(--r-md) + 5px); /* nested radius = inner radius + the gap */
+}
+.bank--thumb {
+  display: inline-flex;
+  gap: 5px;
+  padding: 4px 4px 3px;
+  border-radius: calc(var(--r-sm) + 4px);
+}
+.bank--segment {
+  display: inline-grid;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+}
+.bank--segment > .key {
+  --px: 16px;
+}
+.key--thumb .render-slot {
+  inline-size: 100%;
+  align-self: stretch;
+  place-items: center;
+}
+.bank__label {
+  font: var(--type-label);
+  color: var(--ink-2);
+  margin-block: 9px 5px;
+}
+.bank__label :is(b, strong) {
+  font-weight: 600;
+  color: var(--ink);
+}
+@media (min-width: 75rem) {
+  .bank .key--plat {
+    --h: 64px;
+    font-size: 13.5px;
+  }
+}
+
+/* ───────────────────────────── Chip (§9.8) ───────────────────────────── */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.chips--rail {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-block: 2px 6px;
+  scrollbar-width: none;
+}
+/* a native checkbox / radio inside a chip: invisible but focusable and clickable over the whole key */
+.key > .key__native {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* ───────────────────────────── Tag and Status (§9.12) ───────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  block-size: 24px;
+  padding-inline: 9px;
+  padding-block-end: 1px;
+  border-radius: var(--r-xs);
+  font: var(--type-tag);
+  white-space: nowrap;
+}
+/* new = solid ink */
+.tag--solid {
+  background: var(--ink);
+  color: var(--ground);
+}
+/* used, preorder, refurbished = outlined: shape, not colour, separates them */
+.tag--outline {
+  background: var(--ground);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 12.5px/1.6 var(--font-text);
+}
+.status::before {
+  content: "";
+  flex: none;
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status--ok {
+  color: var(--ok);
+}
+.status--warn {
+  color: var(--warn);
+}
+.status--info {
+  color: var(--info);
+}
+.status--bad {
+  color: var(--red-ink);
+}
+.status--neutral {
+  color: var(--ink-2);
+}
+
+/* the cart bead: the red count on the cart (and in admin, items waiting for a human). Nothing else is a bead. */
+.bead {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 20px;
+  block-size: 20px;
+  padding: 0 5px 1px;
+  border-radius: var(--r-full);
+  background: var(--red-face);
+  box-shadow: inset 0 1px 0 var(--red-lip), 0 1.5px 0 var(--red-wall);
+  color: var(--on-red);
+  font: 600 11.5px/1 var(--font-text);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ───────────────────────────── TextLink (§9.1): one look, never red, never clay ───────────────────────────── */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-block-size: var(--target);
+  margin-block: -4px;
+  font: 600 13.5px/1.4 var(--font-text);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.link:hover .link__text {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+}
+.link--inline {
+  display: inline;
+  min-block-size: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+}
+/* a destructive text action states the consequence in red-ink words (§9.15) */
+.link--danger {
+  color: var(--red-ink);
+}
+
+/* ───────────────────────────── Field family (§9.9): flat paper with a real border ───────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-inline-size: 0;
+}
+.field__label {
+  font: 600 13.5px/1.5 var(--font-text);
+  color: var(--ink);
+}
+.field__mark {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.field__input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 52px;
+  padding-inline: 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 16px/1.4 var(--font-text); /* 16px: no zoom on iOS */
+  appearance: none;
+}
+.field__input:focus-visible {
+  outline: 2.5px solid var(--ink);
+  outline-offset: 2px;
+}
+/* phone numbers, amounts, codes stay left-to-right but hug the start edge of a right-to-left form */
+.field__input[dir="ltr"] {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+[dir="rtl"] .field__input[dir="ltr"] {
+  text-align: end;
+}
+[dir="rtl"] .field__input[dir="ltr"]::placeholder {
+  text-align: end;
+}
+textarea.field__input {
+  block-size: auto;
+  min-block-size: 112px;
+  padding-block: 13px;
+  line-height: 1.6;
+  resize: vertical;
+}
+select.field__input {
+  padding-inline-end: 44px;
+  cursor: pointer;
+}
+.field__caret {
+  position: absolute;
+  inset-inline-end: 14px;
+  color: var(--ink);
+  pointer-events: none;
+}
+.field__end {
+  position: absolute;
+  inset-inline-end: 6px;
+  display: flex;
+  align-items: center;
+  min-inline-size: 44px;
+  justify-content: center;
+  color: var(--ink-2);
+}
+/* room for the end slot, on the side where the slot is: an LTR number inside an RTL form reserves its start side */
+.field__input[data-end] {
+  padding-inline-end: 56px;
+}
+[dir="rtl"] .field__input[data-end][dir="ltr"] {
+  padding-inline: 56px 16px;
+}
+.field__input:disabled {
+  background: var(--niche);
+  border-color: var(--line);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+.field__input[readonly] {
+  background: var(--niche);
+}
+.field__hint {
+  font: var(--type-caption);
+  color: var(--ink-2);
+}
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font: 500 12.5px/1.6 var(--font-text);
+  color: var(--red-ink);
+}
+/* the error region is always in the tree (so the first error is announced) but takes no room while empty */
+.field__error:empty {
+  margin-block-start: -6px;
+}
+.field--group {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.field--group > legend {
+  margin-block-end: 6px;
+  padding: 0;
+}
+.field__options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.field__options--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.field__error > svg {
+  flex: none;
+  margin-block-start: 2.5px;
+}
+/* error: a 2px red-ink border (drawn as 1.5px + an inset half pixel, so nothing inside moves), never a red fill */
+.field[data-invalid] .field__input {
+  border-color: var(--red-ink);
+  box-shadow: inset 0 0 0 0.5px var(--red-ink);
+}
+
+/* checkbox, radio, switch: the native input sits invisibly over the whole row (form-native, keyboard-native) */
+.choice {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-block-size: var(--target);
+  padding-block: 10px;
+  font: var(--type-body);
+  line-height: 1.5;
+  color: var(--ink);
+  cursor: pointer;
+}
+.choice__input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.choice__text {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.choice__hint {
+  font: var(--type-caption);
+  color: var(--ink-2);
+}
+.choice__box {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 22px;
+  block-size: 22px;
+  margin-block-start: 1px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--on-sel);
+}
+.choice__box > svg {
+  opacity: 0;
+}
+.choice__input:checked + .choice__box,
+.choice__input:indeterminate + .choice__box {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.choice__input:checked + .choice__box > svg,
+.choice__input:indeterminate + .choice__box > svg {
+  opacity: 1;
+}
+.choice--radio .choice__box {
+  border-radius: 50%;
+}
+.choice--radio .choice__input:checked + .choice__box {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 3.5px var(--paper), inset 0 0 0 10px var(--ink);
+}
+.choice__input:focus-visible + :is(.choice__box, .switch__track) {
+  outline: 2.5px solid var(--ink);
+  outline-offset: 3px;
+}
+.choice[data-invalid] .choice__box {
+  border-color: var(--red-ink);
+}
+.choice:has(> .choice__input:disabled) {
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+.choice:has(> .choice__input:disabled) .choice__box {
+  border-color: var(--line);
+  background: var(--niche);
+}
+/* option rows (§9.8): a paper row with a 1.5px border, a radio mark at the start, a title and one line of
+ * explanation; chosen = a 2px ink border (1.5px + an inset half pixel: nothing inside moves) and a filled mark */
+.choice--row {
+  align-items: flex-start;
+  min-block-size: 56px;
+  padding: 13px 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--paper);
+}
+.choice--row:has(> .choice__input:checked) {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 0.5px var(--ink);
+}
+.choice--row:has(> .choice__input:focus-visible) {
+  outline: 2.5px solid var(--ink);
+  outline-offset: 2px;
+}
+.choice--row .choice__input:focus-visible + .choice__box {
+  outline: none;
+}
+.choice__end {
+  margin-inline-start: auto;
+  padding-inline-start: var(--s-3);
+  white-space: nowrap;
+}
+/* switch: a clay knob in a well; on = the well turns ink and the knob travels to the inline end */
+.choice--switch {
+  justify-content: space-between;
+  align-items: center;
+}
+.switch__track {
+  position: relative;
+  flex: none;
+  inline-size: 52px;
+  block-size: 32px;
+  border-radius: var(--r-full);
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+}
+.switch__knob {
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: 26px;
+  block-size: 24px;
+  border-radius: var(--r-full);
+  background: var(--clay-face);
+  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -5px 6px -4px var(--clay-belly), 0 2px 0 var(--clay-wall), var(--e-1);
+  transition: transform var(--t-micro) var(--ease-squish);
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  .switch__knob {
+    transition: transform var(--spring-press-t) var(--spring-press);
+  }
+}
+.choice__input:checked + .switch__track {
+  background: var(--sel-face);
+  box-shadow: inset 0 2px 3px var(--sel-in);
+}
+.choice__input:checked + .switch__track > .switch__knob {
+  transform: translateX(calc(var(--dir) * 20px));
+}
+@media (prefers-reduced-motion: reduce) {
+  .switch__knob {
+    transition: none;
+  }
+}
+[data-motion="reduced"] .switch__knob {
+  transition: none;
+}
+
+/* ───────────────────────────── Stepper (§9.10): two round keys in a well ───────────────────────────── */
+.stepper-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 5px 4px;
+  border-radius: var(--r-full);
+}
+.stepper__value {
+  min-inline-size: 38px;
+  text-align: center;
+  font: 700 17px/1 var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.stepper--sm {
+  padding: 4px 4px 3px;
+}
+.stepper--sm .stepper__value {
+  min-inline-size: 30px;
+  font-size: 15px;
+}
+
+/* ───────────────────────────── Price (§9.11): flat ink on paper ───────────────────────────── */
+.price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.26em;
+  font: 700 var(--price-md)/1.3 var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.price--xl {
+  font-size: var(--price-xl);
+}
+.price--lg {
+  font-size: var(--price-lg);
+}
+.price--md {
+  font-size: var(--price-md);
+}
+.price--sm {
+  font-size: var(--price-sm);
+}
+.price__cur {
+  font: 500 max(11px, 0.6em)/1 var(--font-text);
+  color: var(--ink-2);
+}
+.price__was {
+  margin-inline-end: 0.2em;
+  font: 500 max(12px, 0.62em)/1 var(--font-text);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink-2);
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+.price-block {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-inline-size: 0;
+}
+/* a converted amount: never bold, always marked approximate, the dinar payment named beside it */
+.price__approx {
+  font: 500 13px/1.6 var(--font-text);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink-2);
+}
+.price__fx > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-block-size: 32px;
+  list-style: none;
+  cursor: pointer;
+}
+.price__fx > summary::-webkit-details-marker {
+  display: none;
+}
+.price__fx > summary > svg {
+  flex: none;
+}
+.price__fx[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.price__rate {
+  font: var(--type-caption);
+  color: var(--ink-2);
+  white-space: normal;
+}
+
+/* ───────────────────────────── Niche (§6.3, §9.5): the one flat card surface ───────────────────────────── */
+.niche {
+  --pose: 0deg;
+  --slot-top: 30px;
+  position: relative;
+  display: block;
+  aspect-ratio: var(--ratio, 3 / 2);
+  border-radius: var(--r-lg);
+  background: var(--stage); /* the niche colour is the image placeholder: no skeleton, no shift */
+  overflow: hidden;
+}
+.niche--panel {
+  aspect-ratio: auto;
+  background: var(--niche);
+}
+.niche--untagged {
+  --slot-top: 14px;
+}
+.niche__tag {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
+  z-index: 1;
+}
+.niche__slot {
+  position: absolute;
+  inset-block: var(--slot-top) 14px;
+  inset-inline: 14px;
+}
+.niche__fill {
+  position: absolute;
+  inset: 0;
+}
+.niche__fill > :is(img, picture > img) {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* ───────────────────────────── Stage (§2, §6.4): the lit stage at three sizes ─────────────────────────────
+ * The frame is a size container: hero and product stages keep their proportions in whatever column they get
+ * (390-wide phone → 358 × 194 hero; a 7/12 desktop column → about 670 × 452). The frame takes the inline size of its
+ * container — do not put it in a shrink-to-fit box. */
+.stage-frame {
+  container: stage / inline-size;
+  position: relative;
+  min-inline-size: 0;
+}
+.stage__slot {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--slot-top);
+  block-size: var(--slot-h);
+  inset-inline: var(--slot-x);
+}
+.stage__light {
+  inset-block-end: var(--light-lift, 0px);
+}
+.stage__pool {
+  inset-inline: var(--pool-x);
+  inset-block-start: var(--pool-top);
+  block-size: var(--pool-h);
+}
+.stage__top,
+.stage__bottom {
+  position: absolute;
+  z-index: 2;
+  inset-inline: max(var(--gutter), var(--safe-inline));
+}
+.stage__top {
+  inset-block-start: 12px;
+}
+.stage__bottom {
+  inset-block-end: 13px;
+}
+/* hero: home — 358 × 194 on a phone, about 670 × 452 in the desktop column */
+.stage--hero {
+  --pose: -3deg;
+  --slot-top: 5%;
+  --slot-h: 78%;
+  --slot-x: 14%;
+  --pool-x: 19%;
+  --pool-top: 72%;
+  --pool-h: 24%;
+  --light-lift: 7%;
+  aspect-ratio: 358 / 194;
+}
+/* product: the stage on the product page, where the key bank becomes the gallery */
+.stage--product {
+  --pose: -3deg;
+  --slot-top: 19%;
+  --slot-h: 47%;
+  --slot-x: 11%;
+  --pool-x: 14%;
+  --pool-top: 64%;
+  --pool-h: 16%;
+  --light-lift: 12%;
+  --halo-w: 118%;
+  --halo-h: 104%;
+  aspect-ratio: 390 / 318;
+}
+/* compact: hubs (132 / 160 tall) — the render on the inline-end side, the title on the floor beside it */
+.stage--compact {
+  --pose: -2deg;
+  --slot-top: 12%;
+  --slot-h: 76%;
+  --slot-x: 52% 6%;
+  --pool-x: 54% 8%;
+  --pool-top: 66%;
+  --pool-h: 30%;
+  --halo-w: 70%;
+  --halo-h: 150%;
+  block-size: 132px;
+}
+.stage--compact .stage__light {
+  inset-inline-start: 46%;
+}
+.stage--flush {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+@media (min-width: 48rem) {
+  .stage--compact {
+    block-size: 160px;
+  }
+}
+/* the band: the glass price tag and the commit key hang off the rim, half on the stage, half on the floor */
+.stage__band {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-block-start: -30px;
+  padding-inline: 10px;
+}
+.stage__band > .key {
+  --px: 16px;
+}
+.gtag {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-inline-size: 0;
+  padding: 8px 14px 9px;
+  border-radius: var(--r-md);
+}
+.gtag__name {
+  font: 500 12.5px/1.5 var(--font-text);
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* a wide column (tablet and desktop layouts) */
+@container stage (min-width: 33rem) {
+  .stage--hero {
+    --pose: -4deg;
+    --slot-top: 12%;
+    --slot-h: 66%;
+    --slot-x: 10%;
+    --pool-x: 14%;
+    --pool-top: 77%;
+    --pool-h: 18%;
+    --light-lift: 4%;
+    --halo-w: 116%;
+    --halo-h: 124%;
+    aspect-ratio: 670 / 452;
+  }
+  .stage--product {
+    --slot-top: 14%;
+    --slot-h: 58%;
+    --pool-top: 66%;
+    --pool-h: 14%;
+    aspect-ratio: 700 / 520;
+  }
+  .stage__band {
+    justify-content: flex-start;
+    padding-inline: 28px;
+  }
+  .gtag {
+    padding: 11px 18px 12px;
+  }
+  .gtag__name {
+    font-size: 14px;
+  }
+}
+
+
+/* platform label: the LED always beside the platform's name written as text */
+.plat {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 500 13px/1.5 var(--font-text);
+  color: var(--ink-2);
+}
+.plat__glyph {
+  flex: none;
+}

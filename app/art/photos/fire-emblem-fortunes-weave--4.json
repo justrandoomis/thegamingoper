@@ -1,0 +1,65 @@
+{
+  "key": "fire-emblem-fortunes-weave--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/4-240.2c628adb.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/4-480.d83f11c7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/4-720.bc05c4b3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/4-960.0f8cbe40.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/4-1440.b7fd5817.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/4-240.1040fc10.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/4-480.aa4f9a34.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/4-720.12407ba4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/4-960.b386058e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/4-1440.6d93805c.webp"
+      }
+    ],
+    "png": "/products/fire-emblem-fortunes-weave/4-720.03622139.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAACQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJbACw7A48VPfLah8gAP6pMpv2Gkk3aY5+vtcWZh0yjMPv1NJiLZBlu/H1Lzr2dQtCDACpIF4rBWxoooGmSrolkV37NoburCAmUX9rL7OtPAAA",
+  "dominant": "#f3ede8",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo / Intelligent Systems",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000126929/54ac2302ff25e1c6d9a88a4695550d5a2cd7aed60ecee11dfb5d2fa54ff50527",
+    "page": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-switch-2/"
+  },
+  "input": "0ad16616ef2adee1"
+}

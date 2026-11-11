@@ -1,0 +1,49 @@
+{
+  "key": "msi-claw-a8--1",
+  "view": "hero",
+  "width": 806,
+  "height": 396,
+  "aspect": 2.0354,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-a8/1-240.1f4262b5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-a8/1-480.d730b599.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-a8/1-720.5547fabd.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-a8/1-240.66611e5f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-a8/1-480.3ab6efce.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-a8/1-720.14dcc0c4.webp"
+      }
+    ],
+    "png": "/products/msi-claw-a8/1-720.50272f53.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvAAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEIAAAARR6CmkRQ4fe0dYODrCKaIiAA/NicOamPbhuxSmVQVYk0Q73JdKPz/TwkR/Z8ARgwlg0vUi1rK+eEpCVNubDByRgRWUDggiAAAALADAJ0BKhQACgA/EXKwUCwmpKKwCAGAIglsAAA84rMhwM8LfDAAAPjZ0r673ce87GT46JYzY7MLsZyEIbmcsAPXRlYiHfDpJf1Dh+RG1r3Xw34tITBInv+eUcLuobY7Yzu7yL4HliI4f4Ex1u2mpPHTnQuP8d3th0ZDCg4/+29/96OuntWA8AA=",
+  "dominant": "#010004",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "MSI",
+  "source": {
+    "url": "https://storage-asset.msi.com/global/picture/product/product_17501412831a5f8410f3f57086c7f018c79a965d2c.png",
+    "page": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery"
+  },
+  "input": "2f6d854c57ffa39e"
+}

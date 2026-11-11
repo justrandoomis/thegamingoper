@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-sports-resort--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-sports-resort/3-240.40c281eb.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-sports-resort/3-480.ffacd4f4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-sports-resort/3-720.7735a742.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-sports-resort/3-960.0f77d24e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-sports-resort/3-1440.900ac7cc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-sports-resort/3-240.1e4fcd95.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-sports-resort/3-480.186fd920.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-sports-resort/3-720.7fd1892b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-sports-resort/3-960.06747eaf.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-sports-resort/3-1440.d599e944.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-sports-resort/3-720.7a6485b7.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoR2WCn5Nf+Iut3ViAAA/eNeEG++Ch2rhj1iXHx6th5SgHvzuPtUo4EFiCW/LUicEaTSzymPBZakcnPgKhm7rod+IwSXAAAA",
+  "dominant": "#014986",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000125145/7ecd230cdcfb4b058c89270bdd84ee6ece79a18b07063bbc470ab2433def082a",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-switch-2/"
+  },
+  "input": "34cda4fbe0e80ce6"
+}

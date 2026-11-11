@@ -1,0 +1,57 @@
+{
+  "key": "sandisk-microsd-express--3",
+  "view": "hero",
+  "width": 1268,
+  "height": 967,
+  "aspect": 1.3113,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-microsd-express/3-240.c968e420.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-microsd-express/3-480.7f95da5d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-microsd-express/3-720.7146b83a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-microsd-express/3-960.a9ec0c10.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-microsd-express/3-240.6af2c478.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-microsd-express/3-480.e55f4d93.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-microsd-express/3-720.178db83e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-microsd-express/3-960.06fe9ff1.webp"
+      }
+    ],
+    "png": "/products/sandisk-microsd-express/3-720.f9955be0.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSEEAAAART6AkABo2iUbj2O+wiAhY+QregU0kW5GGm/R74opRgA0y0pXwBf9sBUT0fwIQk6Nmflb9v9VaOKp3fx5AxOEAAABWUDgghgAAADAEAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglsAJ0ygAL8R1L1AJE5P0mDwAD+LkSf/K6xJuq4ubzB8q1tYWfctIClEyOQaA9tm+GOrHVPZtPVsRFH/wWVIJkYpkogyjX9DlBjRx6JIZRzgRUCRIBRQJCb0JO7cCS1xUAMiIe1faBOTnZ53AAA",
+  "dominant": "#e50605",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sandisk / Nintendo",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-512gb-front.png",
+    "page": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXFN-512G-GR6ZN"
+  },
+  "input": "ca30d0ad4bcb37aa"
+}

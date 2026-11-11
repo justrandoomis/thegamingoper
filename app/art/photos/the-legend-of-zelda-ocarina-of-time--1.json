@@ -1,0 +1,57 @@
+{
+  "key": "the-legend-of-zelda-ocarina-of-time--1",
+  "view": "hero",
+  "width": 1054,
+  "height": 1600,
+  "aspect": 0.6587,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-240.d8447f92.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-480.0aa8bb5b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-720.0ab05a76.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-960.4f5c065d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-240.79994fe8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-480.13bb0147.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-720.f5db480b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/1-960.1400570b.webp"
+      }
+    ],
+    "png": "/products/the-legend-of-zelda-ocarina-of-time/1-720.79409b93.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOD+YtN4CDXiIjgNiBq20ZTGYzBKQzuwmDjD+3+Ef2PA5Aa1c3r7r4/jeqmAFIAVlA4IIoAAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdL11s/wGlCoaWQ1uTU4AA/ZUXfrVQigZSQuN+clfbjqbgZ4C1XZuJJo0Oeho+KbewaN0K5VYh5Z1D473dNIY8Y0Y33AcMU4hZ1FrHzR1mUbOYgyEn17osjdhDeLTJSRlt31zS6sfbHr4pd9AAAAA=",
+  "dominant": "#e70012",
+  "transparent": true,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/The%20Legend%20of%20Zelda%20Ocarina%20of%20Time/125697-nintendo-the-legend-of-zelda-ocarina-of-time-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/the-legend-of-zelda-ocarina-of-time-125697/"
+  },
+  "input": "67862c7284c45451"
+}

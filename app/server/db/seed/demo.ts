@@ -252,12 +252,17 @@ type PutOptions = {
   skipOnAnyConflict?: boolean;
 };
 
+/** `Plan.tables` entry of a row-count probe (a SELECT, not a write). */
+const PROBE = "";
+
 class Plan {
   readonly statements: BatchStatement[] = [];
-  /** Table of each statement, parallel to `statements`. */
+  /** Table of each statement, parallel to `statements` (PROBE for the row counts of `measure`). */
   readonly tables: string[] = [];
   /** Rows the seed defines, per table. */
   readonly rows: Record<string, number> = {};
+  /** Tables whose changes are measured by counting rows before and after their statements: index of each count. */
+  readonly measured = new Map<string, { before: number; after: number }>();
 
   constructor(
     readonly db: Db,
@@ -268,6 +273,22 @@ class Plan {
     this.statements.push(statement);
     this.tables.push(table);
     this.rows[table] = (this.rows[table] ?? 0) + rows;
+  }
+
+  /**
+   * Counts `table` before and after the statements `write` adds, in the same batch. For the FTS5
+   * search index: D1 also reports the rows an FTS5 insert writes to the index's shadow tables as
+   * changes, so `meta.changes` cannot say how many index rows were added (1 insert ≈ 9-12 changes).
+   */
+  measure(table: string, write: () => void): void {
+    const count = () => {
+      this.statements.push(batchSql(this.db, sql`SELECT count(*) AS n FROM ${sql.identifier(table)}`));
+      this.tables.push(PROBE);
+      return this.statements.length - 1;
+    };
+    const before = count();
+    write();
+    this.measured.set(table, { before, after: count() });
   }
 
   put<T extends SQLiteTable>(table: T, rows: T["$inferInsert"][], options: PutOptions): void {
@@ -572,41 +593,6 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
     { target: compatibilityRules.id, mode: "content", keep: ["createdAt"], skipOnAnyConflict: true },
   );
 
-  // ── search ─────────────────────────────────────────────────────────────────
-  const synonymRows: NewSearchSynonym[] = [];
-  for (const group of DEMO_SYNONYM_GROUPS) {
-    for (const locale of SEED_LOCALES) {
-      const [term, ...rest] = group[locale].map((entry) => normalizeSearchText(entry));
-      const synonyms = [...new Set(rest)].filter((entry) => entry && entry !== term);
-      synonymRows.push({ id: demoId.synonym(locale, group.key), locale, term, synonyms, isActive: true, createdBy: null, updatedAt: now });
-    }
-  }
-  plan.put(searchSynonyms, synonymRows, { target: searchSynonyms.id, mode: "content", skipOnAnyConflict: true });
-  for (const product of DEMO_PRODUCTS) {
-    const productId = demoId.product(product.slug);
-    const docs = productSearchDocs(product);
-    if (overwrite) {
-      // Replace the product's rows (the same statements the catalogue service uses on publish).
-      for (const statement of searchIndexStatements(db, productId, docs)) plan.add("search_index", statement, 0);
-      plan.rows.search_index = (plan.rows.search_index ?? 0) + docs.length;
-      continue;
-    }
-    // Index only what is missing, so a product whose text was edited in the admin keeps its own index rows.
-    for (const doc of docs) {
-      const name = normalizeSearchText(doc.name);
-      const keywords = normalizeSearchText(doc.keywords);
-      const body = normalizeSearchText(doc.body);
-      plan.add(
-        "search_index",
-        batchSql(
-          db,
-          sql`INSERT INTO search_index (product_id, locale, name, keywords, body) SELECT ${productId}, ${doc.locale}, ${name}, ${keywords}, ${body} WHERE NOT EXISTS (SELECT 1 FROM search_index WHERE product_id = ${productId} AND locale = ${doc.locale})`,
-        ),
-        1,
-      );
-    }
-  }
-
   // ── used units and trade-in guides ─────────────────────────────────────────
   plan.put(
     usedUnits,
@@ -743,6 +729,49 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
     { target: troubleshootingTrees.id, mode: "content", keep: ["approvedAt"], rowsPerStatement: 1 },
   );
 
+  // ── search (last: see below) ───────────────────────────────────────────────
+  const synonymRows: NewSearchSynonym[] = [];
+  for (const group of DEMO_SYNONYM_GROUPS) {
+    for (const locale of SEED_LOCALES) {
+      const [term, ...rest] = group[locale].map((entry) => normalizeSearchText(entry));
+      const synonyms = [...new Set(rest)].filter((entry) => entry && entry !== term);
+      synonymRows.push({ id: demoId.synonym(locale, group.key), locale, term, synonyms, isActive: true, createdBy: null, updatedAt: now });
+    }
+  }
+  plan.put(searchSynonyms, synonymRows, { target: searchSynonyms.id, mode: "content", skipOnAnyConflict: true });
+  // The FTS5 index comes last in the batch. FTS5 buffers what an INSERT writes and flushes it to its
+  // shadow tables when the NEXT write statement opens its savepoint, so D1 would count that flush
+  // as changes of whatever table follows. Last, the flush happens at commit and counts for nobody.
+  if (overwrite) {
+    // Replace each product's rows (the same statements the catalogue service uses on publish).
+    // Every row is rewritten, so seedDemo reports all of them as changed.
+    for (const product of DEMO_PRODUCTS) {
+      const docs = productSearchDocs(product);
+      for (const statement of searchIndexStatements(db, demoId.product(product.slug), docs)) plan.add("search_index", statement, 0);
+      plan.rows.search_index = (plan.rows.search_index ?? 0) + docs.length;
+    }
+  } else {
+    // Index only what is missing, so a product whose text was edited in the admin keeps its own index rows.
+    plan.measure("search_index", () => {
+      for (const product of DEMO_PRODUCTS) {
+        const productId = demoId.product(product.slug);
+        for (const doc of productSearchDocs(product)) {
+          const name = normalizeSearchText(doc.name);
+          const keywords = normalizeSearchText(doc.keywords);
+          const body = normalizeSearchText(doc.body);
+          plan.add(
+            "search_index",
+            batchSql(
+              db,
+              sql`INSERT INTO search_index (product_id, locale, name, keywords, body) SELECT ${productId}, ${doc.locale}, ${name}, ${keywords}, ${body} WHERE NOT EXISTS (SELECT 1 FROM search_index WHERE product_id = ${productId} AND locale = ${doc.locale})`,
+            ),
+            1,
+          );
+        }
+      }
+    });
+  }
+
   return plan;
 }
 
@@ -769,6 +798,13 @@ const changesOf = (result: unknown): number => {
   return typeof changes === "number" ? changes : 0;
 };
 
+/** The count a `Plan.measure` probe returned. */
+const countOf = (result: unknown): number => {
+  const count = (result as { results?: Array<{ n?: unknown }> } | null)?.results?.[0]?.n;
+  if (typeof count !== "number") throw new Error("Demo seed: a row-count probe returned no count");
+  return count;
+};
+
 /**
  * Loads the DEMO catalogue. The third argument also accepts the context scripts/db-reset.ts passes
  * (`{ d1, kv, env }`); only `overwrite` is read.
@@ -782,7 +818,10 @@ export async function seedDemo(db: Db, now: number, options: SeedDemoOptions & R
   for (const table of Object.keys(plan.rows)) changed[table] = 0;
   results.forEach((result, index) => {
     const table = plan.tables[index];
-    changed[table] = (changed[table] ?? 0) + changesOf(result);
+    if (table !== PROBE) changed[table] = (changed[table] ?? 0) + changesOf(result);
   });
+  for (const [table, probe] of plan.measured) changed[table] = countOf(results[probe.after]) - countOf(results[probe.before]);
+  // With overwrite the index rows are deleted and written again: all of them are refreshed.
+  if (overwrite && plan.rows.search_index !== undefined) changed.search_index = plan.rows.search_index;
   return { overwrite, statements: plan.statements.length, rows: plan.rows, changed };
 }

@@ -1,0 +1,65 @@
+{
+  "key": "xbox-series-s--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 1338,
+  "aspect": 1.1958,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-s/2-240.64a4b26a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-s/2-480.06cbf4c9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-s/2-720.048b8524.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-s/2-960.2e4e9fc5.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-series-s/2-1440.d1118b40.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-s/2-240.5fa10617.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-s/2-480.1601d41a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-s/2-720.74072850.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-s/2-960.140dbc01.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-series-s/2-1440.18d8acf6.webp"
+      }
+    ],
+    "png": "/products/xbox-series-s/2-720.939b3e28.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgwBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSFsAAAART6AmAAg2JsTenCIioDCG3y7gtLZtJ3p0kJNDgsvJsXA0gMbhs84FoLj1kmcaiOj/BNB9fS095sQCYNww/ya9snBVHLTDcDAPWw8g5hiixNmBjCciYqu8F+k2AFZQOCCKAAAAUAQAnQEqFAARAD8RgLhVrCglIygIAYAiCWkAAC3W1ZaMuVuOCwf+zm/fQAD+3rBsYJNe7KYttkvwfblbCeAIGv689qcSDn8hbH/bKtV+ptrL54EKv43rwSsQjdvVyvjXzYdjVloYjCBv9hlD1O5rfglCH/Qg91TdU1rf/2GfnQI945vuFIHz0QAA",
+  "dominant": "#f4f4f5",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-S-White-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn"
+  },
+  "input": "7c8e93ec593d1c5c"
+}

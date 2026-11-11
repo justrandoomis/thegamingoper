@@ -1,0 +1,326 @@
+{
+  "slug": "steam-deck-lcd",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "Valve",
+  "deviceModel": "steam-deck-lcd",
+  "family": "steam-deck-lcd",
+  "status": "discontinued",
+  "releaseDate": "2022-02-25",
+  "name": { "ar": "Steam Deck LCD", "en": "Steam Deck LCD", "ckb": "Steam Deck LCD" },
+  "short": {
+    "ar": "الطراز الأصلي · شاشة LCD قياس 7 بوصة · 64GB / 256GB / 512GB",
+    "en": "The original model · 7-inch LCD · 64GB / 256GB / 512GB",
+    "ckb": "مۆدێلی سەرەتایی · شاشەی LCD ـی 7 ئینچ · 64GB / 256GB / 512GB"
+  },
+  "description": {
+    "ar": "الطراز الأول من Steam Deck بشاشة LCD قياس 7 بوصة، ويشغّل مكتبة Steam بنظام SteamOS. أوقفت Valve إنتاجه في ديسمبر 2025، لذلك يتوفر اليوم كجهاز مستعمل أو مجدَّد. يقدم نفس أدوات التحكم ونفس قوة المعالجة تقريباً مثل طراز OLED، لكن بشاشة أصغر وبطارية أصغر.",
+    "en": "The first Steam Deck, with a 7-inch LCD screen, running your Steam library on SteamOS. Valve ended production in December 2025, so today it is sold used or refurbished. It has the same controls and nearly the same processing power as the OLED model, with a smaller screen and battery.",
+    "ckb": "یەکەم Steam Deck، بە شاشەی LCD ـی 7 ئینچ، کە کتێبخانەی Steam لەسەر SteamOS کار پێدەکات. Valve لە دیسەمبەری 2025 بەرهەمهێنانی ڕاگرت، بۆیە ئەمڕۆ وەک ئامێری بەکارهاتوو یان نوێکراوە دەفرۆشرێت. هەمان کۆنترۆڵ و نزیکەی هەمان هێزی پرۆسێسکردنی مۆدێلی OLED ـی هەیە، بەڵام شاشە و پاترییەکەی بچووکترن."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة IPS LCD ملتصقة بصرياً قياس 7 بوصة بدقة 1280×800 وتردد 60Hz",
+      "en": "7-inch optically bonded IPS LCD, 1280×800 at 60Hz",
+      "ckb": "شاشەی IPS LCD ـی 7 ئینچ بە لکاندنی ئۆپتیکی، 1280×800 لە 60Hz"
+    },
+    {
+      "ar": "بطارية 40Wh تكفي من 2 إلى 8 ساعات لعب حسب اللعبة",
+      "en": "40Wh battery: 2 to 8 hours of play depending on the game",
+      "ckb": "پاتریی 40Wh: 2 بۆ 8 کاتژمێر یاری بەپێی یارییەکە"
+    },
+    {
+      "ar": "يعمل بنظام SteamOS ومكتبة Steam؛ تقييمات Steam Deck Verified نفسها تنطبق على طرازي LCD وOLED",
+      "en": "Runs SteamOS and your Steam library; Steam Deck Verified ratings apply to both the LCD and OLED models",
+      "ckb": "لەسەر SteamOS و کتێبخانەی Steam کار دەکات؛ هەڵسەنگاندنی Steam Deck Verified بۆ هەردوو مۆدێلی LCD و OLED یەکسانە"
+    },
+    {
+      "ar": "نسخة 64GB تستخدم ذاكرة eMMC أبطأ، أما 256GB و512GB فتستخدمان NVMe SSD؛ وكلها فيها منفذ microSD",
+      "en": "The 64GB model uses slower eMMC storage; 256GB and 512GB use an NVMe SSD; all have a microSD slot",
+      "ckb": "مۆدێلی 64GB بیرگەی eMMC ـی هێواشتر بەکاردەهێنێت؛ 256GB و 512GB NVMe SSD بەکاردەهێنن؛ هەموویان شوێنی microSD یان هەیە"
+    },
+    {
+      "ar": "متوقف عن الإنتاج: تعرض Valve أحياناً نسخاً مجدّدة معتمدة بضمان سنة، وفي مناطقها الرسمية فقط",
+      "en": "Discontinued: Valve sometimes has Certified Refurbished units with a one-year warranty, only in its official regions",
+      "ckb": "بەرهەمهێنانی ڕاگیراوە: Valve جاروبار ئامێری نوێکراوەی بڕوانامەدار بە گەرەنتیی ساڵێک دەفرۆشێت، تەنها لە ناوچە فەرمییەکانی خۆی"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "معالج AMD مخصص بدقة 7nm: وحدة Zen 2 بأربع أنوية / 8 مسارات (2.4–3.5GHz) ورسوميات RDNA 2 بثماني وحدات CU بتردد 1.6GHz، باستهلاك 4–15W",
+        "en": "Custom 7 nm AMD APU: Zen 2 CPU, 4 cores / 8 threads (2.4–3.5GHz); RDNA 2 GPU, 8 CUs at 1.6GHz; 4–15W",
+        "ckb": "APU ـی تایبەتی AMD بە 7nm: CPU ـی Zen 2 بە 4 ناوک / 8 دەزوو (2.4–3.5GHz)؛ GPU ـی RDNA 2 بە 8 CU لە 1.6GHz؛ 4–15W"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB LPDDR5 بسرعة 5500 MT/s", "en": "16GB LPDDR5, 5500 MT/s", "ckb": "16GB LPDDR5، 5500 MT/s" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "64GB eMMC أو 256GB NVMe SSD أو 512GB NVMe SSD",
+        "en": "64GB eMMC, 256GB NVMe SSD or 512GB NVMe SSD",
+        "ckb": "64GB eMMC، یان 256GB NVMe SSD، یان 512GB NVMe SSD"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "منفذ microSD سريع (UHS-I) يدعم بطاقات SD وSDHC وSDXC",
+        "en": "High-speed microSD slot (UHS-I), supports SD, SDHC and SDXC",
+        "ckb": "شوێنی microSD ـی خێرا (UHS-I)، پشتگیری SD و SDHC و SDXC دەکات"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "7 بوصة IPS LCD تعمل باللمس، 1280×800، تردد 60Hz، سطوع 400 nit",
+        "en": "7-inch IPS LCD touchscreen, 1280×800, 60Hz, 400 nits typical",
+        "ckb": "شاشەی دەستلێدانی IPS LCD ـی 7 ئینچ، 1280×800، 60Hz، 400 nit"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "40Wh، من 2 إلى 8 ساعات لعب", "en": "40Wh, 2–8 hours of play", "ckb": "40Wh، 2–8 کاتژمێر یاری" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": {
+        "ar": "شاحن USB-C بقدرة 45W (PD 3.0) مع كابل بطول 1.5 متر",
+        "en": "45W USB-C power supply (PD 3.0) with a 1.5 m cable",
+        "ckb": "شەحنکەری USB-C ـی 45W (PD 3.0) لەگەڵ کێبڵی 1.5 مەتر"
+      }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": {
+        "ar": "SteamOS 3 مع وضع سطح المكتب KDE Plasma",
+        "en": "SteamOS 3, with a KDE Plasma desktop mode",
+        "ckb": "SteamOS 3، لەگەڵ دۆخی دێسکتۆپی KDE Plasma"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ USB-C واحد (USB 3.2 Gen 2 مع DisplayPort 1.4 حتى 4K بتردد 120Hz أو 8K بتردد 60Hz)، مقبس سماعة 3.5mm، منفذ microSD",
+        "en": "1× USB-C (USB 3.2 Gen 2 with DisplayPort 1.4, up to 4K 120Hz or 8K 60Hz), 3.5mm headphone jack, microSD slot",
+        "ckb": "1× USB-C (USB 3.2 Gen 2 لەگەڵ DisplayPort 1.4، تا 4K 120Hz یان 8K 60Hz)، دەروازەی بیستۆکی 3.5mm، شوێنی microSD"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": {
+        "ar": "Wi-Fi 5 ثنائي النطاق (2.4 و5GHz) وBluetooth 5.0",
+        "en": "Dual-band Wi-Fi 5 (2.4 and 5GHz) and Bluetooth 5.0",
+        "ckb": "Wi-Fi 5 ـی دوو-باند (2.4 و 5GHz) و Bluetooth 5.0"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "298 × 117 × 49 ملم", "en": "298 × 117 × 49 mm", "ckb": "298 × 117 × 49 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "حوالي 669 غرام", "en": "About 669 g", "ckb": "نزیکەی 669 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "واجهة Steam غير مترجمة إلى العربية حالياً، لذلك يعمل الجهاز بالإنجليزية أو بلغة أخرى مدعومة؛ أما الألعاب التي تدعم العربية فيمكن اختيار العربية لها من إعدادات اللعبة في Steam",
+        "en": "Steam's interface is not translated into Arabic yet, so the device runs in English or another supported language; games that include Arabic can be set to Arabic in that game's Steam settings",
+        "ckb": "ڕووکاری Steam هێشتا وەرنەگێڕدراوەتە سەر عەرەبی، بۆیە ئامێرەکە بە ئینگلیزی یان زمانێکی تری پشتگیریکراو کار دەکات؛ بەڵام ئەو یاریانەی عەرەبییان تێدایە دەتوانیت لە ڕێکخستنی یارییەکە لە Steam عەرەبییان بۆ هەڵبژێریت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Steam Deck LCD", "en": "Steam Deck LCD", "ckb": "ئامێری Steam Deck LCD" },
+    { "ar": "شاحن 45W مع كابل بطول 1.5 متر", "en": "45W power supply with 1.5 m cable", "ckb": "شەحنکەری 45W لەگەڵ کێبڵی 1.5 مەتر" },
+    { "ar": "حقيبة حمل", "en": "Carrying case", "ckb": "جانتای هەڵگرتن" }
+  ],
+  "variants": [
+    {
+      "sku": "SD-LCD-256",
+      "title": { "ar": "Steam Deck LCD 256GB", "en": "Steam Deck LCD 256GB", "ckb": "Steam Deck LCD 256GB" },
+      "options": { "storage": "256GB" },
+      "isDefault": true,
+      "images": ["steam-deck-lcd--1", "steam-deck-lcd--2", "steam-deck-lcd--3", "steam-deck-lcd--4"],
+      "notes": {
+        "ar": "آخر طراز LCD أنتجته Valve؛ توقف إنتاجه في ديسمبر 2025.",
+        "en": "The last LCD model Valve made; production ended in December 2025.",
+        "ckb": "دوایین مۆدێلی LCD کە Valve دروستی کرد؛ بەرهەمهێنانی لە دیسەمبەری 2025 ڕاگیرا."
+      }
+    },
+    {
+      "sku": "SD-LCD-64",
+      "title": { "ar": "Steam Deck LCD 64GB", "en": "Steam Deck LCD 64GB", "ckb": "Steam Deck LCD 64GB" },
+      "options": { "storage": "64GB eMMC" },
+      "isDefault": false,
+      "images": ["steam-deck-lcd--1", "steam-deck-lcd--2", "steam-deck-lcd--3", "steam-deck-lcd--4"],
+      "notes": {
+        "ar": "ذاكرة eMMC أبطأ ومساحة صغيرة؛ بطاقة microSD شبه ضرورية للألعاب الكبيرة.",
+        "en": "Slower eMMC storage and little space; a microSD card is almost a must for large games.",
+        "ckb": "بیرگەی eMMC ـی هێواشتر و شوێنی کەم؛ کارتی microSD بۆ یارییە گەورەکان نزیکەی پێویستە."
+      }
+    },
+    {
+      "sku": "SD-LCD-512",
+      "title": { "ar": "Steam Deck LCD 512GB", "en": "Steam Deck LCD 512GB", "ckb": "Steam Deck LCD 512GB" },
+      "options": { "storage": "512GB" },
+      "isDefault": false,
+      "images": ["steam-deck-lcd--1", "steam-deck-lcd--2", "steam-deck-lcd--3", "steam-deck-lcd--4"]
+    }
+  ],
+  "related": [
+    { "slug": "steam-deck-oled", "kind": "upsell" },
+    { "slug": "rog-xbox-ally", "kind": "alternative" },
+    { "slug": "lenovo-legion-go-s", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "steam-deck-lcd--1",
+      "file": ".cache/product-images/steam-deck-lcd/1.png",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering07.png",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "hero",
+      "alt": {
+        "ar": "Steam Deck LCD من الأمام مع لعبة على الشاشة",
+        "en": "Steam Deck LCD from the front with a game on screen",
+        "ckb": "Steam Deck LCD لە پێشەوە لەگەڵ یارییەک لەسەر شاشە"
+      },
+      "credit": "Valve",
+      "width": 3200,
+      "height": 1800,
+      "transparent": true
+    },
+    {
+      "key": "steam-deck-lcd--2",
+      "file": ".cache/product-images/steam-deck-lcd/2.png",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering08.png",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "angle",
+      "alt": {
+        "ar": "Steam Deck LCD من زاوية جانبية",
+        "en": "Steam Deck LCD seen from a side angle",
+        "ckb": "Steam Deck LCD لە گۆشەیەکی لاتەنیشتەوە"
+      },
+      "credit": "Valve",
+      "width": 3200,
+      "height": 1800,
+      "transparent": true
+    },
+    {
+      "key": "steam-deck-lcd--3",
+      "file": ".cache/product-images/steam-deck-lcd/3.png",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering06.png",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "angle",
+      "alt": {
+        "ar": "الحافة العلوية لجهاز Steam Deck LCD مع المنافذ وفتحات التهوية",
+        "en": "Top edge of Steam Deck LCD with ports and vents",
+        "ckb": "لێواری سەرەوەی Steam Deck LCD لەگەڵ دەروازەکان و کونی هەوا"
+      },
+      "credit": "Valve",
+      "width": 3200,
+      "height": 1800,
+      "transparent": true
+    },
+    {
+      "key": "steam-deck-lcd--4",
+      "file": ".cache/product-images/steam-deck-lcd/4.jpg",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering05.jpg",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "detail",
+      "alt": {
+        "ar": "لقطة قريبة لأزرار ABXY والعصا اليمنى في Steam Deck LCD",
+        "en": "Close-up of the ABXY buttons and right stick on Steam Deck LCD",
+        "ckb": "وێنەی نزیکی دوگمەکانی ABXY و جۆیستیکی ڕاست لە Steam Deck LCD"
+      },
+      "credit": "Valve",
+      "width": 2500,
+      "height": 1406,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.steamdeck.com/en/tech/deck",
+      "title": "Steam Deck :: Tech Specs (LCD)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "processor, memory, storage options, microSD, display, battery, charger and cable, ports, wireless, size, weight, OS"
+    },
+    {
+      "url": "https://www.steamdeck.com/en/oled",
+      "title": "Introducing Steam Deck OLED (Compare Steam Decks)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "256GB LCD contents: 45W power supply with 1.5 m cable, carrying case"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Steam_Deck",
+      "title": "Steam Deck",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release 25 February 2022, 7 nm APU, LPDDR5-5500, 64GB eMMC / 256GB / 512GB NVMe, 7-inch 400-nit 60Hz LCD; 64GB/512GB discontinued in 2023-2024; 256GB discontinued around 19-20 December 2025 and new stock gone by about 17 February 2026"
+    },
+    {
+      "url": "https://store.steampowered.com/steamdeck",
+      "title": "Steam Deck (Steam store)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "LCD no longer in the new line-up; Valve Certified Refurbished units with a one-year warranty; not purchasable from Iraq"
+    },
+    {
+      "url": "https://partner.steamgames.com/doc/store/localization/languages",
+      "title": "Languages Supported on Steam (Steamworks Documentation)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "the Steam interface is not translated into Arabic and cannot be run in Arabic; Arabic can be chosen per game for games that include it"
+    },
+    {
+      "url": "https://me.ign.com/ar/steam-deck/191874/shrk-valve-tln-n-rf-sr-jhz-steam-deck",
+      "title": "شركة Valve تعلن عن رفع سعر جهاز Steam Deck",
+      "publisher": "IGN Middle East",
+      "retrieved": "2026-11-11",
+      "supports": "refurbished LCD 64GB, 256GB and 512GB still sold by Valve (May 2026)"
+    },
+    {
+      "url": "https://www.steamdeck.com/en/press",
+      "title": "Steam Deck :: Press Kit",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "official product images"
+    }
+  ],
+  "notes": {
+    "ar": "لم تعد Valve تصنع هذا الجهاز؛ ما يُباع اليوم أجهزة مستعملة أو مجدّدة، وقد تختلف محتويات العلبة. لا تبيع Valve جهاز Steam Deck مباشرة في العراق.",
+    "en": "Valve no longer makes this model; what is sold today is used or refurbished, and box contents may differ. Valve does not sell Steam Deck directly in Iraq.",
+    "ckb": "Valve ئیتر ئەم مۆدێلە دروست ناکات؛ ئەوەی ئەمڕۆ دەفرۆشرێت بەکارهاتوو یان نوێکراوەیە، و ناوەڕۆکی قوتووەکە لەوانەیە جیاواز بێت. Valve ئامێری Steam Deck ڕاستەوخۆ لە عێراق نافرۆشێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "In-the-box list is Valve's list for the 256GB model; the original 64GB and 512GB boxes were not re-checked",
+      "Valve does not publish model numbers or barcodes",
+      "How often Valve restocks refurbished LCD units is not published"
+    ]
+  }
+}

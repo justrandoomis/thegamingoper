@@ -21,21 +21,34 @@ try {
   await sleep(150);
   await plain.evaluate(() => {
     window.__pageFade = [];
+    window.__flips = [];
     const original = Element.prototype.animate;
     Element.prototype.animate = function (keyframes, options) {
-      if (this.hasAttribute?.("data-motion-page")) window.__pageFade.push(Object.keys(keyframes[0] ?? {}));
+      if (this.hasAttribute?.("data-motion-page")) window.__pageFade.push({ keys: Object.keys(keyframes[0] ?? {}), duration: options?.duration });
+      if (this.hasAttribute?.("data-share")) window.__flips.push({ share: this.getAttribute("data-share"), from: keyframes[0]?.transform, to: keyframes[1]?.transform, width: Math.round(this.getBoundingClientRect().width) });
       return original.call(this, keyframes, options);
     };
   });
+  const cardWidth = await plain.$eval('[data-testid="card-c"] [data-share]', (el) => Math.round(el.getBoundingClientRect().width));
   await tap(plain, '[data-testid="card-c"]', { scroll: false });
   await plain.waitForSelector('[data-testid="lab-detail"][data-item="c"]');
-  await sleep(300);
+  await sleep(500);
   const fade = await plain.evaluate(() => window.__pageFade);
-  add("no view transitions: navigation works and the new page fades in (opacity only)", url(plain) === "/motion/item/c" && fade.length === 1 && fade[0].join() === "opacity", [url(plain), fade]);
+  add("no view transitions: navigation works and the new page fades in (opacity only, 120 ms)", url(plain) === "/motion/item/c" && fade.length === 1 && fade[0].keys.join() === "opacity" && fade[0].duration === 120, [url(plain), fade]);
+  const flipIn = await plain.evaluate(() => window.__flips);
+  const scaleOf = (transform) => Number(/scale\(([\d.]+)\)/.exec(transform ?? "")?.[1] ?? NaN);
+  add(
+    "no view transitions: the shared element FLIPs from the card's box (one scale, never stretched)",
+    flipIn.length === 1 && flipIn[0].share === "lab-item:c" && Math.abs(scaleOf(flipIn[0].from) - cardWidth / flipIn[0].width) < 0.01 && flipIn[0].to === "none",
+    { cardWidth, flipIn },
+  );
+  await plain.evaluate(() => (window.__flips.length = 0));
   await plain.goBack();
   await plain.waitForSelector('[data-testid="lab-home"]');
-  await sleep(300);
+  await sleep(500);
   add("no view transitions: Back restores URL and scroll", url(plain) === "/motion?tab=flow" && (await scrollY(plain)) === 240, [url(plain), await scrollY(plain)]);
+  const flipBack = await plain.evaluate(() => window.__flips);
+  add("no view transitions: Back FLIPs the card from the detail picture's box", flipBack.length === 1 && flipBack[0].share === "lab-item:c" && scaleOf(flipBack[0].from) > 1.5, flipBack);
   await tap(plain, '[data-testid="tab-system"]');
   await plain.waitForSelector('[data-testid="panel-system"]');
   await sleep(1200);
@@ -59,7 +72,7 @@ try {
   await sleep(100);
   let vt = await older.vt();
   const marks = await older.evaluate(() => ({ nav: document.documentElement.getAttribute("data-nav"), name: document.documentElement.style.viewTransitionName }));
-  add("no activeViewTransition: the zoom transition still runs on the root snapshots", vt.length === 1 && vt[0].nav === "zoom" && vt[0].root.new.includes("tt-grow-in"), vt.map((v) => [v.nav, v.root]));
+  add("no activeViewTransition: the zoom transition still runs on the root snapshots", vt.length === 1 && vt[0].nav === "zoom" && vt[0].root.new.includes("tt-zoom-in"), vt.map((v) => [v.nav, v.root]));
   add("no activeViewTransition: marks are cleared when React reports the transition finished", marks.nav === null && marks.name === "", marks);
   await older.clearVt();
   await older.goBack();

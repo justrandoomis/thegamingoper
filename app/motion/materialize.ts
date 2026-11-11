@@ -1,36 +1,40 @@
 /**
- * materialize / dematerialize — menus, popovers and toasts grow out of the thing that opened them and shrink back.
- * (Loaded on demand through ./extras; the public entries are in ./lazy.)
+ * materialize / dematerialize — menus, popovers and toasts arrive from the thing that opened them and leave the same
+ * way (loaded on demand through ./extras; the public entries are in ./lazy).
  *
- * Scale + opacity only, from the trigger's position. Interruptible: calling one while the other is running
- * continues from the current look. Reduced motion: opacity only.
+ * DESIGN.md §7.2: menus are glass, and glass slides: they drop from their trigger with 8px of travel and opacity
+ * (`settle` curve, 220 ms in, 140 ms out). The travel points away from the trigger: a menu below its trigger drops
+ * down, one above it rises. Interruptible: calling one while the other is running continues from the current look.
+ * Reduced motion: opacity only.
  */
 import { getMotionTier } from "./env";
 import { lastPointer } from "./pointer";
-import { springTiming } from "./timing";
-import { durations, easings } from "./tokens";
+import { durations, easings, travel } from "./tokens";
 
 export type MaterializeOptions = {
-  /** Where it grows from: the trigger element or a viewport point. Default: the last press, else the element's centre. */
+  /** What it comes from: the trigger element or a viewport point. Default: the last press, else from above. */
   from?: Element | { x: number; y: number } | null;
 };
 
-type Look = { opacity: string; scale: string };
+type Look = { opacity: string; translate: string };
 
 const running = new WeakMap<Element, Animation[]>();
+/** The side each element arrived from, so it leaves the same way. */
+const arrivedFrom = new WeakMap<Element, number>();
 
 /** If the element is mid-animation, read how it looks right now and stop — the next animation starts from there. */
 function interrupt(element: HTMLElement): Look | null {
   const animations = running.get(element);
   if (!animations) return null;
   const style = getComputedStyle(element);
-  const look = { opacity: style.opacity, scale: style.scale === "none" ? "1" : style.scale };
+  const look = { opacity: style.opacity, translate: style.translate === "none" ? "0px 0px" : style.translate };
   for (const animation of animations) animation.cancel();
   running.delete(element);
   return look;
 }
 
-function setOrigin(element: HTMLElement, from: MaterializeOptions["from"]): void {
+/** The offset (px) the element travels from: toward its trigger, vertically. */
+function offsetFrom(element: HTMLElement, from: MaterializeOptions["from"]): number {
   let point: { x: number; y: number } | null = null;
   if (from instanceof Element) {
     const rect = from.getBoundingClientRect();
@@ -40,12 +44,9 @@ function setOrigin(element: HTMLElement, from: MaterializeOptions["from"]): void
   } else {
     point = lastPointer();
   }
-  if (!point) return;
+  if (!point) return -travel.menu;
   const rect = element.getBoundingClientRect();
-  // Clamp to the element's box (plus a little) so a far-away trigger does not make it fly across the screen.
-  const x = Math.min(Math.max(point.x - rect.left, -24), rect.width + 24);
-  const y = Math.min(Math.max(point.y - rect.top, -24), rect.height + 24);
-  element.style.transformOrigin = `${Math.round(x)}px ${Math.round(y)}px`;
+  return point.y > rect.top + rect.height / 2 ? travel.menu : -travel.menu;
 }
 
 function play(element: HTMLElement, animations: Animation[]): Promise<void> {
@@ -63,11 +64,14 @@ function play(element: HTMLElement, animations: Animation[]): Promise<void> {
 export function materialize(element: HTMLElement, options: MaterializeOptions = {}): Promise<void> {
   const look = interrupt(element);
   const reduced = getMotionTier() === "reduced";
-  if (!reduced && !look) setOrigin(element, options.from);
-  const animations = [
-    element.animate([{ opacity: look?.opacity ?? "0" }, { opacity: "1" }], { duration: reduced ? 100 : durations.quick, easing: easings.out }),
-  ];
-  if (!reduced) animations.push(element.animate([{ scale: look?.scale ?? "0.9" }, { scale: "1" }], springTiming("gentle")));
+  const timing = { duration: reduced ? 120 : durations.base, easing: easings.settle };
+  const animations = [element.animate([{ opacity: look?.opacity ?? "0" }, { opacity: "1" }], timing)];
+  if (!reduced) {
+    const offset = offsetFrom(element, options.from);
+    arrivedFrom.set(element, offset);
+    const start = look?.translate ?? `0px ${offset}px`;
+    animations.push(element.animate([{ translate: start }, { translate: "0px 0px" }], timing));
+  }
   return play(element, animations);
 }
 
@@ -75,10 +79,12 @@ export function materialize(element: HTMLElement, options: MaterializeOptions = 
 export function dematerialize(element: HTMLElement, options: MaterializeOptions = {}): Promise<void> {
   const look = interrupt(element);
   const reduced = getMotionTier() === "reduced";
-  if (!reduced && options.from !== undefined) setOrigin(element, options.from);
-  const duration = reduced ? 80 : durations.quick;
-  const timing = { duration, easing: easings.in, fill: "forwards" as const };
+  const timing = { duration: reduced ? 120 : durations.exit, easing: easings.exit, fill: "forwards" as const };
   const animations = [element.animate(look ? [{ opacity: look.opacity }, { opacity: "0" }] : { opacity: "0" }, timing)];
-  if (!reduced) animations.push(element.animate(look ? [{ scale: look.scale }, { scale: "0.94" }] : { scale: "0.94" }, timing));
+  if (!reduced) {
+    const offset = options.from !== undefined ? offsetFrom(element, options.from) : (arrivedFrom.get(element) ?? -travel.menu);
+    const end = `0px ${offset}px`;
+    animations.push(element.animate(look ? [{ translate: look.translate }, { translate: end }] : { translate: end }, timing));
+  }
   return play(element, animations);
 }

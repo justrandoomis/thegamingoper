@@ -1,0 +1,65 @@
+{
+  "key": "pulse-3d--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1019,
+  "aspect": 1.5702,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pulse-3d/3-240.5353f8b1.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-3d/3-480.5de90839.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-3d/3-720.df320fe6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-3d/3-960.1efdc0ed.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pulse-3d/3-1440.bcbe9822.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pulse-3d/3-240.5db574e6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-3d/3-480.03387215.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-3d/3-720.03d8fa0f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-3d/3-960.b015f672.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pulse-3d/3-1440.a4cf8446.webp"
+      }
+    ],
+    "png": "/products/pulse-3d/3-720.d4b41743.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSGwAAAART6CobSQ3tyB6f+3eRURAGn5fsYET27bV5oYjM4S42HIrmSxOgOuqyDFZ7hlvaQoR/Z8A/Rq2Z/NuypDCJ++LqjHlq7d6mwzA/xQDZ3UGaIKVzz2BPhjSA9izlHSB84aGpDxEQcmWpF5N/wJWUDggXAAAANADAJ0BKhQADQA/EXKxUKwmpKKwCAGAIgllAABSabc7AYLcrwkaAAD+vGUa95mV2E2HX4lDyCF5uiodeig3Rjcut8n7m4gpn8dI734IwdhaGvbddLGOI9D4+IAA",
+  "dominant": "#272b32",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-midnight-black-screenshot-02-en-16aug21?$native--t$",
+    "page": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/"
+  },
+  "input": "6ebb8b1d5075e285"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "playstation-5-slim--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 574,
+  "aspect": 2.7875,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim/2-240.7103afdb.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim/2-480.616c40b6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-slim/2-720.c2eed7e1.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-slim/2-960.bd3b5f05.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5-slim/2-1440.fd14c13d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim/2-240.a21065cb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim/2-480.a1cbec5a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-slim/2-720.3667cba4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-slim/2-960.8b692fcf.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5-slim/2-1440.8d26e611.webp"
+      }
+    ],
+    "png": "/products/playstation-5-slim/2-720.4ca1be07.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSFQAAAART6CobSM2VRbj7rUjIsD6pKMSbGtrT/Ilwcr/ZAJm8J7DCAxASenS+wSReZEZIvo/AfjbNalkj9BYa29vW0Rrn4Gyfv3i5kVAUVXOK2MkAIAkAABWUDggjAAAADAEAJ0BKhQABwA/EXKwUKwmpKKwCAGAIglsAMKBhKorm7i0ziCef1CBoAD+xRR1IgH7eWrFh4v7qAfrsZgNYboAWgFGemYotPoXjVbJKM6dV7Cxagp9/QNGKJro/OyCtbvKYQ0Tdn3mTV+mKSEVYCzo5H9u8T2Qo7IE1MH1/+A/0imssjmv0GPn7+AA",
+  "dominant": "#e9ecf3",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-05-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/"
+  },
+  "input": "5e7a1f0aa1f1e7a8"
+}

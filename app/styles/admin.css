@@ -1,0 +1,106 @@
+/*
+ * Admin density — docs/DESIGN.md §10. Imported into the `components` layer by app/app.css, after components.css.
+ * The same tokens and components with a density switch: put data-density="admin" on the admin shell (or any
+ * container). Raised clay means "act on this", glass means "navigation or a temporary layer", data has no material.
+ * The type roles shrink in tokens.css; the controls shrink here.
+ */
+
+/* keys: 36px, 2px wall, no cast shadow, 8px radius, Plex 600 13 */
+[data-density="admin"] .key {
+  --wall: 2px;
+  --h: 36px;
+  --px: 14px;
+  --r: var(--r-xs);
+  --cast: none;
+  font: 600 13px/1.25 var(--font-text);
+}
+[data-density="admin"] .key--lg {
+  --h: 40px;
+}
+[data-density="admin"] .key--round {
+  --h: 32px;
+  --r: var(--r-full);
+}
+[data-density="admin"] .key--chip {
+  --h: 32px;
+  font: 500 13px/1.25 var(--font-text);
+}
+/* the dense admin is built for a mouse; on touch screens every key keeps a 44px hit area */
+@media (pointer: coarse) {
+  [data-density="admin"] .key::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--target)) / 2));
+    inset-inline: min(0px, calc((100% - var(--target)) / 2));
+  }
+}
+
+/* fields: 36px, 8px radius, 13px text */
+[data-density="admin"] .field__input {
+  block-size: 36px;
+  border-radius: var(--r-xs);
+  font-size: 13px;
+  padding-inline: 10px;
+}
+[data-density="admin"] textarea.field__input {
+  block-size: auto;
+  min-block-size: 80px;
+  padding-block: 8px;
+}
+[data-density="admin"] select.field__input {
+  padding-inline-end: 34px;
+}
+[data-density="admin"] .field__caret {
+  inset-inline-end: 10px;
+}
+[data-density="admin"] .field__label {
+  font: var(--type-label);
+}
+[data-density="admin"] .choice {
+  min-block-size: 36px;
+  padding-block: 6px;
+  font: var(--type-body);
+}
+
+/* tables and financial grids: flat paper, hairlines, a sticky SOLID head, tabular numbers at the inline end.
+   No clay, no glass, no shadow, no animation beyond an instant row highlight. */
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--type-data);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.table th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-sticky);
+  block-size: var(--row, 36px);
+  padding-inline: 12px;
+  background: var(--niche);
+  color: var(--ink-2);
+  font-weight: 600;
+  text-align: start;
+  white-space: nowrap;
+  border-block-end: 1px solid var(--line-strong);
+}
+.table td {
+  block-size: var(--row, 36px);
+  padding-inline: 12px;
+  border-block-end: 1px solid var(--line);
+}
+.table .is-num {
+  text-align: end;
+  white-space: nowrap;
+}
+.table .is-negative {
+  color: var(--red-ink);
+}
+.table tbody tr:hover td,
+.table tr[aria-selected="true"] td {
+  background: var(--niche);
+}
+.table tr[aria-selected="true"] td:first-child {
+  border-inline-start: 3px solid var(--ink);
+}

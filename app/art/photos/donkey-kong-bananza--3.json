@@ -1,0 +1,65 @@
+{
+  "key": "donkey-kong-bananza--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/donkey-kong-bananza/3-240.e3fc62c8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/donkey-kong-bananza/3-480.67c8902d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/donkey-kong-bananza/3-720.5b6171a3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/donkey-kong-bananza/3-960.928ac53d.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/donkey-kong-bananza/3-1440.5c3626ba.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/donkey-kong-bananza/3-240.e263fb6e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/donkey-kong-bananza/3-480.8b27554e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/donkey-kong-bananza/3-720.a2ed3ddc.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/donkey-kong-bananza/3-960.5f9decca.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/donkey-kong-bananza/3-1440.321659db.webp"
+      }
+    ],
+    "png": "/products/donkey-kong-bananza/3-720.5d60d7bf.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJagCdABVWsmW5uIAA/t/nTIjrIWZKUGdLAcG97hs1DhddIhm+gfUa+dz52yCvhu/ybeVVmwg1Z3zsYTYE1f9ZVLZ8X98l4towrcpBvlEmP1PXU/prXKDJsMC5AAAA",
+  "dominant": "#571818",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/b8ae4b278d62fb9683adf9939c79a3fc5ac71a671d1d644eb8774c4904e34ee2",
+    "page": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/"
+  },
+  "input": "a806abce9954625e"
+}

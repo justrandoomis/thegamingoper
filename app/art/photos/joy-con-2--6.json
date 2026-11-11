@@ -1,0 +1,41 @@
+{
+  "key": "joy-con-2--6",
+  "view": "hero",
+  "width": 571,
+  "height": 748,
+  "aspect": 0.7634,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2/6-240.b4e7f179.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2/6-480.9614730a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2/6-240.cb007284.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2/6-480.5549a3d7.webp"
+      }
+    ],
+    "png": "/products/joy-con-2/6-571.a2c29b4a.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAADgAAEwAAQUxQSIIAAAART6CmkRQ4dybeCmiJiAD7G18GUGTbVh3tsGWQkYljctTomDw7JsndX4azJ5wxRPQ/WfP0drQZhj1d2oOJ/vgOM9+nGmLh7cwglFx5vvCdku6uPKequ9pjT3e0wp2eaJEPvdAEY33UGB8GU43QN1j6DjwGS8sA7eNGCCCXAyCZibAWVlA4IHQAAAAwBACdASoPABQAPxFysFAsJqSisAgBgCIJYwATwBQYjFjd6rLch4DSZ0AA+SCTPaRHzVOiggBbamdNZTNPByPNhbaCjO839Lz2zuZWv2GNvEsFc8CMiXL/QWQ2BtIXZY3u76gAzPkMWAbmImeiCgDSdEoAAA==",
+  "dominant": "#353639",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/127071-nintendo-switch-2-joy-con-2-blue-light-yellow-front-angle-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/joy-con-2-blue-light-yellow-127071/"
+  },
+  "input": "672a2ce843629516"
+}

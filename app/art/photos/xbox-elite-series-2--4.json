@@ -1,0 +1,65 @@
+{
+  "key": "xbox-elite-series-2--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 1168,
+  "aspect": 1.3699,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-elite-series-2/4-240.18cf514b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-elite-series-2/4-480.1be71a23.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-elite-series-2/4-720.83544f4f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-elite-series-2/4-960.acd8b226.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-elite-series-2/4-1440.0e39d651.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-elite-series-2/4-240.307ae9a3.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-elite-series-2/4-480.ef645dfa.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-elite-series-2/4-720.dbc99b94.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-elite-series-2/4-960.e473b016.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-elite-series-2/4-1440.08573f42.webp"
+      }
+    ],
+    "png": "/products/xbox-elite-series-2/4-720.310aa7ab.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGwAAAART6CobSM2Vwp3rz0BXEQE6JLfUxpObNtWmxOOjIzEgmTSpHEI7NoZZNVFF994P4whov8TgPVuvRgdW0AmWhceuhReujl8dTeSv65xemL0N6bgbopqaUbD4eIvcS1dgKfEG/GUngTJCu3BwRJWUDggigAAABAEAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglpAAPl0d1q9OMnrE1ugMvAAP6PrwDHxtsB/1rzlnSUwTG8PKWZe9FwSKChVxKUGNazT4d5DzNTxW2GRjM1rR9huxldBnXCPM19R9B8UP48O9Bs/F/e3NtNIbOWR8QcWvtnNHRCTY0VR18i6niE96xgAA==",
+  "dominant": "#e6e6e6",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/320089_Image-Buy-Box-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2-core/8v7m3k0bsh52"
+  },
+  "input": "f8ad9228bb6b5f83"
+}

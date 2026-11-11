@@ -11,14 +11,16 @@
  *     </Await>
  *   </Suspense>
  *
- * - The animation is scale (.92 → 1, soft overshoot) + opacity on the wrapper itself: no layout shift, compositor only.
- *   Reserve the geometry on the wrapper (and on the fallback) with your own classes.
- * - It plays for content that appears after the page is on screen: Suspense reveals, results that arrive, items the
- *   shopper adds. Content that is part of the server HTML or of a page navigation is simply there (the page
- *   transition is that animation) — pass `always` to opt in.
+ * - The animation is DESIGN.md's inflate: scale .86 → 1 with opacity 0 → 1 on the `inflate` spring, on the wrapper
+ *   itself: no layout shift, compositor only. Reserve the geometry on the wrapper (and on the fallback) with your
+ *   own classes. A failed load is not a bubble: show the empty reserved space with a message and a retry key.
+ * - It plays for content that appears after the page is on screen (first appearance only): Suspense reveals,
+ *   results that arrive, items the shopper adds. Content that is part of the server HTML or of a page navigation is
+ *   simply there (the page transition is that animation) — pass `always` to opt in.
  * - `origin` makes it grow from a point (a tap) instead of its own centre.
- * - A group staggers its children; the whole wave never takes more than 400 ms. Items added to an existing group later
- *   are not delayed. Re-key the group to play the wave again (e.g. `key={query}`).
+ * - A group staggers its children 45 ms apart; at most six are staggered, the rest appear with the sixth. Items added
+ *   to an existing group later are not delayed. Re-key the group to play the wave again (e.g. `key={query}`).
+ * - Low-end tier and reduced motion: content appears in place, no animation.
  */
 import {
   Children,
@@ -41,10 +43,10 @@ import { staggerStep } from "./stagger";
 import { bubble as tokens } from "./tokens";
 
 type GroupValue = { step: number; isFresh: () => boolean };
-const GroupContext = createContext<GroupValue | null>(null);
+const GroupContext = /* @__PURE__ */ createContext<GroupValue | null>(null);
 
-/** CSS assigns stagger slots 0–11 by child position; later children share the last slot. */
-const MAX_SLOTS = 12;
+/** CSS assigns stagger slots 0–5 by child position; later children share the last slot (motion.css). */
+const MAX_SLOTS = tokens.staggerSlots;
 
 export type BubbleProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   children?: ReactNode;

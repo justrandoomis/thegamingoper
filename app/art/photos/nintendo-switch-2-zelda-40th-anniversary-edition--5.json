@@ -1,0 +1,49 @@
+{
+  "key": "nintendo-switch-2-zelda-40th-anniversary-edition--5",
+  "view": "hero",
+  "width": 822,
+  "height": 760,
+  "aspect": 1.0816,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-240.11212ed4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-480.cd98e47d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-720.e116431b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-240.981e2d0b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-480.c2071a4c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-720.f9909c13.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/5-720.0fa996e4.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABwBACdASoUABIAPxF+t1WsJ6UjKAgBgCIJZwAAIdhWcTu2ypzK75jR7sWSAAD+6rwucVYBjXmbUAB3JrxVxqSh6ezC9iJtj0pVyTuVkgTklbuNoFpJblnMfKNMPgPC7aRqe7jSMoZFmtg1ShAoUCAfKReu8AAA",
+  "dominant": "#363738",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "detail",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-joy-con-with-straps-front-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/"
+  },
+  "input": "421e69f0b698fffe"
+}

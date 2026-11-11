@@ -1,0 +1,334 @@
+{
+  "slug": "playstation-5",
+  "group": "playstation-hardware",
+  "kind": "console",
+  "platform": "playstation",
+  "brand": "Sony",
+  "deviceModel": "ps5",
+  "family": "ps5",
+  "status": "discontinued",
+  "releaseDate": "2020-11-12",
+  "name": {
+    "ar": "PlayStation 5 (الطراز الأصلي 2020)",
+    "en": "PlayStation 5 (original 2020 model)",
+    "ckb": "PlayStation 5 (مۆدێلی ڕەسەنی 2020)"
+  },
+  "short": {
+    "ar": "825GB · نسخة أقراص أو Digital Edition · طرازات CFI-1000/1100/1200",
+    "en": "825GB · Disc or Digital Edition · CFI-1000/1100/1200 models",
+    "ckb": "825GB · وەشانی دیسک یان Digital Edition · مۆدێلەکانی CFI-1000/1100/1200"
+  },
+  "description": {
+    "ar": "جهاز PS5 الأول بالحجم الكبير الذي صدر في نوفمبر 2020، بنسختين: مع قارئ أقراص Ultra HD Blu-ray أو Digital Edition بدونه. استُبدل بطراز slim الأصغر في نوفمبر 2023، ولم يعد يُنتج جديداً، لكن Sony ما زالت تبيعه كجهاز مُجدَّد رسمياً. الأداء نفسه تقريباً، والفرق في الحجم والسعة (825GB).",
+    "en": "The first, larger PS5 released in November 2020, in two versions: with an Ultra HD Blu-ray drive or as a Digital Edition without one. It was replaced by the smaller slim model in November 2023 and is no longer made new, but Sony still sells it as a certified refurbished console. Performance is essentially the same; the differences are size and the 825GB storage.",
+    "ckb": "یەکەم PS5ی گەورە کە لە تشرینی دووەمی 2020 دەرچوو، بە دوو وەشان: لەگەڵ دڕایڤی Ultra HD Blu-ray یان Digital Edition بەبێ دڕایڤ. لە تشرینی دووەمی 2023 مۆدێلی slimی بچووکتر جێگەی گرتەوە و ئیتر بە نوێ دروست ناکرێت، بەڵام Sony هێشتا وەک ئامێری نۆژەنکراوەی فەرمی دەیفرۆشێت. توانا نزیکەی هەمانە؛ جیاوازی لە قەبارە و بیرگەی 825GB دایە."
+  },
+  "highlights": [
+    {
+      "ar": "ذاكرة SSD سعة 825GB، وقابلة للتوسعة بقرص M.2",
+      "en": "825GB SSD, expandable with an M.2 SSD",
+      "ckb": "بیرگەی SSDی 825GB، دەتوانرێت بە SSDی M.2 زیاد بکرێت"
+    },
+    {
+      "ar": "نفس مكتبة ألعاب PS5 وميزاته: 4K، تتبع الأشعة، صوت ثلاثي الأبعاد، ومعظم ألعاب PS4",
+      "en": "Same PS5 games and features: 4K, ray tracing, 3D audio and most PS4 games",
+      "ckb": "هەمان یاری و تایبەتمەندییەکانی PS5: 4K، ڕەی تڕەیسینگ، دەنگی سێ ڕەهەندی و زۆربەی یارییەکانی PS4"
+    },
+    {
+      "ar": "قاعدة لوقوف الجهاز عمودياً مرفقة في العلبة",
+      "en": "A base to stand the console upright comes in the box",
+      "ckb": "بنکەیەک بۆ وەستاندنی کۆنسۆڵ بە ستوونی لەناو قوتووەکەدایە"
+    },
+    {
+      "ar": "لا يقبل قارئ الأقراص المنفصل الجديد، وله أغطية خاصة به غير أغطية فئة slim",
+      "en": "Does not take the newer add-on Disc Drive, and uses its own covers rather than slim covers",
+      "ckb": "دڕایڤی دیسکی جیاکراوەی نوێ وەرناگرێت، و قاپی تایبەتی خۆی هەیە نەک قاپەکانی slim"
+    },
+    {
+      "ar": "أكبر وأثقل من الطراز الحالي: نسخة الأقراص 390 × 104 × 260 ملم",
+      "en": "Bigger and heavier than today's model: disc version 390 × 104 × 260 mm",
+      "ckb": "گەورەتر و قورستر لە مۆدێلی ئێستا: وەشانی دیسک 390 × 104 × 260 ملم"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "أرقام الطراز", "en": "Model numbers", "ckb": "ژمارەکانی مۆدێل" },
+      "value": {
+        "ar": "CFI-1000 (2020)، CFI-1100 (2021)، CFI-1200 (2022)؛ الحرف A لنسخة الأقراص وB للرقمية (مثال: CFI-1216A)",
+        "en": "CFI-1000 (2020), CFI-1100 (2021), CFI-1200 (2022); A = disc, B = digital (e.g. CFI-1216A)",
+        "ckb": "CFI-1000 (2020)، CFI-1100 (2021)، CFI-1200 (2022)؛ A = دیسک، B = دیجیتاڵ (نموونە: CFI-1216A)"
+      }
+    },
+    {
+      "key": "cpu-gpu",
+      "label": { "ar": "المعالج والرسوميات", "en": "CPU and GPU", "ckb": "پرۆسێسەر و گرافیک" },
+      "value": {
+        "ar": "AMD Zen 2 بثماني أنوية حتى 3.5GHz؛ رسوميات RDNA 2 حتى 2.23GHz (10.28 TFLOPS)",
+        "en": "8-core AMD Zen 2 up to 3.5GHz; RDNA 2 graphics up to 2.23GHz (10.28 TFLOPS)",
+        "ckb": "AMD Zen 2ی 8 ناوک تا 3.5GHz؛ گرافیکی RDNA 2 تا 2.23GHz (10.28 TFLOPS)"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "میمۆری" },
+      "value": { "ar": "16GB GDDR6", "en": "16GB GDDR6", "ckb": "16GB GDDR6" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": {
+        "ar": "SSD سعة 825GB (المساحة المتاحة أقل لأن جزءاً محجوز للنظام)",
+        "en": "825GB SSD (usable space is lower because part is reserved for the system)",
+        "ckb": "SSDی 825GB (شوێنی بەکارهێنراو کەمترە چونکە بەشێکی بۆ سیستەم تەرخانە)"
+      }
+    },
+    {
+      "key": "disc",
+      "label": { "ar": "الأقراص", "en": "Discs", "ckb": "دیسک" },
+      "value": {
+        "ar": "نسخة الأقراص: Ultra HD Blu-ray وBlu-ray وDVD؛ النسخة الرقمية: بدون قارئ",
+        "en": "Disc version: Ultra HD Blu-ray, Blu-ray, DVD; Digital Edition: none",
+        "ckb": "وەشانی دیسک: Ultra HD Blu-ray، Blu-ray، DVD؛ Digital Edition: نییە"
+      }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "HDMI 2.1، Wi-Fi 6، Bluetooth 5.1، Ethernet جيجابت",
+        "en": "HDMI 2.1, Wi-Fi 6, Bluetooth 5.1, Gigabit Ethernet",
+        "ckb": "HDMI 2.1، Wi-Fi 6، Bluetooth 5.1، Ethernetی گیگابایت"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "ئەندازەکان" },
+      "value": {
+        "ar": "نسخة الأقراص 390 × 104 × 260 ملم؛ الرقمية 390 × 92 × 260 ملم (تقريباً)",
+        "en": "Disc 390 × 104 × 260 mm; Digital 390 × 92 × 260 mm (approx.)",
+        "ckb": "دیسک 390 × 104 × 260 ملم؛ دیجیتاڵ 390 × 92 × 260 ملم (نزیکەی)"
+      }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": {
+        "ar": "حسب المراجعة: نسخة الأقراص من 4.5 إلى 3.9 كغ، والرقمية من 3.9 إلى 3.4 كغ",
+        "en": "Depends on revision: disc 4.5 to 3.9 kg, Digital 3.9 to 3.4 kg",
+        "ckb": "بەپێی پێداچوونەوە: دیسک لە 4.5 بۆ 3.9 کگ، دیجیتاڵ لە 3.9 بۆ 3.4 کگ"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز PlayStation 5 (طراز CFI-1000)", "en": "PlayStation 5 console (CFI-1000 model group)", "ckb": "کۆنسۆڵی PlayStation 5 (کۆمەڵەی CFI-1000)" },
+    { "ar": "يد تحكم لاسلكية DualSense", "en": "DualSense wireless controller", "ckb": "کۆنتڕۆڵەری بێتەلی DualSense" },
+    { "ar": "كابل شحن USB لـ DualSense", "en": "DualSense USB charging cable", "ckb": "کێبڵی USB بۆ شەحنی DualSense" },
+    { "ar": "قاعدة لوقوف الجهاز", "en": "Base stand for the console", "ckb": "بنکە بۆ وەستانی کۆنسۆڵ" },
+    { "ar": "كابل HDMI", "en": "HDMI cable", "ckb": "کێبڵی HDMI" },
+    { "ar": "سلك الكهرباء (AC)", "en": "AC power cord", "ckb": "وایەری کارەبا (AC)" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" },
+    { "ar": "لعبة ASTRO's PLAYROOM مثبّتة مسبقاً", "en": "ASTRO's PLAYROOM (pre-installed)", "ckb": "یاریی ASTRO's PLAYROOM (پێشتر دامەزراوە)" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-ORIG-DISC",
+      "title": {
+        "ar": "PS5 الأصلي – نسخة الأقراص 825GB",
+        "en": "Original PS5 – Disc, 825GB",
+        "ckb": "PS5ی ڕەسەن – وەشانی دیسک، 825GB"
+      },
+      "options": { "edition": "Disc", "storage": "825GB", "color": "White" },
+      "modelNumber": "CFI-1216A",
+      "isDefault": true,
+      "images": ["playstation-5--1", "playstation-5--4"],
+      "notes": {
+        "ar": "CFI-1216A هو الطراز الذي يبيعه متجر PlayStation البريطاني مُجدَّداً؛ أرقام الطرازات الأخرى (CFI-10xx/11xx/12xx) تختلف حسب السنة والمنطقة.",
+        "en": "CFI-1216A is the unit PlayStation UK sells refurbished; other numbers (CFI-10xx/11xx/12xx) vary by year and region.",
+        "ckb": "CFI-1216A ئەو ئامێرەیە کە PlayStationی بەریتانی بە نۆژەنکراوەیی دەیفرۆشێت؛ ژمارەکانی تر (CFI-10xx/11xx/12xx) بەپێی ساڵ و ناوچە جیاوازن."
+      }
+    },
+    {
+      "sku": "PS5-ORIG-DIGITAL",
+      "title": {
+        "ar": "PS5 الأصلي – Digital Edition 825GB",
+        "en": "Original PS5 – Digital Edition, 825GB",
+        "ckb": "PS5ی ڕەسەن – Digital Edition، 825GB"
+      },
+      "options": { "edition": "Digital", "storage": "825GB", "color": "White" },
+      "isDefault": false,
+      "images": ["playstation-5--2", "playstation-5--3"],
+      "notes": {
+        "ar": "بدون قارئ أقراص ولا يمكن إضافة قارئ الأقراص المنفصل إليه.",
+        "en": "No disc drive, and the add-on Disc Drive cannot be fitted to it.",
+        "ckb": "دڕایڤی دیسکی نییە و ناتوانرێت دڕایڤی دیسکی جیاکراوەی بۆ زیاد بکرێت."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "القاعدة العمودية الجديدة (CFI-ZVS1) متوافقة مع فئة CFI-1000.",
+        "en": "The newer Vertical Stand (CFI-ZVS1) fits the CFI-1000 model group.",
+        "ckb": "ستاندی ستوونی نوێ (CFI-ZVS1) لەگەڵ کۆمەڵەی CFI-1000 گونجاوە."
+      },
+      "source": "https://direct.playstation.com/en-us/buy-accessories/vertical-stand-for-ps5-consoles"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "note": {
+        "ar": "النسخة الرقمية الأصلية تبقى بدون أقراص: قارئ الأقراص المنفصل مخصص لـ slim Digital وPS5 Pro فقط.",
+        "en": "The original Digital Edition stays disc-free: the add-on Disc Drive is only for the slim Digital Edition and PS5 Pro.",
+        "ckb": "Digital Editionی ڕەسەن بێ دیسک دەمێنێتەوە: دڕایڤی دیسکی جیاکراوە تەنها بۆ slim Digital و PS5 Proیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-vertical-stand", "kind": "accessory" },
+    { "slug": "dualsense-charging-station", "kind": "accessory" },
+    { "slug": "pulse-elite", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "playstation-5--1",
+      "file": ".cache/product-images/playstation-5/1.webp",
+      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/v2-PS5-Console-Disc-hero-recert?wid=2000",
+      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-console",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PS5 الأصلي بقارئ أقراص واقفاً على قاعدته بجانب يد DualSense",
+        "en": "Original PS5 with disc drive standing on its base next to a DualSense",
+        "ckb": "PS5ی ڕەسەن بە دڕایڤی دیسکەوە لەسەر بنکەکەی لە تەنیشت DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 2000, "height": 900, "transparent": false
+    },
+    {
+      "key": "playstation-5--2",
+      "file": ".cache/product-images/playstation-5/2.webp",
+      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-front-recert?wid=2000",
+      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console",
+      "kind": "angle",
+      "alt": {
+        "ar": "PS5 Digital Edition الأصلي من الأمام مع يد DualSense",
+        "en": "Original PS5 Digital Edition from the front with a DualSense",
+        "ckb": "PS5 Digital Editionی ڕەسەن لە پێشەوە لەگەڵ DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 2000, "height": 900, "transparent": false
+    },
+    {
+      "key": "playstation-5--3",
+      "file": ".cache/product-images/playstation-5/3.webp",
+      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-side-recert?wid=2000",
+      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console",
+      "kind": "angle",
+      "alt": {
+        "ar": "PS5 Digital Edition الأصلي من الجانب",
+        "en": "Original PS5 Digital Edition from the side",
+        "ckb": "PS5 Digital Editionی ڕەسەن لە لاوە"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 2000, "height": 900, "transparent": false
+    },
+    {
+      "key": "playstation-5--4",
+      "file": ".cache/product-images/playstation-5/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Certified_Refurbished_PlayStation_5_Console_PROD_3D_16x9-01-24Apr26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/certified-refurbished/product/PSD001-PSDE01840_63-PS5GRADEDCEC7XZE/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة PS5 الأصلي بجانب الجهاز ويد التحكم",
+        "en": "Original PS5 box beside the console and controller",
+        "ckb": "قوتووی PS5ی ڕەسەن لە تەنیشت کۆنسۆڵ و کۆنتڕۆڵەر"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/ps5/certified-refurbished/product/PSD001-PSDE01840_63-PS5GRADEDCEC7XZE/",
+      "title": "Certified Refurbished PlayStation®5 Console",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "still sold as certified refurbished, CFI-1000 model group, model number CFI-1216A01Y_R, 390 × 104 × 260 mm, what's in the box"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console",
+      "title": "Certified Refurbished PlayStation®5 Digital Edition Console (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "Digital Edition 825GB, CFI-1000 model group, what's in the box"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/ps5/",
+      "title": "PlayStation®5 | Play Has No Limits",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "launch 12 November 2020 in select territories and 19 November 2020 globally; slim model is smaller and lighter"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/10/10/new-look-for-ps5-console-this-holiday-season/",
+      "title": "New look for PS5 console this holiday season",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "the slim model replaces the original once stock sells out"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/PlayStation_5",
+      "title": "PlayStation 5",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "CFI-1100 (2021) and CFI-1200 (2022) revisions, dimensions and weights per revision, CPU/GPU, 825GB, Wi-Fi 6, Bluetooth 5.1, HDMI 2.1"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/",
+      "title": "Disc Drive For PS5® Digital Edition Consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "add-on Disc Drive only for slim Digital Edition and PS5 Pro"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/accessories/add-ons",
+      "title": "Buy Covers & Add ons | PlayStation® (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "separate console covers for the original PS5 / Digital Edition and for the slim model group"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-console",
+      "title": "Certified Refurbished PlayStation®5 Console (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: disc model still sold as certified refurbished in the US, 825GB, CFI-1000 model group, 12-month warranty, what's in the box (incl. DualSense USB charging cable and vertical base)"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/compatibility-ps5-pro/",
+      "title": "Compatibility guide for PS5 Pro consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Sony lists CFI-1000 covers, slim (CFI-2000) covers and the original console base as separate parts, none of which fit PS5 Pro"
+    }
+  ],
+  "notes": {
+    "ar": "حالة المنتج: لم يعد يُصنع، والمتوفر منه مُجدَّد رسمياً أو مستعمل. عند شراء جهاز مستعمل افحص رقم الطراز على الجهاز (CFI-10xx/11xx/12xx). الحساب يُنشأ على منطقة PSN مدعومة لأن العراق غير مدرج، واللعب الجماعي عبر الإنترنت يحتاج PlayStation Plus.",
+    "en": "Status: no longer manufactured; what is available is certified refurbished or used. When buying used, check the model number on the console (CFI-10xx/11xx/12xx). The account is registered to a supported PSN region because Iraq is not listed, and online multiplayer needs PlayStation Plus.",
+    "ckb": "دۆخ: ئیتر دروست ناکرێت؛ ئەوەی هەیە نۆژەنکراوەی فەرمی یان بەکارهاتووە. لە کاتی کڕینی بەکارهاتوو ژمارەی مۆدێل لەسەر کۆنسۆڵەکە بپشکنە (CFI-10xx/11xx/12xx). هەژمار لەسەر ناوچەیەکی پشتگیریکراوی PSN دروست دەکرێت چونکە عێراق لە لیستەکەدا نییە، و یاریی بە کۆمەڵی ئۆنلاین PlayStation Plusی دەوێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Per-revision weights and the Digital Edition dimensions come from Wikipedia (Sony's current pages only list the refurbished CFI-1216A disc unit)",
+      "The UK store lists approx. 4.5 kg for the refurbished CFI-1216A, while Wikipedia gives 3.9 kg for 1200-series disc units"
+    ]
+  }
+}

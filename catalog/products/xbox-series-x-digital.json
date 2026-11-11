@@ -1,0 +1,298 @@
+{
+  "slug": "xbox-series-x-digital",
+  "group": "xbox-hardware",
+  "kind": "console",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "deviceModel": "xbox-series-x-digital",
+  "family": "xbox-series-x",
+  "status": "available",
+  "releaseDate": "2024-10-15",
+  "name": { "ar": "XBOX Series X – 1TB Digital Edition", "en": "XBOX Series X – 1TB Digital Edition", "ckb": "XBOX Series X – 1TB Digital Edition" },
+  "short": {
+    "ar": "SSD سعة 1TB · رقمي بالكامل بدون مشغل أقراص · أبيض Robot White",
+    "en": "1TB SSD · all-digital, no disc drive · Robot White",
+    "ckb": "SSD ـی 1TB · تەواو دیجیتاڵ، بێ خوێنەری دیسک · سپیی Robot White"
+  },
+  "description": {
+    "ar": "نفس قوة وسرعة XBOX Series X لكن بدون مشغل أقراص، باللون الأبيض Robot White مع SSD سعة 1TB. يشغّل الألعاب الرقمية فقط، أي أنها تُشترى وتُنزّل عبر الإنترنت ولا يقرأ أقراص الألعاب أو أفلام Blu-ray. تأتي معه يد تحكم بيضاء مطابقة.",
+    "en": "The same power and speed as the XBOX Series X, without a disc drive, in Robot White with a 1TB SSD. It plays digital games only: games are bought and downloaded online, and it cannot read game discs or Blu-ray movies. A matching white controller is in the box.",
+    "ckb": "هەمان هێز و خێرایی XBOX Series X بەڵام بێ خوێنەری دیسک، بە ڕەنگی سپیی Robot White لەگەڵ SSD ـی 1TB. تەنها یاریی دیجیتاڵ کار پێدەکات: یارییەکان لە ئینتەرنێتەوە دەکڕدرێن و دادەگیرێن، و دیسکی یاری یان فیلمی Blu-ray ناخوێنێتەوە. دەسکێکی سپیی هاوشێوەی لەگەڵە."
+  },
+  "highlights": [
+    {
+      "ar": "نفس معالج ورسوميات XBOX Series X: دقة 4K حتى 120 إطاراً",
+      "en": "Same processor and graphics as XBOX Series X: 4K at up to 120 FPS",
+      "ckb": "هەمان پرۆسێسەر و گرافیکی XBOX Series X: ‏4K تا 120 FPS"
+    },
+    {
+      "ar": "بدون مشغل أقراص: لا يشغّل أقراص الألعاب ولا أفلام Blu-ray",
+      "en": "No disc drive: does not play game discs or Blu-ray movies",
+      "ckb": "بێ خوێنەری دیسک: دیسکی یاری و فیلمی Blu-ray کار پێناکات"
+    },
+    {
+      "ar": "SSD سعة 1TB قابل للتوسعة ببطاقة توسعة التخزين",
+      "en": "1TB SSD, expandable with a Storage Expansion Card",
+      "ckb": "SSD ـی 1TB، بە کارتی فراوانکردنی بیرگە زیاد دەکرێت"
+    },
+    {
+      "ar": "يد تحكم بيضاء مطابقة في العلبة",
+      "en": "Matching white controller in the box",
+      "ckb": "دەسکی سپیی هاوشێوە لەناو قوتووەکەدایە"
+    },
+    {
+      "ar": "قوائم الجهاز متوفرة باللغة العربية",
+      "en": "Console menus are available in Arabic",
+      "ckb": "لیستەکانی کۆنسۆڵەکە بە زمانی عەرەبیش بەردەستن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "Processor (CPU)", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "8 أنوية AMD Zen 2 مخصصة بتردد 3.8GHz ‏(3.66GHz مع SMT)",
+        "en": "8-core custom AMD Zen 2 at 3.8GHz (3.66GHz with SMT)",
+        "ckb": "8 ناوکی AMD Zen 2 ـی تایبەت بە 3.8GHz ‏(3.66GHz لەگەڵ SMT)"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "معالج الرسوميات", "en": "Graphics (GPU)", "ckb": "گرافیک (GPU)" },
+      "value": {
+        "ar": "12 TFLOPS، ‏52 وحدة حوسبة بتردد 1.825GHz، معمارية AMD RDNA 2 مخصصة",
+        "en": "12 TFLOPS, 52 CUs at 1.825GHz, custom AMD RDNA 2",
+        "ckb": "12 TFLOPS، ‏52 CU بە 1.825GHz، AMD RDNA 2 ـی تایبەت"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB GDDR6 بناقل 320-bit", "en": "16GB GDDR6, 320-bit bus", "ckb": "16GB GDDR6، ‏320-bit" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين الداخلي", "en": "Internal storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "SSD ‏NVMe مخصص سعة 1TB، ‏2.4GB/s خام و4.8GB/s مضغوط",
+        "en": "1TB custom NVMe SSD, 2.4GB/s raw, 4.8GB/s compressed",
+        "ckb": "SSD ـی NVMe ـی تایبەت 1TB، ‏2.4GB/s خاو و 4.8GB/s پەستێنراو"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "منفذ بطاقة توسعة التخزين، ودعم أقراص USB 3.1 الخارجية للتخزين",
+        "en": "Storage Expansion Card slot, plus USB 3.1 external drives for storage",
+        "ckb": "دەروازەی کارتی فراوانکردنی بیرگە، لەگەڵ هاردی دەرەکیی USB 3.1 بۆ هەڵگرتن"
+      }
+    },
+    {
+      "key": "optical",
+      "label": { "ar": "مشغل الأقراص", "en": "Disc drive", "ckb": "خوێنەری دیسک" },
+      "value": { "ar": "لا يوجد (رقمي بالكامل)", "en": "None (all-digital)", "ckb": "نییە (تەواو دیجیتاڵ)" }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "الدقة والأداء", "en": "Resolution and frame rate", "ckb": "ڕوونی و خێرایی وێنە" },
+      "value": {
+        "ar": "ألعاب بدقة 4K حقيقية، حتى 120 إطاراً في الثانية، وحتى 8K HDR",
+        "en": "True 4K gaming, up to 120 FPS, up to 8K HDR",
+        "ckb": "یاریی 4K ـی ڕاستەقینە، تا 120 FPS، تا 8K HDR"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ HDMI 2.1، ‏3 منافذ USB 3.1 Gen 1، منفذ Ethernet",
+        "en": "1× HDMI 2.1, 3× USB 3.1 Gen 1, Ethernet",
+        "ckb": "1× HDMI 2.1، ‏3× USB 3.1 Gen 1، Ethernet"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
+      "value": {
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی XBOX Wireless"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "15.1 × 15.1 × 30.1 سم", "en": "15.1 × 15.1 × 30.1 cm", "ckb": "15.1 × 15.1 × 30.1 سم" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز XBOX Series X Digital Edition", "en": "XBOX Series X Digital Edition console", "ckb": "کۆنسۆڵی XBOX Series X Digital Edition" },
+    { "ar": "يد XBOX Wireless Controller بيضاء Robot White", "en": "XBOX Wireless Controller – Robot White", "ckb": "دەسکی XBOX Wireless Controller ـی سپیی Robot White" },
+    { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
+    { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
+  ],
+  "variants": [
+    {
+      "sku": "XSXD-1TB-WHT",
+      "title": {
+        "ar": "XBOX Series X ‏1TB رقمي بالكامل، أبيض Robot White",
+        "en": "XBOX Series X 1TB, All-Digital, Robot White",
+        "ckb": "XBOX Series X ‏1TB تەواو دیجیتاڵ، سپیی Robot White"
+      },
+      "options": { "edition": "Digital Edition", "storage": "1TB", "color": "Robot White" },
+      "isDefault": true,
+      "images": ["xbox-series-x-digital--1", "xbox-series-x-digital--2", "xbox-series-x-digital--3"]
+    }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "alternative" },
+    { "slug": "xbox-series-s", "kind": "alternative" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "seagate-storage-expansion-card", "kind": "accessory" },
+    { "slug": "sandisk-optimus-gx-c50-expansion-card", "kind": "accessory" },
+    { "slug": "xbox-rechargeable-battery-usb-c", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "xbox-series-x-digital--1",
+      "file": ".cache/product-images/xbox-series-x-digital/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-X-Robot-White-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "hero",
+      "alt": {
+        "ar": "XBOX Series X الأبيض الرقمي بزاوية مائلة مع يده البيضاء",
+        "en": "White all-digital XBOX Series X at an angle with its white controller",
+        "ckb": "XBOX Series X ـی سپیی دیجیتاڵ بە گۆشەیەکی لار لەگەڵ دەسکە سپییەکەی"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 1500,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x-digital--2",
+      "file": ".cache/product-images/xbox-series-x-digital/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Content-Feature-Xbox-Series-X-Robot-White-Compare?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "angle",
+      "alt": {
+        "ar": "الواجهة الأمامية لجهاز XBOX Series X Digital Edition الأبيض بدون فتحة أقراص، مع يده",
+        "en": "Front of the white XBOX Series X Digital Edition, with no disc slot, and its controller",
+        "ckb": "ڕووی پێشەوەی XBOX Series X Digital Edition ـی سپی بێ کونی دیسک، لەگەڵ دەسکەکەی"
+      },
+      "credit": "Microsoft",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false
+    },
+    {
+      "key": "xbox-series-x-digital--3",
+      "file": ".cache/product-images/xbox-series-x-digital/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-White-b01?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "in-box",
+      "alt": {
+        "ar": "يد XBOX Wireless Controller البيضاء المرفقة",
+        "en": "The included white XBOX Wireless Controller",
+        "ckb": "دەسکی سپیی XBOX Wireless Controller ـی هاوپێچ"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "title": "Buy XBOX Series X: 1TB Black or White (1TB All-Digital, Robot White configuration)",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "tech specs of the 1TB All-Digital Robot White model, digital games only, product images"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/11/15/xbox-series-xs-every-console-option-available-now/",
+      "title": "Xbox Series X|S – Every Console Option Available Now",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "same performance as Series X with 1TB, all-digital, matching controller included"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
+      "title": "XBOX Series X",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "still in the current line-up; Series X box contents (console, controller, HDMI cable, power cord)"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/08/21/xbox-series-x-s-new-console-options-pre-order/",
+      "title": "Pre-Order Three New Xbox Series X|S Console Options Starting August 21",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "release on 15 October 2024 (select countries on 29 October)"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/06/09/xbox-series-x-s-new-console-options/",
+      "title": "More Choices Than Ever Before with Three New Xbox Series X|S Consoles Coming Holiday 2024",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "all-digital Series X in Robot White with a 1TB SSD and the speed and performance of Series X"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+      "title": "Xbox Series X and Series S",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 15 October 2024, CPU 3.8 GHz (3.66 GHz with SMT), weight listed as 3.58 kg"
+    },
+    {
+      "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
+      "title": "XBOX locales FAQ",
+      "publisher": "Microsoft (XBOX Support)",
+      "retrieved": "2026-11-11",
+      "supports": "XBOX support and warranties are only available in supported countries/regions; system updates work anywhere with an internet connection"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/game-principles/localization/console_supported_languages",
+      "title": "Console-supported languages",
+      "publisher": "Microsoft Learn",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic console language with the Saudi Arabia and UAE locales"
+    },
+    {
+      "url": "https://www.saudigamer.com/xbox-one-arabic-localization-coming-fall/",
+      "title": "اللغة العربية قادمة لأجهزة إكسبوكس ون في الخريف",
+      "publisher": "Saudi Gamer",
+      "retrieved": "2026-11-11",
+      "supports": "second source: Microsoft added Arabic as an XBOX console interface language in the 2017 Fall Update"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not on the list of supported countries/regions"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/xbox-game-pass",
+      "title": "XBOX Game Pass",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "online console multiplayer is included in the Essential, Premium and Ultimate plans"
+    }
+  ],
+  "notes": {
+    "ar": "بما أن الجهاز رقمي بالكامل، فكل الألعاب تُشترى رقمياً وتُنزّل عبر الإنترنت، ولا يمكن استعمال أقراص الألعاب المستعملة. العراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات XBOX، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط. اللعب الجماعي عبر الإنترنت مشمول في باقات Game Pass ‏(Essential وPremium وUltimate).",
+    "en": "Because the console is all-digital, every game is bought digitally and downloaded, and second-hand game discs cannot be used. Iraq is not on Microsoft's list of countries where XBOX services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says XBOX support and warranties are only available in supported countries. Online console multiplayer is included in the Game Pass plans (Essential, Premium, Ultimate).",
+    "ckb": "لەبەر ئەوەی کۆنسۆڵەکە تەواو دیجیتاڵە، هەموو یارییەک بە دیجیتاڵی دەکڕدرێت و دادەگیرێت، و دیسکی یاریی بەکارهاتوو بەکار نایەت. عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی XBOX، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. یاریی بە کۆمەڵ لە ئینتەرنێت لە پلانەکانی Game Pass ‏(Essential، Premium، Ultimate) دایە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Weight left out: Microsoft Store lists 4.4 kg (the same as the disc model) while Wikipedia lists 3.58 kg",
+      "Model number and barcodes were not found on an official page"
+    ]
+  }
+}

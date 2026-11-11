@@ -1,0 +1,65 @@
+{
+  "key": "kirby-air-riders--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/kirby-air-riders/2-240.c9835ab1.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/kirby-air-riders/2-480.e458b14e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/kirby-air-riders/2-720.d6509344.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/kirby-air-riders/2-960.d0210618.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/kirby-air-riders/2-1440.939bd9dc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/kirby-air-riders/2-240.e16fea90.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/kirby-air-riders/2-480.421a4a95.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/kirby-air-riders/2-720.a2599ef9.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/kirby-air-riders/2-960.dcd78e19.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/kirby-air-riders/2-1440.f47b08bf.webp"
+      }
+    ],
+    "png": "/products/kirby-air-riders/2-720.a4fc7cec.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoUAAsAPxFwsFAsJiSisAgBgCIJaACdMoADR1KPq/J8YSgAAPe/jtMpWSSX2aP9SoeB9R8YN6stoIT7PfZjXtriwXT6DNHjRKX2lxq7KqU5qXWQe9UvdAFKeAA=",
+  "dominant": "#9aa9b7",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000103775/4f647898656deeede484a491afee6dd97da93b48fab3eb0636932cab07c309fb",
+    "page": "https://www.nintendo.com/us/store/products/kirby-air-riders-switch-2/"
+  },
+  "input": "f3cff5fcfdee9210"
+}

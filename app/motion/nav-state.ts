@@ -3,6 +3,7 @@
  * how each history entry was reached. Module variables are only ever written in the browser (event handlers
  * and layout effects), never while rendering and never on the server.
  */
+import type { MotionTier } from "./env";
 import { resolveNav, type NavDescriptor, type NavIntent, type NavPlan, type NavRecord } from "./nav-plan";
 import { recentClaim } from "./share-registry";
 
@@ -72,8 +73,12 @@ export function getCommittedKey(): string | null {
   return committedKey;
 }
 
-/** Read-only: decide the transition for `from` → `to`. Safe to call while rendering. */
-export function planNavigation(from: NavDescriptor, to: NavDescriptor, type: "PUSH" | "POP" | "REPLACE"): NavPlan | null {
+/**
+ * Read-only: decide the transition for `from` → `to`. Safe to call while rendering.
+ * The language switch is instant below the full tier (DESIGN.md §6.5, §7.3); at the reduced tier every other
+ * navigation is still planned, and motion.css turns it into a 120 ms cross-fade.
+ */
+export function planNavigation(from: NavDescriptor, to: NavDescriptor, type: "PUSH" | "POP" | "REPLACE", tier: MotionTier): NavPlan | null {
   if (typeof window === "undefined") return null;
   const index = historyIndex();
   const records = loadMemory();
@@ -88,8 +93,9 @@ export function planNavigation(from: NavDescriptor, to: NavDescriptor, type: "PU
     fromOrder: lastOrder,
     claim: type === "POP" ? null : recentClaim(),
   });
+  if (!plan || (plan.nav === "direction" && tier !== "full")) return null;
   // While this render is in progress <html dir> still belongs to the page being left.
-  return plan ? { ...plan, fromDir: document.documentElement.dir === "rtl" ? "rtl" : "ltr" } : null;
+  return { ...plan, fromDir: document.documentElement.dir === "rtl" ? "rtl" : "ltr" };
 }
 
 /**

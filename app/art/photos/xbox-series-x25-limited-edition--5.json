@@ -1,0 +1,57 @@
+{
+  "key": "xbox-series-x25-limited-edition--5",
+  "view": "hero",
+  "width": 1123,
+  "height": 1600,
+  "aspect": 0.7019,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x25-limited-edition/5-240.dfd558dc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x25-limited-edition/5-480.34055865.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x25-limited-edition/5-720.36016a7e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x25-limited-edition/5-960.0b83a561.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x25-limited-edition/5-240.69d6958b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x25-limited-edition/5-480.164c1c86.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x25-limited-edition/5-720.83151cb4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x25-limited-edition/5-960.1c6b574a.webp"
+      }
+    ],
+    "png": "/products/xbox-series-x25-limited-edition/5-720.3522a63e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4WAoAAAAQAAAADQAAEwAAQUxQSCUAAAARHyAQSPZHTWKNiIgGCtq2YaIV4w7GqkxHIKL/ARBb112/sQUAAFZQOCB2AAAA8AMAnQEqDgAUAD8RcrBQLCakorAIAYAiCUAX5wQKOPdST3tUydkUAAD+ZLXD9I1BQF/xLUX728FANkMSaWQ5UF4MYo3YlNX13iNYm3ECbTnA8ejtO6bFcraoySh4vYv0p9fEzyCnxD8120zTEj2Tc2qx3NoAAA==",
+  "dominant": "#151716",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_04_2000x2000_04?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3"
+  },
+  "input": "fc3ed5361e6f900e"
+}

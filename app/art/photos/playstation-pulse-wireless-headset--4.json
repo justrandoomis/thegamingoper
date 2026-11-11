@@ -1,0 +1,57 @@
+{
+  "key": "playstation-pulse-wireless-headset--4",
+  "view": "hero",
+  "width": 1360,
+  "height": 1600,
+  "aspect": 0.85,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-pulse-wireless-headset/4-240.05e46e18.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-pulse-wireless-headset/4-480.c5b6358e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-pulse-wireless-headset/4-720.566dcb99.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-pulse-wireless-headset/4-960.fd1d7274.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-pulse-wireless-headset/4-240.cef6408b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-pulse-wireless-headset/4-480.f3578b47.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-pulse-wireless-headset/4-720.5457ec9d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-pulse-wireless-headset/4-960.59b72a9b.webp"
+      }
+    ],
+    "png": "/products/playstation-pulse-wireless-headset/4-720.5cae7399.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiwBAABXRUJQVlA4WAoAAAAQAAAAEAAAEwAAQUxQSH4AAAART6CobSM2VhC98eqIiIDo6p2HE9u23eSmJy6AikOCA4V9iuJicW0CvbnedL/j/W0KEf2fAFhf+7rR/htqXvEs0dw9KZR8gFZTkQJ5rJSpYRYbynD8aChS+/PpA5hvSMZt1P8kmV4woppdcNAkF8w04RSiDAHgS3Z9Re4dOAJWUDggiAAAAFAEAJ0BKhEAFAA/EYC3VawnpSMoCAGAIglnAAPioPCovS1GqOEFPaxtkiAA/uTPRGsEDNa8wZ01DA0Hpa4yfLtgIAHMIU6B6P+KWLBz0gAHKdvlMXevEXMpwnvY8Iv6QcsmKfV5oaw3wwrjIMcj95UCa57Kow3eqQX9V84fPvOo5IEHR5KAAAA=",
+  "dominant": "#23252b",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE_MIDNIGHTBLACK_PR_01_PSL-1x1-01-09jul26-_en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/"
+  },
+  "input": "be89920b289c0b45"
+}

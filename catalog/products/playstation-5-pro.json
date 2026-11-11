@@ -1,0 +1,302 @@
+{
+  "slug": "playstation-5-pro",
+  "group": "playstation-hardware",
+  "kind": "console",
+  "platform": "playstation",
+  "brand": "Sony",
+  "deviceModel": "ps5-pro",
+  "family": "ps5",
+  "status": "available",
+  "releaseDate": "2024-11-07",
+  "name": {
+    "ar": "PlayStation 5 Pro",
+    "en": "PlayStation 5 Pro",
+    "ckb": "PlayStation 5 Pro"
+  },
+  "short": {
+    "ar": "2TB · رسوميات أقوى وPSSR · Wi-Fi 7 · بدون قارئ أقراص",
+    "en": "2TB · Stronger GPU and PSSR · Wi-Fi 7 · No disc drive",
+    "ckb": "2TB · گرافیکی بەهێزتر و PSSR · Wi-Fi 7 · بێ دڕایڤی دیسک"
+  },
+  "description": {
+    "ar": "أقوى أجهزة PS5: معالج رسومي أقوى، وتتبع أشعة متقدم، وتقنية PSSR لرفع دقة الصورة بالذكاء الاصطناعي في الألعاب المحسّنة لـ PS5 Pro. يأتي بذاكرة 2TB ويدعم Wi-Fi 7. الجهاز رقمي بدون قارئ أقراص، ويمكن إضافة قارئ الأقراص الرسمي والقاعدة العمودية بشكل منفصل.",
+    "en": "The most powerful PS5: a stronger GPU, advanced ray tracing and PSSR AI upscaling in games enhanced for PS5 Pro. It has 2TB of storage and supports Wi-Fi 7. It is an all-digital console with no disc drive; the official Disc Drive and vertical stand are sold separately.",
+    "ckb": "بەهێزترین PS5: پرۆسێسەری گرافیکی بەهێزتر، ڕەی تڕەیسینگی پێشکەوتوو و PSSR بۆ بەرزکردنەوەی وردی وێنە بە زیرەکی دەستکرد لەو یارییانەی بۆ PS5 Pro باشترکراون. بیرگەی 2TB هەیە و پشتگیری Wi-Fi 7 دەکات. کۆنسۆڵێکی دیجیتاڵە بێ دڕایڤی دیسک؛ دڕایڤی دیسکی فەرمی و ستاندی ستوونی بە جیا دەفرۆشرێن."
+  },
+  "highlights": [
+    {
+      "ar": "PSSR: رفع دقة بالذكاء الاصطناعي لصورة أوضح على تلفاز 4K في الألعاب المدعومة",
+      "en": "PSSR AI upscaling for a sharper image on a 4K TV in supported games",
+      "ckb": "PSSR: بەرزکردنەوەی وردی وێنە بە زیرەکی دەستکرد بۆ وێنەی ڕوونتر لەسەر تەلەفزیۆنی 4K لە یارییە پشتگیریکراوەکاندا"
+    },
+    {
+      "ar": "أكثر من 100 لعبة PS5 محسّنة لـ PS5 Pro، ويشغّل كل ألعاب PS5 وأكثر من 8,500 لعبة PS4",
+      "en": "Over 100 PS5 games enhanced for PS5 Pro; plays all PS5 games and over 8,500 PS4 games",
+      "ckb": "زیاتر لە 100 یاریی PS5 بۆ PS5 Pro باشترکراون؛ هەموو یارییەکانی PS5 و زیاتر لە 8,500 یاریی PS4 کار پێدەکات"
+    },
+    {
+      "ar": "ذاكرة SSD سعة 2TB",
+      "en": "2TB SSD built in",
+      "ckb": "بیرگەی SSDی 2TB"
+    },
+    {
+      "ar": "يدعم Wi-Fi 7 مع راوتر متوافق في الدول التي تسمح بهذا المعيار (ويعمل أيضاً مع Wi-Fi 6 وWi-Fi 5)",
+      "en": "Wi-Fi 7 with a compatible router where the standard is allowed (also works with Wi-Fi 6 and Wi-Fi 5)",
+      "ckb": "Wi-Fi 7 لەگەڵ ڕاوتەری گونجاو لەو وڵاتانەی ڕێگەی پێدەدەن (لەگەڵ Wi-Fi 6 و Wi-Fi 5یش کار دەکات)"
+    },
+    {
+      "ar": "بدون قارئ أقراص: لتشغيل الأقراص أضف Disc Drive for PS5 (يُباع منفصلاً)",
+      "en": "No disc drive: add the Disc Drive for PS5 (sold separately) to play discs",
+      "ckb": "بێ دڕایڤی دیسک: بۆ دیسک Disc Drive for PS5 زیاد بکە (بە جیا دەفرۆشرێت)"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": {
+        "ar": "فئة CFI-7000 (النسخة البريطانية CFI-7021)",
+        "en": "CFI-7000 model group (UK unit CFI-7021)",
+        "ckb": "کۆمەڵەی CFI-7000 (ئامێری بەریتانی CFI-7021)"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "المعالج الرسومي", "en": "GPU", "ckb": "پرۆسێسەری گرافیک" },
+      "value": {
+        "ar": "60 وحدة حسابية، أي أكثر بنسبة 67% من PS5، مع ذاكرة أسرع بنسبة 28% وتتبع أشعة متقدم وPSSR",
+        "en": "60 compute units (67% more than PS5) with 28% faster memory, advanced ray tracing and PSSR",
+        "ckb": "60 یەکەی ژمێریاری (67% زیاتر لە PS5) لەگەڵ میمۆری 28% خێراتر، ڕەی تڕەیسینگی پێشکەوتوو و PSSR"
+      }
+    },
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "CPU", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Zen 2 بثماني أنوية",
+        "en": "8-core AMD Zen 2",
+        "ckb": "AMD Zen 2ی 8 ناوک"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "میمۆری" },
+      "value": {
+        "ar": "16GB GDDR6 للألعاب + 2GB DDR5 لنظام التشغيل",
+        "en": "16GB GDDR6 for games + 2GB DDR5 for the system software",
+        "ckb": "16GB GDDR6 بۆ یاری + 2GB DDR5 بۆ سیستەمی کارپێکردن"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": {
+        "ar": "SSD سعة 2TB (جزء منها محجوز للنظام) + منفذ M.2 للتوسعة",
+        "en": "2TB SSD (part reserved for the system) + M.2 expansion slot",
+        "ckb": "SSDی 2TB (بەشێکی بۆ سیستەم تەرخانە) + شوێنی M.2 بۆ زیادکردن"
+      }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "إخراج الصورة", "en": "Video output", "ckb": "دەرچوونی وێنە" },
+      "value": {
+        "ar": "4K بتردد 60/120Hz، ودعم إخراج 8K",
+        "en": "4K at 60/120Hz, with 8K output support",
+        "ckb": "4K بە 60/120Hz، لەگەڵ پشتگیری دەرچوونی 8K"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الاتصال", "en": "Networking", "ckb": "پەیوەندی" },
+      "value": { "ar": "Wi-Fi 7، Ethernet", "en": "Wi-Fi 7, Ethernet", "ckb": "Wi-Fi 7، Ethernet" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": {
+        "ar": "تقريباً 388 × 89 × 216 ملم، نحو 3.1 كغ",
+        "en": "Approx. 388 × 89 × 216 mm, about 3.1 kg",
+        "ckb": "نزیکەی 388 × 89 × 216 ملم، نزیکەی 3.1 کگ"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز PlayStation 5 Pro", "en": "PlayStation 5 Pro console", "ckb": "کۆنسۆڵی PlayStation 5 Pro" },
+    { "ar": "يد تحكم لاسلكية DualSense", "en": "DualSense wireless controller", "ckb": "کۆنتڕۆڵەری بێتەلی DualSense" },
+    { "ar": "قاعدتان بلاستيكيتان للوضع الأفقي", "en": "2 plastic feet for horizontal placement", "ckb": "2 پێی پلاستیکی بۆ دانانی ئاسۆیی" },
+    { "ar": "كابل HDMI", "en": "HDMI cable", "ckb": "کێبڵی HDMI" },
+    { "ar": "سلك الكهرباء (AC)", "en": "AC power cord", "ckb": "وایەری کارەبا (AC)" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" },
+    { "ar": "لعبة ASTRO's PLAYROOM مثبّتة مسبقاً", "en": "ASTRO's PLAYROOM (pre-installed)", "ckb": "یاریی ASTRO's PLAYROOM (پێشتر دامەزراوە)" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-PRO-2TB",
+      "title": {
+        "ar": "PlayStation 5 Pro – 2TB",
+        "en": "PlayStation 5 Pro – 2TB",
+        "ckb": "PlayStation 5 Pro – 2TB"
+      },
+      "options": { "edition": "Pro", "storage": "2TB", "color": "White" },
+      "modelNumber": "CFI-7021",
+      "isDefault": true,
+      "images": ["playstation-5-pro--1", "playstation-5-pro--2", "playstation-5-pro--3", "playstation-5-pro--4"],
+      "notes": {
+        "ar": "CFI-7021 هو الرقم الذي يذكره متجر PlayStation البريطاني؛ الرقم يختلف حسب المنطقة.",
+        "en": "CFI-7021 is the number given by the PlayStation UK store; it differs by region.",
+        "ckb": "CFI-7021 ئەو ژمارەیەیە کە فرۆشگای PlayStationی بەریتانی دەیدات؛ بەپێی ناوچە جیاوازە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": {
+        "ar": "يستخدم يد DualSense ويتوافق مع DualSense Edge وسماعات PS5.",
+        "en": "Uses the DualSense and works with DualSense Edge and PS5 audio devices.",
+        "ckb": "DualSense بەکاردەهێنێت و لەگەڵ DualSense Edge و ئامێرە دەنگییەکانی PS5 کار دەکات."
+      },
+      "source": "https://www.playstation.com/en-us/ps5/ps5-pro/"
+    }
+  ],
+  "related": [
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "ps5-vertical-stand", "kind": "accessory" },
+    { "slug": "dualsense-edge", "kind": "upsell" },
+    { "slug": "wd-black-sn850x", "kind": "accessory" },
+    { "slug": "playstation-5-slim", "kind": "alternative" },
+    { "slug": "playstation-vr2", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "playstation-5-pro--1",
+      "file": ".cache/product-images/playstation-5-pro/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PS5 Pro واقفاً بجانب يد التحكم DualSense",
+        "en": "PS5 Pro standing next to a DualSense controller",
+        "ckb": "PS5 Pro بە ستوونی لە تەنیشت کۆنتڕۆڵەری DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-pro--2",
+      "file": ".cache/product-images/playstation-5-pro/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "kind": "angle",
+      "alt": {
+        "ar": "PS5 Pro موضوع أفقياً مع يد التحكم",
+        "en": "PS5 Pro lying flat with the controller",
+        "ckb": "PS5 Pro بە ئاسۆیی لەگەڵ کۆنتڕۆڵەر"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-pro--3",
+      "file": ".cache/product-images/playstation-5-pro/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-05-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "kind": "angle",
+      "alt": {
+        "ar": "الحافة الأمامية لجهاز PS5 Pro على القاعدة العمودية",
+        "en": "Front edge of the PS5 Pro on the vertical stand",
+        "ckb": "لای پێشەوەی PS5 Pro لەسەر ستاندی ستوونی"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-pro--4",
+      "file": ".cache/product-images/playstation-5-pro/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-06-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "kind": "angle",
+      "alt": {
+        "ar": "PS5 Pro من الأمام مع يد التحكم DualSense",
+        "en": "PS5 Pro seen from the front with a DualSense",
+        "ckb": "PS5 Pro لە پێشەوە لەگەڵ DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "title": "PlayStation®5 Pro Console - 2 TB",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-7021, dimensions, weight, what's in the box, all-digital console, disc drive and vertical stand sold separately"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/ps5/ps5-pro/",
+      "title": "PlayStation®5 Pro | Witness Play Unleashed",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PSSR, 60/120Hz support, advanced ray tracing, 100+ enhanced games, 2TB, Wi-Fi 7, 8,500+ PS4 games, controller and audio compatibility FAQ"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/PlayStation_5",
+      "title": "PlayStation 5",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 7 November 2024, 2GB DDR5, 8K output, dimensions and weight"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: GPU with 67% more compute units and 28% faster memory, Wi-Fi 7 only in territories supporting the standard, 2TB, DualSense and ASTRO's PLAYROOM included, disc-less with the Disc Drive sold separately, launch 7 November 2024, compatible with PS VR2, PlayStation Portal, DualSense Edge, Access controller, PULSE Elite and PULSE Explore"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-consoles/playstation5-pro-console",
+      "title": "PlayStation®5 Pro Console - 2TB (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: what's in the box (same list as the UK store), disc drive and vertical stand sold separately, paid PlayStation Plus needed for online multiplayer"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/compatibility-ps5-pro/",
+      "title": "Compatibility guide for PS5 Pro consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: select games up to 8K, system and media apps up to 4K; vertical stand and disc drive compatible; CFI-1000 and slim console covers not compatible"
+    },
+    {
+      "url": "https://www.tweaktown.com/news/101472/playstation-5-pro-detailed-specs-and-teardown-16gb-gddr6-new-2gb-ddr5-memory-inside-ps5/index.html",
+      "title": "PlayStation 5 Pro detailed specs and teardown: 16GB GDDR6 + new 2GB DDR5 memory inside PS5 Pro",
+      "publisher": "TweakTown",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: 8-core Zen 2 CPU, 60 compute units, 16GB GDDR6 for games plus 2GB DDR5 for the system software"
+    },
+    {
+      "url": "https://www.kitguru.net/tech-news/featured-tech-news/joao-silva/sony-quietly-refreshes-playstation-5-pro-with-more-efficient-cfi-7100-revision/",
+      "title": "Sony quietly refreshes PlayStation 5 Pro with more efficient 'CFI-7100' revision",
+      "publisher": "KitGuru",
+      "retrieved": "2026-11-11",
+      "supports": "press report of a CFI-7100 hardware revision (not stated by Sony; not used in the product text)"
+    }
+  ],
+  "notes": {
+    "ar": "ميزات PS5 Pro تظهر فقط في الألعاب التي حدّثها مطوروها لـ PS5 Pro وتختلف من لعبة لأخرى. اللعب الجماعي عبر الإنترنت يحتاج PlayStation Plus، والحساب يُنشأ على منطقة PSN مدعومة لأن العراق غير مدرج.",
+    "en": "PS5 Pro features only appear in games their developers have enhanced for it, and vary by game. Online multiplayer needs PlayStation Plus, and the account is registered to a supported PSN region because Iraq is not listed.",
+    "ckb": "تایبەتمەندییەکانی PS5 Pro تەنها لەو یارییانەدا دەردەکەون کە پەرەپێدەرەکانیان بۆی باشتریان کردوون، و لە یارییەکەوە بۆ یارییەکی تر جیاوازن. یاریی بە کۆمەڵی ئۆنلاین PlayStation Plusی دەوێت، و هەژمار لەسەر ناوچەیەکی پشتگیریکراوی PSN دروست دەکرێت چونکە عێراق لە لیستەکەدا نییە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "CFI-7100 revision (press reports only; Sony's UK store still lists CFI-7021)",
+      "CPU and GPU clock speeds: Sony does not publish them and the press figures disagree (Wikipedia up to 2.35GHz, TweakTown 2.17GHz), so they were removed",
+      "Whether Wi-Fi 7 is enabled on units sold for Iraq (Sony: only in territories supporting the standard)",
+      "Box contents can differ by region: Sony Japan also lists a USB cable, while the UK and US lists do not"
+    ]
+  }
+}

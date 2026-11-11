@@ -1,0 +1,65 @@
+{
+  "key": "joy-con-2-wheel--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 845,
+  "aspect": 1.8935,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-wheel/1-240.ec3c4c8f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-wheel/1-480.c609cc34.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-wheel/1-720.94d4d535.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-wheel/1-960.15254a56.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/joy-con-2-wheel/1-1440.acab027b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-wheel/1-240.2937a95a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-wheel/1-480.eb964dc4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-wheel/1-720.c6767ebb.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-wheel/1-960.777628d7.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/joy-con-2-wheel/1-1440.97e350a6.webp"
+      }
+    ],
+    "png": "/products/joy-con-2-wheel/1-720.a08b29d5.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkQBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSHMAAAART6CobSM2dRz6u70jIugHCDYJuI1tW1XO99+AhS5kbplV4NDBg+xHL8YldU7Dv4aI/ieq6tIBpkIDZHJRg81YYLhbXuz9ZvnVS5K1J0lrT3LwImmXj8ej9vz//9bQx9De6zjouLYvarCZbIG6dICp0FAFAFZQOCCqAAAA8AMAnQEqFAALAD8RcrBQLCakorAIAYAiCWwArAGL9EZ+9NSvlwYAAAD9kAlkZxrgfz8ng8HOxXaj5RbiL9eh7ZlNyaDsLkvJCVZtvzwv3oQJAGcE5ewXpqBtTY//krY/X2cgdhFfs9ML2Cnozr8L/HwpcfsAjsjZOU6EwwMHOKDajv/n/SuzWZNiUzv0AebcBkHAweCyXDK2lnzVgFXeHtRYNNQe4bNAAAA=",
+  "dominant": "#040405",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Wheel/Frame_3473691.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "c1f48371596b3c01"
+}

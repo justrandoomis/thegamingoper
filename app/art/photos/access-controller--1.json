@@ -1,0 +1,65 @@
+{
+  "key": "access-controller--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1063,
+  "aspect": 1.5052,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/1-240.968bcfb8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/1-480.07534804.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/1-720.2893ee37.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/1-960.8b623b5b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/1-1440.d93278b9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/1-240.b7bddd9b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/1-480.af30e4cd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/1-720.e1f3c631.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/1-960.3e1ba731.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/1-1440.9b4649b7.webp"
+      }
+    ],
+    "png": "/products/access-controller/1-720.cc9590e5.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSGgAAAART6AmANA0SAJeh7lGRIBVpKWfE05r25aaw4z8rwPoADV0gEaiM7vExUb9lQIYbr156SGi/xMAEMxwQ4zfwflI0gg0x49S5pPcgl1+HY4/Fevdy5tD7sJTfsFLms7x3UN3PBIzA2gTfFZQOCCMAAAAEAQAnQEqFAANAD8RcrBQLCakorAIAYAiCWcAA+PBxCeCP1+wcczgKYAA/jFkSRx6xNpjk8GACz7sV41/sP6AvStAuyBCJ4ohMnuRwV0+RA4xvkce+AXBYKXL5vuSpTw1T7kth6v5bAQd1+GcMzqqCU5fnkpCybQXX5xG6Lent0kf3/7lf78I45hAAAA=",
+  "dominant": "#e9ecf4",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-01-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/access-controller/"
+  },
+  "input": "2ecd395a99697223"
+}

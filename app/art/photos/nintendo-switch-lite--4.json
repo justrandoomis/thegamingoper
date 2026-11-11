@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-lite--4",
+  "view": "hero",
+  "width": 1200,
+  "height": 675,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-lite/4-240.dff4309d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-lite/4-480.e06516fa.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-lite/4-720.b3280983.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-lite/4-960.3c0818ec.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-lite/4-240.4c9baa15.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-lite/4-480.672bb16e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-lite/4-720.af128b61.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-lite/4-960.3695ba3a.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-lite/4-720.1073c860.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAACQBACdASoUAAsAPxFwsFAsJiSisAgBgCIJbACdMoMiAJnz/4DyQxpGCShY0YAA/uDJAS100yqTnzuDqfQEyA342/S7F5aaSwcHfAIycgxAwlLyE3iFFId14RZ/gXrNhEj1Y1jqYcUDs+AAAAA=",
+  "dominant": "#ffffff",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-yellow/110678-nintendo-switch-lite-yellow-front-screen-on-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-yellow/"
+  },
+  "input": "24113692fb24683d"
+}

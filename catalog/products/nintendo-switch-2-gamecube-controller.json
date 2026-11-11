@@ -1,0 +1,191 @@
+{
+  "slug": "nintendo-switch-2-gamecube-controller",
+  "group": "nintendo-hardware",
+  "kind": "controller",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "nintendo-switch-2-gamecube-controller",
+  "status": "limited",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Nintendo GameCube Controller", "en": "Nintendo GameCube Controller", "ckb": "Nintendo GameCube Controller" },
+  "short": {
+    "ar": "ذراع GameCube لاسلكية لـ Switch 2 · لأعضاء Nintendo Switch Online فقط",
+    "en": "Wireless GameCube-style pad for Switch 2 · Nintendo Switch Online members only",
+    "ckb": "دەسکی بێتەلی GameCube بۆ Switch 2 · تەنها بۆ ئەندامانی Nintendo Switch Online"
+  },
+  "description": {
+    "ar": "ذراع تحكم لاسلكية بشكل وإحساس ذراع Nintendo GameCube الأصلية، صُنعت للعب ألعاب مجموعة Nintendo GameCube – Nintendo Classics على Switch 2. أضافت Nintendo زر C لـ GameChat وزر Capture وبطارية تُشحن بكابل USB-C المرفق. تبيعها Nintendo في متجرها فقط ولمشتركي Nintendo Switch Online المدفوع.",
+    "en": "A wireless controller with the shape and feel of the original Nintendo GameCube pad, made for the Nintendo GameCube – Nintendo Classics games on Switch 2. Nintendo added a C button for GameChat, a Capture button and a built-in battery charged with the included USB-C cable. Nintendo sells it only in its own store and only to paid Nintendo Switch Online members.",
+    "ckb": "دەسکێکی بێتەل بە شێوە و هەستی دەسکی ڕەسەنی Nintendo GameCube، دروستکراوە بۆ یارییەکانی Nintendo GameCube – Nintendo Classics لەسەر Switch 2. Nintendo دوگمەی C بۆ GameChat، دوگمەی Capture و پاترییەکی زیادکردووە کە بە کێبڵی USB-C ی ناو قوتووەکە بارگاوی دەبێت. Nintendo تەنها لە فرۆشگای خۆی و تەنها بە بەشداربووانی پارەداری Nintendo Switch Online دەیفرۆشێت."
+  },
+  "highlights": [
+    {
+      "ar": "للشراء من متجر Nintendo تحتاج اشتراك Nintendo Switch Online مدفوعًا (لا يكفي الاشتراك التجريبي المجاني)",
+      "en": "Buying it from Nintendo Store requires a paid Nintendo Switch Online membership (free trials do not count)",
+      "ckb": "بۆ کڕینی لە فرۆشگای Nintendo بەشداریی پارەداری Nintendo Switch Online پێویستە (تاقیکردنەوەی بێبەرامبەر بەس نییە)"
+    },
+    {
+      "ar": "ألعاب GameCube – Nintendo Classics تتطلب اشتراك Nintendo Switch Online + Expansion Pack؛ والذراع اختيارية للعبها",
+      "en": "GameCube – Nintendo Classics games need Nintendo Switch Online + Expansion Pack; the controller itself is optional for them",
+      "ckb": "یارییەکانی GameCube – Nintendo Classics پێویستیان بە Nintendo Switch Online + Expansion Pack هەیە؛ دەسکەکە خۆی بۆیان ئارەزوومەندانەیە"
+    },
+    {
+      "ar": "لجهاز Nintendo Switch 2 فقط — لا تعمل مع Nintendo Switch",
+      "en": "Nintendo Switch 2 only — not compatible with Nintendo Switch",
+      "ckb": "تەنها Nintendo Switch 2 — لەگەڵ Nintendo Switch ناگونجێت"
+    },
+    {
+      "ar": "لاسلكية مع زر C لـ GameChat وزر Capture وكابل شحن USB-C",
+      "en": "Wireless, with a C button for GameChat, Capture button and USB-C charging cable",
+      "ckb": "بێتەل، لەگەڵ دوگمەی C بۆ GameChat، دوگمەی Capture و کێبڵی بارگاویکردنی USB-C"
+    },
+    {
+      "ar": "مصممة لألعاب GameCube؛ قد لا تعمل جيدًا مع ألعاب أخرى لأنها تنقصها بعض الأزرار",
+      "en": "Made for GameCube games; may not suit other games because it lacks some buttons",
+      "ckb": "بۆ یارییەکانی GameCube دروستکراوە؛ لەوانەیە بۆ یاریی تر گونجاو نەبێت چونکە هەندێک دوگمەی نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Works with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "Nintendo Switch 2 فقط (قد يلزم تحديث النظام)", "en": "Nintendo Switch 2 only (a system update may be needed)", "ckb": "تەنها Nintendo Switch 2 (لەوانەیە نوێکردنەوەی سیستەم پێویست بێت)" }
+    },
+    {
+      "key": "connection",
+      "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" },
+      "value": { "ar": "لاسلكي؛ الاقتران والشحن بكابل USB-C المرفق", "en": "Wireless; pair and charge with the included USB-C cable", "ckb": "بێتەل؛ هاوتاکردن و بارگاویکردن بە کێبڵی USB-C ی ناو قوتووەکە" }
+    },
+    {
+      "key": "buttons",
+      "label": { "ar": "أزرار جديدة", "en": "New buttons", "ckb": "دوگمەی نوێ" },
+      "value": { "ar": "زر C (GameChat)، زر HOME/Capture، زر Sync، ومؤشرات ضوئية", "en": "C button (GameChat), HOME/Capture button, Sync button, player and charge LEDs", "ckb": "دوگمەی C (GameChat)، دوگمەی HOME/Capture، دوگمەی Sync، و چرای یاریزان و بارگاوی" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "500mAh (النسخة الحالية)", "en": "500 mAh (current version)", "ckb": "500mAh (وەشانی ئێستا)" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "نحو 210 غرامات", "en": "About 210 g", "ckb": "نزیکەی 210 گرام" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد الأذرع", "en": "How many", "ckb": "ژمارە" },
+      "value": { "ar": "حتى 4 أذرع على جهاز واحد للعب المحلي، وذراع واحدة لكل جهاز عبر الإنترنت", "en": "Up to 4 on one console locally; one per console online", "ckb": "تا 4 دانە لەسەر یەک کۆنسۆڵ بۆ یاری ناوخۆیی؛ یەک دانە بۆ هەر کۆنسۆڵێک ئۆنلاین" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "ذراع Nintendo GameCube Controller", "en": "Nintendo GameCube Controller", "ckb": "Nintendo GameCube Controller" },
+    { "ar": "كابل شحن USB-C", "en": "USB-C charging cable", "ckb": "کێبڵی بارگاویکردنی USB-C" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-GCN-PAD",
+      "title": { "ar": "Nintendo GameCube Controller لـ Nintendo Switch 2", "en": "Nintendo GameCube Controller for Nintendo Switch 2", "ckb": "Nintendo GameCube Controller بۆ Nintendo Switch 2" },
+      "options": { "color": "Purple" },
+      "barcodes": ["0045496884796"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2-gamecube-controller--1", "nintendo-switch-2-gamecube-controller--2", "nintendo-switch-2-gamecube-controller--3"],
+      "notes": {
+        "ar": "الباركود أمريكي. في بريطانيا يحمل اسم Nintendo GameCube (GCN) Controller - Nintendo Classics.",
+        "en": "US barcode. In the UK it is called Nintendo GameCube (GCN) Controller - Nintendo Classics.",
+        "ckb": "بارکۆدی ئەمریکی. لە بەریتانیا ناوی Nintendo GameCube (GCN) Controller - Nintendo Classics ە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "قد يلزم تحديث النظام", "en": "A system update may be needed", "ckb": "لەوانەیە نوێکردنەوەی سیستەم پێویست بێت" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-gamecube-controller-120833/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "incompatible",
+      "note": { "ar": "Nintendo تقول إنها لا تتوافق مع Nintendo Switch", "en": "Nintendo says it is not compatible with Nintendo Switch", "ckb": "Nintendo دەڵێت لەگەڵ Nintendo Switch ناگونجێت" },
+      "source": "https://store.nintendo.com/en-gb/nintendo-gamecube-gcn-controller-nintendo-classics-000000000010015326"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-gamecube-controller--1",
+      "file": ".cache/product-images/nintendo-switch-2-gamecube-controller/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Wireless%20Controllers/120833-nintendo-switch-2-nintendo-gamecube-controller-front-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-gamecube-controller-120833/",
+      "kind": "hero",
+      "alt": { "ar": "ذراع Nintendo GameCube البنفسجية من الأمام", "en": "Purple Nintendo GameCube Controller from the front", "ckb": "دەسکی مۆری Nintendo GameCube لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-gamecube-controller--2",
+      "file": ".cache/product-images/nintendo-switch-2-gamecube-controller/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/game%20cube%20controller/120833-nintendo-switch-2-nintendo-gamecube-controller-package-front-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة الذراع بشعار Nintendo Switch Online", "en": "Controller box with the Nintendo Switch Online logo", "ckb": "قوتووی دەسکەکە بە لۆگۆی Nintendo Switch Online" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-gamecube-controller--3",
+      "file": ".cache/product-images/nintendo-switch-2-gamecube-controller/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Wireless%20Controllers/120833-nintendo-switch-2-nintendo-gamecube-controller-lifestyle-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-gamecube-controller-120833/",
+      "kind": "detail",
+      "alt": { "ar": "الذراع بين يدي لاعب", "en": "The controller held in two hands", "ckb": "دەسکەکە بە دوو دەست گیراوە" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-gamecube-controller-120833/",
+      "title": "Nintendo GameCube Controller",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "Nintendo Store exclusive, paid NSO membership to buy, purchase limit, NSO + Expansion Pack for GameCube games, controller optional, system update, C/Capture buttons, motion controls, USB cable, Switch 2 only, UPC"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-gamecube-gcn-controller-nintendo-classics-000000000010015326",
+      "title": "Nintendo GameCube (GCN) Controller - Nintendo Classics - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "European name, Nintendo Store exclusive for NSO members, release 5 June 2025, up to 4 per console locally / 1 per console online, not compatible with Nintendo Switch, USB-C cable included"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68609/",
+      "title": "Nintendo GameCube Controller Overview & FAQ",
+      "publisher": "Nintendo of America Support",
+      "retrieved": "2026-11-11",
+      "supports": "wireless with built-in battery charged by USB-C, C/Sync/HOME-Capture buttons, player and recharge LEDs, possible issues with non-GameCube games, sold only by Nintendo Store"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch-2/Information-about-upcoming-battery-related-revisions-to-some-Nintendo-products-3132901.html",
+      "title": "Information about upcoming battery-related revisions to some Nintendo products",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "battery 500 mAh and weight 210 g; European revision (525 mAh, 215 g) due early 2027"
+    }
+  ],
+  "notes": {
+    "ar": "لا تبيع Nintendo هذه الذراع عبر التجار؛ تبيعها فقط في متجرها لمشتركي Nintendo Switch Online وبحد أقصى لكل حساب، لذلك قد يصعب توفيرها في المتاجر. ستصل في أوروبا نسخة ببطارية قابلة للاستبدال (525mAh، 215 غرامًا) في أوائل 2027.",
+    "en": "Nintendo does not sell this controller through retailers: it is sold only in Nintendo's own store to Nintendo Switch Online members, with a per-account limit, so it may be hard to source for shops. A European version with a user-replaceable battery (525 mAh, 215 g) is due in early 2027.",
+    "ckb": "Nintendo ئەم دەسکە لە ڕێگەی فرۆشیارانەوە نافرۆشێت: تەنها لە فرۆشگای خۆیدا بە ئەندامانی Nintendo Switch Online دەیفرۆشێت، بە سنووری دیاریکراو بۆ هەر هەژمارێک، بۆیە لەوانەیە دابینکردنی بۆ دوکانەکان قورس بێت. وەشانێکی ئەوروپی بە پاتریی گۆڕاو (525mAh، 215 گرام) لە سەرەتای 2027 دێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact purchase limit: Nintendo's pages differ (US store: four per customer; UK store: two per Nintendo Account and four per customer; US support FAQ: one per Nintendo Account)"
+    ]
+  }
+}

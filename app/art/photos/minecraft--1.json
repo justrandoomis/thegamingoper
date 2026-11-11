@@ -1,0 +1,57 @@
+{
+  "key": "minecraft--1",
+  "view": "hero",
+  "width": 1024,
+  "height": 1024,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/minecraft/1-240.0a07f327.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/minecraft/1-480.a3626f27.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/minecraft/1-720.f744d181.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/minecraft/1-960.588e81b7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/minecraft/1-240.08a9f4e9.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/minecraft/1-480.4a93817d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/minecraft/1-720.b2b79713.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/minecraft/1-960.c91bd04c.webp"
+      }
+    ],
+    "png": "/products/minecraft/1-720.0af2a518.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4INIAAADQBgCdASoUABQAPxF2slGsJySiqA1RgCIJbACdMoR+ItxhAbZ3cAbyBvQAChuCVrqlpDVM/v6lOpfneUqHgsAA3g6Je3aORcAFmbfK6f8bjORcxtArU9TlDxyz5xKOmMQ4xG0m5k6nJr+yU9W96HVXtxT4eWNptJBUt8xJqWNpjMMOFkFjnvtkW1NZrp9cn6gJGknlo1XX29Zua1kzmcnoFTCzKiN3YRPJjSY6fgyWSFP6dj11YdGRYflWz9qqrrw7V01sRn/zT5DDCMQOe3gAAAA=",
+  "dominant": "#89e3fe",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Mojang Studios / Microsoft",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202407/0401/670c294ded3baf4fa11068db2ec6758c63f7daeb266a35a1.png",
+    "page": "https://store.playstation.com/en-ae/concept/212779"
+  },
+  "input": "e789729c804cb56c"
+}

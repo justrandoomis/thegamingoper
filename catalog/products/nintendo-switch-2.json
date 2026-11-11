@@ -1,0 +1,381 @@
+{
+  "slug": "nintendo-switch-2",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch-2",
+  "family": "switch-2",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Nintendo Switch 2", "en": "Nintendo Switch 2", "ckb": "Nintendo Switch 2" },
+  "short": {
+    "ar": "256GB · شاشة 7.9 بوصة بدقة 1080p · حتى 4K على التلفاز",
+    "en": "256GB · 7.9-inch 1080p screen · up to 4K on TV",
+    "ckb": "256GB · شاشەی 7.9 ئینج 1080p · تا 4K لەسەر تەلەڤزیۆن"
+  },
+  "description": {
+    "ar": "Nintendo Switch 2 هو جهاز Nintendo الهجين: تلعب به محمولًا في يدك، أو على الطاولة بالحامل الخلفي، أو على التلفاز عبر القاعدة المرفقة. يأتي بشاشة LCD قياس 7.9 بوصة بدقة 1080p مع HDR وتردد حتى 120 هرتز، وسعة تخزين 256GB، ويدي تحكم Joy-Con 2 تثبتان بالمغناطيس ويمكن استخدامهما كفأرة في الألعاب المتوافقة. يشغّل ألعاب Switch 2 ومعظم ألعاب Nintendo Switch الأصلية، سواء على بطاقة أو بالتنزيل.",
+    "en": "Nintendo Switch 2 is Nintendo's hybrid console: play it in your hands, on a table with the rear stand, or on your TV through the included dock. It has a 7.9-inch 1080p LCD with HDR and up to 120 Hz, 256GB of storage, and magnetic Joy-Con 2 controllers that can also be used like a mouse in compatible games. It runs Switch 2 games and most original Nintendo Switch games, on game card or as downloads.",
+    "ckb": "Nintendo Switch 2 کۆنسۆڵی هایبریدی Nintendo یە: دەتوانیت بە دەستەوە یاری پێ بکەیت، یان لەسەر مێز بە پاڵپشتە پشتەوەکەی، یان لەسەر تەلەڤزیۆن لە ڕێگەی ئەو دۆکەی لەگەڵیدایە. شاشەیەکی LCDی 7.9 ئینجی 1080p ی هەیە لەگەڵ HDR و تا 120 هێرتز، 256GB بیرگە، و دوو دەسکی Joy-Con 2 کە بە موگناتیس دەلکێن و لە یارییە گونجاوەکاندا وەک ماوس بەکاردێن. یارییەکانی Switch 2 و زۆربەی یارییەکانی Nintendo Switchی یەکەم کار پێدەکات، چ بە کارت چ بە داگرتن."
+  },
+  "highlights": [
+    {
+      "ar": "ثلاثة أوضاع للعب: محمول، وعلى الطاولة، وعلى التلفاز حتى دقة 4K بمعدل 60 إطارًا",
+      "en": "Three play modes: handheld, tabletop and TV, with up to 4K at 60 fps on a compatible TV",
+      "ckb": "سێ دۆخی یاری: بە دەست، لەسەر مێز و لەسەر تەلەڤزیۆن تا 4K بە 60 فرەیم"
+    },
+    {
+      "ar": "تخزين داخلي 256GB، والتوسعة فقط ببطاقات microSD Express حتى 2TB؛ بطاقات microSD العادية لا تخزّن الألعاب",
+      "en": "256GB built in; expand only with microSD Express cards up to 2TB — ordinary microSD cards cannot store games",
+      "ckb": "256GB بیرگەی ناوخۆیی؛ تەنها بە کارتی microSD Express تا 2TB زیاد دەکرێت — کارتی microSDی ئاسایی یاری هەڵناگرێت"
+    },
+    {
+      "ar": "يشغّل ألعاب Switch 2 ومعظم ألعاب Nintendo Switch الأصلية (بعضها غير مدعوم أو غير متوافق بالكامل)",
+      "en": "Plays Switch 2 games and most original Nintendo Switch games (a few are not supported or not fully compatible)",
+      "ckb": "یارییەکانی Switch 2 و زۆربەی یارییەکانی Nintendo Switchی یەکەم کار پێدەکات (هەندێکیان پشتگیری ناکرێن یان بە تەواوی ناگونجێن)"
+    },
+    {
+      "ar": "يدا Joy-Con 2 تثبتان بالمغناطيس وتعملان كفأرة في الألعاب المتوافقة، وزر C يفتح GameChat",
+      "en": "Magnetic Joy-Con 2 controllers work as a mouse in compatible games; the C button opens GameChat",
+      "ckb": "دەسکەکانی Joy-Con 2 بە موگناتیس دەلکێن و لە یارییە گونجاوەکاندا وەک ماوس کار دەکەن؛ دوگمەی C ـیش GameChat دەکاتەوە"
+    },
+    {
+      "ar": "اللعب عبر الإنترنت وGameChat يتطلبان اشتراكًا مدفوعًا في Nintendo Switch Online وحساب Nintendo، ويحتاج GameChat أيضًا إلى تسجيل رقم هاتف محمول في الحساب",
+      "en": "Online play and GameChat need a paid Nintendo Switch Online membership and a Nintendo Account; GameChat also needs a mobile phone number registered to the account",
+      "ckb": "یاری ئۆنلاین و GameChat پێویستیان بە بەشداریی پارەدار لە Nintendo Switch Online و هەژماری Nintendo هەیە؛ GameChat پێویستی بە تۆمارکردنی ژمارەی مۆبایلیش لە هەژمارەکەدا هەیە"
+    },
+    {
+      "ar": "واجهة الجهاز لا تدعم اللغة العربية (تدعم الإنجليزية والفرنسية والألمانية والإسبانية والروسية وغيرها)",
+      "en": "The system menus are not available in Arabic (English, French, German, Spanish, Russian and others are)",
+      "ckb": "ڕووکاری سیستەمەکە زمانی عەرەبی تێدا نییە (ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ڕووسی و هیتر هەن)"
+    }
+  ],
+  "specs": [
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "شاشة LCD لمسية 7.9 بوصة، 1920×1080، تدعم HDR10 وتردد متغير (VRR) حتى 120 هرتز",
+        "en": "7.9-inch LCD touchscreen, 1920×1080, HDR10, VRR up to 120 Hz",
+        "ckb": "شاشەی LCDی دەستلێدان 7.9 ئینج، 1920×1080، HDR10، VRR تا 120 هێرتز"
+      }
+    },
+    {
+      "key": "tv_output",
+      "label": { "ar": "الإخراج على التلفاز", "en": "TV output", "ckb": "پیشاندان لەسەر تەلەڤزیۆن" },
+      "value": {
+        "ar": "عبر HDMI من القاعدة: حتى 3840×2160 (4K) بمعدل 60 إطارًا، و120 إطارًا بدقة 1080p أو 1440p، مع HDR10",
+        "en": "HDMI via the dock: up to 3840×2160 (4K) at 60 fps; 120 fps at 1080p or 1440p; HDR10",
+        "ckb": "HDMI لە ڕێگەی دۆکەوە: تا 3840×2160 (4K) بە 60 فرەیم؛ 120 فرەیم بە 1080p یان 1440p؛ HDR10"
+      }
+    },
+    {
+      "key": "processor",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": { "ar": "معالج مخصص من صنع NVIDIA", "en": "Custom processor made by NVIDIA", "ckb": "پرۆسێسەری تایبەت دروستکراوی NVIDIA" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": {
+        "ar": "256GB من نوع UFS (جزء منها محجوز للنظام)؛ منفذ microSD Express حتى 2TB",
+        "en": "256GB UFS (part is reserved for the system); microSD Express slot up to 2TB",
+        "ckb": "256GB جۆری UFS (بەشێکی بۆ سیستەمە)؛ شوێنی کارتی microSD Express تا 2TB"
+      }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "Wi-Fi 6 وBluetooth، ومنفذ LAN سلكي في القاعدة لوضع التلفاز",
+        "en": "Wi-Fi 6 and Bluetooth; wired LAN port on the dock for TV mode",
+        "ckb": "Wi-Fi 6 و Bluetooth؛ دەرچەی LANی وایەردار لەسەر دۆکەکە بۆ دۆخی تەلەڤزیۆن"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەرچەکان" },
+      "value": {
+        "ar": "منفذا USB-C (أعلى وأسفل الجهاز)، مقبس سماعات 3.5 مم، منفذ بطاقات ألعاب Switch 2 وSwitch",
+        "en": "2 × USB-C (top and bottom), 3.5 mm headset jack, game card slot for Switch 2 and Switch cards",
+        "ckb": "2 × USB-C (سەرەوە و خوارەوە)، دەرچەی بیستۆکی 3.5 ملم، شوێنی کارتی یاری Switch 2 و Switch"
+      }
+    },
+    {
+      "key": "audio",
+      "label": { "ar": "الصوت", "en": "Audio", "ckb": "دەنگ" },
+      "value": {
+        "ar": "سماعات ستيريو، ميكروفون مدمج مع إلغاء الضوضاء، وصوت 5.1 عبر HDMI",
+        "en": "Stereo speakers, built-in noise-cancelling microphone, 5.1 PCM over HDMI",
+        "ckb": "بڵندگۆی ستیریۆ، مایکرۆفۆنی ناوخۆیی بە لابردنی ژاوەژاو، دەنگی 5.1 لە ڕێگەی HDMI"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "5220mAh، تدوم تقريبًا من 2 إلى 6.5 ساعات حسب اللعبة، والشحن نحو 3 ساعات",
+        "en": "5220 mAh; about 2–6.5 hours depending on the game; about 3 hours to charge",
+        "ckb": "5220mAh؛ نزیکەی 2 تا 6.5 کاتژمێر بەپێی یارییەکە؛ بارگاویکردن نزیکەی 3 کاتژمێر"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Size", "ckb": "قەبارە" },
+      "value": {
+        "ar": "نحو 116 × 272 × 13.9 مم مع تركيب يدي Joy-Con 2",
+        "en": "About 116 × 272 × 13.9 mm with Joy-Con 2 attached",
+        "ckb": "نزیکەی 116 × 272 × 13.9 ملم لەگەڵ Joy-Con 2"
+      }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": {
+        "ar": "نحو 401 غرام للجهاز وحده، ونحو 534 غرامًا مع يدي Joy-Con 2",
+        "en": "About 401 g console only; about 534 g with Joy-Con 2",
+        "ckb": "نزیکەی 401 گرام کۆنسۆڵ بەتەنها؛ نزیکەی 534 گرام لەگەڵ Joy-Con 2"
+      }
+    },
+    {
+      "key": "system_languages",
+      "label": { "ar": "لغات الواجهة", "en": "System languages", "ckb": "زمانەکانی سیستەم" },
+      "value": {
+        "ar": "الإنجليزية، الفرنسية، الألمانية، الإسبانية، الإيطالية، الهولندية، البرتغالية، الروسية، اليابانية، الصينية، الكورية — بدون العربية",
+        "en": "English, French, German, Spanish, Italian, Dutch, Portuguese, Russian, Japanese, Chinese, Korean — no Arabic",
+        "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ئیتاڵی، هۆڵەندی، پورتوگالی، ڕووسی، یابانی، چینی، کۆری — بێ عەرەبی"
+      }
+    },
+    {
+      "key": "model_number",
+      "label": { "ar": "رقم الموديل", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": {
+        "ar": "BEE-001؛ والنسخة ذات البطارية القابلة للاستبدال BEE-001(-01)",
+        "en": "BEE-001; user-replaceable battery version BEE-001(-01)",
+        "ckb": "BEE-001؛ وەشانی پاتریی گۆڕاو BEE-001(-01)"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch 2", "en": "Nintendo Switch 2 console", "ckb": "کۆنسۆڵی Nintendo Switch 2" },
+    { "ar": "يد Joy-Con 2 (L) باللون الأزرق الفاتح و Joy-Con 2 (R) باللون الأحمر الفاتح", "en": "Joy-Con 2 (L) in Light Blue and Joy-Con 2 (R) in Light Red", "ckb": "Joy-Con 2 (L) شینی کاڵ و Joy-Con 2 (R) سووری کاڵ" },
+    { "ar": "مقبض Joy-Con 2 Grip", "en": "Joy-Con 2 Grip", "ckb": "دەسگرەی Joy-Con 2 Grip" },
+    { "ar": "حزاما معصم Joy-Con 2 (عدد 2)", "en": "Joy-Con 2 Strap (×2)", "ckb": "قایشی Joy-Con 2 (×2)" },
+    { "ar": "قاعدة Nintendo Switch 2 Dock", "en": "Nintendo Switch 2 Dock", "ckb": "دۆکی Nintendo Switch 2" },
+    { "ar": "محول الطاقة Nintendo Switch 2 AC Adapter وكابل شحن USB-C", "en": "Nintendo Switch 2 AC Adapter and USB-C charging cable", "ckb": "ئەداپتەری کارەبای Nintendo Switch 2 و کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "كابل Ultra High Speed HDMI", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی Ultra High Speed HDMI" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-STD",
+      "title": {
+        "ar": "Nintendo Switch 2 — النسخة الدولية",
+        "en": "Nintendo Switch 2 — international model",
+        "ckb": "Nintendo Switch 2 — مۆدێلی نێودەوڵەتی"
+      },
+      "options": { "edition": "Standard", "storage": "256GB", "color": "Black, Light Blue / Light Red Joy-Con 2" },
+      "modelNumber": "BEE-001",
+      "barcodes": ["0045496885816"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2--1", "nintendo-switch-2--2", "nintendo-switch-2--3", "nintendo-switch-2--4", "nintendo-switch-2--5", "nintendo-switch-2--6"],
+      "notes": {
+        "ar": "الباركود هو رمز UPC الأمريكي المنشور في متجر Nintendo الأمريكي.",
+        "en": "Barcode is the US UPC published on Nintendo's US store.",
+        "ckb": "بارکۆدەکە UPCی ئەمریکییە کە لە فرۆشگای ئەمریکی Nintendo بڵاوکراوەتەوە."
+      }
+    },
+    {
+      "sku": "NS2-STD-RB",
+      "title": {
+        "ar": "Nintendo Switch 2 — نسخة البطارية القابلة للاستبدال (أوروبا والخليج)",
+        "en": "Nintendo Switch 2 — user-replaceable battery version (Europe & Gulf)",
+        "ckb": "Nintendo Switch 2 — وەشانی پاتریی گۆڕاو (ئەوروپا و کەنداو)"
+      },
+      "options": { "edition": "Standard", "storage": "256GB", "battery": "User-replaceable" },
+      "modelNumber": "BEE-001(-01)",
+      "isDefault": false,
+      "images": ["nintendo-switch-2--1", "nintendo-switch-2--2"],
+      "notes": {
+        "ar": "تحل تدريجيًا محل الموديل الحالي في مناطق Nintendo of Europe (ومنها السعودية والإمارات وعُمان) منذ خريف 2026، ويبيعها متجر Nintendo البريطاني منذ 27 أكتوبر 2026. بطارية 5172mAh (أصغر بنحو 1%)، والجهاز أثقل بنحو 10 غرامات (411 غرامًا، و548 غرامًا مع يدي Joy-Con 2)، ويدا Joy-Con 2 المرفقتان ببطاريات قابلة للاستبدال أيضًا. تقول Nintendo إنه لا فرق في الوظائف.",
+        "en": "Replacing the current model on a rolling basis in Nintendo of Europe territories (including Saudi Arabia, the UAE and Oman) from autumn 2026; Nintendo's UK store has sold it since 27 October 2026. 5172 mAh battery (about 1% smaller), console about 10 g heavier (411 g; 548 g with Joy-Con 2), and the included Joy-Con 2 also have replaceable batteries. Nintendo says functionality is the same.",
+        "ckb": "لە پاییزی 2026ەوە بە قۆناغ جێگەی مۆدێلی ئێستا دەگرێتەوە لە ناوچەکانی Nintendo of Europe (لەوانە سعوودیە، ئیمارات و عومان)، و فرۆشگای بەریتانیی Nintendo لە 27ی تشرینی یەکەمی 2026ەوە دەیفرۆشێت. پاتریی 5172mAh (نزیکەی 1% بچووکتر)، کۆنسۆڵ نزیکەی 10 گرام قورسترە (411 گرام؛ 548 گرام لەگەڵ Joy-Con 2)، و Joy-Con 2 ـەکانی ناو قوتووەکەش پاتریی گۆڕاویان هەیە. Nintendo دەڵێت هیچ جیاوازییەک لە کارکردندا نییە."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2-mario-kart-world-bundle", "kind": "alternative" },
+    { "slug": "nintendo-switch-2-zelda-40th-anniversary-edition", "kind": "alternative" },
+    { "slug": "sandisk-microsd-express", "kind": "setup" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" },
+    { "slug": "joy-con-2", "kind": "accessory" },
+    { "slug": "nintendo-switch-2-carrying-case", "kind": "accessory" },
+    { "slug": "nintendo-switch-2-camera", "kind": "accessory" },
+    { "slug": "mario-kart-world", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2--1",
+      "file": ".cache/product-images/nintendo-switch-2/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/v1745278135/switch-2/tech-specs/switch-2-front.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز Nintendo Switch 2 من الأمام مع يدي Joy-Con 2 وبطاقة لعبة فوق منفذ البطاقات",
+        "en": "Nintendo Switch 2 front view with Joy-Con 2 attached and a game card above the card slot",
+        "ckb": "Nintendo Switch 2 لە پێشەوە لەگەڵ Joy-Con 2 و کارتێکی یاری لە سەرووی شوێنی کارتەکە"
+      },
+      "credit": "Nintendo",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2--2",
+      "file": ".cache/product-images/nintendo-switch-2/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-docked-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "angle",
+      "alt": {
+        "ar": "Nintendo Switch 2 داخل القاعدة لوضع التلفاز",
+        "en": "Nintendo Switch 2 sitting in its dock for TV mode",
+        "ckb": "Nintendo Switch 2 لەناو دۆکەکەیدا بۆ دۆخی تەلەڤزیۆن"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2--3",
+      "file": ".cache/product-images/nintendo-switch-2/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-back-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهة الخلفية لجهاز Nintendo Switch 2 مع الحامل",
+        "en": "Back of the Nintendo Switch 2 showing the stand",
+        "ckb": "پشتەوەی Nintendo Switch 2 لەگەڵ پاڵپشتەکەی"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2--4",
+      "file": ".cache/product-images/nintendo-switch-2/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-tabletop-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "angle",
+      "alt": {
+        "ar": "Nintendo Switch 2 في وضع الطاولة ويدا Joy-Con 2 مفصولتان",
+        "en": "Nintendo Switch 2 in tabletop mode with the Joy-Con 2 detached",
+        "ckb": "Nintendo Switch 2 لە دۆخی سەر مێز و Joy-Con 2 ـەکان جیاکراونەتەوە"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2--5",
+      "file": ".cache/product-images/nintendo-switch-2/5.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-dock-joy-con-grip-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "القاعدة ويدا Joy-Con 2 مركّبتان على المقبض",
+        "en": "The dock and the Joy-Con 2 controllers attached to the grip",
+        "ckb": "دۆکەکە و Joy-Con 2 ـەکان لەسەر دەسگرەکە"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2--6",
+      "file": ".cache/product-images/nintendo-switch-2/6.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-package-front-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة Nintendo Switch 2",
+        "en": "Nintendo Switch 2 retail box",
+        "ckb": "قوتووی Nintendo Switch 2"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "title": "Nintendo Switch 2 Tech Specs",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "display, processor, storage, microSD Express, video/audio output, ports, battery, charging time, connectivity"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "title": "Nintendo Switch 2 System",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "in the box, release date June 5 2025, UPC, Nintendo Switch Online requirement for online play and GameChat, images"
+    },
+    {
+      "url": "https://www.nintendo.com/sg/hardware/switch2/specs/index.html",
+      "title": "Specifications | Nintendo Switch 2",
+      "publisher": "Nintendo (Singapore)",
+      "retrieved": "2026-11-11",
+      "supports": "metric size and weight, second official confirmation of specs"
+    },
+    {
+      "url": "https://www.nintendo.com/jp/hardware/switch2/specs/index.html",
+      "title": "機能・仕様 | Nintendo Switch 2",
+      "publisher": "Nintendo Co., Ltd. (Japan)",
+      "retrieved": "2026-11-11",
+      "supports": "independent official confirmation of size 116 × 272 × 13.9 mm, weight 401 g / 534 g, 7.9-inch 1920×1080 HDR screen with VRR up to 120 Hz, 256GB UFS, microSD Express only up to 2TB, 5220 mAh battery lasting about 2–6.5 hours, about 3 hours to charge"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-P00209",
+      "title": "Nintendo Switch 2 - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "console languages (no Arabic), box contents, paid Nintendo Switch Online and a registered mobile number needed for GameChat, UK listing of the user-replaceable battery version from 27 October 2026"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch-2/Information-about-upcoming-battery-related-revisions-to-some-Nintendo-products-3132901.html",
+      "title": "Information about upcoming battery-related revisions to some Nintendo products",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "user-replaceable battery revision: 5172 mAh, 411 g / 548 g, territories incl. Saudi Arabia, UAE, Oman"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Support/Troubleshooting/Battery-replacement/Nintendo-Switch-2-console-battery-user-replaceable-Battery-Replacement-Procedure-3212759.html",
+      "title": "Nintendo Switch 2 console (battery user-replaceable) Battery Replacement Procedure",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "model numbers BEE-001 and BEE-001(-01)"
+    },
+    {
+      "url": "https://www.notebookcheck.net/Nintendo-Switch-2-Official-video-shows-new-revision-s-easy-battery-swap.1422895.0.html",
+      "title": "Nintendo Switch 2: Official video shows new revision's easy battery swap",
+      "publisher": "Notebookcheck",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation that the user-replaceable battery revision is on sale (October 2026) and uses replacement battery BEE-003(-01)"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Nintendo_Switch_2",
+      "title": "Nintendo Switch 2",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of release date and specs; Japan-only model limited to Japanese language and Japanese accounts"
+    }
+  ],
+  "notes": {
+    "ar": "اختر النسخة الدولية. تبيع Nintendo في اليابان نسخة أرخص مخصصة لليابان فقط تعمل باللغة اليابانية وحدها ومع حسابات يابانية فقط، فلا تناسب الاستخدام في العراق. يمكن تشغيل ألعاب Nintendo Switch الأصلية، لكن Nintendo تنبّه إلى أن بعضها غير مدعوم أو غير متوافق بالكامل.",
+    "en": "Choose the international model. In Japan Nintendo also sells a cheaper Japan-only version that works only in Japanese and only with Japanese accounts, so it is not suitable for use in Iraq. Original Nintendo Switch games run, but Nintendo warns that some are not supported or not fully compatible.",
+    "ckb": "مۆدێلی نێودەوڵەتی هەڵبژێرە. Nintendo لە ژاپۆن وەشانێکی هەرزانتری تایبەت بە ژاپۆن دەفرۆشێت کە تەنها بە زمانی ژاپۆنی و تەنها لەگەڵ هەژماری ژاپۆنی کار دەکات، بۆیە بۆ بەکارهێنان لە عێراق گونجاو نییە. یارییەکانی Nintendo Switchی یەکەم کار دەکەن، بەڵام Nintendo ئاگادار دەکاتەوە کە هەندێکیان پشتگیری ناکرێن یان بە تەواوی ناگونجێن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether Nintendo or an authorised distributor officially sells or services Nintendo Switch 2 in Iraq (Iraq is not in Nintendo of Europe's list of territories)",
+      "Barcode of the BEE-001(-01) user-replaceable battery version",
+      "When the BEE-001(-01) version reaches retailers in Saudi Arabia, the UAE and Oman (Nintendo lists them but gives no date)"
+    ]
+  }
+}

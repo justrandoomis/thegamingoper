@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1192,
+  "aspect": 1.3423,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch/3-240.d241a082.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch/3-480.9667e2f9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch/3-720.f4619edb.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch/3-960.55ea93a7.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch/3-1440.56a022e3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch/3-240.d0860b70.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch/3-480.e69c5751.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch/3-720.ce892a8e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch/3-960.e5443f95.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch/3-1440.e6caa417.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch/3-720.3eaef5fa.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSEQAAAARP0CmARmWgc/rEsFEROAup4BRbFttHnWNhOYABziof5/uIBP/M8AqAiL6PwFYzM9Ubd9U/4+No8BhBi8HDBHRnRhWAVZQOCCIAAAA8AMAnQEqFAAPAD8RcrBQLCakorAIAYAiCWwAnTKAA0X1+ixFNcV4AAD+433lSTSQPaAztc1THXVYLaSJzbO6M+3YwTlLE3jknRtpS0UXr0MsQyFh1QIP2aSXiuSec8T8Xg0ESQaiG1Xej6J8m8/qIYdcXi66bA7RfJx7fsfEubWwUxakUwAAAA==",
+  "dominant": "#030607",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotTVMode_NOE",
+    "page": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739"
+  },
+  "input": "a9865b2d6bd8e975"
+}

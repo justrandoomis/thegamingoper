@@ -17,8 +17,9 @@
 
 /* ───────────────────────────── core (theme independent) ───────────────────────────── */
 :root {
-  /* families: the metric-adjusted local fallbacks are declared in styles/fonts.css */
-  --font-display: "Kufam Variable", "Kufam", "IBM Plex Sans Arabic", "Kufam Fallback", system-ui, sans-serif;
+  /* families. ext: the metric-adjusted local fallbacks ("Kufam Fallback", "Plex Fallback", styles/fonts.css) stand
+     in while the web fonts load; they come before any other web font so the swap does not move layout. */
+  --font-display: "Kufam Variable", "Kufam", "Kufam Fallback", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-text: "IBM Plex Sans Arabic", "Plex Fallback", "Noto Sans Arabic", system-ui, sans-serif;
   --font-head: var(--font-display); /* the headline face; swapped per locale */
   --ds: 1; /* display scale for translated strings */
@@ -311,8 +312,10 @@
   --e-5: 0 -20px 44px -16px rgb(0 0 0 / 0.8);
 }
 
-/* ───────────────────────────── admin density (DESIGN.md §10) ───────────────────────────── */
-[data-density="admin"] {
+/* ───────────────────────────── admin density (DESIGN.md §10) ─────────────────────────────
+ * Also on language islands inside the admin, which would otherwise re-declare the storefront type roles. */
+[data-density="admin"],
+[data-density="admin"] [lang] {
   --gutter: 24px;
   --type-body: 400 13px/1.5 var(--font-text);
   --type-label: 600 12.5px/1.5 var(--font-text);

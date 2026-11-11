@@ -80,7 +80,7 @@ export function LabBar() {
       <PerfReadout />
       <span className="lab-cart" data-cart-target="" data-testid="lab-cart">
         <CartGlyph />
-        <span className="lab-cart__badge" data-cart-badge="" aria-hidden="true">
+        <span className="lab-cart__badge bead" data-cart-badge="" aria-hidden="true">
           <NumberMorph value={count} format={f.number} data-testid="lab-cart-count" />
         </span>
         <span className="lab-sr" role="status" aria-live="polite">

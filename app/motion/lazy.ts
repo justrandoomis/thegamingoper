@@ -8,9 +8,10 @@
  */
 import { resolveTheme, setPrefs, type Theme } from "~/lib/prefs";
 import { getMotionTier } from "./env";
-import type { CartReceivedDetail, FlyOptions } from "./fly";
+import type { CartReceivedDetail, FlyHandle, FlyOptions } from "./fly";
 import type { MaterializeOptions } from "./materialize";
 import type { MorphOrigin } from "./morph";
+import { armAnchors } from "./nav";
 import { setNavIntent } from "./nav-state";
 
 type Extras = typeof import("./extras");
@@ -49,26 +50,27 @@ function cartTarget(): Element | null {
   return null;
 }
 
+const NOTHING: FlyHandle = { revert() {} };
+
 /**
- * Fly a copy of `source` (a product image, a tile) along an arc into the cart.
+ * Fly a red clay bead from `source` (the product image) along an arc into the cart (DESIGN.md §7.2).
  *
- * Call it in the same handler that adds the item — it returns immediately and never blocks or delays the cart
- * update. The element marked `data-cart-target` squishes and its `[data-cart-badge]` bumps when the puck lands, and
- * a bubbling `tt:cart-received` CustomEvent ({ detail: { flown } }) is dispatched on it. Rapid taps each get their own
- * flight (at most four at once; the rest land instantly). Under reduced motion there is no flight: the event fires
- * straight away.
+ * Call it in the same handler that adds the item, after updating the count — it returns immediately and never
+ * blocks or delays the cart update. The cart bead (`[data-cart-badge]` inside the first visible `[data-cart-target]`)
+ * squishes when the bead lands, and a bubbling `tt:cart-received` CustomEvent ({ detail: { flown } }) is dispatched
+ * on the target. Rapid taps each get a bead, at most three in flight; further taps go straight to the count.
+ * Reduced motion: no flight, the event fires straight away. If the add fails, call `revert()` on the returned
+ * handle: the bead returns along the same arc (roll the count back and show the message yourself).
  */
-export function flyToCart(source: Element, options: FlyOptions = {}): void {
-  if (typeof window === "undefined") return;
+export function flyToCart(source: Element, options: FlyOptions = {}): FlyHandle {
+  if (typeof window === "undefined") return NOTHING;
   const target = options.target ?? cartTarget();
   const extras = loaded;
-  if (extras && target && getMotionTier() !== "reduced") {
-    extras.fly(source, target, options);
-    return;
-  }
+  if (extras && target && getMotionTier() !== "reduced") return extras.fly(source, target, options);
   if (!extras) preloadExtras();
   options.onArrive?.();
   (target ?? document).dispatchEvent(new CustomEvent<CartReceivedDetail>("tt:cart-received", { bubbles: true, detail: { flown: false } }));
+  return NOTHING;
 }
 
 function applyTheme(next: Theme): void {
@@ -82,26 +84,27 @@ function applyTheme(next: Theme): void {
 }
 
 /**
- * Switch the theme with a reveal that starts at `origin` (the control that was pressed, or a point).
- * A soft-edged circle grows from the control; without an origin (or at the 'lite' tier) a light sweep crosses the
- * screen. Text is legible in every frame because each pixel is entirely one theme. Scroll position and all state are
- * untouched — nothing navigates, nothing remounts. Instant when motion is reduced or view transitions are missing.
+ * Switch the theme with a 200 ms cross-fade of two snapshots (DESIGN.md §7.2: "the light changes, not the objects").
+ * Nothing moves and nothing repaints per frame; scroll position and all state are untouched. Instant at the low-end
+ * tier, under reduced motion, and without View Transitions. `origin` is accepted for compatibility and not used.
  */
 export function themeMorph(next: Theme, origin?: MorphOrigin): Promise<void> {
+  void origin;
   if (typeof window === "undefined") return Promise.resolve();
   const extras = loaded;
   const unchanged = document.documentElement.dataset.theme === resolveTheme(next);
-  if (!extras || unchanged || getMotionTier() === "reduced") {
+  if (!extras || unchanged || getMotionTier() !== "full") {
     if (!extras) preloadExtras();
     applyTheme(next);
     return Promise.resolve();
   }
-  return extras.themeReveal(() => applyTheme(next), origin, resolveTheme(next) === "dark");
+  return extras.themeCrossFade(() => applyTheme(next));
 }
 
 /**
- * Run a language-changing navigation with the direction morph: the page slides out toward the old reading
- * direction's end and the new one comes in from its start while `dir` flips.
+ * Run a language-changing navigation with the direction morph: the content slides 16px toward the new reading
+ * direction's start and cross-fades while `dir` flips; fixed chrome cross-fades in place; `data-motion-anchor`
+ * elements stay where they are. Instant at the lite and reduced tiers.
  *
  *   directionMorph(() => navigate(switchLocalePath(pathname, search, hash, "en"), { replace: true, preventScrollReset: true }));
  *
@@ -110,11 +113,12 @@ export function themeMorph(next: Theme, origin?: MorphOrigin): Promise<void> {
  */
 export function directionMorph(run: () => void | Promise<void>): void {
   setNavIntent({ nav: "direction" });
+  armAnchors();
   void run();
 }
 
 /**
- * A menu, popover or toast grows out of what opened it (scale + opacity from the trigger's position).
+ * A menu, popover or toast drops in from what opened it (8px of travel and opacity, 220 ms).
  * Call right after the element is in the DOM; resolves when it has arrived.
  */
 export function materialize(element: HTMLElement, options?: MaterializeOptions): Promise<void> {
@@ -126,7 +130,7 @@ export function materialize(element: HTMLElement, options?: MaterializeOptions):
   return extras.materialize(element, options);
 }
 
-/** The reverse: resolves when the element has shrunk away — unmount it then. */
+/** The reverse (140 ms): resolves when the element has gone — unmount it then. */
 export function dematerialize(element: HTMLElement, options?: MaterializeOptions): Promise<void> {
   const extras = loaded;
   if (!extras) return Promise.resolve();

@@ -1,0 +1,65 @@
+{
+  "key": "donkey-kong-bananza--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/donkey-kong-bananza/1-240.f7dc3620.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/donkey-kong-bananza/1-480.27045d03.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/donkey-kong-bananza/1-720.7148da40.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/donkey-kong-bananza/1-960.43d243f7.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/donkey-kong-bananza/1-1440.55214272.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/donkey-kong-bananza/1-240.47ce78f4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/donkey-kong-bananza/1-480.f4f17870.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/donkey-kong-bananza/1-720.fed4b19c.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/donkey-kong-bananza/1-960.7b58f313.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/donkey-kong-bananza/1-1440.5888186a.webp"
+      }
+    ],
+    "png": "/products/donkey-kong-bananza/1-720.1e653af4.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAADQAwCdASoUABQAPxF+tlWsJ6SjKAgBgCIJbAAAJofVFtXuUvTlyqAA/u3QuZ/ppd28fKqoQpeGY0IbJ+1Bi90GRBbqa0asOPCJYssHRbCmj5fArTj73j+IFAuiKfmNf7wbX1ngfwu2ks9uCzZIFb3n/woQSwfadqAu6fAeF68meYfJZQa20hKJgXUvFfJld1/IAA==",
+  "dominant": "#ffffff",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "box-art",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Donkey%20Kong%20Bananza/121485-nintendo-switch-2-donkey-kong-bananza-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-donkey-kong-bananza-121485/"
+  },
+  "input": "1c8d149d4dce15a2"
+}

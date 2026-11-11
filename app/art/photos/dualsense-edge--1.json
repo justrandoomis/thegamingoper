@@ -1,0 +1,65 @@
+{
+  "key": "dualsense-edge--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1120,
+  "aspect": 1.4286,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/1-240.8e372255.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/1-480.b7f61943.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/1-720.424c1c2e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/1-960.0e6f2855.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/1-1440.135da0eb.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/1-240.cf1b9d26.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/1-480.72c52c96.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/1-720.6ec1c2a7.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/1-960.a9610385.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/1-1440.17a7d390.webp"
+      }
+    ],
+    "png": "/products/dualsense-edge/1-720.3398755c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiYBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGsAAAART6AmABI2SQdwXlLAiAjI2588w4lt205z6Uj+DOjFYXEsRoBCd0gcjkhU4nveeH8ZQ0T/JwCq9W05ju5hAi8SVsBXdIVHUq2Wma3M2mXOKXNPKhrG4ie5O9kA0JPTksGVZPkXxrG7Dg1CDwBWUDgglAAAADAEAJ0BKhQADgA/EXKwUCwmpKKwCAGAIglnAMKBi157fj1ylcad/65NIAD+ZqCh8VZy3sWguwN5SjMjjQvOb6T5CSa9hLhfxkTQOBtCSBmSZ+rJrcj4tb13pIyr7vlyGUZHzx1yweH36J4cN8vuxUkDD/bb8VIpGvogftc3TgwdWwkKBH6N3L0b/36jBMPXvNdakAA=",
+  "dominant": "#060a15",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-01-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/"
+  },
+  "input": "f152977aedf02b24"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "fire-emblem-fortunes-weave--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/2-240.67b382ec.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/2-480.ac5ae4fb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/2-720.2f00fe0b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/2-960.9573d94e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/2-1440.5c9a26ec.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/2-240.3161c620.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/2-480.76f143f4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/2-720.a3372f68.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/2-960.abf0f319.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/2-1440.e3adf1d2.webp"
+      }
+    ],
+    "png": "/products/fire-emblem-fortunes-weave/2-720.c94cebcf.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAACQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBOgAeC5O0kHAJvgAP3/ib20grEYo4iq6YGqc13tmh6+wA0IrVNKxtFJ0rvLu++PY/i+LGzpWT5b2vl9kqQ0eVBVZXmqopz2gzqTAAA=",
+  "dominant": "#fdfcf9",
+  "transparent": false,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo / Intelligent Systems",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000126929/721a919e1256af6b1b011854ccaa69f6112c87d9541f1749dd470794d0207d61",
+    "page": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-switch-2/"
+  },
+  "input": "b5c0048d81149481"
+}

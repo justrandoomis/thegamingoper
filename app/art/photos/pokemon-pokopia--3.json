@@ -1,0 +1,65 @@
+{
+  "key": "pokemon-pokopia--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-pokopia/3-240.7f10bdd4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-pokopia/3-480.08c62c5b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-pokopia/3-720.d2eacd26.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-pokopia/3-960.f4308f15.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pokemon-pokopia/3-1440.83f1ff1f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-pokopia/3-240.82ace38b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-pokopia/3-480.bf4568ea.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-pokopia/3-720.3ec7c872.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-pokopia/3-960.1f0de517.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pokemon-pokopia/3-1440.c00b0d6f.webp"
+      }
+    ],
+    "png": "/products/pokemon-pokopia/3-720.f0fcaa18.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJbACsACP7tHsVSGZZkgAA/sX6mOJGncoWf8fycWeUdGPEUt5XQf7XU7j206vh5PkN12JSR7w2QEERHEBt8FzyZhhWsF6BXYteP7woe1nNDqiMcAHYAAAA",
+  "dominant": "#c3dd65",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo / The Pokémon Company",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000107421/2045c3f67f865d333b1995562ad6b2894473b8a869e4c8efa01572539ec86019",
+    "page": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/"
+  },
+  "input": "41f4a85df06843f2"
+}

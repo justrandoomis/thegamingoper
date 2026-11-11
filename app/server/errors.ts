@@ -70,6 +70,58 @@ export function isAppError(error: unknown, code?: string): error is AppError {
   return error instanceof AppError && (code === undefined || error.code === code);
 }
 
+/**
+ * Every code and field key the server core itself can produce (errors, auth, settings, uploads,
+ * rate limits). Screens show them through `errors.<key>` translations, so whoever owns those
+ * strings can check this list is covered in ar, en and ckb. Domain services add their own keys.
+ */
+export const CORE_ERROR_KEYS = [
+  // generic, and the keys zodFieldErrors() derives from a failed validation
+  "invalid",
+  "required",
+  "too_short",
+  "too_long",
+  "too_small",
+  "too_big",
+  "not_found",
+  "unauthorized",
+  "forbidden",
+  "rate_limited",
+  "unique",
+  "check",
+  // accounts and sign-in
+  "invalid_credentials",
+  "account_blocked",
+  "phone_invalid",
+  "phone_taken",
+  "email_invalid",
+  "password_too_short",
+  "password_too_long",
+  "otp_invalid",
+  "mfa_invalid",
+  "locked_out",
+  "mfa_already_enabled",
+  "mfa_not_pending",
+  "mfa_not_enabled",
+  "cannot_disable_self",
+  "last_owner",
+  "employee_not_active",
+  "setup_disabled",
+  "setup_token_invalid",
+  "setup_done",
+  // settings values
+  "account_number_invalid",
+  "url_invalid",
+  // uploads
+  "upload_missing",
+  "upload_too_large",
+  "upload_type",
+  "upload_corrupt",
+  "upload_dimensions",
+] as const;
+
+export type CoreErrorKey = (typeof CORE_ERROR_KEYS)[number];
+
 // ───────────────────────────────────────────────────────────────── constructors
 
 /** 404 — the thing does not exist, or the caller may not know that it does. */

@@ -1,0 +1,57 @@
+{
+  "key": "pulse-explore--1",
+  "view": "hero",
+  "width": 1266,
+  "height": 1084,
+  "aspect": 1.1679,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pulse-explore/1-240.a4e6181c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-explore/1-480.ed7bf7a5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-explore/1-720.54c1a526.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-explore/1-960.d6ee6400.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pulse-explore/1-240.e16aa8d2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-explore/1-480.600d5dbe.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-explore/1-720.da17eee0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-explore/1-960.38c3f11e.webp"
+      }
+    ],
+    "png": "/products/pulse-explore/1-720.f6cf1200.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjgBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSH8AAAART6CgbSM3diD2vvuPiAB8/aVsEk5s23aTm27pIJHIDIGFi6MX15vLQoHrzXbOePOZQ0T/J0Cy9LexsU2pLxVTHSJTDCVJNVs78KQqkXbcbekBTgzbfCIYAgPFUAoNZSilfuCGUwh0JNIb8JVq2/oCrpJrwDakfqxkHt3cP0pLAFZQOCCSAAAAcAQAnQEqFAARAD8RgLdVrCelIygIAYAiCWMAxkGLDjiq8aJqfNDSouZ0rgAA/uFwLVc2is3wN0UX9zKCGWn/Q2ejEbXuOu4q0IUbUqRpTQtBOvMaw/dwa+XoVZbKfl7s43cIT9LeHd8RcCJZgF7OLcxfj2n7uCYx0ZH98gYiSCbqFSwv+zdeF/EvRAS6vOKwAAA=",
+  "dominant": "#e4e9f3",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-White-01-28x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/"
+  },
+  "input": "2025e2e7350b0838"
+}

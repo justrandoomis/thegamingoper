@@ -1,57 +1,37 @@
 /*
- * Styles that are only needed once the on-demand chunk (./extras.ts) is running: theme reveal, the rail's depth
- * tilt and the fly-to-cart layer. Imported by extras.ts, so they arrive with the code that uses them.
- * Same rules as motion.css: only transform and opacity are animated.
+ * Styles that are only needed once the on-demand chunk (./extras.ts) is running: the theme cross-fade, the rail's
+ * depth tilt and the fly-to-cart bead. Imported by extras.ts, so they arrive with the code that uses them.
+ * Same rules as motion.css: only transform and opacity are animated; colours come from the design tokens.
  */
 
 /* ───────────────────────────── theme morph ─────────────────────────────
- * themeMorph() renames the root between the two captures (tt-theme-old → tt-theme-new) so the new theme
- * is its own layer above the old one, then reveals it with transforms only: the layer's clip box grows
- * (circle) or slides (sweep) while the snapshot inside counter-moves and therefore stands still.
- * Every pixel is fully in one theme or the other, so text stays legible throughout.
+ * DESIGN.md §7.2: themeMorph() swaps data-theme inside a view transition; the two root snapshots cross-fade over
+ * 200 ms on the water curve (the browser's own plus-lighter cross-fade, retimed). Nothing repaints per frame.
+ * Fixed chrome is not a separate layer for this one: it fades with the page.
  */
-html[data-morph] [data-motion-persist] {
+html[data-morph="theme"] [data-motion-persist] {
   view-transition-name: none !important;
 }
-html[data-morph]::view-transition-group(tt-theme-old),
-html[data-morph]::view-transition-old(tt-theme-old) {
+/* The root's two boxes are identical: its group has nothing to move. */
+html[data-morph="theme"]::view-transition-group(root) {
   animation: none;
 }
-html[data-morph]::view-transition-group(tt-theme-new) {
-  animation: none;
-  overflow: clip;
-  box-shadow: 0 0 56px 8px var(--morph-glow, transparent);
-}
-html[data-morph]::view-transition-new(tt-theme-new) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-html[data-morph="circle"]::view-transition-group(tt-theme-new) {
-  inset-inline-start: auto;
-  left: calc(var(--morph-x) - var(--morph-r));
-  top: calc(var(--morph-y) - var(--morph-r));
-  width: calc(var(--morph-r) * 2);
-  height: calc(var(--morph-r) * 2);
-  border-radius: 50%;
-  transform: none;
-}
-html[data-morph="circle"]::view-transition-new(tt-theme-new) {
-  left: calc(var(--morph-r) - var(--morph-x));
-  top: calc(var(--morph-r) - var(--morph-y));
-  width: var(--morph-w);
-  height: var(--morph-h);
-  max-width: none;
-  transform-origin: var(--morph-x) var(--morph-y);
+html[data-morph="theme"]::view-transition-old(root),
+html[data-morph="theme"]::view-transition-new(root) {
+  animation-duration: var(--motion-duration-theme);
+  animation-timing-function: var(--motion-ease-water);
+  /* the group no longer animates, so nothing to inherit the fill from: hold the end state until the layer goes */
+  animation-fill-mode: both;
 }
 
 /* ───────────────────────────── rail depth tilt ───────────────────────────── */
 @supports (animation-timeline: view()) {
-  /* An item leans away while it crosses either edge of the rail. Scroll-driven, on the compositor.
+  /* An item leans away while it crosses either edge of the rail. Scroll-driven, on the compositor, no scroll listener.
    * Only the crossing is animated (keyframes are pinned to the entry and exit ranges): items that are fully inside
    * are flat, because scroll-snap measures the transformed box and would otherwise drift.
    * data-rail-tilt="on" is set by the rail's script only after it has checked that the browser's view timeline is
-   * sane for this writing direction: Chromium 157 computes horizontal view timelines wrongly in RTL scrollers
-   * (every item stays in its "not yet entered" state), so there the rail simply stays flat. */
+   * sane for this writing direction: Chromium computes horizontal view timelines wrongly in RTL scrollers (every
+   * item stays in its "not yet entered" state), so there the rail simply stays flat. */
   html[data-motion="full"] .tt-rail[data-rail-tilt="on"] > * {
     animation: tt-rail-tilt linear both;
     animation-timeline: view(inline);
@@ -77,23 +57,40 @@ html[data-morph="circle"]::view-transition-new(tt-theme-new) {
   }
 }
 
-/* ───────────────────────────── fly to cart ───────────────────────────── */
+/* ───────────────────────────── fly to cart ─────────────────────────────
+ * One fixed, untouchable layer above everything (--z-fly). The bead is DESIGN.md's `.fly`: a 22px red clay bead,
+ * placed by its centre in viewport pixels (the one physical-property exception the design lint allows) and moved by
+ * transform only. The picture variant (flyToCart(el, { image })) is a rounded copy of the product picture.
+ */
 .tt-fly-layer {
   position: fixed;
   inset: 0;
-  z-index: 2147483000;
+  z-index: var(--z-fly, 600);
   overflow: clip;
   pointer-events: none;
   contain: strict;
 }
-.tt-fly {
+.fly.tt-fly {
+  position: absolute;
+  inline-size: 22px;
+  block-size: 22px;
+  /* centred on its start point; the flight itself is the `transform` animation, which composes after this */
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--red-face, var(--red));
+  box-shadow:
+    inset 0 1.5px 0 var(--red-lip),
+    0 2px 0 var(--red-wall);
+  will-change: transform;
+}
+.tt-fly--picture {
   position: absolute;
   overflow: clip;
   border-radius: 26%;
-  box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.35);
-  will-change: transform, opacity;
+  box-shadow: var(--e-3);
+  will-change: transform;
 }
-.tt-fly > * {
+.tt-fly--picture > * {
   display: block;
   inline-size: 100%;
   block-size: 100%;

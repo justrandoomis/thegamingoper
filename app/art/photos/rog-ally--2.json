@@ -1,0 +1,65 @@
+{
+  "key": "rog-ally--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 858,
+  "aspect": 1.8648,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/rog-ally/2-240.e161c6e3.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/rog-ally/2-480.8a5dbd58.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/rog-ally/2-720.15bb73bb.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/rog-ally/2-960.70f135d2.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/rog-ally/2-1440.ff72145e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/rog-ally/2-240.ee8b1304.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/rog-ally/2-480.045eb791.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/rog-ally/2-720.449cb824.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/rog-ally/2-960.148d4ad2.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/rog-ally/2-1440.dae81979.webp"
+      }
+    ],
+    "png": "/products/rog-ally/2-720.60709367.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgIBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFgAAAART6CgjSQ1dSIYnz8iAiLC58EvYFTbtpKLT50AvwIFNIBbAOaMIAKfqUPeLxki+j8BkHdIlLeLipjSn7Vw/HwLt8C0P4ER/0JtFuxKsW6UGQHAJlE+hYwQVlA4IIQAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBfnAqEOu+ik51CwAADMgl30AT/MfiBDYRFpa4Z6DmwFZ5RMF8c8fzbKOouSn6OuAjgxgf6C+Ihp2Gh/zFbawM/fruCO4Oh+MB/xnnLEnmz2xGP+INhCuutPb1+I+jC0H9839OTEQ3QAAAA=",
+  "dominant": "#eaeaea",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "ASUS",
+  "source": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/5A45FA04-FD07-4A98-9722-AA678364F4F6/",
+    "page": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/"
+  },
+  "input": "e952966b6116adae"
+}

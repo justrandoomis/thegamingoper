@@ -7,11 +7,17 @@
  * storefront's translations):
  *
  *   display_in · display_type · display_resolution · display_refresh_hz · display_hdr · touchscreen
- *   chip · cpu · gpu · ram_gb · storage_gb · storage_type · storage_expansion
+ *   chip · cpu · gpu · ram_gb · storage_type · storage_expansion
+ *   storage_gb (models made in one size) · storage_options (models made in several sizes: each
+ *     product variant then names its own size, so the sheet never shows one size for all of them)
  *   battery_mah · battery_wh · battery_life_hours · charger_w
- *   weight_g (as played: handhelds with their controllers attached) · dimensions_mm (W × H × D)
+ *   weight_g (as played: handhelds with their controllers attached) · dimensions_mm (W × H × D,
+ *     in the position the maker measures it)
  *   tv_output · disc_drive · upscaling · os · wifi · bluetooth · usb_c_ports · game_media
  *   controls · audio · requires
+ *
+ * A figure that differs between editions of one model (the PS5 Slim disc and Digital editions
+ * weigh 3.2 and 2.6 kg) is left out rather than shown as if it held for both.
  */
 import type { DeviceKind, Specs } from "../../schema";
 import { same, t3, type T3 } from "./text";
@@ -76,6 +82,7 @@ const XBOX_EXPANSION = t3(
   "Storage Expansion Card port, plus USB 3.1 external drives",
   "دەرچەی کارتی فراوانکردنی بیرگە، لەگەڵ دیسکی دەرەکیی USB 3.1",
 );
+const SSD_512_OR_1TB = t3("512GB أو 1TB بحسب الإصدار", "512GB or 1TB, depending on the version", "512GB یان 1TB بەپێی وەشان");
 
 export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
   {
@@ -200,7 +207,7 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
     artViews: ["hero", "front", "back"],
     specs: {
       cpu: PS5_CPU,
-      gpu: "AMD Radeon RDNA, 10.3 TFLOPS",
+      gpu: "AMD Radeon RDNA 2, 10.3 TFLOPS",
       ram_gb: 16,
       storage_gb: 1000,
       storage_type: "NVMe SSD",
@@ -211,8 +218,6 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
         "Ultra HD Blu-ray لە وەشانی دیسکدا؛ وەشانی دیجیتاڵی خوێنەری دیسکێک وەردەگرێت کە بە جیا دەفرۆشرێت",
       ),
       tv_output: PS5_TV,
-      weight_g: 3200,
-      dimensions_mm: "96 × 358 × 216",
       wifi: "Wi-Fi 6",
       bluetooth: true,
     },
@@ -233,7 +238,7 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
     artViews: ["hero", "front"],
     specs: {
       cpu: PS5_CPU,
-      gpu: "AMD Radeon RDNA, 16.7 TFLOPS",
+      gpu: "AMD Radeon, 16.7 TFLOPS",
       ram_gb: 16,
       storage_gb: 2000,
       storage_type: "NVMe SSD",
@@ -246,7 +251,7 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
       tv_output: PS5_TV,
       upscaling: "PlayStation Spectral Super Resolution (PSSR)",
       weight_g: 3100,
-      dimensions_mm: "89 × 388 × 216",
+      dimensions_mm: "388 × 89 × 216",
       wifi: "Wi-Fi 7",
       bluetooth: true,
     },
@@ -336,13 +341,13 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
       cpu: t3("AMD Zen 2 مخصص بثماني أنوية، 3.6 غيغاهرتز", "Custom 8-core AMD Zen 2, 3.6 GHz", "AMD Zen 2ـی تایبەت بە 8 ناوک، 3.6 گیگاهێرتز"),
       gpu: "AMD RDNA 2, 4 TFLOPS",
       ram_gb: 10,
-      storage_gb: 512,
+      storage_options: SSD_512_OR_1TB,
       storage_type: "NVMe SSD",
       storage_expansion: XBOX_EXPANSION,
       disc_drive: t3("لا يوجد — جهاز رقمي بالكامل", "None — all-digital console", "نییە — ئامێرێکی تەواو دیجیتاڵی"),
       tv_output: t3("حتى 1440p بمعدل 120 إطاراً في الثانية", "Up to 1440p at 120 fps", "تا 1440p بە 120 فرەیم لە چرکەیەکدا"),
       weight_g: 1930,
-      dimensions_mm: "151 × 275 × 63.5",
+      dimensions_mm: "275 × 63.5 × 151",
       wifi: "Wi-Fi 5",
       bluetooth: false,
     },
@@ -370,7 +375,7 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
       touchscreen: true,
       chip: t3("AMD APU مخصص بدقة تصنيع 6 نانومتر (Zen 2 و RDNA 2)", "Custom 6 nm AMD APU (Zen 2 and RDNA 2)", "AMD APUـی تایبەت بە 6 نانۆمەتر (Zen 2 و RDNA 2)"),
       ram_gb: 16,
-      storage_gb: 512,
+      storage_options: SSD_512_OR_1TB,
       storage_type: "NVMe SSD",
       storage_expansion: MICROSD_SLOT,
       battery_wh: 50,
@@ -440,7 +445,7 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
       touchscreen: true,
       chip: "AMD Ryzen Z1 Extreme",
       ram_gb: 16,
-      storage_gb: 512,
+      storage_options: SSD_512_OR_1TB,
       storage_type: "NVMe SSD (M.2 2242)",
       storage_expansion: MICROSD_SLOT,
       battery_wh: 49.2,

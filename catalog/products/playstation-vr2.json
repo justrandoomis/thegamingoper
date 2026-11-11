@@ -1,0 +1,261 @@
+{
+  "slug": "playstation-vr2",
+  "group": "playstation-hardware",
+  "kind": "vr",
+  "platform": "playstation",
+  "brand": "Sony",
+  "deviceModel": "ps-vr2",
+  "family": "ps-vr2",
+  "status": "available",
+  "releaseDate": "2023-02-22",
+  "name": {
+    "ar": "PlayStation VR2",
+    "en": "PlayStation VR2",
+    "ckb": "PlayStation VR2"
+  },
+  "short": {
+    "ar": "شاشتا OLED بدقة 2000×2040 لكل عين · 90/120Hz · تتبع العين · يتطلب PS5",
+    "en": "2000×2040 OLED per eye · 90/120Hz · Eye tracking · Requires PS5",
+    "ckb": "OLEDی 2000×2040 بۆ هەر چاوێک · 90/120Hz · شوێنکەوتنی چاو · PS5ی پێویستە"
+  },
+  "description": {
+    "ar": "نظارة الواقع الافتراضي من Sony لجهاز PS5، تتصل بكابل USB-C واحد ولا تحتاج كاميرا خارجية لأن الكاميرات مدمجة فيها. تأتي مع يدي تحكم PlayStation VR2 Sense فيهما اهتزاز Haptic وأزرار Adaptive triggers. يمكن استخدامها أيضاً مع كمبيوتر ويندوز عبر محوّل PC الرسمي (يُباع منفصلاً) مع بعض الميزات غير المتاحة.",
+    "en": "Sony's virtual reality headset for PS5. It connects with a single USB-C cable and needs no external camera because the tracking cameras are built in. It comes with two PlayStation VR2 Sense controllers with haptic feedback and adaptive triggers. It can also be used with a Windows PC through the official PC adapter (sold separately), with some features unavailable.",
+    "ckb": "هێدسێتی ڕاستیی مەجازیی Sony بۆ PS5. بە یەک کێبڵی USB-C دەبەسترێت و کامێرای دەرەکی ناوێت چونکە کامێراکانی شوێنکەوتن لەناو خۆیدان. دوو کۆنتڕۆڵەری PlayStation VR2 Senseی لەگەڵدایە کە لەرینەوەی هاپتیک و تریگەری گونجاویان هەیە. دەتوانرێت لەگەڵ کۆمپیوتەری ویندۆزیش بەکاربهێنرێت لە ڕێگەی ئەداپتەری فەرمیی PC (بە جیا دەفرۆشرێت)، بەڵام هەندێک تایبەتمەندی بەردەست نابن."
+  },
+  "highlights": [
+    {
+      "ar": "شاشتا OLED بدقة 2000×2040 لكل عين مع HDR وتردد 90/120Hz",
+      "en": "Two OLED displays at 2000×2040 per eye with HDR and 90/120Hz",
+      "ckb": "دوو شاشەی OLED بە 2000×2040 بۆ هەر چاوێک لەگەڵ HDR و 90/120Hz"
+    },
+    {
+      "ar": "تتبع العين والعرض المركّز (Foveated rendering) ومجال رؤية نحو 110 درجات",
+      "en": "Eye tracking, foveated rendering and about a 110-degree field of view",
+      "ckb": "شوێنکەوتنی چاو، foveated rendering و مەودای بینینی نزیکەی 110 پلە"
+    },
+    {
+      "ar": "كابل USB-C واحد إلى PS5 – بدون كاميرا خارجية",
+      "en": "One USB-C cable to the PS5 – no external camera needed",
+      "ckb": "یەک کێبڵی USB-C بۆ PS5 – کامێرای دەرەکی پێویست نییە"
+    },
+    {
+      "ar": "لا يعمل مع PS4 ولا يشغّل ألعاب PS VR الأولى",
+      "en": "Does not work with PS4 and cannot play original PS VR games",
+      "ckb": "لەگەڵ PS4 کار ناکات و یارییەکانی PS VRی یەکەم کار پێناکات"
+    },
+    {
+      "ar": "غير مخصص للأطفال دون 12 عاماً؛ ألعاب Roomscale تحتاج مساحة 2×2 متر",
+      "en": "Not for children under 12; roomscale games need a 2 m × 2 m play area",
+      "ckb": "بۆ منداڵانی خوار 12 ساڵ نییە؛ یارییەکانی roomscale ناوچەی 2×2 مەتر پێویستە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZVR1", "en": "CFI-ZVR1", "ckb": "CFI-ZVR1" }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "OLED، 2000×2040 لكل عين، 90Hz و120Hz",
+        "en": "OLED, 2000×2040 per eye, 90Hz and 120Hz",
+        "ckb": "OLED، 2000×2040 بۆ هەر چاوێک، 90Hz و 120Hz"
+      }
+    },
+    {
+      "key": "fov",
+      "label": { "ar": "مجال الرؤية", "en": "Field of view", "ckb": "مەودای بینین" },
+      "value": { "ar": "نحو 110 درجات؛ مسافة العدسات قابلة للضبط", "en": "About 110 degrees; adjustable lens separation", "ckb": "نزیکەی 110 پلە؛ دووری نێوان هاوێنەکان دەگۆڕدرێت" }
+    },
+    {
+      "key": "tracking",
+      "label": { "ar": "التتبع", "en": "Tracking", "ckb": "شوێنکەوتن" },
+      "value": {
+        "ar": "4 كاميرات مدمجة لتتبع النظارة ويدي التحكم + كاميرا أشعة تحت حمراء لكل عين",
+        "en": "4 built-in cameras for headset and controller tracking + an IR eye-tracking camera per eye",
+        "ckb": "4 کامێرای ناوەکی بۆ شوێنکەوتنی هێدسێت و کۆنتڕۆڵەر + کامێرای IR بۆ هەر چاوێک"
+      }
+    },
+    {
+      "key": "feedback",
+      "label": { "ar": "الاهتزاز", "en": "Feedback", "ckb": "لەرینەوە" },
+      "value": { "ar": "اهتزاز في النظارة نفسها", "en": "Vibration in the headset", "ckb": "لەرینەوە لە هێدسێتەکەدا" }
+    },
+    {
+      "key": "connection",
+      "label": { "ar": "الاتصال بـ PS5", "en": "Connection to PS5", "ckb": "بەستنەوە بە PS5" },
+      "value": { "ar": "USB-C", "en": "USB-C", "ckb": "USB-C" }
+    },
+    {
+      "key": "audio",
+      "label": { "ar": "الصوت", "en": "Audio", "ckb": "دەنگ" },
+      "value": { "ar": "ميكروفون مدمج؛ منفذ سماعة ستيريو", "en": "Built-in microphone; stereo headphone jack", "ckb": "مایکرۆفۆنی ناوەکی؛ دەروازەی گوێگری ستێریۆ" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 158 × 212 × 278 ملم، نحو 0.6 كغ", "en": "Approx. 158 × 212 × 278 mm, about 0.6 kg", "ckb": "نزیکەی 158 × 212 × 278 ملم، نزیکەی 0.6 کگ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "نظارة PlayStation VR2", "en": "PlayStation VR2 headset", "ckb": "هێدسێتی PlayStation VR2" },
+    { "ar": "يدا تحكم PlayStation VR2 Sense مع الأحزمة", "en": "2 PlayStation VR2 Sense controllers with straps attached", "ckb": "2 کۆنتڕۆڵەری PlayStation VR2 Sense لەگەڵ پشتێنەکانیان" },
+    { "ar": "كابل شحن USB", "en": "USB charging cable", "ckb": "کێبڵی شەحنی USB" },
+    { "ar": "سماعات أذن ستيريو مع 3 مقاسات لرؤوس السماعة", "en": "Stereo headphones with three sizes of earpieces", "ckb": "گوێگری ستێریۆ لەگەڵ سێ قەبارەی سەری گوێگر" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PSVR2-STD",
+      "title": { "ar": "PlayStation VR2", "en": "PlayStation VR2", "ckb": "PlayStation VR2" },
+      "options": { "edition": "Standard" },
+      "modelNumber": "CFI-ZVR1",
+      "isDefault": true,
+      "images": ["playstation-vr2--1", "playstation-vr2--2", "playstation-vr2--3", "playstation-vr2--4", "playstation-vr2--5"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل مع أي جهاز PS5 عبر منفذ USB-C.", "en": "Works with any PS5 through the USB-C port.", "ckb": "لەگەڵ هەر PS5ێک لە ڕێگەی دەروازەی USB-C کار دەکات." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/"
+    },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/" },
+    {
+      "deviceModel": "windows-pc",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج محوّل PlayStation VR2 PC (يُباع منفصلاً) وكابل DisplayPort 1.4 وBluetooth 4.0 وبطاقة رسومية GTX 1650 أو أعلى. على الكمبيوتر لا تتوفر HDR ولا تتبع العين ولا اهتزاز النظارة ولا Adaptive triggers.",
+        "en": "Needs the PlayStation VR2 PC adapter (sold separately), a DisplayPort 1.4 cable, Bluetooth 4.0 and a GTX 1650-class GPU or better. On PC there is no HDR, eye tracking, headset feedback or adaptive triggers.",
+        "ckb": "ئەداپتەری PlayStation VR2 PC (بە جیا دەفرۆشرێت)، کێبڵی DisplayPort 1.4، Bluetooth 4.0 و کارتی گرافیکی GTX 1650 یان بەرزتری پێویستە. لەسەر PC نە HDR، نە شوێنکەوتنی چاو، نە لەرینەوەی هێدسێت و نە تریگەری گونجاو هەیە."
+      },
+      "source": "https://www.playstation.com/en-us/support/hardware/pc-prepare-ps-vr2/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "playstation-5-pro", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "playstation-vr2--1",
+      "file": ".cache/product-images/playstation-vr2/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_01-16x9-01-09april26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/",
+      "kind": "hero",
+      "alt": { "ar": "نظارة PlayStation VR2 بين يدي التحكم Sense", "en": "PlayStation VR2 headset between the two Sense controllers", "ckb": "هێدسێتی PlayStation VR2 لە نێوان دوو کۆنتڕۆڵەری Sense" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-vr2--2",
+      "file": ".cache/product-images/playstation-vr2/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_05-16x9-01-09april26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "نظارة PS VR2 من زاوية جانبية", "en": "PS VR2 headset from the side", "ckb": "هێدسێتی PS VR2 لە لاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-vr2--3",
+      "file": ".cache/product-images/playstation-vr2/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_03-16x9-01-09april26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/",
+      "kind": "detail",
+      "alt": { "ar": "الجهة الداخلية للنظارة والعدسات مع يدي التحكم", "en": "Inside of the headset showing the lenses, with both controllers", "ckb": "ناوەوەی هێدسێت و هاوێنەکان لەگەڵ هەردوو کۆنتڕۆڵەر" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-vr2--4",
+      "file": ".cache/product-images/playstation-vr2/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_Family_01-16x9-01-09april26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "النظارة ويدا التحكم Sense جنباً إلى جنب", "en": "Headset and Sense controllers side by side", "ckb": "هێدسێت و کۆنتڕۆڵەرەکانی Sense لە تەنیشت یەکتر" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-vr2--5",
+      "file": ".cache/product-images/playstation-vr2/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_Headphones-16x9-01-09april26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/",
+      "kind": "in-box",
+      "alt": { "ar": "سماعات الأذن الستيريو المرفقة مع PS VR2", "en": "The stereo headphones included with PS VR2", "ckb": "گوێگرە ستێریۆکەی لەگەڵ PS VR2 دێت" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/",
+      "title": "PlayStation®VR2 – Buy now",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZVR1, dimensions, weight, what's in the box, 2000x2040 OLED, eye tracking, foveated rendering, PS5 required, not PS4 / PS VR compatible, under-12 warning, 2 m × 2 m roomscale"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/ps-vr2/ps-vr2-tech-specs/",
+      "title": "PS VR2 Tech Specs",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "OLED, 90/120Hz, adjustable lens separation, ~110° field of view, sensors, cameras, headset vibration, USB-C, audio"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/pc-prepare-ps-vr2/",
+      "title": "How to prepare for using PS VR2 with PC",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PC adapter requirements: Windows 10/11 64-bit, DisplayPort 1.4, USB 3.0, Bluetooth 4.0, GPU minimums, Steam apps"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/06/03/playstation-vr2-players-can-access-games-on-pc-with-adapter-starting-on-august-7/",
+      "title": "PlayStation VR2 players can access games on PC with adapter starting on August 7",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "PC adapter launch 7 August 2024; features unavailable on PC (HDR, headset feedback, eye tracking, adaptive triggers, haptics other than rumble)"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/PlayStation_5",
+      "title": "PlayStation 5 (PlayStation VR2 section)",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "launch date 22 February 2023, inside-out tracking with four cameras, single USB-C cable"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/ps-vr2/ps-vr2-tech-specs/",
+      "title": "PS VR2 Tech Specs (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment (PlayStation UAE)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: OLED 2000 × 2040 per eye, 90/120Hz, approx. 110° field of view, 4 tracking cameras plus an IR eye-tracking camera per eye, headset vibration, USB-C, built-in mic and stereo headphone jack; the Gulf PS VR2 page lists it as available now with the PC adapter"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: PlayStation VR2 works with PS5 Pro"
+    }
+  ],
+  "notes": {
+    "ar": "تحتاج الألعاب إلى شراء منفصل من PlayStation Store أو أقراص. محوّل الكمبيوتر يُباع منفصلاً وليس ضمن هذا المنتج. استخدم النظارة في مكان خالٍ من العوائق، وخذ فترات راحة إذا شعرت بالدوار.",
+    "en": "Games are bought separately (PlayStation Store or disc). The PC adapter is sold separately and is not part of this product. Use the headset in a clear space and take breaks if you feel motion sickness.",
+    "ckb": "یارییەکان بە جیا دەکڕدرێن (PlayStation Store یان دیسک). ئەداپتەری PC بە جیا دەفرۆشرێت و بەشێک نییە لەم بەرهەمە. هێدسێتەکە لە شوێنێکی بەتاڵ بەکاربهێنە و ئەگەر سەرت گێژ بوو پشوو بدە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether any PS VR2 bundles are sold in the Middle East (PlayStation UK lists a Horizon Call of the Mountain bundle; not checked for this region)"
+    ]
+  }
+}

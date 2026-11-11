@@ -1,0 +1,57 @@
+{
+  "key": "gran-turismo-7--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/gran-turismo-7/1-240.705fb196.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/gran-turismo-7/1-480.b142ac41.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/gran-turismo-7/1-720.8e19a492.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/gran-turismo-7/1-960.12233fcb.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/gran-turismo-7/1-240.82259c98.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/gran-turismo-7/1-480.61fd4e0c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/gran-turismo-7/1-720.caa464b0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/gran-turismo-7/1-960.bab3c135.webp"
+      }
+    ],
+    "png": "/products/gran-turismo-7/1-720.56959953.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJbACdABrT7WnaasthuFQAAP7Q7C9IUfl/QmLWa+qTnf0VgVmOPxZcLTaY5Ut7vEOWdRvAVQn5Z+wE0rGTYDNqaM0w6P7Gxje9UROWDYqcQZ3V1IZcp8j8AM7E0UK7TIj6H+PzrIne8s728ec7G5++AAA=",
+  "dominant": "#020002",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202202/2806/QDzid2jNv4e44kgumGXDCscF.png",
+    "page": "https://store.playstation.com/en-ae/concept/10000956"
+  },
+  "input": "d26261c4658ceaf4"
+}

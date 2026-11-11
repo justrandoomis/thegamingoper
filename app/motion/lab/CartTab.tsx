@@ -3,21 +3,50 @@ import { useFormat, useT } from "~/i18n/react";
 import { flyToCart } from "../lazy";
 import { useSheet } from "../sheet-hook";
 import { LAB_ITEMS, labArt } from "./items";
-import { addToLabCart, clearLabCart, useLabCart } from "./store";
+import { addToLabCart, clearLabCart, removeFromLabCart, useLabCart } from "./store";
 
 const noop = () => {};
+
+/** How long the pretend server takes to refuse the request in the failure demo. */
+const FAILURE_AFTER_MS = 450;
 
 function FlySection() {
   const t = useT("motion");
   const f = useFormat();
   const count = useLabCart();
   const picture = useRef<HTMLImageElement>(null);
+  const [failed, setFailed] = useState(false);
+  const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const item = LAB_ITEMS[1];
+
+  useEffect(
+    () => () => {
+      for (const timer of timers.current) clearTimeout(timer);
+    },
+    [],
+  );
+
+  const target = () => document.querySelector('[data-testid="lab-cart"]');
 
   const add = () => {
     // State first: the cart is updated before any animation exists.
+    setFailed(false);
     addToLabCart();
-    if (picture.current) flyToCart(picture.current, { target: document.querySelector('[data-testid="lab-cart"]') });
+    if (picture.current) flyToCart(picture.current, { target: target() });
+  };
+
+  /** The same add, but the (pretend) server refuses it: the count rolls back and the bead returns along its arc. */
+  const addFailing = () => {
+    setFailed(false);
+    addToLabCart();
+    const flight = picture.current ? flyToCart(picture.current, { target: target() }) : null;
+    timers.current.push(
+      setTimeout(() => {
+        removeFromLabCart();
+        flight?.revert();
+        setFailed(true);
+      }, FAILURE_AFTER_MS),
+    );
   };
 
   return (
@@ -29,11 +58,22 @@ function FlySection() {
         <div className="lab-product__body">
           <strong>{t("flow.item", { n: f.number(2) })}</strong>
           <bdi className="lab-note">{f.iqd(item.priceIqd)}</bdi>
-          <button type="button" className="lab-btn lab-btn--primary" data-press="clay" data-haptic="success" data-testid="fly-add" onClick={add}>
+          <button type="button" className="lab-btn clay--red" data-press="clay" data-haptic="tap" data-testid="fly-add" onClick={add}>
             {t("cart.add")}
+          </button>
+          <button type="button" className="lab-btn" data-press="soft" data-testid="fly-add-failing" onClick={addFailing}>
+            {t("cart.addFailing")}
           </button>
         </div>
       </div>
+      {failed ? (
+        <p className="lab-error" role="alert" data-testid="fly-failed">
+          {t("cart.failed")}{" "}
+          <button type="button" className="lab-btn" data-press="soft" data-testid="fly-retry" onClick={add}>
+            {t("cart.retry")}
+          </button>
+        </p>
+      ) : null}
       <div className="lab-row lab-row--spread">
         <span className="lab-note" data-testid="fly-count">
           {t("cart.badge", { count })}
@@ -46,31 +86,18 @@ function FlySection() {
   );
 }
 
+/** The sheet component: useSheet owns the physics, the focus (in, trapped, back to the opener) and Escape. */
 function DemoSheet({ onClose }: { onClose: () => void }) {
   const t = useT("motion");
   const f = useFormat();
   const sheet = useSheet({ snapPoints: [0.5, 1], initialSnap: 0, onClose });
-  const { ref, backdropRef, close } = sheet;
-
-  // The sheet component owns focus and Escape: focus moves in on open and returns to the opener on close.
-  useEffect(() => {
-    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    ref.current?.focus({ preventScroll: true });
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      opener?.focus({ preventScroll: true });
-    };
-  }, [ref, close]);
+  const side = sheet.edge === "inline-end";
 
   return (
     <>
-      <div ref={backdropRef as React.RefObject<HTMLDivElement | null>} className="lab-scrim" data-testid="sheet-scrim" onClick={close} />
+      <div ref={sheet.backdropRef as React.RefObject<HTMLDivElement | null>} className="lab-scrim" data-testid="sheet-scrim" onClick={sheet.close} />
       <section
-        ref={ref as React.RefObject<HTMLElement | null>}
+        ref={sheet.ref as React.RefObject<HTMLElement | null>}
         className="tt-sheet lab-sheet"
         role="dialog"
         aria-modal="true"
@@ -82,13 +109,17 @@ function DemoSheet({ onClose }: { onClose: () => void }) {
           <span className="lab-sheet__grabber" aria-hidden="true" />
         </div>
         <div className="lab-row lab-sheet__actions">
-          <button type="button" className="lab-btn" data-press="soft" data-testid="sheet-half" onClick={() => sheet.snapTo(0)}>
-            {t("sheet.half")}
-          </button>
-          <button type="button" className="lab-btn" data-press="soft" data-testid="sheet-full" onClick={() => sheet.snapTo(1)}>
-            {t("sheet.full")}
-          </button>
-          <button type="button" className="lab-btn" data-press="soft" data-testid="sheet-close" onClick={close}>
+          {side ? null : (
+            <>
+              <button type="button" className="lab-btn" data-press="soft" data-testid="sheet-half" onClick={() => sheet.snapTo(0)}>
+                {t("sheet.half")}
+              </button>
+              <button type="button" className="lab-btn" data-press="soft" data-testid="sheet-full" onClick={() => sheet.snapTo(1)}>
+                {t("sheet.full")}
+              </button>
+            </>
+          )}
+          <button type="button" className="lab-btn" data-press="soft" data-testid="sheet-close" onClick={sheet.close}>
             {t("sheet.close")}
           </button>
         </div>

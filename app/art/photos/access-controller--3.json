@@ -1,0 +1,65 @@
+{
+  "key": "access-controller--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 858,
+  "aspect": 1.8648,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/3-240.21800dfd.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/3-480.7b76a961.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/3-720.2dbd6ba3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/3-960.bd699a92.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/3-1440.29a64af5.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/3-240.a720f1c6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/3-480.7d786c8a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/3-720.e6e15d5a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/3-960.189dcd4e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/3-1440.c88008a0.webp"
+      }
+    ],
+    "png": "/products/access-controller/3-720.59de53ad.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhIBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSGIAAAART6AmAAg2JsTeXCIioK9Ezh7BNrJtJQ+Nv5M6uUtODZZpJd4Cv1+khYj+K0zbhsluT4E/Li8gKxqo+kByZa5lACjpKivsmuCKW8q+CQGwkjzDrmucPt4IY2TFA1HhwQV+CFZQOCCKAAAAsAMAnQEqFAALAD8RcrBQLCakorAIAYAiCWoAAEo/DKL9ybtEEiAA2t+BpP5JA0g+9CjvY6QKeckeOjOiaNIgWQ8uctS9d37EH6ftysLX3mPeRgd9lXRg9/FslpeUPkGoscVddvUHbbzlsATl8ZeFhVD/nqVPGOOBZAi4/wcZ+wWv5NQYtb8BwAAA",
+  "dominant": "#e9ecf4",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-04-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/access-controller/"
+  },
+  "input": "47c2c01dc0b7f007"
+}

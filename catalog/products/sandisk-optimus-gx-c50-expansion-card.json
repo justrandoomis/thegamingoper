@@ -1,0 +1,303 @@
+{
+  "slug": "sandisk-optimus-gx-c50-expansion-card",
+  "group": "xbox-hardware",
+  "kind": "storage",
+  "platform": "xbox",
+  "brand": "SanDisk",
+  "family": "sandisk-optimus-gx-c50-expansion-card",
+  "status": "available",
+  "name": {
+    "ar": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S",
+    "en": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S",
+    "ckb": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S"
+  },
+  "short": {
+    "ar": "512GB أو 1TB أو 2TB · مرخّصة رسمياً لـ XBOX · ضمان 5 سنوات",
+    "en": "512GB, 1TB or 2TB · officially licensed for XBOX · 5-year warranty",
+    "ckb": "512GB، 1TB یان 2TB · مۆڵەتی فەرمیی XBOX · گەرەنتیی 5 ساڵ"
+  },
+  "description": {
+    "ar": "بطاقة توسعة تخزين مرخّصة رسمياً من SanDisk لأجهزة XBOX Series X|S، وهي الاسم الجديد لبطاقة WD_BLACK C50. تُركّب في منفذ التوسعة خلف الجهاز وتعمل بأداء الـ SSD الداخلي، فتُلعب الألعاب منها مباشرة وتدعم Quick Resume. متوفرة بسعات 512GB و1TB و2TB مع ضمان محدود 5 سنوات.",
+    "en": "SanDisk's officially licensed storage expansion card for XBOX Series X|S, the new name of the WD_BLACK C50. It plugs into the expansion slot on the back of the console and matches the internal SSD, so games play directly from it, with Quick Resume support. It comes in 512GB, 1TB and 2TB with a 5-year limited warranty.",
+    "ckb": "کارتی فراوانکردنی بیرگەی مۆڵەتدراوی فەرمیی SanDisk بۆ XBOX Series X|S، کە ناوی نوێی WD_BLACK C50 ـە. لە دەروازەی فراوانکردنی پشتەوەی کۆنسۆڵ دادەنرێت و هاوتای SSD ـی ناوەکی کار دەکات، بۆیە یارییەکان ڕاستەوخۆ لێیەوە کار دەکەن و Quick Resume پشتگیری دەکات. بە 512GB، 1TB و 2TB لەگەڵ گەرەنتیی سنوورداری 5 ساڵ هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "تشغيل ألعاب XBOX Series X|S مباشرة من البطاقة بأداء التخزين الداخلي",
+      "en": "Plays XBOX Series X|S games directly from the card at internal-SSD performance",
+      "ckb": "یارییەکانی XBOX Series X|S ڕاستەوخۆ لە کارتەکەوە کار دەکەن بە توانای SSD ـی ناوەکی"
+    },
+    {
+      "ar": "تدعم Quick Resume للتنقل بين عدة ألعاب",
+      "en": "Supports Quick Resume for switching between several games",
+      "ckb": "Quick Resume پشتگیری دەکات بۆ گۆڕینی نێوان چەند یارییەک"
+    },
+    {
+      "ar": "ثلاث سعات: 512GB و1TB و2TB",
+      "en": "Three sizes: 512GB, 1TB and 2TB",
+      "ckb": "سێ قەبارە: 512GB، 1TB و 2TB"
+    },
+    {
+      "ar": "ضمان محدود من SanDisk لمدة 5 سنوات",
+      "en": "5-year limited warranty from SanDisk",
+      "ckb": "گەرەنتیی سنوورداری 5 ساڵە لە SanDisk"
+    }
+  ],
+  "specs": [
+    {
+      "key": "capacity",
+      "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" },
+      "value": { "ar": "512GB أو 1TB أو 2TB", "en": "512GB, 1TB or 2TB", "ckb": "512GB، 1TB یان 2TB" }
+    },
+    {
+      "key": "interface",
+      "label": { "ar": "طريقة التوصيل", "en": "Interface", "ckb": "شێوەی بەستنەوە" },
+      "value": { "ar": "منفذ توسعة XBOX", "en": "XBOX expansion slot", "ckb": "دەروازەی فراوانکردنی XBOX" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارەی دەرەکی" },
+      "value": {
+        "ar": "2.18 × 1.24 × 0.3 إنش (نحو 55.4 × 31.5 × 7.6 ملم)",
+        "en": "2.18 × 1.24 × 0.3 in (about 55.4 × 31.5 × 7.6 mm)",
+        "ckb": "2.18 × 1.24 × 0.3 ئینچ (نزیکەی 55.4 × 31.5 × 7.6 ملم)"
+      }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "25 غرام", "en": "25 g", "ckb": "25 گرام" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "ضمان محدود 5 سنوات من SanDisk", "en": "5-year limited warranty (SanDisk)", "ckb": "گەرەنتیی سنوورداری 5 ساڵ (SanDisk)" }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "XBOX Series X وXBOX Series S", "en": "XBOX Series X, XBOX Series S", "ckb": "XBOX Series X، XBOX Series S" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "بطاقة SANDISK Optimus GX C50 Storage Expansion Card",
+      "en": "SANDISK Optimus GX C50 Storage Expansion Card",
+      "ckb": "کارتی SANDISK Optimus GX C50 Storage Expansion Card"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SDK-C50-512",
+      "title": {
+        "ar": "SANDISK Optimus GX C50 ‏512GB لـ XBOX Series X|S",
+        "en": "SANDISK Optimus GX C50 512GB for XBOX Series X|S",
+        "ckb": "SANDISK Optimus GX C50 ‏512GB بۆ XBOX Series X|S"
+      },
+      "options": { "storage": "512GB" },
+      "modelNumber": "SDCEOGN-512G-GNAGX",
+      "barcodes": ["619659234454"],
+      "isDefault": false,
+      "images": ["sandisk-optimus-gx-c50-expansion-card--1", "sandisk-optimus-gx-c50-expansion-card--4"],
+      "notes": {
+        "ar": "الباركود رمز UPC للنسخة الأمريكية كما يظهر في Best Buy.",
+        "en": "The barcode is the US-retail UPC as listed by Best Buy.",
+        "ckb": "بارکۆدەکە کۆدی UPC ـی وەشانی ئەمریکییە وەک لە Best Buy نووسراوە."
+      }
+    },
+    {
+      "sku": "SDK-C50-1TB",
+      "title": {
+        "ar": "SANDISK Optimus GX C50 ‏1TB لـ XBOX Series X|S",
+        "en": "SANDISK Optimus GX C50 1TB for XBOX Series X|S",
+        "ckb": "SANDISK Optimus GX C50 ‏1TB بۆ XBOX Series X|S"
+      },
+      "options": { "storage": "1TB" },
+      "modelNumber": "SDCEOGN-1T00-GNAGX",
+      "barcodes": ["619659234447"],
+      "isDefault": true,
+      "images": ["sandisk-optimus-gx-c50-expansion-card--1", "sandisk-optimus-gx-c50-expansion-card--2", "sandisk-optimus-gx-c50-expansion-card--3"],
+      "notes": {
+        "ar": "الباركود رمز UPC للنسخة الأمريكية كما يظهر في Best Buy.",
+        "en": "The barcode is the US-retail UPC as listed by Best Buy.",
+        "ckb": "بارکۆدەکە کۆدی UPC ـی وەشانی ئەمریکییە وەک لە Best Buy نووسراوە."
+      }
+    },
+    {
+      "sku": "SDK-C50-2TB",
+      "title": {
+        "ar": "SANDISK Optimus GX C50 ‏2TB لـ XBOX Series X|S",
+        "en": "SANDISK Optimus GX C50 2TB for XBOX Series X|S",
+        "ckb": "SANDISK Optimus GX C50 ‏2TB بۆ XBOX Series X|S"
+      },
+      "options": { "storage": "2TB" },
+      "modelNumber": "SDCEOGN-2T00-GNAGX",
+      "barcodes": ["619659234423"],
+      "isDefault": false,
+      "images": ["sandisk-optimus-gx-c50-expansion-card--1", "sandisk-optimus-gx-c50-expansion-card--5"],
+      "notes": {
+        "ar": "الباركود رمز UPC للنسخة الأمريكية كما يظهر في Best Buy.",
+        "en": "The barcode is the US-retail UPC as listed by Best Buy.",
+        "ckb": "بارکۆدەکە کۆدی UPC ـی وەشانی ئەمریکییە وەک لە Best Buy نووسراوە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "منفذ التوسعة الخلفي", "en": "Rear expansion slot", "ckb": "دەروازەی فراوانکردنی پشتەوە" },
+      "source": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "verified",
+      "note": { "ar": "منفذ التوسعة الخلفي", "en": "Rear expansion slot", "ckb": "دەروازەی فراوانکردنی پشتەوە" },
+      "source": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": { "ar": "منفذ التوسعة الخلفي", "en": "Rear expansion slot", "ckb": "دەروازەی فراوانکردنی پشتەوە" },
+      "source": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox"
+    }
+  ],
+  "related": [
+    { "slug": "seagate-storage-expansion-card", "kind": "alternative" },
+    { "slug": "xbox-series-s", "kind": "setup" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "sandisk-optimus-gx-c50-expansion-card--1",
+      "file": ".cache/product-images/sandisk-optimus-gx-c50-expansion-card/1.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-front-nocapacity.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة SANDISK Optimus GX C50 السوداء من الأمام",
+        "en": "Black SANDISK Optimus GX C50 card from the front",
+        "ckb": "کارتی ڕەشی SANDISK Optimus GX C50 لە پێشەوە"
+      },
+      "credit": "SanDisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-optimus-gx-c50-expansion-card--2",
+      "file": ".cache/product-images/sandisk-optimus-gx-c50-expansion-card/2.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-1tb-front-nocap.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox?sku=SDCEOGN-1T00-GNAGX",
+      "kind": "angle",
+      "alt": {
+        "ar": "بطاقة 1TB بزاوية مائلة",
+        "en": "The 1TB card at an angle",
+        "ckb": "کارتی 1TB بە گۆشەیەکی لار"
+      },
+      "credit": "SanDisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-optimus-gx-c50-expansion-card--3",
+      "file": ".cache/product-images/sandisk-optimus-gx-c50-expansion-card/3.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-1tb-side.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox?sku=SDCEOGN-1T00-GNAGX",
+      "kind": "detail",
+      "alt": {
+        "ar": "بطاقة 1TB من الجانب مع علامة السعة",
+        "en": "The 1TB card from the side with the capacity label",
+        "ckb": "کارتی 1TB لە لاتەنیشتەوە لەگەڵ نیشانەی قەبارە"
+      },
+      "credit": "SanDisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-optimus-gx-c50-expansion-card--4",
+      "file": ".cache/product-images/sandisk-optimus-gx-c50-expansion-card/4.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-512gb-side.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox?sku=SDCEOGN-512G-GNAGX",
+      "kind": "detail",
+      "alt": {
+        "ar": "بطاقة 512GB من الجانب مع علامة السعة",
+        "en": "The 512GB card from the side with the capacity label",
+        "ckb": "کارتی 512GB لە لاتەنیشتەوە لەگەڵ نیشانەی قەبارە"
+      },
+      "credit": "SanDisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-optimus-gx-c50-expansion-card--5",
+      "file": ".cache/product-images/sandisk-optimus-gx-c50-expansion-card/5.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-2tb-side.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox?sku=SDCEOGN-2T00-GNAGX",
+      "kind": "detail",
+      "alt": {
+        "ar": "بطاقة 2TB من الجانب مع علامة السعة",
+        "en": "The 2TB card from the side with the capacity label",
+        "ckb": "کارتی 2TB لە لاتەنیشتەوە لەگەڵ نیشانەی قەبارە"
+      },
+      "credit": "SanDisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox",
+      "title": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S",
+      "publisher": "SanDisk",
+      "retrieved": "2026-11-11",
+      "supports": "capacities, model numbers, interface, dimensions, weight, 5-year warranty, Quick Resume, compatibility, in the box, promotional inserts, images"
+    },
+    {
+      "url": "https://www.sandisk.com/products/ssd/external-ssd/wd-black-c50-expansion-card-for-xbox-ssd?sku=WDBMPH0010BNC-WCSN",
+      "title": "WD_BLACK C50 Storage Expansion Card for Xbox",
+      "publisher": "SanDisk",
+      "retrieved": "2026-11-11",
+      "supports": "WD_BLACK C50 is now SANDISK Optimus GX C50; previous WD_BLACK model numbers"
+    },
+    {
+      "url": "https://www.digitalcitizen.life/sandisk-expands-xbox-series-xs-storage-lineup-with-new-512gb-1tb-and-2tb-cards/",
+      "title": "SanDisk Expands Xbox Series X|S Storage Lineup With New 512GB, 1TB and 2TB Cards",
+      "publisher": "Digital Citizen",
+      "retrieved": "2026-11-11",
+      "supports": "announced in August 2026, officially licensed, runs games directly, three capacities, Game Pass and Discord Nitro trials in the box"
+    },
+    {
+      "url": "https://www.techtimes.com/articles/323859/20260810/sandisk-launches-xbox-expansion-card-19999-third-licensed-competitor-arrives-before-gta-vi.htm",
+      "title": "SanDisk Launches Xbox Expansion Card at $199.99",
+      "publisher": "Tech Times",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: unveiled 10 August 2026 as the third licensed expansion-card maker, 512GB/1TB/2TB, 5-year limited warranty; no firm ship date at announcement, retail expected late August 2026"
+    },
+    {
+      "url": "https://www.bestbuy.com/product/sandisk-1tb-optimus-gx-c50-storage-nvme-ssd-expansion-card-for-xbox-series-xs-black/JXJ62CH7C5",
+      "title": "SANDISK 1TB Optimus GX C50 Storage NVMe SSD Expansion Card For Xbox Series X|S",
+      "publisher": "Best Buy",
+      "retrieved": "2026-11-11",
+      "supports": "model SDCEOGN-1T00-GNAGX, UPC 619659234447 (US); the 512GB (JXJ62CH72X) and 2TB (JXJ62CH7JF) listings give SDCEOGN-512G-GNAGX / UPC 619659234454 and SDCEOGN-2T00-GNAGX / UPC 619659234423"
+    }
+  ],
+  "notes": {
+    "ar": "تحتوي العلبة حسب SanDisk على عرض تجريبي لشهر من Game Pass Ultimate وشهر من Discord Nitro، وهذه العروض لا تشمل كل الدول وقد لا تعمل لحسابات العراق. نفس البطاقة كانت تُباع سابقاً باسم WD_BLACK C50 (أرقام الطراز WDBMPH…).",
+    "en": "SanDisk says the box includes a one-month Game Pass Ultimate trial and a month of Discord Nitro; these offers are not available in every country and may not work for accounts in Iraq. The card was previously sold as the WD_BLACK C50 (model numbers WDBMPH…).",
+    "ckb": "SanDisk دەڵێت قوتووەکە تاقیکردنەوەی مانگێکی Game Pass Ultimate و مانگێک Discord Nitro ـی تێدایە؛ ئەم پێشکەشکردنانە لە هەموو وڵاتێک بەردەست نین و لەوانەیە بۆ هەژمارەکانی عێراق کار نەکەن. کارتەکە پێشتر بە ناوی WD_BLACK C50 دەفرۆشرا (ژمارەی مۆدێل WDBMPH…)."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact release date: unveiled on 10 August 2026 with no firm ship date (Tech Times, Digital Citizen); retail availability was expected in late August 2026, so releaseDate is left out",
+      "Whether the Game Pass and Discord trials can be redeemed in Iraq",
+      "Operating temperature range was not published for the Optimus GX C50"
+    ]
+  }
+}

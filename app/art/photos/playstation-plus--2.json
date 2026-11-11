@@ -1,0 +1,65 @@
+{
+  "key": "playstation-plus--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-plus/2-240.80fe5262.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-plus/2-480.88d75ec5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-plus/2-720.30963420.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-plus/2-960.ea5d6de5.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-plus/2-1440.6ec8c9ed.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-plus/2-240.57623915.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-plus/2-480.f92315ee.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-plus/2-720.1b5c70fd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-plus/2-960.f5d18e0c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-plus/2-1440.ae9472b1.webp"
+      }
+    ],
+    "png": "/products/playstation-plus/2-720.4582c897.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAABwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoMYOFmAlbhu5lW8H6CReAD7cisruEKYTN8CrvDpChiXzP6NwrMHqBSKkY59tayZunlQkHxwy9UeB9ZlCRjpRzQIb1GiLGYZ01//kV5QAWAoijmoT4ChbmdW7QzUAAAA",
+  "dominant": "#fed826",
+  "transparent": false,
+  "background": null,
+  "kind": "detail",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps-plus-overview-online-multiplayer-image-block-01-en-04jul24?$1600px$",
+    "page": "https://www.playstation.com/en-sa/ps-plus/"
+  },
+  "input": "693495a3b45c7209"
+}

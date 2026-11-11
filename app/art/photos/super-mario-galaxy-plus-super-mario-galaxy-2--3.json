@@ -1,0 +1,57 @@
+{
+  "key": "super-mario-galaxy-plus-super-mario-galaxy-2--3",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-240.153f61f8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-480.b91b0c63.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-720.e48e8c1c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-960.88c3f2b7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-240.23160c61.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-480.d777a0d4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-720.6ccfcdde.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-960.bda36c3f.webp"
+      }
+    ],
+    "png": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/3-720.b1085e70.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoR3ACmO7cJoTXKvSOp44AD+6nndycHLhr0l0zuYQfFqBKt+l3dciNbnVkcCReqlW1vvTejJ2xANP1X5WaNHVJmJGEItd1dIOe5xSXWtM8JMTigl++O9LOAAAAA=",
+  "dominant": "#f5fcfa",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70070000030770/2eafc395d5c6fbbcbccc7e151a2552f15d83d5d881bb074d3bc881a38191e440",
+    "page": "https://www.nintendo.com/us/store/products/super-mario-galaxy-plus-super-mario-galaxy-2-switch/"
+  },
+  "input": "d4605fd9d5e02cce"
+}

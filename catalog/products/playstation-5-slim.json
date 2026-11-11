@@ -1,0 +1,356 @@
+{
+  "slug": "playstation-5-slim",
+  "group": "playstation-hardware",
+  "kind": "console",
+  "platform": "playstation",
+  "brand": "Sony",
+  "deviceModel": "ps5-slim",
+  "family": "ps5",
+  "status": "available",
+  "releaseDate": "2023-11-10",
+  "name": {
+    "ar": "PlayStation 5 Slim (نسخة الأقراص) – 1TB",
+    "en": "PlayStation 5 Slim (Disc) – 1TB",
+    "ckb": "PlayStation 5 Slim (وەشانی دیسک) – 1TB"
+  },
+  "short": {
+    "ar": "1TB · قارئ أقراص Ultra HD Blu-ray قابل للفصل · DualSense في العلبة",
+    "en": "1TB · Detachable Ultra HD Blu-ray drive · DualSense included",
+    "ckb": "1TB · دڕایڤی دیسکی Ultra HD Blu-ray کە جیا دەکرێتەوە · DualSense لەگەڵیدایە"
+  },
+  "description": {
+    "ar": "هذا هو جهاز PS5 الحالي بالحجم الأصغر (فئة slim) مع قارئ أقراص، ويأتي بذاكرة SSD سعة 1TB. يشغّل ألعاب PS5 على الأقراص أو بالتحميل، ومعظم ألعاب PS4، ويعرض أفلام 4K Blu-ray. حجمه أصغر بأكثر من 30% من الطراز الأول، والقاعدة العمودية تُباع منفصلة.",
+    "en": "This is the current, smaller PS5 (slim model group) with a disc drive and a 1TB SSD. It plays PS5 games on disc or by download, most PS4 games, and 4K Ultra HD Blu-ray movies. It is more than 30% smaller in volume than the launch model; the vertical stand is sold separately.",
+    "ckb": "ئەمە PS5ی ئێستایە بە قەبارەی بچووکتر (کۆمەڵەی slim) لەگەڵ دڕایڤی دیسک و بیرگەی SSDی 1TB. یارییەکانی PS5 لەسەر دیسک یان بە داگرتن کار پێدەکات، زۆربەی یارییەکانی PS4 و فیلمی 4K Ultra HD Blu-ray. قەبارەکەی زیاتر لە 30% بچووکترە لە مۆدێلی یەکەم؛ ستاندی ستوونی بە جیا دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "ذاكرة SSD سعة 1TB (جزء منها محجوز لنظام التشغيل)، وقابلة للتوسعة بقرص M.2 حتى 8TB",
+      "en": "1TB SSD (part is reserved for system software), expandable with an M.2 SSD up to 8TB",
+      "ckb": "بیرگەی SSDی 1TB (بەشێکی بۆ سیستەم تەرخانە)، دەتوانرێت بە SSDی M.2 تا 8TB زیاد بکرێت"
+    },
+    {
+      "ar": "قارئ أقراص Ultra HD Blu-ray يمكن فصله، يشغّل أقراص ألعاب PS5 وPS4 وأفلام 4K Blu-ray وDVD",
+      "en": "Detachable Ultra HD Blu-ray drive for PS5/PS4 game discs, 4K Blu-ray films and DVDs",
+      "ckb": "دڕایڤی دیسکی Ultra HD Blu-ray کە جیا دەکرێتەوە، بۆ دیسکی یارییەکانی PS5 و PS4 و فیلمی 4K Blu-ray و DVD"
+    },
+    {
+      "ar": "إخراج 4K حتى 120Hz مع دعم VRR عبر HDMI 2.1، وصوت Tempest ثلاثي الأبعاد",
+      "en": "4K output up to 120Hz with VRR over HDMI 2.1, plus Tempest 3D AudioTech",
+      "ckb": "دەرچوونی 4K تا 120Hz لەگەڵ VRR لە ڕێگەی HDMI 2.1، و دەنگی سێ ڕەهەندی Tempest"
+    },
+    {
+      "ar": "يتوافق مع معظم ألعاب PS4، وواجهة الجهاز متوفرة باللغة العربية",
+      "en": "Plays most PS4 games, and the console menus are available in Arabic",
+      "ckb": "زۆربەی یارییەکانی PS4 کار پێدەکات، و مێنیوی کۆنسۆڵەکە بە زمانی عەرەبی هەیە"
+    },
+    {
+      "ar": "تنويه من Sony: الألعاب الجديدة الصادرة من يناير 2028 ستكون رقمية فقط، وأقراص الألعاب الأقدم تبقى قابلة للتشغيل",
+      "en": "Sony notice: new games released from January 2028 will be digital only; discs of earlier games keep working",
+      "ckb": "ئاگاداری Sony: یارییە نوێکان لە کانوونی دووەمی 2028ەوە تەنها دیجیتاڵ دەبن؛ دیسکی یارییە کۆنەکان هەر کار دەکەن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "فئة الطراز", "en": "Model group", "ckb": "کۆمەڵەی مۆدێل" },
+      "value": {
+        "ar": "CFI-2000 (2023) وCFI-2100 (الإصدار الحالي) – فئة slim",
+        "en": "CFI-2000 (2023) and CFI-2100 (current) – slim model group",
+        "ckb": "CFI-2000 (2023) و CFI-2100 (ئێستا) – کۆمەڵەی slim"
+      }
+    },
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "CPU", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen \"Zen 2\" بثماني أنوية / 16 مساراً، حتى 3.5GHz",
+        "en": "AMD Ryzen \"Zen 2\", 8 cores / 16 threads, up to 3.5GHz",
+        "ckb": "AMD Ryzen \"Zen 2\"، 8 ناوک / 16 ڕێڕەو، تا 3.5GHz"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "المعالج الرسومي", "en": "GPU", "ckb": "پرۆسێسەری گرافیک" },
+      "value": {
+        "ar": "AMD Radeon بمعمارية RDNA 2 مع تسريع تتبع الأشعة، حتى 2.23GHz (10.3 TFLOPS)",
+        "en": "AMD Radeon RDNA 2-based with ray tracing acceleration, up to 2.23GHz (10.3 TFLOPS)",
+        "ckb": "AMD Radeon لەسەر بنەمای RDNA 2 لەگەڵ خێراکردنی ڕەی تڕەیسینگ، تا 2.23GHz (10.3 TFLOPS)"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "میمۆری" },
+      "value": { "ar": "16GB GDDR6 (448GB/s)", "en": "16GB GDDR6 (448GB/s)", "ckb": "16GB GDDR6 (448GB/s)" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": {
+        "ar": "SSD سعة 1TB (قراءة خام 5.5GB/s) + منفذ M.2 للتوسعة",
+        "en": "1TB SSD (5.5GB/s raw read) + M.2 expansion slot",
+        "ckb": "SSDی 1TB (خوێندنەوەی خاو 5.5GB/s) + شوێنی M.2 بۆ زیادکردن"
+      }
+    },
+    {
+      "key": "disc",
+      "label": { "ar": "الأقراص", "en": "Discs", "ckb": "دیسک" },
+      "value": {
+        "ar": "Ultra HD Blu-ray (أقراص ألعاب PS5 حتى 100GB)، Blu-ray، DVD",
+        "en": "Ultra HD Blu-ray (PS5 game discs up to 100GB), Blu-ray, DVD",
+        "ckb": "Ultra HD Blu-ray (دیسکی یاریی PS5 تا 100GB)، Blu-ray، DVD"
+      }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "إخراج الصورة", "en": "Video output", "ckb": "دەرچوونی وێنە" },
+      "value": {
+        "ar": "HDMI 2.1: شاشات 4K بتردد 120Hz، شاشات 8K، VRR",
+        "en": "HDMI 2.1: 4K 120Hz TVs, 8K TVs, VRR",
+        "ckb": "HDMI 2.1: تەلەفزیۆنی 4K بە 120Hz، تەلەفزیۆنی 8K، VRR"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "أمامي: USB-C (10Gbps) وUSB-C (Hi-Speed)؛ خلفي: منفذا USB-A (10Gbps)، Ethernet",
+        "en": "Front: USB-C (10Gbps) and USB-C (Hi-Speed); back: 2× USB-A (10Gbps), Ethernet",
+        "ckb": "پێشەوە: USB-C (10Gbps) و USB-C (Hi-Speed)؛ دواوە: 2× USB-A (10Gbps)، Ethernet"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الاتصال", "en": "Networking", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "Wi-Fi 6 (802.11ax)، Ethernet جيجابت، Bluetooth 5.1",
+        "en": "Wi-Fi 6 (802.11ax), Gigabit Ethernet, Bluetooth 5.1",
+        "ckb": "Wi-Fi 6 (802.11ax)، Ethernetی گیگابایت، Bluetooth 5.1"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": {
+        "ar": "تقريباً 358 × 96 × 216 ملم، نحو 3.2 كغ",
+        "en": "Approx. 358 × 96 × 216 mm, about 3.2 kg",
+        "ckb": "نزیکەی 358 × 96 × 216 ملم، نزیکەی 3.2 کگ"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز PlayStation 5", "en": "PlayStation 5 console", "ckb": "کۆنسۆڵی PlayStation 5" },
+    { "ar": "يد تحكم لاسلكية DualSense", "en": "DualSense wireless controller", "ckb": "کۆنتڕۆڵەری بێتەلی DualSense" },
+    { "ar": "قاعدتان بلاستيكيتان للوضع الأفقي", "en": "2 plastic feet for horizontal placement", "ckb": "2 پێی پلاستیکی بۆ دانانی ئاسۆیی" },
+    { "ar": "كابل HDMI", "en": "HDMI cable", "ckb": "کێبڵی HDMI" },
+    { "ar": "سلك الكهرباء (AC)", "en": "AC power cord", "ckb": "وایەری کارەبا (AC)" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" },
+    { "ar": "لعبة ASTRO's PLAYROOM مثبّتة مسبقاً", "en": "ASTRO's PLAYROOM (pre-installed)", "ckb": "یاریی ASTRO's PLAYROOM (پێشتر دامەزراوە)" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-SLIM-DISC-1TB",
+      "title": {
+        "ar": "PlayStation 5 Slim – نسخة الأقراص 1TB",
+        "en": "PlayStation 5 Slim – Disc, 1TB",
+        "ckb": "PlayStation 5 Slim – وەشانی دیسک، 1TB"
+      },
+      "options": { "edition": "Disc", "storage": "1TB", "color": "White" },
+      "isDefault": true,
+      "images": ["playstation-5-slim--1", "playstation-5-slim--2", "playstation-5-slim--3", "playstation-5-slim--4", "playstation-5-slim--5"],
+      "notes": {
+        "ar": "رقم الطراز الدقيق يختلف حسب المنطقة (مثل CFI-21xx)؛ تحقّق من الملصق على العلبة.",
+        "en": "The exact model number differs by region (e.g. CFI-21xx); check the label on the box.",
+        "ckb": "ژمارەی مۆدێلی ورد بەپێی ناوچە جیاوازە (وەک CFI-21xx)؛ سەیری لەیبڵی سەر قوتووەکە بکە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يقبل أغطية الجهاز المخصصة لفئة slim (CFI-2000/2100).",
+        "en": "Takes console covers made for the slim model group (CFI-2000/2100).",
+        "ckb": "قاپی کۆنسۆڵی تایبەت بە کۆمەڵەی slim (CFI-2000/2100) وەردەگرێت."
+      },
+      "source": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim-digital-edition", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-vertical-stand", "kind": "setup" },
+    { "slug": "dualsense-charging-station", "kind": "accessory" },
+    { "slug": "playstation-portal", "kind": "accessory" },
+    { "slug": "wd-black-sn850x", "kind": "accessory" },
+    { "slug": "playstation-store-gift-card", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "playstation-5-slim--1",
+      "file": ".cache/product-images/playstation-5-slim/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-06-16x9-01-09apr26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PlayStation 5 Slim بقارئ أقراص واقفاً عمودياً",
+        "en": "PlayStation 5 Slim with disc drive standing upright",
+        "ckb": "PlayStation 5 Slim بە دڕایڤی دیسکەوە بە ستوونی وەستاوە"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim--2",
+      "file": ".cache/product-images/playstation-5-slim/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-05-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهاز موضوع أفقياً بجانب يد التحكم DualSense",
+        "en": "The console lying flat next to a DualSense controller",
+        "ckb": "کۆنسۆڵەکە بە ئاسۆیی لە تەنیشت کۆنتڕۆڵەری DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim--3",
+      "file": ".cache/product-images/playstation-5-slim/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-02-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/",
+      "kind": "angle",
+      "alt": {
+        "ar": "منظر علوي للجهاز في الوضع الأفقي مع يد التحكم",
+        "en": "Top view of the console lying flat with the controller",
+        "ckb": "دیمەنی سەرەوەی کۆنسۆڵەکە بە ئاسۆیی لەگەڵ کۆنتڕۆڵەر"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim--4",
+      "file": ".cache/product-images/playstation-5-slim/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/",
+      "kind": "angle",
+      "alt": {
+        "ar": "الواجهة الأمامية للجهاز واقفاً على القاعدة العمودية (تُباع منفصلة)",
+        "en": "Front edge of the console on the vertical stand (sold separately)",
+        "ckb": "لای پێشەوەی کۆنسۆڵەکە لەسەر ستاندی ستوونی (بە جیا دەفرۆشرێت)"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim--5",
+      "file": ".cache/product-images/playstation-5-slim/5.webp",
+      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/2025-PS5-Disc-in-the-box-packaging-console-dualsense-US-v2?fmt=png-alpha&wid=2000",
+      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/playstation5-console-1-tb",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة PS5 بجانب الجهاز ويد التحكم DualSense",
+        "en": "PS5 retail box beside the console and DualSense controller",
+        "ckb": "قوتووی PS5 لە تەنیشت کۆنسۆڵ و کۆنتڕۆڵەری DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 2000, "height": 507, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/",
+      "title": "PlayStation®5 Console - 1 TB",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "CFI-2100 model group, dimensions, weight, what's in the box, disc-format notice, vertical stand sold separately"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-consoles/playstation5-console-1-tb",
+      "title": "PlayStation®5 Console - 1 TB (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "1TB storage, up to 120fps with 120Hz output, what's in the box, CFI-2100/CFI-2000 accessory compatibility"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/10/10/new-look-for-ps5-console-this-holiday-season/",
+      "title": "New look for PS5 console this holiday season",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "full specification table (CPU, GPU, memory, SSD, disc, video out, ports, networking), size and weight, 30% smaller, horizontal stand included, vertical stand sold separately"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/ps5/",
+      "title": "PlayStation®5 | Play Has No Limits",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PS4 backwards compatibility, M.2/extra storage, January 2028 digital-only notice, slim vs original FAQ"
+    },
+    {
+      "url": "https://blog.playstation.com/2026/07/01/physical-disc-production-ending-in-january-2028-for-new-games-releasing-on-playstation-consoles/",
+      "title": "Physical disc production ending in January 2028 for new games releasing on PlayStation consoles",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "new games digital-only from January 2028; earlier disc games unaffected"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/",
+      "title": "PlayStation accessories",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "internal storage expandable up to 8TB with an M.2 SSD"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/PlayStation_5",
+      "title": "PlayStation 5",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "confirmation of slim dimensions, Wi-Fi 6, Bluetooth 5.1, HDMI 2.1, model revisions"
+    },
+    {
+      "url": "https://www.psu.com/news/ps5-slim-release-date-when-did-sonys-revised-playstation-5-come-out/",
+      "title": "PS5 Slim Release Date - When Did Sony's Revised PlayStation 5 Come Out?",
+      "publisher": "PlayStation Universe",
+      "retrieved": "2026-11-11",
+      "supports": "release date 10 November 2023 (North America), 29 November 2023 (UK)"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/legal/language-support/",
+      "title": "Console and PSN Supported Languages (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic console menu language; list of PSN countries/regions"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/ps5/buy-now/",
+      "title": "Buy PlayStation®5 (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment (PlayStation UAE)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: PS5 Console - 1TB is the disc model sold in the Gulf; January 2028 digital-only notice; vertical stand sold separately; CFI-2000 and CFI-2100 slim model groups"
+    },
+    {
+      "url": "https://www.techspot.com/news/113007-sony-confirms-make-playstation-discs-after-2028-not.html",
+      "title": "Sony clarifies that it will still make PlayStation discs after 2028, just not for new games",
+      "publisher": "TechSpot",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: independent confirmation that new games go digital-only from January 2028 while discs of earlier games stay playable and can still be reprinted"
+    }
+  ],
+  "notes": {
+    "ar": "يحتاج الجهاز إلى حساب PlayStation للتحديثات والمتجر والميزات عبر الإنترنت، واللعب الجماعي عبر الإنترنت يحتاج اشتراك PlayStation Plus مدفوعاً. العراق غير مدرج ضمن دول/مناطق PSN على صفحة Sony، لذا يُنشأ الحساب على منطقة مدعومة. الإصدار الأول في أمريكا الشمالية في 10 نوفمبر 2023.",
+    "en": "An account for PlayStation is needed for updates, the store and online features; online multiplayer needs a paid PlayStation Plus membership. Iraq is not listed among PSN countries/regions on Sony's page, so accounts are registered to a supported region. First release was in North America on 10 November 2023.",
+    "ckb": "بۆ نوێکردنەوە و فرۆشگا و تایبەتمەندییە ئۆنلاینەکان هەژماری PlayStation پێویستە؛ یاریی بە کۆمەڵی ئۆنلاین ئابوونەی پارەداری PlayStation Plus دەوێت. عێراق لە لیستی وڵات/ناوچەکانی PSN لە پەڕەی Sony دا نییە، بۆیە هەژمار لەسەر ناوچەیەکی پشتگیریکراو دروست دەکرێت. یەکەم دەرچوون لە ئەمریکای باکوور بوو لە 10ی تشرینی دووەمی 2023."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact region-specific model numbers of the current disc model (Sony's UK, US and UAE pages list only the CFI-2000/CFI-2100 model groups)",
+      "Official weight differs by source: PlayStation UK store and the 2023 PlayStation.Blog say approx. 3.2 kg; Wikipedia's prose gives 3.9 kg — we use Sony's figure",
+      "Bluetooth 5.1 and Wi-Fi 6 naming come from Wikipedia; Sony's table lists IEEE 802.11 a/b/g/n/ac/ax"
+    ]
+  }
+}

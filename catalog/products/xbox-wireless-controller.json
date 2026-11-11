@@ -1,0 +1,372 @@
+{
+  "slug": "xbox-wireless-controller",
+  "group": "xbox-hardware",
+  "kind": "controller",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "family": "xbox-wireless-controller",
+  "status": "available",
+  "releaseDate": "2020-11-10",
+  "name": { "ar": "XBOX Wireless Controller", "en": "XBOX Wireless Controller", "ckb": "XBOX Wireless Controller" },
+  "short": {
+    "ar": "XBOX Wireless وBluetooth · زر المشاركة · حتى 40 ساعة ببطاريات AA",
+    "en": "XBOX Wireless + Bluetooth · Share button · up to 40 h on AA batteries",
+    "ckb": "XBOX Wireless و Bluetooth · دوگمەی Share · تا 40 کاتژمێر بە پاتریی AA"
+  },
+  "description": {
+    "ar": "يد التحكم الرسمية لأجهزة XBOX Series X|S، وتعمل أيضاً مع XBOX One وأجهزة Windows والهواتف بنظامي Android وiOS. فيها زر مشاركة لالتقاط الصور والمقاطع، وأزرار اتجاه هجينة، وملمس مانع للانزلاق على الزنادات والأكتاف والظهر، ومقبس سماعة 3.5mm. تعمل ببطاريتين AA حتى 40 ساعة، أو ببطارية XBOX القابلة للشحن (تُباع منفصلة).",
+    "en": "The official controller for XBOX Series X|S, which also works with XBOX One, Windows PCs and Android and iOS phones. It has a Share button for screenshots and clips, a hybrid D-pad, textured grip on the triggers, bumpers and back, and a 3.5mm headset jack. It runs on AA batteries for up to 40 hours, or on the XBOX Rechargeable Battery (sold separately).",
+    "ckb": "دەسکی فەرمیی XBOX Series X|S، کە لەگەڵ XBOX One و کۆمپیوتەری Windows و مۆبایلی Android و iOS ـیش کار دەکات. دوگمەی Share ـی هەیە بۆ گرتنی وێنە و کلیپ، D-pad ـی تێکەڵ، ڕووی زبر لەسەر تریگەر و بەمپەر و پشتەوە، و دەروازەی 3.5mm بۆ هێدسێت. بە پاتریی AA تا 40 کاتژمێر کار دەکات، یان بە پاتریی شەحنکراوەی XBOX (جیا دەفرۆشرێت)."
+  },
+  "highlights": [
+    {
+      "ar": "يعمل مع XBOX Series X|S وXBOX One وWindows 10/11 وAndroid وiOS",
+      "en": "Works with XBOX Series X|S, XBOX One, Windows 10/11, Android and iOS",
+      "ckb": "لەگەڵ XBOX Series X|S و XBOX One و Windows 10/11 و Android و iOS کار دەکات"
+    },
+    {
+      "ar": "زر Share لالتقاط الصور ومقاطع اللعب ومشاركتها",
+      "en": "Share button for capturing and sharing screenshots and clips",
+      "ckb": "دوگمەی Share بۆ گرتن و هاوبەشکردنی وێنە و کلیپی یاری"
+    },
+    {
+      "ar": "أزرار اتجاه هجينة وملمس مانع للانزلاق، مع تخصيص الأزرار عبر تطبيق XBOX Accessories",
+      "en": "Hybrid D-pad and textured grip, with button mapping in the XBOX Accessories app",
+      "ckb": "D-pad ـی تێکەڵ و ڕووی زبر، لەگەڵ ڕێکخستنی دوگمەکان لە ئەپی XBOX Accessories"
+    },
+    {
+      "ar": "حتى 40 ساعة ببطاريات AA، أو بطارية قابلة للشحن تُباع منفصلة",
+      "en": "Up to 40 hours on AA batteries, or a rechargeable battery sold separately",
+      "ckb": "تا 40 کاتژمێر بە پاتریی AA، یان پاتریی شەحنکراوە کە جیا دەفرۆشرێت"
+    },
+    {
+      "ar": "مقبس سماعة 3.5mm ومنفذ USB-C",
+      "en": "3.5mm headset jack and USB-C port",
+      "ckb": "دەروازەی هێدسێتی 3.5mm و USB-C"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "XBOX Wireless مع أجهزة XBOX؛ Bluetooth مع Windows 10/11 والأجهزة اللوحية وAndroid وiOS؛ أو سلكي عبر USB-C",
+        "en": "XBOX Wireless to XBOX consoles; Bluetooth to Windows 10/11, tablets, Android and iOS; or wired over USB-C",
+        "ckb": "XBOX Wireless لەگەڵ کۆنسۆڵەکانی XBOX؛ Bluetooth لەگەڵ Windows 10/11 و تابلێت و Android و iOS؛ یان بە وایەری USB-C"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
+      "value": {
+        "ar": "XBOX Series X وXBOX Series S وXBOX One وWindows 10/11 وAndroid وiOS",
+        "en": "XBOX Series X, XBOX Series S, XBOX One, Windows 10/11, Android, iOS",
+        "ckb": "XBOX Series X، XBOX Series S، XBOX One، Windows 10/11، Android، iOS"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "بطاريات AA حتى 40 ساعة تقريباً",
+        "en": "AA batteries, up to about 40 hours",
+        "ckb": "پاتریی AA، نزیکەی تا 40 کاتژمێر"
+      }
+    },
+    {
+      "key": "audio",
+      "label": { "ar": "الصوت", "en": "Audio", "ckb": "دەنگ" },
+      "value": { "ar": "مقبس سماعة ستيريو 3.5mm", "en": "3.5mm stereo headset jack", "ckb": "دەروازەی هێدسێتی ستێریۆی 3.5mm" }
+    },
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model", "ckb": "مۆدێل" },
+      "value": { "ar": "1914", "en": "1914", "ckb": "1914" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "يد XBOX Wireless Controller", "en": "XBOX Wireless Controller", "ckb": "دەسکی XBOX Wireless Controller" }
+  ],
+  "variants": [
+    {
+      "sku": "XWC-BLK",
+      "title": { "ar": "XBOX Wireless Controller أسود Carbon Black", "en": "XBOX Wireless Controller – Carbon Black", "ckb": "XBOX Wireless Controller ـی ڕەشی Carbon Black" },
+      "options": { "color": "Carbon Black" },
+      "isDefault": true,
+      "images": ["xbox-wireless-controller--1", "xbox-wireless-controller--2"]
+    },
+    {
+      "sku": "XWC-WHT",
+      "title": { "ar": "XBOX Wireless Controller أبيض Robot White", "en": "XBOX Wireless Controller – Robot White", "ckb": "XBOX Wireless Controller ـی سپیی Robot White" },
+      "options": { "color": "Robot White" },
+      "isDefault": false,
+      "images": ["xbox-wireless-controller--3"]
+    },
+    {
+      "sku": "XWC-BLU",
+      "title": { "ar": "XBOX Wireless Controller أزرق Shock Blue", "en": "XBOX Wireless Controller – Shock Blue", "ckb": "XBOX Wireless Controller ـی شینی Shock Blue" },
+      "options": { "color": "Shock Blue" },
+      "isDefault": false,
+      "images": ["xbox-wireless-controller--4"]
+    },
+    {
+      "sku": "XWC-RED",
+      "title": { "ar": "XBOX Wireless Controller أحمر Pulse Red", "en": "XBOX Wireless Controller – Pulse Red", "ckb": "XBOX Wireless Controller ـی سووری Pulse Red" },
+      "options": { "color": "Pulse Red" },
+      "isDefault": false,
+      "images": ["xbox-wireless-controller--5"]
+    },
+    {
+      "sku": "XWC-PNK",
+      "title": { "ar": "XBOX Wireless Controller وردي Deep Pink", "en": "XBOX Wireless Controller – Deep Pink", "ckb": "XBOX Wireless Controller ـی پەمەیی Deep Pink" },
+      "options": { "color": "Deep Pink" },
+      "isDefault": false,
+      "images": ["xbox-wireless-controller--2"]
+    },
+    {
+      "sku": "XWC-GRN",
+      "title": { "ar": "XBOX Wireless Controller أخضر Velocity Green", "en": "XBOX Wireless Controller – Velocity Green", "ckb": "XBOX Wireless Controller ـی سەوزی Velocity Green" },
+      "options": { "color": "Velocity Green" },
+      "isDefault": false,
+      "images": ["xbox-wireless-controller--2"]
+    },
+    {
+      "sku": "XWC-VLT",
+      "title": { "ar": "XBOX Wireless Controller أصفر Electric Volt", "en": "XBOX Wireless Controller – Electric Volt", "ckb": "XBOX Wireless Controller ـی زەردی Electric Volt" },
+      "options": { "color": "Electric Volt" },
+      "isDefault": false
+    },
+    {
+      "sku": "XWC-PUR",
+      "title": { "ar": "XBOX Wireless Controller بنفسجي Astral Purple", "en": "XBOX Wireless Controller – Astral Purple", "ckb": "XBOX Wireless Controller ـی مۆری Astral Purple" },
+      "options": { "color": "Astral Purple" },
+      "isDefault": false
+    },
+    {
+      "sku": "XWC-X25",
+      "title": {
+        "ar": "XBOX Wireless Controller X25 Special Edition أخضر شفاف",
+        "en": "XBOX Wireless Controller X25 Special Edition",
+        "ckb": "XBOX Wireless Controller X25 Special Edition ـی سەوزی ڕوون"
+      },
+      "options": { "edition": "X25 Special Edition", "color": "Translucent OG Green" },
+      "isDefault": false,
+      "images": ["xbox-wireless-controller--6"],
+      "notes": {
+        "ar": "إصدار الذكرى 25 لـ XBOX، صدر في 20 تشرين الأول 2026: هيكل أخضر شفاف، زر XBOX أخضر، أزرار ABXY بألوان يد XBOX الأصلية، أكتاف تستعيد الزرين الأسود والأبيض في يد XBOX الأصلية، وغطاء خلفي وغطاء بطارية شفافان.",
+        "en": "XBOX 25th-anniversary edition, released 20 October 2026: translucent green shell, green XBOX button, ABXY buttons in the original XBOX colours, bumpers that recall the black and white buttons of the original XBOX controller, and a see-through back case and battery door.",
+        "ckb": "وەشانی 25 ساڵەی XBOX، لە 20ی تشرینی یەکەمی 2026 دەرچوو: ڕووکاری سەوزی ڕوون، دوگمەی XBOX ـی سەوز، دوگمەکانی ABXY بە ڕەنگەکانی دەسکی یەکەمی XBOX، بەمپەرەکان کە یادی دوگمە ڕەش و سپییەکانی دەسکی یەکەمی XBOX دەکەنەوە، و پشت و دەرگای پاتریی ڕوون."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "عبر XBOX Wireless أو USB-C", "en": "Over XBOX Wireless or USB-C", "ckb": "بە XBOX Wireless یان USB-C" },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "verified",
+      "note": { "ar": "عبر XBOX Wireless أو USB-C", "en": "Over XBOX Wireless or USB-C", "ckb": "بە XBOX Wireless یان USB-C" },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": { "ar": "عبر XBOX Wireless أو USB-C", "en": "Over XBOX Wireless or USB-C", "ckb": "بە XBOX Wireless یان USB-C" },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "Windows 10/11 عبر Bluetooth أو كابل USB-C (يُباع منفصلاً)",
+        "en": "Windows 10/11 over Bluetooth or a USB-C cable (sold separately)",
+        "ckb": "Windows 10/11 بە Bluetooth یان کێبڵی USB-C (جیا دەفرۆشرێت)"
+      },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller"
+    }
+  ],
+  "related": [
+    { "slug": "xbox-rechargeable-battery-usb-c", "kind": "accessory" },
+    { "slug": "xbox-wireless-headset", "kind": "accessory" },
+    { "slug": "xbox-elite-series-2", "kind": "upsell" },
+    { "slug": "xbox-nano-controller", "kind": "alternative" },
+    { "slug": "xbox-adaptive-controller", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "xbox-wireless-controller--1",
+      "file": ".cache/product-images/xbox-wireless-controller/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-Black-b00?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz",
+      "kind": "hero",
+      "alt": {
+        "ar": "يد XBOX Wireless Controller السوداء من الأمام",
+        "en": "Black XBOX Wireless Controller from the front",
+        "ckb": "دەسکی ڕەشی XBOX Wireless Controller لە پێشەوە"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-wireless-controller--2",
+      "file": ".cache/product-images/xbox-wireless-controller/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Xbox-Wireless-Controller_CP-0_8-Controllers_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz",
+      "kind": "detail",
+      "alt": {
+        "ar": "ست أيادٍ بالألوان الأسود والأبيض والأزرق والأحمر والأخضر والوردي",
+        "en": "Six controllers in black, white, blue, red, green and pink",
+        "ckb": "شەش دەسک بە ڕەنگی ڕەش، سپی، شین، سوور، سەوز و پەمەیی"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-wireless-controller--3",
+      "file": ".cache/product-images/xbox-wireless-controller/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-White-b01-1?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz",
+      "kind": "angle",
+      "alt": { "ar": "اليد بلون Robot White", "en": "Robot White controller", "ckb": "دەسکی Robot White" },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-wireless-controller--4",
+      "file": ".cache/product-images/xbox-wireless-controller/4.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-Blue-b02?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz",
+      "kind": "angle",
+      "alt": { "ar": "اليد بلون Shock Blue", "en": "Shock Blue controller", "ckb": "دەسکی Shock Blue" },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-wireless-controller--5",
+      "file": ".cache/product-images/xbox-wireless-controller/5.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Wireless-Controller-Pulse-Red-Front?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz",
+      "kind": "angle",
+      "alt": { "ar": "اليد بلون Pulse Red", "en": "Pulse Red controller", "ckb": "دەسکی Pulse Red" },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 1500,
+      "transparent": true
+    },
+    {
+      "key": "xbox-wireless-controller--6",
+      "file": ".cache/product-images/xbox-wireless-controller/6.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_05_2000x2000?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "kind": "angle",
+      "alt": {
+        "ar": "يد X25 Special Edition الخضراء الشفافة",
+        "en": "Translucent green X25 Special Edition controller",
+        "ckb": "دەسکی سەوزی ڕوونی X25 Special Edition"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller",
+      "title": "XBOX Wireless Controller",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "colours currently sold, connectivity, compatibility, AA batteries up to 40 hours, Share button, hybrid D-pad, 3.5mm jack, note that not all versions include an expansion port"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/accessories",
+      "title": "XBOX Accessories & Controllers",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "current colour line-up (Robot White, Carbon Black, Pulse Red, Electric Volt, Shock Blue, Deep Pink, Velocity Green, Astral Purple) and X25 Special Edition"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-25th-anniversary",
+      "title": "XBOX Wireless Controller X25 Special Edition",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "X25 Special Edition design details and specs"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2026/08/26/pre-orders-begin-today-xbox-25th-anniversary-collection/",
+      "title": "Pre-orders Begin Today for the XBOX 25th Anniversary Collection",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "X25 Special Edition controller launch date 20 October 2026"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2026/06/07/xbox-25th-anniversary-console-controller-x25-xbox-games-showcase-2026/",
+      "title": "New XBOX 25th Anniversary Console and Controller",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "X25 Special Edition design: translucent OG Green, original ABXY colours, bumpers honouring the black and white buttons of the original controller, transparent back case and battery door"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/replacement-pcba-and-motor-assembly-for-xbox-wireless-controller/93ztd8f0bd8d",
+      "title": "Replacement PCBA and Motor Assembly for Xbox Wireless Controller",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "official model number: Xbox Wireless Controller (Model 1914)"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz",
+      "title": "Buy XBOX Wireless Controller",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "second official source for connectivity, compatibility and AA batteries up to 40 hours; Carbon Black, Robot White, Shock Blue, Velocity Green, Deep Pink and Pulse Red sold there"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Wireless_Controller",
+      "title": "Xbox Wireless Controller",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "model 1914 released November 2020 with Xbox Series X|S, Share button, USB-C, Bluetooth LE"
+    },
+    {
+      "url": "https://www.engadget.com/2179020/microsofts-xbox-controller-refresh-kills-its-underused-accessory-port/",
+      "title": "Microsoft's Xbox controller refresh kills its underused accessory port",
+      "publisher": "Engadget",
+      "retrieved": "2026-11-11",
+      "supports": "2026 change: newer controllers ship without the expansion port; the note was added to the store page in April 2026"
+    },
+    {
+      "url": "https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=8XN59CRBSQGZ&market=US&languages=en-US",
+      "title": "Microsoft Store catalogue entry: XBOX Wireless Controller",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "colour SKUs and official product images"
+    }
+  ],
+  "notes": {
+    "ar": "منذ 2026 قد تصل بعض النسخ الجديدة من اليد بدون منفذ الملحقات (Expansion Port) الموجود أسفلها، وتقول صفحة Microsoft إن ليس كل النسخ فيها هذا المنفذ. مقبس السماعة 3.5mm باقٍ. اليد لا تحتوي بطارية مدمجة؛ للشحن استخدم بطارية XBOX القابلة للشحن.",
+    "en": "Since 2026 some newly made controllers ship without the expansion port on the bottom edge; Microsoft's page now says not all versions include it. The 3.5mm headset jack remains. The controller has no built-in battery; for recharging use the XBOX Rechargeable Battery.",
+    "ckb": "لە 2026 ـەوە هەندێک دەسکی تازە بێ دەروازەی پاشکۆ (Expansion Port) ی خوارەوە دێن؛ پەڕەی Microsoft ئێستا دەڵێت هەموو وەشانەکان ئەو دەروازەیەیان نییە. دەروازەی هێدسێتی 3.5mm ماوە. دەسکەکە پاتریی ناوەکیی نییە؛ بۆ شەحنکردن پاتریی شەحنکراوەی XBOX بەکاربهێنە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether AA batteries are included in the box is not stated on the official page",
+      "Release dates of the individual colours were not researched",
+      "Which retail units lack the expansion port cannot be told from the box; Microsoft has not announced the change formally",
+      "No official product image was found for the Electric Volt and Astral Purple colours on the Microsoft Store"
+    ]
+  }
+}

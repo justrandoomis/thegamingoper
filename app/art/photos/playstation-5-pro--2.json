@@ -1,0 +1,65 @@
+{
+  "key": "playstation-5-pro--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 579,
+  "aspect": 2.7634,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-pro/2-240.7252fe77.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-pro/2-480.9cc764bf.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-pro/2-720.3f7ddebc.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-pro/2-960.32edada2.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5-pro/2-1440.b770f347.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-pro/2-240.699d926f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-pro/2-480.5e20fbb2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-pro/2-720.0750b176.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-pro/2-960.41e84a5f.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5-pro/2-1440.5a3051e5.webp"
+      }
+    ],
+    "png": "/products/playstation-5-pro/2-720.424b1779.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvAAAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSFAAAAART6CgbRsWF8bbjYhAdhLzB2xrbXvx/kGoY02l11mANpvAMUA2ggXSuy9miOj/BAACn9WROS8FSe7B2MniIcn0pIVkech4mGwAUZ8LN7TwE1ZQOCB6AAAA8AMAnQEqFAAHAD8RcrFQrCakorAIAYAiCWMAA+SyC9arTi5q1gokgADiUX+DZYkDAExGqE716QfuKyvX7VICejfj8mRag6AG7fQVXPqmQU8KrQqfw9rxhH80FOfHSe7wkT15j5MshhOxk0vjRVEiRnNH2x6sqcBX8AA=",
+  "dominant": "#060b17",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-04-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/"
+  },
+  "input": "c342fdec0a30cb30"
+}

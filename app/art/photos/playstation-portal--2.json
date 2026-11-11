@@ -1,0 +1,65 @@
+{
+  "key": "playstation-portal--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 1239,
+  "aspect": 1.2914,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/2-240.60e153f3.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/2-480.a99965e3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/2-720.bb28c2fb.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/2-960.1335cd1c.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/2-1440.212c2638.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/2-240.89a0afc5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/2-480.87c87512.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/2-720.c7b29820.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/2-960.4eeb91da.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/2-1440.025c7198.webp"
+      }
+    ],
+    "png": "/products/playstation-portal/2-720.86df5d13.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGQAAAART6CgbRs2VBbdvxERsBu6fRJua9tWoovGnw7cumCR0QEFeOZWACOhz7x60RIi+j8BOJdxW6/RXmN/oohf+HciulsAypyWNlB2KxPA1MuiAAA1/tMcLsCC7OGtAMpD3oDKbR0FVlA4IJIAAADwAwCdASoUAA8APxFysFAsJqSisAgBgCIJaA28wBteD7/zGUy7lbAgAP38uEcOCEc/2SnE9kMwUy6pXY5OqhTbv3d49XXPaPJfaAV0Du33QF8c8f0M53Hl85/ynAjq0xvZzmn5dcxA5f95ap/1+DowwfkDt5P0j+85H6pLOGWL/phGxR8JpZ7xP2cw2U73ZMwAAA==",
+  "dominant": "#252529",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-02-PS-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+  },
+  "input": "9d47ff1d1a9e8709"
+}

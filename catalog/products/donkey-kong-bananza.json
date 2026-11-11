@@ -1,0 +1,159 @@
+{
+  "slug": "donkey-kong-bananza",
+  "group": "nintendo-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2025-07-17",
+  "name": { "ar": "Donkey Kong Bananza", "en": "Donkey Kong Bananza", "ckb": "Donkey Kong Bananza" },
+  "short": {
+    "ar": "حصرية Nintendo Switch 2 · مغامرة ثلاثية الأبعاد · PEGI 7",
+    "en": "Nintendo Switch 2 exclusive · 3D platform adventure · PEGI 7",
+    "ckb": "تایبەت بە Nintendo Switch 2 · سەرگوزشتەی سێ ڕەهەندی · PEGI 7"
+  },
+  "description": {
+    "ar": "مغامرة ثلاثية الأبعاد يحطم فيها دونكي كونغ طريقه عبر عالم واسع تحت الأرض، فيكسر الجدران ويحفر الأنفاق ويقتلع قطعاً من الأرض ليرميها. ترافقه بولين التي يحوّله غناؤها إلى أشكال حيوانية بقدرات خاصة. يمكن للاعب ثانٍ أن يتحكم ببولين في طور تعاوني.",
+    "en": "A 3D adventure in which Donkey Kong smashes his way through a huge underground world — breaking walls, digging tunnels and ripping up chunks of terrain to throw. He is joined by Pauline, whose singing transforms him into animal forms with special powers. A second player can control Pauline in co-op.",
+    "ckb": "سەرگوزشتەیەکی سێ ڕەهەندی کە تێیدا دۆنکی کۆنگ ڕێگای خۆی بە ناو جیهانێکی گەورەی ژێر زەویدا دەشکێنێت — دیوار دەڕووخێنێت، تونێل هەڵدەکەنێت و پارچە زەوی هەڵدەگرێت و فڕێی دەدات. پاولین هاوڕێیەتی، کە گۆرانییەکانی دەیگۆڕن بۆ شێوەی ئاژەڵی بە توانای تایبەت. یاریزانێکی دووەم دەتوانێت لە دۆخی هاوکاریدا پاولین کۆنترۆڵ بکات."
+  },
+  "highlights": [
+    { "ar": "اللعبة كاملة على بطاقة اللعبة، وليست Game-Key Card", "en": "The full game is on the game card — not a Game-Key Card", "ckb": "تەواوی یارییەکە لەسەر کارتەکەیە — Game-Key Card نییە" },
+    { "ar": "حطّم تقريباً كل شيء: الجدران والأرض والصخور لتكشف الأسرار", "en": "Smash almost anything — walls, floors and rock — to uncover secrets", "ckb": "نزیکەی هەموو شتێک بشکێنە — دیوار، زەوی و بەرد — بۆ دۆزینەوەی نهێنییەکان" },
+    { "ar": "لاعب أو لاعبان: الثاني يتحكم ببولين في طور تعاوني", "en": "1–2 players: the second player controls Pauline in co-op", "ckb": "1–2 یاریزان: یاریزانی دووەم پاولین لە دۆخی هاوکاریدا کۆنترۆڵ دەکات" },
+    { "ar": "إضافة DK Island & Emerald Rush متوفرة بشكل منفصل", "en": "DK Island & Emerald Rush DLC available separately", "ckb": "زیادکراوی DK Island & Emerald Rush بە جیا بەردەستە" },
+    { "ar": "PEGI 7 · ESRB E10+ · لا تدعم العربية", "en": "PEGI 7 · ESRB E10+ · No Arabic", "ckb": "PEGI 7 · ESRB E10+ · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "17 تموز 2025", "en": "17 July 2025", "ckb": "17ی تەممووزی 2025" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "9.0 GB", "en": "9.0 GB", "ckb": "9.0 GB" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–2 على جهاز واحد", "en": "1–2 on one system", "ckb": "1–2 لەسەر یەک ئامێر" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E10+ (عنف خيالي، مشتريات داخل اللعبة)", "en": "PEGI 7 · ESRB E10+ (Fantasy Violence, In-Game Purchases)", "ckb": "PEGI 7 · ESRB E10+ (توندوتیژیی خەیاڵی، کڕینی ناو یاری)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، البرتغالية، الروسية، البولندية، اليابانية، الكورية، الصينية، التايلاندية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Portuguese, Russian, Polish, Japanese, Korean, Chinese, Thai — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، پورتوگالی، ڕووسی، پۆڵەندی، ژاپۆنی، کۆری، چینی، تایلەندی — بێ عەرەبی" } },
+    { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "لا يوجد طور تنافسي عبر الإنترنت؛ الحفظ السحابي يحتاج Nintendo Switch Online", "en": "No online competitive mode; cloud saves need Nintendo Switch Online", "ckb": "دۆخی ڕکابەریی ئۆنلاینی نییە؛ پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە" } },
+    { "key": "amiibo", "label": { "ar": "amiibo", "en": "amiibo", "ckb": "amiibo" }, "value": { "ar": "مجسم Donkey Kong & Pauline يفتح فستاناً خاصاً لبولين", "en": "The Donkey Kong & Pauline amiibo unlocks a special dress for Pauline", "ckb": "amiibo ی Donkey Kong & Pauline جلێکی تایبەت بۆ پاولین دەکاتەوە" } },
+    { "key": "developer", "label": { "ar": "المطوّر / الناشر", "en": "Developer / publisher", "ckb": "پەرەپێدەر / بڵاوکەرەوە" }, "value": { "ar": "Nintendo EPD / Nintendo", "en": "Nintendo EPD / Nintendo", "ckb": "Nintendo EPD / Nintendo" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة لعبة Nintendo Switch 2 داخل علبتها", "en": "Nintendo Switch 2 game card in its case", "ckb": "کارتی یاریی Nintendo Switch 2 لە ناو قوتووەکەیدا" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2G-DK-BANANZA",
+      "title": { "ar": "Donkey Kong Bananza — نسخة فعلية لـ Nintendo Switch 2", "en": "Donkey Kong Bananza — Nintendo Switch 2 physical edition", "ckb": "Donkey Kong Bananza — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
+      "barcodes": ["045496905576"],
+      "isDefault": true,
+      "images": ["donkey-kong-bananza--1", "donkey-kong-bananza--2", "donkey-kong-bananza--3", "donkey-kong-bananza--4", "donkey-kong-bananza--5", "donkey-kong-bananza--6"],
+      "notes": {
+        "ar": "الباركود المذكور هو للنسخة الأمريكية (UPC) من متجر Nintendo الأمريكي؛ النسخ الأوروبية تحمل رمز EAN مختلفاً.",
+        "en": "The barcode is the US edition's UPC from Nintendo's US store; European copies carry a different EAN.",
+        "ckb": "ئەم بارکۆدە UPC ی وەشانی ئەمریکییە لە فرۆشگای ئەمریکیی Nintendo؛ کۆپییە ئەوروپییەکان EAN ی جیاوازیان هەیە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["switch-2"],
+    "genres": [
+      { "ar": "منصات ثلاثية الأبعاد", "en": "3D platformer", "ckb": "پلاتفۆرمەری سێ ڕەهەندی" },
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرگوزشتە" }
+    ],
+    "players": "1-2",
+    "online": {
+      "ar": "لا يوجد لعب تنافسي عبر الإنترنت. يمكن لصديق الانضمام كبولين عبر GameShare. الحفظ السحابي يحتاج اشتراك Nintendo Switch Online.",
+      "en": "No online competitive play. A friend can join as Pauline through GameShare. Cloud saves need a Nintendo Switch Online membership.",
+      "ckb": "یاریی ڕکابەریی ئۆنلاینی تێدا نییە. هاوڕێیەک دەتوانێت لە ڕێگەی GameShare ەوە وەک پاولین بەشداری بکات. پاشەکەوتی هەوری پێویستی بە بەشداریی Nintendo Switch Online هەیە."
+    },
+    "ageRating": { "pegi": 7, "esrb": "E10+" },
+    "arabic": "none",
+    "physicalFormat": "cartridge",
+    "sizeGb": 9.0,
+    "developer": "Nintendo EPD",
+    "publisher": "Nintendo"
+  },
+  "compatibility": [
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "مصممة حصرياً لـ Nintendo Switch 2.", "en": "Made exclusively for Nintendo Switch 2.", "ckb": "تەنها بۆ Nintendo Switch 2 دروستکراوە." }, "source": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/" },
+    { "deviceModel": "switch", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch الأول؛ يمكن لجهاز Switch الأول فقط الانضمام كلاعب ثانٍ عبر GameShare.", "en": "Does not run on the original Nintendo Switch; a Switch 1 can only join as the second player through GameShare.", "ckb": "لەسەر Nintendo Switch ی یەکەم کار ناکات؛ Switch ی یەکەم تەنها دەتوانێت لە ڕێگەی GameShare ەوە وەک یاریزانی دووەم بەشداری بکات." }, "source": "https://en.wikipedia.org/wiki/Donkey_Kong_Bananza" },
+    { "deviceModel": "switch-oled", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch – OLED Model.", "en": "Does not run on Nintendo Switch – OLED Model.", "ckb": "لەسەر Nintendo Switch – OLED Model کار ناکات." }, "source": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/" },
+    { "deviceModel": "switch-lite", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch Lite.", "en": "Does not run on Nintendo Switch Lite.", "ckb": "لەسەر Nintendo Switch Lite کار ناکات." }, "source": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/" }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" },
+    { "slug": "mario-kart-world", "kind": "alternative" },
+    { "slug": "kirby-air-riders", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "donkey-kong-bananza--1",
+      "file": ".cache/product-images/donkey-kong-bananza/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Donkey%20Kong%20Bananza/121485-nintendo-switch-2-donkey-kong-bananza-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-donkey-kong-bananza-121485/",
+      "kind": "box-art",
+      "alt": { "ar": "الغلاف الأمامي للعبة Donkey Kong Bananza على Nintendo Switch 2", "en": "Front cover of Donkey Kong Bananza for Nintendo Switch 2", "ckb": "بەرگی پێشەوەی Donkey Kong Bananza بۆ Nintendo Switch 2" },
+      "credit": "Nintendo", "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "donkey-kong-bananza--2",
+      "file": ".cache/product-images/donkey-kong-bananza/2.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/c111819ae2b07f446ab92d64c8d37e9ef8e541e30b687121fa6d5976096b61f9",
+      "sourcePage": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "بولين تجلس على كتفي دونكي كونغ داخل كهف أخضر", "en": "Pauline riding on Donkey Kong's shoulders in a green cavern", "ckb": "پاولین لەسەر شانی دۆنکی کۆنگ لە ناو ئەشکەوتێکی سەوزدا" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "donkey-kong-bananza--3",
+      "file": ".cache/product-images/donkey-kong-bananza/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/b8ae4b278d62fb9683adf9939c79a3fc5ac71a671d1d644eb8774c4904e34ee2",
+      "sourcePage": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "دونكي كونغ يحطم الصخور بقبضتيه", "en": "Donkey Kong smashing through rock with his fists", "ckb": "دۆنکی کۆنگ بە مستەکانی بەرد دەشکێنێت" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "donkey-kong-bananza--4",
+      "file": ".cache/product-images/donkey-kong-bananza/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/1db3e042985d95332cb7750d9353a343b33415b12fbb82be6bffbcf0848949c3",
+      "sourcePage": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "دونكي كونغ بشكل الحمار الوحشي يركض فوق الماء", "en": "Donkey Kong in his zebra form running across water", "ckb": "دۆنکی کۆنگ بە شێوەی زێبرا بەسەر ئاودا ڕادەکات" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "donkey-kong-bananza--5",
+      "file": ".cache/product-images/donkey-kong-bananza/5.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/eedd5cf569384e972df7ee8cebb8a84ec86a7ab7f382f3f34b40e2cc4d22b8e1",
+      "sourcePage": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "دونكي كونغ يركب وحيد قرن", "en": "Donkey Kong riding a rhino", "ckb": "دۆنکی کۆنگ بە سواری کەرگەدەنێک" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "donkey-kong-bananza--6",
+      "file": ".cache/product-images/donkey-kong-bananza/6.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/760dd462413e23f48dd733041689430bf6446b9f88494c4edee7a44fd86ebabf",
+      "sourcePage": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "بولين بتعبير مندهش", "en": "Pauline looking surprised", "ckb": "پاولین بە سەرسوڕمانەوە" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/", "title": "Donkey Kong Bananza – Nintendo Switch 2 Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch 2 exclusive, release date, ESRB E10+ and descriptors, 1-2 players, supported languages, Save Data Cloud, amiibo, HDR, DLC bundle" },
+    { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-donkey-kong-bananza-121485/", "title": "Donkey Kong Bananza – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905576, box art" },
+    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Donkey-Kong-Bananza-2785804.html", "title": "Donkey Kong Bananza | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, download size 9.0 GB, smashing gameplay, Bananza transformations, DK Island & Emerald Rush DLC sold separately, Donkey Kong & Pauline amiibo unlocks the Diva Dress" },
+    { "url": "https://en.wikipedia.org/wiki/Donkey_Kong_Bananza", "title": "Donkey Kong Bananza", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Nintendo EPD, release July 17, 2025, co-op with a second player as Pauline, GameShare to another Switch 2 or locally to an original Switch" },
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+  ],
+  "verification": {
+    "checkedBy": "Claude (nintendo-games research pass)",
+    "secondSource": true,
+    "unverified": [
+      "Full game card status is inferred from Nintendo's official box art (no game-key card label); no Nintendo page states it in words",
+      "European EAN barcode not found on an official page"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-lite--6",
+  "view": "hero",
+  "width": 1335,
+  "height": 664,
+  "aspect": 2.0105,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-lite/6-240.a9063cb7.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-lite/6-480.cf8fde9f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-lite/6-720.2db48521.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-lite/6-960.df27e531.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-lite/6-240.75879354.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-lite/6-480.40376c22.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-lite/6-720.15414e11.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-lite/6-960.de819a94.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-lite/6-720.5f3595a7.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtoAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSDkAAAARL6CobRuoF+qi7XskRiMiAr9roBAA0KYLkEFtAk9gCPPn+QYR/Z8AOJx9q8W27Dv6VXY8clo2gUMAVlA4IHoAAADwAwCdASoUAAoAPxFwsFAsJiSisAgBgCIJZACdAYuQdJ2HFxof+p7AAPfQzY4r7gE3xSzFa9sodvW+KnhiqrJ2lrkC0ubpKnS4+qEpudSWPgP/SpVBkZEQt5XKwaNj1LujSYToMzbEhsKSsPpds+eMfJq2V6xpDwAAAA==",
+  "dominant": "#455aa5",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-blue-112385/112385-nintendo-switch-lite-blue-front-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-blue/"
+  },
+  "input": "bd912911bbfa2d99"
+}

@@ -1,0 +1,188 @@
+{
+  "slug": "nintendo-switch-2-camera",
+  "group": "nintendo-hardware",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "nintendo-switch-2-camera",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Nintendo Switch 2 Camera", "en": "Nintendo Switch 2 Camera", "ckb": "Nintendo Switch 2 Camera" },
+  "short": {
+    "ar": "كاميرا USB-C لـ GameChat والألعاب · عدسة واسعة · غطاء خصوصية",
+    "en": "USB-C camera for GameChat and games · wide lens · privacy shutter",
+    "ckb": "کامێرای USB-C بۆ GameChat و یاری · هاوێنەی پان · داپۆشەری نهێنیپارێزی"
+  },
+  "description": {
+    "ar": "كاميرا صغيرة بمنفذ USB-C صممتها Nintendo لجهاز Switch 2. تتصل بمنفذ USB-C أعلى الجهاز لإجراء مكالمات فيديو في GameChat واستخدام مزايا الكاميرا داخل الألعاب المتوافقة، في وضع التلفاز أو الطاولة أو المحمول. عدستها واسعة الزاوية وقابلة للتعديل، ومستشعرها يضبط الإضاءة تلقائيًا، وفيها غطاء خصوصية مدمج.",
+    "en": "A small USB-C camera made by Nintendo for Switch 2. It plugs into the USB-C port on top of the console for video in GameChat and camera features in compatible games, in TV, tabletop or handheld mode. The wide-angle lens can be angled freely, the sensor adjusts brightness automatically, and a built-in shutter covers the lens.",
+    "ckb": "کامێرایەکی بچووکی USB-C کە Nintendo بۆ Switch 2 دروستی کردووە. دەبەسترێتە دەرچەی USB-C ی سەرەوەی کۆنسۆڵەکە بۆ ڤیدیۆ لە GameChat و تایبەتمەندییەکانی کامێرا لە یارییە گونجاوەکاندا، لە دۆخی تەلەڤزیۆن، سەر مێز یان دەستی. هاوێنە پانەکەی بە ئازادی ڕێکدەخرێت، هەستەوەرەکەی ڕووناکی خۆکار ڕێکدەخات، و داپۆشەرێکی ناوخۆیی هاوێنەکە دادەپۆشێت."
+  },
+  "highlights": [
+    {
+      "ar": "مكالمات فيديو في GameChat ومزايا الكاميرا في الألعاب المتوافقة",
+      "en": "Video in GameChat and camera features in compatible games",
+      "ckb": "ڤیدیۆ لە GameChat و تایبەتمەندیی کامێرا لە یارییە گونجاوەکاندا"
+    },
+    {
+      "ar": "عدسة واسعة الزاوية قابلة للتعديل تلتقط غرفة كاملة أو مجموعة أشخاص",
+      "en": "Adjustable wide-angle lens that can fit a whole room or group",
+      "ckb": "هاوێنەی پانی ڕێکخراو کە ژوورێکی تەواو یان کۆمەڵێک کەس دەگرێت"
+    },
+    {
+      "ar": "غطاء خصوصية مدمج للعدسة",
+      "en": "Built-in privacy shutter",
+      "ckb": "داپۆشەری نهێنیپارێزیی ناوخۆیی بۆ هاوێنەکە"
+    },
+    {
+      "ar": "GameChat يتطلب اشتراك Nintendo Switch Online وحساب Nintendo",
+      "en": "GameChat needs a Nintendo Switch Online membership and a Nintendo Account",
+      "ckb": "GameChat پێویستی بە بەشداریی Nintendo Switch Online و هەژماری Nintendo هەیە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Works with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "مصممة خصيصًا لـ Nintendo Switch 2", "en": "Designed specifically for Nintendo Switch 2", "ckb": "تایبەت بۆ Nintendo Switch 2 دیزاین کراوە" }
+    },
+    {
+      "key": "connection",
+      "label": { "ar": "التوصيل", "en": "Connection", "ckb": "پەیوەستکردن" },
+      "value": { "ar": "USB-C في المنفذ العلوي للجهاز، فتعمل والجهاز في القاعدة أو خارجها", "en": "USB-C into the port on top of the console, so it works docked or undocked", "ckb": "USB-C بۆ دەرچەی سەرەوەی کۆنسۆڵ، بۆیە لە ناو دۆک و دەرەوەی دۆکیش کار دەکات" }
+    },
+    {
+      "key": "lens",
+      "label": { "ar": "العدسة", "en": "Lens", "ckb": "هاوێنە" },
+      "value": { "ar": "واسعة الزاوية وقابلة للتعديل؛ زاوية الرؤية القطرية نحو 110 درجات", "en": "Wide-angle, adjustable; diagonal angle of view about 110°", "ckb": "پان و ڕێکخراو؛ گۆشەی بینینی دیاگۆناڵ نزیکەی 110 پلە" }
+    },
+    {
+      "key": "resolution",
+      "label": { "ar": "الدقة", "en": "Resolution", "ckb": "ڕوونی" },
+      "value": { "ar": "لا تنشرها Nintendo؛ مراجعة IGN تذكر دقة 1080p", "en": "Not published by Nintendo; IGN's review reports 1080p", "ckb": "Nintendo بڵاوی نەکردۆتەوە؛ هەڵسەنگاندنی IGN دەڵێت 1080p ە" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "نحو 170 × 65.4 × 65.4 مم، ونحو 111 غرامًا", "en": "About 170 × 65.4 × 65.4 mm; about 111 g", "ckb": "نزیکەی 170 × 65.4 × 65.4 ملم؛ نزیکەی 111 گرام" }
+    },
+    {
+      "key": "privacy",
+      "label": { "ar": "الخصوصية", "en": "Privacy", "ckb": "نهێنیپارێزی" },
+      "value": { "ar": "غطاء عدسة مدمج", "en": "Built-in lens shutter", "ckb": "داپۆشەری هاوێنەی ناوخۆیی" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "كاميرا Nintendo Switch 2 Camera", "en": "Nintendo Switch 2 Camera", "ckb": "Nintendo Switch 2 Camera" },
+    { "ar": "كابل USB-C", "en": "USB-C cable", "ckb": "کێبڵی USB-C" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-CAMERA",
+      "title": { "ar": "Nintendo Switch 2 Camera", "en": "Nintendo Switch 2 Camera", "ckb": "Nintendo Switch 2 Camera" },
+      "options": { "color": "Black" },
+      "barcodes": ["0045496885946"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2-camera--1", "nintendo-switch-2-camera--2", "nintendo-switch-2-camera--3", "nintendo-switch-2-camera--4"],
+      "notes": { "ar": "الباركود أمريكي.", "en": "US barcode.", "ckb": "بارکۆدی ئەمریکی." }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "مصممة خصيصًا لـ Nintendo Switch 2", "en": "Designed specifically for Nintendo Switch 2", "ckb": "تایبەت بۆ Nintendo Switch 2" },
+      "source": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-dock-set", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-camera--1",
+      "file": ".cache/product-images/nintendo-switch-2-camera/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Camera/Frame_3473725.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "hero",
+      "alt": { "ar": "كاميرا Nintendo Switch 2 على حاملها", "en": "Nintendo Switch 2 Camera on its stand", "ckb": "Nintendo Switch 2 Camera لەسەر پاڵپشتەکەی" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-camera--2",
+      "file": ".cache/product-images/nintendo-switch-2-camera/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Camera/Frame_3473726.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "angle",
+      "alt": { "ar": "الكاميرا موصولة بمنفذ USB-C أعلى الجهاز", "en": "Camera plugged into the USB-C port on top of the console", "ckb": "کامێراکە بەستراوە بە دەرچەی USB-C ی سەرەوەی کۆنسۆڵ" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-camera--3",
+      "file": ".cache/product-images/nintendo-switch-2-camera/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/Cameras/123682-nintendo-switch-2-camera-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-camera-123682/",
+      "kind": "detail",
+      "alt": { "ar": "الكاميرا عن قرب", "en": "Close-up of the camera", "ckb": "کامێراکە لە نزیکەوە" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-camera--4",
+      "file": ".cache/product-images/nintendo-switch-2-camera/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Camera/Frame_3473727.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "detail",
+      "alt": { "ar": "ضبط زاوية الكاميرا بجانب القاعدة", "en": "Adjusting the camera angle next to the dock", "ckb": "ڕێکخستنی گۆشەی کامێرا لە تەنیشت دۆکەکە" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-camera-123682/",
+      "title": "Nintendo Switch 2 Camera",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "USB-C connection on top of the console, wide-angle adjustable lens, auto-brightness sensor, privacy shutter, cable included, release date, UPC"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "designed specifically for Switch 2, GameChat requirements, transparent product images"
+    },
+    {
+      "url": "https://www.nintendo.com/sg/hardware/switch2/accessories/camera.html",
+      "title": "Nintendo Switch 2 Camera Main specifications",
+      "publisher": "Nintendo (Singapore)",
+      "retrieved": "2026-11-11",
+      "supports": "size about 170 × 65.4 × 65.4 mm, weight about 111 g, USB Type-C connector, diagonal angle of view about 110°"
+    },
+    {
+      "url": "https://www.ign.com/articles/nintendo-switch-2-camera-review",
+      "title": "Nintendo Switch 2 Camera Review",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "independent hands-on: 1080p resolution, 110-degree field of view, twist ring privacy cover, USB-C to USB-C cable plugs into the top of the console (not the dock), works docked or undocked"
+    }
+  ],
+  "notes": {
+    "ar": "يمكن أيضًا استخدام بعض كاميرات USB الأخرى المتوافقة مع GameChat، لكن Nintendo لا تضمن عمل كل الكاميرات.",
+    "en": "Some other compatible USB cameras also work with GameChat, but Nintendo does not guarantee every camera.",
+    "ckb": "هەندێک کامێرای USB ی گونجاوی تریش لەگەڵ GameChat کار دەکەن، بەڵام Nintendo گەرەنتیی هەموو کامێرایەک ناکات."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Video resolution is not published by Nintendo (1080p comes from IGN's review)",
+      "Whether the camera also works from the dock's USB ports with a different cable (Nintendo only describes the console's top USB-C port)",
+      "European barcode"
+    ]
+  }
+}

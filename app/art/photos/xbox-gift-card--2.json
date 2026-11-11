@@ -1,0 +1,41 @@
+{
+  "key": "xbox-gift-card--2",
+  "view": "hero",
+  "width": 573,
+  "height": 573,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-gift-card/2-240.73ebb3a6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-gift-card/2-480.a7145e79.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-gift-card/2-240.4a2d0dfb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-gift-card/2-480.bdc6ec28.webp"
+      }
+    ],
+    "png": "/products/xbox-gift-card/2-573.961383a7.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSDQAAAARL0AWYDKA+aN1hdGfRkQENx0URZIaUTjAwakADCAh/v3MN++I/k+AJOpb7DGsX7nF9kQFVlA4IHQAAAAQBACdASoUABQAPxF6tVOsJ6SiqAqpgCIJZgCCcARfF9yusN4HOjPBgAD+Ljx94n7ilqIup3Gi8B2gdPgP8LuB8Sny0aa7/xn1MRK2qgLZKVqO9dGyv/VRNMN//DtLXwQOjbYVgMPC1hzxFIhQdNzNJEgAAA==",
+  "dominant": "#0f7c0f",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Microsoft (Xbox)",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?scl=1&fmt=png-alpha",
+    "page": "https://www.microsoft.com/en-us/store/b/gift-cards"
+  },
+  "input": "0b2f61d106d2f5fd"
+}

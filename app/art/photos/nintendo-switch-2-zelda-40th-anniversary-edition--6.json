@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-zelda-40th-anniversary-edition--6",
+  "view": "hero",
+  "width": 1556,
+  "height": 1600,
+  "aspect": 0.9725,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-240.c17049c0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-480.1c502a94.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-720.d7204667.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-960.860f5169.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-1440.2e7fa7e6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-240.5a0dc635.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-480.94b618e0.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-720.7dda7ae4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-960.28125493.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-1440.b473371b.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-zelda-40th-anniversary-edition/6-720.ccecddee.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvoAAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSEwAAAART6CojSQ0tRKOngwREXBLX78nsIltK84DCyhgkAAWELCjgEmdCgkZ2lQ8vdm61BH9nwC81jb30RT2Y/E65cnHXxAWybl5A4RRncBHVlA4IIgAAADwBACdASoTABQAPxF6tFQsJySjKAqpgCIJZgDA3BE8vt2HICZGT1QNNWNJYCDk7bAA/j44suSB80cbrIbRgGn29LW85i2cdUagd/biQzS9oBVDgbjmbvxSfFwRt8MF0P68Wcw9bQzS+8k/5N7MwAKn8k2Uj4IA1C+au/T9C6jS06DC+9Yj4ZAA",
+  "dominant": "#060402",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-package-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/"
+  },
+  "input": "4d2091b45fbb770a"
+}

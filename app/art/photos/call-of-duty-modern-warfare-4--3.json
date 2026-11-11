@@ -1,0 +1,65 @@
+{
+  "key": "call-of-duty-modern-warfare-4--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-modern-warfare-4/3-240.b155c0c3.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-modern-warfare-4/3-480.447cb9b6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-modern-warfare-4/3-720.c2e4f857.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-modern-warfare-4/3-960.3019c953.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/call-of-duty-modern-warfare-4/3-1440.334fe4e6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-modern-warfare-4/3-240.5738dd61.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-modern-warfare-4/3-480.7c5286f4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-modern-warfare-4/3-720.5b0dc94e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-modern-warfare-4/3-960.356bd6fa.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/call-of-duty-modern-warfare-4/3-1440.4b62f36a.webp"
+      }
+    ],
+    "png": "/products/call-of-duty-modern-warfare-4/3-720.e43d3345.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJaACdACHw+qAWTjTAMqZ5AAD+5Rr9g5U0fZTURwWzHfUIG7PDBJhuuNGxLY/hrfhdZOrTRHRxDvUTe8AAAA==",
+  "dominant": "#0a0906",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Activision",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/cod-mw4-screenshot-01-en-22may26?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/"
+  },
+  "input": "2fe3e6f8465ebabd"
+}

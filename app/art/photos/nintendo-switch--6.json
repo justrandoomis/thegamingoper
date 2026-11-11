@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch--6",
+  "view": "hero",
+  "width": 1329,
+  "height": 666,
+  "aspect": 1.9955,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch/6-240.76abc35e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch/6-480.fd14e5e2.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch/6-720.84290873.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch/6-960.0d09e557.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch/6-240.0419892b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch/6-480.8c4128b8.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch/6-720.4eea1c88.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch/6-960.283bea3e.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch/6-720.c4598a00.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuAAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSFUAAAART6CgbSQUvwlmiIiAQ3uT9QTb2nabSCaWnoEVYIC0AB0rULp0SUYa4c/rMENE/yeAMu3QMRHZnUZApewXZQcAG6B8BAqgiIRVRpPQp3UiIv73a02ZAFZQOCBkAAAA0AMAnQEqFAAKAD8RcrFQLCakorAIAYAiCWkAAFwJDPllnV92+esAAP4jgdA1NENUi6flpuhW+OiRwGZ+jwKSUjO2Neg67gs27f+0p2DpG+cupyQ1lq6xS6V3DwF6Q/7sRCAAAA==",
+  "dominant": "#43474b",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-gray/110477-nintendo-switch-gray-gray-console-docked-joy-con-grip-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-gray-gray-joy-con/"
+  },
+  "input": "b26304b412b1f727"
+}

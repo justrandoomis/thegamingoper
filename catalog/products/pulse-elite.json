@@ -1,0 +1,234 @@
+{
+  "slug": "pulse-elite",
+  "group": "playstation-hardware",
+  "kind": "headset",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "pulse",
+  "status": "available",
+  "releaseDate": "2024-02-21",
+  "name": {
+    "ar": "سماعة الرأس اللاسلكية PULSE Elite",
+    "en": "PULSE Elite Wireless Headset",
+    "ckb": "هێدسێتی بێتەلی PULSE Elite"
+  },
+  "short": {
+    "ar": "مشغلات Planar magnetic · PlayStation Link + Bluetooth · بطارية حتى 30 ساعة",
+    "en": "Planar magnetic drivers · PlayStation Link + Bluetooth · Up to 30h battery",
+    "ckb": "درایڤەری planar magnetic · PlayStation Link + Bluetooth · پاتری تا 30 کاتژمێر"
+  },
+  "description": {
+    "ar": "سماعة رأس لاسلكية من Sony بمشغلات Planar magnetic لصوت دقيق، وتتصل بتقنية PlayStation Link منخفضة التأخير مع PS5 وPlayStation Portal والكمبيوتر وMac، وفي الوقت نفسه بالهاتف عبر Bluetooth. ميكروفونها قابل للسحب مع خاصية تقليل الضوضاء بالذكاء الاصطناعي، والبطارية تدوم حتى 30 ساعة. تأتي مع علّاقة شحن يمكن تثبيتها على المكتب أو الحائط.",
+    "en": "Sony's wireless headset with planar magnetic drivers for precise sound. It connects with low-latency PlayStation Link to a PS5, PlayStation Portal, PC or Mac, and at the same time to a phone over Bluetooth. The retractable mic has AI-enhanced noise rejection, and the battery lasts up to 30 hours. A charging hanger for desk or wall mounting is included.",
+    "ckb": "هێدسێتی بێتەلی Sony بە درایڤەری planar magnetic بۆ دەنگی ورد. بە PlayStation Linkی کەم-دواکەوتن بە PS5، PlayStation Portal، PC یان Mac دەبەسترێت، و لە هەمان کاتدا بە Bluetooth بە مۆبایل. مایکی ڕاکێشراوی هەیە لەگەڵ لابردنی ژاوەژاو بە زیرەکی دەستکرد، و پاتری تا 30 کاتژمێر دەمێنێت. هەڵواسەری شەحن بۆ مێز یان دیوار لەگەڵیدایە."
+  },
+  "highlights": [
+    {
+      "ar": "PlayStation Link لصوت بدون فقدان وتأخير منخفض، مع محوّل USB مرفق",
+      "en": "PlayStation Link for lossless, low-latency audio, with a USB adapter in the box",
+      "ckb": "PlayStation Link بۆ دەنگی بێ-لەدەستدان و کەم-دواکەوتن، لەگەڵ ئەداپتەری USB لەناو قوتوو"
+    },
+    {
+      "ar": "اتصال مزدوج: PlayStation Link وBluetooth في الوقت نفسه",
+      "en": "Dual connection: PlayStation Link and Bluetooth at the same time",
+      "ckb": "بەستنەوەی دووانە: PlayStation Link و Bluetooth لە هەمان کاتدا"
+    },
+    {
+      "ar": "بطارية حتى 30 ساعة؛ شحن 10 دقائق يعطي حتى ساعتين",
+      "en": "Up to 30 hours of battery; a 10-minute charge gives up to 2 hours",
+      "ckb": "پاتری تا 30 کاتژمێر؛ 10 خولەک شەحن تا 2 کاتژمێر دەدات"
+    },
+    {
+      "ar": "ميكروفون قابل للسحب مع تقليل الضوضاء بالذكاء الاصطناعي",
+      "en": "Retractable microphone with AI-enhanced noise rejection",
+      "ckb": "مایکرۆفۆنی ڕاکێشراو لەگەڵ لابردنی ژاوەژاو بە زیرەکی دەستکرد"
+    },
+    {
+      "ar": "تعمل مع PS5 وPlayStation Portal والكمبيوتر وMac والهاتف",
+      "en": "Works with PS5, PlayStation Portal, PC, Mac and mobile",
+      "ckb": "لەگەڵ PS5، PlayStation Portal، PC، Mac و مۆبایل کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZWH2 (النسخة البريطانية CFI-ZWH2EC)", "en": "CFI-ZWH2 (UK unit CFI-ZWH2EC)", "ckb": "CFI-ZWH2 (ئامێری بەریتانی CFI-ZWH2EC)" }
+    },
+    {
+      "key": "drivers",
+      "label": { "ar": "المشغلات", "en": "Drivers", "ckb": "درایڤەرەکان" },
+      "value": { "ar": "Planar magnetic", "en": "Planar magnetic", "ckb": "Planar magnetic" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "PlayStation Link (محوّل USB)، Bluetooth", "en": "PlayStation Link (USB adapter), Bluetooth", "ckb": "PlayStation Link (ئەداپتەری USB)، Bluetooth" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "حتى 30 ساعة؛ 10 دقائق شحن = حتى ساعتين", "en": "Up to 30 hours; 10-minute charge = up to 2 hours", "ckb": "تا 30 کاتژمێر؛ 10 خولەک شەحن = تا 2 کاتژمێر" }
+    },
+    {
+      "key": "mic",
+      "label": { "ar": "الميكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
+      "value": { "ar": "ذراع قابل للسحب، تقليل ضوضاء بالذكاء الاصطناعي، زر كتم", "en": "Retractable boom, AI noise rejection, mute button", "ckb": "باسکی ڕاکێشراو، لابردنی ژاوەژاو بە AI، دوگمەی بێدەنگکردن" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 251 × 147 × 214 ملم، نحو 0.4 كغ", "en": "Approx. 251 × 147 × 214 mm, about 0.4 kg", "ckb": "نزیکەی 251 × 147 × 214 ملم، نزیکەی 0.4 کگ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "سماعة PULSE Elite", "en": "PULSE Elite wireless headset", "ckb": "هێدسێتی PULSE Elite" },
+    { "ar": "محوّل PlayStation Link USB", "en": "PlayStation Link USB adapter", "ckb": "ئەداپتەری PlayStation Link USB" },
+    { "ar": "علّاقة شحن PULSE Elite", "en": "PULSE Elite charging hanger", "ckb": "هەڵواسەری شەحنی PULSE Elite" },
+    { "ar": "لوحة تثبيت (البراغي غير مرفقة)", "en": "Mounting plate (screws not included)", "ckb": "تەختەی بەستن (بزمار لەگەڵی نییە)" },
+    { "ar": "حقيبة حمل", "en": "Carrying case", "ckb": "جانتای هەڵگرتن" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PULSE-ELITE-WHITE",
+      "title": { "ar": "PULSE Elite – أبيض", "en": "PULSE Elite – White", "ckb": "PULSE Elite – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZWH2EC",
+      "isDefault": true,
+      "images": ["pulse-elite--1", "pulse-elite--2", "pulse-elite--3", "pulse-elite--4"]
+    },
+    {
+      "sku": "PULSE-ELITE-MIDNIGHT-BLACK",
+      "title": { "ar": "PULSE Elite – أسود Midnight Black", "en": "PULSE Elite – Midnight Black", "ckb": "PULSE Elite – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["pulse-elite--5"],
+      "notes": { "ar": "صدرت في 20 فبراير 2025 ضمن مجموعة Midnight Black.", "en": "Released 20 February 2025 in the Midnight Black Collection.", "ckb": "لە 20ی شوباتی 2025 لە کۆمەڵەی Midnight Black دەرچوو." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "note": { "ar": "عبر محوّل PlayStation Link المرفق.", "en": "Through the included PlayStation Link adapter.", "ckb": "لە ڕێگەی ئەداپتەری PlayStation Linkی لەگەڵیدایە." }, "source": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://www.playstation.com/en-us/ps5/ps5-pro/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/" },
+    { "deviceModel": "ps-portal", "status": "verified", "note": { "ar": "اتصال مباشر عبر PlayStation Link بدون محوّل.", "en": "Connects directly over PlayStation Link, no adapter needed.", "ckb": "ڕاستەوخۆ لە ڕێگەی PlayStation Link دەبەسترێت، ئەداپتەر ناوێت." }, "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/" },
+    { "deviceModel": "windows-pc", "status": "verified", "note": { "ar": "عبر محوّل PlayStation Link USB.", "en": "Through the PlayStation Link USB adapter.", "ckb": "لە ڕێگەی ئەداپتەری PlayStation Link USB." }, "source": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/" }
+  ],
+  "related": [
+    { "slug": "playstation-pulse-wireless-headset", "kind": "alternative" },
+    { "slug": "pulse-explore", "kind": "alternative" },
+    { "slug": "playstation-portal", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "pulse-elite--1",
+      "file": ".cache/product-images/pulse-elite/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-White-01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/",
+      "kind": "hero",
+      "alt": { "ar": "سماعة PULSE Elite البيضاء", "en": "White PULSE Elite headset", "ckb": "هێدسێتی PULSE Eliteی سپی" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-elite--2",
+      "file": ".cache/product-images/pulse-elite/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-White-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/",
+      "kind": "detail",
+      "alt": { "ar": "PULSE Elite مع الميكروفون ممدوداً", "en": "PULSE Elite with the microphone extended", "ckb": "PULSE Elite کاتێک مایکەکە دەرهێنراوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-elite--3",
+      "file": ".cache/product-images/pulse-elite/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-White-03-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/",
+      "kind": "angle",
+      "alt": { "ar": "PULSE Elite من الجانب", "en": "PULSE Elite from the side", "ckb": "PULSE Elite لە لاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-elite--4",
+      "file": ".cache/product-images/pulse-elite/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-White-06-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/",
+      "kind": "in-box",
+      "alt": { "ar": "علّاقة الشحن المرفقة مع PULSE Elite", "en": "The charging hanger that comes with PULSE Elite", "ckb": "هەڵواسەری شەحنی لەگەڵ PULSE Elite" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-elite--5",
+      "file": ".cache/product-images/pulse-elite/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-MidnightBlack-01-1x1-01-17feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/",
+      "kind": "angle",
+      "alt": { "ar": "PULSE Elite باللون Midnight Black", "en": "PULSE Elite in Midnight Black", "ckb": "PULSE Elite بە ڕەنگی Midnight Black" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/",
+      "title": "PULSE Elite™ wireless headset - PS5",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZWH2EC, dimensions, weight, what's in the box, battery, quick charge, mic, PlayStation Link, Bluetooth dual connection, compatible devices, White and Midnight Black"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/pulse-elite-wireless-headset/",
+      "title": "PULSE Elite™ wireless headset",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "planar magnetic drivers, 3D Audio on PS5, charging hanger, still on sale"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/08/23/playstations-first-remote-play-dedicated-device-playstation-portal-remote-player-to-launch-later-this-year-at-199-99/",
+      "title": "PlayStation's first Remote Play dedicated device ... Pulse Explore and Pulse Elite revealed",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "PULSE Elite launch starting 21 February 2024"
+    },
+    {
+      "url": "https://blog.playstation.com/2025/01/07/new-midnight-black-collection-of-ps5-accessories-launches-next-month/",
+      "title": "New Midnight Black Collection of PS5 accessories launches next month",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Midnight Black PULSE Elite from 20 February 2025, felt grey carrying case included"
+    },
+    {
+      "url": "https://blog.playstation.com/2026/09/15/introducing-the-next-line-of-ps5-audio-products-playstation-pulse-and-pulse-edge-wireless-headsets/",
+      "title": "Introducing the next line of PS5 audio products: PlayStation Pulse and Pulse Edge Wireless Headsets",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "successor line announced: PlayStation PULSE (19 November 2026) and PULSE Edge (early 2027)"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: PULSE Elite works with PS5 Pro"
+    }
+  ],
+  "notes": {
+    "ar": "أعلنت Sony في سبتمبر 2026 عن الجيل الجديد: سماعة PlayStation PULSE (تصدر 19 نوفمبر 2026) وPULSE Edge (أوائل 2027). ما زالت PULSE Elite تُباع حالياً من Sony. شاحن الكهرباء غير مرفق.",
+    "en": "In September 2026 Sony announced the next line: the PlayStation PULSE headset (out 19 November 2026) and PULSE Edge (early 2027). PULSE Elite is still sold by Sony today. A wall charger is not included.",
+    "ckb": "Sony لە ئەیلوولی 2026 هێڵی نوێی ڕاگەیاند: هێدسێتی PlayStation PULSE (لە 19ی تشرینی دووەمی 2026 دەردەچێت) و PULSE Edge (سەرەتای 2027). PULSE Elite هێشتا لەلایەن Sony دەفرۆشرێت. شەحنەری دیوار لەگەڵی نییە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether Sony will stop selling PULSE Elite once PULSE Edge launches (no announcement found)",
+      "Carrying case: Sony's blog confirms a felt grey case with the Midnight Black version and the UK page now lists it for White too, but early (2024) White stock may not include it"
+    ]
+  }
+}

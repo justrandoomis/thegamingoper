@@ -1,0 +1,57 @@
+{
+  "key": "xbox-elite-series-2--3",
+  "view": "hero",
+  "width": 998,
+  "height": 663,
+  "aspect": 1.5053,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-elite-series-2/3-240.8a2758ad.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-elite-series-2/3-480.c46314f1.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-elite-series-2/3-720.5a0183e6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-elite-series-2/3-960.befd8cd9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-elite-series-2/3-240.e7e8bac5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-elite-series-2/3-480.131f29db.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-elite-series-2/3-720.509425fd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-elite-series-2/3-960.f71bedb0.webp"
+      }
+    ],
+    "png": "/products/xbox-elite-series-2/3-720.0b3a9a3c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACwAgCdASoUAA0APxFysVCsJqSisAgBgCIJaQAAeyAA/vAG5t0on8HxzejPlaAA",
+  "dominant": "#181819",
+  "transparent": false,
+  "background": "#000000",
+  "kind": "in-box",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Elite2-Controller-Carousel2?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg"
+  },
+  "input": "a2b47a63891eea2b"
+}

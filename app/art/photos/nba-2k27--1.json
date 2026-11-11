@@ -1,0 +1,57 @@
+{
+  "key": "nba-2k27--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/1-240.204af5d2.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/1-480.90fc16e5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/1-720.a2d29bd5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/1-960.80f0a106.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/1-240.13121633.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/1-480.96194eb6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/1-720.e24b8788.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/1-960.9c3eeba8.webp"
+      }
+    ],
+    "png": "/products/nba-2k27/1-720.9b108e6c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoRwIsCudAHS2ta04d/ZA+gAAP1rJ7GjcsFyJpt19F/Fm4Ugm3TGGbuKrBXmmCMNbZJgKZ+dAWySB9xoHxrgTDT5TzYQsiOyi9Mhj+MBCjJjIW+lr2cZObnJ2KVTOMxSAAA=",
+  "dominant": "#064887",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "2K",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.31609.13934234425416393.c16fba18-9d46-4e2f-9891-5efae739df3f.356d4164-080b-449e-ae1e-3c7b8c5e8277",
+    "page": "https://www.xbox.com/en-US/games/store/nba-2k27-xbox-series-xs/9n3d82tff6c4"
+  },
+  "input": "f10f63562c7ce291"
+}

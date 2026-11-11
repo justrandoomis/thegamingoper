@@ -1,0 +1,65 @@
+{
+  "key": "nba-2k27--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/4-240.1672d7dc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/4-480.dc99468d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/4-720.c5a8c184.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/4-960.31b337e4.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k27/4-1440.f0064da4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/4-240.c001c7df.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/4-480.8f99334f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/4-720.b796935c.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/4-960.488205ae.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k27/4-1440.21262205.webp"
+      }
+    ],
+    "png": "/products/nba-2k27/4-720.6b03cc23.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJQBfnA9GZNASt//ovDBEsAAD+7p8sOvohjZazUvv5IyKimYP8htUk/dXRcJiy513uViaxrlY400Vy1apAQ8nbj3tNbUzTy2Qwo0UaAijg2tDb6v9GZvB4AAA=",
+  "dominant": "#06060a",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "2K",
+  "source": {
+    "url": "https://assets.2k.com/1a6ngf98576c/53OX2pyHbyRRJNK4o8IKFe/607504dbb3eeb07ccaf26b104d3edf70/N27-ALL-FIRST_LOOK_SCREEN_CADE_CUNNINGHAM-STATIC-ENUS-NO_RATING-1920x1080-FINAL__2_.jpg",
+    "page": "https://nba.2k.com/2k27/"
+  },
+  "input": "36f2833223b83c07"
+}

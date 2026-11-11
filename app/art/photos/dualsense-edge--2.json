@@ -1,0 +1,65 @@
+{
+  "key": "dualsense-edge--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 858,
+  "aspect": 1.8648,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/2-240.4c9b25f1.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/2-480.d5776336.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/2-720.7195e2d0.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/2-960.f7873d58.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/2-1440.29206dc4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/2-240.a0cfff26.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/2-480.7518b896.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/2-720.313bb73a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/2-960.1e9a512d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/2-1440.c03e95fb.webp"
+      }
+    ],
+    "png": "/products/dualsense-edge/2-720.03b0d0b0.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSF0AAAART6CobSM2VQr32vsiIhC2nfTLcFvbthJdPLUGiIhdQocGtAJiIhaxMxUMr16khoj+TwC+Nzr7kPTXEd7Mi4io0ICBHn/GGxFnvklyV/0fBDDKTO04lQAQearC4DMAVlA4IIIAAABQBACdASoUAAsAPxFysFAsJqSisAgBgCIJZwDE2YsOquSbpGqV/7QQds5QAMr1Ix8HeXYidj84vFSRFMn/llVneI4s1nB00kJs2LA7AtOWdDB6vo7wDRdyAYJw4RLwsqLm3wCPNL7Lfqp66RwNmjp/t9gT1rTyr/1ka6/529PdcGAA",
+  "dominant": "#a6aab6",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-02-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/"
+  },
+  "input": "d4938036f85a97d2"
+}

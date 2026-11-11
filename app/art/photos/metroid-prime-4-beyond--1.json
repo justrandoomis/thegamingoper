@@ -1,0 +1,57 @@
+{
+  "key": "metroid-prime-4-beyond--1",
+  "view": "hero",
+  "width": 1054,
+  "height": 1600,
+  "aspect": 0.6587,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/metroid-prime-4-beyond/1-240.da9cbb0a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/metroid-prime-4-beyond/1-480.301c6ae7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/metroid-prime-4-beyond/1-720.2ce284b4.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/metroid-prime-4-beyond/1-960.b5fd50a1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/metroid-prime-4-beyond/1-240.7044df40.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/metroid-prime-4-beyond/1-480.08bbec8f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/metroid-prime-4-beyond/1-720.34e94120.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/metroid-prime-4-beyond/1-960.0e0e396f.webp"
+      }
+    ],
+    "png": "/products/metroid-prime-4-beyond/1-720.5733247d.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRugAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOD+YtN4CDXiIjgNiBq20ZTGYzBKQzuwmDjD+3+Ef2PA5Aa1c3r7r4/jeqmAFIAVlA4II4AAACQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoR3JoHh/gNc0iUj41bOTYAA/kBKCy+GvH2My88l4wgiH0VzcGd2U6dtEBjp0DCQBqrZfCHVZLMhTJCe74y+ecbyj3h81p8ZmKRfsjkr25+elyCQmkIj3+GfzPJLQfD5xJNEAiTuEeNRrhWnuAM7ANgA",
+  "dominant": "#e70012",
+  "transparent": true,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Metroid%20Prime%204%20Beyond%20-%20Switch%202/121491-nintendo-metroid-prime-4-beyond-nintendo-switch-2-edition-box-art-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-121491/"
+  },
+  "input": "61f9b05f4dca9ca1"
+}

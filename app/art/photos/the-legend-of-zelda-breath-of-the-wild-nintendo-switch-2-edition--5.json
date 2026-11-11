@@ -1,0 +1,65 @@
+{
+  "key": "the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-240.a99f572f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-480.3cc239eb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-720.0ec51168.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-960.12134982.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-1440.cb808e90.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-240.74bfe478.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-480.901c63e3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-720.7c218b76.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-960.d2290271.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-1440.87711923.webp"
+      }
+    ],
+    "png": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/5-720.b7f388d8.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJagCo9BTeHesAAByqAAD+xMb0P3yFtmKeVGX6WWyeo+eczdgXWBQRhvhftpl0xZ9cHQ9H1dNANg6v464WaX4MgOp3VecJLvfg/fH6cUK0yydfUaNqQAAA",
+  "dominant": "#393933",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://www.nintendo.com/eu/media/images/assets/nintendo_switch_2_games/thelegendofzeldabreathofthewild_nintendoswitch2edition/nswitch2_thelegendofzeldabreathofthewild_nintendoswitch2edition/TheLegendOfZeldaBreathOfTheWild_NintendoSwitch2Edition_04.png",
+    "page": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/The-Legend-of-Zelda-Breath-of-the-Wild-Nintendo-Switch-2-Edition-2787250.html"
+  },
+  "input": "b84eec7001eeab10"
+}

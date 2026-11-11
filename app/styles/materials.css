@@ -1,0 +1,660 @@
+/*
+ * Materials — docs/DESIGN.md §6. Imported into the `components` cascade layer by app/app.css, so Tailwind utilities
+ * can still adjust spacing and placement. Components (app/ui/*) render these classes; feature code should use the
+ * components, not the classes.
+ *
+ *   clay    .clay  .key (+ variants)  .well  .socket                 for the hand: it has a wall, it travels
+ *   glass   .glass (+ --bottom --static --solid)                      for the eye: THE ONLY backdrop-filter in the app
+ *   flat    .floor  .paper  .panel                                    for reading: no shadow, no gradient, no blur
+ *   light   .stage  .stage__*  .render  .led  [data-gel]              for the platform: --gel lives only here
+ *   tiers   @supports / prefers-reduced-transparency / .fx-low, [data-motion="lite"] / prefers-contrast /
+ *           forced-colors / reduced motion                            §6.5, §7.3
+ *
+ * Motion here is transform and opacity only; shadows, blur and colours never animate.
+ */
+
+/* ───────────────────────────── clay: the painted face ───────────────────────────── */
+.clay {
+  background: var(--clay-face);
+  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly);
+}
+.clay--red {
+  background: var(--red-face);
+  color: var(--on-red);
+  box-shadow: inset 0 1.5px 0 var(--red-lip), inset 0 -6px 8px -5px var(--red-belly);
+}
+.clay--ink {
+  background: var(--sel-face);
+  color: var(--on-sel);
+  box-shadow: inset 0 2px 3px var(--sel-in);
+}
+/* clay that never travels (admin decision cards): the wall is drawn as a zero-blur shadow */
+.clay--walled {
+  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly), 0 3px 0 var(--clay-wall), var(--e-2);
+}
+
+/* ───────────────────────────── the key: a clay face on a static front wall ─────────────────────────────
+ * <button class="key"><span class="key__cap">…</span></button>. Only the cap moves, by transform. Variants only
+ * reassign the custom properties below. */
+.key {
+  --wall: 3px;
+  --r: var(--r-md);
+  --h: 48px;
+  --px: 20px;
+  --face: var(--clay-face);
+  --wall-c: var(--clay-wall);
+  --on: var(--ink);
+  --lip: var(--clay-lip);
+  --belly: var(--clay-belly);
+  --cast: var(--e-2);
+  --travel: max(0px, calc(var(--wall) - 1px));
+  position: relative;
+  display: inline-flex;
+  vertical-align: top;
+  min-inline-size: 0;
+  padding: 0 0 var(--wall);
+  border: 0;
+  border-radius: var(--r);
+  background: none;
+  color: var(--on);
+  font: var(--type-button);
+  white-space: nowrap;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* the wall never moves and owns the only blurred shadow */
+.key::before {
+  content: "";
+  position: absolute;
+  inset: var(--wall) 0 0;
+  border-radius: inherit;
+  background: var(--wall-c);
+  box-shadow: var(--cast);
+}
+.key__cap {
+  position: relative;
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-block-size: var(--h);
+  padding-inline: var(--px);
+  border-radius: inherit;
+  background: var(--face);
+  box-shadow: inset 0 1.5px 0 var(--lip), inset 0 -6px 8px -5px var(--belly);
+  transition: transform var(--t-release) var(--ease-squish);
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  .key__cap {
+    transition: transform var(--spring-press-t) var(--spring-press);
+  }
+}
+.key__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* The Motion Engine's element-level squish (data-press) is neutralised on keys — the wall and its shadow never
+ * move; the cap travels instead. Two attributes, so it outranks the engine's [data-press] wherever its CSS loads. */
+.key[data-press] {
+  --press-scale: 1;
+  --press-sink: 0px;
+}
+/* press: the cap travels wall − 1px down in 80ms; release returns on the press spring.
+ * data-pressed is set inside pointerdown by the Motion Engine (it also cancels on scroll and handles Space/Enter);
+ * :active covers the moment before the engine has mounted. */
+.key[data-pressed] > .key__cap,
+html:not([data-motion-ready]) .key:active > .key__cap {
+  transform: translateY(var(--travel));
+  transition-duration: var(--t-press);
+  transition-timing-function: ease-out;
+}
+/* hover (pointer devices): the cap rises 1px and more wall shows */
+@media (hover: hover) {
+  .key:not(:disabled, [aria-disabled="true"], [aria-checked="true"], [aria-pressed="true"], [data-held], [data-pressed], [data-loading]):hover > .key__cap {
+    transform: translateY(-1px);
+  }
+}
+
+/* selected / on = the same key held down, ink-faced, with a second cue drawn by the component (check, LED, filled icon) */
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held]) {
+  --face: var(--sel-face);
+  --wall-c: var(--sel-wall);
+  --on: var(--on-sel);
+}
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held]) > .key__cap {
+  transform: translateY(var(--travel));
+  box-shadow: inset 0 2px 3px var(--sel-in);
+}
+
+/* disabled: no wall, no cast shadow, flat on the floor with an ink-3 label (the reason is written next to it) */
+.key:is(:disabled, [aria-disabled="true"]) {
+  --face: var(--niche);
+  --wall-c: transparent;
+  --cast: none;
+  --on: var(--ink-3);
+  cursor: not-allowed;
+}
+.key:is(:disabled, [aria-disabled="true"]) > .key__cap {
+  transform: translateY(var(--wall));
+  box-shadow: none;
+}
+
+/* busy: the label keeps its width (it stays in the accessibility tree, only transparent) and a spinner sits on top */
+.key[data-loading] {
+  cursor: progress;
+}
+.key[data-loading] > .key__cap > :not(.key__spinner) {
+  opacity: 0;
+}
+.key__spinner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.key__spinner > svg {
+  animation: key-spin 0.9s linear infinite;
+}
+@keyframes key-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* ── variants: only custom properties ── */
+/* commit: the one key per view that moves the order forward */
+.key--red {
+  --face: var(--red-face);
+  --wall-c: var(--red-wall);
+  --on: var(--on-red);
+  --lip: var(--red-lip);
+  --belly: var(--red-belly);
+}
+/* ink: a raised graphite key — emphasis without red (it commits nothing to the order) */
+.key--ink {
+  --face: var(--sel-face);
+  --wall-c: var(--sel-wall);
+  --on: var(--on-sel);
+  --lip: var(--ink-lip);
+  --belly: var(--ink-belly);
+}
+/* quiet: chrome tools on bars and headers — no wall and no face until pointed at; pressed sinks into a well */
+.key--quiet {
+  --wall: 0px;
+  --face: transparent;
+  --wall-c: transparent;
+  --lip: transparent;
+  --belly: transparent;
+  --cast: none;
+}
+@media (hover: hover) {
+  .key--quiet:not(:disabled, [aria-disabled="true"]):hover {
+    --face: var(--niche);
+  }
+}
+.key--quiet[data-pressed],
+html:not([data-motion-ready]) .key--quiet:active,
+.key--quiet:is([aria-checked="true"], [aria-pressed="true"], [data-held]) {
+  --face: var(--well);
+}
+.key--quiet:is([aria-checked="true"], [aria-pressed="true"], [data-held], [data-pressed]) > .key__cap {
+  box-shadow: var(--well-shadow);
+}
+.key--quiet:is([aria-checked="true"], [aria-pressed="true"], [data-held]) {
+  --on: var(--ink);
+}
+.key--quiet:is(:disabled, [aria-disabled="true"]) {
+  --face: transparent;
+}
+
+/* sizes */
+.key--lg {
+  --h: 56px;
+  --px: 26px;
+}
+.key--sm {
+  --wall: 2px;
+  --h: 40px;
+  --px: 14px;
+  --r: var(--r-sm);
+  --cast: var(--e-1);
+  font: 600 13.5px/1.25 var(--font-text); /* Kufam is never used below 15px */
+}
+.key--sm::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0; /* 40 + 2 wall + 4 = a 46px hit area */
+}
+.key--block {
+  display: flex;
+  inline-size: 100%;
+}
+/* round: icon keys (favourite, close, copy, stepper, the socket's add key) */
+.key--round {
+  --wall: 2px;
+  --r: var(--r-full);
+  --h: 44px;
+  --px: 0px;
+  --cast: var(--e-1);
+}
+.key--round > .key__cap {
+  inline-size: var(--h);
+  flex: none;
+}
+.key--round.key--sm {
+  --h: 36px;
+  --r: var(--r-full);
+}
+.key--round.key--sm::after {
+  inset: -4px; /* 36 → 44 */
+}
+
+/* chip: 44px, short labels; the mark is reserved, so choosing never reflows the row */
+.key--chip {
+  --wall: 2px;
+  --h: 44px;
+  --px: 14px;
+  --cast: var(--e-1);
+  font: 500 14px/1.25 var(--font-text);
+}
+.key__mark {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 16px;
+  block-size: 16px;
+}
+.key__mark::before {
+  content: "";
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  border: 1.6px solid var(--ink-2);
+}
+.key__mark > svg {
+  display: none;
+}
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark::before {
+  display: none;
+}
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark > svg {
+  display: block;
+}
+/* a chip that wraps a native checkbox or radio (form submission without script) */
+.key:has(> input:checked) {
+  --face: var(--sel-face);
+  --wall-c: var(--sel-wall);
+  --on: var(--on-sel);
+}
+.key:has(> input:checked) > .key__cap {
+  transform: translateY(var(--travel));
+  box-shadow: inset 0 2px 3px var(--sel-in);
+}
+.key:has(> input:focus-visible) {
+  outline: 2.5px solid var(--ink);
+  outline-offset: 3px;
+}
+.key:has(> input:disabled) {
+  --face: var(--niche);
+  --wall-c: transparent;
+  --cast: none;
+  --on: var(--ink-3);
+  cursor: not-allowed;
+}
+
+/* platform keys: tall, a device pictogram, an LED and the name as text */
+.key--plat {
+  --h: 58px;
+  --px: 2px;
+  font: 500 12.5px/1.3 var(--font-text);
+}
+.key--plat > .key__cap {
+  flex-direction: column;
+  gap: 2px;
+  padding-block: 6px 5px;
+}
+.key--plat .led {
+  margin-block-end: 3px;
+}
+.key--plat:is([aria-checked="true"], [aria-pressed="true"]) {
+  font-weight: 600;
+}
+
+/* thumbnail keys (gallery): the chosen one is held down with an ink ring and keeps its clay face */
+.key--thumb {
+  --wall: 2px;
+  --r: var(--r-sm);
+  --h: 42px;
+  --px: 0px;
+  --cast: var(--e-1);
+  --pose: 0deg;
+}
+.key--thumb > .key__cap {
+  inline-size: 50px;
+  flex: none;
+  padding: 4px;
+}
+.key--thumb:is([aria-checked="true"], [aria-pressed="true"]) {
+  --face: var(--clay-face);
+  --wall-c: var(--clay-wall);
+  --on: var(--ink);
+}
+.key--thumb:is([aria-checked="true"], [aria-pressed="true"]) > .key__cap {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+.key--thumb .render::after {
+  display: none;
+}
+
+/* ───────────────────────────── wells and sockets: clay pressed in ───────────────────────────── */
+.well {
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+}
+/* the socket: a red key is seated in a flat well, so an empty socket can say "it left" */
+.socket {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: var(--r-full);
+  background: var(--well);
+}
+.socket--inset {
+  box-shadow: var(--well-shadow);
+}
+
+/* ───────────────────────────── glass: for the eye ─────────────────────────────
+ * Live frost only on fixed or sticky chrome that content really scrolls under; at most two per viewport. Never a
+ * wall, never red, never masked or clipped; blur, tint and shadow never animate. */
+.glass {
+  --ink-2: var(--on-glass-2); /* secondary text on glass is always on-glass-2 */
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  box-shadow: var(--glass-rim), var(--e-4);
+  color: var(--ink);
+}
+/* bars and sheets anchored to the bottom edge throw their shadow upward */
+.glass--bottom {
+  box-shadow: var(--glass-rim), var(--e-4-up);
+}
+/* the same pane without backdrop-filter, only where it rests on a smooth surface (floor, stage, light) */
+.glass--static {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-static);
+  box-shadow: var(--glass-rim), var(--e-3);
+}
+/* the third overlay in a viewport, or wherever frost is not allowed */
+.glass--solid {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-solid);
+}
+.glass .is-2 {
+  color: var(--on-glass-2);
+}
+
+/* ───────────────────────────── flat: for reading ───────────────────────────── */
+.floor {
+  background: var(--ground);
+}
+.paper {
+  background: var(--paper);
+}
+/* a flat tonal panel: info panels, empty states (a tonal step from the floor, nothing else) */
+.panel {
+  border-radius: var(--r-lg);
+  background: var(--niche);
+}
+.panel--paper {
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* ───────────────────────────── light: for the platform ─────────────────────────────
+ * A subtree sets its platform once with data-gel (or style="--gel: var(--gel-xbox)"); --gel-* is read only by
+ * .stage__* and .led. */
+[data-gel="nintendo"] {
+  --gel: var(--gel-nintendo);
+}
+[data-gel="playstation"] {
+  --gel: var(--gel-playstation);
+}
+[data-gel="xbox"] {
+  --gel: var(--gel-xbox);
+}
+[data-gel="handheld"] {
+  --gel: var(--gel-handheld);
+}
+[data-gel="brand"] {
+  --gel: var(--gel-brand);
+}
+
+/* the stage: a flat surface; the light is two pre-painted radial gradients behind the render */
+.stage {
+  --halo-w: 112%;
+  --halo-h: 140%;
+  position: relative;
+  border-radius: var(--r-xl);
+  background: var(--stage);
+  overflow: hidden;
+  isolation: isolate;
+}
+.stage__light {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.stage__halo,
+.stage__spot {
+  grid-area: 1 / 1;
+  border-radius: 50%;
+}
+.stage__halo {
+  inline-size: var(--halo-w);
+  block-size: var(--halo-h);
+  background: radial-gradient(closest-side, rgb(var(--gel, var(--gel-brand)) / var(--halo)), rgb(var(--gel, var(--gel-brand)) / calc(var(--halo) * 0.3)) 58%, transparent);
+}
+/* dark only (--spot is 0 in light): a neutral rim so dark hardware separates from the light */
+.stage__spot {
+  inline-size: calc(var(--halo-w) * 0.62);
+  block-size: calc(var(--halo-h) * 0.62);
+  background: radial-gradient(closest-side, rgb(var(--lumen) / var(--spot)), transparent);
+}
+.stage__pool {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(var(--gel, var(--gel-brand)) / var(--pool)), rgb(var(--gel, var(--gel-brand)) / calc(var(--pool) * 0.38)) 56%, transparent);
+}
+/* relight: each light (halo + spot + pool) is a pre-painted layer; a new layer fades in over 260ms while the old one
+ * fades out in 110ms (opacity only — --gel is never changed on a painted element) */
+.stage__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.stage__layer[data-leaving] {
+  opacity: 0;
+  transition: opacity 110ms var(--ease-exit);
+}
+.stage__layer[data-entering] {
+  animation: stage-light-in 260ms ease-out both;
+}
+@keyframes stage-light-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* a size container that holds one render (a stage slot, a niche slot, a thumbnail key) */
+.render-slot {
+  container-type: size;
+  display: grid;
+  place-items: end center;
+}
+/* a render: one box sized from the picture's aspect ratio inside a size container (the slot); the contact shadow
+ * is a percentage of that box, so no product needs its own layout numbers */
+.render {
+  position: relative;
+  display: block;
+  inline-size: min(100cqi, calc(100cqb * var(--aspect, 1)));
+  aspect-ratio: var(--aspect, 1);
+  line-height: 0;
+  isolation: isolate;
+}
+.render > img,
+.render > picture > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  transform: rotate(var(--pose, 0deg));
+}
+.render::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline: 6%;
+  inset-block-end: -11%;
+  block-size: 15%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(var(--shade) / 0.42), rgb(var(--shade) / 0.13) 60%, transparent);
+}
+.render--flat::after {
+  display: none;
+}
+/* a render that replaces another on the stage inflates into its reserved box (never on first paint) */
+.render[data-enter] {
+  animation: render-in var(--t-reveal) var(--ease-squish) both;
+}
+@supports (animation-timing-function: linear(0, 1)) {
+  .render[data-enter] {
+    animation-duration: var(--spring-inflate-t);
+    animation-timing-function: var(--spring-inflate);
+  }
+}
+@keyframes render-in {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+}
+
+/* the LED: 16 × 5, always beside the platform's name written as text */
+.led {
+  display: block;
+  flex: none;
+  inline-size: 16px;
+  block-size: 5px;
+  border-radius: var(--r-full);
+  background: rgb(var(--gel, var(--gel-brand)));
+  opacity: 0.5;
+}
+.led--solid {
+  opacity: 1;
+}
+.led.is-on,
+[aria-checked="true"] .led,
+[aria-pressed="true"] .led {
+  opacity: 1;
+  box-shadow: 0 0 0 3px rgb(var(--gel, var(--gel-brand)) / 0.18), 0 0 8px rgb(var(--gel, var(--gel-brand)) / 0.8);
+}
+
+/* ───────────────────────────── tiers and preferences (§6.5, §7.3) ───────────────────────────── */
+/* no backdrop-filter support */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass-solid);
+  }
+}
+/* the shopper asked for less transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass--static {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--glass-solid);
+  }
+}
+/* low-end tier: .fx-low (DESIGN.md) or the Motion Engine's "lite" tier — glass becomes solid, nothing inflates */
+:is(.fx-low, [data-motion="lite"]) .glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-solid);
+}
+:is(.fx-low, [data-motion="lite"]) :is(.render[data-enter], .stage__layer[data-entering]) {
+  animation: none;
+}
+/* reduced motion: the pressed offset is shown with no transition; swaps are instant */
+@media (prefers-reduced-motion: reduce) {
+  .key__cap {
+    transition: none;
+  }
+  .render[data-enter],
+  .stage__layer[data-entering],
+  .key__spinner > svg {
+    animation: none;
+  }
+  .stage__layer[data-leaving] {
+    transition: none;
+  }
+}
+[data-motion="reduced"] .key__cap {
+  transition: none;
+}
+[data-motion="reduced"] :is(.render[data-enter], .stage__layer[data-entering], .key__spinner > svg) {
+  animation: none;
+}
+[data-motion="reduced"] .stage__layer[data-leaving] {
+  transition: none;
+}
+/* more contrast: materials become outlined flat surfaces */
+@media (prefers-contrast: more) {
+  .glass,
+  .glass--static {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--ground);
+    box-shadow: 0 0 0 1.5px var(--ink);
+  }
+  .key__cap {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .panel,
+  .niche,
+  .well {
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+  .stage__light,
+  .stage__pool {
+    display: none;
+  }
+}
+/* forced colours: depth and fills disappear, so state gets an outline */
+@media (forced-colors: active) {
+  .key__cap {
+    border: 1px solid ButtonText;
+  }
+  .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) > .key__cap {
+    outline: 3px solid Highlight;
+    outline-offset: -3px;
+  }
+  .led {
+    forced-color-adjust: none;
+  }
+}

@@ -1,26 +1,29 @@
 /**
  * Sheet physics (loaded on demand through ./extras; the public entry is the `useSheet` hook in ./sheet-hook).
  *
- * A bottom sheet is one element translated along Y. Positions are "how far it is pushed down", in px:
- *   0 = fully open … height = fully closed.  Snap points are open fractions of the sheet's own height.
+ * A sheet is one element translated along one axis: up from the bottom edge (phones), or in from the inline-end edge
+ * (tablet and desktop cart and filters, DESIGN.md §7.2). Positions are "how far it is pushed toward its edge", in px:
+ *   0 = fully open … size = fully closed.  Snap points are open fractions of the sheet's own size.
  *
  *  - Drag: pointer-captured, 1:1 from the grab offset, rubber-band past the most open point.
  *  - Release: velocity from the last ~100 ms; momentum is projected to choose the snap point being aimed at.
  *  - Settle: the `sheet` spring, starting with the finger's velocity, sampled into one WAAPI animation (compositor).
  *  - Interrupt: grabbing a settling sheet reads its exact position from the closed-form spring and carries on.
- *  - Reduced motion: no travel — it is placed, with a short fade.
+ *  - Reduced motion: it appears and disappears with a 120 ms fade; dragging still works, release places it.
  */
 import { getMotionTier } from "./env";
 import { pickSnap, rubberBandClamp, velocityFrom, type Sample } from "./physics";
 import { springKeyframes, springValue, springVelocity } from "./spring";
 import { sheet as tokens, springs } from "./tokens";
 
+export type SheetEdge = "bottom" | "inline-end";
+
 export type SheetOptions = {
-  /** Open fractions of the sheet's height, e.g. [0.5, 1]. Default [1]. */
+  /** Open fractions of a bottom sheet's height, e.g. [0.5, 1]. Default [1]. A side sheet always rests fully open. */
   snapPoints?: readonly number[];
   /** Index into snapPoints to open at. Default: the most open one. */
   initialSnap?: number;
-  /** The sheet was dismissed (dragged or flicked down, or `close()`): unmount it. Without it the sheet cannot be dismissed. */
+  /** The sheet was dismissed (dragged or flicked away, Escape, or `close()`): unmount it. Without it the sheet cannot be dismissed. */
   onClose?: () => void;
   /** It came to rest at snapPoints[index]. */
   onSnap?: (index: number) => void;
@@ -29,7 +32,7 @@ export type SheetOptions = {
 export type SheetController = {
   /** Spring to snapPoints[index]. */
   snapTo(index: number): void;
-  /** Spring down and call onClose. */
+  /** Spring away and call onClose. */
   close(): void;
   destroy(): void;
 };
@@ -39,42 +42,51 @@ type Settle = { animation: Animation; from: number; to: number; velocity: number
 export function createSheet(
   element: HTMLElement,
   getOptions: () => SheetOptions,
-  extra: { backdrop?: HTMLElement | null; animateIn?: boolean } = {},
+  extra: { backdrop?: HTMLElement | null; animateIn?: boolean; edge?: SheetEdge } = {},
 ): SheetController {
   const backdrop = extra.backdrop ?? null;
-  let height = element.offsetHeight || 1;
-  let y = height; // current push-down in px
+  const side = extra.edge === "inline-end";
+  /** +1 when "toward the edge" is +x / +y on screen; an inline-end sheet in RTL closes toward the left. */
+  const sign = side && getComputedStyle(element).direction === "rtl" ? -1 : 1;
+  const measure = () => (side ? element.offsetWidth : element.offsetHeight) || 1;
+  const pointerAxis = (event: PointerEvent) => (side ? event.clientX * sign : event.clientY);
+  let size = measure();
+  let position = size;
   let settle: Settle | null = null;
   let backdropAnimation: Animation | null = null;
-  let drag: { pointerId: number; grab: number; samples: Sample[]; moved: boolean; startY: number } | null = null;
+  let fade: Animation | null = null;
+  let drag: { pointerId: number; grab: number; samples: Sample[]; moved: boolean; start: number } | null = null;
   let destroyed = false;
 
   const fractions = (): number[] => {
-    const points = getOptions().snapPoints;
+    // A side sheet has one resting point, fully open; snap points describe how far a bottom sheet rises.
+    const points = side ? undefined : getOptions().snapPoints;
     const list = points && points.length > 0 ? [...points] : [1];
     return list.map((f) => Math.min(Math.max(f, 0.05), 1)).sort((a, b) => a - b);
   };
-  /** Push-down px for each snap point, most open first is last (ascending fractions → descending px). */
-  const offsets = (): number[] => fractions().map((f) => (1 - f) * height);
+  /** Push distance (px) for each snap point: ascending fractions → descending px, so the most open is last. */
+  const offsets = (): number[] => fractions().map((f) => (1 - f) * size);
   const dismissible = () => typeof getOptions().onClose === "function";
+  const transform = (value: number) => (side ? `${(sign * value).toFixed(1)}px 0` : `0 ${value.toFixed(1)}px`);
+  const openness = (value: number) => Math.min(Math.max(1 - value / size, 0), 1);
 
   const place = (value: number) => {
-    y = value;
-    element.style.translate = `0 ${value.toFixed(1)}px`;
-    if (backdrop) backdrop.style.opacity = String(Math.min(Math.max(1 - value / height, 0), 1));
+    position = value;
+    element.style.translate = transform(value);
+    if (backdrop) backdrop.style.opacity = String(openness(value));
   };
 
   const stopSettle = () => {
-    if (!settle) return;
+    if (!settle) return 0;
     // Exact state at this instant from the closed-form spring — no style read, no layout.
     const seconds = Number(settle.animation.currentTime ?? 0) / 1000;
     const motion = { from: settle.from, to: settle.to, velocity: settle.velocity };
-    const position = springValue(springs.sheet, seconds, motion);
+    const value = springValue(springs.sheet, seconds, motion);
     settle.animation.cancel();
     backdropAnimation?.cancel();
     backdropAnimation = null;
     settle = null;
-    place(position);
+    place(value);
     return springVelocity(springs.sheet, seconds, motion);
   };
 
@@ -83,25 +95,47 @@ export function createSheet(
     else getOptions().onSnap?.(index);
   };
 
+  /** Reduced motion: no travel. Opening fades in, closing fades out, then it is placed. */
+  const placeReduced = (to: number, index: number) => {
+    fade?.cancel();
+    if (index < 0) {
+      fade = element.animate([{ opacity: 1 }, { opacity: 0 }], { duration: tokens.reducedFade, easing: "linear", fill: "forwards" });
+      if (backdrop) backdrop.animate([{ opacity: backdrop.style.opacity || "1" }, { opacity: 0 }], { duration: tokens.reducedFade, easing: "linear", fill: "forwards" });
+      fade.finished.then(
+        () => {
+          place(to);
+          rest(index);
+        },
+        () => {},
+      );
+      return;
+    }
+    const wasClosed = position >= size - 0.5;
+    place(to);
+    if (wasClosed) {
+      fade = element.animate([{ opacity: 0 }, { opacity: 1 }], { duration: tokens.reducedFade, easing: "linear" });
+      if (backdrop) backdrop.animate([{ opacity: 0 }, { opacity: backdrop.style.opacity }], { duration: tokens.reducedFade, easing: "linear" });
+    }
+    rest(index);
+  };
+
   /** `index` −1 means closed. */
   const settleTo = (index: number, velocity: number) => {
     stopSettle();
-    const to = index < 0 ? height : offsets()[index];
+    const to = index < 0 ? size : offsets()[index];
     if (getMotionTier() === "reduced") {
-      place(to);
-      if (index >= 0) element.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 120, easing: "linear" });
-      rest(index);
+      placeReduced(to, index);
       return;
     }
-    const from = y;
+    const from = position;
     const { values, duration } = springKeyframes(springs.sheet, { from, to, velocity });
     const animation = element.animate(
-      values.map((v) => ({ translate: `0 ${v.toFixed(1)}px` })),
+      values.map((v) => ({ translate: transform(v) })),
       { duration, easing: "linear" },
     );
     if (backdrop) {
       backdropAnimation = backdrop.animate(
-        values.map((v) => ({ opacity: Math.min(Math.max(1 - v / height, 0), 1) })),
+        values.map((v) => ({ opacity: openness(v) })),
         { duration, easing: "linear" },
       );
     }
@@ -130,7 +164,8 @@ export function createSheet(
   const onPointerDown = (event: PointerEvent) => {
     if (destroyed || drag || !handleOf(event.target) || (event.pointerType === "mouse" && event.button !== 0)) return;
     stopSettle();
-    drag = { pointerId: event.pointerId, grab: event.clientY - y, samples: [{ t: event.timeStamp, v: y }], moved: false, startY: event.clientY };
+    const at = pointerAxis(event);
+    drag = { pointerId: event.pointerId, grab: at - position, samples: [{ t: event.timeStamp, v: position }], moved: false, start: at };
     try {
       element.setPointerCapture(event.pointerId);
     } catch {
@@ -141,13 +176,14 @@ export function createSheet(
 
   const onPointerMove = (event: PointerEvent) => {
     if (!drag || event.pointerId !== drag.pointerId) return;
-    if (!drag.moved && Math.abs(event.clientY - drag.startY) < tokens.slop) return;
+    const at = pointerAxis(event);
+    if (!drag.moved && Math.abs(at - drag.start) < tokens.slop) return;
     drag.moved = true;
     const points = offsets();
     const mostOpen = points[points.length - 1];
-    const lowest = dismissible() ? height : points[0];
-    place(rubberBandClamp(event.clientY - drag.grab, mostOpen, lowest, height));
-    drag.samples.push({ t: event.timeStamp, v: y });
+    const lowest = dismissible() ? size : points[0];
+    place(rubberBandClamp(at - drag.grab, mostOpen, lowest, size));
+    drag.samples.push({ t: event.timeStamp, v: position });
     if (drag.samples.length > 12) drag.samples.shift();
   };
 
@@ -163,26 +199,29 @@ export function createSheet(
     }
     const points = offsets();
     const velocity = moved && event.type !== "pointercancel" ? velocityFrom(samples, event.timeStamp) : 0;
-    const candidates = dismissible() ? [...points, height] : points;
-    const chosen = pickSnap(candidates, y, velocity);
+    const candidates = dismissible() ? [...points, size] : points;
+    const chosen = pickSnap(candidates, position, velocity);
     settleTo(chosen >= points.length ? -1 : chosen, velocity);
   };
-
-  const resize = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
-    const next = element.offsetHeight || 1;
-    if (next === height || drag) return;
-    const index = settle ? settle.index : nearestIndex();
-    height = next;
-    if (settle) settleTo(index, 0);
-    else if (index >= 0) place(offsets()[index]);
-  }) : null;
 
   const nearestIndex = (): number => {
     const points = offsets();
     let best = 0;
-    for (let i = 1; i < points.length; i++) if (Math.abs(points[i] - y) < Math.abs(points[best] - y)) best = i;
+    for (let i = 1; i < points.length; i++) if (Math.abs(points[i] - position) < Math.abs(points[best] - position)) best = i;
     return best;
   };
+
+  const resize =
+    typeof ResizeObserver === "function"
+      ? new ResizeObserver(() => {
+          const next = measure();
+          if (next === size || drag) return;
+          const index = settle ? settle.index : nearestIndex();
+          size = next;
+          if (settle) settleTo(index, 0);
+          else if (index >= 0) place(offsets()[index]);
+        })
+      : null;
 
   element.addEventListener("pointerdown", onPointerDown);
   element.addEventListener("pointermove", onPointerMove);
@@ -196,7 +235,7 @@ export function createSheet(
   if (extra.animateIn === false) {
     place(offsets()[initial]);
   } else {
-    place(height);
+    place(size);
     settleTo(initial, 0);
   }
 
@@ -207,14 +246,14 @@ export function createSheet(
       settleTo(Math.min(Math.max(index, 0), count - 1), 0);
     },
     close() {
-      if (destroyed) return;
-      if (!dismissible()) return;
+      if (destroyed || !dismissible()) return;
       settleTo(-1, 0);
     },
     destroy() {
       destroyed = true;
       settle?.animation.cancel();
       backdropAnimation?.cancel();
+      fade?.cancel();
       settle = null;
       resize?.disconnect();
       element.removeEventListener("pointerdown", onPointerDown);

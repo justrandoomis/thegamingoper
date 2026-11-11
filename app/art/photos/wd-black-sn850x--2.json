@@ -1,0 +1,65 @@
+{
+  "key": "wd-black-sn850x--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 1019,
+  "aspect": 1.5702,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/wd-black-sn850x/2-240.ed1dbeac.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/wd-black-sn850x/2-480.8338fdf9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/wd-black-sn850x/2-720.7f54923b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/wd-black-sn850x/2-960.edaa747f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wd-black-sn850x/2-1440.f2470b2b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/wd-black-sn850x/2-240.aeb5d878.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/wd-black-sn850x/2-480.26de2917.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/wd-black-sn850x/2-720.5799916c.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/wd-black-sn850x/2-960.3f03c96d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wd-black-sn850x/2-1440.e4a03831.webp"
+      }
+    ],
+    "png": "/products/wd-black-sn850x/2-720.d70cbbde.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgwBAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSF0AAAART6CobSM2VQp9jpsREfh5mXsFppFtO7lEnT0O+xVDCdSBw6UKcmgA5tRLqCGi/xOgvyb9GsnfghsK69EClA9zA1SWpOwCOB1JwQpw2pKCBcDXcwCcF/U0+qzTL0kAVlA4IIgAAACwAwCdASoUAA0APxFysVAsJqSisAgBgCIJZgDCgBVA1lSH8EayUAD+omEreSllHnyONTH4obtVkFpXwWXv2MY7M5JdrSs7ktzwTnEzE3+3FgucMnkIaiCxl19JsxU14RPWMLv2h6PtnzRqUnlV3/m6R//r/n/7/RvO9tzrwc2OjWKu2gD2wIAA",
+  "dominant": "#383738",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sandisk (WD_BLACK)",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/wd-black-sn850x-nvme-ssd/gallery/wd-black-sn850x-nvme-ssd-heatsink-angled.png",
+    "page": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd?sku=WDS100T2XHE-00BCA0"
+  },
+  "input": "7a5566b79e324c9e"
+}

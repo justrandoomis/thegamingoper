@@ -1,0 +1,275 @@
+{
+  "slug": "elden-ring-nightreign",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "Bandai Namco Entertainment",
+  "status": "available",
+  "releaseDate": "2025-05-30",
+  "name": { "ar": "ELDEN RING NIGHTREIGN", "en": "ELDEN RING NIGHTREIGN", "ckb": "ELDEN RING NIGHTREIGN" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · لعب تعاوني لـ 3 لاعبين",
+    "en": "PS5 · Xbox Series X · disc · 3-player co-op",
+    "ckb": "PS5 · Xbox Series X · دیسک · هاوکاری 3 یاریزان"
+  },
+  "description": {
+    "ar": "مغامرة مستقلة في عالم ELDEN RING من FromSoftware، مبنية على اللعب التعاوني. تتعاون مع لاعبَين آخرين لتنجو من ليلتين، ثم تواجه زعيم الليلة الأخيرة في جولة تمتد ثلاثة أيام داخل اللعبة. تختار بين أبطال لكل منهم قدرات خاصة، وتتغير الخريطة بين جولة وأخرى.",
+    "en": "A standalone adventure in the ELDEN RING universe from FromSoftware, built around co-op. You team up with two other players to survive two nights, then face the boss of the final night, in runs that last three in-game days. You pick from heroes with their own abilities, and the land changes from run to run.",
+    "ckb": "سەرکێشییەکی سەربەخۆ لە جیهانی ELDEN RING لە FromSoftware، کە لەسەر یاری هاوکاری بنیاتنراوە. لەگەڵ دوو یاریزانی تر هاوکاری دەکەیت بۆ ئەوەی دوو شەو ڕزگار بیت، پاشان ڕووبەڕووی سەرۆکی شەوی کۆتایی دەبیتەوە، لە گەڕێکدا کە سێ ڕۆژی ناو یاری دەخایەنێت. لە نێوان چەند پاڵەوانێک هەڵدەبژێریت کە هەر یەکەیان توانای تایبەتی خۆی هەیە، و نەخشەکە لە گەڕێکەوە بۆ گەڕێکی تر دەگۆڕێت."
+  },
+  "highlights": [
+    {
+      "ar": "لعب تعاوني أونلاين لثلاثة لاعبين، ويمكن اللعب منفرداً.",
+      "en": "Three-player online co-op, and it can also be played solo.",
+      "ckb": "هاوکاری ئۆنلاین بۆ سێ یاریزان، و بە تەنهاش یاری دەکرێت."
+    },
+    {
+      "ar": "اللعب الأونلاين يحتاج PlayStation Plus أو Game Pass Essential أو أعلى.",
+      "en": "Online play needs PlayStation Plus or Game Pass Essential or higher.",
+      "ckb": "یاری ئۆنلاین پێویستی بە PlayStation Plus یان Game Pass Essential یان بەرزتر هەیە."
+    },
+    {
+      "ar": "قوائم وترجمة بالعربية، والصوت بالإنجليزية.",
+      "en": "Arabic menus and subtitles, English voice.",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی، دەنگی ئینگلیزی."
+    },
+    {
+      "ar": "حجم صغير نسبياً: نحو 28.5 غيغابايت على Xbox Series X|S.",
+      "en": "Fairly small install: about 28.5 GB on Xbox Series X|S.",
+      "ckb": "قەبارەیەکی بچووک: نزیکەی 28.5 گیگابایت لەسەر Xbox Series X|S."
+    },
+    {
+      "ar": "التصنيف PEGI 16.",
+      "en": "Rated PEGI 16.",
+      "ckb": "پۆلێنی PEGI 16."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "30 أيار 2025", "en": "30 May 2025", "ckb": "30ی ئایاری 2025" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": {
+        "ar": "PS5 وPS4 وXbox Series X|S وXbox One وPC",
+        "en": "PS5, PS4, Xbox Series X|S, Xbox One and PC",
+        "ckb": "PS5، PS4، Xbox Series X|S، Xbox One و PC"
+      }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص لـ PS5 وXbox Series X", "en": "Disc for PS5 and Xbox Series X", "ckb": "دیسک بۆ PS5 و Xbox Series X" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "نحو 28.5 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "About 28.5 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "نزیکەی 28.5 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "1، أو 3 لاعبين أونلاين", "en": "1, or 3 players online", "ckb": "1، یان 3 یاریزان ئۆنلاین" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "PlayStation Plus على PS5؛ Game Pass Essential أو Premium أو Ultimate على Xbox",
+        "en": "PlayStation Plus on PS5; Game Pass Essential, Premium or Ultimate on Xbox",
+        "ckb": "PlayStation Plus لەسەر PS5؛ Game Pass Essential یان Premium یان Ultimate لەسەر Xbox"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "قوائم وترجمة (الصوت إنجليزي)", "en": "Menus and subtitles (English voice)", "ckb": "مێنیو و ژێرنووس (دەنگی ئینگلیزی)" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 16 / ESRB M", "en": "PEGI 16 / ESRB M", "ckb": "PEGI 16 / ESRB M" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "FromSoftware / Bandai Namco Entertainment", "en": "FromSoftware / Bandai Namco Entertainment", "ckb": "FromSoftware / Bandai Namco Entertainment" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة (Standard Edition)", "en": "Game disc (Standard Edition)", "ckb": "دیسکی یارییەکە (Standard Edition)" }
+  ],
+  "variants": [
+    {
+      "sku": "ERNR-PS5-STD",
+      "title": { "ar": "ELDEN RING NIGHTREIGN لجهاز PS5", "en": "ELDEN RING NIGHTREIGN for PS5", "ckb": "ELDEN RING NIGHTREIGN بۆ PS5" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["elden-ring-nightreign--1", "elden-ring-nightreign--2", "elden-ring-nightreign--3", "elden-ring-nightreign--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "ERNR-XSX-STD",
+      "title": { "ar": "ELDEN RING NIGHTREIGN لجهاز Xbox Series X", "en": "ELDEN RING NIGHTREIGN for Xbox Series X", "ckb": "ELDEN RING NIGHTREIGN بۆ Xbox Series X" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["elden-ring-nightreign--1", "elden-ring-nightreign--2", "elden-ring-nightreign--3"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "أكشن", "en": "Action", "ckb": "ئاکشن" },
+      { "ar": "لعب تعاوني", "en": "Co-op", "ckb": "هاوکاری" }
+    ],
+    "players": "1, 3 online co-op",
+    "online": {
+      "ar": "اللعب التعاوني أونلاين يحتاج PlayStation Plus على PS5 أو Game Pass Essential أو أعلى على Xbox.",
+      "en": "Online co-op needs PlayStation Plus on PS5 or Game Pass Essential or higher on Xbox.",
+      "ckb": "هاوکاری ئۆنلاین پێویستی بە PlayStation Plus لەسەر PS5 یان Game Pass Essential یان بەرزتر لەسەر Xbox هەیە."
+    },
+    "ageRating": { "pegi": 16, "esrb": "M" },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "sizeGb": 28.5,
+    "developer": "FromSoftware",
+    "publisher": "Bandai Namco Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/shop-now"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/shop-now"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "يعمل مع قارئ الأقراص الإضافي.", "en": "Works with the add-on Disc Drive.", "ckb": "لەگەڵ Disc Drive ی زیادە کار دەکات." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X|S / Xbox One.", "en": "Xbox Series X / Xbox One disc.", "ckb": "دیسکی Xbox Series X / Xbox One." },
+      "source": "https://store.bandainamcoent.eu/elden-ring-nightreign-physical-full-game-xsx-x1-seekers-edition/"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/elden-ring-nightreign/9pj22qnvcz3g"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/elden-ring-nightreign/9pj22qnvcz3g"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "pulse-elite", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "elden-ring-nightreign--1",
+      "file": ".cache/product-images/elden-ring-nightreign/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.21572.14220340964291907.89c95a82-805b-43b9-8393-3be8df29bd15.019f9a77-d622-467b-a294-de28fe09f661",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/elden-ring-nightreign/9pj22qnvcz3g",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف ELDEN RING NIGHTREIGN", "en": "ELDEN RING NIGHTREIGN cover art", "ckb": "وێنەی بەرگی ELDEN RING NIGHTREIGN" },
+      "credit": "Bandai Namco Entertainment / FromSoftware",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "elden-ring-nightreign--2",
+      "file": ".cache/product-images/elden-ring-nightreign/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/elden-ring-nightreign-screenshot-01-en-13dec24?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/elden-ring-nightreign/",
+      "kind": "screenshot",
+      "alt": { "ar": "ثلاثة أبطال يواجهون تنيناً مشتعلاً", "en": "Three heroes facing a fiery dragon", "ckb": "سێ پاڵەوان بەرامبەر ئەژدیهایەکی ئاگرین" },
+      "credit": "Bandai Namco Entertainment / FromSoftware",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "elden-ring-nightreign--3",
+      "file": ".cache/product-images/elden-ring-nightreign/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/elden-ring-nightreign-screenshot-03-en-13dec24?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/elden-ring-nightreign/",
+      "kind": "screenshot",
+      "alt": { "ar": "قتال ليلي بين الأبطال والأعداء", "en": "A night fight between the heroes and enemies", "ckb": "شەڕێکی شەوانە لە نێوان پاڵەوانەکان و دوژمناندا" },
+      "credit": "Bandai Namco Entertainment / FromSoftware",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "elden-ring-nightreign--4",
+      "file": ".cache/product-images/elden-ring-nightreign/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/elden-ring-nightreign-screenshot-05-en-13dec24?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/elden-ring-nightreign/",
+      "kind": "screenshot",
+      "alt": { "ar": "انفجار ناري أثناء معركة", "en": "A fiery explosion during battle", "ckb": "تەقینەوەیەکی ئاگرین لە کاتی شەڕدا" },
+      "credit": "Bandai Namco Entertainment / FromSoftware",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.xbox.com/en-US/games/store/elden-ring-nightreign/9pj22qnvcz3g", "title": "ELDEN RING NIGHTREIGN — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "release 30 May 2025, 3-player online co-op, ESRB Mature 17+, Smart Delivery, max install about 28.5 GB, online requires Game Pass Essential/Premium/Ultimate, cover art" },
+    { "url": "https://www.playstation.com/en-ae/games/elden-ring-nightreign/", "title": "Elden Ring Nightreign — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 and PS4, PS Plus required online, up to 3 online players, FromSoftware, three in-game days, The Forsaken Hollows add-on, screenshots" },
+    { "url": "https://store.playstation.com/en-ae/concept/10010877", "title": "ELDEN RING NIGHTREIGN — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language, English voice only" },
+    { "url": "https://store.playstation.com/en-gb/concept/10010877", "title": "ELDEN RING NIGHTREIGN — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16" },
+    { "url": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/shop-now", "title": "ELDEN RING NIGHTREIGN — Shop now", "publisher": "Bandai Namco Entertainment Europe", "retrieved": "2026-11-11", "supports": "editions (Standard, Deluxe, Seekers, Collector's), platforms, Middle East countries in the retailer list" },
+    { "url": "https://store.bandainamcoent.eu/elden-ring-nightreign-physical-full-game-xsx-x1-seekers-edition/", "title": "ELDEN RING NIGHTREIGN — Seekers Edition [XSX-X1]", "publisher": "Bandai Namco Store", "retrieved": "2026-11-11", "supports": "physical full game for Xbox Series X / Xbox One" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "التوسعة المدفوعة The Forsaken Hollows تُباع بشكل منفصل.",
+    "en": "The paid add-on The Forsaken Hollows is sold separately.",
+    "ckb": "زیادکراوی پارەداری The Forsaken Hollows جیا دەفرۆشرێت."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "The Standard Edition physical disc for PS5 was seen in the Bandai Namco US store listing through search; the page itself redirected to the EU store.",
+      "PS5 install size is not published; the size shown is the Microsoft Store figure.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

@@ -91,8 +91,8 @@ import {
   settings,
 } from "~/server/db/schema";
 import { SETTINGS_DEFAULTS } from "~/server/db/seed/reference";
-import { mapDbError } from "~/server/db/tx.server";
-import { AppError, actionError, conflict, forbidden, invalid, isAppError, notFound, rateLimited, throwAsResponse, toAppError, zodFieldErrors } from "~/server/errors";
+import { TRIGGER_ERROR_CODES, mapDbError } from "~/server/db/tx.server";
+import { AppError, CORE_ERROR_KEYS, actionError, conflict, forbidden, invalid, isAppError, notFound, rateLimited, throwAsResponse, toAppError, zodFieldErrors } from "~/server/errors";
 import { deliverOutbox, enqueueMessage, outboxStatement, sendOrHold, type MessageProviders, type OutgoingMessage } from "~/server/outbox.server";
 import {
   DEFAULT_ROLES,
@@ -110,7 +110,7 @@ import {
   type Permission,
 } from "~/server/permissions";
 import { RATE_LIMITS, claimOnce, cleanupRateLimits, enforceRateLimit, limitKey, peekRateLimit, rateLimit, resetRateLimit } from "~/server/ratelimit.server";
-import { SETTINGS, SETTING_KEYS, getPublicSettings, getSetting, getSettings, listSettings, setSetting, settingDefault } from "~/server/settings.server";
+import { PUBLIC_SETTING_KEYS, SETTINGS, SETTING_KEYS, getPublicSettings, getSetting, getSettings, listSettings, setSetting, settingDefault } from "~/server/settings.server";
 import { loadShellData } from "~/server/shell.server";
 import { deleteFile, fileHeaders, fileResponse, getFile, getPublicBlob, isPublicStorageKey, kvBlobStore, putFile, sanitizeFileName, setFileVisibility, type BlobStore } from "~/server/storage.server";
 import { MAX_IMAGE_BYTES, detectImageFormat, processImageUpload, sanitizeImage, saveImageUpload } from "~/server/uploads.server";
@@ -197,14 +197,18 @@ function cookiesAfter(previous: TestRequest, base: Record<string, string> = {}):
   return jar;
 }
 
+/** Every error code and field key seen by failure(), checked against CORE_ERROR_KEYS at the end of this file. */
+const seenErrorKeys = new Set<string>();
+
 async function failure(run: () => Promise<unknown> | unknown): Promise<AppError> {
   try {
     await run();
   } catch (error) {
-    if (error instanceof AppError) return error;
-    const mapped = toAppError(error);
-    if (mapped) return mapped;
-    throw error;
+    const appError = error instanceof AppError ? error : toAppError(error);
+    if (!appError) throw error;
+    seenErrorKeys.add(appError.code);
+    for (const key of Object.values(appError.fields ?? {})) seenErrorKeys.add(key);
+    return appError;
   }
   throw new Error("Expected the call to fail, but it succeeded");
 }
@@ -365,6 +369,8 @@ describe("permissions", () => {
       "inventory.oversell.authorize",
       "inventory.stock.adjust",
       "orders.payment.verify",
+      "orders.payment.override",
+      "orders.refund.create",
       "orders.refund.approve",
       "pricing.discount.override",
       "catalog.product.publish",
@@ -417,12 +423,13 @@ describe("permissions", () => {
     const expectations: Record<(typeof DEFAULT_ROLE_KEYS)[number], { can: Permission[]; cannot: Permission[] }> = {
       owner: { can: ["staff.manage", "settings.payment.manage", "channels.api_key.manage", "digital_code.reveal", "finance.period.close"], cannot: [] },
       manager: {
-        can: ["orders.payment.verify", "orders.refund.approve", "inventory.oversell.authorize", "pricing.discount.override", "catalog.product.publish", "settings.manage", "audit.read", "payment_proof.read"],
+        can: ["orders.payment.verify", "orders.payment.override", "orders.refund.approve", "inventory.oversell.authorize", "pricing.discount.override", "catalog.product.publish", "settings.manage", "audit.read", "payment_proof.read"],
         cannot: ["staff.manage", "settings.payment.manage", "channels.api_key.manage", "channels.integration.manage", "finance.period.close", "security.mfa.manage", "staff.payroll.approve"],
       },
       finance: {
         can: ["orders.payment.verify", "orders.refund.approve", "payment_proof.read", "finance.period.close", "finance.journal.post", "shipping.cod.settle", "audit.read"],
-        cannot: ["staff.manage", "settings.payment.manage", "settings.manage", "catalog.product.publish", "inventory.stock.adjust", "inventory.oversell.authorize", "digital_code.reveal", "customer.phone.read_full"],
+        // A transfer whose amount does not match goes to a manager or the owner: verifying and overriding stay with different people.
+        cannot: ["orders.payment.override", "staff.manage", "settings.payment.manage", "settings.manage", "catalog.product.publish", "inventory.stock.adjust", "inventory.oversell.authorize", "digital_code.reveal", "customer.phone.read_full"],
       },
       inventory: {
         can: ["inventory.stock.adjust", "inventory.stock.receive", "inventory.count.perform", "purchasing.receipt.create", "devices.used.inspect"],
@@ -434,7 +441,7 @@ describe("permissions", () => {
       },
       support: {
         can: ["support.ticket.reply", "orders.refund.create", "returns.rma.create", "customer.phone.read_full"],
-        cannot: ["orders.refund.approve", "orders.payment.verify", "payment_proof.read", "customers.wallet.adjust", "digital_code.reveal", "support.knowledge.approve", "settings.manage", "audit.read"],
+        cannot: ["orders.refund.approve", "orders.payment.verify", "orders.payment.override", "payment_proof.read", "customers.wallet.adjust", "digital_code.reveal", "support.knowledge.approve", "settings.manage", "audit.read"],
       },
       cashier: {
         can: ["pos.sale.create", "pos.shift.open", "pos.shift.close", "pos.discount.apply"],
@@ -691,21 +698,23 @@ describe("first-owner bootstrap", () => {
   test("setup is available only while no employee exists, and only with the setup token", async () => {
     expect(await isSetupAvailable(t.db)).toBe(true);
 
-    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: SETUP_TOKEN }, { expectedToken: undefined, now: NOW }))).toMatchObject({ code: "setup_disabled", status: 403 });
-    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "" }, { expectedToken: "", now: NOW }))).toMatchObject({ code: "setup_disabled" });
-    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "short" }, { expectedToken: "short", now: NOW }))).toMatchObject({ code: "setup_disabled" });
+    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: SETUP_TOKEN }, NOW, {}))).toMatchObject({ code: "setup_disabled", status: 403 });
+    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "" }, NOW, { SETUP_TOKEN: "" }))).toMatchObject({ code: "setup_disabled" });
+    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "short" }, NOW, { SETUP_TOKEN: "short" }))).toMatchObject({ code: "setup_disabled" });
+    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "fifteen-chars-x" }, NOW, { SETUP_TOKEN: "fifteen-chars-x" }))).toMatchObject({ code: "setup_disabled" });
 
     for (const wrong of ["", "wrong-token", SETUP_TOKEN.slice(0, -1), `${SETUP_TOKEN}x`, SETUP_TOKEN.toUpperCase()]) {
-      const error = await failure(() => createFirstOwner(t.db, { ...owner, setupToken: wrong }, { expectedToken: SETUP_TOKEN, now: NOW }));
+      const error = await failure(() => createFirstOwner(t.db, { ...owner, setupToken: wrong }, NOW, secrets));
       expect(error).toMatchObject({ code: "setup_token_invalid", status: 403, fields: { setupToken: "setup_token_invalid" } });
     }
-    expect(await failure(() => createFirstOwner(t.db, { email: owner.email, name: owner.name, password: owner.password }, { expectedToken: SETUP_TOKEN, now: NOW }))).toMatchObject({ code: "setup_token_invalid" });
+    expect(await failure(() => createFirstOwner(t.db, { email: owner.email, name: owner.name, password: owner.password }, NOW, secrets))).toMatchObject({ code: "setup_token_invalid" });
+    expect(await failure(() => createFirstOwner(t.db, null, NOW, secrets))).toMatchObject({ code: "setup_token_invalid" });
     expect(await scalar("SELECT count(*) FROM employees")).toBe(0);
     expect(await scalar("SELECT count(*) FROM roles")).toBe(0);
   });
 
   test("the right token still needs a valid email, name and a 12-character password", async () => {
-    const error = await failure(() => createFirstOwner(t.db, { setupToken: SETUP_TOKEN, email: "not-an-email", name: "x", password: "short" }, { expectedToken: SETUP_TOKEN, now: NOW }));
+    const error = await failure(() => createFirstOwner(t.db, { setupToken: SETUP_TOKEN, email: "not-an-email", name: "x", password: "short" }, NOW, secrets));
     expect(error).toMatchObject({ code: "invalid", status: 400, fields: { email: "email_invalid", name: "too_short", password: "password_too_short" } });
     expect(await scalar("SELECT count(*) FROM employees")).toBe(0);
   });
@@ -713,14 +722,14 @@ describe("first-owner bootstrap", () => {
   test("attempts are rate-limited per address", async () => {
     const ip = "203.0.113.200";
     for (let i = 0; i < RATE_LIMITS.setup.limit; i++) {
-      expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "guess" }, { expectedToken: SETUP_TOKEN, now: NOW, ip }))).toMatchObject({ code: "setup_token_invalid" });
+      expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: "guess" }, NOW, secrets, { ip }))).toMatchObject({ code: "setup_token_invalid" });
     }
-    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: SETUP_TOKEN }, { expectedToken: SETUP_TOKEN, now: NOW, ip }))).toMatchObject({ code: "rate_limited", status: 429 });
+    expect(await failure(() => createFirstOwner(t.db, { ...owner, setupToken: SETUP_TOKEN }, NOW, secrets, { ip }))).toMatchObject({ code: "rate_limited", status: 429 });
     expect(await scalar("SELECT count(*) FROM employees")).toBe(0);
   });
 
   test("creates the owner once, with the built-in roles and an audit event", async () => {
-    const { employeeId } = await createFirstOwner(t.db, { ...owner, setupToken: SETUP_TOKEN }, { expectedToken: SETUP_TOKEN, now: NOW, ip: "203.0.113.9", requestId: "req-setup" });
+    const { employeeId } = await createFirstOwner(t.db, { ...owner, setupToken: SETUP_TOKEN }, NOW, secrets, { ip: "203.0.113.9", requestId: "req-setup" });
     const row = await t.db.select().from(employees).where(eq(employees.id, employeeId)).get();
     expect(row).toMatchObject({ email: "owner@tamtam.test", name: "صاحب المتجر", status: "active", totpEnabled: false, passwordIters: 100_000 });
     expect(row?.passwordHash).toMatch(/^pbkdf2-sha256\$100000\$/);
@@ -740,10 +749,61 @@ describe("first-owner bootstrap", () => {
   });
 
   test("it never works a second time, even with the right token", async () => {
-    const again = await failure(() => createFirstOwner(t.db, { setupToken: SETUP_TOKEN, email: "second@tamtam.test", name: "Second Owner", password: "another-long-password" }, { expectedToken: SETUP_TOKEN, now: NOW + MINUTE }));
+    const again = await failure(() => createFirstOwner(t.db, { setupToken: SETUP_TOKEN, email: "second@tamtam.test", name: "Second Owner", password: "another-long-password" }, NOW + MINUTE, secrets));
     expect(again).toMatchObject({ code: "setup_done", status: 409 });
     expect(await scalar("SELECT count(*) FROM employees")).toBe(1);
     expect(await scalar("SELECT count(*) FROM audit_events WHERE action = 'staff.employee.bootstrap'")).toBe(1);
+  });
+});
+
+describe("first-owner bootstrap on an empty production database", () => {
+  // Production gets its reference data from /admin/setup and from nowhere else: a database with the
+  // migrations applied and NOTHING seeded is exactly what the first deploy has.
+  let fresh: TestDb;
+  beforeAll(async () => {
+    fresh = await createTestDb({ seed: false });
+  });
+  afterAll(async () => {
+    await fresh?.dispose();
+  });
+
+  const count = async (table: string) => Number((await fresh.d1.prepare(`SELECT count(*) AS n FROM ${table}`).first<{ n: number }>())?.n ?? -1);
+  const REFERENCE_TABLES = ["governorates", "districts", "settings", "inventory_locations", "channels", "accounts", "inspection_templates"];
+
+  // Runs first, while the database is still empty: every page's root loader must work before setup.
+  test("the shell loads before setup: empty cart, no customer, no rate, no write", async () => {
+    for (const table of ["fx_rates", "carts", "customers", "customer_sessions", "settings"]) expect(await count(table), table).toBe(0);
+    const production = { isDev: false } as const;
+    expect(await loadShellData(request(production).ctx, fresh.db)).toEqual({ cart: { count: 0 }, customer: null, fx: null, fxIsDemo: false, introSeen: false, personalizationConsent: null });
+    // Cookies that point at nothing (an old cart, an old session) are not an error either.
+    const stale = request({ ...production, cookies: { tt_cart: randomToken(), tt_sid: randomToken(), tt_intro: "1" } });
+    expect(await loadShellData(stale.ctx, fresh.db)).toMatchObject({ cart: { count: 0 }, customer: null, fx: null, introSeen: true });
+    for (const table of ["carts", "customers", "customer_sessions", "audit_events"]) expect(await count(table), table).toBe(0);
+  });
+
+  test("installs the reference data and the roles, then the owner; a second run changes nothing", async () => {
+    for (const table of [...REFERENCE_TABLES, "roles", "employees"]) expect(await count(table), table).toBe(0);
+
+    // A refused attempt writes no reference data (only its rate-limit count).
+    expect(await failure(() => createFirstOwner(fresh.db, { setupToken: "wrong-token", email: "owner@tamtam.test", name: "صاحب المتجر", password: "a-long-owner-password" }, NOW, secrets))).toMatchObject({ code: "setup_token_invalid" });
+    for (const table of REFERENCE_TABLES) expect(await count(table), table).toBe(0);
+
+    await createFirstOwner(fresh.db, { setupToken: SETUP_TOKEN, email: "owner@tamtam.test", name: "صاحب المتجر", password: "a-long-owner-password" }, NOW, secrets);
+    const after: Record<string, number> = {};
+    for (const table of REFERENCE_TABLES) {
+      after[table] = await count(table);
+      expect(after[table], table).toBeGreaterThan(0);
+    }
+    expect(after.governorates).toBe(19);
+    expect(after.settings).toBe(Object.keys(SETTINGS_DEFAULTS).length);
+    expect(await getSetting(fresh.db, "shipping.flat_fee_iqd")).toBe(5000);
+    expect(await count("roles")).toBe(DEFAULT_ROLE_KEYS.length);
+    expect(await count("employees")).toBe(1);
+
+    // Setup is closed now: a second attempt is refused before anything is written.
+    expect(await failure(() => createFirstOwner(fresh.db, { setupToken: SETUP_TOKEN, email: "second@tamtam.test", name: "Second Owner", password: "another-long-password" }, NOW + MINUTE, secrets))).toMatchObject({ code: "setup_done", status: 409 });
+    for (const table of REFERENCE_TABLES) expect(await count(table), table).toBe(after[table]);
+    expect(await count("employees")).toBe(1);
   });
 });
 
@@ -870,7 +930,8 @@ describe("admin authentication", () => {
   });
 
   test("without a valid session requireEmployee redirects the document to /admin/login", async () => {
-    for (const cookies of [{}, { tt_adm: "not-a-token" }, { tt_adm: randomToken() }]) {
+    const jars: Record<string, string>[] = [{}, { tt_adm: "not-a-token" }, { tt_adm: randomToken() }];
+    for (const cookies of jars) {
       const req = request({ cookies });
       expect(await getEmployee(req.ctx, t.db)).toBeNull();
       const response = (await thrown(() => requireEmployee(req.ctx, t.db, undefined, { next: "/admin/orders?status=new" }))) as Response;
@@ -1213,7 +1274,8 @@ describe("customer authentication", () => {
   });
 
   test("guests: getCustomer is null and requireCustomer redirects to the sign-in page in their language", async () => {
-    for (const cookies of [{}, { tt_sid: "garbage" }, { tt_sid: randomToken() }]) {
+    const jars: Record<string, string>[] = [{}, { tt_sid: "garbage" }, { tt_sid: randomToken() }];
+    for (const cookies of jars) {
       expect(await getCustomer(request({ cookies }).ctx, t.db)).toBeNull();
     }
     const arabic = (await thrown(() => requireCustomer(request().ctx, t.db, { next: "/account/orders" }))) as Response;
@@ -1256,7 +1318,7 @@ describe("customer authentication", () => {
 
   test("sessions: list, revoke one, revoke all others, sign out", async () => {
     const start = NOW + 100 * DAY;
-    const devices = [];
+    const devices: { cookies: Record<string, string>; session: Awaited<ReturnType<typeof signInCustomer>> }[] = [];
     for (let i = 0; i < 3; i++) {
       const req = request({ now: start + i * MINUTE });
       const session = await signInCustomer(req.ctx, t.db, { phone: PHONE, password: PASSWORD });
@@ -1423,6 +1485,21 @@ describe("customer authentication", () => {
       expect(limited).toMatchObject({ code: "rate_limited", status: 429 });
       expect(await scalar("SELECT count(*) FROM otp_codes WHERE phone_e164 = ?", phone)).toBe(3);
       expect(await failure(() => requestOtp(request().ctx, t.db, { phone: "123", purpose: "login" }, options))).toMatchObject({ code: "invalid", fields: { phone: "phone_invalid" } });
+    });
+
+    test("without SESSION_SECRET a code is neither stored nor checked, and costs no attempt", async () => {
+      const start = NOW + 205 * DAY;
+      const phone = "+9647702000007";
+      for (const secret of [undefined, null, "", "too-short-for-a-key"]) {
+        await expect(requestOtp(request({ now: start }).ctx, t.db, { phone, purpose: "login" }, { secret })).rejects.toThrow(/secret/i);
+      }
+      expect(await scalar("SELECT count(*) FROM otp_codes WHERE phone_e164 = ?", phone)).toBe(0);
+      expect(await scalar("SELECT count(*) FROM rate_limits WHERE key = ?", await limitKey("otp", "phone", phone))).toBe(0);
+
+      const sent = await requestOtp(request({ now: start }).ctx, t.db, { phone, purpose: "login" }, options);
+      await expect(verifyOtp(request({ now: start }).ctx, t.db, { phone, purpose: "login", code: sent.devCode!, id: sent.id }, { secret: undefined })).rejects.toThrow(/secret/i);
+      expect(await scalar("SELECT attempts FROM otp_codes WHERE id = ?", sent.id)).toBe(0);
+      expect((await verifyOtp(request({ now: start }).ctx, t.db, { phone, purpose: "login", code: sent.devCode!, id: sent.id }, options)).id).toBe(sent.id);
     });
 
     test("confirming a code marks the signed-in customer's phone as verified", async () => {
@@ -1657,13 +1734,21 @@ describe("settings", () => {
   const admin = employeeActor(["settings.read", "settings.manage", "settings.shipping.manage", "settings.payment.manage", "settings.locale.manage"], { id: "emp_settings", label: "مديرة الإعدادات" });
 
   test("the registry covers every key of ARCHITECTURE §10 with the seeded defaults", async () => {
-    expect([...SETTING_KEYS].sort()).toEqual(Object.keys(SETTINGS_DEFAULTS).sort());
-    for (const key of SETTING_KEYS) {
+    const seeded = Object.keys(SETTINGS_DEFAULTS) as (keyof typeof SETTINGS_DEFAULTS)[];
+    for (const key of seeded) {
+      expect(SETTING_KEYS, key).toContain(key);
       expect(settingDefault(key), key).toEqual(SETTINGS_DEFAULTS[key]);
       expect(await getSetting(t.db, key), key).toEqual(SETTINGS_DEFAULTS[key]);
+    }
+    // Keys beyond §10 are internal controls: never shown to shoppers, and they work without a seeded row.
+    const extra = SETTING_KEYS.filter((key) => !seeded.includes(key as (typeof seeded)[number]));
+    expect(extra).toEqual(["refunds.approval_threshold_iqd"]);
+    expect([...PUBLIC_SETTING_KEYS].sort()).toEqual([...seeded].sort());
+    for (const key of SETTING_KEYS) {
       expect(isPermission(SETTINGS[key].permission), key).toBe(true);
       expect(SETTINGS[key].label.ar.trim()).not.toBe("");
       expect(SETTINGS[key].label.en.trim()).not.toBe("");
+      expect(SETTINGS[key].schema.safeParse(SETTINGS[key].default).success, `${key} default fits its schema`).toBe(true);
     }
     expect(await getSetting(t.db, "shipping.flat_fee_iqd")).toBe(5000);
     expect(await getSetting(t.db, "shipping.overrides_enabled")).toBe(false);
@@ -1673,7 +1758,9 @@ describe("settings", () => {
     const several = await getSettings(t.db, ["payments.cod", "checkout.reservation_minutes", "returns.window_days"]);
     expect(several).toEqual({ "payments.cod": { enabled: true }, "checkout.reservation_minutes": 30, "returns.window_days": 7 });
     expect(await getSettings(t.db, [])).toEqual({});
-    expect(Object.keys(await getPublicSettings(t.db)).sort()).toEqual([...SETTING_KEYS].sort());
+    const shown = await getPublicSettings(t.db);
+    expect(Object.keys(shown).sort()).toEqual([...seeded].sort());
+    expect("refunds.approval_threshold_iqd" in shown).toBe(false);
   });
 
   test("a missing row falls back to the default; a row that breaks its schema is an error, not a guess", async () => {
@@ -1759,6 +1846,19 @@ describe("settings", () => {
     expect(byKey["returns.window_days"]).toMatchObject({ value: 7, canEdit: true, isStored: true, group: "policies" });
     expect(byKey["payments.zaincash"]).toMatchObject({ canEdit: false, value: { enabled: false, number: "07701234567" }, updatedBy: "emp_settings" });
     expect(byKey["shipping.flat_fee_iqd"]).toMatchObject({ canEdit: false, value: 5000 });
+    expect(byKey["refunds.approval_threshold_iqd"]).toMatchObject({ canEdit: false, value: 0, isStored: false, group: "controls" });
+  });
+
+  test("the refund approval threshold: every refund needs approval until the owner changes it", async () => {
+    expect(await scalar("SELECT count(*) FROM settings WHERE key = 'refunds.approval_threshold_iqd'")).toBe(0);
+    expect(await getSetting(t.db, "refunds.approval_threshold_iqd")).toBe(0);
+    // Raising it weakens a money control: a store manager may not; the owner may.
+    expect(await failure(() => setSetting(t.db, roleActor("manager"), "refunds.approval_threshold_iqd", 50_000, "مرتجعات صغيرة", NOW))).toMatchObject({ code: "forbidden", detail: "settings.payment.manage" });
+    expect(await failure(() => setSetting(t.db, roleActor("owner"), "refunds.approval_threshold_iqd", -5, "خطأ في الإدخال", NOW))).toMatchObject({ code: "invalid", fields: { value: "too_small" } });
+    expect(await setSetting(t.db, roleActor("owner"), "refunds.approval_threshold_iqd", 50_000, "مرتجعات صغيرة", NOW)).toBe(50_000);
+    expect(await getSetting(t.db, "refunds.approval_threshold_iqd")).toBe(50_000);
+    await setSetting(t.db, roleActor("owner"), "refunds.approval_threshold_iqd", 0, "إعادة القيمة الأصلية", NOW + MINUTE);
+    expect(await getSetting(t.db, "refunds.approval_threshold_iqd")).toBe(0);
   });
 });
 
@@ -2013,7 +2113,8 @@ describe("image uploads", () => {
 
   test("WebP: EXIF and XMP chunks are removed and the header flags and size are corrected", () => {
     const exifPayload = text("Exif-GPS-33.3152");
-    const xmpPayload = text("<xmp>creator=Noor</xmp>!");
+    // Odd length on purpose: the chunk is followed by a pad byte, which must go with it.
+    const xmpPayload = text("<xmp>creator=Noor</xmp>");
     expect(xmpPayload.length % 2).toBe(1);
     const original = riff(
       [vp8x(0x08 | 0x04 | 0x20, 300, 200), webpChunk("ICCP", [1, 2, 3]), vp8(300, 200), webpChunk("EXIF", exifPayload), webpChunk("XMP ", xmpPayload), webpChunk("JUNK", [9, 9])],
@@ -2425,5 +2526,19 @@ describe("database error mapping stays in step with the data layer", () => {
     expect(await scalar("SELECT count(*) FROM audit_events WHERE action = 'staff.employee.disable' AND entity_id = 'emp_nobody'")).toBe(0);
     expect(mapDbError(new Error("D1_ERROR: TT:LAST_OWNER:emp_1: SQLITE_CONSTRAINT"))).toMatchObject({ code: "LAST_OWNER", detail: "emp_1", status: 409 });
     expect(toAppError(new Error("D1_ERROR: TT:LAST_OWNER:emp_1: SQLITE_CONSTRAINT"))).toMatchObject({ code: "last_owner", detail: "emp_1", status: 409 });
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── error keys (keep last: it reads what the tests above saw)
+
+describe("error keys", () => {
+  test("every code and field key the core produced in this file is listed in CORE_ERROR_KEYS", () => {
+    // Database rules (TT:<CODE>) belong to the data layer and the domain services, not to this list.
+    const databaseRules = new Set(Object.keys(TRIGGER_ERROR_CODES).map((code) => code.toLowerCase()));
+    const unlisted = [...seenErrorKeys].filter((key) => !databaseRules.has(key) && !(CORE_ERROR_KEYS as readonly string[]).includes(key));
+    expect(seenErrorKeys.size).toBeGreaterThan(30);
+    expect(unlisted).toEqual([]);
+    expect(new Set(CORE_ERROR_KEYS).size).toBe(CORE_ERROR_KEYS.length);
+    for (const key of CORE_ERROR_KEYS) expect(key).toMatch(/^[a-z][a-z0-9_]*$/);
   });
 });

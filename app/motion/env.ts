@@ -2,15 +2,17 @@
  * Motion environment: the adaptive quality tier, the shopper's override, and haptics.
  *
  *   'full'     everything
- *   'lite'     primary motion only — secondary and ambient layers are dropped (stagger, overshoot, parallax,
- *              tilt, squish, idle motion). Chosen for Save-Data and low-memory / low-core devices.
- *   'reduced'  prefers-reduced-motion: short opacity cross-fades or nothing; no movement, no view transitions.
+ *   'lite'     the low-end tier of DESIGN.md §6.5 (<html class="fx-low">): function is identical; glass becomes solid
+ *              (design-system CSS), staggered inflate is off, theme and language switch instantly, idle motion is off.
+ *              Chosen for Save-Data, ≤ 2 GB devices and ≤ 4-core phones, and at runtime after three long frames
+ *              inside one transition (sticky for the session).
+ *   'reduced'  prefers-reduced-motion: nothing travels; page changes are 120 ms cross-fades (DESIGN.md §7.3).
  *
- * SSR-safe: nothing touches `window` at module scope; on the server the tier is always 'full' and the
- * client corrects it right after hydration (CSS already honours `prefers-reduced-motion` before that).
+ * SSR-safe: nothing touches `window` at module scope; on the server the tier is always 'full' and the client
+ * corrects it right after hydration — or before first paint when the document head runs MOTION_TIER_SCRIPT.
  */
 import { useSyncExternalStore } from "react";
-import { haptics, type HapticKind } from "./tokens";
+import { haptics, lowEnd as lowEndTokens, type HapticKind } from "./tokens";
 
 export type MotionTier = "full" | "lite" | "reduced";
 
@@ -23,35 +25,74 @@ export type TierSignals = {
   deviceMemory?: number;
   /** `navigator.hardwareConcurrency` */
   hardwareConcurrency?: number;
+  /** The device's shorter screen side is below 768 px (a phone). */
+  smallScreen?: boolean;
+  /** Long frames were measured during a transition earlier in this session (sticky). */
+  janky?: boolean;
   /** The shopper's explicit choice; wins over every signal, in both directions. */
   override?: MotionTier | null;
 };
 
-/** Pure tier resolution (unit-tested). */
+/**
+ * Pure tier resolution (unit-tested; MOTION_TIER_SCRIPT is the same rule for the document head).
+ *
+ * The core-count rule only applies where `deviceMemory` exists (Chromium), because only there is the count real:
+ * WebKit reports 4 for every device with fewer than 8 cores (all iPhones) to resist fingerprinting, so on Safari
+ * the DESIGN.md rule "≤ 4 cores on a small screen" would put every iPhone on the low-end tier.
+ */
 export function resolveTier(signals: TierSignals): MotionTier {
   if (signals.override === "full" || signals.override === "lite" || signals.override === "reduced") return signals.override;
   if (signals.reducedMotion) return "reduced";
-  if (signals.saveData) return "lite";
+  if (signals.saveData || signals.janky) return "lite";
   const memory = signals.deviceMemory;
-  const cores = signals.hardwareConcurrency;
-  if (memory !== undefined && memory <= 2) return "lite";
-  if (cores !== undefined && cores <= 2) return "lite";
-  // 4 GiB with four cores or fewer is the budget-Android profile; iPhones report no deviceMemory and stay 'full'.
-  if (memory !== undefined && memory <= 4 && cores !== undefined && cores <= 4) return "lite";
+  if (memory !== undefined) {
+    if (memory <= 2) return "lite";
+    const cores = signals.hardwareConcurrency;
+    if (signals.smallScreen && cores !== undefined && cores <= 4) return "lite";
+  }
   return "full";
 }
 
 const OVERRIDE_KEY = "tt:motion";
+const JANK_KEY = "tt:motion-low";
 const QUERY = "(prefers-reduced-motion: reduce)";
 
 let tier: MotionTier | null = null;
 let watching = false;
+let janky: boolean | null = null;
 const listeners = new Set<() => void>();
 
 type NavigatorHints = Navigator & {
   connection?: { saveData?: boolean; addEventListener?: (type: string, listener: () => void) => void };
   deviceMemory?: number;
 };
+
+function isJanky(): boolean {
+  if (janky === null) {
+    try {
+      janky = window.sessionStorage.getItem(JANK_KEY) === "1";
+    } catch {
+      janky = false;
+    }
+  }
+  return janky;
+}
+
+/**
+ * The device could not keep up with a transition (three frames over 50 ms inside one): use the low-end tier for the
+ * rest of the session (DESIGN.md §6.5). The shopper's own override still wins.
+ */
+export function markJanky(): void {
+  if (typeof window === "undefined" || isJanky()) return;
+  janky = true;
+  try {
+    window.sessionStorage.setItem(JANK_KEY, "1");
+  } catch {
+    // storage blocked: the downgrade lasts for this page view
+  }
+  getMotionTier();
+  refresh();
+}
 
 function isTier(value: unknown): value is MotionTier {
   return value === "full" || value === "lite" || value === "reduced";
@@ -79,6 +120,8 @@ function readSignals(): TierSignals {
     saveData: nav.connection?.saveData === true,
     deviceMemory: typeof nav.deviceMemory === "number" ? nav.deviceMemory : undefined,
     hardwareConcurrency: typeof nav.hardwareConcurrency === "number" ? nav.hardwareConcurrency : undefined,
+    smallScreen: typeof screen !== "undefined" && Math.min(screen.width, screen.height) < lowEndTokens.smallScreen,
+    janky: isJanky(),
     override: getMotionOverride(),
   };
 }

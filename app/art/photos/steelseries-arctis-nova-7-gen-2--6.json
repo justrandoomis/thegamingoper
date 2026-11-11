@@ -1,0 +1,57 @@
+{
+  "key": "steelseries-arctis-nova-7-gen-2--6",
+  "view": "hero",
+  "width": 1037,
+  "height": 1353,
+  "aspect": 0.7664,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-240.421c28ca.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-480.e14b4882.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-720.9b0a09e5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-960.89d58911.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-240.1e4a57b0.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-480.6bb4c07c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-720.f0417619.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/6-960.19dffd01.webp"
+      }
+    ],
+    "png": "/products/steelseries-arctis-nova-7-gen-2/6-720.f767e9b3.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRioBAABXRUJQVlA4WAoAAAAQAAAADgAAEwAAQUxQSHkAAAART6AgbQMWTsdfRAQcPxYNt7W2rckTb4MNQcehS5cKGYHOYQCncysd3nn//88MEf2fAAqeZlUjl7bGXn8FwOt+UAh8en1FwLfesPyS9G+J+IVG0FwDfEdSCOlPUgZ9SdrC3vEwurA3MtgZNY9c0nbc8pjP1tXbzcMJAFZQOCCKAAAAEAQAnQEqDwAUAD8RcrBQLCakorAIAYAiCWkAA+Q50YJvM5XYJ0Qrz2AA/oLT+MNaX0VMWWVDMsgM5KN4kSK6bH6RjyTATlikwORjQZnnkEanc1uWn975iZ+WG/3gpVTlwmHOpxLd9n9+3SyGCDMjtxSIyHMo31QmyqCEKGX+3ig8YzjibnIAAAAA",
+  "dominant": "#282827",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "SteelSeries",
+  "source": {
+    "url": "https://images.ctfassets.net/hmm5mo4qf4mf/2xxHJMFREaKGO0Cn6lMqO7/0c7348f65f232066b5703017255dafe3/arctis_nova_7x_wl_gen_2_black_pdp_img_buy_01.png",
+    "page": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=black&primaryPlatform=xbox"
+  },
+  "input": "a6e9fb67c642533a"
+}

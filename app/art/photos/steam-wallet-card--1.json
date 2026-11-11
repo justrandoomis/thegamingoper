@@ -1,0 +1,41 @@
+{
+  "key": "steam-wallet-card--1",
+  "view": "hero",
+  "width": 556,
+  "height": 622,
+  "aspect": 0.8939,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/steam-wallet-card/1-240.5935f531.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/steam-wallet-card/1-480.4bbb839b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/steam-wallet-card/1-240.502d7028.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/steam-wallet-card/1-480.6b185272.webp"
+      }
+    ],
+    "png": "/products/steam-wallet-card/1-556.9dfb2efc.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSGAAAAART6CobSM2VQ79rRsREdBbM3eE28i2nebi00cR5J4WSF0ThB6pA+Vet18uNUT0fwJw2eKhiR3A3iQZIX3wxFaeTRStSpX9Bb7qrZ5qUq1Klf0FviTH0gXevCcOACy1g+tWUDgglAAAANAEAJ0BKhIAFAA/EX61VawnpKMoCAGAIgllAM7wl/Wgwd7DEwTIHjW+KZHH7MCAAP677v8PTnd367LPaL+XCNYAxEahAH1KexErtD3TgyAp9wWQE1+iryUeQ056j7CsFuZnL8EaPZjyw0MsxmJ/LeHj9dgUyvrERz1+gv2khSVCMUgLMjMrIYw0/oYB450mhr0sEAA=",
+  "dominant": "#030303",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Valve Corporation",
+  "source": {
+    "url": "https://store.akamai.steamstatic.com/public/images/gift/steamcards_physical.png",
+    "page": "https://store.steampowered.com/digitalgiftcards/"
+  },
+  "input": "f1bbfd26177679b7"
+}

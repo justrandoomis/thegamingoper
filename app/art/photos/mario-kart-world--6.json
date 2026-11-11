@@ -1,0 +1,65 @@
+{
+  "key": "mario-kart-world--6",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/mario-kart-world/6-240.02adb558.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-kart-world/6-480.a978b0ce.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/mario-kart-world/6-720.f56627ad.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/mario-kart-world/6-960.577f8a75.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mario-kart-world/6-1440.34f078dc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/mario-kart-world/6-240.57a0b20f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-kart-world/6-480.bba4b7d4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/mario-kart-world/6-720.3d9988e8.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/mario-kart-world/6-960.c45dd2a5.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mario-kart-world/6-1440.d53959c0.webp"
+      }
+    ],
+    "png": "/products/mario-kart-world/6-720.8ad5d9e6.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJbACdLwABvQXJhHpiiWwAAP7fhTzzZirSBohMzeMobJN4pNArr/jnx8Q5AA2xwrKUQR2CVsoU00TtVFsP9qgA",
+  "dominant": "#57a637",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000095431/e0c211ccca9b4e1d4f1359b21c05c07ab62638929256a50518b6efe1ec185ee8",
+    "page": "https://www.nintendo.com/us/store/products/mario-kart-world-switch-2/"
+  },
+  "input": "82c587674ed2f435"
+}

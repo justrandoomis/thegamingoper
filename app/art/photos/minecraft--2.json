@@ -1,0 +1,65 @@
+{
+  "key": "minecraft--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/minecraft/2-240.aea908ac.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/minecraft/2-480.be6eac28.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/minecraft/2-720.e5cbbb17.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/minecraft/2-960.5dfe1057.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/minecraft/2-1440.53ad22dd.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/minecraft/2-240.b254d349.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/minecraft/2-480.bb2e1a0c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/minecraft/2-720.d9d639e4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/minecraft/2-960.dace4510.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/minecraft/2-1440.67a1e248.webp"
+      }
+    ],
+    "png": "/products/minecraft/2-720.ed3ccc2a.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoRwGQA57MBh3ighG7RWr4cAAP53s3bkCY5IhPoXSNEj3PKgOsMuCVtGiNSef2RHa7cA3i3E6ZHrVb6p7TMJihVQjAt7JsYEmr6ywqyVHKMmG0zPV8Rjy98xBt9begAA",
+  "dominant": "#0a5388",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Mojang Studios / Microsoft",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/minecraft-screenshot-01-ps4-05dec19-en?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/minecraft/"
+  },
+  "input": "2653db4d79839a2b"
+}

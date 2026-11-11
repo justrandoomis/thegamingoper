@@ -1,0 +1,363 @@
+{
+  "slug": "lenovo-legion-go",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "Lenovo",
+  "deviceModel": "legion-go",
+  "family": "legion-go",
+  "status": "discontinued",
+  "releaseDate": "2023-10-31",
+  "name": { "ar": "Lenovo Legion Go (2023)", "en": "Lenovo Legion Go (2023)", "ckb": "Lenovo Legion Go (2023)" },
+  "short": {
+    "ar": "الجيل الأول · شاشة 8.8 بوصة 2560×1600 بتردد 144Hz · يدا تحكم قابلتان للفصل",
+    "en": "First generation · 8.8-inch 2560×1600 144Hz · detachable controllers",
+    "ckb": "نەوەی یەکەم · شاشەی 8.8 ئینچ 2560×1600 بە 144Hz · دەسکی جیابووەوە"
+  },
+  "description": {
+    "ar": "أول حاسوب ألعاب محمول باليد من Lenovo، يعمل بنظام Windows 11 بشاشة IPS كبيرة قياس 8.8 بوصة بدقة 2560×1600 وتردد 144Hz. يدا التحكم تنفصلان، ويمكن تحويل اليد اليمنى إلى فأرة عمودية على قاعدتها في وضع FPS. تصنّفه Lenovo اليوم كطراز مسحوب من البيع وخلفه Legion Go 2، لذلك يُباع غالباً مستعملاً أو مجدداً.",
+    "en": "Lenovo's first handheld gaming PC: Windows 11 on a large 8.8-inch 2560×1600 IPS screen at 144Hz. The controllers detach, and the right one becomes an upright mouse on its base in FPS mode. Lenovo now lists it as withdrawn, with the Legion Go 2 as its successor, so today it is mostly sold used or refurbished.",
+    "ckb": "یەکەم کۆمپیوتەری یاریی دەستیی Lenovo: Windows 11 لەسەر شاشەیەکی گەورەی IPS ـی 8.8 ئینچی 2560×1600 بە 144Hz. دەسکەکان جیادەبنەوە، و دەسکی ڕاست لەسەر بنکەکەی دەبێتە ماوسێکی ستوونی لە دۆخی FPS. Lenovo ئێستا وەک مۆدێلێکی کێشراوە لە فرۆشتن نیشانی دەدات و Legion Go 2 جێگەی گرتۆتەوە، بۆیە ئەمڕۆ زیاتر بە بەکارهاتوو یان نوێکراوە دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة IPS قياس 8.8 بوصة بدقة 2560×1600 وتردد 144Hz وسطوع 500 nit",
+      "en": "8.8-inch 2560×1600 IPS screen at 144Hz, 500 nits",
+      "ckb": "شاشەی IPS ـی 8.8 ئینچ بە 2560×1600 و 144Hz، 500 nit"
+    },
+    {
+      "ar": "يدا تحكم قابلتان للفصل مع حامل خلفي ووضع FPS وقاعدة لليد اليمنى في العلبة",
+      "en": "Detachable controllers with a kickstand, FPS mode and a base for the right controller in the box",
+      "ckb": "دەسکی جیابووەوە لەگەڵ ستاندی پشتەوە، دۆخی FPS و بنکەیەک بۆ دەسکی ڕاست لە قوتووەکەدا"
+    },
+    {
+      "ar": "معالج Ryzen Z1 Extreme أو Ryzen Z1 مع ذاكرة 16GB LPDDR5X-7500",
+      "en": "Ryzen Z1 Extreme or Ryzen Z1 with 16GB of LPDDR5X-7500",
+      "ckb": "Ryzen Z1 Extreme یان Ryzen Z1 لەگەڵ 16GB LPDDR5X-7500"
+    },
+    {
+      "ar": "بطارية 49.2Wh، أصغر بوضوح من بطارية Legion Go 2 البالغة 74Wh",
+      "en": "49.2Wh battery, clearly smaller than the 74Wh battery in the Legion Go 2",
+      "ckb": "پاتریی 49.2Wh، بە ڕوونی بچووکترە لە پاتریی 74Wh ـی Legion Go 2"
+    },
+    {
+      "ar": "منفذا USB4 وقارئ microSD؛ يعمل بنظام Windows 11",
+      "en": "Two USB4 ports and a microSD reader; runs Windows 11",
+      "ckb": "دوو دەروازەی USB4 و خوێنەری microSD؛ لەسەر Windows 11 کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen Z1 Extreme (8 أنوية / 16 مساراً، حتى 5.1GHz) أو AMD Ryzen Z1 (6 أنوية / 12 مساراً، حتى 4.9GHz)، مع رسوميات AMD Radeon",
+        "en": "AMD Ryzen Z1 Extreme (8 cores / 16 threads, up to 5.1GHz) or AMD Ryzen Z1 (6 cores / 12 threads, up to 4.9GHz), with AMD Radeon graphics",
+        "ckb": "AMD Ryzen Z1 Extreme (8 ناوک / 16 دەزوو، تا 5.1GHz) یان AMD Ryzen Z1 (6 ناوک / 12 دەزوو، تا 4.9GHz)، لەگەڵ گرافیکی AMD Radeon"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB LPDDR5X-7500 مدمجة", "en": "16GB LPDDR5X-7500, soldered", "ckb": "16GB LPDDR5X-7500، لکێنراو" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "256GB أو 512GB أو 1TB بحجم M.2 2242 PCIe 4.0",
+        "en": "256GB, 512GB or 1TB M.2 2242 PCIe 4.0 SSD",
+        "ckb": "256GB یان 512GB یان 1TB ـی M.2 2242 PCIe 4.0"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": { "ar": "قارئ بطاقات microSD", "en": "microSD card reader", "ckb": "خوێنەری کارتی microSD" }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "8.8 بوصة WQXGA (2560×1600) من نوع IPS تعمل باللمس، 16:10، 144Hz، سطوع 500 nit، تغطية 97% من DCI-P3، Gorilla Glass 5",
+        "en": "8.8-inch WQXGA (2560×1600) IPS touchscreen, 16:10, 144Hz, 500 nits, 97% DCI-P3, Gorilla Glass 5",
+        "ckb": "شاشەی دەستلێدانی IPS ـی 8.8 ئینچ WQXGA (2560×1600)، 16:10، 144Hz، 500 nit، 97% DCI-P3، Gorilla Glass 5"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "49.2Wh، شحن سريع: 70% خلال 30 دقيقة",
+        "en": "49.2Wh, Super Rapid Charge: 70% in 30 minutes",
+        "ckb": "49.2Wh، شەحنی زۆر خێرا: 70% لە 30 خولەکدا"
+      }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": { "ar": "شاحن USB-C بقدرة 65W", "en": "65W USB-C adapter", "ckb": "شەحنکەری USB-C ـی 65W" }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": { "ar": "Windows 11 Home", "en": "Windows 11 Home", "ckb": "Windows 11 Home" }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذان USB4 بسرعة 40Gbps (شحن PD 3.0 وDisplayPort 1.4)، مقبس صوت 3.5mm، قارئ microSD",
+        "en": "2× USB4 40Gbps (PD 3.0, DisplayPort 1.4), 3.5mm audio jack, microSD reader",
+        "ckb": "2× USB4 ـی 40Gbps (PD 3.0، DisplayPort 1.4)، دەروازەی دەنگی 3.5mm، خوێنەری microSD"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 6E (2×2) وBluetooth 5.3", "en": "Wi-Fi 6E (2×2) and Bluetooth 5.3", "ckb": "Wi-Fi 6E (2×2) و Bluetooth 5.3" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "يدا تحكم قابلتان للفصل، لوحة لمس على اليد اليمنى، عجلة فأرة ومفتاح وضع FPS، أزرار خلفية، حساس حركة؛ لا يوجد قارئ بصمة",
+        "en": "Detachable controllers, touchpad on the right controller, mouse wheel and FPS mode switch, rear buttons, gyro; no fingerprint reader",
+        "ckb": "دەسکی جیابووەوە، تەختەی دەستلێدان لەسەر دەسکی ڕاست، تەکەری ماوس و سویچی دۆخی FPS، دوگمەی پشتەوە، Gyro؛ خوێنەری پەنجەمۆری نییە"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": {
+        "ar": "298.83 × 131 × 40.7 ملم مع يدي التحكم",
+        "en": "298.83 × 131 × 40.7 mm with controllers",
+        "ckb": "298.83 × 131 × 40.7 ملم لەگەڵ دەسکەکان"
+      }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": {
+        "ar": "أقل من 854 غرام مع يدي التحكم (أقل من 640 غرام للجهاز وحده)",
+        "en": "Under 854 g with controllers (under 640 g without)",
+        "ckb": "کەمتر لە 854 گرام لەگەڵ دەسکەکان (کەمتر لە 640 گرام بەبێ دەسک)"
+      }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Legion Go مع يدي التحكم", "en": "Legion Go with both controllers", "ckb": "ئامێری Legion Go لەگەڵ هەردوو دەسک" },
+    { "ar": "حقيبة حمل مع قاعدة ليد التحكم", "en": "Carry bag with controller dock", "ckb": "جانتای هەڵگرتن لەگەڵ بنکەی دەسک" },
+    { "ar": "شاحن USB-C بقدرة 65W (حسب الدولة)", "en": "65W USB-C adapter (depends on country)", "ckb": "شەحنکەری USB-C ـی 65W (بەپێی وڵات)" }
+  ],
+  "variants": [
+    {
+      "sku": "LEGO1-Z1E-512",
+      "title": {
+        "ar": "Legion Go Z1 Extreme 16GB / 512GB",
+        "en": "Legion Go Z1 Extreme 16GB / 512GB",
+        "ckb": "Legion Go Z1 Extreme 16GB / 512GB"
+      },
+      "options": { "chip": "Ryzen Z1 Extreme", "memory": "16GB", "storage": "512GB", "color": "Shadow Black" },
+      "modelNumber": "83E1",
+      "isDefault": true,
+      "images": ["lenovo-legion-go--1", "lenovo-legion-go--2", "lenovo-legion-go--3", "lenovo-legion-go--4", "lenovo-legion-go--5", "lenovo-legion-go--6"]
+    },
+    {
+      "sku": "LEGO1-Z1E-1TB",
+      "title": {
+        "ar": "Legion Go Z1 Extreme 16GB / 1TB",
+        "en": "Legion Go Z1 Extreme 16GB / 1TB",
+        "ckb": "Legion Go Z1 Extreme 16GB / 1TB"
+      },
+      "options": { "chip": "Ryzen Z1 Extreme", "memory": "16GB", "storage": "1TB", "color": "Shadow Black" },
+      "modelNumber": "83E1",
+      "isDefault": false,
+      "images": ["lenovo-legion-go--1", "lenovo-legion-go--2", "lenovo-legion-go--3", "lenovo-legion-go--4", "lenovo-legion-go--5", "lenovo-legion-go--6"]
+    },
+    {
+      "sku": "LEGO1-Z1-256",
+      "title": {
+        "ar": "Legion Go Z1 16GB / 256GB",
+        "en": "Legion Go Z1 16GB / 256GB",
+        "ckb": "Legion Go Z1 16GB / 256GB"
+      },
+      "options": { "chip": "Ryzen Z1", "memory": "16GB", "storage": "256GB", "color": "Shadow Black" },
+      "modelNumber": "83E1",
+      "isDefault": false,
+      "images": ["lenovo-legion-go--1", "lenovo-legion-go--2", "lenovo-legion-go--3", "lenovo-legion-go--4", "lenovo-legion-go--5", "lenovo-legion-go--6"],
+      "notes": {
+        "ar": "النسخة الأضعف بمعالج Ryzen Z1 (4 وحدات رسوميات فقط).",
+        "en": "The weaker version with the Ryzen Z1 (only 4 GPU compute units).",
+        "ckb": "وەشانی لاوازتر بە Ryzen Z1 (تەنها 4 یەکەی گرافیک)."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "lenovo-legion-go-2", "kind": "upsell" },
+    { "slug": "lenovo-legion-go-s", "kind": "alternative" },
+    { "slug": "rog-ally", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "lenovo-legion-go--1",
+      "file": ".cache/product-images/lenovo-legion-go/1.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#01_Legion_Go_Tour_Front.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "kind": "hero",
+      "alt": { "ar": "Lenovo Legion Go من الأمام", "en": "Lenovo Legion Go from the front", "ckb": "Lenovo Legion Go لە پێشەوە" },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go--2",
+      "file": ".cache/product-images/lenovo-legion-go/2.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#06_Legion_Go_Hero_Front_Facing_Left.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "kind": "angle",
+      "alt": { "ar": "Legion Go من زاوية أمامية مائلة", "en": "Legion Go from a front angle", "ckb": "Legion Go لە گۆشەیەکی پێشەوەی لار" },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go--3",
+      "file": ".cache/product-images/lenovo-legion-go/3.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#02_Legion_Go_Tour_Rear.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من Legion Go", "en": "Back of Legion Go", "ckb": "پشتەوەی Legion Go" },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go--4",
+      "file": ".cache/product-images/lenovo-legion-go/4.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#11_Legion_Go_Hero_Kickstand_Out.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "kind": "detail",
+      "alt": { "ar": "Legion Go مع الحامل الخلفي مفتوحاً", "en": "Legion Go with the kickstand open", "ckb": "Legion Go لەگەڵ ستاندی پشتەوەی کراوە" },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go--5",
+      "file": ".cache/product-images/lenovo-legion-go/5.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#21_Legion_Go_Hero_Front_Non_FPS.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "kind": "detail",
+      "alt": {
+        "ar": "Legion Go مع فصل يدي التحكم",
+        "en": "Legion Go with the controllers detached",
+        "ckb": "Legion Go لەگەڵ دەسکە جیاکراوەکان"
+      },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go--6",
+      "file": ".cache/product-images/lenovo-legion-go/6.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#22_Legion_Go_Hero_Front_Facing_Right_Non_FPS.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "kind": "angle",
+      "alt": {
+        "ar": "Legion Go على الحامل ويدا التحكم منفصلتان",
+        "en": "Legion Go standing on its kickstand with the controllers off",
+        "ckb": "Legion Go لەسەر ستاندەکەی و دەسکەکان جیاکراونەتەوە"
+      },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://psref.lenovo.com/Product/Legion/Legion_Go_8APU1?tab=spec",
+      "title": "Legion Go 8APU1 (Withdrawn) – PSREF Specifications",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "withdrawn status, processors, memory, storage options, display, battery, adapter, ports, wireless, controls, dimensions, weight, no fingerprint reader, bundled carry bag with controller dock"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Legion_Go",
+      "title": "Lenovo Legion Go",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 31 October 2023, launch configurations (Z1 256GB, Z1 Extreme 512GB and 1TB), box contents, successor Legion Go 2"
+    },
+    {
+      "url": "https://news.lenovo.com/pressroom/press-releases/legion-gaming-devices-ai-tablets-software-best-in-customer-choice/",
+      "title": "New Lenovo Legion Gaming Devices… (Innovation World 2025)",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "Legion Go 2 TrueStrike controllers are backwards-compatible with the first-generation Legion Go (8.8″, 1)"
+    },
+    {
+      "url": "https://news.lenovo.com/press-kits/ifa-2023/",
+      "title": "Lenovo Tech Life 2023 press kit",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "official product images (Legion Go product photos ZIP)"
+    },
+    {
+      "url": "https://psref.lenovo.com/Product/Legion/Legion_Go_8APU1?tab=model",
+      "title": "Legion Go 8APU1 – PSREF Models",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "every listed retail model uses machine type 83E1, with Ryzen Z1 or Z1 Extreme"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language (one of the editions on Lenovo's spec sheet) cannot install additional languages"
+    }
+  ],
+  "notes": {
+    "ar": "لم يعد يُصنع؛ ما يُباع اليوم غالباً مستعمل أو مجدد، لذلك افحص البطارية ويدي التحكم والشاشة. يدا TrueStrike في Legion Go 2 متوافقتان مع هذا الجهاز بحسب Lenovo. يحتاج حساب Microsoft واتصالاً بالإنترنت للإعداد، والعراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات Xbox، لذلك Game Pass غير مقدم رسمياً هنا؛ ألعاب Steam وEpic وغيرها تعمل بشكل طبيعي.",
+    "en": "No longer made; what is sold today is mostly used or refurbished, so check the battery, controllers and screen. Lenovo says the Legion Go 2's TrueStrike controllers are backwards-compatible with this model. It needs a Microsoft account and an internet connection to set up, and Iraq is not on Microsoft's list of countries where Xbox services are supported, so Game Pass is not officially offered here; games from Steam, Epic and other stores work normally.",
+    "ckb": "ئیتر دروست ناکرێت؛ ئەوەی ئەمڕۆ دەفرۆشرێت زیاتر بەکارهاتوو یان نوێکراوەیە، بۆیە پاتری و دەسکەکان و شاشە بپشکنە. Lenovo دەڵێت دەسکەکانی TrueStrike ـی Legion Go 2 لەگەڵ ئەم مۆدێلە گونجاون. بۆ ڕێکخستن پێویستی بە هەژماری Microsoft و پەیوەندیی ئینتەرنێت هەیە، و عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی Xbox، بۆیە Game Pass بە فەرمی لێرە پێشکەش ناکرێت؛ یارییەکانی Steam و Epic و فرۆشگاکانی تر بە ئاسایی کار دەکەن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Barcodes not found on an official page",
+      "Which Z1 / Z1 Extreme storage pairings were sold in which countries varies by market; the three variants follow the US launch line-up"
+    ]
+  }
+}

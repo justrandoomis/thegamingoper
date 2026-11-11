@@ -1,0 +1,65 @@
+{
+  "key": "playstation-portal--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 696,
+  "aspect": 2.2989,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/1-240.867eba8b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/1-480.38d5e7e3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/1-720.227f951a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/1-960.993f9150.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/1-1440.cdb65faa.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/1-240.a0c7bae5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/1-480.91611b73.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/1-720.f4c59b1d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/1-960.dcead46b.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/1-1440.f39181ec.webp"
+      }
+    ],
+    "png": "/products/playstation-portal/1-720.81c98160.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSE8AAAARP6CQkSQ2dwrfH6EafUQE5CuVDkxk204T1nW17OtiCwFP/m+hvP8JrCGi/xOAKpshxBijHnD3F8laYlASIJ/E3gLaO5Gn6KhTSql5IagSAFZQOCBaAAAAcAMAnQEqFAAJAD8RdLBQrCakorAIAYAiCUAACXeb3xZH+mAAAPjkVJKZurg6wp9FWvFpkPks11eJTkgsrMxjRg/8JmM9tM9FRy5cYG0P0ydnQj8PjIZeAAAA",
+  "dominant": "#040405",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-05-PS-16x9-01-15apr26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+  },
+  "input": "3d10306885f8323d"
+}

@@ -1,27 +1,41 @@
 /**
- * Fly-to-cart flight (loaded on demand through ./extras; the public entry is `flyToCart` in ./lazy).
+ * Fly to cart (loaded on demand through ./extras; the public entry is `flyToCart` in ./lazy). DESIGN.md §7.2:
  *
- * The source is never moved: a copy of its picture is placed over it in a fixed layer, shrinks to a puck and
- * travels a quadratic Bézier arc to the cart, which receives it with a squish and a badge bump.
- * One WAAPI animation per flight (transform + opacity keyframes sampled along the arc) — compositor only.
+ *  1. The caller has already updated the cart count, the cart state and the aria-live message (state first).
+ *  2. A 22px red clay bead (`.fly`) leaves the product image and travels a quadratic arc — control point halfway
+ *     across, 70px above the higher end — to the cart bead, shrinking to .55. 420 ms + 0.3 ms per px, at most 600 ms.
+ *  3. The cart bead receives it with a squish: scale(1.4, .68) → (.88, 1.16) → 1 over 340 ms.
+ *  4. Rapid taps each get a bead, at most three in flight; further taps go straight to the count (the bead squishes).
+ *  5. On failure (`revert()` on the returned handle) the bead returns along the same arc to where it came from.
+ *
+ * The source is never moved. One WAAPI animation per flight (transform keyframes along the arc) — compositor only.
+ * `options.image` flies a copy of the product picture instead of the bead (the brief's "thumbnail becomes an icon").
  */
-import { arcControl, quadBezier, type Point } from "./physics";
-import { springValue } from "./spring";
 import { getMotionTier } from "./env";
-import { durations, easings, fly as tokens, springs } from "./tokens";
+import { arcControl, flightMs, quadBezier, type Point } from "./physics";
+import { fly as tokens } from "./tokens";
 
 export type FlyOptions = {
-  /** Picture to fly instead of the source's own: a URL, or an element to copy (img / svg / canvas / picture). */
-  image?: string | Element;
-  /** Where to land. Default: the first visible element marked `data-cart-target`. */
+  /** Fly a picture instead of the bead: a URL, an element to copy (img / svg / canvas / picture), or true for the source's own picture. */
+  image?: string | Element | true;
+  /** Where to land. Default: the first visible element marked `data-cart-target` (its `[data-cart-badge]` is the bead). */
   target?: Element | null;
-  /** Puck diameter in px. */
-  size?: number;
-  /** Runs when the puck lands — or straight away when no flight is played (reduced motion, no target, cap reached). */
+  /** Runs when the bead lands — or straight away when no flight is played (reduced motion, no target, cap reached). */
   onArrive?: () => void;
 };
 
+/** Returned by `flyToCart`. */
+export type FlyHandle = {
+  /**
+   * The add failed: the bead returns along the same arc to where it came from (mid-flight it simply turns back).
+   * Roll the count back and show the message yourself — this is only the motion. Safe to call more than once.
+   */
+  revert(): void;
+};
+
 export type CartReceivedDetail = { /** false when the arrival was announced without a flight */ flown: boolean };
+
+export const NO_FLIGHT: FlyHandle = { revert() {} };
 
 let layer: HTMLElement | null = null;
 let airborne = 0;
@@ -35,7 +49,7 @@ function flightLayer(): HTMLElement {
   return layer;
 }
 
-function pictureOf(source: Element, image: FlyOptions["image"]): Element {
+function pictureOf(source: Element, image: string | Element | true): Element {
   if (typeof image === "string") {
     const img = document.createElement("img");
     img.decoding = "sync";
@@ -43,7 +57,7 @@ function pictureOf(source: Element, image: FlyOptions["image"]): Element {
     img.src = image;
     return img;
   }
-  const original = image ?? (source.matches("img, picture, svg, canvas") ? source : (source.querySelector("img, picture, svg, canvas") ?? source));
+  const original = image !== true ? image : source.matches("img, picture, svg, canvas") ? source : (source.querySelector("img, picture, svg, canvas") ?? source);
   if (original instanceof HTMLCanvasElement) {
     const canvas = document.createElement("canvas");
     canvas.width = original.width;
@@ -66,92 +80,125 @@ function pictureOf(source: Element, image: FlyOptions["image"]): Element {
   return copy;
 }
 
-/** The cart reacts: a soft squish on the target, a bump on its badge, and the public event. */
-export function receive(target: Element | null, flown: boolean, onArrive?: () => void): void {
+/** The cart bead: `[data-cart-badge]` inside the target when it is showing (an empty cart may hide it), else the target. */
+function beadOf(target: Element): Element {
+  const badge = target.querySelector("[data-cart-badge]");
+  if (!badge) return target;
+  const rect = badge.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0 ? badge : target;
+}
+
+/** The cart bead's squish (DESIGN.md §7.2). Skipped under reduced motion. */
+export function squish(target: Element | null): void {
+  if (!target || getMotionTier() === "reduced") return;
+  beadOf(target).animate(
+    [{ transform: "scale(1)" }, { transform: "scale(1.4, 0.68)", offset: 0.3 }, { transform: "scale(0.88, 1.16)", offset: 0.62 }, { transform: "scale(1)" }],
+    { duration: tokens.squishMs, easing: "ease-out" },
+  );
+}
+
+/** The cart reacts (squish when a bead arrived, or for a tap over the cap) and the public event is dispatched. */
+export function receive(target: Element | null, flown: boolean, onArrive?: () => void, squishIt = flown): void {
   onArrive?.();
-  const tier = getMotionTier();
-  if (target && flown && tier !== "reduced") {
-    if (tier === "full") {
-      target.animate(
-        [{ scale: "1 1" }, { scale: "1.12 0.9", offset: 0.28 }, { scale: "0.96 1.04", offset: 0.62 }, { scale: "1 1" }],
-        { duration: durations.slow, easing: easings.out },
-      );
-    }
-    target.querySelector("[data-cart-badge]")?.animate([{ scale: "1" }, { scale: "1.28", offset: 0.35 }, { scale: "1" }], {
-      duration: durations.page,
-      easing: easings.out,
-    });
-  }
+  if (squishIt) squish(target);
   (target ?? document).dispatchEvent(new CustomEvent<CartReceivedDetail>("tt:cart-received", { bubbles: true, detail: { flown } }));
+}
+
+function centreOf(rect: DOMRect): Point {
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
 }
 
 function onScreen(rect: DOMRect): boolean {
   return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
 }
 
+/** 13 transform keyframes along the arc (DESIGN.md mock), shrinking from `fromScale` to `toScale`. */
+function arcKeyframes(start: Point, end: Point, fromScale: number, toScale: number): Keyframe[] {
+  const control = arcControl(start, end);
+  const frames: Keyframe[] = [];
+  for (let i = 0; i <= 12; i++) {
+    const u = i / 12;
+    const point = quadBezier(start, control, end, u);
+    const scale = fromScale + (toScale - fromScale) * u;
+    frames.push({ transform: `translate(${(point.x - start.x).toFixed(1)}px, ${(point.y - start.y).toFixed(1)}px) scale(${scale.toFixed(3)})` });
+  }
+  return frames;
+}
+
 /** Start one flight. Returns immediately; every flight is independent of the others. */
-export function fly(source: Element, target: Element, options: FlyOptions = {}): void {
+export function fly(source: Element, target: Element, options: FlyOptions = {}): FlyHandle {
   const from = source.getBoundingClientRect();
-  const to = target.getBoundingClientRect();
+  const bead = beadOf(target);
+  const to = bead.getBoundingClientRect();
   if (airborne >= tokens.maxConcurrent || !onScreen(from) || !onScreen(to)) {
-    receive(target, false, options.onArrive);
-    return;
+    // Over the cap (or nothing to fly between): straight to the count — the cart bead still acknowledges the tap.
+    receive(target, false, options.onArrive, airborne >= tokens.maxConcurrent);
+    return NO_FLIGHT;
   }
 
-  const lite = getMotionTier() === "lite";
-  const side = Math.min(from.width, from.height);
-  const size = options.size ?? tokens.puck;
-  const start: Point = { x: from.left + from.width / 2, y: from.top + from.height / 2 };
-  const end: Point = { x: to.left + to.width / 2, y: to.top + to.height / 2 };
-  const control = arcControl(start, end, lite ? 0.5 : 1);
-  const distance = Math.hypot(end.x - start.x, end.y - start.y);
-  const duration = Math.round(Math.min(Math.max(300 + distance * 0.4, 360), 640));
-  const endScale = Math.min(size / side, 1);
-
-  const puck = document.createElement("div");
-  puck.className = "tt-fly";
-  puck.style.cssText = `left:${start.x - side / 2}px;top:${start.y - side / 2}px;width:${side}px;height:${side}px`;
-  puck.appendChild(pictureOf(source, options.image));
-
-  // Travel follows the `fly` spring (leaves fast, lands softly), trimmed to where it is 98.5 % home.
-  const springSeconds = 0.4;
-  const reach = springValue(springs.fly, springSeconds);
-  const frames = 22;
-  const keyframes: Keyframe[] = [];
-  for (let i = 0; i <= frames; i++) {
-    const time = i / frames;
-    const travel = i === frames ? 1 : Math.min(springValue(springs.fly, time * springSeconds) / reach, 1);
-    const point = quadBezier(start, control, end, travel);
-    const shrink = Math.min(time / 0.55, 1);
-    const eased = 1 - (1 - shrink) * (1 - shrink);
-    // The last stretch: the cart swallows the puck.
-    const absorb = time > 0.86 ? (time - 0.86) / 0.14 : 0;
-    const scale = (1 + (endScale - 1) * eased) * (1 - 0.45 * absorb);
-    const spin = lite ? 0 : (1 - travel) * -10;
-    keyframes.push({
-      offset: time,
-      opacity: 1 - absorb,
-      transform: `translate3d(${(point.x - start.x).toFixed(1)}px, ${(point.y - start.y).toFixed(1)}px, 0) rotate(${spin.toFixed(1)}deg) scale(${scale.toFixed(4)})`,
-    });
+  const start = centreOf(from);
+  const end = centreOf(to);
+  const duration = flightMs(Math.hypot(end.x - start.x, end.y - start.y));
+  const element = document.createElement("i");
+  let fromScale = 1;
+  if (options.image) {
+    // A picture puck: starts at the source's size and shrinks to the bead's.
+    const side = Math.max(Math.min(from.width, from.height), tokens.bead);
+    element.className = "tt-fly tt-fly--picture";
+    element.style.cssText = `left:${(start.x - side / 2).toFixed(1)}px;top:${(start.y - side / 2).toFixed(1)}px;width:${side}px;height:${side}px`;
+    element.appendChild(pictureOf(source, options.image));
+    fromScale = 1;
+    const endScale = (tokens.bead * tokens.endScale) / side;
+    return launch(element, arcKeyframes(start, end, fromScale, endScale), duration, target, options);
   }
+  // DESIGN.md's bead: 22px, red clay, centred on the start point (the `.fly` class carries the look).
+  element.className = "fly tt-fly";
+  element.style.left = `${start.x.toFixed(1)}px`;
+  element.style.top = `${start.y.toFixed(1)}px`;
+  return launch(element, arcKeyframes(start, end, fromScale, tokens.endScale), duration, target, options);
+}
 
-  flightLayer().appendChild(puck);
+function launch(element: HTMLElement, keyframes: Keyframe[], duration: number, target: Element, options: FlyOptions): FlyHandle {
+  flightLayer().appendChild(element);
   airborne++;
-  const animation = puck.animate(keyframes, { duration, easing: "linear", fill: "forwards" });
+  const animation = element.animate(keyframes, { duration, easing: tokens.easing, fill: "forwards" });
   let landed = false;
-  const land = (flown: boolean) => {
+  let returning = false;
+  const land = () => {
     if (landed) return;
     landed = true;
     airborne--;
-    puck.remove();
-    receive(target, flown, options.onArrive);
+    element.remove();
+    if (!returning) receive(target, true, options.onArrive);
   };
-  animation.finished.then(
-    () => land(true),
-    () => land(false),
-  );
-  // Safety net: animations do not advance in a hidden tab, but the cart must still be told and the puck removed.
-  setTimeout(() => {
+  animation.finished.then(land, land);
+  // Safety net: animations do not advance in a hidden tab, but the cart must still be told and the bead removed.
+  const timer = setTimeout(() => {
     if (!landed) animation.finish();
-  }, duration + 60);
+  }, duration + 80);
+
+  return {
+    revert() {
+      if (returning) return;
+      returning = true;
+      if (!landed) {
+        // Still in the air: it turns round and goes back the way it came.
+        clearTimeout(timer);
+        animation.reverse();
+        setTimeout(() => {
+          if (!landed) animation.finish();
+        }, duration + 80);
+        return;
+      }
+      if (getMotionTier() === "reduced") return;
+      // Already landed: a bead leaves the cart and flies the same arc backwards to where it started.
+      const back = element.cloneNode(true) as HTMLElement;
+      flightLayer().appendChild(back);
+      const reversed = keyframes.slice().reverse().map((frame) => ({ transform: frame.transform }));
+      const flight = back.animate(reversed, { duration, easing: tokens.easing, fill: "forwards" });
+      const done = () => back.remove();
+      flight.finished.then(done, done);
+      setTimeout(done, duration + 80);
+    },
+  };
 }

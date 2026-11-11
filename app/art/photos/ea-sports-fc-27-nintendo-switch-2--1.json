@@ -1,0 +1,65 @@
+{
+  "key": "ea-sports-fc-27-nintendo-switch-2--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-240.6e8fdd11.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-480.005360d2.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-720.b4eb2679.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-960.91b504fc.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-1440.4567f9ce.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-240.67396ffb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-480.33b2998a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-720.0a8e6292.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-960.c6a3054e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-1440.ccaef694.webp"
+      }
+    ],
+    "png": "/products/ea-sports-fc-27-nintendo-switch-2/1-720.167d6c85.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAACQAwCdASoUAAsAPxFysVAsJqSisAgBgCIJZQAAUQ6Wb+Azk5gAAMnInelZA6OBhkm5bLzHwXA3cAr9IHgjChINZP6gqeVP8/8DUmfCCmM9bBvjIx1HBVyo/AA=",
+  "dominant": "#b7b6b7",
+  "transparent": false,
+  "background": null,
+  "kind": "hero",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000110123/ce773ca9bd3d7bb606fab8cd9fd91f2bcecaf53fdf753109e26fa46669ee9c6b",
+    "page": "https://www.nintendo.com/us/store/products/ea-sports-fc-27-switch-2/"
+  },
+  "input": "65cc88bd9177c7ff"
+}

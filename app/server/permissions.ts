@@ -3,8 +3,8 @@
  *
  * Names are `<module>.<resource>.<action>`, where `<module>` is the admin module's folder name
  * (app/routes/admin/<module>, one per blueprint module 01–23). A few are shorter by contract:
- * `settings.manage`, `staff.manage`, `audit.read`, and the FIELD-LEVEL permissions that decide
- * whether protected data may leave the server at all:
+ * `settings.read`, `settings.manage`, `staff.manage`, `audit.read`, and the FIELD-LEVEL permissions
+ * that decide whether protected data may leave the server at all:
  *
  *   cost.read                 supplier cost, landed cost, acquisition cost          ([P] data)
  *   profit.read               profit and margin figures
@@ -122,6 +122,7 @@ export const PERMISSION_DEFS = {
   "orders.order.note": p("orders", "إضافة ملاحظة داخلية على الطلب", "Add an internal note to an order"),
   "orders.order.export": p("orders", "تصدير الطلبات", "Export orders"),
   "orders.payment.verify": p("orders", "مطابقة إثبات التحويل واعتماد الدفع أو رفضه", "Review a transfer proof and approve or reject the payment"),
+  "orders.payment.override": p("orders", "اعتماد دفعة لا يطابق مبلغها المبلغ المستحق، مع ذكر السبب", "Approve a payment whose amount does not match what is due, with a reason"),
   "orders.payment.record": p("orders", "تسجيل تحصيل الدفع عند الاستلام", "Record a cash-on-delivery collection"),
   "orders.refund.create": p("orders", "طلب استرداد مبلغ", "Request a refund"),
   "orders.refund.approve": p("orders", "اعتماد الاسترداد وتنفيذه", "Approve and issue a refund"),

@@ -1,0 +1,65 @@
+{
+  "key": "the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-240.83f62d10.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-480.63de85c6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-720.9b8ac153.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-960.daedc6d3.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-1440.759516ce.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-240.fa6434ff.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-480.e11941ec.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-720.9bfe0131.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-960.fdf37686.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-1440.f269c2f8.webp"
+      }
+    ],
+    "png": "/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition/5-720.4c0257ed.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJaAC7L1yBBiW5Il9NAAD9z2BvlzJSNyMO/SftP1lGG+9rnvi32+r7VuQ7C0tLLVTZzSyscOW+N201SuGBb4AA",
+  "dominant": "#97a859",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://www.nintendo.com/eu/media/images/assets/nintendo_switch_2_games/thelegendofzeldatearsofthekingdomnintendoswitch2edition/nswitch2_thelegendofzeldatearsofthekingdomnintendoswitch2edition/TheLegendOfZeldaTearsOfTheKingdomNintendoSwitch2Edition_04.png",
+    "page": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/The-Legend-of-Zelda-Tears-of-the-Kingdom-Nintendo-Switch-2-Edition-2787249.html"
+  },
+  "input": "38241075ebed04e8"
+}

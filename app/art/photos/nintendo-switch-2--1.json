@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2--1",
+  "view": "hero",
+  "width": 1349,
+  "height": 1416,
+  "aspect": 0.9527,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2/1-240.453b26fd.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2/1-480.7f86f010.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2/1-720.96161bc9.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2/1-960.0acba4c6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2/1-240.00b76f23.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2/1-480.4b1a5795.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2/1-720.54678a73.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2/1-960.5b93f6b3.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2/1-720.0e1a8225.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjoBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSGUAAAART6CmbSM4WQy9u6nPfhER4PeaVHAb27ZSnQcNaCMOKSEZJbjF0IBLzpfbL04DEf2fABz0lY2aoSGLAVg5NESFvEeLxQJ+g6isvB1anD1a2Bv8/x7UcQ9C/N8B1HEPQr0HuDmOAgBWUDggrgAAAFAEAJ0BKhMAFAA/EX62VawnpKMoCAGAIglsALsADL2MUmIwr1hoPCHqnkAA/qFk21Utg7r6qmYnEvfadHE/j0pKjJ+BwAzBg9cA/8Upj9M/1s7ZEnFIvO8xoj4ce7DXpHYTBwV6Ou5aA3Xu1+OasUwyPFaxk3hCqA/yzNspDP0b3M6lMWVT0+ffQMEc4xl+Efh9BK6kNwVlF5Zb1g/5o7xMw3MjaO4B5d70RAmAAA==",
+  "dominant": "#060607",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/v1745278135/switch-2/tech-specs/switch-2-front.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/"
+  },
+  "input": "bfa12d58d2cdca19"
+}

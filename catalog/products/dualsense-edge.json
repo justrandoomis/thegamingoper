@@ -1,0 +1,251 @@
+{
+  "slug": "dualsense-edge",
+  "group": "playstation-hardware",
+  "kind": "controller",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "dualsense",
+  "status": "available",
+  "releaseDate": "2023-01-26",
+  "name": {
+    "ar": "يد التحكم اللاسلكية DualSense Edge",
+    "en": "DualSense Edge Wireless Controller",
+    "ckb": "کۆنتڕۆڵەری بێتەلی DualSense Edge"
+  },
+  "short": {
+    "ar": "يد تحكم احترافية · أزرار خلفية · عصا قابلة للاستبدال · حقيبة حمل",
+    "en": "Pro controller · Back buttons · Replaceable stick modules · Carry case",
+    "ckb": "کۆنتڕۆڵەری پڕۆفیشناڵ · دوگمەی دواوە · مۆدیولی ستیکی گۆڕاو · جانتای هەڵگرتن"
+  },
+  "description": {
+    "ar": "نسخة احترافية من DualSense لمن يريد التحكم الكامل بإعداداته: زران خلفيان قابلان للتعيين، ومسافة ضغط قابلة للضبط للأزرار R2/L2، وأغطية عصا قابلة للتبديل، ووحدات عصا يمكن استبدالها عند التلف. يحفظ ملفات إعداد متعددة ويتبدل بينها من زر على اليد. يأتي مع كابل مضفّر بقفل وحقيبة حمل.",
+    "en": "A pro version of the DualSense for players who want full control over their setup: two mappable back buttons, adjustable trigger travel, swappable stick caps and stick modules that can be replaced when worn. It stores several control profiles and switches between them from a button on the controller. Comes with a braided cable with a lock housing and a carry case.",
+    "ckb": "وەشانێکی پڕۆفیشناڵی DualSense بۆ ئەو یاریزانانەی کە کۆنتڕۆڵی تەواویان دەوێت: دوو دوگمەی دواوەی دیاریکراو، دووری پەستانی تریگەرەکان دەگۆڕدرێت، سەری ستیکی گۆڕاو و مۆدیولی ستیک کە کاتێک کۆن بوو دەگۆڕدرێت. چەند پرۆفایلێکی ڕێکخستن هەڵدەگرێت و بە دوگمەیەک لەسەر کۆنتڕۆڵەرەکە لە نێوانیاندا دەگۆڕێت. کێبڵێکی چنراو لەگەڵ قوفڵ و جانتای هەڵگرتنی لەگەڵدایە."
+  },
+  "highlights": [
+    {
+      "ar": "زران خلفيان قابلان للتعيين بنوعين (نصف قبة وذراع)",
+      "en": "Two mappable back buttons in two styles (half dome and lever)",
+      "ckb": "دوو دوگمەی دواوەی دیاریکراو بە دوو شێوە (نیوە گومەز و لیڤەر)"
+    },
+    {
+      "ar": "ضبط مسافة ضغط الزرين L2/R2 وحساسية العصا",
+      "en": "Adjustable L2/R2 trigger travel and stick sensitivity",
+      "ckb": "دووری پەستانی L2/R2 و هەستیاریی ستیک دەگۆڕدرێت"
+    },
+    {
+      "ar": "وحدات العصا قابلة للاستبدال (الوحدة البديلة تُباع منفصلة)",
+      "en": "Replaceable stick modules (spare module sold separately)",
+      "ckb": "مۆدیولی ستیک دەگۆڕدرێت (مۆدیولی یەدەگ بە جیا دەفرۆشرێت)"
+    },
+    {
+      "ar": "زر Fn لتبديل ملفات الإعداد وضبط الصوت وتوازن الدردشة",
+      "en": "Fn button to switch profiles and adjust game volume and chat balance",
+      "ckb": "دوگمەی Fn بۆ گۆڕینی پرۆفایل و ڕێکخستنی دەنگی یاری و هاوسەنگیی چات"
+    },
+    {
+      "ar": "يحتفظ بميزات DualSense: اهتزاز Haptic وAdaptive triggers",
+      "en": "Keeps the DualSense features: haptic feedback and adaptive triggers",
+      "ckb": "تایبەتمەندییەکانی DualSense دەپارێزێت: لەرینەوەی هاپتیک و تریگەری گونجاو"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZCP1", "en": "CFI-ZCP1", "ckb": "CFI-ZCP1" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "لاسلكي، أو سلكي بكابل USB-C المضفّر مع قفل", "en": "Wireless, or wired with the locking braided USB-C cable", "ckb": "بێتەل، یان بە کێبڵی USB-Cی چنراو لەگەڵ قوفڵ" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 160 × 66 × 106 ملم، نحو 0.3 كغ", "en": "Approx. 160 × 66 × 106 mm, about 0.3 kg", "ckb": "نزیکەی 160 × 66 × 106 ملم، نزیکەی 0.3 کگ" }
+    },
+    {
+      "key": "profiles",
+      "label": { "ar": "ملفات الإعداد", "en": "Profiles", "ckb": "پرۆفایلەکان" },
+      "value": { "ar": "ملفات تحكم مخصصة قابلة للتبديل من زر Fn", "en": "Custom control profiles switchable with the Fn button", "ckb": "پرۆفایلی کۆنتڕۆڵی تایبەت کە بە دوگمەی Fn دەگۆڕدرێن" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "يد التحكم DualSense Edge", "en": "DualSense Edge wireless controller", "ckb": "کۆنتڕۆڵەری DualSense Edge" },
+    { "ar": "كابل USB مضفّر مع غطاء لقفل الوصلة", "en": "Braided USB cable with connector housing to lock it in place", "ckb": "کێبڵی USBی چنراو لەگەڵ قاپی قوفڵکردنی سەرەکەی" },
+    { "ar": "غطاءان قياسيان للعصا (مركّبان)", "en": "2 standard stick caps (attached)", "ckb": "2 سەری ستیکی ستاندارد (بەستراون)" },
+    { "ar": "غطاءان بقبة عالية", "en": "2 high dome caps", "ckb": "2 سەری گومەزی بەرز" },
+    { "ar": "غطاءان بقبة منخفضة", "en": "2 low dome caps", "ckb": "2 سەری گومەزی نزم" },
+    { "ar": "زران خلفيان بنصف قبة", "en": "2 half dome back buttons", "ckb": "2 دوگمەی دواوەی نیوە گومەز" },
+    { "ar": "زران خلفيان بشكل ذراع", "en": "2 lever back buttons", "ckb": "2 دوگمەی دواوەی لیڤەر" },
+    { "ar": "غطاء الوصلة", "en": "Connector housing", "ckb": "قاپی سەری کێبڵ" },
+    { "ar": "حقيبة حمل", "en": "Carry case", "ckb": "جانتای هەڵگرتن" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "DSEDGE-WHITE",
+      "title": { "ar": "DualSense Edge – أبيض", "en": "DualSense Edge – White", "ckb": "DualSense Edge – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZCP1",
+      "isDefault": true,
+      "images": ["dualsense-edge--1", "dualsense-edge--2", "dualsense-edge--3", "dualsense-edge--4"]
+    },
+    {
+      "sku": "DSEDGE-MIDNIGHT-BLACK",
+      "title": { "ar": "DualSense Edge – أسود Midnight Black", "en": "DualSense Edge – Midnight Black", "ckb": "DualSense Edge – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["dualsense-edge--5"],
+      "notes": { "ar": "صدر في 20 فبراير 2025 ضمن مجموعة Midnight Black، والحقيبة سوداء أيضاً.", "en": "Released 20 February 2025 in the Midnight Black Collection; the carry case is black too.", "ckb": "لە 20ی شوباتی 2025 لە کۆمەڵەی Midnight Black دەرچوو؛ جانتاکەشی ڕەشە." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/" },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": { "ar": "Sony تذكر DualSense Edge صراحة كيد متوافقة مع PS5 Pro.", "en": "Sony names DualSense Edge as compatible with PS5 Pro.", "ckb": "Sony بە ڕوونی DualSense Edge وەک کۆنتڕۆڵەری گونجاو لەگەڵ PS5 Pro ناو دەبات." },
+      "source": "https://www.playstation.com/en-us/ps5/ps5-pro/"
+    }
+  ],
+  "related": [
+    { "slug": "dualsense", "kind": "alternative" },
+    { "slug": "dualsense-charging-station", "kind": "accessory" },
+    { "slug": "playstation-5-pro", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "dualsense-edge--1",
+      "file": ".cache/product-images/dualsense-edge/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/",
+      "kind": "hero",
+      "alt": { "ar": "DualSense Edge البيضاء من الأمام", "en": "White DualSense Edge from the front", "ckb": "DualSense Edgeی سپی لە پێشەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense-edge--2",
+      "file": ".cache/product-images/dualsense-edge/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-02-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "DualSense Edge من زاوية جانبية", "en": "DualSense Edge from an angle", "ckb": "DualSense Edge لە گۆشەیەکی لاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense-edge--3",
+      "file": ".cache/product-images/dualsense-edge/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-05-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/",
+      "kind": "detail",
+      "alt": { "ar": "ظهر DualSense Edge مع الأزرار الخلفية", "en": "Back of the DualSense Edge with the back buttons", "ckb": "پشتی DualSense Edge لەگەڵ دوگمەکانی دواوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense-edge--4",
+      "file": ".cache/product-images/dualsense-edge/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-AllAccs-01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/",
+      "kind": "in-box",
+      "alt": { "ar": "محتويات العلبة: اليد، الحقيبة، الكابل، الأغطية والأزرار الخلفية", "en": "Box contents: controller, case, cable, caps and back buttons", "ckb": "ناوەڕۆکی قوتوو: کۆنتڕۆڵەر، جانتا، کێبڵ، سەرەکان و دوگمەکانی دواوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense-edge--5",
+      "file": ".cache/product-images/dualsense-edge/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-MidnightBlack-01-1x1-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "DualSense Edge باللون Midnight Black", "en": "DualSense Edge in Midnight Black", "ckb": "DualSense Edge بە ڕەنگی Midnight Black" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/",
+      "title": "DualSense Edge® Wireless Controller – Buy now",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZCP1, dimensions, weight, full box contents, White and Midnight Black, on-controller UI, back buttons, trigger length"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/DualShock#DualSense_Edge",
+      "title": "DualShock – DualSense Edge",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "released 26 January 2023 on PlayStation Direct, retail from 23 February 2023, replaceable stick modules"
+    },
+    {
+      "url": "https://blog.playstation.com/2025/01/07/new-midnight-black-collection-of-ps5-accessories-launches-next-month/",
+      "title": "New Midnight Black Collection of PS5 accessories launches next month",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Midnight Black DualSense Edge launched 20 February 2025 with a black carrying case"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/ps5/ps5-pro/",
+      "title": "PlayStation®5 Pro",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PS5 Pro compatible with DualSense Edge"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/accessories/add-ons",
+      "title": "Buy Covers & Add ons | PlayStation® (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "Stick Module for DualSense Edge sold separately"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/dualsense-wireless-controller/",
+      "title": "DualSense wireless controller (DualSense Edge section)",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "remappable buttons, tunable triggers and sticks, changeable stick caps, back buttons; keeps DualSense immersive features"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/",
+      "title": "DualSense® Charging Station",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "charging station holds DualSense Edge controllers"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-accessories/dualsense-charging-station",
+      "title": "Buy PS5™ DualSense™ Charging Station (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: the charging station takes up to two DualSense or DualSense Edge controllers"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: DualSense Edge works with PS5 Pro"
+    }
+  ],
+  "notes": {
+    "ar": "وحدة العصا البديلة (Stick Module for DualSense Edge) تُباع منفصلة من Sony. يمكن شحن DualSense Edge على قاعدة شحن DualSense الرسمية.",
+    "en": "The replacement Stick Module for DualSense Edge is sold separately by Sony. The DualSense Edge also fits the official DualSense Charging Station.",
+    "ckb": "مۆدیولی ستیکی یەدەگ (Stick Module for DualSense Edge) لەلایەن Sony بە جیا دەفرۆشرێت. DualSense Edge لەسەر وێستگەی شەحنی فەرمیی DualSenseیش شەحن دەکرێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Battery life (not stated on Sony's pages)",
+      "PC support for DualSense Edge features (not stated on the pages read)"
+    ]
+  }
+}

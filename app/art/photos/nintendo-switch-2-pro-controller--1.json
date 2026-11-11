@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2-pro-controller--1",
+  "view": "hero",
+  "width": 1314,
+  "height": 977,
+  "aspect": 1.3449,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/1-240.6d1bd797.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/1-480.1c5e783f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/1-720.519cd234.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/1-960.770860cc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/1-240.654c15e6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/1-480.4bd9e471.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/1-720.982f8862.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/1-960.966ee156.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-pro-controller/1-720.4e43d031.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGsAAAART6C2kaQ2+a4FjyciIiICen258XSDaa1tS16c6FBlAkZgBBqHRoLq1iAygH3z/jJDRP8nALLO0rXtWinARdwYeHg18PEOOD/vVhISqrlIK0VGIzJ7qtMs8x6yTrIB4CS7J40pyEoqcBcVkgBWUDggcgAAAHADAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglpAABRlCfgprAteAD+gh1mchCajEjQ6BffUWBHEEhMABWDlf4qaYGoGpHKzLqtyjEla8lg9xY/8xFiLtzvn1mLAu2ApEBxiiLlftK//4xLmf4qY+bga/QAAA==",
+  "dominant": "#262729",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Pro%20Controller/Frame_3473717.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "429ccf00e13f38ba"
+}

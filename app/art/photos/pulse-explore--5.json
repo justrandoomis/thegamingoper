@@ -1,0 +1,65 @@
+{
+  "key": "pulse-explore--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 1370,
+  "aspect": 1.1679,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pulse-explore/5-240.e0a5bda6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-explore/5-480.790a37c1.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-explore/5-720.dddc12e8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-explore/5-960.381de0ab.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pulse-explore/5-1440.5f60f727.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pulse-explore/5-240.cca298bc.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-explore/5-480.62413f1a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-explore/5-720.f665dcb3.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-explore/5-960.33d79a98.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pulse-explore/5-1440.51c696d6.webp"
+      }
+    ],
+    "png": "/products/pulse-explore/5-720.dfcd6c17.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjIBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSH8AAAART6CgbSM3dij2vvuPiADs+Sw4Bqe2bavKfv4iDpFIpNLcGkSiS3uDBM2tOut73+UfIvo/AZKlv4ONbUp8KZmq0DNFUJBUt7UDT6pS0Y67LT3AiWCbjQV9YKgIwjLQUxHCxA/c8hQCHenpDfhKNG19AVfxNWAbEj9WMo9u7p84AFZQOCCMAAAA0AQAnQEqFAARAD8RfrJUrCgkIygKqYAiCWMAA+OQ9psaqNiBg6aBM0JusNfJUAAA/umkh7lzp3TaKLnavotHepcr7ffVzkQImIJOaOvvpVbAXLyc0SZeMJlMhzyP0Onw2C++OVu4EWvlkA1bRUUa2wtd2tGUxFiShLIjt3LESBZ1ijcGg3/FFXwhAAA=",
+  "dominant": "#22252c",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-MidnightBlack-01-1x1-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/"
+  },
+  "input": "8abde2dd208c3e45"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-eshop-card--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 870,
+  "aspect": 1.8391,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-eshop-card/1-240.ba321cf7.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-eshop-card/1-480.ada264d5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-eshop-card/1-720.e725565a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-eshop-card/1-960.7c86f175.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-eshop-card/1-1440.8dd99d17.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-eshop-card/1-240.c218435f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-eshop-card/1-480.1957687c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-eshop-card/1-720.c1617db5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-eshop-card/1-960.eccd97c1.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-eshop-card/1-1440.ae6f4d80.webp"
+      }
+    ],
+    "png": "/products/nintendo-eshop-card/1-720.b4318af1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhgBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFAAAAARL6CmbSOo/Bl27v7cHYCjERGB51lQ1EiScmSABLAA/IOEW/9uDh1E9F9IkGBzCjrUErgZbLVM886N5IqThbhpGTLUXPOy48+2YIe31TJ0CFZQOCCiAAAAEAQAnQEqFAALAD8RcrBQLCakorAIAYAiCWwAnRH/4tgk5DOjQLblHAAA4n2UnhI+7eueDY+wWf1ZykNm8WGoVw8d71WwNAULsbxxs1jgTsKC9wi2grAjE/FP/PtQ+OXZhgMANY+Btx/9eKLh/X8tOI/3tdcq7IHefC5EG465gF2OfNODqHXLBJZHPd527gL8P/PvofP9GwLnn390l/gSwAAA",
+  "dominant": "#e60012",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/gift-cards/POSAorDRI_ContentCards_NewPOSADenoms_LineUp_Wht.png",
+    "page": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/"
+  },
+  "input": "557e5f7e36c26c32"
+}

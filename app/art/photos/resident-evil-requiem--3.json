@@ -1,0 +1,65 @@
+{
+  "key": "resident-evil-requiem--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-requiem/3-240.457119d5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-requiem/3-480.6daca8dc.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-requiem/3-720.10e36379.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-requiem/3-960.768be3f1.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/resident-evil-requiem/3-1440.e8e46108.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-requiem/3-240.bd250448.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-requiem/3-480.2c4cefd1.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-requiem/3-720.da6f6ebe.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-requiem/3-960.b928001d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/resident-evil-requiem/3-1440.aa6f37cb.webp"
+      }
+    ],
+    "png": "/products/resident-evil-requiem/3-720.b7ec766d.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwAAYXpa1KIKLD0oD9MgAP7p2h0VNkwDW+7MPaz/rNtZjvBPwR+hqj+DhOmzRYXNz64jt7dHgAAA",
+  "dominant": "#050608",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Capcom",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Resident-Evil-Requiem-Leon-3rd-person-screenshot-12-25feb26?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/resident-evil-requiem/"
+  },
+  "input": "24f79e0da184b137"
+}

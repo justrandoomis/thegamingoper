@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2-carrying-case--4",
+  "view": "hero",
+  "width": 1340,
+  "height": 641,
+  "aspect": 2.0905,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-carrying-case/4-240.9e81cbcf.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-carrying-case/4-480.a485c55a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-carrying-case/4-720.9c67d9ef.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-carrying-case/4-960.537f41ee.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-carrying-case/4-240.61065a3d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-carrying-case/4-480.87a47971.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-carrying-case/4-720.a06f9573.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-carrying-case/4-960.498d5be9.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-carrying-case/4-720.cdc6f3e3.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAACQAwCdASoUAAoAPxGCtFIsKaUisAgBgCIJZwAAUqLKcty5I4wgAP7h4RZDT3fkZC3svyemfSC9qllu5yxN8a9e80H48C5tquef/uK3zhAAAA==",
+  "dominant": "#363739",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/Cases/127073-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-case-map-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-the-legend-of-zelda-40th-anniversary-edition-127073/"
+  },
+  "input": "4c4718a511a05d60"
+}

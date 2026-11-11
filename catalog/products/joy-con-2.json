@@ -1,0 +1,279 @@
+{
+  "slug": "joy-con-2",
+  "group": "nintendo-hardware",
+  "kind": "controller",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "joy-con-2",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Joy-Con 2 (L)/(R)", "en": "Joy-Con 2 (L)/(R)", "ckb": "Joy-Con 2 (L)/(R)" },
+  "short": {
+    "ar": "زوج يدي تحكم لـ Switch 2 · تحكم كفأرة · زر C",
+    "en": "Controller pair for Switch 2 · mouse controls · C button",
+    "ckb": "جووتێک دەسکی یاری بۆ Switch 2 · کۆنترۆڵی ماوس · دوگمەی C"
+  },
+  "description": {
+    "ar": "زوج يدي تحكم Joy-Con 2 يسار ويمين مع حزامي معصم، لجهاز Nintendo Switch 2 فقط. تثبتان على الجهاز بالمغناطيس، وفيهما اهتزاز HD Rumble 2 ومستشعرات حركة، ويمكن تحريك كل واحدة على الطاولة كفأرة في الألعاب المتوافقة. مناسبتان كزوج إضافي للعب مع صديق على جهاز واحد.",
+    "en": "A left and right pair of Joy-Con 2 controllers with two straps, for Nintendo Switch 2 only. They attach to the console magnetically, have HD Rumble 2 and motion sensors, and each one can be slid on a table like a mouse in compatible games. A good extra pair for playing with a friend on one console.",
+    "ckb": "جووتێک دەسکی Joy-Con 2 ی چەپ و ڕاست لەگەڵ دوو قایش، تەنها بۆ Nintendo Switch 2. بە موگناتیس بە کۆنسۆڵەکەوە دەلکێن، HD Rumble 2 و هەستەوەری جووڵەیان هەیە، و هەر یەکەیان لە یارییە گونجاوەکاندا وەک ماوس لەسەر مێز دەجووڵێنرێت. جووتێکی زیادەی باشە بۆ یاریکردن لەگەڵ هاوڕێیەک لەسەر یەک کۆنسۆڵ."
+  },
+  "highlights": [
+    {
+      "ar": "لجهاز Nintendo Switch 2 فقط — لا تعمل مع Switch الأول",
+      "en": "For Nintendo Switch 2 only — they do not work with the original Switch",
+      "ckb": "تەنها بۆ Nintendo Switch 2 — لەگەڵ Switch ی یەکەم کار ناکەن"
+    },
+    {
+      "ar": "تحكم كفأرة في الألعاب المتوافقة، واهتزاز HD Rumble 2 ومستشعرات حركة",
+      "en": "Mouse controls in compatible games, HD Rumble 2 and motion sensors",
+      "ckb": "کۆنترۆڵی ماوس لە یارییە گونجاوەکاندا، HD Rumble 2 و هەستەوەری جووڵە"
+    },
+    {
+      "ar": "زر C في اليد اليمنى لفتح GameChat (يتطلب Nintendo Switch Online)",
+      "en": "C button on the right Joy-Con opens GameChat (needs Nintendo Switch Online)",
+      "ckb": "دوگمەی C لە Joy-Con ی ڕاست GameChat دەکاتەوە (Nintendo Switch Online ی دەوێت)"
+    },
+    {
+      "ar": "بطارية تدوم نحو 20 ساعة، وتُشحن على الجهاز أو على مقبض الشحن",
+      "en": "About 20 hours of battery; charges on the console or a charging grip",
+      "ckb": "پاتری نزیکەی 20 کاتژمێر؛ لەسەر کۆنسۆڵ یان دەسگرەی بارگاویکردن بارگاوی دەبێت"
+    },
+    {
+      "ar": "ثلاثة ألوان: أزرق فاتح/أحمر فاتح، بنفسجي فاتح/أخضر فاتح، أزرق/أصفر فاتح",
+      "en": "Three colourways: Light Blue/Light Red, Light Purple/Light Green, Blue/Light Yellow",
+      "ckb": "سێ ڕەنگ: شینی کاڵ/سووری کاڵ، مۆری کاڵ/سەوزی کاڵ، شین/زەردی کاڵ"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Works with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "500mAh لكل يد، نحو 20 ساعة، والشحن نحو 3.5 ساعات", "en": "500 mAh each; about 20 hours; about 3.5 hours to charge", "ckb": "500mAh هەر یەکە؛ نزیکەی 20 کاتژمێر؛ بارگاویکردن نزیکەی 3.5 کاتژمێر" }
+    },
+    {
+      "key": "sensors",
+      "label": { "ar": "المستشعرات", "en": "Sensors", "ckb": "هەستەوەرەکان" },
+      "value": { "ar": "مقياس تسارع، جيروسكوب، ومستشعر فأرة في كل يد", "en": "Accelerometer, gyroscope and mouse sensor in each Joy-Con", "ckb": "هەستەوەری خێرایی، جایرۆسکۆپ و هەستەوەری ماوس لە هەر Joy-Con ێکدا" }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال", "en": "Wireless", "ckb": "بێتەل" },
+      "value": { "ar": "Bluetooth؛ واليد اليمنى فيها NFC أيضًا", "en": "Bluetooth; the right Joy-Con also has NFC", "ckb": "Bluetooth؛ Joy-Con ی ڕاست NFC ـیشی هەیە" }
+    },
+    {
+      "key": "vibration",
+      "label": { "ar": "الاهتزاز", "en": "Vibration", "ckb": "لەرزین" },
+      "value": { "ar": "HD Rumble 2", "en": "HD Rumble 2", "ckb": "HD Rumble 2" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "اليسرى نحو 66 غرامًا، واليمنى نحو 67 غرامًا", "en": "Left about 66 g, right about 67 g", "ckb": "چەپ نزیکەی 66 گرام، ڕاست نزیکەی 67 گرام" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "يد Joy-Con 2 (L)", "en": "Joy-Con 2 (L)", "ckb": "Joy-Con 2 (L)" },
+    { "ar": "يد Joy-Con 2 (R)", "en": "Joy-Con 2 (R)", "ckb": "Joy-Con 2 (R)" },
+    { "ar": "حزاما Joy-Con 2 (عدد 2)", "en": "Joy-Con 2 Strap (×2)", "ckb": "قایشی Joy-Con 2 (×2)" }
+  ],
+  "variants": [
+    {
+      "sku": "JC2-LBLUE-LRED",
+      "title": { "ar": "Joy-Con 2 — أزرق فاتح / أحمر فاتح", "en": "Joy-Con 2 — Light Blue / Light Red", "ckb": "Joy-Con 2 — شینی کاڵ / سووری کاڵ" },
+      "options": { "color": "Light Blue / Light Red" },
+      "barcodes": ["0045496885892"],
+      "isDefault": true,
+      "images": ["joy-con-2--1", "joy-con-2--2", "joy-con-2--3"],
+      "notes": { "ar": "نفس لون اليدين المرفقتين مع Switch 2. الباركود أمريكي.", "en": "Same colours as the pair that comes with Switch 2. US barcode.", "ckb": "هەمان ڕەنگی ئەو جووتەی لەگەڵ Switch 2 دێت. بارکۆدی ئەمریکی." }
+    },
+    {
+      "sku": "JC2-LPURPLE-LGREEN",
+      "title": { "ar": "Joy-Con 2 — بنفسجي فاتح / أخضر فاتح", "en": "Joy-Con 2 — Light Purple / Light Green", "ckb": "Joy-Con 2 — مۆری کاڵ / سەوزی کاڵ" },
+      "options": { "color": "Light Purple / Light Green" },
+      "barcodes": ["0045496886509"],
+      "isDefault": false,
+      "images": ["joy-con-2--4"],
+      "notes": { "ar": "صدر في 12 فبراير 2026. الباركود أمريكي.", "en": "Released 12 February 2026. US barcode.", "ckb": "لە 12ی شوباتی 2026 دەرچوو. بارکۆدی ئەمریکی." }
+    },
+    {
+      "sku": "JC2-BLUE-LYELLOW",
+      "title": { "ar": "Joy-Con 2 — أزرق / أصفر فاتح", "en": "Joy-Con 2 — Blue / Light Yellow", "ckb": "Joy-Con 2 — شین / زەردی کاڵ" },
+      "options": { "color": "Blue / Light Yellow" },
+      "barcodes": ["0045496886295"],
+      "isDefault": false,
+      "images": ["joy-con-2--5", "joy-con-2--6"],
+      "notes": { "ar": "ألوان مستوحاة من فرقة Deep Cut في Splatoon، صدر في 23 يوليو 2026. الباركود أمريكي.", "en": "Colours inspired by Deep Cut from Splatoon; released 23 July 2026. US barcode.", "ckb": "ڕەنگەکانی لە Deep Cut ی Splatoon وەرگیراون؛ لە 23ی تەممووزی 2026 دەرچوو. بارکۆدی ئەمریکی." }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "مصممة لـ Nintendo Switch 2", "en": "Made for Nintendo Switch 2", "ckb": "بۆ Nintendo Switch 2 دروستکراوە" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "incompatible",
+      "note": { "ar": "Nintendo تقول إنها لجهاز Switch 2 فقط", "en": "Nintendo says they are only for use with Switch 2", "ckb": "Nintendo دەڵێت تەنها بۆ Switch 2 ن" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/"
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "incompatible",
+      "note": { "ar": "Nintendo تقول إنها لجهاز Switch 2 فقط", "en": "Nintendo says they are only for use with Switch 2", "ckb": "Nintendo دەڵێت تەنها بۆ Switch 2 ن" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/"
+    },
+    {
+      "deviceModel": "switch-lite",
+      "status": "incompatible",
+      "note": { "ar": "Nintendo تقول إنها لجهاز Switch 2 فقط", "en": "Nintendo says they are only for use with Switch 2", "ckb": "Nintendo دەڵێت تەنها بۆ Switch 2 ن" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/"
+    }
+  ],
+  "related": [
+    { "slug": "joy-con-2-charging-grip", "kind": "accessory" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "alternative" },
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "mario-kart-world", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "joy-con-2--1",
+      "file": ".cache/product-images/joy-con-2/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/v1746487454/switch-2/tech-specs/switch-2-joy-cons-front.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "kind": "hero",
+      "alt": { "ar": "يدا Joy-Con 2 الزرقاء الفاتحة والحمراء الفاتحة من الأمام", "en": "Light Blue and Light Red Joy-Con 2 from the front", "ckb": "Joy-Con 2 ی شینی کاڵ و سووری کاڵ لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "joy-con-2--2",
+      "file": ".cache/product-images/joy-con-2/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/123677-nintendo-switch-2-joy-con-2-set-light-blue-light-red-with-straps-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/",
+      "kind": "in-box",
+      "alt": { "ar": "زوج Joy-Con 2 أزرق فاتح/أحمر فاتح مع الحزامين", "en": "Light Blue / Light Red Joy-Con 2 pair with straps", "ckb": "جووتی Joy-Con 2 ی شینی کاڵ/سووری کاڵ لەگەڵ قایشەکان" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "joy-con-2--3",
+      "file": ".cache/product-images/joy-con-2/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/123677-nintendo-switch-2-joy-con-double-mouse-control-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/",
+      "kind": "detail",
+      "alt": { "ar": "استخدام يدي Joy-Con 2 كفأرتين على سطح", "en": "Using both Joy-Con 2 as mice on a surface", "ckb": "بەکارهێنانی هەردوو Joy-Con 2 وەک ماوس لەسەر ڕووێک" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "joy-con-2--4",
+      "file": ".cache/product-images/joy-con-2/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/127067-nintendo-joy-con-set-light-purple-light-green-front-with-straps-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-purple-light-green-127067/",
+      "kind": "angle",
+      "alt": { "ar": "زوج Joy-Con 2 بنفسجي فاتح/أخضر فاتح مع الحزامين", "en": "Light Purple / Light Green Joy-Con 2 pair with straps", "ckb": "جووتی Joy-Con 2 ی مۆری کاڵ/سەوزی کاڵ لەگەڵ قایشەکان" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "joy-con-2--5",
+      "file": ".cache/product-images/joy-con-2/5.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/127071-nintendo-switch-2-joy-con-2-blue-light-yellow-full-set-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/joy-con-2-blue-light-yellow-127071/",
+      "kind": "angle",
+      "alt": { "ar": "زوج Joy-Con 2 أزرق/أصفر فاتح مع الحزامين", "en": "Blue / Light Yellow Joy-Con 2 pair with straps", "ckb": "جووتی Joy-Con 2 ی شین/زەردی کاڵ لەگەڵ قایشەکان" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "joy-con-2--6",
+      "file": ".cache/product-images/joy-con-2/6.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/127071-nintendo-switch-2-joy-con-2-blue-light-yellow-front-angle-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/joy-con-2-blue-light-yellow-127071/",
+      "kind": "detail",
+      "alt": { "ar": "يدا Joy-Con 2 الزرقاء والصفراء متلاصقتان بزاوية", "en": "Blue / Light Yellow Joy-Con 2 side by side at an angle", "ckb": "Joy-Con 2 ی شین/زەرد لە تەنیشت یەکتر بە گۆشەیەک" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/",
+      "title": "Joy-Con 2 (L)/(R) Light Blue / Light Red",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "features (HD rumble, motion, mouse, C button), two straps included, Switch 2 only, release date, UPC, images"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-purple-light-green-127067/",
+      "title": "Joy-Con 2 (L)/(R) Light Purple / Light Green",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "colour, release date 12 Feb 2026, UPC, images"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/joy-con-2-blue-light-yellow-127071/",
+      "title": "Joy-Con 2 (L)/(R) Blue / Light Yellow",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "colour inspired by Deep Cut (Splatoon), release date 23 Jul 2026, UPC, images"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "title": "Nintendo Switch 2 Tech Specs",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "battery 500 mAh, ~20 h, charging time, sensors, wireless, HD Rumble 2, buttons"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch-2/Information-about-upcoming-battery-related-revisions-to-some-Nintendo-products-3132901.html",
+      "title": "Information about upcoming battery-related revisions to some Nintendo products",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "metric weights (66 g / 67 g) and the user-replaceable battery revision in Europe (about 2 g heavier, same functions)"
+    },
+    {
+      "url": "https://www.nintendo.com/jp/hardware/switch2/specs/index.html",
+      "title": "機能・仕様 | Nintendo Switch 2",
+      "publisher": "Nintendo Co., Ltd. (Japan)",
+      "retrieved": "2026-11-11",
+      "supports": "independent official confirmation of 500 mAh battery, about 20 hours, about 3.5 hours to charge, 66 g / 67 g, accelerometer, gyroscope and mouse sensor, NFC in the right Joy-Con 2, HD Rumble 2"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/consoles/nintendo-switch-2-consoles/nintendo-switch-2-accessories/nintendo-switch-2-controllers",
+      "title": "Controllers | Nintendo Switch 2 | Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "Light Blue / Light Red, Light Purple / Light Green and Blue / Light Yellow pairs and single Joy-Con 2 (L) and (R) sold in the UK; the UK Light Purple / Light Green pair is listed with a user-replaceable battery from 5 October 2026"
+    },
+    {
+      "url": "https://www.ign.com/articles/new-blue-and-yellow-joy-con-2-are-now-available",
+      "title": "New Blue and Yellow Joy-Con 2 Are Now Available",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the Blue / Light Yellow release on 23 July 2026 and its Deep Cut (Splatoon) colours; IGN's Joy-Con colours guide confirms the Light Purple / Light Green release on 12 February 2026"
+    }
+  ],
+  "notes": {
+    "ar": "تباع أيضًا يد Joy-Con 2 (L) زرقاء فاتحة ويد (R) حمراء فاتحة كل واحدة منفصلة. في أوروبا تنتقل Nintendo تدريجيًا إلى نسخ ببطاريات قابلة للاستبدال (أثقل بنحو غرامين، بنفس الوظائف)؛ متجر Nintendo البريطاني يبيع زوج اللونين البنفسجي الفاتح والأخضر الفاتح بهذه النسخة منذ 5 أكتوبر 2026.",
+    "en": "Nintendo also sells a single Joy-Con 2 (L) in Light Blue and (R) in Light Red. In Europe Nintendo is moving to versions with user-replaceable batteries (about 2 g heavier, same functions); Nintendo's UK store has sold the Light Purple / Light Green pair in this version since 5 October 2026.",
+    "ckb": "Nintendo هەروەها Joy-Con 2 (L) ی شینی کاڵ و (R) ی سووری کاڵ بە تاک دەفرۆشێت. لە ئەوروپا Nintendo بە قۆناغ دەگوازێتەوە بۆ وەشانی پاتریی گۆڕاو (نزیکەی 2 گرام قورستر، بە هەمان کارکردن)؛ فرۆشگای بەریتانیی Nintendo لە 5ی تشرینی یەکەمی 2026ەوە جووتی مۆری کاڵ/سەوزی کاڵ بەم وەشانە دەفرۆشێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "European barcodes",
+      "Which colours are already supplied with user-replaceable batteries in Saudi Arabia, the UAE and Oman"
+    ]
+  }
+}

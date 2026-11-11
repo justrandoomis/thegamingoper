@@ -1,0 +1,57 @@
+{
+  "key": "pulse-3d--4",
+  "view": "hero",
+  "width": 1196,
+  "height": 1301,
+  "aspect": 0.9193,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pulse-3d/4-240.e26a3217.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-3d/4-480.3e1a09a7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-3d/4-720.7804faf4.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-3d/4-960.d36b27f7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pulse-3d/4-240.ec97319d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-3d/4-480.4605af10.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-3d/4-720.5ea839e2.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-3d/4-960.59bbe021.webp"
+      }
+    ],
+    "png": "/products/pulse-3d/4-720.2ae02676.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnIBAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSJIAAAART6CobSQ3txT21fveRUQA1u8TJ4NT27ZVZb2HVYfq1tyaW5NEdGu8SHaqs3+Yb4jof/LPvbx1DYCjpCpQlyTZ4XnvFpa/Gnz9QONANgPAwzZ1ADB07m0AZF2WCUA4NMYA3CTG9YkBZ3ti/paDoXZJS6rxlEJ16cBXsrt/UlS6G7yktjQAS/foTyEILwKMyiZ/AFZQOCC6AAAAsAQAnQEqEgAUAD8RgLdVrCelIygIAYAiCWcAA+SA8f615v1lXpTItFl5C6aMAAD9JKM4aRPPGLPMEbbf0zMQYLAe2ZppmanuMZ0xzhszcUt4jXGT1FQ8qXwLPUARW3X5jtz6arJm/xmkQlgfKhGMiTJzbvF/+IqjcjJNCrHh186KeW8FBvHmCs6oA2QS6I5jDpThHC33ymm2/e/+//DOVEpEU2avZAN56+dIgH2DS/m4ZbON7WCsoAAA",
+  "dominant": "#ffffff",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-gray-camo-screenshot-01-en-06sep22?$native--t$",
+    "page": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/"
+  },
+  "input": "2fc51b1777e1bd1d"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "rog-xbox-ally-x--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 768,
+  "aspect": 2.0833,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/rog-xbox-ally-x/1-240.477588fe.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/rog-xbox-ally-x/1-480.2d04394d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/rog-xbox-ally-x/1-720.54f30b08.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/rog-xbox-ally-x/1-960.870da7d2.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/rog-xbox-ally-x/1-1440.1bedebf8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/rog-xbox-ally-x/1-240.308cc51a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/rog-xbox-ally-x/1-480.27691968.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/rog-xbox-ally-x/1-720.cfcb7407.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/rog-xbox-ally-x/1-960.8c8961b4.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/rog-xbox-ally-x/1-1440.ed3792d1.webp"
+      }
+    ],
+    "png": "/products/rog-xbox-ally-x/1-720.128ccdd9.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEMAAAARR6CkkSQ2ePjoN9zVfEQE+KcpMVATyVZDruloowOGPjrAwLeAC4R/goSI/k8AudRzoJmWfRRwUutk/sBJ2ZjQxsglAFZQOCBKAAAAsAMAnQEqFAAKAD8RfLRRrCglIrAIAYAiCWkAAFM/q/z8g3IRNYAA/tyDItpvrw0kVv+y1f130ETN63dxdzw/H3TyrlmH1eHAAAA=",
+  "dominant": "#050505",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "ASUS",
+  "source": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/A35887E0-C362-4D79-9CA7-6AA8FF7E70C9/",
+    "page": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-x-2025/gallery/"
+  },
+  "input": "02b5c1b0b57c9bec"
+}

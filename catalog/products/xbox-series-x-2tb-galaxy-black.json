@@ -1,0 +1,304 @@
+{
+  "slug": "xbox-series-x-2tb-galaxy-black",
+  "group": "xbox-hardware",
+  "kind": "console",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "deviceModel": "xbox-series-x",
+  "family": "xbox-series-x",
+  "status": "discontinued",
+  "releaseDate": "2024-10-15",
+  "name": {
+    "ar": "XBOX Series X – 2TB Galaxy Black Special Edition",
+    "en": "XBOX Series X – 2TB Galaxy Black Special Edition",
+    "ckb": "XBOX Series X – 2TB Galaxy Black Special Edition"
+  },
+  "short": {
+    "ar": "SSD سعة 2TB · مشغل أقراص · إصدار خاص Galaxy Black",
+    "en": "2TB SSD · disc drive · Galaxy Black special edition",
+    "ckb": "SSD ـی 2TB · خوێنەری دیسک · وەشانی تایبەتی Galaxy Black"
+  },
+  "description": {
+    "ar": "إصدار خاص من XBOX Series X بضعف مساحة التخزين (SSD سعة 2TB) مع مشغل أقراص 4K UHD Blu-ray، وبنفس أداء Series X العادي. الهيكل أسود مرشوش بنقاط فضية ورمادية وخضراء تشبه النجوم، ومعه يد تحكم مطابقة بأزرار اتجاه Galaxy Black وغطاء خلفي أخضر Velocity Green لا تُباع إلا مع هذا الجهاز. صدر في 15 تشرين الأول 2024 بكميات محدودة، وأعلنت Microsoft في حزيران 2026 أنها ستوقف طراز 2TB، فالمتوفر هو ما تبقى من المخزون.",
+    "en": "A special edition of the XBOX Series X with double the storage (a 2TB SSD) and a 4K UHD Blu-ray drive, with the same performance as the standard Series X. The black shell is speckled with silver, grey and green like a star field, and it comes with a matching controller (Galaxy Black D-pad, Velocity Green back case) that is only sold with this console. It launched on 15 October 2024 in limited quantities; in June 2026 Microsoft announced it is retiring the 2TB model, so only remaining stock is sold.",
+    "ckb": "وەشانێکی تایبەتی XBOX Series X بە دوو هێندەی بیرگە (SSD ـی 2TB) و خوێنەری دیسکی 4K UHD Blu-ray، بە هەمان توانای Series X ـی ئاسایی. ڕووکاری ڕەشەکەی خاڵی زیوی و خۆڵەمێشی و سەوزی وەک ئەستێرەی پێوەیە، و دەسکێکی هاوشێوەی لەگەڵە (D-pad ـی Galaxy Black و پشتی سەوزی Velocity Green) کە تەنها لەگەڵ ئەم کۆنسۆڵە دەفرۆشرێت. لە 15ی تشرینی یەکەمی 2024 بە ژمارەیەکی سنووردار دەرچوو؛ Microsoft لە حوزەیرانی 2026 ڕایگەیاند کە مۆدێلی 2TB ڕادەگرێت، بۆیە تەنها ئەوەی لە کۆگا ماوەتەوە دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "SSD سعة 2TB، أكبر تخزين داخلي في أجهزة XBOX Series",
+      "en": "2TB SSD, the largest internal storage in the XBOX Series line-up",
+      "ckb": "SSD ـی 2TB، گەورەترین بیرگەی ناوەکی لە کۆنسۆڵەکانی XBOX Series"
+    },
+    {
+      "ar": "نفس أداء XBOX Series X: دقة 4K حتى 120 إطاراً ومشغل أقراص 4K UHD Blu-ray",
+      "en": "Same performance as XBOX Series X: 4K at up to 120 FPS and a 4K UHD Blu-ray drive",
+      "ckb": "هەمان توانای XBOX Series X: ‏4K تا 120 FPS و خوێنەری دیسکی 4K UHD Blu-ray"
+    },
+    {
+      "ar": "يد تحكم مطابقة للإصدار الخاص لا تُباع منفصلة",
+      "en": "Matching special-edition controller that is not sold separately",
+      "ckb": "دەسکی هاوشێوەی وەشانی تایبەت کە جیا نافرۆشرێت"
+    },
+    {
+      "ar": "أعلنت Microsoft في حزيران 2026 إيقاف هذا الطراز، والمتوفر من المخزون المتبقي فقط",
+      "en": "Microsoft announced in June 2026 that this model is being retired; remaining stock only",
+      "ckb": "Microsoft لە حوزەیرانی 2026 ڕایگەیاند ئەم مۆدێلە ڕادەگیرێت؛ تەنها لە کۆگای ماوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "Processor (CPU)", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "8 أنوية AMD Zen 2 مخصصة بتردد 3.8GHz ‏(3.66GHz مع SMT)",
+        "en": "8-core custom AMD Zen 2 at 3.8GHz (3.66GHz with SMT)",
+        "ckb": "8 ناوکی AMD Zen 2 ـی تایبەت بە 3.8GHz ‏(3.66GHz لەگەڵ SMT)"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "معالج الرسوميات", "en": "Graphics (GPU)", "ckb": "گرافیک (GPU)" },
+      "value": {
+        "ar": "12 TFLOPS، ‏52 وحدة حوسبة بتردد 1.825GHz، معمارية AMD RDNA 2 مخصصة",
+        "en": "12 TFLOPS, 52 CUs at 1.825GHz, custom AMD RDNA 2",
+        "ckb": "12 TFLOPS، ‏52 CU بە 1.825GHz، AMD RDNA 2 ـی تایبەت"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB GDDR6 بناقل 320-bit", "en": "16GB GDDR6, 320-bit bus", "ckb": "16GB GDDR6، ‏320-bit" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين الداخلي", "en": "Internal storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "SSD ‏NVMe مخصص سعة 2TB، ‏2.4GB/s خام و4.8GB/s مضغوط",
+        "en": "2TB custom NVMe SSD, 2.4GB/s raw, 4.8GB/s compressed",
+        "ckb": "SSD ـی NVMe ـی تایبەت 2TB، ‏2.4GB/s خاو و 4.8GB/s پەستێنراو"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "منفذ بطاقة توسعة التخزين، ودعم أقراص USB 3.1 الخارجية للتخزين",
+        "en": "Storage Expansion Card slot, plus USB 3.1 external drives for storage",
+        "ckb": "دەروازەی کارتی فراوانکردنی بیرگە، لەگەڵ هاردی دەرەکیی USB 3.1 بۆ هەڵگرتن"
+      }
+    },
+    {
+      "key": "optical",
+      "label": { "ar": "مشغل الأقراص", "en": "Disc drive", "ckb": "خوێنەری دیسک" },
+      "value": { "ar": "4K UHD Blu-ray", "en": "4K UHD Blu-ray", "ckb": "4K UHD Blu-ray" }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "الدقة والأداء", "en": "Resolution and frame rate", "ckb": "ڕوونی و خێرایی وێنە" },
+      "value": {
+        "ar": "ألعاب بدقة 4K حقيقية، حتى 120 إطاراً في الثانية، وحتى 8K HDR",
+        "en": "True 4K gaming, up to 120 FPS, up to 8K HDR",
+        "ckb": "یاریی 4K ـی ڕاستەقینە، تا 120 FPS، تا 8K HDR"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ HDMI 2.1، ‏3 منافذ USB 3.1 Gen 1، منفذ Ethernet",
+        "en": "1× HDMI 2.1, 3× USB 3.1 Gen 1, Ethernet",
+        "ckb": "1× HDMI 2.1، ‏3× USB 3.1 Gen 1، Ethernet"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
+      "value": {
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی XBOX Wireless"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "15.1 × 15.1 × 30.1 سم", "en": "15.1 × 15.1 × 30.1 cm", "ckb": "15.1 × 15.1 × 30.1 سم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "4.4 كغم", "en": "4.4 kg", "ckb": "4.4 کگم" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز XBOX Series X بإصدار Galaxy Black", "en": "XBOX Series X Galaxy Black console", "ckb": "کۆنسۆڵی XBOX Series X ـی Galaxy Black" },
+    {
+      "ar": "يد XBOX Wireless Controller مطابقة (أزرار اتجاه Galaxy Black وغطاء خلفي Velocity Green)",
+      "en": "Matching XBOX Wireless Controller (Galaxy Black D-pad, Velocity Green back case)",
+      "ckb": "دەسکی XBOX Wireless Controller ـی هاوشێوە (D-pad ـی Galaxy Black، پشتی Velocity Green)"
+    },
+    { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
+    { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
+  ],
+  "variants": [
+    {
+      "sku": "XSX-2TB-GALAXY",
+      "title": {
+        "ar": "XBOX Series X ‏2TB مع مشغل أقراص، Galaxy Black Special Edition",
+        "en": "XBOX Series X 2TB, Disc Drive, Galaxy Black Special Edition",
+        "ckb": "XBOX Series X ‏2TB لەگەڵ خوێنەری دیسک، Galaxy Black Special Edition"
+      },
+      "options": { "edition": "Galaxy Black Special Edition", "storage": "2TB", "color": "Galaxy Black" },
+      "isDefault": true,
+      "images": ["xbox-series-x-2tb-galaxy-black--1", "xbox-series-x-2tb-galaxy-black--2", "xbox-series-x-2tb-galaxy-black--3"]
+    }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "alternative" },
+    { "slug": "xbox-series-x25-limited-edition", "kind": "alternative" },
+    { "slug": "xbox-wireless-headset", "kind": "accessory" },
+    { "slug": "xbox-rechargeable-battery-usb-c", "kind": "accessory" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "xbox-series-x-2tb-galaxy-black--1",
+      "file": ".cache/product-images/xbox-series-x-2tb-galaxy-black/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-X-Galaxy-Black-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "hero",
+      "alt": {
+        "ar": "XBOX Series X بإصدار Galaxy Black المنقط مع يده المطابقة",
+        "en": "Speckled Galaxy Black XBOX Series X with its matching controller",
+        "ckb": "XBOX Series X ـی Galaxy Black ـی خاڵدار لەگەڵ دەسکە هاوشێوەکەی"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 1500,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x-2tb-galaxy-black--2",
+      "file": ".cache/product-images/xbox-series-x-2tb-galaxy-black/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b01-Xbox-Series-X-Galaxy-2TB-Front?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "angle",
+      "alt": {
+        "ar": "الواجهة الأمامية لجهاز Galaxy Black مع اليد",
+        "en": "Front of the Galaxy Black console with the controller",
+        "ckb": "ڕووی پێشەوەی کۆنسۆڵی Galaxy Black لەگەڵ دەسکەکە"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x-2tb-galaxy-black--3",
+      "file": ".cache/product-images/xbox-series-x-2tb-galaxy-black/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b02-Xbox-Series-X-Galaxy-2TB-Back?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهة الخلفية لجهاز Galaxy Black",
+        "en": "Back of the Galaxy Black console",
+        "ckb": "پشتەوەی کۆنسۆڵی Galaxy Black"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://news.xbox.com/en-us/2024/11/15/xbox-series-xs-every-console-option-available-now/",
+      "title": "Xbox Series X|S – Every Console Option Available Now",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "2TB SSD with disc drive, Galaxy Black design, matching controller only sold with this console, limited quantities in select markets"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "title": "Buy XBOX Series X: 1TB Black or White (2TB Galaxy Black configuration)",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "tech specs of the 2TB Galaxy Black configuration, product images"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
+      "title": "XBOX Series X",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "the 2TB Galaxy Black is still listed but shown as sold out at Microsoft Store on 2026-11-11; contents of the Series X box; matching controller with Galaxy Black D-pad and Velocity Green back case"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2026/06/25/xbox-console-price-update/",
+      "title": "Updated XBOX Console Prices",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "official announcement (25 June 2026): Microsoft is sunsetting its 2TB model as part of the 1 August 2026 price changes"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/06/09/xbox-series-x-s-new-console-options/",
+      "title": "More Choices Than Ever Before with Three New Xbox Series X|S Consoles Coming Holiday 2024",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "silver, grey and green celestial design, same performance as Series X with twice the storage, matching controller only sold with this console, limited quantities in select markets"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/08/21/xbox-series-x-s-new-console-options-pre-order/",
+      "title": "Pre-Order Three New Xbox Series X|S Console Options Starting August 21",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "release on 15 October 2024 (select countries on 29 October)"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+      "title": "Xbox Series X and Series S",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 15 October 2024, CPU 3.8 GHz (3.66 GHz with SMT), confirmation that the 2TB configuration was discontinued in 2026"
+    },
+    {
+      "url": "https://www.techspot.com/news/112906-third-xbox-price-hike-15-months-raises-all.html",
+      "title": "The third Xbox price hike in 15 months raises all models by at least $100",
+      "publisher": "TechSpot",
+      "retrieved": "2026-11-11",
+      "supports": "June 2026 announcement: the 2TB variant will be discontinued"
+    },
+    {
+      "url": "https://www.digitalcitizen.life/xbox-series-x-and-series-s-prices-will-rise-again-as-memory-and-storage-costs-surge/",
+      "title": "Xbox Series X and Series S Prices Will Rise Again as Memory and Storage Costs Surge",
+      "publisher": "Digital Citizen",
+      "retrieved": "2026-11-11",
+      "supports": "2TB Galaxy Black listed as discontinued from 1 August 2026"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not on the list of supported countries/regions"
+    },
+    {
+      "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
+      "title": "XBOX locales FAQ",
+      "publisher": "Microsoft (XBOX Support)",
+      "retrieved": "2026-11-11",
+      "supports": "XBOX support and warranties are only available in supported countries/regions"
+    }
+  ],
+  "notes": {
+    "ar": "العراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات XBOX، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط. اليد المرفقة خاصة بهذا الإصدار ولا تُباع منفصلة.",
+    "en": "Iraq is not on Microsoft's list of countries where XBOX services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says XBOX support and warranties are only available in supported countries. The included controller is unique to this edition and is not sold separately.",
+    "ckb": "عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی XBOX، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. دەسکە هاوپێچەکە تایبەتە بەم وەشانە و جیا نافرۆشرێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Barcodes and the model number printed on this edition were not found on an official page"
+    ]
+  }
+}

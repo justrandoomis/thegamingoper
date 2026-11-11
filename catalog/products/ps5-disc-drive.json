@@ -1,0 +1,216 @@
+{
+  "slug": "ps5-disc-drive",
+  "group": "playstation-hardware",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Sony",
+  "status": "available",
+  "releaseDate": "2023-12-01",
+  "name": {
+    "ar": "قارئ الأقراص Disc Drive for PS5 Digital Edition",
+    "en": "Disc Drive for PS5 Digital Edition Consoles",
+    "ckb": "Disc Drive for PS5 Digital Edition (دڕایڤی دیسک)"
+  },
+  "short": {
+    "ar": "Ultra HD Blu-ray · لـ PS5 Slim Digital وPS5 Pro فقط · ربط عبر الإنترنت",
+    "en": "Ultra HD Blu-ray · For PS5 slim Digital and PS5 Pro only · Online pairing",
+    "ckb": "Ultra HD Blu-ray · تەنها بۆ PS5 Slim Digital و PS5 Pro · بەستنەوەی ئۆنلاین"
+  },
+  "description": {
+    "ar": "قارئ أقراص رسمي من Sony يُركَّب على جهاز PS5 Digital Edition من فئة slim أو PS5 Pro، فيحوّله إلى جهاز يشغّل أقراص الألعاب والأفلام. يشغّل أقراص ألعاب PS5 وPS4 وأفلام 4K Ultra HD Blu-ray وBlu-ray وDVD. يحتاج الجهاز إلى اتصال بالإنترنت مرة واحدة لربط القارئ عند التركيب.",
+    "en": "Sony's official disc drive that attaches to a slim PS5 Digital Edition or a PS5 Pro, turning it into a console that plays game and movie discs. It plays PS5 and PS4 game discs, 4K Ultra HD Blu-ray, Blu-ray and DVD. The console needs an internet connection once to pair the drive during setup.",
+    "ckb": "دڕایڤی دیسکی فەرمیی Sony کە لەسەر PS5 Digital Editionی slim یان PS5 Pro دادەنرێت و دەیکاتە کۆنسۆڵێک کە دیسکی یاری و فیلم کار پێدەکات. دیسکی یارییەکانی PS5 و PS4، و 4K Ultra HD Blu-ray، Blu-ray و DVD کار پێدەکات. کۆنسۆڵەکە یەکجار پێویستی بە ئینتەرنێتە بۆ بەستنەوەی دڕایڤەکە لە کاتی دامەزراندندا."
+  },
+  "highlights": [
+    {
+      "ar": "متوافق فقط مع PS5 Digital Edition (فئة CFI-2000/2100 slim) وPS5 Pro",
+      "en": "Only for the PS5 Digital Edition (CFI-2000/2100 slim) and PS5 Pro",
+      "ckb": "تەنها بۆ PS5 Digital Edition (slimی CFI-2000/2100) و PS5 Pro"
+    },
+    {
+      "ar": "لا يركب على PS5 الأصلي (2020) بنسختيه",
+      "en": "Does not fit either version of the original 2020 PS5",
+      "ckb": "لەسەر هیچ وەشانێکی PS5ی ڕەسەن (2020) دانانرێت"
+    },
+    {
+      "ar": "يشغّل 4K Ultra HD Blu-ray وBlu-ray وDVD وأقراص ألعاب PS5/PS4",
+      "en": "Plays 4K Ultra HD Blu-ray, Blu-ray, DVD and PS5/PS4 game discs",
+      "ckb": "4K Ultra HD Blu-ray، Blu-ray، DVD و دیسکی یارییەکانی PS5/PS4 کار پێدەکات"
+    },
+    {
+      "ar": "يحتاج اتصالاً بالإنترنت مرة واحدة لربطه بالجهاز",
+      "en": "Needs an internet connection once to pair with the console",
+      "ckb": "یەکجار پێویستی بە ئینتەرنێتە بۆ بەستنەوە بە کۆنسۆڵەکە"
+    },
+    {
+      "ar": "تنويه من Sony: الألعاب الجديدة من يناير 2028 ستكون رقمية فقط؛ أقراص الألعاب الأقدم تبقى صالحة",
+      "en": "Sony notice: new games from January 2028 will be digital only; discs of earlier games still work",
+      "ckb": "ئاگاداری Sony: یارییە نوێکان لە کانوونی دووەمی 2028ەوە تەنها دیجیتاڵ دەبن؛ دیسکی یارییە کۆنەکان هەر کار دەکەن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZDD1", "en": "CFI-ZDD1", "ckb": "CFI-ZDD1" }
+    },
+    {
+      "key": "discs",
+      "label": { "ar": "الأقراص المدعومة", "en": "Supported discs", "ckb": "دیسکە پشتگیریکراوەکان" },
+      "value": { "ar": "4K Ultra HD Blu-ray، Blu-ray، DVD، أقراص ألعاب PS5 وPS4", "en": "4K Ultra HD Blu-ray, Blu-ray, DVD, PS5 and PS4 game discs", "ckb": "4K Ultra HD Blu-ray، Blu-ray، DVD، دیسکی یاریی PS5 و PS4" }
+    },
+    {
+      "key": "consoles",
+      "label": { "ar": "الأجهزة المتوافقة", "en": "Compatible consoles", "ckb": "کۆنسۆڵە گونجاوەکان" },
+      "value": { "ar": "PS5 Digital Edition (CFI-2000 وCFI-2100 slim)، PS5 Pro", "en": "PS5 Digital Edition (CFI-2000 and CFI-2100 slim), PS5 Pro", "ckb": "PS5 Digital Edition (slimی CFI-2000 و CFI-2100)، PS5 Pro" }
+    },
+    {
+      "key": "setup",
+      "label": { "ar": "التركيب", "en": "Setup", "ckb": "دامەزراندن" },
+      "value": { "ar": "يُركَّب على الجهاز ثم يُربط عبر الإنترنت مرة واحدة", "en": "Attaches to the console, then pairs once over the internet", "ckb": "لەسەر کۆنسۆڵ دادەنرێت و دواتر یەکجار لە ڕێگەی ئینتەرنێت دەبەسترێتەوە" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قارئ الأقراص", "en": "Disc Drive", "ckb": "دڕایڤی دیسک" },
+    { "ar": "غطاء أبيض لقارئ الأقراص", "en": "White cover for the Disc Drive", "ckb": "قاپی سپی بۆ دڕایڤەکە" },
+    { "ar": "قاعدتان بلاستيكيتان للوضع الأفقي", "en": "2 plastic feet for horizontal placement", "ckb": "2 پێی پلاستیکی بۆ دانانی ئاسۆیی" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-DISC-DRIVE",
+      "title": { "ar": "قارئ أقراص PS5 – أبيض", "en": "PS5 Disc Drive – White", "ckb": "دڕایڤی دیسکی PS5 – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZDD1",
+      "isDefault": true,
+      "images": ["ps5-disc-drive--1", "ps5-disc-drive--2", "ps5-disc-drive--3"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "note": { "ar": "فئة CFI-2000 وCFI-2100 slim.", "en": "CFI-2000 and CFI-2100 slim model groups.", "ckb": "کۆمەڵەکانی slimی CFI-2000 و CFI-2100." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": { "ar": "PS5 Digital Edition الأصلي (CFI-1000) غير مدعوم.", "en": "The original PS5 Digital Edition (CFI-1000) is not supported.", "ckb": "PS5 Digital Editionی ڕەسەن (CFI-1000) پشتگیری ناکرێت." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "incompatible",
+      "note": { "ar": "PS5 الأصلي فيه قارئ مدمج ولا يقبل هذا القارئ.", "en": "The original PS5 has a built-in drive and does not take this one.", "ckb": "PS5ی ڕەسەن دڕایڤی ناوەکیی هەیە و ئەمە وەرناگرێت." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
+    { "slug": "playstation-5-pro", "kind": "setup" },
+    { "slug": "ps5-vertical-stand", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "ps5-disc-drive--1",
+      "file": ".cache/product-images/ps5-disc-drive/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5_CFI2000_DISC_DRIVE_PR_01_sRGB_US-16x9-01-21may26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/",
+      "kind": "hero",
+      "alt": { "ar": "قارئ أقراص PS5 الأبيض", "en": "The white PS5 Disc Drive", "ckb": "دڕایڤی دیسکی سپیی PS5" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "ps5-disc-drive--2",
+      "file": ".cache/product-images/ps5-disc-drive/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5_CFI2000_DISC_DRIVE_PR_02_sRGB_US-16x9-01-21may26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/",
+      "kind": "detail",
+      "alt": { "ar": "القارئ بجانب جهاز PS5 مفتوح الغطاء يوضح مكان التركيب", "en": "The drive beside a PS5 with its cover removed, showing where it attaches", "ckb": "دڕایڤەکە لە تەنیشت PS5ێک کە قاپەکەی لابراوە، شوێنی دانانەکەی پیشان دەدات" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "ps5-disc-drive--3",
+      "file": ".cache/product-images/ps5-disc-drive/3.webp",
+      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/Disc-Drive-and-Packaging-in-the-box?wid=2000",
+      "sourcePage": "https://direct.playstation.com/en-us/buy-accessories/disc-drive-for-ps5-digital-edition-consoles",
+      "kind": "in-box",
+      "alt": { "ar": "علبة قارئ الأقراص بجانب القارئ", "en": "Disc Drive box next to the drive", "ckb": "قوتووی دڕایڤەکە لە تەنیشت دڕایڤەکە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 2000, "height": 506, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/",
+      "title": "Disc Drive For PS5® Digital Edition Consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZDD1, compatible consoles, supported discs, internet pairing, what's in the box, UK release 1 December 2023, January 2028 disc notice"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-accessories/disc-drive-for-ps5-digital-edition-consoles",
+      "title": "Buy Disc Drive For PS5® Digital Edition Consoles (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "compatibility (CFI-2000 & CFI-2100 slim Digital, PS5 Pro), features, what's in the box"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/10/10/new-look-for-ps5-console-this-holiday-season/",
+      "title": "New look for PS5 console this holiday season",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Ultra HD Blu-ray Disc Drive sold separately for the new PS5 Digital Edition, announced October 2023"
+    },
+    {
+      "url": "https://blog.playstation.com/2026/07/01/physical-disc-production-ending-in-january-2028-for-new-games-releasing-on-playstation-consoles/",
+      "title": "Physical disc production ending in January 2028 for new games releasing on PlayStation consoles",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "new games digital-only from January 2028"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/ps5/buy-now/",
+      "title": "Buy PlayStation®5 (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment (PlayStation UAE)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: in the Gulf the Disc Drive is for PS5 Digital Edition (CFI-2000 and CFI-2100 slim) and PS5 Pro, plays 4K Ultra HD Blu-ray, Blu-ray and DVD, and needs internet to pair on setup; January 2028 digital-only notice"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/compatibility-ps5-pro/",
+      "title": "Compatibility guide for PS5 Pro consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Disc drive with cover compatible with PS5 Pro"
+    },
+    {
+      "url": "https://www.techspot.com/news/113007-sony-confirms-make-playstation-discs-after-2028-not.html",
+      "title": "Sony clarifies that it will still make PlayStation discs after 2028, just not for new games",
+      "publisher": "TechSpot",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: discs of games released before January 2028 stay playable and can still be reprinted"
+    }
+  ],
+  "notes": {
+    "ar": "تاريخ الإصدار المذكور (1 ديسمبر 2023) هو تاريخ متجر PlayStation البريطاني؛ أعلنت Sony القارئ في أكتوبر 2023 مع طراز slim الجديد الذي بدأ بيعه في أمريكا في نوفمبر 2023. تأكد أن جهاز العميل متصل بالإنترنت عند التركيب الأول.",
+    "en": "The release date given (1 December 2023) is the PlayStation UK store date; Sony announced the drive in October 2023 alongside the new slim model, which went on sale in the US in November 2023. Make sure the customer's console can go online for the first setup.",
+    "ckb": "بەرواری دەرچوونی نووسراو (1ی کانوونی یەکەمی 2023) بەرواری فرۆشگای PlayStationی بەریتانییە؛ Sony لە تشرینی یەکەمی 2023 لەگەڵ مۆدێلی slimی نوێ ڕایگەیاند، کە لە تشرینی دووەمی 2023 لە ئەمریکا کەوتە فرۆشتن. دڵنیابە کۆنسۆڵی کڕیار بۆ یەکەمجار دامەزراندن دەتوانێت ئۆنلاین بێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact first US release date of the drive",
+      "Drive dimensions and weight (the UK store's H248 × W127 × D248 mm / 1.1 kg looks like packaging and was left out)",
+      "What happens when the drive is moved to a different console (Sony only says an internet connection is required to pair it on setup)"
+    ]
+  }
+}

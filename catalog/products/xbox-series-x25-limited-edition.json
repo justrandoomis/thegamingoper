@@ -1,0 +1,294 @@
+{
+  "slug": "xbox-series-x25-limited-edition",
+  "group": "xbox-hardware",
+  "kind": "console",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "deviceModel": "xbox-series-x",
+  "family": "xbox-series-x",
+  "status": "limited",
+  "releaseDate": "2026-11-13",
+  "name": { "ar": "XBOX Series X25 Limited Edition", "en": "XBOX Series X25 Limited Edition", "ckb": "XBOX Series X25 Limited Edition" },
+  "short": {
+    "ar": "1TB · أخضر شفاف OG Green · 25,000 جهاز مرقّم",
+    "en": "1TB · translucent OG Green · 25,000 numbered consoles",
+    "ckb": "1TB · سەوزی ڕوونی OG Green · ‏25,000 کۆنسۆڵی ژمارەدار"
+  },
+  "description": {
+    "ar": "إصدار محدود من XBOX Series X بمناسبة مرور 25 عاماً على XBOX، بهيكل أخضر شفاف مستوحى من جهاز XBOX الأصلي، وشعار XBOX 25 في الواجهة، وعلامة X تضيء بالأخضر عند التشغيل. العتاد نفسه في Series X: ‏SSD سعة 1TB ومشغل أقراص 4K UHD Blu-ray. كل جهاز محفور برقم خاص، ومعه يد XBOX Wireless Controller X25 Special Edition ونسخة رقمية كاملة من Halo: Campaign Evolved. يصدر في 13 تشرين الثاني 2026، والطلبات المسبقة نفدت بسرعة.",
+    "en": "A limited XBOX Series X made for XBOX's 25th anniversary: a translucent green shell inspired by the original XBOX, an XBOX 25 logo on the front and an X that lights up green at start-up. Inside it is a standard Series X with a 1TB SSD and a 4K UHD Blu-ray drive. Every console is engraved with its own number and comes with the XBOX Wireless Controller X25 Special Edition and a full-game download of Halo: Campaign Evolved. It launches on 13 November 2026; pre-orders sold out quickly.",
+    "ckb": "وەشانێکی سنوورداری XBOX Series X بۆ 25 ساڵەی XBOX: ڕووکاری سەوزی ڕوون کە لە XBOX ـی یەکەمەوە وەرگیراوە، لۆگۆی XBOX 25 لە پێشەوە و X ێک کە لە کاتی هەڵکردندا بە سەوزی ڕووناک دەبێتەوە. لەناوەوە هەمان Series X ـە بە SSD ـی 1TB و خوێنەری دیسکی 4K UHD Blu-ray. هەر کۆنسۆڵێک ژمارەی تایبەتی خۆی لەسەر هەڵکەندراوە و دەسکی XBOX Wireless Controller X25 Special Edition و داگرتنی تەواوی یاریی Halo: Campaign Evolved ـی لەگەڵە. لە 13ی تشرینی دووەمی 2026 دەردەچێت؛ پێشفرۆشتنەکان زوو تەواو بوون."
+  },
+  "highlights": [
+    {
+      "ar": "25,000 جهاز فقط، كل واحد محفور برقم خاص",
+      "en": "Only 25,000 consoles, each engraved with its own number",
+      "ckb": "تەنها 25,000 کۆنسۆڵ، هەریەکە ژمارەی تایبەتی خۆی لەسەر هەڵکەندراوە"
+    },
+    {
+      "ar": "هيكل أخضر شفاف OG Green مع شعار XBOX 25 وعلامة X تضيء بالأخضر",
+      "en": "Translucent OG Green shell with an XBOX 25 logo and an X that glows green",
+      "ckb": "ڕووکاری سەوزی ڕوونی OG Green لەگەڵ لۆگۆی XBOX 25 و X ێکی سەوزی ڕووناک"
+    },
+    {
+      "ar": "معه يد X25 Special Edition ونسخة رقمية كاملة من Halo: Campaign Evolved",
+      "en": "Includes the X25 Special Edition controller and a full digital copy of Halo: Campaign Evolved",
+      "ckb": "دەسکی X25 Special Edition و کۆپییەکی دیجیتاڵی تەواوی Halo: Campaign Evolved ـی لەگەڵە"
+    },
+    {
+      "ar": "نفس عتاد XBOX Series X: ‏SSD سعة 1TB، مشغل أقراص 4K UHD Blu-ray، دقة 4K حتى 120 إطاراً",
+      "en": "Same hardware as XBOX Series X: 1TB SSD, 4K UHD Blu-ray drive, 4K at up to 120 FPS",
+      "ckb": "هەمان ئامێری XBOX Series X: ‏SSD ـی 1TB، خوێنەری دیسکی 4K UHD Blu-ray، ‏4K تا 120 FPS"
+    },
+    {
+      "ar": "موعد الإصدار 13 تشرين الثاني 2026، وكانت الطلبات المسبقة محدودة بجهاز واحد لكل زبون",
+      "en": "Launches 13 November 2026; pre-orders were limited to one per customer",
+      "ckb": "لە 13ی تشرینی دووەمی 2026 دەردەچێت؛ پێشفرۆشتن بۆ هەر کڕیارێک یەک دانە بوو"
+    }
+  ],
+  "specs": [
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "Processor (CPU)", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "8 أنوية AMD Zen 2 مخصصة بتردد 3.8GHz ‏(3.66GHz مع SMT)",
+        "en": "8-core custom AMD Zen 2 at 3.8GHz (3.66GHz with SMT)",
+        "ckb": "8 ناوکی AMD Zen 2 ـی تایبەت بە 3.8GHz ‏(3.66GHz لەگەڵ SMT)"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "معالج الرسوميات", "en": "Graphics (GPU)", "ckb": "گرافیک (GPU)" },
+      "value": {
+        "ar": "12 TFLOPS، ‏52 وحدة حوسبة بتردد 1.825GHz، معمارية AMD RDNA 2 مخصصة",
+        "en": "12 TFLOPS, 52 CUs at 1.825GHz, custom AMD RDNA 2",
+        "ckb": "12 TFLOPS، ‏52 CU بە 1.825GHz، AMD RDNA 2 ـی تایبەت"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB GDDR6 بناقل 320-bit", "en": "16GB GDDR6, 320-bit bus", "ckb": "16GB GDDR6، ‏320-bit" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين الداخلي", "en": "Internal storage", "ckb": "بیرگەی ناوەکی" },
+      "value": { "ar": "SSD ‏NVMe مخصص سعة 1TB", "en": "1TB custom NVMe SSD", "ckb": "SSD ـی NVMe ـی تایبەت 1TB" }
+    },
+    {
+      "key": "optical",
+      "label": { "ar": "مشغل الأقراص", "en": "Disc drive", "ckb": "خوێنەری دیسک" },
+      "value": { "ar": "4K UHD Blu-ray", "en": "4K UHD Blu-ray", "ckb": "4K UHD Blu-ray" }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "الدقة والأداء", "en": "Resolution and frame rate", "ckb": "ڕوونی و خێرایی وێنە" },
+      "value": {
+        "ar": "ألعاب بدقة 4K حقيقية، حتى 120 إطاراً في الثانية، وحتى 8K HDR",
+        "en": "True 4K gaming, up to 120 FPS, up to 8K HDR",
+        "ckb": "یاریی 4K ـی ڕاستەقینە، تا 120 FPS، تا 8K HDR"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ HDMI 2.1، ‏3 منافذ USB 3.1 Gen 1، منفذ Ethernet، منفذ بطاقة التوسعة",
+        "en": "1× HDMI 2.1, 3× USB 3.1 Gen 1, Ethernet, expansion card slot",
+        "ckb": "1× HDMI 2.1، ‏3× USB 3.1 Gen 1، Ethernet، دەروازەی کارتی فراوانکردن"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "15.1 × 15.1 × 30.1 سم", "en": "15.1 × 15.1 × 30.1 cm", "ckb": "15.1 × 15.1 × 30.1 سم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "4.4 كغم", "en": "4.4 kg", "ckb": "4.4 کگم" }
+    },
+    {
+      "key": "edition-size",
+      "label": { "ar": "عدد النسخ", "en": "Production run", "ckb": "ژمارەی دانەکان" },
+      "value": { "ar": "25,000 جهاز مرقّم", "en": "25,000 numbered consoles", "ckb": "25,000 کۆنسۆڵی ژمارەدار" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "جهاز XBOX Series X25 Limited Edition محفور برقمه",
+      "en": "XBOX Series X25 Limited Edition console, engraved with its number",
+      "ckb": "کۆنسۆڵی XBOX Series X25 Limited Edition، ژمارەکەی لەسەر هەڵکەندراوە"
+    },
+    { "ar": "يد XBOX Wireless Controller X25 Special Edition", "en": "XBOX Wireless Controller X25 Special Edition", "ckb": "دەسکی XBOX Wireless Controller X25 Special Edition" },
+    {
+      "ar": "تنزيل كامل للعبة Halo: Campaign Evolved (يصل إلى الجهاز أثناء الإعداد)",
+      "en": "Full-game download of Halo: Campaign Evolved (delivered to the console during setup)",
+      "ckb": "داگرتنی تەواوی یاریی Halo: Campaign Evolved (لە کاتی ڕێکخستندا دەگاتە کۆنسۆڵەکە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "XSX25-LE-1TB",
+      "title": {
+        "ar": "XBOX Series X25 Limited Edition ‏1TB، أخضر شفاف OG Green",
+        "en": "XBOX Series X25 Limited Edition 1TB, Translucent OG Green",
+        "ckb": "XBOX Series X25 Limited Edition ‏1TB، سەوزی ڕوونی OG Green"
+      },
+      "options": { "edition": "X25 Limited Edition", "storage": "1TB", "color": "Translucent OG Green" },
+      "isDefault": true,
+      "images": [
+        "xbox-series-x25-limited-edition--1",
+        "xbox-series-x25-limited-edition--2",
+        "xbox-series-x25-limited-edition--3",
+        "xbox-series-x25-limited-edition--4",
+        "xbox-series-x25-limited-edition--5"
+      ]
+    }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "alternative" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "xbox-wireless-headset", "kind": "accessory" },
+    { "slug": "seagate-storage-expansion-card", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "xbox-series-x25-limited-edition--1",
+      "file": ".cache/product-images/xbox-series-x25-limited-edition/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_01_2000x2000_01?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز XBOX Series X25 الأخضر الشفاف من الأمام مع يده",
+        "en": "Translucent green XBOX Series X25 from the front with its controller",
+        "ckb": "XBOX Series X25 ـی سەوزی ڕوون لە پێشەوە لەگەڵ دەسکەکەی"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x25-limited-edition--2",
+      "file": ".cache/product-images/xbox-series-x25-limited-edition/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-03_2000x2000_03?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "kind": "angle",
+      "alt": {
+        "ar": "XBOX Series X25 بزاوية مائلة تظهر الهيكل الشفاف",
+        "en": "XBOX Series X25 at an angle showing the see-through shell",
+        "ckb": "XBOX Series X25 بە گۆشەیەکی لار، ڕووکارە ڕوونەکەی دیارە"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x25-limited-edition--3",
+      "file": ".cache/product-images/xbox-series-x25-limited-edition/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_02_2000x2000_02?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهة الخلفية من XBOX Series X25 مع المنافذ",
+        "en": "Back of the XBOX Series X25 with its ports",
+        "ckb": "پشتەوەی XBOX Series X25 لەگەڵ دەروازەکان"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x25-limited-edition--4",
+      "file": ".cache/product-images/xbox-series-x25-limited-edition/4.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_05_2000x2000?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "kind": "in-box",
+      "alt": {
+        "ar": "يد XBOX Wireless Controller X25 Special Edition المرفقة",
+        "en": "The included XBOX Wireless Controller X25 Special Edition",
+        "ckb": "دەسکی XBOX Wireless Controller X25 Special Edition ـی هاوپێچ"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x25-limited-edition--5",
+      "file": ".cache/product-images/xbox-series-x25-limited-edition/5.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_04_2000x2000_04?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "kind": "in-box",
+      "alt": {
+        "ar": "غلاف لعبة Halo: Campaign Evolved المرفقة كتنزيل رقمي",
+        "en": "Cover art of Halo: Campaign Evolved, included as a digital download",
+        "ckb": "بەرگی یاریی Halo: Campaign Evolved کە وەک داگرتنی دیجیتاڵ هاوپێچە"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
+      "title": "XBOX Series X25 Limited Edition",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "release date 13 November 2026, 1TB, what is included (X25 controller, numbered engraved console, Halo: Campaign Evolved), tech specs, 25,000 consoles (store description), images"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2026/06/07/xbox-25th-anniversary-console-controller-x25-xbox-games-showcase-2026/",
+      "title": "New XBOX 25th Anniversary Console and Controller",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "announcement at XBOX Games Showcase 2026, translucent OG Green design, green X at start-up, 1TB"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2026/08/26/pre-orders-begin-today-xbox-25th-anniversary-collection/",
+      "title": "Pre-orders Begin Today for the XBOX 25th Anniversary Collection",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "individually numbered engraving, Halo: Campaign Evolved full-game download, launch 13 November 2026, one per customer, select markets"
+    },
+    {
+      "url": "https://www.ign.com/articles/xbox-series-x-x25-special-edition-console-invite-requests-are-up-at-amazon",
+      "title": "Xbox Series X | X25 Special Edition Console – Invite Requests Are Up at Amazon",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: pre-orders sold out almost instantly in August, only 25,000 numbered consoles, 1TB console with X25 logo and green-lit X, matching controller and Halo: Campaign Evolved, launch 13 November"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+      "title": "Xbox Series X and Series S",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "X25 Limited Edition announced at the XBOX Games Showcase 2026; Series X CPU 3.8 GHz (3.66 GHz with SMT)"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not on the list of supported countries/regions"
+    }
+  ],
+  "notes": {
+    "ar": "لعبة Halo: Campaign Evolved المرفقة تصل إلى الجهاز أثناء الإعداد وترتبط بأول حساب Microsoft يستلمها، وهي مصنفة M ‏(17+) من ESRB. هذا الإصدار متاح رسمياً في أسواق محددة فقط والعراق ليس منها، لذلك توفره عندنا يعتمد على المخزون. لم تذكر صفحة المنتج الكابلات الموجودة في العلبة.",
+    "en": "The included Halo: Campaign Evolved is delivered to the console during setup and is tied to the first Microsoft account that redeems it; the game is rated M (17+) by ESRB. This edition is officially sold only in select markets, and Iraq is not one of them, so availability here depends on stock. The product page does not list the cables in the box.",
+    "ckb": "یاریی Halo: Campaign Evolved ـی هاوپێچ لە کاتی ڕێکخستندا دەگاتە کۆنسۆڵەکە و بە یەکەم هەژماری Microsoft ـەوە دەبەسترێت کە وەریدەگرێت؛ یارییەکە پۆلێنی M ‏(17+) ـی ESRB ـی هەیە. ئەم وەشانە بە فەرمی تەنها لە هەندێک بازاڕ دەفرۆشرێت و عێراق یەکێک لەوان نییە، بۆیە بوونی لای ئێمە بەندە بە کۆگا. پەڕەی بەرهەمەکە باسی کێبڵەکانی ناو قوتووەکەی نەکردووە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Cables in the X25 box (HDMI, power cord) are not listed on the X25 product page or in the XBOX Wire posts",
+      "Weight and dimensions are copied from the Microsoft Store spec sheet, which repeats the standard Series X figures"
+    ]
+  }
+}

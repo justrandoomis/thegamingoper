@@ -1,0 +1,57 @@
+{
+  "key": "xbox-series-s--1",
+  "view": "hero",
+  "width": 1256,
+  "height": 1600,
+  "aspect": 0.785,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-s/1-240.5cd064d8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-s/1-480.234ddb8c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-s/1-720.d83a055e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-s/1-960.f7597992.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-s/1-240.2cbbfe9e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-s/1-480.fcae91b2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-s/1-720.de5d0965.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-s/1-960.2b7ddba8.webp"
+      }
+    ],
+    "png": "/products/xbox-series-s/1-720.024e8f02.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvwAAABXRUJQVlA4WAoAAAAQAAAADwAAEwAAQUxQSE0AAAART6CobSM2VQb33/siIlD8QsoyYNTaVpzPjAKCLCSwI93NrYR+DDR5fv/fVUBE/yeA1M7MnIhWAMi/M6uERZlGglOiUL/Uxvs8ZfekAgBWUDggiAAAABAEAJ0BKhAAFAA/EXKwUCwmpKKwCAGAIglpAAPlceapQHDptJbfOQ1gAP7JzOXB+NYZiGmJd7q/EJ+r8d50yhe5LTWYH3uf/AF5Z9MB6JB6nl3lCA50T9XFE6rtVamHTME7u3I0QWTe3/NXZsuTLMT/WdQhreh/x/IGv1fzzgmUYXelDphjgAA=",
+  "dominant": "#f5f6f9",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSS_Image-Buy-Box_Boxshot_2555x1994?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn"
+  },
+  "input": "3a1672dc8948f2ef"
+}

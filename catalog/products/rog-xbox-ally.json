@@ -1,0 +1,302 @@
+{
+  "slug": "rog-xbox-ally",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "ASUS",
+  "deviceModel": "rog-xbox-ally",
+  "family": "rog-xbox-ally",
+  "status": "available",
+  "releaseDate": "2025-10-16",
+  "name": { "ar": "ROG Xbox Ally", "en": "ROG Xbox Ally", "ckb": "ROG Xbox Ally" },
+  "short": {
+    "ar": "Ryzen Z2 A · 16GB RAM · 512GB · شاشة 7 بوصة 120Hz · Windows 11",
+    "en": "Ryzen Z2 A · 16GB RAM · 512GB · 7-inch 120Hz · Windows 11",
+    "ckb": "Ryzen Z2 A · 16GB RAM · 512GB · شاشەی 7 ئینچ 120Hz · Windows 11"
+  },
+  "description": {
+    "ar": "النسخة الأساسية البيضاء من عائلة ROG Xbox Ally، جهاز ألعاب محمول يعمل بنظام Windows 11 صممته ASUS بالتعاون مع Xbox. يأتي بمعالج AMD Ryzen Z2 A وذاكرة 16GB وتخزين 512GB وبطارية 60Wh، ويشتغل مباشرة في وضع Xbox. مناسب للألعاب الأخف ولمن يريد مقابض بأسلوب يد Xbox في جهاز أخف وزناً وأقل قوة من Ally X.",
+    "en": "The white entry model of the ROG Xbox Ally family: a Windows 11 handheld made by ASUS together with Xbox. It has an AMD Ryzen Z2 A chip, 16GB of memory, 512GB of storage and a 60Wh battery, and it starts straight into Xbox mode. A good fit for lighter games and for anyone who wants Xbox-style grips in a lighter, less powerful device than the Ally X.",
+    "ckb": "مۆدێلی سەرەتایی سپیی خێزانی ROG Xbox Ally: ئامێرێکی یاریی دەستیی Windows 11 کە ASUS لەگەڵ Xbox دروستی کردووە. پرۆسێسەری AMD Ryzen Z2 A، بیرگەی 16GB، شوێنی 512GB و پاتریی 60Wh ـی هەیە، و ڕاستەوخۆ دەچێتە ناو دۆخی Xbox. گونجاوە بۆ یارییە سووکترەکان و بۆ ئەوەی دەسکی شێوە-Xbox ـی دەوێت لە ئامێرێکی سووکتر و کەمهێزتر لە Ally X."
+  },
+  "highlights": [
+    {
+      "ar": "معالج AMD Ryzen Z2 A بأربع أنوية وثمانية مسارات",
+      "en": "AMD Ryzen Z2 A with 4 cores and 8 threads",
+      "ckb": "AMD Ryzen Z2 A بە 4 ناوک و 8 دەزوو"
+    },
+    {
+      "ar": "ذاكرة 16GB LPDDR5-6400 وتخزين 512GB M.2 2280 يمكن ترقيته، مع قارئ microSD سريع (UHS-II)",
+      "en": "16GB LPDDR5-6400 and a 512GB M.2 2280 SSD that can be upgraded, plus a fast UHS-II microSD reader",
+      "ckb": "16GB LPDDR5-6400 و SSD ـی 512GB M.2 2280 کە دەتوانرێت باشتر بکرێت، لەگەڵ خوێنەری microSD ـی خێرای UHS-II"
+    },
+    {
+      "ar": "شاشة IPS قياس 7 بوصة بدقة 1080p وتردد 120Hz مع FreeSync Premium",
+      "en": "7-inch 1080p IPS screen at 120Hz with FreeSync Premium",
+      "ckb": "شاشەی IPS ـی 7 ئینچ بە 1080p و 120Hz لەگەڵ FreeSync Premium"
+    },
+    {
+      "ar": "بطارية 60Wh ومنفذا USB-C من نوع USB 3.2 Gen 2",
+      "en": "60Wh battery and two USB 3.2 Gen 2 USB-C ports",
+      "ckb": "پاتریی 60Wh و دوو دەروازەی USB-C ـی USB 3.2 Gen 2"
+    },
+    {
+      "ar": "يعمل بنظام Windows 11: تطبيق Xbox (وGame Pass في الدول المدعومة)، ويمكن تثبيت Steam وEpic وغيرها",
+      "en": "Runs Windows 11: the Xbox app (with Game Pass where supported), and you can install Steam, Epic and other PC stores",
+      "ckb": "لەسەر Windows 11 کار دەکات: ئەپی Xbox (و Game Pass لە وڵاتە پشتگیریکراوەکان)، و دەتوانیت Steam و Epic و فرۆشگاکانی تر دابمەزرێنیت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen Z2 A (4 أنوية / 8 مسارات، 2.8GHz حتى 3.8GHz، ذاكرة مؤقتة 6MB) مع رسوميات AMD Radeon",
+        "en": "AMD Ryzen Z2 A (4 cores / 8 threads, 2.8GHz up to 3.8GHz, 6MB cache) with AMD Radeon graphics",
+        "ckb": "AMD Ryzen Z2 A (4 ناوک / 8 دەزوو، 2.8GHz تا 3.8GHz، کاشی 6MB) لەگەڵ گرافیکی AMD Radeon"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB LPDDR5-6400 مدمجة", "en": "16GB LPDDR5-6400, on board", "ckb": "16GB LPDDR5-6400، لەسەر بۆرد" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": { "ar": "512GB PCIe 4.0 NVMe بحجم M.2 2280", "en": "512GB PCIe 4.0 NVMe M.2 2280 SSD", "ckb": "512GB PCIe 4.0 NVMe M.2 2280 SSD" }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "قارئ microSD من نوع UHS-II (يدعم SD وSDHC وSDXC)، ويمكن استبدال قرص M.2 2280",
+        "en": "UHS-II microSD reader (SD, SDHC, SDXC); the M.2 2280 SSD can be replaced",
+        "ckb": "خوێنەری microSD ـی UHS-II (SD، SDHC، SDXC)؛ SSD ـی M.2 2280 دەگۆڕدرێت"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "7 بوصة FHD (1920×1080) من نوع IPS تعمل باللمس، 120Hz، سطوع 500 nit، AMD FreeSync Premium، طبقة مضادة للانعكاس، Gorilla Glass Victus وDXC",
+        "en": "7-inch FHD (1920×1080) IPS-level touchscreen, 120Hz, 500 nits, AMD FreeSync Premium, anti-glare, Gorilla Glass Victus and DXC",
+        "ckb": "شاشەی دەستلێدانی IPS ـی 7 ئینچ FHD (1920×1080)، 120Hz، 500 nit، AMD FreeSync Premium، دژە-ڕەنگدانەوە، Gorilla Glass Victus و DXC"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "60Wh (أربع خلايا Li-ion)", "en": "60Wh, 4-cell Li-ion", "ckb": "60Wh، 4 خانەی Li-ion" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": { "ar": "شاحن USB-C بقدرة 65W", "en": "65W USB-C charger", "ckb": "شەحنکەری USB-C ـی 65W" }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": { "ar": "Windows 11 Home، يبدأ في وضع Xbox", "en": "Windows 11 Home, starts in Xbox mode", "ckb": "Windows 11 Home، لە دۆخی Xbox دەست پێدەکات" }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذان USB 3.2 Gen 2 Type-C (DisplayPort 1.4 وشحن PD 3.0)، قارئ microSD، مقبس صوت 3.5mm",
+        "en": "2× USB 3.2 Gen 2 Type-C (DisplayPort 1.4, PD 3.0), microSD reader, 3.5mm audio jack",
+        "ckb": "2× USB 3.2 Gen 2 Type-C (DisplayPort 1.4، PD 3.0)، خوێنەری microSD، دەروازەی دەنگی 3.5mm"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 6E (2×2) وBluetooth 5.4", "en": "Wi-Fi 6E (2×2) and Bluetooth 5.4", "ckb": "Wi-Fi 6E (2×2) و Bluetooth 5.4" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "أزرار ABXY، عصاتان بحجم كامل، زنادات Hall Effect، زر Xbox، زران خلفيان قابلان للتخصيص، اهتزاز HD، حساس حركة بستة محاور، قارئ بصمة",
+        "en": "ABXY, two full-size sticks, Hall Effect triggers, Xbox button, 2 assignable back buttons, HD haptics, 6-axis gyro, fingerprint reader",
+        "ckb": "ABXY، دوو جۆیستیکی قەبارە-تەواو، تریگەری Hall Effect، دوگمەی Xbox، 2 دوگمەی پشتەوەی دیاریکراو، لەرزینەوەی HD، Gyro ـی 6 تەوەرە، خوێنەری پەنجەمۆر"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "290.8 × 121.5 × 50.7 ملم", "en": "290.8 × 121.5 × 50.7 mm", "ckb": "290.8 × 121.5 × 50.7 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "670 غرام", "en": "670 g", "ckb": "670 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز ROG Xbox Ally", "en": "ROG Xbox Ally", "ckb": "ئامێری ROG Xbox Ally" },
+    { "ar": "شاحن 65W", "en": "65W charger", "ckb": "شەحنکەری 65W" },
+    { "ar": "حامل (Stand)", "en": "Stand", "ckb": "ستاند" }
+  ],
+  "variants": [
+    {
+      "sku": "XALLY-512",
+      "title": {
+        "ar": "ROG Xbox Ally 16GB / 512GB أبيض",
+        "en": "ROG Xbox Ally 16GB / 512GB, White",
+        "ckb": "ROG Xbox Ally 16GB / 512GB، سپی"
+      },
+      "options": { "memory": "16GB", "storage": "512GB", "color": "White" },
+      "modelNumber": "RC73YA",
+      "isDefault": true,
+      "images": ["rog-xbox-ally--1", "rog-xbox-ally--2", "rog-xbox-ally--3", "rog-xbox-ally--4", "rog-xbox-ally--5"]
+    }
+  ],
+  "related": [
+    { "slug": "rog-xbox-ally-x", "kind": "upsell" },
+    { "slug": "steam-deck-oled", "kind": "alternative" },
+    { "slug": "lenovo-legion-go-s", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "rog-xbox-ally--1",
+      "file": ".cache/product-images/rog-xbox-ally/1.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/828CE44B-7B48-4F48-88F7-88BEA7D13C5D/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/",
+      "kind": "hero",
+      "alt": { "ar": "ROG Xbox Ally باللون الأبيض من الأمام", "en": "White ROG Xbox Ally from the front", "ckb": "ROG Xbox Ally ـی سپی لە پێشەوە" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally--2",
+      "file": ".cache/product-images/rog-xbox-ally/2.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/2BB997F6-23C2-4F2A-98B0-755D73FEC36F/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/",
+      "kind": "angle",
+      "alt": { "ar": "ROG Xbox Ally من زاوية أمامية مائلة", "en": "ROG Xbox Ally from a front three-quarter angle", "ckb": "ROG Xbox Ally لە گۆشەیەکی پێشەوەی لار" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally--3",
+      "file": ".cache/product-images/rog-xbox-ally/3.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/3E3E2E81-1386-46C1-833C-5CA58B7ACBDC/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من ROG Xbox Ally", "en": "Back of ROG Xbox Ally", "ckb": "پشتەوەی ROG Xbox Ally" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally--4",
+      "file": ".cache/product-images/rog-xbox-ally/4.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/3DEDD322-2CF5-4694-B6C7-83E2DC4CC931/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لجهاز ROG Xbox Ally مع المنافذ", "en": "Top edge of ROG Xbox Ally with its ports", "ckb": "لێواری سەرەوەی ROG Xbox Ally لەگەڵ دەروازەکان" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally--5",
+      "file": ".cache/product-images/rog-xbox-ally/5.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/B1B9C625-D1DB-4BC5-BC07-69CC8BA0BBBC/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/",
+      "kind": "angle",
+      "alt": { "ar": "ROG Xbox Ally من الجانب لإظهار شكل المقبض", "en": "ROG Xbox Ally from the side, showing the grip shape", "ckb": "ROG Xbox Ally لە لاتەنیشتەوە، شێوەی دەسکەکە نیشان دەدات" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/spec/",
+      "title": "ROG XBOX Ally (2025) RC73YA – Tech Specs",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "model RC73YA, processor, memory, storage, display, ports, controls, wireless, battery, 65W adapter, weight, OS, fingerprint sensor"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/handhelds/rog-xbox-ally",
+      "title": "ROG XBOX Ally X & ROG XBOX Ally",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "current line-up, LPDDR5-6400, dimensions, Xbox mode, in the box (device, 65W charger, stand)"
+    },
+    {
+      "url": "https://www.ign.com/articles/asus-rog-xbox-ally-x-the-final-preview",
+      "title": "Asus ROG Xbox Ally X – The Final Preview",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "launch date 16 October 2025, white colour, spec confirmation, charger and stand in the box"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    },
+    {
+      "url": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/",
+      "title": "ROG XBOX Ally (2025) – Gallery",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "official product images"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/ROG_Xbox_Ally",
+      "title": "ROG Xbox Ally",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: release 16 October 2025; Ryzen Z2 A with a quad-core Zen 2 CPU and 8 RDNA 2 graphics cores; 16GB LPDDR5; 512GB; 7-inch 1080p 120Hz IPS; Wi-Fi 6E and Bluetooth 5.4; 290.8 × 121.5 × 50.7 mm; 670 g"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language cannot install additional languages"
+    }
+  ],
+  "notes": {
+    "ar": "يحتاج حساب Microsoft واتصالاً بالإنترنت للإعداد وتنزيل الألعاب. العراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات Xbox، لذلك Game Pass وألعاب Xbox السحابية غير مقدمة رسمياً هنا؛ ألعاب Steam وEpic وغيرها تعمل بشكل طبيعي. معالج Z2 A يستخدم نفس نوع المعالج (Zen 2) والرسوميات (RDNA 2 بثماني وحدات) الموجودة في Steam Deck، لذلك هو أضعف بكثير من Z2 Extreme في Ally X.",
+    "en": "Needs a Microsoft account and an internet connection to set up and download games. Iraq is not on Microsoft's list of countries where Xbox services are supported, so Game Pass and Xbox Cloud Gaming are not officially offered here; games from Steam, Epic and other stores work normally. The Z2 A uses the same kind of Zen 2 CPU and 8-unit RDNA 2 graphics as the Steam Deck, so it is much slower than the Z2 Extreme in the Ally X.",
+    "ckb": "بۆ ڕێکخستن و داگرتنی یارییەکان پێویستی بە هەژماری Microsoft و پەیوەندیی ئینتەرنێت هەیە. عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی Xbox، بۆیە Game Pass و یارییە هەورییەکانی Xbox بە فەرمی لێرە پێشکەش ناکرێن؛ یارییەکانی Steam و Epic و فرۆشگاکانی تر بە ئاسایی کار دەکەن. Z2 A هەمان جۆری CPU ـی Zen 2 و گرافیکی RDNA 2 بە 8 یەکە بەکاردەهێنێت کە لە Steam Deck ـدا هەیە، بۆیە زۆر لاوازترە لە Z2 Extreme ـی Ally X."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Barcodes were not found on an official page",
+      "ASUS says charger inclusion can vary by country; Xbox.com lists the 65W charger and stand as included"
+    ]
+  }
+}

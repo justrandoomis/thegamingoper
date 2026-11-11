@@ -1,0 +1,65 @@
+{
+  "key": "playstation-vr2--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 798,
+  "aspect": 2.005,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/3-240.d8440a9c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/3-480.536d6a6d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/3-720.da5e7eb2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/3-960.c123e360.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-vr2/3-1440.4134abb6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/3-240.5f32b672.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/3-480.57b1fe6b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/3-720.7a562544.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/3-960.7b6d46f2.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-vr2/3-1440.7abf612e.webp"
+      }
+    ],
+    "png": "/products/playstation-vr2/3-720.76dd43a9.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSGsAAAART6CmkRQ4ew7ugOqtUEBEBJI3v1sBJ7Ztq80NW45mkAwzAMeJTV0lT4BbzxNupxDR/8Rvfj8RABAS8/fL8ib8E3v4fr25pFYX7nH/VKsl1zTFNumynaL4e/VI+fliohCS9f3DaCYAYJvhDwBWUDggiAAAADAEAJ0BKhQACgA/EXKwUCwmpKKwCAGAIgllAMTZi+rNjhqijb96DEwWgAD9Z7Hz55q32BcfWF2sdSLFXQjz1YL/i4d05/XUB88CODfuQN0JLl5Hy2KcVgmwAZvyr9/UldIc23T1D3/ofXaY2lNUPbFTD95/A54/6YH2e2GLVnCs0Vqf7L5ksAA=",
+  "dominant": "#343b48",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_03-16x9-01-09april26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/"
+  },
+  "input": "c8041b248ab3f369"
+}

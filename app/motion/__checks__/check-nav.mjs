@@ -29,8 +29,8 @@ try {
   add("forward: exactly one view transition", vt.length === 1, vt.length);
   add("forward: data-nav=zoom, forward", vt[0]?.nav === "zoom" && vt[0]?.dir === "forward", [vt[0]?.nav, vt[0]?.dir]);
   add(
-    "forward: the page animation is the two root snapshots",
-    vt[0]?.root?.old.includes("tt-grow-away") && vt[0]?.root?.old.includes("tt-fade-out") && vt[0]?.root?.new.includes("tt-grow-in") && vt[0]?.root?.new.includes("tt-fade-in"),
+    "forward: the page animation is the two root snapshots (list lets go, page inflates behind the morph)",
+    vt[0]?.root?.old.includes("tt-zoom-away") && vt[0]?.root?.old.includes("tt-fade-out") && vt[0]?.root?.new.includes("tt-zoom-in") && vt[0]?.root?.new.includes("tt-fade-in"),
     vt[0]?.root,
   );
   add("forward: one shared element pair morphs", shared(vt[0]).length === 1, shared(vt[0]));
@@ -52,6 +52,9 @@ try {
   add("Back: URL", url(page) === "/motion?tab=flow", url(page));
   add("Back: scroll position restored", (await scrollY(page)) === 260, await scrollY(page));
   add("Back: history length unchanged", (await historyLength(page)) === h0 + 1, [(await historyLength(page)) - h0]);
+  // React Router re-runs the list's loader on Back, so the commit happens after popstate, as an ordinary transition.
+  const popToTransition = await page.evaluate((start) => Math.round(start - window.__popAt), vt[0]?.start);
+  add("Back (a data navigation): React starts the view transition after popstate, once the loader has answered", popToTransition > 0 && popToTransition < 1000, popToTransition + " ms after popstate");
 
   // browser Forward
   await page.clearVt();
@@ -182,7 +185,8 @@ try {
   await settled(page);
   vt = await page.vt();
   const played = Math.round(vt[0].finished - vt[0].ready);
-  add("an undisturbed page transition plays its full 320 ms (nothing hurries or cuts it)", vt.length === 1 && played >= 300 && played <= 420, played + " ms");
+  // The longest pieces are the `settle` spring (410 ms): the shared element's morph and the page settling behind it.
+  add("an undisturbed card → page transition plays its full length, ≈ 410 ms (nothing hurries or cuts it)", vt.length === 1 && played >= 380 && played <= 520, played + " ms");
 
   add("no console errors (Arabic run)", page.motionErrors().length === 0, page.motionErrors());
   const knownApp = page.errors.length - page.motionErrors().length;
@@ -207,14 +211,14 @@ try {
     return Math.round(tx);
   };
   const ltrStart = await push(en, '[data-testid="detail-next"]');
-  add("LTR push-forward: the new page enters from the right", ltrStart === 390, ltrStart);
+  add("LTR push-forward: the next page enters 24px from the inline end (the right)", ltrStart === 24, ltrStart);
   add("no console errors (English run)", en.motionErrors().length === 0, en.motionErrors());
   await en.close();
 
   const ar = await openPage(browser);
   await goto(ar, "/motion/item/c");
   const rtl = await push(ar, '[data-testid="detail-next"]');
-  add("RTL push-forward: the new page enters from the left", rtl === -390, rtl);
+  add("RTL push-forward: the next page enters 24px from the inline end (the left)", rtl === -24, rtl);
 
   // deep link: no history to go back to → the Back link navigates with its own zoom-back intent
   await goto(ar, "/motion/item/b");

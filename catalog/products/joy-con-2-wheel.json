@@ -1,0 +1,154 @@
+{
+  "slug": "joy-con-2-wheel",
+  "group": "nintendo-hardware",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "joy-con-2-wheel",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Joy-Con 2 Wheel (set of 2)", "en": "Joy-Con 2 Wheel (set of 2)", "ckb": "Joy-Con 2 Wheel (set of 2)" },
+  "short": {
+    "ar": "مقودان ليدي Joy-Con 2 لألعاب السباق · أزرق فاتح وأحمر فاتح",
+    "en": "Two steering wheels for Joy-Con 2 racing · light blue and light red",
+    "ckb": "دوو سووکان بۆ Joy-Con 2 لە یاریی پێشبڕکێ · شینی کاڵ و سووری کاڵ"
+  },
+  "description": {
+    "ar": "طقم من مقودين تضع في كل منهما يد Joy-Con 2 لتتحكم في ألعاب السباق المتوافقة بإمساك أشبه بالمقود. تُثبّت اليد في المقود بالمغناطيس، والطقم فيه مقود أزرق فاتح وآخر أحمر فاتح. يدا Joy-Con 2 غير مرفقتين.",
+    "en": "A set of two wheels that hold a Joy-Con 2 each, for steering-wheel style control in compatible racing-style games. The Joy-Con 2 snaps in magnetically; the set has one light blue and one light red wheel. Joy-Con 2 are not included.",
+    "ckb": "کۆمەڵەیەک لە دوو سووکان کە هەر یەکەیان Joy-Con 2 ێک هەڵدەگرێت، بۆ کۆنترۆڵی وەک سووکان لە یارییە گونجاوەکانی پێشبڕکێدا. Joy-Con 2 بە موگناتیس تێیدا جێگیر دەبێت؛ کۆمەڵەکە یەک سووکانی شینی کاڵ و یەکی سووری کاڵی تێدایە. Joy-Con 2 لەگەڵدا نییە."
+  },
+  "highlights": [
+    {
+      "ar": "مقودان في العلبة: أزرق فاتح وأحمر فاتح",
+      "en": "Two wheels in the box: light blue and light red",
+      "ckb": "دوو سووکان لە قوتووەکەدا: شینی کاڵ و سووری کاڵ"
+    },
+    {
+      "ar": "تثبيت مغناطيسي يبقي يد Joy-Con 2 في مكانها أثناء السباق",
+      "en": "Magnetic hold keeps the Joy-Con 2 in place while racing",
+      "ckb": "جێگیرکردنی موگناتیسی Joy-Con 2 لە شوێنی خۆی دەهێڵێتەوە لە کاتی پێشبڕکێدا"
+    },
+    {
+      "ar": "ليدي Joy-Con 2 فقط وفي الألعاب المتوافقة؛ اليدان غير مرفقتين",
+      "en": "Joy-Con 2 only, in compatible games; controllers not included",
+      "ckb": "تەنها بۆ Joy-Con 2، لە یارییە گونجاوەکاندا؛ دەسکەکان لەگەڵدا نین"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Works with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "يدا Joy-Con 2 على Nintendo Switch 2، في الألعاب المتوافقة", "en": "Joy-Con 2 on Nintendo Switch 2, in compatible games", "ckb": "Joy-Con 2 لەسەر Nintendo Switch 2، لە یارییە گونجاوەکاندا" }
+    },
+    {
+      "key": "contents",
+      "label": { "ar": "العدد", "en": "Quantity", "ckb": "ژمارە" },
+      "value": { "ar": "مقودان (أزرق فاتح وأحمر فاتح)", "en": "2 wheels (light blue and light red)", "ckb": "2 سووکان (شینی کاڵ و سووری کاڵ)" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "مقود Joy-Con 2 Wheel أزرق فاتح", "en": "Joy-Con 2 Wheel, light blue", "ckb": "Joy-Con 2 Wheel ی شینی کاڵ" },
+    { "ar": "مقود Joy-Con 2 Wheel أحمر فاتح", "en": "Joy-Con 2 Wheel, light red", "ckb": "Joy-Con 2 Wheel ی سووری کاڵ" }
+  ],
+  "variants": [
+    {
+      "sku": "JC2-WHEEL-2PK",
+      "title": { "ar": "Joy-Con 2 Wheel — طقم من مقودين", "en": "Joy-Con 2 Wheel — set of 2", "ckb": "Joy-Con 2 Wheel — کۆمەڵەی دوو دانە" },
+      "options": { "color": "Light Blue / Light Red", "quantity": "2" },
+      "barcodes": ["0045496884802"],
+      "isDefault": true,
+      "images": ["joy-con-2-wheel--1", "joy-con-2-wheel--2", "joy-con-2-wheel--3"],
+      "notes": { "ar": "الباركود أمريكي.", "en": "US barcode.", "ckb": "بارکۆدی ئەمریکی." }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "مع يدي Joy-Con 2 فقط", "en": "With Joy-Con 2 controllers only", "ckb": "تەنها لەگەڵ Joy-Con 2" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-wheel-set-of-2-120834/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "incompatible",
+      "note": { "ar": "لا يعمل مع يدي Joy-Con الخاصتين بـ Nintendo Switch الأول", "en": "Cannot be used with original Nintendo Switch Joy-Con", "ckb": "لەگەڵ Joy-Con ی Nintendo Switch ی یەکەم بەکارنایەت" },
+      "source": "https://www.nintendo.com/sg/hardware/switch2/accessories/index.html"
+    }
+  ],
+  "related": [
+    { "slug": "joy-con-2", "kind": "setup" },
+    { "slug": "mario-kart-world", "kind": "upsell" },
+    { "slug": "nintendo-switch-2-mario-kart-world-bundle", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "joy-con-2-wheel--1",
+      "file": ".cache/product-images/joy-con-2-wheel/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Wheel/Frame_3473691.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "hero",
+      "alt": { "ar": "مقودا Joy-Con 2 الأزرق والأحمر من الأمام", "en": "The light blue and light red Joy-Con 2 Wheels from the front", "ckb": "سووکانی شین و سووری Joy-Con 2 لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "joy-con-2-wheel--2",
+      "file": ".cache/product-images/joy-con-2-wheel/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Wheel/Frame_3473690.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "angle",
+      "alt": { "ar": "المقودان مع يدي Joy-Con 2 بداخلهما (تباعان منفصلتين)", "en": "The wheels with Joy-Con 2 inside (sold separately)", "ckb": "سووکانەکان لەگەڵ Joy-Con 2 لەناویاندا (جیا دەفرۆشرێن)" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "joy-con-2-wheel--3",
+      "file": ".cache/product-images/joy-con-2-wheel/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Controller%20Accessories/120834-nintendo-switch-2-joy-con-2-wheel-set-of-2-back-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-wheel-set-of-2-120834/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية للمقودين", "en": "Back of the two wheels", "ckb": "پشتەوەی هەردوو سووکانەکە" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-wheel-set-of-2-120834/",
+      "title": "Joy-Con 2 Wheel (set of 2)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "magnetic connection, Joy-Con 2 only in compatible games, release date, UPC, images"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/joy-con-2-wheel-set-of-two-000000000010015099",
+      "title": "Joy-Con 2 Wheel (Set of Two) - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "one light blue and one light red wheel, Joy-Con 2 not included, release 5 June 2025, on sale"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "transparent product images, description"
+    },
+    {
+      "url": "https://www.nintendo.com/sg/hardware/switch2/accessories/index.html",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo (Singapore)",
+      "retrieved": "2026-11-11",
+      "supports": "third official description: one light blue and one light red wheel, magnetic connection, Joy-Con 2 not included, cannot be used with Nintendo Switch Joy-Con"
+    }
+  ],
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "List of games that support the wheel (Nintendo only says compatible racing-style games)",
+      "European barcode"
+    ]
+  }
+}

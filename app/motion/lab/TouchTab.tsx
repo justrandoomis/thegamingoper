@@ -4,7 +4,10 @@ import { convertFromIqd, formatMoney, type CurrencyCode } from "~/lib/money";
 import { dematerialize, materialize } from "../lazy";
 import { NumberMorph } from "../number";
 import { springDuration, springValue } from "../spring";
-import { durations, springs, type SpringName } from "../tokens";
+import { durations, SPRING_NAMES, springs, type DurationName, type SpringName } from "../tokens";
+
+/** The DESIGN.md §7.1 durations (the earlier aliases are left out). */
+const DURATION_NAMES: DurationName[] = ["press", "exit", "micro", "release", "theme", "base", "reveal", "sheet", "page", "fly"];
 import { LAB_FX } from "./items";
 
 function HeartGlyph() {
@@ -166,7 +169,7 @@ function MenuSection() {
 /** The spring as a tiny curve: value over time, with the rest line at 1. */
 function SpringCurve({ name }: { name: SpringName }) {
   const spring = springs[name];
-  const seconds = springDuration(spring);
+  const seconds = (spring.settleMs ?? springDuration(spring) * 1000) / 1000;
   const points: string[] = [];
   for (let i = 0; i <= 40; i++) {
     const x = (i / 40) * 100;
@@ -189,16 +192,16 @@ function TokensSection() {
       <h2 id="lab-tokens">{t("tokens.title")}</h2>
       <p>{t("tokens.body")}</p>
       <ul className="lab-springs">
-        {(Object.keys(springs) as SpringName[]).map((name) => (
+        {SPRING_NAMES.map((name) => (
           <li key={name}>
             <SpringCurve name={name} />
             <code dir="ltr">{name}</code>
-            <span className="lab-note">{t("tokens.ms", { value: f.number(Math.round(springDuration(springs[name]) * 1000)) })}</span>
+            <span className="lab-note">{t("tokens.ms", { value: f.number(springs[name].settleMs) })}</span>
           </li>
         ))}
       </ul>
       <ul className="lab-chips">
-        {(Object.keys(durations) as Array<keyof typeof durations>).map((name) => (
+        {DURATION_NAMES.map((name) => (
           <li key={name}>
             <code dir="ltr">{name}</code> <span className="lab-note">{t("tokens.ms", { value: f.number(durations[name]) })}</span>
           </li>

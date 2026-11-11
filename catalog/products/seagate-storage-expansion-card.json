@@ -1,0 +1,313 @@
+{
+  "slug": "seagate-storage-expansion-card",
+  "group": "xbox-hardware",
+  "kind": "storage",
+  "platform": "xbox",
+  "brand": "Seagate",
+  "family": "seagate-storage-expansion-card",
+  "status": "available",
+  "releaseDate": "2020-11-10",
+  "name": {
+    "ar": "Seagate Storage Expansion Card for Xbox Series X|S",
+    "en": "Seagate Storage Expansion Card for Xbox Series X|S",
+    "ckb": "Seagate Storage Expansion Card for Xbox Series X|S"
+  },
+  "short": {
+    "ar": "1TB أو 2TB أو 4TB · نفس سرعة التخزين الداخلي · لـ XBOX Series X|S",
+    "en": "1TB, 2TB or 4TB · same speed as the internal SSD · for XBOX Series X|S",
+    "ckb": "1TB، 2TB یان 4TB · هەمان خێرایی بیرگەی ناوەکی · بۆ XBOX Series X|S"
+  },
+  "description": {
+    "ar": "بطاقة تخزين رسمية من Seagate تُركّب في منفذ التوسعة خلف جهاز XBOX Series X أو Series S، وتعمل بنفس سرعة الـ SSD الداخلي، فتُشغَّل ألعاب Series X|S منها مباشرة. هذا هو الفرق عن أقراص USB الخارجية العادية التي تحفظ ألعاب Series X|S فقط ولا تشغّلها. متوفرة بسعات 1TB و2TB و4TB.",
+    "en": "Seagate's official storage card that plugs into the expansion port on the back of the XBOX Series X or Series S and runs at the same speed as the internal SSD, so Series X|S games play straight from it. That is the difference from ordinary USB drives, which can only store Series X|S games, not run them. Sold in 1TB, 2TB and 4TB.",
+    "ckb": "کارتی بیرگەی فەرمیی Seagate کە لە دەروازەی فراوانکردنی پشتەوەی XBOX Series X یان Series S دادەنرێت و بە هەمان خێرایی SSD ـی ناوەکی کار دەکات، بۆیە یارییەکانی Series X|S ڕاستەوخۆ لێیەوە کار دەکەن. ئەمە جیاوازییە لەگەڵ هاردی USB ـی ئاسایی کە تەنها یارییەکانی Series X|S هەڵدەگرێت و کاریان پێناکات. بە 1TB، 2TB و 4TB هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "تشغيل ألعاب XBOX Series X|S مباشرة من البطاقة بنفس أداء التخزين الداخلي",
+      "en": "Plays XBOX Series X|S games straight from the card at internal-SSD speed",
+      "ckb": "یارییەکانی XBOX Series X|S ڕاستەوخۆ لە کارتەکەوە کار دەکەن بە خێرایی SSD ـی ناوەکی"
+    },
+    {
+      "ar": "تُركّب في منفذ التوسعة المخصص خلف الجهاز، بدون فتح الجهاز",
+      "en": "Plugs into the dedicated expansion port on the back, no need to open the console",
+      "ckb": "لە دەروازەی فراوانکردنی تایبەتی پشتەوە دادەنرێت، پێویست بە کردنەوەی کۆنسۆڵ ناکات"
+    },
+    {
+      "ar": "ثلاث سعات: 1TB و2TB و4TB",
+      "en": "Three sizes: 1TB, 2TB and 4TB",
+      "ckb": "سێ قەبارە: 1TB، 2TB و 4TB"
+    },
+    {
+      "ar": "تعمل مع XBOX Series X وSeries S فقط، لا مع XBOX One",
+      "en": "Works only with XBOX Series X and Series S, not XBOX One",
+      "ckb": "تەنها لەگەڵ XBOX Series X و Series S کار دەکات، نەک XBOX One"
+    }
+  ],
+  "specs": [
+    {
+      "key": "capacity",
+      "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" },
+      "value": { "ar": "1TB أو 2TB أو 4TB", "en": "1TB, 2TB or 4TB", "ckb": "1TB، 2TB یان 4TB" }
+    },
+    {
+      "key": "interface",
+      "label": { "ar": "طريقة التوصيل", "en": "Interface", "ckb": "شێوەی بەستنەوە" },
+      "value": {
+        "ar": "منفذ توسعة التخزين الخاص بأجهزة XBOX Series X|S",
+        "en": "XBOX Series X|S storage expansion port",
+        "ckb": "دەروازەی فراوانکردنی بیرگەی XBOX Series X|S"
+      }
+    },
+    {
+      "key": "performance",
+      "label": { "ar": "الأداء", "en": "Performance", "ckb": "توانا" },
+      "value": {
+        "ar": "نفس سرعة الـ SSD الداخلي (XBOX Velocity Architecture)",
+        "en": "Same peak speed as the internal SSD (XBOX Velocity Architecture)",
+        "ckb": "هەمان خێرایی SSD ـی ناوەکی (XBOX Velocity Architecture)"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "XBOX Series X وXBOX Series S", "en": "XBOX Series X, XBOX Series S", "ckb": "XBOX Series X، XBOX Series S" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "ضمان محدود 3 سنوات من Seagate", "en": "3-year limited warranty (Seagate)", "ckb": "گەرەنتیی سنوورداری 3 ساڵ (Seagate)" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة Seagate Storage Expansion Card", "en": "Seagate Storage Expansion Card", "ckb": "کارتی Seagate Storage Expansion Card" },
+    { "ar": "غطاء واقٍ للبطاقة", "en": "Protective cover", "ckb": "قاپاغی پارێزەر" },
+    { "ar": "دليل البدء السريع", "en": "Quick start guide", "ckb": "ڕێنمایی دەستپێکردنی خێرا" }
+  ],
+  "variants": [
+    {
+      "sku": "SEA-XSEC-1TB",
+      "title": {
+        "ar": "Seagate Storage Expansion Card ‏1TB لـ Xbox Series X|S",
+        "en": "Seagate Storage Expansion Card 1TB for Xbox Series X|S",
+        "ckb": "Seagate Storage Expansion Card ‏1TB بۆ Xbox Series X|S"
+      },
+      "options": { "storage": "1TB" },
+      "modelNumber": "STJR1000400",
+      "barcodes": ["763649142950"],
+      "isDefault": true,
+      "images": ["seagate-storage-expansion-card--1", "seagate-storage-expansion-card--2", "seagate-storage-expansion-card--3", "seagate-storage-expansion-card--4"],
+      "notes": {
+        "ar": "الباركود المذكور هو رمز UPC للنسخة الأمريكية كما يظهر في Best Buy.",
+        "en": "The barcode is the US-retail UPC as listed by Best Buy.",
+        "ckb": "بارکۆدەکە کۆدی UPC ـی وەشانی ئەمریکییە وەک لە Best Buy نووسراوە."
+      }
+    },
+    {
+      "sku": "SEA-XSEC-2TB",
+      "title": {
+        "ar": "Seagate Storage Expansion Card ‏2TB لـ Xbox Series X|S",
+        "en": "Seagate Storage Expansion Card 2TB for Xbox Series X|S",
+        "ckb": "Seagate Storage Expansion Card ‏2TB بۆ Xbox Series X|S"
+      },
+      "options": { "storage": "2TB" },
+      "modelNumber": "STJR2000400",
+      "barcodes": ["763649170311"],
+      "isDefault": false,
+      "images": ["seagate-storage-expansion-card--1", "seagate-storage-expansion-card--2"],
+      "notes": {
+        "ar": "صدرت سعة 2TB في أوائل كانون الأول 2021. الباركود رمز UPC للنسخة الأمريكية (Best Buy).",
+        "en": "The 2TB size launched in early December 2021. The barcode is the US-retail UPC (Best Buy).",
+        "ckb": "قەبارەی 2TB لە سەرەتای کانوونی یەکەمی 2021 دەرچوو. بارکۆدەکە کۆدی UPC ـی وەشانی ئەمریکییە (Best Buy)."
+      }
+    },
+    {
+      "sku": "SEA-XSEC-4TB",
+      "title": {
+        "ar": "Seagate Storage Expansion Card ‏4TB لـ Xbox Series X|S",
+        "en": "Seagate Storage Expansion Card 4TB for Xbox Series X|S",
+        "ckb": "Seagate Storage Expansion Card ‏4TB بۆ Xbox Series X|S"
+      },
+      "options": { "storage": "4TB" },
+      "modelNumber": "STJR4000400",
+      "barcodes": ["763649182376"],
+      "isDefault": false,
+      "images": ["seagate-storage-expansion-card--1", "seagate-storage-expansion-card--2"],
+      "notes": {
+        "ar": "سعة 4TB هي الأكبر، وصدرت في حزيران 2025. الباركود رمز UPC للنسخة الأمريكية (Best Buy).",
+        "en": "4TB is the largest size; it was released in June 2025. The barcode is the US-retail UPC (Best Buy).",
+        "ckb": "4TB گەورەترین قەبارەیە؛ لە حوزەیرانی 2025 دەرچوو. بارکۆدەکە کۆدی UPC ـی وەشانی ئەمریکییە (Best Buy)."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "منفذ التوسعة الخلفي", "en": "Rear expansion port", "ckb": "دەروازەی فراوانکردنی پشتەوە" },
+      "source": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "verified",
+      "note": { "ar": "منفذ التوسعة الخلفي", "en": "Rear expansion port", "ckb": "دەروازەی فراوانکردنی پشتەوە" },
+      "source": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": { "ar": "منفذ التوسعة الخلفي", "en": "Rear expansion port", "ckb": "دەروازەی فراوانکردنی پشتەوە" },
+      "source": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card"
+    }
+  ],
+  "related": [
+    { "slug": "sandisk-optimus-gx-c50-expansion-card", "kind": "alternative" },
+    { "slug": "xbox-series-s", "kind": "setup" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "seagate-storage-expansion-card--1",
+      "file": ".cache/product-images/seagate-storage-expansion-card/1.jpg",
+      "sourceUrl": "https://assets.xboxservices.com/assets/e6/9f/e69ff205-0f26-4500-8c43-5a28a2259f7c.jpg?n=999482_gallery_02_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة Seagate لتوسعة تخزين XBOX من الأمام",
+        "en": "Seagate Storage Expansion Card for XBOX from the front",
+        "ckb": "کارتی فراوانکردنی بیرگەی Seagate بۆ XBOX لە پێشەوە"
+      },
+      "credit": "Microsoft / Seagate",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    },
+    {
+      "key": "seagate-storage-expansion-card--2",
+      "file": ".cache/product-images/seagate-storage-expansion-card/2.jpg",
+      "sourceUrl": "https://assets.xboxservices.com/assets/b4/fe/b4fe6645-e218-431e-aa45-c06c7cea1f82.jpg?n=999482_gallery_04_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
+      "kind": "in-box",
+      "alt": {
+        "ar": "البطاقة مع غطائها الواقي",
+        "en": "The card with its protective cap",
+        "ckb": "کارتەکە لەگەڵ قاپاغە پارێزەرەکەی"
+      },
+      "credit": "Microsoft / Seagate",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    },
+    {
+      "key": "seagate-storage-expansion-card--3",
+      "file": ".cache/product-images/seagate-storage-expansion-card/3.jpg",
+      "sourceUrl": "https://assets.xboxservices.com/assets/dc/f4/dcf4e0e0-df93-4885-84fd-8f1f7ea3337d.jpg?n=999482_gallery_01_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
+      "kind": "angle",
+      "alt": {
+        "ar": "بطاقتان من Seagate بسعة 1TB بزاوية مائلة، إحداهما بغطائها",
+        "en": "Two 1TB Seagate cards at an angle, one with its cover on",
+        "ckb": "دوو کارتی 1TB ـی Seagate بە گۆشەیەکی لار، یەکێکیان بە قاپاغەکەیەوە"
+      },
+      "credit": "Microsoft / Seagate",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    },
+    {
+      "key": "seagate-storage-expansion-card--4",
+      "file": ".cache/product-images/seagate-storage-expansion-card/4.jpg",
+      "sourceUrl": "https://assets.xboxservices.com/assets/50/ee/50eee683-941d-4fea-a6aa-9089f0fb6bab.jpg?n=999482_gallery_05_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
+      "kind": "detail",
+      "alt": {
+        "ar": "البطاقة مركّبة في منفذ التوسعة خلف XBOX Series X",
+        "en": "The card plugged into the expansion port on the back of an XBOX Series X",
+        "ckb": "کارتەکە لە دەروازەی فراوانکردنی پشتەوەی XBOX Series X دانراوە"
+      },
+      "credit": "Microsoft / Seagate",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
+      "title": "Seagate Storage Expansion Card for Xbox Series X|S",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "sizes currently listed (1TB, 2TB, 4TB), same speed as the internal SSD, release November 2020, compatible with XBOX Series X and Series S, images"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
+      "title": "XBOX Series X (FAQ: increasing console storage)",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "the expansion card plugs into the dedicated port on the back and replicates the internal SSD experience"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+      "title": "Xbox Series X and Series S",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "1TB card at launch, 512GB and 2TB at the end of 2021, 4TB in June 2025; USB drives can only run backward-compatible games"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2020/09/24/xbox-series-x-and-xbox-series-s-custom-storage-solution-primer/",
+      "title": "A Primer on the Simple and Custom Storage Options Available for Xbox Series X and Xbox Series S at Launch",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "1TB card launched alongside the consoles on 10 November 2020; matches the internal SSD; USB drives store but cannot play games optimized for Series X|S"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2021/10/21/new-seagate-storage-expansion-cards/",
+      "title": "New 2TB and 512GB Seagate Storage Expansion Cards for Xbox Series X|S",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "2TB card launching in early December 2021 (512GB in mid-November 2021)"
+    },
+    {
+      "url": "https://www.windowscentral.com/gaming/this-new-official-xbox-4tb-storage-card-costs-almost-as-much-as-the-xbox-series-x-itself",
+      "title": "Seagate releases first-ever 4TB Xbox Storage Card",
+      "publisher": "Windows Central",
+      "retrieved": "2026-11-11",
+      "supports": "4TB card released at US retail in June 2025"
+    },
+    {
+      "url": "https://www.dell.com/en-us/shop/client-storage/apd/seagate-stjr1000400-1-tb-solid-state-drive-plug-in-card-internal-pci-express-nvme/8hwgxh/stjr1000400",
+      "title": "Seagate STJR1000400 1 TB Solid State Drive - Plug-in Card",
+      "publisher": "Dell",
+      "retrieved": "2026-11-11",
+      "supports": "manufacturer part number STJR1000400, package contents (card, protective cover, quick start guide), 3-year limited warranty"
+    },
+    {
+      "url": "https://www.bestbuy.com/product/seagate-1tb-storage-expansion-card-for-xbox-series-xs-nvme-ssd-black/J37C5HZ2W7",
+      "title": "Seagate 1TB Storage Expansion Card for Xbox Series X|S",
+      "publisher": "Best Buy",
+      "retrieved": "2026-11-11",
+      "supports": "model STJR1000400, UPC 763649142950 (US); the 2TB (J37C5H459S) and 4TB (J37C5H5HZJ) listings give STJR2000400 / UPC 763649170311 and STJR4000400 / UPC 763649182376"
+    },
+    {
+      "url": "https://www.techtimes.com/articles/323859/20260810/sandisk-launches-xbox-expansion-card-19999-third-licensed-competitor-arrives-before-gta-vi.htm",
+      "title": "SanDisk Launches Xbox Expansion Card at $199.99",
+      "publisher": "Tech Times",
+      "retrieved": "2026-11-11",
+      "supports": "second source for the standard 3-year warranty on Seagate expansion cards; Seagate was the only licensed maker from November 2020 until 2023"
+    }
+  ],
+  "notes": {
+    "ar": "أقراص USB الخارجية العادية تحفظ ألعاب XBOX Series X|S فقط ولا تشغّلها، بينما هذه البطاقة تشغّلها مباشرة. كانت هناك سعة 512GB أيضاً لكنها لم تعد مدرجة في صفحة XBOX الحالية. موقع Seagate يحجب الزوار من العراق، لذلك لا يمكن الوصول إلى صفحات الدعم والضمان الخاصة بها من هنا.",
+    "en": "Ordinary USB drives can store XBOX Series X|S games but cannot run them; this card runs them directly. A 512GB size also existed but is no longer listed on the current XBOX page. Seagate's website blocks visitors from Iraq, so its support and warranty pages cannot be reached from here.",
+    "ckb": "هاردی USB ـی ئاسایی یارییەکانی XBOX Series X|S هەڵدەگرێت بەڵام کاریان پێناکات؛ ئەم کارتە ڕاستەوخۆ کاریان پێدەکات. قەبارەی 512GB ـیش هەبوو بەڵام ئێستا لە پەڕەی ئێستای XBOX ـدا نییە. ماڵپەڕی Seagate سەردانکەرانی عێراق ڕێگری دەکات، بۆیە پەڕەکانی پشتگیری و گەرەنتییەکەی لێرەوە ناکرێنەوە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "seagate.com blocks visitors from Iraq (Cloudflare error 1009), so Seagate's own spec sheet could not be read; model numbers, package contents and the 3-year warranty come from Dell and Best Buy listings",
+      "Card dimensions and weight were not checked",
+      "Images are Microsoft's 1056 × 594 photos from xbox.com on a white background; Seagate's transparent originals could not be downloaded from Iraq"
+    ]
+  }
+}

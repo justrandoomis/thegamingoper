@@ -84,9 +84,10 @@ describe("demo seed definitions", () => {
   });
 
   it("hold about 50 products of every kind the brief lists", () => {
-    const byKind = Object.groupBy(DEMO_PRODUCTS, (product) => product.kind);
+    const byKind: Record<string, number> = {};
+    for (const product of DEMO_PRODUCTS) byKind[product.kind] = (byKind[product.kind] ?? 0) + 1;
     expect(DEMO_PRODUCTS.length).toBe(51);
-    expect(Object.fromEntries(Object.entries(byKind).map(([kind, list]) => [kind, list?.length]))).toEqual({
+    expect(byKind).toEqual({
       console: 11,
       controller: 6,
       headset: 2,

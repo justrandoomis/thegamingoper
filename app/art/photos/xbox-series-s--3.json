@@ -1,0 +1,49 @@
+{
+  "key": "xbox-series-s--3",
+  "view": "hero",
+  "width": 910,
+  "height": 1355,
+  "aspect": 0.6716,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-s/3-240.65b24f23.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-s/3-480.38905e3c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-s/3-720.6bfc6a7b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-s/3-240.cc5c2743.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-s/3-480.46bf23cb.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-s/3-720.ec1b9a51.webp"
+      }
+    ],
+    "png": "/products/xbox-series-s/3-720.09708c3e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSFUAAAART6AkABA0xwGiO42ICMD+YfozMI1s28klI/9z6IykDdrJYDPYr7j1/u9oIKL/g6DEAYDtiQzN+G+1pMb7fAE0Sda21rba/TqaiTR0u7tK08kBlAgAAFZQOCBiAAAA8AMAnQEqDQAUAD8RdLRRLCalIrAIAYAiCWkABD9xHz4QXbj+AI3uwAD+63Fwb1SC1/DLhA8C/mg4xbQyzxdi/g0jnzVOTwh7v62Rp3IRG4zaB1w44+ZZNhFnX7WKDZ4AAAA=",
+  "dominant": "#f6f6f7",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-S-White-Console-Side?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn"
+  },
+  "input": "cd1fb8c7a64e21c7"
+}

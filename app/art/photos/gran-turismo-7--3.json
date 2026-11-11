@@ -1,0 +1,65 @@
+{
+  "key": "gran-turismo-7--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/gran-turismo-7/3-240.a8da17fa.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/gran-turismo-7/3-480.62cdee83.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/gran-turismo-7/3-720.114e36f8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/gran-turismo-7/3-960.dbd8d4f4.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/gran-turismo-7/3-1440.2dc06b4b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/gran-turismo-7/3-240.9790304c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/gran-turismo-7/3-480.7ebe6a73.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/gran-turismo-7/3-720.37cacc37.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/gran-turismo-7/3-960.4f24d7c5.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/gran-turismo-7/3-1440.2efa3720.webp"
+      }
+    ],
+    "png": "/products/gran-turismo-7/3-720.7b1b8e57.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAACQAwCdASoUAAsAPxF0sFCsJqSisAgBgCIJYwAAXod7HT2eoYPQAP7NfxSkZDh77vL0wXs89LmH3jEFxngU8tau93BvS9FpffHximn1BQlGkMg3/47sejaFAAA=",
+  "dominant": "#595658",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-screenshot-02-en-3oct25?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/gran-turismo-7/"
+  },
+  "input": "3dfcb9c5087b7f0b"
+}

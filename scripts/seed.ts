@@ -71,8 +71,12 @@ function fail(message: string): never {
 const ROLES_SEED = path.join(PROJECT_ROOT, "app", "server", "auth", "seed-roles.ts");
 const ROLES_SEED_LABEL = path.relative(PROJECT_ROOT, ROLES_SEED).replaceAll("\\", "/");
 
-type SeedContext = { d1: D1Database; kv: KVNamespace; env: Env };
-type RolesSeed = (db: Db, now: number, context: SeedContext) => unknown;
+/**
+ * seedRoles(db, now) from the auth owner. Called with two arguments only: its third parameter is
+ * its own options object (`{ reset }`), which this script never sets — existing roles keep the
+ * permissions the owner gave them.
+ */
+type RolesSeed = (db: Db, now: number) => unknown;
 
 /** The roles seed belongs to the auth owner; accept the obvious export names. */
 function findRolesSeed(module: Record<string, unknown>): RolesSeed | null {
@@ -85,7 +89,7 @@ function findRolesSeed(module: Record<string, unknown>): RolesSeed | null {
 const summary = (value: unknown) => (value === undefined ? "" : ` ${JSON.stringify(value)}`);
 
 /** Runs reference → roles → demo. Returns the demo result, or null when a step failed (already reported). */
-async function runSeeds(db: Db, now: number, context: SeedContext, overwrite: boolean): Promise<SeedDemoResult | null> {
+async function runSeeds(db: Db, now: number, overwrite: boolean): Promise<SeedDemoResult | null> {
   let step = "Reference data";
   try {
     const reference = await seedReference(db, now);
@@ -104,7 +108,7 @@ async function runSeeds(db: Db, now: number, context: SeedContext, overwrite: bo
         console.error(`Roles: ${ROLES_SEED_LABEL} exports no seed function (found: ${Object.keys(module).join(", ") || "nothing"}). Expected seedRoles(db, now).`);
         return null;
       }
-      console.log(`Roles: seeded${summary(await seedRoles(db, now, context))}.`);
+      console.log(`Roles: seeded${summary(await seedRoles(db, now))}.`);
     }
 
     step = "Demo data";
@@ -143,7 +147,8 @@ function printCounts(title: string, counts: Map<string, number>, changed?: Recor
   console.log(title);
   const width = Math.max(...[...counts.keys()].map((name) => name.length));
   for (const [name, count] of counts) {
-    const extra = changed && name in changed ? `   (+${changed[name]} this run)` : "";
+    // "Written": inserted, or with --overwrite also refreshed in place (the row count then stays the same).
+    const extra = changed && name in changed ? `   (${changed[name]} written this run)` : "";
     console.log(`  ${name.padEnd(width)}  ${String(count).padStart(5)}${extra}`);
   }
 }
@@ -165,7 +170,7 @@ async function seedLocal(args: Args): Promise<number> {
       console.error("The local database has no schema yet. Run `npm run db:migrate` (or `npm run db:reset`) first.");
       return 1;
     }
-    const demo = await runSeeds(createDb(d1), Date.now(), { d1, kv: proxy.env.KV, env: proxy.env }, args.overwrite);
+    const demo = await runSeeds(createDb(d1), Date.now(), args.overwrite);
     if (!demo) return 1;
     printCounts("Rows in the local database (tables the demo seed writes):", await countRows(d1, Object.keys(demo.rows)), demo.changed);
     return 0;
@@ -189,7 +194,7 @@ async function writeSqlFile(args: Args & { sqlFile: string }): Promise<number> {
 
     const recorded: RecordedStatement[] = [];
     const now = Date.now();
-    const demo = await runSeeds(createDb(recordWrites(d1, recorded)), now, { d1, kv: proxy.env.KV, env: proxy.env }, args.overwrite);
+    const demo = await runSeeds(createDb(recordWrites(d1, recorded)), now, args.overwrite);
     if (!demo) return 1;
     const expected = await countRows(d1);
 

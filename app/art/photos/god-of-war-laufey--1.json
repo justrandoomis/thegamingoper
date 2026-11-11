@@ -1,0 +1,57 @@
+{
+  "key": "god-of-war-laufey--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/god-of-war-laufey/1-240.85ae4bb9.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/god-of-war-laufey/1-480.4ca06669.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/god-of-war-laufey/1-720.8149cf9e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/god-of-war-laufey/1-960.01281c81.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/god-of-war-laufey/1-240.87f75e2c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/god-of-war-laufey/1-480.17ccc81a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/god-of-war-laufey/1-720.9b5a1e37.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/god-of-war-laufey/1-960.654338f2.webp"
+      }
+    ],
+    "png": "/products/god-of-war-laufey/1-720.ed9c4620.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJaACdACP8irSUhCWbauKwZAAA/t8jl7s4Hq/9bxqXcXpgeRH8fyqnHZ8enSFXS2OVynM9oi3KnzXAoir96/F2gDh4iTbz6FAxyQwXHdtYgy6qis4AAA==",
+  "dominant": "#b9a7a7",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202609/1800/23a416e877cc00fd8c6048fc5bdde65a1d7aedc1ad010612.png",
+    "page": "https://store.playstation.com/en-gb/concept/10009461"
+  },
+  "input": "81821d1683fcd3da"
+}

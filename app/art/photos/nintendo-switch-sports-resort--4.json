@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-sports-resort--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-sports-resort/4-240.35413504.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-sports-resort/4-480.e0272c11.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-sports-resort/4-720.4f33f312.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-sports-resort/4-960.5aea704e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-sports-resort/4-1440.8bacd582.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-sports-resort/4-240.5a57a709.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-sports-resort/4-480.c006aa78.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-sports-resort/4-720.dfb95776.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-sports-resort/4-960.ee2536ce.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-sports-resort/4-1440.c832fb84.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-sports-resort/4-720.7b8fa310.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACsMoAC2TLstYaBRKHA6IAA3QXyAjOWKVS68MvvLuEn9tt1Q52pjh5HiB6mLzXmSCYB9QsvpTeZKAfY6iWu7/vqtBR3kd+lIun+xquCD9C5un2bzx+AAAA=",
+  "dominant": "#e4e5ed",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000125145/f4808a077d8fb54d01c340b1da50f110cfed32c3532ab697fc8bc65ad39344eb",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-switch-2/"
+  },
+  "input": "b01b140631900132"
+}

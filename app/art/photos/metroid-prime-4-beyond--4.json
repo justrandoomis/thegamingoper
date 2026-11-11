@@ -1,0 +1,65 @@
+{
+  "key": "metroid-prime-4-beyond--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/metroid-prime-4-beyond/4-240.4e991ca0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/metroid-prime-4-beyond/4-480.2d8aefe7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/metroid-prime-4-beyond/4-720.69a4c696.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/metroid-prime-4-beyond/4-960.eb9d9474.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/metroid-prime-4-beyond/4-1440.f369946e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/metroid-prime-4-beyond/4-240.4d7394ed.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/metroid-prime-4-beyond/4-480.d3ec27b3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/metroid-prime-4-beyond/4-720.b44b7616.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/metroid-prime-4-beyond/4-960.7f497ebd.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/metroid-prime-4-beyond/4-1440.1c4067dd.webp"
+      }
+    ],
+    "png": "/products/metroid-prime-4-beyond/4-720.247da9ec.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAABQBACdASoUAAsAPxFysFAsJqSisAgBgCIJYwC26JPC90vM4Q2wVEr5sjAAAPk+gu8DlJoB4n/tS5FxGAcKfWPSpuF4mB4LKtR5CE3DlrfYoa7aUN0qzQ5w1rYcqwzEJ1leXiR0QAA=",
+  "dominant": "#070707",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000104849/7a81e0199a426e7a8441556d0a449ac0e05ccbcc184882f6006d6fdee0a22a32",
+    "page": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-switch-2/"
+  },
+  "input": "ebc57fbbaeeec4e6"
+}

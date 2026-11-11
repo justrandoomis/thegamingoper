@@ -1,0 +1,49 @@
+{
+  "key": "playstation-pulse-wireless-headset--3",
+  "view": "hero",
+  "width": 904,
+  "height": 1064,
+  "aspect": 0.8496,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-pulse-wireless-headset/3-240.851797dc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-pulse-wireless-headset/3-480.42e7514e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-pulse-wireless-headset/3-720.7cbb42fc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-pulse-wireless-headset/3-240.a86b2ff6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-pulse-wireless-headset/3-480.ae56bd4d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-pulse-wireless-headset/3-720.4bd80f46.webp"
+      }
+    ],
+    "png": "/products/playstation-pulse-wireless-headset/3-720.6bca5ff3.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjwBAABXRUJQVlA4WAoAAAAQAAAAEAAAEwAAQUxQSH4AAAART6CobSM2VQx93Z4REWh+l2QbnNi27SY3PTIBFRcJ7qOwX1FcU7gwg95cb7rf8f42hYj+TwCsrz1dtf+Gmlc8SzR3TxZK1odoKqJAFiuD1DCLUWoG4fTRUGT9z6cPYL4hGbdQ/kkyvaCi4aBJLphpwjGkMgGAL9nxFXFvwxFWUDggmAAAAFAEAJ0BKhEAFAA/EYC4VawoJSMoCAGAIgllAAPkaPbuS7JtEOwYMITN2EAA/r3Ibajt1f2exn0U5Usma5eCNeaWlZvYDpCsWZsayZOfiVhi9LmZwCMxn8o39KauNuRnSFNvy+81wtNmXrEh1auuLADpwzpkurWLsaf4ICCuF6L52SZzMSCmqZ90lGypuDm7UtYhv5IAAAAA",
+  "dominant": "#282b34",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE-WHITE-PR-01-PSL-16x9-01-09jul26-_en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/"
+  },
+  "input": "5115d5050041bb20"
+}

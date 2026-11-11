@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 950,
+  "aspect": 1.6842,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go/4-240.24ce183c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go/4-480.def7ad43.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go/4-720.cb263ed4.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go/4-960.20dcd3f1.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go/4-1440.11496d1e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go/4-240.4dd7130f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go/4-480.51a85144.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go/4-720.97887fe7.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go/4-960.e3b5368d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go/4-1440.227fba02.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go/4-720.e87cdf56.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSGUAAAART6CmbSQ2dyC+1/G3j4iABP+WHMFtrW1L86I1/wbYAG499C7pPFlA61Shj337fmSGiP5PAP41D7fTse9d4EHsrODFkYYPN0vGj1vBIz5HtaBjvaDA+9GT6F5KEOeyOEYSACEEeABWUDggWgAAALADAJ0BKhQADAA/EXSwUKwmpKKwCAGAIglpAAPhsZz/aqyjo9GgAP13fv/EDvmdawScmzFioC267UdqfLRO0eVzrfrgQxcD2CAm4fj1exjW3cFT1aPiZtAAAA==",
+  "dominant": "#282828",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#11_Legion_Go_Hero_Kickstand_Out.png",
+    "page": "https://news.lenovo.com/press-kits/ifa-2023/"
+  },
+  "input": "674f25667507a41f"
+}

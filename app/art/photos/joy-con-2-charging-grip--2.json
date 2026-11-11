@@ -1,0 +1,57 @@
+{
+  "key": "joy-con-2-charging-grip--2",
+  "view": "hero",
+  "width": 1207,
+  "height": 1005,
+  "aspect": 1.201,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-charging-grip/2-240.c0b58eb8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-charging-grip/2-480.b01fe237.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-charging-grip/2-720.fc76d593.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-charging-grip/2-960.8eee340d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-charging-grip/2-240.7d4adbb1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-charging-grip/2-480.6c6e3ec7.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-charging-grip/2-720.784306f7.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-charging-grip/2-960.59b4a9e7.webp"
+      }
+    ],
+    "png": "/products/joy-con-2-charging-grip/2-720.e0ae7ac1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSGwAAAART6A0kiQ1fJbUOb4H+e4jImBf/C36DE5s23aaS0cimQKuN4djAB3XEt/zbSJjezLf9/4YIvo/AZBeu7bdpgDKP6kDN8oFHpQHPKkCeFMjnB91V/w/q5WcPnHmjrOunC0zcZZT1UIIkZwUSAJWUDggVAAAANADAJ0BKhQAEQA/EXK0UywmJSKwGAgBgCIJaQAAJYnUr7eUmCOssAD6EDZvC9VIT9ntK1J7AJNzQjgKziU7w4wCuAd43pKy7M2zmE2sNH64TAAAAA==",
+  "dominant": "#35383a",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Grips/Frame_3473715.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "b7abb88ec6c1a342"
+}

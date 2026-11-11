@@ -119,7 +119,9 @@ export type SearchDoc = {
 
 /**
  * Statements that replace a product's rows in the search index (pass `[]` to remove it, e.g. when
- * the product is unpublished). Put them in the same batch as the product write.
+ * the product is unpublished). Put them in the same batch as the product write, and LAST in it:
+ * D1 counts FTS5's shadow-table writes as changes, partly against the statement that follows, so
+ * an `expectChanged()` guard after them would be wrong (drizzle/README.md, "Rules").
  */
 export function searchIndexStatements(db: Db, productId: string, docs: readonly SearchDoc[]): BatchStatement[] {
   const statements: BatchStatement[] = [db.delete(searchIndex).where(eq(searchIndex.productId, productId))];

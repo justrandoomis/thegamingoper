@@ -1,0 +1,349 @@
+{
+  "slug": "xbox-series-s",
+  "group": "xbox-hardware",
+  "kind": "console",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "deviceModel": "xbox-series-s",
+  "family": "xbox-series-s",
+  "status": "available",
+  "releaseDate": "2020-11-10",
+  "name": { "ar": "XBOX Series S", "en": "XBOX Series S", "ckb": "XBOX Series S" },
+  "short": {
+    "ar": "512GB أو 1TB · رقمي بالكامل · دقة 1440p حتى 120 إطاراً",
+    "en": "512GB or 1TB · all-digital · 1440p up to 120 FPS",
+    "ckb": "512GB یان 1TB · تەواو دیجیتاڵ · ‏1440p تا 120 FPS"
+  },
+  "description": {
+    "ar": "أصغر جهاز XBOX، أصغر بنحو 60% من Series X، ويشغّل نفس ألعاب الجيل الحالي بدقة 1440p حتى 120 إطاراً في الثانية مع إمكانية رفع الصورة إلى 4K. رقمي بالكامل بدون مشغل أقراص، ويأتي باللون الأبيض Robot White بسعة 512GB أو 1TB. خيار مناسب لمن يريد ألعاب XBOX الحديثة بسعر أقل ولا يحتاج أقراصاً.",
+    "en": "The smallest XBOX, about 60% smaller than the Series X, running the same current-generation games at 1440p and up to 120 frames per second, with upscaling to 4K. It is all-digital with no disc drive, and comes in Robot White with 512GB or 1TB of storage. A good fit for anyone who wants current XBOX games for less and does not need discs.",
+    "ckb": "بچووکترین XBOX، نزیکەی 60% بچووکترە لە Series X، و هەمان یارییەکانی ئەم نەوەیە بە 1440p و تا 120 وێنە لە چرکەیەکدا کار پێدەکات، لەگەڵ گەورەکردنی وێنە بۆ 4K. تەواو دیجیتاڵە و خوێنەری دیسکی نییە، و بە ڕەنگی سپیی Robot White بە 512GB یان 1TB دێت. گونجاوە بۆ ئەوەی یارییە نوێیەکانی XBOX ـی بە نرخێکی کەمتر دەوێت و پێویستی بە دیسک نییە."
+  },
+  "highlights": [
+    {
+      "ar": "تصميم صغير: 6.5 × 15.1 × 27.5 سم ووزن 1.92 كغم",
+      "en": "Compact: 6.5 × 15.1 × 27.5 cm and 1.92 kg",
+      "ckb": "بچووک: 6.5 × 15.1 × 27.5 سم و 1.92 کگم"
+    },
+    {
+      "ar": "ألعاب بدقة 1440p حتى 120 إطاراً، مع رفع الصورة إلى 4K",
+      "en": "Games at 1440p up to 120 FPS, upscaled to 4K",
+      "ckb": "یاری بە 1440p تا 120 FPS، لەگەڵ گەورەکردنی وێنە بۆ 4K"
+    },
+    {
+      "ar": "رقمي بالكامل: لا يشغّل أقراص الألعاب",
+      "en": "All-digital: does not play game discs",
+      "ckb": "تەواو دیجیتاڵ: دیسکی یاری کار پێناکات"
+    },
+    {
+      "ar": "SSD سعة 512GB أو 1TB، قابل للتوسعة ببطاقة توسعة التخزين",
+      "en": "512GB or 1TB SSD, expandable with a Storage Expansion Card",
+      "ckb": "SSD ـی 512GB یان 1TB، بە کارتی فراوانکردنی بیرگە زیاد دەکرێت"
+    },
+    {
+      "ar": "يشغّل نفس ألعاب XBOX Series X وآلاف ألعاب الأجيال السابقة الرقمية، وقوائمه متوفرة بالعربية",
+      "en": "Runs the same games as XBOX Series X plus thousands of digital back-catalogue games; menus available in Arabic",
+      "ckb": "هەمان یارییەکانی XBOX Series X و هەزاران یاریی دیجیتاڵی نەوەکانی پێشوو کار پێدەکات؛ لیستەکانی بە عەرەبیش هەن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "Processor (CPU)", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "8 أنوية AMD Zen 2 مخصصة بتردد 3.6GHz ‏(3.4GHz مع SMT)",
+        "en": "8-core custom AMD Zen 2 at 3.6GHz (3.4GHz with SMT)",
+        "ckb": "8 ناوکی AMD Zen 2 ـی تایبەت بە 3.6GHz ‏(3.4GHz لەگەڵ SMT)"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "معالج الرسوميات", "en": "Graphics (GPU)", "ckb": "گرافیک (GPU)" },
+      "value": {
+        "ar": "4 TFLOPS، ‏20 وحدة حوسبة بتردد 1.565GHz، معمارية AMD RDNA 2 مخصصة",
+        "en": "4 TFLOPS, 20 CUs at 1.565GHz, custom AMD RDNA 2",
+        "ckb": "4 TFLOPS، ‏20 CU بە 1.565GHz، AMD RDNA 2 ـی تایبەت"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگەی RAM" },
+      "value": {
+        "ar": "10GB GDDR6 بناقل 128-bit ‏(8GB بسرعة 224GB/s و2GB بسرعة 56GB/s)",
+        "en": "10GB GDDR6, 128-bit bus (8GB at 224GB/s, 2GB at 56GB/s)",
+        "ckb": "10GB GDDR6، ‏128-bit ‏(8GB بە 224GB/s و 2GB بە 56GB/s)"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين الداخلي", "en": "Internal storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "SSD ‏NVMe مخصص سعة 512GB أو 1TB، ‏2.4GB/s خام و4.8GB/s مضغوط",
+        "en": "512GB or 1TB custom NVMe SSD, 2.4GB/s raw, 4.8GB/s compressed",
+        "ckb": "SSD ـی NVMe ـی تایبەت 512GB یان 1TB، ‏2.4GB/s خاو و 4.8GB/s پەستێنراو"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "منفذ بطاقة توسعة التخزين، ودعم أقراص USB 3.1 الخارجية للتخزين",
+        "en": "Storage Expansion Card slot, plus USB 3.1 external drives for storage",
+        "ckb": "دەروازەی کارتی فراوانکردنی بیرگە، لەگەڵ هاردی دەرەکیی USB 3.1 بۆ هەڵگرتن"
+      }
+    },
+    {
+      "key": "optical",
+      "label": { "ar": "مشغل الأقراص", "en": "Disc drive", "ckb": "خوێنەری دیسک" },
+      "value": { "ar": "لا يوجد (رقمي بالكامل)", "en": "None (all-digital)", "ckb": "نییە (تەواو دیجیتاڵ)" }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "الدقة والأداء", "en": "Resolution and frame rate", "ckb": "ڕوونی و خێرایی وێنە" },
+      "value": {
+        "ar": "دقة ألعاب 1440p، حتى 120 إطاراً في الثانية",
+        "en": "1440p gaming resolution, up to 120 FPS",
+        "ckb": "ڕوونیی یاری 1440p، تا 120 FPS"
+      }
+    },
+    {
+      "key": "hdmi",
+      "label": { "ar": "مزايا HDMI", "en": "HDMI features", "ckb": "تایبەتمەندییەکانی HDMI" },
+      "value": {
+        "ar": "HDMI 2.1 مع Auto Low Latency Mode وVariable Refresh Rate وAMD FreeSync",
+        "en": "HDMI 2.1 with Auto Low Latency Mode, Variable Refresh Rate and AMD FreeSync",
+        "ckb": "HDMI 2.1 لەگەڵ Auto Low Latency Mode و Variable Refresh Rate و AMD FreeSync"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ HDMI 2.1، ‏3 منافذ USB 3.1 Gen 1، منفذ Ethernet",
+        "en": "1× HDMI 2.1, 3× USB 3.1 Gen 1, Ethernet",
+        "ckb": "1× HDMI 2.1، ‏3× USB 3.1 Gen 1، Ethernet"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
+      "value": {
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی XBOX Wireless"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "6.5 × 15.1 × 27.5 سم", "en": "6.5 × 15.1 × 27.5 cm", "ckb": "6.5 × 15.1 × 27.5 سم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "1.92 كغم", "en": "1.92 kg", "ckb": "1.92 کگم" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز XBOX Series S", "en": "XBOX Series S console", "ckb": "کۆنسۆڵی XBOX Series S" },
+    { "ar": "يد XBOX Wireless Controller", "en": "XBOX Wireless Controller", "ckb": "دەسکی XBOX Wireless Controller" },
+    { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
+    { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
+  ],
+  "variants": [
+    {
+      "sku": "XSS-512-WHT",
+      "title": {
+        "ar": "XBOX Series S ‏512GB، أبيض Robot White",
+        "en": "XBOX Series S 512GB, Robot White",
+        "ckb": "XBOX Series S ‏512GB، سپیی Robot White"
+      },
+      "options": { "storage": "512GB", "color": "Robot White" },
+      "modelNumber": "1883",
+      "isDefault": true,
+      "images": ["xbox-series-s--1", "xbox-series-s--2", "xbox-series-s--3"]
+    },
+    {
+      "sku": "XSS-1TB-WHT",
+      "title": {
+        "ar": "XBOX Series S ‏1TB، أبيض Robot White",
+        "en": "XBOX Series S 1TB, Robot White",
+        "ckb": "XBOX Series S ‏1TB، سپیی Robot White"
+      },
+      "options": { "storage": "1TB", "color": "Robot White" },
+      "modelNumber": "1883",
+      "isDefault": false,
+      "images": ["xbox-series-s--1", "xbox-series-s--2", "xbox-series-s--3"],
+      "notes": {
+        "ar": "نسخة 1TB البيضاء صدرت في 15 تشرين الأول 2024 ولها نفس الشكل الخارجي.",
+        "en": "The white 1TB version launched on 15 October 2024 and looks the same from outside.",
+        "ckb": "وەشانی سپیی 1TB لە 15ی تشرینی یەکەمی 2024 دەرچوو و ڕووکاری دەرەوەی هەمان شتە."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "upsell" },
+    { "slug": "xbox-series-x-digital", "kind": "upsell" },
+    { "slug": "seagate-storage-expansion-card", "kind": "accessory" },
+    { "slug": "sandisk-optimus-gx-c50-expansion-card", "kind": "accessory" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "xbox-rechargeable-battery-usb-c", "kind": "accessory" },
+    { "slug": "xbox-wireless-headset", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "xbox-series-s--1",
+      "file": ".cache/product-images/xbox-series-s/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSS_Image-Buy-Box_Boxshot_2555x1994?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز XBOX Series S الأبيض من جهة فتحة التهوية الدائرية، مع يد التحكم",
+        "en": "White XBOX Series S showing its round vent, with its controller",
+        "ckb": "XBOX Series S ـی سپی لە لای کونی هەواکێشە بازنەییەکەیەوە، لەگەڵ دەسکەکەی"
+      },
+      "credit": "Microsoft",
+      "width": 2555,
+      "height": 1994,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-s--2",
+      "file": ".cache/product-images/xbox-series-s/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-S-White-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
+      "kind": "angle",
+      "alt": {
+        "ar": "XBOX Series S بزاوية مائلة مع اليد",
+        "en": "XBOX Series S at an angle with the controller",
+        "ckb": "XBOX Series S بە گۆشەیەکی لار لەگەڵ دەسکەکە"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 1500,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-s--3",
+      "file": ".cache/product-images/xbox-series-s/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-S-White-Console-Side?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
+      "kind": "angle",
+      "alt": {
+        "ar": "XBOX Series S من الأمام يظهر نحافة الجهاز، مع اليد",
+        "en": "XBOX Series S from the front, showing how slim it is, with the controller",
+        "ckb": "XBOX Series S لە پێشەوە، باریکییەکەی دیارە، لەگەڵ دەسکەکە"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 1500,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/consoles/xbox-series-s",
+      "title": "XBOX Series S",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "current options (512GB and 1TB, both Robot White, all-digital), launch date 10 Nov 2020, what is in the box, 1440p with 4K upscaling, no disc support"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
+      "title": "Buy XBOX Series S: 512GB or 1TB White",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "tech specs (CPU, GPU, memory, SSD, video, ports, wireless, dimensions and weight of the 512GB model), 60% smaller than Series X, product images"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/11/15/xbox-series-xs-every-console-option-available-now/",
+      "title": "Xbox Series X|S – Every Console Option Available Now",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "Series S in Robot White with 512GB and 1TB options"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2023/06/11/xbox-series-s-1tb-black/",
+      "title": "Back in Black, Xbox Series S is Now Available with a 1TB SSD",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "earlier 1TB Carbon Black version, launched 1 September 2023"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+      "title": "Xbox Series X and Series S",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "second source for specs (CPU 3.6 GHz / 3.4 GHz with SMT, 20 CUs, 10GB GDDR6), dimensions and 1.93 kg weight, white 1TB release 15 October 2024"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/08/21/xbox-series-x-s-new-console-options-pre-order/",
+      "title": "Pre-Order Three New Xbox Series X|S Console Options Starting August 21",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "Series S 1TB in Robot White released 15 October 2024 (select countries on 29 October)"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/xbox/service-guides/series-s-console/series-s-device-id-and-disassembly",
+      "title": "XBOX Series S Console Safety & Repair Instructions",
+      "publisher": "Microsoft Learn",
+      "retrieved": "2026-11-11",
+      "supports": "official model number: XBOX Series S Model 1883, printed on the label on the back"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/replacement-power-supply-unit-for-xbox-series-s-model-1883-512-gb-1-tb/8mzbmmcjzqm1",
+      "title": "Replacement Power Supply Unit for Xbox Series S - Model 1883 512 GB, 1 TB",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "Model 1883 covers both the 512GB and 1TB Series S"
+    },
+    {
+      "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
+      "title": "XBOX locales FAQ",
+      "publisher": "Microsoft (XBOX Support)",
+      "retrieved": "2026-11-11",
+      "supports": "XBOX support and warranties are only available in supported countries/regions; system updates work anywhere with an internet connection"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/game-principles/localization/console_supported_languages",
+      "title": "Console-supported languages",
+      "publisher": "Microsoft Learn",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic console language with the Saudi Arabia and UAE locales"
+    },
+    {
+      "url": "https://www.saudigamer.com/xbox-one-arabic-localization-coming-fall/",
+      "title": "اللغة العربية قادمة لأجهزة إكسبوكس ون في الخريف",
+      "publisher": "Saudi Gamer",
+      "retrieved": "2026-11-11",
+      "supports": "second source: Microsoft added Arabic as an XBOX console interface language in the 2017 Fall Update"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not on the list of supported countries/regions"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/xbox-game-pass",
+      "title": "XBOX Game Pass",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "online console multiplayer is included in the Essential, Premium and Ultimate plans"
+    }
+  ],
+  "notes": {
+    "ar": "كانت هناك نسخة 1TB سوداء Carbon Black صدرت في أيلول 2023، ولم تعد ضمن تشكيلة Microsoft الحالية. الجهاز رقمي بالكامل، والعراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات XBOX، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط. اللعب الجماعي عبر الإنترنت مشمول في باقات Game Pass ‏(Essential وPremium وUltimate).",
+    "en": "A 1TB Carbon Black version was sold from September 2023 and is no longer in Microsoft's current line-up. The console is all-digital, and Iraq is not on Microsoft's list of countries where XBOX services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says XBOX support and warranties are only available in supported countries. Online console multiplayer is included in the Game Pass plans (Essential, Premium, Ultimate).",
+    "ckb": "وەشانێکی ڕەشی 1TB ـی Carbon Black لە ئەیلوولی 2023 ـەوە دەفرۆشرا و ئێستا لە لیستی ئێستای Microsoft ـدا نییە. کۆنسۆڵەکە تەواو دیجیتاڵە، و عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی XBOX، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. یاریی بە کۆمەڵ لە ئینتەرنێت لە پلانەکانی Game Pass ‏(Essential، Premium، Ultimate) دایە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Dimensions and weight are the published 512GB figures; the Microsoft Store spec sheet for the 1TB model repeats the Series X dimensions (15.1 × 15.1 × 30.1 cm), which looks like a copy error",
+      "Barcodes were not found on an official page"
+    ]
+  }
+}

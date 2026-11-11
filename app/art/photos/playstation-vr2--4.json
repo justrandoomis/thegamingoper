@@ -1,0 +1,65 @@
+{
+  "key": "playstation-vr2--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 586,
+  "aspect": 2.7304,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/4-240.2074489d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/4-480.9791fbbd.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/4-720.efeb5c9d.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/4-960.68cd1ec1.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-vr2/4-1440.06c64691.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/4-240.2bc5b385.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/4-480.f71e5275.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/4-720.3cc82596.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/4-960.d22b785b.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-vr2/4-1440.728deb05.webp"
+      }
+    ],
+    "png": "/products/playstation-vr2/4-720.2e524965.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvQAAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSFsAAAART6CgbRs2VBT7fxERsKWINx0wsW1byUPzF6BDIjrZZQBWSWSHyqL9GfAGzBwi+p9AKPxeYYEtEwbeh4Iage8rD+JdzUk56gsiNk6760aKKOTOnWoZKJWASEABAFZQOCByAAAA0AMAnQEqFAAHAD8RcrBQLCakorAIAYAiCWUAA+RpVh87apZc0skAAP628rRKbB5Ietk/EGZqbpz6DdQOlklVmv07vTPmVvbjtmbhWtzmFQsQrCKWk3JCO1lwAIkkO9Tm2E3wBCVXyi9NHzab6rWmhAAA",
+  "dominant": "#d6dbe5",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_Family_01-16x9-01-09april26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/"
+  },
+  "input": "ed25fbaa0f72d3c3"
+}

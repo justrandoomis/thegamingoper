@@ -1,0 +1,65 @@
+{
+  "key": "ea-sports-fc-27--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27/2-240.7d0ed477.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27/2-480.24d9b152.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27/2-720.7fbe0662.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27/2-960.3b7fdbbd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27/2-1440.cedbf9b5.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27/2-240.d5943c64.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27/2-480.14e36b25.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27/2-720.6feec3c4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27/2-960.1d6df126.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27/2-1440.901199f0.webp"
+      }
+    ],
+    "png": "/products/ea-sports-fc-27/2-720.6337ff8e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJagCpIwAAjnwBNpLJAAD+2YzDzWUh9Fs2ZjSGTZFx++2RhZ4plkVaqTSqGDZg4aaGL5J4zqwaKwZHVDZHNFTuRg/8VvAtrSay5O8V3XYhCIlzxt0oKeEQcnM7b8AA",
+  "dominant": "#466838",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://drop-assets.ea.com/images/7Dl90ynXhCsqm5xHkiVN5K/17ca58568bfaa2e916c7ef801ef7e8d7/fc-27-screenshots-Musiala-OffBalance-Hires-Clean-16X9.jpg",
+    "page": "https://www.ea.com/games/ea-sports-fc/fc-27"
+  },
+  "input": "0b6a79a330896750"
+}

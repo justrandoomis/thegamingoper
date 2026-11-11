@@ -1,0 +1,65 @@
+{
+  "key": "hyrule-warriors-age-of-imprisonment--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-240.897506e8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-480.cb1e852b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-720.4ee69651.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-960.c46d60cd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-1440.039542d4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-240.e54f7c55.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-480.9a3204e2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-720.f895d318.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-960.eb4a5f74.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyrule-warriors-age-of-imprisonment/2-1440.d914aa68.webp"
+      }
+    ],
+    "png": "/products/hyrule-warriors-age-of-imprisonment/2-720.48b6d89a.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZAC7ABk9GGte1lGAAAD+6dQkqDvoLRBmaVxrkquIshJ3W2C4fe6K1AepWDTBlCyBTyIkEPHMRyg0oV81VVA0HtA4NgNzodW/aIAA",
+  "dominant": "#18150a",
+  "transparent": false,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo / Koei Tecmo Games",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000103459/5c64f5f77b2337252b379076edc705712a5beeaff08a104269a2ccf8fc9445c9",
+    "page": "https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-switch-2/"
+  },
+  "input": "5e6c30b688aaae89"
+}

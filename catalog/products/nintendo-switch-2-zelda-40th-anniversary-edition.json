@@ -1,0 +1,280 @@
+{
+  "slug": "nintendo-switch-2-zelda-40th-anniversary-edition",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch-2",
+  "family": "switch-2",
+  "status": "limited",
+  "releaseDate": "2026-10-29",
+  "name": {
+    "ar": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition",
+    "en": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition",
+    "ckb": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition"
+  },
+  "short": {
+    "ar": "إصدار خاص · 256GB · Joy-Con 2 أخضر وذهبي · بدون لعبة",
+    "en": "Special edition · 256GB · green-and-gold Joy-Con 2 · no game included",
+    "ckb": "وەشانی تایبەت · 256GB · Joy-Con 2 سەوز و زێڕین · بێ یاری"
+  },
+  "description": {
+    "ar": "إصدار خاص من Nintendo Switch 2 بمناسبة مرور 40 عامًا على سلسلة The Legend of Zelda. القاعدة سوداء وذهبية عليها شعار Triforce، وخلفية الجهاز والقاعدة مزينة بنقوش من السلسلة، ويدا Joy-Con 2 باللونين الأخضر والذهبي. من الداخل هو نفس جهاز Nintendo Switch 2 العادي بمواصفاته كاملة، ولا تأتي معه أي لعبة.",
+    "en": "A special Nintendo Switch 2 made for the 40th anniversary of The Legend of Zelda. The dock is black and gold with the Triforce on the front, the back of the console and dock carry series patterns, and the Joy-Con 2 are green and gold. Inside it is the regular Nintendo Switch 2 with the same specs, and no game is included.",
+    "ckb": "وەشانێکی تایبەتی Nintendo Switch 2 بۆ ساڵیادی 40 ساڵەی زنجیرەی The Legend of Zelda. دۆکەکە ڕەش و زێڕینە و هێمای Triforce ی لەسەرە، پشتی کۆنسۆڵ و دۆکەکە نەخشی زنجیرەکەیان لەسەرە، و Joy-Con 2 ـەکان سەوز و زێڕینن. لە ناوەوە هەمان Nintendo Switch 2 ی ئاساییە بە هەمان تایبەتمەندی، و هیچ یارییەکی لەگەڵدا نییە."
+  },
+  "highlights": [
+    {
+      "ar": "قاعدة سوداء وذهبية بشعار Triforce ونقوش Zelda على خلفية الجهاز والقاعدة",
+      "en": "Black-and-gold dock with the Triforce, plus Zelda patterns on the back of the console and dock",
+      "ckb": "دۆکی ڕەش و زێڕین بە هێمای Triforce، لەگەڵ نەخشی Zelda لە پشتی کۆنسۆڵ و دۆکەکە"
+    },
+    {
+      "ar": "يدا Joy-Con 2 باللونين الأخضر والذهبي مع حزامي معصم بتصميم خاص",
+      "en": "Green-and-gold Joy-Con 2 controllers with matching special-design straps",
+      "ckb": "دەسکەکانی Joy-Con 2 بە ڕەنگی سەوز و زێڕین لەگەڵ قایشی دیزاینی تایبەت"
+    },
+    {
+      "ar": "لا تأتي معه أي لعبة — ألعاب Zelda تباع منفصلة",
+      "en": "No game in the box — Zelda games are sold separately",
+      "ckb": "هیچ یارییەک لە قوتووەکەدا نییە — یارییەکانی Zelda جیا دەفرۆشرێن"
+    },
+    {
+      "ar": "نفس مواصفات Nintendo Switch 2: شاشة 7.9 بوصة 1080p، تخزين 256GB، حتى 4K على التلفاز",
+      "en": "Same hardware as Nintendo Switch 2: 7.9-inch 1080p screen, 256GB storage, up to 4K on TV",
+      "ckb": "هەمان ئامێری Nintendo Switch 2: شاشەی 7.9 ئینج 1080p، بیرگەی 256GB، تا 4K لەسەر تەلەڤزیۆن"
+    },
+    {
+      "ar": "إصدار محدود: كان نافدًا من متجري Nintendo الأمريكي والبريطاني في 11 نوفمبر 2026، والمتجر البريطاني يحدد قطعة واحدة لكل عميل",
+      "en": "Limited edition: out of stock on Nintendo's US and UK stores on 11 November 2026; the UK store limits it to one per customer",
+      "ckb": "وەشانی سنووردار: لە 11ی تشرینی دووەمی 2026 لە فرۆشگاکانی ئەمریکی و بەریتانیی Nintendo نەمابوو؛ فرۆشگای بەریتانی یەک دانە بۆ هەر کڕیارێک دیاری دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "design",
+      "label": { "ar": "التصميم", "en": "Design", "ckb": "دیزاین" },
+      "value": {
+        "ar": "نقوش Triforce على خلفية الجهاز والقاعدة ويدي Joy-Con 2؛ قاعدة سوداء وذهبية",
+        "en": "Triforce motifs on the back of the console, the dock and the Joy-Con 2; black-and-gold dock",
+        "ckb": "نەخشی Triforce لە پشتی کۆنسۆڵ، دۆک و Joy-Con 2 ـەکان؛ دۆکی ڕەش و زێڕین"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "شاشة LCD لمسية 7.9 بوصة بدقة 1080p مع HDR",
+        "en": "7.9-inch 1080p LCD touchscreen with HDR",
+        "ckb": "شاشەی LCDی دەستلێدانی 7.9 ئینج 1080p لەگەڵ HDR"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": {
+        "ar": "256GB (جزء منها للنظام)، قابلة للتوسعة ببطاقات microSD Express فقط",
+        "en": "256GB (part used by the system); expandable with microSD Express cards only",
+        "ckb": "256GB (بەشێکی بۆ سیستەمە)؛ تەنها بە کارتی microSD Express زیاد دەکرێت"
+      }
+    },
+    {
+      "key": "tv_output",
+      "label": { "ar": "الإخراج على التلفاز", "en": "TV output", "ckb": "پیشاندان لەسەر تەلەڤزیۆن" },
+      "value": {
+        "ar": "حتى 4K بمعدل 60 إطارًا عبر القاعدة المرفقة مع لعبة وتلفاز متوافقين",
+        "en": "Up to 4K at 60 fps through the included dock with a compatible game and TV",
+        "ckb": "تا 4K بە 60 فرەیم لە ڕێگەی دۆکەکەوە لەگەڵ یاری و تەلەڤزیۆنی گونجاو"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "ليثيوم أيون 5220mAh", "en": "Lithium-ion, 5220 mAh", "ckb": "لیثیۆم-ئایۆن، 5220mAh" }
+    },
+    {
+      "key": "game_included",
+      "label": { "ar": "لعبة مرفقة", "en": "Game included", "ckb": "یاریی لەگەڵدا" },
+      "value": { "ar": "لا", "en": "No", "ckb": "نەخێر" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch 2 بتصميم خاص", "en": "Nintendo Switch 2 console (special design)", "ckb": "کۆنسۆڵی Nintendo Switch 2 (دیزاینی تایبەت)" },
+    { "ar": "يدا Joy-Con 2 (L) و(R) باللونين الأخضر والذهبي", "en": "Joy-Con 2 (L) and (R) in green and gold", "ckb": "Joy-Con 2 (L) و (R) بە سەوز و زێڕین" },
+    { "ar": "حزاما معصم Joy-Con 2 بتصميم خاص (عدد 2)", "en": "Joy-Con 2 Strap, special design (×2)", "ckb": "قایشی Joy-Con 2 بە دیزاینی تایبەت (×2)" },
+    { "ar": "قاعدة Nintendo Switch 2 Dock بتصميم خاص", "en": "Nintendo Switch 2 Dock (special design)", "ckb": "دۆکی Nintendo Switch 2 (دیزاینی تایبەت)" },
+    { "ar": "مقبض Joy-Con 2 Grip", "en": "Joy-Con 2 Grip", "ckb": "دەسگرەی Joy-Con 2 Grip" },
+    { "ar": "محول الطاقة Nintendo Switch 2 AC Adapter وكابل شحن USB-C", "en": "Nintendo Switch 2 AC Adapter and USB-C charging cable", "ckb": "ئەداپتەری کارەبای Nintendo Switch 2 و کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "كابل Ultra High Speed HDMI", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی Ultra High Speed HDMI" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-ZELDA40",
+      "title": {
+        "ar": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition (النسخة الدولية)",
+        "en": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition (international)",
+        "ckb": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition (نێودەوڵەتی)"
+      },
+      "options": { "edition": "The Legend of Zelda 40th Anniversary", "storage": "256GB", "color": "Black and gold dock, green and gold Joy-Con 2" },
+      "barcodes": ["0045496885434"],
+      "isDefault": true,
+      "images": [
+        "nintendo-switch-2-zelda-40th-anniversary-edition--1",
+        "nintendo-switch-2-zelda-40th-anniversary-edition--2",
+        "nintendo-switch-2-zelda-40th-anniversary-edition--3",
+        "nintendo-switch-2-zelda-40th-anniversary-edition--4",
+        "nintendo-switch-2-zelda-40th-anniversary-edition--5",
+        "nintendo-switch-2-zelda-40th-anniversary-edition--6"
+      ],
+      "notes": {
+        "ar": "الباركود هو رمز UPC الأمريكي من متجر Nintendo الأمريكي.",
+        "en": "Barcode is the US UPC from Nintendo's US store.",
+        "ckb": "بارکۆدەکە UPCی ئەمریکییە لە فرۆشگای ئەمریکی Nintendo."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" },
+    { "slug": "nintendo-switch-2-carrying-case", "kind": "accessory" },
+    { "slug": "the-legend-of-zelda-ocarina-of-time", "kind": "upsell" },
+    { "slug": "sandisk-microsd-express", "kind": "setup" },
+    { "slug": "nintendo-switch-2", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-zelda-40th-anniversary-edition--1",
+      "file": ".cache/product-images/nintendo-switch-2-zelda-40th-anniversary-edition/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-handheld-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "kind": "hero",
+      "alt": {
+        "ar": "Nintendo Switch 2 إصدار Zelda الأربعين من الأمام مع يدي Joy-Con 2 خضراوين وذهبيتين",
+        "en": "Zelda 40th Anniversary Nintendo Switch 2 from the front with green-and-gold Joy-Con 2",
+        "ckb": "Nintendo Switch 2 ی وەشانی 40 ساڵەی Zelda لە پێشەوە لەگەڵ Joy-Con 2 ی سەوز و زێڕین"
+      },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-zelda-40th-anniversary-edition--2",
+      "file": ".cache/product-images/nintendo-switch-2-zelda-40th-anniversary-edition/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-docked-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "kind": "angle",
+      "alt": {
+        "ar": "القاعدة السوداء والذهبية بشعار Triforce والجهاز بداخلها",
+        "en": "The black-and-gold Triforce dock with the console inside",
+        "ckb": "دۆکی ڕەش و زێڕین بە Triforce و کۆنسۆڵەکە لەناویدا"
+      },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-zelda-40th-anniversary-edition--3",
+      "file": ".cache/product-images/nintendo-switch-2-zelda-40th-anniversary-edition/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-handheld-back-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "kind": "angle",
+      "alt": {
+        "ar": "خلفية الجهاز بنقوش Triforce",
+        "en": "Back of the console with Triforce patterns",
+        "ckb": "پشتی کۆنسۆڵەکە بە نەخشی Triforce"
+      },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-zelda-40th-anniversary-edition--4",
+      "file": ".cache/product-images/nintendo-switch-2-zelda-40th-anniversary-edition/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-controllers-dock-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "kind": "angle",
+      "alt": {
+        "ar": "يدا Joy-Con 2 على المقبض بجانب القاعدة",
+        "en": "Joy-Con 2 on the grip next to the dock",
+        "ckb": "Joy-Con 2 لەسەر دەسگرەکە لە تەنیشت دۆکەکە"
+      },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-zelda-40th-anniversary-edition--5",
+      "file": ".cache/product-images/nintendo-switch-2-zelda-40th-anniversary-edition/5.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-joy-con-with-straps-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "kind": "detail",
+      "alt": {
+        "ar": "يدا Joy-Con 2 الخضراوان والذهبيتان مع الحزامين",
+        "en": "The green-and-gold Joy-Con 2 with their straps",
+        "ckb": "Joy-Con 2 ی سەوز و زێڕین لەگەڵ قایشەکانیان"
+      },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-zelda-40th-anniversary-edition--6",
+      "file": ".cache/product-images/nintendo-switch-2-zelda-40th-anniversary-edition/6.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/121642-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-package-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة إصدار The Legend of Zelda الأربعين",
+        "en": "The Legend of Zelda 40th Anniversary Edition retail box",
+        "ckb": "قوتووی وەشانی 40 ساڵەی The Legend of Zelda"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-121642/",
+      "title": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "design, in the box, game not included, release date October 29 2026, UPC, sold out on Nintendo Store US, images"
+    },
+    {
+      "url": "https://www.nintendo.co.jp/corporate/release/en/2026/260908_2.html",
+      "title": "News Release: September 8, 2026 – Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition",
+      "publisher": "Nintendo Co., Ltd.",
+      "retrieved": "2026-11-11",
+      "supports": "announcement 8 Sep 2026, release date, Triforce motifs on back of system, dock and Joy-Con 2, items included, Japan version is Japanese-language only"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-P00211",
+      "title": "Nintendo Switch 2 The Legend of Zelda 40th Anniversary Edition - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "European release 29 October 2026, marked Limited, one per customer, out of stock on 11 November 2026, box contents, console languages"
+    },
+    {
+      "url": "https://www.ign.com/articles/legend-of-zelda-40th-anniversary-edition-switch-2-pro-controller-where-to-buy",
+      "title": "The Legend of Zelda 40th Anniversary Edition Switch 2 and Accessories Are Going Up for Preorder",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the 29 October release, no game included, green Joy-Con 2 with Triforce details, black-and-gold Triforce dock"
+    },
+    {
+      "url": "https://www.notebookcheck.net/Easier-to-repair-Zelda-Switch-2-console-and-Pro-Controller-are-now-shipping.1443344.0.html",
+      "title": "Zelda Switch 2 console and controller with replaceable battery are now shipping",
+      "publisher": "Notebookcheck",
+      "retrieved": "2026-11-11",
+      "supports": "press report (6 November 2026) that some European units are the BEE-001(-01) model; Nintendo has not confirmed"
+    }
+  ],
+  "notes": {
+    "ar": "النسخة المباعة في اليابان من هذا الإصدار هي نسخة اليابان فقط (لغة يابانية وحسابات يابانية فقط)، فاحرص على الحصول على النسخة الدولية. ذكرت تقارير صحفية (Notebookcheck، 6 نوفمبر 2026) أن بعض الأجهزة المباعة في أوروبا من الموديل BEE-001(-01) ذي البطارية القابلة للاستبدال، ولم تؤكد Nintendo ذلك، فتحقق من رقم الموديل على العلبة. أُطلق في اليوم نفسه Pro Controller وحقيبة حمل بتصميم Zelda الأربعين، وهي مذكورة في صفحتي ذراع التحكم والحقيبة.",
+    "en": "The version sold in Japan is the Japan-only system (Japanese language and Japanese accounts only), so make sure stock is the international version. Press reports (Notebookcheck, 6 November 2026) say some units sold in Europe are the BEE-001(-01) model with a user-replaceable battery; Nintendo has not confirmed this, so check the model number on the box. A Zelda 40th Pro Controller and carrying case launched the same day; see the Pro Controller and carrying case pages.",
+    "ckb": "ئەو وەشانەی لە ژاپۆن دەفرۆشرێت تەنها بۆ ژاپۆنە (تەنها زمانی ژاپۆنی و هەژماری ژاپۆنی)، بۆیە دڵنیابە کە کاڵاکە وەشانی نێودەوڵەتییە. ڕاپۆرتی ڕۆژنامەوانی (Notebookcheck، 6ی تشرینی دووەمی 2026) دەڵێن هەندێک لەو ئامێرانەی لە ئەوروپا دەفرۆشرێن مۆدێلی BEE-001(-01) ن کە پاتریی گۆڕاویان هەیە؛ Nintendo ئەمەی پشتڕاست نەکردۆتەوە، بۆیە ژمارەی مۆدێل لەسەر قوتووەکە بپشکنە. Pro Controller و جانتای هەڵگرتنی 40 ساڵەی Zelda هەمان ڕۆژ دەرچوون؛ سەیری لاپەڕەکانی Pro Controller و جانتاکە بکە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "European barcode",
+      "Whether European stock is the BEE-001 or the BEE-001(-01) user-replaceable battery model (press reports say some units are BEE-001(-01); Nintendo has not confirmed)",
+      "Whether this edition will be restocked or is a one-time production run (Nintendo only marks it Limited)"
+    ]
+  }
+}

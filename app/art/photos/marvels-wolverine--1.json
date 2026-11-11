@@ -1,0 +1,57 @@
+{
+  "key": "marvels-wolverine--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/marvels-wolverine/1-240.f0c80054.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-wolverine/1-480.e74366e7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-wolverine/1-720.e407b765.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-wolverine/1-960.7f62bd24.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/marvels-wolverine/1-240.ea8e4a96.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-wolverine/1-480.07da98a1.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-wolverine/1-720.2f6f06a4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-wolverine/1-960.71d11b61.webp"
+      }
+    ],
+    "png": "/products/marvels-wolverine/1-720.b9ef00dd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoR4GCmcfYBO/OE5cTdtWAD98Cyx+YYJYyOipTSw3Z1PJgMqZagg9GWelF9lI/sVuMcwEbxG3pswfPY09BCL1TuQf4QzJE1frZzvbCL9WKJuITXZNb4Vd1GSiLvhOQixr9YbCxK/nU/X/iPjbyzyAAAA",
+  "dominant": "#fce646",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Sony Interactive Entertainment / Marvel",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202510/0721/ab0526f97f49e5e810c13b4f7367970f95346b2440baf18b.jpg",
+    "page": "https://store.playstation.com/en-gb/product/UP9000-PPSA03671_00-MARVELSWOLVERINE"
+  },
+  "input": "0265f1079c8685b1"
+}

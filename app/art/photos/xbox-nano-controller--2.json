@@ -1,0 +1,65 @@
+{
+  "key": "xbox-nano-controller--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 1089,
+  "aspect": 1.4692,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-nano-controller/2-240.3407d5d1.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-nano-controller/2-480.896aceca.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-nano-controller/2-720.43995f6a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-nano-controller/2-960.94ca8f9a.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-nano-controller/2-1440.b9ace4c8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-nano-controller/2-240.74bc6452.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-nano-controller/2-480.1f23dd74.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-nano-controller/2-720.87a9e9b9.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-nano-controller/2-960.35399165.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-nano-controller/2-1440.ee3de318.webp"
+      }
+    ],
+    "png": "/products/xbox-nano-controller/2-720.2b5f0679.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiYBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSF4AAAART6AmkhQ2iAWGLlPliAjIR/IgLjCNbNvJ/WTJoJAZHUsIGhQWhU4Kl4pgXr//vRoi+j8BkE7r0KZ1qoCftCEi0l8YGTIWzto4++ZcgSfZOLckmvuu/cjAWQCAH0AKVlA4IKIAAABwBACdASoUAA4APxFysFAsJqSisAgBgCIJZQAu/8BiMZJoXXkKd0TDL4OtAAD+sia/zcG4lUSUFTYlmS9rlZ09n//H0FKrN2YO2Z23RE4w1OdeJMtaDOSRvT8BPxuOl2SyysHrYkNJvw39Aeif5Lmkb6z6eux9Ccrbu8ne6GVcdkK8W+MAsr0x7vnos/vV6HvQDKx6PM+hlNRxNZsD4en8AAA=",
+  "dominant": "#f7f7f7",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/1145287_MS-Store_Image-Gallery-ANL-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3"
+  },
+  "input": "7426e7c42a71cf75"
+}

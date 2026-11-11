@@ -1,0 +1,49 @@
+{
+  "key": "xbox-series-x--2",
+  "view": "hero",
+  "width": 888,
+  "height": 1600,
+  "aspect": 0.555,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x/2-240.83039679.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x/2-480.7c8dbdfd.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x/2-720.a8b52cf3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x/2-240.583d2485.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x/2-480.7e5b59e2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x/2-720.16e05484.webp"
+      }
+    ],
+    "png": "/products/xbox-series-x/2-720.3398edec.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSDEAAAARJ0CYbTSB+cPtfRynERHBbUAQ2YaMBhqY18C9BvRvdgEi+h8NEKtevqqar1e9bIAAAFZQOCA8AAAAcAMAnQEqCwAUAD8RcLBQLCYkorAIAYAiCWkAAF5aG4diC51EAP6/sDkzbJixRX2kuAEN2kYj8x2jFAAA",
+  "dominant": "#26262a",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b01-Xbox-Series-X?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
+  },
+  "input": "027ac635424ff4c3"
+}

@@ -1,0 +1,330 @@
+{
+  "slug": "playstation-5-slim-digital-edition",
+  "group": "playstation-hardware",
+  "kind": "console",
+  "platform": "playstation",
+  "brand": "Sony",
+  "deviceModel": "ps5-slim-digital",
+  "family": "ps5",
+  "status": "available",
+  "releaseDate": "2023-11-10",
+  "name": {
+    "ar": "PlayStation 5 Slim Digital Edition",
+    "en": "PlayStation 5 Slim Digital Edition",
+    "ckb": "PlayStation 5 Slim Digital Edition"
+  },
+  "short": {
+    "ar": "بدون قارئ أقراص · 825GB (الإنتاج الحالي) أو 1TB (مخزون 2023–2025)",
+    "en": "No disc drive · 825GB (current stock) or 1TB (2023–2025 stock)",
+    "ckb": "بێ دڕایڤی دیسک · 825GB (بەرهەمی ئێستا) یان 1TB (کاڵای 2023–2025)"
+  },
+  "description": {
+    "ar": "نسخة رقمية بالكامل من PS5 Slim بدون قارئ أقراص: تُشترى الألعاب وتُحمَّل من PlayStation Store. يمكن إضافة قارئ الأقراص الرسمي لاحقاً. منذ سبتمبر 2025 صارت الأجهزة الجديدة تأتي بسعة 825GB بدلاً من 1TB (في أوروبا أولاً ثم أمريكا، وموقع Sony في الإمارات يعرض نسخة 825GB أيضاً)، لذا انتبه للسعة المكتوبة على العلبة.",
+    "en": "The all-digital PS5 slim with no disc drive: games are bought and downloaded from PlayStation Store. The official Disc Drive can be added later. Since September 2025 new units ship with 825GB instead of 1TB (Europe first, then the US; Sony's UAE site also lists the 825GB model), so check the capacity printed on the box.",
+    "ckb": "وەشانی تەواو دیجیتاڵی PS5 Slim بێ دڕایڤی دیسک: یارییەکان لە PlayStation Store دەکڕدرێن و دادەگیرێن. دەتوانیت دواتر دڕایڤی دیسکی فەرمی زیاد بکەیت. لە ئەیلوولی 2025ەوە ئامێرە نوێکان بە 825GB دێن لە جیاتی 1TB (سەرەتا لە ئەوروپا، دواتر ئەمریکا؛ ماڵپەڕی Sony بۆ ئیماراتیش وەشانی 825GB دەخاتە ڕوو)، بۆیە سەیری قەبارەی سەر قوتووەکە بکە."
+  },
+  "highlights": [
+    {
+      "ar": "بدون قارئ أقراص – الألعاب رقمية فقط، وتحتاج اتصالاً بالإنترنت وحساب PlayStation",
+      "en": "No disc drive – games are digital only and need an internet connection and an account for PlayStation",
+      "ckb": "بێ دڕایڤی دیسک – یارییەکان تەنها دیجیتاڵن و ئینتەرنێت و هەژماری PlayStationیان پێویستە"
+    },
+    {
+      "ar": "يمكن تحويله لجهاز بأقراص بإضافة Disc Drive for PS5 (يُباع منفصلاً، ويحتاج إنترنت عند الربط أول مرة)",
+      "en": "Can become a disc console with the Disc Drive for PS5 (sold separately; internet needed to pair it once)",
+      "ckb": "دەتوانرێت بکرێتە کۆنسۆڵی دیسک بە Disc Drive for PS5 (بە جیا دەفرۆشرێت؛ بۆ یەکەمجار بەستنەوە ئینتەرنێت پێویستە)"
+    },
+    {
+      "ar": "نفس أداء PS5 Slim: 4K حتى 120Hz، تتبع الأشعة، صوت ثلاثي الأبعاد، ومعظم ألعاب PS4",
+      "en": "Same performance as the PS5 slim: 4K up to 120Hz, ray tracing, 3D audio and most PS4 games",
+      "ckb": "هەمان توانای PS5 Slim: 4K تا 120Hz، ڕەی تڕەیسینگ، دەنگی سێ ڕەهەندی و زۆربەی یارییەکانی PS4"
+    },
+    {
+      "ar": "أنحف من نسخة الأقراص (عرض 80 ملم) ووزنه نحو 2.6 كغ",
+      "en": "Slimmer than the disc model (80 mm) and about 2.6 kg",
+      "ckb": "باریکترە لە وەشانی دیسک (80 ملم) و کێشی نزیکەی 2.6 کگە"
+    },
+    {
+      "ar": "التخزين قابل للتوسعة بقرص M.2 SSD حتى 8TB",
+      "en": "Storage can be expanded with an M.2 SSD up to 8TB",
+      "ckb": "بیرگە دەتوانرێت بە SSDی M.2 تا 8TB زیاد بکرێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "فئة الطراز", "en": "Model group", "ckb": "کۆمەڵەی مۆدێل" },
+      "value": {
+        "ar": "CFI-2000 وCFI-2100 (فئة slim)؛ مثال نسخة 825GB في بريطانيا: CFI-2116B01Y",
+        "en": "CFI-2000 and CFI-2100 (slim); example 825GB UK model: CFI-2116B01Y",
+        "ckb": "CFI-2000 و CFI-2100 (slim)؛ نموونەی مۆدێلی 825GB لە بەریتانیا: CFI-2116B01Y"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": {
+        "ar": "SSD سعة 825GB في الإنتاج الحالي (من سبتمبر 2025 في أوروبا، ثم أمريكا والخليج)؛ الوحدات الأقدم 1TB",
+        "en": "825GB SSD in current production (from September 2025 in Europe, then the US and the Gulf); earlier units 1TB",
+        "ckb": "SSDی 825GB لە بەرهەمی ئێستادا (لە ئەیلوولی 2025ەوە لە ئەوروپا، دواتر ئەمریکا و کەنداو)؛ ئامێرە کۆنترەکان 1TB"
+      }
+    },
+    {
+      "key": "cpu-gpu",
+      "label": { "ar": "المعالج والرسوميات", "en": "CPU and GPU", "ckb": "پرۆسێسەر و گرافیک" },
+      "value": {
+        "ar": "AMD Zen 2 بثماني أنوية حتى 3.5GHz؛ رسوميات RDNA 2 حتى 2.23GHz (10.3 TFLOPS)",
+        "en": "8-core AMD Zen 2 up to 3.5GHz; RDNA 2 graphics up to 2.23GHz (10.3 TFLOPS)",
+        "ckb": "AMD Zen 2ی 8 ناوک تا 3.5GHz؛ گرافیکی RDNA 2 تا 2.23GHz (10.3 TFLOPS)"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "میمۆری" },
+      "value": { "ar": "16GB GDDR6", "en": "16GB GDDR6", "ckb": "16GB GDDR6" }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "إخراج الصورة", "en": "Video output", "ckb": "دەرچوونی وێنە" },
+      "value": {
+        "ar": "HDMI 2.1: 4K بتردد 120Hz، 8K، VRR",
+        "en": "HDMI 2.1: 4K 120Hz, 8K, VRR",
+        "ckb": "HDMI 2.1: 4K بە 120Hz، 8K، VRR"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الاتصال", "en": "Networking", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "Wi-Fi (802.11ax)، Ethernet جيجابت",
+        "en": "Wi-Fi (802.11ax), Gigabit Ethernet",
+        "ckb": "Wi-Fi (802.11ax)، Ethernetی گیگابایت"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": {
+        "ar": "تقريباً 358 × 80 × 216 ملم، نحو 2.6 كغ",
+        "en": "Approx. 358 × 80 × 216 mm, about 2.6 kg",
+        "ckb": "نزیکەی 358 × 80 × 216 ملم، نزیکەی 2.6 کگ"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز PlayStation 5 Digital Edition", "en": "PlayStation 5 Digital Edition console", "ckb": "کۆنسۆڵی PlayStation 5 Digital Edition" },
+    { "ar": "يد تحكم لاسلكية DualSense", "en": "DualSense wireless controller", "ckb": "کۆنتڕۆڵەری بێتەلی DualSense" },
+    { "ar": "قاعدتان للوضع الأفقي", "en": "2 horizontal stand feet", "ckb": "2 پێ بۆ دانانی ئاسۆیی" },
+    { "ar": "كابل HDMI", "en": "HDMI cable", "ckb": "کێبڵی HDMI" },
+    { "ar": "سلك الكهرباء (AC)", "en": "AC power cord", "ckb": "وایەری کارەبا (AC)" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" },
+    { "ar": "لعبة ASTRO's PLAYROOM مثبّتة مسبقاً", "en": "ASTRO's PLAYROOM (pre-installed)", "ckb": "یاریی ASTRO's PLAYROOM (پێشتر دامەزراوە)" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-SLIM-DE-825GB",
+      "title": {
+        "ar": "PS5 Slim Digital Edition – 825GB (الإنتاج الحالي)",
+        "en": "PS5 Slim Digital Edition – 825GB (current production)",
+        "ckb": "PS5 Slim Digital Edition – 825GB (بەرهەمی ئێستا)"
+      },
+      "options": { "edition": "Digital", "storage": "825GB", "color": "White" },
+      "modelNumber": "CFI-2116B01Y",
+      "isDefault": true,
+      "images": ["playstation-5-slim-digital-edition--1", "playstation-5-slim-digital-edition--2", "playstation-5-slim-digital-edition--3", "playstation-5-slim-digital-edition--4"],
+      "notes": {
+        "ar": "رقم الطراز CFI-2116B01Y هو النسخة البريطانية/الأوروبية؛ الرقم يختلف حسب المنطقة.",
+        "en": "CFI-2116B01Y is the UK/European unit; the number differs by region.",
+        "ckb": "CFI-2116B01Y ئامێری بەریتانی/ئەوروپییە؛ ژمارەکە بەپێی ناوچە جیاوازە."
+      }
+    },
+    {
+      "sku": "PS5-SLIM-DE-1TB",
+      "title": {
+        "ar": "PS5 Slim Digital Edition – 1TB (مخزون 2023–2025)",
+        "en": "PS5 Slim Digital Edition – 1TB (2023–2025 stock)",
+        "ckb": "PS5 Slim Digital Edition – 1TB (کاڵای 2023–2025)"
+      },
+      "options": { "edition": "Digital", "storage": "1TB", "color": "White" },
+      "isDefault": false,
+      "images": ["playstation-5-slim-digital-edition--1"],
+      "notes": {
+        "ar": "السعة الأصلية عند الإطلاق في نوفمبر 2023؛ ومنذ أواخر 2025 تعرض Sony في أوروبا وأمريكا والخليج نسخة 825GB بدلاً منها.",
+        "en": "The launch capacity from November 2023; since late 2025 Sony's European, US and Gulf line-ups list the 825GB model instead.",
+        "ckb": "قەبارەی ڕەسەن لە کاتی دەرچوون لە تشرینی دووەمی 2023؛ لە کۆتایی 2025ەوە Sony لە ئەوروپا و ئەمریکا و کەنداو وەشانی 825GB لە جیاتی ئەم دەخاتە ڕوو."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "note": {
+        "ar": "طرازات CFI-2100 تقبل ملحقات CFI-2000 مثل الأغطية وقارئ الأقراص.",
+        "en": "CFI-2100 units accept CFI-2000 accessories such as covers and the Disc Drive.",
+        "ckb": "ئامێرەکانی CFI-2100 پاشکۆکانی CFI-2000 وەک قاپ و دڕایڤی دیسک وەردەگرن."
+      },
+      "source": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/"
+    }
+  ],
+  "related": [
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "playstation-5-slim", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "ps5-vertical-stand", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "playstation-store-gift-card", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "playstation-5-slim-digital-edition--1",
+      "file": ".cache/product-images/playstation-5-slim-digital-edition/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-Digital-CFI2100-06-16x9-01-09apr26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PS5 Slim Digital Edition بدون قارئ أقراص واقفاً عمودياً",
+        "en": "PS5 Slim Digital Edition without a disc drive, standing upright",
+        "ckb": "PS5 Slim Digital Edition بێ دڕایڤی دیسک بە ستوونی وەستاوە"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim-digital-edition--2",
+      "file": ".cache/product-images/playstation-5-slim-digital-edition/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-Digital-CFI2100-05-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/",
+      "kind": "angle",
+      "alt": {
+        "ar": "النسخة الرقمية موضوعة أفقياً مع يد التحكم DualSense",
+        "en": "The Digital Edition lying flat with a DualSense controller",
+        "ckb": "وەشانی دیجیتاڵ بە ئاسۆیی لەگەڵ کۆنتڕۆڵەری DualSense"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim-digital-edition--3",
+      "file": ".cache/product-images/playstation-5-slim-digital-edition/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-Digital-CFI2100-02-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/",
+      "kind": "angle",
+      "alt": {
+        "ar": "منظر علوي للنسخة الرقمية مع يد التحكم",
+        "en": "Top view of the Digital Edition with the controller",
+        "ckb": "دیمەنی سەرەوەی وەشانی دیجیتاڵ لەگەڵ کۆنتڕۆڵەر"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-5-slim-digital-edition--4",
+      "file": ".cache/product-images/playstation-5-slim-digital-edition/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-Digital-CFI2100-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/",
+      "kind": "angle",
+      "alt": {
+        "ar": "الحافة الأمامية للنسخة الرقمية على القاعدة العمودية (تُباع منفصلة)",
+        "en": "Front edge of the Digital Edition on the vertical stand (sold separately)",
+        "ckb": "لای پێشەوەی وەشانی دیجیتاڵ لەسەر ستاندی ستوونی (بە جیا دەفرۆشرێت)"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/",
+      "title": "PS5 Digital Console – PlayStation®5 Digital Edition Console - 825 GB",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "825GB SSD, model number CFI-2116B01Y, CFI-2100 slim group, dimensions, weight, what's in the box, disc drive and vertical stand sold separately"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/hardware/ps5/",
+      "title": "Buy PS5 Consoles | PlayStation® (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "US line-up lists PlayStation 5 Digital Edition Console - 825 GB"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/10/10/new-look-for-ps5-console-this-holiday-season/",
+      "title": "New look for PS5 console this holiday season",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Digital Edition launch with 1TB, specifications, 358 × 80 × 216 mm, 2.6 kg, optional Ultra HD Blu-ray Disc Drive"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/PlayStation_5",
+      "title": "PlayStation 5",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "storage cut from 1TB to 825GB, Europe first (September 2025) and then the US"
+    },
+    {
+      "url": "https://www.gadgets360.com/games/news/ps5-digital-edition-ssd-storage-downgrade-europe-price-sony-report-9215592",
+      "title": "PS5 Digital Edition is Reportedly Getting Reduced SSD Storage in Europe",
+      "publisher": "Gadgets 360",
+      "retrieved": "2026-11-11",
+      "supports": "press confirmation of the 825GB European revision (CFI-2100)"
+    },
+    {
+      "url": "https://www.tomshardware.com/video-games/playstation/playstation-5-digital-edition-with-1tb-ssd-downgraded-to-825gb-listed-at-the-same-price-cfi-2116-revision-emerges-overseas-on-amazon",
+      "title": "PlayStation 5 Digital Edition with 1TB SSD downgraded to 825GB listed at the same price — CFI-2116 revision emerges overseas on Amazon",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: 825GB CFI-2116 revision on sale in Europe in September 2025 at the 1TB model's price"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-consoles/playstation5-digital-edition-console-825-gb",
+      "title": "PlayStation®5 Digital Edition Console - 825 GB (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: 825GB model sold in the US, CFI-2100 slim model group accepts CFI-2000 covers and Disc Drive, what's in the box, account and internet required, paid PlayStation Plus for online multiplayer"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/ps5/buy-now/",
+      "title": "Buy PlayStation®5 (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment (PlayStation UAE)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Sony's Gulf line-up lists PS5 Digital Edition - 825GB; Disc Drive for CFI-2000 and CFI-2100 Digital Editions"
+    },
+    {
+      "url": "https://www.playstation.com/ja-jp/ps5/buy-now/ps5-digital-edition-Japanese-only/",
+      "title": "PS5 デジタル・エディション 日本語専用",
+      "publisher": "Sony Interactive Entertainment (PlayStation Japan)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Japan-only Digital Edition CFI-2200B01 (825GB, 21 November 2025) and Midnight Black CFI-2200B02S (19 November 2026): Japanese console language only, Japan-region accounts only"
+    },
+    {
+      "url": "https://www.psu.com/news/ps5-slim-release-date-when-did-sonys-revised-playstation-5-come-out/",
+      "title": "PS5 Slim Release Date",
+      "publisher": "PlayStation Universe",
+      "retrieved": "2026-11-11",
+      "supports": "release date 10 November 2023 (North America)"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/legal/language-support/",
+      "title": "Console and PSN Supported Languages (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic console language; PSN countries/regions list"
+    }
+  ],
+  "notes": {
+    "ar": "لا يمكن تشغيل أي قرص بدون قارئ الأقراص الإضافي. الحساب والإنترنت ضروريان لشراء الألعاب وتحميلها، واللعب الجماعي عبر الإنترنت يحتاج PlayStation Plus. العراق غير مدرج ضمن مناطق PSN على صفحة Sony، فيُستخدم حساب من منطقة مدعومة، وبطاقات الشحن يجب أن تطابق منطقة الحساب. تنبيه للمستورد: تبيع Sony في اليابان نسخة Digital Edition أرخص مخصصة للغة اليابانية فقط (طراز CFI-2200 بسعة 825GB، ونسخة Midnight Black منها تصدر في 19 نوفمبر 2026)، وهي تعمل باللغة اليابانية فقط ومع حسابات منطقة اليابان فقط، فلا تناسب العملاء في العراق.",
+    "en": "No disc of any kind will play without the add-on Disc Drive. An account and internet are required to buy and download games, and online multiplayer needs PlayStation Plus. Iraq is not listed among PSN regions on Sony's page, so an account from a supported region is used, and gift cards must match the account's region. Importer warning: Sony Japan sells a cheaper Japanese-language-only Digital Edition (CFI-2200 model, 825GB; a Midnight Black version follows on 19 November 2026). It works only in Japanese and only with Japan-region accounts, so it is not suitable for customers in Iraq.",
+    "ckb": "بەبێ دڕایڤی دیسکی زیادە هیچ دیسکێک کار ناکات. بۆ کڕین و داگرتنی یاری هەژمار و ئینتەرنێت پێویستن، و یاریی بە کۆمەڵی ئۆنلاین PlayStation Plusی دەوێت. عێراق لە ناوچەکانی PSN لە پەڕەی Sony دا نییە، بۆیە هەژمارێکی ناوچەیەکی پشتگیریکراو بەکاردێت، و کارتی دیاری دەبێت لەگەڵ ناوچەی هەژمارەکە یەک بگرێتەوە. ئاگاداری بۆ هاوردەکار: Sony لە ژاپۆن Digital Editionێکی هەرزانتر دەفرۆشێت کە تەنها بۆ زمانی ژاپۆنییە (مۆدێلی CFI-2200، 825GB؛ وەشانی Midnight Blackی لە 19ی تشرینی دووەمی 2026 دەردەچێت). تەنها بە ژاپۆنی و لەگەڵ هەژماری ناوچەی ژاپۆن کار دەکات، بۆیە بۆ کڕیارانی عێراق گونجاو نییە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Model numbers of the 1TB Digital Edition units and of non-UK 825GB units (the Gulf model number is not published)",
+      "Exact US switch-over date to 825GB (Wikipedia says 3 October 2025; no second source, so only 'then the US' is stated)",
+      "Weight of the 825GB revision (UK store lists approx. 2.6 kg, same as the 2023 model)"
+    ]
+  }
+}

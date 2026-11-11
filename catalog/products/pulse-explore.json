@@ -1,0 +1,234 @@
+{
+  "slug": "pulse-explore",
+  "group": "playstation-hardware",
+  "kind": "headset",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "pulse",
+  "status": "available",
+  "releaseDate": "2023-12-06",
+  "name": {
+    "ar": "سماعات الأذن اللاسلكية PULSE Explore",
+    "en": "PULSE Explore Wireless Earbuds",
+    "ckb": "گوێگرە بێتەلەکانی PULSE Explore"
+  },
+  "short": {
+    "ar": "سماعات أذن Planar magnetic · PlayStation Link + Bluetooth · 5+10 ساعات مع العلبة",
+    "en": "Planar magnetic earbuds · PlayStation Link + Bluetooth · 5 + 10 hours with case",
+    "ckb": "گوێگری planar magnetic · PlayStation Link + Bluetooth · 5 + 10 کاتژمێر لەگەڵ قوتوو"
+  },
+  "description": {
+    "ar": "سماعات أذن لاسلكية من Sony بمشغلات Planar magnetic، تتصل بـ PS5 وPlayStation Portal والكمبيوتر وMac عبر PlayStation Link، وبالهاتف عبر Bluetooth في الوقت نفسه. فيها ميكروفونان مخفيان مع تقليل الضوضاء بالذكاء الاصطناعي. البطارية حتى 5 ساعات، وعلبة الشحن تضيف حتى 10 ساعات.",
+    "en": "Sony's wireless earbuds with planar magnetic drivers. They connect to a PS5, PlayStation Portal, PC or Mac over PlayStation Link and to a phone over Bluetooth at the same time. Two hidden microphones use AI-enhanced noise rejection. The buds last up to 5 hours and the charging case adds up to 10 more.",
+    "ckb": "گوێگرە بێتەلەکانی Sony بە درایڤەری planar magnetic. بە PlayStation Link بە PS5، PlayStation Portal، PC یان Mac دەبەسترێن و لە هەمان کاتدا بە Bluetooth بە مۆبایل. دوو مایکی شاراوەیان هەیە کە ژاوەژاو بە زیرەکی دەستکرد لادەبەن. گوێگرەکان تا 5 کاتژمێر کار دەکەن و قوتووی شەحن تا 10 کاتژمێری تر زیاد دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "مثالية مع PlayStation Portal: اتصال مباشر عبر PlayStation Link",
+      "en": "A natural match for PlayStation Portal: connects directly over PlayStation Link",
+      "ckb": "گونجاو بۆ PlayStation Portal: ڕاستەوخۆ لە ڕێگەی PlayStation Link دەبەسترێت"
+    },
+    {
+      "ar": "بطارية حتى 5 ساعات + حتى 10 ساعات من علبة الشحن",
+      "en": "Up to 5 hours of battery + up to 10 more from the charging case",
+      "ckb": "پاتری تا 5 کاتژمێر + تا 10 کاتژمێری تر لە قوتووی شەحن"
+    },
+    {
+      "ar": "ميكروفونان مخفيان مع تقليل الضوضاء بالذكاء الاصطناعي",
+      "en": "Two hidden microphones with AI-enhanced noise rejection",
+      "ckb": "دوو مایکی شاراوە لەگەڵ لابردنی ژاوەژاو بە زیرەکی دەستکرد"
+    },
+    {
+      "ar": "اتصال مزدوج: PlayStation Link وBluetooth معاً",
+      "en": "Dual connection: PlayStation Link and Bluetooth together",
+      "ckb": "بەستنەوەی دووانە: PlayStation Link و Bluetooth پێکەوە"
+    },
+    {
+      "ar": "8 رؤوس أذن بمقاسات مختلفة وحقيبة حمل في العلبة",
+      "en": "8 ear tips in different sizes and a carrying case in the box",
+      "ckb": "8 سەری گوێ بە قەبارەی جیاواز و جانتای هەڵگرتن لەناو قوتوو"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZWE1 (النسخة البريطانية CFI-ZWE1EC)", "en": "CFI-ZWE1 (UK unit CFI-ZWE1EC)", "ckb": "CFI-ZWE1 (ئامێری بەریتانی CFI-ZWE1EC)" }
+    },
+    {
+      "key": "drivers",
+      "label": { "ar": "المشغلات", "en": "Drivers", "ckb": "درایڤەرەکان" },
+      "value": { "ar": "Planar magnetic", "en": "Planar magnetic", "ckb": "Planar magnetic" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "PlayStation Link (محوّل USB)، Bluetooth", "en": "PlayStation Link (USB adapter), Bluetooth", "ckb": "PlayStation Link (ئەداپتەری USB)، Bluetooth" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "حتى 5 ساعات + حتى 10 ساعات من العلبة", "en": "Up to 5 hours + up to 10 hours from the case", "ckb": "تا 5 کاتژمێر + تا 10 کاتژمێر لە قوتووەکە" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "ئەندازەکان" },
+      "value": { "ar": "العلبة نحو 42 × 88 × 38 ملم؛ السماعة الواحدة نحو 23 × 35 × 19 ملم", "en": "Case approx. 42 × 88 × 38 mm; single earbud approx. 23 × 35 × 19 mm", "ckb": "قوتوو نزیکەی 42 × 88 × 38 ملم؛ یەک گوێگر نزیکەی 23 × 35 × 19 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "العلبة مع السماعتين نحو 77 غ", "en": "Case with both earbuds about 77 g", "ckb": "قوتوو لەگەڵ هەردوو گوێگر نزیکەی 77 گرام" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "سماعات PULSE Explore", "en": "PULSE Explore wireless earbuds", "ckb": "گوێگرەکانی PULSE Explore" },
+    { "ar": "محوّل PlayStation Link USB", "en": "PlayStation Link USB adapter", "ckb": "ئەداپتەری PlayStation Link USB" },
+    { "ar": "علبة الشحن", "en": "Charging case", "ckb": "قوتووی شەحن" },
+    { "ar": "حقيبة حمل", "en": "Carrying case", "ckb": "جانتای هەڵگرتن" },
+    { "ar": "8 رؤوس أذن بمقاسات مختلفة", "en": "8 earbud tips in different sizes", "ckb": "8 سەری گوێگر بە قەبارەی جیاواز" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PULSE-EXPLORE-WHITE",
+      "title": { "ar": "PULSE Explore – أبيض", "en": "PULSE Explore – White", "ckb": "PULSE Explore – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZWE1EC",
+      "isDefault": true,
+      "images": ["pulse-explore--1", "pulse-explore--2", "pulse-explore--3", "pulse-explore--4"]
+    },
+    {
+      "sku": "PULSE-EXPLORE-MIDNIGHT-BLACK",
+      "title": { "ar": "PULSE Explore – أسود Midnight Black", "en": "PULSE Explore – Midnight Black", "ckb": "PULSE Explore – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["pulse-explore--5"],
+      "notes": { "ar": "صدرت في 20 فبراير 2025 ضمن مجموعة Midnight Black.", "en": "Released 20 February 2025 in the Midnight Black Collection.", "ckb": "لە 20ی شوباتی 2025 لە کۆمەڵەی Midnight Black دەرچوو." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps-portal", "status": "verified", "note": { "ar": "اتصال مباشر عبر PlayStation Link.", "en": "Connects directly over PlayStation Link.", "ckb": "ڕاستەوخۆ لە ڕێگەی PlayStation Link دەبەسترێت." }, "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/" },
+    { "deviceModel": "ps5-slim", "status": "verified", "note": { "ar": "عبر محوّل PlayStation Link المرفق.", "en": "Through the included PlayStation Link adapter.", "ckb": "لە ڕێگەی ئەداپتەری PlayStation Linkی لەگەڵیدایە." }, "source": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://www.playstation.com/en-us/ps5/ps5-pro/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/" },
+    { "deviceModel": "windows-pc", "status": "verified", "note": { "ar": "عبر محوّل PlayStation Link USB.", "en": "Through the PlayStation Link USB adapter.", "ckb": "لە ڕێگەی ئەداپتەری PlayStation Link USB." }, "source": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/" }
+  ],
+  "related": [
+    { "slug": "playstation-portal", "kind": "setup" },
+    { "slug": "pulse-elite", "kind": "alternative" },
+    { "slug": "playstation-pulse-wireless-headset", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "pulse-explore--1",
+      "file": ".cache/product-images/pulse-explore/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-White-01-28x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/",
+      "kind": "hero",
+      "alt": { "ar": "سماعتا PULSE Explore البيضاوان", "en": "The pair of white PULSE Explore earbuds", "ckb": "جووتە گوێگری سپیی PULSE Explore" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-explore--2",
+      "file": ".cache/product-images/pulse-explore/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-White-05-28x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/",
+      "kind": "detail",
+      "alt": { "ar": "السماعات في علبة الشحن المفتوحة", "en": "Earbuds in the open charging case", "ckb": "گوێگرەکان لەناو قوتووی شەحنی کراوەدا" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-explore--3",
+      "file": ".cache/product-images/pulse-explore/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-White-03-28x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/",
+      "kind": "angle",
+      "alt": { "ar": "سماعة PULSE Explore من الداخل ومن الخارج", "en": "PULSE Explore earbuds from the inner and outer side", "ckb": "گوێگرەکانی PULSE Explore لە ناوەوە و دەرەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-explore--4",
+      "file": ".cache/product-images/pulse-explore/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PulseExploreEarbuds-White-Product-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة PULSE Explore مع علبة الشحن والسماعتين", "en": "PULSE Explore box with the charging case and earbuds", "ckb": "قوتووی PULSE Explore لەگەڵ قوتووی شەحن و گوێگرەکان" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "pulse-explore--5",
+      "file": ".cache/product-images/pulse-explore/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-MidnightBlack-01-1x1-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/",
+      "kind": "angle",
+      "alt": { "ar": "PULSE Explore باللون Midnight Black", "en": "PULSE Explore in Midnight Black", "ckb": "PULSE Explore بە ڕەنگی Midnight Black" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/",
+      "title": "PULSE Explore™ wireless earbuds - PS5",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZWE1EC, dimensions, weight, what's in the box, battery, mics, PlayStation Link, Bluetooth, compatible devices, White and Midnight Black"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/",
+      "title": "PlayStation Portal™ Remote Player",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PULSE Explore connects directly to PlayStation Portal over PlayStation Link"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/psportal-compatibility/",
+      "title": "Compatibility of PS Portal",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "PS Portal wireless audio is PlayStation Link devices such as PULSE Explore; IGN's Portal guide confirms there is no Bluetooth audio"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/08/23/playstations-first-remote-play-dedicated-device-playstation-portal-remote-player-to-launch-later-this-year-at-199-99/",
+      "title": "PlayStation's first Remote Play dedicated device ... Pulse Explore and Pulse Elite revealed",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "PULSE Explore launch 6 December 2023 in select markets"
+    },
+    {
+      "url": "https://blog.playstation.com/2025/01/07/new-midnight-black-collection-of-ps5-accessories-launches-next-month/",
+      "title": "New Midnight Black Collection of PS5 accessories launches next month",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Midnight Black PULSE Explore from 20 February 2025, with a felt grey carrying case"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: PULSE Explore works with PS5 Pro"
+    }
+  ],
+  "notes": {
+    "ar": "PlayStation Portal لا يدعم سماعات Bluetooth، لذلك سماعات PlayStation Link مثل PULSE Explore هي الخيار اللاسلكي له. شاحن الكهرباء غير مرفق.",
+    "en": "PlayStation Portal does not support Bluetooth audio, so PlayStation Link earbuds like PULSE Explore are its wireless option. A wall charger is not included.",
+    "ckb": "PlayStation Portal پشتگیری دەنگی Bluetooth ناکات، بۆیە گوێگری PlayStation Link وەک PULSE Explore هەڵبژاردەی بێتەلییەتی. شەحنەری دیوار لەگەڵی نییە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Release date in the Middle East (Sony's blog lists the first markets only)",
+      "Carrying case: confirmed for the Midnight Black version and listed by the UK store today, but early (2023–2024) White stock may not include it"
+    ]
+  }
+}

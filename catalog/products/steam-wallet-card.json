@@ -1,0 +1,216 @@
+{
+  "slug": "steam-wallet-card",
+  "group": "accessories-storage-digital",
+  "kind": "digital",
+  "platform": "pc_handheld",
+  "brand": "Steam",
+  "status": "discontinued",
+  "name": {
+    "ar": "بطاقة Steam (رمز محفظة Steam)",
+    "en": "Steam Gift Card (Steam Wallet code)",
+    "ckb": "کارتی Steam (کۆدی جزدانی Steam)"
+  },
+  "short": {
+    "ar": "رصيد بالدولار لمحفظة Steam · حسابات العراق بالدولار · برنامج البطاقات عند البائعين ينتهي في 2026",
+    "en": "US-dollar Steam Wallet credit · Iraqi accounts use USD · retail card program ends in 2026",
+    "ckb": "باڵانسی دۆلار بۆ جزدانی Steam · هەژمارەکانی عێراق بە دۆلارن · بەرنامەی کارت لای فرۆشیاران لە 2026 کۆتایی دێت"
+  },
+  "description": {
+    "ar": "رمز يضيف رصيداً إلى محفظة Steam لشراء الألعاب والبرامج والأجهزة وكل ما يُباع على Steam، ويُستخدم على الكمبيوتر وSteam Deck. حسابات Steam في العراق تتعامل بالدولار الأمريكي بأسعار إقليمية، ولا يُقبل الرمز إلا إذا كانت عملته هي عملة محفظتك، لذلك تناسب الرموز بالدولار الحسابات العراقية. أعلنت Valve إنهاء بيع بطاقات Steam عبر المتاجر وتتوقع نفادها من البائعين بنهاية 2026، مع بقاء البطاقات المشتراة صالحة للاستخدام.",
+    "en": "A code that adds money to your Steam Wallet for games, software, hardware and anything else sold on Steam, used on PC and Steam Deck. Steam accounts in Iraq use US dollars with regional prices, and a code is only accepted in your wallet's own currency, so US-dollar codes suit Iraqi accounts. Valve has announced it is ending Steam gift cards sold through retailers and expects them to be out of stock by the end of 2026; cards already bought stay usable.",
+    "ckb": "کۆدێک کە پارە دەخاتە سەر جزدانی Steamەکەت بۆ کڕینی یاری، بەرنامە، ئامێر و هەر شتێک کە لە Steam دەفرۆشرێت، لەسەر کۆمپیوتەر و Steam Deck بەکاردێت. هەژمارەکانی Steam لە عێراق بە دۆلاری ئەمریکی و نرخی هەرێمی کار دەکەن، و کۆد تەنها بە دراوی جزدانەکەت قبووڵ دەکرێت، بۆیە کۆدی دۆلار بۆ هەژماری عێراقی گونجاوە. Valve ڕایگەیاندووە کە فرۆشتنی کارتی Steam لە ڕێگەی فرۆشیارانەوە کۆتایی پێدەهێنێت و چاوەڕێ دەکات تا کۆتایی 2026 تەواو ببن؛ ئەو کارتانەی پێشتر کڕاون هەر کار دەکەن."
+  },
+  "highlights": [
+    {
+      "ar": "حسابات Steam في العراق بالدولار الأمريكي (تسعير الشرق الأوسط وشمال أفريقيا)",
+      "en": "Steam accounts in Iraq use US dollars (Middle East and North Africa pricing)",
+      "ckb": "هەژمارەکانی Steam لە عێراق بە دۆلاری ئەمریکین (نرخی ڕۆژهەڵاتی ناوەڕاست و باکووری ئەفریقا)"
+    },
+    {
+      "ar": "الرمز يُقبل فقط بعملة محفظتك",
+      "en": "A code is only accepted in your wallet's currency",
+      "ckb": "کۆد تەنها بە دراوی جزدانەکەت وەردەگیرێت"
+    },
+    {
+      "ar": "تشتري به الألعاب والبرامج والأجهزة على Steam",
+      "en": "Buys games, software and hardware on Steam",
+      "ckb": "یاری، بەرنامە و ئامێر لە Steam دەکڕێت"
+    },
+    {
+      "ar": "رصيد المحفظة لا يُنقل ولا يُهدى إلى حساب آخر",
+      "en": "Wallet funds cannot be moved or gifted to another account",
+      "ckb": "باڵانسی جزدان ناگوازرێتەوە و بە دیاری نادرێت بە هەژمارێکی تر"
+    },
+    {
+      "ar": "Valve توقف بطاقات Steam عند البائعين؛ المتوقع نفادها بنهاية 2026",
+      "en": "Valve is ending retailer Steam cards; stock expected to run out by end of 2026",
+      "ckb": "Valve کارتی Steam لای فرۆشیاران دەوەستێنێت؛ چاوەڕوان دەکرێت تا کۆتایی 2026 تەواو ببن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "format",
+      "label": { "ar": "الشكل", "en": "Format", "ckb": "شێوە" },
+      "value": { "ar": "رمز محفظة Steam", "en": "Steam Wallet code", "ckb": "کۆدی جزدانی Steam" }
+    },
+    {
+      "key": "currency",
+      "label": { "ar": "العملة", "en": "Currency", "ckb": "دراو" },
+      "value": { "ar": "دولار أمريكي (يطابق محافظ Steam في العراق)", "en": "US dollars (matches Steam wallets in Iraq)", "ckb": "دۆلاری ئەمریکی (لەگەڵ جزدانەکانی Steam لە عێراق دەگونجێت)" }
+    },
+    {
+      "key": "redeem",
+      "label": { "ar": "طريقة الاسترداد", "en": "How to redeem", "ckb": "چۆنیەتی بەکارهێنان" },
+      "value": { "ar": "Steam ← استرداد بطاقة Steam أو رمز محفظة ← أدخل الرمز ← متابعة", "en": "Steam → Redeem a Steam Gift Card or Wallet Code → enter the code → Continue", "ckb": "Steam ← Redeem a Steam Gift Card or Wallet Code ← کۆدەکە بنووسە ← Continue" }
+    },
+    {
+      "key": "works_on",
+      "label": { "ar": "يعمل على", "en": "Works on", "ckb": "کار دەکات لەسەر" },
+      "value": { "ar": "حساب Steam على الكمبيوتر وSteam Deck والمتصفح", "en": "Your Steam account on PC, Steam Deck and the web", "ckb": "هەژماری Steam لەسەر کۆمپیوتەر، Steam Deck و وێب" }
+    },
+    {
+      "key": "delivery",
+      "label": { "ar": "التسليم", "en": "Delivery", "ckb": "گەیاندن" },
+      "value": { "ar": "يُرسل الرمز بعد إتمام الدفع", "en": "Code is sent after payment", "ckb": "کۆدەکە دوای پارەدان دەنێردرێت" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "STEAM-USD-5",
+      "title": { "ar": "5 دولار", "en": "$5", "ckb": "5 دۆلار" },
+      "options": { "currency": "USD", "value": "5 USD" },
+      "isDefault": false,
+      "images": ["steam-wallet-card--1"]
+    },
+    {
+      "sku": "STEAM-USD-10",
+      "title": { "ar": "10 دولار", "en": "$10", "ckb": "10 دۆلار" },
+      "options": { "currency": "USD", "value": "10 USD" },
+      "isDefault": true,
+      "images": ["steam-wallet-card--1"]
+    },
+    {
+      "sku": "STEAM-USD-20",
+      "title": { "ar": "20 دولار", "en": "$20", "ckb": "20 دۆلار" },
+      "options": { "currency": "USD", "value": "20 USD" },
+      "isDefault": false,
+      "images": ["steam-wallet-card--1"]
+    },
+    {
+      "sku": "STEAM-USD-50",
+      "title": { "ar": "50 دولار", "en": "$50", "ckb": "50 دۆلار" },
+      "options": { "currency": "USD", "value": "50 USD" },
+      "isDefault": false,
+      "images": ["steam-wallet-card--1"]
+    },
+    {
+      "sku": "STEAM-USD-100",
+      "title": { "ar": "100 دولار", "en": "$100", "ckb": "100 دۆلار" },
+      "options": { "currency": "USD", "value": "100 USD" },
+      "isDefault": false,
+      "images": ["steam-wallet-card--1"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": { "ar": "على حساب Steam بمحفظة بالدولار.", "en": "On a Steam account with a US-dollar wallet.", "ckb": "لەسەر هەژماری Steam بە جزدانی دۆلار." },
+      "source": "https://help.steampowered.com/en/faqs/view/78E3-7431-1E88-AD59"
+    },
+    {
+      "deviceModel": "steam-deck-oled",
+      "status": "verified",
+      "note": { "ar": "الرصيد في حساب Steam نفسه.", "en": "The credit sits on the same Steam account.", "ckb": "باڵانسەکە لە هەمان هەژماری Steam دایە." },
+      "source": "https://store.steampowered.com/digitalgiftcards/"
+    },
+    {
+      "deviceModel": "steam-deck-lcd",
+      "status": "verified",
+      "note": { "ar": "الرصيد في حساب Steam نفسه.", "en": "The credit sits on the same Steam account.", "ckb": "باڵانسەکە لە هەمان هەژماری Steam دایە." },
+      "source": "https://store.steampowered.com/digitalgiftcards/"
+    }
+  ],
+  "related": [
+    { "slug": "steam-deck-oled", "kind": "setup" },
+    { "slug": "lenovo-legion-go-2", "kind": "setup" },
+    { "slug": "rog-xbox-ally-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "steam-wallet-card--1",
+      "file": ".cache/product-images/steam-wallet-card/1.png",
+      "sourceUrl": "https://store.akamai.steamstatic.com/public/images/gift/steamcards_physical.png",
+      "sourcePage": "https://store.steampowered.com/digitalgiftcards/",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقات Steam بقيم 20 و30 و50 دولاراً",
+        "en": "Steam Gift Cards for $20, $30 and $50 USD",
+        "ckb": "کارتەکانی Steam بە بەهای 20، 30 و 50 دۆلار"
+      },
+      "credit": "Valve Corporation",
+      "width": 558,
+      "height": 575,
+      "transparent": true
+    },
+    {
+      "key": "steam-wallet-card--2",
+      "file": ".cache/product-images/steam-wallet-card/2.png",
+      "sourceUrl": "https://store.akamai.steamstatic.com/public/images/gift/digital_cards_preview.png",
+      "sourcePage": "https://store.steampowered.com/digitalgiftcards/",
+      "kind": "detail",
+      "alt": {
+        "ar": "تصميم بطاقة Steam الرقمية بشعار Steam",
+        "en": "Steam digital gift card design with the Steam logo",
+        "ckb": "دیزاینی کارتی دیجیتاڵی Steam بە هێمای Steam"
+      },
+      "credit": "Valve Corporation",
+      "width": 270,
+      "height": 255,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://help.steampowered.com/en/faqs/view/78E3-7431-1E88-AD59",
+      "title": "Steam Wallet (Steam Support FAQ)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "end of the retail Steam Gift Card program and stock expected gone by end of 2026, existing cards stay usable, redemption limited to the wallet's currency, how to redeem a wallet code, wallet funds cannot be moved or gifted"
+    },
+    {
+      "url": "https://partner.steamgames.com/doc/store/pricing/currencies",
+      "title": "Supported Currencies (Steamworks Documentation)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is in the USD_MENA group: US-dollar pricing at regional levels"
+    },
+    {
+      "url": "https://store.steampowered.com/digitalgiftcards/",
+      "title": "Steam Gift Cards",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "what the credit buys (games, software, hardware), digital gift cards sent through Steam, physical cards can still be redeemed, card images"
+    },
+    {
+      "url": "https://digital.baly.iq/games/steam/",
+      "title": "بطاقات ستيم في العراق (Iraqi digital card seller)",
+      "publisher": "Baly (Iraq)",
+      "retrieved": "2026-11-11",
+      "supports": "US-dollar Steam codes sold in Iraq in $5, $10, $20, $25, $30, $50, $100 and $150 values"
+    }
+  ],
+  "notes": {
+    "ar": "لأن Valve تنهي بيع بطاقات Steam عبر البائعين، قد لا تتوفر الرموز بعد نفاد المخزون. البديل الرسمي هو بطاقة Steam الرقمية التي يرسلها شخص من حسابه في Steam إلى حسابك، أو إضافة الرصيد مباشرة من Steam. لا تشترِ رموزاً من مصادر غير موثوقة؛ Valve تحذّر من احتيال بطاقات الهدايا.",
+    "en": "Because Valve is ending Steam cards sold through retailers, codes may not be available once stock runs out. The official alternative is a Steam Digital Gift Card that someone sends from their Steam account to yours, or adding funds directly on Steam. Avoid codes from unknown sources; Valve warns about gift card scams.",
+    "ckb": "چونکە Valve فرۆشتنی کارتی Steam لە ڕێگەی فرۆشیارانەوە کۆتایی پێدەهێنێت، لەوانەیە دوای تەواوبوونی کۆگا کۆد بەردەست نەبێت. جێگرەوەی فەرمی کارتی دیجیتاڵی Steam ە کە کەسێک لە هەژماری Steamی خۆیەوە بۆ هەژمارەکەت دەینێرێت، یان زیادکردنی باڵانس ڕاستەوخۆ لە Steam. کۆد لە سەرچاوەی نەناسراو مەکڕە؛ Valve ئاگاداری فێڵی کارتی دیاری دەکاتەوە."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "Whether online wallet-code distributors (not only physical shops) stop at the same time as Valve's retail card program",
+      "Official Steam card images are small (558 px and 270 px); no larger official artwork was found"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "key": "dualsense-edge--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 1120,
+  "aspect": 1.4286,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/5-240.b321046e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/5-480.7c9a3ef3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/5-720.805782d5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/5-960.0261f137.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/5-1440.b2118ae5.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/5-240.499bb2d8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/5-480.853cfb15.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/5-720.5a58b3a3.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/5-960.b26d70d9.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/5-1440.07f469f5.webp"
+      }
+    ],
+    "png": "/products/dualsense-edge/5-720.a6a08c9a.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGcAAAART6CgjSQ1dSaY7yEiArC+XsI6cFrbthNdMpLfAUHhWDgcJaDQOTkcSBT4OPPq/aGGiP5PAFTzrV/X8jSBm4QZ8IlmeCTVEplRyKxF5uwyd6c4ZSy6yF3IBoCKnIIMLiHLnxjHDh2KAFZQOCBgAAAAsAMAnQEqFAAOAD8RcrBQLCakorAIAYAiCWcAAFLmd1GEZoYTJgAA/tvghwXTK/+6oHr6rBRjuIJn55lyWfkipQt6J6GbkUOgmZyR0jZpDliAXkM8JySJmeJck78PIAAA",
+  "dominant": "#24252a",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-MidnightBlack-01-1x1-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/"
+  },
+  "input": "d1f866a4e7d28ca0"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-dock-set--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1288,
+  "aspect": 1.2422,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-dock-set/3-240.cd5953f0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-dock-set/3-480.5048a1be.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-dock-set/3-720.2a34dbc6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-dock-set/3-960.1cfd1ec2.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-dock-set/3-1440.4c173d59.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-dock-set/3-240.50b2bfd3.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-dock-set/3-480.7ff9ff8b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-dock-set/3-720.da7d5d9b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-dock-set/3-960.c40453fc.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-dock-set/3-1440.6a7562ab.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-dock-set/3-720.a0dd3b7b.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvQAAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSFgAAAART6CobSQ3txx2X73fRUSAsXwqxYajSJJUq9bBinhwRiV8ZZCwAh4JoPH73kcDEf2fAO4VtzqejQt4zSUiI5Ryu8H+wvnC9T/Fw2CBvkRMpAA9mUhxqxX3VlA4IHYAAACwAwCdASoUABAAPxFysFAsJqSisAgBgCIJZwAD46mVP7O+dC7esAD9rpS+qVN+v+DiqvknAtcfZiLG5smt7cuUzkr+mnBHmjn4PIuK4d+u+/KP0rl8qioBhDtfHffrLpirO3n/TbzhKBXfaWowgBodmAE4YAAA",
+  "dominant": "#34373a",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/v1746486897/switch-2/tech-specs/switch-2-dock-front.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/"
+  },
+  "input": "d9218f134b783d66"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "xbox-wireless-controller--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 1166,
+  "aspect": 1.3722,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-wireless-controller/4-240.db826663.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-wireless-controller/4-480.41168fca.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-wireless-controller/4-720.fc004140.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-wireless-controller/4-960.8f19115d.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-wireless-controller/4-1440.d2dd12d9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-wireless-controller/4-240.0fecd06b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-wireless-controller/4-480.b581df6a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-wireless-controller/4-720.0528a0d1.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-wireless-controller/4-960.a1f9e086.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-wireless-controller/4-1440.1a5927c9.webp"
+      }
+    ],
+    "png": "/products/xbox-wireless-controller/4-720.930c5fce.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiIBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSG0AAAART6CobSQ3txx6373/RUTAs8mczwgntm27yUm3kZG94DoaxQBwuDqA2EgktnPn+37GENH/CWDyYbtaXRsg/0vSw4eTzBie1gw+1hF+1kgup79zhSdXPGisynL5UzIoA7grOSnwgLnidI9585gIAFZQOCCOAAAA8AQAnQEqFAAPAD8RcrBQLCakorAIAYAiCWwAnTKDGD1/s/+BAUI6hufBfTeSOw3gAP66OKg3FXzix5L9tHzYM39EYsuceeASHActaRrCsgSZwXm7gwVH/JilWJtSDCg1n5aDWAsiYsDii3Aq2y/kkgD7sXCn6MGlBSuiYw62ej+IMwnVVyPcRsM0dAAAAA==",
+  "dominant": "#143979",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-Blue-b02?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz"
+  },
+  "input": "0b73cc620d3b6e42"
+}

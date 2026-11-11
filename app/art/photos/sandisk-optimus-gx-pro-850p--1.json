@@ -1,0 +1,65 @@
+{
+  "key": "sandisk-optimus-gx-pro-850p--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 611,
+  "aspect": 2.6187,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-240.dd68041f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-480.8aa064ee.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-720.3e2e6fff.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-960.c55f878b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-1440.e00f69df.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-240.8e47ccb5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-480.8703f78e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-720.e52110ef.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-960.9d85c554.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sandisk-optimus-gx-pro-850p/1-1440.6e3acdb2.webp"
+      }
+    ],
+    "png": "/products/sandisk-optimus-gx-pro-850p/1-720.947b3acd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSD0AAAARN6AQkhU6+wjeqwS+GNkUEYH7WCYUtG3k3C8ep5TADyKH4vmTWBAi+j8BdumCCawU+9j6jxqn4oIJKNklAFZQOCBGAAAAEAMAnQEqFAAIAD8RTr9aOKKoJJgDECIJZQAAezv5wswAAP7sjGRioQu+lNdyGe8REWvEoUNM3fQlgmiHH8kmM3Gw8gAAAA==",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sandisk / Sony Interactive Entertainment",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/optimus-gx-pro-850p-internal-nvme-ssd/gallery/optimus-gx-pro-850p-front.png",
+    "page": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd"
+  },
+  "input": "d980c8a7ace03308"
+}

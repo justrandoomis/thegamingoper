@@ -1,0 +1,65 @@
+{
+  "key": "007-first-light--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/007-first-light/4-240.72dcc576.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/007-first-light/4-480.3c4d40ca.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/007-first-light/4-720.00367526.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/007-first-light/4-960.fcc58fcc.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/007-first-light/4-1440.0b40bf03.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/007-first-light/4-240.d6808c06.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/007-first-light/4-480.65aa0d14.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/007-first-light/4-720.823cc29e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/007-first-light/4-960.9e36220e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/007-first-light/4-1440.02491dad.webp"
+      }
+    ],
+    "png": "/products/007-first-light/4-720.30d4e011.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBbZAycWe8NFK6haoNAAAP7o8aakgkO6+ao8vEoUkQUm2lJd9gOFfLUfe6BurDwwKH99SNtmgseQn8r76SbwwSUwH9gAAAA=",
+  "dominant": "#070605",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "IO Interactive",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/007-first-light-screenshot-02-en-06feb26?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/007-first-light/"
+  },
+  "input": "fe46a4d0896c4cf8"
+}

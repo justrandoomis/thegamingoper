@@ -1,0 +1,49 @@
+{
+  "key": "samsung-990-pro-heatsink--4",
+  "view": "hero",
+  "width": 834,
+  "height": 1290,
+  "aspect": 0.6465,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/4-240.d40c4003.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/4-480.398e7c02.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/4-720.890088d3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/4-240.e3b58e1d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/4-480.1f4c84db.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/4-720.cd366941.webp"
+      }
+    ],
+    "png": "/products/samsung-990-pro-heatsink/4-720.87e17bf6.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSEIAAAARN6CQjSQ4twSL8GKcyEVE4C/iwCaybSdXys99riPUGQnXvwjoEBDR/wnAu3ju+3YQLJ4Flevkio0kn38TM8Zo8AlWUDggYgAAAFADAJ0BKg0AFAA/EXCwUCwmJKKwCAGAIglAAAtdl+wcifMAAM4OSpsn30He1Nj3wMHv6gjUU7fsRozAV++hpdHfKcEIr6Vb82kKX+s+aT39xljn38VjnjxvOZBVjbzI4AAA",
+  "dominant": "#e8e9ec",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Samsung",
+  "source": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959868?$ORIGIN_PNG$",
+    "page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/"
+  },
+  "input": "2bb7f2c1d4893f60"
+}

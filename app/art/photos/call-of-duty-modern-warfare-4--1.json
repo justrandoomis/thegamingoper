@@ -1,0 +1,65 @@
+{
+  "key": "call-of-duty-modern-warfare-4--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-modern-warfare-4/1-240.81170cca.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-modern-warfare-4/1-480.47c4226d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-modern-warfare-4/1-720.eea93558.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-modern-warfare-4/1-960.9cb237b3.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/call-of-duty-modern-warfare-4/1-1440.4613819e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-modern-warfare-4/1-240.8149f555.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-modern-warfare-4/1-480.47377f53.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-modern-warfare-4/1-720.cd0e824c.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-modern-warfare-4/1-960.80706a69.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/call-of-duty-modern-warfare-4/1-1440.15d79ee6.webp"
+      }
+    ],
+    "png": "/products/call-of-duty-modern-warfare-4/1-720.c214f8e9.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAACwBACdASoUABQAPxF+t1WsJ6UjKAgBgCIJZwDM0dwAV75WT1Wi+GAAE0h/b2SAAP7p1ZppQfIamFZ+hmHTm1lRRiske4Q+Ka9KkTBCwunKeofRCPLTvBlqasIKzez20a9Hov/jZOQg952DRA/FQthLuQ8fwHyQsgouphJyPIh1uOgeec4f06d+EFnqHZHn/KJ1GKyZjEL7AAAA",
+  "dominant": "#080704",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Activision",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.59792.13559635275456449.72d1efe7-e297-4b01-9ff5-81f9541bc9a1.f8f4e212-4f83-45fe-8db7-bbb19d5a9582",
+    "page": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw"
+  },
+  "input": "19a870486c023655"
+}

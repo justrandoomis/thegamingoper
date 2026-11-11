@@ -1,0 +1,57 @@
+{
+  "key": "crimson-desert--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/crimson-desert/1-240.e86ad723.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/crimson-desert/1-480.80d78b48.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/crimson-desert/1-720.f058141f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/crimson-desert/1-960.68035284.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/crimson-desert/1-240.d4a346ce.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/crimson-desert/1-480.dced7c85.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/crimson-desert/1-720.5b40557e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/crimson-desert/1-960.c37cde38.webp"
+      }
+    ],
+    "png": "/products/crimson-desert/1-720.e99b1b97.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADQAwCdASoNABQAPxFysFAsJqSisAgBgCIJYwAAW6gO0/QEQ4DieIAA/sB2KyBgrzXONlXCV4hU86p1Kt1miWszbcNuqKfHA8D2v9lId/jGIN6H0cfL40AA",
+  "dominant": "#261817",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Pearl Abyss",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.61541.14619536583353710.9e307ff1-14c4-4d1a-813e-cef9bbad5dc5.90b67c9e-834e-44f1-b16c-16624e50f9b4",
+    "page": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk"
+  },
+  "input": "c65a54985a8e75bf"
+}

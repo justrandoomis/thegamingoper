@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go-s--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 794,
+  "aspect": 2.0151,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-s/3-240.3e90bbba.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-s/3-480.2c25f5db.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-s/3-720.605b9833.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-s/3-960.eb936a24.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-s/3-1440.7b46c079.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-s/3-240.d8ac389c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-s/3-480.33df8fc4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-s/3-720.f7c509f6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-s/3-960.c9928042.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-s/3-1440.2e5d4b65.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go-s/3-720.879da557.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEYAAAARP6AYkiQ2uAT7umSQiS4iAvEXlASj2Lba0NdI6HtWKEAAg4KWxEL8z/C+hoj+TwCjjnbNzP1QFCQ70hMZSkHSnu9aOSMCVlA4IF4AAACwAwCdASoUAAoAPxFysFAsJqSisAgBgCIJZwDG9Brf4G5H25/AAAD+z1M/ZM3/fWDZTpnw0RJVtEEvmaoOJnu93maNfv6lhshcqGqcKil/ivToCqdOP664KzqLJYAA",
+  "dominant": "#312d3b",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#02_Legion_Go_S_Steam_Back.png",
+    "page": "https://news.lenovo.com/press-kits/ces-2025/"
+  },
+  "input": "00d502d8624591a6"
+}

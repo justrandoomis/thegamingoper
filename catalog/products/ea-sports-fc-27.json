@@ -1,0 +1,293 @@
+{
+  "slug": "ea-sports-fc-27",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "EA SPORTS",
+  "status": "available",
+  "releaseDate": "2026-09-25",
+  "name": { "ar": "EA SPORTS FC 27", "en": "EA SPORTS FC 27", "ckb": "EA SPORTS FC 27" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · تعليق عربي",
+    "en": "PS5 · Xbox Series X · disc · Arabic commentary",
+    "ckb": "PS5 · Xbox Series X · دیسک · لێدوانی عەرەبی"
+  },
+  "description": {
+    "ar": "لعبة كرة القدم السنوية من EA SPORTS لموسم 2026–2027، صدرت في 25 أيلول 2026. تضم أكثر من 21,000 لاعب مرخّص من أكثر من 800 نادٍ ومنتخب، مع وضع The Grounds الجديد للعب في الشوارع مع الأصدقاء، وسوق انتقالات جديد في Career، وFootball Ultimate Team. تدعم اللغة العربية في القوائم والترجمة والتعليق الصوتي.",
+    "en": "EA SPORTS' yearly football game for the 2026–27 season, released on 25 September 2026. It has 21,000+ licensed players from 800+ clubs and national teams, the new The Grounds street-football mode for playing with friends, a rebuilt transfer market in Career, and Football Ultimate Team. Arabic is supported for menus, subtitles and commentary.",
+    "ckb": "یاری تۆپی پێی ساڵانەی EA SPORTS بۆ وەرزی 2026–2027، کە لە 25ی ئەیلوولی 2026 دەرچوو. زیاتر لە 21,000 یاریزانی مۆڵەتدراو لە زیاتر لە 800 یانە و هەڵبژاردەی تێدایە، لەگەڵ شێوازی نوێی The Grounds بۆ تۆپی پێی شەقام لەگەڵ هاوڕێکانت، بازاڕی گواستنەوەی نوێ لە Career و Football Ultimate Team. زمانی عەرەبی بۆ مێنیو، ژێرنووس و لێدوانی دەنگی پشتگیری دەکرێت."
+  },
+  "highlights": [
+    {
+      "ar": "تعليق صوتي وقوائم وترجمة باللغة العربية.",
+      "en": "Arabic commentary, menus and subtitles.",
+      "ckb": "لێدوانی دەنگی، مێنیو و ژێرنووس بە زمانی عەرەبی."
+    },
+    {
+      "ar": "وضع The Grounds الجديد (ومعه Clubs) متاح فقط على PS5 وXbox Series X|S.",
+      "en": "The new The Grounds mode (Clubs included) is only on PS5 and Xbox Series X|S among consoles.",
+      "ckb": "شێوازی نوێی The Grounds (لەگەڵ Clubs) لە نێو کۆنسۆڵەکاندا تەنها لەسەر PS5 و Xbox Series X|S هەیە."
+    },
+    {
+      "ar": "1–4 لاعبين على نفس الجهاز، واللعب أونلاين يحتاج PlayStation Plus أو Game Pass Essential/Premium/Ultimate.",
+      "en": "1–4 players on one console; online play needs PlayStation Plus or Game Pass Essential, Premium or Ultimate.",
+      "ckb": "1–4 یاریزان لەسەر یەک ئامێر؛ یاری ئۆنلاین پێویستی بە PlayStation Plus یان Game Pass Essential/Premium/Ultimate هەیە."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro.",
+      "en": "PS5 Pro Enhanced.",
+      "ckb": "باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "التصنيف PEGI 16 في أوروبا بسبب العناصر العشوائية المدفوعة (حزم Ultimate Team).",
+      "en": "Rated PEGI 16 in Europe because of paid random items (Ultimate Team packs).",
+      "ckb": "پۆلێنی PEGI 16 لە ئەورووپا بەهۆی شتە هەڕەمەکییە پارەدارەکان (پاکێجەکانی Ultimate Team)."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": {
+        "ar": "25 أيلول 2026 (وصول مبكر من 18 أيلول لنسخة Ultimate)",
+        "en": "25 September 2026 (early access from 18 September with the Ultimate Edition)",
+        "ckb": "25ی ئەیلوولی 2026 (دەستپێگەیشتنی زوو لە 18ی ئەیلوولەوە بۆ Ultimate Edition)"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": {
+        "ar": "PS5 وPS4 وXbox Series X|S وXbox One وNintendo Switch 2 وSwitch وPC — هنا نسخ PS5 وXbox Series X",
+        "en": "PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch 2, Switch and PC — sold here for PS5 and Xbox Series X",
+        "ckb": "PS5، PS4، Xbox Series X|S، Xbox One، Nintendo Switch 2، Switch و PC — لێرە وەشانی PS5 و Xbox Series X دەفرۆشرێت"
+      }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص Blu-ray", "en": "Blu-ray disc", "ckb": "دیسکی Blu-ray" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "حتى 92.5 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "Up to 92.5 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "تا 92.5 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "1–4 على نفس الجهاز، ولعب جماعي أونلاين", "en": "1–4 on one console, plus online multiplayer", "ckb": "1–4 لەسەر یەک ئامێر، لەگەڵ یاری بەکۆمەڵی ئۆنلاین" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "PlayStation Plus على PS5؛ Game Pass Essential أو Premium أو Ultimate على Xbox؛ حساب EA مطلوب للمزايا الأونلاين",
+        "en": "PlayStation Plus on PS5; Game Pass Essential, Premium or Ultimate on Xbox; an EA account is needed for online features",
+        "ckb": "PlayStation Plus لەسەر PS5؛ Game Pass Essential یان Premium یان Ultimate لەسەر Xbox؛ هەژماری EA بۆ تایبەتمەندییە ئۆنلاینەکان پێویستە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": {
+        "ar": "تعليق صوتي وقوائم وترجمة (التعليق بغير الإنجليزية ولغة الجهاز يحتاج تحميلاً إضافياً)",
+        "en": "Commentary, menus and subtitles (commentary in languages other than English and the console language is an extra download)",
+        "ckb": "لێدوانی دەنگی، مێنیو و ژێرنووس (لێدوان بە زمانێک جگە لە ئینگلیزی و زمانی ئامێرەکە داگرتنی زیادەی پێویستە)"
+      }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 16 / ESRB E", "en": "PEGI 16 / ESRB E", "ckb": "PEGI 16 / ESRB E" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "EA Vancouver وEA Romania / Electronic Arts", "en": "EA Vancouver and EA Romania / Electronic Arts", "ckb": "EA Vancouver و EA Romania / Electronic Arts" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة الكاملة (Standard Edition)",
+      "en": "Full-game disc (Standard Edition)",
+      "ckb": "دیسکی یارییە تەواوەکە (Standard Edition)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "FC27-PS5-STD",
+      "title": { "ar": "EA SPORTS FC 27 لجهاز PS5 — Standard Edition", "en": "EA SPORTS FC 27 for PS5 — Standard Edition", "ckb": "EA SPORTS FC 27 بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["ea-sports-fc-27--1", "ea-sports-fc-27--2", "ea-sports-fc-27--3", "ea-sports-fc-27--4"],
+      "notes": {
+        "ar": "قرص PS5 لا يعمل على PS4. على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "The PS5 disc does not play on PS4. PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "دیسکی PS5 لەسەر PS4 کار ناکات. PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "FC27-XSX-STD",
+      "title": { "ar": "EA SPORTS FC 27 لجهاز Xbox Series X — Standard Edition", "en": "EA SPORTS FC 27 for Xbox Series X — Standard Edition", "ckb": "EA SPORTS FC 27 بۆ Xbox Series X — Standard Edition" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["ea-sports-fc-27--1", "ea-sports-fc-27--2", "ea-sports-fc-27--3"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition لأنهما بدون قارئ أقراص.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition, which have no disc drive.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات چونکە دیسک خوێنەریان نییە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "رياضة", "en": "Sports", "ckb": "وەرزش" },
+      { "ar": "كرة قدم", "en": "Football", "ckb": "تۆپی پێ" }
+    ],
+    "players": "1-4 local, online multiplayer",
+    "online": {
+      "ar": "اللعب أونلاين يحتاج PlayStation Plus على PS5 أو Game Pass Essential أو Premium أو Ultimate على Xbox، مع حساب EA.",
+      "en": "Online play needs PlayStation Plus on PS5, or Game Pass Essential, Premium or Ultimate on Xbox, plus an EA account.",
+      "ckb": "یاری ئۆنلاین پێویستی بە PlayStation Plus لەسەر PS5، یان Game Pass Essential/Premium/Ultimate لەسەر Xbox هەیە، لەگەڵ هەژماری EA."
+    },
+    "ageRating": { "pegi": 16, "esrb": "E" },
+    "arabic": "voice+subtitles+interface",
+    "physicalFormat": "disc",
+    "sizeGb": 92.5,
+    "developer": "EA Vancouver, EA Romania",
+    "publisher": "Electronic Arts"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://store.playstation.com/en-gb/concept/10017332"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://store.playstation.com/en-gb/concept/10017332"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X.", "en": "Xbox Series X disc.", "ckb": "دیسکی Xbox Series X." },
+      "source": "https://www.amazon.co.uk/SPORTS-Standard-Physical-VideoGame-English/dp/B0H7JWM1JD"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط تعمل عليه.", "en": "No disc drive; only the digital version runs on it.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ کار دەکات." },
+      "source": "https://www.amazon.co.uk/SPORTS-Standard-Physical-VideoGame-English/dp/B0H7JWM1JD"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط تعمل عليه.", "en": "No disc drive; only the digital version runs on it.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ کار دەکات." },
+      "source": "https://www.xbox.com/en-US/games/store/ea-sports-fc-27-xbox-series-xs/9nj2n85t2zgs"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "playstation-store-gift-card", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "ea-sports-fc-27--1",
+      "file": ".cache/product-images/ea-sports-fc-27/1.jpg",
+      "sourceUrl": "https://drop-assets.ea.com/images/5K1irdzIk8dr7VqEfe2yRm/993ad991664df96b85b6910197bb5143/fc-27-standard-key-art-1x1.jpg",
+      "sourcePage": "https://www.ea.com/games/ea-sports-fc/fc-27",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف EA SPORTS FC 27 — Standard Edition مع Kylian Mbappé", "en": "EA SPORTS FC 27 Standard Edition cover art with Kylian Mbappé", "ckb": "وێنەی بەرگی EA SPORTS FC 27 — Standard Edition لەگەڵ Kylian Mbappé" },
+      "credit": "Electronic Arts",
+      "width": 1920, "height": 1920, "transparent": false
+    },
+    {
+      "key": "ea-sports-fc-27--2",
+      "file": ".cache/product-images/ea-sports-fc-27/2.jpg",
+      "sourceUrl": "https://drop-assets.ea.com/images/7Dl90ynXhCsqm5xHkiVN5K/17ca58568bfaa2e916c7ef801ef7e8d7/fc-27-screenshots-Musiala-OffBalance-Hires-Clean-16X9.jpg",
+      "sourcePage": "https://www.ea.com/games/ea-sports-fc/fc-27",
+      "kind": "screenshot",
+      "alt": { "ar": "لقطة من مباراة في EA SPORTS FC 27", "en": "Match action in EA SPORTS FC 27", "ckb": "دیمەنێک لە یارییەکی EA SPORTS FC 27" },
+      "credit": "Electronic Arts",
+      "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "ea-sports-fc-27--3",
+      "file": ".cache/product-images/ea-sports-fc-27/3.jpg",
+      "sourceUrl": "https://drop-assets.ea.com/images/7iSA3w9vlXmKsXJ2eN6Nat/11a2f17052016fd7ea4acf9bca0921bf/fc-27-screenshots-TheGrounds-Bucketball-Clean-16x9.jpg",
+      "sourcePage": "https://www.ea.com/games/ea-sports-fc/fc-27",
+      "kind": "screenshot",
+      "alt": { "ar": "وضع The Grounds لكرة القدم في الشارع", "en": "The Grounds street-football mode", "ckb": "شێوازی The Grounds بۆ تۆپی پێی شەقام" },
+      "credit": "Electronic Arts",
+      "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "ea-sports-fc-27--4",
+      "file": ".cache/product-images/ea-sports-fc-27/4.jpg",
+      "sourceUrl": "https://drop-assets.ea.com/images/597Qk9E9rnNxY0q4g6Vu0w/9e49b5926f4f3845fef75bbcfc8042b3/fc-27-screenshots-FUT-Gallery-Clean-16x9.jpg",
+      "sourcePage": "https://www.ea.com/games/ea-sports-fc/fc-27",
+      "kind": "screenshot",
+      "alt": { "ar": "معرض FUT Gallery في Football Ultimate Team", "en": "The FUT Gallery in Football Ultimate Team", "ckb": "FUT Gallery لە Football Ultimate Team" },
+      "credit": "Electronic Arts",
+      "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.ea.com/games/ea-sports-fc/fc-27/news/fc-27-editions-and-release-dates", "title": "EA SPORTS FC 27 — Ultimate Plus, Ultimate & Standard Edition FAQ + release dates", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "release 25 Sep 2026, early access 18 Sep, editions, The Grounds (incl. Clubs) only on PS5/Xbox Series/PC/Switch 2, free PS4→PS5 upgrade" },
+    { "url": "https://www.ea.com/games/ea-sports-fc/fc-27/buy", "title": "Buy EA SPORTS FC 27", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "language list including Arabic, platforms, game features, 21,000+ players" },
+    { "url": "https://store.playstation.com/en-gb/concept/10017332", "title": "EA SPORTS FC 27 Standard Edition PS4 & PS5 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16 with paid random items, PS Plus required for online play, 1–4 players, PS5 Pro Enhanced, Arabic screen language on PS5" },
+    { "url": "https://www.xbox.com/en-US/games/store/ea-sports-fc-27-xbox-series-xs/9nj2n85t2zgs", "title": "EA SPORTS FC 27 Xbox Series X|S — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "Arabic interface, audio and subtitles; online multiplayer requires Game Pass Essential, Premium or Ultimate; max install about 92.5 GB; local 2–4 and online multiplayer; ESRB Everyone" },
+    { "url": "https://www.playstation.com/en-gb/games/ea-sports-fc/", "title": "EA SPORTS FC 27 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "21,000+ players, 800+ clubs and national teams, features, PS Plus requirement" },
+    { "url": "https://en.wikipedia.org/wiki/EA_Sports_FC_27", "title": "EA Sports FC 27", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developers EA Vancouver and EA Romania, release 25 Sep 2026, platforms, Standard Edition cover features Kylian Mbappé" },
+    { "url": "https://www.pcgamer.com/gaming-industry/ea-sports-fc-27-gets-a-pegi-16-rating-in-europe-because-of-loot-boxes/", "title": "EA Sports FC 27 gets a PEGI 16 rating in Europe because of loot boxes", "publisher": "PC Gamer", "retrieved": "2026-11-11", "supports": "independent confirmation of PEGI 16 and the reason" },
+    { "url": "https://www.amazon.co.uk/SPORTS-Standard-Physical-VideoGame-English/dp/B0H7JWM1JD", "title": "EA SPORTS FC 27 Standard Edition Xbox Series X — physical disc", "publisher": "Amazon UK (publisher listing)", "retrieved": "2026-11-11", "supports": "Xbox Series X physical disc, not compatible with Xbox Series S" },
+    { "url": "https://www.amazon.com/Standard-PlayStation5-Physical-VideoGame-PlayStation-5/dp/B0H9SYK5Q7", "title": "EA SPORTS FC 27 Standard Edition PlayStation 5 — physical disc", "publisher": "Amazon US (publisher listing)", "retrieved": "2026-11-11", "supports": "PS5 physical disc with the full game, not compatible with PS4" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive to play discs" }
+  ],
+  "notes": {
+    "ar": "عملة FC Points داخل اللعبة تُشترى بشكل منفصل من متجر الجهاز. نسخة Ultimate Edition تضيف FC Points ووصولاً مبكراً ومحتوى إضافياً، أما Ultimate Plus Edition فكانت تُباع حتى 31 آب 2026 فقط.",
+    "en": "FC Points, the in-game currency, are sold separately in the console store. The Ultimate Edition adds FC Points, early access and extra content; the Ultimate Plus Edition was only sold until 31 August 2026.",
+    "ckb": "FC Points، دراوی ناو یارییەکە، بە جیا لە فرۆشگای ئامێرەکە دەفرۆشرێت. Ultimate Edition بڕێک FC Points، دەستپێگەیشتنی زوو و ناوەڕۆکی زیادە زیاد دەکات؛ Ultimate Plus Edition تەنها تا 31ی ئابی 2026 دەفرۆشرا."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "PS5 install size is not published on the PlayStation Store web page; the size shown is the Microsoft Store figure for Xbox Series X|S.",
+      "The PlayStation Store lists Arabic voice for the PS4 version and Arabic screen text for PS5; Arabic commentary on PS5 is assumed from EA's language list and the Xbox listing.",
+      "Whether physical copies are a Middle East (Arabic) or European pack depends on the distributor; not checked.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "key": "mario-kart-world--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/mario-kart-world/4-240.ccc16888.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-kart-world/4-480.877bef92.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/mario-kart-world/4-720.29b6df45.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/mario-kart-world/4-960.4e8af246.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mario-kart-world/4-1440.8a5ca839.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/mario-kart-world/4-240.d7707ca6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-kart-world/4-480.0542316d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/mario-kart-world/4-720.b2f005a0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/mario-kart-world/4-960.aa55370f.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mario-kart-world/4-1440.878a642c.webp"
+      }
+    ],
+    "png": "/products/mario-kart-world/4-720.69206b9e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZACdAArxk3xI+/5tmQAA/slFFV1kC/KKW+FT4xeHDd0sPPLcLCKxREVfVI1bafk+7bOjZ6ei/DMb23eadszrIbd2BQ/njiCjkHpN1JIarVMrgUTzLIM6AbbrVqwAAAA=",
+  "dominant": "#e8fafd",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000095431/bbe82fcb30221d01b574da4526ca167e4a1bb911bf013a813c0f656d087d11f6",
+    "page": "https://www.nintendo.com/us/store/products/mario-kart-world-switch-2/"
+  },
+  "input": "4586f4e081c80b7d"
+}

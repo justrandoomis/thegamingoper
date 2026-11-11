@@ -1,0 +1,65 @@
+{
+  "key": "playstation-portal--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 608,
+  "aspect": 2.6316,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/3-240.388c8d3a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/3-480.806e715b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/3-720.61727aba.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/3-960.6a188e2f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/3-1440.63b25d21.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/3-240.a32a307c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/3-480.b7b24f61.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/3-720.ead15b12.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/3-960.37f839a5.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/3-1440.5f5cace2.webp"
+      }
+    ],
+    "png": "/products/playstation-portal/3-720.66ec21d2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSE8AAAART6CobSM2VgL32gdgR0RAxiv5qcA0AIA0OLxAI5F5Y82t+TIn7AWXe5EbIvo/ASBS1cu6rmu9oP4PMhviW3I73SWsHKuqqvTODQXeFINIAFZQOCBoAAAA0AMAnQEqFAAIAD8RcrFQrCakorAIAYAiCWQAtOgfLsU3JRCKTfMgAPRoIlQJD5TBG7xmbd4lqZft8I0YYYoKma7N/MrLhdqSDJXStrib5WdlsE47AfrdAs3TVvRd/f6VERbBrefKAAA=",
+  "dominant": "#343b46",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-04-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+  },
+  "input": "4fa4d89ae5ce53a8"
+}

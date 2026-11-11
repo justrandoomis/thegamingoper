@@ -1,0 +1,265 @@
+{
+  "slug": "resident-evil-requiem",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "Capcom",
+  "status": "available",
+  "releaseDate": "2026-02-27",
+  "name": { "ar": "Resident Evil Requiem", "en": "Resident Evil Requiem", "ckb": "Resident Evil Requiem" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · قوائم وترجمة عربية",
+    "en": "PS5 · Xbox Series X · disc · Arabic menus and subtitles",
+    "ckb": "PS5 · Xbox Series X · دیسک · مێنیو و ژێرنووسی عەرەبی"
+  },
+  "description": {
+    "ar": "الجزء التاسع الرئيسي من سلسلة الرعب Resident Evil من Capcom، صدر في 27 شباط 2026. تلعب بشخصيتين: محللة الـFBI Grace Ashcroft في رعب البقاء، والعميل المخضرم Leon S. Kennedy في مواجهات أكثر أكشن، وتكشفان الحقيقة وراء حادثة Raccoon City. يمكن اللعب من منظور الشخص الأول أو الثالث، وقد تجاوزت مبيعاتها 8 ملايين نسخة حسب Capcom.",
+    "en": "The ninth main entry in Capcom's Resident Evil horror series, released on 27 February 2026. You play two characters: FBI analyst Grace Ashcroft in tense survival horror, and veteran agent Leon S. Kennedy in more action-heavy fights, as they dig into the truth behind the Raccoon City Incident. You can play in first-person or third-person view, and Capcom reports more than 8 million copies sold.",
+    "ckb": "نۆیەمین بەشی سەرەکی زنجیرەی ترسناکی Resident Evil لە Capcom، کە لە 27ی شوباتی 2026 دەرچوو. بە دوو کارەکتەر یاری دەکەیت: Grace Ashcroft ی شیکەرەوەی FBI لە ترسی مانەوەدا، و Leon S. Kennedy ی بریکاری بەئەزموون لە شەڕی زیاتر ئاکشندا، بۆ دۆزینەوەی ڕاستیی پشت ڕووداوی Raccoon City. دەتوانیت لە ڕوانگەی کەسی یەکەم یان سێیەم یاری بکەیت، و بەپێی Capcom زیاتر لە 8 ملیۆن دانە فرۆشراوە."
+  },
+  "highlights": [
+    {
+      "ar": "قوائم وترجمة باللغة العربية؛ الصوت بلغات أخرى.",
+      "en": "Arabic menus and subtitles; voice-over in other languages.",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی؛ دەنگ بە زمانەکانی تر."
+    },
+    {
+      "ar": "منظور الشخص الأول أو الثالث حسب رغبتك.",
+      "en": "Choose first-person or third-person view.",
+      "ckb": "ڕوانگەی کەسی یەکەم یان سێیەم بە دڵی خۆت هەڵبژێرە."
+    },
+    {
+      "ar": "لاعب واحد، وتعمل بدون إنترنت.",
+      "en": "Single-player and works offline.",
+      "ckb": "تاکەکەسییە و بێ ئینتەرنێت کار دەکات."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro.",
+      "en": "PS5 Pro Enhanced.",
+      "ckb": "باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "التصنيف PEGI 18 — رعب وعنف.",
+      "en": "Rated PEGI 18 — horror and violence.",
+      "ckb": "پۆلێنی PEGI 18 — ترس و توندوتیژی."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "27 شباط 2026", "en": "27 February 2026", "ckb": "27ی شوباتی 2026" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": {
+        "ar": "PS5 وXbox Series X|S وNintendo Switch 2 وPC",
+        "en": "PS5, Xbox Series X|S, Nintendo Switch 2 and PC",
+        "ckb": "PS5، Xbox Series X|S، Nintendo Switch 2 و PC"
+      }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص لـ PS5 وXbox Series X", "en": "Disc for PS5 and Xbox Series X", "ckb": "دیسک بۆ PS5 و Xbox Series X" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "حتى 77.2 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "Up to 77.2 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "تا 77.2 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "لاعب واحد", "en": "1 player", "ckb": "1 یاریزان" }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "لغة عرض (قوائم وترجمة) — بدون صوت عربي", "en": "Display language (menus and subtitles) — no Arabic voice", "ckb": "زمانی پیشاندان (مێنیو و ژێرنووس) — بێ دەنگی عەرەبی" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 18 / ESRB M", "en": "PEGI 18 / ESRB M", "ckb": "PEGI 18 / ESRB M" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Capcom", "en": "Capcom", "ckb": "Capcom" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة (Standard Edition)", "en": "Game disc (Standard Edition)", "ckb": "دیسکی یارییەکە (Standard Edition)" }
+  ],
+  "variants": [
+    {
+      "sku": "RE9-PS5-STD",
+      "title": { "ar": "Resident Evil Requiem لجهاز PS5", "en": "Resident Evil Requiem for PS5", "ckb": "Resident Evil Requiem بۆ PS5" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["resident-evil-requiem--1", "resident-evil-requiem--2", "resident-evil-requiem--3", "resident-evil-requiem--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "RE9-XSX-STD",
+      "title": { "ar": "Resident Evil Requiem لجهاز Xbox Series X", "en": "Resident Evil Requiem for Xbox Series X", "ckb": "Resident Evil Requiem بۆ Xbox Series X" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["resident-evil-requiem--1", "resident-evil-requiem--2", "resident-evil-requiem--3"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "رعب البقاء", "en": "Survival horror", "ckb": "ترسی مانەوە" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "لعبة فردية لا تحتاج اشتراكاً أو إنترنت للعب.",
+      "en": "Single-player; no subscription or internet needed to play.",
+      "ckb": "یارییەکی تاکەکەسییە؛ بۆ یاریکردن بەشداریکردن یان ئینتەرنێتی پێویست نییە."
+    },
+    "ageRating": { "pegi": 18, "esrb": "M" },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "sizeGb": 77.2,
+    "developer": "Capcom",
+    "publisher": "Capcom"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.playstation.com/en-ae/games/resident-evil-requiem/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.playstation.com/en-ae/games/resident-evil-requiem/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X.", "en": "Xbox Series X disc.", "ckb": "دیسکی Xbox Series X." },
+      "source": "https://www.ign.com/articles/resident-evil-requiem-is-finally-back-in-stock-at-amazon"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/resident-evil-requiem/9nmfwr0nrlzs"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/resident-evil-requiem/9nmfwr0nrlzs"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "pulse-elite", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "resident-evil-requiem--1",
+      "file": ".cache/product-images/resident-evil-requiem/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.65104.14157056169306105.30ae0432-c36b-42e7-9bbb-f85189243ca3.8e302653-b1b3-4ef9-b328-6a0822123e0c",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/resident-evil-requiem/9nmfwr0nrlzs",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Resident Evil Requiem", "en": "Resident Evil Requiem cover art", "ckb": "وێنەی بەرگی Resident Evil Requiem" },
+      "credit": "Capcom",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "resident-evil-requiem--2",
+      "file": ".cache/product-images/resident-evil-requiem/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Resident-Evil-Requiem-Grace-1st-person-screenshot-11-25feb26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/resident-evil-requiem/",
+      "kind": "screenshot",
+      "alt": { "ar": "Grace بمنظور الشخص الأول في ممر مظلم", "en": "Grace in first-person view in a dark corridor", "ckb": "Grace لە ڕوانگەی کەسی یەکەم لە ڕاڕەوێکی تاریکدا" },
+      "credit": "Capcom",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "resident-evil-requiem--3",
+      "file": ".cache/product-images/resident-evil-requiem/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Resident-Evil-Requiem-Leon-3rd-person-screenshot-12-25feb26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/resident-evil-requiem/",
+      "kind": "screenshot",
+      "alt": { "ar": "Leon بمنظور الشخص الثالث يواجه عدواً بمنشار", "en": "Leon in third-person view facing an enemy with a chainsaw", "ckb": "Leon لە ڕوانگەی کەسی سێیەم بەرامبەر دوژمنێک بە مشارێکی کارەبایی" },
+      "credit": "Capcom",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "resident-evil-requiem--4",
+      "file": ".cache/product-images/resident-evil-requiem/4.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/resident-evil-requiem-screenshot-19-en-25feb26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/resident-evil-requiem/",
+      "kind": "screenshot",
+      "alt": { "ar": "Grace Ashcroft تحمل مسدساً", "en": "Grace Ashcroft holding a pistol", "ckb": "Grace Ashcroft دەمانچەیەکی بەدەستەوەیە" },
+      "credit": "Capcom",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.residentevil.com/requiem/en-asia/", "title": "Resident Evil Requiem — official site", "publisher": "Capcom", "retrieved": "2026-11-11", "supports": "release 27 Feb 2026, story, Grace and Leon, 1 player, display languages incl. Arabic, voice languages without Arabic, first/third-person, 8 million units sold" },
+    { "url": "https://store.playstation.com/en-ae/concept/10015533", "title": "Resident Evil Requiem — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language, no Arabic voice, release date" },
+    { "url": "https://store.playstation.com/en-gb/concept/10015533", "title": "Resident Evil Requiem — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18" },
+    { "url": "https://www.playstation.com/en-ae/games/resident-evil-requiem/", "title": "Resident Evil Requiem — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "offline play, 1 player, PS5 Pro Enhanced, editions, screenshots" },
+    { "url": "https://www.xbox.com/en-US/games/store/resident-evil-requiem/9nmfwr0nrlzs", "title": "Resident Evil Requiem — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, single player, max install about 77.2 GB, cover art" },
+    { "url": "https://www.ign.com/articles/resident-evil-requiem-is-finally-back-in-stock-at-amazon", "title": "Resident Evil Requiem is finally back in stock at Amazon", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "physical copies for PS5, Xbox Series X and Nintendo Switch 2" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "Deluxe Edition تضيف حزمة Deluxe Kit الرقمية. النسخة الفيزيائية هي Standard Edition.",
+    "en": "The Deluxe Edition adds the digital Deluxe Kit. The physical copy is the Standard Edition.",
+    "ckb": "Deluxe Edition بەستەی دیجیتاڵی Deluxe Kit زیاد دەکات. وەشانی فیزیکی Standard Edition ە."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "PS5 install size is not published; the size shown is the Microsoft Store figure.",
+      "The Capcom page lists Arabic as a display language; whether every text, including subtitles, is translated was not checked in the game.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

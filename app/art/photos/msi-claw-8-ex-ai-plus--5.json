@@ -1,0 +1,65 @@
+{
+  "key": "msi-claw-8-ex-ai-plus--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 782,
+  "aspect": 2.046,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-240.a1b9ad89.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-480.0dfb7b29.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-720.1d575d96.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-960.49f4de43.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-1440.4de16544.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-240.a23302c1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-480.1ede14d3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-720.33e55ac0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-960.90d9d1b2.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/msi-claw-8-ex-ai-plus/5-1440.05b0dc2c.webp"
+      }
+    ],
+    "png": "/products/msi-claw-8-ex-ai-plus/5-720.d2896632.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSF4AAAART6CgjSQ1dRqYniEiAmxuPPZ7wW2tbU/ykttMnVPHCBkWCK5AadbSTtjAd17TChH9nwD8WThv5RJhz50F7MnlRG7D28dNeLytJNX9nWQ2PlfNE+rLK4duCADgufgTVlA4IEoAAABwAwCdASoUAAoAPxFysFAsJqSisAgBgCIJZwAARjmFUSPfgAAA/uQjKQRDUUTbyY4VeeVpJkg1qs8rJ2v/Z7xYv3vmydJiEsQAAA==",
+  "dominant": "#474747",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "MSI",
+  "source": {
+    "url": "https://storage-asset.msi.com/global/picture/product/product_17812501741999ac1564c9d2e9c9beef3983fe6919.png",
+    "page": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery"
+  },
+  "input": "9f9c11f076e675ca"
+}

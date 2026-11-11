@@ -1,0 +1,228 @@
+{
+  "slug": "marvels-wolverine",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2026-09-15",
+  "name": { "ar": "Marvel's Wolverine", "en": "Marvel's Wolverine", "ckb": "Marvel's Wolverine" },
+  "short": {
+    "ar": "حصرية PS5 · قرص · دبلجة وترجمة عربية",
+    "en": "PS5 exclusive · disc · Arabic voice and subtitles",
+    "ckb": "تایبەت بە PS5 · دیسک · دەنگ و ژێرنووسی عەرەبی"
+  },
+  "description": {
+    "ar": "مغامرة أكشن من Insomniac Games، استوديو سلسلة Marvel's Spider-Man، بقصة أصلية جديدة عن Wolverine. يعود Logan للقتال بمخالبه في رحلة تمر ببراري كندا وشوارع طوكيو وجزيرة Madripoor، في مواجهة أعداء مثل Omega Red ومرتزقة Reavers. صدرت في 15 أيلول 2026 حصرياً على PS5، وتدعم الدبلجة العربية.",
+    "en": "An action adventure from Insomniac Games, the studio behind Marvel's Spider-Man, with an all-new story about Wolverine. Logan takes up his claws again on a journey through the Canadian wilderness, the streets of Tokyo and the island nation of Madripoor, facing enemies such as Omega Red and the Reavers. It launched on 15 September 2026 as a PS5 exclusive and includes Arabic voice-over.",
+    "ckb": "سەرکێشییەکی ئاکشن لە Insomniac Games، ستۆدیۆی زنجیرەی Marvel's Spider-Man، بە چیرۆکێکی نوێ و ڕەسەن دەربارەی Wolverine. Logan دووبارە بە چنگەکانی دەجەنگێت لە گەشتێکدا بە دەشتەکانی کەنەدا، شەقامەکانی تۆکیۆ و دوورگەی Madripoor، بەرامبەر دوژمنانی وەک Omega Red و Reavers. لە 15ی ئەیلوولی 2026 تەنها بۆ PS5 دەرچوو، و دەنگی عەرەبی تێدایە."
+  },
+  "highlights": [
+    {
+      "ar": "دبلجة عربية مع ترجمة وقوائم بالعربية (الصوت غير الإنجليزي يُحمّل كتحديث).",
+      "en": "Arabic voice-over with Arabic menus and subtitles (non-English audio downloads as an update).",
+      "ckb": "دەنگی عەرەبی لەگەڵ مێنیو و ژێرنووسی عەرەبی (دەنگی جگە لە ئینگلیزی وەک نوێکردنەوە دادەگیرێت)."
+    },
+    {
+      "ar": "قصة للاعب واحد، وتعمل بدون إنترنت.",
+      "en": "Single-player story that works offline.",
+      "ckb": "چیرۆکی تاکەکەسی کە بێ ئینتەرنێت کار دەکات."
+    },
+    {
+      "ar": "حصرية لـ PS5 ومُحسّنة لـ PS5 Pro.",
+      "en": "PS5 exclusive, PS5 Pro Enhanced.",
+      "ckb": "تایبەت بە PS5، باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "من صانعي Marvel's Spider-Man.",
+      "en": "From the makers of Marvel's Spider-Man.",
+      "ckb": "لە دروستکەرانی Marvel's Spider-Man."
+    },
+    {
+      "ar": "التصنيف PEGI 18 — عنف شديد.",
+      "en": "Rated PEGI 18 — strong violence.",
+      "ckb": "پۆلێنی PEGI 18 — توندوتیژی زۆر."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "15 أيلول 2026", "en": "15 September 2026", "ckb": "15ی ئەیلوولی 2026" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 فقط", "en": "PS5 only", "ckb": "تەنها PS5" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص PS5 واحد", "en": "One PS5 disc", "ckb": "یەک دیسکی PS5" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "لاعب واحد", "en": "1 player", "ckb": "1 یاریزان" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "الإنترنت والاشتراكات", "en": "Internet and subscriptions", "ckb": "ئینتەرنێت و بەشداریکردن" },
+      "value": {
+        "ar": "تعمل بدون إنترنت؛ الإنترنت مطلوب لتحميل الصوت بغير الإنجليزية",
+        "en": "Plays offline; internet needed to download non-English audio",
+        "ckb": "بێ ئینتەرنێت کار دەکات؛ ئینتەرنێت بۆ داگرتنی دەنگی جگە لە ئینگلیزی پێویستە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "صوت وترجمة وقوائم", "en": "Voice, subtitles and menus", "ckb": "دەنگ، ژێرنووس و مێنیو" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 18 / ESRB M", "en": "PEGI 18 / ESRB M", "ckb": "PEGI 18 / ESRB M" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Insomniac Games / Sony Interactive Entertainment", "en": "Insomniac Games / Sony Interactive Entertainment", "ckb": "Insomniac Games / Sony Interactive Entertainment" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة لجهاز PS5", "en": "PS5 game disc", "ckb": "دیسکی یارییەکە بۆ PS5" }
+  ],
+  "variants": [
+    {
+      "sku": "WOLV-PS5-STD",
+      "title": { "ar": "Marvel's Wolverine لجهاز PS5 — Standard Edition", "en": "Marvel's Wolverine for PS5 — Standard Edition", "ckb": "Marvel's Wolverine بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["marvels-wolverine--1", "marvels-wolverine--2", "marvels-wolverine--3", "marvels-wolverine--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "genres": [
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ الإنترنت مطلوب لتحميل الصوت بغير الإنجليزية.",
+      "en": "Plays offline with no subscription; internet is needed to download non-English audio.",
+      "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ ئینتەرنێت بۆ داگرتنی دەنگی جگە لە ئینگلیزی پێویستە."
+    },
+    "ageRating": { "pegi": 18, "esrb": "M" },
+    "arabic": "voice+subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://direct.playstation.com/en-us/buy-games/marvels-wolverine-ps5"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://direct.playstation.com/en-us/buy-games/marvels-wolverine-ps5"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    { "slug": "marvels-spider-man-2", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "marvels-wolverine--1",
+      "file": ".cache/product-images/marvels-wolverine/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202510/0721/ab0526f97f49e5e810c13b4f7367970f95346b2440baf18b.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/UP9000-PPSA03671_00-MARVELSWOLVERINE",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Marvel's Wolverine", "en": "Marvel's Wolverine cover art", "ckb": "وێنەی بەرگی Marvel's Wolverine" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "marvels-wolverine--2",
+      "file": ".cache/product-images/marvels-wolverine/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/marvels-wolverine-sentinels-screenshot-08-en-15sept26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/marvels-wolverine/",
+      "kind": "screenshot",
+      "alt": { "ar": "Logan يقاتل روبوتاً عملاقاً", "en": "Logan fighting a giant robot", "ckb": "Logan شەڕ لەگەڵ ڕۆبۆتێکی زەبەلاح دەکات" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "marvels-wolverine--3",
+      "file": ".cache/product-images/marvels-wolverine/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/marvels-wolverine-deathstrike-screenshot-01-en-15sept26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/marvels-wolverine/",
+      "kind": "screenshot",
+      "alt": { "ar": "مواجهة مع Lady Deathstrike", "en": "A clash with Lady Deathstrike", "ckb": "ڕووبەڕووبوونەوە لەگەڵ Lady Deathstrike" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "marvels-wolverine--4",
+      "file": ".cache/product-images/marvels-wolverine/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/marvels-wolverine-essex-screenshot-03-en-15sept26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/marvels-wolverine/",
+      "kind": "screenshot",
+      "alt": { "ar": "مشهد حواري من القصة", "en": "A story scene", "ckb": "دیمەنێکی گفتوگۆ لە چیرۆکەکەدا" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.playstation.com/en-gb/games/marvels-wolverine/", "title": "Marvel's Wolverine — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Insomniac Games, original story, offline play, 1 player, PS5 Pro Enhanced, editions, screenshots" },
+    { "url": "https://www.playstation.com/en-us/support/games/marvel-wolverine-support/", "title": "Marvel's Wolverine support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 15 Sep 2026 on PS5, language table with Arabic voice and text, non-English audio as a download, Standard and Digital Deluxe editions" },
+    { "url": "https://store.playstation.com/en-gb/product/UP9000-PPSA03671_00-MARVELSWOLVERINE", "title": "Marvel's Wolverine — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, Arabic spoken and screen language, cover art" },
+    { "url": "https://direct.playstation.com/en-us/buy-games/marvels-wolverine-ps5", "title": "Marvel's Wolverine — PS5 (PlayStation Direct)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "physical PS5 disc, 1 disc, ESRB Mature 17+, locations and enemies" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "Digital Deluxe Edition رقمية فقط وتضيف بدلات ومخالب وأفاتارات داخل اللعبة.",
+    "en": "The Digital Deluxe Edition is digital only and adds suits, claws and avatars in the game.",
+    "ckb": "Digital Deluxe Edition تەنها دیجیتاڵە و جلوبەرگ، چنگ و ئەڤاتار لە ناو یارییەکەدا زیاد دەکات."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Install size is not published on the official pages we read.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

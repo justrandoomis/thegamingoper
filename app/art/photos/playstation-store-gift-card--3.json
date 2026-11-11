@@ -1,0 +1,65 @@
+{
+  "key": "playstation-store-gift-card--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1067,
+  "aspect": 1.4995,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-store-gift-card/3-240.2c7e357d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-store-gift-card/3-480.c7c4415f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-store-gift-card/3-720.bf4a771c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-store-gift-card/3-960.a092aa98.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-store-gift-card/3-1440.38aa3948.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-store-gift-card/3-240.f1a2c6da.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-store-gift-card/3-480.826a36de.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-store-gift-card/3-720.285a6086.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-store-gift-card/3-960.36556e67.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-store-gift-card/3-1440.b519589f.webp"
+      }
+    ],
+    "png": "/products/playstation-store-gift-card/3-720.82532d0c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACQAwCdASoUAA0APxF0sFCsJqSisAgBgCIJY0wAU0AU/193KVoAAP7ovQMj/YLhgB+OIl3L/jMBJEkbNnCYjke+rhJsqZtl1NiIaI941oYFKSoob9bu0vAA",
+  "dominant": "#00a188",
+  "transparent": false,
+  "background": "#d8dde9",
+  "kind": "detail",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/gift-card-faceplate-birthday-image-block-en-01-07july23?$1600px$",
+    "page": "https://www.playstation.com/en-us/playstation-gift-cards/"
+  },
+  "input": "77acdcc3ed4fa6de"
+}

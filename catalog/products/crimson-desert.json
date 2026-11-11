@@ -1,0 +1,275 @@
+{
+  "slug": "crimson-desert",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "Pearl Abyss",
+  "status": "available",
+  "releaseDate": "2026-03-19",
+  "name": { "ar": "Crimson Desert", "en": "Crimson Desert", "ckb": "Crimson Desert" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · عربية بعد تحديث Enhanced",
+    "en": "PS5 · Xbox Series X · disc · Arabic via the Enhanced update",
+    "ckb": "PS5 · Xbox Series X · دیسک · عەرەبی دوای نوێکردنەوەی Enhanced"
+  },
+  "description": {
+    "ar": "مغامرة أكشن بعالم مفتوح من Pearl Abyss تدور في قارة Pywel. تلعب بشخصية Kliff الذي يحاول جمع رفاقه من مرتزقة Greymanes بعد هجوم مدمّر من عدوهم Black Bears، مع معارك قوية ووحوش ضخمة واستكشاف على الخيول. صدرت في 19 آذار 2026، وأضاف التحديث المجاني Crimson Desert Enhanced قوائم وترجمة عربية.",
+    "en": "An open-world action adventure from Pearl Abyss set on the continent of Pywel. You play Kliff, who sets out to rebuild the Greymane mercenaries after a devastating attack by their enemies, the Black Bears, with heavy combat, giant monsters and exploration on horseback. It launched on 19 March 2026, and the free Crimson Desert Enhanced update added Arabic menus and subtitles.",
+    "ckb": "سەرکێشییەکی ئاکشنی جیهانی کراوە لە Pearl Abyss لە کیشوەری Pywel. بە کارەکتەری Kliff یاری دەکەیت کە هەوڵ دەدات بەکرێگیراوانی Greymanes کۆبکاتەوە دوای هێرشێکی وێرانکەری دوژمنەکانیان Black Bears، لەگەڵ شەڕی قورس، دڕندەی زەبەلاح و گەڕان بە ئەسپ. لە 19ی ئازاری 2026 دەرچوو، و نوێکردنەوەی بێبەرامبەری Crimson Desert Enhanced مێنیو و ژێرنووسی عەرەبی زیاد کرد."
+  },
+  "highlights": [
+    {
+      "ar": "قوائم وترجمة عربية عبر التحديث المجاني 2.00.00 (يحتاج إنترنت للتحميل).",
+      "en": "Arabic menus and subtitles through the free 2.00.00 update (internet needed to download it).",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی لە ڕێگەی نوێکردنەوەی بێبەرامبەری 2.00.00 (ئینتەرنێت بۆ داگرتنی پێویستە)."
+    },
+    {
+      "ar": "لعبة فردية ولا تحتاج اشتراكاً.",
+      "en": "Single-player, no subscription needed.",
+      "ckb": "تاکەکەسییە و بەشداریکردنی پێویست نییە."
+    },
+    {
+      "ar": "من أكثر خمس ألعاب مبيعاً في أمريكا خلال 2026 حتى أيلول حسب Circana.",
+      "en": "One of the five best-selling games of 2026 in the US through September, per Circana.",
+      "ckb": "یەکێکە لە پێنج یاریی پڕفرۆشترینی ساڵی 2026 لە ئەمریکا تا ئەیلوول، بەپێی Circana."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro.",
+      "en": "PS5 Pro Enhanced.",
+      "ckb": "باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": {
+        "ar": "19 آذار 2026؛ تحديث Enhanced في 25 آب 2026",
+        "en": "19 March 2026; Enhanced update on 25 August 2026",
+        "ckb": "19ی ئازاری 2026؛ نوێکردنەوەی Enhanced لە 25ی ئابی 2026"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 وXbox Series X|S وPC وMac", "en": "PS5, Xbox Series X|S, PC and Mac", "ckb": "PS5، Xbox Series X|S، PC و Mac" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": {
+        "ar": "قرص لـ PS5 وXbox Series X (Standard وDeluxe وCollector's)",
+        "en": "Disc for PS5 and Xbox Series X (Standard, Deluxe and Collector's)",
+        "ckb": "دیسک بۆ PS5 و Xbox Series X (Standard، Deluxe و Collector's)"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "حتى نحو 193 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "Up to about 193 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "تا نزیکەی 193 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "لاعب واحد", "en": "1 player", "ckb": "1 یاریزان" }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": {
+        "ar": "قوائم وترجمة بعد تحديث Enhanced؛ لا صوت عربي",
+        "en": "Menus and subtitles after the Enhanced update; no Arabic voice",
+        "ckb": "مێنیو و ژێرنووس دوای نوێکردنەوەی Enhanced؛ دەنگی عەرەبی نییە"
+      }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 18 / ESRB M", "en": "PEGI 18 / ESRB M", "ckb": "PEGI 18 / ESRB M" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Pearl Abyss (التوزيع الفيزيائي: PLAION)", "en": "Pearl Abyss (physical distribution: PLAION)", "ckb": "Pearl Abyss (دابەشکردنی فیزیکی: PLAION)" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة الكاملة (Standard Edition)", "en": "Full-game disc (Standard Edition)", "ckb": "دیسکی یارییە تەواوەکە (Standard Edition)" }
+  ],
+  "variants": [
+    {
+      "sku": "CRD-PS5-STD",
+      "title": { "ar": "Crimson Desert لجهاز PS5 — Standard Edition", "en": "Crimson Desert for PS5 — Standard Edition", "ckb": "Crimson Desert بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["crimson-desert--1", "crimson-desert--2", "crimson-desert--3", "crimson-desert--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي. حمّل التحديث 2.00.00 للحصول على العربية.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive. Download update 2.00.00 to get Arabic.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە. بۆ عەرەبی نوێکردنەوەی 2.00.00 دابگرە."
+      }
+    },
+    {
+      "sku": "CRD-XSX-STD",
+      "title": { "ar": "Crimson Desert لجهاز Xbox Series X — Standard Edition", "en": "Crimson Desert for Xbox Series X — Standard Edition", "ckb": "Crimson Desert بۆ Xbox Series X — Standard Edition" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["crimson-desert--1", "crimson-desert--2", "crimson-desert--3"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" },
+      { "ar": "عالم مفتوح", "en": "Open world", "ckb": "جیهانی کراوە" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "لعبة فردية لا تحتاج اشتراكاً؛ الإنترنت مطلوب لتحميل تحديث Enhanced الذي يضيف العربية.",
+      "en": "Single-player with no subscription; internet is needed to download the Enhanced update that adds Arabic.",
+      "ckb": "یارییەکی تاکەکەسییە و بەشداریکردنی پێویست نییە؛ ئینتەرنێت بۆ داگرتنی نوێکردنەوەی Enhanced پێویستە کە عەرەبی زیاد دەکات."
+    },
+    "ageRating": { "pegi": 18, "esrb": "M" },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "sizeGb": 193,
+    "developer": "Pearl Abyss",
+    "publisher": "Pearl Abyss"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.pearlabyss.com/en-US/Board/Detail?_boardNo=14504"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.pearlabyss.com/en-US/Board/Detail?_boardNo=14504"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X.", "en": "Xbox Series X disc.", "ckb": "دیسکی Xbox Series X." },
+      "source": "https://www.amazon.com/Crimson-Desert-Standard-Xbox-X/dp/B0FST3B1YX"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk"
+    }
+  ],
+  "related": [
+    { "slug": "ghost-of-yotei", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "crimson-desert--1",
+      "file": ".cache/product-images/crimson-desert/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.61541.14619536583353710.9e307ff1-14c4-4d1a-813e-cef9bbad5dc5.90b67c9e-834e-44f1-b16c-16624e50f9b4",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Crimson Desert Enhanced", "en": "Crimson Desert Enhanced cover art", "ckb": "وێنەی بەرگی Crimson Desert Enhanced" },
+      "credit": "Pearl Abyss",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "crimson-desert--2",
+      "file": ".cache/product-images/crimson-desert/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/CrimsonDesert-screenshot-04-en-11mar26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/crimson-desert/",
+      "kind": "screenshot",
+      "alt": { "ar": "Kliff يقاتل عدواً بقرون غزال", "en": "Kliff fighting an antlered enemy", "ckb": "Kliff شەڕ لەگەڵ دوژمنێکی شاخدار دەکات" },
+      "credit": "Pearl Abyss",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "crimson-desert--3",
+      "file": ".cache/product-images/crimson-desert/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/CrimsonDesert-screenshot-07-en-11mar26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/crimson-desert/",
+      "kind": "screenshot",
+      "alt": { "ar": "فارس على حصان في وادٍ أخضر", "en": "A rider on horseback in a green valley", "ckb": "سوارێک بە ئەسپ لە دۆڵێکی سەوزدا" },
+      "credit": "Pearl Abyss",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "crimson-desert--4",
+      "file": ".cache/product-images/crimson-desert/4.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/CrimsonDesert-screenshot-02-en-11mar26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/crimson-desert/",
+      "kind": "screenshot",
+      "alt": { "ar": "جزر صخرية عائمة في السماء", "en": "Floating rock islands in the sky", "ckb": "دوورگە بەردینە هەڵواسراوەکان لە ئاسماندا" },
+      "credit": "Pearl Abyss",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.pearlabyss.com/en-US/Board/Detail?_boardNo=14504", "title": "Prepare for Pywel: physical line-up unveiled for Crimson Desert", "publisher": "Pearl Abyss", "retrieved": "2026-11-11", "supports": "release 19 Mar 2026 on PS5, Xbox Series X|S and PC; story; physical Standard, Deluxe and Collector's editions with PLAION; PS5 pre-order bonus" },
+    { "url": "https://crimsondesert.pearlabyss.com/en-US/News/Notice/Detail?_boardNo=125", "title": "Crimson Desert Enhanced update now available", "publisher": "Pearl Abyss", "retrieved": "2026-11-11", "supports": "free update 2.00.00 on 25 Aug 2026, Arabic interface and subtitles, new voice-over languages, new story moments" },
+    { "url": "https://store.playstation.com/en-gb/concept/10002363", "title": "Crimson Desert Enhanced — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, Arabic screen language, voice languages without Arabic, release date" },
+    { "url": "https://www.playstation.com/en-gb/games/crimson-desert/", "title": "Crimson Desert — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, screenshots" },
+    { "url": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk", "title": "Crimson Desert Enhanced — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "Arabic interface and subtitles, ESRB Mature 17+, single player, max install about 193 GB, cover art" },
+    { "url": "https://www.circana.com/post/top-10-video-games", "title": "Top 10 video games — September 2026 and year-to-date", "publisher": "Circana", "retrieved": "2026-11-11", "supports": "Crimson Desert 5th in US year-to-date 2026 sales" },
+    { "url": "https://www.amazon.com/Crimson-Desert-Standard-Xbox-X/dp/B0FST3B1YX", "title": "Crimson Desert: Standard Edition — Xbox Series X", "publisher": "Amazon US (PLAION listing)", "retrieved": "2026-11-11", "supports": "Xbox Series X physical Standard Edition" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "النسخ الفيزيائية الأولى تحمل نسخة الإطلاق؛ حمّل التحديث المجاني للحصول على Enhanced والعربية. Deluxe وCollector's Edition تضيفان SteelBook ومقتنيات.",
+    "en": "Early physical copies carry the launch version; download the free update to get Enhanced and Arabic. The Deluxe and Collector's Editions add a SteelBook and collectibles.",
+    "ckb": "دانە فیزیکییە سەرەتاییەکان وەشانی دەرچوونیان تێدایە؛ بۆ Enhanced و عەرەبی نوێکردنەوە بێبەرامبەرەکە دابگرە. Deluxe و Collector's Edition SteelBook و کەلوپەلی کۆکردنەوە زیاد دەکەن."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Whether newer physical print runs already contain the Enhanced version on the disc was not found.",
+      "PS5 install size not published; the size shown is the Microsoft Store figure for the Enhanced version.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

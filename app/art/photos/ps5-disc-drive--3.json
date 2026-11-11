@@ -1,0 +1,49 @@
+{
+  "key": "ps5-disc-drive--3",
+  "view": "hero",
+  "width": 833,
+  "height": 454,
+  "aspect": 1.8348,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ps5-disc-drive/3-240.89acc1df.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ps5-disc-drive/3-480.0c07f4d6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ps5-disc-drive/3-720.f2f5ed86.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ps5-disc-drive/3-240.19289436.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ps5-disc-drive/3-480.c01745ef.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ps5-disc-drive/3-720.aa51181d.webp"
+      }
+    ],
+    "png": "/products/ps5-disc-drive/3-720.c4c7e3a8.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAACQAwCdASoUAAsAPxF0slCsJqSisAgBgCIJaQAAW+kWedU9ojgAAP7rCJG7Tz/dFLXbMh1/5zt2BQAA",
+  "dominant": "#f5f4f6",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://media.direct.playstation.com/is/image/sierialto/Disc-Drive-and-Packaging-in-the-box?wid=2000",
+    "page": "https://direct.playstation.com/en-us/buy-accessories/disc-drive-for-ps5-digital-edition-consoles"
+  },
+  "input": "f952398bb6ea681f"
+}

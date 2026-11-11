@@ -1,0 +1,41 @@
+{
+  "key": "xbox-wireless-headset--2",
+  "view": "hero",
+  "width": 513,
+  "height": 595,
+  "aspect": 0.8622,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-wireless-headset/2-240.5a9af357.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-wireless-headset/2-480.edfde349.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-wireless-headset/2-240.e35c68a0.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-wireless-headset/2-480.cfb596a1.webp"
+      }
+    ],
+    "png": "/products/xbox-wireless-headset/2-513.97f313a2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAACQAwCdASoRABQAPxF8s1QsJ6QjKAqpgCIJaQAAKh/FX2aLcTMAAP7w36cJVtLS9G3jkJGQxi+GfiOKL7Qd3VNmHgvQkAAA",
+  "dominant": "#171717",
+  "transparent": false,
+  "background": "#000000",
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cms-assets.xboxservices.com/assets/9d/89/9d89c2a1-da01-4c12-87b9-b42aad36ed8d.jpg?n=465582_Gallery_4_1056x594.jpg",
+    "page": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset"
+  },
+  "input": "7cba9dfd1f725a1b"
+}

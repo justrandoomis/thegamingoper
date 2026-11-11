@@ -1,0 +1,160 @@
+{
+  "slug": "dualsense-charging-station",
+  "group": "playstation-hardware",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Sony",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة الشحن DualSense Charging Station",
+    "en": "DualSense Charging Station",
+    "ckb": "DualSense Charging Station (وێستگەی شەحن)"
+  },
+  "short": {
+    "ar": "تشحن يدَي تحكم معاً · DualSense وDualSense Edge · بدون الحاجة لجهاز PS5",
+    "en": "Charges two controllers at once · DualSense and DualSense Edge · No console needed",
+    "ckb": "دوو کۆنتڕۆڵەر پێکەوە شەحن دەکات · DualSense و DualSense Edge · کۆنسۆڵی ناوێت"
+  },
+  "description": {
+    "ar": "قاعدة شحن رسمية من Sony تتسع ليدَي تحكم DualSense أو DualSense Edge وتشحنهما معاً بمجرد وضعهما عليها، دون توصيلهما بجهاز PS5. تعمل بمحوّل كهرباء خاص بها مرفق في العلبة، فتبقى منافذ USB في الجهاز فارغة.",
+    "en": "Sony's official dock that holds two DualSense or DualSense Edge controllers and charges both as soon as they click in, without connecting them to the PS5. It runs from its own AC adapter (in the box), so the console's USB ports stay free.",
+    "ckb": "وێستگەی فەرمیی Sony کە دوو کۆنتڕۆڵەری DualSense یان DualSense Edge هەڵدەگرێت و هەر کە دانران هەردووکیان شەحن دەکات، بەبێ بەستنەوە بە PS5. بە ئەداپتەری کارەبای خۆی کار دەکات (لەناو قوتووەکەدایە)، بۆیە دەروازەکانی USBی کۆنسۆڵ بەتاڵ دەمێننەوە."
+  },
+  "highlights": [
+    {
+      "ar": "تشحن يدين في نفس الوقت",
+      "en": "Charges two controllers at the same time",
+      "ckb": "دوو کۆنتڕۆڵەر لە یەک کاتدا شەحن دەکات"
+    },
+    {
+      "ar": "متوافقة مع DualSense وDualSense Edge",
+      "en": "Works with DualSense and DualSense Edge",
+      "ckb": "لەگەڵ DualSense و DualSense Edge کار دەکات"
+    },
+    {
+      "ar": "محوّل كهرباء AC وسلك الكهرباء مرفقان",
+      "en": "AC adapter and power cord included",
+      "ckb": "ئەداپتەری AC و وایەری کارەبا لەگەڵیدان"
+    },
+    {
+      "ar": "تشحن بسرعة الشحن نفسها عند التوصيل بجهاز PS5 حسب Sony",
+      "en": "Charges as fast as connecting to the PS5, according to Sony",
+      "ckb": "بەپێی Sony هێندەی بەستنەوە بە PS5 خێرا شەحن دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZDS1", "en": "CFI-ZDS1", "ckb": "CFI-ZDS1" }
+    },
+    {
+      "key": "controllers",
+      "label": { "ar": "عدد الأيدي", "en": "Controllers", "ckb": "ژمارەی کۆنتڕۆڵەر" },
+      "value": { "ar": "حتى 2 (DualSense أو DualSense Edge)", "en": "Up to 2 (DualSense or DualSense Edge)", "ckb": "تا 2 (DualSense یان DualSense Edge)" }
+    },
+    {
+      "key": "power",
+      "label": { "ar": "الطاقة", "en": "Power", "ckb": "وزە" },
+      "value": { "ar": "محوّل AC خاص (مرفق)", "en": "Own AC adapter (included)", "ckb": "ئەداپتەری AC تایبەت (لەگەڵیدایە)" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 62 × 52 × 159 ملم، نحو 0.2 كغ", "en": "Approx. 62 × 52 × 159 mm, about 0.2 kg", "ckb": "نزیکەی 62 × 52 × 159 ملم، نزیکەی 0.2 کگ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قاعدة الشحن DualSense", "en": "DualSense Charging Station", "ckb": "وێستگەی شەحنی DualSense" },
+    { "ar": "محوّل AC", "en": "AC adapter", "ckb": "ئەداپتەری AC" },
+    { "ar": "سلك الكهرباء (AC)", "en": "AC power cord", "ckb": "وایەری کارەبا (AC)" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "DSENSE-CHARGING-STATION",
+      "title": { "ar": "قاعدة شحن DualSense", "en": "DualSense Charging Station", "ckb": "وێستگەی شەحنی DualSense" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZDS1",
+      "isDefault": true,
+      "images": ["dualsense-charging-station--1", "dualsense-charging-station--2"]
+    }
+  ],
+  "related": [
+    { "slug": "dualsense", "kind": "setup" },
+    { "slug": "dualsense-edge", "kind": "setup" },
+    { "slug": "playstation-5-slim", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "dualsense-charging-station--1",
+      "file": ".cache/product-images/dualsense-charging-station/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ChargingStation-Standalone-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/",
+      "kind": "hero",
+      "alt": { "ar": "قاعدة شحن DualSense فارغة", "en": "The DualSense Charging Station on its own", "ckb": "وێستگەی شەحنی DualSense بە تەنها" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense-charging-station--2",
+      "file": ".cache/product-images/dualsense-charging-station/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ChargingStation-DualSense-DualSenseEdge-Amber-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/",
+      "kind": "angle",
+      "alt": { "ar": "قاعدة الشحن وعليها DualSense وDualSense Edge", "en": "The station charging a DualSense and a DualSense Edge", "ckb": "وێستگەکە DualSense و DualSense Edge شەحن دەکات" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/",
+      "title": "DualSense® Charging Station",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZDS1, charges two DualSense or DualSense Edge controllers without the console, dimensions, weight, what's in the box"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/dualsense-wireless-controller/",
+      "title": "DualSense wireless controller",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "click-in design, charges as quickly as when connected to the PS5, frees USB ports"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/",
+      "title": "PlayStation accessories",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "dock up to two DualSense or DualSense Edge controllers; still sold"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/accessories/add-ons",
+      "title": "Buy Covers & Add ons | PlayStation® (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "still sold in the US; separate PlayStation VR2 Sense Controller Charging Station"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-accessories/dualsense-charging-station",
+      "title": "Buy PS5™ DualSense™ Charging Station (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: charges up to two DualSense or DualSense Edge controllers without the console, click-in design, charges as quickly as the PS5, what's in the box (station, AC adaptor, AC power cord, user manual)"
+    }
+  ],
+  "notes": {
+    "ar": "تذكر Sony فقط DualSense وDualSense Edge لهذه القاعدة. ليدي PS VR2 Sense تبيع Sony قاعدة شحن مختلفة (PlayStation VR2 Sense Controller Charging Station).",
+    "en": "Sony lists only DualSense and DualSense Edge for this station. For PS VR2 Sense controllers Sony sells a different dock, the PlayStation VR2 Sense Controller Charging Station.",
+    "ckb": "Sony تەنها DualSense و DualSense Edge بۆ ئەم وێستگەیە ناو دەبات. بۆ کۆنتڕۆڵەرەکانی PS VR2 Sense ـ Sony وێستگەیەکی جیا دەفرۆشێت (PlayStation VR2 Sense Controller Charging Station)."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Release date (announced in September 2020 to launch alongside PS5 in November 2020, per The Verge; the exact day is not confirmed, so left out)",
+      "Whether it can charge PS4 DUALSHOCK 4 controllers (Sony does not say)"
+    ]
+  }
+}

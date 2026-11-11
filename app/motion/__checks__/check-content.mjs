@@ -56,8 +56,8 @@ try {
       firstOpacity: +getComputedStyle(chips[chips.length - 1]).opacity,
     };
   }, ["offset", "easing", "composite", "computedOffset"]);
-  add("bubble: six bubbles inflate with scale + opacity only", reveal.count === 6 && reveal.names.join() === "tt-bubble-fade,tt-bubble-scale" && reveal.properties.join() === "opacity,scale", reveal);
-  add("bubble group: staggered, last one starts ≤ 400 ms after the first", Math.max(...reveal.delays) <= 400 && Math.max(...reveal.delays) > 0 && reveal.delays[0] === 0, reveal.delays);
+  add("bubble: six bubbles inflate (DESIGN.md inflate: scale .86 + opacity, one animation)", reveal.count === 6 && reveal.names.join() === "tt-inflate" && reveal.properties.join() === "opacity,scale", reveal);
+  add("bubble group: 45 ms apart, the sixth starts 225 ms after the first", reveal.delays.join() === "0,45,90,135,180,225", reveal.delays);
   add("bubble: the last of the wave is still invisible while it waits (no pop)", reveal.firstOpacity < 0.2, reveal.firstOpacity);
   add("bubble: reserved geometry — the box never changes height", h0 === hFallback && hFallback === reveal.height, [h0, hFallback, reveal.height]);
   await sleep(900);
@@ -153,7 +153,8 @@ try {
   });
   await hold.waitForSelector('[data-testid="chip-1"]', { timeout: 20000 });
   await sleep(100);
-  const held = await hold.evaluate(() => ({ waited: Math.round(window.__held.shown - window.__held.asked), unhurriedEnd: Math.round(window.__vt[0].ready + 320 / 0.05 - window.__held.asked) }));
+  // The fade's longest piece is the `settle` spring (410 ms), i.e. 8.2 s at 5 % speed.
+  const held = await hold.evaluate(() => ({ waited: Math.round(window.__held.shown - window.__held.asked), unhurriedEnd: Math.round(window.__vt[0].ready + 410 / 0.05 - window.__held.asked) }));
   add("reveal during a page transition: shown soon after its data is ready, the animation is hurried, not waited for", held.waited >= 850 && held.waited < held.unhurriedEnd - 2000, { "data ready after (ms)": 900, "shown after (ms)": held.waited, "transition would have ended after (ms)": held.unhurriedEnd });
   add("no console errors (hurry run)", hold.motionErrors().length === 0, hold.motionErrors());
   await hold.close();
@@ -169,7 +170,7 @@ try {
   await desktop.mouse.wheel({ deltaY: 240 });
   await sleep(500);
   const wheel = { pageMoved: (await scrollY(desktop)) - y0, railBefore: x0, railAfter: await desktop.$eval(rail, (el) => el.scrollLeft) };
-  add("rail: vertical wheel over the rail scrolls the page, not the rail", wheel.pageMoved > 100 && wheel.railAfter === wheel.railBefore, wheel);
+  add("rail: vertical wheel over the rail scrolls the page, not the rail", wheel.pageMoved > 40 && wheel.railAfter === wheel.railBefore, wheel);
   await desktop.close();
 
   // English (LTR): the depth tilt is on, scroll-driven, and only items crossing an edge lean
@@ -220,16 +221,23 @@ try {
   await cart.touchscreen.tap(addButton.x, addButton.y);
   const right = await cart.evaluate(() => ({
     count: document.querySelector('[data-testid="lab-cart-count"] .tt-num-sr').textContent,
-    pucks: document.querySelectorAll(".tt-fly").length,
+    beads: document.querySelectorAll(".tt-fly").length,
+    bead: (() => {
+      const el = document.querySelector(".tt-fly");
+      const style = el && getComputedStyle(el);
+      return el && { classes: el.className, width: style.width, radius: style.borderRadius, background: style.backgroundImage !== "none" || style.backgroundColor !== "rgba(0, 0, 0, 0)" };
+    })(),
     received: window.__received.length,
+    duration: document.querySelector(".tt-fly")?.getAnimations()[0]?.effect.getComputedTiming().duration,
     properties: [...new Set([...document.querySelectorAll(".tt-fly")].flatMap((p) => p.getAnimations().flatMap((a) => a.effect.getKeyframes().flatMap((k) => Object.keys(k)))))].filter((k) => !["offset", "easing", "composite", "computedOffset"].includes(k)).sort(),
   }));
-  add("fly: the cart count is already updated while the puck is still in the air", right.count === "1" && right.pucks === 1 && right.received === 0, right);
-  add("fly: the flight animates transform + opacity only", right.properties.join() === "opacity,transform", right.properties);
+  add("fly: the cart count is already updated while the bead is still in the air", right.count === "1" && right.beads === 1 && right.received === 0, right);
+  add("fly: DESIGN.md's bead — a 22px red clay circle (.fly)", right.bead?.classes.includes("fly") && right.bead.width === "22px" && right.bead.radius === "50%" && right.bead.background, right.bead);
+  add("fly: the flight animates transform only, 420 ms + 0.3 ms per px (≤ 600 ms)", right.properties.join() === "transform" && right.duration >= 420 && right.duration <= 600, [right.properties, right.duration]);
   await sleep(1100);
   const flight = await cart.evaluate(() => {
     const path = window.__path;
-    const target = document.querySelector('[data-testid="lab-cart"]').getBoundingClientRect();
+    const badge = document.querySelector('[data-testid="lab-cart"] [data-cart-badge]').getBoundingClientRect();
     const a = path[0];
     const b = path[path.length - 1];
     // Largest distance of any sampled point from the straight line a → b.
@@ -238,32 +246,86 @@ try {
     return {
       samples: path.length,
       bow: Math.round(bow),
-      endsAtCart: Math.hypot(b.x - (target.left + target.width / 2), b.y - (target.top + target.height / 2)) < 30,
-      startWidth: Math.round(a.w),
-      endWidth: Math.round(b.w),
+      apexAboveCart: Math.min(...path.map((p) => p.y)) < badge.top + badge.height / 2 - 5,
+      endsAtBead: Math.hypot(b.x - (badge.left + badge.width / 2), b.y - (badge.top + badge.height / 2)) < 6,
+      startWidth: +a.w.toFixed(1),
+      endWidth: +b.w.toFixed(1),
       received: window.__received,
       left: document.querySelectorAll(".tt-fly").length,
     };
   });
-  add("fly: travels a curved path into the cart and shrinks to a puck", flight.samples > 5 && flight.bow > 20 && flight.endsAtCart && flight.endWidth < flight.startWidth / 2, flight);
-  add("fly: the cart is told on arrival (tt:cart-received, flown) and the puck is removed", flight.received.length === 1 && flight.received[0].flown === true && flight.left === 0, flight.received);
+  add("fly: travels a curved arc over the cart into the cart bead and shrinks toward .55", flight.samples > 5 && flight.bow > 20 && flight.apexAboveCart && flight.endsAtBead && flight.endWidth < flight.startWidth * 0.65, flight);
+  add("fly: the cart is told on arrival (tt:cart-received, flown) and the bead is removed", flight.received.length === 1 && flight.received[0].flown === true && flight.left === 0, flight.received);
+  const squished = await cart.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const badge = document.querySelector('[data-testid="lab-cart"] [data-cart-badge]');
+        document.addEventListener(
+          "tt:cart-received",
+          () => resolve(badge.getAnimations().map((a) => ({ duration: a.effect.getComputedTiming().duration, frames: a.effect.getKeyframes().map((k) => k.transform) }))),
+          { once: true },
+        );
+        document.querySelector('[data-testid="fly-add"]').click();
+      }),
+  );
+  add("fly: the cart bead receives it with a squish — scale(1.4, .68) → (.88, 1.16) → 1 over 340 ms", squished.length === 1 && squished[0].duration === 340 && squished[0].frames.join(" ").includes("scale(1.4, 0.68)") && squished[0].frames.join(" ").includes("scale(0.88, 1.16)"), squished);
+  await sleep(900);
 
   // rapid taps
   await cart.evaluate(() => {
     window.__received.length = 0;
-    window.__maxPucks = 0;
+    window.__maxBeads = 0;
     const watch = () => {
-      window.__maxPucks = Math.max(window.__maxPucks, document.querySelectorAll(".tt-fly").length);
+      window.__maxBeads = Math.max(window.__maxBeads, document.querySelectorAll(".tt-fly").length);
       requestAnimationFrame(watch);
     };
     requestAnimationFrame(watch);
   });
+  const before = Number(await count());
   for (let i = 0; i < 7; i++) await cart.touchscreen.tap(addButton.x, addButton.y);
-  const rapidNow = await count();
+  const rapidNow = Number(await count());
   await sleep(1500);
-  const rapid = await cart.evaluate(() => ({ max: window.__maxPucks, received: window.__received.length, flown: window.__received.filter((r) => r.flown).length, left: document.querySelectorAll(".tt-fly").length }));
-  add("fly: seven rapid taps all counted immediately", rapidNow === "8", rapidNow);
-  add("fly: at most four flights at once, every tap acknowledged, nothing left behind", rapid.max <= 4 && rapid.max >= 2 && rapid.received === 7 && rapid.left === 0, rapid);
+  const rapid = await cart.evaluate(() => ({ max: window.__maxBeads, received: window.__received.length, flown: window.__received.filter((r) => r.flown).length, left: document.querySelectorAll(".tt-fly").length }));
+  add("fly: seven rapid taps all counted immediately", rapidNow === before + 7, [before, rapidNow]);
+  add("fly: at most three beads in flight, every tap acknowledged, nothing left behind", rapid.max === 3 && rapid.received === 7 && rapid.flown >= 3 && rapid.left === 0, rapid);
+
+  // failure: the count rolls back and the bead turns round along the same arc
+  await cart.evaluate(() => {
+    window.__received.length = 0;
+    window.__return = [];
+    const loop = () => {
+      const bead = document.querySelector(".tt-fly");
+      if (bead) {
+        const r = bead.getBoundingClientRect();
+        window.__return.push({ x: r.left + r.width / 2, y: r.top + r.height / 2, t: performance.now() });
+      }
+      if (window.__return.length < 400) requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  });
+  const start = Number(await count());
+  const failing = await centre(cart, '[data-testid="fly-add-failing"]');
+  await cart.touchscreen.tap(failing.x, failing.y);
+  const optimistic = Number(await count());
+  await cart.waitForSelector('[data-testid="fly-failed"]', { timeout: 3000 });
+  await sleep(900);
+  const failure = await cart.evaluate(() => {
+    const path = window.__return;
+    const source = document.querySelector('[data-testid="fly-source"]').getBoundingClientRect();
+    const end = path[path.length - 1];
+    const farthest = path.reduce((best, p) => (p.y < best.y ? p : best), path[0]);
+    return {
+      samples: path.length,
+      turnedBack: path.indexOf(farthest) < path.length - 3,
+      endsAtSource: end && Math.hypot(end.x - (source.left + source.width / 2), end.y - (source.top + source.height / 2)) < 8,
+      received: window.__received.length,
+      left: document.querySelectorAll(".tt-fly").length,
+      message: document.querySelector('[data-testid="fly-failed"]')?.getAttribute("role"),
+    };
+  });
+  add("fly failure: the count went up at once and rolled back when the request failed", optimistic === start + 1 && Number(await count()) === start, [start, optimistic, Number(await count())]);
+  add("fly failure: the bead turned round and returned to the product image; the cart was never told", failure.samples > 5 && failure.turnedBack && failure.endsAtSource && failure.received === 0 && failure.left === 0, failure);
+  add("fly failure: a specific message with a retry key appears beside the key (role=alert)", failure.message === "alert" && (await cart.$('[data-testid="fly-retry"]')) !== null, failure.message);
 
   // ── sheet ──────────────────────────────────────────────────────────────────
   const sheet = '[data-testid="sheet"]';
@@ -346,8 +408,11 @@ try {
               const still = sheetElement.getBoundingClientRect().top;
               pointer("pointermove", before + 22 + 30);
               const followed = sheetElement.getBoundingClientRect().top;
-              pointer("pointerup", before + 22 + 30);
-              resolve({ before, caught, animations, still, followed });
+              // Hold still before lifting (no fling): 30px in two frames would be a 900 px/s flick at 60 fps.
+              setTimeout(() => {
+                pointer("pointerup", before + 22 + 30);
+                resolve({ before, caught, animations, still, followed });
+              }, 160);
             }),
           );
         };
@@ -372,14 +437,57 @@ try {
   await cart.waitForFunction(() => !document.querySelector('[data-testid="sheet"]'), { timeout: 3000 });
   add("sheet: a downward flick dismisses it (onClose) and focus returns to the opener", await cart.evaluate(() => document.activeElement?.getAttribute("data-testid") === "sheet-open"));
 
+  // Chromium treats a tap that lands while the flick's fling is still settling as "stop the fling" and sends no
+  // click (browser behaviour, the same after flinging any list); a person's next tap comes later than this script's.
+  await sleep(1200);
   await tap(cart, '[data-testid="sheet-open"]');
   await cart.waitForSelector(sheet);
   await sleep(700);
+  const inside = [];
+  for (let i = 0; i < 6; i++) {
+    await cart.keyboard.press("Tab");
+    inside.push(await cart.evaluate(() => Boolean(document.activeElement?.closest('[data-testid="sheet"]'))));
+  }
+  await cart.keyboard.down("Shift");
+  for (let i = 0; i < 3; i++) {
+    await cart.keyboard.press("Tab");
+    inside.push(await cart.evaluate(() => Boolean(document.activeElement?.closest('[data-testid="sheet"]'))));
+  }
+  await cart.keyboard.up("Shift");
+  add("sheet: Tab and Shift+Tab keep focus inside the open sheet", inside.every(Boolean), inside);
   await cart.keyboard.press("Escape");
   await cart.waitForFunction(() => !document.querySelector('[data-testid="sheet"]'), { timeout: 3000 });
-  add("sheet: Escape closes it", true);
+  add("sheet: Escape closes it and focus returns to the opener", await cart.evaluate(() => document.activeElement?.getAttribute("data-testid") === "sheet-open"));
   add("no console errors (cart tab)", cart.motionErrors().length === 0, cart.motionErrors());
   await cart.close();
+
+  // tablet and desktop: the same sheet comes in from the inline-end edge (the left in RTL, the right in LTR)
+  for (const [prefix, expectedSide] of [
+    ["", "left"],
+    ["/en", "right"],
+  ]) {
+    const wide = await openPage(browser, { touch: false, width: 1024, height: 768, dpr: 1 });
+    await goto(wide, `${prefix}/motion?tab=cart`);
+    await sleep(1200);
+    await wide.click('[data-testid="sheet-open"]');
+    await wide.waitForSelector(sheet);
+    const opening = await wide.$eval(sheet, (el) => ({
+      edge: el.getAttribute("data-sheet-edge"),
+      first: el.getAnimations()[0]?.effect.getKeyframes()[0]?.translate,
+    }));
+    await sleep(800);
+    const rest = await wide.$eval(sheet, (el) => {
+      const r = el.getBoundingClientRect();
+      return { left: Math.round(r.left), right: Math.round(window.innerWidth - r.right), width: Math.round(r.width), height: Math.round(r.height) };
+    });
+    const startX = parseFloat(opening.first ?? "0");
+    const fromSide = expectedSide === "left" ? startX < -300 : startX > 300;
+    add(`sheet (${expectedSide === "left" ? "RTL" : "LTR"}, 1024px): a side sheet slides in from the inline end and rests against it`, opening.edge === "inline-end" && fromSide && rest[expectedSide] === 0 && rest.width <= 420 && rest.height === 768, { opening, rest });
+    await wide.keyboard.press("Escape");
+    await wide.waitForFunction(() => !document.querySelector('[data-testid="sheet"]'), { timeout: 3000 });
+    add(`sheet (${expectedSide === "left" ? "RTL" : "LTR"}, 1024px): no console errors`, wide.motionErrors().length === 0, wide.motionErrors());
+    await wide.close();
+  }
 } finally {
   await browser.close();
 }

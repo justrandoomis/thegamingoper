@@ -1,0 +1,49 @@
+{
+  "key": "playstation-5--1",
+  "view": "hero",
+  "width": 761,
+  "height": 927,
+  "aspect": 0.8209,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5/1-240.d64335ce.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5/1-480.146e114e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5/1-720.6550dd56.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5/1-240.f241ce14.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5/1-480.d61e09df.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5/1-720.4e63f751.webp"
+      }
+    ],
+    "png": "/products/playstation-5/1-720.cd3d4021.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAABQAwCdASoQABQALtGIxGIkLCwsDADQSzgABip/EP+ZbzenAAD+7mYC3kXwHxoZI9C3pkDEgOrWFt6qzqoHfVem1FaKxJBTXboqc6HZxa59z+LlH/F2SSNwGgq7NB78Tvkr7Vo80AAAAA==",
+  "dominant": "#1c2025",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://media.direct.playstation.com/is/image/sierialto/v2-PS5-Console-Disc-hero-recert?wid=2000",
+    "page": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-console"
+  },
+  "input": "bb373dc36790e6a9"
+}

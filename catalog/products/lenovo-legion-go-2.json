@@ -1,0 +1,410 @@
+{
+  "slug": "lenovo-legion-go-2",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "Lenovo",
+  "deviceModel": "legion-go-2",
+  "family": "legion-go-2",
+  "status": "available",
+  "name": { "ar": "Lenovo Legion Go 2", "en": "Lenovo Legion Go 2", "ckb": "Lenovo Legion Go 2" },
+  "short": {
+    "ar": "Ryzen Z2 Extreme · شاشة OLED قياس 8.8 بوصة 144Hz · يدا تحكم قابلتان للفصل",
+    "en": "Ryzen Z2 Extreme · 8.8-inch 144Hz OLED · detachable controllers",
+    "ckb": "Ryzen Z2 Extreme · شاشەی OLED ـی 8.8 ئینچ 144Hz · دەسکی جیابووەوە"
+  },
+  "description": {
+    "ar": "الجيل الثاني من Legion Go، وتبيعه Lenovo باسم Legion Go Gen 2 وتسميه أيضاً Legion Go (8.8″, 2). يجمع شاشة OLED كبيرة قياس 8.8 بوصة بتردد 144Hz مع معالج AMD Ryzen Z2 Extreme وذاكرة 16GB أو 32GB وبطارية 74Wh. يدا التحكم تنفصلان عن الجهاز، فيمكنك اللعب على الحامل المدمج أو استخدام اليد اليمنى كفأرة في وضع FPS. يأتي بنظام Windows 11؛ وأعلنت Lenovo أيضاً عن نسخة بنظام SteamOS ما زال موقعها الأمريكي يعرضها بعبارة «قريباً».",
+    "en": "The second-generation Legion Go, which Lenovo sells as Legion Go Gen 2 and also calls Legion Go (8.8″, 2). It pairs a large 8.8-inch 144Hz OLED screen with an AMD Ryzen Z2 Extreme, 16GB or 32GB of memory and a 74Wh battery. The controllers detach, so you can play with the device on its built-in kickstand or use the right controller as a mouse in FPS mode. It ships with Windows 11; Lenovo has also announced a SteamOS version, which its US site still lists as coming soon.",
+    "ckb": "نەوەی دووەمی Legion Go، کە Lenovo بە ناوی Legion Go Gen 2 دەیفرۆشێت و پێی دەڵێت Legion Go (8.8″, 2) ـیش. شاشەیەکی گەورەی OLED ـی 8.8 ئینچی 144Hz لەگەڵ AMD Ryzen Z2 Extreme، بیرگەی 16GB یان 32GB و پاتریی 74Wh کۆدەکاتەوە. دەسکەکان جیادەبنەوە، بۆیە دەتوانیت ئامێرەکە لەسەر ستاندە ناوەکییەکەی دابنێیت یان دەسکی ڕاست وەک ماوس لە دۆخی FPS بەکاربهێنیت. بە Windows 11 دێت؛ Lenovo وەشانێکی SteamOS ـیشی ڕاگەیاندووە، کە ماڵپەڕی ئەمریکیی Lenovo هێشتا وەک «بەم زووانە» نیشانی دەدات."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة OLED قياس 8.8 بوصة بدقة 1920×1200 وتردد 144Hz مع VRR وشهادة DisplayHDR True Black 1000",
+      "en": "8.8-inch 1920×1200 OLED at 144Hz with VRR and DisplayHDR True Black 1000",
+      "ckb": "شاشەی OLED ـی 8.8 ئینچ بە 1920×1200 و 144Hz لەگەڵ VRR و DisplayHDR True Black 1000"
+    },
+    {
+      "ar": "معالج AMD Ryzen Z2 Extreme بثماني أنوية مع ذاكرة LPDDR5X-8000 بسعة 16GB أو 32GB",
+      "en": "AMD Ryzen Z2 Extreme with 8 cores and 16GB or 32GB of LPDDR5X-8000",
+      "ckb": "AMD Ryzen Z2 Extreme بە 8 ناوک لەگەڵ 16GB یان 32GB LPDDR5X-8000"
+    },
+    {
+      "ar": "يدا تحكم TrueStrike قابلتان للفصل بعصي Hall Effect، مع حامل خلفي ووضع FPS وقاعدة مرفقة لليد اليمنى",
+      "en": "Detachable TrueStrike controllers with Hall Effect sticks, a kickstand, and FPS mode with an included base for the right controller",
+      "ckb": "دەسکی TrueStrike ـی جیابووەوە بە جۆیستیکی Hall Effect، ستاندی پشتەوە، و دۆخی FPS لەگەڵ بنکەیەک بۆ دەسکی ڕاست"
+    },
+    {
+      "ar": "بطارية 74Wh تشحن 50% في 30 دقيقة، ومنفذا USB4 أحدهما أعلى الجهاز والآخر أسفله",
+      "en": "74Wh battery that charges to 50% in 30 minutes, and two USB4 ports, one on top and one on the bottom",
+      "ckb": "پاتریی 74Wh کە لە 30 خولەکدا 50% شەحن دەبێت، و دوو دەروازەی USB4، یەکێک لە سەرەوە و یەکێک لە خوارەوە"
+    },
+    {
+      "ar": "يأتي بنظام Windows 11 (تطبيق Xbox وSteam وغيرها)؛ أما نسخة SteamOS الرسمية فما زالت معروضة بعبارة «قريباً»",
+      "en": "Ships with Windows 11 (Xbox app, Steam and other stores); the official SteamOS version is still listed as coming soon",
+      "ckb": "بە Windows 11 دێت (ئەپی Xbox، Steam و فرۆشگاکانی تر)؛ وەشانی فەرمیی SteamOS هێشتا وەک «بەم زووانە» نیشان دەدرێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen Z2 Extreme (8 أنوية / 16 مساراً، 2.0GHz حتى 5.0GHz) مع رسوميات AMD Radeon مدمجة؛ نطاق الطاقة الذي تحدده AMD لهذا المعالج 15–35W",
+        "en": "AMD Ryzen Z2 Extreme (8 cores / 16 threads, 2.0GHz up to 5.0GHz) with integrated AMD Radeon graphics; AMD's configurable power range for this chip is 15–35W",
+        "ckb": "AMD Ryzen Z2 Extreme (8 ناوک / 16 دەزوو، 2.0GHz تا 5.0GHz) لەگەڵ گرافیکی AMD Radeon ـی ناوەکی؛ مەودای وزەی ئەم پرۆسێسەرە بەپێی AMD 15–35W ـە"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": {
+        "ar": "16GB أو 32GB LPDDR5X-8000 مدمجة (غير قابلة للترقية)",
+        "en": "16GB or 32GB LPDDR5X-8000, soldered (not upgradable)",
+        "ckb": "16GB یان 32GB LPDDR5X-8000، لکێنراو (باشترکردن نابێت)"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "512GB أو 1TB بحجم M.2 2242، أو 2TB بحجم M.2 2280، PCIe 4.0؛ المنفذ الداخلي يقبل أقراص M.2 2280",
+        "en": "512GB or 1TB M.2 2242, or 2TB M.2 2280, PCIe 4.0; the internal slot takes M.2 2280 drives",
+        "ckb": "512GB یان 1TB ـی M.2 2242، یان 2TB ـی M.2 2280، PCIe 4.0؛ شوێنە ناوەکییەکە درایڤی M.2 2280 وەردەگرێت"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "قارئ بطاقات microSD (تقول Lenovo إنه يدعم حتى 2TB)",
+        "en": "microSD card reader (Lenovo says up to 2TB)",
+        "ckb": "خوێنەری کارتی microSD (Lenovo دەڵێت تا 2TB)"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "8.8 بوصة OLED بدقة WUXGA (1920×1200) تعمل باللمس، 16:10، 144Hz مع VRR، سطوع 500 nit (SDR) وحتى 1100 nit (HDR)، تغطية 100% من DCI-P3، Gorilla Glass 3",
+        "en": "8.8-inch WUXGA (1920×1200) OLED touchscreen, 16:10, 144Hz with VRR, 500 nits SDR / up to 1,100 nits HDR, 100% DCI-P3, Gorilla Glass 3",
+        "ckb": "شاشەی دەستلێدانی OLED ـی 8.8 ئینچ WUXGA (1920×1200)، 16:10، 144Hz لەگەڵ VRR، 500 nit (SDR) / تا 1100 nit (HDR)، 100% DCI-P3، Gorilla Glass 3"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "74Wh، شحن سريع حتى 50% خلال 30 دقيقة",
+        "en": "74Wh, Rapid Charge to 50% in 30 minutes",
+        "ckb": "74Wh، شەحنی خێرا تا 50% لە 30 خولەکدا"
+      }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": {
+        "ar": "شاحن USB-C بقدرة 65W (يختلف حسب الدولة)",
+        "en": "65W USB-C adapter (varies by country)",
+        "ckb": "شەحنکەری USB-C ـی 65W (بەپێی وڵات جیاوازە)"
+      }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": {
+        "ar": "Windows 11 Home (نسخة Legion Go Powered by SteamOS Gen 2 معلنة لكنها معروضة بعبارة «قريباً»)",
+        "en": "Windows 11 Home (a Legion Go Powered by SteamOS Gen 2 model is announced but listed as coming soon)",
+        "ckb": "Windows 11 Home (مۆدێلی Legion Go Powered by SteamOS Gen 2 ڕاگەیەنراوە بەڵام وەک «بەم زووانە» نیشان دەدرێت)"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذان USB4 بسرعة 40Gbps (شحن PD 65–100W وDisplayPort)، مقبس صوت 3.5mm، قارئ microSD؛ ومنفذا USB-C للشحن فقط على يدي التحكم",
+        "en": "2× USB4 40Gbps (PD 65–100W in, DisplayPort out), 3.5mm audio jack, microSD reader; plus 2 charge-only USB-C ports on the controllers",
+        "ckb": "2× USB4 ـی 40Gbps (شەحنی PD 65–100W و DisplayPort)، دەروازەی دەنگی 3.5mm، خوێنەری microSD؛ لەگەڵ 2 دەروازەی USB-C تەنها بۆ شەحن لەسەر دەسکەکان"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 6E (2×2) وBluetooth 5.3", "en": "Wi-Fi 6E (2×2) and Bluetooth 5.3", "ckb": "Wi-Fi 6E (2×2) و Bluetooth 5.3" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "يدا TrueStrike قابلتان للفصل، عصي Hall Effect، أسهم اتجاه كبيرة، لوحة لمس، عجلة فأرة ووضع FPS، أزرار خلفية قابلة للبرمجة، حساس حركة، قارئ بصمة في زر التشغيل",
+        "en": "Detachable TrueStrike controllers, Hall Effect sticks, large pivot D-pad, touchpad, mouse wheel and FPS mode, programmable rear buttons, gyro, fingerprint reader in the power button",
+        "ckb": "دەسکی TrueStrike ـی جیابووەوە، جۆیستیکی Hall Effect، D-pad ـی گەورە، تەختەی دەستلێدان، تەکەری ماوس و دۆخی FPS، دوگمەی پشتەوەی بەرنامەڕێژکراو، Gyro، خوێنەری پەنجەمۆر لە دوگمەی هەڵکردن"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": {
+        "ar": "295.6 × 136.7 × 42.25 ملم مع يدي التحكم (الجهاز وحده 206 × 136.7 × 22.95 ملم)",
+        "en": "295.6 × 136.7 × 42.25 mm with controllers (body alone 206 × 136.7 × 22.95 mm)",
+        "ckb": "295.6 × 136.7 × 42.25 ملم لەگەڵ دەسکەکان (تەنها لەش 206 × 136.7 × 22.95 ملم)"
+      }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": {
+        "ar": "حوالي 920 غرام مع يدي التحكم (اليدان وحدهما أقل من 210 غرام)",
+        "en": "About 920 g with controllers (controllers alone under 210 g)",
+        "ckb": "نزیکەی 920 گرام لەگەڵ دەسکەکان (تەنها دەسکەکان کەمتر لە 210 گرام)"
+      }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Legion Go 2 مع يدي التحكم", "en": "Legion Go 2 with both controllers", "ckb": "ئامێری Legion Go 2 لەگەڵ هەردوو دەسک" },
+    { "ar": "حقيبة حمل مع قاعدة ليد التحكم", "en": "Carry bag with controller dock", "ckb": "جانتای هەڵگرتن لەگەڵ بنکەی دەسک" },
+    { "ar": "غطاء حماية ليد التحكم (لوضع FPS)", "en": "Controller protecting cover (for FPS mode)", "ckb": "داپۆشەری پاراستنی دەسک (بۆ دۆخی FPS)" },
+    {
+      "ar": "شاحن USB-C بقدرة 65W (حسب الدولة)",
+      "en": "65W USB-C adapter (depends on country)",
+      "ckb": "شەحنکەری USB-C ـی 65W (بەپێی وڵات)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "LEGO2-Z2E-32-1TB",
+      "title": {
+        "ar": "Legion Go 2 Z2 Extreme 32GB / 1TB (Windows 11)",
+        "en": "Legion Go 2 Z2 Extreme 32GB / 1TB (Windows 11)",
+        "ckb": "Legion Go 2 Z2 Extreme 32GB / 1TB (Windows 11)"
+      },
+      "options": { "os": "Windows 11 Home", "chip": "Ryzen Z2 Extreme", "memory": "32GB", "storage": "1TB", "color": "Eclipse Black" },
+      "modelNumber": "83N0",
+      "isDefault": true,
+      "images": ["lenovo-legion-go-2--1", "lenovo-legion-go-2--2", "lenovo-legion-go-2--3", "lenovo-legion-go-2--4", "lenovo-legion-go-2--5", "lenovo-legion-go-2--6"]
+    },
+    {
+      "sku": "LEGO2-Z2E-32-2TB",
+      "title": {
+        "ar": "Legion Go 2 Z2 Extreme 32GB / 2TB (Windows 11)",
+        "en": "Legion Go 2 Z2 Extreme 32GB / 2TB (Windows 11)",
+        "ckb": "Legion Go 2 Z2 Extreme 32GB / 2TB (Windows 11)"
+      },
+      "options": { "os": "Windows 11 Home", "chip": "Ryzen Z2 Extreme", "memory": "32GB", "storage": "2TB", "color": "Eclipse Black" },
+      "modelNumber": "83N0",
+      "isDefault": false,
+      "images": ["lenovo-legion-go-2--1", "lenovo-legion-go-2--2", "lenovo-legion-go-2--3", "lenovo-legion-go-2--4", "lenovo-legion-go-2--5", "lenovo-legion-go-2--6"],
+      "notes": {
+        "ar": "قرص 2TB بحجم M.2 2280. لم يكن هذا الطراز (83N0000AUS) متاحاً للطلب في متجر Lenovo الأمريكي بتاريخ 11 نوفمبر 2026.",
+        "en": "2TB M.2 2280 drive. This model (83N0000AUS) could not be ordered from Lenovo's US store on 11 November 2026.",
+        "ckb": "درایڤی 2TB ـی M.2 2280. ئەم مۆدێلە (83N0000AUS) لە 11ی نۆڤەمبەری 2026 لە فرۆشگای ئەمریکیی Lenovo داوا نەدەکرا."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "lenovo-legion-go-s", "kind": "alternative" },
+    { "slug": "rog-xbox-ally-x", "kind": "alternative" },
+    { "slug": "msi-claw-a8", "kind": "alternative" },
+    { "slug": "lenovo-legion-go", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "lenovo-legion-go-2--1",
+      "file": ".cache/product-images/lenovo-legion-go-2/1.jpg",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_Front_Facing_tranparency.jpg",
+      "sourcePage": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "kind": "hero",
+      "alt": { "ar": "Lenovo Legion Go 2 من الأمام", "en": "Lenovo Legion Go 2 from the front", "ckb": "Lenovo Legion Go 2 لە پێشەوە" },
+      "credit": "Lenovo",
+      "width": 3200,
+      "height": 3200,
+      "transparent": false
+    },
+    {
+      "key": "lenovo-legion-go-2--2",
+      "file": ".cache/product-images/lenovo-legion-go-2/2.jpg",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_45_Degree_Front_Facing_Left_transparency.jpg",
+      "sourcePage": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "kind": "angle",
+      "alt": { "ar": "Legion Go 2 من زاوية 45 درجة", "en": "Legion Go 2 at a 45-degree angle", "ckb": "Legion Go 2 لە گۆشەی 45 پلە" },
+      "credit": "Lenovo",
+      "width": 3200,
+      "height": 3200,
+      "transparent": false
+    },
+    {
+      "key": "lenovo-legion-go-2--3",
+      "file": ".cache/product-images/lenovo-legion-go-2/3.jpg",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_Vertical_Back_Facing_Left_transparency.jpg",
+      "sourcePage": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من Legion Go 2", "en": "Back of Legion Go 2", "ckb": "پشتەوەی Legion Go 2" },
+      "credit": "Lenovo",
+      "width": 3200,
+      "height": 3200,
+      "transparent": false
+    },
+    {
+      "key": "lenovo-legion-go-2--4",
+      "file": ".cache/product-images/lenovo-legion-go-2/4.jpg",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_Top_transparency.jpg",
+      "sourcePage": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لجهاز Legion Go 2 مع المنافذ", "en": "Top edge of Legion Go 2 with its ports", "ckb": "لێواری سەرەوەی Legion Go 2 لەگەڵ دەروازەکان" },
+      "credit": "Lenovo",
+      "width": 3200,
+      "height": 3200,
+      "transparent": false
+    },
+    {
+      "key": "lenovo-legion-go-2--5",
+      "file": ".cache/product-images/lenovo-legion-go-2/5.jpg",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_Detatched_Mode_Front_Facing_transparency.jpg",
+      "sourcePage": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "kind": "detail",
+      "alt": {
+        "ar": "Legion Go 2 على الحامل مع فصل يدي التحكم",
+        "en": "Legion Go 2 on its kickstand with the controllers detached",
+        "ckb": "Legion Go 2 لەسەر ستاندەکەی لەگەڵ دەسکە جیاکراوەکان"
+      },
+      "credit": "Lenovo",
+      "width": 3200,
+      "height": 3200,
+      "transparent": false
+    },
+    {
+      "key": "lenovo-legion-go-2--6",
+      "file": ".cache/product-images/lenovo-legion-go-2/6.jpg",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_FPS_Mode_45_Degree_Front_Facing_transparency.jpg",
+      "sourcePage": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "kind": "detail",
+      "alt": {
+        "ar": "Legion Go 2 في وضع FPS مع اليد اليمنى على قاعدتها",
+        "en": "Legion Go 2 in FPS mode with the right controller on its base",
+        "ckb": "Legion Go 2 لە دۆخی FPS لەگەڵ دەسکی ڕاست لەسەر بنکەکەی"
+      },
+      "credit": "Lenovo",
+      "width": 3200,
+      "height": 3200,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://psref.lenovo.com/Product/Legion/Legion_Go_8ASP2?tab=spec",
+      "title": "Legion Go 8ASP2 – PSREF Specifications",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "processor, memory options, storage options and slot, microSD, display, battery, adapter, ports, wireless, controls, dimensions, weight, fingerprint reader, bundled carry bag and controller cover"
+    },
+    {
+      "url": "https://news.lenovo.com/pressroom/press-releases/legion-gaming-devices-ai-tablets-software-best-in-customer-choice/",
+      "title": "New Lenovo Legion Gaming Devices, AI Tablets, and AI-Powered Software… (Innovation World 2025)",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "official name Legion Go (8.8″, 2), Windows 11, 74Wh battery, detachable controllers, two USB4 ports, availability from September 2025 (Europe)"
+    },
+    {
+      "url": "https://news.lenovo.com/pressroom/press-releases/lenovo-levels-up-ces-with-legion-gaming-devices/",
+      "title": "Lenovo Levels Up CES with Legion Pro Rollable Concept and Latest Gaming Devices",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "a Legion Go, Powered by SteamOS (8.8″, 2) model was announced at CES 2026 (up to Z2 Extreme, 32GB, 2TB), originally expected from June 2026"
+    },
+    {
+      "url": "https://www.lenovo.com/us/en/legion/",
+      "title": "Lenovo Legion – Lenovo US",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "Legion Go Gen 2 (Windows) on sale; Legion Go Powered by SteamOS Gen 2 (8.8″) still marked 'Coming Soon'"
+    },
+    {
+      "url": "https://www.lenovo.com/gb/en/p/handheld/legion-go-series/legion-go-gen-2/83n0cto1wwgb1",
+      "title": "Lenovo Legion Go Gen 2 (Lenovo UK)",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "on sale today (Z2 Extreme, 32GB, 1TB M.2 2242, Windows 11 Home) with delivery dates offered"
+    },
+    {
+      "url": "https://www.lenovo.com/us/en/p/handheld/legion-go-gen-2/83n0000aus",
+      "title": "Lenovo Legion Go Gen 2 83N0000AUS (Lenovo US)",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "32GB / 2TB M.2 2280 configuration (83N0000AUS); could not be ordered in the US store on 11 November 2026"
+    },
+    {
+      "url": "https://www.windowscentral.com/hardware/handheld-gaming-pc/lenovo-legion-go-2-specs-officially-revealed",
+      "title": "Lenovo Legion Go 2 specs unveiled",
+      "publisher": "Windows Central",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of display, chip, memory, battery, weight and October 2025 US release"
+    },
+    {
+      "url": "https://www.notebookcheck.net/MSI-expands-availability-of-Z2-Extreme-equipped-Claw-A8-gaming-handheld.1206980.0.html",
+      "title": "MSI expands availability of Z2 Extreme-equipped Claw A8 gaming handheld",
+      "publisher": "Notebookcheck",
+      "retrieved": "2026-11-11",
+      "supports": "Legion Go 2 became available in October 2025"
+    },
+    {
+      "url": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/",
+      "title": "Legion Go (8.8, 2) – press kit",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "official product images (image set ZIP)"
+    },
+    {
+      "url": "https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2-extreme.html",
+      "title": "AMD Ryzen Z2 Extreme – Specifications",
+      "publisher": "AMD",
+      "retrieved": "2026-11-11",
+      "supports": "default TDP 28W, configurable TDP 15–35W (seen in the page's search summary; the page itself did not finish loading), base clock 2GHz, 8MB L2 + 16MB L3"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language (one of the editions on Lenovo's spec sheet) cannot install additional languages"
+    }
+  ],
+  "notes": {
+    "ar": "صدر في أوروبا ابتداءً من سبتمبر 2025 وفي الولايات المتحدة في أكتوبر 2025. جهاز كبير وثقيل نسبياً (حوالي 920 غرام). نسخة Windows تحتاج حساب Microsoft واتصالاً بالإنترنت للإعداد، والعراق ليس ضمن قائمة Microsoft لدول خدمات Xbox، لذلك عروض Game Pass المرفقة غير صالحة رسمياً هنا.",
+    "en": "Released from September 2025 in Europe and in October 2025 in the US. It is large and fairly heavy (about 920 g). The Windows version needs a Microsoft account and internet to set up; Iraq is not on Microsoft's list of Xbox service countries, so bundled Game Pass offers are not officially usable here.",
+    "ckb": "لە ئەوروپا لە سێپتەمبەری 2025 و لە ئەمریکا لە ئۆکتۆبەری 2025 دەرچوو. ئامێرێکی گەورە و تا ڕادەیەک قورسە (نزیکەی 920 گرام). وەشانی Windows بۆ ڕێکخستن پێویستی بە هەژماری Microsoft و ئینتەرنێت هەیە؛ عێراق لە لیستی Microsoft بۆ وڵاتانی خزمەتگوزاریی Xbox نییە، بۆیە ئۆفەرەکانی Game Pass بە فەرمی لێرە بەکارنایەن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact release day not published; releaseDate left out (September 2025 Europe, October 2025 US)",
+      "The SteamOS model (Legion Go Powered by SteamOS Gen 2) is not offered as a variant: Lenovo US still lists it as coming soon, and its final configurations and regions are not published",
+      "Lower Ryzen Z2 (non-Extreme) configurations mentioned by some press were not found on Lenovo's spec sheet",
+      "DisplayPort version: Lenovo's press release says 2.0 while PSREF says 2.1; left out",
+      "Barcodes not found on an official page"
+    ]
+  }
+}

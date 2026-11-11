@@ -1,15 +1,16 @@
 # TamTam Motion Engine
 
 Motion in TamTam should feel like water, bubbles and elastic clay — and it must never make an interaction slower.
-Everything lives in `app/motion`, is imported from `~/motion`, and can be seen running at **`/motion`** (the lab; every
-piece on neutral surfaces, in `ar`, `en` and `ckb`).
+The specification is **docs/DESIGN.md §7** (tokens, grammar, reduced-motion equivalents); this file says how the engine
+implements it, what was measured, and where it deliberately differs. Everything lives in `app/motion`, is imported from
+`~/motion`, and runs at **`/motion`** (the lab: every piece on flat token surfaces, in `ar`, `en` and `ckb`).
 
 - No animation library: CSS, the Web Animations API and React 19.3 `<ViewTransition>`.
 - Only **transform and opacity** are animated (a test fails if a `@keyframes` block in the engine touches anything else).
 - Feedback starts in the frame after pointer-down. Navigation, data and state changes never wait for an animation.
 - Everything is interruptible: any touch, key press or wheel ends a running page transition at once.
-- `prefers-reduced-motion` (or the shopper's own setting) replaces movement with short opacity changes or nothing; every flow still works.
-- One place to retune: `app/motion/tokens.ts`.
+- Reduced motion replaces movement with a 120 ms cross-fade or nothing (DESIGN.md §7.3); every flow still works.
+- Tokens: `app/motion/tokens.ts` (script) mirrors `app/styles/tokens.css` (design system); a test keeps them equal.
 
 ## 1. Setup (shell owners)
 
@@ -31,109 +32,108 @@ export default function StorefrontLayout() {
 }
 ```
 
-- `<MotionRoot />` renders nothing. It installs a few passive, delegated document listeners, keeps
-  `<html data-motion="full|lite|reduced">` up to date and imports `motion.css`.
+- `<MotionRoot />` renders nothing. It installs passive, delegated document listeners, keeps
+  `<html data-motion="full|lite|reduced">` (and class `fx-low` at the low-end tier) up to date and imports `motion.css`.
 - `<PageTransition>` wraps the outlet in a plain `<div data-motion-page>` (pass `className`/`style` if the layout needs
   it). Keep it mounted; do not key it. Nested layouts may each have one — a navigation is planned once.
 - Chrome that stays put during page transitions: `data-motion-persist="header" | "nav" | "bar" | "float"` (one element
-  per value on screen). Without it the chrome simply moves with the page.
-- The cart button: `data-cart-target` on the button, `data-cart-badge` on its count bubble (see `flyToCart`).
+  per value on screen). On a language switch it cross-fades in place.
+- The stage (and anything else that should stay put while the language changes): `data-motion-anchor`. Anchors must
+  look the same in both reading directions (full width or centred) — they do not slide, so a box at the inline start
+  would jump to the other side.
+- The cart: `data-cart-target` on the cart button, `data-cart-badge` on its bead (see `flyToCart`).
+- **Before first paint** (DESIGN.md §6.5 wants `fx-low` before the first frame): the root layout puts
+  `MOTION_TIER_SCRIPT` (from `~/motion/tier-script`, 0.7 KB) in `<head>` next to its theme script. It sets the same
+  attributes `<MotionRoot>` sets later, by the same rule (a unit test runs both over all 1,280 signal combinations).
+  Wired in `app/root.tsx` (with the request nonce) since 2026-11-11.
 
-## 2. Tokens
+## 2. Tokens (DESIGN.md §7.1)
 
-`app/motion/tokens.ts` is the source; `motion.css` carries the same values as custom properties
-(`npx tsx app/motion/__checks__/gen-css.mjs` regenerates the block, and `tests/motion.test.ts` fails if they drift).
+| Kind | Engine (`tokens.ts`) | CSS in the engine | Design token (`tokens.css`) |
+|---|---|---|---|
+| Springs `{response, dampingRatio}` → settle | `springs.press` {.16,.62} → 260 ms, `squish` {.26,.50} → 510, `inflate` {.28,.68} → 430, `settle` {.30,1} → 410, `sheet` {.30,.86} → 390 | `--motion-spring-<name>` (`linear()`), `--motion-spring-<name>-duration` | `--spring-<name>`, `--spring-<name>-t` |
+| Durations | `durations.press` 80, `exit` 140, `micro` 160, `release` 180, `theme` 200, `base` 220, `reveal` 240, `sheet` 280, `page` 320, `fly` 460 | `--motion-duration-<name>` | `--t-<name>` |
+| Curves | `easings.settle`, `squish`, `exit`, `water` | `--motion-ease-<name>` | `--ease-<name>` |
+| Distances | `travel.push` 24, `direction` 16, `menu` 8, `rise` 48, `fade` 8 (px) | `--motion-travel-<name>` | — (from the §7.2 prose) |
 
-| Token | Value | Use |
-|---|---|---|
-| `--motion-duration-instant` | 80 ms | press-in, things that must feel immediate |
-| `--motion-duration-quick` | 140 ms | micro-interactions, fades |
-| `--motion-duration-base` | 220 ms | default |
-| `--motion-duration-page` | 320 ms | page transitions, shared elements (upper bound) |
-| `--motion-duration-slow` | 480 ms | theme reveal, cart squish |
-| `--motion-ease-out` / `-in` / `-in-out` / `-emphasized` | cubic-béziers | entering / leaving / moving / page-sized movement |
-| `--motion-spring-snappy` (+ `-duration` 208 ms) | response 0.22, damping 0.9 | controls, small state changes |
-| `--motion-spring-gentle` (408 ms) | 0.34 / 0.72 | things that arrive: bubbles, shared elements, menus (a whisper of overshoot) |
-| `--motion-spring-bouncy` (733 ms) | 0.40 / 0.55 | **momentum only** — a flick or a throw, never a plain state change |
-| `--motion-spring-sheet` (442 ms) | 0.34 / 0.82 | sheets settling after a drag |
-| `--motion-spring-fly` (567 ms) | 0.42 / 1.0 | fly-to-cart travel |
-
-Springs are `{ response, dampingRatio }`. Each becomes a CSS `linear()` easing plus the duration it needs (browsers
-without `linear()` get a plain ease-out of the same length).
-
-```css
-.chip { animation: chip-in var(--motion-spring-gentle-duration) var(--motion-spring-gentle) both; }
-```
+- `tests/motion.test.ts` checks `tokens.ts` against `app/styles/tokens.css`: the five pairs and settle times, the 21
+  samples of each design `linear()` against the engine's solver (within 0.003), durations and curves.
+- The engine's own `linear()` curves are generated from the closed-form spring (≤ 40 stops, within 0.5 % everywhere):
+  `npx tsx app/motion/__checks__/gen-css.mjs` rewrites the block in `motion.css` after a retune.
+- Without `linear()` each spring uses the DESIGN.md fallback curve with its duration token (press → squish curve over
+  180 ms; squish and inflate → squish curve over 240 ms; settle → settle curve over 320 ms; sheet → over 280 ms).
+- Two more token objects are exported: `press` (pressed scale and sink per `data-press` kind: `clay` .97 and 1px,
+  `soft` .98, `icon` .94) and `haptics` (the `navigator.vibrate` pattern per `haptic()` kind: `tap` 8 ms, `select`
+  12 ms, `success`, `warning`, `error`).
+- Earlier names still work and point at the design token they now equal (marked `@deprecated`): springs
+  `snappy`→press, `gentle`→inflate, `bouncy`→squish, `fly`→settle; durations `instant`→press, `quick`→exit
+  (`slow` 480 is unused); curves `out`/`emphasized`→settle, `in`→exit, `inOut`→water.
 
 ```ts
-import { durations, springTiming, springs } from "~/motion";
-element.animate([{ scale: 0.9 }, { scale: 1 }], springTiming("gentle"));      // same token, as WAAPI timing
-
-// Gesture hand-off (a spring that starts with the finger's velocity): the solver is a separate import so it stays
-// out of the always-loaded bundle.
-import { springKeyframes, springValue, springVelocity } from "~/motion/spring";
-const { values, duration } = springKeyframes(springs.sheet, { from: y, to: 0, velocity });   // px, px/s
+import { springTiming, durations, easings, travel } from "~/motion";
+element.animate([{ scale: 0.86 }, { scale: 1 }], springTiming("inflate"));   // a spring as WAAPI timing
+import { springKeyframes, springValue, springVelocity } from "~/motion/spring"; // the solver: not in the core bundle
+const { values, duration } = springKeyframes(springs.sheet, { from: y, to: 0, velocity });  // px, px/s
 ```
 
 ## 3. Public API
 
-### Environment
+### Environment and tiers
 
 ```ts
 getMotionTier(): "full" | "lite" | "reduced"      useMotionTier()      useReducedMotion()
 setMotionOverride("full" | "lite" | "reduced" | null)     getMotionOverride()
-haptic("tap" | "select" | "success" | "warning" | "error")
+haptic("tap" | "select" | "success" | "warning" | "error")      MOTION_TIER_SCRIPT
 ```
 
 | Tier | Chosen when | What changes |
 |---|---|---|
 | `full` | default | everything |
-| `lite` | Save-Data, `deviceMemory` ≤ 2 GB, ≤ 2 cores, or ≤ 4 GB with ≤ 4 cores | no stagger or overshoot on bubbles, no parallax layer under a page push, no depth tilt, no cart squish, no ambient motion; theme uses the sweep |
-| `reduced` | `prefers-reduced-motion` | no view transitions (pages cut), press is an opacity change, bubbles and numbers are 80–120 ms fades, no flight, sheets are placed, theme and language switch instantly |
+| `lite` (`fx-low`) | Save-Data; `deviceMemory` ≤ 2; ≤ 4 cores on a phone (shorter screen side < 768px) where `deviceMemory` exists; **three frames over 50 ms inside one page transition** (sticky for the session) | DESIGN.md §6.5: glass becomes solid (design-system CSS), staggered inflate is off, theme and language switch instantly, idle motion is off. Page transitions, press, flight and sheets are unchanged. |
+| `reduced` | `prefers-reduced-motion` | DESIGN.md §7.3: pressed offset with no animation, content and numbers appear in place, page changes are a 120 ms cross-fade, no flight, sheets fade 120 ms (drag still works), theme and language instant, no idle motion |
 
-The shopper's override (stored in `localStorage`, applied immediately, shown on the accessibility page) wins over every
-signal in both directions. The server always renders `full`; CSS honours the OS setting before hydration.
-`haptic()` is `navigator.vibrate` where it exists (Android) and silently nothing elsewhere.
+- Deviation from DESIGN.md's literal rule: the core count only counts where `deviceMemory` exists (Chromium). WebKit
+  reports 4 cores for every device with fewer than 8 (all iPhones, `NavigatorBase.cpp`), so "≤ 4 cores on a small
+  screen" would put every iPhone on the low-end tier. Verified both ways in `check-system.mjs`.
+- The shopper's override (localStorage `tt:motion`, shown in the lab) wins over every signal in both directions.
+- `haptic()` is `navigator.vibrate` where it exists (Android), silent elsewhere, and only after the first tap.
+  DESIGN.md: a light haptic (`data-haptic="tap"`, 8 ms) on the commit key only.
 
 ### Press feedback — automatic
 
 ```tsx
-<button data-press="clay" data-haptic="tap">أضف إلى السلة</button>   {/* 3 % compression + 1px sink, spring return */}
+<button data-press="clay" data-haptic="tap">أضف إلى السلة</button>   {/* 3 % and 1px down, `press` spring back */}
 <a data-press="soft">…</a>                                           {/* 2 % */}
 <button data-press="icon" aria-label="…">…</button>                   {/* 6 % */}
 ```
 
-`<MotionRoot>` sets `data-pressed` inside the `pointerdown` event (and on Space/Enter), swaps it for `data-released` on
-release, and cancels when the pointer leaves the element or the gesture turns into a scroll. The motion is CSS keyframes
-on `scale`/`translate` — deliberately not transitions, so a component's own `transition` list cannot break it, and
-`transform` stays free. Style extra pressed looks with `[data-pressed]`.
+`<MotionRoot>` sets `data-pressed` inside `pointerdown` (and on Space/Enter), swaps it for `data-released` on release,
+and cancels when the pointer leaves the element or the gesture becomes a scroll. Press-in is 80 ms ease-out; the return
+is the `press` spring (260 ms, 8 % overshoot). The design system's keys (`app/styles/materials.css`) carry
+`data-press="clay"`, zero the element's own movement and move only their cap on `[data-pressed]` (DESIGN.md §6.1: the
+wall never moves). Reduced motion: the pressed offset is shown without animation.
 
 ### Navigation grammar
 
 While a page transition runs, `<html>` carries `data-nav` and `data-nav-dir="forward|back"`:
 
-| `data-nav` | Meaning | Motion |
+| `data-nav` | Use | Motion (full and lite) |
 |---|---|---|
-| `fade` | default between unrelated pages | old page lets go (100 ms), new one settles in from 10px (fade-through) |
-| `zoom` | card → detail | the world zooms toward the tap point; the shared element morphs on top. Back: zooms out |
-| `push-forward` / `push-back` | neighbouring contexts | new page slides over from the inline end (from the **left** in RTL); back uncovers |
-| `rise` | sheet-like child page | lifts over a receding parent; back drops away |
-| `direction` | language switch | out toward the old reading direction's end, in from the new start |
+| `zoom` | card → detail | the card's shared element grows into place on the `settle` spring (410 ms, no overshoot); the list lets go (140 ms, exit) and the page settles in behind from .94 at the tap point. Back runs the same path into the same card |
+| `push-forward` / `push-back` | siblings: tabs, steps, neighbouring hubs | "next" enters 24px from the inline-end side and fades in (`settle`); the old view slides 24px the other way and fades (140 ms, exit). RTL mirrors LTR (`--motion-dir`) |
+| `rise` | sheet-like child page | rises 48px on the `sheet` spring over the fading parent; Back drops it away |
+| `fade` | unrelated pages (default) | old fades out (140 ms), new settles in from 8px below |
+| `direction` | language switch (full tier only) | content drifts 16px toward the new reading direction's start: out 140 ms, in 220 ms; chrome cross-fades in place; anchors stay |
+
+Reduced motion: every navigation except the language switch is a 120 ms cross-fade (opacity only, no shared element).
 
 How a navigation gets its transition, in priority order:
 
-1. **Back/Forward** play the reverse (or replay) of whatever brought the shopper to that history entry. The engine
-   remembers it per entry (sessionStorage), together with the tap point and the shared element.
-2. **An explicit request** on the link or before a programmatic navigation:
-   ```tsx
-   <MotionLink nav="zoom" to={`/p/${slug}`}>…</MotionLink>        // LocaleLink + intent (prefetches on intent as usual)
-   <MotionLink nav="push" order={2} to="/account/orders">…</MotionLink>
-   <MotionLink nav="zoom" back to="/c/consoles">رجوع</MotionLink>  // an in-page "back" that pushes a new entry
-
-   const intent = useNavIntent();
-   intent("rise"); navigate("/cart");                               // or before a <Form> submit
-   ```
-3. **Sibling order from route handles** — no link props needed, direction is automatic (and correct on a deep link):
+1. **Back/Forward** play the reverse (or replay) of whatever brought the shopper to that history entry (remembered per
+   entry in sessionStorage, with the tap point and the shared element).
+2. **An explicit request**: `<MotionLink nav="zoom" to=…>` (a `LocaleLink`), `<MotionLink nav="push" order={2}>`,
+   `<MotionLink nav="zoom" back>` for an in-page "back" link, or `useNavIntent()("rise")` before `navigate()` / a form.
+3. **Sibling order from route handles** — direction is automatic and right on a deep link:
    ```ts
    export const handle = { nav: "push", order: 2 } satisfies MotionHandle;
    export const handle = { nav: "push", order: ({ params }) => STEPS.indexOf(params.step!) } satisfies MotionHandle;
@@ -142,13 +142,12 @@ How a navigation gets its transition, in priority order:
    Routes are siblings when they share a parent route (or the same `group`).
 4. `handle = { nav: "rise" }` on the destination, else `fade`.
 
-A change of only the query string or hash on the same page gets **no** page transition unless something above asks
-for one — filters, sorting and pagination stay instant.
+A change of only the query string or hash on the same page gets **no** page transition unless something above asks for
+one — filters, sorting and pagination stay instant.
 
 ### `<SharedElement>` — card → page morph
 
 ```tsx
-// card                                                   // product page
 <MotionLink nav="zoom" to={`/p/${slug}`}>                <SharedElement name={`product-image:${id}`} target>
   <SharedElement name={`product-image:${id}`}>             <Art name={art} priority … />
     <Art name={art} … />                                 </SharedElement>
@@ -156,18 +155,16 @@ for one — filters, sorting and pagination stay instant.
 </MotionLink>
 ```
 
-- It renders one wrapper (`as`, default `div`; pass `className`/`style`) and that box is what morphs.
-  Same aspect ratio on both sides is ideal; otherwise the snapshots are fitted (`fit="contain"` default, or `"cover"`),
-  never stretched.
+- One wrapper (`as`, default `div`) morphs. Same aspect ratio on both sides is ideal; otherwise the snapshots are
+  fitted (`fit="contain"` default, or `"cover"`), never stretched. Niche and render may be two names.
 - A card carries the name only while it is the one that was pressed (or the one Back returns to); the detail side sets
-  `target`. So the same product may appear in several rails. If one page can show the same name twice, give the
-  elements different `slot`s so Back returns into the right one.
-- No partner, partner off-screen, reduced motion, or no browser support → nothing happens, the page transition still plays.
-- **Images inside must have an `onLoad` handler (any) or `loading="lazy"`.** Otherwise React holds the navigation until
-  the image has loaded (see §4.6).
-- Changing `name` on a mounted element remounts its children (it now stands for another thing).
+  `target`. If one page can show the same name twice, give the elements different `slot`s.
+- No View Transitions in the browser: the destination FLIPs from the card's box (one scale, `settle` spring) while the
+  page fades in over 120 ms; Back FLIPs the card from the detail picture's box. Reduced motion: nothing.
+- **Images inside need an `onLoad` handler (any) or `loading="lazy"`**, otherwise React holds the navigation until the
+  image has loaded (§4.6).
 
-### `<Bubble>` / `<BubbleGroup>` — content that arrives
+### `<Bubble>` / `<BubbleGroup>` — content that arrives (DESIGN.md "inflate")
 
 ```tsx
 <Suspense fallback={<div className="grid">{placeholders}</div>}>      {/* same geometry as the content */}
@@ -181,50 +178,46 @@ for one — filters, sorting and pagination stay instant.
 </Suspense>
 ```
 
-- Scale .92 → 1 (soft overshoot) + opacity on the wrapper itself. Reserve the geometry with your own classes on the
-  wrapper and on the fallback; the lab measures zero layout shift.
-- Plays for content that appears **after** the page is on screen: Suspense reveals, arriving results, inserted items.
-  Content that is in the server HTML or part of a navigation is simply there (the page transition is that animation);
-  `always` opts in.
-- `origin={{ x, y }}` or `origin="pointer"` grows it from a tap point.
-- `<BubbleGroup stagger>` (or `stagger={ms}`) delays direct children one after another; the whole wave is capped at
-  400 ms. Items added later are not delayed. Re-key the group (`key={query}`) to play the wave again.
-  Bubbles that are not direct children take `index`.
-- Bubbles are CSS animations on purpose — see §4.5.
+- Scale .86 → 1 with opacity 0 → 1 on the `inflate` spring, on the wrapper itself (zero layout shift, measured).
+- First appearance only: content that arrives after the page is on screen. Server HTML and content that is part of a
+  navigation is simply there; `always` opts in. `origin={{ x, y }}` or `"pointer"` grows it from a tap.
+- `<BubbleGroup stagger>`: 45 ms apart, at most six staggered, the rest appear with the sixth (`stagger={ms}` for a
+  custom step, the wave capped at 400 ms). Items added later are not delayed. Re-key the group to replay.
+- A failed load is not a bubble: show the empty reserved space with a message and a retry key. Lite and reduced: in place.
 
-### `<NumberMorph value format />`
+### `<NumberMorph value format />` (DESIGN.md "Currency number morph")
 
-```tsx
-const f = useFormat();
-<NumberMorph value={priceIqd} format={f.money} />      // also morphs when the display currency changes
-<NumberMorph value={cart.count} format={f.number} />
-```
+Digits roll per column (160 ms, water curve) in fixed cells; equal digit counts never change the width (measured).
+Text around the digits (the currency label) is never animated — visible in every frame, it swaps. Assistive technology
+gets the final text immediately. Reduced motion: the number replaces the number.
 
-Digits roll (up when the value grows, down when it shrinks) in 220 ms; text around them cross-fades. Assistive
-technology gets the final text immediately; the animated glyphs are `aria-hidden`. Digits sit in a left-to-right
-island so Arabic currency text keeps its shaping and order. Western digits get a fixed `1ch` box (heavy fonts ignore
-`tabular-nums` — measured with Segoe UI Black), so equal digit counts never change the width.
-
-### `flyToCart(source, options?)`
+### `flyToCart(source, options?) → FlyHandle` (DESIGN.md "Fly to cart")
 
 ```tsx
 const add = () => {
-  fetcher.submit(form, { method: "post", action: "/api/cart" });   // 1. real state first
-  flyToCart(imageRef.current!);                                     // 2. returns immediately
+  setCount((n) => n + 1); announce();                           // 1. state, count and aria-live first
+  const flight = flyToCart(imageRef.current!);                  // 2. returns immediately
+  fetcher.submit(form, { method: "post", action: "/api/cart" });
+  // on failure: roll the count back, show the message with a retry key, and
+  flight.revert();                                              //    the bead returns along the same arc
 };
 ```
 
-A copy of the picture (`options.image`: URL or element, default: the source's own `img/svg/canvas`) shrinks to a puck
-and travels a quadratic Bézier arc to the first visible `[data-cart-target]` (`options.target` overrides). On arrival
-the target squishes, `[data-cart-badge]` bumps, and a bubbling `tt:cart-received` event (`detail.flown`) fires on it;
-`options.onArrive` runs too. At most four flights at once — further taps are acknowledged instantly. Reduced motion,
-no target, or the chunk not loaded yet: no flight, the event fires straight away.
+- A 22px red clay bead (`.fly`) leaves the centre of `source` and travels a quadratic arc — control point halfway
+  across, 70px above the higher end — to the cart bead (`[data-cart-badge]` in the first visible `[data-cart-target]`),
+  shrinking to .55, in 420 ms + 0.3 ms per px (≤ 600 ms). One transform animation.
+- On arrival the cart bead squishes: scale(1.4, .68) → (.88, 1.16) → 1 over 340 ms; a bubbling `tt:cart-received`
+  event (`detail.flown`) fires on the target; `options.onArrive` runs.
+- At most three beads in flight; further taps go straight to the count (the bead still squishes).
+- `revert()`: mid-flight the bead turns round; after landing a bead flies the same arc back. The cart is not told.
+- `options.image` (URL, element, or `true` for the source's own picture) flies a copy of the picture instead of the bead.
+- Reduced motion, no target, or the chunk not loaded yet: no flight, the event fires straight away.
 
 ### Sheets, menus, toasts
 
 ```tsx
 function CartSheet({ onClose }: { onClose: () => void }) {
-  const sheet = useSheet({ snapPoints: [0.5, 1], initialSnap: 0, onClose });
+  const sheet = useSheet({ snapPoints: [0.5, 1], initialSnap: 0, onClose });   // edge: "auto" by default
   return (
     <>
       <div ref={sheet.backdropRef} className="scrim" onClick={sheet.close} />
@@ -238,166 +231,185 @@ function CartSheet({ onClose }: { onClose: () => void }) {
 {open && <CartSheet onClose={() => setOpen(false)} />}
 ```
 
-Mount the sheet when it opens; it springs up to `initialSnap`. Dragging the handle moves it 1:1 from where it was
-grabbed (pointer capture); on release the finger's momentum is projected to choose the snap point and the spring starts
-with that velocity; past the most open point it rubber-bands; grabbing it mid-flight continues from its exact position.
-Below the lowest snap point (or `sheet.close()`) it springs down, then `onClose` runs. `sheet.snapTo(i)` moves it.
-Only the handle drags, so content scrolls natively. Focus management and Escape belong to the sheet component (the lab's
-`DemoSheet` shows the pattern).
+- Mount when it opens; it rises on the `sheet` spring to `initialSnap`. `edge: "auto"` (default) is the bottom edge
+  below 768px and the inline-end edge from 768px (a side sheet has one resting point: fully open). `sheet.edge` says
+  which; `data-sheet-edge` is set on the element for styling.
+- The handle drags 1:1 from where it was grabbed (pointer capture); on release the finger's momentum is projected to
+  choose the snap point and the spring starts with that velocity; past the most open point it rubber-bands; grabbed
+  mid-flight it continues from its exact position. Past the lowest point, Escape, or `close()`: away, then `onClose`.
+- Focus (unless `manageFocus: false`): moves into the sheet (its `[autofocus]` element, else the sheet), Tab and
+  Shift+Tab stay inside, Escape closes, focus returns to the opener. Only the top sheet answers keys.
+- The scrim's opacity follows how open the sheet is (its colour is the component's: `--scrim`).
+- Reduced motion: it appears and disappears with a 120 ms fade; drag still works.
 
 ```ts
-await materialize(menuElement, { from: triggerElement });   // after it is in the DOM: grows from the trigger
-await dematerialize(menuElement); setOpen(false);           // shrinks away, then unmount
+await materialize(menuElement, { from: triggerElement });   // after it is in the DOM: drops 8px from the trigger, fades in (220 ms)
+await dematerialize(menuElement); setOpen(false);           // leaves the way it came (140 ms, exit curve), then unmount
 ```
 
 ### Theme and language
 
 ```tsx
-<button onClick={(e) => themeMorph("dark", e.currentTarget)}>داكن</button>
+<button onClick={() => themeMorph("dark")}>داكن</button>
 
 const switchLanguage = useDirectionMorph();
 <button onClick={() => switchLanguage("en")}>English</button>
 // low level: directionMorph(() => navigate(path, { replace: true, preventScrollReset: true }))
 ```
 
-`themeMorph` updates the prefs store and `<html data-theme>` inside a reveal that grows from the control (a light sweep
-without an origin or at `lite`). It is transform-only: the new theme is its own layer whose clip box scales (or slides)
-while the picture inside counter-moves, so it stands still. Every pixel is fully one theme, so text is legible in every
-frame. Nothing navigates or remounts; scroll and state are untouched. `useDirectionMorph` navigates to the same page in
-the other language with scroll position and form state kept and the history entry replaced.
+- `themeMorph` (DESIGN.md: "the light changes, not the objects") updates the prefs store and `<html data-theme>` inside
+  a view transition the engine owns: the two snapshots cross-fade over 200 ms (water curve); nothing moves and nothing
+  repaints per frame; fixed chrome fades with the page. Instant at the lite tier, under reduced motion and without
+  View Transitions. **Measured:** text contrast passes through ≈ 2:1 about 70 ms in and is under 3:1 for ≈ 30 ms
+  (two frames) — a cross-fade between dark-on-light and light-on-dark always crosses equal luminance, so DESIGN.md's
+  "legible in every frame" holds everywhere except those frames. (The engine's earlier circular reveal kept every
+  pixel fully one theme; the design team chose the cross-fade.)
+- `useDirectionMorph` navigates to the same page in the other language with `replace` (Back leaves the page) and
+  `preventScrollReset`; the route stays mounted, so form state survives. The first `data-motion-anchor` on screen keeps
+  its place: once the new text has rendered, the page is scrolled by however much the text above moved it (every tier),
+  so what the shopper was looking at stays put. Instant at lite and reduced.
 
-### Rails and ambient motion
+### Rails and idle motion
 
 ```tsx
 const rail = useRail({ tilt: true });
 <div {...rail.props} aria-label={t("trending")}>{cards}</div>
 <button onClick={() => rail.step(true)} aria-label={t("next")}>…</button>
+
+const breathe = useAmbient<HTMLDivElement>();
+<div ref={breathe} data-ambient="" className="stage__pool" />    // your CSS: animation: breathe 5s … infinite alternate
 ```
 
-Native scroll-snap scrolling with the platform's own momentum; vertical gestures and the vertical wheel are never
-captured. Adds ← → (mirrored in RTL), Page Up/Down, Home/End, and a small rubber bump at the edges for mouse, keyboard
-and the step buttons (touch platforms keep their own overscroll effect). `tilt` leans items as they cross an edge using
-scroll-driven animations — only at `full`, only where the browser's timeline is correct (§4.9).
+- Rails: native scroll-snap with the platform's own momentum and rubber band, no scroll listener; vertical gestures and
+  the vertical wheel are never captured. Adds ← → (mirrored in RTL), Page Up/Down, Home/End and a small rubber bump for
+  mouse, keyboard and the step buttons. `tilt` leans items crossing an edge with scroll-driven animations, at `full`
+  only, only where the browser's timeline is right (§4.9).
+- Idle motion (DESIGN.md: nothing moves at rest, one optional exception): runs only at `full` (so never with Save-Data
+  or on the low-end tier), on screen, in a visible tab, and only from 2 s after load. Browsers do not expose battery
+  saver; the engine pauses idle motion at ≤ 20 % battery when not charging, where `navigator.getBattery` exists.
 
-```tsx
-const float = useAmbient<HTMLDivElement>();
-<div ref={float} data-ambient="" className="hero-bubble" />    // your CSS: animation: drift 9s … infinite
-```
+### Stage relight and the intro
 
-Ambient animations run only at `full`, on screen, in a visible tab, and not on a nearly empty battery.
+The stage relight (DESIGN.md §7.2) is implemented by the design system's stage CSS (`materials.css`:
+`.render[data-enter]`, `.stage__layer[data-entering|data-leaving]`, off at `fx-low` and reduced). The intro belongs to
+the home area; both use these tokens and the tiers above.
 
-## 4. What React and React Router actually do (measured)
+### Types
 
-React 19.3.1, React Router 8.5.1, Chromium 157, development server. These findings shaped the design; the check scripts
-in §6 keep them true.
+Exported from `~/motion` next to the pieces above: tokens `Spring`, `SpringName`, `DurationName`, `EasingName`,
+`PressKind`, `HapticKind`, `SpringTiming`; environment `MotionTier`; navigation `MotionHandle`, `MotionLinkProps`,
+`PageTransitionProps`, `NavKind`, `NavName`; content `SharedElementProps`, `BubbleProps`, `BubbleGroupProps`,
+`NumberMorphProps`; imperative `FlyHandle`, `FlyOptions`, `CartReceivedDetail` (the `tt:cart-received` event's
+`detail`), `MaterializeOptions`, `MorphOrigin`; sheets and rails `SheetHandle`, `SheetOptions`, `SheetEdge`,
+`RailHandle`, `RailOptions`.
 
-**4.1 A `<ViewTransition>` around the outlet is not usable as documented.**
-React Router wraps *every* router state update in `startTransition`, and React pre-names every boundary whose
-`update` class is not `"none"` whenever anything near it re-renders. With the documented
-`<ViewTransition><Outlet/></ViewTransition>` we measured a full-page cross-fade right after hydration, another one for
-the `navigation.state = "loading"` update of every click — and the real navigation commit then waited for that
-animation to finish (+380 ms). The page group also slid vertically by the scroll difference between the two pages.
-**Design:** `<PageTransition>` puts a 1px sentinel in a *keyed* `<ViewTransition update="none">`. The key changes only
-when a navigation should animate, so React starts exactly one view transition per navigation and none otherwise
-(fetchers, pending states, filters). The animated layers are the two viewport-sized **root** snapshots, which need no
-scroll compensation and stack correctly under fixed chrome. React normally hides the root layer; setting
-`view-transition-name: root` inline on `<html>` for the commit keeps it (a React 19.3 implementation detail — if it
-changes, pages stop animating but shared elements still morph; `check-nav.mjs` fails).
+## 4. What React 19.3.1 and React Router 8.5.1 actually do
 
-**4.2 Back and Forward.** A Back that needs data (any route with a loader) completes outside the `popstate` event, so it
-is an ordinary transition and animates (view transition started 43 ms after `popstate`). A Back that needs no data —
-hash to hash, or routes without loaders — is finished by React Router *inside* `popstate`, React renders it
-synchronously, and a synchronous commit cannot be a view transition: the page just swaps.
-**Fallback:** `<PageTransition>` detects that it is being rendered inside `popstate` (`window.event`) for a navigation
-that should animate and suspends for one macrotask; React then finishes the same transition asynchronously with the
-view transition. Measured: DOM updated 47 ms after `popstate`, reverse transition played. History is untouched (React
-Router has already moved the URL) and scroll is restored by React Router's own layout effect inside the transition:
-the checks assert URL, `history.length` and `scrollY` after Back and Forward. Note that React Router treats
-`/page#hash → /page` as a data navigation (loaders re-run).
+Chromium 157 (headless Edge), development server. "Verified" items are asserted by the checks in §6 on every run
+(2026-11-11); the others were measured while the engine was built and are the reasons for its design.
 
-**4.3 Interruption.** While a view transition is animating, the captured page is not hit-testable (`elementFromPoint`
-returns `<html>`), and React parks every later transition commit until the animation ends. `<MotionRoot>` therefore
-ends the running transition on any `pointerdown`, key press, wheel or `popstate`. A touch tap then lands by itself (the
-click is hit-tested again on release); a mouse/pen click is dispatched to `<html>` and is forwarded to the element under
-the pointer. The engine never skips a transition that is still preparing — React reports that as an error
-("A ViewTransition was aborted early").
+**4.1 One view transition per navigation.** React Router wraps every router update in `startTransition`, and React
+pre-names every `<ViewTransition>` whose `update` is not `"none"` when anything near it re-renders, so the documented
+`<ViewTransition><Outlet/></ViewTransition>` cross-faded the page after hydration and on every `navigation.state`
+change, and held the real commit until that animation ended (measured +380 ms while building). **Design:**
+`<PageTransition>` puts a 1px sentinel in a *keyed* `<ViewTransition update="none">`; the key changes only when a
+navigation should animate. The animated layers are the two viewport-sized **root** snapshots (no scroll compensation,
+correct stacking under fixed chrome); `view-transition-name: root` is set inline on `<html>` for the commit because
+React otherwise hides the root layer (a React implementation detail — if it changes, `check-nav.mjs` fails).
+Verified: no view transition on load or hydration; exactly one per navigation.
 
-**4.4 Content is not held back.** A Suspense reveal that became ready 0.9 s into an (artificially 20× slowed) page
-transition was shown only when the transition ended, 6.2 s later. React waits by reading `.finished` on the running
-transition; the engine notices that read and plays the rest of the animation 4× faster (`tokens.page.hurry`) — same
-case: shown at 1.85 s. At real speed the worst case is ≈ 80 ms. If React changes how it waits, behaviour falls back to
-React's default hold (≤ 320 ms).
+**4.2 Back and Forward.** Verified: Back and Forward keep URL, `history.length` and scroll (the list returns to
+260px), play the reverse/replay of the remembered transition, and morph into the same card.
+- A Back that needs data (routes with loaders) is an ordinary transition: React starts it after `popstate`, once the
+  loader has answered (measured 32 ms after `popstate`).
+- A Back that needs no data (hash to hash, or no loaders) is finished by React Router *inside* `popstate`, and React
+  19.3 renders a transition scheduled during `popstate` synchronously (`shouldAttemptEagerTransition` in
+  `react-dom-client`, so the browser can restore scroll). A synchronous commit cannot be a view transition: the page
+  would just swap. **Fallback:** `<PageTransition>` notices it is rendering inside `popstate` (`window.event`) for a
+  navigation that should animate and suspends for one macrotask; React finishes the same transition asynchronously,
+  with the view transition. Verified: one push-back transition, DOM updated 18 ms after `popstate`; history untouched
+  (React Router has already moved the URL) and scroll restored by React Router's own layout effect.
 
-**4.5 Why Bubbles are CSS, not `<ViewTransition>`.** A Suspense reveal driven by a view transition is a document-level
-transition: it queues behind a page transition, blocks later commits while it runs, and makes part of the page
-untouchable. A mount-time CSS animation has none of these problems, works before hydration finishes and in every browser.
+**4.3 Interruption.** While a view transition animates, the captured page is not hit-testable (`elementFromPoint`
+returns `<html>`) and React parks later transition commits until it ends. `<MotionRoot>` ends the running transition on
+any `pointerdown`, key press, wheel or `popstate`; a touch tap then lands by itself, a mouse click is forwarded to the
+element under the pointer. A transition that is still preparing is never skipped (React reports "A ViewTransition was
+aborted early"). Verified for touch and mouse, with and without `document.activeViewTransition`.
 
-**4.6 Images inside a `<ViewTransition>` can delay navigation.** React suspends the commit for unloaded `<img>`
-elements inside a boundary: tap → commit took 950 ms with a slow image inside a shared element versus 160–260 ms when the
-`<img>` had an `onLoad` prop (or `loading="lazy"`). Page content is not inside a boundary in this design, so only
-`<SharedElement>` children are affected.
+**4.4 Content is not held back.** React waits for a running view transition before committing a Suspense reveal; it
+waits by reading `.finished`, so the engine plays the rest of the animation 4× faster when that happens
+(`tokens.page.hurry`). Verified at 5 % animation speed: data ready after 0.9 s was shown at 2.26 s instead of 8.03 s.
 
-**4.7 Effects run late during a transition.** `useEffect` callbacks of the new page ran when the view transition had
-finished (≈ 350 ms after the commit), not right after it. Layout effects run inside the transition. Do not start data
-fetching or focus changes that must be prompt in `useEffect` after navigation — use loaders and layout effects.
+**4.5 Why Bubbles are CSS, not `<ViewTransition>`.** A Suspense reveal driven by a view transition is document-level:
+it queues behind a page transition, blocks later commits and makes part of the page untouchable. A mount-time CSS
+animation has none of these problems and works before hydration finishes.
 
-**4.8 Things React reports that are not bugs in the app.**
-- If the viewport is resized while a view transition is preparing (soft keyboard, rotation), Chromium 157 aborts with
-  "Transition was aborted because of invalid state. Viewport size changed"; React 19.3.1 only recognises the older
-  wording and reports it as an uncaught error. Harmless (the navigation completes); worth filtering in error reporting.
-- In development React tracks `<ViewTransition name>` by the name a boundary had when it mounted, so renaming a mounted
-  boundary produces false "two components with the same name" errors. `<SharedElement>` remounts its boundary instead.
+**4.6 Images inside a `<ViewTransition>` can delay navigation** (measured while building). React suspends the commit for
+unloaded `<img>` inside a boundary: tap → commit took 950 ms with a slow image in a shared element versus 160–260 ms with
+an `onLoad` prop (or `loading="lazy"`). Page content is not inside a boundary in this design; only `<SharedElement>`
+children are affected.
 
-**4.9 Scroll-driven tilt in RTL.** Chromium 157 computes horizontal `view()` timelines wrongly in RTL scrollers (every
-item stays in its "not yet entered" keyframe). The rail probes the browser once per writing direction on an invisible
-element and enables the tilt only where an item that is fully inside comes out flat — so Arabic and Kurdish rails are
-flat today and will tilt when the browser is fixed.
+**4.7 Effects run late during a transition** (measured while building). `useEffect` of the new page ran when the view
+transition had finished (≈ 350 ms after the commit); layout effects run inside it. Do not start prompt work in
+`useEffect` after navigation — use loaders and layout effects.
 
-**4.10 Theme changes are synchronous.** The prefs store uses `useSyncExternalStore`, whose updates cannot be transitions,
-so `themeMorph` owns its view transition directly (and ends any page transition first).
+**4.8 Reports that are not app bugs** (observed while building). A viewport resize while a transition prepares
+(soft keyboard, rotation) makes Chromium abort with "Viewport size changed", which React 19.3.1 reports as an uncaught
+error (harmless; filter it in error reporting). In development React tracks `<ViewTransition name>` by the name a
+boundary mounted with, so `<SharedElement>` remounts its boundary instead of renaming it.
 
-**4.11 Browsers.** No View Transitions API (older Safari/Firefox): navigation is instant and the new page fades in
-(opacity only); shared elements and the theme reveal do nothing. Without `document.activeViewTransition` the engine uses
-React's `<ViewTransition>` callbacks and `:active-view-transition` instead. Both paths are covered by `check-fallbacks.mjs`.
+**4.9 Scroll-driven tilt in RTL.** Chromium computes horizontal `view()` timelines wrongly in RTL scrollers. The rail
+probes once per direction and enables the tilt only where an item fully inside comes out flat. Verified: RTL rails are
+flat, LTR rails tilt only the item crossing an edge.
 
-## 5. Performance notes
+**4.10 Theme changes are synchronous.** The prefs store uses `useSyncExternalStore`, whose updates cannot be
+transitions, so `themeMorph` runs its own view transition (ending a page transition first).
 
-- **Bundle** (minified + gzip, a consumer using every export; `node app/motion/__checks__/size.mjs`):
-  always loaded 8.5 KB JS + 3.0 KB CSS; on demand (fetched at idle by `<MotionRoot>`) 5.6 KB JS + 0.6 KB CSS for
-  fly-to-cart, sheet physics, materialize, theme reveal and rail behaviour. If the on-demand chunk has not arrived when
-  it is needed, the call does its instant part (state, event, theme) without the animation — an interaction never waits
-  for code.
-- **Press feedback:** `data-pressed` is set inside the `pointerdown` event and the animation starts in the very next
-  frame: 15–17 ms after the event at 60 fps (17–35 ms after the touch timestamp). The default headless browser on the
-  build machine renders at ~23 fps, where the same single frame is ~42 ms.
+**4.11 Browsers.** Verified by removing the APIs in Chromium: without View Transitions, navigation is instant, the page
+fades in over 120 ms and shared elements FLIP; the theme and language switch instantly. Without
+`document.activeViewTransition`, React's `<ViewTransition>` callbacks and `:active-view-transition` take over.
+
+## 5. Performance (measured)
+
+- **Bundle** — Vite 8 production build (Rolldown, Oxc, Lightning CSS), gzip -9, `node app/motion/__checks__/size.mjs`:
+
+  | | always loaded JS | always loaded CSS | on demand JS + CSS |
+  |---|---|---|---|
+  | a layout (`MotionRoot`, `PageTransition`, `MotionLink`) | 5.8 KB | 3.2 KB | 5.2 KB + 0.6 KB |
+  | every export at once (worst case) | 9.8 KB | 3.2 KB | 5.1 KB + 0.6 KB |
+
+  Plus Vite's dynamic-import helper (≈ 1.3 KB), which the app ships once for every route. The on-demand chunk (fly,
+  sheet physics, menus, theme cross-fade, rail behaviour) is fetched at idle by `<MotionRoot>`; if it has not arrived
+  when needed, the call does its instant part (state, event, theme) without the animation.
+- **Press:** `data-pressed` is set inside `pointerdown`; the animation starts in the very next frame — 14–17 ms after the
+  event and 19–33 ms after the touch timestamp at 60 fps (DESIGN.md budget: 80 ms).
 - **Compositor only:** page transitions animate two viewport-sized snapshots; sheets settle with one WAAPI animation
-  sampled from the closed-form spring (interrupting it needs no style read); the flight is one keyframed transform.
-  Shared-element groups use the browser's own size interpolation between the two boxes.
-- **Listeners:** all delegated, passive, on `document`; `pointermove` is only listened to while something is pressed.
-- **Idle:** nothing runs when nothing moves. The lab's FPS readout is the only `requestAnimationFrame` loop and exists
-  only on `/motion`.
-- **No layout animation:** no CSS transitions at all in the engine; `NumberMorph` takes a new width once, at the start.
+  sampled from the closed-form spring (interrupting it needs no style read); a flight is one transform animation.
+- **Listeners:** delegated, passive, on `document`; `pointermove` only while something is pressed. Nothing runs at rest;
+  the jank watch is one `requestAnimationFrame` loop that lives only while a page transition animates.
 
 ## 6. Verifying
 
 ```
-npm test -- tests/motion.test.ts                  34 tests: spring solver → linear(), hand-off continuity, momentum,
-                                                  rubber band, snap choice, Bézier path, tier resolution, navigation
-                                                  grammar, theme keyframes, tokens ↔ CSS, transform/opacity-only guard
-node app/motion/__checks__/check-nav.mjs          URL / history length / scroll for forward, Back, Forward; one transition
-                                                  per navigation; grammar; shared elements; RTL vs LTR; synchronous Back
-node app/motion/__checks__/check-touch.mjs        press timing and depth, cancel, keyboard, haptics, number morph,
-                                                  materialize, interrupting a transition (touch and mouse)
-node app/motion/__checks__/check-content.mjs      bubbles (zero layout shift, stagger cap), rails, ambient, fly-to-cart,
-                                                  sheet physics, content not held by a page animation
-node app/motion/__checks__/check-system.mjs       tiers and signals, what reduced and lite change, theme reveal, language
-node app/motion/__checks__/check-fallbacks.mjs    no View Transitions; no document.activeViewTransition
+npm test -- tests/motion.test.ts                  41 tests: spring solver → linear(), hand-off, momentum, rubber band, snap,
+                                                  arc and flight time, tiers + the head script (1,280 combinations), navigation
+                                                  grammar, tokens ↔ motion.css ↔ app/styles/tokens.css, transform/opacity guard
+node app/motion/__checks__/check-nav.mjs          40: URL / history / scroll on forward, Back, Forward; one transition per
+                                                  navigation; grammar; shared elements; RTL vs LTR push; synchronous Back
+node app/motion/__checks__/check-touch.mjs        32: press timing and depth, cancel, keyboard, haptics, number morph, menus,
+                                                  interrupting a transition (touch and mouse)
+node app/motion/__checks__/check-content.mjs      50: bubbles (zero layout shift, stagger), rails, idle motion, fly-to-cart (bead,
+                                                  arc, squish, cap, failure return), sheet physics and focus, side sheets
+node app/motion/__checks__/check-system.mjs       45: tiers and signals, reduced and lite, runtime jank downgrade, theme
+                                                  cross-fade with contrast per frame, language switch with anchors
+node app/motion/__checks__/check-fallbacks.mjs    12: no View Transitions (fade + FLIP); no document.activeViewTransition
 node app/motion/__checks__/frames.mjs             stills from the middle of each animation → .shots/motion/
-node app/motion/__checks__/size.mjs               bundle sizes
+node app/motion/__checks__/contact.mjs out.png frames…    lays frames side by side to look at a whole transition
+node app/motion/__checks__/size.mjs               bundle sizes (§5)
 ```
 
-The browser checks drive the lab at 390×844 against the running dev server (`MOTION_ORIGIN` to point elsewhere) and
-write frames to `.shots/motion/` — look at them when changing motion.
+The browser checks drive the lab at 390×844 (and 1024×768 for side sheets) against the running dev server
+(`MOTION_ORIGIN` to point elsewhere) and write frames to `.shots/motion/` — look at them when changing motion.
 
 ## 7. Rules for feature code
 
@@ -405,19 +417,18 @@ write frames to `.shots/motion/` — look at them when changing motion.
    an animation before doing the real thing.
 2. Use the pieces: `data-press` for anything tappable, `<MotionLink>`/handles for navigation, `<SharedElement>` for the
    one thing that travels, `<Bubble>` for content that arrives, `<NumberMorph>` for numbers that change, `useSheet` for
-   sheets. If something needs custom motion, use the tokens and animate only `transform`/`opacity`.
-3. Loaders await what the page needs to be meaningful; stream only what may arrive later, and reveal it with Bubbles into
-   reserved space. No grey skeletons, no layout shift.
+   sheets, `materialize` for menus. Custom motion uses the tokens and animates only `transform`/`opacity`.
+3. Loaders await what the page needs to be meaningful; stream only what may arrive later, into reserved space.
 4. Do not add `<ViewTransition>` boundaries with the default `update` behaviour (§4.1), and do not pass React Router's
-   deprecated `viewTransition` props.
-5. Every flow must be complete with `data-motion="reduced"`: open `/motion`, switch the tier, try it.
+   `viewTransition` props.
+5. Every flow must be complete with `data-motion="reduced"` and `"lite"`: open `/motion`, switch the tier, try it.
 
 ## 8. Not done / limits
 
-- The engine is verified on Chromium 157 (headless Edge). Safari and Firefox paths are exercised only by removing APIs
-  in Chromium, not on those browsers or on real phones; durations and springs should be tuned on devices.
-- The production bundle sizes were measured with esbuild on the engine alone, not from a full `react-router build`.
-- No runtime downgrade from measured frame times; the tier is decided from device signals and the override.
-- Server-rendered Bubbles do not animate when a streamed Suspense boundary resolves before hydration (they are simply
-  shown); after hydration every reveal animates.
+- Verified on Chromium 157 only (headless Edge). Safari and Firefox paths are exercised by removing APIs in Chromium,
+  not on those browsers or on real phones; durations and springs should be tuned on devices, and the jank threshold
+  (3 frames over 50 ms) has not been tried on a real low-end phone.
+- The theme cross-fade dips below 3:1 text contrast for ≈ 30 ms (§3, measured); the design team's call.
+- The language switch cross-fades two pages of text for ≈ 100 ms (DESIGN.md's 140 ms out / 220 ms in).
+- Server-rendered Bubbles do not animate when a streamed Suspense boundary resolves before hydration (they are shown).
 - Rails are flat in RTL until the browser bug in §4.9 is fixed.

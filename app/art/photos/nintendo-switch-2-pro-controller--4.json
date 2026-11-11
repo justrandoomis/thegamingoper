@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2-pro-controller--4",
+  "view": "hero",
+  "width": 1240,
+  "height": 945,
+  "aspect": 1.3122,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/4-240.04999e3b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/4-480.688834c5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/4-720.f8ac7602.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/4-960.c0de12a0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/4-240.74713d06.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/4-480.54604c11.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/4-720.d61d84cd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/4-960.52dd6d4b.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-pro-controller/4-720.35ecdcba.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRggBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSHMAAAART6CmbSQ2eAhu/l6m/4gI6D79RBJObNt2k5Me+WVkbFxhAhkCFocE912Io+M7d7q/zCGi/0KCBJtTwCThp70f5vmxS+GkoAY+oQ38QgtGUUkbS6dYto4VWy0r10+lVQfwVHVU5VnVVpnXq5r2BH1zkpABAFZQOCBuAAAAcAMAnQEqFAAPAD8RcrBQrCakorAIAYAiCWcAAFIir39BxLvwAP4zTzfRMDtFmjXup/jBhWlkZ2TOqzDTZitsV06dEv5vAZNC4aqr2qj84H3qTCWuDz4Pp2U2CxB4fIu5+fDCSI/z4dhmV1eBAAA=",
+  "dominant": "#262729",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Pro%20Controller/Frame_3473720.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "a390437585f82f66"
+}

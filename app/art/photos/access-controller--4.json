@@ -1,0 +1,65 @@
+{
+  "key": "access-controller--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 643,
+  "aspect": 2.4883,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/4-240.2fa1b870.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/4-480.552fca4e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/4-720.eef1f35a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/4-960.bffe73a3.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/4-1440.07c9037d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/4-240.b87d6974.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/4-480.f20149c4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/4-720.c7f9787b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/4-960.2c15e58c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/4-1440.14268faf.webp"
+      }
+    ],
+    "png": "/products/access-controller/4-720.740b08d3.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuAAAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSEkAAAART6A0AAg2Keq0Lc6ICMBvEisusI1sW8nBCV36YSjI70/JXguvYKSEiP5HVdd1BMBqFqQBuN3dffrXPMtljlezIA2nsqquASIAAFZQOCBwAAAAkAMAnQEqFAAIAD8RcLBQLCYkorAIAYAiCWYAxvQiyY122NP+AAD+xgUy1G574+WOgXaQsKtpX4Pi3LRgxV92FXvxfRa5ZBQ8SpfSUzFQtbaTtEAEt6R4cQ4fJ4oOuOic04RP50P7pAh1oQNJGQAAAA==",
+  "dominant": "#fbfbfb",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController_Product_16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/access-controller/"
+  },
+  "input": "3060e1d02c9bc8d1"
+}

@@ -1,0 +1,305 @@
+{
+  "slug": "playstation-portal",
+  "group": "playstation-hardware",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Sony",
+  "deviceModel": "ps-portal",
+  "family": "ps-portal",
+  "status": "available",
+  "releaseDate": "2023-11-15",
+  "name": {
+    "ar": "PlayStation Portal Remote Player",
+    "en": "PlayStation Portal Remote Player",
+    "ckb": "PlayStation Portal Remote Player"
+  },
+  "short": {
+    "ar": "شاشة LCD مقاس 8 بوصة 1080p/60fps · للعب عن بُعد من PS5 عبر Wi-Fi",
+    "en": "8-inch 1080p/60fps LCD · Plays your PS5 over Wi-Fi",
+    "ckb": "شاشەی LCDی 8 ئینچ 1080p/60fps · یاریی PS5ەکەت لە ڕێگەی Wi-Fi"
+  },
+  "description": {
+    "ar": "جهاز محمول بشاشة 8 بوصات ويدَي تحكم بميزات DualSense، يشغّل الألعاب المثبتة على جهاز PS5 الخاص بك عبر Wi-Fi، فيمكنك اللعب في غرفة أخرى أو أثناء استخدام التلفاز. لا يشغّل الألعاب بنفسه؛ يحتاج جهاز PS5، أو اشتراك PlayStation Plus Premium للعب بالبث السحابي لألعاب مختارة. متوفر بلونين: أبيض وMidnight Black.",
+    "en": "A handheld with an 8-inch screen and DualSense-style controls that streams the games installed on your PS5 over Wi-Fi, so you can play in another room or while the TV is in use. It does not run games itself: it needs a PS5, or a PlayStation Plus Premium membership to cloud-stream selected games. Available in White and Midnight Black.",
+    "ckb": "ئامێرێکی دەستی بە شاشەی 8 ئینچ و کۆنتڕۆڵی وەک DualSense، کە یارییە دامەزراوەکانی سەر PS5ەکەت لە ڕێگەی Wi-Fi پەخش دەکات، بۆیە دەتوانیت لە ژوورێکی تر یان لە کاتی بەکارهێنانی تەلەفزیۆن یاری بکەیت. خۆی یاری کار پێناکات: PS5ی دەوێت، یان ئابوونەی PlayStation Plus Premium بۆ پەخشی هەوری یارییە دیاریکراوەکان. بە دوو ڕەنگ هەیە: سپی و Midnight Black."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة LCD مقاس 8 بوصات بدقة 1080p حتى 60 إطاراً في الثانية",
+      "en": "8-inch LCD screen, 1080p at up to 60fps",
+      "ckb": "شاشەی LCDی 8 ئینچ، 1080p تا 60 فرەیم لە چرکەیەکدا"
+    },
+    {
+      "ar": "اهتزاز Haptic وأزرار Adaptive triggers مثل DualSense في الألعاب المدعومة",
+      "en": "Haptic feedback and adaptive triggers like the DualSense in supported games",
+      "ckb": "لەرینەوەی هاپتیک و تریگەری گونجاو وەک DualSense لە یارییە پشتگیریکراوەکاندا"
+    },
+    {
+      "ar": "يحتاج Wi-Fi بسرعة 5Mbps على الأقل (15Mbps موصى بها)، وجهاز PS5 مشغّلاً أو في وضع الراحة",
+      "en": "Needs Wi-Fi of at least 5Mbps (15Mbps recommended) and a PS5 that is on or in Rest Mode",
+      "ckb": "Wi-Fiی لانیکەم 5Mbps پێویستە (15Mbps پێشنیار دەکرێت) و PS5ێک کە هەڵکراو بێت یان لە دۆخی پشوودا بێت"
+    },
+    {
+      "ar": "بث سحابي لألعاب PS5 مختارة مع PlayStation Plus Premium، حتى بدون جهاز PS5",
+      "en": "Cloud streaming of selected PS5 games with PlayStation Plus Premium, even without a PS5",
+      "ckb": "پەخشی هەوری یارییە دیاریکراوەکانی PS5 لەگەڵ PlayStation Plus Premium، تەنانەت بەبێ PS5"
+    },
+    {
+      "ar": "الصوت: سماعات مدمجة، منفذ 3.5 ملم، أو سماعات PlayStation Link مثل PULSE Explore وPULSE Elite (بدون Bluetooth)",
+      "en": "Audio: built-in speakers, 3.5mm jack, or PlayStation Link devices such as PULSE Explore and PULSE Elite (no Bluetooth audio)",
+      "ckb": "دەنگ: بڵندگۆی ناوەکی، دەروازەی 3.5 ملم، یان ئامێرەکانی PlayStation Link وەک PULSE Explore و PULSE Elite (Bluetooth نییە)"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-Y1016 (النسخة البريطانية)", "en": "CFI-Y1016 (UK unit)", "ckb": "CFI-Y1016 (ئامێری بەریتانی)" }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": { "ar": "LCD مقاس 8 بوصات، 1080p، حتى 60fps", "en": "8-inch LCD, 1080p, up to 60fps", "ckb": "LCDی 8 ئینچ، 1080p، تا 60fps" }
+    },
+    {
+      "key": "connection",
+      "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "Wi-Fi (5Mbps على الأقل، 15Mbps موصى بها)؛ PlayStation Link للصوت",
+        "en": "Wi-Fi (5Mbps minimum, 15Mbps recommended); PlayStation Link for audio",
+        "ckb": "Wi-Fi (لانیکەم 5Mbps، 15Mbps پێشنیارکراو)؛ PlayStation Link بۆ دەنگ"
+      }
+    },
+    {
+      "key": "audio",
+      "label": { "ar": "الصوت", "en": "Audio", "ckb": "دەنگ" },
+      "value": {
+        "ar": "سماعات مدمجة، منفذ سماعة 3.5 ملم، PlayStation Link",
+        "en": "Built-in speakers, 3.5mm headphone jack, PlayStation Link",
+        "ckb": "بڵندگۆی ناوەکی، دەروازەی گوێگری 3.5 ملم، PlayStation Link"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": {
+        "ar": "تقريباً 351 × 152 × 96.5 ملم (العرض × الارتفاع × العمق)، ونحو 530 غراماً",
+        "en": "Approx. 351 × 152 × 96.5 mm (width × height × depth), about 530 g",
+        "ckb": "نزیکەی 351 × 152 × 96.5 ملم (پانی × بەرزی × ئەستووری)، نزیکەی 530 گرام"
+      }
+    },
+    {
+      "key": "requires",
+      "label": { "ar": "يتطلب", "en": "Requires", "ckb": "پێویستی بە" },
+      "value": {
+        "ar": "جهاز PS5 وحساب PlayStation؛ أو PlayStation Plus Premium للبث السحابي",
+        "en": "A PS5 and an account for PlayStation; or PlayStation Plus Premium for cloud streaming",
+        "ckb": "PS5 و هەژماری PlayStation؛ یان PlayStation Plus Premium بۆ پەخشی هەوری"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز PlayStation Portal", "en": "PlayStation Portal remote player", "ckb": "ئامێری PlayStation Portal" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PS-PORTAL-WHITE",
+      "title": { "ar": "PlayStation Portal – أبيض", "en": "PlayStation Portal – White", "ckb": "PlayStation Portal – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-Y1016",
+      "isDefault": true,
+      "images": ["playstation-portal--1", "playstation-portal--2", "playstation-portal--3", "playstation-portal--5"]
+    },
+    {
+      "sku": "PS-PORTAL-MIDNIGHT-BLACK",
+      "title": { "ar": "PlayStation Portal – أسود Midnight Black", "en": "PlayStation Portal – Midnight Black", "ckb": "PlayStation Portal – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["playstation-portal--4"],
+      "notes": {
+        "ar": "ضمن مجموعة Midnight Black التي صدرت في 20 فبراير 2025.",
+        "en": "Part of the Midnight Black Collection released on 20 February 2025.",
+        "ckb": "بەشێکە لە کۆمەڵەی Midnight Black کە لە 20ی شوباتی 2025 دەرچوو."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل مع أي جهاز PS5؛ جهاز Portal واحد فقط لكل PS5 في نفس الوقت.", "en": "Works with any PS5; only one Portal can be connected to a PS5 at a time.", "ckb": "لەگەڵ هەر PS5ێک کار دەکات؛ لە یەک کاتدا تەنها یەک Portal بە PS5ێکەوە دەبەسترێت." },
+      "source": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/"
+    },
+    {
+      "deviceModel": "ps-vr2",
+      "status": "incompatible",
+      "note": { "ar": "ألعاب الواقع الافتراضي (PS VR وPS VR2) لا تعمل على Portal.", "en": "VR games (PS VR and PS VR2) cannot be played on Portal.", "ckb": "یارییەکانی VR (PS VR و PS VR2) لەسەر Portal کار ناکەن." },
+      "source": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "pulse-explore", "kind": "accessory" },
+    { "slug": "pulse-elite", "kind": "accessory" },
+    { "slug": "playstation-pulse-wireless-headset", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "playstation-portal--1",
+      "file": ".cache/product-images/playstation-portal/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-05-PS-16x9-01-15apr26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/",
+      "kind": "hero",
+      "alt": { "ar": "PlayStation Portal الأبيض من الأمام", "en": "White PlayStation Portal from the front", "ckb": "PlayStation Portalی سپی لە پێشەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-portal--2",
+      "file": ".cache/product-images/playstation-portal/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-02-PS-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "PlayStation Portal من زاوية جانبية", "en": "PlayStation Portal from an angle", "ckb": "PlayStation Portal لە گۆشەیەکی لاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-portal--3",
+      "file": ".cache/product-images/playstation-portal/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لـ PlayStation Portal مع الأزرار الخلفية", "en": "Top edge of PlayStation Portal with the shoulder buttons", "ckb": "لای سەرەوەی PlayStation Portal لەگەڵ دوگمەکانی شان" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-portal--4",
+      "file": ".cache/product-images/playstation-portal/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PORTAL_MIDNIGHTBLACK_PR_04_RGB-1x1-01-8July26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "PlayStation Portal باللون Midnight Black", "en": "PlayStation Portal in Midnight Black", "ckb": "PlayStation Portal بە ڕەنگی Midnight Black" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    },
+    {
+      "key": "playstation-portal--5",
+      "file": ".cache/product-images/playstation-portal/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStationPortal-White-Product-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة PlayStation Portal بجانب الجهاز", "en": "PlayStation Portal box beside the device", "ckb": "قوتووی PlayStation Portal لە تەنیشت ئامێرەکە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/",
+      "title": "PlayStation Portal™ Remote Player – Buy now",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-Y1016, dimensions, weight, what's in the box, release 15 November 2023, White and Midnight Black, Wi-Fi requirements, VR and peripheral games not compatible, one Portal per PS5"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/",
+      "title": "PlayStation Portal™ Remote Player",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "8-inch LCD, 1080p/60fps, haptic feedback and adaptive triggers, cloud streaming with PS Plus Premium, audio devices (PlayStation Link, 3.5mm, speakers), no PS Plus needed for Remote Play"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/psportal-compatibility/",
+      "title": "Compatibility of PS Portal",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "PS5 only (not PS4), wired 3.5mm and PlayStation Link audio devices only, media apps not supported over Remote Play"
+    },
+    {
+      "url": "https://www.ign.com/wikis/playstation-portal/Compatible_Headphones",
+      "title": "Compatible Headphones - PlayStation Portal Guide",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "PlayStation Portal has no Bluetooth audio support"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/08/23/playstations-first-remote-play-dedicated-device-playstation-portal-remote-player-to-launch-later-this-year-at-199-99/",
+      "title": "PlayStation's first Remote Play dedicated device, PlayStation Portal remote player, to launch starting Nov 15",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "launch date 15 November 2023"
+    },
+    {
+      "url": "https://blog.playstation.com/2025/01/07/new-midnight-black-collection-of-ps5-accessories-launches-next-month/",
+      "title": "New Midnight Black Collection of PS5 accessories launches next month",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Midnight Black Portal launched 20 February 2025"
+    },
+    {
+      "url": "https://blog.ja.playstation.com/2026/11/09/20261109-playstation-portal-announcement-o/",
+      "title": "PlayStation Portal プレーヤー ミッドナイトブラック 日本語専用 12月10日発売",
+      "publisher": "PlayStation.Blog (Japan)",
+      "retrieved": "2026-11-11",
+      "supports": "Japan-only PlayStation Portal Player (Japanese language only, Japan-region accounts only, extra internal storage), 10 December 2026; cloud streaming without a PS5 since 2025; VR games not supported"
+    },
+    {
+      "url": "https://blog.ko.playstation.com/2026/11/09/20261109-psportal/",
+      "title": "PlayStation Portal 플레이어 - 미드나이트 블랙 (한국어 전용), 12월 10일 국내 출시",
+      "publisher": "PlayStation.Blog (Korea)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Korea-only PlayStation Portal Player (Midnight Black), 10 December 2026: Korean system language only, Korea-region accounts only"
+    },
+    {
+      "url": "https://www.ign.com/wikis/playstation-portal/PlayStation_Portal_Specs",
+      "title": "PlayStation Portal Specs - PlayStation Portal Guide",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: size 14.0 × 3.88 × 6.0 in (matches Sony UK's 351 × 96.5 × 152 mm), weight 1.17 lb (about 530 g), 8-inch 1080p/60fps LCD, no Bluetooth, 3.5mm jack and PlayStation Link"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: PlayStation Portal works with PS5 Pro"
+    }
+  ],
+  "notes": {
+    "ar": "لا يعمل مع PS4، وتطبيقات الأفلام والمسلسلات في PS5 (قسم Media) لا تعمل عبر Remote Play. تنبيه للمستورد: أعلنت Sony في 9 نوفمبر 2026 عن طراز ياباني باسم PlayStation Portal Player (Midnight Black) يصدر في 10 ديسمبر 2026، وهو مقفل على اللغة اليابانية وعلى حسابات منطقة اليابان فقط – لا يناسب المستخدمين في العراق. وفي اليوم نفسه يصدر طراز خاص بكوريا بالقيود نفسها (اللغة الكورية وحسابات منطقة كوريا فقط). البث السحابي يحتاج PlayStation Plus Premium المتاح فقط في المناطق التي تقدمه Sony.",
+    "en": "It does not work with PS4, and the PS5's Media apps (films and series) are not available over Remote Play. Importer warning: on 9 November 2026 Sony announced a Japan-only PlayStation Portal Player (Midnight Black) for 10 December 2026 that is locked to Japanese language and Japan-region accounts – unsuitable for customers in Iraq. A Korea-only model with the same limits (Korean language, Korea-region accounts) launches the same day. Cloud streaming needs PlayStation Plus Premium, available only where Sony offers it.",
+    "ckb": "لەگەڵ PS4 کار ناکات، و ئەپەکانی بەشی Mediaی PS5 (فیلم و زنجیرە) لە ڕێگەی Remote Play کار ناکەن. ئاگاداری بۆ هاوردەکار: Sony لە 9ی تشرینی دووەمی 2026 PlayStation Portal Player (Midnight Black)ی تایبەت بە ژاپۆنی ڕاگەیاند بۆ 10ی کانوونی یەکەمی 2026، کە تەنها بە زمانی ژاپۆنی و هەژماری ناوچەی ژاپۆن کار دەکات – بۆ کڕیارانی عێراق گونجاو نییە. لە هەمان ڕۆژدا مۆدێلێکی تایبەت بە کۆریاش بە هەمان سنوورەوە دەردەچێت (تەنها زمانی کۆری و هەژماری ناوچەی کۆریا). پەخشی هەوری PlayStation Plus Premiumی دەوێت کە تەنها لەو ناوچانەی Sony پێشکەشی دەکات هەیە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Model number of the Midnight Black global unit",
+      "Weight: IGN gives 1.17 lb (about 530 g) while Sony UK rounds to approx. 0.6 kg; the more precise figure is used"
+    ]
+  }
+}

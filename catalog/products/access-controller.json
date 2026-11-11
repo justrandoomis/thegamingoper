@@ -1,0 +1,207 @@
+{
+  "slug": "access-controller",
+  "group": "playstation-hardware",
+  "kind": "controller",
+  "platform": "playstation",
+  "brand": "Sony",
+  "status": "available",
+  "releaseDate": "2023-12-06",
+  "name": {
+    "ar": "يد التحكم Access controller",
+    "en": "Access controller",
+    "ckb": "کۆنتڕۆڵەری Access"
+  },
+  "short": {
+    "ar": "يد تحكم قابلة للتخصيص لذوي الإعاقة · أزرار وعصا قابلة للتبديل · 4 منافذ توسعة",
+    "en": "Customisable accessibility controller · Swappable caps and stick · 4 expansion ports",
+    "ckb": "کۆنتڕۆڵەری گونجێنراو بۆ کەسانی خاوەن پێداویستی تایبەت · سەری گۆڕاو و ستیک · 4 دەروازەی زیادکردن"
+  },
+  "description": {
+    "ar": "يد تحكم لاسلكية من Sony لجهاز PS5، صُممت مع مجتمع ذوي الإعاقة لتسهيل اللعب لفترة أطول وبراحة أكبر. يمكن وضعها بأي اتجاه على سطح مستوٍ أو تثبيتها بحامل AMPS، وتغيير أغطية الأزرار وطول ذراع العصا. يمكن دمج يدين منها أو دمجها مع DualSense، وتوصيل أزرار إضافية عبر أربعة منافذ 3.5 ملم.",
+    "en": "Sony's wireless controller kit for PS5, designed with the accessibility community to help players with disabilities play more comfortably for longer. It can sit in any orientation on a flat surface or attach to an AMPS mount, and its button caps and stick length can be changed. Two can be combined, or paired with a DualSense, and extra switches plug into four 3.5mm ports.",
+    "ckb": "کۆنتڕۆڵەری بێتەلی Sony بۆ PS5، لەگەڵ کۆمەڵگەی کەسانی خاوەن پێداویستی تایبەت دیزاین کراوە بۆ ئەوەی ئاسوودەتر و ماوەیەکی درێژتر یاری بکەن. دەتوانرێت بە هەر ئاڕاستەیەک لەسەر ڕووێکی تەخت دابنرێت یان بە پایەی AMPS ببەسترێت، و سەری دوگمەکان و درێژیی ستیکەکە دەگۆڕدرێن. دەتوانرێت دوو دانە پێکەوە یان لەگەڵ DualSense بەکاربهێنرێن، و سویچی زیادە بە چوار دەروازەی 3.5 ملم دەبەسترێن."
+  },
+  "highlights": [
+    {
+      "ar": "أغطية أزرار وعصا قابلة للتبديل، وذراع عصا بطول قابل للضبط",
+      "en": "Swappable button and stick caps, plus an adjustable-length stick arm",
+      "ckb": "سەری دوگمە و ستیکی گۆڕاو، و باسکی ستیک بە درێژیی گۆڕاو"
+    },
+    {
+      "ar": "حتى 30 ملف تحكم في PS5، و3 ملفات محفوظة في اليد",
+      "en": "Up to 30 control profiles on PS5, with 3 stored on the controller",
+      "ckb": "تا 30 پرۆفایلی کۆنتڕۆڵ لەسەر PS5، کە 3یان لەسەر کۆنتڕۆڵەرەکە هەڵدەگیرێن"
+    },
+    {
+      "ar": "4 منافذ توسعة 3.5 ملم لأزرار ومفاتيح خارجية",
+      "en": "4 × 3.5mm expansion ports for external buttons and switches",
+      "ckb": "4 دەروازەی 3.5 ملم بۆ دوگمە و سویچی دەرەکی"
+    },
+    {
+      "ar": "يمكن دمج يدين Access معاً أو مع DualSense/DualSense Edge كيد واحدة",
+      "en": "Two Access controllers, or Access plus DualSense / DualSense Edge, can act as one controller",
+      "ckb": "دوو Access، یان Access لەگەڵ DualSense / DualSense Edge، دەتوانن وەک یەک کۆنتڕۆڵەر کار بکەن"
+    },
+    {
+      "ar": "يتطلب PS5؛ الإعداد الأول للجهاز يحتاج DualSense",
+      "en": "Requires a PS5; first-time console setup needs a DualSense",
+      "ckb": "PS5ی پێویستە؛ یەکەمجار دامەزراندنی کۆنسۆڵ DualSenseی دەوێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZAC1", "en": "CFI-ZAC1", "ckb": "CFI-ZAC1" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "لاسلكي مع PS5؛ كابل USB للشحن", "en": "Wireless to PS5; USB cable for charging", "ckb": "بێتەل لەگەڵ PS5؛ کێبڵی USB بۆ شەحن" }
+    },
+    {
+      "key": "mounting",
+      "label": { "ar": "التثبيت", "en": "Mounting", "ckb": "بەستن" },
+      "value": { "ar": "أي اتجاه 360°، على سطح مستوٍ أو حامل AMPS", "en": "Any 360° orientation, flat surfaces or an AMPS mount", "ckb": "هەر ئاڕاستەیەکی 360°، ڕووی تەخت یان پایەی AMPS" }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "منافذ التوسعة", "en": "Expansion ports", "ckb": "دەروازەکانی زیادکردن" },
+      "value": { "ar": "4 منافذ 3.5 ملم", "en": "4 × 3.5mm", "ckb": "4 × 3.5 ملم" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 39 × 191 × 141 ملم، نحو 0.3 كغ", "en": "Approx. 39 × 191 × 141 mm, about 0.3 kg", "ckb": "نزیکەی 39 × 191 × 141 ملم، نزیکەی 0.3 کگ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "يد التحكم Access", "en": "Access controller", "ckb": "کۆنتڕۆڵەری Access" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" },
+    { "ar": "8 أغطية أزرار وسادية (مركّبة)", "en": "8 pillow button caps (attached)", "ckb": "8 سەری دوگمەی بالیفی (بەستراون)" },
+    { "ar": "4 أغطية أزرار مسطحة", "en": "4 flat button caps", "ckb": "4 سەری دوگمەی تەخت" },
+    { "ar": "4 أغطية أزرار منحنية", "en": "4 curve button caps", "ckb": "4 سەری دوگمەی چەماوە" },
+    { "ar": "غطاءان بارزان (Overhang)", "en": "2 overhang button caps", "ckb": "2 سەری دوگمەی دەرچوو (overhang)" },
+    { "ar": "غطاء زر عريض مسطح", "en": "1 wide flat button cap", "ckb": "1 سەری دوگمەی پانی تەخت" },
+    { "ar": "أغطية عصا: قياسي، قبة (مركّب)، كرة", "en": "Stick caps: standard, dome (attached), ball", "ckb": "سەری ستیک: ستاندارد، گومەز (بەستراو)، تۆپ" },
+    { "ar": "23 ملصقاً تعريفياً", "en": "23 tags", "ckb": "23 تاگ" },
+    { "ar": "دليل البدء ودليل السلامة", "en": "Quick start and safety guides", "ckb": "ڕێبەری دەستپێکردن و سەلامەتی" }
+  ],
+  "variants": [
+    {
+      "sku": "PS-ACCESS-CONTROLLER",
+      "title": { "ar": "Access controller – أبيض", "en": "Access controller – White", "ckb": "Access controller – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZAC1",
+      "isDefault": true,
+      "images": ["access-controller--1", "access-controller--2", "access-controller--3", "access-controller--4"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/access-controller/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/access-controller/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/access-controller/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/access-controller/" },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": { "ar": "أكدت Sony عند إعلان PS5 Pro أنه يعمل مع Access controller.", "en": "Sony confirmed Access controller support when it announced PS5 Pro.", "ckb": "Sony لە کاتی ڕاگەیاندنی PS5 Pro دڵنیایی دا کە لەگەڵ Access controller کار دەکات." },
+      "source": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/"
+    }
+  ],
+  "related": [
+    { "slug": "dualsense", "kind": "setup" },
+    { "slug": "dualsense-edge", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "access-controller--1",
+      "file": ".cache/product-images/access-controller/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/access-controller/",
+      "kind": "hero",
+      "alt": { "ar": "يد التحكم Access بأزرارها الدائرية وعصا التحكم", "en": "The Access controller with its ring of buttons and stick", "ckb": "کۆنتڕۆڵەری Access لەگەڵ بازنەی دوگمەکان و ستیکەکەی" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "access-controller--2",
+      "file": ".cache/product-images/access-controller/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-03-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/access-controller/",
+      "kind": "detail",
+      "alt": { "ar": "منافذ التوسعة الأربعة 3.5 ملم ومنفذ USB-C في الخلف", "en": "The four 3.5mm expansion ports and USB-C port at the back", "ckb": "چوار دەروازەی 3.5 ملم و دەروازەی USB-C لە دواوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "access-controller--3",
+      "file": ".cache/product-images/access-controller/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/access-controller/",
+      "kind": "in-box",
+      "alt": { "ar": "اليد مع كل أغطية الأزرار والعصا والملصقات المرفقة", "en": "The controller with all included button caps, stick caps and tags", "ckb": "کۆنتڕۆڵەرەکە لەگەڵ هەموو سەری دوگمە و ستیک و تاگەکانی لەگەڵیدا" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "access-controller--4",
+      "file": ".cache/product-images/access-controller/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController_Product_16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/access-controller/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة Access controller بجانب اليد", "en": "Access controller box next to the controller", "ckb": "قوتووی Access controller لە تەنیشت کۆنتڕۆڵەرەکە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/access-controller/",
+      "title": "Access controller",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZAC1, release 6 December 2023, dimensions, weight, what's in the box, 360° orientation, AMPS, stick arm, combining controllers, 4 expansion ports, 30 profiles / 3 on device"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-accessories/access-controller",
+      "title": "Buy Access™ controller (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "features, what's in the box, first PS5 setup requires a DualSense, still on sale"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/12/06/celebrating-inclusivity-access-controller-for-ps5-launches-today/",
+      "title": "Celebrating inclusivity: Access controller for PS5 launches today",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "global launch on 6 December 2023"
+    },
+    {
+      "url": "https://blog.playstation.com/2024/09/10/welcome-playstation-5-pro-the-most-visually-impressive-way-to-play-games-on-playstation/",
+      "title": "Welcome PlayStation 5 Pro, the most visually impressive way to play games on PlayStation",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: PS5 Pro is compatible with the Access controller"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/accessories/controllers-and-remotes",
+      "title": "Buy Controllers & Remotes | PlayStation® (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Access controller still on sale from Sony"
+    }
+  ],
+  "notes": {
+    "ar": "لا يحتوي على اهتزاز Haptic أو Adaptive triggers بنفسه؛ يمكن إضافتهما بدمجه مع DualSense. توجد مجموعة Logitech Adaptive Gaming Kit المخصصة له تُباع منفصلة.",
+    "en": "It has no haptic feedback or adaptive triggers of its own; these can be added by combining it with a DualSense. A Logitech Adaptive Gaming Kit made for it is sold separately.",
+    "ckb": "خۆی لەرینەوەی هاپتیک و تریگەری گونجاوی نییە؛ بە پێکەوەبەستنی لەگەڵ DualSense زیاد دەکرێن. Logitech Adaptive Gaming Kit کە بۆی دروستکراوە بە جیا دەفرۆشرێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Battery life (not stated on Sony's pages)"
+    ]
+  }
+}

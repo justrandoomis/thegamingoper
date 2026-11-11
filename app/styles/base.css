@@ -1,0 +1,149 @@
+/*
+ * Base — imported into the `base` cascade layer by app/app.css, after Tailwind's preflight (which already resets
+ * margins, borders, box-sizing, form-control fonts and media display). Only element selectors and a few global
+ * classes live here; every component is in materials.css / components.css.
+ */
+
+/* ── the floor ── */
+/* The root keeps the browser's font size (16px), so rem — and every Tailwind spacing step — stays 4px-grid exact;
+   the type roles set pixel sizes on body and below. */
+html {
+  background-color: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-text);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Plex ships 400/500/600 only: a request for 700 uses 600 instead of a smeared fake bold */
+  font-synthesis-weight: none;
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-color: var(--line-strong) var(--ground);
+}
+body {
+  min-block-size: 100dvh;
+  background-color: var(--ground);
+  color: var(--ink);
+  font: var(--type-body);
+}
+/* a re-themed subtree re-reads its colours (inherited colour is a computed value, not a token reference) */
+[data-theme] {
+  color: var(--ink);
+}
+
+/* ── type: hierarchy from size, weight and the ink / ink-2 pair; never letter-spacing (§5.5) ── */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+p,
+li,
+dd,
+blockquote {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+small {
+  font: var(--type-caption);
+}
+strong,
+b {
+  font-weight: 600;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+/* numbers, prices, quantities, references: tabular lining figures everywhere they appear in a table or a total */
+table,
+output,
+time,
+kbd,
+data {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.92em;
+}
+::placeholder {
+  color: var(--ink-2);
+  opacity: 1;
+}
+
+/* ── focus: always visible, a 2.5px ink outline with a 3px offset (§13) ── */
+:focus-visible {
+  outline: 2.5px solid var(--ink);
+  outline-offset: 3px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── selection: ink, never red ── */
+::selection {
+  background-color: var(--selection);
+  color: inherit;
+}
+
+/* ── scroll ── */
+/* (No smooth scroll-behavior on the root: it would also smooth React Router's scroll restoration.) */
+/* inner scrollers (sheets, tables, rails that show a bar) */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* ── the dependency-free error surface rendered by app/root.tsx (anything above the shells failed) ── */
+.root-error {
+  min-block-size: 100dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--s-3);
+  padding: var(--s-8) max(var(--gutter), var(--safe-inline));
+  background-color: var(--ground);
+  color: var(--ink);
+  text-align: center;
+  font: var(--type-body);
+}
+.root-error__code {
+  font: 700 64px/1 var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink-3); /* decorative: the sentence below says what happened */
+}
+.root-error h1 {
+  font: var(--type-title);
+  text-wrap: balance;
+}
+.root-error p {
+  max-inline-size: 34em;
+  color: var(--ink-2);
+}
+.root-error a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target);
+  font: 600 13.5px/1.4 var(--font-text);
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+}
+.root-error pre {
+  max-inline-size: min(90vw, 60rem);
+  overflow-x: auto;
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  background-color: var(--paper);
+  color: var(--ink-2);
+  text-align: start;
+  font-size: 12px;
+}

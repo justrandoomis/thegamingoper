@@ -1,0 +1,65 @@
+{
+  "key": "splatoon-raiders--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/splatoon-raiders/3-240.3131a115.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/splatoon-raiders/3-480.956471be.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/splatoon-raiders/3-720.533bded7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/splatoon-raiders/3-960.28ae695f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/splatoon-raiders/3-1440.7d58b8f8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/splatoon-raiders/3-240.ee6ee651.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/splatoon-raiders/3-480.9c72060d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/splatoon-raiders/3-720.07ca446e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/splatoon-raiders/3-960.7776e546.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/splatoon-raiders/3-1440.be2b9674.webp"
+      }
+    ],
+    "png": "/products/splatoon-raiders/3-720.14ed4d28.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJaACsACIfVmuOymOmvqwAAP59SFlZlGW5BkW2sMukFJVGXSECYTIjTLhS32GdyzZyDU5nup7lOXPrzbBV5o1YnyNMucwZFfMLyM8Fx8iQnNdQacN12PaAwsUUAAAA",
+  "dominant": "#6797a6",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000122824/75002eca12da1b8a345ef023464242c51ae8a6e3aa50c29dea05ac6c84837d8a",
+    "page": "https://www.nintendo.com/us/store/products/splatoon-raiders-switch-2/"
+  },
+  "input": "b0b65ea9794f9c2a"
+}

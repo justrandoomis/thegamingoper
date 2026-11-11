@@ -5,6 +5,7 @@ import { usePrefs, type Theme } from "~/lib/prefs";
 import { getMotionOverride, setMotionOverride, useMotionTier, type MotionTier } from "../env";
 import { themeMorph } from "../lazy";
 import { useDirectionMorph } from "../nav";
+import { LAB_ITEMS, labArt } from "./items";
 import { PerfReadout } from "./LabBar";
 
 type Choice = "auto" | MotionTier;
@@ -81,6 +82,10 @@ function LanguageSection() {
         <span>{t("language.field")}</span>
         <input type="text" name="lab-demo" placeholder={t("language.placeholder")} autoComplete="off" data-testid="language-field" />
       </label>
+      {/* An anchor (DESIGN.md: "the stage and its render stay exactly where they are"): it does not slide with the page. */}
+      <div className="lab-anchor-art" data-motion-anchor="" data-testid="language-anchor">
+        <img src={labArt(LAB_ITEMS[0].hue)} alt={t("language.anchor")} width={400} height={400} />
+      </div>
       <div className="lab-segment" role="group" aria-labelledby="lab-language">
         {LOCALE_CODES.map((code) => (
           <button

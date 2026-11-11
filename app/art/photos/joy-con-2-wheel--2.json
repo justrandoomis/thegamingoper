@@ -1,0 +1,57 @@
+{
+  "key": "joy-con-2-wheel--2",
+  "view": "hero",
+  "width": 1267,
+  "height": 1016,
+  "aspect": 1.247,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-wheel/2-240.1dfe3e8d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-wheel/2-480.abcdcb7b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-wheel/2-720.dbe79be1.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-wheel/2-960.2d0689a2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-wheel/2-240.02c0915a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-wheel/2-480.e1e08e35.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-wheel/2-720.43dbe3e6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-wheel/2-960.54f756d0.webp"
+      }
+    ],
+    "png": "/products/joy-con-2-wheel/2-720.b0676252.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRl4BAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSIMAAAART6CgjSQ1dRqYniEiAnr2Yz/wwGls26pzPupwIrGAb+OYXOxzz14XBsekP556P9QQ0f8JQOFxH168BLAmHV8SFwhaD5U4mxVKXLbJa++KIali8k9TM9fe5Dm3PGuTkg9p6tWIHHj8Yyg4ULBVKCWWVnEtbAG+JO6DfxNof5YoTSwUBgBWUDggtAAAANAEAJ0BKhQAEAA/EXKwUCwmpKKwCAGAIglsAJ0ygCW13QAzxohl3B6qVaXeyiEgAP6mr5NctOD+lvzt5CXkaTzeNjDDaze6KlM+QtwXTDn7SXiO5FT7RZ0sZ+iQ4+V5s8CM14xxTIngDOw/6lgvYXrNdih5gYWqMaJvVYMbMWIjpf0J8JlI3v82o4SayceN6LHXMSbv+Mm/E6uz/fk+ab+WT8b/g5JLFldrwH/vXTFdcOIAAA==",
+  "dominant": "#45484b",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Wheel/Frame_3473690.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "e0c7b5af2f50c29d"
+}

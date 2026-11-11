@@ -1,0 +1,65 @@
+{
+  "key": "playstation-5-slim-digital-edition--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 578,
+  "aspect": 2.7682,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim-digital-edition/2-240.ee573a4b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim-digital-edition/2-480.0774930e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-slim-digital-edition/2-720.c4af6d50.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-slim-digital-edition/2-960.73494270.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5-slim-digital-edition/2-1440.1867fe28.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim-digital-edition/2-240.932ae3fb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim-digital-edition/2-480.afc9af34.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-slim-digital-edition/2-720.bf74eade.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-slim-digital-edition/2-960.6f1b24a3.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5-slim-digital-edition/2-1440.f02e5cc3.webp"
+      }
+    ],
+    "png": "/products/playstation-5-slim-digital-edition/2-720.9a10c1aa.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvgAAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSE8AAAART6CobSM2VQ53r70jImBj1M8hYBvZtpL78VAq+DVgufbhkhJB7hUw3HqRGiL6PwH4Ow65Kx7yJnkay6QVfFoXTdkeJPUotgDHa2cIW8VPAFZQOCCCAAAAcAMAnQEqFAAHAC7RiMRiJCwsLAwA0EsQAB8e4PBcoTATxGJYAP7iG9mD3ydfuQhJcxPWvvOlx/nUl+u/FxyqLNxM5ItdpesYUHvM7N0PL+j4GMdomO7m2tRdceZtWICNUAPzcz3Kp6B19rAyLKNnGAOhPImn0+j+78c0SbuW+YAAAA==",
+  "dominant": "#e8ecf3",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-Digital-CFI2100-05-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/"
+  },
+  "input": "cd1ed0771b188bbe"
+}

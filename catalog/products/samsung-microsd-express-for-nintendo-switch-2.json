@@ -1,0 +1,235 @@
+{
+  "slug": "samsung-microsd-express-for-nintendo-switch-2",
+  "group": "accessories-storage-digital",
+  "kind": "storage",
+  "platform": "nintendo",
+  "brand": "Samsung",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": {
+    "ar": "بطاقة Samsung microSD Express سعة 256GB لجهاز Nintendo Switch 2",
+    "en": "Samsung microSD Express Card 256GB for Nintendo Switch 2",
+    "ckb": "کارتی Samsung microSD Express بە قەبارەی 256GB بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "256GB · بطاقة Switch 2 الرسمية من Nintendo · ضمان 3 سنوات",
+    "en": "256GB · Nintendo's official Switch 2 card · 3-year warranty",
+    "ckb": "256GB · کارتی فەرمیی Nintendo بۆ Switch 2 · گەرەنتیی 3 ساڵ"
+  },
+  "description": {
+    "ar": "بطاقة microSD Express سعة 256GB تصنعها Samsung وتبيعها Nintendo في متاجرها الرسمية كبطاقة معتمدة لجهاز Nintendo Switch 2، وطُرحت مع إطلاق الجهاز في 5 يونيو 2025. تأتي بتصميم أحمر يحمل شعار ماريو وعلبة بطابع Super Mario. يحتاج Switch 2 إلى بطاقات microSD Express تحديداً لتخزين الألعاب وتشغيلها.",
+    "en": "A 256GB microSD Express card made by Samsung and sold by Nintendo in its own stores as a certified card for Nintendo Switch 2, launched with the console on 5 June 2025. The card is red with Mario's emblem and comes in Super Mario-themed packaging. Switch 2 needs microSD Express cards specifically to store and play games.",
+    "ckb": "کارتێکی microSD Expressی 256GB کە Samsung دروستی دەکات و Nintendo لە فرۆشگا فەرمییەکانی خۆیدا وەک کارتی پەسەندکراو بۆ Nintendo Switch 2 دەیفرۆشێت، لەگەڵ دەرچوونی کۆنسۆڵەکە لە 5ی حوزەیرانی 2025 دەرچوو. کارتەکە سوورە و هێمای ماریۆی لەسەرە و لە قوتوویەکی بە شێوازی Super Mario دێت. Switch 2 بۆ هەڵگرتن و کارپێکردنی یارییەکان پێویستی بە کارتی microSD Express هەیە بە تایبەتی."
+  },
+  "highlights": [
+    {
+      "ar": "معتمدة من Nintendo وتُباع في متجر Nintendo الرسمي",
+      "en": "Certified by Nintendo and sold in Nintendo's official store",
+      "ckb": "لەلایەن Nintendo پەسەندکراوە و لە فرۆشگای فەرمیی Nintendo دەفرۆشرێت"
+    },
+    {
+      "ar": "سعة 256GB تضاعف مساحة Switch 2 الداخلية تقريباً",
+      "en": "256GB, roughly doubling the Switch 2's built-in space",
+      "ckb": "256GB، نزیکەی دوو هێندەی بیرگەی ناوەکیی Switch 2"
+    },
+    {
+      "ar": "ضمان محدود لمدة 3 سنوات من Samsung",
+      "en": "3-year limited warranty from Samsung",
+      "ckb": "گەرەنتیی سنووردار بۆ 3 ساڵ لەلایەن Samsung"
+    },
+    {
+      "ar": "أول استخدام يحتاج تحديث نظام Switch 2 عبر الإنترنت",
+      "en": "First use needs a Switch 2 system update over the internet",
+      "ckb": "یەکەم بەکارهێنان پێویستی بە نوێکردنەوەی سیستەمی Switch 2 هەیە لە ڕێگەی ئینتەرنێتەوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "capacity",
+      "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" },
+      "value": { "ar": "256GB (جزء من المساحة تستخدمه ملفات النظام)", "en": "256GB (some space is used by system files)", "ckb": "256GB (بەشێکی بۆ فایلەکانی سیستەم بەکاردێت)" }
+    },
+    {
+      "key": "card_type",
+      "label": { "ar": "نوع البطاقة", "en": "Card type", "ckb": "جۆری کارت" },
+      "value": { "ar": "microSDXC بمعيار microSD Express (شعار EX)", "en": "microSDXC, microSD Express standard (EX logo)", "ckb": "microSDXC بە ستانداردی microSD Express (هێمای EX)" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "ضمان محدود 3 سنوات", "en": "Limited 3-year warranty", "ckb": "گەرەنتیی سنووردار 3 ساڵ" }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Compatibility", "ckb": "گونجاندن" },
+      "value": { "ar": "Nintendo Switch 2", "en": "Nintendo Switch 2", "ckb": "Nintendo Switch 2" }
+    },
+    {
+      "key": "manufacturer",
+      "label": { "ar": "الشركة المصنّعة", "en": "Manufacturer", "ckb": "دروستکەر" },
+      "value": { "ar": "Samsung Electronics", "en": "Samsung Electronics", "ckb": "Samsung Electronics" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "بطاقة Samsung microSD Express سعة 256GB",
+      "en": "Samsung microSD Express card, 256GB",
+      "ckb": "کارتی Samsung microSD Express بە قەبارەی 256GB"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SAMSUNG-NS2-256",
+      "title": { "ar": "256GB", "en": "256GB", "ckb": "256GB" },
+      "options": { "storage": "256GB" },
+      "modelNumber": "MB-MZ256S",
+      "barcodes": ["198957108983"],
+      "isDefault": true,
+      "images": ["samsung-microsd-express-for-nintendo-switch-2--1", "samsung-microsd-express-for-nintendo-switch-2--2"],
+      "notes": {
+        "ar": "رمز UPC من متجر Nintendo الأمريكي. رمز المنتج لدى Nintendo هو BEE-A-SD01B.",
+        "en": "UPC from Nintendo's US store. Nintendo's own product code is BEE-A-SD01B.",
+        "ckb": "کۆدی UPC لە فرۆشگای Nintendoی ئەمریکاوەیە. کۆدی بەرهەمی Nintendo خۆی BEE-A-SD01B ە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": {
+        "ar": "بطاقة معتمدة لـ Switch 2. يلزم تحديث النظام عبر الإنترنت عند أول استخدام.",
+        "en": "Certified card for Switch 2. A system update over the internet is needed the first time.",
+        "ckb": "کارتی پەسەندکراوە بۆ Switch 2. یەکەم جار نوێکردنەوەی سیستەم لە ڕێگەی ئینتەرنێتەوە پێویستە."
+      },
+      "source": "https://www.nintendo.com/us/store/products/samsung-microsd-express-card-256gb-for-nintendo-switch-2-123685/"
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "partial",
+      "note": {
+        "ar": "حسب دعم Nintendo تعمل بطاقات microSD Express في Switch الأول بسرعة microSD العادية، ومتجر Nintendo يدرج Switch 2 فقط لهذه البطاقة.",
+        "en": "Nintendo Support says microSD Express cards work in the original Switch at ordinary microSD speed; Nintendo's store lists this card for Switch 2 only.",
+        "ckb": "بەپێی پشتگیریی Nintendo کارتی microSD Express لە Switchی یەکەمدا بە خێرایی microSDی ئاسایی کار دەکات؛ فرۆشگای Nintendo ئەم کارتە تەنها بۆ Switch 2 دادەنێت."
+      },
+      "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "partial",
+      "note": {
+        "ar": "تعمل كبطاقة microSD عادية وبنفس سرعتها.",
+        "en": "Works as an ordinary microSD card, at ordinary microSD speed.",
+        "ckb": "وەک کارتێکی microSDی ئاسایی و بە هەمان خێرایی کار دەکات."
+      },
+      "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/"
+    },
+    {
+      "deviceModel": "switch-lite",
+      "status": "partial",
+      "note": {
+        "ar": "تعمل كبطاقة microSD عادية وبنفس سرعتها.",
+        "en": "Works as an ordinary microSD card, at ordinary microSD speed.",
+        "ckb": "وەک کارتێکی microSDی ئاسایی و بە هەمان خێرایی کار دەکات."
+      },
+      "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-mario-kart-world-bundle", "kind": "setup" },
+    { "slug": "sandisk-microsd-express", "kind": "alternative" },
+    { "slug": "nintendo-eshop-card", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "samsung-microsd-express-for-nintendo-switch-2--1",
+      "file": ".cache/product-images/samsung-microsd-express-for-nintendo-switch-2/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/SD%20Cards/123685-nintendo-switch-2-samsung-micro-sd-express-front-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/samsung-microsd-express-card-256gb-for-nintendo-switch-2-123685/",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة Samsung microSD Express سعة 256GB لجهاز Nintendo Switch 2، حمراء مع شعار ماريو",
+        "en": "Samsung 256GB microSD Express card for Nintendo Switch 2, red with Mario's emblem",
+        "ckb": "کارتی Samsung microSD Express بە قەبارەی 256GB بۆ Nintendo Switch 2، سوور لەگەڵ هێمای ماریۆ"
+      },
+      "credit": "Nintendo / Samsung",
+      "width": 2400,
+      "height": 1350,
+      "transparent": false
+    },
+    {
+      "key": "samsung-microsd-express-for-nintendo-switch-2--2",
+      "file": ".cache/product-images/samsung-microsd-express-for-nintendo-switch-2/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/SD%20Cards/123685-nintendo-switch-2-samsung-micro-sd-express-package-front-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/samsung-microsd-express-card-256gb-for-nintendo-switch-2-123685/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة بطاقة Samsung microSD Express سعة 256GB لجهاز Nintendo Switch 2 بطابع Super Mario",
+        "en": "Super Mario-themed retail pack of the Samsung 256GB microSD Express card for Nintendo Switch 2",
+        "ckb": "قوتووی کارتی Samsung microSD Express بە قەبارەی 256GB بۆ Nintendo Switch 2 بە شێوازی Super Mario"
+      },
+      "credit": "Nintendo / Samsung",
+      "width": 2400,
+      "height": 1350,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/samsung-microsd-express-card-256gb-for-nintendo-switch-2-123685/",
+      "title": "Samsung microSD Express Card – 256GB for Nintendo Switch 2",
+      "publisher": "Nintendo (US store)",
+      "retrieved": "2026-11-11",
+      "supports": "product name, release date 5 June 2025, UPC, Switch 2 only accepts microSD Express, images"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/samsung-microsd-express-card-256gb-for-nintendo-switch-2-000000000010016156",
+      "title": "Samsung microSD Express Card 256GB for Nintendo Switch 2",
+      "publisher": "Nintendo (UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "Nintendo-certified, capacity, limited 3-year warranty, release date"
+    },
+    {
+      "url": "https://store-jp.nintendo.com/item/hardware-accessory/VM_BEE_A_SD01B",
+      "title": "Samsung microSD Express Card 256GB for Nintendo Switch 2",
+      "publisher": "Nintendo (Japan store)",
+      "retrieved": "2026-11-11",
+      "supports": "Nintendo product code BEE-A-SD01B, listed for Nintendo Switch 2 only"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/",
+      "title": "microSD Card and microSD Express Card Compatibility with Nintendo Switch 2 and Nintendo Switch",
+      "publisher": "Nintendo Support",
+      "retrieved": "2026-11-11",
+      "supports": "internet system update on first use, cards up to 2TB supported, behaviour in the original Switch"
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/microsd-cards/best-microsd-express-cards-for-nintendo-switch-2",
+      "title": "Best MicroSD Express Cards for Nintendo Switch 2 in 2026",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-11",
+      "supports": "Samsung model number MB-MZ256S"
+    },
+    {
+      "url": "https://www.ign.com/articles/samsung-releases-its-own-microsd-express-cards-at-a-lower-price-than-the-official-switch-2-memory-card",
+      "title": "Samsung Releases Its Own MicroSD Express Cards at a Lower Price Than the Official Switch 2 Memory Card",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "the official Switch 2 256GB card is made by Samsung"
+    }
+  ],
+  "notes": {
+    "ar": "هذه البطاقة غير بطاقات Samsung P9 Express التي تبيعها Samsung باسمها. بطاقات microSD العادية من Switch الأول لا تشغّل ألعاب Switch 2.",
+    "en": "This card is not the same as the Samsung P9 Express line that Samsung sells under its own name. Ordinary microSD cards from the original Switch cannot run Switch 2 games.",
+    "ckb": "ئەم کارتە جیاوازە لە زنجیرەی Samsung P9 Express کە Samsung بە ناوی خۆیەوە دەیفرۆشێت. کارتی microSDی ئاسایی Switchی یەکەم ناتوانێت یاری Switch 2 کار پێبکات."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "Read and write speeds: not published on Nintendo's store pages (only in a Samsung PDF datasheet that was not read)",
+      "Card dimensions and weight"
+    ]
+  }
+}

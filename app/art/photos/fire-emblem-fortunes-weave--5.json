@@ -1,0 +1,65 @@
+{
+  "key": "fire-emblem-fortunes-weave--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/5-240.c5af6049.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/5-480.4132220b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/5-720.6961ba10.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/5-960.6c67d52f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/5-1440.4716b3cf.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/5-240.96c47f46.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/5-480.ef8e5e2d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/5-720.a561227e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/5-960.ed3ccc20.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/5-1440.f7ac49a7.webp"
+      }
+    ],
+    "png": "/products/fire-emblem-fortunes-weave/5-720.92970e96.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBOgBDtRP7ONeg6/RVAAAP7LLa7oeu9m+Dl0ysZtsB43mytPlVwGq+FTTBy/i8lTPhdgj+MUxsJSK55ZsFuPX4AAAA==",
+  "dominant": "#45352a",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo / Intelligent Systems",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000126929/9546ca8ff6c40fa24e79b84b58d3022d512b83d67551567f8864a6976fcc11a3",
+    "page": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-switch-2/"
+  },
+  "input": "c397bde8dfc4ae04"
+}

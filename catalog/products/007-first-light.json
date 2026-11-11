@@ -1,0 +1,274 @@
+{
+  "slug": "007-first-light",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "IO Interactive",
+  "status": "available",
+  "releaseDate": "2026-05-27",
+  "name": { "ar": "007 First Light", "en": "007 First Light", "ckb": "007 First Light" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · لاعب واحد",
+    "en": "PS5 · Xbox Series X · disc · single-player",
+    "ckb": "PS5 · Xbox Series X · دیسک · تاکەکەسی"
+  },
+  "description": {
+    "ar": "قصة بداية جديدة لـ James Bond من IO Interactive، صانعي سلسلة Hitman. تلعب بشخصية Bond شاباً في برنامج تدريب MI6، ينضم إلى برنامج Double 0 ويطارد عميلاً منشقاً ليكشف مؤامرة كبيرة. تجمع اللعبة بين التسلل والأدوات والقتال وقيادة السيارات، وصدرت في 27 أيار 2026.",
+    "en": "A new James Bond origin story from IO Interactive, the studio behind Hitman. You play a young Bond in MI6's training programme who joins the revived Double 0 programme and chases a rogue agent to expose a wider conspiracy. It mixes stealth, gadgets, gunfights and driving, and launched on 27 May 2026.",
+    "ckb": "چیرۆکێکی نوێی سەرەتای James Bond لە IO Interactive، ستۆدیۆی زنجیرەی Hitman. بە کارەکتەری Bond ی گەنج لە بەرنامەی ڕاهێنانی MI6 یاری دەکەیت، کە دەچێتە بەرنامەی Double 0 و بەدوای بریکارێکی یاخیدا دەگەڕێت بۆ ئاشکراکردنی پیلانێکی گەورە. یارییەکە خۆشاردنەوە، ئامراز، شەڕ و لێخوڕینی ئۆتۆمبێل تێکەڵ دەکات، و لە 27ی ئایاری 2026 دەرچوو."
+  },
+  "highlights": [
+    {
+      "ar": "مغامرة قصصية للاعب واحد بدون طور جماعي.",
+      "en": "Single-player story adventure with no multiplayer.",
+      "ckb": "سەرکێشییەکی چیرۆکی تاکەکەسی بێ یاری بەکۆمەڵ."
+    },
+    {
+      "ar": "تحتاج اتصالاً بالإنترنت مرة واحدة لتحميل تحديث اليوم الأول، ثم تُلعب الحملة بدون إنترنت.",
+      "en": "Needs internet once to download the day-one patch; the campaign then plays offline.",
+      "ckb": "یەک جار ئینتەرنێت پێویستە بۆ داگرتنی نوێکردنەوەی ڕۆژی یەکەم؛ دواتر حەملەکە بێ ئینتەرنێت یاری دەکرێت."
+    },
+    {
+      "ar": "لا تدعم العربية: الصوت إنجليزي والترجمة بـ 14 لغة ليس بينها العربية.",
+      "en": "No Arabic: English voice, subtitles in 14 languages that do not include Arabic.",
+      "ckb": "عەرەبی تێدا نییە: دەنگ ئینگلیزییە و ژێرنووس بە 14 زمانە کە عەرەبییان تێدا نییە."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro.",
+      "en": "PS5 Pro Enhanced.",
+      "ckb": "باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "التصنيف PEGI 16.",
+      "en": "Rated PEGI 16.",
+      "ckb": "پۆلێنی PEGI 16."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "27 أيار 2026", "en": "27 May 2026", "ckb": "27ی ئایاری 2026" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": {
+        "ar": "PS5 وXbox Series X|S وPC، وNintendo Switch 2 لاحقاً",
+        "en": "PS5, Xbox Series X|S and PC, with Nintendo Switch 2 later",
+        "ckb": "PS5، Xbox Series X|S و PC، و Nintendo Switch 2 دواتر"
+      }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص لـ PS5 وXbox Series X", "en": "Disc for PS5 and Xbox Series X", "ckb": "دیسک بۆ PS5 و Xbox Series X" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "حتى 63 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "Up to 63 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "تا 63 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "لاعب واحد", "en": "1 player", "ckb": "1 یاریزان" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "الإنترنت والاشتراكات", "en": "Internet and subscriptions", "ckb": "ئینتەرنێت و بەشداریکردن" },
+      "value": {
+        "ar": "لا تحتاج اشتراكاً؛ اتصال واحد لتحديث اليوم الأول، وبعض المزايا (التحديات وقوائم الصدارة) تحتاج إنترنت",
+        "en": "No subscription needed; one connection for the day-one patch, and some features (challenges, leaderboards) need internet",
+        "ckb": "بەشداریکردنی پێویست نییە؛ یەک جار بۆ نوێکردنەوەی ڕۆژی یەکەم، و هەندێک تایبەتمەندی (ئاستەنگەکان، لیستی پێشەنگەکان) ئینتەرنێتیان پێویستە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "غير مدعومة", "en": "Not supported", "ckb": "پشتگیری ناکرێت" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 16 / ESRB T", "en": "PEGI 16 / ESRB T", "ckb": "PEGI 16 / ESRB T" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "IO Interactive (مع Amazon MGM Studios)", "en": "IO Interactive (with Amazon MGM Studios)", "ckb": "IO Interactive (لەگەڵ Amazon MGM Studios)" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة (Standard Edition)", "en": "Game disc (Standard Edition)", "ckb": "دیسکی یارییەکە (Standard Edition)" }
+  ],
+  "variants": [
+    {
+      "sku": "007FL-PS5-STD",
+      "title": { "ar": "007 First Light لجهاز PS5", "en": "007 First Light for PS5", "ckb": "007 First Light بۆ PS5" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["007-first-light--1", "007-first-light--2", "007-first-light--3", "007-first-light--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "007FL-XSX-STD",
+      "title": { "ar": "007 First Light لجهاز Xbox Series X", "en": "007 First Light for Xbox Series X", "ckb": "007 First Light بۆ Xbox Series X" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["007-first-light--1", "007-first-light--2", "007-first-light--3"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" },
+      { "ar": "تسلل", "en": "Stealth", "ckb": "خۆشاردنەوە" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "لا تحتاج اشتراكاً؛ اتصال إنترنت مرة واحدة لتحميل تحديث اليوم الأول، ثم الحملة بدون إنترنت.",
+      "en": "No subscription; a one-time internet connection for the day-one patch, then the campaign plays offline.",
+      "ckb": "بەشداریکردنی پێویست نییە؛ یەک جار ئینتەرنێت بۆ نوێکردنەوەی ڕۆژی یەکەم، دواتر حەملەکە بێ ئینتەرنێت."
+    },
+    "ageRating": { "pegi": 16, "esrb": "T" },
+    "arabic": "none",
+    "physicalFormat": "disc",
+    "sizeGb": 63,
+    "developer": "IO Interactive",
+    "publisher": "IO Interactive"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.ign.com/articles/007-first-light-heres-what-comes-in-each-edition"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.ign.com/articles/007-first-light-heres-what-comes-in-each-edition"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X.", "en": "Xbox Series X disc.", "ckb": "دیسکی Xbox Series X." },
+      "source": "https://www.ign.com/articles/007-first-light-heres-what-comes-in-each-edition"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/007-first-light-standard-edition/9npf9f0dcvks"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/007-first-light-standard-edition/9npf9f0dcvks"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "007-first-light--1",
+      "file": ".cache/product-images/007-first-light/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202506/0421/3f7672a695a9487071b261cc7c0d55ad7c25ebb39c8dc3ec.png",
+      "sourcePage": "https://store.playstation.com/en-gb/concept/10006560",
+      "kind": "hero",
+      "alt": { "ar": "James Bond الشاب يصوّب مسدسه مع شعار 007 First Light", "en": "Young James Bond aiming his pistol, with the 007 First Light logo", "ckb": "James Bond ی گەنج دەمانچەکەی ئاراستە دەکات لەگەڵ لۆگۆی 007 First Light" },
+      "credit": "IO Interactive",
+      "width": 3840, "height": 2160, "transparent": false
+    },
+    {
+      "key": "007-first-light--2",
+      "file": ".cache/product-images/007-first-light/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/007-first-light-screenshot-04-en-02jul25?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/007-first-light/",
+      "kind": "screenshot",
+      "alt": { "ar": "مطاردة بسيارة كلاسيكية في قرية جبلية", "en": "A classic car chase through a mountain village", "ckb": "ڕاوەدوونان بە ئۆتۆمبێلێکی کلاسیک لە گوندێکی شاخاوی" },
+      "credit": "IO Interactive",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "007-first-light--3",
+      "file": ".cache/product-images/007-first-light/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/007-first-light-screenshot-03-en-06feb26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/007-first-light/",
+      "kind": "screenshot",
+      "alt": { "ar": "Bond يتسلق صخوراً في منطقة جبلية", "en": "Bond climbing rocks in a mountain area", "ckb": "Bond بەسەر بەردەکاندا سەردەکەوێت لە ناوچەیەکی شاخاوی" },
+      "credit": "IO Interactive",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "007-first-light--4",
+      "file": ".cache/product-images/007-first-light/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/007-first-light-screenshot-02-en-06feb26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/007-first-light/",
+      "kind": "screenshot",
+      "alt": { "ar": "تسلل داخل قصر فخم", "en": "Sneaking through a grand mansion", "ckb": "خۆدزینەوە بە ناو کۆشکێکی گەورەدا" },
+      "credit": "IO Interactive",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://ioi.dk/007firstlightgame/faq", "title": "007 First Light FAQ", "publisher": "IO Interactive", "retrieved": "2026-11-11", "supports": "release 27 May 2026, platforms incl. Switch 2 later, self-published with Amazon MGM Studios, no multiplayer, one-time internet for the day-one patch then offline campaign" },
+    { "url": "https://store.playstation.com/en-gb/concept/10006560", "title": "007 First Light — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16, English voice only, screen languages without Arabic, key art" },
+    { "url": "https://www.playstation.com/en-ae/games/007-first-light/", "title": "007 First Light — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, online play optional, screenshots" },
+    { "url": "https://www.xbox.com/en-US/games/store/007-first-light-standard-edition/9npf9f0dcvks", "title": "007 First Light — Standard Edition, Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Teen, 14 supported languages without Arabic, max install about 63 GB, story summary" },
+    { "url": "https://www.ign.com/articles/007-first-light-heres-what-comes-in-each-edition", "title": "007 First Light: Here's What Comes in Each Edition", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "physical copies for PS5, Xbox Series X and Switch 2; editions" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "توجد أيضاً نسخ فيزيائية للمقتنين مع مجسم Golden Gun، تُباع بشكل منفصل وبسعر أعلى.",
+    "en": "Physical collector's editions with a Golden Gun figurine also exist; they are sold separately at a higher price.",
+    "ckb": "وەشانی فیزیکی تایبەت بە کۆکەرەوان لەگەڵ پەیکەری Golden Gun یش هەن؛ جیا و بە نرخێکی بەرزتر دەفرۆشرێن."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "No clean official pack shot found: the current store cover images carry a promotional banner, so the first image is the official key art.",
+      "PS5 install size is not published; the size shown is the Microsoft Store figure.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

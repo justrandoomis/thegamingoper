@@ -1,0 +1,196 @@
+{
+  "slug": "ps5-vertical-stand",
+  "group": "playstation-hardware",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Sony",
+  "status": "available",
+  "releaseDate": "2023-12-01",
+  "name": {
+    "ar": "القاعدة العمودية Vertical Stand for PS5",
+    "en": "Vertical Stand for PS5 Consoles",
+    "ckb": "Vertical Stand for PS5 (ستاندی ستوونی)"
+  },
+  "short": {
+    "ar": "قاعدة رسمية لوقوف PS5 عمودياً · لكل طرازات PS5 وPS5 Pro",
+    "en": "Official upright stand · Fits every PS5 model and PS5 Pro",
+    "ckb": "ستاندی فەرمی بۆ وەستاندنی ستوونی · بۆ هەموو مۆدێلەکانی PS5 و PS5 Pro"
+  },
+  "description": {
+    "ar": "قاعدة دائرية رسمية من Sony تثبّت جهاز PS5 واقفاً بشكل آمن. أجهزة PS5 Slim وPS5 Pro تأتي بقواعد للوضع الأفقي فقط، فإذا أردت وضع الجهاز عمودياً تحتاج هذه القاعدة. تتوافق أيضاً مع PS5 الأصلي.",
+    "en": "Sony's official round stand that holds a PS5 securely upright. The slim PS5 and PS5 Pro come only with feet for lying flat, so this stand is needed to stand them up. It also fits the original PS5.",
+    "ckb": "ستاندی خڕی فەرمیی Sony کە PS5 بە سەلامەتی بە ستوونی ڕادەگرێت. PS5ی slim و PS5 Pro تەنها پێی ئاسۆییان لەگەڵدایە، بۆیە بۆ ستوونی دانانیان ئەم ستاندە پێویستە. لەگەڵ PS5ی ڕەسەنیش گونجاوە."
+  },
+  "highlights": [
+    {
+      "ar": "متوافقة مع PS5 Pro وPS5 الأصلي (CFI-1000) وفئتي slim CFI-2000 وCFI-2100",
+      "en": "Fits PS5 Pro, the original PS5 (CFI-1000) and the CFI-2000 / CFI-2100 slim models",
+      "ckb": "لەگەڵ PS5 Pro، PS5ی ڕەسەن (CFI-1000) و مۆدێلەکانی slimی CFI-2000 / CFI-2100 گونجاوە"
+    },
+    {
+      "ar": "تأتي مع برغي التثبيت وقطعة الربط بالجهاز",
+      "en": "Comes with the mounting screw and console attachment piece",
+      "ckb": "بزمارەی بەستن و پارچەی بەستنەوە بە کۆنسۆڵەوە لەگەڵیدایە"
+    },
+    {
+      "ar": "تصميم دائري بقطر نحو 190 ملم",
+      "en": "Round design about 190 mm across",
+      "ckb": "دیزاینی خڕ بە تیرەی نزیکەی 190 ملم"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZVS1", "en": "CFI-ZVS1", "ckb": "CFI-ZVS1" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "ئەندازەکان" },
+      "value": { "ar": "تقريباً 42 × 190 × 190 ملم", "en": "Approx. 42 × 190 × 190 mm", "ckb": "نزیکەی 42 × 190 × 190 ملم" }
+    },
+    {
+      "key": "consoles",
+      "label": { "ar": "الأجهزة المتوافقة", "en": "Compatible consoles", "ckb": "کۆنسۆڵە گونجاوەکان" },
+      "value": { "ar": "PS5 Pro، PS5 (CFI-1000)، PS5 slim (CFI-2000 وCFI-2100) بنسختي الأقراص والرقمية", "en": "PS5 Pro, PS5 (CFI-1000), PS5 slim (CFI-2000 and CFI-2100), disc and Digital", "ckb": "PS5 Pro، PS5 (CFI-1000)، PS5 slim (CFI-2000 و CFI-2100)، دیسک و دیجیتاڵ" }
+    },
+    {
+      "key": "color",
+      "label": { "ar": "اللون", "en": "Colour", "ckb": "ڕەنگ" },
+      "value": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "القاعدة العمودية", "en": "Vertical Stand", "ckb": "ستاندی ستوونی" },
+    { "ar": "برغي التثبيت", "en": "Mounting screw", "ckb": "بزمارەی بەستن" },
+    { "ar": "قطعة ربط القاعدة بالجهاز", "en": "Console stand attachment", "ckb": "پارچەی بەستنەوەی ستاند بە کۆنسۆڵ" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-VERTICAL-STAND",
+      "title": { "ar": "القاعدة العمودية لـ PS5", "en": "Vertical Stand for PS5", "ckb": "ستاندی ستوونی بۆ PS5" },
+      "options": { "color": "Black" },
+      "modelNumber": "CFI-ZVS1",
+      "isDefault": true,
+      "images": ["ps5-vertical-stand--1", "ps5-vertical-stand--2", "ps5-vertical-stand--3", "ps5-vertical-stand--4"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/" },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "PS5 الأصلي يأتي بقاعدته الخاصة، وهذه بديل اختياري.", "en": "The original PS5 ships with its own base; this is an optional alternative.", "ckb": "PS5ی ڕەسەن بنکەی تایبەتی خۆی لەگەڵدایە؛ ئەمە جێگرەوەیەکی ئارەزوومەندانەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/"
+    },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/" }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
+    { "slug": "playstation-5-pro", "kind": "setup" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "ps5-vertical-stand--1",
+      "file": ".cache/product-images/ps5-vertical-stand/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-VerticalStand-01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/",
+      "kind": "hero",
+      "alt": { "ar": "القاعدة العمودية السوداء بحلقتها الفضية", "en": "The black Vertical Stand with its silver ring", "ckb": "ستاندی ستوونیی ڕەش لەگەڵ ئەڵقە زیوییەکەی" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "ps5-vertical-stand--2",
+      "file": ".cache/product-images/ps5-vertical-stand/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/",
+      "kind": "angle",
+      "alt": { "ar": "جهاز PS5 Slim واقفاً على القاعدة العمودية", "en": "A PS5 slim standing on the Vertical Stand", "ckb": "PS5 Slim لەسەر ستاندی ستوونی وەستاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "ps5-vertical-stand--3",
+      "file": ".cache/product-images/ps5-vertical-stand/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-05-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "kind": "angle",
+      "alt": { "ar": "جهاز PS5 Pro واقفاً على القاعدة العمودية", "en": "A PS5 Pro standing on the Vertical Stand", "ckb": "PS5 Pro لەسەر ستاندی ستوونی وەستاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "ps5-vertical-stand--4",
+      "file": ".cache/product-images/ps5-vertical-stand/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/VerticalStand-3D-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة البيع الخاصة بالقاعدة العمودية", "en": "Retail box of the Vertical Stand", "ckb": "قوتووی فرۆشتنی ستاندی ستوونی" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/",
+      "title": "Vertical Stand for PS5® Consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZVS1, dimensions, compatible hardware, what's in the box, UK release 1 December 2023"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-accessories/vertical-stand-for-ps5-consoles",
+      "title": "Buy Vertical Stand for PS5® Consoles (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "compatibility with PS5 Pro, CFI-1000, CFI-2000 and CFI-2100; colour black; what's in the box"
+    },
+    {
+      "url": "https://blog.playstation.com/2023/10/10/new-look-for-ps5-console-this-holiday-season/",
+      "title": "New look for PS5 console this holiday season",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "new Vertical Stand compatible with all PS5 models sold separately; new model ships with a horizontal stand"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/",
+      "title": "PlayStation®5 Pro Console - 2 TB",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "PS5 Pro box has only horizontal feet; vertical stand sold separately"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/compatibility-ps5-pro/",
+      "title": "Compatibility guide for PS5 Pro consoles",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: vertical stand compatible with PS5 Pro (the original PS5 base is not)"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/ps5/buy-now/",
+      "title": "Buy PlayStation®5 (United Arab Emirates)",
+      "publisher": "Sony Interactive Entertainment (PlayStation UAE)",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: vertical stand fits the CFI-1000 model group and the CFI-2000 / CFI-2100 slim model groups; sold separately in the Gulf"
+    }
+  ],
+  "notes": {
+    "ar": "تاريخ الإصدار المذكور هو تاريخ متجر PlayStation البريطاني؛ أعلنت Sony القاعدة في أكتوبر 2023 مع طراز slim.",
+    "en": "The release date given is the PlayStation UK store date; Sony announced the stand in October 2023 with the slim model.",
+    "ckb": "بەرواری دەرچوونی نووسراو بەرواری فرۆشگای PlayStationی بەریتانییە؛ Sony لە تشرینی یەکەمی 2023 لەگەڵ مۆدێلی slim ستاندەکەی ڕاگەیاند."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Weight (the UK store lists 'approx. 30g', which looks wrong and was left out)",
+      "Exact first US release date"
+    ]
+  }
+}

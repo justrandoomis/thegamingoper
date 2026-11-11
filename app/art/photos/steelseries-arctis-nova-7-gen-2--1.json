@@ -1,0 +1,49 @@
+{
+  "key": "steelseries-arctis-nova-7-gen-2--1",
+  "view": "hero",
+  "width": 956,
+  "height": 1352,
+  "aspect": 0.7071,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/1-240.02ac1d4c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/1-480.2938a814.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/1-720.5864e7d7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/1-240.8a892521.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/1-480.10b8b4ec.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/steelseries-arctis-nova-7-gen-2/1-720.f6ea3a92.webp"
+      }
+    ],
+    "png": "/products/steelseries-arctis-nova-7-gen-2/1-720.9e54f375.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRh4BAABXRUJQVlA4WAoAAAAQAAAADQAAEwAAQUxQSHYAAAART6CgjSQ1dSqY7yEiAvAr2jQ1nMa2rTr7s6VQGW/ifglxsXFMjkkyWM6p97/0ENH/CeD/aVQGjHR3YKqffHhorgDek6ZC+OTGUot/IXxDPgF8/PoV+PQkn/grqUFbknbsC3fH0sKSMy1UMJJ2q4DF+Fq+RtgBVlA4IIIAAAAQBACdASoOABQAPxFysFAsJqSisAgBgCIJaQAD5JnREvP2vD///gF0AAD+orkvZDyxkWvYR2zoga1OLivuOqq5IWb362msB88FXe/SSrb0sEXR+ymjlrt+GqWaVKWYRZJS2ffVyP2b+/+KakBv8DpNx/lKOvDOTojG+bviy06dFAAA",
+  "dominant": "#282827",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "SteelSeries",
+  "source": {
+    "url": "https://images.ctfassets.net/hmm5mo4qf4mf/34T7YD8CoFNFhUSuCG8r0Y/622f70d5eda3846426be3ccda20bb8e5/arctis_nova_7_wl_gen_2_black_img_buy_primary.png",
+    "page": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2"
+  },
+  "input": "e59cc4b49a575aa9"
+}

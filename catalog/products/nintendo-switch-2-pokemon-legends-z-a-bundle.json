@@ -1,0 +1,178 @@
+{
+  "slug": "nintendo-switch-2-pokemon-legends-z-a-bundle",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch-2",
+  "family": "switch-2",
+  "status": "limited",
+  "releaseDate": "2025-10-16",
+  "name": {
+    "ar": "Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle",
+    "en": "Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle",
+    "ckb": "Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle"
+  },
+  "short": {
+    "ar": "جهاز Switch 2 بسعة 256GB + Pokémon Legends: Z-A (تنزيل رقمي) · كمية محدودة",
+    "en": "Switch 2 256GB + Pokémon Legends: Z-A download · limited stock",
+    "ckb": "Switch 2 ی 256GB + داگرتنی Pokémon Legends: Z-A · بڕی سنووردار"
+  },
+  "description": {
+    "ar": "حزمة صدرت في أكتوبر 2025 تضم جهاز Nintendo Switch 2 العادي مع لعبة Pokémon Legends: Z-A – Nintendo Switch 2 Edition كاملة بالتنزيل الرقمي. في اللعبة تختار Chikorita أو Tepig أو Totodile كشريك أول وتخوض معارك فورية في مدينة Lumiose، مع دقة وأداء محسّنين على Switch 2. الحزمة لم تعد متوفرة في متجري Nintendo الأمريكي والبريطاني.",
+    "en": "A bundle released in October 2025 with the standard Nintendo Switch 2 and the full Pokémon Legends: Z-A – Nintendo Switch 2 Edition as a digital download. In the game you pick Chikorita, Tepig or Totodile as your first partner and battle in real time across Lumiose City, with higher resolution and frame rates on Switch 2. It is no longer available on Nintendo's US and UK stores.",
+    "ckb": "پاکێجێک کە لە تشرینی یەکەمی 2025 دەرچوو، Nintendo Switch 2 ی ئاسایی لەگەڵ یاریی تەواوی Pokémon Legends: Z-A – Nintendo Switch 2 Edition وەک داگرتنی دیجیتاڵ. لە یارییەکەدا Chikorita یان Tepig یان Totodile وەک هاوڕێی یەکەم هەڵدەبژێریت و لە شاری Lumiose بە شێوەی ڕاستەوخۆ شەڕ دەکەیت، بە ڕوونی و خێرایی باشتر لەسەر Switch 2. ئێستا لە فرۆشگاکانی ئەمریکی و بەریتانی Nintendo بەردەست نییە."
+  },
+  "highlights": [
+    {
+      "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition كاملة بالتنزيل الرقمي، وليست بطاقة لعبة",
+      "en": "Full Pokémon Legends: Z-A – Nintendo Switch 2 Edition as a digital download, not a game card",
+      "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition ی تەواو وەک داگرتنی دیجیتاڵ، نەک کارتی یاری"
+    },
+    {
+      "ar": "إصدار محدود نفد من متاجر Nintendo الرسمية — قد يتوفر لدى بعض التجار فقط",
+      "en": "Limited bundle, sold out on Nintendo's own stores — may only be found at some retailers",
+      "ckb": "پاکێجی سنووردار، لە فرۆشگاکانی خودی Nintendo نەماوە — لەوانەیە تەنها لای هەندێک فرۆشیار هەبێت"
+    },
+    {
+      "ar": "اللعبة لا تدعم اللغة العربية",
+      "en": "The game does not support Arabic",
+      "ckb": "یارییەکە زمانی عەرەبی تێدا نییە"
+    },
+    {
+      "ar": "الجهاز نفسه: شاشة 7.9 بوصة 1080p، تخزين 256GB، حتى 4K على التلفاز",
+      "en": "Same console: 7.9-inch 1080p screen, 256GB storage, up to 4K on TV",
+      "ckb": "هەمان کۆنسۆڵ: شاشەی 7.9 ئینج 1080p، بیرگەی 256GB، تا 4K لەسەر تەلەڤزیۆن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "game",
+      "label": { "ar": "اللعبة المرفقة", "en": "Included game", "ckb": "یاریی لەگەڵدا" },
+      "value": {
+        "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition — تنزيل رقمي كامل",
+        "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition — full digital download",
+        "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition — داگرتنی دیجیتاڵی تەواو"
+      }
+    },
+    {
+      "key": "game_languages",
+      "label": { "ar": "لغات اللعبة", "en": "Game languages", "ckb": "زمانەکانی یارییەکە" },
+      "value": {
+        "ar": "الإنجليزية، الفرنسية، الألمانية، الإسبانية، الإيطالية، اليابانية، الصينية، الكورية — بدون العربية",
+        "en": "English, French, German, Spanish, Italian, Japanese, Chinese, Korean — no Arabic",
+        "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ئیتاڵی، یابانی، چینی، کۆری — بێ عەرەبی"
+      }
+    },
+    {
+      "key": "age_rating",
+      "label": { "ar": "التصنيف العمري للعبة", "en": "Game age rating", "ckb": "پۆلێنی تەمەنی یارییەکە" },
+      "value": { "ar": "PEGI 7 (متجر Nintendo البريطاني)؛ ESRB E10+ (العلبة الأمريكية)", "en": "PEGI 7 (Nintendo UK store); ESRB E10+ (US box)", "ckb": "PEGI 7 (فرۆشگای بەریتانیی Nintendo)؛ ESRB E10+ (قوتووی ئەمریکی)" }
+    },
+    {
+      "key": "console",
+      "label": { "ar": "الجهاز", "en": "Console", "ckb": "کۆنسۆڵ" },
+      "value": {
+        "ar": "Nintendo Switch 2 قياسي: شاشة 7.9 بوصة 1080p، تخزين 256GB، بطارية 5220mAh",
+        "en": "Standard Nintendo Switch 2: 7.9-inch 1080p screen, 256GB storage, 5220 mAh battery",
+        "ckb": "Nintendo Switch 2 ی ئاسایی: شاشەی 7.9 ئینج 1080p، بیرگەی 256GB، پاتریی 5220mAh"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch 2", "en": "Nintendo Switch 2 console", "ckb": "کۆنسۆڵی Nintendo Switch 2" },
+    { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (تنزيل رقمي كامل)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (full digital download)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (داگرتنی دیجیتاڵی تەواو)" },
+    { "ar": "يد Joy-Con 2 (L) زرقاء فاتحة و Joy-Con 2 (R) حمراء فاتحة", "en": "Joy-Con 2 (L) Light Blue and Joy-Con 2 (R) Light Red", "ckb": "Joy-Con 2 (L) شینی کاڵ و Joy-Con 2 (R) سووری کاڵ" },
+    { "ar": "مقبض Joy-Con 2 Grip وحزاما معصم (عدد 2)", "en": "Joy-Con 2 Grip and Joy-Con 2 Strap (×2)", "ckb": "دەسگرەی Joy-Con 2 Grip و قایشی Joy-Con 2 (×2)" },
+    { "ar": "قاعدة Nintendo Switch 2 Dock", "en": "Nintendo Switch 2 Dock", "ckb": "دۆکی Nintendo Switch 2" },
+    { "ar": "محول الطاقة وكابل شحن USB-C", "en": "Nintendo Switch 2 AC Adapter and USB-C charging cable", "ckb": "ئەداپتەری کارەبا و کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "كابل Ultra High Speed HDMI", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی Ultra High Speed HDMI" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-PLZA",
+      "title": {
+        "ar": "Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition",
+        "en": "Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition",
+        "ckb": "Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition"
+      },
+      "options": { "edition": "Pokémon Legends: Z-A Bundle", "storage": "256GB" },
+      "barcodes": ["0045496885533"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2-pokemon-legends-z-a-bundle--1", "nintendo-switch-2-pokemon-legends-z-a-bundle--2"],
+      "notes": {
+        "ar": "الباركود هو رمز UPC الأمريكي. في النسخة البريطانية تأتي اللعبة كرمز تنزيل داخل العلبة.",
+        "en": "Barcode is the US UPC. In the UK version the game comes as a download code in the box.",
+        "ckb": "بارکۆدەکە UPCی ئەمریکییە. لە وەشانی بەریتانیدا یارییەکە وەک کۆدی داگرتن لەناو قوتووەکەدایە."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "alternative" },
+    { "slug": "nintendo-switch-2-mario-kart-world-bundle", "kind": "alternative" },
+    { "slug": "pokemon-legends-z-a", "kind": "alternative" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" },
+    { "slug": "sandisk-microsd-express", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-pokemon-legends-z-a-bundle--1",
+      "file": ".cache/product-images/nintendo-switch-2-pokemon-legends-z-a-bundle/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/122173-nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-bundle-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-bundle-122173/",
+      "kind": "hero",
+      "alt": {
+        "ar": "علبة حزمة Nintendo Switch 2 + Pokémon Legends: Z-A",
+        "en": "Nintendo Switch 2 + Pokémon Legends: Z-A bundle box",
+        "ckb": "قوتووی پاکێجی Nintendo Switch 2 + Pokémon Legends: Z-A"
+      },
+      "credit": "Nintendo / The Pokémon Company",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-pokemon-legends-z-a-bundle--2",
+      "file": ".cache/product-images/nintendo-switch-2-pokemon-legends-z-a-bundle/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-dock-joy-con-grip-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "الجهاز داخل القاعدة مع يدي Joy-Con 2 على المقبض",
+        "en": "The console in its dock with the Joy-Con 2 on the grip",
+        "ckb": "کۆنسۆڵەکە لەناو دۆکەکەدا لەگەڵ Joy-Con 2 لەسەر دەسگرەکە"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-bundle-122173/",
+      "title": "Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "contents, release date 16 Oct 2025, UPC, game languages, marked permanently sold out, box image showing ESRB E10+"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-P00161",
+      "title": "Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "European contents with download code, release date 16 October 2025, PEGI 7, out of stock on 11 November 2026"
+    },
+    {
+      "url": "https://www.nintendo.com/us/whatsnew/nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-bundle-available-oct-16/",
+      "title": "Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle available Oct. 16",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "announced 22 Jul 2025, release 16 Oct 2025, full game download, limited quantity while supplies last"
+    }
+  ],
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether Nintendo still produces this bundle or retail stock is only leftover (Nintendo's US store lists it as permanently sold out; the UK store as out of stock)",
+      "European barcode"
+    ]
+  }
+}

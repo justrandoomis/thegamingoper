@@ -37,7 +37,7 @@ export default defineMessages({
     },
     menu: {
       title: "القوائم والإشعارات",
-      body: "تتشكّل من موضع الزر الذي فتحها ثم تعود إليه.",
+      body: "تنزل من الزر الذي فتحها مسافة قصيرة مع ظهور تدريجي، وتغادر بالطريق نفسه.",
       open: "افتح القائمة",
       close: "إغلاق",
       item1: "ترتيب حسب السعر",
@@ -48,7 +48,7 @@ export default defineMessages({
     },
     tokens: {
       title: "النوابض والمدد",
-      body: "مكان واحد لضبط الإحساس كله: app/motion/tokens.ts",
+      body: "رموز الحركة من نظام التصميم (DESIGN.md §7.1): نسخة للبرمجة في app/motion/tokens.ts ونسخة للأنماط في app/styles/tokens.css، واختبار يبقيهما متطابقتين.",
       ms: "{value} مللي ثانية",
     },
     flow: {
@@ -97,8 +97,11 @@ export default defineMessages({
     },
     cart: {
       title: "الطيران إلى السلة",
-      body: "يُضاف العنصر فوراً، والحركة لا تؤخر شيئاً. اضغط عدة مرات بسرعة.",
+      body: "يُضاف العنصر فوراً، والحركة لا تؤخر شيئاً. اضغط عدة مرات بسرعة: ثلاث خرزات على الأكثر في الهواء، والباقي يذهب مباشرة إلى العدد.",
       add: "أضف إلى السلة",
+      addFailing: "أضف بطلب سيفشل",
+      failed: "تعذّرت إضافة العنصر لأن الخادم التجريبي رفض الطلب. لم يتغيّر شيء في السلة.",
+      retry: "أعد المحاولة",
       badge: {
         zero: "السلة التجريبية فارغة",
         one: "السلة التجريبية: عنصر واحد",
@@ -111,7 +114,7 @@ export default defineMessages({
     },
     sheet: {
       title: "اللوح السفلي",
-      body: "اسحب المقبض: يتبع اللوح إصبعك، ثم يستقر عند النقطة التي يتجه إليها الزخم.",
+      body: "اسحب المقبض: يتبع اللوح إصبعك، ثم يستقر عند النقطة التي يتجه إليها الزخم. على الشاشات العريضة يدخل من الجانب. ينتقل التركيز إليه، ويغلقه مفتاح Escape.",
       open: "افتح اللوح",
       label: "لوح تجريبي",
       handle: "مقبض السحب",
@@ -123,7 +126,7 @@ export default defineMessages({
     },
     tier: {
       title: "مستوى الحركة",
-      body: "يُختار تلقائياً من إعداد تقليل الحركة ووضع توفير البيانات وذاكرة الجهاز وأنويته. يمكنك تغييره هنا.",
+      body: "يُختار تلقائياً من إعداد تقليل الحركة ووضع توفير البيانات وذاكرة الجهاز وأنويته، وينخفض إلى الخفيف إذا تعثّرت الإطارات أثناء انتقال. يمكنك تغييره هنا.",
       auto: "تلقائي",
       full: "كامل",
       lite: "خفيف",
@@ -132,16 +135,17 @@ export default defineMessages({
     },
     theme: {
       title: "تبديل المظهر",
-      body: "ينتشر المظهر الجديد من الزر نفسه، والنص مقروء في كل لحظة.",
+      body: "يتغيّر الضوء لا الأشياء: يتلاشى المظهران أحدهما في الآخر خلال 200 مللي ثانية ولا يتحرك شيء.",
       light: "فاتح",
       dark: "داكن",
       system: "حسب النظام",
     },
     language: {
       title: "تبديل اللغة",
-      body: "تنزلق الصفحة مع انقلاب الاتجاه وتبقى في الموضع نفسه وبالحالة نفسها. اكتب شيئاً ثم بدّل اللغة.",
+      body: "ينزلق المحتوى نحو بداية الاتجاه الجديد ويبقى في الموضع نفسه وبالحالة نفسها، والصورة أدناه ثابتة في مكانها. اكتب شيئاً ثم بدّل اللغة.",
       field: "حقل تجريبي",
       placeholder: "اكتب هنا",
+      anchor: "صورة ثابتة أثناء تبديل اللغة",
     },
     perf: {
       title: "الأداء",
@@ -184,7 +188,7 @@ export default defineMessages({
     },
     menu: {
       title: "Menus and toasts",
-      body: "They grow out of the control that opened them and shrink back into it.",
+      body: "They drop a short way from the control that opened them as they fade in, and leave the same way.",
       open: "Open menu",
       close: "Close",
       item1: "Sort by price",
@@ -195,7 +199,7 @@ export default defineMessages({
     },
     tokens: {
       title: "Springs and durations",
-      body: "One place to retune the whole feel: app/motion/tokens.ts",
+      body: "The motion tokens of the design system (DESIGN.md §7.1): a script copy in app/motion/tokens.ts and a stylesheet copy in app/styles/tokens.css, kept equal by a test.",
       ms: "{value} ms",
     },
     flow: {
@@ -244,8 +248,11 @@ export default defineMessages({
     },
     cart: {
       title: "Fly to cart",
-      body: "The item is added at once; the animation delays nothing. Tap several times quickly.",
+      body: "The item is added at once; the animation delays nothing. Tap several times quickly: at most three beads are in the air, the rest go straight to the count.",
       add: "Add to cart",
+      addFailing: "Add with a request that fails",
+      failed: "The item could not be added because the demo server refused the request. Nothing in the cart changed.",
+      retry: "Try again",
       // English only ever selects `one` and `other`; the rest keep the key set identical across locales.
       badge: {
         zero: "Demo cart is empty",
@@ -259,7 +266,7 @@ export default defineMessages({
     },
     sheet: {
       title: "Bottom sheet",
-      body: "Drag the handle: the sheet follows your finger, then settles where its momentum is heading.",
+      body: "Drag the handle: the sheet follows your finger, then settles where its momentum is heading. On a wide screen it comes in from the side. Focus moves into it and Escape closes it.",
       open: "Open the sheet",
       label: "Demo sheet",
       handle: "Drag handle",
@@ -271,7 +278,7 @@ export default defineMessages({
     },
     tier: {
       title: "Motion tier",
-      body: "Chosen automatically from the reduce-motion setting, Save-Data, and the device's memory and cores. You can change it here.",
+      body: "Chosen automatically from the reduce-motion setting, Save-Data, and the device's memory and cores, and lowered to lite if frames stall during a transition. You can change it here.",
       auto: "Automatic",
       full: "Full",
       lite: "Lite",
@@ -280,16 +287,17 @@ export default defineMessages({
     },
     theme: {
       title: "Theme switch",
-      body: "The new theme spreads from the control itself, and text stays readable throughout.",
+      body: "The light changes, not the objects: the two themes cross-fade in 200 ms and nothing moves.",
       light: "Light",
       dark: "Dark",
       system: "System",
     },
     language: {
       title: "Language switch",
-      body: "The page slides while the direction flips, and stays at the same position with the same state. Type something, then switch language.",
+      body: "The content slides toward the new reading direction's start and stays at the same position with the same state, while the picture below stays where it is. Type something, then switch language.",
       field: "Demo field",
       placeholder: "Type here",
+      anchor: "A picture that stays put during the language switch",
     },
     perf: {
       title: "Performance",
@@ -332,7 +340,7 @@ export default defineMessages({
     },
     menu: {
       title: "لیست و ئاگادارکردنەوەکان",
-      body: "لە شوێنی ئەو دوگمەیەوە دروست دەبن کە کردوونیەتەوە و دەگەڕێنەوە بۆی.",
+      body: "لەو دوگمەیەوە کە کردوونیەتەوە ماوەیەکی کورت دادەبەزن و بە هێواشی دەردەکەون، و بە هەمان ڕێگا دەڕۆن.",
       open: "لیستەکە بکەرەوە",
       close: "داخستن",
       item1: "ڕیزکردن بەپێی نرخ",
@@ -343,7 +351,7 @@ export default defineMessages({
     },
     tokens: {
       title: "سپرینگ و ماوەکان",
-      body: "یەک شوێن بۆ ڕێکخستنی هەموو هەستەکە: app/motion/tokens.ts",
+      body: "نیشانەکانی جووڵەی سیستەمی دیزاین (DESIGN.md §7.1): وەشانێک بۆ کۆد لە app/motion/tokens.ts و وەشانێک بۆ شێواز لە app/styles/tokens.css، و تاقیکردنەوەیەک یەکسانیان دەهێڵێتەوە.",
       ms: "{value} میلی چرکە",
     },
     flow: {
@@ -392,8 +400,11 @@ export default defineMessages({
     },
     cart: {
       title: "فڕین بۆ سەبەتە",
-      body: "بابەتەکە دەستبەجێ زیاد دەکرێت و جووڵەکە هیچ شتێک دوا ناخات. چەند جارێک بە خێرایی دایبگرە.",
+      body: "بابەتەکە دەستبەجێ زیاد دەکرێت و جووڵەکە هیچ شتێک دوا ناخات. چەند جارێک بە خێرایی دایبگرە: زۆرترین سێ مووروو لە ئاسماندان، ئەوانی تر ڕاستەوخۆ دەچنە سەر ژمارەکە.",
       add: "زیادکردن بۆ سەبەتە",
+      addFailing: "زیادکردن بە داواکارییەک کە سەرناکەوێت",
+      failed: "بابەتەکە زیاد نەکرا چونکە ڕاژەکاری تاقیکاری داواکارییەکەی ڕەتکردەوە. هیچ شتێک لە سەبەتەکەدا نەگۆڕا.",
+      retry: "دووبارە هەوڵ بدەرەوە",
       // Sorani selects `one` and `other`; the rest keep the key set identical across locales.
       badge: {
         zero: "سەبەتەی تاقیکاری بەتاڵە",
@@ -407,7 +418,7 @@ export default defineMessages({
     },
     sheet: {
       title: "پەڕەی خوارەوە",
-      body: "دەسکەکە ڕابکێشە: پەڕەکە شوێن پەنجەت دەکەوێت، پاشان لەو خاڵەدا جێگیر دەبێت کە تەوژمەکەی بەرەو ئەوێیە.",
+      body: "دەسکەکە ڕابکێشە: پەڕەکە شوێن پەنجەت دەکەوێت، پاشان لەو خاڵەدا جێگیر دەبێت کە تەوژمەکەی بەرەو ئەوێیە. لە شاشەی پاندا لە لاوە دێتە ژوورەوە. سەرنج دەچێتە ناوی و کلیلی Escape دایدەخات.",
       open: "پەڕەکە بکەرەوە",
       label: "پەڕەی تاقیکاری",
       handle: "دەسکی ڕاکێشان",
@@ -419,7 +430,7 @@ export default defineMessages({
     },
     tier: {
       title: "ئاستی جووڵە",
-      body: "بە خۆکار هەڵدەبژێردرێت لە ڕێکخستنی کەمکردنەوەی جووڵە و دۆخی پاشەکەوتی داتا و میمۆری و ناوکەکانی ئامێر. دەتوانیت لێرە بیگۆڕیت.",
+      body: "بە خۆکار هەڵدەبژێردرێت لە ڕێکخستنی کەمکردنەوەی جووڵە و دۆخی پاشەکەوتی داتا و میمۆری و ناوکەکانی ئامێر، و دادەبەزێت بۆ سووک ئەگەر فرەیمەکان لە کاتی گواستنەوەدا بوەستن. دەتوانیت لێرە بیگۆڕیت.",
       auto: "خۆکار",
       full: "تەواو",
       lite: "سووک",
@@ -428,16 +439,17 @@ export default defineMessages({
     },
     theme: {
       title: "گۆڕینی ڕووکار",
-      body: "ڕووکاری نوێ لە دوگمەکە خۆیەوە بڵاو دەبێتەوە و دەق لە هەموو ساتێکدا دەخوێنرێتەوە.",
+      body: "ڕووناکییەکە دەگۆڕێت نەک تەنەکان: هەردوو ڕووکارەکە لە 200 میلی چرکەدا تێکەڵی یەکتر دەبن و هیچ شتێک ناجووڵێت.",
       light: "ڕووناک",
       dark: "تاریک",
       system: "بەپێی سیستەم",
     },
     language: {
       title: "گۆڕینی زمان",
-      body: "پەڕەکە دەخلیسکێت لە کاتێکدا ئاراستەکە دەگۆڕێت، و لە هەمان شوێن و بە هەمان دۆخ دەمێنێتەوە. شتێک بنووسە و پاشان زمان بگۆڕە.",
+      body: "ناوەڕۆکەکە بەرەو سەرەتای ئاراستە نوێیەکە دەخلیسکێت و لە هەمان شوێن و بە هەمان دۆخ دەمێنێتەوە، و وێنەکەی خوارەوە لە شوێنی خۆی دەمێنێتەوە. شتێک بنووسە و پاشان زمان بگۆڕە.",
       field: "خانەی تاقیکاری",
       placeholder: "لێرە بنووسە",
+      anchor: "وێنەیەک کە لە کاتی گۆڕینی زماندا جێگیر دەمێنێتەوە",
     },
     perf: {
       title: "کارایی",

@@ -95,7 +95,14 @@ export const CONSOLE_PRODUCTS: readonly ProductSeed[] = [
     platform: "nintendo",
     deviceModel: "switch-lite",
     category: "nintendo-consoles",
-    specs: { in_box: t3("الجهاز ومحوّل الطاقة", "Console and AC adapter", "ئامێر و ئەداپتەری کارەبا") },
+    // Nintendo packs the AC adapter with Switch Lite in some regions only (not in Europe, for one).
+    specs: {
+      in_box: t3(
+        "الجهاز؛ محوّل الطاقة مرفق في إصدارات بعض المناطق فقط",
+        "Console; the AC adapter is included in some regional versions only",
+        "ئامێر؛ ئەداپتەری کارەبا تەنها لە وەشانی هەندێک ناوچەدا لەگەڵیدایە",
+      ),
+    },
     warrantyMonths: 12,
     art: ["switch-lite"],
     keywords: { ar: "سويتش لايت سوتش لايت نينتندو لايت", en: "switch lite", ckb: "سویچ لایت" },

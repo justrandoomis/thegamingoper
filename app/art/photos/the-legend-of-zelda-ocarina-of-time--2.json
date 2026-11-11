@@ -1,0 +1,57 @@
+{
+  "key": "the-legend-of-zelda-ocarina-of-time--2",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-240.69bd1178.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-480.76c681d0.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-720.b72790ae.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-960.a2fe0ac1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-240.fe48a592.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-480.9028f074.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-720.f5a0f68d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-legend-of-zelda-ocarina-of-time/2-960.b8eaab56.webp"
+      }
+    ],
+    "png": "/products/the-legend-of-zelda-ocarina-of-time/2-720.f367cad5.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAACQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBfJAtzlAOSbPBQAAP0rT6vKQXVUU5JI34qW97rHi3e+39VkBrUT0Sw9SxbwVoqCQrwZ6iwAAA==",
+  "dominant": "#686966",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/The%20Legend%20of%20Zelda%20Ocarina%20of%20Time/125697-125698-nintendo-the-legend-of-zelda-ocarina-of-time-ss-1-1280x720",
+    "page": "https://www.nintendo.com/us/store/products/the-legend-of-zelda-ocarina-of-time-125697/"
+  },
+  "input": "f391c15952b410fb"
+}

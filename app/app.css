@@ -1,35 +1,27 @@
+/*
+ * Global stylesheet — Tailwind 4 + the TamTam design system (docs/DESIGN.md, cheat-sheet docs/UI.md).
+ *
+ * Cascade layers, lowest priority first. The order statement is the same one Tailwind (and app/motion/motion.css)
+ * declare, so it holds whichever stylesheet the browser meets first:
+ *
+ *   theme        Tailwind theme variables, then the design tokens (styles/tokens.css) — tokens win over the theme
+ *   base         Tailwind preflight, then styles/base.css (floor, type defaults, focus ring, selection, root error)
+ *   components   styles/materials.css (clay, glass, flat, light, tiers), styles/components.css (app/ui pieces),
+ *                styles/admin.css (data-density="admin", .table); the Motion Engine's helper classes live here too
+ *   utilities    Tailwind utilities — the last word on spacing and placement in feature code
+ *
+ * Unlayered: @font-face (styles/fonts.css) and the Tailwind configuration (styles/theme.css: @theme, @utility,
+ * @custom-variant), which Tailwind compiles away. Nothing else may be unlayered: an unlayered rule beats every
+ * utility.
+ */
+@layer theme, base, components, utilities;
+
 @import "tailwindcss" source(".");
 
-/*
- * Global stylesheet entry. The design system (tokens, materials, components) is imported here.
- * Until it lands, only the dependency-free error surface is styled.
- */
-
-.root-error {
-  min-height: 100dvh;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 0.75rem;
-  padding: 2rem;
-  text-align: center;
-  font-family: system-ui, sans-serif;
-}
-.root-error h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-.root-error__code {
-  font-size: 3rem;
-  font-weight: 800;
-  opacity: 0.25;
-}
-.root-error a {
-  text-decoration: underline;
-}
-.root-error pre {
-  max-width: min(90vw, 60rem);
-  overflow-x: auto;
-  text-align: start;
-  font-size: 0.75rem;
-}
+@import "./styles/fonts.css";
+@import "./styles/tokens.css" layer(theme);
+@import "./styles/base.css" layer(base);
+@import "./styles/materials.css" layer(components);
+@import "./styles/components.css" layer(components);
+@import "./styles/admin.css" layer(components);
+@import "./styles/theme.css";

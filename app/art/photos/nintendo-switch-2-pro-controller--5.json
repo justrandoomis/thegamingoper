@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2-pro-controller--5",
+  "view": "hero",
+  "width": 1053,
+  "height": 782,
+  "aspect": 1.3465,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/5-240.fec0c1c9.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/5-480.74549722.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/5-720.d422951e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/5-960.22707158.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pro-controller/5-240.dae16d17.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pro-controller/5-480.8be3bbe6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pro-controller/5-720.246ed823.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pro-controller/5-960.962ae635.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-pro-controller/5-720.72dcf8dd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGgAAAART6CgjSQ1dRb4mTEiAqx8XGFYBxPbtpVcnEiDyPojodJI1ry7NYgMwN54v4whov8TAFVvybp0yTRgIKEPPKIY+EQHvF90ayFJ9UhmJDKrlNk9FYwx9pBzUgAAF7k9mVxETphBuOhQBFZQOCCOAAAA0AMAnQEqFAAPAD8RcLBQLCYkorAIAYAiCWoAuwAZMAXYmR2u/n14AP6f7PdunliCdY8XZfDdImVF8SsTXdQWLQ31+jJbiVIPuuoy3k6i2vqWaI/8ylnkf7RdqYjY5cXfLb6tngmWI0fKJlS0O1p/yd/v/jJItdm8CG19F37r/xgW/5KoIg7n2gXAMDkAAA==",
+  "dominant": "#28292b",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Pro%20Controllers/127076-127074-nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-edition-front-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition-127074/"
+  },
+  "input": "24f9c308dbd95be1"
+}

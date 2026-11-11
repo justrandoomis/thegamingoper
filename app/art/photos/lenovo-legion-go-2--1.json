@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go-2--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 840,
+  "aspect": 1.9048,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-2/1-240.c6f60aae.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-2/1-480.e3089acf.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-2/1-720.f97806c2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-2/1-960.7df8b595.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-2/1-1440.a381cc0c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-2/1-240.2eb3a110.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-2/1-480.cb86b0a5.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-2/1-720.dcff0609.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-2/1-960.ba611231.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-2/1-1440.49c98624.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go-2/1-720.c6ec0c0f.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSEEAAAARP6CmbSQ2eCTa+oXAbx8Rgd+rcKEgkq3koQUoYAmkgAYgAi3oP+MNIvo/AThEiEuHNLds7OQn0Xdc7yh8WyocAgBWUDggaAAAANADAJ0BKhQACwA/EXKwUCwmpKKwCAGAIglmAL5IHq+YoIU3ZdeuAAD+pmtiPTxXX9nwsqnDV5s8a1ZX35opZH5cTCkuhj/gRG+CQCAd7HsvKsLdf7x0eSMkkryCOdTYZ6mwmUw8+AAA",
+  "dominant": "#282829",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_Front_Facing_tranparency.jpg",
+    "page": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/"
+  },
+  "input": "400ec043d9d6d9c4"
+}

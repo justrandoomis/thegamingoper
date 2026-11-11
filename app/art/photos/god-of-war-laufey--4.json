@@ -1,0 +1,65 @@
+{
+  "key": "god-of-war-laufey--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/god-of-war-laufey/4-240.09f60403.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/god-of-war-laufey/4-480.b55979c9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/god-of-war-laufey/4-720.ac500661.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/god-of-war-laufey/4-960.c6375f75.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/god-of-war-laufey/4-1440.7d8aa2c9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/god-of-war-laufey/4-240.8ef4239d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/god-of-war-laufey/4-480.8d712306.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/god-of-war-laufey/4-720.5512997e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/god-of-war-laufey/4-960.e61f6973.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/god-of-war-laufey/4-1440.25939bfa.webp"
+      }
+    ],
+    "png": "/products/god-of-war-laufey/4-720.2f256d63.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAwCdASoUAAsAPxFwsFAsJiSisAgBgCIJYwCw7B0bTphKSfd6CAAAyntQWsSupi3xJZLBCIhVXNEmpgHzUXEpeMzhfS+YD4AAAA==",
+  "dominant": "#988a77",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-laufey-wm-screenshot-leviathan-en-30may26?$1600px$",
+    "page": "https://www.playstation.com/en-us/games/god-of-war-laufey/"
+  },
+  "input": "694daf7828027c38"
+}

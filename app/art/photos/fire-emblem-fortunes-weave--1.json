@@ -1,0 +1,57 @@
+{
+  "key": "fire-emblem-fortunes-weave--1",
+  "view": "hero",
+  "width": 1054,
+  "height": 1600,
+  "aspect": 0.6587,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/1-240.8e47f645.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/1-480.04911adc.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/1-720.074afc77.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/1-960.1b6b21fb.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/1-240.d106a1e7.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/1-480.b6c995f2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/1-720.656adad8.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/1-960.1cd723db.webp"
+      }
+    ],
+    "png": "/products/fire-emblem-fortunes-weave/1-720.6685cd77.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDQAAAARJ0CQbTOF+WvN4CDXiIjgNiBq20ZVGZRCGdyFwcaf1X3vH9H/CdB7ANY3Sc5PBmCttrUAVlA4IIwAAABQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdEf/gNa+NsLJkYS6us5gAAP2bE1891ZqmXmiMD0hvkZMmzIjGEWc+O4ShUio6GDi+y2owJ2SQhdE90lDUPpM/94fQWBqIaBxC0nid5npzKBoxAYpnukAexms/AOo+YmPrh6Is2d0tbvw9bOtMNAAAAA==",
+  "dominant": "#e70012",
+  "transparent": true,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Nintendo / Intelligent Systems",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Fire%20Emblem%20Fortune%27s%20Weave/125688-nintendo-switch-2-fire-emblem-fortunes-weave-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-125688/"
+  },
+  "input": "fbf950def195d948"
+}

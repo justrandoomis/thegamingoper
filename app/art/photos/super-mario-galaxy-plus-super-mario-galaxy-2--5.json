@@ -1,0 +1,57 @@
+{
+  "key": "super-mario-galaxy-plus-super-mario-galaxy-2--5",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-240.04a51c4e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-480.229a0f39.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-720.7e425aec.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-960.7358bc2d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-240.fa4a1ab5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-480.01df72d9.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-720.a19fc431.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-960.e52ed729.webp"
+      }
+    ],
+    "png": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/5-720.57375ed4.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAACQBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoRwABwyIWi5S7nhqqL/LgAA/raopdlEP6mCJgwe+/HtELHZOCTl24zwsIY15UUzbSDYCZFbcAsNySBT4dBFHVbuUI9dBneHPHoUrnBSrqyueF6XwLqDYTsmztCdCMc4RxAAAA==",
+  "dominant": "#674517",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70070000030770/f33b4687628c37c083e6c34f077f5432696ea413048751e8da684ea3b4f1481b",
+    "page": "https://www.nintendo.com/us/store/products/super-mario-galaxy-plus-super-mario-galaxy-2-switch/"
+  },
+  "input": "339943b598ff2fb9"
+}

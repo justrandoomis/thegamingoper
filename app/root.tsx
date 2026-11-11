@@ -14,6 +14,7 @@ import type { Route } from "./+types/root";
 import { listNamespaces, messagesFor } from "~/i18n/i18n.server";
 import { DEFAULT_LOCALE, LOCALES } from "~/lib/locales";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
+import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
 import { loadShell } from "~/server/shell.server";
 import "./app.css";
@@ -61,6 +62,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="color-scheme" content="light dark" />
         <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} suppressHydrationWarning />
+        {/* Motion tier (data-motion + fx-low) before first paint — see app/motion/tier-script.ts */}
+        <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: MOTION_TIER_SCRIPT }} suppressHydrationWarning />
         <Meta />
         <Links />
       </head>

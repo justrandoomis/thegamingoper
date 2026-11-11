@@ -1,0 +1,57 @@
+{
+  "key": "xbox-rechargeable-battery-usb-c--3",
+  "view": "hero",
+  "width": 1025,
+  "height": 282,
+  "aspect": 3.6348,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-240.2fde4862.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-480.d217917b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-720.4e885305.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-960.e130365c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-240.fe923c4f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-480.bde9aa8a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-720.650cf10b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-rechargeable-battery-usb-c/3-960.cbad48a5.webp"
+      }
+    ],
+    "png": "/products/xbox-rechargeable-battery-usb-c/3-720.3c3dc67b.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4WAoAAAAQAAAAEwAABQAAQUxQSEIAAAARR2CmAdI0ARgBeEGNYEQETl+HC0WRJDVXp4CoZB1Qa4EggycSzjfJQkT/hQQJJq/II1dqzYdpZquR1G0QgJ7zSQBWUDggRAAAALADAJ0BKhQABgA/EXi0UawnJSKwCAGAIglpAABcAi81DqaA0l3AAPZozWsdjp47sO7eOjm+jgOwTEbykJCjlpHgUAAA",
+  "dominant": "#343434",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://assets.xboxservices.com/assets/98/1c/981ca0bf-4252-46fa-b1c2-8c5f0676ee37.jpg?n=X1-090234_Gallery-0_03_1056x594.jpg",
+    "page": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit"
+  },
+  "input": "ae914189070fee4b"
+}

@@ -79,17 +79,19 @@ export function quadBezier(p0: Point, p1: Point, p2: Point, t: number): Point {
 }
 
 /**
- * Control point for a tossed arc from `from` to `to`: lifted above the higher of the two ends by a height
- * that grows with the distance (clamped), and placed toward the start so the path leaves steeply and
- * lands along a shallow curve. `lift` scales the height (0 = straight line).
+ * Control point of the fly-to-cart arc (DESIGN.md §7.2): halfway across, `lift` px above the higher of the two
+ * ends, so the bead leaves upward and drops into the cart. `lift` 0 with ends at the same height is a straight line.
  */
-export function arcControl(from: Point, to: Point, lift = 1): Point {
-  const distance = Math.hypot(to.x - from.x, to.y - from.y);
-  const height = Math.min(Math.max(distance * 0.28, flyTokens.arcMin), flyTokens.arcMax) * lift;
+export function arcControl(from: Point, to: Point, lift: number = flyTokens.lift): Point {
   return {
-    x: from.x + (to.x - from.x) * 0.3,
-    y: Math.min(from.y, to.y) - height,
+    x: from.x + (to.x - from.x) * 0.5,
+    y: Math.min(from.y, to.y) - lift,
   };
+}
+
+/** Flight time in ms for a distance in px: 420 ms + 0.3 ms per px, at most 600 ms (DESIGN.md `--t-fly`). */
+export function flightMs(distance: number): number {
+  return Math.round(Math.min(flyTokens.maxMs, flyTokens.baseMs + Math.max(distance, 0) * flyTokens.perPxMs));
 }
 
 /** `count + 1` points along the arc from `from` to `to` (inclusive of both ends), at parameter values `ease(i / count)`. */

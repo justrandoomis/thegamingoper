@@ -1,0 +1,65 @@
+{
+  "key": "red-dead-redemption-2--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/red-dead-redemption-2/4-240.51d54fde.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/red-dead-redemption-2/4-480.aecf95e1.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/red-dead-redemption-2/4-720.b6d46b3e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/red-dead-redemption-2/4-960.25106c61.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/red-dead-redemption-2/4-1440.4250550b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/red-dead-redemption-2/4-240.9bd54d6d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/red-dead-redemption-2/4-480.51200f9f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/red-dead-redemption-2/4-720.941257bd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/red-dead-redemption-2/4-960.8efa849e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/red-dead-redemption-2/4-1440.12612391.webp"
+      }
+    ],
+    "png": "/products/red-dead-redemption-2/4-720.88f990b2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAwCdASoUAAsAPxFysVCsJqSisAgBgCIJQBWF4AAwlJsT++xH/gAA/njA4Gqm0TAdl1Xdq2TKJH3N0kD89WUpGmLDaF9/T1aavFM/yWMAAA==",
+  "dominant": "#583927",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Rockstar Games",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/red-dead-redemption-2-screen-16-ps4-eu-09may18?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/red-dead-redemption-2/"
+  },
+  "input": "46ade03e0ef7e297"
+}

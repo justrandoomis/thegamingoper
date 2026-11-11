@@ -161,9 +161,9 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
         step(
           ADD_STORAGE,
           t3(
-            "Switch 2 يقبل بطاقات microSD Express فقط. أطفئ الجهاز قبل إدخال البطاقة في فتحتها خلف المسند.",
-            "Switch 2 accepts microSD Express cards only. Switch the console off before inserting the card into its slot behind the stand.",
-            "Switch 2 تەنها کارتی microSD Express وەردەگرێت. پێش خستنە ژوورەوەی کارتەکە بۆ شوێنەکەی لە پشت پاڵپشتەکە، ئامێرەکە بکوژێنەوە.",
+            "Switch 2 يقبل بطاقات microSD Express فقط. أطفئ الجهاز تماماً قبل إدخال البطاقة في فتحتها أو إخراجها.",
+            "Switch 2 accepts microSD Express cards only. Switch the console off completely before inserting the card into its slot or removing it.",
+            "Switch 2 تەنها کارتی microSD Express وەردەگرێت. پێش خستنە ناوەوەی کارتەکە بۆ شوێنەکەی یان دەرهێنانی، ئامێرەکە بە تەواوی بکوژێنەوە.",
           ),
         ),
       ),

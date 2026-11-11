@@ -31,6 +31,12 @@ export function addToLabCart(): void {
   emit();
 }
 
+/** Roll one item back (the failure demo: the server refused the add). */
+export function removeFromLabCart(): void {
+  count = Math.max(0, count - 1);
+  emit();
+}
+
 export function clearLabCart(): void {
   count = 0;
   emit();

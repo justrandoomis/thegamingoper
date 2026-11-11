@@ -1,0 +1,65 @@
+{
+  "key": "battlefield-6--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/battlefield-6/1-240.24e43526.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/battlefield-6/1-480.fd611f60.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/battlefield-6/1-720.7e0d4455.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/battlefield-6/1-960.6457174b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/battlefield-6/1-1440.c047ee1a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/battlefield-6/1-240.d67979f6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/battlefield-6/1-480.40910ce0.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/battlefield-6/1-720.c72d7203.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/battlefield-6/1-960.572d975f.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/battlefield-6/1-1440.9967c227.webp"
+      }
+    ],
+    "png": "/products/battlefield-6/1-720.cffc967b.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJQBjPgeOrsz+ZQ0AYPYGLPlnP+rVQAP3uixup43VQE/D9TiG/RSYpQ4YKNrTd2YMGWeZPbW72MHvyyQHk3dHfogA5QrYLeG6ds18QoE5wpe9TJfuZ0HA+dAjRAGsVuTIfTg2jYO6H5pXDdwAAAA==",
+  "dominant": "#261b16",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.8290.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.d19697e7-b1c1-4200-9327-5f3640f65b75",
+    "page": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3"
+  },
+  "input": "4c686430203fe2d6"
+}

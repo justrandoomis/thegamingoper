@@ -1,0 +1,366 @@
+{
+  "slug": "dualsense",
+  "group": "playstation-hardware",
+  "kind": "controller",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "dualsense",
+  "status": "available",
+  "releaseDate": "2020-11-12",
+  "name": {
+    "ar": "يد التحكم اللاسلكية DualSense",
+    "en": "DualSense Wireless Controller",
+    "ckb": "کۆنتڕۆڵەری بێتەلی DualSense"
+  },
+  "short": {
+    "ar": "يد تحكم PS5 الرسمية · اهتزاز Haptic · Adaptive triggers · ميكروفون مدمج",
+    "en": "Official PS5 controller · Haptic feedback · Adaptive triggers · Built-in mic",
+    "ckb": "کۆنتڕۆڵەری فەرمیی PS5 · لەرینەوەی هاپتیک · تریگەری گونجاو · مایکی ناوەکی"
+  },
+  "description": {
+    "ar": "يد التحكم الأصلية لجهاز PS5. محركا اهتزاز Haptic يعطيان إحساساً دقيقاً بما يحدث في اللعبة، والزران الخلفيان Adaptive triggers تتغير مقاومتهما حسب اللعبة. فيها ميكروفون مدمج مع زر كتم ومنفذ سماعة 3.5 ملم، وتعمل أيضاً مع الكمبيوتر وأجهزة Mac والهواتف عبر USB-C أو Bluetooth. متوفرة بألوان كثيرة وإصدارات خاصة.",
+    "en": "The standard PS5 controller. Dual haptic actuators give detailed feedback from the game, and the adaptive triggers change resistance depending on what you do. It has a built-in microphone with a mute button and a 3.5mm headset jack, and also works with PC, Mac and phones over USB-C or Bluetooth. Sold in many colours and special editions.",
+    "ckb": "کۆنتڕۆڵەری سەرەکیی PS5. دوو مەکینەی لەرینەوەی هاپتیک هەستێکی ورد لە یارییەکەوە دەدەن، و تریگەرە گونجاوەکان بەرگرییان بەپێی یارییەکە دەگۆڕێت. مایکرۆفۆنی ناوەکی لەگەڵ دوگمەی بێدەنگکردن و دەروازەی گوێگری 3.5 ملمی هەیە، و لەگەڵ PC و Mac و مۆبایلیش لە ڕێگەی USB-C یان Bluetooth کار دەکات. بە زۆر ڕەنگ و وەشانی تایبەت دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "اهتزاز Haptic وAdaptive triggers في ألعاب PS5 المدعومة",
+      "en": "Haptic feedback and adaptive triggers in supported PS5 games",
+      "ckb": "لەرینەوەی هاپتیک و تریگەری گونجاو لە یارییە پشتگیریکراوەکانی PS5"
+    },
+    {
+      "ar": "ميكروفون مدمج مع زر كتم، ومنفذ سماعة 3.5 ملم",
+      "en": "Built-in microphone with mute button, plus a 3.5mm headset jack",
+      "ckb": "مایکرۆفۆنی ناوەکی لەگەڵ دوگمەی بێدەنگکردن، و دەروازەی گوێگری 3.5 ملم"
+    },
+    {
+      "ar": "تعمل مع PS5 والكمبيوتر وMac وأجهزة Android وiOS (Bluetooth أو USB-C)",
+      "en": "Works with PS5, PC, Mac, Android and iOS (Bluetooth or USB-C)",
+      "ckb": "لەگەڵ PS5، PC، Mac، Android و iOS کار دەکات (Bluetooth یان USB-C)"
+    },
+    {
+      "ar": "الكابل غير مرفق في العلبة – استخدم كابل USB القادم مع جهاز PS5",
+      "en": "No cable in the box – use the USB cable that came with the PS5",
+      "ckb": "کێبڵ لەناو قوتووەکەدا نییە – کێبڵی USBی کە لەگەڵ PS5 هاتووە بەکاربهێنە"
+    },
+    {
+      "ar": "مجموعة Prism الشفافة (Flare Orange وEmerald Green وGraphite Gray) متاحة للطلب المسبق وتصدر في 4 فبراير 2027",
+      "en": "The transparent Prism Collection (Flare Orange, Emerald Green, Graphite Gray) is on pre-order for 4 February 2027",
+      "ckb": "کۆمەڵەی ڕوونی Prism (Flare Orange، Emerald Green، Graphite Gray) بە پێشوەختە داوا دەکرێت بۆ 4ی شوباتی 2027"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZCT2W (الطراز الحالي)", "en": "CFI-ZCT2W (current model)", "ckb": "CFI-ZCT2W (مۆدێلی ئێستا)" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "Bluetooth، USB-C", "en": "Bluetooth, USB-C", "ckb": "Bluetooth، USB-C" }
+    },
+    {
+      "key": "features",
+      "label": { "ar": "الميزات", "en": "Features", "ckb": "تایبەتمەندییەکان" },
+      "value": {
+        "ar": "اهتزاز Haptic بمحركين، Adaptive triggers، لوحة لمس، مستشعر حركة، زر Create",
+        "en": "Dual-actuator haptics, adaptive triggers, touch pad, motion sensor, Create button",
+        "ckb": "هاپتیکی دوو مەکینە، تریگەری گونجاو، تاچپاد، هەستەوەری جووڵە، دوگمەی Create"
+      }
+    },
+    {
+      "key": "audio",
+      "label": { "ar": "الصوت", "en": "Audio", "ckb": "دەنگ" },
+      "value": { "ar": "ميكروفون مدمج، زر كتم، منفذ 3.5 ملم", "en": "Built-in microphone, mute button, 3.5mm jack", "ckb": "مایکرۆفۆنی ناوەکی، دوگمەی بێدەنگکردن، دەروازەی 3.5 ملم" }
+    },
+    {
+      "key": "devices",
+      "label": { "ar": "الأجهزة المتوافقة", "en": "Compatible devices", "ckb": "ئامێرە گونجاوەکان" },
+      "value": {
+        "ar": "PS5، كمبيوتر ويندوز، Mac (macOS 11.3+)، iOS/iPadOS 14.5+، Android",
+        "en": "PS5, Windows PC, Mac (macOS 11.3+), iOS/iPadOS 14.5+, Android",
+        "ckb": "PS5، کۆمپیوتەری ویندۆز، Mac (macOS 11.3+)، iOS/iPadOS 14.5+، Android"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 160 × 66 × 106 ملم، نحو 0.3 كغ", "en": "Approx. 160 × 66 × 106 mm, about 0.3 kg", "ckb": "نزیکەی 160 × 66 × 106 ملم، نزیکەی 0.3 کگ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "يد التحكم DualSense", "en": "DualSense wireless controller", "ckb": "کۆنتڕۆڵەری DualSense" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "DSENSE-WHITE",
+      "title": { "ar": "DualSense – أبيض", "en": "DualSense – White", "ckb": "DualSense – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZCT2W",
+      "isDefault": true,
+      "images": ["dualsense--1", "dualsense--2", "dualsense--3"]
+    },
+    {
+      "sku": "DSENSE-MIDNIGHT-BLACK",
+      "title": { "ar": "DualSense – أسود Midnight Black", "en": "DualSense – Midnight Black", "ckb": "DualSense – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["dualsense--4"]
+    },
+    {
+      "sku": "DSENSE-COSMIC-RED",
+      "title": { "ar": "DualSense – أحمر Cosmic Red", "en": "DualSense – Cosmic Red", "ckb": "DualSense – سووری Cosmic Red" },
+      "options": { "color": "Cosmic Red" },
+      "isDefault": false,
+      "images": ["dualsense--5"]
+    },
+    {
+      "sku": "DSENSE-NOVA-PINK",
+      "title": { "ar": "DualSense – وردي Nova Pink", "en": "DualSense – Nova Pink", "ckb": "DualSense – پەمەیی Nova Pink" },
+      "options": { "color": "Nova Pink" },
+      "isDefault": false,
+      "notes": { "ar": "مدرج في متجر PlayStation البريطاني فقط عند المراجعة.", "en": "Listed by the PlayStation UK store only at the time of checking.", "ckb": "لە کاتی پشکنیندا تەنها لە فرۆشگای PlayStationی بەریتانی هەبوو." }
+    },
+    {
+      "sku": "DSENSE-GALACTIC-PURPLE",
+      "title": { "ar": "DualSense – بنفسجي Galactic Purple", "en": "DualSense – Galactic Purple", "ckb": "DualSense – مۆری Galactic Purple" },
+      "options": { "color": "Galactic Purple" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-STARLIGHT-BLUE",
+      "title": { "ar": "DualSense – أزرق Starlight Blue", "en": "DualSense – Starlight Blue", "ckb": "DualSense – شینی Starlight Blue" },
+      "options": { "color": "Starlight Blue" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-GREY-CAMO",
+      "title": { "ar": "DualSense – مموّه رمادي Grey Camouflage", "en": "DualSense – Grey Camouflage", "ckb": "DualSense – کامۆفلاژی خۆڵەمێشی" },
+      "options": { "color": "Grey Camouflage" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-VOLCANIC-RED",
+      "title": { "ar": "DualSense – أحمر Volcanic Red", "en": "DualSense – Volcanic Red", "ckb": "DualSense – سووری Volcanic Red" },
+      "options": { "color": "Volcanic Red" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-COBALT-BLUE",
+      "title": { "ar": "DualSense – أزرق Cobalt Blue", "en": "DualSense – Cobalt Blue", "ckb": "DualSense – شینی Cobalt Blue" },
+      "options": { "color": "Cobalt Blue" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-STERLING-SILVER",
+      "title": { "ar": "DualSense – فضي Sterling Silver", "en": "DualSense – Sterling Silver", "ckb": "DualSense – زیوی Sterling Silver" },
+      "options": { "color": "Sterling Silver" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-CHROMA-PEARL",
+      "title": { "ar": "DualSense – لؤلؤي Chroma Pearl", "en": "DualSense – Chroma Pearl", "ckb": "DualSense – مروارییی Chroma Pearl" },
+      "options": { "color": "Chroma Pearl" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-CHROMA-INDIGO",
+      "title": { "ar": "DualSense – نيلي Chroma Indigo", "en": "DualSense – Chroma Indigo", "ckb": "DualSense – نیلیی Chroma Indigo" },
+      "options": { "color": "Chroma Indigo" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-CHROMA-TEAL",
+      "title": { "ar": "DualSense – أزرق مخضر Chroma Teal", "en": "DualSense – Chroma Teal", "ckb": "DualSense – شینی سەوزباوی Chroma Teal" },
+      "options": { "color": "Chroma Teal" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-TECHNO-RED",
+      "title": { "ar": "DualSense – أحمر Techno Red", "en": "DualSense – Techno Red", "ckb": "DualSense – سووری Techno Red" },
+      "options": { "color": "Techno Red" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-REMIX-GREEN",
+      "title": { "ar": "DualSense – أخضر Remix Green", "en": "DualSense – Remix Green", "ckb": "DualSense – سەوزی Remix Green" },
+      "options": { "color": "Remix Green" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-RHYTHM-BLUE",
+      "title": { "ar": "DualSense – أزرق Rhythm Blue", "en": "DualSense – Rhythm Blue", "ckb": "DualSense – شینی Rhythm Blue" },
+      "options": { "color": "Rhythm Blue" },
+      "isDefault": false
+    },
+    {
+      "sku": "DSENSE-PRISM-FLARE-ORANGE",
+      "title": { "ar": "DualSense – Prism برتقالي شفاف Flare Orange", "en": "DualSense – Prism Flare Orange", "ckb": "DualSense – Prism پرتەقاڵیی ڕوون Flare Orange" },
+      "options": { "color": "Flare Orange", "edition": "Prism Collection" },
+      "isDefault": false,
+      "images": ["dualsense--6"],
+      "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
+    },
+    {
+      "sku": "DSENSE-PRISM-EMERALD-GREEN",
+      "title": { "ar": "DualSense – Prism أخضر زمردي Emerald Green", "en": "DualSense – Prism Emerald Green", "ckb": "DualSense – Prism سەوزی زمرودی Emerald Green" },
+      "options": { "color": "Emerald Green", "edition": "Prism Collection" },
+      "isDefault": false,
+      "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
+    },
+    {
+      "sku": "DSENSE-PRISM-GRAPHITE-GRAY",
+      "title": { "ar": "DualSense – Prism رمادي غرافيتي Graphite Gray", "en": "DualSense – Prism Graphite Gray", "ckb": "DualSense – Prism خۆڵەمێشیی گرافیتی Graphite Gray" },
+      "options": { "color": "Graphite Gray", "edition": "Prism Collection" },
+      "isDefault": false,
+      "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "source": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/"
+    },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/" },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": { "ar": "PS5 Pro يستخدم DualSense نفسها.", "en": "PS5 Pro uses the same DualSense.", "ckb": "PS5 Pro هەمان DualSense بەکاردەهێنێت." },
+      "source": "https://www.playstation.com/en-us/ps5/ps5-pro/"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر USB-C أو Bluetooth؛ Haptic وAdaptive triggers في ألعاب PC المدعومة، وتحديث البرنامج عبر تطبيق PlayStation Accessories.",
+        "en": "Over USB-C or Bluetooth; haptics and adaptive triggers in supported PC games, firmware updates through the PlayStation Accessories app.",
+        "ckb": "لە ڕێگەی USB-C یان Bluetooth؛ هاپتیک و تریگەری گونجاو لە یارییە پشتگیریکراوەکانی PC، نوێکردنەوەی سۆفتوێر لە ڕێگەی ئەپی PlayStation Accessories."
+      },
+      "source": "https://www.playstation.com/en-us/accessories/dualsense-wireless-controller/"
+    }
+  ],
+  "related": [
+    { "slug": "dualsense-edge", "kind": "upsell" },
+    { "slug": "dualsense-charging-station", "kind": "accessory" },
+    { "slug": "access-controller", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "dualsense--1",
+      "file": ".cache/product-images/dualsense/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-White01-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "kind": "hero",
+      "alt": { "ar": "يد التحكم DualSense البيضاء من الأمام", "en": "White DualSense controller from the front", "ckb": "کۆنتڕۆڵەری DualSenseی سپی لە پێشەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense--2",
+      "file": ".cache/product-images/dualsense/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-White02-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "DualSense البيضاء من زاوية جانبية تُظهر الأزرار الخلفية", "en": "White DualSense from the side, showing the triggers", "ckb": "DualSenseی سپی لە لاوە، تریگەرەکان دیارن" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense--3",
+      "file": ".cache/product-images/dualsense/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-White04-16x9-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لـ DualSense مع منفذ USB-C", "en": "Top edge of the DualSense with the USB-C port", "ckb": "لای سەرەوەی DualSense لەگەڵ دەروازەی USB-C" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "dualsense--4",
+      "file": ".cache/product-images/dualsense/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-MidnightBlack01-1x1-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "DualSense باللون Midnight Black", "en": "DualSense in Midnight Black", "ckb": "DualSense بە ڕەنگی Midnight Black" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    },
+    {
+      "key": "dualsense--5",
+      "file": ".cache/product-images/dualsense/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-CosmicRed01-1x1-01-28feb26$en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "DualSense باللون Cosmic Red", "en": "DualSense in Cosmic Red", "ckb": "DualSense بە ڕەنگی Cosmic Red" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    },
+    {
+      "key": "dualsense--6",
+      "file": ".cache/product-images/dualsense/6.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/DUALSENSE-FLARE-ORANGE-PR-01-1x1-01-09jul26-_en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "kind": "angle",
+      "alt": { "ar": "DualSense الشفافة Flare Orange من مجموعة Prism", "en": "Transparent Flare Orange DualSense from the Prism Collection", "ckb": "DualSenseی ڕوونی Flare Orange لە کۆمەڵەی Prism" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/",
+      "title": "DualSense® Wireless Controller – Buy now",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZCT2W, dimensions, weight, what's in the box, cable not included, colours on sale, compatible devices and OS versions, features"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/accessories/controllers-and-remotes",
+      "title": "Buy Controllers & Remotes | PlayStation® (US)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Direct US)",
+      "retrieved": "2026-11-11",
+      "supports": "colours sold in the US (incl. Galactic Purple, Volcanic Red, Cobalt Blue, Sterling Silver, Chroma, Techno Red, Remix Green, Rhythm Blue, Prism pre-orders)"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/accessories/dualsense-wireless-controller/",
+      "title": "DualSense wireless controller",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "haptic feedback, adaptive triggers, PC/Mac/mobile use, PlayStation Accessories app, limited editions"
+    },
+    {
+      "url": "https://blog.playstation.com/2026/10/28/first-look-inside-the-prism-collection-with-three-new-transparent-designs-for-ps5-accessories/",
+      "title": "First look inside the Prism Collection, with three new transparent designs for PS5 accessories",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "Prism Collection colours, pre-orders from 10 November 2026, launch 4 February 2027; the orange takes on a rosy (red-looking) tint where the clear plastic overlaps, which is why the Flare Orange photo looks red"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/DualShock#DualSense",
+      "title": "DualShock – DualSense",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release 12 November 2020 (AU/JP/KR/NA/NZ) and 19 November 2020 worldwide; motion sensing; microphone array"
+    }
+  ],
+  "notes": {
+    "ar": "Sony تصدر باستمرار إصدارات محدودة (مثل Grand Theft Auto VI وMarvel's Wolverine وGran Turismo) تُضاف كمنتجات منفصلة عند توفرها. اهتزاز Haptic وAdaptive triggers يعملان فقط في الألعاب التي تدعمهما.",
+    "en": "Sony keeps releasing limited editions (for example Grand Theft Auto VI, Marvel's Wolverine and Gran Turismo) – these are added as separate products when stocked. Haptic feedback and adaptive triggers only work in games that support them.",
+    "ckb": "Sony بەردەوام وەشانی سنووردار دەردەکات (بۆ نموونە Grand Theft Auto VI، Marvel's Wolverine و Gran Turismo) – ئەمانە کاتێک هەبن وەک بەرهەمی جیا زیاد دەکرێن. لەرینەوەی هاپتیک و تریگەری گونجاو تەنها لەو یارییانەدا کار دەکەن کە پشتگیرییان دەکەن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Battery capacity and play time (not stated on Sony's current pages)",
+      "Model numbers for each colour (only CFI-ZCT2W for White is published on the UK page)",
+      "Which colours are actually in stock in the Middle East; availability differs by region (Nova Pink was only listed in the UK; Volcanic Red, Cobalt Blue and Sterling Silver are listed without a price in the UK, so may be sold out)"
+    ]
+  }
+}

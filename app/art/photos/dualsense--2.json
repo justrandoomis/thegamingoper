@@ -1,0 +1,65 @@
+{
+  "key": "dualsense--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 862,
+  "aspect": 1.8561,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense/2-240.caf02bfc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense/2-480.e2b648db.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense/2-720.f96f375b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense/2-960.43f893b7.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense/2-1440.ebe415b3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense/2-240.0bdf24e2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense/2-480.450f4ea7.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense/2-720.bfee20e4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense/2-960.0f87916d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense/2-1440.fb2b639d.webp"
+      }
+    ],
+    "png": "/products/dualsense/2-720.ac1227ef.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhIBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFsAAAART6CokSQ1tu81wHwQEQFCf3GeJJjW2rbkxast4OQ/IVUzjQU0kljAmQC+eX9ghoj+TwD+97b0kvXPkXKM+MoCphe6wi8ihX1p+tjeLzIMZ6FhPhsAqCPTEPAbAFZQOCCQAAAAcAQAnQEqFAALAD8RcrBQLCakorAIAYAiCUAAogPauh9poIznNbGwYDbfjgAA/ppQTXRYNg07jWs3BCBnqUiR4hJ/sBmx+TI1BKNyVaWCYYIeLgits9FCwl4G2NX15s/36rOTLu5y0aRFy4zIE46+4YVjBXLJP3QEilDyH1Oiv9buztkU36N7/cZ+BADpYAAA",
+  "dominant": "#b5bac4",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-White02-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/"
+  },
+  "input": "f88fc73adde62d3d"
+}

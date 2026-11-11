@@ -1,0 +1,232 @@
+{
+  "slug": "playstation-plus",
+  "group": "accessories-storage-digital",
+  "kind": "digital",
+  "platform": "playstation",
+  "brand": "PlayStation",
+  "status": "available",
+  "name": {
+    "ar": "اشتراك PlayStation Plus (رمز رقمي)",
+    "en": "PlayStation Plus Membership (digital code)",
+    "ckb": "بەشداریی PlayStation Plus (کۆدی دیجیتاڵ)"
+  },
+  "short": {
+    "ar": "Essential وExtra وPremium · لعب أونلاين وألعاب شهرية · يطابق دولة الحساب",
+    "en": "Essential, Extra, Premium · online play and monthly games · matches your account region",
+    "ckb": "Essential، Extra، Premium · یاریی ئۆنلاین و یاریی مانگانە · لەگەڵ وڵاتی هەژمار"
+  },
+  "description": {
+    "ar": "اشتراك PlayStation Plus لأجهزة PS5 وPS4 بثلاث فئات: Essential للعب الجماعي عبر الإنترنت والألعاب الشهرية والتخفيضات وحفظ الملفات سحابياً، وExtra تضيف مكتبة مئات الألعاب، وPremium تضيف الألعاب الكلاسيكية وتجارب الألعاب والبث السحابي. الرمز مرتبط بدولة ويجب أن يطابق دولة حسابك، وفي الحساب السعودي اسم الفئة العليا Deluxe بدلاً من Premium. يصلك الرمز بعد إتمام الدفع.",
+    "en": "PlayStation Plus for PS5 and PS4 in three tiers: Essential for online multiplayer, monthly games, discounts and cloud saves; Extra adds a catalogue of hundreds of games; Premium adds classics, game trials and cloud streaming. The code is tied to a country and must match your account's country; on Saudi accounts the top tier is Deluxe instead of Premium. The code is sent to you after payment.",
+    "ckb": "بەشداریی PlayStation Plus بۆ PS5 و PS4 بە سێ ئاست: Essential بۆ یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە، داشکاندن و پاشەکەوتی هەوری؛ Extra کتێبخانەیەکی سەدان یاری زیاد دەکات؛ Premium یاریی کلاسیک، تاقیکردنەوەی یاری و پەخشی هەوری زیاد دەکات. کۆدەکە بە وڵاتێکەوە بەستراوە و دەبێت لەگەڵ وڵاتی هەژمارەکەت یەک بگرێتەوە؛ لە هەژماری سعوودیدا ئاستی سەرەوە ناوی Deluxe ە لە جیاتی Premium. کۆدەکە دوای پارەدان بۆت دەنێردرێت."
+  },
+  "highlights": [
+    {
+      "ar": "كل الفئات تشمل اللعب الجماعي أونلاين والألعاب الشهرية والتخفيضات الحصرية",
+      "en": "Every tier includes online multiplayer, monthly games and member discounts",
+      "ckb": "هەموو ئاستەکان یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە و داشکاندنی تایبەت لەخۆدەگرن"
+    },
+    {
+      "ar": "Extra تضيف مكتبة ألعاب PlayStation Plus وUbisoft+ Classics",
+      "en": "Extra adds the PlayStation Plus Game Catalog and Ubisoft+ Classics",
+      "ckb": "Extra کاتالۆگی یارییەکانی PlayStation Plus و Ubisoft+ Classics زیاد دەکات"
+    },
+    {
+      "ar": "Premium تضيف الكلاسيكيات وتجارب الألعاب والبث السحابي وأفلام Sony Pictures",
+      "en": "Premium adds Classics, game trials, cloud streaming and the Sony Pictures Catalog",
+      "ckb": "Premium کلاسیکەکان، تاقیکردنەوەی یاری، پەخشی هەوری و فیلمەکانی Sony Pictures زیاد دەکات"
+    },
+    {
+      "ar": "الرمز يجب أن يكون لدولة حسابك نفسها",
+      "en": "The code must be for your account's country",
+      "ckb": "کۆدەکە دەبێت بۆ هەمان وڵاتی هەژمارەکەت بێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "tiers",
+      "label": { "ar": "الفئات", "en": "Tiers", "ckb": "ئاستەکان" },
+      "value": { "ar": "Essential وExtra وPremium (في الحساب السعودي: Essential وExtra وDeluxe)", "en": "Essential, Extra, Premium (Saudi accounts: Essential, Extra, Deluxe)", "ckb": "Essential، Extra، Premium (هەژماری سعوودی: Essential، Extra، Deluxe)" }
+    },
+    {
+      "key": "essential",
+      "label": { "ar": "Essential", "en": "Essential", "ckb": "Essential" },
+      "value": { "ar": "لعب جماعي أونلاين، ألعاب شهرية، تخفيضات وحزم حصرية، حفظ سحابي، Share Play", "en": "Online multiplayer, monthly games, exclusive discounts and packs, cloud storage, Share Play", "ckb": "یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە، داشکاندن و پاکێجی تایبەت، پاشەکەوتی هەوری، Share Play" }
+    },
+    {
+      "key": "extra",
+      "label": { "ar": "Extra", "en": "Extra", "ckb": "Extra" },
+      "value": { "ar": "كل ما في Essential + مكتبة ألعاب PlayStation Plus + Ubisoft+ Classics", "en": "Everything in Essential + Game Catalog + Ubisoft+ Classics", "ckb": "هەموو شتەکانی Essential + کاتالۆگی یاری + Ubisoft+ Classics" }
+    },
+    {
+      "key": "premium",
+      "label": { "ar": "Premium", "en": "Premium", "ckb": "Premium" },
+      "value": { "ar": "كل ما في Extra + الكلاسيكيات + تجارب الألعاب + البث السحابي + أفلام Sony Pictures", "en": "Everything in Extra + Classics Catalog + game trials + cloud streaming + Sony Pictures Catalog", "ckb": "هەموو شتەکانی Extra + کاتالۆگی کلاسیک + تاقیکردنەوەی یاری + پەخشی هەوری + فیلمەکانی Sony Pictures" }
+    },
+    {
+      "key": "durations",
+      "label": { "ar": "المدد", "en": "Plan lengths", "ckb": "ماوەکان" },
+      "value": { "ar": "شهر، 3 أشهر، 12 شهراً", "en": "1, 3 or 12 months", "ckb": "1، 3 یان 12 مانگ" }
+    },
+    {
+      "key": "delivery",
+      "label": { "ar": "التسليم", "en": "Delivery", "ckb": "گەیاندن" },
+      "value": { "ar": "يُرسل الرمز بعد إتمام الدفع", "en": "Code is sent after payment", "ckb": "کۆدەکە دوای پارەدان دەنێردرێت" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PSPLUS-US-ESS-1M",
+      "title": { "ar": "حساب أمريكي · Essential · شهر", "en": "US account · Essential · 1 month", "ckb": "هەژماری ئەمریکی · Essential · 1 مانگ" },
+      "options": { "region": "United States", "tier": "Essential", "duration": "1 month" },
+      "isDefault": false,
+      "images": ["playstation-plus--1"]
+    },
+    {
+      "sku": "PSPLUS-US-ESS-3M",
+      "title": { "ar": "حساب أمريكي · Essential · 3 أشهر", "en": "US account · Essential · 3 months", "ckb": "هەژماری ئەمریکی · Essential · 3 مانگ" },
+      "options": { "region": "United States", "tier": "Essential", "duration": "3 months" },
+      "isDefault": false,
+      "images": ["playstation-plus--1"]
+    },
+    {
+      "sku": "PSPLUS-US-ESS-12M",
+      "title": { "ar": "حساب أمريكي · Essential · 12 شهراً", "en": "US account · Essential · 12 months", "ckb": "هەژماری ئەمریکی · Essential · 12 مانگ" },
+      "options": { "region": "United States", "tier": "Essential", "duration": "12 months" },
+      "isDefault": true,
+      "images": ["playstation-plus--1"]
+    },
+    {
+      "sku": "PSPLUS-US-EXT-12M",
+      "title": { "ar": "حساب أمريكي · Extra · 12 شهراً", "en": "US account · Extra · 12 months", "ckb": "هەژماری ئەمریکی · Extra · 12 مانگ" },
+      "options": { "region": "United States", "tier": "Extra", "duration": "12 months" },
+      "isDefault": false,
+      "images": ["playstation-plus--1"]
+    },
+    {
+      "sku": "PSPLUS-US-PRM-12M",
+      "title": { "ar": "حساب أمريكي · Premium · 12 شهراً", "en": "US account · Premium · 12 months", "ckb": "هەژماری ئەمریکی · Premium · 12 مانگ" },
+      "options": { "region": "United States", "tier": "Premium", "duration": "12 months" },
+      "isDefault": false,
+      "images": ["playstation-plus--1"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "على حساب من نفس دولة الرمز.", "en": "On an account from the code's country.", "ckb": "لەسەر هەژمارێکی هەمان وڵاتی کۆدەکە." },
+      "source": "https://www.playstation.com/en-us/ps-plus/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "note": { "ar": "على حساب من نفس دولة الرمز.", "en": "On an account from the code's country.", "ckb": "لەسەر هەژمارێکی هەمان وڵاتی کۆدەکە." },
+      "source": "https://www.playstation.com/en-us/ps-plus/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "على حساب من نفس دولة الرمز.", "en": "On an account from the code's country.", "ckb": "لەسەر هەژمارێکی هەمان وڵاتی کۆدەکە." },
+      "source": "https://www.playstation.com/en-us/ps-plus/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "note": { "ar": "على حساب من نفس دولة الرمز.", "en": "On an account from the code's country.", "ckb": "لەسەر هەژمارێکی هەمان وڵاتی کۆدەکە." },
+      "source": "https://www.playstation.com/en-us/ps-plus/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": { "ar": "على حساب من نفس دولة الرمز.", "en": "On an account from the code's country.", "ckb": "لەسەر هەژمارێکی هەمان وڵاتی کۆدەکە." },
+      "source": "https://www.playstation.com/en-us/ps-plus/"
+    },
+    {
+      "deviceModel": "ps-portal",
+      "status": "partial",
+      "note": {
+        "ar": "PlayStation Portal يبث من جهاز PS5؛ الاشتراك يُفعّل على حساب PS5.",
+        "en": "PlayStation Portal streams from your PS5; the membership is activated on the PS5 account.",
+        "ckb": "PlayStation Portal لە PS5ەوە پەخش دەکات؛ بەشدارییەکە لەسەر هەژماری PS5 چالاک دەکرێت."
+      },
+      "source": "https://www.playstation.com/en-us/ps-plus/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-store-gift-card", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "playstation-plus--1",
+      "file": ".cache/product-images/playstation-plus/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps-plus-black-badge-01-22sep20?$1600px--t$",
+      "sourcePage": "https://www.playstation.com/en-sa/ps-plus/",
+      "kind": "hero",
+      "alt": {
+        "ar": "شعار PlayStation Plus",
+        "en": "PlayStation Plus logo",
+        "ckb": "هێمای PlayStation Plus"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600,
+      "height": 355,
+      "transparent": true
+    },
+    {
+      "key": "playstation-plus--2",
+      "file": ".cache/product-images/playstation-plus/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps-plus-overview-online-multiplayer-image-block-01-en-04jul24?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-sa/ps-plus/",
+      "kind": "detail",
+      "alt": {
+        "ar": "صورة ترويجية للعب الجماعي أونلاين في PlayStation Plus",
+        "en": "PlayStation Plus online multiplayer promotional art",
+        "ckb": "وێنەی بانگەشەی یاریی ئۆنلاینی بەکۆمەڵ لە PlayStation Plus"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600,
+      "height": 900,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-us/ps-plus/",
+      "title": "PlayStation Plus",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "three US tiers (Essential, Extra, Premium) and what each includes, 1/3/12-month plans, subscriptions continue until cancelled"
+    },
+    {
+      "url": "https://www.playstation.com/en-sa/ps-plus/",
+      "title": "PlayStation Plus (Saudi Arabia)",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "Saudi tiers are Essential, Extra and Deluxe (no Premium), images"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code/",
+      "title": "How to redeem a PlayStation Store voucher code",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "voucher must be for the same region as the account, some subscription vouchers need a valid payment method on the account, PS Plus benefits on child accounts are limited by age ratings and parental controls"
+    }
+  ],
+  "notes": {
+    "ar": "قبل الشراء تأكد من دولة حسابك. بعض رموز الاشتراك قد تطلب وجود وسيلة دفع صالحة في الحساب لإتمام الاسترداد. على حسابات الأطفال تخضع مزايا الاشتراك لتصنيف العمر وإعدادات الرقابة الأبوية.",
+    "en": "Check your account's country before buying. Some membership codes may ask for a valid payment method on the account before they redeem. On child accounts, membership benefits follow age ratings and parental controls.",
+    "ckb": "پێش کڕین وڵاتی هەژمارەکەت بپشکنە. هەندێک کۆدی بەشداری لەوانەیە پێش بەکارهێنان داوای ڕێگەیەکی پارەدانی دروست لە هەژمارەکە بکەن. لە هەژماری منداڵاندا سوودەکانی بەشداری پەیڕەوی پۆلێنی تەمەن و کۆنترۆڵی دایک و باوک دەکەن."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "What the Saudi Deluxe tier includes compared with Premium",
+      "Which tier and length codes Iraqi suppliers stock (variants list the US tiers as a starting point)",
+      "Second source is a second official Sony page, not independent press"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "key": "xbox-adaptive-controller--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 293,
+  "aspect": 5.4608,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-adaptive-controller/3-240.3428e135.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-adaptive-controller/3-480.39af14c3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-adaptive-controller/3-720.ae15e184.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-adaptive-controller/3-960.73e32556.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-adaptive-controller/3-1440.f2e194e0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-adaptive-controller/3-240.e2602173.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-adaptive-controller/3-480.3faba62f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-adaptive-controller/3-720.7a3c5aed.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-adaptive-controller/3-960.aa8ffd05.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-adaptive-controller/3-1440.5a4ce47b.webp"
+      }
+    ],
+    "png": "/products/xbox-adaptive-controller/3-720.2fa810d6.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4WAoAAAAQAAAAEwAAAwAAQUxQSCQAAAARHyAQIPzXqTBgJiICDwratmGKqjtYhyAay5KI6H8qD+wBVgBWUDggMgAAAPACAJ0BKhQABAA/EXSxUCwnJKKwCAGAIglpAAB60IgAAP7rZzHZgcd4rodro1rcLsAA",
+  "dominant": "#e4e4e4",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b01?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8"
+  },
+  "input": "f55d462fa405341b"
+}

@@ -73,6 +73,16 @@ try {
   await shot(cart, "sheet-opening");
   await cart.close();
 
+  // tablet/desktop: the same sheet as a side sheet from the inline end, a quarter of the way in
+  const wide = await openPage(browser, { touch: false, width: 1024, height: 768, dpr: 1 });
+  await goto(wide, "/motion?tab=cart");
+  await sleep(1200);
+  await wide.click('[data-testid="sheet-open"]');
+  await wide.waitForSelector('[data-testid="sheet"]');
+  await freeze(wide, '[data-testid="sheet"], [data-testid="sheet-scrim"]', 0.25);
+  await shot(wide, "side-sheet-opening");
+  await wide.close();
+
   // dark theme, English: the lab in its other skin
   const dark = await openPage(browser, { dark: true });
   await goto(dark, "/en/motion?tab=cart");

@@ -1,0 +1,65 @@
+{
+  "key": "crimson-desert--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/crimson-desert/4-240.3dbf180f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/crimson-desert/4-480.724c45eb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/crimson-desert/4-720.a481480b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/crimson-desert/4-960.e80e841e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crimson-desert/4-1440.ca2764f6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/crimson-desert/4-240.9110b3cf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/crimson-desert/4-480.8a67f008.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/crimson-desert/4-720.d48f35d4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/crimson-desert/4-960.56bef48c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crimson-desert/4-1440.cdab59f6.webp"
+      }
+    ],
+    "png": "/products/crimson-desert/4-720.4568234c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwDG9Bxlu6L4LS+e2AD+VHvGFum6DsYbHN5W9GwbyjwvDRl86fTiVcfV4baK8RYVqGgs7jJKyrSEaX9M/m7pY13rHNAAAAA=",
+  "dominant": "#acb3b9",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Pearl Abyss",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/CrimsonDesert-screenshot-02-en-11mar26?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/crimson-desert/"
+  },
+  "input": "86bedb09938b00fd"
+}

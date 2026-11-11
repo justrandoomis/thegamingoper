@@ -1,0 +1,65 @@
+{
+  "key": "ghost-of-yotei--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ghost-of-yotei/2-240.7de65ca8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ghost-of-yotei/2-480.a0b78dbf.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ghost-of-yotei/2-720.23d7e6c5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ghost-of-yotei/2-960.ed3562a6.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ghost-of-yotei/2-1440.ef1e48df.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ghost-of-yotei/2-240.98ae3714.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ghost-of-yotei/2-480.5fd5b646.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ghost-of-yotei/2-720.b94a4e4a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ghost-of-yotei/2-960.f921949e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ghost-of-yotei/2-1440.893a3ecc.webp"
+      }
+    ],
+    "png": "/products/ghost-of-yotei/2-720.f81990da.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAAAwBQCdASoUABQAPxGAt1WsJ6UjKAgBgCIJZQDM0YyKaCaHVDMwYSpw3yQqMqCGdOXSAAD+sh8Q9ShLZGh91GfKVlBnuav9jAGouhTJnNIRuvn7GX9ALBg86FSCOrEdYHniK+53bDivAMyoBIS0IHUxFIoxLsXD5aLPfLvseiep0Xux8e5VmvKvSe9tHgaBDKN7BFp0mR2RXTQH421pjp8hTkzfMX+GEtwAAA==",
+  "dominant": "#f5f2ed",
+  "transparent": false,
+  "background": "#f3f0eb",
+  "kind": "box-art",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-complete-edition-store-artwork-01-en-6aug26?$1600px--t$",
+    "page": "https://www.playstation.com/en-us/games/ghost-of-yotei/"
+  },
+  "input": "fc18a2caba2dc25d"
+}

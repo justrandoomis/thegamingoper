@@ -1,0 +1,246 @@
+{
+  "slug": "xbox-adaptive-controller",
+  "group": "xbox-hardware",
+  "kind": "controller",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "family": "xbox-adaptive-controller",
+  "status": "available",
+  "releaseDate": "2018-09-04",
+  "name": { "ar": "XBOX Adaptive Controller", "en": "XBOX Adaptive Controller", "ckb": "XBOX Adaptive Controller" },
+  "short": {
+    "ar": "يد تحكم مخصصة لذوي الحركة المحدودة · 19 منفذ 3.5mm ومنفذا USB",
+    "en": "For players with limited mobility · 19 × 3.5mm ports + 2 USB",
+    "ckb": "بۆ یاریزانی جووڵەی سنووردار · 19 دەروازەی 3.5mm و 2 USB"
+  },
+  "description": {
+    "ar": "لوحة تحكم صممتها Microsoft أساساً للاعبين ذوي الحركة المحدودة، فيها زران كبيران قابلان للبرمجة وأزرار اتجاه. تعمل كمركز لتوصيل المفاتيح والأزرار وعصي التحكم وحوامل التثبيت (تُباع منفصلة) عبر 19 منفذ 3.5mm ومنفذي USB، فيصنع كل لاعب يد التحكم التي تناسبه. تعمل مع XBOX Series X|S وXBOX One وأجهزة Windows، وفيها بطارية مدمجة تُشحن بكابل USB-C المرفق.",
+    "en": "A controller Microsoft designed mainly for players with limited mobility, with two large programmable buttons and a D-pad. It is a hub for switches, buttons, joysticks and mounts (sold separately) through 19 3.5mm ports and two USB ports, so each player can build the setup that suits them. It works with XBOX Series X|S, XBOX One and Windows PCs, and has a built-in battery charged with the included USB-C cable.",
+    "ckb": "دەسکێک کە Microsoft بە شێوەیەکی سەرەکی بۆ یاریزانانی جووڵەی سنووردار دروستی کردووە، دوو دوگمەی گەورەی بەرنامەڕێژکراو و D-pad ـی هەیە. وەک ناوەندێک بۆ بەستنەوەی سویچ، دوگمە، جۆیستیک و هەڵگر (جیا دەفرۆشرێن) کار دەکات بە 19 دەروازەی 3.5mm و دوو دەروازەی USB، بۆ ئەوەی هەر یاریزانێک ئەو ڕێکخستنە دروست بکات کە بۆی گونجاوە. لەگەڵ XBOX Series X|S و XBOX One و کۆمپیوتەری Windows کار دەکات، و پاتریی ناوەکیی هەیە کە بە کێبڵی USB-C ـی هاوپێچ شەحن دەکرێت."
+  },
+  "highlights": [
+    {
+      "ar": "19 منفذ 3.5mm ومنفذا USB 2.0 لتوصيل مفاتيح وأزرار وعصي خارجية",
+      "en": "19 × 3.5mm ports and 2 × USB 2.0 for external switches, buttons and joysticks",
+      "ckb": "19 دەروازەی 3.5mm و 2 دەروازەی USB 2.0 بۆ سویچ و دوگمە و جۆیستیکی دەرەکی"
+    },
+    {
+      "ar": "تخصيص الأزرار وحفظ 3 ملفات يتم التبديل بينها بزر Profile",
+      "en": "Button remapping, with 3 profiles switched by the Profile button",
+      "ckb": "ڕێکخستنەوەی دوگمەکان، لەگەڵ 3 پرۆفایل کە بە دوگمەی Profile دەگۆڕدرێن"
+    },
+    {
+      "ar": "XBOX Wireless وBluetooth وUSB-C، ومقبس سماعة 3.5mm",
+      "en": "XBOX Wireless, Bluetooth and USB-C, plus a 3.5mm headset jack",
+      "ckb": "XBOX Wireless و Bluetooth و USB-C، لەگەڵ دەروازەی هێدسێتی 3.5mm"
+    },
+    {
+      "ar": "فتحات تثبيت على حوامل AMPS وحوامل التصوير الثلاثية",
+      "en": "Mounting threads for AMPS mounts and camera tripods",
+      "ckb": "شوێنی بەستنەوە بۆ هەڵگری AMPS و سێپێی کامێرا"
+    }
+  ],
+  "specs": [
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "19 منفذ 3.5mm ومنفذا USB 2.0 للمدخلات الخارجية، ومقبس سماعة ستيريو 3.5mm",
+        "en": "19 × 3.5mm and 2 × USB 2.0 for external inputs; 3.5mm stereo headset jack",
+        "ckb": "19 × 3.5mm و 2 × USB 2.0 بۆ کۆنترۆڵی دەرەکی؛ دەروازەی هێدسێتی ستێریۆی 3.5mm"
+      }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": {
+        "ar": "XBOX Wireless مع XBOX One وXBOX Series X|S؛ Bluetooth أو USB مع Windows 10/11 وبعض الشاشات الذكية وiOS وAndroid",
+        "en": "XBOX Wireless to XBOX One and XBOX Series X|S; Bluetooth or USB to Windows 10/11, select smart TVs, iOS and Android",
+        "ckb": "XBOX Wireless لەگەڵ XBOX One و XBOX Series X|S؛ Bluetooth یان USB لەگەڵ Windows 10/11، هەندێک شاشەی زیرەک، iOS و Android"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية والشحن", "en": "Battery and charging", "ckb": "پاتری و شەحن" },
+      "value": {
+        "ar": "بطارية ليثيوم أيون داخلية تُشحن بكابل USB-C المرفق أو بمحول كهرباء (يُباع منفصلاً)",
+        "en": "Internal lithium-ion battery, charged with the included USB-C cable or a power adapter (sold separately)",
+        "ckb": "پاتریی لیسیۆم-ئایۆنی ناوەکی، بە کێبڵی USB-C ـی هاوپێچ یان ئەداپتەری کارەبا (جیا دەفرۆشرێت) شەحن دەکرێت"
+      }
+    },
+    {
+      "key": "mounting",
+      "label": { "ar": "التثبيت", "en": "Mounting", "ckb": "بەستنەوە" },
+      "value": {
+        "ar": "براغي 1/4-20 لحوامل AMPS ولحوامل التصوير الثلاثية",
+        "en": "1/4-20 threads for AMPS-compatible mounts and tripods",
+        "ckb": "پێچی 1/4-20 بۆ هەڵگری گونجاو لەگەڵ AMPS و سێپێ"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "292 × 130 × 23 ملم", "en": "292 × 130 × 23 mm", "ckb": "292 × 130 × 23 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "552 غرام (الكابل 64 غرام)", "en": "552 g (cable 64 g)", "ckb": "552 گرام (کێبڵ 64 گرام)" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "XBOX Adaptive Controller", "en": "XBOX Adaptive Controller", "ckb": "XBOX Adaptive Controller" },
+    { "ar": "كابل USB-C بطول 2.7 متر (9 أقدام)", "en": "9 ft (2.7 m) USB-C cable", "ckb": "کێبڵی USB-C ـی 2.7 مەتر (9 پێ)" }
+  ],
+  "variants": [
+    {
+      "sku": "XAC-STD",
+      "title": { "ar": "XBOX Adaptive Controller", "en": "XBOX Adaptive Controller", "ckb": "XBOX Adaptive Controller" },
+      "options": { "color": "White" },
+      "isDefault": true,
+      "images": ["xbox-adaptive-controller--1", "xbox-adaptive-controller--2", "xbox-adaptive-controller--3", "xbox-adaptive-controller--4"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "verified",
+      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "Windows 10/11 عبر Bluetooth أو USB؛ تخصيص الأزرار على Windows يحتاج اتصالاً سلكياً",
+        "en": "Windows 10/11 over Bluetooth or USB; remapping on Windows needs a wired USB connection",
+        "ckb": "Windows 10/11 بە Bluetooth یان USB؛ ڕێکخستنەوەی دوگمەکان لەسەر Windows پێویستی بە USB ـی وایەردار هەیە"
+      },
+      "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
+    }
+  ],
+  "related": [
+    { "slug": "xbox-wireless-controller", "kind": "setup" },
+    { "slug": "xbox-series-s", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "xbox-adaptive-controller--1",
+      "file": ".cache/product-images/xbox-adaptive-controller/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b00?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
+      "kind": "hero",
+      "alt": {
+        "ar": "XBOX Adaptive Controller الأبيض بزريه الكبيرين من الأعلى",
+        "en": "White XBOX Adaptive Controller with its two large buttons, seen from above",
+        "ckb": "XBOX Adaptive Controller ـی سپی لەگەڵ دوو دوگمە گەورەکەی، لە سەرەوە"
+      },
+      "credit": "Microsoft",
+      "width": 2748,
+      "height": 1339,
+      "transparent": true
+    },
+    {
+      "key": "xbox-adaptive-controller--2",
+      "file": ".cache/product-images/xbox-adaptive-controller/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b02?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
+      "kind": "angle",
+      "alt": {
+        "ar": "Adaptive Controller بزاوية تظهر منفذ USB ومقبس السماعة على الجانب",
+        "en": "Adaptive Controller at an angle showing the side USB port and headset jack",
+        "ckb": "Adaptive Controller بە گۆشەیەک کە دەروازەی USB و هێدسێتی لاتەنیشت نیشان دەدات"
+      },
+      "credit": "Microsoft",
+      "width": 2703,
+      "height": 1221,
+      "transparent": true
+    },
+    {
+      "key": "xbox-adaptive-controller--3",
+      "file": ".cache/product-images/xbox-adaptive-controller/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b01?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
+      "kind": "detail",
+      "alt": {
+        "ar": "الحافة الخلفية مع صف منافذ 3.5mm لتوصيل الأجهزة المساعدة",
+        "en": "Back edge with the row of 3.5mm ports for assistive devices",
+        "ckb": "لێواری پشتەوە لەگەڵ ڕیزی دەروازەکانی 3.5mm بۆ ئامێرە یارمەتیدەرەکان"
+      },
+      "credit": "Microsoft",
+      "width": 2765,
+      "height": 239,
+      "transparent": true
+    },
+    {
+      "key": "xbox-adaptive-controller--4",
+      "file": ".cache/product-images/xbox-adaptive-controller/4.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b04?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجانب الأيمن من Adaptive Controller مع منفذ USB الثاني",
+        "en": "Right side of the Adaptive Controller with the second USB port",
+        "ckb": "لای ڕاستی Adaptive Controller لەگەڵ دەروازەی USB ـی دووەم"
+      },
+      "credit": "Microsoft",
+      "width": 2747,
+      "height": 530,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller",
+      "title": "XBOX Adaptive Controller",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "purpose, connectivity incl. XBOX Series X|S, ports, profiles, in the box, mounting, battery, dimensions, weight"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
+      "title": "Buy XBOX Adaptive Controller",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "tech specs (ports, in the box with 9 ft USB-C cable, battery, dimensions, weight), images"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Adaptive_Controller",
+      "title": "Xbox Adaptive Controller",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 4 September 2018, designed for players with disabilities"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2018/09/04/xbox-adaptive-controller-now-available/",
+      "title": "Gaming Gets More Inclusive with the Launch of the Xbox Adaptive Controller",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "official launch on 4 September 2018"
+    }
+  ],
+  "notes": {
+    "ar": "المفاتيح والأزرار والعصي الخارجية لا تأتي مع اليد وتُشترى منفصلة. يمكن ربطها مع يد XBOX عادية بميزة XBOX Controller Assist (كان اسمها سابقاً Copilot) ليلعب شخصان كأنهما يد واحدة.",
+    "en": "External switches, buttons and joysticks are not included and are bought separately. It can be paired with a standard XBOX controller using XBOX Controller Assist (formerly called Copilot) so two people play as one controller.",
+    "ckb": "سویچ و دوگمە و جۆیستیکی دەرەکی لەگەڵی نین و جیا دەکڕدرێن. دەتوانرێت بە تایبەتمەندیی XBOX Controller Assist (ناوی پێشووی Copilot بوو) لەگەڵ دەسکێکی ئاسایی XBOX ببەسترێتەوە بۆ ئەوەی دوو کەس وەک یەک دەسک یاری بکەن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Model number and barcodes were not found on an official page"
+    ]
+  }
+}

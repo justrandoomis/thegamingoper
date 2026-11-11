@@ -1,0 +1,392 @@
+{
+  "slug": "lenovo-legion-go-s",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "Lenovo",
+  "deviceModel": "legion-go-s",
+  "family": "legion-go-s",
+  "status": "available",
+  "name": { "ar": "Lenovo Legion Go S", "en": "Lenovo Legion Go S", "ckb": "Lenovo Legion Go S" },
+  "short": {
+    "ar": "شاشة 8 بوصة 120Hz · نسخة SteamOS أو Windows 11 · Z1 Extreme أو Z2 Go",
+    "en": "8-inch 120Hz · SteamOS or Windows 11 · Z1 Extreme or Z2 Go",
+    "ckb": "شاشەی 8 ئینچ 120Hz · SteamOS یان Windows 11 · Z1 Extreme یان Z2 Go"
+  },
+  "description": {
+    "ar": "جهاز Legion Go بهيكل واحد ويدي تحكم ثابتتين، أخف وأبسط من Legion Go الأصلي. يأتي بشاشة 8 بوصة بدقة 1920×1200 وتردد حتى 120Hz وبطارية 55.5Wh. يباع بنسختين: Powered by SteamOS، وهو أول جهاز من شركة أخرى غير Valve يعمل رسمياً بنظام SteamOS، أو بنظام Windows 11، ومع معالج AMD Ryzen Z1 Extreme أو Ryzen Z2 Go الأضعف.",
+    "en": "A one-piece Legion Go with fixed controllers, lighter and simpler than the original Legion Go. It has an 8-inch 1920×1200 screen at up to 120Hz and a 55.5Wh battery. It is sold as Powered by SteamOS, the first handheld from a company other than Valve to ship SteamOS officially, or with Windows 11, and with either the AMD Ryzen Z1 Extreme or the weaker Ryzen Z2 Go.",
+    "ckb": "Legion Go ـێکی یەک-پارچە بە دەسکی جێگیر، سووکتر و سادەتر لە Legion Go ـی سەرەتایی. شاشەی 8 ئینچی 1920×1200 بە تا 120Hz و پاتریی 55.5Wh ـی هەیە. بە دوو شێوە دەفرۆشرێت: Powered by SteamOS، یەکەم ئامێری دەستی لە کۆمپانیایەکی جگە لە Valve کە بە فەرمی SteamOS ـی تێدایە، یان بە Windows 11، و لەگەڵ AMD Ryzen Z1 Extreme یان Ryzen Z2 Go ـی لاوازتر."
+  },
+  "highlights": [
+    {
+      "ar": "نسختان من النظام: SteamOS بواجهة تشبه Steam Deck، أو Windows 11 لتطبيق Xbox ومتاجر الحاسوب",
+      "en": "Two OS choices: SteamOS with a Steam Deck-style interface, or Windows 11 for the Xbox app and other PC stores",
+      "ckb": "دوو هەڵبژاردەی سیستەم: SteamOS بە ڕووکارێکی وەک Steam Deck، یان Windows 11 بۆ ئەپی Xbox و فرۆشگاکانی تری کۆمپیوتەر"
+    },
+    {
+      "ar": "شاشة IPS قياس 8 بوصة بدقة 1920×1200 وتردد 48–120Hz مع VRR وسطوع 500 nit",
+      "en": "8-inch 1920×1200 IPS screen, 48–120Hz VRR, 500 nits",
+      "ckb": "شاشەی IPS ـی 8 ئینچ بە 1920×1200، 48–120Hz VRR، 500 nit"
+    },
+    {
+      "ar": "نسخة Z1 Extreme أقوى بوضوح من نسخة Z2 Go (ثماني أنوية مقابل أربع)",
+      "en": "The Z1 Extreme version is clearly stronger than the Z2 Go version (8 cores versus 4)",
+      "ckb": "وەشانی Z1 Extreme بە ڕوونی بەهێزترە لە وەشانی Z2 Go (8 ناوک بەرامبەر 4)"
+    },
+    {
+      "ar": "بطارية 55.5Wh تشحن 70% في 30 دقيقة، ومنفذا USB4",
+      "en": "55.5Wh battery that charges to 70% in 30 minutes, and two USB4 ports",
+      "ckb": "پاتریی 55.5Wh کە لە 30 خولەکدا 70% شەحن دەبێت، و دوو دەروازەی USB4"
+    },
+    {
+      "ar": "وزن حوالي 740 غرام، وعصي Hall Effect وزنادات بمفتاح لضبط مدى الضغط",
+      "en": "About 740 g, with Hall Effect sticks and triggers with an adjustable travel switch",
+      "ckb": "نزیکەی 740 گرام، بە جۆیستیکی Hall Effect و تریگەری خاوەن سویچی ڕێکخستنی ماوەی پەستان"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen Z1 Extreme (8 أنوية / 16 مساراً حتى 5.1GHz) أو AMD Ryzen Z2 Go (4 أنوية / 8 مسارات حتى 4.3GHz)، مع رسوميات AMD Radeon",
+        "en": "AMD Ryzen Z1 Extreme (8 cores / 16 threads, up to 5.1GHz) or AMD Ryzen Z2 Go (4 cores / 8 threads, up to 4.3GHz), with AMD Radeon graphics",
+        "ckb": "AMD Ryzen Z1 Extreme (8 ناوک / 16 دەزوو، تا 5.1GHz) یان AMD Ryzen Z2 Go (4 ناوک / 8 دەزوو، تا 4.3GHz)، لەگەڵ گرافیکی AMD Radeon"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": {
+        "ar": "16GB أو 32GB مدمجة: LPDDR5X-7500 مع Z1 Extreme، و6400 MT/s مع Z2 Go",
+        "en": "16GB or 32GB, soldered: LPDDR5X-7500 with the Z1 Extreme, 6400 MT/s with the Z2 Go",
+        "ckb": "16GB یان 32GB، لکێنراو: LPDDR5X-7500 لەگەڵ Z1 Extreme، و 6400 MT/s لەگەڵ Z2 Go"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "512GB أو 1TB بحجم M.2 2242 PCIe 4.0",
+        "en": "512GB or 1TB M.2 2242 PCIe 4.0 SSD",
+        "ckb": "512GB یان 1TB ـی M.2 2242 PCIe 4.0"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": { "ar": "قارئ بطاقات microSD", "en": "microSD card reader", "ckb": "خوێنەری کارتی microSD" }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "8 بوصة WUXGA (1920×1200) من نوع IPS تعمل باللمس، 16:10، 48–120Hz مع VRR، سطوع 500 nit، تغطية 100% من sRGB",
+        "en": "8-inch WUXGA (1920×1200) IPS touchscreen, 16:10, 48–120Hz VRR, 500 nits, 100% sRGB",
+        "ckb": "شاشەی دەستلێدانی IPS ـی 8 ئینچ WUXGA (1920×1200)، 16:10، 48–120Hz VRR، 500 nit، 100% sRGB"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "55.5Wh، شحن سريع: 70% خلال 30 دقيقة",
+        "en": "55.5Wh, Super Rapid Charge: 70% in 30 minutes",
+        "ckb": "55.5Wh، شەحنی زۆر خێرا: 70% لە 30 خولەکدا"
+      }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": {
+        "ar": "شاحن USB-C بقدرة 65W (حسب الدولة)",
+        "en": "65W USB-C adapter (depends on country)",
+        "ckb": "شەحنکەری USB-C ـی 65W (بەپێی وڵات)"
+      }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": { "ar": "SteamOS أو Windows 11 Home حسب النسخة", "en": "SteamOS or Windows 11 Home, depending on the model", "ckb": "SteamOS یان Windows 11 Home، بەپێی مۆدێل" }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذان USB4 بسرعة 40Gbps (شحن PD 65–100W وDisplayPort 1.4)، مقبس صوت 3.5mm، قارئ microSD",
+        "en": "2× USB4 40Gbps (PD 65–100W in, DisplayPort 1.4), 3.5mm audio jack, microSD reader",
+        "ckb": "2× USB4 ـی 40Gbps (شەحنی PD 65–100W، DisplayPort 1.4)، دەروازەی دەنگی 3.5mm، خوێنەری microSD"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 6E (2×2) وBluetooth 5.3", "en": "Wi-Fi 6E (2×2) and Bluetooth 5.3", "ckb": "Wi-Fi 6E (2×2) و Bluetooth 5.3" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "يدا TrueStrike ثابتتان، عصي Hall Effect، زنادات بمفتاح لضبط المدى، لوحة لمس صغيرة، أزرار خلفية، حساس حركة؛ لا يوجد قارئ بصمة",
+        "en": "Fixed TrueStrike controls, Hall Effect sticks, triggers with a range switch, small touchpad, rear buttons, gyro; no fingerprint reader",
+        "ckb": "کۆنترۆڵی جێگیری TrueStrike، جۆیستیکی Hall Effect، تریگەر بە سویچی ماوە، تەختەی دەستلێدانی بچووک، دوگمەی پشتەوە، Gyro؛ خوێنەری پەنجەمۆری نییە"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "298.5 × 127.55 × 22.6–43.4 ملم", "en": "298.5 × 127.55 × 22.6–43.4 mm", "ckb": "298.5 × 127.55 × 22.6–43.4 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "حوالي 740 غرام", "en": "About 740 g", "ckb": "نزیکەی 740 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "نسخ SteamOS: واجهة Steam غير مترجمة إلى العربية حالياً، لكن يمكن اختيار العربية للألعاب التي تدعمها من إعدادات اللعبة في Steam. نسخ Windows: يمكن تشغيل Windows 11 بالعربية بعد إضافة حزمة اللغة العربية، إلا في نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق",
+        "en": "SteamOS models: Steam's interface is not translated into Arabic yet, but games that include Arabic can be set to Arabic in their Steam settings. Windows models: Windows 11 can run in Arabic once the Arabic language pack is added, except on the Windows 11 Home Single Language edition sold in some markets",
+        "ckb": "مۆدێلەکانی SteamOS: ڕووکاری Steam هێشتا وەرنەگێڕدراوەتە سەر عەرەبی، بەڵام ئەو یاریانەی عەرەبییان تێدایە دەتوانیت لە ڕێکخستنی یارییەکە لە Steam عەرەبییان بۆ هەڵبژێریت. مۆدێلەکانی Windows: Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی، جگە لە وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Legion Go S", "en": "Legion Go S", "ckb": "ئامێری Legion Go S" },
+    {
+      "ar": "شاحن USB-C بقدرة 65W (حسب الدولة؛ لا توجد ملحقات أخرى مرفقة)",
+      "en": "65W USB-C adapter (depends on country; no other accessories are bundled)",
+      "ckb": "شەحنکەری USB-C ـی 65W (بەپێی وڵات؛ هیچ پاشکۆیەکی تر لەگەڵیدا نییە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "LEGOS-Z1E-STEAM",
+      "title": {
+        "ar": "Legion Go S بنظام SteamOS Z1 Extreme 32GB / 1TB Nebula Nocturne",
+        "en": "Legion Go S Powered by SteamOS, Z1 Extreme 32GB / 1TB, Nebula Nocturne",
+        "ckb": "Legion Go S بە SteamOS، Z1 Extreme 32GB / 1TB، Nebula Nocturne"
+      },
+      "options": { "os": "SteamOS", "chip": "Ryzen Z1 Extreme", "memory": "32GB", "storage": "1TB", "color": "Nebula Nocturne" },
+      "modelNumber": "83N6",
+      "isDefault": true,
+      "images": ["lenovo-legion-go-s--1", "lenovo-legion-go-s--2", "lenovo-legion-go-s--3", "lenovo-legion-go-s--4"]
+    },
+    {
+      "sku": "LEGOS-Z1E-WIN",
+      "title": {
+        "ar": "Legion Go S بنظام Windows 11 Z1 Extreme 32GB / 1TB أبيض Glacier White",
+        "en": "Legion Go S with Windows 11, Z1 Extreme 32GB / 1TB, Glacier White",
+        "ckb": "Legion Go S بە Windows 11، Z1 Extreme 32GB / 1TB، سپیی Glacier White"
+      },
+      "options": { "os": "Windows 11 Home", "chip": "Ryzen Z1 Extreme", "memory": "32GB", "storage": "1TB", "color": "Glacier White" },
+      "modelNumber": "83N6",
+      "isDefault": false,
+      "images": ["lenovo-legion-go-s--5", "lenovo-legion-go-s--6"]
+    },
+    {
+      "sku": "LEGOS-Z2GO-STEAM",
+      "title": {
+        "ar": "Legion Go S بنظام SteamOS Z2 Go 16GB / 512GB Nebula Nocturne",
+        "en": "Legion Go S Powered by SteamOS, Z2 Go 16GB / 512GB, Nebula Nocturne",
+        "ckb": "Legion Go S بە SteamOS، Z2 Go 16GB / 512GB، Nebula Nocturne"
+      },
+      "options": { "os": "SteamOS", "chip": "Ryzen Z2 Go", "memory": "16GB", "storage": "512GB", "color": "Nebula Nocturne" },
+      "modelNumber": "83L3",
+      "isDefault": false,
+      "images": ["lenovo-legion-go-s--1", "lenovo-legion-go-s--2", "lenovo-legion-go-s--3", "lenovo-legion-go-s--4"],
+      "notes": {
+        "ar": "النسخة الأرخص والأضعف أداءً. متجر Lenovo الأمريكي يعرضها حالياً بعبارة «متوفر قريباً».",
+        "en": "The cheaper, slower version. Lenovo's US store currently shows it as 'Available soon'.",
+        "ckb": "وەشانی هەرزانتر و هێواشتر. فرۆشگای ئەمریکی Lenovo ئێستا وەک «بەم زووانە بەردەست دەبێت» نیشانی دەدات."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "steam-deck-oled", "kind": "alternative" },
+    { "slug": "lenovo-legion-go-2", "kind": "upsell" },
+    { "slug": "rog-xbox-ally", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "lenovo-legion-go-s--1",
+      "file": ".cache/product-images/lenovo-legion-go-s/1.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#01_Legion_Go_S_Steam_Front_facing.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ces-2025/",
+      "kind": "hero",
+      "alt": {
+        "ar": "Legion Go S بنظام SteamOS بلون Nebula Nocturne من الأمام",
+        "en": "Legion Go S Powered by SteamOS in Nebula Nocturne, from the front",
+        "ckb": "Legion Go S ـی SteamOS بە ڕەنگی Nebula Nocturne، لە پێشەوە"
+      },
+      "credit": "Lenovo",
+      "width": 2200,
+      "height": 2200,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go-s--2",
+      "file": ".cache/product-images/lenovo-legion-go-s/2.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#03_Legion_Go_S_Steam_45_degree_front_facing_left.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ces-2025/",
+      "kind": "angle",
+      "alt": { "ar": "Legion Go S من زاوية 45 درجة", "en": "Legion Go S at a 45-degree angle", "ckb": "Legion Go S لە گۆشەی 45 پلە" },
+      "credit": "Lenovo",
+      "width": 2200,
+      "height": 2200,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go-s--3",
+      "file": ".cache/product-images/lenovo-legion-go-s/3.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#02_Legion_Go_S_Steam_Back.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ces-2025/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من Legion Go S", "en": "Back of Legion Go S", "ckb": "پشتەوەی Legion Go S" },
+      "credit": "Lenovo",
+      "width": 2200,
+      "height": 2200,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go-s--4",
+      "file": ".cache/product-images/lenovo-legion-go-s/4.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#11_Legion_Go_S_Steam_Top.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ces-2025/",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لجهاز Legion Go S مع المنافذ", "en": "Top edge of Legion Go S with its ports", "ckb": "لێواری سەرەوەی Legion Go S لەگەڵ دەروازەکان" },
+      "credit": "Lenovo",
+      "width": 2200,
+      "height": 2200,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go-s--5",
+      "file": ".cache/product-images/lenovo-legion-go-s/5.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/01/08040353/Legion-Go-S-8in-1.zip#01_Legion_Go_S_Front_facing.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ces-2025/",
+      "kind": "hero",
+      "alt": {
+        "ar": "Legion Go S الأبيض Glacier White من الأمام",
+        "en": "Legion Go S in Glacier White, from the front",
+        "ckb": "Legion Go S ـی سپیی Glacier White، لە پێشەوە"
+      },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    },
+    {
+      "key": "lenovo-legion-go-s--6",
+      "file": ".cache/product-images/lenovo-legion-go-s/6.png",
+      "sourceUrl": "https://media.lenovonews.fiestic.com/2025/01/08040353/Legion-Go-S-8in-1.zip#03_Legion_Go_S_45_degree_front_facing_left.png",
+      "sourcePage": "https://news.lenovo.com/press-kits/ces-2025/",
+      "kind": "angle",
+      "alt": {
+        "ar": "Legion Go S الأبيض من زاوية 45 درجة",
+        "en": "Glacier White Legion Go S at a 45-degree angle",
+        "ckb": "Legion Go S ـی سپی لە گۆشەی 45 پلە"
+      },
+      "credit": "Lenovo",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://psref.lenovo.com/Product/Legion/Legion_Go_S_8APU1?tab=spec",
+      "title": "Legion Go S 8APU1 – PSREF Specifications (Ryzen Z1 Extreme)",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "Z1 Extreme, Windows or SteamOS, 16/32GB LPDDR5X-7500, 512GB/1TB M.2 2242, display, 55.5Wh, ports, colours, weight, no fingerprint reader, no bundled accessories"
+    },
+    {
+      "url": "https://psref.lenovo.com/Product/Legion/Legion_Go_S_8ARP1?tab=spec",
+      "title": "Legion Go S 8ARP1 – PSREF Specifications (Ryzen Z2 Go)",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "Z2 Go, Windows or SteamOS, 16/32GB at 6400 MT/s, storage, display 48–120Hz VRR, battery and charging, adapter, dimensions, wireless"
+    },
+    {
+      "url": "https://www.lenovo.com/us/en/p/handheld/legion-go-s/len106g0003",
+      "title": "Legion Go S (AMD Ryzen Z1 Extreme) – Lenovo US",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "on sale today: SteamOS Nebula Nocturne 32GB/1TB (83N6000GUS) and Windows Glacier White 32GB/1TB (83N60000US)"
+    },
+    {
+      "url": "https://www.lenovo.com/us/en/p/handheld/legion-go-s/len106g0002",
+      "title": "Legion Go S (AMD Ryzen Z2 Go) – Lenovo US",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "SteamOS Z2 Go 16GB/512GB Nebula Nocturne (83L30030US), shown as 'Available soon'"
+    },
+    {
+      "url": "https://news.lenovo.com/pressroom/press-releases/lenovo-legion-unleashes-next-gen-gaming-power-at-ces-2025/",
+      "title": "Lenovo Legion Unleashes Next-Gen Gaming Power at CES 2025",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "first officially licensed third-party SteamOS handheld; US availability from January 2025 (Windows) and May 2025 (SteamOS); Hall Effect sticks"
+    },
+    {
+      "url": "https://news.lenovo.com/press-kits/ces-2025/",
+      "title": "CES 2025 press kit",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-11",
+      "supports": "official product images (Legion Go S and Legion Go S Powered by SteamOS image sets)"
+    },
+    {
+      "url": "https://www.pcgamer.com/hardware/handheld-gaming-pcs/lenovo-legion-go-s-steamos-review/",
+      "title": "Lenovo Legion Go S SteamOS review",
+      "publisher": "PC Gamer",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the SteamOS Z1 Extreme model: 32GB LPDDR5X, 1TB, 8-inch 1920×1200 IPS up to 120Hz with VRR, 55.5Wh battery, Nebula Nocturne colour, fixed (non-detachable) controllers"
+    },
+    {
+      "url": "https://partner.steamgames.com/doc/store/localization/languages",
+      "title": "Languages Supported on Steam (Steamworks Documentation)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "the Steam interface is not translated into Arabic and cannot be run in Arabic; Arabic can be chosen per game for games that include it"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language (one of the editions on Lenovo's spec sheet) cannot install additional languages"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    }
+  ],
+  "notes": {
+    "ar": "نسخة SteamOS تعمل بحساب Steam ومكتبتك هناك. نسخة Windows تحتاج حساب Microsoft، والعراق ليس ضمن قائمة Microsoft لدول خدمات Xbox، لذلك Game Pass غير مقدم رسمياً هنا. توفرت نسخة Windows في الولايات المتحدة من يناير 2025 ونسخة SteamOS من مايو 2025.",
+    "en": "The SteamOS version runs on your Steam account and library. The Windows version needs a Microsoft account; Iraq is not on Microsoft's list of Xbox service countries, so Game Pass is not officially offered here. In the US the Windows version arrived from January 2025 and the SteamOS version from May 2025.",
+    "ckb": "وەشانی SteamOS بە هەژمار و کتێبخانەی Steam ـەکەت کار دەکات. وەشانی Windows پێویستی بە هەژماری Microsoft هەیە؛ عێراق لە لیستی Microsoft بۆ وڵاتانی خزمەتگوزاریی Xbox نییە، بۆیە Game Pass بە فەرمی لێرە پێشکەش ناکرێت. لە ئەمریکا وەشانی Windows لە کانوونی دووەمی 2025 و وەشانی SteamOS لە ئایاری 2025 هات."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact release days not published; releaseDate left out",
+      "PSREF also lists Windows with the Z2 Go chip, but no such model is in Lenovo's US store today, so it is not offered as a variant",
+      "Hall Effect sticks come from Lenovo's CES 2025 press release; the PSREF sheet does not name the stick type",
+      "Barcodes not found on an official page"
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "key": "ea-sports-fc-27--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27/1-240.6f1ed78c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27/1-480.515acacb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27/1-720.7db9f5dc.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27/1-960.b8981e3e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27/1-1440.986fe17f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27/1-240.8c3bf555.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27/1-480.25c6c68f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27/1-720.5986af74.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27/1-960.b15f7c7b.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27/1-1440.507c934b.webp"
+      }
+    ],
+    "png": "/products/ea-sports-fc-27/1-720.2d8e8b30.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQBACdASoUABQAPxGAtlWsJ6SjKAgBgCIJZQDCgBDeBIe4cI+bQZGv5tQPK3frAAD41Rk+TvJfu1TY9w9MMf1ZfMoFb9wkxBzKF2w1RQlH/ZTADDQsIijfOYHbtGOHuwhXSQk5Y2u4/H58k9ax2SIqxt5tiMND/KK10CSUNg/4AA==",
+  "dominant": "#fbfcf6",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://drop-assets.ea.com/images/5K1irdzIk8dr7VqEfe2yRm/993ad991664df96b85b6910197bb5143/fc-27-standard-key-art-1x1.jpg",
+    "page": "https://www.ea.com/games/ea-sports-fc/fc-27"
+  },
+  "input": "ced3d9c51beee505"
+}

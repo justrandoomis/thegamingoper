@@ -1,0 +1,57 @@
+{
+  "key": "sandisk-microsd-express--1",
+  "view": "hero",
+  "width": 1268,
+  "height": 967,
+  "aspect": 1.3113,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-microsd-express/1-240.485be879.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-microsd-express/1-480.4a2005e6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-microsd-express/1-720.94bcd0b4.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-microsd-express/1-960.f490d3db.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-microsd-express/1-240.4acee6ee.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-microsd-express/1-480.893f8418.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-microsd-express/1-720.35178086.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-microsd-express/1-960.3a4eb272.webp"
+      }
+    ],
+    "png": "/products/sandisk-microsd-express/1-720.ec54c152.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSEEAAAART6AkABo2iUbj2O+wiAhY+QregU0kW5GGm/R74opRgA0y0pXwBf9sBUT0fwIQk6Nmflb9v9VaOKp3fx5AxOEAAABWUDggigAAAFAEAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglsAJ0yhHcAJZz+xS6kRMpwnSwA/i5En/yusSbqt2WI+79n+5utCZP60TYUkMQkgvHDMJgr7eWA2nxwMP/gsqQTIxNsMuax0OYFnIt8Aeco5wIvMjHJxKI2qKsNo8mcjn2WGgQaloKIGpWNplAN/AAAAA==",
+  "dominant": "#e50604",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sandisk / Nintendo",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-256gb-front.png",
+    "page": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXFN-256G-GR6ZZ"
+  },
+  "input": "553032c1d25c1577"
+}

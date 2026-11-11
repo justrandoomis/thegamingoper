@@ -1,0 +1,65 @@
+{
+  "key": "resident-evil-requiem--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-requiem/2-240.400363ee.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-requiem/2-480.04299b31.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-requiem/2-720.6e6f4630.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-requiem/2-960.2c1c0906.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/resident-evil-requiem/2-1440.ea09257c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-requiem/2-240.aa8cdf66.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-requiem/2-480.8fd06ca9.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-requiem/2-720.0330941b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-requiem/2-960.ae0ea109.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/resident-evil-requiem/2-1440.63259d94.webp"
+      }
+    ],
+    "png": "/products/resident-evil-requiem/2-720.b2daf5fd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACwAwCdASoUAAsAPxFysVAsJqSisAgBgCIJaQAAXlvMxiIy9JAYAAD+5X28ae9mHjfdvEwLYKX/OgtgAAA=",
+  "dominant": "#161818",
+  "transparent": false,
+  "background": "#0e1010",
+  "kind": "screenshot",
+  "credit": "Capcom",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Resident-Evil-Requiem-Grace-1st-person-screenshot-11-25feb26?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/resident-evil-requiem/"
+  },
+  "input": "7562b024dd6d17f3"
+}

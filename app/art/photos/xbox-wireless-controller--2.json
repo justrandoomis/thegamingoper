@@ -1,0 +1,65 @@
+{
+  "key": "xbox-wireless-controller--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 959,
+  "aspect": 1.6684,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-wireless-controller/2-240.09e33ca0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-wireless-controller/2-480.7a4fab17.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-wireless-controller/2-720.4838e5b2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-wireless-controller/2-960.892c66fd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-wireless-controller/2-1440.6c62b797.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-wireless-controller/2-240.850e0d9b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-wireless-controller/2-480.580cd9ce.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-wireless-controller/2-720.ef4f8416.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-wireless-controller/2-960.ad25302e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-wireless-controller/2-1440.2cc66030.webp"
+      }
+    ],
+    "png": "/products/xbox-wireless-controller/2-720.8cff2225.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkgBAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSHMAAAART6CokSQ1tiKY93UQEQHqn3mxD5zYtu0mNz2yUSyOFYnE9TaAD7aje3Nx8fQz4Ywhov+p0s69fihcScqZvgmlaPed3YvtY2d1wGmlHXD3UJMOEOQD8BcwCBt7yJ4Q2HrC9A2Z9Jqbx89c2tLRkjGKmioDAFZQOCCuAAAAkAQAnQEqFAAMAD8RcrBQLCakorAIAYAiCWwAnTlBOlZVGAsdS+aHf698YPTAAP5y9em3CL1qM5f/LfjCD03rAyT5e8TlgUD5d3Mvo1AhsG0kI4yx3sNzZzMM9z3yXBwUUPJwvsAxn46EXvwZ40UErF/a97EiJy1CR5Tf9yqv6PZuzMbNpUg4vovLHzGmc8hkcLyvOFwziP39v6pl31R/wpPwaBtKLHf+vNzVrAAA",
+  "dominant": "#f6f7fd",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Xbox-Wireless-Controller_CP-0_8-Controllers_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz"
+  },
+  "input": "fa9309fa15ec212e"
+}

@@ -4,15 +4,17 @@
  *   1. drops every table, trigger and view in the local D1 the dev server uses
  *   2. re-applies all migrations in ./drizzle (recorded in d1_migrations, so wrangler agrees)
  *   3. runs seedReference() — governorates, settings defaults, chart of accounts, …
- *   4. runs the demo seed (app/server/db/seed/demo.ts) when that file exists
+ *   4. runs seedRoles() — the built-in staff roles and their default permissions
+ *   5. runs the demo seed (app/server/db/seed/demo.ts) when that file exists
+ *   6. prints the row counts of the main tables
  *
  *   npm run db:reset                 everything above
- *   npm run db:reset -- --no-demo    skip step 4 (reference data only)
+ *   npm run db:reset -- --no-demo    skip step 5 (reference data and roles only)
  *   npm run db:reset -- --kv         also delete every key in the local KV namespace (uploaded files)
- *   npm run db:reset -- --demo-seed=path/to/module.ts   run another seed module in step 4
+ *   npm run db:reset -- --demo-seed=path/to/module.ts   run another seed module in step 5
  *
  * The demo seed module exports `seedDemo(db, now, { d1, kv, env })` (also accepted: `seedDemoData`,
- * `seed`, or a default export). It runs AFTER seedReference, against the real constraints and
+ * `seed`, or a default export). It runs AFTER seedReference and seedRoles, against the real constraints and
  * triggers; if it throws, the script reports the database rule that refused it and exits with 1.
  *
  * Local only: it talks to wrangler's local state in .wrangler/state/v3 and has no way to reach a
@@ -23,10 +25,43 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { getPlatformProxy } from "wrangler";
+import { seedRoles } from "~/server/auth/seed-roles";
 import { createDb, type Db } from "~/server/db/drizzle.server";
 import { seedReference } from "~/server/db/seed/reference";
 import { mapDbError } from "~/server/db/tx.server";
 import { PROJECT_ROOT, applyMigrations, dropEverything } from "../tests/helpers/migrations";
+
+/** Tables whose row counts the reset prints at the end: reference data, roles, the demo catalogue, and what must stay empty. */
+const SUMMARY_TABLES = [
+  "settings",
+  "governorates",
+  "districts",
+  "accounts",
+  "inventory_locations",
+  "roles",
+  "role_permissions",
+  "platforms",
+  "device_models",
+  "categories",
+  "products",
+  "variants",
+  "variant_costs",
+  "media",
+  "stock_levels",
+  "stock_movements",
+  "serials",
+  "cost_layers",
+  "compatibility_rules",
+  "search_index",
+  "used_units",
+  "knowledge_articles",
+  "fx_rates",
+  "coupons",
+  "reviews",
+  "customers",
+  "employees",
+  "orders",
+] as const;
 
 const USAGE = "Usage: npm run db:reset [-- --no-demo] [-- --kv] [-- --demo-seed=<module>]";
 const argv = process.argv.slice(2);
@@ -94,6 +129,9 @@ async function main(): Promise<number> {
         `${reference.accounts} accounts, ${reference.inspectionTemplates} inspection templates, ${reference.locations} stock location, ${reference.channels} channels.`,
     );
 
+    const roles = await seedRoles(db, now);
+    console.log(`Roles: ${roles.created.length} created (${roles.created.join(", ") || "none"}), ${roles.existing.length} already there.`);
+
     if (args.has("--kv")) console.log(`Local KV: deleted ${await clearKv(proxy.env.KV)} keys.`);
 
     if (args.has("--no-demo")) {
@@ -127,6 +165,10 @@ async function main(): Promise<number> {
       )
       .first<{ n: number }>();
     const triggers = await d1.prepare("SELECT count(*) AS n FROM sqlite_master WHERE type = 'trigger'").first<{ n: number }>();
+    const counts = await d1.batch<{ n: number }>(SUMMARY_TABLES.map((name) => d1.prepare(`SELECT count(*) AS n FROM "${name}"`)));
+    console.log("Rows in the main tables:");
+    const width = Math.max(...SUMMARY_TABLES.map((name) => name.length));
+    SUMMARY_TABLES.forEach((name, index) => console.log(`  ${name.padEnd(width)}  ${String(counts[index].results[0]?.n ?? "?").padStart(5)}`));
     console.log(`Done in ${((Date.now() - started) / 1000).toFixed(1)} s — ${tables?.n ?? "?"} tables and ${triggers?.n ?? "?"} triggers in the local database.`);
   } finally {
     await proxy.dispose();

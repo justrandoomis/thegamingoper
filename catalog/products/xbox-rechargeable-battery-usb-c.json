@@ -1,0 +1,205 @@
+{
+  "slug": "xbox-rechargeable-battery-usb-c",
+  "group": "xbox-hardware",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "family": "xbox-rechargeable-battery-usb-c",
+  "status": "available",
+  "releaseDate": "2020-11-10",
+  "name": {
+    "ar": "XBOX Rechargeable Battery + USB-C Cable",
+    "en": "XBOX Rechargeable Battery + USB-C Cable",
+    "ckb": "XBOX Rechargeable Battery + USB-C Cable"
+  },
+  "short": {
+    "ar": "حتى 30 ساعة للشحنة · شحن كامل بأقل من 4 ساعات · كابل USB-C ‏2.7 م",
+    "en": "Up to 30 h per charge · full charge under 4 h · 9 ft USB-C cable",
+    "ckb": "تا 30 کاتژمێر بۆ هەر شەحنێک · شەحنی تەواو لە کەمتر لە 4 کاتژمێر · کێبڵی USB-C ‏2.7 م"
+  },
+  "description": {
+    "ar": "بطارية رسمية من Microsoft تحل محل بطاريات AA في يد XBOX Wireless Controller، مع كابل USB-C بطول 2.7 متر. تُشحن واليد قيد اللعب، أو بعد اللعب حتى وجهاز XBOX في وضع الاستعداد، وتكتمل الشحنة في أقل من 4 ساعات وتدوم حتى 30 ساعة.",
+    "en": "Microsoft's official battery pack that replaces the AA batteries in the XBOX Wireless Controller, with a 9 ft (2.7 m) USB-C cable. It charges while you play, or afterwards even with the XBOX in standby, reaches a full charge in under 4 hours and lasts up to 30 hours.",
+    "ckb": "پاتریی فەرمیی Microsoft کە لە جیاتی پاتریی AA ـی دەسکی XBOX Wireless Controller دادەنرێت، لەگەڵ کێبڵی USB-C ـی 2.7 مەتر. لە کاتی یاریکردندا شەحن دەکرێت، یان دوای یاری تەنانەت کاتێک XBOX لە دۆخی چاوەڕوانیدایە، لە کەمتر لە 4 کاتژمێردا تەواو شەحن دەبێت و تا 30 کاتژمێر دەمێنێت."
+  },
+  "highlights": [
+    {
+      "ar": "حتى 30 ساعة لعب للشحنة الواحدة",
+      "en": "Up to 30 hours of play per charge",
+      "ckb": "تا 30 کاتژمێر یاری بۆ هەر شەحنێک"
+    },
+    {
+      "ar": "شحن أثناء اللعب أو والجهاز في وضع الاستعداد، وشحن كامل في أقل من 4 ساعات",
+      "en": "Charges while you play or with the console in standby; full in under 4 hours",
+      "ckb": "لە کاتی یاری یان کاتێک کۆنسۆڵ لە دۆخی چاوەڕوانیدایە شەحن دەکرێت؛ لە کەمتر لە 4 کاتژمێر پڕ دەبێت"
+    },
+    {
+      "ar": "كابل USB-C بطول 2.7 متر مرفق",
+      "en": "9 ft (2.7 m) USB-C cable included",
+      "ckb": "کێبڵی USB-C ـی 2.7 مەتر لەگەڵیەتی"
+    },
+    {
+      "ar": "للأيادي التي فيها منفذ USB-C (أيادي XBOX Series X|S)",
+      "en": "For XBOX Wireless Controllers with a USB-C port (the XBOX Series X|S controller)",
+      "ckb": "بۆ دەسکەکانی XBOX Wireless Controller کە دەروازەی USB-C یان هەیە (دەسکی XBOX Series X|S)"
+    }
+  ],
+  "specs": [
+    {
+      "key": "battery-life",
+      "label": { "ar": "مدة البطارية", "en": "Battery life", "ckb": "تەمەنی پاتری" },
+      "value": { "ar": "حتى 30 ساعة للشحنة", "en": "Up to 30 hours per charge", "ckb": "تا 30 کاتژمێر بۆ هەر شەحنێک" }
+    },
+    {
+      "key": "charge-time",
+      "label": { "ar": "زمن الشحن", "en": "Charging time", "ckb": "کاتی شەحن" },
+      "value": { "ar": "أقل من 4 ساعات للشحن الكامل", "en": "Under 4 hours to full", "ckb": "کەمتر لە 4 کاتژمێر بۆ پڕبوون" }
+    },
+    {
+      "key": "cable",
+      "label": { "ar": "الكابل", "en": "Cable", "ckb": "کێبڵ" },
+      "value": { "ar": "USB-C بطول 2.7 متر (9 أقدام)", "en": "USB-C, 9 ft (2.7 m)", "ckb": "USB-C، ‏2.7 مەتر (9 پێ)" }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
+      "value": {
+        "ar": "أيادي XBOX Wireless Controller التي فيها منفذ USB-C",
+        "en": "XBOX Wireless Controllers with a USB-C port",
+        "ckb": "دەسکەکانی XBOX Wireless Controller کە دەروازەی USB-C یان هەیە"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "بطارية XBOX قابلة للشحن", "en": "XBOX Rechargeable Battery", "ckb": "پاتریی شەحنکراوەی XBOX" },
+    { "ar": "كابل USB-C بطول 2.7 متر", "en": "9 ft (2.7 m) USB-C cable", "ckb": "کێبڵی USB-C ـی 2.7 مەتر" }
+  ],
+  "variants": [
+    {
+      "sku": "XRB-USBC",
+      "title": {
+        "ar": "XBOX Rechargeable Battery + USB-C Cable",
+        "en": "XBOX Rechargeable Battery + USB-C Cable",
+        "ckb": "XBOX Rechargeable Battery + USB-C Cable"
+      },
+      "options": { "color": "Black" },
+      "isDefault": true,
+      "images": ["xbox-rechargeable-battery-usb-c--1", "xbox-rechargeable-battery-usb-c--2", "xbox-rechargeable-battery-usb-c--3"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": {
+        "ar": "للاستعمال داخل يد XBOX Wireless Controller ذات منفذ USB-C المرفقة مع الجهاز",
+        "en": "Goes in the USB-C XBOX Wireless Controller that comes with the console",
+        "ckb": "لەناو دەسکی XBOX Wireless Controller ـی USB-C دادەنرێت کە لەگەڵ کۆنسۆڵەکە دێت"
+      },
+      "source": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "verified",
+      "note": {
+        "ar": "للاستعمال داخل يد XBOX Wireless Controller ذات منفذ USB-C المرفقة مع الجهاز",
+        "en": "Goes in the USB-C XBOX Wireless Controller that comes with the console",
+        "ckb": "لەناو دەسکی XBOX Wireless Controller ـی USB-C دادەنرێت کە لەگەڵ کۆنسۆڵەکە دێت"
+      },
+      "source": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": {
+        "ar": "للاستعمال داخل يد XBOX Wireless Controller ذات منفذ USB-C المرفقة مع الجهاز",
+        "en": "Goes in the USB-C XBOX Wireless Controller that comes with the console",
+        "ckb": "لەناو دەسکی XBOX Wireless Controller ـی USB-C دادەنرێت کە لەگەڵ کۆنسۆڵەکە دێت"
+      },
+      "source": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit"
+    }
+  ],
+  "related": [
+    { "slug": "xbox-wireless-controller", "kind": "setup" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-series-s", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "xbox-rechargeable-battery-usb-c--1",
+      "file": ".cache/product-images/xbox-rechargeable-battery-usb-c/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/200912399_Image-Buy-Box-0_2555x1555?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-rechargeable-battery-usb-c-cable/8thsbp49z46x",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطارية XBOX السوداء القابلة للشحن مع كابل USB-C",
+        "en": "Black XBOX Rechargeable Battery with its USB-C cable",
+        "ckb": "پاتریی ڕەشی شەحنکراوەی XBOX لەگەڵ کێبڵی USB-C"
+      },
+      "credit": "Microsoft",
+      "width": 2555,
+      "height": 1555,
+      "transparent": true
+    },
+    {
+      "key": "xbox-rechargeable-battery-usb-c--2",
+      "file": ".cache/product-images/xbox-rechargeable-battery-usb-c/2.jpg",
+      "sourceUrl": "https://assets.xboxservices.com/assets/24/28/24287d05-3a7b-491c-85f8-ff9bc7ff6132.jpg?n=X1-090234_Gallery-0_02_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit",
+      "kind": "angle",
+      "alt": { "ar": "البطارية والكابل بزاوية مائلة", "en": "Battery and cable at an angle", "ckb": "پاتری و کێبڵ بە گۆشەیەکی لار" },
+      "credit": "Microsoft",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    },
+    {
+      "key": "xbox-rechargeable-battery-usb-c--3",
+      "file": ".cache/product-images/xbox-rechargeable-battery-usb-c/3.jpg",
+      "sourceUrl": "https://assets.xboxservices.com/assets/98/1c/981ca0bf-4252-46fa-b1c2-8c5f0676ee37.jpg?n=X1-090234_Gallery-0_03_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit",
+      "kind": "detail",
+      "alt": { "ar": "طرف كابل USB-C", "en": "The USB-C plug of the cable", "ckb": "سەری کێبڵی USB-C" },
+      "credit": "Microsoft",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/accessories/batteries-chargers/play-and-charge-kit",
+      "title": "XBOX Rechargeable Battery + USB-C Cable",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "release date 10 November 2020, compatibility (controllers with USB-C), up to 30 hours, full charge under 4 hours, charging in standby, images"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-rechargeable-battery-usb-c-cable/8thsbp49z46x",
+      "title": "Buy XBOX Rechargeable Battery + USB-C Cable",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "9 ft USB-C cable, specifications, product image"
+    },
+    {
+      "url": "https://www.xbox.com/en-GB/accessories/batteries-chargers/play-and-charge-kit",
+      "title": "XBOX Rechargeable Battery + USB-C Cable (UK)",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "second official regional page confirming release date, compatibility, 30-hour battery and 4-hour charge"
+    }
+  ],
+  "notes": {
+    "ar": "لا حاجة لها مع يد Elite Series 2 أو يد Nano لأن فيهما بطارية مدمجة. أيادي XBOX One القديمة ذات منفذ micro-USB غير مذكورة ضمن الأجهزة المدعومة.",
+    "en": "Not needed for the Elite Series 2 or the Nano controller, which have built-in batteries. Older XBOX One controllers with micro-USB are not listed as supported.",
+    "ckb": "بۆ دەسکی Elite Series 2 و Nano پێویست نییە چونکە پاتریی ناوەکییان هەیە. دەسکە کۆنەکانی XBOX One کە micro-USB یان هەیە وەک پشتگیریکراو ناونەبراون."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Battery capacity (mAh) is not published by Microsoft",
+      "Model number and barcodes were not found on an official page"
+    ]
+  }
+}

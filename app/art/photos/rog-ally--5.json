@@ -1,0 +1,41 @@
+{
+  "key": "rog-ally--5",
+  "view": "hero",
+  "width": 674,
+  "height": 1600,
+  "aspect": 0.4213,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/rog-ally/5-240.8b5a4492.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/rog-ally/5-480.aa3b8f13.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/rog-ally/5-240.35f67637.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/rog-ally/5-480.a57e9a73.webp"
+      }
+    ],
+    "png": "/products/rog-ally/5-674.0fbe2dac.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRswAAABXRUJQVlA4WAoAAAAQAAAABwAAEwAAQUxQSFEAAAART6CgbSQUvwpmiIiAJlx6qQDT2LbiPKiCDrBfRlJCSsDG7cuXSGTkrZdJDxH9nwBJsntSwdXooUIqkIweDcIMcYXQcA3fT8O14qq4jEU6s0YAVlA4IFQAAACwAwCdASoIABQAPxF0sVCsJqSisAgBgCIJaQAAUpr/1lxNHxOSAAD8sY8HgZmV4cObwTYByd1LVztdsXOOWR6BpaM/JFpB1K5cQCsY1Wbr4AAAAAA=",
+  "dominant": "#c8c8c8",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "ASUS",
+  "source": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/2B2C09FE-1C0B-44CA-8EAB-D4C1024857C4/",
+    "page": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/"
+  },
+  "input": "c1f32fdb93cce911"
+}

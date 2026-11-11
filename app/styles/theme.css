@@ -1,0 +1,186 @@
+/*
+ * Tailwind 4 ↔ design tokens. Imported by app/app.css OUTSIDE any layer: @theme, @utility and @custom-variant must
+ * stay at the top level.
+ *
+ * The default palette, radius, shadow, blur and letter-spacing scales are removed, so the only colours, radii and
+ * shadows a utility can produce are the tokens of docs/DESIGN.md §5 — `bg-red-500`, `rounded-2xl`, `shadow-lg`,
+ * `backdrop-blur-md` and `tracking-wide` simply do not exist here.
+ *
+ * `@theme inline` makes each utility carry the token reference itself (`.bg-floor { background-color: var(--ground) }`),
+ * so a [data-theme] subtree re-themes utilities exactly like it re-themes components.
+ * Theme keys deliberately never reuse a token's name (no `--font-display` here): a theme variable named like the
+ * token it points at would become a self-reference.
+ */
+
+@theme {
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --blur-*: initial;
+  --tracking-*: initial;
+  --breakpoint-*: initial;
+
+  /* §5.6 breakpoints: 600 large phone · 768 tablet · 1024 · 1200 desktop · 1280 content max-width */
+  --breakpoint-sm: 37.5rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 75rem;
+  --breakpoint-2xl: 80rem;
+}
+
+@theme inline {
+  /* surfaces — flat (§6.3) */
+  --color-floor: var(--ground);
+  --color-ground: var(--ground);
+  --color-niche: var(--niche);
+  --color-stage: var(--stage);
+  --color-well: var(--well);
+  --color-paper: var(--paper);
+  --color-glass-solid: var(--glass-solid);
+  /* text and lines */
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-on-glass-2: var(--on-glass-2);
+  --color-on-sel: var(--on-sel);
+  --color-sel: var(--sel-face);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  /* state — text and dots, always with words */
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-info: var(--info);
+  --color-red-ink: var(--red-ink);
+  /* brand red exists as a utility only for the logo (`text-logo`); commit keys and the cart bead are components.
+     lint-design: allow red — the logo's colour; scripts/lint-design.mjs rejects bg-logo / border-logo surfaces */
+  --color-logo: var(--red);
+
+  /* radius — one scale (§5.7) and its jobs */
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-tag: var(--r-xs);
+  --radius-key: var(--r-md);
+  --radius-chip: var(--r-md);
+  --radius-field: var(--r-md);
+  --radius-niche: var(--r-lg);
+  --radius-panel: var(--r-lg);
+  --radius-stage: var(--r-xl);
+  --radius-sheet: var(--r-xl);
+
+  /* elevation — one blurred shadow per object, static (§5.7) */
+  --shadow-e1: var(--e-1);
+  --shadow-e2: var(--e-2);
+  --shadow-e3: var(--e-3);
+  --shadow-e4: var(--e-4);
+  --shadow-e4-up: var(--e-4-up);
+  --shadow-e5: var(--e-5);
+  --shadow-wall: 0 3px 0 var(--clay-wall);
+  --shadow-well: var(--well-shadow);
+  --shadow-rim: var(--glass-rim);
+
+  /* families — prefer the type roles below; these exist for the odd one-off */
+  --font-headline: var(--font-head);
+  --font-kufam: var(--font-display);
+  --font-plex: var(--font-text);
+}
+
+/* Dark is an attribute on <html> (or any subtree), never the media query: `dark:` follows the shopper's choice. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+/* Admin density (§10). */
+@custom-variant admin (&:where([data-density="admin"], [data-density="admin"] *));
+
+/* ── type roles (§5.5): size, weight, line-height and face in one class ── */
+@utility type-hero {
+  font: var(--type-hero);
+  text-wrap: balance;
+}
+@utility type-title {
+  font: var(--type-title);
+  text-wrap: balance;
+}
+@utility type-section {
+  font: var(--type-section);
+  text-wrap: balance;
+}
+@utility type-sub {
+  font: var(--type-sub);
+}
+@utility type-button {
+  font: var(--type-button);
+}
+@utility type-body {
+  font: var(--type-body);
+}
+@utility type-strong {
+  font: var(--type-strong);
+}
+@utility type-label {
+  font: var(--type-label);
+}
+@utility type-caption {
+  font: var(--type-caption);
+}
+@utility type-tab {
+  font: var(--type-tab);
+}
+@utility type-tag {
+  font: var(--type-tag);
+}
+@utility type-data {
+  font: var(--type-data);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@utility type-data-sm {
+  font: var(--type-data-sm);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@utility type-kpi {
+  font: var(--type-kpi);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+/* every price, counter, quantity and table cell */
+@utility nums {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ── layout helpers ── */
+/* the page column: content max-width 1280, side gutter 16 / 24 / 40, never inside the safe area */
+@utility page {
+  inline-size: 100%;
+  max-inline-size: calc(var(--page-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), var(--safe-inline));
+}
+@utility gutter {
+  padding-inline: max(var(--gutter), var(--safe-inline));
+}
+@utility gap-card {
+  gap: var(--gap-card);
+}
+@utility gap-section {
+  gap: var(--gap-section);
+}
+/* bars pad for the home indicator and the notch (§8 sticky rule) */
+@utility safe-top {
+  padding-block-start: var(--safe-top);
+}
+@utility safe-bottom {
+  padding-block-end: var(--safe-bottom);
+}
+@utility safe-x {
+  padding-inline: max(var(--gutter), var(--safe-inline));
+}
+/* a 44 × 44 hit area around a control that looks smaller (§5.6) — the element must be positioned */
+@utility hit-44 {
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--target)) / 2));
+    inset-inline: min(0px, calc((100% - var(--target)) / 2));
+  }
+}

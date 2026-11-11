@@ -201,7 +201,8 @@ try {
         requestAnimationFrame(() =>
           resolve({
             animations: el.getAnimations().length,
-            origin: el.style.transformOrigin,
+            from: el.getAnimations().flatMap((a) => a.effect.getKeyframes().slice(0, 1).map((k) => k.translate ?? k.opacity)),
+            duration: el.getAnimations().map((a) => a.effect.getComputedTiming().duration),
             properties: [...new Set(el.getAnimations().flatMap((a) => a.effect.getKeyframes().flatMap((k) => Object.keys(k))))].filter((k) => !["offset", "easing", "composite", "computedOffset"].includes(k)),
           }),
         );
@@ -212,7 +213,8 @@ try {
   await tap(page, '[data-testid="menu-open"]');
   await page.waitForSelector('[data-testid="menu"]');
   const opening = await page.evaluate(() => window.__menu);
-  add("materialize: menu grows from its trigger (scale + opacity only)", opening.animations === 2 && opening.origin !== "" && opening.properties.sort().join() === "opacity,scale", opening);
+  // DESIGN.md §7.2: menus drop from their trigger with 8px of travel and opacity, 220 ms in.
+  add("materialize: the menu drops 8px from its trigger and fades in (translate + opacity only, 220 ms)", opening.animations === 2 && opening.properties.sort().join() === "opacity,translate" && opening.from.includes("0px -8px") && opening.duration.every((d) => d === 220), opening);
   await sleep(500);
   await page.keyboard.press("Escape");
   await page.waitForFunction(() => !document.querySelector('[data-testid="menu"]'), { timeout: 3000 });

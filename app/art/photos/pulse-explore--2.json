@@ -1,0 +1,65 @@
+{
+  "key": "pulse-explore--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 991,
+  "aspect": 1.6145,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pulse-explore/2-240.f4ce7a53.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-explore/2-480.27fa4c0f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-explore/2-720.fbf87f94.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-explore/2-960.491298ab.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pulse-explore/2-1440.477937f4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pulse-explore/2-240.f2795d97.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-explore/2-480.0892f341.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-explore/2-720.b0ff4d9e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pulse-explore/2-960.16a78702.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pulse-explore/2-1440.f48d2a01.webp"
+      }
+    ],
+    "png": "/products/pulse-explore/2-720.603d5be2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSGQAAAART6CgjSQ1dRoYnz8iAubH9POHgWltPU8+OjIwSZ3gnwCF7kWimkPCAC37JjtE9F9h0gZM0vELpATt4+i/LUVyWCinqogt+nyczMxzkTtYWHq5NSsD+jQgMwhCADDD+h8OpJEFVlA4IIAAAADwAwCdASoUAAwAPxFysFAsJqSisAgBgCIJYwDCgYtAYOvsJ/5yb/AAAP7n2pj93X0cogQjwClrKWKw3/jKBjj3yUWZfLR0pRfBxiu45qJhZ8u+4ExXoyCfBeSbkrYqXkQr3FejXzB51fd9zpM0xXEvMscOZ/fCcUZiyomGUoAAAA==",
+  "dominant": "#e7ebf7",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-White-05-28x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/"
+  },
+  "input": "d3155b936959f660"
+}

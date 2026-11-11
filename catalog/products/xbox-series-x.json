@@ -1,0 +1,331 @@
+{
+  "slug": "xbox-series-x",
+  "group": "xbox-hardware",
+  "kind": "console",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "deviceModel": "xbox-series-x",
+  "family": "xbox-series-x",
+  "status": "available",
+  "releaseDate": "2020-11-10",
+  "name": { "ar": "XBOX Series X", "en": "XBOX Series X", "ckb": "XBOX Series X" },
+  "short": {
+    "ar": "SSD سعة 1TB · مشغل أقراص 4K UHD Blu-ray · ألعاب 4K حتى 120 إطاراً",
+    "en": "1TB SSD · 4K UHD Blu-ray drive · 4K gaming up to 120 FPS",
+    "ckb": "SSD ـی 1TB · خوێنەری دیسکی 4K UHD Blu-ray · یاریی 4K تا 120 FPS"
+  },
+  "description": {
+    "ar": "أقوى جهاز XBOX من Microsoft، بنسخته السوداء Carbon Black مع SSD سعة 1TB ومشغل أقراص 4K UHD Blu-ray، فيشغّل أقراص الألعاب والألعاب الرقمية معاً. يستهدف دقة 4K حقيقية حتى 120 إطاراً في الثانية، ويشغّل آلاف الألعاب من XBOX One وXBOX 360 وجهاز XBOX الأصلي. في العلبة يد تحكم XBOX Wireless Controller وكابل HDMI فائق السرعة.",
+    "en": "Microsoft's most powerful XBOX, in Carbon Black with a 1TB SSD and a 4K UHD Blu-ray drive, so it plays game discs as well as digital games. It targets true 4K at up to 120 frames per second and runs thousands of games from XBOX One, XBOX 360 and the original XBOX. An XBOX Wireless Controller and an Ultra High Speed HDMI cable come in the box.",
+    "ckb": "بەهێزترین XBOX ـی Microsoft، بە ڕەنگی ڕەشی Carbon Black لەگەڵ SSD ـی 1TB و خوێنەری دیسکی 4K UHD Blu-ray، بۆیە هەم دیسکی یاری و هەم یاریی دیجیتاڵ کار پێدەکات. ئامانجی 4K ـی ڕاستەقینەیە تا 120 وێنە لە چرکەیەکدا، و هەزاران یاریی XBOX One و XBOX 360 و XBOX ـی یەکەم کار پێدەکات. دەسکی XBOX Wireless Controller و کێبڵی HDMI ـی زۆر خێرا لەناو قوتووەکەدان."
+  },
+  "highlights": [
+    {
+      "ar": "SSD مخصص سعة 1TB، ويمكن إضافة مساحة ببطاقة توسعة التخزين (تُباع منفصلة)",
+      "en": "1TB custom NVMe SSD; add space with a Storage Expansion Card (sold separately)",
+      "ckb": "SSD ـی تایبەتی 1TB؛ دەتوانیت بە کارتی فراوانکردنی بیرگە شوێن زیاد بکەیت (جیا دەفرۆشرێت)"
+    },
+    {
+      "ar": "مشغل أقراص 4K UHD Blu-ray لأقراص ألعاب XBOX وأفلام 4K",
+      "en": "4K UHD Blu-ray drive for XBOX game discs and 4K movies",
+      "ckb": "خوێنەری دیسکی 4K UHD Blu-ray بۆ دیسکی یارییەکانی XBOX و فیلمی 4K"
+    },
+    {
+      "ar": "معالج رسوميات بقوة 12 تيرافلوب: دقة 4K حتى 120 إطاراً وجاهز لـ 8K HDR (حسب اللعبة والشاشة)",
+      "en": "12-teraflop GPU: 4K at up to 120 FPS and 8K HDR ready (game and TV support needed)",
+      "ckb": "گرافیکی 12 تێرافلۆپ: 4K تا 120 FPS و ئامادە بۆ 8K HDR (بەپێی یاری و شاشە)"
+    },
+    {
+      "ar": "يشغّل آلاف ألعاب XBOX One وXBOX 360 وXBOX الأصلي، مع Quick Resume للتنقل بين الألعاب",
+      "en": "Plays thousands of XBOX One, XBOX 360 and original XBOX games, with Quick Resume to jump between games",
+      "ckb": "هەزاران یاریی XBOX One و XBOX 360 و XBOX ـی یەکەم کار پێدەکات، لەگەڵ Quick Resume بۆ گۆڕینی خێرای یارییەکان"
+    },
+    {
+      "ar": "قوائم الجهاز متوفرة باللغة العربية",
+      "en": "Console menus are available in Arabic",
+      "ckb": "لیستەکانی کۆنسۆڵەکە بە زمانی عەرەبیش بەردەستن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "cpu",
+      "label": { "ar": "المعالج", "en": "Processor (CPU)", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "8 أنوية AMD Zen 2 مخصصة بتردد 3.8GHz ‏(3.66GHz مع SMT)",
+        "en": "8-core custom AMD Zen 2 at 3.8GHz (3.66GHz with SMT)",
+        "ckb": "8 ناوکی AMD Zen 2 ـی تایبەت بە 3.8GHz ‏(3.66GHz لەگەڵ SMT)"
+      }
+    },
+    {
+      "key": "gpu",
+      "label": { "ar": "معالج الرسوميات", "en": "Graphics (GPU)", "ckb": "گرافیک (GPU)" },
+      "value": {
+        "ar": "12 TFLOPS، ‏52 وحدة حوسبة بتردد 1.825GHz، معمارية AMD RDNA 2 مخصصة",
+        "en": "12 TFLOPS, 52 CUs at 1.825GHz, custom AMD RDNA 2",
+        "ckb": "12 TFLOPS، ‏52 CU بە 1.825GHz، AMD RDNA 2 ـی تایبەت"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگەی RAM" },
+      "value": {
+        "ar": "16GB GDDR6 بناقل 320-bit ‏(10GB بسرعة 560GB/s و6GB بسرعة 336GB/s)",
+        "en": "16GB GDDR6, 320-bit bus (10GB at 560GB/s, 6GB at 336GB/s)",
+        "ckb": "16GB GDDR6، ‏320-bit ‏(10GB بە 560GB/s و 6GB بە 336GB/s)"
+      }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين الداخلي", "en": "Internal storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "SSD ‏NVMe مخصص سعة 1TB، ‏2.4GB/s خام و4.8GB/s مضغوط",
+        "en": "1TB custom NVMe SSD, 2.4GB/s raw, 4.8GB/s compressed",
+        "ckb": "SSD ـی NVMe ـی تایبەت 1TB، ‏2.4GB/s خاو و 4.8GB/s پەستێنراو"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "منفذ بطاقة توسعة التخزين في الخلف (بنفس سرعة الـ SSD الداخلي)، ودعم أقراص USB 3.1 الخارجية للتخزين",
+        "en": "Rear Storage Expansion Card slot (same speed as the internal SSD), plus USB 3.1 external drives for storage",
+        "ckb": "دەروازەی کارتی فراوانکردنی بیرگە لە پشتەوە (هەمان خێرایی SSD ـی ناوەکی)، لەگەڵ هاردی دەرەکیی USB 3.1 بۆ هەڵگرتن"
+      }
+    },
+    {
+      "key": "optical",
+      "label": { "ar": "مشغل الأقراص", "en": "Disc drive", "ckb": "خوێنەری دیسک" },
+      "value": { "ar": "4K UHD Blu-ray", "en": "4K UHD Blu-ray", "ckb": "4K UHD Blu-ray" }
+    },
+    {
+      "key": "video",
+      "label": { "ar": "الدقة والأداء", "en": "Resolution and frame rate", "ckb": "ڕوونی و خێرایی وێنە" },
+      "value": {
+        "ar": "ألعاب بدقة 4K حقيقية، حتى 120 إطاراً في الثانية، وحتى 8K HDR",
+        "en": "True 4K gaming, up to 120 FPS, up to 8K HDR",
+        "ckb": "یاریی 4K ـی ڕاستەقینە، تا 120 FPS، تا 8K HDR"
+      }
+    },
+    {
+      "key": "hdmi",
+      "label": { "ar": "مزايا HDMI", "en": "HDMI features", "ckb": "تایبەتمەندییەکانی HDMI" },
+      "value": {
+        "ar": "HDMI 2.1 مع Auto Low Latency Mode وVariable Refresh Rate وAMD FreeSync",
+        "en": "HDMI 2.1 with Auto Low Latency Mode, Variable Refresh Rate and AMD FreeSync",
+        "ckb": "HDMI 2.1 لەگەڵ Auto Low Latency Mode و Variable Refresh Rate و AMD FreeSync"
+      }
+    },
+    {
+      "key": "audio",
+      "label": { "ar": "الصوت", "en": "Audio", "ckb": "دەنگ" },
+      "value": {
+        "ar": "Dolby Digital 5.1 وDTS 5.1 وDolby TrueHD مع Atmos وحتى 7.1 L-PCM",
+        "en": "Dolby Digital 5.1, DTS 5.1, Dolby TrueHD with Atmos, up to 7.1 L-PCM",
+        "ckb": "Dolby Digital 5.1، DTS 5.1، Dolby TrueHD لەگەڵ Atmos، تا 7.1 L-PCM"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ HDMI 2.1، ‏3 منافذ USB 3.1 Gen 1، منفذ Ethernet، منفذ بطاقة التوسعة",
+        "en": "1× HDMI 2.1, 3× USB 3.1 Gen 1, Ethernet, expansion card slot",
+        "ckb": "1× HDMI 2.1، ‏3× USB 3.1 Gen 1، Ethernet، دەروازەی کارتی فراوانکردن"
+      }
+    },
+    {
+      "key": "network",
+      "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
+      "value": {
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless لأيادي التحكم",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio for controllers",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، و ڕادیۆی XBOX Wireless بۆ دەسکەکان"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "15.1 × 15.1 × 30.1 سم", "en": "15.1 × 15.1 × 30.1 cm", "ckb": "15.1 × 15.1 × 30.1 سم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "4.4 كغم", "en": "4.4 kg", "ckb": "4.4 کگم" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "العربية متاحة (عند اختيار السعودية أو الإمارات موقعاً للجهاز)، إضافة إلى الإنجليزية ولغات أخرى",
+        "en": "Arabic available (with Saudi Arabia or the UAE set as the console location), plus English and other languages",
+        "ckb": "عەرەبی بەردەستە (کاتێک شوێنی کۆنسۆڵەکە سعودیە یان ئیمارات بێت)، لەگەڵ ئینگلیزی و زمانی تر"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز XBOX Series X", "en": "XBOX Series X console", "ckb": "کۆنسۆڵی XBOX Series X" },
+    { "ar": "يد تحكم XBOX Wireless Controller", "en": "XBOX Wireless Controller", "ckb": "دەسکی XBOX Wireless Controller" },
+    { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
+    { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
+  ],
+  "variants": [
+    {
+      "sku": "XSX-1TB-BLK",
+      "title": {
+        "ar": "XBOX Series X ‏1TB مع مشغل أقراص، أسود Carbon Black",
+        "en": "XBOX Series X 1TB, Disc Drive, Carbon Black",
+        "ckb": "XBOX Series X ‏1TB لەگەڵ خوێنەری دیسک، ڕەشی Carbon Black"
+      },
+      "options": { "edition": "Disc Drive", "storage": "1TB", "color": "Carbon Black" },
+      "modelNumber": "1882",
+      "isDefault": true,
+      "images": ["xbox-series-x--1", "xbox-series-x--2", "xbox-series-x--3"]
+    }
+  ],
+  "related": [
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "seagate-storage-expansion-card", "kind": "accessory" },
+    { "slug": "sandisk-optimus-gx-c50-expansion-card", "kind": "accessory" },
+    { "slug": "xbox-wireless-headset", "kind": "accessory" },
+    { "slug": "xbox-rechargeable-battery-usb-c", "kind": "accessory" },
+    { "slug": "xbox-series-x25-limited-edition", "kind": "upsell" },
+    { "slug": "xbox-series-x-digital", "kind": "alternative" },
+    { "slug": "xbox-series-s", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "xbox-series-x--1",
+      "file": ".cache/product-images/xbox-series-x/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-X-Carbon-Black-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز XBOX Series X الأسود بزاوية مائلة مع يد التحكم",
+        "en": "Black XBOX Series X at an angle with its controller",
+        "ckb": "XBOX Series X ـی ڕەش بە گۆشەیەکی لار لەگەڵ دەسکەکەی"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 1500,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x--2",
+      "file": ".cache/product-images/xbox-series-x/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b01-Xbox-Series-X?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهة الخلفية من XBOX Series X مع المنافذ",
+        "en": "Back of the XBOX Series X with its ports",
+        "ckb": "پشتەوەی XBOX Series X لەگەڵ دەروازەکانی"
+      },
+      "credit": "Microsoft",
+      "width": 811,
+      "height": 1620,
+      "transparent": true
+    },
+    {
+      "key": "xbox-series-x--3",
+      "file": ".cache/product-images/xbox-series-x/3.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-Black-b00?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "kind": "in-box",
+      "alt": {
+        "ar": "يد تحكم XBOX Wireless Controller السوداء المرفقة مع الجهاز",
+        "en": "The black XBOX Wireless Controller included with the console",
+        "ckb": "دەسکی ڕەشی XBOX Wireless Controller کە لەگەڵ کۆنسۆڵەکە دێت"
+      },
+      "credit": "Microsoft",
+      "width": 2000,
+      "height": 2000,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
+      "title": "XBOX Series X",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "current line-up (1TB Carbon Black, 1TB Digital, 2TB Galaxy Black, X25), launch date 10 Nov 2020, what is in the box, expansion card and USB storage, 4K/120 FPS, backward compatibility"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
+      "title": "Buy XBOX Series X: 1TB Black or White",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "tech specs (CPU, GPU, memory, SSD, disc drive, HDMI, audio, ports, wireless, dimensions, weight), product images"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S",
+      "title": "Xbox Series X and Series S",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "second source for specs (CPU 3.8 GHz, 3.66 GHz with SMT) and dimensions, model number 1882, launch in November 2020"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/xbox/service-guides/series-x-console/series-x-device-id-and-disassembly",
+      "title": "Xbox Series X Console Safety & Repair Instructions",
+      "publisher": "Microsoft Learn",
+      "retrieved": "2026-11-11",
+      "supports": "official model number: XBOX Series X Model 1882, printed on the label on the back"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/game-principles/localization/console_supported_languages",
+      "title": "Console-supported languages",
+      "publisher": "Microsoft Learn",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic console localization (ar-SA, ar-AE); choosing Arabic limits the console location to Saudi Arabia or the UAE"
+    },
+    {
+      "url": "https://www.saudigamer.com/xbox-one-arabic-localization-coming-fall/",
+      "title": "اللغة العربية قادمة لأجهزة إكسبوكس ون في الخريف",
+      "publisher": "Saudi Gamer",
+      "retrieved": "2026-11-11",
+      "supports": "second source: Microsoft added Arabic as an XBOX console interface language in the 2017 Fall Update"
+    },
+    {
+      "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
+      "title": "XBOX locales FAQ",
+      "publisher": "Microsoft (XBOX Support)",
+      "retrieved": "2026-11-11",
+      "supports": "XBOX support and warranties only in supported countries/regions; system updates work anywhere with an internet connection; store purchases need a billing address that matches the console location"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not on the list of countries/regions where XBOX products and services are supported"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/xbox-game-pass",
+      "title": "XBOX Game Pass",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "online console multiplayer is included in the Essential, Premium and Ultimate plans"
+    },
+    {
+      "url": "https://www.gamespot.com/articles/xbox-is-rebranding-itself-sort-of/1100-6540005/",
+      "title": "Xbox Is Rebranding Itself, Sort Of",
+      "publisher": "GameSpot",
+      "retrieved": "2026-11-11",
+      "supports": "all-caps XBOX styling adopted in May 2026 (xbox.com and the Microsoft Store now use XBOX in product names)"
+    }
+  ],
+  "notes": {
+    "ar": "العراق ليس ضمن قائمة Microsoft للدول والمناطق التي تدعم منتجات وخدمات XBOX، لذلك متجر Microsoft واشتراك Game Pass واللعب السحابي غير مقدمة رسمياً للعراق. وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط، بينما تصل تحديثات النظام إلى الجهاز في أي مكان ما دام متصلاً بالإنترنت. اللعب الجماعي عبر الإنترنت على الجهاز مشمول في كل باقات XBOX Game Pass ‏(Essential وPremium وUltimate) التي تُباع منفصلة. منذ أيار 2026 تكتب Microsoft اسم العلامة بالأحرف الكبيرة XBOX.",
+    "en": "Iraq is not on Microsoft's list of countries and regions where XBOX products and services are supported, so the Microsoft Store, Game Pass and cloud gaming are not officially offered for Iraq. Microsoft says XBOX support and warranties are only available in supported countries, while system updates reach the console anywhere it is online. Online console multiplayer is included in every XBOX Game Pass plan (Essential, Premium and Ultimate), sold separately. Since May 2026 Microsoft writes the brand in capitals as XBOX.",
+    "ckb": "عێراق لە لیستی Microsoft ـدا نییە بۆ ئەو وڵات و ناوچانەی کە بەرهەم و خزمەتگوزارییەکانی XBOX پشتگیری دەکەن، بۆیە فرۆشگای Microsoft و Game Pass و یاریی هەوری بە فەرمی بۆ عێراق پێشکەش ناکرێن. Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە، بەڵام نوێکردنەوەی سیستەم لە هەر شوێنێک بێت دەگاتە کۆنسۆڵەکە ئەگەر بە ئینتەرنێتەوە بەسترابێت. یاریی بە کۆمەڵ لە ئینتەرنێت لەسەر کۆنسۆڵ لە هەموو پلانەکانی XBOX Game Pass ‏(Essential، Premium و Ultimate) دایە کە جیا دەفرۆشرێن. لە ئایاری 2026 ـەوە Microsoft ناوی براندەکە بە پیتی گەورە دەنووسێت: XBOX."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Barcodes (EAN/UPC) were not found on an official page",
+      "Stock levels at retailers were not checked; xbox.com lists the model for sale on 2026-11-11"
+    ]
+  }
+}

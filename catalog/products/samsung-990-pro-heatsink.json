@@ -1,0 +1,317 @@
+{
+  "slug": "samsung-990-pro-heatsink",
+  "group": "accessories-storage-digital",
+  "kind": "storage",
+  "platform": "playstation",
+  "brand": "Samsung",
+  "status": "available",
+  "name": {
+    "ar": "Samsung 990 PRO مع مشتت حراري (NVMe SSD)",
+    "en": "Samsung 990 PRO with Heatsink NVMe SSD",
+    "ckb": "Samsung 990 PRO لەگەڵ ساردکەرەوە (NVMe SSD)"
+  },
+  "short": {
+    "ar": "1TB / 2TB / 4TB · قراءة حتى 7,450MB/s · متوافق مع PS5",
+    "en": "1TB / 2TB / 4TB · up to 7,450MB/s read · PS5 compatible",
+    "ckb": "1TB / 2TB / 4TB · خوێندنەوە تا 7,450MB/s · گونجاو لەگەڵ PS5"
+  },
+  "description": {
+    "ar": "قرص Samsung 990 PRO بواجهة PCIe 4.0 NVMe في نسخته المزودة بمشتت حراري رفيع مع إضاءة RGB، وتصفه Samsung بأنه متوافق مع PlayStation 5. يقرأ حتى 7,450 ميغابايت/ثانية ويكتب حتى 6,900، ويتوفر بسعات 1TB و2TB و4TB. يمكن ضبط الإضاءة وتحديث البرنامج الثابت عبر برنامج Samsung Magician على الكمبيوتر.",
+    "en": "Samsung's 990 PRO PCIe 4.0 NVMe SSD in the version with a slim heatsink and RGB lighting, which Samsung sells as PlayStation 5 compatible. It reads at up to 7,450MB/s and writes at up to 6,900MB/s, in 1TB, 2TB and 4TB. Lighting and firmware are managed with Samsung Magician software on a PC.",
+    "ckb": "SSDی Samsung 990 PRO بە PCIe 4.0 NVMe، لە وەشانێکدا کە ساردکەرەوەیەکی تەنک و ڕووناکیی RGBی هەیە، و Samsung وەک گونجاو لەگەڵ PlayStation 5 دەیفرۆشێت. خێرایی خوێندنەوەی تا 7,450 و نووسینی تا 6,900 مێگابایت/چرکەیە، بە قەبارەکانی 1TB و 2TB و 4TB. ڕووناکی و نوێکردنەوەی فیرموێر بە بەرنامەی Samsung Magician لەسەر کۆمپیوتەر ڕێکدەخرێن."
+  },
+  "highlights": [
+    {
+      "ar": "متوافق مع PS5 بمشتت رفيع سماكته 8.2 ملم (حتى 8.88 ملم في 4TB)",
+      "en": "PS5 compatible with a slim 8.2 mm heatsink (up to 8.88 mm on the 4TB)",
+      "ckb": "گونجاو لەگەڵ PS5 بە ساردکەرەوەیەکی تەنکی 8.2 ملم (تا 8.88 ملم لە 4TB)"
+    },
+    {
+      "ar": "قراءة حتى 7,450MB/s وكتابة حتى 6,900MB/s عبر PCIe 4.0",
+      "en": "Reads up to 7,450MB/s and writes up to 6,900MB/s over PCIe 4.0",
+      "ckb": "خوێندنەوە تا 7,450MB/s و نووسین تا 6,900MB/s بە PCIe 4.0"
+    },
+    {
+      "ar": "إضاءة RGB على المشتت قابلة للتعديل عبر Samsung Magician",
+      "en": "RGB lighting on the heatsink, adjustable in Samsung Magician",
+      "ckb": "ڕووناکیی RGB لەسەر ساردکەرەوەکە، بە Samsung Magician دەگۆڕدرێت"
+    },
+    {
+      "ar": "تشغيل ألعاب PS5 وPS4 مباشرة من القرص",
+      "en": "Play PS5 and PS4 games straight from the drive",
+      "ckb": "یاریکردنی یارییەکانی PS5 و PS4 ڕاستەوخۆ لەسەر SSDیەکە"
+    },
+    {
+      "ar": "ضمان 5 سنوات أو حتى حد الكتابة (TBW)، أيهما أسبق",
+      "en": "5-year warranty or the TBW limit, whichever comes first",
+      "ckb": "گەرەنتیی 5 ساڵ یان تا سنووری نووسین (TBW)، کامیان زووتر بێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "interface",
+      "label": { "ar": "الواجهة", "en": "Interface", "ckb": "ڕووکاری پەیوەندی" },
+      "value": { "ar": "PCIe Gen 4.0 x4، NVMe 2.0، حجم M.2 2280", "en": "PCIe Gen 4.0 x4, NVMe 2.0, M.2 2280", "ckb": "PCIe Gen 4.0 x4، NVMe 2.0، قەبارەی M.2 2280" }
+    },
+    {
+      "key": "read_speed",
+      "label": { "ar": "سرعة القراءة المتتالية", "en": "Sequential read", "ckb": "خێرایی خوێندنەوەی زنجیرەیی" },
+      "value": { "ar": "حتى 7,450MB/s", "en": "Up to 7,450MB/s", "ckb": "تا 7,450MB/s" }
+    },
+    {
+      "key": "write_speed",
+      "label": { "ar": "سرعة الكتابة المتتالية", "en": "Sequential write", "ckb": "خێرایی نووسینی زنجیرەیی" },
+      "value": { "ar": "حتى 6,900MB/s", "en": "Up to 6,900MB/s", "ckb": "تا 6,900MB/s" }
+    },
+    {
+      "key": "random_read",
+      "label": { "ar": "القراءة العشوائية", "en": "Random read", "ckb": "خوێندنەوەی هەڕەمەکی" },
+      "value": { "ar": "حتى 1.2 / 1.4 / 1.6 مليون IOPS (1TB / 2TB / 4TB)", "en": "Up to 1.2M / 1.4M / 1.6M IOPS (1TB / 2TB / 4TB)", "ckb": "تا 1.2M / 1.4M / 1.6M IOPS (1TB / 2TB / 4TB)" }
+    },
+    {
+      "key": "endurance",
+      "label": { "ar": "التحمّل (TBW)", "en": "Endurance (TBW)", "ckb": "بەرگەگرتن (TBW)" },
+      "value": { "ar": "600 / 1,200 / 2,400 تيرابايت مكتوبة (1TB / 2TB / 4TB)", "en": "600 / 1,200 / 2,400 TB written (1TB / 2TB / 4TB)", "ckb": "600 / 1,200 / 2,400 تێرابایت نووسین (1TB / 2TB / 4TB)" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد مع المشتت", "en": "Size with heatsink", "ckb": "قەبارە لەگەڵ ساردکەرەوە" },
+      "value": { "ar": "80 × 24.3 × 8.2 ملم (1TB و2TB)؛ حتى 80.15 × 25 × 8.88 ملم (4TB)", "en": "80 × 24.3 × 8.2 mm (1TB, 2TB); up to 80.15 × 25 × 8.88 mm (4TB)", "ckb": "80 × 24.3 × 8.2 ملم (1TB و 2TB)؛ تا 80.15 × 25 × 8.88 ملم (4TB)" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "حتى 28 غرام", "en": "Up to 28 g", "ckb": "تا 28 گرام" }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگە" },
+      "value": { "ar": "Samsung V-NAND TLC مع ذاكرة LPDDR4 مؤقتة", "en": "Samsung V-NAND TLC with LPDDR4 cache", "ckb": "Samsung V-NAND TLC لەگەڵ کاشی LPDDR4" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "ضمان محدود 5 سنوات أو حتى حد TBW", "en": "5-year limited warranty or up to the TBW limit", "ckb": "گەرەنتیی سنووردار 5 ساڵ یان تا سنووری TBW" }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Compatibility", "ckb": "گونجاندن" },
+      "value": { "ar": "PlayStation 5 وأجهزة PC المكتبية مع منفذ M.2 2280", "en": "PlayStation 5 and desktop PCs with an M.2 2280 slot", "ckb": "PlayStation 5 و کۆمپیوتەری مێزی کە شوێنی M.2 2280ی هەبێت" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SAMSUNG-990PRO-HS-1TB",
+      "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
+      "options": { "storage": "1TB", "heatsink": "yes" },
+      "modelNumber": "MZ-V9P1T0CW",
+      "isDefault": true,
+      "images": ["samsung-990-pro-heatsink--1", "samsung-990-pro-heatsink--2", "samsung-990-pro-heatsink--3"]
+    },
+    {
+      "sku": "SAMSUNG-990PRO-HS-2TB",
+      "title": { "ar": "2TB", "en": "2TB", "ckb": "2TB" },
+      "options": { "storage": "2TB", "heatsink": "yes" },
+      "modelNumber": "MZ-V9P2T0CW",
+      "isDefault": false,
+      "images": ["samsung-990-pro-heatsink--1", "samsung-990-pro-heatsink--2", "samsung-990-pro-heatsink--3", "samsung-990-pro-heatsink--4"],
+      "notes": {
+        "ar": "في المملكة المتحدة وأوروبا يحمل الموديل الرمز MZ-V9P2T0GW.",
+        "en": "Sold in the UK and Europe as MZ-V9P2T0GW.",
+        "ckb": "لە بەریتانیا و ئەوروپا بە کۆدی MZ-V9P2T0GW دەفرۆشرێت."
+      }
+    },
+    {
+      "sku": "SAMSUNG-990PRO-HS-4TB",
+      "title": { "ar": "4TB", "en": "4TB", "ckb": "4TB" },
+      "options": { "storage": "4TB", "heatsink": "yes" },
+      "modelNumber": "MZ-V9P4T0CW",
+      "isDefault": false,
+      "images": ["samsung-990-pro-heatsink--1", "samsung-990-pro-heatsink--2"],
+      "notes": {
+        "ar": "صدرت سعة 4TB في 2023 بعد السعتين الأخريين.",
+        "en": "The 4TB arrived in 2023, after the other two sizes.",
+        "ckb": "قەبارەی 4TB لە 2023 دەرچوو، دوای دوو قەبارەکەی تر."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "تصفه Samsung بأنه متوافق مع PS5. حدّث نظام الجهاز قبل التركيب، وسيُهيّأ القرص عند أول استخدام.",
+        "en": "Sold by Samsung as PS5 compatible. Update the console software first; the PS5 formats the drive on first use.",
+        "ckb": "Samsung وەک گونجاو لەگەڵ PS5 دەیفرۆشێت. پێشتر سیستەمی کۆنسۆڵ نوێ بکەرەوە؛ PS5 لە یەکەم بەکارهێناندا SSDیەکە فۆرمات دەکات."
+      },
+      "source": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-pro-w-heatsink-pcie-4-0-nvme-ssd-2tb-sku-mz-v9p2t0cw/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "note": {
+        "ar": "نفس منفذ M.2 الموجود في نسخة القرص.",
+        "en": "Same M.2 slot as the disc model.",
+        "ckb": "هەمان شوێنی M.2ی وەشانی دیسک."
+      },
+      "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "ضمن حدود Sony لقرص M.2 (عرض حتى 25 ملم وسماكة حتى 11.25 ملم).",
+        "en": "Within Sony's M.2 limits (up to 25 mm wide, 11.25 mm thick).",
+        "ckb": "لەناو سنوورەکانی Sony بۆ M.2 (پانی تا 25 ملم، ئەستووری تا 11.25 ملم)."
+      },
+      "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "note": {
+        "ar": "نفس منفذ M.2 في PS5 Slim.",
+        "en": "Same M.2 slot as the PS5 Slim.",
+        "ckb": "هەمان شوێنی M.2ی PS5 Slim."
+      },
+      "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": {
+        "ar": "ضمن حدود Sony لقرص M.2 التي تشمل PS5 Pro.",
+        "en": "Within Sony's M.2 limits, which cover the PS5 Pro.",
+        "ckb": "لەناو سنوورەکانی Sony بۆ M.2 کە PS5 Proش دەگرێتەوە."
+      },
+      "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "أجهزة PC مع منفذ M.2 2280 يدعم PCIe 4.0 للحصول على كامل السرعة.",
+        "en": "PCs with an M.2 2280 slot; PCIe 4.0 needed for full speed.",
+        "ckb": "کۆمپیوتەر لەگەڵ شوێنی M.2 2280؛ بۆ خێرایی تەواو PCIe 4.0 پێویستە."
+      },
+      "source": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
+    { "slug": "playstation-5-pro", "kind": "setup" },
+    { "slug": "sandisk-optimus-gx-pro-850p", "kind": "alternative" },
+    { "slug": "wd-black-sn850x", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "samsung-990-pro-heatsink--1",
+      "file": ".cache/product-images/samsung-990-pro-heatsink/1.png",
+      "sourceUrl": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959882?$ORIGIN_PNG$",
+      "sourcePage": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/",
+      "kind": "hero",
+      "alt": {
+        "ar": "قرص Samsung 990 PRO مع المشتت الحراري الأسود والأحمر من الأعلى",
+        "en": "Samsung 990 PRO with its black and red heatsink, top view",
+        "ckb": "Samsung 990 PRO لەگەڵ ساردکەرەوە ڕەش و سوورەکەی، لە سەرەوە"
+      },
+      "credit": "Samsung",
+      "width": 1920,
+      "height": 1280,
+      "transparent": true
+    },
+    {
+      "key": "samsung-990-pro-heatsink--2",
+      "file": ".cache/product-images/samsung-990-pro-heatsink/2.png",
+      "sourceUrl": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959863?$ORIGIN_PNG$",
+      "sourcePage": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/",
+      "kind": "angle",
+      "alt": {
+        "ar": "قرص Samsung 990 PRO مع المشتت الحراري من زاوية مائلة",
+        "en": "Samsung 990 PRO with heatsink, angled view",
+        "ckb": "Samsung 990 PRO لەگەڵ ساردکەرەوە، لە گۆشەیەکی لارەوە"
+      },
+      "credit": "Samsung",
+      "width": 1920,
+      "height": 1280,
+      "transparent": true
+    },
+    {
+      "key": "samsung-990-pro-heatsink--3",
+      "file": ".cache/product-images/samsung-990-pro-heatsink/3.png",
+      "sourceUrl": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959862?$ORIGIN_PNG$",
+      "sourcePage": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/",
+      "kind": "detail",
+      "alt": {
+        "ar": "الجهة الخلفية للقرص مع ملصق 990 PRO with Heatsink سعة 2TB",
+        "en": "Underside with the 990 PRO with Heatsink 2TB label",
+        "ckb": "پشتەوەی SSDیەکە لەگەڵ لەیبڵی 990 PRO with Heatsink 2TB"
+      },
+      "credit": "Samsung",
+      "width": 1920,
+      "height": 1280,
+      "transparent": true
+    },
+    {
+      "key": "samsung-990-pro-heatsink--4",
+      "file": ".cache/product-images/samsung-990-pro-heatsink/4.png",
+      "sourceUrl": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959868?$ORIGIN_PNG$",
+      "sourcePage": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة Samsung 990 PRO with Heatsink سعة 2TB",
+        "en": "Retail box of the Samsung 990 PRO with Heatsink 2TB",
+        "ckb": "قوتووی Samsung 990 PRO with Heatsink بە قەبارەی 2TB"
+      },
+      "credit": "Samsung",
+      "width": 1920,
+      "height": 1280,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.samsung.com/us/memory-storage/nvme-ssd/990-pro-w-heatsink-pcie-4-0-nvme-ssd-2tb-sku-mz-v9p2t0cw/",
+      "title": "990 PRO w/ Heatsink PCIe 4.0 NVMe SSD (1TB, 2TB, 4TB pages)",
+      "publisher": "Samsung US",
+      "retrieved": "2026-11-11",
+      "supports": "model numbers, PS5 compatible, speeds, random IOPS, size, weight, memory, warranty and TBW per capacity (1TB and 4TB pages), still on sale"
+    },
+    {
+      "url": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/",
+      "title": "990 PRO PCIe 4.0 NVMe M.2 2TB SSD (with heatsink)",
+      "publisher": "Samsung UK",
+      "retrieved": "2026-11-11",
+      "supports": "UK model code, 1,200 TBW on 2TB, slim heatsink fits PS5, LED colours set in Magician, 4TB released in 2023, images"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/",
+      "title": "How to add an M.2 SSD to a PS5 console",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PS5 M.2 size limits, playing PS5/PS4 games from M.2, formatting on first use"
+    },
+    {
+      "url": "https://www.theverge.com/2022/8/24/23319258/samsung-990-pro-ssd-speeds-heatsink-ps5",
+      "title": "Samsung's new flagship SSDs are even more overkill for your PS5",
+      "publisher": "The Verge",
+      "retrieved": "2026-11-11",
+      "supports": "announced August 2022, on sale October 2022, RGB heatsink version, 4TB a year later, speeds"
+    }
+  ],
+  "notes": {
+    "ar": "حدّث برنامج نظام PS5 قبل التركيب. عند أول استخدام يقوم PS5 بتهيئة القرص بالكامل. لا تضف مشتتاً آخر فوق المشتت المدمج. للحصول على كامل السرعة في الكمبيوتر يلزم منفذ يدعم PCIe 4.0.",
+    "en": "Update the PS5 system software before installing. On first use the PS5 formats the whole drive. Do not add another heatsink on top of the built-in one. A PC needs a PCIe 4.0 slot for full speed.",
+    "ckb": "پێش دانان سیستەمی PS5 نوێ بکەرەوە. لە یەکەم بەکارهێناندا PS5 هەموو SSDیەکە فۆرمات دەکات. ساردکەرەوەیەکی تر لەسەر ساردکەرەوە ناوەکییەکە دامەنێ. کۆمپیوتەر بۆ خێرایی تەواو پێویستی بە شوێنی PCIe 4.0 هەیە."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "Exact first sale day (on sale from October 2022 per The Verge; 4TB in 2023)",
+      "Box contents (not listed on Samsung's pages)",
+      "Samsung US 2TB page shows 600 TBW, which contradicts Samsung UK's 1,200 TBW for the same 2TB drive; 1,200 is used here"
+    ]
+  }
+}

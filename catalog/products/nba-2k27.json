@@ -1,0 +1,269 @@
+{
+  "slug": "nba-2k27",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "2K",
+  "status": "available",
+  "releaseDate": "2026-09-04",
+  "name": { "ar": "NBA 2K27", "en": "NBA 2K27", "ckb": "NBA 2K27" },
+  "short": {
+    "ar": "PS5 · Xbox Series X|S · كرة السلة · 1–4 لاعبين",
+    "en": "PS5 · Xbox Series X|S · basketball · 1–4 players",
+    "ckb": "PS5 · Xbox Series X|S · تۆپی سەبەتە · 1–4 یاریزان"
+  },
+  "description": {
+    "ar": "لعبة كرة السلة السنوية من 2K لموسم 2026–2027، صدرت في 4 أيلول 2026. فيها أطوار MyCAREER وMyTEAM وMyNBA وThe City، ولأول مرة تلعب في MyCAREER عبر خمس حقب من تاريخ الـNBA. اللعبة لأجهزة الجيل الحالي فقط ولا تتوفر على PS4 أو Xbox One.",
+    "en": "2K's yearly basketball game for the 2026–27 season, released on 4 September 2026. It has MyCAREER, MyTEAM, MyNBA and The City, and for the first time MyCAREER takes you through five eras of NBA history. It is made for current consoles only, with no PS4 or Xbox One version.",
+    "ckb": "یاری تۆپی سەبەتەی ساڵانەی 2K بۆ وەرزی 2026–2027، کە لە 4ی ئەیلوولی 2026 دەرچوو. شێوازەکانی MyCAREER، MyTEAM، MyNBA و The City ی تێدایە، و بۆ یەکەم جار MyCAREER بە پێنج سەردەمی مێژووی NBA دا دەتبات. تەنها بۆ ئامێرەکانی ئەم نەوەیە دروستکراوە و وەشانی PS4 و Xbox One ی نییە."
+  },
+  "highlights": [
+    {
+      "ar": "1–4 لاعبين على نفس الجهاز، وحتى 10 لاعبين أونلاين مع لعب مشترك بين PS5 وXbox Series X|S.",
+      "en": "1–4 players on one console and up to 10 online, with crossplay between PS5 and Xbox Series X|S.",
+      "ckb": "1–4 یاریزان لەسەر یەک ئامێر و تا 10 ئۆنلاین، لەگەڵ یاری هاوبەش لە نێوان PS5 و Xbox Series X|S."
+    },
+    {
+      "ar": "حساب NBA 2K واتصال إنترنت مطلوبان للأطوار الأونلاين، مع اشتراك PlayStation Plus أو Game Pass.",
+      "en": "An NBA 2K account and internet are needed for online modes, plus PlayStation Plus or a Game Pass subscription.",
+      "ckb": "هەژماری NBA 2K و ئینتەرنێت بۆ شێوازە ئۆنلاینەکان پێویستن، لەگەڵ PlayStation Plus یان بەشداریکردنی Game Pass."
+    },
+    {
+      "ar": "لا تدعم العربية: الصوت إنجليزي والقوائم بعدة لغات ليس بينها العربية.",
+      "en": "No Arabic: English voice, menus in several languages that do not include Arabic.",
+      "ckb": "عەرەبی تێدا نییە: دەنگ ئینگلیزییە و مێنیو بە چەند زمانێکە کە عەرەبییان تێدا نییە."
+    },
+    {
+      "ar": "حجم كبير: حتى نحو 133 غيغابايت على Xbox Series X|S.",
+      "en": "Large install: up to about 133 GB on Xbox Series X|S.",
+      "ckb": "قەبارەی گەورە: تا نزیکەی 133 گیگابایت لەسەر Xbox Series X|S."
+    },
+    {
+      "ar": "التصنيف PEGI 16 بسبب المشتريات العشوائية داخل اللعبة.",
+      "en": "Rated PEGI 16 because of paid random items.",
+      "ckb": "پۆلێنی PEGI 16 بەهۆی کڕینی شتی هەڕەمەکی لە ناو یارییەکەدا."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "4 أيلول 2026", "en": "4 September 2026", "ckb": "4ی ئەیلوولی 2026" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": {
+        "ar": "PS5 وXbox Series X|S وNintendo Switch 2 وPC (لا يوجد إصدار PS4 أو Xbox One)",
+        "en": "PS5, Xbox Series X|S, Nintendo Switch 2 and PC (no PS4 or Xbox One version)",
+        "ckb": "PS5، Xbox Series X|S، Nintendo Switch 2 و PC (وەشانی PS4 و Xbox One نییە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص PS5 (Standard Edition)", "en": "PS5 disc (Standard Edition)", "ckb": "دیسکی PS5 (Standard Edition)" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
+      "value": {
+        "ar": "حتى نحو 133 غيغابايت على Xbox Series X|S حسب Microsoft Store",
+        "en": "Up to about 133 GB on Xbox Series X|S (Microsoft Store)",
+        "ckb": "تا نزیکەی 133 گیگابایت لەسەر Xbox Series X|S (بەپێی Microsoft Store)"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "1–4 على نفس الجهاز، وحتى 10 أونلاين", "en": "1–4 on one console, up to 10 online", "ckb": "1–4 لەسەر یەک ئامێر، تا 10 ئۆنلاین" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "PlayStation Plus على PS5 أو Game Pass Essential أو أعلى على Xbox، مع حساب NBA 2K",
+        "en": "PlayStation Plus on PS5 or Game Pass Essential or higher on Xbox, plus an NBA 2K account",
+        "ckb": "PlayStation Plus لەسەر PS5 یان Game Pass Essential یان بەرزتر لەسەر Xbox، لەگەڵ هەژماری NBA 2K"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "غير مدعومة", "en": "Not supported", "ckb": "پشتگیری ناکرێت" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 16 / ESRB E", "en": "PEGI 16 / ESRB E", "ckb": "PEGI 16 / ESRB E" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "الناشر", "en": "Publisher", "ckb": "بڵاوکەرەوە" },
+      "value": { "ar": "2K", "en": "2K", "ckb": "2K" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة (Standard Edition)", "en": "Game disc (Standard Edition)", "ckb": "دیسکی یارییەکە (Standard Edition)" }
+  ],
+  "variants": [
+    {
+      "sku": "NBA2K27-PS5-STD",
+      "title": { "ar": "NBA 2K27 لجهاز PS5 — Standard Edition", "en": "NBA 2K27 for PS5 — Standard Edition", "ckb": "NBA 2K27 بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["nba-2k27--1", "nba-2k27--2", "nba-2k27--3", "nba-2k27--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "NBA2K27-XBS-STD",
+      "title": { "ar": "NBA 2K27 لجهاز Xbox Series X|S — Standard Edition", "en": "NBA 2K27 for Xbox Series X|S — Standard Edition", "ckb": "NBA 2K27 بۆ Xbox Series X|S — Standard Edition" },
+      "options": { "platform": "Xbox Series X|S", "edition": "Standard", "format": "Physical" },
+      "isDefault": false,
+      "images": ["nba-2k27--1", "nba-2k27--2", "nba-2k27--3"],
+      "notes": {
+        "ar": "تحقق من نوع الوسيط في علبة Xbox قبل البيع: القرص لا يعمل على Xbox Series S أو Series X Digital.",
+        "en": "Check the media type in the Xbox box before selling: a disc will not work on Xbox Series S or the Series X Digital Edition.",
+        "ckb": "پێش فرۆشتن جۆری ناوەڕۆکی قوتووی Xbox بپشکنە: دیسک لەسەر Xbox Series S و Series X Digital کار ناکات."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "رياضة", "en": "Sports", "ckb": "وەرزش" },
+      { "ar": "كرة سلة", "en": "Basketball", "ckb": "تۆپی سەبەتە" }
+    ],
+    "players": "1-4 local, up to 10 online",
+    "online": {
+      "ar": "الأطوار الأونلاين تحتاج حساب NBA 2K وإنترنت واشتراكاً مدفوعاً (PlayStation Plus أو Game Pass Essential أو أعلى).",
+      "en": "Online modes need an NBA 2K account, internet and a paid subscription (PlayStation Plus or Game Pass Essential or higher).",
+      "ckb": "شێوازە ئۆنلاینەکان پێویستیان بە هەژماری NBA 2K، ئینتەرنێت و بەشداریکردنی پارەدار هەیە (PlayStation Plus یان Game Pass Essential یان بەرزتر)."
+    },
+    "ageRating": { "pegi": 16, "esrb": "E" },
+    "arabic": "none",
+    "physicalFormat": "disc",
+    "sizeGb": 133,
+    "developer": "Visual Concepts",
+    "publisher": "2K"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://store.playstation.com/en-gb/product/UP1001-PPSA35889_00-NBA2K27000000000"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://store.playstation.com/en-gb/product/UP1001-PPSA35889_00-NBA2K27000000000"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "نسخة Xbox Series X|S.", "en": "Xbox Series X|S version.", "ckb": "وەشانی Xbox Series X|S." },
+      "source": "https://www.xbox.com/en-US/games/store/nba-2k27-xbox-series-xs/9n3d82tff6c4"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "unverified",
+      "note": { "ar": "يعمل فقط إذا كانت العلبة تحتوي كود تحميل وليس قرصاً.", "en": "Works only if the box holds a download code rather than a disc.", "ckb": "تەنها کار دەکات ئەگەر قوتووەکە کۆدی داگرتنی تێدابێت نەک دیسک." }
+    }
+  ],
+  "related": [
+    { "slug": "ea-sports-fc-27", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "playstation-store-gift-card", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "nba-2k27--1",
+      "file": ".cache/product-images/nba-2k27/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.31609.13934234425416393.c16fba18-9d46-4e2f-9891-5efae739df3f.356d4164-080b-449e-ae1e-3c7b8c5e8277",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/nba-2k27-xbox-series-xs/9n3d82tff6c4",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف NBA 2K27 — Standard Edition", "en": "NBA 2K27 Standard Edition cover art", "ckb": "وێنەی بەرگی NBA 2K27 — Standard Edition" },
+      "credit": "2K",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "nba-2k27--2",
+      "file": ".cache/product-images/nba-2k27/2.jpg",
+      "sourceUrl": "https://assets.2k.com/1a6ngf98576c/gjvwsF72IGtDdwF6Kf3mJ/b03845c6f03313a6b1047c4c294350e8/N27-ALL-FIRST_LOOK_SCREEN_WEMBY-STATIC-ENUS-NO_RATING-1920x1080-FINAL__2_.jpg",
+      "sourcePage": "https://nba.2k.com/2k27/",
+      "kind": "screenshot",
+      "alt": { "ar": "لاعب San Antonio Spurs داخل الملعب", "en": "A San Antonio Spurs player on court", "ckb": "یاریزانێکی San Antonio Spurs لە یاریگادا" },
+      "credit": "2K",
+      "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "nba-2k27--3",
+      "file": ".cache/product-images/nba-2k27/3.jpg",
+      "sourceUrl": "https://assets.2k.com/1a6ngf98576c/6YOyJHATIayjycOxiAZUBd/848333ed043a0d054bb25c549dc3d3e3/N27-ALL-FIRST_LOOK_SCREEN_CAITLIN_CLARK-STATIC-ENUS-NO_RATING-1920x1080-FINAL__3_.jpg",
+      "sourcePage": "https://nba.2k.com/2k27/",
+      "kind": "screenshot",
+      "alt": { "ar": "لاعبة Indiana Fever في دوري WNBA", "en": "An Indiana Fever player in the WNBA", "ckb": "یاریزانێکی Indiana Fever لە WNBA" },
+      "credit": "2K",
+      "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "nba-2k27--4",
+      "file": ".cache/product-images/nba-2k27/4.jpg",
+      "sourceUrl": "https://assets.2k.com/1a6ngf98576c/53OX2pyHbyRRJNK4o8IKFe/607504dbb3eeb07ccaf26b104d3edf70/N27-ALL-FIRST_LOOK_SCREEN_CADE_CUNNINGHAM-STATIC-ENUS-NO_RATING-1920x1080-FINAL__2_.jpg",
+      "sourcePage": "https://nba.2k.com/2k27/",
+      "kind": "screenshot",
+      "alt": { "ar": "لاعب Detroit Pistons قبل المباراة", "en": "A Detroit Pistons player before the game", "ckb": "یاریزانێکی Detroit Pistons پێش یارییەکە" },
+      "credit": "2K",
+      "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://nba.2k.com/2k27/faq/", "title": "NBA 2K27 FAQs", "publisher": "2K", "retrieved": "2026-11-11", "supports": "physical and digital release 4 Sep 2026, platforms, current-gen only, editions, crossplay PS5/Xbox, NBA 2K account, internet and paid online subscription required" },
+    { "url": "https://nba.2k.com/2k27/", "title": "NBA 2K27 — official site", "publisher": "2K", "retrieved": "2026-11-11", "supports": "modes, Season 2, screenshots" },
+    { "url": "https://store.playstation.com/en-gb/product/UP1001-PPSA35889_00-NBA2K27000000000", "title": "NBA 2K27 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16 with paid random items, 1–4 players, up to 10 online with PS Plus, PS5 Pro Enhanced, English voice, no Arabic screen language" },
+    { "url": "https://www.xbox.com/en-US/games/store/nba-2k27-xbox-series-xs/9n3d82tff6c4", "title": "NBA 2K27 (Xbox Series X|S) — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "release date, 9 languages without Arabic, max install about 133 GB, local 2–4 and online 2–10, ESRB Everyone, MyCAREER eras, cover art" },
+    { "url": "https://www.target.com/p/mcb-27-playstation-5/-/A-1012695231", "title": "NBA 2K27 — PlayStation 5", "publisher": "Target", "retrieved": "2026-11-11", "supports": "PS5 Standard Edition sold as a physical disc" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "العملة الافتراضية VC تُشترى بشكل منفصل من متجر الجهاز. Deluxe وUltra Edition نسختان أغلى بمحتوى إضافي.",
+    "en": "VC, the in-game currency, is bought separately in the console store. The Deluxe and Ultra Editions are pricier versions with extra content.",
+    "ckb": "VC، دراوی ناو یارییەکە، بە جیا لە فرۆشگای ئامێرەکە دەکڕدرێت. Deluxe و Ultra Edition وەشانی گرانترن لەگەڵ ناوەڕۆکی زیادە."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Media type of the Xbox physical box (disc or download code) was not confirmed on an official page.",
+      "The PS5 disc format is confirmed only by a retailer answer (Target); 2K confirms that physical versions exist.",
+      "Developer Visual Concepts is the series developer but was not stated on the pages we read.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

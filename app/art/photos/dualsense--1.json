@@ -1,0 +1,65 @@
+{
+  "key": "dualsense--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1120,
+  "aspect": 1.4286,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense/1-240.a7b7509e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense/1-480.5f0ca889.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense/1-720.151586c5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense/1-960.00cac726.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense/1-1440.8fa1499d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense/1-240.1fafe1e7.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense/1-480.841e8bcb.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense/1-720.27c29bd6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense/1-960.6a737b49.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense/1-1440.010c30cb.webp"
+      }
+    ],
+    "png": "/products/dualsense/1-720.98403190.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGkAAAART6CojSQ0tSKO4UcREfCo+KYYOI1t26kOGcnrAIvD4igBhc7J4S4SlWz44db7Qg0R/Z8AmOZTT1TuLvCwMgO+qhkRa61c5xY6b9EFG19ERH8ON04A4JZ8qeKwYkdK2Y9XIUWHDWFJEAAAVlA4IIwAAADwAwCdASoUAA4APxFysFAsJqSisAgBgCIJZwDG9B8u7xCMnN2tMU8AAP6yKCp88q/Z9YilJoe89UtOUBDUDaWtGXn4NzJNtSF5ZTlgKuyN8z83voUoef9TuEafbnTDeEl+a9vJTf327ogFs/8A/xUika+0AWMj6GXdchMhmpBH7AaX/BOSFfMXmoAAAA==",
+  "dominant": "#d8dce6",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-White01-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/"
+  },
+  "input": "7e855a425b33f893"
+}

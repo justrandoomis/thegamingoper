@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-lite--1",
+  "view": "hero",
+  "width": 1200,
+  "height": 675,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-lite/1-240.b0a970b6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-lite/1-480.4535dfce.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-lite/1-720.dcf6e13f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-lite/1-960.4c93d2e4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-lite/1-240.8429a2e5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-lite/1-480.b720b242.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-lite/1-720.66d2c5db.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-lite/1-960.6adff8be.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-lite/1-720.e489a786.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoMluIpz/4DxuggtsR/u7AD+lPrD3nTUfgxclrBLzlICWmMJ1X6rKilHcVLHtLP+RL86fJHEKT7/bR8tRgSF728AOHUNPlny6vFzLiJmFTtNXVHg2XuHqZ++lw9Q4USD/AA=",
+  "dominant": "#ffffff",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-turquoise/110663-nintendo-switch-lite-turquoise-front-screen-on-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-turquoise/"
+  },
+  "input": "d18d7a015e8ecfea"
+}

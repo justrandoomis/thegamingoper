@@ -1,0 +1,65 @@
+{
+  "key": "elden-ring-nightreign--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/elden-ring-nightreign/4-240.dc4ae4c4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/elden-ring-nightreign/4-480.c0db306e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/elden-ring-nightreign/4-720.584f642c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/elden-ring-nightreign/4-960.90c4b041.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/elden-ring-nightreign/4-1440.87d2ccbf.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/elden-ring-nightreign/4-240.eff584d2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/elden-ring-nightreign/4-480.365f529e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/elden-ring-nightreign/4-720.7e5d8e6f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/elden-ring-nightreign/4-960.a14c2527.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/elden-ring-nightreign/4-1440.a6c424ae.webp"
+      }
+    ],
+    "png": "/products/elden-ring-nightreign/4-720.69cb0005.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJbAAAPMSD2kwwJlJIAAD+3NtmgozAInD9JFm/QddJCvFyLl1UG2FuW4J9vFrXkf9pcXyYAv3yzZlmoT9Yp56vCY7CwzFgAAA=",
+  "dominant": "#050916",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Bandai Namco Entertainment / FromSoftware",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/elden-ring-nightreign-screenshot-05-en-13dec24?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/elden-ring-nightreign/"
+  },
+  "input": "9c4cdcecab59afe7"
+}

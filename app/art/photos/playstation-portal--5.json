@@ -1,0 +1,65 @@
+{
+  "key": "playstation-portal--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 490,
+  "aspect": 3.2653,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/5-240.b3e5423a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/5-480.4c8a748b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/5-720.836af2c3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/5-960.d68d8acb.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/5-1440.796220b4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/5-240.7eb4478c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/5-480.4ed711b4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/5-720.2e6089db.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/5-960.e75ec12c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/5-1440.362c66cc.webp"
+      }
+    ],
+    "png": "/products/playstation-portal/5-720.109efda8.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAAEwAABQAAQUxQSEkAAAARP6AYABo4mUDfMjhGtYgI8C+2wCaSZFUPDHD+UQjnnOM+Ceu//v8eIvo/AcZaa8V7AvZRWmvFQTJlAPRHQ6Y4AduQt33tjBW/AFZQOCBuAAAAkAMAnQEqFAAGAD8RcrFQLCakorAIAYAiCUAACYtAnKid93wrIAD+1RNPrc+LDfv5Zm7AUPtvrcmoTEZZ84gkrHqlGuV75Wa1L1KHrwPVcBLN1912zBz7kWLblYuNsgYB7UefaBVvX1DmCj8AAAA=",
+  "dominant": "#fbfbfb",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStationPortal-White-Product-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+  },
+  "input": "eb0927f164b36bad"
+}

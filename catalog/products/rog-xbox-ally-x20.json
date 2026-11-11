@@ -1,0 +1,358 @@
+{
+  "slug": "rog-xbox-ally-x20",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "ASUS",
+  "deviceModel": "rog-xbox-ally-x",
+  "family": "rog-xbox-ally-x",
+  "status": "limited",
+  "releaseDate": "2026-10-15",
+  "name": { "ar": "ROG Xbox Ally X20", "en": "ROG Xbox Ally X20", "ckb": "ROG Xbox Ally X20" },
+  "short": {
+    "ar": "إصدار الذكرى العشرين · شاشة OLED قياس 7.4 بوصة · 24GB / 1TB",
+    "en": "20th-anniversary edition · 7.4-inch OLED · 24GB / 1TB",
+    "ckb": "وەشانی یادی 20 ساڵە · شاشەی OLED ـی 7.4 ئینچ · 24GB / 1TB"
+  },
+  "description": {
+    "ar": "إصدار خاص من ROG Xbox Ally X بمناسبة مرور 20 عاماً على علامة ROG، بهيكل أسود شفاف وتفاصيل ذهبية. يحتفظ بنفس المعالج AMD Ryzen AI Z2 Extreme وذاكرة 24GB وتخزين 1TB، لكنه يضيف شاشة OLED قياس 7.4 بوصة مع HDR، وعصي TMR، وأسهم اتجاه قابلة للتحويل، وقارئ microSD Express. يعمل بنظام Windows 11 ويبدأ في وضع Xbox.",
+    "en": "A special edition of the ROG Xbox Ally X for ROG's 20th anniversary, with a translucent black shell and gold details. It keeps the AMD Ryzen AI Z2 Extreme, 24GB of memory and 1TB of storage, and adds a 7.4-inch HDR OLED screen, TMR sticks, a transforming D-pad and a microSD Express reader. It runs Windows 11 and starts in Xbox mode.",
+    "ckb": "وەشانێکی تایبەتی ROG Xbox Ally X بە بۆنەی 20 ساڵەی ROG، بە لەشێکی ڕەشی ڕوون و وردەکاریی زێڕین. هەمان پرۆسێسەری AMD Ryzen AI Z2 Extreme، بیرگەی 24GB و شوێنی 1TB دەهێڵێتەوە، و شاشەی HDR OLED ـی 7.4 ئینچ، جۆیستیکی TMR، D-pad ـی گۆڕاو و خوێنەری microSD Express زیاد دەکات. لەسەر Windows 11 کار دەکات و لە دۆخی Xbox دەست پێدەکات."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة OLED قياس 7.4 بوصة بدقة 1080p وتردد 120Hz، سطوع حتى 1400 nit في HDR، ودعم Dolby Vision",
+      "en": "7.4-inch 1080p OLED at 120Hz, up to 1,400 nits in HDR, with Dolby Vision support",
+      "ckb": "شاشەی OLED ـی 7.4 ئینچ بە 1080p و 120Hz، تا 1400 nit لە HDR، لەگەڵ پشتگیریی Dolby Vision"
+    },
+    {
+      "ar": "نفس قوة Ally X: معالج Ryzen AI Z2 Extreme وذاكرة 24GB LPDDR5X وتخزين 1TB M.2 2280",
+      "en": "Same power as the Ally X: Ryzen AI Z2 Extreme, 24GB LPDDR5X and a 1TB M.2 2280 SSD",
+      "ckb": "هەمان هێزی Ally X: Ryzen AI Z2 Extreme، 24GB LPDDR5X و SSD ـی 1TB M.2 2280"
+    },
+    {
+      "ar": "عصي TMR مقاومة للانحراف مع إضاءة RGB، وأسهم اتجاه تتحول بين 4 و8 اتجاهات، وزنادات Impulse",
+      "en": "TMR sticks with RGB rings, a D-pad that switches between 4-way and 8-way, and impulse triggers",
+      "ckb": "جۆیستیکی TMR بە ئەڵقەی RGB، D-pad ـێک کە لە نێوان 4 و 8 ئاراستە دەگۆڕێت، و تریگەری Impulse"
+    },
+    {
+      "ar": "قارئ microSD Express سريع، ومنفذ USB4 متوافق مع Thunderbolt 4",
+      "en": "Fast microSD Express reader and a Thunderbolt 4 compatible USB4 port",
+      "ckb": "خوێنەری خێرای microSD Express و دەروازەی USB4 ـی گونجاو لەگەڵ Thunderbolt 4"
+    },
+    {
+      "ar": "إصدار خاص محدود بمناسبة الذكرى العشرين لـ ROG بهيكل أسود شفاف وهيكل داخلي ذهبي",
+      "en": "Limited 20th-anniversary edition with a translucent black shell and a gold internal frame",
+      "ckb": "وەشانی سنووردار بۆ یادی 20 ساڵەی ROG بە لەشی ڕەشی ڕوون و چوارچێوەی ناوەوەی زێڕین"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen AI Z2 Extreme (8 أنوية / 16 مساراً، حتى 5.0GHz، ذاكرة مؤقتة 24MB، NPU حتى 50 TOPS) مع رسوميات AMD Radeon",
+        "en": "AMD Ryzen AI Z2 Extreme (8 cores / 16 threads, up to 5.0GHz, 24MB cache, NPU up to 50 TOPS) with AMD Radeon graphics",
+        "ckb": "AMD Ryzen AI Z2 Extreme (8 ناوک / 16 دەزوو، تا 5.0GHz، کاشی 24MB، NPU تا 50 TOPS) لەگەڵ گرافیکی AMD Radeon"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "24GB LPDDR5X مدمجة", "en": "24GB LPDDR5X, on board", "ckb": "24GB LPDDR5X، لەسەر بۆرد" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": { "ar": "1TB PCIe 4.0 NVMe بحجم M.2 2280", "en": "1TB PCIe 4.0 NVMe M.2 2280 SSD", "ckb": "1TB PCIe 4.0 NVMe M.2 2280 SSD" }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "قارئ microSD Express (PCIe Gen4 x1، ويقبل بطاقات UHS-I العادية)",
+        "en": "microSD Express reader (PCIe Gen4 x1; also reads standard UHS-I cards)",
+        "ckb": "خوێنەری microSD Express (PCIe Gen4 x1؛ کارتی ئاسایی UHS-I ـیش دەخوێنێتەوە)"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "7.4 بوصة OLED بدقة FHD (1920×1080) تعمل باللمس، 120Hz، سطوع 600 nit (SDR) و1400 nit (HDR)، تغطية 100% من DCI-P3، Dolby Vision، FreeSync Premium Pro، طبقة مضادة للانعكاس، Gorilla Glass Victus وDXC",
+        "en": "7.4-inch FHD (1920×1080) OLED touchscreen, 120Hz, 600 nits SDR / 1,400 nits HDR, 100% DCI-P3, Dolby Vision, FreeSync Premium Pro, anti-reflection, Gorilla Glass Victus and DXC",
+        "ckb": "شاشەی دەستلێدانی OLED ـی 7.4 ئینچ FHD (1920×1080)، 120Hz، 600 nit (SDR) / 1400 nit (HDR)، 100% DCI-P3، Dolby Vision، FreeSync Premium Pro، دژە-ڕەنگدانەوە، Gorilla Glass Victus و DXC"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "80Wh (أربع خلايا Li-ion)", "en": "80Wh, 4-cell Li-ion", "ckb": "80Wh، 4 خانەی Li-ion" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": { "ar": "شاحن USB-C بقدرة 68W", "en": "68W USB-C charger", "ckb": "شەحنکەری USB-C ـی 68W" }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": { "ar": "Windows 11 Home، يبدأ في وضع Xbox", "en": "Windows 11 Home, starts in Xbox mode", "ckb": "Windows 11 Home، لە دۆخی Xbox دەست پێدەکات" }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ USB4 Type-C (متوافق مع Thunderbolt 4، DisplayPort 2.1، شحن PD 3.0)، منفذ USB 3.2 Gen 2 Type-C (DisplayPort وشحن)، قارئ microSD Express، مقبس صوت 3.5mm",
+        "en": "1× USB4 Type-C (Thunderbolt 4 compatible, DisplayPort 2.1, PD 3.0), 1× USB 3.2 Gen 2 Type-C (DisplayPort, power delivery), microSD Express reader, 3.5mm audio jack",
+        "ckb": "1× USB4 Type-C (گونجاو لەگەڵ Thunderbolt 4، DisplayPort 2.1، PD 3.0)، 1× USB 3.2 Gen 2 Type-C (DisplayPort و شەحن)، خوێنەری microSD Express، دەروازەی دەنگی 3.5mm"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 6E (2×2) وBluetooth 5.4", "en": "Wi-Fi 6E (2×2) and Bluetooth 5.4", "ckb": "Wi-Fi 6E (2×2) و Bluetooth 5.4" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "عصي TMR مع حلقات إضاءة RGB، أسهم اتجاه قابلة للتحويل، زنادات Impulse بتقنية Hall Effect، زر Xbox مضيء، زر Action، زران خلفيان، اهتزاز HD، حساس حركة بستة محاور، قارئ بصمة",
+        "en": "TMR sticks with RGB light rings, transforming D-pad, impulse triggers with Hall Effect sensing, lit Xbox button, Action button, 2 back buttons, HD haptics, 6-axis gyro, fingerprint reader",
+        "ckb": "جۆیستیکی TMR بە ئەڵقەی ڕووناکیی RGB، D-pad ـی گۆڕاو، تریگەری Impulse بە Hall Effect، دوگمەی Xbox ـی ڕووناک، دوگمەی Action، 2 دوگمەی پشتەوە، لەرزینەوەی HD، Gyro ـی 6 تەوەرە، خوێنەری پەنجەمۆر"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "30.0 × 12.1 × 2.75–5.13 سم", "en": "30.0 × 12.1 × 2.75–5.13 cm", "ckb": "30.0 × 12.1 × 2.75–5.13 سم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "756 غرام", "en": "756 g", "ckb": "756 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز ROG Xbox Ally X20", "en": "ROG Xbox Ally X20", "ckb": "ئامێری ROG Xbox Ally X20" },
+    {
+      "ar": "شاحن USB-C بقدرة 68W (تقول ASUS إنه قد يختلف حسب المنطقة)",
+      "en": "68W USB-C charger (ASUS says this can vary by region)",
+      "ckb": "شەحنکەری USB-C ـی 68W (ASUS دەڵێت بەپێی ناوچە جیاوازە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "XALLYX20-1TB",
+      "title": {
+        "ar": "ROG Xbox Ally X20 24GB / 1TB",
+        "en": "ROG Xbox Ally X20 24GB / 1TB",
+        "ckb": "ROG Xbox Ally X20 24GB / 1TB"
+      },
+      "options": { "edition": "Standalone", "memory": "24GB", "storage": "1TB", "color": "Translucent black / gold" },
+      "modelNumber": "RC74XA",
+      "isDefault": true,
+      "images": ["rog-xbox-ally-x20--1", "rog-xbox-ally-x20--2", "rog-xbox-ally-x20--3", "rog-xbox-ally-x20--4", "rog-xbox-ally-x20--5"]
+    },
+    {
+      "sku": "XALLYX20-BUNDLE",
+      "title": {
+        "ar": "حزمة ROG Xbox Ally X20 Bundle مع نظارة ROG XREAL R1",
+        "en": "ROG Xbox Ally X20 Bundle with ROG XREAL R1 glasses",
+        "ckb": "باندڵی ROG Xbox Ally X20 Bundle لەگەڵ چاویلکەی ROG XREAL R1"
+      },
+      "options": { "edition": "Bundle", "memory": "24GB", "storage": "1TB", "color": "Translucent black / gold" },
+      "modelNumber": "RC74XA",
+      "isDefault": false,
+      "images": ["rog-xbox-ally-x20--1", "rog-xbox-ally-x20--2"],
+      "notes": {
+        "ar": "تضم الجهاز ونظارة الألعاب ROG XREAL R1 Edition 20 وغطاء dbrand Killswitch وحقيبة Pelican خاصة وشاحن 68W.",
+        "en": "Includes the handheld, ROG XREAL R1 Edition 20 gaming AR glasses, a dbrand Killswitch case, a custom Pelican protector case and a 68W charger.",
+        "ckb": "ئامێرەکە، چاویلکەی یاریی ROG XREAL R1 Edition 20، کەیسی dbrand Killswitch، جانتای تایبەتی Pelican و شەحنکەری 68W لەخۆدەگرێت."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "rog-xbox-ally-x", "kind": "alternative" },
+    { "slug": "sandisk-microsd-express", "kind": "accessory" },
+    { "slug": "lenovo-legion-go-2", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "rog-xbox-ally-x20--1",
+      "file": ".cache/product-images/rog-xbox-ally-x20/1.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/D797EEA6-B797-472F-9E8B-EC9E07963B27/",
+      "sourcePage": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/gallery/",
+      "kind": "hero",
+      "alt": {
+        "ar": "ROG Xbox Ally X20 بهيكل أسود شفاف من الأمام",
+        "en": "ROG Xbox Ally X20 with its translucent black shell, from the front",
+        "ckb": "ROG Xbox Ally X20 بە لەشی ڕەشی ڕوون، لە پێشەوە"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally-x20--2",
+      "file": ".cache/product-images/rog-xbox-ally-x20/2.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/9E26A9A6-9974-489C-BDF7-2BC69F2B9537/",
+      "sourcePage": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/gallery/",
+      "kind": "angle",
+      "alt": {
+        "ar": "ROG Xbox Ally X20 من زاوية أمامية مائلة",
+        "en": "ROG Xbox Ally X20 from a front three-quarter angle",
+        "ckb": "ROG Xbox Ally X20 لە گۆشەیەکی پێشەوەی لار"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally-x20--3",
+      "file": ".cache/product-images/rog-xbox-ally-x20/3.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/328FCEFC-088C-4CA2-B54C-111B93C48950/",
+      "sourcePage": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/gallery/",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهة الخلفية من ROG Xbox Ally X20 مع التفاصيل الذهبية",
+        "en": "Back of ROG Xbox Ally X20 with gold details",
+        "ckb": "پشتەوەی ROG Xbox Ally X20 لەگەڵ وردەکاریی زێڕین"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally-x20--4",
+      "file": ".cache/product-images/rog-xbox-ally-x20/4.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/4DAA7560-4684-4F8D-8830-50A9F243B226/",
+      "sourcePage": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/gallery/",
+      "kind": "angle",
+      "alt": {
+        "ar": "ROG Xbox Ally X20 من الخلف بزاوية مائلة",
+        "en": "ROG Xbox Ally X20 from a rear angle",
+        "ckb": "ROG Xbox Ally X20 لە گۆشەیەکی پشتەوە"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-xbox-ally-x20--5",
+      "file": ".cache/product-images/rog-xbox-ally-x20/5.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/9C502E4F-85E0-4A9C-81C2-9F383969D0B7/",
+      "sourcePage": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/gallery/",
+      "kind": "detail",
+      "alt": {
+        "ar": "الحافة العلوية لجهاز ROG Xbox Ally X20 مع المنافذ",
+        "en": "Top edge of ROG Xbox Ally X20 with its ports",
+        "ckb": "لێواری سەرەوەی ROG Xbox Ally X20 لەگەڵ دەروازەکان"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/spec/",
+      "title": "ROG XBOX Ally X20 (2026) RC74XA – Tech Specs (ASUS USA)",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "model RC74XA, processor, memory, storage, OLED display, ports, microSD Express, controls, wireless, battery, 68W adapter, weight, dimensions, OS; ASUS US store showed it out of stock"
+    },
+    {
+      "url": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/",
+      "title": "ROG XBOX Ally X20 (2026) – Features",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "part of ROG's limited-edition 20th-anniversary collection, Xbox mode, TMR joysticks"
+    },
+    {
+      "url": "https://press.asus.com/news/press-releases/rog-xbox-ally-x20-pre-order/",
+      "title": "ASUS Republic of Gamers Announces ROG XBOX Ally X20 is Now Available for Pre-Order",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "on shelves from 15 October 2026, standalone and bundle editions, bundle contents"
+    },
+    {
+      "url": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-x20-bundle-2026/",
+      "title": "ROG XBOX Ally X20 Bundle (2026) RC74XA",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "bundle model number RC74XA; bundle contents (ROG XREAL R1 Edition 20 glasses, custom Pelican protective case, dbrand Killswitch, 68W adapter); part of ROG's limited-edition 20th-anniversary collection"
+    },
+    {
+      "url": "https://www.windowscentral.com/hardware/handheld-gaming-pc/pre-orders-are-live-for-the-rog-xbox-ally-x20",
+      "title": "Pre-orders are live for the new ROG Xbox Ally X20…",
+      "publisher": "Windows Central",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: launch on 15 October 2026; 7.4-inch OLED 600/1,400 nits with Dolby Vision; 24GB LPDDR5X-8000; 1TB M.2 2280; Wi-Fi 6E + Bluetooth 5.4; USB4, USB-C 3.2 Gen 2 and microSD Express; 80Wh; 300 × 121.1 × 51.3 mm; 756 g; bundle contents"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/handhelds/rog-xbox-ally",
+      "title": "ROG XBOX Ally X & ROG XBOX Ally",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "X20 is part of the current ROG Xbox Ally line-up; OLED, impulse triggers, microSD Express, TMR sticks, transforming D-pad"
+    },
+    {
+      "url": "https://www.androidauthority.com/asus-rog-xbox-ally-x20-review-3722864/",
+      "title": "The ASUS ROG Xbox Ally X20 is the best (and priciest) Ally yet",
+      "publisher": "Android Authority",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: same performance as the Ally X, 7.4-inch OLED, 80Wh battery, Windows 11 with Steam preinstalled"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language cannot install additional languages"
+    }
+  ],
+  "notes": {
+    "ar": "إصدار خاص بكميات غير مضمونة، وكان غير متوفر في متجر ASUS الأمريكي بتاريخ 11 نوفمبر 2026. العراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات Xbox، لذلك Game Pass وألعاب Xbox السحابية غير مقدمة رسمياً هنا؛ ألعاب Steam وغيرها تعمل بشكل طبيعي.",
+    "en": "A special edition with uncertain supply; the ASUS US store listed it as out of stock on 11 November 2026. Iraq is not on Microsoft's list of countries where Xbox services are supported, so Game Pass and Xbox Cloud Gaming are not officially offered here; games from Steam and other stores work normally.",
+    "ckb": "وەشانێکی تایبەتە و بەردەستبوونی دڵنیا نییە؛ فرۆشگای ASUS ـی ئەمریکا لە 11ی نۆڤەمبەری 2026 وەک نەماو نیشانی دا. عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی Xbox، بۆیە Game Pass و یارییە هەورییەکانی Xbox بە فەرمی لێرە پێشکەش ناکرێن؛ یارییەکانی Steam و فرۆشگاکانی تر بە ئاسایی کار دەکەن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "No canonical device key exists for the X20; it is filed under rog-xbox-ally-x (closest model)",
+      "Contents of the standalone box beyond the device and charger (stand, documents) are not listed on an official page",
+      "ASUS does not say how many units are made; 'limited' follows ASUS calling the 20th-anniversary collection limited-edition",
+      "Barcodes were not found on an official page"
+    ]
+  }
+}

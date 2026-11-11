@@ -1,0 +1,65 @@
+{
+  "key": "xbox-series-x25-limited-edition--1",
+  "view": "hero",
+  "width": 1486,
+  "height": 1600,
+  "aspect": 0.9287,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x25-limited-edition/1-240.4d3e7ade.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x25-limited-edition/1-480.a047760e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x25-limited-edition/1-720.40fe4a07.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x25-limited-edition/1-960.325f5730.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-series-x25-limited-edition/1-1440.0d854bb3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x25-limited-edition/1-240.06496594.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x25-limited-edition/1-480.1adab9cd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x25-limited-edition/1-720.bf2d6edc.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x25-limited-edition/1-960.7d35023c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-series-x25-limited-edition/1-1440.52bfd3cc.webp"
+      }
+    ],
+    "png": "/products/xbox-series-x25-limited-edition/1-720.29850e8a.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjABAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSFcAAAART6CobSM2eAiqA7Dn7yIiCHYP3hSwiWzbySXWPyjACgoySMBAbKn+74lX8H8VAiL6PwGQr9vmxhiA+kgy/zfVM1AxdAhOwb0Lki9QFrPzfrIRACitowgAVlA4ILIAAAAQBACdASoTABQAPxGAt1WsJ6UjKAgBgCIJbACdMoABYt9AG7l93OaCCAD+zuWINW8wNQiC3/1Qmg4ot2MZvMiRAREEofHHa36oDIv8feGOxeXYK4LvWJeAMscLFxHZ07TtmmI6EFJwVecPgFSLfdNJ6//P/Eop3lDz69d/s5MsBDFH+6GdbvRC9cb88ghmP9EIPGx1XMaCI5rcYs8DaxCQWKIK15BuPHEo5UsQjE1S3gAA",
+  "dominant": "#254609",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_01_2000x2000_01?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3"
+  },
+  "input": "9369bd73cda81891"
+}

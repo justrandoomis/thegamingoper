@@ -1,0 +1,261 @@
+{
+  "slug": "ghost-of-yotei",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2025-10-02",
+  "name": { "ar": "Ghost of Yōtei", "en": "Ghost of Yōtei", "ckb": "Ghost of Yōtei" },
+  "short": {
+    "ar": "حصرية PS5 · قرص · قوائم وترجمة عربية",
+    "en": "PS5 exclusive · disc · Arabic menus and subtitles",
+    "ckb": "تایبەت بە PS5 · دیسک · مێنیو و ژێرنووسی عەرەبی"
+  },
+  "description": {
+    "ar": "مغامرة عالم مفتوح من Sucker Punch Productions تدور في شمال اليابان في القرن السابع عشر، بعد 300 عام من أحداث Ghost of Tsushima. تلعب بشخصية Atsu، مقاتلة مرتزقة تطارد عصابة من ستة خارجين عن القانون قتلوا عائلتها. اللعبة حصرية لـ PS5 ولا تتوفر على PS4. صدرت في 2 تشرين الأول 2025، ثم صدرت Complete Edition في 1 تشرين الأول 2026 مع التوسعة القصصية Echoes of Sekigahara.",
+    "en": "An open-world adventure from Sucker Punch Productions set in northern Japan in the 1600s, 300 years after Ghost of Tsushima. You play Atsu, a lone mercenary hunting the gang of six outlaws who killed her family. It is a PS5 exclusive with no PS4 version. It launched on 2 October 2025, and the Complete Edition with the Echoes of Sekigahara story expansion followed on 1 October 2026.",
+    "ckb": "سەرکێشییەکی جیهانی کراوە لە Sucker Punch Productions لە باکووری ژاپۆن لە سەدەی حەڤدەهەمدا، 300 ساڵ دوای ڕووداوەکانی Ghost of Tsushima. بە کارەکتەری Atsu یاری دەکەیت، جەنگاوەرێکی بەکرێگیراو کە بەدوای دەستەیەکی شەش کەسیی یاخیدا دەگەڕێت کە خێزانەکەیان کوشتووە. یارییەکە تایبەتە بە PS5 و وەشانی PS4 ی نییە. لە 2ی تشرینی یەکەمی 2025 دەرچوو، و Complete Edition لەگەڵ فراوانکردنی چیرۆکی Echoes of Sekigahara لە 1ی تشرینی یەکەمی 2026 دەرچوو."
+  },
+  "highlights": [
+    {
+      "ar": "حصرية لـ PS5 ومُحسّنة لـ PS5 Pro بتقنيتي PSSR وتتبع الأشعة.",
+      "en": "PS5 exclusive, PS5 Pro Enhanced with PSSR and ray tracing.",
+      "ckb": "تایبەت بە PS5، باشترکراو بۆ PS5 Pro بە PSSR و ray tracing."
+    },
+    {
+      "ar": "قوائم وترجمة باللغة العربية؛ الصوت بلغات أخرى.",
+      "en": "Arabic menus and subtitles; voice-over in other languages.",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی؛ دەنگ بە زمانەکانی تر."
+    },
+    {
+      "ar": "قصة للاعب واحد، مع طور Legends التعاوني أونلاين لـ 2–4 لاعبين كتحديث مجاني (يحتاج PlayStation Plus).",
+      "en": "Single-player story, plus the online co-op Legends mode for 2–4 players as a free update (needs PlayStation Plus).",
+      "ckb": "چیرۆکی تاکەکەسی، لەگەڵ شێوازی هاوکاری ئۆنلاینی Legends بۆ 2–4 یاریزان وەک نوێکردنەوەیەکی بێبەرامبەر (PlayStation Plus پێویستە)."
+    },
+    {
+      "ar": "Complete Edition تضيف Echoes of Sekigahara وطور Most Wanted.",
+      "en": "The Complete Edition adds Echoes of Sekigahara and the Most Wanted mode.",
+      "ckb": "Complete Edition فراوانکردنی Echoes of Sekigahara و شێوازی Most Wanted زیاد دەکات."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": {
+        "ar": "2 تشرين الأول 2025؛ Complete Edition في 1 تشرين الأول 2026",
+        "en": "2 October 2025; Complete Edition on 1 October 2026",
+        "ckb": "2ی تشرینی یەکەمی 2025؛ Complete Edition لە 1ی تشرینی یەکەمی 2026"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 فقط (لا يوجد إصدار PS4)", "en": "PS5 only (no PS4 version)", "ckb": "تەنها PS5 (وەشانی PS4 نییە)" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص PS5", "en": "PS5 disc", "ckb": "دیسکی PS5" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": {
+        "ar": "1؛ وطور Legends التعاوني أونلاين حتى 4 لاعبين",
+        "en": "1; Legends online co-op for up to 4",
+        "ckb": "1؛ و شێوازی هاوکاری ئۆنلاینی Legends تا 4 یاریزان"
+      }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "القصة لا تحتاج اشتراكاً؛ Legends أونلاين يحتاج PlayStation Plus",
+        "en": "The story needs no subscription; online Legends needs PlayStation Plus",
+        "ckb": "چیرۆکەکە پێویستی بە بەشداریکردن نییە؛ Legends ی ئۆنلاین پێویستی بە PlayStation Plus هەیە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "قوائم وترجمة (بدون دبلجة عربية)", "en": "Menus and subtitles (no Arabic voice-over)", "ckb": "مێنیو و ژێرنووس (بێ دەنگی عەرەبی)" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 18", "en": "PEGI 18", "ckb": "PEGI 18" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Sucker Punch Productions / Sony Interactive Entertainment", "en": "Sucker Punch Productions / Sony Interactive Entertainment", "ckb": "Sucker Punch Productions / Sony Interactive Entertainment" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "GOY-PS5-STD",
+      "title": { "ar": "Ghost of Yōtei لجهاز PS5 — Standard Edition", "en": "Ghost of Yōtei for PS5 — Standard Edition", "ckb": "Ghost of Yōtei بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["ghost-of-yotei--1", "ghost-of-yotei--3", "ghost-of-yotei--4", "ghost-of-yotei--5"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "GOY-PS5-CE",
+      "title": { "ar": "Ghost of Yōtei لجهاز PS5 — Complete Edition", "en": "Ghost of Yōtei for PS5 — Complete Edition", "ckb": "Ghost of Yōtei بۆ PS5 — Complete Edition" },
+      "options": { "platform": "PS5", "edition": "Complete", "format": "Physical" },
+      "isDefault": false,
+      "images": ["ghost-of-yotei--2", "ghost-of-yotei--3", "ghost-of-yotei--4"],
+      "notes": {
+        "ar": "صدرت في 1 تشرين الأول 2026 وتضم اللعبة مع التوسعة القصصية Echoes of Sekigahara وطور Most Wanted.",
+        "en": "Released 1 October 2026; includes the game with the Echoes of Sekigahara story expansion and the Most Wanted mode.",
+        "ckb": "لە 1ی تشرینی یەکەمی 2026 دەرچوو؛ یارییەکە لەگەڵ فراوانکردنی چیرۆکی Echoes of Sekigahara و شێوازی Most Wanted لەخۆدەگرێت."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "genres": [
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" },
+      { "ar": "عالم مفتوح", "en": "Open world", "ckb": "جیهانی کراوە" }
+    ],
+    "players": "1, 2-4 online co-op (Legends)",
+    "online": {
+      "ar": "القصة تُلعب بدون إنترنت أو اشتراك؛ طور Legends التعاوني أونلاين يحتاج PlayStation Plus.",
+      "en": "The story plays without a subscription; the online co-op Legends mode needs PlayStation Plus.",
+      "ckb": "چیرۆکەکە بێ بەشداریکردن یاری دەکرێت؛ شێوازی هاوکاری ئۆنلاینی Legends پێویستی بە PlayStation Plus هەیە."
+    },
+    "ageRating": { "pegi": 18 },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Sucker Punch Productions",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.playstation.com/en-ae/games/ghost-of-yotei/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.playstation.com/en-ae/games/ghost-of-yotei/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "pulse-elite", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "ghost-of-yotei--1",
+      "file": ".cache/product-images/ghost-of-yotei/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-packshot-ps5-01-24jul25?$1600px--t$",
+      "sourcePage": "https://www.playstation.com/en-us/games/ghost-of-yotei/",
+      "kind": "box-art",
+      "alt": { "ar": "علبة Ghost of Yōtei لجهاز PS5", "en": "Ghost of Yōtei PS5 box", "ckb": "قوتووی Ghost of Yōtei بۆ PS5" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 2017, "transparent": true
+    },
+    {
+      "key": "ghost-of-yotei--2",
+      "file": ".cache/product-images/ghost-of-yotei/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-complete-edition-store-artwork-01-en-6aug26?$1600px--t$",
+      "sourcePage": "https://www.playstation.com/en-us/games/ghost-of-yotei/",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Ghost of Yōtei Complete Edition", "en": "Ghost of Yōtei Complete Edition cover art", "ckb": "وێنەی بەرگی Ghost of Yōtei Complete Edition" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 1600, "transparent": false
+    },
+    {
+      "key": "ghost-of-yotei--3",
+      "file": ".cache/product-images/ghost-of-yotei/3.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-screenshot-02-en-04sep26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/ghost-of-yotei/",
+      "kind": "screenshot",
+      "alt": { "ar": "Atsu على حصان أمام جبل Yōtei", "en": "Atsu on horseback in front of Mount Yōtei", "ckb": "Atsu بە سواری ئەسپ لە بەردەم چیای Yōtei" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "ghost-of-yotei--4",
+      "file": ".cache/product-images/ghost-of-yotei/4.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-screenshot-01-en-04sep26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/ghost-of-yotei/",
+      "kind": "screenshot",
+      "alt": { "ar": "معركة ليلية بين الساموراي", "en": "A night battle between samurai", "ckb": "شەڕێکی شەوانە لە نێوان ساموراییەکاندا" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "ghost-of-yotei--5",
+      "file": ".cache/product-images/ghost-of-yotei/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-screenshot-04-en-04sep26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/ghost-of-yotei/",
+      "kind": "screenshot",
+      "alt": { "ar": "استراحة حول نار المخيم", "en": "Resting around a campfire", "ckb": "پشوودان لە دەوری ئاگری ئۆردوگا" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.playstation.com/en-ae/games/ghost-of-yotei/", "title": "Ghost of Yōtei — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "story and setting, PS5 exclusive with no PS4 version, release 2 Oct 2025, PS5 Pro PSSR and ray tracing, Legends 2–4 online co-op, Complete Edition content, PS Plus for online" },
+    { "url": "https://store.playstation.com/en-ae/concept/10003923", "title": "Ghost of Yōtei Complete Edition — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language (no Arabic voice), 1 player, up to 4 online with PS Plus, PS5 Pro Enhanced" },
+    { "url": "https://store.playstation.com/en-gb/concept/10003923", "title": "Ghost of Yōtei Complete Edition — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18 (violence)" },
+    { "url": "https://blog.playstation.com/2026/08/12/ghost-of-yotei-complete-edition-comes-to-ps5-october-1/", "title": "Ghost of Yōtei Complete Edition Comes to PS5 October 1", "publisher": "PlayStation.Blog", "retrieved": "2026-11-11", "supports": "Complete Edition on 1 Oct 2026, Echoes of Sekigahara expansion, Most Wanted mode" },
+    { "url": "https://collectorseditions.co.uk/gaming/ghost-of-yotei-complete-edition/", "title": "Ghost of Yōtei Complete Edition", "publisher": "Collector's Editions", "retrieved": "2026-11-11", "supports": "independent confirmation that the Complete Edition is sold physically for PS5" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Whether the physical Complete Edition has the expansion on the disc or as a download was not found on an official page.",
+      "Install size is not published on the official pages we read.",
+      "ESRB rating not recorded (not checked on a US store page).",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

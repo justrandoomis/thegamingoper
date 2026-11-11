@@ -1,0 +1,65 @@
+{
+  "key": "msi-claw-8-ex-ai-plus--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 532,
+  "aspect": 3.0075,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-240.614e55e8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-480.ec96dcdf.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-720.27a60ee6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-960.b8b80b77.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-1440.2b173fe0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-240.df142948.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-480.55ad6a69.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-720.3734d5ad.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-960.12106e7f.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/msi-claw-8-ex-ai-plus/4-1440.075a0670.webp"
+      }
+    ],
+    "png": "/products/msi-claw-8-ex-ai-plus/4-720.f38e700c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSEYAAAART6AmkiQ1eDmDAfrPLiIC8vC+6S+wqa2tDR1GJKCCGS91LSnfmjUOEr+Ahoj+TwDZdBemlT3/0rSVDm8BgPIJ68k0UrIJVlA4ID4AAABwAwCdASoUAAcAPxF0sVCsJqSisAgBgCIJaQAAW+tMxfmbuAAA/uLre4GU6yStz388osfANioYC8UxxgAAAA==",
+  "dominant": "#171717",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "MSI",
+  "source": {
+    "url": "https://storage-asset.msi.com/global/picture/product/product_1781250172ba5c0417f9720a15a5f3a1a0111d82df.png",
+    "page": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery"
+  },
+  "input": "3b40bf5fb8b306f5"
+}

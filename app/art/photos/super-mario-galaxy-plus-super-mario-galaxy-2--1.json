@@ -1,0 +1,57 @@
+{
+  "key": "super-mario-galaxy-plus-super-mario-galaxy-2--1",
+  "view": "hero",
+  "width": 1054,
+  "height": 1600,
+  "aspect": 0.6587,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-240.942f12e9.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-480.b9331c94.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-720.44864512.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-960.5e4cdd21.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-240.d15f0dde.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-480.e276b18a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-720.3aba6ba5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-960.b4253881.webp"
+      }
+    ],
+    "png": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-720.9373bee5.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOD+YtN4CDXiIjgNiBq20ZTGYzBKQzuwmDjD+3+Ef2PA5Aa1c3r7r4/jeqmAFIAVlA4IJgAAABQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoGv/i15m6IG3I9YvfxIAM4p25rs34j5OZ6CVK1l/GWfPy1YqXxYtAqLK81+muDpUFAkJQcOcCAaqWv/YsSdzF4i69DyVaMexdRUB7W7AxGodOCZ2oxukEOv+JFBsAvFTxRwTVs/qxm0XwjlzQP9/AlRQnSSuZml5KEAAA==",
+  "dominant": "#d7d7d7",
+  "transparent": true,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%20Software/Super%20Mario%20Galaxy%201%20and%202%20-%20Switch/121495-nintendo-super-mario-galaxy-and-super-mario-galaxy-2-box-art-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/super-mario-galaxy-super-mario-galaxy-2-121495/"
+  },
+  "input": "0f0772e1c0518c7e"
+}

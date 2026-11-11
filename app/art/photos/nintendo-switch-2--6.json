@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2--6",
+  "view": "hero",
+  "width": 1556,
+  "height": 1600,
+  "aspect": 0.9725,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2/6-240.ddc622ea.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2/6-480.e799c930.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2/6-720.f3a2dcb8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2/6-960.74e125cd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2/6-1440.53befa65.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2/6-240.75dda02f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2/6-480.e7c6caa2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2/6-720.56b74303.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2/6-960.9ca4dc83.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2/6-1440.bbd60a9f.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2/6-720.c6fb784d.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkQBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSEwAAAART6CojSQ0tRKOngwREXBLX78nsIltK84DCyhgkAAWELCjgEmdCgkZ2lQ8vdm61BH9nwC81jb30RT2Y/E65cnHXxAWybl5A4RRncBHVlA4INIAAACwBgCdASoTABQAPxF+tlWsJ6SjKAgBgCIJbACdMzQ/gLFhLkwVjB+s1U6AEqgNZkKG3ntABdQMuhVd5W+AAAD52fCH9d1G8C7AVDx8odEylT0gPgeF38ZZlKyfkCPWPEcS9oIa4hd9ae+L85BR4D0h3qn5i51Q3UvUV0AOm9yHzvB+joT8Hv73Cq1E/K+FLtQk1DUFqnS+rVFm7451o8GndFeYJnycF4TqP2YykjVbDpq+O2JZ6YIRx33n+IztakbQnT37CWe3GJin1kZ++PkAAAA=",
+  "dominant": "#c50119",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-package-front-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/"
+  },
+  "input": "133aa834188924aa"
+}

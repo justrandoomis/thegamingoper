@@ -1,0 +1,65 @@
+{
+  "key": "joy-con-2-wheel--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-wheel/3-240.ec47bb7e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-wheel/3-480.c27fd084.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-wheel/3-720.528f4496.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-wheel/3-960.fe114c6e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/joy-con-2-wheel/3-1440.3a6ff0de.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2-wheel/3-240.9aa213a4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2-wheel/3-480.e2a1f13f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2-wheel/3-720.8025781d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2-wheel/3-960.41de2042.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/joy-con-2-wheel/3-1440.2f7c77e8.webp"
+      }
+    ],
+    "png": "/products/joy-con-2-wheel/3-720.36b369b2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBACdASoUABQAPxF4s1IsJySisBgIAYAiCWMAzNAQ7O7PryARmqED8DgwAP7vuwoLgS04Ai83pV94oB9eWsqNqku8kt+gqjzeT/RKOGiIwtvzJE1ExsvMAtWisLtOcQ/VGKe8Rwt7osgeqXGX3SolR4AAAA==",
+  "dominant": "#35383b",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Controller%20Accessories/120834-nintendo-switch-2-joy-con-2-wheel-set-of-2-back-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-wheel-set-of-2-120834/"
+  },
+  "input": "34080670402c71f2"
+}

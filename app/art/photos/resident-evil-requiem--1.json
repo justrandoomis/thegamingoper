@@ -1,0 +1,57 @@
+{
+  "key": "resident-evil-requiem--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-requiem/1-240.b70fecd9.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-requiem/1-480.fb044644.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-requiem/1-720.49d4f9b5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-requiem/1-960.e2e01a13.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-requiem/1-240.45211b1c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-requiem/1-480.74ff4957.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-requiem/1-720.8b2d4c5f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-requiem/1-960.89b03b01.webp"
+      }
+    ],
+    "png": "/products/resident-evil-requiem/1-720.0bfa6235.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJYwDCgCG/GITK0VK/SbywAP7h4ixZqd6qBu1jsmLtGEhv+95le5TrNrNpYRT9Perp3paCVXob0umHLfVjE3ZMsh+ZrVPgMNah1+Fkdwglenhn9CsH63OFNTzlO2Qn8TcQovfzg/hAKtNJNwrgAAAA",
+  "dominant": "#fcfcfc",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Capcom",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.65104.14157056169306105.30ae0432-c36b-42e7-9bbb-f85189243ca3.8e302653-b1b3-4ef9-b328-6a0822123e0c",
+    "page": "https://www.xbox.com/en-US/games/store/resident-evil-requiem/9nmfwr0nrlzs"
+  },
+  "input": "e4bb45a94cc01e82"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "god-of-war-ragnarok--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/god-of-war-ragnarok/4-240.f589ef8e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/god-of-war-ragnarok/4-480.c93764d0.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/god-of-war-ragnarok/4-720.4002f0a9.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/god-of-war-ragnarok/4-960.26c84fb0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/god-of-war-ragnarok/4-1440.97ad5421.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/god-of-war-ragnarok/4-240.75154cb7.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/god-of-war-ragnarok/4-480.015a46a3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/god-of-war-ragnarok/4-720.94ac7b56.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/god-of-war-ragnarok/4-960.9daf79a5.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/god-of-war-ragnarok/4-1440.72286f22.webp"
+      }
+    ],
+    "png": "/products/god-of-war-ragnarok/4-720.210959a5.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBhQA9G0tN5/zY/dAAD+6fWKUJTdtgenn8zV6kTa03HgdEFVH5ml2C1Abvc9rf/kDRxAeIug4+Q+5KVCYJrju02OnC5hMKZ7ejwAAAA=",
+  "dominant": "#040206",
+  "transparent": false,
+  "background": "#06060d",
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-ragnarok-watermark-screenshot-11-en-08sep21?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/god-of-war-ragnarok/"
+  },
+  "input": "0b53ff89469c09ae"
+}

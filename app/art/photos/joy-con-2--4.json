@@ -1,0 +1,57 @@
+{
+  "key": "joy-con-2--4",
+  "view": "hero",
+  "width": 1200,
+  "height": 675,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2/4-240.1b9d793c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2/4-480.8152efd4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2/4-720.c87966e8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2/4-960.7f593e8d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/joy-con-2/4-240.205fa75f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/joy-con-2/4-480.43fdb9ad.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/joy-con-2/4-720.605915f0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/joy-con-2/4-960.f15a458a.webp"
+      }
+    ],
+    "png": "/products/joy-con-2/4-720.e6e33c41.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACwAwCdASoUAAsAPxFysVCsJqSisAgBgCIJaQAATGCw8L4K/73oAAD+7V9vBiFoILq9x8JgJTiS1ryQF/ADqrcW765icbus9pSWYTI8K3jgAAAA",
+  "dominant": "#34383b",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/127067-nintendo-joy-con-set-light-purple-light-green-front-with-straps-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-purple-light-green-127067/"
+  },
+  "input": "2e67443d743a1b58"
+}

@@ -1,0 +1,343 @@
+{
+  "slug": "msi-claw-8-ex-ai-plus",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "MSI",
+  "deviceModel": "msi-claw",
+  "family": "msi-claw-8-ex-ai-plus",
+  "status": "available",
+  "releaseDate": "2026-06-23",
+  "name": { "ar": "MSI Claw 8 EX AI+", "en": "MSI Claw 8 EX AI+", "ckb": "MSI Claw 8 EX AI+" },
+  "short": {
+    "ar": "Intel Arc G3 Extreme · 32GB · 1TB · شاشة 8 بوصة 120Hz · بطارية 80Wh",
+    "en": "Intel Arc G3 Extreme · 32GB · 1TB · 8-inch 120Hz · 80Wh",
+    "ckb": "Intel Arc G3 Extreme · 32GB · 1TB · شاشەی 8 ئینچ 120Hz · 80Wh"
+  },
+  "description": {
+    "ar": "أحدث أجهزة MSI Claw، ويعمل بمعالج Intel Arc G3 Extreme الذي صممته Intel للأجهزة المحمولة. يأتي بشاشة 8 بوصة بدقة 1920×1200 وتردد 120Hz، وذاكرة 32GB، وبطارية 80Wh، ويعمل بنظام Windows 11 مع وضع Xbox. صدر باللون البنفسجي Void Purple بتصميم مقابض جديد.",
+    "en": "The newest MSI Claw, built on Intel's Arc G3 Extreme, a chip Intel designed for handhelds. It has an 8-inch 1920×1200 120Hz screen, 32GB of memory and an 80Wh battery, and runs Windows 11 with Xbox mode. It comes in Void Purple with a redesigned grip.",
+    "ckb": "نوێترین MSI Claw، لەسەر پرۆسێسەری Intel Arc G3 Extreme کە Intel بۆ ئامێری دەستی دروستی کردووە. شاشەی 8 ئینچی 1920×1200 بە 120Hz، بیرگەی 32GB و پاتریی 80Wh ـی هەیە، و لەسەر Windows 11 لەگەڵ دۆخی Xbox کار دەکات. بە ڕەنگی مۆری Void Purple و دیزاینێکی نوێی دەسک دێت."
+  },
+  "highlights": [
+    {
+      "ar": "معالج Intel Arc G3 Extreme (Panther Lake) مع رسوميات Intel Arc B390 بـ12 نواة Xe ودعم XeSS 3",
+      "en": "Intel Arc G3 Extreme (Panther Lake) with Intel Arc B390 graphics, 12 Xe cores and XeSS 3 support",
+      "ckb": "Intel Arc G3 Extreme (Panther Lake) لەگەڵ گرافیکی Intel Arc B390 بە 12 ناوکی Xe و پشتگیریی XeSS 3"
+    },
+    {
+      "ar": "شاشة IPS قياس 8 بوصة بدقة 1920×1200 وتردد 48–120Hz مع VRR وسطوع 500 nit",
+      "en": "8-inch 1920×1200 IPS screen, 48–120Hz VRR, 500 nits",
+      "ckb": "شاشەی IPS ـی 8 ئینچ بە 1920×1200، 48–120Hz VRR، 500 nit"
+    },
+    {
+      "ar": "بطارية 80Wh ومنفذا Thunderbolt 4 وقارئ microSD Express",
+      "en": "80Wh battery, two Thunderbolt 4 ports and a microSD Express reader",
+      "ckb": "پاتریی 80Wh، دوو دەروازەی Thunderbolt 4 و خوێنەری microSD Express"
+    },
+    {
+      "ar": "قرص M.2 2280 يمكن استبداله بفتح الغطاء الخلفي، وذاكرة 32GB LPDDR5x",
+      "en": "M.2 2280 SSD you can swap by removing the back cover, and 32GB of LPDDR5x",
+      "ckb": "SSD ـی M.2 2280 کە بە لابردنی داپۆشەری پشتەوە دەگۆڕدرێت، و 32GB LPDDR5x"
+    },
+    {
+      "ar": "عصي وزنادات Hall Effect، ومحرك اهتزاز خطي، وWi-Fi 7 مع Bluetooth 6",
+      "en": "Hall Effect sticks and triggers, a linear haptics motor, and Wi-Fi 7 with Bluetooth 6",
+      "ckb": "جۆیستیک و تریگەری Hall Effect، مۆتۆری لەرزینەوەی هێڵی، و Wi-Fi 7 لەگەڵ Bluetooth 6"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "Intel Arc G3 Extreme (حتى 14 نواة، 1.5–4.6GHz، وحدة NPU حتى 46 TOPS) مع رسوميات Intel Arc B390 (12 نواة Xe)",
+        "en": "Intel Arc G3 Extreme (up to 14 cores, 1.5–4.6GHz, NPU up to 46 TOPS) with Intel Arc B390 graphics (12 Xe cores)",
+        "ckb": "Intel Arc G3 Extreme (تا 14 ناوک، 1.5–4.6GHz، NPU تا 46 TOPS) لەگەڵ گرافیکی Intel Arc B390 (12 ناوکی Xe)"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "32GB LPDDR5x مدمجة (قناة مزدوجة)", "en": "32GB LPDDR5x on board, dual channel", "ckb": "32GB LPDDR5x لەسەر بۆرد، دوو-کەناڵ" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": {
+        "ar": "1TB (أو 512GB في نسخة Arc G3) بحجم M.2 2280 PCIe 4.0 x4",
+        "en": "1TB (or 512GB on the Arc G3 version) M.2 2280 PCIe 4.0 x4 SSD",
+        "ckb": "1TB (یان 512GB لە وەشانی Arc G3) ـی M.2 2280 PCIe 4.0 x4"
+      }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "قارئ microSD Express، ويمكن استبدال قرص M.2 2280",
+        "en": "microSD Express card reader; the M.2 2280 SSD can be replaced",
+        "ckb": "خوێنەری microSD Express؛ SSD ـی M.2 2280 دەگۆڕدرێت"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "8 بوصة FHD+ (1920×1200) من نوع IPS تعمل باللمس، 48–120Hz مع VRR، سطوع 500 nit، تغطية 100% من sRGB",
+        "en": "8-inch FHD+ (1920×1200) IPS-level touchscreen, 48–120Hz VRR, 500 nits, 100% sRGB",
+        "ckb": "شاشەی دەستلێدانی IPS ـی 8 ئینچ FHD+ (1920×1200)، 48–120Hz VRR، 500 nit، 100% sRGB"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "80Wh (أربع خلايا)", "en": "80Wh, 4-cell", "ckb": "80Wh، 4 خانە" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": {
+        "ar": "شاحن PD بقدرة 65W (توصي MSI بشاحن 65W أو أعلى)",
+        "en": "65W PD adapter (MSI recommends a 65W or higher PD charger)",
+        "ckb": "شەحنکەری PD ـی 65W (MSI شەحنکەری 65W یان زیاتر پێشنیار دەکات)"
+      }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": {
+        "ar": "Windows 11 Home مع وضع Xbox عبر MSI Center M",
+        "en": "Windows 11 Home, with Xbox mode through MSI Center M",
+        "ckb": "Windows 11 Home، لەگەڵ دۆخی Xbox لە ڕێگەی MSI Center M"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذا Thunderbolt 4 (DisplayPort وشحن PD 3.0)، قارئ microSD Express، مقبس صوت 3.5mm",
+        "en": "2× Thunderbolt 4 (DisplayPort, Power Delivery 3.0), microSD Express reader, 3.5mm audio jack",
+        "ckb": "2× Thunderbolt 4 (DisplayPort، PD 3.0)، خوێنەری microSD Express، دەروازەی دەنگی 3.5mm"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 7 وBluetooth 6", "en": "Wi-Fi 7 and Bluetooth 6", "ckb": "Wi-Fi 7 و Bluetooth 6" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "عصي وزنادات Hall Effect بإضاءة RGB، أزرار ABXY بإضاءة RGB، زرا ماكرو M1/M2، اهتزاز HD بمحرك خطي، حساس حركة بستة محاور، قارئ بصمة",
+        "en": "RGB Hall Effect sticks and Hall Effect triggers, RGB ABXY, M1/M2 macro buttons, HD haptics with a linear motor, 6-axis gyro, fingerprint reader",
+        "ckb": "جۆیستیکی Hall Effect ـی RGB و تریگەری Hall Effect، ABXY ـی RGB، دوگمەی ماکرۆ M1/M2، لەرزینەوەی HD بە مۆتۆری هێڵی، Gyro ـی 6 تەوەرە، خوێنەری پەنجەمۆر"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "296–321 × 130 × 25–48 ملم", "en": "296–321 × 130 × 25–48 mm", "ckb": "296–321 × 130 × 25–48 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "785 غرام", "en": "785 g", "ckb": "785 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز MSI Claw 8 EX AI+", "en": "MSI Claw 8 EX AI+", "ckb": "ئامێری MSI Claw 8 EX AI+" },
+    { "ar": "شاحن PD بقدرة 65W", "en": "65W PD adapter", "ckb": "شەحنکەری PD ـی 65W" }
+  ],
+  "variants": [
+    {
+      "sku": "CLAW8EX-G3E-1TB",
+      "title": {
+        "ar": "MSI Claw 8 EX AI+ Arc G3 Extreme 32GB / 1TB",
+        "en": "MSI Claw 8 EX AI+ Arc G3 Extreme 32GB / 1TB",
+        "ckb": "MSI Claw 8 EX AI+ Arc G3 Extreme 32GB / 1TB"
+      },
+      "options": { "chip": "Intel Arc G3 Extreme", "memory": "32GB", "storage": "1TB", "color": "Void Purple" },
+      "modelNumber": "CG3EM",
+      "isDefault": true,
+      "images": ["msi-claw-8-ex-ai-plus--1", "msi-claw-8-ex-ai-plus--2", "msi-claw-8-ex-ai-plus--3", "msi-claw-8-ex-ai-plus--4", "msi-claw-8-ex-ai-plus--5"]
+    },
+    {
+      "sku": "CLAW8EX-G3-512",
+      "title": {
+        "ar": "MSI Claw 8 EX AI+ Arc G3 32GB / 512GB",
+        "en": "MSI Claw 8 EX AI+ Arc G3 32GB / 512GB",
+        "ckb": "MSI Claw 8 EX AI+ Arc G3 32GB / 512GB"
+      },
+      "options": { "chip": "Intel Arc G3", "memory": "32GB", "storage": "512GB" },
+      "modelNumber": "CG3M",
+      "isDefault": false,
+      "images": ["msi-claw-8-ex-ai-plus--1", "msi-claw-8-ex-ai-plus--2", "msi-claw-8-ex-ai-plus--3", "msi-claw-8-ex-ai-plus--4"],
+      "notes": {
+        "ar": "نسخة بمعالج Intel Arc G3 العادي (غير Extreme) وتخزين 512GB، مدرجة في متجر MSI الأمريكي.",
+        "en": "Version with the standard Intel Arc G3 (not Extreme) and 512GB of storage, listed in MSI's US store.",
+        "ckb": "وەشانێک بە Intel Arc G3 ـی ئاسایی (نەک Extreme) و 512GB، لە فرۆشگای ئەمریکی MSI ـدا هەیە."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "msi-claw-a8", "kind": "alternative" },
+    { "slug": "rog-xbox-ally-x", "kind": "alternative" },
+    { "slug": "sandisk-microsd-express", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "msi-claw-8-ex-ai-plus--1",
+      "file": ".cache/product-images/msi-claw-8-ex-ai-plus/1.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_1789350524d07b59314abe42ed6e70777585e51a91.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery",
+      "kind": "hero",
+      "alt": { "ar": "MSI Claw 8 EX AI+ البنفسجي من الأمام", "en": "Void Purple MSI Claw 8 EX AI+ from the front", "ckb": "MSI Claw 8 EX AI+ ـی مۆر لە پێشەوە" },
+      "credit": "MSI",
+      "width": 1800,
+      "height": 1440,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-8-ex-ai-plus--2",
+      "file": ".cache/product-images/msi-claw-8-ex-ai-plus/2.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_17812501697da0e81bdbce6eb77a1e3e6ee3d656f6.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery",
+      "kind": "angle",
+      "alt": { "ar": "MSI Claw 8 EX AI+ من زاوية أمامية مائلة", "en": "MSI Claw 8 EX AI+ from a front angle", "ckb": "MSI Claw 8 EX AI+ لە گۆشەیەکی پێشەوەی لار" },
+      "credit": "MSI",
+      "width": 1800,
+      "height": 1440,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-8-ex-ai-plus--3",
+      "file": ".cache/product-images/msi-claw-8-ex-ai-plus/3.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_178125017230aa7951e4c071a82ab1bb2fc480fb29.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من MSI Claw 8 EX AI+", "en": "Back of MSI Claw 8 EX AI+", "ckb": "پشتەوەی MSI Claw 8 EX AI+" },
+      "credit": "MSI",
+      "width": 1800,
+      "height": 1440,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-8-ex-ai-plus--4",
+      "file": ".cache/product-images/msi-claw-8-ex-ai-plus/4.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_1781250172ba5c0417f9720a15a5f3a1a0111d82df.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لجهاز MSI Claw 8 EX AI+ مع المنافذ", "en": "Top edge of MSI Claw 8 EX AI+ with its ports", "ckb": "لێواری سەرەوەی MSI Claw 8 EX AI+ لەگەڵ دەروازەکان" },
+      "credit": "MSI",
+      "width": 1800,
+      "height": 1440,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-8-ex-ai-plus--5",
+      "file": ".cache/product-images/msi-claw-8-ex-ai-plus/5.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_17812501741999ac1564c9d2e9c9beef3983fe6919.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery",
+      "kind": "angle",
+      "alt": {
+        "ar": "MSI Claw 8 EX AI+ من الأمام والخلف",
+        "en": "MSI Claw 8 EX AI+ shown from the front and the back",
+        "ckb": "MSI Claw 8 EX AI+ لە پێشەوە و پشتەوە"
+      },
+      "credit": "MSI",
+      "width": 1800,
+      "height": 1440,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Specification",
+      "title": "Claw 8 EX AI+ CG3EM – Specification",
+      "publisher": "MSI",
+      "retrieved": "2026-11-11",
+      "supports": "processor, OS, display, graphics, memory, storage slot, controls, fingerprint, Wi-Fi 7 + Bluetooth 6, 65W PD adapter, microSD Express, 2× Thunderbolt 4, 80Wh, dimensions, 785 g, Void Purple"
+    },
+    {
+      "url": "https://us-store.msi.com/Laptops/handheld-gaming/Claw-Handheld-Gaming",
+      "title": "Claw Handheld PCs – MSI US Store",
+      "publisher": "MSI",
+      "retrieved": "2026-11-11",
+      "supports": "on sale today: CG3EM-024US (Arc G3 Extreme, 32GB, 1TB M.2 2280) and CG3M-072USY (Arc G3, 32GB, 512GB); 500 nits; clock speeds"
+    },
+    {
+      "url": "https://us-store.msi.com/Claw-8-EX-AI-CG3EM",
+      "title": "Claw 8 EX AI+ – MSI US Official Store",
+      "publisher": "MSI",
+      "retrieved": "2026-11-11",
+      "supports": "up to 14 cores, 12 Xe cores, 46 NPU TOPS, PCIe 4.0 x4 M.2 2280 SSD replaceable via back cover, dual-channel LPDDR5x"
+    },
+    {
+      "url": "https://www.msi.com/news/detail/MSI-Debuts-Claw-8-EX-AI--Handheld-with-Intel--Arc-G3-Extreme-and-Titan-18-HX-Dragon-Edition-Draco-Epic-at-COMPUTEX-2026-148880",
+      "title": "MSI Debuts Claw 8 EX AI+ Handheld with Intel Arc G3 Extreme… at COMPUTEX 2026",
+      "publisher": "MSI",
+      "retrieved": "2026-11-11",
+      "supports": "announced 1 June 2026 at COMPUTEX, Arc G3 Extreme processor made for handhelds, linear haptics motor, XeSS 3, Xbox Mode, Void Purple"
+    },
+    {
+      "url": "https://liliputing.com/msi-claw-8-ex-ai-is-a-gaming-handheld-with-intel-arc-g3-extreme/",
+      "title": "MSI Claw 8 EX AI+ is a gaming handheld with Intel Arc G3 Extreme",
+      "publisher": "Liliputing",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of specs (IPS panel, 48–120Hz, 2P+8E+4LPE cores, Panther Lake, 32GB LPDDR5x, M.2 2280, Wi-Fi 7, Bluetooth 6.0, 80Wh, two Thunderbolt 4) and the 23 June 2026 on-sale date from MSI's US site"
+    },
+    {
+      "url": "https://www.techtimes.com/articles/318847/20260622/lenovo-legion-go-2-steamos-faces-first-intel-arc-rival-costs-500-less.htm",
+      "title": "Lenovo Legion Go 2 SteamOS Faces First Intel Arc Rival…",
+      "publisher": "Tech Times",
+      "retrieved": "2026-11-11",
+      "supports": "second confirmation of the on-sale date (Tuesday 23 June 2026)"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language cannot install additional languages"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    }
+  ],
+  "notes": {
+    "ar": "جهاز Windows 11: يشغّل Steam وEpic وتطبيق Xbox. العراق ليس ضمن قائمة Microsoft لدول خدمات Xbox، لذلك Game Pass غير مقدم رسمياً هنا. يحتاج حساب Microsoft واتصالاً بالإنترنت للإعداد.",
+    "en": "A Windows 11 device: it runs Steam, Epic and the Xbox app. Iraq is not on Microsoft's list of Xbox service countries, so Game Pass is not officially offered here. Needs a Microsoft account and internet to set up.",
+    "ckb": "ئامێرێکی Windows 11 ـە: Steam و Epic و ئەپی Xbox کار پێدەکات. عێراق لە لیستی Microsoft بۆ وڵاتانی خزمەتگوزاریی Xbox نییە، بۆیە Game Pass بە فەرمی لێرە پێشکەش ناکرێت. بۆ ڕێکخستن پێویستی بە هەژماری Microsoft و ئینتەرنێت هەیە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Box contents: MSI lists a 65W PD adapter in the spec sheet but publishes no in-the-box list",
+      "Colour of the Arc G3 (CG3M) version not stated, and MSI's store lists the same 12-Xe-core B390 graphics for both chips while its product page says 'up to 12'",
+      "MSI calls it the world's first Arc G3 Extreme handheld; Acer and ONEXPLAYER announced Arc G-series handhelds the same month, so that claim is left out",
+      "Barcodes not found on an official page"
+    ]
+  }
+}

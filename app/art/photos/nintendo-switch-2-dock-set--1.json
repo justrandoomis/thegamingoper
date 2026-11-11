@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch-2-dock-set--1",
+  "view": "hero",
+  "width": 1036,
+  "height": 1121,
+  "aspect": 0.9242,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-dock-set/1-240.761dd0fc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-dock-set/1-480.3685f54e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-dock-set/1-720.973f2a1b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-dock-set/1-960.8321a15b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-dock-set/1-240.30891e5d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-dock-set/1-480.588ba936.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-dock-set/1-720.cd185e58.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-dock-set/1-960.5b65a491.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-dock-set/1-720.5a931f5f.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSHsAAAART6CobSQ3txx6373XRURAd+rLjw23tbatyROtXcoEp3Pr3Dqnhg1cJuCwAeef908qFojo/wSQbX2+8ls9ivTonFH9l7g5nkxazaZGakOF+8Fj4I5ZCbEkT02rSR6WZklFYt36iT47ZaifZjuN0iRvDlq5huNjGYClAAAAVlA4IHoAAABwBACdASoSABQAPxF8tVOsJ6UiqAqpgCIJaQDPZBF+OAsff0IeqzYMQ6L+cAD+ywqyJPVtxI6rSvRe98rthxsfKl2zN/h/TKtEbA1dRn0Gro1mWScbc9MKZcAvxrF867vlMhc+GzfdSAwJgb4DNfPdtc2oR6x2rQAAAA==",
+  "dominant": "#343739",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Dock%20and%20AC/Frame_3473694.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "92bcf0ac03f67c8d"
+}

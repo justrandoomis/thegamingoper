@@ -1,0 +1,65 @@
+{
+  "key": "xbox-nano-controller--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 888,
+  "aspect": 1.8018,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-nano-controller/3-240.dacdce41.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-nano-controller/3-480.753218f4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-nano-controller/3-720.5072e84f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-nano-controller/3-960.22b5c71a.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-nano-controller/3-1440.d096f60e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-nano-controller/3-240.0baa76f5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-nano-controller/3-480.bab421b9.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-nano-controller/3-720.4cd8dae5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-nano-controller/3-960.b3bc5ccf.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-nano-controller/3-1440.360ac1dc.webp"
+      }
+    ],
+    "png": "/products/xbox-nano-controller/3-720.603b17a1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFoAAAART6CgbRs2VhTdfwQWEYGkxJ+7gk1t7U3+0Mf8DqgaWJHAQUEk0MvGls8B5/ebHw0R/Z8A+rvhvi6PnuwnwccMoiajljotm7X81QonAgAiWek7ZubpjshS0BBWUDggZAAAANADAJ0BKhQACwA/EXCwUCwmJKKwCAGAIglpAABhg3fLymf7t8IgAAD+601rDlA7vI47OXbCbFVKb+f4jdXXPt+2qVf2ADA05KN2wkikX3duYcEQJiLFrE+eKZbMLgfb/MAAAAA=",
+  "dominant": "#f9f9f9",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/1145287_MS-Store_Image-Gallery-BOB-0_2000x20001?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3"
+  },
+  "input": "84bb7e2351085742"
+}

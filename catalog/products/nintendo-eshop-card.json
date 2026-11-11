@@ -1,0 +1,246 @@
+{
+  "slug": "nintendo-eshop-card",
+  "group": "accessories-storage-digital",
+  "kind": "digital",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "name": {
+    "ar": "بطاقة Nintendo eShop (رصيد رقمي)",
+    "en": "Nintendo eShop Card (digital code)",
+    "ckb": "کارتی Nintendo eShop (کۆدی دیجیتاڵ)"
+  },
+  "short": {
+    "ar": "رصيد لـ Switch 2 وSwitch · يجب أن تطابق دولة البطاقة دولة حساب Nintendo",
+    "en": "Credit for Switch 2 and Switch · card country must match your Nintendo Account",
+    "ckb": "باڵانس بۆ Switch 2 و Switch · وڵاتی کارت دەبێت وەک وڵاتی هەژماری Nintendo بێت"
+  },
+  "description": {
+    "ar": "رمز رقمي من 16 خانة يضيف رصيداً إلى حساب Nintendo لتشتري من Nintendo eShop الألعاب والإضافات واشتراك Nintendo Switch Online على Nintendo Switch 2 وNintendo Switch. البطاقة تعمل فقط في متجر الدولة التي صدرت لها، ولا توجد نسخة من Nintendo eShop للعراق، لذلك يستخدم معظم اللاعبين في العراق حساباً أمريكياً وبطاقات بالدولار. يصلك الرمز بعد إتمام الدفع.",
+    "en": "A 16-digit digital code that adds funds to your Nintendo Account, to buy games, DLC and Nintendo Switch Online from Nintendo eShop on Nintendo Switch 2 and Nintendo Switch. The card only works in the eShop of the country it was made for, and there is no Nintendo eShop for Iraq, so most players in Iraq use a US account and US-dollar cards. The code is sent to you after payment.",
+    "ckb": "کۆدێکی دیجیتاڵی 16 ژمارەیی کە باڵانس دەخاتە سەر هەژماری Nintendoکەت، بۆ کڕینی یاری، زیادکراوە و Nintendo Switch Online لە Nintendo eShop لەسەر Nintendo Switch 2 و Nintendo Switch. کارتەکە تەنها لە eShopی ئەو وڵاتەدا کار دەکات کە بۆی دروستکراوە، و Nintendo eShop بۆ عێراق نییە، بۆیە زۆربەی یاریزانانی عێراق هەژماری ئەمریکی و کارتی دۆلار بەکاردەهێنن. کۆدەکە دوای پارەدان بۆت دەنێردرێت."
+  },
+  "highlights": [
+    {
+      "ar": "تعمل فقط على حساب Nintendo من نفس دولة البطاقة، ولا تُستبدل ولا تُسترجع إذا كانت لدولة أخرى",
+      "en": "Only works on a Nintendo Account from the card's country; Nintendo will not exchange or refund a wrong-region card",
+      "ckb": "تەنها لەسەر هەژماری Nintendo لە هەمان وڵاتی کارت کار دەکات؛ Nintendo کارتی وڵاتی هەڵە ناگۆڕێتەوە و پارەکەی ناگەڕێنێتەوە"
+    },
+    {
+      "ar": "تعمل على Nintendo Switch 2 وNintendo Switch، أو من موقع Nintendo على المتصفح",
+      "en": "Works on Nintendo Switch 2 and Nintendo Switch, or on Nintendo's website",
+      "ckb": "لەسەر Nintendo Switch 2 و Nintendo Switch کار دەکات، یان لە ماڵپەڕی Nintendo"
+    },
+    {
+      "ar": "تشتري بها الألعاب والإضافات واشتراك Nintendo Switch Online",
+      "en": "Buys games, DLC and Nintendo Switch Online memberships",
+      "ckb": "یاری، زیادکراوە و بەشداریی Nintendo Switch Online دەکڕێت"
+    },
+    {
+      "ar": "الرصيد لا ينتقل إذا غيّرت دولة حسابك",
+      "en": "Your balance does not carry over if you change your account's country",
+      "ckb": "ئەگەر وڵاتی هەژمارەکەت بگۆڕیت باڵانسەکە ناگوازرێتەوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "format",
+      "label": { "ar": "الشكل", "en": "Format", "ckb": "شێوە" },
+      "value": { "ar": "رمز رقمي من 16 خانة", "en": "16-digit digital code", "ckb": "کۆدی دیجیتاڵی 16 ژمارەیی" }
+    },
+    {
+      "key": "region",
+      "label": { "ar": "الدولة", "en": "Region", "ckb": "وڵات" },
+      "value": { "ar": "مقفلة على دولة البطاقة (مثلاً الولايات المتحدة بالدولار، المملكة المتحدة بالجنيه)", "en": "Locked to the card's country (e.g. US in dollars, UK in pounds)", "ckb": "بە وڵاتی کارتەکە قوفڵە (بۆ نموونە ئەمریکا بە دۆلار، بەریتانیا بە پاوەند)" }
+    },
+    {
+      "key": "redeem",
+      "label": { "ar": "طريقة الاسترداد", "en": "How to redeem", "ckb": "چۆنیەتی بەکارهێنان" },
+      "value": { "ar": "Nintendo eShop على الجهاز ← إدخال الرمز، أو ec.nintendo.com/redeem", "en": "Nintendo eShop on the console → Enter Code, or ec.nintendo.com/redeem", "ckb": "Nintendo eShop لەسەر کۆنسۆڵ ← Enter Code، یان ec.nintendo.com/redeem" }
+    },
+    {
+      "key": "works_on",
+      "label": { "ar": "يعمل على", "en": "Works on", "ckb": "کار دەکات لەسەر" },
+      "value": { "ar": "Nintendo Switch 2 وعائلة Nintendo Switch", "en": "Nintendo Switch 2 and the Nintendo Switch family", "ckb": "Nintendo Switch 2 و خێزانی Nintendo Switch" }
+    },
+    {
+      "key": "delivery",
+      "label": { "ar": "التسليم", "en": "Delivery", "ckb": "گەیاندن" },
+      "value": { "ar": "يُرسل الرمز بعد إتمام الدفع", "en": "Code is sent after payment", "ckb": "کۆدەکە دوای پارەدان دەنێردرێت" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ESHOP-US-10",
+      "title": { "ar": "حساب أمريكي · 10 دولار", "en": "US account · $10", "ckb": "هەژماری ئەمریکی · 10 دۆلار" },
+      "options": { "region": "United States", "value": "10 USD" },
+      "isDefault": true,
+      "images": ["nintendo-eshop-card--1"]
+    },
+    {
+      "sku": "ESHOP-US-20",
+      "title": { "ar": "حساب أمريكي · 20 دولار", "en": "US account · $20", "ckb": "هەژماری ئەمریکی · 20 دۆلار" },
+      "options": { "region": "United States", "value": "20 USD" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--1"]
+    },
+    {
+      "sku": "ESHOP-US-50",
+      "title": { "ar": "حساب أمريكي · 50 دولار", "en": "US account · $50", "ckb": "هەژماری ئەمریکی · 50 دۆلار" },
+      "options": { "region": "United States", "value": "50 USD" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--1"]
+    },
+    {
+      "sku": "ESHOP-US-70",
+      "title": { "ar": "حساب أمريكي · 70 دولار", "en": "US account · $70", "ckb": "هەژماری ئەمریکی · 70 دۆلار" },
+      "options": { "region": "United States", "value": "70 USD" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--1"]
+    },
+    {
+      "sku": "ESHOP-US-100",
+      "title": { "ar": "حساب أمريكي · 100 دولار", "en": "US account · $100", "ckb": "هەژماری ئەمریکی · 100 دۆلار" },
+      "options": { "region": "United States", "value": "100 USD" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--1"]
+    },
+    {
+      "sku": "ESHOP-UK-15",
+      "title": { "ar": "حساب بريطاني · 15 جنيه", "en": "UK account · £15", "ckb": "هەژماری بەریتانی · 15 پاوەند" },
+      "options": { "region": "United Kingdom", "value": "15 GBP" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--2"]
+    },
+    {
+      "sku": "ESHOP-UK-25",
+      "title": { "ar": "حساب بريطاني · 25 جنيه", "en": "UK account · £25", "ckb": "هەژماری بەریتانی · 25 پاوەند" },
+      "options": { "region": "United Kingdom", "value": "25 GBP" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--2"]
+    },
+    {
+      "sku": "ESHOP-UK-50",
+      "title": { "ar": "حساب بريطاني · 50 جنيه", "en": "UK account · £50", "ckb": "هەژماری بەریتانی · 50 پاوەند" },
+      "options": { "region": "United Kingdom", "value": "50 GBP" },
+      "isDefault": false,
+      "images": ["nintendo-eshop-card--2"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "على حساب Nintendo من نفس دولة البطاقة.", "en": "On a Nintendo Account from the card's country.", "ckb": "لەسەر هەژماری Nintendo لە هەمان وڵاتی کارتەکە." },
+      "source": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/"
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "verified",
+      "note": { "ar": "على حساب Nintendo من نفس دولة البطاقة.", "en": "On a Nintendo Account from the card's country.", "ckb": "لەسەر هەژماری Nintendo لە هەمان وڵاتی کارتەکە." },
+      "source": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "verified",
+      "note": { "ar": "على حساب Nintendo من نفس دولة البطاقة.", "en": "On a Nintendo Account from the card's country.", "ckb": "لەسەر هەژماری Nintendo لە هەمان وڵاتی کارتەکە." },
+      "source": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/"
+    },
+    {
+      "deviceModel": "switch-lite",
+      "status": "verified",
+      "note": { "ar": "على حساب Nintendo من نفس دولة البطاقة.", "en": "On a Nintendo Account from the card's country.", "ckb": "لەسەر هەژماری Nintendo لە هەمان وڵاتی کارتەکە." },
+      "source": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "mario-kart-world", "kind": "accessory" },
+    { "slug": "the-legend-of-zelda-ocarina-of-time", "kind": "accessory" },
+    { "slug": "sandisk-microsd-express", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-eshop-card--1",
+      "file": ".cache/product-images/nintendo-eshop-card/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/gift-cards/POSAorDRI_ContentCards_NewPOSADenoms_LineUp_Wht.png",
+      "sourcePage": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/",
+      "kind": "hero",
+      "alt": {
+        "ar": "مجموعة بطاقات Nintendo eShop الأمريكية من 5 إلى 200 دولار بشخصيات Nintendo",
+        "en": "US Nintendo eShop card line-up from $5 to $200 with Nintendo characters",
+        "ckb": "کۆمەڵە کارتی ئەمریکیی Nintendo eShop لە 5 تا 200 دۆلار بە کەسایەتییەکانی Nintendo"
+      },
+      "credit": "Nintendo",
+      "width": 6875,
+      "height": 3867,
+      "transparent": false
+    },
+    {
+      "key": "nintendo-eshop-card--2",
+      "file": ".cache/product-images/nintendo-eshop-card/2.jpg",
+      "sourceUrl": "https://www.nintendo.com/eu/media/images/10_share_images/others_3/nintendo_eshop_5/H2x1_NintendoeShop_GiftCards_Pound.jpg",
+      "sourcePage": "https://www.nintendo.com/en-gb/Hardware/Nintendo-3DS-Family/Download-Content/How-to-buy-games/Nintendo-eShop-Cards/Nintendo-eShop-Cards-941639.html",
+      "kind": "detail",
+      "alt": {
+        "ar": "بطاقات Nintendo eShop البريطانية فئة 15 و25 و50 جنيهاً",
+        "en": "UK Nintendo eShop cards for £15, £25 and £50",
+        "ckb": "کارتە بەریتانییەکانی Nintendo eShop بە 15، 25 و 50 پاوەند"
+      },
+      "credit": "Nintendo",
+      "width": 2000,
+      "height": 1000,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/retail-offers/nintendo-eshop-cards/",
+      "title": "Nintendo eShop cards",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "cards work on Nintendo Switch and Nintendo Switch 2, current US card values ($5 to $200 line-up image), redeeming on the console or at ec.nintendo.com/redeem, account must be set to a country where eShop is available"
+    },
+    {
+      "url": "https://www.nintendo.com/au/support/articles/nintendo-switch-2-regional-compatibility-faq/",
+      "title": "Nintendo Switch 2 Regional Compatibility FAQ",
+      "publisher": "Nintendo Australia",
+      "retrieved": "2026-11-11",
+      "supports": "eShop cards only work for the country/region they were sold for and cannot be replaced, exchanged or refunded; eShop country follows the Nintendo Account; balance does not carry over when changing country"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Hardware/Nintendo-3DS-Family/Download-Content/How-to-buy-games/Nintendo-eShop-Cards/Nintendo-eShop-Cards-941639.html",
+      "title": "Nintendo eShop Cards",
+      "publisher": "Nintendo UK",
+      "retrieved": "2026-11-11",
+      "supports": "UK values £15, £25, £50, £75, £100, 16-digit number, no extra fees, UK card image"
+    },
+    {
+      "url": "https://www.nintendo.com/region-selector/",
+      "title": "Nintendo Region Selector",
+      "publisher": "Nintendo",
+      "retrieved": "2026-11-11",
+      "supports": "no Nintendo site for Iraq; the Saudi Arabia site is run by a local distributor"
+    },
+    {
+      "url": "https://digital.baly.iq/games/nintendo/",
+      "title": "بطاقات نينتندو سويتش (Iraqi digital card seller)",
+      "publisher": "Baly (Iraq)",
+      "retrieved": "2026-11-11",
+      "supports": "eShop cards sold in Iraq are US-dollar cards; card country must match the Nintendo Account"
+    }
+  ],
+  "notes": {
+    "ar": "تحقق من دولة حساب Nintendo قبل الشراء (من إعدادات الحساب). بطاقة دولة أخرى لن تعمل ولا تستبدلها Nintendo ولا تسترد قيمتها. للاسترداد يجب أن يكون الحساب قد دخل Nintendo eShop مرة واحدة على الأقل من الجهاز.",
+    "en": "Check your Nintendo Account's country before buying (in account settings). A card for another country will not work, and Nintendo will not exchange or refund it. To redeem on the web, the account must have opened Nintendo eShop on a console at least once.",
+    "ckb": "پێش کڕین وڵاتی هەژماری Nintendoکەت بپشکنە (لە ڕێکخستنەکانی هەژمار). کارتی وڵاتێکی تر کار ناکات، و Nintendo نایگۆڕێتەوە و پارەکەی ناگەڕێنێتەوە. بۆ بەکارهێنان لە وێبگەڕ، دەبێت هەژمارەکە لانیکەم یەک جار Nintendo eShopی لەسەر کۆنسۆڵ کردبێتەوە."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "That most players in Iraq use US accounts is inferred from Iraqi sellers offering only US-dollar eShop cards",
+      "Exact digital denominations differ by retailer (Iraqi sellers also list $35, $45 and $99 codes)"
+    ]
+  }
+}

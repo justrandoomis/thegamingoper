@@ -147,20 +147,24 @@ export async function hashPassword(password: string, iterations: number = PASSWO
 }
 
 const DUMMY_SALT = new Uint8Array(SALT_BYTES);
+/** Derived instead of an empty or over-long password: some runtimes refuse empty PBKDF2 key material, and the time spent must not differ. */
+const UNUSABLE_PASSWORD = "\u0000unusable";
 
 /**
- * Constant-time check of a password against a stored hash. A missing or malformed hash still costs
- * one full derivation, so "no such account" and "wrong password" take the same time.
+ * Constant-time check of a password against a stored hash. A missing or malformed hash, an empty
+ * password and an over-long one still cost one full derivation, so "no such account" and "wrong
+ * password" take the same time.
  */
 export async function verifyPassword(password: string, encoded: string | null | undefined): Promise<boolean> {
-  const candidate = password.length > MAX_PASSWORD_LENGTH ? "" : password;
+  const usable = typeof password === "string" && password.length > 0 && password.length <= MAX_PASSWORD_LENGTH;
+  const candidate = usable ? password : UNUSABLE_PASSWORD;
   const parsed = parsePasswordHash(encoded);
   if (!parsed) {
     await pbkdf2(candidate, DUMMY_SALT, PASSWORD_ITERATIONS);
     return false;
   }
   const derived = await pbkdf2(candidate, parsed.salt, parsed.iterations);
-  return equalBytes(derived, parsed.hash) && candidate.length > 0;
+  return equalBytes(derived, parsed.hash) && usable;
 }
 
 /** True when a stored hash should be replaced at the next successful sign-in (weaker than today's setting, or unreadable). */

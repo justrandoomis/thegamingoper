@@ -8,7 +8,8 @@
  *   interruption        any touch, key press or wheel while a view transition is animating ends that transition,
  *                       so the page is live at once and React is not left waiting for an animation.
  *   shared elements     a press inside a link/button claims the <SharedElement>s it contains.
- *   tier                <html data-motion="full|lite|reduced">, kept in sync with the OS setting and the override.
+ *   tier                <html data-motion="full|lite|reduced"> and, for the low-end tier, class fx-low (DESIGN.md
+ *                       §6.5), kept in sync with the OS setting, device signals, measured jank and the override.
  *   ambient             <html data-motion-hidden> while the tab is hidden, data-motion-lowpower on low battery.
  *
  * Mounting it twice is harmless (reference counted).
@@ -18,7 +19,7 @@ import { getMotionTier, haptic, subscribeMotionTier } from "./env";
 import { preloadExtras } from "./lazy";
 import { clearNavIntent } from "./nav-state";
 import { notePointer, setMotionLive } from "./pointer";
-import { claimWithin } from "./share-registry";
+import { claimWithin, rememberArmed } from "./share-registry";
 import { haptics, type HapticKind } from "./tokens";
 import { endActiveTransition, isTransitionActive } from "./vt";
 import "./motion.css";
@@ -41,7 +42,11 @@ function install(): () => void {
   const passive = { capture: true, passive: true, signal } as const;
 
   // --- tier ---------------------------------------------------------------
-  const applyTier = () => root.setAttribute("data-motion", getMotionTier());
+  const applyTier = () => {
+    const tier = getMotionTier();
+    root.setAttribute("data-motion", tier);
+    root.classList.toggle("fx-low", tier === "lite");
+  };
   applyTier();
   const unsubscribe = subscribeMotionTier(applyTier);
 
@@ -170,6 +175,11 @@ function install(): () => void {
   const onInterrupt = () => {
     if (isTransitionActive()) endActiveTransition();
   };
+  // Capture phase: runs before React Router's own popstate listener, while the page being left is still on screen.
+  const onPop = () => {
+    rememberArmed();
+    onInterrupt();
+  };
 
   document.addEventListener("pointerdown", onPointerDown, passive);
   document.addEventListener("pointerup", onPointerEnd, passive);
@@ -180,7 +190,7 @@ function install(): () => void {
   document.addEventListener("animationend", onAnimationEnd, passive);
   document.addEventListener("animationcancel", onAnimationEnd, passive);
   document.addEventListener("wheel", onInterrupt, passive);
-  window.addEventListener("popstate", onInterrupt, { signal });
+  window.addEventListener("popstate", onPop, { capture: true, signal });
   window.addEventListener("blur", endPress, { signal });
 
   setMotionLive(true);
@@ -201,6 +211,7 @@ function install(): () => void {
     unsubscribe();
     setMotionLive(false);
     for (const name of ["data-motion", "data-motion-hidden", "data-motion-lowpower", "data-motion-ready"]) root.removeAttribute(name);
+    root.classList.remove("fx-low");
   };
 }
 

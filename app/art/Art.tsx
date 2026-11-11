@@ -1,10 +1,13 @@
 import type { CSSProperties, SyntheticEvent } from "react";
 import { preload } from "react-dom";
 
-import { artAspect, artName, artSrcSet, getArt, parseArtName, type ArtView } from "./index";
+import { artAspect, artName, artSrcSet, getArt, isPhoto, parseArtName, parsePhotoKey, type ArtView } from "./index";
 
 export interface ArtProps {
-  /** Art key from scripts/art/catalog.json, e.g. "switch-2". "switch-2@front" also selects a view. */
+  /**
+   * Art key from scripts/art/catalog.json, e.g. "switch-2" ("switch-2@front" also selects a view),
+   * or a product photo key "<slug>--<n>" from catalog/products, e.g. "nintendo-switch-2--1".
+   */
   name: string;
   /** "hero" (three-quarter, the default), "front" or "back". */
   view?: ArtView;
@@ -30,19 +33,26 @@ const DEFAULT_SIZES = "(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw";
 const FULL_SIDE = 1600;
 
 /**
- * A TamTam clay render: transparent, pre-built in AVIF and WebP at five widths with a PNG fallback.
+ * A TamTam clay render or product photo, pre-built in AVIF and WebP at up to five widths with a PNG
+ * fallback.
  *
  *   <Art name="switch-2" alt={t("switch2")} sizes="(min-width: 768px) 320px, 45vw" className="w-full" />
  *   <Art name="ps5-slim" view="front" alt="" className="h-full w-full object-contain" />
  *   <Art name="xbox-series-x" alt={title} priority sizes="(min-width: 1024px) 480px, 90vw" />
+ *   <Art name="nintendo-switch-2--1" alt={image.alt[lang]} className="h-full w-full object-contain" />
  *
  * It renders a `<picture>` whose `<img>` carries the intrinsic width and height, so the space is
  * reserved before anything loads (give it `height: auto` or a fixed box, as with any image —
  * Tailwind's base styles already do). Until the file arrives a blurred miniature is shown behind it.
  *
- * A key that has no render yet (most of the catalogue while the models are being built) draws a
- * neutral clay block of the expected shape instead, and warns in the dev console. Pages can ship
- * before their art does. Ask `hasArt(name)` / `artViews(key)` from "~/art" when a layout must know.
+ * Renders and most photos are transparent. A photo whose background could not be removed safely
+ * (manifest `transparent: false`) is drawn in its own rounded frame filled with its recorded
+ * background colour, so it sits cleanly on a niche or stage; the radius is `--photo-radius`
+ * (default `--r-md`). Every picture carries `data-transparent="true" | "false"` for CSS.
+ *
+ * A key that has no picture yet draws a neutral clay block of the expected shape instead, and warns
+ * in the dev console. Pages can ship before their art does. Ask `hasArt(name)` / `artViews(key)` /
+ * `productPhotos(slug)` from "~/art" when a layout must know.
  *
  * Purely presentational and safe on the server; it keeps no state.
  */
@@ -54,7 +64,13 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
   const label = artName(target.key, target.view);
 
   if (!art) {
-    warnOnce(label, `[Art] "${label}" has no render yet — showing a placeholder. Add scripts/art/models/${target.key}.mjs and run: node scripts/art/build.mjs --only=${target.key}`);
+    const photo = parsePhotoKey(target.key);
+    warnOnce(
+      label,
+      photo
+        ? `[Art] "${label}" has no photo yet — showing a placeholder. Check its entry in catalog/products/${photo.slug}.json and run: node scripts/products/images.mjs --only ${photo.slug}`
+        : `[Art] "${label}" has no render yet — showing a placeholder. Add scripts/art/models/${target.key}.mjs and run: node scripts/art/build.mjs --only=${target.key}`,
+    );
     const aspect = artAspect(target.key, target.view) ?? artAspect(target.key) ?? 1;
     const width = Math.round(aspect >= 1 ? FULL_SIDE : FULL_SIDE * aspect);
     const height = Math.round(aspect >= 1 ? FULL_SIDE / aspect : FULL_SIDE);
@@ -75,6 +91,8 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
 
   if (!exact) warnOnce(label, `[Art] "${label}" is not rendered — showing the hero view of "${target.key}" instead.`);
 
+  const photo = isPhoto(art) ? art : undefined;
+  const opaque = photo !== undefined && !photo.transparent;
   const avif = artSrcSet(art.variants.avif);
   const webp = artSrcSet(art.variants.webp);
   if (priority) {
@@ -98,8 +116,9 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
         decoding={priority ? undefined : "async"}
         fetchPriority={priority ? "high" : undefined}
         data-art={artName(art.key, art.view)}
+        data-transparent={opaque ? "false" : "true"}
         className={className}
-        style={{ ...blurBehind(art.placeholder), ...style }}
+        style={{ ...blurBehind(art.placeholder), ...(opaque ? frame(photo.background) : null), ...style }}
       />
     </picture>
   );
@@ -107,6 +126,14 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
 
 /** The wrapper must not take part in layout: the `<img>` is the element callers size and place. */
 const PICTURE_STYLE: CSSProperties = { display: "contents" };
+
+/**
+ * An opaque photo: its own rounded frame, filled with the background the photo kept, so the frame
+ * continues the photo — also where `object-fit: contain` leaves room around it.
+ */
+function frame(background: string | null): CSSProperties {
+  return { backgroundColor: background ?? undefined, borderRadius: "var(--photo-radius, var(--r-md))" };
+}
 
 function blurBehind(placeholder: string): CSSProperties {
   return {

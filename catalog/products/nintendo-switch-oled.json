@@ -1,0 +1,286 @@
+{
+  "slug": "nintendo-switch-oled",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch-oled",
+  "family": "switch-oled",
+  "status": "available",
+  "releaseDate": "2021-10-08",
+  "name": { "ar": "Nintendo Switch – OLED Model", "en": "Nintendo Switch – OLED Model", "ckb": "Nintendo Switch – OLED Model" },
+  "short": {
+    "ar": "64GB · شاشة OLED قياس 7 بوصات · تلفاز وطاولة ومحمول",
+    "en": "64GB · 7-inch OLED screen · TV, tabletop and handheld",
+    "ckb": "64GB · شاشەی OLEDی 7 ئینج · تەلەڤزیۆن، مێز و دەستی"
+  },
+  "description": {
+    "ar": "أعلى طراز من جهاز Nintendo Switch الأول: شاشة OLED قياس 7 بوصات بألوان زاهية، وحامل خلفي عريض قابل للتعديل، وقاعدة فيها منفذ LAN للإنترنت السلكي، وتخزين 64GB. يعمل على التلفاز أو على الطاولة أو محمولًا، ويشغّل ألعاب Nintendo Switch فقط وليس ألعاب Switch 2 الحصرية.",
+    "en": "The top model of the original Nintendo Switch: a vivid 7-inch OLED screen, a wide adjustable stand, a dock with a wired LAN port and 64GB of storage. It plays on the TV, on a table or in your hands, and runs Nintendo Switch games — not Switch 2 exclusives.",
+    "ckb": "بەرزترین مۆدێلی Nintendo Switch ی یەکەم: شاشەی OLEDی 7 ئینج بە ڕەنگی زیندوو، پاڵپشتێکی پانی ڕێکخراو، دۆکێک بە دەرچەی LANی وایەردار، و بیرگەی 64GB. لەسەر تەلەڤزیۆن، لەسەر مێز یان بە دەست کار دەکات، و یارییەکانی Nintendo Switch کار پێدەکات — نەک یارییە تایبەتەکانی Switch 2."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة OLED لمسية قياس 7 بوصات بدقة 720p",
+      "en": "7-inch OLED touchscreen, 720p",
+      "ckb": "شاشەی OLEDی دەستلێدانی 7 ئینج، 720p"
+    },
+    {
+      "ar": "تخزين 64GB، ويقبل بطاقات microSDHC وmicroSDXC حتى 2TB",
+      "en": "64GB storage; takes microSDHC/microSDXC cards up to 2TB",
+      "ckb": "بیرگەی 64GB؛ کارتی microSDHC/microSDXC تا 2TB وەردەگرێت"
+    },
+    {
+      "ar": "القاعدة المرفقة فيها منفذ LAN للإنترنت السلكي على التلفاز (حتى 1080p)",
+      "en": "Included dock has a wired LAN port; up to 1080p on the TV",
+      "ckb": "دۆکەکەی لەگەڵیدایە دەرچەی LANی وایەرداری هەیە؛ تا 1080p لەسەر تەلەڤزیۆن"
+    },
+    {
+      "ar": "يشغّل ألعاب Nintendo Switch؛ ألعاب Nintendo Switch 2 الحصرية لا تعمل عليه",
+      "en": "Runs Nintendo Switch games; Nintendo Switch 2 exclusives do not run on it",
+      "ckb": "یارییەکانی Nintendo Switch کار پێدەکات؛ یارییە تایبەتەکانی Nintendo Switch 2 لەسەری کار ناکەن"
+    },
+    {
+      "ar": "بطارية تدوم تقريبًا 4.5 إلى 9 ساعات حسب اللعبة",
+      "en": "Battery lasts about 4.5–9 hours depending on the game",
+      "ckb": "پاتری نزیکەی 4.5 تا 9 کاتژمێر دەمێنێت بەپێی یارییەکە"
+    },
+    {
+      "ar": "واجهة الجهاز لا تدعم اللغة العربية (تدعم الإنجليزية والفرنسية والألمانية والإسبانية والروسية وغيرها)",
+      "en": "The system menus are not available in Arabic (English, French, German, Spanish, Russian and others are)",
+      "ckb": "ڕووکاری سیستەمەکە زمانی عەرەبی تێدا نییە (ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ڕووسی و هیتر هەن)"
+    }
+  ],
+  "specs": [
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": { "ar": "OLED لمسية 7.0 بوصة، 1280×720", "en": "7.0-inch OLED touchscreen, 1280×720", "ckb": "OLEDی دەستلێدانی 7.0 ئینج، 1280×720" }
+    },
+    {
+      "key": "processor",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": { "ar": "معالج NVIDIA Tegra مخصص", "en": "NVIDIA custom Tegra processor", "ckb": "پرۆسێسەری تایبەتی NVIDIA Tegra" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": { "ar": "64GB، وبطاقات microSDHC/microSDXC حتى 2TB", "en": "64GB; microSDHC/microSDXC up to 2TB", "ckb": "64GB؛ microSDHC/microSDXC تا 2TB" }
+    },
+    {
+      "key": "tv_output",
+      "label": { "ar": "الإخراج على التلفاز", "en": "TV output", "ckb": "پیشاندان لەسەر تەلەڤزیۆن" },
+      "value": { "ar": "حتى 1080p عبر HDMI في وضع التلفاز؛ 720p على شاشة الجهاز", "en": "Up to 1080p over HDMI in TV mode; 720p on the built-in screen", "ckb": "تا 1080p بە HDMI لە دۆخی تەلەڤزیۆن؛ 720p لەسەر شاشەی خۆی" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "Wi-Fi (802.11ac) وBluetooth 4.1، ومنفذ LAN في القاعدة", "en": "Wi-Fi (802.11ac), Bluetooth 4.1, LAN port on the dock", "ckb": "Wi-Fi (802.11ac)، Bluetooth 4.1، دەرچەی LAN لەسەر دۆکەکە" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "4310mAh، نحو 4.5–9 ساعات، والشحن نحو 3 ساعات", "en": "4310 mAh; about 4.5–9 hours; about 3 hours to charge", "ckb": "4310mAh؛ نزیکەی 4.5–9 کاتژمێر؛ بارگاویکردن نزیکەی 3 کاتژمێر" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Size", "ckb": "قەبارە" },
+      "value": { "ar": "102 × 242 × 13.9 مم مع يدي Joy-Con", "en": "102 × 242 × 13.9 mm with Joy-Con attached", "ckb": "102 × 242 × 13.9 ملم لەگەڵ Joy-Con" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "نحو 320 غرامًا، ونحو 420 غرامًا مع يدي Joy-Con", "en": "About 320 g; about 420 g with Joy-Con", "ckb": "نزیکەی 320 گرام؛ نزیکەی 420 گرام لەگەڵ Joy-Con" }
+    },
+    {
+      "key": "system_languages",
+      "label": { "ar": "لغات الواجهة", "en": "System languages", "ckb": "زمانەکانی سیستەم" },
+      "value": {
+        "ar": "الإنجليزية، الفرنسية، الألمانية، الإسبانية، الإيطالية، الهولندية، البرتغالية، الروسية، اليابانية، الصينية (المبسطة والتقليدية)، الكورية — بدون العربية",
+        "en": "English, French, German, Spanish, Italian, Dutch, Portuguese, Russian, Japanese, Chinese (simplified and traditional), Korean — no Arabic",
+        "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ئیتاڵی، هۆڵەندی، پورتوگالی، ڕووسی، یابانی، چینی (سادەکراو و نەریتی)، کۆری — بێ عەرەبی"
+      }
+    },
+    {
+      "key": "model_number",
+      "label": { "ar": "رقم الموديل", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "HEG-001", "en": "HEG-001", "ckb": "HEG-001" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch – OLED Model", "en": "Nintendo Switch – OLED Model console", "ckb": "کۆنسۆڵی Nintendo Switch – OLED Model" },
+    { "ar": "قاعدة Nintendo Switch مع منفذ LAN", "en": "Nintendo Switch dock with LAN port", "ckb": "دۆکی Nintendo Switch بە دەرچەی LAN" },
+    { "ar": "يدا Joy-Con (L) و(R)", "en": "Joy-Con (L) and (R)", "ckb": "Joy-Con (L) و (R)" },
+    { "ar": "حزاما معصم Joy-Con", "en": "Joy-Con wrist straps", "ckb": "قایشی مەچەکی Joy-Con" },
+    { "ar": "مقبض Joy-Con Grip", "en": "Joy-Con Grip", "ckb": "دەسگرەی Joy-Con Grip" },
+    { "ar": "كابل HDMI عالي السرعة", "en": "High Speed HDMI cable", "ckb": "کێبڵی HDMIی خێرا" },
+    { "ar": "محول الطاقة Nintendo Switch AC Adapter", "en": "Nintendo Switch AC Adapter", "ckb": "ئەداپتەری کارەبای Nintendo Switch" }
+  ],
+  "variants": [
+    {
+      "sku": "NSW-OLED-WHT",
+      "title": { "ar": "Nintendo Switch – OLED Model — أبيض", "en": "Nintendo Switch – OLED Model — White", "ckb": "Nintendo Switch – OLED Model — سپی" },
+      "options": { "edition": "Standard", "storage": "64GB", "color": "White" },
+      "modelNumber": "HEG-001",
+      "barcodes": ["0045496883386"],
+      "isDefault": true,
+      "images": ["nintendo-switch-oled--1", "nintendo-switch-oled--2", "nintendo-switch-oled--3", "nintendo-switch-oled--6"],
+      "notes": { "ar": "الباركود هو رمز UPC الأمريكي.", "en": "Barcode is the US UPC.", "ckb": "بارکۆدەکە UPCی ئەمریکییە." }
+    },
+    {
+      "sku": "NSW-OLED-NEON",
+      "title": { "ar": "Nintendo Switch – OLED Model — أزرق نيون / أحمر نيون", "en": "Nintendo Switch – OLED Model — Neon Blue / Neon Red", "ckb": "Nintendo Switch – OLED Model — شینی نیۆن / سووری نیۆن" },
+      "options": { "edition": "Standard", "storage": "64GB", "color": "Neon Blue / Neon Red" },
+      "modelNumber": "HEG-001",
+      "barcodes": ["0045496883409"],
+      "isDefault": false,
+      "images": ["nintendo-switch-oled--4", "nintendo-switch-oled--5"],
+      "notes": { "ar": "الباركود هو رمز UPC الأمريكي.", "en": "Barcode is the US UPC.", "ckb": "بارکۆدەکە UPCی ئەمریکییە." }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "upsell" },
+    { "slug": "nintendo-switch", "kind": "alternative" },
+    { "slug": "nintendo-switch-lite", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-oled--1",
+      "file": ".cache/product-images/nintendo-switch-oled/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-white-set/115461-switch-oled-white-console-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-white-set/",
+      "kind": "hero",
+      "alt": { "ar": "Nintendo Switch – OLED Model الأبيض من الأمام", "en": "White Nintendo Switch – OLED Model from the front", "ckb": "Nintendo Switch – OLED Model ی سپی لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-oled--2",
+      "file": ".cache/product-images/nintendo-switch-oled/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-white-set/115461-switch-oled-white-console-dock-joy-con-grip-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-white-set/",
+      "kind": "in-box",
+      "alt": { "ar": "الجهاز في القاعدة البيضاء مع يدي Joy-Con على المقبض", "en": "Console in the white dock with Joy-Con on the grip", "ckb": "کۆنسۆڵەکە لە دۆکی سپیدا لەگەڵ Joy-Con لەسەر دەسگرە" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-oled--3",
+      "file": ".cache/product-images/nintendo-switch-oled/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-white-set/115461-switch-oled-white-console_joy-con-detached-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-white-set/",
+      "kind": "angle",
+      "alt": { "ar": "وضع الطاولة بالحامل العريض ويدا Joy-Con مفصولتان", "en": "Tabletop mode on the wide stand with Joy-Con detached", "ckb": "دۆخی سەر مێز بە پاڵپشتە پانەکە و Joy-Con جیاکراوە" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-oled--4",
+      "file": ".cache/product-images/nintendo-switch-oled/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-neon-blue-neon-red/115464-switch-oled-red-blue-console-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-neon-blue-neon-red-set/",
+      "kind": "angle",
+      "alt": { "ar": "نسخة النيون الأزرق والأحمر من الأمام", "en": "Neon Blue / Neon Red version from the front", "ckb": "وەشانی شینی نیۆن و سووری نیۆن لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-oled--5",
+      "file": ".cache/product-images/nintendo-switch-oled/5.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-neon-blue-neon-red/115464-switch-oled-red-blue-console-dock-joy-con_grip-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-neon-blue-neon-red-set/",
+      "kind": "in-box",
+      "alt": { "ar": "نسخة النيون مع القاعدة السوداء ومقبض Joy-Con", "en": "Neon version with the black dock and Joy-Con grip", "ckb": "وەشانی نیۆن لەگەڵ دۆکی ڕەش و دەسگرەی Joy-Con" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-oled--6",
+      "file": ".cache/product-images/nintendo-switch-oled/6.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-white-set/115461-switch-oled-white-joy-con-straps-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-white-set/",
+      "kind": "detail",
+      "alt": { "ar": "يدا Joy-Con البيضاوان مع حزامي المعصم", "en": "White Joy-Con with wrist straps", "ckb": "Joy-Con ی سپی لەگەڵ قایشی مەچەک" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch/tech-specs/",
+      "title": "Technical Specs - Nintendo Switch",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "screen, processor, storage, microSD, video output, wireless, battery, charging time"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-white-set/",
+      "title": "Nintendo Switch – OLED Model White set",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "in the box, colours sold (White, Neon Blue/Neon Red), model numbers, UPC, release 10/8/21, on sale today, images"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-neon-blue-neon-red-set/",
+      "title": "Nintendo Switch – OLED Model Neon Blue/Neon Red set",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "Neon Blue/Neon Red version on sale today, its UPC, Neon images"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22355/~/how-to-change-the-system-language-on-nintendo-switch",
+      "title": "How to Change the System Language on Nintendo Switch",
+      "publisher": "Nintendo of America Support",
+      "retrieved": "2026-11-11",
+      "supports": "system languages of Nintendo Switch – OLED Model (no Arabic)"
+    },
+    {
+      "url": "https://me.ign.com/ar/nintendo-switch-1/193116/sytm-yqf-by-jhz-nintendo-switch-bdan-mn-mntsf-fbryr-2027",
+      "title": "Nintendo Switch consoles will no longer be sold from mid-February 2027 (IGN Middle East)",
+      "publisher": "IGN Middle East",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation that Switch, Switch Lite and Switch – OLED Model sales to retailers in Europe end mid-February 2027"
+    },
+    {
+      "url": "https://www.nintendo.com/ph/hardware/switch/modal/specs/body_oled.html?width=960",
+      "title": "Nintendo Switch OLED model console [HEG-001] specifications",
+      "publisher": "Nintendo (Philippines)",
+      "retrieved": "2026-11-11",
+      "supports": "metric size and weight, model number HEG-001"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch-2/Information-about-upcoming-battery-related-revisions-to-some-Nintendo-products-3132901.html",
+      "title": "Information about upcoming battery-related revisions to some Nintendo products",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "Switch family still manufactured in 2026; sales to retailers in Europe and on Nintendo Store end mid-February 2027"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-P00209",
+      "title": "Nintendo Switch 2 - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "Switch 2 has exclusive games that play only on Switch 2"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Nintendo_Switch",
+      "title": "Nintendo Switch",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of OLED release date 8 Oct 2021 and EU discontinuation in February 2027"
+    }
+  ],
+  "notes": {
+    "ar": "تقول Nintendo إن عائلة Switch الأولى ما زالت تُصنَّع خلال 2026، لكنها ستتوقف من منتصف فبراير 2027 عن بيعها للتجار في أوروبا، وعن بيعها في متجرها الرسمي أيضًا. لم توضح Nintendo إن كان ذلك يشمل السعودية والإمارات وعُمان التي تزوّدها Nintendo of Europe كذلك. خدمتا Nintendo eShop وNintendo Switch Online مستمرتان.",
+    "en": "Nintendo says the original Switch family is still being manufactured in 2026, but from mid-February 2027 it will stop selling it to retailers in Europe, and on its own store too. Nintendo has not said whether this also covers Saudi Arabia, the UAE and Oman, which Nintendo of Europe also supplies. Nintendo eShop and Nintendo Switch Online continue.",
+    "ckb": "Nintendo دەڵێت خێزانی Switch ی یەکەم هێشتا لە 2026 دا بەرهەم دەهێنرێت، بەڵام لە ناوەڕاستی شوباتی 2027 ەوە فرۆشتنی بە فرۆشیاران لە ئەوروپا دەوەستێنێت، هەروەها لە فرۆشگای خۆیشیدا. Nintendo ڕوونی نەکردۆتەوە کە ئەمە سعوودیە، ئیمارات و عومانیش دەگرێتەوە یان نا، کە Nintendo of Europe کاڵایان بۆ دابین دەکات. Nintendo eShop و Nintendo Switch Online بەردەوام دەبن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether the end of Switch hardware sales in mid-February 2027 also applies to Saudi Arabia, the UAE and Oman",
+      "Availability of special-design OLED editions (the Mario Red Edition shows as sold out on Nintendo's US store)"
+    ]
+  }
+}

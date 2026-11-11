@@ -1,0 +1,57 @@
+{
+  "key": "xbox-series-x-2tb-galaxy-black--2",
+  "view": "hero",
+  "width": 1167,
+  "height": 1600,
+  "aspect": 0.7294,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-240.18b7447d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-480.18492517.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-720.f855432e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-960.8e5c2a19.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-240.61231f1c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-480.d0f7d249.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-720.e6176fa4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x-2tb-galaxy-black/2-960.0adc5f57.webp"
+      }
+    ],
+    "png": "/products/xbox-series-x-2tb-galaxy-black/2-720.56188071.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRroAAABXRUJQVlA4WAoAAAAQAAAADgAAEwAAQUxQSEwAAAARR6CmbSM4WRTdev/dfhEReDslGWAT2baT+/8n1DjIQQE1Q0WZgwE0PAtXOLdDQET/JwByNDNzwEKS/1MJBpGKXsxf04P8eK8zG6ABVlA4IEgAAAAwAwCdASoPABQAPxFysFAsJqSisAgBgCIJZwAAetmAvJwAAP7pmuiXfiHnkCn9mQVx1k72Cuxm6p1k4I73fg7l3f9C94uAAAA=",
+  "dominant": "#282828",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b01-Xbox-Series-X-Galaxy-2TB-Front?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
+  },
+  "input": "651513b1c477ad4c"
+}

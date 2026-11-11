@@ -1,5 +1,6 @@
 /**
- * <NumberMorph value format /> — digits roll to the new value in ~220 ms.
+ * <NumberMorph value format /> — digits roll per column to the new value (160 ms, water curve; DESIGN.md §7.2
+ * "Currency number morph"). This is the only motion money is allowed.
  *
  *   const f = useFormat();
  *   <NumberMorph value={product.priceIqd} format={f.money} />       // also morphs when the display currency changes
@@ -8,10 +9,11 @@
  * - Assistive technology gets the final text immediately (a visually hidden copy); the animated glyphs are aria-hidden.
  * - Only digits and their separators are split into slots, inside a left-to-right island, so Arabic currency text
  *   keeps its shaping and the bidi order is the same as plain text. Works with Latin and Arabic-Indic digits.
- * - Tabular figures: a changing digit never nudges its neighbours. When the number of characters changes the row
- *   takes its new width once, at the start — nothing animates layout.
- * - Rolls up when the value grows, down when it shrinks; text around the digits (currency) cross-fades.
- * - Server-rendered output is the plain final value; nothing animates on first paint.
+ * - Tabular cells: a changing digit never nudges its neighbours, so equal digit counts never change the width. When
+ *   the number of characters changes the row takes its new width once, at the start — nothing animates layout.
+ * - Rolls up when the value grows, down when it shrinks. Text around the digits (the currency label) is never
+ *   animated: it is visible in every frame and simply swaps when it changes.
+ * - Reduced motion: the number replaces the number. Server-rendered output is the plain final value.
  */
 import { useState, type CSSProperties, type HTMLAttributes } from "react";
 
@@ -54,24 +56,15 @@ export function NumberMorph({ value, format, className, style, ...rest }: Number
   const now = segment(current.text);
   const before = current.previous === null ? null : segment(current.previous);
   const beforeNumbers = before?.filter((s) => s.number) ?? [];
-  const beforeTexts = before?.filter((s) => !s.number) ?? [];
   let numberIndex = 0;
-  let textIndex = 0;
 
   return (
     <span className={className ? `tt-num ${className}` : "tt-num"} style={style} {...rest}>
       <span className="tt-num-sr">{current.text}</span>
       <span aria-hidden="true" style={{ "--tt-num-dir": current.direction } as CSSProperties}>
         {now.map((part, partIndex) => {
-          if (!part.number) {
-            const old = beforeTexts[textIndex++]?.text;
-            const changed = before !== null && old !== part.text;
-            return (
-              <span key={`t${partIndex}:${changed ? current.tick : 0}`} className={changed ? "tt-num-text-in" : undefined}>
-                {part.text}
-              </span>
-            );
-          }
+          // Labels (currency, units) are visible in every frame: they swap, they never fade.
+          if (!part.number) return <span key={`t${partIndex}`}>{part.text}</span>;
           const chars = Array.from(part.text);
           const old = beforeNumbers[numberIndex++];
           const oldChars = old ? Array.from(old.text) : null;

@@ -1,0 +1,57 @@
+{
+  "key": "super-mario-galaxy-plus-super-mario-galaxy-2--4",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-240.89706ce6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-480.d21cfdb2.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-720.2880ffb3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-960.071ad338.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-240.e53483e0.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-480.a8ba95a6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-720.e26bd293.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-960.22ee400e.webp"
+      }
+    ],
+    "png": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/4-720.e8a52e20.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJZgCdMoAC8iEVOLiNB2RJJIAA/unX4h54y6c9RMi3cGpAeRJKN3sYYVj72hh0OddhD25bbtHoWPoehQrUFACCKsYpfp61fQ1Z5B3xHgEXGEEMYcnW7Gc2bmoAAA==",
+  "dominant": "#180a04",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70070000030770/3504cc11a769b7e29a25148fe5d92a7c0cc308d7889723b11e2c56b02d73400f",
+    "page": "https://www.nintendo.com/us/store/products/super-mario-galaxy-plus-super-mario-galaxy-2-switch/"
+  },
+  "input": "d0b07692bcef69e9"
+}

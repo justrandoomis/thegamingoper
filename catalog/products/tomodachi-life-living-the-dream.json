@@ -1,0 +1,131 @@
+{
+  "slug": "tomodachi-life-living-the-dream",
+  "group": "nintendo-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2026-04-16",
+  "name": { "ar": "Tomodachi Life: Living the Dream", "en": "Tomodachi Life: Living the Dream", "ckb": "Tomodachi Life: Living the Dream" },
+  "short": {
+    "ar": "Nintendo Switch · تعمل على Switch 2 · محاكاة حياة بشخصيات Mii · PEGI 3",
+    "en": "Nintendo Switch · Plays on Switch 2 · Mii life simulation · PEGI 3",
+    "ckb": "Nintendo Switch · لەسەر Switch 2 کار دەکات · لاساییکردنەوەی ژیان بە Mii · PEGI 3"
+  },
+  "description": {
+    "ar": "لعبة محاكاة حياة مرحة تصبح فيها مسؤولاً عن جزيرة يسكنها أشخاص Mii تصنعهم بنفسك، من العائلة والأصدقاء أو شخصيات من خيالك. تطعمهم وتلبسهم وتنصحهم، وتراقب صداقاتهم وقصص حبهم ومواقفهم الطريفة. تتوفر نسخة تجريبية مجانية يمكن نقل تقدمها إلى اللعبة الكاملة.",
+    "en": "A light-hearted life simulation in which you look after an island of Mii characters you create yourself — family, friends or anyone you imagine. Feed them, dress them, give advice and watch their friendships, romances and odd moments unfold. A free demo is available and its progress carries over to the full game.",
+    "ckb": "یارییەکی خۆشی لاساییکردنەوەی ژیان کە تێیدا ئاگات لە دوورگەیەکە کە کارەکتەرەکانی Mii ی تێدان و خۆت دروستیان دەکەیت — خێزان، هاوڕێ یان هەر کەسێک کە بیری لێ دەکەیتەوە. خواردنیان دەدەیتێ، جلیان لەبەر دەکەیت، ئامۆژگارییان دەکەیت و سەیری هاوڕێیەتی و خۆشەویستی و ساتە سەیرەکانیان دەکەیت. وەشانێکی تاقیکاریی بەخۆڕایی هەیە و پێشکەوتنەکەی دەگوازرێتەوە بۆ یارییە تەواوەکە."
+  },
+  "highlights": [
+    { "ar": "لعبة Nintendo Switch تعمل على Switch 2 دون مشاكل معروفة", "en": "A Nintendo Switch game that runs on Switch 2 with no known issues", "ckb": "یارییەکی Nintendo Switch ە کە بێ کێشەی ناسراو لەسەر Switch 2 کار دەکات" },
+    { "ar": "اصنع شخصيات Mii بتفاصيل كثيرة: الوجه والصوت والشخصية", "en": "Create Mii characters in detail: face, voice and personality", "ckb": "کارەکتەری Mii بە وردی دروست بکە: ڕوخسار، دەنگ و کەسایەتی" },
+    { "ar": "نسخة تجريبية مجانية وينتقل تقدمها إلى اللعبة الكاملة", "en": "Free demo whose progress transfers to the full game", "ckb": "وەشانی تاقیکاریی بەخۆڕایی کە پێشکەوتنەکەی دەگوازرێتەوە بۆ یارییە تەواوەکە" },
+    { "ar": "PEGI 3 · ESRB E · لا تدعم العربية", "en": "PEGI 3 · ESRB E · No Arabic", "ckb": "PEGI 3 · ESRB E · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch (متوافقة مع Nintendo Switch 2)", "en": "Nintendo Switch (compatible with Nintendo Switch 2)", "ckb": "Nintendo Switch (گونجاو لەگەڵ Nintendo Switch 2)" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "16 نيسان 2026", "en": "16 April 2026", "ckb": "16ی نیسانی 2026" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "6.3 GB", "en": "6.3 GB", "ckb": "6.3 GB" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد؛ 2 عبر الاتصال المحلي اللاسلكي", "en": "1; 2 over local wireless", "ckb": "یەک یاریزان؛ 2 بە بێتەلی ناوخۆیی" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 3 · ESRB E (مزاح كوميدي، عنف خيالي خفيف)", "en": "PEGI 3 · ESRB E (Comic Mischief, Mild Fantasy Violence)", "ckb": "PEGI 3 · ESRB E (گاڵتەی کۆمیدی، توندوتیژیی خەیاڵیی سووک)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، ژاپۆنی، کۆری، چینی — بێ عەرەبی" } },
+    { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "لا يوجد لعب عبر الإنترنت؛ الحفظ السحابي يحتاج Nintendo Switch Online", "en": "No online play; cloud saves need Nintendo Switch Online", "ckb": "یاریی ئۆنلاین نییە؛ پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە" } },
+    { "key": "publisher", "label": { "ar": "الناشر", "en": "Publisher", "ckb": "بڵاوکەرەوە" }, "value": { "ar": "Nintendo", "en": "Nintendo", "ckb": "Nintendo" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة لعبة Nintendo Switch داخل علبتها", "en": "Nintendo Switch game card in its case", "ckb": "کارتی یاریی Nintendo Switch لە ناو قوتووەکەیدا" }
+  ],
+  "variants": [
+    {
+      "sku": "NSG-TOMODACHI-LIFE-DREAM",
+      "title": { "ar": "Tomodachi Life: Living the Dream — نسخة فعلية لـ Nintendo Switch", "en": "Tomodachi Life: Living the Dream — Nintendo Switch physical edition", "ckb": "Tomodachi Life: Living the Dream — کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
+      "barcodes": ["045496906078"],
+      "isDefault": true,
+      "images": ["tomodachi-life-living-the-dream--1", "tomodachi-life-living-the-dream--2", "tomodachi-life-living-the-dream--3", "tomodachi-life-living-the-dream--4"],
+      "notes": { "ar": "الباركود للنسخة الأمريكية (UPC) من متجر Nintendo الأمريكي.", "en": "Barcode is the US edition's UPC from Nintendo's US store.", "ckb": "بارکۆدەکە UPC ی وەشانی ئەمریکییە لە فرۆشگای ئەمریکیی Nintendo." }
+    }
+  ],
+  "game": {
+    "platforms": ["switch", "switch-oled", "switch-lite", "switch-2"],
+    "genres": [
+      { "ar": "محاكاة حياة", "en": "Life simulation", "ckb": "لاساییکردنەوەی ژیان" }
+    ],
+    "players": "1, 2 local wireless",
+    "online": {
+      "ar": "لا يوجد لعب عبر الإنترنت. الحفظ السحابي يحتاج Nintendo Switch Online.",
+      "en": "No online play. Cloud saves need Nintendo Switch Online.",
+      "ckb": "یاریی ئۆنلاین نییە. پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە."
+    },
+    "ageRating": { "pegi": 3, "esrb": "E" },
+    "arabic": "none",
+    "physicalFormat": "cartridge",
+    "sizeGb": 6.3,
+    "publisher": "Nintendo"
+  },
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "لعبة Nintendo Switch.", "en": "A Nintendo Switch game.", "ckb": "یاریی Nintendo Switch ە." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" },
+    { "deviceModel": "switch-oled", "status": "verified", "note": { "ar": "مثل Nintendo Switch.", "en": "Same as Nintendo Switch.", "ckb": "وەک Nintendo Switch." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" },
+    { "deviceModel": "switch-lite", "status": "verified", "note": { "ar": "تدعم الوضع المحمول؛ تنبّه Nintendo إلى أن التجربة قد تختلف على Switch Lite.", "en": "Handheld mode is supported; Nintendo notes the experience may differ on Switch Lite.", "ckb": "دۆخی دەستی پشتگیری دەکرێت؛ Nintendo ئاگادار دەکاتەوە کە ئەزموونەکە لەسەر Switch Lite لەوانەیە جیاواز بێت." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" },
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "تؤكد Nintendo أنها مدعومة على Switch 2 دون مشاكل معروفة.", "en": "Nintendo lists it as supported on Switch 2 with no issues found.", "ckb": "Nintendo دەڵێت لەسەر Switch 2 پشتگیری دەکرێت و هیچ کێشەیەک نەدۆزراوەتەوە." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Tomodachi-Life-Living-the-Dream-2786386.html" }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "nintendo-switch-lite", "kind": "setup" },
+    { "slug": "pokemon-pokopia", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "tomodachi-life-living-the-dream--1",
+      "file": ".cache/product-images/tomodachi-life-living-the-dream/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%20Software/tomodachi%20life%20-%20living%20the%20dream/125240-nintendo-tomodachi-life-living-the-dream-nintendo-switch-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-125240/",
+      "kind": "box-art",
+      "alt": { "ar": "الغلاف الأمامي للعبة Tomodachi Life: Living the Dream على Nintendo Switch", "en": "Front cover of Tomodachi Life: Living the Dream for Nintendo Switch", "ckb": "بەرگی پێشەوەی Tomodachi Life: Living the Dream بۆ Nintendo Switch" },
+      "credit": "Nintendo", "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "tomodachi-life-living-the-dream--2",
+      "file": ".cache/product-images/tomodachi-life-living-the-dream/2.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000116663/940ff91bfdbc963635d09032b6fc83524eb5a8387920099723ede3dc077a33ce",
+      "sourcePage": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/",
+      "kind": "screenshot",
+      "alt": { "ar": "شاشة تصميم وجه شخصية Mii", "en": "Designing a Mii character's face", "ckb": "دیزاینکردنی ڕوخساری کارەکتەرێکی Mii" },
+      "credit": "Nintendo", "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "tomodachi-life-living-the-dream--3",
+      "file": ".cache/product-images/tomodachi-life-living-the-dream/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000116663/89ed392763dc397c1a293632b002253b80f2d83443386a934565e1a5cc03ab61",
+      "sourcePage": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/",
+      "kind": "screenshot",
+      "alt": { "ar": "شخصية Mii تستمتع بطعامها داخل غرفتها", "en": "A Mii enjoying a snack in its room", "ckb": "کارەکتەرێکی Mii لە ژوورەکەیدا چێژ لە خواردنەکەی وەردەگرێت" },
+      "credit": "Nintendo", "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "tomodachi-life-living-the-dream--4",
+      "file": ".cache/product-images/tomodachi-life-living-the-dream/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000116663/c06079b8589ac010653147094d8d4aded874e658d7f5dd5ef2d0dbae7fe5ec5c",
+      "sourcePage": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/",
+      "kind": "screenshot",
+      "alt": { "ar": "منظر علوي لبلدة الجزيرة وشاطئها", "en": "Overhead view of the island town and beach", "ckb": "دیمەنی سەرەوەی شارۆچکەی دوورگەکە و کەنارەکەی" },
+      "credit": "Nintendo", "width": 1280, "height": 720, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/", "title": "Tomodachi Life: Living the Dream for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date April 16, 2026, file size 6.3 GB on Switch and Switch 2, play modes including handheld, players 1 / 2 local wireless, Save Data Cloud, languages, ESRB descriptors, Mii support, Switch Lite note" },
+    { "url": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-125240/", "title": "Tomodachi Life: Living the Dream – Physical Copy", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906078, box art with ESRB E" },
+    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Tomodachi-Life-Living-the-Dream-2786386.html", "title": "Tomodachi Life: Living the Dream | Nintendo UK", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 3, languages, download size 6.3 GB, Nintendo Switch 2 compatibility supported with no issues found, free demo with progress transfer, Mii creation and island care" }
+  ],
+  "verification": {
+    "checkedBy": "Claude (nintendo-games research pass)",
+    "secondSource": true,
+    "unverified": [
+      "Developer not stated on the Nintendo pages read",
+      "European EAN barcode not found on an official page"
+    ]
+  }
+}

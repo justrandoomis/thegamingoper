@@ -1,0 +1,209 @@
+{
+  "slug": "playstation-pulse-wireless-headset",
+  "group": "playstation-hardware",
+  "kind": "headset",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "pulse",
+  "status": "preorder",
+  "releaseDate": "2026-11-19",
+  "name": {
+    "ar": "سماعة الرأس اللاسلكية PlayStation PULSE",
+    "en": "PlayStation PULSE Wireless Headset",
+    "ckb": "هێدسێتی بێتەلی PlayStation PULSE"
+  },
+  "short": {
+    "ar": "جديد: مشغلات Planar magnetic أكبر · PlayStation Link + Bluetooth · حتى 30 ساعة",
+    "en": "New: larger planar magnetic drivers · PlayStation Link + Bluetooth · Up to 30h",
+    "ckb": "نوێ: درایڤەری planar magneticی گەورەتر · PlayStation Link + Bluetooth · تا 30 کاتژمێر"
+  },
+  "description": {
+    "ar": "سماعة Sony الجديدة لعام 2026 وأول منتج في خط PULSE الجديد. مشغلات Planar magnetic أكبر لصوت أعمق، واتصال PlayStation Link مع PS5 وPlayStation Portal والكمبيوتر وMac، مع Bluetooth في الوقت نفسه. ميكروفون مدمج مع تقليل الضوضاء بالذكاء الاصطناعي، وأكواب تدور لتصبح مسطحة عند الحمل. الإصدار في 19 نوفمبر 2026 والطلب المسبق مفتوح.",
+    "en": "Sony's new 2026 headset and the first of its new PULSE line. Larger planar magnetic drivers give deeper bass, and PlayStation Link connects to PS5, PlayStation Portal, PC and Mac while Bluetooth stays connected at the same time. It has a built-in mic with AI noise rejection and earcups that rotate flat for carrying. Out on 19 November 2026; pre-orders are open.",
+    "ckb": "هێدسێتی نوێی Sony بۆ 2026 و یەکەم بەرهەم لە هێڵی نوێی PULSE. درایڤەری planar magneticی گەورەتر بۆ بەیسی قووڵتر، و PlayStation Link بە PS5، PlayStation Portal، PC و Mac دەبەسترێت لە کاتێکدا Bluetoothیش بەستراو دەمێنێت. مایکی ناوەکی لەگەڵ لابردنی ژاوەژاو بە زیرەکی دەستکرد، و قاپی گوێ کە بۆ هەڵگرتن تەخت دەسووڕێنەوە. لە 19ی تشرینی دووەمی 2026 دەردەچێت؛ پێشوەختە داواکردن کراوەیە."
+  },
+  "highlights": [
+    {
+      "ar": "مشغلات Planar magnetic مخصصة (4 مغناطيسات لكل مشغل) مع دعم الصوت ثلاثي الأبعاد على PS5",
+      "en": "Custom planar magnetic drivers (4 magnets per driver) with 3D Audio on PS5",
+      "ckb": "درایڤەری planar magneticی تایبەت (4 موگناتیس بۆ هەر درایڤێک) لەگەڵ دەنگی سێ ڕەهەندی لەسەر PS5"
+    },
+    {
+      "ar": "PlayStation Link وBluetooth في الوقت نفسه، مع محوّل USB-C مرفق",
+      "en": "PlayStation Link and Bluetooth at the same time, with a USB-C adapter in the box",
+      "ckb": "PlayStation Link و Bluetooth لە هەمان کاتدا، لەگەڵ ئەداپتەری USB-C لەناو قوتوو"
+    },
+    {
+      "ar": "بطارية حتى 30 ساعة",
+      "en": "Up to 30 hours of battery",
+      "ckb": "پاتری تا 30 کاتژمێر"
+    },
+    {
+      "ar": "أكواب تدور لتنطوي بشكل مسطح لسهولة الحمل",
+      "en": "Earcups rotate to lie flat for easy carrying",
+      "ckb": "قاپی گوێ دەسووڕێتەوە و تەخت دەبێت بۆ هەڵگرتنی ئاسان"
+    },
+    {
+      "ar": "طلب مسبق؛ الإصدار في 19 نوفمبر 2026 بلونين: أبيض وMidnight Black",
+      "en": "Pre-order; out 19 November 2026 in White and Midnight Black",
+      "ckb": "پێشوەختە داواکردن؛ لە 19ی تشرینی دووەمی 2026 بە سپی و Midnight Black دەردەچێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZWH3 (النسخة البريطانية CFI-ZWH3E)", "en": "CFI-ZWH3 (UK unit CFI-ZWH3E)", "ckb": "CFI-ZWH3 (ئامێری بەریتانی CFI-ZWH3E)" }
+    },
+    {
+      "key": "drivers",
+      "label": { "ar": "المشغلات", "en": "Drivers", "ckb": "درایڤەرەکان" },
+      "value": { "ar": "Planar magnetic مخصصة، 4 مغناطيسات لكل مشغل", "en": "Custom planar magnetic, 4 magnets per driver", "ckb": "Planar magneticی تایبەت، 4 موگناتیس بۆ هەر درایڤێک" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "PlayStation Link (محوّل USB-C)، Bluetooth، اتصال متزامن", "en": "PlayStation Link (USB-C adapter), Bluetooth, simultaneous connection", "ckb": "PlayStation Link (ئەداپتەری USB-C)، Bluetooth، بەستنەوەی هاوکات" }
+    },
+    {
+      "key": "mic",
+      "label": { "ar": "الميكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
+      "value": { "ar": "مدمج مع تقليل الضوضاء بالذكاء الاصطناعي", "en": "Integrated, with AI noise rejection", "ckb": "ناوەکی، لەگەڵ لابردنی ژاوەژاو بە AI" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "حتى 30 ساعة (عبر PlayStation Link، حسب اختبار Sony)", "en": "Up to 30 hours (over PlayStation Link, per Sony's testing)", "ckb": "تا 30 کاتژمێر (لە ڕێگەی PlayStation Link، بەپێی تاقیکردنەوەی Sony)" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد والوزن", "en": "Size and weight", "ckb": "قەبارە و کێش" },
+      "value": { "ar": "تقريباً 164 × 193 × 99 ملم، نحو 0.3 كغ", "en": "Approx. 164 × 193 × 99 mm, about 0.3 kg", "ckb": "نزیکەی 164 × 193 × 99 ملم، نزیکەی 0.3 کگ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "سماعة PlayStation PULSE", "en": "PlayStation PULSE wireless headset", "ckb": "هێدسێتی PlayStation PULSE" },
+    { "ar": "محوّل PlayStation Link USB بوصلة USB-C", "en": "PlayStation Link USB adapter (USB-C connector)", "ckb": "ئەداپتەری PlayStation Link USB (سەری USB-C)" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "PS-PULSE-HEADSET-WHITE",
+      "title": { "ar": "PlayStation PULSE – أبيض", "en": "PlayStation PULSE – White", "ckb": "PlayStation PULSE – سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "CFI-ZWH3E",
+      "isDefault": true,
+      "images": ["playstation-pulse-wireless-headset--1", "playstation-pulse-wireless-headset--2", "playstation-pulse-wireless-headset--3", "playstation-pulse-wireless-headset--5"]
+    },
+    {
+      "sku": "PS-PULSE-HEADSET-MIDNIGHT-BLACK",
+      "title": { "ar": "PlayStation PULSE – أسود Midnight Black", "en": "PlayStation PULSE – Midnight Black", "ckb": "PlayStation PULSE – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["playstation-pulse-wireless-headset--4"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "note": { "ar": "عبر محوّل PlayStation Link المرفق.", "en": "Through the included PlayStation Link adapter.", "ckb": "لە ڕێگەی ئەداپتەری PlayStation Linkی لەگەڵیدایە." }, "source": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://www.playstation.com/en-us/ps5/ps5-pro/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/" },
+    { "deviceModel": "ps-portal", "status": "verified", "source": "https://blog.playstation.com/2026/09/15/introducing-the-next-line-of-ps5-audio-products-playstation-pulse-and-pulse-edge-wireless-headsets/" },
+    { "deviceModel": "windows-pc", "status": "verified", "note": { "ar": "عبر محوّل PlayStation Link.", "en": "Through the PlayStation Link adapter.", "ckb": "لە ڕێگەی ئەداپتەری PlayStation Link." }, "source": "https://blog.playstation.com/2026/09/15/introducing-the-next-line-of-ps5-audio-products-playstation-pulse-and-pulse-edge-wireless-headsets/" }
+  ],
+  "related": [
+    { "slug": "pulse-elite", "kind": "alternative" },
+    { "slug": "pulse-explore", "kind": "alternative" },
+    { "slug": "playstation-portal", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "playstation-pulse-wireless-headset--1",
+      "file": ".cache/product-images/playstation-pulse-wireless-headset/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE-WHITE-PR-01-16x9-01-09jul26-_en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/",
+      "kind": "hero",
+      "alt": { "ar": "سماعة PlayStation PULSE البيضاء", "en": "White PlayStation PULSE headset", "ckb": "هێدسێتی PlayStation PULSEی سپی" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-pulse-wireless-headset--2",
+      "file": ".cache/product-images/playstation-pulse-wireless-headset/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE-WHITE-PR-02-16x9-01-09jul26-_en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/",
+      "kind": "angle",
+      "alt": { "ar": "PlayStation PULSE من الجانب", "en": "PlayStation PULSE from the side", "ckb": "PlayStation PULSE لە لاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-pulse-wireless-headset--3",
+      "file": ".cache/product-images/playstation-pulse-wireless-headset/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE-WHITE-PR-01-PSL-16x9-01-09jul26-_en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/",
+      "kind": "in-box",
+      "alt": { "ar": "السماعة مع محوّل PlayStation Link المرفق", "en": "The headset with the included PlayStation Link adapter", "ckb": "هێدسێتەکە لەگەڵ ئەداپتەری PlayStation Linkی لەگەڵیدا" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": true
+    },
+    {
+      "key": "playstation-pulse-wireless-headset--4",
+      "file": ".cache/product-images/playstation-pulse-wireless-headset/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE_MIDNIGHTBLACK_PR_01_PSL-1x1-01-09jul26-_en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/",
+      "kind": "angle",
+      "alt": { "ar": "PlayStation PULSE باللون Midnight Black مع المحوّل", "en": "PlayStation PULSE in Midnight Black with its adapter", "ckb": "PlayStation PULSE بە ڕەنگی Midnight Black لەگەڵ ئەداپتەرەکەی" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 3840, "transparent": true
+    },
+    {
+      "key": "playstation-pulse-wireless-headset--5",
+      "file": ".cache/product-images/playstation-pulse-wireless-headset/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/pulse-SA-16x9-01-5Nov26_en?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة سماعة PlayStation PULSE", "en": "PlayStation PULSE retail box", "ckb": "قوتووی هێدسێتی PlayStation PULSE" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/",
+      "title": "PlayStation PULSE™ Wireless Headset",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "model number CFI-ZWH3E / CFI-ZWH3, dimensions, weight, what's in the box, 30-hour battery, flat-folding earcups, compatible devices, pre-order, White and Midnight Black"
+    },
+    {
+      "url": "https://blog.playstation.com/2026/09/15/introducing-the-next-line-of-ps5-audio-products-playstation-pulse-and-pulse-edge-wireless-headsets/",
+      "title": "Introducing the next line of PS5 audio products: PlayStation Pulse and Pulse Edge Wireless Headsets",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "launch 19 November 2026, pre-orders from 29 October 2026, launch regions, 4 magnets per driver, PlayStation Link with USB-C adapter, simultaneous Bluetooth, AI noise rejection, PULSE Edge in early 2027"
+    },
+    {
+      "url": "https://me.ign.com/ar/playstation-5-2/196957/sm-playstation-pulse-llslky-mth-lltlb-lmsbq-bsr-99-dwlran-wtsdr-fy-lywm-nfsh-m-gta-6",
+      "title": "سماعة PlayStation Pulse اللاسلكية متاحة للطلب المسبق وتصدر في اليوم نفسه مع GTA 6",
+      "publisher": "IGN Middle East",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: pre-orders open, release 19 November 2026, PlayStation Link plus simultaneous Bluetooth, White and Midnight Black, earcups rotate flat, AI noise rejection, 3D Audio on PS5, PULSE Edge with active noise cancelling early next year"
+    }
+  ],
+  "notes": {
+    "ar": "في 19 نوفمبر 2026 تُطرح في دول محددة (منها أمريكا وكندا واليابان وأستراليا ومعظم أوروبا الغربية وبريطانيا)؛ لم تعلن Sony بعد موعدها في الشرق الأوسط. النسخة الأعلى PULSE Edge (عزل ضوضاء نشط، ميكروفون قابل للفصل، حقيبة) تأتي في أوائل 2027 ولم يُعلن موعدها أو سعرها.",
+    "en": "From 19 November 2026 it launches in selected countries (including the US, Canada, Japan, Australia, much of Western Europe and the UK); Sony has not yet given a Middle East date. The higher-end PULSE Edge (active noise cancelling, detachable boom mic, carrying case) follows in early 2027 with no date or price yet.",
+    "ckb": "لە 19ی تشرینی دووەمی 2026 لە وڵاتانی دیاریکراو دەردەچێت (لەوانە ئەمریکا، کەنەدا، ژاپۆن، ئوسترالیا، زۆربەی ئەوروپای ڕۆژئاوا و بەریتانیا)؛ Sony هێشتا بەرواری ڕۆژهەڵاتی ناوەڕاستی نەداوە. وەشانی بەرزتری PULSE Edge (لابردنی چالاکی ژاوەژاو، مایکی جیاکراوە، جانتا) لە سەرەتای 2027 دێت و بەروار و نرخی ڕانەگەیەنراوە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Release in Iraq or the Gulf (not in Sony's first launch list)",
+      "Model number of the Midnight Black unit",
+      "Charging time (not stated by Sony)"
+    ]
+  }
+}

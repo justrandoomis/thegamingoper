@@ -1,0 +1,173 @@
+{
+  "slug": "joy-con-2-charging-grip",
+  "group": "nintendo-hardware",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "joy-con-2-charging-grip",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Joy-Con 2 Charging Grip", "en": "Joy-Con 2 Charging Grip", "ckb": "Joy-Con 2 Charging Grip" },
+  "short": {
+    "ar": "مقبض يشحن يدي Joy-Con 2 أثناء اللعب · زرّا GL/GR",
+    "en": "Charges Joy-Con 2 while you play · GL/GR buttons",
+    "ckb": "Joy-Con 2 بارگاوی دەکات کاتی یاری · دوگمەکانی GL/GR"
+  },
+  "description": {
+    "ar": "مقبض تركّب عليه يدي Joy-Con 2 لتصبحا ذراع تحكم واحدة بالشكل التقليدي، ويشحنهما عند توصيله بكابل USB-C المرفق. فيه زرّان إضافيان GL/GR يمكن ربطهما بأي زر. يختلف عن المقبض العادي المرفق مع الجهاز الذي لا يشحن.",
+    "en": "A grip that holds both Joy-Con 2 so they work as one classic-style controller, and charges them when connected with the included USB-C cable. It adds GL/GR buttons you can map to any button. Unlike the plain grip that comes with the console, this one charges.",
+    "ckb": "دەسگرەیەک کە هەردوو Joy-Con 2 هەڵدەگرێت تا وەک یەک دەسکی ئاسایی کار بکەن، و کاتێک بە کێبڵی USB-C ی ناو قوتووەکە دەبەسترێتەوە بارگاوییان دەکات. دوگمەی زیادەی GL/GR ی هەیە کە بە هەر دوگمەیەک دەبەسترێنەوە. جیاوازە لەو دەسگرە ئاساییەی لەگەڵ کۆنسۆڵەکە دێت کە بارگاوی ناکات."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن يدي Joy-Con 2 أثناء اللعب عبر كابل USB-C المرفق",
+      "en": "Charges the Joy-Con 2 while you play, using the included USB-C cable",
+      "ckb": "Joy-Con 2 بارگاوی دەکات کاتی یاری، بە کێبڵی USB-C ی ناو قوتووەکە"
+    },
+    {
+      "ar": "زرّا GL/GR إضافيان قابلان للبرمجة",
+      "en": "Extra GL/GR buttons you can map",
+      "ckb": "دوگمەی زیادەی GL/GR کە ڕێکدەخرێن"
+    },
+    {
+      "ar": "لا يشمل يدي Joy-Con 2",
+      "en": "Joy-Con 2 not included",
+      "ckb": "Joy-Con 2 ی لەگەڵدا نییە"
+    },
+    {
+      "ar": "لـ Switch 2 ويدي Joy-Con 2 فقط — لا يعمل مع يدي Joy-Con الأوليين",
+      "en": "For Switch 2 and Joy-Con 2 only — does not work with original Joy-Con",
+      "ckb": "تەنها بۆ Switch 2 و Joy-Con 2 — لەگەڵ Joy-Con ی یەکەم کار ناکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Works with", "ckb": "گونجاوە لەگەڵ" },
+      "value": { "ar": "Nintendo Switch 2 ويدا Joy-Con 2 فقط", "en": "Nintendo Switch 2 and Joy-Con 2 only", "ckb": "تەنها Nintendo Switch 2 و Joy-Con 2" }
+    },
+    {
+      "key": "buttons",
+      "label": { "ar": "أزرار إضافية", "en": "Extra buttons", "ckb": "دوگمەی زیادە" },
+      "value": { "ar": "GL / GR قابلان للبرمجة", "en": "GL / GR, mappable", "ckb": "GL / GR، ڕێکخراو" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "بارگاویکردن" },
+      "value": { "ar": "يشحن يدي Joy-Con 2 عبر منفذ USB-C", "en": "Charges the attached Joy-Con 2 through its USB-C port", "ckb": "Joy-Con 2 ی لکێنراو لە ڕێگەی دەرچەی USB-C بارگاوی دەکات" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Size", "ckb": "قەبارە" },
+      "value": { "ar": "نحو 116 × 144 × 40.8 مم", "en": "About 116 × 144 × 40.8 mm", "ckb": "نزیکەی 116 × 144 × 40.8 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "نحو 110 غرامات", "en": "About 110 g", "ckb": "نزیکەی 110 گرام" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "مقبض Joy-Con 2 Charging Grip", "en": "Joy-Con 2 Charging Grip", "ckb": "Joy-Con 2 Charging Grip" },
+    { "ar": "كابل شحن USB-C", "en": "USB-C charging cable", "ckb": "کێبڵی بارگاویکردنی USB-C" }
+  ],
+  "variants": [
+    {
+      "sku": "JC2-CHARGING-GRIP",
+      "title": { "ar": "Joy-Con 2 Charging Grip", "en": "Joy-Con 2 Charging Grip", "ckb": "Joy-Con 2 Charging Grip" },
+      "options": { "color": "Black" },
+      "barcodes": ["0045496886028"],
+      "isDefault": true,
+      "images": ["joy-con-2-charging-grip--1", "joy-con-2-charging-grip--2", "joy-con-2-charging-grip--3"],
+      "notes": { "ar": "الباركود أمريكي.", "en": "US barcode.", "ckb": "بارکۆدی ئەمریکی." }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "لـ Nintendo Switch 2 ويدي Joy-Con 2", "en": "For Nintendo Switch 2 with Joy-Con 2", "ckb": "بۆ Nintendo Switch 2 لەگەڵ Joy-Con 2" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-charging-grip-123690/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "incompatible",
+      "note": { "ar": "لا يعمل مع يدي Joy-Con الخاصتين بـ Nintendo Switch", "en": "Cannot be used with Nintendo Switch Joy-Con", "ckb": "لەگەڵ Joy-Con ی Nintendo Switch بەکارنایەت" },
+      "source": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+    }
+  ],
+  "related": [
+    { "slug": "joy-con-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "alternative" },
+    { "slug": "nintendo-switch-2", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "joy-con-2-charging-grip--1",
+      "file": ".cache/product-images/joy-con-2-charging-grip/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Grips/Frame_3473716.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "hero",
+      "alt": { "ar": "مقبض Joy-Con 2 Charging Grip من الأمام", "en": "Joy-Con 2 Charging Grip from the front", "ckb": "Joy-Con 2 Charging Grip لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "joy-con-2-charging-grip--2",
+      "file": ".cache/product-images/joy-con-2-charging-grip/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Grips/Frame_3473715.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "angle",
+      "alt": { "ar": "المقبض مع يدي Joy-Con 2 مركّبتين (تباعان منفصلتين)", "en": "The grip with Joy-Con 2 attached (sold separately)", "ckb": "دەسگرەکە لەگەڵ Joy-Con 2 (جیا دەفرۆشرێن)" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "joy-con-2-charging-grip--3",
+      "file": ".cache/product-images/joy-con-2-charging-grip/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Grips/Frame_3473714.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية للمقبض مع زرّي GL/GR", "en": "Back of the grip with the GL/GR buttons", "ckb": "پشتەوەی دەسگرەکە لەگەڵ دوگمەکانی GL/GR" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-charging-grip-123690/",
+      "title": "Joy-Con 2 Charging Grip",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "charging, GL/GR buttons, USB-C cable included, Switch 2 only, not included with the console, release date, UPC"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "Joy-Con 2 not included, cannot be used with Nintendo Switch Joy-Con, transparent product images"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/joy-con-2-charging-grip-000000000010015098",
+      "title": "Joy-Con 2 Charging Grip - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "independent official confirmation of charging, mappable GL/GR buttons, USB charging cable included, Switch 2 only, not for Nintendo Switch Joy-Con; size about 116 × 144 × 40.8 mm, weight about 110 g, release 5 June 2025, on sale"
+    },
+    {
+      "url": "https://www.nintendo.com/sg/hardware/switch2/accessories/index.html",
+      "title": "Nintendo Switch 2 Accessories – Main Specifications",
+      "publisher": "Nintendo (Singapore)",
+      "retrieved": "2026-11-11",
+      "supports": "size, weight, USB-C charging port and GL/GR buttons"
+    }
+  ],
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "European barcode"
+    ]
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "slug": "nintendo-switch-2-sports-resort-bundle",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch-2",
+  "family": "switch-2",
+  "status": "available",
+  "releaseDate": "2026-10-22",
+  "name": {
+    "ar": "Nintendo Switch 2 + Nintendo Switch Sports Resort Bundle",
+    "en": "Nintendo Switch 2 + Nintendo Switch Sports Resort Bundle",
+    "ckb": "Nintendo Switch 2 + Nintendo Switch Sports Resort Bundle"
+  },
+  "short": {
+    "ar": "جهاز Switch 2 بسعة 256GB + لعبة Nintendo Switch Sports Resort كاملة (تنزيل رقمي) + اشتراك Nintendo Switch Online لـ3 أشهر",
+    "en": "Switch 2 256GB + full Nintendo Switch Sports Resort download + 3 months of Nintendo Switch Online",
+    "ckb": "Switch 2 ی 256GB + داگرتنی تەواوی Nintendo Switch Sports Resort + 3 مانگ Nintendo Switch Online"
+  },
+  "description": {
+    "ar": "حزمة تضم جهاز Nintendo Switch 2 العادي مع لعبة Nintendo Switch Sports Resort كاملة بالتنزيل الرقمي، وهي لعبة عائلية فيها 12 رياضة بالتحكم بالحركة على جزيرة Wuhu. النسختان الأوروبية والأمريكية تضيفان اشتراكًا فرديًا في Nintendo Switch Online لمدة 3 أشهر (90 يومًا).",
+    "en": "A bundle of the standard Nintendo Switch 2 with the full Nintendo Switch Sports Resort game as a digital download — a family game with 12 motion-control sports on Wuhu Island. Both the European and US versions add a 3-month (90-day) Nintendo Switch Online Individual Membership.",
+    "ckb": "پاکێجێک کە Nintendo Switch 2 ی ئاسایی لەگەڵ یاریی تەواوی Nintendo Switch Sports Resort وەک داگرتنی دیجیتاڵ لەخۆ دەگرێت — یارییەکی خێزانییە بە 12 وەرزش کە بە جووڵە کۆنترۆڵ دەکرێن لە دوورگەی Wuhu. هەردوو وەشانی ئەوروپی و ئەمریکی بەشداریی تاکەکەسیی 3 مانگە (90 ڕۆژە)ی Nintendo Switch Online یان لەگەڵدایە."
+  },
+  "highlights": [
+    {
+      "ar": "Nintendo Switch Sports Resort كاملة بالتنزيل الرقمي على الجهاز المرفق، وليست بطاقة لعبة",
+      "en": "Full Nintendo Switch Sports Resort as a digital download for the included console, not a game card",
+      "ckb": "Nintendo Switch Sports Resort ی تەواو وەک داگرتنی دیجیتاڵ بۆ ئەو کۆنسۆڵەی لە قوتووەکەدایە، نەک کارتی یاری"
+    },
+    {
+      "ar": "12 رياضة بالتحكم بالحركة، منها الرماية والبولينغ والملاكمة والتنس والتزلج",
+      "en": "12 motion-control sports including Archery, Bowling, Boxing, Tennis and Skateboarding",
+      "ckb": "12 وەرزشی کۆنترۆڵکراو بە جووڵە، لەوانە تیرهاوێژی، بۆڵینگ، بۆکسین، تێنس و سکەیتبۆرد"
+    },
+    {
+      "ar": "حتى 4 لاعبين على جهاز واحد",
+      "en": "Up to 4 players on one system",
+      "ckb": "تا 4 یاریزان لەسەر یەک ئامێر"
+    },
+    {
+      "ar": "اللعبة تعمل في وضعي التلفاز والطاولة فقط، ولا تعمل في الوضع المحمول",
+      "en": "The game plays in TV and tabletop modes only, not in handheld mode",
+      "ckb": "یارییەکە تەنها لە دۆخی تەلەڤزیۆن و سەر مێز کار دەکات، نەک لە دۆخی دەستی"
+    },
+    {
+      "ar": "اللعبة لا تدعم اللغة العربية",
+      "en": "The game does not support Arabic",
+      "ckb": "یارییەکە زمانی عەرەبی تێدا نییە"
+    },
+    {
+      "ar": "يشمل اشتراكًا فرديًا في Nintendo Switch Online لمدة 3 أشهر (90 يومًا)",
+      "en": "Includes a 3-month (90-day) Nintendo Switch Online Individual Membership",
+      "ckb": "بەشداریی تاکەکەسیی 3 مانگە (90 ڕۆژە)ی Nintendo Switch Online ی تێدایە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "game",
+      "label": { "ar": "اللعبة المرفقة", "en": "Included game", "ckb": "یاریی لەگەڵدا" },
+      "value": {
+        "ar": "Nintendo Switch Sports Resort — تنزيل رقمي كامل",
+        "en": "Nintendo Switch Sports Resort — full digital download",
+        "ckb": "Nintendo Switch Sports Resort — داگرتنی دیجیتاڵی تەواو"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "1–4 على جهاز واحد", "en": "1–4 on one system", "ckb": "1–4 لەسەر یەک ئامێر" }
+    },
+    {
+      "key": "play_modes",
+      "label": { "ar": "أوضاع اللعب", "en": "Play modes", "ckb": "دۆخەکانی یاری" },
+      "value": { "ar": "التلفاز والطاولة فقط (لا يدعم الوضع المحمول)", "en": "TV and tabletop only (no handheld mode)", "ckb": "تەنها تەلەڤزیۆن و سەر مێز (دۆخی دەستی نییە)" }
+    },
+    {
+      "key": "age_rating",
+      "label": { "ar": "التصنيف العمري للعبة", "en": "Game age rating", "ckb": "پۆلێنی تەمەنی یارییەکە" },
+      "value": { "ar": "PEGI 7 (متجر Nintendo البريطاني والعلبة الأوروبية)؛ ESRB E10+ (العلبة الأمريكية)", "en": "PEGI 7 (Nintendo UK store and European box); ESRB E10+ (US box)", "ckb": "PEGI 7 (فرۆشگای بەریتانیی Nintendo و قوتووی ئەوروپی)؛ ESRB E10+ (قوتووی ئەمریکی)" }
+    },
+    {
+      "key": "game_languages",
+      "label": { "ar": "لغات اللعبة", "en": "Game languages", "ckb": "زمانەکانی یارییەکە" },
+      "value": {
+        "ar": "الإنجليزية، الفرنسية، الألمانية، الإسبانية، الإيطالية، الهولندية، البرتغالية، الروسية، البولندية، التايلاندية، اليابانية، الصينية، الكورية — بدون العربية",
+        "en": "English, French, German, Spanish, Italian, Dutch, Portuguese, Russian, Polish, Thai, Japanese, Chinese, Korean — no Arabic",
+        "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ئیتاڵی، هۆڵەندی، پورتوگالی، ڕووسی، پۆڵەندی، تایلەندی، یابانی، چینی، کۆری — بێ عەرەبی"
+      }
+    },
+    {
+      "key": "online_membership",
+      "label": { "ar": "اشتراك الإنترنت", "en": "Online membership", "ckb": "بەشداریی ئۆنلاین" },
+      "value": {
+        "ar": "3 أشهر (90 يومًا) Nintendo Switch Online فردي في النسختين؛ في النسخة الأوروبية يأتي كرمز تنزيل داخل العلبة",
+        "en": "3 months (90 days) of Nintendo Switch Online, Individual, in both versions; the European box has it as a download code",
+        "ckb": "3 مانگ (90 ڕۆژ) Nintendo Switch Online ی تاکەکەسی لە هەردوو وەشانەکەدا؛ لە قوتووی ئەوروپیدا وەک کۆدی داگرتن هەیە"
+      }
+    },
+    {
+      "key": "console",
+      "label": { "ar": "الجهاز", "en": "Console", "ckb": "کۆنسۆڵ" },
+      "value": {
+        "ar": "Nintendo Switch 2 قياسي: شاشة 7.9 بوصة 1080p، تخزين 256GB",
+        "en": "Standard Nintendo Switch 2: 7.9-inch 1080p screen, 256GB storage",
+        "ckb": "Nintendo Switch 2 ی ئاسایی: شاشەی 7.9 ئینج 1080p، بیرگەی 256GB"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch 2", "en": "Nintendo Switch 2 console", "ckb": "کۆنسۆڵی Nintendo Switch 2" },
+    { "ar": "Nintendo Switch Sports Resort (تنزيل رقمي كامل)", "en": "Nintendo Switch Sports Resort (full digital download)", "ckb": "Nintendo Switch Sports Resort (داگرتنی دیجیتاڵی تەواو)" },
+    { "ar": "اشتراك Nintendo Switch Online فردي لمدة 3 أشهر (90 يومًا)", "en": "3-month (90-day) Nintendo Switch Online Individual Membership", "ckb": "بەشداریی تاکەکەسیی 3 مانگە (90 ڕۆژە)ی Nintendo Switch Online" },
+    { "ar": "يد Joy-Con 2 (L) زرقاء فاتحة و Joy-Con 2 (R) حمراء فاتحة", "en": "Joy-Con 2 (L) Light Blue and Joy-Con 2 (R) Light Red", "ckb": "Joy-Con 2 (L) شینی کاڵ و Joy-Con 2 (R) سووری کاڵ" },
+    { "ar": "مقبض Joy-Con 2 Grip وحزاما معصم (عدد 2)", "en": "Joy-Con 2 Grip and Joy-Con 2 Strap (×2)", "ckb": "دەسگرەی Joy-Con 2 Grip و قایشی Joy-Con 2 (×2)" },
+    { "ar": "قاعدة Nintendo Switch 2 Dock", "en": "Nintendo Switch 2 Dock", "ckb": "دۆکی Nintendo Switch 2" },
+    { "ar": "محول الطاقة وكابل شحن USB-C", "en": "Nintendo Switch 2 AC Adapter and USB-C charging cable", "ckb": "ئەداپتەری کارەبا و کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "كابل Ultra High Speed HDMI", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی Ultra High Speed HDMI" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-NSSR-EU",
+      "title": {
+        "ar": "النسخة الأوروبية: Switch 2 + Nintendo Switch Sports Resort + اشتراك 3 أشهر",
+        "en": "European version: Switch 2 + Nintendo Switch Sports Resort + 3-month membership",
+        "ckb": "وەشانی ئەوروپی: Switch 2 + Nintendo Switch Sports Resort + بەشداریی 3 مانگ"
+      },
+      "options": { "edition": "Nintendo Switch Sports Resort Bundle", "storage": "256GB", "region": "Europe", "extras": "3-month Nintendo Switch Online" },
+      "isDefault": true,
+      "images": ["nintendo-switch-2-sports-resort-bundle--1", "nintendo-switch-2-sports-resort-bundle--4"],
+      "notes": {
+        "ar": "بحسب Nintendo UK: اللعبة تنزيل كامل للجهاز المرفق نفسه، واشتراك Nintendo Switch Online الفردي لمدة 3 أشهر يأتي كرمز تنزيل داخل العلبة. العلبة تحمل تصنيفي PEGI 7 وUSK 6.",
+        "en": "Per Nintendo UK: the game is a full download for the included console, and the 3-month Nintendo Switch Online Individual Membership comes as a download code in the box. The box carries PEGI 7 and USK 6 ratings.",
+        "ckb": "بەپێی Nintendo UK: یارییەکە داگرتنی تەواوە بۆ هەمان ئەو کۆنسۆڵەی لە قوتووەکەدایە، و بەشداریی تاکەکەسیی 3 مانگەی Nintendo Switch Online وەک کۆدی داگرتن لەناو قوتووەکەدایە. لەسەر قوتووەکە پۆلێنی PEGI 7 و USK 6 هەیە."
+      }
+    },
+    {
+      "sku": "NS2-NSSR-US",
+      "title": {
+        "ar": "النسخة الأمريكية: Switch 2 + Nintendo Switch Sports Resort + اشتراك 3 أشهر",
+        "en": "US version: Switch 2 + Nintendo Switch Sports Resort + 3-month membership",
+        "ckb": "وەشانی ئەمریکی: Switch 2 + Nintendo Switch Sports Resort + بەشداریی 3 مانگ"
+      },
+      "options": { "edition": "Nintendo Switch Sports Resort Bundle", "storage": "256GB", "region": "US", "extras": "3-month Nintendo Switch Online" },
+      "barcodes": ["0045496886820"],
+      "isDefault": false,
+      "images": ["nintendo-switch-2-sports-resort-bundle--2", "nintendo-switch-2-sports-resort-bundle--3", "nintendo-switch-2-sports-resort-bundle--4"],
+      "notes": {
+        "ar": "الباركود هو رمز UPC الأمريكي. تقول Nintendo of America إن الاشتراك المرفق يتجدد تلقائيًا بعد انتهائه ما لم يُلغَ.",
+        "en": "Barcode is the US UPC. Nintendo of America says the included membership auto-renews after the first term unless cancelled.",
+        "ckb": "بارکۆدەکە UPCی ئەمریکییە. Nintendo of America دەڵێت بەشدارییەکە دوای ماوەی یەکەم خۆکار نوێ دەبێتەوە ئەگەر هەڵنەوەشێنرێتەوە."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "alternative" },
+    { "slug": "nintendo-switch-2-mario-kart-world-bundle", "kind": "alternative" },
+    { "slug": "nintendo-switch-sports-resort", "kind": "alternative" },
+    { "slug": "joy-con-2", "kind": "accessory" },
+    { "slug": "joy-con-2-charging-grip", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-sports-resort-bundle--1",
+      "file": ".cache/product-images/nintendo-switch-2-sports-resort-bundle/1.png",
+      "sourceUrl": "https://assets.nintendo.eu/image/private/f_png,q_100,c_limit,w_2000/gy6kslyoemwewkplsee6",
+      "sourcePage": "https://store.nintendo.com/en-gb/nintendo-switch-2-nintendo-switch-sports-resort-P00208",
+      "kind": "hero",
+      "alt": {
+        "ar": "علبة حزمة Nintendo Switch 2 + Nintendo Switch Sports Resort (النسخة الأوروبية)",
+        "en": "Nintendo Switch 2 + Nintendo Switch Sports Resort Bundle box (European version)",
+        "ckb": "قوتووی پاکێجی Nintendo Switch 2 + Nintendo Switch Sports Resort (وەشانی ئەوروپی)"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-sports-resort-bundle--2",
+      "file": ".cache/product-images/nintendo-switch-2-sports-resort-bundle/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/129088-nintendo-switch-2-nintendo-sports-resort-bundle-box-art-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-switch-sports-resort-bundle-129088/",
+      "kind": "angle",
+      "alt": {
+        "ar": "علبة حزمة Nintendo Switch 2 + Nintendo Switch Sports Resort (النسخة الأمريكية)",
+        "en": "Nintendo Switch 2 + Nintendo Switch Sports Resort Bundle box (US version)",
+        "ckb": "قوتووی پاکێجی Nintendo Switch 2 + Nintendo Switch Sports Resort (وەشانی ئەمریکی)"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-sports-resort-bundle--3",
+      "file": ".cache/product-images/nintendo-switch-2-sports-resort-bundle/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/v1788046450/ncom/en_US/merchandising/Showrooms/2026%20Holiday/NSSR_bundle_product_shot.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/",
+      "kind": "angle",
+      "alt": {
+        "ar": "علبة الحزمة الأمريكية بزاوية جانبية",
+        "en": "US bundle box at an angle",
+        "ckb": "قوتووی پاکێجی ئەمریکی لە گۆشەیەکی لاتەنیشتەوە"
+      },
+      "credit": "Nintendo",
+      "width": 1600, "height": 900, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-sports-resort-bundle--4",
+      "file": ".cache/product-images/nintendo-switch-2-sports-resort-bundle/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-dock-joy-con-grip-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "الجهاز داخل القاعدة مع يدي Joy-Con 2 على المقبض",
+        "en": "The console in its dock with the Joy-Con 2 on the grip",
+        "ckb": "کۆنسۆڵەکە لەناو دۆکەکەدا لەگەڵ Joy-Con 2 لەسەر دەسگرەکە"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-switch-sports-resort-bundle-129088/",
+      "title": "Nintendo Switch 2 + Nintendo Switch Sports Resort Bundle",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "US contents incl. 3-month NSO (auto-renews), release date 22 Oct 2026, UPC, players, play modes (TV and tabletop), game languages, 12 sports incl. Archery, Basketball, Boxing, Tennis, Skateboarding, images (box shows ESRB E10+)"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-nintendo-switch-sports-resort-P00208",
+      "title": "Nintendo Switch 2 + Nintendo Switch Sports Resort - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "European pack includes console, 3-month (90-day) Individual Nintendo Switch Online membership and the game (full download for the included console); European box image with PEGI 7 / USK 6 and 'download code included' membership badge; release 22 October 2026, play modes (TV and tabletop), 1–4 players, languages (no Arabic), on sale"
+    },
+    {
+      "url": "https://www.engadget.com/2243642/nintendo-reveals-its-latest-switch-2-bundles-just-ahead-of-the-consoles-price-increase/",
+      "title": "Nintendo reveals its latest Switch 2 bundles just ahead of the console's price increase",
+      "publisher": "Engadget",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the bundle, its 22 October release (same day as the game), digital game and 90-day Nintendo Switch Online membership"
+    },
+    {
+      "url": "https://www.nintendo.com/us/whatsnew/two-new-nintendo-switch-2-bundles-deliver-sun-soaked-sports-high-speed-thrills-and-extra-value/",
+      "title": "Two new Nintendo Switch 2 bundles deliver sun-soaked sports, high-speed thrills and extra value",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "bundle announcement, game launches 22 Oct 2026 exclusively on Switch 2, 12 sports on Wuhu Island incl. Bowling, Boxing, Archery, Thumb Wrestling, Prop Plane, Power Cruising"
+    }
+  ],
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "European barcode",
+      "Whether the European membership code auto-renews (Nintendo states auto-renewal only for the US version)"
+    ]
+  }
+}

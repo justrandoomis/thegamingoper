@@ -1,0 +1,65 @@
+{
+  "key": "ea-sports-fc-27--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27/4-240.8e1f3da4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27/4-480.d12d90dc.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27/4-720.6586a2b2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27/4-960.05ae8bdd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27/4-1440.bb1c96e2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27/4-240.6acfe042.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27/4-480.fa397fb6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27/4-720.859a93bd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27/4-960.6cf478c9.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ea-sports-fc-27/4-1440.3087e005.webp"
+      }
+    ],
+    "png": "/products/ea-sports-fc-27/4-720.6ce40888.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwAAXgWZCU1mGDDK3gAA/uzM9dUAYqnAyeCnlFvGC4F2pdfgS4YlnVBqK7EmZPrHhU02Im5gQAAA",
+  "dominant": "#151718",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://drop-assets.ea.com/images/597Qk9E9rnNxY0q4g6Vu0w/9e49b5926f4f3845fef75bbcfc8042b3/fc-27-screenshots-FUT-Gallery-Clean-16x9.jpg",
+    "page": "https://www.ea.com/games/ea-sports-fc/fc-27"
+  },
+  "input": "707a786dc11e58c8"
+}

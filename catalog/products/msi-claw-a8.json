@@ -1,0 +1,294 @@
+{
+  "slug": "msi-claw-a8",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "MSI",
+  "deviceModel": "msi-claw",
+  "family": "msi-claw-a8",
+  "status": "available",
+  "name": { "ar": "MSI Claw A8", "en": "MSI Claw A8", "ckb": "MSI Claw A8" },
+  "short": {
+    "ar": "Ryzen Z2 Extreme · 24GB · 1TB · شاشة 8 بوصة 120Hz · بطارية 80Wh",
+    "en": "Ryzen Z2 Extreme · 24GB · 1TB · 8-inch 120Hz · 80Wh",
+    "ckb": "Ryzen Z2 Extreme · 24GB · 1TB · شاشەی 8 ئینچ 120Hz · 80Wh"
+  },
+  "description": {
+    "ar": "أول جهاز MSI Claw بمعالج AMD، ويعمل بنفس معالج Ryzen Z2 Extreme الموجود في ROG Xbox Ally X وLegion Go 2. يأتي بشاشة 8 بوصة بدقة 1920×1200 وتردد 120Hz، وذاكرة 24GB، وتخزين 1TB، وبطارية كبيرة 80Wh، ويعمل بنظام Windows 11. ألوانه Neon Green وPolar Tempest.",
+    "en": "MSI's first AMD-based Claw, using the same Ryzen Z2 Extreme as the ROG Xbox Ally X and Legion Go 2. It has an 8-inch 1920×1200 120Hz screen, 24GB of memory, 1TB of storage and a large 80Wh battery, and runs Windows 11. Colours are Neon Green and Polar Tempest.",
+    "ckb": "یەکەم Claw ـی MSI بە پرۆسێسەری AMD، هەمان Ryzen Z2 Extreme ـی ROG Xbox Ally X و Legion Go 2 بەکاردەهێنێت. شاشەی 8 ئینچی 1920×1200 بە 120Hz، بیرگەی 24GB، شوێنی 1TB و پاتریی گەورەی 80Wh ـی هەیە، و لەسەر Windows 11 کار دەکات. ڕەنگەکانی Neon Green و Polar Tempest ـن."
+  },
+  "highlights": [
+    {
+      "ar": "معالج AMD Ryzen Z2 Extreme مع رسوميات Radeon 890M",
+      "en": "AMD Ryzen Z2 Extreme with Radeon 890M graphics",
+      "ckb": "AMD Ryzen Z2 Extreme لەگەڵ گرافیکی Radeon 890M"
+    },
+    {
+      "ar": "شاشة 8 بوصة بدقة 1920×1200 وتردد 48–120Hz مع VRR",
+      "en": "8-inch 1920×1200 screen with 48–120Hz VRR",
+      "ckb": "شاشەی 8 ئینچ بە 1920×1200 لەگەڵ 48–120Hz VRR"
+    },
+    {
+      "ar": "ذاكرة 24GB LPDDR5x وتخزين 1TB على قرص M.2 2280 قابل للاستبدال",
+      "en": "24GB of LPDDR5x and 1TB on a replaceable M.2 2280 SSD",
+      "ckb": "24GB LPDDR5x و 1TB لەسەر SSD ـی M.2 2280 ـی گۆڕاو"
+    },
+    {
+      "ar": "بطارية 80Wh ومنفذا USB4 متوافقان مع Thunderbolt 4",
+      "en": "80Wh battery and two Thunderbolt 4 compatible USB4 ports",
+      "ckb": "پاتریی 80Wh و دوو دەروازەی USB4 ـی گونجاو لەگەڵ Thunderbolt 4"
+    },
+    {
+      "ar": "عصي وزنادات Hall Effect، وقارئ بصمة، وWi-Fi 7",
+      "en": "Hall Effect sticks and triggers, fingerprint reader and Wi-Fi 7",
+      "ckb": "جۆیستیک و تریگەری Hall Effect، خوێنەری پەنجەمۆر و Wi-Fi 7"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen Z2 Extreme مع رسوميات AMD Radeon 890M",
+        "en": "AMD Ryzen Z2 Extreme with AMD Radeon 890M graphics",
+        "ckb": "AMD Ryzen Z2 Extreme لەگەڵ گرافیکی AMD Radeon 890M"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "24GB LPDDR5x", "en": "24GB LPDDR5x", "ckb": "24GB LPDDR5x" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": { "ar": "1TB NVMe PCIe 4.0 x4 بحجم M.2 2280", "en": "1TB NVMe PCIe 4.0 x4 M.2 2280 SSD", "ckb": "1TB NVMe PCIe 4.0 x4 ـی M.2 2280" }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "قارئ بطاقات microSD، ويمكن استبدال قرص M.2 2280",
+        "en": "microSD card reader; the M.2 2280 SSD can be replaced",
+        "ckb": "خوێنەری کارتی microSD؛ SSD ـی M.2 2280 دەگۆڕدرێت"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "8 بوصة FHD+ (1920×1200) تعمل باللمس، 48–120Hz مع VRR، تغطية 100% من sRGB",
+        "en": "8-inch FHD+ (1920×1200) touchscreen, 48–120Hz VRR, 100% sRGB",
+        "ckb": "شاشەی دەستلێدانی 8 ئینچ FHD+ (1920×1200)، 48–120Hz VRR، 100% sRGB"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "80Wh (أربع خلايا)", "en": "80Wh, 4-cell", "ckb": "80Wh، 4 خانە" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": { "ar": "شاحن PD بقدرة 65W", "en": "65W PD adapter", "ckb": "شەحنکەری PD ـی 65W" }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": { "ar": "Windows 11 Home", "en": "Windows 11 Home", "ckb": "Windows 11 Home" }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذا Type-C (USB4، DisplayPort، شحن PD 3.0، متوافقان مع Thunderbolt 4)، قارئ microSD، مقبس صوت 3.5mm",
+        "en": "2× Type-C (USB4, DisplayPort, Power Delivery 3.0, Thunderbolt 4 compatible), microSD reader, 3.5mm audio jack",
+        "ckb": "2× Type-C (USB4، DisplayPort، PD 3.0، گونجاو لەگەڵ Thunderbolt 4)، خوێنەری microSD، دەروازەی دەنگی 3.5mm"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 7 وBluetooth 5.4", "en": "Wi-Fi 7 and Bluetooth 5.4", "ckb": "Wi-Fi 7 و Bluetooth 5.4" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "عصي Hall Effect بإضاءة RGB وزنادات Hall Effect، أزرار ABXY بإضاءة RGB، زرا ماكرو M1/M2، اهتزاز HD، حساس حركة بستة محاور، قارئ بصمة",
+        "en": "RGB Hall Effect sticks and Hall Effect triggers, RGB ABXY, M1/M2 macro buttons, HD haptics, 6-axis gyro, fingerprint reader",
+        "ckb": "جۆیستیکی Hall Effect ـی RGB و تریگەری Hall Effect، ABXY ـی RGB، دوگمەی ماکرۆ M1/M2، لەرزینەوەی HD، Gyro ـی 6 تەوەرە، خوێنەری پەنجەمۆر"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "299.5 × 126.2 × 24.0 ملم", "en": "299.5 × 126.2 × 24.0 mm", "ckb": "299.5 × 126.2 × 24.0 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "765 غرام", "en": "765 g", "ckb": "765 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز MSI Claw A8", "en": "MSI Claw A8", "ckb": "ئامێری MSI Claw A8" },
+    { "ar": "شاحن PD بقدرة 65W", "en": "65W PD adapter", "ckb": "شەحنکەری PD ـی 65W" }
+  ],
+  "variants": [
+    {
+      "sku": "CLAWA8-24-1TB",
+      "title": {
+        "ar": "MSI Claw A8 24GB / 1TB",
+        "en": "MSI Claw A8 24GB / 1TB",
+        "ckb": "MSI Claw A8 24GB / 1TB"
+      },
+      "options": { "chip": "Ryzen Z2 Extreme", "memory": "24GB", "storage": "1TB" },
+      "modelNumber": "BZ2EM",
+      "isDefault": true,
+      "images": ["msi-claw-a8--1", "msi-claw-a8--2", "msi-claw-a8--3", "msi-claw-a8--4", "msi-claw-a8--5"],
+      "notes": {
+        "ar": "اللون (Neon Green أو Polar Tempest) يختلف حسب السوق والمخزون.",
+        "en": "Colour (Neon Green or Polar Tempest) depends on market and stock.",
+        "ckb": "ڕەنگ (Neon Green یان Polar Tempest) بەپێی بازاڕ و کۆگا جیاوازە."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "msi-claw-8-ex-ai-plus", "kind": "upsell" },
+    { "slug": "rog-xbox-ally-x", "kind": "alternative" },
+    { "slug": "lenovo-legion-go-2", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "msi-claw-a8--1",
+      "file": ".cache/product-images/msi-claw-a8/1.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_17501412831a5f8410f3f57086c7f018c79a965d2c.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery",
+      "kind": "hero",
+      "alt": { "ar": "MSI Claw A8 باللون Neon Green من الأمام", "en": "MSI Claw A8 in Neon Green, from the front", "ckb": "MSI Claw A8 بە ڕەنگی Neon Green، لە پێشەوە" },
+      "credit": "MSI",
+      "width": 1000,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-a8--2",
+      "file": ".cache/product-images/msi-claw-a8/2.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_1750141287515e6992eb8f16af9a05a20e8cb372f5.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery",
+      "kind": "hero",
+      "alt": { "ar": "MSI Claw A8 باللون Polar Tempest من الأمام", "en": "MSI Claw A8 in Polar Tempest, from the front", "ckb": "MSI Claw A8 بە ڕەنگی Polar Tempest، لە پێشەوە" },
+      "credit": "MSI",
+      "width": 1000,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-a8--3",
+      "file": ".cache/product-images/msi-claw-a8/3.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_1750141283b9704d3dcdb4d373afc73fa84362d26f.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery",
+      "kind": "angle",
+      "alt": { "ar": "لونا MSI Claw A8 جنباً إلى جنب", "en": "Both MSI Claw A8 colours side by side", "ckb": "هەردوو ڕەنگی MSI Claw A8 لە تەنیشت یەکتر" },
+      "credit": "MSI",
+      "width": 1000,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-a8--4",
+      "file": ".cache/product-images/msi-claw-a8/4.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_1750141285deffb2dfa4cb1e0664761be0205f8f03.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من MSI Claw A8 الأخضر", "en": "Back of the Neon Green MSI Claw A8", "ckb": "پشتەوەی MSI Claw A8 ـی سەوز" },
+      "credit": "MSI",
+      "width": 1000,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "msi-claw-a8--5",
+      "file": ".cache/product-images/msi-claw-a8/5.png",
+      "sourceUrl": "https://storage-asset.msi.com/global/picture/product/product_17501422707a1d695b3e76967b18e24e260ea20f8c.png",
+      "sourcePage": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من MSI Claw A8 بلون Polar Tempest", "en": "Back of the Polar Tempest MSI Claw A8", "ckb": "پشتەوەی MSI Claw A8 ـی Polar Tempest" },
+      "credit": "MSI",
+      "width": 1000,
+      "height": 800,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Specification",
+      "title": "MSI Claw A8 BZ2EM – Specification",
+      "publisher": "MSI",
+      "retrieved": "2026-11-11",
+      "supports": "processor, graphics, OS, display, 24GB LPDDR5x, M.2 2280 slot, controls, fingerprint, Wi-Fi 7 + Bluetooth 5.4, 65W PD adapter, ports, 80Wh, dimensions, 765 g, colours"
+    },
+    {
+      "url": "https://us-store.msi.com/Laptops/handheld-gaming/Claw-Handheld-Gaming",
+      "title": "Claw Handheld PCs – MSI US Store",
+      "publisher": "MSI",
+      "retrieved": "2026-11-11",
+      "supports": "on sale today: Claw A8 BZ2EM-070US with 24GB and 1TB PCIe 4.0 x4 M.2 2280"
+    },
+    {
+      "url": "https://www.notebookcheck.net/MSI-expands-availability-of-Z2-Extreme-equipped-Claw-A8-gaming-handheld.1206980.0.html",
+      "title": "MSI expands availability of Z2 Extreme-equipped Claw A8 gaming handheld",
+      "publisher": "Notebookcheck",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: first AMD-based Claw with the Ryzen Z2 Extreme; on sale in China from July 2025 and in the US from January 2026; 8 GB less memory than the 32GB Intel Claw 8; 8-inch screen"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language cannot install additional languages"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    }
+  ],
+  "notes": {
+    "ar": "صدر في الصين في يوليو 2025 ووصل الولايات المتحدة في يناير 2026. جهاز Windows 11 يشغّل Steam وEpic وتطبيق Xbox، والعراق ليس ضمن قائمة Microsoft لدول خدمات Xbox، لذلك Game Pass غير مقدم رسمياً هنا.",
+    "en": "Released in China in July 2025 and reached the US in January 2026. A Windows 11 device that runs Steam, Epic and the Xbox app; Iraq is not on Microsoft's list of Xbox service countries, so Game Pass is not officially offered here.",
+    "ckb": "لە چین لە تەمووزی 2025 دەرچوو و لە کانوونی دووەمی 2026 گەیشتە ئەمریکا. ئامێرێکی Windows 11 ـە کە Steam و Epic و ئەپی Xbox کار پێدەکات؛ عێراق لە لیستی Microsoft بۆ وڵاتانی خزمەتگوزاریی Xbox نییە، بۆیە Game Pass بە فەرمی لێرە پێشکەش ناکرێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Exact first release day not published; releaseDate left out (July 2025 China, January 2026 US)",
+      "Which colour the US BZ2EM-070US unit is, and whether other memory/storage configurations exist",
+      "Box contents: MSI lists a 65W PD adapter in the spec sheet but publishes no in-the-box list",
+      "Official images are only 1000×800 px",
+      "Barcodes not found on an official page"
+    ]
+  }
+}

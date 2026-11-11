@@ -89,6 +89,13 @@ export async function openPage(browser, options = {}) {
           const animations = pseudoAnimations();
           entry.groups = [...new Set(animations.map((a) => a.effect.pseudoElement).filter((p) => p.includes("-group(")))];
           entry.animations = animations.map((a) => `${a.effect.pseudoElement} ${a.animationName ?? "waapi"}`);
+          entry.timing = animations.map((a) => ({
+            pseudo: a.effect.pseudoElement,
+            name: a.animationName ?? "waapi",
+            duration: Math.round(Number(a.effect.getComputedTiming().duration)),
+            delay: Math.round(Number(a.effect.getComputedTiming().delay)),
+            properties: [...new Set(a.effect.getKeyframes().flatMap((k) => Object.keys(k)))].filter((k) => !["offset", "easing", "composite", "computedOffset"].includes(k)),
+          }));
           // Which keyframes drive the two root snapshots (the page animation).
           entry.root = { old: [], new: [] };
           for (const a of animations) {
@@ -225,6 +232,32 @@ export const historyLength = (page) => page.evaluate(() => window.history.length
 export async function settled(page, extra = 120) {
   await page.waitForFunction(() => !document.documentElement.matches(":active-view-transition"), { timeout: 15000 });
   await sleep(extra);
+}
+
+/**
+ * Contrast of the text inside `selector` as it is on screen right now (WCAG ratio between the 2nd and 98th percentile
+ * luminance of the element's pixels — the ink and its background). Measures a frozen transition frame as well.
+ */
+export async function textContrast(page, selector) {
+  const { default: sharp } = await import("sharp");
+  // Screenshot clips are in document coordinates.
+  const box = await page.$eval(selector, (el) => {
+    const r = el.getBoundingClientRect();
+    return { x: r.left + window.scrollX, y: r.top + window.scrollY, width: r.width, height: r.height };
+  });
+  // captureBeyondViewport would re-render the live page and miss a frozen view transition's snapshots.
+  const png = await page.screenshot({ clip: box, captureBeyondViewport: false });
+  const { data, info } = await sharp(png).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const linear = (c) => {
+    const s = c / 255;
+    return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const values = [];
+  for (let i = 0; i < data.length; i += info.channels) values.push(0.2126 * linear(data[i]) + 0.7152 * linear(data[i + 1]) + 0.0722 * linear(data[i + 2]));
+  values.sort((a, b) => a - b);
+  const low = values[Math.floor(values.length * 0.02)];
+  const high = values[Math.floor(values.length * 0.98)];
+  return +((high + 0.05) / (low + 0.05)).toFixed(2);
 }
 
 export function report(name, checks) {

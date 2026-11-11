@@ -1,0 +1,65 @@
+{
+  "key": "wd-black-sn850x--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 609,
+  "aspect": 2.6273,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/wd-black-sn850x/1-240.1fe180e6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/wd-black-sn850x/1-480.2dbaa673.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/wd-black-sn850x/1-720.669f58bf.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/wd-black-sn850x/1-960.8b9e0884.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wd-black-sn850x/1-1440.f18e3419.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/wd-black-sn850x/1-240.0123f6c0.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/wd-black-sn850x/1-480.d6f5548d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/wd-black-sn850x/1-720.b9300dc6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/wd-black-sn850x/1-960.ebdcd9cb.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wd-black-sn850x/1-1440.0a6b8711.webp"
+      }
+    ],
+    "png": "/products/wd-black-sn850x/1-720.e5deac69.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSDwAAAARN6AWkiQ4udkCLMInc9FFROBenKEQkiTno8c5zAF8WICneH+JhBDR/wkIlyYBSHHtY21f1imbO4AUwyVWUDggTAAAADADAJ0BKhQACAAu0YjEYiQsLCwMANBLKAAFO0boftEeJ6AA/uWpygvs3w62YZVg50yigaAgCjBTGM25Sb2kp25r6gRICbgHLvNAAAA=",
+  "dominant": "#353739",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sandisk (WD_BLACK)",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/wd-black-sn850x-nvme-ssd/gallery/wd-black-sn850x-nvme-ssd-heatsink-front.png",
+    "page": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd?sku=WDS100T2XHE-00BCA0"
+  },
+  "input": "2318c3f43d543f3a"
+}

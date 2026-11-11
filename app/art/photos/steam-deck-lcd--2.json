@@ -1,0 +1,65 @@
+{
+  "key": "steam-deck-lcd--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 516,
+  "aspect": 3.1008,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/steam-deck-lcd/2-240.beecf68b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/steam-deck-lcd/2-480.574ca50c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/steam-deck-lcd/2-720.898a3364.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/steam-deck-lcd/2-960.39d02bc1.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/steam-deck-lcd/2-1440.4e15468a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/steam-deck-lcd/2-240.bd6f6ca5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/steam-deck-lcd/2-480.9fb2ea56.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/steam-deck-lcd/2-720.c091cbce.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/steam-deck-lcd/2-960.36c6417a.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/steam-deck-lcd/2-1440.41c1348c.webp"
+      }
+    ],
+    "png": "/products/steam-deck-lcd/2-720.2d9e2f3e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4WAoAAAAQAAAAEwAABQAAQUxQSFAAAAART6AmkiQ1eOEJYErvMSICqv3ip2Gwqa29yUsUUAUQHGRiZUNA3/uKiDb3Xy+IiOh/AjiaLw3NnMWeglt+CRzPvojIBJHNW9mkcQFca4yrAFZQOCBAAAAAcAMAnQEqFAAGAD8RcrBQLCakorAIAYAiCWkAAFqMFpOqpagAAP7kJEfciyWg/IeOHwOgjhmmx2eSZTih5JgAAA==",
+  "dominant": "#393939",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Valve",
+  "source": {
+    "url": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering08.png",
+    "page": "https://www.steamdeck.com/en/press"
+  },
+  "input": "d21276b98b4be636"
+}

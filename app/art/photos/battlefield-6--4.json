@@ -1,0 +1,65 @@
+{
+  "key": "battlefield-6--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/battlefield-6/4-240.27a8e208.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/battlefield-6/4-480.e0738af3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/battlefield-6/4-720.c100537b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/battlefield-6/4-960.e7b28862.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/battlefield-6/4-1440.cc499f10.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/battlefield-6/4-240.fc741eda.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/battlefield-6/4-480.d9c6c3cb.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/battlefield-6/4-720.4055ffd0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/battlefield-6/4-960.d458e4be.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/battlefield-6/4-1440.c7039688.webp"
+      }
+    ],
+    "png": "/products/battlefield-6/4-720.814ed132.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZQC7ABh6Dz5qBpPNHUgAAP7mXPTol/rMCSe/6mcOD3ckZZjIhS8SP5bshOFn8tu0kz5fbG+vGTkabsRNTGviBtRHORuKHsmNfOgA",
+  "dominant": "#271a26",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/battlefield-6-siegeofcairo-map-screenshot-01-en-04jul25?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/battlefield-6/"
+  },
+  "input": "19f8da4361ccffbb"
+}

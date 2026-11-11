@@ -1,0 +1,65 @@
+{
+  "key": "nba-2k27--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/2-240.3e3f7ae0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/2-480.a11b7c51.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/2-720.e752afd1.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/2-960.9a2d8bb8.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k27/2-1440.a5881eff.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/2-240.7197e1ba.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/2-480.e444d69a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/2-720.5bf03f1e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/2-960.124c6e81.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k27/2-1440.592b75c3.webp"
+      }
+    ],
+    "png": "/products/nba-2k27/2-720.df9e246b.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZQDG9CKThDUJ+Bzkk8AA/tzrnxx2V1xLFAMYfEyj+gaHl4JrqINR7DbXH0Kl5yAufQwECVDlW8uBcDCe5xHOpXPq1zSXoQLbZTwAAAA=",
+  "dominant": "#282528",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "2K",
+  "source": {
+    "url": "https://assets.2k.com/1a6ngf98576c/gjvwsF72IGtDdwF6Kf3mJ/b03845c6f03313a6b1047c4c294350e8/N27-ALL-FIRST_LOOK_SCREEN_WEMBY-STATIC-ENUS-NO_RATING-1920x1080-FINAL__2_.jpg",
+    "page": "https://nba.2k.com/2k27/"
+  },
+  "input": "579014bc16758dae"
+}

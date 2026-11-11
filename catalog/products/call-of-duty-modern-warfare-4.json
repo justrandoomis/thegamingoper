@@ -1,0 +1,292 @@
+{
+  "slug": "call-of-duty-modern-warfare-4",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "Activision",
+  "status": "available",
+  "releaseDate": "2026-10-23",
+  "name": { "ar": "Call of Duty: Modern Warfare 4", "en": "Call of Duty: Modern Warfare 4", "ckb": "Call of Duty: Modern Warfare 4" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · قوائم وترجمة عربية",
+    "en": "PS5 · Xbox Series X · disc · Arabic menus and subtitles",
+    "ckb": "PS5 · Xbox Series X · دیسک · مێنیو و ژێرنووسی عەرەبی"
+  },
+  "description": {
+    "ar": "جزء Call of Duty لعام 2026 من تطوير Infinity Ward، صدر في 23 تشرين الأول 2026. القصة تبدأ بغزو كوري شمالي شامل لكوريا الجنوبية، بينما يخوض Captain Price حرباً شخصية بعيداً عن الجبهة. تضم اللعبة حملة قصصية وطور Multiplayer وطور DMZ، وهي متوفرة على PS5 وXbox Series X|S فقط من بين أجهزة البلايستيشن والإكس بوكس، ولا تصدر على PS4 أو Xbox One.",
+    "en": "The 2026 Call of Duty from Infinity Ward, released on 23 October 2026. The campaign opens with a full-scale North Korean invasion of South Korea while Captain Price fights a personal war away from the front line. It includes the campaign, Multiplayer and DMZ, and on PlayStation and Xbox it is made for PS5 and Xbox Series X|S only — there is no PS4 or Xbox One version.",
+    "ckb": "بەشی ساڵی 2026ی Call of Duty لە گەشەپێدانی Infinity Ward، کە لە 23ی تشرینی یەکەمی 2026 دەرچوو. چیرۆکەکە بە هێرشێکی گشتی کۆریای باکوور بۆ سەر کۆریای باشوور دەست پێدەکات، لە کاتێکدا Captain Price دوور لە بەرەی جەنگ شەڕێکی کەسی دەکات. حەملەی چیرۆک، Multiplayer و DMZ ی تێدایە، و لە نێو ئامێرەکانی PlayStation و Xbox تەنها بۆ PS5 و Xbox Series X|S دەرچووە — وەشانی PS4 و Xbox One ی نییە."
+  },
+  "highlights": [
+    {
+      "ar": "حملة قصصية في كوريا ونيويورك وباريس ومومباي، مع Multiplayer وDMZ.",
+      "en": "Campaign across Korea, New York, Paris and Mumbai, plus Multiplayer and DMZ.",
+      "ckb": "حەملەی چیرۆک لە کۆریا، نیویۆرک، پاریس و مومبای، لەگەڵ Multiplayer و DMZ."
+    },
+    {
+      "ar": "القوائم والترجمة بالعربية (بدون دبلجة عربية).",
+      "en": "Arabic menus and subtitles (no Arabic voice-over).",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی (بێ دەنگی عەرەبی)."
+    },
+    {
+      "ar": "لعب أونلاين يصل إلى 60 لاعباً، ويحتاج PlayStation Plus أو Game Pass Essential واتصال إنترنت دائم.",
+      "en": "Online play for up to 60 players; needs PlayStation Plus or Game Pass Essential and a constant internet connection.",
+      "ckb": "یاری ئۆنلاین تا 60 یاریزان؛ پێویستی بە PlayStation Plus یان Game Pass Essential و ئینتەرنێتی بەردەوام هەیە."
+    },
+    {
+      "ar": "تقسيم الشاشة للاعبَين على PS5 وXbox Series X|S.",
+      "en": "Two-player split-screen on PS5 and Xbox Series X|S.",
+      "ckb": "دابەشکردنی شاشە بۆ دوو یاریزان لەسەر PS5 و Xbox Series X|S."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro.",
+      "en": "PS5 Pro Enhanced.",
+      "ckb": "باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "23 تشرين الأول 2026", "en": "23 October 2026", "ckb": "23ی تشرینی یەکەمی 2026" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": {
+        "ar": "PS5 وXbox Series X|S وPC وNintendo Switch 2 (لا يوجد إصدار PS4 أو Xbox One)",
+        "en": "PS5, Xbox Series X|S, PC and Nintendo Switch 2 (no PS4 or Xbox One version)",
+        "ckb": "PS5، Xbox Series X|S، PC و Nintendo Switch 2 (وەشانی PS4 و Xbox One نییە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": {
+        "ar": "نسخة فيزيائية للعبة الأساسية الكاملة على PS5 وXbox Series X",
+        "en": "Physical edition with the full base game, for PS5 and Xbox Series X",
+        "ckb": "وەشانی فیزیکی لەگەڵ یارییە بنەڕەتییە تەواوەکە، بۆ PS5 و Xbox Series X"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": {
+        "ar": "1–2 على نفس الشاشة، وحتى 60 أونلاين",
+        "en": "1–2 split-screen, up to 60 online",
+        "ckb": "1–2 لەسەر هەمان شاشە، تا 60 ئۆنلاین"
+      }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "PlayStation Plus أو Game Pass Essential للأطوار الأونلاين؛ اتصال دائم لـ Multiplayer وDMZ؛ قد يُطلب رقم هاتف مرتبط بحساب Activision",
+        "en": "PlayStation Plus or Game Pass Essential for online modes; constant connection for Multiplayer and DMZ; a phone number linked to your Activision account may be required",
+        "ckb": "PlayStation Plus یان Game Pass Essential بۆ شێوازە ئۆنلاینەکان؛ پەیوەندی بەردەوام بۆ Multiplayer و DMZ؛ لەوانەیە ژمارەی مۆبایلی بەستراو بە هەژماری Activision داوا بکرێت"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": {
+        "ar": "نصوص وترجمة عربية فقط؛ الصوت بلغات أخرى",
+        "en": "Arabic text and subtitles only; voice-over in other languages",
+        "ckb": "تەنها دەق و ژێرنووسی عەرەبی؛ دەنگ بە زمانەکانی تر"
+      }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 18 / ESRB M", "en": "PEGI 18 / ESRB M", "ckb": "PEGI 18 / ESRB M" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Infinity Ward / Activision", "en": "Infinity Ward / Activision", "ckb": "Infinity Ward / Activision" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "اللعبة الأساسية الكاملة (النسخة الفيزيائية لا تُرقّى إلى Vault Edition)",
+      "en": "The full base game (the physical edition cannot be upgraded to the Vault Edition)",
+      "ckb": "یارییە بنەڕەتییە تەواوەکە (وەشانی فیزیکی ناتوانرێت بۆ Vault Edition بەرز بکرێتەوە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "MW4-PS5-STD",
+      "title": { "ar": "Call of Duty: Modern Warfare 4 لجهاز PS5", "en": "Call of Duty: Modern Warfare 4 for PS5", "ckb": "Call of Duty: Modern Warfare 4 بۆ PS5" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["call-of-duty-modern-warfare-4--1", "call-of-duty-modern-warfare-4--2", "call-of-duty-modern-warfare-4--3", "call-of-duty-modern-warfare-4--4", "call-of-duty-modern-warfare-4--5"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "MW4-XSX-STD",
+      "title": { "ar": "Call of Duty: Modern Warfare 4 لجهاز Xbox Series X", "en": "Call of Duty: Modern Warfare 4 for Xbox Series X", "ckb": "Call of Duty: Modern Warfare 4 بۆ Xbox Series X" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["call-of-duty-modern-warfare-4--1", "call-of-duty-modern-warfare-4--2", "call-of-duty-modern-warfare-4--3"],
+      "notes": {
+        "ar": "النسخة الفيزيائية مخصصة لـ Xbox Series X؛ Xbox Series S وSeries X Digital بدون قارئ أقراص.",
+        "en": "The physical edition is for Xbox Series X; Xbox Series S and the Series X Digital Edition have no disc drive.",
+        "ckb": "وەشانی فیزیکی بۆ Xbox Series X ە؛ Xbox Series S و Series X Digital دیسک خوێنەریان نییە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "تصويب من منظور الشخص الأول", "en": "First-person shooter", "ckb": "تەقەکردن لە ڕوانگەی کەسی یەکەم" }
+    ],
+    "players": "1-2 split-screen, 2-60 online",
+    "online": {
+      "ar": "الأطوار الأونلاين تحتاج PlayStation Plus على PS5 أو Game Pass Essential على Xbox، مع اتصال إنترنت دائم لـ Multiplayer وDMZ.",
+      "en": "Online modes need PlayStation Plus on PS5 or Game Pass Essential on Xbox, with a constant internet connection for Multiplayer and DMZ.",
+      "ckb": "شێوازە ئۆنلاینەکان پێویستیان بە PlayStation Plus لەسەر PS5 یان Game Pass Essential لەسەر Xbox هەیە، لەگەڵ ئینتەرنێتی بەردەوام بۆ Multiplayer و DMZ."
+    },
+    "ageRating": { "pegi": 18, "esrb": "M" },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Infinity Ward",
+    "publisher": "Activision"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "النسخة الفيزيائية لـ PS5.", "en": "PS5 physical edition.", "ckb": "وەشانی فیزیکی PS5." },
+      "source": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "النسخة الفيزيائية لـ Xbox Series X.", "en": "Xbox Series X physical edition.", "ckb": "وەشانی فیزیکی Xbox Series X." },
+      "source": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense-edge", "kind": "upsell" },
+    { "slug": "pulse-elite", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-elite-series-2", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "call-of-duty-modern-warfare-4--1",
+      "file": ".cache/product-images/call-of-duty-modern-warfare-4/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.59792.13559635275456449.72d1efe7-e297-4b01-9ff5-81f9541bc9a1.f8f4e212-4f83-45fe-8db7-bbb19d5a9582",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Call of Duty: Modern Warfare 4", "en": "Call of Duty: Modern Warfare 4 cover art", "ckb": "وێنەی بەرگی Call of Duty: Modern Warfare 4" },
+      "credit": "Activision",
+      "width": 2160, "height": 2160, "transparent": false
+    },
+    {
+      "key": "call-of-duty-modern-warfare-4--2",
+      "file": ".cache/product-images/call-of-duty-modern-warfare-4/2.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.4715.13559635275456449.72d1efe7-e297-4b01-9ff5-81f9541bc9a1.a25cb344-59ba-49dd-8858-37563c544636",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw",
+      "kind": "box-art",
+      "alt": { "ar": "ملصق Modern Warfare 4 العمودي", "en": "Modern Warfare 4 portrait poster", "ckb": "پۆستەری درێژی Modern Warfare 4" },
+      "credit": "Activision",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "call-of-duty-modern-warfare-4--3",
+      "file": ".cache/product-images/call-of-duty-modern-warfare-4/3.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/cod-mw4-screenshot-01-en-22may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/",
+      "kind": "screenshot",
+      "alt": { "ar": "جندي كوري جنوبي في شارع مشتعل", "en": "A South Korean soldier on a burning street", "ckb": "سەربازێکی کۆریای باشوور لە شەقامێکی سووتاودا" },
+      "credit": "Activision",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "call-of-duty-modern-warfare-4--4",
+      "file": ".cache/product-images/call-of-duty-modern-warfare-4/4.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/cod-mw4-screenshot-06-en-22may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/",
+      "kind": "screenshot",
+      "alt": { "ar": "مطاردة بالسيارات في شوارع باريس", "en": "A car chase through the streets of Paris", "ckb": "ڕاوەدوونان بە ئۆتۆمبێل لە شەقامەکانی پاریس" },
+      "credit": "Activision",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "call-of-duty-modern-warfare-4--5",
+      "file": ".cache/product-images/call-of-duty-modern-warfare-4/5.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/cod-mw4-screenshot-08-en-22may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/",
+      "kind": "screenshot",
+      "alt": { "ar": "قتال في شارع كوري", "en": "Combat on a Korean street", "ckb": "شەڕ لە شەقامێکی کۆری" },
+      "credit": "Activision",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.callofduty.com/blog/2026/05/call-of-duty-modern-warfare-4-announcement", "title": "Announcing Call of Duty: Modern Warfare 4", "publisher": "Activision", "retrieved": "2026-11-11", "supports": "release 23 Oct 2026, platforms, no PS4/Xbox One version, Infinity Ward, campaign setting, modes" },
+    { "url": "https://support.activision.com/modern-warfare-4/articles/modern-warfare-4-editions", "title": "Call of Duty: Modern Warfare 4 Editions", "publisher": "Activision Support", "retrieved": "2026-11-11", "supports": "physical editions for PS5 and Xbox Series X with the full base game, no Vault upgrade for physical, constant internet for Multiplayer/DMZ, split-screen, Arabic text and subtitles only, PS Plus or Game Pass Essential required online, phone number" },
+    { "url": "https://store.playstation.com/en-gb/product/EP0002-PPSA07950_00-CODMW4STANDARD01", "title": "Call of Duty: Modern Warfare 4 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, PS Plus required for online play, up to 60 online players, PS5 Pro Enhanced" },
+    { "url": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/", "title": "Call of Duty: Modern Warfare 4 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "editions, PEGI content descriptors, screenshots" },
+    { "url": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw", "title": "Call of Duty: Modern Warfare 4 — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, online multiplayer 2–60, split screen, 120 fps, cover art" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Install size: the Microsoft Store lists a maximum install size of about 338 GB, which appears to include extra Call of Duty content, so no game size is recorded.",
+      "Activision says the physical edition 'includes the full base game'; whether everything is on the disc or partly downloaded was not stated.",
+      "Arabic availability can vary by region and platform, per Activision.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

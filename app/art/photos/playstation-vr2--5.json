@@ -1,0 +1,57 @@
+{
+  "key": "playstation-vr2--5",
+  "view": "hero",
+  "width": 1410,
+  "height": 1099,
+  "aspect": 1.283,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/5-240.29ea2314.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/5-480.839b922a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/5-720.805c52f7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/5-960.0d235b8d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/5-240.cca353d8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/5-480.29eb9619.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/5-720.2578de59.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/5-960.7080afa5.webp"
+      }
+    ],
+    "png": "/products/playstation-vr2/5-720.ba40ea4b.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRioBAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSHIAAAARR6CQkSQ2dwTfK8dbfEQEav2avuCmtm01Ou+/tVJzz1ByUpMAkhAJ42CsBzRE9H8C+D6va/owdW60BECVARwKP3MLR+xebvYpleHR1opXjcAGARPB39pKcCO4tBqeYqhBK8GFCNRWW6GSytC0Anab8BVWUDggkgAAANADAJ0BKhQAEAA/EXKwUCwmpKKwCAGAIgljAKcXLBOXiW5bmRndgAD+v7/DbeWb+cZhqt4d4VpfPhONucnmhQkGFk51teyP6s06I74fpoZx80FotZxK1m57yiYt+W1dpowFLwfP93dBUOhxNyw+TqwzyYAChtQn/3i41zEzsb58RBaNv4Az8OgjVT+SLUCzYCgA",
+  "dominant": "#343b46",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_Headphones-16x9-01-09april26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/"
+  },
+  "input": "3ee2b3953ec07323"
+}

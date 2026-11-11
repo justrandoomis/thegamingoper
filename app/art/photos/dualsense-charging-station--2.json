@@ -1,0 +1,57 @@
+{
+  "key": "dualsense-charging-station--2",
+  "view": "hero",
+  "width": 1156,
+  "height": 1072,
+  "aspect": 1.0784,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-charging-station/2-240.6b4bdc65.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-charging-station/2-480.9fcbcf18.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-charging-station/2-720.2412e300.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-charging-station/2-960.08328d6d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-charging-station/2-240.920f2c0f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-charging-station/2-480.1fcbc200.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-charging-station/2-720.fa0fcb44.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-charging-station/2-960.af168e61.webp"
+      }
+    ],
+    "png": "/products/dualsense-charging-station/2-720.91b1d4fb.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRm4BAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSHoAAAART6CgjSQ1dSKY7yEiAvBc9f7ucGLb1rLc3/8oQHeopD8jE6DSHKpbc8t+x/vZFCL6PwHQH+UUDT6nZSF/IcltCrwo3SP6y55Wg0q7p3JnKv+gCo58yMIZ27Kgs3/J/CiVPWzgRXY/zEB4Zk97C8DiU4vrVQCImhZMAVZQOCDOAAAAUAUAnQEqFAATAD8RgLhVrCglIygIAYAiCUAZQDFn0QAaRjjbxy5VdNwGLpzp9B9m1YoAAP3/ajiRGr+e94REox9j5K+Yvchc085JFjfnC453vSq9LnosS32tCH5BFrz55jTYCoD3u3t4eIZ0m5HfmhWAkvVVVfY185zLRKrdZOnzdx4VnZd/z5eZTO+SKwXyAydVYLnw5F/04PveYgjpeZq1tNBgGW57FPb/H8kD+UqrnmdtqThBcH2GlcvVyV09q/fPxClf6wvnUz8AAAA=",
+  "dominant": "#d6dbe5",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ChargingStation-DualSense-DualSenseEdge-Amber-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/"
+  },
+  "input": "4c8f55456eecca48"
+}

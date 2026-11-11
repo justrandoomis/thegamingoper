@@ -1,0 +1,65 @@
+{
+  "key": "samsung-microsd-express-for-nintendo-switch-2--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1221,
+  "aspect": 1.3104,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-240.d75701ba.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-480.a2f69050.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-720.aaf2d733.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-960.f92c184b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-1440.0f820983.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-240.d8f0fdf5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-480.30892afb.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-720.a2dc4195.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-960.65c37d6e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-microsd-express-for-nintendo-switch-2/1-1440.56118914.webp"
+      }
+    ],
+    "png": "/products/samsung-microsd-express-for-nintendo-switch-2/1-720.cfeb1c91.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSEMAAAART6A0kiQ1evocn6KnHD4iAori2+BLsIlkK9Jwk35PXDEKsEFGCBJW8M9WQET/JwBRWZ8aj5b/b5Ti1rt7PgsgYhAAAFZQOCB8AAAAsAQAnQEqFAAPAD8RcrBQLCakorAIAYAiCWwAsRtdbP8BtIXhtHJIvqinBunPTADvwEQlx1loxaDvD+nooexIBqCuG6SLpnfRjzNbijA5k/8zX5ZsCZ2trdnYf6qQZfW74PURw3ZNwqisi9zEZg5Qny5XSsfdikIWVlsAAA==",
+  "dominant": "#d42d25",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo / Samsung",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/SD%20Cards/123685-nintendo-switch-2-samsung-micro-sd-express-front-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/samsung-microsd-express-card-256gb-for-nintendo-switch-2-123685/"
+  },
+  "input": "1cdd07090e3eba81"
+}

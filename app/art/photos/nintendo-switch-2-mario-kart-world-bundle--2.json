@@ -1,0 +1,49 @@
+{
+  "key": "nintendo-switch-2-mario-kart-world-bundle--2",
+  "view": "hero",
+  "width": 959,
+  "height": 884,
+  "aspect": 1.0848,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/2-240.0e7408d5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/2-480.fd54a585.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/2-720.368288f9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/2-240.8c740fe4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/2-480.e00a39ae.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-mario-kart-world-bundle/2-720.bdcec5fc.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-mario-kart-world-bundle/2-720.75d5b641.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRg4BAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSFAAAAART6AmABI2RwlwexERAWvuzU8wqm1bycHm/zVAGtDAIlgCMnwS2NAlL48h84j+TwCqESBMq85Oc+uwPLr/N9nxEWSXMlvP5MPcN2UiQJgIb1ZQOCCYAAAAcAQAnQEqFAASAD8RerJULCckIygKqYAiCWwAuxUAOf/AEaG4fxguY69cyIAA+dNvmxCTY1Cj1hwATgRn1fnekbo5mw2VHxB2xuQgDY4UBLbHLTdo08SbRNxC9zHtoM3ZTPOwou/WD5WhC3N/nz3VQWzUJ5auwmgg3uxC98X6mZzUCng5yJAXqWh414jTrI4AehX3IQyyQAA=",
+  "dominant": "#ed1c25",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/v1788046450/ncom/en_US/merchandising/Showrooms/2026%20Holiday/MKW_bundle_product_shot.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/"
+  },
+  "input": "159100f4450b097a"
+}

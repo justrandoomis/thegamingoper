@@ -1,0 +1,65 @@
+{
+  "key": "samsung-990-pro-heatsink--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 605,
+  "aspect": 2.6446,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/3-240.9483acc1.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/3-480.5f70e823.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/3-720.d8c053a1.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-990-pro-heatsink/3-960.f11693a8.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-990-pro-heatsink/3-1440.345639b7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/3-240.1e8925d3.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/3-480.178d149c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/3-720.c7cfea20.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-990-pro-heatsink/3-960.443e99dd.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-990-pro-heatsink/3-1440.0ba4bc81.webp"
+      }
+    ],
+    "png": "/products/samsung-990-pro-heatsink/3-720.6391fe73.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSDQAAAARN0Amgpn9WQSTk0QNERHsVgOFsK1YfT1yKIAQolh/iH2PIaL/EyBkNdR7MBYlc0RN/1VIVlA4IEoAAAAQAwCdASoUAAgALtGIxGIkLCwsDADQSzgABb8JU3JvgygA/sxqlVMHrVVyD6XYHWu7ny1DCI9+gmd8PDRwcdX20wrNfJ+3qwUAAA==",
+  "dominant": "#030303",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Samsung",
+  "source": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959862?$ORIGIN_PNG$",
+    "page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/"
+  },
+  "input": "90071e1efa133565"
+}

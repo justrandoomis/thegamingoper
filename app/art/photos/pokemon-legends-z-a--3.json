@@ -1,0 +1,65 @@
+{
+  "key": "pokemon-legends-z-a--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-legends-z-a/3-240.f73aec5a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-legends-z-a/3-480.d52e7f5c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-legends-z-a/3-720.c9a75262.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-legends-z-a/3-960.5f3c29ce.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pokemon-legends-z-a/3-1440.266eb485.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-legends-z-a/3-240.9222ceec.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-legends-z-a/3-480.4edc69cd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-legends-z-a/3-720.a9248124.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-legends-z-a/3-960.ca5c260b.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/pokemon-legends-z-a/3-1440.a7c81bbe.webp"
+      }
+    ],
+    "png": "/products/pokemon-legends-z-a/3-720.ee6595dd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoUABQAPxF6sFMsJ6QiqA1RgCIJagDE2Axw18/ih8DfHtI2AAD+7dC4XDtgrz+leH/HkAk+OU+6Do7YnMPf56bxgVUO/D0tdpkAiuXhKZSyFNSuyl8b/THIQRMhZTPYoRB2bSCO5DdDgNHlG+17adlhxaJIhDYq4AA=",
+  "dominant": "#ffffff",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "box-art",
+  "credit": "Nintendo / The Pokémon Company",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Pok%C3%A9mon%20Legends%20ZA%20Nintendo%20Switch%202%20Edition%20%2B%20Mega%20Dimension/129316-pokemon-legends-za-switch-2-edition-mega-dimensions-package-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/pokemon-legends-z-a-nintendo-switch-2-edition-mega-dimension-129316/"
+  },
+  "input": "c659d338ba8e60f7"
+}

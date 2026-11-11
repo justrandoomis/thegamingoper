@@ -1,0 +1,65 @@
+{
+  "key": "access-controller--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 585,
+  "aspect": 2.735,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/2-240.e67a0da2.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/2-480.8dcab720.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/2-720.f4c80c29.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/2-960.dee4d851.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/2-1440.daeae4c9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/access-controller/2-240.bd32b397.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/access-controller/2-480.aebc2723.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/access-controller/2-720.3ed17668.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/access-controller/2-960.f6972117.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/access-controller/2-1440.2d352fa5.webp"
+      }
+    ],
+    "png": "/products/access-controller/2-720.e4b11885.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtgAAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSEwAAAARR6AmABI2SwBO+AjgymBEBKK/uAg2tbU3ealz4qCAADzUlQ1GJhRUB0T4j4eI/k8AQFAAnU79tR5tYd+uKtql/vrwSa/ifMQZiCIAVlA4IGYAAABQAwCdASoUAAcAPxFysFAsJqSisAgBgCIJZwAAK2mNqPUtAAD+x3diufYgrLDtegWvPQIoURVWddDyLolq4F2ADkCyAI+RieIjGEivPR4sj8Jd0epRti0nJm/erRLLpxGYRoRAgAA=",
+  "dominant": "#e3e6ed",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-03-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/access-controller/"
+  },
+  "input": "c3b6588af6c35274"
+}

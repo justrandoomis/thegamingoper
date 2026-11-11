@@ -1,0 +1,57 @@
+{
+  "key": "nintendo-switch--5",
+  "view": "hero",
+  "width": 1332,
+  "height": 649,
+  "aspect": 2.0524,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch/5-240.34cadc49.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch/5-480.8a05ddd9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch/5-720.12396c72.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch/5-960.4fce0f6d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch/5-240.f7a33047.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch/5-480.ddb3783c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch/5-720.216c5373.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch/5-960.b9424f1a.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch/5-720.ea782d31.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSDMAAAARL0CQbZscxHKCE13gERHssVAIAGjTA4ihDEogifnD/CMQ0f8JgEX1sD6w2lR+0JwiLAIAVlA4IGIAAABwAwCdASoUAAoAPxFysVCsJqSisAgBgCIJQBWAA9THj//BaoAA/iWkzqFbg1k/enG6M4/5UzmavuVvGoukTpxbNDjX4jf18EITiSMg8DlEh4oHVoQ+OVi5M3KdIl/GI6QAAA==",
+  "dominant": "#010202",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-gray/110477-nintendo-switch-gray-gray-front-screen-on-1200x675",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-gray-gray-joy-con/"
+  },
+  "input": "1c7747090db81d7c"
+}

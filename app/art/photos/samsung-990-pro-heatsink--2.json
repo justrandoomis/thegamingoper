@@ -1,0 +1,65 @@
+{
+  "key": "samsung-990-pro-heatsink--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 692,
+  "aspect": 2.3121,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/2-240.7317e00a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/2-480.46b09520.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/2-720.34d738d9.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-990-pro-heatsink/2-960.4ce79c5a.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-990-pro-heatsink/2-1440.94dfdb5a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/2-240.0fcea8d1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/2-480.2d6890dd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/2-720.14ea328d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-990-pro-heatsink/2-960.4c38adab.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-990-pro-heatsink/2-1440.93c72ba0.webp"
+      }
+    ],
+    "png": "/products/samsung-990-pro-heatsink/2-720.e6924675.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSEYAAAARR6CgjSQ1dh4Yn2V8RAR8yVr4JhjFttWGzhYcMChoBtIk5GXN6muJcZ6GiP5PgCJTrmM+Lz69/m08iEK0XVjEAQAiIlqRVlA4IEwAAABwAwCdASoUAAkAPxF0tFAsJyUisAgBgCIJZQAAUb++4Mv6CHAA/WtpgBRfkqG3BiE7Zs68xwCqf1KoUnt0qPGnLOqMkH+2Q8fBPAAA",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Samsung",
+  "source": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959863?$ORIGIN_PNG$",
+    "page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/"
+  },
+  "input": "7c572e4471d26782"
+}

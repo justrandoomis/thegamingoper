@@ -1,0 +1,65 @@
+{
+  "key": "xbox-elite-series-2--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1171,
+  "aspect": 1.3664,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-elite-series-2/1-240.2f5a765e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-elite-series-2/1-480.b39b9c40.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-elite-series-2/1-720.4f46436c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-elite-series-2/1-960.9e620584.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-elite-series-2/1-1440.2af84a46.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-elite-series-2/1-240.833ede07.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-elite-series-2/1-480.df4b1ab9.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-elite-series-2/1-720.8227b065.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-elite-series-2/1-960.8761e366.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-elite-series-2/1-1440.f44aa66e.webp"
+      }
+    ],
+    "png": "/products/xbox-elite-series-2/1-720.b39dce15.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvoAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGsAAAART6AmkhQ2+BJIbYaOiAjQuX1IB5zYtq02JxwZGYkFyaRJ4xDYdQhpXXTxjffDGCL6PwFY79bL5bEFZKJ14aFL4aWbw1d3I/nrGqcnRm9jCu6mqJZmNBwu/hLX0gV4SrwRT+lJkKzQHhwsAQBWUDggaAAAANADAJ0BKhQADwA/EXCwUCwmJKKwCAGAIglpAABb4FGoX1HalfNBoAD+gh2O2fz3H82kstXbYH7LV+0bB9XNykm8Su0hLr5z2iO5r+87UxdyqA/PG87JU5QNx+W9FJvnBmrI+7M23IAA",
+  "dominant": "#161718",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-3131-D-b00-1?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg"
+  },
+  "input": "fa6224616ca16e4d"
+}

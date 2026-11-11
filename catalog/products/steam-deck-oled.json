@@ -1,0 +1,341 @@
+{
+  "slug": "steam-deck-oled",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "Valve",
+  "deviceModel": "steam-deck-oled",
+  "family": "steam-deck-oled",
+  "status": "available",
+  "releaseDate": "2023-11-16",
+  "name": { "ar": "Steam Deck OLED", "en": "Steam Deck OLED", "ckb": "Steam Deck OLED" },
+  "short": {
+    "ar": "512GB أو 1TB · شاشة HDR OLED قياس 7.4 بوصة · SteamOS",
+    "en": "512GB or 1TB · 7.4-inch HDR OLED · SteamOS",
+    "ckb": "512GB یان 1TB · شاشەی HDR OLED ـی 7.4 ئینچ · SteamOS"
+  },
+  "description": {
+    "ar": "جهاز الألعاب المحمول من Valve لتشغيل مكتبة Steam الخاصة بك في أي مكان. طراز OLED يأتي بشاشة HDR OLED قياس 7.4 بوصة بتردد حتى 90Hz وبطارية 50Wh وWi-Fi 6E، ويعمل بنظام SteamOS الذي صممته Valve للعب المحمول. التخزين الداخلي 512GB أو 1TB من نوع NVMe، ويمكن زيادة المساحة ببطاقة microSD.",
+    "en": "Valve's handheld gaming PC for playing your Steam library anywhere. The OLED model has a 7.4-inch HDR OLED screen at up to 90Hz, a 50Wh battery and Wi-Fi 6E, and it runs SteamOS, which Valve built for handheld play. Internal storage is a 512GB or 1TB NVMe SSD, and a microSD card adds more room.",
+    "ckb": "ئامێری یاریی دەستیی Valve بۆ یاریکردنی کتێبخانەی Steam ـەکەت لە هەر شوێنێک. مۆدێلی OLED شاشەیەکی HDR OLED ـی 7.4 ئینچی هەیە بە ڕێژەی نوێبوونەوەی تا 90Hz، پاترییەکی 50Wh و Wi-Fi 6E، و لەسەر SteamOS کار دەکات کە Valve بۆ یاریی دەستی دروستی کردووە. بیرگەی ناوەکی 512GB یان 1TB ـی NVMe ـە و بە کارتی microSD دەتوانیت شوێنی زیاتر زیاد بکەیت."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة HDR OLED قياس 7.4 بوصة بدقة 1280×800 وتردد حتى 90Hz وسطوع حتى 1000 nit في وضع HDR",
+      "en": "7.4-inch HDR OLED screen, 1280×800, up to 90Hz, up to 1,000 nits in HDR",
+      "ckb": "شاشەی HDR OLED ـی 7.4 ئینچ، 1280×800، تا 90Hz، ڕووناکی تا 1000 nit لە HDR"
+    },
+    {
+      "ar": "بطارية 50Wh تكفي من 3 إلى 12 ساعة لعب حسب اللعبة (تقدير Valve)",
+      "en": "50Wh battery: 3 to 12 hours of play depending on the game (Valve's estimate)",
+      "ckb": "پاتریی 50Wh: لە 3 بۆ 12 کاتژمێر یاری بەپێی یارییەکە (خەمڵاندنی Valve)"
+    },
+    {
+      "ar": "يعمل بنظام SteamOS مع مكتبة Steam وتقييمات Steam Deck Verified؛ ليس جهاز Windows، لذلك تطبيق Xbox وGame Pass للحاسوب غير متوفرين فيه",
+      "en": "Runs SteamOS with your Steam library and Steam Deck Verified ratings; it is not a Windows device, so the Xbox app and PC Game Pass are not part of it",
+      "ckb": "لەسەر SteamOS کار دەکات لەگەڵ کتێبخانەی Steam و هەڵسەنگاندنی Steam Deck Verified؛ ئامێری Windows نییە، بۆیە ئەپی Xbox و Game Pass ـی کۆمپیوتەر تێیدا نییە"
+    },
+    {
+      "ar": "تخزين 512GB أو 1TB NVMe مع منفذ بطاقة microSD لزيادة المساحة",
+      "en": "512GB or 1TB NVMe SSD, plus a microSD card slot for more space",
+      "ckb": "بیرگەی 512GB یان 1TB ـی NVMe، لەگەڵ شوێنی کارتی microSD بۆ شوێنی زیاتر"
+    },
+    {
+      "ar": "نسخة 1TB تضيف زجاجاً مضاداً للانعكاس وحقيبة بغطاء داخلي قابل للإزالة",
+      "en": "The 1TB model adds anti-glare etched glass and a case with a removable liner",
+      "ckb": "مۆدێلی 1TB شووشەی دژە-ڕەنگدانەوە و جانتایەک بە ناوپۆشی لابراو زیاد دەکات"
+    },
+    {
+      "ar": "أدوات تحكم كاملة: عصاتان بحجم كامل ولوحتا لمس وحساس حركة (Gyro) وأربعة أزرار خلفية",
+      "en": "Full controls: two full-size sticks, two trackpads, gyro and four rear grip buttons",
+      "ckb": "کۆنترۆڵی تەواو: دوو جۆیستیکی قەبارە-تەواو، دوو تەختەی دەستلێدان، Gyro و چوار دوگمەی پشتەوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "معالج AMD مخصص بدقة 6nm: وحدة Zen 2 بأربع أنوية / 8 مسارات (2.4–3.5GHz) ورسوميات RDNA 2 بثماني وحدات CU بتردد 1.6GHz، باستهلاك 4–15W",
+        "en": "Custom 6 nm AMD APU: Zen 2 CPU, 4 cores / 8 threads (2.4–3.5GHz); RDNA 2 GPU, 8 CUs at 1.6GHz; 4–15W",
+        "ckb": "APU ـی تایبەتی AMD بە 6nm: CPU ـی Zen 2 بە 4 ناوک / 8 دەزوو (2.4–3.5GHz)؛ GPU ـی RDNA 2 بە 8 CU لە 1.6GHz؛ 4–15W"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB LPDDR5 بسرعة 6400 MT/s", "en": "16GB LPDDR5, 6400 MT/s", "ckb": "16GB LPDDR5، 6400 MT/s" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": { "ar": "512GB أو 1TB NVMe SSD", "en": "512GB or 1TB NVMe SSD", "ckb": "512GB یان 1TB NVMe SSD" }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": {
+        "ar": "منفذ microSD سريع (UHS-I) يدعم بطاقات SD وSDHC وSDXC",
+        "en": "High-speed microSD slot (UHS-I), supports SD, SDHC and SDXC",
+        "ckb": "شوێنی microSD ـی خێرا (UHS-I)، پشتگیری SD و SDHC و SDXC دەکات"
+      }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "7.4 بوصة HDR OLED تعمل باللمس، 1280×800، حتى 90Hz، سطوع 600 nit (SDR) و1000 nit كحد أقصى (HDR)، تغطية 110% من P3",
+        "en": "7.4-inch HDR OLED touchscreen, 1280×800, up to 90Hz, 600 nits SDR / 1,000 nits peak HDR, 110% P3",
+        "ckb": "شاشەی دەستلێدانی HDR OLED ـی 7.4 ئینچ، 1280×800، تا 90Hz، 600 nit (SDR) / تا 1000 nit (HDR)، 110% P3"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "50Wh، من 3 إلى 12 ساعة لعب حسب اللعبة والإعدادات",
+        "en": "50Wh, 3–12 hours of play depending on game and settings",
+        "ckb": "50Wh، 3–12 کاتژمێر یاری بەپێی یاری و ڕێکخستنەکان"
+      }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": {
+        "ar": "شاحن USB-C بقدرة 45W (PD 3.0) مع كابل بطول 2.5 متر",
+        "en": "45W USB-C power supply (PD 3.0) with a 2.5 m cable",
+        "ckb": "شەحنکەری USB-C ـی 45W (PD 3.0) لەگەڵ کێبڵی 2.5 مەتر"
+      }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": {
+        "ar": "SteamOS 3 مع وضع سطح المكتب KDE Plasma",
+        "en": "SteamOS 3, with a KDE Plasma desktop mode",
+        "ckb": "SteamOS 3، لەگەڵ دۆخی دێسکتۆپی KDE Plasma"
+      }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ USB-C واحد (USB 3 Gen 2 مع إخراج DisplayPort حتى 4K بتردد 120Hz أو 8K بتردد 60Hz)، مقبس سماعة 3.5mm، منفذ microSD",
+        "en": "1× USB-C (USB 3 Gen 2 with DisplayPort output up to 4K 120Hz or 8K 60Hz), 3.5mm headphone jack, microSD slot",
+        "ckb": "1× USB-C (USB 3 Gen 2 لەگەڵ دەرچوونی DisplayPort تا 4K 120Hz یان 8K 60Hz)، دەروازەی بیستۆکی 3.5mm، شوێنی microSD"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": { "ar": "Wi-Fi 6E (2×2) وBluetooth 5.3", "en": "Wi-Fi 6E (2×2) and Bluetooth 5.3", "ckb": "Wi-Fi 6E (2×2) و Bluetooth 5.3" }
+    },
+    {
+      "key": "controls",
+      "label": { "ar": "أدوات التحكم", "en": "Controls", "ckb": "کۆنترۆڵەکان" },
+      "value": {
+        "ar": "عصاتان بحجم كامل بحساسات لمس، لوحتا لمس مربعتان 32.5mm مع اهتزاز، حساس حركة بستة محاور، 4 أزرار خلفية قابلة للتخصيص",
+        "en": "Two full-size sticks with capacitive touch, two 32.5mm square trackpads with haptics, 6-axis gyro, 4 assignable grip buttons",
+        "ckb": "دوو جۆیستیکی قەبارە-تەواو بە هەستەوەری دەستلێدان، دوو تەختەی دەستلێدانی چوارگۆشەی 32.5mm بە لەرزینەوە، Gyro ـی 6 تەوەرە، 4 دوگمەی پشتەوەی دیاریکراو"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "298 × 117 × 49 ملم", "en": "298 × 117 × 49 mm", "ckb": "298 × 117 × 49 ملم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "حوالي 640 غرام", "en": "About 640 g", "ckb": "نزیکەی 640 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "واجهة Steam غير مترجمة إلى العربية حالياً، لذلك يعمل الجهاز بالإنجليزية أو بلغة أخرى مدعومة؛ أما الألعاب التي تدعم العربية فيمكن اختيار العربية لها من إعدادات اللعبة في Steam",
+        "en": "Steam's interface is not translated into Arabic yet, so the device runs in English or another supported language; games that include Arabic can be set to Arabic in that game's Steam settings",
+        "ckb": "ڕووکاری Steam هێشتا وەرنەگێڕدراوەتە سەر عەرەبی، بۆیە ئامێرەکە بە ئینگلیزی یان زمانێکی تری پشتگیریکراو کار دەکات؛ بەڵام ئەو یاریانەی عەرەبییان تێدایە دەتوانیت لە ڕێکخستنی یارییەکە لە Steam عەرەبییان بۆ هەڵبژێریت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Steam Deck OLED", "en": "Steam Deck OLED", "ckb": "ئامێری Steam Deck OLED" },
+    { "ar": "شاحن 45W مع كابل بطول 2.5 متر", "en": "45W power supply with 2.5 m cable", "ckb": "شەحنکەری 45W لەگەڵ کێبڵی 2.5 مەتر" },
+    {
+      "ar": "حقيبة حمل (نسخة 1TB: حقيبة بغطاء داخلي قابل للإزالة)",
+      "en": "Carrying case (1TB model: case with a removable liner)",
+      "ckb": "جانتای هەڵگرتن (مۆدێلی 1TB: جانتا بە ناوپۆشی لابراو)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SD-OLED-512",
+      "title": { "ar": "Steam Deck OLED 512GB", "en": "Steam Deck OLED 512GB", "ckb": "Steam Deck OLED 512GB" },
+      "options": { "storage": "512GB" },
+      "isDefault": true,
+      "images": ["steam-deck-oled--1", "steam-deck-oled--2", "steam-deck-oled--3", "steam-deck-oled--4"]
+    },
+    {
+      "sku": "SD-OLED-1TB",
+      "title": { "ar": "Steam Deck OLED 1TB", "en": "Steam Deck OLED 1TB", "ckb": "Steam Deck OLED 1TB" },
+      "options": { "storage": "1TB" },
+      "isDefault": false,
+      "images": ["steam-deck-oled--1", "steam-deck-oled--2", "steam-deck-oled--3", "steam-deck-oled--4"],
+      "notes": {
+        "ar": "يضيف زجاجاً محفوراً مضاداً للانعكاس، وحقيبة بغطاء داخلي قابل للإزالة، وفيديو إقلاع وثيم لوحة مفاتيح حصريين.",
+        "en": "Adds premium anti-glare etched glass, a carrying case with a removable liner, and an exclusive startup movie and keyboard theme.",
+        "ckb": "شووشەی هەڵکۆڵراوی دژە-ڕەنگدانەوە، جانتایەک بە ناوپۆشی لابراو، و ڤیدیۆی دەستپێکردن و ڕووکاری کیبۆردی تایبەت زیاد دەکات."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "steam-deck-lcd", "kind": "alternative" },
+    { "slug": "rog-xbox-ally", "kind": "alternative" },
+    { "slug": "lenovo-legion-go-s", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "steam-deck-oled--1",
+      "file": ".cache/product-images/steam-deck-oled/1.png",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/press_oled_front_english.png",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "hero",
+      "alt": {
+        "ar": "Steam Deck OLED من الأمام مع واجهة Steam على الشاشة",
+        "en": "Steam Deck OLED from the front with the Steam interface on screen",
+        "ckb": "Steam Deck OLED لە پێشەوە لەگەڵ ڕووکاری Steam لەسەر شاشە"
+      },
+      "credit": "Valve",
+      "width": 2500,
+      "height": 980,
+      "transparent": true
+    },
+    {
+      "key": "steam-deck-oled--2",
+      "file": ".cache/product-images/steam-deck-oled/2.png",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/press_oled_abxy.png",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "detail",
+      "alt": {
+        "ar": "لقطة قريبة لأزرار ABXY والعصا اليمنى في Steam Deck OLED",
+        "en": "Close-up of the ABXY buttons and right stick on Steam Deck OLED",
+        "ckb": "وێنەی نزیکی دوگمەکانی ABXY و جۆیستیکی ڕاست لە Steam Deck OLED"
+      },
+      "credit": "Valve",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "steam-deck-oled--3",
+      "file": ".cache/product-images/steam-deck-oled/3.jpg",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/press_oled_top.jpg",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "angle",
+      "alt": {
+        "ar": "الحافة العلوية لجهاز Steam Deck OLED مع منفذ USB-C ومقبس السماعة",
+        "en": "Top edge of Steam Deck OLED with the USB-C port and headphone jack",
+        "ckb": "لێواری سەرەوەی Steam Deck OLED لەگەڵ دەروازەی USB-C و دەروازەی بیستۆک"
+      },
+      "credit": "Valve",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "steam-deck-oled--4",
+      "file": ".cache/product-images/steam-deck-oled/4.jpg",
+      "sourceUrl": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/press_oled_bumper.jpg",
+      "sourcePage": "https://www.steamdeck.com/en/press",
+      "kind": "detail",
+      "alt": {
+        "ar": "زر التشغيل والكتف العلوي في Steam Deck OLED عن قرب",
+        "en": "Close-up of the power button and top bumper on Steam Deck OLED",
+        "ckb": "وێنەی نزیکی دوگمەی هەڵکردن و بەمپەری سەرەوە لە Steam Deck OLED"
+      },
+      "credit": "Valve",
+      "width": 4224,
+      "height": 2376,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.steamdeck.com/en/tech/oled",
+      "title": "Steam Deck :: Tech Specs (OLED)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "processor, memory, storage, microSD, display, battery, charger, ports, wireless, controls, size, weight, OS"
+    },
+    {
+      "url": "https://www.steamdeck.com/en/oled",
+      "title": "Introducing Steam Deck OLED",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "model comparison, in the box (charger, cable length, carrying case), 1TB extras (etched glass, case liner, startup movie, keyboard theme)"
+    },
+    {
+      "url": "https://store.steampowered.com/steamdeck",
+      "title": "Steam Deck (Steam store)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "second official confirmation of the tech specs, weight and both models' box contents; current line-up is the 512GB and 1TB OLED models; sales regions (Komodo for Japan, South Korea, Taiwan, Hong Kong); not purchasable from Iraq; Valve Certified Refurbished units"
+    },
+    {
+      "url": "https://partner.steamgames.com/doc/store/localization/languages",
+      "title": "Languages Supported on Steam (Steamworks Documentation)",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "the Steam interface is not translated into Arabic and cannot be run in Arabic; Arabic can be chosen per game for games that include it"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services (including Cloud Gaming) are supported"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Steam_Deck",
+      "title": "Steam Deck",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 16 November 2023, specs confirmation, sales regions, 2026 stock shortage"
+    },
+    {
+      "url": "https://me.ign.com/ar/steam-deck/191874/shrk-valve-tln-n-rf-sr-jhz-steam-deck",
+      "title": "شركة Valve تعلن عن رفع سعر جهاز Steam Deck",
+      "publisher": "IGN Middle East",
+      "retrieved": "2026-11-11",
+      "supports": "OLED models back in stock on 27 May 2026 (status today)"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/edge/xbox-cloud-gaming-in-microsoft-edge-with-steam-deck",
+      "title": "Xbox Cloud Gaming in Microsoft Edge with Steam Deck",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Xbox Cloud Gaming only through a community Edge package that Microsoft does not officially support on SteamOS"
+    },
+    {
+      "url": "https://www.steamdeck.com/en/press",
+      "title": "Steam Deck :: Press Kit",
+      "publisher": "Valve",
+      "retrieved": "2026-11-11",
+      "supports": "official product images"
+    }
+  ],
+  "notes": {
+    "ar": "لا تبيع Valve جهاز Steam Deck مباشرة في العراق؛ الأجهزة هنا مستوردة. تحتاج حساب Steam واتصالاً بالإنترنت لشراء الألعاب وتنزيلها. خدمة Xbox Cloud Gaming غير مقدمة رسمياً في العراق، وعلى SteamOS لا تعمل إلا عبر حزمة متصفح Edge يصنعها مجتمع المستخدمين ولا تدعمها Microsoft رسمياً.",
+    "en": "Valve does not sell Steam Deck directly in Iraq; units here are imported. You need a Steam account and an internet connection to buy and download games. Xbox Cloud Gaming is not officially offered in Iraq, and on SteamOS it only runs through a community-made Edge browser package that Microsoft does not officially support.",
+    "ckb": "Valve ئامێری Steam Deck ڕاستەوخۆ لە عێراق نافرۆشێت؛ ئامێرەکان لێرە هاوردەن. بۆ کڕین و داگرتنی یارییەکان پێویستت بە هەژماری Steam و پەیوەندیی ئینتەرنێت هەیە. خزمەتگوزاریی Xbox Cloud Gaming بە فەرمی لە عێراق پێشکەش ناکرێت، و لەسەر SteamOS تەنها لە ڕێگەی پاکێجێکی وێبگەڕی Edge کار دەکات کە بەکارهێنەران دروستیان کردووە و Microsoft بە فەرمی پشتگیری ناکات."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Valve does not publish model numbers or barcodes for the retail units",
+      "Warranty handling for units imported into Iraq is not covered by any Valve page"
+    ]
+  }
+}

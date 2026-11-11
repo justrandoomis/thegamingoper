@@ -1,0 +1,57 @@
+{
+  "key": "sandisk-optimus-gx-c50-expansion-card--1",
+  "view": "hero",
+  "width": 1002,
+  "height": 1600,
+  "aspect": 0.6262,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-240.26a3f5c5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-480.85f6acf7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-720.4ede87d6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-960.7a476929.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-240.23f3d5b7.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-480.be800f5e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-720.4883e10c.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-960.8e0e5569.webp"
+      }
+    ],
+    "png": "/products/sandisk-optimus-gx-c50-expansion-card/1-720.428652bf.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSEkAAAARR6CobRs4WBJ9XdtgLCIC1UvHA9PYtqO8LAVERqeCuFhkJBKNogCGSwm/cHYaiOj/BOi4AjSNZmb9lel/ww50paWUOUsrbFGnAFZQOCBIAAAAkAMAnQEqDQAUAC7RiMRiJCwsLAwA0Es4AAXazfdbgXSdFdPKAAD+7JzGXi4aN7sp1E36Yc1/C3VTA0jPQ8z+zdD25026gAAA",
+  "dominant": "#262626",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "SanDisk",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-front-nocapacity.png",
+    "page": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox"
+  },
+  "input": "040acb09ff770c83"
+}

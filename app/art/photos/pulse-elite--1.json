@@ -1,0 +1,49 @@
+{
+  "key": "pulse-elite--1",
+  "view": "hero",
+  "width": 821,
+  "height": 1063,
+  "aspect": 0.7723,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pulse-elite/1-240.be723f2e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-elite/1-480.3e970cd3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-elite/1-720.4de5db79.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pulse-elite/1-240.94e41036.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pulse-elite/1-480.7d2fb10b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pulse-elite/1-720.a75d9090.webp"
+      }
+    ],
+    "png": "/products/pulse-elite/1-720.721451bd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRj4BAABXRUJQVlA4WAoAAAAQAAAADgAAEwAAQUxQSH0AAAART6CojRQ4ti5O+EFEBKbvHrlwYtvWspxfBoBL+yaBNZdI+xfNrTlkl+rc8f4/jCGi/xPAv0fP9hU1afvut4gs4K2bbDBSxldUwciCjpyQbzaFpwW7gqkuXNiln5omYZaX5MFLkrZWUYFWJ2BKK8DBfCXloSspY4EZbpr8DQBWUDggmgAAAFAEAJ0BKg8AFAA/EXKwUCwmpKKwCAGAIgllAMTZp7Odea6LyxP5+/HFcwAA/tmZy5rCfjALGZ+WO1l9YHLqRZf3WsGJrTi1V/xqyDiGsGXf1BFPFP95CXETdjFOmMs4WaLPVsuKYDdfK5Bj34tDZcmaFH/m2V1ttIHJnwJDenXiyGeNl2fihvlaVUWnho0lgD7wgJ4EVjvi+AA=",
+  "dominant": "#191c23",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-White-01-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/"
+  },
+  "input": "9c4dcaa76022a668"
+}

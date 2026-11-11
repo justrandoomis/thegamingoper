@@ -1,0 +1,319 @@
+{
+  "slug": "sandisk-optimus-gx-pro-850p",
+  "group": "accessories-storage-digital",
+  "kind": "storage",
+  "platform": "playstation",
+  "brand": "SanDisk",
+  "status": "available",
+  "releaseDate": "2026-06-16",
+  "name": {
+    "ar": "SANDISK Optimus GX PRO 850P NVMe SSD لأجهزة PS5",
+    "en": "SANDISK Optimus GX PRO 850P NVMe SSD for PS5",
+    "ckb": "SANDISK Optimus GX PRO 850P NVMe SSD بۆ PS5"
+  },
+  "short": {
+    "ar": "من 1TB إلى 8TB · قراءة حتى 7,300MB/s · مرخّص لـ PS5 وPS5 Pro",
+    "en": "1TB to 8TB · up to 7,300MB/s read · licensed for PS5 and PS5 Pro",
+    "ckb": "لە 1TB تا 8TB · خوێندنەوە تا 7,300MB/s · مۆڵەتدراو بۆ PS5 و PS5 Pro"
+  },
+  "description": {
+    "ar": "قرص SSD المرخّص رسمياً من SanDisk لجهازي PS5 وPS5 Pro: قرص PCIe 4.0 NVMe بمشتت حراري مصمم لمنفذ M.2 في الجهاز ويحمل شعار PlayStation، فلا حاجة لشراء مشتت منفصل. تصل سرعة القراءة إلى 7,300 ميغابايت/ثانية ويتوفر بسعات 1TB و2TB و4TB و8TB، وتقدّر SanDisk أن سعة 8TB تتسع لنحو 200 لعبة. هو خليفة WD_BLACK SN850P بالاسم الجديد، ويُباع أيضاً في متجر PlayStation Direct.",
+    "en": "SanDisk's officially licensed SSD for PS5 and PS5 Pro: a PCIe 4.0 NVMe drive with a heatsink shaped for the console's M.2 slot and the PlayStation logo on top, so no separate heatsink is needed. It reads at up to 7,300MB/s and comes in 1TB, 2TB, 4TB and 8TB, with SanDisk estimating about 200 games on the 8TB. It is the WD_BLACK SN850P under its new name and is also sold by PlayStation Direct.",
+    "ckb": "SSDی مۆڵەتدراوی فەرمیی SanDisk بۆ PS5 و PS5 Pro: SSDیەکی PCIe 4.0 NVMe لەگەڵ ساردکەرەوەیەک کە بۆ شوێنی M.2ی کۆنسۆڵەکە دیزاین کراوە و هێمای PlayStationی لەسەرە، بۆیە پێویست بە کڕینی ساردکەرەوەی جیا ناکات. خێرایی خوێندنەوەی دەگاتە 7,300 مێگابایت/چرکە و بە قەبارەکانی 1TB و 2TB و 4TB و 8TB هەیە، و SanDisk خەمڵاندوویەتی کە 8TB نزیکەی 200 یاری تێدا جێدەبێتەوە. ئەمە هەمان WD_BLACK SN850P ە بە ناوە نوێیەکەی و لە PlayStation Directیش دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "مرخّص رسمياً لـ PS5 وPS5 Pro",
+      "en": "Officially licensed for PS5 and PS5 Pro",
+      "ckb": "مۆڵەتی فەرمیی هەیە بۆ PS5 و PS5 Pro"
+    },
+    {
+      "ar": "مشتت حراري مدمج بشعار PlayStation مصمم لمنفذ M.2 في PS5",
+      "en": "Built-in heatsink with the PlayStation logo, shaped for the PS5 M.2 slot",
+      "ckb": "ساردکەرەوەی ناوەکی بە هێمای PlayStation، بۆ شوێنی M.2ی PS5 دیزاین کراوە"
+    },
+    {
+      "ar": "قراءة حتى 7,300MB/s وكتابة حتى 6,600MB/s (PCIe 4.0)",
+      "en": "Reads up to 7,300MB/s, writes up to 6,600MB/s (PCIe 4.0)",
+      "ckb": "خوێندنەوە تا 7,300MB/s و نووسین تا 6,600MB/s (PCIe 4.0)"
+    },
+    {
+      "ar": "تشغيل الألعاب مباشرة من القرص، حتى نحو 200 لعبة على 8TB (تقدير SanDisk بمعدل 36GB للعبة)",
+      "en": "Play games straight from the drive; about 200 games on the 8TB (SanDisk estimate at 36GB per game)",
+      "ckb": "یاریکردن ڕاستەوخۆ لەسەر SSDیەکە؛ نزیکەی 200 یاری لەسەر 8TB (خەمڵاندنی SanDisk بە 36GB بۆ هەر یارییەک)"
+    },
+    {
+      "ar": "ضمان محدود لمدة 5 سنوات",
+      "en": "5-year limited warranty",
+      "ckb": "گەرەنتیی سنووردار بۆ 5 ساڵ"
+    }
+  ],
+  "specs": [
+    {
+      "key": "interface",
+      "label": { "ar": "الواجهة", "en": "Interface", "ckb": "ڕووکاری پەیوەندی" },
+      "value": { "ar": "PCIe 4.0 x4 NVMe 1.4، حجم M.2 2280", "en": "PCIe 4.0 x4, NVMe 1.4, M.2 2280", "ckb": "PCIe 4.0 x4، NVMe 1.4، قەبارەی M.2 2280" }
+    },
+    {
+      "key": "read_speed",
+      "label": { "ar": "سرعة القراءة المتتالية", "en": "Sequential read", "ckb": "خێرایی خوێندنەوەی زنجیرەیی" },
+      "value": { "ar": "7,300MB/s (1TB حتى 4TB)، و7,200MB/s (8TB)", "en": "7,300MB/s (1TB to 4TB); 7,200MB/s (8TB)", "ckb": "7,300MB/s (1TB تا 4TB)؛ 7,200MB/s (8TB)" }
+    },
+    {
+      "key": "write_speed",
+      "label": { "ar": "سرعة الكتابة المتتالية", "en": "Sequential write", "ckb": "خێرایی نووسینی زنجیرەیی" },
+      "value": { "ar": "6,300MB/s (1TB)، و6,600MB/s (2TB حتى 8TB)", "en": "6,300MB/s (1TB); 6,600MB/s (2TB to 8TB)", "ckb": "6,300MB/s (1TB)؛ 6,600MB/s (2TB تا 8TB)" }
+    },
+    {
+      "key": "endurance",
+      "label": { "ar": "التحمّل (TBW)", "en": "Endurance (TBW)", "ckb": "بەرگەگرتن (TBW)" },
+      "value": { "ar": "600 / 1,200 / 2,400 / 4,800 تيرابايت مكتوبة (1TB / 2TB / 4TB / 8TB)", "en": "600 / 1,200 / 2,400 / 4,800 TB written (1TB / 2TB / 4TB / 8TB)", "ckb": "600 / 1,200 / 2,400 / 4,800 تێرابایت نووسین (1TB / 2TB / 4TB / 8TB)" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد مع المشتت", "en": "Size with heatsink", "ckb": "قەبارە لەگەڵ ساردکەرەوە" },
+      "value": { "ar": "1TB: 3.15 × 0.96 × 0.39 إنش؛ 8TB: 3.15 × 0.96 × 0.41 إنش", "en": "1TB: 3.15 × 0.96 × 0.39 in; 8TB: 3.15 × 0.96 × 0.41 in", "ckb": "1TB: 3.15 × 0.96 × 0.39 ئینج؛ 8TB: 3.15 × 0.96 × 0.41 ئینج" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "30.4 غرام", "en": "30.4 g", "ckb": "30.4 گرام" }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "نوع الذاكرة", "en": "Flash memory", "ckb": "جۆری بیرگە" },
+      "value": { "ar": "Sandisk TLC 3D NAND مع ذاكرة DRAM", "en": "Sandisk TLC 3D NAND with DRAM cache", "ckb": "Sandisk TLC 3D NAND لەگەڵ DRAM" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "ضمان محدود 5 سنوات", "en": "5-year limited warranty", "ckb": "گەرەنتیی سنووردار 5 ساڵ" }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Compatibility", "ckb": "گونجاندن" },
+      "value": { "ar": "PlayStation 5 وPlayStation 5 Pro، وأجهزة PC بنظام Windows 10 أو أحدث مع منفذ M.2 2280", "en": "PlayStation 5 and PlayStation 5 Pro; Windows 10+ PCs with an M.2 2280 slot", "ckb": "PlayStation 5 و PlayStation 5 Pro؛ کۆمپیوتەری Windows 10+ کە شوێنی M.2 2280ی هەبێت" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص SANDISK Optimus GX PRO 850P مع المشتت الحراري",
+      "en": "SANDISK Optimus GX PRO 850P SSD with heatsink fitted",
+      "ckb": "SSDی SANDISK Optimus GX PRO 850P لەگەڵ ساردکەرەوەکەی"
+    },
+    {
+      "ar": "دليل المستخدم",
+      "en": "User manual",
+      "ckb": "ڕێبەری بەکارهێنەر"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SANDISK-850P-1TB",
+      "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
+      "options": { "storage": "1TB" },
+      "modelNumber": "SDSG81100TAH-000E0",
+      "isDefault": true,
+      "images": ["sandisk-optimus-gx-pro-850p--1", "sandisk-optimus-gx-pro-850p--2", "sandisk-optimus-gx-pro-850p--3"]
+    },
+    {
+      "sku": "SANDISK-850P-2TB",
+      "title": { "ar": "2TB", "en": "2TB", "ckb": "2TB" },
+      "options": { "storage": "2TB" },
+      "modelNumber": "SDSG81200TAH-000E0",
+      "isDefault": false,
+      "images": ["sandisk-optimus-gx-pro-850p--1", "sandisk-optimus-gx-pro-850p--2", "sandisk-optimus-gx-pro-850p--3"]
+    },
+    {
+      "sku": "SANDISK-850P-4TB",
+      "title": { "ar": "4TB", "en": "4TB", "ckb": "4TB" },
+      "options": { "storage": "4TB" },
+      "modelNumber": "SDSG81400TAH-000E0",
+      "isDefault": false,
+      "images": ["sandisk-optimus-gx-pro-850p--1", "sandisk-optimus-gx-pro-850p--2", "sandisk-optimus-gx-pro-850p--3"]
+    },
+    {
+      "sku": "SANDISK-850P-8TB",
+      "title": { "ar": "8TB", "en": "8TB", "ckb": "8TB" },
+      "options": { "storage": "8TB" },
+      "modelNumber": "SDSG81800TAH-000E0",
+      "isDefault": false,
+      "images": ["sandisk-optimus-gx-pro-850p--1", "sandisk-optimus-gx-pro-850p--2", "sandisk-optimus-gx-pro-850p--3"],
+      "notes": {
+        "ar": "8TB هي أقصى سعة يدعمها PS5 لقرص M.2.",
+        "en": "8TB is the largest M.2 size the PS5 supports.",
+        "ckb": "8TB گەورەترین قەبارەی M.2یە کە PS5 پشتگیری دەکات."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "مرخّص ومختبر لـ PS5. حدّث نظام الجهاز قبل التركيب، وسيُهيّأ القرص (تُمسح بياناته) عند أول استخدام.",
+        "en": "Licensed and tested for PS5. Update the console software first; the PS5 formats (erases) the drive on first use.",
+        "ckb": "بۆ PS5 مۆڵەتدراو و تاقیکراوەیە. پێشتر سیستەمی کۆنسۆڵ نوێ بکەرەوە؛ PS5 لە یەکەم بەکارهێناندا SSDیەکە فۆرمات دەکات (دەیسڕێتەوە)."
+      },
+      "source": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "note": {
+        "ar": "نفس منفذ M.2 الموجود في نسخة القرص.",
+        "en": "Same M.2 slot as the disc model.",
+        "ckb": "هەمان شوێنی M.2ی وەشانی دیسک."
+      },
+      "source": "https://direct.playstation.com/en-us/buy-accessories/1tb-sandisk-optimus-gx-pro-850p-nvme-ssd-for-ps5-consoles"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "مرخّص لأجهزة PS5 بما فيها الطراز النحيف.",
+        "en": "Licensed for PS5 consoles, including the slim model.",
+        "ckb": "بۆ کۆنسۆڵەکانی PS5 مۆڵەتدراوە، وەشانی Slimیش."
+      },
+      "source": "https://direct.playstation.com/en-us/buy-accessories/1tb-sandisk-optimus-gx-pro-850p-nvme-ssd-for-ps5-consoles"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "note": {
+        "ar": "نفس منفذ M.2 في PS5 Slim.",
+        "en": "Same M.2 slot as the PS5 Slim.",
+        "ckb": "هەمان شوێنی M.2ی PS5 Slim."
+      },
+      "source": "https://direct.playstation.com/en-us/buy-accessories/1tb-sandisk-optimus-gx-pro-850p-nvme-ssd-for-ps5-consoles"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": {
+        "ar": "مرخّص رسمياً لـ PS5 Pro.",
+        "en": "Officially licensed for PS5 Pro.",
+        "ckb": "مۆڵەتی فەرمیی هەیە بۆ PS5 Pro."
+      },
+      "source": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "Windows 10 أو أحدث مع منفذ M.2 2280 (M-key).",
+        "en": "Windows 10 or later with an M.2 2280 (M-key) slot.",
+        "ckb": "Windows 10 یان نوێتر لەگەڵ شوێنی M.2 2280 (M-key)."
+      },
+      "source": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
+    { "slug": "playstation-5-pro", "kind": "setup" },
+    { "slug": "wd-black-sn850x", "kind": "alternative" },
+    { "slug": "samsung-990-pro-heatsink", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "sandisk-optimus-gx-pro-850p--1",
+      "file": ".cache/product-images/sandisk-optimus-gx-pro-850p/1.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/optimus-gx-pro-850p-internal-nvme-ssd/gallery/optimus-gx-pro-850p-front.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd",
+      "kind": "hero",
+      "alt": {
+        "ar": "قرص SANDISK Optimus GX PRO 850P من الأعلى مع المشتت الحراري وشعار PlayStation",
+        "en": "SANDISK Optimus GX PRO 850P, top view, with heatsink and PlayStation logo",
+        "ckb": "SANDISK Optimus GX PRO 850P لە سەرەوە، لەگەڵ ساردکەرەوە و هێمای PlayStation"
+      },
+      "credit": "Sandisk / Sony Interactive Entertainment",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-optimus-gx-pro-850p--2",
+      "file": ".cache/product-images/sandisk-optimus-gx-pro-850p/2.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/optimus-gx-pro-850p-internal-nvme-ssd/gallery/optimus-gx-pro-850p-left.png",
+      "sourcePage": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd",
+      "kind": "angle",
+      "alt": {
+        "ar": "قرص SANDISK Optimus GX PRO 850P من زاوية مائلة",
+        "en": "SANDISK Optimus GX PRO 850P, angled view",
+        "ckb": "SANDISK Optimus GX PRO 850P لە گۆشەیەکی لارەوە"
+      },
+      "credit": "Sandisk / Sony Interactive Entertainment",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-optimus-gx-pro-850p--3",
+      "file": ".cache/product-images/sandisk-optimus-gx-pro-850p/3.jpg",
+      "sourceUrl": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/optimus-gx-pro-850p-internal-nvme-ssd/featured/optimus-gx-pro-850p-feature2.jpg",
+      "sourcePage": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd",
+      "kind": "detail",
+      "alt": {
+        "ar": "القرص مركّب في منفذ M.2 داخل جهاز PS5 بعد فتح الغطاء",
+        "en": "The drive fitted in the M.2 slot of a PS5 with the cover removed",
+        "ckb": "SSDیەکە لە شوێنی M.2ی ناو PS5 دانراوە دوای لابردنی سەرپۆشەکە"
+      },
+      "credit": "Sandisk",
+      "width": 1680,
+      "height": 1120,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd",
+      "title": "SANDISK Optimus GX PRO 850P NVMe SSD for PS5 consoles (1TB and 8TB pages)",
+      "publisher": "Sandisk",
+      "retrieved": "2026-11-11",
+      "supports": "official PS5/PS5 Pro licence, capacities, model numbers, speeds, endurance, size, weight, warranty, 200-game estimate, in the box, compatibility, images"
+    },
+    {
+      "url": "https://direct.playstation.com/en-us/buy-accessories/1tb-sandisk-optimus-gx-pro-850p-nvme-ssd-for-ps5-consoles",
+      "title": "1TB SANDISK Optimus GX PRO 850P NVMe SSD for PS5 consoles",
+      "publisher": "PlayStation Direct (Sony Interactive Entertainment)",
+      "retrieved": "2026-11-11",
+      "supports": "sold by Sony as the officially licensed SSD for PS5 and PS5 Pro, box contents (drive and user manual), play directly from the drive"
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/ssds/sandisk-optimus-gx-pro-850p-2tb-ssd-review",
+      "title": "Sandisk Optimus GX Pro 850P 2TB SSD review",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of specs per capacity, NVMe 1.4, DRAM and TLC flash, heights with heatsink, same drive as the WD_BLACK SN850P"
+    },
+    {
+      "url": "https://www.storagereview.com/news/sandisk-expands-optimus-ssd-lineup-with-new-ps5-and-rog-xbox-ally-storage-options",
+      "title": "Sandisk Expands Optimus SSD Lineup with New PS5 and ROG Xbox Ally Storage Options",
+      "publisher": "StorageReview",
+      "retrieved": "2026-11-11",
+      "supports": "launch in June 2026, available through the Sandisk store and retailers"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/",
+      "title": "How to add an M.2 SSD to a PS5 console",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "PS5 M.2 limits (up to 8TB), formatting on first use, update system software first"
+    }
+  ],
+  "notes": {
+    "ar": "حدّث برنامج نظام PS5 قبل التركيب، وتحتاج إلى مفك براغي فيليبس رقم 1. عند أول استخدام يقوم PS5 بتهيئة القرص بالكامل. لا تضف مشتتاً حرارياً آخر لأن القرص يأتي بمشتته الخاص.",
+    "en": "Update the PS5 system software before installing; you need a #1 Phillips screwdriver. On first use the PS5 formats the whole drive. Do not add another heatsink, as the drive already has its own.",
+    "ckb": "پێش دانان سیستەمی PS5 نوێ بکەرەوە؛ پێویستت بە دەرنەفیزی فیلیپسی ژمارە 1 هەیە. لە یەکەم بەکارهێناندا PS5 هەموو SSDیەکە فۆرمات دەکات. ساردکەرەوەیەکی تر زیاد مەکە، چونکە SSDیەکە ساردکەرەوەی خۆی هەیە."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "Exact first retail day (announced 16 June 2026 and reported on sale by 18 June 2026 in the US)",
+      "Size of the 2TB and 4TB models (SanDisk pages for 1TB and 8TB were read; Tom's Hardware gives heights of 9.89 mm for 1TB/2TB and 10.31 mm for 4TB/8TB)",
+      "Regional availability outside the US"
+    ]
+  }
+}

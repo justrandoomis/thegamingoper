@@ -1,0 +1,65 @@
+{
+  "key": "marvels-wolverine--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/marvels-wolverine/2-240.3ae7868e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-wolverine/2-480.90a908ee.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-wolverine/2-720.334131cd.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-wolverine/2-960.0efb03b5.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-wolverine/2-1440.8dbb72cc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/marvels-wolverine/2-240.8b184c58.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-wolverine/2-480.ac513979.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-wolverine/2-720.25a92a4c.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-wolverine/2-960.3adbbbc5.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-wolverine/2-1440.be329661.webp"
+      }
+    ],
+    "png": "/products/marvels-wolverine/2-720.ecb25f3e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBYdgzp8J2KoD/9WiAAA/ep29QXZs8y4JetgG/8f1hSkiZ7/X/+h/gY0NUdlI+SzoxvlDtRjXtJuh489URMNM0AAAA==",
+  "dominant": "#291616",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment / Marvel",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/marvels-wolverine-sentinels-screenshot-08-en-15sept26?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/marvels-wolverine/"
+  },
+  "input": "5d51495631059d4b"
+}

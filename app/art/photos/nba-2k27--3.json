@@ -1,0 +1,65 @@
+{
+  "key": "nba-2k27--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/3-240.91bb3215.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/3-480.07eb1f29.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/3-720.a062608b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/3-960.2c364d76.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k27/3-1440.1cad4431.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k27/3-240.961416d6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k27/3-480.6dc71b45.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k27/3-720.fbb351e0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k27/3-960.177f54d2.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k27/3-1440.aec8ed63.webp"
+      }
+    ],
+    "png": "/products/nba-2k27/3-720.d601bc40.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZQAAQzbJ63/ZQpv8iAD+7qkOhTN6s3C/MXINvE1u0Ls4PKLTGGyK0PduNgicqehyMrWnzB4Xr9NgTPvmrr+irJDHGDp5hCMMSN07xgBFhHlQAAA=",
+  "dominant": "#050406",
+  "transparent": false,
+  "background": "#050407",
+  "kind": "screenshot",
+  "credit": "2K",
+  "source": {
+    "url": "https://assets.2k.com/1a6ngf98576c/6YOyJHATIayjycOxiAZUBd/848333ed043a0d054bb25c549dc3d3e3/N27-ALL-FIRST_LOOK_SCREEN_CAITLIN_CLARK-STATIC-ENUS-NO_RATING-1920x1080-FINAL__3_.jpg",
+    "page": "https://nba.2k.com/2k27/"
+  },
+  "input": "8f888791f44f7629"
+}

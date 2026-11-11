@@ -1,0 +1,271 @@
+{
+  "slug": "battlefield-6",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "multi",
+  "brand": "Electronic Arts",
+  "status": "available",
+  "releaseDate": "2025-10-10",
+  "name": { "ar": "Battlefield 6", "en": "Battlefield 6", "ckb": "Battlefield 6" },
+  "short": {
+    "ar": "PS5 · Xbox Series X · قرص · حتى 64 لاعباً أونلاين",
+    "en": "PS5 · Xbox Series X · disc · up to 64 players online",
+    "ckb": "PS5 · Xbox Series X · دیسک · تا 64 یاریزان ئۆنلاین"
+  },
+  "description": {
+    "ar": "لعبة تصويب عسكرية من Battlefield Studios وElectronic Arts صدرت في 10 تشرين الأول 2025. معاركها الكبيرة تجمع المشاة والدبابات والطائرات مع تدمير للمباني يغيّر ساحة القتال، وفيها حملة قصصية للاعب الواحد وطور Portal. مصممة لأجهزة الجيل الحالي فقط: PS5 وXbox Series X|S وPC.",
+    "en": "A military shooter from Battlefield Studios and Electronic Arts, released on 10 October 2025. Its large battles mix infantry, tanks and jets with building destruction that changes the battlefield, and it also has a single-player campaign and the Portal mode. It was made for current hardware only: PS5, Xbox Series X|S and PC.",
+    "ckb": "یارییەکی تەقەکردنی سەربازی لە Battlefield Studios و Electronic Arts، کە لە 10ی تشرینی یەکەمی 2025 دەرچوو. شەڕە گەورەکانی پیادە، تانک و فڕۆکە تێکەڵ دەکەن لەگەڵ ڕووخاندنی بیناکان کە مەیدانی جەنگ دەگۆڕێت، و حەملەیەکی چیرۆکی تاکەکەسی و شێوازی Portal یشی تێدایە. تەنها بۆ ئامێرەکانی ئەم نەوەیە دروستکراوە: PS5، Xbox Series X|S و PC."
+  },
+  "highlights": [
+    {
+      "ar": "معارك أونلاين حتى 64 لاعباً مع مركبات برية وجوية وبحرية.",
+      "en": "Online battles for up to 64 players with land, air and sea vehicles.",
+      "ckb": "شەڕی ئۆنلاین تا 64 یاریزان لەگەڵ ئامرازی وشکانی، ئاسمانی و دەریایی."
+    },
+    {
+      "ar": "حملة قصصية للاعب الواحد، وخريطة Siege of Cairo من بين خرائطها.",
+      "en": "Single-player campaign, and Siege of Cairo among its maps.",
+      "ckb": "حەملەی چیرۆکی تاکەکەسی، و نەخشەی Siege of Cairo لە نێو نەخشەکانیدایە."
+    },
+    {
+      "ar": "يحتاج اتصال إنترنت، واللعب الجماعي يحتاج PlayStation Plus أو اشتراك Game Pass.",
+      "en": "Needs an internet connection; multiplayer needs PlayStation Plus or a Game Pass subscription.",
+      "ckb": "پێویستی بە ئینتەرنێت هەیە؛ یاری بەکۆمەڵ پێویستی بە PlayStation Plus یان بەشداریکردنی Game Pass هەیە."
+    },
+    {
+      "ar": "نصوص عربية في القوائم والترجمة، بدون دبلجة عربية.",
+      "en": "Arabic text for menus and subtitles, no Arabic voice-over.",
+      "ckb": "دەقی عەرەبی بۆ مێنیو و ژێرنووس، بێ دەنگی عەرەبی."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro، والتصنيف PEGI 16.",
+      "en": "PS5 Pro Enhanced; rated PEGI 16.",
+      "ckb": "باشترکراو بۆ PS5 Pro؛ پۆلێنی PEGI 16."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "10 تشرين الأول 2025", "en": "10 October 2025", "ckb": "10ی تشرینی یەکەمی 2025" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 وXbox Series X|S وPC", "en": "PS5, Xbox Series X|S and PC", "ckb": "PS5، Xbox Series X|S و PC" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": {
+        "ar": "قرص Standard Edition لـ PS5 وXbox Series X",
+        "en": "Standard Edition disc for PS5 and Xbox Series X",
+        "ckb": "دیسکی Standard Edition بۆ PS5 و Xbox Series X"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "1 في الحملة، وحتى 64 أونلاين", "en": "1 in the campaign, up to 64 online", "ckb": "1 لە حەملەدا، تا 64 ئۆنلاین" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
+      "value": {
+        "ar": "اتصال الإنترنت مطلوب؛ PlayStation Plus على PS5 وGame Pass Essential أو أعلى على Xbox للعب الجماعي؛ حساب EA مطلوب",
+        "en": "Internet required; PlayStation Plus on PS5 and Game Pass Essential or higher on Xbox for multiplayer; EA account required",
+        "ckb": "ئینتەرنێت پێویستە؛ PlayStation Plus لەسەر PS5 و Game Pass Essential یان بەرزتر لەسەر Xbox بۆ یاری بەکۆمەڵ؛ هەژماری EA پێویستە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "نصوص فقط (قوائم وترجمة)", "en": "Text only (menus and subtitles)", "ckb": "تەنها دەق (مێنیو و ژێرنووس)" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 16 / ESRB M", "en": "PEGI 16 / ESRB M", "ckb": "PEGI 16 / ESRB M" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Battlefield Studios / Electronic Arts", "en": "Battlefield Studios / Electronic Arts", "ckb": "Battlefield Studios / Electronic Arts" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة الكاملة (Standard Edition)",
+      "en": "Full-game disc (Standard Edition)",
+      "ckb": "دیسکی یارییە تەواوەکە (Standard Edition)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "BF6-PS5-STD",
+      "title": { "ar": "Battlefield 6 لجهاز PS5 — Standard Edition", "en": "Battlefield 6 for PS5 — Standard Edition", "ckb": "Battlefield 6 بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["battlefield-6--1", "battlefield-6--2", "battlefield-6--3", "battlefield-6--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    },
+    {
+      "sku": "BF6-XSX-STD",
+      "title": { "ar": "Battlefield 6 لجهاز Xbox Series X — Standard Edition", "en": "Battlefield 6 for Xbox Series X — Standard Edition", "ckb": "Battlefield 6 بۆ Xbox Series X — Standard Edition" },
+      "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
+      "isDefault": false,
+      "images": ["battlefield-6--1", "battlefield-6--2", "battlefield-6--3"],
+      "notes": {
+        "ar": "قرص لا يعمل على Xbox Series S أو Xbox Series X Digital Edition.",
+        "en": "A disc, so it does not work on Xbox Series S or the Xbox Series X Digital Edition.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series S و Xbox Series X Digital Edition کار ناکات."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "genres": [
+      { "ar": "تصويب من منظور الشخص الأول", "en": "First-person shooter", "ckb": "تەقەکردن لە ڕوانگەی کەسی یەکەم" }
+    ],
+    "players": "1 campaign, up to 64 online",
+    "online": {
+      "ar": "يحتاج اتصال إنترنت وحساب EA؛ اللعب الجماعي يحتاج PlayStation Plus على PS5 أو اشتراك Game Pass Essential أو أعلى على Xbox.",
+      "en": "Needs an internet connection and an EA account; multiplayer needs PlayStation Plus on PS5 or Game Pass Essential or higher on Xbox.",
+      "ckb": "پێویستی بە ئینتەرنێت و هەژماری EA هەیە؛ یاری بەکۆمەڵ پێویستی بە PlayStation Plus لەسەر PS5 یان Game Pass Essential یان بەرزتر لەسەر Xbox هەیە."
+    },
+    "ageRating": { "pegi": 16, "esrb": "M" },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Battlefield Studios",
+    "publisher": "Electronic Arts"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.playstation.com/en-gb/games/battlefield-6/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.playstation.com/en-gb/games/battlefield-6/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "قرص Xbox Series X.", "en": "Xbox Series X disc.", "ckb": "دیسکی Xbox Series X." },
+      "source": "https://www.amazon.com/Battlefield-Standard-EN-FR-Xbox-x/dp/B0FJXZYXS4"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "لا يوجد قارئ أقراص؛ النسخة الرقمية فقط.", "en": "No disc drive; digital version only.", "ckb": "دیسک خوێنەری نییە؛ تەنها وەشانی دیجیتاڵ." },
+      "source": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3"
+    }
+  ],
+  "related": [
+    { "slug": "call-of-duty-modern-warfare-4", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "pulse-elite", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "battlefield-6--1",
+      "file": ".cache/product-images/battlefield-6/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.8290.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.d19697e7-b1c1-4200-9327-5f3640f65b75",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Battlefield 6", "en": "Battlefield 6 cover art", "ckb": "وێنەی بەرگی Battlefield 6" },
+      "credit": "Electronic Arts",
+      "width": 2160, "height": 2160, "transparent": false
+    },
+    {
+      "key": "battlefield-6--2",
+      "file": ".cache/product-images/battlefield-6/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/battlefield-6-alloutwarfare-screenshot-02-en-04jul25?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/battlefield-6/",
+      "kind": "screenshot",
+      "alt": { "ar": "جنود ومروحية ومدرعات في معركة جبلية", "en": "Soldiers, a helicopter and armoured vehicles in a mountain battle", "ckb": "سەرباز، هەلیکۆپتەر و زرێپۆش لە شەڕێکی شاخاویدا" },
+      "credit": "Electronic Arts",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "battlefield-6--3",
+      "file": ".cache/product-images/battlefield-6/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/battlefield-6-tacticaldestruction-screenshot-01-en-04jul25?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/battlefield-6/",
+      "kind": "screenshot",
+      "alt": { "ar": "جدار ينهار أثناء القتال", "en": "A wall collapsing during a firefight", "ckb": "دیوارێک لە کاتی شەڕدا دەڕووخێت" },
+      "credit": "Electronic Arts",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "battlefield-6--4",
+      "file": ".cache/product-images/battlefield-6/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/battlefield-6-siegeofcairo-map-screenshot-01-en-04jul25?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/battlefield-6/",
+      "kind": "screenshot",
+      "alt": { "ar": "خريطة Siege of Cairo", "en": "The Siege of Cairo map", "ckb": "نەخشەی Siege of Cairo" },
+      "credit": "Electronic Arts",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.playstation.com/en-gb/games/battlefield-6/", "title": "Battlefield 6 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS Plus required for online play, online play required, up to 64 online players, PS5 Pro Enhanced, editions incl. Game of the Year Edition, screenshots" },
+    { "url": "https://store.playstation.com/en-gb/product/UP0006-PPSA19534_00-SANTIAGOSTANDARD", "title": "Battlefield 6 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16, release date" },
+    { "url": "https://www.playstation.com/en-us/support/games/battlefield-6-support/", "title": "Battlefield 6 support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "language table: Arabic text (no Arabic voice), Standard and Phantom editions, PS Plus required online" },
+    { "url": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3", "title": "Battlefield 6 — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, online multiplayer 16–64, Arabic interface, online subscription required on console, cover art" },
+    { "url": "https://en.wikipedia.org/wiki/Battlefield_6", "title": "Battlefield 6", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Battlefield Studios, publisher EA, platforms PS5/Xbox Series X|S/Windows, release 10 Oct 2025, single-player and multiplayer" },
+    { "url": "https://www.gamespot.com/articles/battlefield-6-preorder-guide-ps5-xbox-physical-edition-retailer-bonuses/1100-6533616/", "title": "Battlefield 6 preorder guide", "publisher": "GameSpot", "retrieved": "2026-11-11", "supports": "standard physical edition for PS5 and Xbox Series X" },
+    { "url": "https://www.amazon.com/Battlefield-Standard-EN-FR-Xbox-x/dp/B0FJXZYXS4", "title": "Battlefield 6 Standard Edition (Xbox Series X)", "publisher": "Amazon US (publisher listing)", "retrieved": "2026-11-11", "supports": "Standard Edition disc for Xbox Series X contains the full game" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "صدرت Game of the Year Edition رقمياً في 13 تشرين الأول 2026 مع محتوى إضافي؛ القرص الفيزيائي هو Standard Edition. طور Battlefield REDSEC لعبة مجانية منفصلة.",
+    "en": "A Game of the Year Edition with extra content came out digitally on 13 October 2026; the physical disc is the Standard Edition. Battlefield REDSEC is a separate free-to-play game.",
+    "ckb": "Game of the Year Edition لەگەڵ ناوەڕۆکی زیادە لە 13ی تشرینی یەکەمی 2026 بە دیجیتاڵی دەرچوو؛ دیسکی فیزیکی Standard Edition ە. Battlefield REDSEC یارییەکی بێبەرامبەری جیاوازە."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support differs between official pages: PlayStation Support lists Arabic text, the Microsoft Store lists Arabic interface, and the UAE PlayStation Store lists no Arabic.",
+      "Install size not recorded: the Microsoft Store figure (about 197 GB) seems to cover the shared Battlefield package, not this game alone.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

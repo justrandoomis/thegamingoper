@@ -5,7 +5,7 @@ SQL migrations for the `DB` D1 database, applied in file-name order by wrangler:
 ```
 npm run db:migrate          apply to the local D1 (the one `npm run dev` uses)
 npm run db:migrate:remote   apply to the production D1 (owner only)
-npm run db:reset            local only: drop everything, migrate, seed reference (+ demo) data
+npm run db:reset            local only: drop everything, migrate, seed reference data, roles (+ demo) data
 ```
 
 | File | Written by | Contains |
@@ -57,6 +57,12 @@ Never edit a migration that has been applied to production — add a new one.
 - **`search_index` is a virtual table.** `wrangler d1 export` cannot export databases that contain
   one: drop it before an export and re-run `0002_search.sql` afterwards (it is derived data and can
   be rebuilt from products).
+- **`search_index` writes distort change counts in a batch.** D1 reports the rows FTS5 writes to its
+  shadow tables as changes (one insert ≈ 9–12), and FTS5 flushes its buffer when the NEXT write
+  statement starts, so those changes are also counted for whatever statement follows. Put
+  `searchIndexStatements(...)` last in a batch, never guard them (or the statement after them) with
+  `expectChanged()`, and count index rows with `SELECT count(*)` if you need the number (see
+  `Plan.measure` in `app/server/db/seed/demo.ts`).
 
 ## What the database enforces
 

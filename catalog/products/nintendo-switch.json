@@ -1,0 +1,290 @@
+{
+  "slug": "nintendo-switch",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch",
+  "family": "switch",
+  "status": "available",
+  "releaseDate": "2017-03-03",
+  "name": { "ar": "Nintendo Switch", "en": "Nintendo Switch", "ckb": "Nintendo Switch" },
+  "short": {
+    "ar": "32GB · شاشة 6.2 بوصة · تلفاز وطاولة ومحمول",
+    "en": "32GB · 6.2-inch screen · TV, tabletop and handheld",
+    "ckb": "32GB · شاشەی 6.2 ئینج · تەلەڤزیۆن، مێز و دەستی"
+  },
+  "description": {
+    "ar": "جهاز Nintendo Switch الأصلي بموديله الحالي HAC-001(-01): شاشة LCD قياس 6.2 بوصة، وتخزين 32GB، ويدا Joy-Con تنفصلان عن الجهاز، وقاعدة للعب على التلفاز حتى 1080p. يشغّل ألعاب Nintendo Switch فقط، فهو مناسب لمن لا يحتاج ألعاب Switch 2.",
+    "en": "The original Nintendo Switch in its current HAC-001(-01) version: a 6.2-inch LCD, 32GB of storage, detachable Joy-Con and a dock for TV play at up to 1080p. It runs Nintendo Switch games only, so it suits players who do not need Switch 2 games.",
+    "ckb": "Nintendo Switch ی یەکەم بە وەشانی ئێستای HAC-001(-01): شاشەی LCDی 6.2 ئینج، بیرگەی 32GB، Joy-Con ی جیاکراوە و دۆکێک بۆ یاری لەسەر تەلەڤزیۆن تا 1080p. تەنها یارییەکانی Nintendo Switch کار پێدەکات، بۆیە گونجاوە بۆ ئەوانەی پێویستیان بە یارییەکانی Switch 2 نییە."
+  },
+  "highlights": [
+    {
+      "ar": "ثلاثة أوضاع: تلفاز (حتى 1080p)، وطاولة، ومحمول (720p)",
+      "en": "Three modes: TV (up to 1080p), tabletop and handheld (720p)",
+      "ckb": "سێ دۆخ: تەلەڤزیۆن (تا 1080p)، سەر مێز و دەستی (720p)"
+    },
+    {
+      "ar": "تخزين 32GB، ويقبل بطاقات microSDHC وmicroSDXC حتى 2TB",
+      "en": "32GB storage; takes microSDHC/microSDXC cards up to 2TB",
+      "ckb": "بیرگەی 32GB؛ کارتی microSDHC/microSDXC تا 2TB وەردەگرێت"
+    },
+    {
+      "ar": "يشغّل ألعاب Nintendo Switch؛ ألعاب Nintendo Switch 2 الحصرية لا تعمل عليه",
+      "en": "Runs Nintendo Switch games; Nintendo Switch 2 exclusives do not run on it",
+      "ckb": "یارییەکانی Nintendo Switch کار پێدەکات؛ یارییە تایبەتەکانی Nintendo Switch 2 لەسەری کار ناکەن"
+    },
+    {
+      "ar": "بطارية الموديل HAC-001(-01) تدوم تقريبًا 4.5 إلى 9 ساعات",
+      "en": "HAC-001(-01) battery lasts about 4.5–9 hours",
+      "ckb": "پاتریی مۆدێلی HAC-001(-01) نزیکەی 4.5 تا 9 کاتژمێر دەمێنێت"
+    },
+    {
+      "ar": "اللعب عبر الإنترنت يتطلب اشتراك Nintendo Switch Online",
+      "en": "Online play needs a Nintendo Switch Online membership",
+      "ckb": "یاری ئۆنلاین پێویستی بە بەشداریی Nintendo Switch Online هەیە"
+    },
+    {
+      "ar": "واجهة الجهاز لا تدعم اللغة العربية (تدعم الإنجليزية والفرنسية والألمانية والإسبانية والروسية وغيرها)",
+      "en": "The system menus are not available in Arabic (English, French, German, Spanish, Russian and others are)",
+      "ckb": "ڕووکاری سیستەمەکە زمانی عەرەبی تێدا نییە (ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ڕووسی و هیتر هەن)"
+    }
+  ],
+  "specs": [
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": { "ar": "LCD لمسية 6.2 بوصة، 1280×720", "en": "6.2-inch LCD touchscreen, 1280×720", "ckb": "LCDی دەستلێدانی 6.2 ئینج، 1280×720" }
+    },
+    {
+      "key": "processor",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": { "ar": "معالج NVIDIA Tegra مخصص", "en": "NVIDIA custom Tegra processor", "ckb": "پرۆسێسەری تایبەتی NVIDIA Tegra" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگە" },
+      "value": { "ar": "32GB (جزء منها للنظام)، وبطاقات microSD حتى 2TB", "en": "32GB (part reserved for the system); microSD up to 2TB", "ckb": "32GB (بەشێکی بۆ سیستەمە)؛ microSD تا 2TB" }
+    },
+    {
+      "key": "tv_output",
+      "label": { "ar": "الإخراج على التلفاز", "en": "TV output", "ckb": "پیشاندان لەسەر تەلەڤزیۆن" },
+      "value": { "ar": "حتى 1080p عبر HDMI في وضع التلفاز", "en": "Up to 1080p over HDMI in TV mode", "ckb": "تا 1080p بە HDMI لە دۆخی تەلەڤزیۆن" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "Wi-Fi (802.11ac) وBluetooth 4.1؛ الإنترنت السلكي يحتاج محول LAN يباع منفصلًا", "en": "Wi-Fi (802.11ac), Bluetooth 4.1; wired internet needs a LAN adapter (sold separately)", "ckb": "Wi-Fi (802.11ac)، Bluetooth 4.1؛ ئینتەرنێتی وایەردار ئەداپتەری LAN ی دەوێت (جیا دەفرۆشرێت)" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "4310mAh، نحو 4.5–9 ساعات، والشحن نحو 3 ساعات", "en": "4310 mAh; about 4.5–9 hours; about 3 hours to charge", "ckb": "4310mAh؛ نزیکەی 4.5–9 کاتژمێر؛ بارگاویکردن نزیکەی 3 کاتژمێر" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Size", "ckb": "قەبارە" },
+      "value": { "ar": "102 × 239 × 13.9 مم مع يدي Joy-Con", "en": "102 × 239 × 13.9 mm with Joy-Con attached", "ckb": "102 × 239 × 13.9 ملم لەگەڵ Joy-Con" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "نحو 297 غرامًا، ونحو 398 غرامًا مع يدي Joy-Con", "en": "About 297 g; about 398 g with Joy-Con", "ckb": "نزیکەی 297 گرام؛ نزیکەی 398 گرام لەگەڵ Joy-Con" }
+    },
+    {
+      "key": "system_languages",
+      "label": { "ar": "لغات الواجهة", "en": "System languages", "ckb": "زمانەکانی سیستەم" },
+      "value": {
+        "ar": "الإنجليزية، الفرنسية، الألمانية، الإسبانية، الإيطالية، الهولندية، البرتغالية، الروسية، اليابانية، الصينية (المبسطة والتقليدية)، الكورية — بدون العربية",
+        "en": "English, French, German, Spanish, Italian, Dutch, Portuguese, Russian, Japanese, Chinese (simplified and traditional), Korean — no Arabic",
+        "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ئیتاڵی، هۆڵەندی، پورتوگالی، ڕووسی، یابانی، چینی (سادەکراو و نەریتی)، کۆری — بێ عەرەبی"
+      }
+    },
+    {
+      "key": "model_number",
+      "label": { "ar": "رقم الموديل", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "HAC-001(-01)", "en": "HAC-001(-01)", "ckb": "HAC-001(-01)" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch", "en": "Nintendo Switch console", "ckb": "کۆنسۆڵی Nintendo Switch" },
+    { "ar": "قاعدة Nintendo Switch Dock", "en": "Nintendo Switch Dock", "ckb": "دۆکی Nintendo Switch" },
+    { "ar": "يدا Joy-Con (L) و(R)", "en": "Joy-Con (L) and (R)", "ckb": "Joy-Con (L) و (R)" },
+    { "ar": "حزاما معصم Joy-Con", "en": "Joy-Con wrist straps", "ckb": "قایشی مەچەکی Joy-Con" },
+    { "ar": "مقبض Joy-Con Grip", "en": "Joy-Con Grip", "ckb": "دەسگرەی Joy-Con Grip" },
+    { "ar": "كابل HDMI عالي السرعة", "en": "High Speed HDMI cable", "ckb": "کێبڵی HDMIی خێرا" },
+    { "ar": "محول الطاقة Nintendo Switch AC Adapter", "en": "Nintendo Switch AC Adapter", "ckb": "ئەداپتەری کارەبای Nintendo Switch" }
+  ],
+  "variants": [
+    {
+      "sku": "NSW-NEON",
+      "title": { "ar": "Nintendo Switch — يدا Joy-Con أزرق نيون / أحمر نيون", "en": "Nintendo Switch — Neon Blue / Neon Red Joy-Con", "ckb": "Nintendo Switch — Joy-Con ی شینی نیۆن / سووری نیۆن" },
+      "options": { "edition": "Standard", "storage": "32GB", "color": "Neon Blue / Neon Red" },
+      "modelNumber": "HAC-001(-01)",
+      "barcodes": ["0045496883775"],
+      "isDefault": true,
+      "images": ["nintendo-switch--1", "nintendo-switch--2", "nintendo-switch--3", "nintendo-switch--4"],
+      "notes": { "ar": "الباركود هو رمز UPC الأمريكي.", "en": "Barcode is the US UPC.", "ckb": "بارکۆدەکە UPCی ئەمریکییە." }
+    },
+    {
+      "sku": "NSW-GRAY",
+      "title": { "ar": "Nintendo Switch — يدا Joy-Con رمادي", "en": "Nintendo Switch — Gray Joy-Con", "ckb": "Nintendo Switch — Joy-Con ی خۆڵەمێشی" },
+      "options": { "edition": "Standard", "storage": "32GB", "color": "Gray" },
+      "modelNumber": "HAC-001(-01)",
+      "barcodes": ["0045496882167"],
+      "isDefault": false,
+      "images": ["nintendo-switch--5", "nintendo-switch--6"],
+      "notes": {
+        "ar": "الباركود هو رمز UPC الأمريكي. متجر Nintendo الأمريكي يعرض هذا اللون على أنه نفد نهائيًا (11 نوفمبر 2026).",
+        "en": "Barcode is the US UPC. Nintendo's US store lists this colour as permanently sold out (11 November 2026).",
+        "ckb": "بارکۆدەکە UPCی ئەمریکییە. فرۆشگای ئەمریکی Nintendo ئەم ڕەنگە وەک بەتەواوی نەماو پیشان دەدات (11ی تشرینی دووەمی 2026)."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "upsell" },
+    { "slug": "nintendo-switch-oled", "kind": "alternative" },
+    { "slug": "nintendo-switch-lite", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch--1",
+      "file": ".cache/product-images/nintendo-switch/1.png",
+      "sourceUrl": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotHandheldMode_NOE",
+      "sourcePage": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739",
+      "kind": "hero",
+      "alt": { "ar": "جهاز Nintendo Switch مع يدي Joy-Con باللونين الأزرق النيون والأحمر النيون", "en": "Nintendo Switch with Neon Blue and Neon Red Joy-Con", "ckb": "Nintendo Switch لەگەڵ Joy-Con ی شینی نیۆن و سووری نیۆن" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch--2",
+      "file": ".cache/product-images/nintendo-switch/2.png",
+      "sourceUrl": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotTabletopMode_NOE",
+      "sourcePage": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739",
+      "kind": "angle",
+      "alt": { "ar": "وضع الطاولة ويدا Joy-Con النيون مفصولتان", "en": "Tabletop mode with the Neon Joy-Con detached", "ckb": "دۆخی سەر مێز و Joy-Con ی نیۆن جیاکراوە" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch--3",
+      "file": ".cache/product-images/nintendo-switch/3.png",
+      "sourceUrl": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotTVMode_NOE",
+      "sourcePage": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739",
+      "kind": "angle",
+      "alt": { "ar": "وضع التلفاز: الجهاز في القاعدة ويدا Joy-Con النيون على المقبض", "en": "TV mode: the console in its dock with the Neon Joy-Con on the grip", "ckb": "دۆخی تەلەڤزیۆن: کۆنسۆڵەکە لە دۆکدا و Joy-Con ی نیۆن لەسەر دەسگرە" },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch--4",
+      "file": ".cache/product-images/nintendo-switch/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Hardware/nintendo-switch-neon-blue-neon-red-joy-con-117972/117972-nintendo-switch-neon-blue-neon-red-package-front-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-neon-blue-neon-red-joy-con-117972/",
+      "kind": "in-box",
+      "alt": { "ar": "علبة Nintendo Switch بيدي Joy-Con نيون", "en": "Nintendo Switch box with Neon Joy-Con", "ckb": "قوتووی Nintendo Switch بە Joy-Con ی نیۆن" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch--5",
+      "file": ".cache/product-images/nintendo-switch/5.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-gray/110477-nintendo-switch-gray-gray-front-screen-on-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-gray-gray-joy-con/",
+      "kind": "angle",
+      "alt": { "ar": "Nintendo Switch من الأمام مع يدي Joy-Con رماديتين", "en": "Nintendo Switch from the front with Gray Joy-Con", "ckb": "Nintendo Switch لە پێشەوە لەگەڵ Joy-Con ی خۆڵەمێشی" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch--6",
+      "file": ".cache/product-images/nintendo-switch/6.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-gray/110477-nintendo-switch-gray-gray-console-docked-joy-con-grip-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-gray-gray-joy-con/",
+      "kind": "in-box",
+      "alt": { "ar": "الجهاز الرمادي في القاعدة مع يدي Joy-Con على المقبض", "en": "Gray version in the dock with the Joy-Con on the grip", "ckb": "وەشانی خۆڵەمێشی لە دۆکدا لەگەڵ Joy-Con لەسەر دەسگرە" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch/tech-specs/",
+      "title": "Technical Specs - Nintendo Switch",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "HAC-001(-01) screen, processor, storage, video output, wireless, LAN adapter note, battery, charging time"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-neon-blue-neon-red-joy-con-117972/",
+      "title": "Nintendo Switch – Neon Blue + Neon Red Joy-Con",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "in the box, UPC of the Neon version, on sale today, box image"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-gray-gray-joy-con/",
+      "title": "Nintendo Switch - Gray + Gray Joy-Con",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "Gray version UPC, listed as permanently sold out, Gray images"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739",
+      "title": "Nintendo Switch with Neon Blue / Neon Red Joy-Con Controllers - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "second official confirmation of the box contents and 32GB storage, console languages (no Arabic), release 3 March 2017, on sale today, Neon product images"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22355/~/how-to-change-the-system-language-on-nintendo-switch",
+      "title": "How to Change the System Language on Nintendo Switch",
+      "publisher": "Nintendo of America Support",
+      "retrieved": "2026-11-11",
+      "supports": "full list of system languages for Nintendo Switch, Switch Lite and Switch – OLED Model (no Arabic)"
+    },
+    {
+      "url": "https://www.nintendo.com/ph/hardware/switch/modal/specs/body.html?width=960",
+      "title": "Nintendo Switch console [HAC-001(-01)] specifications",
+      "publisher": "Nintendo (Philippines)",
+      "retrieved": "2026-11-11",
+      "supports": "metric size and weight"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch-2/Information-about-upcoming-battery-related-revisions-to-some-Nintendo-products-3132901.html",
+      "title": "Information about upcoming battery-related revisions to some Nintendo products",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "still manufactured in 2026; sales to retailers in Europe and on Nintendo Store end mid-February 2027"
+    },
+    {
+      "url": "https://me.ign.com/ar/nintendo-switch-1/193116/sytm-yqf-by-jhz-nintendo-switch-bdan-mn-mntsf-fbryr-2027",
+      "title": "Nintendo Switch consoles will no longer be sold from mid-February 2027 (IGN Middle East)",
+      "publisher": "IGN Middle East",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the end of Switch hardware sales in Europe from mid-February 2027, and that Nintendo did not say whether it applies outside Europe"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Nintendo_Switch",
+      "title": "Nintendo Switch",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release date 3 March 2017 (incl. UAE), EU discontinuation February 2027"
+    }
+  ],
+  "notes": {
+    "ar": "تقول Nintendo إن الجهاز ما زال يُصنَّع خلال 2026، لكنها ستتوقف من منتصف فبراير 2027 عن بيع أجهزة عائلة Switch الأولى للتجار في أوروبا، وعن بيعها في متجرها الرسمي أيضًا. لم توضح Nintendo إن كان ذلك يشمل السعودية والإمارات وعُمان التي تزوّدها Nintendo of Europe كذلك. خدمتا Nintendo eShop وNintendo Switch Online مستمرتان.",
+    "en": "Nintendo says it is still being manufactured in 2026, but from mid-February 2027 it will stop selling original Switch family hardware to retailers in Europe, and on its own store too. Nintendo has not said whether this also covers Saudi Arabia, the UAE and Oman, which Nintendo of Europe also supplies. Nintendo eShop and Nintendo Switch Online continue.",
+    "ckb": "Nintendo دەڵێت ئامێرەکە هێشتا لە 2026 دا بەرهەم دەهێنرێت، بەڵام لە ناوەڕاستی شوباتی 2027 ەوە فرۆشتنی ئامێرەکانی خێزانی Switch ی یەکەم بە فرۆشیاران لە ئەوروپا دەوەستێنێت، هەروەها لە فرۆشگای خۆیشیدا. Nintendo ڕوونی نەکردۆتەوە کە ئەمە سعوودیە، ئیمارات و عومانیش دەگرێتەوە یان نا، کە Nintendo of Europe کاڵایان بۆ دابین دەکات. Nintendo eShop و Nintendo Switch Online بەردەوام دەبن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Whether the end of Switch hardware sales in mid-February 2027 also applies to Saudi Arabia, the UAE and Oman",
+      "Whether the Gray version is still supplied to retailers outside the US"
+    ]
+  }
+}

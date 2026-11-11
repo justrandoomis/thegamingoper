@@ -1,0 +1,65 @@
+{
+  "key": "playstation-vr2--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 968,
+  "aspect": 1.6529,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/1-240.bf187658.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/1-480.7e84a276.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/1-720.352903ea.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/1-960.d43994d4.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-vr2/1-1440.ccc43d1c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-vr2/1-240.81ae6d22.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-vr2/1-480.fcf53114.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-vr2/1-720.4ae33fe0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-vr2/1-960.e7a93681.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-vr2/1-1440.12dc3ec8.webp"
+      }
+    ],
+    "png": "/products/playstation-vr2/1-720.2020a6f2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjYBAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSGcAAAART6CgbRsWF8bbjYhA+rPmBk5s21abG478UYlk0mhxAFWt5Q6AW8+a33wDU4jo/wSgv/nIOzb011um9EwPHAfEGyJ6lg0/ihZE5+zykYundxgL2n+t4iUB4DaGBAaAcWzCAS3oZBgIAFZQOCCoAAAAkAQAnQEqFAAMAD8RcrBQLCakorAIAYAiCWMAxNncC3kVahQv3l6BRMyVydqwAPzWC/ijaNTrH6l7WBkZdVjfmeB1iy9tcp/vKc2bcOWZergFXzz/Eu5Z3zsLgLkIJ/Sy63QMbk4dEjwNyqbQu5gD3XvCf3EeUtDKXh26fmAdh7X4prT1+cNG9jYD/ynR1huhYuwUbEtgKoOocJsf3X/n/7/M/5/5DwAA",
+  "dominant": "#d6dbe4",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_01-16x9-01-09april26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/"
+  },
+  "input": "ff15ca9c9958a664"
+}

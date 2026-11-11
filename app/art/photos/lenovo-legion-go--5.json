@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 1308,
+  "aspect": 1.2232,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go/5-240.f35bc82a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go/5-480.5fd5eceb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go/5-720.91c210c4.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go/5-960.d80fbd3e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go/5-1440.ff935031.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go/5-240.084f27af.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go/5-480.2af12cb9.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go/5-720.c40bf5e8.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go/5-960.13bf77d0.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go/5-1440.5c0c00fc.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go/5-720.614271b9.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvwAAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSHgAAAART6AokqQ2egbulwMZBBARAWQ/ZI2HcGLb1rKc36shlQ+PTmYYVJf4xb+ij65vvugMIvofYKrVajUFuIqIbF9UVf+4fcsd4CAisgFmo2q1Wp034N4G2G2pPMsOYC/uWEsOxFP1rWYAXY1sngKYR7kzcQDim0cKAAZWUDggXgAAANADAJ0BKhQAEAA/EXKwUCwmpKKwCAGAIglAGN6Ch/7zUCFcWCuCAAD+49Innp2wAhUitYQUw8RvBkaa9/IHnRDBzkYlRvlQzk0knMRwQU5ewLmYBpvHSVw0ZDJIAAA=",
+  "dominant": "#373737",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2023/09/08024951/Lenovo-Legion-Go-Product-Photos_9-1.zip#21_Legion_Go_Hero_Front_Non_FPS.png",
+    "page": "https://news.lenovo.com/press-kits/ifa-2023/"
+  },
+  "input": "66e08d1525c74af7"
+}

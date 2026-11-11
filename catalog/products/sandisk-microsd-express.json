@@ -1,0 +1,338 @@
+{
+  "slug": "sandisk-microsd-express",
+  "group": "accessories-storage-digital",
+  "kind": "storage",
+  "platform": "nintendo",
+  "brand": "SanDisk",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": {
+    "ar": "بطاقة SanDisk microSD Express لجهاز Nintendo Switch 2",
+    "en": "SanDisk microSD Express Card for Nintendo Switch 2",
+    "ckb": "کارتی SanDisk microSD Express بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "من 256GB إلى 1TB · قراءة حتى 880MB/s · مرخّصة لـ Switch 2",
+    "en": "256GB to 1TB · up to 880MB/s read · licensed for Switch 2",
+    "ckb": "لە 256GB تا 1TB · خوێندنەوە تا 880MB/s · مۆڵەتدراو بۆ Switch 2"
+  },
+  "description": {
+    "ar": "بطاقة microSD Express من SanDisk مصنوعة بترخيص رسمي من Nintendo لجهاز Nintendo Switch 2، وتتوفر بسعات 256GB و512GB و1TB. جهاز Switch 2 لا يقبل للألعاب إلا بطاقات microSD Express، لذلك لا تنفع بطاقات microSD العادية المستخدمة مع Switch الأول. تصل سرعة القراءة إلى 880 ميغابايت في الثانية، وتقدّر SanDisk أنها تتسع لنحو 9 أو 18 أو 36 لعبة بحسب السعة.",
+    "en": "SanDisk's microSD Express card made under official Nintendo licence for Nintendo Switch 2, sold in 256GB, 512GB and 1TB. Switch 2 only accepts microSD Express cards for games, so the ordinary microSD cards used with the first Switch will not do. It reads at up to 880MB/s, and SanDisk estimates room for about 9, 18 or 36 Switch 2 games depending on the size.",
+    "ckb": "کارتی microSD Expressی SanDisk کە بە مۆڵەتی فەرمیی Nintendo بۆ Nintendo Switch 2 دروستکراوە، بە قەبارەکانی 256GB و 512GB و 1TB بەردەستە. Switch 2 بۆ یارییەکان تەنها کارتی microSD Express قبووڵ دەکات، بۆیە کارتی microSDی ئاسایی کە لەگەڵ Switchی یەکەم بەکارهاتووە سوودی نییە. خێرایی خوێندنەوەی دەگاتە 880 مێگابایت لە چرکەیەکدا، و SanDisk خەمڵاندوویەتی کە بەپێی قەبارە نزیکەی 9 یان 18 یان 36 یاری Switch 2ی تێدا جێدەبێتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "مرخّصة رسمياً من Nintendo لجهاز Switch 2",
+      "en": "Officially licensed by Nintendo for Switch 2",
+      "ckb": "مۆڵەتی فەرمیی Nintendoی هەیە بۆ Switch 2"
+    },
+    {
+      "ar": "قراءة حتى 880MB/s وكتابة حتى 650MB/s (حتى 800MB/s في سعة 1TB)",
+      "en": "Reads up to 880MB/s, writes up to 650MB/s (up to 800MB/s on the 1TB)",
+      "ckb": "خوێندنەوە تا 880MB/s و نووسین تا 650MB/s (لە 1TB تا 800MB/s)"
+    },
+    {
+      "ar": "تتسع لنحو 9 / 18 / 36 لعبة على 256GB / 512GB / 1TB (تقدير SanDisk بمعدل 25GB للعبة)",
+      "en": "About 9 / 18 / 36 games on 256GB / 512GB / 1TB (SanDisk estimate at 25GB per game)",
+      "ckb": "نزیکەی 9 / 18 / 36 یاری لەسەر 256GB / 512GB / 1TB (خەمڵاندنی SanDisk بە 25GB بۆ هەر یارییەک)"
+    },
+    {
+      "ar": "أول استخدام يحتاج تحديث نظام Switch 2 عبر الإنترنت",
+      "en": "First use needs a Switch 2 system update over the internet",
+      "ckb": "یەکەم بەکارهێنان پێویستی بە نوێکردنەوەی سیستەمی Switch 2 هەیە لە ڕێگەی ئینتەرنێتەوە"
+    },
+    {
+      "ar": "ضمان محدود مدى الحياة من SanDisk",
+      "en": "Lifetime limited warranty from SanDisk",
+      "ckb": "گەرەنتیی سنووردار بۆ هەموو تەمەن لەلایەن SanDisk"
+    }
+  ],
+  "specs": [
+    {
+      "key": "capacity",
+      "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" },
+      "value": { "ar": "256GB / 512GB / 1TB", "en": "256GB / 512GB / 1TB", "ckb": "256GB / 512GB / 1TB" }
+    },
+    {
+      "key": "card_type",
+      "label": { "ar": "نوع البطاقة", "en": "Card type", "ckb": "جۆری کارت" },
+      "value": { "ar": "microSDXC بمعيار microSD Express (شعار EX)", "en": "microSDXC, microSD Express standard (EX logo)", "ckb": "microSDXC بە ستانداردی microSD Express (هێمای EX)" }
+    },
+    {
+      "key": "read_speed",
+      "label": { "ar": "سرعة القراءة", "en": "Read speed", "ckb": "خێرایی خوێندنەوە" },
+      "value": { "ar": "حتى 880 ميغابايت/ثانية", "en": "Up to 880 MB/s", "ckb": "تا 880 مێگابایت/چرکە" }
+    },
+    {
+      "key": "write_speed",
+      "label": { "ar": "سرعة الكتابة", "en": "Write speed", "ckb": "خێرایی نووسین" },
+      "value": { "ar": "حتى 650 ميغابايت/ثانية (256GB و512GB)، وحتى 800 ميغابايت/ثانية (1TB)", "en": "Up to 650 MB/s (256GB, 512GB); up to 800 MB/s (1TB)", "ckb": "تا 650 مێگابایت/چرکە (256GB و 512GB)، تا 800 مێگابایت/چرکە (1TB)" }
+    },
+    {
+      "key": "dimensions",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارەی دەرەکی" },
+      "value": { "ar": "0.59 × 0.43 × 0.03 إنش (حجم microSD القياسي)", "en": "0.59 × 0.43 × 0.03 in (standard microSD size)", "ckb": "0.59 × 0.43 × 0.03 ئینج (قەبارەی ستانداردی microSD)" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "0.26 غرام", "en": "0.26 g", "ckb": "0.26 گرام" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "ضمان محدود مدى الحياة (30 سنة في الدول التي لا تعترف بضمان مدى الحياة)", "en": "Lifetime limited (30 years where lifetime warranties are not recognised)", "ckb": "گەرەنتیی سنووردار بۆ هەموو تەمەن (30 ساڵ لەو وڵاتانەی گەرەنتیی هەمیشەیی قبووڵ ناکەن)" }
+    },
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Compatibility", "ckb": "گونجاندن" },
+      "value": { "ar": "Nintendo Switch 2", "en": "Nintendo Switch 2", "ckb": "Nintendo Switch 2" }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "بطاقة SanDisk microSD Express واحدة (البطاقة فقط)",
+      "en": "One SanDisk microSD Express card (card only)",
+      "ckb": "یەک کارتی SanDisk microSD Express (تەنها کارتەکە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SANDISK-NS2-256",
+      "title": { "ar": "256GB", "en": "256GB", "ckb": "256GB" },
+      "options": { "storage": "256GB" },
+      "modelNumber": "SDSQXFN-256G-GR6ZZ",
+      "isDefault": true,
+      "images": ["sandisk-microsd-express--1", "sandisk-microsd-express--2"],
+      "notes": {
+        "ar": "تصميم أحمر مع شعار ماريو. رقم الموديل من متجر SanDisk الأمريكي، وقد يختلف في مناطق أخرى.",
+        "en": "Red design with Mario's emblem. Model number from SanDisk's US store; other regions may use a different code.",
+        "ckb": "دیزاینی سوور لەگەڵ هێمای ماریۆ. ژمارەی مۆدێل لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بێت."
+      }
+    },
+    {
+      "sku": "SANDISK-NS2-512",
+      "title": { "ar": "512GB", "en": "512GB", "ckb": "512GB" },
+      "options": { "storage": "512GB" },
+      "modelNumber": "SDSQXFN-512G-GR6ZN",
+      "isDefault": false,
+      "images": ["sandisk-microsd-express--3", "sandisk-microsd-express--4"],
+      "notes": {
+        "ar": "تصميم أحمر مع زهرة النار من ألعاب ماريو.",
+        "en": "Red design with the Fire Flower from the Mario games.",
+        "ckb": "دیزاینی سوور لەگەڵ گوڵی ئاگر لە یارییەکانی ماریۆ."
+      }
+    },
+    {
+      "sku": "SANDISK-NS2-1TB",
+      "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
+      "options": { "storage": "1TB" },
+      "modelNumber": "SDSQXF8-1T00-GR6ZN",
+      "isDefault": false,
+      "images": ["sandisk-microsd-express--5", "sandisk-microsd-express--6"],
+      "notes": {
+        "ar": "تصميم أحمر مع النجمة الخارقة. سرعة الكتابة حتى 800MB/s. كانت هذه السعة غير متوفرة مؤقتاً في متجر SanDisk وقت البحث.",
+        "en": "Red design with the Super Star. Writes up to 800MB/s. This size showed as out of stock on SanDisk's own store at the time of research.",
+        "ckb": "دیزاینی سوور لەگەڵ ئەستێرەی سوپەر. نووسین تا 800MB/s. لە کاتی لێکۆڵینەوەدا ئەم قەبارەیە لە فرۆشگای SanDisk خۆیدا بەردەست نەبوو."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": {
+        "ar": "مصممة ومختبرة ومعتمدة للاستخدام مع Switch 2. يلزم تحديث النظام عبر الإنترنت عند أول استخدام.",
+        "en": "Designed, tested and approved for Switch 2. A system update over the internet is needed the first time.",
+        "ckb": "بۆ Switch 2 دیزاین و تاقیکراوە و پەسەندکراوە. یەکەم جار نوێکردنەوەی سیستەم لە ڕێگەی ئینتەرنێتەوە پێویستە."
+      },
+      "source": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2"
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "partial",
+      "note": {
+        "ar": "تعمل في Switch الأول كبطاقة microSD عادية وبنفس سرعتها.",
+        "en": "Works in the original Switch family as an ordinary microSD card, at ordinary microSD speed.",
+        "ckb": "لە Switchی یەکەمدا وەک کارتێکی microSDی ئاسایی و بە هەمان خێرایی کار دەکات."
+      },
+      "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "partial",
+      "note": {
+        "ar": "تعمل كبطاقة microSD عادية وبنفس سرعتها.",
+        "en": "Works as an ordinary microSD card, at ordinary microSD speed.",
+        "ckb": "وەک کارتێکی microSDی ئاسایی و بە هەمان خێرایی کار دەکات."
+      },
+      "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/"
+    },
+    {
+      "deviceModel": "switch-lite",
+      "status": "partial",
+      "note": {
+        "ar": "تعمل كبطاقة microSD عادية وبنفس سرعتها.",
+        "en": "Works as an ordinary microSD card, at ordinary microSD speed.",
+        "ckb": "وەک کارتێکی microSDی ئاسایی و بە هەمان خێرایی کار دەکات."
+      },
+      "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-mario-kart-world-bundle", "kind": "setup" },
+    { "slug": "samsung-microsd-express-for-nintendo-switch-2", "kind": "alternative" },
+    { "slug": "nintendo-eshop-card", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "sandisk-microsd-express--1",
+      "file": ".cache/product-images/sandisk-microsd-express/1.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-256gb-front.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXFN-256G-GR6ZZ",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة SanDisk microSD Express سعة 256GB لجهاز Nintendo Switch 2 من الأمام، حمراء مع شعار ماريو",
+        "en": "SanDisk 256GB microSD Express card for Nintendo Switch 2, front, red with Mario's emblem",
+        "ckb": "کارتی SanDisk microSD Express بە قەبارەی 256GB بۆ Nintendo Switch 2 لە پێشەوە، سوور لەگەڵ هێمای ماریۆ"
+      },
+      "credit": "Sandisk / Nintendo",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-microsd-express--2",
+      "file": ".cache/product-images/sandisk-microsd-express/2.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-256gb-angled.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXFN-256G-GR6ZZ",
+      "kind": "angle",
+      "alt": {
+        "ar": "بطاقة SanDisk microSD Express سعة 256GB من زاوية مائلة",
+        "en": "SanDisk 256GB microSD Express card for Switch 2, angled view",
+        "ckb": "کارتی SanDisk microSD Express بە قەبارەی 256GB لە گۆشەیەکی لارەوە"
+      },
+      "credit": "Sandisk / Nintendo",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-microsd-express--3",
+      "file": ".cache/product-images/sandisk-microsd-express/3.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-512gb-front.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXFN-512G-GR6ZN",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة SanDisk microSD Express سعة 512GB لجهاز Nintendo Switch 2 من الأمام، حمراء مع زهرة النار",
+        "en": "SanDisk 512GB microSD Express card for Nintendo Switch 2, front, red with the Fire Flower",
+        "ckb": "کارتی SanDisk microSD Express بە قەبارەی 512GB بۆ Nintendo Switch 2 لە پێشەوە، سوور لەگەڵ گوڵی ئاگر"
+      },
+      "credit": "Sandisk / Nintendo",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-microsd-express--4",
+      "file": ".cache/product-images/sandisk-microsd-express/4.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-512gb-angled.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXFN-512G-GR6ZN",
+      "kind": "angle",
+      "alt": {
+        "ar": "بطاقة SanDisk microSD Express سعة 512GB من زاوية مائلة",
+        "en": "SanDisk 512GB microSD Express card for Switch 2, angled view",
+        "ckb": "کارتی SanDisk microSD Express بە قەبارەی 512GB لە گۆشەیەکی لارەوە"
+      },
+      "credit": "Sandisk / Nintendo",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-microsd-express--5",
+      "file": ".cache/product-images/sandisk-microsd-express/5.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-1tb-front.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXF8-1T00-GR6ZN",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة SanDisk microSD Express سعة 1TB لجهاز Nintendo Switch 2 من الأمام، حمراء مع النجمة الخارقة",
+        "en": "SanDisk 1TB microSD Express card for Nintendo Switch 2, front, red with the Super Star",
+        "ckb": "کارتی SanDisk microSD Express بە قەبارەی 1TB بۆ Nintendo Switch 2 لە پێشەوە، سوور لەگەڵ ئەستێرەی سوپەر"
+      },
+      "credit": "Sandisk / Nintendo",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-microsd-express--6",
+      "file": ".cache/product-images/sandisk-microsd-express/6.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/microsd-express-memory-card-nintendo-switch-2/gallery/microsd-express-card-nintendo-switch-2-1tb-angled.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2?sku=SDSQXF8-1T00-GR6ZN",
+      "kind": "angle",
+      "alt": {
+        "ar": "بطاقة SanDisk microSD Express سعة 1TB من زاوية مائلة",
+        "en": "SanDisk 1TB microSD Express card for Switch 2, angled view",
+        "ckb": "کارتی SanDisk microSD Express بە قەبارەی 1TB لە گۆشەیەکی لارەوە"
+      },
+      "credit": "Sandisk / Nintendo",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-microsd-express-card-for-nintendo-switch-2",
+      "title": "SANDISK microSD Express Card for Nintendo Switch 2 (256GB, 512GB, 1TB)",
+      "publisher": "Sandisk",
+      "retrieved": "2026-11-11",
+      "supports": "official licence, capacities, model numbers, read/write speeds, game estimates, dimensions, weight, warranty, in the box, compatibility, images, 1TB out of stock on SanDisk's store"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/sandisk-microsd-express-card-256gb-for-nintendo-switch-2-000000000010016157",
+      "title": "SanDisk microSD Express Card 256GB for Nintendo Switch 2",
+      "publisher": "Nintendo (UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "official licence, 256GB release date 5 June 2025"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/",
+      "title": "microSD Card and microSD Express Card Compatibility with Nintendo Switch 2 and Nintendo Switch",
+      "publisher": "Nintendo Support",
+      "retrieved": "2026-11-11",
+      "supports": "Switch 2 only accepts microSD Express cards for games, internet system update on first use, cards up to 2TB supported, behaviour in the original Switch, old microSD cards only for screenshots and videos"
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/microsd-cards/best-microsd-express-cards-for-nintendo-switch-2",
+      "title": "Best MicroSD Express Cards for Nintendo Switch 2 in 2026",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the 256GB/512GB speeds, lifetime warranty and the 512GB model number"
+    },
+    {
+      "url": "https://bleedingcool.com/pop-culture/sandisk-offers-four-new-holiday-2026-storage-options/",
+      "title": "Sandisk Offers Four New Holiday 2026 Storage Options",
+      "publisher": "Bleeding Cool",
+      "retrieved": "2026-11-11",
+      "supports": "licensed Switch 2 range now goes up to 1TB"
+    }
+  ],
+  "notes": {
+    "ar": "بطاقات microSD العادية من Switch الأول لا يمكن تشغيل ألعاب Switch 2 منها، ويقتصر استخدامها على عرض أو نسخ الصور ومقاطع الفيديو. يدعم Switch 2 بطاقات microSD Express حتى 2TB. ضمان SanDisk يخضع لشروط بلد الشراء.",
+    "en": "Ordinary microSD cards from the original Switch cannot run Switch 2 games; on Switch 2 they are only good for viewing or copying screenshots and videos. Switch 2 supports microSD Express cards up to 2TB. SanDisk's warranty follows the terms of the country of purchase.",
+    "ckb": "کارتی microSDی ئاسایی Switchی یەکەم ناتوانێت یاری Switch 2 کار پێبکات؛ لەسەر Switch 2 تەنها بۆ بینین یان کۆپیکردنی وێنە و ڤیدیۆکان بەکاردێت. Switch 2 پشتگیریی کارتی microSD Express دەکات تا 2TB. گەرەنتیی SanDisk بەپێی مەرجەکانی ئەو وڵاتەیە کە لێی کڕدراوە."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "Launch dates of the 512GB and 1TB licensed cards (SanDisk marks them as new capacities)",
+      "EAN/UPC barcodes",
+      "Model numbers used outside the US store"
+    ]
+  }
+}

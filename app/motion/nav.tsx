@@ -30,11 +30,11 @@ import {
 import { useLocation, useMatches, useNavigate, useNavigationType, type LinkProps, type Location } from "react-router";
 import { LocaleLink } from "~/i18n/react";
 import { switchLocalePath, type Locale } from "~/lib/locales";
-import { useMotionTier } from "./env";
+import { getMotionTier, markJanky, useMotionTier } from "./env";
 import type { NavDescriptor, NavIntent, NavKind, NavPlan, ShareRef } from "./nav-plan";
 import { commitNavigation, getCommittedKey, noteLocation, planNavigation, setNavIntent } from "./nav-state";
-import { durations, easings, page as pageTokens } from "./tokens";
-import { activeTransition, hurryWhenAwaited, isTransitionActive, supportsViewTransitions, whenTransitionEnds } from "./vt";
+import { easings, lowEnd, page as pageTokens } from "./tokens";
+import { activeTransition, hurryWhenAwaited, isTransitionActive, supportsViewTransitions, watchFrames, whenTransitionEnds } from "./vt";
 
 /**
  * Route `handle` fields the engine understands. Neighbouring routes (tabs, steps, a product and the next one)
@@ -80,8 +80,9 @@ function clearNavigationMarks(): void {
   const root = document.documentElement;
   root.removeAttribute("data-nav");
   root.removeAttribute("data-nav-dir");
-  for (const name of ["--nav-x", "--nav-y", "--nav-out", "--nav-in"]) root.style.removeProperty(name);
+  for (const name of ["--nav-x", "--nav-y", "--nav-start"]) root.style.removeProperty(name);
   if (root.style.viewTransitionName === "root") root.style.viewTransitionName = "";
+  releaseAnchors();
 }
 
 function finishNavigation(token: number): void {
@@ -89,15 +90,20 @@ function finishNavigation(token: number): void {
   clearNavigationMarks();
 }
 
+/** How long the page fades in when the browser has no View Transitions (DESIGN.md: "then a 120ms cross-fade"). */
+const FALLBACK_FADE_MS = 120;
+
 /**
  * Called from the layout effect of the navigation commit — inside React's view-transition update callback,
  * after the old page was captured and before the new one is.
  */
 function playNavigation(plan: NavPlan, page: HTMLElement | null): void {
   if (!isTransitionActive()) {
-    // React committed without a view transition (no browser support, or a synchronous commit): the new page
-    // still arrives softly. Opacity only — a transform here would re-anchor fixed descendants mid-animation.
-    page?.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: durations.quick, easing: easings.out });
+    // React committed without a view transition (no browser support, or a synchronous commit): the new page still
+    // arrives softly while a <SharedElement> target, if any, FLIPs from the card. Opacity only — a transform here
+    // would re-anchor fixed descendants mid-animation.
+    page?.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: FALLBACK_FADE_MS, easing: easings.settle });
+    releaseAnchors();
     return;
   }
   const token = ++navToken;
@@ -111,19 +117,73 @@ function playNavigation(plan: NavPlan, page: HTMLElement | null): void {
     root.style.removeProperty("--nav-x");
     root.style.removeProperty("--nav-y");
   }
-  if (plan.nav === "direction") {
-    // <html dir> already belongs to the new page here. Out toward the old direction's end, in from the new start.
-    const toDir = root.dir === "rtl" ? "rtl" : "ltr";
-    root.style.setProperty("--nav-out", (plan.fromDir ?? toDir) === "rtl" ? "-1" : "1");
-    root.style.setProperty("--nav-in", toDir === "ltr" ? "-1" : "1");
-  }
+  // <html dir> already belongs to the new page here. A language switch drifts toward the new reading direction's
+  // start: the left for LTR (−1), the right for RTL (+1).
+  if (plan.nav === "direction") root.style.setProperty("--nav-start", root.dir === "rtl" ? "1" : "-1");
   // React hides the root snapshot unless the root is explicitly part of the transition. The page animation is
   // the root snapshot (viewport-sized, so scroll offsets and fixed chrome need no special handling).
   root.style.viewTransitionName = "root";
   whenTransitionEnds(() => finishNavigation(token));
-  // Content that becomes ready while the page is still animating must not wait for the animation.
   const active = activeTransition();
-  if (active) hurryWhenAwaited(active, pageTokens.hurry);
+  if (active) {
+    // Content that becomes ready while the page is still animating must not wait for the animation.
+    hurryWhenAwaited(active, pageTokens.hurry);
+    // A device that cannot keep up drops to the low-end tier for the rest of the session (DESIGN.md §6.5).
+    if (getMotionTier() === "full") watchFrames(active, lowEnd.longFrameMs, lowEnd.longFrames, markJanky);
+  }
+}
+
+// --- anchors for the language switch ---------------------------------------------------------------
+
+const ANCHOR_LIMIT = 6;
+let anchored: HTMLElement[] = [];
+let anchorTimer: ReturnType<typeof setTimeout> | undefined;
+/** Where the first on-screen anchor was when the language switch was asked for. */
+let anchorProbe: { element: HTMLElement; top: number } | null = null;
+
+/**
+ * Language switch: the stage and its render (`data-motion-anchor`) stay exactly where they are as the visual anchor
+ * (DESIGN.md §7.2). Called right before the navigation:
+ *  - the first anchor on screen is remembered, and once the other language has rendered the page is scrolled by
+ *    however much the new text above it moved it, so it is still in the same place (every tier);
+ *  - at the full tier each on-screen anchor also gets a view-transition name, so it does not slide with the content.
+ * Names are released when the transition ends, or after 4 s if no switch happens.
+ */
+export function armAnchors(): void {
+  releaseAnchors();
+  if (typeof document === "undefined") return;
+  const name = getMotionTier() === "full" && supportsViewTransitions();
+  for (const element of document.querySelectorAll<HTMLElement>("[data-motion-anchor]")) {
+    if (anchored.length >= ANCHOR_LIMIT) break;
+    const rect = element.getBoundingClientRect();
+    if (rect.width === 0 || rect.bottom < 0 || rect.top > window.innerHeight) continue; // off screen: it travels with the page
+    anchorProbe ??= { element, top: rect.top };
+    if (name) {
+      element.style.viewTransitionName = `tt-anchor-${anchored.length}`;
+      element.style.setProperty("view-transition-class", "tt-anchor");
+    }
+    anchored.push(element);
+  }
+  if (anchored.length > 0) anchorTimer = setTimeout(releaseAnchors, 4000);
+}
+
+/** Runs in the commit of the language switch, before the new page is captured: put the first anchor back in place. */
+function keepAnchorInPlace(): void {
+  const probe = anchorProbe;
+  anchorProbe = null;
+  if (!probe || !probe.element.isConnected) return;
+  const moved = probe.element.getBoundingClientRect().top - probe.top;
+  if (Math.abs(moved) >= 1) window.scrollBy({ top: moved, behavior: "instant" });
+}
+
+function releaseAnchors(): void {
+  clearTimeout(anchorTimer);
+  for (const element of anchored) {
+    element.style.viewTransitionName = "";
+    element.style.removeProperty("view-transition-class");
+  }
+  anchored = [];
+  anchorProbe = null;
 }
 
 /** React calls this when the sentinel's view transition starts; the returned function runs when it ends. */
@@ -204,8 +264,9 @@ export function PageTransition({ children, className, style }: PageTransitionPro
   let current = state;
   if (state.at.key !== descriptor.key) {
     // A navigation is being rendered. Decide its transition now so the sentinel key (and with it React's
-    // decision to run a view transition) is part of this very commit.
-    const plan = tier === "reduced" ? null : planNavigation(state.at, descriptor, type);
+    // decision to run a view transition) is part of this very commit. Reduced motion still gets a transition:
+    // motion.css makes it a 120 ms cross-fade (DESIGN.md §7.3).
+    const plan = planNavigation(state.at, descriptor, type, tier);
     current = { at: descriptor, seq: plan ? state.seq + 1 : state.seq, plan };
     setState(current);
   }
@@ -223,6 +284,8 @@ export function PageTransition({ children, className, style }: PageTransitionPro
     if (from.key === to.key) return;
     committed.current = to;
     const first = commitNavigation(current.plan, from, to, type);
+    // A language switch (replace, or planned as `direction`) keeps its anchor in place before anything is captured.
+    if (first && anchorProbe && (type === "REPLACE" || current.plan?.nav === "direction")) keepAnchorInPlace();
     if (first && current.plan) playNavigation(current.plan, page.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed on the location being committed; plan and type belong to it
   }, [current.at.key]);
@@ -270,13 +333,16 @@ export function useNavIntent(): (nav: NavKind, options?: Omit<NavIntent, "nav">)
  *   const switchLanguage = useDirectionMorph();
  *   <button onClick={() => switchLanguage("en")}>English</button>
  *
- * It replaces the history entry (Back should leave the page, not walk through languages).
+ * It replaces the history entry (Back should leave the page, not walk through languages). The content slides 16px
+ * toward the new reading direction's start and cross-fades; fixed chrome cross-fades in place; elements marked
+ * `data-motion-anchor` stay put. Instant at the lite and reduced tiers.
  */
 export function useDirectionMorph(): (locale: Locale) => void {
   const navigate = useNavigate();
   const location = useLocation();
   return (locale) => {
     setNavIntent({ nav: "direction" });
+    armAnchors();
     void navigate(switchLocalePath(location.pathname, location.search, location.hash, locale), { replace: true, preventScrollReset: true });
   };
 }

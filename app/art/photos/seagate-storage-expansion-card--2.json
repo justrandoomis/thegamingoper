@@ -1,0 +1,41 @@
+{
+  "key": "seagate-storage-expansion-card--2",
+  "view": "hero",
+  "width": 542,
+  "height": 513,
+  "aspect": 1.0565,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/seagate-storage-expansion-card/2-240.f80667ee.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/seagate-storage-expansion-card/2-480.f3278c8a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/seagate-storage-expansion-card/2-240.f8e050ae.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/seagate-storage-expansion-card/2-480.c5d285d8.webp"
+      }
+    ],
+    "png": "/products/seagate-storage-expansion-card/2-542.7e9f65a5.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSGgAAAART6C2jSQ1dvnFzA8REYDvP+mkDye2bTsNHctCoRlCx6NwvblOLJlBorJie+5481ebQUT/J0BiHU9toBAuAHRRlptuMeEMYCBcAWQUA0X2oHgBMCkcmoNipDiAe/L8y0+BLVlefTMkSlZQOCB2AAAAcAQAnQEqFAATAD8RfrdVrCelIygIAYAiCWkAABv3+8lQcPxGGvGFJvsCzgAA1m9CrZfMTXLGLaexyn57zyyhsuGy5AV5cqcmknQbFaxbh3fvzkIYDuf07p2LtQnsVI6UYJJb/+595G2b/WeonsfzODvx9rAAAA==",
+  "dominant": "#777777",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Microsoft / Seagate",
+  "source": {
+    "url": "https://assets.xboxservices.com/assets/b4/fe/b4fe6645-e218-431e-aa45-c06c7cea1f82.jpg?n=999482_gallery_04_1056x594.jpg",
+    "page": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card"
+  },
+  "input": "75aa160fb55b5632"
+}

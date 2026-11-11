@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go-2--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 978,
+  "aspect": 1.636,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-2/3-240.c650bf40.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-2/3-480.698cbf60.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-2/3-720.a4d0651c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-2/3-960.1eb25f80.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-2/3-1440.9168d765.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-2/3-240.c52519ce.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-2/3-480.6d25f58d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-2/3-720.19fb28d1.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-2/3-960.10a0896e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-2/3-1440.44e01ba4.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go-2/3-720.e45d9df0.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuoAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSF4AAAART6CobSM2Vgi99d0XEQHW5n7owWls2051yMhYQGokexRYJBLH4DJcdPihXt7tIaL/EwAAtm3bFrD1PRFRjeYvHjAyf6nj1JIzYs70OR1f0angelHlATG1RSThbUEMVlA4IGYAAADwAwCdASoUAAwAPxFysFAsJqSisAgBgCIJaQAAYdghxIcgiCTE/oAAAP7jf/Rli1xmYP8HyHHDvPyU2FNng8EqmSiPZW5eOZujvcAvAUe7v6I2q1SJnn5OnOsBkh5IM9DTuJAAAAA=",
+  "dominant": "#262628",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_Vertical_Back_Facing_Left_transparency.jpg",
+    "page": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/"
+  },
+  "input": "69ce63ec5f56dc7e"
+}

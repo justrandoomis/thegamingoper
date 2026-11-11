@@ -1,0 +1,57 @@
+{
+  "key": "elden-ring-nightreign--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/elden-ring-nightreign/1-240.74bba01b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/elden-ring-nightreign/1-480.ff762112.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/elden-ring-nightreign/1-720.4323a284.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/elden-ring-nightreign/1-960.e3fc4fa0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/elden-ring-nightreign/1-240.05fd3b17.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/elden-ring-nightreign/1-480.dc2bf902.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/elden-ring-nightreign/1-720.6b231349.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/elden-ring-nightreign/1-960.5dbff8a4.webp"
+      }
+    ],
+    "png": "/products/elden-ring-nightreign/1-720.77b31d65.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoNABQAPxFysFAsJqSisAgBgCIJbAC7MoADTVOWuN4TuwAA/ulBG17K6yMQXleYoG6YZv77+YGN9lsfEy7WduBVSdExhJjBWZpzD61vNKuIkaVNQy1vg2RKj3FGsIDljbszH0QAAAA=",
+  "dominant": "#0b0c17",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Bandai Namco Entertainment / FromSoftware",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.21572.14220340964291907.89c95a82-805b-43b9-8393-3be8df29bd15.019f9a77-d622-467b-a294-de28fe09f661",
+    "page": "https://www.xbox.com/en-US/games/store/elden-ring-nightreign/9pj22qnvcz3g"
+  },
+  "input": "90a6af574d5ed8e1"
+}

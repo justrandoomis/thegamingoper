@@ -1,0 +1,65 @@
+{
+  "key": "playstation-5--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 931,
+  "aspect": 1.7186,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5/4-240.771bd693.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5/4-480.d23ad2b6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5/4-720.e6c68b1a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5/4-960.45f8a0b8.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5/4-1440.cd088c29.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5/4-240.c89743bf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5/4-480.af014bea.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5/4-720.f3f07226.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5/4-960.710e7cc0.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-5/4-1440.4991e3b7.webp"
+      }
+    ],
+    "png": "/products/playstation-5/4-720.76d60201.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSFAAAAART6CgbRs2VBTdvxERiGZ9RDUY1bat5DtzOkgACrjNnABegSE0gOHL+zVCRP8nABkm11zEvvQAALQmL9N9JtyJZ3Iw1R/dXned5xKuASbIEFZQOCBsAAAA0AMAnQEqFAAMAD8RcrBQLCakorAIAYAiCUAAC32xOdLH5OjphG6AAP7WEWMNeVd+uz7hN5zNzJxw2z4wsPMeznOoMUifbMKXodbKhKLH9IdMqUPX7YBx0soR+JZIABgdt9Hcvv6luZU0s5AA",
+  "dominant": "#fcfcfc",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/Certified_Refurbished_PlayStation_5_Console_PROD_3D_16x9-01-24Apr26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/certified-refurbished/product/PSD001-PSDE01840_63-PS5GRADEDCEC7XZE/"
+  },
+  "input": "8eaa8fd3306a2048"
+}

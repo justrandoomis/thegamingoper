@@ -1,0 +1,228 @@
+{
+  "slug": "nintendo-switch-2-carrying-case",
+  "group": "nintendo-hardware",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "nintendo-switch-2-carrying-case",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": {
+    "ar": "Nintendo Switch 2 Carrying Case & Screen Protector",
+    "en": "Nintendo Switch 2 Carrying Case & Screen Protector",
+    "ckb": "Nintendo Switch 2 Carrying Case & Screen Protector"
+  },
+  "short": {
+    "ar": "حقيبة حمل صلبة + واقي شاشة + قطعة تنظيف · تتسع لـ 6 بطاقات ألعاب",
+    "en": "Hard carrying case + screen protector + cleaning cloth · holds 6 game cards",
+    "ckb": "جانتای هەڵگرتنی ڕەق + پارێزەری شاشە + پەڕۆی پاککردنەوە · 6 کارتی یاری دەگرێت"
+  },
+  "description": {
+    "ar": "حقيبة حمل رسمية من Nintendo لجهاز Switch 2 تحميه في التنقل، ومعها واقي شاشة وقطعة قماش للتنظيف. فيها أماكن لست بطاقات ألعاب وحزامي Joy-Con 2. الجهاز ويدا التحكم غير مرفقة.",
+    "en": "Nintendo's official carrying case for Switch 2 to protect it on the go, with a screen protector and a cleaning cloth. It has room for six game cards and two Joy-Con 2 straps. Console and controllers are not included.",
+    "ckb": "جانتای هەڵگرتنی فەرمیی Nintendo بۆ Switch 2 بۆ پاراستنی لە کاتی گەشتدا، لەگەڵ پارێزەری شاشە و پەڕۆیەکی پاککردنەوە. شوێنی شەش کارتی یاری و دوو قایشی Joy-Con 2 ی تێدایە. کۆنسۆڵ و دەسکەکان لەگەڵیدا نین."
+  },
+  "highlights": [
+    {
+      "ar": "يشمل واقي شاشة وقطعة قماش للتنظيف",
+      "en": "Includes a screen protector and a cleaning cloth",
+      "ckb": "پارێزەری شاشە و پەڕۆی پاککردنەوەی تێدایە"
+    },
+    {
+      "ar": "مكان لست بطاقات ألعاب وحزامي Joy-Con 2",
+      "en": "Space for six game cards and two Joy-Con 2 straps",
+      "ckb": "شوێن بۆ شەش کارتی یاری و دوو قایشی Joy-Con 2"
+    },
+    {
+      "ar": "مصممة لجهاز Nintendo Switch 2",
+      "en": "Made for Nintendo Switch 2",
+      "ckb": "بۆ Nintendo Switch 2 دروستکراوە"
+    },
+    {
+      "ar": "تتوفر أيضًا نسخة محدودة بتصميم The Legend of Zelda – 40th Anniversary Edition",
+      "en": "Also made as a limited The Legend of Zelda – 40th Anniversary Edition",
+      "ckb": "وەشانێکی سنووردار بە دیزاینی The Legend of Zelda – 40th Anniversary Edition ـیش هەیە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": { "ar": "التوافق", "en": "Fits", "ckb": "گونجاوە بۆ" },
+      "value": { "ar": "Nintendo Switch 2", "en": "Nintendo Switch 2", "ckb": "Nintendo Switch 2" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين داخل الحقيبة", "en": "Storage inside", "ckb": "شوێنی ناو جانتاکە" },
+      "value": { "ar": "6 بطاقات ألعاب وحزاما Joy-Con 2", "en": "6 game cards and 2 Joy-Con 2 straps", "ckb": "6 کارتی یاری و 2 قایشی Joy-Con 2" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "حقيبة الحمل", "en": "Carrying case", "ckb": "جانتای هەڵگرتن" },
+    { "ar": "واقي شاشة", "en": "Screen protector", "ckb": "پارێزەری شاشە" },
+    { "ar": "قطعة قماش للتنظيف", "en": "Cleaning cloth", "ckb": "پەڕۆی پاککردنەوە" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-CASE-SP",
+      "title": { "ar": "حقيبة حمل Nintendo Switch 2 + واقي شاشة — أسود", "en": "Nintendo Switch 2 Carrying Case & Screen Protector — Black", "ckb": "جانتای Nintendo Switch 2 + پارێزەری شاشە — ڕەش" },
+      "options": { "edition": "Standard", "color": "Black" },
+      "barcodes": ["0045496886073"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2-carrying-case--1", "nintendo-switch-2-carrying-case--2"],
+      "notes": { "ar": "الباركود أمريكي.", "en": "US barcode.", "ckb": "بارکۆدی ئەمریکی." }
+    },
+    {
+      "sku": "NS2-CASE-SP-ZELDA40",
+      "title": {
+        "ar": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition",
+        "en": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition",
+        "ckb": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition"
+      },
+      "options": { "edition": "The Legend of Zelda 40th Anniversary" },
+      "barcodes": ["0045496886318"],
+      "isDefault": false,
+      "images": ["nintendo-switch-2-carrying-case--3", "nintendo-switch-2-carrying-case--4", "nintendo-switch-2-carrying-case--5"],
+      "notes": {
+        "ar": "صدرت في 29 أكتوبر 2026: حقيبة سوداء وذهبية بشعار Triforce وحلقات سحّاب خضراء، ومعها واقي شاشة. كانت نافدة من متجري Nintendo الأمريكي والبريطاني في 11 نوفمبر 2026 (المتجر البريطاني: قطعة واحدة لكل عميل). الباركود أمريكي.",
+        "en": "Released 29 October 2026: a black-and-gold case with the Triforce and green zipper pulls, with a screen protector. Out of stock on Nintendo's US and UK stores on 11 November 2026 (UK store: one per customer). US barcode.",
+        "ckb": "لە 29ی تشرینی یەکەمی 2026 دەرچوو: جانتایەکی ڕەش و زێڕین بە هێمای Triforce و ئەڵقەی زیپی سەوز، لەگەڵ پارێزەری شاشە. لە 11ی تشرینی دووەمی 2026 لە فرۆشگاکانی ئەمریکی و بەریتانیی Nintendo نەمابوو (فرۆشگای بەریتانی: یەک دانە بۆ هەر کڕیارێک). بارکۆدی ئەمریکی."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "حقيبة وواقي شاشة لجهاز Nintendo Switch 2", "en": "Case and screen protector for Nintendo Switch 2", "ckb": "جانتا و پارێزەری شاشە بۆ Nintendo Switch 2" },
+      "source": "https://store.nintendo.com/en-gb/nintendo-switch-2-carrying-case-and-screen-protector-000000000010015104"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-zelda-40th-anniversary-edition", "kind": "upsell" },
+    { "slug": "nintendo-switch-2-dock-set", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-carrying-case--1",
+      "file": ".cache/product-images/nintendo-switch-2-carrying-case/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Carry%20Case/Frame_3473729.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "hero",
+      "alt": { "ar": "حقيبة حمل Nintendo Switch 2 السوداء من الأمام", "en": "Black Nintendo Switch 2 carrying case from the front", "ckb": "جانتای ڕەشی Nintendo Switch 2 لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-carrying-case--2",
+      "file": ".cache/product-images/nintendo-switch-2-carrying-case/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Carry%20Case/Frame_3473730.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية للحقيبة", "en": "Back of the case", "ckb": "پشتەوەی جانتاکە" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-carrying-case--3",
+      "file": ".cache/product-images/nintendo-switch-2-carrying-case/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/Cases/127073-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-case-triforce-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-the-legend-of-zelda-40th-anniversary-edition-127073/",
+      "kind": "angle",
+      "alt": { "ar": "حقيبة نسخة Zelda الأربعين بشعار Triforce", "en": "Zelda 40th Anniversary case with the Triforce", "ckb": "جانتای وەشانی 40 ساڵەی Zelda بە هێمای Triforce" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-carrying-case--4",
+      "file": ".cache/product-images/nintendo-switch-2-carrying-case/4.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/Cases/127073-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-case-map-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-the-legend-of-zelda-40th-anniversary-edition-127073/",
+      "kind": "angle",
+      "alt": { "ar": "الوجه الآخر لحقيبة Zelda بنقش خريطة", "en": "Other side of the Zelda case with a map pattern", "ckb": "ڕووەکەی تری جانتای Zelda بە نەخشی نەخشە" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-carrying-case--5",
+      "file": ".cache/product-images/nintendo-switch-2-carrying-case/5.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/Cases/127073-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-case-with-console-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-the-legend-of-zelda-40th-anniversary-edition-127073/",
+      "kind": "detail",
+      "alt": { "ar": "حقيبة Zelda مفتوحة والجهاز بداخلها", "en": "Zelda case open with the console inside", "ckb": "جانتای Zelda کراوە و کۆنسۆڵەکە لەناویدا" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-carrying-case-and-screen-protector-000000000010015104",
+      "title": "Nintendo Switch 2 Carrying Case & Screen Protector - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "contents (case, screen protector, cleaning cloth), space for 6 game cards and 2 Joy-Con 2 straps, release date 5 June 2025, on sale"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "second official description (case, screen protector, cleaning cloth; console not included), transparent product images"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-the-legend-of-zelda-40th-anniversary-edition-127073/",
+      "title": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "Zelda edition design, screen protector included, release date 29 Oct 2026, UPC, sold out"
+    },
+    {
+      "url": "https://www.nintendo.co.jp/corporate/release/en/2026/260908_2.html",
+      "title": "News Release: September 8, 2026",
+      "publisher": "Nintendo Co., Ltd.",
+      "retrieved": "2026-11-11",
+      "supports": "Zelda 40th carrying case announced with the Zelda edition console"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-123697/",
+      "title": "Nintendo Switch 2 Carrying Case & Screen Protector",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "second official confirmation of contents (case, screen protector, cleaning cloth), release 5 June 2025, US UPC; sold through retailers in the US"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-all-in-one-carrying-case-123692/",
+      "title": "Nintendo Switch 2 All-In-One Carrying Case",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "note about the larger All-In-One case (console, dock, Joy-Con 2, cables and up to six game cards)"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-carrying-case-the-legend-of-zelda-40th-anniversary-edition-and-screen-protector-000000000010019439",
+      "title": "Nintendo Switch 2 Carrying Case The Legend of Zelda 40th Anniversary Edition & Screen Protector - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "Zelda case with screen protector, six game cards and two straps, 29 October 2026, one per customer, out of stock"
+    },
+    {
+      "url": "https://www.ign.com/articles/legend-of-zelda-40th-anniversary-edition-switch-2-pro-controller-where-to-buy",
+      "title": "The Legend of Zelda 40th Anniversary Edition Switch 2 and Accessories Are Going Up for Preorder",
+      "publisher": "IGN",
+      "retrieved": "2026-11-11",
+      "supports": "independent description of the Zelda case (black and gold, Triforce, green zipper pulls) and its 29 October release"
+    }
+  ],
+  "notes": {
+    "ar": "تبيع Nintendo أيضًا حقيبة أكبر باسم Nintendo Switch 2 All-In-One Carrying Case تتسع للجهاز والقاعدة ويدي Joy-Con 2 والكابلات وحتى ست بطاقات ألعاب.",
+    "en": "Nintendo also sells a larger Nintendo Switch 2 All-In-One Carrying Case that holds the console, dock, Joy-Con 2, cables and up to six game cards.",
+    "ckb": "Nintendo هەروەها جانتایەکی گەورەتر بە ناوی Nintendo Switch 2 All-In-One Carrying Case دەفرۆشێت کە کۆنسۆڵ، دۆک، Joy-Con 2، کێبڵەکان و تا شەش کارتی یاری دەگرێت."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Case dimensions and material",
+      "European barcodes"
+    ]
+  }
+}

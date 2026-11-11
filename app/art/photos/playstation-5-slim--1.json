@@ -1,0 +1,41 @@
+{
+  "key": "playstation-5-slim--1",
+  "view": "hero",
+  "width": 559,
+  "height": 1061,
+  "aspect": 0.5269,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim/1-240.44c1d0ee.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim/1-480.c87d5916.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim/1-240.44f58c68.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim/1-480.306138c3.webp"
+      }
+    ],
+    "png": "/products/playstation-5-slim/1-559.29b3c465.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvYAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSFIAAAARR6CobRs4WRDta/cGYhERyP2h7MA2sm0l9yupS0j4Q1qhBysBcr19f2shov8TgOiiKmDm5YCbHIGXHAJFwAZM7CN1wAI/6TLKEL0pqVzPo0MYVlA4IH4AAACQAwCdASoLABQAPxFysFAsJqSisAgBgCIJZQDA3B9exJNoGS1YAP61WqCrohCEms4447/kokWxS465d1jlhWSClOSr+ILg1OiN8ejPkk0zfkJasK4L2+YPhg/1UxvZ6zIl+GeCRxQ9w2Pdxu3DNWMwYB/ubs8DRCjJXib6AAA=",
+  "dominant": "#d7dae5",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-06-16x9-01-09apr26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/"
+  },
+  "input": "fac61ae6f5bd00a6"
+}

@@ -1,0 +1,41 @@
+{
+  "key": "ps5-disc-drive--1",
+  "view": "hero",
+  "width": 599,
+  "height": 1063,
+  "aspect": 0.5635,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ps5-disc-drive/1-240.57304e88.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ps5-disc-drive/1-480.0e405f11.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ps5-disc-drive/1-240.08338904.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ps5-disc-drive/1-480.e1b8e5dc.webp"
+      }
+    ],
+    "png": "/products/ps5-disc-drive/1-599.d29003eb.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSFgAAAART6CokSQ1tR6YX4cREeAr2vHbgElt21LuJ8GMxuKwOCzuOeyPwXdIXoST9w8ZIvo/ASr2T5eR5gxftQG7DDgrB3DrakgVa/BKLHwAIQKe+SL731nSMEgCVlA4IGYAAACwAwCdASoLABQAPxFysFAsJqSisAgBgCIJZwDImCHo1JpY3XizgAD+3pfyCQ9we2un4oExtuhT1yAhBYngEwGyVu/TeO+9jqLkJMh9pZgwGc++zK1SL65O0RkvtSFwYOlBptMRoAA=",
+  "dominant": "#d8dbe6",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS5_CFI2000_DISC_DRIVE_PR_01_sRGB_US-16x9-01-21may26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
+  },
+  "input": "dfaec3d29b35549e"
+}

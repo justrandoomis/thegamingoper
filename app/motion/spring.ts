@@ -147,15 +147,16 @@ const easingCache = new Map<string, SpringEasing>();
 /**
  * A spring as a CSS `linear()` easing plus the duration it needs. Works in `transition`, `animation`
  * and `element.animate({ … }, { easing, duration })`. Normalized: 0 at the start, 1 at rest; overshoot
- * shows up as values above 1.
+ * shows up as values above 1. The duration is the spring's published `settleMs` when it has one (the design
+ * tokens' `--spring-*-t`), otherwise the time it takes to come within 0.2 % of rest.
  */
 export function springEasing(spring: Spring, options: { tolerance?: number } = {}): SpringEasing {
   const tolerance = options.tolerance ?? 0.002;
-  const key = `${spring.response}|${spring.dampingRatio}|${tolerance}`;
+  const key = `${spring.response}|${spring.dampingRatio}|${spring.settleMs ?? ""}|${tolerance}`;
   const cached = easingCache.get(key);
   if (cached) return cached;
 
-  const seconds = springDuration(spring);
+  const seconds = spring.settleMs ? spring.settleMs / 1000 : springDuration(spring);
   // Sampled at 500 Hz before simplifying: a quick spring curves hard in its first few milliseconds, and
   // straight segments between coarser samples would be off by more than the tolerance there.
   const count = Math.max(Math.ceil(seconds * 500), 2);

@@ -13,11 +13,12 @@
  *
  * Rules: 6 digits, valid 5 minutes, at most 5 guesses per code, a new request cancels the previous
  * code for the same phone and purpose, 3 requests per phone per 10 minutes. Only a keyed hash of the
- * code is stored (HMAC with SESSION_SECRET when given — pass it), and the outbox row never contains
- * the code. A code is bound to its phone, purpose and optional `ref` (e.g. an order reference).
+ * code is stored (HMAC with SESSION_SECRET, which is therefore required: a plain hash of six digits
+ * would be reversed in a moment), and the outbox row never contains the code. A code is bound to its
+ * phone, purpose and optional `ref` (e.g. an order reference).
  */
 import { and, desc, eq, gt, isNull, lt, sql } from "drizzle-orm";
-import { newId, sha256Hex, timingSafeEqual } from "~/lib/ids";
+import { newId, timingSafeEqual } from "~/lib/ids";
 import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
 import { hmacSha256Hex, randomDigits } from "../crypto.server";
 import type { Db } from "../db/drizzle.server";
@@ -35,8 +36,8 @@ export const OTP_MAX_ATTEMPTS = 5;
 export type OtpPurpose = "login" | "verify_phone" | "password_reset" | "order_lookup" | "claim_orders" | (string & {});
 
 export type OtpOptions = {
-  /** SESSION_SECRET: makes the stored hash useless without the Worker's secret. */
-  secret?: string | null;
+  /** `env.SESSION_SECRET` (at least 32 characters): the stored code hash is an HMAC with it. Missing → the call throws. */
+  secret: string | null | undefined;
   /** Delivery providers by channel. None exist yet — see ~/server/outbox.server. */
   providers?: MessageProviders;
 };
@@ -59,9 +60,9 @@ export type RequestOtpResult = {
 
 const PURPOSE_PATTERN = /^[a-z][a-z_]{1,31}$/;
 
+/** HMAC-SHA256 with SESSION_SECRET; throws when the secret is missing or too short (a configuration error, never a guess). */
 function otpHash(secret: string | null | undefined, id: string, phone: string, purpose: string, code: string): Promise<string> {
-  const message = `tamtam.otp.v1|${id}|${phone}|${purpose}|${code}`;
-  return secret ? hmacSha256Hex(secret, message) : sha256Hex(message);
+  return hmacSha256Hex(secret, `tamtam.otp.v1|${id}|${phone}|${purpose}|${code}`);
 }
 
 function parseTarget(input: { phone: string; purpose: string }): { phoneE164: string; purpose: string } {
@@ -77,13 +78,15 @@ const otpInvalid = () => new AppError("otp_invalid", 400, { fields: { code: "otp
  * Creates a code for a phone and hands it to the SMS channel (which, today, holds it).
  * Throws AppError `invalid` (fields.phone) or `rate_limited`.
  */
-export async function requestOtp(ctx: AuthCtx, db: Db, input: RequestOtpInput, options: OtpOptions = {}): Promise<RequestOtpResult> {
+export async function requestOtp(ctx: AuthCtx, db: Db, input: RequestOtpInput, options: OtpOptions): Promise<RequestOtpResult> {
   const { phoneE164, purpose } = parseTarget(input);
+  const id = newId("otp");
+  const code = randomDigits(OTP_DIGITS);
+  // Hashed first: a missing SESSION_SECRET fails here, before any limit is counted or any row written.
+  const codeHash = await otpHash(options.secret, id, phoneE164, purpose, code);
   await enforceRateLimit(db, await limitKey("otp", "ip", ctx.ip), RATE_LIMITS.otpRequestIp, ctx.now);
   await enforceRateLimit(db, await limitKey("otp", "phone", phoneE164), RATE_LIMITS.otpRequest, ctx.now);
 
-  const id = newId("otp");
-  const code = randomDigits(OTP_DIGITS);
   const expiresAt = ctx.now + OTP_TTL_MS;
   const ref = input.ref ? String(input.ref).slice(0, 100) : null;
 
@@ -93,7 +96,7 @@ export async function requestOtp(ctx: AuthCtx, db: Db, input: RequestOtpInput, o
       .update(otpCodes)
       .set({ consumedAt: ctx.now })
       .where(and(eq(otpCodes.phoneE164, phoneE164), eq(otpCodes.purpose, purpose), isNull(otpCodes.consumedAt))),
-    db.insert(otpCodes).values({ id, phoneE164, purpose, codeHash: await otpHash(options.secret, id, phoneE164, purpose, code), expiresAt, createdAt: ctx.now, ip: ctx.ip, ref }),
+    db.insert(otpCodes).values({ id, phoneE164, purpose, codeHash, expiresAt, createdAt: ctx.now, ip: ctx.ip, ref }),
     authEventStatement(db, ctx, { subjectKind: "customer", identifier: phoneE164, kind: "otp_request", success: true, details: { purpose } }),
   ]);
 
@@ -117,7 +120,7 @@ export type VerifiedOtp = { id: string; phoneE164: string; purpose: string; ref:
  * expired, already used, too many guesses — so the answer reveals nothing about which it was.
  * A code can succeed once: two simultaneous correct submissions yield one success.
  */
-export async function verifyOtp(ctx: AuthCtx, db: Db, input: VerifyOtpInput, options: OtpOptions = {}): Promise<VerifiedOtp> {
+export async function verifyOtp(ctx: AuthCtx, db: Db, input: VerifyOtpInput, options: OtpOptions): Promise<VerifiedOtp> {
   const { phoneE164, purpose } = parseTarget(input);
   const code = toLatinDigits(String(input.code ?? "")).replace(/[\s-]/g, "");
   if (!/^\d+$/.test(code) || code.length !== OTP_DIGITS) throw otpInvalid();
@@ -129,6 +132,8 @@ export async function verifyOtp(ctx: AuthCtx, db: Db, input: VerifyOtpInput, opt
     if (!newest) throw otpInvalid();
     id = newest.id;
   }
+  // Hashed before the guess is counted, so a missing SESSION_SECRET costs the person no attempt.
+  const candidate = await otpHash(options.secret, id, phoneE164, purpose, code);
 
   // Count the guess first, atomically: the row comes back only while it is still usable.
   const [row] = await db
@@ -138,7 +143,7 @@ export async function verifyOtp(ctx: AuthCtx, db: Db, input: VerifyOtpInput, opt
     .returning({ id: otpCodes.id, codeHash: otpCodes.codeHash, ref: otpCodes.ref });
   if (!row) throw otpInvalid();
 
-  const matches = timingSafeEqual(row.codeHash, await otpHash(options.secret, row.id, phoneE164, purpose, code));
+  const matches = timingSafeEqual(row.codeHash, candidate);
   if (!matches) {
     await db.batch([authEventStatement(db, ctx, { subjectKind: "customer", identifier: phoneE164, kind: "otp_verify", success: false, details: { purpose } })]);
     throw otpInvalid();

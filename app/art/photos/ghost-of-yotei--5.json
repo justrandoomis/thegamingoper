@@ -1,0 +1,65 @@
+{
+  "key": "ghost-of-yotei--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ghost-of-yotei/5-240.568ac818.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ghost-of-yotei/5-480.e798af0a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ghost-of-yotei/5-720.8b31bddf.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ghost-of-yotei/5-960.1fa373fd.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ghost-of-yotei/5-1440.cec7fbb5.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ghost-of-yotei/5-240.7bd725bb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ghost-of-yotei/5-480.1672666a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ghost-of-yotei/5-720.67e67d94.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ghost-of-yotei/5-960.d7dd8a54.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ghost-of-yotei/5-1440.8b1c27d4.webp"
+      }
+    ],
+    "png": "/products/ghost-of-yotei/5-720.85add999.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYgC/OCIg87vlQS4ifQ4wAP7s1WXlDvMLtIXs4XHuQyYauz5UZTouBqjtHNJOedIK0r5+haTOiW7NqeMw7QAA",
+  "dominant": "#080a08",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-screenshot-04-en-04sep26?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/ghost-of-yotei/"
+  },
+  "input": "0f9828b8ea1b933b"
+}

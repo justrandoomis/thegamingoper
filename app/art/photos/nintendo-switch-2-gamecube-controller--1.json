@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-gamecube-controller--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1175,
+  "aspect": 1.3617,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-240.c7f5a533.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-480.97289716.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-720.0d688473.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-960.93af2b3e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-1440.bf259edf.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-240.d3bf839a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-480.f57c5c4f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-720.b4dd89b7.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-960.39b888af.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-gamecube-controller/1-1440.a36bcbdd.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-gamecube-controller/1-720.d38852a9.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiYBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSHcAAAART6CmbSM4VxIZ+9x0ERGi/gMXTmzbWpbv9z9CI7oNQJtbc2su0clu0eGMFxlDRP8nQPxrd5eXw2BCFmLNV5sQ9295YeenHPulFoDhEtBagBoD9DEQuALGigPRG6OPDrYLHszV2VKR7Wnr22w1xdeHbvd9m8riTwBWUDggiAAAAPADAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglsALsAGXzCG6cF2aqe9kwA/rcm690z/8fMUMNoBtiAXMpBYIq+asGn7OCcRTqK8jaKmxyoa2T/Muol56dLRl9blGxRhqnk8feuTMeCz8ocU7rJBPqNVYXALnaeQUxTSDSGz8ecB4SRvCB2AmB2wAA=",
+  "dominant": "#464987",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Wireless%20Controllers/120833-nintendo-switch-2-nintendo-gamecube-controller-front-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-gamecube-controller-120833/"
+  },
+  "input": "aa200858527aae5b"
+}

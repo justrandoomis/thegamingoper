@@ -1,0 +1,154 @@
+{
+  "slug": "metroid-prime-4-beyond",
+  "group": "nintendo-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2025-12-04",
+  "name": { "ar": "Metroid Prime 4: Beyond", "en": "Metroid Prime 4: Beyond", "ckb": "Metroid Prime 4: Beyond" },
+  "short": {
+    "ar": "Nintendo Switch 2 Edition أو نسخة Nintendo Switch · منظور الشخص الأول · PEGI 12",
+    "en": "Nintendo Switch 2 Edition or Nintendo Switch version · First-person action · PEGI 12",
+    "ckb": "Nintendo Switch 2 Edition یان وەشانی Nintendo Switch · ئاکشنی کەسی یەکەم · PEGI 12"
+  },
+  "description": {
+    "ar": "مغامرة أكشن من منظور الشخص الأول تعلق فيها صائدة الجوائز ساموس آران على كوكب غامض اسمه فيوروس. تحصل على قدرات ذهنية جديدة ودراجة اسمها Vi-O-La لتشق طريقها بين البيئات المتشعبة والزعماء الأقوياء. على Switch 2 يمكن التصويب بـ Joy-Con 2 كفأرة واختيار وضع الجودة أو وضع الأداء.",
+    "en": "A first-person action adventure in which bounty hunter Samus Aran is stranded on the mysterious planet Viewros. She gains new psychic powers and a bike called Vi-O-La to push through branching environments and tough bosses. On Switch 2 you can aim with a Joy-Con 2 used as a mouse and pick a quality or performance mode.",
+    "ckb": "سەرگوزشتەیەکی ئاکشنی کەسی یەکەم کە تێیدا ڕاوچیی خەڵات ساموس ئاران لەسەر هەسارەیەکی نامۆ بە ناوی ڤیوەرۆس گیر دەخوات. توانای دەروونیی نوێ و ماتۆڕێک بە ناوی Vi-O-La وەردەگرێت بۆ تێپەڕین بە ناو ژینگە لقلقەکان و سەرۆکە بەهێزەکاندا. لەسەر Switch 2 دەتوانیت Joy-Con 2 وەک ماوس بۆ نیشانەگرتن بەکاربهێنیت و دۆخی کوالیتی یان کارایی هەڵبژێریت."
+  },
+  "highlights": [
+    { "ar": "على Switch 2: حتى 4K بـ 60 إطاراً أو 120 إطاراً في وضع الأداء، مع HDR", "en": "On Switch 2: up to 4K at 60 fps, or 120 fps in performance mode, with HDR", "ckb": "لەسەر Switch 2: تا 4K بە 60 فرەیم، یان 120 فرەیم لە دۆخی کارایی، لەگەڵ HDR" },
+    { "ar": "التصويب بـ Joy-Con 2 كفأرة، أو بعصاتي التحكم، أو بالحركة", "en": "Aim with Joy-Con 2 as a mouse, with two sticks, or with motion controls", "ckb": "نیشانەگرتن بە Joy-Con 2 وەک ماوس، بە دوو دەستەک، یان بە جووڵە" },
+    { "ar": "بطاقة Switch 2 Edition تعمل على Switch الأول بنسخة Switch العادية", "en": "The Switch 2 Edition card runs the regular Switch version on a Switch 1", "ckb": "کارتی Switch 2 Edition لەسەر Switch ی یەکەم وەشانی ئاسایی Switch کار پێدەکات" },
+    { "ar": "لاعب واحد · PEGI 12 / ESRB T · لا تدعم العربية", "en": "Single player · PEGI 12 / ESRB T · No Arabic", "ckb": "یەک یاریزان · PEGI 12 / ESRB T · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 (Switch 2 Edition) أو Nintendo Switch", "en": "Nintendo Switch 2 (Switch 2 Edition) or Nintendo Switch", "ckb": "Nintendo Switch 2 (Switch 2 Edition) یان Nintendo Switch" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "4 كانون الأول 2025", "en": "4 December 2025", "ckb": "4ی کانوونی یەکەمی 2025" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة؛ نسخة Switch 2 Edition تضم لعبة Switch وحزمة الترقية", "en": "Game card; the Switch 2 Edition includes the Switch game and the upgrade pack", "ckb": "کارتی یاری؛ Switch 2 Edition یاریی Switch و پاکێجی نوێکردنەوەی تێدایە" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "27.7 GB على Nintendo Switch 2 · 26.3 GB على Nintendo Switch", "en": "27.7 GB on Nintendo Switch 2 · 26.3 GB on Nintendo Switch", "ckb": "27.7 GB لەسەر Nintendo Switch 2 · 26.3 GB لەسەر Nintendo Switch" } },
+    { "key": "displayModes", "label": { "ar": "أوضاع العرض على Switch 2", "en": "Switch 2 display modes", "ckb": "دۆخەکانی پیشاندان لەسەر Switch 2" }, "value": { "ar": "الجودة: 4K/60 على التلفاز، 1080p/60 محمول · الأداء: 1080p/120 على التلفاز، 720p/120 محمول", "en": "Quality: 4K/60 docked, 1080p/60 handheld · Performance: 1080p/120 docked, 720p/120 handheld", "ckb": "کوالیتی: 4K/60 لەسەر تەلەفزیۆن، 1080p/60 دەستی · کارایی: 1080p/120 لەسەر تەلەفزیۆن، 720p/120 دەستی" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1", "ckb": "یەک یاریزان" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 12 · ESRB T (دماء كرتونية، عنف)", "en": "PEGI 12 · ESRB T (Animated Blood, Violence)", "ckb": "PEGI 12 · ESRB T (خوێنی کارتۆنی، توندوتیژی)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، البرتغالية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Portuguese, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، پورتوگالی، ژاپۆنی، کۆری، چینی — بێ عەرەبی" } },
+    { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "لا يوجد لعب عبر الإنترنت؛ الحفظ السحابي يحتاج Nintendo Switch Online", "en": "No online play; cloud saves need Nintendo Switch Online", "ckb": "یاریی ئۆنلاین نییە؛ پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە" } },
+    { "key": "developer", "label": { "ar": "المطوّر / الناشر", "en": "Developer / publisher", "ckb": "پەرەپێدەر / بڵاوکەرەوە" }, "value": { "ar": "Retro Studios / Nintendo", "en": "Retro Studios / Nintendo", "ckb": "Retro Studios / Nintendo" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة لعبة داخل علبتها", "en": "Game card in its case", "ckb": "کارتی یاری لە ناو قوتووەکەیدا" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2G-METROID-PRIME-4",
+      "title": { "ar": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (نسخة فعلية)", "en": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (physical)", "ckb": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
+      "barcodes": ["045496905613"],
+      "isDefault": true,
+      "images": ["metroid-prime-4-beyond--1", "metroid-prime-4-beyond--3", "metroid-prime-4-beyond--4", "metroid-prime-4-beyond--5"],
+      "notes": { "ar": "تضم لعبة Switch وحزمة الترقية. الباركود للنسخة الأمريكية (UPC).", "en": "Contains the Switch game plus the upgrade pack. Barcode is the US edition's UPC.", "ckb": "یاریی Switch و پاکێجی نوێکردنەوەی تێدایە. بارکۆدەکە UPC ی وەشانی ئەمریکییە." }
+    },
+    {
+      "sku": "NSG-METROID-PRIME-4",
+      "title": { "ar": "Metroid Prime 4: Beyond — نسخة Nintendo Switch (فعلية)", "en": "Metroid Prime 4: Beyond — Nintendo Switch version (physical)", "ckb": "Metroid Prime 4: Beyond — وەشانی Nintendo Switch (فیزیکی)" },
+      "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
+      "barcodes": ["045496591748"],
+      "isDefault": false,
+      "images": ["metroid-prime-4-beyond--2"],
+      "notes": { "ar": "تعمل على كل أجهزة Switch وعلى Switch 2؛ ميزات Switch 2 تحتاج حزمة الترقية الرقمية. الباركود للنسخة الأمريكية (UPC).", "en": "Runs on every Switch model and on Switch 2; Switch 2 features need the digital upgrade pack. Barcode is the US edition's UPC.", "ckb": "لەسەر هەموو جۆرەکانی Switch و Switch 2 کار دەکات؛ تایبەتمەندییەکانی Switch 2 پاکێجی نوێکردنەوەی دیجیتاڵییان دەوێت. بارکۆدەکە UPC ی وەشانی ئەمریکییە." }
+    }
+  ],
+  "game": {
+    "platforms": ["switch-2", "switch", "switch-oled", "switch-lite"],
+    "genres": [
+      { "ar": "أكشن ومغامرة من منظور الشخص الأول", "en": "First-person action-adventure", "ckb": "ئاکشن و سەرگوزشتەی کەسی یەکەم" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "لا يوجد لعب عبر الإنترنت. النسخ الاحتياطي السحابي للحفظ يحتاج Nintendo Switch Online.",
+      "en": "No online play. Save Data Cloud backup needs Nintendo Switch Online.",
+      "ckb": "یاریی ئۆنلاین نییە. پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە."
+    },
+    "ageRating": { "pegi": 12, "esrb": "T" },
+    "arabic": "none",
+    "physicalFormat": "cartridge",
+    "sizeGb": 27.7,
+    "developer": "Retro Studios",
+    "publisher": "Nintendo"
+  },
+  "compatibility": [
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "النسختان تعملان؛ Switch 2 Edition تضيف التصويب بالفأرة ودقة وإطارات أعلى.", "en": "Both versions run; the Switch 2 Edition adds mouse aiming and higher resolution and frame rates.", "ckb": "هەردوو وەشان کار دەکەن؛ Switch 2 Edition نیشانەگرتن بە ماوس و ڕوونی و فرەیمی بەرزتر زیاد دەکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/Metroid-Prime-4-Beyond-Nintendo-Switch-2-Edition-2790001.html" },
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "نسخة Switch تعمل؛ بطاقة Switch 2 Edition تشغّل نسخة Switch فقط.", "en": "The Switch version runs; a Switch 2 Edition card runs only the Switch version.", "ckb": "وەشانی Switch کار دەکات؛ کارتی Switch 2 Edition تەنها وەشانی Switch کار پێدەکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/Metroid-Prime-4-Beyond-Nintendo-Switch-2-Edition-2790001.html" },
+    { "deviceModel": "switch-oled", "status": "verified", "note": { "ar": "مثل Nintendo Switch.", "en": "Same as Nintendo Switch.", "ckb": "وەک Nintendo Switch." }, "source": "https://www.nintendo.com/us/store/products/metroid-prime-4-106495/" },
+    { "deviceModel": "switch-lite", "status": "verified", "note": { "ar": "تعمل نسخة Switch في الوضع المحمول؛ تنبّه Nintendo إلى أن التجربة قد تختلف على Switch Lite.", "en": "Runs the Switch version in handheld mode; Nintendo notes the experience may differ on Switch Lite.", "ckb": "وەشانی Switch لە دۆخی دەستیدا کار دەکات؛ Nintendo ئاگادار دەکاتەوە کە ئەزموونەکە لەسەر Switch Lite لەوانەیە جیاواز بێت." }, "source": "https://www.nintendo.com/us/store/products/metroid-prime-4-106495/" }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" },
+    { "slug": "joy-con-2", "kind": "accessory" },
+    { "slug": "the-legend-of-zelda-ocarina-of-time", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "metroid-prime-4-beyond--1",
+      "file": ".cache/product-images/metroid-prime-4-beyond/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Metroid%20Prime%204%20Beyond%20-%20Switch%202/121491-nintendo-metroid-prime-4-beyond-nintendo-switch-2-edition-box-art-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-121491/",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Metroid Prime 4: Beyond – Nintendo Switch 2 Edition", "en": "Cover of Metroid Prime 4: Beyond – Nintendo Switch 2 Edition", "ckb": "بەرگی Metroid Prime 4: Beyond – Nintendo Switch 2 Edition" },
+      "credit": "Nintendo", "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "metroid-prime-4-beyond--2",
+      "file": ".cache/product-images/metroid-prime-4-beyond/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%20Software/Metroid%20Prime%204%20Beyond%20-%20Switch/106495-nintendo-metroid-prime-4-beyond-switch-box-art-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/metroid-prime-4-106495/",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Metroid Prime 4: Beyond لجهاز Nintendo Switch", "en": "Cover of Metroid Prime 4: Beyond for Nintendo Switch", "ckb": "بەرگی Metroid Prime 4: Beyond بۆ Nintendo Switch" },
+      "credit": "Nintendo", "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "metroid-prime-4-beyond--3",
+      "file": ".cache/product-images/metroid-prime-4-beyond/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000104849/89135935439ee6c3125ed070b578dbf11d352afa8af0f1efec0f9fb150e856e8",
+      "sourcePage": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "ساموس تطلق قدرتها الذهنية من ذراعها", "en": "Samus unleashing psychic energy from her arm cannon", "ckb": "ساموس وزەی دەروونی لە تۆپی دەستییەوە دەردەکات" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "metroid-prime-4-beyond--4",
+      "file": ".cache/product-images/metroid-prime-4-beyond/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000104849/7a81e0199a426e7a8441556d0a449ac0e05ccbcc184882f6006d6fdee0a22a32",
+      "sourcePage": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "منظر من خوذة ساموس لغابة على كوكب فيوروس", "en": "View through Samus's visor of a jungle on Viewros", "ckb": "دیمەنێک لە ناو کڵاوی ساموسەوە بۆ دارستانێک لەسەر ڤیوەرۆس" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "metroid-prime-4-beyond--5",
+      "file": ".cache/product-images/metroid-prime-4-beyond/5.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000104849/18acd13b8c65149036c31d517c873d07d620f6c5e580a11ab1fe1d30da5362be",
+      "sourcePage": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-switch-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "ساموس تقاتل كائنات فضائية من منظور الشخص الأول", "en": "First-person fight against alien creatures", "ckb": "شەڕی کەسی یەکەم دژی بوونەوەرە نامۆکان" },
+      "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-switch-2/", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size (Switch 26.3 GB, Switch 2 27.7 GB), single player, ESRB T and descriptors, languages, Save Data Cloud, amiibo, HDR and 120 Hz output, Joy-Con 2 mouse aiming" },
+    { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-121491/", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch 2 Edition physical, US UPC 00045496905613, box art" },
+    { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-106495/", "title": "Metroid Prime 4: Beyond for Nintendo Switch (Physical)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch physical, US UPC 00045496591748, play modes including handheld, Switch Lite note" },
+    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/Metroid-Prime-4-Beyond-Nintendo-Switch-2-Edition-2790001.html", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, story on planet Viewros, psychic abilities, Vi-O-La, control schemes, quality and performance modes, Switch 2 Edition card plays the Switch version in a Nintendo Switch, upgrade pack; lists download size as 26.4 GB" },
+    { "url": "https://en.wikipedia.org/wiki/Metroid_Prime_4:_Beyond", "title": "Metroid Prime 4: Beyond", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Retro Studios, publisher Nintendo, release December 4, 2025, single-player" }
+  ],
+  "verification": {
+    "checkedBy": "Claude (nintendo-games research pass)",
+    "secondSource": true,
+    "unverified": [
+      "Switch 2 size: 27.7 GB on Nintendo's US store, 26.4 GB on Nintendo UK",
+      "Full game card status inferred from the official covers (no game-key card label)",
+      "European EAN barcodes not found on an official page"
+    ]
+  }
+}

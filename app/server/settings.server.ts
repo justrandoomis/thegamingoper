@@ -62,19 +62,20 @@ const httpsUrl = z
   }, "url_invalid");
 const numbering = z.enum(["latn", "arab"]);
 
-type SettingDef<S extends z.ZodType = z.ZodType> = {
+type SettingDef<S extends z.ZodType = z.ZodType, Public extends boolean = boolean> = {
   schema: S;
   /** Used while no row exists. Must satisfy the schema. */
   default: z.input<S>;
   /** Permission needed to change the value. */
   permission: Permission;
   /** True when the storefront may show the value to shoppers. */
-  public: boolean;
-  group: "shipping" | "payments" | "checkout" | "policies" | "store" | "locale";
+  public: Public;
+  group: "shipping" | "payments" | "checkout" | "policies" | "store" | "locale" | "controls";
   label: { ar: string; en: string };
 };
 
-const define = <S extends z.ZodType>(def: SettingDef<S>): SettingDef<S> => def;
+/** Keeps the schema type and the literal `public` flag of each entry. */
+const define = <S extends z.ZodType, Public extends boolean>(def: SettingDef<S, Public>): SettingDef<S, Public> => def;
 
 // ───────────────────────────────────────────────────────────────── registry
 
@@ -186,12 +187,32 @@ export const SETTINGS = {
     group: "locale",
     label: { ar: "نظام الأرقام لكل لغة", en: "Numeral system per language" },
   }),
+
+  // ── internal controls (not in ARCHITECTURE §10, so not seeded as rows: the default applies until changed)
+
+  /**
+   * "the configured threshold" of CONTRACTS.md createRefund(): a refund larger than this needs
+   * `orders.refund.approve` as well as `orders.refund.create`. The default 0 means EVERY refund needs
+   * that approval — the conservative choice until the owner decides otherwise. Raising it weakens a
+   * money control, so only holders of `settings.payment.manage` (the owner by default) may change it.
+   */
+  "refunds.approval_threshold_iqd": define({
+    schema: z.number().int().min(0, "too_small").max(100_000_000, "too_big"),
+    default: 0,
+    permission: "settings.payment.manage",
+    public: false,
+    group: "controls",
+    label: { ar: "الاسترداد الذي يتجاوز هذا المبلغ يحتاج موافقة ثانية (د.ع، صفر = كل استرداد)", en: "Refunds above this amount need a second approval (IQD; 0 = every refund)" },
+  }),
 } satisfies Record<SeededSettingKey, SettingDef> & Record<string, SettingDef>;
 
 export type SettingKey = keyof typeof SETTINGS;
 export type SettingValue<K extends SettingKey> = z.output<(typeof SETTINGS)[K]["schema"]>;
+/** Keys whose values the storefront may show to shoppers. */
+export type PublicSettingKey = { [K in SettingKey]: (typeof SETTINGS)[K]["public"] extends true ? K : never }[SettingKey];
 
 export const SETTING_KEYS = Object.keys(SETTINGS) as SettingKey[];
+export const PUBLIC_SETTING_KEYS = SETTING_KEYS.filter((key): key is PublicSettingKey => (SETTINGS[key] as SettingDef).public);
 
 export function isSettingKey(value: unknown): value is SettingKey {
   return typeof value === "string" && Object.prototype.hasOwnProperty.call(SETTINGS, value);
@@ -228,10 +249,9 @@ export async function getSettings<const K extends readonly SettingKey[]>(db: Db,
   return out as { [P in K[number]]: SettingValue<P> };
 }
 
-/** Every setting the storefront may show (payment destinations, fees, contact details). */
-export async function getPublicSettings(db: Db): Promise<{ [P in SettingKey]: SettingValue<P> }> {
-  const keys = SETTING_KEYS.filter((key) => (SETTINGS[key] as SettingDef).public);
-  return (await getSettings(db, keys)) as { [P in SettingKey]: SettingValue<P> };
+/** Every setting the storefront may show (payment destinations, fees, contact details) — and nothing else. */
+export async function getPublicSettings(db: Db): Promise<{ [P in PublicSettingKey]: SettingValue<P> }> {
+  return getSettings(db, PUBLIC_SETTING_KEYS);
 }
 
 export type SettingListItem = {

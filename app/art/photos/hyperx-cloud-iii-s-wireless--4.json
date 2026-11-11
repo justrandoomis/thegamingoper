@@ -1,0 +1,57 @@
+{
+  "key": "hyperx-cloud-iii-s-wireless--4",
+  "view": "hero",
+  "width": 1367,
+  "height": 1282,
+  "aspect": 1.0663,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-240.daf21aaf.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-480.fc1f8040.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-720.2ce5de49.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-960.c404597d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-240.058d04f8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-480.0d2ad3dd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-720.1df431b2.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-iii-s-wireless/4-960.79d6f59a.webp"
+      }
+    ],
+    "png": "/products/hyperx-cloud-iii-s-wireless/4-720.feedcd72.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAACwAwCdASoUABMAPxF4s1IsJySisBgIAYAiCWkAAD2psBguOmYfAAD+75WtzEBcnylgrHrjXO9/pnZOeldQgHLlp1AAAA==",
+  "dominant": "#e9e9e9",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "hero",
+  "credit": "HyperX (HP Inc.)",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_white_ax6g1aa_main_1_18b51de8-fff9-47c7-bc05-d81a3263299e.jpg",
+    "page": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+  },
+  "input": "d4ae0e01283a82c6"
+}

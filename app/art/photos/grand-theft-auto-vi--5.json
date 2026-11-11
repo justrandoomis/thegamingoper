@@ -1,0 +1,65 @@
+{
+  "key": "grand-theft-auto-vi--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/grand-theft-auto-vi/5-240.3ba88968.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/grand-theft-auto-vi/5-480.17ccea53.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/grand-theft-auto-vi/5-720.e0b653a1.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/grand-theft-auto-vi/5-960.bd511c9e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/grand-theft-auto-vi/5-1440.ab431005.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/grand-theft-auto-vi/5-240.b6b764ac.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/grand-theft-auto-vi/5-480.178b04b2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/grand-theft-auto-vi/5-720.652f5763.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/grand-theft-auto-vi/5-960.29e409f9.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/grand-theft-auto-vi/5-1440.a0e32af0.webp"
+      }
+    ],
+    "png": "/products/grand-theft-auto-vi/5-720.4c4e29dd.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJYwCnFB0cZEfwCyUikiLYAAD0ZoG//jkSYPvEcfwctbWF/wnfaJkid3Av/0qiF3bSI0YJY+WNEAladIlQ73QSB+LO+qGPVsVTKYMPHVQEr2ayzcIAZjgO85P7gAAA",
+  "dominant": "#fbfaf8",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Rockstar Games",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/grand-theft-auto-vi-screenshot-09-en-06may25?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/grand-theft-auto-vi/"
+  },
+  "input": "a2e20515408de9e1"
+}

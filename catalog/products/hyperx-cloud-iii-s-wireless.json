@@ -1,0 +1,358 @@
+{
+  "slug": "hyperx-cloud-iii-s-wireless",
+  "group": "accessories-storage-digital",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "HyperX",
+  "status": "available",
+  "releaseDate": "2025-05-12",
+  "name": {
+    "ar": "سماعة HyperX Cloud III S Wireless",
+    "en": "HyperX Cloud III S Wireless",
+    "ckb": "هێدسێتی HyperX Cloud III S Wireless"
+  },
+  "short": {
+    "ar": "حتى 120 ساعة (2.4GHz) و200 ساعة (بلوتوث) · PS5 وPC وSwitch",
+    "en": "Up to 120 h (2.4GHz) / 200 h (Bluetooth) · PS5, PC, Switch",
+    "ckb": "تا 120 کاتژمێر (2.4GHz) / 200 کاتژمێر (بلووتوس) · PS5، PC، Switch"
+  },
+  "description": {
+    "ar": "سماعة لاسلكية من HyperX خلفت Cloud III Wireless التي توقف إنتاجها، وأضافت إليها البلوتوث بجانب دونجل 2.4GHz. البطارية تدوم حتى 120 ساعة عبر الدونجل وحتى 200 ساعة عبر البلوتوث، مع سماعات داخلية مائلة بقطر 53 ملم ووسائد من الإسفنج الذكي. تأتي بمايكروفون قابل للفصل ومايكروفون مدمج للمكالمات، وتعمل مع PC وPS5 وPS4 وNintendo Switch وMac والهواتف.",
+    "en": "HyperX's wireless headset that replaces the discontinued Cloud III Wireless and adds Bluetooth next to the 2.4GHz dongle. The battery lasts up to 120 hours on the dongle and up to 200 hours on Bluetooth, with angled 53 mm drivers and memory-foam cushions. It has a detachable boom mic plus a built-in mic for calls, and works with PC, PS5, PS4, Nintendo Switch, Mac and phones.",
+    "ckb": "هێدسێتی بێ وایەری HyperX کە جێگەی Cloud III Wireless دەگرێتەوە (کە بەرهەمهێنانی وەستاوە) و بلووتوسی زیاد کردووە لە تەنیشت دۆنگڵی 2.4GHz. پاتریەکەی بە دۆنگڵ تا 120 کاتژمێر و بە بلووتوس تا 200 کاتژمێر دەمێنێت، لەگەڵ دەنگدەری لاری 53 ملم و بالیشتی فۆمی یادەوەری. مایکرۆفۆنێکی جیاکراوە و مایکرۆفۆنێکی ناوەکی بۆ پەیوەندی هەیە، و لەگەڵ PC و PS5 و PS4 و Nintendo Switch و Mac و مۆبایل کار دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "بطارية حتى 120 ساعة عبر 2.4GHz وحتى 200 ساعة عبر البلوتوث",
+      "en": "Up to 120 hours on 2.4GHz and up to 200 hours on Bluetooth",
+      "ckb": "پاتری تا 120 کاتژمێر بە 2.4GHz و تا 200 کاتژمێر بە بلووتوس"
+    },
+    {
+      "ar": "اتصال 2.4GHz عبر دونجل (USB-A أو USB-C) أو بلوتوث 5.3",
+      "en": "2.4GHz via dongle (USB-A or USB-C) or Bluetooth 5.3",
+      "ckb": "2.4GHz بە دۆنگڵ (USB-A یان USB-C) یان بلووتوس 5.3"
+    },
+    {
+      "ar": "سماعات داخلية مائلة 53 ملم",
+      "en": "Angled 53 mm drivers",
+      "ckb": "دەنگدەری لاری 53 ملم"
+    },
+    {
+      "ar": "مايكروفون قابل للفصل بمؤشر كتم LED، ومايكروفون مدمج",
+      "en": "Detachable boom mic with LED mute light, plus a built-in mic",
+      "ckb": "مایکرۆفۆنی جیاکراوە بە نیشانەی LEDی بێدەنگی، لەگەڵ مایکرۆفۆنی ناوەکی"
+    },
+    {
+      "ar": "لا تعمل مع Xbox ولا يوجد منفذ سلكي 3.5 ملم للصوت",
+      "en": "Not for Xbox, and there is no wired 3.5 mm audio option",
+      "ckb": "بۆ Xbox نییە، و هیچ بژاردەیەکی وایەری 3.5 ملمی دەنگی نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connection",
+      "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" },
+      "value": { "ar": "لاسلكي 2.4GHz (دونجل USB) وبلوتوث 5.3؛ المدى حتى 20 متراً", "en": "2.4GHz wireless (USB dongle) and Bluetooth 5.3; range up to 20 m", "ckb": "بێ وایەری 2.4GHz (دۆنگڵی USB) و بلووتوس 5.3؛ مەودا تا 20 مەتر" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "حتى 120 ساعة (2.4GHz) / 200 ساعة (بلوتوث) عند 50% من الصوت؛ الشحن الكامل 5 ساعات", "en": "Up to 120 h (2.4GHz) / 200 h (Bluetooth) at 50% volume; full charge 5 h", "ckb": "تا 120 کاتژمێر (2.4GHz) / 200 کاتژمێر (بلووتوس) لە 50%ی دەنگ؛ بارگاویی تەواو 5 کاتژمێر" }
+    },
+    {
+      "key": "drivers",
+      "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" },
+      "value": { "ar": "ديناميكية 53 ملم بمغناطيس نيوديميوم، 20 هرتز حتى 20 كيلوهرتز", "en": "Dynamic 53 mm, neodymium magnets, 20 Hz–20 kHz", "ckb": "داینامیکی 53 ملم، موگناتیسی نیۆدیمیۆم، 20 هێرتز تا 20 کیلۆهێرتز" }
+    },
+    {
+      "key": "form_factor",
+      "label": { "ar": "التصميم", "en": "Design", "ckb": "شێوە" },
+      "value": { "ar": "فوق الأذن، مغلقة من الخلف، إطار من الفولاذ والألمنيوم", "en": "Over-ear, closed-back, steel frame with aluminium forks", "ckb": "سەر گوێ، پشت داخراو، چوارچێوەی پۆڵا و ئەلەمنیۆم" }
+    },
+    {
+      "key": "microphone",
+      "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
+      "value": { "ar": "مايكروفون ذراع قابل للفصل أحادي الاتجاه + مايكروفون MEMS مدمج", "en": "Detachable uni-directional boom mic + built-in MEMS mic", "ckb": "مایکرۆفۆنی جیاکراوەی یەک ئاڕاستە + مایکرۆفۆنی MEMSی ناوەکی" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "نحو 358 غرام للسماعة (0.79 رطل)", "en": "About 358 g headset (0.79 lb)", "ckb": "نزیکەی 358 گرام بۆ هێدسێتەکە (0.79 پاوەند)" }
+    },
+    {
+      "key": "software",
+      "label": { "ar": "البرنامج", "en": "Software", "ckb": "بەرنامە" },
+      "value": { "ar": "HyperX NGENUITY على الكمبيوتر", "en": "HyperX NGENUITY on PC", "ckb": "HyperX NGENUITY لەسەر PC" }
+    },
+    {
+      "key": "warranty",
+      "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
+      "value": { "ar": "سنتان", "en": "2 years", "ckb": "2 ساڵ" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "سماعة لاسلكية", "en": "Wireless headset", "ckb": "هێدسێتی بێ وایەر" },
+    { "ar": "مايكروفون قابل للفصل", "en": "Detachable microphone", "ckb": "مایکرۆفۆنی جیاکراوە" },
+    { "ar": "دونجل لاسلكي", "en": "Wireless dongle", "ckb": "دۆنگڵی بێ وایەر" },
+    { "ar": "محوّل USB-C إلى USB-A", "en": "USB-C to USB-A adapter", "ckb": "گۆڕەری USB-C بۆ USB-A" },
+    { "ar": "كابل شحن USB-C", "en": "USB-C charging cable", "ckb": "کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "دليل البدء السريع", "en": "Quick start guide", "ckb": "ڕێبەری دەستپێکی خێرا" }
+  ],
+  "variants": [
+    {
+      "sku": "HX-CLOUD3S-WL-BLK",
+      "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
+      "options": { "color": "Black" },
+      "modelNumber": "A59YZAA",
+      "barcodes": ["198415435590"],
+      "isDefault": true,
+      "images": ["hyperx-cloud-iii-s-wireless--1", "hyperx-cloud-iii-s-wireless--2"]
+    },
+    {
+      "sku": "HX-CLOUD3S-WL-BLKRED",
+      "title": { "ar": "أسود وأحمر", "en": "Black-Red", "ckb": "ڕەش و سوور" },
+      "options": { "color": "Black-Red" },
+      "modelNumber": "A59Z0AA",
+      "barcodes": ["198415435569"],
+      "isDefault": false,
+      "images": ["hyperx-cloud-iii-s-wireless--3"]
+    },
+    {
+      "sku": "HX-CLOUD3S-WL-WHT",
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
+      "options": { "color": "White" },
+      "modelNumber": "AX6G1AA",
+      "barcodes": ["198701814566"],
+      "isDefault": false,
+      "images": ["hyperx-cloud-iii-s-wireless--4"]
+    },
+    {
+      "sku": "HX-CLOUD3S-WL-LAV",
+      "title": { "ar": "لافندر", "en": "Lavender", "ckb": "لاڤەندەر" },
+      "options": { "color": "Lavender" },
+      "modelNumber": "D95DFAA",
+      "barcodes": ["821844615249"],
+      "isDefault": false,
+      "images": ["hyperx-cloud-iii-s-wireless--5"]
+    },
+    {
+      "sku": "HX-CLOUD3S-WL-BLKBLU",
+      "title": { "ar": "أسود وأزرق", "en": "Black-Blue", "ckb": "ڕەش و شین" },
+      "options": { "color": "Black-Blue" },
+      "modelNumber": "DF7E9AA",
+      "barcodes": ["826581029533"],
+      "isDefault": false,
+      "images": ["hyperx-cloud-iii-s-wireless--6"]
+    },
+    {
+      "sku": "HX-CLOUD3S-WL-WHTPNK",
+      "title": { "ar": "أبيض ووردي", "en": "White-Pink", "ckb": "سپی و پەمەیی" },
+      "options": { "color": "White-Pink" },
+      "modelNumber": "DG0R2AA",
+      "barcodes": ["826581045021"],
+      "isDefault": false,
+      "notes": {
+        "ar": "لا توجد صورة خاصة بهذا اللون في الملف بعد.",
+        "en": "No picture of this colour is stored yet.",
+        "ckb": "هێشتا وێنەی ئەم ڕەنگە لێرە نییە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "عبر الدونجل اللاسلكي.", "en": "Via the wireless dongle.", "ckb": "بە دۆنگڵی بێ وایەر." },
+      "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "عبر الدونجل اللاسلكي.", "en": "Via the wireless dongle.", "ckb": "بە دۆنگڵی بێ وایەر." },
+      "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": { "ar": "عبر الدونجل اللاسلكي.", "en": "Via the wireless dongle.", "ckb": "بە دۆنگڵی بێ وایەر." },
+      "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "verified",
+      "note": { "ar": "تذكر HyperX دعم Nintendo Switch.", "en": "HyperX lists Nintendo Switch support.", "ckb": "HyperX پشتگیریی Nintendo Switch دادەنێت." },
+      "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "verified",
+      "note": { "ar": "تذكر HyperX دعم Nintendo Switch.", "en": "HyperX lists Nintendo Switch support.", "ckb": "HyperX پشتگیریی Nintendo Switch دادەنێت." },
+      "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+    },
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "HyperX تذكر Switch دون تحديد Switch 2.",
+        "en": "HyperX says Switch without naming Switch 2.",
+        "ckb": "HyperX باسی Switch دەکات بەبێ ناوهێنانی Switch 2."
+      }
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": { "ar": "عبر الدونجل أو البلوتوث؛ برنامج NGENUITY للتخصيص.", "en": "Via dongle or Bluetooth; NGENUITY for settings.", "ckb": "بە دۆنگڵ یان بلووتوس؛ NGENUITY بۆ ڕێکخستن." },
+      "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "incompatible",
+      "note": {
+        "ar": "Xbox غير مدرج في قائمة التوافق، ولا يوجد اتصال سلكي 3.5 ملم.",
+        "en": "Xbox is not on the compatibility list, and there is no 3.5 mm wired option.",
+        "ckb": "Xbox لە لیستی گونجاندندا نییە، و پەیوەندیی وایەری 3.5 ملم نییە."
+      },
+      "source": "https://www.tomshardware.com/peripherals/gaming-headsets/hyperx-cloud-iii-s-wireless-review"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "steelseries-arctis-nova-7-gen-2", "kind": "alternative" },
+    { "slug": "razer-blackshark-v2-x", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "hyperx-cloud-iii-s-wireless--1",
+      "file": ".cache/product-images/hyperx-cloud-iii-s-wireless/1.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_black_a59yzaa_main_1.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة HyperX Cloud III S Wireless باللون الأسود مع المايكروفون",
+        "en": "HyperX Cloud III S Wireless in black with boom mic",
+        "ckb": "HyperX Cloud III S Wireless بە ڕەنگی ڕەش لەگەڵ مایکرۆفۆن"
+      },
+      "credit": "HyperX (HP Inc.)",
+      "width": 1500,
+      "height": 1500,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-cloud-iii-s-wireless--2",
+      "file": ".cache/product-images/hyperx-cloud-iii-s-wireless/2.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_black_a59yzaa_angle_8.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "kind": "in-box",
+      "alt": {
+        "ar": "محتويات العلبة: السماعة والمايكروفون والدونجل والمحوّل وكابل الشحن",
+        "en": "In the box: headset, boom mic, dongle, adapter and charging cable",
+        "ckb": "ناو قوتوو: هێدسێت، مایکرۆفۆن، دۆنگڵ، گۆڕەر و کێبڵی بارگاوی"
+      },
+      "credit": "HyperX (HP Inc.)",
+      "width": 1500,
+      "height": 1500,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-cloud-iii-s-wireless--3",
+      "file": ".cache/product-images/hyperx-cloud-iii-s-wireless/3.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_red_a59z0aa_main_1_7509e20f-19fa-42e7-9f0d-5729cd52197d.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة HyperX Cloud III S Wireless باللونين الأسود والأحمر",
+        "en": "HyperX Cloud III S Wireless in black-red",
+        "ckb": "HyperX Cloud III S Wireless بە ڕەنگی ڕەش و سوور"
+      },
+      "credit": "HyperX (HP Inc.)",
+      "width": 1500,
+      "height": 1500,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-cloud-iii-s-wireless--4",
+      "file": ".cache/product-images/hyperx-cloud-iii-s-wireless/4.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_white_ax6g1aa_main_1_18b51de8-fff9-47c7-bc05-d81a3263299e.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة HyperX Cloud III S Wireless باللون الأبيض",
+        "en": "HyperX Cloud III S Wireless in white",
+        "ckb": "HyperX Cloud III S Wireless بە ڕەنگی سپی"
+      },
+      "credit": "HyperX (HP Inc.)",
+      "width": 1500,
+      "height": 1500,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-cloud-iii-s-wireless--5",
+      "file": ".cache/product-images/hyperx-cloud-iii-s-wireless/5.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_white_lavender_d95dfaa_main_1.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة HyperX Cloud III S Wireless باللون الأبيض مع لمسات لافندر",
+        "en": "HyperX Cloud III S Wireless in white with lavender accents",
+        "ckb": "HyperX Cloud III S Wireless بە ڕەنگی سپی لەگەڵ لاڤەندەر"
+      },
+      "credit": "HyperX (HP Inc.)",
+      "width": 1500,
+      "height": 1500,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-cloud-iii-s-wireless--6",
+      "file": ".cache/product-images/hyperx-cloud-iii-s-wireless/6.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_iii_s_wireless_black_blue_df7e9aa_main_1.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة HyperX Cloud III S Wireless باللونين الأسود والأزرق",
+        "en": "HyperX Cloud III S Wireless in black-blue",
+        "ckb": "HyperX Cloud III S Wireless بە ڕەنگی ڕەش و شین"
+      },
+      "credit": "HyperX (HP Inc.)",
+      "width": 1500,
+      "height": 1500,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset",
+      "title": "HyperX Cloud III S Wireless – Gaming Headset",
+      "publisher": "HyperX (HP Inc.)",
+      "retrieved": "2026-11-11",
+      "supports": "specs, battery, Bluetooth 5.3, compatibility list, colours with SKUs and UPC barcodes, box contents, 2-year warranty, images"
+    },
+    {
+      "url": "https://hyperx.com/products/hyperx-cloud-iii-wireless-gaming-headset",
+      "title": "HyperX Cloud III Wireless (page marked discontinued)",
+      "publisher": "HyperX (HP Inc.)",
+      "retrieved": "2026-11-11",
+      "supports": "the earlier Cloud III Wireless is discontinued and HyperX points buyers to the Cloud III S Wireless"
+    },
+    {
+      "url": "https://www.tomshardware.com/peripherals/gaming-headsets/hyperx-cloud-iii-s-wireless-review",
+      "title": "HyperX Cloud III S Wireless Review",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-11",
+      "supports": "launch on 12 May 2025, 2.4GHz + Bluetooth, battery figures, built-in plus detachable mic, no wired/analog connection"
+    }
+  ],
+  "notes": {
+    "ar": "هذه الطبعة S هي البديل الحالي لـ Cloud III Wireless التي أوقفتها HyperX. لا تعمل مع Xbox. خاصية Instant Pair تعمل فقط مع بعض حواسيب OMEN المحمولة.",
+    "en": "This S model is the current replacement for the Cloud III Wireless, which HyperX has discontinued. It does not work with Xbox. Instant Pair works only with select OMEN laptops.",
+    "ckb": "ئەم مۆدێلی S جێگرەوەی ئێستای Cloud III Wireless ە کە HyperX وەستاندوویەتی. لەگەڵ Xbox کار ناکات. Instant Pair تەنها لەگەڵ هەندێک لاپتۆپی OMEN کار دەکات."
+  },
+  "verification": {
+    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "secondSource": true,
+    "unverified": [
+      "Nintendo Switch 2 support (HyperX only says Switch)",
+      "Warranty length outside the US",
+      "Release dates of the later colours (Lavender, Black-Blue, White-Pink)"
+    ]
+  }
+}

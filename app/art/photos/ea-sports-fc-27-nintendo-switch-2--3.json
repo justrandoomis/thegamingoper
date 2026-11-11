@@ -1,0 +1,57 @@
+{
+  "key": "ea-sports-fc-27-nintendo-switch-2--3",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-240.6b493285.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-480.a86f15c1.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-720.0a015569.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-960.2fa262c7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-240.a3cd58ec.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-480.1ffb174b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-720.0d1806cb.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ea-sports-fc-27-nintendo-switch-2/3-960.085114d4.webp"
+      }
+    ],
+    "png": "/products/ea-sports-fc-27-nintendo-switch-2/3-720.e7f1532f.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJQBadBAo7R7jkdTZVhmbQ2AAA/tmmDZGA54A0rXb8X/4OBaR7tGVwXKL5RDSx9IPcYR9U4R/ktMZv8xA4zcO9YfKkHAcvjbgCYVIZpHERXfZcigAAAA==",
+  "dominant": "#252a35",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000110123/9dba8d033568e6ba6e649e30a20df213dddcabbd5766d0d6c50117b5aafb5491",
+    "page": "https://www.nintendo.com/us/store/products/ea-sports-fc-27-switch-2/"
+  },
+  "input": "dd3afe8b543da785"
+}

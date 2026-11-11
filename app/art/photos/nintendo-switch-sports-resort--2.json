@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-sports-resort--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-sports-resort/2-240.844fb6c8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-sports-resort/2-480.8dc10994.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-sports-resort/2-720.8ff51540.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-sports-resort/2-960.4fa94017.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-sports-resort/2-1440.f3074637.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-sports-resort/2-240.728020ae.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-sports-resort/2-480.6fe89601.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-sports-resort/2-720.abf38f4e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-sports-resort/2-960.fab66457.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-sports-resort/2-1440.3ddd9c62.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-sports-resort/2-720.0c282bd6.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwAwCdASoUAAsAPxF0sFCsJqSisAgBgCIJZgC7ACEeYjGcwhBGDOJAAP7vw5T8wTX8ybK0KIRA25SlnSUOAhTbsPzkXfbKjw2pF/jX7nLGMRw6rySO9tTnoJmUvNqkjf4pVWzYWjKUzbiAAAA=",
+  "dominant": "#ffffff",
+  "transparent": false,
+  "background": "#fefefe",
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000125145/60f801a1d48a78691408a9ed7f51d87cb0279dc7419a616950b18b9016d9dbd0",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-switch-2/"
+  },
+  "input": "57a31f27ca2ed87b"
+}

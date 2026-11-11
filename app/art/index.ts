@@ -1,15 +1,20 @@
 /**
- * TamTam clay renders — the registry behind `<Art>`.
+ * TamTam pictures — the registry behind `<Art>`: clay renders and product photos.
  *
- * Every picture rendered by `node scripts/art/build.mjs` has one small manifest in
+ * Clay renders: every picture rendered by `node scripts/art/build.mjs` has one small manifest in
  * `app/art/manifest/` (`<key>.json` for the hero view, `<key>--<view>.json` for the others) and
- * its image files in `public/art/`. This module collects the manifests at build time; nothing here
- * touches the network or the DOM, so it is safe in loaders, in components and on the server.
+ * its image files in `public/art/`. Art keys come from `scripts/art/catalog.json` ("switch-2",
+ * "dualsense-white", "game-<slug>", …). The renders are stylised illustrations of the hardware.
  *
- * Art keys come from `scripts/art/catalog.json` ("switch-2", "dualsense-white", "game-<slug>", …).
- * A key that has no render yet is not an error: `<Art>` draws a placeholder of the right shape.
+ * Product photos: every image of `catalog/products/<slug>.json` is built by
+ * `node scripts/products/images.mjs` into `app/art/photos/<slug>--<n>.json` and `public/products/<slug>/`.
+ * Their keys are "<slug>--<n>" (the catalogue's image key); they have one view, "hero", and never
+ * collide with a clay key. `getArt("nintendo-switch-2--1")`, `<Art name="nintendo-switch-2--1" …/>`
+ * and `productPhotos("nintendo-switch-2")` find them.
  *
- * The renders are stylised illustrations of the hardware, not photographs of the item for sale.
+ * This module collects the manifests at build time; nothing here touches the network or the DOM,
+ * so it is safe in loaders, in components and on the server. A key that has no picture yet is not
+ * an error: `<Art>` draws a placeholder of the right shape.
  */
 import expected from "./manifest/_expected.json";
 
@@ -48,6 +53,33 @@ export interface ArtManifest {
   dominant: string;
 }
 
+/** What a product photo shows, as the catalogue says ("box-art" is a game's front cover). */
+export type PhotoKind = "hero" | "angle" | "detail" | "in-box" | "box-art" | "screenshot";
+
+/**
+ * A product photo ("<slug>--<n>"): the manifest of a render, plus how the photo was treated and
+ * where it came from. Always view "hero".
+ */
+export interface PhotoManifest extends ArtManifest {
+  /**
+   * true: no background (the source had none, or it was cut out) — place it on any surface.
+   * false: the photo keeps its own background; `<Art>` draws it in a rounded frame of that colour.
+   */
+  transparent: boolean;
+  /**
+   * The colour of the background an opaque photo kept, "#rrggbb". null when transparent, and when
+   * the picture fills its own frame (box art, screenshots, photos without a plain background).
+   */
+  background: string | null;
+  kind: PhotoKind;
+  /** Who owns the picture, e.g. "Nintendo". */
+  credit: string;
+  /** Where the original was downloaded from (the picture file, and the page it was on). */
+  source: { url: string | null; page: string | null };
+  /** Hash of the original and of the build settings: how the build knows the files are current. */
+  input: string;
+}
+
 const VIEWS: readonly ArtView[] = ["hero", "front", "back"];
 
 const manifests = import.meta.glob<ArtManifest>(["./manifest/*.json", "!./manifest/_*.json"], {
@@ -57,6 +89,14 @@ const manifests = import.meta.glob<ArtManifest>(["./manifest/*.json", "!./manife
 
 const registry = new Map<string, ArtManifest>();
 for (const manifest of Object.values(manifests)) registry.set(artName(manifest.key, manifest.view), manifest);
+
+const photoManifests = import.meta.glob<PhotoManifest>("./photos/*.json", { eager: true, import: "default" });
+
+/** Photos by key ("<slug>--<n>"). Kept apart from the renders: `artNames()` lists renders only. */
+const photos = new Map<string, PhotoManifest>();
+for (const manifest of Object.values(photoManifests)) photos.set(manifest.key, manifest);
+
+const PHOTO_KEY = /^([a-z0-9]+(?:-[a-z0-9]+)*)--(\d+)$/;
 
 const expectedAspects: Readonly<Record<string, number>> = expected;
 
@@ -73,24 +113,65 @@ export function parseArtName(name: string, view?: ArtView): { key: string; view:
   return { key: fromName ? name.slice(0, at) : name, view: view ?? fromName ?? "hero" };
 }
 
-/** The manifest of a rendered picture, or undefined when that key / view has no render yet. */
+/**
+ * The manifest of a picture — a clay render, or a product photo for a "<slug>--<n>" key — or
+ * undefined when it does not exist yet. `isPhoto()` tells the two apart.
+ */
 export function getArt(name: string, view?: ArtView): ArtManifest | undefined {
   const target = parseArtName(name, view);
-  return registry.get(artName(target.key, target.view));
+  return registry.get(artName(target.key, target.view)) ?? (target.view === "hero" ? photos.get(target.key) : undefined);
 }
 
 export function hasArt(name: string, view?: ArtView): boolean {
   return getArt(name, view) !== undefined;
 }
 
-/** The views of a key that are rendered, hero first — what a gallery can show. */
+/** The views of a key that exist, hero first — what a gallery can show. A photo has "hero" only. */
 export function artViews(key: string): ArtView[] {
-  return VIEWS.filter((view) => registry.has(artName(key, view)));
+  return VIEWS.filter((view) => registry.has(artName(key, view)) || (view === "hero" && photos.has(key)));
 }
 
-/** Every rendered picture as "key" / "key@view". */
+/** Every clay render as "key" / "key@view". Photos are listed by `photoKeys()`. */
 export function artNames(): string[] {
   return [...registry.keys()].sort();
+}
+
+/* ── product photos ──────────────────────────────────────────────────────── */
+
+/** "<slug>--<n>": the key of a product's n-th catalogue image (the same key as `media.art_key`). */
+export function photoKey(slug: string, n: number): string {
+  return `${slug}--${n}`;
+}
+
+/** Splits "nintendo-switch-2--3" into slug and number; undefined for anything else. */
+export function parsePhotoKey(key: string): { slug: string; n: number } | undefined {
+  const match = PHOTO_KEY.exec(key);
+  return match ? { slug: match[1], n: Number(match[2]) } : undefined;
+}
+
+/** Narrows a manifest from `getArt()` to a product photo. */
+export function isPhoto(art: ArtManifest | undefined): art is PhotoManifest {
+  return art !== undefined && "transparent" in art && "kind" in art;
+}
+
+/** The manifest of a product photo, or undefined when it is not built (yet). */
+export function getPhoto(key: string): PhotoManifest | undefined {
+  return photos.get(key);
+}
+
+/** A product's built photos in catalogue order (n ascending) — what its gallery shows. */
+export function productPhotos(slug: string): PhotoManifest[] {
+  const found: { n: number; manifest: PhotoManifest }[] = [];
+  for (const [key, manifest] of photos) {
+    const parsed = parsePhotoKey(key);
+    if (parsed?.slug === slug) found.push({ n: parsed.n, manifest });
+  }
+  return found.sort((a, b) => a.n - b.n).map((entry) => entry.manifest);
+}
+
+/** Every built photo key, sorted. */
+export function photoKeys(): string[] {
+  return [...photos.keys()].sort();
 }
 
 /**

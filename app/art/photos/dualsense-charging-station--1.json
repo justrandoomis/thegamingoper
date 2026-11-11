@@ -1,0 +1,57 @@
+{
+  "key": "dualsense-charging-station--1",
+  "view": "hero",
+  "width": 988,
+  "height": 1063,
+  "aspect": 0.9294,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-charging-station/1-240.17890e7a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-charging-station/1-480.cbf5575f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-charging-station/1-720.490272a9.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-charging-station/1-960.a130e1ff.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-charging-station/1-240.87e164d3.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-charging-station/1-480.547980b0.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-charging-station/1-720.a79e7b1e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-charging-station/1-960.c649fa50.webp"
+      }
+    ],
+    "png": "/products/dualsense-charging-station/1-720.731d89d8.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjQBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSHYAAAART6CgbRs2VRLt/omIwG/M8D/gVLZtN9kJzfYi4xgc8klsHL04BheHjUah+/nee+/wCxH9nwD+XR0HwUul1/2pykzxk9QxT0maAt2fmUN3I1vCTW4FT+9M8fNaXOQmgjqDldMiSABLSXXmPL5qYRezeyK8ZlEMVlA4IJgAAACwBACdASoTABQAPxF+tVWsJ6SjKAgBgCIJZwAD5MkG6FnjOh0Nyj7PPVrO3MMAAP7o5fpEPtbhfPIUwMxW+G+MSm7GaTLEnwRCmRCQaPu3ffXKY+s2kP+jY3o/8gkEq5fib6Ve9qiyPH4XPLzrgrsyK/vrTUIjmj07gN/XT8CdT6XkMPsqAm8FoRglfkMAXYsNjOH0KLH4AA==",
+  "dominant": "#d4d9e4",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ChargingStation-Standalone-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/"
+  },
+  "input": "82ccfccfc9d5a414"
+}

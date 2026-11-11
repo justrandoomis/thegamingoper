@@ -1,0 +1,249 @@
+{
+  "slug": "gran-turismo-7",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2022-03-04",
+  "name": { "ar": "Gran Turismo 7", "en": "Gran Turismo 7", "ckb": "Gran Turismo 7" },
+  "short": {
+    "ar": "PS5 · قرص · أكثر من 580 سيارة · يدعم PS VR2",
+    "en": "PS5 · disc · 580+ cars · PS VR2 support",
+    "ckb": "PS5 · دیسک · زیاتر لە 580 ئۆتۆمبێل · پشتگیری PS VR2"
+  },
+  "description": {
+    "ar": "محاكي سباقات السيارات من Polyphony Digital، فيه أكثر من 580 سيارة من أكثر من 77 شركة، وحلبات في 42 موقعاً بـ 122 تصميماً. تشتري السيارات وتعدّلها وتتسابق ضد الذكاء الاصطناعي أو أونلاين، ويمكن اللعب بنظارة PS VR2 على نسخة PS5. ما زالت اللعبة تحصل على تحديثات مجانية كبيرة، آخرها Spec IV في تشرين الأول 2026.",
+    "en": "Polyphony Digital's driving simulator, with more than 580 cars from 77+ brands and tracks at 42 locations with 122 layouts. You buy, tune and race cars against the AI or online, and the PS5 version can be played in PS VR2. It still receives big free updates, most recently Spec IV in October 2026.",
+    "ckb": "سیمولەیتەری لێخوڕینی Polyphony Digital، زیاتر لە 580 ئۆتۆمبێل لە 77+ کۆمپانیا و پیستی پێشبڕکێ لە 42 شوێن بە 122 شێوەی جیاواز. ئۆتۆمبێل دەکڕیت، دەستکاری دەکەیت و لەگەڵ زیرەکی دەستکرد یان ئۆنلاین پێشبڕکێ دەکەیت، و وەشانی PS5 بە PS VR2 یش یاری دەکرێت. هێشتا نوێکردنەوەی گەورەی بێبەرامبەر وەردەگرێت، دواینیان Spec IV لە تشرینی یەکەمی 2026."
+  },
+  "highlights": [
+    {
+      "ar": "أكثر من 580 سيارة وحلبات في 42 موقعاً.",
+      "en": "580+ cars and tracks at 42 locations.",
+      "ckb": "زیاتر لە 580 ئۆتۆمبێل و پیستی پێشبڕکێ لە 42 شوێن."
+    },
+    {
+      "ar": "بدون إنترنت يتوفر طور Arcade فقط؛ معظم اللعبة تحتاج اتصالاً، واللعب الجماعي أونلاين يحتاج PlayStation Plus.",
+      "en": "Offline, only Arcade Mode is available; most of the game needs a connection, and online racing needs PlayStation Plus.",
+      "ckb": "بێ ئینتەرنێت تەنها شێوازی Arcade بەردەستە؛ زۆربەی یارییەکە پەیوەندی پێویستە، و پێشبڕکێی ئۆنلاین PlayStation Plus ی پێویستە."
+    },
+    {
+      "ar": "تدعم PS VR2 في نسخة PS5 (بدون وحدات التحكم PS VR2 Sense).",
+      "en": "PS VR2 support on the PS5 version (PS VR2 Sense controllers not supported).",
+      "ckb": "پشتگیری PS VR2 لە وەشانی PS5 (بێ کۆنترۆڵەکانی PS VR2 Sense)."
+    },
+    {
+      "ar": "قوائم وترجمة باللغة العربية.",
+      "en": "Arabic menus and subtitles.",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی."
+    },
+    {
+      "ar": "التصنيف PEGI 3 — مناسبة لكل الأعمار.",
+      "en": "Rated PEGI 3 — suitable for all ages.",
+      "ckb": "پۆلێنی PEGI 3 — گونجاو بۆ هەموو تەمەنەکان."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "4 آذار 2022", "en": "4 March 2022", "ckb": "4ی ئازاری 2022" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 وPS4 — هنا نسخة PS5", "en": "PS5 and PS4 — sold here for PS5", "ckb": "PS5 و PS4 — لێرە وەشانی PS5 دەفرۆشرێت" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص PS5", "en": "PS5 disc", "ckb": "دیسکی PS5" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": {
+        "ar": "سباق بشاشة مقسومة على نفس الجهاز، وحتى 20 لاعباً أونلاين",
+        "en": "Split-screen racing on one console, up to 20 players online",
+        "ckb": "پێشبڕکێی شاشەی دابەشکراو لەسەر یەک ئامێر، تا 20 یاریزان ئۆنلاین"
+      }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "الإنترنت والاشتراكات", "en": "Internet and subscriptions", "ckb": "ئینتەرنێت و بەشداریکردن" },
+      "value": {
+        "ar": "بدون إنترنت يتوفر طور Arcade فقط؛ اللعب الجماعي أونلاين يحتاج PlayStation Plus",
+        "en": "Offline, only Arcade Mode is available; online multiplayer needs PlayStation Plus",
+        "ckb": "بێ ئینتەرنێت تەنها شێوازی Arcade بەردەستە؛ یاری بەکۆمەڵی ئۆنلاین پێویستی بە PlayStation Plus هەیە"
+      }
+    },
+    {
+      "key": "vr",
+      "label": { "ar": "الواقع الافتراضي", "en": "Virtual reality", "ckb": "ڕاستیی مەجازی" },
+      "value": {
+        "ar": "PS VR2 اختياري (نسخة PS5 فقط، ما عدا شاشة اللاعبين المقسومة)",
+        "en": "PS VR2 optional (PS5 version only, except split-screen)",
+        "ckb": "PS VR2 ئارەزوومەندانە (تەنها وەشانی PS5، جگە لە شاشەی دابەشکراو)"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "قوائم وترجمة", "en": "Menus and subtitles", "ckb": "مێنیو و ژێرنووس" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 3", "en": "PEGI 3", "ckb": "PEGI 3" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Polyphony Digital / Sony Interactive Entertainment", "en": "Polyphony Digital / Sony Interactive Entertainment", "ckb": "Polyphony Digital / Sony Interactive Entertainment" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة لجهاز PS5", "en": "PS5 game disc", "ckb": "دیسکی یارییەکە بۆ PS5" }
+  ],
+  "variants": [
+    {
+      "sku": "GT7-PS5-STD",
+      "title": { "ar": "Gran Turismo 7 لجهاز PS5 — Standard Edition", "en": "Gran Turismo 7 for PS5 — Standard Edition", "ckb": "Gran Turismo 7 بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["gran-turismo-7--1", "gran-turismo-7--2", "gran-turismo-7--3", "gran-turismo-7--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "genres": [
+      { "ar": "سباقات", "en": "Racing", "ckb": "پێشبڕکێ" },
+      { "ar": "محاكاة قيادة", "en": "Driving simulator", "ckb": "سیمولەیتەری لێخوڕین" }
+    ],
+    "players": "1, local split-screen, up to 20 online",
+    "online": {
+      "ar": "بدون إنترنت يتوفر طور Arcade فقط؛ اللعب الجماعي أونلاين يحتاج PlayStation Plus.",
+      "en": "Offline only Arcade Mode is available; online multiplayer needs PlayStation Plus.",
+      "ckb": "بێ ئینتەرنێت تەنها شێوازی Arcade بەردەستە؛ یاری بەکۆمەڵی ئۆنلاین پێویستی بە PlayStation Plus هەیە."
+    },
+    "ageRating": { "pegi": 3 },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Polyphony Digital",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.playstation.com/en-ae/games/gran-turismo-7/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.playstation.com/en-ae/games/gran-turismo-7/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps-vr2",
+      "status": "verified",
+      "note": { "ar": "دعم كامل لـ PS VR2 في نسخة PS5؛ لا يدعم وحدات PS VR2 Sense.", "en": "Full PS VR2 support in the PS5 version; PS VR2 Sense controllers not supported.", "ckb": "پشتگیری تەواوی PS VR2 لە وەشانی PS5؛ کۆنترۆڵەکانی PS VR2 Sense پشتگیری ناکرێن." },
+      "source": "https://www.gran-turismo.com/us/products/gt7/"
+    }
+  ],
+  "related": [
+    { "slug": "playstation-vr2", "kind": "upsell" },
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "gran-turismo-7--1",
+      "file": ".cache/product-images/gran-turismo-7/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202202/2806/QDzid2jNv4e44kgumGXDCscF.png",
+      "sourcePage": "https://store.playstation.com/en-ae/concept/10000956",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Gran Turismo 7", "en": "Gran Turismo 7 cover art", "ckb": "وێنەی بەرگی Gran Turismo 7" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "gran-turismo-7--2",
+      "file": ".cache/product-images/gran-turismo-7/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-screenshot-01-en-3oct25?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/gran-turismo-7/",
+      "kind": "screenshot",
+      "alt": { "ar": "سيارة رياضية صفراء على الحلبة", "en": "A yellow sports car on track", "ckb": "ئۆتۆمبێلێکی وەرزشی زەرد لەسەر پیست" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "gran-turismo-7--3",
+      "file": ".cache/product-images/gran-turismo-7/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-screenshot-02-en-3oct25?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/gran-turismo-7/",
+      "kind": "screenshot",
+      "alt": { "ar": "سباق جماعي على الحلبة", "en": "A pack of cars racing", "ckb": "پێشبڕکێی چەندین ئۆتۆمبێل لەسەر پیست" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "gran-turismo-7--4",
+      "file": ".cache/product-images/gran-turismo-7/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-7-screenshot-ps5-06-en-05aug21?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-ae/games/gran-turismo-7/",
+      "kind": "screenshot",
+      "alt": { "ar": "منظور من داخل قمرة سيارة سباق", "en": "Cockpit view from inside a race car", "ckb": "دیمەنی ناو ئۆتۆمبێلی پێشبڕکێ" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.gran-turismo.com/us/products/gt7/", "title": "Gran Turismo 7 — product information", "publisher": "Polyphony Digital / Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "580+ cars from 77+ brands, 42 locations and 122 layouts, release 4 Mar 2022, offline only Arcade Mode, split screen, PS VR2 support (PS5 only, no Sense controllers), Spec IV update Oct 2026" },
+    { "url": "https://www.playstation.com/en-ae/games/gran-turismo-7/", "title": "Gran Turismo 7 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 and PS4, PS Plus required for online play, up to 20 online players, PS5 Pro Enhanced, PS VR2 optional, screenshots" },
+    { "url": "https://store.playstation.com/en-ae/concept/10000956", "title": "Gran Turismo 7 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language, cover art" },
+    { "url": "https://store.playstation.com/en-gb/concept/10000956", "title": "Gran Turismo 7 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 3 with in-game purchases" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "ألعاب السباقات تكون أمتع مع مقود سباق متوافق مع PS5. التوسعة المدفوعة Power Pack تُباع بشكل منفصل.",
+    "en": "Racing games are more fun with a PS5-compatible racing wheel. The paid Power Pack expansion is sold separately.",
+    "ckb": "یارییەکانی پێشبڕکێ لەگەڵ سووکانێکی گونجاو لەگەڵ PS5 خۆشترن. فراوانکردنی پارەداری Power Pack جیا دەفرۆشرێت."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Exact split-screen player count: the official page mentions split-screen racing; the store lists no local player count.",
+      "Install size is not published on the official pages we read.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

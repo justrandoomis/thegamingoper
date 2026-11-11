@@ -1,0 +1,57 @@
+{
+  "key": "xbox-series-x-digital--1",
+  "view": "hero",
+  "width": 1320,
+  "height": 1280,
+  "aspect": 1.0313,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x-digital/1-240.92637b61.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x-digital/1-480.a74c1c69.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x-digital/1-720.6401d6cf.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x-digital/1-960.f776f673.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-series-x-digital/1-240.c3d4cf61.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-series-x-digital/1-480.69100a1c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-series-x-digital/1-720.21bbc849.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-series-x-digital/1-960.56feec25.webp"
+      }
+    ],
+    "png": "/products/xbox-series-x-digital/1-720.aa6a9b40.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvQAAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSFcAAAARR6CobSM2VR7r1usiIpB+35JwYtu20xy67cXikDg0jiGg+wyKLknuxD8qA4jof0AYRRYA3a5jawEuSer/OTTPwzIk9yV4KY1hrGH8SWfbFEAUVXFkWQAAVlA4IHYAAADwBACdASoUABMAPxFws1AsJiUisBgMAYAiCWcAACnB7E9I0qXZFzRR6fmxXdejmAAA/sTtmjarmkFOR3+NP7H6GlRr+suwr3wpSiJoOhYUg7HNCtPXHYQJufsW5h6gvuPp1c922xwJfMX+OBw3Kbqp9qSAAAAA",
+  "dominant": "#f9f9f9",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-X-Robot-White-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
+  },
+  "input": "db8c11f9fc07b9a3"
+}

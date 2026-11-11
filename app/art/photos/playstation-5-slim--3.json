@@ -1,0 +1,57 @@
+{
+  "key": "playstation-5-slim--3",
+  "view": "hero",
+  "width": 1332,
+  "height": 1100,
+  "aspect": 1.2109,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim/3-240.19b3ad75.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim/3-480.13ca495e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-slim/3-720.c3ec0331.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-slim/3-960.315aa6fe.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-slim/3-240.343b7a50.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-5-slim/3-480.a9fbf3b9.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5-slim/3-720.7b7e1571.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5-slim/3-960.a3c522de.webp"
+      }
+    ],
+    "png": "/products/playstation-5-slim/3-720.80c2bc49.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjYBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSHQAAAART6CgbRs2VBD7fxERODvfpm84sW1rWe7vf8SpbtWh0SC6RO9uI/gX1bnj/WQMEf2fAGj3Y6ovu4ZkQfKeE74U51H0qXR2Gn2N0OkveRhAZRuQbAOdWz1zJm3gRSZDozkQ+gcsAwaQ6lU+PqQGno4MGBgqJVZQOCCcAAAAcAQAnQEqFAARAD8RfrZVrCekoygIAYAiCWMAA+K48Al/iUe6Yxar+lL2UgAA/tPeNV+GBPImqsXWU2UaDdRCx4Qi/47gge1TPa51Pz9jN/2343PXvE9vJ3yCu9SjUu+GGj0bU+1OskGl/ZjToHfpAAN4FgzrNxZtrtPuwEtbpyOiJZiX2JFaOklIneY/n/kb2x/U/1YgntzfsAAA",
+  "dominant": "#e2e5ed",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS5Console-CFI2100-02-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/1-tb-disc/product/PSD001-PSDE01929_59-PS5CONSOLEHB2OYE/"
+  },
+  "input": "d3299a42b2e20fd2"
+}

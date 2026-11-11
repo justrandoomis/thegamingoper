@@ -1,0 +1,65 @@
+{
+  "key": "msi-claw-8-ex-ai-plus--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 947,
+  "aspect": 1.6895,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-240.f7211059.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-480.7b25559e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-720.9a4f0a5b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-960.0c22b1d4.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-1440.7841d4a2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-240.e7e70b2b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-480.13f4cbfd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-720.40b40545.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-960.bc5fffbc.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/msi-claw-8-ex-ai-plus/2-1440.b3ac70cc.webp"
+      }
+    ],
+    "png": "/products/msi-claw-8-ex-ai-plus/2-720.f2ef1683.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSFYAAAART6CgbSM3diT2vvuPiICmDvOPCza1tTf56OwYaAY6GOgCstPnTISRFQnR20BCRP8nALp5S47zYg5SLp8wK15QBbc1vEflq5hLhbsPgJnXJDEAIGzwI1ZQOCBUAAAA0AMAnQEqFAAMAD8RcrBQLCakorAIAYAiCWQArAAiApPrUQqWfEsAAP7lmcDmL05nuQp+hNWVC22f04mpogH1TwgESQnlmg0likp8j7sqLTh1AAAA",
+  "dominant": "#36293b",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "MSI",
+  "source": {
+    "url": "https://storage-asset.msi.com/global/picture/product/product_17812501697da0e81bdbce6eb77a1e3e6ee3d656f6.png",
+    "page": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery"
+  },
+  "input": "dd86be58fe496059"
+}

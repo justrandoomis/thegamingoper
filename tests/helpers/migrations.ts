@@ -130,8 +130,14 @@ export async function dropEverything(d1: D1Database): Promise<{ tables: number; 
   // DROP TABLE runs the foreign-key actions of the table's rows, and SQLite must be able to
   // compile them: a child table may only still exist while all its parents do. So tables are
   // dropped children-first — a table goes once nothing that remains references it.
+  // The same filter as above: on D1, reading the pragma of its internal `_cf_METADATA` table is
+  // refused (SQLITE_AUTH), and it has no foreign keys worth knowing anyway.
   const references = (
-    await d1.prepare(`SELECT m.name AS child, fk."table" AS parent FROM sqlite_master m, pragma_foreign_key_list(m.name) fk WHERE m.type = 'table'`).all<{ child: string; parent: string }>()
+    await d1
+      .prepare(
+        `SELECT m.name AS child, fk."table" AS parent FROM sqlite_master m, pragma_foreign_key_list(m.name) fk WHERE m.type = 'table' AND m.name NOT LIKE 'sqlite\\_%' ESCAPE '\\' AND m.name NOT LIKE '\\_cf\\_%' ESCAPE '\\'`,
+      )
+      .all<{ child: string; parent: string }>()
   ).results;
   const remaining = new Set(regular);
   const dropOrder: string[] = [];

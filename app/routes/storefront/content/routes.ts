@@ -8,5 +8,6 @@ import { route, type RouteConfigEntry } from "@react-router/dev/routes";
 export const contentRoutes: RouteConfigEntry[] = [
   // Motion lab (owner: motion): /motion and its list → detail demo route /motion/item/:id.
   route("motion", "routes/storefront/content/motion-lab.tsx", [route("item/:id", "routes/storefront/content/motion-lab-item.tsx")]),
+  route("design-system", "routes/storefront/content/design-system.tsx"),
   route("*", "routes/storefront/content/not-found.tsx"),
 ];

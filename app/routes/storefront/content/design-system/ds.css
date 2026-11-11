@@ -1,0 +1,165 @@
+/*
+ * /design-system — page layout only (the specimens are the real components). Same cascade layer as the
+ * component styles; tokens only.
+ */
+@layer components {
+  .ds {
+    min-block-size: 100dvh;
+    padding-block-end: var(--s-16);
+  }
+  .ds-head {
+    display: grid;
+    gap: var(--s-3);
+    padding-block: var(--s-6) var(--s-4);
+  }
+  .ds-title {
+    font: var(--type-title);
+    text-wrap: balance;
+  }
+  .ds-lede {
+    max-inline-size: 62ch;
+    color: var(--ink-2);
+  }
+  .ds-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--s-4) var(--s-6);
+    padding-block-start: var(--s-2);
+  }
+  .ds-control {
+    display: grid;
+    gap: 4px;
+    min-inline-size: 0;
+  }
+  .ds-control > .bank__label {
+    margin-block: 0;
+  }
+  .ds-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-5);
+    padding-block: var(--s-2) var(--s-4);
+    border-block-end: 1px solid var(--line);
+  }
+  .ds-section {
+    padding-block: var(--s-8) var(--s-4);
+    scroll-margin-block-start: var(--s-4);
+  }
+  .ds-section + .ds-section {
+    border-block-start: 1px solid var(--line);
+  }
+  .ds-h2 {
+    font: var(--type-section);
+  }
+  .ds-owner {
+    font: var(--type-caption);
+    color: var(--ink-2);
+  }
+  .ds-block {
+    display: grid;
+    gap: var(--s-3);
+    margin-block-start: var(--s-10);
+    min-inline-size: 0;
+  }
+  .ds-h3 {
+    font: var(--type-sub);
+  }
+  .ds-note {
+    max-inline-size: 66ch;
+    font: var(--type-caption);
+    color: var(--ink-2);
+  }
+  .ds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+    gap: var(--s-5) var(--s-4);
+    align-items: start;
+  }
+  .ds-grid--swatches {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 96px), 1fr));
+    gap: var(--s-3);
+  }
+  .ds-grid--wide {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  }
+  .ds-spec {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    min-inline-size: 0;
+    margin: 0;
+  }
+  .ds-spec--wide {
+    grid-column: 1 / -1;
+  }
+  .ds-spec__body {
+    min-inline-size: 0;
+  }
+  .ds-spec__label {
+    font: 500 12px/1.5 var(--font-text);
+    color: var(--ink-2);
+    overflow-wrap: anywhere;
+  }
+  .ds-spec__label code {
+    font-size: 11.5px;
+  }
+  .ds-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .ds-swatch {
+    display: grid;
+    align-content: end;
+    block-size: 64px;
+    padding: 8px 10px;
+    border-radius: var(--r-sm);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font: 500 11.5px/1.4 var(--font-text);
+  }
+  .ds-type {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .ds-type > div > code {
+    justify-self: start;
+  }
+  .ds-type > div {
+    display: grid;
+    gap: 2px;
+    padding-block-end: var(--s-2);
+    border-block-end: 1px solid var(--line);
+  }
+  .ds-scroll {
+    position: relative;
+    block-size: 280px;
+    overflow-y: auto;
+    border-radius: var(--r-lg);
+    background: var(--ground);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .ds-scroll__bar {
+    position: sticky;
+    inset-block-start: 8px;
+    z-index: var(--z-raised);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin: 8px;
+    padding-block: 6px;
+    padding-inline: 14px 6px;
+    border-radius: var(--r-md);
+  }
+  .ds-stage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--s-8) var(--s-4);
+  }
+  .ds-demo-note {
+    font: var(--type-caption);
+    color: var(--ink-2);
+  }
+}

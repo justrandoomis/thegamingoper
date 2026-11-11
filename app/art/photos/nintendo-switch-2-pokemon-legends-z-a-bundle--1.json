@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-pokemon-legends-z-a-bundle--1",
+  "view": "hero",
+  "width": 1556,
+  "height": 1600,
+  "aspect": 0.9725,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-240.ac626c71.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-480.1df15e60.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-720.e9790b1e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-960.6b23aa8e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-1440.b264ec54.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-240.b47edfe1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-480.6e0a871d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-720.aa681f67.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-960.99e84fac.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-1440.382bf704.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/1-720.3eb5235d.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjYBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSE0AAAART6CobSM2VQj33PsiIsC80bpPYNvaWpYXRoAJCBsQRoAB/J/AWFsxgqG14g6sdtYR/Z8AvfYx73VzOq8OQDM3j79g6EA7SpCGuiarjwBWUDggwgAAAPAEAJ0BKhMAFAA/EXq1U6wnpSKoCqmAIglsAMKdgABWZc3wF95BeF76tgrpKXHYAAD6a/WAvMdf60iUMBvSxV5ZYndpjOOYDXVIDvZDRBMbr5Uj3asswsvvuE//5nqJ2OpRxixRCl0Hr0cmNTF50qs/7xXiWSg96ZNNwdc3rTq+wI8emaV7Txc9OSZhV4TPHVihIByaiCCUo0XnoMrgJyjhNN0mC1RPWU1PhmZYKjhPnuj1jB/VsB0juQ901y3WrBAA",
+  "dominant": "#e70014",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo / The Pokémon Company",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/122173-nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-bundle-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-pokemon-legends-z-a-nintendo-switch-2-edition-bundle-122173/"
+  },
+  "input": "be3585c370e355da"
+}

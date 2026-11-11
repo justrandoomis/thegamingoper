@@ -1,0 +1,229 @@
+{
+  "slug": "marvels-spider-man-2",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2023-10-20",
+  "name": { "ar": "Marvel's Spider-Man 2", "en": "Marvel's Spider-Man 2", "ckb": "Marvel's Spider-Man 2" },
+  "short": {
+    "ar": "PS5 · قرص · دبلجة عربية · لاعب واحد",
+    "en": "PS5 · disc · Arabic voice-over · single-player",
+    "ckb": "PS5 · دیسک · دەنگی عەرەبی · تاکەکەسی"
+  },
+  "description": {
+    "ar": "مغامرة من Insomniac Games تتنقل فيها بين Peter Parker وMiles Morales داخل مدينة نيويورك المفتوحة. تواجه أعداء مثل Kraven وVenom، وتستخدم قدرات Symbiote الجديدة وأجنحة الويب للتنقل بسرعة. اللعبة فردية وتدعم الدبلجة العربية بالكامل.",
+    "en": "An Insomniac Games adventure where you switch between Peter Parker and Miles Morales across an open New York. You face villains such as Kraven and Venom, use new symbiote powers and glide around the city with Web Wings. It is a single-player game with full Arabic voice-over.",
+    "ckb": "سەرکێشییەک لە Insomniac Games کە تێیدا لە نێوان Peter Parker و Miles Morales دا دەگۆڕێیت لە شاری کراوەی نیویۆرک. ڕووبەڕووی دوژمنانی وەک Kraven و Venom دەبیتەوە، توانا نوێیەکانی Symbiote بەکاردەهێنیت و بە Web Wings بە خێرایی بە شارەکەدا دەفڕیت. یارییەکی تاکەکەسییە و دەنگی عەرەبی تەواوی تێدایە."
+  },
+  "highlights": [
+    {
+      "ar": "دبلجة عربية كاملة مع ترجمة وقوائم بالعربية.",
+      "en": "Full Arabic voice-over with Arabic menus and subtitles.",
+      "ckb": "دەنگی عەرەبی تەواو لەگەڵ مێنیو و ژێرنووسی عەرەبی."
+    },
+    {
+      "ar": "بطلان قابلان للعب: Peter Parker وMiles Morales.",
+      "en": "Two playable heroes: Peter Parker and Miles Morales.",
+      "ckb": "دوو پاڵەوانی یاریپێکراو: Peter Parker و Miles Morales."
+    },
+    {
+      "ar": "قصة للاعب واحد بدون طور أونلاين.",
+      "en": "Single-player story with no online mode.",
+      "ckb": "چیرۆکی تاکەکەسی بێ شێوازی ئۆنلاین."
+    },
+    {
+      "ar": "مُحسّنة لـ PS5 Pro.",
+      "en": "PS5 Pro Enhanced.",
+      "ckb": "باشترکراو بۆ PS5 Pro."
+    },
+    {
+      "ar": "التصنيف PEGI 16.",
+      "en": "Rated PEGI 16.",
+      "ckb": "پۆلێنی PEGI 16."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "20 تشرين الأول 2023", "en": "20 October 2023", "ckb": "20ی تشرینی یەکەمی 2023" }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 (والنسخة الفيزيائية لـ PS5 فقط)", "en": "PS5 (the physical copy is PS5 only)", "ckb": "PS5 (وەشانی فیزیکی تەنها بۆ PS5)" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص PS5 واحد", "en": "One PS5 disc", "ckb": "یەک دیسکی PS5" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "لاعب واحد", "en": "1 player", "ckb": "1 یاریزان" }
+    },
+    {
+      "key": "online",
+      "label": { "ar": "الإنترنت والاشتراكات", "en": "Internet and subscriptions", "ckb": "ئینتەرنێت و بەشداریکردن" },
+      "value": {
+        "ar": "لا تحتاج اشتراكاً؛ الإنترنت مطلوب لتحميل الصوت بغير الإنجليزية مثل العربية",
+        "en": "No subscription needed; internet needed to download non-English audio such as Arabic",
+        "ckb": "بەشداریکردنی پێویست نییە؛ ئینتەرنێت بۆ داگرتنی دەنگی جگە لە ئینگلیزی وەک عەرەبی پێویستە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "صوت وترجمة وقوائم", "en": "Voice, subtitles and menus", "ckb": "دەنگ، ژێرنووس و مێنیو" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 16 / ESRB T", "en": "PEGI 16 / ESRB T", "ckb": "PEGI 16 / ESRB T" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Insomniac Games / Sony Interactive Entertainment", "en": "Insomniac Games / Sony Interactive Entertainment", "ckb": "Insomniac Games / Sony Interactive Entertainment" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة لجهاز PS5", "en": "PS5 game disc", "ckb": "دیسکی یارییەکە بۆ PS5" }
+  ],
+  "variants": [
+    {
+      "sku": "MSM2-PS5-STD",
+      "title": { "ar": "Marvel's Spider-Man 2 لجهاز PS5 — Standard Edition", "en": "Marvel's Spider-Man 2 for PS5 — Standard Edition", "ckb": "Marvel's Spider-Man 2 بۆ PS5 — Standard Edition" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["marvels-spider-man-2--1", "marvels-spider-man-2--2", "marvels-spider-man-2--3", "marvels-spider-man-2--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "genres": [
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" },
+      { "ar": "عالم مفتوح", "en": "Open world", "ckb": "جیهانی کراوە" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "لعبة فردية لا تحتاج اشتراكاً؛ الإنترنت مطلوب لتحميل الصوت العربي.",
+      "en": "Single-player, no subscription; internet is needed to download the Arabic audio.",
+      "ckb": "یارییەکی تاکەکەسییە و بەشداریکردنی پێویست نییە؛ ئینتەرنێت بۆ داگرتنی دەنگی عەرەبی پێویستە."
+    },
+    "ageRating": { "pegi": 16, "esrb": "T" },
+    "arabic": "voice+subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Insomniac Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://direct.playstation.com/en-us/buy-games/marvels-spider-man-2-ps5"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://direct.playstation.com/en-us/buy-games/marvels-spider-man-2-ps5"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مُحسّنة لـ PS5 Pro، لكن القرص يحتاج قارئ الأقراص الإضافي.", "en": "PS5 Pro Enhanced, but the disc needs the add-on Disc Drive.", "ckb": "باشترکراو بۆ PS5 Pro، بەڵام دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    { "slug": "marvels-wolverine", "kind": "alternative" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" },
+    { "slug": "ps5-disc-drive", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "marvels-spider-man-2--1",
+      "file": ".cache/product-images/marvels-spider-man-2/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-packshot-01-en-02jul24?$1600px--t$",
+      "sourcePage": "https://www.playstation.com/en-us/games/marvels-wolverine/",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Marvel's Spider-Man 2", "en": "Marvel's Spider-Man 2 cover art", "ckb": "وێنەی بەرگی Marvel's Spider-Man 2" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 1600, "transparent": false
+    },
+    {
+      "key": "marvels-spider-man-2--2",
+      "file": ".cache/product-images/marvels-spider-man-2/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-screenshot-story-duo-4k-legal-13jul23?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "Peter وMiles يتأرجحان بين ناطحات السحاب", "en": "Peter and Miles swinging between skyscrapers", "ckb": "Peter و Miles لە نێوان باڵەخانە بەرزەکاندا هەڵدەفڕن" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "marvels-spider-man-2--3",
+      "file": ".cache/product-images/marvels-spider-man-2/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-screenshot-venom-4k-legal-13jul23?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "Venom في شوارع نيويورك", "en": "Venom on the streets of New York", "ckb": "Venom لە شەقامەکانی نیویۆرک" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "marvels-spider-man-2--4",
+      "file": ".cache/product-images/marvels-spider-man-2/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-screenshot-peter-miles-en-25may23.jpg?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/",
+      "kind": "screenshot",
+      "alt": { "ar": "Peter ببدلة Symbiote السوداء بجانب Miles", "en": "Peter in the black symbiote suit next to Miles", "ckb": "Peter بە جلی ڕەشی Symbiote لە تەنیشت Miles" },
+      "credit": "Sony Interactive Entertainment / Marvel",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://www.playstation.com/en-us/support/games/marvels-spider-man-2-support/", "title": "Marvel's Spider-Man 2 support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 20 Oct 2023, language table with Arabic voice and text, non-English audio as a download, single-player, editions" },
+    { "url": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/", "title": "Marvel's Spider-Man 2 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, villains, Web Wings, screenshots, PlayStation Plus Extra catalogue" },
+    { "url": "https://store.playstation.com/en-gb/concept/10002456", "title": "Marvel's Spider-Man 2 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16, Arabic spoken language" },
+    { "url": "https://direct.playstation.com/en-us/buy-games/marvels-spider-man-2-ps5", "title": "Marvel's Spider-Man 2 — PS5 (PlayStation Direct)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "physical PS5 disc, 1 player, 1 disc, ESRB descriptors, PS5 Pro Enhanced" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "اللعبة متاحة أيضاً ضمن كتالوج PlayStation Plus Extra لمن يملك الاشتراك.",
+    "en": "The game is also in the PlayStation Plus Extra catalogue for subscribers.",
+    "ckb": "یارییەکە لە کاتالۆگی PlayStation Plus Extra یش بەردەستە بۆ بەشداربووان."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Install size is not published on the official pages we read.",
+      "ESRB letter rating (T) is inferred from the ESRB content descriptors shown on PlayStation Direct.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "key": "playstation-5-pro--3",
+  "view": "hero",
+  "width": 468,
+  "height": 1063,
+  "aspect": 0.4403,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-pro/3-240.e21043e5.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-5-pro/3-240.1387ec86.webp"
+      }
+    ],
+    "png": "/products/playstation-5-pro/3-468.fa835ae2.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvwAAABXRUJQVlA4WAoAAAAQAAAACAAAEwAAQUxQSEwAAAARR6CobSM2Vwy35/PAXEQE4pz2o8Emsm0n5733BRGNgAaGFjrazPVNlBDR/wngtmkdNiVYFbDIH2YZjJdhuuE/g1kGi/wSZF1fg5kBVlA4IIoAAACQAwCdASoJABQAPxFysFAsJqSisAgBgCIJQAAJQ8fYXz4R8UxMAPQBl/RriBShTRZosRN2Mu3VVExPdxXX2v6UTZjJ/NJGFKyVNDt3SN/okUgu/Yv1SY25S5192PZgFop+ubEo7RBv1u7wo3TPQrGu38vGjuxIXkub5mfjmg7S9+7xTLXtxdgAAAA=",
+  "dominant": "#070c17",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-ProConsole-05-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/ps5/ps5-pro/buy-now/product/PSD001-PSDE01942_39-PS5PROCHASASIRSE/"
+  },
+  "input": "d2cdf9a9a8c293fd"
+}

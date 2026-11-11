@@ -1,0 +1,238 @@
+{
+  "slug": "xbox-wireless-headset",
+  "group": "xbox-hardware",
+  "kind": "headset",
+  "platform": "xbox",
+  "brand": "Microsoft",
+  "family": "xbox-wireless-headset",
+  "status": "available",
+  "releaseDate": "2024-10-22",
+  "name": { "ar": "XBOX Wireless Headset", "en": "XBOX Wireless Headset", "ckb": "XBOX Wireless Headset" },
+  "short": {
+    "ar": "اقتران مباشر بالجهاز · Bluetooth 5.3 · Dolby Atmos · حتى 20 ساعة",
+    "en": "Pairs directly to XBOX · Bluetooth 5.3 · Dolby Atmos · up to 20 h",
+    "ckb": "ڕاستەوخۆ بە XBOX ـەوە دەبەسترێت · Bluetooth 5.3 · Dolby Atmos · تا 20 کاتژمێر"
+  },
+  "description": {
+    "ar": "سماعة XBOX اللاسلكية الرسمية بنسختها المحدّثة لعام 2024 باللون الأسود. تتصل مباشرة بأجهزة XBOX Series X|S وXBOX One بدون قطعة USB إضافية، وبالكمبيوتر والهاتف عبر Bluetooth 5.3، ويمكن وصلها بالجهاز والهاتف معاً. تشمل Dolby Atmos بدون تكلفة إضافية، وفيها كتم تلقائي وعزل للصوت في المايك، وقرصان على الأذنين للتحكم بالصوت وبالتوازن بين اللعبة والمحادثة، وبطارية حتى 20 ساعة.",
+    "en": "The official XBOX wireless headset in its refreshed 2024 all-black version. It pairs directly to XBOX Series X|S and XBOX One with no USB dongle, connects to PCs and phones over Bluetooth 5.3, and can stay connected to a console and a phone at the same time. Dolby Atmos is included at no extra cost, the mic has auto-mute and voice isolation, earcup dials set volume and game/chat balance, and the battery lasts up to 20 hours.",
+    "ckb": "هێدسێتی بێتەلی فەرمیی XBOX بە وەشانە نوێکراوەکەی 2024 بە ڕەنگی ڕەش. ڕاستەوخۆ بە XBOX Series X|S و XBOX One ـەوە دەبەسترێت بێ دۆنگڵی USB، بە Bluetooth 5.3 بە کۆمپیوتەر و مۆبایلەوە دەبەسترێت، و دەتوانێت هاوکات بە کۆنسۆڵ و مۆبایلەوە بەستراو بێت. Dolby Atmos بێ تێچووی زیادە لەگەڵیەتی، مایکەکە بێدەنگکردنی خۆکار و جیاکردنەوەی دەنگی هەیە، بازنەکانی سەر گوێچکەکان دەنگ و هاوسەنگیی یاری/قسەکردن ڕێکدەخەن، و پاتری تا 20 کاتژمێر دەمێنێت."
+  },
+  "highlights": [
+    {
+      "ar": "اقتران مباشر بأجهزة XBOX بدون قطعة USB، وBluetooth 5.3 للهاتف والكمبيوتر",
+      "en": "Pairs straight to XBOX consoles with no dongle; Bluetooth 5.3 for phone and PC",
+      "ckb": "ڕاستەوخۆ بە کۆنسۆڵی XBOX ـەوە دەبەسترێت بێ دۆنگڵ؛ Bluetooth 5.3 بۆ مۆبایل و کۆمپیوتەر"
+    },
+    {
+      "ar": "Dolby Atmos مشمول بدون تكلفة إضافية، ويدعم Windows Sonic وDTS Headphone:X (قد يحتاج DTS إلى شراء منفصل)",
+      "en": "Dolby Atmos included at no extra cost; also supports Windows Sonic and DTS Headphone:X (DTS may need a separate purchase)",
+      "ckb": "Dolby Atmos بێ تێچووی زیادە لەگەڵیەتی؛ Windows Sonic و DTS Headphone:X ـیش پشتگیری دەکات (DTS لەوانەیە کڕینی جیای پێویست بێت)"
+    },
+    {
+      "ar": "مايك ذراع قابل للثني بميكروفونين، مع كتم تلقائي وعزل لضوضاء الخلفية",
+      "en": "Bendable boom with dual mics, auto-mute and background-noise isolation",
+      "ckb": "مایکی بۆمی چەماوە بە دوو مایک، بێدەنگکردنی خۆکار و جیاکردنەوەی دەنگی دەوروبەر"
+    },
+    {
+      "ar": "بطارية حتى 20 ساعة؛ 30 دقيقة شحن تعطي نحو 4 ساعات",
+      "en": "Up to 20 hours of battery; 30 minutes of charging gives about 4 hours",
+      "ckb": "پاتری تا 20 کاتژمێر؛ 30 خولەک شەحن نزیکەی 4 کاتژمێر دەدات"
+    },
+    {
+      "ar": "قرص للصوت على الأذن اليمنى وقرص لتوازن اللعبة والمحادثة على اليسرى",
+      "en": "Volume dial on the right earcup and game/chat balance dial on the left",
+      "ckb": "بازنەی دەنگ لەسەر گوێچکەی ڕاست و بازنەی هاوسەنگیی یاری/قسەکردن لەسەر چەپ"
+    }
+  ],
+  "specs": [
+    {
+      "key": "speakers",
+      "label": { "ar": "السماعات", "en": "Speakers", "ckb": "بڵندگۆکان" },
+      "value": {
+        "ar": "40mm، غشاء ورقي مركب ومغناطيس نيوديميوم، 32 أوم، 20Hz–20kHz",
+        "en": "40mm, paper composite diaphragm with neodymium magnet, 32 ohm, 20Hz–20kHz",
+        "ckb": "40mm، پەردەی کاغەزی تێکەڵ و مەگناتیسی نیۆدیمیۆم، 32 ئۆم، 20Hz–20kHz"
+      }
+    },
+    {
+      "key": "microphone",
+      "label": { "ar": "المايك", "en": "Microphone", "ckb": "مایک" },
+      "value": {
+        "ar": "ذراع قابل للثني بميكروفونين وضوء LED عند تشغيل المايك",
+        "en": "Bendable boom with dual mics and an LED when the mic is on",
+        "ckb": "بۆمی چەماوە بە دوو مایک و LED کاتێک مایکەکە کارایە"
+      }
+    },
+    {
+      "key": "bluetooth",
+      "label": { "ar": "Bluetooth", "en": "Bluetooth", "ckb": "Bluetooth" },
+      "value": { "ar": "الإصدار 5.3 ‏(A2DP وHFP وHSP)، ترميز SBC", "en": "Version 5.3 (A2DP, HFP, HSP), SBC codec", "ckb": "وەشانی 5.3 ‏(A2DP، HFP، HSP)، کۆدێکی SBC" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": {
+        "ar": "ليثيوم أيون مدمجة، حتى 20 ساعة؛ الشحن الكامل نحو 3 ساعات",
+        "en": "Built-in lithium-ion, up to 20 hours; full charge in about 3 hours",
+        "ckb": "لیسیۆم-ئایۆنی ناوەکی، تا 20 کاتژمێر؛ شەحنی تەواو نزیکەی 3 کاتژمێر"
+      }
+    },
+    {
+      "key": "spatial",
+      "label": { "ar": "الصوت المحيطي", "en": "Spatial sound", "ckb": "دەنگی دەوروبەر" },
+      "value": {
+        "ar": "Windows Sonic وDolby Atmos وDTS Headphone:X على XBOX Series X|S وXBOX One؛ تحتاج محتوى يدعمها، وقد يحتاج DTS Headphone:X إلى شراء منفصل",
+        "en": "Windows Sonic, Dolby Atmos and DTS Headphone:X on XBOX Series X|S and XBOX One; needs supported content, and DTS Headphone:X may need a separate purchase",
+        "ckb": "Windows Sonic، Dolby Atmos و DTS Headphone:X لەسەر XBOX Series X|S و XBOX One؛ ناوەڕۆکی گونجاوی پێویستە، و DTS Headphone:X لەوانەیە کڕینی جیای پێویست بێت"
+      }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "320 غرام", "en": "320 g", "ckb": "320 گرام" }
+    },
+    {
+      "key": "app",
+      "label": { "ar": "التطبيق", "en": "App", "ckb": "ئەپ" },
+      "value": {
+        "ar": "تطبيق XBOX Accessories: المعادل الصوتي، تعزيز الباس، الكتم التلقائي، سطوع LED، سماع صوتك",
+        "en": "XBOX Accessories app: equaliser, bass boost, auto-mute, LED brightness, mic monitoring",
+        "ckb": "ئەپی XBOX Accessories: ئیکوالایزەر، بەهێزکردنی باس، بێدەنگکردنی خۆکار، ڕووناکیی LED، گوێگرتن لە دەنگی خۆت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "سماعة XBOX Wireless Headset", "en": "XBOX Wireless Headset", "ckb": "هێدسێتی XBOX Wireless Headset" }
+  ],
+  "variants": [
+    {
+      "sku": "XWH-2024-BLK",
+      "title": { "ar": "XBOX Wireless Headset (إصدار 2024)", "en": "XBOX Wireless Headset (2024 version)", "ckb": "XBOX Wireless Headset (وەشانی 2024)" },
+      "options": { "edition": "2024", "color": "Black" },
+      "isDefault": true,
+      "images": ["xbox-wireless-headset--1", "xbox-wireless-headset--2", "xbox-wireless-headset--3"]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "اقتران لاسلكي مباشر", "en": "Direct wireless pairing", "ckb": "بەستنەوەی بێتەلی ڕاستەوخۆ" },
+      "source": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "verified",
+      "note": { "ar": "اقتران لاسلكي مباشر", "en": "Direct wireless pairing", "ckb": "بەستنەوەی بێتەلی ڕاستەوخۆ" },
+      "source": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": { "ar": "اقتران لاسلكي مباشر", "en": "Direct wireless pairing", "ckb": "بەستنەوەی بێتەلی ڕاستەوخۆ" },
+      "source": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "Windows 10/11 عبر Bluetooth 4.2 أو أحدث، أو كابل USB-C (يُباع منفصلاً)",
+        "en": "Windows 10/11 over Bluetooth 4.2+ or a USB-C cable (sold separately)",
+        "ckb": "Windows 10/11 بە Bluetooth 4.2+ یان کێبڵی USB-C (جیا دەفرۆشرێت)"
+      },
+      "source": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset"
+    }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-series-s", "kind": "setup" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "xbox-wireless-headset--1",
+      "file": ".cache/product-images/xbox-wireless-headset/1.jpg",
+      "sourceUrl": "https://cms-assets.xboxservices.com/assets/80/45/8045f5b9-ba9a-4595-b44f-6b0f32b8c95d.jpg?n=465582_Gallery_1_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة XBOX Wireless Headset السوداء مع ذراع المايك",
+        "en": "Black XBOX Wireless Headset with its boom mic",
+        "ckb": "هێدسێتی ڕەشی XBOX Wireless Headset لەگەڵ مایکی بۆم"
+      },
+      "credit": "Microsoft",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    },
+    {
+      "key": "xbox-wireless-headset--2",
+      "file": ".cache/product-images/xbox-wireless-headset/2.jpg",
+      "sourceUrl": "https://cms-assets.xboxservices.com/assets/9d/89/9d89c2a1-da01-4c12-87b9-b42aad36ed8d.jpg?n=465582_Gallery_4_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset",
+      "kind": "angle",
+      "alt": { "ar": "السماعة من الأمام", "en": "The headset from the front", "ckb": "هێدسێتەکە لە پێشەوە" },
+      "credit": "Microsoft",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    },
+    {
+      "key": "xbox-wireless-headset--3",
+      "file": ".cache/product-images/xbox-wireless-headset/3.jpg",
+      "sourceUrl": "https://cms-assets.xboxservices.com/assets/e4/c6/e4c653e2-932c-4bce-ae2d-6a66d174bd22.jpg?n=465582_Gallery_6_1056x594.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset",
+      "kind": "angle",
+      "alt": { "ar": "السماعة من الجانب مع ذراع المايك", "en": "The headset from the side with the boom mic", "ckb": "هێدسێتەکە لە لاتەنیشتەوە لەگەڵ مایکی بۆم" },
+      "credit": "Microsoft",
+      "width": 1056,
+      "height": 594,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset",
+      "title": "XBOX Wireless Headset",
+      "publisher": "Microsoft (XBOX)",
+      "retrieved": "2026-11-11",
+      "supports": "specifications (speakers, mic, Bluetooth 5.3, battery, weight, controls, spatial sound, app), in the box, compatibility, Game Pass note for some voice chat features, images"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2024/10/22/xbox-wireless-headset-evolution/",
+      "title": "Immerse Yourself in the Game: The Next Evolution of the Xbox Wireless Headset",
+      "publisher": "Microsoft (XBOX Wire)",
+      "retrieved": "2026-11-11",
+      "supports": "2024 refresh available from 22 October 2024: Dolby Atmos included, 20-hour battery, auto-mute and voice isolation, Bluetooth 5.3, all-black design; DTS Headphone:X may require additional purchases"
+    },
+    {
+      "url": "https://www.techspot.com/news/105251-microsoft-updates-xbox-wireless-headset-dolby-atmos-improved.html",
+      "title": "Microsoft updates Xbox wireless headset with Dolby Atmos, improved battery, and more for $110",
+      "publisher": "TechSpot",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: Bluetooth 4.2 to 5.3, battery 15 to 20 hours, 40mm drivers, 32 ohm"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/d/xbox-wireless-headset/9203q8w23lhn",
+      "title": "XBOX Wireless Headset",
+      "publisher": "Microsoft Store",
+      "retrieved": "2026-11-11",
+      "supports": "current listing of the headset"
+    }
+  ],
+  "notes": {
+    "ar": "هذه النسخة المحدّثة (2024) تختلف عن نسخة 2021 الأولى ذات البطارية 15 ساعة وBluetooth 4.2. حسب Microsoft قد تحتاج بعض مزايا المحادثة الصوتية على أجهزة XBOX اشتراك Game Pass ‏(Essential أو Premium أو Ultimate). الوضع اللاسلكي مخصص لأجهزة XBOX والكمبيوتر والهواتف، ولا تذكر Microsoft دعم PlayStation أو Nintendo Switch.",
+    "en": "This refreshed (2024) version differs from the first 2021 model, which had a 15-hour battery and Bluetooth 4.2. Microsoft says some voice chat features on XBOX consoles may require a Game Pass plan (Essential, Premium or Ultimate). The headset's wireless mode is made for XBOX, PC and phones; PlayStation and Nintendo Switch are not listed as supported.",
+    "ckb": "ئەم وەشانە نوێکراوەیە (2024) جیاوازە لە مۆدێلی یەکەمی 2021 کە پاتریی 15 کاتژمێر و Bluetooth 4.2 ـی هەبوو. Microsoft دەڵێت هەندێک تایبەتمەندیی قسەکردنی دەنگی لەسەر کۆنسۆڵی XBOX ڕەنگە پێویستیان بە پلانی Game Pass ‏(Essential، Premium یان Ultimate) بێت. دۆخی بێتەلی هێدسێتەکە بۆ XBOX و کۆمپیوتەر و مۆبایلە؛ PlayStation و Nintendo Switch وەک پشتگیریکراو ناونەبراون."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "TechSpot gives the weight as 312 g; xbox.com lists 320 g (used here)",
+      "Only 1056 × 594 official JPG photos on a black background were found; the Microsoft Store has no larger transparent image of the 2024 model",
+      "Model number and barcodes were not found on an official page"
+    ]
+  }
+}

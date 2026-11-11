@@ -1,0 +1,65 @@
+{
+  "key": "marvels-wolverine--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/marvels-wolverine/3-240.83c53223.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-wolverine/3-480.b6891f8d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-wolverine/3-720.5c9f80ec.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-wolverine/3-960.95bddc4b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-wolverine/3-1440.d0138913.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/marvels-wolverine/3-240.8768516a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-wolverine/3-480.30e88a4d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-wolverine/3-720.78e18ead.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-wolverine/3-960.9187fa25.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-wolverine/3-1440.cb725b57.webp"
+      }
+    ],
+    "png": "/products/marvels-wolverine/3-720.adbabe38.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoUAAsAPxFwsFAsJiSisAgBgCIJbACdMoACrECilcfMocAA/tBoQboNz1+ehNSKSHYqHCwwMdZmc7N/XugPM6vgZPv/iaekvUYjv5+7zl3Wg3bv3Zmw2TG5+cowP0XAExdvHyYBOGWzOyvZh28KGVAA",
+  "dominant": "#374866",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment / Marvel",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/marvels-wolverine-deathstrike-screenshot-01-en-15sept26?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/marvels-wolverine/"
+  },
+  "input": "df50f51ceae4e7dd"
+}

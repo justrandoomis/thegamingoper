@@ -1,0 +1,57 @@
+{
+  "key": "pokemon-legends-z-a--5",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-legends-z-a/5-240.dda88f5f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-legends-z-a/5-480.bec5a9c2.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-legends-z-a/5-720.f378a9aa.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-legends-z-a/5-960.bef44933.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-legends-z-a/5-240.8662c772.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-legends-z-a/5-480.062764df.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-legends-z-a/5-720.3e87c167.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-legends-z-a/5-960.4bec20ba.webp"
+      }
+    ],
+    "png": "/products/pokemon-legends-z-a/5-720.70106c82.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYwC06BKIafZkqMRMAAD8guBvkUHoDfdlWzRDeebJyCqGvC+9Ah1W9ktTLD1QH2OL7iP68Io2SaGyf70AAA==",
+  "dominant": "#273726",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo / The Pokémon Company",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Pok%C3%A9mon%20Legends%3A%20Z-A%20%E2%80%93%20Nintendo%20Switch%202%20Edition/121587-nintendo-pokemon-legends-z-a-switch-2-edition-ss-2-1280x720",
+    "page": "https://www.nintendo.com/us/store/products/pokemon-legends-z-a-nintendo-switch-2-edition-121587/"
+  },
+  "input": "21adea7d25d805be"
+}

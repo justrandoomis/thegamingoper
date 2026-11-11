@@ -64,7 +64,7 @@ export default function MotionLabItem({ loaderData }: Route.ComponentProps) {
         <span>{t("detail.price")}</span>
         <NumberMorph value={item.priceIqd} format={f.iqd} className="lab-total__value" data-testid="detail-price" />
       </p>
-      <button type="button" className="lab-btn lab-btn--primary lab-btn--wide" data-press="clay" data-haptic="success" data-testid="detail-add" onClick={add}>
+      <button type="button" className="lab-btn clay--red lab-btn--wide" data-press="clay" data-haptic="tap" data-testid="detail-add" onClick={add}>
         {t("detail.add")}
       </button>
       <p>{t("detail.body")}</p>

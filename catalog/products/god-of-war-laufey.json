@@ -1,0 +1,220 @@
+{
+  "slug": "god-of-war-laufey",
+  "group": "playstation-xbox-games",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "preorder",
+  "releaseDate": "2027-05-20",
+  "name": { "ar": "God of War Laufey", "en": "God of War Laufey", "ckb": "God of War Laufey" },
+  "short": {
+    "ar": "حصرية PS5 · طلب مسبق · تصدر 20 أيار 2027",
+    "en": "PS5 exclusive · pre-order · out 20 May 2027",
+    "ckb": "تایبەت بە PS5 · داواکاری پێشوەخت · 20ی ئایاری 2027 دەردەچێت"
+  },
+  "description": {
+    "ar": "الجزء الجديد من سلسلة God of War من Santa Monica Studio، وبطلته Laufey (Faye)، زوجة Kratos وأم Atreus. بعد موتها تستيقظ Faye في Everywhen، عالم ما بعد الموت للآلهة، وتقاتل آلهة من أساطير مختلفة لتعود وتحمي عائلتها. اللعبة حصرية لـ PS5، وتأجل موعدها إلى 20 أيار 2027 والطلبات المسبقة مفتوحة.",
+    "en": "The new God of War game from Santa Monica Studio, starring Laufey (Faye), wife of Kratos and mother of Atreus. After her death, Faye wakes up in the Everywhen, the afterlife of the gods, and fights gods from many mythologies to find her way home and protect her family. It is a PS5 exclusive, now set for 20 May 2027, with pre-orders open.",
+    "ckb": "بەشی نوێی زنجیرەی God of War لە Santa Monica Studio، کە پاڵەوانەکەی Laufey (Faye) ە، هاوسەری Kratos و دایکی Atreus. دوای مردنی، Faye لە Everywhen، جیهانی دوای مردنی خواوەندەکان، بەئاگا دێتەوە و لەگەڵ خواوەندانی ئەفسانە جیاوازەکان دەجەنگێت بۆ گەڕانەوە و پاراستنی خێزانەکەی. یارییەکە تایبەتە بە PS5، بەروارەکەی دواخراوە بۆ 20ی ئایاری 2027 و داواکاری پێشوەخت کراوەیە."
+  },
+  "highlights": [
+    {
+      "ar": "حصرية لـ PS5، والطلب المسبق مفتوح للصدور في 20 أيار 2027.",
+      "en": "PS5 exclusive, open for pre-order ahead of 20 May 2027.",
+      "ckb": "تایبەت بە PS5، داواکاری پێشوەخت کراوەیە بۆ 20ی ئایاری 2027."
+    },
+    {
+      "ar": "مكافأة الطلب المسبق: درع Last Wish ومظهر Golden Leaves لـ Phranque وحزمة موارد (عبر كود).",
+      "en": "Pre-order bonus: Last Wish Armor Set, Phranque's Golden Leaves look and a resource pack (via code).",
+      "ckb": "دیاری داواکاری پێشوەخت: زرێی Last Wish، ڕووکاری Golden Leaves بۆ Phranque و بەستەی کەرەستە (بە کۆد)."
+    },
+    {
+      "ar": "قصة Faye تبدأ بعد وفاتها، في اللحظة التي تبدأ فيها أحداث God of War (2018).",
+      "en": "Faye's story starts after her death, at the moment God of War (2018) begins.",
+      "ckb": "چیرۆکی Faye دوای مردنی دەست پێدەکات، لەو کاتەی ڕووداوەکانی God of War (2018) دەست پێدەکەن."
+    },
+    {
+      "ar": "التصنيف المؤقت PEGI 18.",
+      "en": "Provisional rating PEGI 18.",
+      "ckb": "پۆلێنی کاتی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": {
+        "ar": "20 أيار 2027 (تأجلت من 16 شباط 2027)",
+        "en": "20 May 2027 (moved from 16 February 2027)",
+        "ckb": "20ی ئایاری 2027 (لە 16ی شوباتی 2027ەوە دواخرا)"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
+      "value": { "ar": "PS5 فقط", "en": "PS5 only", "ckb": "تەنها PS5" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
+      "value": { "ar": "قرص PS5 (Standard Edition)", "en": "PS5 disc (Standard Edition)", "ckb": "دیسکی PS5 (Standard Edition)" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": { "ar": "لاعب واحد (قصة)", "en": "1 player (story)", "ckb": "1 یاریزان (چیرۆک)" }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": { "ar": "لم تُعلن بعد", "en": "Not announced yet", "ckb": "هێشتا ڕانەگەیەنراوە" }
+    },
+    {
+      "key": "age",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "PEGI 18 (مؤقت)", "en": "PEGI 18 (provisional)", "ckb": "PEGI 18 (کاتی)" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "Santa Monica Studio / Sony Interactive Entertainment", "en": "Santa Monica Studio / Sony Interactive Entertainment", "ckb": "Santa Monica Studio / Sony Interactive Entertainment" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قرص اللعبة لجهاز PS5", "en": "PS5 game disc", "ckb": "دیسکی یارییەکە بۆ PS5" }
+  ],
+  "variants": [
+    {
+      "sku": "GOWL-PS5-STD",
+      "title": { "ar": "God of War Laufey لجهاز PS5 — Standard Edition (طلب مسبق)", "en": "God of War Laufey for PS5 — Standard Edition (pre-order)", "ckb": "God of War Laufey بۆ PS5 — Standard Edition (داواکاری پێشوەخت)" },
+      "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["god-of-war-laufey--1", "god-of-war-laufey--2", "god-of-war-laufey--3", "god-of-war-laufey--4"],
+      "notes": {
+        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي. مكافأة الطلب المسبق تأتي ككود وتحتاج إنترنت وحساب PlayStation.",
+        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive. The pre-order bonus comes as a code and needs internet and a PlayStation account.",
+        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە. دیاری داواکاری پێشوەخت وەک کۆد دێت و ئینتەرنێت و هەژماری PlayStation ی پێویستە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "genres": [
+      { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "لم تُعلن متطلبات اللعب أونلاين؛ مكافآت الطلب المسبق تحتاج إنترنت.",
+      "en": "Online requirements not announced; pre-order bonuses need internet.",
+      "ckb": "پێداویستییەکانی یاری ئۆنلاین ڕانەگەیەنراون؛ دیارییەکانی داواکاری پێشوەخت ئینتەرنێتیان پێویستە."
+    },
+    "ageRating": { "pegi": 18 },
+    "arabic": "unknown",
+    "physicalFormat": "disc",
+    "developer": "Santa Monica Studio",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": { "ar": "قرص PS5.", "en": "PS5 disc.", "ckb": "دیسکی PS5." },
+      "source": "https://www.playstation.com/en-gb/games/god-of-war-laufey/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": { "ar": "يعمل على الموديل الذي فيه قارئ أقراص.", "en": "Works on the model with a disc drive.", "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات." },
+      "source": "https://www.playstation.com/en-gb/games/god-of-war-laufey/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "القرص يحتاج قارئ الأقراص الإضافي.", "en": "The disc needs the add-on Disc Drive.", "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    { "slug": "god-of-war-ragnarok", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "upsell" },
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "dualsense", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "god-of-war-laufey--1",
+      "file": ".cache/product-images/god-of-war-laufey/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202609/1800/23a416e877cc00fd8c6048fc5bdde65a1d7aedc1ad010612.png",
+      "sourcePage": "https://store.playstation.com/en-gb/concept/10009461",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف God of War Laufey", "en": "God of War Laufey cover art", "ckb": "وێنەی بەرگی God of War Laufey" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1440, "height": 2160, "transparent": false
+    },
+    {
+      "key": "god-of-war-laufey--2",
+      "file": ".cache/product-images/god-of-war-laufey/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-laufey-wm-screenshot-everywhen-en-30may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-us/games/god-of-war-laufey/",
+      "kind": "screenshot",
+      "alt": { "ar": "Faye في غابة Everywhen", "en": "Faye in a forest of the Everywhen", "ckb": "Faye لە دارستانێکی Everywhen" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "god-of-war-laufey--3",
+      "file": ".cache/product-images/god-of-war-laufey/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-laufey-wm-screenshot-battle-en-30may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-us/games/god-of-war-laufey/",
+      "kind": "screenshot",
+      "alt": { "ar": "Faye تواجه وحشاً مشتعلاً", "en": "Faye facing a burning monster", "ckb": "Faye بەرامبەر دڕندەیەکی ئاگرین" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    },
+    {
+      "key": "god-of-war-laufey--4",
+      "file": ".cache/product-images/god-of-war-laufey/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-laufey-wm-screenshot-leviathan-en-30may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-us/games/god-of-war-laufey/",
+      "kind": "screenshot",
+      "alt": { "ar": "مخلوق ضخم أمام Faye", "en": "A giant creature in front of Faye", "ckb": "بوونەوەرێکی زەبەلاح لە بەردەم Faye" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600, "height": 900, "transparent": false
+    }
+  ],
+  "sources": [
+    { "url": "https://blog.playstation.com/2026/09/28/god-of-war-laufey-pre-orders-available-starting-september-29-editions-detailed/", "title": "God of War Laufey pre-orders available starting September 29, editions detailed", "publisher": "PlayStation.Blog", "retrieved": "2026-11-11", "supports": "PS5 release delayed to 20 May 2027 (update 4 Nov 2026), pre-orders from 29 Sep 2026, pre-order bonus, Digital Deluxe Edition, Collector Box (game sold separately)" },
+    { "url": "https://www.playstation.com/en-gb/games/god-of-war-laufey/", "title": "God of War Laufey — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "story of Laufey (Faye), the Everywhen, PS5 only, pre-order bonus via download code" },
+    { "url": "https://store.playstation.com/en-gb/concept/10009461", "title": "God of War Laufey — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI provisional 18, release 20 May 2027, editions, cover art" },
+    { "url": "https://www.bestbuy.com/product/god-of-war-laufey-standard-edition-playstation-5/JXHQ37TZJS", "title": "God of War Laufey Standard Edition — PlayStation 5", "publisher": "Best Buy", "retrieved": "2026-11-11", "supports": "physical Standard Edition for PS5 on pre-order at retail" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+  ],
+  "notes": {
+    "ar": "Collector Box يُباع بكميات محدودة جداً من متجر PlayStation المباشر وبدون اللعبة. Digital Deluxe Edition رقمية فقط.",
+    "en": "The Collector Box is sold in very limited numbers directly from PlayStation and does not include the game. The Digital Deluxe Edition is digital only.",
+    "ckb": "Collector Box بە ژمارەیەکی زۆر کەم ڕاستەوخۆ لە PlayStation دەفرۆشرێت و یارییەکەی تێدا نییە. Digital Deluxe Edition تەنها دیجیتاڵە."
+  },
+  "verification": {
+    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "secondSource": true,
+    "unverified": [
+      "Supported languages (including Arabic) are not published yet.",
+      "Age rating is provisional (PEGI 18) until release.",
+      "Online features, install size and PS5 Pro enhancements are not announced.",
+      "The PlayStation game page text still shows the old 16 February 2027 date in one paragraph; the PlayStation Store and PlayStation.Blog show 20 May 2027.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

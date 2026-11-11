@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-carrying-case--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 765,
+  "aspect": 2.0915,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-carrying-case/1-240.2a6ac3ba.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-carrying-case/1-480.724f0e66.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-carrying-case/1-720.bcddbc37.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-carrying-case/1-960.8962d642.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-carrying-case/1-1440.e2154c52.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-carrying-case/1-240.c32805af.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-carrying-case/1-480.718f581e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-carrying-case/1-720.3ebfef78.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-carrying-case/1-960.56051b5c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-carrying-case/1-1440.cceb9103.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-carrying-case/1-720.448a9a97.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEgAAAART6AmkiQ1dzkb4KfoIyLAD357vAKMIsl2sj+e87fwHSABCZwzOrCB3hc0RPR/AqBMz0u3iv3np/uERTGtNIwUsQse6XnpCjVWUDggYAAAAJADAJ0BKhQACgA/EXKxUKwmpKKwCAGAIglkAEIABGKaNNaf7QAA/vbyPWRqOTzBha8QE/lbrwxa89uL/K+k/6CMpFc6vvqZXad0BAtz/7yyqiZTtREpF7k9eLGAkyfAAA==",
+  "dominant": "#35383a",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Carry%20Case/Frame_3473729.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "6517c9dd073548ee"
+}

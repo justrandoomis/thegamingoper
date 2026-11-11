@@ -1,0 +1,245 @@
+{
+  "slug": "pulse-3d",
+  "group": "playstation-hardware",
+  "kind": "headset",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "pulse",
+  "status": "discontinued",
+  "name": {
+    "ar": "سماعة الرأس اللاسلكية PULSE 3D",
+    "en": "PULSE 3D Wireless Headset",
+    "ckb": "هێدسێتی بێتەلی PULSE 3D"
+  },
+  "short": {
+    "ar": "سماعة PS5 الأولى · مضبوطة للصوت ثلاثي الأبعاد · بطارية حتى 12 ساعة",
+    "en": "The original PS5 headset · Tuned for 3D Audio · Up to 12h battery",
+    "ckb": "یەکەم هێدسێتی PS5 · بۆ دەنگی سێ ڕەهەندی ڕێکخراوە · پاتری تا 12 کاتژمێر"
+  },
+  "description": {
+    "ar": "أول سماعة رأس لاسلكية رسمية لجهاز PS5، مضبوطة لتقنية الصوت ثلاثي الأبعاد. تتصل بمحوّل لاسلكي USB مع PS5 وPS4 والكمبيوتر وMac، وبكابل 3.5 ملم مع الأجهزة الأخرى. لم تعد Sony تبيعها في متجرها المباشر منذ 2025 تقريباً، وحلّت محلها سماعات PULSE الأحدث، لكنها ما زالت متوفرة من المخزون أو مستعملة.",
+    "en": "The first official wireless headset for PS5, tuned for its 3D Audio. It connects through a USB wireless adaptor to PS5, PS4, PC and Mac, and with a 3.5mm cable to other devices. Sony stopped selling it on PlayStation Direct around 2025 and newer PULSE headsets replaced it, but it is still found as remaining stock or used.",
+    "ckb": "یەکەم هێدسێتی بێتەلی فەرمی بۆ PS5، بۆ دەنگی سێ ڕەهەندیی ڕێکخراوە. لە ڕێگەی ئەداپتەری بێتەلی USB بە PS5، PS4، PC و Mac دەبەسترێت، و بە کێبڵی 3.5 ملم بە ئامێرەکانی تر. Sony نزیکەی لە 2025ەوە لە PlayStation Direct نایفرۆشێت و هێدسێتە نوێیەکانی PULSE جێگەیان گرتەوە، بەڵام هێشتا وەک کاڵای ماوە یان بەکارهاتوو دەدۆزرێتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "مضبوطة لصوت Tempest ثلاثي الأبعاد في ألعاب PS5 المدعومة",
+      "en": "Tuned for Tempest 3D AudioTech in supported PS5 games",
+      "ckb": "بۆ دەنگی سێ ڕەهەندیی Tempest لە یارییە پشتگیریکراوەکانی PS5 ڕێکخراوە"
+    },
+    {
+      "ar": "بطارية حتى 12 ساعة مع شحن USB-C",
+      "en": "Up to 12 hours of battery with USB-C charging",
+      "ckb": "پاتری تا 12 کاتژمێر لەگەڵ شەحنی USB-C"
+    },
+    {
+      "ar": "ميكروفونان مخفيان مع إلغاء الضوضاء، وأزرار كتم وصوت وتوازن الدردشة",
+      "en": "Two hidden noise-cancelling mics, plus mute, volume and game/chat mix controls",
+      "ckb": "دوو مایکی شاراوە لەگەڵ لابردنی ژاوەژاو، و دوگمەی بێدەنگکردن، دەنگ و هاوسەنگیی یاری/چات"
+    },
+    {
+      "ar": "محوّل لاسلكي لـ PS5 وPS4 والكمبيوتر وMac، وكابل 3.5 ملم للهاتف أو PlayStation Portal",
+      "en": "Wireless adaptor for PS5, PS4, PC and Mac; 3.5mm cable for phones or PlayStation Portal",
+      "ckb": "ئەداپتەری بێتەل بۆ PS5، PS4، PC و Mac؛ کێبڵی 3.5 ملم بۆ مۆبایل یان PlayStation Portal"
+    },
+    {
+      "ar": "منتج متوقف: متوفر من المخزون المتبقي أو مستعملاً فقط",
+      "en": "Discontinued: only available as remaining stock or used",
+      "ckb": "بەرهەمی ڕاگیراو: تەنها وەک کاڵای ماوە یان بەکارهاتوو هەیە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CFI-ZWH1 (السماعة)", "en": "CFI-ZWH1 (headset)", "ckb": "CFI-ZWH1 (هێدسێت)" }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "حتى 12 ساعة، شحن USB-C", "en": "Up to 12 hours, USB-C charging", "ckb": "تا 12 کاتژمێر، شەحنی USB-C" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "محوّل لاسلكي USB (PS5 وPS4 وويندوز وmacOS)؛ كابل 3.5 ملم", "en": "USB wireless adaptor (PS5, PS4, Windows, macOS); 3.5mm cable", "ckb": "ئەداپتەری بێتەلی USB (PS5، PS4، ویندۆز، macOS)؛ کێبڵی 3.5 ملم" }
+    },
+    {
+      "key": "mic",
+      "label": { "ar": "الميكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
+      "value": { "ar": "ميكروفونان مخفيان مع إلغاء الضوضاء", "en": "Two hidden noise-cancelling microphones", "ckb": "دوو مایکی شاراوە لەگەڵ لابردنی ژاوەژاو" }
+    },
+    {
+      "key": "eq",
+      "label": { "ar": "المعادل الصوتي", "en": "EQ", "ckb": "EQ" },
+      "value": { "ar": "3 إعدادات جاهزة + 3 مخصصة من قائمة PS5", "en": "3 presets + 3 custom slots from the PS5 menu", "ckb": "3 ڕێکخستنی ئامادە + 3 شوێنی تایبەت لە مێنیوی PS5" }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "سماعة PULSE 3D", "en": "PULSE 3D wireless headset", "ckb": "هێدسێتی PULSE 3D" },
+    { "ar": "محوّل لاسلكي USB", "en": "USB wireless adaptor", "ckb": "ئەداپتەری بێتەلی USB" },
+    { "ar": "كابل صوت 3.5 ملم", "en": "3.5mm audio cable", "ckb": "کێبڵی دەنگی 3.5 ملم" }
+  ],
+  "variants": [
+    {
+      "sku": "PULSE3D-WHITE",
+      "title": { "ar": "PULSE 3D – أبيض", "en": "PULSE 3D – White", "ckb": "PULSE 3D – سپی" },
+      "options": { "color": "White" },
+      "isDefault": true,
+      "images": ["pulse-3d--1", "pulse-3d--2", "pulse-3d--5"]
+    },
+    {
+      "sku": "PULSE3D-MIDNIGHT-BLACK",
+      "title": { "ar": "PULSE 3D – أسود Midnight Black", "en": "PULSE 3D – Midnight Black", "ckb": "PULSE 3D – ڕەشی Midnight Black" },
+      "options": { "color": "Midnight Black" },
+      "isDefault": false,
+      "images": ["pulse-3d--3"]
+    },
+    {
+      "sku": "PULSE3D-GRAY-CAMO",
+      "title": { "ar": "PULSE 3D – مموّه رمادي Gray Camouflage", "en": "PULSE 3D – Gray Camouflage", "ckb": "PULSE 3D – کامۆفلاژی خۆڵەمێشی" },
+      "options": { "color": "Gray Camouflage" },
+      "isDefault": false,
+      "images": ["pulse-3d--4"],
+      "notes": { "ar": "صدر في ديسمبر 2022 ضمن مجموعة Gray Camouflage.", "en": "Released in December 2022 as part of the Gray Camouflage Collection.", "ckb": "لە کانوونی یەکەمی 2022 لە کۆمەڵەی Gray Camouflage دەرچوو." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "note": { "ar": "عبر المحوّل اللاسلكي المرفق.", "en": "Through the included wireless adaptor.", "ckb": "لە ڕێگەی ئەداپتەری بێتەلی لەگەڵیدایە." }, "source": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/" },
+    { "deviceModel": "ps5", "status": "verified", "source": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/" },
+    { "deviceModel": "ps5-digital", "status": "verified", "source": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/" },
+    { "deviceModel": "ps5-pro", "status": "verified", "note": { "ar": "PS5 Pro متوافق مع أجهزة الصوت كما في PS5.", "en": "PS5 Pro works with audio devices the same way as PS5.", "ckb": "PS5 Pro وەک PS5 لەگەڵ ئامێرە دەنگییەکان کار دەکات." }, "source": "https://www.playstation.com/en-us/ps5/ps5-pro/" },
+    { "deviceModel": "windows-pc", "status": "verified", "note": { "ar": "عبر المحوّل اللاسلكي.", "en": "Through the wireless adaptor.", "ckb": "لە ڕێگەی ئەداپتەری بێتەل." }, "source": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/" },
+    { "deviceModel": "ps-portal", "status": "partial", "note": { "ar": "سلكياً فقط عبر كابل 3.5 ملم؛ Portal يقبل لاسلكياً أجهزة PlayStation Link فقط.", "en": "Wired only, through the 3.5mm cable; Portal's only wireless audio is PlayStation Link.", "ckb": "تەنها بە وایەر لە ڕێگەی کێبڵی 3.5 ملم؛ Portal بە بێتەل تەنها ئامێرەکانی PlayStation Link وەردەگرێت." }, "source": "https://www.playstation.com/en-us/support/hardware/psportal-compatibility/" }
+  ],
+  "related": [
+    { "slug": "playstation-pulse-wireless-headset", "kind": "alternative" },
+    { "slug": "pulse-elite", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "pulse-3d--1",
+      "file": ".cache/product-images/pulse-3d/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-screenshot-01-en-16aug21?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
+      "kind": "hero",
+      "alt": { "ar": "سماعة PULSE 3D البيضاء من الأمام", "en": "White PULSE 3D headset from the front", "ckb": "هێدسێتی PULSE 3Dی سپی لە پێشەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3600, "height": 2400, "transparent": false
+    },
+    {
+      "key": "pulse-3d--2",
+      "file": ".cache/product-images/pulse-3d/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-screenshot-02-en-16aug21?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
+      "kind": "angle",
+      "alt": { "ar": "PULSE 3D البيضاء من زاوية جانبية تُظهر الأزرار", "en": "White PULSE 3D from an angle, showing the controls", "ckb": "PULSE 3Dی سپی لە گۆشەیەکی لاوە، دوگمەکان دیارن" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3600, "height": 2400, "transparent": false
+    },
+    {
+      "key": "pulse-3d--3",
+      "file": ".cache/product-images/pulse-3d/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-midnight-black-screenshot-02-en-16aug21?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
+      "kind": "angle",
+      "alt": { "ar": "PULSE 3D باللون Midnight Black", "en": "PULSE 3D in Midnight Black", "ckb": "PULSE 3D بە ڕەنگی Midnight Black" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3600, "height": 2400, "transparent": false
+    },
+    {
+      "key": "pulse-3d--4",
+      "file": ".cache/product-images/pulse-3d/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-gray-camo-screenshot-01-en-06sep22?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
+      "kind": "angle",
+      "alt": { "ar": "PULSE 3D بنقشة Gray Camouflage", "en": "PULSE 3D in Gray Camouflage", "ckb": "PULSE 3D بە نەخشی Gray Camouflage" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840, "height": 2160, "transparent": false
+    },
+    {
+      "key": "pulse-3d--5",
+      "file": ".cache/product-images/pulse-3d/5.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/wireless-adaptor-image-block-01-en-02jul20?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
+      "kind": "in-box",
+      "alt": { "ar": "المحوّل اللاسلكي USB المرفق مع PULSE 3D", "en": "The USB wireless adaptor included with PULSE 3D", "ckb": "ئەداپتەری بێتەلی USBی لەگەڵ PULSE 3D" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
+      "title": "PULSE 3D™ Wireless Headset",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "3D Audio tuning, dual hidden noise-cancelling mics, USB-C charging, controls, EQ presets, 12-hour battery, wireless adaptor for PS5/PS4/Windows/macOS, 3.5mm cable for PS VR and mobile, colours, Gray Camouflage 8 December 2022"
+    },
+    {
+      "url": "https://www.playstationlifestyle.net/2025/05/29/ps5-accessory-pulse-3d-possibly-discontinued",
+      "title": "Sony May Have Quietly Discontinued a PS5 Accessory",
+      "publisher": "PlayStation LifeStyle",
+      "retrieved": "2026-11-11",
+      "supports": "PULSE 3D no longer available on PlayStation Direct (May 2025)"
+    },
+    {
+      "url": "https://www.eteknix.com/sony-stops-selling-pulse-3d-headset-for-ps5-fans-frustrated-by-replacement/",
+      "title": "Sony Stops Selling Pulse 3D Headset for PS5",
+      "publisher": "eTeknix",
+      "retrieved": "2026-11-11",
+      "supports": "confirmation that PULSE 3D disappeared from stores and PS Direct"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/headsets/shop-all/",
+      "title": "Buy headsets & gaming audio | PlayStation® (UK)",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK store)",
+      "retrieved": "2026-11-11",
+      "supports": "PULSE 3D not in Sony's current UK headset line-up (PULSE, PULSE Elite, PULSE Explore only)"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/hardware/psportal-compatibility/",
+      "title": "Compatibility of PS Portal",
+      "publisher": "Sony Interactive Entertainment (PlayStation Support)",
+      "retrieved": "2026-11-11",
+      "supports": "PS Portal accepts wired 3.5mm headsets; wireless only via PlayStation Link"
+    },
+    {
+      "url": "https://blog.playstation.com/2026/09/15/introducing-the-next-line-of-ps5-audio-products-playstation-pulse-and-pulse-edge-wireless-headsets/",
+      "title": "Introducing the next line of PS5 audio products: PlayStation Pulse and Pulse Edge Wireless Headsets",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "PlayStation PULSE wireless headset launches 19 November 2026"
+    },
+    {
+      "url": "https://blog.playstation.com/2022/09/06/gray-camouflage-collection-joins-the-ps5-accessories-lineup-starting-this-fall/",
+      "title": "Gray Camouflage Collection joins the PS5 accessories lineup starting this fall",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: Gray Camouflage PULSE 3D launched in December 2022 (exact day varies by country)"
+    },
+    {
+      "url": "https://www.playstation.com/content/dam/global_pdc/en-gb/corporate/support/manuals/accessories/ps5-accessories/pulse-3d-wireless-headset/CFI-ZWH1_PULSE3D_Instruction_Manual_Web$en-gb.pdf",
+      "title": "PULSE 3D Wireless Headset and Adaptor Instruction Manual (CFI-ZWH1)",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "fact-check: headset model number CFI-ZWH1; USB wireless adaptor and audio cable included; wired use with PS VR2 through the audio cable"
+    }
+  ],
+  "notes": {
+    "ar": "Sony لم تعلن رسمياً إيقاف PULSE 3D، لكنها أزالتها من متاجرها والبديل الحالي الأقرب هو سماعة PlayStation PULSE الجديدة (19 نوفمبر 2026). عند بيع قطعة مستعملة تأكد من وجود المحوّل اللاسلكي، فهو وسيلة اتصالها اللاسلكي بالأجهزة.",
+    "en": "Sony never formally announced the end of PULSE 3D but removed it from its stores; the closest current replacement is the new PlayStation PULSE headset (19 November 2026). When selling a used unit, make sure the wireless adaptor is included – it is how the headset connects wirelessly.",
+    "ckb": "Sony بە فەرمی کۆتایی PULSE 3Dی ڕانەگەیاند بەڵام لە فرۆشگاکانی لایبرد؛ نزیکترین جێگرەوەی ئێستا هێدسێتی نوێی PlayStation PULSEە (19ی تشرینی دووەمی 2026). کاتێک دانەیەکی بەکارهاتوو دەفرۆشیت، دڵنیابە ئەداپتەرە بێتەلەکەی لەگەڵدایە، چونکە ڕێگەی بەستنەوەی بێتەلییەتی."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "First release date (secondary sources say late October 2020, ahead of the PS5; no official date found, so left out)",
+      "Midnight Black release date",
+      "Model number of the USB wireless adaptor (manual mirrors name CFI-ZWD1; not read on a Sony page)",
+      "Whether a USB-C charging cable is in the box (Sony's page mentions USB-C charging but does not list box contents)"
+    ]
+  }
+}

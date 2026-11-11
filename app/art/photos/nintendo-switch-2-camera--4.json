@@ -1,0 +1,49 @@
+{
+  "key": "nintendo-switch-2-camera--4",
+  "view": "hero",
+  "width": 872,
+  "height": 1210,
+  "aspect": 0.7207,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-camera/4-240.0956e292.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-camera/4-480.02a01f6e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-camera/4-720.14091c58.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-camera/4-240.f2553e8c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-camera/4-480.918b0623.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-camera/4-720.f299f256.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-camera/4-720.24dd76d7.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4WAoAAAAQAAAADQAAEwAAQUxQSCYAAAARHyAQQdpuf4JJ5oiI4ISBtG1q4HM37rGXegMR/Q+A02w7v6cBAFZQOCCGAAAAEAQAnQEqDgAUAD8RcrBQLCakorAIAYAiCWQAvmfAAvWFf4mLyWJh4AAA/mFeE+13xWKGHgAqnigngaG5wx/PjS2k8JpT9vCJQzRFAA9DcVkdR/3UZJ0ca7n/krFNQz3OUvyuNdP56HY3GOg9OfdpoGsZIczdIhBs9Tp0xHQOpYBlNBmhxAA=",
+  "dominant": "#f4f6f7",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Camera/Frame_3473727.png",
+    "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
+  },
+  "input": "9efbe20ca8df028b"
+}

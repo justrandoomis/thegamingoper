@@ -1,0 +1,300 @@
+{
+  "slug": "rog-ally",
+  "group": "handheld-pcs",
+  "kind": "handheld_pc",
+  "platform": "pc_handheld",
+  "brand": "ASUS",
+  "deviceModel": "rog-ally",
+  "family": "rog-ally",
+  "status": "discontinued",
+  "releaseDate": "2023-06-13",
+  "name": { "ar": "ROG Ally (2023)", "en": "ROG Ally (2023)", "ckb": "ROG Ally (2023)" },
+  "short": {
+    "ar": "Z1 Extreme أو Z1 · 16GB RAM · 512GB · شاشة 7 بوصة 120Hz",
+    "en": "Z1 Extreme or Z1 · 16GB RAM · 512GB · 7-inch 120Hz",
+    "ckb": "Z1 Extreme یان Z1 · 16GB RAM · 512GB · شاشەی 7 ئینچ 120Hz"
+  },
+  "description": {
+    "ar": "أول جهاز ألعاب محمول من ASUS يعمل بنظام Windows 11، باللون الأبيض. جاء بنسختين: معالج AMD Ryzen Z1 Extreme الأقوى أو Ryzen Z1، مع ذاكرة 16GB وتخزين 512GB وشاشة 7 بوصة بتردد 120Hz. بعد وصول ROG Xbox Ally اختفت النسخ الجديدة منه من كبار المتاجر الأمريكية، ويُباع اليوم غالباً مستعملاً أو مجدداً.",
+    "en": "ASUS's first Windows 11 handheld, in white. It came in two versions, with the stronger AMD Ryzen Z1 Extreme or the Ryzen Z1, plus 16GB of memory, 512GB of storage and a 7-inch 120Hz screen. After the ROG Xbox Ally arrived, new units disappeared from major US retailers; today it is mostly sold used or refurbished.",
+    "ckb": "یەکەم ئامێری یاریی دەستیی Windows 11 ـی ASUS، بە ڕەنگی سپی. بە دوو وەشان هات: AMD Ryzen Z1 Extreme ـی بەهێزتر یان Ryzen Z1، لەگەڵ 16GB بیرگە، 512GB شوێن و شاشەی 7 ئینچی 120Hz. دوای هاتنی ROG Xbox Ally، ئامێری نوێی لە فرۆشگا گەورەکانی ئەمریکا نەما؛ ئەمڕۆ زیاتر بە بەکارهاتوو یان نوێکراوە دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة IPS قياس 7 بوصة بدقة 1080p وتردد 120Hz وسطوع 500 nit مع FreeSync Premium",
+      "en": "7-inch 1080p IPS screen, 120Hz, 500 nits, FreeSync Premium",
+      "ckb": "شاشەی IPS ـی 7 ئینچ بە 1080p، 120Hz، 500 nit، FreeSync Premium"
+    },
+    {
+      "ar": "نسخة Z1 Extreme بثماني أنوية و12 وحدة رسوميات أقوى بكثير من نسخة Z1 بست أنوية و4 وحدات رسوميات",
+      "en": "The Z1 Extreme version (8 cores, 12 GPU CUs) is much stronger than the Z1 version (6 cores, 4 GPU CUs)",
+      "ckb": "وەشانی Z1 Extreme (8 ناوک، 12 CU ـی گرافیک) زۆر بەهێزترە لە وەشانی Z1 (6 ناوک، 4 CU ـی گرافیک)"
+    },
+    {
+      "ar": "ذاكرة 16GB وتخزين 512GB على قرص M.2 2230، مع قارئ microSD من نوع UHS-II",
+      "en": "16GB of memory and a 512GB M.2 2230 SSD, plus a UHS-II microSD reader",
+      "ckb": "16GB بیرگە و SSD ـی 512GB M.2 2230، لەگەڵ خوێنەری microSD ـی UHS-II"
+    },
+    {
+      "ar": "بطارية 40Wh ووزن 608 غرام، أخف من الطرازات الأحدث",
+      "en": "40Wh battery and 608 g, lighter than the newer models",
+      "ckb": "پاتریی 40Wh و کێشی 608 گرام، سووکترە لە مۆدێلە نوێیەکان"
+    },
+    {
+      "ar": "يعمل بنظام Windows 11: Steam وتطبيق Xbox وEpic وغيرها",
+      "en": "Runs Windows 11: Steam, the Xbox app, Epic and other PC stores",
+      "ckb": "لەسەر Windows 11 کار دەکات: Steam، ئەپی Xbox، Epic و فرۆشگاکانی تر"
+    }
+  ],
+  "specs": [
+    {
+      "key": "chip",
+      "label": { "ar": "المعالج", "en": "Processor", "ckb": "پرۆسێسەر" },
+      "value": {
+        "ar": "AMD Ryzen Z1 Extreme (8 أنوية / 16 مساراً حتى 5.1GHz، رسوميات RDNA 3 بـ12 وحدة CU) أو AMD Ryzen Z1 (6 أنوية / 12 مساراً حتى 4.9GHz، رسوميات RDNA 3 بـ4 وحدات CU)؛ استهلاك 9–30W",
+        "en": "AMD Ryzen Z1 Extreme (8 cores / 16 threads up to 5.1GHz, RDNA 3 graphics with 12 CUs) or AMD Ryzen Z1 (6 cores / 12 threads up to 4.9GHz, RDNA 3 graphics with 4 CUs); 9–30W",
+        "ckb": "AMD Ryzen Z1 Extreme (8 ناوک / 16 دەزوو تا 5.1GHz، گرافیکی RDNA 3 بە 12 CU) یان AMD Ryzen Z1 (6 ناوک / 12 دەزوو تا 4.9GHz، گرافیکی RDNA 3 بە 4 CU)؛ 9–30W"
+      }
+    },
+    {
+      "key": "memory",
+      "label": { "ar": "الذاكرة (RAM)", "en": "Memory (RAM)", "ckb": "بیرگەی RAM" },
+      "value": { "ar": "16GB LPDDR5 مدمجة، 6400 MT/s", "en": "16GB LPDDR5 on board, 6400 MT/s", "ckb": "16GB LPDDR5 لەسەر بۆرد، 6400 MT/s" }
+    },
+    {
+      "key": "storage",
+      "label": { "ar": "التخزين", "en": "Storage", "ckb": "بیرگەی ناوەکی" },
+      "value": { "ar": "512GB PCIe 4.0 NVMe بحجم M.2 2230", "en": "512GB PCIe 4.0 NVMe M.2 2230 SSD", "ckb": "512GB PCIe 4.0 NVMe M.2 2230 SSD" }
+    },
+    {
+      "key": "expansion",
+      "label": { "ar": "توسعة التخزين", "en": "Storage expansion", "ckb": "فراوانکردنی بیرگە" },
+      "value": { "ar": "قارئ microSD من نوع UHS-II (يدعم SD وSDHC وSDXC)", "en": "UHS-II microSD reader (SD, SDHC, SDXC)", "ckb": "خوێنەری microSD ـی UHS-II (SD، SDHC، SDXC)" }
+    },
+    {
+      "key": "display",
+      "label": { "ar": "الشاشة", "en": "Display", "ckb": "شاشە" },
+      "value": {
+        "ar": "7 بوصة FHD (1920×1080) من نوع IPS تعمل باللمس، 120Hz، زمن استجابة 7ms، سطوع 500 nit، FreeSync Premium، Gorilla Glass Victus وDXC",
+        "en": "7-inch FHD (1920×1080) IPS-level touchscreen, 120Hz, 7ms, 500 nits, FreeSync Premium, Gorilla Glass Victus and DXC",
+        "ckb": "شاشەی دەستلێدانی IPS ـی 7 ئینچ FHD (1920×1080)، 120Hz، 7ms، 500 nit، FreeSync Premium، Gorilla Glass Victus و DXC"
+      }
+    },
+    {
+      "key": "battery",
+      "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
+      "value": { "ar": "40Wh (أربع خلايا Li-ion)", "en": "40Wh, 4-cell Li-ion", "ckb": "40Wh، 4 خانەی Li-ion" }
+    },
+    {
+      "key": "charging",
+      "label": { "ar": "الشحن", "en": "Charging", "ckb": "شەحنکردن" },
+      "value": { "ar": "شاحن USB-C بقدرة 65W", "en": "65W USB-C charger", "ckb": "شەحنکەری USB-C ـی 65W" }
+    },
+    {
+      "key": "os",
+      "label": { "ar": "نظام التشغيل", "en": "Operating system", "ckb": "سیستەمی کارپێکردن" },
+      "value": { "ar": "Windows 11 Home", "en": "Windows 11 Home", "ckb": "Windows 11 Home" }
+    },
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەروازەکان" },
+      "value": {
+        "ar": "منفذ واحد يجمع واجهة ROG XG Mobile وUSB-C (USB 3.2 Gen 2 مع DisplayPort 1.4)، قارئ microSD، مقبس صوت 3.5mm",
+        "en": "1× combined ROG XG Mobile interface and USB-C port (USB 3.2 Gen 2, DisplayPort 1.4), microSD reader, 3.5mm audio jack",
+        "ckb": "1× دەروازەی هاوبەشی ROG XG Mobile و USB-C (USB 3.2 Gen 2، DisplayPort 1.4)، خوێنەری microSD، دەروازەی دەنگی 3.5mm"
+      }
+    },
+    {
+      "key": "wireless",
+      "label": { "ar": "الاتصال اللاسلكي", "en": "Wireless", "ckb": "پەیوەندیی بێتەل" },
+      "value": {
+        "ar": "Wi-Fi 6E (2×2) وBluetooth (تذكر ASUS الإصدار 5.4 وقد يختلف حسب إصدار النظام)",
+        "en": "Wi-Fi 6E (2×2) and Bluetooth (ASUS lists 5.4; may vary with OS version)",
+        "ckb": "Wi-Fi 6E (2×2) و Bluetooth (ASUS وەشانی 5.4 دەنووسێت؛ لەوانەیە بەپێی وەشانی سیستەم بگۆڕێت)"
+      }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارە" },
+      "value": { "ar": "28.0 × 11.1 × 2.12–3.24 سم", "en": "28.0 × 11.1 × 2.12–3.24 cm", "ckb": "28.0 × 11.1 × 2.12–3.24 سم" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
+      "value": { "ar": "608 غرام", "en": "608 g", "ckb": "608 گرام" }
+    },
+    {
+      "key": "language",
+      "label": { "ar": "لغة الواجهة", "en": "Interface language", "ckb": "زمانی ڕووکار" },
+      "value": {
+        "ar": "يمكن تشغيل Windows 11 باللغة العربية بعد إضافة حزمة اللغة العربية من الإعدادات؛ أما نسخة Windows 11 Home Single Language التي تُباع في بعض الأسواق فلا تسمح بإضافة لغة أخرى",
+        "en": "Windows 11 can run in Arabic once the Arabic language pack is added in Settings; the Windows 11 Home Single Language edition sold in some markets cannot add another language",
+        "ckb": "Windows 11 دەتوانێت بە عەرەبی کار بکات دوای زیادکردنی پاکێجی زمانی عەرەبی لە ڕێکخستنەکان؛ بەڵام وەشانی Windows 11 Home Single Language کە لە هەندێک بازاڕ دەفرۆشرێت ڕێگە نادات زمانێکی تر زیاد بکرێت"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز ROG Ally", "en": "ROG Ally", "ckb": "ئامێری ROG Ally" },
+    {
+      "ar": "شاحن USB-C بقدرة 65W (تقول ASUS إنه قد يختلف حسب المنطقة)",
+      "en": "65W USB-C charger (ASUS says this can vary by region)",
+      "ckb": "شەحنکەری USB-C ـی 65W (ASUS دەڵێت بەپێی ناوچە جیاوازە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ROG-ALLY-Z1E-512",
+      "title": { "ar": "ROG Ally Z1 Extreme 512GB أبيض", "en": "ROG Ally Z1 Extreme 512GB, White", "ckb": "ROG Ally Z1 Extreme 512GB، سپی" },
+      "options": { "chip": "Ryzen Z1 Extreme", "memory": "16GB", "storage": "512GB", "color": "White" },
+      "modelNumber": "RC71L",
+      "isDefault": true,
+      "images": ["rog-ally--1", "rog-ally--2", "rog-ally--3", "rog-ally--4", "rog-ally--5"]
+    },
+    {
+      "sku": "ROG-ALLY-Z1-512",
+      "title": { "ar": "ROG Ally Z1 512GB أبيض", "en": "ROG Ally Z1 512GB, White", "ckb": "ROG Ally Z1 512GB، سپی" },
+      "options": { "chip": "Ryzen Z1", "memory": "16GB", "storage": "512GB", "color": "White" },
+      "modelNumber": "RC71L",
+      "isDefault": false,
+      "images": ["rog-ally--1", "rog-ally--2", "rog-ally--3", "rog-ally--4", "rog-ally--5"],
+      "notes": {
+        "ar": "صدرت في سبتمبر 2023 بمعالج أضعف (4 وحدات رسوميات فقط).",
+        "en": "Released in September 2023 with the weaker chip (only 4 GPU CUs).",
+        "ckb": "لە سێپتەمبەری 2023 بە پرۆسێسەری لاوازتر دەرچوو (تەنها 4 CU ـی گرافیک)."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "rog-ally-x", "kind": "upsell" },
+    { "slug": "rog-xbox-ally", "kind": "alternative" },
+    { "slug": "steam-deck-oled", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "rog-ally--1",
+      "file": ".cache/product-images/rog-ally/1.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/9B345703-C095-4C0C-A86F-0E48FB76F93F/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/",
+      "kind": "hero",
+      "alt": { "ar": "ROG Ally الأبيض من الأمام", "en": "White ROG Ally from the front", "ckb": "ROG Ally ـی سپی لە پێشەوە" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-ally--2",
+      "file": ".cache/product-images/rog-ally/2.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/5A45FA04-FD07-4A98-9722-AA678364F4F6/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/",
+      "kind": "angle",
+      "alt": { "ar": "ROG Ally من زاوية أمامية مائلة", "en": "ROG Ally from a front three-quarter angle", "ckb": "ROG Ally لە گۆشەیەکی پێشەوەی لار" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-ally--3",
+      "file": ".cache/product-images/rog-ally/3.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/27E3C5C6-05A9-4191-BAC4-B1B8DE1EF9A7/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/",
+      "kind": "angle",
+      "alt": { "ar": "الجهة الخلفية من ROG Ally", "en": "Back of ROG Ally", "ckb": "پشتەوەی ROG Ally" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-ally--4",
+      "file": ".cache/product-images/rog-ally/4.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/A33F296A-EEFA-4443-9F40-96B4FCB5F081/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/",
+      "kind": "detail",
+      "alt": { "ar": "الحافة العلوية لجهاز ROG Ally مع المنافذ", "en": "Top edge of ROG Ally with its ports", "ckb": "لێواری سەرەوەی ROG Ally لەگەڵ دەروازەکان" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    },
+    {
+      "key": "rog-ally--5",
+      "file": ".cache/product-images/rog-ally/5.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/2B2C09FE-1C0B-44CA-8EAB-D4C1024857C4/",
+      "sourcePage": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/",
+      "kind": "angle",
+      "alt": { "ar": "ROG Ally من الجانب", "en": "ROG Ally from the side", "ckb": "ROG Ally لە لاتەنیشتەوە" },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-ally-2023/spec/",
+      "title": "ROG Ally (2023) RC71L – Tech Specs (ASUS USA)",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "model RC71L, Z1 Extreme and Z1 versions, memory, storage, display, ports, wireless, battery, 65W adapter, weight, dimensions, OS"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/ROG_Ally",
+      "title": "Asus ROG Ally",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "release dates (Z1 Extreme 13 June 2023, Z1 18 September 2023), M.2 2230 drive, successor"
+    },
+    {
+      "url": "https://www.gamesradar.com/hardware/handhelds/looks-like-the-asus-rog-ally-just-got-discontinued-but-its-at-least-down-to-a-price-id-pay/",
+      "title": "Looks like the Asus ROG Ally just got discontinued, but it's at least down to a price I'd pay",
+      "publisher": "GamesRadar+",
+      "retrieved": "2026-11-11",
+      "supports": "new stock ended (December 2025); open-box and refurbished units remain"
+    },
+    {
+      "url": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/",
+      "title": "ROG Ally (2023) – Gallery",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-11",
+      "supports": "official product images"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/regions",
+      "title": "XBOX Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "Iraq is not in the list of countries/regions where Xbox services are supported"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/language-packs-for-windows",
+      "title": "Language packs for Windows",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Arabic can be installed as a Windows 11 display language"
+    },
+    {
+      "url": "https://support.microsoft.com/en-us/windows/hardware/input-devices/check-whether-a-version-of-windows-supports-multiple-languages",
+      "title": "Check whether a version of Windows supports multiple languages",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-11",
+      "supports": "Windows 11 Home Single Language cannot install additional languages (ASUS ships that edition in selected markets)"
+    }
+  ],
+  "notes": {
+    "ar": "يُباع اليوم غالباً مستعملاً أو مجدداً، لذلك افحص حالة البطارية والعصي والشاشة. منفذ USB-C الوحيد هو أيضاً منفذ ROG XG Mobile للبطاقات الرسومية الخارجية من ASUS. يحتاج حساب Microsoft واتصالاً بالإنترنت للإعداد، والعراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات Xbox، لذلك Game Pass غير مقدم رسمياً هنا؛ ألعاب Steam وEpic وغيرها تعمل بشكل طبيعي.",
+    "en": "Today it is mostly sold used or refurbished, so check the battery, sticks and screen. Its single USB-C port also carries ASUS's ROG XG Mobile interface for ASUS external graphics. It needs a Microsoft account and an internet connection to set up, and Iraq is not on Microsoft's list of countries where Xbox services are supported, so Game Pass is not officially offered here; games from Steam, Epic and other stores work normally.",
+    "ckb": "ئەمڕۆ زیاتر بە بەکارهاتوو یان نوێکراوە دەفرۆشرێت، بۆیە پاتری و جۆیستیک و شاشە بپشکنە. تاکە دەروازەی USB-C ـەکەی دەروازەی ROG XG Mobile ـیشە بۆ کارتی گرافیکی دەرەکیی ASUS. بۆ ڕێکخستن پێویستی بە هەژماری Microsoft و پەیوەندیی ئینتەرنێت هەیە، و عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی Xbox، بۆیە Game Pass بە فەرمی لێرە پێشکەش ناکرێت؛ یارییەکانی Steam و Epic و فرۆشگاکانی تر بە ئاسایی کار دەکەن."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "ASUS has not published an end-of-production notice; 'discontinued' follows GamesRadar+ (5 December 2025) reporting that new stock was gone from Best Buy",
+      "Full box contents beyond the charger are not listed on an official page",
+      "Bluetooth version: ASUS now lists 5.4 (depends on OS version) while Wikipedia lists 5.2",
+      "Barcodes not found on an official page"
+    ]
+  }
+}

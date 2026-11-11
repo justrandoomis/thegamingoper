@@ -1,0 +1,187 @@
+{
+  "slug": "nintendo-switch-2-dock-set",
+  "group": "nintendo-hardware",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "family": "nintendo-switch-2-dock-set",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": { "ar": "Nintendo Switch 2 Dock Set", "en": "Nintendo Switch 2 Dock Set", "ckb": "Nintendo Switch 2 Dock Set" },
+  "short": {
+    "ar": "قاعدة ثانية للتلفاز مع محول وكابلات · حتى 4K",
+    "en": "A second TV dock with adapter and cables · up to 4K",
+    "ckb": "دۆکی دووەم بۆ تەلەڤزیۆن لەگەڵ ئەداپتەر و کێبڵ · تا 4K"
+  },
+  "description": {
+    "ar": "طقم قاعدة كامل لجهاز Nintendo Switch 2، لتجهيز تلفاز ثانٍ في البيت أو لاستبدال قاعدة تالفة. يضم القاعدة ومحول الطاقة وكابل شحن USB-C وكابل Ultra High Speed HDMI، فتنقل الجهاز بين الغرفتين وتلعب مباشرة على التلفاز حتى دقة 4K في الألعاب المتوافقة.",
+    "en": "A complete dock kit for Nintendo Switch 2, to set up a second TV at home or replace a damaged dock. It includes the dock, AC adapter, USB-C charging cable and Ultra High Speed HDMI cable, so you can move the console between rooms and play on the TV at up to 4K in compatible games.",
+    "ckb": "کۆمەڵەیەکی تەواوی دۆک بۆ Nintendo Switch 2، بۆ ئامادەکردنی تەلەڤزیۆنی دووەم لە ماڵەوە یان گۆڕینی دۆکێکی تێکچوو. دۆک، ئەداپتەری کارەبا، کێبڵی USB-C و کێبڵی Ultra High Speed HDMI لەخۆ دەگرێت، بۆیە دەتوانیت کۆنسۆڵەکە لە نێوان ژوورەکاندا بگوازیتەوە و لەسەر تەلەڤزیۆن تا 4K یاری بکەیت لە یارییە گونجاوەکاندا."
+  },
+  "highlights": [
+    {
+      "ar": "كل ما تحتاجه لتلفاز ثانٍ: قاعدة ومحول وكابل USB-C وكابل HDMI",
+      "en": "Everything for a second TV: dock, adapter, USB-C cable and HDMI cable",
+      "ckb": "هەموو شتێک بۆ تەلەڤزیۆنی دووەم: دۆک، ئەداپتەر، کێبڵی USB-C و کێبڵی HDMI"
+    },
+    {
+      "ar": "حتى 4K بمعدل 60 إطارًا مع لعبة وتلفاز متوافقين",
+      "en": "Up to 4K at 60 fps with a compatible game and TV",
+      "ckb": "تا 4K بە 60 فرەیم لەگەڵ یاری و تەلەڤزیۆنی گونجاو"
+    },
+    {
+      "ar": "منفذ LAN للإنترنت السلكي ومنفذا USB 2.0 جانبيان",
+      "en": "LAN port for wired internet and two USB 2.0 ports on the side",
+      "ckb": "دەرچەی LAN بۆ ئینتەرنێتی وایەردار و دوو دەرچەی USB 2.0 لە تەنیشت"
+    },
+    {
+      "ar": "الجهاز Nintendo Switch 2 غير مرفق",
+      "en": "Nintendo Switch 2 console not included",
+      "ckb": "کۆنسۆڵی Nintendo Switch 2 لەگەڵدا نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "ports",
+      "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەرچەکان" },
+      "value": { "ar": "منفذا USB (متوافقان مع USB 2.0) جانبيان، موصل الجهاز، منفذ محول الطاقة، HDMI، LAN", "en": "2 × USB (USB 2.0 compatible) on the side, system connector, AC adapter port, HDMI, LAN", "ckb": "2 × USB (گونجاو لەگەڵ USB 2.0) لە تەنیشت، بەستەری کۆنسۆڵ، دەرچەی ئەداپتەر، HDMI، LAN" }
+    },
+    {
+      "key": "tv_output",
+      "label": { "ar": "الإخراج على التلفاز", "en": "TV output", "ckb": "پیشاندان لەسەر تەلەڤزیۆن" },
+      "value": { "ar": "حتى 3840×2160 بمعدل 60 إطارًا؛ 120 إطارًا بدقة 1080p أو 1440p", "en": "Up to 3840×2160 at 60 fps; 120 fps at 1080p or 1440p", "ckb": "تا 3840×2160 بە 60 فرەیم؛ 120 فرەیم بە 1080p یان 1440p" }
+    },
+    {
+      "key": "size",
+      "label": { "ar": "أبعاد القاعدة", "en": "Dock size", "ckb": "قەبارەی دۆک" },
+      "value": { "ar": "نحو 115 × 201 × 51.2 مم (الارتفاع يشمل الأرجل السفلية بارتفاع 2 مم)", "en": "About 115 × 201 × 51.2 mm (height includes the 2 mm feet)", "ckb": "نزیکەی 115 × 201 × 51.2 ملم (بەرزییەکە پێیەکانی 2 ملم ـیش دەگرێتەوە)" }
+    },
+    {
+      "key": "weight",
+      "label": { "ar": "وزن القاعدة", "en": "Dock weight", "ckb": "کێشی دۆک" },
+      "value": { "ar": "نحو 383 غرامًا", "en": "About 383 g", "ckb": "نزیکەی 383 گرام" }
+    },
+    {
+      "key": "ac_adapter",
+      "label": { "ar": "محول الطاقة", "en": "AC adapter", "ckb": "ئەداپتەری کارەبا" },
+      "value": {
+        "ar": "يعمل على تيار 100–240 فولت، 50/60 هرتز، ويعطي حتى 20 فولت / 3 أمبير؛ طول الكابل نحو 1.5 م؛ شكل القابس يختلف حسب نسخة المنطقة",
+        "en": "Input 100–240 V AC, 50/60 Hz; output up to 20 V / 3 A; cable about 1.5 m; plug type depends on the regional version",
+        "ckb": "لەسەر کارەبای 100–240 ڤۆڵت، 50/60 هێرتز کار دەکات و تا 20 ڤۆڵت / 3 ئەمپێر دەدات؛ درێژیی کێبڵ نزیکەی 1.5 م؛ جۆری پلاکەکە بەپێی وەشانی ناوچەکە جیاوازە"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "قاعدة Nintendo Switch 2 Dock", "en": "Nintendo Switch 2 Dock", "ckb": "دۆکی Nintendo Switch 2" },
+    { "ar": "محول الطاقة Nintendo Switch 2 AC Adapter", "en": "Nintendo Switch 2 AC Adapter", "ckb": "ئەداپتەری کارەبای Nintendo Switch 2" },
+    { "ar": "كابل شحن USB-C", "en": "USB-C charging cable", "ckb": "کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "كابل Ultra High Speed HDMI", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی Ultra High Speed HDMI" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-DOCK-SET",
+      "title": { "ar": "Nintendo Switch 2 Dock Set", "en": "Nintendo Switch 2 Dock Set", "ckb": "Nintendo Switch 2 Dock Set" },
+      "options": { "color": "Black" },
+      "barcodes": ["0045496886080"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2-dock-set--1", "nintendo-switch-2-dock-set--2", "nintendo-switch-2-dock-set--3"],
+      "notes": { "ar": "الباركود أمريكي؛ نوع قابس المحول يختلف حسب المنطقة.", "en": "US barcode; the adapter plug type depends on the region version.", "ckb": "بارکۆدی ئەمریکی؛ جۆری پلاکی ئەداپتەرەکە بەپێی ناوچە جیاوازە." }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": { "ar": "قاعدة إضافية أو بديلة لـ Nintendo Switch 2", "en": "Extra or replacement dock for Nintendo Switch 2", "ckb": "دۆکی زیادە یان جێگرەوە بۆ Nintendo Switch 2" },
+      "source": "https://www.nintendo.com/us/store/products/nintendo-switch-2-dock-set-123791/"
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-2-carrying-case", "kind": "accessory" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-dock-set--1",
+      "file": ".cache/product-images/nintendo-switch-2-dock-set/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Dock%20and%20AC/Frame_3473694.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "hero",
+      "alt": { "ar": "محتويات Dock Set: القاعدة والمحول والكابلات", "en": "Dock Set contents: dock, adapter and cables", "ckb": "ناوەڕۆکی Dock Set: دۆک، ئەداپتەر و کێبڵەکان" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-dock-set--2",
+      "file": ".cache/product-images/nintendo-switch-2-dock-set/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Dock%20and%20AC/Frame_3473696.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "kind": "angle",
+      "alt": { "ar": "قاعدة Nintendo Switch 2 من الأمام", "en": "Nintendo Switch 2 Dock from the front", "ckb": "دۆکی Nintendo Switch 2 لە پێشەوە" },
+      "credit": "Nintendo",
+      "width": 1920, "height": 1080, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-dock-set--3",
+      "file": ".cache/product-images/nintendo-switch-2-dock-set/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/v1746486897/switch-2/tech-specs/switch-2-dock-front.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "kind": "angle",
+      "alt": { "ar": "القاعدة بزاوية جانبية", "en": "The dock at an angle", "ckb": "دۆکەکە لە گۆشەیەکی لاتەنیشتەوە" },
+      "credit": "Nintendo",
+      "width": 3840, "height": 2160, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-dock-set-123791/",
+      "title": "Nintendo Switch 2 Dock Set",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "contents (dock, AC adapter, USB-C charging cable, Ultra High Speed HDMI cable), purpose, release date, UPC"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "title": "Nintendo Switch 2 Tech Specs",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "dock size, weight, ports; TV output resolution and frame rates"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "second official description of contents, transparent product images"
+    },
+    {
+      "url": "https://store.nintendo.com/en-gb/nintendo-switch-2-P00209",
+      "title": "Nintendo Switch 2 - Nintendo Store (UK)",
+      "publisher": "Nintendo of Europe",
+      "retrieved": "2026-11-11",
+      "supports": "Nintendo sells region-specific AC adapter versions (UK plug option shown)"
+    },
+    {
+      "url": "https://www.nintendo.com/jp/hardware/switch2/specs/index.html",
+      "title": "機能・仕様 | Nintendo Switch 2",
+      "publisher": "Nintendo Co., Ltd. (Japan)",
+      "retrieved": "2026-11-11",
+      "supports": "metric dock size 115 × 201 × 51.2 mm (incl. 2 mm feet), weight about 383 g, ports (2 × USB 2.0 on the side, system connector, AC adapter port, HDMI, LAN)"
+    },
+    {
+      "url": "https://www.nintendo.com/sg/hardware/switch2/accessories/index.html",
+      "title": "Nintendo Switch 2 Accessories – Nintendo Switch 2 AC Adapter specifications",
+      "publisher": "Nintendo (Singapore)",
+      "retrieved": "2026-11-11",
+      "supports": "AC adapter input 100–240 V 50/60 Hz, output up to 20 V / 3 A, cable about 1.5 m"
+    }
+  ],
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "European barcode and plug type of the version sold in the Gulf"
+    ]
+  }
+}

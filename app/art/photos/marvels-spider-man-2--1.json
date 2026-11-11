@@ -1,0 +1,65 @@
+{
+  "key": "marvels-spider-man-2--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/marvels-spider-man-2/1-240.1bf1c90c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-spider-man-2/1-480.f5a20354.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-spider-man-2/1-720.9cc5fa9a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-spider-man-2/1-960.e52b32fc.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-spider-man-2/1-1440.2abece39.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/marvels-spider-man-2/1-240.757adf93.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-spider-man-2/1-480.07546f13.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-spider-man-2/1-720.9d4a992b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-spider-man-2/1-960.7eedcd27.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-spider-man-2/1-1440.15e4a977.webp"
+      }
+    ],
+    "png": "/products/marvels-spider-man-2/1-720.7cc1da53.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABQAPxF4sVIsJySiqA1RgCIJbACdL3WA59eVbBJLqIEeGkAA/uvitxOutCGIGZFK1UFK7q1PRjeo3k3S04m3rC9/8g2LnB9Kki33W3ttnZ7lywCmgGgr30CJZJqnyZ4qyjih4QDerG7/IWGhsHVgsAA=",
+  "dominant": "#770001",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Sony Interactive Entertainment / Marvel",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-packshot-01-en-02jul24?$1600px--t$",
+    "page": "https://www.playstation.com/en-us/games/marvels-wolverine/"
+  },
+  "input": "fe9af189a3e61581"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "forza-horizon-6--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/forza-horizon-6/4-240.9c82c8fd.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/forza-horizon-6/4-480.8e6290d5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/forza-horizon-6/4-720.80fceb02.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/forza-horizon-6/4-960.e27cbb2b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/forza-horizon-6/4-1440.0a954089.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/forza-horizon-6/4-240.1f993c07.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/forza-horizon-6/4-480.12616e31.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/forza-horizon-6/4-720.81e44cdb.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/forza-horizon-6/4-960.3a40ec7c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/forza-horizon-6/4-1440.07be0376.webp"
+      }
+    ],
+    "png": "/products/forza-horizon-6/4-720.96ff1484.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJZgAAWjk5gYGv313Ql4wwgAD+crSk95Vg+S4JaAAjJdB6IqH10gs0XpsNUEM+2fRnsk5AHn01ccBY05iZpAgXmLtEeIHt8SDlBz8XJNTCtAssdYAAAA==",
+  "dominant": "#181816",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Xbox Game Studios",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/forza-horizon-6-screenshot-05-en-12jan26?$1600px$",
+    "page": "https://www.playstation.com/en-ae/games/forza-horizon-6/"
+  },
+  "input": "167dd4b7120d23b0"
+}

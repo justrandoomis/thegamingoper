@@ -1,0 +1,264 @@
+{
+  "slug": "nintendo-switch-2-mario-kart-world-bundle",
+  "group": "nintendo-hardware",
+  "kind": "console",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "deviceModel": "switch-2",
+  "family": "switch-2",
+  "status": "available",
+  "releaseDate": "2025-06-05",
+  "name": {
+    "ar": "Nintendo Switch 2 + Mario Kart World Bundle",
+    "en": "Nintendo Switch 2 + Mario Kart World Bundle",
+    "ckb": "Nintendo Switch 2 + Mario Kart World Bundle"
+  },
+  "short": {
+    "ar": "جهاز Switch 2 بسعة 256GB + لعبة Mario Kart World كاملة (تنزيل رقمي)",
+    "en": "Switch 2 256GB + full Mario Kart World digital download",
+    "ckb": "Switch 2 ی 256GB + یاریی تەواوی Mario Kart World (داگرتنی دیجیتاڵ)"
+  },
+  "description": {
+    "ar": "حزمة تضم جهاز Nintendo Switch 2 العادي مع لعبة Mario Kart World كاملة بصيغة تنزيل رقمي، وليست بطاقة لعبة. نسخة 2026 من الحزمة تضيف أيضًا اشتراكًا فرديًا لمدة 3 أشهر في Nintendo Switch Online للعب عبر الإنترنت. محتويات الجهاز نفسها مثل علبة Switch 2 العادية.",
+    "en": "A bundle of the standard Nintendo Switch 2 with the full Mario Kart World game as a digital download, not a game card. The 2026 version of the bundle also adds a 3-month Nintendo Switch Online Individual Membership for online play. The hardware in the box is the same as the regular Switch 2.",
+    "ckb": "پاکێجێک کە Nintendo Switch 2 ی ئاسایی لەگەڵ یاریی تەواوی Mario Kart World وەک داگرتنی دیجیتاڵ لەخۆ دەگرێت، نەک کارتی یاری. وەشانی 2026 ی پاکێجەکە بەشداریی تاکەکەسیی 3 مانگەی Nintendo Switch Online ـیشی تێدایە بۆ یاری ئۆنلاین. ئامێرەکانی ناو قوتووەکە هەمان Switch 2 ی ئاساییە."
+  },
+  "highlights": [
+    {
+      "ar": "Mario Kart World كاملة بالتنزيل الرقمي وليست بطاقة لعبة — تحتاج اتصالًا بالإنترنت لتنزيلها",
+      "en": "Full Mario Kart World as a digital download, not a game card — you need internet to download it",
+      "ckb": "Mario Kart World ی تەواو وەک داگرتنی دیجیتاڵ، نەک کارتی یاری — ئینتەرنێتت پێویستە بۆ داگرتنی"
+    },
+    {
+      "ar": "نسخة 2026 تشمل اشتراك Nintendo Switch Online فرديًا لمدة 3 أشهر (يتجدد تلقائيًا ما لم يُلغَ)",
+      "en": "2026 version includes a 3-month Nintendo Switch Online Individual Membership (auto-renews unless cancelled)",
+      "ckb": "وەشانی 2026 بەشداریی تاکەکەسیی 3 مانگەی Nintendo Switch Online ی تێدایە (خۆکار نوێ دەبێتەوە ئەگەر هەڵنەوەشێنرێتەوە)"
+    },
+    {
+      "ar": "Mario Kart World: حتى 4 لاعبين على جهاز واحد، و8 لاسلكيًا محليًا، و24 عبر الإنترنت",
+      "en": "Mario Kart World: up to 4 players on one system, 8 over local wireless, 24 online",
+      "ckb": "Mario Kart World: تا 4 یاریزان لەسەر یەک ئامێر، 8 بە بێتەلی ناوخۆیی، 24 ئۆنلاین"
+    },
+    {
+      "ar": "لعبة Mario Kart World لا تدعم اللغة العربية",
+      "en": "Mario Kart World does not support Arabic",
+      "ckb": "Mario Kart World زمانی عەرەبی تێدا نییە"
+    },
+    {
+      "ar": "الجهاز نفسه: شاشة 7.9 بوصة 1080p، تخزين 256GB، حتى 4K على التلفاز",
+      "en": "Same console: 7.9-inch 1080p screen, 256GB storage, up to 4K on TV",
+      "ckb": "هەمان کۆنسۆڵ: شاشەی 7.9 ئینج 1080p، بیرگەی 256GB، تا 4K لەسەر تەلەڤزیۆن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "game",
+      "label": { "ar": "اللعبة المرفقة", "en": "Included game", "ckb": "یاریی لەگەڵدا" },
+      "value": {
+        "ar": "Mario Kart World — تنزيل رقمي كامل",
+        "en": "Mario Kart World — full digital download",
+        "ckb": "Mario Kart World — داگرتنی دیجیتاڵی تەواو"
+      }
+    },
+    {
+      "key": "online_membership",
+      "label": { "ar": "اشتراك الإنترنت", "en": "Online membership", "ckb": "بەشداریی ئۆنلاین" },
+      "value": {
+        "ar": "نسخة 2026: 3 أشهر Nintendo Switch Online (فردي)؛ نسخة 2025: غير مشمول",
+        "en": "2026 version: 3 months Nintendo Switch Online (Individual); 2025 version: not included",
+        "ckb": "وەشانی 2026: 3 مانگ Nintendo Switch Online (تاکەکەسی)؛ وەشانی 2025: لەگەڵدا نییە"
+      }
+    },
+    {
+      "key": "game_languages",
+      "label": { "ar": "لغات اللعبة", "en": "Game languages", "ckb": "زمانەکانی یارییەکە" },
+      "value": {
+        "ar": "الإنجليزية، الفرنسية، الألمانية، الإسبانية، الإيطالية، الهولندية، البرتغالية، الروسية، البولندية، التايلاندية، اليابانية، الصينية، الكورية — بدون العربية",
+        "en": "English, French, German, Spanish, Italian, Dutch, Portuguese, Russian, Polish, Thai, Japanese, Chinese, Korean — no Arabic",
+        "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیسپانی، ئیتاڵی، هۆڵەندی، پورتوگالی، ڕووسی، پۆڵەندی، تایلەندی، یابانی، چینی، کۆری — بێ عەرەبی"
+      }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": {
+        "ar": "1–4 على جهاز واحد، 2–8 لاسلكي محلي، 2–24 عبر الإنترنت",
+        "en": "1–4 on one system, 2–8 local wireless, 2–24 online",
+        "ckb": "1–4 لەسەر یەک ئامێر، 2–8 بێتەلی ناوخۆیی، 2–24 ئۆنلاین"
+      }
+    },
+    {
+      "key": "age_rating",
+      "label": { "ar": "التصنيف العمري للعبة", "en": "Game age rating", "ckb": "پۆلێنی تەمەنی یارییەکە" },
+      "value": {
+        "ar": "ESRB E (للجميع)، كما هو مطبوع على العلبة الأمريكية",
+        "en": "ESRB E (Everyone), as printed on the US box",
+        "ckb": "ESRB E (بۆ هەمووان)، وەک لەسەر قوتووی ئەمریکی چاپ کراوە"
+      }
+    },
+    {
+      "key": "console",
+      "label": { "ar": "الجهاز", "en": "Console", "ckb": "کۆنسۆڵ" },
+      "value": {
+        "ar": "Nintendo Switch 2 قياسي: شاشة 7.9 بوصة 1080p، تخزين 256GB، بطارية 5220mAh",
+        "en": "Standard Nintendo Switch 2: 7.9-inch 1080p screen, 256GB storage, 5220 mAh battery",
+        "ckb": "Nintendo Switch 2 ی ئاسایی: شاشەی 7.9 ئینج 1080p، بیرگەی 256GB، پاتریی 5220mAh"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "جهاز Nintendo Switch 2", "en": "Nintendo Switch 2 console", "ckb": "کۆنسۆڵی Nintendo Switch 2" },
+    { "ar": "Mario Kart World (تنزيل رقمي كامل)", "en": "Mario Kart World (full digital download)", "ckb": "Mario Kart World (داگرتنی دیجیتاڵی تەواو)" },
+    { "ar": "اشتراك Nintendo Switch Online فردي لمدة 3 أشهر (نسخة 2026 فقط)", "en": "3-month Nintendo Switch Online Individual Membership (2026 version only)", "ckb": "بەشداریی تاکەکەسیی 3 مانگەی Nintendo Switch Online (تەنها وەشانی 2026)" },
+    { "ar": "يد Joy-Con 2 (L) زرقاء فاتحة و Joy-Con 2 (R) حمراء فاتحة", "en": "Joy-Con 2 (L) Light Blue and Joy-Con 2 (R) Light Red", "ckb": "Joy-Con 2 (L) شینی کاڵ و Joy-Con 2 (R) سووری کاڵ" },
+    { "ar": "مقبض Joy-Con 2 Grip وحزاما معصم (عدد 2)", "en": "Joy-Con 2 Grip and Joy-Con 2 Strap (×2)", "ckb": "دەسگرەی Joy-Con 2 Grip و قایشی Joy-Con 2 (×2)" },
+    { "ar": "قاعدة Nintendo Switch 2 Dock", "en": "Nintendo Switch 2 Dock", "ckb": "دۆکی Nintendo Switch 2" },
+    { "ar": "محول الطاقة وكابل شحن USB-C", "en": "Nintendo Switch 2 AC Adapter and USB-C charging cable", "ckb": "ئەداپتەری کارەبا و کێبڵی بارگاویکردنی USB-C" },
+    { "ar": "كابل Ultra High Speed HDMI", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی Ultra High Speed HDMI" }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-MKW-2026",
+      "title": {
+        "ar": "حزمة 2026: Switch 2 + Mario Kart World + اشتراك Nintendo Switch Online لـ3 أشهر",
+        "en": "2026 bundle: Switch 2 + Mario Kart World + 3-month Nintendo Switch Online",
+        "ckb": "پاکێجی 2026: Switch 2 + Mario Kart World + 3 مانگ Nintendo Switch Online"
+      },
+      "options": { "edition": "Mario Kart World Bundle (2026)", "storage": "256GB", "extras": "3-month Nintendo Switch Online" },
+      "barcodes": ["0045496886707"],
+      "isDefault": true,
+      "images": ["nintendo-switch-2-mario-kart-world-bundle--1", "nintendo-switch-2-mario-kart-world-bundle--2", "nintendo-switch-2-mario-kart-world-bundle--3"],
+      "notes": {
+        "ar": "صدرت في 18 سبتمبر 2026 في الولايات المتحدة. تذكر العلبة أن اللعبة تُنزَّل على الجهاز المرفق نفسه. الباركود هو رمز UPC الأمريكي.",
+        "en": "Released 18 September 2026 in the US. The box says the game is downloaded on the included console. Barcode is the US UPC.",
+        "ckb": "لە 18ی ئەیلوولی 2026 لە ئەمریکا دەرچوو. لەسەر قوتووەکە نووسراوە کە یارییەکە لەسەر هەمان ئەو کۆنسۆڵەی لە قوتووەکەدایە دادەگیرێت. بارکۆدەکە UPCی ئەمریکییە."
+      }
+    },
+    {
+      "sku": "NS2-MKW-2025",
+      "title": {
+        "ar": "حزمة الإطلاق 2025: Switch 2 + Mario Kart World",
+        "en": "2025 launch bundle: Switch 2 + Mario Kart World",
+        "ckb": "پاکێجی دەستپێکی 2025: Switch 2 + Mario Kart World"
+      },
+      "options": { "edition": "Mario Kart World Bundle (2025 launch)", "storage": "256GB" },
+      "isDefault": false,
+      "images": ["nintendo-switch-2-mario-kart-world-bundle--3"],
+      "notes": {
+        "ar": "صدرت مع الجهاز في 5 يونيو 2025 بدون اشتراك Nintendo Switch Online. توقف إنتاجها في ديسمبر 2025 وتباع بكميات محدودة حتى نفاد المخزون.",
+        "en": "Launched with the console on 5 June 2025, without a Nintendo Switch Online membership. Production ended in December 2025; sold in limited quantities while stock lasts.",
+        "ckb": "لەگەڵ کۆنسۆڵەکە لە 5ی حوزەیرانی 2025 دەرچوو، بێ بەشداریی Nintendo Switch Online. بەرهەمهێنانی لە کانوونی یەکەمی 2025 وەستا؛ بە بڕی سنووردار دەفرۆشرێت تا کاڵاکە تەواو دەبێت."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-2", "kind": "alternative" },
+    { "slug": "mario-kart-world", "kind": "alternative" },
+    { "slug": "joy-con-2", "kind": "accessory" },
+    { "slug": "nintendo-switch-2-pro-controller", "kind": "accessory" },
+    { "slug": "sandisk-microsd-express", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "nintendo-switch-2-mario-kart-world-bundle--1",
+      "file": ".cache/product-images/nintendo-switch-2-mario-kart-world-bundle/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/128067-nintendo-switch-2-mario-kart-world-bundle-package-front-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-bundle-128067/",
+      "kind": "hero",
+      "alt": {
+        "ar": "علبة حزمة Nintendo Switch 2 + Mario Kart World (2026)",
+        "en": "Nintendo Switch 2 + Mario Kart World Bundle box (2026)",
+        "ckb": "قوتووی پاکێجی Nintendo Switch 2 + Mario Kart World (2026)"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    },
+    {
+      "key": "nintendo-switch-2-mario-kart-world-bundle--2",
+      "file": ".cache/product-images/nintendo-switch-2-mario-kart-world-bundle/2.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/v1788046450/ncom/en_US/merchandising/Showrooms/2026%20Holiday/MKW_bundle_product_shot.png",
+      "sourcePage": "https://www.nintendo.com/us/gaming-systems/switch-2/",
+      "kind": "angle",
+      "alt": {
+        "ar": "علبة حزمة Mario Kart World بزاوية جانبية",
+        "en": "Mario Kart World Bundle box at an angle",
+        "ckb": "قوتووی پاکێجی Mario Kart World لە گۆشەیەکی لاتەنیشتەوە"
+      },
+      "credit": "Nintendo",
+      "width": 1600, "height": 900, "transparent": true
+    },
+    {
+      "key": "nintendo-switch-2-mario-kart-world-bundle--3",
+      "file": ".cache/product-images/nintendo-switch-2-mario-kart-world-bundle/3.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-dock-joy-con-grip-2000x2000",
+      "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-bundle-128067/",
+      "kind": "in-box",
+      "alt": {
+        "ar": "الجهاز داخل القاعدة مع يدي Joy-Con 2 على المقبض",
+        "en": "The console in its dock with the Joy-Con 2 on the grip",
+        "ckb": "کۆنسۆڵەکە لەناو دۆکەکەدا لەگەڵ Joy-Con 2 لەسەر دەسگرەکە"
+      },
+      "credit": "Nintendo",
+      "width": 2000, "height": 2000, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-bundle-128067/",
+      "title": "Nintendo Switch 2 + Mario Kart World Bundle",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "2026 bundle contents (digital download, 3-month NSO), release date 18 Sep 2026, UPC, players, game languages, available while supplies last"
+    },
+    {
+      "url": "https://www.nintendo.com/us/whatsnew/two-new-nintendo-switch-2-bundles-deliver-sun-soaked-sports-high-speed-thrills-and-extra-value/",
+      "title": "Two new Nintendo Switch 2 bundles deliver sun-soaked sports, high-speed thrills and extra value",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "announcement of the 2026 Mario Kart World bundle with 3-month NSO (25 Aug 2026)"
+    },
+    {
+      "url": "https://www.nintendo.com/us/whatsnew/nintendo-maintains-nintendo-switch-2-pricing-retail-pre-orders-to-begin-april-24-in-u-s/",
+      "title": "Nintendo Maintains Nintendo Switch 2 Pricing, Retail Pre-Orders to Begin April 24 in U.S.",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-11",
+      "supports": "existence of the 2025 launch bundle"
+    },
+    {
+      "url": "https://me.ign.com/ar/untitled-mario-kart-game/188512/news/twqf-ntj-hzm-switch-2-mario-kart-world-hyth-kdt-nintendo-twfrh-lan-bkmyt-mhdwd-fqt-wdhlk-l-hyn-nfd-l",
+      "title": "Switch 2 Mario Kart World bundle production ends (IGN Middle East)",
+      "publisher": "IGN Middle East",
+      "retrieved": "2026-11-11",
+      "supports": "2025 bundle production ended, Nintendo statement of 22 Dec 2025 that it is available in limited quantities while supplies last"
+    },
+    {
+      "url": "https://www.vice.com/en/article/nintendo-ends-production-on-the-switch-2-mario-kart-world-bundle/",
+      "title": "Nintendo Ends Production On The Switch 2 Mario Kart World Bundle",
+      "publisher": "VICE",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation (22 Dec 2025) that the 2025 launch bundle reached end of production"
+    },
+    {
+      "url": "https://www.engadget.com/2243642/nintendo-reveals-its-latest-switch-2-bundles-just-ahead-of-the-consoles-price-increase/",
+      "title": "Nintendo reveals its latest Switch 2 bundles just ahead of the console's price increase",
+      "publisher": "Engadget",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation that the revamped 2026 bundle adds a 90-day individual Nintendo Switch Online membership the launch bundle lacked, digital game, late-September availability"
+    }
+  ],
+  "notes": {
+    "ar": "اللعبة في هذه الحزمة تنزيل رقمي وليست بطاقة لعبة. أعلنت Nintendo of America عن نسخة 2026؛ لم نتأكد من توفرها في المناطق الأخرى، ولم نجدها في متجر Nintendo البريطاني.",
+    "en": "The game in this bundle is a digital download, not a game card. The 2026 version was announced by Nintendo of America; availability in other regions is not confirmed and it is not listed on Nintendo Store UK.",
+    "ckb": "یارییەکەی ئەم پاکێجە داگرتنی دیجیتاڵە، نەک کارتی یاری. وەشانی 2026 لەلایەن Nintendo of America ڕاگەیەنرا؛ بەردەستبوونی لە ناوچەکانی تر پشتڕاست نەکراوەتەوە و لە فرۆشگای بەریتانی Nintendo دا نییە."
+  },
+  "verification": {
+    "checkedBy": "fact-check",
+    "secondSource": true,
+    "unverified": [
+      "Availability of the 2026 bundle outside the US (not listed on Nintendo Store UK)",
+      "Barcode of the 2025 launch bundle",
+      "Whether 2025 launch bundles outside the US came with a download code in the box or a download linked to the console",
+      "PEGI rating (only the US ESRB rating is printed on this bundle's box)"
+    ]
+  }
+}

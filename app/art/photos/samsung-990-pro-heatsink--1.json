@@ -1,0 +1,65 @@
+{
+  "key": "samsung-990-pro-heatsink--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 607,
+  "aspect": 2.6359,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/1-240.cfcc5996.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/1-480.d55ee929.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/1-720.db809824.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-990-pro-heatsink/1-960.2e357171.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-990-pro-heatsink/1-1440.2361d87c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/samsung-990-pro-heatsink/1-240.13024de5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/samsung-990-pro-heatsink/1-480.b859e491.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/samsung-990-pro-heatsink/1-720.7bb0b9cf.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/samsung-990-pro-heatsink/1-960.a0a721d7.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/samsung-990-pro-heatsink/1-1440.e1807d86.webp"
+      }
+    ],
+    "png": "/products/samsung-990-pro-heatsink/1-720.ac61d567.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSDcAAAARN6CYkSQ4Os9xmL3XY0k2IgL34iYUAgDadD1yKIAQosgf4mwIEf2fADha+IzVq+aX2sTCZ4QjAFZQOCBQAAAA8AMAnQEqFAAIAD8RerRQLCglIrAIAYAiCUAXYDFAGTIZwmp9i1iegAD+cx+rWY1CZVU6Zu7NyND/UxHF4ZxQ7KqEnwrw52gDiUqGNlQAAAA=",
+  "dominant": "#262626",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Samsung",
+  "source": {
+    "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959882?$ORIGIN_PNG$",
+    "page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/"
+  },
+  "input": "c18f90d4230d7d12"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "nintendo-switch-2-pokemon-legends-z-a-bundle--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 873,
+  "aspect": 1.8328,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-240.319544b6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-480.98f52529.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-720.4aee5694.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-960.feacda2c.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-1440.fa390269.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-240.eb9a87c4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-480.1f8f81a3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-720.59da0bb0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-960.fab4fd1d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-1440.9956ae13.webp"
+      }
+    ],
+    "png": "/products/nintendo-switch-2-pokemon-legends-z-a-bundle/2-720.ccf101ec.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSE0AAAARR6CmjSQ3eWUmkO/6p/EREYDvt58tGMW23eQlgX2HLRKigUEAFvq+W8j33TRE9H8CAMBBfU/eYpwS8b5IJPcDadEwGxbDZYjHKf45jABWUDggXgAAAJADAJ0BKhQACwA/EXKwUKwmpKKwCAGAIglpAABSIa7U6+FeVAAA+x8LIBQiyNOiOBlkW4H2kW9D7CISdcG4OyU8T5g16m3qL4YD12xB4KCrNDgrUuzLB3MQNxxwAAA=",
+  "dominant": "#34373a",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-dock-joy-con-grip-2000x2000",
+    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/"
+  },
+  "input": "144ab6e19416be13"
+}

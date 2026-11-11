@@ -1,0 +1,65 @@
+{
+  "key": "dualsense-edge--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 794,
+  "aspect": 2.0151,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/4-240.7b33152c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/4-480.c9886b0d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/4-720.5473768e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/4-960.bf85fd30.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/4-1440.a0deb20c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge/4-240.c2209cad.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge/4-480.febfebb7.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge/4-720.5ddabd66.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualsense-edge/4-960.fde31816.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dualsense-edge/4-1440.42a38e3d.webp"
+      }
+    ],
+    "png": "/products/dualsense-edge/4-720.186827cc.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSGoAAAART6CgjSQ1dR4YnjEiAvxP9HhS4Da2bVW531MHws+vAIfQid0ySnDLnAZ814vUENH/CZA/7WZdi8pRNquEMHbDG+gToFO6gzUFLrtnf5XYA9dtz0maU+CyFdeVMuyOu1RQF6nWvVap/PEnVlA4IHoAAAAQBACdASoUAAoAPxFysFAsJqSisAgBgCIJZwDE2CIQNjexxR3f6HkgAAD+YUMnLpd2ClyPXnge0ErQqbP+VwrmW0o6lW0WsntsbVmzwx9usBmntafPUwvcZTbR/76f5X4Aujd7wsdbuFT8dK7oLdDAOV6zpGACzXAAAA==",
+  "dominant": "#e9edf3",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-AllAccs-01-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/"
+  },
+  "input": "5cca39ec181da239"
+}

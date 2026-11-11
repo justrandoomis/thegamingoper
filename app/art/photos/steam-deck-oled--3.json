@@ -1,0 +1,65 @@
+{
+  "key": "steam-deck-oled--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/steam-deck-oled/3-240.502b7451.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/steam-deck-oled/3-480.36a5bd30.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/steam-deck-oled/3-720.88bc00c3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/steam-deck-oled/3-960.9751b61b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/steam-deck-oled/3-1440.b2f3b6be.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/steam-deck-oled/3-240.1d0f01e2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/steam-deck-oled/3-480.9b3ac624.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/steam-deck-oled/3-720.6c262b49.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/steam-deck-oled/3-960.7a13a1b4.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/steam-deck-oled/3-1440.f04fcdd2.webp"
+      }
+    ],
+    "png": "/products/steam-deck-oled/3-720.70710f0f.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoUAAsAPxGCtFIsKaUisAgBgCIJaSz2wAIT0AD+7H2/0l/YmpwItDELRZ/gFAUd9GQVekP4AAA=",
+  "dominant": "#0c0c0c",
+  "transparent": false,
+  "background": null,
+  "kind": "angle",
+  "credit": "Valve",
+  "source": {
+    "url": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/press_oled_top.jpg",
+    "page": "https://www.steamdeck.com/en/press"
+  },
+  "input": "a6059a388df8328b"
+}

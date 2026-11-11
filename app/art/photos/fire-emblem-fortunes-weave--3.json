@@ -1,0 +1,65 @@
+{
+  "key": "fire-emblem-fortunes-weave--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/3-240.359a6655.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/3-480.1ecc0b51.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/3-720.f339067d.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/3-960.c11d109b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/3-1440.4054c452.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/fire-emblem-fortunes-weave/3-240.09f37cc9.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/fire-emblem-fortunes-weave/3-480.786bf897.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/fire-emblem-fortunes-weave/3-720.1fcf5545.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/fire-emblem-fortunes-weave/3-960.c6f18b79.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/fire-emblem-fortunes-weave/3-1440.5c259460.webp"
+      }
+    ],
+    "png": "/products/fire-emblem-fortunes-weave/3-720.3eebbd5c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYgCdIFzBUjasQf7uEa6gAP6e67ZsaxCI04XRa+OUX8lS77nZ/ZDzIbnOfWhL5WPTD3XNxX7TvY2bNxKshdVzSwAZ+D4cAAA=",
+  "dominant": "#f3ece6",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo / Intelligent Systems",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000126929/ff416413a2538f8e4076a8b60b0f831c75a1eb3892150ff6678f3ddedfe6ad0e",
+    "page": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-switch-2/"
+  },
+  "input": "ba7df0376a4cecbb"
+}

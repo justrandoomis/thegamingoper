@@ -1,0 +1,65 @@
+{
+  "key": "razer-blackshark-v2-x--5",
+  "view": "hero",
+  "width": 1500,
+  "height": 1000,
+  "aspect": 1.5,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/razer-blackshark-v2-x/5-240.5d83a21e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/razer-blackshark-v2-x/5-480.6ba75855.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/razer-blackshark-v2-x/5-720.c699c46e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/razer-blackshark-v2-x/5-960.9b98a137.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/razer-blackshark-v2-x/5-1440.726b7605.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/razer-blackshark-v2-x/5-240.4e86734b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/razer-blackshark-v2-x/5-480.52ef3ac2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/razer-blackshark-v2-x/5-720.25d8be59.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/razer-blackshark-v2-x/5-960.caffeca3.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/razer-blackshark-v2-x/5-1440.148ec01d.webp"
+      }
+    ],
+    "png": "/products/razer-blackshark-v2-x/5-720.183511c8.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAABQAwCdASoUAA0APxFysFAsJqSisAgBgCIJYgAAW+nyDbAzEAD+000dWNHEddprqqQ2f06KXHsfgnXfVrpHsAnAAAA=",
+  "dominant": "#fac6d6",
+  "transparent": false,
+  "background": null,
+  "kind": "hero",
+  "credit": "Razer",
+  "source": {
+    "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h36/h95/9446069469214/221015-blackshark-v2-x-quartz-1500x1000-1.jpg",
+    "page": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240800-R3U1"
+  },
+  "input": "f9c61a9dc749925c"
+}

@@ -1,0 +1,65 @@
+{
+  "key": "lenovo-legion-go-s--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 983,
+  "aspect": 1.6277,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-s/2-240.3564ed1b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-s/2-480.587fb4f4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-s/2-720.388c796c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-s/2-960.0342b051.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-s/2-1440.11ef13b1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/lenovo-legion-go-s/2-240.a1d8f8b2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/lenovo-legion-go-s/2-480.fc723509.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/lenovo-legion-go-s/2-720.6c0d1a92.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/lenovo-legion-go-s/2-960.7d292ba3.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/lenovo-legion-go-s/2-1440.9b4e17ac.webp"
+      }
+    ],
+    "png": "/products/lenovo-legion-go-s/2-720.a70e31b0.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSFgAAAART6CokRQ2h4jeeREiIgDP1vmlwDaybSX3o+l7VZB7ao1oAUR8QjIeDVi9X2qI6P8EAMzMMCcRObRugOe3R/Q50vZ3xqPH5nF6jK6Qhl2MWwGgfL0kg5MBVlA4IIgAAAAwBACdASoUAAwAPxFysVAsJqSisAgBgCIJaAC7ACP7sbpQEzcaKjGX3AAA/qjUfuOrgo1yBEG4u6fgjhsZvnOGubo+x1PC+jtH1j5Uks+DDu475EAonu8IMgN8jYN2LKWHD8IEoeuscwj0WiRh+RpFiZVNprPvrPmrg2xw1VWTLauc1MO8IuAA",
+  "dominant": "#070708",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Lenovo",
+  "source": {
+    "url": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#03_Legion_Go_S_Steam_45_degree_front_facing_left.png",
+    "page": "https://news.lenovo.com/press-kits/ces-2025/"
+  },
+  "input": "70e810bd694270ea"
+}

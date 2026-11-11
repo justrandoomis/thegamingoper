@@ -1,0 +1,65 @@
+{
+  "key": "xbox-adaptive-controller--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 798,
+  "aspect": 2.005,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/xbox-adaptive-controller/1-240.df8fe612.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-adaptive-controller/1-480.938f955d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-adaptive-controller/1-720.73ec44a8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-adaptive-controller/1-960.0fa05075.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-adaptive-controller/1-1440.4ca0491f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/xbox-adaptive-controller/1-240.763447ad.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/xbox-adaptive-controller/1-480.d0b93a40.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-adaptive-controller/1-720.e0774cd6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-adaptive-controller/1-960.6031487a.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/xbox-adaptive-controller/1-1440.42a25df5.webp"
+      }
+    ],
+    "png": "/products/xbox-adaptive-controller/1-720.5a798a9c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSFgAAAART6AmkiQ1eBaYH8KPPiIC8L6h+IfBpta2JQ86/xGwBNaDjdVthOlvwCGAfXmxChH9nwB+qrgdABV3q4i4lKs8Tszy6uYv2vGum85M2GUbIgNgKUKDR8UrVlA4IIwAAAAQBACdASoUAAoAPxFysFAsJqSisAgBgCIJaQAD46nT8GT6RbeIsA1AAAD+17GJFslsggXGbs4LPnRY2edii/t/S/YxwS/FNgyhCCo+RvkU38YRsBP3l8P2THTdjxKX0qiuX66My4EqfKRCcz8fAMVqzp0WqxFNJ/ikGL8OEn3Znqd7tMpkJdd9gAAAAA==",
+  "dominant": "#f4f4f4",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Microsoft",
+  "source": {
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b00?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8"
+  },
+  "input": "28249556a1602feb"
+}

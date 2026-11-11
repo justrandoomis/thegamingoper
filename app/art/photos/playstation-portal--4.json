@@ -1,0 +1,65 @@
+{
+  "key": "playstation-portal--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 696,
+  "aspect": 2.2989,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/4-240.493c73ee.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/4-480.1d30c4e4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/4-720.096e3ca4.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/4-960.f60f5ede.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/4-1440.402801ae.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/playstation-portal/4-240.d90c7c53.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/playstation-portal/4-480.f7786ea1.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-portal/4-720.2dfd663b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-portal/4-960.a5408d5d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/playstation-portal/4-1440.22199141.webp"
+      }
+    ],
+    "png": "/products/playstation-portal/4-720.7b4e2fd1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSE8AAAARP6CQkSQ2dwz31aAqfUQE5CuVByaybacJ67pa9nWxhYAn/7dQ3v8E1hDR/wlAlc0QYoxRD7j7i2QtMSgJkE9ibwHtnchTdNQppdS8EFQJAFZQOCBGAAAAkAMAnQEqFAAJAD8RcrBQLCakorAIAYAiCUAAC4DKUUdZAyIwgAD+2TDFUMYj3WOvZrM2PVS9fqoyjdcwj4JJFPglOeAAAA==",
+  "dominant": "#25252a",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/PORTAL_MIDNIGHTBLACK_PR_04_RGB-1x1-01-8July26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
+  },
+  "input": "25912b7605d35a7e"
+}

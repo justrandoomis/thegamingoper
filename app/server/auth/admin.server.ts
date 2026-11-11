@@ -31,11 +31,12 @@ import { data, redirectDocument } from "react-router";
 import { z } from "zod";
 import { newId, randomToken, sha256Hex, timingSafeEqual } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
-import { assertCan, can, systemActor, type Actor, type EmployeeActor } from "../actor";
+import { assertCan, can, systemActor, type Actor, type EmployeeActor, type RequestOrigin } from "../actor";
 import { auditStatement } from "../audit.server";
 import { TOTP_DEFAULTS, decryptSecret, encryptSecret, findRecoveryCode, generateRecoveryCodes, generateTotpSecret, hashPassword, hashRecoveryCode, needsRehash, otpauthUri, verifyPassword, verifyTotp } from "../crypto.server";
 import type { BatchStatement, Db } from "../db/drizzle.server";
 import { employeeRoles, employeeSessions, employees, rolePermissions, roles } from "../db/schema";
+import { seedReference } from "../db/seed/reference";
 import { expectChanged, expectThat, isDbError, runBatch } from "../db/tx.server";
 import { AppError, conflict, invalid, notFound, rateLimited, unauthorized } from "../errors";
 import { roleId, type Permission } from "../permissions";
@@ -681,19 +682,17 @@ export async function changeEmployeePassword(ctx: AuthCtx, db: Db, raw: unknown)
 
 // ───────────────────────────────────────────────────────────────── first owner
 
-const FirstOwnerInput = z.object({
+const FirstOwnerSchema = z.object({
   email: z.string({ error: "required" }).trim().toLowerCase().min(1, "required").max(200, "email_invalid").pipe(z.email("email_invalid")),
   name: z.string({ error: "required" }).trim().min(2, "too_short").max(80, "too_long"),
   password: passwordField(EMPLOYEE_PASSWORD_MIN),
 });
 
-export type FirstOwnerOptions = {
-  /** `env.SETUP_TOKEN`. Setup is refused when it is not configured. */
-  expectedToken: string | null | undefined;
-  now: number;
-  ip?: string | null;
-  requestId?: string | null;
-};
+/** What the /admin/setup form sends. Validated inside createFirstOwner(), so a raw form object can be passed. */
+export type FirstOwnerInput = { setupToken: string; email: string; name: string; password: string };
+
+/** A SETUP_TOKEN shorter than this counts as not configured: setup stays switched off. */
+export const MIN_SETUP_TOKEN_LENGTH = 16;
 
 /** True while no employee exists — the only time /admin/setup may be shown. */
 export async function isSetupAvailable(db: Db): Promise<boolean> {
@@ -702,26 +701,41 @@ export async function isSetupAvailable(db: Db): Promise<boolean> {
 }
 
 /**
- * Creates the first owner account. Works exactly once: only while the `employees` table is empty
- * (checked inside the same transaction as the insert) and only with the setup token.
+ * Creates the first owner account — the one-time bootstrap behind /admin/setup.
  *
- *   await createFirstOwner(db, { setupToken, email, name, password }, { expectedToken: env.SETUP_TOKEN, now: ctx.now, ip: ctx.ip, requestId: ctx.requestId });
+ *   import { env } from "cloudflare:workers";
+ *   await createFirstOwner(getDb(), Object.fromEntries(await request.formData()), ctx.now, env, { ip: ctx.ip, requestId: ctx.requestId });
  *
- * Also installs the built-in roles. Does not sign anyone in — send the owner to /admin/login.
- * Throws AppError: `setup_disabled` (403, no SETUP_TOKEN configured), `setup_token_invalid` (403,
- * fields.setupToken), `setup_done` (409), `invalid` (fields), `rate_limited`.
+ * Works exactly once: only while the `employees` table is empty (checked first, and again inside the
+ * transaction that inserts the owner, so two simultaneous attempts cannot both succeed) and only with
+ * `SETUP_TOKEN`, compared in constant time.
+ *
+ * Before the owner is written it installs, idempotently, what a fresh production database lacks:
+ *   · the reference data — seedReference(): governorates and districts, the ARCHITECTURE §10 settings
+ *     defaults, the main stock location, the sales channels, the chart of accounts and the inspection
+ *     templates. Production has no other path to them. Existing rows are never overwritten.
+ *   · the built-in roles (seedRoles), in the same transaction as the owner.
+ *
+ * Does not sign anyone in — send the owner to /admin/login. Throws AppError: `setup_disabled` (403,
+ * SETUP_TOKEN missing or shorter than 16 characters), `setup_token_invalid` (403, fields.setupToken),
+ * `setup_done` (409), `invalid` (fields.email / name / password), `rate_limited` (429, per IP).
  */
-export async function createFirstOwner(db: Db, raw: unknown, options: FirstOwnerOptions): Promise<{ employeeId: string }> {
-  const expected = options.expectedToken ?? "";
-  if (expected.length < 16) throw new AppError("setup_disabled", 403);
-  await enforceRateLimit(db, await limitKey("setup", "ip", options.ip), RATE_LIMITS.setup, options.now);
+export async function createFirstOwner(db: Db, raw: unknown, now: number, secrets: Pick<AuthSecrets, "SETUP_TOKEN">, origin: RequestOrigin = {}): Promise<{ employeeId: string }> {
+  const expected = (secrets.SETUP_TOKEN ?? "").trim();
+  if (expected.length < MIN_SETUP_TOKEN_LENGTH) throw new AppError("setup_disabled", 403);
+  await enforceRateLimit(db, await limitKey("setup", "ip", origin.ip), RATE_LIMITS.setup, now);
 
   const provided = typeof (raw as { setupToken?: unknown } | null)?.setupToken === "string" ? (raw as { setupToken: string }).setupToken.trim() : "";
   // Both sides are hashed first, so the comparison takes the same time whatever was typed.
   const tokenOk = timingSafeEqual(await sha256Hex(`tamtam.setup|${provided}`), await sha256Hex(`tamtam.setup|${expected}`));
   if (!tokenOk) throw new AppError("setup_token_invalid", 403, { fields: { setupToken: "setup_token_invalid" } });
 
-  const input = FirstOwnerInput.parse(raw);
+  const input = FirstOwnerSchema.parse(raw);
+  // Nothing is written once an owner exists, not even reference data.
+  if (!(await isSetupAvailable(db))) throw conflict("setup_done");
+
+  await seedReference(db, now);
+
   const password = await hashPassword(input.password);
   const employeeId = newId("emp");
   const existingRoles = await existingDefaultRoles(db);
@@ -729,28 +743,28 @@ export async function createFirstOwner(db: Db, raw: unknown, options: FirstOwner
   try {
     await runBatch(db, [
       expectThat(db, sql`NOT EXISTS (SELECT 1 FROM employees)`, { code: "SETUP_DONE" }),
-      ...seedRolesStatements(db, options.now, existingRoles),
+      ...seedRolesStatements(db, now, existingRoles),
       db.insert(employees).values({
         id: employeeId,
         email: input.email,
         name: input.name,
         passwordHash: password.hash,
         passwordIters: password.iterations,
-        passwordChangedAt: options.now,
+        passwordChangedAt: now,
         status: "active",
-        createdAt: options.now,
-        updatedAt: options.now,
+        createdAt: now,
+        updatedAt: now,
       }),
-      db.insert(employeeRoles).values({ employeeId, roleId: ownerRoleId, grantedBy: null, grantedAt: options.now }),
+      db.insert(employeeRoles).values({ employeeId, roleId: ownerRoleId, grantedBy: null, grantedAt: now }),
       auditStatement(db, {
         actor: systemActor("admin.setup"),
         action: "staff.employee.bootstrap",
         entityType: "employee",
         entityId: employeeId,
         after: { email: input.email, name: input.name, roles: ["owner"] },
-        at: options.now,
-        ip: options.ip,
-        requestId: options.requestId,
+        at: now,
+        ip: origin.ip ?? null,
+        requestId: origin.requestId ?? null,
       }),
     ]);
   } catch (error) {

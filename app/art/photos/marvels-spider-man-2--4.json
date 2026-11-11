@@ -1,0 +1,65 @@
+{
+  "key": "marvels-spider-man-2--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/marvels-spider-man-2/4-240.e2eeba37.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-spider-man-2/4-480.05e46bb1.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-spider-man-2/4-720.6c6620c3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-spider-man-2/4-960.9426f75e.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-spider-man-2/4-1440.dd93ddfd.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/marvels-spider-man-2/4-240.84748a5e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/marvels-spider-man-2/4-480.5c1b81d8.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/marvels-spider-man-2/4-720.d9b549ae.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/marvels-spider-man-2/4-960.54a81f32.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/marvels-spider-man-2/4-1440.1adbc604.webp"
+      }
+    ],
+    "png": "/products/marvels-spider-man-2/4-720.f0d152f0.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBdgA0kWyesPjEW9SAAA/o03XeX6T8a6PjhdxW1nHmOs3U5S2qIpvnzzy/op4b03gYJKocO4Wa2mHoMk8SAkh7/246Pm2Nd1gz6gZYuZXxC4AAA=",
+  "dominant": "#cab5aa",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment / Marvel",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-screenshot-peter-miles-en-25may23.jpg?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/"
+  },
+  "input": "6125503ea089ce58"
+}

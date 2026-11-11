@@ -39,7 +39,7 @@ export type TestDb = {
   d1: D1Database;
   /** The private KV namespace used by the storage service. */
   kv: KVNamespace;
-  /** All local bindings and vars (DB, KV, APP_ENV, STORE_MODE, secrets from .dev.vars…). */
+  /** All local bindings and vars (DB, KV, STORE_MODE…), with TEST_VARS for APP_ENV, PUBLIC_ORIGIN and the secrets. */
   env: Env;
   /** The timestamp passed to seedReference — a fixed "now" tests can reuse. */
   now: number;
@@ -56,6 +56,19 @@ export type CreateTestDbOptions = {
 
 /** 10 November 2026, 09:00 in Baghdad. */
 export const TEST_NOW = Date.UTC(2026, 10, 10, 6, 0, 0);
+
+/**
+ * Vars and secrets every test database runs with — fixed, obviously fake values, so the suite behaves the same with
+ * or without a developer's .dev.vars (a clean worktree, CI, a new machine). Without them getPlatformProxy would hand
+ * out wrangler.jsonc's production vars and no secrets at all. Never real values.
+ */
+export const TEST_VARS = {
+  APP_ENV: "development",
+  PUBLIC_ORIGIN: "http://localhost:5173",
+  SESSION_SECRET: "test-only-session-secret-not-for-production-0123456789",
+  DATA_KEY: "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+  SETUP_TOKEN: "test-only-setup-token-0123456789",
+} as const;
 
 type Registry = Set<() => Promise<void>>;
 const globals = globalThis as typeof globalThis & { __tamtamTestDbs?: Registry };
@@ -83,8 +96,9 @@ export async function createTestDb(options: CreateTestDbOptions = {}): Promise<T
     await applyMigrations(d1);
     const db = createDb(d1);
     if (options.seed !== false) await seedReference(db, now);
-    setTestEnv(proxy.env as unknown as Record<string, unknown>);
-    return { db, d1, kv: proxy.env.KV, env: proxy.env, now, dispose };
+    const env = { ...(proxy.env as unknown as Record<string, unknown>), ...TEST_VARS } as unknown as Env;
+    setTestEnv(env as unknown as Record<string, unknown>);
+    return { db, d1, kv: proxy.env.KV, env, now, dispose };
   } catch (error) {
     await dispose();
     throw error;

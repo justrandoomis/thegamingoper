@@ -1,0 +1,56 @@
+{
+  "key": "xbox-controller-white",
+  "view": "hero",
+  "width": 1548,
+  "height": 1123,
+  "aspect": 1.3785,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/xbox-controller-white-240.632c8592.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/xbox-controller-white-480.925f0a99.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/xbox-controller-white-720.d45246c6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/xbox-controller-white-960.7e89436d.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/xbox-controller-white-1440.7b3128bd.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/xbox-controller-white-240.cbc61198.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/xbox-controller-white-480.f0418ef6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/xbox-controller-white-720.626cca2f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/xbox-controller-white-960.ec27e414.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/xbox-controller-white-1440.d516b0cd.webp"
+      }
+    ],
+    "png": "/art/xbox-controller-white-720.9887d831.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmQBAABXRUJQVlA4WAoAAAAQAAAAFwAAEAAAQUxQSIkAAAARX6CgbRs2VBDdvxEREH+Ky1AUTmtte5M3ZYC/xfcB6MgOli2qBo8lFhdN1/0dL22FiP5PAGoLu4I4pXOr5EzyaAoOzD+93KeAmQWIfxFdYMAqC/Lxz3kWBsyW+x/JxIJ/nbcnO/IZW0AQhs3xn2lkAZAyaP641cgLGf7YVwUQ8pVGVhFEI5aoCQBWUDggtAAAAFAFAJ0BKhgAEQA/CXixU6unJCKoCqlwIQlpEMA/QAAPkCOXxZuY+6nAnNYMH97Hb7f6XAD+6pdx2y0bLzYKakW+ytg/XsTimpGTTAKcFGnlAsmEm1dQll71FdyT8ZiIrfbJegsh389mSVvwz+RV8d9J75RXUGBwYPIHLO5QmLm+n9UL8sXo30fOHo03TmLdf92iayDFXM8XNraYLp2BSbe+nmdcqmM7l1z0RJyROSAXAAAAAA==",
+  "dominant": "#f5f2ed"
+}

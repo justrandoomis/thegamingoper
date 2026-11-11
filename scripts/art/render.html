@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TamTam clay render</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  The render page. build.mjs opens it in headless Chrome/Edge and calls window.tamtamArt.render();
+  open it yourself for a live look while modelling:
+
+    node scripts/art/build.mjs --serve
+    http://127.0.0.1:<port>/scripts/art/render.html?key=switch-2&view=hero&size=900&samples=64
+
+  It only works when served from the repository root (three is loaded from /node_modules).
+-->
+<script type="importmap">
+{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }
+</script>
+<style>
+  html { min-height: 100%; font: 13px/1.4 system-ui, sans-serif; color: #555; background: #f3efe9; }
+  body { margin: 0; }
+  html.dark { background: #17181b; color: #aaa; }
+  html.checker { background: conic-gradient(#ddd 25%, #fff 0 50%, #ddd 0 75%, #fff 0) 0 0 / 24px 24px; }
+  main { display: grid; place-items: center; gap: 12px; padding: 16px; }
+  canvas { max-width: min(92vw, 900px); height: auto; }
+  nav a { margin: 0 6px; color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <canvas id="preview" width="16" height="16" hidden></canvas>
+  <nav id="status">ready</nav>
+</main>
+<script type="module">
+  import * as kit from './kit.mjs';
+
+  const status = document.getElementById('status');
+  let stage = null;
+  const built = new Map();
+
+  function getStage() {
+    if (!stage) stage = kit.createStage();
+    return stage;
+  }
+
+  // options: { file, params, item, platformColors } — see "Conventions" in README.md
+  async function subjectFor(key, options = {}) {
+    if (built.has(key)) return built.get(key);
+    const file = options.file ?? `${key}.mjs`;
+    const module = await import(`./models/${file}`);
+    if (typeof module.build !== 'function') throw new Error(`models/${file} must export function build(kit, options)`);
+    const object = await module.build(kit, { key, params: options.params ?? {}, item: options.item ?? null, platformColors: options.platformColors ?? {} });
+    if (!object || !object.isObject3D) throw new Error(`models/${file}: build() must return a THREE.Object3D`);
+    const entry = { object, views: module.views ?? {} };
+    built.set(key, entry);
+    return entry;
+  }
+
+  function toBase64(bytes) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error);
+      reader.onload = () => resolve(reader.result.slice(reader.result.indexOf(',') + 1));
+      reader.readAsDataURL(new Blob([bytes]));
+    });
+  }
+
+  window.tamtamArt = {
+    /** Throws when this browser cannot render (no WebGL2 / no float render targets). */
+    info() {
+      return getStage().info;
+    },
+    /** Render one key / view. Returns raw RGBA (straight alpha, top row first) as base64. */
+    async render({ key, view = 'hero', size = 1600, samples = 256, ...options }) {
+      const { object, views } = await subjectFor(key, options);
+      const shot = getStage().render(object, { view: kit.resolveView(view, views), size, samples });
+      return { width: shot.width, height: shot.height, bounds: shot.bounds, stats: shot.stats, rgba: await toBase64(shot.pixels) };
+    },
+    /** Same, drawn into the page for a human. */
+    async show({ key, view = 'hero', size = 900, samples = 64, ...options }) {
+      const { object, views } = await subjectFor(key, options);
+      const shot = getStage().render(object, { view: kit.resolveView(view, views), size, samples });
+      const canvas = document.getElementById('preview');
+      canvas.width = shot.width;
+      canvas.height = shot.height;
+      canvas.hidden = false;
+      canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(shot.pixels.buffer), shot.width, shot.height), 0, 0);
+      return shot.stats;
+    },
+  };
+
+  const query = new URLSearchParams(location.search);
+  if (['dark', 'checker'].includes(query.get('bg'))) document.documentElement.className = query.get('bg');
+  if (query.get('key')) {
+    const key = query.get('key'), view = query.get('view') ?? 'hero';
+    status.textContent = `rendering ${key} @ ${view}…`;
+    const link = (label, changes) => {
+      const q = new URLSearchParams(location.search);
+      for (const [k, v] of Object.entries(changes)) q.set(k, v);
+      const a = document.createElement('a');
+      a.href = `?${q}`;
+      a.textContent = label;
+      return a;
+    };
+    // family models: add &file=dualsense-[colour].mjs&params={"colour":"white"}
+    const extra = { file: query.get('file') ?? undefined, params: query.get('params') ? JSON.parse(query.get('params')) : undefined };
+    window.tamtamArt.show({ key, view, size: +(query.get('size') ?? 900), samples: +(query.get('samples') ?? 64), ...extra }).then((stats) => {
+      status.textContent = `${key} @ ${view} — ${stats.ms} ms, ${stats.triangles.toLocaleString()} triangles, ${stats.sizeMm.join(' × ')} mm · `;
+      status.append(...['hero', 'front', 'back'].map((v) => link(v, { view: v })), ' · ', ...['light', 'dark', 'checker'].map((b) => link(b, { bg: b })));
+    }, (error) => {
+      status.textContent = String(error && error.stack || error);
+    });
+  }
+</script>
+</body>
+</html>

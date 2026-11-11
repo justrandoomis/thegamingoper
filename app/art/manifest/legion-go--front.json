@@ -1,0 +1,56 @@
+{
+  "key": "legion-go",
+  "view": "front",
+  "width": 1568,
+  "height": 816,
+  "aspect": 1.9216,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/legion-go--front-240.c45031b2.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/legion-go--front-480.98ee9708.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/legion-go--front-720.4e199859.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/legion-go--front-960.3c85f4bc.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/legion-go--front-1440.72ccc69b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/legion-go--front-240.3080bc6c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/legion-go--front-480.4b7f0df3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/legion-go--front-720.06230469.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/legion-go--front-960.bb2fee7c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/legion-go--front-1440.c43b1bd7.webp"
+      }
+    ],
+    "png": "/art/legion-go--front-720.a7d91041.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuAAAABXRUJQVlA4WAoAAAAQAAAAFwAACwAAQUxQSEkAAAARV6A4kqQ0e4593Z4UKRARAX3mk1648sGQtq1YByKDIiiCSSGZEEIIYOQc/yeI6P8EcG6lWWoBbW4TjF35S9/lm7pLYENcBsU5AFZQOCBwAAAA0AMAnQEqGAAMAD8JcLFQK6YkorAIAXAhCWcAAFvsZTrrieOs20UAAP7APMco/UouNkQkfgQHmvqUNjBVARu6J3YHsOAAA76kEJncMj5Qcx9Shx82+yxb/6Zxmd73yqfYPuOTtRy0ztYJF5mHVt6AAA==",
+  "dominant": "#17191a"
+}

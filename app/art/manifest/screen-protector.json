@@ -1,0 +1,56 @@
+{
+  "key": "screen-protector",
+  "view": "hero",
+  "width": 1577,
+  "height": 1156,
+  "aspect": 1.3642,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/screen-protector-240.83b66d7f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/screen-protector-480.0eba6637.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/screen-protector-720.8ff4b4aa.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/screen-protector-960.34830e18.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/screen-protector-1440.613daab5.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/screen-protector-240.bd196c33.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/screen-protector-480.a4f5e3a5.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/screen-protector-720.4b1886e9.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/screen-protector-960.09ceaec2.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/screen-protector-1440.dcb53619.webp"
+      }
+    ],
+    "png": "/art/screen-protector-720.7b7c0f05.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqgBAABXRUJQVlA4WAoAAAAQAAAAFwAAEQAAQUxQSJAAAAARX6CgbRs2VAD7fxERyNuneCt5OKpt22kuRQALB6QoYGXe7mf+GxioAqoEkIAELMQeVUJE/ycA178Z30JnS9IUffqKb86KeV8m1j4BRTZ9QfLvrLpqNQCa7LOUpL8yfZpskXlfCNJ4q7YvuBEI0WXpykXQjXOd2Q1822WZhiq1DgBEv3acp+HuYDP6FVWI6wFWUDgg8gAAAPAGAJ0BKhgAEgA/CXiyUyunJKKoCqlwIQlsALszJf4ZDPmM8kA/QDrIUaBs+xS8q04yNAotVe9Z/ss0azv0S+AA/pf6ey33zcr9mLeVH2bw2OFZ4ALZa1rIu2s4piyLMSwWY6KV9AJWOAb34l6YsKXCAdwDnxsbKaf2sODvixo9KVKI8n+OPNR3+Yn2v3cQkTu4jDn4bYKYJTY+DehO2sIjEcDvDQGs1fc8KZGnRkB5fqWs6PhE9I3lgLAE63Pep27M/g3/OXIQw6aXD0GNqmgxlvQV8f07LnbJqKdzaFjzfoixnP/QYz1FNn72KeoUwAAA",
+  "dominant": "#e4f1ed"
+}

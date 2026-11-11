@@ -1,0 +1,48 @@
+{
+  "key": "game-spider-man-2",
+  "view": "hero",
+  "width": 1221,
+  "height": 1583,
+  "aspect": 0.7713,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/game-spider-man-2-240.d9da9a6e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-spider-man-2-480.c87cc9e8.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-spider-man-2-720.4ca9452d.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-spider-man-2-960.c9f3e5bf.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/game-spider-man-2-240.1e7ac8bf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-spider-man-2-480.edbf27af.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-spider-man-2-720.8e7a6181.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-spider-man-2-960.e6f3cdd1.webp"
+      }
+    ],
+    "png": "/art/game-spider-man-2-720.3f98511e.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvABAABXRUJQVlA4WAoAAAAQAAAAFwAAHgAAQUxQSHUAAAARX6CobRs4WAbt7j23iAjkTuXtVxNOq21bsocGzbW5jkDkMIBvwAqQaYwAkfo31/FwJojo/wRg/yQ2WGLh+f9fhq4pY25mPtzyOC7Yct/HP8ttST2dAlx3G5eo3UigXUNred3/5gAwelb3v79LYEozelTx2B8AVlA4IFQBAABwBwCdASoYAB8APwFqqE+rJaOiMAwBYCAJbACdL5WkGmIEo9m+f/slwrwPdig7jI7CCbW6FblZuqID0MpGZvu+IoxEMAD80DeItL4wv8BRgPAotoM9nb12k5k8ePuBPwF16VLcDspW2FuLjB1rEKUePOSNW+QBzGH2qk6mkMPxhdhwslWeul0sNR+uD+spr3M+8DoyWkEBv2VxMtHVpJwl1UJomW2f5S//B97+r/rFu03/cNbYwln0JhzQa/tLHezMR/Pahs2ddXWUn/2Z/XUJjkJHEWjZBoK857YWi8hjxtK8ddxxw/Z4g2A5kj3yFT9qcYfyh5rwKITVqXfAzuYUF+38Xc1gh6Gp4anY69V5gNm0vHf1puDLO/OBhEl/3Qxmp/FY1Mb8NE7nb8GiC1B5B6p8EYqUnXhTCXAMgPopOy9STK6r/zDeaqEC/sf+MrfyAAAA",
+  "dominant": "#232b44"
+}

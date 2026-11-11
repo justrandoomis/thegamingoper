@@ -1,0 +1,48 @@
+{
+  "key": "game-pokemon-legends-z-a",
+  "view": "hero",
+  "width": 1022,
+  "height": 1585,
+  "aspect": 0.6448,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/game-pokemon-legends-z-a-240.f5f1ac34.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-pokemon-legends-z-a-480.4685fc4c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-pokemon-legends-z-a-720.c911fde5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-pokemon-legends-z-a-960.9d3332b4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/game-pokemon-legends-z-a-240.7a8b3c4f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-pokemon-legends-z-a-480.22e125f3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-pokemon-legends-z-a-720.86fe283f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-pokemon-legends-z-a-960.5b551347.webp"
+      }
+    ],
+    "png": "/art/game-pokemon-legends-z-a-720.3b0cdd69.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiACAABXRUJQVlA4WAoAAAAQAAAAFwAAJAAAQUxQSHwAAAARX6CgjSQ1dQ6Y7yEiAnDOf6ThtnBaa9vTvHRwP73IfwRYoM6AZoQONjYuuJy4uLZBMh4dFojo/wRge6KpC4bv49pnaUAZ4PmfdRd5h3CBYdFtG+Uolzn5bMU20lHyOfFwAkj4XgCVJu1rZDEAUVWatPefyWCsqir1VWwPVlA4IH4BAAAwCACdASoYACUAPwl0sFArpySiqqwBcCEJbACdMwAD14I8BtmueZ03TyAPS59jDynQFWXUnzvAWJSX+Q8QpUZ2uCiJ51sCr9QlYAD7RNUAbzx5e6JuIoh7uL5dwnh4NvKuC3UGGwWNftz2FgWTX5QEDL+UFd177TSwuuehmsFRJu9QRs29mg9CEQKQzRChZTlEK/8YwNQC1LWnZzy34Nfjsrj3BHebXTrjXPyrlhdJ4lH50gosvVZK/9EJ+bLlvwcJpGKCdiHOwjlZ1/T/h9WANxz0D5viBoboh43eLd3rka+LZ6n1FhispDoC9TDuNveprSG/FgX/nbUyU8qRDTulXZse5p7SHHHIzFfJ3aVzEB0LuHOZ80WVZwJq0jAz+tfuwSkkLo8aVfi6625N9B1qaV9asYEMZAlrmSTMGg1tCA13tXmlGEd2/hwmG+CWAuwZ2gGOC3zhGbZrtcoLfz8WpdN0E75IxRaTb39/kv/k2/hl93klWv+f8rzM4AAA",
+  "dominant": "#462224"
+}

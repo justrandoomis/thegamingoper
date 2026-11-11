@@ -1,0 +1,56 @@
+{
+  "key": "joy-con-2-pair",
+  "view": "hero",
+  "width": 1498,
+  "height": 1586,
+  "aspect": 0.9445,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/joy-con-2-pair-240.023b845f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/joy-con-2-pair-480.84df0a31.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/joy-con-2-pair-720.3bfbfbf7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/joy-con-2-pair-960.9cca52ca.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/joy-con-2-pair-1440.1c06e3d8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/joy-con-2-pair-240.75765258.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/joy-con-2-pair-480.837c95ea.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/joy-con-2-pair-720.b397f831.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/joy-con-2-pair-960.0f1ca2e8.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/joy-con-2-pair-1440.34b3e0f2.webp"
+      }
+    ],
+    "png": "/art/joy-con-2-pair-720.4d697467.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpQBAABXRUJQVlA4WAoAAAAQAAAAFwAAGAAAQUxQSJAAAAARX6CgjSQ1dBKYHyMigC9S+m+hB7exbavK+ThE7xISOaRSgUtoGVVQgru7Wwi/AuaW972DiP5PACzsTSqAkBQZ5hnE95IA0FYEmWUb8NFgD/DW8ukKAGtFkpl9pnmBtnUeIy0rbipuoKpL/PlGGTXa8y2SZWYnQKFGiWrMsl8CBAlKjX7NiASloFA6QtAURABWUDgg3gAAADAGAJ0BKhgAGQA/CXKwUaumpKKoDVFwIQlsAH7A9K//xRXvGBEhg52klHdAeDO4jWFwC9T/vnpYkAAA/s7pj3yuvjx/5n7sPZX6YNY+tpBWkUxwTftEMBJnCM4Iht8l9ALZdo6hyHGSUdh+2/Pe/sL2IWmrkrDsLzq9qu9cmV/cVt9WQHzGJgFn7/BHxdcwegntcHJIxC/nf8BM/bmlkfYcEkjEnwybPbyt4tDKVclTlHd8QUhC14klt6ni0UPojcVH7ivj/9BOdK2QF0I5MbxNRckY1fiwmtemmAAAAA==",
+  "dominant": "#373739"
+}

@@ -1,0 +1,56 @@
+{
+  "key": "steam-deck-oled",
+  "view": "front",
+  "width": 1560,
+  "height": 759,
+  "aspect": 2.0553,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/steam-deck-oled--front-240.7a126c3c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/steam-deck-oled--front-480.ba0eeef0.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/steam-deck-oled--front-720.d8d27bae.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/steam-deck-oled--front-960.3d73fe18.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/steam-deck-oled--front-1440.93b85452.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/steam-deck-oled--front-240.d6ae3942.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/steam-deck-oled--front-480.f95ad633.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/steam-deck-oled--front-720.0ac0e664.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/steam-deck-oled--front-960.780761a9.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/steam-deck-oled--front-1440.8ae806e0.webp"
+      }
+    ],
+    "png": "/art/steam-deck-oled--front-720.1f6d6f9d.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtgAAABXRUJQVlA4WAoAAAAQAAAAFwAACwAAQUxQSEQAAAARR6CobSM2VwJ93V7cLiICOfxrMbCKbKvNwQGYQQMG2nd3AAZIEd4TAxH9nwCeT80edg3Lfhr+MM8MxGEPhwapOFSC61ZQOCBuAAAA8AMAnQEqGAAMAD8JcK9Pq6akIjAIAXAhCWkAA+OSGeD/ZCGMbTw5AAD+v8kWJeeeaPoUH3H9If54egYFynD1JLZFs9aYf8Y/YxsOOyNp9OvpntKy7yKAp4POXGCN5Gu/Dz9spjS19717eR2AAAA=",
+  "dominant": "#363638"
+}

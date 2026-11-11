@@ -1,0 +1,56 @@
+{
+  "key": "xbox-elite-2",
+  "view": "hero",
+  "width": 1547,
+  "height": 1123,
+  "aspect": 1.3776,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/xbox-elite-2-240.66c03e0f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/xbox-elite-2-480.f9aa2349.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/xbox-elite-2-720.3ae9b1a0.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/xbox-elite-2-960.3875f6d0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/xbox-elite-2-1440.160574fd.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/xbox-elite-2-240.5d7d8ace.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/xbox-elite-2-480.1f5b06ae.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/xbox-elite-2-720.3513eaee.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/xbox-elite-2-960.8adac285.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/xbox-elite-2-1440.1f23f120.webp"
+      }
+    ],
+    "png": "/art/xbox-elite-2-720.c10ddfd8.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhIBAABXRUJQVlA4WAoAAAAQAAAAFwAAEAAAQUxQSIwAAAARX6CgjSQ1dRIYnz8iAiw+4YxDlnBia9uivGPdu3ccokN1WIJm6FSm0ibjfZB3eWNbiOj/BKCwKuZQL+FIyLiSPJspJybfVuKTwkgA1H8aZaDETAUYk69/whLQZrQ+/kgGAuz7qtY/kG9fABzXrcz+DD0BgKY5lT/3HpKq5v7Y0lOganHoCWlQy76GglZQOCBgAAAAkAQAnQEqGAARAD8JbrJSq6WkorAYCAFwIQlpAAPhyLxdBYfwSqxp44EbJFAAAP7ZWgf4kZZ92Il5PSLSVzu/eGkmAr1IVA22pXUo/KgiIBKDVAJg+jC6rhyoDh0VQAAA",
+  "dominant": "#363638"
+}

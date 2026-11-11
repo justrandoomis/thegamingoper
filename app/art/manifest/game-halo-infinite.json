@@ -1,0 +1,48 @@
+{
+  "key": "game-halo-infinite",
+  "view": "hero",
+  "width": 1235,
+  "height": 1583,
+  "aspect": 0.7802,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/game-halo-infinite-240.4dc50019.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-halo-infinite-480.89364ba3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-halo-infinite-720.5fa88f65.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-halo-infinite-960.a11f4299.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/game-halo-infinite-240.1d81eacf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-halo-infinite-480.fc7a13e1.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-halo-infinite-720.c6bd3b34.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-halo-infinite-960.51763c88.webp"
+      }
+    ],
+    "png": "/art/game-halo-infinite-720.ed1655b1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvQBAABXRUJQVlA4WAoAAAAQAAAAFwAAHgAAQUxQSHIAAAARX6CgbRs2VA7dvxERcC8PWj4FTGPbcvIYFKjdxeEYVHAMLoceqCBVQAE4JDgGh8UFx7ZHpoGI/k8Ano8cnZ5tnM9jW2WOeHDs/mF9xvrKcmY+pgLTf2SgP5OA7rHmEk3rYT8BiJYWw84NAYeE2rmC5wFWUDggXAEAAHAHAJ0BKhgAHwA/AWqoT6smI6IwDAFgIAlsAJ0ygyINF9th6YBz6Psho1ucA64xIB972+Q6MwW6Q2AxPtjpsvyGZNsAAP4X6EeMskqPdhXr8jvJWOlNEWxG+z2oo+KGOFIIU5+/UGBBQD9pxlVNmycQDGBnE0+esHvLqVIXDLoHCgvbsPxaFO5k3j7fkKFsSEP3YGAg+dhLxhn2a+mqRsOAYOx3J1lcIGJPz9eEDa+GUvcWTJ8zKIcnYixehZl2imacKS+bKCtL4UbLypDybP+tWfHDGGkEHHTlam5gDTp2ieYy7Q8SHaEUCnROVQXz3RzZvUswxeKkUHREJRVY60EcTNvnurEYvyyctRmd3kUmjlikWb5+wPmJq/H13XHZ4A58+hMTgFuB1y7C3Yti7qfkhK4G5+43E+Ws41dCAFg/n/8onl4wAMUeWhWA0jAB/13+0V8ivC601G2AAA==",
+  "dominant": "#243525"
+}

@@ -1,0 +1,48 @@
+{
+  "key": "microsd-express",
+  "view": "hero",
+  "width": 1275,
+  "height": 1581,
+  "aspect": 0.8065,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/microsd-express-240.2b05fb95.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/microsd-express-480.43a51f15.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/microsd-express-720.ab42507d.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/microsd-express-960.77e19a90.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/microsd-express-240.54eb63f9.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/microsd-express-480.cd30efce.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/microsd-express-720.0902e0a6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/microsd-express-960.a761b09d.webp"
+      }
+    ],
+    "png": "/art/microsd-express-720.bdeee120.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsgBAABXRUJQVlA4WAoAAAAQAAAAFwAAHQAAQUxQSKkAAAARX6CgbSM3dgz2vvuPiAAps32VvxFQbdtW3exwJKMilRHLzMwFxcwMihW51pGqQsftu593zstI/yCi/xOAfzSMBk1yWSFer5ZKStIVbIJMDyJAtjkXOeOc5JrTk5u+Hjkdeee05INzkk/ukHxxb4p+Hsg35weAH05LfrkY+ePWABhkxojENQC4BZ8AYHiSMQIGz/ytJISo+xQA4Bk+l0TNxADG/IFVgcEDAFZQOCD4AAAA8AUAnQEqGAAeAD8JcrFQq6akoqgNUXAhCWwAy0EAOf/sk1G55INak5id5p/cTClGt/PX6H70FsAA/r3M9JNqB6j/t1TQzNtVAey2HczPVj0bFiOfoU8g7EIaMW5W/GGRi5MABKFdZ9tA0ibH7Y6td0/5PhoEtvJsvjTdAslf85i0mCX4VsyBucNvM6bfA7Anda2r4XiOHIjmkG4WvIMQ/g+zhxwNYqgscNeyyU/5Sm1MM4DiWdF3/iITdB6diMsEy7jn50ys3rLIr1Ffj8MRhVE28skfBw8Os49ls3tMT6PZTDpkGHTm5u73v3H2nh/mh5ye857lAAA=",
+  "dominant": "#515155"
+}

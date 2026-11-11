@@ -1,0 +1,56 @@
+{
+  "key": "headset-black",
+  "view": "hero",
+  "width": 1513,
+  "height": 1515,
+  "aspect": 0.9987,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/headset-black-240.85a4cf11.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/headset-black-480.8ccae7be.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/headset-black-720.667166a1.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/headset-black-960.8e1656a9.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/headset-black-1440.58dcbf52.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/headset-black-240.26006610.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/headset-black-480.512bd746.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/headset-black-720.2db3d516.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/headset-black-960.3e931be1.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/headset-black-1440.1291fc76.webp"
+      }
+    ],
+    "png": "/art/headset-black-720.f7e09fc1.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqYBAABXRUJQVlA4WAoAAAAQAAAAFwAAFwAAQUxQSMAAAAARX6CgbRs2VAzdvxERMPqHV08QcGTbNm3NZ0T33PTpIzQj3uizA0ZmZbYR/dD2D5/fbt4596MHEf2fAP61/mjS6+IURWZdMrPlrxIyWFc+rMKwwekHdq892kQVQMGvLUW1dMgQ0x7C2sW6D9iJaDkZdisryTXUf7QCjsi3hyf59sKEISfiN1xDUSQIjsgsZSWDVZC+Ss0Pav+yq7K8JOIF1dhUUWEX5NwGlFLlFe+loUoPgFINA8stNkZLNdqKXwJWUDggwAAAALAFAJ0BKhgAGAA/CX63VSuoJSMoCAFwIQlACmCB/7I7IiwLzsAfN6ia4zksR1fplwGeXhtTCAD+2O6wW8p3KCkqeju0mK3pLyWxoMrEWHKamP1P9FUAklnwlKz+vTHL2FfkKmjh8fNUNemUAtKdz83j4lg8jVdxps5YUwHuY6L+Vknb79ofJHDabKirLhQjVu/k39bPGgyVoSfN1v1g67hn81Wn5ki92EzW34MVrIFl1AAhGlI0KpPrae48QAAAAA==",
+  "dominant": "#262729"
+}

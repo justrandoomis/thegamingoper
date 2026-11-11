@@ -1,0 +1,56 @@
+{
+  "key": "part-thumbstick",
+  "view": "hero",
+  "width": 1575,
+  "height": 1440,
+  "aspect": 1.0938,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/part-thumbstick-240.325df674.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/part-thumbstick-480.2a6e63fc.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/part-thumbstick-720.9ff2315a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/part-thumbstick-960.a264bd85.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/part-thumbstick-1440.44502984.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/part-thumbstick-240.5b91d111.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/part-thumbstick-480.a1374c13.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/part-thumbstick-720.4270c800.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/part-thumbstick-960.7d172e63.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/part-thumbstick-1440.1d8a7a48.webp"
+      }
+    ],
+    "png": "/art/part-thumbstick-720.3d0b1a75.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmoBAABXRUJQVlA4WAoAAAAQAAAAFwAAFQAAQUxQSI0AAAARX6CgbRs2VArdvxERkJgrfm4o3Ma2rSoHjd/9FfgvAG9AM4oggtAl99ClAQsdbnnvfesgov8TgGjJj/jWfej/SUgdvrseDWa+2wr9y3JaerByIj1VK1+TYC9VmwB8VCUrBjxv0qloxUDrxfXPp0VeAyjTP1zO86oVA4SRaU5bZUuDTKZpmQS1IKKYhzcAVlA4ILYAAAAwBQCdASoYABYAPwl6tFSrpySjKAgBcCEJaADKBrAW4IvcIHQlUnXgf71byPuwITsAAAD8UDZawTWuZ6z1jchF0QcT6MSSvYeFYQwnC1PDnaELAjjmvMD7yb4sJoJ6b5MLhkTYnxJoAAb4AI/BmoDHUGFpit9Oqx6iLV/FVQqRCyNubeXtZma1POG+wOlT9pwGco78ikfO8cl6nudcAOsk4lt+BS8T0CeQ3sRg/lo4SNBBmgAAAA==",
+  "dominant": "#35855a"
+}

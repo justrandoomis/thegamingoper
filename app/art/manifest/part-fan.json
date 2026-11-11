@@ -1,0 +1,56 @@
+{
+  "key": "part-fan",
+  "view": "hero",
+  "width": 1597,
+  "height": 1510,
+  "aspect": 1.0576,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/part-fan-240.dcaf42fe.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/part-fan-480.aee7a996.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/part-fan-720.6b07e697.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/part-fan-960.5487c694.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/part-fan-1440.9288b5e7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/part-fan-240.863feda8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/part-fan-480.d6143cec.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/part-fan-720.1c53577d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/part-fan-960.74284543.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/part-fan-1440.6e001afc.webp"
+      }
+    ],
+    "png": "/art/part-fan-720.b71a4e7f.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmIBAABXRUJQVlA4WAoAAAAQAAAAFwAAFgAAQUxQSJAAAAARX6CgbRs2VA5nfxERIDffWZuCEwGA0OSGx91IkFyTe9JEpe0JVIfkmpaQ6JIdnnfH9oWI/k8AaBdVOCa3bbtsZQ4/uiThnxqF65E7VyNPTiYvrkLeXE7biwuRB2cnO85CFE5P+pwZAMTomGxtAgA6o/XLrfMNSACI6IyWqnOPAACIiPlVUgIWsS8j/Bcl0AxWUDggrAAAALAEAJ0BKhgAFwA/CXiuUqunI6KoDVFwIQljAFMAW8ib1fuMZjNvzUgOGoC16QgA/rlGH3epojoH7Jtt07lQ+gsTuIa5lZyMEuHNMcEt9rrwAABJlgQtJLopwnpxNc+0TqU58pfDma+iz02reaEwxioSwFyRFQluse3pxLgNcOmX8g5X+pOkGJVE/Qz4HN9+FcT75sHm6xJNbkRtKbfmhBsvmaABAkS+8wGbAAA=",
+  "dominant": "#3a3a3c"
+}

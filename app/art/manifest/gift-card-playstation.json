@@ -1,0 +1,56 @@
+{
+  "key": "gift-card-playstation",
+  "view": "hero",
+  "width": 1596,
+  "height": 1222,
+  "aspect": 1.3061,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/gift-card-playstation-240.a15ba689.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/gift-card-playstation-480.2e4333a7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/gift-card-playstation-720.000d13d0.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/gift-card-playstation-960.8de8dd2f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/gift-card-playstation-1440.fd9bd6ea.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/gift-card-playstation-240.e475c8e5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/gift-card-playstation-480.423f91a6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/gift-card-playstation-720.450bb7a3.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/gift-card-playstation-960.1cb0e529.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/gift-card-playstation-1440.2d083d9c.webp"
+      }
+    ],
+    "png": "/art/gift-card-playstation-720.15f38c3d.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsQBAABXRUJQVlA4WAoAAAAQAAAAFwAAEQAAQUxQSH8AAAARX6CgbRs2VAxnfxERYM+HO3cSTmVtW5RnSdB2SAzJNe7QiESqdxo34NLcojTX5sz+l8d+/zVE9H8C0A+EvYbUV/d1vZgOGcBSOd43Fdg6KTXRasFDqsFTysFLysBb6yOl4Cv54Sd54GQLbjCt6sr+8xkAppUfXFXc4T+YdaEPAFZQOCAeAQAA8AcAnQEqGAASAD8JdrRSq6clIqgKqXAhCWwAnTKEdPaDO0RgP//ugLsA/Y72AP0A6zr0/yWuDABFj/at7dKikxadAPvh2xSAAPtyYMaLWx/V9qnobg8CV0zfylayUfl92V80yBvq1CWIXeeCcPwFYc7nW7v6FE5Do4qV8owg6VD+n6CB/d7wfb/SAgWrVsdiiWILN4MjzC3HIuVE7bq2YEGq1l5UTb6UIqa4T2wcDvocaRP9jTyRpyJKACcZMdeIo5O89lUMApkMFkVjlABpp7v9HhBH8gYL2j6FdoIX/9q+f7yzZuqG8nTwvaA2/fiFHovWXzjv7f0epeuO/t+iZTJkVWGBN5eiex4EmwcyevyyB4be8xLpmTuY/3QAAA==",
+  "dominant": "#2861dc"
+}

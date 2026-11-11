@@ -1,0 +1,48 @@
+{
+  "key": "game-forza-horizon-5",
+  "view": "hero",
+  "width": 1235,
+  "height": 1583,
+  "aspect": 0.7802,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/game-forza-horizon-5-240.589be3c5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-forza-horizon-5-480.ed1a0d7f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-forza-horizon-5-720.60a3b328.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-forza-horizon-5-960.1cad53e3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/game-forza-horizon-5-240.a3c75bde.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-forza-horizon-5-480.c66022e5.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-forza-horizon-5-720.aaa5eb9a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-forza-horizon-5-960.affac58e.webp"
+      }
+    ],
+    "png": "/art/game-forza-horizon-5-720.0f13b950.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtoBAABXRUJQVlA4WAoAAAAQAAAAFwAAHgAAQUxQSHIAAAARX6CgbRs2VA7dvxERcC8PWj4FTGPbcvIYFKjdxeEYVHAMLoceqCBVQAE4JDgGh8UFx7ZHpoGI/k8Ano8cnZ5tnM9jW2WOeHDs/mF9xvrKcmY+pgLTf2SgP5OA7rHmEk3rYT8BiJYWw84NAYeE2rmC5wFWUDggQgEAADAHAJ0BKhgAHwA/CXKwUSumpKKoDVFwIQlsAJ0yhIK/d/FVtQegDeTd46RrY12h1t6/WNvYtZi0mgUoQtL4VF2ewAD+0L3TkyWCOhDQgLtZ9w/08/cbpbrSB583TvC6+b2cwoQW16vKzdyzpkqW0kCopurg0WZeJHN1xZdqgFl9BP6rW+xiNmzDroJg6bcA3mC4C+RVf1T3V3QtW5PCbIYX/ol9MtOh4dCMn7O9l39otqtj4uqi/SxxL3rVo15HlQT9TdJ4NK3rfgGG45cZguqsx1EHFbwv8TML1afU43dJlyuaGBTW6XgEIUXgmpetmX9LoQlDH1Kwc6HNWocDVBW+wW9SmrkdRIqMENQUbzUXlNpEx2a7e2Up0TpqtxMvXRKSQYvWv7SsR2P8oXp1R6VD2n4HI77//dC9fdaT4mCAAAA=",
+  "dominant": "#253525"
+}

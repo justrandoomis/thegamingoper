@@ -1,0 +1,56 @@
+{
+  "key": "switch-2",
+  "view": "front",
+  "width": 1554,
+  "height": 804,
+  "aspect": 1.9328,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/switch-2--front-240.eae82be2.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/switch-2--front-480.8bcbcb09.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/switch-2--front-720.d714a2b6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/switch-2--front-960.52cfa6af.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/switch-2--front-1440.2dbe1c5a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/switch-2--front-240.98c316ed.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/switch-2--front-480.67cd72cd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/switch-2--front-720.4706475f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/switch-2--front-960.2a35778e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/switch-2--front-1440.7d157020.webp"
+      }
+    ],
+    "png": "/art/switch-2--front-720.5f826690.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4WAoAAAAQAAAAFwAACwAAQUxQSD4AAAARP0CmAZkWwVzmU0AiEREQm89QVds2dDSYKihgaWDp8CJI8Oj/MSsQ0f8JYD3laQAdU8H2WTN/oTOBUqeRdVZQOCBiAAAA8AMAnQEqGAAMAD8JcK9Pq6akIjAIAXAhCWIAxvRpYAems48Q3XWgAAD+99XvEd10M0NfTvj4A0WbEI47HFPg+/T5v9W4Au+8mm2yK5RoEBAv8AMmFHOdnYZn8iOIAogAAAA=",
+  "dominant": "#363638"
+}

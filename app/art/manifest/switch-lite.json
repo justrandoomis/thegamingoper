@@ -1,0 +1,56 @@
+{
+  "key": "switch-lite",
+  "view": "hero",
+  "width": 1545,
+  "height": 991,
+  "aspect": 1.559,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/switch-lite-240.1d5fb4b2.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/switch-lite-480.0afdcd36.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/switch-lite-720.ccf05692.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/switch-lite-960.1832f60a.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/switch-lite-1440.b08efb3d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/switch-lite-240.23cbd3a2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/switch-lite-480.7f3067b2.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/switch-lite-720.e7f58063.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/switch-lite-960.de9cce18.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/switch-lite-1440.07f546c3.webp"
+      }
+    ],
+    "png": "/art/switch-lite-720.0c47939c.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRm4BAABXRUJQVlA4WAoAAAAQAAAAFwAADgAAQUxQSHAAAAARX6AmABI2RwFecBsRAdYr7O4i3Na2rUT3UwGfDjT3ClhEZJJRgOaeWwe0MIt0/JWHlhDR/wnAeUNlJ17rnLoS2/kQEa1z6gsH2+BUD7zvKYH3/8yTTojh8t9LACZ71XIAgCvR8KCAbwCRW7HO9vYBVlA4INgAAADQBACdASoYAA8APwlurk+rpiQiMAgBcCEJbACdEfgaYBvHZEcC9K2CpQdHyhcq/ADhgyRteKYN5pGsx2TJCGxSYOkZZOOlDJRvxpxT6uiyp3KN1y8tgnSqqptPvC4Oj/t4D+fbEDq6zsQHKnxHdpbzsFMNbEQQQZJibBf+U97XQyM3IYnJsZrOFwvngovi3eB1wcaHzBF+whdTuVV38GJJv7HotvLO/KT1Kze4VHaUQQEsXkRsB4pyET0pd/aK8d9Xw2ijHzlxDeOM4S1L5t/YpWh+/HlKAAA=",
+  "dominant": "#16181a"
+}

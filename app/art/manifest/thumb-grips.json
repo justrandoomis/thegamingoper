@@ -1,0 +1,56 @@
+{
+  "key": "thumb-grips",
+  "view": "hero",
+  "width": 1577,
+  "height": 1096,
+  "aspect": 1.4389,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/thumb-grips-240.eb57a5bb.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/thumb-grips-480.c4f80352.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/thumb-grips-720.d2ca134f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/thumb-grips-960.7c71ac19.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/thumb-grips-1440.65568767.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/thumb-grips-240.9e857359.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/thumb-grips-480.eb7d524e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/thumb-grips-720.e9d1669f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/thumb-grips-960.88ad308e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/thumb-grips-1440.edeb4b98.webp"
+      }
+    ],
+    "png": "/art/thumb-grips-720.20d878ff.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRloBAABXRUJQVlA4WAoAAAAQAAAAFwAAEAAAQUxQSIgAAAARX6CobSM2VgCn++0dEQHNLqoQeYbTatuW5XkTxO8l0tySL+CMQITGCC7JomtyjTSe8XAmiOj/BOBvQ7OSvLqR1og8JOJbssyqAAXyQt5JC7Amr3y0A+1XQWDAl35Bkbw8rNxiHJ3+kVzN8y6BRqIjspZ2KWDUkThfcjbFozqSaZfKExhVFXwKVlA4IKwAAAAwBACdASoYABEAPwluslIrpaSisBgIAXAhCWwAttn4FkZADS1jgHIrwgAA6IRE/RphucTW+CAHMKC60KYTpK2m/mRms+XQRK/xj0ZmRPEEL1ON3E4MQ1W12QNfm4gaLm7TSC71y5+eDlhL5PHSS+gcEiRijPpIFX4HPT0wI98po57OG02hkW1UZ85zFVBJoyG9v2gWvrtDT9qvDbz1lqY2w9/AVuxDfBmeAAAA",
+  "dominant": "#8356ea"
+}

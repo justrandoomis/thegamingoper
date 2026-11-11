@@ -1,0 +1,48 @@
+{
+  "key": "game-zelda-tears-of-the-kingdom",
+  "view": "hero",
+  "width": 1022,
+  "height": 1585,
+  "aspect": 0.6448,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/game-zelda-tears-of-the-kingdom-240.38b7dbd6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-zelda-tears-of-the-kingdom-480.ad230a79.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-zelda-tears-of-the-kingdom-720.42929ee6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-zelda-tears-of-the-kingdom-960.94fad739.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/game-zelda-tears-of-the-kingdom-240.04ca616f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-zelda-tears-of-the-kingdom-480.6419c3e1.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-zelda-tears-of-the-kingdom-720.34d9b851.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-zelda-tears-of-the-kingdom-960.0b1b8227.webp"
+      }
+    ],
+    "png": "/art/game-zelda-tears-of-the-kingdom-720.729ecfc6.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjACAABXRUJQVlA4WAoAAAAQAAAAFwAAJAAAQUxQSHwAAAARX6CgjSQ1dQ6Y7yEiAnDOf6ThtnBaa9vTvHRwP73IfwRYoM6AZoQONjYuuJy4uLZBMh4dFojo/wRge6KpC4bv49pnaUAZ4PmfdRd5h3CBYdFtG+Uolzn5bMU20lHyOfFwAkj4XgCVJu1rZDEAUVWatPefyWCsqir1VWwPVlA4II4BAABQBwCdASoYACUAPwlysFIrpqSiqqoBcCEJbACdMv6sGIxdqvkAel37FZX42/ALqfoSCm156fwDXtC4++9Yd17MpXgAAPtE00/W+pRb6z2n+/Si1uvloy/XqswJYHvV5IGXOXz9vls6irjvzAwCr67Rb9u37c9pZlAyI+qAC7/PXPnTc+PUk8vfcTLzQR6gIKZysI/xPKqxwqZbzu9fvlQssdgwM0/K3sFfbIIrNqFhIPjsAx+s80QMhTolf/OgjSnlp9zovBLhp55b38X6jPB3Zni/FPeMGIHUyvvMksPHwUQymaup2E+/0y7Kg0EavxWkRcP5hxNNBRNPd9PkHbGr8r+PEBYnhDMMCMCS4ezwz3Ozwyn9zU0ppFFn2NCGfkTShIRVOVmup+AYdP0IlbrqUk3s+9lCft4dr8PNxYAebJqfBduTUb34KequRABSwfwTQF5vGdrTdansauR9glInai9UWEcvmwx9BwXuBOoaonxmSVV5NpWOUT4/n8pcX+9f1ehvzAD/ydT6NqAAAA==",
+  "dominant": "#482224"
+}

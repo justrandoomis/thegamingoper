@@ -1,0 +1,56 @@
+{
+  "key": "charging-station",
+  "view": "hero",
+  "width": 1562,
+  "height": 976,
+  "aspect": 1.6004,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/charging-station-240.44da2a5e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/charging-station-480.b3750360.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/charging-station-720.7fbc18de.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/charging-station-960.038b5a2c.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/charging-station-1440.e544f3a7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/charging-station-240.c61fba10.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/charging-station-480.15d1fe60.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/charging-station-720.8ead89b0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/charging-station-960.1c77731f.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/charging-station-1440.5bd88360.webp"
+      }
+    ],
+    "png": "/art/charging-station-720.8eb548a3.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkoBAABXRUJQVlA4WAoAAAAQAAAAFwAADgAAQUxQSHMAAAARX6CgjSQ1dQoYnjEiArwvnPV7dYbb2raV6CIFeO4UwCKjAshYhD5ex6TTgFVgqc8r71sLEf2fAKhakSbxpssu0TgzsYeMeXHooQHWj0c6YP15Dw3Yk9AEnqJSqtPQXAW1BgTrK/PwwQbt8U8VhFZeaCI+AFZQOCCwAAAA8AMAnQEqGAAPAD8Jbq9Pq6YkIjAIAXAhCWUAxvt4BsqxlDTX9+mUAAD+vhEmO06ivlKB21hdtdezSrR1esfuDCB5UHFREjLStOpBtUMQHQVVXbtmPzMNWBV2MXeCyrjkFAf/sgL99QCxwTVqspadOXueMf4urz9zjfpElwTL23rgGOEeVHXnSecMrb+/z2LvOWzGdk2vazB5Obq7GU2Yjbw7w4su/BI7YVEBmq8AAAA=",
+  "dominant": "#343436"
+}

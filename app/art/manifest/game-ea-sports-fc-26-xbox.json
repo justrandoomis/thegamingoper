@@ -1,0 +1,48 @@
+{
+  "key": "game-ea-sports-fc-26-xbox",
+  "view": "hero",
+  "width": 1235,
+  "height": 1583,
+  "aspect": 0.7802,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/game-ea-sports-fc-26-xbox-240.a7d06643.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-ea-sports-fc-26-xbox-480.6d2310bc.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-ea-sports-fc-26-xbox-720.33e36791.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-ea-sports-fc-26-xbox-960.1feafcc1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/game-ea-sports-fc-26-xbox-240.a70f19a4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/game-ea-sports-fc-26-xbox-480.be4ee542.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/game-ea-sports-fc-26-xbox-720.46b8d59b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/game-ea-sports-fc-26-xbox-960.7f2427bb.webp"
+      }
+    ],
+    "png": "/art/game-ea-sports-fc-26-xbox-720.a3220f24.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRs4BAABXRUJQVlA4WAoAAAAQAAAAFwAAHgAAQUxQSHIAAAARX6CgbRs2VA7dvxERcC8PWj4FTGPbcvIYFKjdxeEYVHAMLoceqCBVQAE4JDgGh8UFx7ZHpoGI/k8Ano8cnZ5tnM9jW2WOeHDs/mF9xvrKcmY+pgLTf2SgP5OA7rHmEk3rYT8BiJYWw84NAYeE2rmC5wFWUDggNgEAADAHAJ0BKhgAHwA/CWqsT6ulpCIwCAFwIQlsAJ0ygyS1FVtb6ZLys3wfr8Cqi2886Jd8R+o8e/B36LvfKkDcXqZeAAD+gsTh83+Ez5+lBG6x9XJWaNX8ebyozdxhLx7/m/KNI8ysv0wEbLqgcX0HAe5DVLoJ7NxFRcDYBsG/Bst6REibu+5UXEKfaQwKACFzMUQ2nTm6nmf2OsUqGKSSbap5UVXeYPegYuFywxQe0BkcAQWpkOwi/ModRXuDGyZ97c+5GhUhF/ORTOcLhmh0OHhtpBfLGDvjz40RYmcSdQAuq2nlqZKIsArQR2dLNjsgSU8h1itAUU7p+nC9dIHLbPubNV8sTmQJq1/sIes75XGSDDI76z0N/Xf7RHVnsuGoKiGGToGdjo27+V/xj3G9zDGeWKsgAAA=",
+  "dominant": "#233123"
+}

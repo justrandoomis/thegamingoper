@@ -1,0 +1,56 @@
+{
+  "key": "switch-oled",
+  "view": "front",
+  "width": 1552,
+  "height": 794,
+  "aspect": 1.9547,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/switch-oled--front-240.6bfdab58.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/switch-oled--front-480.101bb0bd.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/switch-oled--front-720.e78fda30.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/switch-oled--front-960.5a4ca480.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/art/switch-oled--front-1440.6b13274c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/switch-oled--front-240.e58b056d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/switch-oled--front-480.bca93e91.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/switch-oled--front-720.b8338a66.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/switch-oled--front-960.572da1a9.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/art/switch-oled--front-1440.2bc31082.webp"
+      }
+    ],
+    "png": "/art/switch-oled--front-720.f7c1fe12.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuAAAABXRUJQVlA4WAoAAAAQAAAAFwAACwAAQUxQSD4AAAARP0A0YJmVVH0PiF4SEaGUz0BRJEnNnAOCAnBAIeIkYCT5f2QMRPR/AlgPceqgjqli+qzIB22FOlNIeeqFZVZQOCB8AAAAMAQAnQEqGAAMAD8JeLNRK6ekorAIAXAhCWkAA+TJrEgOnZyS/oAEaiSgAPz7VbRbjpZnzQIzhG3jLtdqnpoOidbi7tKmMICd/ttxrUve6cd+dAvsb7rD7P4G/WCgwawu9hhtLEe3f3UybFm8Pd69+gZOtJkVbqnDuEwAAA==",
+  "dominant": "#17191a"
+}

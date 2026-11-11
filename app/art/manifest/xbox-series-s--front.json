@@ -1,0 +1,48 @@
+{
+  "key": "xbox-series-s",
+  "view": "front",
+  "width": 1109,
+  "height": 1586,
+  "aspect": 0.6992,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/art/xbox-series-s--front-240.06b0655a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/art/xbox-series-s--front-480.a0c9e87e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/art/xbox-series-s--front-720.5c2a921f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/art/xbox-series-s--front-960.38131da3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/art/xbox-series-s--front-240.36b6b229.webp"
+      },
+      {
+        "w": 480,
+        "src": "/art/xbox-series-s--front-480.149c03ed.webp"
+      },
+      {
+        "w": 720,
+        "src": "/art/xbox-series-s--front-720.98ab8bf5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/art/xbox-series-s--front-960.207bcb93.webp"
+      }
+    ],
+    "png": "/art/xbox-series-s--front-720.1db4b20a.png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRlIBAABXRUJQVlA4WAoAAAAQAAAAFwAAIQAAQUxQSFAAAAART6CokSQ1uF8UwLsiDiIiQDYL/1EDq8i2m5w4uJHQcIKC6gA8REIUBPz2+h3R/wngwqZerQCVZTUZ0LyW/weg8mYJ4ElyGzlYuXFaHbzhdFZQOCDcAAAAMAYAnQEqGAAiAD8BaqxPqyYkIjAarVFgIAlnABPZISiL+ZuU5/cQQQO8PO03DGlIt0iDQrMlYpZTwAD+5yg0LH+6KK8UxXG+vjenZ4vHLKPwGDlq/uRdY9BrxDyKb9tjhPY/hRknkRyOnd1FuM7EDR4ILm4MkFqJtBRaHV6MmKmuZpZ7xr1vCn3OuP6+JLv8jc/EX9rXDXWKtNY1jlS0j9F6hwj2EK0LXttx7Cs44F8nmF0jPhMwAIYxz5LezJ+ZOFmtcmFat3oBF8Ya96N0P+6m7JiQbL33XAAAAA==",
+  "dominant": "#d5d2cd"
+}

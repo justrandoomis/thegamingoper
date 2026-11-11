@@ -16,7 +16,7 @@ This is the agreement every contributor (human or agent) builds against. If code
 | Validation | zod 4 on the server | |
 | Tests | vitest (Node) against a real local D1 via `wrangler`'s `getPlatformProxy` | `npm test` |
 
-Bindings and vars (see `wrangler.jsonc`, typed in `worker-configuration.d.ts`): `DB` (D1), `KV`, `APP_ENV`, `PUBLIC_ORIGIN`, `STORE_MODE` (`demo`|`live`), `HSTS_MAX_AGE`; secrets `SESSION_SECRET`, `DATA_KEY`, `SETUP_TOKEN` (local values in `.dev.vars`, never committed). Server code reads them with `import { env } from "cloudflare:workers"`.
+Bindings and vars (see `wrangler.jsonc`, typed in `worker-configuration.d.ts`): `DB` (D1), `KV`, `APP_ENV`, `PUBLIC_ORIGIN`, `STORE_MODE` (`demo`|`live`), `HSTS_MAX_AGE`; secrets `SESSION_SECRET`, `DATA_KEY`, `SETUP_TOKEN` (local values in `.dev.vars`, never committed; their types come from the committed `.dev.vars.example` — `wrangler types --env-file .dev.vars.example` — so a fresh clone typechecks; add every new secret there). Server code reads them with `import { env } from "cloudflare:workers"`.
 
 ## 2. Commands
 

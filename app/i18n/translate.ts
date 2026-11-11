@@ -25,8 +25,16 @@ function rules(locale: Locale): Intl.PluralRules {
   return r;
 }
 
+const PLURAL_FORMS: ReadonlySet<string> = new Set(["zero", "one", "two", "few", "many", "other"]);
+
+/**
+ * A plural message is an object with a string `other` whose keys are ALL plural categories. Any other object is a
+ * branch — so "other" stays usable as an ordinary key: `reasons: { damaged, wrong_item, other }` is three messages.
+ */
 function isPlural(value: unknown): value is PluralMessage {
-  return typeof value === "object" && value !== null && typeof (value as PluralMessage).other === "string";
+  if (typeof value !== "object" || value === null || typeof (value as PluralMessage).other !== "string") return false;
+  for (const key of Object.keys(value)) if (!PLURAL_FORMS.has(key)) return false;
+  return true;
 }
 
 export function lookup(tree: MessageTree | undefined, key: string): MessageValue | undefined {

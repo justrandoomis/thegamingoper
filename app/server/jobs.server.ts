@@ -57,7 +57,10 @@ import { deliverOutbox, type MessageProviders } from "./outbox.server";
 import { cleanupRateLimits } from "./ratelimit.server";
 import { expireReservations } from "./services/inventory/stock.server";
 import { transitionOrder } from "./services/orders/manage.server";
+import { purgeRecommendationEvents } from "./services/recommendations.server";
+import { purgeStaleTradeInDrafts } from "./services/tradein.server";
 import { getSetting } from "./settings.server";
+import { kvBlobStore } from "./storage.server";
 
 // ───────────────────────────────────────────────────────────────── schedules
 
@@ -95,11 +98,15 @@ export const RETENTION_DAYS = {
   jobRuns: 90,
 } as const;
 
-/** What the Worker passes as `env`. Everything is optional; nothing here reads secrets. */
+/**
+ * What the Worker passes as `env` (its `Env` fits: extra bindings are ignored). Everything is optional and nothing
+ * here reads secrets; tests pass nothing.
+ */
 export type ScheduledJobsEnv = {
   /** Message providers from the integrations module. None is configured today, so outbox delivery is skipped. */
   providers?: MessageProviders;
-  [binding: string]: unknown;
+  /** The KV namespace behind the file store (uploads): used to delete abandoned trade-in draft photos. */
+  KV?: KVNamespace;
 };
 
 export type JobStatus = "succeeded" | "failed" | "skipped";
@@ -203,7 +210,7 @@ const changesOf = (result: unknown): number => {
   return typeof changes === "number" ? changes : 0;
 };
 
-async function applyRetention(db: Db, { now }: JobContext): Promise<JobResult> {
+async function applyRetention(db: Db, { now, env }: JobContext): Promise<JobResult> {
   const sessionCutoff = now - RETENTION_DAYS.sessions * DAY_MS;
   const ended = (expiresAt: SQL, revokedAt: SQL) => sql`(${expiresAt} < ${sessionCutoff} OR (${revokedAt} IS NOT NULL AND ${revokedAt} < ${sessionCutoff}))`;
 
@@ -304,8 +311,31 @@ async function applyRetention(db: Db, { now }: JobContext): Promise<JobResult> {
       authEvents: authEventsDeleted,
       outbox: outboxDeleted,
       jobRuns: jobRunsDeleted,
+      ...(await purgeAreaData(db, now, env)),
       days: RETENTION_DAYS,
     },
+  };
+}
+
+/**
+ * Purges owned by storefront services, run after the core retention above. Each is isolated: a failure is reported
+ * in the stats (and the run still succeeds), so one area's cleanup can never stop the others.
+ *   recommendationEvents  consented view/add signals older than RECOMMENDATION_EVENT_RETENTION_DAYS (90)
+ *   tradeInDrafts         private photos of trade-in wizards abandoned for 2 days (needs the KV file store; null
+ *                         when the Worker did not pass its bindings, e.g. in tests that do not provide one)
+ */
+async function purgeAreaData(db: Db, now: number, env: ScheduledJobsEnv | undefined): Promise<Record<string, number | null | { error: string }>> {
+  const attempt = async (run: () => Promise<number>) => {
+    try {
+      return await run();
+    } catch (error) {
+      return { error: errorText(error) };
+    }
+  };
+  const kv = env?.KV;
+  return {
+    recommendationEvents: await attempt(() => purgeRecommendationEvents(db, now)),
+    tradeInDrafts: kv ? await attempt(() => purgeStaleTradeInDrafts(db, kvBlobStore(kv), now)) : null,
   };
 }
 

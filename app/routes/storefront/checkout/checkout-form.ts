@@ -1,0 +1,331 @@
+/**
+ * The checkout form, client-safe and pure (no React, no server imports): the steps, the draft the shopper fills in,
+ * the instant field checks that mirror the commerce core's own rules (CheckoutInput in
+ * ~/server/services/orders/place.server — the server checks everything again), the mapping of server field errors to
+ * steps, and the per-tab draft store (sessionStorage) that keeps the form through a reload, a language switch and Back.
+ *
+ * Field checks return an ISSUE — a message key under `fields.<field>.<code>` in the "checkout" namespace plus the
+ * numbers it needs — never a sentence, so the page words it in the shopper's language.
+ */
+import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
+import type { PreferredWindow } from "~/server/services/orders/types";
+
+export const STEPS = ["address", "payment", "review"] as const;
+export type Step = (typeof STEPS)[number];
+
+/** The step in a `?step=` search string; anything unknown is the first step. */
+export function stepOf(search: string | URLSearchParams): Step {
+  const params = typeof search === "string" ? new URLSearchParams(search) : search;
+  const value = params.get("step");
+  return (STEPS as readonly string[]).includes(value ?? "") ? (value as Step) : "address";
+}
+
+export const stepIndex = (step: Step): number => STEPS.indexOf(step);
+
+/** The checkout methods, in the order the payment step lists them. */
+export const PAYMENT_METHODS = ["cod", "wallet", "bank_transfer", "zaincash"] as const;
+export type CheckoutMethod = (typeof PAYMENT_METHODS)[number];
+export const isTransferMethod = (method: string | null | undefined): method is "bank_transfer" | "zaincash" => method === "bank_transfer" || method === "zaincash";
+
+export const WINDOWS: readonly PreferredWindow[] = ["morning", "afternoon", "evening", "any"];
+
+/** The district select's "my district is not in the list" choice. It is sent to the server as "" (no district). */
+export const OTHER_DISTRICT = "other";
+
+/** What the shopper types and picks. Strings exactly as in the fields; the server normalises. */
+export type CheckoutDraft = {
+  contactName: string;
+  phone: string;
+  governorateId: string;
+  /** "" = not chosen yet, OTHER_DISTRICT = not in the list, else a district id. */
+  districtId: string;
+  areaText: string;
+  addressText: string;
+  notes: string;
+  /** "" = no preference, else YYYY-MM-DD (one of the offered days). */
+  preferredDay: string;
+  /** "" = no preference. */
+  preferredWindow: string;
+  /** "" = not chosen yet. */
+  paymentMethod: string;
+  /** Never pre-checked. */
+  marketingConsent: boolean;
+};
+
+export type FieldName = keyof CheckoutDraft;
+
+export const EMPTY_DRAFT: CheckoutDraft = {
+  contactName: "",
+  phone: "",
+  governorateId: "",
+  districtId: "",
+  areaText: "",
+  addressText: "",
+  notes: "",
+  preferredDay: "",
+  preferredWindow: "",
+  paymentMethod: "",
+  marketingConsent: false,
+};
+
+/** Fields in the order they appear (the first one with a problem takes the focus). */
+export const ADDRESS_FIELDS = ["phone", "contactName", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow"] as const satisfies readonly FieldName[];
+export const PAYMENT_FIELDS = ["paymentMethod"] as const satisfies readonly FieldName[];
+export const REVIEW_FIELDS = ["marketingConsent"] as const satisfies readonly FieldName[];
+
+export function stepOfField(field: string): Step {
+  if ((ADDRESS_FIELDS as readonly string[]).includes(field)) return "address";
+  if ((PAYMENT_FIELDS as readonly string[]).includes(field)) return "payment";
+  return "review";
+}
+
+/** A problem with one field: `fields.<field>.<code>` in the checkout namespace, with `count` for plural messages. */
+export type FieldIssue = { code: string; count?: number };
+export type FieldIssues = Partial<Record<FieldName, FieldIssue>>;
+
+/** Limits of CheckoutInput (place.server.ts) — the same numbers, so the page and the server agree. */
+export const LIMITS = { contactName: 100, phone: 40, areaMin: 2, area: 200, addressMin: 5, address: 500, notes: 500 } as const;
+
+/**
+ * Why a phone number is not an Iraqi mobile number, as precisely as the digits allow — or null when it is one
+ * (normalizeIraqPhone accepts it). DESIGN.md §11 #5: "ينقص الرقم 4 أرقام. اكتبه مثل 0770 123 4567."
+ */
+export function phoneIssue(raw: string): FieldIssue | null {
+  const text = raw.trim();
+  if (text === "") return { code: "required" };
+  if (normalizeIraqPhone(text)) return null;
+  const latin = toLatinDigits(text);
+  if (/[^\d\s+()\-.]/.test(latin)) return { code: "chars" };
+  let digits = latin.replace(/\D/g, "");
+  const international = latin.trim().startsWith("+") || digits.startsWith("00964") || digits.startsWith("964");
+  if (digits.startsWith("00964")) digits = digits.slice(5);
+  else if (digits.startsWith("964")) digits = digits.slice(3);
+  // The national number with its leading 0: 07XX XXX XXXX (11 digits).
+  const national = international ? `0${digits.replace(/^0/, "")}` : digits.startsWith("0") ? digits : `0${digits}`;
+  if (!national.startsWith("07")) return { code: "prefix" };
+  if (national.length < 11) return { code: "short", count: 11 - national.length };
+  if (national.length > 11) return { code: "long", count: national.length - 11 };
+  // Eleven digits starting 07 but not a mobile range (073–079).
+  return { code: "range" };
+}
+
+export type ValidationContext = {
+  /** District ids of the chosen governorate (an empty list: the governorate has none, so none is asked for). */
+  districtIds: readonly string[];
+  /** The preferred days on offer. */
+  days: readonly string[];
+  /** Payment methods the shopper may choose right now. */
+  methods: readonly string[];
+  /** The wallet covers the total (signed-in customers only). */
+  walletEnough: boolean;
+};
+
+const length = (value: string) => value.trim().length;
+
+/** One field's problem, or null. */
+export function validateField(name: FieldName, draft: CheckoutDraft, context: ValidationContext): FieldIssue | null {
+  switch (name) {
+    case "phone":
+      return draft.phone.length > LIMITS.phone ? { code: "long_text" } : phoneIssue(draft.phone);
+    case "contactName":
+      return length(draft.contactName) > LIMITS.contactName ? { code: "too_long", count: LIMITS.contactName } : null;
+    case "governorateId":
+      return draft.governorateId ? null : { code: "required" };
+    case "districtId":
+      if (context.districtIds.length === 0) return null;
+      if (!draft.districtId) return { code: "required" };
+      return draft.districtId === OTHER_DISTRICT || context.districtIds.includes(draft.districtId) ? null : { code: "invalid" };
+    case "areaText":
+      if (length(draft.areaText) === 0) return { code: "required" };
+      if (length(draft.areaText) < LIMITS.areaMin) return { code: "too_short" };
+      return length(draft.areaText) > LIMITS.area ? { code: "too_long", count: LIMITS.area } : null;
+    case "addressText":
+      if (length(draft.addressText) === 0) return { code: "required" };
+      if (length(draft.addressText) < LIMITS.addressMin) return { code: "too_short" };
+      return length(draft.addressText) > LIMITS.address ? { code: "too_long", count: LIMITS.address } : null;
+    case "notes":
+      return length(draft.notes) > LIMITS.notes ? { code: "too_long", count: LIMITS.notes } : null;
+    case "preferredDay":
+      return draft.preferredDay === "" || context.days.includes(draft.preferredDay) ? null : { code: "invalid" };
+    case "preferredWindow":
+      return draft.preferredWindow === "" || (WINDOWS as readonly string[]).includes(draft.preferredWindow) ? null : { code: "invalid" };
+    case "paymentMethod":
+      if (!draft.paymentMethod) return { code: "required" };
+      if (!context.methods.includes(draft.paymentMethod)) return { code: "unavailable" };
+      return draft.paymentMethod === "wallet" && !context.walletEnough ? { code: "wallet_insufficient" } : null;
+    case "marketingConsent":
+      return null;
+  }
+}
+
+const FIELDS_OF: Record<Step, readonly FieldName[]> = { address: ADDRESS_FIELDS, payment: PAYMENT_FIELDS, review: REVIEW_FIELDS };
+
+/** Every problem of one step (and, for "review", of the whole form). */
+export function validateStep(step: Step, draft: CheckoutDraft, context: ValidationContext): FieldIssues {
+  const names = step === "review" ? [...ADDRESS_FIELDS, ...PAYMENT_FIELDS, ...REVIEW_FIELDS] : FIELDS_OF[step];
+  const issues: FieldIssues = {};
+  for (const name of names) {
+    const issue = validateField(name, draft, context);
+    if (issue) issues[name] = issue;
+  }
+  return issues;
+}
+
+/** The first field (in page order) that has a problem. */
+export function firstIssue(issues: FieldIssues): FieldName | null {
+  for (const name of [...ADDRESS_FIELDS, ...PAYMENT_FIELDS, ...REVIEW_FIELDS]) if (issues[name]) return name;
+  return null;
+}
+
+/** The earliest step whose fields have a problem, or null. */
+export function firstStepWithIssue(issues: FieldIssues): Step | null {
+  const field = firstIssue(issues);
+  return field ? stepOfField(field) : null;
+}
+
+/**
+ * Server field errors (`{ phone: "phone_invalid", districtId: "district_invalid" }`, keys of the errors namespace)
+ * as issues of this form. Unknown fields are dropped (they are reported as the form-level code).
+ */
+export function issuesFromServer(fields: Record<string, string> | undefined | null): FieldIssues {
+  const issues: FieldIssues = {};
+  if (!fields) return issues;
+  for (const [field, key] of Object.entries(fields)) {
+    if (!(field in EMPTY_DRAFT)) continue;
+    issues[field as FieldName] = { code: `server.${key}` };
+  }
+  return issues;
+}
+
+/** The fields placeOrder reads, as form values (what the page submits and what a no-script form posts). */
+export function draftToForm(draft: CheckoutDraft, extra: { idempotencyKey: string; expectedTotalIqd: number }): Record<string, string> {
+  return {
+    intent: "place",
+    idempotencyKey: extra.idempotencyKey,
+    expectedTotalIqd: String(extra.expectedTotalIqd),
+    contactName: draft.contactName.trim(),
+    phone: draft.phone.trim(),
+    governorateId: draft.governorateId,
+    districtId: draft.districtId === OTHER_DISTRICT ? "" : draft.districtId,
+    areaText: draft.areaText.trim(),
+    addressText: draft.addressText.trim(),
+    notes: draft.notes.trim(),
+    preferredDay: draft.preferredDay,
+    preferredWindow: draft.preferredWindow,
+    paymentMethod: draft.paymentMethod,
+    marketingConsent: draft.marketingConsent ? "on" : "",
+  };
+}
+
+/**
+ * An order reference as typed ("tt-7k4m2q9x ") in its stored form ("TT-7K4M2Q9X"), or null — the same shape
+ * normalizeOrderRef (orders/manage.server) accepts, so the page can say "check the number" before asking the server.
+ */
+export function cleanOrderRef(value: string): string | null {
+  const ref = toLatinDigits(value).trim().toUpperCase();
+  return /^[A-Z]{2,4}-[A-Z0-9]{4,16}$/.test(ref) ? ref : null;
+}
+
+/**
+ * A whole number of dinars typed by a person: Latin or Arabic-Indic digits, thousands separators (comma, Arabic comma
+ * and thousands sign, space) allowed. A decimal point is refused rather than guessed: "12.5" is not 125.
+ */
+export function parseAmountInput(text: string): number | null {
+  const latin = toLatinDigits(text.trim()).replace(/[\s,٬،']/g, "");
+  if (!/^\d{1,10}$/.test(latin)) return null;
+  const value = Number(latin);
+  return Number.isSafeInteger(value) && value > 0 ? value : null;
+}
+
+/** An idempotency key for one checkout attempt: 128 random bits, URL-safe (what placeOrder accepts: 22–128 chars). */
+export function newAttemptKey(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+export const isAttemptKey = (value: unknown): value is string => typeof value === "string" && /^[A-Za-z0-9_-]{22,128}$/.test(value);
+
+// ───────────────────────────────────────────────────────────────── the draft store (one browser tab)
+
+/**
+ * What the tab remembers: the fields, the attempt key, and — after "confirm" was pressed — that key again as
+ * `submittedKey`, so a page that comes back after a lost answer can ask the server for the order that key placed
+ * (placeOrder answers a repeat with the first order). The key belongs to one cart (`cartId`): a later checkout of
+ * another cart gets a new key, so a key that already placed an order is never sent for different goods.
+ * sessionStorage: one tab, gone when the tab closes; cleared by the order page once the order exists. Every access is
+ * guarded (private windows and blocked storage throw).
+ */
+export type StoredCheckout = { v: 1; draft: CheckoutDraft; key: string; submittedKey: string | null; cartId: string | null; savedAt: number };
+
+/**
+ * The attempt key to use now: the stored one while it belongs to this cart (or the cart is gone — a lost answer is
+ * being recovered), a fresh one when the stored key was made for another cart. Pure.
+ */
+export function attemptFor(stored: Pick<StoredCheckout, "key" | "submittedKey" | "cartId">, currentCartId: string | null, fresh: () => string): { key: string; submittedKey: string | null } {
+  if (stored.cartId && currentCartId && stored.cartId !== currentCartId) return { key: fresh(), submittedKey: null };
+  return { key: stored.key, submittedKey: stored.submittedKey };
+}
+
+export const DRAFT_STORAGE_KEY = "tt:checkout";
+
+function storage(): Storage | null {
+  try {
+    return typeof window === "undefined" ? null : window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
+/** Keeps only known fields of the right type (a stored draft is input like any other). */
+export function cleanDraft(value: unknown): CheckoutDraft {
+  const source = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  const out: CheckoutDraft = { ...EMPTY_DRAFT };
+  for (const name of Object.keys(EMPTY_DRAFT) as FieldName[]) {
+    const item = source[name];
+    if (name === "marketingConsent") out.marketingConsent = item === true;
+    else if (typeof item === "string") (out as Record<string, unknown>)[name] = item.slice(0, 600);
+  }
+  return out;
+}
+
+/** The fields of a plain form post (a page rendered without script), as a draft. */
+export function draftFromPosted(values: Record<string, string>): CheckoutDraft {
+  return cleanDraft({ ...values, marketingConsent: values.marketingConsent === "on" || values.marketingConsent === "true" });
+}
+
+export function readStoredCheckout(): StoredCheckout | null {
+  try {
+    const raw = storage()?.getItem(DRAFT_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StoredCheckout>;
+    if (parsed?.v !== 1 || !isAttemptKey(parsed.key)) return null;
+    return {
+      v: 1,
+      draft: cleanDraft(parsed.draft),
+      key: parsed.key,
+      submittedKey: isAttemptKey(parsed.submittedKey) ? parsed.submittedKey : null,
+      cartId: typeof parsed.cartId === "string" && parsed.cartId.length <= 128 ? parsed.cartId : null,
+      savedAt: Number(parsed.savedAt) || 0,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function writeStoredCheckout(value: Omit<StoredCheckout, "v" | "savedAt">): void {
+  try {
+    storage()?.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ v: 1, ...value, savedAt: Date.now() }));
+  } catch {
+    // Full or blocked storage: the form still works, it is just not kept across a reload.
+  }
+}
+
+export function clearStoredCheckout(): void {
+  try {
+    storage()?.removeItem(DRAFT_STORAGE_KEY);
+  } catch {
+    // nothing to clear
+  }
+}

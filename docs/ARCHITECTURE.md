@@ -185,7 +185,7 @@ export async function adjustStock(db: Db, actor: Actor, raw: unknown, now: numbe
 
 - Language: URL prefix (`/`, `/en`, `/ckb`). Switch with `switchLocalePath` — same page, state preserved.
 - Theme, display currency, numeral system: `tt_prefs` cookie + client store (`usePrefs`, `setPrefs` from `~/lib/prefs`). Switching is instant and makes no request.
-- Other cookies: `tt_cart` (httpOnly cart token), `tt_sid` (httpOnly customer session), `tt_adm` (httpOnly admin session, `Path=/admin`), `tt_intro`, `tt_consent`.
+- Other cookies: `tt_cart` (httpOnly cart token), `tt_sid` (httpOnly customer session), `tt_wish` (guest wishlist, 60 days — survives a new cart token), `tt_tradein` (trade-in wizard draft, 2 days), `tt_intro` and `tt_platforms` (home intro seen, chosen platforms), `tt_consent` (personalisation consent), `tt_rs` (hashed recommendation session, only with consent, 90 days); staff: `tt_adm` (httpOnly admin session, `Path=/admin`), `tt_admin_locale`, `tt_admin_rail`. A new shopper cookie must also be listed in `PRIVACY_COOKIES` (`services/content.server.ts`): the privacy policy is built from it and `tests/content.test.ts` checks each entry against its owner's constant.
 
 ## 6. Data model
 

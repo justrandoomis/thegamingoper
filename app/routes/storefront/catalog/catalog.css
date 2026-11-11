@@ -1,0 +1,173 @@
+/*
+ * Catalog pages (app/routes/storefront/catalog) — category and platform hubs, search, compare.
+ * Components layer (utilities still win), tokens only, logical properties only, motion only on transform/opacity.
+ */
+@layer components {
+  /* Script on / off. The Motion Engine's head script sets <html data-motion> before the first paint
+     (app/motion/tier-script.ts), so with script the no-script parts are hidden from the first frame (nothing
+     shifts) and without script the script-only keys (sort menu, filter sheet) never show. */
+  :root:not([data-motion]) .catalog-js-only {
+    display: none !important;
+  }
+  :root[data-motion] .catalog-nojs {
+    display: none;
+  }
+  .catalog-nojs > summary {
+    min-block-size: var(--target);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  /* hub header: the compact stage, the title and count on its unlit inline-start half (the render is at the end) */
+  .catalog-hub {
+    position: relative;
+  }
+  .catalog-hub__text {
+    position: absolute;
+    z-index: 3;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 54%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--s-1);
+    padding-inline-start: var(--s-5);
+  }
+  @media (min-width: 48rem) {
+    .catalog-hub__text {
+      padding-inline-start: var(--s-8);
+    }
+  }
+
+  /* the sticky row under the header: count, sort, filters — solid floor, never a third live glass pane */
+  .catalog-toolbar {
+    position: sticky;
+    inset-block-start: calc(var(--shell-header-h) + var(--safe-top));
+    z-index: var(--z-sticky);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-3);
+    margin-inline: calc(-1 * max(var(--gutter), var(--safe-inline)));
+    padding: var(--s-2) max(var(--gutter), var(--safe-inline));
+    background: var(--ground);
+    border-block-end: 1px solid var(--line);
+  }
+  .catalog-toolbar__note {
+    flex-basis: 100%;
+  }
+
+  /* the product grid: 2 → 3 (600) → 4 (1024) → 5 (1200) columns */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) var(--gap-card);
+  }
+  @media (min-width: 37.5rem) {
+    .catalog-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .catalog-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 75rem) {
+    .catalog-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+  /* new results are on their way: the old ones stay usable, a little quieter */
+  .catalog-grid--busy {
+    opacity: 0.62;
+    transition: opacity var(--t-micro) var(--ease-water);
+  }
+
+  /* device shortcuts: a 1:1 niche with the device, its name on the floor beneath (category-card grammar, §9.4) */
+  .catalog-device {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    inline-size: 100%;
+    border-radius: var(--r-lg);
+  }
+
+  /* the compare list's way back, floating above the bottom chrome */
+  .catalog-tray {
+    position: fixed;
+    z-index: var(--z-sticky);
+    inset-block-end: calc(var(--shell-bottom) + var(--s-3));
+    inset-inline-end: max(var(--gutter), var(--safe-inline));
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+
+  /* compare: paper, hairlines, a sticky first column, sideways scroll (§8.7) */
+  .catalog-compare {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  .catalog-compare__table {
+    inline-size: max-content;
+    min-inline-size: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .catalog-compare__table :is(th, td) {
+    padding: var(--s-3);
+    vertical-align: top;
+    text-align: start;
+    border-block-end: 1px solid var(--line);
+    font: var(--type-body);
+    color: var(--ink);
+  }
+  .catalog-compare__table tbody tr:last-child > * {
+    border-block-end: 0;
+  }
+  .catalog-compare__table td {
+    inline-size: 11rem;
+    min-inline-size: 11rem;
+  }
+  .catalog-compare__table :is(.catalog-compare__label, .catalog-compare__corner) {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 1;
+    inline-size: 8.5rem;
+    min-inline-size: 8.5rem;
+    background: var(--paper);
+    border-inline-end: 1px solid var(--line);
+    font: var(--type-label);
+    color: var(--ink-2);
+  }
+  .catalog-compare__table .catalog-compare__product {
+    inline-size: 11rem;
+    min-inline-size: 11rem;
+  }
+  @media (min-width: 64rem) {
+    .catalog-compare__table td,
+    .catalog-compare__table .catalog-compare__product {
+      inline-size: 14rem;
+      min-inline-size: 14rem;
+    }
+    .catalog-compare__table :is(.catalog-compare__label, .catalog-compare__corner) {
+      inline-size: 12rem;
+      min-inline-size: 12rem;
+    }
+  }
+  .catalog-compare__more {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .catalog-compare__more {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

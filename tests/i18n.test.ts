@@ -63,9 +63,14 @@ function flatten(tree: unknown, locale: Locale, problems: string[]): Map<string,
 
       if (typeof value === "string") {
         out.set(at, { kind: "text", texts: [value] });
-      } else if (isPlainObject(value) && typeof value.other === "string") {
-        const unknown = Object.keys(value).filter((form) => !(PLURAL_CATEGORIES as readonly string[]).includes(form));
-        if (unknown.length > 0) problems.push(`${locale}: plural message "${at}" has keys that are not plural categories (${unknown.join(", ")}); they can never be shown`);
+      } else if (
+        isPlainObject(value) &&
+        typeof value.other === "string" &&
+        Object.keys(value).every((form) => (PLURAL_CATEGORIES as readonly string[]).includes(form))
+      ) {
+        // Exactly translate.ts's rule: only an object whose keys are all plural categories is a plural message.
+        // An object with `other` and any other key is a branch ("reasons.other" is an ordinary key); a mistyped
+        // plural form then shows up as keys that differ from the source language.
         const texts: string[] = [];
         for (const form of PLURAL_CATEGORIES) {
           if (!(form in value)) continue;
@@ -203,7 +208,8 @@ describe("the checker itself", () => {
     expect(problems).toContain('ar: "empty" is an empty string');
     expect(problems).toContain('ar: key "bad.key" cannot be reached by t()');
     expect(problems).toContain('en: "count" looks like a plural message but has no "other" form');
-    expect(problems).toContain('ckb: plural message "items" has keys that are not plural categories (lots)');
+    // `{ other, lots }` is a branch (not a plural): the mistyped form surfaces as keys the source does not have
+    expect(problems).toContain("ckb has 2 key(s) that ar does not: items.other, items.lots");
     expect(problems).toContain('ckb: "nested.deep" is a number');
 
     expect(problemsOf(undefined)).toEqual(["the default export must be defineMessages({ ar, en, ckb }), got nothing"]);

@@ -21,11 +21,11 @@ export default {
    *
    * Local test: curl "http://localhost:5173/cdn-cgi/handler/scheduled?cron=*%2F5+*+*+*+*"
    */
-  async scheduled(controller, _env, ctx) {
+  async scheduled(controller, env, ctx) {
     ctx.waitUntil(
       (async () => {
         const [{ getDb }, { runScheduledJobs }] = await Promise.all([import("~/server/db.server"), import("~/server/jobs.server")]);
-        const run = await runScheduledJobs(getDb(), controller.cron, controller.scheduledTime);
+        const run = await runScheduledJobs(getDb(), controller.cron, controller.scheduledTime, env);
         if (run.audit?.headHash) {
           console.log(JSON.stringify({ event: "audit_seal", headHash: run.audit.headHash, lastSealedSeq: run.audit.lastSealedSeq, seals: run.audit.seals, events: run.audit.events }));
         }

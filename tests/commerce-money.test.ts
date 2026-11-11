@@ -31,6 +31,7 @@ import {
   paymentProofs,
   payments,
   rateLimits,
+  recommendationEvents,
   refunds,
   serials,
   stockLevels,
@@ -762,6 +763,23 @@ describe("scheduled jobs", () => {
     // The pruning run is on record itself.
     expect(await t.db.select({ status: jobRuns.status }).from(jobRuns).where(eq(jobRuns.id, run.runId)).get()).toEqual({ status: "succeeded" });
   });
+
+  test("retention also purges consented recommendation signals after 90 days; trade-in drafts need the Worker's file store", async () => {
+    const { productId } = await make.product();
+    const tag = randomToken().slice(0, 8);
+    await t.db.insert(recommendationEvents).values([
+      { id: `rev_${tag}_old`, sessionHash: `s${tag}`, kind: "view", productId, at: NOW - 91 * DAY },
+      { id: `rev_${tag}_new`, sessionHash: `s${tag}`, kind: "view", productId, at: NOW - DAY },
+    ]);
+
+    const run = await runJob(t.db, "retention", NOW);
+    expect(run.status).toBe("succeeded");
+    expect(Number(run.stats.recommendationEvents)).toBeGreaterThanOrEqual(1);
+    // no bindings passed (no KV file store): the draft purge is reported as not run rather than failing the job
+    expect(run.stats.tradeInDrafts).toBeNull();
+    const left = await t.db.select({ id: recommendationEvents.id }).from(recommendationEvents).where(eq(recommendationEvents.sessionHash, `s${tag}`));
+    expect(left.map((row) => row.id)).toEqual([`rev_${tag}_new`]);
+  });
 });
 
 // ───────────────────────────────────────────────────────────────── error texts
@@ -800,7 +818,8 @@ describe("error texts", () => {
   test("actionError() translates codes and field keys through the errors namespace", () => {
     const failure = actionError(new AppError("totals_changed", 409, { fields: { phone: "phone_invalid" } }), serverT("en", "errors"));
     expect(failure).toMatchObject({ ok: false, code: "totals_changed", status: 409, message: "Prices or availability changed since you reviewed your order. Check the new total, then confirm again." });
-    expect(failure.fields?.phone).toBe("Enter an Iraqi mobile number, for example 0770 123 4567.");
+    // the sample number is joined with no-break spaces so it never wraps mid-number
+    expect(failure.fields?.phone).toBe("Enter an Iraqi mobile number, for example 0770 123 4567.");
     expect(actionError(new AppError("wallet_insufficient", 409), serverT("ar", "errors")).message).toBe("رصيد محفظتك لا يكفي لهذا الطلب. اختر طريقة دفع أخرى.");
   });
 });

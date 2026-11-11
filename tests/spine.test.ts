@@ -3,6 +3,7 @@
  * every response leaves with (security.server.ts). No database.
  */
 import { describe, expect, test } from "vitest";
+import { translate } from "~/i18n/translate";
 import { localePath, splitLocale, switchLocalePath } from "~/lib/locales";
 import type { RequestCtx } from "~/server/context.server";
 import { applySecurityHeaders, pagePathname } from "~/server/security.server";
@@ -30,6 +31,25 @@ describe("locale paths", () => {
     expect(splitLocale("/en/cart")).toEqual({ locale: "en", path: "/cart" });
     expect(splitLocale("/ckb")).toEqual({ locale: "ckb", path: "/" });
     expect(splitLocale("/cart")).toEqual({ locale: "ar", path: "/cart" });
+  });
+});
+
+describe("messages: plurals versus branches", () => {
+  const tree = {
+    items: { one: "{count} item", other: "{count} items" },
+    reasons: { damaged: "Damaged", wrong_item: "Wrong item", other: "Something else" },
+  };
+
+  test("an object whose keys are all plural categories is one plural message", () => {
+    expect(translate(tree, "en", "items", { count: 1 })).toBe("1 item");
+    expect(translate(tree, "en", "items", { count: 3 })).toBe("3 items");
+    expect(translate(tree, "en", "items.one")).toBeUndefined();
+  });
+
+  test("an object with `other` among ordinary keys is a branch, so `other` is an ordinary key", () => {
+    expect(translate(tree, "en", "reasons.other")).toBe("Something else");
+    expect(translate(tree, "en", "reasons.damaged")).toBe("Damaged");
+    expect(translate(tree, "en", "reasons")).toBeUndefined();
   });
 });
 

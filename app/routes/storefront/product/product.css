@@ -1,0 +1,25 @@
+/*
+ * Product page layout bits that utilities cannot say on their own (DESIGN.md §8.4, §8.10, §8.11). Tokens and logical
+ * properties only; everything in the components layer, so utilities still win.
+ */
+@layer components {
+  /* phones: the Lit Stage runs edge to edge right under the header, top corners square (reference b.png) */
+  @media (max-width: 47.99rem) {
+    .pp-stage {
+      margin-inline: calc(-1 * max(var(--gutter), var(--safe-inline)));
+    }
+  }
+  /* from 768 the stage sits in the page column and is a rounded object again */
+  @media (min-width: 48rem) {
+    .pp-stage .stage--flush {
+      border-start-start-radius: var(--r-xl);
+      border-start-end-radius: var(--r-xl);
+    }
+  }
+  /* from 1024 the stage stays in view beside the info column, just under the sticky header */
+  @media (min-width: 64rem) {
+    .pp-stage {
+      inset-block-start: calc(var(--shell-header-h) + var(--s-4));
+    }
+  }
+}

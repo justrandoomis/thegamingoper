@@ -563,7 +563,7 @@ A subtree sets its platform once: `style="--gel:var(--gel-playstation)"`.
 - The platform's name is always written as text next to its LED. No official platform logos are drawn anywhere; key pictograms are neutral device shapes.
 - The Nintendo gel is a warmer, lighter red than brand red and exists only as light, so it cannot be mistaken for a commit key.
 - `--gel-brand` is reserved for store-wide campaigns: the home stage may be lit in TamTam red for a campaign. That is the only way red is ever "added"; it stays light, never a surface.
-- Photos of used devices are not lit. Light is for clay renders only.
+- Photos of used devices are not lit. Light is for new-product photography only.
 
 ### 6.5 Performance tiers and preference fallbacks
 
@@ -698,7 +698,7 @@ The toast that follows carries the thumbnail, the variant line and an undo key. 
 1. 0–300ms. Bare floor. The supplied logo artwork, used as delivered and pre-split into its layers (mascot, Arabic lettering, "TAM TAM GAMES"), assembles as softly floating clay layers: each inflates from `.86` on the `inflate` spring, 60ms apart, with a static pre-rendered shadow and 6px of parallax between layers.
 2. 300–700ms. Four platform lights come on behind it one after another (four pre-painted halos, opacity only, 80ms apart).
 3. 600–1000ms. The line "دورك. اختر منصّتك." rises 8px and fades in. The four platform keys inflate out of their well (45ms stagger). A commit key "ابدأ" rises last. "تخطَّ" has been a visible text link since the first frame.
-4. Corner objects: one clay render per platform rests half out of frame in each of the four corners, each in its own light.
+4. Corner objects: one official product cut-out per platform rests half out of frame in each of the four corners, each in its own light.
 5. On "ابدأ" (navigation fires at once; home is already underneath): each corner object leans 8px inward (60ms, anticipation) and is then **pulled back out along its own diagonal past the edge** (200ms, exit ease, 40ms stagger). They do not fade. The logo travels as a shared element to its header slot. The chosen key is still held down and the home stage is already lit in that platform's colour.
 6. Optional onboarding reuses the same bank with multi-select (`aria-pressed`), a commit key "تابع" and "تخطَّ". Guests can always skip.
 7. Returning shoppers never see it; it can be replayed from settings. No video, no audio. Any tap during the sequence jumps to the end state.
@@ -1105,7 +1105,7 @@ A paper panel: the label "رصيد المحفظة", the balance in price type, a
 
 A paper panel on the product page of every used unit.
 
-- Head: the grade tag (outlined), the inspection date, and "صور الجهاز نفسه" above real photographs (thumbnails with a 1px line border; never clay renders).
+- Head: the grade tag (outlined), the inspection date, and "صور الجهاز نفسه" above real photographs (thumbnails with a 1px line border; never manufacturer images).
 - Checklist: flat rows, each with a check or alert icon and words: screen, buttons and sticks, ports, disc drive, charging, battery health as a percentage when it can be measured and "غير قابل للقياس" when it cannot.
 - Cosmetic defects: listed in words with their photos first.
 - Included accessories; warranty and return conditions in plain sentences.
@@ -1210,18 +1210,16 @@ The Sorani column was written for this spec and must be reviewed by a native Sor
 
 ---
 
-## 12. Product imagery (clay renders)
+## 12. Product imagery (official product photography)
 
-The stage only works if every render comes from one scene.
+Decided by the client on 2026-11-11: **no 3D renders** (the three.js clay-render pipeline is retired). Every product is shown with its **official manufacturer or publisher images**, researched per product in `catalog/` (see `catalog/README.md`) and processed by `scripts/products/images.mjs`.
 
-- **One camera:** front-on, about 12° above the horizon, the same focal length for every model. The floating tilt is applied in CSS (`--pose`), not in the render.
-- **One light:** a soft key light from above and slightly in front, plus a thin **baked rim light** on every model so dark hardware separates from a dark stage.
-- **Transparent background, no baked ground shadow.** The stage draws the contact shadow and the light pool.
-- Accurate proportions; no official platform logos modelled or textured on the hardware.
-- **Delivery:** AVIF and WebP with a PNG fallback, at 160, 320, 480, 640, 960 and 1280 wide, with `srcset` and `sizes`; explicit `width` and `height`. The niche colour is the placeholder, so no per-image placeholder is needed.
-- **Per SKU metadata:** the intrinsic aspect ratio and nothing else. No per-product offsets, widths or shadow sizes in markup.
-- **Used devices** are photographed, not rendered: real photos of the unit on a neutral background, labelled as such, never lit by the platform light.
-- The mock's device drawings are SVG stand-ins with SVG filters for shading. They are mock-only and must not ship.
+- **Hero first.** The first image is a clean front or three-quarter shot of exactly this product, edition and colour; games show the front box art (pack shot). Lifestyle photos never come first.
+- **Cut-outs where they are clean.** Sources with real transparency are trimmed and padded. Opaque photos on a uniform light background are cut out only when the result passes validation (no fragments, nothing eaten from white products); otherwise the photo stays opaque and is shown in its own rounded frame filled with its recorded background colour, so it still sits cleanly on a niche or stage. Box art and screenshots are always rectangles.
+- **The stage still works:** a cut-out floats on the lit stage with the CSS contact shadow; an opaque photo sits on the stage inside its frame, without the floating tilt.
+- **Delivery:** AVIF and WebP at 240, 480, 720, 960 and 1440 wide (up to the source size) with a 720 PNG fallback, `srcset`/`sizes`, explicit width and height, a tiny blurred placeholder and the dominant colour. Manifests live in `app/art/photos/<slug>--<n>.json` and are rendered by `<Art name="<slug>--<n>" />`.
+- **Credit and rights:** every image records its owner (`credit`) and source URL. They are manufacturer marketing images used to sell genuine products; the store owner confirms usage rights with distributors before launch.
+- **Used devices** are photographed, not taken from the manufacturer: real photos of the unit on a neutral background, labelled as such, never lit by the platform light. A used listing that only has the manufacturer image says so plainly ("صورة توضيحية — ليست صورة الجهاز نفسه").
 
 ---
 
@@ -1265,7 +1263,7 @@ The stage only works if every render comes from one scene.
 3. **How little red is acceptable?** The references are roughly a third red; this system is under 4%. The escape hatch is lighting the home stage in brand red for campaigns. Does the client accept that as on-brand?
 4. **Digits.** Western digits in all three languages, as in the brief's price format, or Arabic-Indic digits for Arabic and Sorani?
 5. **Stepper order.** Minus at the start and plus at the end in every language, so it mirrors with direction. Confirm with Iraqi shoppers.
-6. **Clay renders.** Who produces them, by when, and from which shared scene template? The system has nowhere to hide an inconsistent render.
+6. **Product photography.** Resolved 2026-11-11: official manufacturer and publisher images (see section 12); the owner confirms usage rights with distributors before launch.
 7. **Hero merchandising.** The CMS must let staff choose and schedule the staged product and headline per platform, within the headline length budget.
 8. **Font budget.** About 272 KB if every file loads. Is the three-weight text plan acceptable once measured, or do we drop the 500 weight?
 9. **Kurmanji.** If a Latin-script Kurdish locale is wanted, its letters must be checked in both families first.

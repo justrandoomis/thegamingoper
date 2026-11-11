@@ -1,102 +1,185 @@
 /**
- * Desktop platform navigation (≥1200, docs/DESIGN.md §8.8): each platform is a text link with its LED (to the
- * platform hub) plus a caret key that opens its mega menu — one live glass sheet dropping from the header with
- * plain text-link columns (about the device · accessories · games · consoles and used) and the platform's lit stage.
+ * The desktop nav row's platforms and their mega menus (Design System v2 §5.3, §5.4).
  *
- * Opening: the caret (click, Enter, Space; ArrowDown on the platform link) opens it and moves focus inside, where
- * Tab stays until Escape (back to the caret) or a choice; a mouse resting on a platform for 120 ms opens it without
- * taking focus, and leaving the link and the sheet for 200 ms closes it. A press outside, Escape, and every
- * navigation close it. The open platform's name is underlined (§8.8). Disclosure-navigation semantics:
- * `aria-expanded` + `aria-controls` on the caret, the sheet is a labelled region of links.
+ * Each platform is ONE 44px menu button (8px dot + name + caret; no separate caret key) with a 3px underline in the
+ * platform's dot colour on hover, open and current. Its mega menu is an OPAQUE paper panel under the header, across
+ * the page with its content in the 1280 wrap: a first row «كل منتجات PlayStation · 42» (to the platform hub); four
+ * columns — الأجهزة (device models), الألعاب (the platform's own games, then all of them, multi-platform ones
+ * included — the cross-platform category leaves navigation), الإكسسوارات, البطاقات والخدمات (cards, used units) — of
+ * at most five short names; and a featured tile at the inline end (a 1:1 well with the product photo and its name).
+ * The page behind gets the light menu scrim.
+ *
+ * The panel and its scrim are rendered through a portal into the host <ShellFrame> places right after the header —
+ * a sibling of the header, never inside the element that carries the view-transition name during page transitions.
+ *
+ * Opening: a click (the panel drops 8px in 220ms; focus stays on the button), Enter / Space / ↓ (focus moves to the
+ * first link), or 140ms of mouse hover intent (focus never moves); leaving the button and the panel for 200ms closes a
+ * menu the mouse opened. Escape and the scrim close it, and focus returns to the button when it was in the menu. Tab
+ * from the last link continues with the next item of the nav row (as if the panel sat right after its button);
+ * Shift+Tab from the first link goes back to the button. Every navigation closes it; it leaves in 140ms.
+ * Disclosure-navigation semantics: `aria-expanded` + `aria-controls` on the button, the panel is a labelled region.
  */
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { useLocation } from "react-router";
 
+import { Art } from "~/art/Art";
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useT } from "~/i18n/react";
-import { materialize } from "~/motion";
+import { dematerialize, materialize } from "~/motion";
 import { focusablesIn } from "~/ui/Dialog";
-import { Glass } from "~/ui/Glass";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
-import { Render, Stage } from "~/ui/Stage";
 import { TextLink } from "~/ui/TextLink";
+import { megaFeature, megaPlan } from "./chrome";
 import { useShellT } from "./i18n";
 import type { NavLink, NavPlatform } from "./types";
 
-const OPEN_DELAY = 120;
+const OPEN_DELAY = 140;
 const CLOSE_DELAY = 200;
 
+/** Where the mega menu renders: an element <ShellFrame> places right after the header (null on the server). */
+export const MegaHostContext = createContext<HTMLElement | null>(null);
+
 /** The name shoppers see for a platform: the design system's name for the four known ones (Latin brand names stay
- *  Latin, DESIGN.md §11), the catalogue's name otherwise. */
+ *  Latin), the catalogue's name otherwise. */
 export function usePlatformName(): (platform: Pick<NavPlatform, "slug" | "name">) => string {
   const ui = useT("ui");
   return useCallback((platform) => (isPlatform(platform.slug) ? ui(`platform.${platform.slug}`) : platform.name), [ui]);
 }
 
-type OpenState = { slug: string; via: "pointer" | "keyboard" } | null;
+/** How the open menu was opened: mouse hover intent (closes when the mouse leaves), a click (stays), the keyboard
+ *  (focus moved into it). */
+type OpenState = { slug: string; via: "hover" | "click" | "keyboard" } | null;
 
-export function PlatformNav({ platforms, children }: { platforms: NavPlatform[]; children?: ReactNode }) {
+export type PlatformNavProps = {
+  platforms: NavPlatform[];
+  /** The platform whose hub is on screen (its button carries the underline and `aria-current`). */
+  current?: string | null;
+  /** The rest of the nav row (separator, text links), after the platforms. */
+  children?: ReactNode;
+};
+
+export function PlatformNav({ platforms, current = null, children }: PlatformNavProps) {
   const t = useShellT();
   const nameOf = usePlatformName();
   const location = useLocation();
+  const host = useContext(MegaHostContext);
   const [open, setOpen] = useState<OpenState>(null);
   const timers = useRef<{ open?: ReturnType<typeof setTimeout>; close?: ReturnType<typeof setTimeout> }>({});
-  const toggles = useRef(new Map<string, HTMLButtonElement>());
+  const buttons = useRef(new Map<string, HTMLButtonElement>());
   const navRef = useRef<HTMLElement>(null);
-  const sheetId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const panelId = useId();
+  const openRef = useRef<OpenState>(null);
+  openRef.current = open;
+
+  // what the panel shows: it stays on screen while it leaves
+  const [shown, setShown] = useState<string | null>(null);
+  if (open && open.slug !== shown) setShown(open.slug);
 
   const clearTimers = () => {
     clearTimeout(timers.current.open);
     clearTimeout(timers.current.close);
   };
-  const openRef = useRef<OpenState>(null);
-  openRef.current = open;
   const close = useCallback((returnFocus = false) => {
     clearTimeout(timers.current.open);
     clearTimeout(timers.current.close);
-    const current = openRef.current;
+    const was = openRef.current;
     setOpen(null);
-    if (current && returnFocus) toggles.current.get(current.slug)?.focus();
+    if (was && returnFocus) buttons.current.get(was.slug)?.focus();
   }, []);
 
   // every navigation closes it
   useEffect(() => close(), [location.key, close]);
   useEffect(() => clearTimers, []);
 
-  // a press outside the platform links and the sheet closes it; so does Escape, wherever focus is (a menu opened by
-  // the mouse never took focus)
+  // Escape closes it wherever focus is (a menu the mouse opened never took focus); focus goes back to its button when
+  // it was in the menu. A press, or focus moving, outside the buttons and the panel closes it too.
   useEffect(() => {
     if (!open) return;
-    const onPointer = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (navRef.current?.contains(target) || document.getElementById(sheetId)?.contains(target)) return;
-      close();
-    };
+    const inside = (node: Node | null) => !!node && (!!navRef.current?.contains(node) || !!panelRef.current?.contains(node));
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !event.defaultPrevented) close(openRef.current?.via === "keyboard");
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      const focused = document.activeElement;
+      close(openRef.current?.via === "keyboard" || (!!focused && !!panelRef.current?.contains(focused)));
     };
-    document.addEventListener("pointerdown", onPointer);
+    const onFocus = (event: FocusEvent) => {
+      if (!inside(event.target as Node)) close();
+    };
+    const onPointer = (event: PointerEvent) => {
+      if (!inside(event.target as Node)) close();
+    };
     document.addEventListener("keydown", onKey);
+    document.addEventListener("focusin", onFocus);
+    document.addEventListener("pointerdown", onPointer);
     return () => {
-      document.removeEventListener("pointerdown", onPointer);
       document.removeEventListener("keydown", onKey);
+      document.removeEventListener("focusin", onFocus);
+      document.removeEventListener("pointerdown", onPointer);
     };
-  }, [open, close, sheetId]);
+  }, [open, close]);
 
   const hoverIn = (slug: string) => {
     clearTimeout(timers.current.close);
-    if (open?.via === "keyboard") return;
-    if (open?.slug === slug) return;
+    const now = openRef.current;
+    // a menu opened by a click or the keyboard is not taken away by the mouse passing over another platform
+    if ((now && now.via !== "hover") || now?.slug === slug) return;
     clearTimeout(timers.current.open);
-    timers.current.open = setTimeout(() => setOpen({ slug, via: "pointer" }), open ? 0 : OPEN_DELAY);
+    timers.current.open = setTimeout(() => setOpen({ slug, via: "hover" }), now ? 0 : OPEN_DELAY);
   };
   const hoverOut = () => {
     clearTimeout(timers.current.open);
-    if (open?.via === "keyboard") return;
+    if (openRef.current?.via !== "hover") return;
     timers.current.close = setTimeout(() => setOpen(null), CLOSE_DELAY);
   };
 
-  const current = open ? platforms.find((platform) => platform.slug === open.slug) : undefined;
+  // arrive: drop 8px from the button (220ms), the scrim fades in; leave: rise back (140ms), then unmount
+  const arrived = useRef(false);
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const scrim = panel.previousElementSibling as HTMLElement | null;
+    if (open) {
+      if (!arrived.current) {
+        arrived.current = true;
+        void materialize(panel, { from: buttons.current.get(open.slug) ?? null });
+        scrim?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
+      }
+      if (open.via === "keyboard" && !panel.contains(document.activeElement)) focusablesIn(panel)[0]?.focus();
+      return;
+    }
+    if (!shown) return;
+    let cancelled = false;
+    scrim?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: "ease-in", fill: "forwards" });
+    void dematerialize(panel).then(() => {
+      if (cancelled) return;
+      arrived.current = false;
+      setShown(null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, shown]);
+
+  /** Tab out of the panel continues with the nav row after the open button; Shift+Tab out goes back to the button. */
+  const onPanelKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Tab" || !panelRef.current || !openRef.current) return;
+    const items = focusablesIn(panelRef.current);
+    if (items.length === 0) return;
+    const button = buttons.current.get(openRef.current.slug);
+    if (event.shiftKey && document.activeElement === items[0]) {
+      event.preventDefault();
+      button?.focus();
+    } else if (!event.shiftKey && document.activeElement === items[items.length - 1]) {
+      event.preventDefault();
+      const row = navRef.current ? focusablesIn(navRef.current) : [];
+      const next = button ? row[row.indexOf(button) + 1] : undefined;
+      close();
+      (next ?? button)?.focus();
+    }
+  };
+
+  const shownPlatform = shown ? platforms.find((platform) => platform.slug === shown) : undefined;
 
   return (
     <>
@@ -105,169 +188,149 @@ export function PlatformNav({ platforms, children }: { platforms: NavPlatform[];
           const name = nameOf(platform);
           const isOpen = open?.slug === platform.slug;
           return (
-            <span
+            <button
               key={platform.slug}
-              className="shell-nav__item"
+              ref={(element) => {
+                if (element) buttons.current.set(platform.slug, element);
+                else buttons.current.delete(platform.slug);
+              }}
+              type="button"
+              className="shell-navitem"
               data-gel={isPlatform(platform.accent) ? platform.accent : undefined}
-              data-open={isOpen ? "" : undefined}
+              data-press="soft"
+              aria-expanded={isOpen}
+              aria-controls={isOpen ? panelId : undefined}
+              aria-current={current === platform.slug ? "true" : undefined}
               onPointerEnter={(event) => event.pointerType === "mouse" && hoverIn(platform.slug)}
               onPointerLeave={(event) => event.pointerType === "mouse" && hoverOut()}
-            >
-              <LocaleLink
-                to={platform.href}
-                className="shell-nav__link"
-                onKeyDown={(event) => {
-                  if (event.key !== "ArrowDown") return;
+              onClick={(event) => {
+                clearTimers();
+                // a keyboard click (Enter / Space) has no pointer: it opens on the first link
+                const via = event.detail === 0 ? "keyboard" : "click";
+                if (!isOpen) setOpen({ slug: platform.slug, via });
+                // the mouse opened it by hovering and now clicks: keep it open (pinned) rather than closing under the cursor
+                else if (via === "click" && open?.via === "hover") setOpen({ slug: platform.slug, via: "click" });
+                else close();
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowDown") {
                   event.preventDefault();
-                  setOpen({ slug: platform.slug, via: "keyboard" });
-                }}
-              >
-                {isPlatform(platform.accent) ? <PlatformLed solid /> : null}
-                <span className="shell-nav__text">{name}</span>
-              </LocaleLink>
-              <button
-                ref={(element) => {
-                  if (element) toggles.current.set(platform.slug, element);
-                  else toggles.current.delete(platform.slug);
-                }}
-                type="button"
-                className="shell-nav__toggle"
-                aria-expanded={isOpen}
-                aria-controls={isOpen ? sheetId : undefined}
-                aria-label={t("nav.menuFor", { name })}
-                onClick={() => (isOpen && open?.via === "keyboard" ? close() : setOpen({ slug: platform.slug, via: "keyboard" }))}
-              >
-                <Icon name="caret-down" size={14} />
-              </button>
-            </span>
+                  if (isOpen && panelRef.current) focusablesIn(panelRef.current)[0]?.focus();
+                  else setOpen({ slug: platform.slug, via: "keyboard" });
+                } else if (event.key === "Tab" && !event.shiftKey && isOpen && panelRef.current) {
+                  // the panel sits after the header in the document: Tab from its open button goes into it
+                  const first = focusablesIn(panelRef.current)[0];
+                  if (first) {
+                    event.preventDefault();
+                    first.focus();
+                  }
+                }
+              }}
+            >
+              {isPlatform(platform.accent) ? <PlatformLed /> : null}
+              <span>{name}</span>
+              <Icon name="caret-down" size={16} className="shell-navitem__caret" />
+            </button>
           );
         })}
         {children}
       </nav>
-      {current ? (
-        <MegaSheet
-          key={current.slug}
-          id={sheetId}
-          platform={current}
-          name={nameOf(current)}
-          takeFocus={open?.via === "keyboard"}
-          onPointerEnter={() => clearTimeout(timers.current.close)}
-          onPointerLeave={hoverOut}
-          onClose={close}
-        />
-      ) : null}
+      {host && shownPlatform
+        ? createPortal(
+            <>
+              <div className="shell-scrim" aria-hidden="true" onClick={() => close()} />
+              <div
+                ref={panelRef}
+                id={panelId}
+                role="region"
+                aria-label={t("nav.menuFor", { name: nameOf(shownPlatform) })}
+                className="shell-mega"
+                data-gel={isPlatform(shownPlatform.accent) ? shownPlatform.accent : undefined}
+                inert={!open || undefined}
+                onPointerEnter={(event) => event.pointerType === "mouse" && clearTimeout(timers.current.close)}
+                onPointerLeave={(event) => event.pointerType === "mouse" && hoverOut()}
+                onKeyDown={onPanelKey}
+              >
+                <MegaContent platform={shownPlatform} name={nameOf(shownPlatform)} />
+              </div>
+            </>,
+            host,
+          )
+        : null}
     </>
   );
 }
 
-type MegaSheetProps = {
-  id: string;
-  platform: NavPlatform;
-  name: string;
-  takeFocus: boolean;
-  onPointerEnter: () => void;
-  onPointerLeave: () => void;
-  onClose: (returnFocus?: boolean) => void;
-};
+type Column = { id: string; title: string; links: NavLink[]; all: NavLink | null; dot?: boolean };
 
-function MegaSheet({ id, platform, name, takeFocus, onPointerEnter, onPointerLeave, onClose }: MegaSheetProps) {
+function MegaContent({ platform, name }: { platform: NavPlatform; name: string }) {
   const t = useShellT();
-  const sheet = useRef<HTMLDivElement>(null);
-  const gel = isPlatform(platform.accent) ? platform.accent : null;
-
-  useLayoutEffect(() => {
-    const element = sheet.current;
-    if (!element) return;
-    // drops in 8px with opacity (§7.2 menus); leaving is instant — the next platform's sheet replaces it in place
-    void materialize(element);
-    if (takeFocus) focusablesIn(element)[0]?.focus();
-  }, [takeFocus]);
-
-  const consoles: NavLink[] = [...platform.consoles];
-  if (platform.allConsoles) consoles.push({ label: t("nav.allConsoles"), href: platform.allConsoles.href });
-  if (platform.used) consoles.push({ label: t("nav.usedOf", { name }), href: platform.used.href });
-  const columns: { title: string; links: NavLink[] }[] = [
-    { title: t("nav.devices"), links: platform.devices },
-    { title: t("nav.accessories"), links: platform.accessories },
-    { title: t("nav.games"), links: platform.games },
-    { title: t("nav.consoles"), links: consoles },
-  ].filter((column) => column.links.length > 0);
+  const plan = megaPlan(platform);
+  const feature = megaFeature(platform);
+  const columns: Column[] = [
+    { id: "devices", title: t("nav.devices"), links: plan.devices, all: plan.allDevices ? { label: t("nav.allDevices", { name }), href: plan.allDevices } : null, dot: true },
+    { id: "games", title: t("nav.gamesColumn"), links: plan.games, all: plan.allGames ? { label: t("nav.allGames", { name }), href: plan.allGames } : null },
+    { id: "accessories", title: t("nav.accessoriesColumn"), links: plan.accessories, all: null },
+    { id: "cards", title: t("nav.cards"), links: plan.used ? [...plan.cards, { label: t("nav.usedOf", { name }), href: plan.used }] : plan.cards, all: null },
+  ].filter((column) => column.links.length > 0 || column.all !== null);
 
   return (
-    <Glass
-      ref={sheet}
-      id={id}
-      role="region"
-      aria-label={t("nav.menuFor", { name })}
-      className="shell-mega"
-      onPointerEnter={(event) => event.pointerType === "mouse" && onPointerEnter()}
-      onPointerLeave={(event) => event.pointerType === "mouse" && onPointerLeave()}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          event.stopPropagation();
-          onClose(true);
-          return;
-        }
-        if (event.key !== "Tab" || !sheet.current) return;
-        // focus stays inside while the sheet is open (§8.8)
-        const items = focusablesIn(sheet.current);
-        if (items.length === 0) return;
-        const first = items[0];
-        const last = items[items.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }}
-    >
-      <div className="page shell-mega__grid">
-        {columns.length > 0 ? (
-          columns.map((column) => <MegaColumn key={column.title} title={column.title} links={column.links} />)
-        ) : (
-          <p className="type-body col-span-4 text-ink-2">{t("nav.empty")}</p>
-        )}
-        {columns.length > 0 && columns.length < 4 ? <div style={{ gridColumn: `span ${4 - columns.length}` }} aria-hidden="true" /> : null}
-        <div className="shell-mega__side">
-          {platform.artKey ? (
-            <Stage size="compact" gel={gel}>
-              <Render name={platform.artKey} alt="" sizes="260px" />
-            </Stage>
-          ) : null}
-          <TextLink as={LocaleLink} to={platform.href}>
-            {t("nav.all", { name })}
-            <span className="text-ink-2"> · {t("nav.count", { count: platform.productCount })}</span>
-          </TextLink>
-        </div>
+    <div className="page shell-mega__inner">
+      <div className="shell-mega__top">
+        <TextLink as={LocaleLink} to={platform.href}>
+          {t("nav.all", { name })}
+          <span className="text-ink-2"> · {t("nav.count", { count: platform.productCount })}</span>
+        </TextLink>
       </div>
-    </Glass>
+      <div className="shell-mega__grid">
+        {columns.length === 0 ? <p className="shell-mega__empty">{t("nav.empty")}</p> : null}
+        {columns.map((column) => (
+          <MegaColumn key={column.id} column={column} />
+        ))}
+        {columns.length > 0 && columns.length < 4 ? <div style={{ gridColumn: `span ${4 - columns.length}` }} aria-hidden="true" /> : null}
+        {feature ? (
+          <LocaleLink to={feature.href} className="shell-mega__feature">
+            <span className="shell-mega__well">
+              {feature.artKey ? <Art name={feature.artKey} alt="" sizes="132px" /> : <Icon name="game-controller" size={32} />}
+            </span>
+            <span className="shell-mega__name">
+              <span className="shell-mega__text">{feature.label}</span>
+            </span>
+          </LocaleLink>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
-function MegaColumn({ title, links }: { title: string; links: NavLink[] }) {
+function MegaColumn({ column }: { column: Column }) {
   const headingId = useId();
   return (
-    <section aria-labelledby={headingId}>
+    <section aria-labelledby={headingId} className="shell-mega__col">
       <h2 id={headingId} className="shell-mega__title">
-        {title}
+        {column.dot ? <PlatformLed /> : null}
+        {column.title}
       </h2>
       <ul>
-        {links.map((link) => (
+        {column.links.map((link) => (
           <li key={link.href}>
-            <MegaLink link={link} />
+            <LocaleLink to={link.href} className="shell-mega__link">
+              <span className="shell-mega__line">
+                <span className="shell-mega__text">{link.label}</span>
+              </span>
+            </LocaleLink>
           </li>
         ))}
+        {column.all ? (
+          <li>
+            <LocaleLink to={column.all.href} className="shell-mega__link shell-mega__link--all">
+              <span className="shell-mega__line">
+                <span className="shell-mega__text">{column.all.label}</span>
+              </span>
+            </LocaleLink>
+          </li>
+        ) : null}
       </ul>
     </section>
-  );
-}
-
-function MegaLink({ link }: { link: NavLink }): ReactNode {
-  return (
-    <LocaleLink to={link.href} className="shell-mega__link">
-      <span className="shell-mega__text">{link.label}</span>
-    </LocaleLink>
   );
 }

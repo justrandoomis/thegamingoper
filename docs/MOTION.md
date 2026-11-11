@@ -37,11 +37,16 @@ export default function StorefrontLayout() {
 - `<PageTransition>` wraps the outlet in a plain `<div data-motion-page>` (pass `className`/`style` if the layout needs
   it). Keep it mounted; do not key it. Nested layouts may each have one — a navigation is planned once.
 - Chrome that stays put during page transitions: `data-motion-persist="header" | "nav" | "bar" | "float"` (one element
-  per value on screen). On a language switch it cross-fades in place.
+  per value on screen). On a language switch it cross-fades in place. The engine gives it its view-transition name
+  **only while a transition runs** (`html:active-view-transition …` in `motion.css`): an element with a name is a
+  backdrop root, so glass inside a named header frosts nothing (Design System v2 §2.10b, measured in §4.12). Never set
+  a `view-transition-name` yourself, in CSS or inline — `tests/motion.test.ts` and `check-glass.mjs` fail it.
 - The stage (and anything else that should stay put while the language changes): `data-motion-anchor`. Anchors must
   look the same in both reading directions (full width or centred) — they do not slide, so a box at the inline start
-  would jump to the other side.
-- The cart: `data-cart-target` on the cart button, `data-cart-badge` on its bead (see `flyToCart`).
+  would jump to the other side. The engine marks the on-screen ones `data-motion-anchored="0…5"` for the switch;
+  `motion.css` names them only while it runs, and the marks go when it ends.
+- The cart: `data-cart-target` on the cart **button** — drawn at every count, the empty cart included — and
+  `data-cart-badge` on its bead (see `flyToCart`). The first on-screen target in document order receives the bead.
 - **Before first paint** (DESIGN.md §6.5 wants `fx-low` before the first frame): the root layout puts
   `MOTION_TIER_SCRIPT` (from `~/motion/tier-script`, 0.7 KB) in `<head>` next to its theme script. It sets the same
   attributes `<MotionRoot>` sets later, by the same rule (a unit test runs both over all 1,280 signal combinations).
@@ -71,7 +76,7 @@ export default function StorefrontLayout() {
 
 ```ts
 import { springTiming, durations, easings, travel } from "~/motion";
-element.animate([{ scale: 0.86 }, { scale: 1 }], springTiming("inflate"));   // a spring as WAAPI timing
+element.animate([{ scale: 0.94 }, { scale: 1 }], springTiming("inflate"));   // a spring as WAAPI timing
 import { springKeyframes, springValue, springVelocity } from "~/motion/spring"; // the solver: not in the core bundle
 const { values, duration } = springKeyframes(springs.sheet, { from: y, to: 0, velocity });  // px, px/s
 ```
@@ -178,7 +183,9 @@ one — filters, sorting and pagination stay instant.
 </Suspense>
 ```
 
-- Scale .86 → 1 with opacity 0 → 1 on the `inflate` spring, on the wrapper itself (zero layout shift, measured).
+- Scale .94 → 1 with opacity 0 → 1 on the `inflate` spring, on the wrapper itself (zero layout shift, measured).
+  `bubble.fromScale` / `--motion-bubble-from`; Design System v2 §2.11 raised it from .86 — open v2 cards have no box to
+  inflate, so a deep scale read as a jump. Only for content that streams in after first paint, never the hero.
 - First appearance only: content that arrives after the page is on screen. Server HTML and content that is part of a
   navigation is simply there; `always` opts in. `origin={{ x, y }}` or `"pointer"` grows it from a tap.
 - Hydration-safe: a Bubble that hydrates server HTML never inflates — also inside a streamed Suspense section that
@@ -209,9 +216,17 @@ const add = () => {
 };
 ```
 
-- A 22px red clay bead (`.fly`) leaves the centre of `source` and travels a quadratic arc — control point halfway
-  across, 70px above the higher end — to the cart bead (`[data-cart-badge]` in the first visible `[data-cart-target]`),
-  shrinking to .55, in 420 ms + 0.3 ms per px (≤ 600 ms). One transform animation.
+- A 22px red bead (`.fly`) leaves the centre of `source` and travels a quadratic arc — control point halfway
+  across, 70px above the higher end — to the cart bead (`[data-cart-badge]` in the first on-screen
+  `[data-cart-target]`; the target itself while it shows no bead), shrinking to .55, in 420 ms + 0.3 ms per px
+  (≤ 600 ms). One transform animation. The bead looks like the v2 cart bead it lands on: a flat `--red` disc with the
+  bead's 2px ring (`outline`, `--bead-ring`, default `--paper`), no clay wall (`extras.css`).
+- **Lands on the bead even when the bead appears only after the tap.** The count changes in the same handler, so an
+  empty cart draws its bead (and a 9 → 10 count widens it) a frame later: the flight aims again in each of its first
+  two frames, keeping its progress (the turn is far below a pixel). If no cart target is drawn at all at the tap, the
+  engine looks once more in the next task and flies then, or announces the arrival without a flight. Measured on the
+  storefront product page (`check-cart.mjs`): the first add lands 0 px from the bead at 390 and 1440 — aiming at the
+  tap's target centre would have missed it by 24 px.
 - On arrival the cart bead squishes: scale(1.4, .68) → (.88, 1.16) → 1 over 340 ms; a bubbling `tt:cart-received`
   event (`detail.flown`) fires on the target; `options.onArrive` runs.
 - At most three beads in flight; further taps go straight to the count (the bead still squishes).
@@ -376,6 +391,26 @@ transitions, so `themeMorph` runs its own view transition (ending a page transit
 fades in over 120 ms and shared elements FLIP; the theme and language switch instantly. Without
 `document.activeViewTransition`, React's `<ViewTransition>` callbacks and `:active-view-transition` take over.
 
+**4.12 A view-transition-name makes a backdrop root — names only while a transition runs** (Design System v2 §2.10b,
+§2.11; verified by `check-glass.mjs` on every run). An element with a `view-transition-name` is a backdrop root: a
+`backdrop-filter` inside it frosts only what is painted inside that element. Until 2026-11-11 the persistent chrome was
+named at rest, so the header's glass and the glass mega menu inside it frosted nothing and page text showed sharply
+through them. Measured as the high-pass of what shows through a pane (its own content hidden; p99.9 of |L − 3×3 mean|,
+0–255): frosted panes 0.44 with no edge pixels, light and dark, 390 and 1440; the same panes with the old resting name
+put back 7.7–34 (hero text legible through the mega menu, product names and headings behind the header). Facts the fix
+rests on:
+- Naming the glass element **itself** does not break its own frost (the tab bar, measured): only a name on an ancestor
+  of the glass does. The rule is still "nothing named at rest".
+- `:active-view-transition` matches from `startViewTransition()`, so the CSS name is already there when the old state
+  is captured: rendered alone, `::view-transition-old(tt-persist-header)` and `…-new(…)` both show the header (and an
+  element is captured in exactly one place, so it is not in the page snapshots). Push, fade, zoom and rise keep the
+  chrome in place exactly as before; anchors work the same way through `data-motion-anchored`.
+- While a transition runs (≈ 0.4 s) the chrome is a snapshot and its glass shows unfrosted — the trade v2 §2.11 chose.
+- The theme morph unnames chrome and anchors (`!important` in `extras.css`), so they fade with the page.
+- Without the selector (Chromium < 125, Safari < 18.2) the rules drop; those browsers also lack `view-transition-class`
+  and both ways `vt.ts` detects a running transition, so the engine plays no page animation there and the chrome
+  stays live.
+
 ## 5. Performance (measured)
 
 - **Bundle** — Vite 8 production build (Rolldown, Oxc, Lightning CSS), gzip -9, `node app/motion/__checks__/size.mjs`:
@@ -398,9 +433,20 @@ fades in over 120 ms and shared elements FLIP; the theme and language switch ins
 ## 6. Verifying
 
 ```
-npm test -- tests/motion.test.ts                  41 tests: spring solver → linear(), hand-off, momentum, rubber band, snap,
+npm test -- tests/motion.test.ts                  47 tests: spring solver → linear(), hand-off, momentum, rubber band, snap,
                                                   arc and flight time, tiers + the head script (1,280 combinations), navigation
-                                                  grammar, tokens ↔ motion.css ↔ app/styles/tokens.css, transform/opacity guard
+                                                  grammar, tokens ↔ motion.css ↔ app/styles/tokens.css, transform/opacity guard,
+                                                  no view-transition-name at rest (every stylesheet of app/ names only under
+                                                  html:active-view-transition; no script names an element but <html>)
+node app/motion/__checks__/check-glass.mjs        29: on the real storefront and admin — nothing named at rest, nothing named
+                                                  that contains glass (93 page states: 10 pages × 390/1440 × light/dark × top/
+                                                  scrolled, mega menu open, after transitions and a language switch); the chrome
+                                                  and anchors keep both snapshots while a transition runs; what shows through
+                                                  every live pane and the open mega menu is frosted, with two controls that
+                                                  must show sharp text (the old resting name; the pane unfrosted)
+node app/motion/__checks__/check-cart.mjs         14: fly-to-cart on a real product page at 390 and 1440 — lands 0 px from the
+                                                  cart bead even on the first add (bead drawn after the tap), squish, the v2
+                                                  bead; reduced motion: no flight, count at once, polite announcement
 node app/motion/__checks__/check-nav.mjs          40: URL / history / scroll on forward, Back, Forward; one transition per
                                                   navigation; grammar; shared elements; RTL vs LTR push; synchronous Back
 node app/motion/__checks__/check-touch.mjs        32: press timing and depth, cancel, keyboard, haptics, number morph, menus,
@@ -415,8 +461,11 @@ node app/motion/__checks__/contact.mjs out.png frames…    lays frames side by 
 node app/motion/__checks__/size.mjs               bundle sizes (§5)
 ```
 
-The browser checks drive the lab at 390×844 (and 1024×768 for side sheets) against the running dev server
-(`MOTION_ORIGIN` to point elsewhere) and write frames to `.shots/motion/` — look at them when changing motion.
+The lab checks drive `/motion` at 390×844 (and 1024×768 for side sheets); `check-glass` and `check-cart` drive real
+storefront pages (and, for check-glass, `/admin` signed in with the local demo account from `.dev.seed-credentials`,
+never printed). All run against the running dev server (`MOTION_ORIGIN` to point elsewhere) and write pictures to
+`.shots/motion/` (`MOTION_SHOTS` to choose) — look at them when changing motion. check-cart adds one guest cart line per
+run to the dev database (a fresh browser context each time; nothing is reserved).
 
 ## 7. Rules for feature code
 
@@ -436,6 +485,10 @@ The browser checks drive the lab at 390×844 (and 1024×768 for side sheets) aga
   not on those browsers or on real phones; durations and springs should be tuned on devices, and the jank threshold
   (3 frames over 50 ms) has not been tried on a real low-end phone.
 - The theme cross-fade dips below 3:1 text contrast for ≈ 30 ms (§3, measured); the design team's call.
+- While a page transition runs (≈ 0.4 s) the persistent chrome is a snapshot whose glass is not frosted (§4.12); at
+  rest it always is.
+- The lab (`/motion`) renders inside the storefront shell: once scrolled, the shell's sticky header covers the lab's
+  own bar (its pretend cart included) at phone widths. The checks measure around it.
 - The language switch cross-fades two pages of text for ≈ 100 ms (DESIGN.md's 140 ms out / 220 ms in).
 - Server-rendered Bubbles do not animate when a streamed Suspense boundary resolves before hydration (they are shown,
   and they hydrate without a mismatch — §`<Bubble>`).

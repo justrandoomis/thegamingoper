@@ -1,5 +1,40 @@
 # Commerce components — props and examples
 
+## Design System v2 (2026-11-11) — read this first
+
+Where a section further down disagrees with this one, **this one wins**. Live, every state: `/design-system#commerce`.
+
+- **ProductCard** — no frame: a square well (`Niche`, kind from `wellKind(card)`: box art, digital card, wide 1.9:1
+  handhelds, hardware), the tag top-start, the kind line (`KindLine`: platform dot + «جهاز PS5»), the name (two lines,
+  `headingLevel` default **3**), ≤2 facts, then price + the neutral add button (`CardAddButton`: a 40px outlined circle,
+  bag-plus, a check after adding; «اختر نسخة…» opens the quick look when the product has options). States via
+  `data-state`: in · sale (compareAt, shown only when real or in demo mode) · soon (`releaseAt` → «يصدر 18 تشرين الثاني
+  2026» + «الطلب يفتح عند وصوله», `releaseDay(ms, locale)`) · out («نفد حالياً», no add). The wishlist heart is opt-in
+  (`wishlist`, `wished`). A failed image shows «تعذّر تحميل الصورة» + retry. The whole card is one link (the well is
+  inside it, so the shared-element zoom claims it). `layout="row"` for 96px rows. `ProductCardPlaceholder` keeps the
+  geometry.
+- **UsedUnitCard** — grid (grade tag on the well, «صورة توضيحية» when the picture is not the unit, battery and
+  warranty facts, price, a report button) and row layout («اعرض تقرير الفحص»). Never an add button.
+- **AddToCartKey / BuyControls / BuyBar** — `AddToCartKey variant="key"` (primary, bag-plus) or `"socket"` (the card
+  button). The «أُضيف إلى السلة» toast comes AFTER the fly-to-cart lands (`onArrive`, 900ms fallback); a session
+  memory marks items already added (hydration-safe). `BuyBar priceIqd releaseAt alternativesHref fixed`: after adding
+  it reads «✓ في السلة» + «عرض السلة (n)»; sold out → «نفد حالياً» + «شاهد بدائل»; no stepper in the bar.
+- **WishlistKey** — `onImage`, `size="xs"`, `message="none"` for cards; posts to `/api/wishlist`.
+- **Gallery** — `Stage size="pdp"`: straight product, the counter «1 من 4» (polite live region after a change), a
+  full-screen tool, thumbs (a radiogroup) under the stage; the viewer is opaque. Used units: the illustration line.
+- **CartLineRow** — 120px well (`Niche size="sm"`), the name (a 44px link band), option, availability (Status or the
+  problem line), Stepper sm, line total, «إزالة» → an undo row «تراجع».
+- **OrderSummary** — new props: `lines` (64px wells), `couponField` (the «لديك رمز خصم؟» disclosure; use
+  `CouponField`: a field + a SEPARATE 40px «طبّق»), `action` (the commit inside the card on desktop), `trust`
+  (`<TrustStrip variant="line">`), `demo` (the demo order line). «الإجمالي» is the one red figure. Figures that do not
+  reconcile → an error row, never a guessed number.
+- **InspectionCard** — `newPriceIqd` («سعره جديداً في المتجر …»); battery as an ink bar; dates as «7 تشرين الثاني 2026».
+- **ProofUploader**, **WalletBalance** — v2 surfaces; the wallet is a `Band kind="wallet"` with «اشحن الرصيد»
+  (`topupHref`) and «سجل الحركات» (`historyHref`), a ledger with signed amounts.
+- **Rail / ShelfRail** — `.rail`: a snap rail on phones, whole cards in one row from 1024 (no arrows over cards);
+  `ShelfRail` = `SectionHead` + `Rail`, hidden below `minItems` (default 3), optional `chips`. **ShowMore** («عرضنا 24
+  من 60», a bar, «اعرض المزيد») replaces numbered pages on listings.
+
 Owner: commerce components (`app/ui/*` listed below, `app/ui/cart-client.ts`, strings in `app/i18n/messages/ui-shop.ts`).
 Rules and tokens: `docs/UI.md`, `docs/DESIGN.md` §2, §9.5–9.6, §9.11–9.12, §9.18–9.20. Live, in every state, with sample
 data (real product photos, demo-store ids): **`/design-system#commerce`** (also `/en/…`, `/ckb/…`).

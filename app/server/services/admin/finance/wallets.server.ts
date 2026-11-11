@@ -27,6 +27,7 @@ import type { Db } from "~/server/db/drizzle.server";
 import { approvals, customers, files, walletLedger, walletTopups, type WalletTopup } from "~/server/db/schema";
 import { expectChanged, expectThat, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, notFound } from "~/server/errors";
+import { getSetting } from "~/server/settings.server";
 import { familyIds, chartOfAccounts, accountSums } from "~/server/services/accounting/reports.server";
 import { creditWallet } from "~/server/services/wallet.server";
 import { customerLabels, employeeNames, type CustomerLabel } from "./shared.server";
@@ -48,7 +49,8 @@ export const WALLET_ADMIN_ERROR_KEYS = [
 ] as const;
 
 /**
- * Above this amount a top-up needs two people (a constant until settings 22 owns it). What one person approves alone
+ * Above this amount a top-up needs two people — the DEFAULT of the setting "finance.topup_second_approval_iqd" (admin
+ * 22), which this file reads (getSetting) wherever the limit applies. What one person approves alone
  * for one customer counts together over TOPUP_SOLO_WINDOW_MS, so the limit cannot be split into small top-ups.
  */
 export const TOPUP_SECOND_APPROVAL_ABOVE_IQD = 500_000;
@@ -324,6 +326,7 @@ async function decorateTopups(db: Db, actor: Actor, rows: WalletTopup[]): Promis
     employeeNames(db, [...rows.map((row) => row.verifiedBy), ...pending.map((row) => row.requestedBy)]),
   ]);
   const myId = me(actor);
+  const secondAbove = await getSetting(db, "finance.topup_second_approval_iqd");
   return rows.map((row) => {
     const first = pending.find((approval) => approval.entityId === row.id);
     const payload = (first?.payload ?? {}) as { amountIqd?: number; note?: string | null };
@@ -343,7 +346,7 @@ async function decorateTopups(db: Db, actor: Actor, rows: WalletTopup[]): Promis
       verifiedBy: row.verifiedBy ? (names.get(row.verifiedBy) ?? null) : null,
       rejectReason: row.rejectReason,
       notCredited: row.status === "approved" && !row.walletLedgerId,
-      needsTwo: (row.declaredAmountIqd ?? row.amountIqd) > TOPUP_SECOND_APPROVAL_ABOVE_IQD,
+      needsTwo: (row.declaredAmountIqd ?? row.amountIqd) > secondAbove,
       firstApproval: first
         ? { approvalId: first.id, by: names.get(first.requestedBy) ?? null, byMe: first.requestedBy === myId, amountIqd: num(payload.amountIqd), note: payload.note ?? first.reason ?? null, at: first.createdAt }
         : null,
@@ -382,13 +385,14 @@ export async function getTopupReview(db: Db, actor: Actor, topupId: string, proo
   const row = await db.select().from(walletTopups).where(eq(walletTopups.id, topupId)).get();
   if (!row) throw notFound("wallet_topup");
   const [decorated] = await decorateTopups(db, actor, [row]);
-  const [balance, before, solo] = await Promise.all([
+  const [balance, before, solo, secondAbove] = await Promise.all([
     db.all<{ total: number }>(sql`SELECT coalesce(sum(amount_iqd), 0) AS total FROM wallet_ledger WHERE customer_id = ${row.customerId}`),
     db.all<{ n: number }>(sql`SELECT count(*) AS n FROM wallet_topups WHERE customer_id = ${row.customerId} AND status = 'approved' AND id <> ${row.id}`),
     soloApprovedIqd(db, row.customerId, me(actor), now),
+    getSetting(db, "finance.topup_second_approval_iqd"),
   ]);
   const hasProof = Boolean(row.proofFileId);
-  const soloRoomIqd = Math.max(0, TOPUP_SECOND_APPROVAL_ABOVE_IQD - solo);
+  const soloRoomIqd = Math.max(0, secondAbove - solo);
   return {
     ...decorated,
     needsTwo: (row.declaredAmountIqd ?? row.amountIqd) > soloRoomIqd,
@@ -397,7 +401,7 @@ export async function getTopupReview(db: Db, actor: Actor, topupId: string, proo
     hasProof,
     proofUrl: hasProof && can(actor, "payment_proof.read") ? proofUrl(row.id) : null,
     canDecide: can(actor, DECIDE),
-    threshold: TOPUP_SECOND_APPROVAL_ABOVE_IQD,
+    threshold: secondAbove,
     soloApprovedIqd: solo,
     soloRoomIqd,
   };
@@ -540,7 +544,8 @@ async function decideTopupOnce(db: Db, actor: Actor, raw: DecideTopupInput, now:
 
   // what this person already approved alone for this customer today counts with this amount
   const alone = first ? 0 : await soloApprovedIqd(db, topup.customerId, myId, now);
-  const needsTwo = amount + alone > TOPUP_SECOND_APPROVAL_ABOVE_IQD;
+  const secondAbove = await getSetting(db, "finance.topup_second_approval_iqd");
+  const needsTwo = amount + alone > secondAbove;
   if (needsTwo && !first) {
     const approvalId = newId("apv");
     try {
@@ -587,7 +592,7 @@ async function decideTopupOnce(db: Db, actor: Actor, raw: DecideTopupInput, now:
             expectChanged(db, 1, { code: "TOPUP_NOT_PENDING", detail: first.id }),
           ]
         : // alone: with this one, what this person approved alone for this customer in 24 hours stays within the limit
-          [expectThat(db, sql`(${soloApprovedSql(topup.customerId, myId, now - TOPUP_SOLO_WINDOW_MS)}) <= ${TOPUP_SECOND_APPROVAL_ABOVE_IQD}`, { code: "TOPUP_SOLO_LIMIT", detail: topup.id })]),
+          [expectThat(db, sql`(${soloApprovedSql(topup.customerId, myId, now - TOPUP_SOLO_WINDOW_MS)}) <= ${secondAbove}`, { code: "TOPUP_SOLO_LIMIT", detail: topup.id })]),
       auditStatement(db, {
         actor,
         action: "finance.wallet.topup_approve",

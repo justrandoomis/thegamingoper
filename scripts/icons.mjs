@@ -34,7 +34,7 @@ const GROUPS = {
   ],
   actions: [
     "plus", "minus", "check", "check-circle", "trash", "pencil-simple", "copy", "share-network", "upload-simple", "download-simple",
-    "funnel", "sliders-horizontal", "sort-ascending", "arrows-clockwise", "arrow-counter-clockwise", "swap", "scales", "eye", "eye-slash",
+    "funnel", "sliders-horizontal", "sort-ascending", "arrows-clockwise", "arrow-counter-clockwise", "swap", "scales", "eye", "eye-slash", "corners-out",
     "sign-in", "sign-out", "lock", "key", "printer", "link", "floppy-disk", "paperclip", "paper-plane-tilt",
   ],
   status: [
@@ -42,7 +42,7 @@ const GROUPS = {
     "cloud-slash", "lightning", "fire", "sparkle", "star", "circle-notch", "trend-up", "trend-down",
   ],
   commerce: [
-    "tag", "percent", "gift", "receipt", "credit-card", "wallet", "money", "bank", "truck", "package", "map-pin", "calendar-blank",
+    "bag-plus", "tag", "percent", "gift", "receipt", "credit-card", "wallet", "money", "bank", "truck", "package", "map-pin", "calendar", "calendar-blank",
     "storefront", "barcode", "qr-code", "coins", "currency-dollar", "ticket", "hand-coins", "recycle", "certificate",
   ],
   devices: [
@@ -67,6 +67,18 @@ const GROUPS = {
  *   corner and a contact pad) is the closest silhouette.
  */
 const SUBSTITUTIONS = { "sd-card": "sim-card" };
+
+/**
+ * Symbols Phosphor does not have, drawn on its 256 grid in its regular weight (16-unit strokes, round ends) so they sit
+ * with the rest. Design System v2 §8.
+ *   bag-plus   the card add button and «أضف إلى السلة» (was the inline AddGlyph in app/ui/Socket.tsx): Phosphor's
+ *              "bag" outline without its handle stubs, with a plus in the body.
+ */
+const CUSTOM = {
+  "bag-plus":
+    '<path d="M216,64H176a48,48,0,0,0-96,0H40A16,16,0,0,0,24,80V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V80A16,16,0,0,0,216,64ZM128,32a32,32,0,0,1,32,32H96A32,32,0,0,1,128,32Zm88,168H40V80H216Z"/>' +
+    '<path d="M164,140a8,8,0,0,1-8,8H136v20a8,8,0,0,1-16,0V148H100a8,8,0,0,1,0-16h20V112a8,8,0,0,1,16,0v20h20A8,8,0,0,1,164,140Z"/>',
+};
 
 /** Icons that also get the fill weight as "<name>-fill". */
 const FILLED = [
@@ -93,6 +105,7 @@ const problems = [];
 const substituted = [];
 
 const resolve = (name) => {
+  if (name in CUSTOM) return name;
   if (existsSync(path.join(ASSETS, "regular", `${name}.svg`))) return name;
   const replacement = SUBSTITUTIONS[name];
   if (replacement && existsSync(path.join(ASSETS, "regular", `${replacement}.svg`))) {
@@ -125,7 +138,7 @@ async function shapes(weight, file) {
 }
 
 const symbols = [];
-for (const name of regular) symbols.push({ id: name, body: await shapes("regular", name) });
+for (const name of regular) symbols.push({ id: name, body: name in CUSTOM ? CUSTOM[name] : await shapes("regular", name) });
 for (const name of FILLED) {
   if (!existsSync(path.join(ASSETS, "fill", `${name}-fill.svg`))) {
     problems.push(`no fill weight for "${name}"`);

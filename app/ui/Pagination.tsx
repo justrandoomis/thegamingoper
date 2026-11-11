@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Link, type LinkProps } from "react-router";
 
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
@@ -88,13 +89,13 @@ export function Pagination({ page, pageCount, href, onPage, siblings = 1, classN
   return (
     <nav aria-label={rest["aria-label"] ?? t("pagination.label")} className={cx("flex items-center justify-between gap-3 sm:justify-center", className)}>
       {step(current - 1, "arrow-left", t("pagination.previous"), current <= 1)}
-      <p className="type-label text-ink sm:hidden">
+      <p className="type-sm-strong text-ink sm:hidden">
         <bdi className="nums">{t("pagination.status", { page: f.number(current), count: f.number(pageCount) })}</bdi>
       </p>
       <ul role="list" className="hidden items-center gap-1.5 sm:flex">
         {slots.map((slot, index) =>
           slot === "gap" ? (
-            <li key={`gap-${index}`} aria-hidden="true" className="grid w-6 place-items-center type-label text-ink-2">
+            <li key={`gap-${index}`} aria-hidden="true" className="grid w-6 place-items-center type-sm text-ink-2">
               …
             </li>
           ) : (
@@ -132,29 +133,42 @@ export type ShowMoreProps = {
   onMore?: () => void;
   /** The next page is loading: the key spins and stays where it is. */
   loading?: boolean;
-  /** Default "اعرض المزيد". */
+  /** Default «اعرض المزيد»; with `step` and `products`: «اعرض 12 منتجاً آخر». */
   label?: string;
+  /** Products: the line says «عرضنا 12 من 42 منتجاً», the key «اعرض 12 منتجاً آخر», the end «لا يوجد المزيد لعرضه». */
+  products?: boolean;
+  /** How many the next page adds (for the key's words). */
+  step?: number;
   className?: string;
 };
 
-export function ShowMore({ shown, total, href, onMore, loading = false, label, className }: ShowMoreProps) {
+/**
+ * Show more — Design System v2 §4.22: «عرضنا 12 من 42 منتجاً» (14 ink-2, announced when it changes), a 200×4 progress
+ * bar (ink on --niche-2) and the secondary «اعرض 12 منتجاً آخر»; at the end «لا يوجد المزيد لعرضه».
+ */
+export function ShowMore({ shown, total, href, onMore, loading = false, label, products = false, step, className }: ShowMoreProps) {
   const t = useT("ui-overlays");
   const f = useFormat();
   const known = typeof total === "number" && Number.isFinite(total);
   const more = (known ? shown < (total as number) : true) && Boolean(href || onMore);
   const share = known && (total as number) > 0 ? Math.min(100, Math.round((shown / (total as number)) * 100)) : null;
+  const next = known && step ? Math.min(step, (total as number) - shown) : null;
+  const words =
+    label ?? (products && next !== null && next > 0 ? t("pagination.moreProducts", { count: next, n: f.number(next) }) : t("pagination.more"));
   return (
-    <div className={cx("grid justify-items-center gap-3 py-2", className)}>
+    <div className={cx("showmore", className)}>
       {known ? (
         <>
-          <p className="type-caption text-ink-2" role="status">
-            <bdi className="nums">
-              {more ? t("pagination.shown", { shown: f.number(shown), total: f.number(total as number) }) : t("pagination.all", { total: f.number(total as number) })}
-            </bdi>
+          <p className="showmore__count" role="status">
+            {products
+              ? t("pagination.shownProducts", { count: total as number, shown: f.number(shown), total: f.number(total as number) })
+              : more
+                ? t("pagination.shown", { shown: f.number(shown), total: f.number(total as number) })
+                : t("pagination.all", { total: f.number(total as number) })}
           </p>
           {share !== null ? (
-            <span className="block h-1 w-40 overflow-hidden rounded-full bg-well" aria-hidden="true">
-              <span className="block h-full rounded-full bg-ink" style={{ inlineSize: `${share}%` }} />
+            <span className="showmore__bar" aria-hidden="true">
+              <span className="showmore__fill" style={{ "--progress": `${share}%` } as CSSProperties} />
             </span>
           ) : null}
         </>
@@ -162,13 +176,15 @@ export function ShowMore({ shown, total, href, onMore, loading = false, label, c
       {more ? (
         href ? (
           <Key as={HrefLink} to={href} loading={loading}>
-            {label ?? t("pagination.more")}
+            {words}
           </Key>
         ) : (
           <Key onClick={onMore} loading={loading}>
-            {label ?? t("pagination.more")}
+            {words}
           </Key>
         )
+      ) : products && known ? (
+        <p className="showmore__end">{t("pagination.end")}</p>
       ) : null}
     </div>
   );

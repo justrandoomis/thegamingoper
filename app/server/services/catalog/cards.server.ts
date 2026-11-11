@@ -12,6 +12,19 @@
  * decide them, so `platform: "xbox"` includes the games sold for PlayStation AND Xbox and the headsets made for both.
  * Used units are devices and keep their own platform (`getUsedSpotlight`, like the used marketplace's filter).
  *
+ * WHAT A CARD SAYS (design v2 spec §4.7, §4.11, §9; the rules are in ./card-facts.ts):
+ *   · `compareAtIqd` only for a previous price the store really charged — an APPLIED price change set exactly this
+ *     compare-at (admin pricing only applies one that passed the 90-days-charged rule) — or, on a demo row, the
+ *     seed's demo value, flagged `compareAtDemo` (struck only under the demo marking, never worded as a saving).
+ *   · `stock`: a demo row never says "low_stock" — its stock is a placeholder, so its scarcity is too.
+ *   · `badge`: "preorder" (coming soon) › "deal" › "new" (`isNew`: released, or really listed, ≤ 30 days ago); none
+ *     on a sold-out card (the card says «نفد» from `stock`).
+ *   · `kindLabel` («جهاز PS5», «يد تحكم · PS5», «سماعة · متعددة المنصات») and `forPlatforms` (the dots) from the
+ *     device families the product is for: the model it is, else its game facts, else its verified/partial rules.
+ *   · `releaseAt` while coming soon; `image.opaque` for a photo that is not a cut-out (spec §7.5).
+ *   · "featured" = the suggested order «المقترَح»: in stock, then coming soon, then sold out; newest first inside each
+ *     (the platform hubs also lead with the platform's consoles — listing.server.ts).
+ *
  * HOW (one round trip per call, no N+1)
  *   Every card query is ONE SQL statement built from the linear CTE chain in cardCtes():
  *     [filter CTEs: plat (researched platforms), cat (category subtree), fb/fit (device model), hit (search)]
@@ -20,9 +33,11 @@
  *           bundle sets read by indexed correlated subqueries
  *     vs    the stock state of each variant (0 out · 1 low · 2 in, exactly as getAvailability() decides it) and
  *           the best state per product (window)
- *     c     one row per product: card variant price, state, preorder flag, "can be bought now" (avail)
- *   then filters on c, sort + keyset cursor, LIMIT, and — only for the rows of the page — the first picture and
- *   the review summary as correlated subqueries. listCards sends the page and the total COUNT in one db.batch.
+ *     c     one row per product: card variant price, state, preorder flag, the shopping tier, the previous-price
+ *           evidence (was), the release facts
+ *   then filters on c, sort + keyset cursor, LIMIT, and — only for the rows of the page — the first picture, the
+ *   review summary and the card facts (researched platforms, device families) as correlated subqueries. listCards
+ *   sends the page and the total COUNT in one db.batch.
  *
  * PRIVACY: the statements never select cost, landed cost, margins, serials or stock quantities; only the state
  * (0/1/2) leaves SQL. Used units: no acquisition cost, no serial, no location.
@@ -39,6 +54,7 @@ import { ftsMatchQuery, searchTerms } from "~/server/db/search.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { invalid, zodFieldErrors } from "~/server/errors";
 import { DEFAULT_LOW_STOCK } from "~/server/services/inventory/stock.server";
+import { isNewProduct, kindLabelOf, shownStockRank, withOpaque, type DeviceFamily } from "./card-facts";
 import { CARD_SORTS, MAX_CARD_PAGE, type CardFilters, type CardSort, type ListCardsOptions, type ShelfOptions } from "./types";
 
 export { CARD_SORTS, MAX_CARD_PAGE } from "./types";
@@ -149,12 +165,64 @@ c AS (
     d.id AS variant_id, d.price_iqd, d.compare_at_iqd, d.n AS variant_count,
     d.best AS st,
     CASE WHEN COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 ELSE 0 END AS pre,
-    CASE WHEN d.best > 0 OR COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 ELSE 0 END AS avail
+    CASE WHEN COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 WHEN d.best > 0 THEN 2 ELSE 0 END AS tier,
+    ${previousPriceEvidence(sql`d.id`, sql`d.price_iqd`, sql`d.compare_at_iqd`, sql`p.is_demo`)} AS was,
+    p.preorder_release_at AS release_at,
+    CASE WHEN json_valid(p.attributes) THEN json_extract(p.attributes, '$.catalogue.releaseDate') END AS released_on,
+    CASE WHEN json_valid(p.attributes) THEN json_extract(p.attributes, '$.catalogue.kind') END AS research_kind
   FROM vs AS d
   JOIN products AS p ON p.id = d.product_id
   WHERE d.rn = 1
 )`;
 }
+
+/**
+ * What backs a variant's compare-at price (design v2 spec §4.7, §13 row 8): 2 = the store really charged it — an
+ * APPLIED price change set exactly this compare-at (admin pricing applies a compare-at only after its
+ * 90-days-charged check, prices.server.ts compareAtCheck); 1 = a demo value on a demo row (the seed's demo deal:
+ * shown only under the demo marking); 0 = nothing to strike (none, not above the price, or not backed).
+ * The same expression in listing.server.ts and product.server.ts, so every surface strikes the same prices.
+ */
+export function previousPriceEvidence(variantId: SQL, price: SQL, compareAt: SQL, isDemo: SQL): SQL {
+  return sql`(CASE WHEN ${compareAt} IS NULL OR ${compareAt} <= ${price} THEN 0
+      WHEN EXISTS (SELECT 1 FROM price_changes AS pcw WHERE pcw.variant_id = ${variantId} AND pcw.status = 'applied' AND pcw.new_compare_at_iqd = ${compareAt}) THEN 2
+      WHEN ${isDemo} = 1 THEN 1
+      ELSE 0 END)`;
+}
+
+/**
+ * The card facts of a page row (alias `page`), as one JSON object: `pl` = the active platforms the product is
+ * RESEARCHED for ([slug, sort] pairs — researchedPlatformSql), `fam` = the device generations it is for
+ * ([slug, sort, platform slug, platform sort, name]), `wide` = platforms a platform-wide rule names ([slug, sort]).
+ * Families come from the first source that has any, like the researched platforms: the device model the product is
+ * (or is made for), else the devices its game facts name, else its product-level verified/partial rules. Generations
+ * of inactive platforms (the PC) are left out.
+ */
+const FACTS_OF_PAGE_ROW = sql`(
+  SELECT json_object(
+    'pl', json((SELECT json_group_array(json_array(fpl.slug, fpl.sort)) FROM platforms AS fpl WHERE fpl.is_active = 1 AND ${researchedPlatformSql("fp", "fpl")})),
+    'fam', json((SELECT json_group_array(json_array(fg.slug, fg.sort, fgp.slug, fgp.sort, fg.name))
+      FROM device_generations AS fg JOIN platforms AS fgp ON fgp.id = fg.platform_id AND fgp.is_active = 1
+      WHERE fg.id IN (
+        SELECT fdm.generation_id FROM device_models AS fdm WHERE fdm.id = fp.device_model_id
+        UNION
+        SELECT gdm.generation_id
+          FROM json_each(CASE WHEN fp.device_model_id IS NULL AND json_valid(fp.attributes) THEN fp.attributes ELSE '{}' END, '$.game.platforms') AS fgame
+          JOIN device_models AS gdm ON gdm.slug = fgame.value
+        UNION
+        SELECT CASE fr.target_type WHEN 'device_model' THEN (SELECT rdm.generation_id FROM device_models AS rdm WHERE rdm.id = fr.target_id) ELSE fr.target_id END
+          FROM compatibility_rules AS fr
+          WHERE fr.subject_type = 'product' AND fr.subject_id = fp.id AND fr.status IN ('verified', 'partial') AND fr.target_type IN ('device_model', 'generation')
+            AND fp.device_model_id IS NULL
+            AND (CASE WHEN json_valid(fp.attributes) THEN COALESCE(json_array_length(fp.attributes, '$.game.platforms'), 0) ELSE 0 END) = 0))),
+    'wide', json((SELECT json_group_array(json_array(wp.slug, wp.sort))
+      FROM compatibility_rules AS wr JOIN platforms AS wp ON wp.id = wr.target_id AND wp.is_active = 1
+      WHERE wr.subject_type = 'product' AND wr.subject_id = fp.id AND wr.status IN ('verified', 'partial') AND wr.target_type = 'platform'
+        AND fp.device_model_id IS NULL
+        AND (CASE WHEN json_valid(fp.attributes) THEN COALESCE(json_array_length(fp.attributes, '$.game.platforms'), 0) ELSE 0 END) = 0))
+  )
+  FROM products AS fp WHERE fp.id = page.id
+)`;
 
 /** First picture of a card: the card variant's own pictures before the product's; uploaded files only when public. */
 const IMAGE_OF_PAGE_ROW = sql`(
@@ -177,12 +245,15 @@ const RATING_OF_PAGE_ROW = sql`(
 
 type Ordering = CardSort | "saving";
 
-/** ORDER BY for the rows of `alias` (they all carry the columns of c). Every order ends on the id: a total order. */
+/**
+ * ORDER BY for the rows of `alias` (they all carry the columns of c). Every order ends on the id: a total order.
+ * "featured" is the suggested order: the shopping tier (2 in stock › 1 coming soon › 0 sold out), newest first inside.
+ */
 function orderBy(ordering: Ordering, alias: "c" | "page"): SQL {
   const a = sql.raw(alias);
   switch (ordering) {
     case "featured":
-      return sql`${a}.avail DESC, ${a}.pub DESC, ${a}.id DESC`;
+      return sql`${a}.tier DESC, ${a}.pub DESC, ${a}.id DESC`;
     case "newest":
       return sql`${a}.pub DESC, ${a}.id DESC`;
     case "price_asc":
@@ -317,11 +388,12 @@ function cardFilters(filters: CardFilters): SQL[] {
   if (filters.priceMin !== undefined) where.push(sql`c.price_iqd >= ${filters.priceMin}`);
   if (filters.priceMax !== undefined) where.push(sql`c.price_iqd <= ${filters.priceMax}`);
   if (filters.inStockOnly) where.push(sql`c.st > 0`);
-  if (filters.dealsOnly) where.push(sql`c.compare_at_iqd IS NOT NULL AND c.compare_at_iqd > c.price_iqd`);
+  // a previous price the card would strike (really charged, or a demo value on a demo row)
+  if (filters.dealsOnly) where.push(sql`c.was > 0`);
   return where;
 }
 
-/** The page statement: filtered, sorted and limited rows of c, then picture, rating and platform for those rows only. */
+/** The page statement: filtered, sorted and limited rows of c, then picture, rating, platform and facts for those rows only. */
 function pageStatement(scope: Scope, cardWhere: SQL[], ordering: Ordering, limit: number | null, now: number): SQL {
   return sql`${cardCtes(scope, now)},
 page AS (
@@ -329,7 +401,8 @@ page AS (
 )
 SELECT page.*, pl.slug AS platform_slug, pl.name AS platform_name,
   ${IMAGE_OF_PAGE_ROW} AS image,
-  ${RATING_OF_PAGE_ROW} AS rating
+  ${RATING_OF_PAGE_ROW} AS rating,
+  ${FACTS_OF_PAGE_ROW} AS facts
 FROM page
 LEFT JOIN platforms AS pl ON pl.id = page.platform_id
 ORDER BY ${orderBy(ordering, "page")}`;
@@ -357,14 +430,41 @@ type CardRow = {
   variant_count: number;
   st: number;
   pre: number;
-  avail: number;
+  /** 2 in stock · 1 coming soon · 0 sold out. */
+  tier: number;
+  /** previousPriceEvidence(): 2 really charged · 1 demo value on a demo row · 0 nothing to strike. */
+  was: number;
+  release_at: number | null;
+  released_on: string | null;
+  research_kind: string | null;
   platform_slug: string | null;
   platform_name: string | null;
   image: string | null;
   rating: string | null;
+  facts: string | null;
 };
 
 type ImageJson = { a: string | null; k: string | null; w: number | null; h: number | null; alt: L10n | null; i: number | null };
+
+/** FACTS_OF_PAGE_ROW as parsed: [slug, sort] platforms, [slug, sort, platform, platform sort, name] generations. */
+type FactsJson = { pl?: [string, number][] | null; fam?: [string, number, string, number, string | null][] | null; wide?: [string, number][] | null };
+
+/** The researched platforms (menu order) and the device families of a card, from its facts JSON. */
+export function cardFamilies(raw: string | null): { forPlatforms: string[]; families: DeviceFamily[] } {
+  const facts = parseJson<FactsJson>(raw) ?? {};
+  const platforms = (Array.isArray(facts.pl) ? facts.pl : []).filter((entry) => Array.isArray(entry) && typeof entry[0] === "string");
+  const forPlatforms = [...platforms].sort((a, b) => Number(a[1]) - Number(b[1]) || a[0].localeCompare(b[0])).map((entry) => entry[0]);
+  const families: DeviceFamily[] = [];
+  for (const entry of Array.isArray(facts.fam) ? facts.fam : []) {
+    if (!Array.isArray(entry) || typeof entry[0] !== "string" || typeof entry[2] !== "string") continue;
+    families.push({ generation: entry[0], generationSort: Number(entry[1]) || 0, platform: entry[2], platformSort: Number(entry[3]) || 0, generationName: typeof entry[4] === "string" ? entry[4] : null });
+  }
+  for (const entry of Array.isArray(facts.wide) ? facts.wide : []) {
+    if (!Array.isArray(entry) || typeof entry[0] !== "string") continue;
+    families.push({ generation: null, generationSort: 0, platform: entry[0], platformSort: Number(entry[1]) || 0 });
+  }
+  return { forPlatforms: [...new Set(forPlatforms)], families };
+}
 
 function parseJson<T>(text: string | null | undefined): T | null {
   if (typeof text !== "string" || text === "") return null;
@@ -377,17 +477,18 @@ function parseJson<T>(text: string | null | undefined): T | null {
 
 const l10nOf = (value: unknown): L10n | null => (typeof value === "string" ? parseJson<L10n>(value) : (value as L10n | null));
 
+/** The first picture JSON as an ImageRef, with its opaque-photo flag (card-facts.ts opaqueOf) when it is not a cut-out. */
 function imageRef(raw: string | null, fallbackAlt: string, locale: Locale): ImageRef {
   const image = parseJson<ImageJson>(raw);
   if (!image) return { artKey: null, mediaKey: null, alt: fallbackAlt, isIllustration: true };
   const mediaKey = image.k ?? null;
-  return {
+  return withOpaque({
     artKey: mediaKey ? null : (image.a ?? null),
     mediaKey,
     alt: pick(image.alt, locale) || fallbackAlt,
     isIllustration: image.i !== 0,
     ...(mediaKey && image.w && image.h ? { width: image.w, height: image.h } : {}),
-  };
+  });
 }
 
 function ratingOf(raw: string | null): RatingSummary | null {
@@ -398,10 +499,15 @@ function ratingOf(raw: string | null): RatingSummary | null {
 
 const STOCK_BY_RANK: readonly StockState[] = ["out_of_stock", "low_stock", "in_stock"];
 
-function toCard(row: CardRow, locale: Locale): ProductCardData {
+function toCard(row: CardRow, locale: Locale, now: number): ProductCardData {
   const name = pick(l10nOf(row.name), locale);
-  const compareAtIqd = row.compare_at_iqd !== null && row.compare_at_iqd > row.price_iqd ? row.compare_at_iqd : null;
+  const was = Number(row.was);
+  const compareAtIqd = was > 0 && row.compare_at_iqd !== null && row.compare_at_iqd > row.price_iqd ? row.compare_at_iqd : null;
   const preorder = row.pre === 1;
+  const isDemo = row.is_demo === 1;
+  const stock: StockState = preorder ? "preorder" : (STOCK_BY_RANK[shownStockRank(row.st, isDemo)] ?? "out_of_stock");
+  const isNew = !preorder && isNewProduct({ releasedOn: row.released_on, listedAt: Number(row.pub), isDemo, now });
+  const { forPlatforms, families } = cardFamilies(row.facts);
   return {
     id: row.id,
     slug: row.slug,
@@ -414,11 +520,17 @@ function toCard(row: CardRow, locale: Locale): ProductCardData {
     hasVariants: row.variant_count > 1,
     priceIqd: row.price_iqd,
     compareAtIqd,
-    stock: preorder ? "preorder" : (STOCK_BY_RANK[row.st] ?? "out_of_stock"),
-    badge: preorder ? "preorder" : compareAtIqd !== null ? "deal" : "new",
+    compareAtDemo: compareAtIqd !== null && was === 1,
+    stock,
+    // one badge: coming soon › a struck previous price › new; a sold-out card says «نفد» from its stock instead
+    badge: preorder ? "preorder" : stock === "out_of_stock" ? null : compareAtIqd !== null ? "deal" : isNew ? "new" : null,
+    isNew,
+    kindLabel: kindLabelOf({ kind: row.kind, researchKind: row.research_kind, families, forPlatforms, ownPlatform: row.platform_slug, ownPlatformName: row.platform_name }, locale),
+    forPlatforms,
+    releaseAt: preorder && row.release_at !== null ? Number(row.release_at) : null,
     image: imageRef(row.image, name, locale),
     rating: ratingOf(row.rating),
-    isDemo: row.is_demo === 1,
+    isDemo,
   };
 }
 
@@ -455,7 +567,7 @@ function fromBase64Url(value: string): string | null {
 
 /** Opaque cursor: the sort and the sort key of the last row of the page (base64url JSON). */
 function encodeCursor(sort: CardSort, row: CardRow): string {
-  const key = sort === "featured" ? [row.avail, row.pub, row.id] : sort === "newest" ? [row.pub, row.id] : [row.price_iqd, row.id];
+  const key = sort === "featured" ? [row.tier, row.pub, row.id] : sort === "newest" ? [row.pub, row.id] : [row.price_iqd, row.id];
   return toBase64Url(JSON.stringify([sort, ...key]));
 }
 
@@ -478,8 +590,8 @@ function decodeCursor(sort: CardSort, cursor: string): (number | string)[] {
 function afterCursor(sort: CardSort, values: (number | string)[]): SQL {
   switch (sort) {
     case "featured": {
-      const [avail, pub, id] = values;
-      return sql`(c.avail < ${avail} OR (c.avail = ${avail} AND c.pub < ${pub}) OR (c.avail = ${avail} AND c.pub = ${pub} AND c.id < ${id}))`;
+      const [tier, pub, id] = values;
+      return sql`(c.tier < ${tier} OR (c.tier = ${tier} AND c.pub < ${pub}) OR (c.tier = ${tier} AND c.pub = ${pub} AND c.id < ${id}))`;
     }
     case "newest": {
       const [pub, id] = values;
@@ -510,7 +622,7 @@ export async function getCardsByIds(db: Db, locale: Locale, ids: readonly string
   if (!Number.isSafeInteger(now) || now < 0) throw invalid({ now: "invalid" }, "catalog.getCardsByIds");
   const scope: Scope = { ctes: [], where: [sql`p.id IN (SELECT value FROM json_each(${JSON.stringify(unique)}))`] };
   const rows = await runPage(db, pageStatement(scope, [], "newest", null, now));
-  const byId = new Map(rows.map((row) => [row.id, toCard(row, locale)]));
+  const byId = new Map(rows.map((row) => [row.id, toCard(row, locale, now)]));
   return unique.map((id) => byId.get(id)).filter((card): card is ProductCardData => card !== undefined);
 }
 
@@ -534,7 +646,7 @@ export async function listCards(db: Db, locale: Locale, options: ListCardsOption
   const hasMore = rows.length > input.limit;
   const items = rows.slice(0, input.limit);
   return {
-    items: items.map((row) => toCard(row, locale)),
+    items: items.map((row) => toCard(row, locale, now)),
     total,
     nextCursor: hasMore && items.length > 0 ? encodeCursor(input.sort, items[items.length - 1]) : null,
   };
@@ -548,15 +660,16 @@ export async function getNewArrivals(db: Db, locale: Locale, options: ShelfOptio
 }
 
 /**
- * Genuine reductions only: the card variant's compare-at price is above its price (the pricing flow sets compare-at
- * only for a real previous price — schema/catalog.ts). In stock only, biggest saving (in percent) first.
+ * Previous prices the card strikes only: the card variant's compare-at is above its price AND backed — an applied
+ * price change set it (really charged), or it is a demo row's demo value (each card says which: `compareAtDemo`).
+ * In stock only, biggest saving (in percent) first.
  */
 export async function getDeals(db: Db, locale: Locale, options: ShelfOptions = {}): Promise<ProductCardData[]> {
   const input = parse(ShelfSchema, options);
   const now = input.now ?? Date.now();
   const filters: CardFilters = { platform: input.platform, dealsOnly: true, inStockOnly: true };
   const rows = await runPage(db, pageStatement(productScope(filters), cardFilters(filters), "saving", input.limit ?? 12, now));
-  return rows.map((row) => toCard(row, locale));
+  return rows.map((row) => toCard(row, locale, now));
 }
 
 type UsedRow = {

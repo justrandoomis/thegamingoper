@@ -39,7 +39,7 @@ import { auditEvents, inventoryLocations, orderItems, returnItems, returns, seri
 import { batchSql, expectChanged, expectThat, isDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, forbidden, invalid, notFound } from "~/server/errors";
 import { exitQuarantine, returnGoodsStatements, translateReturnGoodsError, type ReturnGoodsTarget } from "~/server/services/returns/receive.server";
-import { DAY_MS, assertLocationBranch, branchLimited, lineName, returnById, returnLocations } from "./shared.server";
+import { DAY_MS, assertLocationBranch, branchLimited, lineName, returnById, returnLocations, slaTargets } from "./shared.server";
 import { CONDITION_LIST, DECISION_LIST, SLA, decisionAction, type Condition, type Decision, type QuarantineRow } from "./types";
 
 export const INSPECT_ERROR_KEYS = ["item_inspected", "serial_mismatch", "quarantine_resolved", "no_suppliers"] as const;
@@ -260,10 +260,11 @@ export async function listQuarantine(
   const { sellable } = await returnLocations(db, actor);
   // An employee limited to a branch sees (and moves) the units waiting in that branch's quarantine.
   const visible = branchLimited(actor) ? rows.filter((row) => canAccessBranch(actor, locationById.get(where.get(row.id) ?? "")?.branchId ?? null)) : rows;
+  const { quarantineDays } = await slaTargets(db);
   return {
     rows: visible.map((row) => {
       const since = row.restockedAt ?? now;
-      const dueAt = since + SLA.quarantineDays * DAY_MS;
+      const dueAt = since + quarantineDays * DAY_MS;
       const locationId = where.get(row.id) ?? null;
       return {
         itemId: row.id,

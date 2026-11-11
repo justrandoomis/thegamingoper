@@ -2,11 +2,16 @@
  * Fly to cart (loaded on demand through ./extras; the public entry is `flyToCart` in ./lazy). DESIGN.md §7.2:
  *
  *  1. The caller has already updated the cart count, the cart state and the aria-live message (state first).
- *  2. A 22px red clay bead (`.fly`) leaves the product image and travels a quadratic arc — control point halfway
- *     across, 70px above the higher end — to the cart bead, shrinking to .55. 420 ms + 0.3 ms per px, at most 600 ms.
+ *  2. A 22px red bead (`.fly`, the cart bead's look: Design System v2 §5.2) leaves the product image and travels a
+ *     quadratic arc — control point halfway across, 70px above the higher end — to the cart bead, shrinking to .55.
+ *     420 ms + 0.3 ms per px, at most 600 ms.
  *  3. The cart bead receives it with a squish: scale(1.4, .68) → (.88, 1.16) → 1 over 340 ms.
  *  4. Rapid taps each get a bead, at most three in flight; further taps go straight to the count (the bead squishes).
  *  5. On failure (`revert()` on the returned handle) the bead returns along the same arc to where it came from.
+ *
+ * The landing point is the cart bead (`[data-cart-badge]` inside the target; the target itself while no bead is
+ * drawn). The count changes in the same handler as the tap, so the bead may only be drawn — or have moved, a wider
+ * number — once the page has rendered: the flight aims again in each of its first two frames, keeping its progress.
  *
  * The source is never moved. One WAAPI animation per flight (transform keyframes along the arc) — compositor only.
  * `options.image` flies a copy of the product picture instead of the bead (the brief's "thumbnail becomes an icon").
@@ -18,7 +23,10 @@ import { fly as tokens } from "./tokens";
 export type FlyOptions = {
   /** Fly a picture instead of the bead: a URL, an element to copy (img / svg / canvas / picture), or true for the source's own picture. */
   image?: string | Element | true;
-  /** Where to land. Default: the first visible element marked `data-cart-target` (its `[data-cart-badge]` is the bead). */
+  /**
+   * Where to land. Default: the first on-screen element marked `data-cart-target` (its `[data-cart-badge]` is the bead);
+   * when none is drawn at the tap, the engine looks once more in the next task (the bead may come with the new count).
+   */
   target?: Element | null;
   /** Runs when the bead lands — or straight away when no flight is played (reduced motion, no target, cap reached). */
   onArrive?: () => void;
@@ -140,26 +148,29 @@ export function fly(source: Element, target: Element, options: FlyOptions = {}):
   const end = centreOf(to);
   const duration = flightMs(Math.hypot(end.x - start.x, end.y - start.y));
   const element = document.createElement("i");
-  let fromScale = 1;
   if (options.image) {
     // A picture puck: starts at the source's size and shrinks to the bead's.
     const side = Math.max(Math.min(from.width, from.height), tokens.bead);
     element.className = "tt-fly tt-fly--picture";
     element.style.cssText = `left:${(start.x - side / 2).toFixed(1)}px;top:${(start.y - side / 2).toFixed(1)}px;width:${side}px;height:${side}px`;
     element.appendChild(pictureOf(source, options.image));
-    fromScale = 1;
-    const endScale = (tokens.bead * tokens.endScale) / side;
-    return launch(element, arcKeyframes(start, end, fromScale, endScale), duration, target, options);
+    return launch(element, { start, end, fromScale: 1, toScale: (tokens.bead * tokens.endScale) / side }, duration, target, options);
   }
-  // DESIGN.md's bead: 22px, red clay, centred on the start point (the `.fly` class carries the look).
+  // The bead: 22px, centred on the start point (the `.fly` class carries the look).
   element.className = "fly tt-fly";
   // lint-design: allow physical — viewport pixel coordinates of a fixed flying bead (client rects are physical in RTL too)
   element.style.left = `${start.x.toFixed(1)}px`;
   element.style.top = `${start.y.toFixed(1)}px`;
-  return launch(element, arcKeyframes(start, end, fromScale, tokens.endScale), duration, target, options);
+  return launch(element, { start, end, fromScale: 1, toScale: tokens.endScale }, duration, target, options);
 }
 
-function launch(element: HTMLElement, keyframes: Keyframe[], duration: number, target: Element, options: FlyOptions): FlyHandle {
+type Arc = { start: Point; end: Point; fromScale: number; toScale: number };
+
+/** Frames in which a flight looks for the cart bead again (see the file header). */
+const AIM_FRAMES = 2;
+
+function launch(element: HTMLElement, arc: Arc, duration: number, target: Element, options: FlyOptions): FlyHandle {
+  let keyframes = arcKeyframes(arc.start, arc.end, arc.fromScale, arc.toScale);
   flightLayer().appendChild(element);
   airborne++;
   const animation = element.animate(keyframes, { duration, easing: tokens.easing, fill: "forwards" });
@@ -173,6 +184,21 @@ function launch(element: HTMLElement, keyframes: Keyframe[], duration: number, t
     if (!returning) receive(target, true, options.onArrive);
   };
   animation.finished.then(land, land);
+  let aimedAt = arc.end;
+  let aims = 0;
+  const aim = () => {
+    if (landed || returning) return;
+    const rect = beadOf(target).getBoundingClientRect();
+    const now = centreOf(rect);
+    if (onScreen(rect) && Math.hypot(now.x - aimedAt.x, now.y - aimedAt.y) >= 1) {
+      // Same start, same progress: early in the flight the bead is a few px along the arc, so the turn is invisible.
+      aimedAt = now;
+      keyframes = arcKeyframes(arc.start, now, arc.fromScale, arc.toScale);
+      (animation.effect as KeyframeEffect | null)?.setKeyframes(keyframes);
+    }
+    if (++aims < AIM_FRAMES) requestAnimationFrame(aim);
+  };
+  requestAnimationFrame(aim);
   // Safety net: animations do not advance in a hidden tab, but the cart must still be told and the bead removed.
   const timer = setTimeout(() => {
     if (!landed) animation.finish();

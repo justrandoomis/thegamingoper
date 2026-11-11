@@ -45,6 +45,7 @@ import { fiscalPeriodOf } from "~/server/db/journal.server";
 import { costCenters, expenses, journalEntries, type Expense, type SystemAccountKey } from "~/server/db/schema";
 import { expectChanged, expectThat, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, notFound } from "~/server/errors";
+import { getSetting } from "~/server/settings.server";
 import { journalStatements, mapPostingError, postedBy } from "./post.server";
 import { chartOfAccounts, isLockedPeriod, openPeriodGuard, systemRoots, type ChartAccount } from "./reports.server";
 
@@ -87,8 +88,16 @@ export const EXPENSE_ERROR_KEYS = [
   "idempotency_mismatch",
 ] as const;
 
-/** Above this amount the person who recorded an expense cannot approve it (a constant until settings 22 owns it). */
+/**
+ * Above this amount the person who recorded an expense cannot approve it — the DEFAULT of the setting
+ * "finance.expense_second_approval_iqd" (admin 22), which the services read (expenseApprovalLimit).
+ */
 export const EXPENSE_SECOND_APPROVAL_ABOVE_IQD = 500_000;
+
+/** The limit in force: the setting "finance.expense_second_approval_iqd" (EXPENSE_SECOND_APPROVAL_ABOVE_IQD until changed). */
+export function expenseApprovalLimit(db: Db): Promise<number> {
+  return getSetting(db, "finance.expense_second_approval_iqd");
+}
 /** What one person records and approves alone counts together over this window against the limit. */
 export const SELF_APPROVAL_WINDOW_MS = 24 * 60 * 60 * 1000;
 /** The largest single expense the form accepts (1 bn IQD). */
@@ -158,8 +167,8 @@ export async function selfApprovedRecentIqd(db: Db, employeeId: string | null, n
  * Whether `approverId` must leave this draft to someone else: they recorded it, and its amount together with what
  * they recorded and approved alone in the last 24 hours (`recentSelfIqd`) is above the limit.
  */
-export function needsOtherApprover(expense: Pick<Expense, "amountIqd" | "createdBy">, approverId: string | null, recentSelfIqd: number): boolean {
-  return Boolean(approverId) && expense.createdBy === approverId && expense.amountIqd + recentSelfIqd > EXPENSE_SECOND_APPROVAL_ABOVE_IQD;
+export function needsOtherApprover(expense: Pick<Expense, "amountIqd" | "createdBy">, approverId: string | null, recentSelfIqd: number, limitIqd: number = EXPENSE_SECOND_APPROVAL_ABOVE_IQD): boolean {
+  return Boolean(approverId) && expense.createdBy === approverId && expense.amountIqd + recentSelfIqd > limitIqd;
 }
 
 async function loadExpense(db: Db, expenseId: string): Promise<Expense> {
@@ -253,7 +262,8 @@ export async function approveExpense(db: Db, actor: Actor, raw: { expenseId: str
   if (expense.status !== "draft") throw new AppError("expense_not_draft", 409);
   const me = postedBy(actor);
   const selfApproval = Boolean(me) && expense.createdBy === me;
-  if (selfApproval && needsOtherApprover(expense, me, await selfApprovedRecentIqd(db, me, now))) throw new AppError("expense_self_approval", 403);
+  const limitIqd = await expenseApprovalLimit(db);
+  if (selfApproval && needsOtherApprover(expense, me, await selfApprovedRecentIqd(db, me, now), limitIqd)) throw new AppError("expense_self_approval", 403);
 
   const chart = await chartOfAccounts(db);
   if (!expenseAccounts(chart).some((account) => account.id === expense.accountId)) throw new AppError("expense_account_invalid", 409);
@@ -278,7 +288,7 @@ export async function approveExpense(db: Db, actor: Actor, raw: { expenseId: str
       ? [
           expectThat(
             db,
-            sql`(SELECT coalesce(sum(amount_iqd), 0) FROM expenses WHERE status = 'posted' AND created_by = ${me} AND approved_by = ${me} AND approved_at > ${now - SELF_APPROVAL_WINDOW_MS}) <= ${EXPENSE_SECOND_APPROVAL_ABOVE_IQD}`,
+            sql`(SELECT coalesce(sum(amount_iqd), 0) FROM expenses WHERE status = 'posted' AND created_by = ${me} AND approved_by = ${me} AND approved_at > ${now - SELF_APPROVAL_WINDOW_MS}) <= ${limitIqd}`,
             { code: "EXPENSE_SELF_LIMIT", detail: expense.id },
           ),
         ]

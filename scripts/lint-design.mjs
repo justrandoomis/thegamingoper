@@ -1,35 +1,52 @@
 #!/usr/bin/env node
 /**
- * Design lint — the checkable rules of docs/DESIGN.md §6.6 (and §5.5, §13) over app/**.
+ * Design lint — the checkable rules of docs/DESIGN.md §6.6 (Design System v2; also §5.5, §13) over app/**.
  *
  *   node scripts/lint-design.mjs                 report everything; exit 1 only if a DESIGN-SYSTEM file breaks a rule
- *   node scripts/lint-design.mjs --strict        exit 1 if ANY file breaks a rule (CI)
+ *   node scripts/lint-design.mjs --strict        exit 1 if ANY file breaks a rule (CI after the v2 migration)
  *   node scripts/lint-design.mjs --json          machine-readable findings
  *   node scripts/lint-design.mjs app/routes/x    only these files / folders
  *
  * Design-system files: app/app.css, app/styles/**, app/ui/**, the /design-system route and its folder. Every other
- * file is reported under "other owners" and, without --strict, never changes the exit code.
+ * file is reported under "other owners" and, without --strict, never changes the exit code. The rules v2 added
+ * (marked "v2" below) fail the exit code only in app/styles/** and app/app.css until the kit and the page areas have
+ * migrated (docs/DESIGN.md §14, stage 4); in app/ui/** and /design-system they are reported under "v2 migration".
+ * The admin (app/routes/admin/**, app/styles/admin.css, any rule under [data-density="admin"]) keeps the Lens & Clay
+ * 1.0 materials and is exempt from the v2 material rules.
  *
  * Rules
- *   raw-colour          hex / rgb() / hsl() / oklch() … literals outside app/styles/tokens.css (§5 "components never
- *                       contain a hex value", §6.6.8)
+ *   raw-colour          hex / rgb() / hsl() / oklch() … literals outside app/styles/tokens.css
  *   physical            left/right properties, physical margin/padding/border/radius, text-align:left|right, float,
  *                       physical Tailwind utilities (ml- pr- left- text-left rounded-l- border-r …), physical keys in
- *                       inline styles (§6.6.6, §13)
- *   backdrop-filter     anywhere but app/styles/materials.css — use <Glass> (§6.6.1)
- *   glass-mask          mask / clip-path on a rule that has backdrop-filter (§6.6.3)
- *   glass-in-list       a live <Glass> inside a .map() callback (§6.6.2 — lists never carry live glass)
- *   filter              CSS filter, SVG <filter>/<fe…>, Tailwind filter utilities (§6.6.4)
- *   animated-property   transition/animation of anything but transform and opacity, `transition: all`, Tailwind
- *                       transition / transition-all / -colors / -shadow (§6.6.5)
- *   letter-spacing      any non-zero letter-spacing, Tailwind tracking-*, letterSpacing (§5.5, §6.6.7)
- *   red                 --red / --red-face outside .key--red .clay--red .bead .fly and the logo; red surfaces via
- *                       utilities (§0 law 4, §6.6.9)
- *   gel                 --gel-* outside .stage__* and .led (assigning `--gel: var(--gel-x)` to a subtree is fine) (§6.6.10)
- *   img-size            <img> without width and height (§6.6.11)
- *   view-transition     view-transition-name set statically outside app/motion (§6.6.12)
- *   commit-count        more than one <Key variant="commit"> (or raw .key--red) in one route module (§6.1 "one per view")
- *   i18n-keys           a "ui" / "ui-*" namespace whose ar / en / ckb keys differ (components read these everywhere)
+ *                       inline styles
+ *   backdrop-filter     anywhere but app/styles/materials.css — use <Glass>
+ *   glass-mask          mask / clip-path on a rule that has backdrop-filter
+ *   glass-in-list       a live <Glass> inside a .map() callback (lists never carry live glass)
+ *   filter              CSS filter (images included: no drop-shadow on products), SVG <filter>/<fe…>, Tailwind
+ *                       filter utilities
+ *   animated-property   transition/animation of anything but transform, translate, scale, rotate and opacity
+ *   letter-spacing      any non-zero letter-spacing, Tailwind tracking-*, letterSpacing
+ *   red                 --red / --red-hover / --hero (and 1.0 --red-face) outside the primary key, the card add button,
+ *                       the bead, the fly-to-cart bead, the logo, the hero and wallet bands and the current step;
+ *                       red surfaces via utilities
+ *   gel                 --gel-* outside the dark cabinet light layers (.band__light, .ptile__light); assigning
+ *                       `--gel: var(--gel-x)` to a subtree is fine
+ *   img-size            <img> without width and height
+ *   view-transition     view-transition-name set statically outside app/motion
+ *   i18n-keys           a "ui" / "ui-*" namespace whose ar / en / ckb keys differ
+ *   v2 legacy-token     a Lens & Clay 1.0 material token (--clay-*, --red-face …, --sel-*, --well, --well-shadow,
+ *                       --glass-bg/-static/-rim, --on-glass-2, --e-1…--e-5, --shade …) or its utility (bg-well,
+ *                       shadow-e1…e5, bg-sel, text-on-sel, text-on-glass-2) outside the admin
+ *   v2 type             font-weight 500 (Plex 500 is retired; also `font-medium`), a non-integer font size
+ *   v2 radius           a border-radius that is not a --r-* token (the checkbox's 6px is --r-check)
+ *   v2 shadow           a box-shadow written with lengths instead of an elevation token (the vocabulary is
+ *                       --clay-cap/--clay-cast, --e-bar, --e-float, --e-overlay, --e-art, --rim)
+ *   v2 blend            mix-blend-mode outside the opaque-photo rule ([data-transparent="false"] / [data-opaque])
+ *   v2 plat             a platform surface (--plat*) outside the platform tile (.ptile) and the showcase band (.band)
+ *   v2 primary-count    more than one primary key (<Key variant="primary"|"commit"> or a raw .key--primary/.key--red)
+ *                       in one route module — one red primary per view; card add buttons are neutral
+ *   v2 deprecated       the 1.0 kit names that stage 4 deletes: Socket, PlatformBank, StageTag, PlatformGlyph,
+ *                       variant="commit" | "ink" | "quiet", <Glass variant="static">
  *
  * Escape hatch (always give the reason): a comment `lint-design: allow <rule>[, <rule>] — why` disables those rules
  * on its own line and the next one; within the first three lines of a file it applies to the whole file.
@@ -48,7 +65,13 @@ const JSON_OUT = args.includes("--json");
 const targets = args.filter((a) => !a.startsWith("--"));
 
 const OWNED = [/^app\/app\.css$/, /^app\/styles\//, /^app\/ui\//, /^app\/routes\/storefront\/content\/design-system(\.tsx|\/)/];
+const SYSTEM = [/^app\/app\.css$/, /^app\/styles\//];
 const isOwned = (rel) => OWNED.some((re) => re.test(rel));
+const isSystem = (rel) => SYSTEM.some((re) => re.test(rel));
+/** The admin keeps the 1.0 materials (DESIGN.md §10). */
+const isAdmin = (rel) => rel.startsWith("app/routes/admin/") || rel === "app/styles/admin.css";
+/** Rules added by Design System v2: they fail only in app/styles until the kit and the areas have migrated. */
+const MIGRATION = new Set(["legacy-token", "type", "radius", "shadow", "blend", "plat", "primary-count", "deprecated"]);
 
 /* ───────────────────────────── files ───────────────────────────── */
 function walk(dir, out = []) {
@@ -90,9 +113,20 @@ function makeReporter(file, raw) {
   });
   return (rule, line, message) => {
     if (fileWide.has(rule) || lineAllow.get(line)?.has(rule)) return;
-    findings.push({ file: r, line, rule, message, owned: isOwned(r) });
+    const migration = MIGRATION.has(rule) && isOwned(r) && !isSystem(r);
+    findings.push({ file: r, line, rule, message, owned: isOwned(r) && !migration, migration });
   };
 }
+
+/* ───────────────────────────── shared vocabularies ───────────────────────────── */
+const LEGACY_TOKEN = /var\(--(clay-face|clay-wall|clay-lip|clay-belly|red-face|red-wall|red-lip|red-belly|sel-face|sel-wall|on-sel|sel-in|ink-lip|ink-belly|well|well-shadow|glass-bg|glass-static|glass-rim|on-glass-2|e-[1-5]|e-4-up|shade|lumen|halo|pool|spot)\)/;
+const LEGACY_UTILITY = /^(bg-well|shadow-e[1-5]|shadow-e4-up|shadow-well|shadow-wall|bg-sel|text-on-sel|text-on-glass-2|font-kufam)$/;
+const RED_TOKEN = /var\(--(red|red-hover|hero|red-face)\)/;
+/** Where brand red may paint (DESIGN.md §6.6): primary key, card add button, bead, fly bead, logo, hero and wallet
+ *  bands, the current step's disc; the admin's 1.0 commit key and bead. */
+const RED_PLACES = /(\.key--primary|\.key--red|\.cadd|\.socket|\.bead|\.fly|\.logo|\[data-logo|\.text-logo|\.band--hero|\.band--wallet|\.step\b|\.clay--red|\[data-density="admin"\])/;
+const GEL_PLACES = /(\.band__light|\.ptile__light|\[data-gel|\[data-density="admin"\])/;
+const PLAT_PLACES = /(\.ptile|\.band\b|\.band--|\[data-gel)/;
 
 /* ───────────────────────────── CSS ───────────────────────────── */
 function blankComments(text) {
@@ -138,6 +172,12 @@ function walkCss(text, onDecl, onBlock) {
     }
   }
 }
+/** The value with every var(…) (nested included) removed: what is left is literal. */
+function withoutVars(value) {
+  let out = value;
+  for (let guard = 0; guard < 8 && /var\(/.test(out); guard++) out = out.replace(/var\([^()]*\)/g, "");
+  return out;
+}
 
 const COLOUR_FN = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(\s*[-+.\d]/i;
 const HEX = /(^|[^\w&-])#[0-9a-f]{3,8}\b/i;
@@ -150,14 +190,17 @@ function lintCss(file, raw) {
   const report = makeReporter(file, raw);
   const text = blankComments(raw);
   const isTokens = r === "app/styles/tokens.css";
+  const isTheme = r === "app/styles/theme.css";
   const isMaterials = r === "app/styles/materials.css";
   const inMotion = r.startsWith("app/motion/");
+  const adminFile = isAdmin(r);
 
   walkCss(
     text,
     (prop, value, index, selectors) => {
       const line = lineOf(text, index);
       const sel = selectors.join(" ");
+      const adminRule = adminFile || /\[data-density="admin"\]/.test(sel);
       // raw colours (custom-property definitions included) — tokens.css is the only place a literal may be written
       if (!isTokens && (HEX.test(value) || COLOUR_FN.test(value))) report("raw-colour", line, `${prop}: ${value.slice(0, 60)} — use a token`);
       // physical properties
@@ -171,8 +214,8 @@ function lintCss(file, raw) {
       }
       // backdrop-filter only in the glass rule
       if (/^(-webkit-)?backdrop-filter$/.test(prop) && value !== "none" && !isMaterials) report("backdrop-filter", line, "backdrop-filter outside materials.css — use <Glass>");
-      // CSS filter
-      if (prop === "filter" && value !== "none" && !inMotion) report("filter", line, `filter: ${value.slice(0, 40)} — no CSS filter in component styles`);
+      // CSS filter (images included: no drop-shadow, no brightness on products)
+      if (prop === "filter" && value !== "none" && !inMotion) report("filter", line, `filter: ${value.slice(0, 40)} — no CSS filter in component styles or on images`);
       // letter-spacing
       if (prop === "letter-spacing" && !/^(0|0px|0em|normal)$/.test(value)) report("letter-spacing", line, `letter-spacing: ${value}`);
       // motion: transform and opacity only
@@ -189,14 +232,32 @@ function lintCss(file, raw) {
       }
       // view-transition-name set statically
       if (prop === "view-transition-name" && value !== "none" && !inMotion) report("view-transition", line, "view-transition-name in a stylesheet — set it at tap time (<SharedElement>)");
-      // red
-      if (/var\(--red(-face)?\)/.test(value) && !/(\.key--red|\.clay--red|\.bead|\.fly|\.logo|\[data-logo|\.text-logo)/.test(sel) && !isTokens) {
-        report("red", line, `${prop} uses brand red in "${sel.slice(0, 60)}" — red is the commit key, the cart bead and the logo only`);
+      // brand red: only where DESIGN.md §6.6 lets it paint
+      if (RED_TOKEN.test(value) && !isTokens && !RED_PLACES.test(sel) && !(isTheme && prop === "--color-logo")) {
+        report("red", line, `${prop} uses brand red in "${sel.slice(0, 60)}" — red is the primary key, the bead, the logo and the hero / wallet bands only`);
       }
-      // gel
+      // platform light: only the dark cabinets' light layers read it
       if (/--gel-[a-z]+|var\(--gel\b/.test(value) && !isTokens) {
         const assignment = prop === "--gel";
-        if (!assignment && !/(\.stage__|\.led\b)/.test(sel)) report("gel", line, `platform light in "${sel.slice(0, 60)}" — --gel-* is read only by .stage__* and .led`);
+        if (!assignment && !GEL_PLACES.test(sel)) report("gel", line, `platform light in "${sel.slice(0, 60)}" — --gel-* is read only by the cabinet light layers (.band__light, .ptile__light)`);
+      }
+      // ── v2 rules ──
+      // the 1.0 material tokens belong to the admin
+      if (LEGACY_TOKEN.test(value) && !isTokens && !isTheme && !adminRule) {
+        report("legacy-token", line, `${prop} reads a Lens & Clay 1.0 token (${LEGACY_TOKEN.exec(value)[0]}) — admin only; use the v2 tokens (DESIGN.md §5)`);
+      }
+      if (!adminRule && !isTokens) {
+        // type: Plex 500 is retired; sizes are integers
+        if ((prop === "font-weight" && /^500$/.test(value)) || (prop === "font" && /^500\s/.test(value))) report("type", line, `${prop}: ${value.slice(0, 40)} — Plex 500 is retired (400 or 600)`);
+        if ((prop === "font" || prop === "font-size") && /(^|[\s/(])\d+\.\d+px/.test(withoutVars(value))) report("type", line, `${prop}: ${value.slice(0, 40)} — integer font sizes only (DESIGN.md §5.5)`);
+        // radius: tokens only
+        if (/^border(-[a-z]+)*-radius$/.test(prop) && /\d*\.?\d+(px|%|em|rem)\b/.test(withoutVars(value).replace(/\b0(px|%|em|rem)?\b/g, ""))) report("radius", line, `${prop}: ${value} — radius only through the --r-* tokens`);
+        // shadow: the elevation vocabulary
+        if ((prop === "box-shadow" || /^--[\w-]*(shadow|cast)$/.test(prop)) && /\d*\.?\d+px/.test(withoutVars(value))) report("shadow", line, `${prop}: ${value.slice(0, 50)} — use an elevation token (--clay-cap, --clay-cast, --e-bar, --e-float, --e-overlay, --e-art, --rim)`);
+        // blend: only the interim opaque-photo rule
+        if (prop === "mix-blend-mode" && value !== "normal" && !/(\[data-opaque\]|\[data-transparent="false"\])/.test(sel)) report("blend", line, `mix-blend-mode in "${sel.slice(0, 60)}" — only the opaque-photo rule may blend`);
+        // platform surfaces: tiles and bands only
+        if (/var\(--plat(-[a-z]+)*\)/.test(value) && prop !== "--plat" && prop !== "--plat-deep" && !PLAT_PLACES.test(sel)) report("plat", line, `${prop} paints a platform surface in "${sel.slice(0, 60)}" — platform colour is a surface only on .ptile and .band; elsewhere an 8px dot (--dot)`);
       }
     },
     (block) => {
@@ -313,6 +374,7 @@ function lintTs(file, raw) {
   const report = makeReporter(file, raw);
   const { code, strings } = scanTs(raw);
   const inMotion = r.startsWith("app/motion/");
+  const adminFile = isAdmin(r);
   const isTsx = r.endsWith(".tsx");
 
   // class strings: className="…", className={"…"}, className={`…`}, and string arguments of cx(…)
@@ -331,6 +393,14 @@ function lintTs(file, raw) {
       if (/^tracking-/.test(token)) report("letter-spacing", line, `utility "${token}"`);
       if (/^(bg|border|ring|outline|fill|stroke|from|to|via|shadow|divide)-logo\b/.test(token)) report("red", line, `utility "${token}" — brand red is never a surface`);
       if (/-\[(#[0-9a-f]{3,8}|(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\()/i.test(token)) report("raw-colour", line, `arbitrary colour "${token}" — use a token`);
+      if (!adminFile) {
+        if (LEGACY_UTILITY.test(token)) report("legacy-token", line, `utility "${token}" is a Lens & Clay 1.0 material — admin only (v2: bg-niche-2, border border-line, bg-ink text-paper, shadow-overlay …)`);
+        if (token === "font-medium") report("type", line, `utility "font-medium" — Plex 500 is retired (font-normal or font-semibold)`);
+        if (/^text-\[\d+\.\d+px\]$/.test(token)) report("type", line, `utility "${token}" — integer font sizes only, from the type roles`);
+        if (/^rounded(-[a-z]+)?-\[/.test(token)) report("radius", line, `utility "${token}" — radius only through the --r-* tokens (rounded-sm, -lg, -xl, -full …)`);
+        if (/^shadow-\[/.test(token)) report("shadow", line, `utility "${token}" — use an elevation token (shadow-bar, -float, -overlay, -art)`);
+        if (/^mix-blend-/.test(token)) report("blend", line, `utility "${token}" — only the opaque-photo rule may blend`);
+      }
     }
   }
 
@@ -342,8 +412,9 @@ function lintTs(file, raw) {
     if ((paintCtx && /^\s*(#[0-9a-f]{3,8}|(rgba?|hsla?|oklch|oklab|hwb|lab|lch)\(\s*[-.\d])/i.test(val)) || /(fill|stroke|stop-color|flood-color|color|background)\s*[=:]\s*\\?["']?\s*#[0-9a-f]{3,8}\b/i.test(val) || /(fill|stroke|stop-color|color|background)\s*[=:]\s*\\?["']?\s*(rgba?|hsla?)\(\s*\d/i.test(val)) {
       report("raw-colour", lineOf(raw, s.index), `colour literal "${val.slice(0, 50)}" — use a token`);
     }
-    if (/var\(--red(-face)?\)/.test(val)) report("red", lineOf(raw, s.index), "brand red referenced from code — use <Key variant=\"commit\">, the bead or the logo");
-    if (/rgb\(var\(--gel/.test(val)) report("gel", lineOf(raw, s.index), "platform light painted from code — only .stage__* and .led read --gel");
+    if (RED_TOKEN.test(val)) report("red", lineOf(raw, s.index), "brand red referenced from code — use <Key variant=\"primary\">, the bead, the logo or a showcase band");
+    if (/rgb\(var\(--gel/.test(val)) report("gel", lineOf(raw, s.index), "platform light painted from code — only the cabinet light layers read --gel");
+    if (!adminFile && LEGACY_TOKEN.test(val)) report("legacy-token", lineOf(raw, s.index), `${LEGACY_TOKEN.exec(val)[0]} is a Lens & Clay 1.0 token — admin only`);
   }
 
   // inline styles and DOM style writes
@@ -358,6 +429,7 @@ function lintTs(file, raw) {
     if (/\b(WebkitBackdropFilter|backdropFilter)\s*:/.test(body)) report("backdrop-filter", lineOf(raw, base), "backdropFilter in an inline style — use <Glass>");
     if (/(^|[\s,{])filter\s*:/.test(body)) report("filter", lineOf(raw, base), "filter in an inline style");
     if (/\bviewTransitionName\s*:/.test(body) && !inMotion) report("view-transition", lineOf(raw, base), "viewTransitionName set statically — use <SharedElement>");
+    if (/\bmixBlendMode\s*:/.test(body) && !adminFile) report("blend", lineOf(raw, base), "mixBlendMode in an inline style — only the opaque-photo rule may blend");
   }
   for (const m of code.matchAll(/\.style\.(left|right|marginLeft|marginRight|paddingLeft|paddingRight)\s*=/g)) {
     report("physical", lineOf(raw, m.index), `element.style.${m[1]} — logical properties only (the flying bead's pixel start is the one documented exception)`);
@@ -379,15 +451,27 @@ function lintTs(file, raw) {
       const g = /<Glass\b([^>]*)>/.exec(window);
       if (g && !/variant\s*=\s*["'](static|solid)["']/.test(g[1])) report("glass-in-list", lineOf(raw, m.index + g.index), "live <Glass> inside a list — lists never carry live glass");
     }
+    // the 1.0 kit names that stage 4 deletes (the kit keeps them working as aliases until then)
+    if (!adminFile && !r.startsWith("app/ui/")) {
+      for (const m of code.matchAll(/import\s*\{([^}]*)\}\s*from\s*["']~\/ui\/(Socket|PlatformBank|Stage|PlatformLed)["']/g)) {
+        for (const name of m[1].split(",").map((s) => s.trim().split(/\s+as\s+/)[0])) {
+          if (["Socket", "PlatformBank", "StageTag", "PlatformGlyph"].includes(name)) report("deprecated", lineOf(raw, m.index), `${name} is a 1.0 kit name — stage 4 deletes it (DESIGN.md §9 "Deprecated")`);
+        }
+      }
+      for (const m of code.matchAll(/<(Key|IconKey)\b[^>]*\bvariant\s*=\s*["'](commit|ink|quiet)["']/g)) {
+        report("deprecated", lineOf(raw, m.index), `<${m[1]} variant="${m[2]}"> — the v2 names are primary / secondary / ghost`);
+      }
+      for (const m of code.matchAll(/<Glass\b[^>]*\bvariant\s*=\s*["']static["']/g)) report("deprecated", lineOf(raw, m.index), `<Glass variant="static"> is retired — panels are opaque; glass is for thin fixed bars`);
+    }
   }
 
-  // one commit key per view (route modules)
-  if (r.startsWith("app/routes/") && isTsx) {
-    const commits = [...code.matchAll(/<Key\b[^>]*\bvariant\s*=\s*["']commit["']/g)].map((m) => m.index);
-    for (const s of classSpans) if (classTokens(s.value).includes("key--red")) commits.push(s.index);
-    if (commits.length > 1) {
-      commits.sort((a, b) => a - b);
-      report("commit-count", lineOf(raw, commits[1]), `${commits.length} commit keys in one route module — a view has exactly one red key (cards' socket keys excepted)`);
+  // one red primary per view (route modules); card add buttons are neutral
+  if (r.startsWith("app/routes/") && isTsx && !adminFile) {
+    const primaries = [...code.matchAll(/<Key\b[^>]*\bvariant\s*=\s*["'](commit|primary)["']/g)].map((m) => m.index);
+    for (const s of classSpans) if (classTokens(s.value).some((t) => t === "key--red" || t === "key--primary")) primaries.push(s.index);
+    if (primaries.length > 1) {
+      primaries.sort((a, b) => a - b);
+      report("primary-count", lineOf(raw, primaries[1]), `${primaries.length} primary keys in one route module — a view has exactly one red primary`);
     }
   }
 }
@@ -431,7 +515,8 @@ for (const file of files) {
 }
 
 const own = findings.filter((f) => f.owned);
-const others = findings.filter((f) => !f.owned);
+const migration = findings.filter((f) => f.migration);
+const others = findings.filter((f) => !f.owned && !f.migration);
 if (JSON_OUT) {
   console.log(JSON.stringify({ files: files.length, findings }, null, 2));
 } else {
@@ -441,6 +526,8 @@ if (JSON_OUT) {
   console.log(`lint-design: ${files.length} files`);
   console.log(`design-system files: ${own.length} finding(s)`);
   print(own);
+  console.log(`v2 migration (kit and /design-system): ${migration.length} finding(s)${STRICT ? "" : " (reported only; --strict makes them fail)"}`);
+  print(migration);
   console.log(`other owners: ${others.length} finding(s)${STRICT ? "" : " (reported only; --strict makes them fail)"}`);
   print(others);
   const byRule = {};

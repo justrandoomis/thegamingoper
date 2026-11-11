@@ -1,0 +1,274 @@
+/*
+ * Admin module 07 (customers) — the few pieces the design system does not have yet. Tokens only, logical properties
+ * only, components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; status = words with a dot; numbers tabular at the inline end.
+ */
+@layer components {
+  /* ── outlined fact tags (labels, demo, segment) ── */
+  .cus-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+
+  /* ── facts (definition lists) ── */
+  .cus-facts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .cus-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .cus-facts dt {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .cus-facts dd {
+    font: var(--type-body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── a page with a side column from 1024px ── */
+  .cus-layout {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .cus-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+      align-items: start;
+    }
+  }
+  .cus-side {
+    display: grid;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  .cus-main {
+    display: grid;
+    gap: var(--s-6);
+    min-inline-size: 0;
+  }
+
+  /* ── a row of action keys that wraps ── */
+  .cus-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+
+  /* ── flat KPI tiles: paper with a hairline, caption label, the figure ── */
+  .cus-kpis {
+    display: grid;
+    gap: var(--s-2);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 48rem) {
+    .cus-kpis {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .cus-kpi {
+    display: grid;
+    gap: 2px;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+
+  /* ── phone cards in place of a dense table (< 768px) ── */
+  .cus-cards {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .cus-card {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    min-inline-size: 0;
+  }
+  a.cus-card:hover {
+    background: var(--niche);
+  }
+  .cus-card__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+
+  /* ── flat rows between hairlines (orders, tickets, warranties on the profile) ── */
+  .cus-rows {
+    display: grid;
+    border-block-start: 1px solid var(--line);
+  }
+  .cus-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+    padding-block: var(--s-2);
+    border-block-end: 1px solid var(--line);
+    min-inline-size: 0;
+  }
+  .cus-row > * {
+    min-inline-size: 0;
+  }
+
+  /* ── history (audit timeline, §10): a hairline with dots; solid = a person, hollow = automation or the customer ── */
+  .cus-timeline {
+    display: grid;
+    gap: var(--s-3);
+    padding-inline-start: var(--s-4);
+    border-inline-start: 1px solid var(--line-strong);
+  }
+  .cus-timeline > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .cus-timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 7px;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .cus-timeline > li[data-actor="system"]::before,
+  .cus-timeline > li[data-actor="guest"]::before,
+  .cus-timeline > li[data-actor="customer"]::before {
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--ink-2);
+  }
+  .cus-quote {
+    padding-inline-start: var(--s-3);
+    border-inline-start: 2px solid var(--line-strong);
+    font: var(--type-body);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* ── the RFM grid: recency rows × frequency columns, counts in tabular type ── */
+  .cus-grid {
+    inline-size: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .cus-grid th,
+  .cus-grid td {
+    block-size: var(--row, 36px);
+    padding-inline: 10px;
+    border: 1px solid var(--line);
+    text-align: center;
+  }
+  .cus-grid th {
+    background: var(--niche);
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+  .cus-grid td[data-empty="true"] {
+    color: var(--ink-3);
+  }
+
+  /* ── side-by-side comparison of two accounts (merge) ── */
+  .cus-compare {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .cus-compare {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .cus-panel {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .cus-panel[data-role="keep"] {
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+
+  /* ── a small ledger: label at the start, figure at the end ── */
+  .cus-ledger {
+    display: grid;
+    align-content: start;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .cus-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  .cus-ledger > div > dd {
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+  }
+
+  /* ── printing a privacy request record: the browser prints it; the admin's chrome and the controls are not printed ── */
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.cus-print) .adm-rail,
+    body:has(.cus-print) .adm-top,
+    body:has(.cus-print) .adm-tabbar,
+    body:has(.cus-print) .adm-skip,
+    body:has(.cus-print) .cus-noprint {
+      display: none !important;
+    }
+    body:has(.cus-print) .adm,
+    body:has(.cus-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .cus-print {
+      color: var(--ink);
+      background: var(--paper);
+    }
+    .cus-print .cus-panel,
+    .cus-print .cus-kpi {
+      box-shadow: inset 0 0 0 1px var(--line-strong);
+    }
+    .cus-print .adm-section {
+      break-inside: avoid;
+    }
+    .cus-print .cus-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

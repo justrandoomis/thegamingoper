@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from "react";
+import { Fragment, type ComponentType, type ReactNode } from "react";
 
 import { useLocale } from "~/i18n/react";
 import type { Locale } from "~/lib/locales";
@@ -60,13 +60,24 @@ export function Specimen({ label, children, wide = false, className }: { label?:
   return (
     <figure className={cx("ds-spec", wide && "ds-spec--wide", className)}>
       <div className="ds-spec__body">{children}</div>
-      {label ? (
-        <figcaption className="ds-spec__label">
-          <code dir="ltr">{label}</code>
-        </figcaption>
-      ) : null}
+      {label ? <figcaption className="ds-spec__label">{specLabel(label)}</figcaption> : null}
     </figure>
   );
+}
+
+const ARABIC_SCRIPT = /[؀-ۿ]/;
+
+/**
+ * A specimen caption: " · "-separated parts; code reads left to right, a part in Arabic script is prose and keeps its
+ * own direction (isolated), so «<CompatList rows> · أيقونة وكلمة…» does not scramble.
+ */
+function specLabel(label: string): ReactNode {
+  return label.split(" · ").map((part, index) => (
+    <Fragment key={index}>
+      {index > 0 ? " · " : null}
+      {ARABIC_SCRIPT.test(part) ? <bdi>{part}</bdi> : <code dir="ltr">{part}</code>}
+    </Fragment>
+  ));
 }
 
 export function SpecimenRow({ children, className }: { children: ReactNode; className?: string }) {

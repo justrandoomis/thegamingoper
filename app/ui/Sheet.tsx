@@ -9,27 +9,23 @@ import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
 
 /**
- * Sheets (docs/DESIGN.md §9.14, motion §7.2): bottom-anchored on phones; a glass header strip (`.glass--bottom`, top
- * corners `--r-xl`) with a grab handle, the title and a round clay close key; an opaque body that scrolls inside;
- * at most 90% of the viewport high. Used for filters, the governorate picker, quick preview, variant choice and
- * reason codes.
+ * Sheets — Design System v2 §4.17: a bottom sheet below 768 (top corners --r-xl, at most 90% of the viewport) and a
+ * 420px side sheet from the inline-end edge from 768. A 56px GLASS header strip (the 36×5 grabber, the title in
+ * type-h3, a 44px close); an OPAQUE paper body that scrolls inside; a sticky paper foot with a hairline on top holding
+ * the actions («امسح الكل» ghost + the primary with the live count «اعرض 24 منتجاً», which grows). Filters, the
+ * governorate picker, quick look, variant choice and reason codes.
  *
  *   const [open, setOpen] = useState(false);
- *   <Key onClick={() => setOpen(true)} aria-haspopup="dialog">{t("governorate")}</Key>
- *   <Sheet open={open} onClose={() => setOpen(false)} title={t("chooseGovernorate")} presentation="picker">
- *     {governorates.map((g) => …option row…)}
- *   </Sheet>
- *
- *   <Sheet open={filters} onClose={close} title={t("filters")} description={t("results", { count })}
- *          presentation="side" snapPoints={[0.5, 1]}
- *          footer={<><Key onClick={clear}>{t("clearAll")}</Key><Key variant="ink" onClick={close}>{t("show", { count })}</Key></>}>
+ *   <Key onClick={() => setOpen(true)} aria-haspopup="dialog">{t("filters")}</Key>
+ *   <Sheet open={open} onClose={() => setOpen(false)} title={t("filters")} description={t("results", { count })}
+ *          snapPoints={[0.5, 1]}
+ *          footer={<><Key variant="ghost" onClick={clear}>{t("clearAll")}</Key><Key variant="primary" onClick={close}>{t("show", { count })}</Key></>}>
  *     …chip groups…
  *   </Sheet>
  *
- * presentation   "sheet" (default) a bottom sheet at every width · "side" a bottom sheet on phones and a 420px side
- *                panel from the inline-end edge from `sideFrom` (768 by default — cart and filters, §8.11; pass 1024
- *                where a screen asks for it) · "picker" a bottom sheet on phones and a centred dialog (max 520) from
- *                768 (governorate, variant, reason codes; §8.11).
+ * presentation   "side" (default) the bottom sheet on phones and the side sheet from `sideFrom` (768; pass 1024 where a
+ *                screen asks for it) · "sheet" a bottom sheet at every width · "picker" a bottom sheet on phones and a
+ *                centred dialog from 768 (governorate, variant, reason codes).
  *
  * Motion comes from the engine's useSheet: it rises on the `sheet` spring, follows the finger 1:1 when the header is
  * dragged, keeps the finger's velocity on release (snap points, flick away), rubber-bands past the top; the scrim
@@ -121,7 +117,7 @@ function SheetPortal({
   description,
   children,
   footer,
-  presentation = "sheet",
+  presentation = "side",
   sideFrom = 768,
   snapPoints,
   initialSnap,
@@ -220,54 +216,51 @@ function SheetPortal({
           data-layer-panel=""
           className={cx(
             "tt-sheet fixed flex flex-col text-ink outline-none",
-            bottom ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-xl shadow-e5" : "inset-y-0 end-0 h-dvh w-[min(420px,100vw)] rounded-s-xl",
+            bottom ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-xl shadow-overlay" : "inset-y-0 end-0 h-dvh w-[min(420px,100vw)] rounded-s-xl shadow-overlay",
             className,
           )}
+          data-sheet={bottom ? "bottom" : "side"}
         >
-          <Glass edge="bottom" className={cx("relative z-[1] shrink-0", bottom ? "rounded-t-xl" : "rounded-ss-xl")}>
-            <div {...sheet.handleProps} className="flex min-h-[77px] items-center pb-2.5 pe-[calc(var(--gutter)+56px)] ps-(--gutter) pt-[21px]">
+          <Glass className={cx("relative z-[1] shrink-0", bottom ? "rounded-t-xl" : "rounded-ss-xl")}>
+            <div {...sheet.handleProps} className={cx("flex min-h-14 items-center pe-16 ps-4", bottom ? "pb-2 pt-4" : "py-2")}>
               {canResize ? (
                 <button
                   type="button"
-                  className="absolute inset-x-0 top-0 mx-auto grid h-[22px] w-16 justify-center pt-[9px] hit-44"
+                  className="absolute inset-x-0 top-0 mx-auto grid h-4 w-16 justify-center pt-1.5 hit-44"
                   aria-label={expanded ? to("sheet.collapse") : to("sheet.expand")}
                   aria-expanded={expanded}
                   onClick={() => sheet.snapTo(expanded ? 0 : mostOpen)}
                 >
-                  <span className="block h-[5px] w-10 rounded-[3px] bg-ink opacity-[.28]" aria-hidden="true" />
+                  <span className="sheet__grab" aria-hidden="true" />
                 </button>
               ) : bottom ? (
-                <span className="absolute inset-x-0 top-[9px] mx-auto block h-[5px] w-10 rounded-[3px] bg-ink opacity-[.28]" aria-hidden="true" />
+                <span className="sheet__grab" aria-hidden="true" />
               ) : null}
               <div className="min-w-0 flex-1">
-                <h2 id={titleId} className="type-sub">
+                <h2 id={titleId} className="type-h3">
                   {title}
                 </h2>
                 {description ? (
-                  <p id={descriptionId} className="type-caption text-ink-2">
+                  <p id={descriptionId} className="type-xs text-ink-2">
                     {description}
                   </p>
                 ) : null}
               </div>
             </div>
-            <IconKey icon="x" label={t("close")} onClick={requestClose} className="absolute end-(--gutter) top-[21px]" />
+            <IconKey icon="x" variant="plain" label={t("close")} onClick={requestClose} className={cx("absolute end-2", bottom ? "top-3" : "top-2")} />
           </Glass>
-          <div className={cx("flex min-h-0 flex-1 flex-col bg-floor", !bottom && "rounded-es-xl")}>
+          <div className={cx("flex min-h-0 flex-1 flex-col bg-paper", !bottom && "rounded-es-xl")}>
             <div
               className={cx(
                 "min-h-0 flex-1 overflow-y-auto overscroll-contain",
-                !flush && "px-(--gutter) pt-3",
-                footer ? (flush ? "" : "pb-3") : "pb-[calc(var(--safe-bottom)+16px)]",
+                !flush && "px-4 pt-2",
+                footer ? (flush ? "" : "pb-4") : "pb-[calc(var(--safe-bottom)+16px)]",
                 bodyClassName,
               )}
             >
               {children}
             </div>
-            {footer ? (
-              <div className="flex shrink-0 flex-wrap items-center gap-3 border-t border-line px-(--gutter) pb-[calc(var(--safe-bottom)+12px)] pt-3 [&>*]:flex-1">
-                {footer}
-              </div>
-            ) : null}
+            {footer ? <div className="sheet__foot">{footer}</div> : null}
           </div>
         </section>
       </div>

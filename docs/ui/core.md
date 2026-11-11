@@ -1,5 +1,61 @@
 # Core components — props and examples
 
+## Design System v2 (2026-11-11) — read this first
+
+The kit was rebuilt to Design System v2 (spec: the redesign's `design-v2-spec.md` §4; CSS classes: `docs/UI.md` §2,
+`app/styles/materials.css`, `components.css`). Where a section further down disagrees with this one, **this one wins**;
+the 1.0 sections below are kept for the props that did not change. Live, every state, ar/en/ckb × light/dark:
+`/design-system#core` and `#forms` (and `#showcase`, see `docs/ui/showcase.md`).
+
+**Keys (`Key`)** — `variant`: `primary` (crimson clay; ONE per view: the commit) · `secondary` (default: paper, hairline) ·
+`ghost` · `onBand` (white key on a crimson / platform band; the red primary in the dark theme) · `danger`. 1.0 names
+still work and map through `KEY_LOOK`: `commit`→primary, `clay`→secondary, `ink`→secondary look but keeps
+`key--ink` (the admin re-skins it), `quiet`→ghost. `size`: md 48 (default) · sm 40 (`lg` = 1.0 name for 48). Press
+physics: `keyPress(look)` → `data-press="clay"` for primary/onBand, `"soft"` otherwise (override with `data-press`).
+
+**IconKey** — round, 44 / 40 (`sm`) / 32 (`xs`, a 44 hit area): `variant` `outline` (default) · `plain` · `onImage`
+(product photos) · `onColor` (the white disc on tiles and bands); 1.0 `clay`/`ink`→outline, `quiet`→plain,
+`commit`→the neutral add button (`cadd`). `held` = aria-pressed with the FILLED glyph; the face never turns ink.
+
+**Choices** — `Segmented` (new; `.seg`): a radiogroup with roving focus, or link mode when every option has `href`
+(`aria-current="page"`); `inline` shrinks it to its content. `KeyBank kind="segment"` now renders `<Segmented inline>`;
+`kind="platform" | "thumb"` keep the `.bank`. `PlatformBank` is retired (renders KeyBank). `Chip`: `count` (tabular,
+in the chip), `platform` (dot after the label), `removable`; `ChipGroup rail bleed` scrolls on phones (chips never
+shrink) and wraps from 768. Roving helpers moved to `~/ui/roving` (`useRovingRadio`, `useControllable`).
+
+**Badges** — `Tag kind`: `new` · `soon` (calendar glyph, «قريباً») · `sale` · `grade` · `out` · `photo` · `demo` · `ok`
+(+ 1.0 `used`/`preorder`/`refurbished`); `onColor` on bands. `Status tone`: ok · warn · info · bad · out · soon ·
+neutral, `size="lg"`. `StockStatus`/`StockNote`: words «متوفر» · «الكمية محدودة» (shown as «متوفر» in demo mode) ·
+«نفد حالياً» · «قريباً»; never "notify me" promises (`notifyTo` is ignored). Helpers: `stockLook`, `useStockWords`,
+`useDemoMode`. `DemoNote variant`: `strip` (a link with `to`) · `chip` (full text from 1280, a compact button with a
+popover below) · `tag` (`what`: price · priceStock · order · data; `onColor`) · `line`.
+
+**Price** — Kufi 700 digits, the currency at a fixed ≥12px size after a no-break space, `aria-label` «667,750 دينار
+عراقي». `tone`: ink · sale (automatic with `compareAtIqd`) · total (the ONE red figure of a summary) · onColor · muted;
+`price--long` from 1,000,000. `PriceTag size="page"` = price + demo note + saving + `PriceLine` (stock + delivery).
+
+**Grounds** — `Niche`: 1:1 by default, `kind` hardware | wide | box | card | used (`data-kind`), `size="sm"` (64–120px
+wells: cart lines, summaries — use it instead of `rounded-md`), `fav` and `note` slots, `state="out"`. `Stage
+size="pdp"` (default): straight, no tilt, no halo, a count chip and a tools slot; `StageTag` renders nothing (retired).
+`Render` ignores the 1.0 `pose`/`shadow`.
+
+**Platforms** — `PlatformLed` is an 8px dot (`.led`); `PlatformLabel` = dot + name; `PlatformGlyph` returns null (no
+logos). **Glass** is for bars and sheet heads only (`variant="live"`); `static` is retired.
+
+**Forms** — `Field` family: the error REPLACES the hint (one description), `aria-required` on required inputs.
+New: `OptionCard` (`pay` with a 72px `mark`, words not logos), `FormErrorSummary errors={[{ id, label }]}` (role=alert,
+44px links to the fields), `GovernoratePicker` (a select-looking button → picker sheet; the fee line on top; a
+filter from 13 rows; unserved rows disabled with the reason; hidden input `name`), `PreferencePicker` (any · morning ·
+afternoon · evening, day cells only when the owner configured `days`; always «وقت مفضّل وليس موعداً مؤكداً.»),
+`Swatches` (colour dots or 56px thumbs; the chosen name printed above; `unavailable` crossed out). `Stepper`: no well,
+plain icon keys, the stock limit is hidden in demo mode.
+
+**Retired names (still exported, render the v2 look):** `Socket` (→ `IconKey` `cadd` / `CardAddButton`),
+`PlatformBank`, `StageTag`, `Stage size="hero" | "compact"`, `KeyBank kind="segment"`, Key `commit/clay/ink/quiet`,
+`Glass variant="static"`, `PlatformGlyph`. Migrate when you next touch the caller.
+
+---
+
 Owner: design system (`app/ui/*`, `app/styles/*`). Rules and tokens: `docs/UI.md`. Live: `/design-system#core`.
 All components are SSR-safe, use logical properties only, work in both themes and in `ar` / `en` / `ckb`, and take
 their own strings from the `ui` namespace (`app/i18n/messages/ui.ts`). Polymorphic components accept `as` (an element

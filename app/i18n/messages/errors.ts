@@ -51,6 +51,8 @@ export default defineMessages({
       foreign_key: "يشير هذا إلى عنصر لم يعد موجوداً. حدّث الصفحة وأعد المحاولة.",
       not_null: "قيمة مطلوبة ناقصة.",
       unexpected: "حدث خطأ من جهتنا ولم يتغير شيء. أعد المحاولة.",
+      // a request that never reached the store (the device is offline, "Failed to fetch"): never "our side" (v2 §9)
+      offline: "لا يوجد اتصال بالإنترنت. أعد المحاولة عند عودة الاتصال.",
       // accounts and sign-in
       invalid_credentials: "بيانات الدخول غير صحيحة. تحقق منها وأعد المحاولة.",
       account_blocked: "هذا الحساب موقوف. تواصل مع المتجر للمساعدة.",
@@ -183,6 +185,7 @@ export default defineMessages({
       foreign_key: "This refers to something that no longer exists. Refresh the page and try again.",
       not_null: "A required value is missing.",
       unexpected: "Something went wrong on our side and nothing was changed. Try again.",
+      offline: "No internet connection. Try again when you are back online.",
       invalid_credentials: "The sign-in details are wrong. Check them and try again.",
       account_blocked: "This account is blocked. Contact the store for help.",
       phone_invalid: "Enter an Iraqi mobile number, for example 0770 123 4567.",
@@ -303,6 +306,7 @@ export default defineMessages({
       foreign_key: "ئەمە ئاماژە بە شتێک دەکات کە ئیتر بوونی نییە. پەڕەکە نوێ بکەرەوە و دووبارە هەوڵ بدەرەوە.",
       not_null: "بەهایەکی پێویست ون بووە.",
       unexpected: "هەڵەیەک لە لای ئێمە ڕوویدا و هیچ نەگۆڕا. دووبارە هەوڵ بدەرەوە.",
+      offline: "هێڵی ئینتەرنێت نییە. کاتێک هێڵ گەڕایەوە دووبارە هەوڵ بدەرەوە.",
       invalid_credentials: "زانیارییەکانی چوونەژوورەوە هەڵەن. بیانپشکنە و دووبارە هەوڵ بدەرەوە.",
       account_blocked: "ئەم هەژمارە ڕاگیراوە. بۆ یارمەتی پەیوەندی بە فرۆشگاوە بکە.",
       phone_invalid: "ژمارەیەکی مۆبایلی عێراقی بنووسە، بۆ نموونە ⁦0770 123 4567⁩.",

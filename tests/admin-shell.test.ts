@@ -10,7 +10,7 @@
 import { readFileSync } from "node:fs";
 import { eq } from "drizzle-orm";
 import { matchPath, RouterContextProvider } from "react-router";
-import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { randomToken } from "~/lib/ids";
 import { BLUEPRINT_STATUS, BLUEPRINT_STATUSES, blueprintStatusMarkdown, statusCounts, statusOf, type BlueprintEntry } from "~/routes/admin/blueprint-status";
 import { adminModuleRoutes } from "~/routes/admin/_routes";
@@ -28,17 +28,77 @@ import { ADMIN_MODULE_SLUGS, ADMIN_MODULES, moduleOfPath, navGroupsFor, NAV_GROU
 import { adminNextPath, loginPathFor } from "~/routes/admin/shell/next.server";
 import { qrPath } from "~/routes/admin/shell/qr.server";
 import { filterGrouped, normalizeSearch } from "~/routes/admin/shell/search";
+import adminMessages from "~/i18n/messages/admin";
+import { loadWaiting, QUEUE_HREF, type ShellQueue, type ShellWaiting } from "~/routes/admin/shell/queues.server";
 import { initialsOf, loadAdminShell } from "~/routes/admin/shell/shell.server";
 import { summarizeUserAgent } from "~/routes/admin/shell/ua";
+import { loader as expensesPageLoader } from "~/routes/admin/finance/expenses";
+import { loader as walletsPageLoader } from "~/routes/admin/finance/wallets";
+import { loader as invoicesPageLoader } from "~/routes/admin/purchasing/invoices";
+import { loader as purchaseOrderPageLoader } from "~/routes/admin/purchasing/order";
+import { loader as purchaseOrdersPageLoader } from "~/routes/admin/purchasing/orders";
+import { loader as receiptPageLoader } from "~/routes/admin/purchasing/receipt";
+import { loader as receiptsPageLoader } from "~/routes/admin/purchasing/receipts";
+import { loader as returnsPageLoader } from "~/routes/admin/returns/index";
+import { loader as rmaPageLoader } from "~/routes/admin/returns/rma";
+import { loader as attemptsPageLoader } from "~/routes/admin/shipping/attempts";
+import { loader as codPageLoader } from "~/routes/admin/shipping/cod";
+import { loader as settlementPageLoader } from "~/routes/admin/shipping/settlement";
 import type { EmployeeActor } from "~/server/actor";
+import { audit } from "~/server/audit.server";
 import { getEmployee, signInEmployee, type EmployeeSession } from "~/server/auth/admin.server";
 import { requestContextMiddleware, type RequestCtx } from "~/server/context.server";
 import { hashPassword, toBase64Url, totpCode } from "~/server/crypto.server";
-import { cycleCounts, employeeRoles, employees, employeeSessions, inventoryLocations, priceChanges, refunds, roles, stockTransfers, variants } from "~/server/db/schema";
-import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
-import { DEFAULT_ROLES, PERMISSION_DEFS, PERMISSIONS, roleId, type DefaultRoleKey } from "~/server/permissions";
+import { createDb } from "~/server/db/drizzle.server";
+import {
+  accounts,
+  approvals,
+  auditEvents,
+  carriers,
+  codSettlementItems,
+  codSettlements,
+  cycleCounts,
+  employeeRoles,
+  employees,
+  employeeSessions,
+  expenses,
+  inventoryLocations,
+  priceChanges,
+  purchaseOrders,
+  receipts,
+  refunds,
+  returns,
+  rolePermissions,
+  roles,
+  shipments,
+  stockTransfers,
+  supplierInvoices,
+  suppliers,
+  variants,
+  walletTopups,
+} from "~/server/db/schema";
+import { accountId, DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
+import { DEFAULT_ROLES, PERMISSION_DEFS, PERMISSIONS, roleId, type DefaultRoleKey, type Permission } from "~/server/permissions";
+import { createExpense } from "~/server/services/accounting/expenses.server";
+import { decideTopup, requestWalletAdjustment } from "~/server/services/admin/finance/wallets.server";
+import { baghdadDay, dayStart, DAY_MS } from "~/server/services/admin/finance/types";
+import { purchasingOverview } from "~/server/services/admin/purchasing/alerts.server";
+import { shippingOverview } from "~/server/services/admin/shipping/shipments.server";
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
+
+/** While on, the returns module's own queue count throws (the shell must then show no returns queue, and nothing else breaks). */
+const failing = vi.hoisted(() => ({ returns: false }));
+vi.mock("~/server/services/admin/returns/rma.server", async (importOriginal) => {
+  const real = await importOriginal<typeof import("~/server/services/admin/returns/rma.server")>();
+  return {
+    ...real,
+    queueCounts: async (...args: Parameters<typeof real.queueCounts>) => {
+      if (failing.returns) throw new Error("the returns counts are down (test)");
+      return real.queueCounts(...args);
+    },
+  };
+});
 
 const NOW = TEST_NOW;
 const MINUTE = 60_000;
@@ -141,6 +201,45 @@ const cookieHeader = (jar: Record<string, string>) =>
   Object.entries(jar)
     .map(([name, value]) => `${name}=${encodeURIComponent(value)}`)
     .join("; ");
+
+/** One statement sent through recordingD1: its SQL and values, the rows it brought back, when it started and finished. */
+type Recorded = { sql: string; params: unknown[]; rows: number; startedAt: number; finishedAt: number | null };
+
+/**
+ * A D1 binding that writes down every statement sent through it (a batch counts as one, its rows summed), on one
+ * counter for starts and finishes. Each statement waits for the next macrotask before it runs, so everything sent at
+ * the same time shows as started before anything finished.
+ */
+function recordingD1(real: D1Database): { d1: D1Database; log: Recorded[] } {
+  const log: Recorded[] = [];
+  let tick = 0;
+  const REAL = Symbol("the real statement");
+  const timed = async <T>(sql: string, params: unknown[], call: () => Promise<T>, rows: (value: T) => number): Promise<T> => {
+    const entry: Recorded = { sql, params, rows: 0, startedAt: ++tick, finishedAt: null };
+    log.push(entry);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const value = await call();
+    entry.rows = rows(value);
+    entry.finishedAt = ++tick;
+    return value;
+  };
+  const wrap = (statement: D1PreparedStatement, sql: string, params: unknown[]): D1PreparedStatement =>
+    ({
+      [REAL]: statement,
+      bind: (...values: unknown[]) => wrap(statement.bind(...values), sql, values),
+      all: () => timed(sql, params, () => statement.all(), (result) => result.results.length),
+      raw: () => timed(sql, params, () => statement.raw(), (result) => result.length),
+      first: (column?: string) => timed(sql, params, () => (column === undefined ? statement.first() : statement.first(column)), (row) => (row === null ? 0 : 1)),
+      run: () => timed(sql, params, () => statement.run(), () => 0),
+    }) as unknown as D1PreparedStatement;
+  const unwrap = (statement: D1PreparedStatement) => (statement as unknown as Record<symbol, D1PreparedStatement>)[REAL] ?? statement;
+  const d1 = {
+    prepare: (sql: string) => wrap(real.prepare(sql), sql, []),
+    batch: (statements: D1PreparedStatement[]) => timed("batch", [], () => real.batch(statements.map(unwrap)), (results) => results.reduce((sum, result) => sum + (result.results?.length ?? 0), 0)),
+    exec: (sql: string) => real.exec(sql),
+  };
+  return { d1: d1 as unknown as D1Database, log };
+}
 
 const OWNER = { name: "صاحب المتجر", email: "owner@shell.test", password: "a-long-owner-password-1" };
 
@@ -679,6 +778,429 @@ describe("shell data", () => {
 
     const cashierShell = await loadAdminShell(request({ now: at }).ctx, t.db, (await signedIn(cashier.email, cashier.password, at)).session);
     expect(cashierShell.waiting.queues).toEqual([]);
+  });
+
+  test("shipping, returns, purchasing and finance queues: each module's own rule and screen, never the employee's own request, only for those who act", async () => {
+    const at = NOW + 14 * HOUR;
+    const signIn = async (person: { email: string; password: string }) => (await signedIn(person.email, person.password, at)).session;
+    const managerA = await staff("manager");
+    const managerB = await staff("manager");
+    const financeA = await staff("finance");
+    const financeB = await staff("finance");
+    const clerk = await staff("inventory");
+    const packer = await staff("fulfillment");
+    const helper = await staff("support");
+    const cashier = await staff("cashier");
+    const buyer = await make.employee();
+    const [mA, mB, fA, fB, clerkSession, packerSession, helperSession, cashierSession] = [
+      await signIn(managerA),
+      await signIn(managerB),
+      await signIn(financeA),
+      await signIn(financeB),
+      await signIn(clerk),
+      await signIn(packer),
+      await signIn(helper),
+      await signIn(cashier),
+    ];
+    const product = await make.product({ priceIqd: 90_000, stock: 4 });
+    const order = await make.order([{ ...product, qty: 1 }]);
+
+    // shipping — a failed delivery (and one already on its way back, which waits for the goods, not a decision); three
+    // submitted settlements: no difference (its preparer may reconcile it alone), a variance (never its creator and
+    // submitter), a hand correction (never its corrector, creator or submitter); and a draft
+    await t.db.insert(carriers).values({ id: "car_shell", code: "SHELL-CAR", name: "شركة شحن للاختبار", createdAt: NOW });
+    await t.db.insert(shipments).values([
+      { id: "shp_shell_failed", orderId: order.orderId, carrierId: "car_shell", status: "failed", failureReason: "لم يرد على الهاتف", createdAt: NOW, updatedAt: NOW },
+      { id: "shp_shell_back", orderId: order.orderId, carrierId: "car_shell", status: "returning", createdAt: NOW, updatedAt: NOW },
+    ]);
+    await t.db.insert(codSettlements).values([
+      { id: "cod_shell_clean", ref: "COD-SHELL-1", carrierId: "car_shell", status: "submitted", createdBy: financeA.id, createdAt: NOW },
+      { id: "cod_shell_short", ref: "COD-SHELL-2", carrierId: "car_shell", status: "submitted", expectedIqd: 100_000, receivedIqd: 95_000, varianceIqd: -5000, createdBy: financeA.id, createdAt: NOW },
+      { id: "cod_shell_fixed", ref: "COD-SHELL-3", carrierId: "car_shell", status: "submitted", createdBy: financeB.id, createdAt: NOW },
+      { id: "cod_shell_draft", ref: "COD-SHELL-4", carrierId: "car_shell", status: "draft", createdBy: financeB.id, createdAt: NOW },
+    ]);
+    await audit(t.db, { actor: fA.actor, action: "shipping.cod.submit", entityType: "cod_settlement", entityId: "cod_shell_clean", at: NOW });
+    await audit(t.db, { actor: fA.actor, action: "shipping.cod.submit", entityType: "cod_settlement", entityId: "cod_shell_short", at: NOW });
+    await audit(t.db, { actor: fA.actor, action: "shipping.cod.item", entityType: "cod_settlement", entityId: "cod_shell_fixed", at: NOW });
+    await audit(t.db, { actor: fB.actor, action: "shipping.cod.submit", entityType: "cod_settlement", entityId: "cod_shell_fixed", at: NOW + MINUTE });
+
+    // returns — two to decide (managerA opened one), one received for inspection, one already inspected (references
+    // in the real RMA-XXXXXXXX form, so each one's page opens)
+    await t.db.insert(returns).values([
+      { id: "ret_shell_mine", rma: "RMA-SHELL001", orderId: order.orderId, status: "requested", createdAt: NOW },
+      { id: "ret_shell_other", rma: "RMA-SHELL002", orderId: order.orderId, status: "requested", createdAt: NOW },
+      { id: "ret_shell_back", rma: "RMA-SHELL003", orderId: order.orderId, status: "received", receivedAt: NOW, createdAt: NOW },
+      { id: "ret_shell_done", rma: "RMA-SHELL004", orderId: order.orderId, status: "inspected", inspectedAt: NOW, createdAt: NOW },
+    ]);
+    await audit(t.db, { actor: mA.actor, action: "returns.rma.create", entityType: "return", entityId: "ret_shell_mine", at: NOW });
+    await audit(t.db, { actor: helperSession.actor, action: "returns.rma.create", entityType: "return", entityId: "ret_shell_other", at: NOW });
+
+    // purchasing — four orders above the limit: managerA's own, managerB's own, a buyer's, a buyer's that managerB edited;
+    // a posting that stopped an hour ago next to a finished one; an invoice with variances next to a matched one
+    await t.db.insert(suppliers).values({ id: "sup_shell", code: "SUP-SHELL", name: "مورد للاختبار", createdAt: NOW, updatedAt: NOW });
+    const pendingOrders = [
+      ["po_shell_a", managerA.id],
+      ["po_shell_b", managerB.id],
+      ["po_shell_buyer", buyer],
+      ["po_shell_edited", buyer],
+    ] as const;
+    await t.db.insert(approvals).values(pendingOrders.map(([id, by]) => ({ id: `apv_${id}`, kind: "purchase_order", entityType: "purchase_order", entityId: id, requestedBy: by, status: "pending" as const, createdAt: NOW })));
+    await t.db.insert(purchaseOrders).values(
+      pendingOrders.map(([id, by], index) => ({ id, ref: `PO-SHELL-${index + 1}`, supplierId: "sup_shell", status: "pending_approval" as const, locationId: DEFAULT_LOCATION_ID, approvalId: `apv_${id}`, createdBy: by, createdAt: NOW, updatedAt: NOW })),
+    );
+    await audit(t.db, { actor: mB.actor, action: "purchasing.po.update", entityType: "purchase_order", entityId: "po_shell_edited", at: NOW });
+    await t.db.insert(receipts).values([
+      { id: "rc_shell_stuck", ref: "RC-SHELL-1", supplierId: "sup_shell", locationId: DEFAULT_LOCATION_ID, status: "posted", receivedBy: "posting:shell-test", postedAt: NOW - HOUR, createdAt: NOW - HOUR },
+      { id: "rc_shell_posted", ref: "RC-SHELL-2", supplierId: "sup_shell", locationId: DEFAULT_LOCATION_ID, status: "posted", receivedBy: clerk.id, postedAt: NOW - HOUR, createdAt: NOW - HOUR },
+    ]);
+    await t.db.insert(supplierInvoices).values([
+      { id: "inv_shell_off", supplierId: "sup_shell", invoiceNo: "INV-SHELL-1", totalMinor: 10_000, status: "mismatch", createdAt: NOW },
+      { id: "inv_shell_ok", supplierId: "sup_shell", invoiceNo: "INV-SHELL-2", totalMinor: 10_000, status: "matched", createdAt: NOW },
+    ]);
+
+    // finance — three top-up requests (financeA gave the large one its first approval; one is rejected), financeA's own
+    // adjustment request, financeA's expense above any one-person limit and financeB's small one
+    const customerId = await make.customer();
+    await t.db.insert(walletTopups).values([
+      { id: "wtu_shell_new", ref: "TU-SHELL-1", customerId, method: "bank_transfer", amountIqd: 50_000, idempotencyKey: "shell-topup-1", createdAt: NOW },
+      { id: "wtu_shell_half", ref: "TU-SHELL-2", customerId, method: "zaincash", amountIqd: 900_000, idempotencyKey: "shell-topup-2", createdAt: NOW },
+      { id: "wtu_shell_no", ref: "TU-SHELL-3", customerId, method: "cash", amountIqd: 20_000, status: "rejected", rejectReason: "لا حوالة", idempotencyKey: "shell-topup-3", createdAt: NOW },
+    ]);
+    await t.db.insert(approvals).values([
+      { id: "apv_shell_topup", kind: "wallet_topup", entityType: "wallet_topup", entityId: "wtu_shell_half", requestedBy: financeA.id, status: "pending", createdAt: NOW },
+      { id: "apv_shell_adjust", kind: "wallet_adjustment", entityType: "customer", entityId: customerId, requestedBy: financeA.id, payload: { amountIqd: 10_000 }, reason: "تعويض عن تأخير التوصيل", status: "pending", createdAt: NOW },
+    ]);
+    const [expenseAccount] = await t.db.select({ id: accounts.id }).from(accounts).where(eq(accounts.type, "expense")).limit(1);
+    await t.db.insert(expenses).values([
+      { id: "exp_shell_rent", accountId: expenseAccount.id, amountIqd: 50_000_000, description: "إيجار المستودع", incurredOn: "2026-11-09", period: "2026-11", createdBy: financeA.id, createdAt: NOW },
+      { id: "exp_shell_pens", accountId: expenseAccount.id, amountIqd: 15_000, description: "قرطاسية", incurredOn: "2026-11-09", period: "2026-11", createdBy: financeB.id, createdAt: NOW },
+    ]);
+
+    const waitingOf = async (session: EmployeeSession) => (await loadAdminShell(request({ now: at }).ctx, t.db, session)).waiting;
+    const NEW = ["failed_deliveries", "cod_settlements", "rmas", "inspections", "po_approvals", "stuck_receipts", "invoice_mismatches", "topups", "adjustments", "expenses"];
+    const countsOf = (waiting: ShellWaiting) => Object.fromEntries(waiting.queues.filter((queue) => NEW.includes(queue.id)).map((queue) => [queue.id, queue.count]));
+
+    // A manager acts on all of them — each opens its module's own queue screen and carries its module's bead.
+    const managerAWaiting = await waitingOf(mA);
+    expect(managerAWaiting.queues.filter((queue) => NEW.includes(queue.id))).toEqual([
+      { id: "failed_deliveries", module: "shipping", count: 1, href: "/admin/shipping/attempts" },
+      { id: "cod_settlements", module: "shipping", count: 3, href: "/admin/shipping/cod?status=submitted" },
+      // not the RMA managerA opened
+      { id: "rmas", module: "returns", count: 1, href: "/admin/returns?view=decide" },
+      { id: "inspections", module: "returns", count: 1, href: "/admin/returns?view=inspect" },
+      // not managerA's own order
+      { id: "po_approvals", module: "purchasing", count: 3, href: "/admin/purchasing/orders?view=pending_approval" },
+      { id: "stuck_receipts", module: "purchasing", count: 1, href: "/admin/purchasing/receipts?state=posting" },
+      { id: "invoice_mismatches", module: "purchasing", count: 1, href: "/admin/purchasing/invoices?status=mismatch" },
+      { id: "topups", module: "finance", count: 2, href: "/admin/finance/wallets?status=pending_verification" },
+      { id: "adjustments", module: "finance", count: 1, href: "/admin/finance/wallets?tab=adjustments" },
+      // every draft the list can show (its longest range up to today, demo rows too) — see the "truth" test below
+      { id: "expenses", module: "finance", count: 2, href: expect.stringMatching(/^\/admin\/finance\/expenses\?from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}&demo=1&status=draft$/) },
+    ]);
+    expect(managerAWaiting.total).toBe(managerAWaiting.queues.reduce((sum, queue) => sum + queue.count, 0));
+    // managerB decides the RMA managerA opened, but neither their own order nor the one they edited
+    expect(countsOf(await waitingOf(mB))).toMatchObject({ rmas: 2, po_approvals: 2 });
+
+    // Finance: not the top-up it approved first, not its own adjustment request (no queue at 0), not its own large
+    // expense, not the settlements it prepared that carry a difference; nothing of purchasing's approvals, receiving,
+    // returns or deliveries.
+    expect(countsOf(await waitingOf(fA))).toEqual({ cod_settlements: 1, invoice_mismatches: 1, topups: 1, expenses: 1 });
+    expect(countsOf(await waitingOf(fB))).toEqual({ cod_settlements: 2, invoice_mismatches: 1, topups: 2, adjustments: 1, expenses: 2 });
+    // The stock clerk inspects returns and resumes postings (no cost.read: no invoices); the packer decides failed
+    // deliveries; support and the cashier act on none of these.
+    expect(countsOf(await waitingOf(clerkSession))).toEqual({ inspections: 1, stuck_receipts: 1 });
+    expect(countsOf(await waitingOf(packerSession))).toEqual({ failed_deliveries: 1 });
+    expect(countsOf(await waitingOf(helperSession))).toEqual({});
+    expect((await waitingOf(cashierSession)).queues).toEqual([]);
+
+    // The same numbers as the modules' own home pages show.
+    expect((await shippingOverview(t.db, fA.actor, at)).toReconcile).toBe(1);
+    expect((await shippingOverview(t.db, fB.actor, at)).toReconcile).toBe(2);
+    expect((await shippingOverview(t.db, mA.actor, at)).failed).toBe(1);
+    expect((await purchasingOverview(t.db, mA.actor, at)).waiting).toMatchObject({ approvals: 3, receiptsStuck: 1, invoicesMismatch: 1 });
+    expect((await purchasingOverview(t.db, mB.actor, at)).waiting.approvals).toBe(2);
+  });
+
+  test("a module whose count fails shows none of its queues: logged, and the other queues and the page still load", async () => {
+    const at = NOW + 15 * HOUR;
+    const manager = await staff("manager");
+    const session = (await signedIn(manager.email, manager.password, at)).session;
+    const product = await make.product({ priceIqd: 40_000, stock: 1 });
+    const order = await make.order([{ ...product, qty: 1 }]);
+    await t.db.insert(returns).values({ id: "ret_shell_failing", rma: "RMA-SHELL009", orderId: order.orderId, status: "received", receivedAt: NOW, createdAt: NOW });
+    await t.db.insert(shipments).values({ id: "shp_shell_failing", orderId: order.orderId, status: "failed", createdAt: NOW, updatedAt: NOW });
+    const healthy = (await loadAdminShell(request({ now: at }).ctx, t.db, session)).waiting;
+    expect(healthy.queues.some((queue) => queue.module === "returns")).toBe(true);
+
+    const logged = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    failing.returns = true;
+    try {
+      const waiting = (await loadAdminShell(request({ now: at }).ctx, t.db, session)).waiting;
+      const others = healthy.queues.filter((queue) => queue.module !== "returns");
+      expect(waiting.queues).toEqual(others);
+      expect(others.map((queue) => queue.id)).toContain("failed_deliveries");
+      expect(waiting.total).toBe(others.reduce((sum, queue) => sum + queue.count, 0));
+      expect(logged).toHaveBeenCalledWith(expect.stringContaining("returns"), expect.any(Error));
+    } finally {
+      failing.returns = false;
+      logged.mockRestore();
+    }
+  });
+
+  // ── the new queues against the pages they open (review 2026-11-11). Page requests run behind the real root
+  // middleware, which stamps them with the real clock, so these employees sign in on it and the records are dated by it.
+
+  /** An employee holding exactly these permissions: a role the owner made in the role editor. */
+  async function custom(permissions: readonly Permission[], password = "custom-password-1234") {
+    const hashed = await hashPassword(password, 1000);
+    const email = `${make.next("custom")}@shell.test`;
+    const id = await make.employee({ email, passwordHash: hashed.hash, passwordIters: hashed.iterations });
+    const role = `rol_${make.next("custom").replace("-", "_")}`;
+    await t.db.insert(roles).values({ id: role, key: role, name: { ar: "دور مخصص", en: "Custom role" }, createdAt: NOW });
+    await t.db.insert(rolePermissions).values(permissions.map((permission) => ({ roleId: role, permission })));
+    await t.db.insert(employeeRoles).values({ employeeId: id, roleId: role });
+    return { id, email, password };
+  }
+
+  type PageLoader = (args: never) => Promise<unknown>;
+  /** The list each queue's link opens, by path. */
+  const QUEUE_PAGES: Record<string, PageLoader> = {
+    "/admin/shipping/attempts": attemptsPageLoader,
+    "/admin/shipping/cod": codPageLoader,
+    "/admin/returns": returnsPageLoader,
+    "/admin/purchasing/orders": purchaseOrdersPageLoader,
+    "/admin/purchasing/receipts": receiptsPageLoader,
+    "/admin/purchasing/invoices": invoicesPageLoader,
+    "/admin/finance/wallets": walletsPageLoader,
+    "/admin/finance/expenses": expensesPageLoader,
+  };
+
+  /** A page's loader for a signed-in employee, behind the real root middleware: its data, or the status it refused with. */
+  async function openPage(href: string, cookies: Record<string, string>, loader?: PageLoader, params: Record<string, string> = {}): Promise<{ status: number; data: unknown }> {
+    const req = new Request(`http://localhost:5173${href}`, { headers: { Cookie: cookieHeader(cookies) } });
+    const run = loader ?? QUEUE_PAGES[new URL(req.url).pathname];
+    if (!run) throw new Error(`no page loader for ${href}`);
+    let data: unknown = null;
+    const outcome = await throughRoot(req, async (context, url) => {
+      data = await run({ request: req, context, params, url, pattern: url.pathname } as never);
+      return new Response(null);
+    });
+    return outcome instanceof Response && outcome.status === 200 ? { status: 200, data } : { status: described(outcome).status, data: null };
+  }
+
+  type Row = Record<string, unknown>;
+  const dig = (value: unknown, ...path: string[]): unknown => path.reduce<unknown>((node, key) => (node !== null && typeof node === "object" ? (node as Row)[key] : undefined), value);
+  const rowsAt = (value: unknown, ...path: string[]): Row[] => {
+    const found = dig(value, ...path);
+    return Array.isArray(found) ? (found as Row[]) : [];
+  };
+
+  /**
+   * How many of the rows a queue's link lists this employee may act on — as the module's own pages say (a settlement's
+   * "reconcile", an RMA's or an order's "decide", a posting's "resumable", the lists' own flags). The link must open
+   * (200) for them. This is the number the shell must show.
+   */
+  async function actionableOnPage(queue: ShellQueue, cookies: Record<string, string>): Promise<number> {
+    const list = await openPage(queue.href, cookies);
+    expect.soft(list.status, `${queue.id}: ${queue.href} opens`).toBe(200);
+    const data = list.data;
+    const ids = (key: string, ...path: string[]) => rowsAt(data, ...path).map((row) => String(row[key]));
+    const howMany = async (keys: string[], may: (key: string) => Promise<boolean>) => {
+      let n = 0;
+      for (const key of keys) if (await may(key)) n++;
+      return n;
+    };
+    switch (queue.id) {
+      case "failed_deliveries":
+        return rowsAt(data, "rows").filter((row) => row.status === "failed").length;
+      case "cod_settlements":
+        return howMany(ids("id", "settlements"), async (settlementId) => dig((await openPage(`/admin/shipping/cod/${settlementId}`, cookies, settlementPageLoader, { settlementId })).data, "settlement", "can", "reconcile") === true);
+      case "rmas":
+        return howMany(ids("rma", "page", "rows"), async (rma) => dig((await openPage(`/admin/returns/${rma}`, cookies, rmaPageLoader, { rma })).data, "rma", "can", "decide") === true);
+      case "inspections":
+      case "invoice_mismatches":
+        return Number(dig(data, "page", "total") ?? 0);
+      case "po_approvals":
+        return howMany(ids("id", "page", "rows"), async (poId) => dig((await openPage(`/admin/purchasing/orders/${poId}`, cookies, purchaseOrderPageLoader, { poId })).data, "detail", "can", "decide") === true);
+      case "stuck_receipts":
+        return howMany(ids("id", "page", "rows"), async (receiptId) => dig((await openPage(`/admin/purchasing/receipts/${receiptId}`, cookies, receiptPageLoader, { receiptId })).data, "detail", "receipt", "posting", "resumable") === true);
+      case "topups":
+        return rowsAt(data, "topups", "rows").filter((row) => row.status === "pending_verification" && dig(row, "firstApproval", "byMe") !== true).length;
+      case "adjustments":
+        return rowsAt(data, "adjustments").filter((row) => row.status === "pending" && row.mine !== true).length;
+      case "expenses":
+        return rowsAt(data, "page", "rows").filter((row) => row.status === "draft" && row.needsOther !== true).length;
+      default:
+        throw new Error(`no page check for ${queue.id}`);
+    }
+  }
+
+  const NEW_QUEUES = ["failed_deliveries", "cod_settlements", "rmas", "inspections", "po_approvals", "stuck_receipts", "invoice_mismatches", "topups", "adjustments", "expenses"] as const;
+
+  test("truth: each new queue counts exactly what its link lists that the employee may act on — last month's and demo drafts, custom roles and all", async () => {
+    const now = Date.now();
+    const manager = await staff("manager");
+    const bookkeeper = await staff("finance");
+    const clerk = await staff("inventory");
+    const packer = await staff("fulfillment");
+    // Roles an owner could make: settles carriers' cash without recording payments (orders.payment.record); decides and
+    // inspects returns without reading the list; approves purchase orders without reading them.
+    const codClerk = await custom(["shipping.cod.settle", "shipping.shipment.read"]);
+    const returnsDecider = await custom(["returns.rma.approve", "returns.rma.inspect"]);
+    const poApprover = await custom(["purchasing.po.approve", "cost.read"]);
+    // and one who approves orders and matches invoices but may not see cost: never a cost-gated count
+    const costBlind = await custom(["purchasing.po.approve", "purchasing.po.read", "purchasing.invoice.manage", "purchasing.receipt.create"]);
+    const people = { manager, bookkeeper, clerk, packer, codClerk, returnsDecider, poApprover, costBlind };
+    const signed: Record<string, { session: EmployeeSession; cookies: Record<string, string> }> = {};
+    for (const [who, person] of Object.entries(people)) signed[who] = await signedIn(person.email, person.password, now);
+
+    const product = await make.product({ priceIqd: 60_000, stock: 6 });
+    const order = await make.order([{ ...product, qty: 1 }]);
+    const cashOrder = await make.order([{ ...product, qty: 1 }], { paymentMethod: "cod" });
+    await make.payment(cashOrder.orderId, cashOrder.totalIqd, { method: "cod", status: "pending" });
+    const backOrder = await make.order([{ ...product, qty: 1 }]);
+
+    // shipping — two failed deliveries and one parcel on its way back; a settlement holding a parcel whose cash the
+    // courier brought (its cash-on-delivery payment still to be recorded), a settlement of the carrier's charges only,
+    // and one with a difference the bookkeeper made and submitted
+    await t.db.insert(carriers).values({ id: "car_truth", code: "TRUTH-CAR", name: "شركة شحن للتحقق", createdAt: now });
+    await t.db.insert(shipments).values([
+      { id: "shp_truth_failed1", orderId: order.orderId, carrierId: "car_truth", status: "failed", failureReason: "الهاتف مغلق", createdAt: now, updatedAt: now },
+      { id: "shp_truth_failed2", orderId: order.orderId, carrierId: "car_truth", status: "failed", createdAt: now, updatedAt: now },
+      { id: "shp_truth_back", orderId: order.orderId, carrierId: "car_truth", status: "returning", createdAt: now, updatedAt: now },
+      { id: "shp_truth_cash", orderId: cashOrder.orderId, carrierId: "car_truth", status: "delivered", deliveredAt: now, createdAt: now, updatedAt: now },
+      { id: "shp_truth_returned", orderId: backOrder.orderId, carrierId: "car_truth", status: "returned", returnedAt: now, createdAt: now, updatedAt: now },
+    ]);
+    await t.db.insert(codSettlements).values([
+      { id: "cod_truth_cash", ref: "COD-TRUTH-1", carrierId: "car_truth", status: "submitted", expectedIqd: cashOrder.totalIqd, receivedIqd: cashOrder.totalIqd, createdBy: bookkeeper.id, createdAt: now },
+      { id: "cod_truth_fees", ref: "COD-TRUTH-2", carrierId: "car_truth", status: "submitted", feesIqd: 3000, receivedIqd: -3000, createdBy: bookkeeper.id, createdAt: now },
+      { id: "cod_truth_diff", ref: "COD-TRUTH-3", carrierId: "car_truth", status: "submitted", receivedIqd: 5000, varianceIqd: 5000, createdBy: bookkeeper.id, createdAt: now },
+    ]);
+    await t.db.insert(codSettlementItems).values([
+      { settlementId: "cod_truth_cash", shipmentId: "shp_truth_cash", amountIqd: cashOrder.totalIqd, feeIqd: 0 },
+      { settlementId: "cod_truth_fees", shipmentId: "shp_truth_returned", amountIqd: 0, feeIqd: 3000 },
+    ]);
+    for (const id of ["cod_truth_cash", "cod_truth_fees", "cod_truth_diff"]) await audit(t.db, { actor: signed.bookkeeper.session.actor, action: "shipping.cod.submit", entityType: "cod_settlement", entityId: id, at: now });
+
+    // returns — two to decide (the manager opened one), one received and waiting for inspection
+    await t.db.insert(returns).values([
+      { id: "ret_truth_mine", rma: "RMA-TRUTH001", orderId: order.orderId, status: "requested", createdAt: now },
+      { id: "ret_truth_web", rma: "RMA-TRUTH002", orderId: order.orderId, status: "requested", createdAt: now },
+      { id: "ret_truth_back", rma: "RMA-TRUTH003", orderId: order.orderId, status: "received", receivedAt: now, createdAt: now },
+    ]);
+    await audit(t.db, { actor: signed.manager.session.actor, action: "returns.rma.create", entityType: "return", entityId: "ret_truth_mine", at: now });
+
+    // purchasing — a buyer's order above the limit and the manager's own; a posting that stopped an hour ago next to one
+    // still running (its lease not over); an invoice with variances
+    const buyer = await make.employee();
+    await t.db.insert(suppliers).values({ id: "sup_truth", code: "SUP-TRUTH", name: "مورد للتحقق", createdAt: now, updatedAt: now });
+    await t.db.insert(approvals).values([
+      { id: "apv_po_truth_buyer", kind: "purchase_order", entityType: "purchase_order", entityId: "po_truth_buyer", requestedBy: buyer, status: "pending", createdAt: now },
+      { id: "apv_po_truth_mine", kind: "purchase_order", entityType: "purchase_order", entityId: "po_truth_mine", requestedBy: manager.id, status: "pending", createdAt: now },
+    ]);
+    await t.db.insert(purchaseOrders).values([
+      { id: "po_truth_buyer", ref: "PO-TRUTH-1", supplierId: "sup_truth", status: "pending_approval", locationId: DEFAULT_LOCATION_ID, approvalId: "apv_po_truth_buyer", createdBy: buyer, createdAt: now, updatedAt: now },
+      { id: "po_truth_mine", ref: "PO-TRUTH-2", supplierId: "sup_truth", status: "pending_approval", locationId: DEFAULT_LOCATION_ID, approvalId: "apv_po_truth_mine", createdBy: manager.id, createdAt: now, updatedAt: now },
+    ]);
+    await t.db.insert(receipts).values([
+      { id: "rc_truth_stopped", ref: "RC-TRUTH-1", supplierId: "sup_truth", locationId: DEFAULT_LOCATION_ID, status: "posted", receivedBy: "posting:truth-a", postedAt: now - HOUR, createdAt: now - HOUR },
+      { id: "rc_truth_running", ref: "RC-TRUTH-2", supplierId: "sup_truth", locationId: DEFAULT_LOCATION_ID, status: "posted", receivedBy: "posting:truth-b", postedAt: now - MINUTE, createdAt: now - MINUTE },
+    ]);
+    await t.db.insert(supplierInvoices).values({ id: "inv_truth_off", supplierId: "sup_truth", invoiceNo: "INV-TRUTH-1", totalMinor: 25_000, status: "mismatch", createdAt: now });
+
+    // finance, through the services — two top-up requests (the bookkeeper approves the large one first: it then waits for
+    // a second person), the bookkeeper's adjustment request, and three drafts the bookkeeper recorded: one dated last
+    // month, a demo one, and one above the limit they may not approve alone
+    const customerId = await make.customer();
+    await t.db.insert(walletTopups).values([
+      { id: "wtu_truth_small", ref: "TU-TRUTH-1", customerId, method: "bank_transfer", amountIqd: 40_000, idempotencyKey: "truth-topup-1", createdAt: now },
+      { id: "wtu_truth_big", ref: "TU-TRUTH-2", customerId, method: "zaincash", amountIqd: 900_000, idempotencyKey: "truth-topup-2", createdAt: now },
+    ]);
+    expect((await decideTopup(t.db, signed.bookkeeper.session.actor, { topupId: "wtu_truth_big", decision: "approve" }, now)).status).toBe("awaiting_second");
+    await requestWalletAdjustment(t.db, signed.bookkeeper.session.actor, { customerId, amountIqd: 15_000, reason: "تعويض عن تأخير الشحنة", idempotencyKey: "truth-adjustment-1" }, now);
+    const today = baghdadDay(now);
+    const lastMonth = baghdadDay(dayStart(`${today.slice(0, 7)}-01`) - DAY_MS);
+    const paid = { accountId: accountId("operating_expenses"), paidFromAccountId: accountId("cash") };
+    await createExpense(t.db, signed.bookkeeper.session.actor, { ...paid, amountIqd: 20_000, description: "صيانة المكيف", incurredOn: lastMonth, idempotencyKey: "truth-expense-last-month" }, now);
+    await createExpense(t.db, signed.bookkeeper.session.actor, { ...paid, amountIqd: 30_000, description: "قرطاسية للعرض", incurredOn: today, idempotencyKey: "truth-expense-demo" }, now, { demo: true });
+    await createExpense(t.db, signed.bookkeeper.session.actor, { ...paid, amountIqd: 900_000, description: "إيجار المخزن", incurredOn: today, idempotencyKey: "truth-expense-big" }, now);
+
+    const shown: Record<string, Record<string, number>> = {};
+    for (const [who, { session, cookies }] of Object.entries(signed)) {
+      const shell = await loadAdminShell(request({ now: Date.now() }).ctx, t.db, session);
+      const queues = shell.waiting.queues.filter((queue) => (NEW_QUEUES as readonly string[]).includes(queue.id));
+      for (const queue of queues) expect.soft(await actionableOnPage(queue, cookies), `${who} · ${queue.id} · ${queue.href}`).toBe(queue.count);
+      // every queue's module is in the employee's navigation, so the rail's beads add up to the bell
+      expect(shell.waiting.queues.every((queue) => shell.modules.includes(queue.module)), who).toBe(true);
+      shown[who] = Object.fromEntries(queues.map((queue) => [queue.id, queue.count]));
+    }
+
+    // The manager acts on all ten; the bookkeeper sees their two cheap drafts (last month's and the demo one) but not the
+    // large one, nor their own adjustment or first approval, nor the settlement with a difference they submitted.
+    expect(Object.keys(shown.manager).sort()).toEqual([...NEW_QUEUES].sort());
+    expect(shown.manager.expenses - shown.bookkeeper.expenses).toBe(1);
+    expect(shown.clerk).toEqual({ inspections: shown.manager.inspections, stuck_receipts: shown.manager.stuck_receipts });
+    expect(shown.packer).toEqual({ failed_deliveries: shown.manager.failed_deliveries });
+    // Who may not record the courier's cash is not asked to reconcile the settlement that carries it.
+    expect(shown.codClerk).toEqual({ cod_settlements: shown.manager.cod_settlements - 1 });
+    // Without the list to open, no queue: returns need returns.rma.read, purchase orders purchasing.po.read.
+    expect(shown.returnsDecider).toEqual({});
+    expect(shown.poApprover).toEqual({});
+    expect(shown.costBlind).toEqual({ stuck_receipts: shown.manager.stuck_receipts });
+  });
+
+  test("speed: every module is asked at once, and the shell reads the same however much waits (no list to count, no query per row)", async () => {
+    const owner = (await signedIn(OWNER.email, OWNER.password, Date.now())).session;
+    const recording = recordingD1(t.d1);
+    const db = createDb(recording.d1);
+    const read = async () => {
+      recording.log.length = 0;
+      const waiting = await loadWaiting(db, owner);
+      return { waiting, statements: recording.log.map((entry) => ({ ...entry })) };
+    };
+    const countOf = (waiting: ShellWaiting, id: string) => waiting.queues.find((queue) => queue.id === id)?.count ?? 0;
+    const rowsRead = (statements: Recorded[]) => statements.reduce((sum, entry) => sum + entry.rows, 0);
+
+    const now = Date.now();
+    const product = await make.product({ priceIqd: 10_000, stock: 1 });
+    const order = await make.order([{ ...product, qty: 1 }]);
+    const customerId = await make.customer();
+    await t.db.insert(carriers).values({ id: "car_rows", code: "ROWS-CAR", name: "شركة شحن للقراءة", createdAt: now });
+    await t.db.insert(codSettlements).values({ id: "cod_rows", ref: "COD-ROWS-1", carrierId: "car_rows", status: "submitted", createdBy: null, createdAt: now });
+
+    const before = await read();
+    // All at once: before any statement came back, the shell's batch and the first query of every module's count had been
+    // sent (pricing, shipping both, purchasing all three, the wallet's two, the settings returns and expenses read first).
+    const firstBack = Math.min(...before.statements.map((entry) => entry.finishedAt ?? Infinity));
+    const firstWave = before.statements.filter((entry) => entry.startedAt < firstBack);
+    const sent = (pattern: RegExp, param?: string) => firstWave.some((entry) => pattern.test(entry.sql) && (param === undefined || entry.params.includes(param)));
+    expect(sent(/^batch$/)).toBe(true);
+    for (const pattern of [/"price_changes"/, /"shipments"/, /cod_settlements/, /purchase_orders/, /FROM receipts/, /supplier_invoices/, /wallet_topups/, /wallet_adjustment/]) expect(sent(pattern), String(pattern)).toBe(true);
+    expect(sent(/"settings"/, "returns.sla")).toBe(true);
+    expect(sent(/"settings"/, "finance.expense_second_approval_iqd")).toBe(true);
+
+    // Much more waits: 60 hand corrections on a settlement, 30 failed deliveries, 30 top-up requests.
+    for (let i = 0; i < 60; i++) await audit(t.db, { actor: { kind: "employee", id: `emp_rows_${i % 3}`, permissions: [] }, action: "shipping.cod.item", entityType: "cod_settlement", entityId: "cod_rows", at: now });
+    // (ten rows per insert: D1 binds at most 100 values to one statement)
+    for (let from = 0; from < 30; from += 10) {
+      await t.db.insert(shipments).values(Array.from({ length: 10 }, (_, i) => ({ id: `shp_rows_${from + i}`, orderId: order.orderId, status: "failed" as const, createdAt: now, updatedAt: now })));
+      await t.db.insert(walletTopups).values(Array.from({ length: 10 }, (_, i) => ({ id: `wtu_rows_${from + i}`, ref: `TU-ROWS-${from + i}`, customerId, method: "cash" as const, amountIqd: 10_000, idempotencyKey: `rows-topup-${from + i}`, createdAt: now })));
+    }
+
+    const after = await read();
+    expect(countOf(after.waiting, "failed_deliveries")).toBe(countOf(before.waiting, "failed_deliveries") + 30);
+    expect(countOf(after.waiting, "topups")).toBe(countOf(before.waiting, "topups") + 30);
+    expect(countOf(after.waiting, "cod_settlements")).toBe(countOf(before.waiting, "cod_settlements"));
+    expect(after.statements.length).toBe(before.statements.length);
+    expect(rowsRead(after.statements)).toBe(rowsRead(before.statements));
+  });
+
+  test("words: every queue's notice is in Arabic with all six plural forms and in English and Sorani with one and other", () => {
+    const formsOf = (locale: "ar" | "en" | "ckb", id: string) => Object.keys(((adminMessages[locale].notices as Record<string, unknown>)[id] ?? {}) as object).sort();
+    for (const id of Object.keys(QUEUE_HREF)) {
+      expect(formsOf("ar", id), `ar ${id}`).toEqual(["few", "many", "one", "other", "two", "zero"]);
+      for (const locale of ["en", "ckb"] as const) expect(formsOf(locale, id), `${locale} ${id}`).toEqual(["one", "other"]);
+    }
   });
 });
 

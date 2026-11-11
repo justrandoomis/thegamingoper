@@ -38,10 +38,11 @@ import { Key } from "./Key";
  *                  reason={{ codes: REJECT_CODES, noteRequired: true, minLength: 10 }}
  *                  onConfirm={({ code, reason }) => fetcher.submit({ code, reason }, { method: "post" })} />
  *
- * Rules: centred, at most 420 wide on phones and 520 from 768, `--r-xl`, opaque paper, a scrim, an optional glass
- * header strip. One sentence that says what will happen, then at most two keys — a neutral key and the action. A
- * destructive action is a neutral key with a red-ink label that states the consequence; the commit (red) key appears
- * in a dialog only when the dialog itself confirms an order step (`tone="commit"`).
+ * Rules — Design System v2 §4.17: centred, at most 440 wide (phones: 100% − 32; admin forms 520 from 768), `--r-xl`,
+ * OPAQUE paper with the overlay shadow, a scrim, an optional glass header strip; the title in type-h3. One sentence
+ * that says what will happen, then at most two buttons — a secondary and the action. A destructive action is the
+ * `danger` button (a --danger label that states the consequence, never brand red); the primary (red) button appears
+ * in a dialog only when the dialog itself confirms an order step (`tone="commit"`). Only for irreversible actions.
  *
  * Behaviour: rendered in a portal (client only — nothing on the server), focus moves in and is trapped, Escape, the
  * scrim and Android's back gesture close it (`dismissible`), focus returns to the opener, the page behind is `inert`
@@ -477,7 +478,7 @@ function DialogLayer({
       {title}
     </h2>
   );
-  const closeButton = showClose ? <IconKey icon="x" label={t("close")} size="sm" onClick={close} disabled={!dismissible} /> : null;
+  const closeButton = showClose ? <IconKey icon="x" variant="plain" label={t("close")} onClick={close} disabled={!dismissible} /> : null;
 
   return createPortal(
     <OverlayHostContext value={host}>
@@ -496,7 +497,7 @@ function DialogLayer({
           noValidate={onSubmit ? true : undefined}
           onSubmit={onSubmit}
           className={cx(
-            "relative flex max-h-[calc(100dvh-2*var(--gutter))] w-full max-w-[420px] flex-col overflow-hidden rounded-xl bg-paper text-ink shadow-e5 outline-none md:max-w-[520px]",
+            "relative flex max-h-[calc(100dvh-2*var(--gutter))] w-full max-w-[440px] flex-col overflow-hidden rounded-xl bg-paper text-ink shadow-overlay outline-none admin:md:max-w-[520px]",
             className,
           )}
         >
@@ -513,7 +514,7 @@ function DialogLayer({
           )}
           <div className={cx("min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-2 pt-2 sm:px-6", bodyClassName)}>
             {description ? (
-              <p id={descriptionId} className="type-body text-ink">
+              <p id={descriptionId} className="type-body text-ink-2">
                 {description}
               </p>
             ) : null}
@@ -667,9 +668,9 @@ export function ConfirmDialog({
           <Key
             ref={confirmRef}
             type="submit"
-            variant={tone === "commit" ? "commit" : "clay"}
+            variant={tone === "commit" ? "primary" : tone === "destructive" ? "danger" : "secondary"}
             loading={pending}
-            className={cx("flex-1 sm:flex-none", tone === "destructive" && "enabled:[--on:var(--red-ink)]")}
+            className="flex-1 sm:flex-none"
           >
             {confirmLabel}
           </Key>
@@ -679,13 +680,13 @@ export function ConfirmDialog({
       {children}
       {impact ? (
         isImpactRows(impact) ? (
-          <div className="mt-4 rounded-lg bg-niche px-4 py-3">
+          <div className="panel mt-4 px-4 py-3">
             <p className="type-caption text-ink-2">{t("dialog.impact")}</p>
             <dl className="mt-1 grid gap-1">
               {impact.map((row, index) => (
                 <div key={index} className="flex items-baseline justify-between gap-4">
                   <dt className="type-label text-ink">{row.label}</dt>
-                  <dd className={cx("type-data whitespace-nowrap", row.negative ? "text-red-ink" : "text-ink")}>
+                  <dd className={cx("type-data whitespace-nowrap", row.negative ? "text-danger" : "text-ink")}>
                     <bdi>{row.value}</bdi>
                   </dd>
                 </div>
@@ -728,8 +729,8 @@ export function ConfirmDialog({
         </div>
       ) : null}
       {error ? (
-        <p role="alert" className="mt-4 flex items-start gap-1.5 text-[12.5px] font-medium leading-[1.6] text-red-ink">
-          <Icon name="warning-circle" size={16} className="mt-[2.5px]" />
+        <p role="alert" className="mt-4 flex items-start gap-1.5 type-caption font-semibold text-danger">
+          <Icon name="warning-circle" size={16} className="mt-0.5" />
           <span>{error}</span>
         </p>
       ) : null}

@@ -7,25 +7,25 @@
   "family": "sandisk-optimus-gx-c50-expansion-card",
   "status": "available",
   "name": {
-    "ar": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S",
-    "en": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S",
-    "ckb": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S"
+    "ar": "SANDISK Optimus GX C50 Storage Expansion Card for Xbox Series X|S",
+    "en": "SANDISK Optimus GX C50 Storage Expansion Card for Xbox Series X|S",
+    "ckb": "SANDISK Optimus GX C50 Storage Expansion Card for Xbox Series X|S"
   },
   "short": {
-    "ar": "512GB أو 1TB أو 2TB · مرخّصة رسمياً لـ XBOX · ضمان 5 سنوات",
-    "en": "512GB, 1TB or 2TB · officially licensed for XBOX · 5-year warranty",
-    "ckb": "512GB، 1TB یان 2TB · مۆڵەتی فەرمیی XBOX · گەرەنتیی 5 ساڵ"
+    "ar": "512GB أو 1TB أو 2TB · مرخّصة رسمياً لـ Xbox · ضمان 5 سنوات",
+    "en": "512GB, 1TB or 2TB · officially licensed for Xbox · 5-year warranty",
+    "ckb": "512GB، 1TB یان 2TB · مۆڵەتی فەرمیی Xbox · گەرەنتیی 5 ساڵ"
   },
   "description": {
-    "ar": "بطاقة توسعة تخزين مرخّصة رسمياً من SanDisk لأجهزة XBOX Series X|S، وهي الاسم الجديد لبطاقة WD_BLACK C50. تُركّب في منفذ التوسعة خلف الجهاز وتعمل بأداء الـ SSD الداخلي، فتُلعب الألعاب منها مباشرة وتدعم Quick Resume. متوفرة بسعات 512GB و1TB و2TB مع ضمان محدود 5 سنوات.",
-    "en": "SanDisk's officially licensed storage expansion card for XBOX Series X|S, the new name of the WD_BLACK C50. It plugs into the expansion slot on the back of the console and matches the internal SSD, so games play directly from it, with Quick Resume support. It comes in 512GB, 1TB and 2TB with a 5-year limited warranty.",
-    "ckb": "کارتی فراوانکردنی بیرگەی مۆڵەتدراوی فەرمیی SanDisk بۆ XBOX Series X|S، کە ناوی نوێی WD_BLACK C50 ـە. لە دەروازەی فراوانکردنی پشتەوەی کۆنسۆڵ دادەنرێت و هاوتای SSD ـی ناوەکی کار دەکات، بۆیە یارییەکان ڕاستەوخۆ لێیەوە کار دەکەن و Quick Resume پشتگیری دەکات. بە 512GB، 1TB و 2TB لەگەڵ گەرەنتیی سنوورداری 5 ساڵ هەیە."
+    "ar": "بطاقة توسعة تخزين مرخّصة رسمياً من SanDisk لأجهزة Xbox Series X|S، وهي الاسم الجديد لبطاقة WD_BLACK C50. تُركّب في منفذ التوسعة خلف الجهاز وتعمل بأداء الـ SSD الداخلي، فتُلعب الألعاب منها مباشرة وتدعم Quick Resume. متوفرة بسعات 512GB و1TB و2TB مع ضمان محدود 5 سنوات.",
+    "en": "SanDisk's officially licensed storage expansion card for Xbox Series X|S, the new name of the WD_BLACK C50. It plugs into the expansion slot on the back of the console and matches the internal SSD, so games play directly from it, with Quick Resume support. It comes in 512GB, 1TB and 2TB with a 5-year limited warranty.",
+    "ckb": "کارتی فراوانکردنی بیرگەی مۆڵەتدراوی فەرمیی SanDisk بۆ Xbox Series X|S، کە ناوی نوێی WD_BLACK C50 ـە. لە دەروازەی فراوانکردنی پشتەوەی کۆنسۆڵ دادەنرێت و هاوتای SSD ـی ناوەکی کار دەکات، بۆیە یارییەکان ڕاستەوخۆ لێیەوە کار دەکەن و Quick Resume پشتگیری دەکات. بە 512GB، 1TB و 2TB لەگەڵ گەرەنتیی سنوورداری 5 ساڵ هەیە."
   },
   "highlights": [
     {
-      "ar": "تشغيل ألعاب XBOX Series X|S مباشرة من البطاقة بأداء التخزين الداخلي",
-      "en": "Plays XBOX Series X|S games directly from the card at internal-SSD performance",
-      "ckb": "یارییەکانی XBOX Series X|S ڕاستەوخۆ لە کارتەکەوە کار دەکەن بە توانای SSD ـی ناوەکی"
+      "ar": "تشغيل ألعاب Xbox Series X|S مباشرة من البطاقة بأداء التخزين الداخلي",
+      "en": "Plays Xbox Series X|S games directly from the card at internal-SSD performance",
+      "ckb": "یارییەکانی Xbox Series X|S ڕاستەوخۆ لە کارتەکەوە کار دەکەن بە توانای SSD ـی ناوەکی"
     },
     {
       "ar": "تدعم Quick Resume للتنقل بين عدة ألعاب",
@@ -52,7 +52,7 @@
     {
       "key": "interface",
       "label": { "ar": "طريقة التوصيل", "en": "Interface", "ckb": "شێوەی بەستنەوە" },
-      "value": { "ar": "منفذ توسعة XBOX", "en": "XBOX expansion slot", "ckb": "دەروازەی فراوانکردنی XBOX" }
+      "value": { "ar": "منفذ توسعة Xbox", "en": "Xbox expansion slot", "ckb": "دەروازەی فراوانکردنی Xbox" }
     },
     {
       "key": "size",
@@ -76,7 +76,7 @@
     {
       "key": "compatibility",
       "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
-      "value": { "ar": "XBOX Series X وXBOX Series S", "en": "XBOX Series X, XBOX Series S", "ckb": "XBOX Series X، XBOX Series S" }
+      "value": { "ar": "Xbox Series X وXbox Series S", "en": "Xbox Series X, Xbox Series S", "ckb": "Xbox Series X، Xbox Series S" }
     }
   ],
   "inTheBox": [
@@ -90,9 +90,9 @@
     {
       "sku": "SDK-C50-512",
       "title": {
-        "ar": "SANDISK Optimus GX C50 ‏512GB لـ XBOX Series X|S",
-        "en": "SANDISK Optimus GX C50 512GB for XBOX Series X|S",
-        "ckb": "SANDISK Optimus GX C50 ‏512GB بۆ XBOX Series X|S"
+        "ar": "SANDISK Optimus GX C50 ‏512GB لـ Xbox Series X|S",
+        "en": "SANDISK Optimus GX C50 512GB for Xbox Series X|S",
+        "ckb": "SANDISK Optimus GX C50 ‏512GB بۆ Xbox Series X|S"
       },
       "options": { "storage": "512GB" },
       "modelNumber": "SDCEOGN-512G-GNAGX",
@@ -108,9 +108,9 @@
     {
       "sku": "SDK-C50-1TB",
       "title": {
-        "ar": "SANDISK Optimus GX C50 ‏1TB لـ XBOX Series X|S",
-        "en": "SANDISK Optimus GX C50 1TB for XBOX Series X|S",
-        "ckb": "SANDISK Optimus GX C50 ‏1TB بۆ XBOX Series X|S"
+        "ar": "SANDISK Optimus GX C50 ‏1TB لـ Xbox Series X|S",
+        "en": "SANDISK Optimus GX C50 1TB for Xbox Series X|S",
+        "ckb": "SANDISK Optimus GX C50 ‏1TB بۆ Xbox Series X|S"
       },
       "options": { "storage": "1TB" },
       "modelNumber": "SDCEOGN-1T00-GNAGX",
@@ -126,9 +126,9 @@
     {
       "sku": "SDK-C50-2TB",
       "title": {
-        "ar": "SANDISK Optimus GX C50 ‏2TB لـ XBOX Series X|S",
-        "en": "SANDISK Optimus GX C50 2TB for XBOX Series X|S",
-        "ckb": "SANDISK Optimus GX C50 ‏2TB بۆ XBOX Series X|S"
+        "ar": "SANDISK Optimus GX C50 ‏2TB لـ Xbox Series X|S",
+        "en": "SANDISK Optimus GX C50 2TB for Xbox Series X|S",
+        "ckb": "SANDISK Optimus GX C50 ‏2TB بۆ Xbox Series X|S"
       },
       "options": { "storage": "2TB" },
       "modelNumber": "SDCEOGN-2T00-GNAGX",
@@ -252,7 +252,7 @@
   "sources": [
     {
       "url": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox",
-      "title": "SANDISK Optimus GX C50 Storage Expansion Card for XBOX Series X|S",
+      "title": "SANDISK Optimus GX C50 Storage Expansion Card for Xbox Series X|S",
       "publisher": "SanDisk",
       "retrieved": "2026-11-11",
       "supports": "capacities, model numbers, interface, dimensions, weight, 5-year warranty, Quick Resume, compatibility, in the box, promotional inserts, images"

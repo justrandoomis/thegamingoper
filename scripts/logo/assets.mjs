@@ -26,9 +26,10 @@ const PUBLIC = path.join(ROOT, "public");
 
 /**
  * Brand colours used by files that cannot read the design tokens (icons, manifest).
- * Keep in step with the design system: `red` = signature TamTam red, `warmWhite` = the light page ground.
+ * Keep in step with the design system: `red` = signature TamTam red, `warmWhite` = the light page ground
+ * (`--ground` in app/styles/tokens.css; #FDFCFA since Design System v2, was #F3EFEC).
  */
-const BRAND = { red: "#E5132B", warmWhite: "#F3EFEC" };
+const BRAND = { red: "#E5132B", warmWhite: "#FDFCFA" };
 
 const NAME = "TamTam Games — طمطم";
 

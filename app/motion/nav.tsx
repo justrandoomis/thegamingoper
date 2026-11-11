@@ -146,22 +146,22 @@ let anchorProbe: { element: HTMLElement; top: number } | null = null;
  * (DESIGN.md §7.2). Called right before the navigation:
  *  - the first anchor on screen is remembered, and once the other language has rendered the page is scrolled by
  *    however much the new text above it moved it, so it is still in the same place (every tier);
- *  - at the full tier each on-screen anchor also gets a view-transition name, so it does not slide with the content.
- * Names are released when the transition ends, or after 4 s if no switch happens.
+ *  - at the full tier each on-screen anchor is marked `data-motion-anchored="0…5"`; motion.css names a marked anchor
+ *    (`tt-anchor-<n>`) only while the view transition runs, so it does not slide with the content. No name is ever set
+ *    here: an element with a view-transition-name is a backdrop root, and glass inside it would stop frosting for as
+ *    long as the name stayed (Design System v2 §2.10b).
+ * Marks are released when the transition ends, or after 4 s if no switch happens.
  */
 export function armAnchors(): void {
   releaseAnchors();
   if (typeof document === "undefined") return;
-  const name = getMotionTier() === "full" && supportsViewTransitions();
+  const mark = getMotionTier() === "full" && supportsViewTransitions();
   for (const element of document.querySelectorAll<HTMLElement>("[data-motion-anchor]")) {
     if (anchored.length >= ANCHOR_LIMIT) break;
     const rect = element.getBoundingClientRect();
     if (rect.width === 0 || rect.bottom < 0 || rect.top > window.innerHeight) continue; // off screen: it travels with the page
     anchorProbe ??= { element, top: rect.top };
-    if (name) {
-      element.style.viewTransitionName = `tt-anchor-${anchored.length}`;
-      element.style.setProperty("view-transition-class", "tt-anchor");
-    }
+    if (mark) element.setAttribute("data-motion-anchored", String(anchored.length));
     anchored.push(element);
   }
   if (anchored.length > 0) anchorTimer = setTimeout(releaseAnchors, 4000);
@@ -178,10 +178,7 @@ function keepAnchorInPlace(): void {
 
 function releaseAnchors(): void {
   clearTimeout(anchorTimer);
-  for (const element of anchored) {
-    element.style.viewTransitionName = "";
-    element.style.removeProperty("view-transition-class");
-  }
+  for (const element of anchored) element.removeAttribute("data-motion-anchored");
   anchored = [];
   anchorProbe = null;
 }

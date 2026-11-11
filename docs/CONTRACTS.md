@@ -226,11 +226,29 @@ selfApprovedRecentIqd(db, employeeId, now): number · needsOtherApprover(expense
 ```
 `finance.expense.manage` for every call, checked before the input is read. Approving posts Dr the expense account (cost centre on the line) / Cr where the money came from (cash, bank clearing, accounts payable, owner's equity or a sub-account of those) in the same batch as the guarded draft → posted update, dated noon (Baghdad) of the day incurred — a closed month, or a month before the last closed one, refuses it (`period_closed`, also at creation). Above the limit the recorder cannot approve (`expense_self_approval`, 403); what one employee records AND approves alone counts together over 24 hours against the limit (no splitting), held inside the posting batch too. The cost of goods, stock write-offs, cash over/short, the wallet, customer control and inventory accounts are never expense or payment accounts here. Errors: `expense_not_draft`, `expense_not_posted`, `expense_self_approval`, `expense_account_invalid`, `expense_paid_from_invalid`, `cost_center_invalid`, `expense_date_future`, `period_closed`, `idempotency_mismatch` (texts: `admin-finance` → `errors.*`).
 
+### `orders/pos-sale.server.ts`  (added by admin 06 pos on 2026-11-11 — a commerce-core file with its own tests, `tests/admin-pos-core.test.ts`; flows in `tests/admin-pos.test.ts`; review cases in `tests/admin-pos-review.test.ts`)
+```ts
+placePosSale(db, actor, raw: PosSaleInput, now): Promise<PosSaleResult>   // pos.sale.create
+type PosSaleInput = {
+  idempotencyKey;                         // made on the device once per sale, 22–128 URL-safe chars (an offline sale keeps it)
+  shiftId;                                // the drawer; its register gives the store location, branch and register
+  customerId?; contact?: { phone; name? }; // an account (wallet allowed) or a phone kept as a guest contact
+  lines: ({ variantId } | { usedUnitId })[] & { qty; unitPriceIqd; discountIqd?; serialIds? };   // prices are the CALLER's (the POS module)
+  orderDiscountIqd?; payments: { method: "pos_cash"|"pos_card"|"wallet"; amountIqd; tenderedIqd? /* cash */; reference? /* card slip */ }[];
+  notes?; offlineCreatedAt?; allowOversell? /* + inventory.oversell.authorize */; isDemo?; locale?; reason?; auditFacts?;
+};
+type PosSaleResult = { orderId; ref; receiptNumber /* "RC-000001" */; totalIqd; changeIqd; replayed; lateForClosedShift }
+posSaleTotals(input) · posSaleKeyHash(key) · storeLocationTree(db, locationId): { locationIds; treeIds; locationSort } · POS_PAYMENT_METHODS · POS_RECEIPT_SEQUENCE · POS_SALE_ERROR_KEYS · type PosReceiptData
+```
+A sale at the counter in ONE batch: guest contact · order (channel `pos`, status `delivered`, payment `paid`, `register_id`, `pos_shift_id`, `cashier_id`, `branch_id`, `offline_created_at`; totals that satisfy the CHECKs and `orders.totals_vs_items`) · lines (snapshots, `cost_snapshot_iqd` [P], warranty months / used-device days) · stock **reserve → commit** at the register's location of kind `store` and the active sellable bins under it (a scanned serial's unit from the serial's own location when it is free there — review 2026-11-11 — the rest most free first): a `stock_reservations` row per slice inserted as `committed`, a `reserve` and FIFO `sale` movements (unit cost [P]), `on_hand −= qty` guarded on `on_hand − reserved ≥ qty` (units promised to web orders are never sold here → `insufficient_stock`; with `allowOversell`: guarded `on_hand ≥ qty`, the level marked `allow_oversell`), cost layers consumed (guarded, re-planned up to 3× on `COST_LAYER_CHANGED`) · serials checked in the store's tree, then `assignSerialsStatements` (sold once) · a used device `reserveUsedUnitStatements` → sold with its own serial · payments `paid`, recorded by the cashier (`verified_by`), the card's slip in `reference`, the wallet's ledger debit (`order:<id>:wallet`; the overdraft trigger aborts everything) · the drawer's `cash_movements` row kind `sale` (+ the cash applied, key `pos_sale:<order>:cash`) · warranties (one per serial, else per line) · the receipt (`invoices` kind `receipt`, counter `pos_receipt`, frozen `PosReceiptData`, no cost) · postings: `postPaymentReceived` / `postWalletPayment` per payment, `postSale`, `postCogs` (FIFO; unknown costs stay out and are counted in the audit) · order event `placed` · audit `pos.sale.create`. The shift: open → guarded `status = 'open'`; closed and not reviewed → only a sale queued offline (`offlineCreatedAt` set) lands there, and the same batch moves its `expected_cash_iqd` up and `variance_iqd` down by the cash (`lateForClosedShift`; an offline sale whose drawer was counted while it was recorded is re-planned as late); a sale rung up now on a counted drawer → `pos_shift_not_open` (review 2026-11-11); reviewed → `pos_shift_reviewed`. The shift must be the actor's own unless they hold `pos.shift.review`; a branch-limited employee sells at their branch's registers only. Idempotency: `orders.idempotency_key` = sha256("tamtam.pos.sale.v1|" + key); the same key returns the first sale (`replayed: true`, also for two at once); the same key with another total or shift → `idempotency_conflict`. Payments must add up exactly (cash may be over-tendered: `changeIqd`). Errors: `POS_SALE_ERROR_KEYS` — `pos_shift_not_open`, `pos_shift_reviewed`, `pos_register_inactive`, `pos_location_invalid`, `insufficient_stock`, `serial_not_available`, `serials_required`, `serials_count`, `used_unit_not_available`, `variant_inactive`, `payment_total_mismatch`, `payment_duplicate_method`, `cash_tendered_short`, `wallet_requires_account`, `wallet_insufficient`, `account_blocked`, `idempotency_conflict`, `period_closed`; plus `invalid` field keys (`discount_exceeds_price`, `used_unit_qty`, `serials_not_tracked`, `serials_duplicate`, `duplicate_line`, `phone_invalid`) (texts: `admin-pos` → `errors.*`).
+
 ### `app/server/jobs.server.ts` (scheduled jobs)
 `runScheduledJobs(db, cron, now, env?)` is called by the Worker's `scheduled` handler (`workers/app.ts`, crons in `wrangler.jsonc`); `runJob(db, job, now, { origin, triggeredBy })` lets the operations module re-run a job (caller checks `ops.job.run`); `listJobRuns(db, job?, limit?)` for the ops screens (caller checks `ops.job.read`). Every run is a `job_runs` row. The daily `retention` job also runs the areas' purges (`purgeAreaData`): recommendation signals, abandoned trade-in photos and — since 2026-11-11 — `purgeExpiredAssistantSessions(db, now)`: stored assistant conversations past their `expires_at`, with their messages (the ticket keeps its note and loses the link; `consents` rows are append-only and stay).
 
 ## 2. Catalogue read layer (owner: storefront shell team)
 `catalog/cards.server.ts` — `getCardsByIds`, `listCards`, `getNewArrivals`, `getDeals`, `getUsedSpotlight`; `catalog/taxonomy.server.ts` — `getPlatforms`, `getCategoryTree`, `getNavTaxonomy`. See the files for exact types.
+
+**Card facts (design v2, 2026-11-11; rules in `catalog/card-facts.ts`, client-safe).** Every `ProductCardData` from the read layer also carries `isNew` (released, or really listed, ≤ 30 days ago — a demo row's listing time is the seed's clock and never counts), `kindLabel` (the card's platform line, localized: «جهاز PS5», «لعبة Switch 2», «يد تحكم · PS5», «سماعة · متعددة المنصات»), `forPlatforms` (the researched platforms, menu order: the dots), `releaseAt` (coming soon) and `compareAtDemo`. `compareAtIqd` is set only when an APPLIED price change set exactly that compare-at (really charged) or as a demo row's demo value (`compareAtDemo: true`: struck only under the demo marking, never worded as a saving); `deals`/`dealsOnly` follow the same rule. A demo row never reports `low_stock`. `badge`: "preorder" › "deal" › "new" (only with `isNew`), none on a sold-out card. `image.opaque` flags a photo that is not a cut-out (box art and screenshots excluded). Sort "featured" is the suggested order «المقترَح»: in stock › coming soon (soonest release first) › sold out, newest first inside; `listProducts` on a platform hub leads with the platform's own in-stock consoles in device-model order (entry version of a model first). `getProductDetail` applies the same rules (`isNew`, variant `compareAtDemo`, no demo scarcity, `opaque` pictures).
 
 **Shell contract for every storefront page** (`app/routes/storefront/shell/README.md` has the examples): no `<main>` of your own (the shell's `<main id="main">` is the landmark — start with the `<h1>`); build `meta` with `shellMeta(args, { title, description, image, type })` from `~/routes/storefront/shell/meta` (React Router replaces the layout's meta, so this keeps canonical, hreflang, Open Graph and demo-mode noindex); a page with its own bottom bar declares `handle = { shell: { tabBar: false } } satisfies ShellHandle` and renders `<TaskBar>`; sticky page elements sit at `inset-block-end: var(--shell-bottom)`. Product pages use `productShareImage(slug)` from `~/art` for `og:image`. The header search calls `GET /api/search/suggest?q=&locale=` → `{ suggestions: { label, href /* locale-less */, hint? }[] }` (catalog area); the footer links `/policies/shipping|returns|warranty|privacy|terms`, `/about`, `/contact`, `/accessibility` (content area).
 
@@ -407,6 +425,73 @@ listPreorders(db, actor, locale, now) · exportOrdersCsv(db, actor, filters, hea
 ```
 Errors (texts: `admin-orders` → `errors.*`): `order_on_hold` (also a "flag" on a held order: only a reviewer's clear lifts a hold), `packing_incomplete`, `pack_not_open`, `assign_not_open`, `assignee_not_packer`, `review_not_open`, `preorder_not_open`, `proof_not_shipped`, `parcel_packed`, `split_qty_exceeds`, `scan_serial_instead`, plus the core's codes and the `edit_*` codes of `orders/edit.server.ts`.
 
+#### 06 pos
+
+`services/admin/pos/` — authorization inside (`assertCan`; branch-limited employees work at their branch's registers); a sale only through the core file `orders/pos-sale.server.ts` (§1); prices through pricing's `resolveListPrice` (channel `pos`); the module itself writes `pos_registers`, `pos_shifts` (open, close, review) and hand `cash_movements` (pay_in / pay_out / drop), each with an audit event, and the shift-difference posting through `journalStatements` (key `pos_shift:<id>:variance`). No cost or margin in any result; the drawer's owner — a supervisor working a till included — never receives expected cash, cash sales, sales by method or the difference (blind count; `seesShiftFigures(actor, shift)` in `shifts.server.ts`); serials on receipts only with inventory.serial.read; the buyer's wallet balance only with customers.wallet.read.
+Exports used across the module's routes (review 2026-11-11): `printReceipt(db, actor, ref, now, locale?) → { copy /* 0 = the original */; receipt }` (the first print is recorded once as `pos.receipt.print`, every later one needs pos.receipt.reprint and is `pos.receipt.reprint`); `discardQueuedSale(db, actor, { key, reason, sale? }, now)` (pos.shift.review; the audit keeps what the device held; a recorded key → `sale_recorded`); `getReceipt(…).printed`; a key reused with other figures on `moveCash` / `openShift` → `idempotency_mismatch`. Details: `docs/areas/admin-pos.md`.
+
+```ts
+// types.ts (client-safe): IQD_DENOMINATIONS, CASH_MOVE_KINDS, TILL_METHODS, CASHIER_DISCOUNT_LIMIT_BPS (1000), CATALOG_MAX_AGE_MS, shiftStateOf, parseWhole / parsePercentBps (Arabic-Indic / Persian digits), cartTotals, discountBeyondLimit, URL filters (parseShiftFilters / shiftSearch, parseSaleFilters / saleSearch), baghdadDay(Range), view-model types (TillItem, LookupResult, CatalogSnapshot, CustomerHit, SaleRequest, SaleOutcome, ShiftView, ShiftReport, RegisterRow, SaleRow, ReceiptView)
+// shared.server.ts — posAccess(actor) · POS_READERS · employeeNames
+// registers.server.ts — 06.01 06.04
+listRegisters(db, actor, locale) · registerFormOptions(db, actor, locale) · saveRegister(db, actor, { registerId?, code, name, locationId /* kind store */, branchId?, isActive, reason? }, now): { registerId; changed }
+// shifts.server.ts — 06.02
+openShiftForm(db, actor, locale) · openShift(db, actor, { registerId, openingFloatIqd, denominations?, notes?, idempotencyKey }, now): { shiftId; replayed }
+moveCash(db, actor, { shiftId, kind: "pay_in"|"pay_out"|"drop", amountIqd, reason, idempotencyKey }, now): { replayed }   // never below zero
+closeShift(db, actor, { shiftId, denominations? | countedCashIqd, notes? }, now): { needsReview; varianceIqd /* reviewers only */; replayed }
+reviewShift(db, actor, { shiftId, expectedVarianceIqd, note }, now): { replayed; journalEntryId }   // pos.shift.review, never who opened or closed it
+myShift(db, actor, locale) · listShifts(db, actor, filters, locale) · shiftReport(db, actor, shiftId, locale) · countReviewable(db, actor)
+// sale.server.ts — 06.01 06.03–06.07
+lookupItem(db, actor, { shiftId, code }, locale, now): LookupResult · searchItems(db, actor, { shiftId, q }, locale, now) · catalogSnapshot(db, actor, { shiftId }, locale, now)
+findCustomer(db, actor, { phone }): CustomerHit | null   // + customers.customer.read
+createSale(db, actor, raw: SaleRequest, { locale, storeMode }, now): { ok: true; ref; receiptNumber; totalIqd; changeIqd; replayed; lateForClosedShift }   // throws PosSaleError (prices, resolvable)
+syncSales(db, actor, { sales }, ctx, now, t?): { key; outcome }[] · saleFailure(error, t?)
+listSales(db, actor, filters, locale) · getReceipt(db, actor, ref, locale): ReceiptView · recordReprint(db, actor, ref, now): { copy }
+```
+Errors (texts: `admin-pos` → `errors.*`): `price_changed`, `price_missing`, `not_sellable`, `discount_not_allowed`, `discount_over_limit`, `discount_below_floor` (403), `discount_reason_required`, `card_reference_required`, `wallet_offline`, `serial_unknown`, `override_reason_required`, `customer_unknown`, `shift_already_open`, `register_busy`, `shift_not_open`, `shift_not_in_review`, `shift_changed`, `drawer_short`, `shift_self_review` (403), `code_taken`, `register_has_open_shift`, `register_changed`, field keys `location_not_store`, `branch_invalid`, `code_invalid`, `count_mismatch`, `reason_required`, plus the core file's `POS_SALE_ERROR_KEYS`.
+
+#### 07 customers
+
+`services/admin/customers/` — authorization inside (`assertCan`); no cost, landed cost, margin or profit is read anywhere ("value" = paid − refunded); phones through `phoneView` (masked without customer.phone.read_full; partial-digit search needs it); the wallet only through the core (`getWalletBalance`, `listWalletEntries`; credits stay module 10's); every change one guarded batch with its audit event; notes and logged contacts are append-only audit events; consents only ever get withdrawals. Details: `docs/areas/admin-customers.md`.
+
+```ts
+// types.ts (client-safe): statuses and tones, RFM_RULES + scoreRecency/Frequency/Monetary + segmentOf + rfmOf (pure), FLAG_RULES + FLAG_IDS,
+//   CUSTOMER_VIEWS / parseCustomerFilters / customerSearch (URL state), consent + privacy filters, PRIVACY_DUE_DAYS, VERIFY_METHODS,
+//   MERGE_VERIFY_METHODS, RETENTION (what an erasure erases / keeps), MESSAGE_SAFE_FIELDS, view-model types
+// shared.server.ts — customersAccess(actor) · phoneView(e164, full) · customerById · changeableCustomer (merged/erased → customer_unavailable) · hasLongDigitRun · CUSTOMER_ERROR_KEYS
+// list.server.ts — 07.01 07.06
+listCustomers(db, actor, filters, now): CustomerListPage · customerWhere(filters, actor, now) · customerQueues(db, actor, now): { vip; risk; complaints; blocked }
+exportCustomersCsv(db, actor, filters, now, labels): { header; rows; truncated }   // + customers.customer.export, ≤ 5,000 rows, audited
+// profile.server.ts — 07.01
+customerHeader(db, actor, customerId, now) · getCustomerProfile(db, actor, customerId, locale, now): CustomerProfile   // sections null without their module's permission; activity by activityScope(actor, access) (wallet / consent / other modules' events need their permission)
+addCustomerNote(db, actor, { customerId, text }, now)   // customers.customer.note · currentConsents(db, customerId)
+// rfm.server.ts — 07.02
+rfmFacts(db, customerIds?) · storedSegments(db, ids) · segmentOverview(db, actor, now) · recomputeSegments(db, actor, now): { counts; total }   // customers.segment.manage, one batch
+// flags.server.ts — 07.06
+customerFlags(db, ids, now): Map<id, CustomerFlag[]> · flagCondition(view, now): SQL
+setVip(db, actor, { customerId, tier | null, reason }, now)   // customers.customer.update
+setFraudFlag / setBlocked(db, actor, { customerId, flagged | blocked, reason }, now)   // customers.customer.block; blocking revokes the sessions
+// contact.server.ts — 07.03 (customers.customer.update)
+getContactView(db, actor, customerId, locale) · updateCustomerDetails(db, actor, { customerId, name?, email?, locale, reason, expectedUpdatedAt }, now)
+saveCustomerAddress(db, actor, { customerId, id?, …AddressInput, reason, expectedUpdatedAt? }, now) · deleteCustomerAddress / setCustomerDefaultAddress(db, actor, { customerId, addressId, reason, expectedUpdatedAt? }, now)
+setCustomerChannels(db, actor, { customerId, sms, whatsapp, email, reason, expectedUpdatedAt? }, now)   // a stamp older than the row → customer_changed; limit and default decided in the batch
+// privacy.server.ts — 07.04
+listConsentLog(db, actor, filters) · customerConsentHistory(db, actor, customerId) · consentSources   // customers.consent.read
+recordWithdrawal(db, actor, { customerId, kind, reason }, now)   // customers.privacy.manage; a "no" only
+listPrivacyRequests · privacyCounts(db, actor, now) · getPrivacyRequest(db, actor, ref, now) · customerPrivacyRequests
+createPrivacyRequest(db, actor, { customerId? | phone, kind, details?, idempotencyKey }, now): { ref; replayed } · verifyPrivacyRequest(…, { ref, method, note }) · rejectPrivacyRequest / completePrivacyRequest(…, { ref, note })
+buildPrivacyExport(db, actor, ref, now): { filename; body; sha256 }   // verified exports still in progress only, audited per download
+planErasure(db, actor, ref) · executeErasure(db, actor, { ref, reason }, now) · executeUnsubscribe(db, actor, { ref, kinds, note }, now) · erasedPhone(customerId)   // erasure: the account + accounts merged into it, guest contacts' names and answers, browsing signals; every guard again in the batch; wallet amounts in the plan only with customers.wallet.read
+// merge.server.ts — 07.05 (customers.customer.merge)
+duplicateCandidates(db, actor, customerId) · storeDuplicates(db, actor) · recentMerges(db, actor)
+planMerge(db, actor, { keepId, mergeId }, now): MergePlan (moves, stays, consentCarry, blockers incl. duplicate_blocked / duplicate_flagged, fingerprint; walletIqd null without customers.wallet.read)
+mergeCustomers(db, actor, { keepId, mergeId, method, verification, reason, fingerprint }, now): { replayed; moved }
+// communication.server.ts — 07.07
+listCommunication(db, actor, { customerId, orderRef? }, now)   // customers.communication.read; outbox rows with MESSAGE_SAFE_FIELDS only + logged contacts
+logContact(db, actor, { customerId, channel, direction, orderRef?, summary }, now)   // customers.customer.note; an order of this customer only
+```
+Errors (texts: `admin-customers` → `errors.*`): `CUSTOMER_ERROR_KEYS` — `customer_changed`, `address_limit`, `note_has_card_number` (field), `consent_not_granted`, `privacy_not_verified`, `privacy_not_exported`, `privacy_not_open`, `privacy_wrong_kind`, `privacy_already_verified`, `privacy_customer_required`, `privacy_open_exists`, `erasure_blocked`, `merge_same_account`, `merge_blocked`, `merge_plan_changed`, `merge_already_done`, `segments_changed`, `vip_unchanged`, `flag_unchanged`, `status_unchanged`, plus `customer_unavailable` and the shared field keys.
+
 #### 09 purchasing
 
 `services/admin/purchasing/` — authorization inside (`assertCan`; branch-limited employees act on their branch's locations); stock moves only through the commerce core (`receiveStock` with `ref { type: "receipt_item", id }` and the landed unit cost, `adjustStock` for returns to the supplier), the books through `postStockReceipt` (Dr inventory / Cr accounts payable, key `receipt:<id>:receipt`), landed costs through pricing's `addLandedCost` / `allocateLandedCost` / `removeLandedCost` on draft receipts. [P] prices, totals, rates, landed costs and claim amounts absent without cost.read (views, lists, print document, alerts). Details: `docs/areas/admin-purchasing.md`.
@@ -556,3 +641,91 @@ openCounterRepair(db, actor, { phone, contactName?, deviceModelId? | deviceText,
 listWarranties · getWarranty · extendWarranty(db, actor, { warrantyId, endsOn: "YYYY-MM-DD", reason }, now) · voidWarranty(db, actor, { warrantyId, reason }, now) · endOfBaghdadDay(day)
 ```
 Errors (texts: `admin-returns` → `errors.*`): `approver_is_requester` (403), `return_not_delivered`, `return_qty_exceeds`, `not_eligible`, `rma_changed`, `photo_limit`, `item_inspected`, `serial_mismatch`, `quarantine_resolved`, `no_suppliers`, `refund_exceeds_items`, `refund_exceeds_policy`, `refund_not_ready`, `repair_changed`, `transition_not_allowed`, `quote_not_approved`, `assignee_not_technician`, `warranty_void`, `warranty_changed`, field keys `items_required`, `used_unit_decision`, `override_reason_required`, `not_inspected`, `not_returned`, `items_not_inspected`, `refund_waiting`, `no_refund_issued`, `no_store_credit_issued`, `no_repair_done`, `no_supplier_unit`, `not_later`, plus the core's codes.
+
+#### 13 devices
+
+`services/admin/devices/` — authorization inside (`assertCan`); money only through the core's statement builders, in ONE batch with the trade-in → paid, the serial and the used unit (a payout that loses a race moves no money): `walletCreditStatement` + `postWalletCredit` (kind `trade_in_credit`, key `tradein:<id>:payout`: Dr inventory / Cr wallet liability, audit `customers.wallet.credit`) for store credit, one `journalStatements` entry for cash (Dr inventory / Cr cash, key `trade_in:<id>:payout`, ref `trade_in`, guarded against an existing credit); prices only through pricing 03 (`setUsedUnitPrice`). The module writes `trade_ins` (staff steps), `trade_in_events` (the history the storefront's tracking page reads: `inspection_scheduled` {at}, `inspected`, `offered` {amountIqd}, `accepted`/`declined` {inPerson}, `paid`, `cancelled`, `expired`; staff-only `data_wiped`, `photo`), `used_units`, the trade-in `serials` row (and, for a unit the store sold before, its open `order_item_serials.released_at` and its active warranty `void`), `media` of used units, `files` visibility (photos published on listing), `inspection_templates` (new versions), `trade_in_price_guides`, `digital_codes` — each change one guarded batch with its audit event (`devices.*`). [P] acquisition / serial / code costs absent without cost.read, the margin without profit.read; phones masked without customer.phone.read_full; serials only for registry / inspection / ownership staff. Details: `docs/areas/admin-devices.md`.
+
+```ts
+// types.ts (client-safe): statuses + tones (trade-in, used unit, serial, code), URL filters (parseTradeInFilters / tradeInSearch, parseUsedFilters,
+//   parseRegistryFilters), PIPELINE_STEPS + pipelineStep(), parseWhole / parsePercent (Arabic-Indic, Persian digits), limits (MAX_OFFER_IQD, OFFER_VALID_DAYS…), view models
+// shared.server.ts — devicesAccess(actor) · DEVICES_PERMISSIONS · inspectionKindFor({ productKind, deviceKind }) · activeTemplates · templateById
+//   checklistView(template, checklist, locale, kind) · buildChecklist(template, answers, actorId, now, clean) → { checklist; complete; batteryPct } · checklistAnswersFrom(form)
+//   unitLocations · assertUnitLocation · unitBranchWhere(actor) (lists and their queue counts) · baghdadInstant(day, time)
+// tradeins.server.ts — 13.03 13.04 13.08 13.09
+listTradeIns(db, actor, filters, locale, now) · getTradeInDetail(db, actor, ref, locale, now, { file, target? }) · deviceQueueCounts(db, actor, now)   // queue counts, null per missing permission; each = its list (viewWhere(view, now))
+openCounterTradeIn(db, actor, { idempotencyKey, phone, contactName?, deviceModelId? | code?, notes?, ownershipDeclared: true }, now, storeMode): { tradeInId; ref; replayed }
+scheduleInspection(db, actor, { tradeInId, day, time, note? }, now) · recordInspection(db, actor, { tradeInId, templateId (current version), variantId?, serial?, grade?, answers, included, ownershipOk?, accountLockOk?, notes? }, now)   // a "yes" not on file for this serial: + devices.ownership.verify; left out: kept
+makeOffer(db, actor, { tradeInId, amountIqd, validDays?, note? }, now): { expiresAt; replayed } · recordAnswer(db, actor, { tradeInId, decision: "accept", payout } | { …, "decline", reason? }, now): { status; replayed }
+confirmWipe(db, actor, { tradeInId, note? }, now) · payOut(db, actor, { tradeInId, method?, locationId, reason? }, now, { labels? }): { usedUnitId; replayed; method }
+cancelTradeIn(db, actor, { tradeInId, reason }, now) · expireTradeInOffers(db, now, limit?): { expired }   // for the daily job
+valuationOf(guide, grade, included) · guideFor(db, modelId, variantId) · priceDifference(target, offerIqd) · payoutNeedsSecond(offerIqd, suggestedIqd, guideSetByOfferer?) · normalizeSerial
+assertTradeInPhotoSlot · recordTradeInPhoto · tradeInDocument · counterModelOptions · payoutWalletKey · payoutJournalKey · counterTradeInId
+// used.server.ts — 13.02 13.08 13.09
+listUsedUnits(db, actor, filters, locale) · getUsedUnitDetail(db, actor, id, locale, { file }) · listBlockers(facts) · settledStatus(db, unit, kind)   // the ready rule, also for the payout
+saveUnitChecklist(db, actor, { usedUnitId, templateId (current version), answers }, now) · saveUnitGrading(db, actor, { usedUnitId, grade, cosmeticNotes, defects, included, warrantyDays }, now, labels)
+confirmUnitChecks(db, actor, { usedUnitId, ownership?, wipe?, note? }, now) · startReinspection(db, actor, { usedUnitId, reason }, now)
+assertUnitPhotoSlot · recordUnitPhoto · setPhotoReal(db, store, actor, { usedUnitId, mediaId, real }, now) · removeUnitPhoto(db, store, actor, …)
+listUnit(db, store, actor, { usedUnitId }, now) · unlistUnit(db, actor, { usedUnitId, reason }, now)
+// registry.server.ts — 13.01 · templates.server.ts — 13.02 · guides.server.ts — 13.03 · codes.server.ts — 13.06 13.07 · files.server.ts
+listRegistry(db, actor, filters, locale) · getRegistryDetail(db, actor, serialId, locale)   // movements only with inventory.movement.read
+listTemplates · getTemplateEditor(db, actor, kind, locale) · saveTemplate(db, actor, { kind, expectedVersion, name, items, reason }, now): { templateId; version }
+listGuides · modelOptions · saveGuide(db, actor, { guideId?, expectedUpdatedAt?, deviceModelId, variantCode?, baseIqd, multipliers (percent), deductions, isActive, reason }, now)
+digitalOverview(db, actor, locale) · deliveryClass(facts) · listCodes(db, actor, variantId, { status, page }, locale)
+importCodes(db, actor, dataKey, { variantId, codes, expiresOn?, unitCostIqd? }, now, { demo? }): { added; duplicates } · revealCode(db, actor, dataKey, { codeId, variantId?, reason }, now): { code }   // only codePaidFor(row): delivered on a paid, not fully refunded line
+revokeCode(db, actor, { codeId, variantId?, reason }, now) · codeContext(codeId) · normalizeCode · devicesFile(db, actor, fileId)
+```
+Errors (texts: `admin-devices` → `errors.*`): `trade_in_changed`, `trade_in_not_open`, `inspection_required`, `offer_ownership`, `offer_account_lock`, `offer_checklist_incomplete`, `offer_grade_required`, `offer_variant_required`, `offer_serial_required`, `offer_open`, `offer_closed`, `payout_not_accepted`, `payout_method_required`, `payout_requires_account`, `payout_wipe_required`, `payout_second_person` (403), `payout_started`, `photo_limit`, `unit_changed`, `unit_not_editable`, `unit_returned_reinspect`, `unit_not_returned`, `unit_not_ready`, `unit_not_listed`, `unit_reserved`, `not_listable`, `last_real_photo`, `template_changed`, `guide_changed`, `not_digital`, `code_unpaid`, `code_not_revealable`, `code_not_available`, field keys `serial_in_stock`, `serial_in_trade_in`, `serial_variant_mismatch`, `variant_not_model`, `template_invalid`, `offer_step`, `percent_invalid`, `schedule_out_of_range`, `key_invalid`, `key_taken`, `critical_pass_fail`, `device_required`, plus the wallet's and pricing's codes.
+
+#### 20 security
+
+`services/admin/security/` — authorization inside (`assertCan` / `assertAny`, before the input is read); sessions and two-step only through the auth core (`revokeEmployeeSession`, `revokeAllEmployeeSessions`, `resetEmployeeMfa`), the chain only through `sealAudit` / `verifyAuditChain`. The module writes `role_permissions`, `roles` (new, non-system), `employee_roles`, `employees.branch_id` — each change one guarded batch with its audit event — and audit-only records (restore tests, access reviews, refund reviews, verify / seal / export). No secret leaves the server (no token, hash, TOTP secret or recovery code); audit snapshots of cost families are withheld and cost / margin / profit keys cut without cost.read (also in the CSV); phone identifiers masked without customer.phone.read_full. Details: `docs/areas/admin-security.md`.
+
+```ts
+// types.ts (client-safe): SECURITY_ERROR_KEYS, FIELD_KEYS (= FIELD_PERMISSIONS, tested), ACCESS_REVIEW_INTERVAL_DAYS, RESTORE_TEST_INTERVAL_DAYS, TIME_TRAVEL_DAYS,
+//   SIGNIN_THRESHOLDS + SIGNIN_RULES, REFUND_THRESHOLDS + REFUND_SIGNALS, URL filters (parseStaffFilters / staffSearch, parseAuditFilters / auditSearch, parseSigninFilters / signinSearch, parseRefundFilters), view models
+// staff.server.ts — 20.01
+listStaffSecurity(db, actor, filters, locale, now) · getStaffSecurity(db, actor, employeeId, locale, now, currentSessionId?) · staffCounts · staffOptions   // security.session.read
+endStaffSession(db, actor, { employeeId, sessionId, reason }, now): { ended } · endAllStaffSessions(db, actor, { employeeId, reason }, now): { ended }   // security.session.revoke; never one's own (own_account_here)
+resetStaffTwoStep(db, actor, { employeeId, reason }, now): { reset }   // security.mfa.manage; two_step_not_on; target_more_privileged (403) when the target holds a permission the actor does not
+// roles.server.ts — 20.02 (read: staff.manage | security.access_review.perform | security.session.read; write: staff.manage)
+listRoles(db, actor, locale, now) · getRole(db, actor, roleId, locale) (+ membersFingerprint) · fingerprintOf(permissions) · membersFingerprintOf(ids)   // sorted, comma-joined
+saveRolePermissions(db, actor, { roleId, permissions, fingerprint, reason }, now): { added; removed; members }   // grant_exceeds_own / revoke_exceeds_own: only one's own permissions, both ways
+createRole(db, actor, { key, nameAr, nameEn?, descriptionAr?, copyFrom?, reason }, now): { roleId; copied; skipped }
+setEmployeeRoles(db, actor, { employeeId, roleIds, expected, reason }, now): { added; removed; gained; lost }   // a role given OR taken needs all it grants (revoke_exceeds_own: only an owner takes the owner role)
+setEmployeeBranch(db, actor, { employeeId, branchId | null, reason }, now): { changed }   // target_more_privileged when the target holds more
+// shared.server.ts — holdsAll(actor, stored) · storedPermissionsOf(db, employeeId) (the hierarchy checks above)
+// audit-log.server.ts — 20.03
+listAuditEvents(db, actor, filters) · getAuditEvent(db, actor, eventId) · exportAuditCsv(db, actor, filters, now): { csv; rows; truncated }   // audit.read; the export is audited
+verifyChain(db, actor, now) · sealNow(db, actor, now) · chainHead(db)   // security.audit.verify; both audited
+// protections.server.ts — 20.04 20.06
+encryptionStatus(db, actor, { DATA_KEY? }) (security.audit.verify) · duplicatesView(db, actor) (security.fraud.review) · IDEMPOTENCY_RULES
+// backups.server.ts — 20.05 · retention.server.ts — 20.07
+backupsView(db, actor, now) · recordRestoreTest(db, actor, { testedOn, method, pointInTime?, restoredTo, durationMinutes?, result, checks, notes?, idempotencyKey }, now): { id; replayed } · restoreTestAge(db, now)   // security.backup.manage
+retentionView(db, actor) · performAccessReview(db, actor, { roleId, outcome: "confirmed"|"changes_needed", note, fingerprint, members }, now) · reviewsDue(db, now, days) · lastReviews(db, roleIds)   // role_changed when the permissions OR the members (getRole's membersFingerprint) moved on
+// signins.server.ts · refund-reviews.server.ts — 20.08
+signinOverview(db, actor, window, now) · listAuthEvents(db, actor, filters, now) · alertCount(db, actor, now)   // security.auth_event.read
+listRefundReviews(db, actor, filters, now) · reviewRefund(db, actor, { refundId, outcome: "cleared"|"suspicious", note }, now) · unreviewedCount(db, actor, now)   // security.fraud.review; reviewer_involved
+// overview.server.ts — securityOverview(db, actor, now) · shared.server.ts — securityAccess, identifierFor, snapshotWithheld, cutSnapshot, deviceOf
+```
+Errors (texts: `admin-security` → `errors.*`): `SECURITY_ERROR_KEYS` — `own_account_here`, `two_step_not_on`, `role_locked`, `role_changed`, `own_role`, `own_roles`, `wildcard_owner_only`, `grant_exceeds_own`, `revoke_exceeds_own`, `target_more_privileged`, `role_key_taken`, `roles_changed`, `last_owner`, `branch_unknown`, `reviewer_involved`, `restore_test_future`, `chain_verify_failed`, field keys `reason_required`, `no_change`.
+
+#### 22 settings
+
+`services/admin/settings/` — authorization inside; settings values only through `setSetting` / `settingChangeStatements` (`app/server/settings.server.ts`, extended additively: `approver` per key, `{ expected }` read once, compared and guarded inside the batch on the same stored text (`expected: null` matches only a stored value that no longer fits its schema), `readSettingState(db, key, row?)` → `{ value | null, isStored, broken }` (never throws), `parseSettingValue`, `isSettingChangedError`). The money-control keys (`pricing.drop_approval_bps`, `purchasing.po_approval_limit_iqd`, `finance.topup_second_approval_iqd`, `finance.expense_second_approval_iqd`) and `returns.sla` are read by their modules with the old constants as defaults; a change of a money-control key by anyone without `settings.change.approve` is an `approvals` row (kind `settings`) that another person approves in one batch. The module also writes `custom_fields`, `message_templates`, and the `pages` rows of kind `policy` for `returns` / `warranty` (draft, publish, archive). Details: `docs/areas/admin-settings.md`.
+
+```ts
+// catalog.ts (client-safe): SETTINGS_ERROR_KEYS, SETTING_EDITORS (every key: value | object | linked | unused) + SETTING_VIEWS / viewOf, SETTING_GROUP_ORDER,
+//   parseWhole / parsePercentBps / latinDigits, FIELD_KINDS / FIELD_TYPES (= schema, tested), TEMPLATE_CATALOG / templateVariables / renderTemplate, EDITABLE_POLICIES, parseChangeFilters
+// policy-text.ts (client-safe): textToBlocks(text) · blocksToText(blocks)   // ## h2 · - ul · 1. ol · > steps · [info|warning|danger] callout · | table |
+// changes.server.ts — 22.06 and every key's editor
+listSettingItems(db, actor, locale, now) · getSettingItem(db, actor, key, locale, now) · pendingChanges(db, actor, locale, now, key?) · listChanges(db, actor, { key, page }, locale)   // settings.read; items carry broken (a stored value that no longer fits) and blocked (a LIVE request); requests carry canDecide (approve) and canReject (also an expired one)
+proposeSettingChange(db, actor, { key, value, expected, reason, idempotencyKey }, now): { status: "applied"|"requested"|"unchanged"; requestId?; replayed? }   // the key's permission
+decideSettingChange(db, actor, { approvalId, decision: "approve"|"reject"|"withdraw", note? }, now): { status; replayed }   // settings.change.approve + the key's permission; never the requester
+countDecidableSettingChanges(db, actor, now): number | null   // for the admin bell
+// system.server.ts — 22.01 22.05 22.06: currencyView · taxSummary · localeView · environmentView(db, actor, { STORE_MODE, APP_ENV })
+// policies.server.ts — 22.02: policiesView · getPolicyEditor(…, storeMode) · startPolicyDraft · savePolicyDraft · publishPolicy · archivePolicy   // cms.page.manage / cms.page.publish, guarded on updated_at
+// custom-fields.server.ts — 22.03: listCustomFields · getCustomField · productCountsByKind · saveCustomField(db, actor, CustomFieldInput, now) · setCustomFieldActive   // settings.custom_field.manage
+// templates.server.ts — 22.04: listTemplates · getTemplate · saveTemplate(db, actor, { key, locale, body, isActive, version, reason? }, now) (settings.template.manage) · filesView (settings.file.manage)
+```
+Errors (texts: `admin-settings` → `errors.*`): `SETTINGS_ERROR_KEYS` — `setting_changed`, `setting_needs_approval` (403), `change_pending`, `change_not_pending`, `approver_is_requester` (403), `not_editable`, `key_taken`, `key_locked`, `field_changed`, `type_locked`, `option_in_use`, `template_variable_unknown`, `template_variable_missing`, `template_changed`, `policy_changed`, `policy_no_draft`, `policy_not_editable`, `policy_empty`, field keys `reason_required`, `no_change`; plus the shared `idempotency_mismatch`.

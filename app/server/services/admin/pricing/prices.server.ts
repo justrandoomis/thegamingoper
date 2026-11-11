@@ -43,6 +43,7 @@ import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { approvals, employees, platforms, priceChanges, products, variantCosts, variants, PRODUCT_KINDS, PRODUCT_STATUSES, type ProductKind, type ProductStatus } from "~/server/db/schema";
 import { expectChanged, expectThat, isUniqueViolation, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, toAppError } from "~/server/errors";
+import { getSetting } from "~/server/settings.server";
 import { actorId, assertAny, fieldAccess, type FieldAccess } from "./access";
 import { bundleComponentsFor, chunks, costBasisFor, onHandFor } from "./facts.server";
 import {
@@ -616,6 +617,7 @@ async function evaluate(db: Db, raw: unknown, locale: Locale, now: number): Prom
     cost: facts.cost,
     mode: input.mode,
     referencePriceIqd: referenceOf(facts, now),
+    dropApprovalBps: await getSetting(db, "pricing.drop_approval_bps"),
   });
   return { facts, input, evaluation };
 }
@@ -868,7 +870,7 @@ export async function decidePriceChange(db: Db, actor: Actor, raw: unknown, loca
     const check = compareAtCheck(request.newCompareAtIqd, priceSegments(facts.priceIqd, facts.createdAt, facts.history, now), facts.onSaleFrom, now);
     if (!check.ok) throw new AppError("compare_at_not_charged", 409, { detail: String(check.days) });
   }
-  const evaluation = evaluatePriceChange({ oldPriceIqd: facts.priceIqd, newPriceIqd: request.newPriceIqd, oldCompareAtIqd: facts.compareAtIqd, newCompareAtIqd: request.newCompareAtIqd, cost: facts.cost, mode, referencePriceIqd: referenceOf(facts, now) });
+  const evaluation = evaluatePriceChange({ oldPriceIqd: facts.priceIqd, newPriceIqd: request.newPriceIqd, oldCompareAtIqd: facts.compareAtIqd, newCompareAtIqd: request.newCompareAtIqd, cost: facts.cost, mode, referencePriceIqd: referenceOf(facts, now), dropApprovalBps: await getSetting(db, "pricing.drop_approval_bps") });
   if (evaluation.needsOverride && !can(actor, "pricing.discount.override")) throw new AppError("override_required", 403, { detail: "pricing.discount.override" });
   const note = input.note || null;
   const guard = costGuard(db, facts.variantId, facts.cost);

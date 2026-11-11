@@ -1,157 +1,181 @@
-# TamTam UI — the cheat-sheet
+# TamTam UI — the cheat-sheet (Design System v2)
 
 Read this instead of `docs/DESIGN.md` when you build screens. Live reference with every piece in every state:
 **`/design-system`** (also `/en/…`, `/ckb/…`; theme, language, currency, density and motion switches at the top).
-Component props and examples: `docs/ui/core.md`. When this sheet and DESIGN.md disagree, DESIGN.md wins — tell the
-design-system owner.
+Component props and examples: `docs/ui/core.md`, `docs/ui/commerce.md`, `docs/ui/overlays.md`. When this sheet and
+DESIGN.md disagree, DESIGN.md wins — tell the design-system owner.
 
-## 1. The five laws (DESIGN.md §0)
+## 1. The ten principles (DESIGN.md §0), short
 
-1. **Clay is for the hand.** Anything you press is a key: a face on a wall; pressing moves the face down; "on" stays down.
-2. **Glass is for the eye.** Floating chrome (bars, sheets, toasts, the stage price tag). Never a wall, never red.
-3. **Light is for the platform.** Platform colour exists only as stage light and a 16×5 LED beside the name in text.
-4. **Red is the commit.** One red key per view (the action that moves the order forward), the cart bead, the logo.
-   Never prices, badges, links, tabs, selection, errors or "danger".
-5. **Flat is for reading.** Floor, niches, fields, prices, tables. Money never bounces or changes colour.
+1. **Red and white is the brand; the four platform colours are the doors.** Everything else is warm white, graphite, hairlines.
+2. **The product is the most real thing on screen:** official photos on one neutral ground, one floor line, no tilt, no coloured light behind it.
+3. **One red primary per view.** Ink fill means *selected*, never *action*.
+4. **Clay in exactly two places:** the primary key and the platform tiles. Every other control is flat.
+5. **Glass only on thin fixed bars.** Panels, menus, sheet bodies, dialogs and toasts are opaque.
+6. **Colour light belongs to showcases** (hero, tiles, platform bands); in dark they become lit cabinets.
+7. **Facts sit beside the price** (stock, 5,000 IQD delivery, payment, returns, guest checkout). Nothing invented.
+8. **Arabic first:** a 13px floor, integer sizes, Latin names isolated, layouts that mirror by logic.
+9. **Motion is the existing engine;** nothing waits for an animation, nothing moves at rest.
+10. **One system:** every value is a token; every component exists once.
 
-## 2. Components — import each file directly (there is no barrel)
+## 2. Components and their classes
 
-```tsx
-import { Key } from "~/ui/Key";            import { Price } from "~/ui/Price";
-import { IconKey } from "~/ui/IconKey";    import { Niche } from "~/ui/Niche";
-import { KeyBank } from "~/ui/KeyBank";    import { Stage, StageTag, Render } from "~/ui/Stage";
-import { Chip, ChipGroup } from "~/ui/Chip";   import { PlatformLabel, PlatformLed, PlatformGlyph } from "~/ui/PlatformLed";
-import { Tag, Status, StockStatus } from "~/ui/Tag";   import { TextLink } from "~/ui/TextLink";
-import { TextField, TextArea, Select, Checkbox, Radio, Switch, FieldGroup } from "~/ui/Field";
-import { Stepper } from "~/ui/Stepper";    import { Glass } from "~/ui/Glass";
-import { Socket, AddGlyph, useAddedFlash } from "~/ui/Socket";
-import { VisuallyHidden } from "~/ui/VisuallyHidden";   import { cx } from "~/ui/cx";
-import { BidiText, BidiLabel } from "~/ui/BidiText";
-```
+Import each kit file directly (there is no barrel): `import { Key } from "~/ui/Key";` … The React components are the
+API; the classes below (in `app/styles/materials.css` and `components.css`) are their implementation — feature code
+uses the components, kit code uses the classes.
 
-| Need | Use | Not |
-|---|---|---|
-| The action that moves the order forward | `<Key variant="commit">` — once per view | a second red key, a red link |
-| Any other action | `<Key>` (clay), `<Key variant="ink">` (emphasis without red), `<Key variant="quiet">` (bar tools) | `<button className="…">` with your own look |
-| Icon-only action | `<IconKey icon label>` (label is required) | an icon without an accessible name |
-| A toggle that is on | `held` (aria-pressed; the key stays down, ink face, filled icon) | colour alone |
-| One choice from a few | `<KeyBank>` (platforms, gallery thumbnails, segments) or `<ChipGroup>` | radio buttons styled as tabs |
-| Several choices / filters | `<Chip selected>`, `<Chip input="checkbox" name>` (no-script forms), `<Chip onRemove>` | facts shaped like chips |
-| A fact about a product | `<Tag kind="new" \| "used" \| "preorder" \| "refurbished">` — one per card | a coloured badge, a price in a tag |
-| A state | `<Status tone>` / `<StockStatus quantity>` — dot + words | colour alone |
-| Text action / navigation | `<TextLink as={LocaleLink} to>` (arrow follows reading direction), `inline` inside paragraphs | a third button style |
-| Form input | `TextField`, `TextArea`, `Select`, `Checkbox`, `Radio row` (option rows), `Switch`, `FieldGroup` | borderless inputs, placeholder-as-label |
-| Quantity | `<Stepper max maxReason="stock">` (minus at start, plus at end, in every language) | a number input |
-| Money | `<Price amountIqd>` (integer IQD; converted line and rate handled) | formatting prices by hand, red prices |
-| A product picture in a card | `<Niche tag><Render name alt /></Niche>` | a card with border/shadow, grey skeletons |
-| The hero / product picture | `<Stage size gel tag action><Render … priority /></Stage>` | podiums, coloured cards, light on photos |
-| Floating chrome | `<Glass>` (live: fixed/sticky only), `variant="static"` over smooth surfaces, `"solid"` | `backdrop-filter` anywhere else |
-| The add-to-cart key on a card | `<Socket name state onAdd>` + `useAddedFlash()` | a bare plus |
-| Screen-reader-only text | `<VisuallyHidden>` | `display:none` text |
+| Need | Component (today) | Classes (v2) | Not |
+|---|---|---|---|
+| The ONE action per view that moves the shopper forward | `<Key variant="primary">` (1.0 alias `commit`) | `.key.key--primary` (alias `.key--red`) > `.key__cap` > `.key__label` | a second red key, a red link |
+| Any other action, toolbar buttons | `<Key>` (secondary, the default; 1.0 `ink` renders secondary) | `.key` / `.key--secondary` | `<button className>` with your own look |
+| Quiet actions in bars and lists | `<Key variant="ghost">` (1.0 `quiet`) | `.key--ghost` | |
+| The action on the crimson hero / wallet band | `<Key variant="onBand">` (kit adds it) | `.key--on-band` (dark: renders the red primary) | a red key on crimson |
+| Destructive confirmations | `<Key variant="danger">` (kit adds it) | `.key--danger` | brand red |
+| Sizes | `size="md"` 48 · `"sm"` 40 (`"lg"` = 48) | `.key--sm`, `.key--block` | a third height |
+| Icon-only action | `<IconKey icon label>` | `.key.key--round` (40; `--sm` 36, `--xs` 32 on photos) + `.key--outline` (default) / `--plain` / `--on-image` / `--on-color`; heart `.key--wish` | an unnamed icon |
+| The card add button | `<Socket>` today (kit: `CardAddButton`) | `.key.key--round.cadd` (neutral; red under the pointer; `data-state="added"` = ok check) | a red key on every card |
+| A toggle that is on | `held` (aria-pressed) | ink fill on keys/chips; icon buttons keep their face and fill the glyph | colour alone |
+| One choice from a few | `<ChipGroup>`, `Segmented` (kit), `<KeyBank>` (renders segmented) | `.seg` > `.seg__opt[aria-checked]`; `.bank` (1.0) | radio buttons styled as tabs |
+| Several choices / filters | `<Chip selected>`, `<Chip input name>`, `<Chip onRemove>` | `.key.key--chip` (+ `.key__mark` check, `.key__count`); rows `.chips`, `.chips--rail`, `.chips--bleed` | facts shaped like chips |
+| A fact about a product (one per card) | `<Tag kind>` | `.tag` + `--new` (`--solid`), `--soon`, `--sale`, `--grade` (`--outline`), `--out`, `--demo`, `--photo`, `--on-color`, `--ok` | a coloured price shout |
+| A state | `<Status tone>`, `<StockStatus>` | `.status` + `--ok` `--warn` `--info` `--bad` `--out` `--soon`; `--lg` | colour alone |
+| Demo marking | `<DemoNote>` | `.demo-strip`, `.demo-chip`, `.tag--demo`, `.demo-line` | anything louder |
+| Text action / navigation | `<TextLink>` | `.link` > `.link__text` + arrow; `.link--inline`, `.link--danger` | a third button style |
+| Form input | `TextField` `TextArea` `Select` `Checkbox` `Radio` (`row` = OptionCard) `Switch` `FieldGroup` | `.field` `.field__label` `.field__input` `.field__hint` `.field__error`; `.choice` `.choice--radio` `.choice--row` (`--pay`) `.choice--switch` `.switch__track`; `.form-alert`; `.pref`/`.pref__cell`; `.swatches`/`.swatch`; `.listrow` (52px) | borderless inputs, placeholder-as-label |
+| Quantity | `<Stepper>` | `.stepper` (+ `--sm`) `.stepper__value` | a number input |
+| Money | `<Price amountIqd>` | `.price` + `--xl/--lg/--md/--sm`, tones `--sale` `--total` `--on-color` `--muted`; `.price__cur`, `.price__was`, `.price-line` | formatting prices by hand |
+| A product in a card | `<ProductCard>` / `<Niche>` | `.cards` (`--4`, `--5`) > `.pcard[data-state]` > `.niche[data-kind]` + `.pcard__body` `__kind` `__title` > `.pcard__link` · `__meta` `__foot` `__status`; `.pcard--row` | a card with border or shadow, skeletons |
+| The product stage | `<Stage>` (1.0, being rebuilt) | `.stage.stage--pdp` (1:1 → 4:3 → 5:4) + `.stage__count`, `.stage__tools`; thumbnails `.thumbs` > `.thumb[aria-checked]` | tilt, halo, glass tag |
+| Showcase bands | `Band` (kit adds it) | `.band.band--hero|--platform|--device|--wallet[data-gel]` > `.band__light` (+ `.band__contact`) | text on the light core |
+| Platform tiles | `PlatformTile(s)` (kit adds them) | `.ptiles` > `a.ptile[data-gel]` > `.ptile__cap` > `.ptile__light`, `.ptile__text` (`__name`, `__count`), `.ptile__hw` > `.ptile__img`, `.ptile__go`; `.ptile--compact` | logos, translucent text |
+| Platform dot / label | `<PlatformLed>`, `<PlatformLabel>` | `.led` (8px, `--dot`), `.plat`; nav underline `.plat-line` | a dot without the name |
+| Trust facts / fact rows | `TrustStrip`, `FactList` (kit adds them) | `.trust` > `.trust__cell` (`__icon` `__title` `__text`), `.trust--line`; `.facts` > `.fact` (`__icon` `__title` `__text` `__link`), `.facts--plain` | invented facts |
+| Release dates | `ReleaseBand` (kit adds it) | `.release` > `.release__list` > `.release__item` (`__date` `__day` `__month` `__rel` `__art` `__name` `__price` `__note`) | countdowns, pre-order keys |
+| Section head, shelf, show more | `SectionHead`, `ShelfRail`, `Rail`, `Pagination` | `.sechead` (`__text` `__title` `__reason` `__chips`), `.rail`, `.showmore` (`__count` `__bar` `__fill` `__end`) | arrows over cards |
+| Cart line / summary | `<CartLineRow>`, `<OrderSummary>` | `.cline` (`__body` `__name` `__opt` `__avail` `__actions` `__total`, `--undo`), `.summary` (`__lines` `__line` `__rows` `__row` `--total` `__coupon`) | two red figures |
+| Used units | `<UsedUnitCard>`, `<InspectionCard>` | `.pcard--row`, `.inspect` (`__rows` `__row`), `.battery` (`__bar` `__fill`) | serial numbers |
+| Buy controls | `AddToCartKey` (`BuyBar`, `BuyControls`) | `.buybar` (`__info` `__var` `__added`) on `<Glass edge="bottom">` | |
+| Toast / sheet / dialog / menu | `toast`, `<Sheet>`, `<Dialog>`, `<Menu>` | `.toast` (`__thumb` `__title` `__line` `__actions` `__view`); `.sheet` (`__head` on glass, `__grab` `__title` `__body` `__foot`); `.dialog` (`__title` `__text` `__actions`); `.menu` > `.menu__row`; `.scrim`, `.scrim--menu` | glass bodies |
+| Structure | `Breadcrumbs`, `ProgressSteps`, `Tabs`, `Accordion`/`Disclosure`, `Blocks` | `.crumbs` (`__list` `__link` `__current` `__sep`), `.steps` > `.step[data-state][aria-current]` (`__n` `__label` `__sep`), `.steps--compact`; `.tabs` > `.tab`; `.acc` (`__summary` `__chev` `__body`); `.callout` (`--ok` `--warn` `--danger`) | |
+| Empty / error / offline | `EmptyState`, `ErrorState`, `OfflineBanner` | `.empty` (`__art`, `__art--well`, `__title` `__text` `__actions` `__ref`), `.empty--error`, `.offline` | «دورك.», "500" offline |
+| Entries, categories, contact, compat | `EntryCard`, `CategoryTile`, `ContactCard` (kit adds them), `CompatBadge` | `.entry` (`__art` `__title` `__text`), `.cats` > `.cat` (`__art` `__name` `__count`), `.contact` > `.contact__row`, `.compat` > `.compat__row[data-state=yes|part|no]` (`__mark` `__name` `__state`) | «قريباً» for missing channels |
+| Proof and wallet | `ProofUploader`, `WalletBalance` | `.proof__drop[data-state]`, `.proof__bar` `__fill`, `.copyval` `__value`; `.band--wallet`, `.wallet__label`, `.ledger` > `.ledger__row`, `.ledger__amount[data-sign]` | |
+| Floating chrome | `<Glass>` (live, fixed/sticky only), `edge="bottom"` (float), `"solid"` | `.glass`, `.glass--bottom`/`--float`, `.glass--solid` (`--static` retired) | `backdrop-filter` anywhere else |
+| Screen-reader text, bidi | `VisuallyHidden`, `BidiText`, `BidiLabel` | `.bidi`; mirrored glyphs `.i--dir`; `/` chip `.kbd`; small pill `.pill` | `display:none` text |
 
-Links that look like keys: `<Key as={LocaleLink} to="/cart">` or `<Key as={MotionLink} nav="zoom" to=…>`; plain
-anchors `<Key as="a" href>`. Every key carries `data-press` (press feedback from `<MotionRoot>`, which the layout mounts).
+Links that look like keys: `<Key as={LocaleLink} to="/cart">` or `<Key as={MotionLink} nav="zoom" to=…>`. Every key
+carries `data-press` (press feedback from `<MotionRoot>`): clay keys move only their cap; flat keys compress softly.
+
+**Deprecated (they work as aliases until stage 4, then the lint forbids them):** `Socket`, `PlatformBank`, `StageTag`,
+`PlatformGlyph`, `variant="commit" | "ink" | "quiet"`, `<Glass variant="static">`.
 
 ## 3. Tokens (CSS custom properties — `app/styles/tokens.css`)
 
 | Group | Tokens | Tailwind |
 |---|---|---|
-| Surfaces | `--ground` (floor) `--niche` `--stage` `--well` `--paper` `--glass-solid` | `bg-floor` `bg-niche` `bg-stage` `bg-well` `bg-paper` `bg-glass-solid` |
-| Ink | `--ink` `--ink-2` (secondary) `--ink-3` (disabled/decorative only) `--on-glass-2` | `text-ink` `text-ink-2` `text-ink-3` `text-on-glass-2` |
-| Lines | `--line` (hairline) `--line-strong` (field borders, 3:1) | `border-line` `border-line-strong` |
-| State | `--ok` `--warn` `--info` `--red-ink` (validation, negative amounts) | `text-ok` `text-warn` `text-info` `text-red-ink` |
-| Brand red | `--red` — logo only through `text-logo`; keys and the bead are components | `text-logo` (no `bg-logo`) |
-| Radius | `--r-xs` 8 `--r-sm` 12 `--r-md` 16 `--r-lg` 20 `--r-xl` 28 `--r-full` | `rounded-xs…xl`, `rounded-key` `-chip` `-field` `-tag` `-niche` `-panel` `-stage` `-sheet`, `rounded-full` |
-| Elevation | `--e-1`…`--e-5`, `--e-4-up`, `--well-shadow`, `--glass-rim` | `shadow-e1…e5` `shadow-e4-up` `shadow-wall` `shadow-well` `shadow-rim` |
-| Spacing | `--s-1` 4 … `--s-16` 64 (4px grid); `--gutter` 16/24/40; `--gap-card` 12/16/20; `--gap-section` 24/40 | Tailwind spacing is the same 4px grid (`p-4` = 16px); `page`, `gutter`, `gap-card`, `gap-section` |
+| Surfaces | `--ground` (floor) `--paper` `--niche` (THE product ground) `--niche-2` `--stage` `--band` `--glass-solid` | `bg-floor` `bg-paper` `bg-niche` `bg-niche-2` `bg-stage` `bg-band` `bg-glass-solid` |
+| The product ground | `--product-ground` (flat light, lit spot dark), `--product-ground-hover`, `--contact` | — (the well classes paint it) |
+| Ink | `--ink` `--ink-2` (secondary) `--ink-3` (disabled/decorative only); on bands `--on-band` `--on-band-2`; on colour `--on-color` | `text-ink` `text-ink-2` `text-ink-3` `text-on-band` `text-on-band-2` `text-on-color` |
+| Lines | `--line` (hairline) `--line-2` (chips, dividers) `--line-strong` (controls, 3:1) `--line-glass` | `border-line` `border-line-2` `border-line-strong` `border-line-glass` |
+| State | `--ok` `--warn` `--info` `--danger` + `-tint`; `--red-ink` `--red-tint`; `--demo-ink` `--demo-bg` | `text-ok` `bg-ok-tint` … `text-danger` `bg-danger-tint` `text-red-ink` `bg-red-tint` `text-demo-ink` `bg-demo-bg` |
+| Brand red | `--red` `--red-hover` `--red-deep` `--hero` — only the primary key, bead, logo, hero/wallet bands, current step | `text-logo` (no `bg-logo`) |
+| Platform | `--plat-*` `--plat-*-deep` (tile/band surfaces), `--dot-*` (dots; dark values in dark), `--gel-*` (dark cabinet light) — set a subtree with `data-gel="xbox"` (→ `--plat`, `--plat-deep`, `--dot`, `--gel`) | `bg-dot-xbox` (a dot), `text-dot-xbox` |
+| Radius | `--r-xs` 8 `--r-sm` 12 `--r-md` 16 (admin) `--r-lg` 20 `--r-xl` 28 `--r-full` `--r-check` 6 | `rounded-xs…xl`, `rounded-full`, jobs: `rounded-button` `-key` `-field` `-thumb` (12) `-tag` `-chip` (full) `-niche` `-well` `-card` `-panel` (20) `-stage` `-band` `-sheet` `-dialog` (28) `-check` |
+| Elevation | `--clay-cap` + `--clay-cast` (clay) · `--e-bar` · `--e-float` · `--e-overlay` · `--e-art` · `--rim` — nothing at rest has a shadow | `shadow-bar` `shadow-float` `shadow-overlay` `shadow-art` `shadow-rim`; 1.0 aliases `shadow-e1…e5` (e1 = a hairline ring until migrated) |
+| Spacing / layout | `--s-1` 4 … `--s-20` 80; `--gutter` 16/24/32; `--gap-card` 12/16/20; `--gap-row` 24/32; `--gap-section` 40/56/72; `--page-max` 1280; `--target` 44; `--h-btn` 48 `--h-btn-sm` 40 `--h-field` 52 `--h-chip` 40 `--h-row` 56 `--h-option` 64/72; bars `--h-strip` 28 `--h-header` 56/64 `--h-nav` 44 `--h-tabbar` 64 `--h-taskbar` 72 `--h-checkout` 56/64; `--shell-top` `--shell-bottom` (set by the shell) | `p-4` = 16px (4px grid); `page`, `gutter`, `gap-card`, `gap-row`, `gap-section` |
 | z-index | `--z-raised` 1 `--z-sticky` 100 `--z-nav` 200 `--z-scrim` 300 `--z-sheet` 310 `--z-dialog` 400 `--z-toast` 500 `--z-fly` 600 `--z-intro` 700 | `z-(--z-nav)` |
 | Motion | `--t-press` 80 … `--t-fly` 460, `--ease-*`, `--spring-*` + `--spring-*-t`; the engine's `--motion-*` (docs/MOTION.md) | — |
-| Platform light | `--gel-nintendo/-playstation/-xbox/-handheld/-brand` (RGB triplets) — set a subtree with `data-gel="xbox"` | — (only `.stage__*` and `.led` read them) |
-| Misc (ext) | `--target` 44px, `--page-max` 1280, `--safe-top/-bottom/-inline`, `--dir` (±1), `--scrim`, `--selection`, `--price-xl…sm` | `safe-top` `safe-bottom` `safe-x` `hit-44` |
+| Misc | `--focus` `--focus-on-color` `--focus-w` `--focus-offset`, `--scrim` `--scrim-menu`, `--selection`, `--on-image`, `--dir` (±1), `--safe-top/-bottom/-inline`, `--lit`/`--unlit` (theme switches) | `safe-top` `safe-bottom` `safe-x` `hit-44` |
+| Legacy: admin only | `--clay-*` `--red-face/-wall/-lip/-belly` `--sel-*` `--ink-lip` `--ink-belly` `--well` `--well-shadow` `--glass-bg/-static/-rim` `--on-glass-2` `--e-1…--e-5` `--shade` … | `bg-well` (→ niche-2), `bg-sel` (→ ink), `text-on-sel`, `shadow-well`, `shadow-wall` — lint `legacy-token` outside the admin |
 
-Breakpoints (Tailwind): `sm` 600 · `md` 768 · `lg` 1024 · `xl` 1200 · `2xl` 1280. The default Tailwind palette,
-radius, shadow, blur and tracking scales are **removed** — `bg-red-500`, `rounded-2xl`, `shadow-lg`,
-`backdrop-blur`, `tracking-wide` do not exist.
+Breakpoints (Tailwind): `sm` 600 · `md` 768 · `lg` 1024 · `xl` 1200 (admin only) · `2xl` 1280. Storefront code uses
+`md`, `lg`, `2xl`. The default Tailwind palette, radius, shadow, blur and tracking scales are **removed**.
 
-### Type roles — one class sets size, weight, line-height and face
+### Type roles — one class sets size, weight, line-height and face (integer px)
 
-| Class | Mobile → desktop (≥1200) | Use |
+| Class | 360 → 768 → 1024 → 1280 | Use |
 |---|---|---|
-| `type-hero` | Kufam 600 36 → 68 | home/campaign headline, one line |
-| `type-title` | Kufam 600 26 → 40 | product and page titles |
-| `type-section` | Kufam 600 19 → 26 | section and rail heads |
-| `type-sub` | Kufam 600 17 → 20 | sheet titles, spec heads |
-| `type-button` | Kufam 600 16 | key labels (keys set it themselves) |
-| `type-body` | Plex 400 15/1.7 → 16/1.75 | reading text (the body default) |
-| `type-strong` | Plex 600 14.5 → 15 | card names (two lines, never truncated to one) |
-| `type-label` | Plex 500 13.5 → 14 | field labels, bank labels |
-| `type-caption` | Plex 400 12.5 → 13 | fact lines, help text |
-| `type-tab` / `type-tag` | Plex 500 12 / 600 12 | tab labels / tags |
-| `type-data` / `type-data-sm` / `type-kpi` | Plex 500 13 / 400 12 / Kufam 700 24 → 28, tabular | admin tables, ledgers, dashboards |
+| `type-display` | Kufi 700 28 → 40 → 48 → 56 | the hero headline (an h2) |
+| `type-h1` | Kufi 700 26 → 30 → 32 → 36 | page titles (PDP included) |
+| `type-h2` | Kufi 700 22 → 24 → 26 → 28 | section heads |
+| `type-tile` | Kufi 700 18 → 20 → 22 | tile names |
+| `type-day` | Kufi 700 44 → 56 (1024) | release-day numerals |
+| `type-h3` | Plex 600 18 | h3, group, sheet and dialog titles |
+| `type-code` | Plex 600 20, tabular | order numbers, account numbers |
+| `type-lead` | Plex 400 16 → 18 | lead paragraphs |
+| `type-body` | Plex 400 16 | reading text (the body default) |
+| `type-card` | Plex 600 15 → 16 (1024) | card titles (two lines, never one) |
+| `type-sm` / `type-sm-strong` | Plex 400 / 600 14 | labels, chips, fact rows |
+| `type-button` / `type-button-sm` | Plex 600 16 / 14 | button labels (keys set them) |
+| `type-xs` / `type-xs-strong` | Plex 400 / 600 13 | captions, meta, hints, tab labels |
+| `type-tag` | Plex 600 12 | badges and the bead only |
 | `nums` | tabular lining figures | every price, counter, quantity, table cell |
 
-Headline roles scale by `--ds` per language (en .91, ckb .94); **Sorani headlines use Plex**, not Kufam (until a
-native reader approves Kufam's ە and ڵا). Kufam never below 15px. **No letter-spacing, ever.**
+1.0 names still work on the v2 scale: `type-hero` = display, `type-title` = h1, `type-section` = h2, `type-sub` = h3,
+`type-strong` = card, `type-label` = sm-strong, `type-caption` = xs, `type-tab` = 13/400; `type-data`, `type-data-sm`,
+`type-kpi` are the admin's. Prices: `.price--xl/lg/md/sm` (Kufi 700 30–36 / 22–24 / 18 / 16). **Kufi only at 18px and
+up (and prices).** Arabic and Sorani text ≥13px; 12px only for 600-weight tags and the bead. **No letter-spacing,
+ever.** Sorani headings use Plex 600 until a native reader approves Noto Kufi's ە and ڵا.
 
-## 4. Rules a reviewer checks (`node scripts/lint-design.mjs`)
+## 4. Rules a reviewer checks (`node scripts/lint-design.mjs`, `node scripts/contrast.mjs`)
 
 - Logical properties only: `ms-/me-/ps-/pe-/start-/end-/text-start/rounded-s-`, `inset-inline-*`, `margin-inline-*`.
-  Never `left/right`, `ml-/pr-/left-/text-left`. Directional icons mirror by themselves (`<Icon name="arrow-right">`).
-- No hex / `rgb()` / `hsl()` literals outside `tokens.css`. No `letter-spacing`. No CSS `filter`, no SVG filters.
+  Never `left/right`, `ml-/pr-/left-/text-left`. Directional icons mirror by themselves.
+- No hex / `rgb()` / `hsl()` literals outside `tokens.css`. No `letter-spacing`. No CSS `filter` (images included), no SVG filters.
 - `backdrop-filter` exists only in `.glass` — use `<Glass>`. At most **two live glass panes per viewport**; live glass
-  only on fixed/sticky chrome, never in a list (the dev console warns when a third is on screen). Under an open sheet
-  or dialog the page's glass turns solid by itself, so a sheet over a page with a header and a tab bar is within budget.
-- Motion: only `transform` and `opacity`. No `transition-all/-colors/-shadow`; shadows, blur and colours never animate.
-- One `<Key variant="commit">` per route view (socket keys on product cards excepted).
-- `--gel-*` only through `<Stage>`, `<PlatformLed>`, `data-gel`. Brand red only through the commit key, bead, logo.
-- `<img>` always has `width` and `height` (or use `<Art>` / `<Render>`).
+  only on fixed/sticky bars, never in a list. Under an open sheet or dialog the page's glass turns solid by itself.
+- Motion: only transform, translate, scale, rotate and opacity. Shadows, blur and colours never animate (a hover colour is instant).
+- One primary key per route view (card add buttons are neutral). `--red`/`--hero` only in the primary key, bead, logo,
+  hero/wallet bands and the current step; `--plat-*` surfaces only on tiles and bands; `--gel-*` only in dark cabinets.
+- v2 rules (fail in `app/styles` now; reported for the kit and the areas until stage 4): no 1.0 material tokens or
+  utilities outside the admin; no `font-weight: 500` / `font-medium`; integer font sizes; radius only through `--r-*`;
+  box shadows only from the elevation tokens; `mix-blend-mode` only in the opaque-photo rule; the deprecated kit names.
+- `<img>` always has `width` and `height` (or use `<Art>`).
 - Escape hatch, with a reason: `// lint-design: allow <rule> — why` (line + next line; first 3 lines = whole file).
-- 44×44 minimum target on everything pressable (keys and fields already are). Focus ring is automatic (2.5px ink).
-- Latin names and numbers inside Arabic/Kurdish text: render names and sentences with `<BidiText text>` (each Latin
-  name and number becomes one left-to-right isolate; brackets, separators and a final full stop stay in the sentence).
-  Keys, chips, banks, breadcrumbs, menus, steps, the stage tag and toasts isolate their labels already (`BidiLabel`) —
-  pass plain strings. Never wrap mixed text in a bare `<bdi>`: it guesses the direction from the first letter, so
-  "PlayStation 5 Slim (نسخة الأقراص)" turns around. Inside a plain string use U+2066…U+2069. Phone numbers,
-  references and amounts stay left-to-right.
-- Every user-facing string exists in `ar`, `en` and `ckb`. Component strings live in `app/i18n/messages/ui.ts`
-  (`useT("ui")`); add your own `ui-<area>.ts` namespace if a shared component of yours needs some (loaded on every page).
+- 44×44 minimum target on everything pressable. Focus ring is automatic (2px, 2px offset; white inside light bands).
+- Latin names and numbers inside Arabic/Kurdish text: `<BidiText text>`; kit labels isolate themselves (`BidiLabel`).
+  Never wrap mixed text in a bare `<bdi>`. Inside a plain string use U+2066…U+2069. Phone numbers, references and
+  amounts stay left-to-right. Card and line titles use `unicode-bidi: plaintext` aligned to the page start.
+- Every user-facing string exists in `ar`, `en` and `ckb`.
+- Token contrast: `node scripts/contrast.mjs` must pass (100 pairs; 2 documented demonstrations).
 
 ## 5. Themes, density, language
 
 - `<html data-theme="light|dark">` (an inline script resolves "system" before paint). Any subtree can carry its own
-  `data-theme`. Tailwind's `dark:` variant follows the attribute, not the media query.
-- Switch theme: `themeMorph("dark", buttonEl)` from `~/motion` (updates the prefs cookie + attribute with a cross-fade).
-- `data-density="admin"` on a container: compact type, 36px keys and fields, 24px gutter (DESIGN.md §10). `admin:` variant.
-  Data grids: `<table className="table">` (`.is-num` cells end-aligned and tabular, `.is-negative` red-ink, selected
-  rows `aria-selected`) — `app/styles/admin.css`.
-- `lang` drives type: `:lang(en)` scales headlines .91 and body line-height 1.55; `:lang(ckb)` swaps the headline face.
-- Direction comes from `<html dir>` only; never force `direction` on names or titles.
+  `data-theme`; the showcases follow it through `--lit` / `--unlit`. Tailwind's `dark:` variant follows the attribute.
+- Switch theme: `themeMorph("dark", buttonEl)` from `~/motion`.
+- `data-density="admin"` on a container: the admin's compact type, 36px keys and fields, 24px gutter **and the Lens &
+  Clay 1.0 materials** (walled keys, wells, `.clay--walled`, 1.0 glass) — `app/styles/admin.css`. `admin:` variant.
+  Data grids: `<table className="table">` (`.is-num`, `.is-negative`, `aria-selected` rows).
+- `lang` drives type: `:lang(en)` sets Latin line heights; `:lang(ckb)` swaps the headline face to Plex 600.
+- Direction comes from `<html dir>` only; sideways movement multiplies by `--dir`.
 
 ## 6. Layers — how to override
 
 `app/app.css` orders the cascade: `theme` (Tailwind theme, then tokens) → `base` (preflight, then base.css) →
-`components` (materials.css, components.css, the Motion Engine's classes) → `utilities`. A Tailwind utility in
-`className` therefore always beats a component class — use utilities for placement and spacing, never to recolour a
+`components` (materials.css, components.css, admin.css, the Motion Engine's classes) → `utilities`. A Tailwind utility
+in `className` always beats a component class — use utilities for placement and spacing, never to recolour a
 material. Nothing in feature code may be unlayered.
 
-## 7. Performance tiers and preferences (DESIGN.md §6.5, §7.3)
+## 7. Performance tiers and preferences (DESIGN.md §6.6)
 
 | Signal | Result |
 |---|---|
-| no `backdrop-filter` support, `prefers-reduced-transparency`, `.fx-low` or `html[data-motion="lite"]` | glass becomes `--glass-solid`; nothing inflates |
-| `prefers-reduced-motion` / `data-motion="reduced"` | key travel without transition, instant relight and render swap, no spinner rotation |
-| `prefers-contrast: more` | glass and caps outlined in ink, niches and wells outlined, stage light hidden |
-| `forced-colors` | key caps get a ButtonText border; held keys a Highlight outline |
+| no `backdrop-filter`, `prefers-reduced-transparency`, `.fx-low`, `html[data-motion="lite"]` | glass becomes `--glass-solid`; nothing inflates |
+| `prefers-reduced-motion` / `data-motion="reduced"` | pressed states without transition, instant swaps, no light fades, no spinner rotation |
+| `prefers-contrast: more` | hairlines become `--line-strong`, glass solid, showcase lights hidden, wells and clay faces outlined |
+| `forced-colors` | borders on keys, chips, tags, cells, wells and bands; selected = a Highlight outline; dots keep their colour |
 
 ## 8. Fonts
 
-Self-hosted in `public/fonts` (content-hashed, cached immutable): Kufam variable (Arabic + Latin) and IBM Plex Sans
-Arabic 400/500/600 (Arabic + Latin), split by `unicode-range`: a file is fetched only when the page draws one of its
-characters. Measured on `/en/design-system`: only the Latin cuts plus Plex 600 Arabic (for the "العربية / کوردی"
-language labels); an Arabic page fetches the Latin cuts for digits and Latin names. `font-display: swap` with
-metric-adjusted local fallbacks ("Kufam Fallback", "Plex Fallback") measured against **Segoe UI only** (Android's Noto
-Sans Arabic and iOS's SF Arabic were not available to measure — they fall through unadjusted). Shell owners preload the
-two critical files: `fontPreloadLinks(LOCALES[locale].script)` from `~/styles/fonts`.
+Self-hosted in `public/fonts` (content-hashed, cached immutable): **Noto Kufi Arabic 700** (display and prices) and
+**IBM Plex Sans Arabic 400/600** (text), each split arabic / latin / latin-ext by `unicode-range` — a file is fetched
+only when the page draws one of its characters (latin-ext only for names like "Yōtei"). Kufam and Plex 500 are retired;
+`font-synthesis-weight: none`. Measured: an Arabic page requests at most six files (182.5 KB); English four.
+`font-display: swap` with metric-adjusted local fallbacks: "Kufi Fallback" / "Plex Fallback" (Segoe UI, Windows) and
+"… Fallback Noto" (Noto Sans Arabic, Android, measured from Google's cut as a stand-in); iOS is unmeasured. The two
+critical files are preloaded by `root.tsx` from `fontPreloadLinks(LOCALES[locale].script)` in `~/styles/fonts`.
+Licences: `public/fonts/OFL-Noto-Kufi-Arabic.txt`, `public/fonts/OFL-IBM-Plex-Sans-Arabic.txt`.
 
 ## 9. The /design-system page
 
@@ -162,8 +186,10 @@ Prices and names on that page are examples and the page says so.
 
 ## 10. Known gaps
 
-- Nothing has been measured on a phone; Safari/WebKit and Firefox are untested (Chromium only).
-- Fallback-font metrics cover Windows (Segoe UI) only.
-- The sprite has no bag-plus symbol: `<AddGlyph>` draws the DESIGN.md bag-plus inline. Platform pictograms are
-  inline too (`PlatformGlyph`) — both should move to the icon sprite.
-- Built by other owners and documented apart: overlays, navigation and states (sheets, dialogs, menus, toasts, tabs, tables, empty and error states) in `docs/ui/overlays.md`; commerce components (product card, buy bar, gallery, cart line, order summary, proof uploader, wallet) in `docs/ui/commerce.md`; header, tab bar and footer in `app/routes/storefront/shell/README.md`.
+- Nothing has been measured on a phone; Safari/WebKit and Firefox are untested (Chromium/Edge only).
+- Fallback-font metrics cover Windows (Segoe UI) and a Noto Sans Arabic stand-in; iOS is not measured.
+- The v2 classes for the new kit pieces (bands, tiles, trust strip, release band, entry/category/contact cards,
+  segmented control, swatches, preference cells) exist in the stylesheets; their components arrive with the kit stage.
+  Until then pages render half-migrated: 1.0 call sites draw on the v2 materials through the aliases above.
+- Built by other owners and documented apart: overlays and states in `docs/ui/overlays.md`; commerce components in
+  `docs/ui/commerce.md`; header, tab bar and footer in `app/routes/storefront/shell/README.md`.

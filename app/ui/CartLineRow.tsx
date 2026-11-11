@@ -12,12 +12,15 @@ import { Niche } from "./Niche";
 import { ProductImage } from "./ProductCard";
 import { iqdText, PriceTag } from "./PriceTag";
 import { Stepper } from "./Stepper";
+import { Status } from "./Tag";
 import { TextLink } from "./TextLink";
 
 /**
- * One line of the cart (docs/DESIGN.md §8.5, §9.10, §9.16): a paper row — the thumbnail in a niche at the start, the
- * name (two lines, a link to the item) and its fact line, the line total at the end; under them the small stepper
- * and "أزل". Feed it the rows of `useCartEditor` (~/ui/cart-client), which owns the requests:
+ * One line of the cart — Design System v2 §4.13: a 96px well (120 from 1024, --r-sm) on the product ground; the name
+ * (a link, two lines), the OPTION VALUE ONLY («النسخة الدولية · قطعة واحدة»), the availability («متوفر» or the problem
+ * sentence), the 40px stepper, the line total (Kufi 16, tabular; a fixed 140px end column from 1024) and, under the
+ * name, «إزالة» (a trash icon, 44px) plus your own actions («نقل إلى المفضلة»). Rows are separated by hairlines. Feed it
+ * the rows of `useCartEditor` (~/ui/cart-client), which owns the requests:
  *
  *   const editor = useCartEditor(loaderData.cart, { locale });
  *   <ul className="grid gap-3">
@@ -70,7 +73,7 @@ const itemOf = (line: CartLine) => (line.usedUnitId ? `u:${line.usedUnitId}` : `
 /** A restored line whose row should take focus as it mounts (set by the undo row as it leaves). */
 let focusHandoff: string | null = null;
 
-const TONE_CLASS = { bad: "text-red-ink", warn: "text-warn", info: "text-info" } as const;
+const TONE_CLASS = { bad: "text-danger", warn: "text-warn", info: "text-info" } as const;
 
 export function CartLineRow({ line, removed = false, busy = false, error = null, onQtyChange, onRemove, onRestore, onDismiss, actions, as = "li", className }: CartLineRowProps) {
   const t = useT("ui-shop");
@@ -121,16 +124,14 @@ export function CartLineRow({ line, removed = false, busy = false, error = null,
       requestAnimationFrame(() => next?.querySelector<HTMLElement>("a[href], button:not([disabled])")?.focus());
     };
     return (
-      <Row ref={setRow} data-cart-line={line.id} data-removed="" aria-busy={busy || undefined} className={cx("grid gap-1 rounded-lg bg-niche px-3 py-2.5", className)}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="min-w-0 flex-1 type-label text-ink-2">
-            {t("line.removed", { name: "⁨" + line.name + "⁩" })}
-          </p>
-          <Key ref={restoreKey} size="sm" loading={busy} onClick={onRestore} aria-label={t("line.restoreNamed", { name: line.name })}>
+      <Row ref={setRow} data-cart-line={line.id} data-removed="" aria-busy={busy || undefined} className={cx("cline cline--undo border-b border-line", className)}>
+        <p className="min-w-0 flex-1">{t("line.removed", { name: "⁨" + line.name + "⁩" })}</p>
+        <span className="flex shrink-0 items-center gap-1">
+          <Key ref={restoreKey} variant="ghost" size="sm" loading={busy} onClick={onRestore} aria-label={t("line.restoreNamed", { name: line.name })}>
             {t("line.restore")}
           </Key>
-          <IconKey icon="x" size="sm" variant="quiet" label={t("line.dismiss")} onClick={dismiss} disabled={busy} />
-        </div>
+          <IconKey icon="x" size="sm" variant="plain" label={t("line.dismiss")} onClick={dismiss} disabled={busy} />
+        </span>
         {error ? <LineMessage tone="bad" icon="warning-circle" text={t(cartErrorKey(error))} /> : null}
       </Row>
     );
@@ -147,69 +148,71 @@ export function CartLineRow({ line, removed = false, busy = false, error = null,
       })
     : null;
   const unitPrice = !single && line.qty > 1 ? t("line.unitPrice", { price: "⁦" + iqdText(f, line.unitPriceIqd) + "⁩" }) : null;
+  // the option value only (v2 §4.13): «النسخة الدولية · قطعة واحدة»
   const facts = [line.optionsLabel, single ? t("line.single") : null, unitPrice].filter(Boolean).join(" · ");
+  const total = look?.blocking ? (
+    <span className="type-xs-strong text-ink-2">{t("line.excluded")}</span>
+  ) : (
+    <PriceTag size="line" priceIqd={line.lineTotalIqd} approx="off" />
+  );
 
   return (
-    <Row
-      ref={setRow}
-      data-cart-line={line.id}
-      data-problem={line.problem ?? undefined}
-      aria-busy={busy || undefined}
-      className={cx("grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-2 rounded-lg bg-paper p-3", className)}
-    >
-      <Niche as="span" ratio="1/1" tagZone={false} fill={Boolean(line.image.mediaKey) && !line.image.isIllustration} className="row-span-2 self-start rounded-md">
-        <ProductImage image={line.image} alt="" sizes="72px" pose={0} shadow={false} fit="cover" />
+    <Row ref={setRow} data-cart-line={line.id} data-problem={line.problem ?? undefined} aria-busy={busy || undefined} className={cx("cline", className)}>
+      <Niche as="span" size="sm" fill={Boolean(line.image.mediaKey) && !line.image.isIllustration} className="self-start">
+        <ProductImage image={line.image} alt="" sizes="120px" fit="cover" />
       </Niche>
-      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-0.5">
-        <LocaleLink to={line.href} data-line-name="" className="line-clamp-2 rounded-xs type-strong text-ink underline-offset-4 hover:underline">
-          <BidiText text={line.name} />
-        </LocaleLink>
-        <div className="row-span-2 text-end">
-          {look?.blocking ? (
-            <span className="type-caption font-medium text-ink-2">{t("line.excluded")}</span>
-          ) : (
-            <PriceTag size="line" priceIqd={line.lineTotalIqd} approx="off" />
-          )}
-        </div>
-        {facts ? <p className="type-caption text-ink-2">{facts}</p> : null}
-      </div>
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        {look?.blocking ? (
-          <span />
-        ) : single ? (
-          <span />
+      <div className="cline__body">
+        {/* the link is a 44px band (negative margins keep the layout); the name inside wraps to two lines at most */}
+        <p className="cline__name [unicode-bidi:isolate]">
+          <LocaleLink to={line.href} data-line-name="" className="-my-3 block py-3 underline-offset-4 hover:underline">
+            <span className="line-clamp-2">
+              <BidiText text={line.name} />
+            </span>
+          </LocaleLink>
+        </p>
+        {facts ? <p className="cline__opt">{facts}</p> : null}
+        {problemText && look ? (
+          <LineMessage tone={look.tone} icon={look.icon} text={problemText} />
         ) : (
-          <Stepper
-            size="sm"
-            value={line.qty}
-            min={1}
-            max={max}
-            maxReason={max < MAX_ADD_QTY ? "stock" : undefined}
-            label={t("line.qty", { name: line.name })}
-            onChange={onQtyChange}
-          />
+          <p className="cline__avail">
+            <Status tone="ok">{t("stock.in")}</Status>
+          </p>
         )}
-        <span className="flex flex-wrap items-center gap-x-4">
-          <TextLink as="button" type="button" arrow={false} onClick={onRemove} aria-label={t("line.removeNamed", { name: line.name })}>
-            {t("line.remove")}
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 pt-1">
+          {look?.blocking || single ? null : (
+            <Stepper
+              size="sm"
+              value={line.qty}
+              min={1}
+              max={max}
+              maxReason={max < MAX_ADD_QTY ? "stock" : undefined}
+              label={t("line.qty", { name: line.name })}
+              onChange={onQtyChange}
+            />
+          )}
+          <span className="lg:hidden">{total}</span>
+        </div>
+        <div className="cline__actions">
+          <TextLink as="button" type="button" icon="trash" arrow={false} onClick={onRemove} aria-label={t("line.removeNamed", { name: line.name })}>
+            {t("buy.removeShort")}
           </TextLink>
           {actions}
-        </span>
-      </div>
-      {problemText || error || busy ? (
-        <div className="col-span-full grid gap-1" aria-live="polite">
-          {problemText && look ? <LineMessage tone={look.tone} icon={look.icon} text={problemText} /> : null}
-          {error ? <LineMessage tone="bad" icon="warning-circle" text={t(cartErrorKey(error))} /> : null}
-          {busy ? <span className="sr-only">{t("line.updating")}</span> : null}
         </div>
-      ) : null}
+        {error || busy ? (
+          <div className="grid gap-1" aria-live="polite">
+            {error ? <LineMessage tone="bad" icon="warning-circle" text={t(cartErrorKey(error))} /> : null}
+            {busy ? <span className="sr-only">{t("line.updating")}</span> : null}
+          </div>
+        ) : null}
+      </div>
+      <div className="cline__total max-lg:hidden">{total}</div>
     </Row>
   );
 }
 
 function LineMessage({ tone, icon, text }: { tone: "bad" | "warn" | "info"; icon: IconName; text: string }) {
   return (
-    <p className={cx("flex items-start gap-1.5 type-caption font-medium", TONE_CLASS[tone])}>
+    <p className={cx("flex items-start gap-1.5 type-xs-strong", TONE_CLASS[tone])}>
       <Icon name={icon} size={16} className="mt-0.5 shrink-0" />
       <span className="min-w-0">{text}</span>
     </p>

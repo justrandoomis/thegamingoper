@@ -34,6 +34,7 @@ import { approvals, auditEvents, employees, inventoryLocations, products, usedUn
 import { expectChanged, expectThat, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, toAppError } from "~/server/errors";
 import type { Permission } from "~/server/permissions";
+import { getSetting } from "~/server/settings.server";
 import { actorId, assertAny, fieldAccess, type FieldAccess } from "./access";
 import { bundleComponentsFor, chunks, costBasisFor, oldestStockDaysFor, salesFor } from "./facts.server";
 import { formIqd, marginStateOf, querySkuRows, toSkuRow, visibleReasons, type MarginState, type PriceFilters, type SkuRow } from "./prices.server";
@@ -255,7 +256,7 @@ async function usedReferencePrice(db: Db, unitId: string, currentIqd: number, no
 }
 
 async function evaluateUsed(db: Db, unit: typeof usedUnits.$inferSelect, newPriceIqd: number, now: number) {
-  return evaluatePriceChange({ oldPriceIqd: unit.priceIqd, newPriceIqd, oldCompareAtIqd: null, newCompareAtIqd: null, cost: usedBasis(unit), mode: "standard", referencePriceIqd: await usedReferencePrice(db, unit.id, unit.priceIqd, now) });
+  return evaluatePriceChange({ oldPriceIqd: unit.priceIqd, newPriceIqd, oldCompareAtIqd: null, newCompareAtIqd: null, cost: usedBasis(unit), mode: "standard", referencePriceIqd: await usedReferencePrice(db, unit.id, unit.priceIqd, now), dropApprovalBps: await getSetting(db, "pricing.drop_approval_bps") });
 }
 
 const usedPendingSql = (unitId: string) => sql`exists (select 1 from approvals a where a.kind = ${USED_KIND} and a.entity_id = ${unitId} and a.status = 'pending')`;

@@ -1,4 +1,3 @@
-// lint-design: allow commit-count — the reference page shows every key variant side by side; it is not a shopping view.
 import { useEffect, useState, type ReactNode } from "react";
 
 import type { Route } from "./+types/design-system";
@@ -7,7 +6,7 @@ import { LOCALE_CODES, LOCALES, type Locale } from "~/lib/locales";
 import { setPrefs, usePrefs, type Theme } from "~/lib/prefs";
 import { MotionRoot, setMotionOverride, themeMorph, useDirectionMorph, useMotionTier, getMotionOverride } from "~/motion";
 import { getCtx } from "~/server/context.server";
-import { KeyBank } from "~/ui/KeyBank";
+import { Segmented } from "~/ui/Segmented";
 import { defineCopy, useCopy, type DsSectionModule } from "./design-system/kit";
 import "./design-system/ds.css";
 
@@ -23,7 +22,7 @@ const SECTIONS = Object.values(modules)
 const COPY = defineCopy({
   ar: {
     title: "نظام التصميم",
-    lede: "طين وعدسة 1.0: الطين لليد، والزجاج للعين، والضوء للمنصة، والأحمر للالتزام، والمسطّح للقراءة. كل ما هنا مكوّنات حقيقية من app/ui.",
+    lede: "نظام التصميم 2: الأحمر والأبيض هوية المتجر وألوان المنصات أبوابه، والمنتج على أرضية محايدة، وزر أحمر واحد في كل شاشة. كل ما هنا مكوّنات حقيقية من app/ui بكل حالاتها.",
     demo: "أسماء المنتجات والأسعار في هذه الصفحة أمثلة للعرض، وليست أسعار المتجر.",
     theme: "المظهر",
     light: "فاتح",
@@ -43,7 +42,7 @@ const COPY = defineCopy({
   },
   en: {
     title: "Design system",
-    lede: "Lens & Clay 1.0: clay is for the hand, glass for the eye, light for the platform, red for the commit, flat for reading. Everything here is a real component from app/ui.",
+    lede: "Design System v2: red and white is the brand and the platform colours are the doors; the product stands on a neutral ground; one red primary per view. Everything here is a real component from app/ui, in every state.",
     demo: "Product names and prices on this page are display examples, not the shop's prices.",
     theme: "Theme",
     light: "Light",
@@ -63,7 +62,7 @@ const COPY = defineCopy({
   },
   ckb: {
     title: "سیستەمی دیزاین",
-    lede: "قوڕ و هاوێنە 1.0: قوڕ بۆ دەستە، شووشە بۆ چاوە، ڕووناکی بۆ پلاتفۆرمە، سوور بۆ پابەندبوونە، تەخت بۆ خوێندنەوەیە. هەموو ئەوەی لێرەیە پێکهاتەی ڕاستەقینەیە لە app/ui.",
+    lede: "سیستەمی دیزاین 2: سوور و سپی ناسنامەی فرۆشگایە و ڕەنگی پلاتفۆرمەکان دەرگاکانین؛ کاڵا لەسەر زەوییەکی بێلایەنە؛ یەک دوگمەی سووری سەرەکی لە هەر شاشەیەکدا. هەموو ئەوەی لێرەیە پێکهاتەی ڕاستەقینەی app/ui یە.",
     demo: "ناوی کاڵا و نرخەکانی ئەم پەڕەیە نموونەن، نرخی فرۆشگا نین.",
     theme: "ڕووکار",
     light: "ڕوون",
@@ -116,10 +115,10 @@ export default function DesignSystem() {
         <p className="ds-demo-note">{c.demo}</p>
         <div className="ds-controls">
           <Control label={c.theme}>
-            <KeyBank
-              kind="segment"
+            <Segmented
+              inline
               aria-label={c.theme}
-              items={[
+              options={[
                 { value: "light", label: c.light, icon: "sun" },
                 { value: "dark", label: c.dark, icon: "moon" },
                 { value: "system", label: c.system },
@@ -129,19 +128,19 @@ export default function DesignSystem() {
             />
           </Control>
           <Control label={c.language}>
-            <KeyBank
-              kind="segment"
+            <Segmented
+              inline
               aria-label={c.language}
-              items={LOCALE_CODES.map((code) => ({ value: code, label: <span lang={LOCALES[code].bcp47}>{LOCALES[code].label}</span> }))}
+              options={LOCALE_CODES.map((code) => ({ value: code, label: LOCALES[code].label, lang: LOCALES[code].bcp47 }))}
               value={locale}
               onChange={(value) => switchLanguage(value as Locale)}
             />
           </Control>
           <Control label={c.currency}>
-            <KeyBank
-              kind="segment"
+            <Segmented
+              inline
               aria-label={c.currency}
-              items={[
+              options={[
                 { value: "IQD", label: "IQD" },
                 { value: "USD", label: "USD" },
               ]}
@@ -150,10 +149,10 @@ export default function DesignSystem() {
             />
           </Control>
           <Control label={c.density}>
-            <KeyBank
-              kind="segment"
+            <Segmented
+              inline
               aria-label={c.density}
-              items={[
+              options={[
                 { value: "store", label: c.store },
                 { value: "admin", label: c.admin },
               ]}
@@ -162,10 +161,10 @@ export default function DesignSystem() {
             />
           </Control>
           <Control label={`${c.motion} (${c[tier]})`}>
-            <KeyBank
-              kind="segment"
+            <Segmented
+              inline
               aria-label={c.motion}
-              items={[
+              options={[
                 { value: "device", label: c.device },
                 { value: "full", label: c.full },
                 { value: "lite", label: c.lite },
@@ -182,7 +181,7 @@ export default function DesignSystem() {
       </header>
       <nav className="ds-toc page" aria-label={c.sections}>
         {SECTIONS.map(({ section }) => (
-          <a key={section.id} href={`#${section.id}`} className="link">
+          <a key={section.id} href={`#${section.id}`} className="link min-w-11 justify-center">
             <span className="link__text">{section.title[locale]}</span>
           </a>
         ))}

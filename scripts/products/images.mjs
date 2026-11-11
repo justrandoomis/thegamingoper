@@ -5,12 +5,15 @@
  *   node scripts/products/images.mjs                       every image of every catalog/products/*.json
  *   node scripts/products/images.mjs --only slug,slug      these products only (also --only=slug,slug)
  *   node scripts/products/images.mjs --force               rebuild even what is up to date
- *   node scripts/products/images.mjs --try a.png,b.jpg --kind=hero [--cutout=false --holes --extend --clean --pad=0.1 --crop=l,t,r,b]
+ *   node scripts/products/images.mjs --try a.png,b.jpg --kind=hero [--cutout=false --holes --extend --clean --pad=0.1 --crop=l,t,r,b --opaque]
  *                                                          run the treatment on any file and write a review
- *                                                          sheet to .cache/product-images/_try/ — publishes nothing
+ *                                                          sheet to .cache/product-images/_try/ — publishes nothing;
+ *                                                          prints the opaque-photo gate's verdict too
+ *   node scripts/products/images.mjs --opaque-report       the published photos the gate would refuse today
  *
  * Other flags: --no-sheet (skip review sheets) · --no-download (never fetch a missing original) ·
- * --jobs=N (images in parallel, default 2).
+ * --jobs=N (images in parallel, default 2) · --opaque-report (list every published photo the opaque-photo gate
+ * below would refuse today — the re-cut list — and exit; nothing is built).
  *
  * For each entry of "images" in a catalogue file (key "<slug>--<n>", file, sourceUrl, sourcePage, kind,
  * credit) it reads the original from "file" — fetching it again from sourceUrl when it is missing —
@@ -39,7 +42,18 @@
  * the frame of a plain canvas: extend the canvas, then cut out), clean true (a transparent source:
  * drop a baked shadow or glow and stray specks), pad (padding share instead of 6%), trim false (an
  * opaque photo keeps its full frame), crop [left, top, right, bottom] (shares of the original cut
- * off before anything else — white bars, an empty canvas).
+ * off before anything else — white bars, an empty canvas), opaque true (the gate below accepts this
+ * opaque photo after looking; it changes nothing in the treatment).
+ *
+ * Opaque-photo gate (design v2 spec §7.5: one ground for every product photo, no white or black boxes
+ * inside the well). A photo that comes out OPAQUE — not box art, not a screenshot — passes only when
+ * the plain background it kept is within ΔE 3 (CIE76, the treatment's own unit) of the light
+ * `--niche` token (read from app/styles/tokens.css), so it sits on the product ground without a
+ * visible box. Otherwise it is REFUSED (✗, not published, exit code 1) — re-cut it (--try helps),
+ * give it the kind it really is (box-art, screenshot), or accept it with "opaque": true and a why.
+ * Photos already published opaque before the gate existed are GRANDFATHERED: rebuilt and published
+ * as before, counted in the summary, and listed by --opaque-report until they are re-cut (owner input,
+ * spec §13 row 7). The storefront flags every one of them (ImageRef.opaque) so the well treats it.
  *
  * Manifest = the clay-render manifest (app/art/index.ts ArtManifest, view "hero", without the PNG) plus
  *   transparent, background ("#rrggbb" | null), kind, credit, source { url, page }, share (first image
@@ -49,13 +63,13 @@
  * Output is deterministic and file names carry a hash of their content, so /products/* can be cached
  * forever and a rebuild that changes nothing rewrites no file.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { PHOTO_KINDS, TREATMENT_VERSION, treat } from './lib/cutout.mjs';
+import { PHOTO_KINDS, TREATMENT_VERSION, lab, treat } from './lib/cutout.mjs';
 import { writeSheet } from './lib/sheet.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -83,6 +97,53 @@ const ENCODE = {
 };
 const SETTINGS = JSON.stringify({ TREATMENT_VERSION, WORK_MAX, MASTER_MAX, WIDTHS, SHARE_WIDTH, PLACEHOLDER_SIDE, ENCODE, sharp: sharp.versions.sharp, vips: sharp.versions.vips });
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
+
+/* ── the opaque-photo gate (header; design v2 spec §7.5) ───────────────────── */
+
+/** An opaque photo's kept background may differ from the product ground by at most this (CIE76 ΔE). */
+const GATE_DELTA_E = 3;
+/** Framed rectangles by design: the gate never asks them for a background. */
+const GATE_FREE_KINDS = new Set(['box-art', 'screenshot']);
+const TOKENS_FILE = path.join(ROOT, 'app', 'styles', 'tokens.css');
+const NICHE_FALLBACK = '#f3f1ee';
+
+/** The light theme's `--niche` (the first one in tokens.css: the :root block comes before the dark one). */
+function readNiche() {
+  try {
+    const match = /--niche:\s*(#[0-9a-f]{6})\b/i.exec(readFileSync(TOKENS_FILE, 'utf8'));
+    return match ? match[1].toLowerCase() : NICHE_FALLBACK;
+  } catch {
+    return NICHE_FALLBACK;
+  }
+}
+const NICHE = readNiche();
+
+/** CIE76 ΔE between two "#rrggbb" colours; null when either does not parse. */
+function deltaE(a, b) {
+  const rgb = (value) => {
+    const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(String(value ?? ''));
+    return match ? match.slice(1, 4).map((part) => parseInt(part, 16)) : null;
+  };
+  const [x, y] = [rgb(a), rgb(b)];
+  if (!x || !y) return null;
+  const [p, q] = [lab(...x), lab(...y)];
+  return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]);
+}
+
+/**
+ * The gate's verdict on one picture: { verdict: 'ok' | 'accepted' | 'refused', deltaE, why }. `picture` is a
+ * treatment result or a published manifest (both carry transparent and background); `accepted` = the image's
+ * options say "opaque": true.
+ */
+function opaqueGate(kind, picture, accepted) {
+  if (picture.transparent || GATE_FREE_KINDS.has(kind)) return { verdict: 'ok', deltaE: null, why: null };
+  const distance = picture.background ? deltaE(picture.background, NICHE) : null;
+  if (distance !== null && distance <= GATE_DELTA_E) return { verdict: 'ok', deltaE: distance, why: null };
+  const why = picture.background
+    ? `opaque on ${picture.background}, ΔE ${distance.toFixed(1)} from --niche ${NICHE} (at most ${GATE_DELTA_E})`
+    : 'opaque and fills its own frame (no plain background to match --niche)';
+  return { verdict: accepted ? 'accepted' : 'refused', deltaE: distance, why };
+}
 
 /* ── flags ────────────────────────────────────────────────────────────────── */
 
@@ -112,7 +173,11 @@ const OPTION_CHECKS = {
   trim: (v) => v === false,
   pad: (v) => typeof v === 'number' && v >= 0 && v <= 0.4,
   crop: (v) => Array.isArray(v) && v.length === 4 && v.every((s) => typeof s === 'number' && s >= 0 && s < 0.5),
+  opaque: (v) => v === true,
 };
+/** Options that only the gate reads: they change nothing in the treatment (nor in the input hash). */
+const GATE_OPTIONS = new Set(['opaque']);
+const withoutGateOptions = (options) => Object.fromEntries(Object.entries(options).filter(([name]) => !GATE_OPTIONS.has(name)));
 
 /** scripts/products/image-options.json: key → { option…, why }. Unknown options are an error. */
 async function readOptions() {
@@ -133,7 +198,7 @@ async function readOptions() {
 }
 
 /** The options as the treatment takes them (defaults filled in elsewhere: absent = default). */
-const treatmentOptions = (job) => ({ kind: job.kind, ...job.options });
+const treatmentOptions = (job) => ({ kind: job.kind, ...withoutGateOptions(job.options) });
 
 /* ── catalogue ────────────────────────────────────────────────────────────── */
 
@@ -373,7 +438,7 @@ async function processImage(job) {
   else if (flags['no-download']) throw new Error(`the original ${rel(job.file)} is missing (--no-download)`);
   else { bytes = await download(job); console.log(`  fetched ${job.key} from ${job.source.url}`); }
 
-  const options = JSON.stringify({ ...job.options, share: job.share });
+  const options = JSON.stringify({ ...withoutGateOptions(job.options), share: job.share });
   const input = sha(Buffer.concat([Buffer.from(`${SETTINGS}|${job.kind}|${options}|`), bytes]), 16);
   const previous = await readManifest(job.key);
   if (!flags.force && previous?.input === input && referencedFiles(previous).every((src) => existsSync(path.join(ROOT, 'public', src)))) {
@@ -385,9 +450,20 @@ async function processImage(job) {
   const started = performance.now();
   const decoded = await decode(bytes, job.options.crop);
   const treated = treat(decoded, treatmentOptions(job));
+  // The opaque-photo gate (header): a new opaque photo off the product ground is not published.
+  const gate = opaqueGate(job.kind, treated, job.options.opaque === true);
+  if (gate.verdict === 'refused') {
+    if (previous && previous.transparent === false) gate.verdict = 'grandfathered';
+    else {
+      throw new Error(
+        `refused by the opaque-photo gate: ${gate.why}. Re-cut it (node scripts/products/images.mjs --try <file> --kind=${job.kind}), ` +
+          `give it the kind it is (box-art, screenshot), or accept it in ${rel(OPTIONS_FILE)} with "opaque": true and a why (design v2 spec §7.5)`,
+      );
+    }
+  }
   const picture = await master(treated);
   const published = await publish(job, picture, input);
-  return { job, status: 'built', manifest: published.manifest, treated, decoded, files: published.files, bytes: published.bytes, ms: performance.now() - started };
+  return { job, status: 'built', manifest: published.manifest, treated, decoded, gate, files: published.files, bytes: published.bytes, ms: performance.now() - started };
 }
 
 function describe(result) {
@@ -400,7 +476,26 @@ function describe(result) {
     : treated.reason ?? '';
   const size = `${manifest.width}×${manifest.height}`.padEnd(10);
   const options = Object.keys(job.options).length ? `  [${Object.entries(job.options).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(' ')}]` : '';
-  return `${treated.transparent ? '✓' : '·'} ${job.key.padEnd(52)} ${kind} ${treated.method.padEnd(9)} ${size} ${String(result.files).padStart(2)} files ${(result.bytes / 1024).toFixed(0).padStart(5)} kB  ${(result.ms / 1000).toFixed(1)}s  ${facts}${options}`;
+  const gate = result.gate && result.gate.verdict !== 'ok' ? `\n    ⚠ opaque-photo gate: ${result.gate.verdict} — ${result.gate.why}` : '';
+  return `${treated.transparent ? '✓' : '·'} ${job.key.padEnd(52)} ${kind} ${treated.method.padEnd(9)} ${size} ${String(result.files).padStart(2)} files ${(result.bytes / 1024).toFixed(0).padStart(5)} kB  ${(result.ms / 1000).toFixed(1)}s  ${facts}${options}${gate}`;
+}
+
+/* ── --opaque-report: the published photos the gate would refuse today ────── */
+
+async function opaqueReport() {
+  const options = await readOptions();
+  const files = existsSync(MANIFESTS) ? (await fs.readdir(MANIFESTS)).filter((file) => file.endsWith('.json')).sort() : [];
+  const rows = [];
+  for (const file of files) {
+    const manifest = await readManifest(file.slice(0, -5));
+    if (!manifest) continue;
+    const gate = opaqueGate(manifest.kind, manifest, options[manifest.key]?.opaque === true);
+    if (gate.verdict !== 'ok') rows.push({ key: manifest.key, kind: manifest.kind, ...gate });
+  }
+  console.log(`Opaque-photo gate (design v2 spec §7.5): background within ΔE ${GATE_DELTA_E} of --niche ${NICHE}, box art and screenshots exempt.\n`);
+  for (const row of rows) console.log(`${row.verdict === 'accepted' ? '·' : '✗'} ${row.key.padEnd(56)} ${row.kind.padEnd(8)} ${row.verdict === 'accepted' ? 'accepted ' : 'to re-cut'} ${row.why}`);
+  const recut = rows.filter((row) => row.verdict !== 'accepted').length;
+  console.log(`\n${files.length} published photo${files.length === 1 ? '' : 's'}: ${recut} to re-cut (grandfathered until then), ${rows.length - recut} accepted in ${rel(OPTIONS_FILE)}.`);
 }
 
 async function pool(items, size, work) {
@@ -441,6 +536,8 @@ async function tryFiles(files, kind) {
     await png.resize({ width: Math.min(720, picture.width), kernel: 'lanczos3' }).png({ compressionLevel: 6 }).toFile(pngFile);
     const sheet = await writeSheet(path.join(out, `${name}.sheet.png`), [{ label: `${name} · ${kind} · ${treated.method}${treated.reason ? ' · ' + treated.reason : ''}`, file: pngFile, transparent: picture.transparent, background: picture.background }]);
     console.log(`${treated.transparent ? '✓' : '·'} ${name}  ${kind}  ${treated.method}  ${picture.width}×${picture.height}  ${((performance.now() - started) / 1000).toFixed(1)}s  ${treated.reason ?? ''}`);
+    const gate = opaqueGate(kind, treated, flags.opaque === true);
+    console.log(`  opaque-photo gate: ${gate.verdict}${gate.why ? ` — ${gate.why}` : ''}`);
     console.log(`  ${JSON.stringify(treated.stats)}`);
     console.log(`  ${rel(pngFile)}   sheet ${rel(sheet)}`);
   }
@@ -449,6 +546,10 @@ async function tryFiles(files, kind) {
 /* ── main ─────────────────────────────────────────────────────────────────── */
 
 async function main() {
+  if (flags['opaque-report']) {
+    await opaqueReport();
+    return;
+  }
   if (flags.try) {
     const kind = flags.kind ?? 'hero';
     if (!PHOTO_KINDS.includes(kind)) throw new Error(`--kind must be one of ${PHOTO_KINDS.join(', ')}`);
@@ -506,6 +607,7 @@ async function main() {
       kind: result.job.kind, method: result.treated.method, transparent: result.treated.transparent, reason: result.treated.reason,
       background: result.treated.background, size: [result.manifest.width, result.manifest.height],
       source: { format: result.decoded.format, ...result.decoded.source }, options: result.job.options, stats: result.treated.stats,
+      gate: result.gate ? { verdict: result.gate.verdict, deltaE: result.gate.deltaE === null ? null : +result.gate.deltaE.toFixed(2), niche: NICHE } : null,
     };
   }
   await fs.mkdir(CACHE, { recursive: true });
@@ -514,6 +616,9 @@ async function main() {
   const built = results.filter((r) => r?.status === 'built');
   const cut = built.filter((r) => r.treated.method === 'cutout').length;
   console.log(`\n${jobs.length} image${jobs.length === 1 ? '' : 's'}: ${built.length} built (${cut} cut out), ${results.filter((r) => r && r.status !== 'built').length} up to date, ${failures.length} failed — ${((performance.now() - started) / 1000).toFixed(1)}s`);
+  const grandfathered = built.filter((r) => r.gate?.verdict === 'grandfathered').length;
+  const accepted = built.filter((r) => r.gate?.verdict === 'accepted').length;
+  if (grandfathered || accepted) console.log(`opaque-photo gate: ${grandfathered} grandfathered (published opaque before the gate: re-cut them), ${accepted} accepted — the list: --opaque-report`);
   if (!flags['no-sheet'] && built.length) console.log(`sheets  ${rel(path.join(CACHE, '_sheets'))}/<slug>.png   report  ${rel(reportFile)}`);
   if (failures.length) process.exitCode = 1;
 }

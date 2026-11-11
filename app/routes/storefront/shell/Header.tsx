@@ -1,36 +1,45 @@
 /**
- * The top of every storefront page (docs/DESIGN.md §9.2, §8.8, §8.11).
+ * The top of every storefront page (Design System v2 §5.1–§5.3, §5.8). One sticky glass <header> for every width:
  *
- *   <UtilityBar>   ≥1200 only, flat, 38px: the delivery fact (fee from settings), track your order, trade in, help,
- *                  the display currency (with its rate), the languages. Below 1200 these live in the categories sheet
- *                  and the footer.
- *   <Header>       sticky. Phones and tablets: logo + search field. ≥1200: logo, platform links with LEDs (each
- *                  with its mega menu), used, repair, search, theme, favourites, account, the cart orb with its bead.
- *                  On the floor at the top of the page; once the page has scrolled about 24px a live glass layer
- *                  fades in behind it (and phones swap the wordmark for the mascot mark). Scrolling is observed with
- *                  an IntersectionObserver on a 24px sentinel — no scroll listener.
+ *   BELOW 1024   56px: the lockup (the mascot + the wordmark; the wordmark alone below 375px) · the search pill (it opens
+ *                the full-screen search sheet; «ابحث» below 430px, «ابحث عن جهاز أو لعبة» from 430) · the cart with its
+ *                bead. Account and favourites live in the tab bar. The demo strip (./Banners) sits above it and scrolls
+ *                away.
+ *   FROM 1024    two rows, 64 + 44 = 108px. Row 1: the lockup · the search field (320 wide, 560 from 1280 with its "/"
+ *                shortcut) · from 1280 «استبدل جهازك» and «تتبّع طلبك» · language (globe → menu), account (a menu
+ *                that also holds those two links at 1024–1279), favourites, the cart. Row 2: the four platform menu
+ *                buttons (./MegaMenu) · الألعاب · الإكسسوارات (from 1280; it is in every mega menu) · المستعمل · الدعم ·
+ *                the demo chip at the end.
+ *   TASK SCREENS pages with their own bottom task bar (handle `tabBar: false`, task flows) have no tab bar, so below 1024
+ *                the header becomes the task header once the page has scrolled 24px: back · the page's <h1> · the cart.
+ *                Back is real history Back when an earlier page of this site is in the tab, else a link to `task.back`.
+ *   CHECKOUT     <CheckoutBar>: one 56px bar (64 from 1024) — back to the cart · the mascot (home) · the step rail · the
+ *                «طلب تجريبي» tag · help. No strip, no search, no menus.
  *
- *   TASK SCREENS   pages with their own bottom task bar (handle `tabBar: false`: product, cart, checkout, …) have no
- *                  tab bar, so below 1200 the scrolled header becomes the task header (§9.2): back at the start, the
- *                  page's <h1> as its title, the cart with its bead at the end — the cart stays one tap away and
- *                  fly-to-cart has a target. At the top of the page the header is the usual one (the product page's
- *                  stage has its own back / cart orbs there). The search field comes back while it has focus. Back is
- *                  real history Back when an earlier page of this site is in the tab, else a link to `task.back`.
+ * The cart button is the fly-to-cart target (`data-cart-target`, drawn at every count) and its bead `data-cart-badge`.
+ * Scrolling is observed with an IntersectionObserver on a 24px sentinel at the top of the document — no scroll listener.
  */
-import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import { Icon } from "~/art/Icon";
 import { Logo } from "~/art/Logo";
 import { LocaleLink, useFormat } from "~/i18n/react";
-import { formatMoney } from "~/lib/money";
+import { splitLocale } from "~/lib/locales";
+import { cx } from "~/ui/cx";
 import { useCartCount } from "~/ui/cart-client";
+import { DemoNote } from "~/ui/DemoNote";
 import { Glass } from "~/ui/Glass";
 import { IconKey } from "~/ui/IconKey";
-import { PlatformNav } from "./MegaMenu";
-import { CurrencyMenu, LanguageLinks, ThemeToggle } from "./Preferences";
-import { SearchForm } from "./SearchForm";
+import { Menu } from "~/ui/Menu";
+import { ProgressSteps } from "~/ui/ProgressSteps";
+import { TextLink } from "~/ui/TextLink";
+import { PageProgress } from "./Banners";
+import { checkoutRail } from "./chrome";
 import { useShellT } from "./i18n";
+import { PlatformNav } from "./MegaMenu";
+import { LanguageMenu } from "./Preferences";
+import { SearchForm } from "./SearchForm";
 import type { ShellData } from "./types";
 
 /** A page with its own task bar: the header's task mode (see the file header). */
@@ -39,39 +48,16 @@ export type HeaderTask = {
   back: string;
 };
 
-export function UtilityBar({ shell }: { shell: ShellData | null }) {
-  const t = useShellT();
-  const f = useFormat();
-  return (
-    <div className="shell-utility">
-      <div className="page shell-utility__row">
-        {shell ? (
-          <p className="shell-utility__fact">
-            <Icon name="truck" size={17} />
-            <span>{t("utility.delivery", { fee: "⁨" + formatMoney(shell.deliveryFeeIqd, "IQD", f.locale, f.numbering) + "⁩" })}</span>
-          </p>
-        ) : (
-          <span />
-        )}
-        <nav className="shell-utility__links" aria-label={t("utility.label")}>
-          <LocaleLink to="/track" className="shell-utility__link hit-44">
-            {t("utility.track")}
-          </LocaleLink>
-          <LocaleLink to="/trade-in" className="shell-utility__link hit-44">
-            {t("utility.tradeIn")}
-          </LocaleLink>
-          <LocaleLink to="/support" className="shell-utility__link hit-44">
-            {t("utility.help")}
-          </LocaleLink>
-          <CurrencyMenu />
-          <LanguageLinks className="shell-langs" linkClassName="shell-utility__link hit-44" />
-        </nav>
-      </div>
-    </div>
-  );
-}
+export type HeaderProps = {
+  shell: ShellData | null;
+  task?: HeaderTask | null;
+  /** STORE_MODE is "demo": the nav row ends with the demo chip. */
+  demo: boolean;
+  /** The phone search pill was pressed: open the search sheet. */
+  onSearch: () => void;
+};
 
-/** True once the page has scrolled past the 24px sentinel that sits right above the header. */
+/** True once the page has scrolled past the 24px sentinel at the top of the document. */
 function useScrolled(sentinel: React.RefObject<HTMLElement | null>): boolean {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -100,94 +86,157 @@ function usePageTitle(active: boolean): string {
   return title;
 }
 
-export function Header({ shell, task = null }: { shell: ShellData | null; task?: HeaderTask | null }) {
+/** The logo lockup: the mascot and the wordmark in brand red, one link home. */
+export function Lockup({ className, label }: { className?: string; label?: string }) {
+  const t = useShellT();
+  return (
+    <LocaleLink to="/" className={cx("shell-lockup text-logo", className)} aria-label={label ?? t("brandHome")}>
+      <Logo variant="mark" className="shell-lockup__mark" />
+      <Logo variant="wordmark" className="shell-lockup__word" />
+    </LocaleLink>
+  );
+}
+
+/** The cart button with its bead: the fly-to-cart target at every count (the bead appears from 1). */
+export function CartButton({ className }: { className?: string }) {
   const t = useShellT();
   const f = useFormat();
   const { count } = useCartCount();
+  return (
+    <LocaleLink
+      to="/cart"
+      className={cx("key key--round key--plain shell-cart", className)}
+      aria-label={t("tools.cartCount", { count })}
+      data-cart-target=""
+      data-press="icon"
+    >
+      <span className="key__cap">
+        <Icon name="shopping-bag" size={24} />
+      </span>
+      {count > 0 ? (
+        <b className="bead" data-cart-badge="" aria-hidden="true">
+          {f.number(count)}
+        </b>
+      ) : null}
+    </LocaleLink>
+  );
+}
+
+function isPlainClick(event: MouseEvent<HTMLAnchorElement>): boolean {
+  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+}
+
+/** The phone search pill: a link to /search (it works without script) that opens the search sheet. */
+function SearchPill({ onOpen }: { onOpen: () => void }) {
+  const t = useShellT();
+  return (
+    <LocaleLink
+      to="/search"
+      prefetch="none"
+      className="shell-pill"
+      aria-haspopup="dialog"
+      data-press="soft"
+      onClick={(event) => {
+        if (!isPlainClick(event)) return;
+        event.preventDefault();
+        onOpen();
+      }}
+    >
+      <Icon name="magnifying-glass" size={20} />
+      <span className="shell-pill__text">
+        <span className="shell-pill__short">{t("search.short")}</span>
+        <span className="shell-pill__long">{t("search.placeholder")}</span>
+      </span>
+    </LocaleLink>
+  );
+}
+
+export function Header({ shell, task = null, demo, onSearch }: HeaderProps) {
+  const t = useShellT();
+  const location = useLocation();
+  const path = splitLocale(location.pathname).path;
   const sentinel = useRef<HTMLDivElement>(null);
-  const header = useRef<HTMLElement>(null);
   const scrolled = useScrolled(sentinel);
   const title = usePageTitle(task !== null && scrolled);
-
-  // toasts start just under the header, wherever it is (below the ribbon and the utility strip at the top of the
-  // page, at the top edge once it sticks) — measured only when that changes, never per scroll frame
-  useLayoutEffect(() => {
-    const element = header.current;
-    if (!element) return;
-    const root = document.documentElement;
-    const publish = () => root.style.setProperty("--shell-toast-top", `${Math.max(0, Math.round(element.getBoundingClientRect().bottom)) + 8}px`);
-    publish();
-    const observer = new ResizeObserver(publish);
-    observer.observe(element);
-    return () => {
-      observer.disconnect();
-      root.style.removeProperty("--shell-toast-top");
-    };
-  }, [scrolled]);
+  const categories = shell?.nav.categories ?? [];
+  const games = categories.find((category) => category.slug === "games");
+  const accessories = categories.find((category) => category.slug === "accessories");
+  const currentPlatform = /^\/platform\/([^/?#]+)/.exec(path)?.[1] ?? null;
+  const here = (href: string) => (path === href || path.startsWith(`${href}/`) ? ("page" as const) : undefined);
 
   return (
     <>
-      <div className="relative" aria-hidden="true">
-        <div ref={sentinel} className="pointer-events-none absolute inset-x-0 h-6" />
-      </div>
-      <header ref={header} className="shell-header" data-scrolled={scrolled ? "" : undefined} data-task={task ? "" : undefined} data-motion-persist="header">
-        {scrolled ? <Glass className="shell-header__glass" aria-hidden="true" /> : null}
-        <div className="page shell-header__bar">
+      <div ref={sentinel} className="shell-sentinel" aria-hidden="true" />
+      <Glass as="header" className="shell-header" data-scrolled={scrolled ? "" : undefined} data-task={task ? "" : undefined} data-motion-persist="header">
+        <div className="page shell-bar">
           {task ? <TaskBack to={task.back} /> : null}
-          <LocaleLink to="/" className="shell-logo text-logo" aria-label={t("brandHome")}>
-            <Logo variant="wordmark" className="shell-logo__word" />
-            <Logo variant="mark" className="shell-logo__mark" />
-          </LocaleLink>
+          <Lockup />
           {task && title ? (
             // the page's own <h1> names the page for assistive technology; this is its visual echo on the bar
             <p className="shell-task shell-task--title" aria-hidden="true">
               {title}
             </p>
           ) : null}
-
-          <PlatformNav platforms={shell?.nav.platforms ?? []}>
-            {shell && shell.nav.platforms.length > 0 ? <span className="shell-nav__sep" aria-hidden="true" /> : null}
-            <LocaleLink to="/used" className="shell-nav__link">
-              <span className="shell-nav__text">{t("nav.used")}</span>
+          <SearchPill onOpen={onSearch} />
+          <SearchForm variant="header" />
+          <div className="shell-end">
+            <div className="shell-links">
+              <TextLink as={LocaleLink} to="/trade-in" icon="recycle" arrow={false}>
+                {t("links.tradeIn")}
+              </TextLink>
+              <TextLink as={LocaleLink} to="/track" icon="package" arrow={false}>
+                {t("links.track")}
+              </TextLink>
+            </div>
+            <div className="shell-tools">
+              <span className="shell-desk">
+                <LanguageMenu />
+              </span>
+              <Menu
+                label={t("tools.account")}
+                align="end"
+                items={[
+                  { id: "account", kind: "link", icon: "user", label: t("tools.account"), href: "/account" },
+                  { id: "track", kind: "link", icon: "package", label: t("links.track"), href: "/track" },
+                  { id: "trade-in", kind: "link", icon: "recycle", label: t("links.tradeIn"), href: "/trade-in" },
+                ]}
+                trigger={(props) => <IconKey {...props} variant="plain" icon={<Icon name="user" size={24} />} label={t("tools.account")} className="shell-desk shell-narrow" />}
+              />
+              <IconKey as={LocaleLink} to="/account" variant="plain" icon={<Icon name="user" size={24} />} label={t("tools.account")} className="shell-wide" />
+              <IconKey as={LocaleLink} to="/wishlist" variant="plain" icon={<Icon name="heart" size={24} />} label={t("tools.wishlist")} className="shell-desk" />
+              <CartButton />
+            </div>
+          </div>
+        </div>
+        <div className="page shell-navrow">
+          <PlatformNav platforms={shell?.nav.platforms ?? []} current={currentPlatform}>
+            <span className="shell-navsep" aria-hidden="true" />
+            {games ? (
+              <LocaleLink to={games.href} className="shell-navitem" aria-current={here(games.href)}>
+                {games.label || t("nav.games")}
+              </LocaleLink>
+            ) : null}
+            {accessories ? (
+              <LocaleLink to={accessories.href} className="shell-navitem shell-navitem--roomy" aria-current={here(accessories.href)}>
+                {accessories.label || t("nav.accessories")}
+              </LocaleLink>
+            ) : null}
+            <LocaleLink to="/used" className="shell-navitem" aria-current={here("/used")}>
+              {t("nav.used")}
             </LocaleLink>
-            <LocaleLink to="/support/repair" className="shell-nav__link">
-              <span className="shell-nav__text">{t("nav.repair")}</span>
+            <LocaleLink to="/support" className="shell-navitem" aria-current={here("/support")}>
+              {t("nav.support")}
             </LocaleLink>
           </PlatformNav>
-
-          <SearchForm />
-
-          <div className="shell-tools">
-            <ThemeToggle />
-            <IconKey as={LocaleLink} to="/wishlist" variant="quiet" icon="heart" label={t("tools.wishlist")} />
-            <IconKey as={LocaleLink} to="/account" variant="quiet" icon="user" label={t("tools.account")} />
-            <CartOrb count={count} label={t("tools.cartCount", { count })} bead={f.number(count)} />
-          </div>
-          {task ? (
-            <span className="shell-task shell-task--cart">
-              <CartOrb count={count} label={t("tools.cartCount", { count })} bead={f.number(count)} />
-            </span>
+          {demo ? (
+            <div className="shell-navend">
+              <DemoNote variant="chip" />
+            </div>
           ) : null}
         </div>
-      </header>
+        <PageProgress />
+      </Glass>
     </>
-  );
-}
-
-/**
- * The cart orb with its bead: the desktop header's, and the task header's below 1200. Fly-to-cart lands on the first
- * VISIBLE `[data-cart-target]`, so the hidden one of the two never receives a bead.
- */
-function CartOrb({ count, label, bead }: { count: number; label: string; bead: string }) {
-  return (
-    <Glass as={LocaleLink} to="/cart" variant="static" className="shell-cart" aria-label={label} data-cart-target="" data-press="icon">
-      <Icon name="shopping-bag" size={20} />
-      {count > 0 ? (
-        <b className="bead" data-cart-badge="" aria-hidden="true">
-          {bead}
-        </b>
-      ) : null}
-    </Glass>
   );
 }
 
@@ -196,7 +245,7 @@ function TaskBack({ to }: { to: string }) {
   const t = useShellT();
   const navigate = useNavigate();
   const back = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (!isPlainClick(event)) return;
     // React Router numbers the entries it created in this tab; idx 0 = the page the shopper arrived on
     const state = window.history.state as { idx?: number } | null;
     if (typeof state?.idx === "number" && state.idx > 0) {
@@ -206,7 +255,45 @@ function TaskBack({ to }: { to: string }) {
   };
   return (
     <span className="shell-task shell-task--back">
-      <IconKey as={LocaleLink} to={to} variant="quiet" icon="arrow-left" label={t("tools.back")} onClick={back} />
+      <IconKey as={LocaleLink} to={to} variant="plain" icon={<Icon name="arrow-left" size={24} />} label={t("tools.back")} onClick={back} />
     </span>
+  );
+}
+
+/**
+ * The checkout shell's one bar (v2 §5.8): back to the cart · the mascot (home) · the step rail from `?step=` (numbers
+ * and labels; below 430px the numbers and the current label) · «طلب تجريبي» in demo mode · help. 56px, 64 from 1024.
+ */
+export function CheckoutBar({ demo }: { demo: boolean }) {
+  const t = useShellT();
+  const location = useLocation();
+  const rail = checkoutRail(location.search);
+
+  return (
+    <Glass as="header" className="shell-cobar" data-motion-persist="header">
+      <div className="page shell-cobar__bar">
+        <IconKey as={LocaleLink} to="/cart" variant="plain" icon={<Icon name="arrow-left" size={24} />} label={t("checkout.back")} className="shell-cobar__back" />
+        <LocaleLink to="/" className="shell-cobar__brand text-logo" aria-label={t("checkout.home")}>
+          <Logo variant="mark" className="shell-lockup__mark" />
+          <Logo variant="wordmark" className="shell-lockup__word" />
+        </LocaleLink>
+        <ProgressSteps
+          className="shell-cobar__steps"
+          aria-label={t("checkout.steps.label")}
+          current={rail.current}
+          steps={rail.steps.map((step) => ({ label: t(`checkout.steps.${step.id}`), href: step.href ?? undefined }))}
+        />
+        {demo ? (
+          <span className="shell-cobar__tag" title={t("demo.orderHint")}>
+            <DemoNote variant="tag">
+              <span className="shell-cobar__long">{t("demo.order")}</span>
+              <span className="shell-cobar__short">{t("demo.orderShort")}</span>
+            </DemoNote>
+          </span>
+        ) : null}
+        <IconKey as={LocaleLink} to="/support" variant="plain" icon={<Icon name="question" size={24} />} label={t("checkout.help")} className="shell-cobar__help" />
+      </div>
+      <PageProgress />
+    </Glass>
   );
 }

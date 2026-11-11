@@ -54,7 +54,7 @@ import {
 } from "~/server/db/schema";
 import { batchSql, expectChanged, isDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, forbidden, invalid, notFound } from "~/server/errors";
-import { DAY_MS, employeeNames, phoneView, returnById, returnRepairId } from "./shared.server";
+import { DAY_MS, employeeNames, phoneView, returnById, returnRepairId, slaTargets } from "./shared.server";
 import { REPAIR_OPEN, REPAIR_REASON_REQUIRED, REPAIR_STATUS_LIST, REPAIR_TRANSITIONS, SLA, type EmployeeRef, type RepairDetail, type RepairFilters, type RepairListRow, type RepairStatusKey, type WarrantyState } from "./types";
 
 export const REPAIR_ERROR_KEYS = ["repair_changed", "transition_not_allowed", "quote_not_approved", "assignee_not_technician"] as const;
@@ -296,7 +296,7 @@ export async function changeRepairStatus(db: Db, actor: Actor, raw: z.input<type
   const set: Partial<typeof repairTickets.$inferInsert> = { status: input.to };
   if (input.to === "received") {
     set.receivedAt = ticket.receivedAt ?? now;
-    set.slaDueAt = ticket.slaDueAt ?? now + SLA.repairDays * DAY_MS;
+    set.slaDueAt = ticket.slaDueAt ?? now + (await slaTargets(db)).repairDays * DAY_MS;
   }
   if (input.to === "ready") set.completedAt = now;
   if (input.to === "delivered") {
@@ -487,7 +487,7 @@ export async function openCounterRepair(db: Db, actor: Actor, raw: z.input<typeo
         warrantyId: warranty?.id ?? null,
         issue: input.issue,
         status: "received",
-        slaDueAt: now + SLA.repairDays * DAY_MS,
+        slaDueAt: now + (await slaTargets(db)).repairDays * DAY_MS,
         createdAt: now,
         contactName: input.contactName || null,
         serialText,
@@ -553,7 +553,7 @@ export async function openReturnRepair(db: Db, actor: Actor, raw: z.input<typeof
       warrantyId: warranty?.id ?? null,
       issue: input.issue,
       status: "received",
-      slaDueAt: now + SLA.repairDays * DAY_MS,
+      slaDueAt: now + (await slaTargets(db)).repairDays * DAY_MS,
       createdAt: now,
       source: "return",
       returnId: ret.id,

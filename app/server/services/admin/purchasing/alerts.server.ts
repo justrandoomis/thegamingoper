@@ -1,7 +1,8 @@
 /**
- * Variance alerts (admin 09.07) and the module's home figures. Alerts are read from the records, never stored: they
- * disappear when the cause is dealt with (an invoice approved with a reason or voided, a claim opened and closed, an
- * order closed, goods received).
+ * Variance alerts (admin 09.07), what waits for a decision (purchasingQueueCounts: the module's home cards and the
+ * admin shell's queues read the same three counts) and the module's home figures. Alerts are read from the records,
+ * never stored: they disappear when the cause is dealt with (an invoice approved with a reason or voided, a claim
+ * opened and closed, an order closed, goods received).
  *
  *   invoice_qty     an invoice bills more units than were received (three-way match)
  *   invoice_price   an invoice's unit cost differs from the order's, or its charges (shipping + other, with the
@@ -14,13 +15,13 @@
  * Quantity alerts need purchasing.po.read; price alerts cost.read as well; links to invoices only for those who may
  * open them. Error codes: forbidden (403).
  */
-import { sql } from "drizzle-orm";
+import { sql, type SQL } from "drizzle-orm";
 import type { Locale } from "~/lib/locales";
 import { can, canAny, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
 import { forbidden } from "~/server/errors";
 import { shapedBySql } from "./orders.server";
-import { ALERT_KINDS, DAY_MS, OPEN_PO_STATUSES, endOfBaghdadDay, type MatchDiscrepancy, type ReceiptState } from "./rules";
+import { ALERT_KINDS, DAY_MS, OPEN_PO_STATUSES, POSTING_LEASE_MS, endOfBaghdadDay, type MatchDiscrepancy, type ReceiptState } from "./rules";
 import { PAGE_SIZE, actorId, branchCondition, pageOf, variantsById, type VariantLabel } from "./shared.server";
 
 export { ALERT_KINDS };
@@ -174,11 +175,54 @@ export async function listAlerts(db: Db, actor: Actor, filters: AlertFilters, lo
   return { rows: filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), total: filtered.length, page, pageCount, counts };
 }
 
+// ───────────────────────────────────────────────────────────────── what waits: the admin shell's queues
+
+/** `SELECT count(*) AS n …` → n. */
+async function countOf(db: Db, query: SQL): Promise<number> {
+  return Number((await db.all<{ n: number | null }>(query))[0]?.n ?? 0);
+}
+
+export type PurchasingQueueCounts = {
+  /** Orders above the spending limit waiting for this employee's approval: never one they asked for, created, edited
+   *  or submitted (decidePurchaseOrder's rule), only in their branch. purchasing.po.approve + cost.read, and
+   *  purchasing.po.read — the orders list and the order's page, where the decision is taken, need it — else null. */
+  approvals: number | null;
+  /** Receipts whose posting stopped half way and may be resumed now (its lease ran out), in their branch.
+   *  purchasing.receipt.create, else null. */
+  stuck: number | null;
+  /** Supplier invoices the three-way match flagged, in their branch. purchasing.invoice.manage + cost.read, else null. */
+  mismatch: number | null;
+};
+
+/**
+ * What waits for this employee's decision in purchasing: three counts and nothing else, light enough for the admin
+ * shell to ask on every page (shell/queues.server.ts: the bell, the navigation's bead, the admin home). The module's
+ * home (purchasingOverview) shows the same three from here, so the shell and the module never count by two rules.
+ */
+export async function purchasingQueueCounts(db: Db, actor: Actor, now: number): Promise<PurchasingQueueCounts> {
+  const me = actorId(actor) ?? "";
+  const withCost = can(actor, "cost.read");
+  const branch = branchCondition(actor, sql`po.location_id`);
+  const [approvals, stuck, mismatch] = await Promise.all([
+    can(actor, "purchasing.po.approve") && withCost && can(actor, "purchasing.po.read")
+      ? countOf(db, sql`SELECT count(*) AS n FROM purchase_orders AS po JOIN approvals AS a ON a.id = po.approval_id WHERE po.status = 'pending_approval' AND a.status = 'pending' AND a.requested_by <> ${me} AND coalesce(po.created_by, '') <> ${me} AND NOT ${shapedBySql(me)} AND ${branch}`)
+      : Promise.resolve(null),
+    can(actor, "purchasing.receipt.create")
+      ? countOf(db, sql`SELECT count(*) AS n FROM receipts AS r WHERE r.status = 'posted' AND r.received_by LIKE 'posting:%' AND r.posted_at + ${POSTING_LEASE_MS} <= ${now} AND ${branchCondition(actor, sql`r.location_id`)}`)
+      : Promise.resolve(null),
+    can(actor, "purchasing.invoice.manage") && withCost
+      ? countOf(db, sql`SELECT count(*) AS n FROM supplier_invoices AS i LEFT JOIN purchase_orders AS po ON po.id = i.po_id WHERE i.status = 'mismatch' AND ${branch}`)
+      : Promise.resolve(null),
+  ]);
+  return { approvals, stuck, mismatch };
+}
+
 // ───────────────────────────────────────────────────────────────── home
 
 export type PurchasingOverview = {
   waiting: {
-    /** Orders above the limit this employee may decide (not their own); null without the permission. */
+    /** Orders above the limit this employee may decide (not their own); null without the permission. These three
+     *  (approvals, receiptsStuck, invoicesMismatch) come from purchasingQueueCounts. */
     approvals: number | null;
     receiptsDraft: number | null;
     receiptsStuck: number | null;
@@ -192,19 +236,14 @@ export type PurchasingOverview = {
 };
 
 export async function purchasingOverview(db: Db, actor: Actor, now: number): Promise<PurchasingOverview> {
-  const me = actorId(actor) ?? "";
   const withCost = can(actor, "cost.read");
   const poRead = can(actor, "purchasing.po.read");
   const branch = branchCondition(actor, sql`po.location_id`);
   const monthStart = Date.UTC(new Date(now + 3 * 3_600_000).getUTCFullYear(), new Date(now + 3 * 3_600_000).getUTCMonth(), 1) - 3 * 3_600_000;
-  const one = async (query: ReturnType<typeof sql>) => Number((await db.all<{ n: number | null }>(query))[0]?.n ?? 0);
-  const [approvals, drafts, stuck, mismatch, claims, late, openOrders, incoming, suppliersActive, receiptsMonth, openValue] = await Promise.all([
-    can(actor, "purchasing.po.approve") && withCost
-      ? one(sql`SELECT count(*) AS n FROM purchase_orders AS po JOIN approvals AS a ON a.id = po.approval_id WHERE po.status = 'pending_approval' AND a.status = 'pending' AND a.requested_by <> ${me} AND coalesce(po.created_by, '') <> ${me} AND NOT ${shapedBySql(me)} AND ${branch}`)
-      : Promise.resolve(null),
+  const one = (query: SQL) => countOf(db, query);
+  const [queue, drafts, claims, late, openOrders, incoming, suppliersActive, receiptsMonth, openValue] = await Promise.all([
+    purchasingQueueCounts(db, actor, now),
     can(actor, "purchasing.receipt.create") ? one(sql`SELECT count(*) AS n FROM receipts AS r WHERE r.status = 'draft' AND ${branchCondition(actor, sql`r.location_id`)}`) : Promise.resolve(null),
-    can(actor, "purchasing.receipt.create") ? one(sql`SELECT count(*) AS n FROM receipts AS r WHERE r.status = 'posted' AND r.received_by LIKE 'posting:%' AND r.posted_at + ${5 * 60_000} <= ${now} AND ${branchCondition(actor, sql`r.location_id`)}`) : Promise.resolve(null),
-    can(actor, "purchasing.invoice.manage") && withCost ? one(sql`SELECT count(*) AS n FROM supplier_invoices AS i LEFT JOIN purchase_orders AS po ON po.id = i.po_id WHERE i.status = 'mismatch' AND ${branch}`) : Promise.resolve(null),
     can(actor, "purchasing.claim.manage")
       ? one(sql`SELECT count(*) AS n FROM supplier_claims AS c LEFT JOIN purchase_orders AS po ON po.id = c.po_id LEFT JOIN receipts AS r ON r.id = c.receipt_id WHERE c.status IN ('open', 'submitted', 'accepted') AND ${branchCondition(actor, sql`coalesce(r.location_id, po.location_id)`)}`)
       : Promise.resolve(null),
@@ -224,7 +263,7 @@ export async function purchasingOverview(db: Db, actor: Actor, now: number): Pro
   const figures: PurchasingOverview["figures"] = { openOrders, unitsIncoming: incoming, suppliersActive, receiptsThisMonth: receiptsMonth };
   if (openValue) figures.openValueIqd = Number(openValue[0]?.unknown ?? 0) > 0 ? null : Number(openValue[0]?.n ?? 0);
   return {
-    waiting: { approvals, receiptsDraft: drafts, receiptsStuck: stuck, invoicesMismatch: mismatch, claimsOpen: claims, late: poRead ? late : null, alerts },
+    waiting: { approvals: queue.approvals, receiptsDraft: drafts, receiptsStuck: queue.stuck, invoicesMismatch: queue.mismatch, claimsOpen: claims, late: poRead ? late : null, alerts },
     figures,
     recent: recent.map((row) => ({ id: row.id, ref: row.ref, state: row.status === "posted" && row.receivedBy?.startsWith("posting:") ? "posting" : row.status, at: row.at, kind: "receipt" as const, label: row.po ?? "" })),
   };

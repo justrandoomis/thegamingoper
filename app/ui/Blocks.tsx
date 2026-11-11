@@ -167,7 +167,7 @@ function Steps({ items }: { items: Array<{ title: string; text?: string }> }) {
     <ol className="grid gap-3">
       {items.map((item, index) => (
         <li key={index} className="flex gap-3">
-          <span className="grid size-7 shrink-0 place-items-center rounded-full border-[1.5px] border-ink text-[13px] font-semibold text-ink nums" aria-hidden="true">
+          <span className="grid size-7 shrink-0 place-items-center rounded-full border-[1.5px] border-ink type-xs-strong text-ink nums" aria-hidden="true">
             {index + 1}
           </span>
           <div className="grid min-w-0 gap-0.5 pt-0.5">
@@ -180,21 +180,24 @@ function Steps({ items }: { items: Array<{ title: string; text?: string }> }) {
   );
 }
 
-const CALLOUT: Record<CalloutTone, { icon: IconName; tone: string }> = {
+const CALLOUT: Record<CalloutTone, { icon: IconName; tone: string; className?: string }> = {
   info: { icon: "info", tone: "text-info" },
-  warning: { icon: "warning", tone: "text-warn" },
-  danger: { icon: "warning", tone: "text-red-ink" },
+  warning: { icon: "warning", tone: "text-warn", className: "callout--warn" },
+  danger: { icon: "warning", tone: "text-danger", className: "callout--danger" },
 };
 
-/** A flat panel; the icon is named (role="img") with the tone's word, so the tone is never colour alone. */
+/**
+ * A callout (v2 §4.1): a paper panel with a 3px inline-start bar in the tone colour; the icon is named (role="img")
+ * with the tone's word, so the tone is never colour alone.
+ */
 function Callout({ tone, title, text }: { tone: CalloutTone; title?: string; text: string }) {
   const t = useT("ui-overlays");
   const look = CALLOUT[tone];
   return (
-    <aside className="panel flex gap-3 p-4">
-      <Icon name={look.icon} size={22} title={t(`blocks.${tone}`)} className={cx("mt-0.5", look.tone)} />
+    <aside className={cx("callout", look.className)}>
+      <Icon name={look.icon} size={20} title={t(`blocks.${tone}`)} className="mt-0.5" />
       <div className="grid min-w-0 gap-1">
-        {title ? <p className={cx("type-strong", look.tone)}>{title}</p> : null}
+        {title ? <p className={cx("callout__title", look.tone)}>{title}</p> : null}
         <p className="text-ink">{text}</p>
       </div>
     </aside>

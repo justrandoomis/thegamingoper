@@ -232,7 +232,8 @@ try {
     properties: [...new Set([...document.querySelectorAll(".tt-fly")].flatMap((p) => p.getAnimations().flatMap((a) => a.effect.getKeyframes().flatMap((k) => Object.keys(k)))))].filter((k) => !["offset", "easing", "composite", "computedOffset"].includes(k)).sort(),
   }));
   add("fly: the cart count is already updated while the bead is still in the air", right.count === "1" && right.beads === 1 && right.received === 0, right);
-  add("fly: DESIGN.md's bead — a 22px red clay circle (.fly)", right.bead?.classes.includes("fly") && right.bead.width === "22px" && right.bead.radius === "50%" && right.bead.background, right.bead);
+  // Design System v2 §5.2: the bead looks like the cart bead it lands on — a flat 22px disc (--r-full), no clay wall
+  add("fly: the v2 bead — a flat 22px red disc (.fly)", right.bead?.classes.includes("fly") && right.bead.width === "22px" && parseFloat(right.bead.radius) >= 11 && right.bead.background, right.bead);
   add("fly: the flight animates transform only, 420 ms + 0.3 ms per px (≤ 600 ms)", right.properties.join() === "transform" && right.duration >= 420 && right.duration <= 600, [right.properties, right.duration]);
   await sleep(1100);
   const flight = await cart.evaluate(() => {

@@ -46,9 +46,17 @@ export type VariantDetail = {
   /** The maker's model number (options.model), e.g. "CFI-2016". */
   modelNumber: string | null;
   priceIqd: number;
-  /** Set only for a genuine reduction (above the price). */
+  /**
+   * The previous price to strike: above the price AND really charged (an applied price change set it), or a demo
+   * row's demo value (`compareAtDemo`). Else null — exactly the rule of the cards (cards.server.ts).
+   */
   compareAtIqd: number | null;
-  /** in_stock · low_stock · out_of_stock — or preorder: not out yet and nothing in stock. Never a number. */
+  /** `compareAtIqd` is a demo value: strike it only under the demo marking, never word it as a saving. */
+  compareAtDemo?: boolean;
+  /**
+   * in_stock · low_stock · out_of_stock — or preorder: not out yet and nothing in stock. Never a number. A demo
+   * product never says low_stock (its stock is a placeholder).
+   */
   stock: StockState;
   /** The cart accepts it now (active, sellable product, units available). */
   orderable: boolean;
@@ -162,6 +170,8 @@ export type ProductDetail = {
   lifecycle: ProductLifecycle | null;
   /** Epoch ms of the product's release while it is still ahead (pre-order date), else null. */
   releaseAt: number | null;
+  /** Released, or really listed, within the last 30 days — the only «جديد» (card-facts.ts isNewProduct). */
+  isNew?: boolean;
   isDemo: boolean;
   /** The product gallery (variant pictures are on the variants). */
   images: ImageRef[];

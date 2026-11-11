@@ -13,7 +13,7 @@
     padding-block: var(--s-6) var(--s-4);
   }
   .ds-title {
-    font: var(--type-title);
+    font: var(--type-h1);
     text-wrap: balance;
   }
   .ds-lede {
@@ -50,24 +50,25 @@
     border-block-start: 1px solid var(--line);
   }
   .ds-h2 {
-    font: var(--type-section);
+    font: var(--type-h2);
   }
   .ds-owner {
-    font: var(--type-caption);
+    font: var(--type-xs);
     color: var(--ink-2);
   }
   .ds-block {
     display: grid;
+    grid-template-columns: minmax(0, 1fr); /* a scrolling rail inside never widens the block */
     gap: var(--s-3);
     margin-block-start: var(--s-10);
     min-inline-size: 0;
   }
   .ds-h3 {
-    font: var(--type-sub);
+    font: var(--type-h3);
   }
   .ds-note {
     max-inline-size: 66ch;
-    font: var(--type-caption);
+    font: var(--type-xs);
     color: var(--ink-2);
   }
   .ds-grid {
@@ -97,12 +98,15 @@
     min-inline-size: 0;
   }
   .ds-spec__label {
-    font: 500 12px/1.5 var(--font-text);
+    font: var(--type-xs);
     color: var(--ink-2);
     overflow-wrap: anywhere;
   }
-  .ds-spec__label code {
-    font-size: 11.5px;
+  /* code on this page is set in the text family: the store has two families, and a monospace third would also
+     set Arabic prose in a fallback face */
+  .ds code {
+    font-family: var(--font-text);
+    font-size: inherit;
   }
   .ds-row {
     display: flex;
@@ -115,9 +119,8 @@
     align-content: end;
     block-size: 64px;
     padding: 8px 10px;
+    border: 1px solid var(--line);
     border-radius: var(--r-sm);
-    box-shadow: inset 0 0 0 1px var(--line);
-    font: 500 11.5px/1.4 var(--font-text);
   }
   .ds-type {
     display: grid;
@@ -136,9 +139,9 @@
     position: relative;
     block-size: 280px;
     overflow-y: auto;
+    border: 1px solid var(--line);
     border-radius: var(--r-lg);
     background: var(--ground);
-    box-shadow: inset 0 0 0 1px var(--line);
   }
   .ds-scroll__bar {
     position: sticky;
@@ -151,7 +154,7 @@
     margin: 8px;
     padding-block: 6px;
     padding-inline: 14px 6px;
-    border-radius: var(--r-md);
+    border-radius: var(--r-sm);
   }
   .ds-stage-grid {
     display: grid;
@@ -159,7 +162,7 @@
     gap: var(--s-8) var(--s-4);
   }
   .ds-demo-note {
-    font: var(--type-caption);
+    font: var(--type-xs);
     color: var(--ink-2);
   }
 }

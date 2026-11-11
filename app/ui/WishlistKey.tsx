@@ -11,7 +11,8 @@ import { TextLink } from "./TextLink";
  * The favourite key (docs/DESIGN.md §6.1: "a filled icon on the favourite"; §8.4: a round key at the end of the
  * title). Optimistic: the heart fills and the key stays down at once, then POST /api/wishlist (intent=toggle,
  * productId) — owned by the account area (docs/CONTRACTS.md §3). If the server says no, or the endpoint is not live,
- * the heart goes back and a sentence says so beside the key. Never on a product card (one walled key per card).
+ * the heart goes back and a sentence says so beside the key. Design System v2 §4.4: an icon button whose held state is
+ * the FILLED heart in --red-ink (`.key--wish`); on a product photo it is the 32px `onImage` button (the card's top-end).
  *
  *   <WishlistKey productId={product.id} name={product.name} initial={isWished} />
  *
@@ -26,14 +27,17 @@ export type WishlistKeyProps = {
   initial?: boolean;
   /** Called with the confirmed state. */
   onChange?: (wished: boolean) => void;
-  size?: "md" | "sm";
+  /** md 40 (default) · sm 36 · xs 32 (on a product photo). */
+  size?: "md" | "sm" | "xs";
+  /** On a product photo: paper at 88% with the glass edge. */
+  onImage?: boolean;
   /** "after" (default): a failure sentence follows the key. "none": render it yourself from `onMessage`. */
   message?: "after" | "none";
   onMessage?: (message: string | null) => void;
   className?: string;
 };
 
-export function WishlistKey({ productId, name, initial = false, onChange, size = "md", message = "after", onMessage, className }: WishlistKeyProps) {
+export function WishlistKey({ productId, name, initial = false, onChange, size = "md", onImage = false, message = "after", onMessage, className }: WishlistKeyProps) {
   const t = useT("ui-shop");
   const [wished, setWished] = useState(initial);
   const [error, setError] = useState<string | null>(null);
@@ -109,10 +113,11 @@ export function WishlistKey({ productId, name, initial = false, onChange, size =
         size={size}
         label={t(wished ? "wishlist.remove" : "wishlist.add", { name })}
         onClick={toggle}
-        className={className}
+        variant={onImage ? "onImage" : "outline"}
+        className={cx("key--wish", className)}
       />
       {message === "after" && error ? (
-        <p className={cx("relative flex w-full basis-full items-start gap-1.5 type-caption font-medium text-red-ink")}>
+        <p className={cx("relative flex w-full basis-full items-start gap-1.5 type-xs-strong text-danger")}>
           <Icon name="warning-circle" size={16} className="mt-0.5" />
           <span className="min-w-0">{error}</span>
           <TextLink as="button" type="button" arrow={false} onClick={toggle}>

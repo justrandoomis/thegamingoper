@@ -21,6 +21,7 @@ export default defineMessages({
     field: {
       optional: "(اختياري)",
       choose: "اختر",
+      summary: { one: "تحقّق من حقل واحد:", two: "تحقّق من حقلين:", few: "تحقّق من {count} حقول:", many: "تحقّق من {count} حقلاً:", other: "تحقّق من {count} حقل:" },
     },
     stepper: {
       label: "الكمية",
@@ -35,17 +36,23 @@ export default defineMessages({
       was: "السعر قبل التخفيض",
       now: "السعر الآن",
       demoRate: "سعر تجريبي للعرض",
+      aria: "{amount} دينار عراقي",
     },
     tag: {
       new: "جديد",
       used: "مستعمل",
-      preorder: "طلب مسبق",
+      preorder: "قريباً",
       refurbished: "مجدَّد",
+      soon: "قريباً",
+      sale: "تخفيض",
+      out: "نفد",
+      photo: "صورة توضيحية",
     },
     stock: {
       in: "متوفر",
       low: "بقي {count}",
       out: "نفد",
+      outNow: "نفد حالياً",
     },
     chip: {
       remove: "أزل {label}",
@@ -53,6 +60,7 @@ export default defineMessages({
     socket: {
       add: "أضف {name} إلى السلة",
       added: "أُضيف {name} إلى السلة",
+      addedMore: "{name} في السلة. أضف قطعة أخرى",
     },
     link: {
       external: "يفتح في نافذة جديدة",
@@ -61,7 +69,7 @@ export default defineMessages({
       nintendo: "Nintendo",
       playstation: "PlayStation",
       xbox: "Xbox",
-      handheld: "أجهزة محمولة",
+      handheld: "الأجهزة المحمولة",
     },
   },
   en: {
@@ -76,6 +84,7 @@ export default defineMessages({
     field: {
       optional: "(optional)",
       choose: "Choose",
+      summary: { one: "Check 1 field:", other: "Check {count} fields:" },
     },
     stepper: {
       label: "Quantity",
@@ -90,17 +99,23 @@ export default defineMessages({
       was: "Was",
       now: "Now",
       demoRate: "demo rate",
+      aria: "{amount} Iraqi dinars",
     },
     tag: {
       new: "New",
       used: "Used",
-      preorder: "Pre-order",
+      preorder: "Coming soon",
       refurbished: "Refurbished",
+      soon: "Coming soon",
+      sale: "Sale",
+      out: "Sold out",
+      photo: "Illustration",
     },
     stock: {
       in: "In stock",
       low: "Only {count} left",
       out: "Sold out",
+      outNow: "Sold out",
     },
     chip: {
       remove: "Remove {label}",
@@ -108,6 +123,7 @@ export default defineMessages({
     socket: {
       add: "Add {name} to cart",
       added: "{name} added to cart",
+      addedMore: "{name} is in your cart. Add another",
     },
     link: {
       external: "opens in a new tab",
@@ -116,7 +132,7 @@ export default defineMessages({
       nintendo: "Nintendo",
       playstation: "PlayStation",
       xbox: "Xbox",
-      handheld: "Handhelds",
+      handheld: "Handheld PCs",
     },
   },
   ckb: {
@@ -131,6 +147,7 @@ export default defineMessages({
     field: {
       optional: "(ئارەزوومەندانە)",
       choose: "هەڵبژێرە",
+      summary: { one: "{count} خانە بپشکنە:", other: "{count} خانە بپشکنە:" },
     },
     stepper: {
       label: "ژمارە",
@@ -145,17 +162,23 @@ export default defineMessages({
       was: "نرخی پێشوو",
       now: "نرخی ئێستا",
       demoRate: "نرخی تاقیکاری",
+      aria: "{amount} دیناری عێراقی",
     },
     tag: {
       new: "نوێ",
       used: "بەکارهاتوو",
-      preorder: "داواکاری پێشوەختە",
+      preorder: "بەم زووانە",
       refurbished: "نۆژەنکراوە",
+      soon: "بەم زووانە",
+      sale: "داشکاندن",
+      out: "نەماوە",
+      photo: "وێنەی ڕوونکردنەوە",
     },
     stock: {
       in: "بەردەستە",
       low: "تەنها {count} ماوە",
       out: "نەماوە",
+      outNow: "ئێستا نەماوە",
     },
     chip: {
       remove: "{label} لابە",
@@ -163,6 +186,7 @@ export default defineMessages({
     socket: {
       add: "{name} بخە ناو سەبەتە",
       added: "{name} خرایە ناو سەبەتە",
+      addedMore: "{name} لە سەبەتەدایە. دانەیەکی تر زیاد بکە",
     },
     link: {
       external: "لە پەنجەرەیەکی نوێدا دەکرێتەوە",
@@ -171,7 +195,7 @@ export default defineMessages({
       nintendo: "Nintendo",
       playstation: "PlayStation",
       xbox: "Xbox",
-      handheld: "ئامێری دەستی",
+      handheld: "ئامێرە دەستییەکان",
     },
   },
 });

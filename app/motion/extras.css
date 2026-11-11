@@ -7,9 +7,9 @@
 /* ───────────────────────────── theme morph ─────────────────────────────
  * DESIGN.md §7.2: themeMorph() swaps data-theme inside a view transition; the two root snapshots cross-fade over
  * 200 ms on the water curve (the browser's own plus-lighter cross-fade, retimed). Nothing repaints per frame.
- * Fixed chrome is not a separate layer for this one: it fades with the page.
+ * Fixed chrome (and a language-switch anchor still marked) is not a separate layer for this one: it fades with the page.
  */
-html[data-morph="theme"] [data-motion-persist] {
+html[data-morph="theme"] :is([data-motion-persist], [data-motion-anchored]) {
   view-transition-name: none !important;
 }
 /* The root's two boxes are identical: its group has nothing to move. */
@@ -58,9 +58,11 @@ html[data-morph="theme"]::view-transition-new(root) {
 }
 
 /* ───────────────────────────── fly to cart ─────────────────────────────
- * One fixed, untouchable layer above everything (--z-fly). The bead is DESIGN.md's `.fly`: a 22px red clay bead,
- * placed by its centre in viewport pixels (the one physical-property exception the design lint allows) and moved by
- * transform only. The picture variant (flyToCart(el, { image })) is a rounded copy of the product picture.
+ * One fixed, untouchable layer above everything (--z-fly). The bead (`.fly`) looks like the cart bead it lands on
+ * (Design System v2 §5.2): a flat 22px --red disc with the bead's 2px ring, no wall and no cast (v2 keeps
+ * clay for the primary key and the platform tiles only). It is placed by its centre in viewport pixels (the one
+ * physical-property exception the design lint allows) and moved by transform only. The picture variant
+ * (flyToCart(el, { image })) is a copy of the product picture with the product well's corners.
  */
 .tt-fly-layer {
   position: fixed;
@@ -76,18 +78,17 @@ html[data-morph="theme"]::view-transition-new(root) {
   block-size: 22px;
   /* centred on its start point; the flight itself is the `transform` animation, which composes after this */
   translate: -50% -50%;
-  border-radius: 50%;
-  background: var(--red-face, var(--red));
-  box-shadow:
-    inset 0 1.5px 0 var(--red-lip),
-    0 2px 0 var(--red-wall);
+  border-radius: var(--r-full);
+  /* the same ring as the cart bead (.bead, components.css) */
+  outline: 2px solid var(--bead-ring, var(--paper));
+  background: var(--red);
   will-change: transform;
 }
 .tt-fly--picture {
   position: absolute;
   overflow: clip;
-  border-radius: 26%;
-  box-shadow: var(--e-3);
+  border-radius: var(--r-lg);
+  box-shadow: var(--e-float);
   will-change: transform;
 }
 .tt-fly--picture > * {

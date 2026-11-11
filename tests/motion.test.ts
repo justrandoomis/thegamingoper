@@ -5,7 +5,7 @@
  * stylesheets honest (tokens in sync with tokens.ts and with the design tokens of docs/DESIGN.md §7.1, keyframes
  * limited to transform and opacity).
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { runInNewContext } from "node:vm";
 import { createElement } from "react";
@@ -547,7 +547,115 @@ describe("motion.css", () => {
     expect(staggerStep(40, 1000, bubble.staggerMax)).toBe(80); // a custom step is capped at 400 ms for the wave
     // CSS: children 1–5 get slots 0–4 and every later child the sixth slot
     expect(motionCss).toContain(".tt-bubbles > :nth-child(n + 6) { --tt-i: 5; }");
-    expect(bubble.fromScale).toBe(0.86);
+    // Design System v2 §2.11: content inflates from .94 (was .86 — open v2 cards have no box to inflate).
+    expect(bubble.fromScale).toBe(0.94);
+  });
+});
+
+/**
+ * Design System v2 §2.10b / §2.11: an element with a view-transition-name is a backdrop root — glass inside it frosts
+ * nothing — so no element may carry a name at rest. Stylesheets name things only under `html:active-view-transition`;
+ * scripts never name an element (React's <ViewTransition> names its boundaries only while its transition runs; the
+ * engine names <html> "root", which is a backdrop root anyway). The browser side of the same rule, on real pages:
+ * app/motion/__checks__/check-glass.mjs.
+ */
+describe("no view-transition-name at rest (glass keeps frosting)", () => {
+  const appDir = fileURLToPath(new URL("../app/", import.meta.url));
+  const filesIn = (pattern: RegExp) =>
+    (readdirSync(appDir, { recursive: true }) as string[])
+      .map((name) => name.split("\\").join("/"))
+      .filter((name) => pattern.test(name) && !name.includes("node_modules"));
+  /** Top-level comma split (not inside parentheses or brackets). */
+  const splitSelectors = (prelude: string) => {
+    const parts: string[] = [];
+    let depth = 0;
+    let from = 0;
+    for (let i = 0; i < prelude.length; i++) {
+      const ch = prelude[i];
+      if (ch === "(" || ch === "[") depth++;
+      else if (ch === ")" || ch === "]") depth--;
+      else if (ch === "," && depth === 0) {
+        parts.push(prelude.slice(from, i).trim());
+        from = i + 1;
+      }
+    }
+    parts.push(prelude.slice(from).trim());
+    return parts.filter(Boolean);
+  };
+  /** Every `view-transition-name` declaration of a stylesheet, with the selectors of the rule that holds it. */
+  const nameDeclarations = (css: string) => {
+    const text = css.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, " ")); // offsets kept
+    const found: Array<{ value: string; selectors: string[]; line: number }> = [];
+    const preludes: string[] = [];
+    let segment = 0;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === "{" || ch === "}") {
+        for (const match of text.slice(segment, i).matchAll(/(?:^|[;\s])view-transition-name\s*:\s*([^;]+)/g)) {
+          const at = segment + (match.index ?? 0);
+          found.push({ value: match[1].replace(/!important/, "").trim(), selectors: splitSelectors(preludes.at(-1) ?? ""), line: text.slice(0, at).split("\n").length });
+        }
+        if (ch === "{") {
+          // the prelude is what follows the last declaration (or block edge) before the brace
+          const before = text.slice(segment, i);
+          preludes.push(before.slice(before.lastIndexOf(";") + 1).trim());
+        } else preludes.pop();
+        segment = i + 1;
+      }
+    }
+    return found;
+  };
+  const active = /^(html|:root):active-view-transition\s/;
+
+  it("names elements in stylesheets only while a view transition runs", () => {
+    const stylesheets = filesIn(/\.css$/);
+    expect(stylesheets).toContain("motion/motion.css");
+    const offenders: string[] = [];
+    let named = 0;
+    for (const file of stylesheets) {
+      for (const declaration of nameDeclarations(readFileSync(appDir + file, "utf8"))) {
+        if (declaration.value.toLowerCase() === "none") continue;
+        named++;
+        for (const selector of declaration.selectors) {
+          if (!active.test(selector)) offenders.push(`app/${file}:${declaration.line} "${selector}" → ${declaration.value}`);
+        }
+      }
+    }
+    expect(offenders, "a view-transition-name at rest makes the element a backdrop root: glass inside it stops frosting").toEqual([]);
+    expect(named).toBeGreaterThanOrEqual(11); // the four chrome layers, six anchors, the lab bar
+    // The guard itself: a name at rest is caught, a scoped one passes.
+    expect(nameDeclarations(".shell-header { view-transition-name: tt-persist-header; }")[0].selectors.every((s) => active.test(s))).toBe(false);
+    expect(nameDeclarations("@layer x { html:active-view-transition .a, html:active-view-transition .b { view-transition-name: x; } }")[0].selectors.every((s) => active.test(s))).toBe(true);
+  });
+
+  it("names the persistent chrome and the six language-switch anchors under that scope; the theme morph unnames both", () => {
+    for (const persist of ["header", "nav", "bar", "float"]) {
+      expect(motionCss).toMatch(new RegExp(`html:active-view-transition \\[data-motion-persist="${persist}"\\]\\s*\\{\\s*view-transition-name: tt-persist-${persist};`));
+    }
+    for (let n = 0; n < 6; n++) {
+      expect(motionCss).toMatch(new RegExp(`html:active-view-transition \\[data-motion-anchored="${n}"\\]\\s*\\{\\s*view-transition-name: tt-anchor-${n};`));
+    }
+    expect(motionCss).toMatch(/html:active-view-transition \[data-motion-persist\]\s*\{\s*view-transition-class: tt-persist;/);
+    expect(motionCss).toMatch(/html:active-view-transition \[data-motion-anchored\]\s*\{\s*view-transition-class: tt-anchor;/);
+    expect(extrasCss).toMatch(/html\[data-morph="theme"\] :is\(\[data-motion-persist\], \[data-motion-anchored\]\)\s*\{\s*view-transition-name: none !important;/);
+  });
+
+  it("never names an element from script (only <html> gets \"root\", for the page snapshots)", () => {
+    const offenders: string[] = [];
+    for (const file of filesIn(/\.tsx?$/)) {
+      const source = readFileSync(appDir + file, "utf8");
+      for (const match of source.matchAll(/([\w.$]*)\.style\.viewTransitionName\s*=(?!=)\s*([^;\n]+)/g)) {
+        const allowed = file === "motion/nav.tsx" && match[1] === "root" && /^("root"|"")$/.test(match[2].trim());
+        if (!allowed) offenders.push(`app/${file}: ${match[0].trim()}`);
+      }
+      for (const match of source.matchAll(/setProperty\(\s*["']view-transition-name["']|viewTransitionName\s*:(?!:)/g)) offenders.push(`app/${file}: ${match[0]}`);
+    }
+    expect(offenders).toEqual([]);
+    // nav.tsx's `root` is the document element, and anchors are marked for motion.css instead of named
+    const nav = readFileSync(appDir + "motion/nav.tsx", "utf8");
+    expect(nav).toMatch(/const root = document\.documentElement;[\s\S]*root\.style\.viewTransitionName = "root";/);
+    expect(nav).toContain('element.setAttribute("data-motion-anchored", String(anchored.length))');
+    expect(nav).toContain('element.removeAttribute("data-motion-anchored")');
   });
 });
 

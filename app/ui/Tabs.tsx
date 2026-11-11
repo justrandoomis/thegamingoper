@@ -61,10 +61,10 @@ export type TabsProps = {
 
 const LIST = "flex min-w-0 gap-1 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 const TAB =
-  "group relative inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap px-3 type-label text-ink-2 outline-offset-[-3px] hover:text-ink " +
+  "group relative inline-flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap px-3 type-tab text-ink-2 outline-offset-[-3px] hover:text-ink " +
   "data-[selected]:text-ink aria-disabled:cursor-default aria-disabled:text-ink-3 " +
-  // the marker: a 3px ink bar on the bottom edge, faded in (opacity only)
-  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100";
+  // the marker (v2 §4.6): a 2px ink underline on the bottom edge, faded in (opacity only)
+  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100";
 
 export function Tabs({
   items,

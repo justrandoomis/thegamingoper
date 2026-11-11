@@ -3,6 +3,7 @@
  * the storefront layout's loader as `shell`, read by <ShellFrame>.
  */
 import type { NavTaxonomy } from "~/server/services/catalog/types";
+import type { ContactChannels } from "~/ui/ContactCard";
 
 export type { NavCategory, NavLink, NavPlatform, NavTaxonomy } from "~/server/services/catalog/types";
 
@@ -12,8 +13,12 @@ export type ShellPayments = { cod: boolean; wallet: boolean; card: boolean; zain
 /** A way to reach the store, ready to render: visible text and the link. */
 export type ShellContactLink = { kind: "phone" | "whatsapp" | "email" | "instagram" | "facebook" | "tiktok" | "telegram" | "map"; label: string; href: string };
 
-/** Store contact details from settings `store.contact` — only what the owner filled in (nothing is invented). */
-export type ShellContact = { links: ShellContactLink[]; address: string | null; hours: string | null };
+/**
+ * Store contact details from settings `store.contact` — only what the owner filled in (nothing is invented).
+ * `channels` is the same data in the kit's <ContactCard> shape (WhatsApp, phone, address, maps, hours in words); null
+ * when none of those is configured, so the card renders nothing.
+ */
+export type ShellContact = { links: ShellContactLink[]; address: string | null; hours: string | null; channels: ContactChannels | null };
 
 export type ShellData = {
   nav: NavTaxonomy;
@@ -27,14 +32,28 @@ export type ShellData = {
   year: number;
 };
 
+/**
+ * The three shells (Design System v2 §5.1, §5.8):
+ *   store     the demo strip and the 56px header below 1024 (108px = 64 + 44 from 1024), the floating tab bar below
+ *             1024, the full footer. Every page that declares nothing.
+ *   checkout  ONE bar, 56px (64 from 1024): back to the cart · the mascot · the step rail · «طلب تجريبي» · help. No
+ *             strip, no search, no menus, no tab bar; the one-line footer. `/checkout` gets it even before its handle
+ *             says so (./chrome shellChrome).
+ *   task      task flows (trade-in, repair, the assistant): the store header, no tab bar (the page's <TaskBar>
+ *             instead), the one-line footer.
+ */
+export type ShellChromeKind = "store" | "checkout" | "task";
+
 /** A route's wishes for the shell, from its `handle` (read on the server too, so SSR is right). */
 export type ShellHandle = {
   shell?: {
+    /** The shell this page lives in (above). Default "store". */
+    chrome?: Exclude<ShellChromeKind, "store">;
     /**
-     * false: the page shows its own bottom task bar (buy bar, checkout bar) through <TaskBar> from ./TabBar, so the
-     * tab bar gives way (DESIGN.md §8 sticky rule: never two bars at the same edge). Below 1200px the header then
-     * becomes the task header once the page scrolls: back · the page's <h1> · the cart with its count (§9.2).
-     * Ignored while the storefront's error page is shown (the page and its task bar are not on screen).
+     * false: the page shows its own bottom task bar (buy bar, cart bar) through <TaskBar> from ./TabBar. The tab bar
+     * gives way to it by itself (CSS: never two bars at one edge) — and comes back when the page draws no task bar
+     * (an empty cart). Below 1024px the header becomes the task header once the page scrolls: back · the page's <h1>
+     * · the cart with its count (§5.2). Ignored while the storefront's error page is shown.
      */
     tabBar?: boolean;
     /**

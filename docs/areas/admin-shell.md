@@ -50,13 +50,47 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
 6. **Strings:** `useT("admin")` gives the module names (`modules.<slug>`), status words (`status.<status>`) and
    priorities; put your own in `app/i18n/messages/admin-<slug>.ts`.
 7. **Queues** (the bell, the home cards, the beads): `shell/queues.server.ts` counts, each only for holders of the
-   permission to act and never something the employee may not decide themselves: transfer proofs awaiting
-   verification → `/admin/orders/proofs`; refunds awaiting a second approval, not the employee's own →
-   `/admin/orders/refunds`; price changes awaiting a decision, not the employee's own request (`countDecidable`) →
-   `/admin/pricing/changes`; stock counts submitted for approval that the employee neither started nor counted →
-   `/admin/inventory/counts?status=review`; transfers in transit → `/admin/inventory/transfers?status=in_transit`
-   (`QUEUE_HREF`, icons in `TopBar.tsx`, words `notices.<id>` in `messages/admin.ts`; proof:
-   `npx vitest run tests/admin-shell.test.ts -t queues`). Ask the shell owner to add yours.
+   permission to act who may see its module and open the list it links to, never something the employee may not
+   decide themselves, and with the module's own count function wherever the module has one. The link opens a list
+   that shows the counted rows to that employee — the "truth" test opens every new queue's page for eight roles and
+   compares the number with what the page says they may act on:
+   - orders: transfer proofs awaiting verification → `/admin/orders/proofs`; refunds awaiting a second approval, not
+     the employee's own (RMA refunds included, so returns has no refund queue of its own) → `/admin/orders/refunds`
+   - shipping: failed deliveries waiting for "try again" or "send back" (`countFailedDeliveries`,
+     shipping.attempt.manage + shipping.shipment.read) → `/admin/shipping/attempts`; carrier settlements to reconcile
+     (`countSettlementsToReconcile`, shipping.cod.settle; one query, one row per submitted settlement): one with a
+     difference never to whoever created, corrected or submitted it (the core's `settlementNeedsSecondPerson`), one
+     carrying cash still to record only with orders.payment.record (the core's reconcile needs it; the settlement's
+     page says "permission") → `/admin/shipping/cod?status=submitted`
+   - returns (`queueCounts`; both need returns.rma.read — without it the list shows only one's own RMAs): RMAs to
+     decide, never one the employee opened (returns.rma.approve) → `/admin/returns?view=decide`; RMAs received and
+     waiting for inspection (returns.rma.inspect) → `/admin/returns?view=inspect`
+   - pricing: price changes awaiting a decision, not the employee's own request (`countDecidable`) →
+     `/admin/pricing/changes`
+   - inventory: stock counts submitted for approval that the employee neither started nor counted →
+     `/admin/inventory/counts?status=review`; transfers in transit → `/admin/inventory/transfers?status=in_transit`
+   - purchasing (`purchasingQueueCounts`, which the module's home reads too): orders above the spending limit, never
+     one the employee asked for, created, edited or submitted, within their branch (purchasing.po.approve + cost.read
+     + purchasing.po.read, which the list and the order's page need) → `/admin/purchasing/orders?view=pending_approval`;
+     receipts whose posting stopped (purchasing.receipt.create) → `/admin/purchasing/receipts?state=posting`; supplier
+     invoices with variances (purchasing.invoice.manage + cost.read) → `/admin/purchasing/invoices?status=mismatch`
+   - finance: wallet top-ups awaiting a decision, not those the employee already approved first, and wallet
+     adjustments awaiting a second person, never the employee's own request (`walletQueue`; finance.wallet.read +
+     customers.wallet.adjust) → `/admin/finance/wallets?status=pending_verification` and
+     `/admin/finance/wallets?tab=adjustments`; draft expenses the employee may approve, not their own above the limit
+     (`countDecidableExpenses`; finance.expense.manage) → `queueHref("expenses", now)` =
+     `/admin/finance/expenses?from=<today − 399 days>&to=<today>&demo=1&status=draft`: the count takes drafts of any
+     month, demo ones included, while the list alone opens on this month's real expenses — so the link asks for the
+     list's longest range (400 Baghdad days) and demo rows (a draft older than that would be counted, not listed)
+
+   The module counts run at the same time as the shell's own batch (the "speed" test records every statement: the
+   batch and every module's first query are sent before any comes back, and 60 more audit rows, 30 more failed
+   parcels and 30 more top-ups change no statement and no row read), each asked only of the employees it concerns; a
+   module whose count throws is logged (`[admin] the <module> queues failed`) and shows no queue, and the page still
+   loads. `QUEUE_HREF` / `queueHref`, icons in `TopBar.tsx`, words `notices.<id>` in `messages/admin.ts` (Arabic with
+   all six plural forms, English and Sorani one/other — the "words" test). Proof: `npx vitest run
+   tests/admin-shell.test.ts` ("shell data"; run the whole file — those tests need the first owner the setup tests
+   create, so `-t` alone fails). Ask the shell owner to add yours.
 
 ## Security notes
 

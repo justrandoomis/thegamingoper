@@ -5,17 +5,17 @@ import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
- * ProgressSteps — the step rail of checkout (العنوان، الدفع، المراجعة) and the trade-in wizard (الجهاز، الحالة،
- * الصور، التقدير، الفحص), DESIGN.md §9.17. Numbered discs with text labels, joined by a line:
+ * ProgressSteps — the step rail of checkout (التوصيل · الدفع · المراجعة) and the trade-in wizard, Design System v2
+ * §4.22. Numbered discs with their labels, joined by a hairline:
  *
  *   done      an ink disc with a check; with `href` it is a link back (every field keeps its value)
- *   current   an ink ring and a bold label — `aria-current="step"`
- *   upcoming  a line-strong ring and an ink-2 label
+ *   current   a RED disc with a white number and the label in ink 600 — `aria-current="step"`
+ *   upcoming  a control-line ring and an ink-2 label
  *
- *   <ProgressSteps current={1} steps={[{ label: t("address"), href: "/checkout/address" }, { label: t("payment") }, { label: t("review") }]} />
+ *   <ProgressSteps current={1} steps={[{ label: t("delivery"), href: "/checkout?step=delivery" }, { label: t("payment") }, { label: t("review") }]} />
+ *   <ProgressSteps variant="compact" … />      inside the checkout bar: numbers, and the current step's label
  *
- * Fixed chrome: it does not move when the step changes (the content below pushes sideways). Equal columns, so five
- * steps fit a 360px phone; labels wrap between words, never inside one (a long word may run past its column).
+ * Fixed chrome: it does not move when the step changes (the content below pushes sideways).
  */
 export type ProgressStep = {
   label: string;
@@ -27,54 +27,46 @@ export type ProgressStepsProps = {
   steps: readonly ProgressStep[];
   /** 0-based index of the current step. */
   current: number;
+  /** full (labels beside the numbers) · compact (the checkout bar). */
+  variant?: "full" | "compact";
   "aria-label"?: string;
   className?: string;
 };
 
-export function ProgressSteps({ steps, current, className, ...rest }: ProgressStepsProps) {
+export function ProgressSteps({ steps, current, variant = "full", className, ...rest }: ProgressStepsProps) {
   const t = useT("ui-overlays");
   const f = useFormat();
+  // a step that is only its disc (phones, more than three steps) is still a 44px target
+  const wide = variant === "full" ? "min-w-11 justify-center" : undefined;
   return (
     <nav aria-label={rest["aria-label"] ?? t("steps.label")} className={cx("min-w-0", className)}>
-      <ol className="grid" style={{ gridTemplateColumns: `repeat(${Math.max(steps.length, 1)}, minmax(0, 1fr))` }}>
+      <ol className={cx("steps", variant === "compact" && "steps--compact")}>
         {steps.map((step, index) => {
           const state = index < current ? "done" : index === current ? "current" : "upcoming";
           const body = (
             <>
-              <span
-                className={cx(
-                  "grid size-8 shrink-0 place-items-center rounded-full text-[13px] font-semibold nums",
-                  state === "done" && "bg-sel text-on-sel",
-                  state === "current" && "border-2 border-ink text-ink",
-                  state === "upcoming" && "border-[1.5px] border-line-strong text-ink-2",
-                )}
-                aria-hidden="true"
-              >
+              <span className="step__n" aria-hidden="true">
                 {state === "done" ? <Icon name="check" size={16} /> : f.number(index + 1)}
               </span>
-              <span className={cx("text-center type-caption [overflow-wrap:normal]", state === "current" ? "font-semibold text-ink" : state === "done" ? "text-ink" : "text-ink-2")}>
+              {/* more than three steps do not fit a phone: there only the current step keeps its words on screen */}
+              <span className={cx("step__label", steps.length > 3 && state !== "current" && "max-md:sr-only")}>
                 <BidiLabel>{step.label}</BidiLabel>
                 {state === "done" ? <VisuallyHidden>{` (${t("steps.done")})`}</VisuallyHidden> : null}
               </span>
+              {variant === "compact" && state !== "current" ? <VisuallyHidden>{step.label}</VisuallyHidden> : null}
             </>
           );
           return (
-            <li
-              key={`${index}:${step.label}`}
-              aria-current={state === "current" ? "step" : undefined}
-              className={cx(
-                "relative flex min-w-0 flex-col items-center",
-                // the line back to the previous disc: from 20px outside this disc to 20px outside the other one
-                index > 0 && "before:absolute before:end-[calc(50%+20px)] before:top-[22px] before:h-[1.5px] before:w-[calc(100%-40px)] before:rounded-full",
-                index > 0 && (index <= current ? "before:bg-ink" : "before:bg-line-strong"),
-              )}
-            >
+            <li key={`${index}:${step.label}`} className={cx("flex min-w-0 items-center gap-2", index > 0 && "flex-1")}>
+              {index > 0 ? <span className="step__sep" aria-hidden="true" /> : null}
               {state === "done" && step.href ? (
-                <LocaleLink to={step.href} className="flex min-h-11 max-w-full flex-col items-center gap-1.5 rounded-sm pt-1.5 hover:[&>span:last-child]:underline">
+                <LocaleLink to={step.href} className={cx("step", wide)} data-state="done" data-press="soft">
                   {body}
                 </LocaleLink>
               ) : (
-                <span className="flex max-w-full flex-col items-center gap-1.5 pt-1.5">{body}</span>
+                <span className={cx("step", wide)} data-state={state} aria-current={state === "current" ? "step" : undefined}>
+                  {body}
+                </span>
               )}
             </li>
           );

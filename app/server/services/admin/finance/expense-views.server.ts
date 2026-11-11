@@ -13,7 +13,7 @@ import type { Db } from "~/server/db/drizzle.server";
 import { costCenters, expenses } from "~/server/db/schema";
 import { mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, notFound } from "~/server/errors";
-import { EXPENSE_SECOND_APPROVAL_ABOVE_IQD, expenseAccounts, needsOtherApprover, paidFromAccounts, selfApprovedRecentIqd } from "~/server/services/accounting/expenses.server";
+import { expenseAccounts, expenseApprovalLimit, needsOtherApprover, paidFromAccounts, selfApprovedRecentIqd } from "~/server/services/accounting/expenses.server";
 import { postedBy } from "~/server/services/accounting/post.server";
 import { chartOfAccounts } from "~/server/services/accounting/reports.server";
 import { employeeNames } from "./shared.server";
@@ -77,6 +77,7 @@ function expenseWhere(filters: ExpenseFilters, withDemo: boolean): SQL {
 export async function listExpenses(db: Db, actor: Actor, filters: ExpenseFilters, locale: Locale, now: number = Date.now()): Promise<ExpensePage> {
   requireExpenses(actor);
   const selfApprovedIqd = await selfApprovedRecentIqd(db, postedBy(actor), now);
+  const threshold = await expenseApprovalLimit(db);
   const base = expenseWhere(filters, filters.demo);
   const where = filters.status ? sql`${base} AND x.status = ${filters.status}` : base;
   const offset = (filters.page - 1) * PAGE_SIZE;
@@ -134,7 +135,7 @@ export async function listExpenses(db: Db, actor: Actor, filters: ExpenseFilters
       approvedAt: row.approvedAt === null ? null : num(row.approvedAt),
       journalEntryId: row.journalEntryId,
       isDemo: Boolean(row.isDemo),
-      needsOther: row.status === "draft" && needsOtherApprover({ amountIqd: num(row.amount), createdBy: row.createdBy }, myId, selfApprovedIqd),
+      needsOther: row.status === "draft" && needsOtherApprover({ amountIqd: num(row.amount), createdBy: row.createdBy }, myId, selfApprovedIqd, threshold),
       hasReceipt: Boolean(row.receiptFileId),
     })),
     total,
@@ -144,7 +145,7 @@ export async function listExpenses(db: Db, actor: Actor, filters: ExpenseFilters
     totals: totals.map((row) => ({ status: row.status, count: num(row.n), iqd: num(row.total) })),
     byAccount: byAccount.map((row) => ({ accountId: row.accountId, account: nameOf.get(row.accountId) ?? row.accountId, iqd: num(row.total) })),
     byCenter: byCenter.map((row) => ({ code: row.code, name: row.code ? (centerName.get(row.code) ?? null) : null, iqd: num(row.total) })),
-    threshold: EXPENSE_SECOND_APPROVAL_ABOVE_IQD,
+    threshold,
     selfApprovedIqd,
   };
 }
@@ -167,14 +168,15 @@ export async function getExpense(db: Db, actor: Actor, expenseId: string, locale
   const row = await db.select().from(expenses).where(eq(expenses.id, expenseId)).get();
   if (!row) throw notFound("expense");
   const myId = postedBy(actor);
-  const [chart, names, reversal, selfApprovedIqd] = await Promise.all([
+  const [chart, names, reversal, selfApprovedIqd, threshold] = await Promise.all([
     chartOfAccounts(db),
     employeeNames(db, [row.createdBy, row.approvedBy]),
     row.journalEntryId ? db.all<{ id: string }>(sql`SELECT id FROM journal_entries WHERE reverses_id = ${row.journalEntryId}`) : Promise.resolve([] as { id: string }[]),
     selfApprovedRecentIqd(db, myId, now),
+    expenseApprovalLimit(db),
   ]);
   const nameOf = new Map(chart.map((account) => [account.id, `${account.code} · ${pick(account.name, locale)}`]));
-  const needsOther = row.status === "draft" && needsOtherApprover(row, myId, selfApprovedIqd);
+  const needsOther = row.status === "draft" && needsOtherApprover(row, myId, selfApprovedIqd, threshold);
   return {
     id: row.id,
     incurredOn: row.incurredOn,
@@ -200,7 +202,7 @@ export async function getExpense(db: Db, actor: Actor, expenseId: string, locale
     reversalId: reversal[0]?.id ?? null,
     canApprove: row.status === "draft" && !needsOther,
     canVoid: row.status === "draft" || row.status === "posted",
-    threshold: EXPENSE_SECOND_APPROVAL_ABOVE_IQD,
+    threshold,
     selfApprovedIqd,
   };
 }
@@ -221,7 +223,7 @@ export async function expenseFormOptions(db: Db, actor: Actor, locale: Locale): 
     accounts: expenseAccounts(chart).map((account) => ({ id: account.id, label: label(account), systemKey: account.systemKey })),
     paidFrom: paidFromAccounts(chart).map((account) => ({ id: account.id, label: label(account), systemKey: account.systemKey })),
     costCenters: centers.map((center) => ({ code: center.code, name: pick(center.name, locale) })).sort((a, b) => a.code.localeCompare(b.code)),
-    threshold: EXPENSE_SECOND_APPROVAL_ABOVE_IQD,
+    threshold: await expenseApprovalLimit(db),
   };
 }
 
@@ -320,7 +322,7 @@ export async function saveCostCenter(db: Db, actor: Actor, raw: z.input<typeof S
 export async function countDecidableExpenses(db: Db, actor: Actor, now: number = Date.now()): Promise<number | null> {
   if (!can(actor, "finance.expense.manage")) return null;
   const myId = postedBy(actor);
-  const room = EXPENSE_SECOND_APPROVAL_ABOVE_IQD - (await selfApprovedRecentIqd(db, myId, now));
+  const room = (await expenseApprovalLimit(db)) - (await selfApprovedRecentIqd(db, myId, now));
   const rows = await db.all<{ n: number }>(sql`
     SELECT count(*) AS n FROM expenses WHERE status = 'draft' AND NOT (created_by = ${myId ?? ""} AND amount_iqd > ${room})`);
   return num(rows[0]?.n);

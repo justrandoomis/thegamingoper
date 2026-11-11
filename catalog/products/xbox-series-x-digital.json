@@ -8,22 +8,22 @@
   "family": "xbox-series-x",
   "status": "available",
   "releaseDate": "2024-10-15",
-  "name": { "ar": "XBOX Series X – 1TB Digital Edition", "en": "XBOX Series X – 1TB Digital Edition", "ckb": "XBOX Series X – 1TB Digital Edition" },
+  "name": { "ar": "Xbox Series X – 1TB Digital Edition", "en": "Xbox Series X – 1TB Digital Edition", "ckb": "Xbox Series X – 1TB Digital Edition" },
   "short": {
     "ar": "SSD سعة 1TB · رقمي بالكامل بدون مشغل أقراص · أبيض Robot White",
     "en": "1TB SSD · all-digital, no disc drive · Robot White",
     "ckb": "SSD ـی 1TB · تەواو دیجیتاڵ، بێ خوێنەری دیسک · سپیی Robot White"
   },
   "description": {
-    "ar": "نفس قوة وسرعة XBOX Series X لكن بدون مشغل أقراص، باللون الأبيض Robot White مع SSD سعة 1TB. يشغّل الألعاب الرقمية فقط، أي أنها تُشترى وتُنزّل عبر الإنترنت ولا يقرأ أقراص الألعاب أو أفلام Blu-ray. تأتي معه يد تحكم بيضاء مطابقة.",
-    "en": "The same power and speed as the XBOX Series X, without a disc drive, in Robot White with a 1TB SSD. It plays digital games only: games are bought and downloaded online, and it cannot read game discs or Blu-ray movies. A matching white controller is in the box.",
-    "ckb": "هەمان هێز و خێرایی XBOX Series X بەڵام بێ خوێنەری دیسک، بە ڕەنگی سپیی Robot White لەگەڵ SSD ـی 1TB. تەنها یاریی دیجیتاڵ کار پێدەکات: یارییەکان لە ئینتەرنێتەوە دەکڕدرێن و دادەگیرێن، و دیسکی یاری یان فیلمی Blu-ray ناخوێنێتەوە. دەسکێکی سپیی هاوشێوەی لەگەڵە."
+    "ar": "نفس قوة وسرعة Xbox Series X لكن بدون مشغل أقراص، باللون الأبيض Robot White مع SSD سعة 1TB. يشغّل الألعاب الرقمية فقط، أي أنها تُشترى وتُنزّل عبر الإنترنت ولا يقرأ أقراص الألعاب أو أفلام Blu-ray. تأتي معه يد تحكم بيضاء مطابقة.",
+    "en": "The same power and speed as the Xbox Series X, without a disc drive, in Robot White with a 1TB SSD. It plays digital games only: games are bought and downloaded online, and it cannot read game discs or Blu-ray movies. A matching white controller is in the box.",
+    "ckb": "هەمان هێز و خێرایی Xbox Series X بەڵام بێ خوێنەری دیسک، بە ڕەنگی سپیی Robot White لەگەڵ SSD ـی 1TB. تەنها یاریی دیجیتاڵ کار پێدەکات: یارییەکان لە ئینتەرنێتەوە دەکڕدرێن و دادەگیرێن، و دیسکی یاری یان فیلمی Blu-ray ناخوێنێتەوە. دەسکێکی سپیی هاوشێوەی لەگەڵە."
   },
   "highlights": [
     {
-      "ar": "نفس معالج ورسوميات XBOX Series X: دقة 4K حتى 120 إطاراً",
-      "en": "Same processor and graphics as XBOX Series X: 4K at up to 120 FPS",
-      "ckb": "هەمان پرۆسێسەر و گرافیکی XBOX Series X: ‏4K تا 120 FPS"
+      "ar": "نفس معالج ورسوميات Xbox Series X: دقة 4K حتى 120 إطاراً",
+      "en": "Same processor and graphics as Xbox Series X: 4K at up to 120 FPS",
+      "ckb": "هەمان پرۆسێسەر و گرافیکی Xbox Series X: ‏4K تا 120 FPS"
     },
     {
       "ar": "بدون مشغل أقراص: لا يشغّل أقراص الألعاب ولا أفلام Blu-ray",
@@ -115,9 +115,9 @@
       "key": "network",
       "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
       "value": {
-        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless",
-        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio",
-        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی XBOX Wireless"
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو Xbox Wireless",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, Xbox Wireless radio",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی Xbox Wireless"
       }
     },
     {
@@ -127,8 +127,8 @@
     }
   ],
   "inTheBox": [
-    { "ar": "جهاز XBOX Series X Digital Edition", "en": "XBOX Series X Digital Edition console", "ckb": "کۆنسۆڵی XBOX Series X Digital Edition" },
-    { "ar": "يد XBOX Wireless Controller بيضاء Robot White", "en": "XBOX Wireless Controller – Robot White", "ckb": "دەسکی XBOX Wireless Controller ـی سپیی Robot White" },
+    { "ar": "جهاز Xbox Series X Digital Edition", "en": "Xbox Series X Digital Edition console", "ckb": "کۆنسۆڵی Xbox Series X Digital Edition" },
+    { "ar": "يد Xbox Wireless Controller بيضاء Robot White", "en": "Xbox Wireless Controller – Robot White", "ckb": "دەسکی Xbox Wireless Controller ـی سپیی Robot White" },
     { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
     { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
   ],
@@ -136,9 +136,9 @@
     {
       "sku": "XSXD-1TB-WHT",
       "title": {
-        "ar": "XBOX Series X ‏1TB رقمي بالكامل، أبيض Robot White",
-        "en": "XBOX Series X 1TB, All-Digital, Robot White",
-        "ckb": "XBOX Series X ‏1TB تەواو دیجیتاڵ، سپیی Robot White"
+        "ar": "Xbox Series X ‏1TB رقمي بالكامل، أبيض Robot White",
+        "en": "Xbox Series X 1TB, All-Digital, Robot White",
+        "ckb": "Xbox Series X ‏1TB تەواو دیجیتاڵ، سپیی Robot White"
       },
       "options": { "edition": "Digital Edition", "storage": "1TB", "color": "Robot White" },
       "isDefault": true,
@@ -161,9 +161,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
       "kind": "hero",
       "alt": {
-        "ar": "XBOX Series X الأبيض الرقمي بزاوية مائلة مع يده البيضاء",
-        "en": "White all-digital XBOX Series X at an angle with its white controller",
-        "ckb": "XBOX Series X ـی سپیی دیجیتاڵ بە گۆشەیەکی لار لەگەڵ دەسکە سپییەکەی"
+        "ar": "Xbox Series X الأبيض الرقمي بزاوية مائلة مع يده البيضاء",
+        "en": "White all-digital Xbox Series X at an angle with its white controller",
+        "ckb": "Xbox Series X ـی سپیی دیجیتاڵ بە گۆشەیەکی لار لەگەڵ دەسکە سپییەکەی"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -177,9 +177,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
       "kind": "angle",
       "alt": {
-        "ar": "الواجهة الأمامية لجهاز XBOX Series X Digital Edition الأبيض بدون فتحة أقراص، مع يده",
-        "en": "Front of the white XBOX Series X Digital Edition, with no disc slot, and its controller",
-        "ckb": "ڕووی پێشەوەی XBOX Series X Digital Edition ـی سپی بێ کونی دیسک، لەگەڵ دەسکەکەی"
+        "ar": "الواجهة الأمامية لجهاز Xbox Series X Digital Edition الأبيض بدون فتحة أقراص، مع يده",
+        "en": "Front of the white Xbox Series X Digital Edition, with no disc slot, and its controller",
+        "ckb": "ڕووی پێشەوەی Xbox Series X Digital Edition ـی سپی بێ کونی دیسک، لەگەڵ دەسکەکەی"
       },
       "credit": "Microsoft",
       "width": 1920,
@@ -193,9 +193,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
       "kind": "in-box",
       "alt": {
-        "ar": "يد XBOX Wireless Controller البيضاء المرفقة",
-        "en": "The included white XBOX Wireless Controller",
-        "ckb": "دەسکی سپیی XBOX Wireless Controller ـی هاوپێچ"
+        "ar": "يد Xbox Wireless Controller البيضاء المرفقة",
+        "en": "The included white Xbox Wireless Controller",
+        "ckb": "دەسکی سپیی Xbox Wireless Controller ـی هاوپێچ"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -206,7 +206,7 @@
   "sources": [
     {
       "url": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
-      "title": "Buy XBOX Series X: 1TB Black or White (1TB All-Digital, Robot White configuration)",
+      "title": "Buy Xbox Series X: 1TB Black or White (1TB All-Digital, Robot White configuration)",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
       "supports": "tech specs of the 1TB All-Digital Robot White model, digital games only, product images"
@@ -214,28 +214,28 @@
     {
       "url": "https://news.xbox.com/en-us/2024/11/15/xbox-series-xs-every-console-option-available-now/",
       "title": "Xbox Series X|S – Every Console Option Available Now",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "same performance as Series X with 1TB, all-digital, matching controller included"
     },
     {
       "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
-      "title": "XBOX Series X",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Series X",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "still in the current line-up; Series X box contents (console, controller, HDMI cable, power cord)"
     },
     {
       "url": "https://news.xbox.com/en-us/2024/08/21/xbox-series-x-s-new-console-options-pre-order/",
       "title": "Pre-Order Three New Xbox Series X|S Console Options Starting August 21",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "release on 15 October 2024 (select countries on 29 October)"
     },
     {
       "url": "https://news.xbox.com/en-us/2024/06/09/xbox-series-x-s-new-console-options/",
       "title": "More Choices Than Ever Before with Three New Xbox Series X|S Consoles Coming Holiday 2024",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "all-digital Series X in Robot White with a 1TB SSD and the speed and performance of Series X"
     },
@@ -248,10 +248,10 @@
     },
     {
       "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
-      "title": "XBOX locales FAQ",
-      "publisher": "Microsoft (XBOX Support)",
+      "title": "Xbox locales FAQ",
+      "publisher": "Microsoft (Xbox Support)",
       "retrieved": "2026-11-11",
-      "supports": "XBOX support and warranties are only available in supported countries/regions; system updates work anywhere with an internet connection"
+      "supports": "Xbox support and warranties are only available in supported countries/regions; system updates work anywhere with an internet connection"
     },
     {
       "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/game-principles/localization/console_supported_languages",
@@ -265,27 +265,27 @@
       "title": "اللغة العربية قادمة لأجهزة إكسبوكس ون في الخريف",
       "publisher": "Saudi Gamer",
       "retrieved": "2026-11-11",
-      "supports": "second source: Microsoft added Arabic as an XBOX console interface language in the 2017 Fall Update"
+      "supports": "second source: Microsoft added Arabic as an Xbox console interface language in the 2017 Fall Update"
     },
     {
       "url": "https://www.xbox.com/en-US/regions",
-      "title": "XBOX Supported Countries & Regions",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "Iraq is not on the list of supported countries/regions"
     },
     {
       "url": "https://www.xbox.com/en-US/xbox-game-pass",
-      "title": "XBOX Game Pass",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Game Pass",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "online console multiplayer is included in the Essential, Premium and Ultimate plans"
     }
   ],
   "notes": {
-    "ar": "بما أن الجهاز رقمي بالكامل، فكل الألعاب تُشترى رقمياً وتُنزّل عبر الإنترنت، ولا يمكن استعمال أقراص الألعاب المستعملة. العراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات XBOX، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط. اللعب الجماعي عبر الإنترنت مشمول في باقات Game Pass ‏(Essential وPremium وUltimate).",
-    "en": "Because the console is all-digital, every game is bought digitally and downloaded, and second-hand game discs cannot be used. Iraq is not on Microsoft's list of countries where XBOX services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says XBOX support and warranties are only available in supported countries. Online console multiplayer is included in the Game Pass plans (Essential, Premium, Ultimate).",
-    "ckb": "لەبەر ئەوەی کۆنسۆڵەکە تەواو دیجیتاڵە، هەموو یارییەک بە دیجیتاڵی دەکڕدرێت و دادەگیرێت، و دیسکی یاریی بەکارهاتوو بەکار نایەت. عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی XBOX، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. یاریی بە کۆمەڵ لە ئینتەرنێت لە پلانەکانی Game Pass ‏(Essential، Premium، Ultimate) دایە."
+    "ar": "بما أن الجهاز رقمي بالكامل، فكل الألعاب تُشترى رقمياً وتُنزّل عبر الإنترنت، ولا يمكن استعمال أقراص الألعاب المستعملة. العراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات Xbox، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم Xbox وضمانه متاحان في الدول المدعومة فقط. اللعب الجماعي عبر الإنترنت مشمول في باقات Game Pass ‏(Essential وPremium وUltimate).",
+    "en": "Because the console is all-digital, every game is bought digitally and downloaded, and second-hand game discs cannot be used. Iraq is not on Microsoft's list of countries where Xbox services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says Xbox support and warranties are only available in supported countries. Online console multiplayer is included in the Game Pass plans (Essential, Premium, Ultimate).",
+    "ckb": "لەبەر ئەوەی کۆنسۆڵەکە تەواو دیجیتاڵە، هەموو یارییەک بە دیجیتاڵی دەکڕدرێت و دادەگیرێت، و دیسکی یاریی بەکارهاتوو بەکار نایەت. عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی Xbox، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی Xbox تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. یاریی بە کۆمەڵ لە ئینتەرنێت لە پلانەکانی Game Pass ‏(Essential، Premium، Ultimate) دایە."
   },
   "verification": {
     "checkedBy": "fact-check",

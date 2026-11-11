@@ -1,8 +1,8 @@
 import { Link, redirect, useActionData } from "react-router";
 
 import type { Route } from "./+types/order-new";
-import { PO_SPENDING_LIMIT_IQD } from "~/server/services/admin/purchasing/rules";
 import { savePurchaseOrder } from "~/server/services/admin/purchasing/orders.server";
+import { getSetting } from "~/server/settings.server";
 import { OrderForm } from "./components/OrderForm";
 import { PageHead, usePurT } from "./components/kit";
 import { purchasingMeta } from "./meta";
@@ -35,7 +35,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       lines: [],
     },
     key: newKey(),
-    limitIqd: PO_SPENDING_LIMIT_IQD,
+    limitIqd: await getSetting(db, "purchasing.po_approval_limit_iqd"),
   };
 }
 

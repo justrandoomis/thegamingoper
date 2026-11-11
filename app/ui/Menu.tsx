@@ -19,12 +19,12 @@ import { dematerialize, materialize } from "~/motion";
 import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { inheritSurface, OverlayHostContext, useOverlayRoot, usePresence, watchCloseRequests } from "./Dialog";
-import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
 
 /**
- * Menu — a list of actions anchored to the key that opened it (docs/DESIGN.md §7.2: menus drop from their trigger
- * with 8px of travel and opacity, `settle`, 220ms in and 140ms out; they are glass, rows are flat).
+ * Menu — a list of actions anchored to the key that opened it. Design System v2 §4.17: an OPAQUE paper popover
+ * (--r-lg, the overlay shadow), 44px rows; it drops from its trigger with 8px of travel and opacity (`settle`, 220ms
+ * in and 140ms out). The highlighted row has a --niche fill and an ink bar on its inline-start edge.
  *
  *   <Menu label={t("orderActions")} items={[
  *     { id: "edit", label: t("edit"), icon: "pencil-simple", onSelect: edit },
@@ -47,7 +47,7 @@ import { IconKey } from "./IconKey";
  *
  * Placement: below the trigger, its inline-start edge on the trigger's (`align="end"`: the inline-end edges); above
  * when there is more room there; kept 8px inside the viewport; it follows the trigger when the page scrolls.
- * Inside a sheet or dialog it renders into that layer (and is solid, not frosted: two live glass panes at most).
+ * Inside a sheet or dialog it renders into that layer.
  * Reduced motion: opacity only. Client only: nothing renders on the server.
  */
 
@@ -386,9 +386,9 @@ function MenuPanel({ target, solid, id, triggerId, items, align, title, classNam
   const slot = items.some((item) => item.kind === "checkbox" || item.kind === "radio" || ((item.kind === undefined || item.kind === "action" || item.kind === "link") && item.icon));
 
   return createPortal(
-    <Glass
+    <div
       ref={panel}
-      variant={solid ? "solid" : "live"}
+      data-solid={solid ? "" : undefined}
       id={id}
       role="menu"
       aria-labelledby={triggerId}
@@ -398,7 +398,7 @@ function MenuPanel({ target, solid, id, triggerId, items, align, title, classNam
       onBlur={onBlur}
       className={cx(
         // above fixed chrome (header, tab bar); inside a sheet or dialog it sits in that layer's stacking context
-        "fixed z-[calc(var(--z-nav)+1)] flex min-w-[min(13.5rem,calc(100vw-16px))] max-w-[min(20rem,calc(100vw-16px))] flex-col overflow-y-auto overscroll-contain rounded-md p-1.5 outline-none",
+        "menu fixed z-[calc(var(--z-nav)+1)] flex min-w-[min(13.5rem,calc(100vw-16px))] max-w-[min(20rem,calc(100vw-16px))] flex-col overflow-y-auto overscroll-contain text-ink outline-none",
         className,
       )}
       style={
@@ -419,7 +419,7 @@ function MenuPanel({ target, solid, id, triggerId, items, align, title, classNam
           <MenuRow key={item.id} item={item} slot={slot} onClose={onClose} />
         ),
       )}
-    </Glass>,
+    </div>,
     target,
   );
 }
@@ -444,7 +444,7 @@ function MenuRow({ item, slot, onClose }: { item: Exclude<MenuItem, MenuSeparato
     onPointerMove: (event: ReactMouseEvent<HTMLElement>) => {
       if (document.activeElement !== event.currentTarget) event.currentTarget.focus({ preventScroll: true });
     },
-    className: cx(ROW, danger && "text-red-ink"),
+    className: cx(ROW, danger && "text-danger"),
   };
   const content = (
     <>

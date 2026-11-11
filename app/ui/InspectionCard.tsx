@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from "react";
+import { useId, type CSSProperties, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
@@ -6,11 +6,14 @@ import type { ImageRef, UsedGrade } from "~/lib/dto";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
 import { GradeBadge } from "./GradeBadge";
+import { fillNodes, iqdText, isIqd } from "./PriceTag";
 import { ProductImage } from "./ProductCard";
 
 /**
- * The inspection report of one used unit (docs/DESIGN.md §9.20, brief §5) — a paper panel on its page. Nothing in it
- * is animated, and serial numbers and private data never appear (pass none: there is no prop for them).
+ * The inspection report of one used unit — Design System v2 §4.12: a paper card with a hairline (--r-lg) on the unit's
+ * page. Nothing in it is animated, and serial numbers and private data never appear (pass none: there is no prop for
+ * them). Checklist rows have a check or an alert icon AND words; battery health is an ink bar on --niche-2 with a
+ * tabular % (or «غير قابل للقياس»); «سعره جديداً في المتجر 524,750 د.ع» when the store sells the model new.
  *
  *   Head        the outlined grade tag with its legend, the inspection date, and "صور الجهاز نفسه" above the real
  *               photographs (thumbnails with a 1px line border; never manufacturer images). The honesty line says
@@ -64,6 +67,8 @@ export type InspectionCardProps = {
   ownershipChecked?: boolean;
   dataWiped?: boolean;
   isDemo?: boolean;
+  /** «سعره جديداً في المتجر 524,750 د.ع» — the store's price for the same model new, when it sells it. */
+  newPriceIqd?: number | null;
   headingLevel?: 2 | 3;
   className?: string;
 };
@@ -92,6 +97,7 @@ export function InspectionCard({
   ownershipChecked = false,
   dataWiped = false,
   isDemo = false,
+  newPriceIqd = null,
   headingLevel = 2,
   className,
 }: InspectionCardProps) {
@@ -105,43 +111,43 @@ export function InspectionCard({
   const days = (n: number) => t("days", { count: n, n: f.number(n) });
 
   return (
-    <section aria-labelledby={headingId} className={cx("grid gap-5 rounded-lg bg-paper p-4 sm:p-5", className)} data-inspection="">
+    <section aria-labelledby={headingId} className={cx("inspect", className)} data-inspection="">
       <div className="grid gap-2">
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-          <Heading id={headingId} className="type-sub text-ink">
+          <Heading id={headingId} className="type-h3 text-ink">
             {t("inspection.title")}
           </Heading>
           <GradeBadge grade={grade} legend />
         </div>
-        <p className="type-caption text-ink-2">
+        <p className="type-xs text-ink-2">
           {inspectedAt !== null && Number.isFinite(inspectedAt) ? (
-            <time dateTime={new Date(inspectedAt).toISOString()}>{t("inspection.inspectedOn", { date: f.date(inspectedAt) })}</time>
+            <time dateTime={new Date(inspectedAt).toISOString()}>{t("inspection.inspectedOn", { date: f.date(inspectedAt, "long") })}</time>
           ) : (
             t("inspection.notDated")
           )}
         </p>
-        {isDemo ? <DemoNote className="mt-1" /> : null}
+        {isDemo ? <DemoNote variant="tag" what="data" className="justify-self-start" /> : null}
       </div>
 
       <Part title={t("inspection.photos")} Sub={Sub}>
         {real.length > 0 ? (
           <>
-            <p className="flex items-start gap-1.5 type-caption text-ink-2">
+            <p className="flex items-start gap-1.5 type-xs text-ink-2">
               <Icon name="camera" size={16} className="mt-0.5 shrink-0" />
               {t("inspection.photosNote")}
             </p>
             <ul className="flex flex-wrap gap-2">
               {real.map((photo, index) => (
-                <li key={photo.mediaKey ?? photo.artKey ?? index} className="size-20 overflow-hidden rounded-sm border border-line bg-niche">
+                <li key={photo.mediaKey ?? photo.artKey ?? index} className="relative size-20 overflow-hidden rounded-sm border border-line bg-niche">
                   <span className="render-slot size-full">
-                    <ProductImage image={photo} sizes="80px" fit="cover" pose={0} shadow={false} />
+                    <ProductImage image={photo} sizes="80px" fit="cover" />
                   </span>
                 </li>
               ))}
             </ul>
           </>
         ) : (
-          <p className="flex items-start gap-1.5 type-caption font-medium text-warn">
+          <p className="flex items-start gap-1.5 type-xs-strong text-warn">
             <Icon name="image" size={16} className="mt-0.5 shrink-0" />
             {t("inspection.noPhotos")}
           </p>
@@ -149,31 +155,34 @@ export function InspectionCard({
       </Part>
 
       <Part title={t("inspection.checklist")} Sub={Sub}>
-        <ul className="grid">
+        <ul className="inspect__rows">
           {checklist.map((check) => (
             <CheckRow key={check.key} ok={check.ok} label={check.label} note={check.note} />
           ))}
-          <li className="grid gap-1.5 border-b border-line py-2.5 last:border-b-0">
-            <div className="flex items-start justify-between gap-3">
-              <span className="flex items-start gap-2 type-label text-ink">
-                <Icon name="battery-high" size={18} className="mt-0.5 shrink-0 text-ink-2" />
-                {t("inspection.battery")}
+          <li className="inspect__row">
+            <Icon name="battery-high" size={20} className="text-ink-2" />
+            <span className="grid gap-1.5">
+              <span className="flex items-start justify-between gap-3">
+                <span>{t("inspection.battery")}</span>
+                {battery === null ? <span className="text-ink-2">{t("inspection.batteryNA")}</span> : null}
               </span>
-              <span className="type-label font-semibold text-ink">{battery === null ? <span className="font-normal text-ink-2">{t("inspection.batteryNA")}</span> : <bdi className="nums">{f.percent(battery / 100)}</bdi>}</span>
-            </div>
-            {battery === null ? null : (
-              <span
-                role="meter"
-                aria-label={t("inspection.battery")}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={battery}
-                aria-valuetext={f.percent(battery / 100)}
-                className="block h-1.5 overflow-hidden rounded-full bg-niche"
-              >
-                <span className="block h-full rounded-full bg-ink" style={{ inlineSize: `${battery}%` }} />
-              </span>
-            )}
+              {battery === null ? null : (
+                <span className="battery">
+                  <span
+                    role="meter"
+                    aria-label={t("inspection.battery")}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={battery}
+                    aria-valuetext={f.percent(battery / 100)}
+                    className="battery__bar"
+                  >
+                    <span className="battery__fill" style={{ "--level": `${battery}%` } as CSSProperties} />
+                  </span>
+                  <bdi className="nums">{f.percent(battery / 100)}</bdi>
+                </span>
+              )}
+            </span>
           </li>
           {ownershipChecked ? <CheckRow ok label={t("inspection.ownership")} /> : null}
           {dataWiped ? <CheckRow ok label={t("inspection.dataWiped")} /> : null}
@@ -182,19 +191,19 @@ export function InspectionCard({
 
       <Part title={t("inspection.defects")} Sub={Sub}>
         {defects.length === 0 ? (
-          <p className="type-body text-ink-2">{t("inspection.noDefects")}</p>
+          <p className="type-sm text-ink-2">{t("inspection.noDefects")}</p>
         ) : (
           <ul className="grid gap-3">
             {defects.map((defect, index) => (
               <li key={index} className="flex items-start gap-3">
                 {defect.photo && !defect.photo.isIllustration ? (
-                  <span className="size-16 shrink-0 overflow-hidden rounded-sm border border-line bg-niche">
+                  <span className="relative size-16 shrink-0 overflow-hidden rounded-sm border border-line bg-niche">
                     <span className="render-slot size-full">
-                      <ProductImage image={defect.photo} alt={t("inspection.defectPhoto", { defect: defect.text })} sizes="64px" fit="cover" pose={0} shadow={false} />
+                      <ProductImage image={defect.photo} alt={t("inspection.defectPhoto", { defect: defect.text })} sizes="64px" fit="cover" />
                     </span>
                   </span>
                 ) : null}
-                <span className="min-w-0 pt-0.5 type-body text-ink">{defect.text}</span>
+                <span className="min-w-0 pt-0.5 type-sm text-ink">{defect.text}</span>
               </li>
             ))}
           </ul>
@@ -203,17 +212,20 @@ export function InspectionCard({
 
       <Part title={t("inspection.included")} Sub={Sub}>
         {included.length === 0 ? (
-          <p className="type-body text-ink-2">{t("inspection.nothingIncluded")}</p>
+          <p className="type-sm text-ink-2">{t("inspection.nothingIncluded")}</p>
         ) : (
-          <ul className="grid list-inside list-disc gap-1 type-body text-ink marker:text-ink-3">
+          <ul className="grid list-inside list-disc gap-1 type-sm text-ink marker:text-ink-2">
             {included.map((thing, index) => (
               <li key={index}>{thing}</li>
             ))}
           </ul>
         )}
-        <div className="mt-2 grid gap-1 border-t border-line pt-3 type-body text-ink">
+        <div className="mt-2 grid gap-1 border-t border-line pt-3 type-sm text-ink">
           <p>{warrantyDays > 0 ? t("inspection.warranty", { days: days(warrantyDays) }) : t("inspection.noWarranty")}</p>
           {returnDays && returnDays > 0 ? <p>{t("inspection.returns", { days: days(returnDays) })}</p> : null}
+          {isIqd(newPriceIqd) ? (
+            <p className="text-ink-2">{fillNodes(t("buy.newPrice"), { price: <bdi className="nums">{iqdText(f, newPriceIqd)}</bdi> })}</p>
+          ) : null}
         </div>
       </Part>
     </section>
@@ -223,7 +235,7 @@ export function InspectionCard({
 function Part({ title, Sub, children }: { title: string; Sub: "h3" | "h4"; children: ReactNode }) {
   return (
     <div className="grid gap-2">
-      <Sub className="type-label font-semibold text-ink">{title}</Sub>
+      <Sub className="type-sm-strong text-ink">{title}</Sub>
       {children}
     </div>
   );
@@ -232,14 +244,14 @@ function Part({ title, Sub, children }: { title: string; Sub: "h3" | "h4"; child
 function CheckRow({ ok, label, note }: { ok: boolean; label: string; note?: string | null }) {
   const t = useT("ui-shop");
   return (
-    <li className="flex items-start gap-2 border-b border-line py-2.5 last:border-b-0">
-      <Icon name={ok ? "check-circle" : "warning"} size={18} filled={ok} className={cx("mt-0.5 shrink-0", ok ? "text-ok" : "text-warn")} />
+    <li className="inspect__row">
+      <Icon name={ok ? "check-circle" : "warning"} size={20} filled={ok} className={ok ? "text-ok" : "text-warn"} />
       <span className="grid min-w-0 gap-0.5">
-        <span className="type-label text-ink">
+        <span className="text-ink">
           {label}
           <span className="sr-only"> — {t(ok ? "inspection.ok" : "inspection.issue")}</span>
         </span>
-        {note ? <span className="type-caption text-ink-2">{note}</span> : null}
+        {note ? <span className="type-xs text-ink-2">{note}</span> : null}
       </span>
     </li>
   );

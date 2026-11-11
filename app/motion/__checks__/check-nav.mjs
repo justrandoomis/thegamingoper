@@ -1,7 +1,7 @@
 // @ts-nocheck — node app/motion/__checks__/check-nav.mjs
 // Navigation grammar on the real lab: forward / Back / Forward keep URL, history length and scroll position,
 // every navigation runs exactly one view transition with the right data-nav, shared elements pair, RTL mirrors LTR.
-import { captureTransition, goto, historyLength, launch, openPage, record, report, scrollY, settled, sleep, tap, url } from "./lib.mjs";
+import { captureTransition, centre, goto, historyLength, launch, openPage, record, report, scrollY, settled, sleep, tap, url } from "./lib.mjs";
 
 const browser = await launch();
 const checks = [];
@@ -138,9 +138,11 @@ try {
 
   // hash state (#viewer → #viewer-2): no data is needed, so React Router finishes Back synchronously inside popstate.
   // React alone would commit that without a view transition; the pop gate keeps it.
+  // centre the opener first and tap without scrolling: Back must return to exactly where the shopper was
+  await centre(page, '[data-testid="viewer-open"]');
   const before = await scrollY(page);
   await page.clearVt();
-  await tap(page, '[data-testid="viewer-open"]');
+  await tap(page, '[data-testid="viewer-open"]', { scroll: false });
   await page.waitForSelector('[data-testid="viewer"][data-slide="0"]');
   await settled(page);
   vt = await page.vt();

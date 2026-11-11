@@ -1,117 +1,316 @@
 /*
- * Core component styles — imported into the `components` cascade layer by app/app.css, after materials.css.
- * One block per app/ui component; the React components are the API, these classes are their implementation.
- * Logical properties only; tokens only; motion is transform/opacity only.
+ * Kit component styles — Design System v2 (docs/DESIGN.md §9; the class map is docs/UI.md §2). Imported into the
+ * `components` cascade layer by app/app.css, after materials.css. One block per app/ui component: the React
+ * components are the API, these classes are their implementation. Logical properties only; tokens only; motion is
+ * transform / opacity only; no resting shadow on anything that is not in the elevation vocabulary.
+ *
+ *   text        .bidi  .link  .plat  .i--dir  .kbd
+ *   choices     .bank (→ segmented)  .seg  .chips  .tag  .status  .bead  .demo-*  .pill
+ *   forms       .field  .choice (checkbox, radio, switch, option card)  .pref  .swatch  .listrow  .form-alert
+ *   commerce    .stepper  .price  .pcard  .cards  .cline  .summary  .thumbs  .buybar  .inspect  .proof  .ledger
+ *   showcases   .sechead  .rail  .showmore  .trust  .facts  .release  .entry  .cats  .contact  .compat
+ *   layers      .toast  .sheet  .dialog  .menu  .scrim
+ *   structure   .crumbs  .steps  .tabs  .acc  .callout  .empty  .offline
+ *   1.0 stage   .stage-frame .stage--hero/--product/--compact .stage__band .gtag (until <Stage> is rebuilt)
  */
 
-/* ───────────────────────────── BidiLabel (§5.5, §13): a label with Arabic script, isolated in the page's direction ─────
- * (a label without Arabic script is a <bdi dir="ltr">; a bare <bdi> would guess the direction from the first letter) */
+/* ───────────────────────────── text ───────────────────────────── */
+/* a label with Arabic script, isolated in the page's direction (a label without Arabic script is a <bdi dir="ltr">;
+   a bare <bdi> would guess the direction from the first letter) */
 .bidi {
   unicode-bidi: isolate;
 }
-
-/* ───────────────────────────── KeyBank (§2, §8.1): keys in a well, the chosen one stays down ───────────────────────────── */
-.bank {
-  display: grid;
-  grid-template-columns: repeat(var(--bank-n, 4), minmax(0, 1fr));
-  gap: 5px;
-  padding: 5px 5px 4px;
-  border-radius: calc(var(--r-md) + 5px); /* nested radius = inner radius + the gap */
+/* directional glyphs (arrows, carets, chevrons) mirror in RTL; nothing else mirrors */
+[dir="rtl"] .i--dir {
+  scale: -1 1;
 }
-.bank--thumb {
+/* the one link look: ink 600, a hairline underline that turns ink on hover, an arrow that nudges toward the reading
+   end. Never red, never a button. 44px tall outside running text. */
+.link {
   display: inline-flex;
-  gap: 5px;
-  padding: 4px 4px 3px;
-  border-radius: calc(var(--r-sm) + 4px);
+  align-items: center;
+  gap: 6px;
+  min-block-size: var(--target);
+  margin-block: -4px;
+  font: var(--type-sm-strong);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
 }
-.bank--segment {
+.link__text {
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.link > svg:last-child {
+  transition: translate var(--t-micro) var(--ease-settle);
+}
+@media (hover: hover) {
+  .link:hover .link__text {
+    text-decoration-color: currentColor;
+  }
+  .link:hover > svg:last-child {
+    translate: calc(3px * var(--dir)) 0;
+  }
+}
+/* inside a paragraph: always underlined, the paragraph's type */
+.link--inline {
+  display: inline;
+  min-block-size: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 600;
+}
+.link--inline .link__text {
+  text-decoration-color: currentColor;
+}
+/* a destructive text action states the consequence in danger words (never brand red) */
+.link--danger {
+  color: var(--danger);
+}
+/* on a band or a toast the link takes the surface's ink */
+:is(.band, .release, .toast) .link {
+  color: inherit;
+}
+:is(.band, .release, .toast) .link__text {
+  text-decoration-color: currentColor;
+}
+/* the platform label: an 8px dot beside the platform's name (13–15/600) */
+.plat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--type-xs-strong);
+  color: var(--ink-2);
+}
+.plat__glyph {
+  display: none; /* 1.0 device pictograms are retired: platforms are names, colours and real photos */
+}
+/* a keyboard shortcut chip ("/" in the search pill) */
+.kbd {
   display: inline-grid;
-  grid-template-columns: none;
+  place-items: center;
+  min-inline-size: 24px;
+  block-size: 24px;
+  padding-inline: 6px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-xs);
+  font: var(--type-tag);
+  color: var(--ink-2);
+}
+
+/* ───────────────────────────── segmented control (and 1.0's KeyBank) ─────────────────────────────
+ * A 44px --niche track; the chosen segment is paper with a hairline and a 600 label. Radiogroup semantics.
+ * <div role="radiogroup" class="seg"><button role="radio" class="seg__opt" aria-checked="true">العربية</button>…</div>
+ * KeyBank renders the same look on its keys (.bank > .key). */
+.seg,
+.bank:not(.bank--thumb) {
+  display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
+  min-block-size: var(--target);
+  padding: 2px;
+  border-radius: var(--r-full);
+  background: var(--niche);
 }
-.bank--segment > .key {
-  --px: 16px;
+/* platform keys: as many 120px+ segments per row as fit (four in a hero column, 2 × 2 on a phone) — a name is never
+   cut */
+.bank:not(.bank--thumb, .bank--segment) {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
+  border-radius: var(--r-lg);
 }
-.key--thumb .render-slot {
-  inline-size: 100%;
-  align-self: stretch;
-  place-items: center;
+.seg--inline,
+.bank.bank--segment {
+  display: inline-grid;
+}
+.seg__opt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-block-size: 40px;
+  padding-inline: 14px;
+  border: 1px solid transparent;
+  border-radius: var(--r-full);
+  background: none;
+  font: var(--type-sm-strong);
+  color: var(--ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.seg__opt::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0; /* 40 → 44 */
+}
+.seg__opt:is([aria-checked="true"], [aria-pressed="true"], [aria-current="true"], [aria-current="page"]) {
+  border-color: var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.bank:not(.bank--thumb) > .key {
+  --r: var(--r-full);
+  --h: 40px;
+  --px: 10px;
+  --face: transparent;
+  --hover-face: transparent;
+  --edge: transparent;
+  --on: var(--ink-2);
+  font: var(--type-sm-strong);
+}
+.bank:not(.bank--thumb) > .key::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0; /* 40 → 44 */
+}
+.bank:not(.bank--thumb) > .key:is([aria-checked="true"], [aria-pressed="true"]) {
+  --face: var(--paper);
+  --hover-face: var(--paper);
+  --edge: var(--line);
+  --on: var(--ink);
+}
+/* gallery thumbnails: a row below the stage */
+.bank--thumb {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: none;
 }
 .bank__label {
-  font: var(--type-label);
+  margin-block: 8px 6px;
+  font: var(--type-sm);
   color: var(--ink-2);
-  margin-block: 9px 5px;
 }
 .bank__label :is(b, strong) {
   font-weight: 600;
   color: var(--ink);
 }
-@media (min-width: 75rem) {
-  .bank .key--plat {
-    --h: 64px;
-    font-size: 13.5px;
-  }
-}
 
-/* ───────────────────────────── Chip (§9.8) ───────────────────────────── */
+/* ───────────────────────────── chips (the key--chip look is in materials.css) ───────────────────────────── */
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--s-2);
 }
+/* one row that scrolls sideways on phones, gutter kept, no arrows; it wraps from 768 */
 .chips--rail {
   flex-wrap: nowrap;
   overflow-x: auto;
-  padding-block: 2px 6px;
+  padding-block: 2px;
   scrollbar-width: none;
 }
-/* a native checkbox / radio inside a chip: invisible but focusable and clickable over the whole key */
-.key > .key__native {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  margin: 0;
-  opacity: 0;
-  cursor: inherit;
+.chips--rail::-webkit-scrollbar {
+  display: none;
+}
+.chips--bleed {
+  margin-inline: calc(-1 * var(--gutter));
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+}
+@media (min-width: 48rem) {
+  .chips--rail {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+  .chips--bleed {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
 }
 
-/* ───────────────────────────── Tag and Status (§9.12) ───────────────────────────── */
+/* ───────────────────────────── badges, status, bead, demo marking (§9.12) ───────────────────────────── */
+/* a badge: a 24px pill, 12/600, one per card */
 .tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   block-size: 24px;
-  padding-inline: 9px;
-  padding-block-end: 1px;
-  border-radius: var(--r-xs);
+  padding-inline: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  color: var(--ink);
   font: var(--type-tag);
   white-space: nowrap;
 }
-/* new = solid ink */
-.tag--solid {
+.tag > svg {
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+}
+/* «جديد»: ink fill (only within 30 days of release) */
+.tag--solid,
+.tag--new {
+  border-color: var(--ink);
   background: var(--ink);
-  color: var(--ground);
+  color: var(--paper);
 }
-/* used, preorder, refurbished = outlined: shape, not colour, separates them */
-.tag--outline {
-  background: var(--ground);
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1.5px var(--ink);
+/* the grade of a used unit «A+ · كالجديد», and 1.0's used / refurbished tags: a 1.5px ink outline */
+.tag--outline,
+.tag--grade {
+  border: 1.5px solid var(--ink);
 }
+/* «قريباً»: paper with a control boundary and a 14px calendar */
+.tag--soon,
+.tag[data-kind="preorder"] {
+  border: 1px solid var(--line-strong);
+}
+/* «تخفيض»: only with a real previous price */
+.tag--sale {
+  border-color: var(--red-tint);
+  background: var(--red-tint);
+  color: var(--red-ink);
+}
+/* «نفد» */
+.tag--out {
+  border-color: var(--niche-2);
+  background: var(--niche-2);
+  color: var(--ink-2);
+}
+.tag--ok {
+  border-color: var(--ok-tint);
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+/* the demo tag beside a price or an order number: «سعر تجريبي» · «سعر ومخزون تجريبيان» · «طلب تجريبي» */
+.tag--demo {
+  border-color: var(--demo-bg);
+  background: var(--demo-bg);
+  color: var(--demo-ink);
+}
+/* «صورة توضيحية» on a used unit's photo, bottom-start */
+.tag--photo {
+  border-color: transparent;
+  background: var(--on-image);
+  color: var(--ink-2);
+}
+/* on crimson (light theme): transparent, a 1px white border at 60%, white text */
+.tag--on-color {
+  border-color: var(--on-color-line);
+  background: transparent;
+  color: var(--on-showcase);
+}
+/* status: an 8px dot and words, 13/600 (14 with .status--lg) — never colour alone */
 .status {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font: 500 12.5px/1.6 var(--font-text);
+  font: var(--type-xs-strong);
 }
 .status::before {
   content: "";
   flex: none;
-  inline-size: 7px;
-  block-size: 7px;
-  border-radius: 50%;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--r-full);
   background: currentColor;
+}
+.status--lg {
+  font: var(--type-sm-strong);
 }
 .status--ok {
   color: var(--ok);
@@ -123,60 +322,80 @@
   color: var(--info);
 }
 .status--bad {
-  color: var(--red-ink);
+  color: var(--danger);
 }
-.status--neutral {
+.status--neutral,
+.status--out {
   color: var(--ink-2);
 }
-
-/* the cart bead: the red count on the cart (and in admin, items waiting for a human). Nothing else is a bead. */
+.status--soon {
+  color: var(--ink);
+}
+/* the cart bead: a 20px red disc, 12/600 white, a 2px ring in the surface colour; the fly-to-cart target */
 .bead {
   display: inline-grid;
   place-items: center;
   min-inline-size: 20px;
   block-size: 20px;
-  padding: 0 5px 1px;
+  padding-inline: 6px;
   border-radius: var(--r-full);
-  background: var(--red-face);
-  box-shadow: inset 0 1px 0 var(--red-lip), 0 1.5px 0 var(--red-wall);
+  outline: 2px solid var(--bead-ring, var(--paper));
+  background: var(--red);
   color: var(--on-red);
-  font: 600 11.5px/1 var(--font-text);
+  font: var(--type-tag);
+  line-height: 1;
   font-variant-numeric: tabular-nums lining-nums;
 }
-
-/* ───────────────────────────── TextLink (§9.1): one look, never red, never clay ───────────────────────────── */
-.link {
+/* demo marking — honest and quiet; never inverted in dark (its own amber pair) */
+.demo-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-block-size: var(--h-strip);
+  padding-inline: var(--gutter);
+  background: var(--demo-bg);
+  color: var(--demo-ink);
+  font: var(--type-xs-strong);
+  text-align: center;
+  text-decoration: none;
+}
+.demo-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  min-block-size: var(--target);
-  margin-block: -4px;
-  font: 600 13.5px/1.4 var(--font-text);
+  gap: 6px;
+  block-size: 28px;
+  padding-inline: 10px 12px;
+  border-radius: var(--r-full);
+  background: var(--demo-bg);
+  color: var(--demo-ink);
+  font: var(--type-xs-strong);
+  white-space: nowrap;
+}
+:is(.demo-strip, .demo-chip) > svg {
+  flex: none;
+  inline-size: 16px;
+  block-size: 16px;
+}
+.demo-line {
+  font: var(--type-xs);
+  color: var(--demo-ink);
+}
+/* a small pill (the hero's platform pill: white, 28px, dot + name) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  block-size: 28px;
+  padding-inline: 10px 12px;
+  border-radius: var(--r-full);
+  background: var(--paper);
   color: var(--ink);
-  text-decoration: none;
-  cursor: pointer;
-}
-.link:hover .link__text {
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 6px;
-}
-.link--inline {
-  display: inline;
-  min-block-size: 0;
-  margin: 0;
-  font: inherit;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 6px;
-}
-/* a destructive text action states the consequence in red-ink words (§9.15) */
-.link--danger {
-  color: var(--red-ink);
+  font: var(--type-xs-strong);
+  white-space: nowrap;
 }
 
-/* ───────────────────────────── Field family (§9.9): flat paper with a real border ───────────────────────────── */
+/* ───────────────────────────── fields (§9.9): paper with a real border ───────────────────────────── */
 .field {
   display: flex;
   flex-direction: column;
@@ -184,11 +403,11 @@
   min-inline-size: 0;
 }
 .field__label {
-  font: 600 13.5px/1.5 var(--font-text);
+  font: var(--type-label);
   color: var(--ink);
 }
 .field__mark {
-  font-weight: 500;
+  font-weight: 400;
   color: var(--ink-2);
 }
 .field__control {
@@ -199,18 +418,25 @@
 .field__input {
   inline-size: 100%;
   min-inline-size: 0;
-  block-size: 52px;
+  block-size: var(--h-field);
   padding-inline: 16px;
-  border: 1.5px solid var(--line-strong);
-  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
   background: var(--paper);
   color: var(--ink);
-  font: 500 16px/1.4 var(--font-text); /* 16px: no zoom on iOS */
+  font: 400 var(--fs-body) / 1.4 var(--font-text); /* 16px: no zoom on iOS */
   appearance: none;
 }
+@media (hover: hover) {
+  .field__input:hover:not(:disabled, :focus, [readonly]) {
+    border-color: var(--ink-2);
+  }
+}
+/* focus: an ink border and the 2px ring (an outline, so it still shows on an errored field) */
 .field__input:focus-visible {
-  outline: 2.5px solid var(--ink);
-  outline-offset: 2px;
+  border-color: var(--ink);
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
 }
 /* phone numbers, amounts, codes stay left-to-right but hug the start edge of a right-to-left form */
 .field__input[dir="ltr"] {
@@ -225,7 +451,7 @@
 textarea.field__input {
   block-size: auto;
   min-block-size: 112px;
-  padding-block: 13px;
+  padding-block: 12px;
   line-height: 1.6;
   resize: vertical;
 }
@@ -244,8 +470,8 @@ select.field__input {
   inset-inline-end: 6px;
   display: flex;
   align-items: center;
-  min-inline-size: 44px;
   justify-content: center;
+  min-inline-size: 44px;
   color: var(--ink-2);
 }
 /* room for the end slot, on the side where the slot is: an LTR number inside an RTL form reserves its start side */
@@ -268,16 +494,30 @@ select.field__input {
   font: var(--type-caption);
   color: var(--ink-2);
 }
+/* the message replaces the hint: a 16px alert icon + words in --danger */
 .field__error {
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  font: 500 12.5px/1.6 var(--font-text);
-  color: var(--red-ink);
+  font: var(--type-xs-strong);
+  color: var(--danger);
+}
+.field__error > svg {
+  flex: none;
+  margin-block-start: 2px;
 }
 /* the error region is always in the tree (so the first error is announced) but takes no room while empty */
 .field__error:empty {
   margin-block-start: -6px;
+}
+/* error: a 2px --danger border (the padding gives the extra pixel back, so nothing inside moves) */
+.field[data-invalid] .field__input {
+  border-width: 2px;
+  border-color: var(--danger);
+  padding-inline: 15px;
+}
+.field[data-invalid] textarea.field__input {
+  padding-block: 11px;
 }
 .field--group {
   min-inline-size: 0;
@@ -292,23 +532,31 @@ select.field__input {
 .field__options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .field__options--row {
   flex-direction: row;
   flex-wrap: wrap;
 }
-.field__error > svg {
-  flex: none;
-  margin-block-start: 2.5px;
+/* the error summary above a form: one role="alert" block whose items link to the fields */
+.form-alert {
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 1px solid var(--danger);
+  border-radius: var(--r-sm);
+  background: var(--danger-tint);
+  color: var(--danger);
+  font: var(--type-sm-strong);
 }
-/* error: a 2px red-ink border (drawn as 1.5px + an inset half pixel, so nothing inside moves), never a red fill */
-.field[data-invalid] .field__input {
-  border-color: var(--red-ink);
-  box-shadow: inset 0 0 0 0.5px var(--red-ink);
+.form-alert a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-/* checkbox, radio, switch: the native input sits invisibly over the whole row (form-native, keyboard-native) */
+/* ───────────────────────────── checkbox, radio, switch, option card ─────────────────────────────
+ * The native input sits invisibly over the whole row (form-native, keyboard-native). */
 .choice {
   position: relative;
   display: flex;
@@ -340,17 +588,18 @@ select.field__input {
   font: var(--type-caption);
   color: var(--ink-2);
 }
+/* checkbox: 20px, radius 6, a 1.5px control boundary; checked = ink fill and a paper check */
 .choice__box {
   flex: none;
   display: grid;
   place-items: center;
-  inline-size: 22px;
-  block-size: 22px;
-  margin-block-start: 1px;
+  inline-size: 20px;
+  block-size: 20px;
+  margin-block-start: 2px;
   border: 1.5px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: var(--r-check);
   background: var(--paper);
-  color: var(--on-sel);
+  color: var(--paper);
 }
 .choice__box > svg {
   opacity: 0;
@@ -366,20 +615,20 @@ select.field__input {
 .choice__input:where([type="checkbox"]):indeterminate + .choice__box > svg {
   opacity: 1;
 }
+/* radio: a 20px circle; checked = a 6px ink ring around a paper centre */
 .choice--radio .choice__box {
-  border-radius: 50%;
+  border-radius: var(--r-full);
 }
 .choice--radio .choice__input:checked + .choice__box {
-  border: 2px solid var(--ink);
+  border: 6px solid var(--ink);
   background: var(--paper);
-  box-shadow: inset 0 0 0 3.5px var(--paper), inset 0 0 0 10px var(--ink);
 }
 .choice__input:focus-visible + :is(.choice__box, .switch__track) {
-  outline: 2.5px solid var(--ink);
-  outline-offset: 3px;
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
 }
 .choice[data-invalid] .choice__box {
-  border-color: var(--red-ink);
+  border-color: var(--danger);
 }
 .choice:has(> .choice__input:disabled) {
   color: var(--ink-3);
@@ -389,23 +638,33 @@ select.field__input {
   border-color: var(--line);
   background: var(--niche);
 }
-/* option rows (§9.8): a paper row with a 1.5px border, a radio mark at the start, a title and one line of
- * explanation; chosen = a 2px ink border (1.5px + an inset half pixel: nothing inside moves) and a filled mark */
+/* option card (version, payment, answer): min 64 (payment 72), a radio at the start, a title, one hint line and the
+ * option's own price or a word mark at the end; chosen = a 2px ink border (the padding gives the pixel back) */
 .choice--row {
   align-items: flex-start;
-  min-block-size: 56px;
-  padding: 13px 16px;
-  border: 1.5px solid var(--line-strong);
-  border-radius: var(--r-md);
+  min-block-size: var(--h-option);
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
   background: var(--paper);
 }
+.choice--row > .choice__text {
+  font: var(--type-card);
+}
+.choice--row .choice__hint {
+  font: var(--type-xs);
+}
+.choice--pay {
+  min-block-size: var(--h-option-pay);
+}
 .choice--row:has(> .choice__input:checked) {
+  border-width: 2px;
   border-color: var(--ink);
-  box-shadow: inset 0 0 0 0.5px var(--ink);
+  padding: 11px 15px;
 }
 .choice--row:has(> .choice__input:focus-visible) {
-  outline: 2.5px solid var(--ink);
-  outline-offset: 2px;
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
 }
 .choice--row .choice__input:focus-visible + .choice__box {
   outline: none;
@@ -415,7 +674,20 @@ select.field__input {
   padding-inline-start: var(--s-3);
   white-space: nowrap;
 }
-/* switch: a clay knob in a well; on = the well turns ink and the knob travels to the inline end */
+/* a 40×28 area holding a payment method's words (no unlicensed logos) */
+.choice__mark {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 40px;
+  block-size: 28px;
+  padding-inline: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  font: var(--type-tag);
+  color: var(--ink-2);
+}
+/* switch: a 44×26 track (off --line-strong 3.83:1, on --ink) and a 20px paper knob that travels 18px with the
+   reading direction on the press spring */
 .choice--switch {
   justify-content: space-between;
   align-items: center;
@@ -423,21 +695,19 @@ select.field__input {
 .switch__track {
   position: relative;
   flex: none;
-  inline-size: 52px;
-  block-size: 32px;
+  inline-size: 44px;
+  block-size: 26px;
   border-radius: var(--r-full);
-  background: var(--well);
-  box-shadow: var(--well-shadow);
+  background: var(--line-strong);
 }
 .switch__knob {
   position: absolute;
   inset-block-start: 3px;
   inset-inline-start: 3px;
-  inline-size: 26px;
-  block-size: 24px;
+  inline-size: 20px;
+  block-size: 20px;
   border-radius: var(--r-full);
-  background: var(--clay-face);
-  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -5px 6px -4px var(--clay-belly), 0 2px 0 var(--clay-wall), var(--e-1);
+  background: var(--paper);
   transition: transform var(--t-micro) var(--ease-squish);
 }
 @supports (transition-timing-function: linear(0, 1)) {
@@ -446,11 +716,10 @@ select.field__input {
   }
 }
 .choice__input:checked + .switch__track {
-  background: var(--sel-face);
-  box-shadow: inset 0 2px 3px var(--sel-in);
+  background: var(--ink);
 }
 .choice__input:checked + .switch__track > .switch__knob {
-  transform: translateX(calc(var(--dir) * 20px));
+  transform: translateX(calc(var(--dir) * 18px));
 }
 @media (prefers-reduced-motion: reduce) {
   .switch__knob {
@@ -461,7 +730,120 @@ select.field__input {
   transition: none;
 }
 
-/* ───────────────────────────── Stepper (§9.10): two round keys in a well ───────────────────────────── */
+/* preferred delivery time: 48px cells, 2 columns on phones, 4 from 600; a radiogroup */
+.pref {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+@media (min-width: 37.5rem) {
+  .pref {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.pref__cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: var(--h-btn);
+  padding-inline: var(--s-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--type-sm-strong);
+  text-align: center;
+  cursor: pointer;
+}
+.pref__cell:is([aria-checked="true"], :has(> input:checked)) {
+  border-width: 2px;
+  border-color: var(--ink);
+}
+.pref__cell:has(> input:focus-visible) {
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+.pref__cell > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.pref__hint {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+/* colour swatches: a 36px dot or a 56px thumbnail on the product ground, 44 hit; chosen = 2px ink ring with a gap;
+   unavailable = a diagonal stroke and the reason in its name */
+.swatches {
+  display: flex;
+  gap: var(--s-3);
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: none;
+}
+.swatch {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--swatch, var(--niche));
+  cursor: pointer;
+  overflow: visible;
+}
+.swatch::after {
+  content: "";
+  position: absolute;
+  inset: -4px; /* 36 → 44 */
+}
+.swatch--thumb {
+  inline-size: 56px;
+  block-size: 56px;
+  border-color: transparent;
+  border-radius: var(--r-sm);
+  background: var(--product-ground);
+}
+.swatch:is([aria-checked="true"], [aria-pressed="true"]) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.swatch[data-unavailable]::before {
+  content: "";
+  position: absolute;
+  inline-size: 2px;
+  block-size: 130%;
+  border-radius: var(--r-full);
+  background: var(--ink-2);
+  rotate: 45deg;
+}
+/* a 52px choice row in a list (the governorate sheet, menus of choices) */
+.listrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-block-size: 52px;
+  padding-inline: var(--s-4);
+  border-block-end: 1px solid var(--line);
+  font: var(--type-body);
+  color: var(--ink);
+  cursor: pointer;
+}
+.listrow:is([aria-selected="true"], [aria-checked="true"], :has(> input:checked)) {
+  font-weight: 600;
+}
+.listrow__fee {
+  padding: 12px var(--s-4);
+  background: var(--niche);
+  font: var(--type-sm-strong);
+}
+
+/* ───────────────────────────── stepper (§9.10): a hairline pill ───────────────────────────── */
 .stepper-wrap {
   display: inline-flex;
   align-items: center;
@@ -471,35 +853,50 @@ select.field__input {
 .stepper {
   display: inline-flex;
   align-items: center;
-  padding: 5px 5px 4px;
+  block-size: var(--h-btn);
+  padding-inline: 3px;
+  border: 1px solid var(--line-2);
   border-radius: var(--r-full);
+  background: var(--paper);
+}
+/* − and +: two 40px round ghost icon buttons (44 hit); minus at the start, plus at the end in every language */
+.stepper > .key {
+  --face: transparent;
+  --edge: transparent;
+  --hover-face: var(--niche);
 }
 .stepper__value {
-  min-inline-size: 38px;
+  min-inline-size: 32px;
   text-align: center;
-  font: 700 17px/1 var(--font-display);
+  font: 600 var(--fs-body) / 1 var(--font-text);
   font-variant-numeric: tabular-nums lining-nums;
 }
 .stepper--sm {
-  padding: 4px 4px 3px;
+  block-size: var(--h-btn-sm);
+  padding-inline: 1px;
 }
 .stepper--sm .stepper__value {
-  min-inline-size: 30px;
-  font-size: 15px;
+  min-inline-size: 28px;
+  font-size: var(--fs-sm);
 }
 
-/* ───────────────────────────── Price (§9.11): flat ink on paper ───────────────────────────── */
+/* ───────────────────────────── price (§9.11) ─────────────────────────────
+ * Kufi 700 figures (tabular), the currency after the figure in Plex 600 at the fixed size of its step. Tones: ink
+ * (every selling price), sale (red-ink, with a real previous price struck beside it), total (the one red figure of a
+ * summary), on-color (white on a band), muted (sold out). Money never animates. */
 .price {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.26em;
-  font: 700 var(--price-md)/1.3 var(--font-display);
+  column-gap: 0.25em;
+  font: 700 var(--price-md) / 1.2 var(--font-display);
   font-variant-numeric: tabular-nums lining-nums;
   white-space: nowrap;
   color: var(--ink);
 }
 .price--xl {
   font-size: var(--price-xl);
+  line-height: 1.15;
 }
 .price--lg {
   font-size: var(--price-lg);
@@ -509,18 +906,43 @@ select.field__input {
 }
 .price--sm {
   font-size: var(--price-sm);
+  line-height: 1.3;
+}
+.price__num {
+  font: inherit;
 }
 .price__cur {
-  font: 500 max(11px, 0.6em)/1 var(--font-text);
+  font: 600 var(--cur-md) / 1 var(--font-text);
   color: var(--ink-2);
 }
+.price--xl .price__cur {
+  font-size: var(--cur-xl);
+}
+.price--lg .price__cur {
+  font-size: var(--cur-lg);
+}
+.price--sm .price__cur {
+  font-size: var(--cur-sm);
+}
 .price__was {
-  margin-inline-end: 0.2em;
-  font: 500 max(12px, 0.62em)/1 var(--font-text);
+  font: 400 var(--fs-xs) / 1.2 var(--font-text);
   font-variant-numeric: tabular-nums lining-nums;
   color: var(--ink-2);
   text-decoration: line-through;
-  text-decoration-thickness: 1.5px;
+  text-decoration-thickness: 1px;
+}
+.price--sale,
+.price--total {
+  color: var(--red-ink);
+}
+.price--on-color {
+  color: var(--on-showcase);
+}
+.price--on-color .price__cur {
+  color: inherit;
+}
+.price--muted {
+  color: var(--ink-2);
 }
 .price-block {
   display: inline-flex;
@@ -531,7 +953,7 @@ select.field__input {
 }
 /* a converted amount: never bold, always marked approximate, the dinar payment named beside it */
 .price__approx {
-  font: 500 13px/1.6 var(--font-text);
+  font: var(--type-xs);
   font-variant-numeric: tabular-nums lining-nums;
   color: var(--ink-2);
 }
@@ -550,57 +972,1498 @@ select.field__input {
   flex: none;
 }
 .price__fx[open] > summary > svg {
-  transform: rotate(180deg);
+  rotate: 180deg;
 }
 .price__rate {
   font: var(--type-caption);
   color: var(--ink-2);
   white-space: normal;
 }
+/* under the page price: «● متوفر · التوصيل 5,000 د.ع لكل المحافظات» (14/600, the dot in the stock colour) */
+.price-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font: var(--type-sm-strong);
+  color: var(--ink);
+}
 
-/* ───────────────────────────── Niche (§6.3, §9.5): the one flat card surface ───────────────────────────── */
-.niche {
-  --pose: 0deg;
-  --slot-top: 30px;
+/* ───────────────────────────── product card (§9.5): one family, no container ─────────────────────────────
+ * <article class="pcard" data-state="in|sale|soon|out|used">
+ *   <div class="niche" data-kind="hardware|wide|box|card|used"> slot · badge (.niche__tag) · wishlist (.niche__fav) </div>
+ *   <div class="pcard__body">
+ *     <p class="pcard__kind"><i class="led" data-gel="playstation"></i> جهاز PS5</p>
+ *     <h3 class="pcard__title"><a class="pcard__link" href="/p/…">PlayStation 5 Slim</a></h3>
+ *     <p class="pcard__meta">…</p>
+ *     <div class="pcard__foot"> price · add button (or .pcard__status) </div>
+ *   </div>
+ * </article>
+ * The whole card is one link (the title link's stretched pseudo-element); the add button and the wishlist sit above
+ * it. Equal-height rows: the foot is pinned to the bottom. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-row) var(--gap-card);
+}
+@media (min-width: 48rem) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 64rem) {
+  .cards--4,
+  .cards--5 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 80rem) {
+  .cards--5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+.pcard {
+  container: pcard / inline-size;
   position: relative;
-  display: block;
-  aspect-ratio: var(--ratio, 3 / 2);
-  border-radius: var(--r-lg);
-  background: var(--stage); /* the niche colour is the image placeholder: no skeleton, no shift */
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.pcard__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  padding-block-start: var(--s-3);
+}
+.pcard__kind {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--type-xs-strong);
+  color: var(--ink-2);
+}
+.pcard__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
+  font: var(--type-card);
+  color: var(--ink);
+  unicode-bidi: plaintext;
+  text-align: match-parent; /* the page's start, whatever the name's own direction */
 }
-.niche--panel {
-  aspect-ratio: auto;
-  background: var(--niche);
+.pcard__link {
+  color: inherit;
+  text-decoration: none;
 }
-.niche--untagged {
-  --slot-top: 14px;
-}
-.niche__tag {
-  position: absolute;
-  inset-block-start: 8px;
-  inset-inline-start: 8px;
-  z-index: 1;
-}
-.niche__slot {
-  position: absolute;
-  inset-block: var(--slot-top) 14px;
-  inset-inline: 14px;
-}
-.niche__fill {
+.pcard__link::after {
+  content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
+  border-radius: var(--r-lg);
 }
-.niche__fill > :is(img, picture > img) {
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
+.pcard__link:focus-visible {
+  outline: none;
+}
+.pcard__link:focus-visible::after {
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+.pcard__meta {
+  overflow: hidden;
+  font: var(--type-caption);
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.pcard__foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px var(--s-2);
+  min-block-size: var(--target);
+  margin-block-start: auto;
+  padding-block-start: 6px;
+}
+.pcard :is(.niche__tag, .niche__fav) {
+  z-index: 2;
+}
+/* coming soon / sold out: words in the action slot, no add button */
+.pcard__status {
+  display: grid;
+  flex-basis: 100%; /* its own line under the price */
+  font: var(--type-xs-strong);
+  color: var(--ink);
+}
+.pcard__status > span + span {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+.pcard[data-state="out"] .pcard__status {
+  color: var(--ink-2);
+}
+.pcard[data-state="out"] .niche__slot {
+  opacity: 0.5;
+}
+/* a seven-digit price in a card narrower than 170px (360px phones) steps down to price sm, so it keeps one row with
+   the add button */
+@container pcard (max-width: 169px) {
+  .pcard .price--long {
+    font-size: var(--price-sm);
+  }
+}
+@media (hover: hover) {
+  .pcard:hover .pcard__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .pcard:hover .niche::after {
+    opacity: 1;
+  }
+  .pcard:hover .niche .render {
+    scale: 1.03;
+  }
+}
+/* row layout: a 96px well at the start, the text beside it, the action at the end (device hubs, wide suggestions,
+   the /used list) */
+.pcard--row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--s-4);
+}
+.pcard--row > .niche {
+  border-radius: var(--r-sm);
+}
+.pcard--row .pcard__body {
+  padding-block: 0;
+}
+.niche--sm {
+  border-radius: var(--r-sm);
 }
 
-/* ───────────────────────────── Stage (§2, §6.4): the lit stage at three sizes ─────────────────────────────
- * The frame is a size container: hero and product stages keep their proportions in whatever column they get
- * (390-wide phone → 358 × 194 hero; a 7/12 desktop column → about 670 × 452). The frame takes the inline size of its
- * container — do not put it in a shrink-to-fit box. */
+/* ───────────────────────────── used units: the inspection card (§9.20) ───────────────────────────── */
+.inspect {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.inspect__rows {
+  display: grid;
+}
+.inspect__row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: var(--s-3);
+  padding-block: 10px;
+  border-block-end: 1px solid var(--line);
+  font: var(--type-sm);
+}
+.inspect__row > svg {
+  margin-block-start: 2px;
+}
+.battery {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font: var(--type-sm-strong);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.battery__bar {
+  flex: 1;
+  block-size: 8px;
+  border-radius: var(--r-full);
+  background: var(--niche-2);
+  overflow: hidden;
+}
+.battery__fill {
+  display: block;
+  block-size: 100%;
+  inline-size: var(--level, 0%);
+  border-radius: inherit;
+  background: var(--ink);
+}
+
+/* ───────────────────────────── cart line and order summary (§9.13) ───────────────────────────── */
+.cline {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: var(--s-3) var(--s-4);
+  padding-block: var(--s-4);
+  border-block-end: 1px solid var(--line);
+}
+.cline > .niche {
+  border-radius: var(--r-sm);
+}
+.cline__body {
+  display: grid;
+  gap: 4px;
+  min-inline-size: 0;
+  align-content: start;
+}
+.cline__name {
+  font: var(--type-card);
+  color: var(--ink);
+  unicode-bidi: plaintext;
+  text-align: match-parent;
+}
+.cline__opt {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+.cline__avail {
+  font: var(--type-xs-strong);
+}
+.cline__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-4);
+}
+.cline__total {
+  font: 700 var(--price-sm) / 1.3 var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink);
+}
+/* the undo row left by a removal: «أزلنا … من السلة.» + «تراجع» */
+.cline--undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-block-size: var(--h-row);
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+@media (min-width: 64rem) {
+  .cline {
+    grid-template-columns: 120px minmax(0, 1fr) 140px;
+  }
+  .cline__total {
+    text-align: end;
+  }
+}
+.summary {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.summary__title {
+  font: var(--type-h3);
+}
+.summary__lines {
+  display: grid;
+  gap: var(--s-3);
+}
+.summary__line {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+  font: var(--type-sm);
+}
+.summary__line > .niche {
+  border-radius: var(--r-sm);
+}
+.summary__rows {
+  display: grid;
+  gap: var(--s-2);
+  padding-block-start: var(--s-3);
+  border-block-start: 1px solid var(--line);
+}
+.summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+.summary__row--total {
+  padding-block-start: var(--s-3);
+  border-block-start: 1px solid var(--line);
+  font: var(--type-sm-strong);
+  color: var(--ink);
+}
+.summary__coupon > summary {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--target);
+  font: var(--type-sm-strong);
+  list-style: none;
+  cursor: pointer;
+}
+.summary__coupon > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ───────────────────────────── gallery, stage chrome, buy bar (§9.6, §9.14) ───────────────────────────── */
+.gallery {
+  display: grid;
+  gap: var(--s-3);
+  min-inline-size: 0;
+}
+/* the v2 product stage (product page, quick look): 1:1 and full bleed on phones; 4:3 with --r-xl from 768; 5:4 from
+   1024. The image box: 8% top, 6% sides, 9% bottom, contained, bottom-aligned. */
+.stage--pdp {
+  aspect-ratio: 1;
+  border-radius: 0;
+}
+.stage--pdp > .stage__slot,
+.stage--pdp > .stage__img {
+  position: absolute;
+  z-index: 1;
+  inset: 8% 6% 9%;
+}
+@media (min-width: 48rem) {
+  .stage--pdp {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--r-xl);
+  }
+}
+@media (min-width: 64rem) {
+  .stage--pdp {
+    aspect-ratio: 5 / 4;
+  }
+}
+/* inside the stage only: the counter chip «1 من 6» (bottom-start) and the full-screen button (top-end) */
+.stage__count {
+  position: absolute;
+  z-index: 2;
+  inset-block-end: 12px;
+  inset-inline-start: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-glass);
+  border-radius: var(--r-full);
+  background: var(--on-image);
+  font: var(--type-xs-strong);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink);
+}
+.stage__tools {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 12px;
+  inset-inline-end: 12px;
+  display: flex;
+  gap: var(--s-2);
+}
+/* thumbnails below the stage: 56px (76 from 1024), the product ground, chosen = 2px ink ring with a 2px gap */
+.thumbs {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: none;
+}
+.thumb {
+  position: relative;
+  flex: none;
+  inline-size: 56px;
+  block-size: 56px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--product-ground);
+  overflow: hidden;
+  cursor: pointer;
+}
+.thumb > :is(img, picture > img, .render-slot) {
+  position: absolute;
+  inset: 8%;
+  inline-size: 84%;
+  block-size: 84%;
+  object-fit: contain;
+}
+.thumb:is([aria-checked="true"], [aria-selected="true"], [aria-current="true"]) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.thumb:is([aria-checked="true"], [aria-selected="true"], [aria-current="true"]):focus-visible {
+  outline-offset: 4px;
+}
+@media (min-width: 64rem) {
+  .thumb {
+    inline-size: 76px;
+    block-size: 76px;
+  }
+}
+/* the phone buy bar (glass, 72px + safe area, --e-float): price and variant at the start, the primary at the end */
+.buybar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+  min-block-size: var(--h-taskbar);
+  padding: 12px var(--s-4) calc(12px + var(--safe-bottom));
+}
+.buybar__info {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.buybar__var {
+  overflow: hidden;
+  font: var(--type-xs);
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.buybar__added {
+  font: var(--type-xs-strong);
+  color: var(--ok);
+}
+.buybar > .key {
+  min-inline-size: 168px;
+}
+
+/* ───────────────────────────── trust strip and fact list (§9.4) ───────────────────────────── */
+/* four honest facts in one paper card divided by hairlines: 2×2 on phones, one row from 768 */
+.trust {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.trust__cell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 2px var(--s-3);
+  padding: var(--s-4);
+}
+.trust__cell:nth-child(odd) {
+  border-inline-end: 1px solid var(--line);
+}
+.trust__cell:nth-child(n + 3) {
+  border-block-start: 1px solid var(--line);
+}
+.trust__icon {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--r-sm);
+  background: var(--red-tint);
+  color: var(--red-ink);
+}
+.trust__title {
+  font: var(--type-card);
+  color: var(--ink);
+}
+.trust__text {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+@media (max-width: 47.99rem) {
+  .trust__cell {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--s-3);
+  }
+  .trust__icon {
+    grid-row: auto;
+    margin-block-end: 6px;
+  }
+}
+@media (min-width: 48rem) {
+  .trust {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .trust__cell:nth-child(n) {
+    border-block-start: 0;
+    border-inline-end: 0;
+  }
+  .trust__cell + .trust__cell {
+    border-inline-start: 1px solid var(--line);
+  }
+}
+@media (min-width: 64rem) {
+  .trust__cell {
+    padding: var(--s-5) var(--s-6);
+  }
+}
+/* the line variant: the same facts as a 13–14px inline list with 16px icons (cart, under the commit key) */
+.trust--line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  border: 0;
+  background: none;
+}
+.trust--line .trust__cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+.trust--line .trust__icon {
+  inline-size: 16px;
+  block-size: 16px;
+  background: none;
+  color: var(--ink-2);
+}
+/* fact rows: a 20px icon, a title, a line and an optional 44px link, between hairlines */
+.facts {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.facts--plain {
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.fact {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px var(--s-3);
+  padding: 14px var(--s-4);
+}
+.facts--plain > .fact {
+  padding-inline: 0;
+}
+.fact + .fact {
+  border-block-start: 1px solid var(--line);
+}
+.fact__icon {
+  grid-row: span 2;
+  margin-block-start: 2px;
+  color: var(--ink-2);
+}
+.fact__title {
+  font: var(--type-sm-strong);
+  color: var(--ink);
+}
+.fact__text {
+  grid-column: 2;
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+.fact__link {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+/* ───────────────────────────── release band (§9.21): the page's one dark band ───────────────────────────── */
+.release {
+  --focus: var(--on-band);
+  padding: var(--s-6) var(--s-5);
+  border-radius: var(--r-xl);
+  background: var(--band);
+  box-shadow: var(--rim);
+  color: var(--on-band);
+}
+.release__lead {
+  font: var(--type-sm);
+  color: var(--on-band-2);
+}
+.release__list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 74%;
+  gap: var(--s-3);
+  margin-inline: calc(-1 * var(--s-5));
+  padding-inline: var(--s-5);
+  overflow-x: auto;
+  scroll-padding-inline: var(--s-5);
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
+}
+.release__item {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  scroll-snap-align: start;
+}
+.release__date {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+}
+.release__day {
+  font: var(--type-day);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.release__month {
+  font: var(--type-sm-strong);
+  color: var(--on-band-2);
+}
+.release__rel {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  block-size: 24px;
+  padding-inline: 10px;
+  border: 1px solid var(--on-band-line);
+  border-radius: var(--r-full);
+  font: var(--type-tag);
+}
+.release__art {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-sm);
+  background: var(--band-art);
+  overflow: hidden;
+}
+.release__name {
+  font: 600 var(--fs-body) / 1.4 var(--font-text);
+  unicode-bidi: plaintext;
+  text-align: match-parent;
+}
+.release__price {
+  font: 700 var(--price-md) / 1.2 var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.release__note {
+  font: var(--type-xs);
+  color: var(--on-band-2);
+}
+@media (min-width: 48rem) {
+  .release {
+    padding: var(--s-8);
+  }
+  .release__list {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+}
+@media (min-width: 64rem) {
+  .release {
+    padding: var(--s-10) var(--s-12);
+  }
+}
+
+/* ───────────────────────────── section head, rails, show more (§9.22) ───────────────────────────── */
+.sechead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  margin-block-end: var(--s-4);
+}
+.sechead__text {
+  display: grid;
+  gap: 4px;
+  min-inline-size: 0;
+}
+.sechead__title {
+  font: var(--type-h2);
+  text-wrap: balance;
+}
+.sechead__reason {
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+.sechead__chips {
+  flex-basis: 100%;
+}
+@media (min-width: 64rem) {
+  .sechead {
+    margin-block-end: var(--s-6);
+  }
+}
+/* a shelf: a native scroll-snap rail on phones (2.15 cards, the gutter kept as scroll padding); from 1024 a grid of
+   whole cards in one row (4-up, 5-up from 1280), never a carousel with arrows over cards */
+.rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - var(--gap-card)) / 2.15);
+  gap: var(--gap-card);
+  margin-inline: calc(-1 * var(--gutter));
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: var(--gutter);
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar {
+  display: none;
+}
+.rail > * {
+  scroll-snap-align: start;
+}
+@media (min-width: 48rem) {
+  .rail {
+    grid-auto-columns: calc((100% - 2 * var(--gap-card)) / 3.2);
+  }
+}
+@media (min-width: 64rem) {
+  .rail {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+  .rail > :nth-child(n + 5) {
+    display: none;
+  }
+}
+@media (min-width: 80rem) {
+  .rail {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .rail > :nth-child(5) {
+    display: revert;
+  }
+}
+.showmore {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  padding-block: var(--s-6);
+  text-align: center;
+}
+.showmore__count,
+.showmore__end {
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+.showmore__bar {
+  inline-size: 200px;
+  block-size: 4px;
+  border-radius: var(--r-full);
+  background: var(--niche-2);
+  overflow: hidden;
+}
+.showmore__fill {
+  display: block;
+  inline-size: var(--progress, 0%);
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--ink);
+}
+
+/* ───────────────────────────── entry card, category tile, contact card (§9.25) ───────────────────────────── */
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  color: inherit;
+  text-decoration: none;
+}
+.entry__art {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  background: var(--product-ground);
+  overflow: hidden;
+}
+.entry__art--mark {
+  background: var(--red-tint);
+}
+.entry__art > img {
+  position: absolute;
+  inset: 8%;
+  inline-size: 84%;
+  block-size: 84%;
+  object-fit: contain;
+  transition: scale var(--t-reveal) var(--ease-settle);
+}
+.entry__title {
+  font: var(--type-h3);
+}
+.entry__text {
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+@media (min-width: 64rem) {
+  .entry {
+    grid-template-columns: minmax(0, 1fr) 160px;
+    gap: var(--s-6);
+    padding: var(--s-6);
+  }
+}
+.cats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4) var(--s-3);
+}
+@media (min-width: 64rem) {
+  .cats {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--gap-row) var(--gap-card);
+  }
+}
+.cat {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+}
+.cat__art {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  background: var(--product-ground);
+  overflow: hidden;
+}
+.cat__art > img {
+  position: absolute;
+  inset: 14%;
+  inline-size: 72%;
+  block-size: 72%;
+  object-fit: contain;
+  transition: scale var(--t-reveal) var(--ease-settle);
+}
+.cat__name {
+  font: var(--type-sm-strong);
+}
+.cat__count {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+@media (hover: hover) {
+  :is(.entry, .cat):hover :is(.entry__art, .cat__art) > img {
+    scale: 1.03;
+  }
+}
+.contact {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.contact__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  min-block-size: var(--h-row);
+  padding: var(--s-2) var(--s-4);
+  font: var(--type-sm);
+}
+.contact__row + .contact__row {
+  border-block-start: 1px solid var(--line);
+}
+
+/* ───────────────────────────── compatibility rows: an icon AND a state word ───────────────────────────── */
+.compat {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.compat__row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: start;
+  gap: 2px var(--s-3);
+  padding: 14px var(--s-4);
+}
+.compat__row + .compat__row {
+  border-block-start: 1px solid var(--line);
+}
+.compat__mark {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--r-full);
+  background: var(--niche);
+  color: var(--ink-2);
+}
+.compat__row[data-state="yes"] .compat__mark {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+.compat__row[data-state="part"] .compat__mark {
+  background: var(--warn-tint);
+  color: var(--warn);
+}
+.compat__row[data-state="no"] .compat__mark {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+.compat__name {
+  font: var(--type-sm-strong);
+}
+.compat__state {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+
+/* ───────────────────────────── layers: toast, sheet, dialog, menu (§9.13–§9.15) ─────────────────────────────
+ * All opaque. Only a sheet's header strip may be glass (<Glass class="sheet__head">). */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+}
+.scrim--menu {
+  background: var(--scrim-menu);
+}
+/* toast: graphite (dark: #2A2C32), a 48px thumbnail, a title with an ok check, one line, «عرض السلة» + «تراجع» */
+.toast {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+  min-block-size: 64px;
+  padding-block: 8px;
+  padding-inline: 12px 8px;
+  border-radius: var(--r-lg);
+  background: var(--toast);
+  box-shadow: var(--e-float);
+  color: var(--on-band);
+}
+.toast__thumb {
+  position: relative;
+  inline-size: 48px;
+  block-size: 48px;
+  border-radius: var(--r-sm);
+  background: var(--niche);
+  overflow: hidden;
+}
+.toast__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--type-sm-strong);
+}
+.toast__title > svg {
+  flex: none;
+  color: var(--on-band-ok);
+}
+.toast__line {
+  overflow: hidden;
+  font: var(--type-xs);
+  color: var(--on-band-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.toast__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* «عرض السلة»: a 40px outlined button (1px white at 40%, 44 hit) */
+.toast__view {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--h-btn-sm);
+  padding-inline: 14px;
+  border: 1px solid var(--on-band-line);
+  border-radius: var(--r-sm);
+  color: var(--on-band);
+  font: var(--type-sm-strong);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.toast__view::after {
+  content: "";
+  position: absolute;
+  inset: -3px 0; /* 40 (+2 border) → 44 */
+}
+.toast .key:is(.key--ghost, .key--quiet, .key--plain) {
+  --on: var(--on-band);
+  --hover-face: var(--on-band-hover);
+}
+/* sheet: bottom sheet below 768 (top corners --r-xl, at most 90% of the viewport), side sheet from the inline end
+   from 768 (420px). A 56px header strip (glass), an opaque paper body, a sticky foot with the actions. */
+.sheet {
+  display: flex;
+  flex-direction: column;
+  max-block-size: 90dvh;
+  border-start-start-radius: var(--r-xl);
+  border-start-end-radius: var(--r-xl);
+  background: var(--paper);
+  box-shadow: var(--e-overlay);
+  overflow: hidden;
+}
+@media (min-width: 48rem) {
+  .sheet {
+    inline-size: min(420px, 100vw);
+    block-size: 100dvh;
+    max-block-size: none;
+    border-radius: 0;
+    border-start-start-radius: var(--r-xl);
+    border-end-start-radius: var(--r-xl);
+  }
+}
+.sheet__head {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--s-2);
+  min-block-size: 56px;
+  padding-inline: var(--s-4) var(--s-2);
+}
+.sheet__grab {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline: 0;
+  inline-size: 36px;
+  block-size: 5px;
+  margin-inline: auto;
+  border-radius: var(--r-full);
+  background: var(--line-2);
+}
+.sheet__title {
+  flex: 1;
+  min-inline-size: 0;
+  font: var(--type-h3);
+}
+.sheet__body {
+  flex: 1;
+  min-block-size: 0;
+  padding: var(--s-2) var(--s-4) var(--s-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.sheet__foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4) calc(var(--s-3) + var(--safe-bottom));
+  border-block-start: 1px solid var(--line);
+  background: var(--paper);
+}
+.sheet__foot > :is(.key--primary, .key--red) {
+  flex: 1;
+}
+/* dialog: centred, max 440 (phones: 100% − 32), --r-xl, one sentence, at most two buttons */
+.dialog {
+  inline-size: min(440px, 100% - 32px);
+  padding: var(--s-6);
+  border-radius: var(--r-xl);
+  background: var(--paper);
+  box-shadow: var(--e-overlay);
+}
+.dialog__title {
+  font: var(--type-h3);
+}
+.dialog__text {
+  margin-block-start: var(--s-2);
+  font: var(--type-body);
+  color: var(--ink-2);
+}
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s-3);
+  margin-block-start: var(--s-6);
+}
+/* menu / popover: opaque paper, --r-lg, 44px rows */
+.menu {
+  min-inline-size: 220px;
+  padding: 6px;
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  box-shadow: var(--e-overlay);
+}
+.menu__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-block-size: var(--target);
+  padding-inline: var(--s-3);
+  border-radius: var(--r-sm);
+  font: var(--type-sm);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.menu__row:is(:hover, [data-active], :focus-visible) {
+  background: var(--niche);
+}
+.menu__row:is([aria-checked="true"], [aria-current="true"], [aria-current="page"]) {
+  font-weight: 600;
+}
+
+/* ───────────────────────────── breadcrumbs, step rail, tabs, disclosure, callout ───────────────────────────── */
+/* breadcrumbs: from 768 only (phones use the title and the browser's back) */
+.crumbs {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .crumbs {
+    display: block;
+  }
+}
+.crumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+.crumbs__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target);
+  color: var(--ink-2);
+  text-decoration: none;
+}
+@media (hover: hover) {
+  .crumbs__link:hover {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+.crumbs__current {
+  font-weight: 600;
+  color: var(--ink);
+}
+.crumbs__sep {
+  color: var(--ink-3);
+}
+/* step rail: done = ink disc + check (a link back); current = a red disc with a white number; upcoming = a ring */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-inline-size: 0;
+}
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-block-size: var(--target);
+  font: var(--type-sm);
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.step__n {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 24px;
+  block-size: 24px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--r-full);
+  font: var(--type-tag);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.step[data-state="done"] .step__n {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.step[aria-current="step"] {
+  font-weight: 600;
+  color: var(--ink);
+}
+.step[aria-current="step"] .step__n {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--on-red);
+}
+.step__sep {
+  flex: 1;
+  min-inline-size: 12px;
+  block-size: 1px;
+  background: var(--line-2);
+}
+/* compact (inside the checkout bar): numbers; the current label too, except below 430px where only its number is
+   joined by the label */
+.steps--compact .step:not([aria-current="step"]) .step__label {
+  display: none;
+}
+@media (max-width: 26.86rem) {
+  .steps--compact .step__label {
+    display: none;
+  }
+  .steps--compact .step[aria-current="step"] .step__label {
+    display: inline;
+  }
+}
+/* tabs: 44px, a 2px ink underline under the current tab */
+.tabs {
+  display: flex;
+  gap: var(--s-6);
+  border-block-end: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--target);
+  border: 0;
+  background: none;
+  font: var(--type-sm-strong);
+  color: var(--ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tab:is([aria-selected="true"], [aria-current="page"]) {
+  color: var(--ink);
+}
+.tab:is([aria-selected="true"], [aria-current="page"])::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -1px;
+  block-size: 2px;
+  border-radius: var(--r-full);
+  background: var(--ink);
+}
+/* accordion / disclosure: 56px rows between hairlines, a chevron that turns */
+.acc {
+  border-block-end: 1px solid var(--line);
+}
+.acc__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-block-size: var(--h-row);
+  font: var(--type-card);
+  color: var(--ink);
+  list-style: none;
+  cursor: pointer;
+}
+.acc__summary::-webkit-details-marker {
+  display: none;
+}
+.acc__chev {
+  flex: none;
+  color: var(--ink-2);
+  transition: rotate var(--t-micro) var(--ease-settle);
+}
+.acc[open] .acc__chev {
+  rotate: 180deg;
+}
+.acc__body {
+  padding-block-end: var(--s-4);
+  font: var(--type-body);
+}
+/* a callout: a paper panel with a 3px inline-start bar in the tone colour */
+.callout {
+  --tone: var(--info);
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--tone);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.callout > svg:first-child {
+  flex: none;
+  color: var(--tone);
+}
+.callout--ok {
+  --tone: var(--ok);
+}
+.callout--warn {
+  --tone: var(--warn);
+}
+.callout--danger {
+  --tone: var(--danger);
+}
+.callout__title {
+  font: var(--type-sm-strong);
+}
+.callout__text {
+  font: var(--type-sm);
+  color: var(--ink-2);
+}
+
+/* ───────────────────────────── empty, error, offline (§9.16) ───────────────────────────── */
+/* centred, max 560, no slab: a picture, a title that says what is empty, one sentence of what to do, one primary
+   and one recovery link */
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  max-inline-size: 560px;
+  margin-inline: auto;
+  padding-block: var(--s-8);
+  text-align: center;
+}
+.empty__art {
+  display: grid;
+  place-items: center;
+  inline-size: 112px;
+  block-size: 112px;
+  margin-block-end: var(--s-2);
+  border-radius: var(--r-full);
+  background: var(--red-tint);
+}
+.empty__art--well {
+  inline-size: 132px;
+  block-size: 132px;
+  border-radius: var(--r-lg);
+  background: var(--product-ground);
+}
+/* the error state: the same anatomy with an alert icon in a --niche disc */
+.empty--error .empty__art {
+  inline-size: 72px;
+  block-size: 72px;
+  background: var(--niche);
+  color: var(--ink);
+}
+.empty__title {
+  font: var(--type-h2);
+  text-wrap: balance;
+}
+.empty__text {
+  max-inline-size: 42ch;
+  font: var(--type-body);
+  color: var(--ink-2);
+}
+.empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3) var(--s-5);
+  margin-block-start: var(--s-2);
+}
+.empty__ref {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+/* the offline banner: 40px, warn ground, words + an inline wifi-slash icon; never confused with the demo strip */
+.offline {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-block-size: 40px;
+  padding-inline: var(--gutter);
+  border-block-end: 1px solid var(--line);
+  background: var(--warn-tint);
+  color: var(--warn);
+  font: var(--type-sm-strong);
+}
+.offline > svg {
+  flex: none;
+}
+
+/* ───────────────────────────── proof uploader, transfer details, wallet ledger (§9.18, §9.19) ───────────────────────────── */
+.proof__drop {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  padding: var(--s-6) var(--s-4);
+  border: 1.5px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  text-align: center;
+}
+.proof__drop[data-state="failed"] {
+  border-color: var(--danger);
+}
+.proof__bar {
+  block-size: 4px;
+  border-radius: var(--r-full);
+  background: var(--niche-2);
+  overflow: hidden;
+}
+.proof__fill {
+  display: block;
+  inline-size: var(--progress, 0%);
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--ink);
+}
+/* a transfer value (recipient number, amount) with its copy key: Plex 600 20px, tabular, grouped */
+.copyval {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+.copyval__value {
+  font: var(--type-code);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.wallet__label {
+  font: var(--type-sm-strong);
+}
+.ledger {
+  display: grid;
+}
+.ledger__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--s-3);
+  padding-block: var(--s-3);
+  border-block-end: 1px solid var(--line);
+  font: var(--type-sm);
+}
+.ledger__amount {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 600;
+  text-align: end;
+}
+.ledger__amount[data-sign="debit"] {
+  color: var(--red-ink);
+}
+
+/* ───────────────────────────── preferences ───────────────────────────── */
+/* forced colours: fills disappear, so badges, segments, cells and swatches keep a border and the chosen one an
+   outline; status dots keep their colour */
+@media (forced-colors: active) {
+  .tag,
+  .seg__opt,
+  .pref__cell,
+  .swatch,
+  .thumb,
+  .demo-strip,
+  .demo-chip {
+    border: 1px solid CanvasText;
+  }
+  :is(.seg__opt, .pref__cell, .swatch, .thumb, .listrow):is([aria-checked="true"], [aria-selected="true"], [aria-current="true"], :has(> input:checked)) {
+    outline: 3px solid Highlight;
+    outline-offset: -3px;
+  }
+  .status::before {
+    forced-color-adjust: none;
+  }
+}
+
+/* ───────────────────────────── 1.0 stage geometry (until <Stage> is rebuilt) ─────────────────────────────
+ * The frame is a size container: hero and product stages keep their proportions in whatever column they get. The
+ * material is the v2 product ground (materials.css): no light, no tilt. */
 .stage-frame {
   container: stage / inline-size;
   position: relative;
@@ -613,14 +2476,6 @@ select.field__input {
   block-size: var(--slot-h);
   inset-inline: var(--slot-x);
 }
-.stage__light {
-  inset-block-end: var(--light-lift, 0px);
-}
-.stage__pool {
-  inset-inline: var(--pool-x);
-  inset-block-start: var(--pool-top);
-  block-size: var(--pool-h);
-}
 .stage__top,
 .stage__bottom {
   position: absolute;
@@ -631,49 +2486,31 @@ select.field__input {
   inset-block-start: 12px;
 }
 .stage__bottom {
-  inset-block-end: 13px;
+  inset-block-end: 12px;
 }
 /* hero: home — 358 × 194 on a phone, about 670 × 452 in the desktop column */
 .stage--hero {
-  --pose: -3deg;
-  --slot-top: 5%;
-  --slot-h: 78%;
+  --slot-top: 6%;
+  --slot-h: 82%;
   --slot-x: 14%;
-  --pool-x: 19%;
-  --pool-top: 72%;
-  --pool-h: 24%;
-  --light-lift: 7%;
   aspect-ratio: 358 / 194;
 }
-/* product: the stage on the product page, where the key bank becomes the gallery */
+/* product: the 1.0 product page, whose thumbnails still sit inside the stage */
 .stage--product {
-  --pose: -3deg;
   --slot-top: 19%;
   --slot-h: 47%;
   --slot-x: 11%;
-  --pool-x: 14%;
-  --pool-top: 64%;
-  --pool-h: 16%;
-  --light-lift: 12%;
-  --halo-w: 118%;
-  --halo-h: 104%;
   aspect-ratio: 390 / 318;
 }
-/* compact: hubs (132 / 160 tall) — the render on the inline-end side, the title on the floor beside it */
+/* compact: hubs (132 / 160 tall) — the render on the inline-end side, the title beside it */
 .stage--compact {
-  --pose: -2deg;
   --slot-top: 12%;
   --slot-h: 76%;
   --slot-x: 52% 6%;
-  --pool-x: 54% 8%;
-  --pool-top: 66%;
-  --pool-h: 30%;
-  --halo-w: 70%;
-  --halo-h: 150%;
   block-size: 132px;
 }
-.stage--compact .stage__light {
-  inset-inline-start: 46%;
+.stage--compact::before {
+  inset-inline: 60% 14%;
 }
 .stage--flush {
   border-start-start-radius: 0;
@@ -684,10 +2521,10 @@ select.field__input {
     block-size: 160px;
   }
 }
-/* the band: the glass price tag and the commit key hang off the rim, half on the stage, half on the floor.
- * The key's label is never cut. The tag gives way first: its name shortens (whole words, then "…") and only its
- * price must fit; a seven-digit price steps down to 17px on a phone-width stage (StageTag sets data-long). Only when
- * the price and the key still cannot share the rim does the key move under the tag, at the inline end. */
+/* the band: the 1.0 price tag and key hang off the rim. The key's label is never cut. The tag gives way first: its
+ * name shortens (whole words, then "…") and only its price must fit; a seven-digit price steps down on a phone-width
+ * stage (StageTag sets data-long). Only when the price and the key still cannot share the rim does the key move under
+ * the tag, at the inline end. */
 .stage__band {
   position: relative;
   z-index: 2;
@@ -696,7 +2533,7 @@ select.field__input {
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--s-2) 10px;
-  margin-block-start: -30px;
+  margin-block-start: -28px;
   padding-inline: 10px;
 }
 .stage__band > .key {
@@ -708,12 +2545,13 @@ select.field__input {
 .gtag {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   flex: 1 1 0;
   min-inline-size: min-content;
   max-inline-size: max-content;
-  padding: 8px 14px 9px;
-  border-radius: var(--r-md);
+  padding: 8px 14px;
+  border: 1px solid var(--line-glass);
+  border-radius: var(--r-sm);
 }
 /* one line of whole words: the longest word, not the whole name, is the narrowest the tag needs */
 .gtag__name {
@@ -722,7 +2560,7 @@ select.field__input {
   -webkit-line-clamp: 1;
   line-clamp: 1;
   overflow: hidden;
-  font: 500 12.5px/1.5 var(--font-text);
+  font: var(--type-xs);
   color: var(--ink);
 }
 @container stage (max-width: 24rem) {
@@ -733,23 +2571,14 @@ select.field__input {
 /* a wide column (tablet and desktop layouts) */
 @container stage (min-width: 33rem) {
   .stage--hero {
-    --pose: -4deg;
-    --slot-top: 12%;
-    --slot-h: 66%;
+    --slot-top: 10%;
+    --slot-h: 72%;
     --slot-x: 10%;
-    --pool-x: 14%;
-    --pool-top: 77%;
-    --pool-h: 18%;
-    --light-lift: 4%;
-    --halo-w: 116%;
-    --halo-h: 124%;
     aspect-ratio: 670 / 452;
   }
   .stage--product {
     --slot-top: 14%;
     --slot-h: 58%;
-    --pool-top: 66%;
-    --pool-h: 14%;
     aspect-ratio: 700 / 520;
   }
   .stage__band {
@@ -760,22 +2589,9 @@ select.field__input {
     margin-inline-start: 0;
   }
   .gtag {
-    padding: 11px 18px 12px;
+    padding: 10px 18px;
   }
   .gtag__name {
-    font-size: 14px;
+    font: var(--type-sm);
   }
-}
-
-
-/* platform label: the LED always beside the platform's name written as text */
-.plat {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font: 500 13px/1.5 var(--font-text);
-  color: var(--ink-2);
-}
-.plat__glyph {
-  flex: none;
 }

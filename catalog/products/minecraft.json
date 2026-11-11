@@ -29,9 +29,9 @@
       "ckb": "1–4 یاریزان لەسەر یەک ئامێر، تا 8 ئۆنلاین لەگەڵ PlayStation Plus."
     },
     {
-      "ar": "لعب مشترك مع أصحاب Minecraft على XBOX وSwitch والهاتف والكمبيوتر (Bedrock).",
-      "en": "Crossplay with Minecraft players on XBOX, Switch, mobile and PC (Bedrock).",
-      "ckb": "یاری هاوبەش لەگەڵ یاریزانانی Minecraft لەسەر XBOX، Switch، مۆبایل و کۆمپیوتەر (Bedrock)."
+      "ar": "لعب مشترك مع أصحاب Minecraft على Xbox وSwitch والهاتف والكمبيوتر (Bedrock).",
+      "en": "Crossplay with Minecraft players on Xbox, Switch, mobile and PC (Bedrock).",
+      "ckb": "یاری هاوبەش لەگەڵ یاریزانانی Minecraft لەسەر Xbox، Switch، مۆبایل و کۆمپیوتەر (Bedrock)."
     },
     {
       "ar": "النسخة الفيزيائية لـ PS5 جاءت عند إطلاقها مع 3,500 Token لمتجر Minecraft.",
@@ -54,9 +54,9 @@
       "key": "platforms",
       "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
       "value": {
-        "ar": "PS5 (والنسخة متوفرة أيضاً على XBOX وNintendo Switch والهاتف وPC)",
-        "en": "PS5 (also available on XBOX, Nintendo Switch, mobile and PC)",
-        "ckb": "PS5 (لەسەر XBOX، Nintendo Switch، مۆبایل و PC یش بەردەستە)"
+        "ar": "PS5 (والنسخة متوفرة أيضاً على Xbox وNintendo Switch والهاتف وPC)",
+        "en": "PS5 (also available on Xbox, Nintendo Switch, mobile and PC)",
+        "ckb": "PS5 (لەسەر Xbox، Nintendo Switch، مۆبایل و PC یش بەردەستە)"
       }
     },
     {
@@ -236,7 +236,7 @@
     "unverified": [
       "That the PS5 box holds a disc comes from retailer listings (Target lists it as physical, other retailers as a disc); Mojang only says it is sold at retailers.",
       "The 3,500 Tokens come from 2024 launch listings (Target, PlayStation Universe); current boxes may differ.",
-      "XBOX physical edition not researched.",
+      "Xbox physical edition not researched.",
       "No EAN/UPC barcode recorded."
     ]
   }

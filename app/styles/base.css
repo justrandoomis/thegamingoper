@@ -16,10 +16,13 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Plex ships 400/500/600 only: a request for 700 uses 600 instead of a smeared fake bold */
+  /* Plex ships 400/600 and Kufi 700 only: a request for 500 draws 400, 700 in Plex draws 600 — never a fake bold */
   font-synthesis-weight: none;
   -webkit-tap-highlight-color: transparent;
   scrollbar-color: var(--line-strong) var(--ground);
+  /* a focused control is never under a sticky or fixed bar (WCAG 2.4.11): the shell publishes --shell-top and
+     --shell-bottom on :root (DESIGN.md §8) */
+  scroll-padding-block: calc(var(--shell-top) + 12px) calc(var(--shell-bottom) + 12px);
 }
 body {
   min-block-size: 100dvh;
@@ -71,19 +74,21 @@ kbd,
 samp,
 pre {
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
-  font-size: 0.92em;
+  font-size: var(--fs-sm);
 }
 ::placeholder {
   color: var(--ink-2);
   opacity: 1;
 }
 
-/* ── focus: always visible, a 2.5px ink outline with a 3px offset (§13) ── */
+/* ── focus: always visible, a 2px outline with a 2px offset (white on crimson and platform surfaces: the showcase
+   classes set --focus). Never animated. Programmatic focus of a non-interactive target shows no ring. ── */
 :focus-visible {
-  outline: 2.5px solid var(--ink);
-  outline-offset: 3px;
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
 }
-:focus:not(:focus-visible) {
+:focus:not(:focus-visible),
+[tabindex="-1"]:focus:not(:focus-visible) {
   outline: none;
 }
 
@@ -115,12 +120,12 @@ pre {
   font: var(--type-body);
 }
 .root-error__code {
-  font: 700 64px/1 var(--font-display);
+  font: 700 64px / 1 var(--font-display);
   font-variant-numeric: tabular-nums lining-nums;
   color: var(--ink-3); /* decorative: the sentence below says what happened */
 }
 .root-error h1 {
-  font: var(--type-title);
+  font: var(--type-h1);
   text-wrap: balance;
 }
 .root-error p {
@@ -131,19 +136,19 @@ pre {
   display: inline-flex;
   align-items: center;
   min-block-size: var(--target);
-  font: 600 13.5px/1.4 var(--font-text);
+  font: var(--type-sm-strong);
   color: var(--ink);
   text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
 }
 .root-error pre {
   max-inline-size: min(90vw, 60rem);
   overflow-x: auto;
   padding: var(--s-4);
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
   background-color: var(--paper);
   color: var(--ink-2);
   text-align: start;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }

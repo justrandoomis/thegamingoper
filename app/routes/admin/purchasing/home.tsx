@@ -4,7 +4,8 @@ import type { Route } from "./+types/home";
 import { useFormat } from "~/i18n/react";
 import { purchasingOverview } from "~/server/services/admin/purchasing/alerts.server";
 import { purchasingAccess } from "~/server/services/admin/purchasing/shared.server";
-import { PO_SPENDING_LIMIT_IQD, SPLIT_WINDOW_DAYS } from "~/server/services/admin/purchasing/rules";
+import { SPLIT_WINDOW_DAYS } from "~/server/services/admin/purchasing/rules";
+import { getSetting } from "~/server/settings.server";
 import { Key } from "~/ui/Key";
 import { ModuleFunctions } from "../blueprint-status";
 import { adminMeta } from "../shell/meta";
@@ -18,7 +19,7 @@ import { openPurchasing } from "./purchasing.server";
 export async function loader({ context }: Route.LoaderArgs) {
   const { db, actor, now } = await openPurchasing(context);
   const overview = await purchasingOverview(db, actor, now);
-  return { overview, access: purchasingAccess(actor), limitIqd: purchasingAccess(actor).cost ? PO_SPENDING_LIMIT_IQD : null };
+  return { overview, access: purchasingAccess(actor), limitIqd: purchasingAccess(actor).cost ? await getSetting(db, "purchasing.po_approval_limit_iqd") : null };
 }
 
 export const meta: Route.MetaFunction = (args) => adminMeta(args, (t) => t("modules.purchasing"));

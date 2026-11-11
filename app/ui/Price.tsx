@@ -9,27 +9,33 @@ import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
- * A price (docs/DESIGN.md §9.11): flat ink on paper — Kufam 700, tabular lining figures, the currency label after
- * the figure and never under 11px. Never red, never struck through in red, never animated.
+ * A price — Design System v2 §4.8: Noto Kufi 700 figures (tabular), the currency after the figure in Plex 600 at the
+ * fixed size of its step (never under 12px), joined to it; never animated.
  *
- *   <Price amountIqd={749000} />                                 card size (md)
- *   <Price amountIqd={899000} size="xl" />                       product page; shows the converted line + rate
- *   <Price amountIqd={749000} compareAtIqd={819000} />           old price in ink-2 with a line through it, first
- *   <Price amountIqd={5000} size="sm" as="span" approx="off" />  inline in a sentence
+ *   <Price amountIqd={667750} />                                  card (md 18)
+ *   <Price amountIqd={667750} size="xl" />                        PDP, hero, wallet balance (30 → 36)
+ *   <Price amountIqd={99000} compareAtIqd={115000} />             sale: red-ink, the real previous price struck above it
+ *   <Price amountIqd={1513750} size="lg" tone="total" />          the ONE red figure of a summary or task bar
+ *   <Price amountIqd={667750} size="xl" tone="onColor" />         white on a band
+ *   <Price amountIqd={13000} tone="muted" />                      sold out
+ *   <Price amountIqd={5000} size="sm" as="span" approx="off" />   inside a sentence
  *
- * The amount is INTEGER Iraqi dinars (a fraction throws). The dinar is always the primary, payable figure. When the
- * shopper has chosen another display currency, a second line shows the conversion — prefixed "≈", followed by
- * "الدفع بالدينار العراقي", never bold — and the rate source and time are one tap away (`rateDetails`, default on
- * for xl). That converted line is the ONLY moving money in the app: its digits roll when the display currency
- * changes (NumberMorph); a new amount appears without motion. Without a configured rate nothing is converted.
+ * Tones: ink (every selling price) · sale (only with a real previous price — set automatically by `compareAtIqd`) ·
+ * total · onColor · muted. Screen readers hear "667,750 دينار عراقي". The amount is INTEGER Iraqi dinars (a fraction
+ * throws). When the shopper chose another display currency a second line says "≈ … · الدفع بالدينار العراقي" (never bold,
+ * never on a key or a total line); its digits are the only money that moves (NumberMorph). Without a configured rate
+ * nothing is converted.
  */
 export type PriceSize = "xl" | "lg" | "md" | "sm";
+export type PriceTone = "ink" | "sale" | "total" | "onColor" | "muted";
 
 export type PriceProps = {
   amountIqd: number;
-  /** product page 28/34 · stage tag 21/28 · card 17 · inline 15 (mobile/desktop) */
+  /** xl 30–36 (PDP, hero, wallet) · lg 22–24 (buy bar, totals) · md 18 (cards) · sm 16 (lines, summaries). */
   size?: PriceSize;
-  /** The previous price, shown first with a line through it — only when it is higher than `amountIqd`. */
+  /** Default: "sale" when a real previous price is given, else "ink". */
+  tone?: PriceTone;
+  /** The real previous price — shown struck above the price, only when it is higher than `amountIqd`. */
   compareAtIqd?: number | null;
   /** "auto" (default): add the converted line when the display currency is not IQD. "off": dinar only. */
   approx?: "auto" | "off";
@@ -42,7 +48,15 @@ export type PriceProps = {
 
 type RootFx = { fx?: FxSnapshot | null; fxIsDemo?: boolean };
 
-export function Price({ amountIqd, size = "md", compareAtIqd = null, approx = "auto", rateDetails, as = "p", className }: PriceProps) {
+const TONE_CLASS: Record<PriceTone, string | undefined> = {
+  ink: undefined,
+  sale: "price--sale",
+  total: "price--total",
+  onColor: "price--on-color",
+  muted: "price--muted",
+};
+
+export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, approx = "auto", rateDetails, as = "p", className }: PriceProps) {
   assertIqd(amountIqd);
   const f = useFormat();
   const t = useT("ui");
@@ -50,34 +64,43 @@ export function Price({ amountIqd, size = "md", compareAtIqd = null, approx = "a
   const fx = root?.fx ?? null;
   const Line = as;
   const inline = as === "span";
+  const Block = inline ? "span" : "div";
 
   const was = compareAtIqd !== null && compareAtIqd !== undefined && compareAtIqd > amountIqd ? assertIqd(compareAtIqd) : null;
+  const look = tone ?? (was !== null ? "sale" : "ink");
+  const figure = f.number(amountIqd);
   const main = (
-    <Line className={cx("price", `price--${size}`, className)}>
-      {was !== null ? (
-        <>
-          <VisuallyHidden>{t("price.was")} </VisuallyHidden>
-          <s className="price__was">
-            <bdi>{f.number(was)}</bdi>
-          </s>
-          <VisuallyHidden> {t("price.now")} </VisuallyHidden>
-        </>
-      ) : null}
-      <bdi className="price__num">{f.number(amountIqd)}</bdi>
-      <span className="price__cur">{CURRENCIES.IQD.symbol[f.locale]}</span>
+    <Line className={cx("price", `price--${size}`, TONE_CLASS[look], amountIqd >= 1_000_000 && "price--long", className)}>
+      {was !== null && inline ? <Was amountIqd={was} /> : null}
+      <span className="price__num" aria-hidden="true">
+        {figure}
+      </span>
+      <span className="price__cur" aria-hidden="true">
+        {CURRENCIES.IQD.symbol[f.locale]}
+      </span>
+      <VisuallyHidden>{t("price.aria", { amount: figure })}</VisuallyHidden>
     </Line>
   );
+  // the real previous price sits above the price (cards, PDP); inline it goes first
+  const withWas =
+    was !== null && !inline ? (
+      <Block className="price-block">
+        <Was amountIqd={was} />
+        {main}
+      </Block>
+    ) : (
+      main
+    );
 
-  if (approx === "off" || f.currency === "IQD") return main;
+  if (approx === "off" || f.currency === "IQD") return withWas;
 
   const converted = f.moneyParts(amountIqd);
-  const Block = inline ? "span" : "div";
   if (!converted.approx) {
     // A display currency is chosen but no rate is configured: say so instead of inventing a number.
-    if (size !== "xl" && size !== "lg") return main;
+    if (size !== "xl" && size !== "lg") return withWas;
     return (
       <Block className="price-block">
-        {main}
+        {withWas}
         <Block className="price__approx">{t("price.noRate")}</Block>
       </Block>
     );
@@ -99,12 +122,12 @@ export function Price({ amountIqd, size = "md", compareAtIqd = null, approx = "a
 
   return (
     <Block className="price-block">
-      {main}
+      {withWas}
       {withDetails ? (
         <details className="price__fx price__approx">
           <summary>
             <span>{line}</span>
-            <Icon name="caret-down" size={14} />
+            <Icon name="caret-down" size={16} />
           </summary>
           <p className="price__rate">
             {t("price.rateTitle")}:{" "}
@@ -123,5 +146,20 @@ export function Price({ amountIqd, size = "md", compareAtIqd = null, approx = "a
         <Block className="price__approx">{line}</Block>
       )}
     </Block>
+  );
+}
+
+/** The real previous price: 13px ink-2, struck, «السعر قبل التخفيض» for screen readers. */
+function Was({ amountIqd }: { amountIqd: number }) {
+  const t = useT("ui");
+  const f = useFormat();
+  return (
+    <span className="price__was-line">
+      <VisuallyHidden>{t("price.was")} </VisuallyHidden>
+      <s className="price__was">
+        <bdi>{f.number(amountIqd)}</bdi>
+      </s>
+      <VisuallyHidden> {t("price.now")}</VisuallyHidden>
+    </span>
   );
 }

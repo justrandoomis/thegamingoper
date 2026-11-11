@@ -57,7 +57,7 @@ import { normalizeOrderRef } from "~/server/services/orders/manage.server";
 import { fraudSignals } from "./fraud.server";
 import { evaluateOrder } from "./policy.server";
 import { restockingFee } from "./refund.server";
-import { DAY_MS, HOUR_MS, VOID_REFUND, VOID_RETURN, branchLimited, employeeNames, failedRepairs, lineName, normalizeRma, openerOf, phoneView, refundableLine, returnById, returnByRma, returnLocations, returnRefundFilter, unitValuesFor } from "./shared.server";
+import { DAY_MS, HOUR_MS, VOID_REFUND, VOID_RETURN, branchLimited, employeeNames, failedRepairs, lineName, normalizeRma, openerOf, phoneView, refundableLine, returnById, returnByRma, returnLocations, returnRefundFilter, slaTargets, unitValuesFor, type SlaTargets } from "./shared.server";
 import {
   CONDITION_LIST,
   DECISION_LIST,
@@ -143,9 +143,9 @@ const BAGHDAD_MS = 3 * HOUR_MS;
 const dayStart = (day: string) => Date.parse(`${day}T00:00:00Z`) - BAGHDAD_MS;
 
 /** When the current step of an RMA is due (a decision, an inspection), or null. */
-export function dueOf(row: Pick<ReturnRequest, "status" | "createdAt" | "receivedAt">): number | null {
-  if (row.status === "requested") return row.createdAt + SLA.decisionHours * HOUR_MS;
-  if (row.status === "received" && row.receivedAt) return row.receivedAt + SLA.inspectionHours * HOUR_MS;
+export function dueOf(row: Pick<ReturnRequest, "status" | "createdAt" | "receivedAt">, sla: Pick<SlaTargets, "decisionHours" | "inspectionHours"> = SLA): number | null {
+  if (row.status === "requested") return row.createdAt + sla.decisionHours * HOUR_MS;
+  if (row.status === "received" && row.receivedAt) return row.receivedAt + sla.inspectionHours * HOUR_MS;
   return null;
 }
 
@@ -222,11 +222,12 @@ export async function listReturns(db: Db, actor: Actor, filters: RmaFilters, loc
   ]);
   const orderById = new Map(orderRows.map((order) => [order.id, order]));
   const values = await unitValuesFor(db, orderRows);
+  const sla = await slaTargets(db);
   const out: RmaListRow[] = rows.map((row) => {
     const order = orderById.get(row.orderId);
     const mine = items.filter((item) => item.returnId === row.id);
     const mineRefunds = refundRows.filter((refund) => refund.returnId === row.id || (refund.key ?? "").startsWith(`rma:${row.id}:`));
-    const dueAt = dueOf(row);
+    const dueAt = dueOf(row, sla);
     return {
       id: row.id,
       rma: row.rma,
@@ -256,6 +257,7 @@ export async function queueCounts(db: Db, actor: Actor, now: number): Promise<Qu
   const me = actor.kind === "employee" ? actor.id : null;
   const count = async (query: Promise<{ n: number } | undefined>) => Number((await query)?.n ?? 0);
   const n = sql<number>`count(*)`;
+  const sla = await slaTargets(db);
   const [decide, receive, inspect, refund, refundApproval, quarantine, repairsLate, warrantiesEnding] = await Promise.all([
     can(actor, "returns.rma.approve") ? count(db.select({ n }).from(returns).where(and(eq(returns.status, "requested"), me ? sql`NOT ${openedBy(me)}` : undefined)).get()) : null,
     can(actor, "returns.rma.inspect") ? count(db.select({ n }).from(returns).where(inArray(returns.status, ["approved", "in_transit"])).get()) : null,
@@ -299,7 +301,7 @@ export async function queueCounts(db: Db, actor: Actor, now: number): Promise<Qu
           db
             .select({ n })
             .from(warranties)
-            .where(and(eq(warranties.status, "active"), gte(warranties.endsAt, now), lte(warranties.endsAt, now + SLA.warrantyEndingDays * DAY_MS)))
+            .where(and(eq(warranties.status, "active"), gte(warranties.endsAt, now), lte(warranties.endsAt, now + sla.warrantyEndingDays * DAY_MS)))
             .get(),
         )
       : null,
@@ -832,7 +834,7 @@ export async function getReturnDetail(db: Db, actor: Actor, rma: string, locale:
   const capIqd = paymentsView.reduce((sum, payment) => sum + payment.refundableIqd, 0);
   const refundSuggestion = refundable.length ? { amountIqd: Math.max(0, Math.min(itemsValueIqd - feeIqd, capIqd)), feeIqd, itemsValueIqd, capIqd } : null;
 
-  const dueAt = dueOf(ret);
+  const dueAt = dueOf(ret, await slaTargets(db));
   const open = (RMA_OPEN_STATUSES as readonly string[]).includes(ret.status);
   const uninspected = itemViews.some((item) => item.decision === null);
   const anyPending = refundViews.some((refund) => refund.status === "pending" || refund.status === "approved");

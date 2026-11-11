@@ -8,9 +8,9 @@
   "status": "available",
   "releaseDate": "2019-11-04",
   "name": {
-    "ar": "XBOX Elite Wireless Controller Series 2",
-    "en": "XBOX Elite Wireless Controller Series 2",
-    "ckb": "XBOX Elite Wireless Controller Series 2"
+    "ar": "Xbox Elite Wireless Controller Series 2",
+    "en": "Xbox Elite Wireless Controller Series 2",
+    "ckb": "Xbox Elite Wireless Controller Series 2"
   },
   "short": {
     "ar": "عصي بشدّ قابل للتعديل · 4 أزرار خلفية · بطارية حتى 40 ساعة",
@@ -18,9 +18,9 @@
     "ckb": "جۆیستیکی گرژیی گۆڕاو · 4 پادڵی پشتەوە · پاتری تا 40 کاتژمێر"
   },
   "description": {
-    "ar": "يد التحكم الاحترافية من XBOX للاعبين التنافسيين: شدّ العصي قابل للتعديل بثلاث درجات، وأقفال زناد أقصر، ومقبض مطاطي يلتف حول اليد، وقطع قابلة للتبديل (عصي وأزرار اتجاه وأزرار خلفية). تحفظ 3 ملفات تخصيص على اليد، وفيها بطارية مدمجة حتى 40 ساعة. النسخة الكاملة السوداء تأتي مع حقيبة وقاعدة شحن والقطع الإضافية، أما نسخة Core (أبيض أو أحمر أو أزرق) فهي نفس اليد مع أداة ضبط العصي وكابل USB-C فقط.",
-    "en": "XBOX's pro controller for competitive players: thumbstick tension adjusts in three steps, the hair-trigger locks are shorter, a rubberised grip wraps around the handles, and the thumbsticks, D-pads and back paddles can be swapped. It stores 3 custom profiles and has a built-in battery for up to 40 hours. The full black version comes with a carrying case, charging dock and extra parts; the Core version (white, red or blue) is the same controller with just the thumbstick tool and a USB-C cable.",
-    "ckb": "دەسکی پرۆفیشناڵی XBOX بۆ یاریزانی پێشبڕکێ: گرژیی جۆیستیکەکان بە سێ پلە دەگۆڕدرێت، قوفڵی تریگەرەکان کورتترن، دەسگرەی لاستیکی دەوری دەسکەکە دەگرێت، و جۆیستیک و D-pad و پادڵەکانی پشتەوە دەگۆڕدرێن. 3 پرۆفایلی تایبەت هەڵدەگرێت و پاتریی ناوەکیی تا 40 کاتژمێری هەیە. وەشانە ڕەشە تەواوەکە جانتا و بنکەی شەحن و پارچە زیادەکانی لەگەڵە؛ وەشانی Core (سپی، سوور یان شین) هەمان دەسکە تەنها لەگەڵ ئامرازی جۆیستیک و کێبڵی USB-C."
+    "ar": "يد التحكم الاحترافية من Xbox للاعبين التنافسيين: شدّ العصي قابل للتعديل بثلاث درجات، وأقفال زناد أقصر، ومقبض مطاطي يلتف حول اليد، وقطع قابلة للتبديل (عصي وأزرار اتجاه وأزرار خلفية). تحفظ 3 ملفات تخصيص على اليد، وفيها بطارية مدمجة حتى 40 ساعة. النسخة الكاملة السوداء تأتي مع حقيبة وقاعدة شحن والقطع الإضافية، أما نسخة Core (أبيض أو أحمر أو أزرق) فهي نفس اليد مع أداة ضبط العصي وكابل USB-C فقط.",
+    "en": "Xbox's pro controller for competitive players: thumbstick tension adjusts in three steps, the hair-trigger locks are shorter, a rubberised grip wraps around the handles, and the thumbsticks, D-pads and back paddles can be swapped. It stores 3 custom profiles and has a built-in battery for up to 40 hours. The full black version comes with a carrying case, charging dock and extra parts; the Core version (white, red or blue) is the same controller with just the thumbstick tool and a USB-C cable.",
+    "ckb": "دەسکی پرۆفیشناڵی Xbox بۆ یاریزانی پێشبڕکێ: گرژیی جۆیستیکەکان بە سێ پلە دەگۆڕدرێت، قوفڵی تریگەرەکان کورتترن، دەسگرەی لاستیکی دەوری دەسکەکە دەگرێت، و جۆیستیک و D-pad و پادڵەکانی پشتەوە دەگۆڕدرێن. 3 پرۆفایلی تایبەت هەڵدەگرێت و پاتریی ناوەکیی تا 40 کاتژمێری هەیە. وەشانە ڕەشە تەواوەکە جانتا و بنکەی شەحن و پارچە زیادەکانی لەگەڵە؛ وەشانی Core (سپی، سوور یان شین) هەمان دەسکە تەنها لەگەڵ ئامرازی جۆیستیک و کێبڵی USB-C."
   },
   "highlights": [
     {
@@ -44,9 +44,9 @@
       "ckb": "پاتریی ناوەکیی شەحنکراوە تا 40 کاتژمێر"
     },
     {
-      "ar": "يعمل مع XBOX Series X|S وXBOX One وWindows والهواتف عبر XBOX Wireless أو Bluetooth أو USB-C",
-      "en": "Works with XBOX Series X|S, XBOX One, Windows and phones over XBOX Wireless, Bluetooth or USB-C",
-      "ckb": "لەگەڵ XBOX Series X|S و XBOX One و Windows و مۆبایل کار دەکات بە XBOX Wireless، Bluetooth یان USB-C"
+      "ar": "يعمل مع Xbox Series X|S وXbox One وWindows والهواتف عبر Xbox Wireless أو Bluetooth أو USB-C",
+      "en": "Works with Xbox Series X|S, Xbox One, Windows and phones over Xbox Wireless, Bluetooth or USB-C",
+      "ckb": "لەگەڵ Xbox Series X|S و Xbox One و Windows و مۆبایل کار دەکات بە Xbox Wireless، Bluetooth یان USB-C"
     }
   ],
   "specs": [
@@ -54,9 +54,9 @@
       "key": "connectivity",
       "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
       "value": {
-        "ar": "XBOX Wireless أو كابل USB-C بطول 2.7 متر (9 أقدام) مع أجهزة XBOX؛ Bluetooth مع Windows والأجهزة اللوحية وAndroid وiOS",
-        "en": "XBOX Wireless or the 9 ft (2.7 m) USB-C cable to XBOX consoles; Bluetooth to Windows PCs, tablets, Android and iOS",
-        "ckb": "XBOX Wireless یان کێبڵی USB-C ـی 2.7 مەتر (9 پێ) لەگەڵ کۆنسۆڵی XBOX؛ Bluetooth لەگەڵ Windows، تابلێت، Android و iOS"
+        "ar": "Xbox Wireless أو كابل USB-C بطول 2.7 متر (9 أقدام) مع أجهزة Xbox؛ Bluetooth مع Windows والأجهزة اللوحية وAndroid وiOS",
+        "en": "Xbox Wireless or the 9 ft (2.7 m) USB-C cable to Xbox consoles; Bluetooth to Windows PCs, tablets, Android and iOS",
+        "ckb": "Xbox Wireless یان کێبڵی USB-C ـی 2.7 مەتر (9 پێ) لەگەڵ کۆنسۆڵی Xbox؛ Bluetooth لەگەڵ Windows، تابلێت، Android و iOS"
       }
     },
     {
@@ -72,9 +72,9 @@
       "key": "sticks",
       "label": { "ar": "العصي", "en": "Thumbsticks", "ckb": "جۆیستیکەکان" },
       "value": {
-        "ar": "3 درجات شدّ تُضبط بالأداة المرفقة، ومنحنيات حساسية قابلة للتعديل في تطبيق XBOX Accessories",
-        "en": "3 tension settings set with the included tool; sensitivity curves adjustable in the XBOX Accessories app",
-        "ckb": "3 پلەی گرژی بە ئامرازی هاوپێچ ڕێکدەخرێن؛ چەماوەی هەستیاری لە ئەپی XBOX Accessories دەگۆڕدرێت"
+        "ar": "3 درجات شدّ تُضبط بالأداة المرفقة، ومنحنيات حساسية قابلة للتعديل في تطبيق Xbox Accessories",
+        "en": "3 tension settings set with the included tool; sensitivity curves adjustable in the Xbox Accessories app",
+        "ckb": "3 پلەی گرژی بە ئامرازی هاوپێچ ڕێکدەخرێن؛ چەماوەی هەستیاری لە ئەپی Xbox Accessories دەگۆڕدرێت"
       }
     },
     {
@@ -116,7 +116,7 @@
     }
   ],
   "inTheBox": [
-    { "ar": "يد XBOX Elite Wireless Controller Series 2", "en": "XBOX Elite Wireless Controller Series 2", "ckb": "دەسکی XBOX Elite Wireless Controller Series 2" },
+    { "ar": "يد Xbox Elite Wireless Controller Series 2", "en": "Xbox Elite Wireless Controller Series 2", "ckb": "دەسکی Xbox Elite Wireless Controller Series 2" },
     { "ar": "أداة ضبط شدّ العصي", "en": "Thumbstick adjustment tool", "ckb": "ئامرازی ڕێکخستنی جۆیستیک" },
     { "ar": "قاعدة شحن مع كابل USB-C", "en": "Charging dock and USB-C cable", "ckb": "بنکەی شەحن و کێبڵی USB-C" },
     { "ar": "4 أزرار خلفية: 2 متوسطة و2 صغيرة", "en": "4 paddles: 2 medium, 2 mini", "ckb": "4 پادڵ: 2 مامناوەند، 2 بچووک" },
@@ -128,9 +128,9 @@
     {
       "sku": "ELITE2-BLK",
       "title": {
-        "ar": "XBOX Elite Wireless Controller Series 2 (النسخة الكاملة، أسود)",
-        "en": "XBOX Elite Wireless Controller Series 2 (full kit, black)",
-        "ckb": "XBOX Elite Wireless Controller Series 2 (وەشانی تەواو، ڕەش)"
+        "ar": "Xbox Elite Wireless Controller Series 2 (النسخة الكاملة، أسود)",
+        "en": "Xbox Elite Wireless Controller Series 2 (full kit, black)",
+        "ckb": "Xbox Elite Wireless Controller Series 2 (وەشانی تەواو، ڕەش)"
       },
       "options": { "edition": "Elite Series 2", "color": "Black" },
       "modelNumber": "1797",
@@ -140,9 +140,9 @@
     {
       "sku": "ELITE2-CORE-WHT",
       "title": {
-        "ar": "XBOX Elite Wireless Controller Series 2 – Core أبيض",
-        "en": "XBOX Elite Wireless Controller Series 2 – Core (White)",
-        "ckb": "XBOX Elite Wireless Controller Series 2 – Core سپی"
+        "ar": "Xbox Elite Wireless Controller Series 2 – Core أبيض",
+        "en": "Xbox Elite Wireless Controller Series 2 – Core (White)",
+        "ckb": "Xbox Elite Wireless Controller Series 2 – Core سپی"
       },
       "options": { "edition": "Core", "color": "White" },
       "isDefault": false,
@@ -156,9 +156,9 @@
     {
       "sku": "ELITE2-CORE-RED",
       "title": {
-        "ar": "XBOX Elite Wireless Controller Series 2 – Core أحمر",
-        "en": "XBOX Elite Wireless Controller Series 2 – Core (Red)",
-        "ckb": "XBOX Elite Wireless Controller Series 2 – Core سوور"
+        "ar": "Xbox Elite Wireless Controller Series 2 – Core أحمر",
+        "en": "Xbox Elite Wireless Controller Series 2 – Core (Red)",
+        "ckb": "Xbox Elite Wireless Controller Series 2 – Core سوور"
       },
       "options": { "edition": "Core", "color": "Red" },
       "isDefault": false,
@@ -171,9 +171,9 @@
     {
       "sku": "ELITE2-CORE-BLU",
       "title": {
-        "ar": "XBOX Elite Wireless Controller Series 2 – Core أزرق",
-        "en": "XBOX Elite Wireless Controller Series 2 – Core (Blue)",
-        "ckb": "XBOX Elite Wireless Controller Series 2 – Core شین"
+        "ar": "Xbox Elite Wireless Controller Series 2 – Core أزرق",
+        "en": "Xbox Elite Wireless Controller Series 2 – Core (Blue)",
+        "ckb": "Xbox Elite Wireless Controller Series 2 – Core شین"
       },
       "options": { "edition": "Core", "color": "Blue" },
       "isDefault": false,
@@ -188,28 +188,28 @@
     {
       "deviceModel": "xbox-series-x",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless أو USB-C", "en": "Over XBOX Wireless or USB-C", "ckb": "بە XBOX Wireless یان USB-C" },
+      "note": { "ar": "عبر Xbox Wireless أو USB-C", "en": "Over Xbox Wireless or USB-C", "ckb": "بە Xbox Wireless یان USB-C" },
       "source": "https://www.xbox.com/en-US/accessories/controllers/elite-wireless-controller-series-2"
     },
     {
       "deviceModel": "xbox-series-x-digital",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless أو USB-C", "en": "Over XBOX Wireless or USB-C", "ckb": "بە XBOX Wireless یان USB-C" },
+      "note": { "ar": "عبر Xbox Wireless أو USB-C", "en": "Over Xbox Wireless or USB-C", "ckb": "بە Xbox Wireless یان USB-C" },
       "source": "https://www.xbox.com/en-US/accessories/controllers/elite-wireless-controller-series-2"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless أو USB-C", "en": "Over XBOX Wireless or USB-C", "ckb": "بە XBOX Wireless یان USB-C" },
+      "note": { "ar": "عبر Xbox Wireless أو USB-C", "en": "Over Xbox Wireless or USB-C", "ckb": "بە Xbox Wireless یان USB-C" },
       "source": "https://www.xbox.com/en-US/accessories/controllers/elite-wireless-controller-series-2"
     },
     {
       "deviceModel": "windows-pc",
       "status": "verified",
       "note": {
-        "ar": "Windows 10/11 عبر Bluetooth أو USB-C؛ تطبيق XBOX Accessories متاح على Windows",
-        "en": "Windows 10/11 over Bluetooth or USB-C; the XBOX Accessories app runs on Windows",
-        "ckb": "Windows 10/11 بە Bluetooth یان USB-C؛ ئەپی XBOX Accessories لەسەر Windows کار دەکات"
+        "ar": "Windows 10/11 عبر Bluetooth أو USB-C؛ تطبيق Xbox Accessories متاح على Windows",
+        "en": "Windows 10/11 over Bluetooth or USB-C; the Xbox Accessories app runs on Windows",
+        "ckb": "Windows 10/11 بە Bluetooth یان USB-C؛ ئەپی Xbox Accessories لەسەر Windows کار دەکات"
       },
       "source": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg"
     }
@@ -227,9 +227,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg",
       "kind": "hero",
       "alt": {
-        "ar": "يد XBOX Elite Series 2 السوداء من الأمام",
-        "en": "Black XBOX Elite Series 2 controller from the front",
-        "ckb": "دەسکی ڕەشی XBOX Elite Series 2 لە پێشەوە"
+        "ar": "يد Xbox Elite Series 2 السوداء من الأمام",
+        "en": "Black Xbox Elite Series 2 controller from the front",
+        "ckb": "دەسکی ڕەشی Xbox Elite Series 2 لە پێشەوە"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -304,22 +304,22 @@
   "sources": [
     {
       "url": "https://www.xbox.com/en-US/accessories/controllers/elite-wireless-controller-series-2",
-      "title": "XBOX Elite Wireless Controller Series 2",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Elite Wireless Controller Series 2",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "features, what is included in the full kit and in the Core, 3 custom profiles, 40-hour battery"
     },
     {
       "url": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg",
-      "title": "Buy XBOX Elite Wireless Controller Series 2",
+      "title": "Buy Xbox Elite Wireless Controller Series 2",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
       "supports": "tech specs (connectivity, 9 ft USB-C cable, battery, thumbstick tension, assignable buttons, audio, haptics, weight), images"
     },
     {
       "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-elite-wireless-controller-series-2-core",
-      "title": "XBOX Elite Wireless Controller Series 2 – Core",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Elite Wireless Controller Series 2 – Core",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "Core colours (White, Red, Blue) and Core box contents"
     },
@@ -333,22 +333,22 @@
     {
       "url": "https://news.xbox.com/en-us/2019/11/04/xbox-elite-wireless-controller-series-2-is-now-available/",
       "title": "Xbox Elite Wireless Controller Series 2 Is Now Available",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "official release on 4 November 2019"
     },
     {
       "url": "https://www.microsoft.com/en-us/d/replacement-pcba-and-motor-assembly-for-xbox-elite-wireless-controller-series-2/8xw0zp6wmgp5",
-      "title": "Replacement PCBA and Motor Assembly for XBOX Elite Wireless Controller Series 2",
+      "title": "Replacement PCBA and Motor Assembly for Xbox Elite Wireless Controller Series 2",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
-      "supports": "official model number: XBOX Elite Wireless Controller Series 2 (Model 1797)"
+      "supports": "official model number: Xbox Elite Wireless Controller Series 2 (Model 1797)"
     }
   ],
   "notes": {
-    "ar": "تطبيق XBOX Accessories لتخصيص الأزرار والملفات يعمل على أجهزة XBOX وWindows 10/11 فقط، وبعض المزايا غير مدعومة على الهواتف. يمكن تحويل نسخة Core إلى ما يشبه النسخة الكاملة بشراء Complete Component Pack منفصلة.",
-    "en": "The XBOX Accessories app for button mapping and profiles works only on XBOX consoles and Windows 10/11, and some features are not supported on phones. A Core can be brought close to the full kit by adding the separately sold Complete Component Pack.",
-    "ckb": "ئەپی XBOX Accessories بۆ ڕێکخستنی دوگمە و پرۆفایل تەنها لەسەر کۆنسۆڵی XBOX و Windows 10/11 کار دەکات، و هەندێک تایبەتمەندی لەسەر مۆبایل پشتگیری ناکرێن. دەتوانرێت Core بە کڕینی Complete Component Pack ـی جیا نزیک بکرێتەوە لە وەشانە تەواوەکە."
+    "ar": "تطبيق Xbox Accessories لتخصيص الأزرار والملفات يعمل على أجهزة Xbox وWindows 10/11 فقط، وبعض المزايا غير مدعومة على الهواتف. يمكن تحويل نسخة Core إلى ما يشبه النسخة الكاملة بشراء Complete Component Pack منفصلة.",
+    "en": "The Xbox Accessories app for button mapping and profiles works only on Xbox consoles and Windows 10/11, and some features are not supported on phones. A Core can be brought close to the full kit by adding the separately sold Complete Component Pack.",
+    "ckb": "ئەپی Xbox Accessories بۆ ڕێکخستنی دوگمە و پرۆفایل تەنها لەسەر کۆنسۆڵی Xbox و Windows 10/11 کار دەکات، و هەندێک تایبەتمەندی لەسەر مۆبایل پشتگیری ناکرێن. دەتوانرێت Core بە کڕینی Complete Component Pack ـی جیا نزیک بکرێتەوە لە وەشانە تەواوەکە."
   },
   "verification": {
     "checkedBy": "fact-check",

@@ -1,0 +1,170 @@
+/*
+ * Admin modules 20 (security) and 22 (settings) — what the UI kit and the shell do not cover: the figures row, the
+ * decision cards' grid, a two-column page from 1024px, the permission matrix, a key/value snapshot and the long-text
+ * editor. Tokens and logical properties only; nothing animates.
+ */
+@layer components {
+  .sec-nav {
+    margin-block-end: var(--s-5);
+  }
+
+  .sec-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sec-kpis > * {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .sec-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    }
+  }
+
+  .sec-decisions {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+
+  .sec-split {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .sec-split {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+      align-items: start;
+    }
+  }
+
+  .sec-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  /* the permission matrix: one fieldset per module, rows of checkboxes */
+  .sec-perms {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 64rem) {
+    .sec-perms {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .sec-perm-group {
+    display: grid;
+    /* a group stretched to its neighbour's height keeps its rows together at the top */
+    align-content: start;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    min-inline-size: 0;
+  }
+  /* the permission editor is long: its save bar stays in reach, above the phone tab bar */
+  .sec-taskbar {
+    position: sticky;
+    inset-block-end: var(--adm-bottom, 0px);
+    z-index: var(--z-sticky);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: 0 -1px 0 var(--line);
+  }
+  .sec-perm-group > legend {
+    padding-inline: var(--s-1);
+  }
+
+  /* a choice the viewer cannot change, as a fact (components/ui.tsx Fact) — the rows line up with the kit's checkbox
+   * rows (36px, a 22px box, 12px gap); held = a solid box with an ink tick, not held = an empty dashed box */
+  .sec-fact {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-block-size: 36px;
+    padding-block: 6px;
+    font: var(--type-body);
+    color: var(--ink-2);
+  }
+  .sec-fact__mark {
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: 22px;
+    block-size: 22px;
+    margin-block-start: 1px;
+    border: 1.5px dashed var(--line-strong);
+    border-radius: var(--r-check);
+    color: var(--ink);
+  }
+  .sec-fact[data-held] {
+    color: var(--ink);
+  }
+  .sec-fact[data-held] .sec-fact__mark {
+    border-style: solid;
+    border-color: var(--ink-2);
+    background: var(--niche);
+  }
+
+  /* a before / after snapshot as rows */
+  .sec-kv {
+    display: grid;
+    grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr);
+    gap: var(--s-1) var(--s-3);
+    margin: 0;
+  }
+  .sec-kv dt {
+    color: var(--ink-2);
+  }
+  .sec-kv dd {
+    margin: 0;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sec-pre {
+    margin: 0;
+    padding: var(--s-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font: var(--type-data);
+    max-block-size: 24rem;
+    overflow: auto;
+  }
+
+  .sec-editor textarea {
+    min-block-size: 18rem;
+    font-family: var(--font-text);
+    line-height: 1.7;
+  }
+
+  .sec-filters {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 40rem) {
+    .sec-filters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .sec-filters {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media print {
+    .sec-noprint,
+    .sec-nav {
+      display: none !important;
+    }
+  }
+}

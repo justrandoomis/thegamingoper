@@ -12,9 +12,10 @@ import { ShellFrame } from "./shell/ShellFrame";
 import type { ShellData } from "./shell/types";
 
 /**
- * Storefront layout: validates the optional locale segment and renders the shopping shell (./shell/ShellFrame —
- * header, mega menus, tab bar, categories sheet, footer, demo ribbon, toasts, offline banner) around every customer
- * page, its error pages included.
+ * Storefront layout: validates the optional locale segment and renders the shopping shell (./shell/ShellFrame,
+ * Design System v2 §5 — the demo strip, the header and its nav row with the mega menus, the search sheet, the tab bar,
+ * the categories sheet, the footer, the checkout bar for `handle.shell.chrome = "checkout"`, the offline banner, the
+ * page progress bar, toasts) around every customer page, its error pages included.
  *
  * Loader data: `shell` (navigation taxonomy, delivery fee, payment switches, contact details, PUBLIC_ORIGIN) and the
  * "shell" strings. A 404 for an unknown language prefix and a 503 when the store's data cannot be read are thrown

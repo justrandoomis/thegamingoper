@@ -1,0 +1,366 @@
+/*
+ * Admin module 06 (point of sale) — the few pieces the design system does not have. Tokens only, logical properties
+ * only, components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; status = words with a dot; numbers tabular at the inline end. Receipts and shift reports print on 80 mm
+ * roll paper from the browser (print CSS; no printer integration exists).
+ */
+@layer components {
+  /* ── facts (definition lists) ── */
+  .pos-facts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .pos-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .pos-facts dt {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .pos-facts dd {
+    font: var(--type-body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── a row of keys that wraps ── */
+  .pos-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+
+  /* ── the till: cart + payment side by side from 1024px ── */
+  .pos-till {
+    display: grid;
+    gap: var(--s-4);
+    align-items: start;
+  }
+  @media (min-width: 64rem) {
+    .pos-till {
+      grid-template-columns: minmax(0, 1fr) minmax(20rem, 24rem);
+    }
+    .pos-till__side {
+      position: sticky;
+      inset-block-start: calc(var(--adm-top-h, 56px) + var(--s-3));
+    }
+  }
+  .pos-till__main,
+  .pos-till__side {
+    display: grid;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  .pos-panel {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .pos-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pos-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding-inline: 10px;
+    min-block-size: 28px;
+    border-radius: var(--r-full);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+  .pos-pill[data-tone="warn"] > svg {
+    color: var(--warn);
+  }
+  .pos-pill[data-tone="ok"] > svg {
+    color: var(--ok);
+  }
+
+  /* ── cart lines ── */
+  .pos-lines {
+    display: grid;
+    gap: 0;
+  }
+  .pos-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-2) var(--s-3);
+    padding-block: var(--s-3);
+    border-block-end: 1px solid var(--line);
+  }
+  .pos-line:last-child {
+    border-block-end: 0;
+  }
+  .pos-line__name {
+    font: var(--type-strong);
+    overflow-wrap: anywhere;
+  }
+  .pos-line__meta {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .pos-line__total {
+    font: var(--type-strong);
+    text-align: end;
+  }
+  .pos-line__controls {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: flex-end;
+  }
+  .pos-line__controls .field {
+    min-inline-size: 0;
+  }
+  .pos-serials {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+  .pos-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+
+  /* ── search results ── */
+  .pos-results {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .pos-result {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-1) var(--s-3);
+    align-items: center;
+    inline-size: 100%;
+    min-block-size: 44px;
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-align: start;
+    cursor: pointer;
+  }
+  .pos-result:hover,
+  .pos-result:focus-visible {
+    background: var(--niche);
+  }
+  .pos-result[aria-disabled="true"] {
+    color: var(--ink-2);
+    cursor: not-allowed;
+  }
+
+  /* ── totals and payment ── */
+  .pos-sum {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .pos-sum > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+  .pos-sum__total {
+    padding-block-start: var(--s-2);
+    border-block-start: 1px solid var(--line-strong);
+    font: var(--type-kpi);
+  }
+  .pos-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+  .pos-count {
+    display: grid;
+    gap: var(--s-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+  }
+
+  /* ── phones: the total and the commit key stay at hand ── */
+  .pos-paybar {
+    position: sticky;
+    inset-block-end: var(--adm-bottom);
+    z-index: var(--z-sticky);
+    display: flex;
+    gap: var(--s-3);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--glass-solid);
+    box-shadow: inset 0 0 0 1px var(--line), var(--e-2);
+  }
+  @media (min-width: 64rem) {
+    .pos-paybar {
+      display: none;
+    }
+  }
+
+  /* ── queue of offline sales ── */
+  .pos-queue {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .pos-queue__item {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* ── phone cards in place of a dense table (< 768px) ── */
+  .pos-cards {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .pos-card {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .pos-card__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+    align-items: baseline;
+  }
+  @media (min-width: 48rem) {
+    .pos-cards--phone {
+      display: none;
+    }
+  }
+  .pos-table {
+    display: none;
+  }
+  @media (min-width: 48rem) {
+    .pos-table {
+      display: block;
+    }
+  }
+
+  /* ── the printed receipt and shift report: 80 mm roll paper, always ink on paper ── */
+  .pos-print {
+    display: grid;
+    gap: var(--s-2);
+    inline-size: 100%;
+    max-inline-size: 80mm;
+    margin-inline: auto;
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .pos-print__head {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-1);
+    text-align: center;
+  }
+  .pos-print__rule {
+    border: 0;
+    border-block-start: 1px dashed var(--line-strong);
+    margin: 0;
+  }
+  .pos-print__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+  .pos-print__item {
+    display: grid;
+    gap: 2px;
+  }
+  .pos-print__muted {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .pos-print__big {
+    font: var(--type-sub);
+  }
+  .pos-print__mark {
+    padding: 2px 8px;
+    border: 1px solid var(--ink);
+    border-radius: var(--r-xs);
+    font: var(--type-label);
+  }
+  .pos-barcode {
+    inline-size: 100%;
+    max-inline-size: 64mm;
+    block-size: 44px;
+    color: var(--ink);
+  }
+  /* A receipt the till prints in place: never on screen, the only thing on paper (the till's own parts are pos-noprint). */
+  .pos-print-only {
+    display: none;
+  }
+
+  @media print {
+    .pos-print-only {
+      display: block;
+    }
+    @page {
+      size: 80mm auto;
+      margin: 3mm;
+    }
+    body:has(.pos-print) .adm-rail,
+    body:has(.pos-print) .adm-top,
+    body:has(.pos-print) .adm-tabbar,
+    body:has(.pos-print) .adm-skip,
+    body:has(.pos-print) .pos-noprint,
+    body:has(.pos-print) [data-toast] {
+      /* a "sale recorded" toast printed over the receipt's number on the till's first print (review 2026-11-11) */
+      display: none !important;
+    }
+    body:has(.pos-print) .adm,
+    body:has(.pos-print) .adm-col,
+    body:has(.pos-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .pos-print {
+      max-inline-size: none;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      font-size: 9pt;
+    }
+  }
+}

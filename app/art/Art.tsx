@@ -20,6 +20,8 @@ export interface ArtProps {
   sizes?: string;
   /** Only for the first picture above the fold: loaded at once, with high priority, and preloaded. */
   priority?: boolean;
+  /** Below-the-fold decoration that must never compete with the page (platform tile hardware): "low". */
+  fetchPriority?: "low";
   /** Classes and styles go on the `<img>`: size it like any image (`w-full`, `h-full object-contain`, …). */
   className?: string;
   style?: CSSProperties;
@@ -53,7 +55,7 @@ const FULL_SIDE = 1600;
  *
  * Purely presentational and safe on the server; it keeps no state.
  */
-export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, className, style }: ArtProps) {
+export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, fetchPriority, className, style }: ArtProps) {
   const target = parseArtName(name, view);
   const exact = getArt(target.key, target.view);
   // Photos have one view: any other view falls back to it.
@@ -111,7 +113,7 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         decoding={priority ? undefined : "async"}
-        fetchPriority={priority ? "high" : undefined}
+        fetchPriority={priority ? "high" : fetchPriority}
         data-art={artName(art.key, art.view)}
         data-transparent={opaque ? "false" : "true"}
         className={className}

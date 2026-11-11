@@ -1,3 +1,4 @@
+// lint-design: allow primary-count — each specimen (a sheet, a dialog, an empty state) carries its own primary; the page is a reference, not a view.
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 
@@ -14,7 +15,7 @@ import { EmptyState } from "~/ui/EmptyState";
 import { ErrorState } from "~/ui/ErrorState";
 import { Radio } from "~/ui/Field";
 import { Key } from "~/ui/Key";
-import { KeyBank } from "~/ui/KeyBank";
+import { Segmented } from "~/ui/Segmented";
 import { Menu } from "~/ui/Menu";
 import { Niche } from "~/ui/Niche";
 import { OfflineBanner } from "~/ui/OfflineBanner";
@@ -27,6 +28,7 @@ import { Sheet } from "~/ui/Sheet";
 import { Render } from "~/ui/Stage";
 import { Status } from "~/ui/Tag";
 import { Tabs } from "~/ui/Tabs";
+import { TextLink } from "~/ui/TextLink";
 import { Toaster } from "~/ui/Toast";
 import { toast } from "~/ui/toast-store";
 import { DsBlock, defineCopy, Specimen, SpecimenGrid, SpecimenRow, useCopy, type DsSectionMeta } from "../kit";
@@ -141,8 +143,10 @@ const COPY = defineCopy({
     inspection: "الفحص",
     states: "الحالات: فارغ، خطأ، بلا اتصال",
     statesNote: "الفارغ لوحة مسطّحة فيها مقعد فارغ وجملة ومفتاح واحد. الخطأ يحفظ المساحة ويعرض إعادة المحاولة ولا يتحرك. انقطاع الاتصال شريط حبر مسطّح تحت الرأس، لا زجاج ولا أحمر.",
-    cartEmpty: "سلتك فارغة. دورك.",
-    cartEmptyHint: "اختر منصّتك ونرتّب لك الرف.",
+    cartEmpty: "سلتك فارغة",
+    cartEmptyHint: "ابدأ من منصّتك: Nintendo أو PlayStation أو Xbox.",
+    trackOrder: "تتبّع طلبك",
+    offlineTitle: "حالة انقطاع الاتصال",
     browse: "تصفّح الأجهزة",
     noResults: "لا نتائج لـ «Switch 3».",
     noResultsHint: "جرّب كلمة أقصر، أو ابحث باسم المنصة.",
@@ -285,8 +289,10 @@ const COPY = defineCopy({
     inspection: "Inspection",
     states: "States: empty, error, offline",
     statesNote: "Empty is a flat panel with an empty socket, one sentence and one key. Error keeps the space, offers a retry and does not move. Offline is a flat ink banner under the header: not glass, not red.",
-    cartEmpty: "Your cart is empty. Your turn.",
-    cartEmptyHint: "Pick your platform and we will stock the shelf.",
+    cartEmpty: "Your cart is empty",
+    cartEmptyHint: "Start with your platform: Nintendo, PlayStation or Xbox.",
+    trackOrder: "Track your order",
+    offlineTitle: "Offline state",
     browse: "Browse devices",
     noResults: "No results for “Switch 3”.",
     noResultsHint: "Try a shorter word, or search by platform name.",
@@ -429,8 +435,10 @@ const COPY = defineCopy({
     inspection: "پشکنین",
     states: "دۆخەکان: بەتاڵ، هەڵە، بێ پەیوەندی",
     statesNote: "بەتاڵ پانێڵێکی تەختە بە جێگایەکی بەتاڵ، یەک ڕستە و یەک دوگمە. هەڵە شوێنەکە دەپارێزێت، دووبارە هەوڵدان پێشکەش دەکات و ناجووڵێت. بێ پەیوەندی شریتێکی مەرەکەبی تەختە لە ژێر سەرپەڕە: نە شووشەیە، نە سوور.",
-    cartEmpty: "سەبەتەکەت بەتاڵە. نۆرەی تۆیە.",
-    cartEmptyHint: "پلاتفۆرمەکەت هەڵبژێرە و ڕەفەکەت بۆ پڕ دەکەینەوە.",
+    cartEmpty: "سەبەتەکەت بەتاڵە",
+    cartEmptyHint: "لە پلاتفۆرمەکەتەوە دەست پێ بکە: Nintendo یان PlayStation یان Xbox.",
+    trackOrder: "بەدوای داواکارییەکەتدا بچۆ",
+    offlineTitle: "دۆخی بێ هێڵ",
     browse: "ئامێرەکان ببینە",
     noResults: "هیچ ئەنجامێک نییە بۆ «Switch 3».",
     noResultsHint: "وشەیەکی کورتتر تاقی بکەرەوە، یان بە ناوی پلاتفۆرم بگەڕێ.",
@@ -585,6 +593,7 @@ function SheetsAndDialogs({ c }: { c: C }) {
         footer={
           <>
             <Key
+              variant="ghost"
               onClick={() => {
                 setPlatforms([]);
                 setConditions([]);
@@ -592,7 +601,7 @@ function SheetsAndDialogs({ c }: { c: C }) {
             >
               {c.clearAll}
             </Key>
-            <Key variant="ink" onClick={() => setFilters(false)}>
+            <Key variant="primary" onClick={() => setFilters(false)}>
               {c.show24}
             </Key>
           </>
@@ -774,7 +783,7 @@ function Toasts({ c }: { c: C }) {
         >
           {c.cart}
         </Key>
-        <Key size="sm" variant="quiet" onClick={() => toast.dismiss()}>
+        <Key size="sm" variant="ghost" onClick={() => toast.dismiss()}>
           {c.dismissAll}
         </Key>
       </SpecimenRow>
@@ -950,21 +959,39 @@ function States({ c }: { c: C }) {
   return (
     <DsBlock id="overlays-states" title={c.states} note={c.statesNote}>
       <SpecimenGrid wide>
-        <Specimen label="<EmptyState title text action />">
+        <Specimen label='<EmptyState layout="stack" action recovery /> (the mascot; no «دورك.», no socket)' wide>
           <EmptyState
+            layout="stack"
             title={c.cartEmpty}
             text={c.cartEmptyHint}
             action={
-              <Key size="sm" as="a" href="#overlays-states">
+              <Key variant="primary" as="a" href="#overlays-states">
                 {c.browse}
+              </Key>
+            }
+            recovery={
+              <TextLink as="a" href="#overlays-states">
+                {c.trackOrder}
+              </TextLink>
+            }
+          />
+        </Specimen>
+        <Specimen label='<EmptyState layout="stack" art> (a product in a 132px well)'>
+          <EmptyState
+            layout="stack"
+            art="playstation-5-slim--1"
+            title={c.noResults}
+            text={c.noResultsHint}
+            action={
+              <Key as="a" href="#overlays-states">
+                {c.clearSearch}
               </Key>
             }
           />
         </Specimen>
-        <Specimen label='<EmptyState icon layout="stack" />'>
+        <Specimen label='<EmptyState icon> (row: a part of a page)'>
           <EmptyState
             icon="magnifying-glass"
-            layout="stack"
             title={c.noResults}
             text={c.noResultsHint}
             action={
@@ -974,15 +1001,19 @@ function States({ c }: { c: C }) {
             }
           />
         </Specimen>
-        <Specimen label="<ErrorState onRetry retrying />">
+        <Specimen label="<ErrorState onRetry retrying /> (row)">
           <ErrorState onRetry={retry} retrying={retrying} />
         </Specimen>
-        <Specimen label='<ErrorState title code="…" />'>
-          <ErrorState title={c.recsFailed} onRetry={retry} retrying={retrying} code="7K4M-2Q9X" />
+        <Specimen label='<ErrorState layout="stack" title code />'>
+          <ErrorState layout="stack" title={c.recsFailed} onRetry={retry} retrying={retrying} code="7K4M-2Q9X" />
+        </Specimen>
+        <Specimen label={`<ErrorState offline layout="stack" /> · ${c.offlineTitle} (never "500")`}>
+          <ErrorState offline layout="stack" onRetry={retry} retrying={retrying} />
         </Specimen>
         <Specimen label='<OfflineBanner state="offline" pinned={false} /> · state="back"' wide>
           <div className="grid gap-2 overflow-hidden rounded-sm">
             <OfflineBanner state="offline" pinned={false} />
+            <OfflineBanner state="offline" message="form" pinned={false} />
             <OfflineBanner state="back" pinned={false} />
           </div>
         </Specimen>
@@ -1175,10 +1206,10 @@ function Table({ c }: { c: C }) {
 
   return (
     <DsBlock id="overlays-table" title={c.table} note={c.tableNote}>
-      <KeyBank
-        kind="segment"
+      <Segmented
+        inline
         aria-label={c.tableState}
-        items={[
+        options={[
           { value: "ready", label: c.ready },
           { value: "loading", label: c.loading },
           { value: "empty", label: c.empty },

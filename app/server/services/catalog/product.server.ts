@@ -19,6 +19,11 @@
  * PRIVACY: no cost, margin, serial or stock quantity is selected or returned — only states. Availability numbers
  * stay inside this function (they decide `orderable`).
  *
+ * HONESTY, the same rules as the cards (cards.server.ts, card-facts.ts): a variant's compare-at is struck only when
+ * an applied price change set it (really charged) or as a demo row's demo value (`compareAtDemo`); a demo product
+ * never says "low_stock"; `isNew` only from the researched release date or a real (non-demo) listing; pictures that
+ * are not cut-outs carry `opaque` (design v2 spec §7.5).
+ *
  * Facts come from the researched catalogue as imported (products.specs, products.attributes — shape in
  * app/server/db/seed/demo/import.ts ProductAttributes). Attributes are JSON that staff may edit later, so they are
  * read defensively: anything malformed is left out, never guessed.
@@ -34,6 +39,7 @@ import { deviceModels, files, media, platforms, productRelations, products, vari
 import { batchSql, runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getSettings } from "~/server/settings.server";
+import { isNewProduct, withOpaque } from "./card-facts";
 import { getCardsByIds } from "./cards.server";
 import {
   baghdadMidnight,
@@ -128,13 +134,13 @@ function imageOf(row: MediaRow, fallbackAlt: string, locale: Locale): ImageRef |
   const mediaKey = row.storageKey && row.visibility === "public" ? row.storageKey : null;
   const artKey = mediaKey ? null : row.artKey;
   if (!mediaKey && !artKey) return null;
-  return {
+  return withOpaque({
     artKey,
     mediaKey,
     alt: text(parsed(row.alt), locale) ?? fallbackAlt,
     isIllustration: row.isIllustration !== false && row.isIllustration !== 0,
     ...(mediaKey && row.width && row.height ? { width: row.width, height: row.height } : {}),
-  };
+  });
 }
 
 type ImageJson = {
@@ -157,13 +163,13 @@ function imageFromJson(raw: unknown, fallbackAlt: string, locale: Locale): Image
       isIllustration: true,
     };
   const mediaKey = asString(image.k);
-  return {
+  return withOpaque({
     artKey: mediaKey ? null : asString(image.a),
     mediaKey,
     alt: text(image.alt, locale) ?? fallbackAlt,
     isIllustration: image.i !== 0,
     ...(mediaKey && image.w && image.h ? { width: image.w, height: image.h } : {}),
-  };
+  });
 }
 
 /** Owners of the catalogue photos shown, once each, with the page the first of their photos came from. */
@@ -278,6 +284,8 @@ type ProductRow = {
   mediaFormat: "physical" | "digital" | null;
   status: string;
   publishAt: number | null;
+  publishedAt: number | null;
+  createdAt: number;
   isDemo: boolean;
   seo: unknown;
   preorderReleaseAt: number | null;
@@ -357,6 +365,8 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
       mediaFormat: products.mediaFormat,
       status: products.status,
       publishAt: products.publishAt,
+      publishedAt: products.publishedAt,
+      createdAt: products.createdAt,
       isDemo: products.isDemo,
       seo: products.seo,
       preorderReleaseAt: products.preorderReleaseAt,
@@ -432,6 +442,12 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
       .where(eq(productRelations.productId, row.id))
       .orderBy(desc(productRelations.pinned), asc(productRelations.sort), asc(productRelations.relatedProductId)),
     batchSql(db, trailStatement(row.categoryId)),
+    // compare-at prices the store really charged: an applied price change set them (cards.server.ts previousPriceEvidence)
+    batchSql(
+      db,
+      sql`SELECT DISTINCT pcw.variant_id, pcw.new_compare_at_iqd FROM price_changes AS pcw
+        WHERE pcw.variant_id IN ${productVariantIds} AND pcw.status = 'applied' AND pcw.new_compare_at_iqd IS NOT NULL`,
+    ),
   ];
   if (gameDevices.length > 0) {
     // Inside db.batch rows are mapped by column NAME: the platform's slug and name are aliased so they do not
@@ -460,8 +476,10 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
   const bundleRows = rowsOf<BundleRow>(results[2]);
   const relationRows = results[3] as RelationRow[];
   const trailRows = rowsOf<TrailRow>(results[4]);
-  const deviceRows = (gameDevices.length > 0 ? results[5] : []) as DeviceRow[];
+  const chargedRows = rowsOf<{ variant_id: string; new_compare_at_iqd: number }>(results[5]);
+  const deviceRows = (gameDevices.length > 0 ? results[6] : []) as DeviceRow[];
   if (variantRows.length === 0) return null;
+  const charged = new Set(chargedRows.map((entry) => `${entry.variant_id}:${Number(entry.new_compare_at_iqd)}`));
 
   // ── 3. stock states and related cards ─────────────────────────────────────────────────────────
   const relatedIds = [...new Set(relationRows.map((relation) => relation.relatedId).filter((id) => id !== row.id))];
@@ -523,7 +541,12 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
       state: "out_of_stock" as StockState,
     };
     const orderable = units.available > 0;
-    const stock: StockState = !orderable && releaseAt !== null ? "preorder" : units.state;
+    // a demo product's stock is a placeholder: it never says "low" (no scarcity from demo data)
+    const shownState: StockState = row.isDemo && units.state === "low_stock" ? "in_stock" : units.state;
+    const stock: StockState = !orderable && releaseAt !== null ? "preorder" : shownState;
+    const reduced = variant.compareAtIqd !== null && variant.compareAtIqd > variant.priceIqd;
+    const reallyCharged = reduced && charged.has(`${variant.id}:${variant.compareAtIqd}`);
+    const compareAtIqd = reduced && (reallyCharged || row.isDemo) ? variant.compareAtIqd : null;
     return {
       id: variant.id,
       sku: variant.sku,
@@ -532,7 +555,8 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
       options,
       modelNumber: model ?? null,
       priceIqd: variant.priceIqd,
-      compareAtIqd: variant.compareAtIqd !== null && variant.compareAtIqd > variant.priceIqd ? variant.compareAtIqd : null,
+      compareAtIqd,
+      compareAtDemo: compareAtIqd !== null && !reallyCharged,
       stock,
       orderable,
       releaseAt,
@@ -596,6 +620,7 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
     mediaFormat: row.mediaFormat,
     lifecycle: lifecycle && (LIFECYCLES as readonly string[]).includes(lifecycle) ? (lifecycle as ProductLifecycle) : null,
     releaseAt: productReleaseAt,
+    isNew: productReleaseAt === null && isNewProduct({ releasedOn: asString(catalogue.releaseDate), listedAt: row.publishedAt ?? row.createdAt, isDemo: row.isDemo, now }),
     isDemo: row.isDemo,
     images: productImages,
     variants: variantsOut,

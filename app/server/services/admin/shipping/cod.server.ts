@@ -8,6 +8,7 @@
  *   await updateSettlementItem(db, actor, { settlementId, shipmentId, amountIqd, feeIqd, reason }, now);   draft only
  *   await submitCodSettlement(…) / reconcileCodSettlement(…)         ← the commerce core (orders/shipments.server.ts)
  *   await disputeSettlement / reopenSettlement / discardSettlement(…)
+ *   const n = await countSettlementsToReconcile(db, actor);          the admin shell's queue (null without .cod.settle)
  *
  * A settlement is a DRAFT while it is put together from the carrier's statement: delivered parcels with the cash
  * collected (prefilled with the cash-on-delivery amount due) and every completed parcel (delivered or back) with the
@@ -525,4 +526,48 @@ export async function settlementBacklog(db: Db, actor: Actor): Promise<{ carrier
     .orderBy(asc(carriers.name));
   const cash = await codOutstandingByCarrier(db);
   return rows.map((row) => ({ carrierId: row.carrierId, name: row.name, parcels: Number(row.parcels ?? 0), cashIqd: cash.get(row.carrierId) ?? 0 }));
+}
+
+/** The audit action of a submission (the core's submitCodSettlement writes it; settlementSubmitter reads it). */
+const SUBMIT_ACTION = "shipping.cod.submit";
+
+/**
+ * How many submitted settlements this employee may reconcile — the admin shell's queue (shell/queues.server.ts). It is
+ * asked on every admin page, so it is ONE query bringing back one row per submitted settlement, however many audit rows
+ * each one has (a settlement can carry a hand correction per parcel). The rules are the core's reconcileCodSettlement
+ * (orders/shipments.server.ts), the same the settlement's own page applies (getSettlement: can.reconcile):
+ *   · settlementNeedsSecondPerson with the settlement's preparers (settlementPreparers: its last submitter and everyone
+ *     who corrected a parcel by hand): a settlement with a difference — a variance or a hand correction — is never
+ *     asked of whoever created, corrected or submitted it. Of the correctors, the rule only asks whether this employee
+ *     is one, so that is all the query reads;
+ *   · reconciling records the cash each parcel brought (a parcel with an amount whose order's cash-on-delivery payment —
+ *     the newest not cancelled — is still pending) and that needs orders.payment.record: without it, such a settlement
+ *     is not asked (its page says so: reconcileReason "permission").
+ * Null without shipping.cod.settle.
+ */
+export async function countSettlementsToReconcile(db: Db, actor: Actor): Promise<number | null> {
+  if (!can(actor, "shipping.cod.settle")) return null;
+  const { actorId } = actorRef(actor);
+  const audited = (action: string) => sql`audit_events AS a WHERE a.entity_type = 'cod_settlement' AND a.entity_id = s.id AND a.action = ${action}`;
+  const cashToRecord = can(actor, "orders.payment.record")
+    ? sql`0`
+    : sql`EXISTS (SELECT 1 FROM cod_settlement_items AS i JOIN shipments AS p ON p.id = i.shipment_id JOIN orders AS o ON o.id = p.order_id
+        WHERE i.settlement_id = s.id AND i.amount_iqd <> 0 AND o.payment_method = 'cod'
+          AND (SELECT pay.status FROM payments AS pay WHERE pay.order_id = o.id AND pay.method = 'cod' AND pay.status <> 'cancelled'
+               ORDER BY pay.created_at DESC, pay.id DESC LIMIT 1) = 'pending')`;
+  const rows = await db.all<{ createdBy: string | null; varianceIqd: number | null; submitter: string | null; corrected: number; correctedByMe: number; cashToRecord: number }>(sql`
+    SELECT s.created_by AS createdBy, s.variance_iqd AS varianceIqd,
+      (SELECT a.actor_id FROM ${audited(SUBMIT_ACTION)} ORDER BY a.seq DESC LIMIT 1) AS submitter,
+      EXISTS (SELECT 1 FROM ${audited(SETTLEMENT_CORRECTION_ACTION)}) AS corrected,
+      EXISTS (SELECT 1 FROM ${audited(SETTLEMENT_CORRECTION_ACTION)} AND a.actor_id = ${actorId ?? ""}) AS correctedByMe,
+      ${cashToRecord} AS cashToRecord
+    FROM cod_settlements AS s WHERE s.status = 'submitted'`);
+  let count = 0;
+  for (const row of rows) {
+    if (Number(row.cashToRecord)) continue;
+    const preparers = { submitter: row.submitter ?? null, correctors: actorId && Number(row.correctedByMe) ? [actorId] : [], corrected: Boolean(Number(row.corrected)) };
+    const rule = settlementNeedsSecondPerson({ createdBy: row.createdBy, varianceIqd: Number(row.varianceIqd ?? 0) }, preparers, actorId);
+    if (!(rule.needsSecond && rule.involved)) count++;
+  }
+  return count;
 }

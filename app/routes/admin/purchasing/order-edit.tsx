@@ -3,7 +3,8 @@ import { Link, redirect, useActionData } from "react-router";
 import type { Route } from "./+types/order-edit";
 import { throwAsResponse } from "~/server/errors";
 import { getPurchaseOrder, savePurchaseOrder } from "~/server/services/admin/purchasing/orders.server";
-import { PO_SPENDING_LIMIT_IQD, baghdadDate, minorToText, rateToText } from "~/server/services/admin/purchasing/rules";
+import { baghdadDate, minorToText, rateToText } from "~/server/services/admin/purchasing/rules";
+import { getSetting } from "~/server/settings.server";
 import { OrderForm } from "./components/OrderForm";
 import { Code, PageHead, usePurT } from "./components/kit";
 import { purchasingMeta } from "./meta";
@@ -43,7 +44,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
         other: order.otherMinor ? minorToText(order.otherMinor, order.currency) : "",
         lines: detail.lines.map((line) => ({ code: line.variant.sku, qty: String(line.qtyOrdered), unitCost: minorToText(line.unitCostMinor ?? null, order.currency) })),
       },
-      limitIqd: PO_SPENDING_LIMIT_IQD,
+      limitIqd: await getSetting(db, "purchasing.po_approval_limit_iqd"),
     };
   } catch (error) {
     if (error instanceof Response) throw error;

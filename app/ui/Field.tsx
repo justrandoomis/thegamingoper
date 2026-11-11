@@ -12,12 +12,14 @@ import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
- * Form fields (docs/DESIGN.md §9.9): flat paper with a real border — 52px, 1.5px line-strong, 16px text (no zoom on
- * iOS), the label above in 600, help below in caption. Validation is the caller's: pass `error` (a sentence that
- * says what is wrong and what to type, e.g. "ينقص الرقم 4 أرقام.") — the field then gets a 2px red-ink border,
- * an alert icon, aria-invalid, aria-describedby, and the sentence is announced politely. Never colour alone, never a
- * red fill. Required fields show "*" plus the word for screen readers; optional ones say "(اختياري)".
- * Native browser validation is not used (no `required` attribute): the server and `error` carry validation.
+ * Form fields — Design System v2 §4.9: paper with a real border — 52px, --r-sm, a 1px --line-strong boundary (3.83:1),
+ * 16px text (no zoom on iOS), the label above in 14/600, a 13px hint below. Validation is the caller's: pass `error` (a
+ * sentence that says what is wrong and what to type, e.g. «ينقص الرقم 4 أرقام.») — the field then gets a 2px --danger
+ * border, a 16px alert icon, and the sentence REPLACES the hint (aria-invalid, aria-describedby, announced politely).
+ * Never colour alone, never brand red. Required fields show «*» plus the word for screen readers and `aria-required`;
+ * optional ones say «(اختياري)». Native browser validation is not used: the server and `error` carry validation. On
+ * submit, put <FormErrorSummary> above the form and move focus to the first invalid field. Option cards (version,
+ * payment, an answer) are <OptionCard>; governorates <GovernoratePicker>; delivery-time cells <PreferencePicker>.
  *
  *   <TextField label={t("phone")} type="tel" autoComplete="tel-national" required hint={t("weCall")} error={errors.phone} name="phone" />
  *   <TextField label={t("amount")} inputMode="numeric" name="amount" end={<span className="type-caption">د.ع</span>} />
@@ -52,7 +54,8 @@ function useFieldIds(id: string | undefined, hint: ReactNode, error: ReactNode) 
   const base = id ?? auto;
   const hintId = hint ? `${base}-hint` : undefined;
   const errorId = `${base}-error`;
-  const describedBy = [hintId, error ? errorId : undefined].filter(Boolean).join(" ") || undefined;
+  // the error REPLACES the hint (v2 §4.9)
+  const describedBy = (error ? errorId : hintId) || undefined;
   return { id: base, hintId, errorId, describedBy };
 }
 
@@ -90,7 +93,7 @@ function FieldLabel({ htmlFor, label, required, optional, hideLabel, as = "label
 function FieldMessages({ hintId, hint, errorId, error }: { hintId?: string; hint?: ReactNode; errorId: string; error?: ReactNode }) {
   return (
     <>
-      {hint ? (
+      {hint && !error ? (
         <p className="field__hint" id={hintId}>
           {hint}
         </p>
@@ -136,6 +139,7 @@ export function TextField({ label, hint, error, required, optional, hideLabel, c
           dir={isLtr ? "ltr" : undefined}
           className={cx("field__input", inputClassName)}
           aria-invalid={error ? true : undefined}
+          aria-required={required || undefined}
           aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
           data-end={end ? "" : undefined}
         />
@@ -160,6 +164,7 @@ export function TextArea({ label, hint, error, required, optional, hideLabel, cl
         id={ids.id}
         className={cx("field__input", inputClassName)}
         aria-invalid={error ? true : undefined}
+        aria-required={required || undefined}
         aria-describedby={cx(ids.describedBy, area["aria-describedby"]) || undefined}
       />
       <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />
@@ -190,6 +195,7 @@ export function Select({ label, hint, error, required, optional, hideLabel, clas
           id={ids.id}
           className={cx("field__input", inputClassName)}
           aria-invalid={error ? true : undefined}
+          aria-required={required || undefined}
           aria-describedby={cx(ids.describedBy, select["aria-describedby"]) || undefined}
         >
           {placeholder !== undefined ? (
@@ -204,7 +210,7 @@ export function Select({ label, hint, error, required, optional, hideLabel, clas
           ))}
           {children}
         </select>
-        <Icon name="caret-down" size={18} className="field__caret" />
+        <Icon name="caret-down" size={20} className="field__caret" />
       </div>
       <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />
     </div>
@@ -310,6 +316,57 @@ export function Switch({ label, hint, error, className, id, ...input }: SwitchPr
         </span>
       </label>
       <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />
+    </div>
+  );
+}
+
+/* ───────────────────────────── OptionCard ───────────────────────────── */
+export type OptionCardProps = Omit<RadioProps, "row"> & {
+  /** A payment option: 72px, a 22px radio, a 16/600 title. */
+  pay?: boolean;
+  /** Words in the 40×28 mark area at the end (a payment method's name — no unlicensed logos). */
+  mark?: string;
+};
+
+/**
+ * An option card — v2 §4.9: min 64 (payment 72), --r-sm, a 1px control boundary; a radio at the start; a title and one
+ * hint line; at the end the option's own price (`end={<Price … size="sm" as="span" />}`) or a word mark. Chosen: a 2px
+ * ink border and the filled radio. Group them in a <FieldGroup> whose legend repeats the choice («النسخة · الدولية»).
+ *
+ *   <OptionCard name="version" value="intl" label={t("intl")} hint={t("intlHint")} end={<Price amountIqd={667750} size="sm" as="span" approx="off" />} />
+ *   <OptionCard pay name="pay" value="cod" label={t("cod")} hint={t("codHint")} mark={t("cash")} />
+ */
+export function OptionCard({ pay = false, mark, end, className, ...radio }: OptionCardProps) {
+  return <Radio {...radio} row className={cx(pay && "choice--pay", className)} end={end ?? (mark ? <span className="choice__mark">{mark}</span> : undefined)} />;
+}
+
+/* ───────────────────────────── FormErrorSummary ───────────────────────────── */
+export type FormError = { id: string; label: ReactNode };
+
+/**
+ * The error summary above a form on submit — v2 §4.9: one `role="alert"` block («تحقّق من حقلين: رقم الموبايل، العنوان.»)
+ * whose items link to the fields. Move focus to the first invalid field yourself (the summary is announced). Nothing
+ * when there is no error.
+ */
+export function FormErrorSummary({ errors, className }: { errors: readonly FormError[]; className?: string }) {
+  const t = useT("ui");
+  if (errors.length === 0) return null;
+  return (
+    <div role="alert" className={cx("form-alert", className)}>
+      <p className="flex items-start gap-1.5">
+        <Icon name="warning-circle" size={20} />
+        <span>{t("field.summary", { count: errors.length })}</span>
+      </p>
+      <ul className="grid ps-7">
+        {errors.map((error) => (
+          <li key={error.id}>
+            {/* 44px rows: each link is a target of its own, not a word inside a sentence */}
+            <a href={`#${error.id}`} className="inline-flex min-h-11 items-center">
+              {error.label}
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

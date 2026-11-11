@@ -1,4 +1,4 @@
-import { useEffect, useId, useReducer, useRef, useState, type DragEvent, type ReactNode } from "react";
+import { useEffect, useId, useReducer, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
@@ -8,7 +8,8 @@ import { Status } from "./Tag";
 import { TextLink } from "./TextLink";
 
 /**
- * The transfer-proof uploader (docs/DESIGN.md §9.18, brief §4 C/D). A paper drop area with a dashed border: drag a
+ * The transfer-proof uploader (Design System v2 §4.24; brief §4 C/D). A paper drop area (--r-lg, a 1.5px dashed
+ * control line) — drag a
  * photo onto it, choose one, or take one with the camera. The file is checked here first (type and size, the same
  * limits as the server: JPEG, PNG or WebP up to 8 MB — the server decides again from the bytes), previewed, then
  * handed to `onUpload` — the ONLY way this component talks to anything:
@@ -311,14 +312,15 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
       const percent = Math.floor(unit(state.progress) * 100);
       body = (
         <div className="grid gap-2">
-          <p className="flex items-baseline justify-between gap-3 type-label text-ink">
+          <p className="flex items-baseline justify-between gap-3 type-sm text-ink">
             <span className="min-w-0 truncate">{t("proof.uploading", { name: "⁨" + state.file.name + "⁩" })}</span>
             <bdi className="nums shrink-0 font-semibold">{pct(state.progress)}</bdi>
           </p>
-          <div role="progressbar" aria-label={t("proof.progress")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} className="h-1.5 overflow-hidden rounded-full bg-niche">
-            <div className="h-full rounded-full bg-ink" style={{ inlineSize: `${percent}%` }} />
+          <div role="progressbar" aria-label={t("proof.progress")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} className="proof__bar">
+            <div className="proof__fill" style={{ "--progress": `${percent}%` } as CSSProperties} />
           </div>
-          <TextLink as="button" type="button" arrow={false} onClick={cancel} className="justify-self-start">
+          {/* a one-word button: padding widens the target to 44px without moving the word */}
+          <TextLink as="button" type="button" arrow={false} onClick={cancel} className="-mx-3.5 justify-self-start px-3.5">
             {t("proof.cancel")}
           </TextLink>
         </div>
@@ -328,8 +330,8 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
     case "interrupted":
       body = (
         <div className="grid gap-3">
-          <p className="flex items-start gap-2 type-label font-medium text-warn">
-            <Icon name="warning" size={18} className="mt-0.5 shrink-0" />
+          <p className="flex items-start gap-2 type-sm-strong text-warn">
+            <Icon name="warning" size={20} className="shrink-0" />
             <span>
               {t("proof.interrupted", { pct: "⁦" + pct(state.progress) + "⁩" })} <bdi className="font-normal text-ink-2">{state.file.name}</bdi>
             </span>
@@ -348,8 +350,8 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
     case "failed":
       body = (
         <div className="grid gap-3">
-          <p className="flex items-start gap-2 type-label font-medium text-red-ink">
-            <Icon name="warning-circle" size={18} className="mt-0.5 shrink-0" />
+          <p className="flex items-start gap-2 type-sm-strong text-danger">
+            <Icon name="warning-circle" size={20} className="shrink-0" />
             <span>{problemText(state.problem)}</span>
           </p>
           <div className="flex flex-wrap items-center gap-2">
@@ -383,19 +385,19 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
       ) : (
         <div className="grid justify-items-center gap-2 py-2 text-center">
           <span className="grid size-11 place-items-center rounded-full bg-niche text-ink-2" aria-hidden="true">
-            <Icon name="upload-simple" size={22} />
+            <Icon name="upload-simple" size={24} />
           </span>
-          <p id={titleId} className="type-strong text-ink">
+          <p id={titleId} className="type-card text-ink">
             {dragging ? t("proof.dropHere") : (title ?? t("proof.drop"))}
           </p>
-          <p className="type-caption text-ink-2">{t("proof.limits", { size: mb(maxBytes) })}</p>
+          <p className="type-xs text-ink-2">{t("proof.limits", { size: mb(maxBytes) })}</p>
           {problem ? (
-            <p className="flex items-start gap-1.5 text-start type-caption font-medium text-red-ink">
+            <p className="flex items-start gap-1.5 text-start type-xs-strong text-danger">
               <Icon name="warning-circle" size={16} className="mt-0.5 shrink-0" />
               {problemText(problem)}
             </p>
           ) : state.phase === "idle" && state.cancelled ? (
-            <p className="type-caption text-ink-2">{t("proof.cancelled")}</p>
+            <p className="type-xs text-ink-2">{t("proof.cancelled")}</p>
           ) : null}
           <div className="mt-1">{keys(problem ? "another" : "choose")}</div>
         </div>
@@ -417,11 +419,8 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
-        className={cx(
-          "rounded-lg border-[1.5px] border-dashed bg-paper p-4",
-          dragging ? "border-ink bg-niche" : "border-line-strong",
-          disabled && "opacity-60",
-        )}
+        data-state={state.phase === "failed" || (state.phase === "idle" && state.problem) ? "failed" : state.phase}
+        className={cx("proof__drop justify-items-stretch text-start", dragging && "border-ink bg-niche", disabled && "opacity-60")}
       >
         {body}
         {inputs}
@@ -439,11 +438,11 @@ function ReviewLine({ status }: { status: ProofStatus }) {
   const text = status.state === "approved" ? t("proof.approvedText") : status.state === "rejected" ? t("proof.rejectedText") : t("proof.submittedText");
   return (
     <div className="grid gap-1" data-review={status.state}>
-      <Status tone={tone} className="font-semibold">
+      <Status tone={tone} size="lg">
         {t(`proof.status.${status.state}`)}
       </Status>
-      {status.state === "rejected" && status.note ? <p className="type-body font-medium text-ink">{t("proof.reviewerNote", { note: status.note })}</p> : null}
-      <p className="type-caption text-ink-2">{text}</p>
+      {status.state === "rejected" && status.note ? <p className="type-sm-strong text-ink">{t("proof.reviewerNote", { note: status.note })}</p> : null}
+      <p className="type-xs text-ink-2">{text}</p>
     </div>
   );
 }
@@ -451,17 +450,17 @@ function ReviewLine({ status }: { status: ProofStatus }) {
 function ProofThumb({ src, name, alt, done }: { src: string | null; name: string | null; alt: string; done?: string }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-md bg-niche text-ink-2">
-        {src ? <img src={src} width={64} height={64} alt={alt} className="size-full object-cover" /> : <Icon name="receipt" size={26} />}
+      <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-sm bg-niche text-ink-2">
+        {src ? <img src={src} width={64} height={64} alt={alt} className="size-full object-cover" /> : <Icon name="receipt" size={24} />}
       </span>
       <span className="grid min-w-0 gap-0.5">
         {done ? (
-          <span className="flex items-center gap-1.5 type-label font-semibold text-ok">
+          <span className="flex items-center gap-1.5 type-sm-strong text-ok">
             <Icon name="check-circle" size={16} filled />
             {done}
           </span>
         ) : null}
-        {name ? <bdi className="truncate type-caption text-ink-2">{name}</bdi> : null}
+        {name ? <bdi className="truncate type-xs text-ink-2">{name}</bdi> : null}
       </span>
     </div>
   );

@@ -4,22 +4,18 @@ import { useT } from "~/i18n/react";
 import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { KeyBank } from "./KeyBank";
-import { PLATFORMS, PlatformGlyph, PlatformLed, type Platform } from "./PlatformLed";
+import { PLATFORMS, PlatformLed, type Platform } from "./PlatformLed";
 
 /**
- * The bank of four platform keys under the home stage (docs/DESIGN.md §2, §8.1, reference a.png): white clay keys
- * in a well, each with a neutral device pictogram, a 16×5 LED in the platform's light and the platform's name as
- * text. No logos, no platform-coloured surfaces. Press one: it goes down and stays down, its LED lights, the
- * previous one springs up. Controlled.
+ * 1.0's bank of four platform keys — RETIRED (Design System v2 §4.1, §4.2; stage 4 deletes it). The platform doors are
+ * ./PlatformTile now. Until the home area migrates, this keeps its API and renders the v2 look: segments with an 8px dot
+ * and the name (radio semantics), or toggles (`multiple`, aria-pressed) for onboarding.
  *
- *   <PlatformBank value={platform} onChange={setPlatform} onIntent={prefetchHero} />     "دورك. اختر منصّتك."
- *   <PlatformBank multiple values={chosen} onToggle={toggle} />                         onboarding (aria-pressed)
- *
- * Single choice is a radiogroup with roving focus; arrows follow the reading direction (KeyBank). Multiple choice
- * is a row of toggles (each its own tab stop, aria-pressed).
+ *   <PlatformBank value={platform} onChange={setPlatform} onIntent={prefetchHero} />
+ *   <PlatformBank multiple values={chosen} onToggle={toggle} />
  */
 type Common = {
-  /** Visible label above the well. Default: "دورك. اختر منصّتك." (onboarding: "اختر منصّاتك."). */
+  /** Visible label above the control. Default: "اختر منصّتك." (`multiple`, the intro: "دورك. اختر منصّاتك."). */
   label?: ReactNode;
   /** Platforms to offer, in order. Default all four. */
   platforms?: readonly Platform[];
@@ -51,13 +47,16 @@ export function PlatformBank(props: PlatformBankProps) {
   const labelId = useId();
   const platforms = props.platforms ?? PLATFORMS;
   const nameOf = (p: Platform) => props.names?.[p] ?? ui(`platform.${p}`);
+  // «دورك.» survives only in the intro line (v2 §9.1); the intro is the one caller of `multiple` with no label of its own
   const label =
     props.label ??
-    (
+    (props.multiple ? (
       <>
-        <b>{t("bank.turn")}</b> {t(props.multiple ? "bank.pickMany" : "bank.pick")}
+        <b>{t("bank.turn")}</b> {t("bank.pickMany")}
       </>
-    );
+    ) : (
+      t("bank.pick")
+    ));
 
   if (!props.multiple) {
     return (
@@ -79,15 +78,14 @@ export function PlatformBank(props: PlatformBankProps) {
       <p className="bank__label" id={labelId}>
         {label}
       </p>
-      <div role="group" aria-labelledby={labelId} className={cx("bank well", props.className)} style={{ "--bank-n": platforms.length, ...props.style } as CSSProperties}>
+      <div role="group" aria-labelledby={labelId} className={cx("bank", props.className)} style={props.style}>
         {platforms.map((p) => {
           const on = props.values.includes(p);
           return (
-            <button key={p} type="button" className="key key--plat" data-gel={p} data-press="clay" aria-pressed={on} onClick={() => props.onToggle(p, !on)}>
+            <button key={p} type="button" className="key key--plat" data-gel={p} data-press="soft" aria-pressed={on} onClick={() => props.onToggle(p, !on)}>
               <span className="key__cap">
-                <PlatformLed />
-                <PlatformGlyph platform={p} />
                 <BidiLabel className="key__label">{nameOf(p)}</BidiLabel>
+                <PlatformLed />
               </span>
             </button>
           );

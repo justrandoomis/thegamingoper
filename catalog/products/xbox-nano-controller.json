@@ -7,16 +7,16 @@
   "family": "xbox-nano-controller",
   "status": "available",
   "releaseDate": "2026-11-04",
-  "name": { "ar": "XBOX Nano Controller", "en": "XBOX Nano Controller", "ckb": "XBOX Nano Controller" },
+  "name": { "ar": "Xbox Nano Controller", "en": "Xbox Nano Controller", "ckb": "Xbox Nano Controller" },
   "short": {
     "ar": "يد صغيرة للجيب · 101 غرام · بطارية قابلة للشحن حتى 5 ساعات",
     "en": "Pocket-size · 101 g · rechargeable, up to 5 hours",
     "ckb": "دەسکی بچووکی گیرفان · 101 گرام · پاتریی شەحنکراوە تا 5 کاتژمێر"
   },
   "description": {
-    "ar": "أصغر يد تحكم من XBOX، بطول يزيد قليلاً على 13 سم ووزن 101 غرام، فيها كل أزرار يد XBOX الأساسية الثمانية عشر. يد اقتصادية مناسبة للأيدي الصغيرة وللعب أثناء التنقل، فيها بطارية مدمجة قابلة للشحن (حتى 5 ساعات) وزر Action قابل للبرمجة. تتصل بأجهزة XBOX عبر XBOX Wireless وبالكمبيوتر والهواتف وبعض الشاشات الذكية عبر Bluetooth. كابل الشحن USB-C غير مرفق.",
-    "en": "XBOX's smallest controller, just over 13 cm long and 101 g, with all 18 standard XBOX inputs. An entry-level pad suited to smaller hands and play on the go, it has a built-in rechargeable battery (up to 5 hours) and a programmable Action Button. It connects to XBOX consoles with XBOX Wireless and to PCs, phones and some smart TVs over Bluetooth. A USB-C charging cable is not included.",
-    "ckb": "بچووکترین دەسکی XBOX، کەمێک لە 13 سم درێژترە و 101 گرامە، و هەموو 18 دوگمە بنەڕەتییەکانی دەسکی XBOX ـی تێدایە. دەسکێکی هەرزانە بۆ دەستی بچووک و یاری لە ڕێگادا، پاتریی ناوەکیی شەحنکراوەی هەیە (تا 5 کاتژمێر) و دوگمەی Action ـی بەرنامەڕێژکراو. بە XBOX Wireless بە کۆنسۆڵەکانی XBOX ـەوە و بە Bluetooth بە کۆمپیوتەر و مۆبایل و هەندێک شاشەی زیرەکەوە دەبەسترێت. کێبڵی شەحنی USB-C لەگەڵی نییە."
+    "ar": "أصغر يد تحكم من Xbox، بطول يزيد قليلاً على 13 سم ووزن 101 غرام، فيها كل أزرار يد Xbox الأساسية الثمانية عشر. يد اقتصادية مناسبة للأيدي الصغيرة وللعب أثناء التنقل، فيها بطارية مدمجة قابلة للشحن (حتى 5 ساعات) وزر Action قابل للبرمجة. تتصل بأجهزة Xbox عبر Xbox Wireless وبالكمبيوتر والهواتف وبعض الشاشات الذكية عبر Bluetooth. كابل الشحن USB-C غير مرفق.",
+    "en": "Xbox's smallest controller, just over 13 cm long and 101 g, with all 18 standard Xbox inputs. An entry-level pad suited to smaller hands and play on the go, it has a built-in rechargeable battery (up to 5 hours) and a programmable Action Button. It connects to Xbox consoles with Xbox Wireless and to PCs, phones and some smart TVs over Bluetooth. A USB-C charging cable is not included.",
+    "ckb": "بچووکترین دەسکی Xbox، کەمێک لە 13 سم درێژترە و 101 گرامە، و هەموو 18 دوگمە بنەڕەتییەکانی دەسکی Xbox ـی تێدایە. دەسکێکی هەرزانە بۆ دەستی بچووک و یاری لە ڕێگادا، پاتریی ناوەکیی شەحنکراوەی هەیە (تا 5 کاتژمێر) و دوگمەی Action ـی بەرنامەڕێژکراو. بە Xbox Wireless بە کۆنسۆڵەکانی Xbox ـەوە و بە Bluetooth بە کۆمپیوتەر و مۆبایل و هەندێک شاشەی زیرەکەوە دەبەسترێت. کێبڵی شەحنی USB-C لەگەڵی نییە."
   },
   "highlights": [
     {
@@ -35,9 +35,9 @@
       "ckb": "دوگمەی Action ـی بەرنامەڕێژکراو بۆ وێنەگرتن و تۆمارکردن و کورتەڕێ"
     },
     {
-      "ar": "XBOX Wireless وBluetooth: أجهزة XBOX والكمبيوتر والهواتف وبعض الشاشات الذكية",
-      "en": "XBOX Wireless and Bluetooth: XBOX consoles, PC, phones and some smart TVs",
-      "ckb": "XBOX Wireless و Bluetooth: کۆنسۆڵی XBOX، کۆمپیوتەر، مۆبایل و هەندێک شاشەی زیرەک"
+      "ar": "Xbox Wireless وBluetooth: أجهزة Xbox والكمبيوتر والهواتف وبعض الشاشات الذكية",
+      "en": "Xbox Wireless and Bluetooth: Xbox consoles, PC, phones and some smart TVs",
+      "ckb": "Xbox Wireless و Bluetooth: کۆنسۆڵی Xbox، کۆمپیوتەر، مۆبایل و هەندێک شاشەی زیرەک"
     }
   ],
   "specs": [
@@ -45,18 +45,18 @@
       "key": "connectivity",
       "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
       "value": {
-        "ar": "XBOX Wireless مع أجهزة XBOX؛ Bluetooth مع Windows 10/11 والأجهزة اللوحية وiOS وAndroid والشاشات الذكية المتوافقة؛ واتصال سلكي عبر USB",
-        "en": "XBOX Wireless to XBOX consoles; Bluetooth to Windows 10/11, tablets, iOS, Android and compatible smart TVs; wired over USB",
-        "ckb": "XBOX Wireless لەگەڵ کۆنسۆڵی XBOX؛ Bluetooth لەگەڵ Windows 10/11، تابلێت، iOS، Android و شاشەی زیرەکی گونجاو؛ و بە وایەری USB"
+        "ar": "Xbox Wireless مع أجهزة Xbox؛ Bluetooth مع Windows 10/11 والأجهزة اللوحية وiOS وAndroid والشاشات الذكية المتوافقة؛ واتصال سلكي عبر USB",
+        "en": "Xbox Wireless to Xbox consoles; Bluetooth to Windows 10/11, tablets, iOS, Android and compatible smart TVs; wired over USB",
+        "ckb": "Xbox Wireless لەگەڵ کۆنسۆڵی Xbox؛ Bluetooth لەگەڵ Windows 10/11، تابلێت، iOS، Android و شاشەی زیرەکی گونجاو؛ و بە وایەری USB"
       }
     },
     {
       "key": "compatibility",
       "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
       "value": {
-        "ar": "XBOX Series X|S وXBOX One وXBOX على الكمبيوتر وWindows وAndroid وiOS",
-        "en": "XBOX Series X|S, XBOX One, XBOX on PC, Windows, Android, iOS",
-        "ckb": "XBOX Series X|S، XBOX One، XBOX لەسەر کۆمپیوتەر، Windows، Android، iOS"
+        "ar": "Xbox Series X|S وXbox One وXbox على الكمبيوتر وWindows وAndroid وiOS",
+        "en": "Xbox Series X|S, Xbox One, Xbox on PC, Windows, Android, iOS",
+        "ckb": "Xbox Series X|S، Xbox One، Xbox لەسەر کۆمپیوتەر، Windows، Android، iOS"
       }
     },
     {
@@ -82,19 +82,19 @@
       "key": "features",
       "label": { "ar": "مزايا إضافية", "en": "Other features", "ckb": "تایبەتمەندیی تر" },
       "value": {
-        "ar": "زر Action قابل للبرمجة، تحديثات البرنامج في الخلفية، تخصيص الأزرار عبر تطبيق XBOX Accessories",
-        "en": "Programmable Action Button, background firmware updates, button mapping in the XBOX Accessories app",
-        "ckb": "دوگمەی Action ـی بەرنامەڕێژکراو، نوێکردنەوەی فیرموێر لە پشتەوە، ڕێکخستنی دوگمەکان لە ئەپی XBOX Accessories"
+        "ar": "زر Action قابل للبرمجة، تحديثات البرنامج في الخلفية، تخصيص الأزرار عبر تطبيق Xbox Accessories",
+        "en": "Programmable Action Button, background firmware updates, button mapping in the Xbox Accessories app",
+        "ckb": "دوگمەی Action ـی بەرنامەڕێژکراو، نوێکردنەوەی فیرموێر لە پشتەوە، ڕێکخستنی دوگمەکان لە ئەپی Xbox Accessories"
       }
     }
   ],
   "inTheBox": [
-    { "ar": "يد XBOX Nano Controller فقط (بدون كابل)", "en": "XBOX Nano Controller only (no cable)", "ckb": "تەنها دەسکی XBOX Nano Controller (بێ کێبڵ)" }
+    { "ar": "يد Xbox Nano Controller فقط (بدون كابل)", "en": "Xbox Nano Controller only (no cable)", "ckb": "تەنها دەسکی Xbox Nano Controller (بێ کێبڵ)" }
   ],
   "variants": [
     {
       "sku": "XNANO-STD",
-      "title": { "ar": "XBOX Nano Controller", "en": "XBOX Nano Controller", "ckb": "XBOX Nano Controller" },
+      "title": { "ar": "Xbox Nano Controller", "en": "Xbox Nano Controller", "ckb": "Xbox Nano Controller" },
       "options": { "edition": "Standard" },
       "isDefault": true,
       "images": ["xbox-nano-controller--1", "xbox-nano-controller--2", "xbox-nano-controller--3", "xbox-nano-controller--4", "xbox-nano-controller--5"]
@@ -104,19 +104,19 @@
     {
       "deviceModel": "xbox-series-x",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "note": { "ar": "عبر Xbox Wireless", "en": "Over Xbox Wireless", "ckb": "بە Xbox Wireless" },
       "source": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3"
     },
     {
       "deviceModel": "xbox-series-x-digital",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "note": { "ar": "عبر Xbox Wireless", "en": "Over Xbox Wireless", "ckb": "بە Xbox Wireless" },
       "source": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "note": { "ar": "عبر Xbox Wireless", "en": "Over Xbox Wireless", "ckb": "بە Xbox Wireless" },
       "source": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3"
     },
     {
@@ -138,7 +138,7 @@
       "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/1145287_MS-Store_Image-Buy-Box-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3",
       "kind": "hero",
-      "alt": { "ar": "يد XBOX Nano البيضاء من الأمام", "en": "White XBOX Nano Controller from the front", "ckb": "دەسکی سپیی XBOX Nano لە پێشەوە" },
+      "alt": { "ar": "يد Xbox Nano البيضاء من الأمام", "en": "White Xbox Nano Controller from the front", "ckb": "دەسکی سپیی Xbox Nano لە پێشەوە" },
       "credit": "Microsoft",
       "width": 2000,
       "height": 2000,
@@ -150,7 +150,7 @@
       "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/1145287_MS-Store_Image-Gallery-ANL-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3",
       "kind": "angle",
-      "alt": { "ar": "يد XBOX Nano بزاوية مائلة", "en": "XBOX Nano Controller at an angle", "ckb": "دەسکی XBOX Nano بە گۆشەیەکی لار" },
+      "alt": { "ar": "يد Xbox Nano بزاوية مائلة", "en": "Xbox Nano Controller at an angle", "ckb": "دەسکی Xbox Nano بە گۆشەیەکی لار" },
       "credit": "Microsoft",
       "width": 2000,
       "height": 2000,
@@ -162,7 +162,7 @@
       "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/1145287_MS-Store_Image-Gallery-BOB-0_2000x20001?fmt=png-alpha&scl=1&bfc=off",
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3",
       "kind": "angle",
-      "alt": { "ar": "الجهة الخلفية من يد XBOX Nano", "en": "Back of the XBOX Nano Controller", "ckb": "پشتەوەی دەسکی XBOX Nano" },
+      "alt": { "ar": "الجهة الخلفية من يد Xbox Nano", "en": "Back of the Xbox Nano Controller", "ckb": "پشتەوەی دەسکی Xbox Nano" },
       "credit": "Microsoft",
       "width": 2000,
       "height": 2000,
@@ -175,9 +175,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3",
       "kind": "detail",
       "alt": {
-        "ar": "الحافة العلوية ليد XBOX Nano مع منفذ USB-C والأكتاف",
-        "en": "Top edge of the XBOX Nano Controller with the USB-C port and bumpers",
-        "ckb": "لێواری سەرەوەی دەسکی XBOX Nano لەگەڵ دەروازەی USB-C و بەمپەرەکان"
+        "ar": "الحافة العلوية ليد Xbox Nano مع منفذ USB-C والأكتاف",
+        "en": "Top edge of the Xbox Nano Controller with the USB-C port and bumpers",
+        "ckb": "لێواری سەرەوەی دەسکی Xbox Nano لەگەڵ دەروازەی USB-C و بەمپەرەکان"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -191,9 +191,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3",
       "kind": "detail",
       "alt": {
-        "ar": "مقارنة حجم يد XBOX Nano مع يد XBOX Wireless Controller العادية",
-        "en": "Size of the XBOX Nano next to a standard XBOX Wireless Controller",
-        "ckb": "بەراوردی قەبارەی XBOX Nano لەگەڵ دەسکی ئاسایی XBOX Wireless Controller"
+        "ar": "مقارنة حجم يد Xbox Nano مع يد Xbox Wireless Controller العادية",
+        "en": "Size of the Xbox Nano next to a standard Xbox Wireless Controller",
+        "ckb": "بەراوردی قەبارەی Xbox Nano لەگەڵ دەسکی ئاسایی Xbox Wireless Controller"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -204,22 +204,22 @@
   "sources": [
     {
       "url": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3",
-      "title": "Buy XBOX Nano Controller",
+      "title": "Buy Xbox Nano Controller",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
       "supports": "tech specs (connectivity, compatibility, battery up to 5 hours, USB-C cable sold separately, 133 × 66.5 × 36.6 mm, 101 g, Action Button), what is included, images"
     },
     {
       "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-nano-controller",
-      "title": "XBOX Nano Controller",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Nano Controller",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
-      "supports": "entry-level rechargeable controller, XBOX Wireless and Bluetooth, button mapping, available now"
+      "supports": "entry-level rechargeable controller, Xbox Wireless and Bluetooth, button mapping, available now"
     },
     {
       "url": "https://news.xbox.com/en-us/2026/10/14/xbox-nano-controller/",
-      "title": "Meet the XBOX Nano Controller",
-      "publisher": "Microsoft (XBOX Wire)",
+      "title": "Meet the Xbox Nano Controller",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "announced 14 October 2026, a little over 5 inches and 3.5 oz, 18 standard inputs, launch markets from November (Iraq not listed)"
     },
@@ -235,7 +235,7 @@
       "title": "Microsoft Launches Xbox Nano Controller for $49.99 With Support for Consoles, PC and Smartphones",
       "publisher": "Digital Citizen",
       "retrieved": "2026-11-11",
-      "supports": "available from 4 November 2026; confirms Bluetooth and XBOX Wireless, rechargeable battery"
+      "supports": "available from 4 November 2026; confirms Bluetooth and Xbox Wireless, rechargeable battery"
     }
   ],
   "notes": {
@@ -250,7 +250,7 @@
       "No vibration: reported by The Verge and Digital Citizen, not stated by Microsoft",
       "Colour name: only a white version is shown and Microsoft does not name the colour",
       "Whether it has a 3.5mm headset jack is not stated on the official pages",
-      "4 November 2026 is the US/UK launch; XBOX Wire only says 'beginning in November' for the other launch markets"
+      "4 November 2026 is the US/UK launch; Xbox Wire only says 'beginning in November' for the other launch markets"
     ]
   }
 }

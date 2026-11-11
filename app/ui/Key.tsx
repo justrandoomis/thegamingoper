@@ -7,42 +7,55 @@ import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
- * The key — TamTam's one button (docs/DESIGN.md §6.1): a clay face on a static front wall; a press is the face
- * travelling down onto the wall, and a key that is "on" stays down.
+ * The button — Design System v2 §4.3 (docs/UI.md §2). One family, five looks, two heights:
  *
- *   <Key variant="commit" icon={<AddGlyph />} onClick={add}>{t("add")}</Key>        the ONE red key of a view
- *   <Key onClick={…}>{t("keepShopping")}</Key>                                        every other action (clay)
- *   <Key variant="ink" onClick={…}>{t("show24")}</Key>                                emphasis without red
- *   <Key variant="quiet" icon="moon" …>{t("theme")}</Key>                             chrome tools on bars
- *   <Key as={LocaleLink} to="/cart" size="lg">{t("viewCart")}</Key>                   a link that looks like a key
- *   <Key as={MotionLink} nav="zoom" to={`/p/${slug}`}>…</Key>
- *   <Key as="a" href="https://…">…</Key>
- *   <Key held={isOn} onClick={toggle}>…</Key>                                         a toggle: aria-pressed, held down
- *   <Key loading={fetcher.state !== "idle"}>…</Key>                                   busy: same width, spinner
+ *   <Key variant="primary" icon="bag-plus" onClick={add}>{t("add")}</Key>   the ONE red action of a view (clay v2)
+ *   <Key onClick={…}>{t("filters")}</Key>                                   secondary (default): paper + a control line
+ *   <Key variant="ghost" onClick={undo}>{t("undo")}</Key>                   quiet actions in bars and lists
+ *   <Key variant="onBand" as={MotionLink} to=…>{t("buy")}</Key>             the white key on the crimson hero / wallet band
+ *   <Key variant="danger" onClick={remove}>{t("remove")}</Key>              destructive confirmations (never brand red)
+ *   <Key size="sm">…</Key>                                                  40px (48 is the default; there is no third)
+ *   <Key as={LocaleLink} to="/cart">…</Key> · <Key as={MotionLink} nav="zoom" to=…>…</Key> · <Key as="a" href=…>
+ *   <Key held={on} onClick={toggle}>…</Key>                                 a toggle: aria-pressed, ink face
+ *   <Key loading={busy}>…</Key>                                             same width, 16px spinner, aria-busy
  *
- * Rules (§6.1, §0): one commit key per view — the action that moves the order forward. Red is never "danger".
- * Disabled keys go flat; write the reason next to them. Icon-only keys are <IconKey label>.
+ * Rules: one primary per view (lint). Ink fill means "selected", never "action". A disabled key states its reason in
+ * text beside it. A button never contains another button. Icon-only actions are <IconKey label>.
  *
- * Press feedback comes from the Motion Engine (`data-press`; <MotionRoot> must be mounted by the layout) with a CSS
- * :active fallback before it mounts; the commit key adds a light haptic where supported.
+ * 1.0 names keep working until stage 4 (§4.2): `commit` renders primary, `clay` and `ink` render secondary (the admin
+ * keeps its 1.0 ink key through `.key--ink`), `quiet` renders ghost, `lg` is 48.
+ *
+ * Press feedback comes from the Motion Engine (`data-press`; <MotionRoot> mounted by the layout): the primary and
+ * on-band keys move only their cap onto the 2px wall (`clay`), every other key compresses softly (`soft`). The primary
+ * adds a light haptic where supported.
  */
-export type KeyVariant = "commit" | "clay" | "ink" | "quiet";
+export type KeyVariant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "onBand"
+  | "danger"
+  /** 1.0 aliases — stage 4 deletes them. */
+  | "commit"
+  | "clay"
+  | "ink"
+  | "quiet";
 export type KeySize = "sm" | "md" | "lg";
 
 export type KeyOwnProps = {
-  /** "commit" = the red key (one per view) · "clay" (default) · "ink" · "quiet". */
+  /** primary (one per view) · secondary (default) · ghost · onBand · danger. 1.0: commit · clay · ink · quiet. */
   variant?: KeyVariant;
-  /** sm 40 (rows, toasts) · md 48 (default) · lg 56 (desktop heroes). All keep a ≥ 44px hit area. */
+  /** md 48 (default) · sm 40. `lg` is a 1.0 name for 48. Both keep a ≥ 44px hit area. */
   size?: KeySize;
   /** Leading icon: a sprite name or any decorative node. */
   icon?: IconName | ReactNode;
-  /** Trailing icon (a direction arrow, a caret). */
+  /** Trailing icon (a direction arrow, a caret). Directional sprite icons mirror in RTL by themselves. */
   iconEnd?: IconName | ReactNode;
   /** Busy: keeps its width, shows a spinner, announces "loading", ignores activation (stays focusable). */
   loading?: boolean;
-  /** A toggle that is on: held down, ink-faced, `aria-pressed`. Leave undefined for a plain action. */
+  /** A toggle that is on: ink-faced, `aria-pressed`. Leave undefined for a plain action. */
   held?: boolean;
-  /** Fill the inline size of the container. */
+  /** Fill the inline size of the container (sheets, task bars, the phone hero only). */
   block?: boolean;
   /** Buttons get the `disabled` attribute; links get `aria-disabled` and do not navigate. */
   disabled?: boolean;
@@ -52,13 +65,39 @@ export type KeyOwnProps = {
 
 export type KeyProps<C extends ElementType = "button"> = KeyOwnProps & { as?: C } & Omit<ComponentPropsWithRef<C>, keyof KeyOwnProps | "as">;
 
-const VARIANT_CLASS: Record<KeyVariant, string | undefined> = {
-  commit: "key--red",
-  clay: undefined,
+/** The v2 look each name renders. */
+export type KeyLook = "primary" | "secondary" | "ghost" | "onBand" | "danger";
+
+export const KEY_LOOK: Record<KeyVariant, KeyLook> = {
+  primary: "primary",
+  secondary: "secondary",
+  ghost: "ghost",
+  onBand: "onBand",
+  danger: "danger",
+  commit: "primary",
+  clay: "secondary",
+  ink: "secondary",
+  quiet: "ghost",
+};
+
+/* `ink` keeps its own class: the storefront draws it as secondary, the admin (1.0 materials) as its ink key. */
+const VARIANT_CLASS: Record<KeyVariant, string> = {
+  primary: "key--primary",
+  commit: "key--primary",
+  secondary: "key--secondary",
+  clay: "key--secondary",
   ink: "key--ink",
-  quiet: "key--quiet",
+  ghost: "key--ghost",
+  quiet: "key--ghost",
+  onBand: "key--on-band",
+  danger: "key--danger",
 };
 const SIZE_CLASS: Record<KeySize, string | undefined> = { sm: "key--sm", md: undefined, lg: "key--lg" };
+
+/** Clay keys travel onto their wall; every other key compresses softly. */
+export function keyPress(look: KeyLook): "clay" | "soft" {
+  return look === "primary" || look === "onBand" ? "clay" : "soft";
+}
 
 export function keyIcon(icon: IconName | ReactNode, size: number): ReactNode {
   if (icon === null || icon === undefined || icon === false) return null;
@@ -67,12 +106,12 @@ export function keyIcon(icon: IconName | ReactNode, size: number): ReactNode {
 }
 
 export function Key<C extends ElementType = "button">(props: KeyProps<C>) {
-  const { as, variant = "clay", size = "md", icon, iconEnd, loading = false, held, block = false, disabled = false, className, children, ...rest } = props;
+  const { as, variant = "secondary", size = "md", icon, iconEnd, loading = false, held, block = false, disabled = false, className, children, ...rest } = props;
   const t = useT("ui");
   const Tag: ElementType = as ?? "button";
   const isButton = Tag === "button";
   const own = rest as Record<string, unknown> & { onClick?: (event: MouseEvent<HTMLElement>) => void; type?: string };
-  const iconSize = size === "sm" ? 18 : 20;
+  const look = KEY_LOOK[variant] ?? "secondary";
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     if (disabled || loading) {
@@ -90,21 +129,21 @@ export function Key<C extends ElementType = "button">(props: KeyProps<C>) {
     <Tag
       {...rest}
       {...state}
-      className={cx("key", VARIANT_CLASS[variant], SIZE_CLASS[size], block && "key--block", className)}
-      data-press="clay"
-      data-haptic={variant === "commit" ? "tap" : undefined}
+      className={cx("key", VARIANT_CLASS[variant] ?? "key--secondary", SIZE_CLASS[size], block && "key--block", className)}
+      data-press={(own["data-press"] as string | undefined) ?? keyPress(look)}
+      data-haptic={look === "primary" ? "tap" : undefined}
       data-loading={loading ? "" : undefined}
       aria-busy={loading || undefined}
       onClick={handleClick}
     >
       <span className="key__cap">
-        {keyIcon(icon, iconSize)}
+        {keyIcon(icon, 20)}
         {children !== undefined && children !== null && children !== false ? <BidiLabel className="key__label">{children}</BidiLabel> : null}
-        {keyIcon(iconEnd, iconSize)}
+        {keyIcon(iconEnd, 20)}
         {loading ? (
           <>
             <span className="key__spinner" aria-hidden="true">
-              <Icon name="circle-notch" size={iconSize} />
+              <Icon name="circle-notch" size={16} />
             </span>
             <VisuallyHidden>{t("loading")}</VisuallyHidden>
           </>

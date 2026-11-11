@@ -339,17 +339,20 @@ describe("getProductDetail — prices, stock and release dates", () => {
     expect(uploads?.variants.find((variant) => variant.id === W.uploads.v2)?.compareAtIqd).toBeNull();
   });
 
-  it("stock is the commerce core's state, and orderable exactly when units are available", async () => {
+  it("stock is the commerce core's state (a demo product never 'low'), and orderable exactly when units are available", async () => {
     const ids = all.flatMap((product) => product.variants.map((variant) => variant.id));
     const availability = await getAvailability(t.db, ids);
     let orderable = 0;
-    for (const variant of all.flatMap((product) => product.variants)) {
-      const units = availability.get(variant.id)!;
-      expect(variant.orderable).toBe(units.available > 0);
-      if (variant.orderable) {
-        expect(variant.stock).toBe(units.state);
-        orderable++;
-      } else expect(["out_of_stock", "preorder"]).toContain(variant.stock);
+    for (const product of all) {
+      for (const variant of product.variants) {
+        const units = availability.get(variant.id)!;
+        expect(variant.orderable).toBe(units.available > 0);
+        if (variant.orderable) {
+          // scarcity from placeholder stock is not information (design v2 spec §4.7): demo rows say in stock
+          expect(variant.stock).toBe(product.isDemo && units.state === "low_stock" ? "in_stock" : units.state);
+          orderable++;
+        } else expect(["out_of_stock", "preorder"]).toContain(variant.stock);
+      }
     }
     expect(orderable).toBeGreaterThan(50);
   });

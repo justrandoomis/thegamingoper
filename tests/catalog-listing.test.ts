@@ -281,6 +281,69 @@ describe("sorting and the cursor", () => {
     }
   });
 
+  it("featured is the suggested order «المقترَح»: can be bought now › coming soon (soonest release first) › sold out", async () => {
+    const tierOf = (card: ProductCardData) => (card.stock === "preorder" ? 1 : card.stock === "out_of_stock" ? 0 : 2);
+    const { rows: universe } = await loadListingRows(t.db, { kind: "all" }, t.now);
+    const pub = new Map(universe.map((row) => [row.id, row.pub]));
+    for (const scope of [{ kind: "all" }, { kind: "category", slug: "consoles" }, { kind: "category", slug: "games" }] as ListingScope[]) {
+      const list = await allPages({ scope, sort: "featured" }, 60);
+      const tiers = list.items.map(tierOf);
+      for (let i = 1; i < tiers.length; i++) expect(tiers[i], JSON.stringify(scope)).toBeLessThanOrEqual(tiers[i - 1]);
+      expect(tiers[0], JSON.stringify(scope)).toBe(2); // the first card can be bought (the old order led with coming soon)
+      const soon = list.items.filter((card) => tierOf(card) === 1);
+      for (let i = 1; i < soon.length; i++) expect(soon[i].releaseAt!).toBeGreaterThanOrEqual(soon[i - 1].releaseAt!);
+      for (const card of soon) expect(card.releaseAt!).toBeGreaterThan(t.now);
+      // newest first inside the other tiers (no hub consoles outside a platform hub)
+      for (const tier of [2, 0]) {
+        const group = list.items.filter((card) => tierOf(card) === tier);
+        for (let i = 1; i < group.length; i++) expect(pub.get(group[i].id)!).toBeLessThanOrEqual(pub.get(group[i - 1].id)!);
+      }
+    }
+  });
+
+  it("a platform hub leads with the platform's own consoles that can be bought now, in device-model order, the entry version first", async () => {
+    const tierOf = (card: ProductCardData) => (card.stock === "preorder" ? 1 : card.stock === "out_of_stock" ? 0 : 2);
+    const model = new Map(
+      (await rows<{ id: string; sort: number; slug: string }>("SELECT p.id, dm.sort, dm.slug FROM products p JOIN device_models dm ON dm.id = p.device_model_id")).map((row) => [row.id, row]),
+    );
+    const own = new Map((await rows<{ id: string; slug: string | null }>("SELECT p.id, pl.slug FROM products p LEFT JOIN platforms pl ON pl.id = p.platform_id")).map((row) => [row.id, row.slug]));
+    const platforms = await rows<{ slug: string }>("SELECT slug FROM platforms WHERE is_active = 1 ORDER BY sort");
+    let led = 0;
+    for (const { slug } of platforms) {
+      const hub = await allPages({ scope: { kind: "platform", slug }, sort: "featured" }, 60);
+      const leads = hub.items.filter((card) => tierOf(card) === 2 && card.kind === "console" && own.get(card.id) === slug);
+      const head = hub.items.slice(0, leads.length);
+      expect(sorted(ids(head)), slug).toEqual(sorted(ids(leads)));
+      for (let i = 1; i < head.length; i++) {
+        const [a, b] = [model.get(head[i - 1].id)?.sort ?? Infinity, model.get(head[i].id)?.sort ?? Infinity];
+        expect(b, `${slug}: ${head[i].slug}`).toBeGreaterThanOrEqual(a);
+        if (a === b) expect(head[i].priceIqd, `${slug}: ${head[i].slug}`).toBeGreaterThanOrEqual(head[i - 1].priceIqd);
+      }
+      // then what can be bought now, then coming soon, then sold out
+      const tiers = hub.items.map(tierOf);
+      for (let i = 1; i < tiers.length; i++) expect(tiers[i], slug).toBeLessThanOrEqual(tiers[i - 1]);
+      if (leads.length > 0) led++;
+    }
+    expect(led).toBeGreaterThanOrEqual(3);
+
+    // /platform/playstation: the first row (four cards on a desktop, two on a phone) can be bought, and it opens with
+    // the console of the first PlayStation device model that is in stock (staff order: PS5 Pro first today)
+    const ps = await allPages({ scope: { kind: "platform", slug: "playstation" }, sort: "featured" }, 60);
+    expect(ps.items.slice(0, 4).every((card) => tierOf(card) === 2)).toBe(true);
+    const buyableConsoles = ps.items.filter((card) => tierOf(card) === 2 && card.kind === "console" && own.get(card.id) === "playstation");
+    const firstModel = Math.min(...buyableConsoles.map((card) => model.get(card.id)?.sort ?? Infinity));
+    expect(model.get(ps.items[0].id)?.sort).toBe(firstModel);
+    expect(ps.items[0].kindLabel).toBe("جهاز PS5");
+    const [top] = await rows<{ slug: string }>(
+      "SELECT dm.slug FROM device_models dm JOIN platforms pl ON pl.id = dm.platform_id WHERE pl.slug = 'playstation' AND dm.status = 'published' ORDER BY dm.sort LIMIT 1",
+    );
+    if (buyableConsoles.some((card) => model.get(card.id)?.slug === top.slug)) expect(model.get(ps.items[0].id)?.slug).toBe(top.slug);
+
+    // picks under a zero-result state follow the same order
+    const picks = await scopePicks(t.db, "ar", { kind: "platform", slug: "playstation" }, { limit: 3, now: t.now });
+    expect(ids(picks)).toEqual(ids(ps.items.filter((card) => tierOf(card) === 2).slice(0, 3)));
+  });
+
   it("cumulative pages are the prefix of the list (show more survives a reload)", async () => {
     const first = (await listProducts(t.db, "ar", { scope: { kind: "all" }, sort: "price_asc", limit: 10, now: t.now }))!;
     const second = (await listProducts(t.db, "ar", { scope: { kind: "all" }, sort: "price_asc", limit: 10, cursor: first.nextCursor, cumulative: true, now: t.now }))!;

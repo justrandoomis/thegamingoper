@@ -7,16 +7,16 @@
   "family": "xbox-adaptive-controller",
   "status": "available",
   "releaseDate": "2018-09-04",
-  "name": { "ar": "XBOX Adaptive Controller", "en": "XBOX Adaptive Controller", "ckb": "XBOX Adaptive Controller" },
+  "name": { "ar": "Xbox Adaptive Controller", "en": "Xbox Adaptive Controller", "ckb": "Xbox Adaptive Controller" },
   "short": {
     "ar": "يد تحكم مخصصة لذوي الحركة المحدودة · 19 منفذ 3.5mm ومنفذا USB",
     "en": "For players with limited mobility · 19 × 3.5mm ports + 2 USB",
     "ckb": "بۆ یاریزانی جووڵەی سنووردار · 19 دەروازەی 3.5mm و 2 USB"
   },
   "description": {
-    "ar": "لوحة تحكم صممتها Microsoft أساساً للاعبين ذوي الحركة المحدودة، فيها زران كبيران قابلان للبرمجة وأزرار اتجاه. تعمل كمركز لتوصيل المفاتيح والأزرار وعصي التحكم وحوامل التثبيت (تُباع منفصلة) عبر 19 منفذ 3.5mm ومنفذي USB، فيصنع كل لاعب يد التحكم التي تناسبه. تعمل مع XBOX Series X|S وXBOX One وأجهزة Windows، وفيها بطارية مدمجة تُشحن بكابل USB-C المرفق.",
-    "en": "A controller Microsoft designed mainly for players with limited mobility, with two large programmable buttons and a D-pad. It is a hub for switches, buttons, joysticks and mounts (sold separately) through 19 3.5mm ports and two USB ports, so each player can build the setup that suits them. It works with XBOX Series X|S, XBOX One and Windows PCs, and has a built-in battery charged with the included USB-C cable.",
-    "ckb": "دەسکێک کە Microsoft بە شێوەیەکی سەرەکی بۆ یاریزانانی جووڵەی سنووردار دروستی کردووە، دوو دوگمەی گەورەی بەرنامەڕێژکراو و D-pad ـی هەیە. وەک ناوەندێک بۆ بەستنەوەی سویچ، دوگمە، جۆیستیک و هەڵگر (جیا دەفرۆشرێن) کار دەکات بە 19 دەروازەی 3.5mm و دوو دەروازەی USB، بۆ ئەوەی هەر یاریزانێک ئەو ڕێکخستنە دروست بکات کە بۆی گونجاوە. لەگەڵ XBOX Series X|S و XBOX One و کۆمپیوتەری Windows کار دەکات، و پاتریی ناوەکیی هەیە کە بە کێبڵی USB-C ـی هاوپێچ شەحن دەکرێت."
+    "ar": "لوحة تحكم صممتها Microsoft أساساً للاعبين ذوي الحركة المحدودة، فيها زران كبيران قابلان للبرمجة وأزرار اتجاه. تعمل كمركز لتوصيل المفاتيح والأزرار وعصي التحكم وحوامل التثبيت (تُباع منفصلة) عبر 19 منفذ 3.5mm ومنفذي USB، فيصنع كل لاعب يد التحكم التي تناسبه. تعمل مع Xbox Series X|S وXbox One وأجهزة Windows، وفيها بطارية مدمجة تُشحن بكابل USB-C المرفق.",
+    "en": "A controller Microsoft designed mainly for players with limited mobility, with two large programmable buttons and a D-pad. It is a hub for switches, buttons, joysticks and mounts (sold separately) through 19 3.5mm ports and two USB ports, so each player can build the setup that suits them. It works with Xbox Series X|S, Xbox One and Windows PCs, and has a built-in battery charged with the included USB-C cable.",
+    "ckb": "دەسکێک کە Microsoft بە شێوەیەکی سەرەکی بۆ یاریزانانی جووڵەی سنووردار دروستی کردووە، دوو دوگمەی گەورەی بەرنامەڕێژکراو و D-pad ـی هەیە. وەک ناوەندێک بۆ بەستنەوەی سویچ، دوگمە، جۆیستیک و هەڵگر (جیا دەفرۆشرێن) کار دەکات بە 19 دەروازەی 3.5mm و دوو دەروازەی USB، بۆ ئەوەی هەر یاریزانێک ئەو ڕێکخستنە دروست بکات کە بۆی گونجاوە. لەگەڵ Xbox Series X|S و Xbox One و کۆمپیوتەری Windows کار دەکات، و پاتریی ناوەکیی هەیە کە بە کێبڵی USB-C ـی هاوپێچ شەحن دەکرێت."
   },
   "highlights": [
     {
@@ -30,9 +30,9 @@
       "ckb": "ڕێکخستنەوەی دوگمەکان، لەگەڵ 3 پرۆفایل کە بە دوگمەی Profile دەگۆڕدرێن"
     },
     {
-      "ar": "XBOX Wireless وBluetooth وUSB-C، ومقبس سماعة 3.5mm",
-      "en": "XBOX Wireless, Bluetooth and USB-C, plus a 3.5mm headset jack",
-      "ckb": "XBOX Wireless و Bluetooth و USB-C، لەگەڵ دەروازەی هێدسێتی 3.5mm"
+      "ar": "Xbox Wireless وBluetooth وUSB-C، ومقبس سماعة 3.5mm",
+      "en": "Xbox Wireless, Bluetooth and USB-C, plus a 3.5mm headset jack",
+      "ckb": "Xbox Wireless و Bluetooth و USB-C، لەگەڵ دەروازەی هێدسێتی 3.5mm"
     },
     {
       "ar": "فتحات تثبيت على حوامل AMPS وحوامل التصوير الثلاثية",
@@ -54,9 +54,9 @@
       "key": "connectivity",
       "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
       "value": {
-        "ar": "XBOX Wireless مع XBOX One وXBOX Series X|S؛ Bluetooth أو USB مع Windows 10/11 وبعض الشاشات الذكية وiOS وAndroid",
-        "en": "XBOX Wireless to XBOX One and XBOX Series X|S; Bluetooth or USB to Windows 10/11, select smart TVs, iOS and Android",
-        "ckb": "XBOX Wireless لەگەڵ XBOX One و XBOX Series X|S؛ Bluetooth یان USB لەگەڵ Windows 10/11، هەندێک شاشەی زیرەک، iOS و Android"
+        "ar": "Xbox Wireless مع Xbox One وXbox Series X|S؛ Bluetooth أو USB مع Windows 10/11 وبعض الشاشات الذكية وiOS وAndroid",
+        "en": "Xbox Wireless to Xbox One and Xbox Series X|S; Bluetooth or USB to Windows 10/11, select smart TVs, iOS and Android",
+        "ckb": "Xbox Wireless لەگەڵ Xbox One و Xbox Series X|S؛ Bluetooth یان USB لەگەڵ Windows 10/11، هەندێک شاشەی زیرەک، iOS و Android"
       }
     },
     {
@@ -89,13 +89,13 @@
     }
   ],
   "inTheBox": [
-    { "ar": "XBOX Adaptive Controller", "en": "XBOX Adaptive Controller", "ckb": "XBOX Adaptive Controller" },
+    { "ar": "Xbox Adaptive Controller", "en": "Xbox Adaptive Controller", "ckb": "Xbox Adaptive Controller" },
     { "ar": "كابل USB-C بطول 2.7 متر (9 أقدام)", "en": "9 ft (2.7 m) USB-C cable", "ckb": "کێبڵی USB-C ـی 2.7 مەتر (9 پێ)" }
   ],
   "variants": [
     {
       "sku": "XAC-STD",
-      "title": { "ar": "XBOX Adaptive Controller", "en": "XBOX Adaptive Controller", "ckb": "XBOX Adaptive Controller" },
+      "title": { "ar": "Xbox Adaptive Controller", "en": "Xbox Adaptive Controller", "ckb": "Xbox Adaptive Controller" },
       "options": { "color": "White" },
       "isDefault": true,
       "images": ["xbox-adaptive-controller--1", "xbox-adaptive-controller--2", "xbox-adaptive-controller--3", "xbox-adaptive-controller--4"]
@@ -105,19 +105,19 @@
     {
       "deviceModel": "xbox-series-x",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "note": { "ar": "عبر Xbox Wireless", "en": "Over Xbox Wireless", "ckb": "بە Xbox Wireless" },
       "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
     },
     {
       "deviceModel": "xbox-series-x-digital",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "note": { "ar": "عبر Xbox Wireless", "en": "Over Xbox Wireless", "ckb": "بە Xbox Wireless" },
       "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "verified",
-      "note": { "ar": "عبر XBOX Wireless", "en": "Over XBOX Wireless", "ckb": "بە XBOX Wireless" },
+      "note": { "ar": "عبر Xbox Wireless", "en": "Over Xbox Wireless", "ckb": "بە Xbox Wireless" },
       "source": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller"
     },
     {
@@ -143,9 +143,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
       "kind": "hero",
       "alt": {
-        "ar": "XBOX Adaptive Controller الأبيض بزريه الكبيرين من الأعلى",
-        "en": "White XBOX Adaptive Controller with its two large buttons, seen from above",
-        "ckb": "XBOX Adaptive Controller ـی سپی لەگەڵ دوو دوگمە گەورەکەی، لە سەرەوە"
+        "ar": "Xbox Adaptive Controller الأبيض بزريه الكبيرين من الأعلى",
+        "en": "White Xbox Adaptive Controller with its two large buttons, seen from above",
+        "ckb": "Xbox Adaptive Controller ـی سپی لەگەڵ دوو دوگمە گەورەکەی، لە سەرەوە"
       },
       "credit": "Microsoft",
       "width": 2748,
@@ -204,14 +204,14 @@
   "sources": [
     {
       "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-adaptive-controller",
-      "title": "XBOX Adaptive Controller",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Adaptive Controller",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
-      "supports": "purpose, connectivity incl. XBOX Series X|S, ports, profiles, in the box, mounting, battery, dimensions, weight"
+      "supports": "purpose, connectivity incl. Xbox Series X|S, ports, profiles, in the box, mounting, battery, dimensions, weight"
     },
     {
       "url": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8",
-      "title": "Buy XBOX Adaptive Controller",
+      "title": "Buy Xbox Adaptive Controller",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
       "supports": "tech specs (ports, in the box with 9 ft USB-C cable, battery, dimensions, weight), images"
@@ -226,15 +226,15 @@
     {
       "url": "https://news.xbox.com/en-us/2018/09/04/xbox-adaptive-controller-now-available/",
       "title": "Gaming Gets More Inclusive with the Launch of the Xbox Adaptive Controller",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "official launch on 4 September 2018"
     }
   ],
   "notes": {
-    "ar": "المفاتيح والأزرار والعصي الخارجية لا تأتي مع اليد وتُشترى منفصلة. يمكن ربطها مع يد XBOX عادية بميزة XBOX Controller Assist (كان اسمها سابقاً Copilot) ليلعب شخصان كأنهما يد واحدة.",
-    "en": "External switches, buttons and joysticks are not included and are bought separately. It can be paired with a standard XBOX controller using XBOX Controller Assist (formerly called Copilot) so two people play as one controller.",
-    "ckb": "سویچ و دوگمە و جۆیستیکی دەرەکی لەگەڵی نین و جیا دەکڕدرێن. دەتوانرێت بە تایبەتمەندیی XBOX Controller Assist (ناوی پێشووی Copilot بوو) لەگەڵ دەسکێکی ئاسایی XBOX ببەسترێتەوە بۆ ئەوەی دوو کەس وەک یەک دەسک یاری بکەن."
+    "ar": "المفاتيح والأزرار والعصي الخارجية لا تأتي مع اليد وتُشترى منفصلة. يمكن ربطها مع يد Xbox عادية بميزة Xbox Controller Assist (كان اسمها سابقاً Copilot) ليلعب شخصان كأنهما يد واحدة.",
+    "en": "External switches, buttons and joysticks are not included and are bought separately. It can be paired with a standard Xbox controller using Xbox Controller Assist (formerly called Copilot) so two people play as one controller.",
+    "ckb": "سویچ و دوگمە و جۆیستیکی دەرەکی لەگەڵی نین و جیا دەکڕدرێن. دەتوانرێت بە تایبەتمەندیی Xbox Controller Assist (ناوی پێشووی Copilot بوو) لەگەڵ دەسکێکی ئاسایی Xbox ببەسترێتەوە بۆ ئەوەی دوو کەس وەک یەک دەسک یاری بکەن."
   },
   "verification": {
     "checkedBy": "fact-check",

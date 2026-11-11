@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useState } from "react";
 
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
@@ -7,16 +7,18 @@ import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 
 /**
- * Breadcrumbs — where this page sits ("الرئيسية › أجهزة › PlayStation 5 Pro"). The separators are carets that point
- * the way the trail reads, so they flip in Arabic and Sorani by themselves; the last item is the current page
- * (`aria-current="page"`, not a link). One line: on a narrow screen it scrolls sideways and starts scrolled to the
- * current page. Links take the locale-less path (LocaleLink adds /en or /ckb).
+ * Breadcrumbs — Design System v2 §4.22: where this page sits («الرئيسية › أجهزة › PlayStation 5 Pro»), FROM 768 ONLY
+ * (phones use the page title and the browser's back). 14px ink-2, chevrons that point the way the trail reads (they
+ * mirror in Arabic and Sorani by themselves), the current page in ink 600 with `aria-current="page"` (not a link), 44px
+ * hit areas. A long trail collapses its middle to «…» (a button that shows the whole trail). Links take the
+ * locale-less path (LocaleLink adds /en or /ckb).
  *
  *   <Breadcrumbs items={[{ label: t("home"), href: "/" }, { label: category.name, href: `/c/${category.slug}` }, { label: product.name }]}
  *                jsonLd={{ origin: PUBLIC_ORIGIN }} />
  *
  * `jsonLd` adds a schema.org BreadcrumbList with absolute URLs for search engines (`origin` = the site's public
- * origin, e.g. from the root loader). It is serialised data — every "<", ">" and "&" is escaped — not markup.
+ * origin, e.g. from the root loader) — also on phones, where the trail is not drawn. It is serialised data — every
+ * "<", ">" and "&" is escaped — not markup.
  */
 export type Crumb = {
   /** Plain text: it is also what search engines see. */
@@ -32,44 +34,45 @@ export type BreadcrumbsProps = {
   className?: string;
 };
 
+/** More crumbs than this and the middle collapses to «…». */
+const COLLAPSE_AFTER = 4;
+
 export function Breadcrumbs({ items, jsonLd, className }: BreadcrumbsProps) {
   const t = useT("ui-overlays");
   const locale = useLocale();
-  const list = useRef<HTMLOListElement | null>(null);
-
-  // Narrow screens: start scrolled to the current page (the inline end), whatever the direction.
-  useLayoutEffect(() => {
-    const element = list.current;
-    if (!element || element.scrollWidth <= element.clientWidth) return;
-    const rtl = getComputedStyle(element).direction === "rtl";
-    element.scrollLeft = rtl ? -element.scrollWidth : element.scrollWidth;
-  }, [items]);
-
+  const [expanded, setExpanded] = useState(false);
   if (items.length === 0) return null;
   const last = items.length - 1;
+  const collapse = !expanded && items.length > COLLAPSE_AFTER;
+  // first · … · the last two
+  const shown = collapse ? [0, -1, last - 1, last] : items.map((_, index) => index);
+
   return (
-    <nav aria-label={t("breadcrumbs.label")} className={cx("min-w-0", className)}>
-      <ol ref={list} className="flex min-w-0 items-center overflow-x-auto whitespace-nowrap type-caption [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {items.map((item, index) => (
-          <li key={`${index}:${item.label}`} className="flex shrink-0 items-center">
-            {index > 0 ? <Icon name="caret-right" size={14} className="mx-1 text-ink-3" /> : null}
-            {index === last || !item.href ? (
-              <span aria-current={index === last ? "page" : undefined} className={cx("inline-flex min-h-11 items-center", index === last ? "font-semibold text-ink" : "text-ink-2")}>
-                <BidiLabel>{item.label}</BidiLabel>
-              </span>
-            ) : (
-              <LocaleLink
-                to={item.href}
-                className="inline-flex min-h-11 items-center rounded-xs text-ink-2 decoration-[1.5px] underline-offset-[6px] hover:text-ink hover:underline"
-              >
-                <BidiLabel>{item.label}</BidiLabel>
-              </LocaleLink>
-            )}
-          </li>
-        ))}
-      </ol>
+    <>
+      <nav aria-label={t("breadcrumbs.label")} className={cx("crumbs", className)}>
+        <ol className="crumbs__list">
+          {shown.map((index, position) => (
+            <li key={index} className="flex items-center gap-1">
+              {position > 0 ? <Icon name="caret-right" size={16} className="crumbs__sep" /> : null}
+              {index === -1 ? (
+                <button type="button" className="crumbs__link hit-44 relative px-1" aria-label={t("breadcrumbs.expand")} onClick={() => setExpanded(true)}>
+                  …
+                </button>
+              ) : index === last || !items[index].href ? (
+                <span aria-current={index === last ? "page" : undefined} className={cx("inline-flex min-h-11 items-center", index === last && "crumbs__current")}>
+                  <BidiLabel>{items[index].label}</BidiLabel>
+                </span>
+              ) : (
+                <LocaleLink to={items[index].href as string} className="crumbs__link min-w-11 justify-center">
+                  <BidiLabel>{items[index].label}</BidiLabel>
+                </LocaleLink>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
       {jsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(items, jsonLd.origin, locale) }} /> : null}
-    </nav>
+    </>
   );
 }
 

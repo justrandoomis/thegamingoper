@@ -26,6 +26,14 @@ export type ImageRef = {
   isIllustration: boolean;
   width?: number;
   height?: number;
+  /**
+   * Set (by the catalogue read layer) for a catalogue photo that is NOT a cut-out, so the well can treat it until it
+   * is re-cut (design v2 spec §7.5): `background` is the plain box the object was photographed on ("#ffffff" for
+   * PS5 2020 and Switch Lite, "#111111" for the Razer BlackShark…), null when the picture fills its own frame;
+   * `tone` is that box's (else the picture's) lightness — "light" boxes melt into the light ground (multiply), dark
+   * ones are framed. Null / absent for cut-outs, box art, screenshots and uploaded files.
+   */
+  opaque?: { background: string | null; tone: "light" | "dark" } | null;
 };
 
 export type RatingSummary = { average: number; count: number };
@@ -44,10 +52,32 @@ export type ProductCardData = {
   variantId: string;
   hasVariants: boolean;
   priceIqd: number;
-  /** Set only for a genuine reduced price. */
+  /**
+   * The previous price to strike: only one the store really charged (an applied price change set it), or a demo
+   * value on a demo row (`compareAtDemo`). Null otherwise.
+   */
   compareAtIqd: number | null;
+  /**
+   * True when `compareAtIqd` is a DEMO value (no applied price change backs it): strike it only under the demo marking
+   * while the store is in demo mode, and never word it as a saving (design v2 spec §4.7, §11.8). Always set by the
+   * catalogue read layer; optional only so hand-written fixtures keep compiling.
+   */
+  compareAtDemo?: boolean;
+  /** A state, never a number. Demo rows never say "low_stock" (scarcity from placeholder stock is not information). */
   stock: StockState;
+  /** One per card: "preorder" (coming soon) › "deal" (a shown previous price) › "new" (`isNew`); null otherwise and when sold out. */
   badge: "new" | "deal" | "preorder" | null;
+  /**
+   * Released, or really listed, within the last 30 days — the only «جديد» (design v2 spec §4.7). A demo row's listing
+   * time is the seed's clock, so only its researched release date counts. Always set by the catalogue read layer.
+   */
+  isNew?: boolean;
+  /** The card's platform line, localized: «جهاز PS5», «لعبة Switch 2», «يد تحكم · PS5», «سماعة · متعددة المنصات». */
+  kindLabel?: string;
+  /** Slugs of the active platforms the product is for (its own, else what its research names), menu order — the dots. */
+  forPlatforms?: string[];
+  /** Coming soon (`stock: "preorder"`): the release, epoch ms of 00:00 in Baghdad, while it is still ahead. Else null. */
+  releaseAt?: number | null;
   image: ImageRef;
   rating: RatingSummary | null;
   isDemo: boolean;

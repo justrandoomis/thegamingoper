@@ -27,17 +27,17 @@ describe("Sorani dates", () => {
 
   it("follows CLDR's Sorani patterns: short, medium, long, and date with time", () => {
     const ms = baghdad(2026, 11, 13, 15, 5);
-    expect(formatDate(ms, "short", "ckb", "latn")).toBe("2026-11-13");
+    expect(formatDate(ms, "short", "ckb", "latn")).toBe("13/11/2026");
     expect(formatDate(ms, "medium", "ckb", "latn")).toBe("2026 تشرینی دووەم 13");
     expect(formatDate(ms, "long", "ckb", "latn")).toBe("13ی تشرینی دووەمی 2026");
     expect(formatDateTime(ms, "ckb", "latn")).toBe("2026 تشرینی دووەم 13 3:05 د.ن");
-    expect(formatDate(baghdad(2027, 1, 5), "short", "ckb", "latn")).toBe("2027-01-05");
+    expect(formatDate(baghdad(2027, 1, 5), "short", "ckb", "latn")).toBe("05/01/2027");
   });
 
   it("writes the shopper's numerals", () => {
     const ms = baghdad(2026, 1, 5, 9, 7);
     expect(formatDate(ms, "long", "ckb", "arab")).toBe("٥ی کانوونی دووەمی ٢٠٢٦");
-    expect(formatDate(ms, "short", "ckb", "arab")).toBe("٢٠٢٦-٠١-٠٥");
+    expect(formatDate(ms, "short", "ckb", "arab")).toBe("٠٥/٠١/٢٠٢٦");
     expect(formatDateTime(ms, "ckb", "arab")).toBe("٢٠٢٦ کانوونی دووەم ٥ ٩:٠٧ ب.ن");
     expect(formatDate(ms, "medium", "ckb", "arab")).not.toMatch(/[0-9]/);
   });
@@ -63,17 +63,36 @@ describe("Sorani dates", () => {
   });
 });
 
-describe("Arabic and English go through Intl unchanged", () => {
+describe("numeric dates are day first in every language (Design System v2 §2.6)", () => {
+  const ms = baghdad(2026, 11, 13, 15, 5);
+  const BIDI_MARKS = /[‎‏؜]/;
+  it("short everywhere, and Arabic medium, print dd/MM/y with no bidi marks", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      expect(formatDate(ms, "short", locale, "latn")).toBe("13/11/2026");
+      expect(formatDate(ms, "short", locale, "arab")).toBe("١٣/١١/٢٠٢٦");
+    }
+    expect(formatDate(ms, "medium", "ar", "latn")).toBe("13/11/2026");
+    expect(formatDate(baghdad(2027, 1, 5), "medium", "ar", "latn")).toBe("05/01/2027");
+    expect(formatDate(ms, "medium", "ar", "arab")).not.toMatch(BIDI_MARKS);
+  });
+  it("Arabic date and time: the numeric date, then Intl's time", () => {
+    for (const numbering of ["latn", "arab"] as NumberingSystem[]) {
+      const time = new Intl.DateTimeFormat(`ar-IQ-u-nu-${numbering}`, { timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms);
+      expect(formatDateTime(ms, "ar", numbering)).toBe(`${numbering === "arab" ? "١٣/١١/٢٠٢٦" : "13/11/2026"}، ${time}`);
+    }
+    expect(formatDateTime(ms, "ar", "latn")).toMatch(/^13\/11\/2026، /);
+  });
+});
+
+describe("dates with a month name go through Intl in Arabic and English", () => {
   const ms = baghdad(2026, 11, 13, 15, 5);
   it("prints what Intl prints, in Iraq time", () => {
-    for (const locale of ["ar", "en"] as const) {
-      const tag = locale === "ar" ? "ar-IQ" : "en-IQ";
-      for (const numbering of ["latn", "arab"] as NumberingSystem[]) {
-        for (const style of ["short", "medium", "long"] as DateStyle[]) {
-          expect(formatDate(ms, style, locale, numbering)).toBe(new Intl.DateTimeFormat(`${tag}-u-nu-${numbering}`, { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms));
-        }
-        expect(formatDateTime(ms, locale, numbering)).toBe(new Intl.DateTimeFormat(`${tag}-u-nu-${numbering}`, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms));
+    for (const numbering of ["latn", "arab"] as NumberingSystem[]) {
+      expect(formatDate(ms, "long", "ar", numbering)).toBe(new Intl.DateTimeFormat(`ar-IQ-u-nu-${numbering}`, { dateStyle: "long", timeZone: "Asia/Baghdad" }).format(ms));
+      for (const style of ["medium", "long"] as DateStyle[]) {
+        expect(formatDate(ms, style, "en", numbering)).toBe(new Intl.DateTimeFormat(`en-IQ-u-nu-${numbering}`, { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms));
       }
+      expect(formatDateTime(ms, "en", numbering)).toBe(new Intl.DateTimeFormat(`en-IQ-u-nu-${numbering}`, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms));
     }
     expect(formatDate(ms, "long", "en", "latn")).toBe("November 13, 2026");
   });
@@ -97,7 +116,8 @@ describe.skipIf(!icuHasSorani)("Sorani matches CLDR as a full ICU prints it", ()
         const ms = baghdad(2025, month, day, hour, minute);
         for (const numbering of ["latn", "arab"] as NumberingSystem[]) {
           const tag = `ckb-IQ-u-nu-${numbering}`;
-          for (const style of ["short", "medium", "long"] as DateStyle[]) {
+          // "short" is left out: numeric dates are day first by design (CLDR's Sorani "y-MM-dd" is year first)
+          for (const style of ["medium", "long"] as DateStyle[]) {
             const icu = cldr(new Intl.DateTimeFormat(tag, { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms));
             expect(formatDate(ms, style, "ckb", numbering), `${month}/${day} ${style} ${numbering}`).toBe(icu);
           }

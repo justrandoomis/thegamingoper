@@ -29,6 +29,7 @@ export default defineMessages({
       added: "أُضيف إلى السلة",
       undo: "تراجع",
       dismiss: "أغلق الإشعار",
+      viewCart: "عرض السلة",
     },
     menu: {
       more: "إجراءات أخرى",
@@ -39,6 +40,7 @@ export default defineMessages({
     },
     breadcrumbs: {
       label: "مسار التنقل",
+      expand: "اعرض المسار كاملاً",
     },
     pagination: {
       label: "الصفحات",
@@ -49,6 +51,9 @@ export default defineMessages({
       more: "اعرض المزيد",
       shown: "عرضنا {shown} من {total}",
       all: "عرضنا كل النتائج ({total}).",
+      shownProducts: { one: "عرضنا {shown} من منتج واحد", two: "عرضنا {shown} من منتجين", few: "عرضنا {shown} من {total} منتجات", many: "عرضنا {shown} من {total} منتجاً", other: "عرضنا {shown} من {total} منتج" },
+      moreProducts: { one: "اعرض منتجاً آخر", two: "اعرض منتجين آخرين", few: "اعرض {n} منتجات أخرى", many: "اعرض {n} منتجاً آخر", other: "اعرض {n} منتج آخر" },
+      end: "لا يوجد المزيد لعرضه",
     },
     steps: {
       label: "الخطوات",
@@ -59,9 +64,12 @@ export default defineMessages({
       title: "تعذّر تحميل هذا الجزء.",
       text: "تحقّق من الاتصال، ثم أعد المحاولة.",
       code: "رمز الخطأ: {code}",
+      offlineTitle: "لا يوجد اتصال بالإنترنت",
+      offlineText: "لا يوجد اتصال بالإنترنت. أعد المحاولة عند عودة الاتصال.",
     },
     offline: {
       store: "لا يوجد اتصال. سلتك محفوظة على هذا الجهاز.",
+      form: "لا يوجد اتصال. ما كتبته باقٍ في الصفحة؛ أرسله عند عودة الاتصال.",
       generic: "لا يوجد اتصال. تحقّق من الشبكة، ثم أعد المحاولة.",
       back: "عاد الاتصال.",
     },
@@ -109,6 +117,7 @@ export default defineMessages({
       added: "Added to cart",
       undo: "Undo",
       dismiss: "Dismiss the notification",
+      viewCart: "View cart",
     },
     menu: {
       more: "More actions",
@@ -119,6 +128,7 @@ export default defineMessages({
     },
     breadcrumbs: {
       label: "Breadcrumb",
+      expand: "Show the whole path",
     },
     pagination: {
       label: "Pages",
@@ -129,6 +139,9 @@ export default defineMessages({
       more: "Show more",
       shown: "Showing {shown} of {total}",
       all: "Showing all results ({total}).",
+      shownProducts: { one: "Showing {shown} of {total} product", other: "Showing {shown} of {total} products" },
+      moreProducts: { one: "Show {n} more product", other: "Show {n} more products" },
+      end: "Nothing more to show",
     },
     steps: {
       label: "Steps",
@@ -139,9 +152,12 @@ export default defineMessages({
       title: "This part did not load.",
       text: "Check your connection, then try again.",
       code: "Error code: {code}",
+      offlineTitle: "No internet connection",
+      offlineText: "No internet connection. Try again when you are back online.",
     },
     offline: {
       store: "No connection. Your cart is saved on this device.",
+      form: "No connection. What you typed stays on the page; send it when you are back online.",
       generic: "No connection. Check your network, then try again.",
       back: "You are back online.",
     },
@@ -185,6 +201,7 @@ export default defineMessages({
       added: "خرایە ناو سەبەتە",
       undo: "پاشگەزبوونەوە",
       dismiss: "ئاگادارکردنەوەکە دابخە",
+      viewCart: "سەبەتە ببینە",
     },
     menu: {
       more: "کرداری زیاتر",
@@ -195,6 +212,7 @@ export default defineMessages({
     },
     breadcrumbs: {
       label: "ڕێڕەوی گەڕان",
+      expand: "هەموو ڕێڕەوەکە پیشان بدە",
     },
     pagination: {
       label: "پەڕەکان",
@@ -205,6 +223,9 @@ export default defineMessages({
       more: "زیاتر پیشان بدە",
       shown: "{shown} لە {total} پیشان دراوە",
       all: "هەموو ئەنجامەکان پیشان دران ({total}).",
+      shownProducts: { one: "{shown} لە {total} کاڵا پیشان دراوە", other: "{shown} لە {total} کاڵا پیشان دراوە" },
+      moreProducts: { one: "{n} کاڵای تر پیشان بدە", other: "{n} کاڵای تر پیشان بدە" },
+      end: "هیچی تر نییە بۆ پیشاندان",
     },
     steps: {
       label: "هەنگاوەکان",
@@ -215,9 +236,12 @@ export default defineMessages({
       title: "ئەم بەشە بار نەبوو.",
       text: "پەیوەندییەکەت بپشکنە، پاشان دووبارە هەوڵ بدەوە.",
       code: "کۆدی هەڵە: {code}",
+      offlineTitle: "هێڵی ئینتەرنێت نییە",
+      offlineText: "هێڵی ئینتەرنێت نییە. کاتێک هێڵ گەڕایەوە دووبارە هەوڵ بدەوە.",
     },
     offline: {
       store: "هێڵی ئینتەرنێت نییە. سەبەتەکەت لەسەر ئەم ئامێرە پاشەکەوت کراوە.",
+      form: "هێڵی ئینتەرنێت نییە. ئەوەی نووسیوتە لە پەڕەکەدا ماوە؛ کاتێک هێڵ گەڕایەوە بینێرە.",
       generic: "هێڵی ئینتەرنێت نییە. تۆڕەکەت بپشکنە، پاشان دووبارە هەوڵ بدەوە.",
       back: "هێڵی ئینتەرنێت گەڕایەوە.",
     },

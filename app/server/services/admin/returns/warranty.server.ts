@@ -25,7 +25,7 @@ import { auditEvents, orderItems, orders, products, repairTickets, returnItems, 
 import { expectChanged, isDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, forbidden, invalid, notFound } from "~/server/errors";
 import { normalizeOrderRef } from "~/server/services/orders/manage.server";
-import { DAY_MS, HOUR_MS, employeeNames, lineName, phoneView } from "./shared.server";
+import { DAY_MS, HOUR_MS, employeeNames, lineName, phoneView, slaTargets } from "./shared.server";
 import { SLA, type RepairStatusKey, type RmaStatus, type WarrantyDetail, type WarrantyFilters, type WarrantyRow, type WarrantyState } from "./types";
 
 const PAGE_SIZE = 25;
@@ -37,12 +37,12 @@ function readable(actor: Actor): void {
   if (!canAny(actor, ["returns.warranty.read", "returns.warranty.manage"])) throw forbidden("returns.warranty.read");
 }
 
-function viewCondition(filters: WarrantyFilters, now: number): SQL | undefined {
+function viewCondition(filters: WarrantyFilters, now: number, endingDays: number = SLA.warrantyEndingDays): SQL | undefined {
   switch (filters.view) {
     case "active":
       return and(eq(warranties.status, "active"), gte(warranties.endsAt, now));
     case "ending":
-      return and(eq(warranties.status, "active"), gte(warranties.endsAt, now), lte(warranties.endsAt, now + SLA.warrantyEndingDays * DAY_MS));
+      return and(eq(warranties.status, "active"), gte(warranties.endsAt, now), lte(warranties.endsAt, now + endingDays * DAY_MS));
     case "expired":
       return or(eq(warranties.status, "expired"), and(eq(warranties.status, "active"), lt(warranties.endsAt, now)));
     case "void":
@@ -67,7 +67,7 @@ function searchCondition(actor: Actor, q: string): SQL | undefined {
 
 export async function listWarranties(db: Db, actor: Actor, filters: WarrantyFilters, locale: Locale, now: number): Promise<{ rows: WarrantyRow[]; total: number; page: number; pageCount: number; filters: WarrantyFilters; canManage: boolean }> {
   readable(actor);
-  const where = and(viewCondition(filters, now), searchCondition(actor, filters.q));
+  const where = and(viewCondition(filters, now, (await slaTargets(db)).warrantyEndingDays), searchCondition(actor, filters.q));
   const [rows, count] = await Promise.all([
     db
       .select({

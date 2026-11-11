@@ -7,8 +7,8 @@ import { IconKey } from "./IconKey";
 import { Tag } from "./Tag";
 
 /**
- * The condition grade of a used unit (docs/DESIGN.md §9.12, §9.20): an OUTLINED tag (used is never solid) with the
- * grade in words and its letter — "مستعمل · ممتاز (A)". Shape, not colour, separates it from "new".
+ * The condition grade of a used unit — Design System v2 §4.7, §4.12: an OUTLINED pill (1.5px ink) with the grade and its
+ * word — «A+ · كالجديد» (the grade isolated left-to-right). Shape, not colour, separates it from «جديد».
  *
  *   <GradeBadge grade="A" />            in a card's tag zone (no legend: a card is one link)
  *   <GradeBadge grade="B" legend />     product page / inspection card: an info key opens the legend of all grades
@@ -87,7 +87,7 @@ export function GradeBadge({ grade, legend = false, className }: GradeBadgeProps
   return (
     <span className={cx("inline-flex items-center gap-1", className)}>
       {tag}
-      <IconKey ref={trigger} icon="info" label={t("grade.legend")} size="sm" variant="quiet" popoverTarget={id} aria-haspopup="dialog" />
+      <IconKey ref={trigger} icon="info" label={t("grade.legend")} size="sm" variant="plain" popoverTarget={id} aria-haspopup="dialog" />
       <div
         id={id}
         ref={popover}
@@ -95,37 +95,31 @@ export function GradeBadge({ grade, legend = false, className }: GradeBadgeProps
         role="dialog"
         aria-label={t("grade.legendTitle")}
         onToggle={place}
-        className="max-w-[min(22rem,calc(100vw-1rem))] rounded-md bg-paper p-4 text-ink shadow-e4"
+        className="max-w-[min(22rem,calc(100vw-1rem))] rounded-lg bg-paper p-4 text-ink shadow-overlay"
       >
-        <p className="type-label font-semibold">{t("grade.legendTitle")}</p>
+        <p className="type-sm-strong">{t("grade.legendTitle")}</p>
         <dl className="mt-3 grid gap-3">
           {GRADES.map((g) => (
             <div key={g} className="grid justify-items-start gap-1">
               <dt>
                 <GradeTag grade={g} />
               </dt>
-              <dd className="type-caption text-ink-2">{t(`grade.hints.${gradeKey(g)}`)}</dd>
+              <dd className="type-xs text-ink-2">{t(`grade.hints.${gradeKey(g)}`)}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-3 border-t border-line pt-3 type-caption text-ink-2">{t("grade.legendNote")}</p>
+        <p className="mt-3 border-t border-line pt-3 type-xs text-ink-2">{t("grade.legendNote")}</p>
       </div>
     </span>
   );
 }
 
-/** The outlined tag alone: "مستعمل · ممتاز (A)". */
+/** The outlined pill alone: «A+ · كالجديد» (the grade first, isolated left-to-right; its word after it). */
 export function GradeTag({ grade, className }: { grade: UsedGrade; className?: string }) {
   const t = useT("ui-shop");
   return (
-    <Tag
-      kind="used"
-      className={className}
-      detail={
-        <>
-          {t(`grade.words.${gradeKey(grade)}`)} <bdi>({grade})</bdi>
-        </>
-      }
-    />
+    <Tag kind="grade" className={className}>
+      <bdi dir="ltr">{grade}</bdi> · {t(`grade.words.${gradeKey(grade)}`)}
+    </Tag>
   );
 }

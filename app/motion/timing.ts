@@ -2,7 +2,7 @@
  * Spring presets as Web Animations timing, read from the generated CSS tokens (--motion-spring-*), so script and
  * stylesheet can never disagree and the spring solver stays out of the always-loaded bundle.
  *
- *   element.animate([{ scale: 0.86 }, { scale: 1 }], springTiming("inflate"));
+ *   element.animate([{ scale: 0.94 }, { scale: 1 }], springTiming("inflate"));
  *
  * Browser only. In a browser without `linear()` it answers with the DESIGN.md fallback curve and duration the
  * stylesheet itself uses; before motion.css has loaded, with the settle curve over 220 ms.

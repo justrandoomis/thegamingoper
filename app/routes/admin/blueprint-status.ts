@@ -372,22 +372,120 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 06 Point of sale
-  "06.01": planned(),
-  "06.02": planned(),
-  "06.03": planned(),
-  "06.04": planned(n("One stock ledger serves every channel; orders record whether they came from the web or the shop.", "دفتر مخزون واحد لكل القنوات، والطلب يسجل إن جاء من الموقع أو من المحل.")),
-  "06.05": planned(),
-  "06.06": planned(),
-  "06.07": planned(),
+  "06.01": {
+    status: "implemented",
+    route: "/admin/pos/sell",
+    note: n(
+      "The till reads a barcode scanner as a keyboard (SKU, barcode, extra barcodes, serial number) and prints the receipt in place from the browser on 80 mm paper, with the sale's barcode. The first print is the original; every later print is a marked, numbered copy, recorded.",
+      "يقرأ الكاشير قارئ الباركود كلوحة مفاتيح (رمز SKU والباركود والباركودات الإضافية والرقم التسلسلي)، ويطبع الإيصال من الصفحة نفسها عبر المتصفح على ورق 80 مم مع باركود البيع. الطبعة الأولى هي الأصل؛ وكل طبعة بعدها نسخة معلَّمة ومرقّمة ومسجلة.",
+    ),
+  },
+  "06.02": {
+    status: "implemented",
+    route: "/admin/pos/shift",
+    note: n(
+      "Shifts open on a register with a counted float; cash moves in and out with a reason; closing is a blind count by note — also when a supervisor works the till: nobody sees their own drawer's expected cash. A difference is approved by a second person (never who opened or closed the shift) and posted once to cash over/short; each shift has a printable report.",
+      "تُفتح الوردية على جهاز برصيد افتتاح معدود، ويُسجَّل الإيداع والسحب بسبب، ويُغلق الدرج بجرد أعمى حسب الفئة — وكذلك حين يعمل مشرف على الكاشير: لا يرى أحد النقد المتوقع في درجه. يعتمد الفرق شخص ثانٍ (ليس من فتح الوردية أو أغلقها) ويُقيَّد مرة واحدة في عجز وزيادة الصندوق، ولكل وردية تقرير قابل للطباعة.",
+    ),
+  },
+  "06.03": {
+    status: "boundary",
+    route: "/admin/pos/sell",
+    note: n(
+      "Cash, wallet and mixed payments work at the till. A card is charged on the bank's own terminal and recorded here by its slip number: no card terminal or gateway is connected (a provider and its credentials are needed). Wallet spending is confirmed by the cashier, not by an SMS code (no SMS provider); the balance shows only to roles allowed to see wallets.",
+      "الدفع نقداً ومن المحفظة والدفع المختلط يعمل في الكاشير. البطاقة تُدفع على جهاز البنك نفسه ويُسجَّل رقم إيصاله هنا: لا يوجد ربط بجهاز البطاقة أو ببوابة دفع (يلزم مزوّد وبيانات اعتماد). والدفع من المحفظة يتحقق منه الكاشير، لا رمز برسالة (لا مزوّد رسائل)؛ ولا يظهر الرصيد إلا لمن له صلاحية رؤية المحافظ.",
+    ),
+  },
+  "06.04": {
+    status: "implemented",
+    route: "/admin/pos/sell",
+    note: n(
+      "The shop sells the same stock as the website through the commerce core: each sale reserves and commits at the register's store location in one step, the website's availability changes at once, and units held for web orders are never sold at the till.",
+      "يبيع المحل من مخزون الموقع نفسه عبر نواة التجارة: كل بيع يحجز ويُخرج من موقع متجر الجهاز في خطوة واحدة، فيتغير المتاح في الموقع فوراً، ولا يُباع في الكاشير ما هو محجوز لطلبات الموقع.",
+    ),
+  },
+  "06.05": {
+    status: "implemented",
+    route: "/admin/pos/sell",
+    note: n(
+      "A sale links to the buyer's account (found by phone) or keeps their phone; serial numbers are scanned and assigned through the core (never sold twice); warranties start at the sale, one per serial. New products carry a warranty term only once the owner sets the store's terms; used devices carry their own days.",
+      "يُربط البيع بحساب العميل (بالبحث بالهاتف) أو يُحفظ هاتفه؛ تُمسح الأرقام التسلسلية وتُخصَّص عبر نواة التجارة (لا يُباع رقم مرتين)؛ ويبدأ الضمان عند البيع، ضمان لكل رقم. المنتجات الجديدة تحمل مدة ضمان حين يحدد المالك شروط المتجر؛ والأجهزة المستعملة تحمل أيامها.",
+    ),
+  },
+  "06.06": {
+    status: "implemented",
+    route: "/admin/pos/sell",
+    note: n(
+      "Prices come from the point-of-sale price lists (branch, segment, quantity breaks) or the SKU's price. A cashier gives at most 10 % per line and per sale, never under the margin floor (a bundle: its components' cost), always with a reason; beyond needs the discount-override permission. The 10 % is a constant until settings has a key.",
+      "الأسعار من قوائم أسعار نقطة البيع (الفرع والشريحة وكسور الكمية) أو سعر القطعة. يعطي الكاشير خصماً حتى 10% لكل بند وللبيع كله، ولا ينزل تحت حد الهامش (والمجموعة: تحت كلفة مكوّناتها)، ومع سبب دائماً؛ وما فوق ذلك يحتاج صلاحية تجاوز الخصم. نسبة 10% ثابتة حتى يُضاف مفتاح في الإعدادات.",
+    ),
+  },
+  "06.07": {
+    status: "partial",
+    route: "/admin/pos/sell",
+    note: n(
+      "An open till keeps selling without a connection from the catalogue kept on the device; each sale keeps the key it got when charged, so syncing twice records it once; stock, prices and serials are confirmed on sync and conflicts wait for a person (only a supervisor drops a queued sale, with a reason). Missing: no service worker caches the app (the page must be open before the connection drops); no wallet or used devices offline.",
+      "يبقى الكاشير المفتوح يبيع دون اتصال من الكتالوج المحفوظ على الجهاز؛ لكل بيع معرّفه منذ الدفع فلا يُسجَّل مرتين عند المزامنة؛ ويؤكد الخادم المخزون والأسعار والأرقام التسلسلية عند المزامنة وتنتظر التعارضات قرار شخص (ولا يحذف بيعاً محفوظاً إلا مشرف، مع سبب). الناقص: لا يوجد Service Worker يحفظ التطبيق (يجب أن تكون الصفحة مفتوحة قبل انقطاع الاتصال)، ولا محفظة ولا أجهزة مستعملة دون اتصال.",
+    ),
+  },
 
   // ── 07 Customers and CRM
-  "07.01": planned(),
-  "07.02": planned(),
-  "07.03": planned(n("Several addresses and notification preferences per customer exist in the database.", "العناوين المتعددة وتفضيلات الإشعارات لكل عميل موجودة في قاعدة البيانات.")),
-  "07.04": planned(n("Consents are append-only in the database.", "سجل الموافقات لا يقبل التعديل أو الحذف في قاعدة البيانات.")),
-  "07.05": planned(),
-  "07.06": planned(),
-  "07.07": planned(),
+  "07.01": {
+    status: "implemented",
+    route: "/admin/customers",
+    note: n(
+      "One page per customer: what they bought and kept, orders, returns (module 12's RMAs), warranties, repairs, support tickets, the wallet (the ledger sum; top-ups and adjustments open in Finance), append-only internal notes, consents and privacy requests, merged accounts and what staff changed. Each section only for the permission of the module that owns it; the full phone only with customer.phone.read_full. Tickets are read here until module 14 is built.",
+      "صفحة لكل عميل: ما اشتراه وما بقي له، الطلبات، المرتجعات (طلبات الإرجاع من القسم 12)، الضمانات، الصيانة، تذاكر الدعم، المحفظة (مجموع الدفتر؛ الشحن والتسويات تُفتح في المالية)، ملاحظات داخلية لا تُعدَّل، الموافقات وطلبات الخصوصية، الحسابات المدموجة وما غيّره الموظفون. كل قسم لمن يملك صلاحية القسم المالك له فقط، والرقم كاملاً مع صلاحية رؤية الرقم كاملاً فقط. التذاكر تُقرأ هنا حتى يُبنى القسم 14.",
+    ),
+  },
+  "07.02": {
+    status: "implemented",
+    route: "/admin/customers/segments",
+    note: n(
+      "Recency, frequency and value scored 1–5 from real orders (paid and not refunded in full), ten segments from written rules, stored membership next to what the orders say now, a recency × frequency grid, recomputed on demand in one audited batch, a segment filter on the list. The bounds are module constants until settings 22 owns them; no scheduled recompute yet.",
+      "الحداثة والتكرار والقيمة من 1 إلى 5 من الطلبات الحقيقية (المدفوعة وغير المستردة كاملاً)، عشر شرائح بقواعد مكتوبة، الشريحة المحفوظة بجانب ما تقوله الطلبات الآن، شبكة الحداثة × التكرار، إعادة حساب عند الطلب في دفعة واحدة مسجلة، وتصفية القائمة بالشريحة. الحدود ثابتة في القسم حتى يملكها قسم الإعدادات 22، ولا إعادة حساب مجدولة بعد.",
+    ),
+  },
+  "07.03": {
+    status: "implemented",
+    route: "/admin/customers",
+    note: n(
+      "Name, e-mail and message language, several addresses (one default, the checkout's own governorates and districts, at most 10), address phones masked without the full-phone permission, and the notification channels — each change with a reason, audited before/after, guarded against two people editing at once. The account phone is the sign-in identity and is not changed here (it needs an SMS code; no provider); channel choices are stored and delivered once a provider is connected.",
+      "الاسم والبريد ولغة الرسائل، وعناوين متعددة (واحد افتراضي، من محافظات وأقضية إتمام الطلب نفسها، حتى 10)، وهواتف العناوين مخفية جزئياً دون صلاحية الرقم كاملاً، وقنوات الإشعارات — كل تغيير بسبب ومسجل قبل/بعد، ومحمي من تعديل شخصين معاً. رقم الحساب هو هوية الدخول ولا يُغيَّر هنا (يحتاج رمزاً برسالة نصية ولا يوجد مزوّد)، واختيار القنوات يُحفظ ويُرسل عند ربط مزوّد.",
+    ),
+  },
+  "07.04": {
+    status: "partial",
+    route: "/admin/customers/privacy",
+    note: n(
+      "The consent log (every grant and withdrawal, its source and policy version; unsubscribes), withdrawals recorded at the customer's request (never a grant), and privacy requests opened on the customer's behalf with a due date: verified first (method and note), then a JSON export built at download while the request is open and audited each time, an erasure that follows the retention rules (personal data erased, the account anonymized, every consent still granted withdrawn — also the person's checkout answers as a guest; orders, payments, the wallet ledger, consents and the audit trail kept; refused while orders, returns or repairs are open), an unsubscribe (the account's and its guest checkouts' answers), or a correction. Missing: an account whose wallet holds money cannot be erased — the admin has no way to pay a wallet out (module 10's adjustments are credits; the commerce core has no wallet debit), so the request waits until the customer spends it. Customers cannot file a request from the storefront yet, and the file is handed over by hand (no e-mail provider).",
+      "سجل الموافقات (كل موافقة وسحب ومصدرها ونسخة السياسة؛ إلغاءات الاشتراك)، وتسجيل السحب بطلب العميل (لا منح أبداً)، وطلبات الخصوصية تُفتح نيابة عن العميل بموعد: التحقق أولاً (الطريقة وملاحظة)، ثم ملف JSON يُبنى عند التنزيل ما دام الطلب مفتوحاً ويُسجَّل كل تنزيل، أو حذف يتبع قواعد الاحتفاظ (تُمحى البيانات الشخصية ويُجهَّل الحساب وتُسحب كل موافقة قائمة — ومنها ما وافق عليه كزائر عند الشراء؛ وتبقى الطلبات والمدفوعات ودفتر المحفظة والموافقات وسجل التدقيق، ويُرفض ما دامت طلبات أو مرتجعات أو صيانة مفتوحة)، أو إلغاء اشتراك (موافقات الحساب ومشترياته كزائر)، أو تصحيح. الناقص: لا يُحذف حساب في محفظته رصيد — لا توجد في لوحة الإدارة طريقة لصرف المحفظة (تسويات القسم 10 إضافة فقط، ولا خصم من المحفظة في نواة التجارة)، فينتظر الطلب حتى يصرف العميل رصيده. لا يستطيع العميل تقديم الطلب من المتجر بعد، ويُسلَّم الملف يدوياً (لا مزوّد بريد).",
+    ),
+  },
+  "07.05": {
+    status: "partial",
+    route: "/admin/customers/duplicates",
+    note: n(
+      "Look-alike accounts with their reason (same e-mail, one account's number on the other's orders or addresses, same name and area); a plan of what moves and what stays before anyone confirms; the verification method, a note and a reason; one batch moving orders (each with an order event), addresses, favourites, saved devices, notifications, returns, warranties, repairs, tickets, trade-ins, coupon uses and reviews, ending the duplicate's sessions; two audit events with the moved order numbers. A blocked or fraud-flagged duplicate only folds into an account carrying the same label, so a merge never drops a block or a fraud flag. Missing: a duplicate whose wallet holds money (or a pending top-up or adjustment, or loyalty points) cannot be merged — the wallet is never rewritten and the commerce core has no wallet transfer yet.",
+      "حسابات متشابهة مع السبب (البريد نفسه، أو رقم أحدها على طلبات الآخر أو عناوينه، أو الاسم والمنطقة)؛ خطة بما ينتقل وما يبقى قبل التأكيد؛ طريقة التحقق وملاحظة وسبب؛ دفعة واحدة تنقل الطلبات (لكل منها حدث في الطلب) والعناوين والمفضلة والأجهزة والإشعارات والمرتجعات والضمانات والصيانة والتذاكر والمقايضات واستعمالات القسائم والتقييمات، وتنهي جلسات الحساب المكرر؛ حدثا تدقيق بأرقام الطلبات المنقولة. الحساب المكرر المحظور أو الموسوم بخطر احتيال لا يُدمج إلا في حساب يحمل الوسم نفسه، فلا يضيع حظر ولا وسم احتيال بالدمج. الناقص: لا يُدمج حساب في محفظته رصيد (أو طلب شحن أو تسوية معلقة أو نقاط ولاء) — المحفظة لا يُعاد كتابتها ولا توجد بعد حركة نقل بين محفظتين في نواة التجارة.",
+    ),
+  },
+  "07.06": {
+    status: "implemented",
+    route: "/admin/customers?view=risk",
+    note: n(
+      "VIP (a manual label, or value or frequency over 365 days), fraud risk (a manual flag with its reason — the orders module then sends the customer's orders to human review —, cancelled or returned orders, rejected or duplicate transfer proofs) and open complaints (complaint or escalated tickets), each label with the sentence and the numbers behind it; saved views and cards on the module page; block / unblock with a reason. The thresholds are module constants until settings 22 owns them.",
+      "مميز (وسم يدوي، أو قيمة أو تكرار خلال 365 يوماً)، وخطر احتيال (وسم يدوي بسببه — وعندها يرسل قسم الطلبات طلبات العميل للمراجعة البشرية —، وطلبات ملغاة أو مُعادة، وإثباتات تحويل مرفوضة أو مكررة)، وشكاوى مفتوحة (تذاكر شكوى أو مصعّدة)، ولكل وسم الجملة والأرقام التي وراءه؛ عروض محفوظة وبطاقات في صفحة القسم؛ وحظر الحساب ورفعه بسبب. الحدود ثابتة في القسم حتى يملكها قسم الإعدادات 22.",
+    ),
+  },
+  "07.07": {
+    status: "implemented",
+    route: "/admin/customers",
+    note: n(
+      "Each customer's communication log, filterable by order: the messages the store wrote (only the facts of the event — amounts, payment references and refusal reasons are left out) and the contacts staff logged by hand (append-only; card-like numbers refused). No SMS, WhatsApp or e-mail provider is connected, so every message shows as held, never as delivered.",
+      "سجل تواصل كل عميل، مع التصفية بالطلب: الرسائل التي كتبها المتجر (وقائع الحدث فقط — بلا مبالغ ولا مراجع دفع ولا أسباب رفض) والاتصالات التي سجّلها الموظفون يدوياً (لا تُعدَّل، وتُرفض الأرقام التي تشبه بطاقة). لا يوجد مزوّد رسائل نصية أو واتساب أو بريد، فكل رسالة تظهر محجوزة ولم تُرسل.",
+    ),
+  },
 
   // ── 08 Promotions and loyalty
   "08.01": planned(n("Coupon rules (fixed or percent, limits, dates) are applied at checkout by the commerce core.", "قواعد الكوبونات (مبلغ أو نسبة، حدود، تواريخ) تُطبق عند إتمام الطلب.")),
@@ -656,15 +754,78 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 13 Devices, games and trade-in
-  "13.01": planned(n("A serial is sold once (unique, guarded status).", "الرقم التسلسلي يُباع مرة واحدة.")),
-  "13.02": planned(n("Inspection checklists are seeded for consoles, handheld PCs, controllers and games.", "قوائم الفحص محمّلة للأجهزة المنزلية والمحمولة وأذرع التحكم والألعاب.")),
-  "13.03": planned(),
-  "13.04": planned(n("An estimate is never an offer: only an employee can set the final offer (database rule).", "التقدير ليس عرضاً: الموظف وحده يحدد العرض النهائي.")),
-  "13.05": planned(),
-  "13.06": planned(),
-  "13.07": planned(),
-  "13.08": planned(n("A used unit cannot be listed without the ownership check and data wipe dates (database rule).", "لا يُعرض جهاز مستعمل دون تاريخي التحقق من الملكية ومسح البيانات.")),
-  "13.09": planned(n("Listing a used unit needs a real photo and a completed checklist (database rule).", "عرض جهاز مستعمل يحتاج صورة حقيقية وقائمة فحص مكتملة.")),
+  "13.01": {
+    status: "implemented",
+    route: "/admin/devices/registry",
+    note: n(
+      "Every serial-numbered unit by serial, condition (new, or used with its grade) and source (the supplier's receipt and purchase order, the trade-in, the demo opening stock), with its status, location, the order holding it, trade-ins, warranties and — for the movement log's permission — its movements; cost only with cost.read. A serial is sold once (database rule); a unit the store sold before and buys back is released from its old sale.",
+      "كل جهاز برقمه التسلسلي وحالته (جديد، أو مستعمل بدرجته) ومصدره (فاتورة المورد وأمر الشراء، أو المقايضة، أو الرصيد الافتتاحي التجريبي)، مع وضعه ومكانه والطلب الذي يحمله والمقايضات والضمانات وحركاته لمن يملك صلاحية سجل الحركات؛ التكلفة لمن يملك صلاحية التكلفة فقط. الرقم التسلسلي يُباع مرة واحدة، والجهاز الذي باعه المتجر ثم اشتراه يتحرر من بيعه القديم.",
+    ),
+  },
+  "13.02": {
+    status: "implemented",
+    route: "/admin/devices/templates",
+    note: n(
+      "A checklist per kind (console, handheld PC, controller, headset, other, used game) with required and critical items — screen, battery (%), ports, buttons, heat; each save is a new version so filled checklists keep their words. Filled at the trade-in inspection and on each used unit; a failed critical item keeps the unit off sale.",
+      "قائمة فحص لكل نوع (جهاز منزلي، محمول، يد تحكم، سماعة، آخر، لعبة مستعملة) ببنود مطلوبة وحاسمة — الشاشة والبطارية (٪) والمنافذ والأزرار والحرارة؛ كل حفظ نسخة جديدة فتبقى القوائم المملوءة على كلماتها. تُملأ عند فحص المقايضة وعلى كل جهاز مستعمل، والبند الحاسم الفاشل يمنع العرض للبيع.",
+    ),
+  },
+  "13.03": {
+    status: "implemented",
+    route: "/admin/devices/guides",
+    note: n(
+      "Price guides per model (or one variant): the reference market price of a grade-A+ unit, each grade's share and a deduction per missing accessory, audited before/after. The trade-in page shows the guide's suggestion for the inspected grade and accessories, beside the store's own new and used prices. No external market-price feed is connected: the reference price is what staff enter.",
+      "أدلة أسعار لكل طراز (أو خيار): سعر السوق المرجعي لجهاز A+ وحصة كل درجة وخصم كل ملحق ناقص، مع تدقيق القيم قبل وبعد. تعرض صفحة المقايضة اقتراح الدليل للدرجة والملحقات المفحوصة بجانب أسعار المتجر للجديد والمستعمل. لا مصدر خارجي لأسعار السوق متصل: السعر المرجعي يدخله الموظفون.",
+    ),
+  },
+  "13.04": {
+    status: "partial",
+    route: "/admin/devices/trade-ins",
+    note: n(
+      "Final offer made by a person after the inspection, open 1–30 days (expired or declined offers replaced, the history keeps both); the price difference against any SKU or used unit; payout as store credit in the wallet or cash, with a printable offer the customer signs. Missing: the trade-in value cannot pay part of a purchase in one transaction (checkout pays a whole order from the wallet only; the POS does not take trade-ins), and the job that marks expired offers is not scheduled yet.",
+      "عرض نهائي يصدره موظف بعد الفحص، صالح من يوم إلى 30 يوماً (يُستبدل المنتهي أو المرفوض ويبقى كلاهما في السجل)، وفرق السعر عن أي منتج أو جهاز مستعمل، والدفع رصيداً في المحفظة أو نقداً مع عرض مطبوع يوقعه العميل. الناقص: قيمة المقايضة لا تدفع جزءاً من مشتريات في عملية واحدة (الدفع بالمحفظة يغطي طلباً كاملاً فقط ونقطة البيع لا تأخذ المقايضة)، ومهمة إنهاء العروض المنتهية غير مجدولة بعد.",
+    ),
+  },
+  "13.05": {
+    status: "implemented",
+    route: "/admin/devices/used",
+    note: n(
+      "A used game is taken in at the counter by its SKU or barcode and inspected on the games checklist (disc or cartridge surface, case and cover, region and platform, unused codes); its unit page shows the catalogue's region, platform, copy format and compatibility rules.",
+      "تُستلم اللعبة المستعملة في المحل برمز SKU أو الباركود وتُفحص بقائمة الألعاب (سطح القرص أو البطاقة، العلبة والغلاف، المنطقة والمنصة، رموز غير مستخدمة)، وتعرض صفحتها منطقة الكتالوج ومنصته ونوع النسخة وقواعد التوافق.",
+    ),
+  },
+  "13.06": {
+    status: "implemented",
+    route: "/admin/devices/digital",
+    note: n(
+      "Every game and digital product in one delivery class from the catalogue's facts (disc, cartridge, code, add-on, subscription, wallet top-up, account), with the products whose facts disagree linked to the catalogue editor where they are fixed, and the code stock per digital option.",
+      "كل لعبة ومنتج رقمي بطريقة تسليم واحدة من حقائق الكتالوج (قرص، بطاقة، رمز، محتوى إضافي، اشتراك، شحن رصيد، حساب)، مع المنتجات المتعارضة الحقائق وروابطها إلى محرر الكتالوج حيث تُصحح، ومخزون الرموز لكل خيار رقمي.",
+    ),
+  },
+  "13.07": {
+    status: "partial",
+    route: "/admin/devices/digital",
+    note: n(
+      "Codes are imported encrypted (AES-256-GCM with DATA_KEY, bound to their row), never stored twice, never shown in a list; staff reveal a code only once it was delivered on a paid order line (never unsold stock, never an unpaid or refunded line), with digital_code.reveal and a reason, audited and rate-limited; revoke. Missing: giving a code to its buyer after payment (the commerce core does not assign codes to paid order lines yet, and the order page cannot show one) — so no code is revealable yet.",
+      "تُضاف الرموز مشفرة (AES-256-GCM بمفتاح البيانات، مربوطة بصفها) ولا تُخزن مرتين ولا تظهر في أي قائمة؛ لا يكشف الموظف رمزاً إلا بعد تسليمه على سطر طلب مدفوع (لا رمز غير مبيع ولا سطر غير مدفوع أو مسترد)، بصلاحية الكشف وسبب، ويُسجل الكشف ويُحد؛ والإلغاء. الناقص: تسليم الرمز لمشتريه بعد الدفع (نواة التجارة لا تخصص الرموز لسطور الطلبات المدفوعة بعد، وصفحة الطلب لا تعرضها) — لذلك لا رمز قابل للكشف بعد.",
+    ),
+  },
+  "13.08": {
+    status: "implemented",
+    route: "/admin/devices/trade-ins",
+    note: n(
+      "At the inspection: proof of ownership and the account-lock check, confirmed by staff who may verify ownership (no offer without both; a confirmation holds for that serial only); after acceptance: accounts unlinked and data wiped, confirmed before the payout; on used units: ownership and wipe confirmations, the wipe again after a return. A unit is never listed without both (service and database rule).",
+      "عند الفحص: إثبات الملكية وفحص قفل الحسابات، يؤكدهما موظف يملك صلاحية التحقق من الملكية (لا عرض دونهما، والتأكيد يخص ذلك الرقم التسلسلي وحده)؛ بعد القبول: فصل الحسابات ومسح البيانات وتأكيدهما قبل الدفع؛ وعلى الأجهزة المستعملة: تأكيد الملكية والمسح، والمسح من جديد بعد الإرجاع. لا يُعرض جهاز دونهما (قاعدة في الخدمة وقاعدة البيانات).",
+    ),
+  },
+  "13.09": {
+    status: "partial",
+    route: "/admin/devices/used",
+    note: n(
+      "Grades A+…C with condition words, disclosed defects, what is included and the store warranty; photos stay private until a person confirms they show this very unit and are published when it is listed (the store labels everything else as an illustration); the customer approves the offer made on the documented grade — in person on the signed printout, or online. Missing: the storefront's tracking page shows the online customer the offer but not the grade and checklist it was made on.",
+      "درجات من A+ إلى C مع وصف الحالة والعيوب الظاهرة وما يأتي مع الجهاز وضمان المتجر؛ تبقى الصور خاصة حتى يؤكد موظف أنها صور الجهاز نفسه وتُنشر عند عرضه للبيع (ويصف المتجر غيرها بأنها توضيحية)؛ ويوافق العميل على العرض المبني على الدرجة الموثقة — حضورياً بتوقيع العرض المطبوع أو عبر الموقع. الناقص: صفحة المتابعة في المتجر تعرض للعميل العرض دون الدرجة وقائمة الفحص التي بُني عليها.",
+    ),
+  },
 
   // ── 14 Customer service
   "14.01": planned(n("No email or messaging provider is connected.", "لا يوجد مزود بريد أو رسائل متصل.")),
@@ -730,26 +891,68 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   // ── 20 Security and compliance
   "20.01": {
     status: "partial",
-    route: "/admin/me",
+    route: "/admin/security/staff",
     note: n(
-      "Two-step verification with an authenticator app and one-time recovery codes, password change, and the employee's own sessions with sign-out (one or all). Not built: trusted devices, requiring two-step verification for a role, and managing other employees' sessions.",
-      "التحقق بخطوتين بتطبيق مصادقة ورموز استرداد لمرة واحدة، وتغيير كلمة المرور، وجلسات الموظف نفسه مع تسجيل الخروج (جلسة أو الكل). غير منفذ: الأجهزة الموثوقة، وفرض التحقق بخطوتين لدور، وإدارة جلسات الآخرين.",
+      "Two-step status and coverage per role; other employees' sessions ended and two-step reset (owner; never of an account holding more than the resetter), with a reason and audited; one's own on /admin/me. Missing: trusted devices and two-step required per role — the sign-in service has neither.",
+      "حالة التحقق بخطوتين والتغطية لكل دور؛ وإنهاء جلسات الموظفين الآخرين وإعادة ضبط تحققهم (المالك؛ ولا لحساب يملك أكثر ممن يعيد الضبط)، بسبب ومسجل؛ وإعدادات الموظف نفسه في /admin/me. ناقص: الأجهزة الموثوقة وفرض التحقق بخطوتين لدور — خدمة الدخول لا تدعمهما.",
     ),
   },
   "20.02": {
     status: "partial",
-    route: "/admin",
+    route: "/admin/security/roles",
     note: n(
-      "Enforced on every admin request: the shell shows and opens only the modules a role may use, and every service checks again; cost and profit leave the server only with cost.read and profit.read. There is no role editor (15.01) and no branch screen.",
-      "مطبّق على كل طلب في لوحة الإدارة: لا تظهر ولا تُفتح إلا أقسام الدور، وكل خدمة تتحقق مجدداً، ولا تخرج التكلفة والربح من الخادم إلا بصلاحيتيهما. لا يوجد محرر أدوار (15.01) ولا شاشة فروع.",
+      "Role editor with field-level permissions marked, new roles, an employee's roles and branch limit — wildcard owner-only, nothing granted or taken away beyond one's own (only an owner takes the owner role), no edit of one's own role, last owner kept, impact shown, audited. Missing: no branch exists yet (module 21).",
+      "محرر الأدوار مع تمييز صلاحيات الحقول، وأدوار جديدة، وأدوار الموظف وحدّ فرعه — الصلاحية الشاملة للمالك وحده، ولا منح ولا سحب فوق ما يملكه الشخص (ولا يسحب دور المالك إلا مالك)، ولا تعديل لدوره، ويبقى آخر مالك، ويُعرض الأثر ويُسجل. ناقص: لا يوجد فرع بعد (القسم 21).",
     ),
   },
-  "20.03": planned(n("Append-only audit events in a hash chain sealed daily; there is no viewer.", "أحداث تدقيق لا تقبل التعديل في سلسلة مختومة يومياً، ولا توجد شاشة لعرضها.")),
-  "20.04": planned(n("Authenticator secrets are encrypted (AES-256-GCM); digital codes are not built.", "أسرار تطبيق المصادقة مشفرة، والرموز الرقمية غير منفذة.")),
-  "20.05": planned(n("No backup or restore test is set up from the app.", "لا يوجد نسخ احتياطي أو اختبار استعادة من التطبيق.")),
-  "20.06": planned(n("Orders, payments, wallet entries and refunds are idempotent; inbound webhook ids are de-duplicated.", "الطلبات والمدفوعات وحركات المحفظة والاستردادات لا تتكرر، ومعرفات الإشعارات الواردة لا تُعالج مرتين.")),
-  "20.07": planned(n("Retention of sessions, codes, sign-in events (180 days) and the outbox (90 days) runs daily; no settings screen or access review.", "حذف الجلسات والرموز وأحداث الدخول (180 يوماً) والرسائل (90 يوماً) يعمل يومياً، بلا شاشة إعدادات أو مراجعة صلاحيات.")),
-  "20.08": planned(n("Every sign-in, failure and lockout is recorded; an email locks after 5 failures. There is no alert screen.", "كل دخول وفشل وإيقاف مسجل، ويُوقف البريد بعد 5 محاولات فاشلة. لا توجد شاشة تنبيهات.")),
+  "20.03": {
+    status: "implemented",
+    route: "/admin/security/audit",
+    note: n(
+      "Filters, CSV export, each event's before and after (cost hidden without cost.read), chain verification and sealing — both recorded; sealed daily by the scheduled job.",
+      "التصفية والتصدير CSV وما قبل كل حدث وبعده (تُحجب التكلفة بلا صلاحيتها)، والتحقق من السلسلة وختمها — وكلاهما مسجل؛ ويُختم يومياً بالمهمة المجدولة.",
+    ),
+  },
+  "20.04": {
+    status: "partial",
+    route: "/admin/security/protections",
+    note: n(
+      "The data key's self-test, authenticator secrets readable with it, and counts of protected records — never a secret. Missing: rotating the data key (re-encrypting under a new DATA_KEY); digital codes are module 13's.",
+      "فحص ذاتي لمفتاح البيانات، وأسرار تطبيق المصادقة المقروءة به، وأعداد السجلات المحمية — دون أي سر. ناقص: تدوير مفتاح البيانات (إعادة التشفير بمفتاح DATA_KEY جديد)، والرموز الرقمية من القسم 13.",
+    ),
+  },
+  "20.05": {
+    status: "partial",
+    route: "/admin/security/backups",
+    note: n(
+      "The recovery plan with its wrangler commands (D1 Time Travel keeps 30 days) and restore tests recorded as evidence, due every 90 days. Backups and restores run in Cloudflare, not from the app; uploaded files (KV) have no history.",
+      "خطة التعافي بأوامر wrangler (يحتفظ D1 Time Travel بثلاثين يوماً)، وتسجيل اختبارات الاستعادة كدليل، ويُستحق اختبار كل 90 يوماً. النسخ والاستعادة تتم في Cloudflare لا من التطبيق، والملفات المرفوعة (KV) بلا سجل زمني.",
+    ),
+  },
+  "20.06": {
+    status: "boundary",
+    route: "/admin/security/protections",
+    note: n(
+      "Built: every duplicate rule checked in the database, flagged duplicate payment proofs and wallet top-ups, incoming provider events keyed by provider and event id. Needs a payment provider: none is connected, so no webhook arrives yet (21.05).",
+      "المنفذ: فحص كل قاعدة لمنع التكرار في قاعدة البيانات، وإثباتات الدفع وطلبات شحن المحفظة المكررة المعلّمة، والأحداث الواردة بمفتاح المزود ومعرف الحدث. يحتاج مزود دفع: لا يوجد مزود متصل، فلا تصل إشعارات Webhook بعد (21.05).",
+    ),
+  },
+  "20.07": {
+    status: "implemented",
+    route: "/admin/security/retention",
+    note: n(
+      "Retention periods (set in code) with the daily job's last run; a customer's deletion request is 07.04. Access reviews of each role every 90 days, recorded in the audit trail.",
+      "مدد الاحتفاظ (محددة في الكود) مع آخر تشغيل للمهمة اليومية، وطلب حذف بيانات زبون في 07.04. مراجعة صلاحيات كل دور كل 90 يوماً، وتُسجل في سجل التدقيق.",
+    ),
+  },
+  "20.08": {
+    status: "implemented",
+    route: "/admin/security/sign-ins",
+    note: n(
+      "Sign-in alerts by rule (24 hours, 7 or 30 days) and the sign-in log, phones masked without customer.phone.read_full; refund reviews with their signals on /admin/security/refunds, never by who asked for or approved the refund.",
+      "تنبيهات الدخول حسب القاعدة (24 ساعة أو 7 أو 30 يوماً) وسجل الدخول، والهواتف مخفية بلا صلاحية رؤيتها كاملة؛ ومراجعة الاستردادات بإشاراتها في /admin/security/refunds، ولا يراجعها من طلبها أو وافق عليها.",
+    ),
+  },
 
   // ── 21 Branches, channels and integrations
   "21.01": planned(),
@@ -760,19 +963,54 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   "21.06": planned(),
 
   // ── 22 Settings and administration
-  "22.01": planned(n("Typed settings and dated USD rates exist, with audited changes.", "الإعدادات وأسعار الصرف المؤرخة موجودة، وتغييراتها مسجلة.")),
-  "22.02": planned(n("Shipping, payment and return settings exist with defaults and owner-only keys.", "إعدادات الشحن والدفع والإرجاع موجودة بقيم افتراضية ومفاتيح للمالك فقط.")),
-  "22.03": planned(),
-  "22.04": planned(),
-  "22.05": {
-    status: "partial",
-    route: "/admin",
+  "22.01": {
+    status: "implemented",
+    route: "/admin/settings/currency",
     note: n(
-      "The admin works in Arabic (right to left) and English, chosen per browser, and shows dates in Iraq time (Asia/Baghdad). There is no settings screen for the time zone, date or numeral formats.",
-      "تعمل لوحة الإدارة بالعربية (من اليمين لليسار) والإنجليزية حسب المتصفح، وتعرض التواريخ بتوقيت العراق. لا توجد شاشة إعدادات للتوقيت أو صيغ التاريخ والأرقام.",
+      "Iraqi dinars, whole and fixed; the store's USD rate in force with the date it took effect, scheduled rates and the history. The rate is entered on /admin/pricing/fx (module 03).",
+      "الدينار العراقي، صحيحاً وثابتاً؛ وسعر الدولار الساري لدى المتجر مع تاريخ سريانه والأسعار المجدولة والسجل. يُدخل السعر في /admin/pricing/fx (القسم 03).",
     ),
   },
-  "22.06": planned(),
+  "22.02": {
+    status: "partial",
+    route: "/admin/settings/policies",
+    note: n(
+      "Shipping fee (module 11), tax (module 10; checkout adds no tax — an owner decision), return window and trade-in validity in one place; the return and warranty texts are drafted, approved and withdrawn here. Missing: the store's own warranty terms are undecided.",
+      "رسم التوصيل (القسم 11) والضريبة (القسم 10؛ لا يضيف الدفع ضريبة — قرار المالك) ومدة الإرجاع وصلاحية تقدير المقايضة في مكان واحد؛ ونصّا الإرجاع والضمان يُكتبان ويُعتمدان ويُسحبان هنا. ناقص: شروط ضمان المتجر نفسه لم تُقرر بعد.",
+    ),
+  },
+  "22.03": {
+    status: "partial",
+    route: "/admin/settings/fields",
+    note: n(
+      "Custom fields per product type (type, options, required, filterable, order, on/off) with the key and a used type locked, options in use kept and the products affected shown; the catalog's product form uses them. Missing: minimum, maximum and pattern rules.",
+      "حقول مخصصة لكل نوع منتج (النوع والخيارات والإلزام والتصفية والترتيب والتفعيل)، يُقفل فيها المفتاح والنوع المستخدم وتبقى الخيارات المستخدمة وتظهر المنتجات المتأثرة؛ ويستخدمها نموذج المنتج في الكتالوج. ناقص: قواعد الحد الأدنى والأقصى والنمط.",
+    ),
+  },
+  "22.04": {
+    status: "partial",
+    route: "/admin/settings/templates",
+    note: n(
+      "The store's text messages per language, checked against each message's variables, with a preview; files by kind, the latest uploads and uploads nothing refers to (/admin/settings/files). Missing: no SMS provider (21.05) and sending does not use these texts yet; invoices are module 05's.",
+      "رسائل المتجر النصية لكل لغة مع فحص متغيرات كل رسالة ومعاينتها؛ والملفات حسب النوع وآخر المرفوعات وما لا يشير إليه شيء (/admin/settings/files). ناقص: لا يوجد مزود رسائل (21.05) ولا يستخدم الإرسال هذه النصوص بعد، والفواتير من القسم 05.",
+    ),
+  },
+  "22.05": {
+    status: "partial",
+    route: "/admin/settings/locale",
+    note: n(
+      "Iraq time (Asia/Baghdad, no daylight saving), how dates and numerals are written in each language, and the reading direction, with samples. Missing: the per-language numeral setting and translation corrections are stored but nothing reads them, so neither is offered.",
+      "توقيت العراق (Asia/Baghdad، بلا توقيت صيفي)، وكيف يُكتب التاريخ والأرقام في كل لغة، واتجاه القراءة، مع أمثلة. ناقص: إعداد الأرقام لكل لغة وتصحيحات الترجمة مخزنة ولا يقرؤها شيء، فلا يُعرض أي منهما.",
+    ),
+  },
+  "22.06": {
+    status: "partial",
+    route: "/admin/settings/changes",
+    note: n(
+      "Every setting with its value, history and a change that needs a reason and the value the person saw; money-control limits need a second person, never the requester; one log of every change and decision. Missing: no separate test deployment — the store mode is a deploy variable, shown read-only.",
+      "كل إعداد بقيمته وسجله، وتغيير يحتاج سبباً والقيمة التي رآها الشخص؛ وحدود الرقابة المالية تحتاج شخصاً ثانياً غير الطالب؛ وسجل واحد لكل تغيير وقرار. ناقص: لا توجد نسخة اختبار منفصلة — وضع المتجر متغير نشر يُعرض للقراءة فقط.",
+    ),
+  },
 
   // ── 23 Technical operations
   "23.01": planned(),

@@ -40,6 +40,7 @@ import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { approvals, inventoryLocations, poItems, purchaseOrders, rfqs, rfqQuotes, supplierContacts, suppliers, type PurchaseOrderStatus } from "~/server/db/schema";
 import { chunkRows, expectChanged, expectThat, isDbError, isUniqueViolation, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, toAppError } from "~/server/errors";
+import { getSetting } from "~/server/settings.server";
 import { defaultRateMicros } from "../pricing/costs.server";
 import {
   MAX_DOC_IQD,
@@ -370,13 +371,13 @@ export async function limitWindow(db: Db, supplierId: string, approvedBy: string
 }
 
 /** How the limit sees a draft now: its own weight, the window's, the total at the store's rate, and the verdict. */
-export type LimitCheck = { orderIqd: number; storeRateIqd: number | null; windowIqd: number; windowCount: number; needsApproval: boolean };
+export type LimitCheck = { orderIqd: number; storeRateIqd: number | null; windowIqd: number; windowCount: number; needsApproval: boolean; /** The limit in force: setting "purchasing.po_approval_limit_iqd" (admin 22), default PO_SPENDING_LIMIT_IQD. */ limitIqd: number };
 
 async function limitCheckOf(db: Db, order: LimitOrder & { supplierId: string; id: string }, approvedBy: string | null, now: number): Promise<LimitCheck> {
-  const [rates, window] = await Promise.all([storeRates(db, [order.currency], now), limitWindow(db, order.supplierId, approvedBy, now, order.id)]);
+  const [rates, window, limitIqd] = await Promise.all([storeRates(db, [order.currency], now), limitWindow(db, order.supplierId, approvedBy, now, order.id), getSetting(db, "purchasing.po_approval_limit_iqd")]);
   const orderIqd = limitValueOf(order, rates);
   const storeRateIqd = order.currency === "IQD" ? null : toIqd(order.totalMinor, order.currency, rates.get(order.currency) ?? null);
-  return { orderIqd, storeRateIqd, windowIqd: window.iqd, windowCount: window.count, needsApproval: needsApproval(orderIqd, PO_SPENDING_LIMIT_IQD, window.iqd) };
+  return { orderIqd, storeRateIqd, windowIqd: window.iqd, windowCount: window.count, needsApproval: needsApproval(orderIqd, limitIqd, window.iqd), limitIqd };
 }
 
 /** Audit actions after which an employee may no longer decide the order's approval: they shaped or asked for it. */
@@ -453,7 +454,7 @@ export async function submitPurchaseOrder(db: Db, actor: Actor, raw: unknown, no
           totalIqd,
           totalMinor,
           currency: order.currency,
-          limitIqd: PO_SPENDING_LIMIT_IQD,
+          limitIqd: check.limitIqd,
           windowIqd,
           windowDays: SPLIT_WINDOW_DAYS,
           // The order's rate is below the store's: what it weighs at the store's rate of the day.
@@ -987,7 +988,7 @@ export async function getPurchaseOrder(db: Db, actor: Actor, poId: string, local
     invoices: can(actor, "purchasing.invoice.manage") && withCost ? invoiceRows.map((row) => ({ id: row.id, invoiceNo: row.invoiceNo, status: row.status, issuedOn: row.issuedOn, totalMinor: row.totalMinor })) : [],
     claims: claimRows,
     history,
-    ...(withCost ? { limitIqd: PO_SPENDING_LIMIT_IQD, storeRateMicros } : {}),
+    ...(withCost ? { limitIqd: limitCheck?.limitIqd ?? (await getSetting(db, "purchasing.po_approval_limit_iqd")), storeRateMicros } : {}),
     ...(limitCheck ? { limitUsedIqd: limitCheck.windowIqd, limitCheck } : {}),
     can: {
       edit: order.status === "draft" && withCost && can(actor, "purchasing.po.create"),

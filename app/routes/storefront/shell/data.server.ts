@@ -61,7 +61,7 @@ export function emptyStorefrontShell(ctx: Pick<RequestCtx, "now" | "origin">): S
       card: settingDefault("payments.bank_transfer").enabled,
       zaincash: settingDefault("payments.zaincash").enabled,
     },
-    contact: { links: [], address: null, hours: null },
+    contact: { links: [], address: null, hours: null, channels: null },
     publicOrigin: publicOrigin(ctx.origin),
     year: new Date(ctx.now).getUTCFullYear(),
   };
@@ -93,11 +93,15 @@ function contactOf(contact: ContactSetting, locale: Locale): ShellContact {
     if (url) links.push({ kind, label: hostLabel(url), href: url });
   }
   if (contact.map_url) links.push({ kind: "map", label: hostLabel(contact.map_url), href: contact.map_url });
-  return {
-    links,
-    address: contact.address ? pick(contact.address, locale) || null : null,
-    hours: contact.hours ? pick(contact.hours, locale) || null : null,
-  };
+  const address = contact.address ? pick(contact.address, locale) || null : null;
+  const hours = contact.hours ? pick(contact.hours, locale) || null : null;
+  // the kit's <ContactCard>: WhatsApp as international digits, the phone in E.164, the hours in the owner's words (no
+  // schedule is stored, so no open/closed state is computed)
+  const channels =
+    phone || whatsapp || address || hours
+      ? { whatsapp: whatsapp ? whatsapp.slice(1) : null, phone, address, mapsUrl: contact.map_url ?? null, hours: null, hoursText: hours, replyTime: null }
+      : null;
+  return { links, address, hours, channels };
 }
 
 /** "https://www.instagram.com/tamtam.games/" → "instagram.com/tamtam.games" */

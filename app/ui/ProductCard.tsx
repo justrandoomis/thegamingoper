@@ -1,47 +1,47 @@
-import { lazy, Suspense, useRef, useState, type MouseEvent, type SyntheticEvent } from "react";
+import { lazy, Suspense, useId, useRef, useState, type MouseEvent, type ReactNode, type SyntheticEvent } from "react";
 import { useRouteLoaderData } from "react-router";
 
-import { getArt, isPhoto } from "~/art";
-import { LocaleLink, useT } from "~/i18n/react";
+import { artAspect, getArt, isPhoto } from "~/art";
+import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { ImageRef, ProductCardData } from "~/lib/dto";
+import { CKB_MONTHS } from "~/lib/dates";
+import { LOCALES, type Locale } from "~/lib/locales";
 import { MotionLink, SharedElement } from "~/motion";
-import { AddToCartKey } from "./AddToCartKey";
+import { CardAddButton } from "./AddToCartKey";
 import { BidiText } from "./BidiText";
 import { mediaUrl } from "./cart-client";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
 import { IconKey } from "./IconKey";
-import { Niche } from "./Niche";
-import { PriceTag, SavingNote } from "./PriceTag";
+import { Niche, type NicheKind } from "./Niche";
+import { isPlatform, PlatformLed } from "./PlatformLed";
+import { SafePrice } from "./PriceTag";
 import { RatingStars } from "./RatingStars";
-import { AddGlyph, Socket } from "./Socket";
 import { Render } from "./Stage";
-import { StockNote } from "./StockNote";
-import { Status, Tag } from "./Tag";
+import { Tag } from "./Tag";
+import { WishlistKey } from "./WishlistKey";
 
 /**
- * The product card — the one card (docs/DESIGN.md §9.5, reference a.png): no chrome at all. A flat niche holds the
- * picture and the one tag; the name (two lines, height reserved), the fact line and the price sit on the floor; the
- * red add key is seated in its socket at the end of the price row.
+ * The product card — Design System v2 §4.11: the one card, NO CONTAINER (no border, no shadow, no fill around the
+ * text). A 1:1 well on the product ground holds the picture (contained, bottom-aligned, the CSS contact ellipse), the one
+ * badge top-start and the wishlist top-end; under it the platform line (8px dots + the kind label «جهاز PS5»), the name
+ * (type-card, two lines, never truncated to one), at most two facts, and the foot pinned to the bottom: the price at the
+ * start and the neutral add button at the end. Cards in a row are equal height (grid stretch), so prices align.
  *
- *   <ProductCard card={card} />                        ProductCardData from the catalogue read layer
- *   <ProductCard card={card} priority />               the first card above the fold only
- *   <ProductCard card={card} slot="trending" />        the same product in two rails on one page
+ *   <ProductCard card={card} />                          ProductCardData from the catalogue read layer
+ *   <ProductCard card={card} priority />                 the first card above the fold only
+ *   <ProductCard card={card} wishlist wished={ids.has(card.id)} />   with the heart on the well
+ *   <ProductCard card={card} layout="row" />             a 96px well at the start (device hubs, wide suggestions)
  *
- * The card is ONE link to /p/<slug> (MotionLink nav="zoom": the niche grows into the product page's stage through
- * <SharedElement name="product-image:<id>">); its link covers the whole card, and the add key sits above it as a
- * separate control — nothing interactive is nested. Out of stock: an empty socket and "نفد" in the status line. A
- * rating shows only when real reviews exist. `isDemo` rows say "تجريبي" when the store is live (in demo mode the
- * store-wide ribbon already says it).
+ * The card is ONE link to /p/<slug> (MotionLink nav="zoom"): the link holds the well (the shared element
+ * `product-image:<id>`) and the words, and its stretched layer covers the card; the add button and the heart sit
+ * above it as separate controls — nothing interactive is nested. Its accessible name is the product name.
  *
- * Products with options (§9.5 "open the quick-preview sheet instead of adding"): the socket key opens the product
- * area's QuickPreview sheet over the page — variants, stock, the buy controls, "التفاصيل الكاملة". The sheet's code is
- * loaded on first intent (hover, focus, press), so the card itself stays light. The key is a real link to the product
- * page underneath: without script, or opened in a new tab (Ctrl/⌘/middle click), it simply goes there.
- *
- * Not out yet (`stock: "preorder"` — announced, no stock): "قريباً" as the tag and the status, an empty socket and no
- * add key. The commerce core has no pre-order flow, so the cart would refuse it (409); the card never offers it.
- * (The card data carries no release date; the product page and the home's "coming soon" shelf say the date.)
+ * States (from the data): in stock · sale («تخفيض», the real previous price struck, the price in red-ink) · coming soon
+ * («قريباً»; «يصدر 19 تشرين الثاني» + «الطلب يفتح عند وصوله», no add button, no pre-order) · sold out («نفد»; the
+ * photo at 50%, the price muted, «نفد حالياً», no notify-me) · image failed (the empty well, «تعذّر تحميل الصورة» and a
+ * retry). A product with options opens the quick look («اختر نسخة {name}»). Loading: <ProductCardPlaceholder> — the
+ * same geometry and the well colour, no grey skeleton.
  */
 export type ProductCardProps = {
   card: ProductCardData;
@@ -53,101 +53,167 @@ export type ProductCardProps = {
   slot?: string;
   /** `sizes` for the picture. */
   sizes?: string;
-  /** Make the name a heading (h2–h4) for the page outline. Default: plain text inside the link. */
+  /** The name's heading level. Default 3 (cards under a section's h2). */
   headingLevel?: 2 | 3 | 4;
+  /** grid (default) · row. */
+  layout?: "grid" | "row";
+  /** Show the heart on the well (pass `wished` from the page's wishlist read). */
+  wishlist?: boolean;
+  wished?: boolean;
   /** Force the demo note on or off. Default: on for demo rows when the store is not in demo mode. */
   demoNote?: boolean;
   className?: string;
 };
 
-const CARD_SIZES = "(min-width: 1200px) 210px, (min-width: 768px) 30vw, 46vw";
+const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
 
-/**
- * The price and the 52px socket share one row. Measured on /design-system: a seven-digit price (1,095,000) needs a
- * card of ~184px at 17px, a six-digit one ~152px — rail cards on phones are narrower, so there the price steps down
- * to 15px (Kufam's floor, DESIGN.md §5.5). Below that (a seven-digit price in a 141px rail card on a 360px phone)
- * the row wraps and the socket keeps to the end (`ms-auto`).
- */
-export function priceFit(priceIqd: number): string {
-  return priceIqd >= 1_000_000 ? "@max-[11.5rem]:[--price-md:15px]" : "@max-[9.5rem]:[--price-md:15px]";
+/** 1.0: the card's price fit is a container query in v2 (`.price--long` steps down below 170px). Kept for importers. */
+export function priceFit(_priceIqd: number): string {
+  return "";
 }
 
 type RootStore = { storeMode?: string };
 
-/** The product area's quick-preview sheet — its code is fetched only when a shopper reaches for a card's key. */
+/** The product area's quick look — its code is fetched only when a shopper reaches for a card's button. */
 const loadQuickPreview = () => import("~/routes/storefront/product/QuickPreview");
 const QuickPreview = lazy(() => loadQuickPreview().then((module) => ({ default: module.QuickPreview })));
 const warmQuickPreview = () => void loadQuickPreview().catch(() => undefined);
 
-export function ProductCard({ card, priority = false, sharedName, slot, sizes = CARD_SIZES, headingLevel, demoNote, className }: ProductCardProps) {
+/** How the picture fits its well (v2 §7.3): box art, digital cards, wide objects, or hardware. Pure. */
+export function wellKind(card: Pick<ProductCardData, "kind" | "image">): NicheKind {
+  const art = card.image.artKey ? getArt(card.image.artKey) : undefined;
+  if (isPhoto(art) && art.kind === "box-art") return "box";
+  if (card.kind === "digital") return "card";
+  const aspect = card.image.artKey ? artAspect(card.image.artKey) : undefined;
+  if (aspect !== undefined && aspect >= 1.8) return "wide";
+  return "hardware";
+}
+
+/** «19 تشرين الثاني» · "19 November" · "19ی تشرینی دووەم" — a release day in Iraq time, Western digits. Pure. */
+export function releaseDay(ms: number, locale: Locale): string {
+  if (locale === "ckb") {
+    const date = new Date(ms + 3 * 3_600_000);
+    return `${date.getUTCDate()}ی ${CKB_MONTHS[date.getUTCMonth()]}`;
+  }
+  return new Intl.DateTimeFormat(`${LOCALES[locale].bcp47}-u-nu-latn`, { day: "numeric", month: "long", timeZone: "Asia/Baghdad" }).format(ms);
+}
+
+export function ProductCard({ card, priority = false, sharedName, slot, sizes = CARD_SIZES, headingLevel = 3, layout = "grid", wishlist = false, wished = false, demoNote, className }: ProductCardProps) {
   const root = useRef<HTMLElement>(null);
+  const titleId = useId();
   const store = useRouteLoaderData("root") as RootStore | undefined;
   const words = useT("ui-card");
-  const showDemo = demoNote ?? (card.isDemo && store?.storeMode !== "demo");
+  const locale = useLocale();
+  const demoMode = store?.storeMode === "demo";
+  const showDemo = demoNote ?? (card.isDemo && !demoMode);
   const href = `/p/${card.slug}`;
-  const Name = headingLevel ? (`h${headingLevel}` as const) : "span";
-  // announced, not in stock: never "pre-order" — nothing can be ordered before stock exists
+  const Name = `h${headingLevel}` as const;
   const soon = card.stock === "preorder";
-  const tag = card.badge === "new" ? <Tag kind="new" /> : card.badge === "preorder" || soon ? <Tag kind="preorder">{words("soon")}</Tag> : null;
-  const saving = card.compareAtIqd !== null && card.compareAtIqd > card.priceIqd;
-  const choose = card.hasVariants && card.stock !== "out_of_stock" && !soon;
+  const out = card.stock === "out_of_stock";
+  // a demo previous price is struck only under the demo marking, in demo mode (dto: compareAtDemo)
+  const compareAt = card.compareAtIqd !== null && card.compareAtIqd > card.priceIqd && (!card.compareAtDemo || demoMode) ? card.compareAtIqd : null;
+  const state = out ? "out" : soon ? "soon" : compareAt !== null ? "sale" : "in";
+  const badge = out ? (
+    <Tag kind="out" />
+  ) : soon || card.badge === "preorder" ? (
+    <Tag kind="soon" />
+  ) : compareAt !== null || card.badge === "deal" ? (
+    <Tag kind="sale" />
+  ) : card.badge === "new" || card.isNew ? (
+    <Tag kind="new" />
+  ) : null;
+  const choose = card.hasVariants && !out && !soon;
+  const dots = (card.forPlatforms?.length ? card.forPlatforms : card.platformSlug ? [card.platformSlug] : []).filter(isPlatform).slice(0, 2);
+  const kindLabel = card.kindLabel ?? card.platformName;
+  const facts = (card.subtitle ?? "").split(" · ").map((fact) => fact.trim()).filter(Boolean).slice(0, 2);
+  const row = layout === "row";
+  const price = <SafePrice amountIqd={card.priceIqd} compareAtIqd={compareAt} tone={out ? "muted" : undefined} approx="off" />;
 
   return (
-    <article ref={root} className={cx("relative flex w-full min-w-0 flex-col", className)} data-product={card.id}>
-      <MotionLink nav="zoom" to={href} className="flex flex-col gap-2 rounded-lg after:absolute after:inset-0 after:content-['']">
+    <article
+      ref={root}
+      className={cx("pcard", row && "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3", className)}
+      data-state={state}
+      data-layout={layout}
+      data-product={card.id}
+    >
+      <MotionLink
+        nav="zoom"
+        to={href}
+        className={cx("pcard__link min-w-0", row ? "grid grid-cols-[96px_minmax(0,1fr)] items-center gap-x-4" : "flex flex-1 flex-col")}
+        aria-labelledby={titleId}
+        data-press="soft"
+      >
         <SharedElement name={sharedName ?? `product-image:${card.id}`} slot={slot} as="span" className="block">
-          <Niche as="span" tag={tag}>
-            <ProductImage image={card.image} alt="" sizes={sizes} priority={priority} />
+          <Niche as="span" kind={wellKind(card)} state={out ? "out" : undefined} tag={row ? undefined : badge} size={row ? "sm" : "md"}>
+            <CardImage image={card.image} sizes={row ? "96px" : sizes} priority={priority} />
           </Niche>
         </SharedElement>
-        <Name className="line-clamp-2 min-h-[2lh] type-strong text-ink">
-          <BidiText text={card.name} />
-        </Name>
-      </MotionLink>
-      <p className="min-h-[1lh] type-caption text-ink-2">
-        {card.subtitle}
-        {saving ? (
-          <>
-            {card.subtitle ? " · " : null}
-            <SavingNote priceIqd={card.priceIqd} compareAtIqd={card.compareAtIqd} />
-          </>
-        ) : null}
-      </p>
-      {soon ? (
-        <span className="mt-0.5 inline-flex">
-          <Status tone="info">{words("soonNote")}</Status>
+        <span className={cx("pcard__body", row && "py-0")}>
+          {kindLabel || dots.length ? (
+            <span className="pcard__kind">
+              {dots.map((p) => (
+                <PlatformLed key={p} platform={p} />
+              ))}
+              {kindLabel ? <span className="min-w-0 truncate">{kindLabel}</span> : null}
+            </span>
+          ) : null}
+          {/* the page's start edge: with `unicode-bidi: plaintext` Chromium aligns a Latin name to the left of an
+              Arabic card (match-parent resolves against the name's own direction). BidiText already isolates the
+              name, so the title keeps the page's direction. */}
+          <Name id={titleId} className="pcard__title [unicode-bidi:isolate]">
+            <BidiText text={card.name} />
+          </Name>
+          {facts.length ? (
+            <span className="pcard__meta">
+              {facts.map((fact, index) => (
+                <span key={index}>
+                  {index > 0 ? " · " : null}
+                  <bdi>{fact}</bdi>
+                </span>
+              ))}
+            </span>
+          ) : null}
+          {card.rating ? <RatingStars rating={card.rating} /> : null}
+          {row ? <span className="mt-1">{price}</span> : null}
         </span>
-      ) : card.stock !== "in_stock" ? (
-        <StockNote stock={card.stock} className="mt-0.5" />
+      </MotionLink>
+      {wishlist && !row ? (
+        <span className="absolute end-1.5 top-1.5 z-2">
+          <WishlistKey productId={card.id} name={card.name} initial={wished} onImage size="xs" message="none" />
+        </span>
       ) : null}
-      {card.rating ? <RatingStars rating={card.rating} className="mt-0.5" /> : null}
-      <div className="@container mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-1.5">
-        <PriceTag priceIqd={card.priceIqd} compareAtIqd={card.compareAtIqd} className={priceFit(card.priceIqd)} />
-        {choose ? (
-          <QuickLookKey card={card} href={href} className="ms-auto" />
+      <div className={cx("pcard__foot", row && "mt-0 pt-0")}>
+        {row ? null : price}
+        {out ? (
+          <span className="pcard__status">{words("outNow")}</span>
+        ) : soon ? (
+          <span className="pcard__status">
+            <span>{card.releaseAt ? words("soonOn", { date: releaseDay(card.releaseAt, locale) }) : words("soon")}</span>
+            <span>{words("soonNote")}</span>
+          </span>
+        ) : choose ? (
+          <QuickLookButton card={card} href={href} />
         ) : (
-          <AddToCartKey
+          <CardAddButton
             item={{ variantId: card.variantId }}
             name={card.name}
-            // not out yet: the empty socket of a product that cannot be added (the status line says why)
-            stock={soon ? "out_of_stock" : card.stock}
             image={card.image}
             source={() => root.current?.querySelector(".niche") ?? null}
-            className="ms-auto"
           />
         )}
       </div>
-      {showDemo ? <DemoNote compact className="relative mt-1 self-start" /> : null}
+      {showDemo ? <DemoNote variant="tag" what="data" className="relative z-2 mt-1 self-start" /> : null}
     </article>
   );
 }
 
 /**
- * The socket key of a card with options: opens the quick-preview sheet (product area) to choose, then add — the page
- * behind keeps its URL and scroll. A real link to the product page underneath (no script, new tab, modified click).
- * Focus returns to this key when the sheet closes (the sheet's modal layer remembers its opener).
+ * The add button of a product with options: opens the product area's quick look over the page (choose, then add) —
+ * the page behind keeps its URL and scroll. A real link to the product page underneath (no script, new tab, a modified
+ * click). Focus returns to this button when the sheet closes.
  */
-function QuickLookKey({ card, href, className }: { card: ProductCardData; href: string; className?: string }) {
+function QuickLookButton({ card, href }: { card: ProductCardData; href: string }) {
   const shop = useT("ui-shop");
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -159,21 +225,19 @@ function QuickLookKey({ card, href, className }: { card: ProductCardData; href: 
   };
   return (
     <>
-      <Socket className={className}>
-        <IconKey
-          as={LocaleLink}
-          to={href}
-          prefetch="none"
-          variant="commit"
-          icon={<AddGlyph />}
-          label={shop("add.chooseNamed", { name: card.name })}
-          aria-haspopup="dialog"
-          onClick={onClick}
-          onPointerEnter={warmQuickPreview}
-          onFocus={warmQuickPreview}
-          onTouchStart={warmQuickPreview}
-        />
-      </Socket>
+      <IconKey
+        as={LocaleLink}
+        to={href}
+        prefetch="none"
+        icon="bag-plus"
+        label={shop("add.chooseNamed", { name: card.name })}
+        aria-haspopup="dialog"
+        className="cadd"
+        onClick={onClick}
+        onPointerEnter={warmQuickPreview}
+        onFocus={warmQuickPreview}
+        onTouchStart={warmQuickPreview}
+      />
       {mounted ? (
         <Suspense fallback={null}>
           <QuickPreview slug={card.slug} name={card.name} card={card} open={open} onClose={() => setOpen(false)} />
@@ -183,20 +247,52 @@ function QuickLookKey({ card, href, className }: { card: ProductCardData; href: 
   );
 }
 
+/** The card's picture, with the "image failed" state: the empty well, one line and a retry (v2 §4.11). */
+function CardImage({ image, sizes, priority }: { image: ImageRef; sizes: string; priority: boolean }) {
+  const words = useT("ui-card");
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  if (failed) {
+    return (
+      <span className="absolute inset-0 z-2 grid place-content-center justify-items-center gap-1 p-3 text-center">
+        <span className="type-xs text-ink-2">{words("imageFailed")}</span>
+        <IconKey
+          icon="arrows-clockwise"
+          variant="onImage"
+          size="sm"
+          label={words("imageRetry")}
+          onClick={(event: MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setFailed(false);
+            setAttempt((n) => n + 1);
+          }}
+        />
+      </span>
+    );
+  }
+  return (
+    <span key={attempt} className="contents" onErrorCapture={() => setFailed(true)}>
+      <ProductImage image={image} alt="" sizes={sizes} priority={priority} />
+    </span>
+  );
+}
+
 /**
- * The same geometry with nothing in it (DESIGN.md §7.2 "Bubble / inflate reveal": no grey skeletons). Use it as the
- * Suspense fallback; reveal the real cards with <Bubble> into exactly this space.
+ * The same geometry with nothing in it (no grey skeletons): the well colour, the reserved lines. Use it as the Suspense
+ * fallback; reveal the real cards with <Bubble> into exactly this space.
  */
 export function ProductCardPlaceholder({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cx("flex w-full min-w-0 flex-col", className)}>
-      <Niche as="span" tagZone={false} />
-      <span className="mt-2 block min-h-[2lh] type-strong" />
-      <span className="block min-h-[1lh] type-caption" />
-      <div className="mt-auto flex items-center justify-between pt-1.5">
-        <span className="block min-h-[1.3em] price price--md" />
-        <Socket state="empty" />
-      </div>
+    <div aria-hidden="true" className={cx("pcard", className)}>
+      <Niche as="span" />
+      <span className="pcard__body">
+        <span className="block min-h-[1lh] type-xs" />
+        <span className="block min-h-[2lh] type-card" />
+        <span className="pcard__foot">
+          <span className="block min-h-[1.2em] price price--md" />
+        </span>
+      </span>
     </div>
   );
 }
@@ -207,25 +303,24 @@ export type ProductImageProps = {
   alt?: string;
   sizes?: string;
   priority?: boolean;
-  /** Uploaded photos: "cover" fills the box (used units in a niche), "contain" fits it (default). */
+  /** Uploaded photos: "cover" fills the box (used units in a well), "contain" fits it (default). */
   fit?: "contain" | "cover";
-  /** Tilt for cut-outs on a stage; ignored for framed photos, box art and screenshots (they never tilt). */
+  /** 1.0 — ignored: products are never tilted. */
   pose?: number;
+  /** 1.0 — ignored: the contact ellipse belongs to the well. */
   shadow?: boolean;
   className?: string;
 };
 
 /**
- * One ImageRef, drawn the right way (DESIGN.md §12): a catalogue photo through <Render> (cut-outs
- * float with a contact shadow; opaque photos, box art and screenshots sit flat in their frame), or an uploaded photo
- * from /media/<key>. Nothing at all when the ref has neither — the surface colour stays, no fake picture.
+ * One ImageRef, drawn the right way (v2 §7): a catalogue photo through <Render> (contained and bottom-aligned in its
+ * slot; an opaque photo draws its own rounded frame until it is re-cut), or an uploaded photo from /media/<key>. Nothing
+ * at all when the ref has neither — the ground stays, no fake picture.
  */
-export function ProductImage({ image, alt, sizes, priority = false, fit = "contain", pose, shadow, className }: ProductImageProps) {
+export function ProductImage({ image, alt, sizes, priority = false, fit = "contain", className }: ProductImageProps) {
   const text = alt ?? image.alt;
   if (image.artKey) {
-    const art = getArt(image.artKey);
-    const framed = isPhoto(art) && (!art.transparent || art.kind === "box-art" || art.kind === "screenshot");
-    return <Render name={image.artKey} alt={text} sizes={sizes} priority={priority} pose={framed ? 0 : pose} shadow={framed ? false : shadow} className={className} />;
+    return <Render name={image.artKey} alt={text} sizes={sizes} priority={priority} className={className} />;
   }
   if (image.mediaKey) {
     return (
@@ -251,8 +346,22 @@ function markLoaded(event: SyntheticEvent<HTMLImageElement>) {
 }
 
 /**
- * A product name as the shopper should read it — the design system's one implementation (./BidiText: Latin names and
- * numbers isolated where a reader expects them to end, brackets and list punctuation kept in the sentence). Kept as an
+ * A product name as the shopper should read it — the design system's one implementation (./BidiText). Kept as an
  * export of this module because the storefront imports it from here (`import { BidiText } from "~/ui/ProductCard"`).
  */
 export { BidiText };
+
+/** For pages that build their own rows: the card's platform dots and kind label (v2 §4.11). */
+export function KindLine({ card, className }: { card: Pick<ProductCardData, "kindLabel" | "platformName" | "forPlatforms" | "platformSlug">; className?: string }): ReactNode {
+  const dots = (card.forPlatforms?.length ? card.forPlatforms : card.platformSlug ? [card.platformSlug] : []).filter(isPlatform).slice(0, 2);
+  const label = card.kindLabel ?? card.platformName;
+  if (!label && dots.length === 0) return null;
+  return (
+    <span className={cx("pcard__kind", className)}>
+      {dots.map((p) => (
+        <PlatformLed key={p} platform={p} />
+      ))}
+      {label ? <span className="min-w-0 truncate">{label}</span> : null}
+    </span>
+  );
+}

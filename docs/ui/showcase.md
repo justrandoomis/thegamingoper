@@ -1,0 +1,81 @@
+# Showcase components — props and examples
+
+Owner: the kit (`app/ui/*` below), strings in `app/i18n/messages/ui-shop.ts` (`tile`, `trust`, `release`, `contact`
+groups) and `ui.ts`. Spec: Design System v2 §4.18–§4.27; CSS classes: `docs/UI.md` §2 (`.band`, `.ptile`, `.trust`,
+`.facts`, `.release`, `.sechead`, `.entry`, `.cats`, `.contact`, `.compat`). Live, every state, ar/en/ckb × light/dark:
+**`/design-system#showcase`**. Import each file directly — there is no barrel.
+
+Colour light belongs to showcases only (bands and platform tiles); everything else stays on paper. Copy never sits on
+a light core; text on a band is solid white in the light theme and ink in the dark one (set by the band).
+
+## Band — `~/ui/Band`
+
+`kind`: `hero` (crimson + the brand light) · `platform` (hub band, `--r-lg`, 104 → 160) · `device` (device-hub head,
+200 → 280) · `wallet` (crimson, no light). `platform` sets the surface and the light (`data-gel`). `media` is the
+hardware layer: clipped at the sides and the bottom only, so it may rise above the top edge; placed at the inline end
+(the hero on phones: a 220px box at the top centre — pad the copy with `max-md:pt-[230px]`); `mediaClassName` places it
+yourself. `contentClassName` lays out the copy layer (it sits above the light). `contact` draws the floor ellipse.
+
+```tsx
+<Band kind="hero" media={<Render name="nintendo-switch-2--1" alt="" priority />} contact>
+  <h2 className="type-display">العب على<br /><bdi>Nintendo&nbsp;Switch&nbsp;2</bdi></h2>
+  <Price amountIqd={667750} size="xl" tone="onColor" /> <DemoNote variant="tag" what="price" onColor />
+  <Key variant="onBand">اشترِ Nintendo Switch 2</Key>
+</Band>
+```
+
+Headline rule: the Arabic line and the Latin name share one direction and edge — the name in a `<bdi>` after a `<br />`,
+never a separate `dir="ltr"` block.
+
+## PlatformTile, PlatformTiles — `~/ui/PlatformTile`
+
+The four doors: `platform`, `to`, `name`, `count` («42 منتجاً», omitted when unknown), `art` (a render key), `compact`
+(the short row variant). The hardware stands on the tile's floor; the white disc with the arrow mirrors in RTL.
+`PlatformTiles` is the `nav` grid around them (`label` names it).
+
+## TrustStrip — `~/ui/TrustStrip`
+
+Only true facts, each shown only when its prop is given (they come from settings): `deliveryIqd` («التوصيل 5,000 د.ع
+لكل المحافظات»), `cod`, `transfer` (Zain Cash / card transfer, «نراجع كل تحويل قبل تأكيد الطلب»), `guest`. `variant="line"`:
+the one-line form under a commit key (COD short + the returns link `returnsTo`). Never ratings, counts or delivery
+times.
+
+## FactList — `~/ui/FactList`
+
+`facts: { icon, title, text?, link?: { to, label } }[]`; a paper card of rows, or `plain` rows. For the PDP and the
+cart (delivery, returns, warranty).
+
+## ReleaseBand — `~/ui/ReleaseBand`
+
+The page's one dark band: «قريباً» + the honest lead («مواعيد الإصدار كما أعلنتها الشركات. الطلب المسبق غير متاح في المتجر
+بعد.»), then items `{ id, to, name, releaseAt, platform, platformLabel?, priceIqd?, image }`: the day in large Kufi
+numerals, «تشرين الثاني 2026», a relative chip «بعد 8 أيام» only within 30 days (Baghdad calendar days, `daysUntil`,
+`iraqDay`), the art, the name, the price when set and «الطلب يفتح عند وصوله». Pass the loader's `now`. No countdowns,
+no pre-order buttons. Nothing renders without items.
+
+## SectionHead — `~/ui/SectionHead`
+
+`title`, `reason` (one honest line on why this shelf is here), `href` + `viewAllLabel` («عرض الكل» at the end),
+`headingLevel` 2 | 3, `chips` (a `ChipGroup rail bleed` under the head; it scrolls on phones).
+
+## EntryCard — `~/ui/EntryCard`
+
+A whole-card link: `title`, `text`, `cta` (a text-link cue), `art` (a render key on a niche, or `"mascot"` for the
+mark on a red-tint ground), `to`. For "used and inspected", "support" and similar doors.
+
+## CategoryTile, CategoryTiles — `~/ui/CategoryTile`
+
+`label`, `count` (optional), `art` (a render key at 14% inset on a square niche), `to`. `CategoryTiles` is the grid.
+
+## ContactCard — `~/ui/ContactCard`
+
+`channels: { whatsapp?, phone?, address?, mapsUrl?, hours?, hoursText?, replyTime? }` — all from settings, written
+by the owner. With no channel it renders **nothing** (the caller shows «اكتب لموظف» instead). WhatsApp is a key
+(`primary` on the contact page), the phone a `tel:` link in LTR, the address with a maps link, the hours with an
+open/closed status computed in Baghdad time (`openNow(hours, now)`, overnight slots supported). `layout="row"` for
+footers. Never invent hours or reply times.
+
+## CompatBadge, CompatList — `~/ui/CompatBadge`
+
+`CompatBadge status device note` — an icon AND words («متوافق مع PS5», «متوافق جزئياً»…, the note underneath).
+`CompatList rows={[{ status, device, note }]}` — a paper card of rows with the state word per device.

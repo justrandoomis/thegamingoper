@@ -13,6 +13,7 @@
  *   await deliverShipment(db, actor, { shipmentId, receivedByName, fileId }, now);   core deliverParcel (+ .deliver)
  *   await receiveReturn(db, actor, { shipmentId, reason, lines }, now);              core returnParcels (attempt.manage)
  *   await addPackingPhoto(db, actor, { shipmentId, fileId, note }, now);                            shipping.proof.manage
+ *   const n = await countFailedDeliveries(db, actor);                the admin shell's queue (null without .attempt.manage)
  *
  * Parcels are the `shipments` rows the orders module (05) creates at its packing station (ids shp_<order>_<n>, scans
  * in shipment_events). This module adds the carrier, service level, tracking number, carrier charge and cash to
@@ -1139,6 +1140,18 @@ export async function attemptsQueue(db: Db, actor: Actor, locale: Locale): Promi
     updatedAt: parcel.updatedAt,
     isDemo: order.isDemo,
   }));
+}
+
+/**
+ * Failed deliveries waiting for a person's decision — try again or send the parcel back: the raised cards of the
+ * attempts page (attemptsQueue's failed parcels; those already on their way back wait for the goods, not a decision).
+ * Counted for the admin shell's queue (shell/queues.server.ts), so one count. Null unless the employee may decide them
+ * (shipping.attempt.manage) and open that page (shipping.shipment.read).
+ */
+export async function countFailedDeliveries(db: Db, actor: Actor): Promise<number | null> {
+  if (!can(actor, "shipping.attempt.manage") || !can(actor, "shipping.shipment.read")) return null;
+  const row = await db.select({ n: sql<number>`count(*)` }).from(shipments).where(eq(shipments.status, "failed")).get();
+  return Number(row?.n ?? 0);
 }
 
 export { syncParcels };

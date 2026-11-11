@@ -1,46 +1,68 @@
 /*
- * TamTam type families — self-hosted (public/fonts, content-hashed names, cached immutable by public/_headers).
- * docs/DESIGN.md §5.5. Licences: public/fonts/OFL-Kufam.txt, public/fonts/OFL-IBM-Plex-Sans-Arabic.txt.
+ * TamTam type families — Design System v2 (docs/DESIGN.md §5.5). Self-hosted in public/fonts (content-hashed names,
+ * cached immutable by public/_headers). Licences: public/fonts/OFL-Noto-Kufi-Arabic.txt,
+ * public/fonts/OFL-IBM-Plex-Sans-Arabic.txt (SIL Open Font License 1.1; static instances from Google Fonts).
  *
- *   Kufam Variable          display: headlines, key labels, prices, KPI numerals (wght axis 400–900)
- *   IBM Plex Sans Arabic    text: everything you read (static 400 / 500 / 600 only — no other weight ships)
+ *   Noto Kufi Arabic 700       display: hero headline, page titles, section heads, tile names, day numerals, prices
+ *                              (digits only) — never under 18px except prices, never for body, buttons or fields
+ *   IBM Plex Sans Arabic 400   reading text
+ *   IBM Plex Sans Arabic 600   labels, buttons, card names, h3 and sheet titles, codes
  *
- * Each family is split by script with the Fontsource unicode-ranges, so a page downloads only the files whose
- * characters it actually draws: an English page fetches the Latin cuts only (plus an Arabic cut if it draws Arabic
- * script, e.g. the language switcher's "العربية"). An Arabic page fetches the Latin cuts the first time it draws a
- * digit, a space or a Latin product name — they are part of the Latin subset. The two files to preload are exported
- * from app/styles/fonts.ts.
+ * No other weight ships (Kufam and Plex 500 are retired): html sets font-synthesis-weight: none, so a request for
+ * 500 draws 400 and a request for 700 in Plex draws 600 — never a smeared fake bold.
  *
- * font-display: swap (§5.5). While a file is on its way the text is drawn in a metric-adjusted local face
- * ("Kufam Fallback", "Plex Fallback", below) so the swap does not move layout.
+ * Each family is split by script with Google's unicode-ranges, so a page downloads only the files whose characters
+ * it draws. An Arabic page fetches at most six files (Plex 400 + 600 and Kufi 700, Arabic + Latin cuts: 182.5 KB);
+ * the Latin cuts arrive with the first digit, space or Latin product name. The latin-ext cuts (é is Latin, ō or ş are
+ * latin-ext) load only on a page that draws one of their characters. The two files to preload are exported from
+ * app/styles/fonts.ts (root.tsx reads it).
+ *
+ * font-display: swap. While a file is on its way the text is drawn in a metric-adjusted local face ("Kufi Fallback",
+ * "Plex Fallback", below) so the swap does not move layout.
  */
 
-/* ── Kufam (variable, 400–900) ─────────────────────────────────────────────── */
+/* ── Noto Kufi Arabic 700 (static instances; latin-ext is the variable 100–900 cut, served at 700) ───────────── */
 @font-face {
-  font-family: "Kufam Variable";
+  font-family: "Noto Kufi Arabic";
   font-style: normal;
   font-display: swap;
-  font-weight: 400 900;
-  src: url("/fonts/kufam-arabic-wght.70d76d8d.woff2") format("woff2-variations"), url("/fonts/kufam-arabic-wght.70d76d8d.woff2") format("woff2");
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+  font-weight: 700;
+  src: url("/fonts/kufi-arabic-700.c964525f.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EEFF;
 }
 @font-face {
-  font-family: "Kufam Variable";
+  font-family: "Noto Kufi Arabic";
   font-style: normal;
   font-display: swap;
-  font-weight: 400 900;
-  src: url("/fonts/kufam-latin-wght.7073ba7c.woff2") format("woff2-variations"), url("/fonts/kufam-latin-wght.7073ba7c.woff2") format("woff2");
+  font-weight: 700;
+  src: url("/fonts/kufi-latin-ext-wght.29036133.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Noto Kufi Arabic";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/kufi-latin-700.d096450f.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ── IBM Plex Sans Arabic (static 400 / 500 / 600) ─────────────────────────── */
+/* ── IBM Plex Sans Arabic 400 / 600 (static) ─────────────────────────────────────────────────────────────── */
 @font-face {
   font-family: "IBM Plex Sans Arabic";
   font-style: normal;
   font-display: swap;
   font-weight: 400;
   src: url("/fonts/plex-arabic-400.6010e7fd.woff2") format("woff2");
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EEFF;
+}
+@font-face {
+  font-family: "IBM Plex Sans Arabic";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/plex-latin-ext-400.1935fa1a.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: "IBM Plex Sans Arabic";
@@ -54,25 +76,17 @@
   font-family: "IBM Plex Sans Arabic";
   font-style: normal;
   font-display: swap;
-  font-weight: 500;
-  src: url("/fonts/plex-arabic-500.90aef64f.woff2") format("woff2");
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
-}
-@font-face {
-  font-family: "IBM Plex Sans Arabic";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 500;
-  src: url("/fonts/plex-latin-500.be6a3b2e.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-weight: 600;
+  src: url("/fonts/plex-arabic-600.16734a5a.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EEFF;
 }
 @font-face {
   font-family: "IBM Plex Sans Arabic";
   font-style: normal;
   font-display: swap;
   font-weight: 600;
-  src: url("/fonts/plex-arabic-600.16734a5a.woff2") format("woff2");
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+  src: url("/fonts/plex-latin-ext-600.0f7c03bb.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: "IBM Plex Sans Arabic";
@@ -84,97 +98,68 @@
 }
 
 /*
- * ── Metric-adjusted fallbacks ────────────────────────────────────────────────
- * Measured, not estimated: headless Chromium drew the same Arabic/Sorani storefront copy and the same Latin
- * product names in the web font and in Segoe UI (canvas measureText at 100px, fontBoundingBox ascent/descent),
- * per weight and per script.  size-adjust = web width ÷ local width; the overrides are the web font's ascent and
- * descent divided by that size-adjust (browsers scale overridden metrics by size-adjust).
- * Only Segoe UI (Windows) could be measured on the build machine: Noto Sans Arabic / Roboto (Android) and SF
- * Arabic (iOS) are not installed there, so on those systems the stack falls through to an unadjusted system face.
- * Re-measure on a device before tuning further (docs/UI.md, "Fonts").
+ * ── Metric-adjusted fallbacks ────────────────────────────────────────────────────────────────────────────────────
+ * Measured, not estimated (2026-11-11): headless Edge drew the same Arabic/Sorani storefront copy and the same Latin
+ * product names and prices in the web font and in the local face (canvas measureText at 100px), per weight and per
+ * script. size-adjust = web width ÷ local width; the overrides are the web font's own ascent and descent (Kufi
+ * 1.282 / 0.615 em, Plex 1.085 / 0.415 em) divided by that size-adjust (browsers scale overridden metrics by it).
+ *   Segoe UI (Windows): measured on the build machine.
+ *   Noto Sans Arabic (Android): measured from Google's variable cut as a stand-in for the system face; on a device
+ *   that has no face by that local() name the family is skipped.
+ * iOS (SF Arabic / Geeza) could not be measured: it falls through to an unadjusted system face. Re-measure on a
+ * device before tuning further (docs/UI.md "Fonts"; the script: …/work/redesign-S-system/measure-fallbacks.mjs).
  */
-/* Kufam 600 (headlines, key labels) ← Segoe UI Semibold */
+/* Kufi 700 ← Segoe UI Bold */
 @font-face {
-  font-family: "Kufam Fallback";
-  font-weight: 400 650;
-  src: local("Segoe UI Semibold"), local("SegoeUI-Semibold");
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
-  size-adjust: 120.09%;
-  ascent-override: 74.95%;
-  descent-override: 33.31%;
-  line-gap-override: 0%;
-}
-@font-face {
-  font-family: "Kufam Fallback";
-  font-weight: 400 650;
-  src: local("Segoe UI Semibold"), local("SegoeUI-Semibold");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
-  size-adjust: 109.38%;
-  ascent-override: 82.28%;
-  descent-override: 36.57%;
-  line-gap-override: 0%;
-}
-/* Kufam 700+ (prices, KPI numerals) ← Segoe UI Bold */
-@font-face {
-  font-family: "Kufam Fallback";
-  font-weight: 651 900;
+  font-family: "Kufi Fallback";
+  font-weight: 600 900;
   src: local("Segoe UI Bold"), local("SegoeUI-Bold");
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
-  size-adjust: 123.38%;
-  ascent-override: 72.94%;
-  descent-override: 32.42%;
+  size-adjust: 118.33%;
+  ascent-override: 108.35%;
+  descent-override: 51.98%;
   line-gap-override: 0%;
 }
 @font-face {
-  font-family: "Kufam Fallback";
-  font-weight: 651 900;
+  font-family: "Kufi Fallback";
+  font-weight: 600 900;
   src: local("Segoe UI Bold"), local("SegoeUI-Bold");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
-  size-adjust: 107.79%;
-  ascent-override: 83.49%;
-  descent-override: 37.11%;
+  size-adjust: 105.77%;
+  ascent-override: 121.21%;
+  descent-override: 58.15%;
+  line-gap-override: 0%;
+}
+/* Kufi 700 ← Noto Sans Arabic Bold (Arabic script only) */
+@font-face {
+  font-family: "Kufi Fallback Noto";
+  font-weight: 600 900;
+  src: local("Noto Sans Arabic Bold"), local("NotoSansArabic-Bold");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
+  size-adjust: 110.68%;
+  ascent-override: 115.83%;
+  descent-override: 55.56%;
   line-gap-override: 0%;
 }
 /* Plex 400 ← Segoe UI */
 @font-face {
   font-family: "Plex Fallback";
-  font-weight: 400;
+  font-weight: 400 500;
   src: local("Segoe UI"), local("SegoeUI");
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
-  size-adjust: 90.21%;
-  ascent-override: 120.82%;
-  descent-override: 46.56%;
+  size-adjust: 91.7%;
+  ascent-override: 118.32%;
+  descent-override: 45.26%;
   line-gap-override: 0%;
 }
 @font-face {
   font-family: "Plex Fallback";
-  font-weight: 400;
+  font-weight: 400 500;
   src: local("Segoe UI"), local("SegoeUI");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
-  size-adjust: 101.74%;
-  ascent-override: 107.14%;
-  descent-override: 41.28%;
-  line-gap-override: 0%;
-}
-/* Plex 500 ← Segoe UI (Segoe has no 500; the regular face with its own size-adjust, never synthesised) */
-@font-face {
-  font-family: "Plex Fallback";
-  font-weight: 500;
-  src: local("Segoe UI"), local("SegoeUI");
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
-  size-adjust: 92.95%;
-  ascent-override: 117.26%;
-  descent-override: 45.18%;
-  line-gap-override: 0%;
-}
-@font-face {
-  font-family: "Plex Fallback";
-  font-weight: 500;
-  src: local("Segoe UI"), local("SegoeUI");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
-  size-adjust: 103.84%;
-  ascent-override: 104.97%;
-  descent-override: 40.45%;
+  size-adjust: 103.03%;
+  ascent-override: 105.31%;
+  descent-override: 40.28%;
   line-gap-override: 0%;
 }
 /* Plex 600 ← Segoe UI Semibold */
@@ -183,9 +168,9 @@
   font-weight: 600 900;
   src: local("Segoe UI Semibold"), local("SegoeUI-Semibold");
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
-  size-adjust: 94.67%;
-  ascent-override: 115.13%;
-  descent-override: 44.36%;
+  size-adjust: 96.04%;
+  ascent-override: 112.97%;
+  descent-override: 43.21%;
   line-gap-override: 0%;
 }
 @font-face {
@@ -193,8 +178,29 @@
   font-weight: 600 900;
   src: local("Segoe UI Semibold"), local("SegoeUI-Semibold");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
-  size-adjust: 101.91%;
-  ascent-override: 106.96%;
-  descent-override: 41.21%;
+  size-adjust: 102.95%;
+  ascent-override: 105.39%;
+  descent-override: 40.31%;
+  line-gap-override: 0%;
+}
+/* Plex 400 / 600 ← Noto Sans Arabic (Arabic script only) */
+@font-face {
+  font-family: "Plex Fallback Noto";
+  font-weight: 400 500;
+  src: local("Noto Sans Arabic"), local("NotoSansArabic-Regular");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
+  size-adjust: 95.13%;
+  ascent-override: 114.05%;
+  descent-override: 43.62%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Plex Fallback Noto";
+  font-weight: 600 900;
+  src: local("Noto Sans Arabic SemiBold"), local("NotoSansArabic-SemiBold");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FEFC;
+  size-adjust: 94.22%;
+  ascent-override: 115.16%;
+  descent-override: 44.05%;
   line-gap-override: 0%;
 }

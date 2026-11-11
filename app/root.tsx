@@ -13,7 +13,7 @@ import {
 
 import type { Route } from "./+types/root";
 import { listNamespaces, messagesFor } from "~/i18n/i18n.server";
-import { DEFAULT_LOCALE, LOCALES } from "~/lib/locales";
+import { DEFAULT_LOCALE, LOCALES, splitLocale, type Locale } from "~/lib/locales";
 import { useNonce } from "~/lib/nonce";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
@@ -33,12 +33,33 @@ export const links: Route.LinksFunction = () => [
 ];
 
 /**
- * Browser chrome colour = the floor of each theme. Light is the manifest's theme_color; dark is --ground of the
- * dark theme (app/styles/tokens.css). Two metas with media queries follow the system; an explicit choice paints
- * both with its colour (ThemeSync keeps them in step after a switch).
+ * Browser chrome colour = the page floor (--ground) of each theme in app/styles/tokens.css (Design System v2); the
+ * light one is also site.webmanifest's theme_color. Two metas with media queries follow the system; an explicit
+ * choice paints both with its colour (ThemeSync keeps them in step after a switch).
  */
 // lint-design: allow raw-colour — <meta name="theme-color"> needs literal colours; they mirror site.webmanifest and tokens.css
-const THEME_COLOR = { light: "#F3EFEC", dark: "#16171B" } as const;
+const THEME_COLOR = { light: "#FDFCFA", dark: "#121316" } as const;
+
+/**
+ * The words of `errors.offline` (app/i18n/messages/errors.ts) and its retry, copied here because this boundary stays
+ * dependency-free: it must render even when the strings of the failed page never arrived.
+ */
+const OFFLINE_TEXT = {
+  ar: { message: "لا يوجد اتصال بالإنترنت. أعد المحاولة عند عودة الاتصال.", retry: "أعد المحاولة" },
+  en: { message: "No internet connection. Try again when you are back online.", retry: "Try again" },
+  ckb: { message: "هێڵی ئینتەرنێت نییە. کاتێک هێڵ گەڕایەوە دووبارە هەوڵ بدەرەوە.", retry: "دووبارە هەوڵ بدەرەوە" },
+} as const satisfies Record<Locale, { message: string; retry: string }>;
+
+/**
+ * A request that never reached the store: the browser is offline, or its fetch failed at the network level
+ * ("Failed to fetch" in Chromium, "NetworkError…" in Firefox, "Load failed" in Safari). Only in the browser — on the
+ * server a TypeError is the store's own failure and stays a 500.
+ */
+function isOfflineError(error: unknown): boolean {
+  if (typeof window === "undefined") return false;
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return true;
+  return error instanceof TypeError && /failed to fetch|networkerror|network error|load failed|network connection was lost/i.test(error.message);
+}
 
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -147,8 +168,27 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   // admin gate's refusals, which are thrown in middleware before any loader runs (React Router then renders the
   // highest boundary with a loader: this one, without the admin's strings). Admin pages get the admin's two
   // languages and a way back into the admin instead of the storefront home. The path decides wording only.
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const inAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+
+  // Offline is never "our side" (Design System v2 §9): no status code, the page's own language, and a retry that
+  // simply opens the same address again once the connection is back.
+  if (isOfflineError(error)) {
+    const locale: Locale = inAdmin ? DEFAULT_LOCALE : splitLocale(pathname).locale;
+    const words = OFFLINE_TEXT[locale];
+    return (
+      <main className="root-error" lang={LOCALES[locale].bcp47} dir={LOCALES[locale].dir} data-offline="">
+        <h1>{words.message}</h1>
+        {inAdmin ? (
+          <p lang="en" dir="ltr">
+            {OFFLINE_TEXT.en.message}
+          </p>
+        ) : null}
+        <a href={`${pathname}${search}`}>{words.retry}</a>
+      </main>
+    );
+  }
+
   // The admin gate's refusals carry the employee's admin language (gate.server.ts): English admins read English first.
   const adminEnglish = inAdmin && isRouteErrorResponse(error) && (error.data as { locale?: string } | null)?.locale === "en";
   let status = 500;

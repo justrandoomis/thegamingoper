@@ -30,10 +30,12 @@ export type PlatformSlug = "nintendo" | "playstation" | "xbox" | "handheld" | "p
 export type PlatformSeed = { slug: PlatformSlug; name: T3; accent: string; artKey: string | null; isActive: boolean };
 
 export const DEMO_PLATFORMS: readonly PlatformSeed[] = [
-  { slug: "nintendo", name: t3("نينتندو", "Nintendo", "نینتێندۆ"), accent: "nintendo", artKey: "nintendo-switch-2--1", isActive: true },
-  { slug: "playstation", name: t3("بلايستيشن", "PlayStation", "پلەیستەیشن"), accent: "playstation", artKey: "playstation-5-slim--1", isActive: true },
-  { slug: "xbox", name: t3("إكس بوكس", "Xbox", "ئێکس بۆکس"), accent: "xbox", artKey: "xbox-series-x--1", isActive: true },
-  { slug: "handheld", name: t3("حواسيب الألعاب المحمولة", "Handheld PCs", "کۆمپیوتەری یاریی دەستی"), accent: "handheld", artKey: "steam-deck-oled--1", isActive: true },
+  // Platform names follow the copy glossary (Design System v2 §9, DESIGN.md): the three brands are written in Latin in
+  // every language; their Arabic and Sorani spellings stay searchable through the synonym groups (search.ts).
+  { slug: "nintendo", name: same("Nintendo"), accent: "nintendo", artKey: "nintendo-switch-2--1", isActive: true },
+  { slug: "playstation", name: same("PlayStation"), accent: "playstation", artKey: "playstation-5-slim--1", isActive: true },
+  { slug: "xbox", name: same("Xbox"), accent: "xbox", artKey: "xbox-series-x--1", isActive: true },
+  { slug: "handheld", name: t3("الأجهزة المحمولة", "Handheld PCs", "کۆمپیوتەری یاریی دەستی"), accent: "handheld", artKey: "steam-deck-oled--1", isActive: true },
   { slug: "pc", name: t3("الحاسوب الشخصي", "PC", "کۆمپیوتەری کەسی"), accent: "brand", artKey: null, isActive: false },
 ];
 
@@ -54,7 +56,7 @@ export const DEMO_GENERATIONS: readonly GenerationSeed[] = [
   { slug: "switch-2", platform: "nintendo", name: same("Nintendo Switch 2") },
   { slug: "switch", platform: "nintendo", name: t3("عائلة Nintendo Switch", "Nintendo Switch family", "خێزانی Nintendo Switch") },
   { slug: "ps5", platform: "playstation", name: t3("جيل PlayStation 5", "PlayStation 5 generation", "نەوەی PlayStation 5") },
-  { slug: "xbox-series", platform: "xbox", name: same("XBOX Series X|S") },
+  { slug: "xbox-series", platform: "xbox", name: same("Xbox Series X|S") },
   { slug: "steam-deck", platform: "handheld", name: same("Steam Deck") },
   { slug: "rog-ally", platform: "handheld", name: same("ROG Ally") },
   { slug: "rog-xbox-ally", platform: "handheld", name: same("ROG Xbox Ally") },
@@ -109,9 +111,9 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
   // A remote player, not a console — but it is graded with the console checklist (screen, battery, sticks).
   { slug: "ps-portal", platform: "playstation", generation: "ps5", name: same("PlayStation Portal"), deviceKind: "console", product: "playstation-portal" },
   { slug: "ps-vr2", platform: "playstation", generation: "ps5", name: same("PlayStation VR2"), deviceKind: "other", product: "playstation-vr2" },
-  { slug: "xbox-series-x", platform: "xbox", generation: "xbox-series", name: same("XBOX Series X"), deviceKind: "console", product: "xbox-series-x" },
-  { slug: "xbox-series-x-digital", platform: "xbox", generation: "xbox-series", name: same("XBOX Series X Digital Edition"), deviceKind: "console", product: "xbox-series-x-digital" },
-  { slug: "xbox-series-s", platform: "xbox", generation: "xbox-series", name: same("XBOX Series S"), deviceKind: "console", product: "xbox-series-s" },
+  { slug: "xbox-series-x", platform: "xbox", generation: "xbox-series", name: same("Xbox Series X"), deviceKind: "console", product: "xbox-series-x" },
+  { slug: "xbox-series-x-digital", platform: "xbox", generation: "xbox-series", name: same("Xbox Series X Digital Edition"), deviceKind: "console", product: "xbox-series-x-digital" },
+  { slug: "xbox-series-s", platform: "xbox", generation: "xbox-series", name: same("Xbox Series S"), deviceKind: "console", product: "xbox-series-s" },
   { slug: "steam-deck-oled", platform: "handheld", generation: "steam-deck", name: same("Steam Deck OLED"), deviceKind: "handheld_pc", product: "steam-deck-oled" },
   { slug: "steam-deck-lcd", platform: "handheld", generation: "steam-deck", name: same("Steam Deck LCD"), deviceKind: "handheld_pc", product: "steam-deck-lcd" },
   { slug: "rog-xbox-ally-x", platform: "handheld", generation: "rog-xbox-ally", name: same("ROG Xbox Ally X"), deviceKind: "handheld_pc", product: "rog-xbox-ally-x" },

@@ -1,28 +1,31 @@
 /**
- * Mobile and tablet bottom navigation (< 1200px, docs/DESIGN.md §9.3) and the task-bar slot that replaces it.
+ * The bottom of the screen below 1024px (Design System v2 §5.6, §5.7).
  *
- * TAB BAR: live glass pinned to the bottom edge, top corners r-xl, 64px + the safe-area inset. Five always-labelled
- * tabs in reading order — الرئيسية، التصنيفات، السلة، المفضلة، حسابي. The active tab has a filled icon, a heavier
- * label and a 22 × 3 ink marker on the bar's top edge (never colour alone, never red). The cart tab carries the red
- * bead (`data-cart-target` / `data-cart-badge`: where fly-to-cart lands). "التصنيفات" opens the categories sheet; it
- * is a link to the footer's category list (#shell-categories), so it still leads somewhere without script.
+ * TAB BAR: a floating glass pill — 64px tall, 12px from the sides, 10px + the safe area from the bottom, --r-xl,
+ * --e-float, at most 520px wide and centred from 600. Five tabs in reading order: الرئيسية · التصنيفات · السلة ·
+ * المفضلة · حسابي; a 24px icon over a 13px label. The current tab: its icon filled in --red-ink inside a 56 × 32
+ * --red-tint pill, its label 600 ink, `aria-current` ("page" on that very page, "true" inside its section); the others
+ * an outline icon and a 400 --ink-2 label. The cart carries the bead (`data-cart-target` on the tab, `data-cart-badge`
+ * on the bead). "التصنيفات" opens the categories sheet; it is a link to the footer's shop column (#shell-categories),
+ * so it still leads somewhere without script.
  *
- * PAGES WITH THEIR OWN BOTTOM BAR (product buy bar, cart and checkout bars — §8 sticky rule: never two bars at one
- * edge). Declare it in the route module, so the server already renders the page without the tab bar:
+ * It is drawn on store pages only (not in checkout or task flows) and gives way BY ITSELF to a page's own bottom bar:
+ * while a <TaskBar> is in the page (product buy bar, a cart with items) the tab bar is hidden (CSS), so an empty cart —
+ * which draws no task bar — keeps the tab bar. Never two bars at one edge.
  *
- *   export const handle = { shell: { tabBar: false } } satisfies ShellHandle;
+ * PAGES WITH THEIR OWN BOTTOM BAR declare it in the route module, so the server already renders the right header, and
+ * render the bar with <TaskBar>:
  *
- * and render the bar with <TaskBar>:
- *
- *   <TaskBar className="lg:hidden">
- *     <Price amountIqd={total} /> <Key variant="commit" block>{t("checkout")}</Key>
+ *   export const handle = { shell: { tabBar: false } } satisfies ShellHandle;      // task flows: { chrome: "task" }
+ *   <TaskBar aria-label={t("buy")} className="lg:hidden">
+ *     <Price amountIqd={total} size="lg" tone="total" /> <Key variant="primary" block>{t("checkout")}</Key>
  *   </TaskBar>
  *
- * <TaskBar> is the same live-glass bar (safe-area padded, persisted through page transitions) and publishes its
- * measured height as `--shell-taskbar-h`; the shell pads the page by `--shell-bottom`, which is the tab bar's
- * height, the task bar's, or 0 on desktop. Sticky page elements sit at `inset-block-end: var(--shell-bottom)` so the
- * bars never cover a call to action. Without the tab bar the cart is still one tap away: below 1200 the header turns
- * into the task header once the page scrolls (back · the page's <h1> · the cart with its bead — ./Header).
+ * <TaskBar> is glass on the bottom edge, 72px + the safe area, --e-float, content inset 16 (centred, at most 640 wide
+ * on tablets); persisted through page transitions; it publishes its measured height as `--shell-taskbar-h`, which the
+ * shell turns into `--shell-bottom` (the page's bottom padding and the global scroll padding). Sticky page elements
+ * sit at `inset-block-end: var(--shell-bottom)`. Below 1024 the header becomes the task header once the page scrolls
+ * (back · the page's <h1> · the cart with its bead — ./Header), so the cart stays one tap away.
  */
 import { useLayoutEffect, useRef, type MouseEvent, type ReactNode } from "react";
 import { useLocation } from "react-router";
@@ -33,21 +36,11 @@ import { splitLocale } from "~/lib/locales";
 import { cx } from "~/ui/cx";
 import { useCartCount } from "~/ui/cart-client";
 import { Glass } from "~/ui/Glass";
+import { tabOf, type TabId } from "./chrome";
 import { useShellT } from "./i18n";
 
-type Section = "home" | "categories" | "cart" | "wishlist" | "account" | null;
-
-const CATALOGUE = /^\/(c|platform|device|used|support|search|compare|trade-in|p)(\/|$)/;
-
-/** Which tab the current page belongs to (locale-less path). */
-export function sectionOf(path: string): Section {
-  if (path === "/") return "home";
-  if (/^\/(cart|checkout)(\/|$)/.test(path)) return "cart";
-  if (/^\/wishlist(\/|$)/.test(path)) return "wishlist";
-  if (/^\/account(\/|$)/.test(path)) return "account";
-  if (CATALOGUE.test(path)) return "categories";
-  return null;
-}
+/** Which tab the current page belongs to (locale-less path). Kept for callers of the 1.0 name. */
+export const sectionOf = tabOf;
 
 export type TabBarProps = {
   sheetOpen: boolean;
@@ -60,9 +53,9 @@ export function TabBar({ sheetOpen, onCategories }: TabBarProps) {
   const location = useLocation();
   const { count } = useCartCount();
   const path = splitLocale(location.pathname).path;
-  const section = sheetOpen ? "categories" : sectionOf(path);
+  const section = sheetOpen ? "categories" : tabOf(path);
   /** aria-current: "page" on the link to this very page, "true" when the page is inside the tab's section. */
-  const current = (tab: Exclude<Section, null>, href: string) => (section !== tab ? undefined : path === href ? ("page" as const) : ("true" as const));
+  const current = (tab: TabId, href: string) => (section !== tab ? undefined : path === href ? ("page" as const) : ("true" as const));
 
   const openSheet = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;

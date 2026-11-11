@@ -10,9 +10,18 @@ import { assertBranch, canAccessBranch, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
 import { auditEvents, inventoryLocations, orderItems, refundItems, refunds, repairEvents, returnItems, returns, type Order, type ReturnRequest } from "~/server/db/schema";
 import { invalid, notFound } from "~/server/errors";
+import { getSetting } from "~/server/settings.server";
 import { employeeNames, phoneFor } from "../orders/shared.server";
 import { allocateAmount } from "../pricing/rules";
-import type { PhoneView } from "./types";
+import { SLA, type PhoneView } from "./types";
+
+export type SlaTargets = { [K in keyof typeof SLA]: number };
+
+/** The service targets in force: the setting "returns.sla" (admin 22), whose default is the SLA constants. */
+export async function slaTargets(db: Db): Promise<SlaTargets> {
+  const value = await getSetting(db, "returns.sla");
+  return { decisionHours: value.decision_hours, inspectionHours: value.inspection_hours, repairDays: value.repair_days, quarantineDays: value.quarantine_days, warrantyEndingDays: value.warranty_ending_days };
+}
 
 export { employeeNames };
 

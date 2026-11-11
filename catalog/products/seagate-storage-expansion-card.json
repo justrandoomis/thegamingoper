@@ -13,20 +13,20 @@
     "ckb": "Seagate Storage Expansion Card for Xbox Series X|S"
   },
   "short": {
-    "ar": "1TB أو 2TB أو 4TB · نفس سرعة التخزين الداخلي · لـ XBOX Series X|S",
-    "en": "1TB, 2TB or 4TB · same speed as the internal SSD · for XBOX Series X|S",
-    "ckb": "1TB، 2TB یان 4TB · هەمان خێرایی بیرگەی ناوەکی · بۆ XBOX Series X|S"
+    "ar": "1TB أو 2TB أو 4TB · نفس سرعة التخزين الداخلي · لـ Xbox Series X|S",
+    "en": "1TB, 2TB or 4TB · same speed as the internal SSD · for Xbox Series X|S",
+    "ckb": "1TB، 2TB یان 4TB · هەمان خێرایی بیرگەی ناوەکی · بۆ Xbox Series X|S"
   },
   "description": {
-    "ar": "بطاقة تخزين رسمية من Seagate تُركّب في منفذ التوسعة خلف جهاز XBOX Series X أو Series S، وتعمل بنفس سرعة الـ SSD الداخلي، فتُشغَّل ألعاب Series X|S منها مباشرة. هذا هو الفرق عن أقراص USB الخارجية العادية التي تحفظ ألعاب Series X|S فقط ولا تشغّلها. متوفرة بسعات 1TB و2TB و4TB.",
-    "en": "Seagate's official storage card that plugs into the expansion port on the back of the XBOX Series X or Series S and runs at the same speed as the internal SSD, so Series X|S games play straight from it. That is the difference from ordinary USB drives, which can only store Series X|S games, not run them. Sold in 1TB, 2TB and 4TB.",
-    "ckb": "کارتی بیرگەی فەرمیی Seagate کە لە دەروازەی فراوانکردنی پشتەوەی XBOX Series X یان Series S دادەنرێت و بە هەمان خێرایی SSD ـی ناوەکی کار دەکات، بۆیە یارییەکانی Series X|S ڕاستەوخۆ لێیەوە کار دەکەن. ئەمە جیاوازییە لەگەڵ هاردی USB ـی ئاسایی کە تەنها یارییەکانی Series X|S هەڵدەگرێت و کاریان پێناکات. بە 1TB، 2TB و 4TB هەیە."
+    "ar": "بطاقة تخزين رسمية من Seagate تُركّب في منفذ التوسعة خلف جهاز Xbox Series X أو Series S، وتعمل بنفس سرعة الـ SSD الداخلي، فتُشغَّل ألعاب Series X|S منها مباشرة. هذا هو الفرق عن أقراص USB الخارجية العادية التي تحفظ ألعاب Series X|S فقط ولا تشغّلها. متوفرة بسعات 1TB و2TB و4TB.",
+    "en": "Seagate's official storage card that plugs into the expansion port on the back of the Xbox Series X or Series S and runs at the same speed as the internal SSD, so Series X|S games play straight from it. That is the difference from ordinary USB drives, which can only store Series X|S games, not run them. Sold in 1TB, 2TB and 4TB.",
+    "ckb": "کارتی بیرگەی فەرمیی Seagate کە لە دەروازەی فراوانکردنی پشتەوەی Xbox Series X یان Series S دادەنرێت و بە هەمان خێرایی SSD ـی ناوەکی کار دەکات، بۆیە یارییەکانی Series X|S ڕاستەوخۆ لێیەوە کار دەکەن. ئەمە جیاوازییە لەگەڵ هاردی USB ـی ئاسایی کە تەنها یارییەکانی Series X|S هەڵدەگرێت و کاریان پێناکات. بە 1TB، 2TB و 4TB هەیە."
   },
   "highlights": [
     {
-      "ar": "تشغيل ألعاب XBOX Series X|S مباشرة من البطاقة بنفس أداء التخزين الداخلي",
-      "en": "Plays XBOX Series X|S games straight from the card at internal-SSD speed",
-      "ckb": "یارییەکانی XBOX Series X|S ڕاستەوخۆ لە کارتەکەوە کار دەکەن بە خێرایی SSD ـی ناوەکی"
+      "ar": "تشغيل ألعاب Xbox Series X|S مباشرة من البطاقة بنفس أداء التخزين الداخلي",
+      "en": "Plays Xbox Series X|S games straight from the card at internal-SSD speed",
+      "ckb": "یارییەکانی Xbox Series X|S ڕاستەوخۆ لە کارتەکەوە کار دەکەن بە خێرایی SSD ـی ناوەکی"
     },
     {
       "ar": "تُركّب في منفذ التوسعة المخصص خلف الجهاز، بدون فتح الجهاز",
@@ -39,9 +39,9 @@
       "ckb": "سێ قەبارە: 1TB، 2TB و 4TB"
     },
     {
-      "ar": "تعمل مع XBOX Series X وSeries S فقط، لا مع XBOX One",
-      "en": "Works only with XBOX Series X and Series S, not XBOX One",
-      "ckb": "تەنها لەگەڵ XBOX Series X و Series S کار دەکات، نەک XBOX One"
+      "ar": "تعمل مع Xbox Series X وSeries S فقط، لا مع Xbox One",
+      "en": "Works only with Xbox Series X and Series S, not Xbox One",
+      "ckb": "تەنها لەگەڵ Xbox Series X و Series S کار دەکات، نەک Xbox One"
     }
   ],
   "specs": [
@@ -54,24 +54,24 @@
       "key": "interface",
       "label": { "ar": "طريقة التوصيل", "en": "Interface", "ckb": "شێوەی بەستنەوە" },
       "value": {
-        "ar": "منفذ توسعة التخزين الخاص بأجهزة XBOX Series X|S",
-        "en": "XBOX Series X|S storage expansion port",
-        "ckb": "دەروازەی فراوانکردنی بیرگەی XBOX Series X|S"
+        "ar": "منفذ توسعة التخزين الخاص بأجهزة Xbox Series X|S",
+        "en": "Xbox Series X|S storage expansion port",
+        "ckb": "دەروازەی فراوانکردنی بیرگەی Xbox Series X|S"
       }
     },
     {
       "key": "performance",
       "label": { "ar": "الأداء", "en": "Performance", "ckb": "توانا" },
       "value": {
-        "ar": "نفس سرعة الـ SSD الداخلي (XBOX Velocity Architecture)",
-        "en": "Same peak speed as the internal SSD (XBOX Velocity Architecture)",
-        "ckb": "هەمان خێرایی SSD ـی ناوەکی (XBOX Velocity Architecture)"
+        "ar": "نفس سرعة الـ SSD الداخلي (Xbox Velocity Architecture)",
+        "en": "Same peak speed as the internal SSD (Xbox Velocity Architecture)",
+        "ckb": "هەمان خێرایی SSD ـی ناوەکی (Xbox Velocity Architecture)"
       }
     },
     {
       "key": "compatibility",
       "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" },
-      "value": { "ar": "XBOX Series X وXBOX Series S", "en": "XBOX Series X, XBOX Series S", "ckb": "XBOX Series X، XBOX Series S" }
+      "value": { "ar": "Xbox Series X وXbox Series S", "en": "Xbox Series X, Xbox Series S", "ckb": "Xbox Series X، Xbox Series S" }
     },
     {
       "key": "warranty",
@@ -173,9 +173,9 @@
       "sourcePage": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
       "kind": "hero",
       "alt": {
-        "ar": "بطاقة Seagate لتوسعة تخزين XBOX من الأمام",
-        "en": "Seagate Storage Expansion Card for XBOX from the front",
-        "ckb": "کارتی فراوانکردنی بیرگەی Seagate بۆ XBOX لە پێشەوە"
+        "ar": "بطاقة Seagate لتوسعة تخزين Xbox من الأمام",
+        "en": "Seagate Storage Expansion Card for Xbox from the front",
+        "ckb": "کارتی فراوانکردنی بیرگەی Seagate بۆ Xbox لە پێشەوە"
       },
       "credit": "Microsoft / Seagate",
       "width": 1056,
@@ -221,9 +221,9 @@
       "sourcePage": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
       "kind": "detail",
       "alt": {
-        "ar": "البطاقة مركّبة في منفذ التوسعة خلف XBOX Series X",
-        "en": "The card plugged into the expansion port on the back of an XBOX Series X",
-        "ckb": "کارتەکە لە دەروازەی فراوانکردنی پشتەوەی XBOX Series X دانراوە"
+        "ar": "البطاقة مركّبة في منفذ التوسعة خلف Xbox Series X",
+        "en": "The card plugged into the expansion port on the back of an Xbox Series X",
+        "ckb": "کارتەکە لە دەروازەی فراوانکردنی پشتەوەی Xbox Series X دانراوە"
       },
       "credit": "Microsoft / Seagate",
       "width": 1056,
@@ -235,14 +235,14 @@
     {
       "url": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card",
       "title": "Seagate Storage Expansion Card for Xbox Series X|S",
-      "publisher": "Microsoft (XBOX)",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
-      "supports": "sizes currently listed (1TB, 2TB, 4TB), same speed as the internal SSD, release November 2020, compatible with XBOX Series X and Series S, images"
+      "supports": "sizes currently listed (1TB, 2TB, 4TB), same speed as the internal SSD, release November 2020, compatible with Xbox Series X and Series S, images"
     },
     {
       "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
-      "title": "XBOX Series X (FAQ: increasing console storage)",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Series X (FAQ: increasing console storage)",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "the expansion card plugs into the dedicated port on the back and replicates the internal SSD experience"
     },
@@ -256,14 +256,14 @@
     {
       "url": "https://news.xbox.com/en-us/2020/09/24/xbox-series-x-and-xbox-series-s-custom-storage-solution-primer/",
       "title": "A Primer on the Simple and Custom Storage Options Available for Xbox Series X and Xbox Series S at Launch",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "1TB card launched alongside the consoles on 10 November 2020; matches the internal SSD; USB drives store but cannot play games optimized for Series X|S"
     },
     {
       "url": "https://news.xbox.com/en-us/2021/10/21/new-seagate-storage-expansion-cards/",
       "title": "New 2TB and 512GB Seagate Storage Expansion Cards for Xbox Series X|S",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "2TB card launching in early December 2021 (512GB in mid-November 2021)"
     },
@@ -297,9 +297,9 @@
     }
   ],
   "notes": {
-    "ar": "أقراص USB الخارجية العادية تحفظ ألعاب XBOX Series X|S فقط ولا تشغّلها، بينما هذه البطاقة تشغّلها مباشرة. كانت هناك سعة 512GB أيضاً لكنها لم تعد مدرجة في صفحة XBOX الحالية. موقع Seagate يحجب الزوار من العراق، لذلك لا يمكن الوصول إلى صفحات الدعم والضمان الخاصة بها من هنا.",
-    "en": "Ordinary USB drives can store XBOX Series X|S games but cannot run them; this card runs them directly. A 512GB size also existed but is no longer listed on the current XBOX page. Seagate's website blocks visitors from Iraq, so its support and warranty pages cannot be reached from here.",
-    "ckb": "هاردی USB ـی ئاسایی یارییەکانی XBOX Series X|S هەڵدەگرێت بەڵام کاریان پێناکات؛ ئەم کارتە ڕاستەوخۆ کاریان پێدەکات. قەبارەی 512GB ـیش هەبوو بەڵام ئێستا لە پەڕەی ئێستای XBOX ـدا نییە. ماڵپەڕی Seagate سەردانکەرانی عێراق ڕێگری دەکات، بۆیە پەڕەکانی پشتگیری و گەرەنتییەکەی لێرەوە ناکرێنەوە."
+    "ar": "أقراص USB الخارجية العادية تحفظ ألعاب Xbox Series X|S فقط ولا تشغّلها، بينما هذه البطاقة تشغّلها مباشرة. كانت هناك سعة 512GB أيضاً لكنها لم تعد مدرجة في صفحة Xbox الحالية. موقع Seagate يحجب الزوار من العراق، لذلك لا يمكن الوصول إلى صفحات الدعم والضمان الخاصة بها من هنا.",
+    "en": "Ordinary USB drives can store Xbox Series X|S games but cannot run them; this card runs them directly. A 512GB size also existed but is no longer listed on the current Xbox page. Seagate's website blocks visitors from Iraq, so its support and warranty pages cannot be reached from here.",
+    "ckb": "هاردی USB ـی ئاسایی یارییەکانی Xbox Series X|S هەڵدەگرێت بەڵام کاریان پێناکات؛ ئەم کارتە ڕاستەوخۆ کاریان پێدەکات. قەبارەی 512GB ـیش هەبوو بەڵام ئێستا لە پەڕەی ئێستای Xbox ـدا نییە. ماڵپەڕی Seagate سەردانکەرانی عێراق ڕێگری دەکات، بۆیە پەڕەکانی پشتگیری و گەرەنتییەکەی لێرەوە ناکرێنەوە."
   },
   "verification": {
     "checkedBy": "fact-check",

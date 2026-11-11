@@ -42,7 +42,7 @@
   --motion-press-soft-sink: 0px;
   --motion-press-icon-scale: 0.94;
   --motion-press-icon-sink: 0px;
-  --motion-bubble-from: 0.86;
+  --motion-bubble-from: 0.94;
   --motion-stagger-step: 45ms;
   --motion-travel-push: 24px;
   --motion-travel-direction: 16px;
@@ -137,9 +137,9 @@
 }
 
 /* ───────────────────────────── bubbles (DESIGN.md "inflate") ─────────────────────────────
- * <Bubble> content inflates into space that is already reserved: from scale .86 with opacity 0 → 1 on the `inflate`
- * spring, on the element itself, so nothing around it moves. <BubbleGroup> staggers its children 45 ms apart; at
- * most six are staggered and the rest appear with the sixth.
+ * <Bubble> content inflates into space that is already reserved: from scale .94 (--motion-bubble-from) with opacity
+ * 0 → 1 on the `inflate` spring, on the element itself, so nothing around it moves. <BubbleGroup> staggers its
+ * children 45 ms apart; at most six are staggered and the rest appear with the sixth.
  */
 @layer components {
   .tt-bubble-in {
@@ -438,23 +438,60 @@ html[data-nav="direction"]::view-transition-new(root) {
 /* ───────────────────────────── persistent chrome and anchors ─────────────────────────────
  * Fixed chrome that must not travel with the page: data-motion-persist="header | nav | bar | float".
  * Each becomes its own static layer above the page snapshots. On a language switch it cross-fades in place
- * (its words change); elements marked data-motion-anchor are named by the engine for that switch and stay put.
+ * (its words change); elements marked data-motion-anchor are marked again by the engine for that switch
+ * (data-motion-anchored, below) and stay put.
+ *
+ * NAMED ONLY WHILE A VIEW TRANSITION RUNS (Design System v2 §2.10b, §2.11). An element with a view-transition-name is
+ * a backdrop root: every backdrop-filter inside it frosts only what is painted inside that element. A name on the
+ * header at rest made its glass and the mega menu frost nothing, so page text showed sharply behind the menu links.
+ * `:active-view-transition` matches from startViewTransition() until the transition has finished, so the name is
+ * already there when the old state is captured (measured in Chromium 157 by check-glass.mjs: the header has both an
+ * old and a new snapshot and is absent from the page snapshots) and the chrome still stays put. At rest nothing
+ * carries a name. While a transition runs (≈ 0.4 s) the chrome is a snapshot and its glass shows unfrosted; that is
+ * the trade v2 §2.11 chose. Browsers without the selector (Chromium < 125, Safari < 18.2) drop these rules; they lack
+ * `view-transition-class` and every way vt.ts detects a running transition as well, so the engine plays no page
+ * animation there and the chrome simply stays live. Guards: tests/motion.test.ts fails a view-transition-name set
+ * outside this scope in any stylesheet of app/; app/motion/__checks__/check-glass.mjs fails any element on real pages
+ * that has a name at rest and is or contains glass.
  */
-[data-motion-persist="header"] {
+html:active-view-transition [data-motion-persist] {
+  view-transition-class: tt-persist;
+}
+html:active-view-transition [data-motion-persist="header"] {
   view-transition-name: tt-persist-header;
-  view-transition-class: tt-persist;
 }
-[data-motion-persist="nav"] {
+html:active-view-transition [data-motion-persist="nav"] {
   view-transition-name: tt-persist-nav;
-  view-transition-class: tt-persist;
 }
-[data-motion-persist="bar"] {
+html:active-view-transition [data-motion-persist="bar"] {
   view-transition-name: tt-persist-bar;
-  view-transition-class: tt-persist;
 }
-[data-motion-persist="float"] {
+html:active-view-transition [data-motion-persist="float"] {
   view-transition-name: tt-persist-float;
-  view-transition-class: tt-persist;
+}
+/* Language-switch anchors: armAnchors() (nav.tsx) marks up to six on screen with data-motion-anchored="0…5" right
+ * before the switch (full tier only) and removes the marks when it ends; like the chrome they carry their name only
+ * while the transition runs. */
+html:active-view-transition [data-motion-anchored] {
+  view-transition-class: tt-anchor;
+}
+html:active-view-transition [data-motion-anchored="0"] {
+  view-transition-name: tt-anchor-0;
+}
+html:active-view-transition [data-motion-anchored="1"] {
+  view-transition-name: tt-anchor-1;
+}
+html:active-view-transition [data-motion-anchored="2"] {
+  view-transition-name: tt-anchor-2;
+}
+html:active-view-transition [data-motion-anchored="3"] {
+  view-transition-name: tt-anchor-3;
+}
+html:active-view-transition [data-motion-anchored="4"] {
+  view-transition-name: tt-anchor-4;
+}
+html:active-view-transition [data-motion-anchored="5"] {
+  view-transition-name: tt-anchor-5;
 }
 ::view-transition-group(.tt-persist) {
   animation: none;

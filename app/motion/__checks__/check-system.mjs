@@ -213,13 +213,16 @@ try {
   await janky.close();
 
   // ── theme morph: a 200 ms cross-fade, nothing moves ──────────────────────────
+  // Measured on a heading of the panel: the lab renders inside the storefront shell, whose sticky header covers the
+  // lab's own bar once the page is scrolled.
+  const THEME_TEXT = "#lab-theme";
   const theme = await openPage(browser);
   await goto(theme, "/motion?tab=system");
   await sleep(1200); // on-demand chunk
   await theme.evaluate(() => window.scrollTo(0, 140));
   await sleep(200);
   const y0 = await scrollY(theme);
-  const before = await textContrast(theme, ".lab-bar__title");
+  const before = await textContrast(theme, THEME_TEXT);
   await theme.freezeNext();
   await tap(theme, '[data-testid="theme-dark"]', { scroll: false });
   await frozen(theme);
@@ -227,7 +230,7 @@ try {
   for (let i = 0; i <= 20; i++) {
     const p = i / 20;
     await seek(theme, Math.min(p, 0.999));
-    contrast[p] = await textContrast(theme, ".lab-bar__title");
+    contrast[p] = await textContrast(theme, THEME_TEXT);
     if (i % 5 === 0) await theme.screenshot({ path: path.join(SHOTS, `theme-${String(Math.round(p * 100)).padStart(3, "0")}.png`) });
   }
   const during = await theme.evaluate(() => {
@@ -248,7 +251,7 @@ try {
   const under3 = samples.filter(([, c]) => c < 3).length * 10; // each sample stands for 1/20 of 200 ms
   frames.themeContrast = { lowest: { at: `${Math.round(lowest[0] * 200)} ms`, ratio: lowest[1] }, below3to1: `${under3} ms of 200 ms`, samples: contrast };
   add(
-    `theme: text contrast frame by frame (lab title) — ${contrast[0]}:1 → ${lowest[1]}:1 at ${Math.round(lowest[0] * 200)} ms → ${contrast[1]}:1; under 3:1 for ≈ ${under3} ms`,
+    `theme: text contrast frame by frame (the lab's "theme" heading) — ${contrast[0]}:1 → ${lowest[1]}:1 at ${Math.round(lowest[0] * 200)} ms → ${contrast[1]}:1; under 3:1 for ≈ ${under3} ms`,
     contrast[0] > 7 && contrast[1] > 7,
     { before, lowest, under3 },
   );
@@ -294,7 +297,10 @@ try {
           start: root.style.getPropertyValue("--nav-start"),
           oldX: Math.round(at("::view-transition-old(root)").m41),
           newX: Math.round(at("::view-transition-new(root)").m41),
-          anchorNamed: document.querySelector('[data-testid="language-anchor"]').style.viewTransitionName,
+          // marked by the engine (never named inline); motion.css names it only while the transition runs
+          anchorMark: document.querySelector('[data-testid="language-anchor"]').getAttribute("data-motion-anchored"),
+          anchorInline: document.querySelector('[data-testid="language-anchor"]').style.viewTransitionName,
+          anchorNamed: getComputedStyle(document.querySelector('[data-testid="language-anchor"]')).viewTransitionName,
           anchorAnimation: anchorGroup.animationName,
           chromeOld: getComputedStyle(root, "::view-transition-old(tt-persist-lab)").display,
         };
@@ -310,7 +316,8 @@ try {
     dir: document.documentElement.dir,
     field: document.querySelector('[data-testid="language-field"]').value,
     title: document.querySelector(".lab-bar__title").textContent,
-    anchorName: document.querySelector('[data-testid="language-anchor"]').style.viewTransitionName,
+    anchorName: getComputedStyle(document.querySelector('[data-testid="language-anchor"]')).viewTransitionName,
+    anchorMark: document.querySelector('[data-testid="language-anchor"]').getAttribute("data-motion-anchored"),
   }));
   const anchorAfter = await lang.$eval('[data-testid="language-anchor"]', (el) => {
     const r = el.getBoundingClientRect();
@@ -335,8 +342,13 @@ try {
   );
   add("language: fixed chrome cross-fades in place (its old snapshot stays visible while fading)", mid.state.chromeOld === "block", mid.state.chromeOld);
   add(
-    "language: the anchor (data-motion-anchor) is its own unanimated layer and keeps its place; the name is released afterwards",
-    mid.state.anchorNamed === "tt-anchor-0" && mid.state.anchorAnimation === "none" && state.anchorName === "",
+    "language: the anchor (data-motion-anchor) is marked, named tt-anchor-0 only while the switch runs (no inline name) and is its own unanimated layer; mark and name are gone afterwards",
+    mid.state.anchorMark === "0" &&
+      mid.state.anchorInline === "" &&
+      mid.state.anchorNamed === "tt-anchor-0" &&
+      mid.state.anchorAnimation === "none" &&
+      state.anchorName === "none" &&
+      state.anchorMark === null,
     { mid: mid.state, before: anchorBefore, after: anchorAfter },
   );
   // LTR → RTL (English → Kurdish)

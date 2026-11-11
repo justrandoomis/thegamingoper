@@ -16,7 +16,7 @@ import { cx } from "./cx";
  *
  * The caret turns over (transform only); the content fades in 4px (opacity and transform, 160ms) when it opens —
  * the height itself never animates (DESIGN.md §6.6.5). Reduced motion: no movement. Flat: a row with a hairline
- * (`variant="row"`, inside an <Accordion>) or a niche panel (`variant="panel"`).
+ * (`variant="row"`, 56px, inside an <Accordion>) or a paper panel with a hairline (`variant="panel"`) — v2 §4.1.
  */
 export type DisclosureProps = {
   /** The always-visible row: say what is inside ("ما الذي يشمله الضمان؟"). */
@@ -31,7 +31,7 @@ export type DisclosureProps = {
   name?: string;
   /** A leading icon in the summary row. */
   icon?: IconName;
-  /** "row" (default): a row with a hairline under it · "panel": a flat niche panel. */
+  /** "row" (default): a 56px row with a hairline under it · "panel": a paper panel with a hairline. */
   variant?: "row" | "panel";
   className?: string;
   bodyClassName?: string;
@@ -50,11 +50,11 @@ export function Disclosure({ summary, children, defaultOpen, open, onOpenChange,
       name={name}
       open={open ?? defaultOpen}
       onToggle={onToggle}
-      className={cx("group min-w-0", panel ? "rounded-lg bg-niche" : "border-b border-line", className)}
+      className={cx("group min-w-0", panel ? "panel" : "border-b border-line", className)}
     >
       <summary
         className={cx(
-          "flex min-h-[52px] cursor-pointer list-none items-center gap-3 rounded-sm py-3 type-strong text-ink outline-offset-2 [&::-webkit-details-marker]:hidden",
+          "flex min-h-14 cursor-pointer list-none items-center gap-3 rounded-sm py-3 type-strong text-ink outline-offset-2 [&::-webkit-details-marker]:hidden",
           panel && "px-4",
         )}
       >
@@ -62,7 +62,7 @@ export function Disclosure({ summary, children, defaultOpen, open, onOpenChange,
         <span className="min-w-0 flex-1">{summary}</span>
         <Icon
           name="caret-down"
-          size={18}
+          size={20}
           className="text-ink-2 transition-transform duration-(--t-micro) group-open:rotate-180 motion-reduce:transition-none [[data-motion=reduced]_&]:transition-none"
         />
       </summary>

@@ -8,16 +8,16 @@
   "family": "xbox-series-x",
   "status": "available",
   "releaseDate": "2020-11-10",
-  "name": { "ar": "XBOX Series X", "en": "XBOX Series X", "ckb": "XBOX Series X" },
+  "name": { "ar": "Xbox Series X", "en": "Xbox Series X", "ckb": "Xbox Series X" },
   "short": {
     "ar": "SSD سعة 1TB · مشغل أقراص 4K UHD Blu-ray · ألعاب 4K حتى 120 إطاراً",
     "en": "1TB SSD · 4K UHD Blu-ray drive · 4K gaming up to 120 FPS",
     "ckb": "SSD ـی 1TB · خوێنەری دیسکی 4K UHD Blu-ray · یاریی 4K تا 120 FPS"
   },
   "description": {
-    "ar": "أقوى جهاز XBOX من Microsoft، بنسخته السوداء Carbon Black مع SSD سعة 1TB ومشغل أقراص 4K UHD Blu-ray، فيشغّل أقراص الألعاب والألعاب الرقمية معاً. يستهدف دقة 4K حقيقية حتى 120 إطاراً في الثانية، ويشغّل آلاف الألعاب من XBOX One وXBOX 360 وجهاز XBOX الأصلي. في العلبة يد تحكم XBOX Wireless Controller وكابل HDMI فائق السرعة.",
-    "en": "Microsoft's most powerful XBOX, in Carbon Black with a 1TB SSD and a 4K UHD Blu-ray drive, so it plays game discs as well as digital games. It targets true 4K at up to 120 frames per second and runs thousands of games from XBOX One, XBOX 360 and the original XBOX. An XBOX Wireless Controller and an Ultra High Speed HDMI cable come in the box.",
-    "ckb": "بەهێزترین XBOX ـی Microsoft، بە ڕەنگی ڕەشی Carbon Black لەگەڵ SSD ـی 1TB و خوێنەری دیسکی 4K UHD Blu-ray، بۆیە هەم دیسکی یاری و هەم یاریی دیجیتاڵ کار پێدەکات. ئامانجی 4K ـی ڕاستەقینەیە تا 120 وێنە لە چرکەیەکدا، و هەزاران یاریی XBOX One و XBOX 360 و XBOX ـی یەکەم کار پێدەکات. دەسکی XBOX Wireless Controller و کێبڵی HDMI ـی زۆر خێرا لەناو قوتووەکەدان."
+    "ar": "أقوى جهاز Xbox من Microsoft، بنسخته السوداء Carbon Black مع SSD سعة 1TB ومشغل أقراص 4K UHD Blu-ray، فيشغّل أقراص الألعاب والألعاب الرقمية معاً. يستهدف دقة 4K حقيقية حتى 120 إطاراً في الثانية، ويشغّل آلاف الألعاب من Xbox One وXbox 360 وجهاز Xbox الأصلي. في العلبة يد تحكم Xbox Wireless Controller وكابل HDMI فائق السرعة.",
+    "en": "Microsoft's most powerful Xbox, in Carbon Black with a 1TB SSD and a 4K UHD Blu-ray drive, so it plays game discs as well as digital games. It targets true 4K at up to 120 frames per second and runs thousands of games from Xbox One, Xbox 360 and the original Xbox. An Xbox Wireless Controller and an Ultra High Speed HDMI cable come in the box.",
+    "ckb": "بەهێزترین Xbox ـی Microsoft، بە ڕەنگی ڕەشی Carbon Black لەگەڵ SSD ـی 1TB و خوێنەری دیسکی 4K UHD Blu-ray، بۆیە هەم دیسکی یاری و هەم یاریی دیجیتاڵ کار پێدەکات. ئامانجی 4K ـی ڕاستەقینەیە تا 120 وێنە لە چرکەیەکدا، و هەزاران یاریی Xbox One و Xbox 360 و Xbox ـی یەکەم کار پێدەکات. دەسکی Xbox Wireless Controller و کێبڵی HDMI ـی زۆر خێرا لەناو قوتووەکەدان."
   },
   "highlights": [
     {
@@ -26,9 +26,9 @@
       "ckb": "SSD ـی تایبەتی 1TB؛ دەتوانیت بە کارتی فراوانکردنی بیرگە شوێن زیاد بکەیت (جیا دەفرۆشرێت)"
     },
     {
-      "ar": "مشغل أقراص 4K UHD Blu-ray لأقراص ألعاب XBOX وأفلام 4K",
-      "en": "4K UHD Blu-ray drive for XBOX game discs and 4K movies",
-      "ckb": "خوێنەری دیسکی 4K UHD Blu-ray بۆ دیسکی یارییەکانی XBOX و فیلمی 4K"
+      "ar": "مشغل أقراص 4K UHD Blu-ray لأقراص ألعاب Xbox وأفلام 4K",
+      "en": "4K UHD Blu-ray drive for Xbox game discs and 4K movies",
+      "ckb": "خوێنەری دیسکی 4K UHD Blu-ray بۆ دیسکی یارییەکانی Xbox و فیلمی 4K"
     },
     {
       "ar": "معالج رسوميات بقوة 12 تيرافلوب: دقة 4K حتى 120 إطاراً وجاهز لـ 8K HDR (حسب اللعبة والشاشة)",
@@ -36,9 +36,9 @@
       "ckb": "گرافیکی 12 تێرافلۆپ: 4K تا 120 FPS و ئامادە بۆ 8K HDR (بەپێی یاری و شاشە)"
     },
     {
-      "ar": "يشغّل آلاف ألعاب XBOX One وXBOX 360 وXBOX الأصلي، مع Quick Resume للتنقل بين الألعاب",
-      "en": "Plays thousands of XBOX One, XBOX 360 and original XBOX games, with Quick Resume to jump between games",
-      "ckb": "هەزاران یاریی XBOX One و XBOX 360 و XBOX ـی یەکەم کار پێدەکات، لەگەڵ Quick Resume بۆ گۆڕینی خێرای یارییەکان"
+      "ar": "يشغّل آلاف ألعاب Xbox One وXbox 360 وXbox الأصلي، مع Quick Resume للتنقل بين الألعاب",
+      "en": "Plays thousands of Xbox One, Xbox 360 and original Xbox games, with Quick Resume to jump between games",
+      "ckb": "هەزاران یاریی Xbox One و Xbox 360 و Xbox ـی یەکەم کار پێدەکات، لەگەڵ Quick Resume بۆ گۆڕینی خێرای یارییەکان"
     },
     {
       "ar": "قوائم الجهاز متوفرة باللغة العربية",
@@ -137,9 +137,9 @@
       "key": "network",
       "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
       "value": {
-        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless لأيادي التحكم",
-        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio for controllers",
-        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، و ڕادیۆی XBOX Wireless بۆ دەسکەکان"
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو Xbox Wireless لأيادي التحكم",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, Xbox Wireless radio for controllers",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، و ڕادیۆی Xbox Wireless بۆ دەسکەکان"
       }
     },
     {
@@ -163,8 +163,8 @@
     }
   ],
   "inTheBox": [
-    { "ar": "جهاز XBOX Series X", "en": "XBOX Series X console", "ckb": "کۆنسۆڵی XBOX Series X" },
-    { "ar": "يد تحكم XBOX Wireless Controller", "en": "XBOX Wireless Controller", "ckb": "دەسکی XBOX Wireless Controller" },
+    { "ar": "جهاز Xbox Series X", "en": "Xbox Series X console", "ckb": "کۆنسۆڵی Xbox Series X" },
+    { "ar": "يد تحكم Xbox Wireless Controller", "en": "Xbox Wireless Controller", "ckb": "دەسکی Xbox Wireless Controller" },
     { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
     { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
   ],
@@ -172,9 +172,9 @@
     {
       "sku": "XSX-1TB-BLK",
       "title": {
-        "ar": "XBOX Series X ‏1TB مع مشغل أقراص، أسود Carbon Black",
-        "en": "XBOX Series X 1TB, Disc Drive, Carbon Black",
-        "ckb": "XBOX Series X ‏1TB لەگەڵ خوێنەری دیسک، ڕەشی Carbon Black"
+        "ar": "Xbox Series X ‏1TB مع مشغل أقراص، أسود Carbon Black",
+        "en": "Xbox Series X 1TB, Disc Drive, Carbon Black",
+        "ckb": "Xbox Series X ‏1TB لەگەڵ خوێنەری دیسک، ڕەشی Carbon Black"
       },
       "options": { "edition": "Disc Drive", "storage": "1TB", "color": "Carbon Black" },
       "modelNumber": "1882",
@@ -201,9 +201,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
       "kind": "hero",
       "alt": {
-        "ar": "جهاز XBOX Series X الأسود بزاوية مائلة مع يد التحكم",
-        "en": "Black XBOX Series X at an angle with its controller",
-        "ckb": "XBOX Series X ـی ڕەش بە گۆشەیەکی لار لەگەڵ دەسکەکەی"
+        "ar": "جهاز Xbox Series X الأسود بزاوية مائلة مع يد التحكم",
+        "en": "Black Xbox Series X at an angle with its controller",
+        "ckb": "Xbox Series X ـی ڕەش بە گۆشەیەکی لار لەگەڵ دەسکەکەی"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -217,9 +217,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
       "kind": "angle",
       "alt": {
-        "ar": "الجهة الخلفية من XBOX Series X مع المنافذ",
-        "en": "Back of the XBOX Series X with its ports",
-        "ckb": "پشتەوەی XBOX Series X لەگەڵ دەروازەکانی"
+        "ar": "الجهة الخلفية من Xbox Series X مع المنافذ",
+        "en": "Back of the Xbox Series X with its ports",
+        "ckb": "پشتەوەی Xbox Series X لەگەڵ دەروازەکانی"
       },
       "credit": "Microsoft",
       "width": 811,
@@ -233,9 +233,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
       "kind": "in-box",
       "alt": {
-        "ar": "يد تحكم XBOX Wireless Controller السوداء المرفقة مع الجهاز",
-        "en": "The black XBOX Wireless Controller included with the console",
-        "ckb": "دەسکی ڕەشی XBOX Wireless Controller کە لەگەڵ کۆنسۆڵەکە دێت"
+        "ar": "يد تحكم Xbox Wireless Controller السوداء المرفقة مع الجهاز",
+        "en": "The black Xbox Wireless Controller included with the console",
+        "ckb": "دەسکی ڕەشی Xbox Wireless Controller کە لەگەڵ کۆنسۆڵەکە دێت"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -246,14 +246,14 @@
   "sources": [
     {
       "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
-      "title": "XBOX Series X",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Series X",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "current line-up (1TB Carbon Black, 1TB Digital, 2TB Galaxy Black, X25), launch date 10 Nov 2020, what is in the box, expansion card and USB storage, 4K/120 FPS, backward compatibility"
     },
     {
       "url": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl",
-      "title": "Buy XBOX Series X: 1TB Black or White",
+      "title": "Buy Xbox Series X: 1TB Black or White",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
       "supports": "tech specs (CPU, GPU, memory, SSD, disc drive, HDMI, audio, ports, wireless, dimensions, weight), product images"
@@ -270,7 +270,7 @@
       "title": "Xbox Series X Console Safety & Repair Instructions",
       "publisher": "Microsoft Learn",
       "retrieved": "2026-11-11",
-      "supports": "official model number: XBOX Series X Model 1882, printed on the label on the back"
+      "supports": "official model number: Xbox Series X Model 1882, printed on the label on the back"
     },
     {
       "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/game-principles/localization/console_supported_languages",
@@ -284,26 +284,26 @@
       "title": "اللغة العربية قادمة لأجهزة إكسبوكس ون في الخريف",
       "publisher": "Saudi Gamer",
       "retrieved": "2026-11-11",
-      "supports": "second source: Microsoft added Arabic as an XBOX console interface language in the 2017 Fall Update"
+      "supports": "second source: Microsoft added Arabic as an Xbox console interface language in the 2017 Fall Update"
     },
     {
       "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
-      "title": "XBOX locales FAQ",
-      "publisher": "Microsoft (XBOX Support)",
+      "title": "Xbox locales FAQ",
+      "publisher": "Microsoft (Xbox Support)",
       "retrieved": "2026-11-11",
-      "supports": "XBOX support and warranties only in supported countries/regions; system updates work anywhere with an internet connection; store purchases need a billing address that matches the console location"
+      "supports": "Xbox support and warranties only in supported countries/regions; system updates work anywhere with an internet connection; store purchases need a billing address that matches the console location"
     },
     {
       "url": "https://www.xbox.com/en-US/regions",
-      "title": "XBOX Supported Countries & Regions",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
-      "supports": "Iraq is not on the list of countries/regions where XBOX products and services are supported"
+      "supports": "Iraq is not on the list of countries/regions where Xbox products and services are supported"
     },
     {
       "url": "https://www.xbox.com/en-US/xbox-game-pass",
-      "title": "XBOX Game Pass",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Game Pass",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "online console multiplayer is included in the Essential, Premium and Ultimate plans"
     },
@@ -312,13 +312,13 @@
       "title": "Xbox Is Rebranding Itself, Sort Of",
       "publisher": "GameSpot",
       "retrieved": "2026-11-11",
-      "supports": "all-caps XBOX styling adopted in May 2026 (xbox.com and the Microsoft Store now use XBOX in product names)"
+      "supports": "all-caps Xbox styling adopted in May 2026 (xbox.com and the Microsoft Store now use Xbox in product names)"
     }
   ],
   "notes": {
-    "ar": "العراق ليس ضمن قائمة Microsoft للدول والمناطق التي تدعم منتجات وخدمات XBOX، لذلك متجر Microsoft واشتراك Game Pass واللعب السحابي غير مقدمة رسمياً للعراق. وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط، بينما تصل تحديثات النظام إلى الجهاز في أي مكان ما دام متصلاً بالإنترنت. اللعب الجماعي عبر الإنترنت على الجهاز مشمول في كل باقات XBOX Game Pass ‏(Essential وPremium وUltimate) التي تُباع منفصلة. منذ أيار 2026 تكتب Microsoft اسم العلامة بالأحرف الكبيرة XBOX.",
-    "en": "Iraq is not on Microsoft's list of countries and regions where XBOX products and services are supported, so the Microsoft Store, Game Pass and cloud gaming are not officially offered for Iraq. Microsoft says XBOX support and warranties are only available in supported countries, while system updates reach the console anywhere it is online. Online console multiplayer is included in every XBOX Game Pass plan (Essential, Premium and Ultimate), sold separately. Since May 2026 Microsoft writes the brand in capitals as XBOX.",
-    "ckb": "عێراق لە لیستی Microsoft ـدا نییە بۆ ئەو وڵات و ناوچانەی کە بەرهەم و خزمەتگوزارییەکانی XBOX پشتگیری دەکەن، بۆیە فرۆشگای Microsoft و Game Pass و یاریی هەوری بە فەرمی بۆ عێراق پێشکەش ناکرێن. Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە، بەڵام نوێکردنەوەی سیستەم لە هەر شوێنێک بێت دەگاتە کۆنسۆڵەکە ئەگەر بە ئینتەرنێتەوە بەسترابێت. یاریی بە کۆمەڵ لە ئینتەرنێت لەسەر کۆنسۆڵ لە هەموو پلانەکانی XBOX Game Pass ‏(Essential، Premium و Ultimate) دایە کە جیا دەفرۆشرێن. لە ئایاری 2026 ـەوە Microsoft ناوی براندەکە بە پیتی گەورە دەنووسێت: XBOX."
+    "ar": "العراق ليس ضمن قائمة Microsoft للدول والمناطق التي تدعم منتجات وخدمات Xbox، لذلك متجر Microsoft واشتراك Game Pass واللعب السحابي غير مقدمة رسمياً للعراق. وتقول Microsoft إن دعم Xbox وضمانه متاحان في الدول المدعومة فقط، بينما تصل تحديثات النظام إلى الجهاز في أي مكان ما دام متصلاً بالإنترنت. اللعب الجماعي عبر الإنترنت على الجهاز مشمول في كل باقات Xbox Game Pass ‏(Essential وPremium وUltimate) التي تُباع منفصلة. منذ أيار 2026 تكتب Microsoft اسم العلامة بالأحرف الكبيرة Xbox.",
+    "en": "Iraq is not on Microsoft's list of countries and regions where Xbox products and services are supported, so the Microsoft Store, Game Pass and cloud gaming are not officially offered for Iraq. Microsoft says Xbox support and warranties are only available in supported countries, while system updates reach the console anywhere it is online. Online console multiplayer is included in every Xbox Game Pass plan (Essential, Premium and Ultimate), sold separately. Since May 2026 Microsoft writes the brand in capitals as Xbox.",
+    "ckb": "عێراق لە لیستی Microsoft ـدا نییە بۆ ئەو وڵات و ناوچانەی کە بەرهەم و خزمەتگوزارییەکانی Xbox پشتگیری دەکەن، بۆیە فرۆشگای Microsoft و Game Pass و یاریی هەوری بە فەرمی بۆ عێراق پێشکەش ناکرێن. Microsoft دەڵێت پشتگیری و گەرەنتیی Xbox تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە، بەڵام نوێکردنەوەی سیستەم لە هەر شوێنێک بێت دەگاتە کۆنسۆڵەکە ئەگەر بە ئینتەرنێتەوە بەسترابێت. یاریی بە کۆمەڵ لە ئینتەرنێت لەسەر کۆنسۆڵ لە هەموو پلانەکانی Xbox Game Pass ‏(Essential، Premium و Ultimate) دایە کە جیا دەفرۆشرێن. لە ئایاری 2026 ـەوە Microsoft ناوی براندەکە بە پیتی گەورە دەنووسێت: Xbox."
   },
   "verification": {
     "checkedBy": "fact-check",

@@ -5,6 +5,7 @@ import {
   useState,
   type FocusEvent as ReactFocusEvent,
   type KeyboardEvent as ReactKeyboardEvent,
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { createPortal } from "react-dom";
@@ -14,8 +15,7 @@ import { LocaleLink, useT } from "~/i18n/react";
 import { dematerialize, durations, easings, getMotionTier, materialize, springTiming } from "~/motion";
 import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
-import { useOverlayDepth, useOverlayRoot } from "./Dialog";
-import { Glass } from "./Glass";
+import { useOverlayRoot } from "./Dialog";
 import { IconKey } from "./IconKey";
 import { Key } from "./Key";
 import { Render } from "./Stage";
@@ -25,25 +25,27 @@ import { toastStore, useToasts, type Toast, type ToastKind } from "./toast-store
  * <Toaster /> — shows the toast store (./toast-store.ts; feature code calls `toast.success(…)`, `toast.cart({…})`).
  * Mount it once in a layout, near <MotionRoot />. Only one instance renders at a time (the others wait to take over).
  *
- *   <Toaster offset="calc(var(--safe-top) + 64px)" />          under a 56px glass header (+ 8px)
+ *   <Toaster offset="var(--shell-toast-top)" />                from 1024: under the header, at the inline end
  *   <Toaster fallback />                                       a page that may or may not have a layout toaster
  *
- * docs/DESIGN.md §9.13: live glass, `--r-md`, pinned under the header so it never covers a task bar; at least 60px:
- * a thumbnail in a small niche (cart) or the kind's icon, a bold first line, a secondary line in on-glass-2, and ONE
- * small clay key (undo, view cart, retry) — or a close key when there is no action. One at a time, 4s, paused while
- * hovered, focused, dragged or the tab is hidden. Above an open sheet or dialog it turns solid (two live glass panes
- * per viewport at most).
+ * Design System v2 §4.16: an OPAQUE graphite toast (--band; dark #2A2C32), --r-lg, --e-float, at least 64px: a 48px
+ * thumbnail on the product ground (or the kind's icon), a 14/600 title with a 16px ok check («أُضيف إلى السلة»), one
+ * 13px line (product · variant), and the actions — on a cart toast «عرض السلة» as a 40px outlined button and «تراجع» as a
+ * ghost button — and a close button. Placement: on phones and tablets above the tab bar or the buy bar
+ * (`--shell-bottom`, published by the shell), never over the cart bead; from 1024 under the header at the inline end
+ * (`offset`, below the cart, where the bead lands), 380px wide. One at a time, paused while hovered, focused, dragged
+ * or the tab is hidden. Show the cart toast once the bead has landed (./AddToCartKey does).
  *
  * Accessibility: what a toast says is announced through two live regions that exist before any toast does —
- * polite for info / success / warning / cart, assertive for errors. F6 moves focus to the toast's key (Escape returns
- * it and dismisses the toast). The toaster stays usable above modal layers (it is excluded from their inert page).
+ * polite for info / success / warning / cart, assertive for errors. F6 moves focus to the toast's first action (Escape
+ * returns it and dismisses the toast). The toaster stays usable above modal layers (it is excluded from their inert page).
  *
  * Motion: drops in with 8px of travel and opacity (materialize) and leaves the same way; a new toast cross-fades with
- * the one it replaces. Swipe sideways or up to dismiss (it follows the finger, then keeps going or springs back).
+ * the one it replaces. Swipe sideways, up or down to dismiss (it follows the finger, then keeps going or springs back).
  * Reduced motion: opacity only; swiping still works.
  */
 export type ToasterProps = {
-  /** Distance from the top of the viewport (under the header). Default `calc(var(--safe-top) + var(--s-2))`. */
+  /** From 1024: the distance from the top of the viewport (under the header). Default `calc(var(--safe-top) + var(--s-2))`. */
   offset?: string;
   /**
    * Render only when no regular <Toaster> is mounted — for a page that needs toasts whether or not it sits inside a
@@ -87,14 +89,13 @@ const KIND: Record<Exclude<ToastKind, "cart">, { icon: IconName; tone: string }>
   info: { icon: "info", tone: "text-info" },
   success: { icon: "check-circle", tone: "text-ok" },
   warning: { icon: "warning", tone: "text-warn" },
-  error: { icon: "warning-circle", tone: "text-red-ink" },
+  error: { icon: "warning-circle", tone: "text-danger" },
 };
 
 function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset">> & Pick<ToasterProps, "className">) {
   const t = useT("ui-overlays");
   const root = useOverlayRoot(true);
   const { current } = useToasts();
-  const depth = useOverlayDepth();
   const [entries, setEntries] = useState<Entry[]>([]);
   const region = useRef<HTMLElement | null>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
@@ -166,15 +167,17 @@ function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset"
           aria-label={t("toast.region")}
           aria-keyshortcuts="F6"
           onKeyDown={onRegionKeyDown}
-          className={cx("pointer-events-none fixed start-(--gutter) end-(--gutter) z-(--z-toast) grid md:start-auto md:w-[400px]", className)}
-          style={{ insetBlockStart: offset }}
+          className={cx(
+            "pointer-events-none fixed start-(--gutter) end-(--gutter) z-(--z-toast) grid max-lg:bottom-[max(calc(var(--shell-bottom)+12px),calc(var(--safe-bottom)+12px))] lg:start-auto lg:top-(--toaster-top) lg:w-[380px]",
+            className,
+          )}
+          style={{ "--toaster-top": offset } as CSSProperties}
         >
           {entries.map((entry) => (
             <ToastCard
               key={entry.key}
               toast={entry.toast}
               leaving={entry.leaving}
-              solid={depth > 0}
               onGone={() => setEntries((list) => list.filter((item) => item.key !== entry.key))}
               onFocusLost={() => {
                 // The toast that had focus is leaving: to the one replacing it, else back to where F6 came from.
@@ -202,9 +205,9 @@ function announcement(toast: Toast, added: string): string {
 
 type Drag = { id: number; x: number; y: number; axis: "x" | "y" | null; samples: { t: number; v: number }[] };
 
-type CardProps = { toast: Toast; leaving: boolean; solid: boolean; onGone: () => void; onFocusLost: () => void };
+type CardProps = { toast: Toast; leaving: boolean; onGone: () => void; onFocusLost: () => void };
 
-function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
+function ToastCard({ toast, leaving, onGone, onFocusLost }: CardProps) {
   const t = useT("ui-overlays");
   const card = useRef<HTMLElement | null>(null);
   const drag = useRef<Drag | null>(null);
@@ -272,7 +275,7 @@ function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
     const dy = event.clientY - state.y;
     if (!state.axis) {
       if (Math.hypot(dx, dy) < 6) return;
-      state.axis = Math.abs(dx) > Math.abs(dy) ? "x" : dy < 0 ? "y" : null;
+      state.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
       if (!state.axis) {
         drag.current = null; // pulled down: not a dismissal
         return;
@@ -281,7 +284,7 @@ function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
       element.setPointerCapture(event.pointerId);
       toastStore.hold("drag");
     }
-    const value = state.axis === "x" ? dx : Math.min(0, dy);
+    const value = state.axis === "x" ? dx : dy;
     const size = state.axis === "x" ? element.offsetWidth : element.offsetHeight;
     element.style.translate = state.axis === "x" ? `${value}px 0` : `0 ${value}px`;
     element.style.opacity = String(1 - Math.min(Math.abs(value) / Math.max(size, 1), 1) * 0.6);
@@ -324,35 +327,40 @@ function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
     callback?.();
     dismiss();
   };
-  const action = toast.onUndo ? (
-    <Key size="sm" onClick={run(toast.onUndo)}>
-      {toast.undoLabel ?? t("toast.undo")}
-    </Key>
+  const cart = toast.kind === "cart";
+  const action = cart ? (
+    <>
+      <LocaleLink to="/cart" className="toast__view" data-press="soft" onClick={dismiss}>
+        {t("toast.viewCart")}
+      </LocaleLink>
+      {toast.onUndo ? (
+        <Key variant="ghost" size="sm" onClick={run(toast.onUndo)}>
+          {toast.undoLabel ?? t("toast.undo")}
+        </Key>
+      ) : null}
+    </>
   ) : toast.action?.href ? (
-    <Key as={LocaleLink} to={toast.action.href} size="sm" onClick={run(toast.action.onAction)}>
+    <LocaleLink to={toast.action.href} className="toast__view" data-press="soft" onClick={run(toast.action.onAction)}>
       {toast.action.label}
-    </Key>
+    </LocaleLink>
   ) : toast.action ? (
-    <Key size="sm" onClick={run(toast.action.onAction)}>
+    <Key variant="ghost" size="sm" onClick={run(toast.action.onAction)}>
       {toast.action.label}
     </Key>
-  ) : (
-    <IconKey icon="x" size="sm" label={t("toast.dismiss")} onClick={dismiss} />
-  );
+  ) : null;
 
   const kind = toast.kind === "cart" ? null : KIND[toast.kind];
-  const thumbnail = toast.art || toast.image || toast.kind === "cart";
+  const thumbnail = toast.art || toast.image || cart;
   return (
-    <Glass
-      ref={(element: HTMLElement | null) => {
+    <div
+      ref={(element: HTMLDivElement | null) => {
         card.current = element;
       }}
-      variant={solid ? "solid" : "live"}
       data-toast=""
       data-kind={toast.kind}
       inert={leaving || undefined}
       aria-hidden={leaving || undefined}
-      className="pointer-events-auto relative flex min-h-[60px] touch-none select-none items-center gap-2.5 rounded-md p-2 pe-2.5 [grid-area:1/1]"
+      className="toast pointer-events-auto relative touch-none select-none [grid-area:1/1] max-md:grid-cols-[48px_minmax(0,1fr)]"
       onPointerEnter={() => hold("hover")}
       onPointerLeave={() => release("hover")}
       onFocus={() => hold("focus")}
@@ -365,25 +373,28 @@ function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
       onPointerCancel={onPointerEnd}
     >
       {thumbnail ? (
-        // The product in a small niche (§9.13) instead of the kind's icon; the title says what happened.
-        <span className="render-slot grid size-11 shrink-0 place-items-center overflow-hidden rounded-sm bg-stage p-1" aria-hidden="true">
+        // the product on its ground (v2 §4.16): a 48px well; the title says what happened
+        <span className="toast__thumb render-slot place-items-center p-1" aria-hidden="true">
           {toast.art ? (
-            <Render name={toast.art} alt="" shadow={false} pose={0} sizes="44px" />
+            <Render name={toast.art} alt="" sizes="48px" />
           ) : toast.image ? (
-            <img src={toast.image.src} width={toast.image.width} height={toast.image.height} alt="" className="size-full rounded-[6px] object-cover" />
+            <img src={toast.image.src} width={toast.image.width} height={toast.image.height} alt="" className="size-full rounded-xs object-cover" />
           ) : (
-            <Icon name="shopping-bag" size={22} />
+            <Icon name="shopping-bag" size={24} className="text-ink-2" />
           )}
         </span>
       ) : kind ? (
-        <span className="grid size-11 shrink-0 place-items-center rounded-sm bg-niche" aria-hidden="true">
-          <Icon name={kind.icon} size={22} className={kind.tone} />
+        <span className="toast__thumb grid place-items-center" aria-hidden="true">
+          <Icon name={kind.icon} size={24} filled className={kind.tone} />
         </span>
       ) : null}
-      <p className="flex min-w-0 flex-1 flex-col">
-        <span className="text-[13.5px] font-semibold leading-[1.45] text-ink">{toast.kind === "cart" ? (toast.title ?? t("toast.added")) : toast.title}</span>
-        {toast.kind === "cart" && toast.name ? (
-          <span className="is-2 text-[12.5px] leading-[1.5]">
+      <div className="grid min-w-0">
+        <p className="toast__title">
+          {cart ? <Icon name="check-circle" size={16} filled /> : null}
+          <span className="min-w-0">{cart ? (toast.title ?? t("toast.added")) : toast.title}</span>
+        </p>
+        {cart && toast.name ? (
+          <p className="toast__line">
             <BidiLabel>{toast.name}</BidiLabel>
             {toast.variant ? (
               <>
@@ -391,12 +402,15 @@ function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
                 <BidiLabel>{toast.variant}</BidiLabel>
               </>
             ) : null}
-          </span>
+          </p>
         ) : toast.detail ? (
-          <span className="is-2 text-[12.5px] leading-[1.5]">{toast.detail}</span>
+          <p className="toast__line whitespace-normal">{toast.detail}</p>
         ) : null}
-      </p>
-      {action}
-    </Glass>
+      </div>
+      <div className="toast__actions max-md:col-span-2 max-md:justify-end">
+        {action}
+        <IconKey icon="x" variant="plain" size="sm" label={t("toast.dismiss")} onClick={dismiss} />
+      </div>
+    </div>
   );
 }

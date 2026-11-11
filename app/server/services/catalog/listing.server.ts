@@ -30,6 +30,14 @@
  *   gives), sorting and the keyset cursor run in memory over the universe. That is cheap for a scope of a few hundred
  *   products (this catalogue has 106); a scope of many thousands would want facets in SQL (docs/areas/catalog.md).
  *
+ * THE SUGGESTED ORDER («المقترَح», sort "featured"; design v2 spec §6.2, §9 row 4): the shopping tier first — what can
+ * be bought now, then what is coming soon (soonest release first), then what is sold out — and newest first inside
+ * a tier. On a PLATFORM HUB the platform's own consoles that can be bought now lead the list: in the order of the
+ * platform's device models (staff sort them in the devices module: PS5 Pro, PS5 Slim, …), the entry version of a
+ * model (its lowest price) before its editions and bundles. "relevance" (search) breaks rank ties by the tier too.
+ * The universe states compare-at and stock exactly as the cards do (cards.server.ts previousPriceEvidence, a demo
+ * row never "low"), so a filter or a facet never counts what the card would not show.
+ *
  * PRIVACY: nothing here selects cost, margin, serials or stock quantities; only the state 0/1/2 leaves SQL.
  * Services take `db` first and never import "cloudflare:workers".
  */
@@ -63,7 +71,8 @@ import type { Db } from "~/server/db/drizzle.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { invalid, zodFieldErrors } from "~/server/errors";
 import { DEFAULT_LOW_STOCK } from "~/server/services/inventory/stock.server";
-import { getCardsByIds, MAX_CARD_IDS } from "./cards.server";
+import { shoppingTier, shownStockRank } from "./card-facts";
+import { getCardsByIds, MAX_CARD_IDS, previousPriceEvidence } from "./cards.server";
 
 export {
   ARABIC_LEVELS,
@@ -256,7 +265,7 @@ ${extra}cv AS (
   WHERE v.is_active = 1 AND p.status = 'published' AND ${where}
 ),
 vs AS (
-  SELECT cv.product_id, cv.rn, cv.price_iqd, cv.compare_at_iqd,
+  SELECT cv.id, cv.product_id, cv.rn, cv.price_iqd, cv.compare_at_iqd,
     MAX(CASE
       WHEN cv.sets IS NOT NULL THEN (CASE WHEN cv.sets <= 0 THEN 0 WHEN cv.sets <= ${DEFAULT_LOW_STOCK} THEN 1 ELSE 2 END)
       WHEN COALESCE(cv.free, 0) <= 0 THEN 0
@@ -266,17 +275,21 @@ vs AS (
   FROM cv
 ),
 c AS (
-  SELECT p.id, p.kind, p.category_id, p.platform_id, p.device_model_id, p.attributes,
+  SELECT p.id, p.kind, p.category_id, p.platform_id, p.device_model_id, p.attributes, p.is_demo,
     COALESCE(p.published_at, p.created_at) AS pub,
     d.price_iqd, d.compare_at_iqd, d.best AS st,
-    CASE WHEN COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 ELSE 0 END AS pre
+    ${previousPriceEvidence(sql`d.id`, sql`d.price_iqd`, sql`d.compare_at_iqd`, sql`p.is_demo`)} AS was,
+    CASE WHEN COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 ELSE 0 END AS pre,
+    p.preorder_release_at AS release_at
   FROM vs AS d
   JOIN products AS p ON p.id = d.product_id
   WHERE d.rn = 1
 )
-SELECT c.id, c.kind, c.price_iqd, c.compare_at_iqd, c.st, c.pre, c.pub, c.category_id,
+SELECT c.id, c.kind, c.price_iqd, c.compare_at_iqd, c.was, c.st, c.pre, c.release_at, c.pub, c.category_id, c.is_demo,
   (SELECT json_group_array(pl.slug) FROM platforms AS pl WHERE pl.is_active = 1 AND ${researchedPlatform("c")}) AS plats,
   ${FITS_OF_C} AS fits,
+  (SELECT op.slug FROM platforms AS op WHERE op.id = c.platform_id AND op.is_active = 1) AS own_platform,
+  (SELECT om.sort FROM device_models AS om WHERE om.id = c.device_model_id) AS model_sort,
   CASE WHEN json_valid(c.attributes) THEN json_extract(c.attributes, '$.game.arabic') END AS arabic,
   CASE WHEN json_valid(c.attributes) THEN json_extract(c.attributes, '$.game.physicalFormat') END AS format
 FROM c`;
@@ -296,12 +309,17 @@ type UniverseRow = {
   kind: ProductKind;
   price_iqd: number;
   compare_at_iqd: number | null;
+  was: number;
   st: number;
   pre: number;
+  release_at: number | null;
   pub: number;
   category_id: string | null;
+  is_demo: number;
   plats: string | null;
   fits: string | null;
+  own_platform: string | null;
+  model_sort: number | null;
   arabic: string | null;
   format: string | null;
 };
@@ -315,13 +333,21 @@ export type ListingRow = {
   kind: ProductKind;
   /** The card variant's price, integer IQD. */
   price: number;
-  /** Set only for a genuine reduction. */
+  /** The previous price the card strikes (really charged, or a demo row's demo value — cards.server.ts); else null. */
   compareAt: number | null;
-  /** 0 out of stock · 1 low · 2 in stock (best over active variants). */
+  /** 0 out of stock · 1 low · 2 in stock (best over active variants), as the card says it: a demo row is never 1. */
   st: 0 | 1 | 2;
   preorder: boolean;
-  /** Can be bought now: in stock, low, or a pre-order. */
+  /** In stock, low, or announced (coming soon). */
   avail: boolean;
+  /** The suggested order's group: 2 can be bought now · 1 coming soon · 0 sold out (card-facts.ts shoppingTier). */
+  tier: 0 | 1 | 2;
+  /** Coming soon: the release (epoch ms) while it is ahead; else null. */
+  releaseAt: number | null;
+  /** The product's own active platform (platform_id), null for multi-platform products. */
+  ownPlatform: string | null;
+  /** Sort of the device model the product IS (device_model_id), null when it is no device. */
+  modelSort: number | null;
   pub: number;
   /** Category slugs from the product's category up to its root (empty when it has none, or an inactive one). */
   chain: string[];
@@ -354,8 +380,8 @@ function l10n(text: string | null): L10n | null {
 }
 
 function toRow(row: UniverseRow, chainOf: (categoryId: string | null) => string[]): ListingRow {
-  const compareAt = row.compare_at_iqd !== null && row.compare_at_iqd > row.price_iqd ? row.compare_at_iqd : null;
-  const st = (row.st >= 2 ? 2 : row.st <= 0 ? 0 : 1) as 0 | 1 | 2;
+  const compareAt = Number(row.was) > 0 && row.compare_at_iqd !== null && row.compare_at_iqd > row.price_iqd ? row.compare_at_iqd : null;
+  const st = shownStockRank(Number(row.st), row.is_demo === 1);
   const preorder = row.pre === 1;
   const arabic = row.arabic !== null && row.arabic in ARABIC_RANK ? (ARABIC_RANK[row.arabic] ?? null) : null;
   const format = (PHYSICAL_FORMATS as readonly string[]).includes(row.format ?? "") ? (row.format as PhysicalFormat) : null;
@@ -367,6 +393,10 @@ function toRow(row: UniverseRow, chainOf: (categoryId: string | null) => string[
     st,
     preorder,
     avail: st > 0 || preorder,
+    tier: shoppingTier({ preorder, st }),
+    releaseAt: preorder && row.release_at !== null ? Number(row.release_at) : null,
+    ownPlatform: row.own_platform ?? null,
+    modelSort: row.model_sort === null || row.model_sort === undefined ? null : Number(row.model_sort),
     pub: Number(row.pub),
     chain: chainOf(row.category_id),
     platforms: [...new Set(jsonList(row.plats))],
@@ -479,22 +509,44 @@ function rankingOf(scope: ListingScope): Ranking {
   return { rank: scope.rank, width };
 }
 
+/** What a sort needs beyond the row: the search ranking, and the platform whose consoles lead (a platform hub). */
+export type SortContext = { ranking: Ranking; lead: string | null };
+
+/** Positions of the "featured" key: six numbers, then the id. */
+const FEATURED_WIDTH = 7;
+/** A missing number in an ascending position: it sorts last. */
+const LAST = Number.MAX_SAFE_INTEGER;
+
+/** The row leads its platform hub: one of the hub platform's own consoles, and it can be bought now. */
+const leadsHub = (row: ListingRow, lead: string | null): boolean => lead !== null && row.tier === 2 && row.kind === "console" && row.ownPlatform === lead;
+
+/**
+ * The suggested order («المقترَح», the file header), position by position (directions() says up or down):
+ *   tier ↓ (2 can be bought now › 1 coming soon › 0 sold out) · hub console ↓ · its device model's sort ↑ · its price
+ *   ↑ (the entry version of a model first) · coming soon: release ↑ (soonest first) · listing time ↓ (newest first).
+ */
+export function suggestedKey(row: ListingRow, lead: string | null): number[] {
+  const first = leadsHub(row, lead);
+  return [row.tier, first ? 1 : 0, first ? (row.modelSort ?? LAST) : 0, first ? row.price : 0, row.tier === 1 ? (row.releaseAt ?? LAST) : 0, row.pub];
+}
+
 /** Sort key of a row (see directions() for the order of each position). The id ends every key. */
-function keyOf(sort: ListingSort, row: ListingRow, ranking: Ranking): SortKey {
+function keyOf(sort: ListingSort, row: ListingRow, context: SortContext): SortKey {
   switch (sort) {
     case "featured":
-      return [row.avail ? 1 : 0, row.pub, row.id];
+      return [...suggestedKey(row, context.lead), row.id];
     case "newest":
       return [row.pub, row.id];
     case "price_asc":
     case "price_desc":
       return [row.price, row.id];
     case "relevance": {
+      const ranking = context.ranking;
       const width = ranking?.width ?? 1;
       const own = ranking?.rank.get(row.id) ?? [];
       // a product without a rank (should not happen) goes last; a short rank is padded the same way
       const padded = Array.from({ length: width }, (_, i) => (typeof own[i] === "number" && Number.isFinite(own[i]) ? own[i] : Number.MAX_SAFE_INTEGER));
-      return [...padded, row.avail ? 1 : 0, row.pub, row.id];
+      return [...padded, row.tier, row.pub, row.id];
     }
   }
 }
@@ -502,7 +554,7 @@ function keyOf(sort: ListingSort, row: ListingRow, ranking: Ranking): SortKey {
 function directions(sort: ListingSort, length: number): (1 | -1)[] {
   switch (sort) {
     case "featured":
-      return [-1, -1, -1];
+      return [-1, -1, 1, 1, 1, -1, -1];
     case "newest":
       return [-1, -1];
     case "price_asc":
@@ -510,9 +562,19 @@ function directions(sort: ListingSort, length: number): (1 | -1)[] {
     case "price_desc":
       return [-1, -1];
     case "relevance":
-      // rank positions ascending (smaller is better), then avail ↓, pub ↓, id ↓
+      // rank positions ascending (smaller is better), then tier ↓, pub ↓, id ↓
       return [...Array.from({ length: length - 3 }, () => 1 as const), -1, -1, -1];
   }
+}
+
+/** Width of a sort's key (its cursor carries exactly this many values). */
+const keyWidth = (sort: ListingSort, ranking: Ranking): number => (sort === "relevance" ? (ranking?.width ?? 1) + 3 : sort === "featured" ? FEATURED_WIDTH : 2);
+
+/** `rows` in the order of `sort` (a copy). */
+export function sortRows(rows: readonly ListingRow[], sort: ListingSort, context: SortContext): ListingRow[] {
+  const keys = new Map(rows.map((row) => [row.id, keyOf(sort, row, context)]));
+  const dirs = directions(sort, keyWidth(sort, context.ranking));
+  return [...rows].sort((a, b) => compareKeys(keys.get(a.id)!, keys.get(b.id)!, dirs));
 }
 
 function compareKeys(a: SortKey, b: SortKey, dirs: readonly (1 | -1)[]): number {
@@ -715,8 +777,9 @@ export async function listProducts(db: Db, locale: Locale, input: ListingInput):
   const facets = facetsOf(rows, matrix, filters, scope, dict, locale);
 
   const ranking = rankingOf(scope);
-  const keys = new Map(matches.map((row) => [row.id, keyOf(sort, row, ranking)]));
-  const width = sort === "relevance" ? (ranking?.width ?? 1) + 3 : sort === "featured" ? 3 : 2;
+  const context: SortContext = { ranking, lead: scope.kind === "platform" ? scope.slug : null };
+  const keys = new Map(matches.map((row) => [row.id, keyOf(sort, row, context)]));
+  const width = keyWidth(sort, ranking);
   const dirs = directions(sort, width);
   const sorted = [...matches].sort((a, b) => compareKeys(keys.get(a.id)!, keys.get(b.id)!, dirs));
 
@@ -935,17 +998,14 @@ export async function getComparison(db: Db, locale: Locale, refs: readonly strin
 }
 
 /**
- * A few products of a scope that can be bought now, featured order — the "picks" under a zero-result state
+ * A few products of a scope that can be bought now, in the suggested order — the "picks" under a zero-result state
  * (labelled for what they are: products of this section, not recommendations).
  */
 export async function scopePicks(db: Db, locale: Locale, scope: ListingScope, options: { limit?: number; now?: number; exclude?: readonly string[] } = {}): Promise<ProductCardData[]> {
   const now = options.now ?? Date.now();
   const { rows } = await loadListingRows(db, scope, now);
   const exclude = new Set(options.exclude ?? []);
-  const dirs = directions("featured", 3);
-  const picks = rows
-    .filter((row) => row.st > 0 && !exclude.has(row.id))
-    .sort((a, b) => compareKeys(keyOf("featured", a, null), keyOf("featured", b, null), dirs))
-    .slice(0, Math.min(Math.max(1, options.limit ?? 3), 12));
+  const buyable = rows.filter((row) => row.tier === 2 && !exclude.has(row.id));
+  const picks = sortRows(buyable, "featured", { ranking: null, lead: scope.kind === "platform" ? scope.slug : null }).slice(0, Math.min(Math.max(1, options.limit ?? 3), 12));
   return cardsFor(db, locale, picks.map((row) => row.id), now);
 }

@@ -1,5 +1,27 @@
 # Overlays, navigation and states — props and examples
 
+## Design System v2 (2026-11-11) — read this first
+
+Where a section further down disagrees with this one, **this one wins**. Live: `/design-system#overlays`.
+
+- **Sheet** — default `presentation="side"` (a side panel from 768; a bottom sheet on phones); a glass head (grab
+  handle, h3, a plain close key), a paper body, `.sheet__foot` for the actions. `presentation="picker"` is the
+  governorate / option picker (a dialog from 768).
+- **Dialog / ConfirmDialog** — opaque paper, max 440px; ConfirmDialog `variant`: primary · danger · secondary. **Menu**
+  is opaque (no glass).
+- **Toast** — opaque paper card: a 48px thumb (cart) or a filled kind icon, the title, one line, actions (cart:
+  «عرض السلة» + «تراجع»), always a close key. Phones: above the bottom bar (`--shell-bottom`); from 1024: top-end,
+  380px wide, under the header (`--toaster-top`). Swipe away in either vertical direction.
+- **Tabs** — a 2px ink underline, 13px labels. **Disclosure** — the panel variant is a hairline `panel`.
+- **Breadcrumbs** — from 768 only; more than four items collapse the middle into «…» (a button); JSON-LD stays.
+- **ProgressSteps** — numbered discs (done = ink + check, current = red); more than three steps show only the current
+  label on phones; `variant="compact"` for the checkout bar.
+- **EmptyState** — `layout="stack"` (the mascot in a red-tint disc, or `art` in a 132px well, or an icon; h2; text;
+  `actions` + a quiet `recovery` link; optional `shelf`) or `"row"` (inline in a page). Never «دورك.»-style jokes.
+- **ErrorState** — `layout` row | stack, `code`, `offline` (or the browser is offline) → «لا يوجد اتصال بالإنترنت» +
+  wifi-slash; never "500". **OfflineBanner** — a warn-tint strip, `message="form"` for forms, a green "back" state.
+- **Callout** (Blocks) — paper panel with a 3px inline-start bar in the tone colour.
+
 Owner: design system (overlays). Files: `app/ui/{Sheet,Dialog,Menu,Toast,toast-store,Tabs,Disclosure,Accordion,Rail,
 Breadcrumbs,Pagination,ProgressSteps,EmptyState,ErrorState,OfflineBanner,Blocks,DataTable}.tsx`, strings in
 `app/i18n/messages/ui-overlays.ts` (`useT("ui-overlays")`, loaded on every page). Rules and tokens: `docs/UI.md`;

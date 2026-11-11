@@ -1,10 +1,366 @@
 /*
- * Admin density — docs/DESIGN.md §10. Imported into the `components` layer by app/app.css, after components.css.
- * The same tokens and components with a density switch: put data-density="admin" on the admin shell (or any
- * container). Raised clay means "act on this", glass means "navigation or a temporary layer", data has no material.
- * The type roles shrink in tokens.css; the controls shrink here.
+ * Admin — docs/DESIGN.md §10. Imported into the `components` layer by app/app.css, after components.css.
+ *
+ *   1. legacy: admin only   the Lens & Clay 1.0 materials. The storefront moved to Design System v2 (materials.css,
+ *                           components.css); [data-density="admin"] keeps the 1.0 look — walled clay keys, wells,
+ *                           .clay--walled decision cards, 1.0 glass, the 16×5 LED — by re-skinning the same classes
+ *                           with the legacy tokens of tokens.css. Shared surfaces (floor, paper, ink, lines) follow v2.
+ *   2. density              the same tokens and components with a density switch: 36px keys and fields, dense type.
+ *   3. tables               .table
+ *
+ * Raised clay means "act on this", glass means "navigation or a temporary layer", data has no material.
+ * This is the only stylesheet besides tokens.css where the legacy tokens (--clay-*, --red-face …, --sel-*, --well*,
+ * --glass-bg/-static/-rim, --on-glass-2, --e-1…--e-5) may be read (scripts/lint-design.mjs, rule legacy-token).
  */
 
+/* ───────────────────────────── 1. legacy: admin only — Lens & Clay 1.0 ───────────────────────────── */
+/* the key: a clay face on a static front wall inside the box; a press travels wall − 1px; "on" stays down */
+[data-density="admin"] .key {
+  --wall: 3px;
+  --r: var(--r-md);
+  --h: 48px;
+  --px: 20px;
+  --face: var(--clay-face);
+  --hover-face: var(--clay-face);
+  --edge: transparent;
+  --wall-c: var(--clay-wall);
+  --on: var(--ink);
+  --lip: var(--clay-lip);
+  --belly: var(--clay-belly);
+  --cap-shadow: inset 0 1.5px 0 var(--lip), inset 0 -6px 8px -5px var(--belly);
+  --cast: var(--e-2);
+  --travel: max(0px, calc(var(--wall) - 1px));
+  --lift: 1px;
+  padding-block-end: var(--wall);
+}
+[data-density="admin"] .key::before {
+  inset: var(--wall) 0 0;
+}
+[data-density="admin"] .key__cap {
+  border: 0;
+}
+[data-density="admin"] .key[data-press] {
+  --press-scale: 1;
+  --press-sink: 0px;
+}
+/* variants */
+[data-density="admin"] :is(.key--red, .key--primary) {
+  --face: var(--red-face);
+  --hover-face: var(--red-face);
+  --wall-c: var(--red-wall);
+  --on: var(--on-red);
+  --lip: var(--red-lip);
+  --belly: var(--red-belly);
+}
+[data-density="admin"] .key--ink {
+  --face: var(--sel-face);
+  --hover-face: var(--sel-face);
+  --wall-c: var(--sel-wall);
+  --on: var(--on-sel);
+  --lip: var(--ink-lip);
+  --belly: var(--ink-belly);
+}
+[data-density="admin"] :is(.key--quiet, .key--ghost, .key--plain) {
+  --wall: 0px;
+  --face: transparent;
+  --hover-face: var(--niche);
+  --wall-c: transparent;
+  --lip: transparent;
+  --belly: transparent;
+  --cast: none;
+}
+/* rejections and deletions: a neutral key with a red-ink label */
+[data-density="admin"] .key--danger {
+  --on: var(--red-ink);
+}
+/* sizes and shapes */
+[data-density="admin"] .key--lg {
+  --h: 56px;
+  --px: 26px;
+}
+[data-density="admin"] .key--sm {
+  --wall: 2px;
+  --h: 40px;
+  --px: 14px;
+  --r: var(--r-sm);
+  --cast: var(--e-1);
+}
+[data-density="admin"] .key--round {
+  --wall: 2px;
+  --r: var(--r-full);
+  --h: 44px;
+  --px: 0px;
+  --cast: var(--e-1);
+}
+[data-density="admin"] .key--round.key--sm {
+  --h: 36px;
+}
+[data-density="admin"] .key--chip {
+  --wall: 2px;
+  --h: 44px;
+  --px: 14px;
+  --cast: var(--e-1);
+}
+[data-density="admin"] .key__mark {
+  position: relative;
+  display: grid;
+}
+[data-density="admin"] .key__mark::before {
+  content: "";
+  inline-size: 14px;
+  block-size: 14px;
+  border: 1.6px solid var(--ink-2);
+  border-radius: var(--r-full);
+}
+[data-density="admin"] .key__mark > svg {
+  display: none;
+}
+[data-density="admin"] .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark::before {
+  display: none;
+}
+[data-density="admin"] .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark > svg {
+  display: block;
+}
+/* selected / on = the same key held down, ink-faced */
+[data-density="admin"] .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) {
+  --face: var(--sel-face);
+  --hover-face: var(--sel-face);
+  --wall-c: var(--sel-wall);
+  --on: var(--on-sel);
+  --cap-shadow: inset 0 2px 3px var(--sel-in);
+}
+[data-density="admin"] .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) > .key__cap {
+  transform: translateY(var(--travel));
+}
+/* quiet tools pressed or held sink into a well */
+[data-density="admin"] :is(.key--quiet, .key--ghost, .key--plain):is([data-pressed], [aria-checked="true"], [aria-pressed="true"], [data-held]),
+html:not([data-motion-ready]) [data-density="admin"] :is(.key--quiet, .key--ghost, .key--plain):active {
+  --face: var(--well);
+  --hover-face: var(--well);
+  --on: var(--ink);
+  --cap-shadow: var(--well-shadow);
+}
+/* disabled: no wall, no cast, flat on the floor with an ink-3 label */
+[data-density="admin"] .key:is(:disabled, [aria-disabled="true"]),
+[data-density="admin"] .key:has(> input:disabled) {
+  --face: var(--niche);
+  --hover-face: var(--niche);
+  --wall-c: transparent;
+  --cast: none;
+  --cap-shadow: none;
+  --on: var(--ink-3);
+}
+[data-density="admin"] .key:is(:disabled, [aria-disabled="true"]) > .key__cap {
+  transform: translateY(var(--wall));
+}
+[data-density="admin"] :is(.key--quiet, .key--ghost, .key--plain):is(:disabled, [aria-disabled="true"]) {
+  --face: transparent;
+  --hover-face: transparent;
+}
+/* wells, sockets and clay outside keys */
+[data-density="admin"] .well {
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+}
+[data-density="admin"] .socket {
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: var(--r-full);
+  background: var(--well);
+}
+[data-density="admin"] .socket--inset {
+  box-shadow: var(--well-shadow);
+}
+[data-density="admin"] .clay {
+  background: var(--clay-face);
+  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly);
+}
+[data-density="admin"] .clay--red {
+  background: var(--red-face);
+  color: var(--on-red);
+  box-shadow: inset 0 1.5px 0 var(--red-lip), inset 0 -6px 8px -5px var(--red-belly);
+}
+[data-density="admin"] .clay--ink {
+  background: var(--sel-face);
+  color: var(--on-sel);
+  box-shadow: inset 0 2px 3px var(--sel-in);
+}
+/* clay that never travels (decision cards): the wall is drawn as a zero-blur shadow */
+[data-density="admin"] .clay--walled {
+  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly), 0 3px 0 var(--clay-wall), var(--e-2);
+}
+/* a flat tonal panel */
+[data-density="admin"] :is(.panel, .niche--panel) {
+  border: 0;
+  background: var(--niche);
+}
+[data-density="admin"] .panel--paper {
+  border: 0;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+/* 1.0 glass */
+[data-density="admin"] .glass {
+  --ink-2: var(--on-glass-2);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-rim), var(--e-4);
+}
+[data-density="admin"] .glass--bottom {
+  box-shadow: var(--glass-rim), var(--e-4-up);
+}
+[data-density="admin"] .glass--static {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-static);
+  box-shadow: var(--glass-rim), var(--e-3);
+}
+[data-density="admin"] .glass--solid {
+  background: var(--glass-solid);
+}
+[data-density="admin"] .glass .is-2 {
+  color: var(--on-glass-2);
+}
+/* the 16×5 LED beside a platform name */
+[data-density="admin"] .led {
+  inline-size: 16px;
+  block-size: 5px;
+  background: rgb(var(--gel, var(--gel-brand)));
+  opacity: 0.5;
+}
+[data-density="admin"] :is(.led--solid, .led.is-on) {
+  opacity: 1;
+}
+/* the bead: a red clay drop (the admin's "waiting for a human") */
+[data-density="admin"] .bead {
+  padding: 0 5px 1px;
+  outline: 0;
+  background: var(--red-face);
+  box-shadow: inset 0 1px 0 var(--red-lip), 0 1.5px 0 var(--red-wall);
+  font: 600 11.5px / 1 var(--font-text);
+}
+/* the stepper: two round keys in a well */
+[data-density="admin"] .stepper {
+  block-size: auto;
+  padding: 5px 5px 4px;
+  border: 0;
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+}
+[data-density="admin"] .stepper--sm {
+  padding: 4px 4px 3px;
+}
+[data-density="admin"] .stepper__value {
+  min-inline-size: 38px;
+  font: 700 17px / 1 var(--font-display);
+}
+[data-density="admin"] .stepper--sm .stepper__value {
+  min-inline-size: 30px;
+  font-size: 15px;
+}
+/* the switch: a clay knob in a well */
+[data-density="admin"] .switch__track {
+  inline-size: 52px;
+  block-size: 32px;
+  background: var(--well);
+  box-shadow: var(--well-shadow);
+}
+[data-density="admin"] .switch__knob {
+  inline-size: 26px;
+  block-size: 24px;
+  background: var(--clay-face);
+  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -5px 6px -4px var(--clay-belly), 0 2px 0 var(--clay-wall), var(--e-1);
+}
+[data-density="admin"] .choice__input:checked + .switch__track {
+  background: var(--sel-face);
+  box-shadow: inset 0 2px 3px var(--sel-in);
+}
+[data-density="admin"] .choice__input:checked + .switch__track > .switch__knob {
+  transform: translateX(calc(var(--dir) * 20px));
+}
+/* checkbox, radio and option rows at their 1.0 sizes */
+[data-density="admin"] .choice__box {
+  inline-size: 22px;
+  block-size: 22px;
+  margin-block-start: 1px;
+  color: var(--on-sel);
+}
+[data-density="admin"] .choice--radio .choice__input:checked + .choice__box {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 3.5px var(--paper), inset 0 0 0 10px var(--ink);
+}
+[data-density="admin"] .choice--row,
+[data-density="admin"] .choice--row:has(> .choice__input:checked) {
+  min-block-size: 56px;
+  padding: 13px 16px;
+  border-width: 1.5px;
+  border-radius: var(--r-md);
+}
+[data-density="admin"] .choice--row:has(> .choice__input:checked) {
+  box-shadow: inset 0 0 0 0.5px var(--ink);
+}
+[data-density="admin"] .choice--row > .choice__text {
+  font: inherit;
+}
+/* fields: a 1.5px border; an error is red-ink */
+[data-density="admin"] .field__input {
+  border-width: 1.5px;
+}
+[data-density="admin"] .field[data-invalid] .field__input {
+  border-width: 1.5px;
+  border-color: var(--red-ink);
+  box-shadow: inset 0 0 0 0.5px var(--red-ink);
+}
+[data-density="admin"] .field__error {
+  font: 400 12.5px / 1.6 var(--font-text);
+  color: var(--red-ink);
+}
+/* tags, status and links in their 1.0 shapes */
+[data-density="admin"] .tag {
+  border-radius: var(--r-xs);
+  padding-inline: 9px;
+}
+[data-density="admin"] .tag--solid {
+  background: var(--ink);
+  color: var(--ground);
+}
+[data-density="admin"] .status {
+  font: 400 12.5px / 1.6 var(--font-text);
+}
+[data-density="admin"] .status::before {
+  inline-size: 7px;
+  block-size: 7px;
+}
+[data-density="admin"] .status--bad {
+  color: var(--red-ink);
+}
+[data-density="admin"] .link {
+  gap: 4px;
+  font: 600 13.5px / 1.4 var(--font-text);
+}
+[data-density="admin"] .link__text {
+  text-decoration: none;
+}
+@media (hover: hover) {
+  [data-density="admin"] .link:hover .link__text {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 6px;
+  }
+  [data-density="admin"] .link:hover > svg:last-child {
+    translate: none;
+  }
+}
+[data-density="admin"] .link--inline .link__text {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+}
+[data-density="admin"] .price__cur {
+  font: 400 max(11px, 0.6em) / 1 var(--font-text);
+}
+
+/* ───────────────────────────── 2. density ───────────────────────────── */
 /* keys: 36px, 2px wall, no cast shadow, 8px radius, Plex 600 13 */
 [data-density="admin"] .key {
   --wall: 2px;
@@ -12,7 +368,7 @@
   --px: 14px;
   --r: var(--r-xs);
   --cast: none;
-  font: 600 13px/1.25 var(--font-text);
+  font: 600 13px / 1.25 var(--font-text);
 }
 [data-density="admin"] .key--lg {
   --h: 40px;
@@ -23,7 +379,7 @@
 }
 [data-density="admin"] .key--chip {
   --h: 32px;
-  font: 500 13px/1.25 var(--font-text);
+  font: 400 13px / 1.25 var(--font-text);
 }
 /* the dense admin is built for a mouse; on touch screens every key keeps a 44px hit area */
 @media (pointer: coarse) {
@@ -62,8 +418,9 @@
   font: var(--type-body);
 }
 
-/* tables and financial grids: flat paper, hairlines, a sticky SOLID head, tabular numbers at the inline end.
-   No clay, no glass, no shadow, no animation beyond an instant row highlight. */
+/* ───────────────────────────── 3. tables and financial grids ─────────────────────────────
+ * Flat paper, hairlines, a sticky SOLID head, tabular numbers at the inline end. No clay, no glass, no shadow, no
+ * animation beyond an instant row highlight. */
 .table {
   inline-size: 100%;
   border-collapse: collapse;
@@ -103,4 +460,43 @@
 }
 .table tr[aria-selected="true"] td:first-child {
   border-inline-start: 3px solid var(--ink);
+}
+
+/* ───────────────────────────── preference tiers for the admin's 1.0 materials ───────────────────────────── */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-density="admin"] .glass {
+    background: var(--glass-solid);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  [data-density="admin"] :is(.glass, .glass--static) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--glass-solid);
+  }
+}
+:is(.fx-low, [data-motion="lite"]) [data-density="admin"] .glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-solid);
+}
+@media (prefers-contrast: more) {
+  [data-density="admin"] .glass,
+  [data-density="admin"] .glass--static {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--ground);
+    box-shadow: 0 0 0 1.5px var(--ink);
+  }
+  [data-density="admin"] .key__cap {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  [data-density="admin"] :is(.panel, .well) {
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+}
+@media (forced-colors: active) {
+  [data-density="admin"] .key__cap {
+    border: 1px solid ButtonText;
+  }
 }

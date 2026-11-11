@@ -45,6 +45,7 @@ export const ICON_NAMES = [
   "scales",
   "eye",
   "eye-slash",
+  "corners-out",
   "sign-in",
   "sign-out",
   "lock",
@@ -72,6 +73,7 @@ export const ICON_NAMES = [
   "circle-notch",
   "trend-up",
   "trend-down",
+  "bag-plus",
   "tag",
   "percent",
   "gift",
@@ -83,6 +85,7 @@ export const ICON_NAMES = [
   "truck",
   "package",
   "map-pin",
+  "calendar",
   "calendar-blank",
   "storefront",
   "barcode",
@@ -161,9 +164,9 @@ export type IconName = (typeof ICON_NAMES)[number];
 /** Icons by purpose, regular weight only — for the design-system page and for finding the right one. */
 export const ICON_GROUPS = {
   navigation: ["house", "squares-four", "shopping-bag", "shopping-cart-simple", "heart", "user", "magnifying-glass", "bell", "list", "x", "dots-three", "dots-three-vertical", "caret-up", "caret-down", "caret-left", "caret-right", "caret-up-down", "arrow-up", "arrow-down", "arrow-left", "arrow-right", "arrow-u-up-left", "arrow-square-out"],
-  actions: ["plus", "minus", "check", "check-circle", "trash", "pencil-simple", "copy", "share-network", "upload-simple", "download-simple", "funnel", "sliders-horizontal", "sort-ascending", "arrows-clockwise", "arrow-counter-clockwise", "swap", "scales", "eye", "eye-slash", "sign-in", "sign-out", "lock", "key", "printer", "link", "floppy-disk", "paperclip", "paper-plane-tilt"],
+  actions: ["plus", "minus", "check", "check-circle", "trash", "pencil-simple", "copy", "share-network", "upload-simple", "download-simple", "funnel", "sliders-horizontal", "sort-ascending", "arrows-clockwise", "arrow-counter-clockwise", "swap", "scales", "eye", "eye-slash", "corners-out", "sign-in", "sign-out", "lock", "key", "printer", "link", "floppy-disk", "paperclip", "paper-plane-tilt"],
   status: ["warning", "warning-circle", "info", "question", "x-circle", "seal-check", "shield-check", "clock", "hourglass", "wifi-slash", "cloud-slash", "lightning", "fire", "sparkle", "star", "circle-notch", "trend-up", "trend-down"],
-  commerce: ["tag", "percent", "gift", "receipt", "credit-card", "wallet", "money", "bank", "truck", "package", "map-pin", "calendar-blank", "storefront", "barcode", "qr-code", "coins", "currency-dollar", "ticket", "hand-coins", "recycle", "certificate"],
+  commerce: ["bag-plus", "tag", "percent", "gift", "receipt", "credit-card", "wallet", "money", "bank", "truck", "package", "map-pin", "calendar", "calendar-blank", "storefront", "barcode", "qr-code", "coins", "currency-dollar", "ticket", "hand-coins", "recycle", "certificate"],
   devices: ["game-controller", "joystick", "headphones", "device-mobile", "desktop", "monitor", "hard-drives", "sim-card", "disc", "cpu", "battery-high", "battery-low", "plug", "usb"],
   support: ["wrench", "toolbox", "first-aid-kit", "chat-circle", "phone", "whatsapp-logo", "envelope-simple", "robot", "lifebuoy", "book-open", "clipboard-text", "file-text", "image", "camera"],
   admin: ["chart-bar", "chart-line", "users", "user-gear", "gear", "buildings", "factory", "flag", "stack", "table", "kanban", "bell-ringing", "database", "plugs-connected", "bug", "pulse"],
@@ -204,4 +207,4 @@ export const ICONS_MIRRORED_IN_RTL: ReadonlySet<IconName> = new Set<IconName>([
 ]);
 
 /** Sprite address. The query changes whenever the sprite does, so an old cached copy is never used. */
-export const ICON_SPRITE_HREF = "/icons.svg?r=3221c994ad";
+export const ICON_SPRITE_HREF = "/icons.svg?r=5359844c04";

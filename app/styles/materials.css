@@ -1,58 +1,46 @@
 /*
- * Materials — docs/DESIGN.md §6. Imported into the `components` cascade layer by app/app.css, so Tailwind utilities
- * can still adjust spacing and placement. Components (app/ui/*) render these classes; feature code should use the
- * components, not the classes.
+ * Materials — Design System v2 (docs/DESIGN.md §6). Imported into the `components` cascade layer by app/app.css, so
+ * Tailwind utilities can still adjust spacing and placement. Components (app/ui/*) render these classes; feature code
+ * uses the components, not the classes.
  *
- *   clay    .clay  .key (+ variants)  .well  .socket                 for the hand: it has a wall, it travels
- *   glass   .glass (+ --bottom --static --solid)                      for the eye: THE ONLY backdrop-filter in the app
- *   flat    .floor  .paper  .panel                                    for reading: no shadow, no gradient, no blur
- *   light   .stage  .stage__*  .render  .led  [data-gel]              for the platform: --gel lives only here
- *   tiers   @supports / prefers-reduced-transparency / .fx-low, [data-motion="lite"] / prefers-contrast /
- *           forced-colors / reduced motion                            §6.5, §7.3
+ *   clay v2   .key--primary (.key--red) .key--on-band .ptile        EXACTLY two objects: a flat face on a 2px wall
+ *   flat      .key (secondary) --ghost --danger --round --chip …     every other control: no wall, no resting shadow
+ *   glass v2  .glass (+ --bottom --float --solid)                     thin fixed bars only — THE ONLY backdrop-filter
+ *   light     .band (hero, platform, device, wallet) .ptile         showcases: colour + one light; dark = cabinets
+ *   ground    .niche (the product well) .stage .render              the neutral product ground; the lit spot in dark
+ *   platform  [data-gel] → --plat --plat-deep --dot --gel; .led      platform colour: 4 surfaces, an 8px dot elsewhere
+ *   tiers     no backdrop-filter / reduced transparency / .fx-low / prefers-contrast / forced-colors / reduced motion
  *
- * Motion here is transform and opacity only; shadows, blur and colours never animate.
+ * The admin keeps the Lens & Clay 1.0 materials (walled keys, wells, .clay--walled, 1.0 glass): app/styles/admin.css
+ * re-skins these same classes under [data-density="admin"].
+ *
+ * Motion here is transform and opacity only; shadows, blur and colours never animate (a hover colour is instant).
  */
 
-/* ───────────────────────────── clay: the painted face ───────────────────────────── */
-.clay {
-  background: var(--clay-face);
-  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly);
-}
-.clay--red {
-  background: var(--red-face);
-  color: var(--on-red);
-  box-shadow: inset 0 1.5px 0 var(--red-lip), inset 0 -6px 8px -5px var(--red-belly);
-}
-.clay--ink {
-  background: var(--sel-face);
-  color: var(--on-sel);
-  box-shadow: inset 0 2px 3px var(--sel-in);
-}
-/* clay that never travels (admin decision cards): the wall is drawn as a zero-blur shadow */
-.clay--walled {
-  box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly), 0 3px 0 var(--clay-wall), var(--e-2);
-}
-
-/* ───────────────────────────── the key: a clay face on a static front wall ─────────────────────────────
- * <button class="key"><span class="key__cap">…</span></button>. Only the cap moves, by transform. Variants only
- * reassign the custom properties below. */
+/* ───────────────────────────── the key: one button, five variants ─────────────────────────────
+ * <button class="key [variant] [size]"><span class="key__cap">icon? <span class="key__label">…</span></span></button>
+ * The face (.key__cap) carries the colour and the 1px boundary; ::before is the static wall (clay only) and owns the
+ * only cast; ::after is the hit area where the visual is smaller than 44px. Variants only reassign the custom
+ * properties below. The wall hangs below the box, so every key is exactly 48 or 40px tall in layout. */
 .key {
-  --wall: 3px;
-  --r: var(--r-md);
-  --h: 48px;
-  --px: 20px;
-  --face: var(--clay-face);
-  --wall-c: var(--clay-wall);
+  --wall: 0px; /* clay keys: 2px */
+  --r: var(--r-sm);
+  --h: var(--h-btn);
+  --px: 24px;
+  --face: var(--paper);
+  --hover-face: var(--niche);
+  --edge: var(--line-strong); /* the face's 1px boundary */
+  --wall-c: transparent;
   --on: var(--ink);
-  --lip: var(--clay-lip);
-  --belly: var(--clay-belly);
-  --cast: var(--e-2);
-  --travel: max(0px, calc(var(--wall) - 1px));
+  --cap-shadow: none;
+  --cast: none;
+  --travel: var(--wall); /* a press: the cap travels onto its wall */
+  --lift: 0px; /* hover (pointer devices): clay caps rise 1px */
   position: relative;
   display: inline-flex;
   vertical-align: top;
   min-inline-size: 0;
-  padding: 0 0 var(--wall);
+  padding: 0;
   border: 0;
   border-radius: var(--r);
   background: none;
@@ -67,11 +55,11 @@
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-/* the wall never moves and owns the only blurred shadow */
+/* the static wall: a layer the size of the face, shifted down by the wall. Zero wall = nothing visible. */
 .key::before {
   content: "";
   position: absolute;
-  inset: var(--wall) 0 0;
+  inset: var(--wall) 0 calc(-1 * var(--wall));
   border-radius: inherit;
   background: var(--wall-c);
   box-shadow: var(--cast);
@@ -86,9 +74,10 @@
   gap: var(--s-2);
   min-block-size: var(--h);
   padding-inline: var(--px);
+  border: 1px solid var(--edge);
   border-radius: inherit;
   background: var(--face);
-  box-shadow: inset 0 1.5px 0 var(--lip), inset 0 -6px 8px -5px var(--belly);
+  box-shadow: var(--cap-shadow);
   transition: transform var(--t-release) var(--ease-squish);
 }
 @supports (transition-timing-function: linear(0, 1)) {
@@ -101,64 +90,300 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* The Motion Engine's element-level squish (data-press) is neutralised on keys — the wall and its shadow never
- * move; the cap travels instead. Two attributes, so it outranks the engine's [data-press] wherever its CSS loads. */
-.key[data-press] {
-  --press-scale: 1;
-  --press-sink: 0px;
+
+/* ── sizes: 48 (default) and 40, nothing else ── */
+.key--sm {
+  --h: var(--h-btn-sm);
+  --px: 16px;
+  font: var(--type-button-sm);
 }
-/* press: the cap travels wall − 1px down in 80ms; release returns on the press spring.
- * data-pressed is set inside pointerdown by the Motion Engine (it also cancels on scroll and handles Space/Enter);
- * :active covers the moment before the engine has mounted. */
+.key--sm::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0; /* 40 → a 44px hit area */
+}
+/* 1.0's 56px key: v2 has two heights */
+.key--lg {
+  --h: var(--h-btn);
+}
+.key--block {
+  display: flex;
+  inline-size: 100%;
+}
+
+/* ── variants: only custom properties ── */
+/* primary: the one action per view that moves the shopper forward — clay red on a 2px wall */
+.key--primary,
+.key--red {
+  --wall: 2px;
+  --face: var(--red);
+  --hover-face: var(--red-hover);
+  --edge: transparent;
+  --wall-c: var(--red-deep);
+  --on: var(--on-red);
+  --cap-shadow: var(--clay-cap);
+  --cast: var(--clay-cast);
+  --lift: 1px;
+}
+/* on-band: the white clay key on the crimson hero and wallet bands; in the dark theme the band is a cabinet and the
+   same markup is the red primary (tokens: --on-band-face / --on-band-label) */
+.key--on-band {
+  --wall: 2px;
+  --face: var(--on-band-face);
+  --hover-face: var(--on-band-face-hover);
+  --edge: transparent;
+  --wall-c: var(--red-deep);
+  --on: var(--on-band-label);
+  --cap-shadow: var(--clay-cap);
+  --cast: var(--clay-cast);
+  --lift: 1px;
+}
+/* secondary (the default): paper with a control boundary. 1.0's "ink" key renders as secondary — ink never means
+   action. */
+.key--secondary,
+.key--ink {
+  --face: var(--paper);
+  --edge: var(--line-strong);
+  --on: var(--ink);
+}
+/* ghost: quiet actions in bars and lists ("تراجع", "إلغاء"); 1.0's "quiet" */
+.key--ghost,
+.key--quiet,
+.key--plain {
+  --px: 12px;
+  --face: transparent;
+  --edge: transparent;
+}
+/* danger: destructive confirmations — a secondary key with a danger label, never brand red */
+.key--danger {
+  --on: var(--danger);
+  --hover-face: var(--danger-tint);
+}
+
+/* ── shapes ── */
+/* icon button: a flat 40px circle (36 small, 32 on photos) with a 44px hit area. The 1.0 default clay maps to
+   "outline"; quiet/ghost/plain are transparent; on-image is paper at 88%; on-color is the white disc on tiles. */
+.key--round {
+  --r: var(--r-full);
+  --h: 40px;
+  --px: 0px;
+  --edge: var(--line-2);
+}
+.key--round > .key__cap {
+  inline-size: var(--h);
+  flex: none;
+}
+.key--round::after {
+  content: "";
+  position: absolute;
+  inset: -2px; /* 40 → 44 */
+}
+.key--round.key--sm {
+  --h: 36px;
+}
+.key--round.key--sm::after {
+  inset: -4px; /* 36 → 44 */
+}
+.key--round.key--xs {
+  --h: 32px;
+}
+.key--round.key--xs::after {
+  inset: -6px; /* 32 → 44 */
+}
+.key--round.key--outline {
+  --face: var(--paper);
+  --edge: var(--line-2);
+}
+.key--round:is(.key--ghost, .key--quiet, .key--plain) {
+  --face: transparent;
+  --edge: transparent;
+}
+.key--round.key--on-image {
+  --face: var(--on-image);
+  --hover-face: var(--paper);
+  --edge: var(--line-glass);
+}
+.key--round.key--on-color {
+  --face: var(--on-color);
+  --hover-face: var(--on-color);
+  --edge: transparent;
+  --on: var(--on-white);
+}
+
+/* chip: a flat 40px pill — state, never action. Selected = ink fill, paper label, a 16px check at the start. */
+.key--chip {
+  --r: var(--r-full);
+  --h: var(--h-chip);
+  --px: 16px;
+  --edge: var(--line-2);
+  font: var(--type-sm-strong);
+}
+.key--chip::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0; /* 40 → 44 */
+}
+.key__mark {
+  flex: none;
+  display: none;
+  place-items: center;
+  inline-size: 16px;
+  block-size: 16px;
+}
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark {
+  display: grid;
+}
+/* a count beside the label ("الألعاب 18"): ink-2; on a selected chip, the label colour at 72% */
+.key__count {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__count {
+  color: inherit;
+  opacity: 0.72;
+}
+/* a removable chip ends with its × */
+.key--chip > .key__cap > svg:first-child {
+  order: 2;
+}
+/* a native checkbox / radio inside a chip: invisible but focusable and clickable over the whole key */
+.key > .key__native {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.key:has(> .key__native:focus-visible) {
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* platform key (1.0 key banks, retired from the storefront): a segment with a dot and the name */
+.key--plat {
+  --h: 40px;
+  --px: 10px;
+  font: var(--type-sm-strong);
+}
+.key--plat > .key__cap > svg {
+  display: none; /* the 1.0 device pictogram */
+}
+/* gallery thumbnail key: 56px (76 from 1024) on the product ground; chosen = a 2px ink ring with a 2px gap */
+.key--thumb {
+  --r: var(--r-sm);
+  --h: 56px;
+  --px: 0px;
+  --face: var(--product-ground);
+  --hover-face: var(--product-ground);
+  --edge: transparent;
+}
+.key--thumb > .key__cap {
+  inline-size: var(--h);
+  flex: none;
+  padding: 4px;
+}
+.key--thumb .render-slot {
+  inline-size: 100%;
+  align-self: stretch;
+  place-items: center;
+}
+@media (min-width: 64rem) {
+  .key--thumb {
+    --h: 76px;
+  }
+}
+
+/* the card add button (§9.5): a neutral 40px circle; under the pointer it fills red with a white glyph; after an add
+   it shows a check in --ok. Rendered today by <Socket>'s key; v2 markup: <button class="key key--round cadd">. */
+.socket {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-inline-size: var(--target);
+  min-block-size: var(--target);
+}
+:is(.socket .key, .key.cadd) {
+  --wall: 0px;
+  --face: var(--paper);
+  --hover-face: var(--red);
+  --edge: var(--line-2);
+  --wall-c: transparent;
+  --on: var(--ink);
+  --cap-shadow: none;
+  --cast: none;
+  --lift: 0px;
+}
+:is(.socket .key, .key.cadd)[data-state="added"] {
+  --on: var(--ok);
+  --hover-face: var(--niche);
+}
+@media (hover: hover) {
+  :is(.socket .key, .key.cadd):not(:disabled, [aria-disabled="true"], [data-state="added"], [data-loading]):hover {
+    --on: var(--on-red);
+  }
+}
+
+/* ── states ── */
+/* hover (pointer devices): the face takes its hover colour at once; clay caps rise 1px */
+@media (hover: hover) {
+  .key:not(:disabled, [aria-disabled="true"], [aria-checked="true"], [aria-pressed="true"], [data-held], [data-pressed], [data-loading]):hover > .key__cap {
+    background: var(--hover-face);
+    transform: translateY(calc(-1 * var(--lift)));
+  }
+}
+/* press: clay caps travel onto the wall in 80ms and return on the press spring. data-pressed is set inside
+ * pointerdown by the Motion Engine (it also cancels on scroll and handles Space/Enter); :active covers the moment
+ * before the engine has mounted. Flat keys get the engine's soft scale instead (below). */
 .key[data-pressed] > .key__cap,
 html:not([data-motion-ready]) .key:active > .key__cap {
   transform: translateY(var(--travel));
   transition-duration: var(--t-press);
   transition-timing-function: ease-out;
 }
-/* hover (pointer devices): the cap rises 1px and more wall shows */
-@media (hover: hover) {
-  .key:not(:disabled, [aria-disabled="true"], [aria-checked="true"], [aria-pressed="true"], [data-held], [data-pressed], [data-loading]):hover > .key__cap {
-    transform: translateY(-1px);
-  }
+/* selected / held (a toggle that is on, a chosen chip or segment): ink fill means "selected", never "action" */
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) {
+  --face: var(--ink);
+  --hover-face: var(--ink);
+  --edge: var(--ink);
+  --on: var(--paper);
 }
-
-/* selected / on = the same key held down, ink-faced, with a second cue drawn by the component (check, LED, filled icon) */
-.key:is([aria-checked="true"], [aria-pressed="true"], [data-held]) {
-  --face: var(--sel-face);
-  --wall-c: var(--sel-wall);
-  --on: var(--on-sel);
-}
-.key:is([aria-checked="true"], [aria-pressed="true"], [data-held]) > .key__cap {
-  transform: translateY(var(--travel));
-  box-shadow: inset 0 2px 3px var(--sel-in);
-}
-
-/* disabled: no wall, no cast shadow, flat on the floor with an ink-3 label (the reason is written next to it) */
-.key:is(:disabled, [aria-disabled="true"]) {
-  --face: var(--niche);
+/* disabled: flat --niche-2, an --ink-3 label, no wall — the reason is written beside it */
+.key:is(:disabled, [aria-disabled="true"]),
+.key:has(> input:disabled) {
+  --wall: 0px;
+  --face: var(--niche-2);
+  --hover-face: var(--niche-2);
+  --edge: transparent;
   --wall-c: transparent;
+  --cap-shadow: none;
   --cast: none;
   --on: var(--ink-3);
   cursor: not-allowed;
 }
-.key:is(:disabled, [aria-disabled="true"]) > .key__cap {
-  transform: translateY(var(--wall));
-  box-shadow: none;
-}
-
-/* busy: the label keeps its width (it stays in the accessibility tree, only transparent) and a spinner sits on top */
+/* busy: the key keeps its width and announces "loading"; a spinner takes the start icon's place, or covers the label
+   when there is no icon */
 .key[data-loading] {
   cursor: progress;
 }
 .key[data-loading] > .key__cap > :not(.key__spinner) {
   opacity: 0;
 }
+.key[data-loading]:has(> .key__cap > svg:first-child) > .key__cap > :not(.key__spinner, svg:first-child) {
+  opacity: 1;
+}
+.key[data-loading] > .key__cap > svg:first-child {
+  display: none;
+}
 .key__spinner {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
+}
+.key[data-loading]:has(> .key__cap > svg:first-child) .key__spinner {
+  position: static;
+  order: -1;
 }
 .key__spinner > svg {
   animation: key-spin 0.9s linear infinite;
@@ -169,241 +394,95 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   }
 }
 
-/* ── variants: only custom properties ── */
-/* commit: the one key per view that moves the order forward */
-.key--red {
-  --face: var(--red-face);
-  --wall-c: var(--red-wall);
-  --on: var(--on-red);
-  --lip: var(--red-lip);
-  --belly: var(--red-belly);
-}
-/* ink: a raised graphite key — emphasis without red (it commits nothing to the order) */
-.key--ink {
-  --face: var(--sel-face);
-  --wall-c: var(--sel-wall);
-  --on: var(--on-sel);
-  --lip: var(--ink-lip);
-  --belly: var(--ink-belly);
-}
-/* quiet: chrome tools on bars and headers — no wall and no face until pointed at; pressed sinks into a well */
-.key--quiet {
-  --wall: 0px;
+/* shape-specific states (after the generic ones) */
+.key:is(.key--ghost, .key--quiet, .key--plain, .key--round):is(:disabled, [aria-disabled="true"]) {
   --face: transparent;
-  --wall-c: transparent;
-  --lip: transparent;
-  --belly: transparent;
-  --cast: none;
+  --hover-face: transparent;
 }
-@media (hover: hover) {
-  .key--quiet:not(:disabled, [aria-disabled="true"]):hover {
-    --face: var(--niche);
-  }
+.key--round.key--outline:is(:disabled, [aria-disabled="true"]) {
+  --edge: var(--line);
 }
-.key--quiet[data-pressed],
-html:not([data-motion-ready]) .key--quiet:active,
-.key--quiet:is([aria-checked="true"], [aria-pressed="true"], [data-held]) {
-  --face: var(--well);
-}
-.key--quiet:is([aria-checked="true"], [aria-pressed="true"], [data-held], [data-pressed]) > .key__cap {
-  box-shadow: var(--well-shadow);
-}
-.key--quiet:is([aria-checked="true"], [aria-pressed="true"], [data-held]) {
+/* a held icon button keeps its face: the filled glyph and aria-pressed say "on" (the heart fills in --red-ink) */
+.key--round:is([aria-pressed="true"], [data-held]) {
+  --face: var(--paper);
+  --hover-face: var(--niche);
+  --edge: var(--line-2);
   --on: var(--ink);
 }
-.key--quiet:is(:disabled, [aria-disabled="true"]) {
+.key--round:is(.key--ghost, .key--quiet, .key--plain):is([aria-pressed="true"], [data-held]) {
   --face: transparent;
+  --edge: transparent;
 }
-
-/* sizes */
-.key--lg {
-  --h: 56px;
-  --px: 26px;
-}
-.key--sm {
-  --wall: 2px;
-  --h: 40px;
-  --px: 14px;
-  --r: var(--r-sm);
-  --cast: var(--e-1);
-  font: 600 13.5px/1.25 var(--font-text); /* Kufam is never used below 15px */
-}
-.key--sm::after {
-  content: "";
-  position: absolute;
-  inset: -2px 0; /* 40 + 2 wall + 4 = a 46px hit area */
-}
-.key--block {
-  display: flex;
-  inline-size: 100%;
-}
-/* round: icon keys (favourite, close, copy, stepper, the socket's add key) */
-.key--round {
-  --wall: 2px;
-  --r: var(--r-full);
-  --h: 44px;
-  --px: 0px;
-  --cast: var(--e-1);
-}
-.key--round > .key__cap {
-  inline-size: var(--h);
-  flex: none;
-}
-.key--round.key--sm {
-  --h: 36px;
-  --r: var(--r-full);
-}
-.key--round.key--sm::after {
-  inset: -4px; /* 36 → 44 */
-}
-
-/* chip: 44px, short labels; the mark is reserved, so choosing never reflows the row */
-.key--chip {
-  --wall: 2px;
-  --h: 44px;
-  --px: 14px;
-  --cast: var(--e-1);
-  font: 500 14px/1.25 var(--font-text);
-}
-.key__mark {
-  position: relative;
-  flex: none;
-  display: grid;
-  place-items: center;
-  inline-size: 16px;
-  block-size: 16px;
-}
-.key__mark::before {
-  content: "";
-  inline-size: 14px;
-  block-size: 14px;
-  border-radius: 50%;
-  border: 1.6px solid var(--ink-2);
-}
-.key__mark > svg {
-  display: none;
-}
-.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark::before {
-  display: none;
-}
-.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark > svg {
-  display: block;
-}
-/* a chip that wraps a native checkbox or radio (form submission without script) */
-.key:has(> input:checked) {
-  --face: var(--sel-face);
-  --wall-c: var(--sel-wall);
-  --on: var(--on-sel);
-}
-.key:has(> input:checked) > .key__cap {
-  transform: translateY(var(--travel));
-  box-shadow: inset 0 2px 3px var(--sel-in);
-}
-.key:has(> input:focus-visible) {
-  outline: 2.5px solid var(--ink);
-  outline-offset: 3px;
-}
-.key:has(> input:disabled) {
-  --face: var(--niche);
-  --wall-c: transparent;
-  --cast: none;
-  --on: var(--ink-3);
-  cursor: not-allowed;
-}
-
-/* platform keys: tall, a device pictogram, an LED and the name as text */
-.key--plat {
-  --h: 58px;
-  --px: 2px;
-  font: 500 12.5px/1.3 var(--font-text);
-}
-.key--plat > .key__cap {
-  flex-direction: column;
-  gap: 2px;
-  padding-block: 6px 5px;
-}
-.key--plat .led {
-  margin-block-end: 3px;
-}
-.key--plat:is([aria-checked="true"], [aria-pressed="true"]) {
-  font-weight: 600;
-}
-
-/* thumbnail keys (gallery): the chosen one is held down with an ink ring and keeps its clay face */
-.key--thumb {
-  --wall: 2px;
-  --r: var(--r-sm);
-  --h: 42px;
-  --px: 0px;
-  --cast: var(--e-1);
-  --pose: 0deg;
-}
-.key--thumb > .key__cap {
-  inline-size: 50px;
-  flex: none;
-  padding: 4px;
+.key--round.key--wish:is([aria-pressed="true"], [data-held]) {
+  --on: var(--red-ink);
 }
 .key--thumb:is([aria-checked="true"], [aria-pressed="true"]) {
-  --face: var(--clay-face);
-  --wall-c: var(--clay-wall);
+  --face: var(--product-ground);
+  --hover-face: var(--product-ground);
+  --edge: transparent;
   --on: var(--ink);
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
-.key--thumb:is([aria-checked="true"], [aria-pressed="true"]) > .key__cap {
-  box-shadow: inset 0 0 0 2px var(--ink);
-}
-.key--thumb .render::after {
-  display: none;
-}
-
-/* ───────────────────────────── wells and sockets: clay pressed in ───────────────────────────── */
-.well {
-  background: var(--well);
-  box-shadow: var(--well-shadow);
-}
-/* the socket: a red key is seated in a flat well, so an empty socket can say "it left" */
-.socket {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  inline-size: 52px;
-  block-size: 52px;
-  border-radius: var(--r-full);
-  background: var(--well);
-}
-.socket--inset {
-  box-shadow: var(--well-shadow);
+.key--thumb:is([aria-checked="true"], [aria-pressed="true"]):focus-visible {
+  outline-offset: 4px;
 }
 
-/* ───────────────────────────── glass: for the eye ─────────────────────────────
- * Live frost only on fixed or sticky chrome that content really scrolls under; at most two per viewport. Never a
- * wall, never red, never masked or clipped; blur, tint and shadow never animate. */
+/* the engine's press: clay keys move only their cap (the wall and its cast never move); flat keys compress softly
+   (.98); icon buttons .94. Two attributes, so these outrank the engine's [data-press] wherever its CSS loads. */
+.key[data-press] {
+  --press-scale: var(--motion-press-soft-scale, 0.98);
+  --press-sink: 0px;
+}
+.key--round[data-press] {
+  --press-scale: var(--motion-press-icon-scale, 0.94);
+}
+:is(.key--primary, .key--red, .key--on-band)[data-press]:not(.key--round) {
+  --press-scale: 1;
+}
+
+/* ───────────────────────────── clay outside keys ───────────────────────────── */
+/* a red clay face on a single element (no separate wall): the Motion lab's commit buttons */
+.clay--red {
+  background: var(--red);
+  color: var(--on-red);
+  box-shadow: var(--clay-cap);
+}
+/* an ink face: selected */
+.clay--ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ───────────────────────────── glass v2: thin fixed bars only ─────────────────────────────
+ * Phone header, the desktop header's two rows, tab bar, buy bar, task bars, checkout bar, the header strip of a
+ * sheet. At most two live panes per viewport. Panels, menus, sheet bodies, dialogs and toasts are OPAQUE. Never
+ * red, never masked or clipped; blur, tint and shadow never animate. Secondary text on glass is plain --ink-2 (5.79:1
+ * over black in the worst case). */
 .glass {
-  --ink-2: var(--on-glass-2); /* secondary text on glass is always on-glass-2 */
-  background: var(--glass-bg);
+  background: var(--glass);
   -webkit-backdrop-filter: var(--glass-filter);
   backdrop-filter: var(--glass-filter);
-  box-shadow: var(--glass-rim), var(--e-4);
+  box-shadow: var(--e-bar);
   color: var(--ink);
 }
-/* bars and sheets anchored to the bottom edge throw their shadow upward */
-.glass--bottom {
-  box-shadow: var(--glass-rim), var(--e-4-up);
+/* bars on the bottom edge and floating pills (tab bar, task bars, buy bar) */
+.glass--bottom,
+.glass--float {
+  box-shadow: var(--e-float);
 }
-/* the same pane without backdrop-filter, only where it rests on a smooth surface (floor, stage, light) */
+/* 1.0's static glass is retired: an opaque surface with the glass edge */
 .glass--static {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  background: var(--glass-static);
-  box-shadow: var(--glass-rim), var(--e-3);
+  background: var(--on-image);
+  box-shadow: none;
 }
-/* the third overlay in a viewport, or wherever frost is not allowed */
+/* the same bar without frost */
 .glass--solid {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background: var(--glass-solid);
-}
-.glass .is-2 {
-  color: var(--on-glass-2);
 }
 
 /* ───────────────────────────── flat: for reading ───────────────────────────── */
@@ -413,92 +492,498 @@ html:not([data-motion-ready]) .key--quiet:active,
 .paper {
   background: var(--paper);
 }
-/* a flat tonal panel: info panels, empty states (a tonal step from the floor, nothing else) */
-.panel {
-  border-radius: var(--r-lg);
-  background: var(--niche);
-}
+/* a content panel: paper with a hairline (info panels, notes, empty states). 1.0's tonal --niche panel is gone:
+   --niche is the product ground. */
+.panel,
 .panel--paper {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
   background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--line);
 }
 
-/* ───────────────────────────── light: for the platform ─────────────────────────────
- * A subtree sets its platform once with data-gel (or style="--gel: var(--gel-xbox)"); --gel-* is read only by
- * .stage__* and .led. */
+/* ───────────────────────────── platform: four surfaces, an 8px dot everywhere else ─────────────────────────────
+ * A subtree names its platform once with data-gel; tiles, bands and dots inside read --plat / --plat-deep / --dot /
+ * --gel. The values follow the theme of the element that carries data-gel. */
 [data-gel="nintendo"] {
   --gel: var(--gel-nintendo);
+  --plat: var(--plat-nintendo);
+  --plat-deep: var(--plat-nintendo-deep);
+  --dot: var(--dot-nintendo);
 }
 [data-gel="playstation"] {
   --gel: var(--gel-playstation);
+  --plat: var(--plat-playstation);
+  --plat-deep: var(--plat-playstation-deep);
+  --dot: var(--dot-playstation);
 }
 [data-gel="xbox"] {
   --gel: var(--gel-xbox);
+  --plat: var(--plat-xbox);
+  --plat-deep: var(--plat-xbox-deep);
+  --dot: var(--dot-xbox);
 }
 [data-gel="handheld"] {
   --gel: var(--gel-handheld);
+  --plat: var(--plat-handheld);
+  --plat-deep: var(--plat-handheld-deep);
+  --dot: var(--dot-handheld);
 }
 [data-gel="brand"] {
   --gel: var(--gel-brand);
+  --plat: var(--hero-face);
+  --plat-deep: var(--red-deep);
+  --dot: var(--red-ink);
+}
+/* the platform dot: 8px, always beside the platform's name written as text (PlatformLed). Never a glow. */
+.led {
+  display: block;
+  flex: none;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--r-full);
+  background: var(--dot, var(--ink-2));
+}
+/* the nav underline in the platform's colour (hover, open, current) — the shell draws it with this colour */
+.plat-line {
+  border-block-end: 3px solid var(--dot, var(--ink));
 }
 
-/* the stage: a flat surface; the light is two pre-painted radial gradients behind the render */
-.stage {
-  --halo-w: 112%;
-  --halo-h: 140%;
+/* ───────────────────────────── showcase light: bands and tiles (§6.4) ─────────────────────────────
+ * Light theme: a colour surface (crimson or a platform colour) with ONE radial light behind the hardware, painted
+ * once. Dark theme: a cabinet — charcoal + rim + the platform's (or brand's) light behind the hardware and a floor
+ * pool. Only the light layer's opacity ever moves (.86 → 1 under the pointer, dark only). Text sits on the solid
+ * surface, never on the light core. */
+.band {
+  --light-x: calc(50% + 25% * var(--dir)); /* the hardware sits at the inline end (top centre on phones, below) */
+  --light-y: 50%;
   position: relative;
+  isolation: isolate;
   border-radius: var(--r-xl);
-  background: var(--stage);
+  background-color: var(--hero-face);
+  box-shadow: var(--rim);
+  color: var(--on-showcase);
+  --focus: var(--focus-showcase);
+}
+.band__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: calc(1 - 0.14 * var(--lit));
+  transition: opacity 240ms var(--ease-water);
+}
+/* hero: one radial in brand red behind the product (light); brand light + floor pool + a neutral key light (dark) */
+.band--hero > .band__light {
+  background:
+    radial-gradient(60% 75% at var(--light-x) var(--light-y), var(--hero-light), transparent 74%),
+    radial-gradient(34% 12% at var(--light-x) 90%, var(--hero-pool), transparent),
+    radial-gradient(46% 52% at var(--light-x) 24%, var(--cab-key-light), transparent);
+}
+@media (max-width: 47.99rem) {
+  .band--hero {
+    --light-x: 50%;
+    --light-y: 42%;
+  }
+}
+/* the contact ellipse under the hero product (the media slot draws it with this class) */
+.band__contact {
+  position: absolute;
+  z-index: -1;
+  inset-inline: 22%;
+  inset-block-end: 2%;
+  block-size: 9%;
+  border-radius: var(--r-full);
+  background: radial-gradient(closest-side, var(--hero-contact), transparent);
+  pointer-events: none;
+}
+/* platform hub band and device-hub head: as a tile, without clay; light from the hardware's corner */
+.band--platform,
+.band--device {
+  border-radius: var(--r-lg);
+  background-color: color-mix(in srgb, var(--plat, var(--hero-face)) calc(var(--unlit) * 100%), var(--cab));
+}
+.band--device {
+  border-radius: var(--r-xl);
+}
+.band--platform > .band__light,
+.band--device > .band__light {
+  background:
+    radial-gradient(48% 70% at var(--light-x) 60%, var(--tile-sheen), transparent 70%),
+    radial-gradient(70% 90% at calc(50% + 50% * var(--dir)) 100%, rgb(var(--gel, var(--gel-brand)) / var(--tile-gel-a)), transparent 72%);
+}
+/* wallet card: crimson, no light (light); a cabinet with the brand light (dark) */
+.band--wallet {
+  border-radius: var(--r-lg);
+}
+.band--wallet > .band__light {
+  background: radial-gradient(70% 90% at calc(50% + 40% * var(--dir)) 100%, var(--wallet-light), transparent 72%);
+}
+/* on a band, prices and quiet text take the band's ink */
+.band :is(.price, .price__cur, .price__was) {
+  color: inherit;
+}
+@media (hover: hover) {
+  a.band:hover > .band__light,
+  .band:has(a:hover) > .band__light {
+    opacity: 1;
+  }
+}
+
+/* ───────────────────────────── platform tile: the second clay object ─────────────────────────────
+ * <a class="ptile" data-gel="playstation" data-press="clay">
+ *   <span class="ptile__cap">
+ *     <span class="ptile__light"></span>
+ *     <span class="ptile__text"><span class="ptile__name">PlayStation</span><span class="ptile__count">42 منتجاً</span></span>
+ *     <span class="ptile__hw"><img class="ptile__img" …></span>
+ *     <span class="ptile__go"><svg …/></span>
+ *   </span>
+ * </a>
+ * Light: a flat --plat face on a 2px --plat-deep wall, white text, a white radial behind the hardware only (never
+ * behind the text: white on PlayStation falls to 4.35:1 under an 8% sheen). Dark: a cabinet with the platform light. */
+.ptiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 12px; /* room above the second row for the hardware that breaks out */
+  padding-block-start: 18px;
+}
+.ptile {
+  --wall: 2px;
+  position: relative;
+  display: flex;
+  min-inline-size: 0;
+  min-block-size: 132px;
+  border-radius: var(--r-lg);
+  color: var(--on-showcase);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.ptile::before {
+  content: "";
+  position: absolute;
+  inset: var(--wall) 0 calc(-1 * var(--wall));
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--plat-deep, var(--red-deep)) calc(var(--unlit) * 100%), transparent);
+  box-shadow: var(--tile-cast);
+}
+.ptile__cap {
+  position: relative;
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* phones: the name under the hardware that stands above the tile; top start from 768 */
+  padding: 16px;
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--plat, var(--hero-face)) calc(var(--unlit) * 100%), var(--cab));
+  box-shadow: var(--tile-cap);
+  transition: transform var(--spring-press-t) var(--spring-press);
+}
+.ptile__light {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(48% 62% at calc(50% + 26% * var(--dir)) 62%, var(--tile-sheen), transparent 70%),
+    radial-gradient(80% 95% at calc(50% + 50% * var(--dir)) 100%, rgb(var(--gel, var(--gel-brand)) / var(--tile-gel-a)), transparent 72%);
+  opacity: calc(1 - 0.14 * var(--lit));
+  transition: opacity 240ms var(--ease-water);
+}
+.ptile__text {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+}
+.ptile__name {
+  font: var(--type-tile);
+  text-wrap: balance;
+}
+.ptile__count {
+  font: var(--type-xs-strong);
+  color: var(--on-showcase-2);
+}
+/* the hardware: clipped at the sides and the bottom only, so it stands above the tile's top edge */
+.ptile__hw {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: inset(-56px 0 0 0 round 0 0 var(--r-lg) var(--r-lg));
+}
+.ptile__img {
+  position: absolute;
+  inset-block-start: -18px;
+  inset-inline-end: 10px;
+  block-size: 92px;
+  inline-size: calc(100% - 20px);
+  max-inline-size: none;
+  object-fit: contain;
+  object-position: 100% 100%; /* the inline end (RTL below) */
+  transition:
+    translate var(--spring-inflate-t) var(--spring-inflate),
+    scale var(--spring-inflate-t) var(--spring-inflate);
+}
+[dir="rtl"] .ptile__img {
+  object-position: 0% 100%;
+}
+.ptile__go {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .ptiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    padding-block-start: 24px;
+  }
+  .ptile {
+    min-block-size: 168px;
+  }
+  .ptile__cap {
+    justify-content: flex-start;
+    padding: 20px;
+  }
+  .ptile__count {
+    font: var(--type-sm-strong);
+  }
+  .ptile__img {
+    inset-block: auto 14px;
+    inset-inline: auto -8%;
+    inline-size: 58%;
+    block-size: calc(100% + 22px);
+    object-position: 100% 100%;
+  }
+  [dir="rtl"] .ptile__img {
+    object-position: 0% 100%;
+  }
+}
+@media (min-width: 64rem) {
+  .ptiles {
+    gap: 20px;
+  }
+  .ptile {
+    min-block-size: 184px;
+  }
+  .ptile__cap {
+    padding: 22px 24px;
+  }
+  .ptile__text {
+    max-inline-size: 48%;
+  }
+  .ptile__go {
+    position: absolute;
+    z-index: 1;
+    inset-block-end: 18px;
+    inset-inline-start: 22px;
+    display: grid;
+    place-items: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-full);
+    background: var(--on-color);
+    color: var(--on-white);
+  }
+}
+/* hover (pointer): the cap rises 2px, the hardware 4px and 1.02 on the inflate spring, the cabinet light .86 → 1 */
+@media (hover: hover) {
+  .ptile:not([data-pressed]):hover > .ptile__cap {
+    transform: translateY(-2px);
+  }
+  .ptile:hover .ptile__img {
+    translate: 0 -4px;
+    scale: 1.02;
+  }
+  .ptile:hover .ptile__light {
+    opacity: 1;
+  }
+}
+/* press: the cap travels 2px onto its wall; the engine's scale is neutralised */
+.ptile[data-press] {
+  --press-scale: 1;
+  --press-sink: 0px;
+}
+.ptile[data-pressed] > .ptile__cap,
+html:not([data-motion-ready]) .ptile:active > .ptile__cap {
+  transform: translateY(var(--wall));
+  transition-duration: var(--t-press);
+  transition-timing-function: ease-out;
+}
+/* compact (the categories sheet, the 404 page): 96px tall, the hardware inside the tile */
+.ptile--compact {
+  min-block-size: 96px;
+}
+.ptile--compact .ptile__cap {
+  justify-content: center;
+  padding: 14px;
+}
+.ptile--compact .ptile__name {
+  font: var(--type-h3);
+}
+.ptile--compact .ptile__hw {
+  clip-path: inset(0 round var(--r-lg));
+}
+.ptile--compact .ptile__img {
+  inset-block: 10px;
+  inset-inline: auto 8px;
+  inline-size: 44%;
+  block-size: calc(100% - 20px);
+}
+.ptile--compact .ptile__text {
+  max-inline-size: 56%;
+}
+.ptile--compact .ptile__go {
+  display: none;
+}
+
+/* ───────────────────────────── the product ground: wells, stage, renders (§6.4d, §12) ─────────────────────────────
+ * Every product a shopper judges stands on the neutral ground: flat --niche in light, the lit spot in dark. No
+ * platform light, no tilt, no filter. Images are contained and bottom-aligned on one floor line, with a CSS contact
+ * ellipse under them. */
+.niche {
+  --pose: 0deg;
+  position: relative;
+  display: block;
+  aspect-ratio: var(--ratio, 1);
+  border-radius: var(--r-lg);
+  background: var(--product-ground);
   overflow: hidden;
   isolation: isolate;
 }
-.stage__light {
+/* the hover overlay: --niche-2 by opacity (160ms) — the colour itself never animates */
+.niche::after {
+  content: "";
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-}
-.stage__halo,
-.stage__spot {
-  grid-area: 1 / 1;
-  border-radius: 50%;
-}
-.stage__halo {
-  inline-size: var(--halo-w);
-  block-size: var(--halo-h);
-  background: radial-gradient(closest-side, rgb(var(--gel, var(--gel-brand)) / var(--halo)), rgb(var(--gel, var(--gel-brand)) / calc(var(--halo) * 0.3)) 58%, transparent);
-}
-/* dark only (--spot is 0 in light): a neutral rim so dark hardware separates from the light */
-.stage__spot {
-  inline-size: calc(var(--halo-w) * 0.62);
-  block-size: calc(var(--halo-h) * 0.62);
-  background: radial-gradient(closest-side, rgb(var(--lumen) / var(--spot)), transparent);
-}
-.stage__pool {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(closest-side, rgb(var(--gel, var(--gel-brand)) / var(--pool)), rgb(var(--gel, var(--gel-brand)) / calc(var(--pool) * 0.38)) 56%, transparent);
-}
-/* relight: each light (halo + spot + pool) is a pre-painted layer; a new layer fades in over 260ms while the old one
- * fades out in 110ms (opacity only — --gel is never changed on a painted element) */
-.stage__layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.stage__layer[data-leaving] {
+  z-index: -1;
+  background: var(--product-ground-hover);
   opacity: 0;
-  transition: opacity 110ms var(--ease-exit);
+  transition: opacity var(--t-micro) var(--ease-water);
+  pointer-events: none;
 }
-.stage__layer[data-entering] {
-  animation: stage-light-in 260ms ease-out both;
+/* the contact ellipse: 44% wide, 6% tall, 7% from the bottom */
+.niche::before,
+.stage::before {
+  content: "";
+  position: absolute;
+  inset-inline: 28%;
+  inset-block-end: 7%;
+  block-size: 6%;
+  border-radius: var(--r-full);
+  background: radial-gradient(closest-side, var(--contact), transparent);
+  pointer-events: none;
 }
-@keyframes stage-light-in {
-  from {
-    opacity: 0;
+.niche__tag {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline-start: 10px;
+  z-index: 2;
+}
+.niche__fav {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-end: 6px;
+  z-index: 2;
+}
+/* the image box (fit rules by kind): hardware and accessories (default) */
+.niche__slot {
+  position: absolute;
+  z-index: 1;
+  inset: 9% 8% 9.5%;
+}
+/* wide objects (≥1.8:1: handheld PCs, SSDs, flat bundles) */
+.niche[data-kind="wide"] .niche__slot {
+  inset: 14% 7% 16%;
+}
+/* box art: the cover at 84% of the frame height, centred, with the art shadow and no contact ellipse */
+.niche[data-kind="box"] .niche__slot,
+.niche[data-kind="card"] .niche__slot {
+  inset: 8% 8%;
+  place-items: center;
+}
+.niche:is([data-kind="box"], [data-kind="card"])::before {
+  display: none;
+}
+.niche:is([data-kind="box"], [data-kind="card"]) :is(.render, .render > img, .render > picture > img) {
+  border-radius: var(--r-xs);
+}
+.niche:is([data-kind="box"], [data-kind="card"]) .render {
+  box-shadow: var(--e-art);
+}
+/* a used unit shown with a «صورة توضيحية» photo: raised 10% so the chip never covers the object */
+.niche[data-kind="used"] .niche__slot {
+  inset-block-end: 19.5%;
+}
+.niche[data-kind="used"]::before {
+  inset-block-end: 17%;
+}
+/* a real photo filling the well (a used unit's own photos) */
+.niche__fill {
+  position: absolute;
+  inset: 0;
+}
+.niche__fill > :is(img, picture > img) {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* 1.0's tonal info panel → a paper panel */
+.niche--panel {
+  aspect-ratio: auto;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.niche--panel::before,
+.niche--panel::after {
+  display: none;
+}
+/* sold out: the photo at 50% */
+.niche[data-state="out"] .niche__slot,
+[data-state="out"] > .niche .niche__slot {
+  opacity: 0.5;
+}
+/* hover (pointer): the photo grows 1.03 in its well (240ms, settle) and the well darkens a step */
+.render {
+  transition: scale var(--t-reveal) var(--ease-settle);
+}
+@media (hover: hover) {
+  a:hover .niche::after,
+  a.niche:hover::after,
+  [data-card]:hover .niche::after {
+    opacity: 1;
   }
+  a:hover .niche .render,
+  a.niche:hover .render,
+  [data-card]:hover .niche .render {
+    scale: 1.03;
+  }
+}
+
+/* an opaque photo (manifest transparent: false, drawn by <Art> with data-transparent="false") until it is re-cut: it
+   melts into the light ground; in dark it keeps its own background as a white --r-sm plate. The only mix-blend-mode
+   in the app. */
+img:is([data-transparent="false"], [data-opaque]) {
+  --photo-radius: var(--r-sm);
+  mix-blend-mode: var(--opaque-blend);
+}
+
+/* the stage: the product page's picture — the same neutral ground, bigger. 1:1 and full bleed on phones, 4:3 with
+ * --r-xl from 768, 5:4 from 1024. The 1.0 light layers (.stage__layer) are not painted: no platform light behind a
+ * product that is being judged. */
+.stage {
+  --pose: 0deg;
+  position: relative;
+  border-radius: var(--r-xl);
+  background: var(--product-ground);
+  overflow: hidden;
+  isolation: isolate;
+}
+.stage__layer,
+.stage__light,
+.stage__pool {
+  display: none;
 }
 
 /* a size container that holds one render (a stage slot, a niche slot, a thumbnail key) */
@@ -507,8 +992,8 @@ html:not([data-motion-ready]) .key--quiet:active,
   display: grid;
   place-items: end center;
 }
-/* a render: one box sized from the picture's aspect ratio inside a size container (the slot); the contact shadow
- * is a percentage of that box, so no product needs its own layout numbers */
+/* a render: one box sized from the picture's aspect ratio inside a size container (the slot), bottom-aligned on the
+   floor line. No tilt, no filter. */
 .render {
   position: relative;
   display: block;
@@ -523,20 +1008,6 @@ html:not([data-motion-ready]) .key--quiet:active,
   inline-size: 100%;
   block-size: 100%;
   object-fit: contain;
-  transform: rotate(var(--pose, 0deg));
-}
-.render::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset-inline: 6%;
-  inset-block-end: -11%;
-  block-size: 15%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(var(--shade) / 0.42), rgb(var(--shade) / 0.13) 60%, transparent);
-}
-.render--flat::after {
-  display: none;
 }
 /* a render that replaces another on the stage inflates into its reserved box (never on first paint) */
 .render[data-enter] {
@@ -551,31 +1022,11 @@ html:not([data-motion-ready]) .key--quiet:active,
 @keyframes render-in {
   from {
     opacity: 0;
-    transform: scale(0.86);
+    transform: scale(0.94);
   }
 }
 
-/* the LED: 16 × 5, always beside the platform's name written as text */
-.led {
-  display: block;
-  flex: none;
-  inline-size: 16px;
-  block-size: 5px;
-  border-radius: var(--r-full);
-  background: rgb(var(--gel, var(--gel-brand)));
-  opacity: 0.5;
-}
-.led--solid {
-  opacity: 1;
-}
-.led.is-on,
-[aria-checked="true"] .led,
-[aria-pressed="true"] .led {
-  opacity: 1;
-  box-shadow: 0 0 0 3px rgb(var(--gel, var(--gel-brand)) / 0.18), 0 0 8px rgb(var(--gel, var(--gel-brand)) / 0.8);
-}
-
-/* ───────────────────────────── tiers and preferences (§6.5, §7.3) ───────────────────────────── */
+/* ───────────────────────────── tiers and preferences (§6.5, §13) ───────────────────────────── */
 /* no backdrop-filter support */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass {
@@ -585,7 +1036,8 @@ html:not([data-motion-ready]) .key--quiet:active,
 /* the shopper asked for less transparency */
 @media (prefers-reduced-transparency: reduce) {
   .glass,
-  .glass--static {
+  .glass--static,
+  [data-density="admin"] :is(.glass, .glass--static) {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background: var(--glass-solid);
@@ -597,7 +1049,7 @@ html:not([data-motion-ready]) .key--quiet:active,
   backdrop-filter: none;
   background: var(--glass-solid);
 }
-:is(.fx-low, [data-motion="lite"]) :is(.render[data-enter], .stage__layer[data-entering]) {
+:is(.fx-low, [data-motion="lite"]) .render[data-enter] {
   animation: none;
 }
 /* the page under an open sheet or dialog (marked by ~/ui/Dialog's modal layers): its frost goes solid, so the
@@ -607,52 +1059,52 @@ html:not([data-motion-ready]) .key--quiet:active,
   backdrop-filter: none;
   background: var(--glass-solid);
 }
-/* reduced motion: the pressed offset is shown with no transition; swaps are instant */
+/* reduced motion: the pressed offset is shown with no transition; swaps are instant; lights do not fade */
 @media (prefers-reduced-motion: reduce) {
-  .key__cap {
+  .key__cap,
+  .ptile__cap,
+  .ptile__img,
+  .ptile__light,
+  .band__light,
+  .niche::after,
+  .render {
     transition: none;
   }
   .render[data-enter],
-  .stage__layer[data-entering],
   .key__spinner > svg {
     animation: none;
   }
-  .stage__layer[data-leaving] {
-    transition: none;
-  }
 }
-[data-motion="reduced"] .key__cap {
+[data-motion="reduced"] :is(.key__cap, .ptile__cap, .ptile__img, .ptile__light, .band__light, .niche::after, .render) {
   transition: none;
 }
-[data-motion="reduced"] :is(.render[data-enter], .stage__layer[data-entering], .key__spinner > svg) {
+[data-motion="reduced"] :is(.render[data-enter], .key__spinner > svg) {
   animation: none;
 }
-[data-motion="reduced"] .stage__layer[data-leaving] {
-  transition: none;
-}
-/* more contrast: materials become outlined flat surfaces */
+/* more contrast: glass solid, showcase lights hidden, product grounds outlined, clay faces outlined */
 @media (prefers-contrast: more) {
   .glass,
   .glass--static {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: var(--ground);
-    box-shadow: 0 0 0 1.5px var(--ink);
+    background: var(--glass-solid);
   }
-  .key__cap {
-    box-shadow: inset 0 0 0 1.5px var(--ink);
-  }
-  .panel,
-  .niche,
-  .well {
-    box-shadow: inset 0 0 0 1px var(--ink);
-  }
-  .stage__light,
-  .stage__pool {
+  .band__light,
+  .ptile__light {
     display: none;
   }
+  .niche,
+  .stage,
+  .key--thumb > .key__cap {
+    outline: 1px solid var(--ink);
+    outline-offset: -1px;
+  }
+  .key:is(.key--primary, .key--red, .key--on-band) > .key__cap {
+    border-color: var(--ink);
+  }
 }
-/* forced colours: depth and fills disappear, so state gets an outline */
+/* forced colours: depth and fills disappear, so every control and ground gets a border; state gets an outline;
+   platform dots keep their colour */
 @media (forced-colors: active) {
   .key__cap {
     border: 1px solid ButtonText;
@@ -660,6 +1112,12 @@ html:not([data-motion-ready]) .key--quiet:active,
   .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) > .key__cap {
     outline: 3px solid Highlight;
     outline-offset: -3px;
+  }
+  .niche,
+  .stage,
+  .ptile__cap,
+  .band {
+    border: 1px solid CanvasText;
   }
   .led {
     forced-color-adjust: none;

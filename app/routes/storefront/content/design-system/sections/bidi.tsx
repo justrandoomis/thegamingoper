@@ -101,7 +101,7 @@ export default function BidiSection() {
       <DsBlock id="bidi-text" title={c.textTitle} note={c.textNote}>
         <ul className="grid gap-2">
           {CASES.map((item) => (
-            <li key={item.key} className="grid gap-1 rounded-md bg-niche px-4 py-3">
+            <li key={item.key} className="grid gap-1 rounded-sm bg-niche px-4 py-3">
               <p dir="rtl" lang={item.lang} className="type-body text-ink" data-units={JSON.stringify(item.units)}>
                 <BidiText text={item.text} />
               </p>

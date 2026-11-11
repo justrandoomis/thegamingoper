@@ -83,6 +83,8 @@ export type ChangeInput = {
   mode: ChangeMode;
   /** The highest price of the drop window (dropReferencePrice); the old price when not given. */
   referencePriceIqd?: number | null;
+  /** The cut limit in basis points — the setting "pricing.drop_approval_bps" (admin 22); DROP_APPROVAL_BPS when not given. */
+  dropApprovalBps?: number;
 };
 
 export type ChangeEvaluation = {
@@ -108,7 +110,7 @@ export function evaluatePriceChange(input: ChangeInput): ChangeEvaluation {
   const dropBps = oldPriceIqd > 0 ? Math.trunc(((oldPriceIqd - newPriceIqd) * BPS) / oldPriceIqd) : null;
   const reference = Math.max(oldPriceIqd, input.referencePriceIqd ?? oldPriceIqd);
   // Exact comparison (no rounding): a cut of more than the limit from the highest price of the window.
-  if (newPriceIqd < reference && (reference - newPriceIqd) * BPS > DROP_APPROVAL_BPS * reference) reasons.push("drop_over_limit");
+  if (newPriceIqd < reference && (reference - newPriceIqd) * BPS > (input.dropApprovalBps ?? DROP_APPROVAL_BPS) * reference) reasons.push("drop_over_limit");
   if (input.newCompareAtIqd !== null && input.newCompareAtIqd !== input.oldCompareAtIqd) reasons.push("compare_at_new");
 
   let floorIqd: number | null = null;

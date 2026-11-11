@@ -1,6 +1,6 @@
 /*
- * Tailwind 4 ↔ design tokens. Imported by app/app.css OUTSIDE any layer: @theme, @utility and @custom-variant must
- * stay at the top level.
+ * Tailwind 4 ↔ design tokens (Design System v2). Imported by app/app.css OUTSIDE any layer: @theme, @utility and
+ * @custom-variant must stay at the top level.
  *
  * The default palette, radius, shadow, blur and letter-spacing scales are removed, so the only colours, radii and
  * shadows a utility can produce are the tokens of docs/DESIGN.md §5 — `bg-red-500`, `rounded-2xl`, `shadow-lg`,
@@ -10,6 +10,8 @@
  * so a [data-theme] subtree re-themes utilities exactly like it re-themes components.
  * Theme keys deliberately never reuse a token's name (no `--font-display` here): a theme variable named like the
  * token it points at would become a self-reference.
+ *
+ * 1.0 names stay as aliases (marked "1.0") so today's call sites render on the v2 values; new code uses the v2 names.
  */
 
 @theme {
@@ -22,7 +24,7 @@
   --tracking-*: initial;
   --breakpoint-*: initial;
 
-  /* §5.6 breakpoints: 600 large phone · 768 tablet · 1024 · 1200 desktop · 1280 content max-width */
+  /* §5.6 breakpoints. Storefront code uses md (768), lg (1024) and 2xl (1280); xl (1200) stays for the admin. */
   --breakpoint-sm: 37.5rem;
   --breakpoint-md: 48rem;
   --breakpoint-lg: 64rem;
@@ -31,62 +33,97 @@
 }
 
 @theme inline {
-  /* surfaces — flat (§6.3) */
+  /* surfaces */
   --color-floor: var(--ground);
   --color-ground: var(--ground);
-  --color-niche: var(--niche);
-  --color-stage: var(--stage);
-  --color-well: var(--well);
   --color-paper: var(--paper);
+  --color-niche: var(--niche);
+  --color-niche-2: var(--niche-2);
+  --color-stage: var(--stage);
+  --color-band: var(--band);
   --color-glass-solid: var(--glass-solid);
+  --color-well: var(--niche-2); /* 1.0: the pressed-in track is retired → the hover ground */
   /* text and lines */
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
-  --color-on-glass-2: var(--on-glass-2);
-  --color-on-sel: var(--on-sel);
-  --color-sel: var(--sel-face);
+  --color-on-band: var(--on-band);
+  --color-on-band-2: var(--on-band-2);
+  --color-on-color: var(--on-color);
   --color-line: var(--line);
+  --color-line-2: var(--line-2);
   --color-line-strong: var(--line-strong);
-  /* state — text and dots, always with words */
+  --color-line-glass: var(--line-glass);
+  --color-on-glass-2: var(--ink-2); /* 1.0: secondary text on glass is plain ink-2 in v2 */
+  --color-sel: var(--ink); /* 1.0: "selected" = an ink fill */
+  --color-on-sel: var(--paper);
+  /* state — text, dots and tints, always with words */
   --color-ok: var(--ok);
+  --color-ok-tint: var(--ok-tint);
   --color-warn: var(--warn);
+  --color-warn-tint: var(--warn-tint);
   --color-info: var(--info);
+  --color-info-tint: var(--info-tint);
+  --color-danger: var(--danger);
+  --color-danger-tint: var(--danger-tint);
+  --color-demo-ink: var(--demo-ink);
+  --color-demo-bg: var(--demo-bg);
+  /* red as text (the sale price, the total) and its tint (active tab, trust icon tiles, sale badge) */
   --color-red-ink: var(--red-ink);
-  /* brand red exists as a utility only for the logo (`text-logo`); commit keys and the cart bead are components.
+  --color-red-tint: var(--red-tint);
+  /* brand red exists as a utility only for the logo (`text-logo`); the primary key and the cart bead are components.
      lint-design: allow red — the logo's colour; scripts/lint-design.mjs rejects bg-logo / border-logo surfaces */
   --color-logo: var(--red);
+  /* platform dots (text-dot-xbox for a glyph, bg-dot-xbox for a dot) — never a surface */
+  --color-dot-nintendo: var(--dot-nintendo);
+  --color-dot-playstation: var(--dot-playstation);
+  --color-dot-xbox: var(--dot-xbox);
+  --color-dot-handheld: var(--dot-handheld);
 
-  /* radius — one scale (§5.7) and its jobs */
+  /* radius — today's scale (§5.7) and its jobs */
   --radius-xs: var(--r-xs);
   --radius-sm: var(--r-sm);
-  --radius-md: var(--r-md);
+  --radius-md: var(--r-md); /* the admin's; storefront views use xs, sm, lg, xl, full */
   --radius-lg: var(--r-lg);
   --radius-xl: var(--r-xl);
-  --radius-tag: var(--r-xs);
-  --radius-key: var(--r-md);
-  --radius-chip: var(--r-md);
-  --radius-field: var(--r-md);
+  --radius-check: var(--r-check);
+  --radius-button: var(--r-sm);
+  --radius-key: var(--r-sm);
+  --radius-field: var(--r-sm);
+  --radius-thumb: var(--r-sm);
+  --radius-tag: var(--r-full);
+  --radius-chip: var(--r-full);
   --radius-niche: var(--r-lg);
+  --radius-well: var(--r-lg);
+  --radius-card: var(--r-lg);
   --radius-panel: var(--r-lg);
   --radius-stage: var(--r-xl);
+  --radius-band: var(--r-xl);
   --radius-sheet: var(--r-xl);
+  --radius-dialog: var(--r-xl);
 
-  /* elevation — one blurred shadow per object, static (§5.7) */
-  --shadow-e1: var(--e-1);
-  --shadow-e2: var(--e-2);
-  --shadow-e3: var(--e-3);
-  --shadow-e4: var(--e-4);
-  --shadow-e4-up: var(--e-4-up);
-  --shadow-e5: var(--e-5);
+  /* elevation — the whole vocabulary (§5.7); nothing at rest has a shadow */
+  --shadow-bar: var(--e-bar);
+  --shadow-float: var(--e-float);
+  --shadow-overlay: var(--e-overlay);
+  --shadow-art: var(--e-art);
+  --shadow-rim: var(--rim);
+  /* 1.0 aliases: e1 (a resting card) becomes a hairline ring until its area migrates to `border border-line`;
+     e4 / e5 (popovers, sheets, dialogs) become the overlay; e4-up the float. wall / well: admin only. */
+  --shadow-e1: 0 0 0 1px var(--line);
+  --shadow-e2: 0 0 0 1px var(--line);
+  --shadow-e3: 0 0 0 1px var(--line);
+  --shadow-e4: var(--e-overlay);
+  --shadow-e4-up: var(--e-float);
+  --shadow-e5: var(--e-overlay);
   --shadow-wall: 0 3px 0 var(--clay-wall);
   --shadow-well: var(--well-shadow);
-  --shadow-rim: var(--glass-rim);
 
   /* families — prefer the type roles below; these exist for the odd one-off */
   --font-headline: var(--font-head);
-  --font-kufam: var(--font-display);
+  --font-kufi: var(--font-display);
   --font-plex: var(--font-text);
+  --font-kufam: var(--font-display); /* 1.0: Kufam is retired → Noto Kufi Arabic */
 }
 
 /* Dark is an attribute on <html> (or any subtree), never the media query: `dark:` follows the shopper's choice. */
@@ -94,7 +131,66 @@
 /* Admin density (§10). */
 @custom-variant admin (&:where([data-density="admin"], [data-density="admin"] *));
 
-/* ── type roles (§5.5): size, weight, line-height and face in one class ── */
+/* ── type roles (§5.5): size, weight, line-height and face in one class; integer sizes that step at 768 / 1024 /
+   1280; Kufi only at 18px and up (and prices) ── */
+@utility type-display {
+  font: var(--type-display);
+  text-wrap: balance;
+}
+@utility type-h1 {
+  font: var(--type-h1);
+  text-wrap: balance;
+}
+@utility type-h2 {
+  font: var(--type-h2);
+  text-wrap: balance;
+}
+@utility type-tile {
+  font: var(--type-tile);
+}
+@utility type-day {
+  font: var(--type-day);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@utility type-code {
+  font: var(--type-code);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@utility type-h3 {
+  font: var(--type-h3);
+}
+@utility type-lead {
+  font: var(--type-lead);
+}
+@utility type-body {
+  font: var(--type-body);
+}
+@utility type-card {
+  font: var(--type-card);
+}
+@utility type-sm {
+  font: var(--type-sm);
+}
+@utility type-sm-strong {
+  font: var(--type-sm-strong);
+}
+@utility type-xs {
+  font: var(--type-xs);
+}
+@utility type-xs-strong {
+  font: var(--type-xs-strong);
+}
+@utility type-tag {
+  font: var(--type-tag);
+}
+@utility type-button {
+  font: var(--type-button);
+}
+@utility type-button-sm {
+  font: var(--type-button-sm);
+}
+/* 1.0 role names → the v2 scale: hero = display, title = h1, section = h2, sub = h3, strong = card,
+   label = sm-strong, caption = xs, tab = xs (the admin pins its own 1.0 sizes, tokens.css) */
 @utility type-hero {
   font: var(--type-hero);
   text-wrap: balance;
@@ -110,12 +206,6 @@
 @utility type-sub {
   font: var(--type-sub);
 }
-@utility type-button {
-  font: var(--type-button);
-}
-@utility type-body {
-  font: var(--type-body);
-}
 @utility type-strong {
   font: var(--type-strong);
 }
@@ -127,9 +217,6 @@
 }
 @utility type-tab {
   font: var(--type-tab);
-}
-@utility type-tag {
-  font: var(--type-tag);
 }
 @utility type-data {
   font: var(--type-data);
@@ -149,7 +236,7 @@
 }
 
 /* ── layout helpers ── */
-/* the page column: content max-width 1280, side gutter 16 / 24 / 40, never inside the safe area */
+/* the page column: the 1280 wrap, side gutter 16 / 24 / 32, never inside the safe area */
 @utility page {
   inline-size: 100%;
   max-inline-size: calc(var(--page-max) + 2 * var(--gutter));
@@ -162,10 +249,13 @@
 @utility gap-card {
   gap: var(--gap-card);
 }
+@utility gap-row {
+  row-gap: var(--gap-row);
+}
 @utility gap-section {
   gap: var(--gap-section);
 }
-/* bars pad for the home indicator and the notch (§8 sticky rule) */
+/* bars pad for the home indicator and the notch */
 @utility safe-top {
   padding-block-start: var(--safe-top);
 }

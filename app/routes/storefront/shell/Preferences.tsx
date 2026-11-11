@@ -1,18 +1,18 @@
 /**
- * The shopper's three switches, in every form the shell needs them:
+ * The shopper's switches, in the forms the shell needs (Design System v2 §4.6, §5.3, §5.9, §5.10):
  *
- *   <LanguageLinks />          ar · ckb · en as real links (work without script); with script the switch keeps the
- *                              page, its scroll and its form state and plays the direction morph (useDirectionMorph)
- *   <LanguageBank />           the same as a key bank (categories sheet)
- *   <CurrencyMenu />           utility-bar button + popover: IQD / USD, the rate, its source and date, "you pay in
- *                              dinars", and — when the rate is the demo seed's placeholder — that it is a demo rate
- *   <CurrencyPanel />          the popover's content on its own (categories sheet)
- *   <ThemeToggle />            light ↔ dark icon key (themeMorph: the prefs cookie + a 200 ms cross-fade)
- *   <ThemeBank />              light / dark / system (categories sheet)
+ *   <LanguageBank />     العربية · English · کوردی as a segmented row of REAL links (each name in its own script; they
+ *                        work without script; with script the switch keeps the page, its scroll and its form state
+ *                        and plays the direction morph). Footer, categories sheet, the accessibility page.
+ *   <LanguageMenu />     the desktop header's globe button → a menu of the three languages
+ *   <ThemeBank />        النظام · فاتح · داكن (segmented; themeMorph: the prefs cookie + a 200 ms cross-fade)
+ *   <CurrencyPanel />    الدينار · الدولار (segmented) with the rate, its source and date, "you pay in dinars", and — when
+ *                        the rate is the demo seed's placeholder — that it is a demo rate
+ *   <PreferenceGroup />  a labelled group for the footer and the sheet
  *
  * Display currency and theme are preferences (cookie `tt_prefs`, no request); the language is the URL prefix.
  */
-import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type MouseEvent, type ReactNode } from "react";
+import { useId, useSyncExternalStore, type MouseEvent, type ReactNode } from "react";
 import { useLocation, useRouteLoaderData } from "react-router";
 
 import { Icon } from "~/art/Icon";
@@ -20,16 +20,17 @@ import { useFormat, useLocale } from "~/i18n/react";
 import { LOCALE_CODES, LOCALES, switchLocalePath, type Locale } from "~/lib/locales";
 import { CURRENCIES, type CurrencyCode, type FxSnapshot } from "~/lib/money";
 import { setPrefs, usePrefs, type Theme } from "~/lib/prefs";
-import { dematerialize, materialize, themeMorph, useDirectionMorph } from "~/motion";
+import { themeMorph, useDirectionMorph } from "~/motion";
 import { cx } from "~/ui/cx";
-import { Glass } from "~/ui/Glass";
 import { IconKey } from "~/ui/IconKey";
-import { KeyBank } from "~/ui/KeyBank";
+import { Menu } from "~/ui/Menu";
+import { Segmented } from "~/ui/Segmented";
 import { canonicalSearch } from "./chrome";
 import { useShellT } from "./i18n";
 
-/** Locales in the order the switch shows them (the mock's: العربية · کوردی · English). */
-const LANGUAGE_ORDER: Locale[] = ["ar", "ckb", "en"];
+/** Locales in the order every language switch shows them (v2 §5.3): العربية · English · کوردی. */
+const LANGUAGE_ORDER: Locale[] = ["ar", "en", "ckb"];
+const languages = () => LANGUAGE_ORDER.filter((code) => LOCALE_CODES.includes(code));
 
 function isPlainClick(event: MouseEvent<HTMLAnchorElement>): boolean {
   return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
@@ -37,23 +38,27 @@ function isPlainClick(event: MouseEvent<HTMLAnchorElement>): boolean {
 
 // ───────────────────────────────────────────────────────────────── language
 
-export function LanguageLinks({ className, linkClassName, onSwitch }: { className?: string; linkClassName?: string; onSwitch?: () => void }) {
+/**
+ * The three languages as a segmented row of links (`.seg` look; the current one `aria-current`). No #fragment in the
+ * href (the server never sees one, so it would not hydrate; the switch keeps it anyway); the query in the server's
+ * spelling ("%20" → "+", "," → "%2C"), the same before and after hydration.
+ */
+export function LanguageBank({ onSwitch, className }: { onSwitch?: () => void; className?: string }) {
   const t = useShellT();
   const locale = useLocale();
   const location = useLocation();
   const switchLanguage = useDirectionMorph();
   return (
-    <span className={className} role="group" aria-label={t("language.label")}>
-      {LANGUAGE_ORDER.filter((code) => LOCALE_CODES.includes(code)).map((code) => (
+    <nav aria-label={t("language.label")} className={cx("seg seg--inline", className)}>
+      {languages().map((code) => (
         <a
           key={code}
-          // no #fragment in the href: the server never sees one, so it would not hydrate (the switch keeps it anyway);
-          // the query in the server's spelling ("%20" → "+", "," → "%2C"), the same before and after hydration
           href={switchLocalePath(location.pathname, canonicalSearch(location.search), "", code)}
           lang={LOCALES[code].bcp47}
           hrefLang={LOCALES[code].bcp47}
           aria-current={code === locale ? "true" : undefined}
-          className={linkClassName}
+          className="seg__opt"
+          data-press="soft"
           onClick={(event) => {
             if (!isPlainClick(event)) return;
             event.preventDefault();
@@ -64,24 +69,31 @@ export function LanguageLinks({ className, linkClassName, onSwitch }: { classNam
           {LOCALES[code].label}
         </a>
       ))}
-    </span>
+    </nav>
   );
 }
 
-export function LanguageBank({ onSwitch }: { onSwitch?: () => void }) {
+/** The desktop header's language button: the globe, and a menu of the three languages (each in its own script). */
+export function LanguageMenu({ className }: { className?: string }) {
   const t = useShellT();
   const locale = useLocale();
   const switchLanguage = useDirectionMorph();
+  const label = t("tools.language", { name: LOCALES[locale].label });
   return (
-    <KeyBank
-      kind="segment"
-      aria-label={t("language.label")}
-      items={LANGUAGE_ORDER.map((code) => ({ value: code, label: <span lang={LOCALES[code].bcp47}>{LOCALES[code].label}</span> }))}
-      value={locale}
-      onChange={(value) => {
-        onSwitch?.();
-        if (value !== locale) switchLanguage(value as Locale);
-      }}
+    <Menu
+      label={t("language.label")}
+      align="end"
+      className={className}
+      items={languages().map((code) => ({
+        id: code,
+        kind: "radio" as const,
+        label: LOCALES[code].label,
+        checked: code === locale,
+        onSelect: () => {
+          if (code !== locale) switchLanguage(code);
+        },
+      }))}
+      trigger={(props) => <IconKey {...props} variant="plain" icon={<Icon name="globe" size={24} />} label={label} />}
     />
   );
 }
@@ -90,7 +102,7 @@ export function LanguageBank({ onSwitch }: { onSwitch?: () => void }) {
 
 type RootFx = { fx?: FxSnapshot | null; fxIsDemo?: boolean };
 
-/** IQD / USD as keys, then what the conversion means: rate, source, date, demo note — or that there is no rate. */
+/** IQD / USD, then what the conversion means: rate, source, date, demo note — or that there is no rate. */
 export function CurrencyPanel({ className }: { className?: string }) {
   const t = useShellT();
   const f = useFormat();
@@ -99,11 +111,11 @@ export function CurrencyPanel({ className }: { className?: string }) {
   const fx = root?.fx ?? null;
   const usdRate = fx?.iqdPerUnit.USD;
   return (
-    <div className={cx("flex flex-col gap-3", className)}>
-      <KeyBank
-        kind="segment"
+    <div className={cx("grid gap-2", className)}>
+      <Segmented
+        inline
         aria-label={t("currency.label")}
-        items={(["IQD", "USD"] as const).map((code) => ({
+        options={(["IQD", "USD"] as const).map((code) => ({
           value: code,
           label: `${t(`currency.${code}`)} · ${CURRENCIES[code].symbol[f.locale]}`,
           disabled: code === "USD" && !usdRate,
@@ -111,14 +123,12 @@ export function CurrencyPanel({ className }: { className?: string }) {
         value={prefs.currency}
         onChange={(value) => setPrefs({ currency: value as CurrencyCode })}
       />
-      <div className="type-caption flex flex-col gap-1 text-ink-2">
-        <p className="text-ink">{t("currency.payIqd")}</p>
+      <div className="shell-pref__note grid gap-0.5">
+        <p>{t("currency.payIqd")}</p>
         {fx && usdRate ? (
           <>
-            <p>
-              {t("currency.rate", { rate: "⁦" + `1 USD = ${f.number(usdRate)} ${CURRENCIES.IQD.symbol[f.locale]}` + "⁩" })}
-            </p>
-            <p>{t("currency.source", { source: "⁨" + fx.source + "⁩", date: f.date(fx.updatedAt, "medium") })}</p>
+            <p>{t("currency.rate", { rate: "⁦" + `1 USD = ${f.number(usdRate)} ${CURRENCIES.IQD.symbol[f.locale]}` + "⁩" })}</p>
+            <p>{t("currency.source", { source: "⁨" + fx.source + "⁩", date: f.date(fx.updatedAt, "long") })}</p>
             {root?.fxIsDemo ? <p className="text-ink">{t("currency.demoRate")}</p> : null}
           </>
         ) : (
@@ -126,88 +136,6 @@ export function CurrencyPanel({ className }: { className?: string }) {
         )}
       </div>
     </div>
-  );
-}
-
-/** The utility bar's currency button ("الدينار العراقي · د.ع") with the panel in a popover. */
-export function CurrencyMenu() {
-  const t = useShellT();
-  const f = useFormat();
-  const prefs = usePrefs();
-  const [open, setOpen] = useState(false);
-  const [present, setPresent] = useState(false);
-  const button = useRef<HTMLButtonElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
-  const panelId = useId();
-  const name = `${t(`currency.${prefs.currency}`)} · ${CURRENCIES[prefs.currency].symbol[f.locale]}`;
-
-  if (open && !present) setPresent(true);
-
-  // arrive: drop in from the button (8px and opacity); leave the same way, then unmount
-  useLayoutEffect(() => {
-    const element = panel.current;
-    if (!element) return;
-    if (open) void materialize(element, { from: button.current ?? undefined });
-    else
-      void dematerialize(element).then(() => {
-        setPresent(false);
-      });
-  }, [open, present]);
-
-  // close on Escape (focus back to the button), a press outside, or focus leaving both
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setOpen(false);
-      button.current?.focus();
-    };
-    const onPointer = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (panel.current?.contains(target) || button.current?.contains(target)) return;
-      setOpen(false);
-    };
-    const onFocus = (event: FocusEvent) => {
-      const target = event.target as Node;
-      if (panel.current?.contains(target) || button.current?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("pointerdown", onPointer);
-    document.addEventListener("focusin", onFocus);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("pointerdown", onPointer);
-      document.removeEventListener("focusin", onFocus);
-    };
-  }, [open]);
-
-  return (
-    <span className="relative">
-      <button
-        ref={button}
-        type="button"
-        className="shell-utility__link hit-44"
-        aria-expanded={open}
-        aria-controls={present ? panelId : undefined}
-        aria-label={t("currency.button", { name })}
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span>{name}</span>
-        <Icon name="caret-down" size={14} />
-      </button>
-      {present ? (
-        <Glass
-          ref={panel}
-          id={panelId}
-          role="region"
-          aria-label={t("currency.label")}
-          className="shell-popover"
-        >
-          <CurrencyPanel />
-        </Glass>
-      ) : null}
-    </span>
   );
 }
 
@@ -229,32 +157,19 @@ export function useShownTheme(): "light" | "dark" {
   return useSyncExternalStore(subscribeTheme, readTheme, () => (theme === "dark" ? "dark" : "light"));
 }
 
-export function ThemeToggle({ className }: { className?: string }) {
-  const t = useShellT();
-  const shown = useShownTheme();
-  const next: Theme = shown === "dark" ? "light" : "dark";
-  return (
-    <IconKey
-      variant="quiet"
-      className={className}
-      icon={shown === "dark" ? "sun" : "moon"}
-      label={t(next === "dark" ? "theme.toDark" : "theme.toLight")}
-      onClick={() => void themeMorph(next)}
-    />
-  );
-}
-
-export function ThemeBank() {
+/** النظام · فاتح · داكن. */
+export function ThemeBank({ className }: { className?: string }) {
   const t = useShellT();
   const prefs = usePrefs();
   return (
-    <KeyBank
-      kind="segment"
+    <Segmented
+      inline
       aria-label={t("theme.label")}
-      items={[
+      className={className}
+      options={[
+        { value: "system", label: t("theme.system") },
         { value: "light", label: t("theme.light"), icon: "sun" },
         { value: "dark", label: t("theme.dark"), icon: "moon" },
-        { value: "system", label: t("theme.system") },
       ]}
       value={prefs.theme}
       onChange={(value) => void themeMorph(value as Theme)}
@@ -262,12 +177,12 @@ export function ThemeBank() {
   );
 }
 
-/** A labelled group for the sheet and the footer. */
-export function PreferenceGroup({ label, children }: { label: string; children: ReactNode }) {
+/** A labelled group (footer, categories sheet): the label above, the control under it. */
+export function PreferenceGroup({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   const id = useId();
   return (
-    <div role="group" aria-labelledby={id} className="flex flex-col gap-2">
-      <span id={id} className="type-label text-ink-2">
+    <div role="group" aria-labelledby={id} className={cx("shell-pref", className)}>
+      <span id={id} className="shell-pref__label">
         {label}
       </span>
       {children}

@@ -3,7 +3,8 @@
  * Always Iraq time: Asia/Baghdad is UTC+3 all year (no daylight saving since 2008), so its wall clock is ms + 3 h.
  *
  *   formatDate(ms, "long", "ckb", "latn")      → "5ی کانوونی دووەمی 2025"
- *   formatDate(ms, "medium", "ar", "latn")     → Intl's Arabic ("05/01/2025")
+ *   formatDate(ms, "medium", "ar", "latn")     → "05/01/2025" (numeric dates are day first in every language)
+ *   formatDate(ms, "long", "ar", "latn")       → Intl's Arabic ("5 كانون الثاني 2025")
  *   formatDateTime(ms, "ckb", "arab")          → "٢٠٢٥ کانوونی دووەم ٥ ٣:٠٠ د.ن"
  *   formatWeekdayDay(ms, "ckb", "latn")        → "یەکشەممە، 5ی کانوونی دووەم"   (a day to choose: weekday + date)
  *
@@ -11,7 +12,8 @@
  * (ckb) is missing from the ICU builds of Chromium and of workerd (the server), so Intl answers a Kurdish page in
  * English ("November 13, 2026"). For ckb the text is assembled here from CLDR's Sorani patterns and names — what a
  * full ICU (Node's) prints for "ckb" —, with the shopper's numerals:
- *   short "y-MM-dd" · medium "y MMM d" · long "dی MMMMی y" · date and time "y MMM d h:mm a" (ب.ن / د.ن)
+ *   medium "y MMM d" · long "dی MMMMی y" · date and time "y MMM d h:mm a" (ب.ن / د.ن); short is the shared numeric
+ *   "dd/MM/y" (CLDR's "y-MM-dd" is year first, which Design System v2 §2.6 rules out)
  *   weekday + day "EEEE، dی MMMM"
  * One difference from CLDR on purpose: December is "کانوونی یەکەم", spelled like January ("کانوونی دووەم"); CLDR
  * writes "کانونی یەکەم". The same code runs on the server and in the browser, so Kurdish dates hydrate unchanged.
@@ -73,12 +75,21 @@ function wallClock(ms: number, offsetMs: number): WallClock {
 
 const intlTag = (locale: Locale, numbering: NumberingSystem) => `${LOCALES[locale].bcp47}-u-nu-${numbering}`;
 
+/**
+ * A numeric date, day first in every language: "18/11/2026" (Design System v2 §2.6 — never 2026/11/18). Built by
+ * hand: Intl orders English month first ("11/18/26"), and in Arabic it puts a right-to-left mark after each part,
+ * which shows the date year first on screen. Without marks the date is one left-to-right run inside Arabic text.
+ */
+function numericDate(clock: WallClock, numbering: NumberingSystem): string {
+  return `${digits(clock.day, numbering, 2)}/${digits(clock.month, numbering, 2)}/${digits(clock.year, numbering)}`;
+}
+
 function soraniDate(clock: WallClock, style: DateStyle, numbering: NumberingSystem): string {
   const year = digits(clock.year, numbering);
   const month = CKB_MONTHS[clock.month - 1];
   switch (style) {
     case "short":
-      return `${year}-${digits(clock.month, numbering, 2)}-${digits(clock.day, numbering, 2)}`;
+      return numericDate(clock, numbering);
     case "medium":
       return `${year} ${month} ${digits(clock.day, numbering)}`;
     case "long":
@@ -86,8 +97,13 @@ function soraniDate(clock: WallClock, style: DateStyle, numbering: NumberingSyst
   }
 }
 
-/** A date in the page's language and numerals, in Iraq time. */
+/**
+ * A date in the page's language and numerals, in Iraq time. Numeric styles — "short" everywhere, and Arabic
+ * "medium" (Arabic has no short month names) — are day first, built by hand (numericDate); dates with a month name
+ * come from Intl (Arabic and English) or from CLDR's Sorani patterns.
+ */
 export function formatDate(ms: number, style: DateStyle, locale: Locale, numbering: NumberingSystem): string {
+  if (style === "short" || (style === "medium" && locale === "ar")) return numericDate(wallClock(ms, BAGHDAD_OFFSET_MS), numbering);
   if (locale === "ckb") return soraniDate(wallClock(ms, BAGHDAD_OFFSET_MS), style, numbering);
   return new Intl.DateTimeFormat(intlTag(locale, numbering), { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms);
 }
@@ -98,6 +114,11 @@ export function formatDateTime(ms: number, locale: Locale, numbering: NumberingS
     const clock = wallClock(ms, BAGHDAD_OFFSET_MS);
     const hour = clock.hour % 12 === 0 ? 12 : clock.hour % 12;
     return `${soraniDate(clock, "medium", numbering)} ${digits(hour, numbering)}:${digits(clock.minute, numbering, 2)} ${clock.hour < 12 ? CKB_AM : CKB_PM}`;
+  }
+  if (locale === "ar") {
+    // the numeric date (day first, no bidi marks), then Intl's time with its ص / م
+    const time = new Intl.DateTimeFormat(intlTag(locale, numbering), { timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms);
+    return `${numericDate(wallClock(ms, BAGHDAD_OFFSET_MS), numbering)}، ${time}`;
   }
   return new Intl.DateTimeFormat(intlTag(locale, numbering), { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms);
 }

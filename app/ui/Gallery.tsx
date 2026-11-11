@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { getArt, isPhoto, type PhotoKind } from "~/art";
@@ -8,38 +8,33 @@ import type { ImageRef } from "~/lib/dto";
 import { SharedElement } from "~/motion";
 import { cx } from "./cx";
 import { fadeElement, useModalLayer, useOverlayRoot, usePresence, usePrimeLayers } from "./Dialog";
-import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
-import { KeyBank, useControllable } from "./KeyBank";
 import type { Gel } from "./PlatformLed";
 import { ProductImage } from "./ProductCard";
+import { useControllable, useRovingRadio } from "./roving";
 import { Stage } from "./Stage";
 
 /**
- * The product page's gallery on the Lit Stage (docs/DESIGN.md §2, §9.6, reference b.png): the picture floats in its
- * platform's light; underneath, inside the stage, the caption of the current view at the start, the thumbnail keys
- * in a well in the middle (the current one held down with an ink ring) and "1 من 4" at the end.
+ * The product page's gallery — Design System v2 §4.14: the NEUTRAL stage (the product ground; 1:1 and full bleed on
+ * phones, 4:3 with --r-xl from 768, 5:4 from 1024), straight, big, standing on the floor line. No tilt, no halo, no
+ * platform light, no kind captions. Inside the stage only the counter chip «1 من 6» (bottom-start) and the full-screen
+ * button (top-end). The thumbnails sit BELOW the stage: 56px (76 from 1024) on the product ground, the chosen one with a
+ * 2px ink ring and a 2px gap, a radiogroup with roving tabindex.
  *
- *   <Gallery name={p.name} items={p.media.map((image) => ({ image }))} gel="handheld" flush
- *            sharedName={`product-image:${p.id}`} priority top={<StageOrbs />} />
- *   <Gallery name={u.name} items={photos} evidence="used" sharedName={`used-image:${u.id}`} />   never lit
+ *   <Gallery name={p.name} items={p.media.map((image) => ({ image }))} sharedName={`product-image:${p.id}`} priority />
+ *   <Gallery name={u.name} items={photos} evidence="used" sharedName={`used-image:${u.id}`} />
  *
- * Pictures are catalogue photos (`<Art name="<slug>--<n>">`) or uploaded files (`mediaKey`). A cut-out floats with
- * its tilt and contact shadow; an opaque photo, box art or a screenshot sits flat in its own frame (DESIGN.md §12).
+ * Swipe the picture sideways or press ← → on it (both follow the reading direction); the thumbnails move with the arrow
+ * keys. Tapping the picture (or the full-screen button) opens the viewer: an opaque layer (--ground), the picture with
+ * double-tap and button zoom (pinch is the browser's own), the thumbnails in a solid strip, close at 44px; Escape and
+ * focus return. Used units: the unit's own photos first; when a picture is not the unit, one line under the stage
+ * says so («صورة توضيحية — ليست صورة الجهاز نفسه»).
  *
- * Swipe the picture sideways (direction follows the reading direction), use the thumbnails (arrow keys, Home/End),
- * or ← → on the focused picture. Tapping the picture opens the full-screen viewer: an opaque floor, the same
- * thumbnail keys in a glass strip, the close key at the end, double-tap or the zoom key to look closer (pinch zoom
- * is the browser's own). The viewer is a modal layer of ~/ui/Dialog's stack (the one Dialog and Sheet use): focus
- * moves in and is trapped, the page behind is inert, Escape closes it and focus returns to the picture.
- *
- * Captions come from the catalogue photo's kind ("الصورة الرئيسية", "محتويات العلبة", "الغلاف" …) unless you pass
- * one. `evidence="used"` labels every picture as a photo of this unit or, honestly, "صورة توضيحية — ليست صورة
- * الجهاز نفسه" — order real defect photos first (DESIGN.md §9.6). Used photos are never lit.
+ * 1.0 props are accepted and ignored: `gel`, `top`, `flush`; `caption` is used only for the thumbnails' names.
  */
 export type GalleryItem = {
   image: ImageRef;
-  /** Words for this view ("الواجهة"). Default: from the photo's kind, or the evidence label for used units. */
+  /** Words for this view (the thumbnail's accessible name). Default: from the photo's kind. */
   caption?: string;
 };
 
@@ -49,19 +44,19 @@ export type GalleryProps = {
   items: readonly GalleryItem[];
   /** The card this page opens from: `product-image:${id}` (ProductCard's default) or `used-image:${id}`. */
   sharedName?: string;
-  /** Platform light. Ignored for used units (real photos are never lit). */
-  gel?: Gel | null;
-  /** "used": every picture is labelled as a real photo of this unit or as an illustration. */
+  /** "used": the honesty line under the stage when a picture is an illustration. */
   evidence?: "product" | "used";
-  /** Inside the stage along its top edge (back / cart orbs). */
-  top?: ReactNode;
-  /** Square top corners: the stage touches the top of the screen. */
-  flush?: boolean;
   /** The first picture is the page's LCP element. */
   priority?: boolean;
   index?: number;
   defaultIndex?: number;
   onIndexChange?: (index: number) => void;
+  /** 1.0 — ignored. */
+  gel?: Gel | null;
+  /** 1.0 — ignored (no orbs on the stage). */
+  top?: ReactNode;
+  /** 1.0 — ignored. */
+  flush?: boolean;
   className?: string;
 };
 
@@ -73,9 +68,6 @@ const KIND_KEY: Record<PhotoKind, string> = {
   "box-art": "boxArt",
   screenshot: "screenshot",
 };
-
-/** Opaque photos draw their own rounded frame (`--photo-radius`); a 42px thumbnail needs a tighter one. */
-const THUMB_STYLE = { "--photo-radius": "var(--r-xs)" } as CSSProperties;
 
 /** Next index after a step, kept inside the list (no wrap: the end of a swipe is the end). Pure. */
 export function stepIndex(index: number, delta: number, total: number): number {
@@ -100,7 +92,7 @@ export function arrowStep(key: string, rtl: boolean): -1 | 0 | 1 {
   return key === (rtl ? "ArrowLeft" : "ArrowRight") ? 1 : -1;
 }
 
-export function Gallery({ name, items, sharedName, gel = null, evidence = "product", top, flush = false, priority = false, index, defaultIndex = 0, onIndexChange, className }: GalleryProps) {
+export function Gallery({ name, items, sharedName, evidence = "product", priority = false, index, defaultIndex = 0, onIndexChange, className }: GalleryProps) {
   const t = useT("ui-shop");
   const f = useFormat();
   const [rawCurrent, setCurrent] = useControllable<number>(index, defaultIndex, onIndexChange);
@@ -109,10 +101,13 @@ export function Gallery({ name, items, sharedName, gel = null, evidence = "produ
   const [viewerOpen, setViewerOpen] = useState(false);
   const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
   const swallowClick = useRef(false);
+  const changed = useRef(false);
 
   const go = (next: number) => {
     const target = stepIndex(next, 0, total);
-    if (target !== current) setCurrent(target);
+    if (target === current) return;
+    changed.current = true;
+    setCurrent(target);
   };
 
   const captionOf = (item: GalleryItem | undefined): string => {
@@ -124,24 +119,13 @@ export function Gallery({ name, items, sharedName, gel = null, evidence = "produ
   };
 
   if (total === 0) {
-    // Nothing to show is said plainly: an unlit, empty stage keeps the page's geometry.
-    return <Stage size="product" gel={null} flush={flush} top={top} className={className} />;
+    // nothing to show is said plainly: the empty ground keeps the page's geometry
+    return <Stage size="pdp" className={className} />;
   }
 
   const item = items[current];
-  const caption = captionOf(item);
   const count = t("gallery.count", { n: f.number(current + 1), total: f.number(total) });
   const illustrationOnUsed = evidence === "used" && item.image.isIllustration;
-  const thumbs = items.map((entry, i) => ({
-    value: String(i),
-    ariaLabel: t("gallery.thumb", { n: f.number(i + 1), caption: captionOf(entry) }),
-    media: (
-      <span className="contents" style={THUMB_STYLE}>
-        <ProductImage image={entry.image} alt="" sizes="56px" shadow={false} pose={0} fit="cover" />
-      </span>
-    ),
-  }));
-  const compact = total > 4;
 
   const onPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -172,35 +156,20 @@ export function Gallery({ name, items, sharedName, gel = null, evidence = "produ
     go(current + step);
   };
 
-  // The bar holds one short word beside the tray (b.png: "الواجهة · 1 من 4"); a used unit's honesty sentence is too
-  // important to be cut, so it gets its own line under the stage instead.
-  const bar = (
-    <div className={cx("grid items-center gap-x-2.5 gap-y-1.5 type-caption text-ink-2", compact ? "grid-cols-[1fr_auto]" : "grid-cols-[1fr_auto_1fr]")}>
-      <span className="min-w-0 truncate" aria-live={evidence === "used" ? undefined : "polite"}>
-        {evidence === "used" ? null : caption}
-      </span>
-      {compact ? (
-        <span className="text-end">
-          <bdi className="nums">{count}</bdi>
-        </span>
-      ) : null}
-      <div className={cx("min-w-0 overflow-x-auto py-1", compact ? "col-span-2 justify-self-center" : "")}>
-        <KeyBank kind="thumb" aria-label={t("gallery.label", { name })} items={thumbs} value={String(current)} onChange={(value) => go(Number(value))} />
-      </div>
-      {compact ? null : (
-        <span className="text-end">
-          <bdi className="nums">{count}</bdi>
-        </span>
-      )}
-    </div>
-  );
-
   const stage = (
-    <Stage size="product" gel={evidence === "used" ? null : gel} flush={flush} top={top} bottom={bar}>
+    <Stage
+      size="pdp"
+      count={
+        <bdi className="nums" aria-live={changed.current ? "polite" : undefined}>
+          {count}
+        </bdi>
+      }
+      tools={<IconKey icon="corners-out" variant="onImage" label={t("buy.fullscreen")} aria-haspopup="dialog" onClick={() => setViewerOpen(true)} />}
+    >
       <button
         type="button"
-        className="grid size-full cursor-zoom-in touch-pan-y touch-pinch-zoom items-end justify-items-center rounded-lg"
-        aria-label={t("gallery.open", { caption })}
+        className="grid size-full cursor-zoom-in touch-pan-y touch-pinch-zoom items-end justify-items-center"
+        aria-label={t("gallery.open", { caption: captionOf(item) })}
         aria-haspopup="dialog"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
@@ -208,20 +177,13 @@ export function Gallery({ name, items, sharedName, gel = null, evidence = "produ
         onClick={onClick}
         onKeyDown={onKeyDown}
       >
-        <ProductImage
-          image={item.image}
-          alt={item.image.alt || name}
-          sizes="(min-width: 1024px) 560px, (min-width: 768px) 70vw, 82vw"
-          priority={priority && current === 0}
-          pose={evidence === "used" ? 0 : undefined}
-          shadow={evidence === "used" ? false : undefined}
-        />
+        <ProductImage image={item.image} alt={item.image.alt || name} sizes="(min-width: 1024px) 714px, (min-width: 768px) 92vw, 100vw" priority={priority && current === 0} />
       </button>
     </Stage>
   );
 
   return (
-    <div className={cx("min-w-0", className)}>
+    <div className={cx("gallery", className)}>
       {sharedName ? (
         <SharedElement name={sharedName} target>
           {stage}
@@ -229,22 +191,33 @@ export function Gallery({ name, items, sharedName, gel = null, evidence = "produ
       ) : (
         stage
       )}
-      {evidence === "used" ? (
-        <p className={cx("mt-2 flex items-start gap-1.5 px-1 type-caption", illustrationOnUsed ? "font-medium text-warn" : "text-ink-2")} aria-live="polite" data-evidence={illustrationOnUsed ? "illustration" : "real"}>
-          <Icon name={illustrationOnUsed ? "image" : "camera"} size={16} className="mt-0.5 shrink-0" />
-          <span>{caption}</span>
+      {illustrationOnUsed ? (
+        <p className="flex items-start gap-1.5 type-xs-strong text-warn" data-evidence="illustration">
+          <Icon name="image" size={16} className="mt-0.5 shrink-0" />
+          <span>{t("gallery.illustration")}</span>
         </p>
       ) : null}
-      <GalleryViewer
-        open={viewerOpen}
-        onClose={() => setViewerOpen(false)}
-        name={name}
-        items={items}
-        index={current}
-        onIndex={go}
-        captionOf={captionOf}
-        thumbs={thumbs}
-      />
+      {total > 1 ? <Thumbs name={name} items={items} index={current} onIndex={go} captionOf={captionOf} /> : null}
+      <GalleryViewer open={viewerOpen} onClose={() => setViewerOpen(false)} name={name} items={items} index={current} onIndex={go} captionOf={captionOf} />
+    </div>
+  );
+}
+
+/** The thumbnails: a radiogroup of 56px (76 from 1024) wells; roving tabindex; arrows follow the reading direction. */
+function Thumbs({ name, items, index, onIndex, captionOf, className }: { name: string; items: readonly GalleryItem[]; index: number; onIndex: (index: number) => void; captionOf: (item: GalleryItem | undefined) => string; className?: string }) {
+  const t = useT("ui-shop");
+  const f = useFormat();
+  const values = items.map((_, i) => String(i));
+  const { itemProps } = useRovingRadio({ values, value: String(index), onChange: (value) => onIndex(Number(value)) });
+  return (
+    <div role="radiogroup" aria-label={t("gallery.label", { name })} className={cx("thumbs", className)}>
+      {items.map((entry, i) => (
+        <button key={i} type="button" className="thumb" data-press="soft" aria-label={t("gallery.thumb", { n: f.number(i + 1), caption: captionOf(entry) })} {...itemProps(i)}>
+          <span className="render-slot place-items-center">
+            <ProductImage image={entry.image} alt="" sizes="76px" fit="cover" />
+          </span>
+        </button>
+      ))}
     </div>
   );
 }
@@ -257,10 +230,9 @@ type ViewerProps = {
   index: number;
   onIndex: (index: number) => void;
   captionOf: (item: GalleryItem | undefined) => string;
-  thumbs: { value: string; ariaLabel: string; media: ReactNode }[];
 };
 
-/** The full-screen viewer (DESIGN.md §9.6): mounted while open or leaving; a layer of the shared modal stack. */
+/** The full-screen viewer: mounted while open or leaving; a layer of the shared modal stack (./Dialog). */
 function GalleryViewer(props: ViewerProps) {
   usePrimeLayers();
   const [present, exited] = usePresence(props.open);
@@ -268,7 +240,7 @@ function GalleryViewer(props: ViewerProps) {
   return <ViewerLayer {...props} leaving={!props.open} onExited={exited} />;
 }
 
-function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, thumbs, leaving, onExited }: ViewerProps & { leaving: boolean; onExited: () => void }) {
+function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, leaving, onExited }: ViewerProps & { leaving: boolean; onExited: () => void }) {
   const t = useT("ui-shop");
   const f = useFormat();
   const root = useOverlayRoot();
@@ -283,7 +255,7 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, thumbs, 
 
   useModalLayer({ root, host, active: !leaving, onEscape: onClose, initialFocus: () => closeKey.current });
 
-  // In and out with opacity only (the floor fades over the page; reduced motion: a 120ms fade).
+  // In and out with opacity only (reduced motion: a 120ms fade).
   useLayoutEffect(() => {
     if (!host) return;
     if (!leaving) {
@@ -304,7 +276,6 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, thumbs, 
 
   if (!root) return null;
   const item = items[index];
-  const caption = captionOf(item);
 
   const toggleZoom = (at?: { x: number; y: number }) => {
     const box = scroller.current;
@@ -321,7 +292,7 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, thumbs, 
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if ((event.target as Element).closest('[role="radiogroup"]')) return; // the thumbnail keys move by themselves
+    if ((event.target as Element).closest('[role="radiogroup"]')) return; // the thumbnails move by themselves
     const step = arrowStep(event.key, getComputedStyle(event.currentTarget).direction === "rtl");
     if (step === 0) return;
     event.preventDefault();
@@ -338,9 +309,9 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, thumbs, 
       inert={leaving || undefined}
       className="fixed inset-0 z-(--z-dialog) grid grid-rows-[auto_minmax(0,1fr)_auto] bg-floor text-ink opacity-0"
     >
-      <div className="flex items-center justify-between gap-3 px-4 pt-[max(12px,var(--safe-top))] pb-2">
-        <p className="min-w-0 truncate type-label text-ink-2">
-          <bdi className="nums">{t("gallery.count", { n: f.number(index + 1), total: f.number(items.length) })}</bdi> · {caption}
+      <div className="flex items-center justify-between gap-3 px-4 pt-[max(8px,var(--safe-top))] pb-2">
+        <p className="min-w-0 truncate type-sm-strong text-ink-2">
+          <bdi className="nums">{t("gallery.count", { n: f.number(index + 1), total: f.number(items.length) })}</bdi>
         </p>
         <div className="flex shrink-0 items-center gap-2">
           <IconKey icon="magnifying-glass" label={t(zoomed ? "gallery.zoomOut" : "gallery.zoomIn")} held={zoomed} onClick={() => toggleZoom()} />
@@ -350,15 +321,13 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, thumbs, 
       <div ref={scroller} className="relative overflow-auto overscroll-contain" onDoubleClick={(event) => toggleZoom({ x: event.clientX, y: event.clientY })}>
         <div className={cx("grid place-items-center p-4", zoomed ? "h-[200%] w-[200%] cursor-zoom-out" : "size-full cursor-zoom-in")}>
           <span className="render-slot size-full place-items-center">
-            <ProductImage image={item.image} alt={item.image.alt || name} sizes={zoomed ? "200vw" : "100vw"} pose={0} shadow={false} />
+            <ProductImage image={item.image} alt={item.image.alt || name} sizes={zoomed ? "200vw" : "100vw"} />
           </span>
         </div>
       </div>
-      <Glass edge="bottom" className="flex justify-center rounded-t-xl px-4 pt-3 pb-[max(12px,var(--safe-bottom))]">
-        <div className="max-w-full overflow-x-auto py-1">
-          <KeyBank kind="thumb" aria-label={t("gallery.label", { name })} items={thumbs} value={String(index)} onChange={(value) => onIndex(Number(value))} />
-        </div>
-      </Glass>
+      <div className="flex justify-center border-t border-line bg-paper px-4 pt-2 pb-[max(8px,var(--safe-bottom))]">
+        <Thumbs name={name} items={items} index={index} onIndex={onIndex} captionOf={captionOf} className="max-w-full" />
+      </div>
     </div>,
     root,
   );

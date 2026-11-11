@@ -1,318 +1,331 @@
-// lint-design: allow commit-count — specimens of the add key in every state (cards, the buy bar), not a shopping view.
+// lint-design: allow primary-count — the reference page shows every buying state side by side; it is not a shopping view.
 import { useState, type ReactNode } from "react";
 
-import { useT } from "~/i18n/react";
 import type { CartLine, ImageRef, ProductCardData, Shelf, UsedUnitCardData } from "~/lib/dto";
-import { AddToCartKey, BuyBar } from "~/ui/AddToCartKey";
+import { AddToCartKey, BuyBar, BuyControls, CardAddButton } from "~/ui/AddToCartKey";
 import { CartLineRow } from "~/ui/CartLineRow";
-import { CompatBadge } from "~/ui/CompatBadge";
-import { DemoNote } from "~/ui/DemoNote";
+import { ChipGroup } from "~/ui/Chip";
 import { Gallery } from "~/ui/Gallery";
-import { GradeBadge } from "~/ui/GradeBadge";
 import { InspectionCard } from "~/ui/InspectionCard";
-import { OrderSummary } from "~/ui/OrderSummary";
-import { PlatformBank } from "~/ui/PlatformBank";
-import type { Platform } from "~/ui/PlatformLed";
-import { PriceTag } from "~/ui/PriceTag";
+import { Key } from "~/ui/Key";
+import { CouponField, OrderSummary } from "~/ui/OrderSummary";
+import { PLATFORMS } from "~/ui/PlatformLed";
 import { ProductCard, ProductCardPlaceholder } from "~/ui/ProductCard";
 import { ProofUploader, type ProofUploadControls, type ProofUploadResult } from "~/ui/ProofUploader";
-import { RatingStars } from "~/ui/RatingStars";
 import { ShelfRail } from "~/ui/ShelfRail";
-import { StockNote } from "~/ui/StockNote";
 import { Toaster } from "~/ui/Toast";
+import { TrustStrip } from "~/ui/TrustStrip";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { WalletBalance, type WalletEntry } from "~/ui/WalletBalance";
 import { WishlistKey } from "~/ui/WishlistKey";
-import { DsBlock, defineCopy, Specimen, SpecimenGrid, SpecimenRow, useCopy, type DsSectionMeta } from "../kit";
+import { useT } from "~/i18n/react";
+import { DsBlock, defineCopy, Specimen, SpecimenGrid, useCopy, type DsSectionMeta } from "../kit";
 
 export const section: DsSectionMeta = {
   id: "commerce",
   order: 20,
   title: { ar: "التسوّق", en: "Commerce", ckb: "بازاڕکردن" },
-  owner: "app/ui — ProductCard, AddToCartKey, Gallery, CartLineRow, OrderSummary, ProofUploader, WalletBalance, InspectionCard … · docs/ui/commerce.md",
+  owner: "app/ui — ProductCard, AddToCartKey, Gallery, CartLineRow, OrderSummary, UsedUnitCard, InspectionCard, ProofUploader, WalletBalance · docs/ui/commerce.md",
 };
 
 const COPY = defineCopy({
   ar: {
-    sample: "عيّنة للعرض: الأسماء حقيقية، والأسعار والمخزون من بيانات المتجر التجريبية. الإضافة إلى السلة تعمل فعلاً على سلة هذا المتصفح في المتجر التجريبي، والمفضلة تفشل بصدق لأن خدمتها لم تُبنَ بعد.",
+    sample: "عيّنة للعرض: الأسماء حقيقية، والأسعار والمخزون من بيانات المتجر التجريبية. الإضافة إلى السلة تعمل فعلاً على سلة هذا المتصفح في المتجر التجريبي.",
     cards: "بطاقة المنتج",
-    cardsNote: "بطاقة واحدة لكل المنتجات: كوّة مسطّحة بلا إطار، اسم بسطرين، سطر حقائق، السعر في البداية، والمفتاح الأحمر في مقبسه في النهاية. الصور المفرّغة تطفو؛ الصور غير المفرّغة وأغلفة الألعاب تجلس في إطارها.",
-    default: "عادي",
-    deal: "تخفيض حقيقي",
-    lowStock: "كمية محدودة",
-    soldOut: "نفد",
-    options: "يحتاج اختياراً",
-    longName: "اسم طويل بلغتين",
-    opaque: "صورة غير مفرّغة",
+    cardsNote: "بطاقة واحدة بلا إطار: بئر مربع على أرضية المنتج، والشارة في البداية والقلب في النهاية؛ تحتها سطر المنصة والاسم بسطرين وحقيقتان، ثم السعر وزر الإضافة المحايد. البطاقة كلها رابط واحد.",
+    inStock: "متوفر",
+    isNew: "جديد",
+    sale: "تخفيض حقيقي",
+    soon: "قريباً",
+    out: "نفد",
+    options: "بخيارات (نظرة سريعة)",
     boxArt: "غلاف لعبة",
+    digital: "بطاقة رقمية",
+    wide: "جهاز عريض",
+    wish: "مع القلب",
+    failing: "صورة لم تُحمَّل",
     loading: "قيد التحميل",
-    used: "جهاز مستعمل",
-    failing: "إضافة تفشل",
-    failingNote: "معرّف غير موجود: يتراجع العدّاد ويعود الحبّة، وتظهر جملة الخطأ و«أعد المحاولة».",
-    rtl: "من اليمين",
-    ltr: "من اليسار",
-    nameSwitch: "Nintendo Switch 2",
-    subSwitch: "256GB · ضمان سنة",
-    subPro: "2TB · بدون قارئ أقراص",
-    subOled: "أبيض · ضمان سنة",
-    subLite: "تركوازي",
-    subDeck: "512GB أو 1TB",
-    subMkw: "لعبة Nintendo Switch 2",
-    namePulse: "سماعة PlayStation Pulse Elite اللاسلكية مع قاعدة الشحن",
-    subPulse: "لاسلكية · PS5 و PS Portal",
-    nameUsed: "Nintendo Switch OLED مستعمل",
-    subUsed: "أبيض · 64GB",
-    add: "مفتاح الإضافة إلى السلة",
-    addNote: "متفائل ولا يعطّل شيئاً: العدّاد يتغير فوراً، والحبّة تطير، والطلب يخرج خلال 250 جزءاً من الثانية مع أي نقرات أخرى. بعد التأكيد علامة صح لثانية وربع ورسالة منبثقة فيها «تراجع».",
-    socket: "في المقبس",
-    keyVariant: "مفتاح بنص",
-    buyBar: "شريط الشراء",
-    buyBarNote: "زجاج مثبّت في أسفل صفحة المنتج على الهاتف: العدّاد في البداية والمفتاح الأحمر بعرض كامل في النهاية.",
-    specs: "المواصفات",
-    display: "الشاشة",
-    displayValue: "7.9 بوصة · 120Hz",
-    storage: "التخزين",
-    battery: "البطارية",
+    rows: "بطاقة الصف",
+    rowsNote: "بئر 96 بكسل في البداية، والكلمات والسعر بجانبه، والزر في النهاية: لمراكز الأجهزة والاقتراحات العريضة.",
+    add: "زر الإضافة",
+    addNote: "محايد: دائرة 40 بكسل على الورق، تمتلئ بالأحمر تحت المؤشر، وبعد الإضافة علامة صح بلون النجاح حتى نهاية الجلسة؛ نقرة أخرى تضيف قطعة. المنتج ذو الخيارات يفتح النظرة السريعة.",
+    ready: "جاهز",
+    choose: "يحتاج اختياراً",
+    keyVariant: "الزر الأساسي",
+    buy: "أدوات الشراء وشريط الشراء",
+    buyNote: "من 1024: العدّاد والزر الأساسي والقلب، وتحتها أزرار نصية. على الهاتف شريط زجاجي في الأسفل: السعر والنسخة في البداية والزر في النهاية؛ بعد الإضافة «في السلة» و«عرض السلة (2)».",
+    variant: "النسخة الدولية · 256GB",
     wishlist: "المفضلة",
+    compare: "قارن",
+    share: "مشاركة",
+    barDefault: "عادي",
+    barOut: "نفد",
+    barSoon: "قريباً",
+    gallery: "المعرض والمسرح",
+    galleryNote: "أرضية محايدة، المنتج مستقيم وكبير على خط الأرض. داخل المسرح العدّاد وزر ملء الشاشة فقط؛ الصور المصغّرة تحته.",
+    galleryUsed: "مستعمل: صورة توضيحية",
     shelf: "الرفّ",
+    shelfNote: "رأس القسم ثم صف يمرّر على الهاتف وشبكة من البطاقات الكاملة من 1024. الرفّ الذي فيه أقل من 3 منتجات لا يظهر.",
     shelfTitle: "وصل حديثاً",
-    shelfReason: "اقتراحات المتجر — عيّنة للعرض",
-    bank: "بنك المنصّات",
-    bankNote: "أربعة مفاتيح بأيقونة جهاز محايدة وضوء صغير واسم المنصة نصاً. لا شعارات ولا أسطح ملوّنة.",
-    onboarding: "اختيار عدة منصّات (البداية)",
-    gallery: "معرض الصور",
-    galleryNote: "مسرح مضاء بلون المنصة، ومفاتيح مصغّرة في مجرى، والتعليق والعدّ. اسحب أو استخدم الأسهم، واضغط الصورة لعرضها بملء الشاشة. صور الأجهزة المستعملة لا تُضاء أبداً.",
-    galleryGame: "لعبة: غلاف ولقطات",
-    galleryUsed: "مستعمل: صورة توضيحية فقط",
-    badges: "السعر والمخزون والتوافق والتقييم والدرجة",
-    badgesNote: "حبر مسطّح للمال، ونقطة مع كلمات للحالة، وأيقونة مع كلمات للتوافق. التقييم لا يظهر إلا مع مراجعات حقيقية؛ الأرقام هنا عيّنة.",
-    ratingNull: "rating = null: لا شيء يُعرض",
-    lines: "سطور السلة وملخص الطلب",
-    linesNote: "عيّنة محلية: العدّاد والإزالة يعملان هنا دون إرسال أي شيء. في صفحة السلة يملك useCartEditor الطلبات.",
-    summaryFlat: "قبل اختيار المحافظة",
-    summaryCoupon: "مع رمز خصم",
-    summaryPending: "تغيير قيد الإرسال",
-    summaryUnserved: "محافظة لا نوصل إليها",
+    shelfReason: "أحدث ما أضفناه، والمتوفر الآن — عيّنة للعرض",
+    all: "الكل",
+    used: "الأجهزة المستعملة",
+    usedNote: "لا إضافة إلى السلة من القائمة: صفحة الجهاز تعرض الفحص أولاً. الصورة التوضيحية تقول ذلك بالكلمات.",
+    lines: "سطور السلة",
+    linesNote: "قيمة الخيار وحدها، والتوفّر، والعدّاد، والمجموع، و«إزالة». الإزالة تترك صف التراجع. عيّنة محلية لا ترسل شيئاً.",
+    summary: "ملخص الطلب",
+    summaryNote: "رقم أحمر واحد: الإجمالي. زر التأكيد داخل البطاقة على سطح المكتب، ثم سطر الثقة وسطر الطلب التجريبي.",
+    placeOrder: "أكّد الطلب",
     summaryBroken: "أرقام لا تتطابق",
+    summaryUnserved: "محافظة لا نوصل إليها",
     couponLabel: "خصم 50,000 د.ع على الطلب",
-    compatNote: "الصوت عبر USB فقط، دون الميكروفون.",
-    white: "أبيض",
+    inspection: "تقرير الفحص",
     proof: "رفع صورة الحوالة",
-    proofNote: "كل الحالات. المثالان التفاعليان محاكاة داخل المتصفح: لا يُرسل أي ملف إلى أي خادم. الثاني ينقطع عند 60% في المحاولة الأولى.",
+    proofNote: "كل الحالات. المثالان التفاعليان محاكاة داخل المتصفح: لا يُرسل أي ملف إلى أي خادم.",
     simulated: "محاكاة تنجح",
     simulatedBreak: "محاكاة تنقطع ثم تكتمل",
     rejectedNote: "المبلغ في الصورة 745,000 د.ع ومبلغ الطلب 765,000 د.ع.",
     wallet: "المحفظة",
-    walletNote: "الرصيد مجموع الحركات ولا يُكتب يدوياً أبداً. الضيف يرى جملة ورابط دخول.",
-    walletPay: "عند الدفع: يكفي",
-    walletShort: "عند الدفع: لا يكفي",
+    walletNote: "الرصيد على شريط المحفظة: قرمزي في الفاتح وخزانة مضاءة في الداكن. الرصيد مجموع الحركات ولا يُكتب يدوياً. الضيف يرى جملة ورابط دخول.",
     guest: "ضيف",
-    inspection: "تقرير فحص الجهاز المستعمل",
+    walletPay: "عند الدفع",
+    nameSwitch: "Nintendo Switch 2",
+    subSwitch: "256GB · ضمان الشركة المصنّعة",
+    subPro: "2TB · بدون قارئ أقراص",
+    subOled: "أبيض · 64GB",
+    subLite: "تركوازي",
+    subDeck: "512GB أو 1TB",
+    subMkw: "حتى 24 متسابقاً · PEGI 3",
+    subCard: "رصيد رقمي · المتجر الأمريكي",
+    subLegion: "شاشة 8.8 بوصة · 512GB",
+    kindConsoleSwitch: "جهاز Switch 2",
+    kindConsolePs5: "جهاز PS5",
+    kindGame: "لعبة Switch 2",
+    kindHandheld: "جهاز محمول",
+    kindCard: "بطاقة شحن · Nintendo",
+    kindXbox: "جهاز Xbox",
+    nameUsed: "Nintendo Switch OLED مستعمل",
+    subUsed: "أبيض · 64GB",
+    white: "أبيض",
     checkScreen: "الشاشة واللمس",
     checkSticks: "الأزرار وعصا التحكم",
     checkSticksNote: "انحراف بسيط في العصا اليسرى، لا يؤثر في اللعب.",
     checkPorts: "المنافذ والقاعدة",
     checkCharging: "الشحن",
-    checkWifi: "Wi-Fi و Bluetooth",
     defect1: "خدش خفيف على الحافة العلوية للشاشة.",
-    defect2: "أثر استعمال على ذراع Joy-Con اليمنى.",
     included1: "القاعدة وكابل HDMI",
     included2: "ذراعا Joy-Con مع الحامل",
-    included3: "الشاحن الأصلي",
   },
   en: {
-    sample: "Sample data: the names are real; prices and stock come from the demo store. Adding to the cart really works on this browser's demo cart; favourites fail honestly because their service is not built yet.",
+    sample: "Sample data: the names are real; prices and stock come from the demo store. Adding to the cart really works on this browser's demo cart.",
     cards: "Product card",
-    cardsNote: "One card for every product: a flat niche with no chrome, a two-line name, a fact line, the price at the start and the red key in its socket at the end. Cut-out photos float; opaque photos and box art sit in their own frame.",
-    default: "Default",
-    deal: "Genuine reduction",
-    lowStock: "Limited stock",
-    soldOut: "Sold out",
-    options: "Needs a choice",
-    longName: "Long mixed-script name",
-    opaque: "Opaque photo",
-    boxArt: "Game box art",
+    cardsNote: "One card with no container: a square well on the product ground, the badge at the start and the heart at the end; under it the platform line, the name on two lines and two facts, then the price and the neutral add button. The whole card is one link.",
+    inStock: "In stock",
+    isNew: "New",
+    sale: "A real reduction",
+    soon: "Coming soon",
+    out: "Sold out",
+    options: "With options (quick look)",
+    boxArt: "Box art",
+    digital: "Digital card",
+    wide: "A wide device",
+    wish: "With the heart",
+    failing: "The picture failed",
     loading: "Loading",
-    used: "Used device",
-    failing: "An add that fails",
-    failingNote: "An unknown id: the count rolls back, the bead returns, the sentence and “Try again” appear.",
-    rtl: "Right to left",
-    ltr: "Left to right",
-    nameSwitch: "Nintendo Switch 2",
-    subSwitch: "256GB · 1-year warranty",
-    subPro: "2TB · no disc drive",
-    subOled: "White · 1-year warranty",
-    subLite: "Turquoise",
-    subDeck: "512GB or 1TB",
-    subMkw: "Nintendo Switch 2 game",
-    namePulse: "PlayStation Pulse Elite wireless headset with charging stand",
-    subPulse: "Wireless · PS5 and PS Portal",
-    nameUsed: "Used Nintendo Switch OLED",
-    subUsed: "White · 64GB",
-    add: "Add-to-cart key",
-    addNote: "Optimistic and never blocking: the count changes at once, the bead flies, and the request leaves within 250 ms together with any other taps. Once confirmed: a check for 1.2 s and a toast with “Undo”.",
-    socket: "In its socket",
-    keyVariant: "Labelled key",
-    buyBar: "Buy bar",
-    buyBarNote: "Glass pinned to the bottom of the product page on phones: the stepper at the start, the full-width red key at the end.",
-    specs: "Specifications",
-    display: "Display",
-    displayValue: "7.9 inch · 120Hz",
-    storage: "Storage",
-    battery: "Battery",
-    wishlist: "Favourite",
+    rows: "Row card",
+    rowsNote: "A 96px well at the start, the words and the price beside it, the button at the end: device hubs and wide suggestions.",
+    add: "The add button",
+    addNote: "Neutral: a 40px circle on paper that fills red under the pointer; after an add an ok check for the rest of the session; another tap adds one more. A product with options opens the quick look.",
+    ready: "Ready",
+    choose: "Needs a choice",
+    keyVariant: "The primary button",
+    buy: "Buy controls and the buy bar",
+    buyNote: "From 1024: the stepper, the primary and the heart, with text buttons under them. On phones a glass bar at the bottom: the price and version at the start, the button at the end; after an add «In your cart» and «View cart (2)».",
+    variant: "International version · 256GB",
+    wishlist: "Favourites",
+    compare: "Compare",
+    share: "Share",
+    barDefault: "Default",
+    barOut: "Sold out",
+    barSoon: "Coming soon",
+    gallery: "Gallery and stage",
+    galleryNote: "A neutral ground; the product straight and big on the floor line. Inside the stage only the counter and the full-screen button; the thumbnails under it.",
+    galleryUsed: "Used: an illustration",
     shelf: "Shelf",
+    shelfNote: "The section head, then a row that scrolls on phones and a grid of whole cards from 1024. A shelf with fewer than 3 products does not render.",
     shelfTitle: "New arrivals",
-    shelfReason: "Store picks — sample",
-    bank: "Platform bank",
-    bankNote: "Four keys with a neutral device pictogram, a small LED and the platform's name as text. No logos, no coloured surfaces.",
-    onboarding: "Several platforms (onboarding)",
-    gallery: "Gallery",
-    galleryNote: "A stage lit in the platform's colour, thumbnail keys in a well, the caption and the count. Swipe or use the arrows; tap the picture for full screen. Used-device photos are never lit.",
-    galleryGame: "A game: box art and screenshots",
-    galleryUsed: "Used: an illustration only",
-    badges: "Price, stock, compatibility, rating, grade",
-    badgesNote: "Flat ink for money, a dot and words for state, an icon and words for compatibility. A rating appears only with real reviews; the numbers here are a sample.",
-    ratingNull: "rating = null: nothing is drawn",
-    lines: "Cart lines and order summary",
-    linesNote: "Local sample: the stepper and removal work here without sending anything. On the cart page useCartEditor owns the requests.",
-    summaryFlat: "Before a governorate is chosen",
-    summaryCoupon: "With a discount code",
-    summaryPending: "A change in flight",
-    summaryUnserved: "A governorate we do not serve",
-    summaryBroken: "Figures that do not reconcile",
+    shelfReason: "The newest we added, in stock now — sample",
+    all: "All",
+    used: "Used devices",
+    usedNote: "No add to cart from a list: the unit's page shows the inspection first. An illustration says so in words.",
+    lines: "Cart lines",
+    linesNote: "The option value only, availability, the stepper, the line total and «Remove». Removing leaves the undo row. A local sample: nothing is sent.",
+    summary: "Order summary",
+    summaryNote: "One red figure: the total. The commit button sits inside the card on desktop, then the trust line and the demo-order line.",
+    placeOrder: "Place order",
+    summaryBroken: "Figures that do not add up",
+    summaryUnserved: "A governorate we do not deliver to",
     couponLabel: "50,000 IQD off the order",
-    compatNote: "Sound over USB only, without the microphone.",
-    white: "White",
-    proof: "Transfer proof upload",
-    proofNote: "Every state. The two interactive ones are simulations inside the browser: no file is sent to any server. The second stops at 60% on its first attempt.",
-    simulated: "Simulation that succeeds",
-    simulatedBreak: "Simulation that breaks, then finishes",
+    inspection: "Inspection report",
+    proof: "Transfer photo upload",
+    proofNote: "Every state. The two interactive ones are simulated in the browser: no file is sent anywhere.",
+    simulated: "Simulated success",
+    simulatedBreak: "Simulated: breaks, then finishes",
     rejectedNote: "The photo shows 745,000 IQD; the order is 765,000 IQD.",
     wallet: "Wallet",
-    walletNote: "The balance is the sum of the entries and is never typed in. A guest sees one sentence and a sign-in link.",
-    walletPay: "At payment: enough",
-    walletShort: "At payment: not enough",
+    walletNote: "The balance on the wallet band: crimson in light, a lit cabinet in dark. The balance is the sum of the ledger and never typed in. A guest sees one sentence and a sign-in link.",
     guest: "Guest",
-    inspection: "Used-device inspection report",
+    walletPay: "At payment",
+    nameSwitch: "Nintendo Switch 2",
+    subSwitch: "256GB · manufacturer warranty",
+    subPro: "2TB · no disc drive",
+    subOled: "White · 64GB",
+    subLite: "Turquoise",
+    subDeck: "512GB or 1TB",
+    subMkw: "Up to 24 racers · PEGI 3",
+    subCard: "Digital credit · US store",
+    subLegion: "8.8-inch screen · 512GB",
+    kindConsoleSwitch: "Switch 2 console",
+    kindConsolePs5: "PS5 console",
+    kindGame: "Switch 2 game",
+    kindHandheld: "Handheld PC",
+    kindCard: "Gift card · Nintendo",
+    kindXbox: "Xbox console",
+    nameUsed: "Used Nintendo Switch OLED",
+    subUsed: "White · 64GB",
+    white: "White",
     checkScreen: "Screen and touch",
     checkSticks: "Buttons and sticks",
-    checkSticksNote: "Slight drift on the left stick; it does not affect play.",
+    checkSticksNote: "A slight drift on the left stick; it does not affect play.",
     checkPorts: "Ports and dock",
     checkCharging: "Charging",
-    checkWifi: "Wi-Fi and Bluetooth",
     defect1: "A light scratch on the top edge of the screen.",
-    defect2: "Signs of use on the right Joy-Con.",
-    included1: "Dock and HDMI cable",
-    included2: "Both Joy-Con with the grip",
-    included3: "The original charger",
+    included1: "The dock and an HDMI cable",
+    included2: "Two Joy-Con with the grip",
   },
   ckb: {
-    sample: "داتای نموونە: ناوەکان ڕاستەقینەن؛ نرخ و کۆگا لە فرۆشگای تاقیکارییەوەن. خستنە ناو سەبەتە بەڕاستی کار دەکات لەسەر سەبەتەی ئەم وێبگەڕە لە فرۆشگای تاقیکاری؛ دڵخوازەکان بە ڕاستگۆیی سەرناکەون چونکە خزمەتگوزارییەکەیان هێشتا دروست نەکراوە.",
+    sample: "داتای نموونە: ناوەکان ڕاستەقینەن؛ نرخ و کۆگا لە فرۆشگای تاقیکارییەوەن. زیادکردن بۆ سەبەتە لەسەر سەبەتەی تاقیکاریی ئەم وێبگەڕە کار دەکات.",
     cards: "کارتی کاڵا",
-    cardsNote: "یەک کارت بۆ هەموو کاڵاکان: کووەیەکی تەخت بێ چوارچێوە، ناوێکی دوو دێڕی، دێڕێکی زانیاری، نرخ لە سەرەتا و کلیلە سوورەکە لە سۆکێتەکەیدا لە کۆتایی. وێنە بڕدراوەکان دەفڕن؛ وێنە ناڕوونەکان و بەرگی یارییەکان لە چوارچێوەی خۆیاندا دادەنیشن.",
-    default: "ئاسایی",
-    deal: "داشکاندنی ڕاستەقینە",
-    lowStock: "بڕی سنووردار",
-    soldOut: "نەماوە",
-    options: "پێویستی بە هەڵبژاردنە",
-    longName: "ناوی درێژی دوو زمان",
-    opaque: "وێنەی نەبڕدراو",
+    cardsNote: "یەک کارت بێ چوارچێوە: بیرێکی چوارگۆشە لەسەر زەوی کاڵا، نیشانە لە سەرەتا و دڵ لە کۆتایی؛ لە خوارەوە هێڵی پلاتفۆرم و ناو بە دوو دێڕ و دوو ڕاستی، پاشان نرخ و دوگمەی زیادکردنی بێلایەن.",
+    inStock: "بەردەستە",
+    isNew: "نوێ",
+    sale: "داشکاندنی ڕاستەقینە",
+    soon: "بەم زووانە",
+    out: "نەماوە",
+    options: "بە هەڵبژاردن (سەیرکردنی خێرا)",
     boxArt: "بەرگی یاری",
-    loading: "بارکردن",
-    used: "ئامێری بەکارهاتوو",
-    failing: "زیادکردنێک کە سەرناکەوێت",
-    failingNote: "ناسێنەرێکی نەناسراو: ژمێرەرەکە دەگەڕێتەوە، دەنکەکە دەگەڕێتەوە، ڕستەکە و «دووبارە هەوڵ بدەوە» دەردەکەون.",
-    rtl: "لە ڕاستەوە",
-    ltr: "لە چەپەوە",
+    digital: "کارتی دیجیتاڵ",
+    wide: "ئامێرێکی پان",
+    wish: "لەگەڵ دڵ",
+    failing: "وێنەکە بار نەبوو",
+    loading: "بار دەکرێت",
+    rows: "کارتی ڕیز",
+    rowsNote: "بیرێکی 96 پیکسڵی لە سەرەتا، وشە و نرخ لە تەنیشتی، دوگمە لە کۆتایی.",
+    add: "دوگمەی زیادکردن",
+    addNote: "بێلایەن: بازنەیەکی 40 پیکسڵی لەسەر کاغەز کە لە ژێر نیشاندەردا سوور دەبێت؛ دوای زیادکردن نیشانەی ڕاست تا کۆتایی دانیشتنەکە.",
+    ready: "ئامادە",
+    choose: "پێویستی بە هەڵبژاردنە",
+    keyVariant: "دوگمەی سەرەکی",
+    buy: "ئامرازەکانی کڕین و شریتی کڕین",
+    buyNote: "لە 1024 بەرەوژوور: ژمێرەر و دوگمەی سەرەکی و دڵ. لە مۆبایلدا شریتێکی شووشەیی لە خوارەوە: نرخ و وەشان لە سەرەتا و دوگمە لە کۆتایی.",
+    variant: "وەشانی نێودەوڵەتی · 256GB",
+    wishlist: "دڵخوازەکان",
+    compare: "بەراورد",
+    share: "هاوبەشکردن",
+    barDefault: "ئاسایی",
+    barOut: "نەماوە",
+    barSoon: "بەم زووانە",
+    gallery: "پیشانگا و شانۆ",
+    galleryNote: "زەوییەکی بێلایەن؛ کاڵاکە ڕاست و گەورە لەسەر هێڵی زەوی. لە ناو شانۆدا تەنها ژمێرەر و دوگمەی شاشەی پڕ؛ وێنە بچووکەکان لە خوارەوە.",
+    galleryUsed: "بەکارهاتوو: وێنەی ڕوونکردنەوە",
+    shelf: "ڕەف",
+    shelfNote: "سەری بەش، پاشان ڕیزێک کە لە مۆبایلدا دەخولێتەوە و تۆڕێکی کارتی تەواو لە 1024 بەرەوژوور. ڕەفی کەمتر لە 3 کاڵا دەرناکەوێت.",
+    shelfTitle: "تازە گەیشتوو",
+    shelfReason: "نوێترین ئەوەی زیادمان کرد — نموونە",
+    all: "هەموو",
+    used: "ئامێرە بەکارهاتووەکان",
+    usedNote: "لە لیستەوە زیادکردن بۆ سەبەتە نییە: پەڕەی ئامێرەکە سەرەتا پشکنین پیشان دەدات.",
+    lines: "دێڕەکانی سەبەتە",
+    linesNote: "تەنها نرخی هەڵبژاردن، بەردەستبوون، ژمێرەر، کۆی دێڕ و «لابردن». نموونەیەکی ناوخۆیی: هیچ نانێردرێت.",
+    summary: "پوختەی داواکاری",
+    summaryNote: "یەک ژمارەی سوور: کۆی گشتی. دوگمەی دووپاتکردنەوە لە ناو کارتەکەدا لەسەر مێز.",
+    placeOrder: "داواکارییەکە دووپات بکەرەوە",
+    summaryBroken: "ژمارەی ناڕێک",
+    summaryUnserved: "پارێزگایەک کە ناگەیەنینە ئەوێ",
+    couponLabel: "50,000 دینار داشکاندن لەسەر داواکاری",
+    inspection: "ڕاپۆرتی پشکنین",
+    proof: "بارکردنی وێنەی گواستنەوە",
+    proofNote: "هەموو دۆخەکان. دوو نموونە کارلێککەرەکە لە ناو وێبگەڕدا لاسایی دەکرێنەوە: هیچ فایلێک نانێردرێت.",
+    simulated: "لاساییکردنەوەی سەرکەوتوو",
+    simulatedBreak: "لاساییکردنەوە: دەپچڕێت، پاشان تەواو دەبێت",
+    rejectedNote: "وێنەکە 745,000 دینار پیشان دەدات؛ داواکارییەکە 765,000 دینارە.",
+    wallet: "جزدان",
+    walletNote: "باڵانس لەسەر شریتی جزدان: قرمزی لە ڕووندا، کابینەیەکی ڕووناک لە تاریکدا. میوان ڕستەیەک و بەستەری چوونەژوورەوە دەبینێت.",
+    guest: "میوان",
+    walletPay: "لە کاتی پارەداندا",
     nameSwitch: "Nintendo Switch 2",
-    subSwitch: "256GB · گەرەنتی ساڵێک",
+    subSwitch: "256GB · گەرەنتیی کۆمپانیا",
     subPro: "2TB · بێ خوێنەری دیسک",
-    subOled: "سپی · گەرەنتی ساڵێک",
+    subOled: "سپی · 64GB",
     subLite: "فیرۆزەیی",
     subDeck: "512GB یان 1TB",
-    subMkw: "یاریی Nintendo Switch 2",
-    namePulse: "بیستۆکی بێتەلی PlayStation Pulse Elite لەگەڵ وێستگەی شەحن",
-    subPulse: "بێتەل · PS5 و PS Portal",
-    nameUsed: "Nintendo Switch OLEDی بەکارهاتوو",
+    subMkw: "تا 24 پێشبڕکێکار · PEGI 3",
+    subCard: "باڵانسی دیجیتاڵ · فرۆشگای ئەمریکی",
+    subLegion: "شاشەی 8.8 ئینج · 512GB",
+    kindConsoleSwitch: "ئامێری Switch 2",
+    kindConsolePs5: "ئامێری PS5",
+    kindGame: "یاریی Switch 2",
+    kindHandheld: "ئامێری دەستی",
+    kindCard: "کارتی پڕکردنەوە · Nintendo",
+    kindXbox: "ئامێری Xbox",
+    nameUsed: "Nintendo Switch OLED بەکارهاتوو",
     subUsed: "سپی · 64GB",
-    add: "کلیلی خستنە ناو سەبەتە",
-    addNote: "گەشبینە و هیچ ڕاناگرێت: ژمێرەرەکە دەستبەجێ دەگۆڕێت، دەنکەکە دەفڕێت، و داواکارییەکە لە ماوەی 250 میلیچرکەدا لەگەڵ هەر کرتەیەکی تر دەڕوات. دوای پشتڕاستکردنەوە: نیشانەی ڕاست بۆ 1.2 چرکە و پەیامێک لەگەڵ «پاشگەزبوونەوە».",
-    socket: "لە سۆکێتەکەدا",
-    keyVariant: "کلیلی نووسراو",
-    buyBar: "شریتی کڕین",
-    buyBarNote: "شووشەیەکی جێگیر لە خوارەوەی پەڕەی کاڵا لەسەر مۆبایل: ژمێرەرەکە لە سەرەتا، کلیلە سوورەکە بە پانیی تەواو لە کۆتایی.",
-    specs: "تایبەتمەندییەکان",
-    display: "شاشە",
-    displayValue: "7.9 ئینچ · 120Hz",
-    storage: "بیرگە",
-    battery: "پاتری",
-    wishlist: "دڵخواز",
-    shelf: "ڕەف",
-    shelfTitle: "تازە گەیشتووەکان",
-    shelfReason: "پێشنیاری فرۆشگا — نموونە",
-    bank: "بانکی پلاتفۆرمەکان",
-    bankNote: "چوار کلیل بە وێنۆچکەی ئامێرێکی بێلایەن و ڕووناکییەکی بچووک و ناوی پلاتفۆرم بە نووسین. بێ لۆگۆ و بێ ڕووی ڕەنگاوڕەنگ.",
-    onboarding: "چەند پلاتفۆرمێک (سەرەتا)",
-    gallery: "پیشانگای وێنە",
-    galleryNote: "شانۆیەکی ڕووناک بە ڕەنگی پلاتفۆرم، کلیلی وێنۆچکە لە جۆگەیەکدا، ڕوونکردنەوە و ژماردن. ڕایبکێشە یان تیرەکان بەکاربهێنە؛ وێنەکە دابگرە بۆ پڕی شاشە. وێنەی ئامێری بەکارهاتوو هەرگیز ڕووناک ناکرێت.",
-    galleryGame: "یارییەک: بەرگ و وێنەی شاشە",
-    galleryUsed: "بەکارهاتوو: تەنها وێنەی ڕوونکردنەوە",
-    badges: "نرخ، کۆگا، گونجاندن، هەڵسەنگاندن، پلە",
-    badgesNote: "مەرەکەبی تەخت بۆ پارە، خاڵ و وشە بۆ دۆخ، وێنۆچکە و وشە بۆ گونجاندن. هەڵسەنگاندن تەنها لەگەڵ پێداچوونەوەی ڕاستەقینە دەردەکەوێت؛ ژمارەکان لێرە نموونەن.",
-    ratingNull: "rating = null: هیچ پیشان نادرێت",
-    lines: "دێڕەکانی سەبەتە و پوختەی داواکاری",
-    linesNote: "نموونەی ناوخۆیی: ژمێرەر و لابردن لێرە کار دەکەن بێ ناردنی هیچ شتێک. لە پەڕەی سەبەتەدا useCartEditor خاوەنی داواکارییەکانە.",
-    summaryFlat: "پێش هەڵبژاردنی پارێزگا",
-    summaryCoupon: "لەگەڵ کۆدی داشکاندن",
-    summaryPending: "گۆڕانکارییەک لە ڕێگادایە",
-    summaryUnserved: "پارێزگایەک کە نایگەیەنین",
-    summaryBroken: "ژمارەگەلێک کە یەک ناگرنەوە",
-    couponLabel: "50,000 د.ع داشکاندن لە داواکارییەکە",
-    compatNote: "دەنگ تەنها لە ڕێگەی USB، بێ مایکرۆفۆن.",
     white: "سپی",
-    proof: "بارکردنی وێنەی حەواڵە",
-    proofNote: "هەموو دۆخەکان. دووە کارلێکەرەکە لاساییکردنەوەن لەناو وێبگەڕدا: هیچ فایلێک بۆ هیچ ڕاژەکارێک نانێردرێت. دووەمیان لە یەکەم هەوڵدا لە 60% دەوەستێت.",
-    simulated: "لاساییکردنەوەیەک کە سەردەکەوێت",
-    simulatedBreak: "لاساییکردنەوەیەک کە دەپچڕێت و پاشان تەواو دەبێت",
-    rejectedNote: "وێنەکە 745,000 د.ع پیشان دەدات؛ داواکارییەکە 765,000 د.ع ـە.",
-    wallet: "جزدان",
-    walletNote: "باڵانس کۆی جووڵەکانە و هەرگیز بە دەست نانووسرێت. میوان ڕستەیەک و بەستەری چوونەژوورەوە دەبینێت.",
-    walletPay: "لە کاتی پارەدان: بەسە",
-    walletShort: "لە کاتی پارەدان: بەس نییە",
-    guest: "میوان",
-    inspection: "ڕاپۆرتی پشکنینی ئامێری بەکارهاتوو",
     checkScreen: "شاشە و دەستلێدان",
-    checkSticks: "دوگمەکان و دەستەی کۆنترۆڵ",
-    checkSticksNote: "لادانێکی کەم لە دەستەی چەپ، کاریگەری لەسەر یاریکردن نییە.",
-    checkPorts: "دەروازەکان و بنکە",
-    checkCharging: "شەحنکردن",
-    checkWifi: "Wi-Fi و Bluetooth",
-    defect1: "خەتێکی سووک لەسەر لێواری سەرەوەی شاشەکە.",
-    defect2: "شوێنەواری بەکارهێنان لەسەر Joy-Conی ڕاست.",
+    checkSticks: "دوگمە و دەستکەکان",
+    checkSticksNote: "لادانێکی کەم لە دەستکی چەپ، کاریگەری لەسەر یاری نییە.",
+    checkPorts: "دەرچەکان و بنکە",
+    checkCharging: "بارگاویکردن",
+    defect1: "خەتێکی سووک لەسەر لێواری سەرەوەی شاشە.",
     included1: "بنکە و کێبڵی HDMI",
-    included2: "هەردوو Joy-Con لەگەڵ هەڵگرەکە",
-    included3: "شەحنکەرە ڕەسەنەکە",
+    included2: "دوو Joy-Con لەگەڵ هەڵگرەکە",
   },
 });
 
 type C = (typeof COPY)["ar"];
 
-/* ───────────────────────────── sample data (real photo keys from app/art/photos, demo-store ids) ───────────────────────────── */
+/* ───────────────────────────── sample data (real photo keys, demo-store ids) ───────────────────────────── */
 
 const photo = (artKey: string, alt = "", isIllustration = false): ImageRef => ({ artKey, mediaKey: null, alt, isIllustration });
+const DAY = 86_400_000;
+const NOW_SAMPLE = Date.UTC(2026, 10, 10, 9); // fixed, so server and client render the same dates
 
 function sampleCards(c: C): Record<string, ProductCardData> {
-  const base = { kind: "console" as const, platformSlug: "nintendo", platformName: "Nintendo", hasVariants: false, compareAtIqd: null, stock: "in_stock" as const, badge: null, rating: null, isDemo: true };
+  const base = {
+    kind: "console" as const,
+    platformSlug: "nintendo",
+    platformName: "Nintendo",
+    hasVariants: false,
+    compareAtIqd: null,
+    compareAtDemo: false,
+    stock: "in_stock" as const,
+    badge: null,
+    isNew: false,
+    rating: null,
+    isDemo: true,
+    releaseAt: null,
+  };
   return {
-    switch2: { ...base, id: "prd_nintendo-switch-2", slug: "nintendo-switch-2", name: c.nameSwitch, subtitle: c.subSwitch, variantId: "var_nsw2-con-256", priceIqd: 675_000, badge: "new", image: photo("nintendo-switch-2--1") },
-    pro: { ...base, id: "prd_playstation-5-pro", slug: "playstation-5-pro", name: "PlayStation 5 Pro", subtitle: c.subPro, platformSlug: "playstation", platformName: "PlayStation", variantId: "var_ps5-pro-2tb", priceIqd: 1_095_000, stock: "low_stock", badge: "new", image: photo("playstation-5-pro--1") },
-    oled: { ...base, id: "prd_nintendo-switch-oled", slug: "nintendo-switch-oled", name: "Nintendo Switch OLED", subtitle: c.subOled, variantId: "var_nsw-oled-wht", priceIqd: 435_000, compareAtIqd: 455_000, badge: "deal", image: photo("nintendo-switch-oled--1") },
-    lite: { ...base, id: "prd_nintendo-switch-lite", slug: "nintendo-switch-lite", name: "Nintendo Switch Lite", subtitle: c.subLite, variantId: "var_nsw-lite-trq", priceIqd: 285_000, stock: "out_of_stock", image: photo("nintendo-switch-lite--1") },
-    deck: { ...base, id: "prd_steam-deck-oled", slug: "steam-deck-oled", name: "Steam Deck OLED", subtitle: c.subDeck, platformSlug: "handheld", platformName: "Handheld", variantId: "var_sdo-512", hasVariants: true, priceIqd: 790_000, image: photo("steam-deck-oled--1") },
-    mkw: { ...base, id: "prd_mario-kart-world", slug: "mario-kart-world", kind: "game", name: "Mario Kart World", subtitle: c.subMkw, variantId: "var_nsw2-mkw", priceIqd: 110_000, badge: "new", image: photo("mario-kart-world--1") },
-    pulse: { ...base, id: "prd_pulse-elite-wireless-headset", slug: "pulse-elite-wireless-headset", kind: "headset", name: c.namePulse, subtitle: c.subPulse, platformSlug: "playstation", platformName: "PlayStation", variantId: "var_pulse-elite-wht", priceIqd: 220_000, compareAtIqd: 240_000, image: photo("pulse-elite--1") },
-    failing: { ...base, id: "prd_design-system-missing", slug: "xbox-series-s", name: "Xbox Series S", subtitle: "512GB", platformSlug: "xbox", platformName: "Xbox", variantId: "var_design-system-missing", priceIqd: 485_000, image: photo("xbox-series-s--1") },
+    switch2: { ...base, id: "prd_nintendo-switch-2", slug: "nintendo-switch-2", name: c.nameSwitch, subtitle: c.subSwitch, kindLabel: c.kindConsoleSwitch, variantId: "var_nsw2-con-256", priceIqd: 675_000, badge: "new", isNew: true, image: photo("nintendo-switch-2--1") },
+    pro: { ...base, id: "prd_playstation-5-pro", slug: "playstation-5-pro", name: "PlayStation 5 Pro", subtitle: c.subPro, kindLabel: c.kindConsolePs5, platformSlug: "playstation", platformName: "PlayStation", variantId: "var_ps5-pro-2tb", priceIqd: 1_095_000, image: photo("playstation-5-pro--1") },
+    oled: { ...base, id: "prd_nintendo-switch-oled", slug: "nintendo-switch-oled", name: "Nintendo Switch OLED", subtitle: c.subOled, kindLabel: c.kindConsoleSwitch, variantId: "var_nsw-oled-wht", priceIqd: 435_000, compareAtIqd: 455_000, badge: "deal", image: photo("nintendo-switch-oled--1") },
+    lite: { ...base, id: "prd_nintendo-switch-lite", slug: "nintendo-switch-lite", name: "Nintendo Switch Lite", subtitle: c.subLite, kindLabel: c.kindConsoleSwitch, variantId: "var_nsw-lite-trq", priceIqd: 285_000, stock: "out_of_stock", image: photo("nintendo-switch-lite--1") },
+    soon: { ...base, id: "prd_xbox-series-x", slug: "xbox-series-x", name: "Xbox Series X", subtitle: "1TB · 4K", kindLabel: c.kindXbox, platformSlug: "xbox", platformName: "Xbox", variantId: "var_xsx-1tb", priceIqd: 828_750, stock: "preorder", badge: "preorder", releaseAt: NOW_SAMPLE + 8 * DAY, image: photo("xbox-series-x--1") },
+    deck: { ...base, id: "prd_steam-deck-oled", slug: "steam-deck-oled", name: "Steam Deck OLED", subtitle: c.subDeck, kindLabel: c.kindHandheld, platformSlug: "handheld", platformName: "Handheld", variantId: "var_sdo-512", hasVariants: true, priceIqd: 790_000, image: photo("steam-deck-oled--1") },
+    mkw: { ...base, id: "prd_mario-kart-world", slug: "mario-kart-world", kind: "game", name: "Mario Kart World", subtitle: c.subMkw, kindLabel: c.kindGame, variantId: "var_nsw2-mkw", priceIqd: 110_000, image: photo("mario-kart-world--1") },
+    card: { ...base, id: "prd_nintendo-eshop-card", slug: "nintendo-eshop-card", kind: "digital", name: "Nintendo eShop Card $20", subtitle: c.subCard, kindLabel: c.kindCard, variantId: "var_eshop-20", priceIqd: 32_000, image: photo("nintendo-eshop-card--1") },
+    legion: { ...base, id: "prd_lenovo-legion-go-2", slug: "lenovo-legion-go-2", name: "Lenovo Legion Go 2", subtitle: c.subLegion, kindLabel: c.kindHandheld, platformSlug: "handheld", platformName: "Handheld", variantId: "var_lgo2-512", priceIqd: 1_099_000, image: photo("lenovo-legion-go-2--1") },
+    failing: { ...base, id: "prd_design-system-missing", slug: "xbox-series-s", name: "Xbox Series S", subtitle: "512GB", kindLabel: c.kindXbox, platformSlug: "xbox", platformName: "Xbox", variantId: "var_design-system-missing", priceIqd: 485_000, image: { artKey: null, mediaKey: "design-system/missing.webp", alt: "", isIllustration: false } },
   };
 }
 
@@ -326,16 +339,13 @@ function sampleUsed(c: C): UsedUnitCardData {
     grade: "A",
     batteryHealthPct: 91,
     priceIqd: 320_000,
-    warrantyDays: 90,
-    // The demo seed has no photo of this unit yet: the manufacturer's picture, flagged as an illustration.
+    warrantyDays: 30,
+    // the demo seed has no photo of this unit yet: the manufacturer's picture, flagged as an illustration
     image: photo("nintendo-switch-oled--1", "", true),
     hasRealPhotos: false,
     isDemo: true,
   };
 }
-
-const DAY = 86_400_000;
-const NOW_SAMPLE = Date.UTC(2026, 10, 10, 9); // fixed, so server and client render the same dates
 
 function sampleLines(c: C): CartLine[] {
   const line = (over: Partial<CartLine> & Pick<CartLine, "id" | "name" | "unitPriceIqd" | "image" | "href">): CartLine => ({
@@ -351,12 +361,10 @@ function sampleLines(c: C): CartLine[] {
     ...over,
   });
   return [
-    line({ id: "cit_nsw2-con-256", name: c.nameSwitch, optionsLabel: c.subSwitch, unitPriceIqd: 675_000, image: photo("nintendo-switch-2--1"), href: "/p/nintendo-switch-2" }),
+    line({ id: "cit_nsw2-con-256", name: c.nameSwitch, optionsLabel: c.variant, unitPriceIqd: 675_000, image: photo("nintendo-switch-2--1"), href: "/p/nintendo-switch-2" }),
     line({ id: "cit_ds-wht", name: "DualSense", optionsLabel: c.white, unitPriceIqd: 105_000, qty: 2, maxQty: 7, image: photo("dualsense--1"), href: "/p/dualsense-wireless-controller" }),
     line({ id: "cit_used", kind: "used_unit", variantId: null, usedUnitId: "usd_used-switch-oled-white-01", name: c.nameUsed, optionsLabel: "A · 91%", unitPriceIqd: 320_000, maxQty: 1, image: photo("nintendo-switch-oled--1", "", true), href: "/used/used-switch-oled-white-01" }),
     line({ id: "cit_ps5-pro-2tb", name: "PlayStation 5 Pro", unitPriceIqd: 1_095_000, qty: 1, maxQty: 1, problem: "qty_reduced", stock: "low_stock", image: photo("playstation-5-pro--1"), href: "/p/playstation-5-pro" }),
-    line({ id: "cit_nsw-oled-wht", name: "Nintendo Switch OLED", unitPriceIqd: 435_000, problem: "price_changed", image: photo("nintendo-switch-oled--1"), href: "/p/nintendo-switch-oled" }),
-    line({ id: "cit_dse-wht", name: "DualSense Edge", unitPriceIqd: 295_000, image: photo("dualsense-edge--1"), href: "/p/dualsense-edge-wireless-controller" }),
     line({ id: "cit_nsw-lite-trq", name: "Nintendo Switch Lite", optionsLabel: c.subLite, unitPriceIqd: 285_000, maxQty: 0, problem: "out_of_stock", stock: "out_of_stock", image: photo("nintendo-switch-lite--1"), href: "/p/nintendo-switch-lite" }),
   ];
 }
@@ -365,7 +373,7 @@ const WALLET: WalletEntry[] = [
   { id: "wle_4", kind: "refund", amountIqd: 105_000, at: NOW_SAMPLE - 1 * DAY, orderRef: "TT-3H8D5R2W" },
   { id: "wle_3", kind: "purchase", amountIqd: -675_000, at: NOW_SAMPLE - 4 * DAY, orderRef: "TT-7K4M2Q9X" },
   { id: "wle_2", kind: "trade_in_credit", amountIqd: 250_000, at: NOW_SAMPLE - 9 * DAY, orderRef: null },
-  { id: "wle_1", kind: "topup", amountIqd: 500_000, at: NOW_SAMPLE - 12 * DAY, orderRef: null },
+  { id: "wle_1", kind: "topup", amountIqd: 500_000, at: NOW_SAMPLE - 12 * DAY, orderRef: null, status: "posted" },
 ];
 const WALLET_BALANCE = WALLET.reduce((sum, entry) => sum + entry.amountIqd, 0);
 
@@ -396,6 +404,9 @@ function simulatedUpload(breakFirstAt: number | null) {
     });
 }
 
+const CARD_GRID = "cards cards--5";
+const FILE = { name: "transfer-zain-cash.jpg", size: 1_840_000, type: "image/jpeg" };
+
 /* ───────────────────────────── the section ───────────────────────────── */
 
 export default function Commerce() {
@@ -403,27 +414,28 @@ export default function Commerce() {
   const cards = sampleCards(c);
   return (
     <>
-      {/* Shows the toasts only when the layout has no toaster of its own. */}
+      {/* shows the toasts only when the layout has no toaster of its own */}
       <Toaster fallback />
-      <p className="ds-note max-w-[52ch]">{c.sample}</p>
+      <p className="ds-note max-w-[60ch]">{c.sample}</p>
       <Cards c={c} cards={cards} />
-      <AddKeys c={c} cards={cards} />
-      <ShelfBlock c={c} cards={cards} />
-      <BankBlock c={c} />
+      <Rows c={c} cards={cards} />
+      <AddButtons c={c} cards={cards} />
+      <Buy c={c} />
       <GalleryBlock c={c} />
-      <Badges c={c} />
+      <ShelfBlock c={c} cards={cards} />
+      <Used c={c} />
       <Lines c={c} />
+      <Summary c={c} />
       <Proof c={c} />
       <Wallet c={c} />
-      <Inspection c={c} />
     </>
   );
 }
 
-/** A specimen with a human caption (and the API in code beside it). */
-function Spec({ title, code, wide = false, className, children }: { title?: ReactNode; code?: string; wide?: boolean; className?: string; children: ReactNode }) {
+/** A specimen with a human caption and the API beside it. */
+function Spec({ title, code, wide = false, children }: { title?: ReactNode; code?: string; wide?: boolean; children: ReactNode }) {
   return (
-    <figure className={["ds-spec", wide ? "ds-spec--wide" : "", className ?? ""].join(" ")}>
+    <figure className={["ds-spec", wide ? "ds-spec--wide" : ""].join(" ")}>
       <div className="ds-spec__body">{children}</div>
       {title || code ? (
         <figcaption className="ds-spec__label">
@@ -436,117 +448,124 @@ function Spec({ title, code, wide = false, className, children }: { title?: Reac
   );
 }
 
-const CARD_GRID = "grid grid-cols-2 items-start gap-x-3 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
-
 function Cards({ c, cards }: { c: C; cards: Record<string, ProductCardData> }) {
-  const used = sampleUsed(c);
+  const states: [string, string, ReactNode][] = [
+    [c.isNew, "badge new", <ProductCard key="n" card={cards.switch2} />],
+    [c.inStock, "a 7-digit price", <ProductCard key="p" card={cards.pro} />],
+    [c.sale, "compareAtIqd", <ProductCard key="s" card={cards.oled} />],
+    [c.soon, 'stock="preorder" releaseAt', <ProductCard key="soon" card={cards.soon} />],
+    [c.out, 'stock="out_of_stock"', <ProductCard key="o" card={cards.lite} />],
+    [c.options, "hasVariants", <ProductCard key="v" card={cards.deck} />],
+    [c.boxArt, 'kind="game" (box art)', <ProductCard key="b" card={cards.mkw} />],
+    [c.digital, 'kind="digital"', <ProductCard key="d" card={cards.card} />],
+    [c.wide, "≥ 1.8:1", <ProductCard key="w" card={cards.legion} />],
+    [c.wish, "wishlist wished", <ProductCard key="h" card={{ ...cards.switch2, id: "prd_nintendo-switch-2" }} slot="wish" wishlist wished />],
+    [c.failing, "image failed → retry", <ProductCard key="f" card={cards.failing} />],
+    [c.loading, "<ProductCardPlaceholder>", <ProductCardPlaceholder key="l" />],
+  ];
   return (
     <DsBlock id="commerce-cards" title={c.cards} note={c.cardsNote}>
       <div className={CARD_GRID}>
-        <Spec title={c.default} code="<ProductCard card />">
-          <ProductCard card={cards.switch2} slot="ds" />
-        </Spec>
-        <Spec title={c.deal} code="compareAtIqd">
-          <ProductCard card={cards.oled} slot="ds" />
-        </Spec>
-        <Spec title={c.lowStock} code='stock="low_stock"'>
-          <ProductCard card={cards.pro} slot="ds" />
-        </Spec>
-        <Spec title={`${c.soldOut} · ${c.opaque}`} code='stock="out_of_stock"'>
-          <ProductCard card={cards.lite} slot="ds" />
-        </Spec>
-        <Spec title={c.options} code="hasVariants">
-          <ProductCard card={cards.deck} slot="ds" />
-        </Spec>
-        <Spec title={c.boxArt} code="kind: box-art">
-          <ProductCard card={cards.mkw} slot="ds" />
-        </Spec>
-        <Spec title={c.longName}>
-          <ProductCard card={cards.pulse} slot="ds" />
-        </Spec>
-        <Spec title={c.used} code="<UsedUnitCard unit />">
-          <UsedUnitCard unit={used} slot="ds" />
-        </Spec>
-        <Spec title={c.loading} code="<ProductCardPlaceholder />">
-          <ProductCardPlaceholder />
-        </Spec>
-        <Spec title={c.failing}>
-          <ProductCard card={cards.failing} slot="ds" />
-          <p className="mt-2 type-caption text-ink-2">{c.failingNote}</p>
-        </Spec>
-        <Spec title={c.rtl} code='dir="rtl"'>
-          <div dir="rtl">
-            <ProductCard card={cards.pulse} slot="ds-rtl" />
-          </div>
-        </Spec>
-        <Spec title={c.ltr} code='dir="ltr"'>
-          <div dir="ltr">
-            <ProductCard card={cards.pulse} slot="ds-ltr" />
-          </div>
-        </Spec>
+        {states.map(([title, code, node]) => (
+          <Spec key={code} title={title} code={code}>
+            {node}
+          </Spec>
+        ))}
       </div>
     </DsBlock>
   );
 }
 
-function AddKeys({ c, cards }: { c: C; cards: Record<string, ProductCardData> }) {
-  const specs = [
-    [c.display, c.displayValue],
-    [c.storage, "256GB"],
-    [c.battery, "5220mAh"],
-  ];
+function Rows({ c, cards }: { c: C; cards: Record<string, ProductCardData> }) {
+  return (
+    <DsBlock id="commerce-rows" title={c.rows} note={c.rowsNote}>
+      <SpecimenGrid wide>
+        <Spec code='layout="row"'>
+          <ProductCard card={cards.pro} layout="row" slot="row" />
+        </Spec>
+        <Spec code='layout="row" (sale)'>
+          <ProductCard card={cards.oled} layout="row" slot="row" />
+        </Spec>
+      </SpecimenGrid>
+    </DsBlock>
+  );
+}
+
+function AddButtons({ c, cards }: { c: C; cards: Record<string, ProductCardData> }) {
   return (
     <DsBlock id="commerce-add" title={c.add} note={c.addNote}>
+      <SpecimenGrid>
+        <Spec title={c.ready} code="<CardAddButton item name>">
+          <CardAddButton item={{ variantId: cards.mkw.variantId }} name={cards.mkw.name} image={cards.mkw.image} />
+        </Spec>
+        <Spec title={c.choose} code="chooseHref">
+          <CardAddButton item={{ variantId: cards.deck.variantId }} name={cards.deck.name} chooseHref="/p/steam-deck-oled" />
+        </Spec>
+        <Spec title={c.keyVariant} code='<AddToCartKey variant="key">'>
+          <AddToCartKey variant="key" item={{ variantId: cards.switch2.variantId }} name={cards.switch2.name} image={cards.switch2.image} optionsLabel={c.variant} />
+        </Spec>
+        <Spec title={c.out} code='variant="key" stock="out_of_stock"'>
+          <AddToCartKey variant="key" item={{ variantId: cards.lite.variantId }} name={cards.lite.name} stock="out_of_stock" />
+        </Spec>
+      </SpecimenGrid>
+    </DsBlock>
+  );
+}
+
+function Buy({ c }: { c: C }) {
+  const ui = useT("ui-shop");
+  const item = { variantId: "var_nsw2-con-256" };
+  const links = (
+    <>
+      <Key variant="ghost" size="sm" icon="heart">
+        {c.wishlist}
+      </Key>
+      <Key variant="ghost" size="sm" icon="scales">
+        {c.compare}
+      </Key>
+      <Key variant="ghost" size="sm" icon="share-network">
+        {c.share}
+      </Key>
+    </>
+  );
+  return (
+    <DsBlock id="commerce-buy" title={c.buy} note={c.buyNote}>
       <SpecimenGrid wide>
-        <Spec title={c.socket} code='variant="socket"'>
-          <SpecimenRow>
-            <AddToCartKey item={{ variantId: cards.mkw.variantId }} name={cards.mkw.name} image={cards.mkw.image} />
-            <AddToCartKey item={{ variantId: cards.deck.variantId }} name={cards.deck.name} chooseHref={`/p/${cards.deck.slug}`} />
-            <AddToCartKey item={{ variantId: cards.lite.variantId }} name={cards.lite.name} stock="out_of_stock" />
-            <AddToCartKey item={{ variantId: cards.failing.variantId }} name={cards.failing.name} image={cards.failing.image} />
-          </SpecimenRow>
-        </Spec>
-        <Spec title={c.keyVariant} code='variant="key"'>
-          <div className="grid gap-3">
-            <SpecimenRow>
-              <AddToCartKey variant="key" item={{ variantId: cards.switch2.variantId }} name={cards.switch2.name} image={cards.switch2.image} optionsLabel={cards.switch2.subtitle} />
-              <AddToCartKey variant="key" item={{ variantId: cards.lite.variantId }} name={cards.lite.name} stock="out_of_stock" />
-            </SpecimenRow>
-            <SpecimenRow>
-              <AddToCartKey variant="key" item={{ variantId: cards.deck.variantId }} name={cards.deck.name} chooseHref={`/p/${cards.deck.slug}`} />
-              <span className="inline-flex flex-wrap items-center gap-2 type-caption text-ink-2">
-                {c.wishlist}
-                <WishlistKey productId={cards.switch2.id} name={cards.switch2.name} />
-              </span>
-            </SpecimenRow>
+        <Spec code="<BuyControls aside links> (≥1024)" wide>
+          <div className="max-w-[34rem]">
+            <BuyControls item={item} name={c.nameSwitch} optionsLabel={c.variant} maxQty={3} aside={<WishlistKey productId="prd_nintendo-switch-2" name={c.nameSwitch} />} links={links} />
           </div>
         </Spec>
-        <Spec title={c.buyBar} code="<BuyBar fixed={false} />" wide className="max-w-[30rem]">
-          <p className="mb-2 type-caption text-ink-2">{c.buyBarNote}</p>
-          <div className="ds-scroll">
-            <div className="px-4 pt-4 pb-6">
-              <p className="type-sub text-ink">{c.specs}</p>
-              <dl className="grid grid-cols-[auto_1fr] gap-x-5 type-body">
-                {[...specs, ...specs].map(([key, value], index) => (
-                  <div key={index} className="contents">
-                    <dt className="border-b border-line py-2.5 text-ink-2">{key}</dt>
-                    <dd className="border-b border-line py-2.5 font-medium">
-                      <bdi>{value}</bdi>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+        {(
+          [
+            [c.barDefault, {}],
+            [c.barOut, { stock: "out_of_stock" as const, alternativesHref: "#commerce-shelf" }],
+            [c.barSoon, { stock: "preorder" as const, releaseAt: NOW_SAMPLE + 8 * DAY }],
+          ] as const
+        ).map(([title, extra]) => (
+          <Spec key={title} title={title} code="<BuyBar fixed={false}>">
+            <div className="ds-scroll h-48">
+              <div className="grid min-h-60 content-start gap-2 p-4">
+                <p className="type-sm text-ink-2">{ui("gallery.label", { name: c.nameSwitch })}</p>
+              </div>
+              <BuyBar fixed={false} item={item} name={c.nameSwitch} priceIqd={675_000} optionsLabel={c.variant} {...extra} />
             </div>
-            <BuyBar
-              fixed={false}
-              item={{ variantId: cards.switch2.variantId }}
-              name={cards.switch2.name}
-              image={cards.switch2.image}
-              optionsLabel={cards.switch2.subtitle}
-              maxQty={4}
-              maxReason="stock"
-            />
-          </div>
+          </Spec>
+        ))}
+      </SpecimenGrid>
+    </DsBlock>
+  );
+}
+
+function GalleryBlock({ c }: { c: C }) {
+  return (
+    <DsBlock id="commerce-gallery" title={c.gallery} note={c.galleryNote}>
+      <SpecimenGrid wide>
+        <Spec code="<Gallery items>">
+          <Gallery name={c.nameSwitch} items={[1, 2, 3, 4].map((n) => ({ image: photo(`nintendo-switch-2--${n}`) }))} />
+        </Spec>
+        <Spec title={c.galleryUsed} code='evidence="used"'>
+          <Gallery name={c.nameUsed} evidence="used" items={[{ image: photo("nintendo-switch-oled--1", "", true) }, { image: photo("nintendo-switch-oled--2", "", true) }]} />
         </Spec>
       </SpecimenGrid>
     </DsBlock>
@@ -554,110 +573,70 @@ function AddKeys({ c, cards }: { c: C; cards: Record<string, ProductCardData> })
 }
 
 function ShelfBlock({ c, cards }: { c: C; cards: Record<string, ProductCardData> }) {
+  const t = useT("ui");
+  const [platform, setPlatform] = useState<string | null>("all");
   const shelf: Shelf<ProductCardData> = {
     key: "ds-new",
     title: c.shelfTitle,
     reason: c.shelfReason,
-    items: [cards.switch2, cards.pro, cards.oled, cards.mkw, cards.deck, cards.pulse, cards.lite],
+    items: [cards.switch2, cards.pro, cards.oled, cards.mkw, cards.legion, cards.card],
   };
   return (
-    <DsBlock id="commerce-shelf" title={c.shelf}>
-      <ShelfRail shelf={shelf} href="#commerce-shelf" headingLevel={3} />
+    <DsBlock id="commerce-shelf" title={c.shelf} note={c.shelfNote}>
+      <ShelfRail
+        shelf={shelf}
+        href="/c/new"
+        headingLevel={3}
+        chips={
+          <ChipGroup
+            aria-label={c.shelfTitle}
+            rail
+            bleed
+            value={platform}
+            onChange={setPlatform}
+            options={[{ value: "all", label: c.all }, ...PLATFORMS.map((p) => ({ value: p, label: t(`platform.${p}`), platform: p }))]}
+          />
+        }
+      />
     </DsBlock>
   );
 }
 
-function BankBlock({ c }: { c: C }) {
-  const [platform, setPlatform] = useState<Platform | null>("playstation");
-  const [chosen, setChosen] = useState<Platform[]>(["nintendo", "handheld"]);
+function Used({ c }: { c: C }) {
+  const unit = sampleUsed(c);
   return (
-    <DsBlock id="commerce-bank" title={c.bank} note={c.bankNote}>
+    <DsBlock id="commerce-used" title={c.used} note={c.usedNote}>
       <SpecimenGrid wide>
-        <Spec code="<PlatformBank value onChange />">
-          <PlatformBank value={platform} onChange={setPlatform} />
-        </Spec>
-        <Spec title={c.onboarding} code="multiple values onToggle">
-          <PlatformBank multiple values={chosen} onToggle={(p, on) => setChosen((list) => (on ? [...list, p] : list.filter((x) => x !== p)))} />
-        </Spec>
-      </SpecimenGrid>
-    </DsBlock>
-  );
-}
-
-function GalleryBlock({ c }: { c: C }) {
-  const switchItems = [1, 2, 4, 5].map((n) => ({ image: photo(`nintendo-switch-2--${n}`, "Nintendo Switch 2") }));
-  const gameItems = [1, 2, 3].map((n) => ({ image: photo(`mario-kart-world--${n}`, "Mario Kart World") }));
-  const usedItems = [{ image: photo("nintendo-switch-oled--1", c.nameUsed, true) }, { image: photo("nintendo-switch-oled--3", c.nameUsed, true) }];
-  return (
-    <DsBlock id="commerce-gallery" title={c.gallery} note={c.galleryNote}>
-      <div className="ds-stage-grid">
-        <Spec code='<Gallery gel="nintendo" items />'>
-          <Gallery name="Nintendo Switch 2" items={switchItems} gel="nintendo" />
-        </Spec>
-        <Spec title={c.galleryGame}>
-          <Gallery name="Mario Kart World" items={gameItems} gel="nintendo" />
-        </Spec>
-        <Spec title={c.galleryUsed} code='evidence="used"'>
-          <Gallery name={c.nameUsed} items={usedItems} evidence="used" />
-        </Spec>
-      </div>
-    </DsBlock>
-  );
-}
-
-function Badges({ c }: { c: C }) {
-  return (
-    <DsBlock id="commerce-badges" title={c.badges} note={c.badgesNote}>
-      <SpecimenGrid>
-        <Spec code="<PriceTag priceIqd />">
-          <PriceTag priceIqd={749_000} />
-        </Spec>
-        <Spec code="compareAtIqd">
-          <PriceTag priceIqd={435_000} compareAtIqd={455_000} />
-        </Spec>
-        <Spec code='size="page" deliveryIqd aside' wide>
-          <PriceTag size="page" priceIqd={899_000} deliveryIqd={5_000} aside={<StockNote stock="in_stock" />} />
-        </Spec>
-        <Spec code="priceIqd={NaN}">
-          <PriceTag priceIqd={Number.NaN} />
-        </Spec>
-        <Spec code="<StockNote stock />">
-          <div className="grid gap-1.5">
-            <StockNote stock="in_stock" />
-            <StockNote stock="low_stock" />
-            <StockNote stock="out_of_stock" />
-            <StockNote stock="preorder" />
+        <Spec code="<UsedUnitCard>">
+          <div className="max-w-[15rem]">
+            <UsedUnitCard unit={unit} />
           </div>
         </Spec>
-        <Spec code="<CompatBadge status device note />" wide>
-          <div className="grid gap-2">
-            <CompatBadge status="verified" device="Nintendo Switch 2" />
-            <CompatBadge status="partial" device="PlayStation 5" note={c.compatNote} />
-            <CompatBadge status="incompatible" device="Xbox Series S" />
-            <CompatBadge status="unverified" device="Steam Deck OLED" />
-          </div>
+        <Spec code='<UsedUnitCard layout="row">'>
+          <UsedUnitCard unit={unit} layout="row" slot="row" />
         </Spec>
-        <Spec code="<RatingStars rating />">
-          <div className="grid gap-2">
-            <RatingStars rating={{ average: 4.6, count: 12 }} />
-            <RatingStars rating={{ average: 3.5, count: 2 }} size="md" verified />
-            <span className="type-caption text-ink-2">{c.ratingNull}</span>
-            <RatingStars rating={null} />
-          </div>
-        </Spec>
-        <Spec code="<GradeBadge grade legend />">
-          <div className="grid justify-items-start gap-2">
-            <GradeBadge grade="A+" />
-            <GradeBadge grade="A" />
-            <GradeBadge grade="B" legend />
-            <GradeBadge grade="C" />
-          </div>
-        </Spec>
-        <Spec code="<DemoNote /> · compact">
-          <div className="grid gap-2">
-            <DemoNote />
-            <DemoNote compact />
-          </div>
+        <Spec code="<InspectionCard>" wide>
+          <InspectionCard
+            grade="A"
+            inspectedAt={NOW_SAMPLE - 3 * DAY}
+            batteryHealthPct={91}
+            checklist={[
+              { key: "screen", label: c.checkScreen, ok: true },
+              { key: "sticks", label: c.checkSticks, ok: false, note: c.checkSticksNote },
+              { key: "ports", label: c.checkPorts, ok: true },
+              { key: "charging", label: c.checkCharging, ok: true },
+            ]}
+            defects={[{ text: c.defect1, photo: null }]}
+            included={[c.included1, c.included2]}
+            photos={[photo("nintendo-switch-oled--1", "", true)]}
+            warrantyDays={30}
+            returnDays={7}
+            ownershipChecked
+            dataWiped
+            isDemo
+            newPriceIqd={435_000}
+            headingLevel={3}
+          />
         </Spec>
       </SpecimenGrid>
     </DsBlock>
@@ -666,89 +645,102 @@ function Badges({ c }: { c: C }) {
 
 function Lines({ c }: { c: C }) {
   const [lines, setLines] = useState(() => sampleLines(c));
-  const [removed, setRemoved] = useState<ReadonlySet<string>>(() => new Set(["cit_dse-wht"]));
-  const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
-  const setQty = (id: string, qty: number) => setLines((list) => list.map((line) => (line.id === id ? { ...line, qty, lineTotalIqd: line.unitPriceIqd * qty } : line)));
-  const mark = (id: string, on: boolean) =>
-    setRemoved((set) => {
-      const next = new Set(set);
-      if (on) next.add(id);
-      else next.delete(id);
-      return next;
-    });
+  const [removed, setRemoved] = useState<string[]>([]);
   return (
     <DsBlock id="commerce-lines" title={c.lines} note={c.linesNote}>
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <ul className="grid gap-3">
-          {lines
-            .filter((line) => !hidden.has(line.id))
-            .map((line) => (
-              <CartLineRow
-                key={line.id}
-                line={line}
-                removed={removed.has(line.id)}
-                error={line.id === "cit_ds-wht" ? "rate_limited" : null}
-                onQtyChange={(qty) => setQty(line.id, qty)}
-                onRemove={() => mark(line.id, true)}
-                onRestore={() => mark(line.id, false)}
-                onDismiss={() => setHidden((set) => new Set(set).add(line.id))}
-              />
-            ))}
-        </ul>
-        <div className="grid gap-5">
-          <Spec title={c.summaryFlat}>
-            <OrderSummary subtotalIqd={1_205_000} discountIqd={0} shippingIqd={5_000} totalIqd={1_210_000} count={4} headingLevel={3} />
-          </Spec>
-          <Spec title={c.summaryCoupon} code='shipping="governorate"'>
-            <OrderSummary subtotalIqd={1_205_000} discountIqd={50_000} coupon={{ code: "SAMPLE50", label: c.couponLabel }} shippingIqd={5_000} totalIqd={1_160_000} count={4} shipping="governorate" title={null} />
-          </Spec>
-          <Spec title={c.summaryPending} code="pending">
-            <OrderSummary subtotalIqd={675_000} discountIqd={0} shippingIqd={5_000} totalIqd={680_000} count={1} pending title={null} />
-          </Spec>
-          <Spec title={c.summaryUnserved} code='shipping="unserved"'>
-            <OrderSummary subtotalIqd={675_000} discountIqd={0} shippingIqd={null} totalIqd={675_000} count={1} shipping="unserved" title={null} />
-          </Spec>
-          <Spec title={c.summaryBroken} code="totalIqd={NaN}">
-            <OrderSummary subtotalIqd={675_000} discountIqd={0} shippingIqd={5_000} totalIqd={Number.NaN} count={1} title={null} />
-          </Spec>
-        </div>
-      </div>
+      <ul className="max-w-[46rem] border-t border-line">
+        {lines.map((line) => (
+          <CartLineRow
+            key={line.id}
+            line={line}
+            removed={removed.includes(line.id)}
+            onQtyChange={(qty) => setLines((list) => list.map((l) => (l.id === line.id ? { ...l, qty, lineTotalIqd: l.unitPriceIqd * qty } : l)))}
+            onRemove={() => setRemoved((ids) => [...ids, line.id])}
+            onRestore={() => setRemoved((ids) => ids.filter((id) => id !== line.id))}
+            onDismiss={() => {
+              setRemoved((ids) => ids.filter((id) => id !== line.id));
+              setLines((list) => list.filter((l) => l.id !== line.id));
+            }}
+          />
+        ))}
+      </ul>
     </DsBlock>
   );
 }
 
-const never = () => new Promise<ProofUploadResult>(() => {});
+function Summary({ c }: { c: C }) {
+  const lines = sampleLines(c)
+    .slice(0, 2)
+    .map((line) => ({ id: line.id, name: line.name, optionsLabel: line.optionsLabel, lineTotalIqd: line.lineTotalIqd, image: line.image }));
+  return (
+    <DsBlock id="commerce-summary" title={c.summary} note={c.summaryNote}>
+      <SpecimenGrid wide>
+        <Spec code="<OrderSummary lines couponField action trust demo>">
+          <OrderSummary
+            subtotalIqd={885_000}
+            discountIqd={0}
+            shippingIqd={5_000}
+            totalIqd={890_000}
+            count={3}
+            lines={lines}
+            couponField={<CouponField />}
+            action={
+              <Key variant="primary" block>
+                {c.placeOrder}
+              </Key>
+            }
+            trust={<TrustStrip variant="line" cod returnsTo="/policies/returns" />}
+            demo
+            headingLevel={3}
+          />
+        </Spec>
+        <Spec code="coupon">
+          <OrderSummary subtotalIqd={885_000} discountIqd={50_000} shippingIqd={5_000} totalIqd={840_000} coupon={{ code: "TAMTAM50", label: c.couponLabel }} headingLevel={3} />
+        </Spec>
+        <Spec title={c.summaryUnserved} code='shipping="unserved"'>
+          <OrderSummary subtotalIqd={885_000} discountIqd={0} shippingIqd={null} totalIqd={885_000} shipping="unserved" headingLevel={3} />
+        </Spec>
+        <Spec title={c.summaryBroken} code="totalsReconcile → false">
+          <OrderSummary subtotalIqd={885_000} discountIqd={0} shippingIqd={5_000} totalIqd={880_000} headingLevel={3} />
+        </Spec>
+      </SpecimenGrid>
+    </DsBlock>
+  );
+}
 
 function Proof({ c }: { c: C }) {
-  const [simulate] = useState(() => simulatedUpload(null));
-  const [simulateBreak] = useState(() => simulatedUpload(0.6));
-  const file = { name: "transfer-receipt.jpg", size: 1_840_000, type: "image/jpeg" };
+  const [simulated] = useState(() => simulatedUpload(null));
+  const [breaking] = useState(() => simulatedUpload(0.6));
+  const refuse = async () => ({ ok: false as const, code: "network" });
   return (
     <DsBlock id="commerce-proof" title={c.proof} note={c.proofNote}>
       <SpecimenGrid wide>
-        <Spec title={c.simulated} code="onUpload">
-          <ProofUploader onUpload={simulate} />
+        <Spec title={c.simulated} code="<ProofUploader onUpload>">
+          <ProofUploader onUpload={simulated} />
         </Spec>
-        <Spec title={c.simulatedBreak}>
-          <ProofUploader onUpload={simulateBreak} />
+        <Spec title={c.simulatedBreak} code="interrupted → resume">
+          <ProofUploader onUpload={breaking} />
         </Spec>
-        <Spec code='defaultState phase="uploading"'>
-          <ProofUploader onUpload={never} defaultState={{ phase: "uploading", file, progress: 0.35 }} />
+        <Spec code='defaultState uploading (60%)'>
+          <ProofUploader onUpload={refuse} defaultState={{ phase: "uploading", file: FILE, progress: 0.6 }} />
         </Spec>
-        <Spec code='phase="interrupted"'>
-          <ProofUploader onUpload={simulate} defaultState={{ phase: "interrupted", file, progress: 0.6 }} />
+        <Spec code="interrupted">
+          <ProofUploader onUpload={refuse} defaultState={{ phase: "interrupted", file: FILE, progress: 0.6 }} />
         </Spec>
-        <Spec code='phase="failed" problem="type"'>
-          <ProofUploader onUpload={simulate} defaultState={{ phase: "failed", file: { name: "statement.pdf", size: 240_000, type: "application/pdf" }, problem: "type", retry: false }} />
+        <Spec code='failed (problem="size")'>
+          <ProofUploader onUpload={refuse} defaultState={{ phase: "failed", file: FILE, problem: "size", retry: false }} />
         </Spec>
-        <Spec code='phase="uploaded" status="submitted"'>
-          <ProofUploader onUpload={simulate} defaultState={{ phase: "uploaded", file, previewUrl: null }} status={{ state: "submitted" }} />
+        <Spec code="uploaded">
+          <ProofUploader onUpload={refuse} defaultState={{ phase: "uploaded", file: FILE, previewUrl: null }} />
         </Spec>
-        <Spec code='status="rejected" note'>
-          <ProofUploader onUpload={simulate} status={{ state: "rejected", note: c.rejectedNote }} />
+        <Spec code='status={{ state: "submitted" }}'>
+          <ProofUploader onUpload={refuse} status={{ state: "submitted", note: null }} current={{ previewUrl: null, fileName: "transfer.jpg" }} />
         </Spec>
-        <Spec code='status="approved"'>
-          <ProofUploader onUpload={simulate} status={{ state: "approved" }} current={{ fileName: file.name }} />
+        <Spec code='status={{ state: "approved" }}'>
+          <ProofUploader onUpload={refuse} status={{ state: "approved", note: null }} current={{ previewUrl: null, fileName: "transfer.jpg" }} />
+        </Spec>
+        <Spec code='status={{ state: "rejected", note }}'>
+          <ProofUploader onUpload={refuse} status={{ state: "rejected", note: c.rejectedNote }} />
         </Spec>
       </SpecimenGrid>
     </DsBlock>
@@ -759,52 +751,16 @@ function Wallet({ c }: { c: C }) {
   return (
     <DsBlock id="commerce-wallet" title={c.wallet} note={c.walletNote}>
       <SpecimenGrid wide>
-        <Spec code="<WalletBalance balanceIqd pendingIqd entries />">
-          <WalletBalance balanceIqd={WALLET_BALANCE} pendingIqd={50_000} entries={WALLET} headingLevel={3} />
+        <Spec code="<WalletBalance entries topupHref historyHref>">
+          <WalletBalance balanceIqd={WALLET_BALANCE} pendingIqd={100_000} entries={WALLET} topupHref="/account/wallet" historyHref="/account/wallet" headingLevel={3} />
         </Spec>
-        <div className="grid content-start gap-5">
-          <Spec title={c.walletPay} code="compact payIqd">
-            <WalletBalance balanceIqd={WALLET_BALANCE} payIqd={110_000} compact />
-          </Spec>
-          <Spec title={c.walletShort} code="compact payIqd">
-            <WalletBalance balanceIqd={WALLET_BALANCE} payIqd={675_000} compact />
-          </Spec>
-          <Spec title={c.guest} code="balanceIqd={null}">
-            <WalletBalance balanceIqd={null} />
-          </Spec>
-        </div>
+        <Spec title={c.walletPay} code="compact payIqd">
+          <WalletBalance balanceIqd={WALLET_BALANCE} payIqd={890_000} compact />
+        </Spec>
+        <Spec title={c.guest} code="balanceIqd={null}">
+          <WalletBalance balanceIqd={null} />
+        </Spec>
       </SpecimenGrid>
-    </DsBlock>
-  );
-}
-
-function Inspection({ c }: { c: C }) {
-  const checks = [
-    { key: "screen", label: c.checkScreen, ok: true },
-    { key: "sticks", label: c.checkSticks, ok: false, note: c.checkSticksNote },
-    { key: "ports", label: c.checkPorts, ok: true },
-    { key: "charging", label: c.checkCharging, ok: true },
-    { key: "wireless", label: c.checkWifi, ok: true },
-  ];
-  return (
-    <DsBlock id="commerce-inspection" title={c.inspection}>
-      <div className="max-w-[40rem]">
-        <InspectionCard
-          grade="B"
-          inspectedAt={NOW_SAMPLE - 2 * DAY}
-          batteryHealthPct={87}
-          checklist={checks}
-          defects={[{ text: c.defect1 }, { text: c.defect2 }]}
-          included={[c.included1, c.included2, c.included3]}
-          photos={[photo("nintendo-switch-oled--1", c.nameUsed, true)]}
-          warrantyDays={90}
-          returnDays={7}
-          ownershipChecked
-          dataWiped
-          isDemo
-          headingLevel={3}
-        />
-      </div>
     </DsBlock>
   );
 }

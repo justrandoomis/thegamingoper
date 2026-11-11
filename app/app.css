@@ -1,13 +1,15 @@
 /*
- * Global stylesheet — Tailwind 4 + the TamTam design system (docs/DESIGN.md, cheat-sheet docs/UI.md).
+ * Global stylesheet — Tailwind 4 + TamTam Design System v2 (docs/DESIGN.md, cheat-sheet docs/UI.md).
  *
  * Cascade layers, lowest priority first. The order statement is the same one Tailwind (and app/motion/motion.css)
  * declare, so it holds whichever stylesheet the browser meets first:
  *
  *   theme        Tailwind theme variables, then the design tokens (styles/tokens.css) — tokens win over the theme
- *   base         Tailwind preflight, then styles/base.css (floor, type defaults, focus ring, selection, root error)
- *   components   styles/materials.css (clay, glass, flat, light, tiers), styles/components.css (app/ui pieces),
- *                styles/admin.css (data-density="admin", .table); the Motion Engine's helper classes live here too
+ *   base         Tailwind preflight, then styles/base.css (floor, type defaults, focus ring, selection, scroll padding,
+ *                root error)
+ *   components   styles/materials.css (clay v2, glass v2, showcase light, the product ground, tiers),
+ *                styles/components.css (app/ui pieces), styles/admin.css (the admin's 1.0 materials under
+ *                data-density="admin", its density, .table); the Motion Engine's helper classes live here too
  *   utilities    Tailwind utilities — the last word on spacing and placement in feature code
  *
  * Unlayered: @font-face (styles/fonts.css) and the Tailwind configuration (styles/theme.css: @theme, @utility,

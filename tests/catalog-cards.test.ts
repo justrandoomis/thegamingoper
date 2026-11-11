@@ -13,21 +13,26 @@
  * Covered: published-only listing; every filter (platform, category with sub-categories, kind, device model with
  * rule precedence, search text in three languages, price range, in stock, deals) alone, combined and all at once;
  * every sort with keyset paging that never repeats or skips; stock states identical to the commerce core's
- * getAvailability() (reservations, bundles, preorder); ar / en / ckb; ratings from approved verified-purchase
- * reviews only; no protected field (cost, margin, serial, quantity) anywhere; shelves; platforms, category tree and
- * the cached navigation taxonomy.
+ * getAvailability() (reservations, bundles, preorder; a demo row never "low"); ar / en / ckb; ratings from approved
+ * verified-purchase reviews only; no protected field (cost, margin, serial, quantity) anywhere; shelves; platforms,
+ * category tree and the cached navigation taxonomy. Design v2 (card-facts.ts): the suggested order (in stock › coming
+ * soon › sold out), «جديد» only from real dates (≤ 30 days), the kind label, a struck price only when really charged
+ * (or a demo row's demo value, flagged), the opaque-photo flag.
  */
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { getArt, isPhoto, photoKeys } from "~/art";
 import type { ProductCardData, StockState } from "~/lib/dto";
 import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
 import { isAppError } from "~/server/errors";
-import { bundleItems, categories, compatibilityRules, deviceGenerations, deviceModels, media, platforms, products, reviews, stockLevels, variantCosts, variants } from "~/server/db/schema";
+import { bundleItems, categories, compatibilityRules, deviceGenerations, deviceModels, media, platforms, priceChanges, products, reviews, stockLevels, variantCosts, variants } from "~/server/db/schema";
 import { searchIndexStatements } from "~/server/db/search.server";
 import { seedDemo } from "~/server/db/seed/demo";
 import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { runBatch, type BatchStatement } from "~/server/db/tx.server";
+import { DAY_MS, isNewProduct, kindLabelOf, NEW_WINDOW_DAYS, opaqueOf, shoppingTier, shownStockRank, type DeviceFamily } from "~/server/services/catalog/card-facts";
 import { getCardsByIds, getDeals, getNewArrivals, getUsedSpotlight, listCards, MAX_CARD_PAGE } from "~/server/services/catalog/cards.server";
 import { loadListingRows } from "~/server/services/catalog/listing.server";
+import { baghdadMidnight } from "~/server/services/catalog/product-types";
 import { getCategoryTree, getNavTaxonomy, getPlatforms, invalidateNavTaxonomy, NAV_CHECK_MS } from "~/server/services/catalog/taxonomy.server";
 import type { CardSort } from "~/server/services/catalog/types";
 import { getAvailability } from "~/server/services/inventory/stock.server";
@@ -145,6 +150,8 @@ async function buildTestWorld(now: number) {
     product("game", { kind: "game", name: name3("لعبة الاختبار", "Test game", "یاریی تاقیکردنەوە"), categoryId: W.child, publishedDaysAgo: 4 }),
     variant(P.game.v, P.game.id, 60_000, { compareAtIqd: 80_000 }),
     stock(P.game.v, 2),
+    // the store really charged 80,000: an applied price change set the compare-at (admin pricing's honest path)
+    db.insert(priceChanges).values({ id: "pc_zz_game", variantId: P.game.v, oldPriceIqd: 80_000, newPriceIqd: 60_000, oldCompareAtIqd: null, newCompareAtIqd: 80_000, status: "applied", createdAt: now - 3 * DAY }),
     product("controller", { kind: "controller", name: name3("يد الاختبار", "Test controller", "دەسکی تاقیکردنەوە"), categoryId: W.child, publishedDaysAgo: 3 }),
     variant(P.controller.v, P.controller.id, 60_000),
     stock(P.controller.v, 0),
@@ -341,13 +348,17 @@ describe("listCards — sorting and keyset paging", () => {
     expect(ids((await allPages({ sort: "newest", limit: 13 })).items)).toEqual(expected.map((row) => row.id));
   });
 
-  it("puts what can be bought now (or pre-ordered) first in featured", async () => {
+  it("featured is the suggested order: what can be bought now, then coming soon, then sold out — newest first inside", async () => {
+    const tierOf = (card: ProductCardData) => (card.stock === "preorder" ? 1 : card.stock === "out_of_stock" ? 0 : 2);
     const { items } = await allPages({ sort: "featured", limit: 9 });
-    const firstUnavailable = items.findIndex((card) => card.stock === "out_of_stock");
-    expect(firstUnavailable).toBeGreaterThan(0);
-    expect(items.slice(firstUnavailable).every((card) => card.stock === "out_of_stock")).toBe(true);
+    for (let i = 1; i < items.length; i++) expect(tierOf(items[i]), items[i].slug).toBeLessThanOrEqual(tierOf(items[i - 1]));
+    expect(new Set(items.map(tierOf))).toEqual(new Set([0, 1, 2])); // the demo catalogue has all three
+    // the first card can be bought (the old order put coming-soon products first)
+    expect(tierOf(items[0])).toBe(2);
+    // the test world, written down: in stock by publication (1, 2, 4, 5, 6 days ago), the coming-soon game, then the
+    // sold-out controller
     const world = ids((await allPages({ platform: PLATFORM, sort: "featured", limit: 3, now: t.now })).items);
-    expect(world.at(-1)).toBe(P.controller.id); // the only test product that cannot be bought now
+    expect(world).toEqual([P.twoVariants.id, P.headset.id, P.game.id, P.console.id, P.bundle.id, P.preorder.id, P.controller.id]);
   });
 
   it("refuses a malformed cursor and a cursor made for another sort", async () => {
@@ -451,26 +462,60 @@ describe("listCards — filters", () => {
     expect(inStock.length).toBe(all.filter((card) => card.stock === "in_stock" || card.stock === "low_stock").length);
   });
 
-  it("keeps only genuine reductions with dealsOnly", async () => {
+  it("keeps only previous prices the card strikes with dealsOnly: really charged, or a demo row's demo value", async () => {
     expect(ids((await world({ dealsOnly: true })).items)).toEqual([P.game.id]);
     const expected = await rows<{ product_id: string }>(
       `SELECT v.product_id FROM variants v JOIN products p ON p.id = v.product_id
        WHERE p.status = 'published' AND v.is_active = 1 AND v.compare_at_iqd > v.price_iqd
          AND v.id = (SELECT v2.id FROM variants v2 WHERE v2.product_id = p.id AND v2.is_active = 1 ORDER BY v2.is_default DESC, v2.sort, v2.id LIMIT 1)
+         AND (p.is_demo = 1 OR EXISTS (SELECT 1 FROM price_changes pc WHERE pc.variant_id = v.id AND pc.status = 'applied' AND pc.new_compare_at_iqd = v.compare_at_iqd))
        ORDER BY v.product_id`,
     );
     const deals = await allPages({ dealsOnly: true, sort: "newest", limit: MAX_CARD_PAGE });
     expect(sorted(ids(deals.items))).toEqual(expected.map((row) => row.product_id));
+    const demo = new Map((await rows<{ id: string; is_demo: number }>("SELECT id, is_demo FROM products")).map((row) => [row.id, row.is_demo === 1]));
     for (const card of deals.items) {
       expect(card.compareAtIqd!).toBeGreaterThan(card.priceIqd);
-      expect(card.badge).toBe("deal");
+      if (card.stock !== "out_of_stock") expect(card.badge).toBe("deal");
+      // the seed writes no price history: a demo deal is a demo value, the test world's game was really charged
+      expect(card.compareAtDemo, card.slug).toBe(card.id === P.game.id ? false : demo.get(card.id) === true);
     }
   });
 
-  it("never shows a compare-at price that is not above the price", async () => {
-    const [headset] = await getCardsByIds(t.db, "ar", [P.headset.id]);
+  it("never strikes a compare-at price that is not above the price, or that the store never charged", async () => {
+    const [headset] = await getCardsByIds(t.db, "ar", [P.headset.id], { now: t.now });
     expect(headset.compareAtIqd).toBeNull();
-    expect(headset.badge).toBe("new");
+    expect(headset.badge).toBe("new"); // listed 2 days ago, not a demo row
+    // the game's 80,000 is backed by an applied price change; without it the card strikes nothing
+    const [backed] = await getCardsByIds(t.db, "ar", [P.game.id], { now: t.now });
+    expect([backed.compareAtIqd, backed.compareAtDemo, backed.badge]).toEqual([80_000, false, "deal"]);
+    // price history is append-only: requests that are still pending, or were rejected, name other compare-at prices
+    await runBatch(t.db, [
+      t.db.insert(priceChanges).values({ id: "pc_zz_game_pending", variantId: P.game.v, oldPriceIqd: 60_000, newPriceIqd: 60_000, newCompareAtIqd: 90_000, status: "pending", createdAt: t.now - DAY }),
+      t.db.insert(priceChanges).values({ id: "pc_zz_game_rejected", variantId: P.game.v, oldPriceIqd: 60_000, newPriceIqd: 60_000, newCompareAtIqd: 95_000, status: "rejected", createdAt: t.now - DAY }),
+    ]);
+    // a compare-at no APPLIED change set — another value, or one only a pending or rejected request names — is not struck
+    for (const value of [85_000, 90_000, 95_000]) {
+      await t.d1.prepare("UPDATE variants SET compare_at_iqd = ? WHERE id = ?").bind(value, P.game.v).run();
+      try {
+        const [unbacked] = await getCardsByIds(t.db, "ar", [P.game.id], { now: t.now });
+        expect([unbacked.compareAtIqd, unbacked.compareAtDemo, unbacked.badge], String(value)).toEqual([null, false, "new"]);
+        expect(ids((await world({ dealsOnly: true })).items), String(value)).toEqual([]);
+      } finally {
+        await t.d1.prepare("UPDATE variants SET compare_at_iqd = 80000 WHERE id = ?").bind(P.game.v).run();
+      }
+    }
+    // on a demo row the same unbacked value is the seed's kind of demo deal: struck, and flagged as demo
+    await t.d1.prepare("UPDATE products SET is_demo = 1 WHERE id = ?").bind(P.game.id).run();
+    await t.d1.prepare("UPDATE variants SET compare_at_iqd = 85000 WHERE id = ?").bind(P.game.v).run();
+    try {
+      const [demo] = await getCardsByIds(t.db, "ar", [P.game.id], { now: t.now });
+      expect([demo.compareAtIqd, demo.compareAtDemo, demo.badge]).toEqual([85_000, true, "deal"]);
+      expect(demo.stock).toBe("in_stock"); // two units left: low stock, but a demo row never says so
+    } finally {
+      await t.d1.prepare("UPDATE products SET is_demo = 0 WHERE id = ?").bind(P.game.id).run();
+      await t.d1.prepare("UPDATE variants SET compare_at_iqd = 80000 WHERE id = ?").bind(P.game.v).run();
+    }
   });
 
   it("searches in Arabic, English and Kurdish, short terms included", async () => {
@@ -518,18 +563,23 @@ describe("listCards — filters", () => {
 // ───────────────────────────────────────────────────────────────── card content
 
 describe("cards — stock, language, ratings, privacy", () => {
-  it("states stock exactly as the commerce core's getAvailability() does", async () => {
+  it("states stock exactly as the commerce core's getAvailability() does — a demo row never 'low'", async () => {
     const all = (await allPages({ sort: "newest", limit: MAX_CARD_PAGE }, "ar")).items;
     const variantRows = await rows<{ id: string; product_id: string }>("SELECT id, product_id FROM variants WHERE is_active = 1");
     const availability = await getAvailability(t.db, variantRows.map((row) => row.id));
     const preorders = new Set((await rows<{ id: string }>("SELECT id FROM products WHERE preorder_release_at > ?", Date.now())).map((row) => row.id));
     const rank: Record<StockState, number> = { out_of_stock: 0, low_stock: 1, in_stock: 2, preorder: 3 };
+    let demoLow = 0;
     for (const card of all) {
       if (preorders.has(card.id)) continue;
       const own = variantRows.filter((row) => row.product_id === card.id).map((row) => availability.get(row.id)!.state);
       const best = own.reduce<StockState>((acc, state) => (rank[state] > rank[acc] ? state : acc), "out_of_stock");
-      expect(card.stock, card.slug).toBe(card.hasVariants ? best : availability.get(card.variantId)!.state);
+      const core = card.hasVariants ? best : availability.get(card.variantId)!.state;
+      // scarcity from placeholder stock is not information (design v2 spec §4.7): a demo row says "in stock"
+      if (card.isDemo && core === "low_stock") demoLow++;
+      expect(card.stock, card.slug).toBe(card.isDemo && core === "low_stock" ? "in_stock" : core);
     }
+    expect(demoLow).toBeGreaterThan(0); // the demo catalogue has low stock to hide
     // the test world, written down
     const states = new Map((await getCardsByIds(t.db, "ar", LISTED, { now: t.now })).map((card) => [card.id, card.stock]));
     expect(Object.fromEntries(states)).toEqual({
@@ -562,13 +612,16 @@ describe("cards — stock, language, ratings, privacy", () => {
     }
   });
 
-  it("says preorder until the release date, then what the stock says", async () => {
+  it("says preorder (with its release date) until the release, then what the stock says", async () => {
     const [before] = await getCardsByIds(t.db, "ar", [P.preorder.id], { now: t.now });
     expect(before.stock).toBe("preorder");
     expect(before.badge).toBe("preorder");
+    expect(before.releaseAt).toBe(t.now + 10 * DAY);
+    expect(before.isNew).toBe(false); // coming soon is not new
     const [after] = await getCardsByIds(t.db, "ar", [P.preorder.id], { now: t.now + 11 * DAY });
     expect(after.stock).toBe("out_of_stock");
-    expect(after.badge).toBe("new");
+    expect(after.releaseAt).toBeNull();
+    expect(after.badge).toBeNull(); // sold out: the card says «نفد» from its stock, no badge
   });
 
   it("localizes names, subtitles and platform names in ar, en and ckb", async () => {
@@ -609,8 +662,30 @@ describe("cards — stock, language, ratings, privacy", () => {
   });
 
   it("never returns protected or internal fields", async () => {
-    const CARD_KEYS = ["badge", "compareAtIqd", "hasVariants", "id", "image", "isDemo", "kind", "name", "platformName", "platformSlug", "priceIqd", "rating", "slug", "stock", "subtitle", "variantId"].sort();
-    const IMAGE_KEYS = ["alt", "artKey", "height", "isIllustration", "mediaKey", "width"];
+    const CARD_KEYS = [
+      "badge",
+      "compareAtDemo",
+      "compareAtIqd",
+      "forPlatforms",
+      "hasVariants",
+      "id",
+      "image",
+      "isDemo",
+      "isNew",
+      "kind",
+      "kindLabel",
+      "name",
+      "platformName",
+      "platformSlug",
+      "priceIqd",
+      "rating",
+      "releaseAt",
+      "slug",
+      "stock",
+      "subtitle",
+      "variantId",
+    ].sort();
+    const IMAGE_KEYS = ["alt", "artKey", "height", "isIllustration", "mediaKey", "opaque", "width"];
     const cards = [...(await allPages({ sort: "featured", limit: MAX_CARD_PAGE })).items, ...(await getDeals(t.db, "ar")), ...(await getNewArrivals(t.db, "ar"))];
     for (const card of cards) {
       expect(Object.keys(card).sort()).toEqual(CARD_KEYS);
@@ -850,5 +925,183 @@ describe("taxonomy", () => {
       await t.d1.prepare("UPDATE categories SET name = json_set(name, '$.en', 'Test department') WHERE id = ?").bind(W.parent).run();
       invalidateNavTaxonomy();
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── design v2 card facts (card-facts.ts)
+
+describe("«جديد»: released, or really listed, within 30 days (isNewProduct)", () => {
+  const NOW = Date.parse("2026-11-11T18:00:00Z");
+  const daysAgo = (n: number) => NOW - n * DAY_MS;
+  /** "YYYY-MM-DD" of the Baghdad day `n` days before NOW. */
+  const dateDaysAgo = (n: number) => new Date(NOW - n * DAY_MS + 3 * 3_600_000).toISOString().slice(0, 10);
+
+  it("counts the researched release date, both ends of the window included", () => {
+    expect(NEW_WINDOW_DAYS).toBe(30);
+    for (const [released, expected] of [[0, true], [1, true], [29, true], [31, false], [400, false]] as const) {
+      expect(isNewProduct({ releasedOn: dateDaysAgo(released), listedAt: null, isDemo: true, now: NOW }), `released ${released} days ago`).toBe(expected);
+    }
+    // exactly 30 days after 00:00 Baghdad of the release day: still new; one millisecond later: not
+    const day = "2026-10-12";
+    const midnight = baghdadMidnight(day)!;
+    expect(isNewProduct({ releasedOn: day, listedAt: null, isDemo: true, now: midnight + 30 * DAY_MS })).toBe(true);
+    expect(isNewProduct({ releasedOn: day, listedAt: null, isDemo: true, now: midnight + 30 * DAY_MS + 1 })).toBe(false);
+  });
+
+  it("never makes a coming-soon product new, whatever its listing", () => {
+    expect(isNewProduct({ releasedOn: "2026-11-19", listedAt: daysAgo(1), isDemo: false, now: NOW })).toBe(false);
+    expect(isNewProduct({ releasedOn: "2027-05-20", listedAt: daysAgo(0), isDemo: false, now: NOW })).toBe(false);
+  });
+
+  it("counts a listing only on a row that is not demo (a demo row's listing time is the seed's clock)", () => {
+    expect(isNewProduct({ releasedOn: "2020-11-12", listedAt: daysAgo(0), isDemo: true, now: NOW })).toBe(false);
+    expect(isNewProduct({ releasedOn: null, listedAt: daysAgo(0), isDemo: true, now: NOW })).toBe(false);
+    expect(isNewProduct({ releasedOn: "2020-11-12", listedAt: daysAgo(5), isDemo: false, now: NOW })).toBe(true);
+    expect(isNewProduct({ releasedOn: null, listedAt: daysAgo(30), isDemo: false, now: NOW })).toBe(true);
+    expect(isNewProduct({ releasedOn: null, listedAt: daysAgo(31), isDemo: false, now: NOW })).toBe(false);
+    expect(isNewProduct({ releasedOn: null, listedAt: NOW + DAY_MS, isDemo: false, now: NOW })).toBe(false); // a listing in the future is no fact yet
+    expect(isNewProduct({ releasedOn: null, listedAt: null, isDemo: false, now: NOW })).toBe(false);
+    expect(isNewProduct({ releasedOn: "not a date", listedAt: Number.NaN, isDemo: false, now: NOW })).toBe(false);
+  });
+
+  it("over the demo catalogue: «جديد» exactly on the products released in the last 30 days, never on everything", async () => {
+    const all = (await allPages({ sort: "newest", limit: MAX_CARD_PAGE, now: t.now })).items;
+    const facts = new Map(
+      (await rows<{ id: string; rel: string | null; is_demo: number; pub: number }>(
+        "SELECT id, json_extract(attributes, '$.catalogue.releaseDate') AS rel, is_demo, COALESCE(published_at, created_at) AS pub FROM products WHERE json_valid(attributes) OR attributes IS NULL",
+      )).map((row) => [row.id, row]),
+    );
+    let fresh = 0;
+    let demo = 0;
+    for (const card of all) {
+      const row = facts.get(card.id);
+      if (!row) continue;
+      const released = baghdadMidnight(row.rel);
+      const expected =
+        card.stock !== "preorder" &&
+        ((released !== null && released <= t.now && t.now - released <= 30 * DAY_MS) || (row.is_demo === 0 && row.pub <= t.now && t.now - row.pub <= 30 * DAY_MS));
+      expect(card.isNew, card.slug).toBe(expected);
+      if (card.badge === "new") expect(card.isNew, card.slug).toBe(true);
+      if (card.isNew) fresh++;
+      if (card.isDemo) demo++;
+    }
+    // the demo seed "lists" every product on the day it runs: listing time must not make them all new
+    expect(demo).toBeGreaterThan(50);
+    expect(fresh).toBeLessThan(demo / 2);
+    // no «جديد» older than 30 days anywhere
+    for (const card of all.filter((entry) => entry.badge === "new" && entry.isDemo)) {
+      const released = baghdadMidnight(facts.get(card.id)!.rel)!;
+      expect(t.now - released, card.slug).toBeLessThanOrEqual(30 * DAY_MS);
+    }
+  });
+});
+
+describe("the shopping tier and the shown stock", () => {
+  it("ranks what can be bought now over coming soon over sold out", () => {
+    expect([shoppingTier({ preorder: false, st: 2 }), shoppingTier({ preorder: false, st: 1 }), shoppingTier({ preorder: true, st: 0 }), shoppingTier({ preorder: false, st: 0 })]).toEqual([2, 2, 1, 0]);
+    // announced but already stocked: the card says coming soon, so it is in the coming-soon tier
+    expect(shoppingTier({ preorder: true, st: 2 })).toBe(1);
+  });
+
+  it("never reports scarcity of a demo row", () => {
+    expect([shownStockRank(0, true), shownStockRank(1, true), shownStockRank(2, true)]).toEqual([0, 2, 2]);
+    expect([shownStockRank(0, false), shownStockRank(1, false), shownStockRank(2, false)]).toEqual([0, 1, 2]);
+  });
+});
+
+describe("the kind label (kindLabelOf) and the platforms of a card", () => {
+  const fam = (generation: string | null, platform: string, generationSort = 10): DeviceFamily => ({ generation, generationSort, platform, platformSort: 10 });
+  const ps5 = fam("ps5", "playstation", 30);
+  const sw2 = fam("switch-2", "nintendo", 10);
+  const sw1 = fam("switch", "nintendo", 20);
+  const xbs = fam("xbox-series", "xbox", 40);
+
+  it("words the examples of the spec in ar, en and ckb", () => {
+    const label = (input: Parameters<typeof kindLabelOf>[0]) => LOCALE_CODES.map((locale) => kindLabelOf(input, locale));
+    expect(label({ kind: "console", families: [ps5], forPlatforms: ["playstation"] })).toEqual(["جهاز PS5", "Console · PS5", "ئامێری PS5"]);
+    expect(label({ kind: "game", families: [sw2], forPlatforms: ["nintendo"] })).toEqual(["لعبة Switch 2", "Game · Switch 2", "یاریی Switch 2"]);
+    expect(label({ kind: "controller", families: [ps5], forPlatforms: ["playstation"] })).toEqual(["يد تحكم · PS5", "Controller · PS5", "دەسکی یاری · PS5"]);
+    expect(label({ kind: "headset", families: [ps5, sw1, xbs], forPlatforms: ["nintendo", "playstation", "xbox"] })).toEqual([
+      "سماعة · متعددة المنصات",
+      "Headset · Multi-platform",
+      "هێدسێت · فرە پلاتفۆرم",
+    ]);
+    expect(label({ kind: "game", families: [ps5, xbs], forPlatforms: ["playstation", "xbox"] })).toEqual(["لعبة متعددة المنصات", "Game · Multi-platform", "یاریی فرە پلاتفۆرم"]);
+  });
+
+  it("names up to two families of one platform, the platform beyond that, and the product's own platform when nothing else is known", () => {
+    expect(kindLabelOf({ kind: "game", families: [sw1, sw2, sw2], forPlatforms: ["nintendo"] }, "ar")).toBe("لعبة Switch 2 · Switch");
+    expect(kindLabelOf({ kind: "digital", families: [sw1, sw2], forPlatforms: ["nintendo"] }, "en")).toBe("Digital code · Switch 2 · Switch");
+    expect(kindLabelOf({ kind: "accessory", families: [fam(null, "xbox")], forPlatforms: ["xbox"] }, "ar")).toBe("إكسسوار · Xbox");
+    expect(kindLabelOf({ kind: "accessory", families: [], ownPlatform: "playstation" }, "ar")).toBe("إكسسوار · PlayStation");
+    expect(kindLabelOf({ kind: "accessory", families: [] }, "en")).toBe("Accessory");
+    // families of platforms the product is not researched for are dropped (a PC rule on a PlayStation headset)
+    expect(kindLabelOf({ kind: "headset", families: [ps5, fam("rog-xbox-ally", "handheld")], forPlatforms: ["playstation"] }, "ar")).toBe("سماعة · PS5");
+    // research kinds that say more than products.kind
+    expect(kindLabelOf({ kind: "console", researchKind: "handheld_pc", families: [fam("steam-deck", "handheld")], forPlatforms: ["handheld"] }, "ar")).toBe("جهاز محمول · Steam Deck");
+    expect(kindLabelOf({ kind: "accessory", researchKind: "vr", families: [ps5], forPlatforms: ["playstation"] }, "en")).toBe("VR headset · PS5");
+    // a generation the table does not know falls back to its own name
+    expect(kindLabelOf({ kind: "console", families: [{ ...fam("zz-gen", PLATFORM), generationName: JSON.stringify(name3("الجيل التجريبي", "Test generation", "نەوەی تاقیکردنەوە")) }], forPlatforms: [PLATFORM] }, "en")).toBe(
+      "Console · Test generation",
+    );
+  });
+
+  it("every card carries its label and its platforms, from the same facts the hubs use", async () => {
+    const all = (await allPages({ sort: "newest", limit: MAX_CARD_PAGE })).items;
+    const { rows: universe } = await loadListingRows(t.db, { kind: "all" }, t.now);
+    const platformsOf = new Map(universe.map((row) => [row.id, row.platforms]));
+    const order = (await rows<{ slug: string }>("SELECT slug FROM platforms WHERE is_active = 1 ORDER BY sort, id")).map((row) => row.slug);
+    let multi = 0;
+    for (const card of all) {
+      expect(card.kindLabel!.length, card.slug).toBeGreaterThan(0);
+      expect(card.forPlatforms, card.slug).toEqual([...platformsOf.get(card.id)!].sort((a, b) => order.indexOf(a) - order.indexOf(b)));
+      if (card.forPlatforms!.length >= 2) {
+        multi++;
+        expect(card.kindLabel, card.slug).toContain("متعددة المنصات");
+      }
+      if (card.kind === "console" && card.platformSlug === "playstation") expect(card.kindLabel, card.slug).toBe("جهاز PS5");
+    }
+    expect(multi).toBeGreaterThan(0);
+    // the test world: its console IS model A of the test generation
+    const [console_] = await getCardsByIds(t.db, "en", [P.console.id]);
+    expect(console_.kindLabel).toBe("Console · Test generation");
+    expect(console_.forPlatforms).toEqual([PLATFORM]);
+    // a headset researched for two platforms through its rules
+    const [headset] = await getCardsByIds(t.db, "ar", [M.headset]);
+    expect([headset.kindLabel, headset.forPlatforms]).toEqual(["سماعة · متعددة المنصات", [MULTI.platform, MULTI.other]]);
+  });
+});
+
+describe("opaque photos (design v2 spec §7.5)", () => {
+  it("flags exactly the card pictures whose manifest kept a background, never box art, screenshots or cut-outs", async () => {
+    const all = (await allPages({ sort: "newest", limit: MAX_CARD_PAGE })).items;
+    let flagged = 0;
+    for (const card of all) {
+      const art = card.image.artKey ? getArt(card.image.artKey) : undefined;
+      const expected = isPhoto(art) && !art.transparent && art.kind !== "box-art" && art.kind !== "screenshot";
+      expect(Boolean(card.image.opaque), card.slug).toBe(expected);
+      if (!card.image.opaque) continue;
+      flagged++;
+      expect(card.image.opaque).toEqual(opaqueOf(card.image.artKey));
+      if (isPhoto(art)) expect(card.image.opaque.background).toBe(art.background);
+    }
+    expect(flagged).toBeGreaterThan(0); // PS5 (2020), Switch Lite, PULSE 3D, the Razer BlackShark… until they are re-cut
+    expect(opaqueOf(null)).toBeNull();
+    expect(opaqueOf("zz-no-such-photo--1")).toBeNull();
+  });
+
+  it("says whether the kept box is light or dark", () => {
+    const keys = photoKeys();
+    let light = 0;
+    let dark = 0;
+    for (const key of keys) {
+      const art = getArt(key);
+      const flag = opaqueOf(key);
+      if (!flag || !isPhoto(art) || !art.background) continue;
+      if (art.background.toLowerCase() === "#ffffff") (expect(flag.tone, key).toBe("light"), light++);
+      if (/^#(0|1)[0-9a-f](0|1)[0-9a-f](0|1)[0-9a-f]$/i.test(art.background)) (expect(flag.tone, key).toBe("dark"), dark++);
+    }
+    expect(light).toBeGreaterThan(0);
+    expect(dark).toBeGreaterThan(0);
   });
 });

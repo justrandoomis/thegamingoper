@@ -1,24 +1,32 @@
 import { useId, type ChangeEvent, type ComponentPropsWithRef, type CSSProperties, type ElementType, type MouseEvent, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
-import { useT } from "~/i18n/react";
+import { useFormat, useT } from "~/i18n/react";
 import { BidiLabel, textOf } from "./BidiText";
 import { cx } from "./cx";
 import { useControllable, useRovingRadio } from "./KeyBank";
+import { PlatformLed, type Gel } from "./PlatformLed";
 
 /**
- * Chips (docs/DESIGN.md §9.8): short choices on 44px clay keys. Unchosen = white clay with a hollow ring; chosen =
- * held down, ink, with a check. The ring and the check occupy the same 16px, so choosing never reflows the row.
- * Chips are for choices — a non-interactive fact is plain text or a <Tag>.
+ * Chips — Design System v2 §4.6: a flat 40px pill (44 hit), paper with a --line-2 hairline, 14/600 ink words, an optional
+ * count in ink-2 («الألعاب 18») and an optional 8px platform dot. Chosen = ink fill, paper words and a 16px check at the
+ * start (the count at 72%). Chips are STATE, never action — an action is a <Key> (12px corners, not a pill).
  *
- *   Toggle (multi-choice, aria-pressed)   <Chip selected={on} onClick={toggle}>1 TB</Chip>
+ *   Toggle (multi-choice, aria-pressed)   <Chip selected={on} onClick={toggle} count={18}>الألعاب</Chip>
+ *   With a platform dot                   <Chip platform="playstation">PlayStation</Chip>
  *   Link (a filter that is a URL)         <Chip as={LocaleLink} to="?storage=1tb" selected={active}>1 TB</Chip>
  *   Native checkbox / radio (no script)   <Chip input="checkbox" name="storage" value="1tb" defaultChecked>1 TB</Chip>
- *   Removable active filter               <Chip onRemove={() => drop("1tb")}>1 TB</Chip>          held, ×, "Remove 1 TB"
+ *   Removable active filter               <Chip onRemove={() => drop("1tb")}>1 TB</Chip>          ×, "أزل 1 TB"
  *   Single choice with arrow keys         <ChipGroup aria-label={t("storage")} options={…} value={v} onChange={setV} />
+ *
+ * Rows: <div className="chips chips--rail chips--bleed"> scrolls sideways on phones (gutter kept) and wraps from 768.
  */
 type ChipCommon = {
   children: ReactNode;
+  /** A count after the label, in ink-2 ("الألعاب 18"). Numbers are formatted for the page's language. */
+  count?: number | string;
+  /** An 8px platform dot after the label. */
+  platform?: Gel;
   className?: string;
   style?: CSSProperties;
   disabled?: boolean;
@@ -41,18 +49,30 @@ export type ChipButtonProps<C extends ElementType = "button"> = ChipCommon & {
   as?: C;
   /** Chosen. On a button this is `aria-pressed`; on a link `aria-current`. */
   selected?: boolean;
-  /** Turns the chip into a held-down "remove this filter" key with a ×. */
+  /** A removable active filter: ends with a 44px ×; its name is "أزل {label}". */
   onRemove?: () => void;
 } & Omit<ComponentPropsWithRef<C>, keyof ChipCommon | "as" | "input" | "selected" | "onRemove">;
 
 export type ChipProps<C extends ElementType = "button"> = ChipInputProps | ChipButtonProps<C>;
 
+function ChipBody({ children, count, platform, lead }: { children: ReactNode; count?: number | string; platform?: Gel; lead: ReactNode }) {
+  const f = useFormat();
+  return (
+    <span className="key__cap">
+      {lead}
+      <BidiLabel className="key__label">{children}</BidiLabel>
+      {count !== undefined && count !== null && count !== "" ? <span className="key__count nums">{typeof count === "number" ? f.number(count) : count}</span> : null}
+      {platform ? <PlatformLed platform={platform} /> : null}
+    </span>
+  );
+}
+
 export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
   const t = useT("ui");
   if (props.input) {
-    const { input, name, value, checked, defaultChecked, onChange, disabled, children, className, style, "aria-label": ariaLabel } = props;
+    const { input, name, value, checked, defaultChecked, onChange, disabled, children, count, platform, className, style, "aria-label": ariaLabel } = props;
     return (
-      <label className={cx("key key--chip", className)} style={style} data-press="clay">
+      <label className={cx("key key--chip", className)} style={style} data-press="soft">
         <input
           className="key__native"
           type={input}
@@ -64,15 +84,14 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
           disabled={disabled}
           aria-label={ariaLabel}
         />
-        <span className="key__cap">
-          <ChipMark />
-          <BidiLabel className="key__label">{children}</BidiLabel>
-        </span>
+        <ChipBody count={count} platform={platform} lead={<ChipMark />}>
+          {children}
+        </ChipBody>
       </label>
     );
   }
 
-  const { as, selected, onRemove, disabled = false, children, className, ...rest } = props as ChipButtonProps<ElementType>;
+  const { as, selected, onRemove, disabled = false, children, count, platform, className, ...rest } = props as ChipButtonProps<ElementType>;
   const Tag: ElementType = as ?? "button";
   const isButton = Tag === "button";
   const removable = typeof onRemove === "function";
@@ -86,7 +105,7 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
       {...rest}
       {...state}
       className={cx("key key--chip", className)}
-      data-press="clay"
+      data-press="soft"
       data-held={removable ? "" : (state["data-held"] as string | undefined)}
       aria-label={removable ? t("chip.remove", { label: textOf(children) }) : (own["aria-label"] as string | undefined)}
       onClick={(event: MouseEvent<HTMLElement>) => {
@@ -98,15 +117,14 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
         if (removable && !event.defaultPrevented) onRemove();
       }}
     >
-      <span className="key__cap">
-        {removable ? <Icon name="x" size={16} /> : <ChipMark />}
-        <BidiLabel className="key__label">{children}</BidiLabel>
-      </span>
+      <ChipBody count={count} platform={platform} lead={removable ? <Icon name="x" size={16} /> : <ChipMark />}>
+        {children}
+      </ChipBody>
     </Tag>
   );
 }
 
-/** The reserved 16px: a hollow ring until chosen, then a check (CSS swaps them; nothing moves). */
+/** The 16px check at the start of a chosen chip (CSS shows it on aria-checked / aria-pressed / data-held / :checked). */
 function ChipMark() {
   return (
     <span className="key__mark" aria-hidden="true">
@@ -117,7 +135,7 @@ function ChipMark() {
 
 /* ───────────────────────────── ChipGroup: one choice, roving focus ───────────────────────────── */
 
-export type ChipOption = { value: string; label: ReactNode; disabled?: boolean };
+export type ChipOption = { value: string; label: ReactNode; disabled?: boolean; count?: number | string; platform?: Gel };
 
 export type ChipGroupProps = {
   options: readonly ChipOption[];
@@ -128,12 +146,14 @@ export type ChipGroupProps = {
   "aria-labelledby"?: string;
   /** Submit the choice with a form. */
   name?: string;
-  /** One scrolling row instead of wrapping lines (hub filter rails). */
+  /** One scrolling row on phones (wraps from 768) instead of wrapping lines. */
   rail?: boolean;
+  /** With `rail`: bleed into the page gutter on phones (the row starts at the gutter, scrolls edge to edge). */
+  bleed?: boolean;
   className?: string;
 };
 
-export function ChipGroup({ options, value, defaultValue = null, onChange, "aria-label": ariaLabel, "aria-labelledby": labelledBy, name, rail = false, className }: ChipGroupProps) {
+export function ChipGroup({ options, value, defaultValue = null, onChange, "aria-label": ariaLabel, "aria-labelledby": labelledBy, name, rail = false, bleed = false, className }: ChipGroupProps) {
   const id = useId();
   const [current, setCurrent] = useControllable(value, defaultValue, onChange);
   const { itemProps } = useRovingRadio({
@@ -143,13 +163,12 @@ export function ChipGroup({ options, value, defaultValue = null, onChange, "aria
     onChange: setCurrent,
   });
   return (
-    <div role="radiogroup" id={id} aria-label={ariaLabel} aria-labelledby={labelledBy} className={cx("chips", rail && "chips--rail", className)}>
+    <div role="radiogroup" id={id} aria-label={ariaLabel} aria-labelledby={labelledBy} className={cx("chips", rail && "chips--rail [&>*]:shrink-0", rail && bleed && "chips--bleed", className)}>
       {options.map((option, index) => (
-        <button key={option.value} type="button" className="key key--chip" data-press="clay" disabled={option.disabled} {...itemProps(index)}>
-          <span className="key__cap">
-            <ChipMark />
-            <BidiLabel className="key__label">{option.label}</BidiLabel>
-          </span>
+        <button key={option.value} type="button" className="key key--chip" data-press="soft" disabled={option.disabled} {...itemProps(index)}>
+          <ChipBody count={option.count} platform={option.platform} lead={<ChipMark />}>
+            {option.label}
+          </ChipBody>
         </button>
       ))}
       {name ? <input type="hidden" name={name} value={current ?? ""} /> : null}

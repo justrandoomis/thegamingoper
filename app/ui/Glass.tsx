@@ -3,24 +3,26 @@ import { useEffect, type ComponentPropsWithRef, type ElementType } from "react";
 import { cx } from "./cx";
 
 /**
- * Glass — for the eye (docs/DESIGN.md §6.2). THE ONLY WAY to get backdrop-filter in this app
- * (scripts/lint-design.mjs fails any other backdrop-filter).
+ * Glass v2 — Design System v2 §2.10b: THIN FIXED CHROME ONLY (the phone header, the desktop header's two rows, the tab
+ * bar, the buy bar, task bars, the checkout bar and a sheet's header strip). THE ONLY WAY to get backdrop-filter in this
+ * app (scripts/lint-design.mjs fails any other backdrop-filter). Panels, menus, sheet bodies, dialogs and toasts are
+ * opaque — never glass.
  *
- *   <Glass as="nav" edge="bottom" className="fixed inset-x-0 bottom-0 …">…tab bar…</Glass>     live frost
- *   <Glass variant="static" className="gtag">…price tag on a stage…</Glass>                     no blur
- *   <Glass variant="solid">…a third overlay while two live panes are up…</Glass>
+ *   <Glass as="header" className="sticky top-0 …">…</Glass>                                  live frost, the bar edge
+ *   <Glass as="nav" edge="bottom" className="fixed inset-x-0 bottom-0 …">…tab bar…</Glass>   floating bars (--e-float)
+ *   <Glass variant="solid">…</Glass>                                                         the same bar, opaque
  *
  * Rules: live glass only on FIXED or STICKY chrome that content really scrolls under — never on anything that
- * scrolls with the page or repeats in a list; at most two live panes in a viewport; always a rounded rectangle
- * (no mask, clip-path or SVG shape); never a wall, never red; blur, tint and shadow never animate. Static glass
- * only over smooth surfaces (floor, stage, light). Secondary text inside glass is automatically on-glass-2.
- * Reduced transparency, the low-end tier and missing backdrop-filter support all fall back to solid; so does the
- * page's glass under an open sheet or dialog (the modal layer marks the page it covers — ./Dialog, materials.css).
+ * scrolls with the page or repeats in a list; at most two live panes in a viewport; never red; blur, tint and shadow
+ * never animate; no element with a view-transition-name may contain it. Secondary text on glass is plain --ink-2.
+ * Reduced transparency, the low-end tier, `prefers-contrast: more` and missing backdrop-filter support all fall back
+ * to solid; so does the page's glass under an open sheet or dialog (the modal layer marks the page it covers —
+ * ./Dialog, materials.css). 1.0's `variant="static"` is retired (§4.2): it renders an opaque surface.
  */
 export type GlassOwnProps = {
-  /** live (default, frosted) · static (no blur, over smooth surfaces) · solid (opaque glass colour). */
+  /** live (default, frosted) · solid (opaque glass colour) · static (1.0, retired: opaque). */
   variant?: "live" | "static" | "solid";
-  /** "bottom" for bars and sheets anchored to the bottom edge: their shadow is thrown upward. */
+  /** "bottom" for bars anchored to the bottom edge and floating pills: the float shadow. */
   edge?: "top" | "bottom";
   className?: string;
 };

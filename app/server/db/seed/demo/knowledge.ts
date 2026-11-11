@@ -453,7 +453,7 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
     platform: "xbox",
     tags: ["setup", "xbox-series-x"],
     blocks: [
-      devicePhoto("xbox-series-x--1", "XBOX Series X"),
+      devicePhoto("xbox-series-x--1", "Xbox Series X"),
       H_PLACE,
       ul(
         t3(

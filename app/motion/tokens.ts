@@ -153,11 +153,12 @@ export const press = {
 export type PressKind = keyof typeof press;
 
 /**
- * Content arriving (Bubble, DESIGN.md "inflate"): from scale .86 with opacity 0 → 1 on the `inflate` spring,
+ * Content arriving (Bubble, DESIGN.md "inflate"): from scale .94 with opacity 0 → 1 on the `inflate` spring,
  * 45 ms apart, at most six items staggered (the rest appear with the sixth). A custom step is capped so the
- * whole wave never takes longer than `staggerMax`.
+ * whole wave never takes longer than `staggerMax`. (Design System v2 §2.11: .94, was .86 — v2 cards are open, with no
+ * box to inflate, so a deep scale read as a jump.)
  */
-export const bubble = { fromScale: 0.86, staggerStep: 45, staggerSlots: 6, staggerMax: 400 } as const;
+export const bubble = { fromScale: 0.94, staggerStep: 45, staggerSlots: 6, staggerMax: 400 } as const;
 
 /** Sheet physics. */
 export const sheet = {

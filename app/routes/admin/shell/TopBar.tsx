@@ -25,9 +25,19 @@ import type { ShellQueueId, ShellWaiting } from "./queues.server";
 const QUEUE_ICON: Record<ShellQueueId, IconName> = {
   proofs: "receipt",
   refunds: "hand-coins",
+  failed_deliveries: "warning",
+  cod_settlements: "scales",
+  rmas: "arrow-u-up-left",
+  inspections: "magnifying-glass",
   prices: "tag",
   counts: "clipboard-text",
   transfers: "truck",
+  po_approvals: "factory",
+  stuck_receipts: "hourglass",
+  invoice_mismatches: "file-text",
+  topups: "wallet",
+  adjustments: "coins",
+  expenses: "money",
 };
 import type { AdminShellData } from "./shell.server";
 

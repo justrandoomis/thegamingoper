@@ -8,16 +8,16 @@
   "family": "xbox-series-s",
   "status": "available",
   "releaseDate": "2020-11-10",
-  "name": { "ar": "XBOX Series S", "en": "XBOX Series S", "ckb": "XBOX Series S" },
+  "name": { "ar": "Xbox Series S", "en": "Xbox Series S", "ckb": "Xbox Series S" },
   "short": {
     "ar": "512GB أو 1TB · رقمي بالكامل · دقة 1440p حتى 120 إطاراً",
     "en": "512GB or 1TB · all-digital · 1440p up to 120 FPS",
     "ckb": "512GB یان 1TB · تەواو دیجیتاڵ · ‏1440p تا 120 FPS"
   },
   "description": {
-    "ar": "أصغر جهاز XBOX، أصغر بنحو 60% من Series X، ويشغّل نفس ألعاب الجيل الحالي بدقة 1440p حتى 120 إطاراً في الثانية مع إمكانية رفع الصورة إلى 4K. رقمي بالكامل بدون مشغل أقراص، ويأتي باللون الأبيض Robot White بسعة 512GB أو 1TB. خيار مناسب لمن يريد ألعاب XBOX الحديثة بسعر أقل ولا يحتاج أقراصاً.",
-    "en": "The smallest XBOX, about 60% smaller than the Series X, running the same current-generation games at 1440p and up to 120 frames per second, with upscaling to 4K. It is all-digital with no disc drive, and comes in Robot White with 512GB or 1TB of storage. A good fit for anyone who wants current XBOX games for less and does not need discs.",
-    "ckb": "بچووکترین XBOX، نزیکەی 60% بچووکترە لە Series X، و هەمان یارییەکانی ئەم نەوەیە بە 1440p و تا 120 وێنە لە چرکەیەکدا کار پێدەکات، لەگەڵ گەورەکردنی وێنە بۆ 4K. تەواو دیجیتاڵە و خوێنەری دیسکی نییە، و بە ڕەنگی سپیی Robot White بە 512GB یان 1TB دێت. گونجاوە بۆ ئەوەی یارییە نوێیەکانی XBOX ـی بە نرخێکی کەمتر دەوێت و پێویستی بە دیسک نییە."
+    "ar": "أصغر جهاز Xbox، أصغر بنحو 60% من Series X، ويشغّل نفس ألعاب الجيل الحالي بدقة 1440p حتى 120 إطاراً في الثانية مع إمكانية رفع الصورة إلى 4K. رقمي بالكامل بدون مشغل أقراص، ويأتي باللون الأبيض Robot White بسعة 512GB أو 1TB. خيار مناسب لمن يريد ألعاب Xbox الحديثة بسعر أقل ولا يحتاج أقراصاً.",
+    "en": "The smallest Xbox, about 60% smaller than the Series X, running the same current-generation games at 1440p and up to 120 frames per second, with upscaling to 4K. It is all-digital with no disc drive, and comes in Robot White with 512GB or 1TB of storage. A good fit for anyone who wants current Xbox games for less and does not need discs.",
+    "ckb": "بچووکترین Xbox، نزیکەی 60% بچووکترە لە Series X، و هەمان یارییەکانی ئەم نەوەیە بە 1440p و تا 120 وێنە لە چرکەیەکدا کار پێدەکات، لەگەڵ گەورەکردنی وێنە بۆ 4K. تەواو دیجیتاڵە و خوێنەری دیسکی نییە، و بە ڕەنگی سپیی Robot White بە 512GB یان 1TB دێت. گونجاوە بۆ ئەوەی یارییە نوێیەکانی Xbox ـی بە نرخێکی کەمتر دەوێت و پێویستی بە دیسک نییە."
   },
   "highlights": [
     {
@@ -41,9 +41,9 @@
       "ckb": "SSD ـی 512GB یان 1TB، بە کارتی فراوانکردنی بیرگە زیاد دەکرێت"
     },
     {
-      "ar": "يشغّل نفس ألعاب XBOX Series X وآلاف ألعاب الأجيال السابقة الرقمية، وقوائمه متوفرة بالعربية",
-      "en": "Runs the same games as XBOX Series X plus thousands of digital back-catalogue games; menus available in Arabic",
-      "ckb": "هەمان یارییەکانی XBOX Series X و هەزاران یاریی دیجیتاڵی نەوەکانی پێشوو کار پێدەکات؛ لیستەکانی بە عەرەبیش هەن"
+      "ar": "يشغّل نفس ألعاب Xbox Series X وآلاف ألعاب الأجيال السابقة الرقمية، وقوائمه متوفرة بالعربية",
+      "en": "Runs the same games as Xbox Series X plus thousands of digital back-catalogue games; menus available in Arabic",
+      "ckb": "هەمان یارییەکانی Xbox Series X و هەزاران یاریی دیجیتاڵی نەوەکانی پێشوو کار پێدەکات؛ لیستەکانی بە عەرەبیش هەن"
     }
   ],
   "specs": [
@@ -128,9 +128,9 @@
       "key": "network",
       "label": { "ar": "الشبكة واللاسلكي", "en": "Network and wireless", "ckb": "تۆڕ و بێتەل" },
       "value": {
-        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو XBOX Wireless",
-        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, XBOX Wireless radio",
-        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی XBOX Wireless"
+        "ar": "Wi-Fi ‏802.11ac ثنائي النطاق، Ethernet ‏10/100/1000، وراديو Xbox Wireless",
+        "en": "Dual-band 802.11ac Wi-Fi, 10/100/1000 Ethernet, Xbox Wireless radio",
+        "ckb": "Wi-Fi ـی 802.11ac ـی دوو باند، Ethernet ‏10/100/1000، ڕادیۆی Xbox Wireless"
       }
     },
     {
@@ -145,8 +145,8 @@
     }
   ],
   "inTheBox": [
-    { "ar": "جهاز XBOX Series S", "en": "XBOX Series S console", "ckb": "کۆنسۆڵی XBOX Series S" },
-    { "ar": "يد XBOX Wireless Controller", "en": "XBOX Wireless Controller", "ckb": "دەسکی XBOX Wireless Controller" },
+    { "ar": "جهاز Xbox Series S", "en": "Xbox Series S console", "ckb": "کۆنسۆڵی Xbox Series S" },
+    { "ar": "يد Xbox Wireless Controller", "en": "Xbox Wireless Controller", "ckb": "دەسکی Xbox Wireless Controller" },
     { "ar": "كابل HDMI فائق السرعة (Ultra High Speed)", "en": "Ultra High Speed HDMI cable", "ckb": "کێبڵی HDMI ـی Ultra High Speed" },
     { "ar": "سلك الكهرباء", "en": "Power cord", "ckb": "وایەری کارەبا" }
   ],
@@ -154,9 +154,9 @@
     {
       "sku": "XSS-512-WHT",
       "title": {
-        "ar": "XBOX Series S ‏512GB، أبيض Robot White",
-        "en": "XBOX Series S 512GB, Robot White",
-        "ckb": "XBOX Series S ‏512GB، سپیی Robot White"
+        "ar": "Xbox Series S ‏512GB، أبيض Robot White",
+        "en": "Xbox Series S 512GB, Robot White",
+        "ckb": "Xbox Series S ‏512GB، سپیی Robot White"
       },
       "options": { "storage": "512GB", "color": "Robot White" },
       "modelNumber": "1883",
@@ -166,9 +166,9 @@
     {
       "sku": "XSS-1TB-WHT",
       "title": {
-        "ar": "XBOX Series S ‏1TB، أبيض Robot White",
-        "en": "XBOX Series S 1TB, Robot White",
-        "ckb": "XBOX Series S ‏1TB، سپیی Robot White"
+        "ar": "Xbox Series S ‏1TB، أبيض Robot White",
+        "en": "Xbox Series S 1TB, Robot White",
+        "ckb": "Xbox Series S ‏1TB، سپیی Robot White"
       },
       "options": { "storage": "1TB", "color": "Robot White" },
       "modelNumber": "1883",
@@ -198,9 +198,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
       "kind": "hero",
       "alt": {
-        "ar": "جهاز XBOX Series S الأبيض من جهة فتحة التهوية الدائرية، مع يد التحكم",
-        "en": "White XBOX Series S showing its round vent, with its controller",
-        "ckb": "XBOX Series S ـی سپی لە لای کونی هەواکێشە بازنەییەکەیەوە، لەگەڵ دەسکەکەی"
+        "ar": "جهاز Xbox Series S الأبيض من جهة فتحة التهوية الدائرية، مع يد التحكم",
+        "en": "White Xbox Series S showing its round vent, with its controller",
+        "ckb": "Xbox Series S ـی سپی لە لای کونی هەواکێشە بازنەییەکەیەوە، لەگەڵ دەسکەکەی"
       },
       "credit": "Microsoft",
       "width": 2555,
@@ -214,9 +214,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
       "kind": "angle",
       "alt": {
-        "ar": "XBOX Series S بزاوية مائلة مع اليد",
-        "en": "XBOX Series S at an angle with the controller",
-        "ckb": "XBOX Series S بە گۆشەیەکی لار لەگەڵ دەسکەکە"
+        "ar": "Xbox Series S بزاوية مائلة مع اليد",
+        "en": "Xbox Series S at an angle with the controller",
+        "ckb": "Xbox Series S بە گۆشەیەکی لار لەگەڵ دەسکەکە"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -230,9 +230,9 @@
       "sourcePage": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
       "kind": "angle",
       "alt": {
-        "ar": "XBOX Series S من الأمام يظهر نحافة الجهاز، مع اليد",
-        "en": "XBOX Series S from the front, showing how slim it is, with the controller",
-        "ckb": "XBOX Series S لە پێشەوە، باریکییەکەی دیارە، لەگەڵ دەسکەکە"
+        "ar": "Xbox Series S من الأمام يظهر نحافة الجهاز، مع اليد",
+        "en": "Xbox Series S from the front, showing how slim it is, with the controller",
+        "ckb": "Xbox Series S لە پێشەوە، باریکییەکەی دیارە، لەگەڵ دەسکەکە"
       },
       "credit": "Microsoft",
       "width": 2000,
@@ -243,14 +243,14 @@
   "sources": [
     {
       "url": "https://www.xbox.com/en-US/consoles/xbox-series-s",
-      "title": "XBOX Series S",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Series S",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "current options (512GB and 1TB, both Robot White, all-digital), launch date 10 Nov 2020, what is in the box, 1440p with 4K upscaling, no disc support"
     },
     {
       "url": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn",
-      "title": "Buy XBOX Series S: 512GB or 1TB White",
+      "title": "Buy Xbox Series S: 512GB or 1TB White",
       "publisher": "Microsoft Store",
       "retrieved": "2026-11-11",
       "supports": "tech specs (CPU, GPU, memory, SSD, video, ports, wireless, dimensions and weight of the 512GB model), 60% smaller than Series X, product images"
@@ -258,14 +258,14 @@
     {
       "url": "https://news.xbox.com/en-us/2024/11/15/xbox-series-xs-every-console-option-available-now/",
       "title": "Xbox Series X|S – Every Console Option Available Now",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "Series S in Robot White with 512GB and 1TB options"
     },
     {
       "url": "https://news.xbox.com/en-us/2023/06/11/xbox-series-s-1tb-black/",
       "title": "Back in Black, Xbox Series S is Now Available with a 1TB SSD",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "earlier 1TB Carbon Black version, launched 1 September 2023"
     },
@@ -279,16 +279,16 @@
     {
       "url": "https://news.xbox.com/en-us/2024/08/21/xbox-series-x-s-new-console-options-pre-order/",
       "title": "Pre-Order Three New Xbox Series X|S Console Options Starting August 21",
-      "publisher": "Microsoft (XBOX Wire)",
+      "publisher": "Microsoft (Xbox Wire)",
       "retrieved": "2026-11-11",
       "supports": "Series S 1TB in Robot White released 15 October 2024 (select countries on 29 October)"
     },
     {
       "url": "https://learn.microsoft.com/en-us/xbox/service-guides/series-s-console/series-s-device-id-and-disassembly",
-      "title": "XBOX Series S Console Safety & Repair Instructions",
+      "title": "Xbox Series S Console Safety & Repair Instructions",
       "publisher": "Microsoft Learn",
       "retrieved": "2026-11-11",
-      "supports": "official model number: XBOX Series S Model 1883, printed on the label on the back"
+      "supports": "official model number: Xbox Series S Model 1883, printed on the label on the back"
     },
     {
       "url": "https://www.microsoft.com/en-us/d/replacement-power-supply-unit-for-xbox-series-s-model-1883-512-gb-1-tb/8mzbmmcjzqm1",
@@ -299,10 +299,10 @@
     },
     {
       "url": "https://support.xbox.com/en-US/help/hardware-network/getting-started-set-up/locale-faq",
-      "title": "XBOX locales FAQ",
-      "publisher": "Microsoft (XBOX Support)",
+      "title": "Xbox locales FAQ",
+      "publisher": "Microsoft (Xbox Support)",
       "retrieved": "2026-11-11",
-      "supports": "XBOX support and warranties are only available in supported countries/regions; system updates work anywhere with an internet connection"
+      "supports": "Xbox support and warranties are only available in supported countries/regions; system updates work anywhere with an internet connection"
     },
     {
       "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/game-principles/localization/console_supported_languages",
@@ -316,27 +316,27 @@
       "title": "اللغة العربية قادمة لأجهزة إكسبوكس ون في الخريف",
       "publisher": "Saudi Gamer",
       "retrieved": "2026-11-11",
-      "supports": "second source: Microsoft added Arabic as an XBOX console interface language in the 2017 Fall Update"
+      "supports": "second source: Microsoft added Arabic as an Xbox console interface language in the 2017 Fall Update"
     },
     {
       "url": "https://www.xbox.com/en-US/regions",
-      "title": "XBOX Supported Countries & Regions",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Supported Countries & Regions",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "Iraq is not on the list of supported countries/regions"
     },
     {
       "url": "https://www.xbox.com/en-US/xbox-game-pass",
-      "title": "XBOX Game Pass",
-      "publisher": "Microsoft (XBOX)",
+      "title": "Xbox Game Pass",
+      "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
       "supports": "online console multiplayer is included in the Essential, Premium and Ultimate plans"
     }
   ],
   "notes": {
-    "ar": "كانت هناك نسخة 1TB سوداء Carbon Black صدرت في أيلول 2023، ولم تعد ضمن تشكيلة Microsoft الحالية. الجهاز رقمي بالكامل، والعراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات XBOX، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم XBOX وضمانه متاحان في الدول المدعومة فقط. اللعب الجماعي عبر الإنترنت مشمول في باقات Game Pass ‏(Essential وPremium وUltimate).",
-    "en": "A 1TB Carbon Black version was sold from September 2023 and is no longer in Microsoft's current line-up. The console is all-digital, and Iraq is not on Microsoft's list of countries where XBOX services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says XBOX support and warranties are only available in supported countries. Online console multiplayer is included in the Game Pass plans (Essential, Premium, Ultimate).",
-    "ckb": "وەشانێکی ڕەشی 1TB ـی Carbon Black لە ئەیلوولی 2023 ـەوە دەفرۆشرا و ئێستا لە لیستی ئێستای Microsoft ـدا نییە. کۆنسۆڵەکە تەواو دیجیتاڵە، و عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی XBOX، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی XBOX تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. یاریی بە کۆمەڵ لە ئینتەرنێت لە پلانەکانی Game Pass ‏(Essential، Premium، Ultimate) دایە."
+    "ar": "كانت هناك نسخة 1TB سوداء Carbon Black صدرت في أيلول 2023، ولم تعد ضمن تشكيلة Microsoft الحالية. الجهاز رقمي بالكامل، والعراق ليس ضمن قائمة Microsoft للدول التي تدعم خدمات Xbox، لذلك متجر Microsoft وGame Pass غير مقدمين رسمياً للعراق، وتقول Microsoft إن دعم Xbox وضمانه متاحان في الدول المدعومة فقط. اللعب الجماعي عبر الإنترنت مشمول في باقات Game Pass ‏(Essential وPremium وUltimate).",
+    "en": "A 1TB Carbon Black version was sold from September 2023 and is no longer in Microsoft's current line-up. The console is all-digital, and Iraq is not on Microsoft's list of countries where Xbox services are supported, so the Microsoft Store and Game Pass are not officially offered for Iraq, and Microsoft says Xbox support and warranties are only available in supported countries. Online console multiplayer is included in the Game Pass plans (Essential, Premium, Ultimate).",
+    "ckb": "وەشانێکی ڕەشی 1TB ـی Carbon Black لە ئەیلوولی 2023 ـەوە دەفرۆشرا و ئێستا لە لیستی ئێستای Microsoft ـدا نییە. کۆنسۆڵەکە تەواو دیجیتاڵە، و عێراق لە لیستی Microsoft ـدا نییە بۆ وڵاتانی پشتگیریکراوی خزمەتگوزارییەکانی Xbox، بۆیە فرۆشگای Microsoft و Game Pass بە فەرمی بۆ عێراق پێشکەش ناکرێن، و Microsoft دەڵێت پشتگیری و گەرەنتیی Xbox تەنها لە وڵاتە پشتگیریکراوەکاندا هەیە. یاریی بە کۆمەڵ لە ئینتەرنێت لە پلانەکانی Game Pass ‏(Essential، Premium، Ultimate) دایە."
   },
   "verification": {
     "checkedBy": "fact-check",

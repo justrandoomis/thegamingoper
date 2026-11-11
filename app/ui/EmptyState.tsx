@@ -1,50 +1,99 @@
 import type { ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
+import { Logo } from "~/art/Logo";
 import { cx } from "./cx";
-import { Socket } from "./Socket";
+import { Render } from "./Stage";
 
 /**
- * EmptyState — nothing here yet (DESIGN.md §9.16): a flat niche panel with an empty socket (the well where a thing
- * would sit), one sentence in the brand voice and ONE key that says where to go. The game-turn voice ("دورك.") is
- * for empty states, onboarding and the home key bank only — never checkout, errors or money (§11).
+ * EmptyState — nothing here yet. Design System v2 §4.23:
  *
- *   <EmptyState title={t("cartEmpty")}                       // "سلتك فارغة. دورك."
- *               text={t("cartEmptyHint")}                    // "اختر منصّتك ونرتّب لك الرف."
- *               action={<Key as={LocaleLink} to="/">{t("browse")}</Key>} />   // "تصفّح الأجهزة"
- *   <EmptyState icon="magnifying-glass" title={t("noResults", { q })} text={t("tryFewer")} layout="stack" />
+ *   layout="stack"  (a page or a sheet that is empty) centred, max 560, NO SLAB: a picture — a 112px --red-tint disc
+ *                   holding the mascot (the supplied logo artwork), or a real product cut-out in a 132px well (`art`)
+ *                   — a type-h2 title that says what is empty, one 16px sentence that says what to do, ONE primary
+ *                   and one recovery link, then an optional shelf of in-stock products.
+ *   layout="row"    (default — a part of a page, the admin) a compact line: a hairline disc with the icon, the title,
+ *                   one sentence and the action at the end.
  *
- * `layout="row"` (default) for a panel inside a page; `"stack"` (centred) when it is the whole content of a page or a
- * sheet. It is not a loading state: render it only once you know there is nothing.
+ *   <EmptyState layout="stack" title={t("cartEmpty")} text={t("cartEmptyHint")}
+ *               action={<Key variant="primary" as={LocaleLink} to="/">{t("shopDevices")}</Key>}
+ *               recovery={<TextLink as={LocaleLink} to="/track">{t("track")}</TextLink>} />
+ *   <EmptyState icon="magnifying-glass" title={t("noResults", { q })} text={t("tryFewer")} />
+ *
+ * Copy (v2 §9): say what is empty and what to do — no «دورك.», never an empty socket. It is not a loading state:
+ * render it only once you know there is nothing.
  */
 export type EmptyStateProps = {
-  /** One sentence: what is empty, plainly ("لا توجد طلبات بعد."). */
+  /** What is empty, plainly («سلتك فارغة»). */
   title: ReactNode;
-  /** One more line: what to do about it. */
+  /** One sentence: what to do about it. */
   text?: ReactNode;
-  /** The one key (a <Key>, usually a link). Never the commit key. */
+  /** The one action (a <Key>, usually a link; the primary in a stack). */
   action?: ReactNode;
-  /** An icon in the socket (a search glass for zero results). Default: the socket stays empty. */
+  /** stack: one recovery link beside the action (a <TextLink>). */
+  recovery?: ReactNode;
+  /** row: an icon in the disc. stack: shown in the red-tint disc instead of the mascot. */
   icon?: IconName;
+  /** stack: a product photo key (a cut-out in a 132px well) or your own picture. Default: the mascot. */
+  art?: string | ReactNode;
+  /** stack: under the actions — a shelf of 4 in-stock products. */
+  shelf?: ReactNode;
   layout?: "row" | "stack";
-  /** Render the title as a heading of this level (default: a paragraph). */
+  /** Render the title as a heading of this level (default: a paragraph in a row, an h2 in a stack). */
   headingLevel?: 2 | 3 | 4;
   className?: string;
 };
 
-export function EmptyState({ title, text, action, icon, layout = "row", headingLevel, className }: EmptyStateProps) {
+export function EmptyState({ title, text, action, recovery, icon, art, shelf, layout = "row", headingLevel, className }: EmptyStateProps) {
+  if (layout === "stack") {
+    const Title = `h${headingLevel ?? 2}` as const;
+    const well = typeof art === "string";
+    return (
+      <div className={cx("empty", className)}>
+        <span className={cx("empty__art", well && "empty__art--well")} aria-hidden="true">
+          {well ? (
+            <span className="render-slot relative size-full p-[12%]">
+              <Render name={art} alt="" sizes="132px" />
+            </span>
+          ) : art ? (
+            art
+          ) : icon ? (
+            <Icon name={icon} size={24} className="text-red-ink" />
+          ) : (
+            <span className="text-logo">
+              <Logo variant="mark" height={60} />
+            </span>
+          )}
+        </span>
+        <Title className="empty__title">{title}</Title>
+        {text ? <p className="empty__text">{text}</p> : null}
+        {action || recovery ? (
+          <div className="empty__actions">
+            {action}
+            {recovery}
+          </div>
+        ) : null}
+        {shelf ? <div className="mt-6 w-full">{shelf}</div> : null}
+      </div>
+    );
+  }
+
   const Title = headingLevel ? (`h${headingLevel}` as const) : "p";
-  const stack = layout === "stack";
   return (
-    <div className={cx("panel flex gap-3", stack ? "flex-col items-center px-6 py-8 text-center" : "flex-wrap items-center p-4", className)}>
-      <Socket state="empty" inset>
-        {icon ? <Icon name={icon} size={22} className="text-ink-2" /> : undefined}
-      </Socket>
-      <div className={cx("grid min-w-0 gap-0.5", stack ? "max-w-[34ch] justify-items-center" : "min-w-[min(100%,12rem)] flex-1")}>
+    <div className={cx("panel flex flex-wrap items-center gap-3 p-4", className)}>
+      <span className="grid size-[52px] shrink-0 place-items-center rounded-full border border-line text-ink-2" aria-hidden="true">
+        {icon ? <Icon name={icon} size={24} /> : <Logo variant="mark" height={26} className="text-ink-3" />}
+      </span>
+      <div className="grid min-w-[min(100%,12rem)] flex-1 gap-0.5">
         <Title className="type-sub text-ink">{title}</Title>
         {text ? <p className="type-caption text-ink-2">{text}</p> : null}
       </div>
-      {action ? <div className={cx("shrink-0", stack && "pt-1")}>{action}</div> : null}
+      {action || recovery ? (
+        <div className="flex shrink-0 flex-wrap items-center gap-x-4">
+          {action}
+          {recovery}
+        </div>
+      ) : null}
     </div>
   );
 }

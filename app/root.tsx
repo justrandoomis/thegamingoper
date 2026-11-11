@@ -14,6 +14,7 @@ import {
 import type { Route } from "./+types/root";
 import { listNamespaces, messagesFor } from "~/i18n/i18n.server";
 import { DEFAULT_LOCALE, LOCALES } from "~/lib/locales";
+import { useNonce } from "~/lib/nonce";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
@@ -73,6 +74,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData("root") as RootLoaderData | undefined;
   const locale = data?.locale ?? DEFAULT_LOCALE;
   const theme = data?.prefs.theme ?? DEFAULT_PREFS.theme;
+  // Root data is missing when a page fails before any loader ran (the admin gate refuses in middleware): the nonce
+  // then comes from the server render or from the document (app/lib/nonce.tsx), the same on both sides.
+  const nonce = useNonce(data?.nonce);
   return (
     <html lang={LOCALES[locale].bcp47} dir={LOCALES[locale].dir} data-theme={theme} data-store-mode={data?.storeMode} suppressHydrationWarning>
       <head>
@@ -85,17 +89,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {fontPreloadLinks(LOCALES[locale].script).map((font) => (
           <link key={font.href} rel="preload" as="font" href={font.href} type={font.type} crossOrigin="anonymous" />
         ))}
-        <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} suppressHydrationWarning />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} suppressHydrationWarning />
         {/* Motion tier (data-motion + fx-low) before first paint — see app/motion/tier-script.ts */}
-        <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: MOTION_TIER_SCRIPT }} suppressHydrationWarning />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: MOTION_TIER_SCRIPT }} suppressHydrationWarning />
         <Meta />
-        {/* The nonce comes from root data on both sides, so server and client render the same attribute. */}
-        <Links nonce={data?.nonce} />
+        {/* The same nonce on both sides (root data, else app/lib/nonce.tsx), so server and client render the same attribute. */}
+        <Links nonce={nonce} />
       </head>
       <body>
         {children}
-        <ScrollRestoration nonce={data?.nonce} />
-        <Scripts nonce={data?.nonce} />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
@@ -145,10 +149,13 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   // languages and a way back into the admin instead of the storefront home. The path decides wording only.
   const { pathname } = useLocation();
   const inAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+  // The admin gate's refusals carry the employee's admin language (gate.server.ts): English admins read English first.
+  const adminEnglish = inAdmin && isRouteErrorResponse(error) && (error.data as { locale?: string } | null)?.locale === "en";
   let status = 500;
   let title = "حدث خطأ غير متوقع";
   let detail = "تعذّر تحميل الصفحة. حاول مرة أخرى بعد قليل.";
   let english: string | null = inAdmin ? "Something went wrong. Please try again in a moment." : null;
+  let englishTitle = "Something went wrong";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
@@ -156,15 +163,31 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     if (error.status === 404) {
       title = "الصفحة غير موجودة";
       detail = "الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت.";
+      englishTitle = "Page not found";
       if (inAdmin) english = "This page does not exist.";
     } else if (error.status === 403) {
       title = "غير مسموح";
       detail = inAdmin ? "صلاحيات دورك لا تشمل هذا القسم. اطلبها من مالك المتجر إن كنت تحتاجها." : "لا تملك صلاحية الوصول إلى هذه الصفحة.";
+      englishTitle = "Not allowed";
       if (inAdmin) english = "Your role does not include this section. Ask the store owner if you need it.";
     }
   } else if (import.meta.env.DEV && error instanceof Error) {
     detail = error.message;
     stack = error.stack;
+  }
+
+  if (adminEnglish && english) {
+    return (
+      <main className="root-error" lang="en" dir="ltr">
+        <p className="root-error__code">{status}</p>
+        <h1>{englishTitle}</h1>
+        <p>{english}</p>
+        <p lang="ar" dir="rtl">
+          {detail}
+        </p>
+        <a href="/admin">Back to the admin</a>
+      </main>
+    );
   }
 
   return (
@@ -179,7 +202,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       ) : null}
       {inAdmin ? (
         <a href="/admin">
-          العودة إلى لوحة الإدارة <span lang="en" dir="ltr">· Back to the admin</span>
+          العودة إلى لوحة الإدارة{" "}
+          <bdi lang="en" dir="ltr">
+            · Back to the admin
+          </bdi>
         </a>
       ) : (
         <a href="/">العودة إلى الرئيسية</a>

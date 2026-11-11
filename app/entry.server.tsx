@@ -2,6 +2,7 @@ import type { EntryContext, RouterContextProvider } from "react-router";
 import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
+import { NonceContext } from "~/lib/nonce";
 import { peekCtx } from "~/server/context.server";
 
 export const streamTimeout = 5_000;
@@ -24,7 +25,10 @@ export default async function handleRequest(
   const userAgent = request.headers.get("user-agent");
 
   const body = await renderToReadableStream(
-    <ServerRouter context={routerContext} url={request.url} nonce={nonce} />,
+    // NonceContext: the root Layout needs the nonce even when no loader ran (a refusal thrown in middleware).
+    <NonceContext.Provider value={nonce}>
+      <ServerRouter context={routerContext} url={request.url} nonce={nonce} />
+    </NonceContext.Provider>,
     {
       nonce,
       signal: AbortSignal.timeout(streamTimeout + 1000),

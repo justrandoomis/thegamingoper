@@ -76,12 +76,14 @@ export const adminGate: MiddlewareFunction<Response> = async ({ context, url, pa
   context.set(sessionContext, session);
 
   const rule = gateRuleOf(pattern);
+  // The refusal renders in the root ErrorBoundary, which has no loader data: it carries the admin language with it.
+  const locale = ctx.locale === "en" ? "en" : "ar";
   if (rule.kind === "module" && !canSeeModule(session.actor, rule.module)) {
-    throw data({ error: "forbidden", module: rule.module }, { status: 403, headers: { "Cache-Control": "no-store" } });
+    throw data({ error: "forbidden", module: rule.module, locale }, { status: 403, headers: { "Cache-Control": "no-store" } });
   }
   if (rule.kind === "unmapped") {
     console.error(`[admin] refused: the route pattern "${pattern}" is neither under /admin/<module>/ nor one of the shell's pages (docs/areas/admin-shell.md, "For module owners")`);
-    throw data({ error: "forbidden" }, { status: 403, headers: { "Cache-Control": "no-store" } });
+    throw data({ error: "forbidden", locale }, { status: 403, headers: { "Cache-Control": "no-store" } });
   }
 
   const response = await next();

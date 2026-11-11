@@ -1,0 +1,20 @@
+{
+  "//": "Type-checks the files `npm run typecheck` does not cover yet (tests, scripts, tool configs): npx tsc -p tests/helpers/tsconfig.check.json",
+  "extends": "../../tsconfig.cloudflare.json",
+  "include": [
+    "../**/*.ts",
+    "../../scripts/**/*.ts",
+    "../../drizzle.config.ts",
+    "../../vitest.config.ts",
+    "../../worker-configuration.d.ts",
+    "../../.react-router/types/**/*"
+  ],
+  "compilerOptions": {
+    "composite": false,
+    "incremental": false,
+    "noEmit": true,
+    "types": ["vite/client", "node"],
+    "rootDir": "../..",
+    "rootDirs": ["../..", "../../.react-router/types"]
+  }
+}

@@ -1,6 +1,7 @@
 import { useCallback, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 
 import type { IconName } from "~/art/Icon";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { keyIcon } from "./Key";
 import { isPlatform, PlatformGlyph, PlatformLed, type Gel } from "./PlatformLed";
@@ -112,7 +113,7 @@ export function KeyBank({
                   <>
                     {item.gel ? <PlatformLed /> : null}
                     {keyIcon(icon, kind === "platform" ? 22 : 18)}
-                    {item.label !== undefined ? <bdi className="key__label">{item.label}</bdi> : null}
+                    {item.label !== undefined ? <BidiLabel className="key__label">{item.label}</BidiLabel> : null}
                   </>
                 )}
               </span>

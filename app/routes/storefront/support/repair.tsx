@@ -36,7 +36,7 @@ import { isPlatform } from "~/ui/PlatformLed";
 import { fieldMessage, formMessage, isFailure, keepFormOnFailure, phoneProblem } from "./client";
 import { SupportTabs } from "./components/parts";
 import { PhotoPicker } from "./components/PhotoPicker";
-import { failed, formFiles, formKey, photoStore, supportWho, textFields } from "./support.server";
+import { failed, formFiles, formKey, photoStore, readSupportForm, supportWho, textFields } from "./support.server";
 
 export const handle = { nav: "push", order: 2, group: "support" } satisfies MotionHandle;
 
@@ -60,7 +60,8 @@ export async function loader({ context, url }: Route.LoaderArgs) {
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const form = await request.formData();
+  const form = await readSupportForm(request);
+  if (!(form instanceof FormData)) return form;
   const values = textFields(form, FIELDS);
   try {
     const { who } = await supportWho(ctx, db);

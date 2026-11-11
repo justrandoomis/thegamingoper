@@ -1,4 +1,6 @@
 import { defineMessages } from "../translate";
+import account from "./account";
+import used from "./used";
 
 /**
  * "errors" — the text for every error code a shopper or an employee can see, in all three languages.
@@ -16,7 +18,14 @@ import { defineMessages } from "../translate";
  * the database rule codes (TRIGGER_ERROR_CODES and constraint kinds, lower-cased by toAppError),
  * CART_ERROR_KEYS (with the coupon_<reason> keys), STOCK_ERROR_KEYS, SHIPPING_ERROR_KEYS,
  * CHECKOUT_ERROR_KEYS, ORDER_ERROR_KEYS, PAYMENT_ERROR_KEYS, WALLET_ERROR_KEYS, REFUND_ERROR_KEYS,
- * RETURN_ERROR_KEYS and ACCOUNTING_ERROR_KEYS. A service that adds a code adds its text here.
+ * RETURN_ERROR_KEYS and ACCOUNTING_ERROR_KEYS, plus — ADOPTED, not copied — ACCOUNT_ERROR_KEYS
+ * (account services) and TRADE_IN_ERROR_KEYS (trade-in service). A service that adds a code adds its text here.
+ *
+ * Adopted codes: their sentences live ONCE, in the owning area's namespace (`account:errors.*`,
+ * `used:errors.*`, where those areas look them up first), and are spread in below so `t("errors.<code>")`
+ * finds them on every page — a favourites key on any card (`wishlist_full`), an admin screen deciding a top-up —
+ * without a second copy that could drift. A code this file defines itself keeps this file's sentence:
+ * `idempotency_conflict` stays the checkout wording here (the used area keeps its trade-in wording on its pages).
  *
  * Voice (ARCHITECTURE §5.3): say what went wrong and what to do next; no exclamation marks; no
  * placeholders, so the same text works on the server and in the browser.
@@ -24,6 +33,8 @@ import { defineMessages } from "../translate";
 export default defineMessages({
   ar: {
     errors: {
+      ...account.ar.errors,
+      ...used.ar.errors,
       // generic and field keys
       invalid: "بعض البيانات غير صحيحة. راجع الحقول المحددة.",
       required: "هذا الحقل مطلوب.",
@@ -155,6 +166,8 @@ export default defineMessages({
   },
   en: {
     errors: {
+      ...account.en.errors,
+      ...used.en.errors,
       invalid: "Some details are not valid. Check the highlighted fields.",
       required: "This field is required.",
       too_short: "This is too short.",
@@ -273,6 +286,8 @@ export default defineMessages({
   },
   ckb: {
     errors: {
+      ...account.ckb.errors,
+      ...used.ckb.errors,
       invalid: "هەندێک زانیاری دروست نییە. خانە دیاریکراوەکان بپشکنە.",
       required: "ئەم خانەیە پێویستە.",
       too_short: "ئەمە زۆر کورتە.",

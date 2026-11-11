@@ -21,7 +21,8 @@
  * <TaskBar> is the same live-glass bar (safe-area padded, persisted through page transitions) and publishes its
  * measured height as `--shell-taskbar-h`; the shell pads the page by `--shell-bottom`, which is the tab bar's
  * height, the task bar's, or 0 on desktop. Sticky page elements sit at `inset-block-end: var(--shell-bottom)` so the
- * bars never cover a call to action.
+ * bars never cover a call to action. Without the tab bar the cart is still one tap away: below 1200 the header turns
+ * into the task header once the page scrolls (back · the page's <h1> · the cart with its bead — ./Header).
  */
 import { useLayoutEffect, useRef, type MouseEvent, type ReactNode } from "react";
 import { useLocation } from "react-router";

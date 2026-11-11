@@ -12,10 +12,15 @@
  * The chosen variant is `?v=<sku>` (./useVariant). Unknown, unpublished or variant-less slugs answer 404 inside the
  * shell; a slug in other letter case redirects to the canonical one.
  *
- * Cross-area pieces (compatibility, recommendation shelves, the device hub link, the wishlist state) are slots in
- * ./components/Slots — filled by the integration pass, empty until then.
+ * Cross-area pieces (integration pass, ./components/Slots): "يعمل مع" from the devices area's
+ * getCompatibilityForProduct; the device hub row link for a product that IS a device; the devices area's
+ * compatibility-checked recommendation shelves (streamed — they replace the raw editorial "related" links, which had no
+ * compatibility or stock check); the heart's starting state from the account area's wishlist; the catalog's compare
+ * key. Once the page is on screen, and only with consent, the "view" signal goes to /api/events and the view to the
+ * shopper's ONE recently-viewed list (home/personal → recordProductView: the device for a guest, the account when
+ * signed in).
  */
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { data, redirect, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/product";
@@ -25,11 +30,19 @@ import { useLocale } from "~/i18n/react";
 import { makeT, type MessageTree } from "~/i18n/translate";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "~/lib/locales";
 import { formatMoney } from "~/lib/money";
+import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { getProductDetail } from "~/server/services/catalog/product.server";
 import { galleryFor } from "~/server/services/catalog/product-types";
+import { getCompatibilityForProduct } from "~/server/services/compatibility.server";
+import { getDeviceLink } from "~/server/services/devices.server";
+import { recommendationsFor } from "~/server/services/recommendations.server";
 import { getReviewSummary } from "~/server/services/reviews.server";
+import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
+import { CompareToggle } from "~/routes/storefront/catalog/CompareToggle";
+import { sendRecommendationEvent } from "~/routes/storefront/devices/components/signals";
+import { readConsent, recordProductView } from "~/routes/storefront/home/personal";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
@@ -45,7 +58,6 @@ import { MixedText } from "./components/MixedText";
 import { SetContents } from "./components/SetContents";
 import { Facts } from "./components/Facts";
 import { PriceBlock } from "./components/PriceBlock";
-import { RelatedShelves } from "./components/Related";
 import { Reviews } from "./components/Reviews";
 import { CompatibilitySlot, DeviceHubSlot, RecommendationsSlot } from "./components/Slots";
 import { StageOrbs } from "./components/StageOrbs";
@@ -59,21 +71,32 @@ import "./product.css";
 export async function loader({ params, context, request }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const product = await getProductDetail(db, ctx.locale, params.slug, {
-    now: ctx.now,
-  });
+  // The related products come as the devices area's compatibility-checked shelves below, not as the raw links.
+  const [product, session] = await Promise.all([getProductDetail(db, ctx.locale, params.slug, { now: ctx.now, related: false }), getCustomer(ctx, db)]);
   if (!product) throw data({ error: "not_found" }, { status: 404 });
   if (product.slug !== params.slug) {
     // "/p/DualSense" → "/p/dualsense": one address per product (the chosen variant travels along).
     const v = new URL(request.url).searchParams.get("v");
     throw redirect(`${localePath(`/p/${product.slug}`, ctx.locale)}${v ? `?v=${encodeURIComponent(v)}` : ""}`, 301);
   }
-  const reviews = await getReviewSummary(db, product.id);
+  const customerId = session?.customer.id ?? null;
+  const [reviews, compatibility, wished, device] = await Promise.all([
+    getReviewSummary(db, product.id),
+    getCompatibilityForProduct(db, ctx.locale, product.id),
+    wishedAmong(db, wishlistWho(ctx.cookie, customerId), [product.id]),
+    getDeviceLink(db, ctx.locale, product.deviceModel?.slug),
+  ]);
   return {
     product,
     reviews,
+    compatibility,
+    wished: wished.has(product.id),
+    device,
+    // streamed, never awaited: the page does not wait for its suggestions (the promise never rejects)
+    recommendations: recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "product", productId: product.id, now: ctx.now }, 8),
     storeMode: ctx.storeMode,
-    i18n: messagesFor(ctx.locale, "product"),
+    // "catalog" for the compare key (CompareToggle reads its own namespace)
+    i18n: messagesFor(ctx.locale, "product", "catalog"),
   };
 }
 
@@ -117,12 +140,24 @@ export const meta: Route.MetaFunction = (args) => {
 type OriginData = { shell?: { publicOrigin?: string } };
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
-  const { product, reviews, storeMode } = loaderData;
+  const { product, reviews, storeMode, compatibility, wished, device, recommendations } = loaderData;
   const t = useProductT();
   const locale = useLocale();
   const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as OriginData | undefined;
-  const root = useRouteLoaderData("root") as { origin?: string } | undefined;
+  const root = useRouteLoaderData("root") as { origin?: string; customer?: { id: string } | null } | undefined;
   const origin = layout?.shell?.publicOrigin || root?.origin || "";
+  const signedIn = Boolean(root?.customer);
+
+  // The page is on screen: the "view" signal and the recently-viewed entry — only with consent, once per product
+  // (a change of variant is the same product). Prefetching a card's link never runs this: nothing is counted on hover.
+  // Consent is this device's answer as it is NOW (the cookie — root data can be a visit behind an answer just given);
+  // the server checks again (the account's answer wins there).
+  useEffect(() => {
+    if (readConsent() !== true) return;
+    sendRecommendationEvent({ kind: "view", productId: product.id, source: "pdp" });
+    recordProductView(product.id, { signedIn });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per product shown (sign-in is read as it is then)
+  }, [product.id]);
 
   const { variant, choose } = useVariantInUrl(product);
   const gallery = galleryFor(product, variant);
@@ -205,8 +240,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               <h1 className="min-w-0 type-title text-ink">
                 <BidiText text={product.name} />
               </h1>
-              {/* Integration: initial={wished} from the account area's getWishlistIds (Slots.tsx). */}
-              <WishlistKey productId={product.id} name={product.name} className="shrink-0" />
+              {/* The heart starts as the account / guest list says (wishedAmong in the loader). */}
+              <WishlistKey key={product.id} productId={product.id} name={product.name} initial={wished} className="shrink-0" />
             </div>
             {product.short ? (
               <p className="type-body text-ink-2">
@@ -238,7 +273,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             <BuyControls {...buy} />
           </div>
 
-          <CompatibilitySlot productId={product.id} />
+          {/* "Add to compare" (catalog area): this device's compare list; the link to /compare follows from two products. */}
+          <CompareToggle product={{ id: product.id, kind: product.kind, name: product.name }} />
+
+          <CompatibilitySlot rows={compatibility} />
           <Highlights items={product.highlights} />
           {product.game ? <GameFacts game={product.game} ageRating={product.ageRating} /> : null}
           <Facts makerWarranty={product.makerWarranty} storeWarrantyMonths={product.storeWarrantyMonths} returnsWindowDays={product.returnsWindowDays} />
@@ -261,9 +299,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             <Notes text={product.notes} />
           </div>
         </div>
-        <DeviceHubSlot deviceModel={product.deviceModel} />
-        <RelatedShelves shelves={product.related} />
-        <RecommendationsSlot productId={product.id} />
+        <DeviceHubSlot device={device} />
+        <RecommendationsSlot key={product.id} result={recommendations} />
         <Reviews summary={reviews} />
         <Credits credits={product.credits} sources={product.sources} />
       </div>

@@ -1,5 +1,6 @@
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
@@ -52,7 +53,7 @@ export function ProgressSteps({ steps, current, className, ...rest }: ProgressSt
                 {state === "done" ? <Icon name="check" size={16} /> : f.number(index + 1)}
               </span>
               <span className={cx("text-center type-caption [overflow-wrap:normal]", state === "current" ? "font-semibold text-ink" : state === "done" ? "text-ink" : "text-ink-2")}>
-                <bdi>{step.label}</bdi>
+                <BidiLabel>{step.label}</BidiLabel>
                 {state === "done" ? <VisuallyHidden>{` (${t("steps.done")})`}</VisuallyHidden> : null}
               </span>
             </>

@@ -28,6 +28,7 @@ import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { files, slaPolicies, supportTickets, ticketMessages, TICKET_CATEGORIES, type NewSupportTicket, type NewTicketMessage, type TicketCategory, type TicketChannel } from "~/server/db/schema";
 import { expectThat, isDbError, runBatch } from "~/server/db/tx.server";
 import { conflict, invalid, zodFieldErrors } from "~/server/errors";
+import { cleanBlock, cleanLine } from "~/server/text.server";
 import { enforceRateLimit, limitKey } from "~/server/ratelimit.server";
 import type { BlobStore } from "~/server/storage.server";
 import type { UploadSource } from "~/server/uploads.server";
@@ -68,9 +69,11 @@ export const SUPPORT_ERROR_KEYS = [
   "upload_dimensions",
 ] as const;
 
-export const optionalText = (max: number) =>
+/** Free text: control, bidi-override and invisible characters are removed first (~/server/text.server). */
+export const optionalText = (max: number, multiline = false) =>
   z
     .string()
+    .overwrite(multiline ? cleanBlock : cleanLine)
     .trim()
     .max(max, "too_long")
     .optional()
@@ -80,8 +83,8 @@ export const SupportTicketInput = z.object({
   idempotencyKey: z.string().refine(isIdempotencyKey, "invalid"),
   phone: z.string().trim().min(1, "required").max(40, "phone_invalid"),
   contactName: optionalText(80),
-  subject: z.string().trim().min(3, "too_short").max(140, "too_long"),
-  message: optionalText(4000),
+  subject: z.string().overwrite(cleanLine).trim().min(3, "too_short").max(140, "too_long"),
+  message: optionalText(4000, true),
   category: z.enum(TICKET_CATEGORIES).default("other"),
   /** The shopper's language: staff answer in it. */
   locale: z.string().optional(),

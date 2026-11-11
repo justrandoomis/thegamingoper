@@ -1093,7 +1093,7 @@ describe("admin authentication", () => {
     expect(await failure(() => disableEmployee(t.db, ownerSession!.actor, { employeeId: leaving.id, reason: "مرة أخرى" }, start + 5 * MINUTE))).toMatchObject({ code: "employee_not_active" });
   });
 
-  test("changing the password signs other devices out and is audited", async () => {
+  test("changing the password signs other devices out, moves this one to a new token and is audited", async () => {
     const start = NOW + 60 * HOUR;
     const person = await employeeWithRole("support", "first-password-123");
     const here = await signIn(person.email, person.password, { now: start });
@@ -1103,9 +1103,12 @@ describe("admin authentication", () => {
     expect(await failure(() => changeEmployeePassword(change.ctx, t.db, { currentPassword: "not-it", newPassword: "second-password-456" }))).toMatchObject({ code: "invalid", fields: { currentPassword: "invalid_credentials" } });
     expect(await failure(() => changeEmployeePassword(change.ctx, t.db, { currentPassword: person.password, newPassword: "short" }))).toMatchObject({ code: "invalid", fields: { newPassword: "password_too_short" } });
     expect(await failure(() => changeEmployeePassword(request().ctx, t.db, { currentPassword: "x", newPassword: "second-password-456" }))).toMatchObject({ code: "unauthorized", status: 401 });
+    expect(change.setCookies).toEqual([]);
 
     await changeEmployeePassword(change.ctx, t.db, { currentPassword: person.password, newPassword: "second-password-456" });
-    expect(await getEmployee(request({ cookies: here.cookies, now: start + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    // This device carries on with the cookie the change set; the cookie it had before (and any copy of it) is dead.
+    expect(await getEmployee(request({ cookies: cookiesAfter(change, here.cookies), now: start + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    expect(await getEmployee(request({ cookies: here.cookies, now: start + 2 * MINUTE }).ctx, t.db)).toBeNull();
     expect(await getEmployee(request({ cookies: elsewhere.cookies, now: start + 2 * MINUTE }).ctx, t.db)).toBeNull();
     expect(await failure(() => signInEmployee(request({ now: start + 3 * MINUTE }).ctx, t.db, { email: person.email, password: person.password }))).toMatchObject({ code: "invalid_credentials" });
     expect((await signIn(person.email, "second-password-456", { now: start + 3 * MINUTE })).result.status).toBe("signed_in");
@@ -1139,10 +1142,14 @@ describe("admin authentication", () => {
     expect(enabledRow?.totpEnabled).toBe(true);
     expect(enabledRow?.recoveryCodes).toHaveLength(10);
     expect(JSON.stringify(enabledRow?.recoveryCodes)).not.toContain(confirmed.recoveryCodes[0]);
-    // The enrolling device stays signed in; the other one must prove the second factor.
-    expect(await getEmployee(request({ cookies: first.cookies, now: start + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    // The enrolling device stays signed in — on the new token the confirmation set (its old cookie is dead); the other
+    // device must prove the second factor.
+    const enrolledCookies = cookiesAfter(enrolRequest, first.cookies);
+    expect(enrolledCookies.tt_adm).not.toBe(first.cookies.tt_adm);
+    expect(await getEmployee(request({ cookies: enrolledCookies, now: start + 2 * MINUTE }).ctx, t.db)).toMatchObject({ session: { mfaOk: true } });
+    expect(await getEmployee(request({ cookies: first.cookies, now: start + 2 * MINUTE }).ctx, t.db)).toBeNull();
     expect(await getEmployee(request({ cookies: elsewhere.cookies, now: start + 2 * MINUTE }).ctx, t.db)).toBeNull();
-    expect(await failure(() => beginTotpEnrollment(request({ cookies: first.cookies, now: start + 2 * MINUTE }).ctx, t.db, secrets))).toMatchObject({ code: "mfa_already_enabled" });
+    expect(await failure(() => beginTotpEnrollment(request({ cookies: enrolledCookies, now: start + 2 * MINUTE }).ctx, t.db, secrets))).toMatchObject({ code: "mfa_already_enabled" });
     expect(await scalar("SELECT count(*) FROM audit_events WHERE action = 'security.mfa.enable' AND entity_id = ?", person.id)).toBe(1);
 
     // Sign-in now stops after the password.
@@ -1354,7 +1361,7 @@ describe("customer authentication", () => {
     await signOutCustomer(request({ now: at }).ctx, t.db);
   });
 
-  test("changing the password keeps this device and signs the others out", async () => {
+  test("changing the password keeps this device (on a new token) and signs the others out", async () => {
     const start = NOW + 120 * DAY;
     const here = request({ now: start });
     await signInCustomer(here.ctx, t.db, { phone: PHONE, password: PASSWORD });
@@ -1366,7 +1373,9 @@ describe("customer authentication", () => {
     expect(await failure(() => changeCustomerPassword(request().ctx, t.db, { currentPassword: PASSWORD, newPassword: "new-customer-pass" }))).toMatchObject({ code: "unauthorized" });
     await changeCustomerPassword(change.ctx, t.db, { currentPassword: PASSWORD, newPassword: "new-customer-pass" });
 
-    expect(await getCustomer(request({ cookies: cookiesAfter(here), now: start + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    // This device carries on with the cookie the change set; the one it had before (and any copy of it) is dead.
+    expect(await getCustomer(request({ cookies: cookiesAfter(change, cookiesAfter(here)), now: start + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    expect(await getCustomer(request({ cookies: cookiesAfter(here), now: start + 2 * MINUTE }).ctx, t.db)).toBeNull();
     expect(await getCustomer(request({ cookies: cookiesAfter(there), now: start + 2 * MINUTE }).ctx, t.db)).toBeNull();
     expect(await failure(() => signInCustomer(request({ now: start + 3 * MINUTE }).ctx, t.db, { phone: PHONE, password: PASSWORD }))).toMatchObject({ code: "invalid_credentials" });
     await signInCustomer(request({ now: start + 3 * MINUTE }).ctx, t.db, { phone: PHONE, password: "new-customer-pass" });
@@ -1502,7 +1511,7 @@ describe("customer authentication", () => {
       expect((await verifyOtp(request({ now: start }).ctx, t.db, { phone, purpose: "login", code: sent.devCode!, id: sent.id }, options)).id).toBe(sent.id);
     });
 
-    test("confirming a code marks the signed-in customer's phone as verified", async () => {
+    test("confirming a code marks the signed-in customer's phone as verified (this device moves to a new token)", async () => {
       const start = NOW + 204 * DAY;
       const phone = "+9647702000006";
       const signUp = request({ now: start });
@@ -1516,7 +1525,8 @@ describe("customer authentication", () => {
       const verified = await confirmCustomerPhone(confirm.ctx, t.db, { code: sent.devCode!, id: sent.id }, options);
       expect(verified.customer.phoneVerified).toBe(true);
       expect((await getCustomer(confirm.ctx, t.db))?.customer.phoneVerified).toBe(true);
-      expect((await getCustomer(request({ cookies, now: start + 3 * MINUTE }).ctx, t.db))?.customer.phoneVerified).toBe(true);
+      expect((await getCustomer(request({ cookies: cookiesAfter(confirm, cookies), now: start + 3 * MINUTE }).ctx, t.db))?.customer.phoneVerified).toBe(true);
+      expect(await getCustomer(request({ cookies, now: start + 3 * MINUTE }).ctx, t.db)).toBeNull();
       expect(await scalar("SELECT phone_verified_at FROM customers WHERE id = ?", session.customer.id)).toBe(start + 2 * MINUTE);
     });
   });

@@ -12,9 +12,12 @@ import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useFormat, useT } from "~/i18n/react";
 import { localePath } from "~/lib/locales";
 import { shellMeta } from "~/routes/storefront/shell/meta";
+import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { listProducts, scopePicks } from "~/server/services/catalog/listing.server";
+import { recommendationsFor } from "~/server/services/recommendations.server";
+import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
 import { LocaleLink } from "~/i18n/react";
@@ -43,10 +46,18 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const picks = result.total === 0 && result.scopeTotal > 0 ? await scopePicks(db, ctx.locale, { kind: "category", slug }, { limit: 3, now: ctx.now }) : [];
   const t = serverT(ctx.locale, "catalog");
   const category = result.hub.category;
+  const session = await getCustomer(ctx, db);
   return {
     list: listOf(result),
     hub: result.hub,
     picks,
+    // the devices area's shelf from the shopper's own signals (context "search") — consent only, streamed
+    recommendations: recommendationsFor(
+      db,
+      { cookie: ctx.cookie, customerId: session?.customer.id ?? null },
+      { locale: ctx.locale, context: "search", platformSlugs: category.platform ? [category.platform] : undefined, personalOnly: true, now: ctx.now },
+      8,
+    ),
     meta: { title: category.name, description: t("meta.category", { name: category.name, n: String(result.scopeTotal) }) },
     i18n: messagesFor(ctx.locale, "catalog"),
   };
@@ -123,6 +134,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
           <DeviceShortcuts devices={hub.devices} title={t("hub.devicesByCategory")} note={t("hub.devicesByCategoryNote")} />
         </>
       )}
+      <RecommendationShelves result={loaderData.recommendations} source="search" />
       <CompareTray />
     </div>
   );

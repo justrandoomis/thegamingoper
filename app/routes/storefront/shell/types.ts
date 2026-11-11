@@ -32,8 +32,16 @@ export type ShellHandle = {
   shell?: {
     /**
      * false: the page shows its own bottom task bar (buy bar, checkout bar) through <TaskBar> from ./TabBar, so the
-     * tab bar gives way (DESIGN.md §8 sticky rule: never two bars at the same edge).
+     * tab bar gives way (DESIGN.md §8 sticky rule: never two bars at the same edge). Below 1200px the header then
+     * becomes the task header once the page scrolls: back · the page's <h1> · the cart with its count (§9.2).
+     * Ignored while the storefront's error page is shown (the page and its task bar are not on screen).
      */
     tabBar?: boolean;
+    /**
+     * Where the task header's back key leads when the shopper opened the page directly (no earlier page of this site
+     * in the tab): a locale-less path such as "/cart". Default: the page's section (./chrome backFallback). With
+     * history, back is always real history Back.
+     */
+    back?: string;
   };
 };

@@ -110,6 +110,9 @@ const COPY = defineCopy({
     tickToContinue: "علّم المربع لتتابع.",
     selectAll: "اختر كل الطلبات",
     payment: "طريقة الدفع",
+    preferredTime: "الوقت المفضّل للتوصيل",
+    nothingChosen: "لم يُختر شيء بعد: كل الدوائر فارغة.",
+    longPrice: "سعر من سبعة أرقام على مسرح بعرض هاتف: يصغر السعر إلى 17 بكسل، ولا يُقطع اسم المفتاح. إن لم يتسعا معاً ينزل المفتاح تحت البطاقة.",
     cod: "الدفع عند الاستلام",
     codHint: "تدفع للمندوب نقداً عند وصول الطلب.",
     zain: "تحويل زين كاش",
@@ -140,7 +143,7 @@ const COPY = defineCopy({
     returnsAfter: "قبل الطلب.",
     deleteAddress: "احذف العنوان",
     glass: "الزجاج",
-    glassNote: "الزجاج الحي فقط على الشرائط الثابتة التي يمرّ المحتوى تحتها، واثنان كحد أقصى في الشاشة. الزجاج الثابت فوق الأسطح الملساء فقط. مرّر داخل الصندوق.",
+    glassNote: "الزجاج الحي فقط على الشرائط الثابتة التي يمرّ المحتوى تحتها، واثنان كحد أقصى في الشاشة. الزجاج الثابت فوق الأسطح الملساء فقط. تحت لوح أو حوار مفتوح يصبح زجاج الصفحة صلباً، فيبقى زجاج اللوح هو الحي. مرّر داخل الصندوق.",
     filters: "الفلاتر",
     results: "24 منتجاً",
     added: "أُضيف إلى السلة",
@@ -227,6 +230,9 @@ const COPY = defineCopy({
     tickToContinue: "Tick the box to continue.",
     selectAll: "Select all orders",
     payment: "Payment method",
+    preferredTime: "Preferred delivery time",
+    nothingChosen: "Nothing chosen yet: every circle is empty.",
+    longPrice: "A seven-digit price on a phone-width stage: the price steps down to 17px and the key's label is never cut. If they still do not fit side by side, the key moves under the tag.",
     cod: "Cash on delivery",
     codHint: "You pay the courier in cash when the order arrives.",
     zain: "Zain Cash transfer",
@@ -257,7 +263,7 @@ const COPY = defineCopy({
     returnsAfter: "before you order.",
     deleteAddress: "Delete the address",
     glass: "Glass",
-    glassNote: "Live glass only on fixed or sticky bars that content scrolls under — two per screen at most. Static glass only over smooth surfaces. Scroll inside the box.",
+    glassNote: "Live glass only on fixed or sticky bars that content scrolls under — two per screen at most. Static glass only over smooth surfaces. Under an open sheet or dialog the page's glass turns solid, so the layer's glass is the live one. Scroll inside the box.",
     filters: "Filters",
     results: "24 products",
     added: "Added to cart",
@@ -344,6 +350,9 @@ const COPY = defineCopy({
     tickToContinue: "بۆ بەردەوامبوون نیشانەی بکە.",
     selectAll: "هەموو داواکارییەکان هەڵبژێرە",
     payment: "شێوازی پارەدان",
+    preferredTime: "کاتی دڵخوازی گەیاندن",
+    nothingChosen: "هێشتا هیچ هەڵنەبژێردراوە: هەموو بازنەکان بەتاڵن.",
+    longPrice: "نرخێکی حەوت ژمارەیی لەسەر شانۆیەک بە پانیی مۆبایل: نرخەکە بچووک دەبێتەوە بۆ 17 پیکسڵ و ناوی کلیلەکە نابڕدرێت. ئەگەر هێشتا پێکەوە جێیان نەبێتەوە، کلیلەکە دەچێتە ژێر تاگەکە.",
     cod: "پارەدان لە کاتی وەرگرتن",
     codHint: "کاتێک داواکارییەکە گەیشت بە نەختی بە گەیەنەر دەدەیت.",
     zain: "گواستنەوەی زەین کاش",
@@ -374,7 +383,7 @@ const COPY = defineCopy({
     returnsAfter: "بخوێنەوە.",
     deleteAddress: "ناونیشانەکە بسڕەوە",
     glass: "شووشە",
-    glassNote: "شووشەی زیندوو تەنها لەسەر شریتە جێگیرەکان کە ناوەڕۆک بە ژێریاندا تێدەپەڕێت — لە هەر شاشەیەکدا دووان بە زۆری. شووشەی جێگیر تەنها لەسەر ڕووکاری لووس. لە ناو سندووقەکەدا بخولێنەوە.",
+    glassNote: "شووشەی زیندوو تەنها لەسەر شریتە جێگیرەکان کە ناوەڕۆک بە ژێریاندا تێدەپەڕێت — لە هەر شاشەیەکدا دووان بە زۆری. شووشەی جێگیر تەنها لەسەر ڕووکاری لووس. لە ژێر پەنجەرە یان دیالۆگێکی کراوەدا شووشەی پەڕەکە ڕەق دەبێت، بۆیە شووشەی چینەکە زیندوو دەمێنێتەوە. لە ناو سندووقەکەدا بخولێنەوە.",
     filters: "فلتەرەکان",
     results: "24 کاڵا",
     added: "خرایە ناو سەبەتە",
@@ -654,9 +663,9 @@ function Chips({ c }: { c: C }) {
           <ChipGroup
             aria-label={c.storage}
             options={[
-              { value: "512", label: <bdi>512 GB</bdi> },
-              { value: "1024", label: <bdi>1 TB</bdi> },
-              { value: "2048", label: <bdi>2 TB</bdi>, disabled: true },
+              { value: "512", label: "512 GB" },
+              { value: "1024", label: "1 TB" },
+              { value: "2048", label: "2 TB", disabled: true },
             ]}
             value={storage}
             onChange={setStorage}
@@ -693,10 +702,10 @@ function Chips({ c }: { c: C }) {
         <Specimen label='as="a" (link chip)'>
           <div className="chips">
             <Chip as="a" href="#core" selected>
-              <bdi>PlayStation</bdi>
+              PlayStation
             </Chip>
             <Chip as="a" href="#core">
-              <bdi>Xbox</bdi>
+              Xbox
             </Chip>
           </div>
         </Specimen>
@@ -788,6 +797,12 @@ function Fields({ c }: { c: C }) {
           <FieldGroup legend={c.payment} required>
             <Radio row name="ds-pay" value="cod" label={c.cod} hint={c.codHint} checked={pay === "cod"} onChange={() => setPay("cod")} />
             <Radio row name="ds-pay" value="zain" label={c.zain} hint={c.zainHint} checked={pay === "zain"} onChange={() => setPay("zain")} />
+          </FieldGroup>
+        </Specimen>
+        <Specimen label="Radio — no defaultChecked (group :indeterminate)">
+          <FieldGroup legend={c.preferredTime} hint={c.nothingChosen}>
+            <Radio name="ds-time" value="morning" label={c.morning} />
+            <Radio name="ds-time" value="evening" label={c.evening} />
           </FieldGroup>
         </Specimen>
         <Specimen label="Switch (role=switch)">
@@ -947,6 +962,39 @@ function Stages({ c }: { c: C }) {
             value={platform}
             onChange={(value) => setPlatform(value as Platform)}
           />
+        </Specimen>
+        <Specimen label="StageTag priceIqd ≥ 1,000,000 — stage 358px (390 phone) · 328px (360 phone)">
+          <p className="mb-3 type-caption text-ink-2">{c.longPrice}</p>
+          <div className="grid gap-8">
+            <div className="w-[358px] max-w-full" data-band-check="">
+              <Stage
+                size="hero"
+                gel="handheld"
+                tag={<StageTag name="ROG Xbox Ally X" priceIqd={1_365_000} />}
+                action={
+                  <Key variant="commit" icon={<AddGlyph />}>
+                    {c.add}
+                  </Key>
+                }
+              >
+                <Render name="rog-xbox-ally-x--1" alt="ROG Xbox Ally X" sizes="358px" />
+              </Stage>
+            </div>
+            <div className="w-[328px] max-w-full" data-band-check="">
+              <Stage
+                size="hero"
+                gel="playstation"
+                tag={<StageTag name="PlayStation 5 Slim (نسخة الأقراص) – 1TB" priceIqd={1_026_750} />}
+                action={
+                  <Key variant="commit" icon={<AddGlyph />}>
+                    {c.add}
+                  </Key>
+                }
+              >
+                <Render name="playstation-5-slim--1" alt="PlayStation 5 Slim" sizes="328px" />
+              </Stage>
+            </div>
+          </div>
         </Specimen>
       </div>
       <div className="ds-stage-grid">

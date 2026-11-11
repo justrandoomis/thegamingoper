@@ -38,16 +38,44 @@ export function requireSignedIn(request: Request, ctx: RequestCtx, db: Db): Prom
   return requireCustomer(ctx, db, { next: pageNext(request) });
 }
 
-/** A safe, locale-less `next` from a form or query value (default `/account`). */
+const NEXT_BASE = "https://local.invalid";
+
+/**
+ * A safe, locale-less `next` from a form or query value (default `/account`), in canonical form: dot segments
+ * resolved, anything outside ASCII percent-encoded (so it can go into a Location header as it is), and a language
+ * prefix dropped — the visitor's language decides the prefix. Checked again AFTER the prefix is dropped and after one
+ * more decoding: "/en//evil.example" would otherwise become "//evil.example" (another site) once "/en" is cut off, and
+ * "/%2F%2Fevil.example" must not turn into one in a component that decodes again (security review 2026-11) — also
+ * when it only appears once the prefix is gone ("/en/%2F%2Fevil.example", second pass): the value that leaves is
+ * checked once more decoded, too.
+ */
 export function nextFrom(value: unknown, fallback = "/account"): string {
-  const safe = safeNextPath(value, fallback);
-  // A `next` that already carries a language prefix keeps only its path: the visitor's language decides the prefix.
-  return splitLocale(safe.split("?")[0]).path + (safe.includes("?") ? safe.slice(safe.indexOf("?")) : "");
+  const safe = safeNextPath(value, "");
+  if (!safe || !decodesSafely(safe)) return fallback;
+  const url = new URL(safe, NEXT_BASE);
+  if (url.origin !== NEXT_BASE) return fallback;
+  const path = `${splitLocale(url.pathname).path}${url.search}${url.hash}`;
+  return safeNextPath(path, "") === path && decodesSafely(path) ? path : fallback;
 }
 
-/** A redirect to a locale-less path in the visitor's language. */
+/** True when one more decoding of a safe path is still a safe path (or the same text). */
+function decodesSafely(path: string): boolean {
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(path);
+  } catch {
+    return false;
+  }
+  return decoded === path || safeNextPath(decoded, "") !== "";
+}
+
+/** True for a path a Location header may carry: one leading "/" (never "//" or "/\", which browsers read as a host). */
+const isLocalTarget = (target: string) => /^\/(?![/\\])/.test(target) && /^[\x21-\x7e]*$/.test(target);
+
+/** A redirect to a locale-less path in the visitor's language. Anything that would not stay on this site goes to /account. */
 export function localeRedirect(path: string, locale: Locale, init?: number | ResponseInit): Response {
-  return redirect(localePath(path, locale), init);
+  const target = localePath(path, locale);
+  return redirect(isLocalTarget(target) ? target : localePath("/account", locale), init);
 }
 
 /** t() for error keys: the account namespace first, then the shared errors namespace. Never warns about either. */

@@ -32,7 +32,7 @@ export type { NavKind, NavName } from "./nav-plan";
 // Shared elements, arriving content, numbers.
 export { SharedElement } from "./shared";
 export type { SharedElementProps } from "./shared";
-export { Bubble, BubbleGroup } from "./bubble";
+export { Bubble, BubbleGroup, useHydrating } from "./bubble";
 export type { BubbleGroupProps, BubbleProps } from "./bubble";
 export { NumberMorph } from "./number";
 export type { NumberMorphProps } from "./number";

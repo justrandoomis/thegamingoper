@@ -153,6 +153,7 @@ export function fly(source: Element, target: Element, options: FlyOptions = {}):
   }
   // DESIGN.md's bead: 22px, red clay, centred on the start point (the `.fly` class carries the look).
   element.className = "fly tt-fly";
+  // lint-design: allow physical — viewport pixel coordinates of a fixed flying bead (client rects are physical in RTL too)
   element.style.left = `${start.x.toFixed(1)}px`;
   element.style.top = `${start.y.toFixed(1)}px`;
   return launch(element, arcKeyframes(start, end, fromScale, tokens.endScale), duration, target, options);

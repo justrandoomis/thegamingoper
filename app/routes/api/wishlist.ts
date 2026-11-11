@@ -20,10 +20,10 @@ import { getCtx, serializeCookie } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { actionError, invalid } from "~/server/errors";
 import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
-import { getWishlistIds, setWished, toggleWishlist, WISH_COOKIE, WISH_COOKIE_MAX_AGE_SEC, wishlistWho } from "~/server/services/wishlist.server";
+import { getWishlistIds, setWished, toggleWishlist, WISH_COOKIE, WISH_COOKIE_MAX_AGE_SEC, WISHLIST_CHANGES_PER_IP, wishlistWho } from "~/server/services/wishlist.server";
 
-/** Toggles per IP per minute: generous for people, tight for scripts. */
-const WISHLIST_CHANGES: RateLimitRule = { limit: 60, windowSec: 60 };
+/** Toggles per IP per minute: generous for people, tight for scripts (one budget with the /wishlist page's form). */
+const WISHLIST_CHANGES: RateLimitRule = WISHLIST_CHANGES_PER_IP;
 const MAX_BODY_BYTES = 4 * 1024;
 const NO_STORE = { "Cache-Control": "no-store" } as const;
 

@@ -11,6 +11,7 @@
  */
 import { useMemo } from "react";
 import { Link, NavLink, useMatches, useRouteLoaderData, type LinkProps, type NavLinkProps } from "react-router";
+import { formatDate, formatDateTime, type DateStyle } from "~/lib/dates";
 import { DEFAULT_LOCALE, LOCALES, localePath, type Dir, type Locale } from "~/lib/locales";
 import { convertFromIqd, formatMoney, type CurrencyCode, type FxSnapshot, type NumberingSystem } from "~/lib/money";
 import { formatIraqPhone } from "~/lib/phone";
@@ -81,7 +82,8 @@ export type Formatters = {
   iqd: (amountIqd: number) => string;
   number: (value: number, options?: Intl.NumberFormatOptions) => string;
   percent: (ratio: number) => string;
-  date: (epochMs: number, style?: "short" | "medium" | "long") => string;
+  /** Iraq time. Sorani months and patterns come from ~/lib/dates (the browsers' ICU has no Kurdish data). */
+  date: (epochMs: number, style?: DateStyle) => string;
   dateTime: (epochMs: number) => string;
   relative: (epochMs: number, nowMs?: number) => string;
   phone: (e164: string) => string;
@@ -101,7 +103,6 @@ export function useFormat(): Formatters {
       if (converted === null) return { text: iqd(amount), approx: false, currency: "IQD" as CurrencyCode };
       return { text: formatMoney(converted, currency, locale, numbering), approx: true, currency };
     };
-    const dateStyles = { short: "short", medium: "medium", long: "long" } as const;
     return {
       locale,
       currency,
@@ -111,10 +112,8 @@ export function useFormat(): Formatters {
       money: (amount) => moneyParts(amount).text,
       number: (value, options) => new Intl.NumberFormat(tag, options).format(value),
       percent: (ratio) => new Intl.NumberFormat(tag, { style: "percent", maximumFractionDigits: 1 }).format(ratio),
-      date: (ms, style = "medium") =>
-        new Intl.DateTimeFormat(tag, { dateStyle: dateStyles[style], timeZone: "Asia/Baghdad" }).format(ms),
-      dateTime: (ms) =>
-        new Intl.DateTimeFormat(tag, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms),
+      date: (ms, style = "medium") => formatDate(ms, style, locale, numbering),
+      dateTime: (ms) => formatDateTime(ms, locale, numbering),
       relative: (ms, nowMs = Date.now()) => {
         const rtf = new Intl.RelativeTimeFormat(tag, { numeric: "auto" });
         const diff = ms - nowMs;

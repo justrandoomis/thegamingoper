@@ -2,6 +2,7 @@ import { useId, type ChangeEvent, type ComponentPropsWithRef, type CSSProperties
 
 import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
+import { BidiLabel, textOf } from "./BidiText";
 import { cx } from "./cx";
 import { useControllable, useRovingRadio } from "./KeyBank";
 
@@ -65,7 +66,7 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
         />
         <span className="key__cap">
           <ChipMark />
-          <bdi className="key__label">{children}</bdi>
+          <BidiLabel className="key__label">{children}</BidiLabel>
         </span>
       </label>
     );
@@ -99,7 +100,7 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
     >
       <span className="key__cap">
         {removable ? <Icon name="x" size={16} /> : <ChipMark />}
-        <bdi className="key__label">{children}</bdi>
+        <BidiLabel className="key__label">{children}</BidiLabel>
       </span>
     </Tag>
   );
@@ -112,13 +113,6 @@ function ChipMark() {
       <Icon name="check" size={16} />
     </span>
   );
-}
-
-function textOf(node: ReactNode): string {
-  if (typeof node === "string" || typeof node === "number") return String(node);
-  if (Array.isArray(node)) return node.map(textOf).join("");
-  if (node && typeof node === "object" && "props" in node) return textOf((node as { props: { children?: ReactNode } }).props.children);
-  return "";
 }
 
 /* ───────────────────────────── ChipGroup: one choice, roving focus ───────────────────────────── */
@@ -154,7 +148,7 @@ export function ChipGroup({ options, value, defaultValue = null, onChange, "aria
         <button key={option.value} type="button" className="key key--chip" data-press="clay" disabled={option.disabled} {...itemProps(index)}>
           <span className="key__cap">
             <ChipMark />
-            <bdi className="key__label">{option.label}</bdi>
+            <BidiLabel className="key__label">{option.label}</BidiLabel>
           </span>
         </button>
       ))}

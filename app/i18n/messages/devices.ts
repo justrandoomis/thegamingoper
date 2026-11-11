@@ -254,6 +254,7 @@ export default defineMessages({
       personal: {
         title: "حسب ما تصفّحته",
         reason: "مبنية على ما شاهدته على هذا الجهاز، بموافقتك",
+        reasonAccount: "مبنية على ما شاهدته وأنت مسجّل الدخول وعلى أجهزتك المحفوظة، بموافقتك",
       },
       picks: {
         title: "مختارات المتجر",
@@ -484,6 +485,7 @@ export default defineMessages({
       personal: {
         title: "Based on your browsing",
         reason: "From what you looked at on this device, with your permission",
+        reasonAccount: "From what you looked at while signed in and your saved devices, with your permission",
       },
       picks: {
         title: "Store picks",
@@ -714,6 +716,7 @@ export default defineMessages({
       personal: {
         title: "بەپێی گەڕانەکەت",
         reason: "لەسەر بنەمای ئەوەی لەم ئامێرەدا سەیرت کردووە، بە ڕەزامەندیی خۆت",
+        reasonAccount: "لەسەر بنەمای ئەوەی بە چوونەژوورەوە سەیرت کردووە و ئامێرە هەڵگیراوەکانت، بە ڕەزامەندیی خۆت",
       },
       picks: {
         title: "هەڵبژاردەکانی فرۆشگا",

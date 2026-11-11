@@ -21,8 +21,11 @@
  *                                      after expiry or revocation), one-time codes (7 days after expiry),
  *                                      sign-in events older than 180 days, outbox rows (sent, failed or
  *                                      held) older than 90 days, and job_runs older than 90 days except
- *                                      the latest run of each job. `consents`, audit events, ledgers and
- *                                      order history are never deleted here.
+ *                                      the latest run of each job; then the areas' own purges
+ *                                      (purgeAreaData: recommendation signals, abandoned trade-in photos,
+ *                                      wallet top-up proofs no request uses, stored assistant
+ *                                      conversations past their expiry). `consents`,
+ *                                      audit events, ledgers and order history are never deleted here.
  *       consistency.daily              stock vs movements, stock vs reservations, wallet ledger vs journal,
  *                                      journal balance, order totals vs lines / payments / refunds, money
  *                                      vs postings → `consistency_findings` (one row per problem, updated
@@ -49,12 +52,29 @@ import { newId } from "~/lib/ids";
 import { systemActor } from "./actor";
 import { sealAudit } from "./audit.server";
 import type { BatchStatement, Db } from "./db/drizzle.server";
-import { authEvents, consistencyFindings, customerSessions, employeeSessions, employeeTrustedDevices, jobRuns, orders, otpCodes, outbox, type FindingSeverity, type JobRunOrigin } from "./db/schema";
+import {
+  assistantMessages,
+  assistantSessions,
+  authEvents,
+  consistencyFindings,
+  customerSessions,
+  employeeSessions,
+  employeeTrustedDevices,
+  jobRuns,
+  orders,
+  otpCodes,
+  outbox,
+  repairTickets,
+  supportTickets,
+  type FindingSeverity,
+  type JobRunOrigin,
+} from "./db/schema";
 import { accountId } from "./db/seed/reference";
 import { runBatch } from "./db/tx.server";
 import { isAppError, toAppError } from "./errors";
 import { deliverOutbox, type MessageProviders } from "./outbox.server";
 import { cleanupRateLimits } from "./ratelimit.server";
+import { purgeUnusedTopupProofs } from "./services/account/topups.server";
 import { expireReservations } from "./services/inventory/stock.server";
 import { transitionOrder } from "./services/orders/manage.server";
 import { purgeRecommendationEvents } from "./services/recommendations.server";
@@ -317,12 +337,51 @@ async function applyRetention(db: Db, { now, env }: JobContext): Promise<JobResu
   };
 }
 
+/** Sessions per round of the assistant purge: each id is one bound parameter, and D1 allows 100 per statement. */
+const ASSISTANT_PURGE_BATCH = 50;
+
+/**
+ * Maintenance-assistant conversations whose retention ended. A conversation is stored only with the shopper's consent,
+ * at the hand-off to staff, with `expires_at` = then + ASSISTANT_RETENTION_DAYS (support area); one without an
+ * `expires_at` is never purged here. Per round, in ONE batch: the support ticket (and any repair ticket) that points at
+ * the session lets go of it — the ticket keeps its own copy of the conversation's summary as its first internal note,
+ * and the foreign key would refuse the delete otherwise — then the session's messages and the session go. The consent
+ * row stays: `consents` is append-only (ARCHITECTURE §6, trigger `consents_no_delete`); it holds no conversation, only
+ * that storing one was allowed, when, and from which address. Returns the number of sessions deleted.
+ */
+export async function purgeExpiredAssistantSessions(db: Db, now: number): Promise<number> {
+  let total = 0;
+  for (let round = 0; round < DELETE_ROUNDS; round++) {
+    const due = await db
+      .select({ id: assistantSessions.id })
+      .from(assistantSessions)
+      .where(lt(assistantSessions.expiresAt, now))
+      .orderBy(asc(assistantSessions.expiresAt), asc(assistantSessions.id))
+      .limit(ASSISTANT_PURGE_BATCH);
+    if (due.length === 0) break;
+    const ids = due.map((row) => row.id);
+    const results = await db.batch([
+      db.update(supportTickets).set({ assistantSessionId: null }).where(inArray(supportTickets.assistantSessionId, ids)),
+      db.update(repairTickets).set({ assistantSessionId: null }).where(inArray(repairTickets.assistantSessionId, ids)),
+      db.delete(assistantMessages).where(inArray(assistantMessages.sessionId, ids)),
+      db.delete(assistantSessions).where(and(inArray(assistantSessions.id, ids), lt(assistantSessions.expiresAt, now))),
+    ]);
+    total += changesOf(results[3]);
+    if (due.length < ASSISTANT_PURGE_BATCH) break;
+  }
+  return total;
+}
+
 /**
  * Purges owned by storefront services, run after the core retention above. Each is isolated: a failure is reported
  * in the stats (and the run still succeeds), so one area's cleanup can never stop the others.
  *   recommendationEvents  consented view/add signals older than RECOMMENDATION_EVENT_RETENTION_DAYS (90)
  *   tradeInDrafts         private photos of trade-in wizards abandoned for 2 days (needs the KV file store; null
  *                         when the Worker did not pass its bindings, e.g. in tests that do not provide one)
+ *   topupProofs           private wallet top-up proofs that no request uses, a day after their upload (same store;
+ *                         security review, second pass — before it nothing ever deleted them)
+ *   assistantSessions     stored assistant conversations past their `expires_at`, with their messages
+ *                         (purgeExpiredAssistantSessions; consent rows are append-only and stay)
  */
 async function purgeAreaData(db: Db, now: number, env: ScheduledJobsEnv | undefined): Promise<Record<string, number | null | { error: string }>> {
   const attempt = async (run: () => Promise<number>) => {
@@ -336,6 +395,8 @@ async function purgeAreaData(db: Db, now: number, env: ScheduledJobsEnv | undefi
   return {
     recommendationEvents: await attempt(() => purgeRecommendationEvents(db, now)),
     tradeInDrafts: kv ? await attempt(() => purgeStaleTradeInDrafts(db, kvBlobStore(kv), now)) : null,
+    topupProofs: kv ? await attempt(() => purgeUnusedTopupProofs(db, kvBlobStore(kv), now)) : null,
+    assistantSessions: await attempt(() => purgeExpiredAssistantSessions(db, now)),
   };
 }
 

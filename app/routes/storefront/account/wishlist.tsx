@@ -7,7 +7,8 @@ import { LocaleLink, useT } from "~/i18n/react";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { listWishlist, reconcileGuestWishlist, setWished, wishlistWho } from "~/server/services/wishlist.server";
+import { enforceRateLimit, limitKey } from "~/server/ratelimit.server";
+import { listWishlist, reconcileGuestWishlist, setWished, WISHLIST_CHANGES_PER_IP, wishlistWho } from "~/server/services/wishlist.server";
 import type { ProductCardData } from "~/lib/dto";
 import { announce, cartErrorKey, postForm, readFailure, type PostOutcome } from "~/ui/cart-client";
 import { EmptyState } from "~/ui/EmptyState";
@@ -53,12 +54,15 @@ export async function action({ request, context }: Route.ActionArgs) {
   const fields = formFields(await request.formData());
   const session = await getCustomer(ctx, db);
   try {
+    // The same per-IP budget as POST /api/wishlist (security review 2026-11).
+    await enforceRateLimit(db, await limitKey("wishlist", "ip", ctx.ip), WISHLIST_CHANGES_PER_IP, ctx.now);
     const change = await setWished(db, wishlistWho(ctx.cookie, session?.customer.id ?? null), fields.productId, fields.intent === "add", ctx.now);
     if (!session && change.guestToken) setWishCookie(ctx, change.guestToken);
     return data({ ok: true as const, intent: fields.intent ?? null, productId: fields.productId ?? "", wished: change.wished });
   } catch (error) {
     const failure = accountFailure(error, ctx.locale);
-    return data({ ...failure, intent: fields.intent ?? null, productId: fields.productId ?? "" }, { status: failure.status });
+    const headers = failure.retryAfterSec === undefined ? undefined : { "Retry-After": String(failure.retryAfterSec) };
+    return data({ ...failure, intent: fields.intent ?? null, productId: fields.productId ?? "" }, { status: failure.status, headers });
   }
 }
 

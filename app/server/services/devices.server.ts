@@ -380,6 +380,24 @@ WHERE dm.slug = ${slug}`;
 
 // ───────────────────────────────────────────────────────────────── public API
 
+/** A device's hub as a row link elsewhere (product page, used unit, help centre): what the link needs to draw. */
+export type DeviceLink = { id: string; slug: string; name: string; artKey: string | null; platformSlug: string };
+
+/**
+ * The hub of one device model as a link, or null when it has none (unknown slug, draft or archived model, model of an
+ * inactive platform — exactly when /device/<slug> answers 404). One small indexed read.
+ */
+export async function getDeviceLink(db: Db, locale: Locale, slug: string | null | undefined): Promise<DeviceLink | null> {
+  if (typeof slug !== "string" || slug.length > 80 || !SLUG.test(slug)) return null;
+  const row = (
+    await db.all<{ id: string; slug: string; name: string; art_key: string | null; platform_slug: string }>(sql`SELECT dm.id, dm.slug, dm.name, dm.art_key, pl.slug AS platform_slug
+FROM device_models AS dm JOIN platforms AS pl ON pl.id = dm.platform_id
+WHERE dm.slug = ${slug} AND dm.status = 'published' AND pl.is_active = 1`)
+  )[0];
+  if (!row) return null;
+  return { id: row.id, slug: row.slug, name: pick(l10n(row.name), locale) || row.slug, artKey: row.art_key, platformSlug: row.platform_slug };
+}
+
 /** Every device that has a hub (published model on an active platform), in menu order — for the sitemap. */
 export async function listDeviceHubs(db: Db, locale: Locale): Promise<DeviceHubListing[]> {
   const rows = await db.all<{ slug: string; name: string; platform_slug: string }>(sql`SELECT dm.slug, dm.name, pl.slug AS platform_slug

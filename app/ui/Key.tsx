@@ -2,6 +2,7 @@ import { isValidElement, type ComponentPropsWithRef, type ElementType, type Mous
 
 import { Icon, type IconName } from "~/art/Icon";
 import { useT } from "~/i18n/react";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
@@ -98,7 +99,7 @@ export function Key<C extends ElementType = "button">(props: KeyProps<C>) {
     >
       <span className="key__cap">
         {keyIcon(icon, iconSize)}
-        {children !== undefined && children !== null && children !== false ? <bdi className="key__label">{children}</bdi> : null}
+        {children !== undefined && children !== null && children !== false ? <BidiLabel className="key__label">{children}</BidiLabel> : null}
         {keyIcon(iconEnd, iconSize)}
         {loading ? (
           <>

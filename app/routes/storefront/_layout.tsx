@@ -72,8 +72,9 @@ export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
   const thrown = isRouteErrorResponse(error) ? (error.data as { i18n?: I18nPayload; shell?: ShellData } | null) : null;
   const messages = loaderData?.i18n.shell ?? thrown?.i18n?.shell;
   const shell = loaderData?.shell ?? thrown?.shell ?? null;
+  // `errored`: the failed page's handle (e.g. a product's tabBar: false) no longer applies — its task bar is gone
   return (
-    <ShellFrame shell={shell} messages={messages}>
+    <ShellFrame shell={shell} messages={messages} errored>
       <ShellError error={error} platforms={shell?.nav.platforms ?? []} />
     </ShellFrame>
   );

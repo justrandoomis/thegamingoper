@@ -6,12 +6,13 @@ import { useFormat, useT } from "~/i18n/react";
 import type { UsedUnitCardData } from "~/lib/dto";
 import { MotionLink, SharedElement } from "~/motion";
 import { AddToCartKey } from "./AddToCartKey";
+import { BidiText } from "./BidiText";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
 import { GradeBadge } from "./GradeBadge";
 import { Niche } from "./Niche";
 import { PriceTag } from "./PriceTag";
-import { BidiText, priceFit, ProductImage } from "./ProductCard";
+import { priceFit, ProductImage } from "./ProductCard";
 
 /**
  * One used unit (docs/DESIGN.md §9.5 "Used devices", §12, brief §5): the same card, but the niche holds a REAL photo

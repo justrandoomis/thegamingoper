@@ -46,8 +46,11 @@ dictionary: `contentMessages()`), filled on every read with live data:
   daily rate-limit cleanup, EVERY shopper cookie (`PRIVACY_COOKIES`: `tt_prefs`, `tt_cart`, `tt_sid` from core
   constants; `tt_wish`, `tt_tradein`, `tt_intro`, `tt_consent`, `tt_platforms`, `tt_rs` mirrored from the areas that
   set them — a test compares each name and lifetime with its owner's constant), browser storage (transitions, motion,
-  compare list, consent-gated recently viewed 90 d and recent searches 30 d), Cloudflare as host, no tracking without
-  consent (signals older than 90 days unused);
+  compare list, a guest's consent-gated recently viewed 90 d — moved to the account and removed from the browser at
+  sign-in — and recent searches 30 d), the account's recently viewed (consent only, cleared on withdrawal), Cloudflare
+  as host, no tracking without consent: signals are DELETED when consent is withdrawn and after 90 days (the daily
+  retention job runs `purgeRecommendationEvents` since 2026-11-11 — integration pass), devices connected only through
+  the account;
 - terms: demo notice while `STORE_MODE=demo`; prices in IQD; orders, holds, stock races, cancellation; wallet ledger;
   trade-in estimates (`tradein.estimate_valid_days`) are not offers; product information.
 

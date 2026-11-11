@@ -97,12 +97,15 @@ export function PlatformsSheet({ open, initial, onSave, onClose }: { open: boole
 export function PersonalPanel({
   consent,
   platforms,
+  signedIn = false,
   onChoose,
   onStop,
   onReplay,
 }: {
   consent: boolean | null;
   platforms: readonly Platform[];
+  /** Signed in: what was viewed is kept in the account, not on this device (./personal.ts, one store). */
+  signedIn?: boolean;
   onChoose: () => void;
   onStop: () => void;
   onReplay: () => void;
@@ -110,8 +113,8 @@ export function PersonalPanel({
   const t = useT("home");
   const names = useNames();
   const id = useId();
-  const status =
-    consent === true ? (platforms.length > 0 ? t("personal.on", { platforms: names(platforms) }) : t("personal.onNoPlatforms")) : consent === false ? t("personal.off") : t("personal.unset");
+  const on = signedIn ? { list: "personal.onAccount", none: "personal.onNoPlatformsAccount" } : { list: "personal.on", none: "personal.onNoPlatforms" };
+  const status = consent === true ? (platforms.length > 0 ? t(on.list, { platforms: names(platforms) }) : t(on.none)) : consent === false ? t("personal.off") : t("personal.unset");
   return (
     <section id="personal" aria-labelledby={id} className="panel home-personal">
       <h2 id={id} className="type-sub text-ink">

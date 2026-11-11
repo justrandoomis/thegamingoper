@@ -69,7 +69,9 @@ const ui = useT("ui");
 
 ## Chip, ChipGroup — `~/ui/Chip`
 
-44px clay choices with a reserved 16px mark (ring → check), so the row never reflows. Labels are isolated (`<bdi>`).
+44px clay choices with a reserved 16px mark (ring → check), so the row never reflows. Labels are isolated by
+`<BidiLabel>` (below): pass plain strings — "PlayStation 5 Slim (نسخة الأقراص)" reads right to left on an Arabic page,
+"1 TB" and "PS5" stay left to right; no `<bdi>` of your own is needed.
 
 | Mode | How | Semantics |
 |---|---|---|
@@ -99,7 +101,7 @@ validation — validate on blur, re-check on input once an error shows, and pass
 | `TextArea` | `inputClassName?` | `rows` 3 by default, resizes vertically |
 | `Select` | `options?`, `placeholder?` | native `<select>`, caret at the inline end |
 | `Checkbox` | `indeterminate?` | never pre-check consent |
-| `Radio` | `row?` (option row: title + `hint` explanation), `end?` | group them in `FieldGroup` with one `name`; arrows are native |
+| `Radio` | `row?` (option row: title + `hint` explanation), `end?` | group them in `FieldGroup` with one `name`; arrows are native; a group with nothing chosen yet shows every circle empty (a radio matches `:indeterminate` then — the mixed look is for checkboxes only) |
 | `Switch` | — | `role="switch"`; for settings that apply at once |
 | `FieldGroup` | `legend`, `hint`, `error`, `required`, `optional`, `layout` | a `<fieldset>` for radios, checkboxes or chips |
 
@@ -151,6 +153,10 @@ say so). Delivery copy: `t("delivery", …)` around `<Price amountIqd={fee} size
 132→160px). `gel` (`"nintendo" | "playstation" | "xbox" | "handheld" | "brand" | null`) cross-fades pre-painted light
 layers when it changes. `tag`/`action` hang off the rim (band below the stage); `top`/`bottom` sit inside (orbs,
 gallery). `<StageTag name priceIqd />` is the static-glass price tag.
+The band never cuts the commit key's label: the tag gives way first (its name keeps to one line of whole words and
+only its price must fit), a price of 1,000,000 or more steps down from 21 to 17px on a stage narrower than 24rem
+(`data-long`; a 390 phone keeps tag and key side by side), and only when the price and the key still do not fit
+(a 360 phone with a seven-digit price) does the key move under the tag, at the inline end. Pages need no local rule.
 `<Render name view? alt sizes? priority? pose? shadow? />` — a catalogue photo fitted by its manifest aspect ratio inside
 its slot, with a percentage contact shadow; a changed `name` inflates in (never on first paint). Only the LCP render
 gets `priority`.
@@ -170,12 +176,41 @@ gets `priority`.
 
 `variant` (`"live"` default | `"static"` | `"solid"`), `edge` (`"bottom"` for bottom-anchored bars and sheets), `as`.
 The only way to get `backdrop-filter`. Secondary text inside glass automatically uses `--on-glass-2`.
+Two live panes per viewport: while a sheet or dialog is open, the page it covers is marked `data-layer-behind` (by the
+modal-layer stack in `~/ui/Dialog`, never on other overlays) and that page's live glass — the header after scroll, the
+tab or task bar — turns solid (`materials.css`), so the layer's own strip is the live pane under the scrim. In
+development `<Glass>` warns when more than two live panes are in the viewport (counted half a second after a live pane
+mounts: drawn, on screen, not behind an open layer); `liveGlassPanes(document)` lists them.
 
 ## Socket — `~/ui/Socket`
 
 `<Socket name state="ready" | "added" | "empty" onAdd loading? disabled? inset? />` — the card's red key seated in a
 well; children replace the default add key. `useAddedFlash(ms = 1200)` → `[added, flash]`. `AddGlyph` is the
 bag-plus glyph for the commit key.
+
+## BidiText, BidiLabel, splitBidi — `~/ui/BidiText`
+
+Mixed scripts (DESIGN.md §5.5, §13). `<BidiText text>` takes a name or a sentence and returns inline nodes: a text
+without Arabic script is one `<bdi dir="ltr">`; inside Arabic or Sorani text each Latin NAME and each number is one
+left-to-right isolate and the rest keeps the page's direction. Where a run ends:
+
+| Kept inside one run | Left in the sentence |
+|---|---|
+| glued joiners: `Z-A` `USB-C` `Marvel's` `X\|S` `1920×1080` `3.5` `25,000` `16:9`; trailing signs `AI+` `C#` `20%` `™` | a final full stop, `, ` `·` `—` (name — option) `،` `؛` quotes, line breaks |
+| spaced joiners between Latin words: ` – ` ` + ` ` / ` ` & ` `: ` ("Pokémon Legends: Z-A – Nintendo Switch 2 Edition") | brackets around Arabic: "PlayStation 5 Slim (نسخة الأقراص) – 1TB" |
+| a bracket pair around Latin only: `Legion Go (2023)`, `BEE-001(-01)`, `Joy-Con 2 (L)/(R)` | a number that follows Arabic: "حزمة 2026: Switch 2" (2026 is the bundle's) |
+
+`<BidiLabel className>{children}</BidiLabel>` is the isolate the kit puts around labels — keys, chips, banks,
+breadcrumbs, menu rows, progress steps, the stage tag's name, the toast's name: a label whose text has no Arabic
+script is `<bdi dir="ltr">`; one with Arabic script (or whose words it cannot read, such as a component that takes them
+as props) is `<span class="bidi">` — `unicode-bidi: isolate` in the page's own direction — and a string gets
+`<BidiText>` inside. A bare `<bdi>` guesses its direction from the first letter, so a Latin-first Arabic label came out
+left to right. `splitBidi(text)` returns the parts (`{ text, ltr }[]`); `textOf(node)` reads a label's text; `hasRtl`.
+Tests: `tests/ui-bidi.test.ts` (every Arabic and Sorani name of the catalogue round-trips with clean runs); live, with
+each line's reading order measured in Chromium: `/design-system#bidi`.
+
+`BidiText` was first written in `~/ui/ProductCard`; that file now re-exports this one, so the storefront's existing
+`import { BidiText } from "~/ui/ProductCard"` gets it too. New code imports it from `~/ui/BidiText`.
 
 ## VisuallyHidden, cx
 

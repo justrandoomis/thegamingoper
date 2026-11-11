@@ -7,7 +7,8 @@
  *   → <main id="main"> → footer → tab bar (< 1200, unless the page has its own task bar) → categories sheet → toasts
  *
  * PAGES: render your content without your own <main> (the shell's is the one landmark; it is the skip link's
- * target) and start it with your <h1>. Pages with a bottom buy/checkout bar: see ./TabBar (handle + <TaskBar>).
+ * target) and start it with your <h1>. Pages with a bottom buy/checkout bar: see ./TabBar (handle + <TaskBar>);
+ * below 1200px their header turns into the task header after scroll (back · the <h1> · cart, ./Header).
  * Fixed chrome is marked `data-motion-persist` (header, nav) so page transitions leave it in place; <MotionRoot/>
  * (press feedback, tiers) is mounted here once.
  */
@@ -15,17 +16,19 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useLocation, useMatches, useRouteLoaderData } from "react-router";
 
 import type { MessageTree } from "~/i18n/translate";
+import { splitLocale } from "~/lib/locales";
 import { MotionRoot } from "~/motion";
 import { OfflineBanner } from "~/ui/OfflineBanner";
 import { Toaster } from "~/ui/Toast";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { DemoRibbon } from "./Banners";
 import { CategoriesSheet } from "./CategoriesSheet";
+import { backFallback, shellChrome } from "./chrome";
 import { Footer } from "./Footer";
 import { Header, UtilityBar } from "./Header";
 import { ShellMessages, useShellT } from "./i18n";
 import { TabBar } from "./TabBar";
-import type { ShellData, ShellHandle } from "./types";
+import type { ShellData } from "./types";
 
 import "./shell.css";
 
@@ -33,26 +36,30 @@ export type ShellFrameProps = {
   /** null when the layout's own loader failed (unknown language prefix, database down): menus are empty then. */
   shell: ShellData | null;
   messages: MessageTree | undefined;
+  /** The layout's ErrorBoundary is rendering: the pages' handles (tabBar: false) no longer apply. */
+  errored?: boolean;
   children: ReactNode;
 };
 
 type RootShellData = { storeMode?: "demo" | "live" };
 
-export function ShellFrame({ shell, messages, children }: ShellFrameProps) {
+export function ShellFrame({ shell, messages, errored = false, children }: ShellFrameProps) {
   return (
     <ShellMessages messages={messages}>
-      <Frame shell={shell}>{children}</Frame>
+      <Frame shell={shell} errored={errored}>
+        {children}
+      </Frame>
     </ShellMessages>
   );
 }
 
-function Frame({ shell, children }: { shell: ShellData | null; children: ReactNode }) {
+function Frame({ shell, errored, children }: { shell: ShellData | null; errored: boolean; children: ReactNode }) {
   const t = useShellT();
   const root = useRouteLoaderData("root") as RootShellData | undefined;
   const demo = root?.storeMode !== "live";
   const matches = useMatches();
   const location = useLocation();
-  const tabBar = !matches.some((match) => (match.handle as ShellHandle | undefined)?.shell?.tabBar === false);
+  const { tabBar, back } = shellChrome(matches, { errored });
   const [sheetOpen, setSheetOpen] = useState(false);
 
   // a navigation (a link in the sheet, Back) closes the categories sheet
@@ -66,7 +73,7 @@ function Frame({ shell, children }: { shell: ShellData | null; children: ReactNo
       </VisuallyHidden>
       {demo ? <DemoRibbon /> : null}
       <UtilityBar shell={shell} />
-      <Header shell={shell} />
+      <Header shell={shell} task={tabBar ? null : { back: back ?? backFallback(splitLocale(location.pathname).path) }} />
       <OfflineBanner offset="calc(var(--safe-top) + var(--shell-header-h))" />
       <main id="main" tabIndex={-1} className="shell-main">
         {children}

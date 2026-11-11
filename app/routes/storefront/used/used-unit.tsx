@@ -23,7 +23,11 @@ import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { getDeviceLink } from "~/server/services/devices.server";
+import { recommendationsFor } from "~/server/services/recommendations.server";
 import { getOtherUsedUnits, getUsedUnitDetail } from "~/server/services/used.server";
+import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
+import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { AddToCartKey, BuyControls } from "~/ui/AddToCartKey";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
 import { ErrorState } from "~/ui/ErrorState";
@@ -50,10 +54,22 @@ export async function loader({ params, context }: Route.LoaderArgs) {
   const unit = await getUsedUnitDetail(db, ctx.locale, params.slug);
   if (!unit) throw data({ error: "not_found" }, { status: 404 });
   // The shelf of other units is extra: when it fails the page still shows, and says so with a retry.
-  const others = await getOtherUsedUnits(db, ctx.locale, { id: unit.id, platformSlug: unit.platform?.slug ?? null }, 8).catch((error: unknown) => {
-    console.error("[used] other units failed", error);
-    return null;
-  });
+  const [others, device] = await Promise.all([
+    getOtherUsedUnits(db, ctx.locale, { id: unit.id, platformSlug: unit.platform?.slug ?? null }, 8).catch((error: unknown) => {
+      console.error("[used] other units failed", error);
+      return null;
+    }),
+    // the model's hub (devices area) — null when it has none; a failure only hides the link
+    getDeviceLink(db, ctx.locale, unit.model?.slug).catch((error: unknown) => {
+      console.error("[used] device link failed", error);
+      return null;
+    }),
+  ]);
+  // Accessories VERIFIED on this unit's model (devices area, "complete your setup" of the device) — streamed, and only
+  // that shelf: the hub's fallback of new consoles is not what someone buying this unit asked for.
+  const accessories = device
+    ? recommendationsFor(db, { cookie: ctx.cookie, customerId: null }, { locale: ctx.locale, context: "device_hub", deviceModelId: device.id, keep: (shelf) => shelf.key.startsWith("device_hub:setup:"), now: ctx.now }, 8)
+    : null;
   const t = serverT(ctx.locale, "used");
   const shop = serverT(ctx.locale, "ui-shop");
   const realPhoto = unit.photos.find((photo) => !photo.isIllustration && photo.mediaKey);
@@ -62,6 +78,8 @@ export async function loader({ params, context }: Route.LoaderArgs) {
   const payload = {
     unit,
     others,
+    device,
+    accessories,
     meta: {
       title: t("unit.metaTitle", { name: unit.name }),
       description: t("unit.metaDescription", { name: unit.name, grade: shop(`grade.words.${gradeKey(unit.grade)}`), warranty }),
@@ -79,7 +97,7 @@ export const meta: Route.MetaFunction = (args) =>
 type LayoutData = { shell?: { deliveryFeeIqd?: number } };
 
 export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
-  const { unit, others } = loaderData;
+  const { unit, others, device, accessories } = loaderData;
   const t = useUsedT();
   const shop = useT("ui-shop");
   const f = useFormat();
@@ -213,8 +231,9 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
         className="lg:max-w-[52rem]"
       />
 
-      {/* Integration slot (devices area): accessories that fit this unit's model — getRecommendations(db, { context: "device_hub",
-          deviceModelId }) — and the device hub link (/device/<unit.model.slug>). Wired by the integration pass. */}
+      {/* Devices area: the model's hub (its picture grows into the hub's stage) and the accessories verified on the model. */}
+      {device ? <DeviceHubLink device={device} title={t("unit.hubTitle", { device: device.name })} text={t("unit.hubText")} className="lg:max-w-[52rem]" /> : null}
+      <RecommendationShelves key={unit.id} result={accessories} source="used" />
 
       {others === null ? (
         <ErrorState title={t("unit.othersFailed")} retryHref={location.pathname} />

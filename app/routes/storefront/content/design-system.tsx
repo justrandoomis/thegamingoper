@@ -83,9 +83,14 @@ const COPY = defineCopy({
   },
 });
 
+/** How long the streamed specimen (sections/reveal.tsx) waits: long enough that the page's shell is sent first. */
+const REVEAL_AFTER_MS = 450;
+
 export function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
-  return { title: `${COPY[ctx.locale].title} — TamTam` };
+  // Not awaited: React Router streams it, so "content that arrives" is shown with real Suspense + hydration.
+  const reveal = new Promise<number>((resolve) => setTimeout(() => resolve(REVEAL_AFTER_MS), REVEAL_AFTER_MS));
+  return { title: `${COPY[ctx.locale].title} — TamTam`, reveal };
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {

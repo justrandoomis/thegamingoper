@@ -37,6 +37,7 @@ import { expectThat, isDbError, runBatch } from "~/server/db/tx.server";
 import { conflict, invalid, zodFieldErrors } from "~/server/errors";
 import { enforceRateLimit, limitKey } from "~/server/ratelimit.server";
 import type { BlobStore } from "~/server/storage.server";
+import { cleanBlock } from "~/server/text.server";
 import type { UploadSource } from "~/server/uploads.server";
 import {
   REPAIR_REF_PREFIX,
@@ -66,7 +67,7 @@ export const RepairInput = z.object({
   device: z.string().trim().min(1, "required").max(64, "invalid"),
   deviceText: optionalText(120),
   serial: optionalText(40),
-  issue: z.string().trim().min(10, "too_short").max(2000, "too_long"),
+  issue: z.string().overwrite(cleanBlock).trim().min(10, "too_short").max(2000, "too_long"),
   phone: z.string().trim().min(1, "required").max(40, "phone_invalid"),
   contactName: optionalText(80),
   handover: z.preprocess(emptyToUndefined, z.enum(REPAIR_HANDOVERS, "invalid").optional()),

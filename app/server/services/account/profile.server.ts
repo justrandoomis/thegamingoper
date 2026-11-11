@@ -8,7 +8,7 @@
  * number, and no SMS provider is configured (docs/STATUS.md open item 4) — the page says so and points to support.
  *
  * Errors (AppError): invalid (400: fields name / email / locale), unauthorized (401: the actor is not this customer),
- * customer_unavailable (409: the account was merged or deleted).
+ * customer_unavailable (409: the account was merged or deleted), rate_limited (429: PROFILE_CHANGES_PER_CUSTOMER).
  * Must not import "cloudflare:workers".
  */
 import { eq } from "drizzle-orm";
@@ -21,7 +21,16 @@ import type { Db } from "~/server/db/drizzle.server";
 import { customers } from "~/server/db/schema";
 import { runBatch } from "~/server/db/tx.server";
 import { AppError, notFound, unauthorized } from "~/server/errors";
+import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
+import { cleanLine } from "~/server/text.server";
 import type { AccountProfile } from "./types";
+
+/**
+ * Profile changes a customer may save per hour (security review, second pass): each one writes an audit event, and
+ * `audit_events` refuses UPDATE and DELETE. People change a name or an e-mail a few times at most; saving what is
+ * already stored writes nothing and does not count.
+ */
+export const PROFILE_CHANGES_PER_CUSTOMER = { limit: 10, windowSec: 60 * 60 } as const satisfies RateLimitRule;
 
 const EMAIL = /^[^\s@<>()[\]\\,;:"]{1,64}@[^\s@<>()[\]\\,;:"]{1,190}\.[^\s@<>()[\]\\,;:"]{2,24}$/;
 
@@ -29,11 +38,12 @@ const EMAIL = /^[^\s@<>()[\]\\,;:"]{1,64}@[^\s@<>()[\]\\,;:"]{1,190}\.[^\s@<>()[
 const blankToNull = (value: unknown) => (typeof value === "string" && value.trim() === "" ? null : value);
 
 export const UpdateProfileInput = z.object({
-  name: z.preprocess(blankToNull, z.string().trim().min(2, "too_short").max(80, "too_long").nullable()).optional(),
+  name: z.preprocess(blankToNull, z.string().overwrite(cleanLine).trim().min(2, "too_short").max(80, "too_long").nullable()).optional(),
   email: z.preprocess(
     blankToNull,
     z
       .string()
+      .overwrite(cleanLine)
       .trim()
       .max(254, "too_long")
       .transform((value) => value.toLowerCase())
@@ -79,6 +89,8 @@ export async function updateProfile(db: Db, actor: CustomerActor, raw: UpdatePro
   const before = { name: row.name, email: row.email, locale: row.locale };
   if (before.name === next.name && before.email === next.email && before.locale === next.locale) return toProfile(row);
 
+  // Every change is an audit event, and audit_events is append-only: a script must not grow it without end.
+  await enforceRateLimit(db, await limitKey("profile", "customer", actor.id), PROFILE_CHANGES_PER_CUSTOMER, now);
   await runBatch(db, [
     db.update(customers).set({ ...next, updatedAt: now }).where(eq(customers.id, actor.id)),
     auditStatement(db, { actor, action: "customers.profile.update", entityType: "customer", entityId: actor.id, before, after: next, at: now }),

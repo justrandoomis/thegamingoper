@@ -15,7 +15,9 @@
  *   · the cart is priced again on the server (getCheckoutCart: today's prices, stock, coupon with
  *     this phone, the governorate's delivery fee). Nothing the browser sends is a price. If the
  *     total differs from `expectedTotalIqd` (what the shopper confirmed) → CheckoutError
- *     "totals_changed" (409) carrying the fresh cart, and nothing is written.
+ *     "totals_changed" (409) carrying the fresh cart, and nothing is written. No cart or no lines →
+ *     "cart_empty"; a line that cannot be bought (sold out, off sale) — also when that is every
+ *     line — → "cart_blocked" (both 409 with the cart as it is now).
  *
  * WHAT IT WRITES — ONE db.batch, all or nothing
  *   guest contact (guests) · order (contact, address, preference fields, totals that satisfy the
@@ -84,6 +86,7 @@ import { batchSql, chunkRows, expectChanged, expectThat, isUniqueViolation, mapD
 import { AppError, invalid, unauthorized, type AppErrorOptions } from "~/server/errors";
 import { RATE_LIMITS, enforceRateLimit, limitKey } from "~/server/ratelimit.server";
 import { getSettings } from "~/server/settings.server";
+import { cleanBlock, cleanLine } from "~/server/text.server";
 import { mapPostingError, postWalletPayment } from "../accounting/post.server";
 import { getCartView, getCheckoutCart, type CartViewData, type PricedCartLine } from "../cart.server";
 import { reserveStatements, reserveUsedUnitStatements } from "../inventory/stock.server";
@@ -122,9 +125,11 @@ export type CheckoutMethod = (typeof CHECKOUT_METHODS)[number];
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
 const idSchema = z.string().regex(ID_PATTERN, "invalid");
 const IDEMPOTENCY_KEY = /^[A-Za-z0-9_-]{22,128}$/;
-const optionalText = (max: number) =>
+/** Free text: control, bidi-override and invisible characters are removed first (~/server/text.server). */
+const optionalText = (max: number, multiline = false) =>
   z
     .string()
+    .overwrite(multiline ? cleanBlock : cleanLine)
     .trim()
     .max(max, "too_long")
     .optional()
@@ -140,9 +145,9 @@ export const CheckoutInput = z.object({
   governorateId: idSchema,
   /** Optional. "" (what an untouched <select> posts) means "not given", like the optional text fields. */
   districtId: z.union([z.literal(""), idSchema]).nullish().transform((value) => value || null),
-  areaText: z.string().trim().min(2, "required").max(200, "too_long"),
-  addressText: z.string().trim().min(5, "too_short").max(500, "too_long"),
-  notes: optionalText(500),
+  areaText: z.string().overwrite(cleanLine).trim().min(2, "required").max(200, "too_long"),
+  addressText: z.string().overwrite(cleanBlock).trim().min(5, "too_short").max(500, "too_long"),
+  notes: optionalText(500, true),
   /** "YYYY-MM-DD" (Asia/Baghdad), today to 30 days ahead — a preference, never a promise. */
   preferredDay: optionalText(10),
   /** Optional; "" means "no preference". */
@@ -213,13 +218,53 @@ export function initialPaymentStatus(method: StoredPaymentMethod | null): Paymen
 
 const METHOD_SETTING = { cod: "payments.cod", wallet: "payments.wallet", bank_transfer: "payments.bank_transfer", zaincash: "payments.zaincash" } as const;
 
-/** "PS5 Slim — نسخة الأقراص" in every locale the product name has. */
-function lineName(productName: L10n, variantTitle: L10n | null): L10n {
+/** Lower-cased (NFKC), single-spaced — how a variant title is compared with its product's name. */
+const foldName = (text: string) => text.normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
+const WORD_CHAR = /[\p{L}\p{N}]/u;
+
+/** True when `phrase` occurs in `text` as whole words ("FC 26" in "EA SPORTS FC 26", not "PS" in "PS5"). */
+function hasPhrase(text: string, phrase: string): boolean {
+  if (!phrase) return false;
+  for (let at = text.indexOf(phrase); at !== -1; at = text.indexOf(phrase, at + 1)) {
+    const before = at > 0 ? text[at - 1] : "";
+    const after = text[at + phrase.length] ?? "";
+    if (!WORD_CHAR.test(before) && !WORD_CHAR.test(after)) return true;
+  }
+  return false;
+}
+
+/** " – " / " — " / " - " between a title's lead and its detail ("DualSense – أبيض"). */
+const TITLE_SEPARATOR = /\s+[–—-]\s+/;
+
+/** One locale of a line name: the product's name and the variant's title, without saying the product's name twice. */
+function joinLineName(name: string | undefined, rawTitle: string | undefined): string | undefined {
+  if (!name) return undefined;
+  const title = rawTitle?.trim();
+  if (!title) return name;
+  const foldedName = foldName(name);
+  // The title already names the product ("Resident Evil Requiem لجهاز PS5"): it is the whole line name.
+  if (hasPhrase(foldName(title), foldedName)) return title;
+  // The title opens with the product's short name ("DualSense – أبيض" of "يد التحكم اللاسلكية DualSense"): keep its detail.
+  const separator = TITLE_SEPARATOR.exec(title);
+  if (separator && separator.index > 0) {
+    const lead = foldName(title.slice(0, separator.index));
+    const detail = title.slice(separator.index + separator[0].length).trim();
+    if (detail && hasPhrase(foldedName, lead)) return `${name} — ${detail}`;
+  }
+  return `${name} — ${title}`;
+}
+
+/**
+ * What an order line is called, in every locale the product name has: "PS5 Slim — نسخة الأقراص". A variant title that
+ * already contains the product's name stands alone ("Resident Evil Requiem لجهاز PS5", never "Resident Evil Requiem —
+ * Resident Evil Requiem لجهاز PS5"), and one that opens with the product's short name keeps only its detail
+ * ("يد التحكم اللاسلكية DualSense — أبيض"). A locale without its own title borrows the Arabic one.
+ */
+export function lineName(productName: L10n, variantTitle: L10n | null): L10n {
   if (!variantTitle) return productName;
-  const join = (name: string | undefined, title: string | undefined) => (name ? (title ? `${name} — ${title}` : name) : undefined);
-  const out: L10n = { ar: join(productName.ar, variantTitle.ar) ?? productName.ar };
-  const en = join(productName.en, variantTitle.en ?? variantTitle.ar);
-  const ckb = join(productName.ckb, variantTitle.ckb ?? variantTitle.ar);
+  const out: L10n = { ar: joinLineName(productName.ar, variantTitle.ar) ?? productName.ar };
+  const en = joinLineName(productName.en, variantTitle.en ?? variantTitle.ar);
+  const ckb = joinLineName(productName.ckb, variantTitle.ckb ?? variantTitle.ar);
   if (en) out.en = en;
   if (ckb) out.ckb = ckb;
   return out;
@@ -308,8 +353,10 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
   const freshView = () => getCartView(db, cartRequest, now).catch(() => null);
   const lines = priced.lines.filter((entry) => entry.purchasable);
   const cartId = priced.cartId;
-  if (!cartId || lines.length === 0) throw new CheckoutError("cart_empty", 409, priced.view);
-  if (priced.view.blocked) throw new CheckoutError("cart_blocked", 409, priced.view);
+  // An empty cart is "cart_empty"; a cart whose lines all sold out (or went off sale) is still a cart the page shows,
+  // line by line, so it is "cart_blocked" like any other cart with a line that cannot be bought.
+  if (!cartId || priced.lines.length === 0) throw new CheckoutError("cart_empty", 409, priced.view);
+  if (lines.length === 0 || priced.view.blocked) throw new CheckoutError("cart_blocked", 409, priced.view);
   if (priced.view.shippingIqd === null) throw new AppError("shipping_unavailable", 409, { fields: { governorateId: "shipping_unavailable" }, detail: input.governorateId });
   if (priced.view.totalIqd !== input.expectedTotalIqd) {
     throw new CheckoutError("totals_changed", 409, priced.view, { detail: `${input.expectedTotalIqd}→${priced.view.totalIqd}` });

@@ -142,12 +142,6 @@ export default defineMessages({
     },
     notes: "قبل أن تطلب",
     variantNote: "عن هذه النسخة",
-    related: {
-      setup: "أكمل تجهيزك",
-      accessory: "ملحقات",
-      alternative: "بدائل",
-      reason: "اقتراحات المتجر",
-    },
     reviews: {
       title: "المراجعات",
       none: "لا توجد مراجعات لهذا المنتج بعد.",
@@ -169,6 +163,15 @@ export default defineMessages({
       images: "الصور: {owners}",
       imagesNote: "صور رسمية من الشركة المصنّعة أو الناشر، نعرضها للتعريف بالمنتج.",
       sources: "مصادر المعلومات",
+    },
+    compat: {
+      title: "يعمل مع",
+      reason: "من سجلّ التوافق الذي تحقّقنا منه. «لم نتحقق» لا تعني أنه يعمل.",
+      more: "اعرض بقية الأجهزة ({n})",
+    },
+    hub: {
+      title: "كل شيء عن {device}",
+      text: "النسخ والمواصفات والأدلة وما يتوافق معه",
     },
     preview: {
       title: "عرض سريع",
@@ -315,12 +318,6 @@ export default defineMessages({
     },
     notes: "Before you order",
     variantNote: "About this version",
-    related: {
-      setup: "Complete your setup",
-      accessory: "Accessories",
-      alternative: "Alternatives",
-      reason: "Store suggestions",
-    },
     reviews: {
       title: "Reviews",
       none: "There are no reviews of this product yet.",
@@ -342,6 +339,15 @@ export default defineMessages({
       images: "Photos: {owners}",
       imagesNote: "Official photos from the maker or publisher, shown to present the product.",
       sources: "Where these facts come from",
+    },
+    compat: {
+      title: "Works with",
+      reason: "From the compatibility records we checked. “Not checked” does not mean it works.",
+      more: "Show the other devices ({n})",
+    },
+    hub: {
+      title: "Everything about {device}",
+      text: "Versions, specifications, guides and what works with it",
     },
     preview: {
       title: "Quick look",
@@ -482,12 +488,6 @@ export default defineMessages({
     },
     notes: "پێش داواکردن",
     variantNote: "دەربارەی ئەم وەشانە",
-    related: {
-      setup: "ئامادەکارییەکەت تەواو بکە",
-      accessory: "پاشکۆکان",
-      alternative: "جێگرەوەکان",
-      reason: "پێشنیاری فرۆشگا",
-    },
     reviews: {
       title: "هەڵسەنگاندنەکان",
       none: "هێشتا هیچ هەڵسەنگاندنێک بۆ ئەم بەرهەمە نییە.",
@@ -506,6 +506,15 @@ export default defineMessages({
       images: "وێنەکان: {owners}",
       imagesNote: "وێنەی فەرمیی کۆمپانیای بەرهەمهێنەر یان بڵاوکەرەوە، بۆ ناساندنی بەرهەمەکە پیشان دەدرێن.",
       sources: "سەرچاوەی زانیارییەکان",
+    },
+    compat: {
+      title: "کار دەکات لەگەڵ",
+      reason: "لە تۆماری گونجاندنەوە کە پشکنیومانە. «نەمانپشکنیوە» واتای ئەوە نییە کە کار دەکات.",
+      more: "ئامێرەکانی تر پیشان بدە ({n})",
+    },
+    hub: {
+      title: "هەموو شتێک دەربارەی {device}",
+      text: "وەشانەکان و تایبەتمەندییەکان و ڕێنماییەکان و ئەوەی لەگەڵیدا دەگونجێت",
     },
     preview: {
       title: "سەیرێکی خێرا",

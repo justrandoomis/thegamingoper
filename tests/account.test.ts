@@ -468,8 +468,14 @@ describe("one-time codes", () => {
     const sent = await requestPhoneCode(request({ cookies }).ctx, t.db, otp());
     expect(sent.devCode).toMatch(/^\d{6}$/);
     expect(await failure(() => confirmPhoneCode(request({ cookies }).ctx, t.db, { code: "" }, otp()))).toMatchObject({ code: "invalid", fields: { code: "required" } });
-    await confirmPhoneCode(request({ cookies }).ctx, t.db, { code: sent.devCode, id: sent.id }, otp());
-    expect((await getCustomer(request({ cookies }).ctx, t.db))?.customer.phoneVerified).toBe(true);
+    // Confirming the number moves this device to a new session token (SECURITY §6): read on with the new cookie.
+    const confirm = request({ cookies });
+    await confirmPhoneCode(confirm.ctx, t.db, { code: sent.devCode, id: sent.id }, otp());
+    const rotated = cookiesAfter(confirm, cookies);
+    expect(rotated.tt_sid).toBeTruthy();
+    expect(rotated.tt_sid).not.toBe(cookies.tt_sid);
+    expect((await getCustomer(request({ cookies: rotated }).ctx, t.db))?.customer.phoneVerified).toBe(true);
+    expect(await getCustomer(request({ cookies }).ctx, t.db)).toBeNull();
     expect(await failure(() => requestPhoneCode(request().ctx, t.db, otp()))).toMatchObject({ code: "unauthorized" });
   });
 });

@@ -43,6 +43,13 @@ export const CART_COOKIE_NAME = "tt_cart";
 
 export const WISHLIST_ERROR_KEYS = ["wishlist_full", "not_found", "invalid", "required"] as const;
 
+/**
+ * Favourites changes per IP per minute — generous for people, tight for scripts. One budget (key "wishlist:ip") for
+ * every way in: POST /api/wishlist and the /wishlist page's form, so a guest-without-cookies script cannot fill the
+ * table through either (security review 2026-11: the page's form had no limit).
+ */
+export const WISHLIST_CHANGES_PER_IP = { limit: 60, windowSec: 60 } as const;
+
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
 

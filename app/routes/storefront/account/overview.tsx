@@ -1,4 +1,5 @@
-import { data, Form, useFetcher, useNavigation } from "react-router";
+import { useEffect } from "react";
+import { data, Form, useFetcher, useNavigation, useRevalidator } from "react-router";
 
 import type { Route } from "./+types/overview";
 import { Icon } from "~/art/Icon";
@@ -21,6 +22,7 @@ import { navHints } from "./components/hints";
 import { OrderRow } from "./components/OrderBits";
 import { PageHead, Section } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
+import { handDeviceListToAccount } from "../home/personal";
 import { useAccountData } from "./layout";
 
 /** The account's home: who is signed in, the wallet and the latest order at a glance, the sections, recent views. */
@@ -67,7 +69,18 @@ export default function Overview({ loaderData }: Route.ComponentProps) {
   const account = useAccountData();
   const navigation = useNavigation();
   const clear = useFetcher<typeof action>();
+  const revalidator = useRevalidator();
   const signingOut = navigation.state !== "idle" && navigation.formAction === href("/account/logout");
+  // One recently-viewed store (home/personal): what this device remembers from before signing in joins the account
+  // once, then leaves the device; the list below is read again when something joined.
+  const consent = loaderData.consent;
+  useEffect(() => {
+    if (!consent) return;
+    void handDeviceListToAccount().then((joined) => {
+      if (joined) void revalidator.revalidate();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit of the overview
+  }, [consent]);
   if (!account) return null;
   const { customer, counts, wallet } = account;
   const cleared = clear.data?.ok === true;

@@ -34,7 +34,8 @@ import type { EmployeeActor } from "~/server/actor";
 import { getEmployee, signInEmployee, type EmployeeSession } from "~/server/auth/admin.server";
 import { requestContextMiddleware, type RequestCtx } from "~/server/context.server";
 import { hashPassword, toBase64Url, totpCode } from "~/server/crypto.server";
-import { employeeRoles, employees, employeeSessions, refunds, roles } from "~/server/db/schema";
+import { cycleCounts, employeeRoles, employees, employeeSessions, inventoryLocations, priceChanges, refunds, roles, stockTransfers, variants } from "~/server/db/schema";
+import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { DEFAULT_ROLES, PERMISSION_DEFS, PERMISSIONS, roleId, type DefaultRoleKey } from "~/server/permissions";
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -628,6 +629,8 @@ describe("shell data", () => {
     const ownerSession = (await signedIn(OWNER.email, OWNER.password, at)).session;
     const ownerShell = await loadAdminShell(request({ now: at, locale: "en" }).ctx, t.db, ownerSession);
     expect(ownerShell.waiting.queues.map((queue) => [queue.id, queue.count])).toEqual([["proofs", 1], ["refunds", 1]]);
+    // each queue opens its module's own queue screen
+    expect(ownerShell.waiting.queues.map((queue) => queue.href)).toEqual(["/admin/orders/proofs", "/admin/orders/refunds"]);
     expect(ownerShell.waiting.total).toBe(2);
     expect(ownerShell.modules).toHaveLength(23);
     expect(ownerShell.employee).toMatchObject({ name: OWNER.name, email: OWNER.email, roles: ["Owner"], totpEnabled: false });
@@ -639,6 +642,43 @@ describe("shell data", () => {
     expect(cashierShell.modules).toEqual(["dashboard", "catalog", "inventory", "pos", "customers", "returns"]);
     expect(cashierShell.rail).toBe("collapsed");
     expect(cashierShell.employee.roles).toEqual(["الكاشير"]);
+  });
+
+  test("inventory and pricing queues: counts to approve (never one the employee started or counted), transfers on their way, price changes to decide (never their own request)", async () => {
+    const manager = await staff("manager");
+    const clerk = await staff("inventory");
+    const cashier = await staff("cashier");
+    await t.db.insert(inventoryLocations).values({ id: "loc_shell_shop", code: "SHELL-SHOP", name: "متجر الاختبار", kind: "shop" });
+    await t.db.insert(cycleCounts).values([
+      { id: "cc_shell_clerk", ref: "CC-SHELL-1", locationId: DEFAULT_LOCATION_ID, status: "review", startedBy: clerk.id, createdAt: NOW },
+      { id: "cc_shell_manager", ref: "CC-SHELL-2", locationId: DEFAULT_LOCATION_ID, status: "review", startedBy: manager.id, createdAt: NOW },
+      { id: "cc_shell_open", ref: "CC-SHELL-3", locationId: DEFAULT_LOCATION_ID, status: "counting", startedBy: clerk.id, createdAt: NOW },
+    ]);
+    await t.db.insert(stockTransfers).values([
+      { id: "tr_shell_1", ref: "TR-SHELL-1", fromLocationId: DEFAULT_LOCATION_ID, toLocationId: "loc_shell_shop", status: "in_transit", createdAt: NOW, shippedAt: NOW },
+      { id: "tr_shell_2", ref: "TR-SHELL-2", fromLocationId: DEFAULT_LOCATION_ID, toLocationId: "loc_shell_shop", status: "draft", createdAt: NOW },
+    ]);
+    const [variant] = await t.db.select({ id: variants.id, price: variants.priceIqd }).from(variants).limit(1);
+    await t.db.insert(priceChanges).values([
+      { id: "pc_shell_clerk", variantId: variant.id, oldPriceIqd: variant.price, newPriceIqd: variant.price + 1000, status: "pending", requestedBy: clerk.id, createdAt: NOW },
+      { id: "pc_shell_manager", variantId: variant.id, oldPriceIqd: variant.price, newPriceIqd: variant.price + 2000, status: "pending", requestedBy: manager.id, createdAt: NOW },
+    ]);
+
+    const at = NOW + 13 * HOUR;
+    const managerShell = await loadAdminShell(request({ now: at }).ctx, t.db, (await signedIn(manager.email, manager.password, at)).session);
+    const queues = Object.fromEntries(managerShell.waiting.queues.map((queue) => [queue.id, queue]));
+    expect(queues.counts).toEqual({ id: "counts", module: "inventory", count: 1, href: "/admin/inventory/counts?status=review" });
+    expect(queues.transfers).toEqual({ id: "transfers", module: "inventory", count: 1, href: "/admin/inventory/transfers?status=in_transit" });
+    expect(queues.prices).toEqual({ id: "prices", module: "pricing", count: 1, href: "/admin/pricing/changes" });
+    expect(managerShell.waiting.total).toBe(managerShell.waiting.queues.reduce((sum, queue) => sum + queue.count, 0));
+
+    // the clerk who started the count is never asked to approve it (and holds no approve permission anyway)
+    const clerkShell = await loadAdminShell(request({ now: at }).ctx, t.db, (await signedIn(clerk.email, clerk.password, at)).session);
+    expect(clerkShell.waiting.queues.find((queue) => queue.id === "counts")).toBeUndefined();
+    expect(clerkShell.waiting.queues.find((queue) => queue.id === "prices")).toBeUndefined();
+
+    const cashierShell = await loadAdminShell(request({ now: at }).ctx, t.db, (await signedIn(cashier.email, cashier.password, at)).session);
+    expect(cashierShell.waiting.queues).toEqual([]);
   });
 });
 
@@ -682,7 +722,9 @@ describe("My security", () => {
     expect(await mySecurityAction(req.ctx, t.db, session, secrets, form({ intent: "password", currentPassword: "not-my-password", newPassword: "a-brand-new-password", confirmPassword: "a-brand-new-password" }))).toMatchObject({ ok: false, fields: { currentPassword: expect.any(String) } });
     expect(await mySecurityAction(req.ctx, t.db, session, secrets, form({ intent: "password", currentPassword: person.password, newPassword: "a-brand-new-password", confirmPassword: "a-brand-new-password" }))).toEqual({ ok: true, intent: "password" });
     expect(await getEmployee(request({ cookies: elsewhere.cookies, now: at + 2 * MINUTE }).ctx, t.db)).toBeNull();
-    expect(await getEmployee(request({ cookies: here.cookies, now: at + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    // This device stays signed in on the new token the change set; its old cookie (and any copy of it) no longer works.
+    expect(await getEmployee(request({ cookies: cookiesAfter(req, here.cookies), now: at + 2 * MINUTE }).ctx, t.db)).not.toBeNull();
+    expect(await getEmployee(request({ cookies: here.cookies, now: at + 2 * MINUTE }).ctx, t.db)).toBeNull();
     expect(await mySecurityAction(req.ctx, t.db, session, secrets, form({ intent: "nonsense" }))).toMatchObject({ ok: false, intent: null });
   });
 

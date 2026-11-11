@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink } from "~/i18n/react";
 import { dematerialize, materialize } from "~/motion";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { inheritSurface, OverlayHostContext, useOverlayRoot, usePresence, watchCloseRequests } from "./Dialog";
 import { Glass } from "./Glass";
@@ -453,11 +454,11 @@ function MenuRow({ item, slot, onClose }: { item: Exclude<MenuItem, MenuSeparato
         </span>
       ) : null}
       <span className="min-w-0 flex-1">
-        <bdi>{item.label}</bdi>
+        <BidiLabel>{item.label}</BidiLabel>
       </span>
       {hint ? (
         <span className="shrink-0 type-caption text-ink-2 nums" aria-hidden="true">
-          <bdi>{hint}</bdi>
+          <BidiLabel>{hint}</BidiLabel>
         </span>
       ) : null}
     </>

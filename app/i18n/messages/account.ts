@@ -337,7 +337,7 @@ export default defineMessages({
     },
     devices: {
       title: "أجهزتي",
-      lead: "احفظ الأجهزة التي تملكها لتصل إلى صفحاتها من حسابك. ستعتمد عليها اقتراحات المنتجات المتوافقة حين تُفعّل.",
+      lead: "احفظ الأجهزة التي تملكها لتصل إلى صفحاتها من حسابك. إذا وافقت على الاقتراحات المخصّصة، نقترح لك ما تحقّقنا من توافقه معها.",
       savedTitle: "أجهزتك",
       savedEmpty: "لم تحفظ أجهزة بعد. دورك.",
       savedEmptyText: "اختر من القائمة أدناه.",
@@ -827,7 +827,7 @@ export default defineMessages({
     },
     devices: {
       title: "My devices",
-      lead: "Save the devices you own to reach their pages from your account. Suggestions of compatible products will use them once they are switched on.",
+      lead: "Save the devices you own to reach their pages from your account. If you agreed to personalised suggestions, we suggest products we verified to work with them.",
       savedTitle: "Your devices",
       savedEmpty: "No devices saved yet. Your turn.",
       savedEmptyText: "Pick them from the list below.",
@@ -1317,7 +1317,7 @@ export default defineMessages({
     },
     devices: {
       title: "ئامێرەکانم",
-      lead: "ئەو ئامێرانەی هەتە پاشەکەوت بکە بۆ ئەوەی لە هەژمارەکەتەوە بگەیتە پەڕەکانیان. پێشنیاری بەرهەمە گونجاوەکان کاتێک چالاک دەکرێن پشتیان پێ دەبەستن.",
+      lead: "ئەو ئامێرانەی هەتە پاشەکەوت بکە بۆ ئەوەی لە هەژمارەکەتەوە بگەیتە پەڕەکانیان. ئەگەر ڕازی بووبیت بە پێشنیاری تایبەت، ئەو بەرهەمانەت پێشنیار دەکەین کە پشتڕاستمان کردووەتەوە لەگەڵیاندا کار دەکەن.",
       savedTitle: "ئامێرەکانت",
       savedEmpty: "هێشتا هیچ ئامێرێکت پاشەکەوت نەکردووە. نۆرەی تۆیە.",
       savedEmptyText: "لە لیستەکەی خوارەوە هەڵیانبژێرە.",

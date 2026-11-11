@@ -1,6 +1,7 @@
 import { useId, type CSSProperties, type ReactNode } from "react";
 
 import { useT } from "~/i18n/react";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { KeyBank } from "./KeyBank";
 import { PLATFORMS, PlatformGlyph, PlatformLed, type Platform } from "./PlatformLed";
@@ -86,7 +87,7 @@ export function PlatformBank(props: PlatformBankProps) {
               <span className="key__cap">
                 <PlatformLed />
                 <PlatformGlyph platform={p} />
-                <bdi className="key__label">{nameOf(p)}</bdi>
+                <BidiLabel className="key__label">{nameOf(p)}</BidiLabel>
               </span>
             </button>
           );

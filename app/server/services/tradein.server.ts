@@ -57,6 +57,7 @@ import type { Db } from "~/server/db/drizzle.server";
 import { files, tradeInEvents, tradeIns, type DeviceKind, type TradeInStatus } from "~/server/db/schema";
 import { expectChanged, runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, rateLimited, zodFieldErrors } from "~/server/errors";
+import { cleanBlock, cleanLine } from "~/server/text.server";
 import { limitKey, rateLimit, type RateLimitRule } from "~/server/ratelimit.server";
 import { getSetting } from "~/server/settings.server";
 import { deleteFile, getFile, type BlobStore, type StoredFile } from "~/server/storage.server";
@@ -397,11 +398,13 @@ export async function estimateTradeIn(db: Db, locale: Locale, slug: unknown, ans
 
 const IDEMPOTENCY_KEY = /^[A-Za-z0-9_-]{22,128}$/;
 const blank = (value: unknown) => (value === "" || value === null ? undefined : value);
-const optionalText = (max: number) =>
+/** Free text: control, bidi-override and invisible characters are removed first (~/server/text.server). */
+const optionalText = (max: number, multiline = false) =>
   z.preprocess(
     blank,
     z
       .string()
+      .overwrite(multiline ? cleanBlock : cleanLine)
       .trim()
       .max(max, "too_long")
       .optional()
@@ -425,7 +428,7 @@ export const CreateTradeInInput = z.object({
   /** YYYY-MM-DD (Baghdad), today … +INSPECTION_DAYS_AHEAD. Empty = no preference. */
   preferredDay: z.preprocess(blank, z.string().max(10, "inspection_day_invalid").optional()),
   preferredWindow: z.preprocess(blank, z.enum(["morning", "afternoon", "evening", "any"]).optional()),
-  notes: optionalText(500),
+  notes: optionalText(500, true),
   /** "This device is mine and I may sell it" — a declaration; the inspection checks it. */
   ownershipConfirmed: z.literal(true, { error: "ownership_required" }),
 });
@@ -956,7 +959,7 @@ export async function lookupTradeIn(db: Db, raw: { ref: unknown; phone: unknown 
 
 export const RespondToOfferInput = z.discriminatedUnion("decision", [
   z.object({ decision: z.literal("accept"), payout: z.preprocess(blank, z.enum(["store_credit", "cash"], { error: "payout_required" })) }),
-  z.object({ decision: z.literal("decline"), reason: optionalText(300) }),
+  z.object({ decision: z.literal("decline"), reason: optionalText(300, true) }),
 ]);
 
 /**

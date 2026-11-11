@@ -13,6 +13,7 @@ import { env } from "cloudflare:workers";
 import { createContext, data, redirect, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import { DEFAULT_LOCALE, LOCALES, splitLocale, type Dir, type Locale } from "~/lib/locales";
 import { parsePrefs, PREFS_COOKIE, readCookie, type Prefs } from "~/lib/prefs";
+import { declaredTooLarge } from "./body.server";
 import { applySecurityHeaders, isSameOriginMutation, pagePathname } from "./security.server";
 
 export { pagePathname };
@@ -101,7 +102,10 @@ export const requestContextMiddleware: MiddlewareFunction<Response> = async ({ r
   }
 
   const cookieHeader = request.headers.get("Cookie");
-  const isDev = env.APP_ENV !== "production";
+  // Development only when it is said exactly: an APP_ENV that is missing (a named wrangler environment does not inherit
+  // the top-level vars), misspelled or anything else runs as production — CSP on, no development codes on screen
+  // (security review 2026-11; it used to be "anything but production").
+  const isDev = env.APP_ENV === "development";
   const queued: string[] = [];
 
   // Locale comes from the URL for the storefront; the admin keeps its own cookie preference.
@@ -136,6 +140,11 @@ export const requestContextMiddleware: MiddlewareFunction<Response> = async ({ r
 
   if (!isSameOriginMutation(request, url)) {
     throw data({ error: "cross_site_request_blocked" }, { status: 403 });
+  }
+  // A body larger than the page's forms (or the upload endpoints' one image) is refused before anything reads it.
+  // Bodies sent without a Content-Length are cut off by the upload endpoints themselves (~/server/body.server).
+  if (request.method !== "GET" && request.method !== "HEAD" && declaredTooLarge(request, url)) {
+    throw data({ error: "payload_too_large" }, { status: 413, headers: { "Cache-Control": "no-store" } });
   }
 
   const response = await next();

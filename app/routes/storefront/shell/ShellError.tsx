@@ -15,6 +15,7 @@ import { isRouteErrorResponse, useLocation } from "react-router";
 import { LocaleLink } from "~/i18n/react";
 import { Key } from "~/ui/Key";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
+import { canonicalSearch } from "./chrome";
 import { usePlatformName } from "./MegaMenu";
 import { SearchForm } from "./SearchForm";
 import { useShellT } from "./i18n";
@@ -43,7 +44,8 @@ export function ShellError({ error, platforms }: { error: unknown; platforms: Na
 
       <div className="flex flex-wrap items-center justify-center gap-3">
         {kind === "error" || kind === "unavailable" ? (
-          <Key as="a" href={`${location.pathname}${location.search}`} icon="arrows-clockwise">
+          // the query in the server's spelling, so the link hydrates unchanged (./chrome canonicalSearch)
+          <Key as="a" href={`${location.pathname}${canonicalSearch(location.search)}`} icon="arrows-clockwise">
             {t("error.retry")}
           </Key>
         ) : null}

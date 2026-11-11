@@ -93,18 +93,21 @@ describe("the universe agrees with the store's cards", () => {
 });
 
 describe("researched platforms (multi-platform products have no platform_id)", () => {
-  it("a platform hub holds its own products AND the multi-platform products researched for it", async () => {
+  it("a platform hub holds its own products AND the multi-platform products researched for it — the same set listCards finds", async () => {
     const platforms = await rows<{ slug: string }>("SELECT slug FROM platforms WHERE is_active = 1");
-    let gained = 0;
+    const multiPlatform = new Set((await rows<{ id: string }>("SELECT id FROM products WHERE platform_id IS NULL AND status = 'published'")).map((row) => row.id));
+    expect(multiPlatform.size).toBeGreaterThan(0);
+    let multiOnHubs = 0;
     for (const { slug } of platforms) {
       const hub = await allPages({ scope: { kind: "platform", slug } }, 60);
       const own = await listCards(t.db, "ar", { platform: slug, sort: "newest", limit: 60, now: t.now });
-      // everything listCards finds by platform_id is on the hub…
+      // the read layer and the hub use one platform rule (researchedPlatformSql), so they agree exactly…
+      expect(hub.total, slug).toBe(own.total);
       for (const id of ids(own.items)) expect(ids(hub.items), slug).toContain(id);
-      gained += hub.total - own.total;
+      multiOnHubs += ids(hub.items).filter((id) => multiPlatform.has(id)).length;
     }
-    // …and the hubs gain the products listCards cannot see
-    expect(gained).toBeGreaterThan(0);
+    // …and that set includes the multi-platform products (no platform_id) researched for each platform
+    expect(multiOnHubs).toBeGreaterThan(0);
   });
 
   it("a game sold for PS5 and Xbox is on both hubs; a headset is on the hubs its compatibility allows", async () => {

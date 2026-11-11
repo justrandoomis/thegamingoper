@@ -15,9 +15,10 @@
 import { data } from "react-router";
 import type { Route } from "./+types/wallet-proof";
 import { getCustomer } from "~/server/auth/customer.server";
+import { readFormData } from "~/server/body.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { actionError } from "~/server/errors";
+import { actionError, isAppError } from "~/server/errors";
 import { fileResponse } from "~/server/storage.server";
 import { getTopupProofForCustomer, saveTopupProof } from "~/server/services/account/topups.server";
 import { MAX_IMAGE_BYTES } from "~/server/uploads.server";
@@ -44,13 +45,13 @@ export async function action({ request, context, params }: Route.ActionArgs) {
   const db = getDb();
   const session = await getCustomer(ctx, db);
   if (!session) return data({ ok: false as const, code: "unauthorized" }, { status: 401, headers: NO_STORE });
-  const length = Number(request.headers.get("Content-Length") ?? "0");
-  if (Number.isFinite(length) && length > MAX_BODY_BYTES) return data({ ok: false as const, code: "upload_too_large" }, { status: 413, headers: NO_STORE });
   try {
     let form: FormData;
     try {
-      form = await request.formData();
-    } catch {
+      // Counted while it is read: past the limit (declared or not) the body is cut off with upload_too_large.
+      form = await readFormData(request, MAX_BODY_BYTES);
+    } catch (error) {
+      if (isAppError(error, "upload_too_large")) return data({ ok: false as const, code: "upload_too_large" }, { status: 413, headers: NO_STORE });
       return data({ ok: false as const, code: "upload_missing" }, { status: 400, headers: NO_STORE });
     }
     const saved = await saveTopupProof(db, blobStore(), session.actor, form.get("file"), ctx.now);

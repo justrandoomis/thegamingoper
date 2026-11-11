@@ -8,7 +8,7 @@ desktop, §8.11 tablet, §9.6 gallery). Contract row: CONTRACTS.md §3 "product"
 | File | What |
 |---|---|
 | `app/routes/storefront/product/product.tsx` | the page: loader, meta (`shellMeta`, `og:image` = `productShareImage`), `handle.shell.tabBar = false`, `shouldRevalidate`, JSON-LD |
-| `…/product/components/*` | stage orbs, variant picker, price block, facts, details sections, store-set contents (each row opens the quick look), `MixedText` (bracket-safe isolation of Latin runs in research sentences), related shelves, reviews, integration slots |
+| `…/product/components/*` | stage orbs, variant picker, price block, facts, details sections, store-set contents (each row opens the quick look), `MixedText` (bracket-safe isolation of Latin runs in research sentences), reviews, the cross-area pieces (`Slots.tsx`: compatibility, device hub link, recommendation shelves) |
 | `…/product/QuickPreview.tsx` | `<QuickPreview slug name card open onClose />` — the sheet the integration pass opens from cards |
 | `…/product/preview.ts` | `GET /api/product-preview/:slug?locale=` → `{ ok, product: ProductPreview, i18n }` (404 `{ ok:false, code:"not_found", i18n }`) |
 | `…/product/useVariant.ts`, `jsonld.ts`, `i18n.tsx`, `product.css` | `?v=` handling, schema.org data, the strings hook, three layout rules |
@@ -26,11 +26,12 @@ column. From 1024: 7 + 5 grid — stage sticky at the inline end, info column at
 bottom bar. From 1200 the orbs hide (the header's cart orb is the fly target).
 
 Order of the info: breadcrumbs (+ BreadcrumbList JSON-LD) · tag ("جديد", or "قريباً" while a release date is ahead) and
-platform LED(s) · h1 + wishlist key · short line · price with genuine old price, delivery fee and stock words · the
-reason it cannot be ordered (when so) · variant picker + the variant's research note · buy controls (≥1024) ·
-[compatibility slot] · highlights · game facts · delivery / warranty / returns. Below: about, specifications (SKU and
-model number first), store-set contents, in the box, "before you order" notes, [device hub slot], related shelves,
-[recommendations slot], reviews, photo credits and research sources.
+platform LED(s) · h1 + wishlist key (starts held when the product is on the shopper's list) · short line · price with
+genuine old price, delivery fee and stock words · the reason it cannot be ordered (when so) · variant picker + the
+variant's research note · buy controls (≥1024) · compare key (catalog area) · "يعمل مع" (compatibility) · highlights ·
+game facts · delivery / warranty / returns. Below: about, specifications (SKU and model number first), store-set
+contents, in the box, "before you order" notes, the device hub row link (products that ARE a device), the
+compatibility-checked recommendation shelves (streamed), reviews, photo credits and research sources.
 
 Variants: `?v=<sku>` (none = the default). Choosing is instant (state first, then a `replace` navigation; the loader is
 skipped for a change of `v` only), Back leaves the product, the language switch keeps the choice, and without script
@@ -65,15 +66,27 @@ photos while its siblings have some shows the default's photos and says so.
 - Reviews: none exist; nothing is invented (no stars, no count, no aggregateRating).
 - Delivery time: "نتصل بك لتأكيد موعد التوصيل" — never a promised day.
 
-## Integration slots (filled by the integration pass — `components/Slots.tsx` says what each needs)
+## Cross-area pieces (wired by the integration pass, 2026-11-11 — `components/Slots.tsx`)
 
-- `CompatibilitySlot` — devices: `getCompatibilityForProduct` → rows for `~/ui/CompatBadge` ("يعمل مع").
-- `RecommendationsSlot` — devices: `getRecommendations({ context: "product", productId, … })` → `ShelfRail`s.
-- `DeviceHubSlot` — devices: the `/device/<slug>` row link for products that are a device (`product.deviceModel`).
-- `WishlistKey initial` — account: `getWishlistIds` in the loader (today `false`; the endpoint answers for real once
-  `POST /api/wishlist` exists).
-- Quick preview from cards: `import { QuickPreview } from "~/routes/storefront/product/QuickPreview"` (header comment
-  has the snippet); DESIGN §9.5 wants it for cards with options.
+- `CompatibilitySlot` ← devices' `getCompatibilityForProduct` (loader): "يعمل مع" + an honest line ("«لم نتحقق» لا تعني
+  أنه يعمل"), one `~/ui/CompatBadge` row per device — stated answers first (verified, partial, incompatible), "not
+  checked" last, menu order inside; each row links the device's hub when it has one; beyond 6 rows (+2) the rest sit
+  behind a native disclosure ("اعرض بقية الأجهزة (n)"). No rows → nothing.
+- `DeviceHubSlot` ← devices' `getDeviceLink(product.deviceModel.slug)` (null without a hub): the shared
+  `devices/components/DeviceHubLink` row; its picture is the shared element `device-image:<slug>` → the hub's stage.
+- `RecommendationsSlot` ← `recommendationsFor(…, { context: "product", productId })`, streamed (never awaited), drawn by
+  the shared `devices/components/RecommendationShelves` (keyed by product; cards inflate in; a failure is a retry
+  panel). These shelves REPLACE the page's own "related" shelves (`components/Related.tsx` is gone, the loader asks
+  `getProductDetail(…, { related: false })`): the raw editorial links had no compatibility and no stock check; the
+  engine shows the same links ("يناسب هذا المنتج", only items VERIFIED on the product's devices), "complete your setup"
+  for a device, real "bought together" past its threshold, and alternatives that claim nothing.
+- `WishlistKey initial` ← account's `wishedAmong(db, wishlistWho(ctx.cookie, customerId), [id])`.
+- Compare: the catalog area's `CompareToggle` in the info column; the loader adds `"catalog"` to `messagesFor`.
+- Once the page is on screen (an effect, never the loader — prefetching a card does not count), and only with consent
+  (root `personalizationConsent`): the "view" signal (`POST /api/events`, source `pdp`) and the view in the shopper's
+  ONE recently-viewed list (`home/personal → recordProductView`: device for a guest, account when signed in).
+- Quick preview from cards: `~/ui/ProductCard` opens `QuickPreview` (lazily loaded) from the socket key of a card with
+  options (DESIGN §9.5); the key is a link to this page underneath (no script, new tab).
 
 ## Verified
 

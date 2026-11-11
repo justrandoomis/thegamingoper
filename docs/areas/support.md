@@ -62,7 +62,9 @@ as "related". Never inferred as written for them.
 
 ## Integration slots left
 
-- Device hub link (`/device/<slug>`, devices area) in the help centre's device panel — comment in `help-center.tsx`.
+- ~~Device hub link in the help centre's device panel~~ — done 2026-11-11 (integration pass): the devices area's
+  `DeviceHubLink` row ("كل شيء عن {device}", `help.device.hub` / `hubText`) heads the panel's guides column; every
+  device the directory lists has a hub (published model, active platform), and its picture grows into the hub's stage.
 - The devices area can call `listArticlesForDevice` for hub guides; product/order pages can call `createSupportTicket`.
 - A "part" outcome links `/p/<slug>` (product area); no seeded tree uses it yet.
 
@@ -83,7 +85,13 @@ reaches the store (form and text kept, sentence beside the commit key, no error 
 
 ## Not done / open
 
-- Retention: no job deletes expired `assistant_sessions` yet (jobs owner). The page does not claim deletion.
+- ~~Retention: no job deletes expired `assistant_sessions` yet (jobs owner).~~ Done 2026-11-11 (server pass): the daily
+  retention job (`purgeExpiredAssistantSessions` in `app/server/jobs.server.ts`, stat `assistantSessions`) deletes a
+  stored conversation once its `expires_at` (hand-off + `ASSISTANT_RETENTION_DAYS`) has passed, with its messages; the
+  ticket keeps its summary note and loses only the `assistant_session_id` link (the foreign key would refuse the delete
+  otherwise; `repair_tickets.assistant_session_id` likewise). The `consents` row (`support_log`) stays: the table is
+  append-only (`consents_no_delete`) and holds no conversation. The pages still do not promise a deletion date
+  (copy is this area's call).
 - Admin side (ticket queue, repair status changes, quotes) is the admin support module's. Status changes should be
   written as `repair_events` kind `status`, `data: { from, to }` so the status page shows them.
 - Error codes: no approved guide mentions one yet, so the assistant says so and offers staff.

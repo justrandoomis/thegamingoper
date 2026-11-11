@@ -181,6 +181,12 @@ one — filters, sorting and pagination stay instant.
 - Scale .86 → 1 with opacity 0 → 1 on the `inflate` spring, on the wrapper itself (zero layout shift, measured).
 - First appearance only: content that arrives after the page is on screen. Server HTML and content that is part of a
   navigation is simply there; `always` opts in. `origin={{ x, y }}` or `"pointer"` grows it from a tap.
+- Hydration-safe: a Bubble that hydrates server HTML never inflates — also inside a streamed Suspense section that
+  hydrates after `<MotionRoot>` went live (it used to add `tt-bubble-in` there: a hydration mismatch). The decision is
+  `inflateOnMount({ hydrating, live, always, inNavigation })`; `hydrating` comes from `useHydrating()` (exported from
+  `~/motion`: `useSyncExternalStore` returns its server snapshot while React hydrates, then turns false). Read it once,
+  at mount. Live check: `/design-system#reveal` streams a shelf — a full load hydrates it with no warning, a client
+  navigation to the page inflates it.
 - `<BubbleGroup stagger>`: 45 ms apart, at most six staggered, the rest appear with the sixth (`stagger={ms}` for a
   custom step, the wave capped at 400 ms). Items added later are not delayed. Re-key the group to replay.
 - A failed load is not a bubble: show the empty reserved space with a message and a retry key. Lite and reduced: in place.
@@ -298,7 +304,8 @@ the home area; both use these tokens and the tiers above.
 
 Exported from `~/motion` next to the pieces above: tokens `Spring`, `SpringName`, `DurationName`, `EasingName`,
 `PressKind`, `HapticKind`, `SpringTiming`; environment `MotionTier`; navigation `MotionHandle`, `MotionLinkProps`,
-`PageTransitionProps`, `NavKind`, `NavName`; content `SharedElementProps`, `BubbleProps`, `BubbleGroupProps`,
+`PageTransitionProps`, `NavKind`, `NavName`; content `SharedElementProps`, `BubbleProps`, `BubbleGroupProps` (and the
+hook `useHydrating`),
 `NumberMorphProps`; imperative `FlyHandle`, `FlyOptions`, `CartReceivedDetail` (the `tt:cart-received` event's
 `detail`), `MaterializeOptions`, `MorphOrigin`; sheets and rails `SheetHandle`, `SheetOptions`, `SheetEdge`,
 `RailHandle`, `RailOptions`.
@@ -430,5 +437,6 @@ The browser checks drive the lab at 390×844 (and 1024×768 for side sheets) aga
   (3 frames over 50 ms) has not been tried on a real low-end phone.
 - The theme cross-fade dips below 3:1 text contrast for ≈ 30 ms (§3, measured); the design team's call.
 - The language switch cross-fades two pages of text for ≈ 100 ms (DESIGN.md's 140 ms out / 220 ms in).
-- Server-rendered Bubbles do not animate when a streamed Suspense boundary resolves before hydration (they are shown).
+- Server-rendered Bubbles do not animate when a streamed Suspense boundary resolves before hydration (they are shown,
+  and they hydrate without a mismatch — §`<Bubble>`).
 - Rails are flat in RTL until the browser bug in §4.9 is fixed.

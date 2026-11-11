@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef } from "react";
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import { localePath, type Locale } from "~/lib/locales";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 
 /**
@@ -54,14 +55,14 @@ export function Breadcrumbs({ items, jsonLd, className }: BreadcrumbsProps) {
             {index > 0 ? <Icon name="caret-right" size={14} className="mx-1 text-ink-3" /> : null}
             {index === last || !item.href ? (
               <span aria-current={index === last ? "page" : undefined} className={cx("inline-flex min-h-11 items-center", index === last ? "font-semibold text-ink" : "text-ink-2")}>
-                <bdi>{item.label}</bdi>
+                <BidiLabel>{item.label}</BidiLabel>
               </span>
             ) : (
               <LocaleLink
                 to={item.href}
                 className="inline-flex min-h-11 items-center rounded-xs text-ink-2 decoration-[1.5px] underline-offset-[6px] hover:text-ink hover:underline"
               >
-                <bdi>{item.label}</bdi>
+                <BidiLabel>{item.label}</BidiLabel>
               </LocaleLink>
             )}
           </li>

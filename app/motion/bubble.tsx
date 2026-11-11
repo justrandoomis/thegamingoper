@@ -21,6 +21,9 @@
  * - A group staggers its children 45 ms apart; at most six are staggered, the rest appear with the sixth. Items added
  *   to an existing group later are not delayed. Re-key the group to play the wave again (e.g. `key={query}`).
  * - Low-end tier and reduced motion: content appears in place, no animation.
+ * - Hydration-safe: a Bubble that HYDRATES server HTML never inflates — not even inside a streamed Suspense section
+ *   that hydrates after the engine went live (useSyncExternalStore reports the server snapshot while hydrating), so
+ *   the markup always matches the server's. Only a client render of new content can inflate.
  */
 import {
   Children,
@@ -31,6 +34,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
   type ElementType,
   type HTMLAttributes,
@@ -60,17 +64,50 @@ export type BubbleProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   index?: number;
 };
 
+export type InflateInput = {
+  /** Rendering on the server, or hydrating server HTML (the markup must match the server's). */
+  hydrating: boolean;
+  /** The engine is live (<MotionRoot> mounted): the page is already on screen. */
+  live: boolean;
+  always: boolean;
+  /** Mounting inside a navigation that has not committed yet: the page transition is the animation. */
+  inNavigation: boolean;
+};
+
+/** Whether a Bubble inflates when it mounts. Server HTML and hydration never do (a hydration mismatch otherwise). */
+export function inflateOnMount({ hydrating, live, always, inNavigation }: InflateInput): boolean {
+  if (hydrating || !live) return false;
+  return always || !inNavigation;
+}
+
+const noSubscription = () => () => {};
+const onClient = () => false;
+const onServerOrHydrating = () => true;
+
+/**
+ * True while React renders on the server or hydrates server HTML — including a Suspense boundary that streamed in
+ * and hydrates later — and false for a client render. (After hydration it turns false and the component renders once
+ * more; callers read it once, at mount.)
+ */
+export function useHydrating(): boolean {
+  return useSyncExternalStore(noSubscription, onClient, onServerOrHydrating);
+}
+
 export function Bubble({ as: Tag = "div", origin, always = false, index, className, style, children, ...rest }: BubbleProps) {
   const nav = useContext(NavContext);
   const group = useContext(GroupContext);
   const element = useRef<HTMLElement>(null);
+  const hydrating = useHydrating();
 
   // Decided once, when the element mounts.
-  const [inflate] = useState(() => {
-    if (typeof window === "undefined" || !isMotionLive()) return false; // server HTML and hydration
-    if (always) return true;
-    return !(nav && nav.key !== getCommittedKey()); // mounting inside a navigation commit: the page transition covers it
-  });
+  const [inflate] = useState(() =>
+    inflateOnMount({
+      hydrating: hydrating || typeof window === "undefined",
+      live: isMotionLive(),
+      always,
+      inNavigation: Boolean(nav && nav.key !== getCommittedKey()),
+    }),
+  );
   const [wave] = useState(() => inflate && group !== null && group.isFresh());
 
   useLayoutEffect(() => {

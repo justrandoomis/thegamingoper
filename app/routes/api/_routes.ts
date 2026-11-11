@@ -7,6 +7,7 @@ import { route, type RouteConfigEntry } from "@react-router/dev/routes";
 export const apiRoutes: RouteConfigEntry[] = [
   route("api/cart", "routes/api/cart.ts"),
   route("api/events", "routes/api/events.ts"),
+  route("api/files/:fileId", "routes/api/files.ts"),
   route("api/health", "routes/api/health.ts"),
   route("api/onboarding", "routes/storefront/home/api.onboarding.ts"),
   route("api/product-preview/:slug", "routes/storefront/product/preview.ts"),

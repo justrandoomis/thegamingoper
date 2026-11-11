@@ -49,7 +49,7 @@ and the socket keeps to the end.
 
 Also exported: `ProductCardPlaceholder`, `ProductImage({ image, alt?, sizes?, priority?, fit?, pose?, shadow? })` (one
 `ImageRef` drawn the right way — `<Art>` for catalogue keys, `/media/<key>` for uploads), `BidiText({ text })`,
-`priceFit(priceIqd)`.
+`priceFit(priceIqd)`. `BidiText` lives in `~/ui/BidiText` (docs/ui/core.md); this file re-exports it.
 
 ## UsedUnitCard — `~/ui/UsedUnitCard`
 
@@ -168,7 +168,7 @@ in a glass strip, zoom key / double-tap, Escape and focus return.
 the price on cards) and the saving as words; `size="page"` puts the delivery fee and `aside` (a StockNote) beside the
 price. Also: `SafePrice` (Price that refuses a broken amount), `SavingNote`, `DeliveryNote` ("التوصيل 5,000 د.ع لكل
 المحافظات" — pass the configured fee), `fillNodes(template, nodes)`, `iqdText(f, amount)` (an amount inside a
-sentence, number then currency, like `<Price>`), `isIqd`.
+sentence, number then currency, like `<Price>` — it is `f.iqd(amount)`; wrap it in `<bdi>` or U+2066…U+2069), `isIqd`.
 
 ## StockNote, CompatBadge, RatingStars, GradeBadge, DemoNote
 

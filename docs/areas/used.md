@@ -18,7 +18,10 @@ listing shows real condition evidence; trade-in offer requires inspection/approv
 
 Every page: no `<main>` (h1 first), `shellMeta` (unit pages: `og:image` = a real public photo or the product's share
 image; the tracking page and wizard steps after the first are `noindex`). Strings: `used` (+ `errors`); this area's error
-codes are under `used:errors.*` (`combinedErrorT` on the server, `useErrorText` in the browser). Motion: list ↔ unit is
+codes are under `used:errors.*` (`combinedErrorT` on the server, `useErrorText` in the browser) — the only copy: since
+2026-11-11 the shared `errors` namespace adopts them by import (`TRADE_IN_ERROR_KEYS`, except `idempotency_conflict`,
+which keeps the checkout wording there), so keep `used:errors.*` exactly in step with `TRADE_IN_ERROR_KEYS`
+(`tests/commerce-money.test.ts` checks it). Motion: list ↔ unit is
 the card's zoom (`used-image:<id>`, the kit's default); wizard steps push sideways in order (`handle.order` from the
 query, own `group`), questions too.
 
@@ -62,10 +65,13 @@ query, own `group`), questions too.
 - A radio group with nothing chosen is `:indeterminate`, which the kit's checkbox rule paints as chosen:
   `RADIO_GROUP_FIX` (components/TradeInParts.tsx) is a scoped workaround until `app/styles/components.css` limits it.
 
-## Integration slots (left for the integration pass)
+## Cross-area pieces (wired by the integration pass, 2026-11-11)
 
-- `/used/:slug`: accessories that fit the unit's model (`getRecommendations`, devices area) and the device hub link
-  `/device/<model>` — marked in `used-unit.tsx`. The new product link (`/p/<slug>`) is already there.
+- `/used/:slug`: the model's hub as a row link (devices area `getDeviceLink` → `DeviceHubLink`, "كل شيء عن {device}";
+  the picture grows into the hub's stage, shared element `device-image:<slug>`; no hub → no link) and the accessories
+  VERIFIED on the model (`recommendationsFor(…, { context: "device_hub", deviceModelId })`, streamed, only the
+  `device_hub:setup:<slug>` shelf — the hub's fallback of new consoles is not what someone buying this unit asked for).
+  Strings `unit.hubTitle`, `unit.hubText`. The new product link (`/p/<slug>`) was already there.
 - Exported for others: `listUsedUnits`, `getUsedFacets`, `getUsedUnitDetail`, `getOtherUsedUnits`, `parseUsedFilters`
   (used.server); `createTradeIn`, `getTradeInByRef`, `lookupTradeIn`, `respondToOffer`, `listTradeInDevices`,
   `estimateTradeIn`, `purgeStaleTradeInDrafts` (for the retention job), `TRADE_IN_ERROR_KEYS` (tradein.server).

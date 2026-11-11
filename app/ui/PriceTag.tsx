@@ -2,7 +2,6 @@ import { Fragment, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
 import { useFormat, useT, type Formatters } from "~/i18n/react";
-import { CURRENCIES } from "~/lib/money";
 import { cx } from "./cx";
 import { Price, type PriceProps } from "./Price";
 import { VisuallyHidden } from "./VisuallyHidden";
@@ -26,10 +25,11 @@ export const isIqd = (value: unknown): value is number => typeof value === "numb
 
 /**
  * An amount of dinars inside a sentence, written the way <Price> writes it: the number, then the currency label
- * ("5,000 د.ع", "5,000 IQD" — DESIGN.md §9.11 and the copy in §11). Wrap it in <bdi> or U+2066…U+2069.
+ * ("5,000 د.ع", "5,000 IQD" — DESIGN.md §9.11 and the copy in §11). It is `f.iqd` (formatMoney puts the figure first
+ * in every language), kept as a name so callers read the same everywhere. Wrap it in <bdi> or U+2066…U+2069.
  */
-export function iqdText(f: Pick<Formatters, "number" | "locale">, amountIqd: number): string {
-  return `${f.number(amountIqd)} ${CURRENCIES.IQD.symbol[f.locale]}`;
+export function iqdText(f: Pick<Formatters, "iqd">, amountIqd: number): string {
+  return f.iqd(amountIqd);
 }
 
 /** Put React nodes where a translated template has {placeholders}: fillNodes(t("price.delivery"), { price: <bdi>…</bdi> }). */

@@ -12,10 +12,13 @@ import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useFormat, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
 import { shellMeta } from "~/routes/storefront/shell/meta";
+import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { getUsedSpotlight } from "~/server/services/catalog/cards.server";
 import { listProducts, scopePicks } from "~/server/services/catalog/listing.server";
+import { recommendationsFor } from "~/server/services/recommendations.server";
+import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { ErrorState } from "~/ui/ErrorState";
 import { isPlatform, PLATFORMS } from "~/ui/PlatformLed";
 import { ChipRail, DeviceShortcuts, HubHeader, UsedShelf } from "./components/Hub";
@@ -60,11 +63,15 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const platform = result.hub.platform;
   const ui = serverT(ctx.locale, "ui");
   const name = isPlatform(platform.slug) ? ui(`platform.${platform.slug}`) : platform.name;
+  const session = await getCustomer(ctx, db);
   return {
     list: listOf(result),
     hub: result.hub,
     used,
     picks,
+    // the devices area's shelf from the shopper's own signals (context "search") — consent only, streamed; the
+    // store's picks are left out: the list above already is the platform's catalogue
+    recommendations: recommendationsFor(db, { cookie: ctx.cookie, customerId: session?.customer.id ?? null }, { locale: ctx.locale, context: "search", platformSlugs: [platform.slug], personalOnly: true, now: ctx.now }, 8),
     meta: { title: name, description: t("meta.platform", { name, n: String(result.scopeTotal) }) },
     i18n: messagesFor(ctx.locale, "catalog"),
   };
@@ -73,7 +80,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
 export const meta: Route.MetaFunction = (args) => shellMeta(args, { title: args.loaderData?.meta.title, description: args.loaderData?.meta.description });
 
 export default function PlatformPage({ loaderData }: Route.ComponentProps) {
-  const { list, hub, used, picks } = loaderData;
+  const { list, hub, used, picks, recommendations } = loaderData;
   const t = useT("catalog");
   const ui = useT("ui");
   const f = useFormat();
@@ -117,6 +124,7 @@ export default function PlatformPage({ loaderData }: Route.ComponentProps) {
         // partial data: the used shelf could not be read; the rest of the page stands
         <ErrorState title={t("hub.usedFailed")} retryHref={location.search || "?"} minHeight="96px" />
       )}
+      <RecommendationShelves result={recommendations} source="search" />
       <CompareTray />
     </div>
   );

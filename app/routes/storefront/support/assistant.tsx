@@ -36,7 +36,7 @@ import { isFailure, keepFormOnFailure } from "./client";
 import { Conversation } from "./components/Conversation";
 import { HandoffForm, HandoffReceiptCard } from "./components/HandoffPanel";
 import { DeviceArt, GuideList, Name, SafetyNote, SupportTabs } from "./components/parts";
-import { failed, formFiles, formKey, photoStore, supportWho, textFields } from "./support.server";
+import { failed, formFiles, formKey, photoStore, readSupportForm, supportWho, textFields } from "./support.server";
 
 export const handle = { shell: { tabBar: false }, nav: "push", order: 1, group: "support" } satisfies ShellHandle & MotionHandle;
 
@@ -70,7 +70,8 @@ function stateFromForm(form: FormData): AssistantState {
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const form = await request.formData();
+  const form = await readSupportForm(request);
+  if (!(form instanceof FormData)) return form;
   if (form.get("intent") !== "handoff") throw data({ error: "invalid" }, { status: 400 });
   const values = textFields(form, ["idempotencyKey", "phone", "contactName", "note", "consent"]);
   const state = stateFromForm(form);

@@ -36,6 +36,7 @@ import { assistantMessages, assistantSessions, consents, troubleshootingTrees, t
 import { chunkRows, isDbError, runBatch } from "~/server/db/tx.server";
 import { invalid, zodFieldErrors } from "~/server/errors";
 import type { BlobStore } from "~/server/storage.server";
+import { cleanLine } from "~/server/text.server";
 import type { UploadSource } from "~/server/uploads.server";
 import { accessTokenHash, actorOf, discardPhotos, isIdempotencyKey, photoSources, preparePhotos, storePhotos, supportAccessToken, type SupportWho } from "./common.server";
 import { findArticlesMentioning, findDevice, findPlatform, getSupportDirectory, listArticlesByTag, listArticlesForDevice, listArticlesForPlatform, listHelpArticles } from "./kb.server";
@@ -358,7 +359,7 @@ export const HandoffInput = z.object({
   idempotencyKey: z.string().refine(isIdempotencyKey, "invalid"),
   phone: z.string().trim().min(1, "required").max(40, "phone_invalid"),
   contactName: optionalText(80),
-  note: optionalText(2000),
+  note: optionalText(2000, true),
   /** "Share this conversation and my number with TamTam staff" — without it nothing may be stored. */
   consent: z.preprocess((value) => value === true || value === "on" || value === "1" || value === "true", z.literal(true, "required")),
 });
@@ -421,8 +422,12 @@ export async function handOffToStaff(
   const replay = await existingTicket(db, tokenHash, phoneE164, accessToken);
   if (replay) return replay;
 
-  const shopperView = await runAssistant(db, locale, { ...state, handoff: false });
-  const staffView = locale === "ar" ? shopperView : await runAssistant(db, "ar", { ...state, handoff: false });
+  // The words the shopper typed are stored (the transcript, the ticket's internal note): cleaned like every other free
+  // text (~/server/text.server) — the URL state only drops C0 controls (security review, second pass).
+  const typed = typeof state.q === "string" ? cleanLine(state.q).replace(/\s+/g, " ").trim() || null : null;
+  const stored: AssistantState = { ...state, q: typed, handoff: false };
+  const shopperView = await runAssistant(db, locale, stored);
+  const staffView = locale === "ar" ? shopperView : await runAssistant(db, "ar", stored);
   const staffT = serverT("ar", "support");
   const staffSummary = summarizeConversation(staffView, staffT);
 

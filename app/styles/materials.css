@@ -600,6 +600,13 @@ html:not([data-motion-ready]) .key--quiet:active,
 :is(.fx-low, [data-motion="lite"]) :is(.render[data-enter], .stage__layer[data-entering]) {
   animation: none;
 }
+/* the page under an open sheet or dialog (marked by ~/ui/Dialog's modal layers): its frost goes solid, so the
+ * layer's own glass is the live pane under the scrim — two at most per viewport, never frost on frost (§6.2) */
+:is([data-layer-behind] .glass, .glass[data-layer-behind]):not(.glass--static) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--glass-solid);
+}
 /* reduced motion: the pressed offset is shown with no transition; swaps are instant */
 @media (prefers-reduced-motion: reduce) {
   .key__cap {

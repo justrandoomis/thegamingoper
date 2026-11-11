@@ -58,29 +58,52 @@ export function pagePathname(pathname: string): string {
   return pathname;
 }
 
+/**
+ * Personal pages outside the areas above, by their locale-less path: a trade-in request's tracking page
+ * (/trade-in/<ref>: the contact name, the masked phone, the device, the offer and the answer form). Never stored, never
+ * indexed — like the account, checkout and order pages.
+ */
+const PERSONAL_PAGE = /^(?:\/(?:en|ckb))?\/trade-in\/[^/]+\/?$/;
+
+/** A Referrer-Policy a route may set that is stricter than the default (pages with a link token in their URL). */
+const STRICTER_REFERRER_POLICIES = new Set(["no-referrer", "same-origin"]);
+
+/** The customer session cookie, shaped like a token (the session itself is checked by ~/server/auth/customer.server). */
+const CUSTOMER_SESSION_COOKIE = /^[A-Za-z0-9_-]{32,128}$/;
+
 export function applySecurityHeaders(response: Response, ctx: RequestCtx, url: URL): void {
   const h = response.headers;
   const isHtml = (h.get("Content-Type") ?? "").includes("text/html");
-  // Admin, API and personal pages (account, checkout, cart, order, track) — by the page path, so "/admin.data" and
-  // "/en/account/_.data" count too. Caching and indexing only: authorization lives in the services.
+  // React Router's single-fetch data of a page ("/p/x.data", "/en/_.data"): the same loader data as the page's HTML,
+  // the shell's (signed-in customer, cart) included, so it is cached exactly like the page (security review 2026-11).
+  const isPageData = url.pathname.endsWith(".data");
+  // Admin, API and personal pages (account, checkout, cart, order, track, a trade-in's tracking page) — by the page
+  // path, so "/admin.data" and "/en/account/_.data" count too. Caching and indexing only: authorization lives in the
+  // services.
   const path = pagePathname(url.pathname);
-  const isPrivateArea = /^\/(admin|api)(\/|$)/.test(path) || /\/(account|checkout|cart|order|track)(\/|$)/.test(path);
+  const isPrivateArea = /^\/(admin|api)(\/|$)/.test(path) || /\/(account|checkout|cart|order|track)(\/|$)/.test(path) || PERSONAL_PAGE.test(path);
+  // A page rendered for a signed-in customer carries their name and masked phone in the shell data: never stored, so a
+  // shared device's cache and Back after signing out show nothing of them.
+  const signedIn = typeof ctx.cookie === "function" && CUSTOMER_SESSION_COOKIE.test(ctx.cookie("tt_sid") ?? "");
 
   h.set("X-Content-Type-Options", "nosniff");
-  h.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  if (!STRICTER_REFERRER_POLICIES.has((h.get("Referrer-Policy") ?? "").trim().toLowerCase())) h.set("Referrer-Policy", "strict-origin-when-cross-origin");
   h.set("X-Frame-Options", "DENY");
   h.set("Cross-Origin-Opener-Policy", "same-origin");
   // Camera: barcode/serial scanning and proof photos. Everything else is off.
   h.set("Permissions-Policy", "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()");
 
-  if (isHtml) {
+  if (isHtml || isPageData) {
     // Vite's dev client needs inline scripts, eval and websockets, so the policy is enforced only
     // outside development. `npm run preview` serves the production build with the real policy.
-    if (!ctx.isDev) h.set("Content-Security-Policy", buildCsp(ctx));
+    if (isHtml && !ctx.isDev) h.set("Content-Security-Policy", buildCsp(ctx));
     // Private pages are never stored, error pages included: an error rendered by the root boundary (the admin
     // gate's 403 is thrown before next(), so no admin header code runs) still leaves through here.
     if (isPrivateArea) h.set("Cache-Control", "no-store");
-    else if (!h.has("Cache-Control")) h.set("Cache-Control", "private, no-cache");
+    else if (signedIn) {
+      const own = h.get("Cache-Control") ?? "";
+      if (!/\bno-store\b/.test(own)) h.set("Cache-Control", "private, no-store");
+    } else if (!h.has("Cache-Control")) h.set("Cache-Control", "private, no-cache");
   } else if (isPrivateArea && !h.has("Cache-Control")) {
     // Data and API responses of private areas (".data" navigations, JSON) are not stored unless the route says so.
     h.set("Cache-Control", "no-store");

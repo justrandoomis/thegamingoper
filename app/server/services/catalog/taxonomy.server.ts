@@ -5,9 +5,16 @@
  *   const tree = await getCategoryTree(db, ctx.locale);            // CategoryNode[] (active categories only)
  *   const nav = await getNavTaxonomy(db, ctx.locale, { now: ctx.now });   // header, mega menu, categories sheet
  *
+ * COUNTS AGREE WITH THE HUBS (catalog area, listing.server.ts): the menu counts and links what the hubs list —
+ * published products with an active variant — and a product belongs to every platform it is RESEARCHED for
+ * (researchedPlatformSql in ./cards.server: its own platform, else the devices its game facts name, else its
+ * verified/partial compatibility rules). So a game sold for PS5 and Xbox counts for both platforms (once in its
+ * department), and the PlayStation menu links the headsets made for PlayStation and others.
+ *
  * getNavTaxonomy() is read on every storefront document request, so it is cached PER ISOLATE (per database binding
  * and locale) and guarded by a VERSION KEY: a one-statement fingerprint of what the menu is built from (published
- * products and device models — count and last update —, platforms, categories, listed used units).
+ * products and device models — count and last update —, active variants, compatibility rules, platforms,
+ * categories, listed used units).
  *   · within NAV_CHECK_MS of the last check: served from memory, no query at all;
  *   · after that: the fingerprint is read (one small query); unchanged → the snapshot is kept, changed → rebuilt;
  *   · a snapshot older than NAV_MAX_AGE_MS is rebuilt whatever the fingerprint says (renames the fingerprint
@@ -15,7 +22,8 @@
  * Admin code that edits the catalogue in the same isolate may call invalidateNavTaxonomy() to drop it at once.
  *
  * Links are locale-less ("/c/controllers?platform=xbox"); the shell wraps them in <LocaleLink>. A category link
- * carries `?platform=` only when the category also holds products of other platforms (or of none).
+ * carries `?platform=` only when the category's hub would also list products that are not for that platform (or
+ * for none).
  *
  * Services take `db` first and never import "cloudflare:workers".
  */
@@ -24,6 +32,7 @@ import type { CategoryNode, PlatformSummary } from "~/lib/dto";
 import { pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
+import { researchedPlatformSql } from "./cards.server";
 import type { NavCategory, NavLink, NavPlatform, NavTaxonomy } from "./types";
 
 export type { NavCategory, NavLink, NavPlatform, NavTaxonomy } from "./types";
@@ -81,7 +90,8 @@ function buildTree(rows: readonly CategoryRow[], locale: Locale): CategoryNode[]
 // ───────────────────────────────────────────────────────────────── navigation taxonomy
 
 type DeviceRow = { platform_id: string; slug: string; name: string };
-type CountRow = { platform_id: string | null; category_id: string | null; n: number };
+type CategoryCountRow = { category_id: string | null; n: number };
+type PlatformCountRow = { platform_id: string; category_id: string | null; n: number };
 type ConsoleRow = { platform_id: string | null; slug: string; name: string };
 type UsedRow = { platform_id: string | null; n: number };
 
@@ -90,13 +100,28 @@ const GAME_KINDS = new Set(["games"]);
 const CONSOLE_KINDS = new Set(["consoles", "handhelds"]);
 const SKIP_KINDS = new Set(["used"]);
 
+/**
+ * What the menu counts — exactly what the hubs list (catalog area, listing.server.ts): published products with at
+ * least one active variant (a product without one answers 404, so it is never counted or linked).
+ */
+const LISTED = sql`p.status = 'published' AND EXISTS (SELECT 1 FROM variants AS lv WHERE lv.product_id = p.id AND lv.is_active = 1)`;
+
 async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<NavTaxonomy> {
-  const [platformResult, categoryResult, deviceResult, countResult, consoleResult, usedResult] = await runBatch(db, [
+  const [platformResult, categoryResult, deviceResult, categoryCountResult, platformCountResult, consoleResult, usedResult] = await runBatch(db, [
     batchSql(db, PLATFORMS_SQL),
     batchSql(db, CATEGORIES_SQL),
     batchSql(db, sql`SELECT platform_id, slug, name FROM device_models WHERE status = 'published' ORDER BY sort, id`),
-    batchSql(db, sql`SELECT platform_id, category_id, COUNT(*) AS n FROM products WHERE status = 'published' GROUP BY platform_id, category_id`),
-    batchSql(db, sql`SELECT platform_id, slug, name FROM products WHERE status = 'published' AND kind = 'console' ORDER BY COALESCE(published_at, created_at) DESC, id DESC`),
+    // each listed product once, on its category
+    batchSql(db, sql`SELECT p.category_id, COUNT(*) AS n FROM products AS p WHERE ${LISTED} GROUP BY p.category_id`),
+    // each listed product once per platform it is RESEARCHED for (a game sold for PS5 and Xbox counts for both)
+    batchSql(
+      db,
+      sql`SELECT pl.id AS platform_id, p.category_id, COUNT(*) AS n
+        FROM products AS p JOIN platforms AS pl ON pl.is_active = 1 AND ${researchedPlatformSql("p", "pl")}
+        WHERE ${LISTED}
+        GROUP BY pl.id, p.category_id`,
+    ),
+    batchSql(db, sql`SELECT p.platform_id, p.slug, p.name FROM products AS p WHERE ${LISTED} AND p.kind = 'console' ORDER BY COALESCE(p.published_at, p.created_at) DESC, p.id DESC`),
     batchSql(db, sql`
       SELECT p.platform_id, COUNT(*) AS n
       FROM used_units AS u JOIN variants AS v ON v.id = u.variant_id JOIN products AS p ON p.id = v.product_id
@@ -106,7 +131,8 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
   const platforms = rowsOf<PlatformRow>(platformResult);
   const categories = rowsOf<CategoryRow>(categoryResult);
   const devices = rowsOf<DeviceRow>(deviceResult);
-  const counts = rowsOf<CountRow>(countResult);
+  const categoryCounts = rowsOf<CategoryCountRow>(categoryCountResult);
+  const platformCounts = rowsOf<PlatformCountRow>(platformCountResult);
   const consoles = rowsOf<ConsoleRow>(consoleResult);
   const used = rowsOf<UsedRow>(usedResult);
 
@@ -122,28 +148,35 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
     return row ?? null;
   };
   const label = (row: { name: string }) => pick(parseL10n(row.name), locale);
-
-  // products per category (deepest), split by platform
-  const perCategory = new Map<string, Map<string | null, number>>();
-  for (const row of counts) {
-    if (!row.category_id || !byId.has(row.category_id)) continue;
-    const map = perCategory.get(row.category_id) ?? new Map<string | null, number>();
-    map.set(row.platform_id, (map.get(row.platform_id) ?? 0) + Number(row.n));
-    perCategory.set(row.category_id, map);
-  }
-  const categoryTotal = (id: string) => [...(perCategory.get(id)?.values() ?? [])].reduce((sum, n) => sum + n, 0);
-  const isMixed = (id: string) => (perCategory.get(id)?.size ?? 0) > 1;
-
-  // top-level categories with their sub-categories, counting whole subtrees
-  const subtreeTotal = new Map<string, number>();
-  for (const row of categories) {
-    const total = categoryTotal(row.id);
-    if (total === 0) continue;
-    for (let current: CategoryRow | undefined = row, guard = 0; current && guard < 16; guard++) {
-      subtreeTotal.set(current.id, (subtreeTotal.get(current.id) ?? 0) + total);
+  /** Adds `n` to the category and each of its active ancestors (a category under an inactive one counts nowhere above it). */
+  const addUp = (map: Map<string, number>, categoryId: string, n: number) => {
+    for (let current: CategoryRow | undefined = byId.get(categoryId), guard = 0; current && guard < 16; guard++) {
+      map.set(current.id, (map.get(current.id) ?? 0) + n);
       current = current.parent_id ? byId.get(current.parent_id) : undefined;
     }
+  };
+
+  // listed products per category subtree (the category hubs' counts)
+  const subtreeTotal = new Map<string, number>();
+  for (const row of categoryCounts) if (row.category_id && byId.has(row.category_id)) addUp(subtreeTotal, row.category_id, Number(row.n));
+
+  // per platform: listed products on each (deepest) category, the same per subtree, and the platform's total
+  const perCategory = new Map<string, Map<string, number>>();
+  const subtreeOf = new Map<string, Map<string, number>>();
+  const platformTotal = new Map<string, number>();
+  for (const row of platformCounts) {
+    const n = Number(row.n);
+    platformTotal.set(row.platform_id, (platformTotal.get(row.platform_id) ?? 0) + n); // on no (active) category too
+    if (!row.category_id || !byId.has(row.category_id)) continue;
+    const own = perCategory.get(row.platform_id) ?? new Map<string, number>();
+    own.set(row.category_id, (own.get(row.category_id) ?? 0) + n);
+    perCategory.set(row.platform_id, own);
+    const subtree = subtreeOf.get(row.platform_id) ?? new Map<string, number>();
+    addUp(subtree, row.category_id, n);
+    subtreeOf.set(row.platform_id, subtree);
   }
+  /** The category's hub also lists products that are not for this platform (or for none): its link filters by it. */
+  const holdsOthers = (categoryId: string, platformId: string) => (subtreeOf.get(platformId)?.get(categoryId) ?? 0) < (subtreeTotal.get(categoryId) ?? 0);
   const navCategories: NavCategory[] = categories
     .filter((row) => row.parent_id === null && (subtreeTotal.get(row.id) ?? 0) > 0 && !SKIP_KINDS.has(row.kind))
     .map((row) => ({
@@ -162,20 +195,16 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
     const accessories: NavLink[] = [];
     const games: NavLink[] = [];
     let allConsoles: NavLink | null = null;
-    let productCount = 0;
+    const own = perCategory.get(platform.id);
     for (const row of categories) {
-      const n = perCategory.get(row.id)?.get(platform.id) ?? 0;
-      if (n === 0) continue;
-      productCount += n;
+      if ((own?.get(row.id) ?? 0) === 0) continue;
       const root = rootOf(row.id);
       if (!root || SKIP_KINDS.has(root.kind)) continue;
-      const link: NavLink = { label: label(row), href: isMixed(row.id) ? `/c/${row.slug}?platform=${platform.slug}` : `/c/${row.slug}` };
+      const link: NavLink = { label: label(row), href: holdsOthers(row.id, platform.id) ? `/c/${row.slug}?platform=${platform.slug}` : `/c/${row.slug}` };
       if (GAME_KINDS.has(root.kind)) games.push(link);
       else if (CONSOLE_KINDS.has(root.kind)) allConsoles ??= link;
       else accessories.push(link);
     }
-    // products of this platform that sit on no (active) category still count for the hub
-    for (const row of counts) if (row.platform_id === platform.id && (!row.category_id || !byId.has(row.category_id))) productCount += Number(row.n);
     const usedCount = usedBy.get(platform.id) ?? 0;
     return {
       id: platform.id,
@@ -184,7 +213,8 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
       accent: platform.accent,
       artKey: platform.art_key,
       href: `/platform/${platform.slug}`,
-      productCount,
+      // = the platform hub's count: every listed product researched for it, whatever its category
+      productCount: platformTotal.get(platform.id) ?? 0,
       devices: devices.filter((row) => row.platform_id === platform.id).map((row) => ({ label: label(row), href: `/device/${row.slug}` })),
       accessories,
       games,
@@ -211,6 +241,8 @@ const FINGERPRINT_SQL = sql`SELECT
   (SELECT COUNT(*) || ':' || COALESCE(MAX(updated_at), 0) FROM products WHERE status = 'published') || '|' ||
   (SELECT COALESCE(MAX(updated_at), 0) FROM products) || '|' ||
   (SELECT COUNT(*) || ':' || COALESCE(MAX(updated_at), 0) FROM device_models WHERE status = 'published') || '|' ||
+  (SELECT COUNT(*) || ':' || TOTAL(rowid * is_active) FROM variants) || '|' ||
+  (SELECT COUNT(*) || ':' || TOTAL(rowid * (CASE status WHEN 'verified' THEN 1 WHEN 'partial' THEN 2 ELSE 3 END)) FROM compatibility_rules WHERE subject_type = 'product') || '|' ||
   (SELECT COUNT(*) || ':' || TOTAL(is_active) || ':' || TOTAL(sort) || ':' || TOTAL(length(name)) || ':' || COALESCE(GROUP_CONCAT(art_key), '') FROM platforms) || '|' ||
   (SELECT COUNT(*) || ':' || TOTAL(is_active) || ':' || TOTAL(sort) || ':' || TOTAL(length(name)) || ':' || TOTAL(length(slug)) FROM categories) || '|' ||
   (SELECT COUNT(*) FROM used_units WHERE status = 'listed') AS v`;

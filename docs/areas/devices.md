@@ -50,30 +50,48 @@ answered only from stored facts · used units of this model.
   they do not use browsing. A model that is one variant of a shared product (2020 PS5 Digital) is matched by the
   variant's first photo = the model's photo.
 - **Signals:** only with consent (customer's latest `consents` row, else `tt_consent`); guests keyed by sha256 of
-  `tt_rs` (random, httpOnly, 90 days, set on the first consented event), customers by id; no IP/UA; dedup windows;
-  `forgetEvents`, `purgeRecommendationEvents` (90 days). The hub sends a click signal (consent only) when a card in
-  one of its shelves is opened (`components/signals.ts`, source = shelf key).
+  `tt_rs` (random, httpOnly, 90 days, set on the first consented event — or at checkout with a consenting guest's
+  first purchase), customers by id; no IP/UA; dedup windows; `forgetEvents`, `purgeRecommendationEvents` (90 days,
+  run daily by the retention job). The hub sends a click signal (consent only) when a card in one of its shelves is
+  opened (`components/signals.ts`, source = shelf key); so do the shelves on other pages (source = `<context>:<shelf>`).
 
 ## Exports for other areas (CONTRACTS §3)
 
 - `getCompatibilityForProduct(db, locale, productId)` → `{ deviceSlug, deviceName, status, note, platformSlug, hasHub, level }[]`.
 - `getRecommendations(db, { locale, context, productId?, deviceModelId?, cartVariantIds?, platformSlugs?, sessionHash?, customerId?, consent, now? }, limit)` → `Shelf<ProductCardData>[]`.
-- `personalizationFor(db, { cookie: ctx.cookie, customerId })` → `{ consent, sessionHash, customerId }` for the call above.
-- `recordEvent(db, who, { kind, productId, source? }, now)` (purchase: server only) · `forgetEvents` · `purgeRecommendationEvents`.
-- `getDeviceHub`, `listDeviceHubs(db, locale)` (sitemap), `compatibilityForModels`, `loadDeviceTargets`.
-- Client: `sendRecommendationEvent`, `useShelfSignals` (`routes/storefront/devices/components/signals.ts`).
+- `recommendationsFor(db, { cookie, customerId }, { locale, context, productId?, deviceModelId?, cartVariantIds?, platformSlugs?, keep?, personalOnly?, now? }, limit)`
+  → `Promise<{ ok, shelves }>` — what a page's loader STREAMS (never awaited, never rejects; a failure is `ok: false`,
+  logged). Home and search read consent and the session key first (`personalizationFor`); `personalOnly` reads nothing
+  without consent and keeps only `<context>:personal`. A customer's personal shelf says it is built from the account's
+  views and saved devices (`rec.personal.reasonAccount`), a guest's from this device.
+- `personalizationFor(db, { cookie: ctx.cookie, customerId })` → `{ consent, sessionHash, customerId }`.
+- `recordEvent(db, who, { kind, productId, source? }, now)` · `recordPurchaseSignals(db, who, productIds, now)` (server
+  only: the checkout's own server file after a new order) · `forgetEvents` · `purgeRecommendationEvents` (the daily
+  retention job calls it since 2026-11-11, so the privacy draft says "deleted") · `orderItemsOf(db, ref)`,
+  `usedUnitVariantIds(db, ids)` (cart/order anchors).
+- `getDeviceHub`, `getDeviceLink(db, locale, slug)` (a hub as a row link, null without one), `listDeviceHubs(db, locale)`
+  (sitemap), `compatibilityForModels`, `loadDeviceTargets`.
+- Client: `components/RecommendationShelves.tsx` (the shared drawer of streamed shelves: nothing until they arrive, cards
+  inflate in, a newer answer replaces the old only when it is here — hub filters never flicker —, `layout="column"`
+  for the cart/order column, a failure is a retry panel, clicks on its cards are "click" signals with consent);
+  `components/DeviceHubLink.tsx` (the row link to a hub; picture = shared element `device-image:<slug>`);
+  `sendRecommendationEvent`, `useSignalConsent`, `useShelfSignals` (`components/signals.ts`).
 
-## Integration slots (wired by the integration pass)
+## Wired by the integration pass (2026-11-11)
 
-- Product page: `CompatibilitySlot` ← `getCompatibilityForProduct` → `CompatBadge` rows (`hasHub` → `/device/<slug>`);
-  `RecommendationsSlot` ← `getRecommendations({ context: "product", productId, ...personalizationFor() })`; a "view"
-  signal (`sendRecommendationEvent`) after the page is on screen; `DeviceHubSlot` → `/device/<slug>`.
-- Cart / order confirmation: `context: "cart" | "post_purchase"` with `cartVariantIds`; `recordEvent(kind: "purchase")`
-  after `placeOrder` (checkout area, server side).
-- Home / search: `context: "home" | "search"` with `platformSlugs` from onboarding; the consent UI calls
-  `POST /api/events intent=forget` (or `forgetEvents`) when the shopper withdraws.
-- Platform hub row link: wrap its picture in `<SharedElement name="device-image:<slug>">` to grow into the hub stage.
-- Guides: the hub reads approved articles itself; `support/kb.server.ts → listArticlesForDevice` may replace that read.
+- Product page: compatibility rows (hub links), the device hub row link, the "product" shelves (replacing the page's
+  unchecked related shelves), the "view" signal once on screen (consent only).
+- Cart / order page: "cart" and "post_purchase" shelves anchored on every line (used units through their variant);
+  the purchase signal after a NEW order (`checkout.server.ts → recordPurchase`, consent only, a consenting guest gets
+  its `tt_rs` there; a replay records nothing).
+- Home (personal shelf only), platform and category hubs and search results (personal shelf only, consent), the search
+  start page (personal + the store's picks). Used unit pages: the model's "complete your setup" shelf + hub link. Help
+  centre device panel: hub link.
+- Forgetting: the home panel's "stop" and the account settings' withdrawal both run `forgetPersonalData`
+  (home/personal.server: `forgetEvents` for this device's `tt_rs` and the account + clear `tt_rs` + the account's
+  recently-viewed list); `POST /api/events intent=forget` still works on its own.
+- `device-image:<slug>`: the catalog platform/category hub device tiles and every `DeviceHubLink` grow into the hub's stage.
+- Open: guides — the hub reads approved articles itself; `support/kb.server.ts → listArticlesForDevice` may replace that read.
 
 ## Verify
 

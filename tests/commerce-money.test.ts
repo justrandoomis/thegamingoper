@@ -8,14 +8,19 @@
  */
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import accountMessages from "~/i18n/messages/account";
 import errorMessages from "~/i18n/messages/errors";
+import usedMessages from "~/i18n/messages/used";
 import { serverT } from "~/i18n/i18n.server";
 import { newId, randomToken } from "~/lib/ids";
 import { LOCALE_CODES } from "~/lib/locales";
 import { systemActor, type Actor } from "~/server/actor";
 import {
+  assistantMessages,
+  assistantSessions,
   auditEvents,
   authEvents,
+  consents,
   consistencyFindings,
   customerSessions,
   files,
@@ -37,6 +42,7 @@ import {
   stockLevels,
   stockMovements,
   stockReservations,
+  supportTickets,
   walletLedger,
 } from "~/server/db/schema";
 import { JournalEntryError } from "~/server/db/journal.server";
@@ -55,6 +61,8 @@ import { RETURN_ERROR_KEYS } from "~/server/services/orders/returns.server";
 import { PAYMENT_ERROR_KEYS, getPaymentInstructions, recordCodCollection, submitPaymentProof, verifyPayment } from "~/server/services/payments/payments.server";
 import { REFUND_ERROR_KEYS, approveRefund, createRefund, getRefundableAmount } from "~/server/services/refunds.server";
 import { SHIPPING_ERROR_KEYS } from "~/server/services/shipping/fees.server";
+import { ACCOUNT_ERROR_KEYS } from "~/server/services/account/types";
+import { TRADE_IN_ERROR_KEYS } from "~/server/services/tradein.server";
 import { WALLET_ERROR_KEYS, creditWallet, getWalletBalance, listWalletEntries, walletDebitStatement } from "~/server/services/wallet.server";
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -780,6 +788,31 @@ describe("scheduled jobs", () => {
     const left = await t.db.select({ id: recommendationEvents.id }).from(recommendationEvents).where(eq(recommendationEvents.sessionHash, `s${tag}`));
     expect(left.map((row) => row.id)).toEqual([`rev_${tag}_new`]);
   });
+
+  test("retention deletes stored assistant conversations past their expiry with their messages; the ticket keeps its note, the consent row stays", async () => {
+    const tag = randomToken().slice(0, 8);
+    const session = (id: string, expiresAt: number | null) => ({ id: `ast_${tag}_${id}`, kind: "maintenance" as const, status: "escalated" as const, summary: "ملخص المحادثة", logConsent: true, locale: "ar" as const, createdAt: NOW - 400 * DAY, updatedAt: NOW - 400 * DAY, expiresAt });
+    await t.db.insert(assistantSessions).values([session("old", NOW - DAY), session("live", NOW + 30 * DAY), session("forever", null)]);
+    await t.db.insert(assistantMessages).values(
+      ["old", "old", "live", "forever"].map((owner, index) => ({ id: `amg_${tag}_${index}`, sessionId: `ast_${tag}_${owner}`, role: "user" as const, content: "الجهاز لا يشتغل", createdAt: NOW - 400 * DAY + index })),
+    );
+    await t.db.insert(consents).values({ id: `cns_${tag}`, subjectType: "assistant_session", subjectId: `ast_${tag}_old`, kind: "support_log", granted: true, source: "assistant", at: NOW - 400 * DAY });
+    // The hand-off's ticket points at the conversation (a foreign key) and carries the summary as its first internal note.
+    await t.db.insert(supportTickets).values({ id: `tkt_${tag}`, ref: `SP-${tag.toUpperCase()}`, channel: "assistant", subject: "الجهاز لا يشتغل", assistantSessionId: `ast_${tag}_old`, createdAt: NOW - 400 * DAY, updatedAt: NOW - 400 * DAY });
+
+    const run = await runJob(t.db, "retention", NOW);
+    expect(run.status).toBe("succeeded");
+    expect(run.stats.assistantSessions).toBe(1);
+    const sessionsLeft = await t.db.select({ id: assistantSessions.id }).from(assistantSessions).where(inArray(assistantSessions.id, [`ast_${tag}_old`, `ast_${tag}_live`, `ast_${tag}_forever`]));
+    expect(sessionsLeft.map((row) => row.id).sort()).toEqual([`ast_${tag}_forever`, `ast_${tag}_live`]);
+    const messagesLeft = await t.db.select({ sessionId: assistantMessages.sessionId }).from(assistantMessages).where(inArray(assistantMessages.id, [0, 1, 2, 3].map((index) => `amg_${tag}_${index}`)));
+    expect(messagesLeft.map((row) => row.sessionId).sort()).toEqual([`ast_${tag}_forever`, `ast_${tag}_live`]);
+    expect(await t.db.select({ link: supportTickets.assistantSessionId, subject: supportTickets.subject }).from(supportTickets).where(eq(supportTickets.id, `tkt_${tag}`)).get()).toEqual({ link: null, subject: "الجهاز لا يشتغل" });
+    // Append-only: the consent row is history, not conversation content.
+    expect(await t.db.select({ id: consents.id }).from(consents).where(eq(consents.id, `cns_${tag}`))).toHaveLength(1);
+    // Nothing left to do on the next run.
+    expect((await runJob(t.db, "retention", NOW + HOUR)).stats.assistantSessions).toBe(0);
+  });
 });
 
 // ───────────────────────────────────────────────────────────────── error texts
@@ -804,6 +837,8 @@ describe("error texts", () => {
       ...REFUND_ERROR_KEYS,
       ...RETURN_ERROR_KEYS,
       ...ACCOUNTING_ERROR_KEYS,
+      ...ACCOUNT_ERROR_KEYS,
+      ...TRADE_IN_ERROR_KEYS,
     ]),
   ];
 
@@ -813,6 +848,23 @@ describe("error texts", () => {
       const missing = EVERY_CODE.filter((code) => typeof texts[code] !== "string" || texts[code].trim() === "");
       expect(missing, `app/i18n/messages/errors.ts (${locale})`).toEqual([]);
     }
+  });
+
+  test("the account and trade-in codes are adopted from their areas, not copied: one sentence each; the core's own wording wins a shared code", () => {
+    for (const locale of LOCALE_CODES) {
+      const texts = (errorMessages[locale] as { errors: Record<string, string> }).errors;
+      const accountTexts = (accountMessages[locale] as { errors: Record<string, string> }).errors;
+      const usedTexts = (usedMessages[locale] as { errors: Record<string, string> }).errors;
+      for (const code of ACCOUNT_ERROR_KEYS) expect(texts[code], `${locale} ${code}`).toBe(accountTexts[code]);
+      for (const code of TRADE_IN_ERROR_KEYS.filter((key) => key !== "idempotency_conflict")) expect(texts[code], `${locale} ${code}`).toBe(usedTexts[code]);
+      // The areas hold exactly their lists, so nothing else rides along into the shared namespace.
+      expect(Object.keys(accountTexts).sort()).toEqual([...ACCOUNT_ERROR_KEYS].sort());
+      expect(Object.keys(usedTexts).sort()).toEqual([...TRADE_IN_ERROR_KEYS].sort());
+    }
+    // "idempotency_conflict" means a repeated checkout here; the used area keeps its trade-in sentence on its own pages.
+    expect(serverT("en", "errors")("errors.idempotency_conflict")).toBe("This order was already sent from another session. Start the checkout again.");
+    expect(actionError(new AppError("topup_not_pending", 409), serverT("en", "errors")).message).toBe("This request is no longer under review, so it cannot be cancelled.");
+    expect(actionError(new AppError("trade_in_offer_closed", 409), serverT("ar", "errors")).message).toBe((usedMessages.ar as { errors: Record<string, string> }).errors.trade_in_offer_closed);
   });
 
   test("actionError() translates codes and field keys through the errors namespace", () => {

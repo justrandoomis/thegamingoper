@@ -14,7 +14,8 @@ import { cx } from "./cx";
  * scrolls with the page or repeats in a list; at most two live panes in a viewport; always a rounded rectangle
  * (no mask, clip-path or SVG shape); never a wall, never red; blur, tint and shadow never animate. Static glass
  * only over smooth surfaces (floor, stage, light). Secondary text inside glass is automatically on-glass-2.
- * Reduced transparency, the low-end tier and missing backdrop-filter support all fall back to solid.
+ * Reduced transparency, the low-end tier and missing backdrop-filter support all fall back to solid; so does the
+ * page's glass under an open sheet or dialog (the modal layer marks the page it covers — ./Dialog, materials.css).
  */
 export type GlassOwnProps = {
   /** live (default, frosted) · static (no blur, over smooth surfaces) · solid (opaque glass colour). */
@@ -32,18 +33,42 @@ export function Glass<C extends ElementType = "div">({ as, variant = "live", edg
   return <Tag {...rest} className={cx("glass", edge === "bottom" && "glass--bottom", variant === "static" && "glass--static", variant === "solid" && "glass--solid", className)} />;
 }
 
-/* Development aid for "at most two live glass panes": counts mounted live panes and warns when a third appears.
-   Mounted is a proxy for visible — a hidden pane still counts, which is the point: replace one or go solid. */
-let liveGlass = 0;
+/** Live panes: `.glass` that is neither static nor solid, and not on the page under an open sheet or dialog. */
+export const LIVE_GLASS = ".glass:not(.glass--static):not(.glass--solid)";
+const BEHIND_LAYER = "[data-layer-behind]";
+
+/** The live glass panes in a document that frost something: not on the page under an open sheet or dialog. */
+export function liveGlassPanes(root: ParentNode): Element[] {
+  return Array.from(root.querySelectorAll(LIVE_GLASS)).filter((pane) => !pane.closest(BEHIND_LAYER));
+}
+
+/** Drawn and inside the viewport (display:none, or a specimen scrolled far away, is not "in a viewport"). */
+function inViewport(pane: Element): boolean {
+  if (pane.getClientRects().length === 0) return false;
+  const box = pane.getBoundingClientRect();
+  return box.bottom > 0 && box.right > 0 && box.top < window.innerHeight && box.left < window.innerWidth;
+}
+
+/* Development aid for "at most two live glass panes per viewport": when a live pane mounts, count the live panes in
+   the viewport once it has settled (a sheet has risen, the layer that brought it has marked the page under it).
+   Panes of a page under an open layer do not count — they are solid there (materials.css). */
+const SETTLE_MS = 500;
+let checkPending = false;
+function checkLiveGlassBudget() {
+  if (checkPending) return;
+  checkPending = true;
+  setTimeout(() => {
+    checkPending = false;
+    const live = liveGlassPanes(document).filter(inViewport).length;
+    if (live > 2) {
+      console.warn(`[Glass] ${live} live glass panes are on screen. DESIGN.md §6.2 allows two per viewport: make the third variant="solid" or replace one.`);
+    }
+  }, SETTLE_MS);
+}
+
 function useLiveGlassBudget(live: boolean) {
   useEffect(() => {
     if (!live || !import.meta.env.DEV) return;
-    liveGlass++;
-    if (liveGlass > 2) {
-      console.warn(`[Glass] ${liveGlass} live glass panes are mounted. DESIGN.md §6.2 allows two per viewport: make the third variant="solid" or replace one.`);
-    }
-    return () => {
-      liveGlass--;
-    };
+    checkLiveGlassBudget();
   }, [live]);
 }

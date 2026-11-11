@@ -4,6 +4,12 @@
  * Logical properties only; tokens only; motion is transform/opacity only.
  */
 
+/* ───────────────────────────── BidiLabel (§5.5, §13): a label with Arabic script, isolated in the page's direction ─────
+ * (a label without Arabic script is a <bdi dir="ltr">; a bare <bdi> would guess the direction from the first letter) */
+.bidi {
+  unicode-bidi: isolate;
+}
+
 /* ───────────────────────────── KeyBank (§2, §8.1): keys in a well, the chosen one stays down ───────────────────────────── */
 .bank {
   display: grid;
@@ -349,13 +355,15 @@ select.field__input {
 .choice__box > svg {
   opacity: 0;
 }
+/* :indeterminate is a checkbox's "some" state — but a radio also matches it while its group has nothing chosen, and
+ * every option of that group would look chosen: the mixed state is for checkboxes only (:where keeps the weight) */
 .choice__input:checked + .choice__box,
-.choice__input:indeterminate + .choice__box {
+.choice__input:where([type="checkbox"]):indeterminate + .choice__box {
   border-color: var(--ink);
   background: var(--ink);
 }
 .choice__input:checked + .choice__box > svg,
-.choice__input:indeterminate + .choice__box > svg {
+.choice__input:where([type="checkbox"]):indeterminate + .choice__box > svg {
   opacity: 1;
 }
 .choice--radio .choice__box {
@@ -676,34 +684,51 @@ select.field__input {
     block-size: 160px;
   }
 }
-/* the band: the glass price tag and the commit key hang off the rim, half on the stage, half on the floor */
+/* the band: the glass price tag and the commit key hang off the rim, half on the stage, half on the floor.
+ * The key's label is never cut. The tag gives way first: its name shortens (whole words, then "…") and only its
+ * price must fit; a seven-digit price steps down to 17px on a phone-width stage (StageTag sets data-long). Only when
+ * the price and the key still cannot share the rim does the key move under the tag, at the inline end. */
 .stage__band {
   position: relative;
   z-index: 2;
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 10px;
+  gap: var(--s-2) 10px;
   margin-block-start: -30px;
   padding-inline: 10px;
 }
 .stage__band > .key {
   --px: 16px;
+  flex: none;
+  margin-inline-start: auto;
 }
+/* flex-basis 0 + min-content: the line breaks on the price, not on the name; max-content: it grows to its full name */
 .gtag {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  min-inline-size: 0;
+  flex: 1 1 0;
+  min-inline-size: min-content;
+  max-inline-size: max-content;
   padding: 8px 14px 9px;
   border-radius: var(--r-md);
 }
+/* one line of whole words: the longest word, not the whole name, is the narrowest the tag needs */
 .gtag__name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
   font: 500 12.5px/1.5 var(--font-text);
   color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+@container stage (max-width: 24rem) {
+  .gtag[data-long] {
+    --price-lg: var(--price-md);
+  }
 }
 /* a wide column (tablet and desktop layouts) */
 @container stage (min-width: 33rem) {
@@ -730,6 +755,9 @@ select.field__input {
   .stage__band {
     justify-content: flex-start;
     padding-inline: 28px;
+  }
+  .stage__band > .key {
+    margin-inline-start: 0;
   }
   .gtag {
     padding: 11px 18px 12px;

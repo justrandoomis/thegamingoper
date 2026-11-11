@@ -66,51 +66,310 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   "01.07": planned(n("Every change to stock, money, prices, permissions and settings is recorded in the audit trail.", "كل تغيير في المخزون والمال والأسعار والصلاحيات والإعدادات مسجل في سجل التدقيق.")),
 
   // ── 02 Product catalog
-  "02.01": planned(n("Products and variants with their options exist in the database; the demo catalogue is seeded.", "المنتجات ومتغيراتها موجودة في قاعدة البيانات، والكتالوج التجريبي محمّل.")),
-  "02.02": planned(n("The category tree exists and the storefront reads it.", "شجرة التصنيفات موجودة ويقرؤها المتجر.")),
-  "02.03": planned(),
-  "02.04": planned(n("Product photos come from the image pipeline; uploads are checked by content and stored privately.", "صور المنتجات تأتي من خط معالجة الصور، والملفات المرفوعة تُفحص بمحتواها وتُخزن بشكل خاص.")),
-  "02.05": planned(n("The statuses draft, review, scheduled, published and archived exist in the database.", "حالات المسودة والمراجعة والجدولة والنشر والأرشفة موجودة في قاعدة البيانات.")),
-  "02.06": planned(),
-  "02.07": planned(n("Bundle components can be stored (bundle_items).", "يمكن تخزين مكونات الحزم.")),
-  "02.08": planned(n("Tables for related products and compatibility rules exist.", "جداول المنتجات المرتبطة وقواعد التوافق موجودة.")),
-  "02.09": planned(n("Product versions are append-only in the database.", "نسخ المنتج لا تقبل التعديل أو الحذف في قاعدة البيانات.")),
-  "02.10": planned(),
+  "02.01": {
+    status: "implemented",
+    route: "/admin/catalog",
+    note: n(
+      "Product list with search by name, SKU, barcode (scanner) or model number and filters in the URL; parent product with SKU variants: platform, colour, capacity, edition, region, condition, model number, barcodes (one code names one variant), serial tracking. Prices are read-only here (module 03): a new variant of a product in the store starts switched off until it is priced.",
+      "قائمة المنتجات مع البحث بالاسم أو SKU أو الباركود (الماسح) أو رقم الطراز ومرشحات في الرابط؛ منتج رئيسي ومتغيرات SKU: المنصة واللون والسعة والإصدار والمنطقة والحالة ورقم الطراز والباركود (الباركود الواحد لمتغير واحد) والتتبع التسلسلي. الأسعار للقراءة فقط هنا (القسم 03): المتغير الجديد لمنتج معروض يبدأ موقوفاً حتى يُسعَّر.",
+    ),
+  },
+  "02.02": {
+    status: "implemented",
+    route: "/admin/catalog/categories",
+    note: n(
+      "Category tree up to four levels (order, names in three languages, switch off — with a reason and its impact shown when products in the store are under it —, delete only when empty); platforms, generations and device models at /admin/catalog/devices.",
+      "شجرة تصنيفات حتى أربعة مستويات (الترتيب، الأسماء بثلاث لغات، الإيقاف — بسبب مع عرض أثره إذا كانت تحته منتجات معروضة —، الحذف للفارغ فقط)؛ والمنصات والأجيال وموديلات الأجهزة في /admin/catalog/devices.",
+    ),
+  },
+  "02.03": {
+    status: "implemented",
+    route: "/admin/catalog",
+    note: n(
+      "Each product kind lists what it needs (compatibility, the store's warranty, age rating, region, licence type, format, bundle components, plus name, description, category, priced variant and picture); an incomplete product cannot be published or scheduled and a save never makes a live one less complete. Required custom fields from module 22 count too. The store's warranty terms are the owner's decision (STATUS item 15).",
+      "لكل نوع منتج ما يلزمه (التوافق، ضمان المتجر، التصنيف العمري، المنطقة، نوع الترخيص، نوع النسخة، مكونات الحزمة، إضافة إلى الاسم والوصف والتصنيف ومتغير مسعّر وصورة)؛ المنتج الناقص لا يُنشر ولا يُجدول، والحفظ لا يجعل منتجاً معروضاً أنقص. والحقول المخصصة المطلوبة من القسم 22 تُحسب أيضاً. شروط ضمان المتجر قرار المالك.",
+    ),
+  },
+  "02.04": {
+    status: "partial",
+    route: "/admin/catalog",
+    note: n(
+      "Several pictures per product and per variant: uploads through the upload service (stored public, 20 files per employee per 10 minutes), official catalogue photos by key, order, alt text in three languages, illustration flag. Missing: video (the upload service accepts images only and the media table has no URL column) and crop/focal hints (no columns) — schema change requested.",
+      "صور متعددة للمنتج ولكل متغير: رفع عبر خدمة الرفع (تخزين عام، 20 ملفاً لكل موظف كل 10 دقائق)، صور الكتالوج الرسمية بمفتاحها، الترتيب، النص البديل بثلاث لغات، وعلامة الصورة التوضيحية. الناقص: الفيديو (خدمة الرفع تقبل الصور فقط وجدول الوسائط بلا عمود رابط) وتلميحات القص ونقطة التركيز (بلا أعمدة) — طُلب تعديل المخطط.",
+    ),
+  },
+  "02.05": {
+    status: "partial",
+    route: "/admin/catalog",
+    note: n(
+      "Draft, review, scheduled, published, hidden and archived, each move with its permission and reason; incomplete products cannot go live. A scheduled product opens on its own page and in the cart at its time; the job that publishes due products for lists and search (publishDueProducts, tested) waits to be added to the 5-minute cron by the lead.",
+      "مسودة ومراجعة وجدولة ونشر وإخفاء وأرشفة، لكل انتقال صلاحيته وسببه؛ والمنتج الناقص لا يُنشر. المنتج المجدول يفتح في صفحته وفي السلة في موعده؛ ومهمة نشر المستحق للقوائم والبحث (publishDueProducts، مختبرة) تنتظر أن يضيفها المسؤول إلى مهمة الخمس دقائق.",
+    ),
+  },
+  "02.06": {
+    status: "implemented",
+    route: "/admin/catalog/import",
+    note: n(
+      "Bulk edit of selected products (fields and publishing moves) and CSV import with a full error preview (dry run), apply in guarded chunks and rollback per product; CSV export with the same columns (cost columns only with cost.read).",
+      "تحرير جماعي للمنتجات المختارة (الحقول وانتقالات النشر) واستيراد CSV بمعاينة كاملة للأخطاء (تشغيل تجريبي) وتطبيق على دفعات محمية وتراجع لكل منتج؛ وتصدير CSV بنفس الأعمدة (أعمدة التكلفة فقط مع صلاحية التكلفة).",
+    ),
+  },
+  "02.07": {
+    status: "implemented",
+    route: "/admin/catalog",
+    note: n(
+      "Bundle components per variant (typed or scanned SKU or barcode) with the stock of each component from the stock core: a bundle is available only as far as every component is, and the scarcest one is marked. One level only; components go only on bundle products, on variants that hold no stock of their own.",
+      "مكونات الحزمة لكل متغير (SKU أو باركود مكتوب أو ممسوح) مع مخزون كل مكوّن من نواة المخزون: الحزمة متاحة بقدر كل مكوّن، ويُعلَّم الأندر. مستوى واحد فقط؛ والمكونات تُضاف لمنتجات الحزم التي لا تملك متغيراتها مخزوناً خاصاً بها.",
+    ),
+  },
+  "02.08": {
+    status: "implemented",
+    route: "/admin/catalog",
+    note: n(
+      "Accessories, step-up, alternatives, upgrades and complete-your-setup links by product id, pinned and ordered; compatible accessories suggested from verified or partial rules on the product's device.",
+      "ملحقات وترقية أعلى وبدائل وترقيات و«أكمل تجهيزك» بمعرّف المنتج، مع التثبيت والترتيب؛ واقتراح الملحقات المتوافقة من القواعد المتحقق منها أو الجزئية على جهاز المنتج.",
+    ),
+  },
+  "02.09": {
+    status: "implemented",
+    route: "/admin/catalog",
+    note: n(
+      "Every save is a full version (who, when, why, what changed); compare any version with now; safe restore brings back texts and facts as a new version and never prices, costs, stock or status. Price history from module 03 shown read-only.",
+      "كل حفظ نسخة كاملة (من ومتى ولماذا وما تغيّر)؛ مقارنة أي نسخة بالحالية؛ الاسترجاع الآمن يعيد النصوص والحقائق كنسخة جديدة ولا يعيد سعراً أو تكلفة أو مخزوناً أو حالة. سجل الأسعار من القسم 03 للقراءة.",
+    ),
+  },
+  "02.10": {
+    status: "implemented",
+    route: "/admin/catalog/compare",
+    note: n(
+      "Compatibility rules per product or variant and device, generation or platform (verified needs a source and catalog.compatibility.verify; partial and incompatible need a note); all rules by device and status at /admin/catalog/compatibility; spec comparison of 2–4 devices with compatibility across generations.",
+      "قواعد التوافق لكل منتج أو متغير وجهاز أو جيل أو منصة (المتحقق منه يحتاج مصدراً وصلاحية الاعتماد؛ الجزئي وغير المتوافق يحتاجان ملاحظة)؛ كل القواعد حسب الجهاز والحالة في /admin/catalog/compatibility؛ ومقارنة مواصفات 2–4 أجهزة مع التوافق عبر الأجيال.",
+    ),
+  },
 
   // ── 03 Pricing and profitability
-  "03.01": planned(n("Protected cost rows and dated USD rates exist; cost leaves the server only for holders of cost.read.", "صفوف التكلفة المحمية وأسعار الصرف المؤرخة موجودة، ولا تخرج التكلفة من الخادم إلا لمن يملك صلاحيتها.")),
-  "03.02": planned(n("FIFO cost layers carry the landed cost into the cost of goods sold.", "طبقات التكلفة FIFO تنقل التكلفة الواصلة إلى تكلفة المبيعات.")),
-  "03.03": planned(),
-  "03.04": planned(),
-  "03.05": planned(n("Price changes are append-only; an approval is a new row.", "تغييرات الأسعار لا تقبل التعديل، والموافقة تُسجل سطراً جديداً.")),
-  "03.06": planned(),
-  "03.07": planned(),
-  "03.08": planned(),
+  "03.01": {
+    status: "implemented",
+    route: "/admin/pricing/skus",
+    note: n(
+      "Each SKU's page records the supplier currency, the unit cost in it, the purchase rate and its date (the store's USD rate is the default) and the per-unit extras, giving the landed cost in exact dinars; cost leaves the server only for holders of cost.read, CSV included.",
+      "صفحة كل صنف تسجل عملة المورد وتكلفة الوحدة بها وسعر صرف الشراء وتاريخه (سعر الدولار المعتمد هو الافتراضي) والإضافات للوحدة، فتخرج التكلفة الواصلة بالدينار بدقة؛ ولا تخرج التكلفة من الخادم إلا لمن يملك صلاحيتها، بما فيها ملف CSV.",
+    ),
+  },
+  "03.02": {
+    status: "partial",
+    route: "/admin/pricing/landed",
+    note: n(
+      "Freight, customs, insurance, fees and commission bills are spread over a receipt's lines by value, quantity or weight, exact to the dinar, before the receipt is posted (purchasing 09 can call the same function). Receipts come from purchasing, which has no screens yet, and a bill that arrives after a receipt is posted needs a FIFO-layer revaluation the commerce core does not offer.",
+      "توزَّع فواتير الشحن والجمارك والتأمين والرسوم والعمولات على بنود الاستلام حسب القيمة أو الكمية أو الوزن بالدينار الكامل قبل ترحيل الإيصال (ويستدعي قسم المشتريات 09 الدالة نفسها). الإيصالات تأتي من المشتريات التي لم تُبنَ شاشاتها بعد، والفاتورة التي تصل بعد الترحيل تحتاج إعادة تقييم طبقات FIFO غير متوفرة في نواة التجارة.",
+    ),
+  },
+  "03.03": {
+    status: "implemented",
+    route: "/admin/pricing/skus",
+    note: n(
+      "Minimum and target margins per SKU (and in bulk). Every selling price is set here (the catalog leaves new variants unpriced and will not publish them so): a price under the minimum margin, under the landed cost or on a SKU without a cost waits for a second person, with the override right below the minimum.",
+      "الحد الأدنى والهامش المستهدف لكل صنف (وبالجملة). كل سعر بيع يُحدَّد من هنا (الكتالوج يترك المتغيرات الجديدة بلا سعر ولا ينشرها كذلك): السعر تحت الحد الأدنى أو تحت التكلفة أو لصنف بلا تكلفة ينتظر شخصاً ثانياً، ومع صلاحية التجاوز تحت الحد الأدنى.",
+    ),
+  },
+  "03.04": {
+    status: "partial",
+    route: "/admin/pricing/lists",
+    note: n(
+      "Price lists per sales channel, branch and customer segment, with quantity breaks, a time window and margin checks, are managed here. The cart, checkout and point of sale do not apply them yet (they price at the SKU's own price), and the product's condition is not a list dimension in the schema.",
+      "قوائم الأسعار حسب قناة البيع والفرع وشريحة الزبائن، مع حدود الكمية ونافذة زمنية وفحص الهامش، تُدار هنا. السلة والدفع ونقطة البيع لا تطبقها بعد (تسعّر بسعر الصنف نفسه)، وحالة المنتج ليست بُعداً للقائمة في قاعدة البيانات.",
+    ),
+  },
+  "03.05": {
+    status: "implemented",
+    route: "/admin/pricing/changes",
+    note: n(
+      "Every change is logged (append-only). A cut of more than 10% from the highest price of the last 30 days (so small cuts cannot add up past the limit), a new 'was' price, any price on a SKU without a cost and every clearance price wait for a second person; under the minimum margin also needs the override right; the requester never approves. The 10% limit is fixed until the settings registry has a key for it.",
+      "كل تغيير مسجَّل ولا يُعدَّل. التخفيض بأكثر من 10% عن أعلى سعر خلال آخر 30 يوماً (فلا تتراكم تخفيضات صغيرة فوق الحد) والسعر السابق الجديد وأي سعر لصنف بلا تكلفة وكل سعر تصفية تنتظر شخصاً ثانياً، والسعر تحت الحد الأدنى يحتاج صلاحية التجاوز أيضاً، وصاحب الطلب لا يوافق عليه. حد 10% ثابت حتى يضاف مفتاح له في الإعدادات.",
+    ),
+  },
+  "03.06": {
+    status: "implemented",
+    route: "/admin/pricing/simulate",
+    note: n(
+      "Net profit and margin per SKU before and after a discount: landed cost, the discount, refunds (the SKU's history or an assumption), payment or channel fees and the commission rules; totals over stock on hand, CSV with the same field rules.",
+      "صافي الربح والهامش لكل صنف قبل الخصم وبعده: التكلفة الواصلة والخصم والاستردادات (من سجل الصنف أو مفترضة) ورسوم الدفع أو القناة وقواعد العمولة؛ مع الإجمالي على المخزون الحالي وملف CSV بقواعد الصلاحيات نفسها.",
+    ),
+  },
+  "03.07": {
+    status: "implemented",
+    route: "/admin/pricing/special",
+    note: n(
+      "Bundles against their components (cost from the components when none is recorded), clearance candidates priced in clearance mode (floor at landed cost, always a second person) and used devices priced unit by unit under the same limits as SKUs: a deeper cut, or a price under the acquisition cost, waits for a second person (with the override right under the cost).",
+      "الحزم مقابل مكوناتها (وتكلفتها من المكونات إن لم تُسجَّل)، والمرشحة للتصفية تسعَّر بنوع التصفية (الحد عند التكلفة الواصلة وشخص ثانٍ دائماً)، والأجهزة المستعملة جهازاً جهازاً بحدود الأصناف نفسها: التخفيض الأكبر أو السعر تحت تكلفة الاقتناء ينتظر شخصاً ثانياً (مع صلاحية التجاوز تحت التكلفة).",
+    ),
+  },
+  "03.08": {
+    status: "implemented",
+    route: "/admin/pricing/skus",
+    note: n(
+      "On each SKU's page: a suggestion from fixed rules (cost and target margin, a market price staff type, slow stock) that only becomes a price through a request and its approval rules. No AI model and no market-price feed are connected.",
+      "في صفحة كل صنف: اقتراح من قواعد ثابتة (التكلفة والهامش المستهدف، وسعر سوق يكتبه الموظف، والمخزون الراكد) لا يصير سعراً إلا عبر طلب يمر بقواعد الموافقة. لا نموذج ذكاء اصطناعي ولا مصدر لأسعار السوق مربوط.",
+    ),
+  },
 
   // ── 04 Inventory and warehouses
-  "04.01": planned(n("Stock per location and the quantity available to sell are computed in the commerce core.", "أرصدة كل موقع والكمية المتاحة للبيع تُحسب في نواة التجارة.")),
-  "04.02": planned(n("Nested locations (warehouse, shelf, bin) with barcodes exist in the database.", "المواقع المتداخلة (مستودع، رف، صندوق) مع الباركود موجودة في قاعدة البيانات.")),
-  "04.03": planned(n("Receiving exists in the commerce core (one serial per unit); there is no scanning screen.", "الاستلام موجود في نواة التجارة (رقم تسلسلي لكل قطعة)، ولا توجد شاشة مسح.")),
-  "04.04": planned(n("Enforced in the database: stock movements reject edits and deletions.", "مطبّق في قاعدة البيانات: حركات المخزون ترفض التعديل والحذف.")),
-  "04.05": planned(),
-  "04.06": planned(),
-  "04.07": planned(),
-  "04.08": planned(n("Works automatically: unpaid reservations expire and are released every 5 minutes. No screen shows them.", "يعمل تلقائياً: الحجوزات غير المدفوعة تنتهي وتُحرر كل 5 دقائق. لا توجد شاشة تعرضها.")),
-  "04.09": planned(n("Enforced by a database rule; selling into negative stock needs inventory.oversell.authorize and a reason.", "مطبّق بقاعدة في قاعدة البيانات، والبيع برصيد سالب يحتاج صلاحية وسبباً.")),
-  "04.10": planned(n("FIFO cost layers are consumed when an order ships.", "طبقات التكلفة FIFO تُستهلك عند شحن الطلب.")),
-  "04.11": planned(n("Shipping refuses an order until every serial-tracked unit is scanned.", "لا يُشحن الطلب قبل مسح كل قطعة لها رقم تسلسلي.")),
-  "04.12": planned(),
+  "04.01": {
+    status: "implemented",
+    route: "/admin/inventory/stock",
+    note: n(
+      "Per SKU across all locations or at one: on hand, reserved, available to sell (sellable locations only), incoming (transfers in transit and approved purchase-order lines), filters and sorting in the URL; each SKU's page breaks it down by location. Value at cost for cost.read only.",
+      "لكل صنف في كل المواقع أو في موقع واحد: الفعلي والمحجوز والمتاح للبيع (في المواقع المخصصة للبيع) والقادم (تحويلات في الطريق وأسطر أوامر شراء معتمدة)، والمرشحات والترتيب في الرابط؛ وصفحة كل صنف تفصّلها حسب الموقع. القيمة بالتكلفة لمن يملك صلاحيتها فقط.",
+    ),
+  },
+  "04.02": {
+    status: "implemented",
+    route: "/admin/inventory/locations",
+    note: n(
+      "Warehouses and shops with aisles, shelves and bins inside (the level follows the depth), unique codes and barcodes, for-sale and active switches (refused while in use, with a reason), and printable labels (Code 128 and QR) from the browser.",
+      "مستودعات ومتاجر وداخلها ممرات ورفوف وصناديق (المستوى حسب العمق)، ورموز وباركود فريدة، ومفاتيح للبيع والتفعيل (تُرفض والموقع مستخدم، مع سبب)، وملصقات قابلة للطباعة (Code 128 وQR) من المتصفح.",
+    ),
+  },
+  "04.03": {
+    status: "implemented",
+    route: "/admin/inventory/receive",
+    note: n(
+      "Receiving sessions: a keyboard-wedge barcode/QR reader (or typing) finds the SKU, units are counted and inspected (rejected ones stay out with a reason), serial numbers are scanned one per unit, and the accepted units enter stock through the commerce core. Receiving against purchase orders and posting receipts to the books belong to purchasing (09).",
+      "جلسات استلام: قارئ باركود/QR يعمل كلوحة مفاتيح (أو الكتابة) يجد الصنف، وتُعدّ القطع وتُفحص (المرفوض يبقى خارجاً مع سببه)، وتُمسح الأرقام التسلسلية رقماً لكل قطعة، ويدخل المقبول إلى المخزون عبر نواة التجارة. الاستلام مقابل أوامر الشراء وترحيله إلى الدفاتر من قسم المشتريات (09).",
+    ),
+  },
+  "04.04": {
+    status: "implemented",
+    route: "/admin/inventory/movements",
+    note: n(
+      "Every receipt, sale, reservation, transfer, damage, adjustment and count with reason, reference, actor and time; filters in the URL and CSV export. The database refuses edits and deletions; there is no way to change a row. The log (also a SKU's latest rows and a unit's history) only for inventory.movement.read; unit costs only for cost.read, serial numbers only for inventory.serial.read.",
+      "كل استلام وبيع وحجز وتحويل وتلف وتسوية وجرد مع السبب والمرجع والفاعل والوقت؛ والمرشحات في الرابط وتصدير CSV. قاعدة البيانات ترفض التعديل والحذف ولا توجد طريقة لتغيير سطر. السجل (ومنه آخر حركات الصنف وتاريخ القطعة) لمن يملك صلاحية سجل الحركات فقط؛ تكلفة القطعة لمن يملك صلاحية التكلفة فقط، والأرقام التسلسلية لمن يملك صلاحيتها فقط.",
+    ),
+  },
+  "04.05": {
+    status: "partial",
+    route: "/admin/inventory/counts",
+    note: n(
+      "Periodic (every SKU at a location) and selective (chosen SKUs or a random sample) counts, blind for counters, with scanning; a supervisor who did not start or count approves, and the differences are posted through the commerce core (negative stock only with the oversell permission); an approval that stopped half way is finished by approving again, never posted twice. Missing: differences of serial-tracked items are shown (missing and unexpected serials) but not posted — the core has no single-serial write-off yet.",
+      "جرد دوري (كل الأصناف في موقع) وانتقائي (أصناف مختارة أو عينة عشوائية)، أعمى للعادّين ومع المسح؛ يعتمده مشرف لم يبدأه ولم يعدّ فيه، وتُرحَّل الفروقات عبر نواة التجارة (الرصيد السالب فقط بصلاحية البيع بالسالب)؛ والاعتماد الذي توقف في منتصفه يُكمَل باعتماد جديد ولا يُرحَّل فرق مرتين. الناقص: فروقات الأصناف المتتبعة بالرقم التسلسلي تُعرض (المفقود وغير المتوقع) ولا تُرحَّل، فلا توجد بعد في النواة عملية لشطب رقم تسلسلي واحد.",
+    ),
+  },
+  "04.06": {
+    status: "implemented",
+    route: "/admin/inventory/reorder",
+    note: n(
+      "Reorder point and order quantity per SKU and location (on the SKU's page), days of cover, stock-out date and a suggested quantity from real shipped sales, with the inputs shown and an honest \"not enough history\". Turning a suggestion into a purchase order is purchasing's (09).",
+      "حد إعادة الطلب وكمية الطلب لكل صنف وموقع (في صفحة الصنف)، وأيام التغطية وتاريخ النفاد والكمية المقترحة من المبيعات المشحونة الفعلية، مع عرض المدخلات وعبارة صريحة «تاريخ قصير» عند غيابه. تحويل الاقتراح إلى أمر شراء من قسم المشتريات (09).",
+    ),
+  },
+  "04.07": {
+    status: "implemented",
+    route: "/admin/inventory/transfers",
+    note: n(
+      "Draft, ship (serials scanned for tracked items), in transit (not sellable or packable), receive in one or several goes at the destination, close a shortfall with a reason, or cancel a draft. Cost layers travel with the units; reserved units never leave; each step is audited and idempotent.",
+      "مسودة، ثم شحن (تُمسح الأرقام التسلسلية للأصناف المتتبعة)، ثم في الطريق (لا تُباع ولا تُجهَّز)، ثم استلام في الموقع الآخر دفعة أو دفعات، أو إغلاق العجز بسبب، أو إلغاء المسودة. طبقات التكلفة تنتقل مع القطع، ولا تُنقل قطع محجوزة، وكل خطوة مسجلة في التدقيق وآمنة من التكرار.",
+    ),
+  },
+  "04.08": {
+    status: "implemented",
+    route: "/admin/inventory/reservations",
+    note: n(
+      "Stock held per order with its expiry (unpaid transfer orders) or \"until shipped or cancelled\"; holds past their time are released automatically by the scheduled job every 5 minutes; a manual release with a reason for orders not yet being packed.",
+      "المخزون المحجوز لكل طلب مع مهلة انتهائه (طلبات التحويل غير المدفوعة) أو «حتى الشحن أو الإلغاء»؛ الحجوزات المنتهية تُحرَّر تلقائياً بالمهمة المجدولة كل 5 دقائق؛ وتحرير يدوي بسبب للطلبات التي لم تدخل التجهيز.",
+    ),
+  },
+  "04.09": {
+    status: "implemented",
+    route: "/admin/inventory/oversell",
+    note: n(
+      "Checkout never oversells and the database refuses negative available stock. The only exception is an adjustment or a count approval that an employee with inventory.oversell.authorize requests explicitly, with a reason; the page lists negative levels now and every authorised exception with who and why.",
+      "إتمام الطلب لا يبيع بالسالب أبداً وقاعدة البيانات ترفض الرصيد المتاح السالب. الاستثناء الوحيد تسوية أو اعتماد جرد يطلبه صراحة موظف يملك صلاحية السماح بالبيع بالسالب مع سبب؛ والصفحة تعرض الأرصدة السالبة الآن وكل استثناء مصرّح به ومن أذن به ولماذا.",
+    ),
+  },
+  "04.10": {
+    status: "partial",
+    route: "/admin/inventory/costing",
+    note: n(
+      "Batch tracking with FIFO costing per location: every received batch is a cost layer (landed cost, date, source), consumed oldest first by sales, transfers and write-offs, shown to cost.read only. Missing: there is no weighted-average policy to choose — FIFO is the only costing method.",
+      "تتبع الدفعات بتكلفة FIFO لكل موقع: كل دفعة مستلمة طبقة تكلفة (تكلفة واصلة وتاريخ ومصدر) يُستهلك الأقدم منها أولاً في البيع والنقل والشطب، وتظهر لمن يملك صلاحية التكلفة فقط. الناقص: لا توجد سياسة متوسط مرجح للاختيار، فـ FIFO هي طريقة التكلفة الوحيدة.",
+    ),
+  },
+  "04.11": {
+    status: "implemented",
+    route: "/admin/orders/fulfillment",
+    note: n(
+      "Packing station per order (module 05): a barcode/QR scanner types into the field (keyboard wedge); serials are attached through the core and checked against the line (a used device takes only its own unit's serial), a bundle is verified component by component, wrong items are refused and written down, and the order ships only when every unit is verified. A unit without a serial can be confirmed by hand with a reason, which is recorded and audited.",
+      "محطة تجهيز لكل طلب (القسم 05): الماسح يكتب في الحقل كلوحة مفاتيح، والأرقام التسلسلية تُربط عبر النواة وتُطابق مع الصنف (الجهاز المستعمل يقبل رقم قطعته فقط)، والحزمة يُتحقق منها مكوّناً مكوّناً، والصنف الخطأ يُرفض ويُسجَّل، ولا يُشحن الطلب قبل التحقق من كل قطعة. القطعة التي بلا رقم تسلسلي يمكن تأكيدها يدوياً مع سبب يُسجَّل في السجل.",
+    ),
+  },
+  "04.12": {
+    status: "implemented",
+    route: "/admin/inventory/reports",
+    note: n(
+      "Dead stock (no sale in 30–365 days), turnover in units (sold ÷ average on hand, days of inventory) and sales versus inbound per SKU and per period, from the actual movements, with CSV export; value and cost of goods sold for cost.read only.",
+      "المخزون الراكد (بلا بيع خلال 30 إلى 365 يوماً)، ودوران المخزون بالقطع (المبيع ÷ متوسط الفعلي، وأيام المخزون)، والمبيعات مقابل الوارد لكل صنف ولكل فترة، من الحركات الفعلية مع تصدير CSV؛ القيمة وتكلفة المبيعات لمن يملك صلاحية التكلفة فقط.",
+    ),
+  },
 
   // ── 05 Orders and fulfillment
-  "05.01": planned(n("The order state machine with all its side effects exists in the commerce core.", "آلة حالات الطلب بكل آثارها موجودة في نواة التجارة.")),
-  "05.02": planned(),
-  "05.03": planned(),
-  "05.04": planned(),
-  "05.05": planned(),
-  "05.06": planned(),
-  "05.07": planned(),
-  "05.08": planned(n("Order events are append-only in the database.", "أحداث الطلب لا تقبل التعديل أو الحذف في قاعدة البيانات.")),
-  "05.09": planned(n("Orders carry risk flags and customers a fraud flag in the database.", "الطلبات تحمل مؤشرات خطر والعملاء علامة احتيال في قاعدة البيانات.")),
+  "05.01": {
+    status: "implemented",
+    route: "/admin/orders",
+    note: n(
+      "New, awaiting payment, under verification, confirmed (paid), preparing, shipped, delivered, cancelled, returned — changed only through the core's state machine, with the stock and money impact shown before confirming and a reason for cancelling or returning.",
+      "جديد، بانتظار الدفع، قيد التحقق، مؤكد (مدفوع)، قيد التجهيز، تم الشحن، تم التسليم، ملغى، مرتجع — لا تتغير إلا عبر آلة الحالات في النواة، مع عرض أثرها على المخزون والمال قبل التأكيد وسبب للإلغاء والإرجاع.",
+    ),
+  },
+  "05.02": { status: "implemented", route: "/admin/orders" },
+  "05.03": { status: "implemented", route: "/admin/orders/fulfillment" },
+  "05.04": {
+    status: "partial",
+    route: "/admin/orders/fulfillment",
+    note: n(
+      "An order can be divided into several parcels, each with its own packing slip and label, but all parcels leave together: the commerce core commits an order's stock in one step, so shipping part of an order ahead of the rest needs a partial commit in the core.",
+      "يمكن تقسيم الطلب إلى عدة طرود لكل منها قائمة تعبئة وملصق، لكن الطرود تخرج معاً: نواة التجارة تُخرج مخزون الطلب دفعة واحدة، وشحن جزء قبل الباقي يحتاج إخراجاً جزئياً في النواة.",
+    ),
+  },
+  "05.05": {
+    status: "partial",
+    route: "/admin/orders",
+    note: n(
+      "Quantities (0 removes a line) and the address change before shipping, with the payment due, the coupon and the stock recalculated and shown first — for orders not paid yet (cash on delivery, a transfer still awaited). A paid order's lines and total cannot change: its refund would need to be booked as a price change, which the core's delivery posting does not tell apart. Once its invoice is issued an order keeps its lines and total (no credit note and re-invoice yet), and a line never goes below the units already scanned at the packing station. Adding new products is not offered.",
+      "تتغير الكميات (0 يحذف السطر) والعنوان قبل الشحن مع إعادة حساب المستحق والقسيمة والمخزون وعرضها أولاً — للطلبات غير المدفوعة بعد (الدفع عند الاستلام، أو تحويل لم يصل). الطلب المدفوع لا تتغير سطوره ولا مبلغه: استرداد الفرق يحتاج تسجيله كتغيير سعر، وقيد التسليم في النواة لا يميّز ذلك. بعد إصدار فاتورة الطلب تبقى سطوره ومبلغه كما هي (لا إشعار دائن وإعادة فوترة بعد)، ولا تنقص كمية السطر عن القطع الممسوحة في محطة التجهيز. إضافة منتجات جديدة غير متاحة.",
+    ),
+  },
+  "05.06": {
+    status: "boundary",
+    route: "/admin/orders/print",
+    note: n(
+      "Invoices (numbered once), packing slips and shipping labels with a barcode print from the browser, one order or a batch. Customer notifications are written to the outbox and held: no SMS or WhatsApp provider is connected.",
+      "الفواتير (برقم يصدر مرة واحدة) وقوائم التعبئة وملصقات الشحن بالباركود تُطبع من المتصفح لطلب أو دفعة. إشعارات العميل تُكتب وتبقى محجوزة: لا يوجد مزوّد رسائل SMS أو واتساب.",
+    ),
+  },
+  "05.07": {
+    status: "partial",
+    route: "/admin/orders/preorders",
+    note: n(
+      "Pre-orders with an expected date and delay updates (recorded, with a held message to the customer). Deposits are shown as the catalogue sets them but not taken: checkout charges the whole total, and a deposit needs a split payment in the core and the checkout.",
+      "الطلبات المسبقة بموعد متوقع وتحديثات تأخير (تُسجَّل مع رسالة محجوزة للعميل). الدفعة المقدمة معروضة كما في الكتالوج ولا تُؤخذ: الدفع عند الطلب بالمجموع كاملاً، والدفعة المقدمة تحتاج دفعاً مجزأً في النواة وصفحة الدفع.",
+    ),
+  },
+  "05.08": {
+    status: "implemented",
+    route: "/admin/orders",
+    note: n(
+      "Each order's history (who, what, why) and its notification log — held messages are shown as not sent; the receipt signature is a photo of the signed slip, kept as a private proof of delivery with the receiver's name.",
+      "سجل كل طلب (من وماذا ولماذا) وسجل إشعاراته — الرسائل المحجوزة تظهر كغير مرسلة؛ توقيع الاستلام صورة للوصل الموقّع تُحفظ بشكل خاص كإثبات تسليم مع اسم المستلم.",
+    ),
+  },
+  "05.09": {
+    status: "implemented",
+    route: "/admin/orders/review",
+    note: n(
+      "Twelve deterministic rules (late or suspicious), each flag with the sentence that explains it; a person clears it, holds the order, or asks for a review — asking never lifts a hold. The hold is enforced by this module's screens (confirm, pack, ship, deliver, approve a proof); the commerce core does not know it yet.",
+      "اثنتا عشرة قاعدة ثابتة (تأخير أو اشتباه)، ولكل علامة جملة تشرح سببها؛ يقرر شخص: سليم، أو إيقاف الطلب، أو طلب مراجعة — وطلب المراجعة لا يرفع الإيقاف. الإيقاف تطبّقه شاشات هذا القسم (التأكيد والتجهيز والشحن والتسليم واعتماد الإثبات)، ونواة التجارة لا تعرفه بعد.",
+    ),
+  },
 
   // ── 06 Point of sale
   "06.01": planned(),

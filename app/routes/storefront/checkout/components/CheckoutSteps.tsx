@@ -49,7 +49,7 @@ export function useIssueText(): (name: FieldName, issue: FieldIssue | undefined)
 
 // ───────────────────────────────────────────────────────────────── 1. address
 
-export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn }: StepProps) {
+export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, saved, onClearSaved }: StepProps & { saved?: { label: string | null } | null; onClearSaved?: () => void }) {
   const t = useT("checkout");
   const f = useFormat();
   const issueText = useIssueText();
@@ -79,6 +79,20 @@ export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn }:
 
       <fieldset className="grid gap-4">
         <legend className="mb-3 type-sub text-ink">{t("address.delivery")}</legend>
+        {saved ? (
+          // the account area's default address filled these in — a starting point the shopper may change or drop
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-paper px-3 py-2.5" role="note">
+            <p className="flex min-w-0 flex-1 items-start gap-2 type-caption text-ink">
+              <Icon name="map-pin" size={16} className="mt-0.5 shrink-0 text-ink-2" />
+              <span>{saved.label ? t("address.savedNamed", { label: saved.label }) : t("address.saved")}</span>
+            </p>
+            {onClearSaved ? (
+              <TextLink as="button" type="button" arrow={false} onClick={onClearSaved} className="type-caption">
+                {t("address.savedClear")}
+              </TextLink>
+            ) : null}
+          </div>
+        ) : null}
         <Select
           {...text("governorateId")}
           autoComplete="address-level1"

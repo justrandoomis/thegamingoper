@@ -45,7 +45,7 @@ import { setSetting } from "~/server/settings.server";
 import { addToCart, applyCoupon, getCartCount, getCartView } from "~/server/services/cart.server";
 import { assignSerialsStatements, receiveStock, releaseOrderReservations } from "~/server/services/inventory/stock.server";
 import { ORDER_TRANSITIONS, addMonthsBaghdad, getOrderByAccessToken, getOrderForCustomer, listOrdersForCustomer, lookupGuestOrder, transitionOrder } from "~/server/services/orders/manage.server";
-import { CheckoutError, placeOrder, type CheckoutInput, type CheckoutWho } from "~/server/services/orders/place.server";
+import { CheckoutError, lineName, placeOrder, type CheckoutInput, type CheckoutWho } from "~/server/services/orders/place.server";
 import { recordCodCollection } from "~/server/services/payments/payments.server";
 import { approveRefund } from "~/server/services/refunds.server";
 import { creditWallet, getWalletBalance } from "~/server/services/wallet.server";
@@ -313,6 +313,63 @@ describe("placeOrder — guest checkout", () => {
       proof: { status: "none" },
       canUploadProof: true,
     });
+  });
+
+  test("a cart whose every line sold out or went off sale is cart_blocked (with the cart, lines marked); only a cart with no lines is cart_empty", async () => {
+    // The last unit goes to the first shopper; the second shopper's only line is now sold out.
+    const last = await make.product({ priceIqd: 90_000, stock: 1 });
+    const firstToken = await cartWith([{ variantId: last.variantId, qty: 1 }]);
+    const lateToken = await cartWith([{ variantId: last.variantId, qty: 1 }]);
+    const lateBody = await input(lateToken);
+    await placeOrder(t.db, who(firstToken), await input(firstToken), NOW);
+    const before = await countOrders();
+    const soldOut = await failureOf(placeOrder(t.db, who(lateToken), lateBody, NOW));
+    expect(soldOut).toBeInstanceOf(CheckoutError);
+    expect(soldOut).toMatchObject({ code: "cart_blocked", status: 409 });
+    expect((soldOut as CheckoutError).cart).toMatchObject({ blocked: true, lines: [{ variantId: last.variantId, problem: "out_of_stock" }] });
+
+    // Every line off sale (the product was archived): blocked as well.
+    const archived = await make.product({ priceIqd: 40_000, stock: 3 });
+    const archivedToken = await cartWith([{ variantId: archived.variantId, qty: 1 }]);
+    const archivedBody = await input(archivedToken);
+    await t.db.update(products).set({ status: "archived" }).where(eq(products.id, archived.productId));
+    expect(await failureOf(placeOrder(t.db, who(archivedToken), archivedBody, NOW))).toMatchObject({ code: "cart_blocked", cart: { lines: [{ problem: "unavailable" }] } });
+
+    // No cart behind the cookie, or a cart without lines: cart_empty.
+    expect(await failureOf(placeOrder(t.db, who(randomToken()), { ...lateBody, idempotencyKey: randomToken() }, NOW))).toMatchObject({ code: "cart_empty", status: 409 });
+    const [emptied] = await t.db.select({ id: carts.id }).from(carts).where(eq(carts.tokenHash, await sha256Hex(archivedToken)));
+    await t.db.delete(cartItems).where(eq(cartItems.cartId, emptied.id));
+    expect(await failureOf(placeOrder(t.db, who(archivedToken), { ...archivedBody, idempotencyKey: randomToken() }, NOW))).toMatchObject({ code: "cart_empty" });
+    expect(await countOrders()).toBe(before);
+  });
+
+  test("an order line's name never says the product's name twice", async () => {
+    const named = async (name: { ar: string; en?: string; ckb?: string }, title: { ar: string; en?: string; ckb?: string } | null) => {
+      const product = await make.product({ priceIqd: 70_000, stock: 2 });
+      await t.db.update(products).set({ name }).where(eq(products.id, product.productId));
+      await t.db.update(variants).set({ title }).where(eq(variants.id, product.variantId));
+      const token = await cartWith([{ variantId: product.variantId, qty: 1 }]);
+      const placed = await placeOrder(t.db, who(token), await input(token), NOW);
+      const [line] = await t.db.select({ name: orderItems.nameSnapshot }).from(orderItems).where(eq(orderItems.orderId, placed.orderId));
+      return line.name;
+    };
+    // The variant title already names the product: it is the whole name.
+    expect(
+      await named(
+        { ar: "Resident Evil Requiem", en: "Resident Evil Requiem", ckb: "Resident Evil Requiem" },
+        { ar: "Resident Evil Requiem لجهاز PS5", en: "Resident Evil Requiem for PS5", ckb: "Resident Evil Requiem بۆ PS5" },
+      ),
+    ).toEqual({ ar: "Resident Evil Requiem لجهاز PS5", en: "Resident Evil Requiem for PS5", ckb: "Resident Evil Requiem بۆ PS5" });
+    // The title opens with the product's short name: only its detail follows the product's name.
+    expect(
+      await named({ ar: "يد التحكم اللاسلكية DualSense", en: "DualSense Wireless Controller", ckb: "کۆنتڕۆڵەری بێتەلی DualSense" }, { ar: "DualSense – أبيض", en: "DualSense – White", ckb: "DualSense – سپی" }),
+    ).toEqual({ ar: "يد التحكم اللاسلكية DualSense — أبيض", en: "DualSense Wireless Controller — White", ckb: "کۆنتڕۆڵەری بێتەلی DualSense — سپی" });
+    // A plain title is joined as before; a locale without its own title borrows the Arabic one.
+    expect(await named({ ar: "بلايستيشن 5 سليم", en: "PlayStation 5 Slim" }, { ar: "نسخة الأقراص" })).toEqual({ ar: "بلايستيشن 5 سليم — نسخة الأقراص", en: "PlayStation 5 Slim — نسخة الأقراص" });
+    // Whole words only: "PS5" in a title is not the product "PS".
+    expect(lineName({ ar: "PS" }, { ar: "PS5 – أسود" })).toEqual({ ar: "PS — PS5 – أسود" });
+    expect(lineName({ ar: "FC 26", en: "FC 26" }, { ar: "EA SPORTS FC 26  لجهاز PS5", en: "EA Sports fc 26 for PS5" })).toEqual({ ar: "EA SPORTS FC 26  لجهاز PS5", en: "EA Sports fc 26 for PS5" });
+    expect(lineName({ ar: "جهاز" }, null)).toEqual({ ar: "جهاز" });
   });
 });
 

@@ -9,7 +9,8 @@
  * Two visibilities, told apart by the storage key itself:
  *   public   `pub_<random>.<ext>`  served to anyone by GET /media/<key>, cached forever
  *   private  `prv_<random>.<ext>`  never served by /media; only through a route that authorizes the
- *                                  actor first (payment proofs need `payment_proof.read`)
+ *                                  actor first (payment proofs need `payment_proof.read`; a shopper's own
+ *                                  proofs go through GET /api/files/:fileId — shopperFilePath)
  * Keys are random and unguessable, and a file's key changes when its visibility changes
  * (setFileVisibility), so a once-private URL never becomes a public one.
  *
@@ -25,6 +26,7 @@ import { newId, randomToken, sha256Hex } from "~/lib/ids";
 import { actorRef, type Actor } from "./actor";
 import type { Db } from "./db/drizzle.server";
 import { files, type FileRecord, type FileVisibility, type NewFileRecord } from "./db/schema";
+import { cleanLine } from "./text.server";
 
 // ───────────────────────────────────────────────────────────────── blob store
 
@@ -86,11 +88,15 @@ function toArrayBuffer(bytes: ArrayBuffer | Uint8Array): ArrayBuffer {
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
-/** A file name that is safe to show and to put in a header: no path, no control characters, short. */
+/**
+ * A file name that is safe to show and to put in a header: no path, no control characters, short — and none of the
+ * hidden characters ~/server/text.server removes from shopper text (bidi overrides and isolates, zero-width space,
+ * C1 controls…), so "IMG<RLO>gnp.exe" cannot pose as "IMGexe.png" on the screens that list uploads (second pass).
+ */
 export function sanitizeFileName(name: string | null | undefined): string | null {
   if (!name) return null;
   const base = name.split(/[\\/]/).pop() ?? "";
-  const clean = base.replace(/[\u0000-\u001f\u007f"<>|:*?]/g, "").trim().slice(0, 120);
+  const clean = cleanLine(base).replace(/[\u0000-\u001f\u007f"<>|:*?]/g, "").trim().slice(0, 120);
   return clean === "" || clean === "." || clean === ".." ? null : clean;
 }
 
@@ -247,6 +253,17 @@ export function fileHeaders(file: ServableFile): Headers {
     headers.set("Cross-Origin-Resource-Policy", "same-origin");
   }
   return headers;
+}
+
+/**
+ * Where a shopper opens one of their OWN private files again — GET /api/files/:fileId (app/routes/api/files.ts), which
+ * authorizes every request: a transfer proof for the order's signed-in owner or with the order's confirmation token
+ * (`t`, as in /order/<ref>?t=…), a wallet top-up proof for the customer who uploaded it. Answered `private, no-store`;
+ * anyone else gets 404. The token goes in the URL only for guests, the same token their order link already carries.
+ */
+export function shopperFilePath(fileId: string, accessToken?: string | null): string {
+  const path = `/api/files/${encodeURIComponent(fileId)}`;
+  return accessToken ? `${path}?t=${encodeURIComponent(accessToken)}` : path;
 }
 
 /** A complete response for a stored file (304 when the browser already has it). */

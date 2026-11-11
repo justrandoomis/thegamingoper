@@ -507,14 +507,17 @@ export const PRIVACY_COOKIES: readonly PrivacyCookie[] = [
 
 /**
  * How long consent-gated data lives (mirrored like the cookies above, checked by the tests): the recently viewed list
- * and recent searches in the browser, and how old a recommendation signal may be before it is no longer used.
+ * and recent searches in the browser, and how old a recommendation signal may be before it is deleted.
  */
 export const PRIVACY_STORAGE_DAYS = {
-  /** RECENT_DAYS, routes/storefront/home/personal (localStorage "tt:recent"). */
+  /** RECENT_DAYS, routes/storefront/home/personal (localStorage "tt:recent" — a guest's list; signed in, the account's). */
   recentlyViewed: 90,
   /** RECENT_DAYS, routes/storefront/catalog/components/recent-searches (localStorage "tt:search:recent"). */
   recentSearches: 30,
-  /** RECOMMENDATION_EVENT_RETENTION_DAYS, services/recommendations.server (older signals are ignored). */
+  /**
+   * RECOMMENDATION_EVENT_RETENTION_DAYS, services/recommendations.server: older signals are ignored, and deleted by the
+   * daily retention job (purgeRecommendationEvents, jobs.server, scheduled since 2026-11-11) — the policy says "deleted".
+   */
   recommendationSignals: 90,
 } as const;
 

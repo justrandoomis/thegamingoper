@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 
 import { Art } from "~/art/Art";
 import { artAspect, parseArtName, type ArtView } from "~/art";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { Glass } from "./Glass";
 import type { Gel } from "./PlatformLed";
@@ -116,12 +117,16 @@ export type StageTagProps = {
   className?: string;
 };
 
-/** The glass price tag on the stage's rim: name above, price below (flat ink; the dinar only). */
+/**
+ * The glass price tag on the stage's rim: name above, price below (flat ink; the dinar only). The name keeps to one
+ * line of whole words; a seven-digit price steps down to 17px on a phone-width stage (`data-long`), so the commit key
+ * beside it keeps its whole label (components.css, "the band").
+ */
 export function StageTag({ name, priceIqd, className }: StageTagProps) {
   return (
-    <Glass variant="static" className={cx("gtag", className)}>
+    <Glass variant="static" className={cx("gtag", className)} data-long={priceIqd >= 1_000_000 ? "" : undefined}>
       <span className="gtag__name">
-        <bdi>{name}</bdi>
+        <BidiLabel>{name}</BidiLabel>
       </span>
       <Price amountIqd={priceIqd} size="lg" approx="off" as="span" />
     </Glass>

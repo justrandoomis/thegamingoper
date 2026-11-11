@@ -6,7 +6,8 @@
 import type { ReactNode } from "react";
 
 import type { UsedUnitCardData } from "~/lib/dto";
-import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { useFormat, useT } from "~/i18n/react";
+import { MotionLink, SharedElement } from "~/motion";
 import { Breadcrumbs, type Crumb } from "~/ui/Breadcrumbs";
 import { Chip } from "~/ui/Chip";
 import { Niche } from "~/ui/Niche";
@@ -107,13 +108,16 @@ export function DeviceShortcuts({ devices, title, note }: { devices: DeviceShort
       </div>
       <Rail aria-labelledby="catalog-devices" itemClassName="flex w-[31%] sm:w-[23%] md:w-[17%] lg:w-[13.5%] xl:w-[12%]" railClassName="-mx-1 scroll-px-1 px-1 pt-1 pb-2">
         {devices.map((device) => (
-          <LocaleLink key={device.slug} to={`/device/${device.slug}`} className="catalog-device" data-press="soft">
-            <Niche as="span" ratio="1/1" tagZone={false} className="w-full">
-              {device.artKey ? <Render name={device.artKey} alt="" sizes="(min-width: 1024px) 140px, 30vw" /> : null}
-            </Niche>
+          // the tile's picture grows into the hub's lit stage (shared element device-image:<slug>, devices area)
+          <MotionLink key={device.slug} nav="zoom" to={`/device/${device.slug}`} className="catalog-device" data-press="soft">
+            <SharedElement name={`device-image:${device.slug}`} slot="shortcut" as="span" className="block w-full">
+              <Niche as="span" ratio="1/1" tagZone={false} className="w-full">
+                {device.artKey ? <Render name={device.artKey} alt="" sizes="(min-width: 1024px) 140px, 30vw" /> : null}
+              </Niche>
+            </SharedElement>
             {/* in the page's direction, not a <bdi>: "PlayStation 5 (الطراز الأصلي 2020)" keeps its brackets right */}
             <span className="type-label text-ink line-clamp-2">{device.name}</span>
-          </LocaleLink>
+          </MotionLink>
         ))}
       </Rail>
     </section>

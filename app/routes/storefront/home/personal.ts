@@ -13,8 +13,13 @@
  * Read consent on the client with readConsent() (the cookie itself): root loader data is only refreshed on a
  * document load or after a form POST, so it can be a visit behind.
  *
- * For the product page (integration pass): call rememberViewed(product.id) once the page has rendered; it does
- * nothing without consent. The home page shows the list (GET /api/recently-viewed).
+ * RECENTLY VIEWED — ONE STORE PER SHOPPER (integration pass; docs/areas/home.md, account.md):
+ *   signed out   this device's list above (`tt:recent`), never sent anywhere;
+ *   signed in    the account's list on the server (services/account/recently-viewed.server) — and nothing on the device.
+ * The product page calls recordProductView(id, { signedIn }) once it is on screen, which writes exactly one of the
+ * two. The first time a signed-in customer opens a product, the home page or the account overview, this device's
+ * guest list is handed to the account (handDeviceListToAccount) and removed from the device — so a view is never
+ * kept twice and a shared device keeps nothing of a customer after they sign out. Nothing at all without consent.
  */
 import { PLATFORMS, isPlatform, type Platform } from "~/ui/PlatformLed";
 
@@ -144,6 +149,65 @@ export function forgetRecentlyViewed(productId?: string): void {
   } catch {
     /* nothing to forget */
   }
+}
+
+/** Removes some entries (the ones the account took over) and keeps the rest. Never throws. */
+function forgetRecentEntries(ids: ReadonlySet<string>): void {
+  try {
+    const store = storage();
+    if (!store || ids.size === 0) return;
+    const left = readRecentlyViewed().filter((entry) => !ids.has(entry.id));
+    if (left.length === 0) store.removeItem(RECENT_KEY);
+    else store.setItem(RECENT_KEY, JSON.stringify(left));
+  } catch {
+    /* nothing to forget */
+  }
+}
+
+export type AccountRecentAnswer = { ok: boolean; kept: boolean; merged: number | null };
+
+/**
+ * POST /api/recently-viewed for a signed-in customer: this view (when given) and this device's guest list. When the
+ * account took the list over (`merged` is a number), the sent entries leave the device. Resolves to null on a network
+ * failure (the device list then simply stays for the next try). Never throws.
+ */
+async function sendToAccount(productId: string | null): Promise<AccountRecentAnswer | null> {
+  if (!inBrowser() || readConsent() !== true) return null;
+  const entries = readRecentlyViewed();
+  const body = new URLSearchParams();
+  if (productId) body.set("productId", productId);
+  if (entries.length > 0) body.set("device", JSON.stringify(entries));
+  if (!productId && entries.length === 0) return null;
+  try {
+    const response = await fetch("/api/recently-viewed", { method: "POST", body, keepalive: true, credentials: "same-origin", headers: { Accept: "application/json" } });
+    const answer = (await response.json().catch(() => null)) as AccountRecentAnswer | null;
+    if (!response.ok || !answer?.ok) return null;
+    if (typeof answer.merged === "number" && entries.length > 0) forgetRecentEntries(new Set(entries.map((entry) => entry.id)));
+    return answer;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A product page is on screen (call it once per product, after the page rendered): the view goes to the ONE store
+ * that applies — this device's list for a guest, the account for a signed-in customer (with this device's guest list,
+ * which the account takes over). Nothing without consent. Fire and forget; never throws.
+ */
+export function recordProductView(productId: string, options: { signedIn: boolean }): void {
+  if (readConsent() !== true || !RECENT_ID.test(productId)) return;
+  if (options.signedIn) void sendToAccount(productId);
+  else rememberViewed(productId);
+}
+
+/**
+ * Signed in: hands this device's guest list to the account once (then it leaves the device). Resolves to true when
+ * the account took something over — a page showing the account's list should then read it again.
+ */
+export async function handDeviceListToAccount(): Promise<boolean> {
+  if (readRecentlyViewed().length === 0) return false;
+  const answer = await sendToAccount(null);
+  return typeof answer?.merged === "number" && answer.merged > 0;
 }
 
 /** The intro was finished or skipped: never shown again on this device (it can be replayed from the home page). */

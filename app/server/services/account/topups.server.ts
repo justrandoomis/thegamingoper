@@ -20,7 +20,7 @@
  * rate_limited (429), upload_* (from ~/server/uploads.server).
  * Must not import "cloudflare:workers".
  */
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, lt, notExists, sql } from "drizzle-orm";
 import { z } from "zod";
 import { newId, publicRef } from "~/lib/ids";
 import type { CustomerActor } from "~/server/actor";
@@ -30,7 +30,8 @@ import { customers, files, walletTopups } from "~/server/db/schema";
 import { expectChanged, expectThat, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, unauthorized } from "~/server/errors";
 import { RATE_LIMITS, enforceRateLimit, limitKey } from "~/server/ratelimit.server";
-import { getFile, getFileRecord, type BlobStore, type StoredFile } from "~/server/storage.server";
+import { cleanLine } from "~/server/text.server";
+import { deleteFile, getFile, getFileRecord, type BlobStore, type StoredFile } from "~/server/storage.server";
 import { saveImageUpload, type UploadSource } from "~/server/uploads.server";
 import { getPaymentInstructions } from "~/server/services/payments/payments.server";
 import { TOPUP_METHODS, type TopupDestinations, type TopupView } from "./types";
@@ -73,7 +74,7 @@ export const RequestTopupInput = z.object({
       .min(TOPUP_MIN_IQD, "too_small")
       .max(TOPUP_MAX_IQD, "too_big"),
   ),
-  reference: z.preprocess(blank, z.string().trim().max(80, "too_long").optional()),
+  reference: z.preprocess(blank, z.string().overwrite(cleanLine).trim().max(80, "too_long").optional()),
   fileId: z.preprocess(blank, z.string({ error: "topup_proof_invalid" }).regex(ID, "topup_proof_invalid")),
   idempotencyKey: z.preprocess(blank, z.string({ error: "required" }).trim().min(8, "invalid").max(120, "invalid")),
 });
@@ -103,10 +104,13 @@ export async function getTopupDestinations(db: Db): Promise<TopupDestinations> {
 
 /**
  * Stores the photo of a transfer for a top-up request: checked and cleaned by the upload pipeline (type by content,
- * size, metadata removed), saved PRIVATELY with the customer as owner. Rate-limited per customer.
+ * size, metadata removed), saved PRIVATELY with the customer as owner. Rate-limited per IP (`actor.ip`, when the request
+ * has one) and per customer: accounts cost nothing, so a per-account budget alone grew with every sign-up from the same
+ * address (security review, second pass). A proof no request uses is deleted after a day (purgeUnusedTopupProofs).
  */
 export async function saveTopupProof(db: Db, store: BlobStore, actor: CustomerActor, source: UploadSource, now: number): Promise<{ fileId: string; previewPath: string }> {
   const customerId = requireActor(actor);
+  await enforceRateLimit(db, await limitKey("upload_topup", "ip", actor.ip ?? null), RATE_LIMITS.upload, now);
   await enforceRateLimit(db, await limitKey("upload", "customer", customerId), RATE_LIMITS.upload, now);
   const { file } = await saveImageUpload(db, store, source, { visibility: "private", kind: TOPUP_PROOF_KIND, ownerType: "customer", ownerId: customerId, createdBy: actor, now });
   return { fileId: file.id, previewPath: topupProofPath(file.id) };
@@ -218,6 +222,34 @@ export async function getPendingTopupTotal(db: Db, customerId: string): Promise<
     .where(and(eq(walletTopups.customerId, customerId), eq(walletTopups.status, "pending_verification")))
     .get();
   return Number(row?.total ?? 0);
+}
+
+/** How long an uploaded top-up proof may wait for the request that uses it (the wallet page sends both within minutes). */
+export const UNUSED_TOPUP_PROOF_MAX_AGE_SEC = 24 * 60 * 60;
+
+/**
+ * Deletes top-up proofs that no request uses, older than `maxAgeSec` (an upload whose request was never sent, or a
+ * photo replaced before sending): bytes removed, row marked deleted — up to 200 per call. For the daily retention job
+ * (app/server/jobs.server.ts). Before the second security pass nothing ever deleted them: up to 8 MB each, private, in
+ * the file store for good. Returns how many were removed.
+ */
+export async function purgeUnusedTopupProofs(db: Db, store: BlobStore, now: number, maxAgeSec = UNUSED_TOPUP_PROOF_MAX_AGE_SEC): Promise<number> {
+  const stale = await db
+    .select({ id: files.id })
+    .from(files)
+    .where(
+      and(
+        eq(files.kind, TOPUP_PROOF_KIND),
+        isNull(files.deletedAt),
+        lt(files.createdAt, now - maxAgeSec * 1000),
+        notExists(db.select({ id: walletTopups.id }).from(walletTopups).where(eq(walletTopups.proofFileId, files.id))),
+      ),
+    )
+    .orderBy(asc(files.createdAt))
+    .limit(200);
+  let removed = 0;
+  for (const row of stale) if (await deleteFile(db, store, row.id, now)) removed++;
+  return removed;
 }
 
 /** Withdraws a request that is still waiting for review. */

@@ -20,7 +20,7 @@ import { Price } from "~/ui/Price";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
-import { cartTokenOf, NO_STORE } from "./checkout.server";
+import { cartShelves, cartTokenOf, NO_STORE } from "./checkout.server";
 import { CommitKey } from "./components/CommitKey";
 import { CouponForm, type CartWithIssue } from "./components/CouponForm";
 import { RecommendationsSlot } from "./components/RecommendationsSlot";
@@ -37,8 +37,11 @@ export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
   const session = await getCustomer(ctx, db);
-  const cart = await getCartView(db, { cartToken: cartTokenOf(ctx), customerId: session?.customer.id ?? null, locale: ctx.locale }, ctx.now);
-  return data({ cart, i18n: messagesFor(ctx.locale, "checkout", "errors") }, { headers: NO_STORE });
+  const customerId = session?.customer.id ?? null;
+  const cart = await getCartView(db, { cartToken: cartTokenOf(ctx), customerId, locale: ctx.locale }, ctx.now);
+  // what completes the cart (devices area) — streamed, never awaited: the cart never waits for its suggestions
+  const recommendations = cartShelves(db, ctx, customerId, cart);
+  return data({ cart, recommendations, i18n: messagesFor(ctx.locale, "checkout", "errors") }, { headers: NO_STORE });
 }
 
 export function headers() {
@@ -62,7 +65,6 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
   const base = override && override.base === loaderData.cart ? override.cart : (loaderData.cart as CartWithIssue);
   const editor = useCartEditor(base, { locale });
   const view = editor.view as CartWithIssue;
-  const live = editor.rows.filter((row) => !row.removed);
 
   if (editor.rows.length === 0) {
     return (
@@ -90,7 +92,7 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="page grid gap-6 pb-10 pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] lg:items-start lg:gap-x-10">
-      <div className="grid min-w-0 gap-4">
+      <div className="grid min-w-0 gap-4 lg:col-start-1 lg:row-start-1">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <h1 className="type-title text-ink">{t("cart.title")}</h1>
           <p className="type-label text-ink-2" aria-live="polite">
@@ -118,10 +120,9 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
             />
           ))}
         </ul>
-        <RecommendationsSlot context="cart" variantIds={live.flatMap((row) => (row.line.variantId ? [row.line.variantId] : []))} />
       </div>
 
-      <aside className="grid gap-4 lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))]" aria-label={t("cart.summaryLabel")}>
+      <aside className="grid gap-4 lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))] lg:col-start-2 lg:row-span-2 lg:row-start-1" aria-label={t("cart.summaryLabel")}>
         <OrderSummary {...view} count={view.count} pending={editor.pending} headingLevel={2}>
           <CouponForm cart={view} locale={locale} onCart={(cart) => setOverride({ base: loaderData.cart as CartWithIssue, cart })} />
         </OrderSummary>
@@ -138,6 +139,9 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
           ) : null}
         </div>
       </aside>
+
+      {/* What completes the cart (devices area): after the summary on phones (DESIGN.md §8.5), under the lines from 1024. */}
+      <RecommendationsSlot context="cart" result={loaderData.recommendations} className="min-w-0 pt-4 lg:col-start-1 lg:row-start-2" />
 
       <TaskBar aria-label={t("cart.barLabel")} className="lg:hidden">
         <div className="flex items-center gap-3">

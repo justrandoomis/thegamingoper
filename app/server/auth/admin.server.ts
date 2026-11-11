@@ -22,6 +22,9 @@
  *     takes effect on their very next click
  *   · half-open after the password when two-step verification is on: it can only be used to submit
  *     the code, for 10 minutes; the token is replaced when the code is accepted
+ *   · replaced by a new token (same start and end) when the employee changes the password or turns
+ *     two-step verification on or off on it; every other session of theirs ends, and so does any copy
+ *     of the old cookie
  *
  * Lockout: 5 failed passwords for one email lock that email until the 15-minute window ends
  * (the correct password is refused too). 6 wrong codes end the half-open session.
@@ -66,6 +69,12 @@ const IDLE_MS = ADMIN_IDLE_HOURS * 60 * 60 * 1000;
 const PENDING_MFA_MS = 10 * 60 * 1000;
 /** `last_seen_at` is written at most this often. */
 const TOUCH_AFTER_MS = 5 * 60 * 1000;
+/**
+ * A request that still carries a session revoked less than this long ago leaves the cookie alone: it may have left the
+ * browser before a password or two-step change rotated the session, and answering it with a deletion would delete the
+ * successor's cookie (the same rule as REVOKED_COOKIE_GRACE_MS for customers). The old token is refused all the same.
+ */
+const REVOKED_COOKIE_GRACE_MS = 30 * 1000;
 const TOTP_PERIOD_MS = TOTP_DEFAULTS.periodSec * 1000;
 
 export type EmployeeProfile = {
@@ -138,9 +147,11 @@ function grantsQuery(db: Db, idHash: string) {
 }
 
 type SessionRow = Awaited<ReturnType<typeof sessionQuery>>[number];
-type Loaded = { state: "none" } | { state: "pending_mfa"; row: SessionRow } | { state: "active"; session: EmployeeSession };
+type Loaded = { state: "none"; keepCookie?: boolean } | { state: "pending_mfa"; row: SessionRow } | { state: "active"; session: EmployeeSession };
 
 const NONE: Loaded = { state: "none" };
+/** Nothing opens, but the session was revoked a moment ago: the browser may hold its successor (REVOKED_COOKIE_GRACE_MS). */
+const JUST_REVOKED: Loaded = { state: "none", keepCookie: true };
 /** One lookup per request (keyed by the request context object). */
 const lookups = new WeakMap<object, Promise<Loaded>>();
 
@@ -150,7 +161,7 @@ async function loadByHash(ctx: AuthCtx, db: Db, idHash: string): Promise<Loaded>
   const row = sessions[0];
   const dead = !row || row.revokedAt !== null || row.expiresAt <= ctx.now || ctx.now - row.lastSeenAt > IDLE_MS;
   // A disabled employee is locked out on the next request, whatever their sessions say.
-  if (dead || row.status !== "active") return NONE;
+  if (dead || row.status !== "active") return row && row.revokedAt !== null && ctx.now - row.revokedAt < REVOKED_COOKIE_GRACE_MS ? JUST_REVOKED : NONE;
   if (row.totpEnabled && !row.mfaOk) return { state: "pending_mfa", row };
 
   if (ctx.now - row.lastSeenAt > TOUCH_AFTER_MS) {
@@ -191,8 +202,9 @@ async function loadFromCookie(ctx: AuthCtx, db: Db): Promise<Loaded> {
   const token = readSessionToken(ctx, ADMIN_COOKIE);
   if (!token) return NONE;
   const loaded = await loadByHash(ctx, db, await sessionIdHash(token));
-  // A cookie that no longer opens anything is removed, so it is not looked up again.
-  if (loaded.state === "none") clearAdminCookies(ctx);
+  // A cookie that no longer opens anything is removed, so it is not looked up again — unless its session was revoked a
+  // moment ago and this browser may already hold the successor's cookie (a request that was in flight during a rotation).
+  if (loaded.state === "none" && !loaded.keepCookie) clearAdminCookies(ctx);
   return loaded;
 }
 
@@ -245,17 +257,51 @@ const invalidCredentials = () => new AppError("invalid_credentials", 401, { fiel
 const mfaInvalid = () => new AppError("mfa_invalid", 401, { fields: { code: "mfa_invalid" } });
 const totpContext = (employeeId: string) => `employee:${employeeId}:totp`;
 
-function sessionInsert(db: Db, ctx: AuthCtx, idHash: string, employeeId: string, mfaOk: boolean, expiresAt: number): BatchStatement {
+function sessionInsert(db: Db, ctx: AuthCtx, idHash: string, employeeId: string, mfaOk: boolean, expiresAt: number, createdAt: number = ctx.now): BatchStatement {
   return db.insert(employeeSessions).values({
     idHash,
     employeeId,
     mfaOk,
-    createdAt: ctx.now,
+    createdAt,
     lastSeenAt: ctx.now,
     expiresAt,
     ip: ctx.ip,
     userAgent: ctx.userAgent ? ctx.userAgent.slice(0, 300) : null,
   });
+}
+
+type SessionRotation = {
+  /** For the credential change's own batch: end every session of the employee, then start this device's successor. */
+  statements: BatchStatement[];
+  /** After the batch committed: sets the new cookie and makes the rest of this request use the new session. */
+  commit: () => Promise<void>;
+};
+
+/**
+ * A new token for the device that changes its credentials (password, two-step verification on or off), so that a
+ * COPY of its cookie stops working with the change (OWASP: renew the session id after a credential or privilege change).
+ * The statements end EVERY session of the employee — other devices, half-open sign-ins and this device's own — and
+ * start this device's successor with the same start and absolute end (a change never lengthens a session) and the same
+ * second-step state unless `mfaOk` says otherwise. Run them in the change's batch, then call `commit()`: from then on
+ * this request runs on the new session — never on the old cookie, whose dead lookup would queue a cookie-clearing
+ * header behind the new cookie and sign this device out.
+ */
+async function sessionRotation(ctx: AuthCtx, db: Db, current: EmployeeSession, options: { mfaOk?: boolean } = {}): Promise<SessionRotation> {
+  const employeeId = current.employee.id;
+  const token = randomToken();
+  const idHash = await sessionIdHash(token);
+  const { createdAt, expiresAt } = current.session;
+  return {
+    statements: [revokeEmployeeSessionsStatement(db, employeeId, ctx.now), sessionInsert(db, ctx, idHash, employeeId, options.mfaOk ?? current.session.mfaOk, expiresAt, createdAt)],
+    async commit() {
+      setAdminCookies(ctx, token, Math.max(1, Math.ceil((expiresAt - ctx.now) / 1000)));
+      // Loaded like any request's session: an employee disabled in the meantime is simply signed out, not an error
+      // after a change that has already been saved.
+      const reloaded = loadByHash(ctx, db, idHash);
+      lookups.set(ctx, reloaded);
+      await reloaded;
+    },
+  };
 }
 
 function revokeByHash(db: Db, idHash: string, now: number): BatchStatement {
@@ -498,7 +544,8 @@ export async function beginTotpEnrollment(ctx: AuthCtx, db: Db, secrets: Pick<Au
 
 /**
  * Finishes enrolment with a code from the authenticator: turns two-step verification on, signs the
- * employee's other devices out and returns ten recovery codes — the only time they are readable.
+ * employee's other devices out, gives this device a new session token (the old cookie stops working; the new one is
+ * set on `ctx`) and returns ten recovery codes — the only time they are readable.
  * Throws `mfa_not_pending` (409) or `mfa_invalid` (401, fields.code).
  */
 export async function confirmTotpEnrollment(ctx: AuthCtx, db: Db, raw: unknown, secrets: Pick<AuthSecrets, "DATA_KEY">): Promise<{ recoveryCodes: string[] }> {
@@ -518,6 +565,9 @@ export async function confirmTotpEnrollment(ctx: AuthCtx, db: Db, raw: unknown, 
 
   const recoveryCodes = generateRecoveryCodes();
   const hashes = await Promise.all(recoveryCodes.map(hashRecoveryCode));
+  // This device just proved it holds the authenticator, so its successor session is marked as such; every other device
+  // must sign in again and prove it too.
+  const rotation = await sessionRotation(ctx, db, current, { mfaOk: true });
   try {
     await runBatch(db, [
       db
@@ -525,9 +575,7 @@ export async function confirmTotpEnrollment(ctx: AuthCtx, db: Db, raw: unknown, 
         .set({ totpEnabled: true, recoveryCodes: hashes, updatedAt: ctx.now })
         .where(and(eq(employees.id, employeeId), eq(employees.totpEnabled, false))),
       expectChanged(db, 1, { code: "MFA_NOT_PENDING", detail: employeeId }),
-      // This device just proved it holds the authenticator; every other device must do the same.
-      db.update(employeeSessions).set({ mfaOk: true }).where(eq(employeeSessions.idHash, current.session.id)),
-      revokeEmployeeSessionsStatement(db, employeeId, ctx.now, current.session.id),
+      ...rotation.statements,
       auditStatement(db, { actor: current.actor, action: "security.mfa.enable", entityType: "employee", entityId: employeeId, at: ctx.now }),
       authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, kind: "mfa_enroll", success: true }),
     ]);
@@ -535,7 +583,7 @@ export async function confirmTotpEnrollment(ctx: AuthCtx, db: Db, raw: unknown, 
     if (isDbError(error, "MFA_NOT_PENDING")) throw conflict("mfa_not_pending");
     throw error;
   }
-  lookups.delete(ctx);
+  await rotation.commit();
   return { recoveryCodes };
 }
 
@@ -543,7 +591,8 @@ const DisableTotpInput = z.object({ password: z.string({ error: "required" }).mi
 
 /**
  * The signed-in employee turns their own two-step verification off. Needs the password AND a
- * current code (or a recovery code). Throws `invalid` (fields.password) or `mfa_invalid`.
+ * current code (or a recovery code). Signs the other devices out and gives this one a new session token (set on `ctx`).
+ * Throws `invalid` (fields.password) or `mfa_invalid`.
  */
 export async function disableOwnTotp(ctx: AuthCtx, db: Db, raw: unknown, secrets: Pick<AuthSecrets, "DATA_KEY">): Promise<void> {
   const input = DisableTotpInput.parse(raw);
@@ -566,13 +615,14 @@ export async function disableOwnTotp(ctx: AuthCtx, db: Db, raw: unknown, secrets
     throw mfaInvalid();
   }
 
+  const rotation = await sessionRotation(ctx, db, current);
   await runBatch(db, [
     db.update(employees).set({ totpEnabled: false, totpSecretEnc: null, recoveryCodes: null, updatedAt: ctx.now }).where(eq(employees.id, employeeId)),
-    revokeEmployeeSessionsStatement(db, employeeId, ctx.now, current.session.id),
+    ...rotation.statements,
     auditStatement(db, { actor: current.actor, action: "security.mfa.disable", entityType: "employee", entityId: employeeId, at: ctx.now }),
     authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, kind: "mfa_enroll", success: true, details: { change: "disabled" } }),
   ]);
-  lookups.delete(ctx);
+  await rotation.commit();
 }
 
 const ReasonedTarget = z.object({ employeeId: z.string().min(1), reason: z.string({ error: "required" }).trim().min(3, "required").max(500, "too_long") });
@@ -694,7 +744,8 @@ const ChangePasswordInput = z.object({
 });
 
 /**
- * The signed-in employee changes their password; their other devices are signed out.
+ * The signed-in employee changes their password; their other devices are signed out and this one continues on a new
+ * session token (set on `ctx` — the route's response carries it; the old cookie, and any copy of it, stops working).
  * Throws AppError: `unauthorized`, `invalid` (fields.currentPassword = "invalid_credentials", fields.newPassword).
  */
 export async function changeEmployeePassword(ctx: AuthCtx, db: Db, raw: unknown): Promise<void> {
@@ -709,12 +760,14 @@ export async function changeEmployeePassword(ctx: AuthCtx, db: Db, raw: unknown)
     throw invalid({ currentPassword: "invalid_credentials" });
   }
   const password = await hashPassword(input.newPassword);
+  const rotation = await sessionRotation(ctx, db, current);
   await runBatch(db, [
     db.update(employees).set({ passwordHash: password.hash, passwordIters: password.iterations, passwordChangedAt: ctx.now, updatedAt: ctx.now }).where(eq(employees.id, employeeId)),
-    revokeEmployeeSessionsStatement(db, employeeId, ctx.now, current.session.id),
+    ...rotation.statements,
     auditStatement(db, { actor: current.actor, action: "security.password.change", entityType: "employee", entityId: employeeId, at: ctx.now }),
     authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, kind: "password_change", success: true }),
   ]);
+  await rotation.commit();
 }
 
 // ───────────────────────────────────────────────────────────────── first owner

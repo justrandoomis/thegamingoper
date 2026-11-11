@@ -12,6 +12,9 @@
  * offline device still has its answer; the server repeats them (Secure on HTTPS) and, for a signed-in customer,
  * appends the answer to the consent history (recordPersonalizationConsent). Guests' answers are never stored on the
  * server. Same-origin POSTs only (the root middleware's CSRF check).
+ *
+ * `consent=0` also FORGETS (integration pass): this device's recommendation signals and its `tt_rs` key, a signed-in
+ * customer's signals and the account's recently-viewed list — "stop and delete" deletes on the server too.
  */
 import { data } from "react-router";
 import type { Route } from "./+types/api.onboarding";
@@ -20,14 +23,16 @@ import { getCtx, serializeCookie, type RequestCtx } from "~/server/context.serve
 import { getDb } from "~/server/db.server";
 import { actionError } from "~/server/errors";
 import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
+import { CONSENT_CHANGES_PER_CUSTOMER } from "~/server/services/account/preferences.server";
 import { parseOnboarding, recordPersonalizationConsent } from "~/server/services/home.server";
+import { forgetPersonalData } from "./personal.server";
 import { CONSENT_COOKIE, INTRO_COOKIE, PLATFORMS_COOKIE, PREF_MAX_AGE_SEC, parseConsent, serializePlatformList } from "./personal";
 
 const NO_STORE = { "Cache-Control": "no-store" } as const;
 /** A handful of short fields. */
 const MAX_BODY_BYTES = 2 * 1024;
-/** Consent rows a signed-in customer may add per minute (people answer once; scripts would not stop). */
-const CONSENT_WRITES: RateLimitRule = { limit: 12, windowSec: 60 };
+/** Consent rows a signed-in customer may add per minute (people answer once; scripts would not stop) — one budget with the account settings. */
+const CONSENT_WRITES: RateLimitRule = CONSENT_CHANGES_PER_CUSTOMER;
 
 const setPref = (ctx: RequestCtx, name: string, value: string | null) =>
   ctx.setCookie(serializeCookie(ctx, name, value ?? "", { httpOnly: false, sameSite: "Lax", maxAge: value === null ? 0 : PREF_MAX_AGE_SEC }));
@@ -68,9 +73,12 @@ export async function action({ request, context }: Route.ActionArgs) {
       const db = getDb();
       const customer = await getCustomer(ctx, db);
       if (customer) {
-        await enforceRateLimit(db, await limitKey("onboarding", "customer", customer.customer.id), CONSENT_WRITES, ctx.now);
+        await enforceRateLimit(db, await limitKey("consent", "customer", customer.customer.id), CONSENT_WRITES, ctx.now);
         await recordPersonalizationConsent(db, { customerId: customer.customer.id, granted: answer.consent, ip: ctx.ip, now: ctx.now });
       }
+      // "Stop and delete what was kept": the recommendation signals of this device (and of the signed-in account),
+      // the device's session key, and the account's recently-viewed list. The browser wiped its own list already.
+      if (answer.consent === false) await forgetPersonalData(ctx, db, customer?.customer.id ?? null);
     }
     return data({ ok: true as const, consent, platforms: consent === true ? (answer.platforms ?? null) : [] }, { headers: NO_STORE });
   } catch (error) {

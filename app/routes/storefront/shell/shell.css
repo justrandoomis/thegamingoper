@@ -388,6 +388,39 @@
     inset-inline-end: -6px;
   }
 
+  /* task screens (< 1200, a page with its own task bar): once scrolled the bar is back · title · cart (§9.2). The
+     pieces are in the markup from the server on (no layout shift, no hydration difference) and hidden until then;
+     the search field returns while it has focus, so typing never loses its field. */
+  .shell-task {
+    display: none;
+  }
+  @media (max-width: 74.99rem) {
+    .shell-header[data-task][data-scrolled] .shell-task {
+      display: flex;
+      flex: none;
+      align-items: center;
+    }
+    .shell-header[data-task][data-scrolled] .shell-logo {
+      display: none;
+    }
+    .shell-header[data-task][data-scrolled] .shell-task--title {
+      flex: 1 1 auto;
+      display: block;
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+      font: var(--type-sub);
+    }
+    .shell-header[data-task][data-scrolled]:has(.shell-task--title):not(:has(.shell-search :focus)) .shell-search {
+      display: none;
+    }
+    .shell-header[data-task][data-scrolled]:has(.shell-search :focus) .shell-task--title {
+      display: none;
+    }
+  }
+
   /* ───────────── mega menu (≥1200): one live glass sheet dropping from the header, bottom corners r-xl ───────────── */
   .shell-mega {
     position: absolute;

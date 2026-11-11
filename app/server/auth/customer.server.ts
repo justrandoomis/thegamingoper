@@ -15,7 +15,8 @@
  * Sessions: a random token in an httpOnly, SameSite=Lax cookie; only its SHA-256 is stored. They
  * last 30 days from the last visit (the expiry slides, written at most once an hour), end when the
  * customer signs out, changes the password (all other devices) or is blocked, and can be listed and
- * revoked one by one.
+ * revoked one by one. The device that changes the password or confirms the phone number with a code
+ * continues on a NEW token (the old cookie, and any copy of it, stops working).
  *
  * PHONE NUMBERS ARE NOT VERIFIED AT SIGN-UP: no SMS provider is configured, so anyone can register
  * any number. `customer.phoneVerified` says whether a one-time code confirmed it. Do not attach
@@ -36,6 +37,7 @@ import type { BatchStatement, Db } from "../db/drizzle.server";
 import { customerSessions, customers } from "../db/schema";
 import { isUniqueViolation, runBatch } from "../db/tx.server";
 import { AppError, invalid, rateLimited, unauthorized } from "../errors";
+import { cleanLine } from "../text.server";
 import { RATE_LIMITS, enforceRateLimit, limitKey, rateLimit } from "../ratelimit.server";
 import { CUSTOMER_PASSWORD_MIN, authEventStatement, originOf, passwordField, readSessionToken, safeNextPath, sessionCookie, sessionIdHash, type AuthCtx, type SessionSummary } from "./common.server";
 import { verifyOtp, type OtpOptions } from "./otp.server";
@@ -53,6 +55,15 @@ export const CUSTOMER_LOGIN_PATH = "/account/login";
 const SESSION_MS = CUSTOMER_SESSION_DAYS * 24 * 60 * 60 * 1000;
 /** The sliding expiry is written at most this often, to keep database writes rare. */
 const REFRESH_AFTER_MS = 60 * 60 * 1000;
+/**
+ * How long after a session was revoked a request that still carries it leaves the cookie alone. Such a request may
+ * have left the browser before a password change, a confirmed phone number or a new sign-in replaced the session, and
+ * its answer may arrive after the answer that set the successor: deleting "tt_sid" then would delete the NEW cookie
+ * and sign the device out. The old token is refused all the same; the dead cookie is cleared by a later request.
+ * Measured at the server, from the revocation to that request's own session lookup — which happens as the request
+ * arrives, so the window only has to cover the network's delay, however long the answer then takes.
+ */
+export const REVOKED_COOKIE_GRACE_MS = 30 * 1000;
 
 export type CustomerProfile = {
   id: string;
@@ -124,16 +135,22 @@ export type CustomerSessionRow = Awaited<ReturnType<typeof customerSessionQuery>
 export async function resolveCustomerSession(ctx: AuthCtx, db: Db, token: string, rows: readonly CustomerSessionRow[]): Promise<CustomerSession | null> {
   const row = rows[0];
   if (!row || row.revokedAt !== null || row.expiresAt <= ctx.now || row.status !== "active") {
-    ctx.setCookie(cookieFor(ctx, "", 0));
+    // A session revoked a moment ago may have a successor in this browser already (REVOKED_COOKIE_GRACE_MS).
+    const justReplaced = row !== undefined && row.revokedAt !== null && ctx.now - row.revokedAt < REVOKED_COOKIE_GRACE_MS;
+    if (!justReplaced) ctx.setCookie(cookieFor(ctx, "", 0));
     return null;
   }
   let expiresAt = row.expiresAt;
   if (ctx.now - row.lastSeenAt > REFRESH_AFTER_MS) {
     expiresAt = ctx.now + SESSION_MS;
-    await db
+    const refreshed = await db
       .update(customerSessions)
       .set({ lastSeenAt: ctx.now, expiresAt })
-      .where(and(eq(customerSessions.idHash, row.idHash), isNull(customerSessions.revokedAt)));
+      .where(and(eq(customerSessions.idHash, row.idHash), isNull(customerSessions.revokedAt)))
+      .returning({ idHash: customerSessions.idHash });
+    // Revoked between the read and this write (a rotation in another request): a guest now, and the cookie — which may
+    // already be its successor's in the browser — is left alone.
+    if (refreshed.length === 0) return null;
     ctx.setCookie(cookieFor(ctx, token, SESSION_MS / 1000));
   }
   return {
@@ -197,7 +214,8 @@ export async function requireCustomer(ctx: AuthCtx, db: Db, options: { next?: st
 const SignUpInput = z.object({
   phone: z.string({ error: "required" }).trim().min(1, "required").max(40, "phone_invalid"),
   password: passwordField(CUSTOMER_PASSWORD_MIN),
-  name: z.string().trim().min(2, "too_short").max(80, "too_long").optional(),
+  // Control, bidi-override and invisible characters removed first (~/server/text.server); passwords are never touched.
+  name: z.string().overwrite(cleanLine).trim().min(2, "too_short").max(80, "too_long").optional(),
   locale: z.enum(LOCALE_CODES as [Locale, ...Locale[]]).optional(),
 });
 
@@ -245,6 +263,47 @@ function revokeSessionStatement(db: Db, sessionId: string, now: number): BatchSt
     .update(customerSessions)
     .set({ revokedAt: now })
     .where(and(eq(customerSessions.idHash, sessionId), isNull(customerSessions.revokedAt)));
+}
+
+type SessionRotation = {
+  /** For the change's own batch: end this device's session and start its successor. */
+  statements: BatchStatement[];
+  /** After the batch committed: sets the new cookie and makes the rest of this request use the new session. */
+  commit: () => CustomerSession;
+};
+
+/**
+ * A new token for this device after its account's credentials changed (a new password, a phone number confirmed with
+ * a code), so that a COPY of the cookie stops working with the change (OWASP: renew the session id after a credential
+ * or privilege change). The successor keeps the session's start (the devices list still says "since …") and gets the
+ * usual 30 days. Run `statements` in the change's batch, then `commit()`: from then on this request runs on the new
+ * session — never on the old cookie, whose dead lookup would queue a cookie-clearing header behind the new cookie.
+ */
+async function sessionRotation(ctx: AuthCtx, db: Db, current: CustomerSession, customer: Partial<CustomerProfile> = {}): Promise<SessionRotation> {
+  const token = randomToken();
+  const idHash = await sessionIdHash(token);
+  const createdAt = current.session.createdAt;
+  const expiresAt = ctx.now + SESSION_MS;
+  return {
+    statements: [
+      revokeSessionStatement(db, current.session.id, ctx.now),
+      db.insert(customerSessions).values({
+        idHash,
+        customerId: current.customer.id,
+        createdAt,
+        lastSeenAt: ctx.now,
+        expiresAt,
+        ip: ctx.ip,
+        userAgent: ctx.userAgent ? ctx.userAgent.slice(0, 300) : null,
+      }),
+    ],
+    commit() {
+      ctx.setCookie(cookieFor(ctx, token, SESSION_MS / 1000));
+      const session: CustomerSession = { ...current, customer: { ...current.customer, ...customer }, session: { id: idHash, createdAt, expiresAt } };
+      lookups.set(ctx, Promise.resolve(session));
+      return session;
+    },
+  };
 }
 
 function established(ctx: AuthCtx, row: { id: string; name: string | null; phoneE164: string; phoneVerifiedAt: number | null; email: string | null; locale: Locale; vipTier: string | null }, token: string, idHash: string): CustomerSession {
@@ -383,7 +442,8 @@ const ChangePasswordInput = z.object({
 });
 
 /**
- * Changes the signed-in customer's password and signs every other device out.
+ * Changes the signed-in customer's password, signs every other device out and moves this device to a new session
+ * token (set on `ctx`, so the route's response carries it; the old cookie, and any copy of it, stops working).
  * Throws AppError: `unauthorized`, `invalid` (fields.currentPassword = "invalid_credentials", fields.newPassword), `rate_limited`.
  */
 export async function changeCustomerPassword(ctx: AuthCtx, db: Db, raw: unknown): Promise<void> {
@@ -398,23 +458,27 @@ export async function changeCustomerPassword(ctx: AuthCtx, db: Db, raw: unknown)
     throw invalid({ currentPassword: "invalid_credentials" });
   }
   const password = await hashPassword(input.newPassword);
-  await db.batch([
+  const rotation = await sessionRotation(ctx, db, current);
+  await runBatch(db, [
     db.update(customers).set({ passwordHash: password.hash, passwordIters: password.iterations, updatedAt: ctx.now }).where(eq(customers.id, current.customer.id)),
     revokeCustomerSessionsStatement(db, current.customer.id, ctx.now, current.session.id),
+    ...rotation.statements,
     authEventStatement(db, ctx, { subjectKind: "customer", subjectId: current.customer.id, kind: "password_change", success: true }),
   ]);
+  rotation.commit();
 }
 
 /**
  * Marks the signed-in customer's phone as verified, given a correct one-time code that was
- * requested for that phone with purpose "verify_phone". Throws `unauthorized` or `otp_invalid`.
+ * requested for that phone with purpose "verify_phone". A confirmed number gives the account more reach (guest orders,
+ * order data by phone), so this device moves to a new session token as well (set on `ctx`; the old cookie stops
+ * working; other devices stay signed in). Returns the new session. Throws `unauthorized` or `otp_invalid`.
  */
 export async function confirmCustomerPhone(ctx: AuthCtx, db: Db, input: { code: string; id?: string | null }, options: OtpOptions): Promise<CustomerSession> {
   const current = await getCustomer(ctx, db);
   if (!current) throw unauthorized();
   await verifyOtp(ctx, db, { phone: current.customer.phoneE164, purpose: "verify_phone", code: input.code, id: input.id }, options);
-  await db.update(customers).set({ phoneVerifiedAt: ctx.now, updatedAt: ctx.now }).where(eq(customers.id, current.customer.id));
-  const session: CustomerSession = { ...current, customer: { ...current.customer, phoneVerified: true } };
-  lookups.set(ctx, Promise.resolve(session));
-  return session;
+  const rotation = await sessionRotation(ctx, db, current, { phoneVerified: true });
+  await runBatch(db, [db.update(customers).set({ phoneVerifiedAt: ctx.now, updatedAt: ctx.now }).where(eq(customers.id, current.customer.id)), ...rotation.statements]);
+  return rotation.commit();
 }

@@ -59,13 +59,22 @@ cells are plain text in the page's direction — an auto isolate (`<bdi>`, the k
 الأصلي 2020)" at its brackets. Compare links use one `ids=` per product (`?ids=a&ids=b`), search links encode spaces as `+`:
 both stay byte-identical when the server re-encodes the query (see Known gaps).
 
-## Integration slots (for the integration pass)
+## Cross-area pieces (integration pass, 2026-11-11)
 
-- `CompareToggle` (`catalog/CompareToggle.tsx`) for the product page and cards; reads the `catalog` namespace — the host loader
-  must add `"catalog"` to `messagesFor`. Hook/store: `useCompare`, `compareHref`, `addToCompare` (`catalog/compare-client.ts`).
+- `CompareToggle` (`catalog/CompareToggle.tsx`) is on the product page (its loader adds `"catalog"` to `messagesFor`).
+  Hook/store: `useCompare`, `compareHref`, `addToCompare` (`catalog/compare-client.ts`).
+- Cards carry NO compare key — decided: one walled key per card (DESIGN §9.5; the socket is the card's one key, and a
+  card with options already opens the quick look there). Comparing starts from a product page or `/compare`'s own
+  same-kind suggestions; the tray (`CompareTray`) brings a saved list back.
 - `searchProducts(db, locale, q, opts)` → `Paged<ProductCardData> & { suggestions, zeroResultHelp }` (+ facets) for other areas.
-- Recommendation shelves on hubs/search (`getRecommendations(context: "search")`) are not wired: devices area's service.
-- Cards carry no compare key on lists (one walled key per card); the tray (`CompareTray`) brings a saved list back.
+- Recommendation shelves (devices area, `recommendationsFor(context: "search")`, streamed, drawn by the shared
+  `devices/components/RecommendationShelves` at the bottom): platform and category hubs and search results show only
+  the shopper's personal shelf, with consent (the store's picks would repeat the list); search without a query shows
+  the personal shelf and the store's picks (for the shopper's platforms when they consented), each with its reason.
+  Zero-result searches keep their own picks and get no shelf. A hub's filters never wait for the shelves, and the
+  shelves never flicker: a newer answer replaces the old one only once it has arrived.
+- Device tiles (`components/Hub.tsx → DeviceShortcuts`) are zoom links whose picture is the shared element
+  `device-image:<slug>` — it grows into the device hub's stage.
 
 ## Verify
 

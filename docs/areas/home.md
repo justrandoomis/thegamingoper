@@ -9,8 +9,9 @@ Owner: home area. Brief §2 "Intro" / "Onboarding", §3.1–3.2, §6 (privacy), 
 | Path | File | What |
 |---|---|---|
 | `/` (`/en`, `/ckb`) | `home.tsx` | the page; `?platform=nintendo\|playstation\|xbox\|handheld` lights the stage for one platform — shareable, kept by Back, no request (`shouldRevalidate` skips the loader when only `platform` changes; every platform's hero and shelves are in the loader data, ~45 KB for 61 cards) |
-| `POST /api/onboarding` | `api.onboarding.ts` | `intro=seen`, `consent=1\|0`, `platforms=a.b` → `tt_intro` / `tt_consent` / `tt_platforms` cookies; a signed-in customer's answer is appended to `consents` (kind personalization, source `home_onboarding`); 400 `invalid` + fields, 405, 429 |
-| `GET /api/recently-viewed?ids=&locale=` | `api.recently-viewed.ts` | cards for the ids this browser remembers (≤ 12, order kept, unknown/unpublished left out), `no-store`; 400 for more ids or malformed ones |
+| `POST /api/onboarding` | `api.onboarding.ts` | `intro=seen`, `consent=1\|0`, `platforms=a.b` → `tt_intro` / `tt_consent` / `tt_platforms` cookies; a signed-in customer's answer is appended to `consents` (kind personalization, source `home_onboarding`); `consent=0` also forgets on the server (`personal.server.ts → forgetPersonalData`: this device's and the account's recommendation signals, the `tt_rs` cookie, the account's recently-viewed list); 400 `invalid` + fields, 405, 429 |
+| `GET /api/recently-viewed?ids=&locale=` | `api.recently-viewed.ts` | a guest's device list: cards for the ids this browser remembers (≤ 12, order kept, unknown/unpublished left out), `no-store`; 400 for more ids or malformed ones. `?scope=account` → a signed-in, consenting customer's account list (`scope: "account"`), else no cards (`scope: "none"`) |
+| `POST /api/recently-viewed` | same file | signed in + consent only: `productId` (a product page on screen) and/or `device=[{id,at}]` (this device's guest list handed to the account) → `{ ok, kept, merged }`; `intent=clear` → the account's list cleared. A guest's view is never stored on the server (`kept: false`). CSRF-checked, 60/min per IP |
 
 ## The page, top to bottom
 
@@ -29,8 +30,10 @@ Owner: home area. Brief §2 "Intro" / "Onboarding", §3.1–3.2, §6 (privacy), 
 5. **Coming soon**: 4 pre-orders and the unreleased variants (grouped per product and day: "3 نسخ جديدة") with the
    release date from the research; no add key.
 6. **Shop by platform**: category cards (1:1 niche, lead photo, LED + name, real product count) → `/platform/<slug>`.
-7. **Recently viewed**: only with consent, from this device, loaded after the page is on screen, "امسح القائمة".
-8. *Recommendation shelves slot* (empty until the integration pass).
+7. **Recently viewed**: only with consent, the shopper's ONE list (below: this device's for a guest, the account's when
+   signed in), loaded after the page is on screen, "امسح القائمة".
+8. **Based on your browsing** (devices area, `home:personal`): only with consent, streamed (`recommendationsFor`,
+   `personalOnly` — the store's picks would repeat the shelves above); hidden at once when the shopper stops.
 9. **Make TamTam yours** (`#personal`): what is remembered here, change platforms, stop and delete, watch the intro again.
 
 ## Rules the data follows (`home.server.ts`; `tests/home.test.ts`, 30 tests)
@@ -57,11 +60,31 @@ Owner: home area. Brief §2 "Intro" / "Onboarding", §3.1–3.2, §6 (privacy), 
 | cookie `tt_intro` | `1` | the intro was finished or skipped |
 | cookie `tt_consent` | `1` / `0` | the shopper answered (never pre-set) |
 | cookie `tt_platforms` | `playstation.xbox` | only while `tt_consent=1`; deleted on `0` |
-| localStorage `tt:recent` | `[{ id, at }]`, ≤ 12, 90 days | only while `tt_consent=1`; wiped on `0` |
+| localStorage `tt:recent` | `[{ id, at }]`, ≤ 12, 90 days | a GUEST's views, only while `tt_consent=1`; wiped on `0`; handed to the account (then removed) after signing in |
 
 The intro asks nothing: platforms picked there light **this visit**. If nothing was ever asked, a sheet then asks
 "نتذكّر منصّاتك؟" with two equal keys; declining or dismissing keeps nothing. Guests' answers stay on the device. On the
 client read consent with `readConsent()` (root `personalizationConsent` refreshes only on a document load or a POST).
+
+### Recently viewed — one store per shopper (decided by the integration pass, 2026-11-11)
+
+| Shopper | Where a view is kept | Shown on |
+|---|---|---|
+| guest (consent) | this device only (`tt:recent`); the server never sees the list | home (cards by `GET ?ids=`) |
+| signed-in customer (consent) | the account only (`recently_viewed`, ≤ 30, account area's service); nothing on the device | home (`GET ?scope=account`), account overview |
+| no consent | nowhere | — |
+
+- The product page, once on screen, calls `recordProductView(id, { signedIn })` (`personal.ts`): a guest's view goes to
+  the device list, a customer's to `POST /api/recently-viewed` — exactly one store per view, so nothing is counted twice.
+  Prefetching a card's link never counts (no loader writes).
+- After signing in, the first product page, home visit or account overview hands this device's guest list to the
+  account once (`handDeviceListToAccount` → `mergeDeviceRecentlyViewed`: published products only, the newest time wins,
+  a product on both lists stays one row) and removes those entries from the device — so a shared device keeps nothing of
+  a customer after they sign out.
+- "امسح القائمة" clears the list that is shown (device or account). "Stop and delete" (this page) and withdrawing
+  personalization in the account settings clear the device list, the account's list and the recommendation signals.
+- The cart-token guest rows of `recently_viewed` (account service) are still read and merged at sign-in for old data,
+  but nothing writes them any more.
 
 ## The intro (`Intro.tsx`)
 
@@ -89,16 +112,16 @@ banner; lighting a platform needs no network; adds roll back honestly) · succes
 - **The hero is not staff-selectable yet** (admin module 17 not built): when it is, read a `banners` row
   (placement `home_hero`, accent = platform, link `/p/<slug>`) before the automatic rule in `pickHero`.
 
-## Integration slots
+## Integration (wired 2026-11-11)
 
-- `RecommendationShelves` (`Shelves.tsx`) + loader `recommendations: []` → devices' `getRecommendations(db, { locale,
-  context: "home", platformSlugs: prefs.platforms, consent: prefs.consent === true, … })`.
-- **Recently viewed has two stores today:** this device's list (`personal.ts`, `rememberViewed(product.id)` for the
-  product page) and the account area's server table (`account/recently-viewed.server.ts`). Pick one in the integration
-  pass (e.g. the product page records server-side, the home loader reads `listRecentlyViewed` and this endpoint goes);
-  "stop remembering" here should then also clear the server copy.
-- Device hub links from the hero are left out until `/device/*` exists; a "replay the intro" entry in account settings
-  or Preferences can link to `/#personal`.
+- ~~`RecommendationShelves` slot~~ — done: the loader streams `recommendationsFor(db, who, { context: "home",
+  platformSlugs, personalOnly: true })` (devices area); `Shelves.tsx → RecommendationShelves` draws it with the shared
+  `devices/components/RecommendationShelves` (cards inflate when they arrive; a failure is a retry panel).
+- ~~Two recently-viewed stores~~ — decided: one store per shopper (table above).
+- ~~Forget on withdrawal~~ — done: `POST /api/onboarding consent=0` → `forgetPersonalData` (also used by the account
+  settings).
+- Open: device hub links from the hero (the hero's product page has the hub link); a "replay the intro" entry in
+  account settings or Preferences can link to `/#personal`.
 
 ## Verified / not verified
 

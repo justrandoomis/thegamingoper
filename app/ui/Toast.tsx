@@ -12,6 +12,7 @@ import { createPortal } from "react-dom";
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useT } from "~/i18n/react";
 import { dematerialize, durations, easings, getMotionTier, materialize, springTiming } from "~/motion";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { useOverlayDepth, useOverlayRoot } from "./Dialog";
 import { Glass } from "./Glass";
@@ -383,11 +384,11 @@ function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
         <span className="text-[13.5px] font-semibold leading-[1.45] text-ink">{toast.kind === "cart" ? (toast.title ?? t("toast.added")) : toast.title}</span>
         {toast.kind === "cart" && toast.name ? (
           <span className="is-2 text-[12.5px] leading-[1.5]">
-            <bdi>{toast.name}</bdi>
+            <BidiLabel>{toast.name}</BidiLabel>
             {toast.variant ? (
               <>
                 {" · "}
-                <bdi>{toast.variant}</bdi>
+                <BidiLabel>{toast.variant}</BidiLabel>
               </>
             ) : null}
           </span>

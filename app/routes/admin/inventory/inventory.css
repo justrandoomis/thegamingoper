@@ -1,0 +1,153 @@
+/*
+ * Admin module 04 (inventory) — what the UI kit and the shell do not cover: the location tree's indentation, the
+ * storage-location label sheet, the barcode island, the small flow chart, and the print views (labels, transfer
+ * slip). Tokens and logical properties only; nothing animates.
+ *
+ * Printing is the browser's (no printer integration): a page that holds `.inv-print` prints only that block — the
+ * shell's chrome (rail, tool bar, tab bar), the module's section links and anything marked `.inv-no-print` are
+ * dropped, and the block prints ink on paper also from a dark screen (data-theme="light": pinned on the label sheet,
+ * set on the transfer slip while printing — usePrintInLight).
+ */
+@layer components {
+  .inv-indent {
+    padding-inline-start: calc(var(--depth, 0) * 1.25rem);
+  }
+
+  /* KPI rows: two figures side by side on a phone, more as the page widens; a long figure (money) takes a row */
+  .inv-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .inv-kpis > .adm-card {
+    min-inline-size: 0;
+  }
+  .inv-kpis > .inv-kpi--wide {
+    grid-column: span 2;
+  }
+  @media (min-width: 48rem) {
+    .inv-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    }
+    .inv-kpis > .inv-kpi--wide {
+      grid-column: auto;
+    }
+  }
+
+  /* a barcode is always drawn ink on paper (it must scan from a dark screen too) */
+  .inv-barcode {
+    display: grid;
+    gap: var(--s-1);
+    justify-items: center;
+    padding: var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .inv-barcode__bars {
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    block-size: 64px;
+  }
+  .inv-qr {
+    inline-size: 96px;
+    block-size: 96px;
+  }
+
+  .inv-label-sheet {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  }
+  .inv-label {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-2) var(--s-3);
+    align-items: center;
+    padding: var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    break-inside: avoid;
+  }
+  .inv-label__bars {
+    grid-column: 1 / -1;
+    block-size: 56px;
+  }
+  .inv-label__code {
+    font: 700 18px/1.2 var(--font-text);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* sales versus inbound: two flat ink bars per period */
+  .inv-chart {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(1.25rem, 1fr);
+    align-items: end;
+    gap: var(--s-2);
+    block-size: 10rem;
+    padding: var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow-x: auto;
+  }
+  .inv-chart__group {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    gap: 2px;
+    block-size: 100%;
+  }
+  .inv-chart__bar {
+    inline-size: 0.5rem;
+    min-block-size: 1px;
+    border-start-start-radius: 2px;
+    border-start-end-radius: 2px;
+  }
+  .inv-chart__bar--sold {
+    background: var(--ink);
+  }
+  .inv-chart__bar--in {
+    background: var(--ink-3);
+  }
+  .inv-swatch {
+    display: inline-block;
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+
+  @media print {
+    /* the printed block is light (labels pin data-theme="light"; the transfer slip takes it while printing) — so is the page */
+    :root:has(.inv-print),
+    :root:has(.inv-print) body {
+      background: none;
+    }
+    :root:has(.inv-print) .adm {
+      display: block;
+      background: none;
+    }
+    :root:has(.inv-print) .adm-rail,
+    :root:has(.inv-print) .adm-top,
+    :root:has(.inv-print) .adm-tabbar,
+    :root:has(.inv-print) .adm-skip,
+    :root:has(.inv-print) .inv-nav,
+    :root:has(.inv-print) .inv-no-print {
+      display: none;
+    }
+    :root:has(.inv-print) .adm-main {
+      padding: 0;
+    }
+    .inv-print {
+      color: var(--ink);
+    }
+    .inv-label {
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+  }
+}

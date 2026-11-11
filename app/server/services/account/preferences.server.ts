@@ -32,6 +32,15 @@ export const CONSENT_COOKIE_MAX_AGE_SEC = 365 * 24 * 60 * 60;
 /** Bump when the privacy policy text people agree to changes. */
 export const CONSENT_POLICY_VERSION = "2026-11";
 
+/**
+ * Consent answers a signed-in customer may send per HOUR, wherever they answer (the home page's panel — POST
+ * /api/onboarding — and the account settings), counted under one key: limitKey("consent", "customer", id). People
+ * answer once; `consents` is append-only (it refuses DELETE), so a script toggling an answer must not be able to grow
+ * it without end (security review 2026-11: the settings form had no limit; the second pass made the window an hour —
+ * per minute it still allowed 17,280 answers a day, two rows each from the settings form).
+ */
+export const CONSENT_CHANGES_PER_CUSTOMER = { limit: 12, windowSec: 60 * 60 } as const;
+
 export type ConsentSubject = { subjectType: "customer" | "guest_contact" | "session" | "order"; subjectId: string };
 
 /** The newest answer of a subject to one consent question; null = never asked. */

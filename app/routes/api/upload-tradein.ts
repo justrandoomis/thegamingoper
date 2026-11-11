@@ -21,9 +21,10 @@ import { env } from "cloudflare:workers";
 import { data } from "react-router";
 import type { Route } from "./+types/upload-tradein";
 import { getCustomer } from "~/server/auth/customer.server";
+import { readFormData } from "~/server/body.server";
 import { getCtx, serializeCookie, type RequestCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { actionError } from "~/server/errors";
+import { actionError, AppError, isAppError } from "~/server/errors";
 import { enforceRateLimit, limitKey, RATE_LIMITS } from "~/server/ratelimit.server";
 import { fileResponse, kvBlobStore } from "~/server/storage.server";
 import { MAX_IMAGE_BYTES } from "~/server/uploads.server";
@@ -79,9 +80,12 @@ export async function action({ request, context }: Route.ActionArgs) {
   const store = kvBlobStore(env.KV);
   try {
     await enforceRateLimit(db, await limitKey("upload", "ip", ctx.ip), RATE_LIMITS.upload, ctx.now);
-    const length = Number(request.headers.get("Content-Length") ?? "0");
-    if (Number.isFinite(length) && length > MAX_BODY_BYTES) return data({ ok: false as const, code: "upload_too_large" }, { status: 413, headers: NO_STORE });
-    const form = await request.formData();
+    // Counted while it is read (AppError upload_too_large past the limit), also without a Content-Length. A body that
+    // is not form data is a 400, never an unexpected error.
+    const form = await readFormData(request, MAX_BODY_BYTES).catch((error: unknown) => {
+      if (isAppError(error)) throw error;
+      throw new AppError("upload_missing", 400, { fields: { file: "upload_missing" } });
+    });
     const intent = form.get("intent");
 
     if (intent === "remove") {

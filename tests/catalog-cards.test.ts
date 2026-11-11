@@ -27,6 +27,7 @@ import { seedDemo } from "~/server/db/seed/demo";
 import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { getCardsByIds, getDeals, getNewArrivals, getUsedSpotlight, listCards, MAX_CARD_PAGE } from "~/server/services/catalog/cards.server";
+import { loadListingRows } from "~/server/services/catalog/listing.server";
 import { getCategoryTree, getNavTaxonomy, getPlatforms, invalidateNavTaxonomy, NAV_CHECK_MS } from "~/server/services/catalog/taxonomy.server";
 import type { CardSort } from "~/server/services/catalog/types";
 import { getAvailability } from "~/server/services/inventory/stock.server";
@@ -83,6 +84,30 @@ const P = {
   noVariant: { id: "prd_zz_novariant", v: "var_zz_novariant" }, // its only variant is inactive → never listed
 } as const;
 const LISTED = [P.console, P.game, P.controller, P.headset, P.twoVariants, P.bundle, P.preorder].map((p) => p.id);
+
+/**
+ * A second little world for RESEARCHED platforms: two more platforms ("zz-multi", "zz-other", a model each) and
+ * products sold for several of them, which have no platform_id — all on one department ("zz-multi-cat"). None of them
+ * is for "zz-test", so the first world's expectations do not move.
+ */
+const MULTI = { platform: "zz-multi", other: "zz-other", category: "zz-multi-cat" } as const;
+const Z = {
+  multi: "plt_zz_multi",
+  other: "plt_zz_other",
+  genM: "gen_zz_m",
+  genO: "gen_zz_o",
+  modelM: "dm_zz_m",
+  modelO: "dm_zz_o",
+  category: "cat_zz_multi",
+} as const;
+const M = {
+  game: "prd_zz_m_game", // game facts name models M and O → both platforms
+  headset: "prd_zz_m_headset", // rules: model M verified, platform O partial → both platforms
+  factsWin: "prd_zz_m_facts", // game facts name O only; its verified rule on M is not read (facts come first) → O
+  none: "prd_zz_m_none", // rules: M unverified, O's generation incompatible → no platform at all
+  own: "prd_zz_m_own", // its own platform is O (platform_id) → O, whatever its rules say
+  broken: "prd_zz_m_broken", // malformed attributes JSON (set after the batch); a verified rule on M's generation → M
+} as const;
 
 const name3 = (ar: string, en: string, ckb: string): L10n => ({ ar, en, ckb });
 
@@ -157,6 +182,9 @@ async function buildTestWorld(now: number) {
     // protected data that must never come back
     db.insert(variantCosts).values({ variantId: P.console.v, currency: "USD", unitCostMinor: 31_337_00, landedCostIqd: 424_242, updatedAt: now }),
 
+    // the researched-platforms world (see MULTI)
+    ...multiPlatformWorld(now),
+
     // search rows in three languages (search index writes go last in a batch — drizzle/README.md)
     ...searchIndexStatements(db, P.console.id, [
       { locale: "ar", name: "جهاز زقزق", keywords: "zx" },
@@ -165,6 +193,60 @@ async function buildTestWorld(now: number) {
     ]),
   ];
   await runBatch(db, statements);
+  // not JSON at all: the platform rules must read it as "no game facts", never fail the statement
+  await t.d1.prepare("UPDATE products SET attributes = '{\"game\": {\"platforms\": [' WHERE id = ?").bind(M.broken).run();
+}
+
+function multiPlatformWorld(now: number): BatchStatement[] {
+  const db = t.db;
+  const product = (id: string, kind: (typeof products.$inferInsert)["kind"], platformId: string | null, attributes: Record<string, unknown> | null, daysAgo: number) =>
+    db.insert(products).values({
+      id,
+      slug: id.replace(/^prd_/, "").replace(/_/g, "-"),
+      kind,
+      name: name3(`منتج ${id}`, `Product ${id}`, `بەرهەمی ${id}`),
+      platformId,
+      categoryId: Z.category,
+      attributes,
+      status: "published",
+      isDemo: false,
+      createdAt: now - 40 * DAY,
+      updatedAt: now - daysAgo * DAY,
+      publishedAt: now - daysAgo * DAY,
+    });
+  const variant = (productId: string, priceIqd: number) => db.insert(variants).values({ id: productId.replace(/^prd_/, "var_"), productId, sku: productId.toUpperCase(), priceIqd, isDefault: true });
+  const rule = (id: string, subjectId: string, targetType: "device_model" | "generation" | "platform", targetId: string, status: "verified" | "partial" | "unverified" | "incompatible") =>
+    db.insert(compatibilityRules).values({ id, subjectType: "product", subjectId, targetType, targetId, status });
+  const games = (...models: string[]) => ({ game: { platforms: models } });
+  return [
+    db.insert(platforms).values({ id: Z.multi, slug: MULTI.platform, name: name3("منصة متعددة", "Multi platform", "پلاتفۆرمی فرە"), accent: "brand", sort: 97 }),
+    db.insert(platforms).values({ id: Z.other, slug: MULTI.other, name: name3("منصة أخرى", "Other platform", "پلاتفۆرمی تر"), accent: "brand", sort: 98 }),
+    db.insert(deviceGenerations).values({ id: Z.genM, platformId: Z.multi, slug: "zz-gen-m", name: name3("جيل م", "Generation M", "نەوەی M") }),
+    db.insert(deviceGenerations).values({ id: Z.genO, platformId: Z.other, slug: "zz-gen-o", name: name3("جيل و", "Generation O", "نەوەی O") }),
+    db.insert(deviceModels).values({ id: Z.modelM, platformId: Z.multi, generationId: Z.genM, slug: "zz-model-m", name: name3("الجهاز م", "Model M", "ئامێری M"), status: "published", sort: 1 }),
+    db.insert(deviceModels).values({ id: Z.modelO, platformId: Z.other, generationId: Z.genO, slug: "zz-model-o", name: name3("الجهاز و", "Model O", "ئامێری O"), status: "published", sort: 1 }),
+    db.insert(categories).values({ id: Z.category, slug: MULTI.category, kind: "zz-multi", sort: 98, name: name3("قسم متعدد المنصات", "Multi-platform department", "بەشی فرە پلاتفۆرم") }),
+
+    product(M.game, "game", null, games("zz-model-m", "zz-model-o"), 11),
+    variant(M.game, 50_000),
+    product(M.headset, "headset", null, null, 12),
+    variant(M.headset, 75_000),
+    rule("cr_zz_m_head_m", M.headset, "device_model", Z.modelM, "verified"),
+    rule("cr_zz_m_head_o", M.headset, "platform", Z.other, "partial"),
+    product(M.factsWin, "game", null, games("zz-model-o"), 13),
+    variant(M.factsWin, 40_000),
+    rule("cr_zz_m_facts_m", M.factsWin, "device_model", Z.modelM, "verified"),
+    product(M.none, "accessory", null, { highlights: [] }, 14),
+    variant(M.none, 20_000),
+    rule("cr_zz_m_none_m", M.none, "device_model", Z.modelM, "unverified"),
+    rule("cr_zz_m_none_o", M.none, "generation", Z.genO, "incompatible"),
+    product(M.own, "console", Z.other, null, 15),
+    variant(M.own, 400_000),
+    rule("cr_zz_m_own_m", M.own, "device_model", Z.modelM, "verified"),
+    product(M.broken, "storage", null, null, 16),
+    variant(M.broken, 30_000),
+    rule("cr_zz_m_broken_g", M.broken, "generation", Z.genM, "verified"),
+  ];
 }
 
 beforeAll(async () => {
@@ -290,18 +372,41 @@ describe("listCards — sorting and keyset paging", () => {
 describe("listCards — filters", () => {
   const world = (options: Omit<Parameters<typeof listCards>[2], "sort" | "limit">) => listCards(t.db, "ar", { platform: PLATFORM, sort: "newest", limit: MAX_CARD_PAGE, ...options });
 
-  it("filters by platform (one or several)", async () => {
-    const [biggest] = await rows<{ slug: string; n: number }>(
-      "SELECT pl.slug, COUNT(*) AS n FROM products p JOIN platforms pl ON pl.id = p.platform_id WHERE p.status = 'published' AND pl.slug <> ? GROUP BY pl.slug ORDER BY n DESC, pl.slug LIMIT 1",
-      PLATFORM,
-    );
-    const one = await allPages({ platform: biggest.slug, sort: "featured", limit: 10 });
-    expect(one.total).toBe(Number(biggest.n));
-    expect(one.items.every((card) => card.platformSlug === biggest.slug)).toBe(true);
-    const both = await allPages({ platform: [biggest.slug, PLATFORM], sort: "newest", limit: MAX_CARD_PAGE });
-    expect(both.total).toBe(Number(biggest.n) + LISTED.length);
-    expect(new Set(both.items.map((card) => card.platformSlug))).toEqual(new Set([biggest.slug, PLATFORM]));
+  it("filters by the RESEARCHED platforms: own platform, else game facts, else verified/partial rules", async () => {
+    const of = async (platform: string | string[]) => sorted(ids((await allPages({ platform, sort: "newest", limit: MAX_CARD_PAGE })).items));
+    expect(await of(MULTI.platform)).toEqual(sorted([M.game, M.headset, M.broken]));
+    expect(await of(MULTI.other)).toEqual(sorted([M.game, M.headset, M.factsWin, M.own]));
+    expect(await of([MULTI.platform, MULTI.other])).toEqual(sorted([M.game, M.headset, M.factsWin, M.own, M.broken]));
+    // a multi-platform card names no platform of its own
+    const [game, own] = await getCardsByIds(t.db, "en", [M.game, M.own]);
+    expect([game.platformSlug, own.platformSlug]).toEqual([null, MULTI.other]);
     expect((await listCards(t.db, "ar", { platform: "no-such-platform", sort: "newest", limit: 5 })).total).toBe(0);
+    // an inactive platform lists nothing, even through game facts and rules
+    await t.d1.prepare("UPDATE platforms SET is_active = 0 WHERE id = ?").bind(Z.multi).run();
+    try {
+      expect(await of(MULTI.platform)).toEqual([]);
+      expect(await of(MULTI.other)).toEqual(sorted([M.game, M.headset, M.factsWin, M.own]));
+    } finally {
+      await t.d1.prepare("UPDATE platforms SET is_active = 1 WHERE id = ?").bind(Z.multi).run();
+    }
+  });
+
+  it("lists exactly what each platform hub lists (catalog area), multi-platform games and headsets included", async () => {
+    const platformRows = await rows<{ slug: string }>("SELECT slug FROM platforms WHERE is_active = 1");
+    let multi = 0;
+    for (const { slug } of platformRows) {
+      const { rows: hub } = await loadListingRows(t.db, { kind: "platform", slug }, t.now);
+      const viaCards = await allPages({ platform: slug, sort: "featured", limit: MAX_CARD_PAGE });
+      expect(viaCards.total, slug).toBe(hub.length);
+      expect(sorted(ids(viaCards.items)), slug).toEqual(sorted(hub.map((row) => row.id)));
+      for (const card of viaCards.items) expect([slug, null], card.slug).toContain(card.platformSlug);
+      if (!slug.startsWith("zz-")) multi += viaCards.items.filter((card) => card.platformSlug === null).length;
+    }
+    expect(multi).toBeGreaterThan(0); // the demo catalogue's games sold for PS5 and Xbox, headsets for several
+    // several platforms at once: the union
+    const [a, b] = ["playstation", "xbox"];
+    const union = new Set([...(await loadListingRows(t.db, { kind: "platform", slug: a }, t.now)).rows, ...(await loadListingRows(t.db, { kind: "platform", slug: b }, t.now)).rows].map((row) => row.id));
+    expect(sorted(ids((await allPages({ platform: [a, b], sort: "newest", limit: MAX_CARD_PAGE })).items))).toEqual(sorted([...union]));
   });
 
   it("includes sub-categories in a category", async () => {
@@ -650,7 +755,7 @@ describe("taxonomy", () => {
     const zz = nav.platforms.find((platform) => platform.slug === PLATFORM)!;
     expect(zz.href).toBe(`/platform/${PLATFORM}`);
     expect(zz.name).toBe("Test platform");
-    expect(zz.productCount).toBe(LISTED.length + 1); // the menu counts published products; the variant-less one included
+    expect(zz.productCount).toBe(LISTED.length); // what the hub lists: the draft and the variant-less product are not counted
     expect(zz.devices).toEqual([
       { label: "Model A", href: "/device/zz-model-a" },
       { label: "Model B", href: "/device/zz-model-b" },
@@ -660,20 +765,15 @@ describe("taxonomy", () => {
     expect(zz.games).toEqual([]);
     expect(zz.used).toBeNull();
 
-    // over the seeded catalogue: counts and links agree with SQL, shared categories carry ?platform=
-    for (const platform of nav.platforms) {
-      const [{ n }] = await rows<{ n: number }>("SELECT COUNT(*) AS n FROM products p JOIN platforms pl ON pl.id = p.platform_id WHERE pl.slug = ? AND p.status = 'published'", platform.slug);
-      expect(platform.productCount, platform.slug).toBe(Number(n));
-      for (const link of [...platform.devices, ...platform.accessories, ...platform.games, ...platform.consoles]) expect(link.label.length).toBeGreaterThan(0);
-      for (const link of [...platform.accessories, ...platform.games]) {
-        const [path, query] = link.href.split("?");
-        const [{ platformsInCategory }] = await rows<{ platformsInCategory: number }>(
-          "SELECT COUNT(DISTINCT COALESCE(p.platform_id, '-')) AS platformsInCategory FROM products p JOIN categories c ON c.id = p.category_id WHERE c.slug = ? AND p.status = 'published'",
-          path.slice("/c/".length),
-        );
-        expect(query === `platform=${platform.slug}`, link.href).toBe(Number(platformsInCategory) > 1);
-      }
-    }
+    // researched platforms: products sold for several count for each; a shared department's link filters by platform
+    const multi = nav.platforms.find((platform) => platform.slug === MULTI.platform)!;
+    const other = nav.platforms.find((platform) => platform.slug === MULTI.other)!;
+    expect([multi.productCount, other.productCount]).toEqual([3, 4]);
+    expect(multi.accessories).toEqual([{ label: "Multi-platform department", href: `/c/${MULTI.category}?platform=${MULTI.platform}` }]);
+    expect(other.accessories).toEqual([{ label: "Multi-platform department", href: `/c/${MULTI.category}?platform=${MULTI.other}` }]);
+    expect(other.consoles).toEqual([{ label: `Product ${M.own}`, href: `/p/${M.own.replace(/^prd_/, "").replace(/_/g, "-")}` }]);
+    expect(nav.categories.find((category) => category.slug === MULTI.category)!.count).toBe(6); // each product once
+
     const [{ used }] = await rows<{ used: number }>("SELECT COUNT(*) AS used FROM used_units WHERE status = 'listed'");
     expect(nav.usedCount).toBe(Number(used));
 
@@ -682,6 +782,48 @@ describe("taxonomy", () => {
     expect(parent.count).toBe(5);
     expect(parent.children).toEqual([{ slug: "zz-child", label: "Test branch", href: "/c/zz-child", count: 3 }]);
     expect(nav.categories.some((category) => category.kind === "used")).toBe(false);
+  });
+
+  it("agrees with the hubs (catalog area): every count, every link, every department", async () => {
+    invalidateNavTaxonomy();
+    const nav = await getNavTaxonomy(t.db, "en", { now: t.now });
+    const { rows: universe, dict } = await loadListingRows(t.db, { kind: "all" }, t.now);
+    const kindOf = new Map(dict.categories.map((row) => [row.slug, row.kind]));
+    let shared = 0;
+    for (const platform of nav.platforms) {
+      // the platform hub's count
+      const { rows: hub } = await loadListingRows(t.db, { kind: "platform", slug: platform.slug }, t.now);
+      expect(platform.productCount, platform.slug).toBe(hub.length);
+      for (const link of [...platform.devices, ...platform.accessories, ...platform.games, ...platform.consoles]) expect(link.label.length).toBeGreaterThan(0);
+      // every department link leads to a hub with products of this platform; it filters exactly when the hub also
+      // lists products that are not for this platform
+      const departmentLinks = [...platform.accessories, ...platform.games, ...(platform.allConsoles ? [platform.allConsoles] : [])];
+      for (const link of departmentLinks) {
+        const [path, query] = link.href.split("?");
+        const { rows: department } = await loadListingRows(t.db, { kind: "category", slug: path.slice("/c/".length) }, t.now);
+        expect(department.some((row) => row.platforms.includes(platform.slug)), link.href).toBe(true);
+        const holdsOthers = department.some((row) => !row.platforms.includes(platform.slug));
+        expect(query === `platform=${platform.slug}`, link.href).toBe(holdsOthers);
+        if (holdsOthers && !platform.slug.startsWith("zz-")) shared++;
+      }
+      // …and no department of this platform's products is missing (consoles have one "all consoles" link)
+      const linked = new Set(departmentLinks.map((link) => link.href.split("?")[0].slice("/c/".length)));
+      for (const row of hub) {
+        if (row.chain.length === 0) continue;
+        const rootKind = kindOf.get(row.chain[row.chain.length - 1]);
+        if (rootKind === "used" || rootKind === "consoles" || rootKind === "handhelds") continue;
+        expect(linked.has(row.chain[0]), `${platform.slug}: ${row.chain[0]}`).toBe(true);
+      }
+    }
+    expect(shared).toBeGreaterThan(0); // e.g. headsets: several platforms in one department
+    // departments and their sub-departments: the category hubs' counts
+    for (const category of nav.categories) {
+      for (const node of [category, ...category.children]) {
+        const { rows: hub } = await loadListingRows(t.db, { kind: "category", slug: node.slug }, t.now);
+        expect(node.count, node.slug).toBe(hub.length);
+      }
+    }
+    expect(nav.categories.reduce((sum, category) => sum + category.count, 0)).toBe(universe.filter((row) => row.chain.length > 0 && kindOf.get(row.chain[row.chain.length - 1]) !== "used").length);
   });
 
   it("names the menu in every language", async () => {

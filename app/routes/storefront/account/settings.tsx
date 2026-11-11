@@ -10,14 +10,16 @@ import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { AppError } from "~/server/errors";
 import { codeDelivery, confirmPhoneCode, requestPhoneCode } from "~/server/services/account/codes.server";
-import { getPreferences, recordConsent, setNotificationChannels } from "~/server/services/account/preferences.server";
-import { clearRecentlyViewed, MAX_RECENTLY_VIEWED } from "~/server/services/account/recently-viewed.server";
+import { enforceRateLimit, limitKey } from "~/server/ratelimit.server";
+import { CONSENT_CHANGES_PER_CUSTOMER, getPreferences, recordConsent, setNotificationChannels } from "~/server/services/account/preferences.server";
+import { MAX_RECENTLY_VIEWED } from "~/server/services/account/recently-viewed.server";
 import { NOTIFICATION_CHANNELS } from "~/server/services/account/types";
 import { Checkbox, Switch, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import { saveConsent } from "../home/personal";
+import { forgetPersonalData } from "../home/personal.server";
 import { accountFailure, formFields, otpOptions, requireSignedIn, setConsentCookie } from "./account.server";
 import { sectionOrder } from "./components/AccountNav";
 import { describeUserAgent } from "./components/device-name";
@@ -63,14 +65,17 @@ export async function action({ request, context }: Route.ActionArgs) {
         await setNotificationChannels(db, actor, { sms: fields.sms, whatsapp: fields.whatsapp, email: fields.email }, ctx.now);
         return ok({});
       case "consents": {
+        // One budget with the home page's panel: consents are append-only (security review 2026-11).
+        await enforceRateLimit(db, await limitKey("consent", "customer", customer.id), CONSENT_CHANGES_PER_CUSTOMER, ctx.now);
         const subject = { subjectType: "customer" as const, subjectId: customer.id };
         const marketing = fields.marketing === "1";
         const personalization = fields.personalization === "1";
         await recordConsent(db, { ...subject, kind: "marketing", granted: marketing, source: "account", ip: ctx.ip, now: ctx.now });
         await recordConsent(db, { ...subject, kind: "personalization", granted: personalization, source: "account", ip: ctx.ip, now: ctx.now });
         setConsentCookie(ctx, personalization);
-        // Withdrawing personalization forgets what was kept under it.
-        if (!personalization) await clearRecentlyViewed(db, { customerId: customer.id, cartToken: null });
+        // Withdrawing personalization forgets what was kept under it: the account's recently-viewed list and the
+        // recommendation signals of the account and of this device (home/personal.server — the home panel does the same).
+        if (!personalization) await forgetPersonalData(ctx, db, customer.id);
         return ok({});
       }
       case "phoneRequest": {

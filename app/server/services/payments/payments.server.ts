@@ -15,6 +15,9 @@
  *                     stock held while staff review it (the reservation no longer expires). The file
  *                     is re-owned by the proof (owner_type "payment_proof", owner_id = proof id), so
  *                     the private-file route can authorize it (payment_proof.read, or the order's shopper).
+ *                     The shopper sees it again at GET /api/files/:fileId (getPaymentProofFileForShopper:
+ *                     the order's signed-in owner, or its confirmation token as `?t=`); latestProofFileId
+ *                     tells the order page which file that is after a reload.
  *                     A proof whose image (sha256) or reference was seen before is accepted but
  *                     FLAGGED (`duplicate_of`) for the reviewer. Nothing here ever marks a payment paid.
  *   verifyPayment     (an EMPLOYEE with orders.payment.verify — a person, never a job)
@@ -38,7 +41,7 @@
  *
  * Must not import "cloudflare:workers".
  */
-import { and, desc, eq, inArray, isNotNull, ne, or, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { newId, sha256Hex, timingSafeEqual } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
@@ -49,6 +52,8 @@ import { files, orderEvents, orders, paymentProofs, payments, stockReservations,
 import { expectChanged, isDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, forbidden, invalid, notFound } from "~/server/errors";
 import { getSetting, getSettings } from "~/server/settings.server";
+import { cleanBlock, cleanLine } from "~/server/text.server";
+import { getFile, type BlobStore, type StoredFile } from "~/server/storage.server";
 import { mapPostingError, postCodCollected, postTransferVerified, postedBy } from "../accounting/post.server";
 import { normalizeOrderRef } from "../orders/manage.server";
 
@@ -112,6 +117,7 @@ export const SubmitProofInput = z.object({
   declaredAmountIqd: z.number().int("invalid").min(1, "too_small").max(1_000_000_000, "too_big"),
   note: z
     .string()
+    .overwrite(cleanBlock)
     .trim()
     .max(500, "too_long")
     .nullish()
@@ -119,6 +125,7 @@ export const SubmitProofInput = z.object({
   /** The transfer's reference number, when the shopper has one (used to flag duplicates). */
   reference: z
     .string()
+    .overwrite(cleanLine)
     .trim()
     .max(100, "too_long")
     .nullish()
@@ -235,6 +242,62 @@ export async function submitPaymentProof(db: Db, who: ProofSubmitter, raw: Submi
     throw error;
   }
   return { proofId, duplicateOf };
+}
+
+// ───────────────────────────────────────────────────────────────── proofs shown back to the shopper
+
+/** Who may see a stored transfer proof again: the signed-in customer who owns the order, or the confirmation link's token. */
+export type ProofViewer = { accessToken?: string | null; customerId?: string | null };
+
+const ACCESS_TOKEN_PATTERN = /^[A-Za-z0-9_-]{32,128}$/;
+
+/**
+ * The picture of a transfer proof, for the shopper of its order only (GET /api/files/:fileId shows it back after a
+ * reload): the file must be a live, private `payment_proof` attached to a proof of an order that `who.customerId` owns
+ * or whose confirmation token is `who.accessToken` (compared as hashes, in constant time). Null for everything else —
+ * an unknown id, another kind of file, a file not attached to a proof, someone else's order, a wrong or missing token —
+ * so the caller answers one 404 whatever the reason. Staff use the admin's own viewer (payment_proof.read). Returns the
+ * file only: never the duplicate flag, never a public URL.
+ */
+export async function getPaymentProofFileForShopper(db: Db, store: BlobStore, fileId: unknown, who: ProofViewer): Promise<StoredFile | null> {
+  if (typeof fileId !== "string" || !ID_PATTERN.test(fileId)) return null;
+  const row = await db
+    .select({ customerId: orders.customerId, accessTokenHash: orders.accessTokenHash })
+    .from(paymentProofs)
+    .innerJoin(files, eq(files.id, paymentProofs.fileId))
+    .innerJoin(payments, eq(payments.id, paymentProofs.paymentId))
+    .innerJoin(orders, eq(orders.id, payments.orderId))
+    .where(and(eq(paymentProofs.fileId, fileId), eq(files.kind, "payment_proof"), eq(files.visibility, "private"), isNull(files.deletedAt)))
+    .get();
+  if (!row) return null;
+  const byCustomer = typeof who?.customerId === "string" && who.customerId !== "" && row.customerId === who.customerId;
+  let byToken = false;
+  if (!byCustomer && typeof who?.accessToken === "string" && ACCESS_TOKEN_PATTERN.test(who.accessToken) && row.accessTokenHash) {
+    byToken = timingSafeEqual(row.accessTokenHash, await sha256Hex(who.accessToken));
+  }
+  if (!byCustomer && !byToken) return null;
+  return getFile(db, store, fileId);
+}
+
+/**
+ * The file id of an order's latest transfer proof (null when it has none), so the order page can show the picture again
+ * after a reload — as `shopperFilePath(fileId, token)` (~/server/storage.server), a URL the file route authorizes again
+ * on every request. It does not check who asks: call it only for an order already opened for this shopper
+ * (the confirmation token or the owner's session).
+ */
+export async function latestProofFileId(db: Db, orderRef: string): Promise<string | null> {
+  const ref = normalizeOrderRef(orderRef);
+  if (!ref) return null;
+  const row = await db
+    .select({ fileId: paymentProofs.fileId })
+    .from(paymentProofs)
+    .innerJoin(payments, eq(payments.id, paymentProofs.paymentId))
+    .innerJoin(orders, eq(orders.id, payments.orderId))
+    .innerJoin(files, eq(files.id, paymentProofs.fileId))
+    .where(and(eq(orders.ref, ref), isNull(files.deletedAt)))
+    .orderBy(desc(paymentProofs.createdAt), desc(paymentProofs.id))
+    .get();
+  return row?.fileId ?? null;
 }
 
 // ───────────────────────────────────────────────────────────────── verification (staff)

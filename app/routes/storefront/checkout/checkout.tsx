@@ -12,6 +12,7 @@ import type { MotionHandle } from "~/motion";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { getDefaultAddress } from "~/server/services/account/addresses.server";
 import { getCartView } from "~/server/services/cart.server";
 import { cx } from "~/ui/cx";
 import { EmptyState } from "~/ui/EmptyState";
@@ -47,7 +48,7 @@ import {
   type Step,
   type ValidationContext,
 } from "./checkout-form";
-import { cartTokenOf, confirmationPath, loadCheckoutData, nationalPhone, NO_STORE, placeCheckout, type CheckoutFailure } from "./checkout.server";
+import { addressPrefill, cartTokenOf, confirmationPath, loadCheckoutData, nationalPhone, NO_STORE, placeCheckout, recordPurchase, type CheckoutFailure, type SavedAddressPrefill } from "./checkout.server";
 import { AddressStep, fieldId, PaymentStep, ReviewStep } from "./components/CheckoutSteps";
 import { CommitKey } from "./components/CommitKey";
 
@@ -70,12 +71,18 @@ export async function loader({ context }: Route.LoaderArgs) {
   const db = getDb();
   const session = await getCustomer(ctx, db);
   const customerId = session?.customer.id ?? null;
-  const [cart, page] = await Promise.all([getCartView(db, { cartToken: cartTokenOf(ctx), customerId, locale: ctx.locale }, ctx.now), loadCheckoutData(db, { locale: ctx.locale, now: ctx.now, customerId })]);
+  const [cart, page, address] = await Promise.all([
+    getCartView(db, { cartToken: cartTokenOf(ctx), customerId, locale: ctx.locale }, ctx.now),
+    loadCheckoutData(db, { locale: ctx.locale, now: ctx.now, customerId }),
+    // the account area's address book: a signed-in customer starts from their default address (never forced)
+    customerId ? getDefaultAddress(db, customerId, ctx.locale) : Promise.resolve(null),
+  ]);
   return data(
     {
       cart,
       page,
       customer: session ? { name: session.customer.name ?? "", phone: nationalPhone(session.customer.phoneE164), phoneMasked: session.customer.phoneMasked } : null,
+      savedAddress: addressPrefill(address, page),
       /** For a form posted without script; the page itself keeps one key per checkout in sessionStorage. */
       attemptKey: randomToken(),
       i18n: messagesFor(ctx.locale, "checkout", "errors"),
@@ -90,7 +97,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   const session = await getCustomer(ctx, db);
   const form = await request.formData();
   const result = await placeCheckout(db, { cartToken: cartTokenOf(ctx), customer: session ? { id: session.customer.id } : null, locale: ctx.locale, ip: ctx.ip, storeMode: ctx.storeMode, requestId: ctx.requestId }, form, ctx.now);
-  if (result.ok) throw redirect(localePath(confirmationPath(result.ref, result.accessToken), ctx.locale), { headers: NO_STORE });
+  if (result.ok) {
+    // the purchase signal (devices area) — consent only, a new order only; a failure is logged and never touches the order
+    await recordPurchase(db, ctx, session?.customer.id ?? null, result);
+    throw redirect(localePath(confirmationPath(result.ref, result.accessToken), ctx.locale), { headers: NO_STORE });
+  }
   return data(result, { status: result.status, headers: NO_STORE });
 }
 
@@ -120,6 +131,13 @@ type ActionResult = CheckoutFailure;
 
 const COMMIT_LABEL: Record<Step, string> = { address: "keys.toPayment", payment: "keys.toReview", review: "keys.place" };
 
+const DELIVERY_FIELDS = ["governorateId", "districtId", "areaText", "addressText", "notes"] as const satisfies readonly FieldName[];
+
+/** The delivery part of the saved default address, as draft fields. */
+function savedDelivery(saved: SavedAddressPrefill): Pick<CheckoutDraft, (typeof DELIVERY_FIELDS)[number]> {
+  return { governorateId: saved.governorateId, districtId: saved.districtId, areaText: saved.areaText, addressText: saved.addressText, notes: saved.notes };
+}
+
 export default function CheckoutPage({ loaderData, actionData }: Route.ComponentProps) {
   const t = useT("checkout");
   const errorsT = useT("errors");
@@ -135,10 +153,18 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   const signedIn = loaderData.customer !== null;
 
   // ── the draft ────────────────────────────────────────────────────────────────
-  const prefill = useMemo<CheckoutDraft>(() => ({ ...EMPTY_DRAFT, phone: loaderData.customer?.phone ?? "", contactName: loaderData.customer?.name ?? "" }), [loaderData.customer]);
+  // A signed-in customer starts from their default address (account area) — every field stays editable.
+  const saved = loaderData.savedAddress;
+  const prefill = useMemo<CheckoutDraft>(() => {
+    const own = { ...EMPTY_DRAFT, phone: loaderData.customer?.phone ?? "", contactName: loaderData.customer?.name ?? "" };
+    if (!saved) return own;
+    return { ...own, ...savedDelivery(saved), phone: saved.phone || own.phone, contactName: saved.contactName || own.contactName };
+  }, [loaderData.customer, saved]);
   // A page rendered after a plain form post (no script) starts from what was posted.
   const posted = (actionData as ActionResult | undefined)?.values;
   const [draft, setDraft] = useState<CheckoutDraft>(() => (posted ? draftFromPosted(posted) : prefill));
+  /** The delivery fields came from the saved address (the page says so, with a way to start empty). */
+  const [fromSaved, setFromSaved] = useState(() => !posted && saved !== null);
   const [attemptKey, setAttemptKey] = useState<string>(loaderData.attemptKey);
   const [submittedKey, setSubmittedKey] = useState<string | null>(null);
   const [restored, setRestored] = useState(false);
@@ -149,7 +175,14 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   useLayoutEffect(() => {
     const stored = readStoredCheckout();
     if (stored) {
-      setDraft({ ...stored.draft, phone: stored.draft.phone || prefill.phone, contactName: stored.draft.contactName || prefill.contactName });
+      // This tab's own draft wins; only a draft without any delivery details (begun before signing in) takes the
+      // saved address's.
+      const empty = !stored.draft.governorateId && !stored.draft.areaText.trim() && !stored.draft.addressText.trim();
+      const delivery = empty && saved ? savedDelivery(saved) : {};
+      // the note stays while the delivery fields are still the saved address's (a reload after the first visit)
+      const same = saved !== null && stored.draft.governorateId === saved.governorateId && stored.draft.areaText === saved.areaText && stored.draft.addressText === saved.addressText;
+      setFromSaved(saved !== null && (empty || same));
+      setDraft({ ...stored.draft, ...delivery, phone: stored.draft.phone || prefill.phone, contactName: stored.draft.contactName || prefill.contactName });
       // The stored key stays with its cart; another cart (an order was placed since) starts a new attempt.
       const attempt = attemptFor(stored, loaderData.cart.id, newAttemptKey);
       setAttemptKey(attempt.key);
@@ -238,6 +271,17 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
     },
     [draft, context],
   );
+  /** "Start with an empty address": the saved one was a starting point, never a requirement. */
+  const clearSaved = useCallback(() => {
+    setDraft((current) => ({ ...current, governorateId: "", districtId: "", areaText: "", addressText: "", notes: "" }));
+    setIssues((current) => {
+      const next = { ...current };
+      for (const name of DELIVERY_FIELDS) delete next[name];
+      return next;
+    });
+    setFromSaved(false);
+    document.getElementById(fieldId("governorateId"))?.focus();
+  }, []);
 
   // ── step changes: focus, and no skipping ahead past an unfinished step ────────────────
   const focusNext = useRef<FieldName | "heading" | null>(null);
@@ -444,7 +488,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                 {t(`steps.title.${s}`)}
               </h2>
               {s === "address" ? (
-                <AddressStep draft={draft} issues={shown} onChange={update} onBlur={blur} data={page} cart={cart} signedIn={signedIn} />
+                <AddressStep draft={draft} issues={shown} onChange={update} onBlur={blur} data={page} cart={cart} signedIn={signedIn} saved={fromSaved && saved ? { label: saved.label } : null} onClearSaved={clearSaved} />
               ) : s === "payment" ? (
                 <PaymentStep draft={draft} issues={shown} onChange={update} onBlur={blur} data={page} cart={cart} signedIn={signedIn} />
               ) : (

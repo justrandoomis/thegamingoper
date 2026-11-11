@@ -22,9 +22,11 @@ import type { Route } from "./+types/home";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
 import type { ProductCardData, Shelf } from "~/lib/dto";
+import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { getHomeData } from "~/server/services/home.server";
+import { recommendationsFor } from "~/server/services/recommendations.server";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import type { ShellData } from "~/routes/storefront/shell/types";
 import { EmptyState } from "~/ui/EmptyState";
@@ -49,20 +51,24 @@ const GEAR_LIMIT = 8;
 
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
+  const db = getDb();
   const consent = parseConsent(ctx.cookie(CONSENT_COOKIE));
   const prefs = {
     introSeen: ctx.cookie(INTRO_COOKIE) === "1",
     consent,
     platforms: consent === true ? parsePlatformList(ctx.cookie(PLATFORMS_COOKIE)) : [],
   };
-  const home = await getHomeData(getDb(), { locale: ctx.locale, now: ctx.now });
+  const [home, session] = await Promise.all([getHomeData(db, { locale: ctx.locale, now: ctx.now }), getCustomer(ctx, db)]);
   return {
     home,
     prefs,
     /** Lit when the URL names no platform: the shopper's first saved platform that has a hero, else the store's first. */
     defaultFocus: resolveFocus(null, home.platforms, prefs.platforms),
-    /** INTEGRATION SLOT: the devices area's getRecommendations(…, { context: "home" }) shelves (./Shelves.tsx). */
-    recommendations: [] as Shelf<ProductCardData>[],
+    /**
+     * The devices area's shelf built from the shopper's own signals (getRecommendations, context "home") — only with
+     * consent, and only that shelf: the store's picks would repeat the page's own shelves. Streamed, never awaited.
+     */
+    recommendations: recommendationsFor(db, { cookie: ctx.cookie, customerId: session?.customer.id ?? null }, { locale: ctx.locale, context: "home", platformSlugs: prefs.platforms, personalOnly: true, now: ctx.now }, 8),
     i18n: messagesFor(ctx.locale, "home"),
   };
 }
@@ -91,6 +97,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const names = useNames();
   const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined;
   const shell = layout?.shell ?? null;
+  const signedIn = Boolean((useRouteLoaderData("root") as { customer?: unknown } | undefined)?.customer);
 
   // ── the platform in focus: the URL, else the server's choice (same on both sides, so hydration matches)
   const [searchParams, setSearchParams] = useSearchParams();
@@ -176,7 +183,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     setPrefs((current) => ({ ...current, consent: false, platforms: [] }));
     setVisitPlatforms([]);
     void sendOnboarding({ consent: false });
-    toast.info(t("personal.stopped"));
+    // the server forgets too (POST /api/onboarding consent=0): signals, and a signed-in customer's list
+    toast.info(t(signedIn ? "personal.stoppedAccount" : "personal.stopped"));
   };
 
   // ── what the page shows
@@ -199,7 +207,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     </>
   );
   const personal = (
-    <PersonalPanel consent={prefs.consent} platforms={prefs.consent === true ? prefs.platforms : []} onChoose={() => setPlatformsSheet(true)} onStop={stopRemembering} onReplay={() => setIntro(true)} />
+    <PersonalPanel consent={prefs.consent} platforms={prefs.consent === true ? prefs.platforms : []} signedIn={signedIn} onChoose={() => setPlatformsSheet(true)} onStop={stopRemembering} onReplay={() => setIntro(true)} />
   );
 
   if (home.platforms.length === 0) {
@@ -261,8 +269,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         />
         <ComingSoon items={home.comingSoon} />
         <PlatformTiles platforms={shell?.nav.platforms ?? []} />
-        <RecentlyViewed consent={prefs.consent} />
-        <RecommendationShelves shelves={recommendations} />
+        <RecentlyViewed consent={prefs.consent} signedIn={signedIn} />
+        <RecommendationShelves result={recommendations} consent={prefs.consent} />
         {personal}
       </Sections>
       {overlays}

@@ -640,20 +640,30 @@ export function isCountableQuery(q: string): boolean {
 }
 
 /**
+ * Distinct queries counted per day and language (security review, second pass). The statistics are written by
+ * anonymous GETs — and any page on the web can make its visitors' browsers request `/search?q=…` — so without a cap
+ * every new string was a new row, for good. Once a day holds this many queries, only those already counted that day
+ * keep counting; a real store sees a few hundred distinct searches a day.
+ */
+export const MAX_COUNTED_QUERIES_PER_DAY = 2_000;
+
+/**
  * Counts one search in `search_query_stats` (day in Baghdad, locale, normalised query → searches, zero_results,
  * last_at). Anonymous by construction: no IP, account, session or cart is stored, and queries that may hold
- * personal data are not counted (isCountableQuery). Returns whether it was counted.
+ * personal data are not counted (isCountableQuery). A new query is counted only while its day and language hold fewer
+ * than MAX_COUNTED_QUERIES_PER_DAY queries — decided in the same statement. Returns whether it was counted.
  */
 export async function recordSearchQuery(db: Db, input: { locale: Locale; q: string; total: number; now: number }): Promise<boolean> {
   if (!isCountableQuery(input.q)) return false;
   const query = normalizeSearchText(input.q);
   const zero = input.total === 0 ? 1 : 0;
-  await db
-    .insert(searchQueryStats)
-    .values({ day: baghdadDay(input.now), locale: input.locale, query, searches: 1, zeroResults: zero, lastAt: input.now })
-    .onConflictDoUpdate({
-      target: [searchQueryStats.day, searchQueryStats.locale, searchQueryStats.query],
-      set: { searches: sql`${searchQueryStats.searches} + 1`, zeroResults: sql`${searchQueryStats.zeroResults} + ${zero}`, lastAt: input.now },
-    });
-  return true;
+  const day = baghdadDay(input.now);
+  // One statement (never inside a batch: drizzle's db.run(sql) must not be batched — drizzle/README.md).
+  const result = await db.run(sql`
+INSERT INTO ${searchQueryStats} (day, locale, query, searches, zero_results, last_at)
+SELECT ${day}, ${input.locale}, ${query}, 1, ${zero}, ${input.now}
+WHERE (SELECT count(*) FROM ${searchQueryStats} WHERE day = ${day} AND locale = ${input.locale}) < ${MAX_COUNTED_QUERIES_PER_DAY}
+   OR EXISTS (SELECT 1 FROM ${searchQueryStats} WHERE day = ${day} AND locale = ${input.locale} AND query = ${query})
+ON CONFLICT (day, locale, query) DO UPDATE SET searches = searches + 1, zero_results = zero_results + excluded.zero_results, last_at = excluded.last_at`);
+  return result.meta.changes > 0;
 }

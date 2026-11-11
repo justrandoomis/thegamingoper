@@ -37,8 +37,14 @@
  * onboarding and the account area). A guest's events are keyed by the SHA-256 of a random first-party cookie
  * (`tt_rs`, set on the first consented event); a customer's by their id — never both, no IP, no user agent, no
  * fingerprint, no cross-device stitching. Events older than RECOMMENDATION_EVENT_RETENTION_DAYS are ignored and
- * deleted by purgeRecommendationEvents() (to be run by the daily retention job — owner: jobs); forgetEvents() deletes
- * a shopper's events at once (privacy control).
+ * deleted by purgeRecommendationEvents() (the daily retention job, app/server/jobs.server.ts, since 2026-11-11);
+ * forgetEvents() deletes a shopper's events at once (privacy control: the home panel's "stop", the account settings,
+ * POST /api/events intent=forget).
+ *
+ * FOR PAGES (the integration pass): `recommendationsFor(db, { cookie, customerId }, { locale, context, … })` is what a
+ * loader streams (not awaited) to the shared <RecommendationShelves> (routes/storefront/devices/components); it never
+ * rejects. `recordPurchaseSignals` is called by the checkout's own server file after a new order — never by the
+ * commerce core. `orderItemsOf` / `usedUnitVariantIds` give the cart and order pages their anchors.
  *
  * Services take `db` first and never import "cloudflare:workers". Invalid input → AppError("invalid", 400).
  */
@@ -614,7 +620,8 @@ LIMIT 60`,
         plans.push({
           key: `${input.context}:personal`,
           title: engine.t("rec.personal.title"),
-          reason: engine.t("rec.personal.reason"),
+          // a customer's signals follow the account (and its saved devices); a guest's stay with this device's key
+          reason: engine.t(input.customerId ? "rec.personal.reasonAccount" : "rec.personal.reason"),
           place: { context: input.context, shelf: "personal", productId: null, categoryId: null, platformIds: new Set(anchors.map((model) => model.platformId)), deviceModelId: anchors[0].id },
           scores,
           accepts: isFit,
@@ -716,4 +723,105 @@ export async function forgetEvents(db: Db, who: { sessionHash: string | null; cu
 export async function purgeRecommendationEvents(db: Db, now: number): Promise<number> {
   const result = await db.run(sql`DELETE FROM recommendation_events WHERE at < ${now - RETENTION_MS}`);
   return Number((result as { meta?: { changes?: unknown } } | null)?.meta?.changes ?? 0);
+}
+
+// ───────────────────────────────────────────────────────────────── for pages (the integration pass)
+
+/**
+ * What a page's loader streams for its recommendation shelves. Never rejects: a failure is `ok: false` (logged on
+ * the server), so the page shows the failure in the shelves' space and everything else stands.
+ */
+export type RecommendationResult = { ok: true; shelves: Shelf<ProductCardData>[] } | { ok: false; shelves: Shelf<ProductCardData>[] };
+
+/** The contexts whose shelves read the shopper's own (consented) signals; the others never need the consent lookup. */
+const PERSONAL_CONTEXTS: ReadonlySet<RecommendationContextName> = new Set(["home", "search"]);
+
+export type PageShelvesRequest = {
+  locale: Locale;
+  context: RecommendationContextName;
+  productId?: string | null;
+  deviceModelId?: string | null;
+  cartVariantIds?: readonly string[];
+  platformSlugs?: readonly string[];
+  now?: number;
+  /**
+   * Only these shelves (by key). Pages that already show their own editorial shelves keep only the personal one
+   * (`personalOnly`) — the store's picks would repeat what the page lists.
+   */
+  keep?: (shelf: Shelf<ProductCardData>) => boolean;
+  /** Show nothing (and read nothing) unless the shopper said yes to personalization: the personal shelf alone. */
+  personalOnly?: boolean;
+};
+
+/** A shelf built from the shopper's own signals (`<context>:personal`). */
+export const isPersonalShelf = (shelf: Shelf<ProductCardData>): boolean => shelf.key.endsWith(":personal");
+
+/**
+ * The shelves of one page, for its loader to return WITHOUT awaiting (streamed to the shared <RecommendationShelves>).
+ * Home and search read the shopper's consent and session key first (personalizationFor: the account's answer, else
+ * the device's `tt_consent`); product, cart, order and device contexts do not use personal signals at all.
+ */
+export async function recommendationsFor(db: Db, who: { cookie: (name: string) => string | null; customerId: string | null }, request: PageShelvesRequest, limit = 8): Promise<RecommendationResult> {
+  try {
+    const personal = PERSONAL_CONTEXTS.has(request.context);
+    const subject: RecommendationSubject = personal ? await personalizationFor(db, who) : { consent: false, sessionHash: null, customerId: null };
+    if (request.personalOnly && !subject.consent) return { ok: true, shelves: [] };
+    const shelves = await getRecommendations(
+      db,
+      {
+        locale: request.locale,
+        context: request.context,
+        productId: request.productId ?? null,
+        deviceModelId: request.deviceModelId ?? null,
+        cartVariantIds: request.cartVariantIds ? [...new Set(request.cartVariantIds)].slice(0, 50) : undefined,
+        platformSlugs: request.platformSlugs ? [...request.platformSlugs] : undefined,
+        sessionHash: subject.sessionHash,
+        customerId: subject.customerId,
+        consent: subject.consent,
+        now: request.now,
+      },
+      limit,
+    );
+    const keep = request.personalOnly ? isPersonalShelf : request.keep;
+    return { ok: true, shelves: keep ? shelves.filter(keep) : shelves };
+  } catch (error) {
+    console.error(`[recommendations] ${request.context} shelves failed`, error);
+    return { ok: false, shelves: [] };
+  }
+}
+
+/**
+ * The purchase signal (kind "purchase"), one per product of a NEW order — recorded only with consent (recordEvent is a
+ * no-op without it). Called by the checkout's own server file after placeOrder succeeded, never by the commerce core,
+ * and never for a replayed attempt. Returns how many were stored. A failure here never undoes the order.
+ */
+export async function recordPurchaseSignals(db: Db, who: RecommendationSubject, productIds: readonly string[], now: number): Promise<number> {
+  if (!who.consent || (!who.customerId && !who.sessionHash)) return 0;
+  let stored = 0;
+  for (const productId of [...new Set(productIds)].slice(0, 50)) {
+    if (!ID.test(productId)) continue;
+    const result = await recordEvent(db, who, { kind: "purchase", productId, source: "checkout" }, now);
+    if (result.recorded) stored++;
+  }
+  return stored;
+}
+
+/** The products and variants of one order (a used unit through its catalogue variant) — anchors and signals. */
+export async function orderItemsOf(db: Db, ref: string): Promise<{ productIds: string[]; variantIds: string[] }> {
+  if (typeof ref !== "string" || ref.length > 40) return { productIds: [], variantIds: [] };
+  const rows = await db.all<{ variant_id: string; product_id: string }>(sql`SELECT oi.variant_id, v.product_id
+FROM order_items AS oi
+JOIN orders AS o ON o.id = oi.order_id
+JOIN variants AS v ON v.id = oi.variant_id
+WHERE o.ref = ${ref}
+ORDER BY oi.id`);
+  return { productIds: [...new Set(rows.map((row) => row.product_id))], variantIds: [...new Set(rows.map((row) => row.variant_id))] };
+}
+
+/** The catalogue variants of some used units (the cart view does not carry them) — anchors for the cart's shelves. */
+export async function usedUnitVariantIds(db: Db, usedUnitIds: readonly string[]): Promise<string[]> {
+  const ids = [...new Set(usedUnitIds)].filter((value) => ID.test(value)).slice(0, 50);
+  if (ids.length === 0) return [];
+  const rows = await db.all<{ variant_id: string }>(sql`SELECT variant_id FROM used_units WHERE id IN (SELECT value FROM json_each(${JSON.stringify(ids)}))`);
+  return [...new Set(rows.map((row) => row.variant_id))];
 }

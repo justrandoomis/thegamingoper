@@ -31,6 +31,7 @@ export function labArt(hue: number): string {
   const dark = `hsl(${hue} 60% 38%)`;
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">` +
+    // lint-design: allow raw-colour — drawn into a data: URL image for the motion lab; CSS tokens do not reach inside an <img>
     `<ellipse cx="200" cy="338" rx="128" ry="18" fill="rgb(0 0 0 / 0.14)"/>` +
     `<rect x="52" y="112" width="296" height="176" rx="64" fill="${dark}"/>` +
     `<rect x="52" y="100" width="296" height="176" rx="64" fill="${body}"/>` +
@@ -39,6 +40,7 @@ export function labArt(hue: number): string {
     `<circle cx="308" cy="206" r="20" fill="${light}"/>` +
     `<circle cx="308" cy="158" r="9" fill="${dark}"/>` +
     `<circle cx="92" cy="218" r="9" fill="${dark}"/>` +
+    // lint-design: allow raw-colour — the same data: URL image (a highlight stroke)
     `<path d="M92 118c40-12 176-12 216 0" stroke="rgb(255 255 255 / 0.5)" stroke-width="8" stroke-linecap="round" fill="none"/>` +
     `</svg>`;
   url = `data:image/svg+xml,${encodeURIComponent(svg)}`;

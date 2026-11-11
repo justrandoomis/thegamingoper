@@ -9,7 +9,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { Logo } from "~/art/Logo";
 import { LOCALES } from "~/lib/locales";
 import { usePrefs } from "~/lib/prefs";
@@ -19,7 +19,16 @@ import { Key } from "~/ui/Key";
 import { Menu, type MenuItem } from "~/ui/Menu";
 import { useShellActions } from "./actions";
 import { useAdminT } from "./i18n";
-import type { ShellWaiting } from "./queues.server";
+import type { ShellQueueId, ShellWaiting } from "./queues.server";
+
+/** One glyph per queue in the notifications menu. */
+const QUEUE_ICON: Record<ShellQueueId, IconName> = {
+  proofs: "receipt",
+  refunds: "hand-coins",
+  prices: "tag",
+  counts: "clipboard-text",
+  transfers: "truck",
+};
 import type { AdminShellData } from "./shell.server";
 
 /** "Ctrl K" everywhere, "⌘ K" on Apple devices (decided after hydration, so the server and first render agree). */
@@ -37,7 +46,7 @@ function NoticesMenu({ waiting }: { waiting: ShellWaiting | null }) {
   const total = waiting?.total ?? 0;
   const items: MenuItem[] = [];
   for (const queue of waiting?.queues ?? []) {
-    items.push({ id: queue.id, label: t(`notices.${queue.id}`, { count: queue.count }), icon: queue.id === "proofs" ? "receipt" : "hand-coins", onSelect: () => go(queue.href) });
+    items.push({ id: queue.id, label: t(`notices.${queue.id}`, { count: queue.count }), icon: QUEUE_ICON[queue.id], onSelect: () => go(queue.href) });
   }
   for (const notice of waiting?.notices ?? []) {
     items.push({

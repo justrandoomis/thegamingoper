@@ -24,7 +24,7 @@ Orders, payments and the wallet ledger are the commerce core's (CONTRACTS §1): 
 | `/account/warranties` | Warranty rows started at delivery, state from the dates, claim → `/support/repair?order=` |
 | `/account/notifications` | In-account messages (paged), read one / all. Nothing produces them yet |
 | `/account/profile` | Name, e-mail, language of store messages (audited); phone shown masked with its state, not editable (needs a code) |
-| `/account/settings` | Order-message channels (stored; "no provider is connected" said plainly), offers + personalization consents (append-only, never pre-ticked; the device's `tt_consent` follows via home's `saveConsent`), phone confirmation (same boundary as reset), password change (other devices signed out), signed-in devices (one / all others) |
+| `/account/settings` | Order-message channels (stored; "no provider is connected" said plainly), offers + personalization consents (append-only, never pre-ticked; the device's `tt_consent` follows via home's `saveConsent`), phone confirmation (same boundary as reset), password change (other devices signed out), signed-in devices (one / all others). Since 2026-11-11 (server pass) a password change or a confirmed phone number moves THIS device to a new session token: the action's answer carries the new `tt_sid` (set by `changeCustomerPassword` / `confirmCustomerPhone` on `ctx`, no change at the call sites), the old cookie and any copy of it stop working; the device keeps its "since" date |
 | `/wishlist` | Cards from the catalogue read layer, "remove" under each card + undo toast, products no longer sold counted not shown, guest note with sign-in |
 | `/api/wishlist` | GET `{ ok, ids }` · POST `intent=toggle\|add\|remove, productId` → `{ ok, wished, count }`; 400 / 404 / 409 `wishlist_full` / 429; what `~/ui/WishlistKey` calls |
 
@@ -32,7 +32,9 @@ Every page: shell meta with `noindex`, no `<main>` (h1 first), `/account/*` is `
 `/wishlist` sets `private, no-store`. Signed-in pages share a layout (side section list from 1024px, `data-motion-persist`
 so it stays while sections push sideways; back link on phones) and every loader/action calls `requireSignedIn` itself.
 Navigation grammar: sections are push siblings (`handle.order` = their order), order detail rises, the entry pages are a
-push group. Strings: the `account` namespace; account error keys live under `account:errors.*`, the rest come from
+push group. Strings: the `account` namespace; account error keys live under `account:errors.*` (the only copy: since
+2026-11-11 the shared `errors` namespace adopts them by import, so a screen outside this area can say them — keep
+`account:errors.*` exactly in step with `ACCOUNT_ERROR_KEYS`; `tests/commerce-money.test.ts` checks it), the rest come from
 `errors` — actions translate on the server (`errorT` looks in both) and return sentences, so `errors` never ships.
 
 ## States (brief §12)
@@ -67,17 +69,32 @@ also passes `tt_wish` and sees moved rows at once.
   `wishlistWho`, `rekeyGuestWishlist` (for the cart, should it ever re-key a guest cart in place).
 - `account/addresses.server`: `listAddresses`, `getDefaultAddress` (checkout prefill) · `account/saved-devices.server`:
   `listSavedDeviceIds` (recommendations) · `account/recently-viewed.server`: `recordRecentlyViewed(db, who, productId,
-  now, { consent })`, `listRecentlyViewed` · `account/notifications.server`: `notificationStatement` (put it in the batch
+  now, { consent })`, `mergeDeviceRecentlyViewed(db, customerId, [{ id, at }], now, { consent })`, `listRecentlyViewed`,
+  `clearRecentlyViewed` · `account/notifications.server`: `notificationStatement` (put it in the batch
   of the change it tells about) · `account/topups.server`: `getPendingTopupTotal` (WalletBalance `pendingIqd`),
   `listWalletTopups` · `account/preferences.server`: `getConsent`, `recordConsent`.
 
-## Integration slots
+## Recently viewed — one store per shopper (integration pass, 2026-11-11)
 
-- Product page: call `recordRecentlyViewed` for signed-in customers with consent (the home area keeps the device-local
-  list with `rememberViewed`; the overview shows the account's list, home shows the device's).
-- Product/catalogue hearts: `WishlistKey initial={…}` from `wishedAmong(db, wishlistWho(ctx.cookie, customerId), ids)`.
-- Recommendations: saved devices as signals (`listSavedDeviceIds`); the devices page says suggestions are not on yet.
-- Checkout: prefill from `getDefaultAddress`; wallet option's pending line from `getPendingTopupTotal`.
+A signed-in customer's views are kept in the ACCOUNT only (`recently_viewed`, ≤ 30, with consent); a guest's on the
+device only (home's `tt:recent`, never sent to the server). The product page writes exactly one of them
+(`home/personal.ts → recordProductView`: signed in → `POST /api/recently-viewed` → `recordRecentlyViewed`). After
+signing in, the first product page, home visit or this overview hands the device's guest list to the account once
+(`mergeDeviceRecentlyViewed`: newest time wins, one row per product) and removes it from the device; the overview reads
+the list again when something joined. Withdrawing personalization in the settings (`forgetPersonalData`,
+home/personal.server) clears the account's list and the recommendation signals of the account and this device. The
+cart-token guest rows the service still supports are only merged at sign-in; nothing writes them now. Full table:
+docs/areas/home.md "Recently viewed".
+
+## Integration (wired 2026-11-11)
+
+- ~~Product page: `recordRecentlyViewed`~~ — done (above).
+- ~~Product hearts: `WishlistKey initial`~~ — done on the product page (`wishedAmong(db, wishlistWho(ctx.cookie,
+  customerId), [id])`); cards carry no heart (one walled key per card, docs/ui/commerce.md).
+- ~~Recommendations: saved devices~~ — the devices area's engine reads `saved_devices` for a consenting customer's
+  personal shelf (home, search); the devices page now says so ("devices.lead").
+- ~~Checkout: prefill from `getDefaultAddress`~~ — done (docs/areas/checkout.md). Open: the wallet option's pending
+  line from `getPendingTopupTotal` (not wired).
 - Admin (customers/finance): approve = `creditWallet(kind "topup", refType "wallet_topup", refId, idempotencyKey
   "topup:<id>")` + the request's status/verifier/ledger id in the same step; reject with a reason the customer reads.
 

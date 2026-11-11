@@ -11,11 +11,13 @@
  *   note                optional
  *   file                the photo: JPEG, PNG or WebP, ≤ 8 MB — decided by its bytes, metadata stripped
  *
- * Answers exactly what `sendProof` in ~/ui/ProofUploader reads: 200 `{ ok: true }`, or `{ ok: false, code, fields? }`
- * with the status of the failure (400 invalid · 404 not_found · 409 proof_not_expected / payment_window_closed ·
- * 413 / 415 / 422 upload_* · 429 rate_limited). No `previewUrl`: the stored file is private, and a shopper-facing
- * private-file route does not exist yet — the uploader shows its own local preview. `duplicateOf` (another proof
- * with the same picture or reference) is for staff only and never leaves this function.
+ * Answers exactly what `sendProof` in ~/ui/ProofUploader reads: 200 `{ ok: true, previewUrl? }`, or
+ * `{ ok: false, code, fields? }` with the status of the failure (400 invalid · 404 not_found · 409 proof_not_expected /
+ * payment_window_closed · 413 / 415 / 422 upload_* · 429 rate_limited). `previewUrl` is where this shopper can open the
+ * stored picture again — the shoppers' private-file route, GET /api/files/<fileId> (with `?t=<token>` for a guest),
+ * which authorizes every request and answers `private, no-store`, so it still works after a reload; it is included
+ * when the caller says where that route is (`deps.previewPath`, the route passes shopperFilePath). `duplicateOf`
+ * (another proof with the same picture or reference) is for staff only and never leaves this function.
  *
  * Order of work — nothing is stored for a request that cannot succeed:
  *   1. body size (Content-Length) and the per-IP upload limit, before the body is read
@@ -32,8 +34,9 @@
 import { z } from "zod";
 import type { Locale } from "~/lib/locales";
 import type { Actor } from "~/server/actor";
+import { readFormData } from "~/server/body.server";
 import type { Db } from "~/server/db/drizzle.server";
-import { toAppError } from "~/server/errors";
+import { isAppError, toAppError } from "~/server/errors";
 import { RATE_LIMITS, enforceRateLimit, limitKey } from "~/server/ratelimit.server";
 import { deleteFile, type BlobStore } from "~/server/storage.server";
 import { MAX_IMAGE_BYTES, saveImageUpload } from "~/server/uploads.server";
@@ -45,7 +48,7 @@ import { findOrderForShopper } from "./checkout.server";
 /** The image limit plus room for the small text fields and the multipart framing. */
 export const MAX_PROOF_BODY_BYTES = MAX_IMAGE_BYTES + 64 * 1024;
 
-export type ProofUploadAnswer = { ok: true } | { ok: false; code: string; fields?: Record<string, string>; retryAfterSec?: number };
+export type ProofUploadAnswer = { ok: true; previewUrl?: string } | { ok: false; code: string; fields?: Record<string, string>; retryAfterSec?: number };
 export type ProofUploadOutcome = { status: number; body: ProofUploadAnswer };
 
 export type ProofUploadDeps = {
@@ -56,6 +59,12 @@ export type ProofUploadDeps = {
   ip: string | null;
   locale: Locale;
   now: number;
+  /**
+   * Where the stored picture can be shown back to this shopper — `shopperFilePath` from ~/server/storage.server
+   * (GET /api/files/:fileId; `accessToken` is the confirmation token for a guest, null for the signed-in owner).
+   * Without it the answer carries no `previewUrl`.
+   */
+  previewPath?: (fileId: string, accessToken: string | null) => string;
 };
 
 const fail = (status: number, code: string, extra: Omit<Extract<ProofUploadAnswer, { ok: false }>, "ok" | "code"> = {}): ProofUploadOutcome => ({ status, body: { ok: false, code, ...extra } });
@@ -96,8 +105,10 @@ export async function handleProofUpload(deps: ProofUploadDeps, request: Request)
 
   let form: FormData;
   try {
-    form = await request.formData();
-  } catch {
+    // Counted while it is read: a body without a Content-Length is cut off at the limit, never read to its end.
+    form = await readFormData(request, MAX_PROOF_BODY_BYTES);
+  } catch (error) {
+    if (isAppError(error, "upload_too_large")) return fail(413, "upload_too_large", { fields: { file: "upload_too_large" } });
     return fail(400, "invalid", { fields: { file: "upload_missing" } });
   }
 
@@ -155,5 +166,6 @@ export async function handleProofUpload(deps: ProofUploadDeps, request: Request)
     return answerFor(error);
   }
   // The answer never says whether this picture or reference was seen before (duplicateOf is for staff).
-  return { status: 200, body: { ok: true } };
+  if (!deps.previewPath) return { status: 200, body: { ok: true } };
+  return { status: 200, body: { ok: true, previewUrl: deps.previewPath(fileId, found.access === "token" ? token : null) } };
 }

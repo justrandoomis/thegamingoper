@@ -13,10 +13,14 @@ import type { Route } from "./+types/search";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useT } from "~/i18n/react";
 import { shellMeta } from "~/routes/storefront/shell/meta";
+import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { normalizeSearchText } from "~/server/db/search.server";
+import { recommendationsFor } from "~/server/services/recommendations.server";
 import { MAX_QUERY_LENGTH, recordSearchQuery, searchProducts } from "~/server/services/search.server";
+import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
+import { CONSENT_COOKIE, PLATFORMS_COOKIE, parsePlatformList } from "~/routes/storefront/home/personal";
 import { ChipRail } from "./components/Hub";
 import { CompareTray } from "./components/CompareTray";
 import { ListingView } from "./components/ListingView";
@@ -33,12 +37,19 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const q = (url.searchParams.get("q") ?? "").trim().slice(0, MAX_QUERY_LENGTH);
   const t = serverT(ctx.locale, "catalog");
   const i18n = messagesFor(ctx.locale, "catalog");
+  const db = getDb();
+  const session = await getCustomer(ctx, db);
+  const who = { cookie: ctx.cookie, customerId: session?.customer.id ?? null };
   if (!normalizeSearchText(q)) {
-    return { q: "", result: null, meta: { title: t("meta.searchStart"), description: t("meta.search") }, i18n };
+    // Nothing searched yet: the devices area's shelves for "search" — the shopper's own (with consent), else the
+    // store's picks for their platforms, each saying which it is. Streamed, never awaited.
+    const consent = ctx.cookie(CONSENT_COOKIE) === "1";
+    const platformSlugs = consent ? parsePlatformList(ctx.cookie(PLATFORMS_COOKIE)) : [];
+    const recommendations = recommendationsFor(db, who, { locale: ctx.locale, context: "search", platformSlugs, now: ctx.now }, 8);
+    return { q: "", result: null, recommendations, meta: { title: t("meta.searchStart"), description: t("meta.search") }, i18n };
   }
 
   const query = readListingQuery(url.searchParams, SEARCH_SORTS);
-  const db = getDb();
   const result = await withCursorFallback(url, query.cursor !== null, () =>
     searchProducts(db, ctx.locale, q, { filters: filtersOf(query), sort: query.sort, cursor: query.cursor, cumulative: true, now: ctx.now }),
   );
@@ -55,6 +66,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return {
     q,
     result: { ...listOf(result) },
+    // below real results only: the shopper's own shelf, with consent (zero results already offer picks of their own)
+    recommendations: result.total > 0 ? recommendationsFor(db, who, { locale: ctx.locale, context: "search", personalOnly: true, now: ctx.now }, 8) : null,
     meta: { title: t("meta.searchTitle", { q }), description: t("meta.search") },
     i18n,
   };
@@ -80,6 +93,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
       <div className="page grid grid-cols-[minmax(0,1fr)] gap-6 pb-12 pt-5">
         <h1 className="type-title text-ink">{t("search.title")}</h1>
         <SearchStart />
+        <RecommendationShelves result={loaderData.recommendations} source="search" className="pt-4" />
       </div>
     );
   }
@@ -122,6 +136,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
         picks={help?.picks ?? []}
         picksTitle={t("zero.picksSearch")}
       />
+      <RecommendationShelves result={loaderData.recommendations} source="search" className="pt-4" />
       <CompareTray />
     </div>
   );

@@ -27,6 +27,7 @@ import { Key } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
 import { Rail } from "~/ui/Rail";
 import { TextLink } from "~/ui/TextLink";
+import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
 import { DeviceArt, DeviceTile, GuideList, PlatformName, SupportTabs } from "./components/parts";
 
 export const handle = { nav: "push", order: 0, group: "support" } satisfies MotionHandle;
@@ -164,9 +165,10 @@ function DevicePanel({ device, guides }: { device: SupportDevice; guides: readon
         <TextLink as={LocaleLink} to="/support" preventScrollReset>
           {t("help.device.change")}
         </TextLink>
-        {/* Integration slot (devices area): a link to this device's hub, /device/<slug>, once that page exists. */}
       </div>
       <div className="grid content-start gap-2 md:col-span-8">
+        {/* The device's hub (devices area): every device listed here has one (published model, active platform). */}
+        <DeviceHubLink device={device} title={t("help.device.hub", { device: device.name })} text={t("help.device.hubText")} className="mb-3 bg-ground" />
         <h3 className="type-sub text-ink">{t("help.device.guides")}</h3>
         {own.length + related.length === 0 ? (
           <EmptyState title={t("help.device.empty")} text={t("help.device.emptyText")} />

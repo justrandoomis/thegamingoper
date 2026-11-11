@@ -2,16 +2,33 @@
  * Server side of the checkout area (cart, checkout, order page, tracking). THIN: every rule — prices, stock, totals,
  * coupons, delivery fees, payment switches, who may see an order — belongs to the commerce core (docs/CONTRACTS.md §1);
  * this file only reads what the pages need, turns form posts into the core's inputs, and turns the core's refusals
- * into `{ ok: false, code, fields, cart }` values the pages can show. Nothing here writes a table.
+ * into `{ ok: false, code, fields, cart }` values the pages can show. Nothing here writes a commerce table.
+ *
+ * Cross-area (integration pass): the cart's and the order's recommendation shelves (devices area, streamed), the
+ * purchase signal after a new order (devices area's recordPurchaseSignals — consent only, never in the commerce
+ * core), and the signed-in customer's default address as the checkout's starting draft (account area).
  */
+import { sha256Hex } from "~/lib/ids";
 import { LOCALES, type Locale } from "~/lib/locales";
 import { normalizeIraqPhone } from "~/lib/phone";
-import type { RequestCtx } from "~/server/context.server";
+import { serializeCookie, type RequestCtx } from "~/server/context.server";
 import type { Db } from "~/server/db/drizzle.server";
 import { AppError, toAppError } from "~/server/errors";
 import { getSetting } from "~/server/settings.server";
 import { CART_COOKIE } from "~/server/shell.server";
+import type { AddressView } from "~/server/services/account/types";
 import { isCartToken, type CartViewData } from "~/server/services/cart.server";
+import {
+  newRecSessionToken,
+  orderItemsOf,
+  personalizationFor,
+  REC_SESSION_COOKIE,
+  REC_SESSION_MAX_AGE_SEC,
+  recommendationsFor,
+  recordPurchaseSignals,
+  usedUnitVariantIds,
+  type RecommendationResult,
+} from "~/server/services/recommendations.server";
 import { getOrderByAccessToken, getOrderForCustomer, lookupGuestOrder, normalizeOrderRef } from "~/server/services/orders/manage.server";
 import { CheckoutError, placeOrder, type CheckoutInput, type CheckoutWho } from "~/server/services/orders/place.server";
 import type { OrderView } from "~/server/services/orders/types";
@@ -196,6 +213,96 @@ export async function trackOrder(db: Db, form: FormData, ctx: { ip: string | nul
     if (!appError) throw error;
     return { ok: false, code: appError.code, status: appError.status, ...(appError.fields ? { fields: { ...appError.fields } } : {}), ...(appError.retryAfterSec !== undefined ? { retryAfterSec: appError.retryAfterSec } : {}), values };
   }
+}
+
+// ───────────────────────────────────────────────────────────────── cross-area (integration pass)
+
+/**
+ * The cart's recommendation shelves (devices area, context "cart"), for the loader to stream: anchored on every line —
+ * a used unit through its catalogue variant. Never rejects (a failure is `ok: false`); an empty cart asks for nothing.
+ */
+export async function cartShelves(db: Db, ctx: Pick<RequestCtx, "cookie" | "locale" | "now">, customerId: string | null, cart: Pick<CartViewData, "lines">): Promise<RecommendationResult> {
+  try {
+    const used = cart.lines.flatMap((line) => (line.usedUnitId ? [line.usedUnitId] : []));
+    const variantIds = [...cart.lines.flatMap((line) => (line.variantId ? [line.variantId] : [])), ...(used.length > 0 ? await usedUnitVariantIds(db, used) : [])];
+    if (variantIds.length === 0) return { ok: true, shelves: [] };
+    return await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "cart", cartVariantIds: variantIds, now: ctx.now }, 8);
+  } catch (error) {
+    console.error("[checkout] cart shelves failed", error);
+    return { ok: false, shelves: [] };
+  }
+}
+
+/** The order page's shelves (context "post_purchase", anchored on what was bought). Never rejects. */
+export async function orderShelves(db: Db, ctx: Pick<RequestCtx, "cookie" | "locale" | "now">, customerId: string | null, ref: string): Promise<RecommendationResult> {
+  try {
+    const { variantIds } = await orderItemsOf(db, ref);
+    if (variantIds.length === 0) return { ok: true, shelves: [] };
+    return await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "post_purchase", cartVariantIds: variantIds, now: ctx.now }, 8);
+  } catch (error) {
+    console.error("[checkout] order shelves failed", error);
+    return { ok: false, shelves: [] };
+  }
+}
+
+/**
+ * The purchase signal (devices area) after a NEW order — server side only, here and never inside the commerce core:
+ * one "purchase" per product, only with the shopper's personalization consent (the account's answer, else this
+ * device's `tt_consent`). A consenting guest without a session key gets one now (the `tt_rs` cookie, as the events
+ * endpoint does on a first signal). A replayed attempt records nothing. A failure is logged and never touches the
+ * order: the shopper is already on their way to it.
+ */
+export async function recordPurchase(db: Db, ctx: RequestCtx, customerId: string | null, result: CheckoutSuccess): Promise<void> {
+  if (result.replayed) return;
+  try {
+    let who = await personalizationFor(db, { cookie: ctx.cookie, customerId });
+    if (!who.consent) return;
+    if (!customerId && !who.sessionHash) {
+      const token = newRecSessionToken();
+      ctx.setCookie(serializeCookie(ctx, REC_SESSION_COOKIE, token, { maxAge: REC_SESSION_MAX_AGE_SEC, httpOnly: true, sameSite: "Lax" }));
+      who = { ...who, sessionHash: await sha256Hex(token) };
+    }
+    const { productIds } = await orderItemsOf(db, result.ref);
+    await recordPurchaseSignals(db, who, productIds, ctx.now);
+  } catch (error) {
+    console.error("[checkout] purchase signal not recorded", error);
+  }
+}
+
+/** A signed-in customer's default address as the checkout's starting values (the shopper may change all of it). */
+export type SavedAddressPrefill = {
+  /** The address's own label ("البيت"), when it has one — the page says which address it started from. */
+  label: string | null;
+  contactName: string;
+  phone: string;
+  governorateId: string;
+  /** "" when the saved district is gone or none was saved: the shopper chooses (never assumed). */
+  districtId: string;
+  areaText: string;
+  addressText: string;
+  notes: string;
+};
+
+/**
+ * The account area's default address (getDefaultAddress) as checkout fields — only a place the checkout serves now:
+ * a governorate that is not served (or no longer active) gives no prefill at all; a district that is no longer in
+ * that governorate's list is left for the shopper to choose. Pure (the page data is already read).
+ */
+export function addressPrefill(address: AddressView | null, page: Pick<CheckoutPageData, "governorates" | "districts">): SavedAddressPrefill | null {
+  if (!address) return null;
+  const governorate = page.governorates.find((g) => g.id === address.governorateId);
+  if (!governorate || governorate.feeIqd === null) return null;
+  const districts = page.districts[address.governorateId] ?? [];
+  return {
+    label: address.label,
+    contactName: address.recipientName ?? "",
+    phone: address.phoneE164 ? nationalPhone(address.phoneE164) : "",
+    governorateId: address.governorateId,
+    districtId: address.districtId && districts.some((d) => d.id === address.districtId) ? address.districtId : "",
+    areaText: address.areaText ?? "",
+    addressText: address.addressText,
+    notes: address.notes ?? "",
+  };
 }
 
 /** The customer's own phone as the field shows it ("0771 234 5678"), for prefilling the checkout. */

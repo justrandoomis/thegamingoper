@@ -6,8 +6,9 @@
  *   ServicesPanel      two flat rows: used and inspected (with the real count) · repairs and help
  *   PlatformTiles      shop by platform → /platform/<slug>, with the real product count
  *   ComingSoon         pre-orders and unreleased variants with their release date — no add key (no pre-order flow)
- *   RecentlyViewed     this device's list (./personal.ts), only with consent, loaded after the page is on screen
- *   RecommendationShelves   the slot the devices area's recommendation shelves go into (integration pass)
+ *   RecentlyViewed     the shopper's ONE list (./personal.ts): this device's for a guest, the account's when signed
+ *                      in — only with consent, loaded after the page is on screen
+ *   RecommendationShelves   the devices area's personal shelf (streamed by the loader, consent only)
  *
  * Product shelves (games, accessories, deals, used) use <ShelfRail> from the kit directly (./home.tsx).
  */
@@ -15,9 +16,10 @@ import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 
 
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
-import type { ProductCardData, Shelf } from "~/lib/dto";
+import type { ProductCardData } from "~/lib/dto";
 import { Bubble, BubbleGroup, MotionLink, SharedElement } from "~/motion";
 import type { ComingSoonItem } from "~/server/services/home.server";
+import { RecommendationShelves as SharedRecommendationShelves, type RecommendationResult } from "~/routes/storefront/devices/components/RecommendationShelves";
 import type { NavPlatform } from "~/routes/storefront/shell/types";
 import { cx } from "~/ui/cx";
 import { ErrorState } from "~/ui/ErrorState";
@@ -26,12 +28,11 @@ import { PlatformLabel, isPlatform, type Platform } from "~/ui/PlatformLed";
 import { PriceTag } from "~/ui/PriceTag";
 import { BidiText, ProductCard, ProductImage } from "~/ui/ProductCard";
 import { Rail } from "~/ui/Rail";
-import { ShelfRail } from "~/ui/ShelfRail";
 import { Render } from "~/ui/Stage";
 import { Tag } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { toast } from "~/ui/toast-store";
-import { forgetRecentlyViewed, readRecentlyViewed } from "./personal";
+import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
 
 const CARD_SIZES = "(min-width: 1200px) 210px, (min-width: 768px) 30vw, 46vw";
 
@@ -215,11 +216,16 @@ export function ComingSoon({ items }: { items: readonly ComingSoonItem[] }) {
   );
 }
 
-// ───────────────────────────────────────────────────────────────── recently viewed (this device, with consent)
+// ───────────────────────────────────────────────────────────────── recently viewed (one store, with consent)
 
 type RecentState = { status: "idle" | "loading" | "ready" | "error"; cards: ProductCardData[] };
 
-export function RecentlyViewed({ consent }: { consent: boolean | null }) {
+/**
+ * The shopper's ONE recently-viewed list (./personal.ts): a guest's lives on this device; a signed-in customer's in
+ * the account (this device's guest list is handed over first, once, then leaves the device). Loaded after the page is
+ * on screen; nothing without consent.
+ */
+export function RecentlyViewed({ consent, signedIn }: { consent: boolean | null; signedIn: boolean }) {
   const t = useT("home");
   const locale = useLocale();
   const id = useId();
@@ -228,21 +234,28 @@ export function RecentlyViewed({ consent }: { consent: boolean | null }) {
 
   const load = useCallback(async () => {
     const ticket = ++request.current;
-    const ids = readRecentlyViewed().map((entry) => entry.id);
-    if (ids.length === 0) {
-      setState({ status: "ready", cards: [] });
-      return;
+    let url: string;
+    if (signedIn) {
+      await handDeviceListToAccount();
+      url = `/api/recently-viewed?scope=account&locale=${locale}`;
+    } else {
+      const ids = readRecentlyViewed().map((entry) => entry.id);
+      if (ids.length === 0) {
+        if (ticket === request.current) setState({ status: "ready", cards: [] });
+        return;
+      }
+      url = `/api/recently-viewed?ids=${encodeURIComponent(ids.join(","))}&locale=${locale}`;
     }
-    setState((current) => ({ ...current, status: "loading" }));
+    if (ticket === request.current) setState((current) => ({ ...current, status: "loading" }));
     try {
-      const response = await fetch(`/api/recently-viewed?ids=${encodeURIComponent(ids.join(","))}&locale=${locale}`, { headers: { Accept: "application/json" } });
+      const response = await fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" });
       const body = (await response.json()) as { ok: boolean; cards?: ProductCardData[] };
       if (!response.ok || !body.ok || !Array.isArray(body.cards)) throw new Error(`recently viewed: ${response.status}`);
       if (ticket === request.current) setState({ status: "ready", cards: body.cards });
     } catch {
       if (ticket === request.current) setState({ status: "error", cards: [] });
     }
-  }, [locale]);
+  }, [locale, signedIn]);
 
   useEffect(() => {
     if (consent === true) void load();
@@ -253,9 +266,16 @@ export function RecentlyViewed({ consent }: { consent: boolean | null }) {
   }, [consent, load]);
 
   const clear = () => {
-    forgetRecentlyViewed();
     request.current++;
     setState({ status: "ready", cards: [] });
+    if (signedIn) {
+      // the account's list (server); the device keeps nothing of a signed-in customer
+      void fetch("/api/recently-viewed", { method: "POST", body: new URLSearchParams({ intent: "clear" }), credentials: "same-origin", headers: { Accept: "application/json" } })
+        .then((response) => toast.info(t(response.ok ? "shelf.recentClearedAccount" : "shelf.recentClearFailed")))
+        .catch(() => toast.info(t("shelf.recentClearFailed")));
+      return;
+    }
+    forgetRecentlyViewed();
     toast.info(t("shelf.recentCleared"));
   };
 
@@ -266,7 +286,7 @@ export function RecentlyViewed({ consent }: { consent: boolean | null }) {
       <SectionHead
         id={id}
         title={t("shelf.recent")}
-        reason={t("shelf.recentReason")}
+        reason={t(signedIn ? "shelf.recentReasonAccount" : "shelf.recentReason")}
         action={
           state.status === "ready" ? (
             <TextLink as="button" type="button" arrow={false} onClick={clear}>
@@ -290,23 +310,16 @@ export function RecentlyViewed({ consent }: { consent: boolean | null }) {
   );
 }
 
-// ───────────────────────────────────────────────────────────────── integration slot
+// ───────────────────────────────────────────────────────────────── recommendations (devices area)
 
 /**
- * INTEGRATION SLOT — the devices area's recommendation shelves (CONTRACTS §3: `getRecommendations(db, { locale,
- * context: "home", platformSlugs, sessionHash?, customerId?, consent }, limit) → Shelf<ProductCardData>[]`, with a
- * hard compatibility filter and an honest `reason`). The integration pass loads them in this route's loader and
- * passes them here; until then the loader passes [] and nothing renders.
+ * The devices area's shelf built from the shopper's own signals (getRecommendations, context "home": what they looked
+ * at and, signed in, their saved devices — hard compatibility filter, an honest reason line). The loader streams it
+ * only with consent; it disappears the moment the shopper stops personalisation on this page.
  */
-export function RecommendationShelves({ shelves }: { shelves: readonly Shelf<ProductCardData>[] }) {
-  if (shelves.length === 0) return null;
-  return (
-    <>
-      {shelves.map((shelf) => (
-        <ShelfRail key={shelf.key} shelf={shelf} renderItem={(card) => <ProductCard card={card} slot={shelf.key} sizes={CARD_SIZES} />} />
-      ))}
-    </>
-  );
+export function RecommendationShelves({ result, consent }: { result: Promise<RecommendationResult> | RecommendationResult | null; consent: boolean | null }) {
+  if (consent !== true) return null;
+  return <SharedRecommendationShelves result={result} source="home" sizes={CARD_SIZES} />;
 }
 
 /** Joins section elements with the section gap — a column on the floor. */

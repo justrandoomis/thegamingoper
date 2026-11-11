@@ -20,13 +20,13 @@ Every sheet and dialog is one **modal layer**: a portal at the end of `<body>`, 
 |---|---|
 | Focus | moves in (`initialFocus`, else `[autofocus]`, else the panel), is trapped (Tab / Shift+Tab wrap; roving `tabindex="-1"` items are skipped), and returns to the opener when the layer closes (Safari: the last pressed element) |
 | Close | Escape (top layer only), the scrim, the close key, and **Android's back button / gesture** (Chromium `CloseWatcher`; elsewhere nothing). A layer that is not dismissible (a request in flight) ignores all of them and listens again |
-| The page behind | `inert` (every other `<body>` child except the toaster), no scroll — without a layout shift (a classic scrollbar's gutter stays reserved) |
+| The page behind | `inert` (every other `<body>` child except the toaster), no scroll — without a layout shift (a classic scrollbar's gutter stays reserved). The page itself (not other overlays) is also marked `data-layer-behind`: its live glass — header after scroll, tab bar, task or buy bar — turns solid while the layer is open, so the layer's glass strip is the live pane under the scrim (two per viewport, DESIGN.md §6.2; a sheet under a dialog keeps its strip) |
 | Surface | the layer takes the **density and theme island of its opener** (`data-density="admin"` on the admin shell → admin-dense dialogs) |
 | Stacking | a dialog over a sheet works (only the top answers keys); menus opened inside a layer render into it |
 
 Exports for other overlay builders: `useModalLayer`, `useOverlayRoot(keep?, enabled?)`, `OverlayHostContext`,
 `useOverlayDepth()` (open layers), `usePresence`, `fadeElement`, `focusablesIn(container)`, `inheritSurface`,
-`watchCloseRequests(onClose)`, `usePrimeLayers()`.
+`watchCloseRequests(onClose)`, `usePrimeLayers()`, `LAYER_BEHIND` (the attribute name).
 
 ## Sheet — `~/ui/Sheet`
 

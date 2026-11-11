@@ -1,0 +1,337 @@
+/*
+ * Admin module 05 (orders) — the few pieces the design system does not have yet. Tokens only, logical properties only,
+ * components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; status = words with a dot; numbers tabular at the inline end.
+ */
+@layer components {
+  /* ── module sections (link tabs that wrap; a held ink key marks the current one) ── */
+  .ord-nav {
+    margin-block-end: var(--s-5);
+  }
+  .ord-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  /* phones: one row that scrolls sideways inside itself (the page never does) */
+  @media (max-width: 47.99rem) {
+    .ord-nav__list {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 3px;
+      margin: -3px;
+      scrollbar-width: none;
+    }
+    .ord-nav__list > li {
+      flex: none;
+    }
+  }
+  .ord-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--target);
+    padding-inline: var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    font: var(--type-label);
+    text-decoration: none;
+  }
+  .ord-nav__link:hover {
+    background: var(--niche);
+  }
+  .ord-nav__link[aria-current="page"] {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: none;
+  }
+  .ord-nav__link > svg {
+    flex: none;
+  }
+
+  /* ── outlined fact tags (flags, demo) ── */
+  .ord-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+  .ord-flag[data-kind="suspicious"] > svg {
+    color: var(--warn);
+  }
+  .ord-flag[data-kind="late"] > svg {
+    color: var(--info);
+  }
+
+  /* ── facts (definition lists) ── */
+  .ord-facts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .ord-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ord-facts dt {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .ord-facts dd {
+    font: var(--type-body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── the order page: main column + side column from 1024px ── */
+  .ord-layout {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .ord-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+      align-items: start;
+    }
+  }
+  .ord-side {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  /* ── a row of action keys that wraps ── */
+  .ord-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+
+  /* ── phone cards in place of a dense table (< 768px) ── */
+  .ord-cards {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .ord-card {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .ord-card:hover {
+    background: var(--niche);
+  }
+  .ord-card__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+
+  /* ── totals (a small ledger: label at the start, figure at the end) ── */
+  .ord-ledger {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .ord-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  .ord-ledger > div > dd {
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+  }
+  .ord-ledger__total {
+    padding-block-start: var(--s-2);
+    border-block-start: 1px solid var(--line-strong);
+    font-weight: 600;
+  }
+
+  /* "before → after": flex follows the inline direction, so the first value sits at the reading start; the arrow
+     is mirrored in RTL to point the way the eye moves. */
+  .ord-change {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--s-1);
+  }
+  .ord-change__arrow {
+    display: inline-block;
+    transform: scaleX(var(--dir, 1));
+  }
+
+  /* ── history (audit timeline, §10): a hairline with dots; solid = a person, hollow = automation ── */
+  .ord-timeline {
+    display: grid;
+    gap: var(--s-3);
+    padding-inline-start: var(--s-4);
+    border-inline-start: 1px solid var(--line-strong);
+  }
+  .ord-timeline > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+  }
+  .ord-timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 7px;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .ord-timeline > li[data-actor="system"]::before,
+  .ord-timeline > li[data-actor="guest"]::before,
+  .ord-timeline > li[data-actor="customer"]::before {
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--ink-2);
+  }
+  .ord-reason {
+    display: inline-flex;
+    padding-inline: 6px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink);
+    font: var(--type-caption);
+  }
+
+  /* ── payment proof: the picture at full width on a phone ── */
+  .ord-proof {
+    display: block;
+    inline-size: 100%;
+    max-block-size: 70dvh;
+    object-fit: contain;
+    border-radius: var(--r-sm);
+    background: var(--niche);
+  }
+
+  /* ── the scan field at the packing station ── */
+  .ord-scan {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+  }
+  .ord-scan input {
+    font-size: 18px;
+  }
+  .ord-progress {
+    display: flex;
+    inline-size: 100%;
+    block-size: 6px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--well);
+  }
+  .ord-progress > span {
+    block-size: 100%;
+    background: var(--ok);
+  }
+
+  /* ── a sticky task bar at the bottom (mobile approvals): above the phone tab bar ── */
+  .ord-taskbar {
+    position: sticky;
+    inset-block-end: var(--adm-bottom, 0px);
+    z-index: var(--z-sticky);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    justify-content: flex-end;
+    margin-block-start: var(--s-4);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+  }
+
+  /* ── printed documents (05.06): the browser prints them; the admin's chrome is not printed ── */
+  .ord-docs {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .ord-doc {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-6);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+  }
+  .ord-doc--label {
+    max-inline-size: 26rem;
+    gap: var(--s-2);
+  }
+  .ord-doc table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .ord-doc th,
+  .ord-doc td {
+    padding-block: 6px;
+    padding-inline: 8px;
+    border-block-end: 1px solid var(--line);
+    text-align: start;
+  }
+  .ord-doc .is-num {
+    text-align: end;
+    white-space: nowrap;
+  }
+  .ord-barcode {
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    block-size: 64px;
+    color: var(--ink);
+  }
+
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.ord-docs) .adm-rail,
+    body:has(.ord-docs) .adm-top,
+    body:has(.ord-docs) .adm-tabbar,
+    body:has(.ord-docs) .adm-skip,
+    body:has(.ord-docs) .ord-noprint {
+      display: none !important;
+    }
+    body:has(.ord-docs) .adm,
+    body:has(.ord-docs) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .ord-docs {
+      gap: 0;
+    }
+    .ord-doc {
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+      break-after: page;
+      break-inside: avoid;
+    }
+    .ord-doc:last-child {
+      break-after: auto;
+    }
+  }
+}

@@ -25,6 +25,7 @@ import { cx } from "~/ui/cx";
 import { Glass } from "~/ui/Glass";
 import { IconKey } from "~/ui/IconKey";
 import { KeyBank } from "~/ui/KeyBank";
+import { canonicalSearch } from "./chrome";
 import { useShellT } from "./i18n";
 
 /** Locales in the order the switch shows them (the mock's: العربية · کوردی · English). */
@@ -46,8 +47,9 @@ export function LanguageLinks({ className, linkClassName, onSwitch }: { classNam
       {LANGUAGE_ORDER.filter((code) => LOCALE_CODES.includes(code)).map((code) => (
         <a
           key={code}
-          // no #fragment in the href: the server never sees one, so it would not hydrate (the switch keeps it anyway)
-          href={switchLocalePath(location.pathname, location.search, "", code)}
+          // no #fragment in the href: the server never sees one, so it would not hydrate (the switch keeps it anyway);
+          // the query in the server's spelling ("%20" → "+", "," → "%2C"), the same before and after hydration
+          href={switchLocalePath(location.pathname, canonicalSearch(location.search), "", code)}
           lang={LOCALES[code].bcp47}
           hrefLang={LOCALES[code].bcp47}
           aria-current={code === locale ? "true" : undefined}

@@ -1,15 +1,19 @@
 /**
  * TamTam Motion Engine — the pure parts: spring solver and its CSS/WAAPI output, gesture maths, flight path,
- * quality-tier resolution (and the head script that repeats it), the navigation grammar, and guards that keep the
+ * quality-tier resolution (and the head script that repeats it), the navigation grammar, when a bubble inflates
+ * (never while hydrating — checked in Chromium on /design-system#reveal), and guards that keep the
  * stylesheets honest (tokens in sync with tokens.ts and with the design tokens of docs/DESIGN.md §7.1, keyframes
  * limited to transform and opacity).
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { runInNewContext } from "node:vm";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import messages from "~/i18n/messages/motion";
+import { Bubble, BubbleGroup, inflateOnMount, type InflateInput } from "~/motion/bubble";
 import { resolveTier, type MotionTier, type TierSignals } from "~/motion/env";
 import { resolveNav, reverseNav, type NavDescriptor, type NavRecord, type ResolveInput } from "~/motion/nav-plan";
 import { arcControl, flightMs, pickSnap, project, quadBezier, rubberBand, rubberBandClamp, samplePath, velocityFrom } from "~/motion/physics";
@@ -544,6 +548,28 @@ describe("motion.css", () => {
     // CSS: children 1–5 get slots 0–4 and every later child the sixth slot
     expect(motionCss).toContain(".tt-bubbles > :nth-child(n + 6) { --tt-i: 5; }");
     expect(bubble.fromScale).toBe(0.86);
+  });
+});
+
+describe("bubble — when content inflates (hydration-safe)", () => {
+  const base: InflateInput = { hydrating: false, live: true, always: false, inNavigation: false };
+
+  it("never inflates server HTML or content that hydrates — even a streamed section after the engine went live", () => {
+    expect(inflateOnMount({ ...base, hydrating: true })).toBe(false);
+    expect(inflateOnMount({ ...base, hydrating: true, always: true })).toBe(false);
+    expect(inflateOnMount({ ...base, live: false })).toBe(false);
+  });
+
+  it("inflates content that arrives on the client, unless a page navigation is drawing it (`always` opts in)", () => {
+    expect(inflateOnMount(base)).toBe(true);
+    expect(inflateOnMount({ ...base, inNavigation: true })).toBe(false);
+    expect(inflateOnMount({ ...base, inNavigation: true, always: true })).toBe(true);
+  });
+
+  it("renders no animation class on the server", () => {
+    const html = renderToStaticMarkup(createElement(BubbleGroup, null, createElement(Bubble, { className: "card" }, "x")));
+    expect(html).not.toContain("tt-bubble-in");
+    expect(html).toContain('class="card"');
   });
 });
 

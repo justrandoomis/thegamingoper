@@ -26,6 +26,7 @@ import { TextField, TextArea, Select, Checkbox, Radio, Switch, FieldGroup } from
 import { Stepper } from "~/ui/Stepper";    import { Glass } from "~/ui/Glass";
 import { Socket, AddGlyph, useAddedFlash } from "~/ui/Socket";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";   import { cx } from "~/ui/cx";
+import { BidiText, BidiLabel } from "~/ui/BidiText";
 ```
 
 | Need | Use | Not |
@@ -98,15 +99,20 @@ native reader approves Kufam's ە and ڵا). Kufam never below 15px. **No letter
   Never `left/right`, `ml-/pr-/left-/text-left`. Directional icons mirror by themselves (`<Icon name="arrow-right">`).
 - No hex / `rgb()` / `hsl()` literals outside `tokens.css`. No `letter-spacing`. No CSS `filter`, no SVG filters.
 - `backdrop-filter` exists only in `.glass` — use `<Glass>`. At most **two live glass panes per viewport**; live glass
-  only on fixed/sticky chrome, never in a list (the dev console warns when a third mounts).
+  only on fixed/sticky chrome, never in a list (the dev console warns when a third is on screen). Under an open sheet
+  or dialog the page's glass turns solid by itself, so a sheet over a page with a header and a tab bar is within budget.
 - Motion: only `transform` and `opacity`. No `transition-all/-colors/-shadow`; shadows, blur and colours never animate.
 - One `<Key variant="commit">` per route view (socket keys on product cards excepted).
 - `--gel-*` only through `<Stage>`, `<PlatformLed>`, `data-gel`. Brand red only through the commit key, bead, logo.
 - `<img>` always has `width` and `height` (or use `<Art>` / `<Render>`).
 - Escape hatch, with a reason: `// lint-design: allow <rule> — why` (line + next line; first 3 lines = whole file).
 - 44×44 minimum target on everything pressable (keys and fields already are). Focus ring is automatic (2.5px ink).
-- Latin names and numbers inside Arabic/Kurdish text go in `<bdi>` (keys, chips and banks isolate their labels
-  already). Inside a plain string use U+2066…U+2069. Phone numbers, references and amounts stay left-to-right.
+- Latin names and numbers inside Arabic/Kurdish text: render names and sentences with `<BidiText text>` (each Latin
+  name and number becomes one left-to-right isolate; brackets, separators and a final full stop stay in the sentence).
+  Keys, chips, banks, breadcrumbs, menus, steps, the stage tag and toasts isolate their labels already (`BidiLabel`) —
+  pass plain strings. Never wrap mixed text in a bare `<bdi>`: it guesses the direction from the first letter, so
+  "PlayStation 5 Slim (نسخة الأقراص)" turns around. Inside a plain string use U+2066…U+2069. Phone numbers,
+  references and amounts stay left-to-right.
 - Every user-facing string exists in `ar`, `en` and `ckb`. Component strings live in `app/i18n/messages/ui.ts`
   (`useT("ui")`); add your own `ui-<area>.ts` namespace if a shared component of yours needs some (loaded on every page).
 

@@ -5,7 +5,9 @@
  * payment methods the store has switched on — as text —, the owner's contact details when there are any, the
  * language switch, the demo line while the store is in demo mode, and the © line.
  *
- * Policy pages are /policies/<slug> with the slugs shipping, returns, warranty, privacy, terms (content area).
+ * Policy pages are /policies/<slug> (content area): every slug of its POLICY_SLUGS, in the columns ./chrome
+ * FOOTER_POLICIES sets (help: shipping, returns, warranty, payment · store: privacy, terms), plus /policies, the list
+ * of them all.
  */
 import { useId, type ReactNode } from "react";
 
@@ -14,6 +16,7 @@ import { Logo } from "~/art/Logo";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { formatMoney } from "~/lib/money";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
+import { FOOTER_POLICIES } from "./chrome";
 import { usePlatformName } from "./MegaMenu";
 import { LanguageLinks } from "./Preferences";
 import { useShellT } from "./i18n";
@@ -80,16 +83,22 @@ export function Footer({ shell, demo }: { shell: ShellData | null; demo: boolean
           <Column title={t("footer.help")}>
             <FooterLink to="/track">{t("utility.track")}</FooterLink>
             <FooterLink to="/support">{t("sheet.support")}</FooterLink>
-            <FooterLink to="/policies/shipping">{t("footer.shipping")}</FooterLink>
-            <FooterLink to="/policies/returns">{t("footer.returns")}</FooterLink>
-            <FooterLink to="/policies/warranty">{t("footer.warranty")}</FooterLink>
+            {FOOTER_POLICIES.help.map((slug) => (
+              <FooterLink key={slug} to={`/policies/${slug}`}>
+                {t(`footer.${slug}`)}
+              </FooterLink>
+            ))}
             <FooterLink to="/contact">{t("footer.contact")}</FooterLink>
           </Column>
 
           <Column title={t("footer.store")}>
             <FooterLink to="/about">{t("footer.about")}</FooterLink>
-            <FooterLink to="/policies/privacy">{t("footer.privacy")}</FooterLink>
-            <FooterLink to="/policies/terms">{t("footer.terms")}</FooterLink>
+            {FOOTER_POLICIES.store.map((slug) => (
+              <FooterLink key={slug} to={`/policies/${slug}`}>
+                {t(`footer.${slug}`)}
+              </FooterLink>
+            ))}
+            <FooterLink to="/policies">{t("footer.policies")}</FooterLink>
             <FooterLink to="/accessibility">{t("footer.accessibility")}</FooterLink>
           </Column>
 

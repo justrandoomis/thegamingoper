@@ -7,9 +7,10 @@ import { data } from "react-router";
 import { randomToken } from "~/lib/ids";
 import { formatIraqPhone } from "~/lib/phone";
 import { getCustomer } from "~/server/auth/customer.server";
+import { MAX_PHOTO_FORM_BODY_BYTES, readFormData } from "~/server/body.server";
 import type { RequestCtx } from "~/server/context.server";
 import type { Db } from "~/server/db.server";
-import { actionError } from "~/server/errors";
+import { actionError, AppError, isAppError } from "~/server/errors";
 import type { SupportWho } from "~/server/services/support/common.server";
 import { kvBlobStore, type BlobStore } from "~/server/storage.server";
 import type { UploadSource } from "~/server/uploads.server";
@@ -56,4 +57,18 @@ export function formFiles(form: FormData, name: string): UploadSource[] {
 export function failed(error: unknown, values: Record<string, string>) {
   const failure = actionError(error);
   return data({ ...failure, values }, { status: failure.status, headers: { "Cache-Control": "no-store" } });
+}
+
+/**
+ * The form of a repair request or a hand-off to staff (fields and up to MAX_SUPPORT_PHOTOS photos), read with a running
+ * count: a body past MAX_PHOTO_FORM_BODY_BYTES — declared or not — is cut off with `upload_too_large` (413) instead of
+ * being read to its end, and a body that is not form data is `invalid` (400), never an unexpected error (security
+ * review 2026-11). Returns the failure answer in place of the form.
+ */
+export async function readSupportForm(request: Request): Promise<FormData | ReturnType<typeof failed>> {
+  try {
+    return await readFormData(request, MAX_PHOTO_FORM_BODY_BYTES);
+  } catch (error) {
+    return failed(isAppError(error) ? error : new AppError("invalid", 400), {});
+  }
 }

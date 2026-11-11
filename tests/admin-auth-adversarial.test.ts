@@ -3,15 +3,15 @@
  *
  * Every test names the correct behaviour and then attacks it through the real route modules, the real root middleware
  * (CSRF, headers) and the real services, against a real local D1 (tests/helpers/db.ts). Holes this review found and
- * closed are marked "was broken"; the one it could not close without changing behaviour that other owners' tests
- * assert is a `test.fails` with the reason next to it.
+ * closed are marked "was broken"; the one it left open (the session token surviving a credential change) was closed
+ * by the server pass on 2026-11-11 and is marked "was open".
  *
  *   1 setup              once, only with SETUP_TOKEN (constant time, rate-limited), races, replay → 404
  *   2 sign-in            enumeration (words, status, timing), lockout and its reset, the lockout RACE (was broken),
  *                        per-IP and per-account limits
  *   3 two-step           replay, the ±1 step window, parallel use of one code, recovery codes once, the code
  *                        brute-force cap, enrolment needs the password on an older session (was broken)
- *   4 sessions           fixation at sign-in and at the second step, rotation after credential changes (OPEN),
+ *   4 sessions           fixation at sign-in and at the second step, rotation after credential changes (was open),
  *                        password change and "sign out everywhere" end every other session, half-open ones too
  *   5 cookies            HttpOnly, Secure on https only, SameSite=Strict, Path=/admin(.data), no token in URLs,
  *                        loader data or logs
@@ -242,7 +242,10 @@ async function signedIn(email: string, password: string, now = NOW, options: { h
   return { session: result.session, cookies, setCookies: req.setCookies };
 }
 
-/** Turns two-step verification on for an employee (fresh session, so no password needed) and returns the secret. */
+/**
+ * Turns two-step verification on for an employee (fresh session, so no password needed) and returns the secret and the
+ * device's cookies — the ones the confirmation set: turning two-step on moves the device to a new session token.
+ */
 async function enrolled(person: { email: string; password: string }, at: number) {
   const login = await signedIn(person.email, person.password, at);
   const begin = request({ cookies: login.cookies, now: at + SECOND });
@@ -251,7 +254,9 @@ async function enrolled(person: { email: string; password: string }, at: number)
   const confirm = request({ cookies: login.cookies, now: at + 2 * SECOND });
   const { recoveryCodes } = await confirmTotpEnrollment(confirm.ctx, t.db, { code: await totpCode(secret, at + 2 * SECOND) }, secrets);
   for (const code of recoveryCodes) remember(code);
-  return { secret, recoveryCodes, cookies: login.cookies };
+  const cookies = cookiesAfter(confirm, login.cookies);
+  remember(cookies[ADMIN_COOKIE]);
+  return { secret, recoveryCodes, cookies };
 }
 
 /** Password step of a two-step sign-in: the half-open session's cookies. */
@@ -626,19 +631,52 @@ describe("4 sessions: fixation, rotation, revocation", () => {
     expect(await getEmployee(request({ cookies: full, now: at + 6 * MINUTE }).ctx, t.db)).not.toBeNull();
   });
 
-  // OPEN — not closed by this review. OWASP: renew the session id after a password change. Today the device that
-  // changes the password (or turns two-step on/off) keeps its token, so whoever holds a COPY of that cookie stays signed
-  // in after the change. Closing it means the changing device continues on a new token, which contradicts assertions
-  // in tests/server-core.test.ts ("changing the password signs other devices out", "two-step verification: enrol…")
-  // and tests/admin-shell.test.ts ("password: …") that the same cookie still works afterwards — owners' decision.
-  test.fails("OPEN — after a password change, a copy of the cookie that made the change no longer works", async () => {
+  // Was open (OWASP: renew the session id after a credential change): the device that changed its password or its
+  // two-step setting kept its token, so a COPY of that cookie stayed signed in. Closed 2026-11-11 (server pass): the
+  // changing device continues on a new token; the old one is dead. More cases: tests/auth-rotation.test.ts.
+  test("was open — after a password change or a two-step change, a copy of the cookie that made it no longer works", async () => {
     const person = await staff("content");
-    const at = NOW + 21 * HOUR;
+    const at = NOW + 21 * HOUR + 15 * SECOND;
     const here = await signedIn(person.email, person.password, at);
     const copy = { ...here.cookies };
     const change = request({ cookies: here.cookies, now: at + MINUTE });
-    await mySecurityAction(change.ctx, t.db, (await getEmployee(change.ctx, t.db))!, secrets, form({ intent: "password", currentPassword: person.password, newPassword: remember("a-fresh-password-456"), confirmPassword: "a-fresh-password-456" }));
+    const changed = await mySecurityAction(change.ctx, t.db, (await getEmployee(change.ctx, t.db))!, secrets, form({ intent: "password", currentPassword: person.password, newPassword: remember("a-fresh-password-456"), confirmPassword: "a-fresh-password-456" }));
+    expect(changed).toEqual({ ok: true, intent: "password" });
     expect(await getEmployee(request({ cookies: copy, now: at + 2 * MINUTE }).ctx, t.db)).toBeNull();
+    // The device that made the change carries on with the cookie its answer set — on both cookie paths.
+    const rotated = cookiesAfter(change, here.cookies);
+    remember(rotated[ADMIN_COOKIE]);
+    expect(rotated[ADMIN_COOKIE]).not.toBe(copy[ADMIN_COOKIE]);
+    expect(change.setCookies.map(parseSetCookie).map((cookie) => [cookie.name, cookie.attributes.path])).toEqual([
+      [ADMIN_COOKIE, "/admin"],
+      [ADMIN_COOKIE, "/admin.data"],
+    ]);
+    expect((await getEmployee(request({ cookies: rotated, now: at + 2 * MINUTE }).ctx, t.db))?.employee.id).toBe(person.id);
+
+    // Two-step on, then off: each change moves the device to a new token again and kills the one before.
+    const begin = request({ cookies: rotated, now: at + 3 * MINUTE });
+    const begun = await mySecurityAction(begin.ctx, t.db, (await getEmployee(begin.ctx, t.db))!, secrets, form({ intent: "totp-begin", password: "a-fresh-password-456" }));
+    if (!begun.ok || begun.intent !== "totp-begin") throw new Error("enrolment did not start");
+    const secret = remember(begun.secret.replace(/ /g, ""));
+    const confirm = request({ cookies: rotated, now: at + 4 * MINUTE });
+    const confirmed = await mySecurityAction(confirm.ctx, t.db, (await getEmployee(confirm.ctx, t.db))!, secrets, form({ intent: "totp-confirm", code: await totpCode(secret, at + 4 * MINUTE) }));
+    expect(confirmed).toMatchObject({ ok: true, intent: "totp-confirm" });
+    if (confirmed.ok && confirmed.intent === "totp-confirm") for (const code of confirmed.recoveryCodes) remember(code);
+    const enrolledJar = cookiesAfter(confirm, rotated);
+    remember(enrolledJar[ADMIN_COOKIE]);
+    expect(await getEmployee(request({ cookies: rotated, now: at + 5 * MINUTE }).ctx, t.db)).toBeNull();
+    expect(await getEmployee(request({ cookies: enrolledJar, now: at + 5 * MINUTE }).ctx, t.db)).toMatchObject({ session: { mfaOk: true } });
+
+    const off = request({ cookies: enrolledJar, now: at + 6 * MINUTE });
+    const turnedOff = await mySecurityAction(off.ctx, t.db, (await getEmployee(off.ctx, t.db))!, secrets, form({ intent: "totp-disable", password: "a-fresh-password-456", code: await totpCode(secret, at + 6 * MINUTE) }));
+    expect(turnedOff).toEqual({ ok: true, intent: "totp-disable" });
+    const offJar = cookiesAfter(off, enrolledJar);
+    remember(offJar[ADMIN_COOKIE]);
+    expect(await getEmployee(request({ cookies: enrolledJar, now: at + 7 * MINUTE }).ctx, t.db)).toBeNull();
+    expect((await getEmployee(request({ cookies: offJar, now: at + 7 * MINUTE }).ctx, t.db))?.employee.totpEnabled).toBe(false);
+    // One live session is left: this device's newest.
+    const live = (await t.db.select().from(employeeSessions).where(eq(employeeSessions.employeeId, person.id))).filter((row) => row.revokedAt === null);
+    expect(live).toHaveLength(1);
   });
 
   test("a password change ends every other session — other devices and half-open sign-ins alike", async () => {
@@ -1126,9 +1164,13 @@ describe("10 audit trail and security log", () => {
     const session = (await getEmployee(off.ctx, t.db))!;
     expect(await mySecurityAction(off.ctx, t.db, session, secrets, form({ intent: "totp-disable", password: "not-my-password", code: "123456" }))).toMatchObject({ ok: false, fields: { password: expect.any(String) } });
     expect(await mySecurityAction(off.ctx, t.db, session, secrets, form({ intent: "totp-disable", password: person.password, code: "123456" }))).toMatchObject({ ok: false, code: "mfa_invalid" });
-    expect(await mySecurityAction(request({ cookies, now: at + 2 * MINUTE }).ctx, t.db, session, secrets, form({ intent: "totp-disable", password: person.password, code: await totpCode(secret, at + 2 * MINUTE) }))).toEqual({ ok: true, intent: "totp-disable" });
+    const disable = request({ cookies, now: at + 2 * MINUTE });
+    expect(await mySecurityAction(disable.ctx, t.db, session, secrets, form({ intent: "totp-disable", password: person.password, code: await totpCode(secret, at + 2 * MINUTE) }))).toEqual({ ok: true, intent: "totp-disable" });
+    // Turning it off moved this device to a new session token: carry on with the cookie that answer set.
+    const afterOff = cookiesAfter(disable, cookies);
+    remember(afterOff[ADMIN_COOKIE]);
     const other = await signedIn(person.email, person.password, at + 3 * MINUTE);
-    const revoke = request({ cookies, now: at + 4 * MINUTE });
+    const revoke = request({ cookies: afterOff, now: at + 4 * MINUTE });
     expect(await mySecurityAction(revoke.ctx, t.db, (await getEmployee(revoke.ctx, t.db))!, secrets, form({ intent: "revoke", sessionId: other.session.session.id }))).toMatchObject({ ok: true, ended: true });
 
     const log = await t.db.select().from(authEvents).where(eq(authEvents.subjectId, person.id));

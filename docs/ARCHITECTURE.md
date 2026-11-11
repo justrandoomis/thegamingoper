@@ -250,7 +250,7 @@ Structured content (knowledge articles, policies, device guides) is stored as lo
 ## 9. URL map
 
 Storefront (optional `/en` or `/ckb` prefix): `/`, `/c/:category`, `/platform/:platform`, `/device/:model`, `/search`, `/p/:slug`, `/compare`, `/wishlist`, `/cart`, `/checkout`, `/order/:ref`, `/track`, `/used`, `/used/:slug`, `/trade-in`, `/trade-in/:ref`, `/support`, `/support/assistant`, `/support/repair`, `/support/article/:slug`, `/account/*`, `/about`, `/contact`, `/policies/:slug`, `/accessibility`, `/design-system`, `/motion`.
-Resources: `/api/cart`, `/api/wishlist`, `/api/search/suggest`, `/api/upload/proof`, `/api/events`, `/api/health`, `/media/:key`.
+Resources (registered in `app/routes/api/_routes.ts`): `/api/cart`, `/api/events`, `/api/files/:fileId` (a shopper's own private file — a transfer proof for the order's owner or its `?t=` token, a wallet top-up proof for its uploader; one 404 for everything else; `private, no-store`), `/api/health`, `/api/onboarding`, `/api/product-preview/:slug`, `/api/recently-viewed`, `/api/search/suggest`, `/api/upload/proof`, `/api/upload/tradein`, `/api/wishlist`, `/media/:key` (public files only), `/robots.txt`, `/sitemap.xml`.
 Admin: `/admin/login`, `/admin/setup`, `/admin`, `/admin/<module>/…`.
 
 ## 10. Settings (table `settings`, seeded)

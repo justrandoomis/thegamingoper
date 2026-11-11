@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 import { useT } from "~/i18n/react";
+import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 
 /**
@@ -56,7 +57,7 @@ export function PlatformLabel({ platform, label, glyph = false, className }: Pla
     <span className={cx("plat", className)} data-gel={platform}>
       <PlatformLed solid />
       {glyph && platform !== "brand" ? <PlatformGlyph platform={platform} size={18} className="plat__glyph" /> : null}
-      <bdi>{text}</bdi>
+      <BidiLabel>{text}</BidiLabel>
     </span>
   );
 }

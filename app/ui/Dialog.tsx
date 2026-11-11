@@ -83,8 +83,18 @@ let inerted: HTMLElement[] = [];
 let lastPressed: HTMLElement | null = null;
 let installed = false;
 
+/**
+ * Marks the page under an open layer (not other overlays — a sheet under a dialog keeps its own glass strip). Its
+ * live glass — the header after scroll, the tab or task bar — turns solid there (materials.css), so the layer's glass
+ * is the live pane under the scrim: two at most per viewport (DESIGN.md §6.2), and no frost stacked on frost.
+ */
+export const LAYER_BEHIND = "data-layer-behind";
+
 function syncInert(): void {
-  for (const element of inerted) element.inert = false;
+  for (const element of inerted) {
+    element.inert = false;
+    element.removeAttribute(LAYER_BEHIND);
+  }
   inerted = [];
   const top = layers[layers.length - 1];
   if (top) {
@@ -93,6 +103,7 @@ function syncInert(): void {
       if (child.inert || child.hasAttribute("data-overlay-keep")) continue; // the toaster stays live above sheets
       if (child instanceof HTMLScriptElement || child instanceof HTMLStyleElement || child instanceof HTMLTemplateElement) continue;
       child.inert = true;
+      if (!child.hasAttribute("data-overlay")) child.setAttribute(LAYER_BEHIND, "");
       inerted.push(child);
     }
   }

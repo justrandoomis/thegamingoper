@@ -41,6 +41,8 @@ export default defineMessages({
         assistant: "ابدأ المساعد لهذا الجهاز",
         repair: "احجز صيانة لهذا الجهاز",
         change: "اختر جهازاً آخر",
+        hub: "كل شيء عن {device}",
+        hubText: "النسخ والمواصفات، وما يعمل معه من ملحقات وألعاب",
       },
       guides: { title: "الأدلة", hint: "خطوات آمنة لا تحتاج فتح الجهاز.", empty: "لا توجد أدلة منشورة بعد.", emptyText: "المساعد وطلب الصيانة متاحان دائماً." },
       contact: {
@@ -317,6 +319,8 @@ export default defineMessages({
         assistant: "Start the assistant for this device",
         repair: "Book a repair for this device",
         change: "Choose another device",
+        hub: "Everything about {device}",
+        hubText: "Versions, specifications, and the accessories and games that work with it",
       },
       guides: { title: "Guides", hint: "Safe steps that never involve opening the device.", empty: "No guides are published yet.", emptyText: "The assistant and repair requests are always available." },
       contact: {
@@ -593,6 +597,8 @@ export default defineMessages({
         assistant: "یاریدەدەر بۆ ئەم ئامێرە دەست پێ بکە",
         repair: "چاککردنەوە بۆ ئەم ئامێرە تۆمار بکە",
         change: "ئامێرێکی تر هەڵبژێرە",
+        hub: "هەموو شتێک دەربارەی {device}",
+        hubText: "وەشانەکان و تایبەتمەندییەکان، و ئەو پاشکۆ و یارییانەی لەگەڵیدا کار دەکەن",
       },
       guides: { title: "ڕێنماییەکان", hint: "هەنگاوی سەلامەت کە پێویستیان بە کردنەوەی ئامێرەکە نییە.", empty: "هێشتا هیچ ڕێنماییەک بڵاو نەکراوەتەوە.", emptyText: "یاریدەدەر و داواکاری چاککردنەوە هەمیشە بەردەستن." },
       contact: {

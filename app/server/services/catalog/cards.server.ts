@@ -7,9 +7,14 @@
  *   const deals = await getDeals(db, ctx.locale, { now: ctx.now });                       // genuine reductions, biggest saving first
  *   const used = await getUsedSpotlight(db, ctx.locale, { limit: 4 });                    // listed used units, newest first
  *
+ * PLATFORMS: a product's platforms are the RESEARCHED ones (researchedPlatformSql below — its own platform, else the
+ * devices its game facts name, else its verified/partial compatibility rules), exactly as the catalog area's hubs
+ * decide them, so `platform: "xbox"` includes the games sold for PlayStation AND Xbox and the headsets made for both.
+ * Used units are devices and keep their own platform (`getUsedSpotlight`, like the used marketplace's filter).
+ *
  * HOW (one round trip per call, no N+1)
  *   Every card query is ONE SQL statement built from the linear CTE chain in cardCtes():
- *     [filter CTEs: cat (category subtree), fb/fit (device model), hit (search)]
+ *     [filter CTEs: plat (researched platforms), cat (category subtree), fb/fit (device model), hit (search)]
  *     cv    active variants of published products that pass the product-level filters, ranked so the card
  *           variant (default, else first by sort) is rn = 1, with free units, low-stock threshold and complete
  *           bundle sets read by indexed correlated subqueries
@@ -191,12 +196,47 @@ function orderBy(ordering: Ordering, alias: "c" | "page"): SQL {
 
 const andAll = (parts: SQL[]): SQL => (parts.length === 0 ? sql`1 = 1` : sql.join(parts, sql` AND `));
 
+/**
+ * Condition on a platforms row (alias `platform`): it is one of the platforms the product (alias `product`) is
+ * RESEARCHED for — the rule of the demo import (app/server/db/seed/demo/import.ts platformsOf) and of the catalog
+ * area's hubs (listing.server.ts):
+ *   1. its own platform (`platform_id`) when it has one;
+ *   2. else the platforms of the device models named in `attributes.game.platforms` (games sold for several);
+ *   3. else the platforms of its product-level compatibility rules that are verified or partial (headsets,
+ *      controllers and storage made for several platforms) — a rule on a device model, a generation or a platform.
+ * Multi-platform products have no `platform_id`, so filtering on it alone misses them. Malformed `attributes` JSON
+ * counts as "no game facts" instead of failing the statement. Callers make sure the platforms row is active.
+ */
+export function researchedPlatformSql(product: string, platform: string): SQL {
+  const p = sql.raw(product);
+  const pl = sql.raw(platform);
+  const gamePlatforms = sql`(CASE WHEN json_valid(${p}.attributes) THEN COALESCE(json_array_length(${p}.attributes, '$.game.platforms'), 0) ELSE 0 END)`;
+  return sql`(${pl}.id = ${p}.platform_id
+    OR (${p}.platform_id IS NULL AND ${gamePlatforms} > 0
+        AND ${pl}.id IN (SELECT rpm.platform_id FROM json_each(${p}.attributes, '$.game.platforms') AS rpg JOIN device_models AS rpm ON rpm.slug = rpg.value))
+    OR (${p}.platform_id IS NULL AND ${gamePlatforms} = 0
+        AND ${pl}.id IN (
+          SELECT CASE rpr.target_type
+                   WHEN 'device_model' THEN (SELECT rpd.platform_id FROM device_models AS rpd WHERE rpd.id = rpr.target_id)
+                   WHEN 'generation' THEN (SELECT rpe.platform_id FROM device_generations AS rpe WHERE rpe.id = rpr.target_id)
+                   ELSE rpr.target_id END
+          FROM compatibility_rules AS rpr
+          WHERE rpr.subject_type = 'product' AND rpr.subject_id = ${p}.id AND rpr.status IN ('verified', 'partial'))))`;
+}
+
 /** Product-level filters, shared by listCards and the shelves. */
 function productScope(filters: CardFilters): Scope {
   const scope: Scope = { ctes: [], where: [] };
   const platforms = asList(filters.platform);
   if (platforms.length > 0) {
-    scope.where.push(sql`p.platform_id IN (SELECT id FROM platforms WHERE is_active = 1 AND slug IN (SELECT value FROM json_each(${JSON.stringify(platforms)})))`);
+    // Products researched for one of the platforms (researchedPlatformSql: multi-platform games and headsets
+    // included), worked out once per product in CTE `plat` rather than once per variant row of `cv`.
+    scope.ctes.push(sql`plat(product_id) AS (
+  SELECT DISTINCT rp.id
+  FROM products AS rp JOIN platforms AS rpl ON rpl.is_active = 1 AND rpl.slug IN (SELECT value FROM json_each(${JSON.stringify(platforms)})) AND ${researchedPlatformSql("rp", "rpl")}
+  WHERE rp.status = 'published'
+)`);
+    scope.where.push(sql`p.id IN (SELECT product_id FROM plat)`);
   }
   const kindList = asList(filters.kind);
   if (kindList.length > 0) scope.where.push(sql`p.kind IN (SELECT value FROM json_each(${JSON.stringify(kindList)}))`);

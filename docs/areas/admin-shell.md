@@ -12,7 +12,7 @@ SECURITY.md §6–7, CONTRACTS.md §4). Arabic first (right to left), English as
 | `/admin/logout` | `POST scope=one\|all` → document redirect to the sign-in page, which says what happened | signed in |
 | `/admin/locale` | `POST locale=ar\|en, back=<admin path>` → `tt_admin_locale` cookie (Path=/), document redirect | anyone |
 | `/admin` | Minimal home until module 01 is built: what waits for this employee (raised clay cards only for things that need a decision), the two-step nudge, the employee's sections, module 01's blueprint status | signed in |
-| `/admin/me` | My security: two-step verification (QR + typed key, recovery codes shown once with copy/download, turn off), password change, own sessions with "end" and "sign out the other devices" | signed in |
+| `/admin/me` | My security: two-step verification (QR + typed key, recovery codes shown once with copy/download, turn off), password change, own sessions with "end" and "sign out the other devices". A password change and turning two-step on or off sign the other devices out and move this one to a new `tt_adm` token (both cookie paths, same session end; server pass 2026-11-11): a copy of the old cookie stops working | signed in |
 | `/admin/blueprint` | 176 functions × status: legend with counts, sections × status matrix (counts link to the filtered list), filters in the URL (status, priority, section, text) | signed in, with at least one admin permission |
 | `/admin/<slug>` | Landing page of a module that has no page yet: blueprint number, priority, title, status of its functions. 403 inside the shell when the role cannot see the module, 404 for an unknown name | signed in |
 | `/admin/*` | 404 inside the shell | signed in |
@@ -49,9 +49,14 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
    `shell/ModuleLanding` until your first screen). `tests/admin-shell.test.ts` checks every route you name exists.
 6. **Strings:** `useT("admin")` gives the module names (`modules.<slug>`), status words (`status.<status>`) and
    priorities; put your own in `app/i18n/messages/admin-<slug>.ts`.
-7. **Queues** (the bell, the home cards, the beads): `shell/queues.server.ts` counts transfer proofs awaiting
-   verification and refunds awaiting a second approval (never the employee's own request), each only for holders of
-   the permission to act. Until module 05 has its screens they link to `/admin/orders`. Ask the shell owner to add yours.
+7. **Queues** (the bell, the home cards, the beads): `shell/queues.server.ts` counts, each only for holders of the
+   permission to act and never something the employee may not decide themselves: transfer proofs awaiting
+   verification → `/admin/orders/proofs`; refunds awaiting a second approval, not the employee's own →
+   `/admin/orders/refunds`; price changes awaiting a decision, not the employee's own request (`countDecidable`) →
+   `/admin/pricing/changes`; stock counts submitted for approval that the employee neither started nor counted →
+   `/admin/inventory/counts?status=review`; transfers in transit → `/admin/inventory/transfers?status=in_transit`
+   (`QUEUE_HREF`, icons in `TopBar.tsx`, words `notices.<id>` in `messages/admin.ts`; proof:
+   `npx vitest run tests/admin-shell.test.ts -t queues`). Ask the shell owner to add yours.
 
 ## Security notes
 

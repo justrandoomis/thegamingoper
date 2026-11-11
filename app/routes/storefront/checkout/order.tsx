@@ -17,7 +17,7 @@ import { fillNodes } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { clearStoredCheckout, readStoredCheckout } from "./checkout-form";
-import { findOrderForShopper, NO_STORE } from "./checkout.server";
+import { findOrderForShopper, NO_STORE, orderShelves } from "./checkout.server";
 import { CopyKey } from "./components/CopyKey";
 import { OrderDetails, When } from "./components/OrderDetails";
 import { RecommendationsSlot } from "./components/RecommendationsSlot";
@@ -39,10 +39,13 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const db = getDb();
   const token = new URL(request.url).searchParams.get("t");
   const session = await getCustomer(ctx, db);
-  const found = await findOrderForShopper(db, { ref: params.ref, token, customerId: session?.customer.id ?? null, locale: ctx.locale, now: ctx.now });
+  const customerId = session?.customer.id ?? null;
+  const found = await findOrderForShopper(db, { ref: params.ref, token, customerId, locale: ctx.locale, now: ctx.now });
   const i18n = messagesFor(ctx.locale, "checkout", "errors");
-  if (!found) return data({ found: null, ref: normalizeOrderRef(params.ref), signedIn: session !== null, i18n }, { status: 404, headers: NO_STORE });
-  return data({ found, ref: found.order.ref, signedIn: session !== null, i18n }, { headers: NO_STORE });
+  if (!found) return data({ found: null, ref: normalizeOrderRef(params.ref), signedIn: session !== null, recommendations: null, i18n }, { status: 404, headers: NO_STORE });
+  // what completes what was bought (devices area, "post_purchase") — only once the shopper may see the order; streamed
+  const recommendations = orderShelves(db, ctx, customerId, found.order.ref);
+  return data({ found, ref: found.order.ref, signedIn: session !== null, recommendations, i18n }, { headers: NO_STORE });
 }
 
 export function headers() {
@@ -102,7 +105,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="page grid gap-6 pb-10 pt-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-x-10">
-      <div className="grid min-w-0 max-w-[720px] gap-5">
+      <div className="grid min-w-0 max-w-[720px] gap-5 lg:col-start-1 lg:row-start-1">
         <header className="grid gap-2">
           <p className="type-label text-ink-2">{t("order.number")}</p>
           <div className="flex flex-wrap items-center gap-3">
@@ -118,10 +121,9 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
         </header>
 
         <OrderDetails order={order} mode="owner" access={{ ref: order.ref, token }} />
-        <RecommendationsSlot context="post_purchase" variantIds={[]} />
       </div>
 
-      <aside className="grid gap-4 lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))]">
+      <aside className="grid gap-4 lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))] lg:col-start-2 lg:row-span-2 lg:row-start-1">
         {link ? (
           <section aria-labelledby="order-save" className="grid gap-2 rounded-lg bg-paper p-4">
             <h2 id="order-save" className="type-sub text-ink">
@@ -158,6 +160,10 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           </TextLink>
         </section>
       </aside>
+
+      {/* What completes what was bought (devices area): after the order's own panels on phones (saving the link comes
+          first), under the order from 1024. */}
+      <RecommendationsSlot key={order.ref} context="post_purchase" result={loaderData.recommendations} className="min-w-0 pt-4 lg:col-start-1 lg:row-start-2" />
     </div>
   );
 }

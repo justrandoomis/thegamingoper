@@ -20,9 +20,9 @@ import { PageHead, Section } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
 
 /**
- * Saved devices (brief §3.10, §6): the models the customer owns, picked from the store's device list. The
- * recommendation service will read them (listSavedDeviceIds) once the integration pass wires it; until then the page
- * says only what it does today — keep the devices and link to their hubs.
+ * Saved devices (brief §3.10, §6): the models the customer owns, picked from the store's device list, each linking to
+ * its hub. With personalization consent the devices area's engine reads them (saved_devices) as anchors of the
+ * customer's personal shelf on home and search ("verified to work with" — never inferred); the page says exactly that.
  */
 export const handle = { nav: "push", order: sectionOrder("devices") } satisfies MotionHandle;
 

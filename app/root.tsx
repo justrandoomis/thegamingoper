@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
   useRouteLoaderData,
   type ShouldRevalidateFunctionArgs,
 } from "react-router";
@@ -138,10 +139,16 @@ function ThemeSync() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  // Deliberately dependency-free: this renders when anything above the storefront/admin shells fails.
+  // Deliberately dependency-free: this renders when anything above the storefront/admin shells fails — and for the
+  // admin gate's refusals, which are thrown in middleware before any loader runs (React Router then renders the
+  // highest boundary with a loader: this one, without the admin's strings). Admin pages get the admin's two
+  // languages and a way back into the admin instead of the storefront home. The path decides wording only.
+  const { pathname } = useLocation();
+  const inAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
   let status = 500;
   let title = "حدث خطأ غير متوقع";
   let detail = "تعذّر تحميل الصفحة. حاول مرة أخرى بعد قليل.";
+  let english: string | null = inAdmin ? "Something went wrong. Please try again in a moment." : null;
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
@@ -149,9 +156,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     if (error.status === 404) {
       title = "الصفحة غير موجودة";
       detail = "الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت.";
+      if (inAdmin) english = "This page does not exist.";
     } else if (error.status === 403) {
       title = "غير مسموح";
-      detail = "لا تملك صلاحية الوصول إلى هذه الصفحة.";
+      detail = inAdmin ? "صلاحيات دورك لا تشمل هذا القسم. اطلبها من مالك المتجر إن كنت تحتاجها." : "لا تملك صلاحية الوصول إلى هذه الصفحة.";
+      if (inAdmin) english = "Your role does not include this section. Ask the store owner if you need it.";
     }
   } else if (import.meta.env.DEV && error instanceof Error) {
     detail = error.message;
@@ -163,7 +172,18 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       <p className="root-error__code" dir="ltr">{status}</p>
       <h1>{title}</h1>
       <p>{detail}</p>
-      <a href="/">العودة إلى الرئيسية</a>
+      {english ? (
+        <p lang="en" dir="ltr">
+          {english}
+        </p>
+      ) : null}
+      {inAdmin ? (
+        <a href="/admin">
+          العودة إلى لوحة الإدارة <span lang="en" dir="ltr">· Back to the admin</span>
+        </a>
+      ) : (
+        <a href="/">العودة إلى الرئيسية</a>
+      )}
       {stack ? (
         <pre dir="ltr">
           <code>{stack}</code>

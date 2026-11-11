@@ -18,6 +18,7 @@
     "db:seed": "tsx --tsconfig tsconfig.cloudflare.json scripts/seed.ts",
     "db:reset": "tsx --tsconfig tsconfig.cloudflare.json scripts/db-reset.ts",
     "catalog:import": "tsx --tsconfig tsconfig.cloudflare.json scripts/seed.ts --overwrite",
+    "dev:accounts": "tsx --tsconfig tsconfig.cloudflare.json scripts/dev-accounts.ts",
     "shot": "node scripts/shot.mjs",
     "icons": "node scripts/icons.mjs",
     "logo": "node scripts/logo/trace.mjs && node scripts/logo/assets.mjs",

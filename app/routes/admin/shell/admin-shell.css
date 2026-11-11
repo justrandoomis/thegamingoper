@@ -1,0 +1,816 @@
+/*
+ * Admin shell (app/routes/admin/shell) — docs/DESIGN.md §10 "Admin adaptation". Components layer only (utilities
+ * still win), tokens only, logical properties only. The shell carries data-density="admin" (app/styles/admin.css:
+ * 36px keys and fields, dense type).
+ *
+ *   ≥ 1200px   a 248px rail at the inline start (static glass on the flat page; 64px of icons when collapsed) and a
+ *              tool bar on top of the content column
+ *   768–1199   no rail: the tool bar gains a "sections" key that opens the navigation in a side sheet
+ *   < 768      a compact tool bar and a glass tab bar at the bottom, the approvals queue first
+ *
+ * Material rule: raised clay means "act on this", glass means navigation or a temporary layer, data has no material.
+ * Only the active module is clay (a held ink key); queue rows carry a red bead with the number waiting for a person.
+ * Nothing here animates except opacity/transform on the palette's rows (instant highlight) — no motion near tables.
+ *
+ * Variables the shell publishes (module pages may read them):
+ *   --adm-top-h      height of the sticky tool bar
+ *   --adm-bottom     what fixed chrome covers at the bottom (the phone tab bar, 0 elsewhere): sticky page bars sit
+ *                    at inset-block-end: var(--adm-bottom)
+ */
+@layer components {
+  /* on :root so portals (toasts, menus) can read them */
+  :root:has(.adm) {
+    --adm-top-h: 56px;
+    scroll-padding-block-start: calc(var(--adm-top-h) + var(--s-2));
+  }
+
+  .adm {
+    --adm-rail-w: 248px;
+    --adm-tab-h: calc(60px + var(--safe-bottom));
+    --adm-bottom: var(--adm-tab-h);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-block-size: 100dvh;
+    background: var(--ground);
+    color: var(--ink);
+  }
+  .adm[data-rail="collapsed"] {
+    --adm-rail-w: 64px;
+  }
+  @media (min-width: 48rem) {
+    .adm {
+      --adm-bottom: 0px;
+    }
+  }
+  @media (min-width: 75rem) {
+    .adm {
+      grid-template-columns: var(--adm-rail-w) minmax(0, 1fr);
+    }
+  }
+
+  .adm-skip:focus-visible {
+    position: fixed;
+    inset-block-start: calc(var(--safe-top) + var(--s-2));
+    inset-inline-start: max(var(--s-2), var(--safe-inline));
+    z-index: var(--z-toast);
+    padding: var(--s-2) var(--s-4);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--e-3);
+  }
+
+  /* ───────────── rail (≥ 1200) ───────────── */
+  .adm-rail {
+    display: none;
+  }
+  @media (min-width: 75rem) {
+    .adm-rail {
+      position: sticky;
+      inset-block-start: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+      block-size: 100dvh;
+      inline-size: var(--adm-rail-w);
+      padding-block: var(--s-3) var(--s-2);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      border-start-end-radius: 0;
+      border-inline-end: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+  }
+  .adm-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 40px;
+    padding-inline: var(--s-4);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .adm-brand__mark {
+    flex: none;
+    block-size: 32px;
+    inline-size: auto;
+  }
+  .adm-brand__text {
+    display: grid;
+    min-inline-size: 0;
+    line-height: 1.2;
+  }
+
+  /* navigation rows: flat 36px, captions as group heads; the active module is a held ink key */
+  .adm-nav {
+    display: grid;
+    gap: var(--s-1);
+    padding-inline: var(--s-2);
+  }
+  .adm-nav__group {
+    display: grid;
+    gap: 2px;
+  }
+  .adm-nav__head {
+    padding-block: var(--s-3) var(--s-1);
+    padding-inline: var(--s-3);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .adm-nav__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: 36px;
+    padding-inline: var(--s-3) var(--s-2);
+    border-radius: var(--r-xs);
+    color: var(--ink);
+    font: var(--type-body);
+    text-decoration: none;
+  }
+  .adm-nav__row:hover {
+    background: var(--niche);
+  }
+  .adm-nav__row > svg {
+    color: var(--ink-2);
+  }
+  .adm-nav__label {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* the active row is clay: the ink key held down (same tokens as .key--ink[aria-pressed]) */
+  .adm-nav__row[aria-current] {
+    background: var(--sel-face);
+    color: var(--on-sel);
+    font-weight: 600;
+    box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -4px 6px -4px var(--clay-belly);
+  }
+  .adm-nav__row[aria-current] > svg {
+    color: var(--on-sel);
+  }
+  @media (pointer: coarse) {
+    .adm-nav__row {
+      min-block-size: var(--target);
+    }
+  }
+  .adm[data-rail="collapsed"] .adm-rail .adm-nav__label,
+  .adm[data-rail="collapsed"] .adm-rail .adm-nav__head,
+  .adm[data-rail="collapsed"] .adm-rail .adm-brand__text,
+  .adm[data-rail="collapsed"] .adm-rail .adm-rail__text {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .adm[data-rail="collapsed"] .adm-rail .adm-nav__row {
+    justify-content: center;
+    padding-inline: 0;
+  }
+  .adm[data-rail="collapsed"] .adm-rail .adm-brand {
+    justify-content: center;
+    padding-inline: 0;
+  }
+  .adm[data-rail="collapsed"] .adm-rail .adm-nav__group + .adm-nav__group {
+    border-block-start: 1px solid var(--line);
+    padding-block-start: var(--s-1);
+  }
+  /* the bead on a collapsed row sits on the icon's corner */
+  .adm[data-rail="collapsed"] .adm-rail .adm-nav__row .bead {
+    position: absolute;
+    inset-block-start: 1px;
+    inset-inline-end: 6px;
+    min-inline-size: 16px;
+    block-size: 16px;
+    font-size: 10px;
+  }
+  .adm-rail__foot {
+    display: flex;
+    align-items: center;
+    gap: var(--s-1);
+    margin-block-start: auto;
+    padding-block: var(--s-2) 0;
+    padding-inline: var(--s-2);
+    border-block-start: 1px solid var(--line);
+  }
+  .adm[data-rail="collapsed"] .adm-rail__foot {
+    flex-direction: column;
+  }
+
+  /* ───────────── column, tool bar, main ───────────── */
+  .adm-col {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    padding-block-end: var(--adm-bottom);
+  }
+  .adm-top {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-nav);
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--adm-top-h);
+    padding-block-start: var(--safe-top);
+    padding-inline: max(var(--s-3), var(--safe-inline));
+    border-block-end: 1px solid var(--line);
+  }
+  @media (min-width: 48rem) {
+    .adm-top {
+      gap: var(--s-3);
+      padding-inline: max(var(--gutter), var(--safe-inline));
+    }
+  }
+  .adm-top__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 44px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  /* the sections key: tablets only (phones have the tab bar, desktops the rail) */
+  .adm-top .adm-top__sections {
+    display: none;
+  }
+  @media (min-width: 48rem) and (max-width: 74.99rem) {
+    .adm-top .adm-top__sections {
+      display: inline-flex;
+    }
+  }
+  @media (min-width: 75rem) {
+    .adm-top .adm-top__brand {
+      display: none;
+    }
+  }
+  .adm-top__spacer {
+    flex: 1;
+  }
+  .adm-top__tools {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+
+  /* the search trigger looks like a paper field, acts as a key */
+  .adm-search {
+    position: relative;
+    display: none;
+    align-items: center;
+    gap: var(--s-2);
+    inline-size: min(100%, 26rem);
+    min-block-size: 36px;
+    padding-inline: var(--s-3) var(--s-2);
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    color: var(--ink-2);
+    font: var(--type-body);
+    text-align: start;
+    cursor: pointer;
+  }
+  .adm-search:hover {
+    border-color: var(--ink-2);
+  }
+  @media (min-width: 48rem) {
+    .adm-search {
+      display: flex;
+    }
+  }
+  .adm-search__text {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .adm-kbd {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 20px;
+    padding-inline: 6px;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--niche);
+    color: var(--ink-2);
+    font: 500 11.5px/1 var(--font-text);
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+  }
+
+  /* bell with a bead */
+  .adm-bell {
+    position: relative;
+    display: inline-flex;
+  }
+  .adm-bell > .bead {
+    position: absolute;
+    inset-block-start: -4px;
+    inset-inline-end: -4px;
+    pointer-events: none;
+  }
+
+  /* the employee key: initials disc + name (name from 768) */
+  .adm-avatar {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 26px;
+    block-size: 26px;
+    border-radius: var(--r-full);
+    background: var(--sel-face);
+    color: var(--on-sel);
+    font: 600 11.5px/1 var(--font-text);
+  }
+  .adm-me__name {
+    display: none;
+    max-inline-size: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (min-width: 48rem) {
+    .adm-me__name {
+      display: inline;
+    }
+  }
+
+  .adm-main {
+    flex: 1 0 auto;
+    inline-size: 100%;
+    max-inline-size: calc(1440px + 2 * var(--gutter));
+    margin-inline: auto;
+    padding-block: var(--s-4) var(--s-10);
+    padding-inline: max(var(--s-4), var(--safe-inline));
+  }
+  @media (min-width: 48rem) {
+    .adm-main {
+      padding-block: var(--s-6) var(--s-12);
+      padding-inline: max(var(--gutter), var(--safe-inline));
+    }
+  }
+  .adm-main:focus {
+    outline: none;
+  }
+
+  /* ───────────── tab bar (< 768) ───────────── */
+  .adm-tabbar {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--z-nav);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    min-block-size: var(--adm-tab-h);
+    padding-block-end: var(--safe-bottom);
+    padding-inline: var(--safe-inline);
+    border-radius: 0;
+  }
+  @media (min-width: 48rem) {
+    .adm-tabbar {
+      display: none;
+    }
+  }
+  .adm-tab {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 2px;
+    min-block-size: 56px;
+    border: 0;
+    background: none;
+    color: var(--ink-2);
+    font: var(--type-tab);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .adm-tab[aria-current] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .adm-tab[aria-current]::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 28%;
+    block-size: 3px;
+    border-end-start-radius: 3px;
+    border-end-end-radius: 3px;
+    background: var(--ink);
+  }
+  .adm-tab__icon {
+    position: relative;
+    display: inline-flex;
+  }
+  .adm-tab__icon > .bead {
+    position: absolute;
+    inset-block-start: -6px;
+    inset-inline-start: 12px;
+    min-inline-size: 18px;
+    block-size: 18px;
+    font-size: 10.5px;
+  }
+
+  /* ───────────── command palette ───────────── */
+  .adm-palette {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-dialog);
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    padding-block: max(var(--s-4), var(--safe-top)) var(--s-4);
+    padding-inline: var(--s-3);
+    overflow-y: auto;
+  }
+  @media (min-width: 48rem) {
+    .adm-palette {
+      padding-block-start: 12dvh;
+    }
+  }
+  .adm-palette__scrim {
+    position: fixed;
+    inset: 0;
+    background: var(--scrim);
+    opacity: 0;
+  }
+  .adm-palette__panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    inline-size: min(100%, 640px);
+    max-block-size: min(76dvh, 640px);
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--e-5);
+  }
+  .adm-palette__strip {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-2);
+    border-start-start-radius: var(--r-lg);
+    border-start-end-radius: var(--r-lg);
+  }
+  .adm-palette__field {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 40px;
+    padding-inline: var(--s-3);
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    color: var(--ink-2);
+  }
+  .adm-palette__field:focus-within {
+    border-color: var(--ink);
+  }
+  .adm-palette__input {
+    flex: 1;
+    min-inline-size: 0;
+    min-block-size: 36px;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: 400 15px/1.4 var(--font-text);
+    outline: none;
+  }
+  .adm-palette__input::-webkit-search-cancel-button,
+  .adm-palette__input::-webkit-search-decoration {
+    appearance: none;
+    display: none;
+  }
+  .adm-palette__list {
+    flex: 1;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: var(--s-1) var(--s-2);
+    padding-inline: var(--s-2);
+  }
+  .adm-palette__group-head {
+    padding-block: var(--s-3) var(--s-1);
+    padding-inline: var(--s-2);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .adm-palette__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: 36px;
+    padding-block: var(--s-1);
+    padding-inline: var(--s-3) var(--s-2);
+    border-radius: var(--r-xs);
+    color: var(--ink);
+    font: var(--type-body);
+    cursor: pointer;
+  }
+  .adm-palette__row > svg {
+    color: var(--ink-2);
+  }
+  /* the highlighted row: niche fill and an ink start-edge bar (§10), instant */
+  .adm-palette__row[aria-selected="true"] {
+    background: var(--niche);
+  }
+  .adm-palette__row[aria-selected="true"]::before {
+    content: "";
+    position: absolute;
+    inset-block: 6px;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    border-radius: 3px;
+    background: var(--ink);
+  }
+  .adm-palette__text {
+    display: grid;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .adm-palette__sub {
+    overflow: hidden;
+    color: var(--ink-2);
+    font: var(--type-caption);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .adm-palette__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-4);
+    padding: var(--s-2) var(--s-4);
+    border-block-start: 1px solid var(--line);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  @media (pointer: coarse) {
+    .adm-palette__row {
+      min-block-size: var(--target);
+    }
+    .adm-palette__foot {
+      display: none;
+    }
+  }
+
+  /* ───────────── pages the shell owns ───────────── */
+  /* type (DESIGN.md §10): Kufam only in page titles and KPI figures — everything operational is IBM Plex */
+  .adm-title {
+    font: 600 calc(26px * var(--ds)) / 1.3 var(--font-head);
+    text-wrap: balance;
+  }
+  @media (min-width: 75rem) {
+    .adm-title {
+      font-size: calc(30px * var(--ds));
+    }
+  }
+  .adm-h2 {
+    font: 600 16px/1.45 var(--font-text);
+  }
+  .adm-h3 {
+    font: 600 14px/1.45 var(--font-text);
+  }
+  .adm-narrow {
+    max-inline-size: 52rem;
+  }
+  .adm-page-head {
+    display: grid;
+    gap: var(--s-1);
+    margin-block-end: var(--s-6);
+  }
+  .adm-eyebrow {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .adm-section {
+    display: grid;
+    gap: var(--s-3);
+    margin-block-end: var(--s-8);
+  }
+  .adm-section__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+  /* flat summary cards; a card that needs a human decision is raised clay (§10 "the relief map is the to-do list") */
+  .adm-card {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .adm-card--act {
+    background: var(--clay-face);
+    box-shadow: inset 0 1.5px 0 var(--clay-lip), inset 0 -6px 8px -5px var(--clay-belly), 0 3px 0 var(--clay-wall), var(--e-2);
+  }
+  .adm-grid {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  }
+  .adm-module-link {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: 56px;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .adm-module-link:hover {
+    background: var(--niche);
+  }
+  .adm-module-link > svg {
+    color: var(--ink-2);
+  }
+
+  /* a link inside a dense row (tables): ink, underlined; a full 44px target on touch screens */
+  .adm-link {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  @media (pointer: coarse) {
+    .adm-link {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: var(--target);
+    }
+  }
+
+  /* blueprint function list: flat rows between hairlines */
+  .adm-fn-list {
+    display: grid;
+    border-block-start: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: var(--r-xs);
+  }
+  .adm-fn {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: var(--s-1) var(--s-3);
+    padding: var(--s-3);
+    border-block-end: 1px solid var(--line);
+  }
+  @media (min-width: 48rem) {
+    .adm-fn {
+      grid-template-columns: 3.5rem minmax(0, 1fr) 12rem;
+      align-items: start;
+    }
+  }
+  /* a function opened from the palette (#fn-05-03): niche fill and an ink start-edge bar */
+  .adm-fn:target {
+    background: var(--niche);
+  }
+  .adm-fn:target::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    background: var(--ink);
+  }
+  .adm-fn__id {
+    color: var(--ink-2);
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .adm-fn__state {
+    grid-column: 2;
+    display: grid;
+    gap: 2px;
+    justify-items: start;
+  }
+  @media (min-width: 48rem) {
+    .adm-fn__state {
+      grid-column: 3;
+    }
+  }
+  .adm-progress {
+    display: flex;
+    inline-size: 100%;
+    block-size: 6px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--well);
+  }
+  .adm-progress > span {
+    block-size: 100%;
+  }
+  .adm-progress__done {
+    background: var(--ok);
+  }
+  .adm-progress__partial {
+    background: var(--warn);
+  }
+  .adm-progress__boundary {
+    background: var(--info);
+  }
+
+  /* recovery codes and the setup secret: monospace-like, left-to-right, selectable */
+  .adm-codes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-2) var(--s-4);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+    font: 600 15px/1.4 var(--font-text);
+    font-variant-numeric: tabular-nums lining-nums;
+    user-select: all;
+  }
+  .adm-qr {
+    inline-size: 184px;
+    block-size: 184px;
+    padding: var(--s-2);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* sign-in and setup */
+  .adm-auth {
+    display: grid;
+    min-block-size: 100dvh;
+    padding-block: max(var(--s-6), var(--safe-top)) var(--s-10);
+    padding-inline: max(var(--s-4), var(--safe-inline));
+    background: var(--ground);
+    color: var(--ink);
+    justify-items: center;
+    align-content: start;
+  }
+  @media (min-width: 48rem) {
+    .adm-auth {
+      align-content: center;
+    }
+  }
+  .adm-auth__column {
+    display: grid;
+    gap: var(--s-5);
+    inline-size: min(100%, 440px);
+  }
+  .adm-auth__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+  .adm-auth__card {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-6) var(--s-5);
+    border-radius: var(--r-xl);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line), var(--e-2);
+  }
+  @media (min-width: 37.5rem) {
+    .adm-auth__card {
+      padding-block: var(--s-8) var(--s-6);
+      padding-inline: var(--s-8);
+    }
+  }
+  .adm-notice {
+    display: flex;
+    gap: var(--s-2);
+    align-items: flex-start;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+    font: var(--type-body);
+  }
+  .adm-notice > svg {
+    flex: none;
+    margin-block-start: 2px;
+  }
+  .adm-notice--bad {
+    color: var(--red-ink);
+  }
+  .adm-notice--ok > svg {
+    color: var(--ok);
+  }
+  .adm-notice--warn > svg {
+    color: var(--warn);
+  }
+}

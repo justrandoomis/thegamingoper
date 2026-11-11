@@ -1,0 +1,397 @@
+/**
+ * The client's admin blueprint — 23 modules, 176 functions, priorities P0/P1/P2 — as typed, client-safe data.
+ *
+ * GENERATED from docs/admin-blueprint.json (only `modules`: ids, priorities, titles and function titles in ar/en).
+ * Do not edit by hand: change the JSON, regenerate, and tests/admin-shell.test.ts checks the two are identical.
+ * The blueprint is a proposed concept (its own disclaimer), not a description of what is built: what exists is
+ * recorded per function in app/routes/admin/blueprint-status.ts.
+ */
+
+export type BlueprintPriority = "P0" | "P1" | "P2";
+
+export type BlueprintFunctionDef = { readonly id: string; readonly ar: string; readonly en: string };
+
+export type BlueprintModuleDef = {
+  readonly id: string;
+  readonly priority: BlueprintPriority;
+  readonly ar: string;
+  readonly en: string;
+  readonly functions: readonly BlueprintFunctionDef[];
+};
+
+export const BLUEPRINT_SOURCE = "TamTam_Admin_Complete_Guide_AR.pdf (10 November 2026)";
+
+export const BLUEPRINT_PRIORITIES = ["P0", "P1", "P2"] as const satisfies readonly BlueprintPriority[];
+
+export const BLUEPRINT_MODULES = [
+  {
+    id: "01",
+    priority: "P0",
+    ar: "مركز القيادة ولوحة المؤشرات",
+    en: "Command Center & Metrics Dashboard",
+    functions: [
+      { id: "01.01", ar: "بطاقات KPI: مبيعات مدفوعة وصافي ربح وطلبات مفتوحة ومتوسط السلة مع مقارنة زمنية", en: "KPI cards: paid sales, net profit, open orders and average basket, with period-over-period comparison" },
+      { id: "01.02", ar: "مركز إجراءات عاجلة: طلبات متأخرة، دفعات غير مطابقة، مخزون منخفض، تذاكر حرجة", en: "Urgent action center: late orders, mismatched payments, low stock, critical tickets" },
+      { id: "01.03", ar: "مخطط مسار التحويل: زيارة ← سلة ← دفع ← تسليم، مع تقسيم حسب الجهاز والقناة", en: "Conversion funnel chart: visit → cart → payment → delivery, segmented by device and channel" },
+      { id: "01.04", ar: "اختيار فترة ومقارنة: اليوم/الأسبوع/الشهر وفترة مماثلة مع فلاتر الفروع", en: "Period selection and comparison: today/week/month versus an equivalent period, with branch filters" },
+      { id: "01.05", ar: "لوحة مخصصة لكل دور: المدير المالي والمخزن والدعم يشاهدون ما يخصهم", en: "Role-specific dashboard: finance manager, warehouse and support each see what concerns them" },
+      { id: "01.06", ar: "بحث عالمي: طلب/عميل/SKU/Serial/تذكرة مع إجراءات سريعة", en: "Global search: order/customer/SKU/Serial/ticket, with quick actions" },
+      { id: "01.07", ar: "موجز نشاط: آخر تعديلات الأسعار والمرتجعات والموافقات", en: "Activity feed: latest price changes, returns and approvals" },
+    ],
+  },
+  {
+    id: "02",
+    priority: "P0",
+    ar: "كتالوج المنتجات",
+    en: "Product Catalog",
+    functions: [
+      { id: "02.01", ar: "منتج رئيسي ومتغيرات SKU: المنصة واللون والسعة والإصدار والمنطقة والحالة", en: "Parent product and SKU variants: platform, color, capacity, edition, region and condition" },
+      { id: "02.02", ar: "تصنيف هرمي: أجهزة/ألعاب/أقراص/يد تحكم/ملحقات/بطاقات رقمية", en: "Hierarchical categories: consoles/games/discs/controllers/accessories/digital cards" },
+      { id: "02.03", ar: "حقول إلزامية حسب النوع: التوافق، الضمان، العمر، المنطقة، نوع الترخيص", en: "Required fields per product type: compatibility, warranty, age rating, region, license type" },
+      { id: "02.04", ar: "معرض وسائط: صور متعددة، فيديو، ترتيب، نص بديل، قص مناسب", en: "Media gallery: multiple images, video, ordering, alt text, proper cropping" },
+      { id: "02.05", ar: "نشر مسودات ومراجعة ومواعيد نشر وإخفاء المنتجات الناقصة", en: "Draft publishing, review, scheduled publishing and hiding incomplete products" },
+      { id: "02.06", ar: "تحرير جماعي واستيراد CSV مع معاينة الأخطاء والتراجع", en: "Bulk editing and CSV import with error preview and rollback" },
+      { id: "02.07", ar: "حزم Bundle: جهاز + لعبة + حقيبة مع تفكيك المخزون حسب المكونات", en: "Bundles: console + game + case, with stock broken down by component" },
+      { id: "02.08", ar: "منتجات مكملة وبدائل وترقية Upsell وربط ملحقات متوافقة", en: "Complementary products, alternatives and upsell upgrades, plus linking compatible accessories" },
+      { id: "02.09", ar: "تاريخ نسخ المنتج وتغييرات السعر والوصف مع استرجاع آمن", en: "Product version history with price and description changes and safe restore" },
+      { id: "02.10", ar: "مقارنة خصائص الأجهزة وإظهار التوافق عبر الأجيال", en: "Device spec comparison and cross-generation compatibility display" },
+    ],
+  },
+  {
+    id: "03",
+    priority: "P0",
+    ar: "التسعير والربحية",
+    en: "Pricing & Profitability",
+    functions: [
+      { id: "03.01", ar: "سعر تكلفة شراء وعملة أصلية وسعر صرف مؤرخ", en: "Purchase cost price, original currency and dated exchange rate" },
+      { id: "03.02", ar: "تكلفة واصلة Landed Cost: شحن وجمارك ورسوم وعمولات موزعة", en: "Landed cost: allocated shipping, customs, fees and commissions" },
+      { id: "03.03", ar: "هامش مستهدف وحد أدنى للربح قبل السماح بنشر السعر", en: "Target margin and minimum profit required before a price may be published" },
+      { id: "03.04", ar: "قوائم أسعار حسب قناة/فرع/شريحة عملاء/حالة المنتج", en: "Price lists by channel/branch/customer segment/product condition" },
+      { id: "03.05", ar: "سجل تغيرات الأسعار وموافقات عند تجاوز حدود الخصم", en: "Price change log and approvals when discount limits are exceeded" },
+      { id: "03.06", ar: "محاكاة تأثير خصم على صافي هامش كل SKU", en: "Simulate a discount's impact on the net margin of each SKU" },
+      { id: "03.07", ar: "تسعير عروض الحزم والتصفية والمستعمل بصورة منفصلة", en: "Separate pricing for bundle offers, clearance and used items" },
+      { id: "03.08", ar: "اقتراح سعر ذكي استرشادي مع اعتماد بشري قبل النشر", en: "Advisory smart price suggestion with human approval before publishing" },
+    ],
+  },
+  {
+    id: "04",
+    priority: "P0",
+    ar: "المخزون والمستودعات",
+    en: "Inventory & Warehouses",
+    functions: [
+      { id: "04.01", ar: "رصيد فعلي ومحجوز ومتاح وقادم لكل SKU ولكل موقع", en: "On-hand, reserved, available and incoming stock per SKU and per location" },
+      { id: "04.02", ar: "مواقع رفوف وممرات وصناديق مع باركود موقع التخزين", en: "Shelf, aisle and bin locations with storage-location barcodes" },
+      { id: "04.03", ar: "استلام وفحص وعدّ ومسح باركود/QR/Serial", en: "Receiving, inspection, counting and barcode/QR/Serial scanning" },
+      { id: "04.04", ar: "حركات مخزون غير قابلة للحذف: إدخال/بيع/نقل/تلف/تسوية", en: "Non-deletable stock movements: stock-in/sale/transfer/damage/adjustment" },
+      { id: "04.05", ar: "جرد دوري وانتقائي وفروقات بموافقة مشرف", en: "Periodic and selective stock counts, with variances approved by a supervisor" },
+      { id: "04.06", ar: "حد إعادة الطلب وتغطية الأيام وتوقع نفاد المخزون", en: "Reorder point, days of cover and stock-out forecast" },
+      { id: "04.07", ar: "تحويلات بين فروع ومستودعات وحالات في الطريق", en: "Transfers between branches and warehouses, with in-transit statuses" },
+      { id: "04.08", ar: "حجز مخزون للطلب مع مهلة انتهاء وتحرير الحجز تلقائياً", en: "Stock reservation per order with an expiry window and automatic release" },
+      { id: "04.09", ar: "منع بيع المخزون السالب إلا باستثناء مصرح وموثق", en: "Block selling into negative stock except by an authorized, documented exception" },
+      { id: "04.10", ar: "تتبع دفعات وتكلفة FIFO أو متوسط مرجح وفق السياسة", en: "Batch tracking with FIFO or weighted-average costing, per policy" },
+      { id: "04.11", ar: "تجهيز Pick-Pack-Ship مع مسح للتحقق من الصنف الصحيح", en: "Pick-Pack-Ship fulfillment with scanning to verify the correct item" },
+      { id: "04.12", ar: "تقارير مخزون راكد ودوران ومبيعات مقابل الوارد", en: "Reports on dead stock, turnover and sales versus inbound stock" },
+    ],
+  },
+  {
+    id: "05",
+    priority: "P0",
+    ar: "الطلبات والتجهيز",
+    en: "Orders & Fulfillment",
+    functions: [
+      { id: "05.01", ar: "حالات واضحة: جديد، مدفوع، قيد التحقق، تجهيز، شحن، تسليم، إلغاء، إرجاع", en: "Clear statuses: new, paid, under verification, preparing, shipped, delivered, cancelled, returned" },
+      { id: "05.02", ar: "صفحة طلب موحدة: العميل، العناصر، الدفع، العنوان، المخزون، السجل", en: "Unified order page: customer, items, payment, address, stock, history" },
+      { id: "05.03", ar: "تخصيص موظف تجهيز وقوائم مهام ومسح Serial قبل التسليم", en: "Assign a fulfillment employee, task lists and Serial scan before handover" },
+      { id: "05.04", ar: "تجزئة الطلب إلى شحنات وجزئيات عند الحاجة", en: "Split an order into shipments and partials when needed" },
+      { id: "05.05", ar: "تعديل الطلب قبل الشحن مع إعادة احتساب فرق الدفع والمخزون", en: "Edit an order before shipping, recalculating the payment difference and stock" },
+      { id: "05.06", ar: "فواتير وإشعارات وملصقات شحن وطباعة دفعات", en: "Invoices, notifications, shipping labels and batch printing" },
+      { id: "05.07", ar: "طلبات مسبقة: موعد متوقع، دفعة مقدمة، تحديثات تأخير", en: "Pre-orders: expected date, deposit, delay updates" },
+      { id: "05.08", ar: "سجل أحداث وإشعارات وتوقيعات الاستلام وإثبات التسليم", en: "Event and notification log, receipt signatures and proof of delivery" },
+      { id: "05.09", ar: "تحديد الطلبات المشبوهة أو المتأخرة ومراجعة بشرية", en: "Flag suspicious or late orders for human review" },
+    ],
+  },
+  {
+    id: "06",
+    priority: "P0",
+    ar: "نقاط البيع POS",
+    en: "Point of Sale (POS)",
+    functions: [
+      { id: "06.01", ar: "بيع من المتجر الفيزيائي عبر قارئ باركود وطابعة إيصالات", en: "In-store sales using a barcode scanner and receipt printer" },
+      { id: "06.02", ar: "درج نقدية وافتتاح وإغلاق ورديات وجرد نقدي", en: "Cash drawer, shift opening and closing, and cash counts" },
+      { id: "06.03", ar: "دفع مختلط نقد/محفظة/بطاقة حسب مزودات مدعومة", en: "Mixed payment (cash/wallet/card), depending on supported providers" },
+      { id: "06.04", ar: "توحيد مخزون POS والمتجر الإلكتروني لحظياً", en: "Real-time unified stock across POS and the online store" },
+      { id: "06.05", ar: "ربط عملية البيع بالعميل والضمان والسيريال", en: "Link each sale to the customer, warranty and serial number" },
+      { id: "06.06", ar: "تسعير وخصومات مقيدة بصلاحية الكاشير", en: "Pricing and discounts restricted by the cashier's permissions" },
+      { id: "06.07", ar: "وضع انقطاع اتصال مع مزامنة آمنة ومنع التكرار عند العودة", en: "Offline mode with safe sync and duplicate prevention on reconnect" },
+    ],
+  },
+  {
+    id: "07",
+    priority: "P0",
+    ar: "العملاء وCRM",
+    en: "Customers & CRM",
+    functions: [
+      { id: "07.01", ar: "ملف عميل 360°: طلبات وتذاكر وضمانات وملاحظات بموافقة", en: "360° customer profile: orders, tickets, warranties and notes, with consent" },
+      { id: "07.02", ar: "شرائح RFM: حداثة الشراء والتكرار والقيمة", en: "RFM segments: recency, frequency and monetary value" },
+      { id: "07.03", ar: "عناوين متعددة ووسائل تواصل وتفضيلات إشعارات", en: "Multiple addresses, contact methods and notification preferences" },
+      { id: "07.04", ar: "سجل موافقات التسويق وإلغاء الاشتراك وطلبات الخصوصية", en: "Log of marketing consents, unsubscribes and privacy requests" },
+      { id: "07.05", ar: "دمج حسابات مكررة بعد تحقق وتدقيق", en: "Merge duplicate accounts after verification and audit" },
+      { id: "07.06", ar: "عملاء VIP ومخاطر الاحتيال والشكاوى المفتوحة", en: "VIP customers, fraud risk and open complaints" },
+      { id: "07.07", ar: "سجل تواصل مرتبط بالطلب دون كشف بيانات مالية حساسة", en: "Order-linked communication log without exposing sensitive financial data" },
+    ],
+  },
+  {
+    id: "08",
+    priority: "P1",
+    ar: "العروض والولاء",
+    en: "Promotions & Loyalty",
+    functions: [
+      { id: "08.01", ar: "كوبونات ثابتة أو نسبية مع حد استخدام وفترة وصلاحيات", en: "Fixed or percentage coupons with usage limit, validity period and permissions" },
+      { id: "08.02", ar: "قواعد خصم شرطية: فئة/عميل/سلة/كمية/منصة", en: "Conditional discount rules: category/customer/cart/quantity/platform" },
+      { id: "08.03", ar: "Flash Sales مع بداية ونهاية ومخزون مخصص", en: "Flash sales with start and end times and dedicated stock" },
+      { id: "08.04", ar: "نقاط مكافآت واستبدال وتاريخ انتهاء ودفتر حركات", en: "Reward points with redemption, expiry dates and a transaction ledger" },
+      { id: "08.05", ar: "إحالات برمز خاص ومنع إساءة الاستخدام", en: "Referrals with a dedicated code and abuse prevention" },
+      { id: "08.06", ar: "عضويات VIP ومزايا محددة وشروط شحن", en: "VIP memberships with defined benefits and shipping terms" },
+      { id: "08.07", ar: "بطاقات هدايا بأرصدة وتسويات وتحقق ضد الاسترداد المكرر", en: "Gift cards with balances, settlements and checks against double redemption" },
+      { id: "08.08", ar: "تجارب A/B على عروض بعد ضبط معايير القياس", en: "A/B tests on offers once measurement criteria are defined" },
+    ],
+  },
+  {
+    id: "09",
+    priority: "P0",
+    ar: "الموردون والمشتريات",
+    en: "Suppliers & Purchasing",
+    functions: [
+      { id: "09.01", ar: "ملف المورد: العملات، شروط الدفع، المهلة، الجودة، جهات الاتصال", en: "Supplier profile: currencies, payment terms, lead time, quality, contacts" },
+      { id: "09.02", ar: "طلب عروض أسعار RFQ ومقارنة سعر ووقت وضمان", en: "Request for quotation (RFQ) with price, lead-time and warranty comparison" },
+      { id: "09.03", ar: "أمر شراء PO مع موافقات وحدود إنفاق", en: "Purchase order (PO) with approvals and spending limits" },
+      { id: "09.04", ar: "استلام جزئي وربط فاتورة المورد بالأمر والاستلام", en: "Partial receiving, with the supplier invoice matched to the order and receipt" },
+      { id: "09.05", ar: "تكلفة شحن وجمارك وتوزيعها على الوحدات", en: "Shipping and customs costs allocated across units" },
+      { id: "09.06", ar: "مطالبات نقص وتالف وإرجاع للمورد", en: "Claims for shortages and damaged goods, and returns to supplier" },
+      { id: "09.07", ar: "تنبيه فروقات الكمية والسعر بين PO والفاتورة والاستلام", en: "Alerts on quantity and price variances between PO, invoice and receipt" },
+      { id: "09.08", ar: "تقييم مورد بناء على التزام المواعيد ونسبة العيوب", en: "Supplier rating based on on-time performance and defect rate" },
+    ],
+  },
+  {
+    id: "10",
+    priority: "P0",
+    ar: "المالية والمحاسبة",
+    en: "Finance & Accounting",
+    functions: [
+      { id: "10.01", ar: "دفتر قيود مزدوجة أو تكامل محاسبي مع مصدر موحد للحقيقة", en: "Double-entry ledger or accounting integration, with a single source of truth" },
+      { id: "10.02", ar: "تسويات الدفع COD/بوابة/محفظة ومطابقة كشوف", en: "Payment settlements for COD/gateway/wallet, with statement reconciliation" },
+      { id: "10.03", ar: "إيراد محقق مقابل طلبات معلقة أو غير مسلمة", en: "Realized revenue versus pending or undelivered orders" },
+      { id: "10.04", ar: "تكلفة البضاعة المباعة وخصومات وكوبونات ومرتجعات", en: "Cost of goods sold, discounts, coupons and returns" },
+      { id: "10.05", ar: "مصروفات تشغيل ورواتب وشحن وتسويق مع مراكز تكلفة", en: "Operating, payroll, shipping and marketing expenses, with cost centers" },
+      { id: "10.06", ar: "تقرير أرباح وخسائر وتدفق نقدي ومخزون كأصل", en: "Profit and loss report, cash flow, and inventory as an asset" },
+      { id: "10.07", ar: "محفظة العميل بدفتر قيود غير قابل للتعديل المباشر", en: "Customer wallet backed by a ledger that cannot be edited directly" },
+      { id: "10.08", ar: "تقرير ضريبة حسب التشريعات المطبقة وتكوين قابل للتعديل", en: "Tax report per applicable regulations, with editable configuration" },
+      { id: "10.09", ar: "إغلاق مالي شهري ومنع تعديل الفترات المغلقة إلا بقيد عكسي", en: "Monthly financial close; closed periods can only be changed by a reversing entry" },
+      { id: "10.10", ar: "تحذير القيم الشاذة: NaN، سالب غير مفسر، عدم تطابق الإجماليات", en: "Anomalous value warnings: NaN, unexplained negatives, mismatched totals" },
+    ],
+  },
+  {
+    id: "11",
+    priority: "P0",
+    ar: "الشحن والتوصيل",
+    en: "Shipping & Delivery",
+    functions: [
+      { id: "11.01", ar: "تعريف مناطق ومحافظات ورسوم وأوقات تقديرية", en: "Define zones, governorates, fees and estimated delivery times" },
+      { id: "11.02", ar: "اختيار شركة شحن حسب المنطقة والكلفة ومستوى الخدمة", en: "Select a carrier by zone, cost and service level" },
+      { id: "11.03", ar: "إنشاء بوليصة ورقم تتبع وحالة استلام وتسليم", en: "Create a waybill and tracking number, with pickup and delivery status" },
+      { id: "11.04", ar: "تسويات التحصيل عند التسليم مع شركات الشحن", en: "Cash-on-delivery collection settlements with carriers" },
+      { id: "11.05", ar: "معالجة فشل التسليم وإعادة المحاولة والمرتجع", en: "Handle failed deliveries, retries and returned shipments" },
+      { id: "11.06", ar: "إثبات استلام وتوثيق تغليف الأجهزة الحساسة", en: "Proof of receipt and documented packaging of sensitive devices" },
+    ],
+  },
+  {
+    id: "12",
+    priority: "P0",
+    ar: "المرتجعات والضمان",
+    en: "Returns & Warranty",
+    functions: [
+      { id: "12.01", ar: "طلب RMA مرتبط بالفاتورة والسيريال والسبب والصور", en: "RMA request linked to the invoice, serial number, reason and photos" },
+      { id: "12.02", ar: "قواعد أهلية الإرجاع حسب نوع المنتج وحالته وموعد الشراء", en: "Return eligibility rules by product type, condition and purchase date" },
+      { id: "12.03", ar: "فحص المنتج المرتجع وتصنيفه صالح/مفتوح/معيب/تالف", en: "Inspect the returned product and grade it good/opened/defective/damaged" },
+      { id: "12.04", ar: "استرداد إلى وسيلة دفع مسموحة أو رصيد وفق السياسة", en: "Refund to an allowed payment method or to store credit, per policy" },
+      { id: "12.05", ar: "منع استرداد العنصر نفسه مرتين ومراقبة الاحتيال", en: "Prevent refunding the same item twice, with fraud monitoring" },
+      { id: "12.06", ar: "ضمان الأجهزة بتواريخ وتاريخ صيانة وقطع مستبدلة", en: "Device warranty with dates, service history and replaced parts" },
+      { id: "12.07", ar: "سير عمل إصلاح واستبدال وإرجاع للمورد مع SLA", en: "Repair, replacement and return-to-supplier workflow with SLA" },
+    ],
+  },
+  {
+    id: "13",
+    priority: "P0",
+    ar: "الأجهزة والألعاب والمقايضة",
+    en: "Devices, Games & Trade-in",
+    functions: [
+      { id: "13.01", ar: "سجل أجهزة فريد بالسيريال والحالة ومصدر الشراء", en: "Unique device registry by serial number, condition and purchase source" },
+      { id: "13.02", ar: "فحص المستعمل: الشاشة والبطارية والمنافذ والأزرار والحرارة", en: "Used-device inspection: screen, battery, ports, buttons and temperature" },
+      { id: "13.03", ar: "تقييم مقايضة حسب موديل وحالة وملحقات وسعر سوق مرجعي", en: "Trade-in valuation by model, condition, accessories and reference market price" },
+      { id: "13.04", ar: "تقدير فرق السعر وقسيمة مقايضة وصلاحية العرض", en: "Price-difference estimate, trade-in voucher and offer validity" },
+      { id: "13.05", ar: "حالة القرص/الغلاف/المنطقة/التوافق مع المنصات", en: "Disc/cover condition, region and platform compatibility" },
+      { id: "13.06", ar: "تمييز النسخ الرقمية والأقراص والرموز والاشتراكات", en: "Distinguish digital copies, discs, codes and subscriptions" },
+      { id: "13.07", ar: "تتبع رموز رقمية بحفظ مشفر ووصول مقيد وعدم كشفها قبل الدفع", en: "Track digital codes with encrypted storage and restricted access, never revealed before payment" },
+      { id: "13.08", ar: "تحقق ملكية الجهاز وفصل الحسابات ومسح البيانات قبل إعادة البيع", en: "Verify device ownership, unlink accounts and wipe data before resale" },
+      { id: "13.09", ar: "تصنيف جودة المستعمل وصور حالة فعلية وموافقة العميل", en: "Used-item quality grading, actual condition photos and customer approval" },
+    ],
+  },
+  {
+    id: "14",
+    priority: "P1",
+    ar: "خدمة العملاء",
+    en: "Customer Service",
+    functions: [
+      { id: "14.01", ar: "صندوق وارد موحد للبريد والمحادثة والرسائل المتاحة", en: "Unified inbox for email, chat and available messaging channels" },
+      { id: "14.02", ar: "تذاكر مرتبطة بالعميل والطلب والمنتج والضمان", en: "Tickets linked to the customer, order, product and warranty" },
+      { id: "14.03", ar: "قواعد توجيه حسب الموضوع والأولوية وقدرة الموظف", en: "Routing rules by topic, priority and agent capacity" },
+      { id: "14.04", ar: "ردود جاهزة ومتغيرات آمنة مع مراجعة قبل الإرسال", en: "Canned replies with safe variables, reviewed before sending" },
+      { id: "14.05", ar: "مؤشرات زمن أول رد وحل ورضا العملاء", en: "Metrics for first-response time, resolution time and customer satisfaction" },
+      { id: "14.06", ar: "قاعدة معرفة داخلية ومركز مساعدة للعملاء", en: "Internal knowledge base and customer help center" },
+      { id: "14.07", ar: "تصعيد شكاوى مالية وضمانات إلى مخولين", en: "Escalate financial and warranty complaints to authorized staff" },
+    ],
+  },
+  {
+    id: "15",
+    priority: "P1",
+    ar: "الموظفون والموارد البشرية",
+    en: "Employees & HR",
+    functions: [
+      { id: "15.01", ar: "أدوار وصلاحيات دقيقة لكل فعل وحقل مالي", en: "Granular roles and permissions for every action and financial field" },
+      { id: "15.02", ar: "جدول دوام وحضور وإجازات ومهام وورديات", en: "Work schedule, attendance, leave, tasks and shifts" },
+      { id: "15.03", ar: "عمولات حسب مبيعات أو ربح محقق مع خصومات مرتجعات", en: "Commissions based on sales or realized profit, with deductions for returns" },
+      { id: "15.04", ar: "حساب أجور ورواتب ومكافآت وسلف وتسويات", en: "Calculation of wages, salaries, bonuses, advances and settlements" },
+      { id: "15.05", ar: "لوحة أداء الموظف دون عرض تكاليف المورد المحمية", en: "Employee performance dashboard that does not show protected supplier costs" },
+      { id: "15.06", ar: "مسار موافقات للخصومات والاسترداد وتعديل المخزون", en: "Approval workflow for discounts, refunds and stock adjustments" },
+      { id: "15.07", ar: "تعطيل وصول فوري عند إنهاء الخدمة وسجل جلسات", en: "Immediate access revocation on termination, plus a session log" },
+    ],
+  },
+  {
+    id: "16",
+    priority: "P1",
+    ar: "التسويق والنمو",
+    en: "Marketing & Growth",
+    functions: [
+      { id: "16.01", ar: "حملات بريد ورسائل بعد موافقة صريحة", en: "Email and messaging campaigns after explicit consent" },
+      { id: "16.02", ar: "استعادة السلات المتروكة مع حدود إرسال", en: "Abandoned cart recovery with sending limits" },
+      { id: "16.03", ar: "تقسيم الحملات حسب منصة ألعاب وتاريخ شراء", en: "Campaign segmentation by gaming platform and purchase date" },
+      { id: "16.04", ar: "روابط UTM وإسناد المبيعات للحملات", en: "UTM links and sales attribution to campaigns" },
+      { id: "16.05", ar: "اقتراح بيع متقاطع: حقيبة/يد تحكم/حماية مع جهاز", en: "Cross-sell suggestions: case/controller/protection with a device" },
+      { id: "16.06", ar: "مركز مراجعات وتقييمات ومحتوى عملاء", en: "Hub for reviews, ratings and customer content" },
+      { id: "16.07", ar: "تقرير CAC وROAS وLTV مع تعريفات حساب واضحة", en: "CAC, ROAS and LTV report with clear calculation definitions" },
+    ],
+  },
+  {
+    id: "17",
+    priority: "P1",
+    ar: "المحتوى وتجربة المتجر",
+    en: "Content & Storefront Experience",
+    functions: [
+      { id: "17.01", ar: "إدارة بانرات وصفحات هبوط وأقسام الصفحة الرئيسية", en: "Manage banners, landing pages and homepage sections" },
+      { id: "17.02", ar: "جدولة حملات موسمية وإصدارات الألعاب الجديدة", en: "Schedule seasonal campaigns and new game releases" },
+      { id: "17.03", ar: "إدارة قوائم التصفح والفلاتر والبحث الداخلي", en: "Manage navigation menus, filters and on-site search" },
+      { id: "17.04", ar: "تحسين SEO وعناوين وروابط وتحويلات 301", en: "SEO optimization, titles, links and 301 redirects" },
+      { id: "17.05", ar: "بحث بلا نتائج واقتراح مرادفات عربية/إنجليزية", en: "Zero-result searches and Arabic/English synonym suggestions" },
+      { id: "17.06", ar: "معاينة الهاتف وسطح المكتب قبل النشر", en: "Mobile and desktop preview before publishing" },
+    ],
+  },
+  {
+    id: "18",
+    priority: "P1",
+    ar: "التقارير وذكاء الأعمال",
+    en: "Reports & Business Intelligence",
+    functions: [
+      { id: "18.01", ar: "تقرير مبيعات حسب يوم ومنصة وفرع وقناة", en: "Sales report by day, platform, branch and channel" },
+      { id: "18.02", ar: "صافي هامش حسب SKU بعد كل المصاريف والخصومات", en: "Net margin per SKU after all expenses and discounts" },
+      { id: "18.03", ar: "ABC للمنتجات ودوران مخزون ومخزون راكد", en: "ABC analysis of products, inventory turnover and dead stock" },
+      { id: "18.04", ar: "تحليل Cohorts وتكرار الشراء وقيمة العميل", en: "Cohort analysis, repeat purchases and customer value" },
+      { id: "18.05", ar: "أداء الموردين والموظفين والشحن وخدمة العملاء", en: "Performance of suppliers, employees, shipping and customer service" },
+      { id: "18.06", ar: "تقارير محفوظة وجدولة إرسال وتصدير CSV/XLSX", en: "Saved reports, scheduled delivery and CSV/XLSX export" },
+      { id: "18.07", ar: "قاموس مقاييس موحد لمنع تضارب تعريف الربح والإيراد", en: "Unified metrics dictionary to prevent conflicting definitions of profit and revenue" },
+    ],
+  },
+  {
+    id: "19",
+    priority: "P2",
+    ar: "الأتمتة والذكاء الاصطناعي",
+    en: "Automation & AI",
+    functions: [
+      { id: "19.01", ar: "منشئ Workflow: حدث + شرط + إجراء + سجل تنفيذ", en: "Workflow builder: event + condition + action + execution log" },
+      { id: "19.02", ar: "تنبيه نفاد مخزون واقتراح أمر شراء قابل للاعتماد", en: "Stock-out alert with a suggested purchase order ready for approval" },
+      { id: "19.03", ar: "تصنيف تذاكر الدعم وتلخيصها واقتراح ردود", en: "Classify and summarize support tickets and suggest replies" },
+      { id: "19.04", ar: "اكتشاف معاملات غير معتادة أو فروقات تكلفة", en: "Detect unusual transactions or cost variances" },
+      { id: "19.05", ar: "توقع الطلب حسب الموسم وإطلاقات الألعاب", en: "Demand forecasting by season and game launches" },
+      { id: "19.06", ar: "مساعد إداري يسأل البيانات مع احترام صلاحيات المستخدم", en: "Admin assistant that queries the data while respecting the user's permissions" },
+      { id: "19.07", ar: "وضع محاكاة Dry Run قبل تفعيل أي قاعدة مؤثرة", en: "Dry Run simulation mode before activating any impactful rule" },
+      { id: "19.08", ar: "إشراف بشري إلزامي على الاسترداد وتعديل الأسعار الكبير", en: "Mandatory human oversight of refunds and large price changes" },
+    ],
+  },
+  {
+    id: "20",
+    priority: "P0",
+    ar: "الأمان والامتثال",
+    en: "Security & Compliance",
+    functions: [
+      { id: "20.01", ar: "مصادقة متعددة العوامل وجلسات وأجهزة موثوقة", en: "Multi-factor authentication, sessions and trusted devices" },
+      { id: "20.02", ar: "RBAC وصلاحيات على مستوى الحقول والفروع", en: "RBAC with field-level and branch-level permissions" },
+      { id: "20.03", ar: "سجل تدقيق غير قابل للتلاعب للتغييرات الحساسة", en: "Tamper-proof audit log for sensitive changes" },
+      { id: "20.04", ar: "تشفير بيانات حساسة وأسرار الرموز الرقمية", en: "Encryption of sensitive data and digital code secrets" },
+      { id: "20.05", ar: "نسخ احتياطية واختبارات استعادة وخطة تعافي", en: "Backups, restore tests and a recovery plan" },
+      { id: "20.06", ar: "حماية من تكرار طلبات الدفع وWebhooks", en: "Protection against duplicate payment requests and Webhooks" },
+      { id: "20.07", ar: "سياسة احتفاظ وحذف بيانات ومراجعة صلاحيات دورية", en: "Data retention and deletion policy, plus periodic permission reviews" },
+      { id: "20.08", ar: "تنبيهات محاولات دخول غير طبيعية ومراجعة استردادات", en: "Alerts on abnormal login attempts, and refund reviews" },
+    ],
+  },
+  {
+    id: "21",
+    priority: "P1",
+    ar: "الفروع والقنوات والتكاملات",
+    en: "Branches, Channels & Integrations",
+    functions: [
+      { id: "21.01", ar: "مخزون وأسعار وقواعد توصيل حسب فرع أو قناة", en: "Stock, prices and delivery rules per branch or channel" },
+      { id: "21.02", ar: "توحيد طلبات الموقع وPOS وأي سوق خارجي مدعوم", en: "Unified orders from the website, POS and any supported external marketplace" },
+      { id: "21.03", ar: "API وWebhooks موثقة مع مفاتيح محددة الصلاحية", en: "Documented API and Webhooks with scoped keys" },
+      { id: "21.04", ar: "مراقبة فشل التكامل وإعادة المحاولة دون تكرار", en: "Monitor integration failures and retry without duplication" },
+      { id: "21.05", ar: "ربط مزودي دفع وشحن ورسائل وفق التوفر المحلي", en: "Connect payment, shipping and messaging providers based on local availability" },
+      { id: "21.06", ar: "قائمة قنوات مع قياس ربحية كل قناة", en: "Channel list with per-channel profitability measurement" },
+    ],
+  },
+  {
+    id: "22",
+    priority: "P0",
+    ar: "الإعدادات وإدارة النظام",
+    en: "Settings & System Administration",
+    functions: [
+      { id: "22.01", ar: "العملة الأساسية وسعر الصرف وتاريخ تغييره", en: "Base currency, exchange rate and the date it changed" },
+      { id: "22.02", ar: "إعدادات الضرائب والشحن وسياسات الضمان والإرجاع", en: "Tax and shipping settings, and warranty and return policies" },
+      { id: "22.03", ar: "حقول مخصصة وقواعد تحقق لكل نوع منتج", en: "Custom fields and validation rules per product type" },
+      { id: "22.04", ar: "إدارة ملفات وقوالب رسائل وفواتير", en: "Manage files and message and invoice templates" },
+      { id: "22.05", ar: "إعدادات وقت العراق والتواريخ والترجمة العربية RTL", en: "Settings for Iraq time, dates and Arabic RTL localization" },
+      { id: "22.06", ar: "بيئة اختبار وتغييرات إعدادات مع سجل وموافقات", en: "Test environment, and settings changes with a log and approvals" },
+    ],
+  },
+  {
+    id: "23",
+    priority: "P1",
+    ar: "الصيانة والتشغيل التقني",
+    en: "Maintenance & Technical Operations",
+    functions: [
+      { id: "23.01", ar: "مراقبة أخطاء الواجهة والخادم وقواعد البيانات", en: "Monitor front-end, server and database errors" },
+      { id: "23.02", ar: "مقاييس زمن تحميل صفحات الإدارة ومعدلات الفشل", en: "Metrics for admin page load times and failure rates" },
+      { id: "23.03", ar: "مراقبة مهام الخلفية وطوابير الرسائل", en: "Monitor background jobs and message queues" },
+      { id: "23.04", ar: "مراقبة النسخ الاحتياطية واستعادة تجريبية دورية", en: "Monitor backups and run periodic trial restores" },
+      { id: "23.05", ar: "مركز حوادث مع مالك مسؤول وتاريخ الحل", en: "Incident center with a responsible owner and resolution date" },
+      { id: "23.06", ar: "فحوصات اتساق يومية للمخزون والمدفوعات والأرباح", en: "Daily consistency checks for stock, payments and profits" },
+    ],
+  },
+] as const satisfies readonly BlueprintModuleDef[];
+
+export type BlueprintModuleId = (typeof BLUEPRINT_MODULES)[number]["id"];
+export type BlueprintFunctionId = (typeof BLUEPRINT_MODULES)[number]["functions"][number]["id"];
+
+/** Every function id in blueprint order ("01.01" … "23.06"). */
+export const BLUEPRINT_FUNCTION_IDS: readonly BlueprintFunctionId[] = BLUEPRINT_MODULES.flatMap((module) => module.functions.map((fn) => fn.id));
+
+export function blueprintModule(id: string): BlueprintModuleDef | undefined {
+  return BLUEPRINT_MODULES.find((module) => module.id === id);
+}

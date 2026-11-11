@@ -13,7 +13,9 @@ import { env } from "cloudflare:workers";
 import { createContext, data, redirect, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import { DEFAULT_LOCALE, LOCALES, splitLocale, type Dir, type Locale } from "~/lib/locales";
 import { parsePrefs, PREFS_COOKIE, readCookie, type Prefs } from "~/lib/prefs";
-import { applySecurityHeaders, isSameOriginMutation } from "./security.server";
+import { applySecurityHeaders, isSameOriginMutation, pagePathname } from "./security.server";
+
+export { pagePathname };
 
 export type StoreMode = "demo" | "live";
 
@@ -76,17 +78,6 @@ export function serializeCookie(ctx: RequestCtx, name: string, value: string, op
 
 export function clearCookie(ctx: RequestCtx, name: string): string {
   return serializeCookie(ctx, name, "", { maxAge: 0 });
-}
-
-/**
- * The page path a request is for. React Router's client navigations request "/en.data" for "/en"
- * and "/en/_.data" (or "/_.data") for a path ending in "/"; this strips that suffix the same way the
- * router does (getNormalizedPath in react-router's server runtime, which it does not export).
- */
-export function pagePathname(pathname: string): string {
-  if (pathname.endsWith("/_.data")) return pathname.slice(0, -"_.data".length);
-  if (pathname.endsWith(".data")) return pathname.slice(0, -".data".length);
-  return pathname;
 }
 
 function newNonce(): string {

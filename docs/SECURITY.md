@@ -97,6 +97,7 @@ Secrets are Worker secrets (`wrangler secret put`). Locally they live in `.dev.v
 **Lockout**
 - 5 failed passwords for one email lock that email until its 15-minute window ends (`locked_out` with `retryAfterSec`). During the lock the correct password is refused too.
 - A successful sign-in clears the earlier failures.
+- Each attempt is counted atomically **before** the password is checked, so parallel guesses cannot slip past the limit (a 40-way race lets exactly 5 through; `tests/admin-auth-adversarial.test.ts`).
 - Attempts are also limited per IP, across all accounts.
 - Anyone who knows a staff email can trigger the lock. This is accepted: the edge challenge on `/admin/login` makes it slow to abuse.
 
@@ -107,8 +108,9 @@ Secrets are Worker secrets (`wrangler secret put`). Locally they live in `.dev.v
 - After 6 attempts, the next one ends the half-open session, and the password is needed again.
 - Success replaces the session with a new token.
 - Enrolment stores the secret encrypted with the context `employee:<id>:totp` and does not turn it on until a valid code proves the app has it. Enrolling signs every other device out and returns 10 recovery codes once.
+- Starting enrolment needs the password again unless the session was opened with it in the last 15 minutes, so a stolen cookie cannot enrol the attacker's phone and lock the employee out (a cookie younger than 15 minutes still can — accepted).
 - A recovery code works once. Two simultaneous uses are resolved with compare-and-swap.
-- An employee can turn it off with their password and a code. An administrator with `security.mfa.manage` can reset it with a reason, for example after a lost phone; that signs the employee out everywhere.
+- An employee can turn it off with their password and a code; refused attempts are written to `auth_events`. An administrator with `security.mfa.manage` can reset it with a reason, for example after a lost phone; that signs the employee out everywhere.
 
 **Sessions**
 - The `tt_adm` cookie holds a random 256-bit token and is HttpOnly, SameSite=Strict and Secure on HTTPS. Only its SHA-256 is stored.
@@ -117,6 +119,7 @@ Secrets are Worker secrets (`wrangler secret put`). Locally they live in `.dev.v
 - Every request checks the database. Revoking a session, or disabling the employee, locks them out on the very next request.
 - Employees can list and revoke their own sessions. Revoking someone else's needs `security.session.revoke`. Both are audited.
 - Changing the password signs the employee's other devices out.
+- **Known gap:** the device that changes its password or its two-step setting keeps its own token, so a copy of that device's cookie survives the change (`test.fails` in `tests/admin-auth-adversarial.test.ts`). Decided 2026-11-11: rotate the token on both changes (staff and customers) — scheduled for the storefront security pass.
 
 **Disabling an employee**
 - Needs `staff.manage` and a reason.
@@ -127,8 +130,9 @@ Secrets are Worker secrets (`wrangler secret put`). Locally they live in `.dev.v
 - Every admin loader and action starts with `requireEmployee(ctx, db, "<permission>")`.
 - With no session, it sends a document redirect (`redirectDocument`) to `/admin/login?next=…`. The `next` value is limited to `/admin` paths by `safeNextPath`.
 - With a session but without the permission, it answers 403.
+- The admin layout's gate (`routes/admin/shell/gate.server.ts`) refuses, before any loader runs, a module whose permission group the employee holds nothing of, and every admin route outside `/admin/<module>/` that has no rule of its own. Such a refusal is rendered by the root error boundary (React Router renders the highest boundary with a loader when middleware throws before `next()`); `applySecurityHeaders` still marks it `no-store`.
 
-**SameSite=Strict side effect:** a link from outside the site (an email, a chat) arrives without the cookie, so the employee lands on `/admin/login`. The login page should call `getEmployee` and forward to `next` when the employee is already signed in.
+**SameSite=Strict side effect:** a link from outside the site (an email, a chat) arrives without the cookie. The sign-in page forwards an employee who is already signed in to `next`, and a cross-site arrival without a visible cookie gets one same-site hop (the page reloads itself from its own origin, so the Strict cookie is sent).
 
 **First owner** (`createFirstOwner(db, { setupToken, email, name, password }, now, env, origin)`):
 - Works only while the `employees` table is empty. This is checked before the reference data or the roles are written, and again inside the transaction that inserts the owner.
@@ -354,6 +358,8 @@ The application relies on the edge for:
 - **Staff sessions are not bound to an IP or device.** A stolen cookie works until the idle (2 h) or absolute (12 h) limit, or until it is revoked. HttpOnly, SameSite=Strict and `Path=/admin` limit how it can be stolen.
 - **Content-Security-Policy:** it is off in development, and `style-src` allows inline styles.
 - **Public files** may stay in caches after being made private (§9).
+- **Session token after a credential change** (§6): the device that changes its password or two-step setting keeps its token. Decided: rotate it (staff and customers); open until the storefront security pass.
+- **Admin JavaScript is public** (it is served to anyone who asks, the blueprint catalogue included): it contains no data, costs or secrets — every number comes from loaders behind `requireEmployee`.
 - **Two-person refunds are enforced** (since 2026-11-11): above `refunds.approval_threshold_iqd` (default 0, so every refund) a refund waits for `approveRefund`, which needs `orders.refund.approve` and refuses the employee who requested it (`approver_is_requester`). Refunds created by a cancellation always wait for approval.
 - **Append-only tables can be rewritten with `INSERT OR REPLACE`.** The UPDATE/DELETE triggers on ledgers and history do not fire on SQLite's REPLACE conflict resolution, so a statement written that way could replace a wallet ledger row (`tests/commerce-adversarial.test.ts`, marked `.fails`). No code path issues REPLACE today; the fix is a BEFORE INSERT trigger that refuses an existing id or idempotency key (data layer, open).
 

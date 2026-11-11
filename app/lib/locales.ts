@@ -69,9 +69,13 @@ export function splitLocale(pathname: string): { locale: Locale; path: string } 
   return { locale: DEFAULT_LOCALE, path: pathname || "/" };
 }
 
-/** Build a locale-prefixed path. `path` must be locale-less and start with "/". */
+/**
+ * Build a locale-prefixed path. `path` must be locale-less and start with "/". The admin (its language is a
+ * cookie, not a URL prefix) and the API never take a prefix, so `<LocaleLink to="/admin/orders">` stays put.
+ */
 export function localePath(path: string, locale: Locale): string {
   const clean = path.startsWith("/") ? path : `/${path}`;
+  if (/^\/(admin|api)(?=[/?#]|$)/.test(clean)) return clean;
   const prefix = LOCALES[locale].prefix;
   if (!prefix) return clean;
   return clean === "/" ? prefix : `${prefix}${clean}`;

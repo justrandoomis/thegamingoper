@@ -40,7 +40,7 @@ import { seedReference } from "../db/seed/reference";
 import { expectChanged, expectThat, isDbError, runBatch } from "../db/tx.server";
 import { AppError, conflict, invalid, notFound, rateLimited, unauthorized } from "../errors";
 import { roleId, type Permission } from "../permissions";
-import { RATE_LIMITS, claimOnce, enforceRateLimit, limitKey, peekRateLimit, rateLimit, resetRateLimit } from "../ratelimit.server";
+import { RATE_LIMITS, claimOnce, enforceRateLimit, limitKey, rateLimit, resetRateLimit } from "../ratelimit.server";
 import { EMPLOYEE_PASSWORD_MIN, authEventStatement, originOf, passwordField, readSessionToken, safeNextPath, sessionCookie, sessionIdHash, type AuthCtx, type AuthSecrets, type SessionSummary } from "./common.server";
 import { existingDefaultRoles, seedRolesStatements } from "./seed-roles";
 
@@ -287,14 +287,16 @@ export async function signInEmployee(ctx: AuthCtx, db: Db, raw: unknown): Promis
   const input = SignInInput.parse(raw);
   await enforceRateLimit(db, await limitKey("admin-signin", "ip", ctx.ip), RATE_LIMITS.adminSignInIp, ctx.now);
 
+  // The attempt is counted BEFORE the password is checked, in one atomic upsert: guesses sent in parallel cannot all
+  // read "not locked" before any of their failures is written (a look-then-count lock let 15 of 40 simultaneous
+  // guesses through). A successful sign-in clears the count again, so only failures keep the email locked.
   const failures = await limitKey("admin-signin-fail", "email", input.email);
-  const lock = await peekRateLimit(db, failures, RATE_LIMITS.adminSignInFailures, ctx.now);
-  if (!lock.ok) throw new AppError("locked_out", 429, { retryAfterSec: lock.retryAfterSec });
+  const counted = await rateLimit(db, failures, RATE_LIMITS.adminSignInFailures, ctx.now);
+  if (!counted.ok) throw new AppError("locked_out", 429, { retryAfterSec: counted.retryAfterSec });
 
   const employee = await db.select().from(employees).where(eq(employees.email, input.email)).get();
   const passwordOk = await verifyPassword(input.password, employee?.passwordHash);
   if (!employee || !passwordOk || employee.status !== "active") {
-    const counted = await rateLimit(db, failures, RATE_LIMITS.adminSignInFailures, ctx.now);
     const reason = !employee ? "unknown_email" : !passwordOk ? "bad_password" : "disabled";
     const about = { subjectKind: "employee" as const, subjectId: employee?.id ?? null, identifier: input.email };
     await runBatch(db, [
@@ -451,14 +453,40 @@ async function requireSession(ctx: AuthCtx, db: Db): Promise<EmployeeSession> {
   return session;
 }
 
+/** How long after typing the password an employee may start two-step enrolment without typing it again. */
+export const RECENT_SIGN_IN_MS = 15 * 60 * 1000;
+
+/**
+ * Tying an account to an authenticator is a credential change, and enrolment signs every other device out: with a
+ * copy of someone's session cookie alone, an attacker could enrol THEIR phone and lock the real employee out. So
+ * enrolment needs the password typed again — unless this session was opened with it in the last 15 minutes.
+ * Throws `invalid` with fields.password = `invalid_credentials` (wrong) or `required` (missing on an older session).
+ */
+async function assertPasswordProven(ctx: AuthCtx, db: Db, current: EmployeeSession, password: string): Promise<void> {
+  const employeeId = current.employee.id;
+  if (password) {
+    await enforceRateLimit(db, await limitKey("password", "employee", employeeId), RATE_LIMITS.signIn, ctx.now);
+    const row = await db.select({ passwordHash: employees.passwordHash }).from(employees).where(eq(employees.id, employeeId)).get();
+    if (await verifyPassword(password, row?.passwordHash)) return;
+    await runBatch(db, [authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, identifier: current.employee.email, kind: "mfa_enroll", success: false, details: { change: "enable", reason: "bad_password" } })]);
+    throw invalid({ password: "invalid_credentials" });
+  }
+  if (ctx.now - current.session.createdAt <= RECENT_SIGN_IN_MS) return;
+  throw invalid({ password: "required" }, "password_required");
+}
+
 /**
  * Starts enrolment for the signed-in employee: creates a secret, stores it encrypted (not active
  * yet) and returns it for the authenticator app — `uri` as a QR code, `secret` for typing.
- * Calling it again replaces the pending secret. Throws `mfa_already_enabled` (409) when it is on.
+ * Calling it again replaces the pending secret. Needs `{ password }` unless the session was opened with the password in
+ * the last 15 minutes (assertPasswordProven). Throws `mfa_already_enabled` (409) when it is on.
  */
-export async function beginTotpEnrollment(ctx: AuthCtx, db: Db, secrets: Pick<AuthSecrets, "DATA_KEY">): Promise<{ secret: string; uri: string }> {
-  const { employee } = await requireSession(ctx, db);
+export async function beginTotpEnrollment(ctx: AuthCtx, db: Db, secrets: Pick<AuthSecrets, "DATA_KEY">, raw: unknown = {}): Promise<{ secret: string; uri: string }> {
+  const current = await requireSession(ctx, db);
+  const { employee } = current;
   if (employee.totpEnabled) throw conflict("mfa_already_enabled");
+  const typed = (raw as { password?: unknown } | null)?.password;
+  await assertPasswordProven(ctx, db, current, typeof typed === "string" ? typed : "");
   const secret = generateTotpSecret();
   const sealed = await encryptSecret(secret, secrets.DATA_KEY, totpContext(employee.id));
   await db
@@ -525,9 +553,18 @@ export async function disableOwnTotp(ctx: AuthCtx, db: Db, raw: unknown, secrets
   await enforceRateLimit(db, await limitKey("admin-mfa", "employee", employeeId), RATE_LIMITS.mfaVerify, ctx.now);
 
   const row = await db.select({ passwordHash: employees.passwordHash }).from(employees).where(eq(employees.id, employeeId)).get();
-  if (!(await verifyPassword(input.password, row?.passwordHash))) throw invalid({ password: "invalid_credentials" });
+  // A refused attempt is written to the security log too: someone with this device is trying to remove a factor.
+  const refused = (reason: "bad_password" | "bad_code") =>
+    runBatch(db, [authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, identifier: current.employee.email, kind: "mfa_enroll", success: false, details: { change: "disable", reason } })]);
+  if (!(await verifyPassword(input.password, row?.passwordHash))) {
+    await refused("bad_password");
+    throw invalid({ password: "invalid_credentials" });
+  }
   const factor = await checkSecondFactor(ctx, db, employeeId, input.code, secrets);
-  if (!factor.ok) throw mfaInvalid();
+  if (!factor.ok) {
+    await refused("bad_code");
+    throw mfaInvalid();
+  }
 
   await runBatch(db, [
     db.update(employees).set({ totpEnabled: false, totpSecretEnc: null, recoveryCodes: null, updatedAt: ctx.now }).where(eq(employees.id, employeeId)),

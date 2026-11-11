@@ -27,7 +27,7 @@ the admin shell (docs/areas/admin-shell.md). Services: `app/server/services/admi
 ## Functions → status (`app/routes/admin/blueprint-status.ts`)
 
 02.01 implemented · 02.02 implemented · 02.03 implemented · 02.04 **partial** (no video, no crop/focal hints) ·
-02.05 **partial** (scheduled → listed needs the cron job) · 02.06 implemented · 02.07 implemented · 02.08 implemented ·
+02.05 implemented (the 5-minute job `catalog.publish_due` lists due products) · 02.06 implemented · 02.07 implemented · 02.08 implemented ·
 02.09 implemented · 02.10 implemented.
 
 ## Rules the services enforce
@@ -114,7 +114,7 @@ the admin shell (docs/areas/admin-shell.md). Services: `app/server/services/admi
 - Video and crop/focal hints: the upload service takes JPEG/PNG/WebP only and `media` has no URL, crop or focal
   columns → 02.04 partial; schema change requested.
 - Scheduled publishing: product page and cart treat a due `scheduled` product as live; category lists, search and
-  menus read `published` only → `publishDueProducts(db, now)` (workflow.server.ts, tested) must run every 5 minutes.
+  menus read `published` only → the 5-minute job `catalog.publish_due` (`publishDueProducts`, app/server/jobs.server.ts since 2026-11-11) lists them within five minutes.
 - Barcode scanners: keyboard-wedge input only (list search, variant barcode, bundle component, relation target).
 - Store warranty terms: owner decision; until then hardware shows "warranty" as missing.
 - Not yet checked: an import ROLLBACK restores the values a live product had before the import without the
@@ -123,8 +123,8 @@ the admin shell (docs/areas/admin-shell.md). Services: `app/server/services/admi
 
 ## Requests to other owners
 
-- **Lead / jobs:** add job `catalog.publish_due` → `publishDueProducts(db, now)` to the `*/5` schedule in
-  `app/server/jobs.server.ts`.
+- ~~**Lead / jobs:** add job `catalog.publish_due` → `publishDueProducts(db, now)` to the `*/5` schedule in
+  `app/server/jobs.server.ts`.~~ Done 2026-11-11.
 - **Storefront catalog (listing, search, nav):** treat `scheduled` with `publish_at <= now` as live, like
   `product.server.ts` and `cart.server.ts` do.
 - **Data:** `media`: `url` (video), `crop` json and `focal_x`/`focal_y`; optionally a stored `hidden` status.

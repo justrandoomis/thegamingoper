@@ -649,6 +649,7 @@ describe("scheduled jobs", () => {
     expect(run.jobs.map((job) => [job.job, job.status])).toEqual([
       ["orders.expire_unpaid", "succeeded"],
       ["inventory.reservations.expire", "succeeded"],
+      ["catalog.publish_due", "succeeded"],
       ["outbox.deliver", "skipped"],
     ]);
     expect(run.jobs[0].stats).toMatchObject({ cancelled: expect.any(Number), failed: 0 });

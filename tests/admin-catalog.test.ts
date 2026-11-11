@@ -38,6 +38,7 @@ import { deleteCategory, getCategoryTree, moveCategory, saveCategory, saveDevice
 import { getVariantsEditor, saveVariant, setVariantActive } from "~/server/services/admin/catalog/variants.server";
 import { compareVersion, getHistory, restoreVersion } from "~/server/services/admin/catalog/versions.server";
 import { bulkChangeStatus, changeProductStatus, publishDueProducts } from "~/server/services/admin/catalog/workflow.server";
+import { CRON_FREQUENT, runScheduledJobs } from "~/server/jobs.server";
 import { addToCart } from "~/server/services/cart.server";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { DEFAULT_ROLES, roleId, type DefaultRoleKey, type Permission } from "~/server/permissions";
@@ -297,6 +298,20 @@ describe("publishing workflow", () => {
     const second = await publishDueProducts(t.db, at + 120_000);
     expect(second.returnedToDraft).toContain(other.productId);
     expect((await status(other.productId)).status).toBe("draft");
+  });
+
+  test("the 5-minute cron publishes a scheduled product once its time has come (job catalog.publish_due)", async () => {
+    const ready = await readyDraft("console");
+    const at = clock + 7_200_000;
+    await changeProductStatus(t.db, manager.actor, { productId: ready.productId, version: await version(ready.productId), action: "schedule", publishAt: at }, tick());
+    const publishJob = (run: Awaited<ReturnType<typeof runScheduledJobs>>) => run.jobs.find((job) => job.job === "catalog.publish_due");
+    const early = await runScheduledJobs(t.db, CRON_FREQUENT, at - 60_000);
+    expect(publishJob(early)?.status).toBe("succeeded");
+    expect((await status(ready.productId)).status).toBe("scheduled");
+    const due = await runScheduledJobs(t.db, CRON_FREQUENT, at + 60_000);
+    expect(publishJob(due)?.status).toBe("succeeded");
+    expect(Number(publishJob(due)?.stats.published)).toBeGreaterThanOrEqual(1);
+    expect(await status(ready.productId)).toMatchObject({ status: "published", published_at: at });
   });
 
   test("hiding and archiving need a reason; bulk transitions skip what they may not change", async () => {

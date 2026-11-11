@@ -11,6 +11,9 @@
  *                                      cancelled: stock and used units released, coupon use freed,
  *                                      payment row cancelled, reason recorded (transitionOrder).
  *       inventory.reservations.expire  safety net: any other stock reservation past expires_at is released.
+ *       catalog.publish_due            scheduled products whose publish time has come go live (lists, search,
+ *                                      menus), or back to draft when they are no longer complete
+ *                                      (publishDueProducts, admin module 02 — 50 per run, guarded by version).
  *       outbox.deliver                 sends queued messages — only when message providers are passed in
  *                                      `env.providers`. None is configured, so it is recorded as skipped.
  *   "30 0 * * *"     DAILY — 00:30 UTC = 03:30 Asia/Baghdad
@@ -75,6 +78,7 @@ import { isAppError, toAppError } from "./errors";
 import { deliverOutbox, type MessageProviders } from "./outbox.server";
 import { cleanupRateLimits } from "./ratelimit.server";
 import { purgeUnusedTopupProofs } from "./services/account/topups.server";
+import { publishDueProducts } from "./services/admin/catalog/workflow.server";
 import { expireReservations } from "./services/inventory/stock.server";
 import { transitionOrder } from "./services/orders/manage.server";
 import { purgeRecommendationEvents } from "./services/recommendations.server";
@@ -90,6 +94,7 @@ export const CRON_DAILY = "30 0 * * *";
 export const JOB_NAMES = [
   "orders.expire_unpaid",
   "inventory.reservations.expire",
+  "catalog.publish_due",
   "outbox.deliver",
   "audit.seal",
   "ratelimits.cleanup",
@@ -100,7 +105,7 @@ export type JobName = (typeof JOB_NAMES)[number];
 
 /** Which jobs each cron expression runs, in order. */
 export const SCHEDULES: Record<string, readonly JobName[]> = {
-  [CRON_FREQUENT]: ["orders.expire_unpaid", "inventory.reservations.expire", "outbox.deliver"],
+  [CRON_FREQUENT]: ["orders.expire_unpaid", "inventory.reservations.expire", "catalog.publish_due", "outbox.deliver"],
   [CRON_DAILY]: ["audit.seal", "ratelimits.cleanup", "retention", "consistency.daily"],
 };
 
@@ -192,6 +197,12 @@ async function expireUnpaidOrders(db: Db, { now }: JobContext): Promise<JobResul
 
 async function expireStockReservations(db: Db, { now }: JobContext): Promise<JobResult> {
   return { stats: await expireReservations(db, now) };
+}
+
+/** Scheduled products whose time has come: published, or back to draft when incomplete (admin module 02). */
+async function publishDue(db: Db, { now }: JobContext): Promise<JobResult> {
+  const run = await publishDueProducts(db, now);
+  return { stats: { published: run.published.length, returnedToDraft: run.returnedToDraft.length, conflicts: run.conflicts.length } };
 }
 
 async function deliverMessages(db: Db, { now, env }: JobContext): Promise<JobResult> {
@@ -700,6 +711,7 @@ export async function listOpenFindings(db: Db, limit = 100) {
 const JOBS: Record<JobName, (db: Db, ctx: JobContext) => Promise<JobResult>> = {
   "orders.expire_unpaid": expireUnpaidOrders,
   "inventory.reservations.expire": expireStockReservations,
+  "catalog.publish_due": publishDue,
   "outbox.deliver": deliverMessages,
   "audit.seal": sealAuditChain,
   "ratelimits.cleanup": cleanupLimits,

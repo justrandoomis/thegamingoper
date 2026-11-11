@@ -228,7 +228,7 @@ bulkUpdateProducts(db, actor, { ids, set, reason }, now) → { updated; skipped 
 getVariantsEditor(db, actor, productId, locale) · saveVariant(db, actor, raw, now) · setVariantActive(db, actor, { productId, variantId, version, active, reason }, now) · findVariantByCode(db, code)
 // workflow.server.ts
 changeProductStatus(db, actor, { productId, version, action, publishAt?, reason? }, now) · bulkChangeStatus(db, actor, raw, now)
-publishDueProducts(db, now) → { published; returnedToDraft; conflicts }   // job PUBLISH_DUE_JOB = "catalog.publish_due" (*/5) — not yet in jobs.server.ts
+publishDueProducts(db, now) → { published; returnedToDraft; conflicts }   // job PUBLISH_DUE_JOB = "catalog.publish_due" (*/5, in jobs.server.ts SCHEDULES since 2026-11-11)
 // media, bundles, relations, compatibility, taxonomy, versions, import (signatures in the files)
 addUploadedImage(db, store, actor, { productId, variantId?, alt?, isIllustration? }, file, now)   // via uploads.server.ts, public "product_image"
 getBundle(db, actor, productId, locale)   // per-component availability from getAvailability

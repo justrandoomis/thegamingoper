@@ -99,11 +99,11 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
     ),
   },
   "02.05": {
-    status: "partial",
+    status: "implemented",
     route: "/admin/catalog",
     note: n(
-      "Draft, review, scheduled, published, hidden and archived, each move with its permission and reason; incomplete products cannot go live. A scheduled product opens on its own page and in the cart at its time; the job that publishes due products for lists and search (publishDueProducts, tested) waits to be added to the 5-minute cron by the lead.",
-      "مسودة ومراجعة وجدولة ونشر وإخفاء وأرشفة، لكل انتقال صلاحيته وسببه؛ والمنتج الناقص لا يُنشر. المنتج المجدول يفتح في صفحته وفي السلة في موعده؛ ومهمة نشر المستحق للقوائم والبحث (publishDueProducts، مختبرة) تنتظر أن يضيفها المسؤول إلى مهمة الخمس دقائق.",
+      "Draft, review, scheduled, published, hidden and archived, each move with its permission and reason; incomplete products cannot go live. A scheduled product opens on its own page and in the cart at its time, and the 5-minute job catalog.publish_due puts it in lists, search and menus within five minutes (or back to draft if it is no longer complete).",
+      "مسودة ومراجعة وجدولة ونشر وإخفاء وأرشفة، لكل انتقال صلاحيته وسببه؛ والمنتج الناقص لا يُنشر. المنتج المجدول يفتح في صفحته وفي السلة في موعده، ومهمة الخمس دقائق catalog.publish_due تضيفه إلى القوائم والبحث والقوائم العلوية خلال خمس دقائق (أو تعيده مسودة إن لم يعد مكتملاً).",
     ),
   },
   "02.06": {

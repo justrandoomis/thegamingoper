@@ -20,3 +20,6 @@ worker-configuration.d.ts
 .shots/
 .dev.seed-credentials
 .secrets/
+
+# Downloaded originals (re-downloadable from catalog sourceUrl)
+.cache/

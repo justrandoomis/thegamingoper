@@ -199,6 +199,7 @@
       "sku": "DSENSE-PRISM-FLARE-ORANGE",
       "title": { "ar": "DualSense – Prism برتقالي شفاف Flare Orange", "en": "DualSense – Prism Flare Orange", "ckb": "DualSense – Prism پرتەقاڵیی ڕوون Flare Orange" },
       "options": { "color": "Flare Orange", "edition": "Prism Collection" },
+      "releaseDate": "2027-02-04",
       "isDefault": false,
       "images": ["dualsense--6"],
       "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
@@ -207,6 +208,7 @@
       "sku": "DSENSE-PRISM-EMERALD-GREEN",
       "title": { "ar": "DualSense – Prism أخضر زمردي Emerald Green", "en": "DualSense – Prism Emerald Green", "ckb": "DualSense – Prism سەوزی زمرودی Emerald Green" },
       "options": { "color": "Emerald Green", "edition": "Prism Collection" },
+      "releaseDate": "2027-02-04",
       "isDefault": false,
       "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
     },
@@ -214,6 +216,7 @@
       "sku": "DSENSE-PRISM-GRAPHITE-GRAY",
       "title": { "ar": "DualSense – Prism رمادي غرافيتي Graphite Gray", "en": "DualSense – Prism Graphite Gray", "ckb": "DualSense – Prism خۆڵەمێشیی گرافیتی Graphite Gray" },
       "options": { "color": "Graphite Gray", "edition": "Prism Collection" },
+      "releaseDate": "2027-02-04",
       "isDefault": false,
       "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
     }

@@ -126,9 +126,9 @@
       "isDefault": true,
       "images": ["call-of-duty-modern-warfare-4--1", "call-of-duty-modern-warfare-4--2", "call-of-duty-modern-warfare-4--3", "call-of-duty-modern-warfare-4--4", "call-of-duty-modern-warfare-4--5"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     },
     {
@@ -182,8 +182,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -277,7 +277,7 @@
     { "url": "https://store.playstation.com/en-gb/product/EP0002-PPSA07950_00-CODMW4STANDARD01", "title": "Call of Duty: Modern Warfare 4 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, PS Plus required for online play, up to 60 online players, PS5 Pro Enhanced" },
     { "url": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/", "title": "Call of Duty: Modern Warfare 4 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "editions, PEGI content descriptors, screenshots" },
     { "url": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw", "title": "Call of Duty: Modern Warfare 4 — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, online multiplayer 2–60, split screen, 120 fps, cover art" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" },
     { "url": "https://store.playstation.com/en-ae/product/EP0002-PPSA07950_00-CODMW4STANDARD01", "title": "Call of Duty: Modern Warfare 4 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic and English screen languages, English voice in the UAE listing, up to 60 online players with PS Plus, PS5 Pro Enhanced" },
     { "url": "https://www.xbox.com/en-GB/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw", "title": "Call of Duty: Modern Warfare 4 — Microsoft Store (UK)", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "independent confirmation of PEGI 18" },
     { "url": "https://store.steampowered.com/app/4435490/", "title": "Call of Duty: Modern Warfare 4 — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: Arabic interface and subtitles without Arabic audio, ESRB M, Infinity Ward / Activision" },

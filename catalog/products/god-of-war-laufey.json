@@ -91,9 +91,9 @@
       "isDefault": true,
       "images": ["god-of-war-laufey--1", "god-of-war-laufey--2", "god-of-war-laufey--3", "god-of-war-laufey--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي. مكافأة الطلب المسبق تأتي ككود وتحتاج إنترنت وحساب PlayStation.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive. The pre-order bonus comes as a code and needs internet and a PlayStation account.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە. دیاری داواکاری پێشوەخت وەک کۆد دێت و ئینتەرنێت و هەژماری PlayStation ی پێویستە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص. مكافأة الطلب المسبق تأتي ككود وتحتاج إنترنت وحساب PlayStation.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs. The pre-order bonus comes as a code and needs internet and a PlayStation account.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە. دیاری داواکاری پێشوەخت وەک کۆد دێت و ئینتەرنێت و هەژماری PlayStation ی پێویستە."
       }
     }
   ],
@@ -135,8 +135,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -200,7 +200,7 @@
     { "url": "https://www.playstation.com/en-gb/games/god-of-war-laufey/", "title": "God of War Laufey — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "story of Laufey (Faye), the Everywhen, PS5 only, pre-order bonus via download code" },
     { "url": "https://store.playstation.com/en-gb/concept/10009461", "title": "God of War Laufey — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI provisional 18, release 20 May 2027, editions, cover art" },
     { "url": "https://www.bestbuy.com/product/god-of-war-laufey-standard-edition-playstation-5/JXHQ37TZJS", "title": "God of War Laufey Standard Edition — PlayStation 5", "publisher": "Best Buy", "retrieved": "2026-11-11", "supports": "physical Standard Edition for PS5 on pre-order at retail" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
     "ar": "Collector Box يُباع بكميات محدودة جداً من متجر PlayStation المباشر وبدون اللعبة. Digital Deluxe Edition رقمية فقط.",

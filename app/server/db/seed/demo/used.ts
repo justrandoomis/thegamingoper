@@ -1,27 +1,34 @@
 /**
  * DEMO used devices and trade-in reference prices.
  *
- * Six listed units across the four grades. They are flagged is_demo, which is the only reason
- * the database lets them be listed without real photographs: their pictures are clay renders of the
- * MODEL, flagged as illustrations, and the storefront must say so. Checklists follow the inspection
- * templates of the reference seed (itpl_console_v1 / itpl_handheld_pc_v1). Serial numbers are
- * obviously fake ("DEMO-USED-…") and, like all serials, never shown on public pages.
+ * Six listed units across the four grades, each an instance of a serial-tracked catalogue variant
+ * (a console or handheld PC). They are flagged is_demo, which is the only reason the database lets
+ * them be listed without real photographs: their pictures are the maker's official photos of the
+ * MODEL, flagged as illustrations (`is_illustration = 1`; the storefront labels them
+ * "صورة توضيحية"). What comes with each unit is a subset of the researched box contents.
+ * Checklists follow the inspection templates of the reference seed (itpl_console_v1 /
+ * itpl_handheld_pc_v1). Serial numbers are obviously fake ("DEMO-USED-…") and, like all serials,
+ * never shown on public pages.
  *
- * No trade-in requests are seeded: a request belongs to a person (it needs a phone number), and
- * the seed creates no people. The units therefore have no `trade_in_id`.
+ * No trade-in requests are seeded: a request belongs to a person (it needs a phone number), and the
+ * seed creates no people. The units therefore have no `trade_in_id`.
  *
- * Trade-in guides: `base_iqd` is what the store would pay for a grade-A+ unit (placeholder),
- * multiplied per grade and reduced per missing item. The demo acquisition costs above follow the
- * same guide, so margin reports on used units add up.
+ * Money follows the demo prices (./pricing.ts): a unit sells at a grade share of its new variant's
+ * price; the trade-in guide of each device model we buy pays a share of the model's new price
+ * (`base_iqd` for grade A+), times the grade multiplier, less a deduction per missing item; what the
+ * store paid for each unit follows that guide, so margin reports on used units add up.
  */
 import type { ChecklistResult, IncludedItem, UsedDefect, UsedGrade } from "../../schema";
+import type { CatalogProduct } from "./catalog/types";
+import type { DeviceModelSeed } from "./devices";
+import { PRICE_STEP_IQD } from "./pricing";
 import { t3, type T3 } from "./text";
 
 type ChecklistItem = { key: string; result: ChecklistResult | null; value?: string | number };
 
 export type UsedUnitSeed = {
   slug: string;
-  /** SKU of the catalogue variant this unit is an instance of. */
+  /** SKU of the catalogue variant this unit is an instance of (serial-tracked). */
   sku: string;
   serial: string;
   grade: UsedGrade;
@@ -29,13 +36,11 @@ export type UsedUnitSeed = {
   cosmeticNotes: T3;
   defects: UsedDefect[];
   included: IncludedItem[];
+  /** Deduction keys of the device's trade-in guide for what this unit came without. */
+  missing: string[];
   templateId: "itpl_console_v1" | "itpl_handheld_pc_v1";
   checklist: ChecklistItem[];
-  priceIqd: number;
-  /** [P] What the store paid — follows the trade-in guide below. */
-  acquisitionCostIqd: number;
   warrantyDays: number;
-  art: string[];
   /** Days before the seed time at which the unit was inspected and listed. */
   inspectedDaysAgo: number;
   listedDaysAgo: number;
@@ -62,17 +67,20 @@ const ITEM = {
   carryingCase: { key: "carrying_case", label: t3("حقيبة الحمل", "Carrying case", "جانتای هەڵگرتن") },
 } satisfies Record<string, IncludedItem>;
 
-/** Shown wherever a demo unit's picture appears. */
-export const USED_ILLUSTRATION_ALT: T3 = t3(
-  "رسم توضيحي للطراز — ليس صورة الجهاز المعروض",
-  "Illustration of the model — not a photo of this unit",
-  "وێنەیەکی ڕوونکەرەوەی مۆدێلەکە — وێنەی ئەم ئامێرە نییە",
+/** Added to the alt text of every picture of a used unit: it is the maker's photo of the model. */
+export const USED_PHOTO_NOTE: T3 = t3(
+  "صورة توضيحية من الشركة المصنّعة، ليست صورة هذا الجهاز",
+  "the maker's photo for illustration, not a photo of this unit",
+  "وێنەی ڕوونکەرەوەی کۆمپانیای دروستکەر، وێنەی ئەم ئامێرە نییە",
 );
+
+/** Pictures a used unit shows: the first official photos of its variant. */
+export const USED_UNIT_PHOTOS = 2;
 
 export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
   {
     slug: "used-ps5-slim-disc-01",
-    sku: "PS5-SLIM-DISC",
+    sku: "PS5-SLIM-DISC-1TB",
     serial: "DEMO-USED-PS5S-0001",
     grade: "A+",
     cosmeticNotes: t3(
@@ -82,6 +90,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
     ),
     defects: [],
     included: [ITEM.dualsense, ITEM.powerCable, ITEM.hdmiCable, ITEM.originalBox],
+    missing: [],
     templateId: "itpl_console_v1",
     checklist: [
       pass("power"),
@@ -98,10 +107,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       pass("account_lock"),
       noted("accessories", "يد DualSense، كيبل طاقة، كيبل HDMI، العلبة الأصلية"),
     ],
-    priceIqd: 560_000,
-    acquisitionCostIqd: 420_000,
     warrantyDays: 30,
-    art: ["ps5-slim", "ps5-slim@front", "ps5-slim@back"],
     inspectedDaysAgo: 3,
     listedDaysAgo: 2,
   },
@@ -118,6 +124,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
     ),
     defects: [{ area: "back", severity: "minor", note: t3("خدوش سطحية خفيفة على الظهر", "Light surface scratches on the back", "ڕووشانی سووکی ڕووکەش لەسەر پشت") }],
     included: [ITEM.dock, ITEM.joyConPair, ITEM.joyConGrip, ITEM.acAdapter, ITEM.hdmiCable],
+    missing: [],
     templateId: "itpl_console_v1",
     checklist: [
       pass("power"),
@@ -134,10 +141,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       pass("account_lock"),
       noted("accessories", "القاعدة، يدا Joy-Con، مقبض Joy-Con، محوّل الطاقة، كيبل HDMI"),
     ],
-    priceIqd: 320_000,
-    acquisitionCostIqd: 216_000,
     warrantyDays: 30,
-    art: ["switch-oled", "switch-oled@front"],
     inspectedDaysAgo: 5,
     listedDaysAgo: 4,
   },
@@ -156,6 +160,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       { area: "corner", severity: "minor", note: t3("أثر احتكاك على إحدى الزوايا", "A scuff on one corner", "شوێنەواری لێخشان لەسەر یەکێک لە گۆشەکان") },
     ],
     included: [ITEM.xboxController, ITEM.powerCable, ITEM.hdmiCable],
+    missing: [],
     templateId: "itpl_console_v1",
     checklist: [
       pass("power"),
@@ -172,16 +177,13 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       pass("account_lock"),
       noted("accessories", "يد Xbox بيضاء، كيبل طاقة، كيبل HDMI"),
     ],
-    priceIqd: 285_000,
-    acquisitionCostIqd: 165_000,
     warrantyDays: 14,
-    art: ["xbox-series-s", "xbox-series-s@front"],
     inspectedDaysAgo: 7,
     listedDaysAgo: 6,
   },
   {
     slug: "used-steam-deck-oled-512-01",
-    sku: "SDO-512",
+    sku: "SD-OLED-512",
     serial: "DEMO-USED-SDO-0001",
     grade: "A",
     batteryHealthPct: 94,
@@ -192,6 +194,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
     ),
     defects: [{ area: "grips", severity: "minor", note: t3("لمعان خفيف من الاستخدام على المقابض", "Slight shine from use on the grips", "بریقەیەکی سووک لە بەکارهێنان لەسەر گرتەکان") }],
     included: [ITEM.charger, ITEM.carryingCase],
+    missing: [],
     templateId: "itpl_handheld_pc_v1",
     checklist: [
       pass("power"),
@@ -209,22 +212,19 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       pass("account_lock"),
       noted("accessories", "الشاحن الأصلي 45 واط، حقيبة الحمل"),
     ],
-    priceIqd: 610_000,
-    acquisitionCostIqd: 432_000,
     warrantyDays: 30,
-    art: ["steam-deck-oled", "steam-deck-oled@front"],
     inspectedDaysAgo: 9,
     listedDaysAgo: 8,
   },
   {
     slug: "used-legion-go-512-01",
-    sku: "LGO-512",
+    sku: "LEGO1-Z1E-512",
     serial: "DEMO-USED-LGO-0001",
     grade: "B",
     batteryHealthPct: 86,
     cosmeticNotes: t3(
       "خدوش على المسند الخلفي وتآكل خفيف في غطاء العصا اليمنى، وخدش رفيع قرب حافة الشاشة لا يظهر أثناء اللعب. حقيبة الحمل الأصلية غير مرفقة.",
-      "Scratches on the kickstand, slight wear on the right stick cap, and a hairline scratch near the screen edge that does not show during play. The original carrying case is not included.",
+      "Scratches on the kickstand, slight wear on the right stick cap, and a hairline scratch near the screen edge that does not show during play. The original carry bag is not included.",
       "ڕووشان لەسەر پاڵپشتی پشتەوە، داخورانێکی سووک لە سەرپۆشی جۆیستیکی ڕاست، و ڕووشانێکی باریک لە نزیک لێواری شاشە کە لە کاتی یاریدا دەرناکەوێت. جانتای هەڵگرتنی ئەسڵی لەگەڵیدا نییە.",
     ),
     defects: [
@@ -233,6 +233,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       { area: "right_stick", severity: "minor", note: t3("تآكل خفيف في غطاء العصا اليمنى", "Slight wear on the right stick cap", "داخورانێکی سووک لە سەرپۆشی جۆیستیکی ڕاست") },
     ],
     included: [ITEM.detachableControllers, ITEM.charger],
+    missing: ["missing_case"],
     templateId: "itpl_handheld_pc_v1",
     checklist: [
       pass("power"),
@@ -250,10 +251,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       pass("account_lock"),
       noted("accessories", "يدا التحكم، الشاحن الأصلي 65 واط — بلا حقيبة"),
     ],
-    priceIqd: 620_000,
-    acquisitionCostIqd: 375_000,
     warrantyDays: 14,
-    art: ["legion-go", "legion-go@front"],
     inspectedDaysAgo: 11,
     listedDaysAgo: 10,
   },
@@ -273,6 +271,7 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       { area: "shell", severity: "moderate", note: t3("خدوش واضحة على الظهر والحواف", "Clear scratches on the back and edges", "ڕووشانی دیار لەسەر پشت و لێوارەکان") },
     ],
     included: [ITEM.acAdapter],
+    missing: [],
     templateId: "itpl_console_v1",
     checklist: [
       pass("power"),
@@ -289,36 +288,46 @@ export const DEMO_USED_UNITS: readonly UsedUnitSeed[] = [
       pass("account_lock"),
       noted("accessories", "محوّل الطاقة فقط"),
     ],
-    priceIqd: 135_000,
-    acquisitionCostIqd: 66_000,
     warrantyDays: 7,
-    art: ["switch-lite"],
     inspectedDaysAgo: 13,
     listedDaysAgo: 12,
   },
 ];
 
-// ───────────────────────────────────────────────────────────────── trade-in price guides
+// ───────────────────────────────────────────────────────────────── money
 
+/** A used unit sells at this share of its new variant's (demo) price. */
+export const USED_PRICE_SHARE: Record<UsedGrade, number> = { "A+": 0.84, A: 0.76, B: 0.66, C: 0.52 };
 /** Basis points of `baseIqd` paid per grade. */
 export const TRADE_IN_GRADE_MULTIPLIERS: Record<UsedGrade, number> = { "A+": 10_000, A: 9_000, B: 7_500, C: 5_500 };
+/** A trade-in guide's grade-A+ price: this share of the model's new price, rounded to 5,000 IQD. */
+export const TRADE_IN_BASE_SHARE = 0.55;
 
 const HOME_CONSOLE_DEDUCTIONS = { missing_controller: 40_000, missing_power_cable: 5_000, missing_hdmi_cable: 5_000 };
 const SWITCH_DOCKED_DEDUCTIONS = { missing_dock: 40_000, missing_joy_con: 50_000, missing_charger: 15_000 };
-const HANDHELD_DEDUCTIONS = { missing_charger: 20_000, missing_case: 15_000 };
 
-export type TradeInGuideSeed = { deviceModel: string; baseIqd: number; deductions: Record<string, number> };
+/** The device models the store buys: consoles and handheld PCs (the inspection templates it has). */
+export const buysDevice = (model: DeviceModelSeed): boolean => model.product !== null && (model.deviceKind === "console" || model.deviceKind === "handheld_pc");
 
-export const DEMO_TRADE_IN_GUIDES: readonly TradeInGuideSeed[] = [
-  { deviceModel: "switch-2", baseIqd: 430_000, deductions: SWITCH_DOCKED_DEDUCTIONS },
-  { deviceModel: "switch-oled", baseIqd: 240_000, deductions: SWITCH_DOCKED_DEDUCTIONS },
-  { deviceModel: "switch-lite", baseIqd: 120_000, deductions: { missing_charger: 15_000 } },
-  { deviceModel: "ps5-slim", baseIqd: 420_000, deductions: HOME_CONSOLE_DEDUCTIONS },
-  { deviceModel: "ps5-pro", baseIqd: 700_000, deductions: HOME_CONSOLE_DEDUCTIONS },
-  { deviceModel: "ps-portal", baseIqd: 170_000, deductions: {} },
-  { deviceModel: "xbox-series-x", baseIqd: 430_000, deductions: HOME_CONSOLE_DEDUCTIONS },
-  { deviceModel: "xbox-series-s", baseIqd: 220_000, deductions: HOME_CONSOLE_DEDUCTIONS },
-  { deviceModel: "steam-deck-oled", baseIqd: 480_000, deductions: HANDHELD_DEDUCTIONS },
-  { deviceModel: "rog-ally-x", baseIqd: 720_000, deductions: { missing_charger: 20_000 } },
-  { deviceModel: "legion-go", baseIqd: 520_000, deductions: HANDHELD_DEDUCTIONS },
-];
+/** What a missing item takes off a trade-in, per device: from what the researched box contains. */
+export function tradeInDeductions(model: DeviceModelSeed, product: CatalogProduct | null): Record<string, number> {
+  const box = (product?.inTheBox ?? []).map((item) => item.en).join(" | ");
+  if (model.deviceKind === "handheld_pc") return /\b(case|bag)\b/i.test(box) ? { missing_charger: 20_000, missing_case: 15_000 } : { missing_charger: 20_000 };
+  if (model.generation === "switch-2" || model.slug === "switch" || model.slug === "switch-oled") return SWITCH_DOCKED_DEDUCTIONS;
+  if (model.slug === "switch-lite") return { missing_charger: 15_000 };
+  if (model.slug === "ps-portal") return {};
+  return HOME_CONSOLE_DEDUCTIONS;
+}
+
+const roundTo = (value: number, step: number) => Math.round(value / step) * step;
+
+export const tradeInBaseIqd = (newPriceIqd: number): number => roundTo(newPriceIqd * TRADE_IN_BASE_SHARE, 5_000);
+
+export const usedPriceIqd = (newPriceIqd: number, grade: UsedGrade): number => roundTo(newPriceIqd * USED_PRICE_SHARE[grade], PRICE_STEP_IQD);
+
+/** What the store paid for a unit: the guide's price for its grade, less what it came without. */
+export function acquisitionCostIqd(baseIqd: number, grade: UsedGrade, deductions: Record<string, number>, missing: readonly string[]): number {
+  const byGrade = (baseIqd * TRADE_IN_GRADE_MULTIPLIERS[grade]) / 10_000;
+  const less = missing.reduce((sum, key) => sum + (deductions[key] ?? 0), 0);
+  return roundTo(byGrade - less, PRICE_STEP_IQD);
+}

@@ -1,33 +1,48 @@
 /**
- * DEMO catalogue seed (ARCHITECTURE §11): so the store can be explored before real data exists.
+ * DEMO seed (ARCHITECTURE §11): the researched product catalogue plus demo money, stock and content,
+ * so the store can be explored before real data exists.
  *
- *   await seedDemo(db, now)                       // insert what is missing, never touch existing rows
- *   await seedDemo(db, now, { overwrite: true })  // also restore the seed's descriptive content
+ *   await seedDemo(db, now)                        // reads catalog/products from disk (Node: scripts and tests)
+ *   await seedDemo(db, now, { catalog })           // with a catalogue already loaded (loadDemoCatalog())
+ *   await seedDemo(db, now, { overwrite: true })   // also restore the seed's descriptive content
  *
- * What it writes (definitions live in ./demo/*):
- *   platforms, device generations and models · category tree · 51 products with variants, costs,
- *   pictures, a bundle, stock (with opening movements, cost layers and serials) · compatibility
- *   rules and product relations · search synonyms and the search index · 6 used units and
- *   trade-in price guides · a DEMO USD rate · 2 coupons · 8 knowledge articles · 2 troubleshooting
- *   trees.
+ * What it writes (definitions in ./demo/*):
+ *   · every product of catalog/products/*.json (./demo/import.ts says where each fact goes): products,
+ *     variants, official photos (media), compatibility rules exactly as researched, product relations,
+ *     the search index in Arabic, English and Kurdish — plus one store set (./demo/sets.ts);
+ *   · platforms, device generations and every device model the catalogue names (./demo/devices.ts),
+ *     the category tree (./demo/categories.ts);
+ *   · demo prices, previous prices on a handful of deals, costs (variant costs + FIFO layers), stock
+ *     with opening movements and serials (./demo/pricing.ts);
+ *   · 6 used units and the trade-in price guides (./demo/used.ts), a DEMO USD rate, 2 coupons,
+ *     8 knowledge articles, 2 troubleshooting trees, search synonyms.
  * What it never writes: reviews, ratings, customers, orders, employees or any account.
  *
  * Rules it keeps:
- *   · Every row whose table has an `is_demo` column is flagged. Tables without one (stock movements,
- *     serials, cost layers) say "DEMO" in their reason / notes and carry ref_type "demo_seed".
+ *   · Every row whose table has an `is_demo` column is flagged. Stock movements and serials have no
+ *     such column: they say "DEMO" in their reason / notes and carry "demo_seed" (ref_type /
+ *     source_ref). Variant prices, costs, stock levels and cost layers have no column for it either
+ *     (cost layers are `source = 'opening'`); every one of them belongs to a product with is_demo = 1.
+ *   · Product photos are the makers' official images (`is_illustration = 0`); a used unit shows the
+ *     model's official photo flagged as an illustration (`is_illustration = 1`).
+ *   · A product whose release date is still ahead is a pre-order (`preorder_release_at`) with no stock;
+ *     so is a variant with a later release date of its own (no stock; attributes.variantReleaseDates).
+ *     Discontinued products stay published and their research status says so (attributes.catalogue).
+ *   · products.warranty_months stays empty: it is the store's warranty, not the maker's (./demo/import.ts).
  *   · Idempotent: ids are derived from slugs and SKUs, every statement is "insert if missing", and
  *     the whole seed is ONE batch — it is applied completely or not at all.
  *   · `overwrite` refreshes names, texts, specs, pictures, relations, compatibility, synonyms,
  *     articles and the search index. It never touches prices, costs, stock, serials, a used unit's
  *     status, coupons, the exchange rate or trade-in guides: those are money and stock, and changes
- *     to them belong to the audited admin flows.
- *   · Pictures are clay renders from scripts/art/catalog.json and are all flagged as illustrations.
+ *     to them belong to the audited admin flows. It does not delete either: a picture, rule or
+ *     relation removed from the catalogue stays until `npm run db:reset` (or the admin) removes it.
  *
- * Needs seedReference() to have run (stock location, inspection templates). Worker-safe: no Node APIs.
+ * Needs seedReference() to have run (stock location, inspection templates). The catalogue is read by
+ * Node only (./demo/catalog/load.ts) — this module itself uses no Node API, and nothing the Worker
+ * or the client bundles imports it.
  */
 import { getTableColumns, getTableName, sql, type SQL } from "drizzle-orm";
 import type { SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
-import { bpsOf, roundToStep } from "../../../lib/money";
 import type { BatchStatement, Db } from "../drizzle.server";
 import {
   bundleItems,
@@ -52,6 +67,7 @@ import {
   usedUnits,
   variantCosts,
   variants,
+  type NewBundleItem,
   type NewCategory,
   type NewCompatibilityRule,
   type NewCostLayer,
@@ -71,167 +87,150 @@ import {
   type NewTradeInPriceGuide,
   type NewTroubleshootingTreeRow,
   type NewUsedUnit,
-  type NewBundleItem,
   type NewVariant,
   type NewVariantCost,
-  type ProductKind,
 } from "../schema";
 import { normalizeSearchText, searchIndexStatements } from "../search.server";
 import { batchSql, chunkRows, runBatch } from "../tx.server";
 import { localizeBlocks } from "./demo/blocks";
+import { loadDemoCatalog } from "./demo/catalog/load";
+import type { DemoCatalog } from "./demo/catalog/types";
 import { DEMO_CATEGORIES } from "./demo/categories";
 import { DEMO_COUPONS, DEMO_FX_RATE } from "./demo/commerce";
-import { DEMO_COMPATIBILITY, DEMO_RELATIONS, type CompatSubject, type CompatTarget } from "./demo/compatibility";
-import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS, artNamesOf, deviceModelBySlug } from "./demo/devices";
+import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS } from "./demo/devices";
 import { DEMO_ACTOR_ID, DEMO_REF_TYPE, demoId } from "./demo/ids";
+import { buildDemoData, type DemoData, type DemoImage, type DemoProduct, type DemoVariant } from "./demo/import";
 import { DEMO_ARTICLES } from "./demo/knowledge";
-import { DEMO_PRODUCTS, DEMO_VARIANTS, KIND_DEFAULTS, productBySlug, variantBySku, type ProductSeed, type VariantSeed } from "./demo/products";
-import { DEMO_SYNONYM_GROUPS, productSearchDocs, productSearchKeywords } from "./demo/search";
-import { SEED_LOCALES, t3, type T3 } from "./demo/text";
+import { BAGHDAD_OFFSET_MS, PRICE_STEP_IQD, defaultVariantOf, demoStock, isPreorderAt, type DemoStock } from "./demo/pricing";
+import { DEMO_SYNONYM_GROUPS, productSearchDocs } from "./demo/search";
+import { SEED_LOCALES, type T3 } from "./demo/text";
 import { DEMO_TREES } from "./demo/trees";
-import { DEMO_TRADE_IN_GUIDES, DEMO_USED_UNITS, TRADE_IN_GRADE_MULTIPLIERS, USED_ILLUSTRATION_ALT } from "./demo/used";
+import {
+  DEMO_USED_UNITS,
+  TRADE_IN_GRADE_MULTIPLIERS,
+  USED_PHOTO_NOTE,
+  USED_UNIT_PHOTOS,
+  acquisitionCostIqd,
+  buysDevice,
+  tradeInBaseIqd,
+  tradeInDeductions,
+  usedPriceIqd,
+  type UsedUnitSeed,
+} from "./demo/used";
 import { DEFAULT_LOCATION_ID } from "./reference";
 
 export { demoId } from "./demo/ids";
+export { loadDemoCatalog } from "./demo/catalog/load";
+export { buildDemoData } from "./demo/import";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
-/** Asia/Baghdad is UTC+3 all year. */
-const BAGHDAD_OFFSET_MS = 3 * 60 * 60 * 1000;
-const PRICE_STEP_IQD = 250;
 
 const OPENING_REASON = "رصيد افتتاحي — بيانات تجريبية (DEMO)";
 const DEMO_SERIAL_NOTE = "وحدة تجريبية (DEMO) — رقم تسلسلي غير حقيقي";
 const DEMO_USED_SERIAL_NOTE = "وحدة مستعملة تجريبية (DEMO) — رقم تسلسلي غير حقيقي";
 
-// ───────────────────────────────────────────────────────────────── derived values
-
-export type PlaceholderCost = { landedCostIqd: number; unitCostMinor: number; minMarginBps: number; targetMarginBps: number };
-
-/**
- * A placeholder cost for a variant, derived from its price so margin features have coherent
- * numbers: the kind's target margin off the regular (pre-discount) price, but never so high that
- * the current price would fall below the kind's minimum margin. 94% of the landed cost is taken
- * as the purchase price in USD cents at the demo rate; the rest stands for freight and customs.
- */
-export function placeholderCost(kind: ProductKind, priceIqd: number, compareAtIqd?: number): PlaceholderCost {
-  const { minMarginBps, targetMarginBps } = KIND_DEFAULTS[kind];
-  const regular = compareAtIqd ?? priceIqd;
-  const fromTarget = roundToStep(regular - bpsOf(regular, targetMarginBps), PRICE_STEP_IQD);
-  const ceiling = Math.floor((priceIqd - bpsOf(priceIqd, minMarginBps + 100)) / PRICE_STEP_IQD) * PRICE_STEP_IQD;
-  const landedCostIqd = Math.min(fromTarget, ceiling);
-  return { landedCostIqd, unitCostMinor: Math.round((landedCostIqd * 94) / DEMO_FX_RATE.iqdPerUnit), minMarginBps, targetMarginBps };
-}
-
-/** Whether units of this variant are tracked one by one. A bundle is not: its components are. */
-const tracksSerials = (product: ProductSeed, variant: VariantSeed) => product.trackSerials === true && !variant.bundle;
-const hasOwnStock = (product: ProductSeed, variant: VariantSeed) => !variant.bundle && product.kind !== "digital";
-const costOf = (product: ProductSeed, variant: VariantSeed) => (variant.cost === false || variant.bundle ? null : placeholderCost(product.kind, variant.priceIqd, variant.compareAtIqd));
-
-/** Fake serial numbers of the new units on hand: "DEMO-PS5-SLIM-DISC-0001"… */
+/** Fake serial numbers of the new units on hand: "DEMO-PS5-SLIM-DISC-1TB-0001"… */
 export const demoSerialsOf = (sku: string, count: number): string[] => Array.from({ length: count }, (_, index) => `DEMO-${sku}-${String(index + 1).padStart(4, "0")}`);
 
-const VIEW_LABEL: Record<string, T3> = {
-  front: t3("من الأمام", "front view", "لە پێشەوە"),
-  back: t3("من الخلف", "back view", "لە پشتەوە"),
-};
+// ───────────────────────────────────────────────────────────────── derived demo data
 
-/** Alt text of a render: the thing's name, the variant if the picture shows one, and the view. */
-function altFor(name: T3, artName: string, variantTitle?: T3): T3 {
-  const view = VIEW_LABEL[artName.split("@")[1] ?? ""];
-  const pick = (locale: (typeof SEED_LOCALES)[number]) => [name[locale], variantTitle?.[locale], view?.[locale]].filter(Boolean).join(" — ");
-  return { ar: pick("ar"), en: pick("en"), ckb: pick("ckb") };
+export type DemoTradeInGuide = { deviceModel: string; baseIqd: number; deductions: Record<string, number> };
+
+/** Trade-in guides of the device models the store buys: a share of the model's new (demo) price. */
+export function demoTradeInGuides(data: DemoData): DemoTradeInGuide[] {
+  return data.deviceModels.filter(buysDevice).map((model) => {
+    const product = data.products.find((entry) => entry.slug === model.product);
+    if (!product?.source) throw new Error(`Demo seed: device model "${model.slug}" has no product to price it by`);
+    const sku = model.variant ?? defaultVariantOf(product.source).sku;
+    const reference = data.variantsBySku.get(sku);
+    if (!reference) throw new Error(`Demo seed: unknown SKU ${sku}`);
+    return { deviceModel: model.slug, baseIqd: tradeInBaseIqd(reference.variant.priceIqd), deductions: tradeInDeductions(model, product.source) };
+  });
 }
 
-const subjectOf = (subject: CompatSubject) =>
-  "product" in subject
-    ? { type: "product" as const, id: demoId.product(productBySlug(subject.product).slug), key: `product-${subject.product}` }
-    : { type: "variant" as const, id: demoId.variant(variantBySku(subject.variant).variant.sku), key: `variant-${subject.variant}` };
+export type DemoUsedUnit = UsedUnitSeed & { priceIqd: number; acquisitionCostIqd: number; deviceModel: string; images: DemoImage[] };
 
-function targetOf(target: CompatTarget) {
-  if ("model" in target) return { type: "device_model" as const, id: demoId.deviceModel(deviceModelBySlug(target.model).slug), key: `model-${target.model}` };
-  if ("generation" in target) {
-    if (!DEMO_GENERATIONS.some((generation) => generation.slug === target.generation)) throw new Error(`Demo seed: unknown generation "${target.generation}"`);
-    return { type: "generation" as const, id: demoId.generation(target.generation), key: `generation-${target.generation}` };
-  }
-  return { type: "platform" as const, id: demoId.platform(target.platform), key: `platform-${target.platform}` };
+/** The used units with their money (from the demo prices and the guides) and their pictures. */
+export function demoUsedUnits(data: DemoData, guides: readonly DemoTradeInGuide[] = demoTradeInGuides(data)): DemoUsedUnit[] {
+  return DEMO_USED_UNITS.map((unit) => {
+    const found = data.variantsBySku.get(unit.sku);
+    if (!found) throw new Error(`Demo seed: used unit "${unit.slug}" names unknown SKU ${unit.sku}`);
+    const { product, variant } = found;
+    const guide = guides.find((entry) => entry.deviceModel === product.deviceModel);
+    if (!guide || !product.deviceModel) throw new Error(`Demo seed: used unit "${unit.slug}" is not a device the store buys`);
+    const shots = (variant.images.length > 0 ? variant.images : product.images).slice(0, USED_UNIT_PHOTOS);
+    return {
+      ...unit,
+      deviceModel: product.deviceModel,
+      priceIqd: usedPriceIqd(variant.priceIqd, unit.grade),
+      acquisitionCostIqd: acquisitionCostIqd(guide.baseIqd, unit.grade, guide.deductions, unit.missing),
+      images: shots.map((image) => ({ key: image.key, alt: withNote(image.alt, USED_PHOTO_NOTE) })),
+    };
+  });
 }
+
+const withNote = (alt: T3, note: T3): T3 => ({ ar: `${alt.ar} — ${note.ar}`, en: `${alt.en} — ${note.en}`, ckb: `${alt.ckb} — ${note.ckb}` });
+
+/** Units on hand of a variant (a store set has none of its own: its components do). */
+const stockOf = (product: DemoProduct, variant: DemoVariant, now: number): DemoStock =>
+  product.source && variant.source ? demoStock(product.source, variant.source, now) : { onHand: 0, reorderPoint: null };
 
 // ───────────────────────────────────────────────────────────────── consistency of the definitions
 
 /**
- * Checks the seed definitions against each other before anything is written, so a typo fails with
- * its own message instead of as a foreign-key error in the middle of a batch.
+ * Checks the seed definitions against each other and against the catalogue before anything is
+ * written, so a typo or a research edit the seed cannot place fails with its own message instead of
+ * a foreign-key error in the middle of a batch.
  */
-export function assertDemoDataConsistent(): void {
-  const fail = (message: string): never => {
-    throw new Error(`Demo seed: ${message}`);
-  };
-  const platformSlugs = new Set<string>(DEMO_PLATFORMS.map((platform) => platform.slug));
-  const generationSlugs = new Set(DEMO_GENERATIONS.map((generation) => generation.slug));
+export function assertDemoDataConsistent(catalog: DemoCatalog = loadDemoCatalog(), data: DemoData = buildDemoData(catalog)): void {
+  const problems: string[] = [];
   const categorySlugs = new Set<string>();
   for (const category of DEMO_CATEGORIES) {
-    if (category.parent && !categorySlugs.has(category.parent)) fail(`category "${category.slug}" comes before its parent "${category.parent}"`);
-    if (categorySlugs.has(category.slug)) fail(`duplicate category "${category.slug}"`);
+    if (category.parent && !categorySlugs.has(category.parent)) problems.push(`category "${category.slug}" comes before its parent "${category.parent}"`);
+    if (categorySlugs.has(category.slug)) problems.push(`duplicate category "${category.slug}"`);
     categorySlugs.add(category.slug);
   }
-  for (const generation of DEMO_GENERATIONS) if (!platformSlugs.has(generation.platform)) fail(`generation "${generation.slug}" has an unknown platform`);
-  for (const model of DEMO_DEVICE_MODELS) {
-    if (!platformSlugs.has(model.platform) || !generationSlugs.has(model.generation)) fail(`device model "${model.slug}" has an unknown platform or generation`);
-  }
-  for (const product of DEMO_PRODUCTS) {
-    if (!categorySlugs.has(product.category)) fail(`product "${product.slug}" has an unknown category "${product.category}"`);
-    if (product.platform && !platformSlugs.has(product.platform)) fail(`product "${product.slug}" has an unknown platform`);
-    if (product.deviceModel) deviceModelBySlug(product.deviceModel);
-    if (product.art.length === 0) fail(`product "${product.slug}" has no picture`);
-    if (product.variants.length === 0) fail(`product "${product.slug}" has no variant`);
+  for (const product of data.products) {
+    if (product.variants.length === 0) problems.push(`product "${product.slug}" has no variant`);
+    if (product.images.length === 0) problems.push(`product "${product.slug}" has no picture`);
     for (const variant of product.variants) {
       for (const price of [variant.priceIqd, variant.compareAtIqd]) {
-        if (price !== undefined && (!Number.isSafeInteger(price) || price <= 0 || price % PRICE_STEP_IQD !== 0)) fail(`${variant.sku}: price ${price} is not a positive multiple of ${PRICE_STEP_IQD}`);
+        if (price !== null && (!Number.isSafeInteger(price) || price <= 0 || price % PRICE_STEP_IQD !== 0)) problems.push(`${variant.sku}: price ${price} is not a positive multiple of ${PRICE_STEP_IQD}`);
       }
-      if (variant.compareAtIqd !== undefined && variant.compareAtIqd <= variant.priceIqd) fail(`${variant.sku}: compare-at price must be above the price`);
-      if (!Number.isSafeInteger(variant.stock) || variant.stock < 0) fail(`${variant.sku}: invalid stock`);
-      if (!hasOwnStock(product, variant) && variant.stock !== 0) fail(`${variant.sku}: bundles and digital items carry no stock of their own`);
+      if (variant.compareAtIqd !== null && variant.compareAtIqd <= variant.priceIqd) problems.push(`${variant.sku}: the previous price must be above the price`);
+      if (variant.cost && (variant.cost.landedCostIqd <= 0 || variant.cost.landedCostIqd >= variant.priceIqd)) problems.push(`${variant.sku}: cost ${variant.cost.landedCostIqd} is not below the price`);
       for (const component of variant.bundle ?? []) {
-        const { product: componentProduct, variant: componentVariant } = variantBySku(component.sku);
-        if (componentVariant.bundle || componentProduct.kind === "digital") fail(`${variant.sku}: bundle component ${component.sku} must be a stocked item`);
+        const part = data.variantsBySku.get(component.sku);
+        if (!part || part.variant.bundle || part.product.kind === "digital") problems.push(`${variant.sku}: set component ${component.sku} must be a stocked item`);
       }
-      const cost = costOf(product, variant);
-      if (cost && (cost.landedCostIqd <= 0 || cost.landedCostIqd >= variant.priceIqd)) fail(`${variant.sku}: derived cost ${cost.landedCostIqd} is not below the price`);
     }
   }
-  const edges = new Set<string>();
-  for (const rule of DEMO_COMPATIBILITY) {
-    const edge = `${subjectOf(rule.subject).key}→${targetOf(rule.target).key}`;
-    if (edges.has(edge)) fail(`duplicate compatibility rule ${edge}`);
-    edges.add(edge);
-    if (rule.status !== "verified" && !rule.note) fail(`compatibility rule ${edge} (${rule.status}) needs a note`);
+  for (const article of DEMO_ARTICLES) {
+    if (article.deviceModel && !DEMO_DEVICE_MODELS.some((model) => model.slug === article.deviceModel)) problems.push(`article "${article.slug}" names unknown device "${article.deviceModel}"`);
+    for (const block of article.blocks) if (block.type === "art" && !catalog.photoKeys.has(block.name)) problems.push(`article "${article.slug}" shows unknown photo "${block.name}"`);
   }
-  const links = new Set<string>();
-  for (const relation of DEMO_RELATIONS) {
-    productBySlug(relation.product);
-    productBySlug(relation.related);
-    const link = `${relation.product}→${relation.related}:${relation.kind}`;
-    if (relation.product === relation.related || links.has(link)) fail(`invalid or duplicate relation ${link}`);
-    links.add(link);
-  }
-  for (const unit of DEMO_USED_UNITS) {
-    const { product } = variantBySku(unit.sku);
-    if (!product.trackSerials) fail(`used unit "${unit.slug}" must be an instance of a serial-tracked variant`);
-    if (unit.priceIqd % PRICE_STEP_IQD !== 0 || unit.acquisitionCostIqd >= unit.priceIqd) fail(`used unit "${unit.slug}" has an invalid price or cost`);
-  }
-  for (const guide of DEMO_TRADE_IN_GUIDES) deviceModelBySlug(guide.deviceModel);
   const articleSlugs = new Set(DEMO_ARTICLES.map((article) => article.slug));
-  for (const article of DEMO_ARTICLES) if (article.deviceModel) deviceModelBySlug(article.deviceModel);
   for (const { symptomKey, tree } of DEMO_TREES) {
     const ids = new Set(tree.nodes.map((node) => node.id));
-    if (!ids.has(tree.start)) fail(`tree "${symptomKey}" starts at an unknown node`);
+    if (!ids.has(tree.start)) problems.push(`tree "${symptomKey}" starts at an unknown node`);
     for (const node of tree.nodes) {
-      for (const choice of node.options ?? []) if (!ids.has(choice.next)) fail(`tree "${symptomKey}": node "${node.id}" points at unknown node "${choice.next}"`);
-      if (node.kind === "outcome" ? !node.outcome || (node.options?.length ?? 0) > 0 : (node.options?.length ?? 0) === 0) fail(`tree "${symptomKey}": node "${node.id}" is malformed`);
-      if (node.outcome?.articleSlug && !articleSlugs.has(node.outcome.articleSlug)) fail(`tree "${symptomKey}": unknown article "${node.outcome.articleSlug}"`);
+      for (const choice of node.options ?? []) if (!ids.has(choice.next)) problems.push(`tree "${symptomKey}": node "${node.id}" points at unknown node "${choice.next}"`);
+      if (node.kind === "outcome" ? !node.outcome || (node.options?.length ?? 0) > 0 : (node.options?.length ?? 0) === 0) problems.push(`tree "${symptomKey}": node "${node.id}" is malformed`);
+      if (node.outcome?.articleSlug && !articleSlugs.has(node.outcome.articleSlug)) problems.push(`tree "${symptomKey}": unknown article "${node.outcome.articleSlug}"`);
     }
   }
+  try {
+    for (const unit of demoUsedUnits(data)) {
+      const found = data.variantsBySku.get(unit.sku);
+      if (!found?.variant.trackSerials) problems.push(`used unit "${unit.slug}" must be an instance of a serial-tracked variant`);
+      if (unit.priceIqd % PRICE_STEP_IQD !== 0 || unit.acquisitionCostIqd <= 0 || unit.acquisitionCostIqd >= unit.priceIqd) problems.push(`used unit "${unit.slug}" has an invalid price or cost`);
+      if (found && unit.priceIqd >= found.variant.priceIqd) problems.push(`used unit "${unit.slug}" is not cheaper than new`);
+    }
+  } catch (error) {
+    problems.push(error instanceof Error ? error.message : String(error));
+  }
+  if (problems.length > 0) throw new Error(`Demo seed: ${problems.join("; ")}`);
 }
 
 // ───────────────────────────────────────────────────────────────── statement plan
@@ -319,14 +318,21 @@ class Plan {
   }
 }
 
-function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
-  assertDemoDataConsistent();
+/** Newest release first (pre-orders lead), undated last: the order "new arrivals" lists them in. */
+function listingOrder(products: readonly DemoProduct[]): DemoProduct[] {
+  const key = (product: DemoProduct) => product.source?.releaseDate ?? "";
+  return [...products].sort((a, b) => (key(a) === key(b) ? a.slug.localeCompare(b.slug) : key(a) < key(b) ? 1 : -1));
+}
+
+function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog): Plan {
+  const data = buildDemoData(catalog);
+  assertDemoDataConsistent(catalog, data);
   const plan = new Plan(db, overwrite);
 
   // ── device knowledge graph and categories ──────────────────────────────────
   plan.put(
     platforms,
-    DEMO_PLATFORMS.map((platform, index): NewPlatform => ({ id: demoId.platform(platform.slug), slug: platform.slug, name: platform.name, accent: platform.accent, sort: (index + 1) * 10, artKey: platform.artKey, isActive: true })),
+    DEMO_PLATFORMS.map((platform, index): NewPlatform => ({ id: demoId.platform(platform.slug), slug: platform.slug, name: platform.name, accent: platform.accent, sort: (index + 1) * 10, artKey: platform.artKey, isActive: platform.isActive })),
     { target: platforms.id, mode: "content" },
   );
   plan.put(
@@ -336,7 +342,7 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
   );
   plan.put(
     deviceModels,
-    DEMO_DEVICE_MODELS.map(
+    data.deviceModels.map(
       (model, index): NewDeviceModel => ({
         id: demoId.deviceModel(model.slug),
         platformId: demoId.platform(model.platform),
@@ -353,7 +359,7 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
         updatedAt: now,
       }),
     ),
-    { target: deviceModels.id, mode: "content" },
+    { target: deviceModels.id, mode: "content", rowsPerStatement: 2 },
   );
   const siblings = new Map<string, number>();
   plan.put(
@@ -377,14 +383,13 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
     { target: categories.id, mode: "content" },
   );
 
-  // ── products, variants, costs, bundles ─────────────────────────────────────
+  // ── products, variants, costs, sets ────────────────────────────────────────
+  const listed = listingOrder(data.products);
   plan.put(
     products,
-    DEMO_PRODUCTS.map((product, index): NewProduct => {
-      // Listed newest first: one minute apart, so "new arrivals" has a stable order.
+    listed.map((product, index): NewProduct => {
+      // One minute apart, so "new arrivals" has a stable order.
       const createdAt = now - index * MINUTE_MS;
-      const modelSpecs = product.kind === "console" && product.deviceModel ? deviceModelBySlug(product.deviceModel).specs : {};
-      const specs = { ...modelSpecs, ...product.specs };
       return {
         id: demoId.product(product.slug),
         slug: product.slug,
@@ -392,25 +397,25 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
         name: product.name,
         short: product.short,
         description: product.description,
-        brand: product.brand ?? null,
+        brand: product.brand,
         platformId: product.platform ? demoId.platform(product.platform) : null,
         deviceModelId: product.deviceModel ? demoId.deviceModel(product.deviceModel) : null,
         categoryId: demoId.category(product.category),
-        specs: Object.keys(specs).length > 0 ? specs : null,
-        attributes: null,
-        warrantyMonths: product.warrantyMonths ?? null,
-        ageRating: product.ageRating ?? null,
-        region: product.region ?? null,
-        licenseType: product.licenseType ?? null,
-        mediaFormat: product.mediaFormat ?? null,
+        specs: product.specs,
+        attributes: product.attributes,
+        warrantyMonths: product.warrantyMonths,
+        ageRating: product.ageRating,
+        region: product.region,
+        licenseType: product.licenseType,
+        mediaFormat: product.mediaFormat,
         status: "published",
         publishAt: null,
         isDemo: true,
         seo: null,
         createdAt,
         updatedAt: now,
-        searchKeywords: productSearchKeywords(product),
-        preorderReleaseAt: null,
+        searchKeywords: product.searchKeywords,
+        preorderReleaseAt: product.source && isPreorderAt(product.source, now) ? product.releaseAt : null,
         preorderDepositIqd: null,
         version: 1,
         publishedAt: createdAt,
@@ -418,47 +423,47 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
         updatedBy: null,
       };
     }),
-    { target: products.id, mode: "content", keep: ["createdAt", "publishedAt", "version", "createdBy"] },
+    { target: products.id, mode: "content", keep: ["createdAt", "publishedAt", "version", "createdBy"], rowsPerStatement: 1 },
   );
+  const allVariants = data.products.flatMap((product) => product.variants.map((variant) => ({ product, variant })));
   plan.put(
     variants,
-    DEMO_VARIANTS.map(
-      ({ product, variant, index }): NewVariant => ({
+    allVariants.map(
+      ({ product, variant }): NewVariant => ({
         id: demoId.variant(variant.sku),
         productId: demoId.product(product.slug),
         sku: variant.sku,
-        barcode: null,
-        title: variant.title ?? null,
-        options: variant.options ?? null,
+        barcode: variant.barcode,
+        title: variant.title,
+        options: variant.options,
         priceIqd: variant.priceIqd,
-        compareAtIqd: variant.compareAtIqd ?? null,
-        isDefault: index === 0,
+        compareAtIqd: variant.compareAtIqd,
+        isDefault: variant.isDefault,
         isActive: true,
-        trackSerials: tracksSerials(product, variant),
-        sort: index,
+        trackSerials: variant.trackSerials,
+        sort: variant.sort,
         weightGrams: null,
         createdAt: now,
         updatedAt: now,
       }),
     ),
     // A price only changes through the audited price-change flow, never by re-running a seed.
-    { target: variants.id, mode: "content", keep: ["priceIqd", "compareAtIqd", "createdAt", "barcode", "weightGrams"] },
+    { target: variants.id, mode: "content", keep: ["priceIqd", "compareAtIqd", "createdAt", "weightGrams"] },
   );
   const fxDate = new Date(now + BAGHDAD_OFFSET_MS).toISOString().slice(0, 10);
   const costRows: NewVariantCost[] = [];
-  for (const { product, variant } of DEMO_VARIANTS) {
-    const cost = costOf(product, variant);
-    if (!cost) continue;
+  for (const { variant } of allVariants) {
+    if (!variant.cost) continue;
     costRows.push({
       variantId: demoId.variant(variant.sku),
       currency: DEMO_FX_RATE.quote,
-      unitCostMinor: cost.unitCostMinor,
+      unitCostMinor: variant.cost.unitCostMinor,
       fxRateMicros: DEMO_FX_RATE.iqdPerUnit * 1_000_000,
       fxDate,
-      landedCostIqd: cost.landedCostIqd,
-      avgCostIqd: cost.landedCostIqd,
-      minMarginBps: cost.minMarginBps,
-      targetMarginBps: cost.targetMarginBps,
+      landedCostIqd: variant.cost.landedCostIqd,
+      avgCostIqd: variant.cost.landedCostIqd,
+      minMarginBps: variant.cost.minMarginBps,
+      targetMarginBps: variant.cost.targetMarginBps,
       updatedBy: null,
       updatedAt: now,
     });
@@ -466,30 +471,25 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
   plan.put(variantCosts, costRows, { target: variantCosts.variantId, mode: "state" });
   plan.put(
     bundleItems,
-    DEMO_VARIANTS.flatMap(({ variant }) =>
+    allVariants.flatMap(({ variant }) =>
       (variant.bundle ?? []).map((component): NewBundleItem => ({ bundleVariantId: demoId.variant(variant.sku), componentVariantId: demoId.variant(component.sku), qty: component.qty })),
     ),
     { target: [bundleItems.bundleVariantId, bundleItems.componentVariantId], mode: "content" },
   );
 
-  // ── pictures (all clay renders, all flagged as illustrations) ──────────────
+  // ── pictures: official photos (used units: the model's photo, as an illustration) ──
+  const usedUnitsData = demoUsedUnits(data);
   const mediaRows: NewMediaItem[] = [];
-  const addMedia = (ownerType: string, ownerId: string, ownerKey: string, artNames: readonly string[], alt: (artName: string) => T3) =>
-    artNames.forEach((artName, index) =>
-      mediaRows.push({ id: demoId.media(ownerType, ownerKey, index), ownerType, ownerId, fileId: null, artKey: artName, kind: "render", alt: alt(artName), isIllustration: true, sort: index, createdAt: now }),
+  const addMedia = (ownerType: string, ownerId: string, ownerKey: string, images: readonly DemoImage[], isIllustration: boolean) =>
+    images.forEach((image, index) =>
+      mediaRows.push({ id: demoId.media(ownerType, ownerKey, index), ownerType, ownerId, fileId: null, artKey: image.key, kind: "image", alt: image.alt, isIllustration, sort: index, createdAt: now }),
     );
-  for (const model of DEMO_DEVICE_MODELS) {
-    addMedia("device_model", demoId.deviceModel(model.slug), model.slug, artNamesOf(model.artKey, model.artViews), (artName) => altFor(model.name, artName));
+  for (const model of data.deviceModels) addMedia("device_model", demoId.deviceModel(model.slug), model.slug, model.images, false);
+  for (const product of data.products) {
+    addMedia("product", demoId.product(product.slug), product.slug, product.images, false);
+    for (const variant of product.variants) addMedia("variant", demoId.variant(variant.sku), variant.sku, variant.images, false);
   }
-  for (const product of DEMO_PRODUCTS) {
-    // A picture that belongs to one colour variant says which one.
-    const variantShowing = (artName: string) => product.variants.find((variant) => variant.art?.includes(artName));
-    addMedia("product", demoId.product(product.slug), product.slug, product.art, (artName) => altFor(product.name, artName, variantShowing(artName)?.title));
-    for (const variant of product.variants) {
-      if (variant.art) addMedia("variant", demoId.variant(variant.sku), variant.sku, variant.art, (artName) => altFor(product.name, artName, variant.title));
-    }
-  }
-  for (const unit of DEMO_USED_UNITS) addMedia("used_unit", demoId.usedUnit(unit.slug), unit.slug, unit.art, () => USED_ILLUSTRATION_ALT);
+  for (const unit of usedUnitsData) addMedia("used_unit", demoId.usedUnit(unit.slug), unit.slug, unit.images, true);
   plan.put(media, mediaRows, { target: media.id, mode: "content", keep: ["createdAt"] });
 
   // ── stock: levels, serials, opening movements, cost layers ─────────────────
@@ -497,22 +497,12 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
   const serialRows: NewSerial[] = [];
   const movementRows: NewStockMovement[] = [];
   const layerRows: NewCostLayer[] = [];
-  for (const { product, variant } of DEMO_VARIANTS) {
+  for (const { product, variant } of allVariants) {
     const variantId = demoId.variant(variant.sku);
-    const stocked = hasOwnStock(product, variant);
-    const cost = costOf(product, variant);
-    levelRows.push({
-      variantId,
-      locationId: DEFAULT_LOCATION_ID,
-      onHand: variant.stock,
-      reserved: 0,
-      incoming: 0,
-      reorderPoint: stocked ? (variant.reorderPoint ?? KIND_DEFAULTS[product.kind].reorderPoint) : null,
-      allowOversell: false,
-      reorderQty: null,
-      updatedAt: now,
-    });
-    if (variant.stock === 0) continue;
+    const stock = stockOf(product, variant, now);
+    levelRows.push({ variantId, locationId: DEFAULT_LOCATION_ID, onHand: stock.onHand, reserved: 0, incoming: 0, reorderPoint: stock.reorderPoint, allowOversell: false, reorderQty: null, updatedAt: now });
+    if (stock.onHand === 0) continue;
+    const unitCost = variant.cost?.landedCostIqd ?? null;
     const movement = (id: string, qtyDelta: number, serialId: string | null): NewStockMovement => ({
       id,
       variantId,
@@ -521,7 +511,7 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
       kind: "adjust",
       qtyDelta,
       reservedDelta: 0,
-      unitCostIqd: cost?.landedCostIqd ?? null,
+      unitCostIqd: unitCost,
       refType: DEMO_REF_TYPE,
       refId: "opening_balance",
       reason: OPENING_REASON,
@@ -529,22 +519,22 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
       actorId: DEMO_ACTOR_ID,
       at: now,
     });
-    if (tracksSerials(product, variant)) {
+    if (variant.trackSerials) {
       // One serial row per unit on hand, so "on hand" and "serials in stock" always agree.
-      for (const serial of demoSerialsOf(variant.sku, variant.stock)) {
+      for (const serial of demoSerialsOf(variant.sku, stock.onHand)) {
         const serialId = demoId.serial(serial);
-        serialRows.push({ id: serialId, serial, variantId, status: "in_stock", locationId: DEFAULT_LOCATION_ID, costIqd: cost?.landedCostIqd ?? null, source: "purchase", sourceRef: DEMO_REF_TYPE, notes: DEMO_SERIAL_NOTE, createdAt: now, updatedAt: now });
+        serialRows.push({ id: serialId, serial, variantId, status: "in_stock", locationId: DEFAULT_LOCATION_ID, costIqd: unitCost, source: "purchase", sourceRef: DEMO_REF_TYPE, notes: DEMO_SERIAL_NOTE, createdAt: now, updatedAt: now });
         movementRows.push(movement(demoId.openingMovement(variant.sku, serial), 1, serialId));
       }
     } else {
-      movementRows.push(movement(demoId.openingMovement(variant.sku), variant.stock, null));
+      movementRows.push(movement(demoId.openingMovement(variant.sku), stock.onHand, null));
     }
-    if (cost) {
-      layerRows.push({ id: demoId.openingCostLayer(variant.sku), variantId, locationId: DEFAULT_LOCATION_ID, qtyRemaining: variant.stock, unitCostIqd: cost.landedCostIqd, receivedAt: now, receiptItemId: null, qtyReceived: variant.stock, source: "opening" });
+    if (variant.cost) {
+      layerRows.push({ id: demoId.openingCostLayer(variant.sku), variantId, locationId: DEFAULT_LOCATION_ID, qtyRemaining: stock.onHand, unitCostIqd: variant.cost.landedCostIqd, receivedAt: now, receiptItemId: null, qtyReceived: stock.onHand, source: "opening" });
     }
   }
   // Used units are one-of-a-kind: each has its own serial, outside the stock counts of new units.
-  for (const unit of DEMO_USED_UNITS) {
+  for (const unit of usedUnitsData) {
     serialRows.push({
       id: demoId.serial(unit.serial),
       serial: unit.serial,
@@ -564,39 +554,37 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
   plan.put(stockMovements, movementRows, { target: stockMovements.id, mode: "state" });
   plan.put(costLayers, layerRows, { target: costLayers.id, mode: "state" });
 
-  // ── relations and compatibility ────────────────────────────────────────────
+  // ── relations and compatibility (as researched) ────────────────────────────
   plan.put(
     productRelations,
-    DEMO_RELATIONS.map((relation): NewProductRelation => ({ productId: demoId.product(relation.product), relatedProductId: demoId.product(relation.related), kind: relation.kind, pinned: relation.pinned, sort: relation.sort })),
+    data.relations.map((relation): NewProductRelation => ({ productId: demoId.product(relation.product), relatedProductId: demoId.product(relation.related), kind: relation.kind, pinned: false, sort: relation.sort })),
     { target: [productRelations.productId, productRelations.relatedProductId, productRelations.kind], mode: "content" },
   );
   plan.put(
     compatibilityRules,
-    DEMO_COMPATIBILITY.map((rule): NewCompatibilityRule => {
-      const subject = subjectOf(rule.subject);
-      const target = targetOf(rule.target);
-      return {
-        id: demoId.compatibility(subject.key, target.key),
-        subjectType: subject.type,
-        subjectId: subject.id,
-        targetType: target.type,
-        targetId: target.id,
+    data.compatibility.map(
+      (rule): NewCompatibilityRule => ({
+        id: demoId.compatibility(`product-${rule.product}`, `model-${rule.deviceModel}`),
+        subjectType: "product",
+        subjectId: demoId.product(rule.product),
+        targetType: "device_model",
+        targetId: demoId.deviceModel(rule.deviceModel),
         status: rule.status,
-        note: rule.note ?? null,
-        source: rule.source ?? null,
+        note: rule.note,
+        source: rule.source,
         verifiedBy: null,
         verifiedAt: rule.status === "unverified" ? null : now,
         createdAt: now,
         updatedAt: now,
-      };
-    }),
+      }),
+    ),
     { target: compatibilityRules.id, mode: "content", keep: ["createdAt"], skipOnAnyConflict: true },
   );
 
   // ── used units and trade-in guides ─────────────────────────────────────────
   plan.put(
     usedUnits,
-    DEMO_USED_UNITS.map((unit): NewUsedUnit => {
+    usedUnitsData.map((unit): NewUsedUnit => {
       const inspectedAt = now - unit.inspectedDaysAgo * DAY_MS;
       return {
         id: demoId.usedUnit(unit.slug),
@@ -638,7 +626,7 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
   );
   plan.put(
     tradeInPriceGuides,
-    DEMO_TRADE_IN_GUIDES.map(
+    demoTradeInGuides(data).map(
       (guide): NewTradeInPriceGuide => ({
         id: demoId.tradeInGuide(guide.deviceModel),
         deviceModelId: demoId.deviceModel(guide.deviceModel),
@@ -739,23 +727,33 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
     }
   }
   plan.put(searchSynonyms, synonymRows, { target: searchSynonyms.id, mode: "content", skipOnAnyConflict: true });
+  const docsOf = (product: DemoProduct) =>
+    productSearchDocs({
+      name: product.name,
+      short: product.short,
+      description: product.description,
+      brand: product.brand,
+      searchKeywords: product.searchKeywords,
+      codes: product.codes,
+      variantTitles: product.variants.map((variant) => variant.title),
+    });
   // The FTS5 index comes last in the batch. FTS5 buffers what an INSERT writes and flushes it to its
   // shadow tables when the NEXT write statement opens its savepoint, so D1 would count that flush
   // as changes of whatever table follows. Last, the flush happens at commit and counts for nobody.
   if (overwrite) {
     // Replace each product's rows (the same statements the catalogue service uses on publish).
     // Every row is rewritten, so seedDemo reports all of them as changed.
-    for (const product of DEMO_PRODUCTS) {
-      const docs = productSearchDocs(product);
+    for (const product of data.products) {
+      const docs = docsOf(product);
       for (const statement of searchIndexStatements(db, demoId.product(product.slug), docs)) plan.add("search_index", statement, 0);
       plan.rows.search_index = (plan.rows.search_index ?? 0) + docs.length;
     }
   } else {
     // Index only what is missing, so a product whose text was edited in the admin keeps its own index rows.
     plan.measure("search_index", () => {
-      for (const product of DEMO_PRODUCTS) {
+      for (const product of data.products) {
         const productId = demoId.product(product.slug);
-        for (const doc of productSearchDocs(product)) {
+        for (const doc of docsOf(product)) {
           const name = normalizeSearchText(doc.name);
           const keywords = normalizeSearchText(doc.keywords);
           const body = normalizeSearchText(doc.body);
@@ -780,6 +778,8 @@ function buildPlan(db: Db, now: number, overwrite: boolean): Plan {
 export type SeedDemoOptions = {
   /** Also restore the seed's descriptive content on rows that already exist (see the file header for what is never touched). */
   overwrite?: boolean;
+  /** The catalogue to import; default: catalog/products and app/art/photos read from disk (Node only). */
+  catalog?: DemoCatalog;
 };
 
 export type SeedDemoResult = {
@@ -806,12 +806,13 @@ const countOf = (result: unknown): number => {
 };
 
 /**
- * Loads the DEMO catalogue. The third argument also accepts the context scripts/db-reset.ts passes
- * (`{ d1, kv, env }`); only `overwrite` is read.
+ * Loads the DEMO data. The third argument also accepts the context scripts/db-reset.ts passes
+ * (`{ d1, kv, env }`); only `overwrite` and `catalog` are read.
  */
 export async function seedDemo(db: Db, now: number, options: SeedDemoOptions & Record<string, unknown> = {}): Promise<SeedDemoResult> {
   const overwrite = options.overwrite === true;
-  const plan = buildPlan(db, now, overwrite);
+  const catalog = (options.catalog as DemoCatalog | undefined) ?? loadDemoCatalog();
+  const plan = buildPlan(db, now, overwrite, catalog);
   // One batch = one transaction: either the whole demo catalogue is there, or none of this run's rows are.
   const results = await runBatch(db, plan.statements);
   const changed: Record<string, number> = {};

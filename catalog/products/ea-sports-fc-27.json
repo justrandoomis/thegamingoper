@@ -126,9 +126,9 @@
       "isDefault": true,
       "images": ["ea-sports-fc-27--1", "ea-sports-fc-27--2", "ea-sports-fc-27--3", "ea-sports-fc-27--4"],
       "notes": {
-        "ar": "قرص PS5 لا يعمل على PS4. على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "The PS5 disc does not play on PS4. PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "دیسکی PS5 لەسەر PS4 کار ناکات. PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "قرص PS5 لا يعمل على PS4. على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "The PS5 disc does not play on PS4. PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "دیسکی PS5 لەسەر PS4 کار ناکات. PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     },
     {
@@ -184,8 +184,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -276,7 +276,7 @@
     { "url": "https://www.pcgamer.com/gaming-industry/ea-sports-fc-27-gets-a-pegi-16-rating-in-europe-because-of-loot-boxes/", "title": "EA Sports FC 27 gets a PEGI 16 rating in Europe because of loot boxes", "publisher": "PC Gamer", "retrieved": "2026-11-11", "supports": "independent confirmation of PEGI 16 and the reason" },
     { "url": "https://www.amazon.co.uk/SPORTS-Standard-Physical-VideoGame-English/dp/B0H7JWM1JD", "title": "EA SPORTS FC 27 Standard Edition Xbox Series X — physical disc", "publisher": "Amazon UK (publisher listing)", "retrieved": "2026-11-11", "supports": "Xbox Series X physical disc, not compatible with Xbox Series S" },
     { "url": "https://www.amazon.com/Standard-PlayStation5-Physical-VideoGame-PlayStation-5/dp/B0H9SYK5Q7", "title": "EA SPORTS FC 27 Standard Edition PlayStation 5 — physical disc", "publisher": "Amazon US (publisher listing)", "retrieved": "2026-11-11", "supports": "PS5 physical disc with the full game, not compatible with PS4" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive to play discs" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
     "ar": "عملة FC Points داخل اللعبة تُشترى بشكل منفصل من متجر الجهاز. نسخة Ultimate Edition تضيف FC Points ووصولاً مبكراً ومحتوى إضافياً، أما Ultimate Plus Edition فكانت تُباع حتى 31 آب 2026 فقط.",

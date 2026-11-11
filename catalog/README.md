@@ -1,6 +1,6 @@
 # Product catalogue research
 
-One JSON file per product in `catalog/products/<slug>.json`, researched from official manufacturer and publisher pages (checked against a second source), as of the `retrieved` date in each source entry. This folder is the single source of truth for the demo catalogue: `npm run catalog:import` turns it into database seed data, and `npm run catalog:images` turns the downloaded images into the responsive files the storefront serves.
+One JSON file per product in `catalog/products/<slug>.json`, researched from official manufacturer and publisher pages (checked against a second source), as of the `retrieved` date in each source entry. This folder is the single source of truth for the demo catalogue: the demo seed (`npm run db:seed`, `npm run db:reset`) imports it into the database (see Import below), and `npm run catalog:images` turns the downloaded images into the responsive files the storefront serves.
 
 **Prices are not researched.** Shop prices come later from the owner's price file; until then the importer assigns random placeholder prices flagged `is_demo`.
 
@@ -43,6 +43,7 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
       "options": { "edition": "Standard", "storage": "256GB", "color": "Black" },
       "modelNumber": "BEE-001",                // manufacturer model number when published
       "barcodes": ["0045496884963"],           // EAN/UPC only when found on an official or major-retailer page; region noted in notes
+      "releaseDate": "2027-02-04",             // optional, only when THIS variant comes out after the product (a new colour, a later platform version); never on the default variant
       "isDefault": true,
       "images": ["nintendo-switch-2--1", "nintendo-switch-2--2"],
       "notes": { "ar": "…", "en": "…", "ckb": "…" }   // optional
@@ -82,3 +83,31 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
 ```
 
 Validate with `node scripts/products/validate.mjs [slug…]` — it checks required fields, the three languages, slugs, SKUs, image files and sources.
+
+## Import
+
+The demo seed imports this folder directly — there is no generated copy to keep in step. `npm run db:seed`, `npm run db:reset` and the production path `npm run db:seed -- --sql <file>` all read `catalog/products/*.json` at run time, in Node (`app/server/db/seed/demo/catalog/load.ts`); nothing under `catalog/` is imported by a module, so none of it reaches the Worker or the client bundle (`tests/seed.test.ts` checks that no module under `app/` imports it).
+
+After editing a file: `npm run catalog:validate`; if images changed, `node scripts/products/images.mjs --only <slug>`; then `npm run db:seed -- --overwrite` (refreshes names, texts, specs, pictures, compatibility and relations of existing rows; never prices, costs or stock) or `npm run db:reset`. Overwrite does not delete: an image, rule or relation you removed stays until `db:reset`. (A `catalog:import` npm script for that overwrite seed is requested from the lead; it does not exist yet.)
+
+Where the facts go (`app/server/db/seed/demo/import.ts`):
+
+| Catalogue | Database |
+|---|---|
+| `kind` | `products.kind`: `handheld_pc` → `console` (its device model has `device_kind = handheld_pc`), `vr` → `accessory` in the "vr" category; the research kind stays in `attributes.catalogue.kind` |
+| `platform` | `products.platform_id`: `pc_handheld` → the "handheld" platform; `multi` → none (multi-platform games go to the "multiplatform-games" category) |
+| `deviceModel` / `family` | the product's `device_model_id`; when one `deviceModel` value is shared by different families (the MSI Claw line), each family is its own device model |
+| `specs` | `products.specs` as `{ [key]: { ar, en, ckb, label: { ar, en, ckb } } }`, in research order; the device model gets the specs of the product that is that device |
+| `highlights`, `inTheBox`, `notes`, `game`, variant notes, variant release dates, extra barcodes, `sources`, `verification.unverified`, `status`, `releaseDate` | `products.attributes` (`ProductAttributes` in import.ts) |
+| `game.ageRating` | `products.age_rating`: "PEGI n" first, else "ESRB x" |
+| `warranty` spec | stays in `specs` only. `products.warranty_months` is the store's own warranty (the cart copies it into the order, delivery opens a `warranties` record the store must honour), so the import leaves it empty: a maker's limited warranty is not the store's promise |
+| `releaseDate` ahead of today | a pre-order: `preorder_release_at`, no stock |
+| variant `releaseDate` ahead of today | that variant has no stock until then (the schema has no per-variant pre-order flag) |
+| `variants` | `variants`: SKU, title, `options` plus `model` (the maker's model number), first barcode, default flag, research order |
+| `images` | `media` rows: `art_key` = the photo key, `kind` image, `is_illustration` 0, alt as researched; a variant with its own set of pictures gets its own rows |
+| `compatibility` | `compatibility_rules` on the product, status exactly as researched (`unknown` → `unverified`, never better), `source` = the URL |
+| `related` | `product_relations` |
+
+The seed refuses to run, with a message naming the file, when the catalogue cannot be placed: a device key (`deviceModel`, `family`, a compatibility or `game.platforms` key) that is not in `app/server/db/seed/demo/devices.ts` — add the device there (name, platform, generation, device kind, the product that is that device) —, an image without a built photo, a duplicate SKU or slug, a product without exactly one default variant, a related slug that does not exist, a variant `releaseDate` that is malformed, not after the product's, or on the default variant.
+
+What the import adds that research does not cover is demo data (`app/server/db/seed/demo/pricing.ts`, `used.ts`, `sets.ts`): placeholder prices (deterministic per SKU), costs (70–85 % of the price; digital codes 92–96 %, since they sell at face value), a handful of previous prices (only on items sold for at least 90 days), stock, serials, six used units, trade-in guides, and one store set made of two catalogue items. Products and used units carry `is_demo = 1`; prices, costs and stock have no such column and belong to those demo products; stock movements and serials say "DEMO" in their text.

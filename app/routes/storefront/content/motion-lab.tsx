@@ -39,7 +39,7 @@ function LabHome() {
   const location = useLocation();
   const tab = labTab(location.search);
   return (
-    <main className="lab-main" data-testid="lab-home">
+    <div className="lab-main" data-testid="lab-home">
       <p className="lab-intro">{t("intro")}</p>
       <LabTabs active={tab} />
       <div className="lab-stack" data-testid={`panel-${tab}`}>
@@ -50,7 +50,7 @@ function LabHome() {
         {tab === "system" ? <SystemTab /> : null}
       </div>
       {location.hash === "#viewer" || location.hash === "#viewer-2" ? <LabViewer slide={location.hash === "#viewer" ? 0 : 1} /> : null}
-    </main>
+    </div>
   );
 }
 

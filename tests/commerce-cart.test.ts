@@ -552,21 +552,22 @@ describe("with the demo catalogue", () => {
   });
 
   test("bundle + used unit + DEMO10: priced, reserved (components), packed (component serial), shipped (FIFO)", async () => {
-    const bundleId = demoId.variant("NSW2-BUNDLE-MKW");
-    const consoleId = demoId.variant("NSW2-CON-256");
-    const gameId = demoId.variant("NSW2-MKW");
+    const bundleId = demoId.variant("TT-SET-NS2-MKW");
+    const consoleId = demoId.variant("NS2-STD");
+    const gameId = demoId.variant("NS2G-MARIO-KART-WORLD");
     const usedId = demoId.usedUnit("used-ps5-slim-disc-01");
     const levelOf = async (variantId: string) => t.db.select().from(stockLevels).where(and(eq(stockLevels.variantId, variantId), eq(stockLevels.locationId, DEFAULT_LOCATION_ID))).get();
     const consoleBefore = await levelOf(consoleId);
     const gameBefore = await levelOf(gameId);
     const sets = Math.min(consoleBefore?.onHand ?? 0, gameBefore?.onHand ?? 0);
+    const bundlePrice = (await t.db.select().from(variants).where(eq(variants.id, bundleId)).get())?.priceIqd ?? 0;
 
     const first = await addToCart(t.db, guest(), { variantId: bundleId, qty: 1 }, NOW);
-    expect(lineOf(first.view, bundleId)).toMatchObject({ unitPriceIqd: 765_000, maxQty: Math.min(MAX_LINE_QTY, sets), problem: null });
+    expect(lineOf(first.view, bundleId)).toMatchObject({ unitPriceIqd: bundlePrice, maxQty: Math.min(MAX_LINE_QTY, sets), problem: null });
     await addToCart(t.db, guest(first.cartToken), { usedUnitId: usedId }, NOW);
     const used = await t.db.select().from(usedUnits).where(eq(usedUnits.id, usedId)).get();
     const withCoupon = await applyCoupon(t.db, guest(first.cartToken), "demo10", NOW);
-    const subtotal = 765_000 + (used?.priceIqd ?? 0);
+    const subtotal = bundlePrice + (used?.priceIqd ?? 0);
     expect(withCoupon).toMatchObject({ subtotalIqd: subtotal, discountIqd: Math.min(25_000, Math.round(subtotal / 10)), coupon: { code: "DEMO10" }, blocked: false });
 
     const checkout = await getCheckoutCart(t.db, { ...guest(first.cartToken), governorateId: governorateId("erbil") }, NOW);
@@ -589,7 +590,7 @@ describe("with the demo catalogue", () => {
 
     // Packing: the bundle line takes the serial of its console component.
     const bundleItemId = order.itemIds[checkout.lines.findIndex((entry) => entry.line.variantId === bundleId && entry.line.kind === "variant")];
-    await runBatch(t.db, assignSerialsStatements(t.db, { orderItemId: bundleItemId, serialIds: [demoId.serial(demoSerialsOf("NSW2-CON-256", 4)[0])], actor, now: NOW }));
+    await runBatch(t.db, assignSerialsStatements(t.db, { orderItemId: bundleItemId, serialIds: [demoId.serial(demoSerialsOf("NS2-STD", 4)[0])], actor, now: NOW }));
 
     // Shipping: FIFO cost of the components' opening layers + the used unit's acquisition cost.
     const layerCost = async (variantId: string) => (await t.db.select().from(costLayers).where(eq(costLayers.variantId, variantId)).get())?.unitCostIqd ?? 0;

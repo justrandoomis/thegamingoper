@@ -5,7 +5,8 @@
  *   2. re-applies all migrations in ./drizzle (recorded in d1_migrations, so wrangler agrees)
  *   3. runs seedReference() — governorates, settings defaults, chart of accounts, …
  *   4. runs seedRoles() — the built-in staff roles and their default permissions
- *   5. runs the demo seed (app/server/db/seed/demo.ts) when that file exists
+ *   5. runs the demo seed (app/server/db/seed/demo.ts) when that file exists — it imports the researched
+ *      catalogue (catalog/products/*.json, read from disk) with demo prices and stock
  *   6. prints the row counts of the main tables
  *
  *   npm run db:reset                 everything above
@@ -41,20 +42,26 @@ const SUMMARY_TABLES = [
   "roles",
   "role_permissions",
   "platforms",
+  "device_generations",
   "device_models",
   "categories",
   "products",
   "variants",
   "variant_costs",
+  "bundle_items",
   "media",
   "stock_levels",
   "stock_movements",
   "serials",
   "cost_layers",
   "compatibility_rules",
+  "product_relations",
+  "search_synonyms",
   "search_index",
   "used_units",
+  "trade_in_price_guides",
   "knowledge_articles",
+  "troubleshooting_trees",
   "fx_rates",
   "coupons",
   "reviews",

@@ -27,7 +27,7 @@ export const banners = sqliteTable(
     ctaLabel: l10n("cta_label"),
     /** Locale-less storefront path, or an absolute URL. */
     link: text("link"),
-    /** Clay render key, or an uploaded image. */
+    /** Catalogue photo key of `~/art` ("<slug>--<n>"), or an uploaded image. */
     artKey: text("art_key"),
     fileId: text("file_id").references((): Ref => files.id),
     /** Accent token, e.g. "brand", "playstation". */

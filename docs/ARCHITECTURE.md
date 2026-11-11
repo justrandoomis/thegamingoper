@@ -43,7 +43,7 @@ app/
   styles/                                      tokens.css, materials.css, base.css, admin.css   (owner: design system)
   ui/                                          design-system components                          (owner: design system)
   motion/                                      TamTam Motion Engine                              (owner: motion)
-  art/                                         clay-render manifest + <Art> image component      (owner: art pipeline)
+  art/                                         product-photo manifests + <Art> image component  (owner: photo pipeline)
   server/
     context.server.ts, security.server.ts, shell.server.ts   request context, headers, shell data (owner: lead / server core)
     db.server.ts, db/schema/*.ts, db/tx.server.ts            database access and schema            (owner: data)
@@ -177,7 +177,7 @@ export async function adjustStock(db: Db, actor: Actor, raw: unknown, now: numbe
 
 - Build screens from `app/ui` components and the tokens in `docs/DESIGN.md`. No hard-coded colours, radii or shadows in feature code. Clay = things you can grab; glass = floating chrome you look through. Glass (`backdrop-filter`) is never used on scrolling lists.
 - Motion goes through `~/motion` (API in `docs/DESIGN.md` §Motion): press feedback is automatic for elements with `data-press`; `flyToCart(el)`; `<Bubble>` for content that arrives; `<SharedElement name>` for card→page morphs; `<NumberMorph>` for prices. Never delay navigation, data or a state change for an animation; everything must work with `prefers-reduced-motion`.
-- Product and category imagery comes from `<Art name=… />` (TamTam clay renders, pre-built responsive AVIF/WebP with dimensions and a placeholder) or `<Media>` for uploaded photos. Always pass intrinsic width/height; only the first above-the-fold image may be `priority`.
+- Product and category imagery comes from `<Art name=… />` (official product photos, keys `<slug>--<n>`, pre-built responsive AVIF/WebP with dimensions and a placeholder; `scripts/products/images.mjs`) or `<Media>` for uploaded photos. Always pass intrinsic width/height; only the first above-the-fold image may be `priority`.
 - Every flow designs its states: loading (bubble reveal, no grey skeletons), empty, error, offline, validation error, success, pending review, unauthorized.
 - Accessibility floor: semantic landmarks and headings, labels on every control, visible focus, 44px touch targets, `aria-live` for cart and form feedback, focus management in sheets/dialogs, WCAG AA contrast in both themes.
 

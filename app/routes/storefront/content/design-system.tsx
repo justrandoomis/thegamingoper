@@ -182,7 +182,7 @@ export default function DesignSystem() {
           </a>
         ))}
       </nav>
-      <main className="page">
+      <div className="page">
         {SECTIONS.map(({ default: Section, section }) => (
           <section key={section.id} id={section.id} className="ds-section" aria-labelledby={`${section.id}-title`}>
             <h2 className="ds-h2" id={`${section.id}-title`}>
@@ -192,7 +192,7 @@ export default function DesignSystem() {
             <Section />
           </section>
         ))}
-      </main>
+      </div>
     </div>
   );
 }

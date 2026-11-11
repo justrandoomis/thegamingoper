@@ -10,7 +10,9 @@
  * Steps, in this order (each is idempotent, so the command is safe to repeat):
  *   1. seedReference()   governorates, districts, settings defaults, stock location, chart of accounts, …
  *   2. the roles seed    app/server/auth/seed-roles.ts, when that file exists (skipped otherwise)
- *   3. seedDemo()        the DEMO catalogue — see app/server/db/seed/demo.ts
+ *   3. seedDemo()        the DEMO catalogue: every researched product of catalog/products/*.json with its
+ *                        official photos, plus demo prices, stock, used units and articles — see
+ *                        app/server/db/seed/demo.ts (the catalogue is read from disk here, in Node)
  *
  * It does not migrate: run `npm run db:migrate` (or `npm run db:reset`) first. It creates no
  * accounts, customers or orders.
@@ -26,7 +28,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { getPlatformProxy } from "wrangler";
 import { createDb, type Db } from "~/server/db/drizzle.server";
-import { seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
+import { loadDemoCatalog, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
 import { recordWrites, statementToSql, toSqlScript, type RecordedStatement } from "~/server/db/seed/demo/sql";
 import { seedReference } from "~/server/db/seed/reference";
 import { mapDbError } from "~/server/db/tx.server";
@@ -112,7 +114,9 @@ async function runSeeds(db: Db, now: number, overwrite: boolean): Promise<SeedDe
     }
 
     step = "Demo data";
-    const demo = await seedDemo(db, now, { overwrite });
+    const catalog = loadDemoCatalog();
+    console.log(`Catalogue: ${catalog.products.length} researched products (catalog/products), ${catalog.photoKeys.size} built photos (app/art/photos).`);
+    const demo = await seedDemo(db, now, { overwrite, catalog });
     const defined = Object.values(demo.rows).reduce((sum, count) => sum + count, 0);
     const changed = Object.values(demo.changed).reduce((sum, count) => sum + count, 0);
     console.log(`Demo data: ${defined} rows defined in ${Object.keys(demo.rows).length} tables, ${changed} written by this run (${demo.statements} statements, one transaction${overwrite ? ", overwrite" : ""}).`);

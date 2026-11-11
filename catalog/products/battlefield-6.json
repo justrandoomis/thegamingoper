@@ -109,9 +109,9 @@
       "isDefault": true,
       "images": ["battlefield-6--1", "battlefield-6--2", "battlefield-6--3", "battlefield-6--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     },
     {
@@ -165,8 +165,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -252,7 +252,7 @@
     { "url": "https://en.wikipedia.org/wiki/Battlefield_6", "title": "Battlefield 6", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Battlefield Studios, publisher EA, platforms PS5/Xbox Series X|S/Windows, release 10 Oct 2025, single-player and multiplayer" },
     { "url": "https://www.gamespot.com/articles/battlefield-6-preorder-guide-ps5-xbox-physical-edition-retailer-bonuses/1100-6533616/", "title": "Battlefield 6 preorder guide", "publisher": "GameSpot", "retrieved": "2026-11-11", "supports": "standard physical edition for PS5 and Xbox Series X" },
     { "url": "https://www.amazon.com/Battlefield-Standard-EN-FR-Xbox-x/dp/B0FJXZYXS4", "title": "Battlefield 6 Standard Edition (Xbox Series X)", "publisher": "Amazon US (publisher listing)", "retrieved": "2026-11-11", "supports": "Standard Edition disc for Xbox Series X contains the full game" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" },
     { "url": "https://help.ea.com/en/articles/battlefield/battlefield-6/game-of-the-year/", "title": "Battlefield 6 Game of the Year edition: what's included and how to get it", "publisher": "EA Help", "retrieved": "2026-11-11", "supports": "Game of the Year Edition available from 13 October 2026 with the base game as a download plus extra content; Phantom Edition no longer sold" },
     { "url": "https://www.ea.com/games/battlefield/battlefield-6/faq", "title": "Battlefield 6 FAQ", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "an internet connection is necessary to download critical updates and play; EA account needed; single-player campaign" },
     { "url": "https://store.steampowered.com/app/2807960/", "title": "Battlefield 6 — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: release 10 Oct 2025, Battlefield Studios / EA, PEGI 16 and ESRB M, Arabic interface and subtitles without Arabic audio" },

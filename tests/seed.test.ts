@@ -1,38 +1,43 @@
 /**
- * The DEMO catalogue seed (app/server/db/seed/demo.ts) against a real, throw-away D1:
- * it is idempotent, flags everything it can as demo, creates no people or orders, and what it
- * writes is internally consistent (stock ↔ movements ↔ serials, pictures ↔ art catalogue,
- * compatibility ↔ catalogue, trees ↔ articles) and complete in Arabic, English and Kurdish.
- * Also covers the SQL-file path used for `wrangler d1 execute --remote --file`.
+ * The DEMO seed (app/server/db/seed/demo.ts) against a real, throw-away D1: it imports every product
+ * of the researched catalogue (catalog/products/*.json) faithfully — texts, specs, variants, official
+ * photos, compatibility exactly as researched, relations — puts demo prices, costs and stock around
+ * it, is idempotent, flags everything it can as demo, creates no people or orders, and what it writes
+ * is internally consistent (stock ↔ movements ↔ serials, pictures ↔ photo manifests, trees ↔
+ * articles) and complete in Arabic, English and Kurdish. Also covers the SQL-file path used for
+ * `wrangler d1 execute --remote --file`.
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createDb } from "~/server/db/drizzle.server";
 import { normalizeSearchText, searchProductIds } from "~/server/db/search.server";
-import { assertDemoDataConsistent, demoId, demoSerialsOf, placeholderCost, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
+import { assertDemoDataConsistent, buildDemoData, demoId, demoSerialsOf, demoTradeInGuides, demoUsedUnits, loadDemoCatalog, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
+import type { CatalogProduct } from "~/server/db/seed/demo/catalog/types";
 import { DEMO_CATEGORIES } from "~/server/db/seed/demo/categories";
-import { DEMO_COMPATIBILITY, DEMO_RELATIONS } from "~/server/db/seed/demo/compatibility";
-import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS } from "~/server/db/seed/demo/devices";
+import { DEMO_COUPONS, DEMO_FX_RATE } from "~/server/db/seed/demo/commerce";
+import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS, deviceModelsOfProducts } from "~/server/db/seed/demo/devices";
+import { capacityGb, catalogImportProblems } from "~/server/db/seed/demo/import";
 import { DEMO_ARTICLES } from "~/server/db/seed/demo/knowledge";
-import { DEMO_PRODUCTS, DEMO_VARIANTS } from "~/server/db/seed/demo/products";
-import { DEMO_SYNONYM_GROUPS } from "~/server/db/seed/demo/search";
+import { COST_SHARE, DEAL_MIN_DAYS_ON_SALE, PRICE_REFERENCE_DATE, demoCost, demoStock, isPreorderAt, unitHash } from "~/server/db/seed/demo/pricing";
+import { DEMO_SYNONYM_GROUPS, NICKNAMED_PRODUCTS } from "~/server/db/seed/demo/search";
+import { DEMO_STORE_SETS } from "~/server/db/seed/demo/sets";
 import { inlineParams, recordWrites, sqlLiteral, statementToSql, toSqlScript, type RecordedStatement } from "~/server/db/seed/demo/sql";
 import { DEMO_TREES } from "~/server/db/seed/demo/trees";
-import { DEMO_TRADE_IN_GUIDES, DEMO_USED_UNITS, TRADE_IN_GRADE_MULTIPLIERS } from "~/server/db/seed/demo/used";
+import { DEMO_USED_UNITS, TRADE_IN_GRADE_MULTIPLIERS } from "~/server/db/seed/demo/used";
 import { DEFAULT_LOCATION_ID, seedReference } from "~/server/db/seed/reference";
 import { createTestDb, type TestDb } from "./helpers/db";
 import { PROJECT_ROOT, applyMigrations, dropEverything } from "./helpers/migrations";
 
-// ───────────────────────────────────────────────────────────────── the art catalogue
+// ───────────────────────────────────────────────────────────────── the catalogue
 
-type ArtCatalog = { items: Array<{ key: string; group: string; views: string[] }>; games: { items: Array<{ slug: string; platform: string }> }; platformColors: Record<string, string> };
-const catalog = JSON.parse(readFileSync(path.join(PROJECT_ROOT, "scripts/art/catalog.json"), "utf8")) as ArtCatalog;
-/** Every name `media.art_key` may hold: "switch-2", "switch-2@front", "game-mario-kart-world"… */
-const artNames = new Set<string>([
-  ...catalog.items.flatMap((item) => item.views.map((view) => (view === "hero" ? item.key : `${item.key}@${view}`))),
-  ...catalog.games.items.map((game) => `game-${game.slug}`),
-]);
+const catalog = loadDemoCatalog();
+const data = buildDemoData(catalog);
+const bySlug = new Map(catalog.products.map((product) => [product.slug, product]));
+const deviceOf = deviceModelsOfProducts(catalog.products);
+const catalogVariants = catalog.products.flatMap((product) => product.variants.map((variant, index) => ({ product, variant, index })));
+const productKindOf = (product: CatalogProduct) => (product.kind === "handheld_pc" ? "console" : product.kind === "vr" ? "accessory" : product.kind);
+const platformOf = (product: CatalogProduct) => (product.platform === "pc_handheld" ? "handheld" : product.platform === "multi" ? null : product.platform);
 
 // ───────────────────────────────────────────────────────────────── helpers
 
@@ -66,9 +71,9 @@ type L10nValue = { ar?: string; en?: string; ckb?: string };
 beforeAll(async () => {
   t = await createTestDb();
   before = await countAll(t.d1);
-  first = await seedDemo(t.db, t.now);
+  first = await seedDemo(t.db, t.now, { catalog });
   afterFirst = await countAll(t.d1);
-  second = await seedDemo(t.db, t.now + 60_000);
+  second = await seedDemo(t.db, t.now + 60_000, { catalog });
   afterSecond = await countAll(t.d1);
 });
 
@@ -79,82 +84,140 @@ afterAll(async () => {
 // ───────────────────────────────────────────────────────────────── definitions (no database)
 
 describe("demo seed definitions", () => {
-  it("are consistent with each other", () => {
-    expect(() => assertDemoDataConsistent()).not.toThrow();
+  it("import the whole researched catalogue as it is", () => {
+    expect(catalog.products.length).toBe(105);
+    expect(catalogImportProblems(catalog)).toEqual([]);
+    expect(() => assertDemoDataConsistent(catalog, data)).not.toThrow();
+    // Every product, plus the one store set; the set is the only product that is not researched.
+    expect(data.products.map((product) => product.slug).sort()).toEqual([...catalog.products.map((product) => product.slug), ...DEMO_STORE_SETS.map((set) => set.slug)].sort());
+    expect(data.products.filter((product) => product.source === null).map((product) => product.slug)).toEqual(DEMO_STORE_SETS.map((set) => set.slug));
   });
 
-  it("hold about 50 products of every kind the brief lists", () => {
-    const byKind: Record<string, number> = {};
-    for (const product of DEMO_PRODUCTS) byKind[product.kind] = (byKind[product.kind] ?? 0) + 1;
-    expect(DEMO_PRODUCTS.length).toBe(51);
-    expect(byKind).toEqual({
-      console: 11,
-      controller: 6,
-      headset: 2,
-      storage: 4,
-      accessory: 6,
-      game: 16,
-      digital: 3,
-      part: 3,
-    });
-    expect(DEMO_VARIANTS.length).toBeGreaterThanOrEqual(70);
+  it("read the catalogue in Node only: no module under app/ imports catalog/**", () => {
+    const files: string[] = [];
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const full = path.join(dir, name);
+        if (statSync(full).isDirectory()) walk(full);
+        else if (/\.(ts|tsx|js|mjs)$/.test(name)) files.push(full);
+      }
+    };
+    walk(path.join(PROJECT_ROOT, "app"));
+    const offenders = files.filter((file) => /(from\s+|import\(|glob[^(]*\()\s*["'`][^"'`]*catalog\/products/.test(readFileSync(file, "utf8")));
+    expect(offenders).toEqual([]);
   });
 
-  it("cover the eleven device models and the ten categories of the task", () => {
-    expect(DEMO_PLATFORMS.map((platform) => platform.slug)).toEqual(["nintendo", "playstation", "xbox", "handheld"]);
-    expect(DEMO_DEVICE_MODELS.map((model) => model.slug)).toEqual([
-      "switch-2", "switch-oled", "switch-lite", "ps5-slim", "ps5-pro", "ps-portal", "xbox-series-x", "xbox-series-s", "steam-deck-oled", "rog-ally-x", "legion-go",
-    ]);
-    expect(DEMO_CATEGORIES.filter((category) => !category.parent).map((category) => category.slug)).toEqual([
-      "consoles", "handheld-pcs", "games", "controllers", "headsets", "storage", "accessories", "digital-cards", "parts", "used-devices",
-    ]);
-    // Every console product is one of the device models, and every device model is sold.
-    const sold = new Set(DEMO_PRODUCTS.filter((product) => product.kind === "console").map((product) => product.deviceModel));
-    expect([...sold].sort()).toEqual(DEMO_DEVICE_MODELS.map((model) => model.slug).sort());
+  it("map the research kinds onto the store's", () => {
+    for (const product of data.products) {
+      if (!product.source) continue;
+      expect(product.kind, product.slug).toBe(productKindOf(product.source));
+    }
+    const handhelds = data.products.filter((product) => product.source?.kind === "handheld_pc");
+    expect(handhelds.length).toBe(12);
+    for (const product of handhelds) {
+      expect(product.category, product.slug).toBe("handheld-pcs");
+      expect(DEMO_DEVICE_MODELS.find((model) => model.slug === product.deviceModel)?.deviceKind, product.slug).toBe("handheld_pc");
+    }
+    const vr = data.products.find((product) => product.slug === "playstation-vr2")!;
+    expect([vr.kind, vr.category, vr.deviceModel]).toEqual(["accessory", "vr", "ps-vr2"]);
+    for (const product of data.products.filter((entry) => entry.kind === "digital")) {
+      expect([product.licenseType, product.mediaFormat], product.slug).toEqual([product.category === "subscriptions" ? "subscription" : "wallet_topup", "digital"]);
+    }
+    expect(data.products.filter((product) => product.category === "subscriptions").map((product) => product.slug).sort()).toEqual(["playstation-plus", "xbox-game-pass"]);
   });
 
-  it("take platform accents from the art catalogue", () => {
-    for (const platform of DEMO_PLATFORMS) {
-      expect(Object.keys(catalog.platformColors), platform.slug).toContain(platform.accent);
-      expect(platform.accent).toBe(platform.slug);
+  it("price every variant the same way on every run, in whole IQD rounded to 250", () => {
+    const again = buildDemoData(loadDemoCatalog());
+    for (const [sku, { variant }] of data.variantsBySku) {
+      expect(variant.priceIqd % 250, sku).toBe(0);
+      expect(variant.priceIqd, sku).toBeGreaterThan(0);
+      expect(again.variantsBySku.get(sku)?.variant.priceIqd, sku).toBe(variant.priceIqd);
+      if (variant.compareAtIqd !== null) expect(variant.compareAtIqd, sku).toBeGreaterThan(variant.priceIqd);
+    }
+    expect(unitHash("PS5-SLIM-DISC-1TB")).toBe(unitHash("PS5-SLIM-DISC-1TB"));
+  });
+
+  it("keep demo prices plausible: bands per kind, more capacity never cheaper, gift cards at face value", () => {
+    const band: Record<string, [number, number]> = {
+      console: [250_000, 1_400_000],
+      handheld_pc: [400_000, 2_300_000],
+      game: [40_000, 150_000],
+      controller: [40_000, 350_000],
+      headset: [40_000, 350_000],
+      storage: [60_000, 900_000],
+      accessory: [25_000, 600_000],
+      vr: [400_000, 600_000],
+    };
+    for (const { product, variant } of catalogVariants) {
+      if (product.kind === "digital") continue;
+      const price = data.variantsBySku.get(variant.sku)!.variant.priceIqd;
+      const [min, max] = band[product.kind];
+      expect(price, `${variant.sku} (${product.kind})`).toBeGreaterThanOrEqual(min);
+      expect(price, `${variant.sku} (${product.kind})`).toBeLessThanOrEqual(max);
+    }
+    // Within a product, a bigger capacity of the same chip and edition costs more.
+    for (const product of catalog.products) {
+      const sized = product.variants.filter((variant) => capacityGb(variant) !== null);
+      for (const a of sized) {
+        for (const b of sized) {
+          const same = a.options?.chip === b.options?.chip && a.options?.edition === b.options?.edition;
+          if (same && capacityGb(a)! < capacityGb(b)!) expect(data.variantsBySku.get(a.sku)!.variant.priceIqd, `${a.sku} < ${b.sku}`).toBeLessThan(data.variantsBySku.get(b.sku)!.variant.priceIqd);
+        }
+      }
+    }
+    // Gift cards: face value at the demo dollar rate.
+    for (const sku of ["PSN-US-10", "XBOX-GC-US-50", "ESHOP-US-100", "STEAM-USD-20"]) {
+      const face = Number(/\d+/.exec(sku.split("-").at(-1)!)![0]);
+      expect(data.variantsBySku.get(sku)!.variant.priceIqd, sku).toBe(Math.round((face * DEMO_FX_RATE.iqdPerUnit) / 250) * 250);
     }
   });
 
-  it("use every picture of the art catalogue, and only pictures that exist in it", () => {
-    const used = new Set<string>();
-    for (const product of DEMO_PRODUCTS) for (const name of [...product.art, ...product.variants.flatMap((variant) => variant.art ?? [])]) used.add(name);
-    for (const model of DEMO_DEVICE_MODELS) used.add(model.artKey);
-    for (const name of used) expect(artNames, name).toContain(name);
-    for (const category of DEMO_CATEGORIES) expect(artNames, category.slug).toContain(category.artKey);
-    for (const platform of DEMO_PLATFORMS) expect(artNames, platform.slug).toContain(platform.artKey);
-    // "Cover the controllers, headsets, storage and accessories in the catalogue" — and everything else in it.
-    const unused = catalog.items.map((item) => item.key).filter((key) => !used.has(key));
-    expect(unused).toEqual([]);
-    // The 16 physical games are exactly the catalogue's games, on the catalogue's platforms.
-    const games = DEMO_PRODUCTS.filter((product) => product.kind === "game");
-    expect(games.map((game) => game.slug).sort()).toEqual(catalog.games.items.map((game) => game.slug).sort());
-    for (const game of games) expect(game.platform, game.slug).toBe(catalog.games.items.find((entry) => entry.slug === game.slug)?.platform);
-  });
-
-  it("price everything in whole IQD rounded to 250, with reduced prices only where a deal is shown", () => {
-    for (const { variant } of DEMO_VARIANTS) {
-      expect(variant.priceIqd % 250, variant.sku).toBe(0);
-      expect(variant.priceIqd, variant.sku).toBeGreaterThan(0);
-      if (variant.compareAtIqd !== undefined) expect(variant.compareAtIqd, variant.sku).toBeGreaterThan(variant.priceIqd);
-    }
-    const deals = DEMO_VARIANTS.filter(({ variant }) => variant.compareAtIqd !== undefined);
+  it("show a handful of genuine-looking deals on in-stock default variants", () => {
+    const deals = [...data.variantsBySku.values()].filter(({ variant }) => variant.compareAtIqd !== null);
     expect(deals.length).toBeGreaterThanOrEqual(3);
     expect(deals.length).toBeLessThanOrEqual(8);
+    for (const { product, variant } of deals) {
+      expect(variant.isDefault, variant.sku).toBe(true);
+      const saving = (variant.compareAtIqd! - variant.priceIqd) / variant.compareAtIqd!;
+      expect(saving, variant.sku).toBeGreaterThan(0.05);
+      expect(saving, variant.sku).toBeLessThan(0.2);
+      expect(demoStock(product.source!, variant.source!, t.now).onHand, variant.sku).toBeGreaterThan(0);
+      // A "was" price needs a time it was charged: no deal on something that only just came out
+      // (the XBOX Nano Controller, out 4 November 2026, once showed a previous price a week later).
+      expect(product.source!.status, variant.sku).toBe("available");
+      if (product.source!.releaseDate) {
+        const daysOnSale = (Date.parse(`${PRICE_REFERENCE_DATE}T00:00:00Z`) - Date.parse(`${product.source!.releaseDate}T00:00:00Z`)) / 86_400_000;
+        expect(daysOnSale, variant.sku).toBeGreaterThanOrEqual(DEAL_MIN_DAYS_ON_SALE);
+      }
+    }
+    expect(deals.map(({ variant }) => variant.sku)).not.toContain("XNANO-STD");
   });
 
-  it("derive placeholder costs that respect the minimum margin, also for reduced prices", () => {
-    for (const { product, variant } of DEMO_VARIANTS) {
-      if (variant.cost === false || variant.bundle) continue;
-      const cost = placeholderCost(product.kind, variant.priceIqd, variant.compareAtIqd);
-      const marginBps = Math.floor(((variant.priceIqd - cost.landedCostIqd) * 10_000) / variant.priceIqd);
-      expect(cost.landedCostIqd % 250, variant.sku).toBe(0);
-      expect(cost.unitCostMinor, variant.sku).toBeGreaterThan(0);
-      expect(marginBps, variant.sku).toBeGreaterThanOrEqual(cost.minMarginBps);
+  it("derive costs of 70–85 % of the price (digital codes 92–96 %), above the minimum margin", () => {
+    for (const [sku, { product, variant }] of data.variantsBySku) {
+      if (!variant.cost) {
+        expect(variant.bundle, `${sku} has no cost`).not.toBeNull();
+        continue;
+      }
+      const ratio = variant.cost.landedCostIqd / variant.priceIqd;
+      // Exactly inside the band — rounding to 250 IQD must not step out of it (it once gave 69.9 % and 96.2 %).
+      const [low, high] = product.kind === "digital" ? [0.92, 0.96] : [0.7, 0.85];
+      expect(COST_SHARE[product.kind === "digital" ? "digital" : "physical"]).toEqual([low, high]);
+      expect(ratio, sku).toBeGreaterThanOrEqual(low);
+      expect(ratio, sku).toBeLessThanOrEqual(high);
+      expect(variant.cost.landedCostIqd % 250, sku).toBe(0);
+      expect(variant.cost.unitCostMinor, sku).toBeGreaterThan(0);
+      expect(Math.floor(((variant.priceIqd - variant.cost.landedCostIqd) * 10_000) / variant.priceIqd), sku).toBeGreaterThanOrEqual(variant.cost.minMarginBps);
+    }
+    // Every price a hash can draw stays inside the band, at the step edges too.
+    for (const [kind, low, high] of [["controller", 0.7, 0.85], ["digital", 0.92, 0.96]] as const) {
+      for (let price = 6_500; price <= 2_000_000; price = Math.round(price * 1.37 / 250) * 250) {
+        for (const sku of ["A", "B", "XWC-PUR", "ESHOP-US-10", "NBA2K27-PS5-STD", "Z"]) {
+          const share = demoCost(kind, sku, price).landedCostIqd / price;
+          expect(share, `${kind} ${sku} ${price}`).toBeGreaterThanOrEqual(low);
+          expect(share, `${kind} ${sku} ${price}`).toBeLessThanOrEqual(high);
+        }
+      }
     }
   });
 
@@ -176,8 +239,10 @@ describe("demo seed definitions", () => {
       }
       for (const [key, entry] of Object.entries(record)) visit(entry, `${trail}.${key}`);
     };
-    visit({ DEMO_PLATFORMS, DEMO_GENERATIONS, DEMO_DEVICE_MODELS, DEMO_CATEGORIES, DEMO_PRODUCTS, DEMO_COMPATIBILITY, DEMO_USED_UNITS, DEMO_ARTICLES, DEMO_TREES }, "seed");
+    const keywords = data.products.map((product) => product.searchKeywords);
+    visit({ DEMO_PLATFORMS, DEMO_GENERATIONS, DEMO_DEVICE_MODELS, DEMO_CATEGORIES, DEMO_STORE_SETS, DEMO_USED_UNITS, DEMO_ARTICLES, DEMO_TREES, keywords, catalogue: catalog.products }, "seed");
     expect(problems).toEqual([]);
+    for (const slug of NICKNAMED_PRODUCTS) expect(bySlug.has(slug), `nickname for unknown product ${slug}`).toBe(true);
   });
 });
 
@@ -203,21 +268,30 @@ describe("seedDemo", () => {
   });
 
   it("reports counts per table", () => {
+    const variants = data.variantsBySku.size;
+    const media =
+      data.products.reduce((sum, product) => sum + product.images.length + product.variants.reduce((inner, variant) => inner + variant.images.length, 0), 0) +
+      data.deviceModels.reduce((sum, model) => sum + model.images.length, 0) +
+      demoUsedUnits(data).reduce((sum, unit) => sum + unit.images.length, 0);
     expect(first.rows).toMatchObject({
-      platforms: 4,
-      device_generations: 7,
-      device_models: 11,
-      categories: 16,
-      products: 51,
-      variants: DEMO_VARIANTS.length,
-      bundle_items: 2,
-      stock_levels: DEMO_VARIANTS.length,
+      platforms: DEMO_PLATFORMS.length,
+      device_generations: DEMO_GENERATIONS.length,
+      device_models: DEMO_DEVICE_MODELS.length,
+      categories: DEMO_CATEGORIES.length,
+      products: catalog.products.length + DEMO_STORE_SETS.length,
+      variants,
+      variant_costs: variants - DEMO_STORE_SETS.length,
+      bundle_items: DEMO_STORE_SETS.reduce((sum, set) => sum + set.components.length, 0),
+      media,
+      stock_levels: variants,
+      compatibility_rules: catalog.products.reduce((sum, product) => sum + (product.compatibility?.length ?? 0), 0),
+      product_relations: catalog.products.reduce((sum, product) => sum + product.related.length, 0),
       search_synonyms: DEMO_SYNONYM_GROUPS.length * 3,
-      search_index: 51 * 3,
+      search_index: (catalog.products.length + DEMO_STORE_SETS.length) * 3,
       used_units: 6,
-      trade_in_price_guides: 11,
+      trade_in_price_guides: demoTradeInGuides(data).length,
       fx_rates: 1,
-      coupons: 2,
+      coupons: DEMO_COUPONS.length,
       knowledge_articles: 8,
       troubleshooting_trees: 2,
     });
@@ -249,8 +323,11 @@ describe("seedDemo", () => {
 
   it("restores descriptive content with overwrite, and never prices, stock or a unit's status", async () => {
     const productId = demoId.product("nintendo-switch-2");
-    const variantId = demoId.variant("NSW2-CON-256");
+    const variantId = demoId.variant("NS2-STD");
     const unitId = demoId.usedUnit("used-ps5-slim-disc-01");
+    const price = await scalar("SELECT price_iqd FROM variants WHERE id = ?", variantId);
+    const onHand = await scalar("SELECT on_hand FROM stock_levels WHERE variant_id = ?", variantId);
+    const unit = (await rows<{ status: string; price_iqd: number }>("SELECT status, price_iqd FROM used_units WHERE id = ?", unitId))[0];
     await t.d1.batch([
       t.d1.prepare(`UPDATE products SET name = '{"ar":"اسم معدّل"}', status = 'archived' WHERE id = ?`).bind(productId),
       t.d1.prepare("UPDATE variants SET price_iqd = 700000 WHERE id = ?").bind(variantId),
@@ -262,7 +339,7 @@ describe("seedDemo", () => {
     ]);
 
     // Without overwrite nothing that exists is touched; only the missing index row comes back.
-    const plain = await seedDemo(t.db, t.now + 120_000);
+    const plain = await seedDemo(t.db, t.now + 120_000, { catalog });
     expect(Object.entries(plain.changed).filter(([, changed]) => changed > 0)).toEqual([["search_index", 1]]);
     expect(await rows("SELECT name, status FROM products WHERE id = ?", productId)).toEqual([{ name: '{"ar":"اسم معدّل"}', status: "archived" }]);
     expect(await rows("SELECT locale, name FROM search_index WHERE product_id = ? ORDER BY locale", productId)).toEqual([
@@ -271,13 +348,12 @@ describe("seedDemo", () => {
       { locale: "en", name: "nintendo switch 2" },
     ]);
 
-    const restored = await seedDemo(t.db, t.now + 180_000, { overwrite: true });
+    const restored = await seedDemo(t.db, t.now + 180_000, { overwrite: true, catalog });
     expect(restored.overwrite).toBe(true);
     expect(await countAll(t.d1)).toEqual(afterFirst);
     const product = (await rows<{ name: string; status: string; created_at: number }>("SELECT name, status, created_at FROM products WHERE id = ?", productId))[0];
     expect(parse<L10nValue>(product.name)).toEqual({ ar: "Nintendo Switch 2", en: "Nintendo Switch 2", ckb: "Nintendo Switch 2" });
     expect(product.status).toBe("published");
-    expect(product.created_at).toBe(t.now);
     expect(await rows("SELECT name FROM search_index WHERE product_id = ? AND locale = 'ar'", productId)).toEqual([{ name: "nintendo switch 2" }]);
     // Money, stock and state are not the seed's to reset.
     expect(await scalar("SELECT price_iqd FROM variants WHERE id = ?", variantId)).toBe(700_000);
@@ -287,58 +363,177 @@ describe("seedDemo", () => {
 
     // Put the fixture back for the tests below.
     await t.d1.batch([
-      t.d1.prepare("UPDATE variants SET price_iqd = 675000 WHERE id = ?").bind(variantId),
-      t.d1.prepare("UPDATE stock_levels SET on_hand = 4 WHERE variant_id = ?").bind(variantId),
-      t.d1.prepare("UPDATE used_units SET status = 'listed', price_iqd = 560000 WHERE id = ?").bind(unitId),
-      t.d1.prepare("UPDATE fx_rates SET iqd_per_unit = 1310").bind(),
+      t.d1.prepare("UPDATE variants SET price_iqd = ? WHERE id = ?").bind(price, variantId),
+      t.d1.prepare("UPDATE stock_levels SET on_hand = ? WHERE variant_id = ?").bind(onHand, variantId),
+      t.d1.prepare("UPDATE used_units SET status = ?, price_iqd = ? WHERE id = ?").bind(unit.status, unit.price_iqd, unitId),
+      t.d1.prepare("UPDATE fx_rates SET iqd_per_unit = ?").bind(DEMO_FX_RATE.iqdPerUnit),
     ]);
   });
 });
 
-// ───────────────────────────────────────────────────────────────── catalogue
+// ───────────────────────────────────────────────────────────────── the imported catalogue
 
-describe("seeded catalogue", () => {
-  it("gives every product a default variant, a price, a picture from the art catalogue and a name in three languages", async () => {
-    const products = await rows<{ id: string; slug: string; name: string; short: string; description: string; status: string; category_id: string | null }>(
-      "SELECT id, slug, name, short, description, status, category_id FROM products",
+describe("imported catalogue", () => {
+  type ProductRow = {
+    id: string; slug: string; kind: string; name: string; short: string; description: string; brand: string | null; platform: string | null; device: string | null; category: string;
+    specs: string | null; attributes: string; age_rating: string | null; region: string | null; license_type: string | null; media_format: string | null; warranty_months: number | null;
+    status: string; is_demo: number; preorder_release_at: number | null;
+  };
+  let products: Map<string, ProductRow>;
+  beforeAll(async () => {
+    const list = await rows<ProductRow>(
+      "SELECT p.*, pl.slug AS platform, dm.slug AS device, c.slug AS category FROM products p LEFT JOIN platforms pl ON pl.id = p.platform_id LEFT JOIN device_models dm ON dm.id = p.device_model_id JOIN categories c ON c.id = p.category_id",
     );
-    expect(products.length).toBe(51);
-    for (const product of products) {
-      const variants = await rows<{ sku: string; price_iqd: number; is_default: number; compare_at_iqd: number | null }>("SELECT sku, price_iqd, is_default, compare_at_iqd FROM variants WHERE product_id = ? ORDER BY sort", product.id);
-      expect(variants.length, product.slug).toBeGreaterThan(0);
-      expect(variants.filter((variant) => variant.is_default === 1).length, `${product.slug} default variant`).toBe(1);
-      expect(variants[0].is_default, `${product.slug}: the first variant is the default`).toBe(1);
-      for (const variant of variants) {
-        expect(variant.price_iqd, variant.sku).toBeGreaterThan(0);
-        expect(variant.price_iqd % 250, variant.sku).toBe(0);
-      }
-      const pictures = await rows<{ art_key: string | null; is_illustration: number; kind: string; file_id: string | null }>(
-        "SELECT art_key, is_illustration, kind, file_id FROM media WHERE owner_type = 'product' AND owner_id = ? ORDER BY sort",
-        product.id,
-      );
-      expect(pictures.length, `${product.slug} pictures`).toBeGreaterThan(0);
-      expect(pictures.some((picture) => picture.art_key !== null && artNames.has(picture.art_key)), `${product.slug} art`).toBe(true);
-      for (const text of [product.name, product.short, product.description]) {
-        const value = parse<L10nValue>(text);
-        for (const locale of ["ar", "en", "ckb"] as const) expect(value[locale]?.trim(), `${product.slug} ${locale}`).toBeTruthy();
-      }
-      expect(product.status).toBe("published");
-      expect(product.category_id, product.slug).not.toBeNull();
+    products = new Map(list.map((row) => [row.slug, row]));
+  });
+
+  it("publishes every catalogue product with its researched texts, brand, platform, device and kind", () => {
+    expect(products.size).toBe(catalog.products.length + DEMO_STORE_SETS.length);
+    for (const product of catalog.products) {
+      const row = products.get(product.slug)!;
+      expect(row, product.slug).toBeDefined();
+      expect([parse(row.name), parse(row.short), parse(row.description)], product.slug).toEqual([product.name, product.short, product.description]);
+      expect([row.kind, row.brand, row.platform, row.device, row.status, row.is_demo], product.slug).toEqual([productKindOf(product), product.brand, platformOf(product), deviceOf.get(product.slug) ?? null, "published", 1]);
+      expect(row.media_format, product.slug).toBe(product.kind === "game" ? "physical" : product.kind === "digital" ? "digital" : null);
     }
   });
 
-  it("flags every picture as an illustration from the art catalogue", async () => {
-    const pictures = await rows<{ id: string; owner_type: string; art_key: string | null; is_illustration: number; kind: string; file_id: string | null; alt: string }>("SELECT * FROM media");
-    expect(pictures.length).toBe(first.rows.media);
-    for (const picture of pictures) {
-      expect(picture.art_key && artNames.has(picture.art_key), `${picture.id}: ${picture.art_key}`).toBe(true);
-      expect([picture.is_illustration, picture.kind, picture.file_id], picture.id).toEqual([1, "render", null]);
+  it("stores the spec sheet with labels, and the rest of the research in attributes", () => {
+    for (const product of catalog.products) {
+      const row = products.get(product.slug)!;
+      const specs = parse<Record<string, L10nValue & { label: L10nValue }>>(row.specs);
+      expect(Object.keys(specs), product.slug).toEqual(product.specs.map((spec) => spec.key));
+      for (const spec of product.specs) expect(specs[spec.key], `${product.slug}.${spec.key}`).toEqual({ ...spec.value, label: spec.label });
+      const attributes = parse<{ catalogue: { status: string; releaseDate: string | null; kind: string }; highlights: unknown; inTheBox: unknown; notes: unknown; game: unknown; sources: unknown; unverified: unknown }>(row.attributes);
+      expect(attributes.catalogue.status, product.slug).toBe(product.status);
+      expect(attributes.catalogue.kind, product.slug).toBe(product.kind);
+      expect(attributes.catalogue.releaseDate, product.slug).toBe(product.releaseDate ?? null);
+      expect(attributes.highlights, product.slug).toEqual(product.highlights);
+      expect(attributes.inTheBox, product.slug).toEqual(product.inTheBox ?? []);
+      expect(attributes.notes, product.slug).toEqual(product.notes ?? null);
+      expect(attributes.game, product.slug).toEqual(product.game ?? null);
+      expect(attributes.sources, product.slug).toEqual(product.sources);
+      expect(attributes.unverified, product.slug).toEqual(product.verification.unverified ?? []);
+    }
+  });
+
+  it("rates games PEGI first, and records the region where all variants share one", () => {
+    for (const product of catalog.products) {
+      const row = products.get(product.slug)!;
+      const rating = product.game?.ageRating;
+      expect(row.age_rating, product.slug).toBe(rating?.pegi !== undefined ? `PEGI ${rating.pegi}` : rating?.esrb ? `ESRB ${rating.esrb}` : null);
+    }
+    expect(products.get("xbox-gift-card")!.region).toBe("US");
+    expect(products.get("playstation-store-gift-card")!.region).toBeNull();
+  });
+
+  it("never turns a maker's warranty into a store warranty: warranty_months stays empty, the maker's terms stay a spec", () => {
+    // warranty_months is what the cart copies into an order and what delivery turns into a `warranties`
+    // record the store must honour; "5-year limited warranty or the TBW limit" is Samsung's or WD's, not ours.
+    for (const product of catalog.products) expect(products.get(product.slug)!.warranty_months, product.slug).toBeNull();
+    const withWarrantySpec = catalog.products.filter((product) => product.specs.some((spec) => spec.key === "warranty"));
+    expect(withWarrantySpec.length).toBeGreaterThan(5);
+    for (const product of withWarrantySpec) {
+      const spec = product.specs.find((entry) => entry.key === "warranty")!;
+      expect(parse<Record<string, unknown>>(products.get(product.slug)!.specs).warranty, product.slug).toEqual({ ...spec.value, label: spec.label });
+    }
+  });
+
+  it("sells products that are not out yet as pre-orders, never from stock; discontinued ones stay published and say so", async () => {
+    const levels = new Map((await rows<{ sku: string; on_hand: number }>("SELECT v.sku, s.on_hand FROM stock_levels s JOIN variants v ON v.id = s.variant_id")).map((row) => [row.sku, row.on_hand]));
+    const ahead = catalog.products.filter((product) => isPreorderAt(product, t.now));
+    expect(ahead.map((product) => product.slug)).toEqual(expect.arrayContaining(["grand-theft-auto-vi"]));
+    for (const product of catalog.products) {
+      const row = products.get(product.slug)!;
+      if (ahead.includes(product)) {
+        expect(row.preorder_release_at, product.slug).toBe(Date.parse(`${product.releaseDate}T00:00:00+03:00`));
+        for (const variant of product.variants) expect(levels.get(variant.sku), variant.sku).toBe(0);
+      } else {
+        expect(row.preorder_release_at, product.slug).toBeNull();
+      }
+      if (product.status === "discontinued") {
+        expect(row.status, product.slug).toBe("published");
+        expect(parse<{ catalogue: { status: string } }>(row.attributes).catalogue.status).toBe("discontinued");
+        for (const variant of product.variants) expect(levels.get(variant.sku), variant.sku).toBeLessThanOrEqual(2);
+      }
+    }
+  });
+
+  it("never stocks a variant that comes out after its product (a new colour, a later platform version)", async () => {
+    const levels = new Map((await rows<{ sku: string; on_hand: number }>("SELECT v.sku, s.on_hand FROM stock_levels s JOIN variants v ON v.id = s.variant_id")).map((row) => [row.sku, row.on_hand]));
+    const later = catalogVariants.filter(({ variant }) => variant.releaseDate !== undefined);
+    // The DualSense Prism colours (out 4 February 2027) and Forza Horizon 6 on PS5 (26 January 2027).
+    expect(later.map(({ variant }) => variant.sku).sort()).toEqual(expect.arrayContaining(["DSENSE-PRISM-EMERALD-GREEN", "DSENSE-PRISM-FLARE-ORANGE", "DSENSE-PRISM-GRAPHITE-GRAY", "FH6-PS5-STD"]));
+    for (const { product, variant } of later) {
+      expect(variant.isDefault, variant.sku).toBe(false);
+      expect(variant.releaseDate! > (product.releaseDate ?? ""), variant.sku).toBe(true);
+      if (Date.parse(`${variant.releaseDate}T00:00:00+03:00`) > t.now) expect(levels.get(variant.sku), variant.sku).toBe(0);
+      expect(parse<{ variantReleaseDates: Record<string, string> }>(products.get(product.slug)!.attributes).variantReleaseDates[variant.sku], variant.sku).toBe(variant.releaseDate);
+    }
+    // A variant whose notes or title announce a pre-order carries a release date (the stock rule reads only the date).
+    for (const { variant } of catalogVariants) {
+      if (/pre-?order/i.test(`${variant.title.en} ${variant.notes?.en ?? ""}`) && !/pre-order bonus/i.test(variant.notes?.en ?? "")) {
+        const product = catalogVariants.find((entry) => entry.variant === variant)!.product;
+        expect(variant.releaseDate ?? (isPreorderAt(product, t.now) ? product.releaseDate : undefined), `${variant.sku} says pre-order`).toBeDefined();
+      }
+    }
+  });
+
+  it("refuses a variant release date it cannot use", () => {
+    const base = bySlug.get("dualsense")!;
+    const withVariant = (patch: Partial<CatalogProduct["variants"][number]>, index: number) => ({
+      ...catalog,
+      products: catalog.products.map((product) => (product === base ? { ...product, variants: product.variants.map((variant, at) => (at === index ? { ...variant, ...patch } : variant)) } : product)),
+    });
+    const defaultIndex = base.variants.findIndex((variant) => variant.isDefault);
+    const otherIndex = base.variants.findIndex((variant) => !variant.isDefault);
+    expect(catalogImportProblems(withVariant({ releaseDate: "4 Feb 2027" }, otherIndex)).join("\n")).toMatch(/releaseDate must be YYYY-MM-DD/);
+    expect(catalogImportProblems(withVariant({ releaseDate: "2019-01-01" }, otherIndex)).join("\n")).toMatch(/not after the product's/);
+    expect(catalogImportProblems(withVariant({ releaseDate: "2027-02-04" }, defaultIndex)).join("\n")).toMatch(/default variant .* cannot come out after its product/);
+  });
+
+  it("writes every variant as researched: SKU, title, options with the model number, first barcode, default flag, order", async () => {
+    const variants = new Map(
+      (await rows<{ sku: string; product: string; title: string; options: string | null; barcode: string | null; is_default: number; sort: number; track_serials: number; is_active: number }>(
+        "SELECT v.*, p.slug AS product FROM variants v JOIN products p ON p.id = v.product_id",
+      )).map((row) => [row.sku, row]),
+    );
+    expect(variants.size).toBe(data.variantsBySku.size);
+    for (const { product, variant, index } of catalogVariants) {
+      const row = variants.get(variant.sku)!;
+      expect(row.product, variant.sku).toBe(product.slug);
+      expect(parse(row.title), variant.sku).toEqual(variant.title);
+      expect(row.options === null ? null : parse(row.options), variant.sku).toEqual({ ...(variant.options ?? {}), ...(variant.modelNumber ? { model: variant.modelNumber } : {}) });
+      expect(row.barcode, variant.sku).toBe(variant.barcodes?.[0] ?? null);
+      expect([row.is_default, row.sort, row.is_active], variant.sku).toEqual([variant.isDefault ? 1 : 0, index, 1]);
+      expect(row.track_serials, variant.sku).toBe(productKindOf(product) === "console" ? 1 : 0);
+    }
+  });
+
+  it("shows the official photos: one row per catalogue image, illustrations only for used units, every key built", async () => {
+    const media = await rows<{ id: string; owner_type: string; owner_id: string; art_key: string | null; kind: string; file_id: string | null; is_illustration: number; alt: string; sort: number }>("SELECT * FROM media ORDER BY owner_type, owner_id, sort");
+    expect(media.length).toBe(first.rows.media);
+    for (const picture of media) {
+      expect(picture.art_key && catalog.photoKeys.has(picture.art_key), `${picture.id}: ${picture.art_key}`).toBe(true);
+      expect([picture.kind, picture.file_id, picture.is_illustration], picture.id).toEqual(["image", null, picture.owner_type === "used_unit" ? 1 : 0]);
       const alt = parse<L10nValue>(picture.alt);
       expect(alt.ar && alt.en && alt.ckb, picture.id).toBeTruthy();
     }
-    expect(new Set(pictures.map((picture) => picture.owner_type))).toEqual(new Set(["product", "variant", "device_model", "used_unit"]));
+    expect(new Set(media.map((picture) => picture.owner_type))).toEqual(new Set(["product", "variant", "device_model", "used_unit"]));
+    for (const product of catalog.products) {
+      const own = media.filter((picture) => picture.owner_type === "product" && picture.owner_id === demoId.product(product.slug));
+      expect(own.map((picture) => [picture.art_key, parse(picture.alt), picture.sort]), product.slug).toEqual(product.images.map((image, index) => [image.key, image.alt, index]));
+      for (const variant of product.variants) {
+        const keys = media.filter((picture) => picture.owner_type === "variant" && picture.owner_id === demoId.variant(variant.sku)).map((picture) => picture.art_key);
+        const wholeGallery = (variant.images ?? []).join("|") === product.images.map((image) => image.key).join("|");
+        expect(keys, variant.sku).toEqual(wholeGallery ? [] : (variant.images ?? []));
+      }
+    }
     for (const table of ["platforms", "device_models", "categories"]) {
-      for (const row of await rows<{ art_key: string | null }>(`SELECT art_key FROM ${table}`)) expect(row.art_key && artNames.has(row.art_key), `${table}: ${row.art_key}`).toBe(true);
+      for (const row of await rows<{ slug: string; art_key: string | null }>(`SELECT slug, art_key FROM ${table}`)) {
+        if (row.art_key !== null) expect(catalog.photoKeys.has(row.art_key), `${table}: ${row.art_key}`).toBe(true);
+        else expect(["pc", "windows-pc", "parts"], `${table} ${row.slug} has no picture`).toContain(row.slug);
+      }
     }
   });
 
@@ -357,54 +552,61 @@ describe("seeded catalogue", () => {
     expect(await scalar("SELECT count(*) FROM products WHERE name IS NULL OR short IS NULL OR description IS NULL OR search_keywords IS NULL")).toBe(0);
   });
 
-  it("builds the device graph with published models and their specifications", async () => {
-    const models = await rows<{ slug: string; status: string; specs: string; released_on: string; device_kind: string; platform: string; generation: string }>(
-      "SELECT m.slug, m.status, m.specs, m.released_on, m.device_kind, p.slug AS platform, g.slug AS generation FROM device_models m JOIN platforms p ON p.id = m.platform_id JOIN device_generations g ON g.id = m.generation_id ORDER BY m.sort",
+  it("builds the device graph: every device the catalogue names, on its platform and generation, with the researched specs", async () => {
+    const models = await rows<{ slug: string; status: string; specs: string | null; released_on: string | null; device_kind: string; platform: string; generation: string; platform_active: number }>(
+      "SELECT m.slug, m.status, m.specs, m.released_on, m.device_kind, p.slug AS platform, p.is_active AS platform_active, g.slug AS generation FROM device_models m JOIN platforms p ON p.id = m.platform_id JOIN device_generations g ON g.id = m.generation_id ORDER BY m.sort",
     );
     expect(models.map((model) => model.slug)).toEqual(DEMO_DEVICE_MODELS.map((model) => model.slug));
-    for (const model of models) {
-      expect(model.status).toBe("published");
-      expect(model.released_on).toMatch(/^\d{4}(-\d{2}-\d{2})?$/);
-      expect(Object.keys(parse<Record<string, unknown>>(model.specs)).length, model.slug).toBeGreaterThanOrEqual(6);
+    const known = new Set(models.map((model) => model.slug));
+    for (const product of catalog.products) {
+      const keys = [deviceOf.get(product.slug), ...(product.compatibility ?? []).map((entry) => entry.deviceModel), ...(product.game?.platforms ?? [])].filter((key): key is string => !!key);
+      for (const key of keys) expect(known.has(key), `${product.slug} names ${key}`).toBe(true);
     }
-    expect(models.filter((model) => model.device_kind === "handheld_pc").map((model) => model.slug)).toEqual(["steam-deck-oled", "rog-ally-x", "legion-go"]);
-    const specs = Object.fromEntries(models.map((model) => [model.slug, parse<Record<string, unknown>>(model.specs)]));
-    expect(specs["switch-2"]).toMatchObject({ display_in: 7.9, storage_gb: 256, battery_mah: 5220 });
-    expect(specs["ps5-pro"]).toMatchObject({ storage_gb: 2000, ram_gb: 16 });
-    expect(specs["steam-deck-oled"]).toMatchObject({ display_type: "OLED", battery_wh: 50, ram_gb: 16 });
-    // Console products carry their model's sheet plus what is in the box.
-    const consoleSpecs = parse<Record<string, unknown>>((await rows<{ specs: string }>("SELECT specs FROM products WHERE slug = 'xbox-series-x'"))[0].specs);
-    expect(consoleSpecs).toMatchObject({ storage_gb: 1000, disc_drive: "4K UHD Blu-ray" });
-    expect(consoleSpecs.in_box).toBeTruthy();
+    for (const model of models) {
+      expect(model.status, model.slug).toBe("published");
+      const seed = DEMO_DEVICE_MODELS.find((entry) => entry.slug === model.slug)!;
+      const product = seed.product ? bySlug.get(seed.product)! : null;
+      expect(model.released_on, model.slug).toBe(product?.releaseDate ?? null);
+      if (product) expect(Object.keys(parse<Record<string, unknown>>(model.specs)), model.slug).toEqual(product.specs.map((spec) => spec.key));
+      else expect(model.specs, model.slug).toBeNull();
+    }
+    // 12 handheld PC products, 11 devices: the ROG Xbox Ally X20 is an edition of the ROG Xbox Ally X.
+    expect(models.filter((model) => model.device_kind === "handheld_pc").length).toBe(11);
+    const pc = models.find((model) => model.slug === "windows-pc")!;
+    expect([pc.platform, pc.platform_active, pc.generation, pc.device_kind]).toEqual(["pc", 0, "windows-pc", "other"]);
+    // The two MSI Claw models share the catalogue's "msi-claw" line: each family is a model, the line their generation.
+    expect(models.filter((model) => model.generation === "msi-claw").map((model) => model.slug).sort()).toEqual(["msi-claw-8-ex-ai-plus", "msi-claw-a8"]);
+    const switch2 = parse<Record<string, L10nValue & { label: L10nValue }>>(models.find((model) => model.slug === "switch-2")!.specs);
+    expect(switch2.display.label.en).toBe("Display");
+    expect(switch2.display.en).toContain("7.9-inch");
   });
 
   it("links the category tree and files every product under a leaf", async () => {
-    expect(await scalar("SELECT count(*) FROM categories WHERE parent_id IS NULL")).toBe(10);
+    expect((await rows<{ slug: string }>("SELECT slug FROM categories WHERE parent_id IS NULL ORDER BY sort")).map((row) => row.slug)).toEqual([
+      "consoles", "handheld-pcs", "games", "controllers", "headsets", "storage", "accessories", "vr", "digital-cards", "parts", "used-devices",
+    ]);
     expect(await scalar("SELECT count(*) FROM categories c WHERE c.parent_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM categories p WHERE p.id = c.parent_id)")).toBe(0);
     // No product sits on a category that has children (it would be missing from the child pages).
     expect(await scalar("SELECT count(*) FROM products p WHERE EXISTS (SELECT 1 FROM categories c WHERE c.parent_id = p.category_id)")).toBe(0);
-    const perTop = await rows<{ slug: string; n: number }>(
-      "SELECT top.slug, count(p.id) AS n FROM categories top LEFT JOIN categories c ON c.id = top.id OR c.parent_id = top.id LEFT JOIN products p ON p.category_id = c.id WHERE top.parent_id IS NULL GROUP BY top.id ORDER BY top.sort",
-    );
-    expect(Object.fromEntries(perTop.map((row) => [row.slug, row.n]))).toEqual({
-      consoles: 8, "handheld-pcs": 3, games: 16, controllers: 6, headsets: 2, storage: 4, accessories: 6, "digital-cards": 3, parts: 3, "used-devices": 0,
-    });
+    const perCategory = Object.fromEntries((await rows<{ slug: string; n: number }>("SELECT c.slug, count(p.id) AS n FROM categories c LEFT JOIN products p ON p.category_id = c.id GROUP BY c.id")).map((row) => [row.slug, row.n]));
+    expect(perCategory).toMatchObject({ "handheld-pcs": 12, vr: 1, "gift-cards": 4, subscriptions: 2, "multiplatform-games": 11, "xbox-games": 0, parts: 0, "used-devices": 0 });
+    for (const product of catalog.products.filter((entry) => entry.kind === "game" && entry.platform === "multi")) expect(products.get(product.slug)!.category).toBe("multiplatform-games");
   });
 
-  it("sells the Switch 2 bundle as a variant made of the console and Mario Kart World", async () => {
-    const bundle = demoId.variant("NSW2-BUNDLE-MKW");
-    const components = await rows<{ sku: string; qty: number; price_iqd: number }>(
-      "SELECT v.sku, b.qty, v.price_iqd FROM bundle_items b JOIN variants v ON v.id = b.component_variant_id WHERE b.bundle_variant_id = ? ORDER BY v.sku",
-      bundle,
-    );
-    expect(components.map((component) => [component.sku, component.qty])).toEqual([["NSW2-CON-256", 1], ["NSW2-MKW", 1]]);
-    const bundleRow = (await rows<{ price_iqd: number; track_serials: number; product: string }>("SELECT v.price_iqd, v.track_serials, p.slug AS product FROM variants v JOIN products p ON p.id = v.product_id WHERE v.id = ?", bundle))[0];
-    expect(bundleRow.product).toBe("nintendo-switch-2");
-    expect(bundleRow.track_serials).toBe(0);
-    expect(bundleRow.price_iqd).toBeLessThan(components.reduce((sum, component) => sum + component.price_iqd * component.qty, 0));
-    // The bundle has no stock or cost of its own: both come from its components.
-    expect(await scalar("SELECT on_hand FROM stock_levels WHERE variant_id = ?", bundle)).toBe(0);
-    expect(await scalar("SELECT count(*) FROM variant_costs WHERE variant_id = ?", bundle)).toBe(0);
+  it("sells the store set as its components: priced below them, with no stock or cost of its own", async () => {
+    for (const set of DEMO_STORE_SETS) {
+      const id = demoId.variant(set.sku);
+      const components = await rows<{ sku: string; qty: number; price_iqd: number; on_hand: number }>(
+        "SELECT v.sku, b.qty, v.price_iqd, s.on_hand FROM bundle_items b JOIN variants v ON v.id = b.component_variant_id JOIN stock_levels s ON s.variant_id = v.id WHERE b.bundle_variant_id = ? ORDER BY v.sku",
+        id,
+      );
+      expect(components.map((component) => [component.sku, component.qty])).toEqual(set.components.map((component) => [component.sku, component.qty]).sort());
+      const row = (await rows<{ price_iqd: number; track_serials: number; kind: string }>("SELECT v.price_iqd, v.track_serials, p.kind FROM variants v JOIN products p ON p.id = v.product_id WHERE v.id = ?", id))[0];
+      expect([row.kind, row.track_serials]).toEqual(["bundle", 0]);
+      expect(row.price_iqd).toBeLessThan(components.reduce((sum, component) => sum + component.price_iqd * component.qty, 0));
+      expect(await scalar("SELECT on_hand FROM stock_levels WHERE variant_id = ?", id)).toBe(0);
+      expect(await scalar("SELECT count(*) FROM variant_costs WHERE variant_id = ?", id)).toBe(0);
+    }
   });
 });
 
@@ -421,43 +623,46 @@ describe("seeded stock", () => {
     expect(await scalar("SELECT count(*) FROM stock_movements WHERE kind <> 'adjust' OR actor_kind <> 'system' OR qty_delta <= 0")).toBe(0);
   });
 
-  it("shows in-stock, low-stock and out-of-stock items", async () => {
+  it("shows in-stock, low-stock and out-of-stock items; digital codes and pre-orders have none", async () => {
     const states = await rows<{ sku: string; kind: string; on_hand: number; reorder_point: number | null }>(
       "SELECT v.sku, p.kind, s.on_hand, s.reorder_point FROM stock_levels s JOIN variants v ON v.id = s.variant_id JOIN products p ON p.id = v.product_id",
     );
+    for (const row of states) {
+      const found = data.variantsBySku.get(row.sku)!;
+      const expected = found.product.source && found.variant.source ? demoStock(found.product.source, found.variant.source, t.now) : { onHand: 0, reorderPoint: null };
+      expect([row.on_hand, row.reorder_point], row.sku).toEqual([expected.onHand, expected.reorderPoint]);
+    }
     const physical = states.filter((row) => row.reorder_point !== null);
-    const out = physical.filter((row) => row.on_hand === 0).map((row) => row.sku);
-    const low = physical.filter((row) => row.on_hand > 0 && row.on_hand <= (row.reorder_point ?? 0)).map((row) => row.sku);
-    expect(out.sort()).toEqual(["DS-RED", "NSW-LITE-TRQ", "PS5-GOY", "SEC-2TB", "XSS-1TB-WHT"]);
-    expect(low.sort()).toEqual(["NSW2-PLZA-ED", "NSW2-PRO", "PART-SDO-BATT", "PS5-ER", "PS5-PRO-2TB", "PSSD-2TB", "SDO-1TB", "XSX-1TB-BLK", "XWC-BLU"]);
-    expect(physical.length - out.length - low.length).toBeGreaterThan(40);
-    // Digital top-ups have no codes loaded, so nothing is on hand.
+    const out = physical.filter((row) => row.on_hand === 0);
+    const low = physical.filter((row) => row.on_hand > 0 && row.on_hand <= (row.reorder_point ?? 0));
+    expect(out.length).toBeGreaterThan(5);
+    expect(low.length).toBeGreaterThan(10);
+    expect(physical.length - out.length - low.length).toBeGreaterThan(100);
+    // Digital codes are not loaded in the demo, so nothing is on hand.
     expect(states.filter((row) => row.kind === "digital").every((row) => row.on_hand === 0 && row.reorder_point === null)).toBe(true);
   });
 
-  it("tracks consoles and handhelds by serial, one in-stock serial per unit on hand", async () => {
+  it("tracks consoles and handheld PCs by serial, one in-stock serial per unit on hand", async () => {
     const tracked = await rows<{ sku: string; kind: string; on_hand: number; serials: number }>(
       "SELECT v.sku, p.kind, s.on_hand, (SELECT count(*) FROM serials x WHERE x.variant_id = v.id AND x.source = 'purchase' AND x.status = 'in_stock') AS serials FROM variants v JOIN products p ON p.id = v.product_id JOIN stock_levels s ON s.variant_id = v.id WHERE v.track_serials = 1",
     );
-    expect(tracked.length).toBe(15);
+    expect(tracked.length).toBe(catalogVariants.filter(({ product }) => productKindOf(product) === "console").length);
     for (const row of tracked) {
       expect(row.kind, row.sku).toBe("console");
       expect(row.serials, row.sku).toBe(row.on_hand);
     }
     expect(await scalar("SELECT count(*) FROM variants v JOIN products p ON p.id = v.product_id WHERE p.kind <> 'console' AND v.track_serials = 1")).toBe(0);
     expect(await scalar("SELECT count(*) FROM serials")).toBe(tracked.reduce((sum, row) => sum + row.on_hand, 0) + DEMO_USED_UNITS.length);
-    expect((await rows<{ serial: string }>("SELECT serial FROM serials WHERE variant_id = ? AND source = 'purchase' ORDER BY serial", demoId.variant("PS5-SLIM-DISC"))).map((row) => row.serial)).toEqual(demoSerialsOf("PS5-SLIM-DISC", 5));
+    const slim = tracked.find((row) => row.sku === "PS5-SLIM-DISC-1TB")!;
+    expect((await rows<{ serial: string }>("SELECT serial FROM serials WHERE variant_id = ? AND source = 'purchase' ORDER BY serial", demoId.variant("PS5-SLIM-DISC-1TB"))).map((row) => row.serial)).toEqual(demoSerialsOf("PS5-SLIM-DISC-1TB", slim.on_hand));
     // Each serial has its own opening movement.
     expect(await scalar("SELECT count(*) FROM serials x WHERE x.source = 'purchase' AND (SELECT count(*) FROM stock_movements m WHERE m.serial_id = x.id AND m.qty_delta = 1) <> 1")).toBe(0);
   });
 
-  it("gives most variants a cost with a margin above the minimum, and matching cost layers", async () => {
-    const total = await scalar("SELECT count(*) FROM variants");
-    const costed = await scalar("SELECT count(*) FROM variant_costs");
-    expect(costed / total).toBeGreaterThan(0.85);
-    expect(costed).toBeLessThan(total);
+  it("gives every variant except the store set a cost, and matching cost layers", async () => {
+    expect(await scalar("SELECT count(*) FROM variants v WHERE NOT EXISTS (SELECT 1 FROM variant_costs c WHERE c.variant_id = v.id)")).toBe(DEMO_STORE_SETS.length);
     const bad = await rows(
-      "SELECT v.sku FROM variant_costs c JOIN variants v ON v.id = c.variant_id WHERE c.landed_cost_iqd <= 0 OR c.landed_cost_iqd >= v.price_iqd OR (v.price_iqd - c.landed_cost_iqd) * 10000 / v.price_iqd < c.min_margin_bps OR c.currency <> 'USD' OR c.fx_rate_micros <> 1310000000 OR c.unit_cost_minor <= 0",
+      `SELECT v.sku FROM variant_costs c JOIN variants v ON v.id = c.variant_id WHERE c.landed_cost_iqd <= 0 OR c.landed_cost_iqd >= v.price_iqd OR (v.price_iqd - c.landed_cost_iqd) * 10000 / v.price_iqd < c.min_margin_bps OR c.currency <> 'USD' OR c.fx_rate_micros <> ${DEMO_FX_RATE.iqdPerUnit * 1_000_000} OR c.unit_cost_minor <= 0`,
     );
     expect(bad).toEqual([]);
     // FIFO layers: one opening layer per costed variant that has stock, holding exactly what is on hand.
@@ -470,79 +675,87 @@ describe("seeded stock", () => {
 
 // ───────────────────────────────────────────────────────────────── compatibility and relations
 
-describe("seeded compatibility", () => {
-  const status = async (subject: string, target: string) => (await rows<{ status: string }>("SELECT status FROM compatibility_rules WHERE subject_id = ? AND target_id = ?", subject, target))[0]?.status ?? null;
-
-  it("points every rule at a real subject and target", async () => {
-    expect(await scalar("SELECT count(*) FROM compatibility_rules")).toBe(DEMO_COMPATIBILITY.length);
-    expect(await scalar("SELECT count(*) FROM compatibility_rules r WHERE (r.subject_type = 'product' AND NOT EXISTS (SELECT 1 FROM products p WHERE p.id = r.subject_id)) OR (r.subject_type = 'variant' AND NOT EXISTS (SELECT 1 FROM variants v WHERE v.id = r.subject_id))")).toBe(0);
-    expect(
-      await scalar(
-        "SELECT count(*) FROM compatibility_rules r WHERE (r.target_type = 'device_model' AND NOT EXISTS (SELECT 1 FROM device_models m WHERE m.id = r.target_id)) OR (r.target_type = 'generation' AND NOT EXISTS (SELECT 1 FROM device_generations g WHERE g.id = r.target_id)) OR (r.target_type = 'platform' AND NOT EXISTS (SELECT 1 FROM platforms p WHERE p.id = r.target_id))",
-      ),
-    ).toBe(0);
-    const byStatus = await rows<{ status: string; n: number }>("SELECT status, count(*) AS n FROM compatibility_rules GROUP BY status");
-    expect(byStatus.map((row) => row.status).sort()).toEqual(["incompatible", "partial", "unverified", "verified"]);
-    const targets = await rows<{ target_type: string }>("SELECT DISTINCT target_type FROM compatibility_rules ORDER BY target_type");
-    expect(targets.map((row) => row.target_type)).toEqual(["device_model", "generation", "platform"]);
-  });
-
-  it("states the facts the task lists", async () => {
-    const product = demoId.product;
-    const model = demoId.deviceModel;
-    expect(await status(product("dualsense-wireless-controller"), model("ps5-slim"))).toBe("verified");
-    expect(await status(product("dualsense-wireless-controller"), model("ps5-pro"))).toBe("verified");
-    expect(await status(product("xbox-wireless-controller"), demoId.generation("xbox-series"))).toBe("verified");
-    expect(await status(product("sandisk-microsd-express"), model("switch-2"))).toBe("verified");
-    expect(await status(product("sandisk-microsd-express"), model("switch-oled"))).toBe("partial");
-    expect(await status(product("sandisk-microsd-express"), model("switch-lite"))).toBe("partial");
-    expect(await status(product("wd-black-sn850x-nvme-ssd-heatsink"), model("ps5-slim"))).toBe("verified");
-    expect(await status(product("seagate-storage-expansion-card-xbox"), demoId.generation("xbox-series"))).toBe("verified");
-    expect(await status(product("joy-con-2-pair"), model("switch-2"))).toBe("verified");
-    expect(await status(product("joy-con-2-pair"), model("switch-oled"))).toBe("incompatible");
-    // A disc cannot be read by a console without a drive.
-    expect(await status(product("forza-horizon-5"), model("xbox-series-s"))).toBe("incompatible");
-    expect(await status(product("spider-man-2"), model("ps5-pro"))).toBe("partial");
-    // Editions of one game differ: rules sit on the variant.
-    expect(await status(demoId.variant("NSW-TOTK"), model("switch-oled"))).toBe("verified");
-    expect(await status(demoId.variant("NSW2-TOTK-ED"), model("switch-oled"))).toBe("incompatible");
-    // Unknown pairs stay absent — never inferred.
-    expect(await status(product("dualsense-wireless-controller"), model("ps-portal"))).toBeNull();
-    expect(await status(product("xbox-wireless-controller"), model("steam-deck-oled"))).toBeNull();
-    expect(await status(product("nintendo-switch-2-dock-set"), model("switch-oled"))).toBeNull();
-  });
-
-  it("explains everything that is not plainly verified, and claims no in-store testing", async () => {
-    expect(await scalar("SELECT count(*) FROM compatibility_rules WHERE status <> 'verified' AND note IS NULL")).toBe(0);
-    expect(await scalar("SELECT count(*) FROM compatibility_rules WHERE verified_by IS NOT NULL")).toBe(0);
-    expect(await scalar("SELECT count(*) FROM compatibility_rules WHERE status = 'unverified' AND (verified_at IS NOT NULL OR source IS NOT NULL)")).toBe(0);
-    expect(await scalar("SELECT count(*) FROM compatibility_rules WHERE status <> 'unverified' AND (verified_at IS NULL OR source NOT IN ('manufacturer', 'standard'))")).toBe(0);
-    // Generic and third-party items are never presented as verified.
-    const generic = await rows<{ slug: string; status: string }>(
-      "SELECT p.slug, r.status FROM compatibility_rules r JOIN products p ON p.id = r.subject_id WHERE p.brand IS NULL",
+describe("seeded compatibility and relations", () => {
+  it("writes every researched rule with its status exactly as researched, its note and its source", async () => {
+    const stored = new Map(
+      (await rows<{ product: string; model: string; status: string; note: string | null; source: string | null; subject_type: string; target_type: string; verified_by: string | null; verified_at: number | null }>(
+        "SELECT p.slug AS product, m.slug AS model, r.* FROM compatibility_rules r JOIN products p ON p.id = r.subject_id JOIN device_models m ON m.id = r.target_id",
+      )).map((row) => [`${row.product}|${row.model}`, row]),
     );
-    expect(generic.length).toBeGreaterThan(0);
-    expect(generic.every((row) => row.status === "unverified")).toBe(true);
+    expect(await scalar("SELECT count(*) FROM compatibility_rules")).toBe(stored.size);
+    let total = 0;
+    for (const product of catalog.products) {
+      for (const entry of product.compatibility ?? []) {
+        total++;
+        const row = stored.get(`${product.slug}|${entry.deviceModel}`)!;
+        expect(row, `${product.slug} → ${entry.deviceModel}`).toBeDefined();
+        expect([row.subject_type, row.target_type, row.status], `${product.slug} → ${entry.deviceModel}`).toEqual(["product", "device_model", entry.status === "unknown" ? "unverified" : entry.status]);
+        expect(row.note === null ? null : parse(row.note), `${product.slug} → ${entry.deviceModel}`).toEqual(entry.note ?? null);
+        expect(row.source, `${product.slug} → ${entry.deviceModel}`).toBe(entry.source ?? null);
+        // Nobody has tested anything in the store: no one is named as having verified a rule.
+        expect(row.verified_by).toBeNull();
+        // When the documented fact was recorded (an overwrite records it again); never for an unverified one.
+        expect(row.verified_at === null, `${product.slug} → ${entry.deviceModel}`).toBe(row.status === "unverified");
+      }
+    }
+    expect(stored.size).toBe(total);
+    // What the research could not confirm stays unconfirmed.
+    expect(stored.get("hyperx-cloud-iii-s-wireless|switch-2")).toMatchObject({ status: "unverified", source: null, verified_at: null });
+    expect(stored.get("battlefield-6|xbox-series-s")?.status).toBe("incompatible");
+    expect(new Set([...stored.values()].map((row) => row.status))).toEqual(new Set(["verified", "partial", "incompatible", "unverified"]));
+  });
+
+  it("keeps disc games consistent with the Disc Drive research: a disc plays on a console without a drive only through the add-on drive", async () => {
+    // The consoles with no disc drive of their own (their catalogue entries: PS5 Pro "No disc drive",
+    // the Digital Editions, the all-digital Series S).
+    const noDrive = ["ps5-digital", "ps5-slim-digital", "ps5-pro", "xbox-series-s", "xbox-series-x-digital"];
+    const drive = bySlug.get("ps5-disc-drive")!;
+    const takesAddOn = new Set((drive.compatibility ?? []).filter((entry) => entry.status === "verified").map((entry) => entry.deviceModel));
+    // The add-on Disc Drive fits the slim Digital Edition and PS5 Pro, not the original 2020 Digital Edition.
+    expect([...takesAddOn].sort()).toEqual(["ps5-pro", "ps5-slim-digital"]);
+    expect(drive.compatibility?.find((entry) => entry.deviceModel === "ps5-digital")?.status).toBe("incompatible");
+    const stored = new Map(
+      (await rows<{ product: string; model: string; status: string }>("SELECT p.slug AS product, m.slug AS model, r.status FROM compatibility_rules r JOIN products p ON p.id = r.subject_id JOIN device_models m ON m.id = r.target_id")).map((row) => [`${row.product}|${row.model}`, row.status]),
+    );
+    const discGames = catalog.products.filter((product) => product.kind === "game" && product.game?.physicalFormat === "disc");
+    expect(discGames.length).toBeGreaterThan(10);
+    let checked = 0;
+    for (const game of discGames) {
+      for (const entry of game.compatibility ?? []) {
+        if (!noDrive.includes(entry.deviceModel)) continue;
+        const expected = takesAddOn.has(entry.deviceModel) ? "partial" : "incompatible";
+        expect(entry.status, `${game.slug} → ${entry.deviceModel}`).toBe(expected);
+        expect(stored.get(`${game.slug}|${entry.deviceModel}`), `${game.slug} → ${entry.deviceModel} in the database`).toBe(expected);
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(40);
+    // Shopper-facing notes say which Digital Edition takes the drive (they once said "PS5 Digital Edition
+    // and PS5 Pro need the add-on Disc Drive", which is wrong for the 2020 Digital Edition).
+    for (const game of discGames) {
+      for (const variant of game.variants) {
+        const note = variant.notes?.en ?? "";
+        if (/add-on Disc Drive/i.test(note) && /Digital Edition/.test(note)) expect(note, variant.sku).toMatch(/original PS5 Digital Edition \(2020\) cannot play discs/);
+      }
+    }
+  });
+
+  it("links related products exactly as researched", async () => {
+    const stored = await rows<{ product: string; related: string; kind: string; sort: number; pinned: number }>(
+      "SELECT p.slug AS product, q.slug AS related, r.kind, r.sort, r.pinned FROM product_relations r JOIN products p ON p.id = r.product_id JOIN products q ON q.id = r.related_product_id ORDER BY p.slug, r.sort",
+    );
+    const expected = catalog.products.flatMap((product) => product.related.map((relation, index) => ({ product: product.slug, related: relation.slug, kind: relation.kind, sort: index, pinned: 0 })));
+    expect(stored).toEqual(expected.sort((a, b) => (a.product === b.product ? a.sort - b.sort : a.product < b.product ? -1 : 1)));
   });
 
   it("never puts something incompatible on a console's setup shelf", async () => {
-    expect(await scalar("SELECT count(*) FROM product_relations")).toBe(DEMO_RELATIONS.length);
-    const shelves = await rows<{ console: string; model_id: string; generation_id: string; platform_id: string; related: string; related_id: string }>(
-      "SELECT p.slug AS console, m.id AS model_id, m.generation_id, m.platform_id, q.slug AS related, q.id AS related_id FROM product_relations r JOIN products p ON p.id = r.product_id JOIN device_models m ON m.id = p.device_model_id JOIN products q ON q.id = r.related_product_id WHERE r.kind IN ('setup', 'accessory') AND p.kind = 'console'",
+    const shelves = await rows<{ console: string; model_id: string; related_id: string; related: string }>(
+      "SELECT p.slug AS console, p.device_model_id AS model_id, q.id AS related_id, q.slug AS related FROM product_relations r JOIN products p ON p.id = r.product_id JOIN products q ON q.id = r.related_product_id WHERE r.kind IN ('setup', 'accessory') AND p.kind = 'console' AND p.device_model_id IS NOT NULL",
     );
-    expect(new Set(shelves.map((row) => row.console)).size).toBe(11);
+    expect(shelves.length).toBeGreaterThan(20);
     for (const row of shelves) {
-      const applicable = await rows<{ status: string; subject_type: string }>(
-        "SELECT r.status, r.subject_type FROM compatibility_rules r WHERE (r.subject_id = ?1 OR r.subject_id IN (SELECT id FROM variants WHERE product_id = ?1)) AND r.target_id IN (?2, ?3, ?4)",
-        row.related_id, row.model_id, row.generation_id, row.platform_id,
-      );
-      const productRules = applicable.filter((rule) => rule.subject_type === "product");
-      const variantRules = applicable.filter((rule) => rule.subject_type === "variant");
-      expect(productRules.some((rule) => rule.status === "incompatible"), `${row.console} → ${row.related}`).toBe(false);
-      if (variantRules.length > 0) expect(variantRules.some((rule) => rule.status !== "incompatible"), `${row.console} → ${row.related}`).toBe(true);
+      expect(await scalar("SELECT count(*) FROM compatibility_rules WHERE subject_id = ? AND target_id = ? AND status = 'incompatible'", row.related_id, row.model_id), `${row.console} → ${row.related}`).toBe(0);
     }
-    const kinds = await rows<{ kind: string }>("SELECT DISTINCT kind FROM product_relations ORDER BY kind");
-    expect(kinds.map((row) => row.kind)).toEqual(["accessory", "alternative", "setup", "upgrade", "upsell"]);
   });
 });
 
@@ -552,12 +765,12 @@ describe("seeded search", () => {
   const find = async (query: string) => (await searchProductIds(t.db, query, { limit: 100 })).map((hit) => hit.productId);
 
   it("indexes every product in the three languages", async () => {
-    expect(await scalar("SELECT count(*) FROM search_index")).toBe(153);
+    expect(await scalar("SELECT count(*) FROM search_index")).toBe((catalog.products.length + DEMO_STORE_SETS.length) * 3);
     expect(await scalar("SELECT count(*) FROM products p WHERE (SELECT count(DISTINCT locale) FROM search_index s WHERE s.product_id = p.id) <> 3")).toBe(0);
     expect(await scalar("SELECT count(*) FROM search_index WHERE name = '' OR keywords = '' OR body = ''")).toBe(0);
   });
 
-  it("stores normalized synonym sets per language", async () => {
+  it("stores normalized synonym sets per language, old and new names", async () => {
     const synonyms = await rows<{ locale: string; term: string; synonyms: string }>("SELECT locale, term, synonyms FROM search_synonyms");
     expect(synonyms.length).toBe(DEMO_SYNONYM_GROUPS.length * 3);
     for (const row of synonyms) {
@@ -570,7 +783,7 @@ describe("seeded search", () => {
     }
     expect(new Set(synonyms.map((row) => row.locale))).toEqual(new Set(["ar", "en", "ckb"]));
     const terms = (locale: string) => synonyms.filter((row) => row.locale === locale).map((row) => row.term);
-    expect(terms("ar")).toEqual(expect.arrayContaining(["بلايستيشن", "سويتش", "اكس بوكس", "يد تحكم", "سماعه", "ذاكره", "مستعمل"].map(normalizeSearchText)));
+    expect(terms("ar")).toEqual(expect.arrayContaining(["بلايستيشن", "سويتش", "اكس بوكس", "يد تحكم", "سماعه", "ذاكره", "مستعمل", "سويتش 2", "بلايستيشن 5 برو", "ستيم ديك"].map(normalizeSearchText)));
     const playstation = synonyms.find((row) => row.locale === "ar" && row.term === normalizeSearchText("بلايستيشن"));
     expect(parse<string[]>(playstation!.synonyms)).toEqual(expect.arrayContaining(["بلي ستيشن", "سوني", "playstation"].map(normalizeSearchText)));
   });
@@ -580,26 +793,48 @@ describe("seeded search", () => {
     expect(await find("بلي ستيشن")).toContain(product("playstation-5-slim"));
     expect(await find("PS5")).toEqual(expect.arrayContaining([product("playstation-5-slim"), product("playstation-5-pro")]));
     expect(await find("سويتش 2")).toContain(product("nintendo-switch-2"));
+    expect(await find("سويتش ٢")).toContain(product("nintendo-switch-2"));
+    expect(await find("بلايستيشن ٥ برو")).toContain(product("playstation-5-pro"));
+    expect(await find("ستيم ديك")).toEqual(expect.arrayContaining([product("steam-deck-oled"), product("steam-deck-lcd")]));
     expect(await find("اكس بوكس")).toEqual(expect.arrayContaining([product("xbox-series-x"), product("xbox-series-s")]));
-    expect(await find("جوستك")).toEqual(expect.arrayContaining([product("dualsense-wireless-controller"), product("xbox-wireless-controller")]));
-    expect(await find("كنترولر")).toContain(product("joy-con-2-pair"));
-    expect(await find("هيدسيت")).toEqual(expect.arrayContaining([product("pulse-elite-wireless-headset"), product("xbox-wireless-headset")]));
+    expect(await find("جوستك")).toEqual(expect.arrayContaining([product("dualsense"), product("xbox-wireless-controller")]));
+    expect(await find("كنترولر")).toContain(product("joy-con-2"));
+    expect(await find("هيدسيت")).toEqual(expect.arrayContaining([product("pulse-elite"), product("xbox-wireless-headset")]));
     expect(await find("ميموري")).toContain(product("sandisk-microsd-express"));
-    expect(await find("فيفا")).toEqual(expect.arrayContaining([product("ea-sports-fc-26-ps5"), product("ea-sports-fc-26-xbox")]));
+    expect(await find("فيفا")).toEqual(expect.arrayContaining([product("ea-sports-fc-27"), product("ea-sports-fc-27-nintendo-switch-2")]));
     expect(await find("ماريو كارت")).toContain(product("mario-kart-world"));
+    expect(await find("جي تي اي")).toContain(product("grand-theft-auto-vi"));
     expect(await find("پلەیستەیشن")).toContain(product("playstation-5-slim"));
-    expect(await find("دەسکی یاری")).toContain(product("dualsense-wireless-controller"));
+    expect(await find("دەسکی یاری")).toContain(product("dualsense"));
     expect(await find("هێدسێت")).toContain(product("xbox-wireless-headset"));
     expect(await find("steam deck")).toContain(product("steam-deck-oled"));
-    expect(await find("spider-man")).toContain(product("spider-man-2"));
+    expect(await find("spider-man")).toContain(product("marvels-spider-man-2"));
+    expect(await find("CFI-ZCT2W")).toContain(product("dualsense"));
     expect(await find("zzz-no-such-thing")).toEqual([]);
+    // Spellings that once found nothing: they lived only in search_synonyms, which this search does not expand.
+    expect(await find("بليستيشن ٥")).toContain(product("playstation-5-slim"));
+    expect(await find("بلستيشن")).toContain(product("playstation-5-slim"));
+    expect(await find("ايكس بوكس سيريس اس")).toContain(product("xbox-series-s"));
+    expect(await find("مشغل اقراص بلايستيشن")).toContain(product("ps5-disc-drive"));
+    expect(await find("ستاند بلايستيشن")).toContain(product("ps5-vertical-stand"));
+    expect((await find("قاعدة شحن يد"))[0]).toBe(product("dualsense-charging-station"));
+  });
+
+  it("indexes every spelling of a platform's synonym set with the platform's products", async () => {
+    const representative: Record<string, string> = { playstation: "playstation-5-slim", "nintendo-switch": "nintendo-switch-2", xbox: "xbox-series-s", handheld: "steam-deck-oled" };
+    for (const [group, slug] of Object.entries(representative)) {
+      const spellings = DEMO_SYNONYM_GROUPS.find((entry) => entry.key === group)!;
+      for (const locale of ["ar", "en", "ckb"] as const) {
+        for (const spelling of spellings[locale]) expect(await find(spelling), `${locale} «${spelling}» → ${slug}`).toContain(demoId.product(slug));
+      }
+    }
   });
 });
 
 // ───────────────────────────────────────────────────────────────── used devices
 
 describe("seeded used devices", () => {
-  it("lists six demo units across the four grades, with illustrations only", async () => {
+  it("lists six demo units across the four grades, showing the model's official photos as illustrations", async () => {
     const units = await rows<{
       id: string; slug: string; grade: string; status: string; is_demo: number; battery_health_pct: number | null; price_iqd: number; acquisition_cost_iqd: number; warranty_days: number;
       checklist: string; included: string; defects: string; serial_source: string; serial_status: string; device_kind: string; new_price: number; listed_at: number; ownership_checked_at: number; data_wiped_at: number; trade_in_id: string | null;
@@ -634,9 +869,13 @@ describe("seeded used devices", () => {
       if (unit.battery_health_pct === null) expect(batteryAnswer?.result, unit.slug).toBe("na");
       else expect(batteryAnswer?.value, unit.slug).toBe(unit.battery_health_pct);
 
-      const pictures = await rows<{ is_illustration: number; kind: string; file_id: string | null; art_key: string }>("SELECT is_illustration, kind, file_id, art_key FROM media WHERE owner_type = 'used_unit' AND owner_id = ?", unit.id);
+      const pictures = await rows<{ is_illustration: number; kind: string; file_id: string | null; art_key: string; alt: string }>("SELECT is_illustration, kind, file_id, art_key, alt FROM media WHERE owner_type = 'used_unit' AND owner_id = ?", unit.id);
       expect(pictures.length, unit.slug).toBeGreaterThan(0);
-      expect(pictures.every((picture) => picture.is_illustration === 1 && picture.file_id === null && picture.kind === "render"), unit.slug).toBe(true);
+      for (const picture of pictures) {
+        expect([picture.is_illustration, picture.kind, picture.file_id], unit.slug).toEqual([1, "image", null]);
+        expect(catalog.photoKeys.has(picture.art_key), picture.art_key).toBe(true);
+        expect(parse<L10nValue>(picture.alt).ar, unit.slug).toContain("صورة توضيحية");
+      }
     }
     const withBattery = units.filter((unit) => unit.battery_health_pct !== null).map((unit) => unit.slug).sort();
     expect(withBattery).toEqual(["used-legion-go-512-01", "used-steam-deck-oled-512-01", "used-switch-lite-turquoise-01", "used-switch-oled-white-01"]);
@@ -644,19 +883,21 @@ describe("seeded used devices", () => {
     for (const unit of units.filter((entry) => entry.grade === "B" || entry.grade === "C")) expect(parse<unknown[]>(unit.defects).length, unit.slug).toBeGreaterThan(0);
   });
 
-  it("has a trade-in price guide for every device model, and costs that follow it", async () => {
+  it("has a trade-in price guide for every console and handheld PC model, and costs that follow it", async () => {
     const guides = await rows<{ slug: string; base_iqd: number; grade_multipliers: string; deductions: string; variant_id: string | null }>(
       "SELECT m.slug, g.base_iqd, g.grade_multipliers, g.deductions, g.variant_id FROM trade_in_price_guides g JOIN device_models m ON m.id = g.device_model_id",
     );
-    expect(guides.map((guide) => guide.slug).sort()).toEqual(DEMO_DEVICE_MODELS.map((model) => model.slug).sort());
+    const expected = demoTradeInGuides(data);
+    expect(guides.map((guide) => guide.slug).sort()).toEqual(DEMO_DEVICE_MODELS.filter((model) => model.product && (model.deviceKind === "console" || model.deviceKind === "handheld_pc")).map((model) => model.slug).sort());
     for (const guide of guides) {
+      const definition = expected.find((entry) => entry.deviceModel === guide.slug)!;
+      expect([guide.base_iqd, parse(guide.deductions)], guide.slug).toEqual([definition.baseIqd, definition.deductions]);
       expect(parse(guide.grade_multipliers)).toEqual({ "A+": 10_000, A: 9_000, B: 7_500, C: 5_500 });
-      expect(guide.base_iqd % 250).toBe(0);
+      expect(guide.base_iqd % 5_000).toBe(0);
       expect(guide.variant_id).toBeNull();
     }
-    for (const unit of DEMO_USED_UNITS) {
-      const product = DEMO_VARIANTS.find((entry) => entry.variant.sku === unit.sku)!.product;
-      const guide = DEMO_TRADE_IN_GUIDES.find((entry) => entry.deviceModel === product.deviceModel)!;
+    for (const unit of demoUsedUnits(data)) {
+      const guide = expected.find((entry) => entry.deviceModel === unit.deviceModel)!;
       const byGrade = (guide.baseIqd * TRADE_IN_GRADE_MULTIPLIERS[unit.grade]) / 10_000;
       expect(unit.acquisitionCostIqd, unit.slug).toBeLessThanOrEqual(byGrade);
       expect(byGrade - unit.acquisitionCostIqd, unit.slug).toBeLessThanOrEqual(Math.max(0, ...Object.values(guide.deductions)));
@@ -707,7 +948,7 @@ describe("seeded rate, coupons and knowledge", () => {
       for (const locale of ["ar", "en", "ckb"] as const) {
         for (const block of body[locale]) {
           expect(allowed, `${article.slug}: ${block.type}`).toContain(block.type);
-          if (block.type === "art") expect(artNames, `${article.slug} art`).toContain(block.name);
+          if (block.type === "art") expect(catalog.photoKeys.has(block.name ?? ""), `${article.slug} photo ${block.name}`).toBe(true);
           if (block.type === "callout") expect(["info", "warning", "danger"]).toContain(block.tone);
           // Plain text only — never markup.
           expect(JSON.stringify(block), article.slug).not.toMatch(/<[a-z/][^>]*>|\*\*|\]\(/i);
@@ -805,7 +1046,7 @@ describe("SQL export of the seed", () => {
       const recorded: RecordedStatement[] = [];
       const recordingDb = createDb(recordWrites(scratch.d1, recorded));
       await seedReference(recordingDb, t.now);
-      const direct = await seedDemo(recordingDb, t.now);
+      const direct = await seedDemo(recordingDb, t.now, { catalog });
       const expected = await countAll(scratch.d1);
       expect(recorded.length).toBeGreaterThan(direct.statements);
       expect(recorded.every((statement) => /^\s*insert\b/i.test(statement.sql))).toBe(true);
@@ -834,14 +1075,15 @@ describe("SQL export of the seed", () => {
       expect(await countAll(scratch.d1)).toEqual(expected);
 
       // Spot-check that values survived the trip through SQL text.
+      const slim = bySlug.get("playstation-5-slim")!;
       const product = await scratch.d1.prepare("SELECT name, is_demo, specs FROM products WHERE slug = 'playstation-5-slim'").first<{ name: string; is_demo: number; specs: string }>();
-      expect(parse<L10nValue>(product!.name)).toEqual({ ar: "PlayStation 5 (النموذج النحيف)", en: "PlayStation 5 (Slim)", ckb: "PlayStation 5 (مۆدێلی باریک)" });
+      expect(parse<L10nValue>(product!.name)).toEqual(slim.name);
       expect(product!.is_demo).toBe(1);
-      expect(parse<Record<string, unknown>>(product!.specs).storage_gb).toBe(1000);
+      expect(parse<Record<string, unknown>>(product!.specs).storage).toEqual({ ...slim.specs.find((spec) => spec.key === "storage")!.value, label: slim.specs.find((spec) => spec.key === "storage")!.label });
       const hits = await searchProductIds(createDb(scratch.d1), "بلي ستيشن", { limit: 100 });
       expect(hits.map((hit) => hit.productId)).toContain(demoId.product("playstation-5-slim"));
     } finally {
       await scratch.dispose();
     }
-  }, 120_000);
+  }, 180_000);
 });

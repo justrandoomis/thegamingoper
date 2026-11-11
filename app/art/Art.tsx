@@ -4,12 +4,9 @@ import { preload } from "react-dom";
 import { artAspect, artFallbackSrc, artName, artSrcSet, getArt, isPhoto, parseArtName, parsePhotoKey, type ArtView } from "./index";
 
 export interface ArtProps {
-  /**
-   * Art key from scripts/art/catalog.json, e.g. "switch-2" ("switch-2@front" also selects a view),
-   * or a product photo key "<slug>--<n>" from catalog/products, e.g. "nintendo-switch-2--1".
-   */
+  /** A product photo key "<slug>--<n>" from catalog/products, e.g. "nintendo-switch-2--1". */
   name: string;
-  /** "hero" (three-quarter, the default), "front" or "back". */
+  /** Photos have one view, "hero" (the default); another view falls back to it. */
   view?: ArtView;
   /**
    * Required. Say what the picture shows ("Nintendo Switch 2 from the front"), in the page's
@@ -29,24 +26,22 @@ export interface ArtProps {
 }
 
 const DEFAULT_SIZES = "(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw";
-/** Longer side of a full render; placeholders use the same so both lay out alike. */
+/** Longer side of a placeholder block. */
 const FULL_SIDE = 1600;
 
 /**
- * A TamTam clay render or product photo, pre-built in AVIF and WebP at up to five widths. The `<img>`
- * itself names one fallback file: the 720 px WebP of a photo (every browser the store supports
- * decodes WebP), the PNG of a clay render.
+ * An official product photo, pre-built in AVIF and WebP at up to five widths. The `<img>` itself
+ * names one fallback file: the 720 px WebP (every browser the store supports decodes WebP).
  *
- *   <Art name="switch-2" alt={t("switch2")} sizes="(min-width: 768px) 320px, 45vw" className="w-full" />
- *   <Art name="ps5-slim" view="front" alt="" className="h-full w-full object-contain" />
- *   <Art name="xbox-series-x" alt={title} priority sizes="(min-width: 1024px) 480px, 90vw" />
  *   <Art name="nintendo-switch-2--1" alt={image.alt[lang]} className="h-full w-full object-contain" />
+ *   <Art name="playstation-5-slim--1" alt="" sizes="(min-width: 768px) 320px, 45vw" className="w-full" />
+ *   <Art name="xbox-series-x--1" alt={title} priority sizes="(min-width: 1024px) 480px, 90vw" />
  *
  * It renders a `<picture>` whose `<img>` carries the intrinsic width and height, so the space is
  * reserved before anything loads (give it `height: auto` or a fixed box, as with any image —
  * Tailwind's base styles already do). Until the file arrives a blurred miniature is shown behind it.
  *
- * Renders and most photos are transparent. A photo whose background could not be removed safely
+ * Most photos are transparent cut-outs. A photo whose background could not be removed safely
  * (manifest `transparent: false`) is drawn in its own rounded frame filled with its recorded
  * background colour, so it sits cleanly on a niche or stage; the radius is `--photo-radius`
  * (default `--r-md`). Every picture carries `data-transparent="true" | "false"` for CSS.
@@ -61,7 +56,7 @@ const FULL_SIDE = 1600;
 export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, className, style }: ArtProps) {
   const target = parseArtName(name, view);
   const exact = getArt(target.key, target.view);
-  // A view that is not rendered falls back to the hero picture of the same object.
+  // Photos have one view: any other view falls back to it.
   const art = exact ?? (target.view === "hero" ? undefined : getArt(target.key, "hero"));
   const label = artName(target.key, target.view);
 
@@ -71,7 +66,7 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
       label,
       photo
         ? `[Art] "${label}" has no photo yet — showing a placeholder. Check its entry in catalog/products/${photo.slug}.json and run: node scripts/products/images.mjs --only ${photo.slug}`
-        : `[Art] "${label}" has no render yet — showing a placeholder. Add scripts/art/models/${target.key}.mjs and run: node scripts/art/build.mjs --only=${target.key}`,
+        : `[Art] "${label}" is not a product photo key ("<slug>--<n>") — showing a placeholder.`,
     );
     const aspect = artAspect(target.key, target.view) ?? artAspect(target.key) ?? 1;
     const width = Math.round(aspect >= 1 ? FULL_SIDE : FULL_SIDE * aspect);
@@ -91,7 +86,7 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
     );
   }
 
-  if (!exact) warnOnce(label, `[Art] "${label}" is not rendered — showing the hero view of "${target.key}" instead.`);
+  if (!exact) warnOnce(label, `[Art] "${label}": photos have one view — showing "${target.key}".`);
 
   const photo = isPhoto(art) ? art : undefined;
   const opaque = photo !== undefined && !photo.transparent;
@@ -146,7 +141,7 @@ function blurBehind(placeholder: string): CSSProperties {
   };
 }
 
-// The pictures are transparent, so the blurred miniature has to go once the real file is in —
+// Most photos are transparent, so the blurred miniature has to go once the real file is in —
 // otherwise it would glow around the object. No state: the element is updated directly.
 function reveal(img: HTMLImageElement) {
   img.style.backgroundImage = "none";
@@ -164,7 +159,7 @@ function settle(img: HTMLImageElement | null) {
 const blocks = new Map<string, string>();
 
 /**
- * The stand-in for art that is not rendered yet. The file is an empty SVG that only carries the
+ * The stand-in for a photo that is not built yet. The file is an empty SVG that only carries the
  * shape (an image cannot read the page's tokens); the block itself is painted by `MISSING_STYLE`:
  * the translucent `--line` tint, rounded like a photo frame, so it sits on any surface in both themes.
  */

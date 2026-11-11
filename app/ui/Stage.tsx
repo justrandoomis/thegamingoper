@@ -15,7 +15,7 @@ import { Price } from "./Price";
  *   <Stage size="hero" gel="playstation"
  *          tag={<StageTag name="PlayStation 5 Pro" priceIqd={1099000} />}
  *          action={<Key variant="commit" icon={<AddGlyph />} onClick={add}>{t("add")}</Key>}>
- *     <Render name="ps5-pro" alt="PlayStation 5 Pro" priority sizes="(min-width: 1200px) 540px, 70vw" />
+ *     <Render name="playstation-5-pro--1" alt="PlayStation 5 Pro" priority sizes="(min-width: 1200px) 540px, 70vw" />
  *   </Stage>
  *
  *   <Stage size="product" gel="handheld" flush top={<Orbs />} bottom={<Gallery />}>…</Stage>
@@ -129,7 +129,7 @@ export function StageTag({ name, priceIqd, className }: StageTagProps) {
 }
 
 export type RenderProps = {
-  /** Art key ("switch-2", "ps5-slim@front"). Unrendered keys show a neutral placeholder of the right shape. */
+  /** Art key ("nintendo-switch-2--1", "playstation-5-slim--2"). Unrendered keys show a neutral placeholder of the right shape. */
   name: string;
   view?: ArtView;
   /** What the picture shows, in the page's language; "" when the name is right next to it. */

@@ -103,9 +103,9 @@ const STICK_DRIFT: TroubleshootingTree = {
     stepNode(
       "calibrate_handheld",
       t3(
-        "استخدم أداة معايرة العصا في إعدادات الجهاز أو تطبيق الشركة (إعدادات المتحكم في Steam Deck، Armoury Crate SE، Legion Space)، وحدّث النظام.",
-        "Use the stick calibration tool in the device settings or the maker's app (controller settings on Steam Deck, Armoury Crate SE, Legion Space), and update the system.",
-        "ئامرازی پێوانەکردنەوەی جۆیستیک لە ڕێکخستنەکانی ئامێرەکە یان ئەپی کۆمپانیاکە بەکاربهێنە (ڕێکخستنەکانی کۆنترۆڵەر لە Steam Deck، Armoury Crate SE، Legion Space)، و سیستەم نوێ بکەرەوە.",
+        "استخدم أداة معايرة العصا في إعدادات الجهاز أو تطبيق الشركة (إعدادات المتحكم في Steam Deck، Armoury Crate SE، Legion Space، MSI Center M)، وحدّث النظام.",
+        "Use the stick calibration tool in the device settings or the maker's app (controller settings on Steam Deck, Armoury Crate SE, Legion Space, MSI Center M), and update the system.",
+        "ئامرازی پێوانەکردنەوەی جۆیستیک لە ڕێکخستنەکانی ئامێرەکە یان ئەپی کۆمپانیاکە بەکاربهێنە (ڕێکخستنەکانی کۆنترۆڵەر لە Steam Deck، Armoury Crate SE، Legion Space، MSI Center M)، و سیستەم نوێ بکەرەوە.",
       ),
       afterStep("repair"),
     ),

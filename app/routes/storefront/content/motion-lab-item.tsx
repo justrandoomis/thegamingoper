@@ -50,7 +50,7 @@ export default function MotionLabItem({ loaderData }: Route.ComponentProps) {
   };
 
   return (
-    <main className="lab-main" data-testid="lab-detail" data-item={item.id}>
+    <div className="lab-main" data-testid="lab-detail" data-item={item.id}>
       <MotionLink to="/motion?tab=flow" nav="zoom" back className="lab-btn lab-back" data-press="soft" data-testid="detail-back" onClick={goBack}>
         <span className="lab-arrow lab-arrow--back" aria-hidden="true" />
         {t("detail.back")}
@@ -85,6 +85,6 @@ export default function MotionLabItem({ loaderData }: Route.ComponentProps) {
         )}
       </nav>
       <div className="lab-filler" aria-hidden="true" />
-    </main>
+    </div>
   );
 }

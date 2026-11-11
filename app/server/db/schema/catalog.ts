@@ -358,7 +358,7 @@ export type MediaKind = (typeof MEDIA_KINDS)[number];
 
 /**
  * Gallery entries for products, variants, used units, device models, categories…
- * (`owner_type` + `owner_id`). Either an uploaded file (`file_id`) or a TamTam clay render (`art_key`).
+ * (`owner_type` + `owner_id`). Either an uploaded file (`file_id`) or a catalogue photo key of `~/art` (`art_key`).
  *
  * `is_illustration` defaults to TRUE: an image only counts as "a photo of this actual unit" when a
  * person says so. A used unit needs at least one `kind = 'image'`, `is_illustration = 0`,

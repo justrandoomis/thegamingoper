@@ -29,10 +29,10 @@ export const section: DsSectionMeta = {
 
 /* Example products for the specimens. Names are real hardware; the prices are display examples only. */
 const DEMO: Record<Platform, { art: string; name: string; priceIqd: number }> = {
-  nintendo: { art: "switch-2", name: "Nintendo Switch 2", priceIqd: 749000 },
-  playstation: { art: "ps5-slim", name: "PlayStation 5 Slim", priceIqd: 445000 },
-  xbox: { art: "xbox-series-x", name: "Xbox Series X", priceIqd: 689000 },
-  handheld: { art: "legion-go", name: "Lenovo Legion Go", priceIqd: 899000 },
+  nintendo: { art: "nintendo-switch-2--1", name: "Nintendo Switch 2", priceIqd: 749000 },
+  playstation: { art: "playstation-5-slim--1", name: "PlayStation 5 Slim", priceIqd: 445000 },
+  xbox: { art: "xbox-series-x--1", name: "Xbox Series X", priceIqd: 689000 },
+  handheld: { art: "lenovo-legion-go--1", name: "Lenovo Legion Go", priceIqd: 899000 },
 };
 
 const COPY = defineCopy({
@@ -619,7 +619,7 @@ function Banks({ c }: { c: C }) {
           <KeyBank
             kind="thumb"
             aria-label={c.gallery}
-            items={views.map((v) => ({ value: v, ariaLabel: viewLabel[v], media: <Render name={`switch-2@${v}`} alt="" shadow={false} sizes="48px" /> }))}
+            items={views.map((v) => ({ value: v, ariaLabel: viewLabel[v], media: <Render name={`nintendo-switch-2--${views.indexOf(v) + 1}`} alt="" shadow={false} sizes="48px" /> }))}
             value={view}
             onChange={setView}
           />
@@ -855,17 +855,17 @@ function Niches({ c }: { c: C }) {
       <SpecimenGrid>
         <Specimen label='ratio="3/2" tag'>
           <Niche as="a" href="#core" aria-label={DEMO.nintendo.name} tag={<Tag kind="new" />}>
-            <Render name="switch-2" alt="" sizes="(min-width: 768px) 240px, 45vw" />
+            <Render name="nintendo-switch-2--1" alt="" sizes="(min-width: 768px) 240px, 45vw" />
           </Niche>
         </Specimen>
         <Specimen label='tag kind="used"'>
           <Niche tag={<Tag kind="used" />}>
-            <Render name="xbox-series-x" alt={DEMO.xbox.name} sizes="(min-width: 768px) 240px, 45vw" />
+            <Render name="xbox-series-x--1" alt={DEMO.xbox.name} sizes="(min-width: 768px) 240px, 45vw" />
           </Niche>
         </Specimen>
         <Specimen label='ratio="1/1" tagZone={false}'>
           <Niche ratio="1/1" tagZone={false}>
-            <Render name="dualsense-white" alt="" sizes="(min-width: 768px) 200px, 30vw" />
+            <Render name="dualsense--1" alt="" sizes="(min-width: 768px) 200px, 30vw" />
           </Niche>
         </Specimen>
         <Specimen label='variant="panel" + Socket inset' wide>
@@ -971,7 +971,7 @@ function Stages({ c }: { c: C }) {
                 <KeyBank
                   kind="thumb"
                   aria-label={c.gallery}
-                  items={views.map((v) => ({ value: v, ariaLabel: viewLabel[v], media: <Render name={`switch-2@${v}`} alt="" shadow={false} sizes="48px" /> }))}
+                  items={views.map((v) => ({ value: v, ariaLabel: viewLabel[v], media: <Render name={`nintendo-switch-2--${views.indexOf(v) + 1}`} alt="" shadow={false} sizes="48px" /> }))}
                   value={view}
                   onChange={(value) => setView(value as typeof view)}
                 />
@@ -981,12 +981,12 @@ function Stages({ c }: { c: C }) {
               </div>
             }
           >
-            <Render name={`switch-2@${view}`} alt={`${DEMO.nintendo.name} — ${viewLabel[view]}`} sizes="(min-width: 768px) 360px, 80vw" />
+            <Render name={`nintendo-switch-2--${views.indexOf(view) + 1}`} alt={`${DEMO.nintendo.name} — ${viewLabel[view]}`} sizes="(min-width: 768px) 360px, 80vw" />
           </Stage>
         </Specimen>
         <Specimen label='<Stage size="compact">'>
           <Stage size="compact" gel="playstation">
-            <Render name="ps5-slim" alt={DEMO.playstation.name} sizes="160px" />
+            <Render name="playstation-5-slim--1" alt={DEMO.playstation.name} sizes="160px" />
           </Stage>
           <PlatformLabel platform="playstation" />
         </Specimen>
@@ -1099,7 +1099,7 @@ function GlassPanes({ c }: { c: C }) {
         </Specimen>
         <Specimen label='variant="static" (over the stage)'>
           <Stage size="hero" gel="xbox" tag={<StageTag name={DEMO.xbox.name} priceIqd={DEMO.xbox.priceIqd} />}>
-            <Render name="xbox-series-x" alt="" sizes="(min-width: 768px) 300px, 70vw" />
+            <Render name="xbox-series-x--1" alt="" sizes="(min-width: 768px) 300px, 70vw" />
           </Stage>
         </Specimen>
       </SpecimenGrid>

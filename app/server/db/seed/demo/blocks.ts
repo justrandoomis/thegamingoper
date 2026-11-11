@@ -12,7 +12,7 @@
  *   { type: "steps",   items: [{ title, text? }] }                         numbered how-to steps
  *   { type: "callout", tone: "info" | "warning" | "danger", title?, text } safety and scope notes
  *   { type: "table",   head: string[], rows: string[][] }
- *   { type: "art",     name, alt }                                         `name` = art key for <Art>
+ *   { type: "art",     name, alt }                                         `name` = product photo key ("<slug>--<n>") for <Art>
  *
  * Articles are authored once with all three languages side by side (TBlock) and split into one
  * array per language for storage, so the three versions cannot drift in structure.

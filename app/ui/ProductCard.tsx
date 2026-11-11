@@ -144,7 +144,7 @@ export type ProductImageProps = {
 };
 
 /**
- * One ImageRef, drawn the right way (DESIGN.md §12): a catalogue photo or clay render through <Render> (cut-outs
+ * One ImageRef, drawn the right way (DESIGN.md §12): a catalogue photo through <Render> (cut-outs
  * float with a contact shadow; opaque photos, box art and screenshots sit flat in their frame), or an uploaded photo
  * from /media/<key>. Nothing at all when the ref has neither — the surface colour stays, no fake picture.
  */

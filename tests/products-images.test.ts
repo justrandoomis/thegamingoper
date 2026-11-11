@@ -22,7 +22,7 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
 import { Art } from "../app/art/Art";
-import { artFallbackSrc, artNames, artViews, getArt, getPhoto, hasArt, isPhoto, parsePhotoKey, photoKey, photoKeys, productPhotos, productShareImage, type PhotoManifest } from "../app/art/index";
+import { artFallbackSrc, artViews, getArt, getPhoto, hasArt, isPhoto, parsePhotoKey, photoKey, photoKeys, productPhotos, productShareImage, type PhotoManifest } from "../app/art/index";
 import { PAD, treat, type RawImage } from "../scripts/products/lib/cutout.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -228,8 +228,6 @@ describe("photo registry", () => {
     expect(getPhoto("no-such-product--1")).toBeUndefined();
     expect(hasArt("no-such-product--1")).toBe(false);
     expect(productPhotos("no-such-product")).toEqual([]);
-    // the renders' list is unchanged
-    expect(artNames().some((name) => KEY.test(name))).toBe(false);
   });
 
   it.skipIf(manifests.length === 0)("hands photos out through getArt, in catalogue order per product", () => {

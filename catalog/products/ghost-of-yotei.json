@@ -113,9 +113,9 @@
       "isDefault": true,
       "images": ["ghost-of-yotei--1", "ghost-of-yotei--3", "ghost-of-yotei--4", "ghost-of-yotei--5"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     },
     {
@@ -125,9 +125,9 @@
       "isDefault": false,
       "images": ["ghost-of-yotei--2", "ghost-of-yotei--3", "ghost-of-yotei--4"],
       "notes": {
-        "ar": "صدرت في 1 تشرين الأول 2026 وتضم اللعبة مع التوسعة القصصية Echoes of Sekigahara وطور Most Wanted. هذا المحتوى أُضيف بالتحديث 2.0، لذلك ثبّت آخر تحديث (يحتاج إنترنت وحساب PlayStation). على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "Released 1 October 2026; includes the game with the Echoes of Sekigahara story expansion and the Most Wanted mode. That content came with update 2.0, so install the latest update (internet and a PlayStation account needed). PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "لە 1ی تشرینی یەکەمی 2026 دەرچوو؛ یارییەکە لەگەڵ فراوانکردنی چیرۆکی Echoes of Sekigahara و شێوازی Most Wanted لەخۆدەگرێت. ئەم ناوەڕۆکە بە نوێکردنەوەی 2.0 هات، بۆیە دوایین نوێکردنەوە دابمەزرێنە (ئینتەرنێت و هەژماری PlayStation پێویستە). PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "صدرت في 1 تشرين الأول 2026 وتضم اللعبة مع التوسعة القصصية Echoes of Sekigahara وطور Most Wanted. هذا المحتوى أُضيف بالتحديث 2.0، لذلك ثبّت آخر تحديث (يحتاج إنترنت وحساب PlayStation). على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "Released 1 October 2026; includes the game with the Echoes of Sekigahara story expansion and the Most Wanted mode. That content came with update 2.0, so install the latest update (internet and a PlayStation account needed). PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "لە 1ی تشرینی یەکەمی 2026 دەرچوو؛ یارییەکە لەگەڵ فراوانکردنی چیرۆکی Echoes of Sekigahara و شێوازی Most Wanted لەخۆدەگرێت. ئەم ناوەڕۆکە بە نوێکردنەوەی 2.0 هات، بۆیە دوایین نوێکردنەوە دابمەزرێنە (ئینتەرنێت و هەژماری PlayStation پێویستە). PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     }
   ],
@@ -170,8 +170,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -246,7 +246,7 @@
     { "url": "https://store.playstation.com/en-gb/concept/10003923", "title": "Ghost of Yōtei Complete Edition — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18 (violence)" },
     { "url": "https://blog.playstation.com/2026/08/12/ghost-of-yotei-complete-edition-comes-to-ps5-october-1/", "title": "Ghost of Yōtei Complete Edition Comes to PS5 October 1", "publisher": "PlayStation.Blog", "retrieved": "2026-11-11", "supports": "Complete Edition on 1 Oct 2026, Echoes of Sekigahara expansion, Most Wanted mode" },
     { "url": "https://collectorseditions.co.uk/gaming/ghost-of-yotei-complete-edition/", "title": "Ghost of Yōtei Complete Edition", "publisher": "Collector's Editions", "retrieved": "2026-11-11", "supports": "independent confirmation that the Complete Edition is sold physically for PS5" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" },
     { "url": "https://www.playstation.com/en-us/support/games/ghost-of-yotei-support/", "title": "Ghost of Yōtei support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 2 October 2025 on PS5; language table: Arabic text only (no Arabic voice); non-English audio needs a game update download" },
     { "url": "https://store.playstation.com/en-us/concept/10003923", "title": "Ghost of Yōtei Complete Edition — PlayStation Store (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, Arabic screen language, up to 4 online players" },
     { "url": "https://www.playstation.com/en-us/games/ghost-of-yotei/", "title": "Ghost of Yōtei — PlayStation (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Pro Enhanced with PSSR and advanced ray tracing; PS5 pack shot" }

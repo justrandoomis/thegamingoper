@@ -11,12 +11,18 @@ export type StockState = "in_stock" | "low_stock" | "out_of_stock" | "preorder";
 
 export type CompatibilityStatus = "verified" | "partial" | "incompatible" | "unverified";
 
-/** An image reference: a TamTam clay render (`artKey`) or an uploaded file served from /media/<mediaKey>. */
+/**
+ * An image reference: a catalogue photo from `~/art` (`artKey`, "<slug>--<n>": official product photography,
+ * DESIGN.md §12) or an uploaded file served from /media/<mediaKey>.
+ */
 export type ImageRef = {
   artKey: string | null;
   mediaKey: string | null;
   alt: string;
-  /** True for clay renders and any non-photographic stand-in; the UI labels these where real photos matter (used devices). */
+  /**
+   * False only when a person confirmed the picture shows this exact item. Catalogue photos of a model are
+   * illustrations of a used unit; the UI labels illustrations where real photos matter (used devices).
+   */
   isIllustration: boolean;
   width?: number;
   height?: number;

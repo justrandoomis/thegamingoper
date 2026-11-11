@@ -113,9 +113,9 @@
       "isDefault": true,
       "images": ["crimson-desert--1", "crimson-desert--2", "crimson-desert--3", "crimson-desert--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي. حمّل التحديث 2.00.00 للحصول على العربية.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive. Download update 2.00.00 to get Arabic.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە. بۆ عەرەبی نوێکردنەوەی 2.00.00 دابگرە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص. حمّل التحديث 2.00.00 للحصول على العربية.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs. Download update 2.00.00 to get Arabic.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە. بۆ عەرەبی نوێکردنەوەی 2.00.00 دابگرە."
       }
     },
     {
@@ -171,8 +171,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -256,7 +256,7 @@
     { "url": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk", "title": "Crimson Desert Enhanced — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "Arabic interface and subtitles, ESRB Mature 17+, single player, max install about 193 GB, cover art" },
     { "url": "https://store.steampowered.com/app/3321460/", "title": "Crimson Desert Enhanced — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: release 19 Mar 2026, Windows and Mac, PEGI 18, Arabic interface and subtitles without Arabic audio, single-player" },
     { "url": "https://www.amazon.com/Crimson-Desert-Standard-Xbox-X/dp/B0FST3B1YX", "title": "Crimson Desert: Standard Edition — Xbox Series X", "publisher": "Amazon US (PLAION listing)", "retrieved": "2026-11-11", "supports": "Xbox Series X physical Standard Edition" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
     "ar": "النسخ الفيزيائية الأولى تحمل نسخة الإطلاق؛ حمّل التحديث المجاني للحصول على Enhanced والعربية. Deluxe وCollector's Edition تضيفان SteelBook ومقتنيات.",

@@ -151,7 +151,7 @@ say so). Delivery copy: `t("delivery", …)` around `<Price amountIqd={fee} size
 132→160px). `gel` (`"nintendo" | "playstation" | "xbox" | "handheld" | "brand" | null`) cross-fades pre-painted light
 layers when it changes. `tag`/`action` hang off the rim (band below the stage); `top`/`bottom` sit inside (orbs,
 gallery). `<StageTag name priceIqd />` is the static-glass price tag.
-`<Render name view? alt sizes? priority? pose? shadow? />` — a clay render fitted by its manifest aspect ratio inside
+`<Render name view? alt sizes? priority? pose? shadow? />` — a catalogue photo fitted by its manifest aspect ratio inside
 its slot, with a percentage contact shadow; a changed `name` inflates in (never on first paint). Only the LCP render
 gets `priority`.
 

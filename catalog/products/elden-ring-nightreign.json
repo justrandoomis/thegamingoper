@@ -114,9 +114,9 @@
       "isDefault": true,
       "images": ["elden-ring-nightreign--1", "elden-ring-nightreign--2", "elden-ring-nightreign--3", "elden-ring-nightreign--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     },
     {
@@ -172,8 +172,8 @@
     },
     {
       "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -258,7 +258,7 @@
     { "url": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-patch-notes-version-102", "title": "ELDEN RING NIGHTREIGN – Patch Notes Version 1.02", "publisher": "Bandai Namco Entertainment Europe", "retrieved": "2026-11-11", "supports": "two-player expeditions added on 31 July 2025 for PS4, PS5, Xbox One, Xbox Series X|S and Steam" },
     { "url": "https://store.steampowered.com/app/2622380/", "title": "ELDEN RING NIGHTREIGN — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 16 and ESRB M, Arabic interface and subtitles without Arabic audio, The Forsaken Hollows add-on" },
     { "url": "https://store.bandainamcoent.eu/elden-ring-nightreign-physical-full-game-xsx-x1-seekers-edition/", "title": "ELDEN RING NIGHTREIGN — Seekers Edition [XSX-X1]", "publisher": "Bandai Namco Store", "retrieved": "2026-11-11", "supports": "physical full game for Xbox Series X / Xbox One" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
     "ar": "التوسعة المدفوعة The Forsaken Hollows تُباع بشكل منفصل.",

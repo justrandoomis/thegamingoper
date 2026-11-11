@@ -1,30 +1,29 @@
 /**
- * TamTam pictures — the registry behind `<Art>`: clay renders and product photos.
+ * TamTam pictures — the registry behind `<Art>`: official product photos (DESIGN.md §12).
  *
- * Clay renders: every picture rendered by `node scripts/art/build.mjs` has one small manifest in
- * `app/art/manifest/` (`<key>.json` for the hero view, `<key>--<view>.json` for the others) and
- * its image files in `public/art/`. Art keys come from `scripts/art/catalog.json` ("switch-2",
- * "dualsense-white", "game-<slug>", …). The renders are stylised illustrations of the hardware.
+ * Every image of `catalog/products/<slug>.json` is built by `node scripts/products/images.mjs` into
+ * `app/art/photos/<slug>--<n>.json` (its manifest) and `public/products/<slug>/` (AVIF and WebP at
+ * fixed widths). Their keys are "<slug>--<n>" — the catalogue's image key, which is also what
+ * `media.art_key` stores. `getArt("nintendo-switch-2--1")`, `<Art name="nintendo-switch-2--1" …/>`
+ * and `productPhotos("nintendo-switch-2")` find them. A product's first photo also carries its
+ * share picture for `og:image` (`productShareImage("nintendo-switch-2")`).
  *
- * Product photos: every image of `catalog/products/<slug>.json` is built by
- * `node scripts/products/images.mjs` into `app/art/photos/<slug>--<n>.json` and `public/products/<slug>/`.
- * Their keys are "<slug>--<n>" (the catalogue's image key); they have one view, "hero", and never
- * collide with a clay key. `getArt("nintendo-switch-2--1")`, `<Art name="nintendo-switch-2--1" …/>`
- * and `productPhotos("nintendo-switch-2")` find them. Photos ship AVIF and WebP only (no PNG
- * fallback); a product's first photo also carries its share picture for `og:image`
- * (`productShareImage("nintendo-switch-2")`).
+ * (The stylised clay renders this registry used to serve are retired: no 3D art.)
  *
  * This module collects the manifests at build time; nothing here touches the network or the DOM,
  * so it is safe in loaders, in components and on the server. A key that has no picture yet is not
  * an error: `<Art>` draws a placeholder of the right shape.
  */
-import expected from "./manifest/_expected.json";
 
 // The component, so that `import { Art, hasArt } from "~/art"` works as well as "~/art/Art".
 // (Art.tsx imports this file too; that is fine because neither uses the other while loading.)
 export { Art } from "./Art";
 export type { ArtProps } from "./Art";
 
+/**
+ * Views a picture name may ask for ("<key>@front"). Photos have one view, "hero"; another view of a
+ * photo falls back to it. Kept so names and components written with views keep working.
+ */
 export type ArtView = "hero" | "front" | "back";
 
 export interface ArtVariant {
@@ -37,7 +36,7 @@ export interface ArtVariant {
 export interface ArtManifest {
   key: string;
   view: ArtView;
-  /** Intrinsic size of the picture (the largest master); use it for width/height attributes. */
+  /** Intrinsic size of the picture (the largest file); use it for width/height attributes. */
   width: number;
   height: number;
   /** width / height */
@@ -46,12 +45,6 @@ export interface ArtManifest {
     /** Ascending by width. */
     avif: ArtVariant[];
     webp: ArtVariant[];
-    /**
-     * Clay renders only: one PNG for clients that take neither AVIF nor WebP. Product photos have
-     * none — every browser the store supports decodes WebP, so their `<img src>` is the 720 px WebP
-     * (`artFallbackSrc()`).
-     */
-    png?: string;
   };
   /** A ~24 px WebP as a data: URL, shown blurred until the real file has loaded. */
   placeholder: string;
@@ -74,10 +67,7 @@ export interface ShareImage {
   type: "image/jpeg" | "image/png";
 }
 
-/**
- * A product photo ("<slug>--<n>"): the manifest of a render, plus how the photo was treated and
- * where it came from. Always view "hero".
- */
+/** A product photo ("<slug>--<n>"): its files, how it was treated and where it came from. Always view "hero". */
 export interface PhotoManifest extends ArtManifest {
   /**
    * true: no background (the source had none, or it was cut out) — place it on any surface.
@@ -102,30 +92,20 @@ export interface PhotoManifest extends ArtManifest {
 
 const VIEWS: readonly ArtView[] = ["hero", "front", "back"];
 
-const manifests = import.meta.glob<ArtManifest>(["./manifest/*.json", "!./manifest/_*.json"], {
-  eager: true,
-  import: "default",
-});
-
-const registry = new Map<string, ArtManifest>();
-for (const manifest of Object.values(manifests)) registry.set(artName(manifest.key, manifest.view), manifest);
-
 const photoManifests = import.meta.glob<PhotoManifest>("./photos/*.json", { eager: true, import: "default" });
 
-/** Photos by key ("<slug>--<n>"). Kept apart from the renders: `artNames()` lists renders only. */
+/** Photos by key ("<slug>--<n>"). */
 const photos = new Map<string, PhotoManifest>();
 for (const manifest of Object.values(photoManifests)) photos.set(manifest.key, manifest);
 
 const PHOTO_KEY = /^([a-z0-9]+(?:-[a-z0-9]+)*)--(\d+)$/;
 
-const expectedAspects: Readonly<Record<string, number>> = expected;
-
-/** "switch-2" for the hero view, "switch-2@front" for the others — the form `media.art_key` stores. */
+/** "<key>" for the hero view, "<key>@front" for the others — the form a picture name may take. */
 export function artName(key: string, view: ArtView = "hero"): string {
   return view === "hero" ? key : `${key}@${view}`;
 }
 
-/** Splits "switch-2@front" into key and view. An explicit `view` argument wins over the suffix. */
+/** Splits "<key>@front" into key and view. An explicit `view` argument wins over the suffix. */
 export function parseArtName(name: string, view?: ArtView): { key: string; view: ArtView } {
   const at = name.lastIndexOf("@");
   const suffix = at > 0 ? name.slice(at + 1) : "";
@@ -133,27 +113,19 @@ export function parseArtName(name: string, view?: ArtView): { key: string; view:
   return { key: fromName ? name.slice(0, at) : name, view: view ?? fromName ?? "hero" };
 }
 
-/**
- * The manifest of a picture — a clay render, or a product photo for a "<slug>--<n>" key — or
- * undefined when it does not exist yet. `isPhoto()` tells the two apart.
- */
+/** The manifest of a product photo ("<slug>--<n>"), or undefined when it does not exist (yet). */
 export function getArt(name: string, view?: ArtView): ArtManifest | undefined {
   const target = parseArtName(name, view);
-  return registry.get(artName(target.key, target.view)) ?? (target.view === "hero" ? photos.get(target.key) : undefined);
+  return target.view === "hero" ? photos.get(target.key) : undefined;
 }
 
 export function hasArt(name: string, view?: ArtView): boolean {
   return getArt(name, view) !== undefined;
 }
 
-/** The views of a key that exist, hero first — what a gallery can show. A photo has "hero" only. */
+/** The views of a key that exist — what a gallery can show. A photo has "hero" only. */
 export function artViews(key: string): ArtView[] {
-  return VIEWS.filter((view) => registry.has(artName(key, view)) || (view === "hero" && photos.has(key)));
-}
-
-/** Every clay render as "key" / "key@view". Photos are listed by `photoKeys()`. */
-export function artNames(): string[] {
-  return [...registry.keys()].sort();
+  return photos.has(key) ? ["hero"] : [];
 }
 
 /* ── product photos ──────────────────────────────────────────────────────── */
@@ -169,7 +141,7 @@ export function parsePhotoKey(key: string): { slug: string; n: number } | undefi
   return match ? { slug: match[1], n: Number(match[2]) } : undefined;
 }
 
-/** Narrows a manifest from `getArt()` to a product photo. */
+/** Narrows a manifest from `getArt()` to a product photo (every picture is one now). */
 export function isPhoto(art: ArtManifest | undefined): art is PhotoManifest {
   return art !== undefined && "transparent" in art && "kind" in art;
 }
@@ -204,19 +176,17 @@ export function productShareImage(slug: string): ShareImage | undefined {
 
 /**
  * The single file an `<img src>` names when no `<source>` applies (and for anything that wants one
- * URL): a clay render's PNG, a photo's 720 px WebP (or its largest, when it is narrower).
+ * URL): the 720 px WebP (or the largest, when the photo is narrower). Every browser the store
+ * supports decodes WebP, so there is no PNG fallback.
  */
 export function artFallbackSrc(art: ArtManifest): string {
-  return art.variants.png ?? (art.variants.webp.find((variant) => variant.w >= 720) ?? art.variants.webp[art.variants.webp.length - 1]).src;
+  return (art.variants.webp.find((variant) => variant.w >= 720) ?? art.variants.webp[art.variants.webp.length - 1]).src;
 }
 
-/**
- * Width / height to reserve for a picture: the real one when it is rendered, otherwise an
- * estimate from the hardware's size in the catalogue, otherwise undefined (unknown key).
- */
+/** Width / height to reserve for a picture, or undefined for an unknown key. */
 export function artAspect(name: string, view?: ArtView): number | undefined {
   const target = parseArtName(name, view);
-  return getArt(target.key, target.view)?.aspect ?? expectedAspects[artName(target.key, target.view)];
+  return getArt(target.key, target.view)?.aspect;
 }
 
 /** `srcset` value for a list of variants. */

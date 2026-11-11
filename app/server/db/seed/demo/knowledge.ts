@@ -1,6 +1,11 @@
 /**
  * DEMO knowledge articles: a first-time setup guide and a "safe fixes" article for Switch 2,
- * PlayStation 5, Xbox Series X and handheld gaming PCs.
+ * PlayStation 5, Xbox Series X and handheld gaming PCs. They hang on the device models of
+ * ./devices.ts (switch-2, ps5-slim, xbox-series-x; the handheld articles on the whole platform), and
+ * their pictures are the devices' official photos. Statements were checked against the researched
+ * catalogue (catalog/products): microSD Express on Switch 2, the USB cable in the PS5 Slim box but
+ * not the PS5 Pro box, AA batteries for the Xbox controller (whether they come in the box is not
+ * published), SteamOS and Windows handhelds, the makers' apps.
  *
  * Rules these articles follow (brief §7):
  *   · only steps a shopper can do without opening the device, taken from the makers' own guidance
@@ -12,8 +17,8 @@
  */
 import type { ArticleKind } from "../../schema";
 import { art, callout, h2, p, step, steps, ul, type TBlock } from "./blocks";
-import { deviceModelBySlug, type PlatformSlug } from "./devices";
-import { t3, type T3 } from "./text";
+import type { PlatformSlug } from "./devices";
+import { same, t3, type T3 } from "./text";
 
 export type ArticleSeed = {
   slug: string;
@@ -76,10 +81,8 @@ const POWER_SUPPLY_DANGER = callout(
 
 const STICK_DRIFT_TREE = t3("انحراف عصا التحكم", "Controller stick drift", "لادانی جۆیستیکی دەسکی یاری");
 
-const modelArt = (slug: string): TBlock => {
-  const model = deviceModelBySlug(slug);
-  return art(model.artKey, model.name);
-};
+/** The device's main official photo (the first image of the catalogue product that is the device). */
+const devicePhoto = (photoKey: string, name: string): TBlock => art(photoKey, same(name));
 
 // ───────────────────────────────────────────────────────────────── articles
 
@@ -97,7 +100,7 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
     platform: "nintendo",
     tags: ["setup", "switch-2"],
     blocks: [
-      modelArt("switch-2"),
+      devicePhoto("nintendo-switch-2--1", "Nintendo Switch 2"),
       h2(t3("ما تحتاجه", "What you need", "ئەوەی پێویستتە")),
       ul(
         t3(
@@ -161,9 +164,9 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
         step(
           ADD_STORAGE,
           t3(
-            "Switch 2 يقبل بطاقات microSD Express فقط. أطفئ الجهاز تماماً قبل إدخال البطاقة في فتحتها أو إخراجها.",
-            "Switch 2 accepts microSD Express cards only. Switch the console off completely before inserting the card into its slot or removing it.",
-            "Switch 2 تەنها کارتی microSD Express وەردەگرێت. پێش خستنە ناوەوەی کارتەکە بۆ شوێنەکەی یان دەرهێنانی، ئامێرەکە بە تەواوی بکوژێنەوە.",
+            "لا تُحفظ الألعاب إلا على بطاقات microSD Express (حتى 2TB)؛ بطاقة microSD العادية من Switch سابق يفتح منها الجهاز لقطات الشاشة والفيديوهات فقط. أطفئ الجهاز تماماً قبل إدخال البطاقة في فتحتها أو إخراجها.",
+            "Games can be stored only on microSD Express cards (up to 2TB); from an ordinary microSD card of an earlier Switch the console only opens screenshots and videos. Switch the console off completely before inserting the card into its slot or removing it.",
+            "یاری تەنها لەسەر کارتی microSD Express (تا 2TB) هەڵدەگیرێت؛ لە کارتی microSDی ئاسایی Switchـی پێشوو ئامێرەکە تەنها وێنەی شاشە و ڤیدیۆ دەکاتەوە. پێش خستنە ناوەوەی کارتەکە بۆ شوێنەکەی یان دەرهێنانی، ئامێرەکە بە تەواوی بکوژێنەوە.",
           ),
         ),
       ),
@@ -266,7 +269,7 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
     platform: "playstation",
     tags: ["setup", "ps5"],
     blocks: [
-      modelArt("ps5-slim"),
+      devicePhoto("playstation-5-slim--1", "PlayStation 5 Slim"),
       H_PLACE,
       ul(
         t3(
@@ -298,9 +301,9 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
         step(
           t3("اقرن يد DualSense", "Pair the DualSense", "دەسکی DualSense جووت بکە"),
           t3(
-            "صِل اليد بالجهاز عبر كيبل USB المرفق، ثم اضغط زر PS.",
-            "Connect the controller to the console with the included USB cable, then press the PS button.",
-            "دەسکەکە لە ڕێگەی کێبڵی USBـی هاوپێچەوە بە ئامێرەکە ببەستە، پاشان دوگمەی PS داگرە.",
+            "صِل اليد بالجهاز بكيبل USB، ثم اضغط زر PS. علبة PS5 Slim فيها كيبل USB، أما علبة PS5 Pro فليس فيها.",
+            "Connect the controller to the console with a USB cable, then press the PS button. The PS5 Slim box includes one; the PS5 Pro box does not.",
+            "دەسکەکە بە کێبڵی USB بە ئامێرەکە ببەستە، پاشان دوگمەی PS داگرە. قوتووی PS5 Slim کێبڵی USBـی تێدایە، بەڵام قوتووی PS5 Pro نییەتی.",
           ),
         ),
         step(
@@ -450,7 +453,7 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
     platform: "xbox",
     tags: ["setup", "xbox-series-x"],
     blocks: [
-      modelArt("xbox-series-x"),
+      devicePhoto("xbox-series-x--1", "XBOX Series X"),
       H_PLACE,
       ul(
         t3(
@@ -477,9 +480,9 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
         step(
           t3("شغّل الجهاز واليد", "Switch on the console and the controller", "ئامێر و دەسکەکە داگیرسێنە"),
           t3(
-            "اضغط زر Xbox في واجهة الجهاز. ضع البطاريتين المرفقتين في اليد ثم اضغط زر Xbox فيها.",
-            "Press the Xbox button on the front of the console. Put the two included batteries in the controller, then press its Xbox button.",
-            "دوگمەی Xbox لە ڕووی پێشەوەی ئامێرەکە داگرە. دوو پاترییە هاوپێچەکە بخە ناو دەسکەکە، پاشان دوگمەی Xboxـی سەری داگرە.",
+            "اضغط زر Xbox في واجهة الجهاز. ضع بطاريتين من نوع AA في اليد (أو صِلها بكيبل USB-C)، ثم اضغط زر Xbox فيها.",
+            "Press the Xbox button on the front of the console. Put two AA batteries in the controller (or connect it with a USB-C cable), then press its Xbox button.",
+            "دوگمەی Xbox لە ڕووی پێشەوەی ئامێرەکە داگرە. دوو پاتریی AA بخە ناو دەسکەکە (یان بە کێبڵی USB-C بیبەستە)، پاشان دوگمەی Xboxـی سەری داگرە.",
           ),
         ),
         step(
@@ -618,14 +621,14 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
       "ئامادەکردنی کۆمپیوتەری یاریی دەستی بۆ یەکەم جار",
     ),
     summary: t3(
-      "خطوات تنطبق على Steam Deck OLED و ROG Ally X و Legion Go: الشحن، التحديثات، التخزين والعناية بالبطارية.",
-      "Steps that apply to Steam Deck OLED, ROG Ally X and Legion Go: charging, updates, storage and battery care.",
-      "هەنگاوانێک کە بۆ Steam Deck OLED و ROG Ally X و Legion Go دەگونجێن: بارگاویکردن، نوێکردنەوەکان، بیرگە و چاودێریی پاتری.",
+      "خطوات تنطبق على Steam Deck و ROG Ally و ROG Xbox Ally و Legion Go و MSI Claw: الشحن، التحديثات، التخزين والعناية بالبطارية.",
+      "Steps that apply to Steam Deck, ROG Ally, ROG Xbox Ally, Legion Go and MSI Claw: charging, updates, storage and battery care.",
+      "هەنگاوانێک کە بۆ Steam Deck و ROG Ally و ROG Xbox Ally و Legion Go و MSI Claw دەگونجێن: بارگاویکردن، نوێکردنەوەکان، بیرگە و چاودێریی پاتری.",
     ),
     platform: "handheld",
     tags: ["setup", "handheld-pc", "battery"],
     blocks: [
-      modelArt("steam-deck-oled"),
+      devicePhoto("steam-deck-oled--1", "Steam Deck OLED"),
       H_STEPS,
       steps(
         step(
@@ -639,17 +642,17 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
         step(
           t3("أكمل إعداد النظام", "Finish the system setup", "ئامادەکردنی سیستەم تەواو بکە"),
           t3(
-            "Steam Deck يطلب حساب Steam. أجهزة Windows مثل ROG Ally X و Legion Go تبدأ بإعداد Windows 11.",
-            "Steam Deck asks for a Steam account. Windows devices such as ROG Ally X and Legion Go start with Windows 11 setup.",
-            "Steam Deck داوای هەژماری Steam دەکات. ئامێرەکانی Windows وەک ROG Ally X و Legion Go بە ئامادەکردنی Windows 11 دەست پێدەکەن.",
+            "يطلب Steam Deck ونسخة SteamOS من Legion Go S حساب Steam. أجهزة Windows مثل ROG Ally و ROG Xbox Ally و Legion Go و MSI Claw تبدأ بإعداد Windows 11.",
+            "Steam Deck and the SteamOS edition of Legion Go S ask for a Steam account. Windows devices such as ROG Ally, ROG Xbox Ally, Legion Go and MSI Claw start with Windows 11 setup.",
+            "Steam Deck و وەشانی SteamOSـی Legion Go S داوای هەژماری Steam دەکەن. ئامێرەکانی Windows وەک ROG Ally و ROG Xbox Ally و Legion Go و MSI Claw بە ئامادەکردنی Windows 11 دەست پێدەکەن.",
           ),
         ),
         step(
           t3("ثبّت التحديثات كلها", "Install all updates", "هەموو نوێکردنەوەکان دابمەزرێنە"),
           t3(
-            "في Steam Deck من الإعدادات ثم النظام. في أجهزة Windows شغّل Windows Update، ثم حدّث تطبيق الشركة (Armoury Crate SE أو Legion Space). أبقِ الجهاز على الشاحن أثناء أي تحديث للـ BIOS ولا تطفئه.",
-            "On Steam Deck, go to Settings, then System. On Windows devices run Windows Update, then update the maker's app (Armoury Crate SE or Legion Space). Keep the device on its charger during any BIOS update and do not switch it off.",
-            "لە Steam Deck لە ڕێکخستنەکان و پاشان سیستەم. لە ئامێرەکانی Windows، Windows Update کارپێبکە، پاشان ئەپی کۆمپانیاکە نوێ بکەرەوە (Armoury Crate SE یان Legion Space). لە کاتی هەر نوێکردنەوەیەکی BIOSدا ئامێرەکە لەسەر بارگاویکەر بهێڵەوە و مەیکوژێنەوە.",
+            "في Steam Deck من الإعدادات ثم النظام. في أجهزة Windows شغّل Windows Update، ثم حدّث تطبيق الشركة (Armoury Crate SE أو Legion Space أو MSI Center M). أبقِ الجهاز على الشاحن أثناء أي تحديث للـ BIOS ولا تطفئه.",
+            "On Steam Deck, go to Settings, then System. On Windows devices run Windows Update, then update the maker's app (Armoury Crate SE, Legion Space or MSI Center M). Keep the device on its charger during any BIOS update and do not switch it off.",
+            "لە Steam Deck لە ڕێکخستنەکان و پاشان سیستەم. لە ئامێرەکانی Windows، Windows Update کارپێبکە، پاشان ئەپی کۆمپانیاکە نوێ بکەرەوە (Armoury Crate SE یان Legion Space یان MSI Center M). لە کاتی هەر نوێکردنەوەیەکی BIOSدا ئامێرەکە لەسەر بارگاویکەر بهێڵەوە و مەیکوژێنەوە.",
           ),
         ),
         step(
@@ -703,9 +706,9 @@ export const DEMO_ARTICLES: readonly ArticleSeed[] = [
       "کۆمپیوتەری یاریی دەستی: چارەسەری سەلامەت بۆ کێشە باوەکان",
     ),
     summary: t3(
-      "الجهاز لا يشتغل، يسخن، أو العصا لا تستجيب: خطوات آمنة لـ Steam Deck OLED و ROG Ally X و Legion Go.",
-      "The device will not turn on, runs hot, or a stick does not respond: safe steps for Steam Deck OLED, ROG Ally X and Legion Go.",
-      "ئامێرەکە داناگیرسێت، گەرم دەبێت، یان جۆیستیک وەڵام ناداتەوە: هەنگاوی سەلامەت بۆ Steam Deck OLED و ROG Ally X و Legion Go.",
+      "الجهاز لا يشتغل، يسخن، أو العصا لا تستجيب: خطوات آمنة لـ Steam Deck و ROG Ally و ROG Xbox Ally و Legion Go و MSI Claw.",
+      "The device will not turn on, runs hot, or a stick does not respond: safe steps for Steam Deck, ROG Ally, ROG Xbox Ally, Legion Go and MSI Claw.",
+      "ئامێرەکە داناگیرسێت، گەرم دەبێت، یان جۆیستیک وەڵام ناداتەوە: هەنگاوی سەلامەت بۆ Steam Deck و ROG Ally و ROG Xbox Ally و Legion Go و MSI Claw.",
     ),
     platform: "handheld",
     tags: ["troubleshooting", "power", "overheating", "stick-drift", "handheld-pc"],

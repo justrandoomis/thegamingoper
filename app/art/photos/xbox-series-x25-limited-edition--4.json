@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/xbox-series-x25-limited-edition/4-1440.1d0d9474.webp"
       }
-    ],
-    "png": "/products/xbox-series-x25-limited-edition/4-720.39be8c03.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRiIBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGsAAAART6C0bSQ2ePTw6XEvERF4BXvdAk5s23aTkx7ZiwwSzxBY0SBxdRK4ICPp3PH+MoaI/k8A3vtpu7m2QPGXpCWEo6wpPGxr+NgO8LMtjHKGO1dydKWzblVZrn7KZw0Ad+VHRcaotJiwXgI8AQBWUDggkAAAADAEAJ0BKhQADwA/EXKwUCwmpKKwCAGAIgloAKwgXOCtFXF/JfVQJO6B3ADNo24vw5XMQUHxd/uC3DUcvfNhMD6Hi/RhnyMirRJESccoMp4/innp77h7iEFHlovEWXP4sb+/i7b0Hk7XG+HHFxgFrGhlwAhlNNntaoPLfAChMaONpRPMU/6EX1VRhTWDGcAAAA==",
   "dominant": "#192708",
@@ -61,5 +60,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_05_2000x2000?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3"
   },
-  "input": "aeb1a669de9be48f"
+  "input": "ba62e1a14fffcde9"
 }

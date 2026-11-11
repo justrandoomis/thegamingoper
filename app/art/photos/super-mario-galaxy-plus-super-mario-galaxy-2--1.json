@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-960.b4253881.webp"
       }
-    ],
-    "png": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-720.9373bee5.png"
+    ]
+  },
+  "share": {
+    "src": "/products/super-mario-galaxy-plus-super-mario-galaxy-2/1-1054.c568981e.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOD+YtN4CDXiIjgNiBq20ZTGYzBKQzuwmDjD+3+Ef2PA5Aa1c3r7r4/jeqmAFIAVlA4IJgAAABQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoGv/i15m6IG3I9YvfxIAM4p25rs34j5OZ6CVK1l/GWfPy1YqXxYtAqLK81+muDpUFAkJQcOcCAaqWv/YsSdzF4i69DyVaMexdRUB7W7AxGodOCZ2oxukEOv+JFBsAvFTxRwTVs/qxm0XwjlzQP9/AlRQnSSuZml5KEAAA==",
   "dominant": "#d7d7d7",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%20Software/Super%20Mario%20Galaxy%201%20and%202%20-%20Switch/121495-nintendo-super-mario-galaxy-and-super-mario-galaxy-2-box-art-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/super-mario-galaxy-super-mario-galaxy-2-121495/"
   },
-  "input": "0f0772e1c0518c7e"
+  "input": "2533efb9e9c456e3"
 }

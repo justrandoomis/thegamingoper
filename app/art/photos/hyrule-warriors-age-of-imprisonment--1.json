@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/hyrule-warriors-age-of-imprisonment/1-960.8cb8360e.webp"
       }
-    ],
-    "png": "/products/hyrule-warriors-age-of-imprisonment/1-720.7d7254ab.png"
+    ]
+  },
+  "share": {
+    "src": "/products/hyrule-warriors-age-of-imprisonment/1-1054.da0d1549.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOD+YtN4CDXiIjgNiBq20ZTGYzBKQzuwmDjD+3+Ef2PA5Aa1c3r7r4/jeqmAFIAVlA4IIQAAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdEf/gNXtKeBOqIS/vBOAA/oO1lHWgigxKuSTgAPuvVLQAv+TZfmKuJSeh19CBqtsQu7eQBvzPkrdaUD6Cvbszw2Ef+zv8c6qrfuqF8ufnpWcZRslXUErC72R2taRlc5NKX3pyGDQAAAA=",
   "dominant": "#e70012",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Hyrule%20Warriors%20Age%20of%20Imprisonment/121582-nintendo-hyrule-warriors-age-of-imprisonment-box-art-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-121582/"
   },
-  "input": "c160ec06063b07b4"
+  "input": "c7f42e4872e369d0"
 }

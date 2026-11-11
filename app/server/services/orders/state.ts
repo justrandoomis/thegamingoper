@@ -16,10 +16,14 @@
  * The moves between awaiting_payment, payment_review and confirmed belong to the payment flow
  * (submitPaymentProof, verifyPayment): transitionOrder refuses them, so an order is never
  * confirmed without a verified payment.
+ *
+ * `returned` has two meanings by origin: from `shipped` the parcel came back undelivered (the
+ * goods return to stock in the same step); from `delivered` the customer sent the order back
+ * after delivery (goods and money go through the refund / returns flow first, with inspection).
  */
 import type { OrderStatus } from "~/lib/dto";
 
-export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
+export const ORDER_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   new: ["confirmed", "cancelled"],
   awaiting_payment: ["payment_review", "cancelled"],
   payment_review: ["confirmed", "awaiting_payment", "cancelled"],

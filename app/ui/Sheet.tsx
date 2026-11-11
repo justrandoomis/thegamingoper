@@ -35,10 +35,11 @@ import { IconKey } from "./IconKey";
  * dragged, keeps the finger's velocity on release (snap points, flick away), rubber-bands past the top; the scrim
  * fades with how open it is. Reduced motion: a 120ms fade; dragging still works. Only the header strip is glass.
  *
- * Focus moves into the sheet and is trapped, Escape / the scrim / the close key close it, focus returns to the opener,
- * the page behind is inert and keeps its scroll position without a layout shift (shared with <Dialog>). `open` is
- * the state: when it turns false the sheet springs away and unmounts afterwards. A drag or flick past the lowest snap
- * point calls `onClose` when the sheet has left. Client only: nothing renders on the server.
+ * Focus moves into the sheet and is trapped, Escape / the scrim / the close key / Android's back close it, focus
+ * returns to the opener, the page behind is inert and keeps its scroll position without a layout shift (shared with
+ * <Dialog>), and the sheet takes the opener's density. `open` is the state: when it turns false the sheet springs away
+ * and unmounts afterwards. A drag or flick past the lowest snap point calls `onClose` when the sheet has left. Client
+ * only: nothing renders on the server. Props and examples: docs/ui/overlays.md.
  */
 export type SheetProps = {
   open: boolean;
@@ -105,7 +106,16 @@ export function Sheet(props: SheetProps) {
   return <SheetLayer {...props} leaving={!props.open} onExited={exited} />;
 }
 
-function SheetLayer({
+type LayerProps = SheetProps & { leaving: boolean; onExited: () => void };
+
+/** Waits for the portal root (it exists only after hydration), so the sheet and its physics mount together. */
+function SheetLayer(props: LayerProps) {
+  const root = useOverlayRoot();
+  return root ? <SheetPortal {...props} root={root} /> : null;
+}
+
+function SheetPortal({
+  root,
   onClose,
   title,
   description,
@@ -121,10 +131,9 @@ function SheetLayer({
   bodyClassName,
   leaving,
   onExited,
-}: SheetProps & { leaving: boolean; onExited: () => void }) {
+}: LayerProps & { root: HTMLElement }) {
   const t = useT("ui");
   const to = useT("ui-overlays");
-  const root = useOverlayRoot();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -186,7 +195,6 @@ function SheetLayer({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reacts to `leaving` only
   }, [leaving]);
 
-  if (!root) return null;
   const bottom = edge === "bottom";
   const canResize = bottom && points.length > 1;
   const expanded = snap >= mostOpen;

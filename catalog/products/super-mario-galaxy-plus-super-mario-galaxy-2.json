@@ -21,13 +21,13 @@
     { "ar": "لعبتان كاملتان: Super Mario Galaxy و Super Mario Galaxy 2", "en": "Two full games: Super Mario Galaxy and Super Mario Galaxy 2", "ckb": "دوو یاریی تەواو: Super Mario Galaxy و Super Mario Galaxy 2" },
     { "ar": "تحديث مجاني يحسّن الصورة على Nintendo Switch 2 (حتى 4K على التلفاز)", "en": "A free update improves visuals on Nintendo Switch 2 (up to 4K on a TV)", "ckb": "نوێکردنەوەیەکی بەخۆڕایی وێنە لەسەر Nintendo Switch 2 باشتر دەکات (تا 4K لەسەر تەلەفزیۆن)" },
     { "ar": "لاعب أو لاعبان: الثاني يساعد بمؤشر النجوم في وضع Co-Star", "en": "1–2 players: the second helps with the star pointer in Co-Star mode", "ckb": "1–2 یاریزان: دووەم لە دۆخی Co-Star بە نیشاندەری ئەستێرە یارمەتی دەدات" },
-    { "ar": "فصول قصة جديدة وموسيقى إضافية و Assist Mode", "en": "New storybook chapters, extra music and Assist Mode", "ckb": "بەشی چیرۆکی نوێ، مۆسیقای زیادە و Assist Mode" },
+    { "ar": "فصول جديدة في كتاب القصص، وطور Soundtrack Mode للاستماع إلى موسيقى اللعبة، و Assist Mode", "en": "New storybook chapters, a Soundtrack Mode for the game's music, and Assist Mode", "ckb": "بەشی نوێ لە کتێبی چیرۆکەکەدا، Soundtrack Mode بۆ گوێگرتن لە مۆسیقای یارییەکە، و Assist Mode" },
     { "ar": "PEGI 7 · ESRB E · لا تدعم العربية", "en": "PEGI 7 · ESRB E · No Arabic", "ckb": "PEGI 7 · ESRB E · عەرەبی تێدا نییە" }
   ],
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch (تعمل على Nintendo Switch 2 مع تحسينات)", "en": "Nintendo Switch (runs on Nintendo Switch 2 with enhancements)", "ckb": "Nintendo Switch (لەسەر Nintendo Switch 2 بە باشترکردنەوە کار دەکات)" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "2 تشرين الأول 2025", "en": "2 October 2025", "ckb": "2ی تشرینی یەکەمی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "Super Mario Galaxy ‏3.6 GB + Super Mario Galaxy 2 ‏2.9 GB", "en": "Super Mario Galaxy 3.6 GB + Super Mario Galaxy 2 2.9 GB", "ckb": "Super Mario Galaxy ‏3.6 GB + Super Mario Galaxy 2 ‏2.9 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–2 على جهاز واحد", "en": "1–2 on one system", "ckb": "1–2 لەسەر یەک ئامێر" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E (عنف خيالي خفيف)", "en": "PEGI 7 · ESRB E (Mild Fantasy Violence)", "ckb": "PEGI 7 · ESRB E (توندوتیژیی خەیاڵیی سووک)" } },
@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NSG-MARIO-GALAXY-1-2",
-      "title": { "ar": "Super Mario Galaxy + Super Mario Galaxy 2 — نسخة فعلية لـ Nintendo Switch", "en": "Super Mario Galaxy + Super Mario Galaxy 2 — Nintendo Switch physical edition", "ckb": "Super Mario Galaxy + Super Mario Galaxy 2 — کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "title": { "ar": "Super Mario Galaxy + Super Mario Galaxy 2 — نسخة فيزيائية لـ Nintendo Switch", "en": "Super Mario Galaxy + Super Mario Galaxy 2 — Nintendo Switch physical edition", "ckb": "Super Mario Galaxy + Super Mario Galaxy 2 — کۆپیی فیزیکی بۆ Nintendo Switch" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496905651"],
       "isDefault": true,
@@ -126,15 +126,18 @@
     }
   ],
   "sources": [
-    { "url": "https://www.nintendo.com/us/store/products/super-mario-galaxy-super-mario-galaxy-2-121495/", "title": "Super Mario Galaxy + Super Mario Galaxy 2 – Nintendo Switch (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905651, release date, ESRB E, 1-2 players, enhanced resolution, improved UI, storybook chapters, extra music, Assist Mode, free Switch 2 update, 4K note" },
+    { "url": "https://www.nintendo.com/us/store/products/super-mario-galaxy-super-mario-galaxy-2-121495/", "title": "Super Mario Galaxy + Super Mario Galaxy 2 – Nintendo Switch (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905651, release date, ESRB E, 1-2 players, enhanced resolution, improved UI, storybook chapters, Soundtrack Mode, Assist Mode, free Switch 2 update, 4K note" },
     { "url": "https://www.nintendo.com/us/store/products/super-mario-galaxy-plus-super-mario-galaxy-2-switch/", "title": "Super Mario Galaxy + Super Mario Galaxy 2 – Nintendo Switch Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "digital bundle, ESRB descriptor, publisher, screenshots" },
-    { "url": "https://www.nintendo.com/us/store/products/super-mario-galaxy-switch/", "title": "Super Mario Galaxy for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "file size 3.6 GB, play modes including handheld, 1-2 players, Save Data Cloud, Switch Lite note" },
+    { "url": "https://www.nintendo.com/us/store/products/super-mario-galaxy-switch/", "title": "Super Mario Galaxy for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "file size 3.6 GB, play modes including handheld, 1-2 players, Save Data Cloud, Switch Lite note, free Switch 2 update with 4K visuals and mouse controls for a second player" },
     { "url": "https://www.nintendo.com/us/store/products/super-mario-galaxy-2-switch/", "title": "Super Mario Galaxy 2 for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "file size 2.9 GB, play modes, 1-2 players" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-games/Super-Mario-Galaxy-Super-Mario-Galaxy-2-2915270.html", "title": "Super Mario Galaxy + Super Mario Galaxy 2 | Nintendo Switch games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, sold as a Nintendo Switch Game Card, Pro Controller compatible, Co-Star mode" },
-    { "url": "https://www.mariowiki.com/Super_Mario_Galaxy_%2B_Super_Mario_Galaxy_2", "title": "Super Mario Galaxy + Super Mario Galaxy 2", "publisher": "Super Mario Wiki (fan wiki)", "retrieved": "2026-11-11", "supports": "Switch 2 update runs the games at 4K docked and 1080p handheld; second player can use Joy-Con 2 mouse controls on Switch 2" }
+    { "url": "https://www.mariowiki.com/Super_Mario_Galaxy_%2B_Super_Mario_Galaxy_2", "title": "Super Mario Galaxy + Super Mario Galaxy 2", "publisher": "Super Mario Wiki (fan wiki)", "retrieved": "2026-11-11", "supports": "Switch 2 update runs the games at 4K docked and 1080p handheld; second player can use Joy-Con 2 mouse controls on Switch 2" },
+    { "url": "https://pegi.info/search-pegi?q=Super%20Mario%20Galaxy", "title": "PEGI search: Super Mario Galaxy + Super Mario Galaxy 2", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 7 (violence, fear) for Nintendo Switch and Nintendo Switch 2, European release 02/10/2025" },
+    { "url": "https://en.wikipedia.org/wiki/Super_Mario_Galaxy", "title": "Super Mario Galaxy", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "both Galaxy games were enhanced and re-released as a collection for Nintendo Switch on 2 October 2025, also sold separately on the eShop" },
+    { "url": "https://www.upcitemdb.com/upc/45496905651", "title": "UPC 045496905651 - Super Mario Galaxy + Super Mario Galaxy 2 - Nintendo Switch", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905651 is listed by US retailers for this collection" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Nintendo's pages do not say in words whether both games are on the card; the UK page lists the release as a Nintendo Switch Game Card",

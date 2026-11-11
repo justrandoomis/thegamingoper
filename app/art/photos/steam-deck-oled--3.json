@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/steam-deck-oled/3-1440.f04fcdd2.webp"
       }
-    ],
-    "png": "/products/steam-deck-oled/3-720.70710f0f.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAgCdASoUAAsAPxGCtFIsKaUisAgBgCIJaSz2wAIT0AD+7H2/0l/YmpwItDELRZ/gFAUd9GQVekP4AAA=",
   "dominant": "#0c0c0c",
@@ -61,5 +60,5 @@
     "url": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/press_oled_top.jpg",
     "page": "https://www.steamdeck.com/en/press"
   },
-  "input": "a6059a388df8328b"
+  "input": "18c870d7fdae070d"
 }

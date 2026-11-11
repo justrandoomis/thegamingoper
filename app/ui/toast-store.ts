@@ -46,8 +46,9 @@ export type Toast = {
   /** Cart toasts: the product name and the variant line ("Xbox Series X · 1TB"). */
   name?: string;
   variant?: string;
-  /** Cart toasts: an <Art> key for the thumbnail ("xbox-series-x--1"). */
+  /** A thumbnail in a small niche instead of the kind's icon: an <Art> key ("xbox-series-x--1")… */
   art?: string;
+  /** …or an uploaded photo (used devices). Any kind may carry one; cart toasts usually do. */
   image?: ToastImage;
   /** The one small clay key: an action or a link. */
   action?: ToastAction;
@@ -68,6 +69,9 @@ export type ToastOptions = {
   detail?: string;
   action?: ToastAction;
   duration?: number;
+  /** A thumbnail instead of the kind's icon (an <Art> key, or an uploaded photo). */
+  art?: string;
+  image?: ToastImage;
 };
 
 export type CartToastInput = {
@@ -278,6 +282,42 @@ export const toast = {
   /** Remove one toast, or all of them. */
   dismiss: (id?: string): void => toastStore.dismiss(id),
 };
+
+/**
+ * A toast described as data, for code that only knows the store by shape (app/ui/cart-client.ts looks for a
+ * function export named `showToast` and passes this; anything else may use it too). An `ImageRef`-like `image`
+ * becomes the thumbnail: its `artKey` through <Art>, or its `mediaKey` as the uploaded file at /media/<key>.
+ */
+export type ToastPayload = {
+  tone?: "info" | "success" | "warning" | "warn" | "error";
+  title: string;
+  detail?: string | null;
+  image?: { artKey?: string | null; mediaKey?: string | null; width?: number; height?: number } | null;
+  action?: { label: string; onAction?: () => void; href?: string } | null;
+  id?: string;
+  duration?: number;
+};
+
+/** The store's input for a payload (pure; exported for tests). */
+export function toastFromPayload(payload: ToastPayload): ToastInput {
+  const kind: ToastKind = payload.tone === "warn" ? "warning" : (payload.tone ?? "info");
+  const input: ToastInput = { kind, title: payload.title };
+  if (payload.detail) input.detail = payload.detail;
+  if (payload.image?.artKey) input.art = payload.image.artKey;
+  else if (payload.image?.mediaKey) {
+    // The thumbnail box is 44 × 44 and crops (object-fit: cover); the file's own size, when known, keeps its ratio.
+    input.image = { src: `/media/${encodeURIComponent(payload.image.mediaKey)}`, width: payload.image.width ?? 44, height: payload.image.height ?? 44 };
+  }
+  if (payload.action) input.action = { label: payload.action.label, onAction: payload.action.onAction, href: payload.action.href };
+  if (payload.id) input.id = payload.id;
+  if (payload.duration !== undefined) input.duration = payload.duration;
+  return input;
+}
+
+/** Show a toast described as data (see ToastPayload). Returns its id ("" on the server). */
+export function showToast(payload: ToastPayload): string {
+  return inBrowser ? toastStore.show(toastFromPayload(payload)) : "";
+}
 
 const serverState = (): ToastState => EMPTY;
 

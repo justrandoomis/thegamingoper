@@ -19,9 +19,9 @@
   },
   "highlights": [
     {
-      "ar": "دبلجة عربية كاملة مع ترجمة وقوائم بالعربية.",
-      "en": "Full Arabic voice-over with Arabic menus and subtitles.",
-      "ckb": "دەنگی عەرەبی تەواو لەگەڵ مێنیو و ژێرنووسی عەرەبی."
+      "ar": "دبلجة عربية كاملة مع قوائم وترجمة بالعربية (اللغات تعتمد على منطقة النسخة).",
+      "en": "Full Arabic voice-over with Arabic menus and subtitles (languages depend on the region of the copy).",
+      "ckb": "دەنگی عەرەبی تەواو لەگەڵ مێنیو و ژێرنووسی عەرەبی (زمانەکان پەیوەستن بە ناوچەی وەشانەکە)."
     },
     {
       "ar": "بطلان قابلان للعب: Peter Parker وMiles Morales.",
@@ -53,7 +53,7 @@
     {
       "key": "platforms",
       "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
-      "value": { "ar": "PS5 (والنسخة الفيزيائية لـ PS5 فقط)", "en": "PS5 (the physical copy is PS5 only)", "ckb": "PS5 (وەشانی فیزیکی تەنها بۆ PS5)" }
+      "value": { "ar": "PS5 وPC — هنا نسخة PS5", "en": "PS5 and PC — sold here for PS5", "ckb": "PS5 و PC — لێرە وەشانی PS5 دەفرۆشرێت" }
     },
     {
       "key": "format",
@@ -77,7 +77,7 @@
     {
       "key": "arabic",
       "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
-      "value": { "ar": "صوت وترجمة وقوائم", "en": "Voice, subtitles and menus", "ckb": "دەنگ، ژێرنووس و مێنیو" }
+      "value": { "ar": "صوت وترجمة وقوائم (حسب منطقة النسخة)", "en": "Voice, subtitles and menus (depends on the region of the copy)", "ckb": "دەنگ، ژێرنووس و مێنیو (بەپێی ناوچەی وەشانەکە)" }
     },
     {
       "key": "age",
@@ -101,14 +101,14 @@
       "isDefault": true,
       "images": ["marvels-spider-man-2--1", "marvels-spider-man-2--2", "marvels-spider-man-2--3", "marvels-spider-man-2--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     }
   ],
   "game": {
-    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-slim-digital"],
     "genres": [
       { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" },
       { "ar": "عالم مفتوح", "en": "Open world", "ckb": "جیهانی کراوە" }
@@ -145,15 +145,15 @@
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-digital",
+      "deviceModel": "ps5-slim-digital",
       "status": "partial",
       "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-slim-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     }
   ],
@@ -206,11 +206,14 @@
     }
   ],
   "sources": [
-    { "url": "https://www.playstation.com/en-us/support/games/marvels-spider-man-2-support/", "title": "Marvel's Spider-Man 2 support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 20 Oct 2023, language table with Arabic voice and text, non-English audio as a download, single-player, editions" },
-    { "url": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/", "title": "Marvel's Spider-Man 2 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, villains, Web Wings, screenshots, PlayStation Plus Extra catalogue" },
-    { "url": "https://store.playstation.com/en-gb/concept/10002456", "title": "Marvel's Spider-Man 2 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16, Arabic spoken language" },
+    { "url": "https://www.playstation.com/en-us/support/games/marvels-spider-man-2-support/", "title": "Marvel's Spider-Man 2 support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 20 Oct 2023, language table with Arabic voice and text, languages depend on the region of purchase, non-English audio as a download, editions" },
+    { "url": "https://www.playstation.com/en-gb/games/marvels-spider-man-2/", "title": "Marvel's Spider-Man 2 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "released 20/10/2023, 1 player, PS5 Pro Enhanced, villains, Web Wings, screenshots, PlayStation Plus Extra catalogue" },
+    { "url": "https://store.playstation.com/en-gb/concept/10002456", "title": "Marvel's Spider-Man 2 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16 (violence, in-game purchases), Arabic spoken and screen language, PS5 Pro Enhanced" },
+    { "url": "https://store.playstation.com/en-ae/concept/10002456", "title": "Marvel's Spider-Man 2 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "fact-check: the Middle East PS5 product lists Arabic voice and Arabic screen language" },
+    { "url": "https://www.playstation.com/en-us/games/marvels-spider-man-2/", "title": "Marvel's Spider-Man 2 — PlayStation (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "fact-check: ESRB T rating" },
+    { "url": "https://store.steampowered.com/app/2651280/", "title": "Marvel's Spider-Man 2 on Steam", "publisher": "Valve (Steam)", "retrieved": "2026-11-11", "supports": "fact-check: PC version released 30 Jan 2025" },
     { "url": "https://direct.playstation.com/en-us/buy-games/marvels-spider-man-2-ps5", "title": "Marvel's Spider-Man 2 — PS5 (PlayStation Direct)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "physical PS5 disc, 1 player, 1 disc, ESRB descriptors, PS5 Pro Enhanced" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
     "ar": "اللعبة متاحة أيضاً ضمن كتالوج PlayStation Plus Extra لمن يملك الاشتراك.",
@@ -218,11 +221,10 @@
     "ckb": "یارییەکە لە کاتالۆگی PlayStation Plus Extra یش بەردەستە بۆ بەشداربووان."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Install size is not published on the official pages we read.",
-      "ESRB letter rating (T) is inferred from the ESRB content descriptors shown on PlayStation Direct.",
       "No EAN/UPC barcode recorded."
     ]
   }

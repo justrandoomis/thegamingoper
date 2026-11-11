@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
-import { announce, cartErrorKey, postForm, readFailure } from "./cart-client";
+import { announce, cartErrorKey, postForm, readFailure, showShopToast } from "./cart-client";
 import { cx } from "./cx";
 import { IconKey } from "./IconKey";
 import { TextLink } from "./TextLink";
@@ -76,13 +76,16 @@ export function WishlistKey({ productId, name, initial = false, onChange, size =
         latest.current.onChange?.(confirmed.current);
         continue;
       }
-      // Failure: the server state is what we last confirmed; the shopper's choice is undone and explained.
+      // Failure: the server state is what we last confirmed; the shopper's choice is undone and explained — beside
+      // the key, in the live region and in an error toast with a retry. (Until the account area ships the endpoint,
+      // every toggle ends here, honestly: "this service is not available right now".)
       const code = outcome.kind === "network" ? "network" : outcome.kind === "timeout" ? "timeout" : readFailure(outcome.status, json).code;
       const reason = t(cartErrorKey(code));
       desired.current = confirmed.current;
       if (mounted.current) setWished(confirmed.current);
       announce(t("wishlist.failed", { reason }));
       report(t("wishlist.failed", { reason }));
+      showShopToast({ kind: "error", title: t("wishlist.notSaved"), detail: reason, retry: { label: t("add.retry"), onRetry: () => toggle() } });
       break;
     }
     if (mounted.current) setWished(desired.current);

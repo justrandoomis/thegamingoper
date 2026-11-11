@@ -18,7 +18,7 @@
     "ckb": "یارییەکی هێمنی لاساییکردنەوەی ژیان کە تێیدا وەک Ditto یاری دەکەیت و ژیان دەگەڕێنیتەوە بۆ زەوییەکی چۆڵ. کەرەستە کۆدەکەیتەوە، کەلوپەل دروست دەکەیت، سەوزە دەچێنیت و خانوو بۆ ئەو پۆکیمۆنانە دروست دەکەیت کە دەیانبینیت، ئەوانیش جووڵەت فێر دەکەن کە لە بیناکردندا یارمەتیت دەدات. تا چوار یاریزان دەتوانن پێکەوە بە ناوخۆیی یان ئۆنلاین بنیات بنێن."
   },
   "highlights": [
-    { "ar": "النسخة الفعلية Game-Key Card: تحتاج إنترنت و10 GB مساحة فارغة على الأقل لتنزيل اللعبة قبل اللعب", "en": "The physical version is a Game-Key Card: you need internet and at least 10 GB free to download the game before playing", "ckb": "کۆپیی فیزیکی Game-Key Card ە: پێش یاریکردن ئینتەرنێت و لانیکەم 10 GB شوێنی بەتاڵت دەوێت بۆ داگرتنی یارییەکە" },
+    { "ar": "النسخة الفيزيائية Game-Key Card: تحتاج إنترنت و10 GB مساحة فارغة على الأقل لتنزيل اللعبة قبل اللعب", "en": "The physical version is a Game-Key Card: you need internet and at least 10 GB free to download the game before playing", "ckb": "کۆپیی فیزیکی Game-Key Card ە: پێش یاریکردن ئینتەرنێت و لانیکەم 10 GB شوێنی بەتاڵت دەوێت بۆ داگرتنی یارییەکە" },
     { "ar": "اصنع وازرع وابنِ عالماً للبوكيمون، مع تحكم Joy-Con 2 كفأرة في الديكور", "en": "Craft, farm and build a Pokémon paradise, with Joy-Con 2 mouse controls for decorating", "ckb": "دروستکردن، کشتوکاڵ و بیناکردنی بەهەشتێک بۆ پۆکیمۆن، لەگەڵ کۆنترۆڵی ماوسی Joy-Con 2 بۆ ڕازاندنەوە" },
     { "ar": "حتى 4 لاعبين محلياً لاسلكياً أو عبر الإنترنت، ودعم GameShare", "en": "Up to 4 players over local wireless or online, plus GameShare", "ckb": "تا 4 یاریزان بە بێتەلی ناوخۆیی یان ئۆنلاین، لەگەڵ GameShare" },
     { "ar": "Expansion Pass مدفوع من ثلاثة أجزاء متوفر منفصلاً", "en": "A three-part paid Expansion Pass is sold separately", "ckb": "Expansion Pass ی پارەداری سێ بەشی بە جیا دەفرۆشرێت" },
@@ -27,7 +27,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "5 آذار 2026", "en": "5 March 2026", "ckb": "5ی ئازاری 2026" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "Game-Key Card — البطاقة مفتاح فقط واللعبة تُنزَّل من الإنترنت، وتبقى البطاقة مطلوبة داخل الجهاز للعب", "en": "Game-Key Card — the card is a key; the game downloads from the internet and the card must stay inserted to play", "ckb": "Game-Key Card — کارتەکە تەنها کلیلە؛ یارییەکە لە ئینتەرنێتەوە دادەگیرێت و بۆ یاریکردن دەبێت کارتەکە لە ناو ئامێرەکەدا بێت" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "Game-Key Card — البطاقة مفتاح فقط واللعبة تُنزَّل من الإنترنت، وتبقى البطاقة مطلوبة داخل الجهاز للعب", "en": "Game-Key Card — the card is a key; the game downloads from the internet and the card must stay inserted to play", "ckb": "Game-Key Card — کارتەکە تەنها کلیلە؛ یارییەکە لە ئینتەرنێتەوە دادەگیرێت و بۆ یاریکردن دەبێت کارتەکە لە ناو ئامێرەکەدا بێت" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "6.8 GB (تطلب Nintendo توفر 10 GB على الأقل لنسخة Game-Key Card)", "en": "6.8 GB (Nintendo asks for at least 10 GB free for the Game-Key Card version)", "ckb": "6.8 GB (Nintendo داوای لانیکەم 10 GB شوێنی بەتاڵ دەکات بۆ وەشانی Game-Key Card)" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد على الجهاز؛ 2–4 محلياً لاسلكياً؛ 1–4 عبر الإنترنت", "en": "1 per system; 2–4 local wireless; 1–4 online", "ckb": "یەک یاریزان لەسەر ئامێر؛ 2–4 بێتەلی ناوخۆیی؛ 1–4 ئۆنلاین" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 3 · ESRB E (تفاعل المستخدمين، مشتريات داخل اللعبة)", "en": "PEGI 3 · ESRB E (Users Interact, In-Game Purchases)", "ckb": "PEGI 3 · ESRB E (کارلێکی بەکارهێنەران، کڕینی ناو یاری)" } },
@@ -131,7 +131,12 @@
     { "url": "https://www.nintendo.com/us/store/products/pokemon-pokopia-121593/", "title": "Pokémon Pokopia – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906047, box art showing the Game-Key Card label and ESRB E" },
     { "url": "https://pokopia.pokemon.com/en-us/buy-now/", "title": "Buy Now | Pokémon Pokopia", "publisher": "The Pokémon Company International", "retrieved": "2026-11-11", "supports": "sold as digital and game-key card versions; game-key card needs internet and at least 10 GB free; three-part Expansion Pass paid DLC" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Pokemon-Pokopia-2915161.html", "title": "Pokémon Pokopia | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 3, languages, download size 6.8 GB, Switch 2 only, play as Ditto, crafting and building, Joy-Con 2 mouse controls, up to four players online and local, GameShare, Expansion Pass release 09/06/2026" },
-    { "url": "https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pokopia", "title": "Pokémon Pokopia", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developers Game Freak and Omega Force, publishers Nintendo (worldwide) and The Pokémon Company (Japan), release March 5, 2026, social simulation genre" }
+    { "url": "https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pokopia", "title": "Pokémon Pokopia", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developers Game Freak and Omega Force, publishers Nintendo (worldwide) and The Pokémon Company (Japan), release March 5, 2026, social simulation genre" },
+    { "url": "https://pokopia.pokemon.com/en-gb/buy-now/", "title": "Buy Now | Pokémon Pokopia (UK)", "publisher": "The Pokémon Company International", "retrieved": "2026-11-11", "supports": "the UK release is also sold in digital and game-key card versions; the game-key card version needs internet and at least 10 GB free" },
+    { "url": "https://www.ign.com/articles/pokemon-pokopia-looks-to-be-a-70-game-key-card-release-but-no-nintendo-hasnt-broken-its-promise-around-games-it-develops", "title": "Fans Claim Broken Promises After $70 Pokémon Pokopia Confirmed as First Nintendo-Published Game-Key Card Release", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "independent check: physical edition only as a Game-Key Card (Nintendo Japan lists it as one), release March 5, 2026, developed with Koei Tecmo" },
+    { "url": "https://pegi.info/search-pegi?q=Pokopia", "title": "PEGI search: Pokémon Pokopia", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 3 (in-game purchases) for Nintendo Switch 2, European release 05/03/2026" },
+    { "url": "https://www.nintendo.com/en-gb/Hardware/Nintendo-Switch-2/GameShare/Nintendo-Switch-2-GameShare-2785626.html", "title": "Nintendo Switch 2 GameShare", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "Pokémon Pokopia can be shared locally and online via GameChat" },
+    { "url": "https://www.upcitemdb.com/upc/45496906047", "title": "UPC 045496906047 - Pokémon Pokopia", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496906047 is listed by US retailers for Pokémon Pokopia" }
   ],
   "notes": {
     "ar": "هذه ليست بطاقة لعبة كاملة: عند أول تشغيل تُنزَّل اللعبة كاملة من الإنترنت، ويجب إبقاء البطاقة في الجهاز في كل مرة تلعب. يُنصح ببطاقة microSD Express إذا كانت مساحة الجهاز ممتلئة.",
@@ -139,10 +144,9 @@
     "ckb": "ئەمە کارتی یاریی تەواو نییە: لە یەکەم بەکارهێناندا هەموو یارییەکە دادەگیرێت، و هەموو جارێک کە یاری دەکەیت دەبێت کارتەکە لە ناو ئامێرەکەدا بێت. ئەگەر بیرگەی ئامێرەکە پڕ بێت کارتی microSD Express بەسوودە."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Game-Key Card format confirmed for the US release (box art) and by the official Pokopia site; European packaging was not inspected",
       "European EAN barcode not found on an official page"
     ]
   }

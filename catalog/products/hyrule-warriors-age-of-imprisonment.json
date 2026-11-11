@@ -27,7 +27,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "6 تشرين الثاني 2025", "en": "6 November 2025", "ckb": "6ی تشرینی دووەمی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "43.5 GB", "en": "43.5 GB", "ckb": "43.5 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–2 على جهاز واحد", "en": "1–2 on one system", "ckb": "1–2 لەسەر یەک ئامێر" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 12 · ESRB T (عنف خيالي)", "en": "PEGI 12 · ESRB T (Fantasy Violence)", "ckb": "PEGI 12 · ESRB T (توندوتیژیی خەیاڵی)" } },
@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-HYRULE-WARRIORS-AOI",
-      "title": { "ar": "Hyrule Warriors: Age of Imprisonment — نسخة فعلية لـ Nintendo Switch 2", "en": "Hyrule Warriors: Age of Imprisonment — Nintendo Switch 2 physical edition", "ckb": "Hyrule Warriors: Age of Imprisonment — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Hyrule Warriors: Age of Imprisonment — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Hyrule Warriors: Age of Imprisonment — Nintendo Switch 2 physical edition", "ckb": "Hyrule Warriors: Age of Imprisonment — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905934"],
       "isDefault": true,
@@ -56,9 +56,9 @@
     ],
     "players": "1-2",
     "online": {
-      "ar": "لا يوجد لعب عبر الإنترنت. الحفظ السحابي يحتاج Nintendo Switch Online.",
-      "en": "No online play. Cloud saves need Nintendo Switch Online.",
-      "ckb": "یاریی ئۆنلاین نییە. پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە."
+      "ar": "لا يوجد طور لعب جماعي عبر الإنترنت، لكن يمكن لصديق الانضمام إلى اللعب الثنائي عبر GameShare من خلال GameChat (يحتاج Nintendo Switch Online). الحفظ السحابي يحتاج Nintendo Switch Online.",
+      "en": "No online multiplayer mode, but a friend can join two-player play through GameShare over GameChat (needs Nintendo Switch Online). Cloud saves need Nintendo Switch Online.",
+      "ckb": "دۆخی یاریی بەکۆمەڵی ئۆنلاینی نییە، بەڵام هاوڕێیەک دەتوانێت لە ڕێگەی GameShare و GameChat ەوە بەشداری یاریی دوو کەسی بکات (Nintendo Switch Online پێویستە). پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە."
     },
     "ageRating": { "pegi": 12, "esrb": "T" },
     "arabic": "none",
@@ -104,7 +104,7 @@
       "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000103459/6c233749c2311251c1df347f5e46016b95c293d1568e1196b44d6712dcfae308",
       "sourcePage": "https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-switch-2/",
       "kind": "screenshot",
-      "alt": { "ar": "شخصيتان تسيران في غابة خضراء", "en": "Two characters walking through a green forest", "ckb": "دوو کارەکتەر بە ناو دارستانێکی سەوزدا دەڕۆن" },
+      "alt": { "ar": "بطل يرتدي عباءة يسير في غابة خضراء مشمسة", "en": "A cloaked hero walking through a sunlit green forest", "ckb": "پاڵەوانێکی عەباپۆش بە ناو دارستانێکی سەوزی خۆرەتاودا دەڕوات" },
       "credit": "Nintendo / Koei Tecmo Games", "width": 1920, "height": 1080, "transparent": false
     },
     {
@@ -128,15 +128,19 @@
   ],
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-switch-2/", "title": "Hyrule Warriors: Age of Imprisonment for Nintendo Switch 2", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size 43.5 GB, 1-2 players on one system, GameShare, ESRB T, languages, Save Data Cloud, amiibo" },
-    { "url": "https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-121582/", "title": "Hyrule Warriors: Age of Imprisonment (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905934, developer Koei Tecmo Games AAA Studio, box art" },
+    { "url": "https://www.nintendo.com/us/store/products/hyrule-warriors-age-of-imprisonment-121582/", "title": "Hyrule Warriors: Age of Imprisonment (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905934, developer Koei Tecmo Games AAA Studio, box art (ESRB T, no Game-Key Card label)" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Hyrule-Warriors-Age-of-Imprisonment-2789659.html", "title": "Hyrule Warriors: Age of Imprisonment | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, download size 43.5 GB, Switch 2 only, story of the Imprisoning War from Tears of the Kingdom, playable heroes, Zonai devices" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Age%20of%20Imprisonment", "title": "PEGI search: Hyrule Warriors: Age of Imprisonment", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 12 (violence) for Nintendo Switch 2, European release 06/11/2025" },
+    { "url": "https://www.rpgsite.net/feature/17453-every-nintendo-switch-2-rpg-physical-release-complete-on-cartridge-no-game-key-cards-or-codes-needed", "title": "Every Nintendo Switch 2 RPG Physical Release Complete on Cartridge", "publisher": "RPG Site", "retrieved": "2026-11-11", "supports": "independent check of the format: Age of Imprisonment is listed among Switch 2 physical releases complete on the cartridge" },
+    { "url": "https://en.wikipedia.org/wiki/Hyrule_Warriors:_Age_of_Imprisonment", "title": "Hyrule Warriors: Age of Imprisonment", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developed by Koei Tecmo's AAA Games Studio, published by Nintendo for Nintendo Switch 2, released November 6, 2025, story set during the Imprisoning War of Tears of the Kingdom" },
+    { "url": "https://www.nintendo.com/en-gb/Hardware/Nintendo-Switch-2/GameShare/Nintendo-Switch-2-GameShare-2785626.html", "title": "Nintendo Switch 2 GameShare", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "Age of Imprisonment can be shared locally and online via GameChat" },
+    { "url": "https://www.upcitemdb.com/upc/45496905934", "title": "UPC 045496905934 - Hyrule Warriors: Age of Imprisonment - Nintendo Switch 2", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905934 is listed by US retailers for this game" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Full game card status inferred from the official box art (no game-key card label)",
       "European EAN barcode not found on an official page"
     ]
   }

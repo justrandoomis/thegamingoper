@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/joy-con-2-wheel/1-1440.97e350a6.webp"
       }
-    ],
-    "png": "/products/joy-con-2-wheel/1-720.a08b29d5.png"
+    ]
+  },
+  "share": {
+    "src": "/products/joy-con-2-wheel/1-1200.bac0ec1f.png",
+    "width": 1200,
+    "height": 634,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRkQBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSHMAAAART6CobSM2dRz6u70jIugHCDYJuI1tW1XO99+AhS5kbplV4NDBg+xHL8YldU7Dv4aI/ieq6tIBpkIDZHJRg81YYLhbXuz9ZvnVS5K1J0lrT3LwImmXj8ej9vz//9bQx9De6zjouLYvarCZbIG6dICp0FAFAFZQOCCqAAAA8AMAnQEqFAALAD8RcrBQLCakorAIAYAiCWwArAGL9EZ+9NSvlwYAAAD9kAlkZxrgfz8ng8HOxXaj5RbiL9eh7ZlNyaDsLkvJCVZtvzwv3oQJAGcE5ewXpqBtTY//krY/X2cgdhFfs9ML2Cnozr8L/HwpcfsAjsjZOU6EwwMHOKDajv/n/SuzWZNiUzv0AebcBkHAweCyXDK2lnzVgFXeHtRYNNQe4bNAAAA=",
   "dominant": "#040405",
@@ -61,5 +66,5 @@
     "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Wheel/Frame_3473691.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
   },
-  "input": "c1f48371596b3c01"
+  "input": "04c7710b616316c7"
 }

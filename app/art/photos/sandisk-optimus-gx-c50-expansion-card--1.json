@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-960.8e0e5569.webp"
       }
-    ],
-    "png": "/products/sandisk-optimus-gx-c50-expansion-card/1-720.428652bf.png"
+    ]
+  },
+  "share": {
+    "src": "/products/sandisk-optimus-gx-c50-expansion-card/1-1002.a4f4c8ce.png",
+    "width": 1002,
+    "height": 1600,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSEkAAAARR6CobRs4WBJ9XdtgLCIC1UvHA9PYtqO8LAVERqeCuFhkJBKNogCGSwm/cHYaiOj/BOi4AjSNZmb9lel/ww50paWUOUsrbFGnAFZQOCBIAAAAkAMAnQEqDQAUAC7RiMRiJCwsLAwA0Es4AAXazfdbgXSdFdPKAAD+7JzGXi4aN7sp1E36Yc1/C3VTA0jPQ8z+zdD25026gAAA",
   "dominant": "#262626",
@@ -53,5 +58,5 @@
     "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-front-nocapacity.png",
     "page": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox"
   },
-  "input": "040acb09ff770c83"
+  "input": "93586567bcaae2f5"
 }

@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/xbox-wireless-controller/5-1440.aa52a9fc.webp"
       }
-    ],
-    "png": "/products/xbox-wireless-controller/5-720.b47372e3.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRiwBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGoAAAART6AmkiQ1eAYuupDpMSICVOIzLRQ4rbVtbZ6wjYxkchxdW0cL0AK1ce0K3G/f788MEf2fAFYf5mG4FkAsqg0nzYen1sBb28JPW4jFaG9M7snk32TJ0rT/SXCXCOAhwU4cC2jFCyfUo8VKVlA4IJwAAADQBACdASoUAA8APxFysFAsJqSisAgBgCIJbACdMoR4MKAR4ABM5Oru+bl24oFQOAD+ntPvOOf+pxz8Ygwx4xdkuIXruS6DlxGN1ySKjzR5tqGsnrYvf/wHal9s8scuiax/YUT+ds4g8KmDeX/DDP7VHAe/5SY2VB79XeFQcMDbnDy7jupIn8V1a9zhGj/jAt/wb2yJsN1Koq2kAAA=",
   "dominant": "#a81408",
@@ -61,5 +60,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Wireless-Controller-Pulse-Red-Front?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz"
   },
-  "input": "be603d0fb45b3a3a"
+  "input": "4cd25c7ebcd68b52"
 }

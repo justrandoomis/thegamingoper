@@ -8,8 +8,9 @@
  * WHAT IT CHECKS (before writing anything)
  *   · input (zod): phone required and normalised (normalizeIraqPhone → +9647XXXXXXXXX), governorate +
  *     area + detailed address required, district optional but must belong to the governorate,
- *     notes / recipient name / preferred day and window optional, marketing consent explicit
- *     (false unless the shopper ticked it), payment method enabled in settings.
+ *     notes / recipient name / preferred day and window optional (an optional field sent empty —
+ *     "" from a form — counts as not given), marketing consent explicit (false unless the shopper
+ *     ticked it), payment method enabled in settings.
  *   · wallet: signed-in customers only (a guest gets 403 "wallet_requires_account").
  *   · the cart is priced again on the server (getCheckoutCart: today's prices, stock, coupon with
  *     this phone, the governorate's delivery fee). Nothing the browser sends is a price. If the
@@ -37,10 +38,15 @@
  *   The checkout page sends `idempotencyKey` = randomToken() (22–128 URL-safe characters), one per
  *   attempt. The order stores sha256 of it (UNIQUE). A retry — or two concurrent submissions — with
  *   the same key returns the first order: same ref, same orderId, same access token, nothing
- *   written twice. The access token is derived from the key (sha256 under its own label), so it can
- *   be returned again without ever being stored; only sha256(token) is stored. A replay is answered
- *   only to the same shopper (same customer, or the cookie of the cart that became the order);
- *   anyone else gets "idempotency_conflict" (409).
+ *   written twice. A replay is answered only to the same shopper (same customer, or the cookie of
+ *   the cart that became the order); anyone else gets "idempotency_conflict" (409).
+ *
+ * GUEST ACCESS TOKEN (/order/<ref>?t=<token>)
+ *   token = base64url(sha256("tamtam.order.access.v2|" + orderId + "|" + idempotencyKey)): 256 bits
+ *   that depend on two random secrets — the shopper's key (never stored; only its hash is) and the
+ *   order id (80 random bits generated here, never shown to shoppers). Only sha256(token) is
+ *   stored, so a database reader cannot rebuild the link, yet a retry with the same key gets the
+ *   same token back without the token ever being stored.
  *
  * Must not import "cloudflare:workers".
  */
@@ -132,13 +138,15 @@ export const CheckoutInput = z.object({
   contactName: optionalText(100),
   phone: z.string().trim().min(1, "required").max(40, "too_long"),
   governorateId: idSchema,
-  districtId: idSchema.optional().nullable().transform((value) => value ?? null),
+  /** Optional. "" (what an untouched <select> posts) means "not given", like the optional text fields. */
+  districtId: z.union([z.literal(""), idSchema]).nullish().transform((value) => value || null),
   areaText: z.string().trim().min(2, "required").max(200, "too_long"),
   addressText: z.string().trim().min(5, "too_short").max(500, "too_long"),
   notes: optionalText(500),
   /** "YYYY-MM-DD" (Asia/Baghdad), today to 30 days ahead — a preference, never a promise. */
   preferredDay: optionalText(10),
-  preferredWindow: z.enum(PREFERRED_WINDOWS).optional().nullable().transform((value) => value ?? null),
+  /** Optional; "" means "no preference". */
+  preferredWindow: z.union([z.literal(""), z.enum(PREFERRED_WINDOWS)]).nullish().transform((value) => value || null),
   /** Never pre-checked: false unless the shopper ticked it. */
   marketingConsent: z.boolean().default(false),
   paymentMethod: z.enum(CHECKOUT_METHODS),
@@ -190,9 +198,9 @@ export async function orderKeyHash(idempotencyKey: string): Promise<string> {
   return sha256Hex(`tamtam.order.idempotency.v1|${idempotencyKey}`);
 }
 
-/** The guest access token of the order placed with this key (only its sha256 is stored). */
-export async function orderAccessToken(idempotencyKey: string): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`tamtam.order.access.v1|${idempotencyKey}`));
+/** The guest access token of the order `orderId` placed with this key (only its sha256 is stored). */
+export async function orderAccessToken(orderId: string, idempotencyKey: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`tamtam.order.access.v2|${orderId}|${idempotencyKey}`));
   return base64Url(new Uint8Array(digest));
 }
 
@@ -242,7 +250,7 @@ async function replayFor(db: Db, existing: ExistingOrder, who: CheckoutWho, idem
     same = cart !== undefined;
   }
   if (!same) throw new AppError("idempotency_conflict", 409);
-  return { ref: existing.ref, orderId: existing.id, accessToken: await orderAccessToken(idempotencyKey), paymentStatus: initialPaymentStatus(existing.paymentMethod), totalIqd: existing.totalIqd, replayed: true };
+  return { ref: existing.ref, orderId: existing.id, accessToken: await orderAccessToken(existing.id, idempotencyKey), paymentStatus: initialPaymentStatus(existing.paymentMethod), totalIqd: existing.totalIqd, replayed: true };
 }
 
 /**
@@ -352,14 +360,14 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
   const transfer = method === "bank_transfer" || method === "zaincash";
   const paymentDueAt = transfer ? now + settings["checkout.transfer_proof_hours"] * HOUR_MS : null;
   const actor: Actor = customerId ? { kind: "customer", id: customerId, ip: who.ip, requestId: who.requestId ?? null } : { kind: "guest", ip: who.ip, requestId: who.requestId ?? null };
-  const accessToken = await orderAccessToken(input.idempotencyKey);
-  const accessTokenHash = await sha256Hex(accessToken);
   const status: NewOrder["status"] = method === "cod" ? "new" : method === "wallet" ? "confirmed" : "awaiting_payment";
   const paymentStatus: OrderPaymentStatus = initialPaymentStatus(method);
 
   for (let attempt = 1; ; attempt++) {
     const orderId = newId("ord");
     const ref = publicRef("TT");
+    const accessToken = await orderAccessToken(orderId, input.idempotencyKey);
+    const accessTokenHash = await sha256Hex(accessToken);
     const guestContactId = customerId ? null : (guestContact?.id ?? newId("gst"));
     const paymentId = newId("pay");
     const ledgerId = method === "wallet" ? newId("wal") : null;

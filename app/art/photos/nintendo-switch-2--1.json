@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/nintendo-switch-2/1-960.5b93f6b3.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2/1-720.0e1a8225.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch-2/1-1200.73bfdb8d.png",
+    "width": 1200,
+    "height": 1260,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRjoBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSGUAAAART6CmbSM4WQy9u6nPfhER4PeaVHAb27ZSnQcNaCMOKSEZJbjF0IBLzpfbL04DEf2fABz0lY2aoSGLAVg5NESFvEeLxQJ+g6isvB1anD1a2Bv8/x7UcQ9C/N8B1HEPQr0HuDmOAgBWUDggrgAAAFAEAJ0BKhMAFAA/EX62VawnpKMoCAGAIglsALsADL2MUmIwr1hoPCHqnkAA/qFk21Utg7r6qmYnEvfadHE/j0pKjJ+BwAzBg9cA/8Upj9M/1s7ZEnFIvO8xoj4ce7DXpHYTBwV6Ou5aA3Xu1+OasUwyPFaxk3hCqA/yzNspDP0b3M6lMWVT0+ffQMEc4xl+Efh9BK6kNwVlF5Zb1g/5o7xMw3MjaO4B5d70RAmAAA==",
   "dominant": "#060607",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/v1745278135/switch-2/tech-specs/switch-2-front.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/"
   },
-  "input": "bfa12d58d2cdca19"
+  "input": "d0c84a051685ff66"
 }

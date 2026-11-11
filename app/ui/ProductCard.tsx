@@ -1,10 +1,11 @@
-import { useRef, type ReactNode } from "react";
+import { useRef, type ReactNode, type SyntheticEvent } from "react";
 import { useRouteLoaderData } from "react-router";
 
 import { getArt, isPhoto } from "~/art";
 import type { ImageRef, ProductCardData } from "~/lib/dto";
 import { MotionLink, SharedElement } from "~/motion";
 import { AddToCartKey } from "./AddToCartKey";
+import { mediaUrl } from "./cart-client";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
 import { Niche } from "./Niche";
@@ -49,6 +50,16 @@ export type ProductCardProps = {
 
 const CARD_SIZES = "(min-width: 1200px) 210px, (min-width: 768px) 30vw, 46vw";
 
+/**
+ * The price and the 52px socket share one row. Measured on /design-system: a seven-digit price (1,095,000) needs a
+ * card of ~184px at 17px, a six-digit one ~152px — rail cards on phones are narrower, so there the price steps down
+ * to 15px (Kufam's floor, DESIGN.md §5.5). Below that (a seven-digit price in a 141px rail card on a 360px phone)
+ * the row wraps and the socket keeps to the end (`ms-auto`).
+ */
+export function priceFit(priceIqd: number): string {
+  return priceIqd >= 1_000_000 ? "@max-[11.5rem]:[--price-md:15px]" : "@max-[9.5rem]:[--price-md:15px]";
+}
+
 type RootStore = { storeMode?: string };
 
 export function ProductCard({ card, priority = false, sharedName, slot, sizes = CARD_SIZES, headingLevel, demoNote, className }: ProductCardProps) {
@@ -61,7 +72,7 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
   const saving = card.compareAtIqd !== null && card.compareAtIqd > card.priceIqd;
 
   return (
-    <article ref={root} className={cx("relative flex min-w-0 flex-col", className)} data-product={card.id}>
+    <article ref={root} className={cx("relative flex w-full min-w-0 flex-col", className)} data-product={card.id}>
       <MotionLink nav="zoom" to={href} className="flex flex-col gap-2 rounded-lg after:absolute after:inset-0 after:content-['']">
         <SharedElement name={sharedName ?? `product-image:${card.id}`} slot={slot} as="span" className="block">
           <Niche as="span" tag={tag}>
@@ -83,8 +94,8 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
       </p>
       {card.stock !== "in_stock" ? <StockNote stock={card.stock} className="mt-0.5" /> : null}
       {card.rating ? <RatingStars rating={card.rating} className="mt-0.5" /> : null}
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-1.5">
-        <PriceTag priceIqd={card.priceIqd} compareAtIqd={card.compareAtIqd} />
+      <div className="@container mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-1.5">
+        <PriceTag priceIqd={card.priceIqd} compareAtIqd={card.compareAtIqd} className={priceFit(card.priceIqd)} />
         <AddToCartKey
           item={{ variantId: card.variantId }}
           name={card.name}
@@ -92,6 +103,7 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
           chooseHref={card.hasVariants ? href : null}
           image={card.image}
           source={() => root.current?.querySelector(".niche") ?? null}
+          className="ms-auto"
         />
       </div>
       {showDemo ? <DemoNote compact className="relative mt-1 self-start" /> : null}
@@ -105,7 +117,7 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
  */
 export function ProductCardPlaceholder({ className }: { className?: string }) {
   return (
-    <div aria-hidden="true" className={cx("flex min-w-0 flex-col", className)}>
+    <div aria-hidden="true" className={cx("flex w-full min-w-0 flex-col", className)}>
       <Niche as="span" tagZone={false} />
       <span className="mt-2 block min-h-[2lh] type-strong" />
       <span className="block min-h-[1lh] type-caption" />
@@ -146,18 +158,24 @@ export function ProductImage({ image, alt, sizes, priority = false, fit = "conta
   if (image.mediaKey) {
     return (
       <img
-        src={`/media/${encodeURIComponent(image.mediaKey)}`}
+        src={mediaUrl(image.mediaKey)}
         width={image.width ?? 1200}
         height={image.height ?? 900}
         alt={text}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         fetchPriority={priority ? "high" : undefined}
+        // An onLoad prop keeps React from holding a card → page navigation until the photo has loaded (docs/MOTION.md §4.6).
+        onLoad={markLoaded}
         className={cx("block size-full", fit === "cover" ? "object-cover" : "object-contain", className)}
       />
     );
   }
   return null;
+}
+
+function markLoaded(event: SyntheticEvent<HTMLImageElement>) {
+  event.currentTarget.dataset.loaded = "";
 }
 
 const RTL_SCRIPT = /[֐-ࣿיִ-﷿ﹰ-﻿]/u;

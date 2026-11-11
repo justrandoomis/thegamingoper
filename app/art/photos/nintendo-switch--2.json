@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/nintendo-switch/2-1440.046a08dc.webp"
       }
-    ],
-    "png": "/products/nintendo-switch/2-720.d850140f.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQAALjk1Nx5x55NtXUkAA/u/BUe9yvrDsgJnwqn5JNlpCZ8fgLvBUkv+vl7+lGaqK6DR+N+XgqpE1mAGqDVL5V+WdIMp3zyOsJ26ysU2IxuPxJsUAAA==",
   "dominant": "#151719",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotTabletopMode_NOE",
     "page": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739"
   },
-  "input": "0961faa5d13b6854"
+  "input": "040aece393cf33f4"
 }

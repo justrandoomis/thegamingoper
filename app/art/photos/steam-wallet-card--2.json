@@ -16,8 +16,7 @@
         "w": 240,
         "src": "/products/steam-wallet-card/2-240.a9927b72.webp"
       }
-    ],
-    "png": "/products/steam-wallet-card/2-272.61849394.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRkwBAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSGoAAAART6CokSQ1th7oxXQXEQGs/0QCF05r21ajG9QMkjrgxI0izR2AY3Jxs9LBvHo/tRDR/wmAYrY+ME75/NOkAbMfsVWIkfiDxEriLPHVRKRLGBKmhC2RiD4hZzrWHkaiz7zQAFxOtQduqkEIVlA4ILwAAABwBACdASoUABIAPxF+tlWsJ6SjKAgBgCIJQAB8nCIt35m2t2phJ7/c4Ot7gAD+22Vof9eWjOB8G36kpvY+70hesKzvHlW+z0W6l70YM5PWPHNX+0QPFTod3sv2eK1g4tBFztitl9gHxCR4DUOKJjZfkcINyY5Fl0lKz8mgkY4w6cTYr7HW4Z1xZmhbJ8/E4RuXmmd0z/vP5VGaa+peXRJNGpp+L9Q4Hsc/oIKn09Qld+hNVZXfob/ih5peAA==",
   "dominant": "#314057",
@@ -29,5 +28,5 @@
     "url": "https://store.akamai.steamstatic.com/public/images/gift/digital_cards_preview.png",
     "page": "https://store.steampowered.com/digitalgiftcards/"
   },
-  "input": "4ccfa0b2c2e56916"
+  "input": "684fe67dad343bb0"
 }

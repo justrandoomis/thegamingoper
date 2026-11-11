@@ -40,8 +40,7 @@
         "w": 960,
         "src": "/products/nintendo-switch-oled/3-960.eaebf628.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-oled/3-720.ea590de9.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAACwAwCdASoUAAsAPxFwsFAsJiSisAgBgCIJYwAAW3KolPgE8J0dgAD+1iTeE+NMBR4ziZpwJBEo9yknzBS7vKbMPpxVVhCi2Djj9ximAEwAZC0gfMr3V9s8e8p+uYVFZmtkhpWeFZyKwAAA",
   "dominant": "#020203",
@@ -53,5 +52,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-oled-model-white-set/115461-switch-oled-white-console_joy-con-detached-1200x675",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-oled-model-white-set/"
   },
-  "input": "d576731078f2927f"
+  "input": "9110fc9729eb485c"
 }

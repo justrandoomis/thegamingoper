@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/nintendo-switch/3-1440.e6caa417.webp"
       }
-    ],
-    "png": "/products/nintendo-switch/3-720.3eaef5fa.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSEQAAAARP0CmARmWgc/rEsFEROAup4BRbFttHnWNhOYABziof5/uIBP/M8AqAiL6PwFYzM9Ubd9U/4+No8BhBi8HDBHRnRhWAVZQOCCIAAAA8AMAnQEqFAAPAD8RcrBQLCakorAIAYAiCWwAnTKAA0X1+ixFNcV4AAD+433lSTSQPaAztc1THXVYLaSJzbO6M+3YwTlLE3jknRtpS0UXr0MsQyFh1QIP2aSXiuSec8T8Xg0ESQaiG1Xej6J8m8/qIYdcXi66bA7RfJx7fsfEubWwUxakUwAAAA==",
   "dominant": "#030607",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotTVMode_NOE",
     "page": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739"
   },
-  "input": "a9865b2d6bd8e975"
+  "input": "95689eec5bf93e3a"
 }

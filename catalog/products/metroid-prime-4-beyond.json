@@ -26,7 +26,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 (Switch 2 Edition) أو Nintendo Switch", "en": "Nintendo Switch 2 (Switch 2 Edition) or Nintendo Switch", "ckb": "Nintendo Switch 2 (Switch 2 Edition) یان Nintendo Switch" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "4 كانون الأول 2025", "en": "4 December 2025", "ckb": "4ی کانوونی یەکەمی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة؛ نسخة Switch 2 Edition تضم لعبة Switch وحزمة الترقية", "en": "Game card; the Switch 2 Edition includes the Switch game and the upgrade pack", "ckb": "کارتی یاری؛ Switch 2 Edition یاریی Switch و پاکێجی نوێکردنەوەی تێدایە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة؛ نسخة Switch 2 Edition تضم لعبة Switch وحزمة الترقية", "en": "Game card; the Switch 2 Edition includes the Switch game and the upgrade pack", "ckb": "کارتی یاری؛ Switch 2 Edition یاریی Switch و پاکێجی نوێکردنەوەی تێدایە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "27.7 GB على Nintendo Switch 2 · 26.3 GB على Nintendo Switch", "en": "27.7 GB on Nintendo Switch 2 · 26.3 GB on Nintendo Switch", "ckb": "27.7 GB لەسەر Nintendo Switch 2 · 26.3 GB لەسەر Nintendo Switch" } },
     { "key": "displayModes", "label": { "ar": "أوضاع العرض على Switch 2", "en": "Switch 2 display modes", "ckb": "دۆخەکانی پیشاندان لەسەر Switch 2" }, "value": { "ar": "الجودة: 4K/60 على التلفاز، 1080p/60 محمول · الأداء: 1080p/120 على التلفاز، 720p/120 محمول", "en": "Quality: 4K/60 docked, 1080p/60 handheld · Performance: 1080p/120 docked, 720p/120 handheld", "ckb": "کوالیتی: 4K/60 لەسەر تەلەفزیۆن، 1080p/60 دەستی · کارایی: 1080p/120 لەسەر تەلەفزیۆن، 720p/120 دەستی" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1", "ckb": "یەک یاریزان" } },
@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-METROID-PRIME-4",
-      "title": { "ar": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (نسخة فعلية)", "en": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (physical)", "ckb": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (physical)", "ckb": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905613"],
       "isDefault": true,
@@ -50,7 +50,7 @@
     },
     {
       "sku": "NSG-METROID-PRIME-4",
-      "title": { "ar": "Metroid Prime 4: Beyond — نسخة Nintendo Switch (فعلية)", "en": "Metroid Prime 4: Beyond — Nintendo Switch version (physical)", "ckb": "Metroid Prime 4: Beyond — وەشانی Nintendo Switch (فیزیکی)" },
+      "title": { "ar": "Metroid Prime 4: Beyond — نسخة Nintendo Switch (فيزيائية)", "en": "Metroid Prime 4: Beyond — Nintendo Switch version (physical)", "ckb": "Metroid Prime 4: Beyond — وەشانی Nintendo Switch (فیزیکی)" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496591748"],
       "isDefault": false,
@@ -137,17 +137,18 @@
   ],
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-switch-2/", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size (Switch 26.3 GB, Switch 2 27.7 GB), single player, ESRB T and descriptors, languages, Save Data Cloud, amiibo, HDR and 120 Hz output, Joy-Con 2 mouse aiming" },
-    { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-121491/", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch 2 Edition physical, US UPC 00045496905613, box art" },
+    { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-121491/", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch 2 Edition physical, US UPC 00045496905613, box art (ESRB T; cover text: includes the Nintendo Switch game and the Nintendo Switch 2 Edition upgrade pack; no Game-Key Card label)" },
     { "url": "https://www.nintendo.com/us/store/products/metroid-prime-4-106495/", "title": "Metroid Prime 4: Beyond for Nintendo Switch (Physical)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch physical, US UPC 00045496591748, play modes including handheld, Switch Lite note" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/Metroid-Prime-4-Beyond-Nintendo-Switch-2-Edition-2790001.html", "title": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, story on planet Viewros, psychic abilities, Vi-O-La, control schemes, quality and performance modes, Switch 2 Edition card plays the Switch version in a Nintendo Switch, upgrade pack; lists download size as 26.4 GB" },
-    { "url": "https://en.wikipedia.org/wiki/Metroid_Prime_4:_Beyond", "title": "Metroid Prime 4: Beyond", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Retro Studios, publisher Nintendo, release December 4, 2025, single-player" }
+    { "url": "https://en.wikipedia.org/wiki/Metroid_Prime_4:_Beyond", "title": "Metroid Prime 4: Beyond", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Retro Studios, publisher Nintendo, release December 4, 2025, single-player" },
+    { "url": "https://pegi.info/search-pegi?q=Metroid%20Prime%204", "title": "PEGI search: Metroid Prime 4: Beyond", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 12 (violence) for Nintendo Switch and Nintendo Switch 2, European release 04/12/2025" },
+    { "url": "https://www.notebookcheck.net/Report-Physical-Switch-2-Edition-games-will-include-the-game-and-upgrade-pack-no-download-needed.997137.0.html", "title": "Report: Physical Switch 2 Edition games will include the game and upgrade pack, no download needed", "publisher": "Notebookcheck", "retrieved": "2026-11-11", "supports": "independent check of the format: physical Nintendo Switch 2 Edition games carry both the Switch game and the upgrade pack, with no download needed (Metroid Prime 4: Beyond given as an example)" },
+    { "url": "https://www.upcitemdb.com/upc/45496905613", "title": "UPC 045496905613 - Metroid Prime 4: Beyond Nintendo Switch 2 Edition", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905613 is listed for the Nintendo Switch 2 Edition; UPC 045496591748 is listed for the Nintendo Switch version" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Switch 2 size: 27.7 GB on Nintendo's US store, 26.4 GB on Nintendo UK",
-      "Full game card status inferred from the official covers (no game-key card label)",
       "European EAN barcodes not found on an official page"
     ]
   }

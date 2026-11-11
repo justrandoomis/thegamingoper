@@ -32,8 +32,7 @@
         "w": 720,
         "src": "/products/xbox-series-x-digital/2-720.13ea3f04.webp"
       }
-    ],
-    "png": "/products/xbox-series-x-digital/2-720.d33d428b.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAwCdASoPABQAPxF0tFAsJyUisAgBgCIJaQAD46oFJVCDQ1ZI6NAAAP5r8EQkiLU6ic7e7M6663igT5QbBltQJGCzihyfR0XWNlemOfEvBNcmjoS4GXGCegAAAA==",
   "dominant": "#f8f8f8",
@@ -42,8 +41,8 @@
   "kind": "angle",
   "credit": "Microsoft",
   "source": {
-    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/66743890_Image-Buy-Box-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Content-Feature-Xbox-Series-X-Robot-White-Compare?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
   },
-  "input": "e55d5a560849406c"
+  "input": "a36945938e6d7bca"
 }

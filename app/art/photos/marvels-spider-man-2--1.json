@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/marvels-spider-man-2/1-1440.15e4a977.webp"
       }
-    ],
-    "png": "/products/marvels-spider-man-2/1-720.7cc1da53.png"
+    ]
+  },
+  "share": {
+    "src": "/products/marvels-spider-man-2/1-1200.c5c704b7.jpg",
+    "width": 1200,
+    "height": 1200,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABQAPxF4sVIsJySiqA1RgCIJbACdL3WA59eVbBJLqIEeGkAA/uvitxOutCGIGZFK1UFK7q1PRjeo3k3S04m3rC9/8g2LnB9Kki33W3ttnZ7lywCmgGgr30CJZJqnyZ4qyjih4QDerG7/IWGhsHVgsAA=",
   "dominant": "#770001",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-packshot-01-en-02jul24?$1600px--t$",
     "page": "https://www.playstation.com/en-us/games/marvels-wolverine/"
   },
-  "input": "fe9af189a3e61581"
+  "input": "d1164e1efb6d6d7d"
 }

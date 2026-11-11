@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/wd-black-sn850x/1-1440.0a6b8711.webp"
       }
-    ],
-    "png": "/products/wd-black-sn850x/1-720.e5deac69.png"
+    ]
+  },
+  "share": {
+    "src": "/products/wd-black-sn850x/1-1200.1761e018.png",
+    "width": 1200,
+    "height": 457,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSDwAAAARN6AWkiQ4udkCLMInc9FFROBenKEQkiTno8c5zAF8WICneH+JhBDR/wkIlyYBSHHtY21f1imbO4AUwyVWUDggTAAAADADAJ0BKhQACAAu0YjEYiQsLCwMANBLKAAFO0boftEeJ6AA/uWpygvs3w62YZVg50yigaAgCjBTGM25Sb2kp25r6gRICbgHLvNAAAA=",
   "dominant": "#353739",
@@ -61,5 +66,5 @@
     "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/wd-black-sn850x-nvme-ssd/gallery/wd-black-sn850x-nvme-ssd-heatsink-front.png",
     "page": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd?sku=WDS100T2XHE-00BCA0"
   },
-  "input": "2318c3f43d543f3a"
+  "input": "2e18f7a260702b3d"
 }

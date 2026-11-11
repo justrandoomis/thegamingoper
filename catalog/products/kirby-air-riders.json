@@ -27,7 +27,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "20 تشرين الثاني 2025", "en": "20 November 2025", "ckb": "20ی تشرینی دووەمی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "21.9 GB", "en": "21.9 GB", "ckb": "21.9 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–4 على جهاز واحد، 2–8 محلياً لاسلكياً، 1–16 عبر الإنترنت", "en": "1–4 on one system, 2–8 local wireless, 1–16 online", "ckb": "1–4 لەسەر یەک ئامێر، 2–8 بێتەلی ناوخۆیی، 1–16 ئۆنلاین" } },
     { "key": "modes", "label": { "ar": "أطوار اللعب", "en": "Game modes", "ckb": "دۆخەکانی یاری" }, "value": { "ar": "City Trial، Air Ride، Top Ride، وطور القصة Road Trip", "en": "City Trial, Air Ride, Top Ride and the Road Trip story mode", "ckb": "City Trial، Air Ride، Top Ride و دۆخی چیرۆکی Road Trip" } },
@@ -42,7 +42,7 @@
   "variants": [
     {
       "sku": "NS2G-KIRBY-AIR-RIDERS",
-      "title": { "ar": "Kirby Air Riders — نسخة فعلية لـ Nintendo Switch 2", "en": "Kirby Air Riders — Nintendo Switch 2 physical edition", "ckb": "Kirby Air Riders — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Kirby Air Riders — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Kirby Air Riders — Nintendo Switch 2 physical edition", "ckb": "Kirby Air Riders — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905699"],
       "isDefault": true,
@@ -70,7 +70,7 @@
   },
   "compatibility": [
     { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "مصممة حصرياً لـ Nintendo Switch 2.", "en": "Made exclusively for Nintendo Switch 2.", "ckb": "تەنها بۆ Nintendo Switch 2 دروستکراوە." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Kirby-Air-Riders-2785805.html" },
-    { "deviceModel": "switch", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch الأول (يمكن الانضمام فقط عبر GameShare من Switch 2).", "en": "Does not run on the original Nintendo Switch (it can only join through GameShare started on a Switch 2).", "ckb": "لەسەر Nintendo Switch ی یەکەم کار ناکات (تەنها لە ڕێگەی GameShare ەوە کە لە Switch 2 دەستپێدەکرێت دەتوانێت بەشداری بکات)." }, "source": "https://www.nintendo.com/us/store/products/kirby-air-riders-switch-2/" },
+    { "deviceModel": "switch", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch الأول (يمكنه فقط الانضمام محلياً عبر GameShare يبدأ من جهاز Switch 2).", "en": "Does not run on the original Nintendo Switch (it can only join locally through GameShare started on a Switch 2).", "ckb": "لەسەر Nintendo Switch ی یەکەم کار ناکات (تەنها دەتوانێت بە ناوخۆیی لە ڕێگەی GameShare ەوە بەشداری بکات کە لە Switch 2 دەستپێدەکرێت)." }, "source": "https://www.nintendo.com/en-gb/Hardware/Nintendo-Switch-2/GameShare/Nintendo-Switch-2-GameShare-2785626.html" },
     { "deviceModel": "switch-oled", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch – OLED Model.", "en": "Does not run on Nintendo Switch – OLED Model.", "ckb": "لەسەر Nintendo Switch – OLED Model کار ناکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Kirby-Air-Riders-2785805.html" },
     { "deviceModel": "switch-lite", "status": "incompatible", "note": { "ar": "لا تعمل على Nintendo Switch Lite.", "en": "Does not run on Nintendo Switch Lite.", "ckb": "لەسەر Nintendo Switch Lite کار ناکات." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Kirby-Air-Riders-2785805.html" }
   ],
@@ -129,16 +129,19 @@
   ],
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/kirby-air-riders-switch-2/", "title": "Kirby Air Riders for Nintendo Switch 2", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size 21.9 GB, players 1-4 / 2-8 / 1-16, GameShare, ESRB E10+, languages, Online Play and Save Data Cloud, amiibo, HDR" },
-    { "url": "https://www.nintendo.com/us/store/products/kirby-air-riders-121500/", "title": "Kirby Air Riders (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905699, developer Bandai Namco, box art" },
+    { "url": "https://www.nintendo.com/us/store/products/kirby-air-riders-121500/", "title": "Kirby Air Riders (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905699, developer Bandai Namco, box art (ESRB E10+, no Game-Key Card label)" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Kirby-Air-Riders-2785805.html", "title": "Kirby Air Riders | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, download size 21.9 GB, Switch 2 exclusive, riders and machines, City Trial, Air Ride, Top Ride, Road Trip, online needs paid membership, amiibo" },
     { "url": "https://en.wikipedia.org/wiki/Kirby_Air_Riders", "title": "Kirby Air Riders", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developers Bandai Namco Studios and Sora Ltd., director Masahiro Sakurai, publisher Nintendo, release November 20, 2025" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Kirby%20Air%20Riders", "title": "PEGI search: Kirby Air Riders", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 7 (violence, fear) for Nintendo Switch 2, European release 20/11/2025" },
+    { "url": "https://finalboss.io/switch-2s-kirby-air-riders-is-here-physical", "title": "Switch 2's Kirby Air Riders is here — physical vs digital", "publisher": "FinalBoss", "retrieved": "2026-11-11", "supports": "independent check of the format: the physical cartridge contains the full game, no forced download" },
+    { "url": "https://www.nintendo.com/en-gb/Hardware/Nintendo-Switch-2/GameShare/Nintendo-Switch-2-GameShare-2785626.html", "title": "Nintendo Switch 2 GameShare", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "Kirby Air Riders can be shared locally and online via GameChat; an original Nintendo Switch can only receive shared games over local wireless" },
+    { "url": "https://www.upcitemdb.com/upc/45496905699", "title": "UPC 045496905699 - Kirby Air Riders Nintendo Switch 2", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905699 is listed by US retailers for Kirby Air Riders – Nintendo Switch 2" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Full game card status inferred from the official box art (no game-key card label)",
       "European EAN barcode not found on an official page"
     ]
   }

@@ -1,65 +1,62 @@
 {
   "key": "mario-kart-world--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1053,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6581,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/mario-kart-world/1-240.33ac2468.avif"
+        "src": "/products/mario-kart-world/1-240.cf443079.avif"
       },
       {
         "w": 480,
-        "src": "/products/mario-kart-world/1-480.73817f1d.avif"
+        "src": "/products/mario-kart-world/1-480.acb62572.avif"
       },
       {
         "w": 720,
-        "src": "/products/mario-kart-world/1-720.58d3a9e6.avif"
+        "src": "/products/mario-kart-world/1-720.c0d5a693.avif"
       },
       {
         "w": 960,
-        "src": "/products/mario-kart-world/1-960.7f5de637.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/mario-kart-world/1-1440.a4267617.avif"
+        "src": "/products/mario-kart-world/1-960.99977b0b.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/mario-kart-world/1-240.2c095101.webp"
+        "src": "/products/mario-kart-world/1-240.f6cb6478.webp"
       },
       {
         "w": 480,
-        "src": "/products/mario-kart-world/1-480.0071aec4.webp"
+        "src": "/products/mario-kart-world/1-480.a40fa291.webp"
       },
       {
         "w": 720,
-        "src": "/products/mario-kart-world/1-720.7acfabd0.webp"
+        "src": "/products/mario-kart-world/1-720.c744162a.webp"
       },
       {
         "w": 960,
-        "src": "/products/mario-kart-world/1-960.826d4cf0.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/mario-kart-world/1-1440.5a476aae.webp"
+        "src": "/products/mario-kart-world/1-960.0040273c.webp"
       }
-    ],
-    "png": "/products/mario-kart-world/1-720.55f4a829.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAABwBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJbADE2AxUb7MV207lj3tL3PkggAD+7dCxGtnGihfvm5Wla9+Yde7DCb4hQSJFq8l6/35PTRBYKEkCWRlkbVWVO6OEwIz2Umgv/Ul3I1rF4FDCg31W/tBd48aNOwChpRrDYtepvGQNrDMgFtYlhboQZVySTdcEQAA=",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "share": {
+    "src": "/products/mario-kart-world/1-1053.08866582.png",
+    "width": 1053,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOC+ZNN4CDXiIjgNiBq20bTGJTBFAZ3YbDjD+3+Ef2PAaBW9fVNkvPTqr4egC4AVlA4IJgAAABQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoRwFf/i13GLJXT3bRAAAP089X0dMBR6dhTlq711aveauu6TXC6SC5kKeagKRiM0VRrxQFubHXsA4xocy4b2N+MzOdoae8PnGUlgiAc9DvI8qFWQBsbk8ej0fyE14zcw4xozCtlUPUtVgZbBHrTaXilJSQdbblyMb5kAAA==",
+  "dominant": "#e70012",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Mario%20Kart%20World/121472-nintendo-switch-2-mario-kart-world-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-121472/"
   },
-  "input": "f1ae08884f4f60d7"
+  "input": "55f5e636a5769fc7"
 }

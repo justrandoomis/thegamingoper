@@ -90,7 +90,7 @@
     {
       "key": "age",
       "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
-      "value": { "ar": "PEGI 18", "en": "PEGI 18", "ckb": "PEGI 18" }
+      "value": { "ar": "PEGI 18 / ESRB M", "en": "PEGI 18 / ESRB M", "ckb": "PEGI 18 / ESRB M" }
     },
     {
       "key": "developer",
@@ -121,13 +121,13 @@
     {
       "sku": "GOY-PS5-CE",
       "title": { "ar": "Ghost of Yōtei لجهاز PS5 — Complete Edition", "en": "Ghost of Yōtei for PS5 — Complete Edition", "ckb": "Ghost of Yōtei بۆ PS5 — Complete Edition" },
-      "options": { "platform": "PS5", "edition": "Complete", "format": "Physical" },
+      "options": { "platform": "PS5", "edition": "Complete", "format": "Disc" },
       "isDefault": false,
       "images": ["ghost-of-yotei--2", "ghost-of-yotei--3", "ghost-of-yotei--4"],
       "notes": {
-        "ar": "صدرت في 1 تشرين الأول 2026 وتضم اللعبة مع التوسعة القصصية Echoes of Sekigahara وطور Most Wanted.",
-        "en": "Released 1 October 2026; includes the game with the Echoes of Sekigahara story expansion and the Most Wanted mode.",
-        "ckb": "لە 1ی تشرینی یەکەمی 2026 دەرچوو؛ یارییەکە لەگەڵ فراوانکردنی چیرۆکی Echoes of Sekigahara و شێوازی Most Wanted لەخۆدەگرێت."
+        "ar": "صدرت في 1 تشرين الأول 2026 وتضم اللعبة مع التوسعة القصصية Echoes of Sekigahara وطور Most Wanted. هذا المحتوى أُضيف بالتحديث 2.0، لذلك ثبّت آخر تحديث (يحتاج إنترنت وحساب PlayStation). على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
+        "en": "Released 1 October 2026; includes the game with the Echoes of Sekigahara story expansion and the Most Wanted mode. That content came with update 2.0, so install the latest update (internet and a PlayStation account needed). PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
+        "ckb": "لە 1ی تشرینی یەکەمی 2026 دەرچوو؛ یارییەکە لەگەڵ فراوانکردنی چیرۆکی Echoes of Sekigahara و شێوازی Most Wanted لەخۆدەگرێت. ئەم ناوەڕۆکە بە نوێکردنەوەی 2.0 هات، بۆیە دوایین نوێکردنەوە دابمەزرێنە (ئینتەرنێت و هەژماری PlayStation پێویستە). PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
       }
     }
   ],
@@ -143,7 +143,7 @@
       "en": "The story plays without a subscription; the online co-op Legends mode needs PlayStation Plus.",
       "ckb": "چیرۆکەکە بێ بەشداریکردن یاری دەکرێت؛ شێوازی هاوکاری ئۆنلاینی Legends پێویستی بە PlayStation Plus هەیە."
     },
-    "ageRating": { "pegi": 18 },
+    "ageRating": { "pegi": 18, "esrb": "M" },
     "arabic": "subtitles+interface",
     "physicalFormat": "disc",
     "developer": "Sucker Punch Productions",
@@ -246,15 +246,18 @@
     { "url": "https://store.playstation.com/en-gb/concept/10003923", "title": "Ghost of Yōtei Complete Edition — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18 (violence)" },
     { "url": "https://blog.playstation.com/2026/08/12/ghost-of-yotei-complete-edition-comes-to-ps5-october-1/", "title": "Ghost of Yōtei Complete Edition Comes to PS5 October 1", "publisher": "PlayStation.Blog", "retrieved": "2026-11-11", "supports": "Complete Edition on 1 Oct 2026, Echoes of Sekigahara expansion, Most Wanted mode" },
     { "url": "https://collectorseditions.co.uk/gaming/ghost-of-yotei-complete-edition/", "title": "Ghost of Yōtei Complete Edition", "publisher": "Collector's Editions", "retrieved": "2026-11-11", "supports": "independent confirmation that the Complete Edition is sold physically for PS5" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" },
+    { "url": "https://www.playstation.com/en-us/support/games/ghost-of-yotei-support/", "title": "Ghost of Yōtei support", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 2 October 2025 on PS5; language table: Arabic text only (no Arabic voice); non-English audio needs a game update download" },
+    { "url": "https://store.playstation.com/en-us/concept/10003923", "title": "Ghost of Yōtei Complete Edition — PlayStation Store (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, Arabic screen language, up to 4 online players" },
+    { "url": "https://www.playstation.com/en-us/games/ghost-of-yotei/", "title": "Ghost of Yōtei — PlayStation (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Pro Enhanced with PSSR and advanced ray tracing; PS5 pack shot" }
   ],
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Whether the physical Complete Edition has the expansion on the disc or as a download was not found on an official page.",
+      "Whether the physical Complete Edition has the expansion on the disc or as a download was not found on an official page (PlayStation.Blog says the content arrived with update 2.0, which needs internet).",
+      "No official pack shot of the physical Complete Edition was found; its image is the official store artwork.",
       "Install size is not published on the official pages we read.",
-      "ESRB rating not recorded (not checked on a US store page).",
       "No EAN/UPC barcode recorded."
     ]
   }

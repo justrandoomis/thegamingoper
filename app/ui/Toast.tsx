@@ -22,9 +22,10 @@ import { toastStore, useToasts, type Toast, type ToastKind } from "./toast-store
 
 /**
  * <Toaster /> — shows the toast store (./toast-store.ts; feature code calls `toast.success(…)`, `toast.cart({…})`).
- * Mount it once in a layout, near <MotionRoot />. A second instance renders nothing.
+ * Mount it once in a layout, near <MotionRoot />. Only one instance renders at a time (the others wait to take over).
  *
  *   <Toaster offset="calc(var(--safe-top) + 64px)" />          under a 56px glass header (+ 8px)
+ *   <Toaster fallback />                                       a page that may or may not have a layout toaster
  *
  * docs/DESIGN.md §9.13: live glass, `--r-md`, pinned under the header so it never covers a task bar; at least 60px:
  * a thumbnail in a small niche (cart) or the kind's icon, a bold first line, a secondary line in on-glass-2, and ONE
@@ -43,26 +44,41 @@ import { toastStore, useToasts, type Toast, type ToastKind } from "./toast-store
 export type ToasterProps = {
   /** Distance from the top of the viewport (under the header). Default `calc(var(--safe-top) + var(--s-2))`. */
   offset?: string;
+  /**
+   * Render only when no regular <Toaster> is mounted — for a page that needs toasts whether or not it sits inside a
+   * layout that has one (the /design-system sections). The layout's toaster, with its header offset, wins.
+   */
+  fallback?: boolean;
   className?: string;
 };
 
 type Entry = { key: number; toast: Toast; leaving: boolean };
 
-let owner: symbol | null = null;
+/**
+ * Mounted toasters in the order they claimed. Exactly one renders: the first regular one, else the first fallback.
+ * When it unmounts the next one takes over, so a layout's toaster keeps working after a page with its own leaves.
+ */
+type Claim = { fallback: boolean; setActive: (active: boolean) => void };
+const toasters: Claim[] = [];
+function electToaster(): void {
+  const winner = toasters.find((claim) => !claim.fallback) ?? toasters[0];
+  for (const claim of toasters) claim.setActive(claim === winner);
+}
 let entrySeq = 0;
 
-export function Toaster({ offset = "calc(var(--safe-top) + var(--s-2))", className }: ToasterProps) {
-  const [token] = useState(() => Symbol("toaster"));
+export function Toaster({ offset = "calc(var(--safe-top) + var(--s-2))", fallback = false, className }: ToasterProps) {
   const [active, setActive] = useState(false);
   useEffect(() => {
-    if (owner) return;
-    owner = token;
-    setActive(true);
+    const claim: Claim = { fallback, setActive };
+    toasters.push(claim);
+    electToaster();
     return () => {
-      if (owner === token) owner = null;
+      const index = toasters.indexOf(claim);
+      if (index >= 0) toasters.splice(index, 1);
       setActive(false);
+      electToaster();
     };
-  }, [token]);
+  }, [fallback]);
   return active ? <ToasterView offset={offset} className={className} /> : null;
 }
 
@@ -159,6 +175,13 @@ function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset"
               leaving={entry.leaving}
               solid={depth > 0}
               onGone={() => setEntries((list) => list.filter((item) => item.key !== entry.key))}
+              onFocusLost={() => {
+                // The toast that had focus is leaving: to the one replacing it, else back to where F6 came from.
+                const next = region.current?.querySelector<HTMLElement>("[data-toast]:not([inert])");
+                const target = next?.querySelector<HTMLElement>("a[href], button:not([disabled])") ?? returnFocus.current;
+                if (!next) returnFocus.current = null;
+                if (target?.isConnected) target.focus({ preventScroll: true });
+              }}
             />
           ))}
         </section>
@@ -178,15 +201,34 @@ function announcement(toast: Toast, added: string): string {
 
 type Drag = { id: number; x: number; y: number; axis: "x" | "y" | null; samples: { t: number; v: number }[] };
 
-function ToastCard({ toast, leaving, solid, onGone }: { toast: Toast; leaving: boolean; solid: boolean; onGone: () => void }) {
+type CardProps = { toast: Toast; leaving: boolean; solid: boolean; onGone: () => void; onFocusLost: () => void };
+
+function ToastCard({ toast, leaving, solid, onGone, onFocusLost }: CardProps) {
   const t = useT("ui-overlays");
   const card = useRef<HTMLElement | null>(null);
   const drag = useRef<Drag | null>(null);
   const swiped = useRef(false);
-  const gone = useRef(onGone);
+  const latest = useRef({ onGone, onFocusLost });
   useLayoutEffect(() => {
-    gone.current = onGone;
+    latest.current = { onGone, onFocusLost };
   });
+  const gone = { current: () => latest.current.onGone() };
+  /** The pause reasons this card holds, released when it leaves (a card replaced under the pointer gets no pointerleave). */
+  const holding = useRef(new Set<"hover" | "focus">());
+  const hold = (reason: "hover" | "focus") => {
+    holding.current.add(reason);
+    toastStore.hold(reason);
+  };
+  const release = (reason: "hover" | "focus") => {
+    if (holding.current.delete(reason)) toastStore.release(reason);
+  };
+  useEffect(
+    () => () => {
+      for (const reason of holding.current) toastStore.release(reason);
+      holding.current.clear();
+    },
+    [],
+  );
 
   // In: drops 8px from above with opacity (reduced motion: opacity only).
   useLayoutEffect(() => {
@@ -198,6 +240,9 @@ function ToastCard({ toast, leaving, solid, onGone }: { toast: Toast; leaving: b
   useLayoutEffect(() => {
     if (!leaving) return;
     const element = card.current;
+    if (element?.contains(document.activeElement)) latest.current.onFocusLost();
+    release("hover");
+    release("focus");
     if (!element || swiped.current) {
       gone.current();
       return;
@@ -295,6 +340,7 @@ function ToastCard({ toast, leaving, solid, onGone }: { toast: Toast; leaving: b
   );
 
   const kind = toast.kind === "cart" ? null : KIND[toast.kind];
+  const thumbnail = toast.art || toast.image || toast.kind === "cart";
   return (
     <Glass
       ref={(element: HTMLElement | null) => {
@@ -306,18 +352,19 @@ function ToastCard({ toast, leaving, solid, onGone }: { toast: Toast; leaving: b
       inert={leaving || undefined}
       aria-hidden={leaving || undefined}
       className="pointer-events-auto relative flex min-h-[60px] touch-none select-none items-center gap-2.5 rounded-md p-2 pe-2.5 [grid-area:1/1]"
-      onPointerEnter={() => toastStore.hold("hover")}
-      onPointerLeave={() => toastStore.release("hover")}
-      onFocus={() => toastStore.hold("focus")}
+      onPointerEnter={() => hold("hover")}
+      onPointerLeave={() => release("hover")}
+      onFocus={() => hold("focus")}
       onBlur={(event: ReactFocusEvent<HTMLElement>) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) toastStore.release("focus");
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) release("focus");
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerEnd}
       onPointerCancel={onPointerEnd}
     >
-      {toast.kind === "cart" ? (
+      {thumbnail ? (
+        // The product in a small niche (§9.13) instead of the kind's icon; the title says what happened.
         <span className="render-slot grid size-11 shrink-0 place-items-center overflow-hidden rounded-sm bg-stage p-1" aria-hidden="true">
           {toast.art ? (
             <Render name={toast.art} alt="" shadow={false} pose={0} sizes="44px" />

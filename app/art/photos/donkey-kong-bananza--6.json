@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/donkey-kong-bananza/6-1440.6734f176.webp"
       }
-    ],
-    "png": "/products/donkey-kong-bananza/6-720.29407beb.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoRwFf/gGb4Xk9udaVYwAAD+P1mfQ8AvDwqKCNaH+V26MvaTWzA/tHA/c9hcvqo81gJAe27hv34OVQZIfDdd6I5jyZSlsRJSt2u/DiKiw2jTtsbYcTt68KJqMdcyzRzssANe61DIAAAAAA==",
   "dominant": "#0ab5e1",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000096809/760dd462413e23f48dd733041689430bf6446b9f88494c4edee7a44fd86ebabf",
     "page": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/"
   },
-  "input": "7dd01aea10c49762"
+  "input": "653f0da773efe6fa"
 }

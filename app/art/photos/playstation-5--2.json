@@ -32,8 +32,7 @@
         "w": 720,
         "src": "/products/playstation-5/2-720.f412a2ce.webp"
       }
-    ],
-    "png": "/products/playstation-5/2-720.fd65b406.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoQABQAPxF6tFAsKCUisAgBgCIJZwABJP+REyx3yv7XIAAA/vm7LqR8y2fVPiv1g5DAGNCzz/UZhvT6cZ40VR3VGszEGeK8Oop69mlbjAgCFvDG2lmtf30Dwr2tHz4VhWfa7ZuRejgxto0beDKgAAAA",
   "dominant": "#1c2025",
@@ -45,5 +44,5 @@
     "url": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-front-recert?wid=2000",
     "page": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console"
   },
-  "input": "d884af5863bf27d4"
+  "input": "63f633d1d3fef7c3"
 }

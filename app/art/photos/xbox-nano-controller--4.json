@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/xbox-nano-controller/4-1440.353e1eca.webp"
       }
-    ],
-    "png": "/products/xbox-nano-controller/4-720.840c87ee.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRtgAAABXRUJQVlA4WAoAAAAQAAAAEwAABgAAQUxQSE8AAAARR6CkkSQ2eRoOli/84UdEgK37jcGotm0l9/vUCqABpAARWGSwqVOBn9s6RPRfSJBIcwoAk/1ueJq+XhxGn/r54TNqyhPF11bBvFNoJAgAAFZQOCBiAAAAsAMAnQEqFAAHAD8RcLBQLCYkorAIAYAiCWkAAFyqPWZeMD8nLAAA/tTODZQ9zpc6QyH1n6t3I/677a3ffNRMirN3iJ+Emr6VTujKLAIRyISxlOObRZHDpD+53VaGzbg9AAA=",
   "dominant": "#f9f9f9",
@@ -61,5 +60,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/1145287_MS-Store_Image-Gallery-TOP-0_2000x2000-1?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-nano-controller/8wg5vqp0x4g3"
   },
-  "input": "7943d07fc0f7bf3e"
+  "input": "0943f3e50ed0675d"
 }

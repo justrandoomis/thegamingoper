@@ -1,0 +1,64 @@
+{
+  "key": "sandisk-optimus-gx-c50-expansion-card--5",
+  "view": "hero",
+  "width": 1600,
+  "height": 415,
+  "aspect": 3.8554,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-240.e5159b31.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-480.e236630c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-720.b5ed3b20.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-960.b6238733.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-1440.400e126a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-240.1a2d7f2d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-480.372b93b7.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-720.0c9bc693.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-960.5ee2cfbc.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sandisk-optimus-gx-c50-expansion-card/5-1440.f34ade54.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4WAoAAAAQAAAAEwAABAAAQUxQSDYAAAARR6CobRs4VwgXhq7/RUSAt1UfqKptG7rmX6+BSL6oMVNB8KtDRP8TUQhI+1Ix7X0hX64WwgpWUDggPAAAAHADAJ0BKhQABQA/EXaxUCwnpKKwCAGAIglpAABb/kM6dK8AAAD+z16jDJkERIR07dsOnn1Wm2mRcAAAAA==",
+  "dominant": "#262523",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "SanDisk",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/desktop/optimus-gx-c50-ssd-expansion-card/gallery/optimus-gx-c50-ssd-expansion-card-2tb-side.png",
+    "page": "https://www.sandisk.com/products/ssd/external-ssd/sandisk-optimus-gx-c50-ssd-expansion-card-for-xbox?sku=SDCEOGN-2T00-GNAGX"
+  },
+  "input": "aa8242959b8e2272"
+}

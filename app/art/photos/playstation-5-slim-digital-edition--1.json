@@ -24,8 +24,13 @@
         "w": 480,
         "src": "/products/playstation-5-slim-digital-edition/1-480.3dee6a88.webp"
       }
-    ],
-    "png": "/products/playstation-5-slim-digital-edition/1-559.9259ed6b.png"
+    ]
+  },
+  "share": {
+    "src": "/products/playstation-5-slim-digital-edition/1-559.b4704228.png",
+    "width": 559,
+    "height": 1061,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRugAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSFIAAAART6CgjSQ1dSaY7yEiAtK+4DYumEa27eR+svw4cFgcLcUeKAF8PPX+1EJE/ydAwblspem/RumGXnqh8zSe2lOlfFCGfigC9odcFmeIsvt55PIDVlA4IHAAAADQAwCdASoLABQAPxF4slEsJ6SisAgBgCIJZADG9BjGK5MJC0n2wQAA/tS7dyAeHo3hDi8uMAfAjhjIBdp2xyfT8jcqv9Pg/Kr9ihuFLyZchhauFo30mYZFjlF/3nwDJsX8hMWL5yjb4D+wQZALk+AA",
   "dominant": "#d7dae4",
@@ -37,5 +42,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-Digital-CFI2100-06-16x9-01-09apr26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/ps5/digital-edition-825-gb/"
   },
-  "input": "6a86efd4a3635f71"
+  "input": "28b510b6c948f86a"
 }

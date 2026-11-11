@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/playstation-vr2/1-1440.12dc3ec8.webp"
       }
-    ],
-    "png": "/products/playstation-vr2/1-720.2020a6f2.png"
+    ]
+  },
+  "share": {
+    "src": "/products/playstation-vr2/1-1200.4c72c595.png",
+    "width": 1200,
+    "height": 726,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRjYBAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSGcAAAART6CgbRsWF8bbjYhA+rPmBk5s21abG478UYlk0mhxAFWt5Q6AW8+a33wDU4jo/wSgv/nIOzb011um9EwPHAfEGyJ6lg0/ihZE5+zykYundxgL2n+t4iUB4DaGBAaAcWzCAS3oZBgIAFZQOCCoAAAAkAQAnQEqFAAMAD8RcrBQLCakorAIAYAiCWMAxNncC3kVahQv3l6BRMyVydqwAPzWC/ijaNTrH6l7WBkZdVjfmeB1iy9tcp/vKc2bcOWZergFXzz/Eu5Z3zsLgLkIJ/Sy63QMbk4dEjwNyqbQu5gD3XvCf3EeUtDKXh26fmAdh7X4prT1+cNG9jYD/ynR1huhYuwUbEtgKoOocJsf3X/n/7/M/5/5DwAA",
   "dominant": "#d6dbe4",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS_VR2_01-16x9-01-09april26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/ps-vr2/buy-now/"
   },
-  "input": "ff15ca9c9958a664"
+  "input": "cc9766ed9d666ab1"
 }

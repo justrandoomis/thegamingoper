@@ -28,9 +28,9 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "5 حزيران 2025", "en": "5 June 2025", "ckb": "5ی حوزەیرانی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "22.2 GB", "en": "22.2 GB", "ckb": "22.2 GB" } },
-    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–4 على جهاز واحد، 1–8 محلياً لاسلكياً، 1–24 عبر الإنترنت", "en": "1–4 on one system, 1–8 local wireless, 1–24 online", "ckb": "1–4 لەسەر یەک ئامێر، 1–8 بێتەلی ناوخۆیی، 1–24 ئۆنلاین" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–4 على جهاز واحد، 2–8 محلياً لاسلكياً، 2–24 عبر الإنترنت", "en": "1–4 on one system, 2–8 local wireless, 2–24 online", "ckb": "1–4 لەسەر یەک ئامێر، 2–8 بێتەلی ناوخۆیی، 2–24 ئۆنلاین" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 3 · ESRB E (عنف خيالي خفيف، تفاعل المستخدمين)", "en": "PEGI 3 · ESRB E (Mild Fantasy Violence, Users Interact)", "ckb": "PEGI 3 · ESRB E (توندوتیژیی خەیاڵیی سووک، کارلێکی بەکارهێنەران)" } },
     { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، البرتغالية، الروسية، البولندية، اليابانية، الكورية، الصينية، التايلاندية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Portuguese, Russian, Polish, Japanese, Korean, Chinese, Thai — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، پورتوگالی، ڕووسی، پۆڵەندی، ژاپۆنی، کۆری، چینی، تایلەندی — بێ عەرەبی" } },
     { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "اللعب عبر الإنترنت والحفظ السحابي يحتاجان اشتراك Nintendo Switch Online؛ GameChat يتطلب أيضاً تسجيل رقم هاتف", "en": "Online play and cloud saves need Nintendo Switch Online; GameChat also requires a registered phone number", "ckb": "یاریی ئۆنلاین و پاشەکەوتی هەوری پێویستیان بە Nintendo Switch Online هەیە؛ GameChat هەروەها تۆمارکردنی ژمارەی مۆبایلی دەوێت" } },
@@ -43,7 +43,7 @@
   "variants": [
     {
       "sku": "NS2G-MARIO-KART-WORLD",
-      "title": { "ar": "Mario Kart World — نسخة فعلية لـ Nintendo Switch 2", "en": "Mario Kart World — Nintendo Switch 2 physical edition", "ckb": "Mario Kart World — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Mario Kart World — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Mario Kart World — Nintendo Switch 2 physical edition", "ckb": "Mario Kart World — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905453"],
       "isDefault": true,
@@ -61,7 +61,7 @@
       { "ar": "سباقات", "en": "Kart racing", "ckb": "پێشبڕکێی ئۆتۆمبێل" },
       { "ar": "ألعاب جماعية", "en": "Party", "ckb": "یاریی بەکۆمەڵ" }
     ],
-    "players": "1-4 on one system, 1-8 local wireless, 1-24 online",
+    "players": "1-4 on one system, 2-8 local wireless, 2-24 online",
     "online": {
       "ar": "سباقات عبر الإنترنت حتى 24 لاعباً باشتراك Nintendo Switch Online، مع دعم GameChat.",
       "en": "Online races of up to 24 players with a Nintendo Switch Online membership, plus GameChat support.",
@@ -145,10 +145,13 @@
   ],
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/mario-kart-world-switch-2/", "title": "Mario Kart World – Nintendo Switch 2 Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch 2 exclusive, release date, ESRB E and descriptors, player counts, supported languages, Online Play and Save Data Cloud via Nintendo Switch Online, CameraPlay, HDR, developer and publisher" },
-    { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-121472/", "title": "Mario Kart World – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905453, box art, 1-4 / 1-8 / 1-24 players" },
+    { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-mario-kart-world-121472/", "title": "Mario Kart World – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905453, box art (ESRB E, no Game-Key Card label); the listing carries no Game-Key Card download notice" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Mario-Kart-World-2790000.html", "title": "Mario Kart World | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 3, languages, download size 22.2 GB, 24-racer Grand Prix, Knockout Tour, free roam, up to four players per console, Joy-Con 2 Wheel, GameChat and CameraPlay requirements, Nintendo Switch 2 + Mario Kart World bundle contains the game as a download code" },
     { "url": "https://en.wikipedia.org/wiki/Mario_Kart_World", "title": "Mario Kart World", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Nintendo EPD, publisher Nintendo, release June 5, 2025 as a Switch 2 launch title, kart racing genre" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Mario%20Kart%20World", "title": "PEGI search: Mario Kart World", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 3 for Nintendo Switch 2, European release 05/06/2025" },
+    { "url": "https://www.ign.com/articles/pokemon-pokopia-looks-to-be-a-70-game-key-card-release-but-no-nintendo-hasnt-broken-its-promise-around-games-it-develops", "title": "Fans Claim Broken Promises After $70 Pokémon Pokopia Confirmed as First Nintendo-Published Game-Key Card Release", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "independent check of the format: Nintendo said it had no plans to use Game-Key Cards for Nintendo-developed games, and Pokopia (announced November 2025) was the first Nintendo-published Game-Key Card release" },
+    { "url": "https://www.upcitemdb.com/upc/45496905453", "title": "UPC 045496905453 - Mario Kart World - Nintendo Switch 2", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905453 is listed by US retailers for Mario Kart World – Nintendo Switch 2" }
   ],
   "notes": {
     "ar": "تتوفر أيضاً حزمة Nintendo Switch 2 + Mario Kart World، وفيها اللعبة كرمز تنزيل وليست بطاقة.",
@@ -156,10 +159,10 @@
     "ckb": "پاکێجی Nintendo Switch 2 + Mario Kart World یش هەیە؛ لەو پاکێجەدا یارییەکە کۆدی داگرتنە نەک کارت."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Full game card status is inferred from Nintendo's official box art (no game-key card label); no Nintendo page states it in words",
+      "No Nintendo page says in words that the card holds the full game; this rests on the cover (no Game-Key Card label), the US physical listing (no Game-Key Card notice) and Nintendo's stated policy for its own games (IGN)",
       "European EAN barcode not found on an official page"
     ]
   }

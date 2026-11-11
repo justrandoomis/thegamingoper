@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/xbox-rechargeable-battery-usb-c/1-1440.3b71f327.webp"
       }
-    ],
-    "png": "/products/xbox-rechargeable-battery-usb-c/1-720.45c3ddeb.png"
+    ]
+  },
+  "share": {
+    "src": "/products/xbox-rechargeable-battery-usb-c/1-1200.b57833ac.png",
+    "width": 1200,
+    "height": 829,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSE8AAAARR6AmABI2SQA+EvC5jYhASF3mw21t20r0kAa8AQ9dQi2C2FMiKEBv4ehMAxH9nwC67zQhd7YA9v952sUIHEBVlnw6DRuQCAJDRPU0q3QfAFZQOCBYAAAAsAMAnQEqFAAOAD8RcrBQLCakorAIAYAiCWkAAFr2C8aceSlZ+vAA/p6BVrFEg9IduSCedUCuvc1dPYUK5AfTrt9MGH6Exdxx+bx80Mq1pzWb5xqEGwQAAA==",
   "dominant": "#1a1818",
@@ -61,5 +66,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/200912399_Image-Buy-Box-0_2555x1555?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-rechargeable-battery-usb-c-cable/8thsbp49z46x"
   },
-  "input": "a632859b8fda80fb"
+  "input": "ba8631ba6b1b195b"
 }

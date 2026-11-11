@@ -1,0 +1,39 @@
+{
+  "$comment": "Per-image options for scripts/products/images.mjs, decided by looking at the result on the contact sheets (.shots/catalog). Key = catalogue image key. Options: cutout false (keep opaque), holes true (cut out closed windows of pure background colour), extend true (the object touches the frame of a plain canvas: extend it, then cut out), clean true (transparent source: drop a baked shadow or glow and stray specks), pad <share> (padding instead of 0.06), trim false (opaque photo keeps its whole frame), crop [left, top, right, bottom] (shares of the original cut off first). Every entry says why.",
+
+  "donkey-kong-bananza--1": { "extend": true, "why": "The cover touches the top and bottom of its white 2000 px square canvas, so it was left as a white square; extending the canvas lets the pack shot be cut out like the other Switch 2 covers." },
+  "kirby-air-riders--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "mario-kart-world--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "pokemon-legends-z-a--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "pokemon-legends-z-a--2": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "pokemon-legends-z-a--3": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "pokemon-pokopia--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "splatoon-raiders--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+  "tomodachi-life-living-the-dream--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
+
+  "hyperx-cloud-iii-s-wireless--1": { "holes": true, "why": "All-black headset: the white seen between headband and suspension band and behind the cable loop is background (it stayed as white patches); nothing on the product is white." },
+  "hyperx-cloud-iii-s-wireless--2": { "holes": true, "why": "All-black headset and accessories: the closed white windows (headband, cable coils) are background." },
+  "hyperx-cloud-iii-s-wireless--3": { "holes": true, "why": "Black and red headset: the white between the bands and behind the cable is background." },
+  "hyperx-cloud-iii-s-wireless--6": { "holes": true, "why": "Black and blue headset: the white between the bands and behind the cable is background." },
+  "pulse-3d--4": { "holes": true, "why": "Grey camouflage headset: the white inside the headband arch is background; the product has no pure white." },
+  "joy-con-2--2": { "extend": true, "holes": true, "why": "The straps touch the frame and their loops enclose background; the Joy-Con 2 and straps are dark grey and black." },
+  "joy-con-2--4": { "extend": true, "holes": true, "why": "The straps touch the frame and their loops enclose background; the Joy-Con 2 and straps are dark grey and black." },
+  "joy-con-2--5": { "holes": true, "why": "Strap loops enclose background; the Joy-Con 2 and straps are dark grey and black." },
+  "nintendo-switch-2-zelda-40th-anniversary-edition--5": { "holes": true, "why": "Strap loops enclose background; the green and gold Joy-Con and black straps have no pure white." },
+  "joy-con-2-wheel--3": { "extend": true, "holes": true, "why": "The wheels touch the frame of a mostly empty white square and their openings show background; wheels are red, blue and black." },
+  "nintendo-switch-2-carrying-case--3": { "holes": true, "why": "The zip-pull loops enclose background; the case is black, brown and gold." },
+  "nintendo-switch-2-carrying-case--4": { "holes": true, "why": "The zip-pull loops enclose background; the case is black and green." },
+  "nintendo-switch-2-camera--3": { "holes": true, "why": "The cable loop encloses background; the camera and cable are black." },
+  "nintendo-switch-oled--5": { "extend": true, "why": "The dock touches the frame of a white canvas; extended, the console with neon Joy-Con cuts out cleanly (checked on both floors)." },
+
+  "steam-deck-lcd--1": { "clean": true, "why": "The transparent render carries a broad baked shadow that reached the picture's edge (a faint rectangle on the light floor) and a shadow slab under the device; the stage draws its own shadow." },
+  "nintendo-switch-2-mario-kart-world-bundle--2": { "clean": true, "why": "The transparent render has a white floor glow under the box that shows as a white smudge on the dark floor." },
+  "playstation-portal--2": { "clean": true, "why": "Two stray opaque specks at the right edge of the 3840 px canvas widened the picture and pushed the device off centre." },
+
+  "nintendo-switch-2-carrying-case--5": { "crop": [0.125, 0, 0.125, 0], "why": "The photo is pillarboxed: 150 px white bars on both sides of a dark 900 px photo." },
+  "seagate-storage-expansion-card--4": { "crop": [0, 0, 0.14, 0], "why": "White background shows in a slanted 131–142 px strip right of the console; cropped just inside it (148 px) so no white sliver remains." },
+  "nintendo-switch-2--4": { "crop": [0, 0.22, 0, 0.22], "why": "The tabletop scene fills only the middle 47% of a 2000 px white square; the console and Joy-Con are cropped by the left and right edges, so it stays opaque, without the empty top and bottom." },
+  "playstation-5-slim--5": { "crop": [0.275, 0, 0.275, 0], "why": "An opaque white 900 px photo sits inside a 2000 px transparent canvas, so it was drawn as a hard white rectangle; cropped to the photo it is treated as an opaque photo on white (framed, rounded)." }
+}

@@ -24,9 +24,9 @@
       "ckb": "زیاتر لە 550 ئۆتۆمبێلی ڕاستەقینە لە نەخشەی ژاپۆن، لەگەڵ تۆکیۆ."
     },
     {
-      "ar": "نسخة PS5 على قرص في 26 كانون الثاني 2027 مع لعب مشترك وحفظ مشترك مع Xbox وPC.",
-      "en": "PS5 disc on 26 January 2027, with crossplay and cross-save with Xbox and PC.",
-      "ckb": "دیسکی PS5 لە 26ی کانوونی دووەمی 2027، لەگەڵ یاری هاوبەش و پاشەکەوتی هاوبەش لەگەڵ Xbox و PC."
+      "ar": "نسخة PS5 على قرص في 26 كانون الثاني 2027، مع لعب وحفظ مشترك مع Xbox وPC، وتحتاج ربط حساب Microsoft للعب على PS5.",
+      "en": "PS5 disc on 26 January 2027, with crossplay and cross-save with Xbox and PC; playing on PS5 needs a linked Microsoft account.",
+      "ckb": "دیسکی PS5 لە 26ی کانوونی دووەمی 2027، لەگەڵ یاری و پاشەکەوتی هاوبەش لەگەڵ Xbox و PC؛ بۆ یاریکردن لەسەر PS5 پێویستە هەژماری Microsoft ببەستیتەوە."
     },
     {
       "ar": "على PS5: طور جودة 4K بـ 30 إطاراً وطور أداء بـ 60 إطاراً.",
@@ -37,6 +37,11 @@
       "ar": "اللعب الأونلاين يحتاج Game Pass Essential أو أعلى على Xbox وPlayStation Plus على PS5.",
       "en": "Online play needs Game Pass Essential or higher on Xbox and PlayStation Plus on PS5.",
       "ckb": "یاری ئۆنلاین پێویستی بە Game Pass Essential یان بەرزتر لەسەر Xbox و PlayStation Plus لەسەر PS5 هەیە."
+    },
+    {
+      "ar": "لا تدعم العربية: الصوت والنصوص بلغات أخرى منها الإنجليزية.",
+      "en": "No Arabic: voice and text come in other languages, English included.",
+      "ckb": "عەرەبی تێدا نییە: دەنگ و دەق بە زمانەکانی ترن، ئینگلیزیش لەناویاندا."
     },
     {
       "ar": "التصنيف PEGI 3 — مناسبة لكل العائلة.",
@@ -82,15 +87,15 @@
       "key": "online",
       "label": { "ar": "اللعب عبر الإنترنت", "en": "Online play", "ckb": "یاری ئۆنلاین" },
       "value": {
-        "ar": "Game Pass Essential أو Premium أو Ultimate على Xbox؛ PlayStation Plus على PS5؛ حساب Microsoft مطلوب على PS5 للحفظ المشترك",
-        "en": "Game Pass Essential, Premium or Ultimate on Xbox; PlayStation Plus on PS5; a Microsoft account links progress on PS5",
-        "ckb": "Game Pass Essential یان Premium یان Ultimate لەسەر Xbox؛ PlayStation Plus لەسەر PS5؛ هەژماری Microsoft لەسەر PS5 پێشکەوتن دەبەستێتەوە"
+        "ar": "اللعب الجماعي أونلاين يحتاج Game Pass Essential أو Premium أو Ultimate على Xbox، وPlayStation Plus على PS5؛ اللعب على PS5 يحتاج ربط حساب Microsoft عند أول تشغيل",
+        "en": "Online multiplayer needs Game Pass Essential, Premium or Ultimate on Xbox, and PlayStation Plus on PS5; playing on PS5 needs a Microsoft account linked at first start",
+        "ckb": "یاری بەکۆمەڵی ئۆنلاین پێویستی بە Game Pass Essential یان Premium یان Ultimate لەسەر Xbox، و PlayStation Plus لەسەر PS5 هەیە؛ یاریکردن لەسەر PS5 پێویستی بە بەستنەوەی هەژماری Microsoft هەیە لە یەکەم جاری کردنەوەدا"
       }
     },
     {
       "key": "arabic",
       "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
-      "value": { "ar": "غير معروف — لم تذكره صفحات المتاجر الرسمية", "en": "Unknown — not stated on the official store pages", "ckb": "نەزانراو — لە پەڕە فەرمییەکانی فرۆشگا نەنووسراوە" }
+      "value": { "ar": "غير مدعومة — ليست بين لغات اللعبة الرسمية", "en": "Not supported — not among the game's official languages", "ckb": "پشتگیری ناکرێت — لە نێو زمانە فەرمییەکانی یارییەکەدا نییە" }
     },
     {
       "key": "age",
@@ -144,12 +149,12 @@
     ],
     "players": "1, up to 12 online",
     "online": {
-      "ar": "اللعب الأونلاين يحتاج Game Pass Essential أو أعلى على Xbox، وPlayStation Plus على PS5.",
-      "en": "Online play needs Game Pass Essential or higher on Xbox, and PlayStation Plus on PS5.",
-      "ckb": "یاری ئۆنلاین پێویستی بە Game Pass Essential یان بەرزتر لەسەر Xbox، و PlayStation Plus لەسەر PS5 هەیە."
+      "ar": "اللعب الأونلاين يحتاج Game Pass Essential أو أعلى على Xbox، وPlayStation Plus على PS5؛ وعلى PS5 يجب ربط حساب Microsoft للعب.",
+      "en": "Online play needs Game Pass Essential or higher on Xbox, and PlayStation Plus on PS5; on PS5 a linked Microsoft account is required to play.",
+      "ckb": "یاری ئۆنلاین پێویستی بە Game Pass Essential یان بەرزتر لەسەر Xbox، و PlayStation Plus لەسەر PS5 هەیە؛ لەسەر PS5 بۆ یاریکردن دەبێت هەژماری Microsoft ببەسترێتەوە."
     },
     "ageRating": { "pegi": 3, "esrb": "E" },
-    "arabic": "unknown",
+    "arabic": "none",
     "physicalFormat": "disc",
     "sizeGb": 172,
     "developer": "Playground Games",
@@ -219,7 +224,7 @@
       "sourceUrl": "https://store-images.s-microsoft.com/image/apps.29856.14202278764680089.8e4c786a-0a1c-4737-a244-0bdfa34aab7b.64883cac-25a8-4715-a0dc-0dd42b0e5435",
       "sourcePage": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8",
       "kind": "box-art",
-      "alt": { "ar": "غلاف Forza Horizon 6 مع جبل فوجي وطوكيو", "en": "Forza Horizon 6 cover art with Mount Fuji and Tokyo", "ckb": "وێنەی بەرگی Forza Horizon 6 لەگەڵ چیای فوجی و تۆکیۆ" },
+      "alt": { "ar": "غلاف Forza Horizon 6: سيارة رياضية حمراء أمام جبل فوجي", "en": "Forza Horizon 6 cover art: a red sports car in front of Mount Fuji", "ckb": "وێنەی بەرگی Forza Horizon 6: ئۆتۆمبێلێکی وەرزشی سوور لە بەردەم چیای فوجی" },
       "credit": "Xbox Game Studios",
       "width": 1440, "height": 2160, "transparent": false
     },
@@ -256,7 +261,10 @@
   ],
   "sources": [
     { "url": "https://forza.net/forzahorizon6", "title": "Forza Horizon 6 — official site", "publisher": "Xbox Game Studios", "retrieved": "2026-11-11", "supports": "out now on Xbox Series X|S and PC, PS5 on 26 Jan 2027, 550+ cars, Japan and Tokyo, solo and co-op, multiplayer modes" },
-    { "url": "https://support.forza.net/hc/en-us/articles/56161269430675-Forza-Horizon-6-on-PlayStation-5-FAQ", "title": "Forza Horizon 6 on PlayStation 5 FAQ", "publisher": "Forza Support", "retrieved": "2026-11-11", "supports": "PS5 release 26 Jan 2027, PS5 disc at retailers, Panic Button, 4K30 Quality and 60 fps Performance modes, crossplay and cross-save via Microsoft account, editions" },
+    { "url": "https://support.forza.net/hc/en-us/articles/56161269430675-Forza-Horizon-6-on-PlayStation-5-FAQ", "title": "Forza Horizon 6 on PlayStation 5 FAQ", "publisher": "Forza Support", "retrieved": "2026-11-11", "supports": "PS5 release 26 Jan 2027, PS5 disc at supporting retailers, Panic Button, 4K30 Quality and 60 fps Performance modes, crossplay and cross-save, Microsoft account must be linked to play on PS5, PS Plus Essential/Extra/Premium for online multiplayer, PS5 version is a separate purchase, DLC bought per platform, first expansion 21 Jan 2027" },
+    { "url": "https://support.forza.net/hc/en-us/articles/48409181275539-Forza-Horizon-6-FAQ", "title": "Forza Horizon 6 FAQ", "publisher": "Forza Support", "retrieved": "2026-11-11", "supports": "official language list (10 with voice and text, 15 text only) without Arabic; start as a tourist; Tokyo is the largest city in a Horizon game" },
+    { "url": "https://store.steampowered.com/app/2483190/", "title": "Forza Horizon 6 — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 3 and ESRB E, 23 languages without Arabic, Playground Games / Xbox Game Studios" },
+    { "url": "https://www.amazon.ca/Xbox-Forza-Horizon-Disc/dp/B0GGBRLFYB", "title": "Forza Horizon 6 — Xbox Series X (Disc)", "publisher": "Amazon Canada", "retrieved": "2026-11-11", "supports": "Xbox Series X disc edition sold at retail" },
     { "url": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8", "title": "Forza Horizon 6 Standard Edition — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Everyone, online multiplayer requires Game Pass Essential/Premium/Ultimate, Xbox Play Anywhere, max install about 172 GB, cover art" },
     { "url": "https://www.playstation.com/en-ae/games/forza-horizon-6/", "title": "Forza Horizon 6 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 pre-order, PS Plus required online, up to 12 online players, 1 player, screenshots" },
     { "url": "https://store.playstation.com/en-gb/concept/10016335", "title": "Forza Horizon 6 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 3, PS5 release date" },
@@ -270,10 +278,9 @@
     "ckb": "کڕینی یارییەکە لەسەر پلاتفۆرمێک لەسەر پلاتفۆرمێکی تر نایداتێ، و ناوەڕۆکی زیادەی پارەدار بۆ هەر پلاتفۆرمێک جیا دەکڕدرێت. یەکەم فراوانکردنی پارەدار لە 21ی کانوونی دووەمی 2027 دەردەچێت."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Arabic support: neither the Microsoft Store nor the PlayStation Store lists languages for this game; a Steam page for Forza Horizon 6 content lists 23 languages without Arabic.",
       "The Xbox Series X disc is confirmed by press and retailer listings (IGN, Amazon), not by an official Microsoft page.",
       "PS5 install size not published yet.",
       "No EAN/UPC barcode recorded."

@@ -2,56 +2,61 @@
   "key": "steam-deck-lcd--1",
   "view": "hero",
   "width": 1600,
-  "height": 876,
-  "aspect": 1.8265,
+  "height": 742,
+  "aspect": 2.1563,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/steam-deck-lcd/1-240.45450730.avif"
+        "src": "/products/steam-deck-lcd/1-240.d9286b7f.avif"
       },
       {
         "w": 480,
-        "src": "/products/steam-deck-lcd/1-480.51076181.avif"
+        "src": "/products/steam-deck-lcd/1-480.c38d2e29.avif"
       },
       {
         "w": 720,
-        "src": "/products/steam-deck-lcd/1-720.67ca79bc.avif"
+        "src": "/products/steam-deck-lcd/1-720.c7d5600f.avif"
       },
       {
         "w": 960,
-        "src": "/products/steam-deck-lcd/1-960.76ca9984.avif"
+        "src": "/products/steam-deck-lcd/1-960.addc5c39.avif"
       },
       {
         "w": 1440,
-        "src": "/products/steam-deck-lcd/1-1440.ea3b1ab3.avif"
+        "src": "/products/steam-deck-lcd/1-1440.78f8231f.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/steam-deck-lcd/1-240.198f6da5.webp"
+        "src": "/products/steam-deck-lcd/1-240.52f055d9.webp"
       },
       {
         "w": 480,
-        "src": "/products/steam-deck-lcd/1-480.3c344166.webp"
+        "src": "/products/steam-deck-lcd/1-480.f5e85bb3.webp"
       },
       {
         "w": 720,
-        "src": "/products/steam-deck-lcd/1-720.d860fe45.webp"
+        "src": "/products/steam-deck-lcd/1-720.d91e3c91.webp"
       },
       {
         "w": 960,
-        "src": "/products/steam-deck-lcd/1-960.28d594e5.webp"
+        "src": "/products/steam-deck-lcd/1-960.b235e6c2.webp"
       },
       {
         "w": 1440,
-        "src": "/products/steam-deck-lcd/1-1440.0e3e6d06.webp"
+        "src": "/products/steam-deck-lcd/1-1440.c035b9c8.webp"
       }
-    ],
-    "png": "/products/steam-deck-lcd/1-720.d6ab9b8a.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSEwAAAARR6CobSM22n97g8ACcbqICNRmHffBKLatNp+6BgfNARioAtixjYlMLET4f2iI6P8E0G2pbKb2Q72ReZC92cg0pMP7sUe6stgsyEMCVlA4IEoAAADQAwCdASoUAAsAPxF0sFCsJqSisAgBgCIJZwAAYdudqPikO+ipgAAA/uW+ZKRLXaRkcBpKKye5dz6euoCW2GcLN1MfKeiRP0EAAA==",
+  "share": {
+    "src": "/products/steam-deck-lcd/1-1200.baecdb18.png",
+    "width": 1200,
+    "height": 557,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSD4AAAARP6CQkSQ2eA533wyaz0dEIO6rSSiqbSVi3EMDIhDBCK5soBXsf87cIKL/EwC+hRxbrnOrv8pOoq8agfkSAVZQOCBeAAAA0AMAnQEqFAAJAD8RcLBQLCYkorAIAYAiCWUAAGHgUXO3y9xLCsgAAP6EtW4vnbV67jiCgOEU4C/NvDdIto7rbSoFlyjJFtvtcPkN5e4aPW1GfNImhpIoxOyXIbQAAA==",
   "dominant": "#030303",
   "transparent": true,
   "background": null,
@@ -61,5 +66,5 @@
     "url": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering07.png",
     "page": "https://www.steamdeck.com/en/press"
   },
-  "input": "2359e88e854bcfb7"
+  "input": "fdcafa9c7eb74094"
 }

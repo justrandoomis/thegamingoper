@@ -8,14 +8,14 @@
   "releaseDate": "2022-11-09",
   "name": { "ar": "God of War Ragnarök", "en": "God of War Ragnarök", "ckb": "God of War Ragnarök" },
   "short": {
-    "ar": "PS5 · قرص · قوائم وترجمة عربية · لاعب واحد",
-    "en": "PS5 · disc · Arabic menus and subtitles · single-player",
-    "ckb": "PS5 · دیسک · مێنیو و ژێرنووسی عەرەبی · تاکەکەسی"
+    "ar": "PS5 · قرص · دبلجة عربية · لاعب واحد",
+    "en": "PS5 · disc · Arabic voice-over · single-player",
+    "ckb": "PS5 · دیسک · دەنگی عەرەبی · تاکەکەسی"
   },
   "description": {
-    "ar": "تكملة God of War (2018) من Santa Monica Studio. مع اقتراب Ragnarök يخوض Kratos وابنه Atreus رحلة عبر العوالم التسعة من الأساطير الإسكندنافية بحثاً عن إجابات. اللعبة فردية، وتتضمن تحديث Valhalla المجاني، وهي ضمن أفضل ألعاب الأكشن على PlayStation.",
-    "en": "The sequel to God of War (2018) from Santa Monica Studio. With Ragnarök approaching, Kratos and his son Atreus travel across the Nine Realms of Norse myth in search of answers. It is a single-player game and includes the free Valhalla update.",
-    "ckb": "بەشی دووەمی God of War (2018) لە Santa Monica Studio. لە کاتێکدا Ragnarök نزیک دەبێتەوە، Kratos و کوڕەکەی Atreus بە ناو نۆ جیهانەکەی ئەفسانەی نۆردیدا گەشت دەکەن بۆ دۆزینەوەی وەڵام. یارییەکی تاکەکەسییە و نوێکردنەوەی بێبەرامبەری Valhalla ی لەگەڵدایە."
+    "ar": "تكملة God of War (2018) من Santa Monica Studio. مع اقتراب Ragnarök يخوض Kratos وابنه Atreus رحلة عبر العوالم التسعة من الأساطير الإسكندنافية بحثاً عن إجابات. اللعبة فردية، ويمكن تحميل إضافة Valhalla مجاناً.",
+    "en": "The sequel to God of War (2018) from Santa Monica Studio. With Ragnarök approaching, Kratos and his son Atreus travel across the Nine Realms of Norse myth in search of answers. It is a single-player game, and the free Valhalla add-on can be downloaded.",
+    "ckb": "بەشی دووەمی God of War (2018) لە Santa Monica Studio. لە کاتێکدا Ragnarök نزیک دەبێتەوە، Kratos و کوڕەکەی Atreus بە ناو نۆ جیهانەکەی ئەفسانەی نۆردیدا گەشت دەکەن بۆ دۆزینەوەی وەڵام. یارییەکی تاکەکەسییە، و زیادکراوی Valhalla بێبەرامبەر دادەگیرێت."
   },
   "highlights": [
     {
@@ -24,14 +24,14 @@
       "ckb": "چیرۆکی تاکەکەسی کە بێ ئینتەرنێت یاری دەکرێت."
     },
     {
-      "ar": "قوائم وترجمة بالعربية، والمتجر الإماراتي يذكر صوتاً عربياً لنسخة PS4.",
-      "en": "Arabic menus and subtitles; the UAE store also lists Arabic voice for the PS4 version.",
-      "ckb": "مێنیو و ژێرنووسی عەرەبی؛ فرۆشگای ئیمارات دەنگی عەرەبیش بۆ وەشانی PS4 دەنووسێت."
+      "ar": "دبلجة عربية مع قوائم وترجمة بالعربية؛ اللغات المتوفرة تعتمد على منطقة النسخة.",
+      "en": "Arabic voice-over, menus and subtitles; the languages available depend on the region of the copy.",
+      "ckb": "دەنگی عەرەبی لەگەڵ مێنیو و ژێرنووسی عەرەبی؛ ئەو زمانانەی بەردەستن پەیوەستن بە ناوچەی وەشانەکە."
     },
     {
-      "ar": "تحديث Valhalla المجاني يضيف طوراً جديداً بعد القصة.",
-      "en": "The free Valhalla update adds a new post-story mode.",
-      "ckb": "نوێکردنەوەی بێبەرامبەری Valhalla شێوازێکی نوێ دوای چیرۆکەکە زیاد دەکات."
+      "ar": "إضافة Valhalla المجانية تضيف طوراً جديداً بعد نهاية القصة.",
+      "en": "The free Valhalla add-on adds a new mode set after the story.",
+      "ckb": "زیادکراوی بێبەرامبەری Valhalla شێوازێکی نوێ دوای کۆتایی چیرۆکەکە زیاد دەکات."
     },
     {
       "ar": "مُحسّنة لـ PS5 Pro.",
@@ -78,15 +78,15 @@
       "key": "arabic",
       "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
       "value": {
-        "ar": "قوائم وترجمة؛ صوت عربي مذكور لنسخة PS4 في متجر الإمارات",
-        "en": "Menus and subtitles; Arabic voice listed for the PS4 version on the UAE store",
-        "ckb": "مێنیو و ژێرنووس؛ دەنگی عەرەبی بۆ وەشانی PS4 لە فرۆشگای ئیمارات نووسراوە"
+        "ar": "صوت وترجمة وقوائم (حسب منطقة النسخة)",
+        "en": "Voice, subtitles and menus (depends on the region of the copy)",
+        "ckb": "دەنگ، ژێرنووس و مێنیو (بەپێی ناوچەی وەشانەکە)"
       }
     },
     {
       "key": "age",
       "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
-      "value": { "ar": "PEGI 18", "en": "PEGI 18", "ckb": "PEGI 18" }
+      "value": { "ar": "PEGI 18 / ESRB M", "en": "PEGI 18 / ESRB M", "ckb": "PEGI 18 / ESRB M" }
     },
     {
       "key": "developer",
@@ -105,14 +105,14 @@
       "isDefault": true,
       "images": ["god-of-war-ragnarok--1", "god-of-war-ragnarok--2", "god-of-war-ragnarok--3", "god-of-war-ragnarok--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     }
   ],
   "game": {
-    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-slim-digital"],
     "genres": [
       { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" }
     ],
@@ -122,7 +122,7 @@
       "en": "Single-player, plays offline, no subscription needed.",
       "ckb": "یارییەکی تاکەکەسییە، بێ ئینتەرنێت کار دەکات و بەشداریکردنی پێویست نییە."
     },
-    "ageRating": { "pegi": 18 },
+    "ageRating": { "pegi": 18, "esrb": "M" },
     "arabic": "voice+subtitles+interface",
     "physicalFormat": "disc",
     "developer": "Santa Monica Studio",
@@ -148,15 +148,15 @@
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-digital",
+      "deviceModel": "ps5-slim-digital",
       "status": "partial",
       "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-slim-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     }
   ],
@@ -210,9 +210,15 @@
   ],
   "sources": [
     { "url": "https://www.playstation.com/en-gb/games/god-of-war-ragnarok/", "title": "God of War Ragnarök — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Santa Monica Studio sequel to God of War (2018), released 9 Nov 2022, offline play, 1 player, PS5 Pro Enhanced, Valhalla, PS Plus Extra catalogue, key art and screenshots" },
-    { "url": "https://store.playstation.com/en-gb/concept/10001850", "title": "God of War Ragnarök — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, release date, PS5 and PS4 products" },
-    { "url": "https://store.playstation.com/en-ae/concept/10001850", "title": "God of War Ragnarök — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language for PS4 and PS5, Arabic spoken language listed for PS4" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://store.playstation.com/en-gb/concept/10001850", "title": "God of War Ragnarök — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18 (language, violence), release date, PS5 and PS4 products, PS5 Pro Enhanced" },
+    { "url": "https://store.playstation.com/en-ae/product/EP9000-PPSA08332_00-GOWRAGNAROK00000", "title": "God of War Ragnarök — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language for PS4 and PS5, Arabic spoken language listed for PS4 (the PS5 spoken-language list shown there is only en, es-MX, fr, pt-BR)" },
+    { "url": "https://www.playstation.com/en-gb/support/games/god-of-war-ragnarok-faq/", "title": "God of War Ragnarök FAQ", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "fact-check: language table lists Arabic with voice and text; available languages depend on the region of purchase" },
+    { "url": "https://me.ign.com/ar/god-of-war-ragnarok/159483/news/tkyd-qdwm-lb-god-of-war-ragnarok-bdm-kml-llg-lrby", "title": "تأكيد قدوم لعبة God of War: Ragnarok بدعم كامل للغة العربية", "publisher": "IGN Middle East", "retrieved": "2026-11-11", "supports": "fact-check: PlayStation Arabia confirmed full Arabic dubbing and Arabic menus and text at launch (9 Nov 2022, PS4 and PS5)" },
+    { "url": "https://www.playstation.com/ar-sa/support/games/god-of-war-ragnarok-faq/", "title": "الأسئلة الشائعة للعبة God of War Ragnarök", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "fact-check: release date 9 Nov 2022, physical PS5 Launch Edition on disc" },
+    { "url": "https://www.playstation.com/en-ae/games/god-of-war-ragnarok/", "title": "God of War Ragnarök — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "fact-check: released 09/11/2022, offline play, 1 player, Remote Play, PS5 Pro Enhanced, included in PlayStation Plus Extra, free Valhalla add-on" },
+    { "url": "https://www.playstation.com/en-us/games/god-of-war-ragnarok/", "title": "God of War Ragnarök — PlayStation (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "fact-check: ESRB M rating" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" },
+    { "url": "https://gameinformer.com/2026/11/04/god-of-war-laufey-delayed-to-may", "title": "God of War Laufey delayed to May", "publisher": "Game Informer", "retrieved": "2026-11-11", "supports": "fact-check: God of War Laufey moved to 20 May 2027 on PS5 (announced 4 Nov 2026)" }
   ],
   "notes": {
     "ar": "اللعبة متاحة أيضاً ضمن كتالوج PlayStation Plus Extra. الجزء الجديد God of War Laufey معلن لـ PS5 في 20 أيار 2027.",
@@ -220,14 +226,13 @@
     "ckb": "یارییەکە لە کاتالۆگی PlayStation Plus Extra یش هەیە. یاری نوێی God of War Laufey بۆ PS5 لە 20ی ئایاری 2027 ڕاگەیەنراوە."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Arabic voice: the UAE PlayStation Store lists Arabic audio for the PS4 version; for PS5 only Arabic text is listed, so Arabic voice on the PS5 disc is assumed, not confirmed.",
-      "No official standard-edition pack shot was found (store covers now show the Digital Deluxe or 20th Anniversary art), so the first image is the official key art.",
-      "The physical PS5 disc is assumed to still be in production; no official retail page was found.",
-      "ESRB rating and install size not recorded.",
-      "God of War Laufey date (20 May 2027) comes from press after the November 2026 delay, not read on an official page."
+      "No official standard-edition pack shot was found: Sony's store covers now show the Digital Deluxe or 20th Anniversary art and PlayStation Direct no longer lists the disc, so the first image is the official key art (validator warning stays).",
+      "The UAE store's PS5 voice list looks incomplete; Arabic voice on the PS5 disc rests on Sony's FAQ language table and PlayStation Arabia's launch announcement, and Sony notes that languages depend on the region of the copy.",
+      "Whether the PS5 disc is still being manufactured is not stated by Sony.",
+      "Install size not recorded; no EAN/UPC barcode recorded."
     ]
   }
 }

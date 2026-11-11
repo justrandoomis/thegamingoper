@@ -78,6 +78,17 @@ export function clearCookie(ctx: RequestCtx, name: string): string {
   return serializeCookie(ctx, name, "", { maxAge: 0 });
 }
 
+/**
+ * The page path a request is for. React Router's client navigations request "/en.data" for "/en"
+ * and "/en/_.data" (or "/_.data") for a path ending in "/"; this strips that suffix the same way the
+ * router does (getNormalizedPath in react-router's server runtime, which it does not export).
+ */
+export function pagePathname(pathname: string): string {
+  if (pathname.endsWith("/_.data")) return pathname.slice(0, -"_.data".length);
+  if (pathname.endsWith(".data")) return pathname.slice(0, -".data".length);
+  return pathname;
+}
+
 function newNonce(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(16));
   let bin = "";
@@ -103,8 +114,10 @@ export const requestContextMiddleware: MiddlewareFunction<Response> = async ({ r
   const queued: string[] = [];
 
   // Locale comes from the URL for the storefront; the admin keeps its own cookie preference.
-  let locale: Locale = splitLocale(url.pathname).locale;
-  if (url.pathname === "/admin" || url.pathname.startsWith("/admin/")) {
+  // Client navigations fetch "<path>.data" (or "<path>/_.data"), so read the page's own path.
+  const pagePath = pagePathname(url.pathname);
+  let locale: Locale = splitLocale(pagePath).locale;
+  if (pagePath === "/admin" || pagePath.startsWith("/admin/")) {
     const adminLocale = readCookie(cookieHeader, "tt_admin_locale");
     locale = adminLocale === "en" ? "en" : DEFAULT_LOCALE;
   }

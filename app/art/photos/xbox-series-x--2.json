@@ -32,8 +32,7 @@
         "w": 720,
         "src": "/products/xbox-series-x/2-720.16e05484.webp"
       }
-    ],
-    "png": "/products/xbox-series-x/2-720.3398edec.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSDEAAAARJ0CYbTSB+cPtfRynERHBbUAQ2YaMBhqY18C9BvRvdgEi+h8NEKtevqqar1e9bIAAAFZQOCA8AAAAcAMAnQEqCwAUAD8RcLBQLCYkorAIAYAiCWkAAF5aG4diC51EAP6/sDkzbJixRX2kuAEN2kYj8x2jFAAA",
   "dominant": "#26262a",
@@ -45,5 +44,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b01-Xbox-Series-X?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
   },
-  "input": "027ac635424ff4c3"
+  "input": "9dd4da1f28bb7e5b"
 }

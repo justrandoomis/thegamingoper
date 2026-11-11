@@ -196,12 +196,21 @@ export function postWalletPayment(db: Db, input: Omit<PaymentPosting, "method" |
  * Revenue is recognised when an order is delivered: Dr customer control (total), Dr sales
  * discounts (discount), Cr sales revenue (subtotal of the lines), Cr shipping income (fee charged).
  * Prices are tax-inclusive and no tax is configured: an order carrying tax cannot be posted here.
+ *
+ * `refundedBeforeIqd`: refunds already issued for this order BEFORE delivery were posted against
+ * customer control (there was no revenue to reverse yet). At recognition that part of the total is
+ * moved to sales refunds (Dr sales refunds instead of Dr customer control), so customer control
+ * nets to zero and net revenue is the total minus every refund — whenever it was issued.
  */
 export function postSale(
   db: Db,
-  input: PostingContext & { orderId: string; ref: string; subtotalIqd: number; discountIqd: number; shippingIqd: number; totalIqd: number; taxIqd?: number },
+  input: PostingContext & { orderId: string; ref: string; subtotalIqd: number; discountIqd: number; shippingIqd: number; totalIqd: number; taxIqd?: number; refundedBeforeIqd?: number },
 ): BatchStatement[] {
   if ((input.taxIqd ?? 0) !== 0) throw new Error(`postSale: order ${input.ref} carries tax, but no tax account is configured`);
+  const refundedBefore = input.refundedBeforeIqd ?? 0;
+  if (!Number.isSafeInteger(refundedBefore) || refundedBefore < 0 || refundedBefore > input.totalIqd) {
+    throw new Error(`postSale: refundedBeforeIqd must be a whole number between 0 and the order total, got ${String(refundedBefore)}`);
+  }
   return journalStatements(db, {
     at: input.at,
     memo: `Order ${input.ref} delivered`,
@@ -211,7 +220,8 @@ export function postSale(
     idempotencyKey: salePostingKey(input.orderId),
     isDemo: input.isDemo,
     lines: [
-      { accountCode: "cod_receivable", debitIqd: input.totalIqd },
+      { accountCode: "cod_receivable", debitIqd: input.totalIqd - refundedBefore },
+      { accountCode: "sales_refunds", debitIqd: refundedBefore },
       { accountCode: "sales_discounts", debitIqd: input.discountIqd },
       { accountCode: "sales_revenue", creditIqd: input.subtotalIqd },
       { accountCode: "shipping_income", creditIqd: input.shippingIqd },

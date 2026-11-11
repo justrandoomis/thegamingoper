@@ -21,13 +21,13 @@
     { "ar": "نسخة Nintendo Switch 2 Edition تقدم دقة أعلى ومعدل إطارات أكثر سلاسة", "en": "The Nintendo Switch 2 Edition runs at higher resolution with smoother frame rates", "ckb": "Nintendo Switch 2 Edition بە ڕوونییەکی بەرزتر و فرەیمڕەیتێکی نەرمتر کار دەکات" },
     { "ar": "بطاقة Nintendo Switch 2 Edition تعمل أيضاً على Switch الأول لكن بنسخة Switch العادية", "en": "The Nintendo Switch 2 Edition card also works in a Switch 1, running the regular Switch version", "ckb": "کارتی Nintendo Switch 2 Edition لەسەر Switch ی یەکەمیش کار دەکات، بەڵام وەشانی ئاسایی Switch دەخاتە کار" },
     { "ar": "معارك Z-A Battle Club حتى 4 لاعبين محلياً أو عبر الإنترنت (يتطلب Nintendo Switch Online)", "en": "Z-A Battle Club fights for up to 4 players locally or online (online needs Nintendo Switch Online)", "ckb": "شەڕەکانی Z-A Battle Club تا 4 یاریزان بە ناوخۆیی یان ئۆنلاین (ئۆنلاین پێویستی بە Nintendo Switch Online هەیە)" },
-    { "ar": "إضافة Mega Dimension المدفوعة متوفرة منفصلة أو ضمن إصدار فعلي خاص", "en": "Paid Mega Dimension DLC sold separately or inside a dedicated physical edition", "ckb": "زیادکراوی پارەداری Mega Dimension بە جیا یان لە ناو وەشانێکی فیزیکیی تایبەتدا هەیە" },
+    { "ar": "إضافة Mega Dimension المدفوعة متوفرة منفصلة أو ضمن إصدار فيزيائي خاص", "en": "Paid Mega Dimension DLC sold separately or inside a dedicated physical edition", "ckb": "زیادکراوی پارەداری Mega Dimension بە جیا یان لە ناو وەشانێکی فیزیکیی تایبەتدا هەیە" },
     { "ar": "لا تدعم العربية · لا تدعم الحفظ السحابي", "en": "No Arabic · No cloud save backup", "ckb": "عەرەبی تێدا نییە · پاشەکەوتی هەوری پشتگیری ناکرێت" }
   ],
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 (Switch 2 Edition) أو Nintendo Switch", "en": "Nintendo Switch 2 (Switch 2 Edition) or Nintendo Switch", "ckb": "Nintendo Switch 2 (Switch 2 Edition) یان Nintendo Switch" } },
-    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "16 تشرين الأول 2025 (إصدار + Mega Dimension الفعلي: 29 تشرين الأول 2026)", "en": "16 October 2025 (physical + Mega Dimension edition: 29 October 2026)", "ckb": "16ی تشرینی یەکەمی 2025 (وەشانی فیزیکیی + Mega Dimension: 29ی تشرینی یەکەمی 2026)" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة؛ نسخة Switch 2 Edition تضم لعبة Switch وحزمة الترقية", "en": "Game card; the Switch 2 Edition includes the Switch game and the upgrade pack", "ckb": "کارتی یاری؛ Switch 2 Edition یاریی Switch و پاکێجی نوێکردنەوەی تێدایە" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "16 تشرين الأول 2025 (إصدار + Mega Dimension الفيزيائي: 29 تشرين الأول 2026)", "en": "16 October 2025 (physical + Mega Dimension edition: 29 October 2026)", "ckb": "16ی تشرینی یەکەمی 2025 (وەشانی فیزیکیی + Mega Dimension: 29ی تشرینی یەکەمی 2026)" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة؛ نسخة Switch 2 Edition تضم لعبة Switch وحزمة الترقية", "en": "Game card; the Switch 2 Edition includes the Switch game and the upgrade pack", "ckb": "کارتی یاری؛ Switch 2 Edition یاریی Switch و پاکێجی نوێکردنەوەی تێدایە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "11.3 GB على Nintendo Switch 2 · 6 GB على Nintendo Switch", "en": "11.3 GB on Nintendo Switch 2 · 6 GB on Nintendo Switch", "ckb": "11.3 GB لەسەر Nintendo Switch 2 · 6 GB لەسەر Nintendo Switch" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد في القصة؛ 2–4 محلياً لاسلكياً أو عبر الإنترنت", "en": "1 in the story; 2–4 over local wireless or online", "ckb": "یەک یاریزان لە چیرۆکەکەدا؛ 2–4 بە بێتەلی ناوخۆیی یان ئۆنلاین" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E10+ (عنف خيالي، مشتريات داخل اللعبة)", "en": "PEGI 7 · ESRB E10+ (Fantasy Violence, In-Game Purchases)", "ckb": "PEGI 7 · ESRB E10+ (توندوتیژیی خەیاڵی، کڕینی ناو یاری)" } },
@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-POKEMON-LEGENDS-ZA",
-      "title": { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (نسخة فعلية)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (physical)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (physical)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905989"],
       "isDefault": true,
@@ -54,7 +54,7 @@
     },
     {
       "sku": "NSG-POKEMON-LEGENDS-ZA",
-      "title": { "ar": "Pokémon Legends: Z-A — نسخة Nintendo Switch (فعلية)", "en": "Pokémon Legends: Z-A — Nintendo Switch version (physical)", "ckb": "Pokémon Legends: Z-A — وەشانی Nintendo Switch (فیزیکی)" },
+      "title": { "ar": "Pokémon Legends: Z-A — نسخة Nintendo Switch (فيزيائية)", "en": "Pokémon Legends: Z-A — Nintendo Switch version (physical)", "ckb": "Pokémon Legends: Z-A — وەشانی Nintendo Switch (فیزیکی)" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496905309"],
       "isDefault": false,
@@ -67,15 +67,15 @@
     },
     {
       "sku": "NS2G-POKEMON-LEGENDS-ZA-MEGA",
-      "title": { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (نسخة فعلية)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (physical)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (کۆپیی فیزیکی)" },
+      "title": { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (نسخة فيزيائية)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (physical)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (کۆپیی فیزیکی)" },
       "options": { "edition": "Nintendo Switch 2 Edition + Mega Dimension", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496907907"],
       "isDefault": false,
       "images": ["pokemon-legends-z-a--3"],
       "notes": {
-        "ar": "صدرت في 29 تشرين الأول 2026 وتضم لعبة Switch وحزمة الترقية ومحتوى Mega Dimension، مع رمز هدية لـ 100 Ultra Ball في النسخة الأمريكية. الباركود للنسخة الأمريكية (UPC).",
-        "en": "Released 29 October 2026; includes the Switch game, the upgrade pack and the Mega Dimension content, plus a bonus code for 100 Ultra Balls in the US release. Barcode is the US edition's UPC.",
-        "ckb": "لە 29ی تشرینی یەکەمی 2026 دەرچووە؛ یاریی Switch و پاکێجی نوێکردنەوە و ناوەڕۆکی Mega Dimension ی تێدایە، لەگەڵ کۆدی دیاری بۆ 100 Ultra Ball لە وەشانی ئەمریکیدا. بارکۆدەکە UPC ی وەشانی ئەمریکییە."
+        "ar": "صدرت في 29 تشرين الأول 2026، وتأتي لعبة Switch وحزمة الترقية وإضافة Mega Dimension كلها على بطاقة لعبة واحدة، مع ورقة فيها رمز لـ 100 Ultra Ball في النسخة الأمريكية. الباركود للنسخة الأمريكية (UPC).",
+        "en": "Released 29 October 2026; the Switch game, the upgrade pack and the Mega Dimension DLC are all on one game card, plus an insert with a code for 100 Ultra Balls in the US release. Barcode is the US edition's UPC.",
+        "ckb": "لە 29ی تشرینی یەکەمی 2026 دەرچووە؛ یاریی Switch و پاکێجی نوێکردنەوە و زیادکراوی Mega Dimension هەموویان لەسەر یەک کارتی یارین، لەگەڵ پەڕەیەک کە کۆدی 100 Ultra Ball ی تێدایە لە وەشانی ئەمریکیدا. بارکۆدەکە UPC ی وەشانی ئەمریکییە."
       }
     }
   ],
@@ -174,14 +174,16 @@
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/Pokemon-Legends-Z-A-Nintendo-Switch-2-Edition-2827849.html", "title": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, Switch 2 Edition card plays the Switch version in a Nintendo Switch, upgrade pack for Switch owners, higher frame rate and resolution" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-games/Pokemon-Legends-Z-A-2533423.html", "title": "Pokémon Legends: Z-A | Nintendo Switch games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "Nintendo Switch version: PEGI 7, download size 6.0 GB, Pro Controller compatible, online play needs a paid Nintendo Switch Online membership" },
     { "url": "https://www.nintendo.com/us/store/products/pokemon-legends-z-a-switch/", "title": "Pokémon Legends: Z-A for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch version play modes include handheld; Nintendo's note that experience may differ on Switch Lite" },
-    { "url": "https://en.wikipedia.org/wiki/Pok%C3%A9mon_Legends:_Z-A", "title": "Pokémon Legends: Z-A", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Game Freak, publishers Nintendo (worldwide) and The Pokémon Company (Japan), action role-playing, Mega Dimension DLC released December 10, 2025" }
+    { "url": "https://en.wikipedia.org/wiki/Pok%C3%A9mon_Legends:_Z-A", "title": "Pokémon Legends: Z-A", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Game Freak, publishers Nintendo (worldwide) and The Pokémon Company (Japan), action role-playing, Mega Dimension DLC released December 10, 2025" },
+    { "url": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Legends", "title": "PEGI search: Pokémon Legends: Z-A", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 7 for Nintendo Switch and Nintendo Switch 2, European release 16/10/2025; Mega Dimension DLC PEGI 7, released 10/12/2025" },
+    { "url": "https://www.rpgsite.net/feature/17453-every-nintendo-switch-2-rpg-physical-release-complete-on-cartridge-no-game-key-cards-or-codes-needed", "title": "Every Nintendo Switch 2 RPG Physical Release Complete on Cartridge", "publisher": "RPG Site", "retrieved": "2026-11-11", "supports": "independent check of the format: the Nintendo Switch 2 Edition includes the game and the upgrade pack on a single cartridge" },
+    { "url": "https://www.rpgsite.net/news/21494-pokmon-legends-z-a-nintendo-switch-2-edition-mega-dimension-physical-bundle-cartridge-release-date", "title": "Pokemon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension bundle physical release announced", "publisher": "RPG Site", "retrieved": "2026-11-11", "supports": "quotes The Pokémon Company: the October 29, 2026 bundle has the Switch 2 Edition and the Mega Dimension DLC on one game card; on a Nintendo Switch it plays as the Switch version" },
+    { "url": "https://www.upcitemdb.com/upc/45496905989", "title": "UPC 045496905989 - Pokémon Legends: Z-A - Nintendo Switch 2 Edition", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905989 (Switch 2 Edition), 045496905309 (Nintendo Switch) and 045496907907 (Switch 2 Edition + Mega Dimension) are listed under these products" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Whether the Mega Dimension content in the physical + Mega Dimension edition is on the card or delivered as a download code",
-      "Full game card status inferred from Nintendo's official box art (no game-key card label)",
       "European EAN barcodes not found on an official page"
     ]
   }

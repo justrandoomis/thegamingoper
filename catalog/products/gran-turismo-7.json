@@ -13,15 +13,20 @@
     "ckb": "PS5 · دیسک · زیاتر لە 580 ئۆتۆمبێل · پشتگیری PS VR2"
   },
   "description": {
-    "ar": "محاكي سباقات السيارات من Polyphony Digital، فيه أكثر من 580 سيارة من أكثر من 77 شركة، وحلبات في 42 موقعاً بـ 122 تصميماً. تشتري السيارات وتعدّلها وتتسابق ضد الذكاء الاصطناعي أو أونلاين، ويمكن اللعب بنظارة PS VR2 على نسخة PS5. ما زالت اللعبة تحصل على تحديثات مجانية كبيرة، آخرها Spec IV في تشرين الأول 2026.",
-    "en": "Polyphony Digital's driving simulator, with more than 580 cars from 77+ brands and tracks at 42 locations with 122 layouts. You buy, tune and race cars against the AI or online, and the PS5 version can be played in PS VR2. It still receives big free updates, most recently Spec IV in October 2026.",
-    "ckb": "سیمولەیتەری لێخوڕینی Polyphony Digital، زیاتر لە 580 ئۆتۆمبێل لە 77+ کۆمپانیا و پیستی پێشبڕکێ لە 42 شوێن بە 122 شێوەی جیاواز. ئۆتۆمبێل دەکڕیت، دەستکاری دەکەیت و لەگەڵ زیرەکی دەستکرد یان ئۆنلاین پێشبڕکێ دەکەیت، و وەشانی PS5 بە PS VR2 یش یاری دەکرێت. هێشتا نوێکردنەوەی گەورەی بێبەرامبەر وەردەگرێت، دواینیان Spec IV لە تشرینی یەکەمی 2026."
+    "ar": "محاكي سباقات السيارات من Polyphony Digital، فيه أكثر من 580 سيارة من أكثر من 77 شركة، وحلبات في 42 موقعاً بـ 122 تصميماً. تشتري السيارات وتعدّلها وتتسابق ضد الذكاء الاصطناعي أو أونلاين، ويمكن اللعب بنظارة PS VR2 على نسخة PS5. ما زالت اللعبة تحصل على تحديثات مجانية كبيرة: الجزء الأول من تحديث Spec IV صدر في 15 تشرين الأول 2026، والجزء الثاني معلن لشهر كانون الأول.",
+    "en": "Polyphony Digital's driving simulator, with more than 580 cars from 77+ brands and tracks at 42 locations with 122 layouts. You buy, tune and race cars against the AI or online, and the PS5 version can be played in PS VR2. It still gets big free updates: Part 1 of the Spec IV update arrived on 15 October 2026, with Part 2 announced for December.",
+    "ckb": "سیمولەیتەری لێخوڕینی Polyphony Digital، زیاتر لە 580 ئۆتۆمبێل لە 77+ کۆمپانیا و پیستی پێشبڕکێ لە 42 شوێن بە 122 شێوەی جیاواز. ئۆتۆمبێل دەکڕیت، دەستکاری دەکەیت و لەگەڵ زیرەکی دەستکرد یان ئۆنلاین پێشبڕکێ دەکەیت، و وەشانی PS5 بە PS VR2 یش یاری دەکرێت. هێشتا نوێکردنەوەی گەورەی بێبەرامبەر وەردەگرێت: بەشی یەکەمی نوێکردنەوەی Spec IV لە 15ی تشرینی یەکەمی 2026 هات، و بەشی دووەم بۆ کانوونی یەکەم ڕاگەیەنراوە."
   },
   "highlights": [
     {
       "ar": "أكثر من 580 سيارة وحلبات في 42 موقعاً.",
       "en": "580+ cars and tracks at 42 locations.",
       "ckb": "زیاتر لە 580 ئۆتۆمبێل و پیستی پێشبڕکێ لە 42 شوێن."
+    },
+    {
+      "ar": "حتى 4 لاعبين بشاشة مقسومة على PS5، وحتى 20 لاعباً أونلاين.",
+      "en": "Up to 4 players split-screen on PS5, and up to 20 online.",
+      "ckb": "تا 4 یاریزان بە شاشەی دابەشکراو لەسەر PS5، و تا 20 یاریزان ئۆنلاین."
     },
     {
       "ar": "بدون إنترنت يتوفر طور Arcade فقط؛ معظم اللعبة تحتاج اتصالاً، واللعب الجماعي أونلاين يحتاج PlayStation Plus.",
@@ -64,9 +69,9 @@
       "key": "players",
       "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
       "value": {
-        "ar": "سباق بشاشة مقسومة على نفس الجهاز، وحتى 20 لاعباً أونلاين",
-        "en": "Split-screen racing on one console, up to 20 players online",
-        "ckb": "پێشبڕکێی شاشەی دابەشکراو لەسەر یەک ئامێر، تا 20 یاریزان ئۆنلاین"
+        "ar": "حتى 4 لاعبين بشاشة مقسومة على PS5، وحتى 20 لاعباً أونلاين",
+        "en": "Up to 4 players split-screen on PS5, up to 20 online",
+        "ckb": "تا 4 یاریزان بە شاشەی دابەشکراو لەسەر PS5، تا 20 یاریزان ئۆنلاین"
       }
     },
     {
@@ -82,9 +87,9 @@
       "key": "vr",
       "label": { "ar": "الواقع الافتراضي", "en": "Virtual reality", "ckb": "ڕاستیی مەجازی" },
       "value": {
-        "ar": "PS VR2 اختياري (نسخة PS5 فقط، ما عدا شاشة اللاعبين المقسومة)",
-        "en": "PS VR2 optional (PS5 version only, except split-screen)",
-        "ckb": "PS VR2 ئارەزوومەندانە (تەنها وەشانی PS5، جگە لە شاشەی دابەشکراو)"
+        "ar": "PS VR2 اختياري (نسخة PS5 فقط، ما عدا الشاشة المقسومة للاعبَين)",
+        "en": "PS VR2 optional (PS5 version only, except 2-player split-screen)",
+        "ckb": "PS VR2 ئارەزوومەندانە (تەنها وەشانی PS5، جگە لە شاشەی دابەشکراوی دوو یاریزان)"
       }
     },
     {
@@ -114,19 +119,19 @@
       "isDefault": true,
       "images": ["gran-turismo-7--1", "gran-turismo-7--2", "gran-turismo-7--3", "gran-turismo-7--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي.",
-        "en": "PS5 Digital Edition and PS5 Pro need the add-on Disc Drive.",
-        "ckb": "PS5 Digital Edition و PS5 Pro پێویستیان بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     }
   ],
   "game": {
-    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-slim-digital"],
     "genres": [
       { "ar": "سباقات", "en": "Racing", "ckb": "پێشبڕکێ" },
       { "ar": "محاكاة قيادة", "en": "Driving simulator", "ckb": "سیمولەیتەری لێخوڕین" }
     ],
-    "players": "1, local split-screen, up to 20 online",
+    "players": "1-4 local split-screen (PS5), up to 20 online",
     "online": {
       "ar": "بدون إنترنت يتوفر طور Arcade فقط؛ اللعب الجماعي أونلاين يحتاج PlayStation Plus.",
       "en": "Offline only Arcade Mode is available; online multiplayer needs PlayStation Plus.",
@@ -158,15 +163,15 @@
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-digital",
+      "deviceModel": "ps5-slim-digital",
       "status": "partial",
       "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-slim-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
@@ -226,22 +231,22 @@
     }
   ],
   "sources": [
-    { "url": "https://www.gran-turismo.com/us/products/gt7/", "title": "Gran Turismo 7 — product information", "publisher": "Polyphony Digital / Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "580+ cars from 77+ brands, 42 locations and 122 layouts, release 4 Mar 2022, offline only Arcade Mode, split screen, PS VR2 support (PS5 only, no Sense controllers), Spec IV update Oct 2026" },
-    { "url": "https://www.playstation.com/en-ae/games/gran-turismo-7/", "title": "Gran Turismo 7 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 and PS4, PS Plus required for online play, up to 20 online players, PS5 Pro Enhanced, PS VR2 optional, screenshots" },
-    { "url": "https://store.playstation.com/en-ae/concept/10000956", "title": "Gran Turismo 7 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language, cover art" },
-    { "url": "https://store.playstation.com/en-gb/concept/10000956", "title": "Gran Turismo 7 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 3 with in-game purchases" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.gran-turismo.com/us/products/gt7/", "title": "Gran Turismo 7 — product information", "publisher": "Polyphony Digital / Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "580+ cars from 77+ brands, 42 locations and 122 layouts, 4P split screen, offline only Arcade Mode, PS VR2 support (PS5 only, not in 2P split screen, no Sense controllers), paid DLC Power Pack, Spec IV Part 1 on 15 Oct 2026 and Part 2 in December" },
+    { "url": "https://www.playstation.com/en-ae/games/gran-turismo-7/", "title": "Gran Turismo 7 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "released 4 Mar 2022, PS5 and PS4, PS Plus required for online play, up to 20 online players, PS5 Pro Enhanced, PS VR2 optional (not with two-player split screen), free Spec IV update in two parts, screenshots" },
+    { "url": "https://store.playstation.com/en-ae/concept/10000956", "title": "Gran Turismo 7 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language (PS4 and PS5), PS VR2 optional, cover art" },
+    { "url": "https://store.playstation.com/en-gb/concept/10000956", "title": "Gran Turismo 7 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 3 with in-game purchases, release date 4 Mar 2022" },
+    { "url": "https://www.gameinformer.com/2023/11/01/gran-turismo-7-gets-4-player-split-screen-for-ps5-7-new-cars-and-more-in-free-update", "title": "Gran Turismo 7 gets 4-player split-screen for PS5, 7 new cars, and more in free update", "publisher": "Game Informer", "retrieved": "2026-11-11", "supports": "fact-check: 4-player split-screen added on PS5 with the free Spec II update (Nov 2023)" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
-    "ar": "ألعاب السباقات تكون أمتع مع مقود سباق متوافق مع PS5. التوسعة المدفوعة Power Pack تُباع بشكل منفصل.",
-    "en": "Racing games are more fun with a PS5-compatible racing wheel. The paid Power Pack expansion is sold separately.",
-    "ckb": "یارییەکانی پێشبڕکێ لەگەڵ سووکانێکی گونجاو لەگەڵ PS5 خۆشترن. فراوانکردنی پارەداری Power Pack جیا دەفرۆشرێت."
+    "ar": "إضافة Power Pack المدفوعة تُباع بشكل منفصل.",
+    "en": "The paid Power Pack add-on is sold separately.",
+    "ckb": "زیادکراوی پارەداری Power Pack بە جیا دەفرۆشرێت."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Exact split-screen player count: the official page mentions split-screen racing; the store lists no local player count.",
       "Install size is not published on the official pages we read.",
       "No EAN/UPC barcode recorded."
     ]

@@ -1,57 +1,48 @@
 {
   "key": "joy-con-2--2",
   "view": "hero",
-  "width": 1200,
-  "height": 675,
-  "aspect": 1.7778,
+  "width": 824,
+  "height": 761,
+  "aspect": 1.0828,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/joy-con-2/2-240.0a800759.avif"
+        "src": "/products/joy-con-2/2-240.06ea389a.avif"
       },
       {
         "w": 480,
-        "src": "/products/joy-con-2/2-480.478402f6.avif"
+        "src": "/products/joy-con-2/2-480.1edbb445.avif"
       },
       {
         "w": 720,
-        "src": "/products/joy-con-2/2-720.c6175b21.avif"
-      },
-      {
-        "w": 960,
-        "src": "/products/joy-con-2/2-960.7c47ad4c.avif"
+        "src": "/products/joy-con-2/2-720.35e6d568.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/joy-con-2/2-240.64f09105.webp"
+        "src": "/products/joy-con-2/2-240.f535302f.webp"
       },
       {
         "w": 480,
-        "src": "/products/joy-con-2/2-480.d4b124f6.webp"
+        "src": "/products/joy-con-2/2-480.25b95a8f.webp"
       },
       {
         "w": 720,
-        "src": "/products/joy-con-2/2-720.3b8a0757.webp"
-      },
-      {
-        "w": 960,
-        "src": "/products/joy-con-2/2-960.8f77cd80.webp"
+        "src": "/products/joy-con-2/2-720.5d13fb0b.webp"
       }
-    ],
-    "png": "/products/joy-con-2/2-720.c674b170.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAACQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwAATGBxO9bv7roAAP7tX2cJySwQnfQWpNkE7GfUHdSdPf6FVzVcNf3d87Jvf5nvy8NNaoAAAA==",
+  "placeholder": "data:image/webp;base64,UklGRjgBAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSI4AAAARR2AkANIwC2iQQN1kRAQUX56B29i2VWV/T/3/1CXEIXQJGSpgqMAldV7faAkR/Q8gkkMbMO3KM1iflEjqjpbCX4liqFbNm9AXYio5/1XC66sjK5Xo3VbC+PIqY9lMz299yWytXsYWM+uKYC3UOWZCX5ul9DFTUCrQl2i8D2BAqFRkGtBt1qE+V4FIAtMGVlA4IIQAAABwBACdASoUABIAPxF+t1WsJ6UjKAgBgCIJZQDOOA/P+/VBM1vi4WidULP8AAD+zGayxvs7S8xkkFRLGkuDzWvNXHnAxzVgdIm2VNLKbWvMbj5X1n+NAZl6Q2F/jdAp/24axq7dGARENvVKTXJj6OkyhQmLxrcJp/mv9qZcCEcVH6iFLAA=",
   "dominant": "#34373b",
-  "transparent": false,
-  "background": "#ffffff",
+  "transparent": true,
+  "background": null,
   "kind": "in-box",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/123677-nintendo-switch-2-joy-con-2-set-light-blue-light-red-with-straps-front-1200x675",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-l-r-light-blue-light-red-123677/"
   },
-  "input": "fbdc2cf8e0ab0eda"
+  "input": "09314f21c8644a4b"
 }

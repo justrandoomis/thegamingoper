@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/xbox-adaptive-controller/1-1440.42a25df5.webp"
       }
-    ],
-    "png": "/products/xbox-adaptive-controller/1-720.5a798a9c.png"
+    ]
+  },
+  "share": {
+    "src": "/products/xbox-adaptive-controller/1-1200.4d5ef60a.png",
+    "width": 1200,
+    "height": 599,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSFgAAAART6AmkiQ1eBaYH8KPPiIC8L6h+IfBpta2JQ86/xGwBNaDjdVthOlvwCGAfXmxChH9nwB+qrgdABV3q4i4lKs8Tszy6uYv2vGum85M2GUbIgNgKUKDR8UrVlA4IIwAAAAQBACdASoUAAoAPxFysFAsJqSisAgBgCIJaQAD46nT8GT6RbeIsA1AAAD+17GJFslsggXGbs4LPnRY2edii/t/S/YxwS/FNgyhCCo+RvkU38YRsBP3l8P2THTdjxKX0qiuX66My4EqfKRCcz8fAMVqzp0WqxFNJ/ikGL8OEn3Znqd7tMpkJdd9gAAAAA==",
   "dominant": "#f4f4f4",
@@ -61,5 +66,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Z-BuyBoxImage-b00?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-adaptive-controller/8nsdbhz1n3d8"
   },
-  "input": "28249556a1602feb"
+  "input": "e6a983e8b2e9c0f7"
 }

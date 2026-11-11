@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/battlefield-6/1-1440.9967c227.webp"
       }
-    ],
-    "png": "/products/battlefield-6/1-720.cffc967b.png"
+    ]
+  },
+  "share": {
+    "src": "/products/battlefield-6/1-1200.e9ee5902.jpg",
+    "width": 1200,
+    "height": 1200,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJQBjPgeOrsz+ZQ0AYPYGLPlnP+rVQAP3uixup43VQE/D9TiG/RSYpQ4YKNrTd2YMGWeZPbW72MHvyyQHk3dHfogA5QrYLeG6ds18QoE5wpe9TJfuZ0HA+dAjRAGsVuTIfTg2jYO6H5pXDdwAAAA==",
   "dominant": "#261b16",
@@ -61,5 +66,5 @@
     "url": "https://store-images.s-microsoft.com/image/apps.8290.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.d19697e7-b1c1-4200-9327-5f3640f65b75",
     "page": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3"
   },
-  "input": "4c686430203fe2d6"
+  "input": "a398094db422a360"
 }

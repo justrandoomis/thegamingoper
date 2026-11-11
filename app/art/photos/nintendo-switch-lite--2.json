@@ -40,8 +40,7 @@
         "w": 960,
         "src": "/products/nintendo-switch-lite/2-960.c1bb79ce.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-lite/2-720.39453ad3.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABQBACdASoUAAsAPxF0sVCsJqSisAgBgCIJbACdMoMYJngAbOXHigFseTjAAP6VB7oFQdKsDH+kdOSIhGt00IpBbRXkL4mWV7j+SFFN4J3BLjvkLheGMcwbQrJOad//fFZbQzQDsTvUYjq6vwCmXk3XybpQx4hL4AA=",
   "dominant": "#01b5b9",
@@ -53,5 +52,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-turquoise/110663-nintendo-switch-lite-turquoise-back-1200x675",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-turquoise/"
   },
-  "input": "d785b75d3ce58247"
+  "input": "28f4bced8f1ff71d"
 }

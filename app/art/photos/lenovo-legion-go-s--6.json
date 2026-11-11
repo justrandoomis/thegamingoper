@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/lenovo-legion-go-s/6-1440.a706d57a.webp"
       }
-    ],
-    "png": "/products/lenovo-legion-go-s/6-720.c0e609db.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRgABAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSFkAAAART6CmbSQ2dhBuKr/ViAiwf0uTAZva2pt8oa7BQYeVDQFYQEDfY4HpBwMpev8kGiL6PwFA5QVwfJwWQDt/Jm2gnF0w3yNUxBvKVCitN7LsFwCa9SE3wS9bAQBWUDgggAAAABAEAJ0BKhQADAA/EXKwUCwmpKKwCAGAIglAGN6xfBjaGigHneqjLgbwAPfLiS2+S14SvHjzC8tdha1hUJDigPUWIeIDKZV6WF1GheZdDUADkKRBG8n7DN21wlLaZE+zJWjEvrUINT/LH1BOFh+56gOKLcOLelwfn57IGQGYAAAA",
   "dominant": "#d7d7d7",
@@ -61,5 +60,5 @@
     "url": "https://media.lenovonews.fiestic.com/2025/01/08040353/Legion-Go-S-8in-1.zip#03_Legion_Go_S_45_degree_front_facing_left.png",
     "page": "https://news.lenovo.com/press-kits/ces-2025/"
   },
-  "input": "53696bb518356b2b"
+  "input": "ffdcdd1a71191c97"
 }

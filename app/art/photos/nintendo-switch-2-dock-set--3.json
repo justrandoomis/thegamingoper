@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/nintendo-switch-2-dock-set/3-1440.6a7562ab.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2-dock-set/3-720.a0dd3b7b.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRvQAAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSFgAAAART6CobSQ3txx2X73fRUSAsXwqxYajSJJUq9bBinhwRiV8ZZCwAh4JoPH73kcDEf2fAO4VtzqejQt4zSUiI5Ryu8H+wvnC9T/Fw2CBvkRMpAA9mUhxqxX3VlA4IHYAAACwAwCdASoUABAAPxFysFAsJqSisAgBgCIJZwAD46mVP7O+dC7esAD9rpS+qVN+v+DiqvknAtcfZiLG5smt7cuUzkr+mnBHmjn4PIuK4d+u+/KP0rl8qioBhDtfHffrLpirO3n/TbzhKBXfaWowgBodmAE4YAAA",
   "dominant": "#34373a",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.com/image/upload/v1746486897/switch-2/tech-specs/switch-2-dock-front.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/"
   },
-  "input": "d9218f134b783d66"
+  "input": "0f71fb4ce86cbd3d"
 }

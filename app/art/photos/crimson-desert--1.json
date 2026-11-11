@@ -8,50 +8,55 @@
     "avif": [
       {
         "w": 240,
-        "src": "/products/crimson-desert/1-240.e86ad723.avif"
+        "src": "/products/crimson-desert/1-240.be687fc8.avif"
       },
       {
         "w": 480,
-        "src": "/products/crimson-desert/1-480.80d78b48.avif"
+        "src": "/products/crimson-desert/1-480.9ac3389d.avif"
       },
       {
         "w": 720,
-        "src": "/products/crimson-desert/1-720.f058141f.avif"
+        "src": "/products/crimson-desert/1-720.e9fcf717.avif"
       },
       {
         "w": 960,
-        "src": "/products/crimson-desert/1-960.68035284.avif"
+        "src": "/products/crimson-desert/1-960.4930cfc4.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/crimson-desert/1-240.d4a346ce.webp"
+        "src": "/products/crimson-desert/1-240.0e52fa9a.webp"
       },
       {
         "w": 480,
-        "src": "/products/crimson-desert/1-480.dced7c85.webp"
+        "src": "/products/crimson-desert/1-480.77b746f0.webp"
       },
       {
         "w": 720,
-        "src": "/products/crimson-desert/1-720.5b40557e.webp"
+        "src": "/products/crimson-desert/1-720.c4afc04d.webp"
       },
       {
         "w": 960,
-        "src": "/products/crimson-desert/1-960.c37cde38.webp"
+        "src": "/products/crimson-desert/1-960.60e35e3d.webp"
       }
-    ],
-    "png": "/products/crimson-desert/1-720.e99b1b97.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADQAwCdASoNABQAPxFysFAsJqSisAgBgCIJYwAAW6gO0/QEQ4DieIAA/sB2KyBgrzXONlXCV4hU86p1Kt1miWszbcNuqKfHA8D2v9lId/jGIN6H0cfL40AA",
+  "share": {
+    "src": "/products/crimson-desert/1-1067.902c0241.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJYwAAW+HY+2LadYqf4WWgAP68mzasS7qpMDBRyFM3sSyvyKCoI32HBciTQilTEJeL6eDzLKDL5wwA",
   "dominant": "#261817",
   "transparent": false,
   "background": null,
   "kind": "box-art",
   "credit": "Pearl Abyss",
   "source": {
-    "url": "https://store-images.s-microsoft.com/image/apps.61541.14619536583353710.9e307ff1-14c4-4d1a-813e-cef9bbad5dc5.90b67c9e-834e-44f1-b16c-16624e50f9b4",
-    "page": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk"
+    "url": "https://store-images.s-microsoft.com/image/apps.45738.13616283370123336.55bc585b-1fc2-4652-8965-61111d6975e0.5236f2e9-a0f4-4fc1-8aba-dbf96b812b95",
+    "page": "https://web.archive.org/web/20260415194911/https://www.xbox.com/en-us/games/store/crimson-desert/9p6hvhdp2pgk"
   },
-  "input": "c65a54985a8e75bf"
+  "input": "1df7ffe385a4fb26"
 }

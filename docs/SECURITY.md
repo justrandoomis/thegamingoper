@@ -349,12 +349,13 @@ The application relies on the edge for:
 - **No message provider.** One-time codes are held, phone numbers are unverified, and customers have no self-service password reset. Connecting a provider means implementing `MessageProvider` and passing it in, using credentials from Worker secrets.
 - **Staff two-step verification is optional.** Nothing forces enrolment yet. Before go-live, at least the owner and anyone with money permissions should enrol. A future setting could require it for some roles.
 - **PBKDF2 is capped at 100,000 iterations by the platform** (§8).
-- **Nothing runs on a schedule yet.** `workers/app.ts` has no `scheduled` handler, so `sealAudit` (daily, with its `headHash` logged outside the database) and `cleanupRateLimits` (daily) are not run. There is also no retention job for `auth_events`, `otp_codes`, expired sessions or the outbox.
+- **Scheduled jobs run since 2026-11-11** (`workers/app.ts` `scheduled` handler, crons in `wrangler.jsonc`, jobs in `app/server/jobs.server.ts`): daily `sealAudit` with its `headHash` written to the Workers logs (outside the database), `cleanupRateLimits`, retention of sessions, trusted devices, one-time codes, `auth_events` (180 days) and the outbox (90 days), and consistency checks; every 5 minutes, unpaid transfer orders and stale reservations expire. Gap: Workers logs are kept for a limited time, so the owner should copy the daily `audit_seal` lines somewhere durable (a Logpush destination or a weekly export). Retention periods are constants, not settings yet.
 - **No re-encryption tool for `DATA_KEY` rotation** (§4).
 - **Staff sessions are not bound to an IP or device.** A stolen cookie works until the idle (2 h) or absolute (12 h) limit, or until it is revoked. HttpOnly, SameSite=Strict and `Path=/admin` limit how it can be stolen.
 - **Content-Security-Policy:** it is off in development, and `style-src` allows inline styles.
 - **Public files** may stay in caches after being made private (§9).
-- **Two-person refunds are not enforced here.** `refunds.approval_threshold_iqd` defaults to 0, so every refund needs `orders.refund.approve`. A two-person rule needs the refund service to also refuse an approval by the employee who created the refund: finance and manager hold both permissions.
+- **Two-person refunds are enforced** (since 2026-11-11): above `refunds.approval_threshold_iqd` (default 0, so every refund) a refund waits for `approveRefund`, which needs `orders.refund.approve` and refuses the employee who requested it (`approver_is_requester`). Refunds created by a cancellation always wait for approval.
+- **Append-only tables can be rewritten with `INSERT OR REPLACE`.** The UPDATE/DELETE triggers on ledgers and history do not fire on SQLite's REPLACE conflict resolution, so a statement written that way could replace a wallet ledger row (`tests/commerce-adversarial.test.ts`, marked `.fails`). No code path issues REPLACE today; the fix is a BEFORE INSERT trigger that refuses an existing id or idempotency key (data layer, open).
 
 ## 15. Go-live checklist (application side)
 
@@ -363,5 +364,5 @@ The application relies on the edge for:
 3. Open `/admin/setup` and create the owner. This also installs the reference data and the roles. Then delete the `SETUP_TOKEN` secret.
 4. The owner turns on two-step verification and keeps the recovery codes offline.
 5. Create staff accounts with the narrowest role that fits. Only owner, manager and finance see cost and profit.
-6. Schedule `sealAudit` and `cleanupRateLimits`, and log the seal head hash outside the database.
+6. Check the cron triggers ran (`job_runs`, or the `scheduled_jobs` / `audit_seal` lines in the Workers logs) and keep the daily `audit_seal` head hashes somewhere outside Cloudflare.
 7. Confirm §13 and decide on HSTS.

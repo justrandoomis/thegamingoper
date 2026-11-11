@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/red-dead-redemption-2/1-960.31db0e34.webp"
       }
-    ],
-    "png": "/products/red-dead-redemption-2/1-720.20f9cec8.png"
+    ]
+  },
+  "share": {
+    "src": "/products/red-dead-redemption-2/1-1067.7fd8ec61.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACwAwCdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoACiZdDRL6DoAD+SUD+lpg5OPUm89ft2FVk3Xht+485lNzYuZDuBRj1o9kTAkuLrCkeqcAKfnni5Pbd45X8+kr9ZeXJKBQefXyeWx3eOMqbznBW4AWmImxu2kAAAA==",
   "dominant": "#030101",
@@ -53,5 +58,5 @@
     "url": "https://store-images.s-microsoft.com/image/apps.34695.68182501197884443.ac728a87-7bc1-4a0d-8bc6-0712072da93c.25816f86-f27c-4ade-ae29-222661145f1f",
     "page": "https://www.xbox.com/en-US/games/store/red-dead-redemption-2/bpswgqbw7r3g"
   },
-  "input": "40e78c2de85fade8"
+  "input": "abbd5731f5fc9827"
 }

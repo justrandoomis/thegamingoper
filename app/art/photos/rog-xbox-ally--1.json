@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/rog-xbox-ally/1-1440.8e7fd95f.webp"
       }
-    ],
-    "png": "/products/rog-xbox-ally/1-720.dd5ae7aa.png"
+    ]
+  },
+  "share": {
+    "src": "/products/rog-xbox-ally/1-1200.a145e47e.png",
+    "width": 1200,
+    "height": 576,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEQAAAARR6CkkSQ2efjwF9pfzUdEgH8S4gM1kWw15JqONjpg6KMDDHwLuED4J0iI6P8EkEs9B5pp2UcBJ7VO5g+clI0JbYxcAlZQOCBkAAAAkAMAnQEqFAAKAD8RcrBQLCakorAIAYAiCWkAADs3bG9P4MVEAAD+ZlrdXdVKRsAEE8b3HZ+75Oo3iKTF97m5eAP/VH75y5BgOty36TTxbErwCEYsoglvVDOvFJvP95HjzAAAAA==",
   "dominant": "#050505",
@@ -61,5 +66,5 @@
     "url": "https://dlcdnwebimgs.asus.com/gain/828CE44B-7B48-4F48-88F7-88BEA7D13C5D/",
     "page": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-xbox-ally-2025/gallery/"
   },
-  "input": "f97d08c72a0b5cfc"
+  "input": "70afac255c5816d6"
 }

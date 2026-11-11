@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/playstation-plus/2-1440.ae9472b1.webp"
       }
-    ],
-    "png": "/products/playstation-plus/2-720.4582c897.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAABwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoMYOFmAlbhu5lW8H6CReAD7cisruEKYTN8CrvDpChiXzP6NwrMHqBSKkY59tayZunlQkHxwy9UeB9ZlCRjpRzQIb1GiLGYZ01//kV5QAWAoijmoT4ChbmdW7QzUAAAA",
   "dominant": "#fed826",
@@ -61,5 +60,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps-plus-overview-online-multiplayer-image-block-01-en-04jul24?$1600px$",
     "page": "https://www.playstation.com/en-sa/ps-plus/"
   },
-  "input": "693495a3b45c7209"
+  "input": "8edfe45f38d6802c"
 }

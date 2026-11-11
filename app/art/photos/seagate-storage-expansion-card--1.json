@@ -16,8 +16,13 @@
         "w": 240,
         "src": "/products/seagate-storage-expansion-card/1-240.fa1bfec4.webp"
       }
-    ],
-    "png": "/products/seagate-storage-expansion-card/1-271.d27deebb.png"
+    ]
+  },
+  "share": {
+    "src": "/products/seagate-storage-expansion-card/1-271.a8a74213.png",
+    "width": 271,
+    "height": 501,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSDQAAAARL6CQjSQ4uRa79x/CAV5EBP6SC9WQrVAXIYYmgDdBDNdfps8AIvo/AThFaw1Ocl4TrTLcVlA4IFwAAACQAwCdASoLABQAPxF0sVAsJySisAgBgCIJaQAASclS98PPqzoAAPev35RYOJpNWewxm6bljLb9F59OfvPHY8SKEyL/RMFXZ0kavWZ+P85ts+3Nd7/ifMKSaAAAAA==",
   "dominant": "#393939",
@@ -29,5 +34,5 @@
     "url": "https://assets.xboxservices.com/assets/e6/9f/e69ff205-0f26-4500-8c43-5a28a2259f7c.jpg?n=999482_gallery_02_1056x594.jpg",
     "page": "https://www.xbox.com/en-US/accessories/hard-drives/seagate-expansion-card"
   },
-  "input": "42ad06c9aa5963a5"
+  "input": "989d749b5f05b70d"
 }

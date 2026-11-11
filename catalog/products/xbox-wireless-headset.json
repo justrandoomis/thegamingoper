@@ -152,9 +152,9 @@
   "images": [
     {
       "key": "xbox-wireless-headset--1",
-      "file": ".cache/product-images/xbox-wireless-headset/1.jpg",
-      "sourceUrl": "https://cms-assets.xboxservices.com/assets/80/45/8045f5b9-ba9a-4595-b44f-6b0f32b8c95d.jpg?n=465582_Gallery_1_1056x594.jpg",
-      "sourcePage": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset",
+      "file": ".cache/product-images/xbox-wireless-headset/1.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/465582_Image-0_1920x1080?fmt=png-alpha&scl=1&bfc=off",
+      "sourcePage": "https://www.microsoft.com/en-us/d/xbox-wireless-headset/9203q8w23lhn",
       "kind": "hero",
       "alt": {
         "ar": "سماعة XBOX Wireless Headset السوداء مع ذراع المايك",
@@ -162,9 +162,9 @@
         "ckb": "هێدسێتی ڕەشی XBOX Wireless Headset لەگەڵ مایکی بۆم"
       },
       "credit": "Microsoft",
-      "width": 1056,
-      "height": 594,
-      "transparent": false
+      "width": 1920,
+      "height": 1080,
+      "transparent": true
     },
     {
       "key": "xbox-wireless-headset--2",

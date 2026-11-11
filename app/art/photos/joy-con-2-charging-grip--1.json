@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/joy-con-2-charging-grip/1-960.a3ef7a5f.webp"
       }
-    ],
-    "png": "/products/joy-con-2-charging-grip/1-720.7578835a.png"
+    ]
+  },
+  "share": {
+    "src": "/products/joy-con-2-charging-grip/1-1114.66d16b04.png",
+    "width": 1114,
+    "height": 997,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRkQBAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSIEAAAART6C2ASE4agUqUbknIgLNcd4ruI1s202evEJhC2AowLsu/pCREbnsRzIZGaMY9069/0s1RPR/AqR3cS2rwAeEPu1aAtuRiBjFTUS+eI9S4G9k4XnRBoZW4QTRhUZhBYnloTCD1HJWCJXsycH5kVumQPgmMwwdSyLz4lpWQXENpCcAVlA4IJwAAAAwBACdASoUABIAPxF+t1WsJ6UjKAgBgCIJaQAD5Sh9v/NbVtAlXe0XMfAA/i4UhQ4LtTMmNUWgOWdc4nRHyIDfec5up1uivDcgmxTj4JDTmzDaqHdF72UsHdutCR/cEbSBYgsAQfp4uVk0w7Ykzw3urp7crNMw0CIM97tRNjySPtTKoNrvKzEMRocXGCM/af/qxogxZf/vstEOKAA=",
   "dominant": "#35383a",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Grips/Frame_3473716.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
   },
-  "input": "984aa9e44a87de11"
+  "input": "13cdfab4f569af08"
 }

@@ -1,65 +1,62 @@
 {
   "key": "playstation-plus--1",
   "view": "hero",
-  "width": 1600,
-  "height": 472,
-  "aspect": 3.3898,
+  "width": 1024,
+  "height": 1024,
+  "aspect": 1,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-plus/1-240.fc07fea5.avif"
+        "src": "/products/playstation-plus/1-240.476f9e79.avif"
       },
       {
         "w": 480,
-        "src": "/products/playstation-plus/1-480.8ee20887.avif"
+        "src": "/products/playstation-plus/1-480.b8cbffb6.avif"
       },
       {
         "w": 720,
-        "src": "/products/playstation-plus/1-720.7f32bb0b.avif"
+        "src": "/products/playstation-plus/1-720.3083c3bd.avif"
       },
       {
         "w": 960,
-        "src": "/products/playstation-plus/1-960.f37f4bcd.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/playstation-plus/1-1440.0928ac9d.avif"
+        "src": "/products/playstation-plus/1-960.c9cec240.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-plus/1-240.32e108cf.webp"
+        "src": "/products/playstation-plus/1-240.26bd64d7.webp"
       },
       {
         "w": 480,
-        "src": "/products/playstation-plus/1-480.2c2b89ae.webp"
+        "src": "/products/playstation-plus/1-480.917913eb.webp"
       },
       {
         "w": 720,
-        "src": "/products/playstation-plus/1-720.06ddaf23.webp"
+        "src": "/products/playstation-plus/1-720.d43ee47a.webp"
       },
       {
         "w": 960,
-        "src": "/products/playstation-plus/1-960.9c2198dd.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/playstation-plus/1-1440.6ba27a9d.webp"
+        "src": "/products/playstation-plus/1-960.7f23104a.webp"
       }
-    ],
-    "png": "/products/playstation-plus/1-720.e7185d66.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4WAoAAAAQAAAAEwAABQAAQUxQSD8AAAARR6AokqQ2eQbunTNgg4gI0Ee0hR8KYtuG3lfhjwKPBH4BewM9xFB8qRDR/wnA67zl440kVfbRFJsFOixA8AsAVlA4IFIAAADwAgCdASoUAAYAPxFwsFAsJiSisAgBgCIJYgAASFfSIAD+CHpuZHVexfgDsZnH+6d38PnvAVybuUUlJQf/gMCdX42yG4/3UZnDvLlYwXnwPYAA",
-  "dominant": "#000000",
-  "transparent": true,
+  "share": {
+    "src": "/products/playstation-plus/1-1024.bc7c6e08.jpg",
+    "width": 1024,
+    "height": 1024,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAACwAwCdASoUABQAPxF4sVIsJySiqA1RgCIJbADMWBESo6dhndyMAAD+4JjH3F2hULS0GzFl5be9eMRYqMhb/uBCRql+SqEy1vsvoyHkLMlDaUCMpipcHOgAAAA=",
+  "dominant": "#d6d5da",
+  "transparent": false,
   "background": null,
   "kind": "hero",
   "credit": "Sony Interactive Entertainment",
   "source": {
-    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps-plus-black-badge-01-22sep20?$1600px--t$",
-    "page": "https://www.playstation.com/en-sa/ps-plus/"
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202204/0810/803Pm8uJoZ2Cl9fJPvTaXHqG.png",
+    "page": "https://www.playstation.com/en-us/ps-plus/"
   },
-  "input": "161af473fc6d9e88"
+  "input": "ff748865de7811c0"
 }

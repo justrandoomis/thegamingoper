@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/resident-evil-requiem/1-960.89b03b01.webp"
       }
-    ],
-    "png": "/products/resident-evil-requiem/1-720.0bfa6235.png"
+    ]
+  },
+  "share": {
+    "src": "/products/resident-evil-requiem/1-1067.bb7b895f.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJYwDCgCG/GITK0VK/SbywAP7h4ixZqd6qBu1jsmLtGEhv+95le5TrNrNpYRT9Perp3paCVXob0umHLfVjE3ZMsh+ZrVPgMNah1+Fkdwglenhn9CsH63OFNTzlO2Qn8TcQovfzg/hAKtNJNwrgAAAA",
   "dominant": "#fcfcfc",
@@ -53,5 +58,5 @@
     "url": "https://store-images.s-microsoft.com/image/apps.65104.14157056169306105.30ae0432-c36b-42e7-9bbb-f85189243ca3.8e302653-b1b3-4ef9-b328-6a0822123e0c",
     "page": "https://www.xbox.com/en-US/games/store/resident-evil-requiem/9nmfwr0nrlzs"
   },
-  "input": "e4bb45a94cc01e82"
+  "input": "5cb5d55af1371252"
 }

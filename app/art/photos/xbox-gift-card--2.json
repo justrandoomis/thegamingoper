@@ -1,41 +1,40 @@
 {
   "key": "xbox-gift-card--2",
   "view": "hero",
-  "width": 573,
+  "width": 572,
   "height": 573,
-  "aspect": 1,
+  "aspect": 0.9983,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/xbox-gift-card/2-240.73ebb3a6.avif"
+        "src": "/products/xbox-gift-card/2-240.e7b1e09f.avif"
       },
       {
         "w": 480,
-        "src": "/products/xbox-gift-card/2-480.a7145e79.avif"
+        "src": "/products/xbox-gift-card/2-480.f9039ee9.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/xbox-gift-card/2-240.4a2d0dfb.webp"
+        "src": "/products/xbox-gift-card/2-240.f8dcea80.webp"
       },
       {
         "w": 480,
-        "src": "/products/xbox-gift-card/2-480.bdc6ec28.webp"
+        "src": "/products/xbox-gift-card/2-480.89df41d2.webp"
       }
-    ],
-    "png": "/products/xbox-gift-card/2-573.961383a7.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSDQAAAARL0AWYDKA+aN1hdGfRkQENx0URZIaUTjAwakADCAh/v3MN++I/k+AJOpb7DGsX7nF9kQFVlA4IHQAAAAQBACdASoUABQAPxF6tVOsJ6SiqAqpgCIJZgCCcARfF9yusN4HOjPBgAD+Ljx94n7ilqIup3Gi8B2gdPgP8LuB8Sny0aa7/xn1MRK2qgLZKVqO9dGyv/VRNMN//DtLXwQOjbYVgMPC1hzxFIhQdNzNJEgAAA==",
-  "dominant": "#0f7c0f",
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSDIAAAARL0AWYDKA+YsFkEZfGhER3HRQ00gKlOAAB78BMIJ/P9tSR/R/AixQbrFHMb9yi2WBAlZQOCB4AAAAUAQAnQEqFAAUAD8RerRTrCelIqgKqYAiCWYAuy+BpAAOFow1ww0wb15QwAD+nKmWSMR7TU6K2i5zari13nAqJdUEyYKuCc49zKrueqD8JnLFXWk0Ja51ujXH9eeZ411aG0oucs/Xn5yAS9NonoMFuC+KtyC58AAA",
+  "dominant": "#107c0f",
   "transparent": true,
   "background": null,
   "kind": "detail",
   "credit": "Microsoft (Xbox)",
   "source": {
-    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?scl=1&fmt=png-alpha",
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/store/b/gift-cards"
   },
-  "input": "0b2f61d106d2f5fd"
+  "input": "5c7399d0be130662"
 }

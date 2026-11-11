@@ -2,48 +2,47 @@
   "key": "joy-con-2--5",
   "view": "hero",
   "width": 822,
-  "height": 760,
-  "aspect": 1.0816,
+  "height": 759,
+  "aspect": 1.083,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/joy-con-2/5-240.435996a7.avif"
+        "src": "/products/joy-con-2/5-240.89123dc5.avif"
       },
       {
         "w": 480,
-        "src": "/products/joy-con-2/5-480.ff1d9bbf.avif"
+        "src": "/products/joy-con-2/5-480.ce5df3e2.avif"
       },
       {
         "w": 720,
-        "src": "/products/joy-con-2/5-720.9e912907.avif"
+        "src": "/products/joy-con-2/5-720.5cc0d7e1.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/joy-con-2/5-240.2cb78481.webp"
+        "src": "/products/joy-con-2/5-240.e572d146.webp"
       },
       {
         "w": 480,
-        "src": "/products/joy-con-2/5-480.d190836f.webp"
+        "src": "/products/joy-con-2/5-480.e3d801b6.webp"
       },
       {
         "w": 720,
-        "src": "/products/joy-con-2/5-720.d0f49cf6.webp"
+        "src": "/products/joy-con-2/5-720.b962937f.webp"
       }
-    ],
-    "png": "/products/joy-con-2/5-720.0418b352.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACQBACdASoUABIAPxGAt1WsKCUjKAgBgCIJaQAAHwb8mK4+SgbzVYEsS50VKAAA/uftAKRymf9Rg/Zxo2cH9PzX4mVqCfbMiOIa4LAFeTQIZdv0272uhQVB+OUwX9FvTABmW1yLka09IwH7fluYSHJK37pyQeymUxfuxkjm2o7L7oRjpIEiPJa2AAAAAA==",
+  "placeholder": "data:image/webp;base64,UklGRjgBAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSI4AAAARR6AokqQ2eQrulTOgiIgIoLSXHxtuY9tWlfPkQ/r9py6hS4hDqAVQgkvsr2+0hIj+BwCH2ioA2U2e1ubMHNIZboW1FtGSp/JNtFZiQrT/Evv6aihL0neV2d7lFWdU9t97BPX61d5BLjvC2gg+J7KPnjT10XuBJUCPoHjvA33YLKEogE6ZE+QLDsAlgOwCVlA4IIQAAACQBACdASoUABIAPxGAuFWsKCUjKAgBgCIJZwAD5bifF623prnNNRctufPYGgAA/sxlT5TBGq08JlNhH8eLhsTke1+XJiJe69T6Yp/aTqgPz1GLeZFNwlGKWdnGES1AASYyCHZNnHMaxQkjgndjdIi/GNity3IwpDk68NdaAxNrXqgAAAA=",
   "dominant": "#37383a",
-  "transparent": false,
-  "background": "#ffffff",
+  "transparent": true,
+  "background": null,
   "kind": "angle",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Joy-Con%202/127071-nintendo-switch-2-joy-con-2-blue-light-yellow-full-set-1200x675",
     "page": "https://www.nintendo.com/us/store/products/joy-con-2-blue-light-yellow-127071/"
   },
-  "input": "93462b77616e1445"
+  "input": "99025c9be043b0b2"
 }

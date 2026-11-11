@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/nintendo-switch-2-dock-set/1-960.5b65a491.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2-dock-set/1-720.5a931f5f.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch-2-dock-set/1-1036.f420063c.png",
+    "width": 1036,
+    "height": 1121,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSHsAAAART6CobSQ3txx6373XRURAd+rLjw23tbatyROtXcoEp3Pr3Dqnhg1cJuCwAeef908qFojo/wSQbX2+8ls9ivTonFH9l7g5nkxazaZGakOF+8Fj4I5ZCbEkT02rSR6WZklFYt36iT47ZaifZjuN0iRvDlq5huNjGYClAAAAVlA4IHoAAABwBACdASoSABQAPxF8tVOsJ6UiqAqpgCIJaQDPZBF+OAsff0IeqzYMQ6L+cAD+ywqyJPVtxI6rSvRe98rthxsfKl2zN/h/TKtEbA1dRn0Gro1mWScbc9MKZcAvxrF867vlMhc+GzfdSAwJgb4DNfPdtc2oR6x2rQAAAA==",
   "dominant": "#343739",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Dock%20and%20AC/Frame_3473694.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
   },
-  "input": "92bcf0ac03f67c8d"
+  "input": "f32b36f62eb0a70f"
 }

@@ -2,7 +2,20 @@
  * Background treatment for product photos: pure pixel work on 8-bit sRGB RGBA with straight alpha.
  * No I/O, no sharp — scripts/products/images.mjs decodes and encodes, this module decides.
  *
- *   treat({ data, width, height }, { kind }) → { data, width, height, transparent, background, dominant, method, reason, stats }
+ *   treat({ data, width, height }, { kind, cutout, holes, pad, trim })
+ *     → { data, width, height, transparent, background, dominant, method, reason, stats }
+ *
+ * Options (per image, from scripts/products/image-options.json; the defaults are the rules below):
+ *   cutout false  never cut out: the photo stays opaque, trimmed on its own background
+ *   holes  true   closed windows of pure background colour (the inside of a headband arch) are cut out
+ *                 too, instead of keeping the photo opaque — only after looking at the result
+ *   pad    0.06   padding around a trimmed object, as a share of its longer side
+ *   trim   false  an opaque photo keeps its whole frame
+ *   extend true   the object touches the frame of a plain canvas (a cover on a square canvas): the
+ *                 canvas is extended on every side first, so the object can be cut out
+ *   clean  true   a transparent source: faint parts more than 2 px outside the solid object (a baked
+ *                 soft shadow, a glow) and small separate specks are dropped — the stage draws its own
+ *                 shadow
  *
  * Rules:
  *   - A source with real transparency keeps it: trimmed to the object (alpha ≥ 50%) plus PAD, the
@@ -79,43 +92,58 @@ const clamp255 = (v) => (v < 0 ? 0 : v > 255 ? 255 : Math.round(v));
 
 /**
  * @param {{ data: Uint8Array, width: number, height: number }} image  RGBA, 8-bit sRGB, straight alpha
- * @param {{ kind?: string }} [options]
+ * @param {{ kind?: string, cutout?: boolean, holes?: boolean, pad?: number, trim?: boolean, extend?: boolean, clean?: boolean }} [options]
  */
-export function treat(image, { kind = 'hero' } = {}) {
-  const { width: w, height: h } = image;
-  const n = w * h;
+export function treat(image, { kind = 'hero', cutout: mayCut = true, holes = false, pad = PAD, trim = true, extend = false, clean = false } = {}) {
+  let { width: w, height: h } = image;
+  let n = w * h;
   const data = image.data;
   if (data.length !== n * 4) throw new Error(`expected ${n * 4} bytes of RGBA, got ${data.length}`);
   if (!PHOTO_KINDS.includes(kind)) throw new Error(`unknown image kind "${kind}"`);
+  if (!(pad >= 0 && pad <= 0.4)) throw new Error(`pad ${pad} must be between 0 and 0.4`);
 
   let see = 0;
   for (let i = 3; i < data.length; i += 4) if (data[i] < 250) see++;
   if (see >= n * 0.002) {
     const out = Uint8Array.from(data);
     for (let i = 0; i < out.length; i += 4) if (out[i + 3] === 0) out[i] = out[i + 1] = out[i + 2] = 0;
-    const trimmed = trimToAlpha(out, w, h);
-    return { ...trimmed, transparent: true, background: null, dominant: dominantColor(trimmed.data, null), method: 'alpha', reason: null, stats: { seeThrough: round(see / n) } };
+    const stats = { seeThrough: round(see / n) };
+    if (clean) stats.cleaned = round(cleanAlpha(out, w, h) / n);
+    const trimmed = trimToAlpha(out, w, h, pad);
+    return { ...trimmed, transparent: true, background: null, dominant: dominantColor(trimmed.data, null), method: 'alpha', reason: null, stats };
   }
 
   // Opaque (a handful of see-through pixels at most): drop the alpha channel's noise.
-  const rgba = Uint8Array.from(data);
+  let rgba = Uint8Array.from(data);
   for (let i = 3; i < rgba.length; i += 4) rgba[i] = 255;
+  let extended = 0;
+  if (extend) {
+    // The object touches the frame of its canvas: give it a margin of the canvas colour first.
+    extended = Math.max(4, Math.round(0.02 * Math.max(w, h)));
+    const fill = borderStats(rgba, w, h).rgb;
+    rgba = crop(rgba, w, h, -extended, -extended, w + 2 * extended, h + 2 * extended, fill);
+    w += 2 * extended; h += 2 * extended; n = w * h;
+  }
   const border = borderStats(rgba, w, h);
   const plain = border.share >= 0.9;
   const light = border.lab[0] >= 72;
   const background = border.share >= 0.6 ? hex(border.rgb) : null;
   const stats = { borderShare: round(border.share), borderNoise: round(border.noise), backgroundL: round(border.lab[0]) };
+  if (extended) stats.extended = extended;
   const untouched = (reason) => ({ data: rgba, width: w, height: h, transparent: false, background, dominant: dominantColor(rgba, null), method: 'untouched', reason, stats });
+
+  const kept = (reason) => (trim ? opaqueTrim(rgba, w, h, border, background, stats, reason, pad) : { ...untouched(reason), method: 'opaque' });
 
   if (kind === 'screenshot') return untouched(null);
   if (!plain) return untouched(FLAT_KINDS.has(kind) ? null : `the background is not plain (${pct(border.share)} of the border matches its colour)`);
   // A cover with a plain dark border is a framed cover, not a cover on a canvas: never crop it.
-  if (!light) return FLAT_KINDS.has(kind) ? untouched(null) : opaqueTrim(rgba, w, h, border, background, stats, 'the background is dark');
+  if (!light) return FLAT_KINDS.has(kind) ? untouched(null) : kept('the background is dark');
+  if (!mayCut) return kept('kept opaque by its image option');
 
-  const cut = cutout(rgba, w, h, border);
+  const cut = cutout(rgba, w, h, border, holes);
   Object.assign(stats, cut.stats);
-  if (!cut.ok) return opaqueTrim(rgba, w, h, border, background, stats, cut.reason);
-  const trimmed = trimToAlpha(cut.data, w, h);
+  if (!cut.ok) return kept(cut.reason);
+  const trimmed = trimToAlpha(cut.data, w, h, pad);
   return { ...trimmed, transparent: true, background: null, dominant: dominantColor(trimmed.data, null), method: 'cutout', reason: null, stats };
 }
 
@@ -323,7 +351,7 @@ function components(mask, value, w, h, eight, score) {
 
 /* ── the cut-out ───────────────────────────────────────────────────────────── */
 
-function cutout(rgba, w, h, border) {
+function cutout(rgba, w, h, border, holes = false) {
   const n = w * h;
   const long = Math.max(w, h);
   const maps = colourMaps(rgba, n, border.lab);
@@ -408,8 +436,17 @@ function cutout(rgba, w, h, border) {
   }
   const wall = Math.max(4, Math.round(0.03 * Math.max(maxX - minX + 1, maxY - minY + 1)));
   const windows = closedWindows(isBg, q, qMin, w, h, wall, Math.max(0.0003 * n, 0.002 * fgArea, 24), fgArea);
-  stats.windows = round(windows / n);
-  if (windows > 0) return fail('the background colour shows inside closed shapes (loops, white faces)');
+  stats.windows = round(windows.total / n);
+  if (holes) {
+    // Opted in per image, after looking (the product has nothing of the background's colour): every
+    // closed region of pure background colour is background seen through the object — the windows
+    // above, and the small pockets the gap guard put back (behind a cable, inside a strap loop).
+    const opened = openWindows(isBg, q, qt, w, h, closedWindows(isBg, q, qMin, w, h, wall, 24, fgArea, true));
+    stats.holes = round(opened / n);
+    fgArea -= opened;
+    stats.foreground = round(fgArea / n);
+    if (pieceStats(isBg, q, qt, w, h, fgArea).faint) return fail('a faint shape remains after opening the closed windows');
+  } else if (windows.total > 0) return fail('the background colour shows inside closed shapes (loops, white faces)');
 
   // The outline must be a real edge against the background next to it, everywhere but a few spots.
   const weak = weakOutline(isBg, maps, w, h);
@@ -598,8 +635,9 @@ function pieceStats(isBg, q, qt, w, h, fgArea) {
  * photo opaque too: the two cannot be told apart, and opaque is the safe side.
  * A white panel near one edge of a box or a card (an age-rating box, lettering) is near the outside
  * on one side only, and white far inside the object (a logo on a screen) not at all; neither counts.
+ * `all` (option holes): every region of pure background colour of at least `minArea` counts.
  */
-function closedWindows(isBg, q, floor, w, h, wall, minArea, fgArea) {
+function closedWindows(isBg, q, floor, w, h, wall, minArea, fgArea, all = false) {
   const n = w * h;
   const pure = new Uint8Array(n);
   for (let p = 0; p < n; p++) pure[p] = !isBg[p] && q[p] <= floor ? 1 : 0;
@@ -617,10 +655,32 @@ function closedWindows(isBg, q, floor, w, h, wall, minArea, fgArea) {
     }
   }
   let total = 0;
+  const counted = new Uint8Array(parts.count + 1);
   for (let id = 1; id <= parts.count; id++) {
-    if (parts.area[id] >= minArea && (rimNear[id] >= 0.6 * rim[id] || parts.area[id] >= 0.06 * fgArea)) total += parts.area[id];
+    if (parts.area[id] >= minArea && (all || rimNear[id] >= 0.6 * rim[id] || parts.area[id] >= 0.06 * fgArea)) { total += parts.area[id]; counted[id] = 1; }
   }
-  return total;
+  return { total, labels: parts.labels, counted };
+}
+
+/**
+ * Turns the counted windows into background, grown from their pure pixels through everything within
+ * the cut-out's tolerance (their anti-aliased rim is then unmixed by the matte like any other edge).
+ * Returns how many pixels were opened.
+ */
+function openWindows(isBg, q, qt, w, h, windows) {
+  const n = w * h;
+  const queue = new Int32Array(n);
+  let head = 0, tail = 0;
+  for (let p = 0; p < n; p++) if (windows.counted[windows.labels[p]] && windows.labels[p]) { isBg[p] = 1; queue[tail++] = p; }
+  while (head < tail) {
+    const p = queue[head++], x = p % w;
+    const visit = (k) => { if (!isBg[k] && q[k] <= qt) { isBg[k] = 1; queue[tail++] = k; } };
+    if (x > 0) visit(p - 1);
+    if (x < w - 1) visit(p + 1);
+    if (p >= w) visit(p - w);
+    if (p < n - w) visit(p + w);
+  }
+  return tail;
 }
 
 /**
@@ -749,6 +809,35 @@ function matte(rgba, w, h, isBg, bgRGB, shadowMask) {
   return out;
 }
 
+/**
+ * Option `clean` on a transparent source: keeps the object — the largest opaque piece (alpha ≥ 250)
+ * and every opaque piece of at least 2% of its size — with its anti-aliased rim (2 px), and drops
+ * the rest: see-through parts further out (a baked soft shadow, a floor glow, however dense) and
+ * small separate specks. Only for photos whose product has no see-through parts of its own.
+ * Returns how many pixels were cleared.
+ */
+function cleanAlpha(rgba, w, h) {
+  const n = w * h;
+  const solid = new Uint8Array(n);
+  for (let p = 0; p < n; p++) solid[p] = rgba[p * 4 + 3] >= 250 ? 1 : 0;
+  const pieces = components(solid, 1, w, h, true, null);
+  let largest = 0;
+  for (let id = 1; id <= pieces.count; id++) largest = Math.max(largest, pieces.area[id]);
+  const keep = new Uint8Array(n);
+  for (let p = 0; p < n; p++) {
+    const id = pieces.labels[p];
+    if (id && pieces.area[id] >= 0.02 * largest) keep[p] = 1;
+  }
+  const near = chamfer(keep, w, h, 1);
+  let cleared = 0;
+  for (let p = 0, i = 0; p < n; p++, i += 4) {
+    if (rgba[i + 3] === 0 || keep[p] || near[p] <= 6) continue;
+    rgba[i] = rgba[i + 1] = rgba[i + 2] = rgba[i + 3] = 0;
+    cleared++;
+  }
+  return cleared;
+}
+
 /* ── framing ───────────────────────────────────────────────────────────────── */
 
 function box(rgba, w, h, minAlpha) {
@@ -766,14 +855,14 @@ function box(rgba, w, h, minAlpha) {
 }
 
 /**
- * The object (alpha ≥ 50%) centred with PAD of its longer side on every side; fainter parts
- * (a soft shadow) widen the picture evenly when they reach further than the padding.
+ * The object (alpha ≥ 50%) centred with `share` (PAD) of its longer side on every side; fainter
+ * parts (a soft shadow) widen the picture evenly when they reach further than the padding.
  */
-function trimToAlpha(rgba, w, h) {
+function trimToAlpha(rgba, w, h, share = PAD) {
   const o = box(rgba, w, h, 128), s = box(rgba, w, h, 10);
   if (!o || !s) throw new Error('the picture is empty');
   const ow = o.maxX - o.minX + 1, oh = o.maxY - o.minY + 1;
-  const pad = Math.max(ow, oh) * PAD;
+  const pad = Math.max(ow, oh) * share;
   const cx = (o.minX + o.maxX + 1) / 2, cy = (o.minY + o.maxY + 1) / 2;
   const halfW = Math.max(ow / 2 + pad, cx - s.minX, s.maxX + 1 - cx);
   const halfH = Math.max(oh / 2 + pad, cy - s.minY, s.maxY + 1 - cy);
@@ -801,7 +890,7 @@ function crop(rgba, w, h, x0, y0, width, height, fill) {
  * background (at the noise floor, so nothing of the object is lost) plus PAD, the new margin filled
  * with the background colour. Left as it is when the content reaches the frame.
  */
-function opaqueTrim(rgba, w, h, border, background, stats, reason) {
+function opaqueTrim(rgba, w, h, border, background, stats, reason, share = PAD) {
   const n = w * h;
   const { q } = colourMaps(rgba, n, border.lab);
   const level = floodLevels(q, w, h);
@@ -825,7 +914,7 @@ function opaqueTrim(rgba, w, h, border, background, stats, reason) {
   const result = (data, width, height) => ({ data, width, height, transparent: false, background, dominant: dominantColor(data, null, border.rgb), method: 'opaque', reason, stats });
   if (maxX < 0 || minX === 0 || minY === 0 || maxX === w - 1 || maxY === h - 1) return result(rgba, w, h);
   const ow = maxX - minX + 1, oh = maxY - minY + 1;
-  const pad = Math.round(Math.max(ow, oh) * PAD);
+  const pad = Math.round(Math.max(ow, oh) * share);
   const width = ow + 2 * pad, height = oh + 2 * pad;
   return result(crop(rgba, w, h, minX - pad, minY - pad, width, height, border.rgb), width, height);
 }

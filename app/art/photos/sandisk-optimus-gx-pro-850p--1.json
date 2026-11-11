@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/sandisk-optimus-gx-pro-850p/1-1440.6e3acdb2.webp"
       }
-    ],
-    "png": "/products/sandisk-optimus-gx-pro-850p/1-720.947b3acd.png"
+    ]
+  },
+  "share": {
+    "src": "/products/sandisk-optimus-gx-pro-850p/1-1200.f75f8f62.png",
+    "width": 1200,
+    "height": 458,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSD0AAAARN6AQkhU6+wjeqwS+GNkUEYH7WCYUtG3k3C8ep5TADyKH4vmTWBAi+j8BdumCCawU+9j6jxqn4oIJKNklAFZQOCBGAAAAEAMAnQEqFAAIAD8RTr9aOKKoJJgDECIJZQAAezv5wswAAP7sjGRioQu+lNdyGe8REWvEoUNM3fQlgmiHH8kmM3Gw8gAAAA==",
   "dominant": "#272727",
@@ -61,5 +66,5 @@
     "url": "https://www.sandisk.com/content/dam/sandisk/en-us/assets/products/internal-storage/optimus-gx-pro-850p-internal-nvme-ssd/gallery/optimus-gx-pro-850p-front.png",
     "page": "https://www.sandisk.com/products/ssd/internal-ssd/sandisk-optimus-gx-pro-850p-ps5-nvme-ssd"
   },
-  "input": "d980c8a7ace03308"
+  "input": "4123a8188c1b6286"
 }

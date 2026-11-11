@@ -1,65 +1,62 @@
 {
   "key": "splatoon-raiders--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1054,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6587,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/splatoon-raiders/1-240.6d23b435.avif"
+        "src": "/products/splatoon-raiders/1-240.5c592210.avif"
       },
       {
         "w": 480,
-        "src": "/products/splatoon-raiders/1-480.3d4ce82e.avif"
+        "src": "/products/splatoon-raiders/1-480.0b807989.avif"
       },
       {
         "w": 720,
-        "src": "/products/splatoon-raiders/1-720.98528ee7.avif"
+        "src": "/products/splatoon-raiders/1-720.f5448733.avif"
       },
       {
         "w": 960,
-        "src": "/products/splatoon-raiders/1-960.6acbd8e2.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/splatoon-raiders/1-1440.baa3c592.avif"
+        "src": "/products/splatoon-raiders/1-960.eccbfd51.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/splatoon-raiders/1-240.45b8380a.webp"
+        "src": "/products/splatoon-raiders/1-240.b21c60a8.webp"
       },
       {
         "w": 480,
-        "src": "/products/splatoon-raiders/1-480.d337d88b.webp"
+        "src": "/products/splatoon-raiders/1-480.edff164f.webp"
       },
       {
         "w": 720,
-        "src": "/products/splatoon-raiders/1-720.5af969f3.webp"
+        "src": "/products/splatoon-raiders/1-720.76a8a0b0.webp"
       },
       {
         "w": 960,
-        "src": "/products/splatoon-raiders/1-960.56ebd2d9.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/splatoon-raiders/1-1440.637664ec.webp"
+        "src": "/products/splatoon-raiders/1-960.cba034a8.webp"
       }
-    ],
-    "png": "/products/splatoon-raiders/1-720.3801264a.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAABwBACdASoUABQAPxF+tVWsJ6SkqAgBgCIJbADE2A95MGA10fZ95oVVyXfUAAD+7dC1icyc45oWCYoZ3ebiEt9fJgc7/zdbglUy1lDMPm4yohWA/8Snlqitx8Aj6azy60Buvl+nHt2EzsKfPAXBoM8SWdOHvSr4NVPr1jRJy03Xe2IOz3oAAAAA",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "share": {
+    "src": "/products/splatoon-raiders/1-1054.4f64c861.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDIAAAARJ0CQbTOD+YPN4B7XiIjgNiBq20ZVGYxCGNyFwY4/tPtH9D8C0Kzq652ZOT+t6msAGlZQOCCKAAAAkAQAnQEqDQAUAD8RcrBQLCakorAIAYAiCWwAnTKEdyaB4f4DS7TjmG3HKqIwAP5ASgsvhrvnAR5jreim3BBUOz6MMU0ccgluDtFdy/rWWeaHQP71rfmUw3N3h81oV47qZ+HmMsfzHB5uKabZ32Zr1BWUMxHWsmneseF71lfHKnfkTi4e6O8SQAAA",
+  "dominant": "#e70012",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Splatoon%20Raiders/125682-nintendo-splatoon-raiders-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/splatoon-raiders-125682/"
   },
-  "input": "c171f84735ee75f8"
+  "input": "675213b45956e0cd"
 }

@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/xbox-series-s/2-1440.18d8acf6.webp"
       }
-    ],
-    "png": "/products/xbox-series-s/2-720.939b3e28.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRgwBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSFsAAAART6AmAAg2JsTenCIioDCG3y7gtLZtJ3p0kJNDgsvJsXA0gMbhs84FoLj1kmcaiOj/BNB9fS095sQCYNww/ya9snBVHLTDcDAPWw8g5hiixNmBjCciYqu8F+k2AFZQOCCKAAAAUAQAnQEqFAARAD8RgLhVrCglIygIAYAiCWkAAC3W1ZaMuVuOCwf+zm/fQAD+3rBsYJNe7KYttkvwfblbCeAIGv689qcSDn8hbH/bKtV+ptrL54EKv43rwSsQjdvVyvjXzYdjVloYjCBv9hlD1O5rfglCH/Qg91TdU1rf/2GfnQI945vuFIHz0QAA",
   "dominant": "#f4f4f5",
@@ -61,5 +60,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-S-White-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-series-s/942j774tp9jn"
   },
-  "input": "7c8e93ec593d1c5c"
+  "input": "d956400251de32a7"
 }

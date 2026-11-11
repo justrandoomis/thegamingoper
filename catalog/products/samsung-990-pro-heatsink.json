@@ -22,9 +22,9 @@
   },
   "highlights": [
     {
-      "ar": "متوافق مع PS5 بمشتت رفيع سماكته 8.2 ملم (حتى 8.88 ملم في 4TB)",
-      "en": "PS5 compatible with a slim 8.2 mm heatsink (up to 8.88 mm on the 4TB)",
-      "ckb": "گونجاو لەگەڵ PS5 بە ساردکەرەوەیەکی تەنکی 8.2 ملم (تا 8.88 ملم لە 4TB)"
+      "ar": "متوافق مع PS5، ومشتته المدمج ضمن حدود Sony للحجم (سماكة 8.88 ملم كحد أقصى)",
+      "en": "PS5 compatible; the built-in heatsink stays within Sony's size limits (8.88 mm thick at most)",
+      "ckb": "گونجاو لەگەڵ PS5؛ ساردکەرەوە ناوەکییەکەی لەناو سنوورەکانی قەبارەی Sony دایە (ئەستووری زۆرترین 8.88 ملم)"
     },
     {
       "ar": "قراءة حتى 7,450MB/s وكتابة حتى 6,900MB/s عبر PCIe 4.0",
@@ -51,7 +51,11 @@
     {
       "key": "interface",
       "label": { "ar": "الواجهة", "en": "Interface", "ckb": "ڕووکاری پەیوەندی" },
-      "value": { "ar": "PCIe Gen 4.0 x4، NVMe 2.0، حجم M.2 2280", "en": "PCIe Gen 4.0 x4, NVMe 2.0, M.2 2280", "ckb": "PCIe Gen 4.0 x4، NVMe 2.0، قەبارەی M.2 2280" }
+      "value": {
+        "ar": "PCIe Gen 4.0 x4، NVMe 2.0، حجم M.2 2280",
+        "en": "PCIe Gen 4.0 x4, NVMe 2.0, M.2 2280",
+        "ckb": "PCIe Gen 4.0 x4، NVMe 2.0، قەبارەی M.2 2280"
+      }
     },
     {
       "key": "read_speed",
@@ -66,17 +70,29 @@
     {
       "key": "random_read",
       "label": { "ar": "القراءة العشوائية", "en": "Random read", "ckb": "خوێندنەوەی هەڕەمەکی" },
-      "value": { "ar": "حتى 1.2 / 1.4 / 1.6 مليون IOPS (1TB / 2TB / 4TB)", "en": "Up to 1.2M / 1.4M / 1.6M IOPS (1TB / 2TB / 4TB)", "ckb": "تا 1.2M / 1.4M / 1.6M IOPS (1TB / 2TB / 4TB)" }
+      "value": {
+        "ar": "حتى 1.2 / 1.4 / 1.6 مليون IOPS (1TB / 2TB / 4TB)",
+        "en": "Up to 1.2M / 1.4M / 1.6M IOPS (1TB / 2TB / 4TB)",
+        "ckb": "تا 1.2M / 1.4M / 1.6M IOPS (1TB / 2TB / 4TB)"
+      }
     },
     {
       "key": "endurance",
       "label": { "ar": "التحمّل (TBW)", "en": "Endurance (TBW)", "ckb": "بەرگەگرتن (TBW)" },
-      "value": { "ar": "600 / 1,200 / 2,400 تيرابايت مكتوبة (1TB / 2TB / 4TB)", "en": "600 / 1,200 / 2,400 TB written (1TB / 2TB / 4TB)", "ckb": "600 / 1,200 / 2,400 تێرابایت نووسین (1TB / 2TB / 4TB)" }
+      "value": {
+        "ar": "600 / 1,200 / 2,400 تيرابايت مكتوبة (1TB / 2TB / 4TB)",
+        "en": "600 / 1,200 / 2,400 TB written (1TB / 2TB / 4TB)",
+        "ckb": "600 / 1,200 / 2,400 تێرابایت نووسین (1TB / 2TB / 4TB)"
+      }
     },
     {
       "key": "dimensions",
       "label": { "ar": "الأبعاد مع المشتت", "en": "Size with heatsink", "ckb": "قەبارە لەگەڵ ساردکەرەوە" },
-      "value": { "ar": "80 × 24.3 × 8.2 ملم (1TB و2TB)؛ حتى 80.15 × 25 × 8.88 ملم (4TB)", "en": "80 × 24.3 × 8.2 mm (1TB, 2TB); up to 80.15 × 25 × 8.88 mm (4TB)", "ckb": "80 × 24.3 × 8.2 ملم (1TB و 2TB)؛ تا 80.15 × 25 × 8.88 ملم (4TB)" }
+      "value": {
+        "ar": "حتى 80.15 × 25 × 8.88 ملم مع المشتت",
+        "en": "Up to 80.15 × 25 × 8.88 mm with heatsink",
+        "ckb": "تا 80.15 × 25 × 8.88 ملم لەگەڵ ساردکەرەوە"
+      }
     },
     {
       "key": "weight",
@@ -86,17 +102,29 @@
     {
       "key": "memory",
       "label": { "ar": "الذاكرة", "en": "Memory", "ckb": "بیرگە" },
-      "value": { "ar": "Samsung V-NAND TLC مع ذاكرة LPDDR4 مؤقتة", "en": "Samsung V-NAND TLC with LPDDR4 cache", "ckb": "Samsung V-NAND TLC لەگەڵ کاشی LPDDR4" }
+      "value": {
+        "ar": "Samsung V-NAND TLC مع ذاكرة LPDDR4 مؤقتة (1GB / 2GB / 4GB)",
+        "en": "Samsung V-NAND TLC with LPDDR4 cache (1GB / 2GB / 4GB)",
+        "ckb": "Samsung V-NAND TLC لەگەڵ کاشی LPDDR4 (1GB / 2GB / 4GB)"
+      }
     },
     {
       "key": "warranty",
       "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
-      "value": { "ar": "ضمان محدود 5 سنوات أو حتى حد TBW", "en": "5-year limited warranty or up to the TBW limit", "ckb": "گەرەنتیی سنووردار 5 ساڵ یان تا سنووری TBW" }
+      "value": {
+        "ar": "ضمان محدود 5 سنوات أو حتى حد TBW",
+        "en": "5-year limited warranty or up to the TBW limit",
+        "ckb": "گەرەنتیی سنووردار 5 ساڵ یان تا سنووری TBW"
+      }
     },
     {
       "key": "compatibility",
       "label": { "ar": "التوافق", "en": "Compatibility", "ckb": "گونجاندن" },
-      "value": { "ar": "PlayStation 5 وأجهزة PC المكتبية مع منفذ M.2 2280", "en": "PlayStation 5 and desktop PCs with an M.2 2280 slot", "ckb": "PlayStation 5 و کۆمپیوتەری مێزی کە شوێنی M.2 2280ی هەبێت" }
+      "value": {
+        "ar": "PlayStation 5 وأجهزة PC المكتبية مع منفذ M.2 2280",
+        "en": "PlayStation 5 and desktop PCs with an M.2 2280 slot",
+        "ckb": "PlayStation 5 و کۆمپیوتەری مێزی کە شوێنی M.2 2280ی هەبێت"
+      }
     }
   ],
   "variants": [
@@ -106,7 +134,7 @@
       "options": { "storage": "1TB", "heatsink": "yes" },
       "modelNumber": "MZ-V9P1T0CW",
       "isDefault": true,
-      "images": ["samsung-990-pro-heatsink--1", "samsung-990-pro-heatsink--2", "samsung-990-pro-heatsink--3"]
+      "images": ["samsung-990-pro-heatsink--1", "samsung-990-pro-heatsink--2"]
     },
     {
       "sku": "SAMSUNG-990PRO-HS-2TB",
@@ -149,11 +177,7 @@
     {
       "deviceModel": "ps5-digital",
       "status": "verified",
-      "note": {
-        "ar": "نفس منفذ M.2 الموجود في نسخة القرص.",
-        "en": "Same M.2 slot as the disc model.",
-        "ckb": "هەمان شوێنی M.2ی وەشانی دیسک."
-      },
+      "note": { "ar": "نفس منفذ M.2 الموجود في نسخة القرص.", "en": "Same M.2 slot as the disc model.", "ckb": "هەمان شوێنی M.2ی وەشانی دیسک." },
       "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
     },
     {
@@ -169,11 +193,7 @@
     {
       "deviceModel": "ps5-slim-digital",
       "status": "verified",
-      "note": {
-        "ar": "نفس منفذ M.2 في PS5 Slim.",
-        "en": "Same M.2 slot as the PS5 Slim.",
-        "ckb": "هەمان شوێنی M.2ی PS5 Slim."
-      },
+      "note": { "ar": "نفس منفذ M.2 في PS5 Slim.", "en": "Same M.2 slot as the PS5 Slim.", "ckb": "هەمان شوێنی M.2ی PS5 Slim." },
       "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
     },
     {
@@ -286,6 +306,13 @@
       "supports": "UK model code, 1,200 TBW on 2TB, slim heatsink fits PS5, LED colours set in Magician, 4TB released in 2023, images"
     },
     {
+      "url": "https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_NVMe_SSD_990_PRO_with_Heatsink_Datasheet_Rev_2.0_10129695053410.pdf",
+      "title": "Samsung SSD 990 PRO with Heatsink — Data Sheet Rev. 2.0",
+      "publisher": "Samsung Semiconductor",
+      "retrieved": "2026-11-11",
+      "supports": "usage for client PCs and PlayStation 5, PCIe 4.0 x4 / NVMe 2.0, V-NAND TLC with 1GB/2GB LPDDR4, 7,450/6,900MB/s, 1,200K/1,400K random read IOPS, 600/1,200 TBW for 1TB/2TB, 5-year limited warranty, max size 80.15 × 25 × 8.88 mm (revised June 2023), warranty void if the heatsink is removed, US (CW) and EU (GW) model codes; initial release October 2022"
+    },
+    {
       "url": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/",
       "title": "How to add an M.2 SSD to a PS5 console",
       "publisher": "Sony Interactive Entertainment",
@@ -301,17 +328,17 @@
     }
   ],
   "notes": {
-    "ar": "حدّث برنامج نظام PS5 قبل التركيب. عند أول استخدام يقوم PS5 بتهيئة القرص بالكامل. لا تضف مشتتاً آخر فوق المشتت المدمج. للحصول على كامل السرعة في الكمبيوتر يلزم منفذ يدعم PCIe 4.0.",
-    "en": "Update the PS5 system software before installing. On first use the PS5 formats the whole drive. Do not add another heatsink on top of the built-in one. A PC needs a PCIe 4.0 slot for full speed.",
-    "ckb": "پێش دانان سیستەمی PS5 نوێ بکەرەوە. لە یەکەم بەکارهێناندا PS5 هەموو SSDیەکە فۆرمات دەکات. ساردکەرەوەیەکی تر لەسەر ساردکەرەوە ناوەکییەکە دامەنێ. کۆمپیوتەر بۆ خێرایی تەواو پێویستی بە شوێنی PCIe 4.0 هەیە."
+    "ar": "حدّث برنامج نظام PS5 قبل التركيب. عند أول استخدام يقوم PS5 بتهيئة القرص بالكامل. لا تضف مشتتاً آخر فوق المشتت المدمج، ولا تنزعه لأن نزعه يلغي ضمان Samsung. للحصول على كامل السرعة في الكمبيوتر يلزم منفذ يدعم PCIe 4.0.",
+    "en": "Update the PS5 system software before installing. On first use the PS5 formats the whole drive. Do not add another heatsink on top of the built-in one, and do not remove it: Samsung voids the warranty if the heatsink is taken off. A PC needs a PCIe 4.0 slot for full speed.",
+    "ckb": "پێش دانان سیستەمی PS5 نوێ بکەرەوە. لە یەکەم بەکارهێناندا PS5 هەموو SSDیەکە فۆرمات دەکات. ساردکەرەوەیەکی تر لەسەر ساردکەرەوە ناوەکییەکە دامەنێ، و ساردکەرەوە ناوەکییەکەش لامەبە، چونکە لابردنی گەرەنتیی Samsung هەڵدەوەشێنێتەوە. کۆمپیوتەر بۆ خێرایی تەواو پێویستی بە شوێنی PCIe 4.0 هەیە."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Exact first sale day (on sale from October 2022 per The Verge; 4TB in 2023)",
+      "Exact first sale day (initial release October 2022 per Samsung's data sheet; 4TB in 2023)",
       "Box contents (not listed on Samsung's pages)",
-      "Samsung US 2TB page shows 600 TBW, which contradicts Samsung UK's 1,200 TBW for the same 2TB drive; 1,200 is used here"
+      "4TB figures (4GB cache, 1.6M IOPS, 2,400 TBW) come from Samsung's US product page and brochure; the heatsink data sheet covers only 1TB and 2TB"
     ]
   }
 }

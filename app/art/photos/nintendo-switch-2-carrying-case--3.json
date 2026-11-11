@@ -2,56 +2,55 @@
   "key": "nintendo-switch-2-carrying-case--3",
   "view": "hero",
   "width": 1340,
-  "height": 641,
-  "aspect": 2.0905,
+  "height": 639,
+  "aspect": 2.097,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/nintendo-switch-2-carrying-case/3-240.2cd962b2.avif"
+        "src": "/products/nintendo-switch-2-carrying-case/3-240.17354e49.avif"
       },
       {
         "w": 480,
-        "src": "/products/nintendo-switch-2-carrying-case/3-480.83ea6da3.avif"
+        "src": "/products/nintendo-switch-2-carrying-case/3-480.b3c5dbec.avif"
       },
       {
         "w": 720,
-        "src": "/products/nintendo-switch-2-carrying-case/3-720.27cab530.avif"
+        "src": "/products/nintendo-switch-2-carrying-case/3-720.9e180da1.avif"
       },
       {
         "w": 960,
-        "src": "/products/nintendo-switch-2-carrying-case/3-960.0da8cadc.avif"
+        "src": "/products/nintendo-switch-2-carrying-case/3-960.4144eb60.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/nintendo-switch-2-carrying-case/3-240.a51eaa19.webp"
+        "src": "/products/nintendo-switch-2-carrying-case/3-240.b972cbc0.webp"
       },
       {
         "w": 480,
-        "src": "/products/nintendo-switch-2-carrying-case/3-480.114d3ce9.webp"
+        "src": "/products/nintendo-switch-2-carrying-case/3-480.af04a2bf.webp"
       },
       {
         "w": 720,
-        "src": "/products/nintendo-switch-2-carrying-case/3-720.68c5726f.webp"
+        "src": "/products/nintendo-switch-2-carrying-case/3-720.63aa723d.webp"
       },
       {
         "w": 960,
-        "src": "/products/nintendo-switch-2-carrying-case/3-960.af57301d.webp"
+        "src": "/products/nintendo-switch-2-carrying-case/3-960.bc0ad8b4.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2-carrying-case/3-720.82c7a206.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAABwAwCdASoUAAoAPxF0sVCsJqSisAgBgCIJaQAAW+vkGyLvwAAA/mxRsVKP8RVoHjyg7ueLdFWCHxqOb6KQiMMOUlQOf8VkjsXwdp2AAAA=",
+  "placeholder": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEgAAAART6C0jSQ3ezgfOxz/H35EBMTD72ndYBVJspN98Ts/CSABB08HWQc20HtBQ0T/JwDKdL90Vuw/v7lPWBWLYhgpYhc80vPSCTVWUDggXAAAAJADAJ0BKhQACgA/EXCwUCwmJKKwCAGAIgllAMiYHpUXp3qD4GAA/qL0ngS76pDMAyFAnUJWCxNqmP6fSNZwj8W3ISJ0cTD/5B/YvWM6exzL9VQ4k0lcavkMAAAA",
   "dominant": "#252628",
-  "transparent": false,
-  "background": "#ffffff",
+  "transparent": true,
+  "background": null,
   "kind": "angle",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Accessories/Cases/127073-nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-case-triforce-1200x675",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-carrying-case-screen-protector-the-legend-of-zelda-40th-anniversary-edition-127073/"
   },
-  "input": "38fadc55bc62b709"
+  "input": "dbafc31f3d7ee38d"
 }

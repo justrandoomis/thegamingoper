@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/pokemon-pokopia/2-1440.d93c2e8c.webp"
       }
-    ],
-    "png": "/products/pokemon-pokopia/2-720.2637c66e.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoAC2KlFwGjfKGPPAAD9Uimm4Cd9yuyduIkro+oSmoCCoj97q10b5LLAyJM9a30aoqqbFnI2awZW+9scc7z+jVmD0tDmqC726otLbq01IxrKWS5q7AA=",
   "dominant": "#feecb5",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000107421/ccb2d70f7ad6878b78d366898a0f0baf94a2d3350b76725c88b591453a797502",
     "page": "https://www.nintendo.com/us/store/products/pokemon-pokopia-switch-2/"
   },
-  "input": "748e1b39ed7faf88"
+  "input": "351a3063188d58fc"
 }

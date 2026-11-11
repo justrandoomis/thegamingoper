@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/joy-con-2/1-960.d89b4313.webp"
       }
-    ],
-    "png": "/products/joy-con-2/1-720.3c1b01fa.png"
+    ]
+  },
+  "share": {
+    "src": "/products/joy-con-2/1-1200.ac079d16.png",
+    "width": 1200,
+    "height": 1363,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRvgAAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSFYAAAARR6AkABA0yAC6e+IDERHwmrR4BaaxbcV5rJoSKOFLJPLLuJQQvzawvsY/KgVE9H8CMChngMweeNiwUlFJxU36bsTJSFb+jSRGLIbDzYaLCtQjoi8eg1ZQOCB8AAAAMAQAnQEqEgAUAD8ReLNSLCckorAYCAGAIgljAL/sCyazHlWjibft04CAAP6i7RqjNgo9QVzYVLDJulkgWdm4GHrgeYkpw9GpKgSlu0AvYsuNKfu9j7IRWmhrpEiDiJWFi/5akImzGA5XclIUyio/b1tEnKFNdP5gLZqQAA==",
   "dominant": "#35383a",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/v1746487454/switch-2/tech-specs/switch-2-joy-cons-front.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/"
   },
-  "input": "f5642474db715649"
+  "input": "4729b17baa9828e5"
 }

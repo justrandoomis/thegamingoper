@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/nba-2k27/1-960.9c3eeba8.webp"
       }
-    ],
-    "png": "/products/nba-2k27/1-720.9b108e6c.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nba-2k27/1-1067.47acdcec.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoRwIsCudAHS2ta04d/ZA+gAAP1rJ7GjcsFyJpt19F/Fm4Ugm3TGGbuKrBXmmCMNbZJgKZ+dAWySB9xoHxrgTDT5TzYQsiOyi9Mhj+MBCjJjIW+lr2cZObnJ2KVTOMxSAAA=",
   "dominant": "#064887",
@@ -53,5 +58,5 @@
     "url": "https://store-images.s-microsoft.com/image/apps.31609.13934234425416393.c16fba18-9d46-4e2f-9891-5efae739df3f.356d4164-080b-449e-ae1e-3c7b8c5e8277",
     "page": "https://www.xbox.com/en-US/games/store/nba-2k27-xbox-series-xs/9n3d82tff6c4"
   },
-  "input": "f10f63562c7ce291"
+  "input": "2e320bd181e17f87"
 }

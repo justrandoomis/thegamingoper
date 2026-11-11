@@ -32,8 +32,13 @@
         "w": 720,
         "src": "/products/playstation-5/1-720.4e63f751.webp"
       }
-    ],
-    "png": "/products/playstation-5/1-720.cd3d4021.png"
+    ]
+  },
+  "share": {
+    "src": "/products/playstation-5/1-761.6851b597.jpg",
+    "width": 761,
+    "height": 927,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAABQAwCdASoQABQALtGIxGIkLCwsDADQSzgABip/EP+ZbzenAAD+7mYC3kXwHxoZI9C3pkDEgOrWFt6qzqoHfVem1FaKxJBTXboqc6HZxa59z+LlH/F2SSNwGgq7NB78Tvkr7Vo80AAAAA==",
   "dominant": "#1c2025",
@@ -45,5 +50,5 @@
     "url": "https://media.direct.playstation.com/is/image/sierialto/v2-PS5-Console-Disc-hero-recert?wid=2000",
     "page": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-console"
   },
-  "input": "bb373dc36790e6a9"
+  "input": "40fceb8b02550cfc"
 }

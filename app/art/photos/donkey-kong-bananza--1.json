@@ -1,65 +1,62 @@
 {
   "key": "donkey-kong-bananza--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1053,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6581,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/donkey-kong-bananza/1-240.f7dc3620.avif"
+        "src": "/products/donkey-kong-bananza/1-240.4ffd4ff0.avif"
       },
       {
         "w": 480,
-        "src": "/products/donkey-kong-bananza/1-480.27045d03.avif"
+        "src": "/products/donkey-kong-bananza/1-480.c993f753.avif"
       },
       {
         "w": 720,
-        "src": "/products/donkey-kong-bananza/1-720.7148da40.avif"
+        "src": "/products/donkey-kong-bananza/1-720.71eea609.avif"
       },
       {
         "w": 960,
-        "src": "/products/donkey-kong-bananza/1-960.43d243f7.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/donkey-kong-bananza/1-1440.55214272.avif"
+        "src": "/products/donkey-kong-bananza/1-960.a69bb5ed.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/donkey-kong-bananza/1-240.47ce78f4.webp"
+        "src": "/products/donkey-kong-bananza/1-240.0e266670.webp"
       },
       {
         "w": 480,
-        "src": "/products/donkey-kong-bananza/1-480.f4f17870.webp"
+        "src": "/products/donkey-kong-bananza/1-480.7928637c.webp"
       },
       {
         "w": 720,
-        "src": "/products/donkey-kong-bananza/1-720.fed4b19c.webp"
+        "src": "/products/donkey-kong-bananza/1-720.57825954.webp"
       },
       {
         "w": 960,
-        "src": "/products/donkey-kong-bananza/1-960.7b58f313.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/donkey-kong-bananza/1-1440.5888186a.webp"
+        "src": "/products/donkey-kong-bananza/1-960.faa72a4e.webp"
       }
-    ],
-    "png": "/products/donkey-kong-bananza/1-720.1e653af4.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAADQAwCdASoUABQAPxF+tlWsJ6SjKAgBgCIJbAAAJofVFtXuUvTlyqAA/u3QuZ/ppd28fKqoQpeGY0IbJ+1Bi90GRBbqa0asOPCJYssHRbCmj5fArTj73j+IFAuiKfmNf7wbX1ngfwu2ks9uCzZIFb3n/woQSwfadqAu6fAeF68meYfJZQa20hKJgXUvFfJld1/IAA==",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "share": {
+    "src": "/products/donkey-kong-bananza/1-1053.ea8cdd95.png",
+    "width": 1053,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvQAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOC+ZNN4CDXiIjgNiBq20bTGJTBFAZ3YbDjD+3+Ef2PAaBW9fVNkvPTqr4egC4AVlA4IJoAAACQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoGv/gNdCI1fU89cW58GdAAA/oO22EuQsnzipm5MaVWa4OLIzhJ3sea9g3v3EeeC6I1cgRDouXtZQg9VNCnBMxbYVP0PIA35nXc4MbMH+vpErfgP4cMv5oMMV3dUl7bMe06wl4V1L3TaOIrSmiyGv9UJ8wJTzQqzin596AAA",
+  "dominant": "#010101",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Donkey%20Kong%20Bananza/121485-nintendo-switch-2-donkey-kong-bananza-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-donkey-kong-bananza-121485/"
   },
-  "input": "1c8d149d4dce15a2"
+  "input": "69a852c55293aab3"
 }

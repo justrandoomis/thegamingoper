@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/dualsense-charging-station/1-960.c649fa50.webp"
       }
-    ],
-    "png": "/products/dualsense-charging-station/1-720.731d89d8.png"
+    ]
+  },
+  "share": {
+    "src": "/products/dualsense-charging-station/1-988.1291d4dc.png",
+    "width": 988,
+    "height": 1063,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRjQBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSHYAAAART6CgbRs2VRLt/omIwG/M8D/gVLZtN9kJzfYi4xgc8klsHL04BheHjUah+/nee+/wCxH9nwD+XR0HwUul1/2pykzxk9QxT0maAt2fmUN3I1vCTW4FT+9M8fNaXOQmgjqDldMiSABLSXXmPL5qYRezeyK8ZlEMVlA4IJgAAACwBACdASoTABQAPxF+tVWsJ6SjKAgBgCIJZwAD5MkG6FnjOh0Nyj7PPVrO3MMAAP7o5fpEPtbhfPIUwMxW+G+MSm7GaTLEnwRCmRCQaPu3ffXKY+s2kP+jY3o/8gkEq5fib6Ve9qiyPH4XPLzrgrsyK/vrTUIjmj07gN/XT8CdT6XkMPsqAm8FoRglfkMAXYsNjOH0KLH4AA==",
   "dominant": "#d4d9e4",
@@ -53,5 +58,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/ChargingStation-Standalone-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/dualsense-charging-station/product/PSD001-PSDE01815_67-PS5DUALSENIKVW3E/"
   },
-  "input": "82ccfccfc9d5a414"
+  "input": "8105ff3b1412d518"
 }

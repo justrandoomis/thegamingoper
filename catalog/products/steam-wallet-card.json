@@ -5,11 +5,7 @@
   "platform": "pc_handheld",
   "brand": "Steam",
   "status": "discontinued",
-  "name": {
-    "ar": "بطاقة Steam (رمز محفظة Steam)",
-    "en": "Steam Gift Card (Steam Wallet code)",
-    "ckb": "کارتی Steam (کۆدی جزدانی Steam)"
-  },
+  "name": { "ar": "بطاقة Steam (رمز محفظة Steam)", "en": "Steam Gift Card (Steam Wallet code)", "ckb": "کارتی Steam (کۆدی جزدانی Steam)" },
   "short": {
     "ar": "رصيد بالدولار لمحفظة Steam · حسابات العراق بالدولار · برنامج البطاقات عند البائعين ينتهي في 2026",
     "en": "US-dollar Steam Wallet credit · Iraqi accounts use USD · retail card program ends in 2026",
@@ -56,17 +52,29 @@
     {
       "key": "currency",
       "label": { "ar": "العملة", "en": "Currency", "ckb": "دراو" },
-      "value": { "ar": "دولار أمريكي (يطابق محافظ Steam في العراق)", "en": "US dollars (matches Steam wallets in Iraq)", "ckb": "دۆلاری ئەمریکی (لەگەڵ جزدانەکانی Steam لە عێراق دەگونجێت)" }
+      "value": {
+        "ar": "دولار أمريكي (يطابق محافظ Steam في العراق)",
+        "en": "US dollars (matches Steam wallets in Iraq)",
+        "ckb": "دۆلاری ئەمریکی (لەگەڵ جزدانەکانی Steam لە عێراق دەگونجێت)"
+      }
     },
     {
       "key": "redeem",
       "label": { "ar": "طريقة الاسترداد", "en": "How to redeem", "ckb": "چۆنیەتی بەکارهێنان" },
-      "value": { "ar": "Steam ← استرداد بطاقة Steam أو رمز محفظة ← أدخل الرمز ← متابعة", "en": "Steam → Redeem a Steam Gift Card or Wallet Code → enter the code → Continue", "ckb": "Steam ← Redeem a Steam Gift Card or Wallet Code ← کۆدەکە بنووسە ← Continue" }
+      "value": {
+        "ar": "Steam ← استرداد بطاقة Steam أو رمز محفظة ← أدخل الرمز ← متابعة",
+        "en": "Steam → Redeem a Steam Gift Card or Wallet Code → enter the code → Continue",
+        "ckb": "Steam ← Redeem a Steam Gift Card or Wallet Code ← کۆدەکە بنووسە ← Continue"
+      }
     },
     {
       "key": "works_on",
       "label": { "ar": "يعمل على", "en": "Works on", "ckb": "کار دەکات لەسەر" },
-      "value": { "ar": "حساب Steam على الكمبيوتر وSteam Deck والمتصفح", "en": "Your Steam account on PC, Steam Deck and the web", "ckb": "هەژماری Steam لەسەر کۆمپیوتەر، Steam Deck و وێب" }
+      "value": {
+        "ar": "حساب Steam على الكمبيوتر وSteam Deck والمتصفح",
+        "en": "Your Steam account on PC, Steam Deck and the web",
+        "ckb": "هەژماری Steam لەسەر کۆمپیوتەر، Steam Deck و وێب"
+      }
     },
     {
       "key": "delivery",
@@ -115,19 +123,31 @@
     {
       "deviceModel": "windows-pc",
       "status": "verified",
-      "note": { "ar": "على حساب Steam بمحفظة بالدولار.", "en": "On a Steam account with a US-dollar wallet.", "ckb": "لەسەر هەژماری Steam بە جزدانی دۆلار." },
+      "note": {
+        "ar": "على حساب Steam بمحفظة بالدولار.",
+        "en": "On a Steam account with a US-dollar wallet.",
+        "ckb": "لەسەر هەژماری Steam بە جزدانی دۆلار."
+      },
       "source": "https://help.steampowered.com/en/faqs/view/78E3-7431-1E88-AD59"
     },
     {
       "deviceModel": "steam-deck-oled",
       "status": "verified",
-      "note": { "ar": "الرصيد في حساب Steam نفسه.", "en": "The credit sits on the same Steam account.", "ckb": "باڵانسەکە لە هەمان هەژماری Steam دایە." },
+      "note": {
+        "ar": "الرصيد في حساب Steam نفسه.",
+        "en": "The credit sits on the same Steam account.",
+        "ckb": "باڵانسەکە لە هەمان هەژماری Steam دایە."
+      },
       "source": "https://store.steampowered.com/digitalgiftcards/"
     },
     {
       "deviceModel": "steam-deck-lcd",
       "status": "verified",
-      "note": { "ar": "الرصيد في حساب Steam نفسه.", "en": "The credit sits on the same Steam account.", "ckb": "باڵانسەکە لە هەمان هەژماری Steam دایە." },
+      "note": {
+        "ar": "الرصيد في حساب Steam نفسه.",
+        "en": "The credit sits on the same Steam account.",
+        "ckb": "باڵانسەکە لە هەمان هەژماری Steam دایە."
+      },
       "source": "https://store.steampowered.com/digitalgiftcards/"
     }
   ],
@@ -176,21 +196,28 @@
       "title": "Steam Wallet (Steam Support FAQ)",
       "publisher": "Valve",
       "retrieved": "2026-11-11",
-      "supports": "end of the retail Steam Gift Card program and stock expected gone by end of 2026, existing cards stay usable, redemption limited to the wallet's currency, how to redeem a wallet code, wallet funds cannot be moved or gifted"
+      "supports": "end of the retail Steam Gift Card program with stock expected gone by end of 2026, existing cards stay usable, redemption limited to the wallet's currency, how to redeem a wallet code, wallet funds cannot be moved or gifted (read by the researcher; the FAQ text loads only in a full browser)"
+    },
+    {
+      "url": "https://www.tomshardware.com/video-games/pc-gaming/valve-to-discontinue-physical-steam-gift-cards-by-the-end-of-2026-due-to-scammers-says-nefarious-actors-continue-to-exploit-them-despite-years-of-restrictions",
+      "title": "Valve to discontinue physical Steam gift cards by the end of 2026 due to scammers",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: Valve ends the Steam Gift Card program at retail stores, no restocking and stock expected to run out by the end of 2026, existing cards stay redeemable, digital gift cards through Steam continue, redemption already limited to the wallet's currency"
     },
     {
       "url": "https://partner.steamgames.com/doc/store/pricing/currencies",
       "title": "Supported Currencies (Steamworks Documentation)",
       "publisher": "Valve",
       "retrieved": "2026-11-11",
-      "supports": "Iraq is in the USD_MENA group: US-dollar pricing at regional levels"
+      "supports": "Iraq is in the USD_MENA group: discounted US-dollar pricing for Middle East and North Africa countries without local pricing"
     },
     {
       "url": "https://store.steampowered.com/digitalgiftcards/",
       "title": "Steam Gift Cards",
       "publisher": "Valve",
       "retrieved": "2026-11-11",
-      "supports": "what the credit buys (games, software, hardware), digital gift cards sent through Steam, physical cards can still be redeemed, card images"
+      "supports": "what the credit buys (games, software, hardware), digital gift cards sent through Steam, physical cards can still be redeemed at any time, card images"
     },
     {
       "url": "https://digital.baly.iq/games/steam/",
@@ -206,7 +233,7 @@
     "ckb": "چونکە Valve فرۆشتنی کارتی Steam لە ڕێگەی فرۆشیارانەوە کۆتایی پێدەهێنێت، لەوانەیە دوای تەواوبوونی کۆگا کۆد بەردەست نەبێت. جێگرەوەی فەرمی کارتی دیجیتاڵی Steam ە کە کەسێک لە هەژماری Steamی خۆیەوە بۆ هەژمارەکەت دەینێرێت، یان زیادکردنی باڵانس ڕاستەوخۆ لە Steam. کۆد لە سەرچاوەی نەناسراو مەکڕە؛ Valve ئاگاداری فێڵی کارتی دیاری دەکاتەوە."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Whether online wallet-code distributors (not only physical shops) stop at the same time as Valve's retail card program",

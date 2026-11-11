@@ -1,57 +1,54 @@
 {
   "key": "xbox-game-pass--1",
   "view": "hero",
-  "width": 1372,
-  "height": 297,
-  "aspect": 4.6195,
+  "width": 885,
+  "height": 662,
+  "aspect": 1.3369,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/xbox-game-pass/1-240.d6ff806a.avif"
+        "src": "/products/xbox-game-pass/1-240.0d931664.avif"
       },
       {
         "w": 480,
-        "src": "/products/xbox-game-pass/1-480.d597a5db.avif"
+        "src": "/products/xbox-game-pass/1-480.04bf6199.avif"
       },
       {
         "w": 720,
-        "src": "/products/xbox-game-pass/1-720.26fa82d4.avif"
-      },
-      {
-        "w": 960,
-        "src": "/products/xbox-game-pass/1-960.358e4334.avif"
+        "src": "/products/xbox-game-pass/1-720.b55ab640.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/xbox-game-pass/1-240.3978bfba.webp"
+        "src": "/products/xbox-game-pass/1-240.720bbe8e.webp"
       },
       {
         "w": 480,
-        "src": "/products/xbox-game-pass/1-480.2f2887ed.webp"
+        "src": "/products/xbox-game-pass/1-480.7fbafb5e.webp"
       },
       {
         "w": 720,
-        "src": "/products/xbox-game-pass/1-720.43740f52.webp"
-      },
-      {
-        "w": 960,
-        "src": "/products/xbox-game-pass/1-960.9933aff1.webp"
+        "src": "/products/xbox-game-pass/1-720.b4642daf.webp"
       }
-    ],
-    "png": "/products/xbox-game-pass/1-720.5616f84a.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4WAoAAAAQAAAAEwAAAwAAQUxQSDsAAAARR6AmkiQ1eAYYw4vuISICZJHb50NRbdvUewggg5EAnwD3KGC9IvrPX4eI/qe5pXeCwRL1z0B3i9bdEgBWUDggVgAAAFADAJ0BKhQABAA/EXKwUCwmpKKwCAGAIgliAJ0AGMUIPZYAAPO3CM+KE3lN1ul8koVI+Hv5bGMtIMVZVrv6hzsX4X78xhNJN3Y/JXncOPOGYZM6rAAA",
-  "dominant": "#33760a",
-  "transparent": true,
-  "background": null,
+  "share": {
+    "src": "/products/xbox-game-pass/1-885.0ca57c97.jpg",
+    "width": 885,
+    "height": 662,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAQBACdASoUAA8APxFwsFAsJiSisAgBgCIJZgCdABjsdasaowxzq6QYAAD+nqRoYM26uBGwIH45lF2B9IFEabKlRmDsiPsql5pAWWUFe7XwwmF75ZGIoF69V4a9lws2AA3HQ7xtkqBYLGPByhdQAAAA",
+  "dominant": "#ffffff",
+  "transparent": false,
+  "background": "#107c0f",
   "kind": "hero",
   "credit": "Microsoft (Xbox)",
   "source": {
-    "url": "https://cms-assets.xboxservices.com/assets/dc/a1/dca12e01-f367-4d86-a2c8-1ef23bfd593a.png",
-    "page": "https://www.xbox.com/en-US/xbox-game-pass"
+    "url": "https://cms-assets.xboxservices.com/assets/2b/76/2b7650d4-6363-4022-96eb-d2a8eae47c5d.jpg?n=XboxGamePass-Boxart-1080x1080.jpg",
+    "page": "https://www.xbox.com/en-GB/games/store/game-pass-essential/CFQ7TTC0K5DJ"
   },
-  "input": "82ce920434d76c86"
+  "input": "bd116626022bcfe7"
 }

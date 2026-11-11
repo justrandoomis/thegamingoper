@@ -19,14 +19,14 @@
   },
   "highlights": [
     {
-      "ar": "تعليق صوتي وقوائم وترجمة باللغة العربية.",
-      "en": "Arabic commentary, menus and subtitles.",
-      "ckb": "لێدوانی دەنگی، مێنیو و ژێرنووس بە زمانی عەرەبی."
+      "ar": "قوائم وترجمة بالعربية، وتعليق صوتي عربي (على PS5 يُحمَّل من داخل اللعبة).",
+      "en": "Arabic menus and subtitles, plus Arabic commentary (a separate in-game download on PS5).",
+      "ckb": "مێنیو و ژێرنووسی عەرەبی، لەگەڵ لێدوانی دەنگی عەرەبی (لەسەر PS5 لە ناو یارییەکەوە دادەگیرێت)."
     },
     {
-      "ar": "وضع The Grounds الجديد (ومعه Clubs) متاح فقط على PS5 وXbox Series X|S.",
-      "en": "The new The Grounds mode (Clubs included) is only on PS5 and Xbox Series X|S among consoles.",
-      "ckb": "شێوازی نوێی The Grounds (لەگەڵ Clubs) لە نێو کۆنسۆڵەکاندا تەنها لەسەر PS5 و Xbox Series X|S هەیە."
+      "ar": "وضع The Grounds الجديد (ومعه Clubs) موجود في نسختي PS5 وXbox Series X|S، وغير متوفر على PS4 وXbox One.",
+      "en": "The new The Grounds mode (Clubs included) is in the PS5 and Xbox Series X|S versions, not on PS4 or Xbox One.",
+      "ckb": "شێوازی نوێی The Grounds (لەگەڵ Clubs) لە وەشانی PS5 و Xbox Series X|S دا هەیە، بەڵام لەسەر PS4 و Xbox One نییە."
     },
     {
       "ar": "1–4 لاعبين على نفس الجهاز، واللعب أونلاين يحتاج PlayStation Plus أو Game Pass Essential/Premium/Ultimate.",
@@ -95,9 +95,9 @@
       "key": "arabic",
       "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
       "value": {
-        "ar": "تعليق صوتي وقوائم وترجمة (التعليق بغير الإنجليزية ولغة الجهاز يحتاج تحميلاً إضافياً)",
-        "en": "Commentary, menus and subtitles (commentary in languages other than English and the console language is an extra download)",
-        "ckb": "لێدوانی دەنگی، مێنیو و ژێرنووس (لێدوان بە زمانێک جگە لە ئینگلیزی و زمانی ئامێرەکە داگرتنی زیادەی پێویستە)"
+        "ar": "قوائم وترجمة وتعليق صوتي؛ التعليق العربي يحتاج تحميلاً منفصلاً على PS5 (فيه الإنجليزي والفرنسي فقط)، وعلى Xbox إذا لم تكن لغة الجهاز العربية",
+        "en": "Menus, subtitles and commentary; Arabic commentary is a separate download on PS5 (which includes only English and French) and on Xbox unless the console language is Arabic",
+        "ckb": "مێنیو، ژێرنووس و لێدوانی دەنگی؛ لێدوانی عەرەبی لەسەر PS5 داگرتنی جیای پێویستە (تەنها ئینگلیزی و فەرەنسی تێدایە)، و لەسەر Xbox ئەگەر زمانی ئامێرەکە عەرەبی نەبێت"
       }
     },
     {
@@ -265,7 +265,10 @@
   ],
   "sources": [
     { "url": "https://www.ea.com/games/ea-sports-fc/fc-27/news/fc-27-editions-and-release-dates", "title": "EA SPORTS FC 27 — Ultimate Plus, Ultimate & Standard Edition FAQ + release dates", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "release 25 Sep 2026, early access 18 Sep, editions, The Grounds (incl. Clubs) only on PS5/Xbox Series/PC/Switch 2, free PS4→PS5 upgrade" },
-    { "url": "https://www.ea.com/games/ea-sports-fc/fc-27/buy", "title": "Buy EA SPORTS FC 27", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "language list including Arabic, platforms, game features, 21,000+ players" },
+    { "url": "https://www.ea.com/games/ea-sports-fc/fc-27/buy", "title": "Buy EA SPORTS FC 27", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "language list including Arabic; on PS5 and PS4 audio commentary other than English and French is a separate download, on Xbox other than English and the console language; physical versions exist; The Grounds content not on PS4, Xbox One or Switch" },
+    { "url": "https://www.ea.com/games/ea-sports-fc/fc-27", "title": "EA SPORTS FC 27", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "21,000+ players from 800+ clubs and national teams, rebuilt Transfer Market in Manager Career, The Grounds, cover and screenshots" },
+    { "url": "https://store.playstation.com/en-ae/concept/10017332", "title": "EA SPORTS FC 27 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic screen language on PS5, PS5 audio on the disc build English and French (Arabic audio listed for PS4), 1–4 players, PS Plus required online, PS5 Pro Enhanced" },
+    { "url": "https://store.steampowered.com/app/4080220/", "title": "EA SPORTS FC 27 — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 16 (in-game purchases) and ESRB E, Arabic with full audio, EA Canada and EA Romania" },
     { "url": "https://store.playstation.com/en-gb/concept/10017332", "title": "EA SPORTS FC 27 Standard Edition PS4 & PS5 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16 with paid random items, PS Plus required for online play, 1–4 players, PS5 Pro Enhanced, Arabic screen language on PS5" },
     { "url": "https://www.xbox.com/en-US/games/store/ea-sports-fc-27-xbox-series-xs/9nj2n85t2zgs", "title": "EA SPORTS FC 27 Xbox Series X|S — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "Arabic interface, audio and subtitles; online multiplayer requires Game Pass Essential, Premium or Ultimate; max install about 92.5 GB; local 2–4 and online multiplayer; ESRB Everyone" },
     { "url": "https://www.playstation.com/en-gb/games/ea-sports-fc/", "title": "EA SPORTS FC 27 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "21,000+ players, 800+ clubs and national teams, features, PS Plus requirement" },
@@ -281,11 +284,11 @@
     "ckb": "FC Points، دراوی ناو یارییەکە، بە جیا لە فرۆشگای ئامێرەکە دەفرۆشرێت. Ultimate Edition بڕێک FC Points، دەستپێگەیشتنی زوو و ناوەڕۆکی زیادە زیاد دەکات؛ Ultimate Plus Edition تەنها تا 31ی ئابی 2026 دەفرۆشرا."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "PS5 install size is not published on the PlayStation Store web page; the size shown is the Microsoft Store figure for Xbox Series X|S.",
-      "The PlayStation Store lists Arabic voice for the PS4 version and Arabic screen text for PS5; Arabic commentary on PS5 is assumed from EA's language list and the Xbox listing.",
+      "Arabic commentary on PS5: EA lists Arabic among the game's languages and says PS5 commentary other than English and French is a separate download; the PlayStation Store lists Arabic audio only for the PS4 build, so the PS5 download was not seen directly.",
       "Whether physical copies are a Middle East (Arabic) or European pack depends on the distributor; not checked.",
       "No EAN/UPC barcode recorded."
     ]

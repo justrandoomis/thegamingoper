@@ -5,11 +5,7 @@
   "platform": "xbox",
   "brand": "Xbox",
   "status": "available",
-  "name": {
-    "ar": "بطاقة Xbox Gift Card (رصيد رقمي)",
-    "en": "Xbox Gift Card (digital code)",
-    "ckb": "کارتی Xbox Gift Card (کۆدی دیجیتاڵ)"
-  },
+  "name": { "ar": "بطاقة Xbox Gift Card (رصيد رقمي)", "en": "Xbox Gift Card (digital code)", "ckb": "کارتی Xbox Gift Card (کۆدی دیجیتاڵ)" },
   "short": {
     "ar": "رصيد لحساب Microsoft · Xbox وPC · يجب أن تطابق دولة البطاقة دولة الحساب",
     "en": "Microsoft account credit · Xbox and PC · card region must match the account",
@@ -31,11 +27,7 @@
       "en": "Spend it on Xbox, on Windows or in Microsoft Store online",
       "ckb": "لەسەر Xbox، Windows یان Microsoft Storeی ئۆنلاین خەرجی بکە"
     },
-    {
-      "ar": "تشتري به الألعاب والإضافات واشتراك Game Pass",
-      "en": "Buys games, add-ons and Game Pass",
-      "ckb": "یاری، زیادکراوە و Game Pass دەکڕێت"
-    },
+    { "ar": "تشتري به الألعاب والإضافات واشتراك Game Pass", "en": "Buys games, add-ons and Game Pass", "ckb": "یاری، زیادکراوە و Game Pass دەکڕێت" },
     {
       "ar": "بلا رسوم ولا تاريخ انتهاء حسب Microsoft",
       "en": "No fees and no expiry date, per Microsoft",
@@ -46,22 +38,34 @@
     {
       "key": "format",
       "label": { "ar": "الشكل", "en": "Format", "ckb": "شێوە" },
-      "value": { "ar": "رمز رقمي", "en": "Digital code", "ckb": "کۆدی دیجیتاڵ" }
+      "value": { "ar": "رمز رقمي من 25 حرفاً ورقماً", "en": "25-character digital code", "ckb": "کۆدی دیجیتاڵی 25 پیت و ژمارەیی" }
     },
     {
       "key": "region",
       "label": { "ar": "الدولة", "en": "Region", "ckb": "وڵات" },
-      "value": { "ar": "مخصصة لدولة البطاقة؛ يجب أن تطابق دولة حساب Microsoft", "en": "Made for the card's country; must match your Microsoft account's country", "ckb": "بۆ وڵاتی کارتەکە دروستکراوە؛ دەبێت وەک وڵاتی هەژماری Microsoft بێت" }
+      "value": {
+        "ar": "مخصصة لدولة البطاقة؛ يجب أن تطابق دولة حساب Microsoft",
+        "en": "Made for the card's country; must match your Microsoft account's country",
+        "ckb": "بۆ وڵاتی کارتەکە دروستکراوە؛ دەبێت وەک وڵاتی هەژماری Microsoft بێت"
+      }
     },
     {
       "key": "redeem",
       "label": { "ar": "طريقة الاسترداد", "en": "How to redeem", "ckb": "چۆنیەتی بەکارهێنان" },
-      "value": { "ar": "xbox.com/redeem أو Microsoft Store على Xbox أو Windows", "en": "xbox.com/redeem, or Microsoft Store on Xbox or Windows", "ckb": "xbox.com/redeem، یان Microsoft Store لەسەر Xbox یان Windows" }
+      "value": {
+        "ar": "xbox.com/redeem أو microsoft.com/redeem أو Microsoft Store على Xbox أو Windows",
+        "en": "xbox.com/redeem or microsoft.com/redeem, or Microsoft Store on Xbox or Windows",
+        "ckb": "xbox.com/redeem یان microsoft.com/redeem، یان Microsoft Store لەسەر Xbox یان Windows"
+      }
     },
     {
       "key": "works_on",
       "label": { "ar": "يعمل على", "en": "Works on", "ckb": "کار دەکات لەسەر" },
-      "value": { "ar": "Xbox Series X|S وXbox One وأجهزة Windows", "en": "Xbox Series X|S, Xbox One and Windows devices", "ckb": "Xbox Series X|S، Xbox One و ئامێرەکانی Windows" }
+      "value": {
+        "ar": "Xbox Series X|S وXbox One وأجهزة Windows",
+        "en": "Xbox Series X|S, Xbox One and Windows devices",
+        "ckb": "Xbox Series X|S، Xbox One و ئامێرەکانی Windows"
+      }
     },
     {
       "key": "delivery",
@@ -110,37 +114,61 @@
     {
       "deviceModel": "xbox-series-x",
       "status": "verified",
-      "note": { "ar": "على حساب Microsoft من نفس دولة البطاقة.", "en": "On a Microsoft account from the card's country.", "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کارتەکە." },
+      "note": {
+        "ar": "على حساب Microsoft من نفس دولة البطاقة.",
+        "en": "On a Microsoft account from the card's country.",
+        "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کارتەکە."
+      },
       "source": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account"
     },
     {
       "deviceModel": "xbox-series-x-digital",
       "status": "verified",
-      "note": { "ar": "على حساب Microsoft من نفس دولة البطاقة.", "en": "On a Microsoft account from the card's country.", "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کارتەکە." },
+      "note": {
+        "ar": "على حساب Microsoft من نفس دولة البطاقة.",
+        "en": "On a Microsoft account from the card's country.",
+        "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کارتەکە."
+      },
       "source": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "verified",
-      "note": { "ar": "على حساب Microsoft من نفس دولة البطاقة.", "en": "On a Microsoft account from the card's country.", "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کارتەکە." },
+      "note": {
+        "ar": "على حساب Microsoft من نفس دولة البطاقة.",
+        "en": "On a Microsoft account from the card's country.",
+        "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کارتەکە."
+      },
       "source": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account"
     },
     {
       "deviceModel": "windows-pc",
       "status": "verified",
-      "note": { "ar": "عبر Microsoft Store أو تطبيق Xbox على Windows.", "en": "Through Microsoft Store or the Xbox app on Windows.", "ckb": "لە ڕێگەی Microsoft Store یان ئەپی Xbox لەسەر Windows." },
+      "note": {
+        "ar": "عبر Microsoft Store أو تطبيق Xbox على Windows.",
+        "en": "Through Microsoft Store or the Xbox app on Windows.",
+        "ckb": "لە ڕێگەی Microsoft Store یان ئەپی Xbox لەسەر Windows."
+      },
       "source": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account"
     },
     {
       "deviceModel": "rog-xbox-ally-x",
       "status": "verified",
-      "note": { "ar": "جهاز يعمل بـ Windows، يُستخدم الرصيد عبر Microsoft Store وتطبيق Xbox.", "en": "A Windows handheld; use the credit through Microsoft Store and the Xbox app.", "ckb": "ئامێرێکی دەستیی Windows؛ باڵانسەکە لە ڕێگەی Microsoft Store و ئەپی Xbox بەکاربهێنە." },
+      "note": {
+        "ar": "جهاز يعمل بـ Windows، يُستخدم الرصيد عبر Microsoft Store وتطبيق Xbox.",
+        "en": "A Windows handheld; use the credit through Microsoft Store and the Xbox app.",
+        "ckb": "ئامێرێکی دەستیی Windows؛ باڵانسەکە لە ڕێگەی Microsoft Store و ئەپی Xbox بەکاربهێنە."
+      },
       "source": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account"
     },
     {
       "deviceModel": "rog-xbox-ally",
       "status": "verified",
-      "note": { "ar": "جهاز يعمل بـ Windows، يُستخدم الرصيد عبر Microsoft Store وتطبيق Xbox.", "en": "A Windows handheld; use the credit through Microsoft Store and the Xbox app.", "ckb": "ئامێرێکی دەستیی Windows؛ باڵانسەکە لە ڕێگەی Microsoft Store و ئەپی Xbox بەکاربهێنە." },
+      "note": {
+        "ar": "جهاز يعمل بـ Windows، يُستخدم الرصيد عبر Microsoft Store وتطبيق Xbox.",
+        "en": "A Windows handheld; use the credit through Microsoft Store and the Xbox app.",
+        "ckb": "ئامێرێکی دەستیی Windows؛ باڵانسەکە لە ڕێگەی Microsoft Store و ئەپی Xbox بەکاربهێنە."
+      },
       "source": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account"
     }
   ],
@@ -169,8 +197,8 @@
     },
     {
       "key": "xbox-gift-card--2",
-      "file": ".cache/product-images/xbox-gift-card/2.webp",
-      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?scl=1&fmt=png-alpha",
+      "file": ".cache/product-images/xbox-gift-card/2.png",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?fmt=png-alpha&scl=1&bfc=off",
       "sourcePage": "https://www.microsoft.com/en-us/store/b/gift-cards",
       "kind": "detail",
       "alt": {
@@ -190,14 +218,14 @@
       "title": "Xbox Gift Card – Digital Code",
       "publisher": "Microsoft Store (US)",
       "retrieved": "2026-11-11",
-      "supports": "digital code sent by email, usable at Microsoft Store online, on Windows and on Xbox for games, apps, films and devices, no fees or expiry, US values from $1 to $100, card image"
+      "supports": "digital code sent by email, 25-character code redeemed at microsoft.com/redeem, usable at Microsoft Store online, on Windows and on Xbox for games, apps, films and devices, no fees, retail gift cards never expire, US card applies to a US Microsoft account with country restrictions, US values from $1 to $100 (Microsoft catalogue), card image"
     },
     {
       "url": "https://support.xbox.com/en-US/help/subscriptions-billing/redeem-codes-gifting/digital-code-solution",
       "title": "My digital code or gift card doesn't work",
       "publisher": "Xbox Support",
       "retrieved": "2026-11-11",
-      "supports": "codes are meant for a specific country/region; a card that does not match the account's region must be taken up with the retailer"
+      "supports": "codes are meant for a specific country/region; a card that does not match the account's region must be taken up with the retailer (read by the researcher; the page loads only in a full browser)"
     },
     {
       "url": "https://support.microsoft.com/en-us/accounts-billing/redeem-a-gift-card-or-code-to-your-microsoft-account",
@@ -211,21 +239,21 @@
       "title": "Redeem Xbox codes or gift cards",
       "publisher": "Xbox",
       "retrieved": "2026-11-11",
-      "supports": "redeem at xbox.com/redeem; sign in to the right account because codes cannot be transferred; balance can go toward Game Pass"
+      "supports": "redeem at xbox.com/redeem; sign in to the right account because codes cannot be transferred; balance can go toward a Game Pass subscription"
     },
     {
       "url": "https://www.xbox.com/en-US/regions",
       "title": "Xbox Supported Countries & Regions",
       "publisher": "Xbox",
       "retrieved": "2026-11-11",
-      "supports": "Iraq is not on the supported list; Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman, Egypt and Turkey are"
+      "supports": "Iraq is not on the supported list; Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman, Egypt and Turkey are (regions data file behind the page)"
     },
     {
       "url": "https://digital.baly.iq/games/xbox/",
       "title": "بطاقات اكس بوكس (Iraqi digital card seller)",
       "publisher": "Baly (Iraq)",
       "retrieved": "2026-11-11",
-      "supports": "Xbox cards sold in Iraq are US-dollar cards ($10, $15, $20, $25, $50, $100); card country must match the Microsoft account"
+      "supports": "Xbox cards sold in Iraq are US-dollar cards ($10, $15, $20, $25, $50, $100) for US Microsoft accounts; card country must match the Microsoft account"
     }
   ],
   "notes": {
@@ -234,7 +262,7 @@
     "ckb": "پێش کڕین وڵاتی هەژماری Microsoftەکەت بپشکنە، و پێش نووسینی کۆدەکە بە هەژماری دروست بچۆ ژوورەوە، چونکە باڵانس ناگوازرێتەوە. کارتەکە خۆی بەشداریی Game Pass نییە؛ باڵانسەکە بۆ کڕینی بەکاربهێنە."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Card values offered for Gulf-region Microsoft accounts (only US-dollar values were checked)",

@@ -81,7 +81,8 @@ export const REFUND_ERROR_KEYS = [
 
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
 const idSchema = z.string().regex(ID_PATTERN, "invalid");
-const LIVE_REFUND = ["rejected", "cancelled"] as const;
+/** Refund statuses that no longer count against the refundable amount and quantity (the triggers agree). */
+const VOID_REFUND_STATUSES: ("rejected" | "cancelled")[] = ["rejected", "cancelled"];
 
 export const RefundItemInput = z.object({
   orderItemId: idSchema,
@@ -139,7 +140,7 @@ export async function getRefundableAmount(db: Db, paymentId: string): Promise<nu
     db
       .select({ total: sql<number>`coalesce(sum(${refunds.amountIqd}), 0)` })
       .from(refunds)
-      .where(and(eq(refunds.paymentId, paymentId), notInArray(refunds.status, LIVE_REFUND)))
+      .where(and(eq(refunds.paymentId, paymentId), notInArray(refunds.status, VOID_REFUND_STATUSES)))
       .get(),
   ]);
   if (!payment || payment.status !== "paid") return 0;
@@ -339,7 +340,7 @@ export async function createRefund(db: Db, actor: Actor, raw: CreateRefundInput,
         .select({ orderItemId: refundItems.orderItemId, qty: sql<number>`sum(${refundItems.qty})` })
         .from(refundItems)
         .innerJoin(refunds, eq(refunds.id, refundItems.refundId))
-        .where(and(inArray(refundItems.orderItemId, itemIds), notInArray(refunds.status, LIVE_REFUND)))
+        .where(and(inArray(refundItems.orderItemId, itemIds), notInArray(refunds.status, VOID_REFUND_STATUSES)))
         .groupBy(refundItems.orderItemId),
     ]);
     const takenBy = new Map(taken.map((row) => [row.orderItemId, Number(row.qty)]));

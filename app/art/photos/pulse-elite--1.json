@@ -32,8 +32,13 @@
         "w": 720,
         "src": "/products/pulse-elite/1-720.a75d9090.webp"
       }
-    ],
-    "png": "/products/pulse-elite/1-720.721451bd.png"
+    ]
+  },
+  "share": {
+    "src": "/products/pulse-elite/1-821.f7135080.png",
+    "width": 821,
+    "height": 1063,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRj4BAABXRUJQVlA4WAoAAAAQAAAADgAAEwAAQUxQSH0AAAART6CojRQ4ti5O+EFEBKbvHrlwYtvWspxfBoBL+yaBNZdI+xfNrTlkl+rc8f4/jCGi/xPAv0fP9hU1afvut4gs4K2bbDBSxldUwciCjpyQbzaFpwW7gqkuXNiln5omYZaX5MFLkrZWUYFWJ2BKK8DBfCXloSspY4EZbpr8DQBWUDggmgAAAFAEAJ0BKg8AFAA/EXKwUCwmpKKwCAGAIgllAMTZp7Odea6LyxP5+/HFcwAA/tmZy5rCfjALGZ+WO1l9YHLqRZf3WsGJrTi1V/xqyDiGsGXf1BFPFP95CXETdjFOmMs4WaLPVsuKYDdfK5Bj34tDZcmaFH/m2V1ttIHJnwJDenXiyGeNl2fihvlaVUWnho0lgD7wgJ4EVjvi+AA=",
   "dominant": "#191c23",
@@ -45,5 +50,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/PulseEliteHeadset-White-01-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/pulse-elite-wireless-headset/product/PSD001-PSDE01834_23-PULSEELITEDSGVRE/"
   },
-  "input": "9c4dcaa76022a668"
+  "input": "7f09ecd3039ae1af"
 }

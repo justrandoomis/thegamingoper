@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/lenovo-legion-go-s/3-1440.2e5d4b65.webp"
       }
-    ],
-    "png": "/products/lenovo-legion-go-s/3-720.879da557.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSEYAAAARP6AYkiQ2uAT7umSQiS4iAvEXlASj2Lba0NdI6HtWKEAAg4KWxEL8z/C+hoj+TwCjjnbNzP1QFCQ70hMZSkHSnu9aOSMCVlA4IF4AAACwAwCdASoUAAoAPxFysFAsJqSisAgBgCIJZwDG9Brf4G5H25/AAAD+z1M/ZM3/fWDZTpnw0RJVtEEvmaoOJnu93maNfv6lhshcqGqcKil/ivToCqdOP664KzqLJYAA",
   "dominant": "#312d3b",
@@ -61,5 +60,5 @@
     "url": "https://media.lenovonews.fiestic.com/2025/01/08040355/Legion-Go-S-Powered-by-SteamOS-8in-1.zip#02_Legion_Go_S_Steam_Back.png",
     "page": "https://news.lenovo.com/press-kits/ces-2025/"
   },
-  "input": "00d502d8624591a6"
+  "input": "6bf209ec93c2d141"
 }

@@ -33,6 +33,10 @@ export default defineMessages({
     menu: {
       more: "إجراءات أخرى",
     },
+    rail: {
+      previous: "اعرض العناصر السابقة",
+      next: "اعرض العناصر التالية",
+    },
     breadcrumbs: {
       label: "مسار التنقل",
     },
@@ -82,6 +86,7 @@ export default defineMessages({
       sortAsc: "رتّب تصاعدياً",
       sortDesc: "رتّب تنازلياً",
       loading: "جارٍ تحميل الصفوف",
+      empty: "لا توجد صفوف في هذا العرض.",
     },
   },
   en: {
@@ -107,6 +112,10 @@ export default defineMessages({
     },
     menu: {
       more: "More actions",
+    },
+    rail: {
+      previous: "Show the previous items",
+      next: "Show the next items",
     },
     breadcrumbs: {
       label: "Breadcrumb",
@@ -153,6 +162,7 @@ export default defineMessages({
       sortAsc: "Sort ascending",
       sortDesc: "Sort descending",
       loading: "Loading rows",
+      empty: "There are no rows in this view.",
     },
   },
   ckb: {
@@ -178,6 +188,10 @@ export default defineMessages({
     },
     menu: {
       more: "کرداری زیاتر",
+    },
+    rail: {
+      previous: "بابەتەکانی پێشوو پیشان بدە",
+      next: "بابەتەکانی دواتر پیشان بدە",
     },
     breadcrumbs: {
       label: "ڕێڕەوی گەڕان",
@@ -224,6 +238,7 @@ export default defineMessages({
       sortAsc: "بە سەرەوە ڕیز بکە",
       sortDesc: "بە خوارەوە ڕیز بکە",
       loading: "ڕیزەکان بار دەکرێن",
+      empty: "هیچ ڕیزێک لەم پیشاندانەدا نییە.",
     },
   },
 });

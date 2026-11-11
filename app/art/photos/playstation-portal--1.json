@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/playstation-portal/1-1440.f39181ec.webp"
       }
-    ],
-    "png": "/products/playstation-portal/1-720.81c98160.png"
+    ]
+  },
+  "share": {
+    "src": "/products/playstation-portal/1-1200.59f6c78b.png",
+    "width": 1200,
+    "height": 522,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSE8AAAARP6CQkSQ2dwrfH6EafUQE5CuVDkxk204T1nW17OtiCwFP/m+hvP8JrCGi/xOAKpshxBijHnD3F8laYlASIJ/E3gLaO5Gn6KhTSql5IagSAFZQOCBaAAAAcAMAnQEqFAAJAD8RdLBQrCakorAIAYAiCUAACXeb3xZH+mAAAPjkVJKZurg6wp9FWvFpkPks11eJTkgsrMxjRg/8JmM9tM9FRy5cYG0P0ydnQj8PjIZeAAAA",
   "dominant": "#040405",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-05-PS-16x9-01-15apr26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
   },
-  "input": "3d10306885f8323d"
+  "input": "1c5be0170b62858d"
 }

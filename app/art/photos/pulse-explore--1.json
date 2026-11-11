@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/pulse-explore/1-960.38c3f11e.webp"
       }
-    ],
-    "png": "/products/pulse-explore/1-720.f6cf1200.png"
+    ]
+  },
+  "share": {
+    "src": "/products/pulse-explore/1-1200.c87d3b24.png",
+    "width": 1200,
+    "height": 1027,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRjgBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSH8AAAART6CgbSM3diD2vvuPiAB8/aVsEk5s23aTm27pIJHIDIGFi6MX15vLQoHrzXbOePOZQ0T/J0Cy9LexsU2pLxVTHSJTDCVJNVs78KQqkXbcbekBTgzbfCIYAgPFUAoNZSilfuCGUwh0JNIb8JVq2/oCrpJrwDakfqxkHt3cP0pLAFZQOCCSAAAAcAQAnQEqFAARAD8RgLdVrCelIygIAYAiCWMAxkGLDjiq8aJqfNDSouZ0rgAA/uFwLVc2is3wN0UX9zKCGWn/Q2ejEbXuOu4q0IUbUqRpTQtBOvMaw/dwa+XoVZbKfl7s43cIT9LeHd8RcCJZgF7OLcxfj2n7uCYx0ZH98gYiSCbqFSwv+zdeF/EvRAS6vOKwAAA=",
   "dominant": "#e4e9f3",
@@ -53,5 +58,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/Pulse-Explore-Earbuds-White-01-28x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/pulse-explore-wireless-earbuds/product/PSD001-PSDE01833_59-PULSEEXPLOH2YMZE/"
   },
-  "input": "2025e2e7350b0838"
+  "input": "13101dd0286dd318"
 }

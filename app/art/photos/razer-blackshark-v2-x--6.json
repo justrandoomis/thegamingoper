@@ -1,65 +1,48 @@
 {
   "key": "razer-blackshark-v2-x--6",
   "view": "hero",
-  "width": 1500,
-  "height": 1000,
-  "aspect": 1.5,
+  "width": 829,
+  "height": 958,
+  "aspect": 0.8653,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/razer-blackshark-v2-x/6-240.1bf6640e.avif"
+        "src": "/products/razer-blackshark-v2-x/6-240.d278ca40.avif"
       },
       {
         "w": 480,
-        "src": "/products/razer-blackshark-v2-x/6-480.0581f175.avif"
+        "src": "/products/razer-blackshark-v2-x/6-480.079a4d71.avif"
       },
       {
         "w": 720,
-        "src": "/products/razer-blackshark-v2-x/6-720.4ae5d55f.avif"
-      },
-      {
-        "w": 960,
-        "src": "/products/razer-blackshark-v2-x/6-960.ac1d5d71.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/razer-blackshark-v2-x/6-1440.cff335cb.avif"
+        "src": "/products/razer-blackshark-v2-x/6-720.285cc2b2.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/razer-blackshark-v2-x/6-240.d939617d.webp"
+        "src": "/products/razer-blackshark-v2-x/6-240.6c2411cf.webp"
       },
       {
         "w": 480,
-        "src": "/products/razer-blackshark-v2-x/6-480.53ae6e03.webp"
+        "src": "/products/razer-blackshark-v2-x/6-480.b67245cf.webp"
       },
       {
         "w": 720,
-        "src": "/products/razer-blackshark-v2-x/6-720.c1f52071.webp"
-      },
-      {
-        "w": 960,
-        "src": "/products/razer-blackshark-v2-x/6-960.47d45d2c.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/razer-blackshark-v2-x/6-1440.512d2267.webp"
+        "src": "/products/razer-blackshark-v2-x/6-720.4cb35b06.webp"
       }
-    ],
-    "png": "/products/razer-blackshark-v2-x/6-720.d59dc9a8.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADwAwCdASoUAA0APxFysFAsJqSisAgBgCIJZgCdMoADSr+vqEfEccqQAP7pQABEYJJudMaAN/6kkSmUP7+6d7Wd+FuwXnviF1NJtcCqV7EJi+ZjZc6Ekg/UtTKLRmv1/U4OokAA",
-  "dominant": "#011a04",
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAABwAwCdASoRABQAPxF0s1EsJqSiqA1RgCIJaAAALa4qY2ZgI0AA/uvjWCUniJcMcaR3IbdSQvoEbWtE98cHSkmy5BG8UPImz+g8KukXXYJW8D17i9+XBQwA",
+  "dominant": "#181d22",
   "transparent": false,
-  "background": null,
+  "background": "#111111",
   "kind": "hero",
   "credit": "Razer",
   "source": {
-    "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h86/h4b/9242259193886/210928-blackshark-v2-x-green-1500x1000-1.jpg",
+    "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hf5/h02/9242258997278/210928-blackshark-v2-x-green-1500x1000-2.jpg",
     "page": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240600-R3U1"
   },
-  "input": "822f99f21872d8b4"
+  "input": "6304f48ba2d9a114"
 }

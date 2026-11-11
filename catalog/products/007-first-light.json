@@ -13,9 +13,9 @@
     "ckb": "PS5 · Xbox Series X · دیسک · تاکەکەسی"
   },
   "description": {
-    "ar": "قصة بداية جديدة لـ James Bond من IO Interactive، صانعي سلسلة Hitman. تلعب بشخصية Bond شاباً في برنامج تدريب MI6، ينضم إلى برنامج Double 0 ويطارد عميلاً منشقاً ليكشف مؤامرة كبيرة. تجمع اللعبة بين التسلل والأدوات والقتال وقيادة السيارات، وصدرت في 27 أيار 2026.",
+    "ar": "قصة جديدة عن بدايات James Bond من IO Interactive، صانعي سلسلة Hitman. تلعب بشخصية Bond شاباً في برنامج تدريب MI6، ينضم إلى برنامج Double 0 ويطارد عميلاً منشقاً ليكشف مؤامرة كبيرة. تجمع اللعبة بين التسلل والأدوات والقتال وقيادة السيارات، وصدرت في 27 أيار 2026.",
     "en": "A new James Bond origin story from IO Interactive, the studio behind Hitman. You play a young Bond in MI6's training programme who joins the revived Double 0 programme and chases a rogue agent to expose a wider conspiracy. It mixes stealth, gadgets, gunfights and driving, and launched on 27 May 2026.",
-    "ckb": "چیرۆکێکی نوێی سەرەتای James Bond لە IO Interactive، ستۆدیۆی زنجیرەی Hitman. بە کارەکتەری Bond ی گەنج لە بەرنامەی ڕاهێنانی MI6 یاری دەکەیت، کە دەچێتە بەرنامەی Double 0 و بەدوای بریکارێکی یاخیدا دەگەڕێت بۆ ئاشکراکردنی پیلانێکی گەورە. یارییەکە خۆشاردنەوە، ئامراز، شەڕ و لێخوڕینی ئۆتۆمبێل تێکەڵ دەکات، و لە 27ی ئایاری 2026 دەرچوو."
+    "ckb": "چیرۆکێکی نوێ دەربارەی سەرەتاکانی James Bond لە IO Interactive، ستۆدیۆی زنجیرەی Hitman. بە کارەکتەری Bond ی گەنج لە بەرنامەی ڕاهێنانی MI6 یاری دەکەیت، کە دەچێتە بەرنامەی Double 0 و بەدوای بریکارێکی یاخیدا دەگەڕێت بۆ ئاشکراکردنی پیلانێکی گەورە. یارییەکە خۆشاردنەوە، ئامراز، شەڕ و لێخوڕینی ئۆتۆمبێل تێکەڵ دەکات، و لە 27ی ئایاری 2026 دەرچوو."
   },
   "highlights": [
     {
@@ -54,9 +54,9 @@
       "key": "platforms",
       "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
       "value": {
-        "ar": "PS5 وXbox Series X|S وPC، وNintendo Switch 2 لاحقاً",
-        "en": "PS5, Xbox Series X|S and PC, with Nintendo Switch 2 later",
-        "ckb": "PS5، Xbox Series X|S و PC، و Nintendo Switch 2 دواتر"
+        "ar": "PS5 وXbox Series X|S وPC، وNintendo Switch 2 في 18 آذار 2027",
+        "en": "PS5, Xbox Series X|S and PC, with Nintendo Switch 2 on 18 March 2027",
+        "ckb": "PS5، Xbox Series X|S و PC، و Nintendo Switch 2 لە 18ی ئازاری 2027"
       }
     },
     {
@@ -211,12 +211,12 @@
     {
       "key": "007-first-light--1",
       "file": ".cache/product-images/007-first-light/1.jpg",
-      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202506/0421/3f7672a695a9487071b261cc7c0d55ad7c25ebb39c8dc3ec.png",
-      "sourcePage": "https://store.playstation.com/en-gb/concept/10006560",
-      "kind": "hero",
-      "alt": { "ar": "James Bond الشاب يصوّب مسدسه مع شعار 007 First Light", "en": "Young James Bond aiming his pistol, with the 007 First Light logo", "ckb": "James Bond ی گەنج دەمانچەکەی ئاراستە دەکات لەگەڵ لۆگۆی 007 First Light" },
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.8071.14287567326939893.1fdb2217-3463-49e6-b44c-c16587b03bc8.d8033845-8141-4dc4-b49e-2a8e6749235d",
+      "sourcePage": "https://web.archive.org/web/20260610204144/https://www.xbox.com/en-us/games/store/007-first-light-standard-edition/9npf9f0dcvks",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف 007 First Light: James Bond الشاب يصوّب مسدسه", "en": "007 First Light cover art: young James Bond aiming his pistol", "ckb": "وێنەی بەرگی 007 First Light: James Bond ی گەنج دەمانچەکەی ئاراستە دەکات" },
       "credit": "IO Interactive",
-      "width": 3840, "height": 2160, "transparent": false
+      "width": 1440, "height": 2160, "transparent": false
     },
     {
       "key": "007-first-light--2",
@@ -224,7 +224,7 @@
       "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/007-first-light-screenshot-04-en-02jul25?$1600px$",
       "sourcePage": "https://www.playstation.com/en-ae/games/007-first-light/",
       "kind": "screenshot",
-      "alt": { "ar": "مطاردة بسيارة كلاسيكية في قرية جبلية", "en": "A classic car chase through a mountain village", "ckb": "ڕاوەدوونان بە ئۆتۆمبێلێکی کلاسیک لە گوندێکی شاخاوی" },
+      "alt": { "ar": "سيارة كلاسيكية مسرعة عبر قرية جبلية", "en": "A classic car speeding through a mountain village", "ckb": "ئۆتۆمبێلێکی کلاسیک بە خێرایی بە ناو گوندێکی شاخاویدا تێدەپەڕێت" },
       "credit": "IO Interactive",
       "width": 1600, "height": 900, "transparent": false
     },
@@ -234,7 +234,7 @@
       "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/007-first-light-screenshot-03-en-06feb26?$1600px$",
       "sourcePage": "https://www.playstation.com/en-ae/games/007-first-light/",
       "kind": "screenshot",
-      "alt": { "ar": "Bond يتسلق صخوراً في منطقة جبلية", "en": "Bond climbing rocks in a mountain area", "ckb": "Bond بەسەر بەردەکاندا سەردەکەوێت لە ناوچەیەکی شاخاوی" },
+      "alt": { "ar": "Bond يتحرك بين الصخور وأشجار الصنوبر في الجبال", "en": "Bond moving through rocks and pine trees in the mountains", "ckb": "Bond لە نێوان بەرد و دارکاژەکانی شاخدا دەجووڵێت" },
       "credit": "IO Interactive",
       "width": 1600, "height": 900, "transparent": false
     },
@@ -250,23 +250,27 @@
     }
   ],
   "sources": [
-    { "url": "https://ioi.dk/007firstlightgame/faq", "title": "007 First Light FAQ", "publisher": "IO Interactive", "retrieved": "2026-11-11", "supports": "release 27 May 2026, platforms incl. Switch 2 later, self-published with Amazon MGM Studios, no multiplayer, one-time internet for the day-one patch then offline campaign" },
-    { "url": "https://store.playstation.com/en-gb/concept/10006560", "title": "007 First Light — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16, English voice only, screen languages without Arabic, key art" },
-    { "url": "https://www.playstation.com/en-ae/games/007-first-light/", "title": "007 First Light — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, online play optional, screenshots" },
-    { "url": "https://www.xbox.com/en-US/games/store/007-first-light-standard-edition/9npf9f0dcvks", "title": "007 First Light — Standard Edition, Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Teen, 14 supported languages without Arabic, max install about 63 GB, story summary" },
-    { "url": "https://www.ign.com/articles/007-first-light-heres-what-comes-in-each-edition", "title": "007 First Light: Here's What Comes in Each Edition", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "physical copies for PS5, Xbox Series X and Switch 2; editions" },
+    { "url": "https://ioi.dk/007firstlightgame/faq", "title": "007 First Light FAQ", "publisher": "IO Interactive", "retrieved": "2026-11-11", "supports": "release 27 May 2026, platforms, self-published with Amazon MGM Studios, no multiplayer, one-time internet for the day-one patch then offline campaign, leaderboards and challenges need internet, Legacy and Collector's Editions" },
+    { "url": "https://ioi.dk/007firstlightgame/news/2026/007-first-light-switch-2-date-confirmed", "title": "007 First Light Switch 2 Date Confirmed", "publisher": "IO Interactive", "retrieved": "2026-11-11", "supports": "Nintendo Switch 2 version on 18 March 2027 (announced 14 October 2026)" },
+    { "url": "https://store.playstation.com/en-ae/product/EP3969-PPSA11386_00-007FIRSTLIGHT000", "title": "007 First Light — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 only listing, English voice only, 14 screen languages without Arabic, 1 player, PS5 Pro Enhanced, online play optional, IARC 16+" },
+    { "url": "https://store.playstation.com/en-gb/concept/10006560", "title": "007 First Light — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 16, product data" },
+    { "url": "https://www.playstation.com/en-ae/games/007-first-light/", "title": "007 First Light — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, screenshots" },
+    { "url": "https://www.xbox.com/en-US/games/store/007-first-light-standard-edition/9npf9f0dcvks", "title": "007 First Light — Standard Edition, Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Teen, 14 supported languages without Arabic, English audio, max install about 63 GB, release 27 May 2026, original Standard Edition cover art (archived June 2026 page)" },
+    { "url": "https://store.steampowered.com/app/3768760/", "title": "007 First Light — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 16 and ESRB T, 14 languages without Arabic, single-player" },
+    { "url": "https://www.ign.com/articles/007-first-light-heres-what-comes-in-each-edition", "title": "007 First Light: Here's What Comes in Each Edition", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "physical copies for PS5 and Xbox Series X; Legacy Edition with Golden Gun figurine" },
+    { "url": "https://mashable.com/article/007-first-light-preorder-guide", "title": "007 First Light preorder guide", "publisher": "Mashable", "retrieved": "2026-11-11", "supports": "second confirmation of physical discs on PlayStation and Xbox" },
     { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
   ],
   "notes": {
-    "ar": "توجد أيضاً نسخ فيزيائية للمقتنين مع مجسم Golden Gun، تُباع بشكل منفصل وبسعر أعلى.",
-    "en": "Physical collector's editions with a Golden Gun figurine also exist; they are sold separately at a higher price.",
-    "ckb": "وەشانی فیزیکی تایبەت بە کۆکەرەوان لەگەڵ پەیکەری Golden Gun یش هەن؛ جیا و بە نرخێکی بەرزتر دەفرۆشرێن."
+    "ar": "توجد أيضاً نسخة Legacy Edition فيزيائية للمقتنين مع مجسم Golden Gun، وهي منتج منفصل.",
+    "en": "A physical Legacy Edition for collectors with a Golden Gun figurine also exists; it is a separate product.",
+    "ckb": "وەشانی فیزیکی Legacy Edition بۆ کۆکەرەوان لەگەڵ پەیکەری Golden Gun یش هەیە؛ بەرهەمێکی جیایە."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "No clean official pack shot found: the current store cover images carry a promotional banner, so the first image is the official key art.",
+      "The cover image is the official Standard Edition store art from June 2026 (the current store covers carry a promotional banner); a photo of the retail box was not found on an official page.",
       "PS5 install size is not published; the size shown is the Microsoft Store figure.",
       "No EAN/UPC barcode recorded."
     ]

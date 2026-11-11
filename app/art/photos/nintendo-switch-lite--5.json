@@ -40,8 +40,7 @@
         "w": 960,
         "src": "/products/nintendo-switch-lite/5-960.10d2ef6c.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-lite/5-720.d9ce9ae1.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdIIjDAwBdD66fZqmSrLAA/sd6RNaoH6nhnr8fpu2dUiSLoIDp7ht6tHFNSVWnUlMW50AXcSVcRKpq/DCxOfk4lVysN/4ER5acBPkgNIAA",
   "dominant": "#ffffff",
@@ -53,5 +52,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-coral/112175-nintendo-switch-lite-coral-front-screen-on-1200x675",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-coral/"
   },
-  "input": "bab5b0b9e0b596fd"
+  "input": "c20dac1a4bbda1b8"
 }

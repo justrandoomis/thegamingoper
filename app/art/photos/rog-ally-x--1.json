@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/rog-ally-x/1-1440.0792a369.webp"
       }
-    ],
-    "png": "/products/rog-ally-x/1-720.ca5ce594.png"
+    ]
+  },
+  "share": {
+    "src": "/products/rog-ally-x/1-1200.60b0cc77.png",
+    "width": 1200,
+    "height": 566,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSEAAAAARR6CobSM2VxK317+6iAhIPDlyUBTbSvXwu7YCCYxgBCMQwZ0VCM4jQ0T/JwC6QsX2H3q9Trux8djMWOKwBqUAVlA4IFYAAADwAwCdASoUAAkAPxFysFAsJqSisAgBgCIJZAC7ACPtbGjkiELIYyQAAP7clz+LXp+4xyvH5wI6zej325hefX0NdvheeU2oC2XJUsK9Q1uM8llsPwAAAA==",
   "dominant": "#373737",
@@ -61,5 +66,5 @@
     "url": "https://dlcdnwebimgs.asus.com/gain/C1CA88A3-6AF7-4567-AB25-879EDCD4339C/",
     "page": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-x-2024/gallery/"
   },
-  "input": "9b5862301a6499bd"
+  "input": "fe9f0398e70d21e1"
 }

@@ -31,7 +31,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 (البطاقة تشغّل نسخة Switch العادية على Switch الأول)", "en": "Nintendo Switch 2 (the card runs the regular Switch version on a Switch 1)", "ckb": "Nintendo Switch 2 (کارتەکە لەسەر Switch ی یەکەم وەشانی ئاسایی Switch کار پێدەکات)" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "5 حزيران 2025", "en": "5 June 2025", "ckb": "5ی حوزەیرانی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تضم لعبة Switch وحزمة ترقية Switch 2 Edition", "en": "Game card with the Switch game and the Switch 2 Edition upgrade pack", "ckb": "کارتی یاری کە یاریی Switch و پاکێجی نوێکردنەوەی Switch 2 Edition ی تێدایە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تضم لعبة Switch وحزمة ترقية Switch 2 Edition", "en": "Game card with the Switch game and the Switch 2 Edition upgrade pack", "ckb": "کارتی یاری کە یاریی Switch و پاکێجی نوێکردنەوەی Switch 2 Edition ی تێدایە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "20.1 GB على Nintendo Switch 2 · 16.5 GB على Nintendo Switch", "en": "20.1 GB on Nintendo Switch 2 · 16.5 GB on Nintendo Switch", "ckb": "20.1 GB لەسەر Nintendo Switch 2 · 16.5 GB لەسەر Nintendo Switch" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1", "ckb": "یەک یاریزان" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 12 · ESRB E10+ (عنف خيالي، إيحاءات خفيفة)", "en": "PEGI 12 · ESRB E10+ (Fantasy Violence, Mild Suggestive Themes)", "ckb": "PEGI 12 · ESRB E10+ (توندوتیژیی خەیاڵی، ئاماژەی سووک)" } },
@@ -45,7 +45,7 @@
   "variants": [
     {
       "sku": "NS2G-ZELDA-TOTK",
-      "title": { "ar": "Tears of the Kingdom – Nintendo Switch 2 Edition (نسخة فعلية)", "en": "Tears of the Kingdom – Nintendo Switch 2 Edition (physical)", "ckb": "Tears of the Kingdom – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "Tears of the Kingdom – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Tears of the Kingdom – Nintendo Switch 2 Edition (physical)", "ckb": "Tears of the Kingdom – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905736"],
       "isDefault": true,
@@ -145,7 +145,10 @@
     { "url": "https://www.nintendo.com/us/store/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition-switch-2/", "title": "The Legend of Zelda: Tears of the Kingdom – Nintendo Switch 2 Edition", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size (Switch 16.5 GB, Switch 2 20.1 GB), single player, ESRB E10+ and descriptors, languages, Save Data Cloud, amiibo, HDR, developer and publisher, upgrade pack included with Nintendo Switch Online + Expansion Pack" },
     { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition-121504/", "title": "The Legend of Zelda: Tears of the Kingdom – Nintendo Switch 2 Edition (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905736, box art" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/The-Legend-of-Zelda-Tears-of-the-Kingdom-Nintendo-Switch-2-Edition-2787249.html", "title": "The Legend of Zelda: Tears of the Kingdom – Nintendo Switch 2 Edition", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, download size 20.0 GB, higher resolution, frame rate, HDR, faster loading, extra save slot, ZELDA NOTES without a membership, card plays the Switch version in a Nintendo Switch, upgrade pack, screenshots" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; this cover instead says it includes the Switch game and the upgrade pack" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; this cover instead says it includes the Switch game and the upgrade pack" },
+    { "url": "https://pegi.info/search-pegi?q=Tears%20of%20the%20Kingdom", "title": "PEGI search: The Legend of Zelda: Tears of the Kingdom – Nintendo Switch 2 Edition", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 12 (violence) for the Nintendo Switch 2 Edition, European release 05/06/2025" },
+    { "url": "https://www.rpgsite.net/feature/17453-every-nintendo-switch-2-rpg-physical-release-complete-on-cartridge-no-game-key-cards-or-codes-needed", "title": "Every Nintendo Switch 2 RPG Physical Release Complete on Cartridge", "publisher": "RPG Site", "retrieved": "2026-11-11", "supports": "independent check of the format: ships on a physical cartridge with the Nintendo Switch game and the upgrade pack" },
+    { "url": "https://www.upcitemdb.com/upc/45496905736", "title": "UPC 045496905736 - The Legend of Zelda: Tears of the Kingdom - Nintendo Switch 2 Edition", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905736 is listed by US retailers for this edition" }
   ],
   "notes": {
     "ar": "من يملك نسخة Nintendo Switch الأصلية يمكنه شراء حزمة الترقية رقمياً بدلاً من هذه النسخة، وهي مشمولة لمشتركي Nintendo Switch Online + Expansion Pack.",
@@ -153,11 +156,9 @@
     "ckb": "ئەوانەی وەشانی ڕەسەنی Nintendo Switch یان هەیە دەتوانن لە جیاتی ئەمە پاکێجی نوێکردنەوەی دیجیتاڵی بکڕن؛ بۆ بەشداربووانی Nintendo Switch Online + Expansion Pack بەخۆڕاییە."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Size is 20.1 GB on Nintendo's US store and 20.0 GB on Nintendo UK (rounding)",
-      "Full game card status inferred from the official cover (no game-key card label)",
       "European EAN barcode not found on an official page"
     ]
   }

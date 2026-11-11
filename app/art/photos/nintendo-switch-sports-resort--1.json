@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/nintendo-switch-sports-resort/1-960.47061b8d.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-sports-resort/1-720.f881a716.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch-sports-resort/1-1053.b11443a8.jpg",
+    "width": 1053,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoADR6yiK93iO/xk8UAA/geIIoAnkMUmU0tex3XEd8oqddzDNNQWPlLaABteh+AoNDWtzc0yHag4oSSnm2byiUM7lXzoY/k/p8/etH9v21nbmBwiNe8vdOFIGKn9GmdOGS01ZRVHtx0N4AxnKWgAAA==",
   "dominant": "#e70012",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Nintendo%20Switch%20Sports%20Resort/125691-nintendo-switch-2-switch-sports-resort-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-125691/"
   },
-  "input": "7a38d5ded71f746a"
+  "input": "fbeeb1d821902dfc"
 }

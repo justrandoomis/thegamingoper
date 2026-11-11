@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/lenovo-legion-go-2/1-1440.49c98624.webp"
       }
-    ],
-    "png": "/products/lenovo-legion-go-2/1-720.c6ec0c0f.png"
+    ]
+  },
+  "share": {
+    "src": "/products/lenovo-legion-go-2/1-1200.cd516c8f.png",
+    "width": 1200,
+    "height": 630,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSEEAAAARP6CmbSQ2eCTa+oXAbx8Rgd+rcKEgkq3koQUoYAmkgAYgAi3oP+MNIvo/AThEiEuHNLds7OQn0Xdc7yh8WyocAgBWUDggaAAAANADAJ0BKhQACwA/EXKwUCwmpKKwCAGAIglmAL5IHq+YoIU3ZdeuAAD+pmtiPTxXX9nwsqnDV5s8a1ZX35opZH5cTCkuhj/gRG+CQCAd7HsvKsLdf7x0eSMkkryCOdTYZ6mwmUw8+AAA",
   "dominant": "#282829",
@@ -61,5 +66,5 @@
     "url": "https://media.lenovonews.fiestic.com/2025/09/08042903/Legion-Go-8.8-2.zip#Legion_Go_2_Front_Facing_tranparency.jpg",
     "page": "https://news.lenovo.com/press-kits/innovation-world-2025/legion-go-8-8-2/"
   },
-  "input": "400ec043d9d6d9c4"
+  "input": "8a3beaa366fd09ae"
 }

@@ -1,65 +1,62 @@
 {
   "key": "tomodachi-life-living-the-dream--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1054,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6587,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/tomodachi-life-living-the-dream/1-240.ada0aeb8.avif"
+        "src": "/products/tomodachi-life-living-the-dream/1-240.1875d1a1.avif"
       },
       {
         "w": 480,
-        "src": "/products/tomodachi-life-living-the-dream/1-480.74d7d590.avif"
+        "src": "/products/tomodachi-life-living-the-dream/1-480.41f94db5.avif"
       },
       {
         "w": 720,
-        "src": "/products/tomodachi-life-living-the-dream/1-720.edca04e0.avif"
+        "src": "/products/tomodachi-life-living-the-dream/1-720.8f95fbc8.avif"
       },
       {
         "w": 960,
-        "src": "/products/tomodachi-life-living-the-dream/1-960.64053cbf.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/tomodachi-life-living-the-dream/1-1440.073102d7.avif"
+        "src": "/products/tomodachi-life-living-the-dream/1-960.3830ede1.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/tomodachi-life-living-the-dream/1-240.eb415767.webp"
+        "src": "/products/tomodachi-life-living-the-dream/1-240.51930d30.webp"
       },
       {
         "w": 480,
-        "src": "/products/tomodachi-life-living-the-dream/1-480.56483eb4.webp"
+        "src": "/products/tomodachi-life-living-the-dream/1-480.9726071b.webp"
       },
       {
         "w": 720,
-        "src": "/products/tomodachi-life-living-the-dream/1-720.40dc947c.webp"
+        "src": "/products/tomodachi-life-living-the-dream/1-720.a7e934d5.webp"
       },
       {
         "w": 960,
-        "src": "/products/tomodachi-life-living-the-dream/1-960.b2b7947e.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/tomodachi-life-living-the-dream/1-1440.befc4722.webp"
+        "src": "/products/tomodachi-life-living-the-dream/1-960.b99e2073.webp"
       }
-    ],
-    "png": "/products/tomodachi-life-living-the-dream/1-720.7613293e.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABQBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJbADIuA/BG4L6D9uu0gTcfRQAAP7t0AnUNoBHrWqgdEZammmrrXIfWuD7i9NMZm979LHAAPvJCkWlEpl0tLfcHekHsM48iO63mf0h81fIejsZOvMTeMH3y4yz9Fybz9olLNdxCTwAAA==",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "share": {
+    "src": "/products/tomodachi-life-living-the-dream/1-1054.ce153ac7.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDIAAAARJ0CQbTOD+YPN4B7XiIjgNiBq20ZVGYxCGNyFwY4/tPtH9D8C0Kzq652ZOT+t6msAGlZQOCCOAAAA8AMAnQEqDQAUAD8RcrBQLCakorAIAYAiCWwAnSBNcGYE7f5zXDZw8AD5YinEgQvMrzQkvjlDq+Q6cbFOy9+MukTsZfMkt8e+m8nVLRj6+dGP9lPpTIt4Lp9btBwAMmysS1CfKIV/QeqOrTtyOjlsOtHnIekhN+9RXXXu9RG34Vm+AubpjRNaQHceKRUAAA==",
+  "dominant": "#ffec01",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%20Software/tomodachi%20life%20-%20living%20the%20dream/125240-nintendo-tomodachi-life-living-the-dream-nintendo-switch-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-125240/"
   },
-  "input": "b1d76788750f793c"
+  "input": "cbb49466f9b7b0d6"
 }

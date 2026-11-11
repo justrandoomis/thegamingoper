@@ -221,10 +221,14 @@ async function readFingerprint(db: Db): Promise<string> {
 }
 
 type CacheEntry = { value: NavTaxonomy; version: string; checkedAt: number };
-/** Per database binding (tests create many), then per locale. Module scope = per isolate; holds no request data. */
+/**
+ * Per database binding (tests create many), then per locale. Module scope = per isolate; it holds finished, plain
+ * data only — never a promise. A Worker must not await I/O that another request started: when that request ends or
+ * is cancelled (a client that went away), its pending queries are cancelled and the promise never settles, so every
+ * request waiting on it would hang. Each request therefore reads for itself; requests that arrive together when the
+ * snapshot has just gone stale may each run the fingerprint query (one small query each, at most every NAV_CHECK_MS).
+ */
 let caches = new WeakMap<object, Map<Locale, CacheEntry>>();
-/** Builds in flight, so concurrent requests of one isolate share one rebuild. */
-const pending = new WeakMap<object, Map<Locale, Promise<CacheEntry>>>();
 
 const cacheKey = (db: Db): object => (db as { $client?: object }).$client ?? db;
 
@@ -241,24 +245,14 @@ export async function getNavTaxonomy(db: Db, locale: Locale, options: { now?: nu
   const hit = byLocale.get(locale);
   if (hit && now - hit.checkedAt >= 0 && now - hit.checkedAt < NAV_CHECK_MS) return hit.value;
 
-  let inFlight = pending.get(key);
-  if (!inFlight) pending.set(key, (inFlight = new Map()));
-  const running = inFlight.get(locale);
-  if (running) return (await running).value;
-
-  const work = (async (): Promise<CacheEntry> => {
-    const version = await readFingerprint(db);
-    if (hit && hit.version === version && now - hit.value.builtAt < NAV_MAX_AGE_MS) return { ...hit, checkedAt: now };
-    return { value: await buildNavTaxonomy(db, locale, now), version, checkedAt: now };
-  })();
-  inFlight.set(locale, work);
-  try {
-    const entry = await work;
-    byLocale.set(locale, entry);
-    return entry.value;
-  } finally {
-    inFlight.delete(locale);
+  const version = await readFingerprint(db);
+  if (hit && hit.version === version && now - hit.value.builtAt < NAV_MAX_AGE_MS) {
+    byLocale.set(locale, { ...hit, checkedAt: now });
+    return hit.value;
   }
+  const entry: CacheEntry = { value: await buildNavTaxonomy(db, locale, now), version, checkedAt: now };
+  byLocale.set(locale, entry);
+  return entry.value;
 }
 
 /** Drop the cached navigation (this isolate only) — for admin code that just changed the catalogue. */

@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/pulse-3d/1-960.c6aeee1e.webp"
       }
-    ],
-    "png": "/products/pulse-3d/1-720.1ece586f.png"
+    ]
+  },
+  "share": {
+    "src": "/products/pulse-3d/1-1200.36a4c674.jpg",
+    "width": 1200,
+    "height": 1317,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAADQBACdASoSABQAPxF+tlWsJ6SjKAgBgCIJZwAAKh/xLPkybEGo097bOqTpD0QvwAD+7WDv/dMzFrPnT9JrIChAi4i4sdIN0D8yokehdXyxEIwA7Cul92GELa1sHNehjPYlrIo07nKEQYacxobwfUdZK0nwshl+wB5idLPWB1xgkOPLJZ/iSNQBf6Z2UOwAAAA=",
   "dominant": "#262a36",
@@ -53,5 +58,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-screenshot-01-en-16aug21?$native--t$",
     "page": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/"
   },
-  "input": "8ab38df822928007"
+  "input": "0755a80f4d7cb85d"
 }

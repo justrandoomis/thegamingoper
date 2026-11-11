@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/nintendo-switch-2-pro-controller/1-960.966ee156.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2-pro-controller/1-720.4e43d031.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch-2-pro-controller/1-1200.b179c7bf.png",
+    "width": 1200,
+    "height": 892,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGsAAAART6C2kaQ2+a4FjyciIiICen258XSDaa1tS16c6FBlAkZgBBqHRoLq1iAygH3z/jJDRP8nALLO0rXtWinARdwYeHg18PEOOD/vVhISqrlIK0VGIzJ7qtMs8x6yTrIB4CS7J40pyEoqcBcVkgBWUDggcgAAAHADAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglpAABRlCfgprAteAD+gh1mchCajEjQ6BffUWBHEEhMABWDlf4qaYGoGpHKzLqtyjEla8lg9xY/8xFiLtzvn1mLAu2ApEBxiiLlftK//4xLmf4qY+bga/QAAA==",
   "dominant": "#262729",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/ccb3e8ca3c296e21a8c933e8369031511589d0ef6b079cf5bb3667b09893482c/accessories/Pro%20Controller/Frame_3473717.png",
     "page": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/"
   },
-  "input": "429ccf00e13f38ba"
+  "input": "a0061c9d03edd09d"
 }

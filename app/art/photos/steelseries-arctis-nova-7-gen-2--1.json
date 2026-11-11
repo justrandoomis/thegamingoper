@@ -32,8 +32,13 @@
         "w": 720,
         "src": "/products/steelseries-arctis-nova-7-gen-2/1-720.f6ea3a92.webp"
       }
-    ],
-    "png": "/products/steelseries-arctis-nova-7-gen-2/1-720.9e54f375.png"
+    ]
+  },
+  "share": {
+    "src": "/products/steelseries-arctis-nova-7-gen-2/1-956.14af798e.png",
+    "width": 956,
+    "height": 1352,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRh4BAABXRUJQVlA4WAoAAAAQAAAADQAAEwAAQUxQSHYAAAART6CgjSQ1dSqY7yEiAvAr2jQ1nMa2rTr7s6VQGW/ifglxsXFMjkkyWM6p97/0ENH/CeD/aVQGjHR3YKqffHhorgDek6ZC+OTGUot/IXxDPgF8/PoV+PQkn/grqUFbknbsC3fH0sKSMy1UMJJ2q4DF+Fq+RtgBVlA4IIIAAAAQBACdASoOABQAPxFysFAsJqSisAgBgCIJaQAD5JnREvP2vD///gF0AAD+orkvZDyxkWvYR2zoga1OLivuOqq5IWb362msB88FXe/SSrb0sEXR+ymjlrt+GqWaVKWYRZJS2ffVyP2b+/+KakBv8DpNx/lKOvDOTojG+bviy06dFAAA",
   "dominant": "#282827",
@@ -45,5 +50,5 @@
     "url": "https://images.ctfassets.net/hmm5mo4qf4mf/34T7YD8CoFNFhUSuCG8r0Y/622f70d5eda3846426be3ccda20bb8e5/arctis_nova_7_wl_gen_2_black_img_buy_primary.png",
     "page": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2"
   },
-  "input": "e59cc4b49a575aa9"
+  "input": "5f9115295b58abef"
 }

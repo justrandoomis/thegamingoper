@@ -10,7 +10,9 @@
  * `node scripts/products/images.mjs` into `app/art/photos/<slug>--<n>.json` and `public/products/<slug>/`.
  * Their keys are "<slug>--<n>" (the catalogue's image key); they have one view, "hero", and never
  * collide with a clay key. `getArt("nintendo-switch-2--1")`, `<Art name="nintendo-switch-2--1" …/>`
- * and `productPhotos("nintendo-switch-2")` find them.
+ * and `productPhotos("nintendo-switch-2")` find them. Photos ship AVIF and WebP only (no PNG
+ * fallback); a product's first photo also carries its share picture for `og:image`
+ * (`productShareImage("nintendo-switch-2")`).
  *
  * This module collects the manifests at build time; nothing here touches the network or the DOM,
  * so it is safe in loaders, in components and on the server. A key that has no picture yet is not
@@ -44,8 +46,12 @@ export interface ArtManifest {
     /** Ascending by width. */
     avif: ArtVariant[];
     webp: ArtVariant[];
-    /** One PNG for clients that take neither AVIF nor WebP. */
-    png: string;
+    /**
+     * Clay renders only: one PNG for clients that take neither AVIF nor WebP. Product photos have
+     * none — every browser the store supports decodes WebP, so their `<img src>` is the 720 px WebP
+     * (`artFallbackSrc()`).
+     */
+    png?: string;
   };
   /** A ~24 px WebP as a data: URL, shown blurred until the real file has loaded. */
   placeholder: string;
@@ -55,6 +61,18 @@ export interface ArtManifest {
 
 /** What a product photo shows, as the catalogue says ("box-art" is a game's front cover). */
 export type PhotoKind = "hero" | "angle" | "detail" | "in-box" | "box-art" | "screenshot";
+
+/**
+ * A product's share picture for `og:image` / `twitter:image`: its first photo as one file, at most
+ * 1200 px wide — JPEG when the photo is opaque, PNG when it is transparent.
+ */
+export interface ShareImage {
+  /** Public URL, content-hashed. Make it absolute (origin + src) in meta tags. */
+  src: string;
+  width: number;
+  height: number;
+  type: "image/jpeg" | "image/png";
+}
 
 /**
  * A product photo ("<slug>--<n>"): the manifest of a render, plus how the photo was treated and
@@ -76,6 +94,8 @@ export interface PhotoManifest extends ArtManifest {
   credit: string;
   /** Where the original was downloaded from (the picture file, and the page it was on). */
   source: { url: string | null; page: string | null };
+  /** Only on the product's first photo: its share picture (`productShareImage(slug)` finds it). */
+  share?: ShareImage;
   /** Hash of the original and of the build settings: how the build knows the files are current. */
   input: string;
 }
@@ -172,6 +192,22 @@ export function productPhotos(slug: string): PhotoManifest[] {
 /** Every built photo key, sorted. */
 export function photoKeys(): string[] {
   return [...photos.keys()].sort();
+}
+
+/**
+ * The share picture of a product (its first photo, one JPEG or PNG ≤ 1200 px wide) for
+ * `og:image`, or undefined when that photo is not built. Absolute URL: `new URL(share.src, origin)`.
+ */
+export function productShareImage(slug: string): ShareImage | undefined {
+  return productPhotos(slug).find((photo) => photo.share)?.share;
+}
+
+/**
+ * The single file an `<img src>` names when no `<source>` applies (and for anything that wants one
+ * URL): a clay render's PNG, a photo's 720 px WebP (or its largest, when it is narrower).
+ */
+export function artFallbackSrc(art: ArtManifest): string {
+  return art.variants.png ?? (art.variants.webp.find((variant) => variant.w >= 720) ?? art.variants.webp[art.variants.webp.length - 1]).src;
 }
 
 /**

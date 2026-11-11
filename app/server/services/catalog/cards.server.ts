@@ -8,13 +8,13 @@
  *   const used = await getUsedSpotlight(db, ctx.locale, { limit: 4 });                    // listed used units, newest first
  *
  * HOW (one round trip per call, no N+1)
- *   Every card query is ONE SQL statement built from the CTE chain in cardCtes():
+ *   Every card query is ONE SQL statement built from the linear CTE chain in cardCtes():
+ *     [filter CTEs: cat (category subtree), fb/fit (device model), hit (search)]
  *     cv    active variants of published products that pass the product-level filters, ranked so the card
- *           variant (default, else first by sort) is rn = 1
- *     lv    free units per variant (and per bundle component) over sellable, active locations
- *     bn    complete bundle sets
- *     va    the stock state of each variant (0 out · 1 low · 2 in), exactly as getAvailability() decides it
- *     pb    the best state per product
+ *           variant (default, else first by sort) is rn = 1, with free units, low-stock threshold and complete
+ *           bundle sets read by indexed correlated subqueries
+ *     vs    the stock state of each variant (0 out · 1 low · 2 in, exactly as getAvailability() decides it) and
+ *           the best state per product (window)
  *     c     one row per product: card variant price, state, preorder flag, "can be bought now" (avail)
  *   then filters on c, sort + keyset cursor, LIMIT, and — only for the rows of the page — the first picture and
  *   the review summary as correlated subqueries. listCards sends the page and the total COUNT in one db.batch.
@@ -87,67 +87,65 @@ const asList = <T>(value: T | readonly T[] | undefined): T[] => (value === undef
 // ───────────────────────────────────────────────────────────────── SQL building blocks
 
 /**
- * Product-level scope: CTEs the filters need (named, at the top of the WITH clause — D1 refuses deeply nested
- * subqueries, so nothing filter-related is nested inside the chain) and conditions on products (alias p).
+ * Product-level scope: CTEs the filters need (named, at the top of the WITH clause) and conditions on products
+ * (alias p). Each filter CTE is referenced exactly once, from `cv`.
  */
 type Scope = { ctes: SQL[]; where: SQL[] };
 
-/** The CTE chain shared by every card query (see the file header). */
+/**
+ * Free units of one variant over sellable, active locations (NULL when it has no stock rows). `alias` keeps the
+ * nested copies of this subquery apart.
+ */
+const freeUnits = (variantId: SQL, alias: string): SQL => {
+  const sl = sql.raw(`${alias}s`);
+  const loc = sql.raw(`${alias}l`);
+  return sql`(SELECT SUM(MAX(${sl}.on_hand - ${sl}.reserved, 0)) FROM stock_levels AS ${sl} JOIN inventory_locations AS ${loc} ON ${loc}.id = ${sl}.location_id WHERE ${sl}.variant_id = ${variantId} AND ${loc}.is_sellable = 1 AND ${loc}.is_active = 1)`;
+};
+
+/**
+ * The CTE chain shared by every card query (see the file header).
+ *
+ * D1 (workerd's SQLite) refuses a statement whose CTE references fan out too far ("VIEWs and/or subqueries nested
+ * too deep"): every reference to a CTE expands that CTE's whole definition again, MATERIALIZED or not, so a chain
+ * in which CTEs are referenced two or three times each grows exponentially. This chain is LINEAR — every CTE is
+ * referenced once, by the next one — and per-variant stock comes from correlated subqueries (indexed lookups on
+ * stock_levels' primary key), not from extra CTEs.
+ */
 function cardCtes(scope: Scope, now: number): SQL {
   const extra = scope.ctes.length > 0 ? sql`${sql.join(scope.ctes, sql`,\n`)},\n` : sql``;
   return sql`WITH RECURSIVE
-${extra}prod AS MATERIALIZED (
-  SELECT p.id FROM products AS p WHERE p.status = 'published' AND ${andAll(scope.where)}
-),
-cv AS MATERIALIZED (
+${extra}cv AS (
   SELECT v.id, v.product_id, v.price_iqd, v.compare_at_iqd,
     ROW_NUMBER() OVER (PARTITION BY v.product_id ORDER BY v.is_default DESC, v.sort ASC, v.id ASC) AS rn,
-    COUNT(*) OVER (PARTITION BY v.product_id) AS n
+    COUNT(*) OVER (PARTITION BY v.product_id) AS n,
+    ${freeUnits(sql`v.id`, "f")} AS free,
+    (SELECT CASE WHEN COUNT(ts.reorder_point) > 0 THEN SUM(ts.reorder_point) ELSE ${DEFAULT_LOW_STOCK} END
+       FROM stock_levels AS ts JOIN inventory_locations AS tl ON tl.id = ts.location_id
+       WHERE ts.variant_id = v.id AND tl.is_sellable = 1 AND tl.is_active = 1) AS low,
+    (SELECT MIN(COALESCE(${freeUnits(sql`bi.component_variant_id`, "b")}, 0) / MAX(bi.qty, 1))
+       FROM bundle_items AS bi WHERE bi.bundle_variant_id = v.id) AS sets
   FROM variants AS v
-  WHERE v.is_active = 1 AND v.product_id IN (SELECT id FROM prod)
+  JOIN products AS p ON p.id = v.product_id
+  WHERE v.is_active = 1 AND p.status = 'published' AND ${andAll(scope.where)}
 ),
-lv AS MATERIALIZED (
-  SELECT sl.variant_id,
-    SUM(MAX(sl.on_hand - sl.reserved, 0)) AS free,
-    SUM(sl.reorder_point) AS reorder_sum,
-    COUNT(sl.reorder_point) AS reorder_n
-  FROM stock_levels AS sl
-  JOIN inventory_locations AS loc ON loc.id = sl.location_id
-  WHERE loc.is_sellable = 1 AND loc.is_active = 1
-    AND sl.variant_id IN (SELECT id FROM cv UNION SELECT bi.component_variant_id FROM bundle_items AS bi WHERE bi.bundle_variant_id IN (SELECT id FROM cv))
-  GROUP BY sl.variant_id
-),
-bn AS (
-  SELECT bi.bundle_variant_id AS variant_id, MIN(COALESCE(lv.free, 0) / bi.qty) AS free
-  FROM bundle_items AS bi
-  LEFT JOIN lv ON lv.variant_id = bi.component_variant_id
-  WHERE bi.bundle_variant_id IN (SELECT id FROM cv)
-  GROUP BY bi.bundle_variant_id
-),
-va AS MATERIALIZED (
+vs AS (
   SELECT cv.id, cv.product_id, cv.rn, cv.n, cv.price_iqd, cv.compare_at_iqd,
-    CASE
-      WHEN bn.variant_id IS NOT NULL THEN (CASE WHEN bn.free <= 0 THEN 0 WHEN bn.free <= ${DEFAULT_LOW_STOCK} THEN 1 ELSE 2 END)
-      WHEN COALESCE(lv.free, 0) <= 0 THEN 0
-      WHEN lv.free <= (CASE WHEN lv.reorder_n > 0 THEN lv.reorder_sum ELSE ${DEFAULT_LOW_STOCK} END) THEN 1
+    MAX(CASE
+      WHEN cv.sets IS NOT NULL THEN (CASE WHEN cv.sets <= 0 THEN 0 WHEN cv.sets <= ${DEFAULT_LOW_STOCK} THEN 1 ELSE 2 END)
+      WHEN COALESCE(cv.free, 0) <= 0 THEN 0
+      WHEN cv.free <= cv.low THEN 1
       ELSE 2
-    END AS st
+    END) OVER (PARTITION BY cv.product_id) AS best
   FROM cv
-  LEFT JOIN bn ON bn.variant_id = cv.id
-  LEFT JOIN lv ON lv.variant_id = cv.id
-),
-pb AS (
-  SELECT product_id, MAX(st) AS best FROM va GROUP BY product_id
 ),
 c AS (
   SELECT p.id, p.slug, p.kind, p.name, p.short, p.platform_id, p.is_demo,
     COALESCE(p.published_at, p.created_at) AS pub,
     d.id AS variant_id, d.price_iqd, d.compare_at_iqd, d.n AS variant_count,
-    CASE WHEN d.n > 1 THEN pb.best ELSE d.st END AS st,
-    CASE WHEN p.preorder_release_at IS NOT NULL AND p.preorder_release_at > ${now} THEN 1 ELSE 0 END AS pre,
-    CASE WHEN (CASE WHEN d.n > 1 THEN pb.best ELSE d.st END) > 0 OR (p.preorder_release_at IS NOT NULL AND p.preorder_release_at > ${now}) THEN 1 ELSE 0 END AS avail
-  FROM va AS d
-  JOIN pb ON pb.product_id = d.product_id
+    d.best AS st,
+    CASE WHEN COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 ELSE 0 END AS pre,
+    CASE WHEN d.best > 0 OR COALESCE(p.preorder_release_at, 0) > ${now} THEN 1 ELSE 0 END AS avail
+  FROM vs AS d
   JOIN products AS p ON p.id = d.product_id
   WHERE d.rn = 1
 )`;
@@ -230,30 +228,31 @@ function productScope(filters: CardFilters): Scope {
  * the product or one of its active variants — whose MOST SPECIFIC compatibility rule for this model (device model ›
  * generation › platform) is verified or partial. A more specific rule of any status overrides a broader one
  * ("Series S: no disc drive" beats "Xbox Series generation"); unverified and incompatible never qualify.
+ *
+ * `fb` packs both orderings into one number per subject — specificity × 10 + weakness (0 verified, 1 partial,
+ * 2 unverified, 3 incompatible) — so MAX() picks the most specific rule (the unique edge index allows one rule per
+ * subject and target, so there is no tie to break); the subject fits when the remainder is 0 or 1. Each CTE is
+ * referenced once (see cardCtes()).
  */
 function deviceModelCtes(model: string): SQL[] {
   return [
-    sql`dm AS (SELECT id, generation_id, platform_id FROM device_models WHERE slug = ${model})`,
-    sql`fr AS (
-  SELECT r.subject_type, r.subject_id, r.status,
-    CASE r.target_type WHEN 'device_model' THEN 3 WHEN 'generation' THEN 2 ELSE 1 END AS rk
-  FROM compatibility_rules AS r JOIN dm
-    ON (r.target_type = 'device_model' AND r.target_id = dm.id)
-    OR (r.target_type = 'generation' AND r.target_id = dm.generation_id)
-    OR (r.target_type = 'platform' AND r.target_id = dm.platform_id)
-)`,
     sql`fb AS (
-  SELECT fr.subject_type, fr.subject_id, fr.status FROM fr
-  JOIN (SELECT subject_type, subject_id, MAX(rk) AS rk FROM fr GROUP BY subject_type, subject_id) AS top
-    ON top.subject_type = fr.subject_type AND top.subject_id = fr.subject_id AND top.rk = fr.rk
+  SELECT r.subject_type, r.subject_id,
+    MAX(CASE r.target_type WHEN 'device_model' THEN 30 WHEN 'generation' THEN 20 ELSE 10 END
+      + CASE r.status WHEN 'verified' THEN 0 WHEN 'partial' THEN 1 WHEN 'unverified' THEN 2 ELSE 3 END) AS k
+  FROM compatibility_rules AS r
+  JOIN device_models AS dm ON dm.slug = ${model}
+  WHERE (r.target_type = 'device_model' AND r.target_id = dm.id)
+     OR (r.target_type = 'generation' AND r.target_id = dm.generation_id)
+     OR (r.target_type = 'platform' AND r.target_id = dm.platform_id)
+  GROUP BY r.subject_type, r.subject_id
 )`,
     sql`fit(product_id) AS (
-  SELECT subject_id FROM fb WHERE subject_type = 'product' AND status IN ('verified', 'partial')
+  SELECT CASE WHEN fb.subject_type = 'product' THEN fb.subject_id ELSE v.product_id END
+  FROM fb LEFT JOIN variants AS v ON fb.subject_type = 'variant' AND v.id = fb.subject_id AND v.is_active = 1
+  WHERE fb.k % 10 <= 1 AND (fb.subject_type = 'product' OR v.id IS NOT NULL)
   UNION
-  SELECT v.product_id FROM fb JOIN variants AS v ON v.id = fb.subject_id
-  WHERE fb.subject_type = 'variant' AND fb.status IN ('verified', 'partial') AND v.is_active = 1
-  UNION
-  SELECT p.id FROM products AS p JOIN dm ON p.device_model_id = dm.id
+  SELECT p.id FROM products AS p JOIN device_models AS dm ON dm.id = p.device_model_id WHERE dm.slug = ${model}
 )`,
   ];
 }

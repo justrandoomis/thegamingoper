@@ -1,41 +1,54 @@
 {
   "key": "xbox-wireless-headset--1",
   "view": "hero",
-  "width": 577,
-  "height": 579,
-  "aspect": 0.9965,
+  "width": 898,
+  "height": 1011,
+  "aspect": 0.8882,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/xbox-wireless-headset/1-240.1f2fa0b5.avif"
+        "src": "/products/xbox-wireless-headset/1-240.638d65c8.avif"
       },
       {
         "w": 480,
-        "src": "/products/xbox-wireless-headset/1-480.512545be.avif"
+        "src": "/products/xbox-wireless-headset/1-480.ca2a25a3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-wireless-headset/1-720.e0ced2eb.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/xbox-wireless-headset/1-240.26decff3.webp"
+        "src": "/products/xbox-wireless-headset/1-240.dbe12508.webp"
       },
       {
         "w": 480,
-        "src": "/products/xbox-wireless-headset/1-480.a454bd87.webp"
+        "src": "/products/xbox-wireless-headset/1-480.41a6c705.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/xbox-wireless-headset/1-720.83d1021a.webp"
       }
-    ],
-    "png": "/products/xbox-wireless-headset/1-577.c192ae76.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAwAwCdASoUABQAPxF6sVIsJ6SisBgIAYAiCWkAACSoc4MwAP7qNQAmnAMfNiU/YKaQF5D8+RNqFK9Z+KOBhbCpMMnuklwAAAA=",
-  "dominant": "#282828",
-  "transparent": false,
-  "background": "#000000",
+  "share": {
+    "src": "/products/xbox-wireless-headset/1-898.a2b4c169.png",
+    "width": 898,
+    "height": 1011,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhQBAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSH8AAAART6CgbRsWl8bfIiJA+5dX4LS29rZ57tTpGaBCoRRYUFiZwDBioaLpoe7/vLI9Q0T/J4Cul+/NteLa1Csr+bsPbaUnlLhAPoXKB8oQihCofMgioFw7+yIEcllW4gOliMgEzmJruDf8IWnQoBp2QCHmYzxAzdz4OKD1sG7hGrQAAFZQOCBuAAAAEAQAnQEqEgAUAD8RgLhVrCglIygIAYAiCWkAA+K5ECFXbX0frrCKMwAA/oOwJMrlqpDmOREh+ZMmaCBC4CNESDWvOJSs9Wx58f8XNYFDGKR/XDJSbJqeZruw0ejRqMy/5CS5SQY7AL4JZ79oAAA=",
+  "dominant": "#373737",
+  "transparent": true,
+  "background": null,
   "kind": "hero",
   "credit": "Microsoft",
   "source": {
-    "url": "https://cms-assets.xboxservices.com/assets/80/45/8045f5b9-ba9a-4595-b44f-6b0f32b8c95d.jpg?n=465582_Gallery_1_1056x594.jpg",
-    "page": "https://www.xbox.com/en-US/accessories/headsets/xbox-wireless-headset"
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/465582_Image-0_1920x1080?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/d/xbox-wireless-headset/9203q8w23lhn"
   },
-  "input": "730e13cb3002c9c6"
+  "input": "cb2e4dd54ec56268"
 }

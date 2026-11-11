@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/playstation-store-gift-card/1-1440.e95137ac.webp"
       }
-    ],
-    "png": "/products/playstation-store-gift-card/1-720.c4ba9ac0.png"
+    ]
+  },
+  "share": {
+    "src": "/products/playstation-store-gift-card/1-1200.84a545d3.jpg",
+    "width": 1200,
+    "height": 1200,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAQBACdASoUABQAPxFytFKsJiUisBgIAYAiCWIAvzgQ67ZjgSKz2vC2DAD+53C+xLxGWsZ3g1yY0++BJn/NFZiEo7HpchmlZbZl08ehO/CtMIxDmlAtNWPSw3DXS9m5mXAAAA==",
   "dominant": "#064798",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps-store-credit-image-block-01-en-21oct21?$1600px$",
     "page": "https://www.playstation.com/en-ae/playstation-gift-cards/"
   },
-  "input": "a4b06600cfa7a926"
+  "input": "250663634c67b9a0"
 }

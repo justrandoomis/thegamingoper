@@ -19,9 +19,9 @@
   },
   "highlights": [
     {
-      "ar": "معارك أونلاين حتى 64 لاعباً مع مركبات برية وجوية وبحرية.",
-      "en": "Online battles for up to 64 players with land, air and sea vehicles.",
-      "ckb": "شەڕی ئۆنلاین تا 64 یاریزان لەگەڵ ئامرازی وشکانی، ئاسمانی و دەریایی."
+      "ar": "معارك أونلاين حتى 64 لاعباً مع دبابات ومروحيات وطائرات مقاتلة.",
+      "en": "Online battles for up to 64 players with tanks, helicopters and fighter jets.",
+      "ckb": "شەڕی ئۆنلاین تا 64 یاریزان لەگەڵ تانک، هەلیکۆپتەر و فڕۆکەی جەنگی."
     },
     {
       "ar": "حملة قصصية للاعب الواحد، وخريطة Siege of Cairo من بين خرائطها.",
@@ -29,9 +29,9 @@
       "ckb": "حەملەی چیرۆکی تاکەکەسی، و نەخشەی Siege of Cairo لە نێو نەخشەکانیدایە."
     },
     {
-      "ar": "يحتاج اتصال إنترنت، واللعب الجماعي يحتاج PlayStation Plus أو اشتراك Game Pass.",
-      "en": "Needs an internet connection; multiplayer needs PlayStation Plus or a Game Pass subscription.",
-      "ckb": "پێویستی بە ئینتەرنێت هەیە؛ یاری بەکۆمەڵ پێویستی بە PlayStation Plus یان بەشداریکردنی Game Pass هەیە."
+      "ar": "تحتاج اتصال إنترنت للعب وحساب EA، واللعب الجماعي يحتاج PlayStation Plus أو Game Pass Essential أو أعلى.",
+      "en": "Needs an internet connection to play and an EA account; multiplayer needs PlayStation Plus or Game Pass Essential or higher.",
+      "ckb": "بۆ یاریکردن پێویستی بە ئینتەرنێت و هەژماری EA هەیە؛ یاری بەکۆمەڵ پێویستی بە PlayStation Plus یان Game Pass Essential یان بەرزتر هەیە."
     },
     {
       "ar": "نصوص عربية في القوائم والترجمة، بدون دبلجة عربية.",
@@ -252,7 +252,11 @@
     { "url": "https://en.wikipedia.org/wiki/Battlefield_6", "title": "Battlefield 6", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Battlefield Studios, publisher EA, platforms PS5/Xbox Series X|S/Windows, release 10 Oct 2025, single-player and multiplayer" },
     { "url": "https://www.gamespot.com/articles/battlefield-6-preorder-guide-ps5-xbox-physical-edition-retailer-bonuses/1100-6533616/", "title": "Battlefield 6 preorder guide", "publisher": "GameSpot", "retrieved": "2026-11-11", "supports": "standard physical edition for PS5 and Xbox Series X" },
     { "url": "https://www.amazon.com/Battlefield-Standard-EN-FR-Xbox-x/dp/B0FJXZYXS4", "title": "Battlefield 6 Standard Edition (Xbox Series X)", "publisher": "Amazon US (publisher listing)", "retrieved": "2026-11-11", "supports": "Standard Edition disc for Xbox Series X contains the full game" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" },
+    { "url": "https://help.ea.com/en/articles/battlefield/battlefield-6/game-of-the-year/", "title": "Battlefield 6 Game of the Year edition: what's included and how to get it", "publisher": "EA Help", "retrieved": "2026-11-11", "supports": "Game of the Year Edition available from 13 October 2026 with the base game as a download plus extra content; Phantom Edition no longer sold" },
+    { "url": "https://www.ea.com/games/battlefield/battlefield-6/faq", "title": "Battlefield 6 FAQ", "publisher": "Electronic Arts", "retrieved": "2026-11-11", "supports": "an internet connection is necessary to download critical updates and play; EA account needed; single-player campaign" },
+    { "url": "https://store.steampowered.com/app/2807960/", "title": "Battlefield 6 — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: release 10 Oct 2025, Battlefield Studios / EA, PEGI 16 and ESRB M, Arabic interface and subtitles without Arabic audio" },
+    { "url": "https://store.steampowered.com/app/3028330/", "title": "Battlefield REDSEC — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "Battlefield REDSEC is a separate free-to-play game" }
   ],
   "notes": {
     "ar": "صدرت Game of the Year Edition رقمياً في 13 تشرين الأول 2026 مع محتوى إضافي؛ القرص الفيزيائي هو Standard Edition. طور Battlefield REDSEC لعبة مجانية منفصلة.",
@@ -260,10 +264,11 @@
     "ckb": "Game of the Year Edition لەگەڵ ناوەڕۆکی زیادە لە 13ی تشرینی یەکەمی 2026 بە دیجیتاڵی دەرچوو؛ دیسکی فیزیکی Standard Edition ە. Battlefield REDSEC یارییەکی بێبەرامبەری جیاوازە."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Arabic support differs between official pages: PlayStation Support lists Arabic text, the Microsoft Store lists Arabic interface, and the UAE PlayStation Store lists no Arabic.",
+      "Arabic on PS5: PlayStation Support lists Arabic text, and the Microsoft Store and Steam list Arabic for Xbox and PC, but the UK, US and UAE PlayStation Store pages list nine languages without Arabic.",
+      "The Xbox Series X disc is confirmed by retailer listings (Amazon, Target, Best Buy), not by an official EA or Microsoft page.",
       "Install size not recorded: the Microsoft Store figure (about 197 GB) seems to cover the shared Battlefield package, not this game alone.",
       "No EAN/UPC barcode recorded."
     ]

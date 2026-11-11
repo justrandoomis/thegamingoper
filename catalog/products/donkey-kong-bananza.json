@@ -27,7 +27,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "17 تموز 2025", "en": "17 July 2025", "ckb": "17ی تەممووزی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "9.0 GB", "en": "9.0 GB", "ckb": "9.0 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–2 على جهاز واحد", "en": "1–2 on one system", "ckb": "1–2 لەسەر یەک ئامێر" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E10+ (عنف خيالي، مشتريات داخل اللعبة)", "en": "PEGI 7 · ESRB E10+ (Fantasy Violence, In-Game Purchases)", "ckb": "PEGI 7 · ESRB E10+ (توندوتیژیی خەیاڵی، کڕینی ناو یاری)" } },
@@ -42,7 +42,7 @@
   "variants": [
     {
       "sku": "NS2G-DK-BANANZA",
-      "title": { "ar": "Donkey Kong Bananza — نسخة فعلية لـ Nintendo Switch 2", "en": "Donkey Kong Bananza — Nintendo Switch 2 physical edition", "ckb": "Donkey Kong Bananza — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Donkey Kong Bananza — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Donkey Kong Bananza — Nintendo Switch 2 physical edition", "ckb": "Donkey Kong Bananza — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905576"],
       "isDefault": true,
@@ -143,16 +143,20 @@
   ],
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/donkey-kong-bananza-switch-2/", "title": "Donkey Kong Bananza – Nintendo Switch 2 Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "Switch 2 exclusive, release date, ESRB E10+ and descriptors, 1-2 players, supported languages, Save Data Cloud, amiibo, HDR, DLC bundle" },
-    { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-donkey-kong-bananza-121485/", "title": "Donkey Kong Bananza – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905576, box art" },
+    { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-2-donkey-kong-bananza-121485/", "title": "Donkey Kong Bananza – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905576, box art (ESRB E10+, no Game-Key Card label); the listing carries no Game-Key Card download notice" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Donkey-Kong-Bananza-2785804.html", "title": "Donkey Kong Bananza | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, download size 9.0 GB, smashing gameplay, Bananza transformations, DK Island & Emerald Rush DLC sold separately, Donkey Kong & Pauline amiibo unlocks the Diva Dress" },
     { "url": "https://en.wikipedia.org/wiki/Donkey_Kong_Bananza", "title": "Donkey Kong Bananza", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Nintendo EPD, release July 17, 2025, co-op with a second player as Pauline, GameShare to another Switch 2 or locally to an original Switch" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Donkey%20Kong%20Bananza", "title": "PEGI search: Donkey Kong Bananza", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 7 (violence, in-game purchases) for Nintendo Switch 2, European release 17/07/2025" },
+    { "url": "https://www.nintendo.com/en-gb/Hardware/Nintendo-Switch-2/GameShare/Nintendo-Switch-2-GameShare-2785626.html", "title": "Nintendo Switch 2 GameShare", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "Donkey Kong Bananza can be shared locally and online via GameChat; an original Nintendo Switch can only receive shared games over local wireless" },
+    { "url": "https://www.ign.com/articles/pokemon-pokopia-looks-to-be-a-70-game-key-card-release-but-no-nintendo-hasnt-broken-its-promise-around-games-it-develops", "title": "Fans Claim Broken Promises After $70 Pokémon Pokopia Confirmed as First Nintendo-Published Game-Key Card Release", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "independent check of the format: Nintendo said it had no plans to use Game-Key Cards for Nintendo-developed games, and Pokopia (announced November 2025) was the first Nintendo-published Game-Key Card release" },
+    { "url": "https://www.upcitemdb.com/upc/45496905576", "title": "UPC 045496905576 - Donkey Kong Bananza - Nintendo Switch 2", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905576 is listed by US retailers for Donkey Kong Bananza – Nintendo Switch 2" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Full game card status is inferred from Nintendo's official box art (no game-key card label); no Nintendo page states it in words",
+      "No Nintendo page says in words that the card holds the full game; this rests on the cover (no Game-Key Card label), the US physical listing (no Game-Key Card notice) and Nintendo's stated policy for its own games (IGN)",
       "European EAN barcode not found on an official page"
     ]
   }

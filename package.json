@@ -23,7 +23,8 @@
     "logo": "node scripts/logo/trace.mjs && node scripts/logo/assets.mjs",
     "icons:check": "node scripts/icons.mjs --check",
     "lint:design": "node scripts/lint-design.mjs",
-    "catalog:validate": "node scripts/products/validate.mjs"
+    "catalog:validate": "node scripts/products/validate.mjs",
+    "catalog:images": "node scripts/products/images.mjs"
   },
   "dependencies": {
     "@fontsource-variable/kufam": "^5.3.0",

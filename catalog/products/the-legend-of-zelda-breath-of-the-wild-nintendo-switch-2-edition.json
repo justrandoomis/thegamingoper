@@ -25,12 +25,13 @@
     { "ar": "اللعبة كاملة على بطاقة اللعبة (لعبة Switch + حزمة ترقية Switch 2)، وليست Game-Key Card", "en": "Full game on the card (Switch game + Switch 2 upgrade pack) — not a Game-Key Card", "ckb": "تەواوی یارییەکە لەسەر کارتەکەیە (یاریی Switch + پاکێجی نوێکردنەوەی Switch 2) — Game-Key Card نییە" },
     { "ar": "دقة أعلى، معدل إطارات أفضل، HDR وتحميل أسرع على Switch 2", "en": "Higher resolution, better frame rate, HDR and faster loading on Switch 2", "ckb": "ڕوونیی بەرزتر، فرەیمڕەیتی باشتر، HDR و بارکردنی خێراتر لەسەر Switch 2" },
     { "ar": "خانة حفظ إضافية وتوافق مع ZELDA NOTES على الهاتف", "en": "Extra save slot and ZELDA NOTES support on your phone", "ckb": "شوێنی پاشەکەوتی زیادە و پشتگیریی ZELDA NOTES لەسەر مۆبایل" },
+    { "ar": "إضافة Expansion Pass غير مشمولة وتُباع منفصلة", "en": "The Expansion Pass DLC is not included (sold separately)", "ckb": "زیادکراوی Expansion Pass لەگەڵیدا نییە و بە جیا دەفرۆشرێت" },
     { "ar": "لاعب واحد · PEGI 12 · لا تدعم العربية", "en": "Single player · PEGI 12 · No Arabic", "ckb": "یەک یاریزان · PEGI 12 · عەرەبی تێدا نییە" }
   ],
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 (البطاقة تشغّل نسخة Switch العادية على Switch الأول)", "en": "Nintendo Switch 2 (the card runs the regular Switch version on a Switch 1)", "ckb": "Nintendo Switch 2 (کارتەکە لەسەر Switch ی یەکەم وەشانی ئاسایی Switch کار پێدەکات)" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "5 حزيران 2025", "en": "5 June 2025", "ckb": "5ی حوزەیرانی 2025" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تضم لعبة Switch وحزمة ترقية Switch 2 Edition", "en": "Game card with the Switch game and the Switch 2 Edition upgrade pack", "ckb": "کارتی یاری کە یاریی Switch و پاکێجی نوێکردنەوەی Switch 2 Edition ی تێدایە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تضم لعبة Switch وحزمة ترقية Switch 2 Edition", "en": "Game card with the Switch game and the Switch 2 Edition upgrade pack", "ckb": "کارتی یاری کە یاریی Switch و پاکێجی نوێکردنەوەی Switch 2 Edition ی تێدایە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "24.1 GB على Nintendo Switch 2 · 14.4 GB على Nintendo Switch", "en": "24.1 GB on Nintendo Switch 2 · 14.4 GB on Nintendo Switch", "ckb": "24.1 GB لەسەر Nintendo Switch 2 · 14.4 GB لەسەر Nintendo Switch" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1", "ckb": "یەک یاریزان" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 12 · ESRB E10+ (عنف خيالي، إيحاءات خفيفة، تناول الكحول، مشتريات داخل اللعبة)", "en": "PEGI 12 · ESRB E10+ (Fantasy Violence, Mild Suggestive Themes, Use of Alcohol, In-Game Purchases)", "ckb": "PEGI 12 · ESRB E10+ (توندوتیژیی خەیاڵی، ئاماژەی سووک، بەکارهێنانی ئەلکهول، کڕینی ناو یاری)" } },
@@ -44,7 +45,7 @@
   "variants": [
     {
       "sku": "NS2G-ZELDA-BOTW",
-      "title": { "ar": "Breath of the Wild – Nintendo Switch 2 Edition (نسخة فعلية)", "en": "Breath of the Wild – Nintendo Switch 2 Edition (physical)", "ckb": "Breath of the Wild – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "Breath of the Wild – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Breath of the Wild – Nintendo Switch 2 Edition (physical)", "ckb": "Breath of the Wild – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905774"],
       "isDefault": true,
@@ -143,7 +144,10 @@
     { "url": "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition-switch-2/", "title": "The Legend of Zelda: Breath of the Wild – Nintendo Switch 2 Edition", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date, game file size (Switch 14.4 GB, Switch 2 24.1 GB), single player, ESRB E10+ and descriptors, languages, Save Data Cloud, amiibo, HDR, developer and publisher, upgrade pack included with Nintendo Switch Online + Expansion Pack" },
     { "url": "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition-121508/", "title": "The Legend of Zelda: Breath of the Wild – Nintendo Switch 2 Edition (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496905774, box art" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-Edition/The-Legend-of-Zelda-Breath-of-the-Wild-Nintendo-Switch-2-Edition-2787250.html", "title": "The Legend of Zelda: Breath of the Wild – Nintendo Switch 2 Edition", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, download size 24.0 GB, higher resolution, frame rate, HDR, faster loading, extra save slot, ZELDA NOTES, card plays the Switch version in a Nintendo Switch, upgrade pack, screenshots" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; this cover instead says it includes the Switch game and the upgrade pack" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; this cover instead says it includes the Switch game and the upgrade pack" },
+    { "url": "https://pegi.info/search-pegi?q=Breath%20of%20the%20Wild", "title": "PEGI search: The Legend of Zelda: Breath of the Wild – Nintendo Switch 2 Edition", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 12 (violence, in-game purchases) for the Nintendo Switch 2 Edition, European release 05/06/2025" },
+    { "url": "https://www.rpgsite.net/feature/17453-every-nintendo-switch-2-rpg-physical-release-complete-on-cartridge-no-game-key-cards-or-codes-needed", "title": "Every Nintendo Switch 2 RPG Physical Release Complete on Cartridge", "publisher": "RPG Site", "retrieved": "2026-11-11", "supports": "independent check of the format: the game and the upgrade pack are on the cartridge; Nintendo confirmed the DLC is not included" },
+    { "url": "https://www.upcitemdb.com/upc/45496905774", "title": "UPC 045496905774 - The Legend of Zelda: Breath of the Wild - Nintendo Switch 2 Edition", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496905774 is listed by US retailers for this edition" }
   ],
   "notes": {
     "ar": "من يملك نسخة Nintendo Switch الأصلية يمكنه شراء حزمة الترقية رقمياً بدلاً من هذه النسخة، وهي مشمولة لمشتركي Nintendo Switch Online + Expansion Pack.",
@@ -151,12 +155,9 @@
     "ckb": "ئەوانەی وەشانی ڕەسەنی Nintendo Switch یان هەیە دەتوانن لە جیاتی ئەمە پاکێجی نوێکردنەوەی دیجیتاڵی بکڕن؛ بۆ بەشداربووانی Nintendo Switch Online + Expansion Pack بەخۆڕاییە."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Whether the Expansion Pass DLC is included is not stated on the pages read (assume not included)",
-      "Size is 24.1 GB on Nintendo's US store and 24.0 GB on Nintendo UK (rounding)",
-      "Full game card status inferred from the official cover (no game-key card label)",
       "European EAN barcode not found on an official page"
     ]
   }

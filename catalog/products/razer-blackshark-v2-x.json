@@ -5,11 +5,7 @@
   "platform": "multi",
   "brand": "Razer",
   "status": "available",
-  "name": {
-    "ar": "سماعة Razer BlackShark V2 X",
-    "en": "Razer BlackShark V2 X",
-    "ckb": "هێدسێتی Razer BlackShark V2 X"
-  },
+  "name": { "ar": "سماعة Razer BlackShark V2 X", "en": "Razer BlackShark V2 X", "ckb": "هێدسێتی Razer BlackShark V2 X" },
   "short": {
     "ar": "سلكية 3.5 ملم · 240 غرام · PS5 وXbox وSwitch وPC",
     "en": "Wired 3.5 mm · 240 g · PS5, Xbox, Switch, PC",
@@ -31,11 +27,7 @@
       "en": "Works with PS5 and Xbox through the controller's headset jack",
       "ckb": "لەگەڵ PS5 و Xbox کار دەکات لە ڕێگەی کونی هێدسێتی دەسکەکەوە"
     },
-    {
-      "ar": "سماعات Razer TriForce بقطر 50 ملم",
-      "en": "50 mm Razer TriForce drivers",
-      "ckb": "دەنگدەری Razer TriForce بە قەبارەی 50 ملم"
-    },
+    { "ar": "سماعات Razer TriForce بقطر 50 ملم", "en": "50 mm Razer TriForce drivers", "ckb": "دەنگدەری Razer TriForce بە قەبارەی 50 ملم" },
     {
       "ar": "مايكروفون HyperClear أحادي الاتجاه قابل للثني",
       "en": "Bendable HyperClear cardioid microphone",
@@ -56,37 +48,57 @@
     {
       "key": "drivers",
       "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" },
-      "value": { "ar": "Razer TriForce بقطر 50 ملم، 12 هرتز حتى 28 كيلوهرتز، 32 أوم", "en": "Razer TriForce 50 mm, 12 Hz–28 kHz, 32 ohms", "ckb": "Razer TriForce 50 ملم، 12 هێرتز تا 28 کیلۆهێرتز، 32 ئۆم" }
+      "value": {
+        "ar": "Razer TriForce بقطر 50 ملم، 12 هرتز حتى 28 كيلوهرتز، 32 أوم",
+        "en": "Razer TriForce 50 mm, 12 Hz–28 kHz, 32 ohms",
+        "ckb": "Razer TriForce 50 ملم، 12 هێرتز تا 28 کیلۆهێرتز، 32 ئۆم"
+      }
     },
     {
       "key": "microphone",
       "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
-      "value": { "ar": "Razer HyperClear أحادي الاتجاه، 100 هرتز حتى 10 كيلوهرتز", "en": "Razer HyperClear cardioid (unidirectional), 100 Hz–10 kHz", "ckb": "Razer HyperClear یەک ئاڕاستە، 100 هێرتز تا 10 کیلۆهێرتز" }
+      "value": {
+        "ar": "Razer HyperClear أحادي الاتجاه، 100 هرتز حتى 10 كيلوهرتز",
+        "en": "Razer HyperClear cardioid (unidirectional), 100 Hz–10 kHz",
+        "ckb": "Razer HyperClear یەک ئاڕاستە، 100 هێرتز تا 10 کیلۆهێرتز"
+      }
     },
     {
       "key": "noise",
       "label": { "ar": "عزل الضوضاء", "en": "Noise isolation", "ckb": "دابڕینی دەنگی دەرەوە" },
-      "value": { "ar": "عزل سلبي متقدم بأكواب مغلقة", "en": "Advanced passive noise cancellation, closed earcups", "ckb": "دابڕینی پاسیڤی پێشکەوتوو بە گوێگری داخراو" }
+      "value": {
+        "ar": "عزل سلبي متقدم بأكواب مغلقة",
+        "en": "Advanced passive noise cancellation, closed earcups",
+        "ckb": "دابڕینی پاسیڤی پێشکەوتوو بە گوێگری داخراو"
+      }
     },
     {
       "key": "controls",
       "label": { "ar": "التحكم", "en": "Controls", "ckb": "کۆنترۆڵ" },
-      "value": { "ar": "عجلة الصوت وزر كتم المايكروفون على السماعة", "en": "Volume wheel and mic mute toggle on the earcup", "ckb": "خولگەی دەنگ و دوگمەی بێدەنگکردنی مایک لەسەر گوێگرەکە" }
+      "value": {
+        "ar": "عجلة الصوت وزر كتم المايكروفون على السماعة",
+        "en": "Volume wheel and mic mute toggle on the earcup",
+        "ckb": "خولگەی دەنگ و دوگمەی بێدەنگکردنی مایک لەسەر گوێگرەکە"
+      }
     },
     {
       "key": "surround",
       "label": { "ar": "الصوت المحيطي", "en": "Surround sound", "ckb": "دەنگی دەوروبەر" },
-      "value": { "ar": "7.1 على Windows 11 فقط؛ Windows Sonic على Xbox", "en": "7.1 on Windows 11 only; Windows Sonic on Xbox", "ckb": "7.1 تەنها لەسەر Windows 11؛ Windows Sonic لەسەر Xbox" }
+      "value": {
+        "ar": "7.1 على Windows 11 فقط؛ Windows Sonic على Xbox",
+        "en": "7.1 on Windows 11 only; Windows Sonic on Xbox",
+        "ckb": "7.1 تەنها لەسەر Windows 11؛ Windows Sonic لەسەر Xbox"
+      }
     },
-    {
-      "key": "weight",
-      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
-      "value": { "ar": "240 غرام", "en": "240 g", "ckb": "240 گرام" }
-    },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "240 غرام", "en": "240 g", "ckb": "240 گرام" } },
     {
       "key": "warranty",
       "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
-      "value": { "ar": "حتى سنتين حسب Razer (يختلف حسب بلد الشراء)", "en": "Up to 2 years per Razer (varies by country of purchase)", "ckb": "تا 2 ساڵ بەپێی Razer (بەپێی وڵاتی کڕین دەگۆڕێت)" }
+      "value": {
+        "ar": "حتى سنتين حسب Razer (يختلف حسب بلد الشراء)",
+        "en": "Up to 2 years per Razer (varies by country of purchase)",
+        "ckb": "تا 2 ساڵ بەپێی Razer (بەپێی وڵاتی کڕین دەگۆڕێت)"
+      }
     }
   ],
   "variants": [
@@ -132,7 +144,11 @@
     {
       "deviceModel": "ps5",
       "status": "verified",
-      "note": { "ar": "عبر منفذ 3.5 ملم في ذراع DualSense.", "en": "Through the 3.5 mm jack on the DualSense controller.", "ckb": "لە ڕێگەی کونی 3.5 ملمی دەسکی DualSense." },
+      "note": {
+        "ar": "عبر منفذ 3.5 ملم في ذراع DualSense.",
+        "en": "Through the 3.5 mm jack on the DualSense controller.",
+        "ckb": "لە ڕێگەی کونی 3.5 ملمی دەسکی DualSense."
+      },
       "source": "https://www.razer.com/console-headsets/razer-blackshark-v2-x-for-playstation-xbox"
     },
     {
@@ -150,13 +166,21 @@
     {
       "deviceModel": "xbox-series-x",
       "status": "verified",
-      "note": { "ar": "عبر منفذ 3.5 ملم في ذراع Xbox.", "en": "Through the Xbox controller's 3.5 mm jack.", "ckb": "لە ڕێگەی کونی 3.5 ملمی دەسکی Xbox." },
+      "note": {
+        "ar": "عبر منفذ 3.5 ملم في ذراع Xbox.",
+        "en": "Through the Xbox controller's 3.5 mm jack.",
+        "ckb": "لە ڕێگەی کونی 3.5 ملمی دەسکی Xbox."
+      },
       "source": "https://www.razer.com/console-headsets/razer-blackshark-v2-x-for-playstation-xbox"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "verified",
-      "note": { "ar": "عبر منفذ 3.5 ملم في ذراع Xbox.", "en": "Through the Xbox controller's 3.5 mm jack.", "ckb": "لە ڕێگەی کونی 3.5 ملمی دەسکی Xbox." },
+      "note": {
+        "ar": "عبر منفذ 3.5 ملم في ذراع Xbox.",
+        "en": "Through the Xbox controller's 3.5 mm jack.",
+        "ckb": "لە ڕێگەی کونی 3.5 ملمی دەسکی Xbox."
+      },
       "source": "https://www.razer.com/console-headsets/razer-blackshark-v2-x-for-playstation-xbox"
     },
     {
@@ -228,11 +252,7 @@
       "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h06/h71/9081232457758/Phoenix-Gallery-Blackshark-V2-X-1500x1000-3.jpg",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240100-R3U1",
       "kind": "angle",
-      "alt": {
-        "ar": "السماعة من الأمام",
-        "en": "Headset from the front",
-        "ckb": "هێدسێتەکە لە پێشەوە"
-      },
+      "alt": { "ar": "السماعة من الأمام", "en": "Headset from the front", "ckb": "هێدسێتەکە لە پێشەوە" },
       "credit": "Razer",
       "width": 1500,
       "height": 1000,
@@ -244,11 +264,7 @@
       "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h31/h51/9081230983198/Phoenix-Gallery-Blackshark-V2-X-1500x1000-2.jpg",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240100-R3U1",
       "kind": "angle",
-      "alt": {
-        "ar": "السماعة من الجانب مع الكابل",
-        "en": "Side view with the cable",
-        "ckb": "لە تەنیشتەوە لەگەڵ کێبڵەکە"
-      },
+      "alt": { "ar": "السماعة من الجانب مع الكابل", "en": "Side view with the cable", "ckb": "لە تەنیشتەوە لەگەڵ کێبڵەکە" },
       "credit": "Razer",
       "width": 1500,
       "height": 1000,
@@ -257,13 +273,13 @@
     {
       "key": "razer-blackshark-v2-x--4",
       "file": ".cache/product-images/razer-blackshark-v2-x/4.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h98/h05/9368738824222/220218-blackshark-v2-x-white-1500x1000-1.jpg",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h3f/h08/9368738791454/220218-blackshark-v2-x-white-1500x1000-2.jpg",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240700-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X باللون الأبيض",
-        "en": "Razer BlackShark V2 X in white",
-        "ckb": "Razer BlackShark V2 X بە ڕەنگی سپی"
+        "ar": "سماعة Razer BlackShark V2 X باللون الأبيض مع المايكروفون من زاوية مائلة",
+        "en": "Razer BlackShark V2 X in white with mic, angled view",
+        "ckb": "Razer BlackShark V2 X بە ڕەنگی سپی لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
       },
       "credit": "Razer",
       "width": 1500,
@@ -273,13 +289,13 @@
     {
       "key": "razer-blackshark-v2-x--5",
       "file": ".cache/product-images/razer-blackshark-v2-x/5.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h36/h95/9446069469214/221015-blackshark-v2-x-quartz-1500x1000-1.jpg",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hd4/ha5/9446069927966/221015-blackshark-v2-x-quartz-1500x1000-4.jpg",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240800-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X بلون Quartz الوردي",
-        "en": "Razer BlackShark V2 X in Quartz pink",
-        "ckb": "Razer BlackShark V2 X بە ڕەنگی پەمەیی Quartz"
+        "ar": "سماعة Razer BlackShark V2 X بلون Quartz الوردي مع المايكروفون من زاوية مائلة",
+        "en": "Razer BlackShark V2 X in Quartz pink with mic, angled view",
+        "ckb": "Razer BlackShark V2 X بە ڕەنگی پەمەیی Quartz لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
       },
       "credit": "Razer",
       "width": 1500,
@@ -289,13 +305,13 @@
     {
       "key": "razer-blackshark-v2-x--6",
       "file": ".cache/product-images/razer-blackshark-v2-x/6.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h86/h4b/9242259193886/210928-blackshark-v2-x-green-1500x1000-1.jpg",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hf5/h02/9242258997278/210928-blackshark-v2-x-green-1500x1000-2.jpg",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240600-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X باللون الأخضر",
-        "en": "Razer BlackShark V2 X in green",
-        "ckb": "Razer BlackShark V2 X بە ڕەنگی سەوز"
+        "ar": "سماعة Razer BlackShark V2 X باللون الأخضر مع المايكروفون من زاوية مائلة",
+        "en": "Razer BlackShark V2 X in green with mic, angled view",
+        "ckb": "Razer BlackShark V2 X بە ڕەنگی سەوز لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
       },
       "credit": "Razer",
       "width": 1500,
@@ -309,7 +325,7 @@
       "title": "Razer BlackShark V2 X (overview, tech specs and colour pages)",
       "publisher": "Razer",
       "retrieved": "2026-11-11",
-      "supports": "specs, 240 g, 3.5 mm connection, compatibility list (PC, Mac, PS5, Xbox, Switch, Steam Deck, mobile), 7.1 on Windows 11 only, colours and US model numbers, warranty up to 2 years, images"
+      "supports": "specs (50 mm TriForce drivers, 12 Hz–28 kHz, 32 ohms, HyperClear cardioid mic 100 Hz–10 kHz, 1.3 m cable, 240 g), 3.5 mm connection, compatibility (PC, Mac, PS5, Xbox, Nintendo Switch, Steam Deck, mobile), 7.1 surround on Windows 11 only, colours and US model numbers (Black 0100, Green 0600, White 0700, Quartz 0800), up to 2 years warranty, images"
     },
     {
       "url": "https://www.razer.com/console-headsets/razer-blackshark-v2-x-for-playstation-xbox",
@@ -332,7 +348,7 @@
     "ckb": "Razer هەروەها وەشانی تایبەتی BlackShark V2 X for PlayStation و for Xbox دەفرۆشێت بە هەمان دیزاینی وایەری. هێدسێتەکە پێویستی بە بارگاوی و ئەپ نییە؛ تەنها بە دەسک یان ئامێرەکەوە بیبەستە."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Exact launch date (on sale by August 2020)",

@@ -160,4 +160,4 @@ Prices and names on that page are examples and the page says so.
 - Fallback-font metrics cover Windows (Segoe UI) only.
 - The sprite has no bag-plus symbol: `<AddGlyph>` draws the DESIGN.md bag-plus inline. Platform pictograms are
   inline too (`PlatformGlyph`) — both should move to the icon sprite.
-- Not built here (other owners): header, tab bar, sheets/dialog shells, toasts, product card, tables, uploader.
+- Built by other owners and documented apart: overlays, navigation and states (sheets, dialogs, menus, toasts, tabs, tables, empty and error states) in `docs/ui/overlays.md`; commerce components (product card, buy bar, gallery, cart line, order summary, proof uploader, wallet) in `docs/ui/commerce.md`; header, tab bar and footer in `app/routes/storefront/shell/README.md`.

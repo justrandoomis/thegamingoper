@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/steam-deck-lcd/3-1440.5a101861.webp"
       }
-    ],
-    "png": "/products/steam-deck-lcd/3-720.00bf18c8.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4WAoAAAAQAAAAEwAABAAAQUxQSEQAAAART6CokSQ1uA6YDwTc9yIiAN+lb3s32MS21YjYgwMGC6nOfXSAiMUBGrC7SUNE/xP8iGHVPTMqZ133PtQt+doEQP5iAFZQOCBAAAAAUAMAnQEqFAAFAD8ReLRRrCclIrAIAYAiCWkAAEhQ43//fQAA/tCd2KcXI44LLcoyaQCcNoYcU3e64Rhj4AAAAA==",
   "dominant": "#383838",
@@ -61,5 +60,5 @@
     "url": "https://cdn.akamai.steamstatic.com/steamdeck/images/press/renderings/rendering06.png",
     "page": "https://www.steamdeck.com/en/press"
   },
-  "input": "41893655ea13ed06"
+  "input": "2f65e3f92dc10fc8"
 }

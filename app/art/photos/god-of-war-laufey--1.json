@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/god-of-war-laufey/1-960.654338f2.webp"
       }
-    ],
-    "png": "/products/god-of-war-laufey/1-720.ed9c4620.png"
+    ]
+  },
+  "share": {
+    "src": "/products/god-of-war-laufey/1-1067.d0a1cb83.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJaACdACP8irSUhCWbauKwZAAA/t8jl7s4Hq/9bxqXcXpgeRH8fyqnHZ8enSFXS2OVynM9oi3KnzXAoir96/F2gDh4iTbz6FAxyQwXHdtYgy6qis4AAA==",
   "dominant": "#b9a7a7",
@@ -53,5 +58,5 @@
     "url": "https://image.api.playstation.com/vulcan/ap/rnd/202609/1800/23a416e877cc00fd8c6048fc5bdde65a1d7aedc1ad010612.png",
     "page": "https://store.playstation.com/en-gb/concept/10009461"
   },
-  "input": "81821d1683fcd3da"
+  "input": "737794163a1fff4d"
 }

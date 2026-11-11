@@ -30,7 +30,24 @@ export interface Treatment extends RawImage {
   stats: Record<string, number | string | boolean | null>;
 }
 
-export function treat(image: RawImage, options?: { kind?: PhotoKind }): Treatment;
+/** Per-image options (scripts/products/image-options.json); absent = the default rules. */
+export interface TreatOptions {
+  kind?: PhotoKind;
+  /** false: never cut out — the photo stays opaque, trimmed on its own background. */
+  cutout?: boolean;
+  /** true: closed windows of pure background colour (inside a headband arch) are cut out too. */
+  holes?: boolean;
+  /** Padding around a trimmed object, as a share of its longer side (default PAD). */
+  pad?: number;
+  /** false: an opaque photo keeps its whole frame. */
+  trim?: boolean;
+  /** true: the object touches the frame of a plain canvas — extend the canvas first, then cut out. */
+  extend?: boolean;
+  /** true: a transparent source loses its baked shadow / glow and stray specks (the stage draws its own). */
+  clean?: boolean;
+}
+
+export function treat(image: RawImage, options?: TreatOptions): Treatment;
 export function lab(r: number, g: number, b: number): [number, number, number];
 export function hex(rgb: readonly number[]): string;
 export function dominantColor(rgba: Uint8Array, mask: Uint8Array | null, ignore?: readonly number[]): string;

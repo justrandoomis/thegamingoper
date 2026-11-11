@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/dualsense/4-1440.edc36f59.webp"
       }
-    ],
-    "png": "/products/dualsense/4-720.74f56561.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGgAAAART6CgbRs2VBT7fxERUP2YIhs4rW3biS4Zye8Ai8PiKAGFzsmh5lnUBJvn1vtDDRH9nwC41tss0l5D4EVjBXxNOzJavdIWNLbosCUnHxeR9c/0ZAEAT6YHY61j0jHQSsa5KC0THwpGBVZQOCBYAAAA8AMAnQEqFAAOAD8RcrBQLCakorAIAYAiCWcAA+JCEfIZMeLLBaX0AAD+z3QPuxxQ50WeR+KlYtrEfMuBT2MgrNPeNIX31Gkd7NvEb2mgypWF304QTVQAAA==",
   "dominant": "#25272b",
@@ -61,5 +60,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-MidnightBlack01-1x1-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/"
   },
-  "input": "85958c80433953b3"
+  "input": "7cb2fa67e8a70cf1"
 }

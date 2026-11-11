@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/nintendo-switch/1-1440.c522f0c0.webp"
       }
-    ],
-    "png": "/products/nintendo-switch/1-720.c3797676.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch/1-1200.4045a25a.png",
+    "width": 1200,
+    "height": 1017,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRkQBAABXRUJQVlA4WAoAAAAQAAAAEwAAEAAAQUxQSGYAAAART6CgbSQUvwhmiIiA2sb354TbWtuW5sUpOUygA1BxKGEFSdImG7gtYK3nnffXESL6PwEwX7Wq50WRvOlI6ivpCcOfZABkB4oR+h9lHeUXd60IoYpVCxdL4VIBwqNxAKDjIoW8gEVWUDgguAAAAJAEAJ0BKhQAEQA/EXqzVCwnJCMoCqmAIglsALfmlY9AW4Iv0Aic9m/qn21KAAD+FjGB9tgeXkz7l/vxPr4hXv+k/DXWhOuGpfSCryUAAzBc/yE2riPEI/i6Upak0l4+LAkZogKec5BOyW/c/OlHpKhHANi5aOt/3YJvE9/5MeQA3+oEns+G6Esoq/aEPToUfMwiaa5hFJaNklhpPgq84zYp99jMvb/9CX8ubC+v/0JLe/C0yIGwwAA=",
   "dominant": "#141517",
@@ -61,5 +66,5 @@
     "url": "https://assets.nintendo.eu/image/upload/f_png,q_100/MNS/NOE/000000000010010739/1.1_ProductGallery_NintendoSwitch_BeautyShotHandheldMode_NOE",
     "page": "https://store.nintendo.com/en-gb/nintendo-switch-with-neon-blue-neon-red-joy-con-controllers-000000000010010739"
   },
-  "input": "b6424719fabb8598"
+  "input": "c0bd6231633e274f"
 }

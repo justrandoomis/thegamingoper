@@ -29,9 +29,9 @@
       "ckb": "تاکەکەسییە و بەشداریکردنی پێویست نییە."
     },
     {
-      "ar": "من أكثر خمس ألعاب مبيعاً في أمريكا خلال 2026 حتى أيلول حسب Circana.",
-      "en": "One of the five best-selling games of 2026 in the US through September, per Circana.",
-      "ckb": "یەکێکە لە پێنج یاریی پڕفرۆشترینی ساڵی 2026 لە ئەمریکا تا ئەیلوول، بەپێی Circana."
+      "ar": "تُباع بنسخ Standard وDeluxe وCollector's فيزيائية؛ هنا Standard Edition.",
+      "en": "Sold in physical Standard, Deluxe and Collector's Editions; this is the Standard Edition.",
+      "ckb": "بە وەشانی فیزیکی Standard، Deluxe و Collector's دەفرۆشرێت؛ ئەمە Standard Edition ە."
     },
     {
       "ar": "مُحسّنة لـ PS5 Pro.",
@@ -210,10 +210,10 @@
     {
       "key": "crimson-desert--1",
       "file": ".cache/product-images/crimson-desert/1.jpg",
-      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.61541.14619536583353710.9e307ff1-14c4-4d1a-813e-cef9bbad5dc5.90b67c9e-834e-44f1-b16c-16624e50f9b4",
-      "sourcePage": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.45738.13616283370123336.55bc585b-1fc2-4652-8965-61111d6975e0.5236f2e9-a0f4-4fc1-8aba-dbf96b812b95",
+      "sourcePage": "https://web.archive.org/web/20260415194911/https://www.xbox.com/en-us/games/store/crimson-desert/9p6hvhdp2pgk",
       "kind": "box-art",
-      "alt": { "ar": "غلاف Crimson Desert Enhanced", "en": "Crimson Desert Enhanced cover art", "ckb": "وێنەی بەرگی Crimson Desert Enhanced" },
+      "alt": { "ar": "غلاف Crimson Desert: Kliff يرفع سيفه ويحمل درعه", "en": "Crimson Desert cover art: Kliff raising his sword behind his shield", "ckb": "وێنەی بەرگی Crimson Desert: Kliff شمشێرەکەی بەرز دەکاتەوە و قەڵغانەکەی هەڵگرتووە" },
       "credit": "Pearl Abyss",
       "width": 1440, "height": 2160, "transparent": false
     },
@@ -254,7 +254,7 @@
     { "url": "https://store.playstation.com/en-gb/concept/10002363", "title": "Crimson Desert Enhanced — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, Arabic screen language, voice languages without Arabic, release date" },
     { "url": "https://www.playstation.com/en-gb/games/crimson-desert/", "title": "Crimson Desert — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "1 player, PS5 Pro Enhanced, screenshots" },
     { "url": "https://www.xbox.com/en-US/games/store/crimson-desert-enhanced/9p6hvhdp2pgk", "title": "Crimson Desert Enhanced — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "Arabic interface and subtitles, ESRB Mature 17+, single player, max install about 193 GB, cover art" },
-    { "url": "https://www.circana.com/post/top-10-video-games", "title": "Top 10 video games — September 2026 and year-to-date", "publisher": "Circana", "retrieved": "2026-11-11", "supports": "Crimson Desert 5th in US year-to-date 2026 sales" },
+    { "url": "https://store.steampowered.com/app/3321460/", "title": "Crimson Desert Enhanced — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: release 19 Mar 2026, Windows and Mac, PEGI 18, Arabic interface and subtitles without Arabic audio, single-player" },
     { "url": "https://www.amazon.com/Crimson-Desert-Standard-Xbox-X/dp/B0FST3B1YX", "title": "Crimson Desert: Standard Edition — Xbox Series X", "publisher": "Amazon US (PLAION listing)", "retrieved": "2026-11-11", "supports": "Xbox Series X physical Standard Edition" },
     { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
   ],
@@ -264,10 +264,12 @@
     "ckb": "دانە فیزیکییە سەرەتاییەکان وەشانی دەرچوونیان تێدایە؛ بۆ Enhanced و عەرەبی نوێکردنەوە بێبەرامبەرەکە دابگرە. Deluxe و Collector's Edition SteelBook و کەلوپەلی کۆکردنەوە زیاد دەکەن."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Whether newer physical print runs already contain the Enhanced version on the disc was not found.",
+      "The cover image is the launch store cover art (the current store covers say Enhanced); a photo of the retail box was not found on an official page.",
+      "The researcher's US sales ranking (Circana) was removed: Circana's own page could not be read and press reports give different positions after Circana changed its method.",
       "PS5 install size not published; the size shown is the Microsoft Store figure for the Enhanced version.",
       "No EAN/UPC barcode recorded."
     ]

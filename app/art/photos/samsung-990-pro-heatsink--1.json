@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/samsung-990-pro-heatsink/1-1440.e1807d86.webp"
       }
-    ],
-    "png": "/products/samsung-990-pro-heatsink/1-720.ac61d567.png"
+    ]
+  },
+  "share": {
+    "src": "/products/samsung-990-pro-heatsink/1-1200.8cd8b746.png",
+    "width": 1200,
+    "height": 455,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4WAoAAAAQAAAAEwAABwAAQUxQSDcAAAARN6CYkSQ4Os9xmL3XY0k2IgL34iYUAgDadD1yKIAQosgf4mwIEf2fADha+IzVq+aX2sTCZ4QjAFZQOCBQAAAA8AMAnQEqFAAIAD8RerRQLCglIrAIAYAiCUAXYDFAGTIZwmp9i1iegAD+cx+rWY1CZVU6Zu7NyND/UxHF4ZxQ7KqEnwrw52gDiUqGNlQAAAA=",
   "dominant": "#262626",
@@ -61,5 +66,5 @@
     "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/mz-v9p2t0gw/gallery/uk-990-pro-with-heatsink-nvme-m2-ssd-mz-v9p2t0gw-535959882?$ORIGIN_PNG$",
     "page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/nvme-pcie-gen-4-2tb-mz-v9p2t0gw/"
   },
-  "input": "c18f90d4230d7d12"
+  "input": "50d67d68df0d5a75"
 }

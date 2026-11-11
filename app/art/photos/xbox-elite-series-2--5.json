@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/xbox-elite-series-2/5-1440.3e37d10c.webp"
       }
-    ],
-    "png": "/products/xbox-elite-series-2/5-720.65a59aea.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRkYBAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSHwAAAART6CobSM2VQ6377UjIhD0Wx1pcGLb1rLc3//oUBmCkxnCR4NGpXl3y37G+9sUIvo/AWrav45L9jfAlbSmuLRk/iXYOlLuaFFh6VRh61PhRP8Kt0ulZ4BnwV9BK14DwQEcdf4Qrnha0gsCw1zSBPzo15akD656lqR4OlNdVlA4IKQAAADQBACdASoUABMAPxF+tlWsJ6SjKAgBgCIJaQAD5MOIAa9az7X5VI7u9/wLusd/AAD+VavAQ4oADNuXLmBeRiuZ5HQb/Bi7anlmGF8TohqLoWb4nynG6OVWwXfhdL4DdISHJ/Zt6B6ErAOtig9guHBGNuJaZwv6aGeqPbYnlU3/mTfmm8Kfictzk3TCV3Ps6fmj7/UD3s+fHmd+WhX0wCUyAAAAAA==",
   "dominant": "#161617",
@@ -61,5 +60,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Elite-Controller-right-angle-Series-2-White?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2-core/8v7m3k0bsh52"
   },
-  "input": "be85283e4f342250"
+  "input": "4e2d0bb1ee980258"
 }

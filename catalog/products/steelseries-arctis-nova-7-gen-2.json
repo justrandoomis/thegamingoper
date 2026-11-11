@@ -17,15 +17,15 @@
     "ckb": "بێ وایەری 2.4GHz + بلووتوس پێکەوە · پاتری تا 54 کاتژمێر · PS5، PC، Switch"
   },
   "description": {
-    "ar": "الجيل الثاني من سماعة Arctis Nova 7 اللاسلكية من SteelSeries، تتصل عبر دونجل USB-C بتردد 2.4GHz وبالبلوتوث في الوقت نفسه، فيمكنك سماع اللعبة ومكالمة الهاتف معاً. تعمل مع PS5 وPC وNintendo Switch وSwitch 2 والهواتف، وتأتي بمايكروفون ClearCast Gen 2 قابل للسحب داخل السماعة وبطارية تصل إلى 54 ساعة. تتوفر بثلاث نسخ: Nova 7 للكمبيوتر وغيره، وNova 7P بتصميم PlayStation، وNova 7X التي تعمل أيضاً مع Xbox.",
-    "en": "The second generation of SteelSeries' Arctis Nova 7 wireless headset. It connects over a 2.4GHz USB-C dongle and Bluetooth at the same time, so game audio and a phone call can play together. It works with PS5, PC, Nintendo Switch and Switch 2 and phones, with a retractable ClearCast Gen 2 microphone and up to 54 hours of battery. Three editions: Nova 7 (PC and more), Nova 7P (PlayStation styling) and Nova 7X, which also works with Xbox.",
-    "ckb": "نەوەی دووەمی هێدسێتی بێ وایەری Arctis Nova 7ی SteelSeries. لە یەک کاتدا بە دۆنگڵی USB-Cی 2.4GHz و بلووتوس پەیوەندی دەکات، بۆیە دەنگی یاری و پەیوەندیی تەلەفۆن پێکەوە دەبیسترێن. لەگەڵ PS5 و PC و Nintendo Switch و Switch 2 و مۆبایل کار دەکات، مایکرۆفۆنی ClearCast Gen 2ی هەیە کە دەچێتەوە ناو هێدسێتەکە، و پاتریەکەی تا 54 کاتژمێر دەمێنێت. سێ وەشانی هەیە: Nova 7 (بۆ PC و ئامێرەکانی تر)، Nova 7P (بە شێوازی PlayStation)، و Nova 7X کە لەگەڵ Xboxیش کار دەکات."
+    "ar": "الجيل الثاني من سماعة Arctis Nova 7 اللاسلكية من SteelSeries، تتصل عبر دونجل USB-C بتردد 2.4GHz وبالبلوتوث في الوقت نفسه، فيمكنك سماع اللعبة ومكالمة الهاتف معاً. تعمل مع PS5 وPC وNintendo Switch وSwitch 2 والهواتف، وتأتي بمايكروفون ClearCast Gen 2 قابل للسحب داخل السماعة وبطارية تصل إلى 54 ساعة. تتوفر بثلاث نسخ: Nova 7 للكمبيوتر وغيره، وNova 7P نسخة PlayStation التي تأتي بعجلة sidetone بدل ChatMix، وNova 7X التي تعمل أيضاً مع Xbox.",
+    "en": "The second generation of SteelSeries' Arctis Nova 7 wireless headset. It connects over a 2.4GHz USB-C dongle and Bluetooth at the same time, so game audio and a phone call can play together. It works with PS5, PC, Nintendo Switch and Switch 2 and phones, with a retractable ClearCast Gen 2 microphone and up to 54 hours of battery. Three editions: Nova 7 (PC and more), Nova 7P (the PlayStation edition, with a sidetone dial instead of ChatMix) and Nova 7X, which also works with Xbox.",
+    "ckb": "نەوەی دووەمی هێدسێتی بێ وایەری Arctis Nova 7ی SteelSeries. لە یەک کاتدا بە دۆنگڵی USB-Cی 2.4GHz و بلووتوس پەیوەندی دەکات، بۆیە دەنگی یاری و پەیوەندیی تەلەفۆن پێکەوە دەبیسترێن. لەگەڵ PS5 و PC و Nintendo Switch و Switch 2 و مۆبایل کار دەکات، مایکرۆفۆنی ClearCast Gen 2ی هەیە کە دەچێتەوە ناو هێدسێتەکە، و پاتریەکەی تا 54 کاتژمێر دەمێنێت. سێ وەشانی هەیە: Nova 7 (بۆ PC و ئامێرەکانی تر)، Nova 7P (وەشانی PlayStation، خولگەی sidetoneی هەیە لە جیاتی ChatMix)، و Nova 7X کە لەگەڵ Xboxیش کار دەکات."
   },
   "highlights": [
     {
-      "ar": "اتصال 2.4GHz وبلوتوث 5.0 في نفس الوقت",
-      "en": "2.4GHz wireless and Bluetooth 5.0 at the same time",
-      "ckb": "بێ وایەری 2.4GHz و بلووتوس 5.0 لە یەک کاتدا"
+      "ar": "اتصال 2.4GHz وبلوتوث في نفس الوقت",
+      "en": "2.4GHz wireless and Bluetooth at the same time",
+      "ckb": "بێ وایەری 2.4GHz و بلووتوس لە یەک کاتدا"
     },
     {
       "ar": "بطارية حتى 54 ساعة (2.4GHz)، وشحن 15 دقيقة يكفي لنحو 6 ساعات",
@@ -52,22 +52,38 @@
     {
       "key": "connection",
       "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" },
-      "value": { "ar": "لاسلكي 2.4GHz عبر دونجل USB-C + بلوتوث 5.0 (يعملان معاً)", "en": "2.4GHz wireless via USB-C dongle + Bluetooth 5.0 (simultaneous)", "ckb": "بێ وایەری 2.4GHz بە دۆنگڵی USB-C + بلووتوس 5.0 (پێکەوە)" }
+      "value": {
+        "ar": "لاسلكي 2.4GHz عبر دونجل USB-C + بلوتوث (يعملان معاً)",
+        "en": "2.4GHz wireless via USB-C dongle + Bluetooth (simultaneous)",
+        "ckb": "بێ وایەری 2.4GHz بە دۆنگڵی USB-C + بلووتوس (پێکەوە)"
+      }
     },
     {
       "key": "battery",
       "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
-      "value": { "ar": "حتى 54 ساعة (2.4GHz) / 42 ساعة (بلوتوث) / 38 ساعة (الاثنان معاً)", "en": "Up to 54 h (2.4GHz) / 42 h (Bluetooth) / 38 h (both at once)", "ckb": "تا 54 کاتژمێر (2.4GHz) / 42 کاتژمێر (بلووتوس) / 38 کاتژمێر (هەردووکیان پێکەوە)" }
+      "value": {
+        "ar": "حتى 54 ساعة (2.4GHz) / 42 ساعة (بلوتوث) / 38 ساعة (الاثنان معاً)",
+        "en": "Up to 54 h (2.4GHz) / 42 h (Bluetooth) / 38 h (both at once)",
+        "ckb": "تا 54 کاتژمێر (2.4GHz) / 42 کاتژمێر (بلووتوس) / 38 کاتژمێر (هەردووکیان پێکەوە)"
+      }
     },
     {
       "key": "drivers",
       "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" },
-      "value": { "ar": "نيوديميوم 40 ملم، استجابة 20 حتى 22,000 هرتز، 36 أوم", "en": "40 mm neodymium, 20–22,000 Hz, 36 ohms", "ckb": "نیۆدیمیۆم 40 ملم، 20 تا 22,000 هێرتز، 36 ئۆم" }
+      "value": {
+        "ar": "نيوديميوم 40 ملم، استجابة 20 حتى 22,000 هرتز، 36 أوم",
+        "en": "40 mm neodymium, 20–22,000 Hz, 36 ohms",
+        "ckb": "نیۆدیمیۆم 40 ملم، 20 تا 22,000 هێرتز، 36 ئۆم"
+      }
     },
     {
       "key": "microphone",
       "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
-      "value": { "ar": "ClearCast Gen 2 قابل للسحب، ثنائي الاتجاه مع تقليل الضوضاء", "en": "ClearCast Gen 2, retractable boom, bidirectional noise-cancelling", "ckb": "ClearCast Gen 2، دەچێتەوە ناوەوە، دوو ئاڕاستەیی لەگەڵ کەمکردنەوەی دەنگە دەوروبەر" }
+      "value": {
+        "ar": "ClearCast Gen 2 قابل للسحب، ثنائي الاتجاه مع تقليل الضوضاء",
+        "en": "ClearCast Gen 2, retractable boom, bidirectional noise-cancelling",
+        "ckb": "ClearCast Gen 2، دەچێتەوە ناوەوە، دوو ئاڕاستەیی لەگەڵ کەمکردنەوەی دەنگە دەوروبەر"
+      }
     },
     {
       "key": "spatial_audio",
@@ -77,29 +93,45 @@
     {
       "key": "controls",
       "label": { "ar": "الأزرار على السماعة", "en": "On-ear controls", "ckb": "دوگمەکانی سەر هێدسێت" },
-      "value": { "ar": "عجلة الصوت، عجلة ChatMix (أو عجلة sidetone في Nova 7P)، تشغيل، اقتران، بلوتوث، كتم المايك", "en": "Volume dial, ChatMix dial (sidetone dial on Nova 7P), power, pairing, Bluetooth, mic mute", "ckb": "خولگەی دەنگ، خولگەی ChatMix (لە Nova 7P بۆ sidetone)، هەڵکردن، جووتکردن، بلووتوس، بێدەنگکردنی مایک" }
+      "value": {
+        "ar": "عجلة الصوت، عجلة ChatMix (أو عجلة sidetone في Nova 7P)، تشغيل، اقتران، بلوتوث، كتم المايك",
+        "en": "Volume dial, ChatMix dial (sidetone dial on Nova 7P), power, pairing, Bluetooth, mic mute",
+        "ckb": "خولگەی دەنگ، خولگەی ChatMix (لە Nova 7P بۆ sidetone)، هەڵکردن، جووتکردن، بلووتوس، بێدەنگکردنی مایک"
+      }
     },
     {
       "key": "charging",
       "label": { "ar": "الشحن", "en": "Charging", "ckb": "بارگاویکردن" },
-      "value": { "ar": "USB-C، شحن سريع: 15 دقيقة لنحو 6 ساعات", "en": "USB-C; fast charge 15 min for about 6 h", "ckb": "USB-C؛ بارگاویی خێرا: 15 خولەک بۆ نزیکەی 6 کاتژمێر" }
+      "value": {
+        "ar": "USB-C، شحن سريع: 15 دقيقة لنحو 6 ساعات",
+        "en": "USB-C; fast charge 15 min for about 6 h",
+        "ckb": "USB-C؛ بارگاویی خێرا: 15 خولەک بۆ نزیکەی 6 کاتژمێر"
+      }
     },
-    {
-      "key": "weight",
-      "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" },
-      "value": { "ar": "325 غرام", "en": "325 g", "ckb": "325 گرام" }
-    },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "325 غرام", "en": "325 g", "ckb": "325 گرام" } },
     {
       "key": "warranty",
       "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
-      "value": { "ar": "ضمان SteelSeries المحدود لمدة 12 شهراً (في الولايات المتحدة)", "en": "SteelSeries limited warranty, 12 months (US)", "ckb": "گەرەنتیی سنوورداری SteelSeries، 12 مانگ (لە ئەمریکا)" }
+      "value": {
+        "ar": "ضمان SteelSeries المحدود لمدة 12 شهراً (في الولايات المتحدة)",
+        "en": "SteelSeries limited warranty, 12 months (US)",
+        "ckb": "گەرەنتیی سنوورداری SteelSeries، 12 مانگ (لە ئەمریکا)"
+      }
     }
   ],
   "inTheBox": [
-    { "ar": "سماعة Arctis Nova 7 Wireless Gen 2 (أو 7P / 7X حسب النسخة)", "en": "Arctis Nova 7 Wireless Gen 2 headset (or 7P / 7X, by edition)", "ckb": "هێدسێتی Arctis Nova 7 Wireless Gen 2 (یان 7P / 7X بەپێی وەشان)" },
+    {
+      "ar": "سماعة Arctis Nova 7 Wireless Gen 2 (أو 7P / 7X حسب النسخة)",
+      "en": "Arctis Nova 7 Wireless Gen 2 headset (or 7P / 7X, by edition)",
+      "ckb": "هێدسێتی Arctis Nova 7 Wireless Gen 2 (یان 7P / 7X بەپێی وەشان)"
+    },
     { "ar": "دونجل لاسلكي صغير بمنفذ USB-C", "en": "Compact USB-C wireless dongle", "ckb": "دۆنگڵی بێ وایەری بچووکی USB-C" },
     { "ar": "محوّل من USB-C إلى USB-A", "en": "USB-C to USB-A adapter", "ckb": "گۆڕەری USB-C بۆ USB-A" },
-    { "ar": "كابل شحن USB-A إلى USB-C بطول 1.5 متر", "en": "USB-A to USB-C charging cable, 1.5 m", "ckb": "کێبڵی بارگاویکردنی USB-A بۆ USB-C، 1.5 مەتر" }
+    {
+      "ar": "كابل شحن USB-A إلى USB-C بطول 1.5 متر",
+      "en": "USB-A to USB-C charging cable, 1.5 m",
+      "ckb": "کێبڵی بارگاویکردنی USB-A بۆ USB-C، 1.5 مەتر"
+    }
   ],
   "variants": [
     {
@@ -109,7 +141,7 @@
       "modelNumber": "61730",
       "barcodes": ["5707119065597", "810164142122"],
       "isDefault": true,
-      "images": ["steelseries-arctis-nova-7-gen-2--1", "steelseries-arctis-nova-7-gen-2--2"]
+      "images": ["steelseries-arctis-nova-7-gen-2--1"]
     },
     {
       "sku": "SS-NOVA7G2-WHT",
@@ -132,8 +164,9 @@
       "title": { "ar": "Nova 7P (PlayStation) · أسود", "en": "Nova 7P (PlayStation) · Black", "ckb": "Nova 7P (PlayStation) · ڕەش" },
       "options": { "edition": "Nova 7P (PlayStation)", "color": "Black" },
       "modelNumber": "61744",
+      "barcodes": ["5707119065658", "810164142153"],
       "isDefault": false,
-      "images": ["steelseries-arctis-nova-7-gen-2--5", "steelseries-arctis-nova-7-gen-2--2"],
+      "images": ["steelseries-arctis-nova-7-gen-2--1"],
       "notes": {
         "ar": "العجلة اليمنى تضبط sidetone (سماع صوتك) بدل ChatMix.",
         "en": "The right-cup dial sets sidetone (hearing your own voice) instead of ChatMix.",
@@ -177,7 +210,7 @@
       "options": { "edition": "Nova 7X (Xbox)", "color": "White" },
       "modelNumber": "61759",
       "isDefault": false,
-      "images": ["steelseries-arctis-nova-7-gen-2--3"]
+      "images": ["steelseries-arctis-nova-7-gen-2--5"]
     },
     {
       "sku": "SS-NOVA7XG2-MAG",
@@ -185,7 +218,7 @@
       "options": { "edition": "Nova 7X (Xbox)", "color": "Magenta" },
       "modelNumber": "61760",
       "isDefault": false,
-      "images": ["steelseries-arctis-nova-7-gen-2--4"]
+      "images": ["steelseries-arctis-nova-7-gen-2--2"]
     }
   ],
   "compatibility": [
@@ -254,11 +287,7 @@
     {
       "deviceModel": "xbox-series-s",
       "status": "partial",
-      "note": {
-        "ar": "نسخة Nova 7X فقط.",
-        "en": "Nova 7X edition only.",
-        "ckb": "تەنها وەشانی Nova 7X."
-      },
+      "note": { "ar": "نسخة Nova 7X فقط.", "en": "Nova 7X edition only.", "ckb": "تەنها وەشانی Nova 7X." },
       "source": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=black&primaryPlatform=xbox"
     },
     {
@@ -296,9 +325,9 @@
       "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة SteelSeries Arctis Nova 7 Gen 2 باللون الأسود مع دونجل USB-C",
-        "en": "SteelSeries Arctis Nova 7 Gen 2 in black with its USB-C dongle",
-        "ckb": "هێدسێتی SteelSeries Arctis Nova 7 Gen 2 بە ڕەنگی ڕەش لەگەڵ دۆنگڵی USB-C"
+        "ar": "سماعة SteelSeries Arctis Nova 7 Gen 2 باللون الأسود مع دونجل USB-C (الشكل نفسه في نسخة 7P)",
+        "en": "SteelSeries Arctis Nova 7 Gen 2 in black with its USB-C dongle (the 7P edition looks the same)",
+        "ckb": "هێدسێتی SteelSeries Arctis Nova 7 Gen 2 بە ڕەنگی ڕەش لەگەڵ دۆنگڵی USB-C (وەشانی 7Pیش هەمان شێوەیە)"
       },
       "credit": "SteelSeries",
       "width": 1400,
@@ -308,17 +337,17 @@
     {
       "key": "steelseries-arctis-nova-7-gen-2--2",
       "file": ".cache/product-images/steelseries-arctis-nova-7-gen-2/2.png",
-      "sourceUrl": "https://images.ctfassets.net/hmm5mo4qf4mf/4QZLXpyRXTkfaRbe7oAes0/1a852bd3629971abdf7df82f4d9a8da9/arctis_nova_7_wl_gen_2_black_pdp_img_buy_03.png",
-      "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2",
-      "kind": "angle",
+      "sourceUrl": "https://images.ctfassets.net/hmm5mo4qf4mf/2UmWYcBRLHmcTe8k2GRAW7/e87b7fd7829f98f654931c43cc47f73c/arctis_nova_7x_wl_gen_2_magenta_img_buy_primary.png",
+      "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=magenta&primaryPlatform=xbox",
+      "kind": "hero",
       "alt": {
-        "ar": "السماعة السوداء من الأمام تظهر الوسائد وعصابة الرأس",
-        "en": "Black headset from the front, showing the ear cushions and headband",
-        "ckb": "هێدسێتە ڕەشەکە لە پێشەوە، بالیشتی گوێ و سەربەندەکە دیارن"
+        "ar": "سماعة Arctis Nova 7X Gen 2 لأجهزة Xbox باللون الأرجواني مع دونجل Xbox",
+        "en": "Arctis Nova 7X Gen 2 for Xbox in magenta with its Xbox dongle",
+        "ckb": "Arctis Nova 7X Gen 2 بۆ Xbox بە ڕەنگی مەیجێنتا لەگەڵ دۆنگڵی Xbox"
       },
       "credit": "SteelSeries",
-      "width": 1172,
-      "height": 938,
+      "width": 1400,
+      "height": 1400,
       "transparent": true
     },
     {
@@ -328,9 +357,9 @@
       "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=white&primaryPlatform=pc",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Arctis Nova 7 Gen 2 باللون الأبيض مع الدونجل",
-        "en": "Arctis Nova 7 Gen 2 in white with the dongle",
-        "ckb": "Arctis Nova 7 Gen 2 بە ڕەنگی سپی لەگەڵ دۆنگڵەکە"
+        "ar": "سماعة Arctis Nova 7 Gen 2 باللون الأبيض مع الدونجل (الشكل نفسه في نسخة 7P)",
+        "en": "Arctis Nova 7 Gen 2 in white with the dongle (the 7P edition looks the same)",
+        "ckb": "Arctis Nova 7 Gen 2 بە ڕەنگی سپی لەگەڵ دۆنگڵەکە (وەشانی 7Pیش هەمان شێوەیە)"
       },
       "credit": "SteelSeries",
       "width": 2392,
@@ -344,9 +373,9 @@
       "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=magenta&primaryPlatform=pc",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Arctis Nova 7 Gen 2 باللون الأرجواني مع الدونجل",
-        "en": "Arctis Nova 7 Gen 2 in magenta with the dongle",
-        "ckb": "Arctis Nova 7 Gen 2 بە ڕەنگی مەیجێنتا لەگەڵ دۆنگڵەکە"
+        "ar": "سماعة Arctis Nova 7 Gen 2 باللون الأرجواني مع الدونجل (الشكل نفسه في نسخة 7P)",
+        "en": "Arctis Nova 7 Gen 2 in magenta with the dongle (the 7P edition looks the same)",
+        "ckb": "Arctis Nova 7 Gen 2 بە ڕەنگی مەیجێنتا لەگەڵ دۆنگڵەکە (وەشانی 7Pیش هەمان شێوەیە)"
       },
       "credit": "SteelSeries",
       "width": 2392,
@@ -356,17 +385,17 @@
     {
       "key": "steelseries-arctis-nova-7-gen-2--5",
       "file": ".cache/product-images/steelseries-arctis-nova-7-gen-2/5.png",
-      "sourceUrl": "https://images.ctfassets.net/hmm5mo4qf4mf/7vCnvL57N1BLTM6IqLto1T/ffefaba4249960172a9a3a66b2e9c7b9/arctis_nova_7p_wl_gen_2_black_pdp_img_buy_01.png",
-      "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=black&primaryPlatform=ps5",
+      "sourceUrl": "https://images.ctfassets.net/hmm5mo4qf4mf/7aKEyGfzm96e9cuuFrFy0k/bf6065bc0898c4248c4f4811e76e072c/arctis_nova_7x_wl_gen_2_white_img_buy_primary.png",
+      "sourcePage": "https://steelseries.com/gaming-headsets/arctis-nova-7-gen-2?color=white&primaryPlatform=xbox",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Arctis Nova 7P Gen 2 لأجهزة PlayStation باللون الأسود",
-        "en": "Arctis Nova 7P Gen 2 for PlayStation in black",
-        "ckb": "Arctis Nova 7P Gen 2 بۆ PlayStation بە ڕەنگی ڕەش"
+        "ar": "سماعة Arctis Nova 7X Gen 2 لأجهزة Xbox باللون الأبيض مع دونجل Xbox",
+        "en": "Arctis Nova 7X Gen 2 for Xbox in white with its Xbox dongle",
+        "ckb": "Arctis Nova 7X Gen 2 بۆ Xbox بە ڕەنگی سپی لەگەڵ دۆنگڵی Xbox"
       },
       "credit": "SteelSeries",
-      "width": 2392,
-      "height": 1462,
+      "width": 1400,
+      "height": 1400,
       "transparent": true
     },
     {
@@ -392,14 +421,21 @@
       "title": "Arctis Nova 7 Wireless Gen 2 (with 7P and 7X variant pages)",
       "publisher": "SteelSeries",
       "retrieved": "2026-11-11",
-      "supports": "editions and colours, product codes, barcodes for three variants, US launch date 10 Oct 2025, specs, battery, compatibility list, 7 vs 7P dial, 7X dongle Xbox/USB switch, box contents, 12-month US warranty, images"
+      "supports": "editions, colours and product codes for all nine variants, barcodes, US launch date 10 Oct 2025, specs (40 mm drivers, 20–22,000 Hz, 36 ohms, battery 54/42/38 h, 15-minute fast charge, 325 g), compatibility (PS4/PS5 with ChatMix in the on-screen menu only, Switch 1/2 with the mic over 2.4GHz only, Sonar for ChatMix on Windows 10+), 7P sidetone dial, box contents, 12-month US warranty, images"
     },
     {
       "url": "https://www.pcworld.com/article/3014674/steelseries-arctis-nova-7-gen-2-review.html",
       "title": "SteelSeries Arctis Nova 7 Gen 2 review",
       "publisher": "PCWorld",
       "retrieved": "2026-11-11",
-      "supports": "independent confirmation of simultaneous 2.4GHz + Bluetooth, 50+ hour battery, 325 g weight, 40 mm drivers, only the 7X version is fully Xbox compatible"
+      "supports": "independent confirmation of simultaneous 2.4GHz + Bluetooth, 50+ hour battery, 325 g, 40 mm drivers, no active noise cancelling, identical hardware across editions with only the 7X fully Xbox compatible"
+    },
+    {
+      "url": "https://wccftech.com/review/steelseries-arctis-nova-7x-gen-2-review-a-smart-refresh/",
+      "title": "SteelSeries Arctis Nova 7X Gen 2 Review – A Smart Refresh",
+      "publisher": "Wccftech",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation that the 7X works on Xbox and PlayStation while the PlayStation edition does not work on Xbox, and that the 7X transmitter has USB and Xbox modes"
     }
   ],
   "notes": {
@@ -408,13 +444,14 @@
     "ckb": "ئەگەر لەسەر Xbox یاری دەکەیت Nova 7X هەڵبژێرە؛ لەگەڵ ئامێرەکانی تریش کار دەکات. بلووتوس بۆ مۆبایل و مۆسیقا بەکاربهێنە و دۆنگڵی 2.4GHz بۆ یاری، چونکە بە کردەوە دواکەوتنی نییە. لابردنی چالاکی دەنگی دەوروبەر (ANC)ی نییە."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Barcodes for the six variants not listed here",
+      "Bluetooth version (SteelSeries lists 5.0, PCWorld says 5.3; left out)",
+      "Barcodes for the variants not listed here",
       "Warranty length outside the US",
-      "Wired 3.5 mm use mentioned by PCWorld but not listed by SteelSeries; left out",
-      "Images for 7P/7X white and magenta use the matching Nova 7 colour shot (PCWorld reports the hardware is the same across editions)"
+      "Wired 3.5 mm use is not listed by SteelSeries; left out",
+      "7P variants use the Nova 7 colour shots; SteelSeries' own 7P images look the same"
     ]
   }
 }

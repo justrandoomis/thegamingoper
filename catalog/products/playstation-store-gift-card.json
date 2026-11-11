@@ -16,9 +16,9 @@
     "ckb": "باڵانسی جزدانی PlayStation · وڵاتی کارت دەبێت وەک وڵاتی هەژمارەکەت بێت"
   },
   "description": {
-    "ar": "رمز رقمي من 12 خانة يضيف رصيداً إلى محفظة حسابك في PlayStation Store، لتشتري به الألعاب الرقمية والإضافات واشتراك PlayStation Plus والعملات داخل الألعاب. البطاقة مرتبطة بدولة: تعمل فقط على حساب من نفس الدولة. لا يوجد متجر PlayStation رسمي للعراق، لذلك يستخدم اللاعبون في العراق حسابات من دول أخرى، أشهرها الحساب الأمريكي ثم الخليجي، فاختر بطاقة تطابق دولة حسابك. يصلك الرمز بعد إتمام الدفع.",
-    "en": "A 12-digit digital code that adds money to your PlayStation Store wallet, to spend on digital games, add-ons, PlayStation Plus and in-game currency. The card is tied to a country: it only works on an account from the same country. There is no official PlayStation Store for Iraq, so players in Iraq use accounts from other countries, most often the US and then Gulf stores; pick the card that matches your account's country. The code is sent to you after payment.",
-    "ckb": "کۆدێکی دیجیتاڵی 12 ژمارەیی کە پارە دەخاتە سەر جزدانی هەژمارەکەت لە PlayStation Store، بۆ کڕینی یاریی دیجیتاڵ، زیادکراوەکان، PlayStation Plus و دراوی ناو یاری. کارتەکە بە وڵاتێکەوە بەستراوە: تەنها لەسەر هەژمارێک کار دەکات کە هەمان وڵاتی هەبێت. فرۆشگای فەرمیی PlayStation بۆ عێراق نییە، بۆیە یاریزانانی عێراق هەژماری وڵاتانی تر بەکاردەهێنن، زۆرتر ئەمریکی و پاشان کەنداو؛ ئەو کارتە هەڵبژێرە کە لەگەڵ وڵاتی هەژمارەکەت یەک بگرێتەوە. کۆدەکە دوای پارەدان بۆت دەنێردرێت."
+    "ar": "رمز رقمي من 12 خانة يضيف رصيداً إلى محفظة حسابك في PlayStation Store، لتشتري به الألعاب الرقمية والإضافات واشتراك PlayStation Plus والعملات داخل الألعاب. البطاقة مرتبطة بدولة: تعمل فقط على حساب من نفس الدولة. لا يوجد متجر PlayStation رسمي للعراق، لذلك يستخدم اللاعبون في العراق حسابات من دول أخرى، وأغلب البطاقات المعروضة في العراق للمتجر الأمريكي ثم متاجر الخليج، فاختر بطاقة تطابق دولة حسابك. يصلك الرمز بعد إتمام الدفع.",
+    "en": "A 12-digit digital code that adds money to your PlayStation Store wallet, to spend on digital games, add-ons, PlayStation Plus and in-game currency. The card is tied to a country: it only works on an account from the same country. There is no official PlayStation Store for Iraq, so players in Iraq use accounts from other countries, and the cards sold in Iraq are mostly for the US store, then the Gulf stores; pick the card that matches your account's country. The code is sent to you after payment.",
+    "ckb": "کۆدێکی دیجیتاڵی 12 ژمارەیی کە پارە دەخاتە سەر جزدانی هەژمارەکەت لە PlayStation Store، بۆ کڕینی یاریی دیجیتاڵ، زیادکراوەکان، PlayStation Plus و دراوی ناو یاری. کارتەکە بە وڵاتێکەوە بەستراوە: تەنها لەسەر هەژمارێک کار دەکات کە هەمان وڵاتی هەبێت. فرۆشگای فەرمیی PlayStation بۆ عێراق نییە، بۆیە یاریزانانی عێراق هەژماری وڵاتانی تر بەکاردەهێنن، و زۆربەی ئەو کارتانەی لە عێراق دەفرۆشرێن بۆ فرۆشگای ئەمریکین و پاشان فرۆشگاکانی کەنداو؛ ئەو کارتە هەڵبژێرە کە لەگەڵ وڵاتی هەژمارەکەت یەک بگرێتەوە. کۆدەکە دوای پارەدان بۆت دەنێردرێت."
   },
   "highlights": [
     {
@@ -56,17 +56,29 @@
     {
       "key": "region",
       "label": { "ar": "الدولة", "en": "Region", "ckb": "وڵات" },
-      "value": { "ar": "مقفلة على دولة البطاقة؛ يجب أن تطابق دولة حسابك", "en": "Locked to the card's country; must match your account's country", "ckb": "بە وڵاتی کارتەکە قوفڵە؛ دەبێت لەگەڵ وڵاتی هەژمارەکەت یەک بێت" }
+      "value": {
+        "ar": "مقفلة على دولة البطاقة؛ يجب أن تطابق دولة حسابك",
+        "en": "Locked to the card's country; must match your account's country",
+        "ckb": "بە وڵاتی کارتەکە قوفڵە؛ دەبێت لەگەڵ وڵاتی هەژمارەکەت یەک بێت"
+      }
     },
     {
       "key": "redeem",
       "label": { "ar": "طريقة الاسترداد", "en": "How to redeem", "ckb": "چۆنیەتی بەکارهێنان" },
-      "value": { "ar": "PlayStation Store ← ملفك الشخصي ← استرداد الرمز ← أدخل الرمز", "en": "PlayStation Store → your profile → Redeem Code → enter the code", "ckb": "PlayStation Store ← پرۆفایلەکەت ← Redeem Code ← کۆدەکە بنووسە" }
+      "value": {
+        "ar": "PlayStation Store ← ملفك الشخصي ← استرداد الرمز ← أدخل الرمز",
+        "en": "PlayStation Store → your profile → Redeem Code → enter the code",
+        "ckb": "PlayStation Store ← پرۆفایلەکەت ← Redeem Code ← کۆدەکە بنووسە"
+      }
     },
     {
       "key": "works_on",
       "label": { "ar": "يعمل على", "en": "Works on", "ckb": "کار دەکات لەسەر" },
-      "value": { "ar": "PS5 وPS4 وتطبيق PlayStation والمتصفح", "en": "PS5, PS4, PlayStation App, web browser", "ckb": "PS5، PS4، ئەپی PlayStation، وێبگەڕ" }
+      "value": {
+        "ar": "PS5 وPS4 وتطبيق PlayStation والمتصفح",
+        "en": "PS5, PS4, PlayStation App, web browser",
+        "ckb": "PS5، PS4، ئەپی PlayStation، وێبگەڕ"
+      }
     },
     {
       "key": "delivery",
@@ -110,9 +122,9 @@
       "isDefault": false,
       "images": ["playstation-store-gift-card--1"],
       "notes": {
-        "ar": "بطاقات المتجر السعودي تُباع بالدولار الأمريكي.",
-        "en": "Saudi store cards are sold in US dollars.",
-        "ckb": "کارتەکانی فرۆشگای سعوودی بە دۆلاری ئەمریکی دەفرۆشرێن."
+        "ar": "منذ أكتوبر 2026 يسعّر المتجر السعودي بالريال السعودي. بطاقات المتجر السعودي بالدولار تبقى صالحة، ويُحوَّل رصيدها إلى ريال عند الاسترداد بسعر Sony (1 دولار = 4.5 ريال).",
+        "en": "Since October 2026 the Saudi PlayStation Store prices in Saudi riyals. Dollar cards for the Saudi store stay valid and are converted to riyals when redeemed, at Sony's rate of 1 USD = 4.5 SAR.",
+        "ckb": "لە ئۆکتۆبەری 2026ەوە فرۆشگای سعوودی بە ڕیاڵی سعوودی نرخ دادەنێت. کارتی دۆلاری فرۆشگای سعوودی هەر کار دەکەن و لە کاتی بەکارهێناندا بە نرخی Sony دەگۆڕدرێن بۆ ڕیاڵ (1 دۆلار = 4.5 ڕیاڵ)."
       }
     },
     {
@@ -120,21 +132,36 @@
       "title": { "ar": "حساب سعودي · 20 دولار", "en": "Saudi account · $20", "ckb": "هەژماری سعوودی · 20 دۆلار" },
       "options": { "region": "Saudi Arabia", "value": "20 USD" },
       "isDefault": false,
-      "images": ["playstation-store-gift-card--1"]
+      "images": ["playstation-store-gift-card--1"],
+      "notes": {
+        "ar": "منذ أكتوبر 2026 يسعّر المتجر السعودي بالريال السعودي. بطاقات المتجر السعودي بالدولار تبقى صالحة، ويُحوَّل رصيدها إلى ريال عند الاسترداد بسعر Sony (1 دولار = 4.5 ريال).",
+        "en": "Since October 2026 the Saudi PlayStation Store prices in Saudi riyals. Dollar cards for the Saudi store stay valid and are converted to riyals when redeemed, at Sony's rate of 1 USD = 4.5 SAR.",
+        "ckb": "لە ئۆکتۆبەری 2026ەوە فرۆشگای سعوودی بە ڕیاڵی سعوودی نرخ دادەنێت. کارتی دۆلاری فرۆشگای سعوودی هەر کار دەکەن و لە کاتی بەکارهێناندا بە نرخی Sony دەگۆڕدرێن بۆ ڕیاڵ (1 دۆلار = 4.5 ڕیاڵ)."
+      }
     },
     {
       "sku": "PSN-SA-50",
       "title": { "ar": "حساب سعودي · 50 دولار", "en": "Saudi account · $50", "ckb": "هەژماری سعوودی · 50 دۆلار" },
       "options": { "region": "Saudi Arabia", "value": "50 USD" },
       "isDefault": false,
-      "images": ["playstation-store-gift-card--1"]
+      "images": ["playstation-store-gift-card--1"],
+      "notes": {
+        "ar": "منذ أكتوبر 2026 يسعّر المتجر السعودي بالريال السعودي. بطاقات المتجر السعودي بالدولار تبقى صالحة، ويُحوَّل رصيدها إلى ريال عند الاسترداد بسعر Sony (1 دولار = 4.5 ريال).",
+        "en": "Since October 2026 the Saudi PlayStation Store prices in Saudi riyals. Dollar cards for the Saudi store stay valid and are converted to riyals when redeemed, at Sony's rate of 1 USD = 4.5 SAR.",
+        "ckb": "لە ئۆکتۆبەری 2026ەوە فرۆشگای سعوودی بە ڕیاڵی سعوودی نرخ دادەنێت. کارتی دۆلاری فرۆشگای سعوودی هەر کار دەکەن و لە کاتی بەکارهێناندا بە نرخی Sony دەگۆڕدرێن بۆ ڕیاڵ (1 دۆلار = 4.5 ڕیاڵ)."
+      }
     },
     {
       "sku": "PSN-SA-100",
       "title": { "ar": "حساب سعودي · 100 دولار", "en": "Saudi account · $100", "ckb": "هەژماری سعوودی · 100 دۆلار" },
       "options": { "region": "Saudi Arabia", "value": "100 USD" },
       "isDefault": false,
-      "images": ["playstation-store-gift-card--1"]
+      "images": ["playstation-store-gift-card--1"],
+      "notes": {
+        "ar": "منذ أكتوبر 2026 يسعّر المتجر السعودي بالريال السعودي. بطاقات المتجر السعودي بالدولار تبقى صالحة، ويُحوَّل رصيدها إلى ريال عند الاسترداد بسعر Sony (1 دولار = 4.5 ريال).",
+        "en": "Since October 2026 the Saudi PlayStation Store prices in Saudi riyals. Dollar cards for the Saudi store stay valid and are converted to riyals when redeemed, at Sony's rate of 1 USD = 4.5 SAR.",
+        "ckb": "لە ئۆکتۆبەری 2026ەوە فرۆشگای سعوودی بە ڕیاڵی سعوودی نرخ دادەنێت. کارتی دۆلاری فرۆشگای سعوودی هەر کار دەکەن و لە کاتی بەکارهێناندا بە نرخی Sony دەگۆڕدرێن بۆ ڕیاڵ (1 دۆلار = 4.5 ڕیاڵ)."
+      }
     }
   ],
   "compatibility": [
@@ -183,7 +210,7 @@
     { "slug": "playstation-5-slim", "kind": "setup" },
     { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
     { "slug": "grand-theft-auto-vi", "kind": "accessory" },
-    { "slug": "ea-sports-fc-26", "kind": "accessory" }
+    { "slug": "ea-sports-fc-27", "kind": "accessory" }
   ],
   "images": [
     {
@@ -205,49 +232,17 @@
     {
       "key": "playstation-store-gift-card--2",
       "file": ".cache/product-images/playstation-store-gift-card/2.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gift-card-faceplate-gifting-image-block-en-01-07july23?$1600px$",
-      "sourcePage": "https://www.playstation.com/en-us/playstation-gift-cards/",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gift-cards-digital-card-keyart-01-en-20oct22?$2400px$",
+      "sourcePage": "https://www.playstation.com/en-ae/playstation-gift-cards/",
       "kind": "detail",
       "alt": {
-        "ar": "واجهة بطاقة هدية PlayStation بشخصيات ألعاب PlayStation",
-        "en": "PlayStation gift card faceplate with PlayStation game characters",
-        "ckb": "ڕووی کارتی دیاریی PlayStation بە کەسایەتییەکانی یارییەکانی PlayStation"
+        "ar": "بطاقة PlayStation Store الرقمية (رمز رقمي) أمام شخصيات من ألعاب PlayStation",
+        "en": "PlayStation Store digital gift card (digital code) in front of PlayStation game characters",
+        "ckb": "کارتی دیجیتاڵی PlayStation Store (کۆدی دیجیتاڵ) لەبەردەم کەسایەتییەکانی یارییەکانی PlayStation"
       },
       "credit": "Sony Interactive Entertainment",
-      "width": 1600,
-      "height": 1067,
-      "transparent": false
-    },
-    {
-      "key": "playstation-store-gift-card--3",
-      "file": ".cache/product-images/playstation-store-gift-card/3.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gift-card-faceplate-birthday-image-block-en-01-07july23?$1600px$",
-      "sourcePage": "https://www.playstation.com/en-us/playstation-gift-cards/",
-      "kind": "detail",
-      "alt": {
-        "ar": "واجهة بطاقة هدية PlayStation بتصميم عيد ميلاد",
-        "en": "PlayStation gift card faceplate with a birthday design",
-        "ckb": "ڕووی کارتی دیاریی PlayStation بە دیزاینی ڕۆژی لەدایکبوون"
-      },
-      "credit": "Sony Interactive Entertainment",
-      "width": 1600,
-      "height": 1067,
-      "transparent": false
-    },
-    {
-      "key": "playstation-store-gift-card--4",
-      "file": ".cache/product-images/playstation-store-gift-card/4.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gift-card-faceplate-shapes-image-block-en-01-07july23?$1600px$",
-      "sourcePage": "https://www.playstation.com/en-us/playstation-gift-cards/",
-      "kind": "detail",
-      "alt": {
-        "ar": "واجهة بطاقة هدية PlayStation بأشكال PlayStation",
-        "en": "PlayStation gift card faceplate with PlayStation shapes",
-        "ckb": "ڕووی کارتی دیاریی PlayStation بە شێوەکانی PlayStation"
-      },
-      "credit": "Sony Interactive Entertainment",
-      "width": 1600,
-      "height": 1067,
+      "width": 2400,
+      "height": 1350,
       "transparent": false
     }
   ],
@@ -264,42 +259,56 @@
       "title": "PlayStation Store gift cards (FAQ)",
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
-      "supports": "what the credit buys (games, add-ons, PS Plus, V-Bucks, FC Points, COD Points, pre-orders), redeem on PS5/PS4/app/browser, not valid for consoles or merchandise, some physical cards need activation at purchase, faceplate images"
+      "supports": "what the credit buys (games, add-ons, PS Plus, V-Bucks, EA SPORTS FC Points, Call of Duty Points, pre-orders), redeem on PS5/PS4/app/browser with the 12-digit code, only for digital products (no consoles, accessories or merch), some physical cards need activation at purchase"
     },
     {
       "url": "https://www.playstation.com/country-selector/index.html",
       "title": "PlayStation country selector",
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
-      "supports": "no PlayStation country site for Iraq; Middle East sites exist for UAE, Saudi Arabia, Kuwait, Bahrain, Qatar, Oman, Lebanon"
+      "supports": "no PlayStation country site for Iraq; Middle East sites exist for UAE/Middle East, Saudi Arabia, Kuwait, Bahrain, Qatar, Oman, Lebanon"
     },
     {
       "url": "https://www.playstation.com/en-ae/playstation-gift-cards/",
       "title": "PlayStation gift cards (UAE / Middle East)",
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
-      "supports": "codes delivered by email from online retailers, card image"
+      "supports": "codes delivered by email from online retailers, card images"
     },
     {
       "url": "https://digital.baly.iq/games/playstation/",
       "title": "بطاقات بلايستيشن ستور (Iraqi digital card seller)",
       "publisher": "Baly (Iraq)",
       "retrieved": "2026-11-11",
-      "supports": "regions sold to customers in Iraq (US first, then Saudi, Bahrain, Turkey, Kuwait, UK and others), Saudi store cards sold in USD ($10, $20, $50, $100 among others), US $10, $25 and $100 cards, card country must match the PSN account"
+      "supports": "regions sold to customers in Iraq (US first, then Saudi, Bahrain, Turkey, Kuwait, UK and others), dollar cards for the US and Saudi stores, card country must match the PSN account"
+    },
+    {
+      "url": "https://www.playstation.com/ar-sa/support/store/latam-mena-currency/",
+      "title": "دليل تغيير العملة في PlayStation Store (أمريكا اللاتينية والشرق الأوسط)",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-11",
+      "supports": "Saudi PlayStation Store moved from US dollars to Saudi riyals (maintenance 5–8 October 2026), wallet conversion at 1 USD = 4.5 SAR, existing US-dollar PlayStation gift cards remain valid and are converted on redemption"
+    },
+    {
+      "url": "https://www.target.com/p/50-playstation-store-gift-card-digital/-/A-93243880",
+      "title": "$50 PlayStation Store Gift Card (Email Delivery)",
+      "publisher": "Target",
+      "retrieved": "2026-11-11",
+      "supports": "a US $50 PlayStation Store digital card is sold by a major US retailer"
     }
   ],
   "notes": {
-    "ar": "قبل الشراء تأكد من دولة حسابك في PlayStation (من إعدادات الحساب). بطاقة دولة مختلفة لن تعمل ولا يمكن تحويلها. حسابات الأطفال: رصيد المحفظة يُضاف إلى حساب مدير العائلة. البطاقة لا تتضمن اشتراكاً تلقائياً؛ لشراء PlayStation Plus استخدم الرصيد من داخل المتجر.",
-    "en": "Before buying, check your PlayStation account's country (in account settings). A card for a different country will not work and cannot be converted. Child accounts: wallet credit goes on the family manager's account. The card is not a subscription by itself; use the credit in the store to buy PlayStation Plus.",
-    "ckb": "پێش کڕین وڵاتی هەژماری PlayStationەکەت بپشکنە (لە ڕێکخستنەکانی هەژمار). کارتی وڵاتێکی تر کار ناکات و ناگۆڕدرێت. هەژماری منداڵان: باڵانسی جزدان دەچێتە سەر هەژماری بەڕێوەبەری خێزان. کارتەکە خۆی بەشداریکردن نییە؛ بۆ کڕینی PlayStation Plus باڵانسەکە لە ناو فرۆشگا بەکاربهێنە."
+    "ar": "قبل الشراء تأكد من دولة حسابك في PlayStation (من إعدادات الحساب). بطاقة دولة مختلفة لن تعمل ولا يمكن تحويلها. منذ أكتوبر 2026 يعمل المتجر السعودي بالريال السعودي، وبطاقاته القديمة بالدولار تبقى صالحة وتُحوَّل عند الاسترداد. حسابات الأطفال: رصيد المحفظة يُضاف إلى حساب مدير العائلة. البطاقة لا تتضمن اشتراكاً تلقائياً؛ لشراء PlayStation Plus استخدم الرصيد من داخل المتجر.",
+    "en": "Before buying, check your PlayStation account's country (in account settings). A card for a different country will not work and cannot be converted. Since October 2026 the Saudi store runs in Saudi riyals; its existing dollar cards stay valid and are converted when redeemed. Child accounts: wallet credit goes on the family manager's account. The card is not a subscription by itself; use the credit in the store to buy PlayStation Plus.",
+    "ckb": "پێش کڕین وڵاتی هەژماری PlayStationەکەت بپشکنە (لە ڕێکخستنەکانی هەژمار). کارتی وڵاتێکی تر کار ناکات و ناگۆڕدرێت. لە ئۆکتۆبەری 2026ەوە فرۆشگای سعوودی بە ڕیاڵی سعوودی کار دەکات؛ کارتە دۆلارییە کۆنەکانی هەر کار دەکەن و لە کاتی بەکارهێناندا دەگۆڕدرێن. هەژماری منداڵان: باڵانسی جزدان دەچێتە سەر هەژماری بەڕێوەبەری خێزان. کارتەکە خۆی بەشداریکردن نییە؛ بۆ کڕینی PlayStation Plus باڵانسەکە لە ناو فرۆشگا بەکاربهێنە."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "US $50 card: standard in the US but not shown on the sources read (Baly listed $1, $4, $5, $10, $25 and $100 at the time)",
       "Which regions customers in Iraq use most is taken from what Iraqi sellers offer, not from official statistics",
-      "Card artwork differs by region and seller; the images are Sony's own card and faceplate designs"
+      "Whether new Saudi-store cards are now printed in riyals instead of dollars (Sony only says existing dollar cards stay valid)",
+      "Card artwork differs by region and seller; the images are Sony's own card designs"
     ]
   }
 }

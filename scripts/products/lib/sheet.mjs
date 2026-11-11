@@ -1,5 +1,5 @@
 /**
- * Review sheets for product photos: one row per picture, built from the published 720 px PNG.
+ * Review sheets for product photos: one row per picture, built from the published 720 px WebP.
  *
  *   [light stage] [dark stage] [left edge ×3, dark] [bottom edge ×3, dark] [left edge ×3, light]
  *

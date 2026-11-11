@@ -8,14 +8,14 @@
   "releaseDate": "2018-10-26",
   "name": { "ar": "Red Dead Redemption 2", "en": "Red Dead Redemption 2", "ckb": "Red Dead Redemption 2" },
   "short": {
-    "ar": "قرص PS4 / Xbox One · يعمل على PS5 وXbox Series X",
-    "en": "PS4 / Xbox One disc · plays on PS5 and Xbox Series X",
-    "ckb": "دیسکی PS4 / Xbox One · لەسەر PS5 و Xbox Series X کار دەکات"
+    "ar": "قرص PS4 / XBOX One · يعمل على PS5 وXBOX Series X",
+    "en": "PS4 / XBOX One disc · plays on PS5 and XBOX Series X",
+    "ckb": "دیسکی PS4 / XBOX One · لەسەر PS5 و XBOX Series X کار دەکات"
   },
   "description": {
-    "ar": "ملحمة الغرب الأمريكي من Rockstar Games: أمريكا عام 1899، وArthur Morgan وعصابة Van der Linde هاربون من القانون. صدرت عام 2018 لـ PS4 وXbox One، وتعمل على PS5 وXbox Series X عبر التوافق مع الأجيال السابقة، ولا توجد نسخة رسمية خاصة بالجيل الحالي حتى اليوم. تتضمن قصة طويلة للاعب واحد وطور Red Dead Online.",
-    "en": "Rockstar Games' Wild West epic: America, 1899, with Arthur Morgan and the Van der Linde gang on the run from the law. It came out in 2018 for PS4 and Xbox One and plays on PS5 and Xbox Series X through backward compatibility; there is no official current-gen version as of today. It includes a long single-player story and Red Dead Online.",
-    "ckb": "داستانی ڕۆژئاوای ئەمریکا لە Rockstar Games: ئەمریکا لە ساڵی 1899، Arthur Morgan و دەستەی Van der Linde لە یاسا هەڵدێن. لە ساڵی 2018 بۆ PS4 و Xbox One دەرچوو و لە ڕێگەی گونجاندنی نەوەکانی پێشووەوە لەسەر PS5 و Xbox Series X کار دەکات؛ تا ئەمڕۆ وەشانێکی فەرمی تایبەت بە نەوەی ئێستا نییە. چیرۆکێکی درێژی تاکەکەسی و Red Dead Online ی تێدایە."
+    "ar": "ملحمة الغرب الأمريكي من Rockstar Games: أمريكا عام 1899، وArthur Morgan وعصابة Van der Linde هاربون من القانون. صدرت عام 2018 لـ PS4 وXBOX One، وتعمل على PS5 وXBOX Series X عبر التوافق مع الأجيال السابقة، ولا توجد نسخة رسمية خاصة بالجيل الحالي حتى اليوم. تتضمن قصة طويلة للاعب واحد وطور Red Dead Online.",
+    "en": "Rockstar Games' Wild West epic: America, 1899, with Arthur Morgan and the Van der Linde gang on the run from the law. It came out in 2018 for PS4 and XBOX One and plays on PS5 and XBOX Series X through backward compatibility; there is no official current-gen version as of today. It includes a long single-player story and Red Dead Online.",
+    "ckb": "داستانی ڕۆژئاوای ئەمریکا لە Rockstar Games: ئەمریکا لە ساڵی 1899، Arthur Morgan و دەستەی Van der Linde لە یاسا هەڵدێن. لە ساڵی 2018 بۆ PS4 و XBOX One دەرچوو و لە ڕێگەی گونجاندنی نەوەکانی پێشووەوە لەسەر PS5 و XBOX Series X کار دەکات؛ تا ئەمڕۆ وەشانێکی فەرمی تایبەت بە نەوەی ئێستا نییە. چیرۆکێکی درێژی تاکەکەسی و Red Dead Online ی تێدایە."
   },
   "highlights": [
     {
@@ -24,9 +24,9 @@
       "ckb": "چیرۆکێکی درێژی تاکەکەسی لە جیهانێکی کراوەی گەورەدا."
     },
     {
-      "ar": "قرص PS4 يعمل على PS5 بقارئ أقراص، وقرص Xbox One يعمل على Xbox Series X.",
-      "en": "The PS4 disc plays on a PS5 with a disc drive; the Xbox One disc plays on Xbox Series X.",
-      "ckb": "دیسکی PS4 لەسەر PS5 ی خاوەن دیسک خوێنەر کار دەکات؛ دیسکی Xbox One لەسەر Xbox Series X کار دەکات."
+      "ar": "قرص PS4 يعمل على PS5 بقارئ أقراص، وقرص XBOX One يعمل على XBOX Series X.",
+      "en": "The PS4 disc plays on a PS5 with a disc drive; the XBOX One disc plays on XBOX Series X.",
+      "ckb": "دیسکی PS4 لەسەر PS5 ی خاوەن دیسک خوێنەر کار دەکات؛ دیسکی XBOX One لەسەر XBOX Series X کار دەکات."
     },
     {
       "ar": "Red Dead Online حتى 32 لاعباً، ويحتاج PlayStation Plus أو Game Pass Essential أو أعلى.",
@@ -34,9 +34,9 @@
       "ckb": "Red Dead Online تا 32 یاریزان، پێویستی بە PlayStation Plus یان Game Pass Essential یان بەرزتر هەیە."
     },
     {
-      "ar": "لا تدعم العربية: الصوت إنجليزي والترجمة بـ 13 لغة ليس بينها العربية.",
-      "en": "No Arabic: English voice, subtitles in 13 languages that do not include Arabic.",
-      "ckb": "عەرەبی تێدا نییە: دەنگ ئینگلیزییە و ژێرنووس بە 13 زمانە کە عەرەبییان تێدا نییە."
+      "ar": "لا تدعم العربية: الصوت إنجليزي، والقوائم والترجمة بلغات أخرى ليس بينها العربية.",
+      "en": "No Arabic: English voice; menus and subtitles in other languages, none of them Arabic.",
+      "ckb": "عەرەبی تێدا نییە: دەنگ ئینگلیزییە، و مێنیو و ژێرنووس بە زمانی ترن کە عەرەبییان تێدا نییە."
     },
     {
       "ar": "التصنيف PEGI 18.",
@@ -54,23 +54,23 @@
       "key": "platforms",
       "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
       "value": {
-        "ar": "PS4 وXbox One وPC؛ تعمل على PS5 وXbox Series X|S بالتوافق مع الأجيال السابقة",
-        "en": "PS4, Xbox One and PC; plays on PS5 and Xbox Series X|S through backward compatibility",
-        "ckb": "PS4، Xbox One و PC؛ لە ڕێگەی گونجاندنی پاشەوە لەسەر PS5 و Xbox Series X|S کار دەکات"
+        "ar": "PS4 وXBOX One وPC؛ تعمل على PS5 وXBOX Series X|S بالتوافق مع الأجيال السابقة",
+        "en": "PS4, XBOX One and PC; plays on PS5 and XBOX Series X|S through backward compatibility",
+        "ckb": "PS4، XBOX One و PC؛ لە ڕێگەی گونجاندنی پاشەوە لەسەر PS5 و XBOX Series X|S کار دەکات"
       }
     },
     {
       "key": "format",
       "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری وەشانی فیزیکی" },
-      "value": { "ar": "قرص PS4 أو Xbox One", "en": "PS4 or Xbox One disc", "ckb": "دیسکی PS4 یان Xbox One" }
+      "value": { "ar": "قرصان لـ PS4 أو XBOX One", "en": "Two PS4 or XBOX One discs", "ckb": "دوو دیسکی PS4 یان XBOX One" }
     },
     {
       "key": "size",
       "label": { "ar": "المساحة المطلوبة", "en": "Storage needed", "ckb": "بۆشایی پێویست" },
       "value": {
-        "ar": "حتى نحو 113 غيغابايت على Xbox حسب Microsoft Store",
-        "en": "Up to about 113 GB on Xbox (Microsoft Store)",
-        "ckb": "تا نزیکەی 113 گیگابایت لەسەر Xbox (بەپێی Microsoft Store)"
+        "ar": "حتى نحو 113 غيغابايت على XBOX حسب Microsoft Store",
+        "en": "Up to about 113 GB on XBOX (Microsoft Store)",
+        "ckb": "تا نزیکەی 113 گیگابایت لەسەر XBOX (بەپێی Microsoft Store)"
       }
     },
     {
@@ -104,7 +104,7 @@
     }
   ],
   "inTheBox": [
-    { "ar": "قرص (أو أقراص) اللعبة لـ PS4 أو Xbox One", "en": "Game disc(s) for PS4 or Xbox One", "ckb": "دیسکی یارییەکە بۆ PS4 یان Xbox One" }
+    { "ar": "قرصا اللعبة (Data Disc وPlay Disc) لـ PS4 أو XBOX One", "en": "Two game discs (Data Disc and Play Disc) for PS4 or XBOX One", "ckb": "دوو دیسکی یارییەکە (Data Disc و Play Disc) بۆ PS4 یان XBOX One" }
   ],
   "variants": [
     {
@@ -114,26 +114,26 @@
       "isDefault": true,
       "images": ["red-dead-redemption-2--1", "red-dead-redemption-2--2", "red-dead-redemption-2--3", "red-dead-redemption-2--4"],
       "notes": {
-        "ar": "على PS5 Digital Edition وPS5 Pro تحتاج قارئ الأقراص الإضافي لتشغيل القرص.",
-        "en": "On PS5 Digital Edition and PS5 Pro the disc needs the add-on Disc Drive.",
-        "ckb": "لەسەر PS5 Digital Edition و PS5 Pro دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     },
     {
       "sku": "RDR2-XB1-STD",
-      "title": { "ar": "Red Dead Redemption 2 لجهاز Xbox One (يعمل على Xbox Series X)", "en": "Red Dead Redemption 2 for Xbox One (plays on Xbox Series X)", "ckb": "Red Dead Redemption 2 بۆ Xbox One (لەسەر Xbox Series X کار دەکات)" },
-      "options": { "platform": "Xbox One", "edition": "Standard", "format": "Disc" },
+      "title": { "ar": "Red Dead Redemption 2 لجهاز XBOX One (يعمل على XBOX Series X)", "en": "Red Dead Redemption 2 for XBOX One (plays on XBOX Series X)", "ckb": "Red Dead Redemption 2 بۆ XBOX One (لەسەر XBOX Series X کار دەکات)" },
+      "options": { "platform": "XBOX One", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["red-dead-redemption-2--1", "red-dead-redemption-2--2", "red-dead-redemption-2--3"],
       "notes": {
-        "ar": "القرص لا يعمل على Xbox Series S أو Series X Digital لأنهما بدون قارئ أقراص.",
-        "en": "The disc does not work on Xbox Series S or the Series X Digital Edition, which have no disc drive.",
-        "ckb": "دیسکەکە لەسەر Xbox Series S و Series X Digital کار ناکات چونکە دیسک خوێنەریان نییە."
+        "ar": "القرص لا يعمل على XBOX Series S أو XBOX Series X Digital Edition لأنهما بدون قارئ أقراص.",
+        "en": "The disc does not work on XBOX Series S or the XBOX Series X Digital Edition, which have no disc drive.",
+        "ckb": "دیسکەکە لەسەر XBOX Series S و XBOX Series X Digital Edition کار ناکات چونکە دیسک خوێنەریان نییە."
       }
     }
   ],
   "game": {
-    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital", "xbox-series-x"],
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-slim-digital", "xbox-series-x"],
     "genres": [
       { "ar": "أكشن ومغامرة", "en": "Action-adventure", "ckb": "ئاکشن و سەرکێشی" },
       { "ar": "عالم مفتوح", "en": "Open world", "ckb": "جیهانی کراوە" }
@@ -171,34 +171,34 @@
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
-      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
-    },
-    {
       "deviceModel": "ps5-slim-digital",
       "status": "partial",
       "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
       "deviceModel": "xbox-series-x",
       "status": "partial",
-      "note": { "ar": "قرص Xbox One يعمل على Xbox Series X بالتوافق مع الأجيال السابقة.", "en": "The Xbox One disc runs on Xbox Series X through backward compatibility.", "ckb": "دیسکی Xbox One لە ڕێگەی گونجاندنی پاشەوە لەسەر Xbox Series X کار دەکات." },
-      "source": "https://www.xbox.com/en-US/games/store/red-dead-redemption-2/bpswgqbw7r3g"
+      "note": { "ar": "قرص XBOX One يعمل على XBOX Series X بالتوافق مع الأجيال السابقة.", "en": "The XBOX One disc runs on XBOX Series X through backward compatibility.", "ckb": "دیسکی XBOX One لە ڕێگەی گونجاندنی پاشەوە لەسەر XBOX Series X کار دەکات." },
+      "source": "https://www.xbox.com/en-US/consoles/xbox-series-x"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "incompatible",
       "note": { "ar": "لا يوجد قارئ أقراص.", "en": "No disc drive.", "ckb": "دیسک خوێنەری نییە." },
-      "source": "https://www.xbox.com/en-US/games/store/red-dead-redemption-2/bpswgqbw7r3g"
+      "source": "https://www.xbox.com/en-US/consoles/xbox-series-s"
     },
     {
       "deviceModel": "xbox-series-x-digital",
       "status": "incompatible",
       "note": { "ar": "لا يوجد قارئ أقراص.", "en": "No disc drive.", "ckb": "دیسک خوێنەری نییە." },
-      "source": "https://www.xbox.com/en-US/games/store/red-dead-redemption-2/bpswgqbw7r3g"
+      "source": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
     }
   ],
   "related": [
@@ -244,32 +244,35 @@
       "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/red-dead-redemption-2-screen-16-ps4-eu-09may18?$1600px$",
       "sourcePage": "https://www.playstation.com/en-ae/games/red-dead-redemption-2/",
       "kind": "screenshot",
-      "alt": { "ar": "رجل يسير في سهل عند الغروب", "en": "A rider walking across the plains at sunset", "ckb": "پیاوێک لە دەشتێکدا لە کاتی خۆرئاوابووندا دەڕوات" },
+      "alt": { "ar": "رجل مسلّح يسير في سهل عند الغروب", "en": "A gunman walking across the plains at sunset", "ckb": "پیاوێکی چەکدار لە دەشتێکدا لە کاتی خۆرئاوابووندا دەڕوات" },
       "credit": "Rockstar Games",
       "width": 1600, "height": 900, "transparent": false
     }
   ],
   "sources": [
-    { "url": "https://www.playstation.com/en-ae/games/red-dead-redemption-2/", "title": "Red Dead Redemption 2 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS4 version, PS Plus required for online play, up to 32 online players, 1 player, PlayStation Plus Extra catalogue, screenshots" },
-    { "url": "https://store.playstation.com/en-ae/concept/209441", "title": "Red Dead Redemption 2 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release date 26 Oct 2018, English voice, screen languages without Arabic" },
-    { "url": "https://store.playstation.com/en-gb/concept/209441", "title": "Red Dead Redemption 2 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18" },
-    { "url": "https://www.xbox.com/en-US/games/store/red-dead-redemption-2/bpswgqbw7r3g", "title": "Red Dead Redemption 2 — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "13 languages without Arabic, ESRB Mature 17+, online 2–32, Xbox One X Enhanced, max install about 113 GB, story summary, cover art" },
+    { "url": "https://www.playstation.com/en-ae/games/red-dead-redemption-2/", "title": "Red Dead Redemption 2 — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS4 version, PS Plus required for online play, up to 32 online players, 1 player, Remote Play, PlayStation Plus Extra catalogue, screenshots" },
+    { "url": "https://store.playstation.com/en-ae/concept/209441", "title": "Red Dead Redemption 2 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release date 26 Oct 2018, PS4 only (no PS5 product), English voice, screen languages without Arabic" },
+    { "url": "https://store.playstation.com/en-gb/concept/209441", "title": "Red Dead Redemption 2 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18 (gambling, language, violence, in-game purchases), PS4 only" },
+    { "url": "https://www.xbox.com/en-US/games/store/red-dead-redemption-2/bpswgqbw7r3g", "title": "Red Dead Redemption 2 — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "13 languages without Arabic (English audio), ESRB Mature 17+, online 2–32, XBOX One X Enhanced, max install about 113 GB, story summary, cover art" },
+    { "url": "https://support.rockstargames.com/articles/4EMsJuBWdHraOT43DlDc3r/red-dead-redemption-2-disc-installation-on-playstation-4", "title": "Red Dead Redemption 2 Disc Installation on PlayStation 4", "publisher": "Rockstar Games Support", "retrieved": "2026-11-11", "supports": "fact-check: the PS4 copy comes on two discs (Data Disc and Play Disc); install from the Data Disc first, then keep the Play Disc in the console" },
+    { "url": "https://www.gamespot.com/articles/red-dead-redemption-2-physical-copies-come-on-two-/1100-6462795/", "title": "Red Dead Redemption 2 Physical Copies Come On Two Discs On PS4 And Xbox One", "publisher": "GameSpot", "retrieved": "2026-11-11", "supports": "fact-check: two discs on both PS4 and XBOX One" },
+    { "url": "https://www.gamespot.com/articles/red-dead-redemption-2-ps5-xbox-switch-2-port-release-date-trailer-story/1100-6536035/", "title": "RDR2 For Switch 2, PS5, And Xbox Series X|S - Everything We Know About Rumored Ports", "publisher": "GameSpot", "retrieved": "2026-11-11", "supports": "fact-check: current-gen versions are rumoured, not announced by Rockstar" },
     { "url": "https://www.playstation.com/en-us/staying-connected-to-ps4-and-ps5/", "title": "Stay connected to PS4 and PS5", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS4 games play on PS5 through backward compatibility" },
-    { "url": "https://red-dead-redemption-3.com/articles/rdr2-next-gen-update-what-has-been-said/", "title": "RDR2 next-gen update: what has actually been said in 2026", "publisher": "red-dead-redemption-3.com", "retrieved": "2026-11-11", "supports": "as of October 2026 no official current-gen version; runs on PS5/Xbox Series via backward compatibility" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.xbox.com/en-US/consoles/xbox-series-x", "title": "XBOX Series X", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "XBOX Series X backward compatibility with XBOX One games" },
+    { "url": "https://www.xbox.com/en-US/consoles/xbox-series-s", "title": "XBOX Series S", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "XBOX Series S is all-digital (no disc drive)" },
+    { "url": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl", "title": "XBOX Series X — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "XBOX Series X Digital Edition is all-digital (no disc drive)" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) plays PS5 and supported PS4 discs and works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
-    "ar": "تشير تقارير إلى نسخة محسّنة لـ PS5 وXbox Series، لكن Rockstar لم تعلن عنها رسمياً حتى اليوم. اللعبة متاحة أيضاً ضمن كتالوج PlayStation Plus Extra.",
-    "en": "Reports talk about an upgraded PS5 / Xbox Series version, but Rockstar has not officially announced one as of today. The game is also in the PlayStation Plus Extra catalogue.",
-    "ckb": "هەندێک ڕاپۆرت باسی وەشانێکی باشترکراو بۆ PS5 / Xbox Series دەکەن، بەڵام Rockstar تا ئەمڕۆ بە فەرمی ڕای نەگەیاندووە. یارییەکە لە کاتالۆگی PlayStation Plus Extra یش هەیە."
+    "ar": "عند التثبيت ابدأ بقرص Data Disc ثم Play Disc، ويبقى Play Disc في الجهاز للعب. تشير تقارير إلى نسخة محسّنة لـ PS5 وXBOX Series، لكن Rockstar لم تعلن عنها رسمياً حتى اليوم. اللعبة متاحة أيضاً ضمن كتالوج PlayStation Plus Extra.",
+    "en": "To install, start with the Data Disc and then the Play Disc, which stays in the console to play. Reports talk about an upgraded PS5 / XBOX Series version, but Rockstar has not officially announced one as of today. The game is also in the PlayStation Plus Extra catalogue.",
+    "ckb": "بۆ دامەزراندن لە Data Disc ەوە دەست پێبکە و پاشان Play Disc، کە بۆ یاریکردن لەناو ئامێرەکەدا دەمێنێتەوە. هەندێک ڕاپۆرت باسی وەشانێکی باشترکراو بۆ PS5 / XBOX Series دەکەن، بەڵام Rockstar تا ئەمڕۆ بە فەرمی ڕای نەگەیاندووە. یارییەکە لە کاتالۆگی PlayStation Plus Extra یش هەیە."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Number of discs in the box was not confirmed on an official page.",
-      "The 'no official current-gen version' statement relies on store listings (PS4 / Xbox One only) and a fan-site summary; Rockstar has made no announcement either way.",
-      "Xbox Series X backward compatibility is inferred from the Microsoft Store listing (Xbox One title sold to Series X|S owners), not from a dedicated page.",
+      "Rockstar's install article covers the PS4 discs; the XBOX One two-disc set is confirmed only by press (GameSpot).",
       "No EAN/UPC barcode recorded."
     ]
   }

@@ -136,7 +136,7 @@ export async function planReturnedGoods(
   const movements: NewStockMovement[] = [];
   const levelAdds = new Map<string, { variantId: string; locationId: string; qty: number }>();
   const touchedVariants = new Set<string>();
-  const movement = (variantId: string, locationId: string, kind: "return" | "damage", qty: number, unitCostIqd: number | null, serialId: string | null): NewStockMovement => ({
+  const movement = (variantId: string, locationId: string, kind: "return" | "damage" | "transfer_out" | "transfer_in", qty: number, unitCostIqd: number | null, serialId: string | null): NewStockMovement => ({
     id: newId("mov"),
     variantId,
     locationId,

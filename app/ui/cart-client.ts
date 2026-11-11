@@ -8,9 +8,11 @@
  *   announce(t("add.announceAdded", { name }));            the one polite live region for cart feedback
  *
  * The count (DESIGN.md §7.2 "Fly to cart", step 1): the badge changes the moment the shopper taps — base + changes
- * in flight — and settles on the server's `cart.count` when the JSON answer arrives. The base is the root loader's
- * `cart.count` until a newer server answer is known. A failed change rolls its part back. Rapid taps on one item
- * are coalesced into one POST per 250 ms (at most 10 units per request, the server's per-line maximum).
+ * in flight — and settles on the server's `cart.count` when the JSON answer arrives. The base is the newest server
+ * figure: an /api/cart answer, or a fresh root-loader result (recognised by identity, so a component that mounts
+ * later never replays an old count, and "0 after checkout" counts even when the page started at 0). A failed change
+ * rolls its part back. Rapid taps on one item are coalesced into one POST per 250 ms (at most 10 units per request,
+ * the server's per-line maximum).
  *
  * Why `fetch` and not `useFetcher`: React Router 8 routes a fetcher's failures — a network error, a thrown 5xx, a
  * path whose resource route does not exist yet — to the route's ErrorBoundary (router.js `setFetcherError`), which
@@ -27,6 +29,7 @@ import { useRouteLoaderData } from "react-router";
 
 import type { CartLine, CartView, ImageRef } from "~/lib/dto";
 import type { Locale } from "~/lib/locales";
+import { toast, type ToastImage } from "./toast-store";
 
 /* ═══════════════════════════════ pure: the count model ═══════════════════════════════ */
 
@@ -37,19 +40,18 @@ export const MAX_ADD_QTY = 10;
 const REQUEST_TIMEOUT_MS = 15_000;
 
 export type CountState = {
-  /** Last authoritative count (root loader or a server answer); null until the first one is known. */
+  /** Last authoritative count (a fresh root-loader read or a server answer); null until the first one is known. */
   confirmed: number | null;
-  /** Last root-loader count seen, so a stale root value never overwrites a newer server answer. */
-  lastRoot: number | null;
   /** Signed sum of changes sent or about to be sent and not settled yet. */
   pending: number;
   /** Increments every time a bead lands on the cart (`tt:cart-received`). */
   bump: number;
 };
 
-export const INITIAL_COUNT: CountState = { confirmed: null, lastRoot: null, pending: 0, bump: 0 };
+export const INITIAL_COUNT: CountState = { confirmed: null, pending: 0, bump: 0 };
 
 export type CountEvent =
+  /** A fresh root-loader read (dispatched once per loader result — see useCartCount). */
   | { type: "root"; count: number }
   | { type: "optimistic"; delta: number }
   | { type: "settled"; delta: number; count: number | null }
@@ -62,8 +64,9 @@ const isDelta = (value: unknown): value is number => typeof value === "number" &
 export function reduceCount(state: CountState, event: CountEvent): CountState {
   switch (event.type) {
     case "root":
-      if (!isCount(event.count) || event.count === state.lastRoot) return state;
-      return { ...state, confirmed: event.count, lastRoot: event.count };
+      // Even when it equals the old number: after checkout an emptied cart reads 0 again, and that 0 is the truth.
+      if (!isCount(event.count) || event.count === state.confirmed) return state;
+      return { ...state, confirmed: event.count };
     case "optimistic":
       return isDelta(event.delta) && event.delta !== 0 ? { ...state, pending: state.pending + event.delta } : state;
     case "settled":
@@ -280,12 +283,22 @@ const getServerState = () => INITIAL_COUNT;
 
 type RootCart = { cart?: { count?: unknown } | null };
 
-/** The root loader's `cart.count` (0 when absent or malformed). */
-export function useRootCartCount(): number {
-  const root = useRouteLoaderData("root") as RootCart | undefined;
+const countOf = (root: RootCart | undefined): number => {
   const count = root?.cart?.count;
   return isCount(count) ? count : 0;
+};
+
+/** The root loader's `cart.count` (0 when absent or malformed). */
+export function useRootCartCount(): number {
+  return countOf(useRouteLoaderData("root") as RootCart | undefined);
 }
+
+/**
+ * Root-loader results already folded into the store. React Router hands out a new data object only when the root
+ * loader ran again (after a mutation), so identity — not the number — says "fresh read": a component that mounts
+ * later must not replay an old count over a newer server answer, and a new read of the same number still counts.
+ */
+const seenRoots = new WeakSet<object>();
 
 export type CartCount = {
   /** The number for the cart bead. */
@@ -301,10 +314,13 @@ export type CartCount = {
  * `data-cart-target` element. Server-rendered and hydrated from the root loader's `cart.count`.
  */
 export function useCartCount(): CartCount {
-  const rootCount = useRootCartCount();
+  const root = useRouteLoaderData("root") as RootCart | undefined;
+  const rootCount = countOf(root);
   useEffect(() => {
-    dispatch({ type: "root", count: rootCount });
-  }, [rootCount]);
+    if (!root || seenRoots.has(root)) return;
+    seenRoots.add(root);
+    dispatch({ type: "root", count: countOf(root) });
+  }, [root]);
   const current = useSyncExternalStore(subscribe, getState, getServerState);
   return { count: displayCount(current, rootCount), bump: current.bump, pending: current.pending !== 0 };
 }
@@ -632,6 +648,8 @@ export function announce(message: string): void {
     region.setAttribute("aria-live", "polite");
     region.setAttribute("aria-atomic", "true");
     region.dataset.shopAnnouncer = "";
+    // Modal layers make the rest of <body> inert (~/ui/Dialog); an inert region would be silent while a sheet is open.
+    region.setAttribute("data-overlay-keep", "");
     document.body.appendChild(region);
   }
   const target = region;
@@ -642,34 +660,53 @@ export function announce(message: string): void {
   }, 60);
 }
 
-/** A toast for the shared toast store (DESIGN.md §9.13): thumbnail, a bold line, a secondary line, one small key. */
-export type ShopToast = {
-  tone: "success" | "error";
-  title: string;
-  detail?: string | null;
-  image?: ImageRef | null;
-  action?: { label: string; onAction: () => void } | null;
-};
-
-/*
- * Adapter for ~/ui/toast-store, which another owner is writing in parallel. Until that file exists the glob is empty
- * and nothing is shown as a toast (the inline sentence beside the key and the live region still say everything).
- * When it lands, check that its export accepts this ShopToast shape and adjust this one function.
+/**
+ * The two toasts the commerce components show through the shared store (~/ui/toast-store, DESIGN.md §9.13):
+ *   "added" — thumbnail, "أُضيف إلى السلة", "name · variant" and an undo key (toast.cart: rapid adds refresh ONE toast);
+ *   "error" — the reason in words and one retry key (toast.error: never pushed away by a less important toast).
+ * A toast is a courtesy: the sentence beside the control and the live region already said everything, so nothing
+ * depends on a toast being seen (on the server, or without a mounted <Toaster>, nothing shows).
  */
-const toastStores = import.meta.glob<Record<string, unknown>>("./toast-store.{ts,tsx}", { eager: true });
-
-/** Show a toast if the toast store is available. Returns false when it is not (callers must not rely on it). */
-export function showShopToast(toast: ShopToast): boolean {
-  if (typeof window === "undefined") return false;
-  for (const store of Object.values(toastStores)) {
-    const show = store.showToast ?? store.toast ?? store.pushToast;
-    if (typeof show !== "function") continue;
-    try {
-      (show as (toast: ShopToast) => unknown)(toast);
-      return true;
-    } catch {
-      return false;
+export type ShopToast =
+  | {
+      kind: "added";
+      title: string;
+      name: string;
+      variant?: string | null;
+      image?: ImageRef | null;
+      undo?: { label: string; onUndo: () => void } | null;
     }
+  | {
+      kind: "error";
+      title: string;
+      detail?: string | null;
+      retry?: { label: string; onRetry: () => void } | null;
+    };
+
+/** `/media/<key>` — uploaded files (used-unit photos); the server decides what is public. */
+export const mediaUrl = (mediaKey: string) => `/media/${encodeURIComponent(mediaKey)}`;
+
+/** An ImageRef as the toast's thumbnail: a catalogue picture by its art key, or an uploaded photo. */
+export function toastThumb(image: ImageRef | null | undefined): { art?: string; image?: ToastImage } {
+  if (image?.artKey) return { art: image.artKey };
+  if (image?.mediaKey) return { image: { src: mediaUrl(image.mediaKey), width: image.width ?? 1200, height: image.height ?? 900 } };
+  return {};
+}
+
+/** Show a commerce toast. Returns the toast id ("" on the server, where nothing is shown). */
+export function showShopToast(input: ShopToast): string {
+  if (input.kind === "added") {
+    return toast.cart({
+      title: input.title,
+      name: input.name,
+      variant: input.variant ?? undefined,
+      ...toastThumb(input.image),
+      onUndo: input.undo?.onUndo,
+      undoLabel: input.undo?.label,
+    });
   }
-  return false;
+  return toast.error(input.title, {
+    detail: input.detail ?? undefined,
+    action: input.retry ? { label: input.retry.label, onAction: input.retry.onRetry } : undefined,
+  });
 }

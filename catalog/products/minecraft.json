@@ -29,12 +29,12 @@
       "ckb": "1–4 یاریزان لەسەر یەک ئامێر، تا 8 ئۆنلاین لەگەڵ PlayStation Plus."
     },
     {
-      "ar": "لعب مشترك مع أصحاب Minecraft على Xbox وSwitch والهاتف والكمبيوتر (Bedrock).",
-      "en": "Crossplay with Minecraft players on Xbox, Switch, mobile and PC (Bedrock).",
-      "ckb": "یاری هاوبەش لەگەڵ یاریزانانی Minecraft لەسەر Xbox، Switch، مۆبایل و کۆمپیوتەر (Bedrock)."
+      "ar": "لعب مشترك مع أصحاب Minecraft على XBOX وSwitch والهاتف والكمبيوتر (Bedrock).",
+      "en": "Crossplay with Minecraft players on XBOX, Switch, mobile and PC (Bedrock).",
+      "ckb": "یاری هاوبەش لەگەڵ یاریزانانی Minecraft لەسەر XBOX، Switch، مۆبایل و کۆمپیوتەر (Bedrock)."
     },
     {
-      "ar": "النسخة الفيزيائية لـ PS5 تضم 3,500 Token لمتجر Minecraft حسب الإعلان عند إطلاقها.",
+      "ar": "النسخة الفيزيائية لـ PS5 جاءت عند إطلاقها مع 3,500 Token لمتجر Minecraft.",
       "en": "The PS5 physical edition came with 3,500 Tokens for the Minecraft store at launch.",
       "ckb": "وەشانی فیزیکی PS5 لە کاتی دەرچوونیدا 3,500 Token ی بۆ فرۆشگای Minecraft لەگەڵدا بوو."
     },
@@ -54,9 +54,9 @@
       "key": "platforms",
       "label": { "ar": "الأجهزة", "en": "Platforms", "ckb": "ئامێرەکان" },
       "value": {
-        "ar": "PS5 (والنسخة متوفرة أيضاً على Xbox وNintendo Switch والهاتف وPC)",
-        "en": "PS5 (also available on Xbox, Nintendo Switch, mobile and PC)",
-        "ckb": "PS5 (لەسەر Xbox، Nintendo Switch، مۆبایل و PC یش بەردەستە)"
+        "ar": "PS5 (والنسخة متوفرة أيضاً على XBOX وNintendo Switch والهاتف وPC)",
+        "en": "PS5 (also available on XBOX, Nintendo Switch, mobile and PC)",
+        "ckb": "PS5 (لەسەر XBOX، Nintendo Switch، مۆبایل و PC یش بەردەستە)"
       }
     },
     {
@@ -95,13 +95,13 @@
     },
     {
       "key": "developer",
-      "label": { "ar": "المطوّر", "en": "Developer", "ckb": "گەشەپێدەر" },
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "گەشەپێدەر و بڵاوکەرەوە" },
       "value": { "ar": "Mojang Studios", "en": "Mojang Studios", "ckb": "Mojang Studios" }
     }
   ],
   "inTheBox": [
-    { "ar": "نسخة اللعبة لجهاز PS5", "en": "The game for PS5", "ckb": "یارییەکە بۆ PS5" },
-    { "ar": "3,500 Token لمتجر Minecraft (حسب إعلان إطلاق 2024)", "en": "3,500 Minecraft store Tokens (per the 2024 launch announcement)", "ckb": "3,500 Token بۆ فرۆشگای Minecraft (بەپێی ڕاگەیاندنی دەرچوونی 2024)" }
+    { "ar": "قرص اللعبة لجهاز PS5", "en": "PS5 game disc", "ckb": "دیسکی یارییەکە بۆ PS5" },
+    { "ar": "3,500 Token لمتجر Minecraft عبر كود في العلبة (حسب قوائم إطلاق 2024)", "en": "3,500 Minecraft store Tokens via a code in the box (per the 2024 launch listings)", "ckb": "3,500 Token بۆ فرۆشگای Minecraft لە ڕێگەی کۆدێک لەناو قوتووەکە (بەپێی لیستەکانی دەرچوونی 2024)" }
   ],
   "variants": [
     {
@@ -111,14 +111,14 @@
       "isDefault": true,
       "images": ["minecraft--1", "minecraft--2", "minecraft--3", "minecraft--4"],
       "notes": {
-        "ar": "من يملك Minecraft على PS4 يحصل على نسخة PS5 الرقمية مجاناً من PlayStation Store.",
-        "en": "Owners of Minecraft on PS4 can claim the digital PS5 version free from PlayStation Store.",
-        "ckb": "خاوەنانی Minecraft لەسەر PS4 دەتوانن وەشانی دیجیتاڵی PS5 بێبەرامبەر لە PlayStation Store وەربگرن."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     }
   ],
   "game": {
-    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-digital", "ps5-slim-digital"],
+    "platforms": ["ps5", "ps5-slim", "ps5-pro", "ps5-slim-digital"],
     "genres": [
       { "ar": "بناء ومغامرة", "en": "Sandbox", "ckb": "بنیاتنان و سەرکێشی" },
       { "ar": "عائلية", "en": "Family", "ckb": "خێزانی" }
@@ -133,7 +133,7 @@
     "arabic": "none",
     "physicalFormat": "disc",
     "developer": "Mojang Studios",
-    "publisher": "Microsoft"
+    "publisher": "Mojang Studios"
   },
   "compatibility": [
     {
@@ -155,15 +155,15 @@
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-digital",
+      "deviceModel": "ps5-slim-digital",
       "status": "partial",
       "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     },
     {
-      "deviceModel": "ps5-slim-digital",
-      "status": "partial",
-      "note": { "ar": "يحتاج قارئ الأقراص الإضافي.", "en": "Needs the add-on Disc Drive.", "ckb": "پێویستی بە Disc Drive ی زیادە هەیە." },
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": { "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.", "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.", "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات." },
       "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
     }
   ],
@@ -216,26 +216,27 @@
     }
   ],
   "sources": [
-    { "url": "https://www.minecraft.net/en-us/article/minecraft-now-available-for-ps5--", "title": "Minecraft now available for PS5", "publisher": "Mojang Studios", "retrieved": "2026-11-11", "supports": "native PS5 version on 22 Oct 2024, 4K and 60 fps, crossplay with Bedrock devices, free PS5 upgrade for PS4 owners, sold at retailers" },
-    { "url": "https://www.minecraft.net/en-us/article/release-date--minecraft-for-playstation-5-", "title": "Release date: Minecraft for PlayStation 5", "publisher": "Mojang Studios", "retrieved": "2026-11-11", "supports": "release date, render distance, Minecraft store tokens" },
-    { "url": "https://www.playstation.com/en-ae/games/minecraft/", "title": "Minecraft — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS Plus required for online play, up to 8 online players, 1–4 players, editions, screenshots" },
-    { "url": "https://store.playstation.com/en-ae/concept/212779", "title": "Minecraft — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 screen languages without Arabic, cover art" },
+    { "url": "https://www.minecraft.net/en-us/article/minecraft-now-available-for-ps5--", "title": "Minecraft now available for PS5", "publisher": "Mojang Studios", "retrieved": "2026-11-11", "supports": "native PS5 version, 4K and 60 fps with a greater render distance, free PS5 version for owners of Bedrock Edition on PS4 (PS4 disc owners must insert the disc), sold on PlayStation Store and at retailers" },
+    { "url": "https://www.minecraft.net/en-us/article/release-date--minecraft-for-playstation-5-", "title": "Release date: Minecraft for PlayStation 5", "publisher": "Mojang Studios", "retrieved": "2026-11-11", "supports": "release on 22 Oct (2024), render distance, cross-play with all Bedrock devices, Minecraft store tokens" },
+    { "url": "https://www.playstation.com/en-ae/games/minecraft/", "title": "Minecraft — PlayStation (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS Plus required for online play, up to 8 online players, 1–4 players, Remote Play, screenshots" },
+    { "url": "https://store.playstation.com/en-ae/concept/212779", "title": "Minecraft — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 release 22 Oct 2024, PS5 screen languages without Arabic, publisher Mojang AB, cover art" },
     { "url": "https://store.playstation.com/en-gb/concept/212779", "title": "Minecraft — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 7 (fear, violence, in-game purchases)" },
     { "url": "https://www.psu.com/news/minecraft-ps5-physical-edition-release-date-preorder/", "title": "Minecraft PS5 physical edition out October 22, features $20 worth of in-game currency", "publisher": "PlayStation Universe", "retrieved": "2026-11-11", "supports": "PS5 physical edition on 22 Oct 2024 with 3,500 tokens" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.target.com/p/minecraft-playstation-5/-/A-92999000", "title": "Minecraft — PlayStation 5", "publisher": "Target", "retrieved": "2026-11-11", "supports": "fact-check: physical PS5 edition, street date 22 Oct 2024, includes 3,500 tokens via a voucher code" },
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "the add-on drive (CFI-ZDD1) works only with PS5 Pro and PS5 Digital Edition CFI-2000/CFI-2100 (slim) consoles, so the original 2020 Digital Edition cannot play discs" }
   ],
   "notes": {
-    "ar": "Tokens تُستخدم لشراء العوالم والإضافات والأزياء من متجر Minecraft. تحقق من محتوى العلبة الحالية لأن العروض المرفقة قد تتغير.",
-    "en": "Tokens buy worlds, add-ons and skins in the Minecraft store. Check the current box, as bundled offers can change.",
-    "ckb": "Token بۆ کڕینی جیهان، زیادکراو و جلوبەرگ لە فرۆشگای Minecraft بەکاردێت. ناوەڕۆکی قوتووی ئێستا بپشکنە چونکە ئۆفەرە لەگەڵدا هاتووەکان لەوانەیە بگۆڕێن."
+    "ar": "Tokens تُستخدم لشراء العوالم والإضافات والأزياء من متجر Minecraft. من يملك Minecraft: Bedrock Edition على PS4 يحصل على نسخة PS5 الرقمية مجاناً، ومن يملكها على قرص PS4 يجب أن يضع القرص في الجهاز ليلعب. تحقق من محتوى العلبة الحالية لأن العروض المرفقة قد تتغير.",
+    "en": "Tokens buy worlds, add-ons and skins in the Minecraft store. Owners of Minecraft: Bedrock Edition on PS4 can claim the digital PS5 version free; if they own the PS4 disc, it must be in the console to play. Check the current box, as bundled offers can change.",
+    "ckb": "Token بۆ کڕینی جیهان، زیادکراو و جلوبەرگ لە فرۆشگای Minecraft بەکاردێت. خاوەنانی Minecraft: Bedrock Edition لەسەر PS4 دەتوانن وەشانی دیجیتاڵی PS5 بێبەرامبەر وەربگرن؛ ئەگەر دیسکی PS4 یان هەیە، دەبێت دیسکەکە لەناو ئامێرەکەدا بێت بۆ یاریکردن. ناوەڕۆکی قوتووی ئێستا بپشکنە چونکە ئۆفەرە لەگەڵدا هاتووەکان لەوانەیە بگۆڕێن."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "That the PS5 physical edition is a disc (not a download code) is inferred from retailer listings; Mojang only says it is sold at retailers.",
-      "The 3,500 Tokens bundle comes from press coverage of the 2024 launch; current boxes may differ.",
-      "Xbox physical edition not researched.",
+      "That the PS5 box holds a disc comes from retailer listings (Target lists it as physical, other retailers as a disc); Mojang only says it is sold at retailers.",
+      "The 3,500 Tokens come from 2024 launch listings (Target, PlayStation Universe); current boxes may differ.",
+      "XBOX physical edition not researched.",
       "No EAN/UPC barcode recorded."
     ]
   }

@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/xbox-elite-series-2/2-1440.cffe594a.webp"
       }
-    ],
-    "png": "/products/xbox-elite-series-2/2-720.ec08559f.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGsAAAART6AmkhQ2+BJIbYaOiAjQuX1IB5zYtq02JxwZGYkFyaRJ4xDYdQhpXXTxjffDGCL6PwFY79bL5bEFZKJ14aFL4aWbw1d3I/nrGqcnRm9jCu6mqJZmNBwu/hLX0gV4SrwRT+lJkKzQHhwsAQBWUDggYAAAAJADAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglpAABRyYAWSS70A4AA/qjoefJemP893Wzaw2oJ8jQr0VnHpAPa2Qg9Tv82HR5rUUOfZzOxVGUOvDbYpfAYt6f3Y/2zGxAAAA==",
   "dominant": "#171717",
@@ -61,5 +60,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-3131-D-b01-1?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg"
   },
-  "input": "4c6ea8d5ff705e86"
+  "input": "d4d4c24476966854"
 }

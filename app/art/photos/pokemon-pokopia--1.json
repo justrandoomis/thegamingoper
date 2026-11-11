@@ -1,65 +1,62 @@
 {
   "key": "pokemon-pokopia--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1054,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6587,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/pokemon-pokopia/1-240.2f2d9001.avif"
+        "src": "/products/pokemon-pokopia/1-240.3f87d5ff.avif"
       },
       {
         "w": 480,
-        "src": "/products/pokemon-pokopia/1-480.743c370f.avif"
+        "src": "/products/pokemon-pokopia/1-480.e7d347a6.avif"
       },
       {
         "w": 720,
-        "src": "/products/pokemon-pokopia/1-720.6b717c55.avif"
+        "src": "/products/pokemon-pokopia/1-720.e63a7db2.avif"
       },
       {
         "w": 960,
-        "src": "/products/pokemon-pokopia/1-960.645955b1.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/pokemon-pokopia/1-1440.1eec3172.avif"
+        "src": "/products/pokemon-pokopia/1-960.5db3e1e4.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/pokemon-pokopia/1-240.5936c9c2.webp"
+        "src": "/products/pokemon-pokopia/1-240.24c898bd.webp"
       },
       {
         "w": 480,
-        "src": "/products/pokemon-pokopia/1-480.887082c2.webp"
+        "src": "/products/pokemon-pokopia/1-480.6104a8a3.webp"
       },
       {
         "w": 720,
-        "src": "/products/pokemon-pokopia/1-720.ff641e0f.webp"
+        "src": "/products/pokemon-pokopia/1-720.88f4e9ff.webp"
       },
       {
         "w": 960,
-        "src": "/products/pokemon-pokopia/1-960.6fec7554.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/pokemon-pokopia/1-1440.76760ed1.webp"
+        "src": "/products/pokemon-pokopia/1-960.1553fbc0.webp"
       }
-    ],
-    "png": "/products/pokemon-pokopia/1-720.02223ae9.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABQBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJbAC+SAyXUSk4Bq5rIqektMIAAP7t0LbWIu0BYvJfl938qEkRORr9qpUZNhw1pYynVfWwbyIGW1CKGz1+CV7DvGmQpW1/wj+RJc0wggQu1lh51LP/ODiPaRA9SiYkC02CaBGkrAK5SGi7Q04AAA==",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "share": {
+    "src": "/products/pokemon-pokopia/1-1054.56f41d68.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDIAAAARJ0CQbTOD+YPN4B7XiIjgNiBq20ZVGYxCGNyFwY4/tPtH9D8C0Kzq652ZOT+t6msAGlZQOCCWAAAA0AMAnQEqDQAUAD8RcrBQLCakorAIAYAiCWwAnTKBr/4DS0YJmfkQAP5ASv0otsAjge4MMCYQX7Avlq0vReNivE+buLNx0Gy6/xWgw4ZK+VWIeXSZ/7w+g6ncAqFrf5jrlPb+1hqON/aqYd//Ai5F5RV/eoDV+oXgGH51q2uDLIu0ua1pP5XXkX/w/Bj/786OOA4AAAAA",
+  "dominant": "#fffefe",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo / The Pokémon Company",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Pokemon%20Pokopia/121593-nintendo-pokemon-pokopia-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/pokemon-pokopia-121593/"
   },
-  "input": "a9455bae75444881"
+  "input": "f8f7bf2a3196c9ed"
 }

@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/ea-sports-fc-27/1-1440.507c934b.webp"
       }
-    ],
-    "png": "/products/ea-sports-fc-27/1-720.2d8e8b30.png"
+    ]
+  },
+  "share": {
+    "src": "/products/ea-sports-fc-27/1-1200.a8a71fb9.jpg",
+    "width": 1200,
+    "height": 1200,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQBACdASoUABQAPxGAtlWsJ6SjKAgBgCIJZQDCgBDeBIe4cI+bQZGv5tQPK3frAAD41Rk+TvJfu1TY9w9MMf1ZfMoFb9wkxBzKF2w1RQlH/ZTADDQsIijfOYHbtGOHuwhXSQk5Y2u4/H58k9ax2SIqxt5tiMND/KK10CSUNg/4AA==",
   "dominant": "#fbfcf6",
@@ -61,5 +66,5 @@
     "url": "https://drop-assets.ea.com/images/5K1irdzIk8dr7VqEfe2yRm/993ad991664df96b85b6910197bb5143/fc-27-standard-key-art-1x1.jpg",
     "page": "https://www.ea.com/games/ea-sports-fc/fc-27"
   },
-  "input": "ced3d9c51beee505"
+  "input": "096e54d464a6ecb3"
 }

@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/xbox-wireless-controller/1-1440.e080a760.webp"
       }
-    ],
-    "png": "/products/xbox-wireless-controller/1-720.079c5d31.png"
+    ]
+  },
+  "share": {
+    "src": "/products/xbox-wireless-controller/1-1200.4564af2d.png",
+    "width": 1200,
+    "height": 875,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRugAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSG8AAAART6CobSM2VgA9Avs1IyLAa7V6cTitte1pXrrlc8jeXEejGACHK8kAicRmhJ5v3r/MENH/CYD2MnbdJQMQstQENpkLPGUV8JGt8H+y0whZaU4qe1O5Nz6TOG5/7N25BIAHBxtbREQ1u+HsC3Q1oQkAVlA4IFIAAABQAwCdASoUAA8APxFysFAsJqSisAgBgCIJaQAALfpdHfcq8AD+zvVjkKizkjAgSGX9ELXjiO7r7IwUDSdaIQEDJDKYAlNDG1/t7/fgnkRSAAAA",
   "dominant": "#282828",
@@ -61,5 +66,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/gldn-Xbox-Cntrl-Black-b00?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-wireless-controller/8xn59crbsqgz"
   },
-  "input": "2f40146a788a3835"
+  "input": "346be455895d0236"
 }

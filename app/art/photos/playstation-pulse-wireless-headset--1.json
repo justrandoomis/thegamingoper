@@ -32,8 +32,13 @@
         "w": 720,
         "src": "/products/playstation-pulse-wireless-headset/1-720.8eaaf4e5.webp"
       }
-    ],
-    "png": "/products/playstation-pulse-wireless-headset/1-720.42a09cc1.png"
+    ]
+  },
+  "share": {
+    "src": "/products/playstation-pulse-wireless-headset/1-752.12e994bd.png",
+    "width": 752,
+    "height": 1064,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAADQAAEwAAQUxQSHkAAAART2CmYdooGjgbXtgiIgRPTQK3kW2rzRG8+alkdvZLcOZxxpSpBI0rYMqYYn716quHiP4TTNJU2zHkja4jgHT/C4CXHAxwJ6mDbdGoQ7uOFUgNkcBMnEuC6aMK7cJfnx6LjaqK1czazOXoYNwL2hkT+KoOfGjfm+QFAFZQOCB8AAAAEAQAnQEqDgAUAD8RcLBQLCYkorAIAYAiCWcAA+TJZB7zwWzr3wZ5vUAA/qRmFscqbJcv40AxW2+u3UfLzh9oC3c3fnT50idIg8S8NR3EMiabGkXEDO2+gJv7wIOR6ovDIXyUb7A5rymw/dPklb3u/BMzZ3FmD258bFVgAA==",
   "dominant": "#282b34",
@@ -45,5 +50,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/PULSE-WHITE-PR-01-16x9-01-09jul26-_en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/pulse-wireless-headset/product/PSD001-PSDE00423_03-PSPULSEHEAF2BYME/"
   },
-  "input": "59fa17ee2d353c41"
+  "input": "3092d6f6b6ef2eca"
 }

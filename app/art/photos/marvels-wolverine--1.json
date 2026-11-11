@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/marvels-wolverine/1-960.71d11b61.webp"
       }
-    ],
-    "png": "/products/marvels-wolverine/1-720.b9ef00dd.png"
+    ]
+  },
+  "share": {
+    "src": "/products/marvels-wolverine/1-1067.731e84b8.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoR4GCmcfYBO/OE5cTdtWAD98Cyx+YYJYyOipTSw3Z1PJgMqZagg9GWelF9lI/sVuMcwEbxG3pswfPY09BCL1TuQf4QzJE1frZzvbCL9WKJuITXZNb4Vd1GSiLvhOQixr9YbCxK/nU/X/iPjbyzyAAAA",
   "dominant": "#fce646",
@@ -53,5 +58,5 @@
     "url": "https://image.api.playstation.com/vulcan/ap/rnd/202510/0721/ab0526f97f49e5e810c13b4f7367970f95346b2440baf18b.jpg",
     "page": "https://store.playstation.com/en-gb/product/UP9000-PPSA03671_00-MARVELSWOLVERINE"
   },
-  "input": "0265f1079c8685b1"
+  "input": "55926b5902902899"
 }

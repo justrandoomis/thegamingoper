@@ -32,8 +32,7 @@
         "w": 720,
         "src": "/products/msi-claw-a8/5-720.e5e96a2e.webp"
       }
-    ],
-    "png": "/products/msi-claw-a8/5-720.4d8f648a.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRuYAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFUAAAART6CobSM2VQr93p4REeBbh6gbGMW23eTRtykKcNAMYKFpCNveFJA99fsl0RDR/wmALQPAOC9dnGpdD00U4aH/KCFTZwotgsLkY9Q/uwPwOG9UK2ELAFZQOCBqAAAAEAQAnQEqFAALAD8RcrBQLCakorAIAYAiCWkAA+T5kRVesheH/v/NhgAA/uWipCz1h0shB3qbfAYZSAFcgzPVdbbIPW3qAktzHeaqhDFgSGWrUsRpg4D6A6qLLc6JNpXQ4HKQ4EOcpAAAAA==",
   "dominant": "#272727",
@@ -45,5 +44,5 @@
     "url": "https://storage-asset.msi.com/global/picture/product/product_17501422707a1d695b3e76967b18e24e260ea20f8c.png",
     "page": "https://www.msi.com/Handheld/Claw-A8-BZ2EMX/Gallery"
   },
-  "input": "3a9d2183b764b4ec"
+  "input": "fc2b1cde778128dc"
 }

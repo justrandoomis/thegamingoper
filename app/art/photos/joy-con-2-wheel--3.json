@@ -2,64 +2,63 @@
   "key": "joy-con-2-wheel--3",
   "view": "hero",
   "width": 1600,
-  "height": 1600,
-  "aspect": 1,
+  "height": 841,
+  "aspect": 1.9025,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/joy-con-2-wheel/3-240.ec47bb7e.avif"
+        "src": "/products/joy-con-2-wheel/3-240.e6511417.avif"
       },
       {
         "w": 480,
-        "src": "/products/joy-con-2-wheel/3-480.c27fd084.avif"
+        "src": "/products/joy-con-2-wheel/3-480.3d489804.avif"
       },
       {
         "w": 720,
-        "src": "/products/joy-con-2-wheel/3-720.528f4496.avif"
+        "src": "/products/joy-con-2-wheel/3-720.84db8d87.avif"
       },
       {
         "w": 960,
-        "src": "/products/joy-con-2-wheel/3-960.fe114c6e.avif"
+        "src": "/products/joy-con-2-wheel/3-960.579c0cca.avif"
       },
       {
         "w": 1440,
-        "src": "/products/joy-con-2-wheel/3-1440.3a6ff0de.avif"
+        "src": "/products/joy-con-2-wheel/3-1440.148c7267.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/joy-con-2-wheel/3-240.9aa213a4.webp"
+        "src": "/products/joy-con-2-wheel/3-240.121d41e8.webp"
       },
       {
         "w": 480,
-        "src": "/products/joy-con-2-wheel/3-480.e2a1f13f.webp"
+        "src": "/products/joy-con-2-wheel/3-480.0d9cdde9.webp"
       },
       {
         "w": 720,
-        "src": "/products/joy-con-2-wheel/3-720.8025781d.webp"
+        "src": "/products/joy-con-2-wheel/3-720.f90ff634.webp"
       },
       {
         "w": 960,
-        "src": "/products/joy-con-2-wheel/3-960.41de2042.webp"
+        "src": "/products/joy-con-2-wheel/3-960.07ee6715.webp"
       },
       {
         "w": 1440,
-        "src": "/products/joy-con-2-wheel/3-1440.2f7c77e8.webp"
+        "src": "/products/joy-con-2-wheel/3-1440.7a3c8a92.webp"
       }
-    ],
-    "png": "/products/joy-con-2-wheel/3-720.36b369b2.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBACdASoUABQAPxF4s1IsJySisBgIAYAiCWMAzNAQ7O7PryARmqED8DgwAP7vuwoLgS04Ai83pV94oB9eWsqNqku8kt+gqjzeT/RKOGiIwtvzJE1ExsvMAtWisLtOcQ/VGKe8Rwt7osgeqXGX3SolR4AAAA==",
+  "placeholder": "data:image/webp;base64,UklGRkwBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSG8AAAART6CgbRs2VBT7fxER+KZgil04sW1bbW44EyAZG8fkOK2lOTR1UdVMlnsn/McQ0X+1aRsweHbKGxAR7CxgsVGAa3KVvbEdUW3XZ3M/77/qRNJ/kjT2JMsXSXN6PB7+8///G5WLytyrOKgCTfhDAAAAVlA4ILYAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdAywTnIvOKjrqQ6ijMHAA/Y/7u6AEFJ6zS0SB8/MDEh0QhTqAPxfbZ5HfloSqfGUYEf8GaRBKYeSImU8JXE1ACxMc52sq95ku0U57XOvHC/6fivf+VVWEYn8P74KDhvql6oashYYrT7rLfPIlpiZPEBa0lH9z4Nu5s1u4/oOTewMOXrBS7AKxWy10uviR1r9mjIOQxVyevAAAAA==",
   "dominant": "#35383b",
-  "transparent": false,
-  "background": "#ffffff",
+  "transparent": true,
+  "background": null,
   "kind": "angle",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Controller%20Accessories/120834-nintendo-switch-2-joy-con-2-wheel-set-of-2-back-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-wheel-set-of-2-120834/"
   },
-  "input": "34080670402c71f2"
+  "input": "d6948d7ab5d5707e"
 }

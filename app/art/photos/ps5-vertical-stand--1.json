@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/ps5-vertical-stand/1-1440.501cbe3f.webp"
       }
-    ],
-    "png": "/products/ps5-vertical-stand/1-720.fc3c7e35.png"
+    ]
+  },
+  "share": {
+    "src": "/products/ps5-vertical-stand/1-1200.243fad78.png",
+    "width": 1200,
+    "height": 587,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRgIBAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSF8AAAART6CgbRsWF8bbjYjAsKf5YzitbduJLtlmNAqde6CA4Jksc9Kjfgechqkhov+pzXo8ns6ppOXcPcHkKgbtVgD76jwAzBRcnwAXpwoqwPTS39Fu/aVhcywl1dPxNCfaBABWUDggfAAAALADAJ0BKhQACgA/EXKxUCwmpKKwCAGAIglnAABQvmvtEO/v/DEAAPyxhKypKrSWzHNuerSpDRyNENkDc6ZUDmIp4UBrfwjK0D/b4XP2594uiGe5cbBd64I8Vr/6Trqz+nfu7/IbH6En8G4jivEW/8B6nK0R0QLFwOY5iAA=",
   "dominant": "#353a43",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/PlayStation5-VerticalStand-01-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/"
   },
-  "input": "9e4d6270f9d72134"
+  "input": "add1035d88ac744d"
 }

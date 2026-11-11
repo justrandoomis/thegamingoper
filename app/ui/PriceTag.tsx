@@ -1,9 +1,11 @@
 import { Fragment, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
-import { useFormat, useT } from "~/i18n/react";
+import { useFormat, useT, type Formatters } from "~/i18n/react";
+import { CURRENCIES } from "~/lib/money";
 import { cx } from "./cx";
 import { Price, type PriceProps } from "./Price";
+import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
  * The commerce price line (docs/DESIGN.md §9.11) built on <Price>: ink, Kufam 700, tabular figures, never red,
@@ -21,6 +23,14 @@ import { Price, type PriceProps } from "./Price";
  * "تعذّر عرض السعر" instead of a number — never a zero, never a crash (SafePrice).
  */
 export const isIqd = (value: unknown): value is number => typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+
+/**
+ * An amount of dinars inside a sentence, written the way <Price> writes it: the number, then the currency label
+ * ("5,000 د.ع", "5,000 IQD" — DESIGN.md §9.11 and the copy in §11). Wrap it in <bdi> or U+2066…U+2069.
+ */
+export function iqdText(f: Pick<Formatters, "number" | "locale">, amountIqd: number): string {
+  return `${f.number(amountIqd)} ${CURRENCIES.IQD.symbol[f.locale]}`;
+}
 
 /** Put React nodes where a translated template has {placeholders}: fillNodes(t("price.delivery"), { price: <bdi>…</bdi> }). */
 export function fillNodes(template: string, vars: Record<string, ReactNode>): ReactNode[] {
@@ -71,6 +81,11 @@ export type PriceTagProps = {
 };
 
 export function PriceTag({ priceIqd, compareAtIqd = null, size = "card", deliveryIqd = null, aside, showSaving, approx = "auto", className }: PriceTagProps) {
+  if (size === "card" && isIqd(priceIqd) && isIqd(compareAtIqd) && compareAtIqd > priceIqd) {
+    // A two-up card on a phone has no room for both figures on one line next to the socket: the old price sits
+    // above the price (still before it in reading order), small, ink-2, struck through.
+    return <CardReduction priceIqd={priceIqd} compareAtIqd={compareAtIqd} approx={approx} className={className} />;
+  }
   if (size !== "page") {
     return <SafePrice amountIqd={priceIqd} compareAtIqd={compareAtIqd} size={size === "line" ? "sm" : "md"} approx={approx} className={className} />;
   }
@@ -92,14 +107,33 @@ export function PriceTag({ priceIqd, compareAtIqd = null, size = "card", deliver
   );
 }
 
-/** "توفّر 70,000 د.ع" — plain words in ink-2; nothing when there is no genuine reduction. */
+function CardReduction({ priceIqd, compareAtIqd, approx, className }: { priceIqd: number; compareAtIqd: number; approx: "auto" | "off"; className?: string }) {
+  const ui = useT("ui");
+  const f = useFormat();
+  return (
+    <span className={cx("inline-grid justify-items-start gap-0.5", className)}>
+      <span className="leading-none">
+        <VisuallyHidden>{ui("price.was")} </VisuallyHidden>
+        <s className="price__was">
+          <bdi>{f.number(compareAtIqd)}</bdi>
+        </s>
+      </span>
+      <span>
+        <VisuallyHidden>{ui("price.now")} </VisuallyHidden>
+        <Price amountIqd={priceIqd} size="md" approx={approx} as="span" />
+      </span>
+    </span>
+  );
+}
+
+/** "توفّر 70,000 د.ع" — plain words in ink-2, kept on one line; nothing when there is no genuine reduction. */
 export function SavingNote({ priceIqd, compareAtIqd, className }: { priceIqd: number; compareAtIqd?: number | null; className?: string }) {
   const t = useT("ui-shop");
   const f = useFormat();
   if (!isIqd(priceIqd) || !isIqd(compareAtIqd) || compareAtIqd <= priceIqd) return null;
   return (
-    <span className={cx("type-caption text-ink-2", className)}>
-      {fillNodes(t("price.saving"), { amount: <bdi className="nums">{f.iqd(compareAtIqd - priceIqd)}</bdi> })}
+    <span className={cx("type-caption whitespace-nowrap text-ink-2", className)}>
+      {fillNodes(t("price.saving"), { amount: <bdi className="nums">{iqdText(f, compareAtIqd - priceIqd)}</bdi> })}
     </span>
   );
 }
@@ -109,5 +143,5 @@ export function DeliveryNote({ feeIqd, className }: { feeIqd: number; className?
   const t = useT("ui-shop");
   const f = useFormat();
   if (!isIqd(feeIqd)) return null;
-  return <span className={cx("type-caption text-ink-2", className)}>{fillNodes(t("price.delivery"), { price: <bdi className="nums">{f.iqd(feeIqd)}</bdi> })}</span>;
+  return <span className={cx("type-caption text-ink-2", className)}>{fillNodes(t("price.delivery"), { price: <bdi className="nums">{iqdText(f, feeIqd)}</bdi> })}</span>;
 }

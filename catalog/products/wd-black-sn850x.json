@@ -36,16 +36,8 @@
       "en": "Download, store and play PS5 and PS4 games straight from the drive",
       "ckb": "داگرتن و هەڵگرتن و یاریکردنی یارییەکانی PS5 و PS4 ڕاستەوخۆ لەسەر SSDیەکە"
     },
-    {
-      "ar": "سعات 1TB و2TB و4TB و8TB",
-      "en": "1TB, 2TB, 4TB or 8TB",
-      "ckb": "قەبارەکانی 1TB و 2TB و 4TB و 8TB"
-    },
-    {
-      "ar": "ضمان محدود لمدة 5 سنوات",
-      "en": "5-year limited warranty",
-      "ckb": "گەرەنتیی سنووردار بۆ 5 ساڵ"
-    }
+    { "ar": "سعات 1TB و2TB و4TB و8TB", "en": "1TB, 2TB, 4TB or 8TB", "ckb": "قەبارەکانی 1TB و 2TB و 4TB و 8TB" },
+    { "ar": "ضمان محدود لمدة 5 سنوات", "en": "5-year limited warranty", "ckb": "گەرەنتیی سنووردار بۆ 5 ساڵ" }
   ],
   "specs": [
     {
@@ -56,27 +48,47 @@
     {
       "key": "read_speed",
       "label": { "ar": "سرعة القراءة المتتالية", "en": "Sequential read", "ckb": "خێرایی خوێندنەوەی زنجیرەیی" },
-      "value": { "ar": "حتى 7,300MB/s (1TB حتى 4TB)، و7,200MB/s (8TB)", "en": "Up to 7,300MB/s (1TB to 4TB); 7,200MB/s (8TB)", "ckb": "تا 7,300MB/s (1TB تا 4TB)؛ 7,200MB/s (8TB)" }
+      "value": {
+        "ar": "حتى 7,300MB/s (1TB حتى 4TB)، و7,200MB/s (8TB)",
+        "en": "Up to 7,300MB/s (1TB to 4TB); 7,200MB/s (8TB)",
+        "ckb": "تا 7,300MB/s (1TB تا 4TB)؛ 7,200MB/s (8TB)"
+      }
     },
     {
       "key": "write_speed",
       "label": { "ar": "سرعة الكتابة المتتالية", "en": "Sequential write", "ckb": "خێرایی نووسینی زنجیرەیی" },
-      "value": { "ar": "6,300MB/s (1TB)، و6,600MB/s (2TB حتى 8TB)", "en": "6,300MB/s (1TB); 6,600MB/s (2TB to 8TB)", "ckb": "6,300MB/s (1TB)؛ 6,600MB/s (2TB تا 8TB)" }
+      "value": {
+        "ar": "6,300MB/s (1TB)، و6,600MB/s (2TB حتى 8TB)",
+        "en": "6,300MB/s (1TB); 6,600MB/s (2TB to 8TB)",
+        "ckb": "6,300MB/s (1TB)؛ 6,600MB/s (2TB تا 8TB)"
+      }
     },
     {
       "key": "endurance",
       "label": { "ar": "التحمّل (TBW)", "en": "Endurance (TBW)", "ckb": "بەرگەگرتن (TBW)" },
-      "value": { "ar": "600 / 1,200 / 2,400 / 4,800 تيرابايت مكتوبة (1TB / 2TB / 4TB / 8TB)", "en": "600 / 1,200 / 2,400 / 4,800 TB written (1TB / 2TB / 4TB / 8TB)", "ckb": "600 / 1,200 / 2,400 / 4,800 تێرابایت نووسین (1TB / 2TB / 4TB / 8TB)" }
+      "value": {
+        "ar": "600 / 1,200 / 2,400 / 4,800 تيرابايت مكتوبة (1TB / 2TB / 4TB / 8TB)",
+        "en": "600 / 1,200 / 2,400 / 4,800 TB written (1TB / 2TB / 4TB / 8TB)",
+        "ckb": "600 / 1,200 / 2,400 / 4,800 تێرابایت نووسین (1TB / 2TB / 4TB / 8TB)"
+      }
     },
     {
       "key": "dimensions",
       "label": { "ar": "الأبعاد مع المشتت", "en": "Size with heatsink", "ckb": "قەبارە لەگەڵ ساردکەرەوە" },
-      "value": { "ar": "2TB: 3.15 × 0.92 × 0.35 إنش؛ 4TB و8TB: 3.15 × 0.96 × 0.41 إنش", "en": "2TB: 3.15 × 0.92 × 0.35 in; 4TB and 8TB: 3.15 × 0.96 × 0.41 in", "ckb": "2TB: 3.15 × 0.92 × 0.35 ئینج؛ 4TB و 8TB: 3.15 × 0.96 × 0.41 ئینج" }
+      "value": {
+        "ar": "1TB و2TB: 80 × 23.4 × 8.9 ملم؛ 4TB و8TB: 80 × 24.5 × 10.3 ملم",
+        "en": "1TB and 2TB: 80 × 23.4 × 8.9 mm; 4TB and 8TB: 80 × 24.5 × 10.3 mm",
+        "ckb": "1TB و 2TB: 80 × 23.4 × 8.9 ملم؛ 4TB و 8TB: 80 × 24.5 × 10.3 ملم"
+      }
     },
     {
       "key": "weight",
       "label": { "ar": "الوزن مع المشتت", "en": "Weight with heatsink", "ckb": "کێش لەگەڵ ساردکەرەوە" },
-      "value": { "ar": "24 غرام (2TB)، و30.4 غرام (4TB و8TB)", "en": "24 g (2TB); 30.4 g (4TB and 8TB)", "ckb": "24 گرام (2TB)؛ 30.4 گرام (4TB و 8TB)" }
+      "value": {
+        "ar": "24 غرام (1TB و2TB)، و30.4 غرام (4TB و8TB)",
+        "en": "24 g (1TB, 2TB); 30.4 g (4TB, 8TB)",
+        "ckb": "24 گرام (1TB و 2TB)؛ 30.4 گرام (4TB و 8TB)"
+      }
     },
     {
       "key": "memory",
@@ -86,12 +98,20 @@
     {
       "key": "warranty",
       "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" },
-      "value": { "ar": "ضمان محدود 5 سنوات", "en": "5-year limited warranty", "ckb": "گەرەنتیی سنووردار 5 ساڵ" }
+      "value": {
+        "ar": "ضمان محدود 5 سنوات أو حتى حد الكتابة (TBW)، أيهما أسبق",
+        "en": "5-year limited warranty or the TBW limit, whichever comes first",
+        "ckb": "گەرەنتیی سنووردار 5 ساڵ یان تا سنووری نووسین (TBW)، کامیان زووتر بێت"
+      }
     },
     {
       "key": "compatibility",
       "label": { "ar": "التوافق", "en": "Compatibility", "ckb": "گونجاندن" },
-      "value": { "ar": "PlayStation 5 (نسخة المشتت فقط)، وأجهزة PC بنظام Windows 10 أو أحدث مع منفذ M.2 (M-key)", "en": "PlayStation 5 (heatsink model only); Windows 10+ PCs with an M.2 (M-key) slot", "ckb": "PlayStation 5 (تەنها وەشانی ساردکەرەوە)؛ کۆمپیوتەری Windows 10+ کە شوێنی M.2 (M-key)ی هەبێت" }
+      "value": {
+        "ar": "PlayStation 5 (نسخة المشتت فقط)، وأجهزة PC بنظام Windows 10 أو أحدث مع منفذ M.2 (M-key)",
+        "en": "PlayStation 5 (heatsink model only); Windows 10+ PCs with an M.2 (M-key) slot",
+        "ckb": "PlayStation 5 (تەنها وەشانی ساردکەرەوە)؛ کۆمپیوتەری Windows 10+ کە شوێنی M.2 (M-key)ی هەبێت"
+      }
     }
   ],
   "variants": [
@@ -152,11 +172,7 @@
     {
       "deviceModel": "ps5-digital",
       "status": "verified",
-      "note": {
-        "ar": "نفس منفذ M.2 الموجود في نسخة القرص.",
-        "en": "Same M.2 slot as the disc model.",
-        "ckb": "هەمان شوێنی M.2ی وەشانی دیسک."
-      },
+      "note": { "ar": "نفس منفذ M.2 الموجود في نسخة القرص.", "en": "Same M.2 slot as the disc model.", "ckb": "هەمان شوێنی M.2ی وەشانی دیسک." },
       "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
     },
     {
@@ -172,22 +188,18 @@
     {
       "deviceModel": "ps5-slim-digital",
       "status": "verified",
-      "note": {
-        "ar": "نفس منفذ M.2 في PS5 Slim.",
-        "en": "Same M.2 slot as the PS5 Slim.",
-        "ckb": "هەمان شوێنی M.2ی PS5 Slim."
-      },
+      "note": { "ar": "نفس منفذ M.2 في PS5 Slim.", "en": "Same M.2 slot as the PS5 Slim.", "ckb": "هەمان شوێنی M.2ی PS5 Slim." },
       "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
     },
     {
       "deviceModel": "ps5-pro",
       "status": "verified",
       "note": {
-        "ar": "تشير SanDisk إلى توافق PS5 وPS5 Pro مع الالتزام بتحديث النظام.",
-        "en": "SanDisk refers to PS5 and PS5 Pro system software compatibility for this drive.",
-        "ckb": "SanDisk ئاماژە بە گونجانی سیستەمی PS5 و PS5 Pro دەکات بۆ ئەم SSDیە."
+        "ar": "تنطبق متطلبات Sony لقرص M.2 على PS5 Pro أيضاً (مجموعة الطراز CFI-7000)، ونسخة المشتت ضمن هذه الحدود.",
+        "en": "Sony's M.2 requirements also cover the PS5 Pro (CFI-7000 model group), and the heatsink model fits within them.",
+        "ckb": "مەرجەکانی Sony بۆ M.2 PS5 Proش دەگرێتەوە (گرووپی مۆدێلی CFI-7000)، و وەشانی ساردکەرەوە لەناو ئەو سنوورانەدایە."
       },
-      "source": "https://www.sandisk.com/products/ssd/internal-ssd/wd-black-sn850x-nvme-ssd?sku=WDS100T2XHE-00BCA0"
+      "source": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/"
     },
     {
       "deviceModel": "windows-pc",
@@ -279,28 +291,35 @@
       "title": "WD_BLACK SN850X NVMe SSD With Heatsink (1TB, 2TB, 4TB, 8TB pages)",
       "publisher": "Sandisk",
       "retrieved": "2026-11-11",
-      "supports": "model numbers, speeds, endurance, size and weight with heatsink, warranty, PS5 compatibility (heatsink model only), pointer to the newer Optimus GX PRO 850X, images"
+      "supports": "model numbers, speeds, endurance, warranty, PS5 compatibility (heatsink model only), the notice that WD_BLACK SN850X is now SANDISK Optimus GX PRO 850X, images"
+    },
+    {
+      "url": "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/product/internal-drives/wd-black-ssd/data-sheet-wd-black-sn850x-nvme-ssd.pdf",
+      "title": "Data Sheet: WD_BLACK SN850X NVMe SSD",
+      "publisher": "Sandisk",
+      "retrieved": "2026-11-11",
+      "supports": "model numbers with and without heatsink, speeds and TBW per capacity, heatsink sizes (1TB/2TB 80 × 23.40 × 8.90 mm, 24 g; 4TB/8TB 80 × 24.46 × 10.31 mm, 30.4 g), Sandisk TLC 3D NAND, 5-year/TBW warranty, PlayStation 5 compatibility for the heatsink model only, Windows 10+ PCs with M.2 2280"
     },
     {
       "url": "https://www.playstation.com/en-us/support/hardware/ps5-install-m2-ssd/",
       "title": "How to add an M.2 SSD to a PS5 console",
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
-      "supports": "PS5 M.2 requirements (PCIe Gen4, 250GB to 8TB, size limits, 5,500MB/s recommended), playing PS5/PS4 games from M.2, formatting on first use, no extra heatsink on drives with a built-in one"
-    },
-    {
-      "url": "https://www.techspot.com/news/110818-sandisk-takes-over-western-digital-consumer-ssd-line.html",
-      "title": "SanDisk is replacing WD Blue and Black SSDs with new Optimus models",
-      "publisher": "TechSpot",
-      "retrieved": "2026-11-11",
-      "supports": "WD_BLACK SN850X renamed SanDisk Optimus GX PRO 850X with essentially unchanged hardware"
+      "supports": "PS5 M.2 requirements (PCIe Gen4 x4, 250GB to 8TB, up to 25 mm wide and 11.25 mm thick, 5,500MB/s recommended), covers CFI-1000 and CFI-2000/7000 consoles, playing PS5/PS4 games from M.2, formatting on first use, no extra heatsink on drives with a built-in one"
     },
     {
       "url": "https://www.tomshardware.com/pc-components/ssds/sandisk-optimus-gx-pro-850p-2tb-ssd-review",
       "title": "Sandisk Optimus GX Pro 850P 2TB SSD review",
       "publisher": "Tom's Hardware",
       "retrieved": "2026-11-11",
-      "supports": "independent confirmation of the SN850X capacities (1TB to 8TB) and lineage"
+      "supports": "independent confirmation that Sandisk's Optimus PS5 drive carries the WD_BLACK SN850X design under the new name"
+    },
+    {
+      "url": "https://www.pcgamer.com/hardware/ssds/the-names-of-some-of-the-most-popular-ssds-are-changing-so-their-new-owner-sandisk-now-gets-the-glory/",
+      "title": "The names of some of the most popular SSDs are changing so their new owner Sandisk gets the glory",
+      "publisher": "PC Gamer",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation: the WD_BLACK SN850X is now the SANDISK Optimus GX PRO 850X, only the name changes, new branding rolled out in the first half of 2026"
     }
   ],
   "notes": {
@@ -309,13 +328,12 @@
     "ckb": "پێش دانان سیستەمی PS5 نوێ بکەرەوە. لە یەکەم بەکارهێناندا PS5 هەموو SSDیەکە فۆرمات دەکات و هەموو داتاکانی سەری دەسڕێتەوە. ساردکەرەوەیەکی تر لەسەر ساردکەرەوە ناوەکییەکەی دامەنێ. هەمان SSD ئێستا بە ناوی SANDISK Optimus GX PRO 850X دەفرۆشرێت."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Exact launch date (2022; sources disagree on the day)",
-      "Size and weight of the 1TB heatsink model (SanDisk's 1TB page shows the bare-drive figures)",
-      "Box contents (not listed on SanDisk's page)",
-      "Whether SanDisk has fully stopped production of the WD_BLACK-branded drive (status set from SanDisk pointing buyers to the renamed model)"
+      "Exact launch date (2022)",
+      "Box contents (not listed on Sandisk's page or data sheet)",
+      "Whether Sandisk has fully stopped making WD_BLACK-branded units (status set from Sandisk's notice that the drive is now sold as the Optimus GX PRO 850X)"
     ]
   }
 }

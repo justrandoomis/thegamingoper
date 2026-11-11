@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/ghost-of-yotei/1-960.18ce3715.webp"
       }
-    ],
-    "png": "/products/ghost-of-yotei/1-720.42fd78e0.png"
+    ]
+  },
+  "share": {
+    "src": "/products/ghost-of-yotei/1-1200.d5216d2f.png",
+    "width": 1200,
+    "height": 1491,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRuwAAABXRUJQVlA4WAoAAAAQAAAADwAAEwAAQUxQSCgAAAARH0AgQNH/l+GHGxERfEJB2zZMyIxEeexgrMp0BCL6HwCxdd31G1sAVlA4IJ4AAADQAwCdASoQABQAPxFysFAsJqSisAgBgCIJbACdICXC/bwMUA7/UkAA/gGIQyDM+ysiQ+y6Omez8oHqJPNA1M5xkt9+WseLSyUAFlolx+nJ1CuDJ/Ed6lCs0BDFcHRQURzg0Nl3AxtoXqNUIC9XbYfNqm3yRF+aAc2TEAD0tPE7E8P24oLH6xp3Ucp21O8qnPuOZ7rEfmlBoWRNOiQAAA==",
   "dominant": "#fafafa",
@@ -53,5 +58,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-packshot-ps5-01-24jul25?$1600px--t$",
     "page": "https://www.playstation.com/en-us/games/ghost-of-yotei/"
   },
-  "input": "ead68946ebf907a4"
+  "input": "9c7e6ec08b87ae4a"
 }

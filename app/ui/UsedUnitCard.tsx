@@ -11,7 +11,7 @@ import { DemoNote } from "./DemoNote";
 import { GradeBadge } from "./GradeBadge";
 import { Niche } from "./Niche";
 import { PriceTag } from "./PriceTag";
-import { BidiText, ProductImage } from "./ProductCard";
+import { BidiText, priceFit, ProductImage } from "./ProductCard";
 
 /**
  * One used unit (docs/DESIGN.md §9.5 "Used devices", §12, brief §5): the same card, but the niche holds a REAL photo
@@ -52,7 +52,7 @@ export function UsedUnitCard({ unit, priority = false, sharedName, slot, sizes =
   ].filter(Boolean);
 
   return (
-    <article ref={root} className={cx("relative flex min-w-0 flex-col", className)} data-used-unit={unit.id}>
+    <article ref={root} className={cx("relative flex w-full min-w-0 flex-col", className)} data-used-unit={unit.id}>
       <MotionLink nav="zoom" to={href} className="flex flex-col gap-2 rounded-lg after:absolute after:inset-0 after:content-['']">
         <SharedElement name={sharedName ?? `used-image:${unit.id}`} slot={slot} as="span" className="block">
           <Niche as="span" fill={real && !!unit.image.mediaKey} tag={<GradeBadge grade={unit.grade} />}>
@@ -68,9 +68,9 @@ export function UsedUnitCard({ unit, priority = false, sharedName, slot, sizes =
         <Icon name={real ? "camera" : "image"} size={14} className="mt-[3px]" />
         <span>{t(real ? "card.realPhoto" : "card.illustration")}</span>
       </p>
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-1.5">
-        <PriceTag priceIqd={unit.priceIqd} />
-        <AddToCartKey item={{ usedUnitId: unit.id }} name={unit.name} image={unit.image} source={() => root.current?.querySelector(".niche") ?? null} />
+      <div className="@container mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-1 pt-1.5">
+        <PriceTag priceIqd={unit.priceIqd} className={priceFit(unit.priceIqd)} />
+        <AddToCartKey item={{ usedUnitId: unit.id }} name={unit.name} image={unit.image} source={() => root.current?.querySelector(".niche") ?? null} className="ms-auto" />
       </div>
       {showDemo ? <DemoNote compact className="relative mt-1 self-start" /> : null}
     </article>

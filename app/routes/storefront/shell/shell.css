@@ -1,0 +1,707 @@
+/*
+ * Storefront shell (app/routes/storefront/shell) — docs/DESIGN.md §9.2 header, §9.3 tab bar, §8.8 desktop header and
+ * mega menu, §8.11 tablet, §9.16 offline. Everything is in the components layer (utilities still win), uses tokens
+ * only and logical properties only. Materials come from app/styles (clay keys, .glass via <Glass>, .bead, .led).
+ *
+ * Variables the shell publishes (pages may read them):
+ *   --shell-header-h    height of the sticky header bar: 56px, 80px from 1200px (on :root, so portals see it)
+ *   --shell-bottom      what fixed chrome covers at the bottom of the viewport — the tab bar (64px + safe area), a
+ *                       page's <TaskBar>, or 0 on desktop. Sticky elements of a page sit at
+ *                       `inset-block-end: var(--shell-bottom)`; the shell pads the page by it.
+ *   --shell-toast-top   where toasts start: just under the header, wherever the header is (set by the header)
+ */
+@layer components {
+  :root {
+    --shell-header-h: 56px;
+  }
+  @media (min-width: 75rem) {
+    :root {
+      --shell-header-h: 80px;
+    }
+  }
+  /* in-page anchors (the skip link, #fragments) stop below the sticky header */
+  :root:has(.shell) {
+    scroll-padding-block-start: calc(var(--shell-header-h) + var(--safe-top) + var(--s-2));
+  }
+
+  .shell {
+    --shell-tabbar-h: calc(64px + var(--safe-bottom));
+    --shell-bottom: var(--shell-tabbar-h);
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100dvh;
+    padding-block-end: var(--shell-bottom);
+  }
+  /* a page with its own task bar: its measured height (set by <TaskBar>), the tab bar's until it is measured */
+  .shell[data-tabbar="off"] {
+    --shell-bottom: var(--shell-taskbar-h, var(--shell-tabbar-h));
+  }
+  @media (min-width: 75rem) {
+    .shell {
+      --shell-bottom: 0px;
+    }
+    .shell[data-tabbar="off"] {
+      --shell-bottom: var(--shell-taskbar-h, 0px);
+    }
+  }
+  .shell-main {
+    flex: 1 0 auto;
+    min-inline-size: 0;
+  }
+  .shell-main:focus {
+    outline: none;
+  }
+
+  /* ───────────── skip link: hidden until focused, then a paper key at the top start corner ───────────── */
+  .shell-skip:focus-visible {
+    position: fixed;
+    inset-block-start: calc(var(--safe-top) + var(--s-2));
+    inset-inline-start: max(var(--s-2), var(--safe-inline));
+    z-index: var(--z-toast);
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--target);
+    padding-inline: var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--e-4);
+    font: 600 14px/1.4 var(--font-text);
+  }
+
+  /* ───────────── demo ribbon: flat ink, not red (red is the commit), scrolls away with the page ───────────── */
+  .shell-ribbon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+    min-block-size: 32px;
+    padding: 6px max(var(--gutter), var(--safe-inline));
+    padding-block-start: calc(6px + var(--safe-top));
+    background: var(--sel-face);
+    color: var(--on-sel);
+    font: 500 12.5px/1.5 var(--font-text);
+    text-align: center;
+  }
+  .shell-ribbon svg {
+    flex: none;
+  }
+
+  /* ───────────── utility strip (≥1200): flat, 38px; its links reach 44px through hit-44 ───────────── */
+  .shell-utility {
+    display: none;
+  }
+  @media (min-width: 75rem) {
+    .shell-utility {
+      display: block;
+      border-block-end: 1px solid var(--line);
+      color: var(--ink-2);
+      font: 400 12.5px/1 var(--font-text);
+    }
+  }
+  .shell-utility__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-6);
+    block-size: 38px;
+  }
+  .shell-utility__fact {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .shell-utility__fact svg {
+    color: var(--ink);
+  }
+  .shell-utility__links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .shell-utility__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-block-size: 38px;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .shell-utility__link:hover {
+    color: var(--ink);
+  }
+  .shell-langs {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-inline-start: 22px;
+    border-inline-start: 1px solid var(--line);
+  }
+  .shell-langs [aria-current="true"] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  /* the currency popover: live glass dropping from its button (materialize), anchored at the button's inline end */
+  .shell-popover {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(100% + var(--s-2));
+    z-index: calc(var(--z-nav) + 1); /* above the sticky header it drops over */
+    inline-size: 340px;
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    color: var(--ink);
+    text-align: start;
+    font: var(--type-body);
+  }
+
+  /* ───────────── header: on the floor at the top of the page, live glass once the page has scrolled ───────────── */
+  .shell-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-nav);
+    padding-block-start: var(--safe-top);
+  }
+  .shell-header__glass {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-end-start-radius: var(--r-xl);
+    border-end-end-radius: var(--r-xl);
+    pointer-events: none;
+    animation: shell-fade-in var(--t-micro) var(--ease-settle) both;
+  }
+  .shell-header__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    block-size: var(--shell-header-h);
+  }
+  /* the desktop row (logo, four platforms with carets, used, repair, search, four tools) must fit 1200px in the
+     longest language (Sorani): compact below 1440, roomier from 1440 (measured: ckb needs 1195 / 1315 px) */
+  @media (min-width: 75rem) {
+    .shell-header__bar {
+      gap: 14px;
+    }
+  }
+  @media (min-width: 90rem) {
+    .shell-header__bar {
+      gap: 18px;
+    }
+  }
+  .shell-logo {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    min-block-size: var(--target);
+  }
+  .shell-logo__word {
+    block-size: 30px;
+    inline-size: auto;
+  }
+  .shell-logo__mark {
+    display: none;
+    block-size: 36px;
+    inline-size: auto;
+  }
+  @media (max-width: 74.99rem) {
+    .shell-header[data-scrolled] .shell-logo__word {
+      display: none;
+    }
+    .shell-header[data-scrolled] .shell-logo__mark {
+      display: block;
+    }
+  }
+  @media (min-width: 75rem) {
+    .shell-logo__word {
+      block-size: 32px;
+    }
+  }
+  @media (min-width: 90rem) {
+    .shell-logo__word {
+      block-size: 38px;
+    }
+  }
+
+  /* platform links with their LEDs (≥1200), each with a caret that opens its mega menu */
+  .shell-nav {
+    display: none;
+  }
+  @media (min-width: 75rem) {
+    .shell-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font: 500 14px/1 var(--font-text);
+    }
+  }
+  @media (min-width: 90rem) {
+    .shell-nav {
+      gap: 14px;
+      font-size: 15px;
+    }
+  }
+  .shell-nav__item {
+    display: inline-flex;
+    align-items: center;
+  }
+  .shell-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-block-size: var(--target);
+    white-space: nowrap;
+    color: var(--ink);
+  }
+  .shell-nav__link:hover .shell-nav__text,
+  .shell-nav__item[data-open] .shell-nav__text {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 8px;
+  }
+  .shell-nav__toggle {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 20px;
+    block-size: var(--target);
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .shell-nav__toggle::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline: -12px;
+  }
+  .shell-nav__toggle svg {
+    transition: transform var(--t-micro) var(--ease-water);
+  }
+  .shell-nav__toggle[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .shell-nav__sep {
+    inline-size: 1px;
+    block-size: 20px;
+    background: var(--line);
+  }
+
+  /* search: a paper field (§9.9 look) that fills the bar on phones and tablets */
+  .shell-search {
+    position: relative;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  @media (min-width: 75rem) {
+    .shell-search {
+      flex: 0 1 320px;
+      min-inline-size: 176px;
+      margin-inline-start: auto;
+    }
+  }
+  @media (min-width: 90rem) {
+    .shell-search {
+      min-inline-size: 200px;
+    }
+  }
+  .shell-search__input {
+    block-size: 44px;
+    padding-inline: 44px 14px;
+    border-radius: var(--r-md);
+    font-weight: 400;
+  }
+  @media (min-width: 75rem) {
+    .shell-search__input {
+      block-size: 46px;
+    }
+  }
+  .shell-search__input::-webkit-search-cancel-button {
+    appearance: none;
+  }
+  .shell-search__submit {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    display: grid;
+    place-items: center;
+    inline-size: 44px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .shell-search__list {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: calc(100% + 6px);
+    z-index: var(--z-raised);
+    max-block-size: min(60vh, 420px);
+    overflow-y: auto;
+    padding: var(--s-1);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: var(--e-4);
+  }
+  .shell-search__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    min-block-size: var(--target);
+    padding-inline: var(--s-3);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .shell-search__option[aria-selected="true"] {
+    background: var(--niche);
+  }
+  .shell-search__hint {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+
+  /* desktop tools: theme, favourites, account, the cart orb with its bead */
+  .shell-tools {
+    display: none;
+  }
+  @media (min-width: 75rem) {
+    .shell-tools {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+  }
+  .shell-cart {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: var(--target);
+    block-size: var(--target);
+    border-radius: var(--r-full);
+    color: var(--ink);
+  }
+  .shell-cart .bead {
+    position: absolute;
+    inset-block-start: -4px;
+    inset-inline-end: -6px;
+  }
+
+  /* ───────────── mega menu (≥1200): one live glass sheet dropping from the header, bottom corners r-xl ───────────── */
+  .shell-mega {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    border-end-start-radius: var(--r-xl);
+    border-end-end-radius: var(--r-xl);
+  }
+  .shell-mega__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(240px, 300px);
+    gap: var(--s-8);
+    padding-block: var(--s-6) var(--s-8);
+  }
+  .shell-mega__title {
+    margin-block-end: var(--s-2);
+    color: var(--ink-2);
+    font: 600 13px/1.5 var(--font-text);
+  }
+  .shell-mega__link {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--target);
+    color: var(--ink);
+    font: 500 14.5px/1.4 var(--font-text);
+  }
+  .shell-mega__link:hover .shell-mega__text {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 6px;
+  }
+  .shell-mega__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+
+  /* ───────────── tab bar (< 1200): live glass on the bottom edge, top corners r-xl, 64px + safe area ───────────── */
+  .shell-tabbar {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--z-nav);
+    display: flex;
+    block-size: var(--shell-tabbar-h);
+    padding-block: 9px var(--safe-bottom);
+    padding-inline: max(6px, var(--safe-inline));
+    border-start-start-radius: var(--r-xl);
+    border-start-end-radius: var(--r-xl);
+    justify-content: center;
+  }
+  @media (min-width: 75rem) {
+    .shell-tabbar {
+      display: none;
+    }
+  }
+  .shell-tab {
+    position: relative;
+    flex: 1 1 0;
+    min-inline-size: 0;
+    max-inline-size: 128px; /* tablets: five tabs centred, not spread over 1000px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2px;
+    color: var(--ink);
+    font: var(--type-tab);
+    text-align: center;
+  }
+  .shell-tab[aria-current],
+  .shell-tab[data-active] {
+    font-weight: 600;
+  }
+  /* the active tab: filled icon, heavier label and a 22 × 3 ink marker on the bar's top edge — never colour alone */
+  .shell-tab[aria-current]::before,
+  .shell-tab[data-active]::before {
+    content: "";
+    position: absolute;
+    inset-block-start: -9px;
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: 22px;
+    block-size: 3px;
+    border-end-start-radius: 3px;
+    border-end-end-radius: 3px;
+    background: var(--ink);
+  }
+  .shell-tab__ico {
+    position: relative;
+    display: block;
+    line-height: 0;
+  }
+  .shell-tab__ico .bead {
+    position: absolute;
+    inset-block-start: -6px;
+    inset-inline-end: -11px;
+  }
+  .shell-tab__label {
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* a page's own bottom bar (buy bar, checkout bar) in place of the tab bar */
+  .shell-taskbar {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--z-nav);
+    padding-block: var(--s-3) calc(var(--s-3) + var(--safe-bottom));
+    padding-inline: max(var(--gutter), var(--safe-inline));
+    border-start-start-radius: var(--r-xl);
+    border-start-end-radius: var(--r-xl);
+  }
+
+  /* ───────────── categories sheet rows ───────────── */
+  .shell-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .shell-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: 56px;
+    padding-block: var(--s-2);
+    border-block-end: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .shell-row--plain {
+    border-block-end: 0;
+  }
+  .shell-group {
+    border-block-end: 1px solid var(--line);
+  }
+  .shell-row__text {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  .shell-row__hint {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .shell-row__count {
+    color: var(--ink-2);
+    font: var(--type-caption);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .shell-sheet__head {
+    margin-block: var(--s-6) var(--s-1);
+    color: var(--ink-2);
+    font: 600 13px/1.5 var(--font-text);
+  }
+  .shell-sublinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-4);
+    padding-block-end: var(--s-2);
+  }
+  .shell-sublinks a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--target);
+    color: var(--ink-2);
+    font: 500 13.5px/1.4 var(--font-text);
+  }
+
+  /* ───────────── footer: a flat niche band ───────────── */
+  .shell-footer {
+    margin-block-start: var(--s-16);
+    background: var(--niche);
+    color: var(--ink);
+  }
+  .shell-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-8) var(--s-6);
+    padding-block: var(--s-10) var(--s-8);
+  }
+  @media (min-width: 48rem) {
+    .shell-footer__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 75rem) {
+    .shell-footer__grid {
+      grid-template-columns: minmax(0, 1.3fr) repeat(5, minmax(0, 1fr));
+    }
+  }
+  .shell-footer__brand {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  @media (min-width: 75rem) {
+    .shell-footer__brand {
+      grid-column: auto;
+    }
+  }
+  .shell-footer__logo {
+    block-size: 88px;
+    inline-size: auto;
+  }
+  .shell-footer__title {
+    margin-block-end: var(--s-2);
+    font: 600 14px/1.5 var(--font-text);
+  }
+  .shell-footer__list {
+    display: flex;
+    flex-direction: column;
+  }
+  .shell-footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--target);
+    color: var(--ink-2);
+    font: 400 14px/1.4 var(--font-text);
+  }
+  .shell-footer__link:hover {
+    color: var(--ink);
+  }
+  .shell-footer__link:hover .shell-footer__text {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 6px;
+  }
+  .shell-footer__fact {
+    color: var(--ink-2);
+    font: 400 14px/1.6 var(--font-text);
+  }
+  .shell-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-6);
+    padding-block: var(--s-5) var(--s-6);
+    border-block-start: 1px solid var(--line);
+    color: var(--ink-2);
+    font: 400 13px/1.6 var(--font-text);
+  }
+  .shell-footer__demo {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    margin-block-end: var(--s-6);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 13px/1.6 var(--font-text);
+  }
+  .shell-footer__demo svg {
+    flex: none;
+    margin-block-start: 2px;
+  }
+
+  /* ───────────── the 404 / 500 panel inside the shell ───────────── */
+  .shell-error {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-4);
+    padding-block: var(--s-12) var(--s-16);
+    text-align: center;
+  }
+  .shell-error__code {
+    color: var(--ink-3); /* decorative: the sentence says what happened */
+    font: 700 64px/1 var(--font-display);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .shell-error__text {
+    max-inline-size: 34em;
+    color: var(--ink-2);
+  }
+  /* the 404 panel's search: centred, not the header field's desktop placement */
+  .shell-error__search {
+    flex: none;
+    inline-size: min(100%, 480px);
+    min-inline-size: 0;
+    margin-inline: auto;
+  }
+  .shell-error__stack {
+    max-inline-size: min(100%, 60rem);
+    overflow-x: auto;
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    color: var(--ink-2);
+    text-align: start;
+    font-size: 12px;
+  }
+
+  @keyframes shell-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shell-header__glass,
+    .shell-nav__toggle svg {
+      animation: none;
+      transition: none;
+    }
+  }
+  :is(.fx-low, [data-motion="lite"], [data-motion="reduced"]) .shell-header__glass {
+    animation: none;
+  }
+}

@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/xbox-gift-card/1-1440.297e805e.webp"
       }
-    ],
-    "png": "/products/xbox-gift-card/1-720.ab422ec6.png"
+    ]
+  },
+  "share": {
+    "src": "/products/xbox-gift-card/1-1200.c07ce7b7.png",
+    "width": 1200,
+    "height": 1200,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSCoAAAARH0AgQNH/l+GHGxERfEIhG0nQyJzEeXyMk0M9gIj+BwCn5lZVvDo1AQBWUDggbAAAAJADAJ0BKhQAFAA/EYC4VawoJSMoCAGAIglAAAU7QA/P9dhY64AA/nGWFSqIXR87KX5xRd9u7403EoopVBJdGUS+TXKcSwV7jent3+5D/4Nkg3ff+vWluauU+F9D50RdEXE/mBRO/Kp6ukngAA==",
   "dominant": "#0f7c11",
@@ -61,5 +66,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Store-Xbox-Gift-Card?scl=1&fmt=png-alpha",
     "page": "https://www.microsoft.com/en-us/p/xbox-gift-card-digital-code/cfq7ttc0k63h"
   },
-  "input": "33e3c0fca303a7b0"
+  "input": "46d144f1c0fcdd54"
 }

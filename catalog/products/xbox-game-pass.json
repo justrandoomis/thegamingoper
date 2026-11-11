@@ -46,27 +46,47 @@
     {
       "key": "essential",
       "label": { "ar": "Essential", "en": "Essential", "ckb": "Essential" },
-      "value": { "ar": "أكثر من 50 لعبة، لعب أونلاين، 5 ساعات لعب سحابي شهرياً، مزايا داخل الألعاب", "en": "50+ games, online console multiplayer, 5 h cloud play a month, in-game benefits", "ckb": "50+ یاری، یاریی ئۆنلاین، 5 کاتژمێر یاریی هەوری لە مانگێکدا، سوودی ناو یاری" }
+      "value": {
+        "ar": "أكثر من 50 لعبة، لعب أونلاين، 5 ساعات لعب سحابي شهرياً، مزايا داخل الألعاب",
+        "en": "50+ games, online console multiplayer, 5 h cloud play a month, in-game benefits",
+        "ckb": "50+ یاری، یاریی ئۆنلاین، 5 کاتژمێر یاریی هەوری لە مانگێکدا، سوودی ناو یاری"
+      }
     },
     {
       "key": "premium",
       "label": { "ar": "Premium", "en": "Premium", "ckb": "Premium" },
-      "value": { "ar": "أكثر من 200 لعبة، ألعاب Xbox الجديدة خلال سنة من صدورها، 10 ساعات لعب سحابي", "en": "200+ games, new Xbox-published games within a year of launch, 10 h cloud play", "ckb": "200+ یاری، یارییە نوێکانی Xbox لە ماوەی ساڵێکدا، 10 کاتژمێر یاریی هەوری" }
+      "value": {
+        "ar": "أكثر من 200 لعبة، ألعاب Xbox الجديدة خلال سنة من صدورها، 10 ساعات لعب سحابي",
+        "en": "200+ games, new Xbox-published games within a year of launch, 10 h cloud play",
+        "ckb": "200+ یاری، یارییە نوێکانی Xbox لە ماوەی ساڵێکدا، 10 کاتژمێر یاریی هەوری"
+      }
     },
     {
       "key": "ultimate",
       "label": { "ar": "Ultimate", "en": "Ultimate", "ckb": "Ultimate" },
-      "value": { "ar": "أكثر من 500 لعبة، ألعاب جديدة يوم صدورها، EA Play وFortnite Crew وUbisoft+ Classics، 15 ساعة لعب سحابي", "en": "500+ games, new games on day one, EA Play, Fortnite Crew, Ubisoft+ Classics, 15 h cloud play", "ckb": "500+ یاری، یاریی نوێ لە ڕۆژی دەرچوون، EA Play، Fortnite Crew، Ubisoft+ Classics، 15 کاتژمێر یاریی هەوری" }
+      "value": {
+        "ar": "أكثر من 500 لعبة، ألعاب جديدة يوم صدورها، EA Play وFortnite Crew وUbisoft+ Classics، 15 ساعة لعب سحابي",
+        "en": "500+ games, new games on day one, EA Play, Fortnite Crew, Ubisoft+ Classics, 15 h cloud play",
+        "ckb": "500+ یاری، یاریی نوێ لە ڕۆژی دەرچوون، EA Play، Fortnite Crew، Ubisoft+ Classics، 15 کاتژمێر یاریی هەوری"
+      }
     },
     {
       "key": "works_on",
       "label": { "ar": "يعمل على", "en": "Works on", "ckb": "کار دەکات لەسەر" },
-      "value": { "ar": "Xbox Series X|S وXbox One والكمبيوتر وأجهزة محمولة مدعومة، والبث السحابي على أجهزة أخرى", "en": "Xbox Series X|S, Xbox One, PC and supported handhelds; cloud streaming on more devices", "ckb": "Xbox Series X|S، Xbox One، PC و ئامێرە دەستییە پشتگیریکراوەکان؛ پەخشی هەوری لەسەر ئامێری زیاتر" }
+      "value": {
+        "ar": "Xbox Series X|S وXbox One والكمبيوتر وأجهزة محمولة مدعومة، والبث السحابي على أجهزة أخرى",
+        "en": "Xbox Series X|S, Xbox One, PC and supported handhelds; cloud streaming on more devices",
+        "ckb": "Xbox Series X|S، Xbox One، PC و ئامێرە دەستییە پشتگیریکراوەکان؛ پەخشی هەوری لەسەر ئامێری زیاتر"
+      }
     },
     {
       "key": "redeem",
       "label": { "ar": "طريقة الاسترداد", "en": "How to redeem", "ckb": "چۆنیەتی بەکارهێنان" },
-      "value": { "ar": "xbox.com/redeem أو Microsoft Store على Xbox أو Windows", "en": "xbox.com/redeem, or Microsoft Store on Xbox or Windows", "ckb": "xbox.com/redeem، یان Microsoft Store لەسەر Xbox یان Windows" }
+      "value": {
+        "ar": "xbox.com/redeem أو Microsoft Store على Xbox أو Windows",
+        "en": "xbox.com/redeem, or Microsoft Store on Xbox or Windows",
+        "ckb": "xbox.com/redeem، یان Microsoft Store لەسەر Xbox یان Windows"
+      }
     },
     {
       "key": "delivery",
@@ -80,21 +100,21 @@
       "title": { "ar": "حساب أمريكي · Ultimate · شهر", "en": "US account · Ultimate · 1 month", "ckb": "هەژماری ئەمریکی · Ultimate · 1 مانگ" },
       "options": { "region": "United States", "tier": "Ultimate", "duration": "1 month" },
       "isDefault": true,
-      "images": ["xbox-game-pass--1"]
+      "images": ["xbox-game-pass--2"]
     },
     {
       "sku": "GAMEPASS-US-ULT-3M",
       "title": { "ar": "حساب أمريكي · Ultimate · 3 أشهر", "en": "US account · Ultimate · 3 months", "ckb": "هەژماری ئەمریکی · Ultimate · 3 مانگ" },
       "options": { "region": "United States", "tier": "Ultimate", "duration": "3 months" },
       "isDefault": false,
-      "images": ["xbox-game-pass--1"]
+      "images": ["xbox-game-pass--2"]
     },
     {
       "sku": "GAMEPASS-US-PRM-1M",
       "title": { "ar": "حساب أمريكي · Premium · شهر", "en": "US account · Premium · 1 month", "ckb": "هەژماری ئەمریکی · Premium · 1 مانگ" },
       "options": { "region": "United States", "tier": "Premium", "duration": "1 month" },
       "isDefault": false,
-      "images": ["xbox-game-pass--1"]
+      "images": ["xbox-game-pass--3"]
     },
     {
       "sku": "GAMEPASS-US-ESS-1M",
@@ -108,37 +128,61 @@
     {
       "deviceModel": "xbox-series-x",
       "status": "verified",
-      "note": { "ar": "على حساب Microsoft من نفس دولة الرمز.", "en": "On a Microsoft account from the code's country.", "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کۆدەکە." },
+      "note": {
+        "ar": "على حساب Microsoft من نفس دولة الرمز.",
+        "en": "On a Microsoft account from the code's country.",
+        "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کۆدەکە."
+      },
       "source": "https://www.xbox.com/en-US/xbox-game-pass"
     },
     {
       "deviceModel": "xbox-series-x-digital",
       "status": "verified",
-      "note": { "ar": "على حساب Microsoft من نفس دولة الرمز.", "en": "On a Microsoft account from the code's country.", "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کۆدەکە." },
+      "note": {
+        "ar": "على حساب Microsoft من نفس دولة الرمز.",
+        "en": "On a Microsoft account from the code's country.",
+        "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کۆدەکە."
+      },
       "source": "https://www.xbox.com/en-US/xbox-game-pass"
     },
     {
       "deviceModel": "xbox-series-s",
       "status": "verified",
-      "note": { "ar": "على حساب Microsoft من نفس دولة الرمز.", "en": "On a Microsoft account from the code's country.", "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کۆدەکە." },
+      "note": {
+        "ar": "على حساب Microsoft من نفس دولة الرمز.",
+        "en": "On a Microsoft account from the code's country.",
+        "ckb": "لەسەر هەژماری Microsoft لە هەمان وڵاتی کۆدەکە."
+      },
       "source": "https://www.xbox.com/en-US/xbox-game-pass"
     },
     {
       "deviceModel": "windows-pc",
       "status": "verified",
-      "note": { "ar": "عبر تطبيق Xbox على Windows 10/11 (الإصدار 22H2 أو أحدث).", "en": "Through the Xbox app on Windows 10/11 (version 22H2 or later).", "ckb": "لە ڕێگەی ئەپی Xbox لەسەر Windows 10/11 (وەشانی 22H2 یان نوێتر)." },
+      "note": {
+        "ar": "عبر تطبيق Xbox على Windows 10/11 (الإصدار 22H2 أو أحدث).",
+        "en": "Through the Xbox app on Windows 10/11 (version 22H2 or later).",
+        "ckb": "لە ڕێگەی ئەپی Xbox لەسەر Windows 10/11 (وەشانی 22H2 یان نوێتر)."
+      },
       "source": "https://www.xbox.com/en-US/xbox-game-pass"
     },
     {
       "deviceModel": "rog-xbox-ally-x",
       "status": "verified",
-      "note": { "ar": "الأجهزة المحمولة المدعومة تحمّل الألعاب عبر تطبيق Xbox.", "en": "Supported handhelds download games through the Xbox app.", "ckb": "ئامێرە دەستییە پشتگیریکراوەکان یارییەکان لە ڕێگەی ئەپی Xbox دادەبەزێنن." },
+      "note": {
+        "ar": "الأجهزة المحمولة المدعومة تحمّل الألعاب عبر تطبيق Xbox.",
+        "en": "Supported handhelds download games through the Xbox app.",
+        "ckb": "ئامێرە دەستییە پشتگیریکراوەکان یارییەکان لە ڕێگەی ئەپی Xbox دادەبەزێنن."
+      },
       "source": "https://www.xbox.com/en-US/xbox-game-pass"
     },
     {
       "deviceModel": "rog-xbox-ally",
       "status": "verified",
-      "note": { "ar": "الأجهزة المحمولة المدعومة تحمّل الألعاب عبر تطبيق Xbox.", "en": "Supported handhelds download games through the Xbox app.", "ckb": "ئامێرە دەستییە پشتگیریکراوەکان یارییەکان لە ڕێگەی ئەپی Xbox دادەبەزێنن." },
+      "note": {
+        "ar": "الأجهزة المحمولة المدعومة تحمّل الألعاب عبر تطبيق Xbox.",
+        "en": "Supported handhelds download games through the Xbox app.",
+        "ckb": "ئامێرە دەستییە پشتگیریکراوەکان یارییەکان لە ڕێگەی ئەپی Xbox دادەبەزێنن."
+      },
       "source": "https://www.xbox.com/en-US/xbox-game-pass"
     }
   ],
@@ -150,34 +194,42 @@
   "images": [
     {
       "key": "xbox-game-pass--1",
-      "file": ".cache/product-images/xbox-game-pass/1.png",
-      "sourceUrl": "https://cms-assets.xboxservices.com/assets/dc/a1/dca12e01-f367-4d86-a2c8-1ef23bfd593a.png",
-      "sourcePage": "https://www.xbox.com/en-US/xbox-game-pass",
+      "file": ".cache/product-images/xbox-game-pass/1.jpg",
+      "sourceUrl": "https://cms-assets.xboxservices.com/assets/2b/76/2b7650d4-6363-4022-96eb-d2a8eae47c5d.jpg?n=XboxGamePass-Boxart-1080x1080.jpg",
+      "sourcePage": "https://www.xbox.com/en-GB/games/store/game-pass-essential/CFQ7TTC0K5DJ",
       "kind": "hero",
       "alt": {
-        "ar": "شعار Xbox Game Pass",
-        "en": "Xbox Game Pass logo",
-        "ckb": "هێمای Xbox Game Pass"
+        "ar": "صورة Xbox Game Pass الخضراء مع شعار Xbox",
+        "en": "Green Xbox Game Pass tile with the Xbox logo",
+        "ckb": "وێنەی سەوزی Xbox Game Pass لەگەڵ هێمای Xbox"
       },
       "credit": "Microsoft (Xbox)",
-      "width": 1225,
-      "height": 150,
-      "transparent": true
+      "width": 1080,
+      "height": 1080,
+      "transparent": false
     },
     {
       "key": "xbox-game-pass--2",
       "file": ".cache/product-images/xbox-game-pass/2.jpg",
-      "sourceUrl": "https://cms-assets.xboxservices.com/assets/4b/b6/4bb6e926-4b54-4f47-b335-ca8a6bd7f994.jpg",
-      "sourcePage": "https://www.xbox.com/en-US/xbox-game-pass",
-      "kind": "detail",
-      "alt": {
-        "ar": "مجموعة صور من ألعاب متاحة في Xbox Game Pass",
-        "en": "Collage of games available in Xbox Game Pass",
-        "ckb": "کۆمەڵە وێنەی ئەو یاریانەی لە Xbox Game Pass هەن"
-      },
+      "sourceUrl": "https://cms-assets.xboxservices.com/assets/4c/c2/4cc260a2-868b-4f21-9cdc-ca7f238ed529.jpg?n=Ultimate-Boxart-1080x1080.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/game-pass-ultimate/CFQ7TTC0KHS0",
+      "kind": "hero",
+      "alt": { "ar": "صورة اشتراك Xbox Game Pass Ultimate", "en": "Xbox Game Pass Ultimate tile", "ckb": "وێنەی بەشداریی Xbox Game Pass Ultimate" },
       "credit": "Microsoft (Xbox)",
-      "width": 767,
-      "height": 1175,
+      "width": 1080,
+      "height": 1080,
+      "transparent": false
+    },
+    {
+      "key": "xbox-game-pass--3",
+      "file": ".cache/product-images/xbox-game-pass/3.jpg",
+      "sourceUrl": "https://cms-assets.xboxservices.com/assets/f1/a1/f1a1ec4c-3c4e-47d1-9bac-b6413620d7b1.jpg?n=Premium-Boxart-1080x1080.jpg",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/game-pass-premium/CFQ7TTC0P85B",
+      "kind": "hero",
+      "alt": { "ar": "صورة اشتراك Xbox Game Pass Premium", "en": "Xbox Game Pass Premium tile", "ckb": "وێنەی بەشداریی Xbox Game Pass Premium" },
+      "credit": "Microsoft (Xbox)",
+      "width": 1080,
+      "height": 1080,
       "transparent": false
     }
   ],
@@ -187,7 +239,7 @@
       "title": "Xbox Game Pass",
       "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
-      "supports": "Essential, Premium and Ultimate tiers and what each includes, devices (console, PC with Windows 10/11 22H2+, supported handhelds, cloud), market availability linked to the Xbox regions list, images"
+      "supports": "Essential (50+ games, 5 h cloud), Premium (200+ games, new Xbox-published games within a year, 10 h cloud) and Ultimate (500+ games, day-one games, EA Play, Fortnite Crew, Ubisoft+ Classics, 15 h cloud), online console multiplayer in every tier, devices (console, PC with Windows 10/11 22H2+, supported handhelds, cloud), market availability linked to the Xbox regions list"
     },
     {
       "url": "https://news.xbox.com/en-us/2026/09/03/xbox-cloud-gaming-changes/",
@@ -201,14 +253,28 @@
       "title": "Xbox Supported Countries & Regions",
       "publisher": "Microsoft (Xbox)",
       "retrieved": "2026-11-11",
-      "supports": "Iraq is not a supported market"
+      "supports": "Iraq is not a supported market (regions data file behind the page)"
     },
     {
       "url": "https://support.xbox.com/en-US/help/subscriptions-billing/redeem-codes-gifting/digital-code-solution",
       "title": "My digital code or gift card doesn't work",
       "publisher": "Xbox Support",
       "retrieved": "2026-11-11",
-      "supports": "codes are meant for a specific country/region and must match the account"
+      "supports": "codes are meant for a specific country/region and must match the account (read by the researcher; the page loads only in a full browser)"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/games/store/game-pass-ultimate/CFQ7TTC0KHS0",
+      "title": "Xbox Game Pass Ultimate (Microsoft Store listing, also Premium CFQ7TTC0P85B and Essential CFQ7TTC0K5DJ)",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-11",
+      "supports": "tier descriptions (Ultimate 15 h and Premium 10 h of cloud gaming a month, EA Play in Ultimate, new Xbox games in Premium within 12 months), tier box-art images"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Xbox_Game_Pass",
+      "title": "Xbox Game Pass",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the current Essential, Premium and Ultimate tiers alongside PC Game Pass"
     }
   ],
   "notes": {
@@ -217,10 +283,10 @@
     "ckb": "پێش کڕین وڵاتی هەژماری Microsoft بپشکنە، و پێش نووسینی کۆدەکە بە هەژماری دروست بچۆ ژوورەوە. بۆ ئەوانەی تەنها لەسەر PC یاری دەکەن پلانی جیای PC Game Passیش هەیە. کاتژمێری زیادەی یاریی هەوری بە جیا دەکڕدرێت."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Which code lengths suppliers stock for each tier (1-month and 3-month Ultimate and 1-month Premium/Essential are listed as a starting point)",
+      "Which code lengths suppliers stock for each tier (3-month Ultimate codes were only seen at Canadian/European retailers and resellers)",
       "Tier line-up and cloud hours on Gulf-region accounts"
     ]
   }

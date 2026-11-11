@@ -360,6 +360,8 @@ const EXPIRE_ROUNDS = 5;
  * Scheduled job: releases active stock reservations whose `expires_at` has passed (status
  * 'expired'), up to 1,000 per call, oldest first. Only stock is released here — what happens to the
  * order (cancel, reminder) and to used units it holds is the order flow's decision.
+ * The batch re-checks that every chosen row is STILL active and due: a transfer proof that arrives
+ * between the read and the write clears `expires_at` (submitPaymentProof) and keeps its stock.
  */
 export async function expireReservations(db: Db, now: number): Promise<{ released: number }> {
   assertTime(now, "expireReservations.now");
@@ -374,10 +376,11 @@ export async function expireReservations(db: Db, now: number): Promise<{ release
       .limit(EXPIRE_BATCH);
     if (due.length === 0) break;
     const idsJson = JSON.stringify(due.map((row) => row.id));
-    const chosen = (alias: string) => sql`${tableAlias(alias)}.id IN (SELECT value FROM json_each(${idsJson})) AND ${tableAlias(alias)}.status = 'active'`;
+    const chosen = (alias: string) =>
+      sql`${tableAlias(alias)}.id IN (SELECT value FROM json_each(${idsJson})) AND ${tableAlias(alias)}.status = 'active' AND ${tableAlias(alias)}.expires_at IS NOT NULL AND ${tableAlias(alias)}.expires_at <= ${now}`;
     const statements = [
       ...releaseMatching(db, chosen, { status: "expired", reason: "reservation_expired", actor, now }),
-      // Every chosen row must still have been active; otherwise someone released one meanwhile — start over.
+      // Every chosen row must still be active and due; otherwise someone released or extended one meanwhile — start over.
       expectChanged(db, due.length, { code: "RESERVATION_CHANGED", detail: "expire" }),
       auditStatement(db, {
         actor,
@@ -639,6 +642,11 @@ export type AdjustStockInput = z.input<typeof AdjustStockInput>;
  *   · on_hand never goes below 0 → insufficient_stock (409).
  *   · Taking on_hand below what is reserved for orders is an oversell: it needs `allowOversell: true`
  *     AND inventory.oversell.authorize (403 without it); the level is then marked allow_oversell.
+ *   · The oversell decision is re-checked by the write itself: an order that reserves units between
+ *     this function's read and its write cannot turn a plain removal into an unauthorised oversell
+ *     (the write matches nothing, the level is read again, and the removal is refused if it now
+ *     would oversell). An adjustment that leaves the level whole clears allow_oversell, so the
+ *     stock trigger guards the level again (tests/commerce-adversarial.test.ts).
  *   · Serial-tracked variants change through their serials (receiveStock with serials, serial
  *     operations), never by a bare number → serial_tracked (409).
  */
@@ -686,7 +694,15 @@ export async function adjustStock(db: Db, actor: Actor, raw: unknown, now: numbe
         db
           .insert(stockLevels)
           .values({ variantId: input.variantId, locationId: input.locationId, onHand: input.delta, reserved: 0, updatedAt: now })
-          .onConflictDoUpdate({ target: [stockLevels.variantId, stockLevels.locationId], set: { onHand: sql`${stockLevels.onHand} + ${input.delta}`, updatedAt: now } }),
+          .onConflictDoUpdate({
+            target: [stockLevels.variantId, stockLevels.locationId],
+            set: {
+              onHand: sql`${stockLevels.onHand} + ${input.delta}`,
+              // An authorised oversell is over once the level is whole again: switch the backstop back on.
+              allowOversell: sql`CASE WHEN ${stockLevels.onHand} + ${input.delta} - ${stockLevels.reserved} >= 0 THEN 0 ELSE ${stockLevels.allowOversell} END`,
+              updatedAt: now,
+            },
+          }),
       );
       if (input.unitCostIqd !== undefined) {
         const layer: NewCostLayer = { id: newId("cly"), variantId: input.variantId, locationId: input.locationId, qtyRemaining: input.delta, qtyReceived: input.delta, unitCostIqd: input.unitCostIqd, receivedAt: now, receiptItemId: null, source: "adjustment" };
@@ -696,11 +712,19 @@ export async function adjustStock(db: Db, actor: Actor, raw: unknown, now: numbe
     } else {
       const removed = -input.delta;
       statements.push(
-        db
-          .update(stockLevels)
-          .set({ onHand: sql`${stockLevels.onHand} - ${removed}`, ...(oversell ? { allowOversell: true } : {}), updatedAt: now })
-          .where(and(eq(stockLevels.variantId, input.variantId), eq(stockLevels.locationId, input.locationId), gte(stockLevels.onHand, removed))),
-        expectChanged(db, 1, { code: "INSUFFICIENT_STOCK", detail: input.variantId }),
+        oversell
+          ? db
+              .update(stockLevels)
+              .set({ onHand: sql`${stockLevels.onHand} - ${removed}`, allowOversell: true, updatedAt: now })
+              .where(and(eq(stockLevels.variantId, input.variantId), eq(stockLevels.locationId, input.locationId), gte(stockLevels.onHand, removed)))
+          : db
+              .update(stockLevels)
+              // Not authorised to oversell: the decision above was made on a read, so the write checks it
+              // again — an order that reserved units in between makes this match nothing (STOCK_CHANGED,
+              // read again). The flag goes off: the level stays whole, so the trigger guards it again.
+              .set({ onHand: sql`${stockLevels.onHand} - ${removed}`, allowOversell: false, updatedAt: now })
+              .where(and(eq(stockLevels.variantId, input.variantId), eq(stockLevels.locationId, input.locationId), sql`${stockLevels.onHand} - ${removed} >= ${stockLevels.reserved}`)),
+        expectChanged(db, 1, { code: oversell ? "INSUFFICIENT_STOCK" : "STOCK_CHANGED", detail: input.variantId }),
       );
       const slices = takeFifo(layers, removed, standard[0]?.landedCostIqd ?? null);
       const takes = new Map<string, number>();
@@ -726,7 +750,7 @@ export async function adjustStock(db: Db, actor: Actor, raw: unknown, now: numbe
         entityType: "variant",
         entityId: input.variantId,
         before: { locationId: input.locationId, onHand: before.onHand, reserved: before.reserved, allowOversell: before.allowOversell },
-        after: { locationId: input.locationId, onHand, reserved: before.reserved, allowOversell: oversell || before.allowOversell, delta: input.delta, oversell },
+        after: { locationId: input.locationId, onHand, reserved: before.reserved, allowOversell: oversell || (onHand - before.reserved < 0 && before.allowOversell), delta: input.delta, oversell },
         reason: input.reason,
         at: now,
       }),
@@ -735,7 +759,9 @@ export async function adjustStock(db: Db, actor: Actor, raw: unknown, now: numbe
       await runBatch(db, statements);
       return;
     } catch (error) {
-      if (isDbError(error, "COST_LAYER_CHANGED") && attempt < 3) continue;
+      const changed = isDbError(error, "COST_LAYER_CHANGED") || isDbError(error, "STOCK_CHANGED");
+      if (changed && attempt < 3) continue;
+      if (isDbError(error, "STOCK_CHANGED")) throw new AppError("insufficient_stock", 409, { detail: input.variantId, fields: { delta: "insufficient_stock" }, cause: error });
       throw error;
     }
   }
@@ -861,10 +887,14 @@ export async function receiveStock(db: Db, actor: Actor, raw: unknown, now: numb
 
 /**
  * Batch statements that attach physical units to an order line (packing). Guarded per serial: it
- * must be in_stock or reserved and belong to the line's variant (or to a component of the line's
- * bundle) — otherwise the batch aborts with TT:SERIAL_NOT_AVAILABLE:<serial id>. A serial attached
- * elsewhere cannot be attached again (UNIQUE while not released), and a line cannot carry more
- * serials than its units → TT:SERIAL_COUNT_EXCEEDS_QTY:<order item id>.
+ * must belong to the line's variant (or to a component of the line's bundle) and be free for THIS
+ * line — otherwise the batch aborts with TT:SERIAL_NOT_AVAILABLE:<serial id>:
+ *   · in_stock, and not the serial of a used device (a used device leaves only through its own line:
+ *     a trade-in console is never packed as a new one, and its listing stays sellable), or
+ *   · reserved for the used device of this very line (reserveUsedUnitStatements) — a serial held
+ *     for another order's used device cannot be packed into this one.
+ * A serial attached elsewhere cannot be attached again (UNIQUE while not released), and a line
+ * cannot carry more serials than its units → TT:SERIAL_COUNT_EXCEEDS_QTY:<order item id>.
  */
 export function assignSerialsStatements(db: Db, input: { orderItemId: string; serialIds: readonly string[]; actor: Actor; now: number }): BatchStatement[] {
   const orderItemId = assertId(input.orderItemId, "assignSerialsStatements.orderItemId");
@@ -877,13 +907,19 @@ export function assignSerialsStatements(db: Db, input: { orderItemId: string; se
     UNION ALL
     SELECT b.component_variant_id FROM bundle_items AS b JOIN order_items AS oi ON oi.variant_id = b.bundle_variant_id WHERE oi.id = ${orderItemId}
   )`;
+  /** The used device this line sells (NULL for new stock). */
+  const lineUsedUnit = sql`(SELECT oi.used_unit_id FROM order_items AS oi WHERE oi.id = ${orderItemId})`;
+  const freeForThisLine = sql`(
+    (${serials.status} = 'in_stock' AND NOT EXISTS (SELECT 1 FROM used_units AS u WHERE u.serial_id = ${serials.id} AND u.id IS NOT ${lineUsedUnit}))
+    OR (${serials.status} = 'reserved' AND EXISTS (SELECT 1 FROM used_units AS u WHERE u.serial_id = ${serials.id} AND u.id = ${lineUsedUnit} AND u.status = 'reserved'))
+  )`;
   const statements: BatchStatement[] = [];
   for (const serialId of serialIds) {
     statements.push(
       db
         .update(serials)
         .set({ status: "sold", updatedAt: now })
-        .where(and(eq(serials.id, serialId), inArray(serials.status, ["in_stock", "reserved"]), sql`${serials.variantId} IN ${lineVariants}`)),
+        .where(and(eq(serials.id, serialId), sql`${serials.variantId} IN ${lineVariants}`, freeForThisLine)),
       expectChanged(db, 1, { code: "SERIAL_NOT_AVAILABLE", detail: serialId }),
       db.insert(orderItemSerials).values({ orderItemId, serialId, attachedAt: now, attachedBy: actorId }),
     );

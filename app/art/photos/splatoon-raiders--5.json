@@ -48,8 +48,7 @@
         "w": 1440,
         "src": "/products/splatoon-raiders/5-1440.3d385df2.webp"
       }
-    ],
-    "png": "/products/splatoon-raiders/5-720.9d126470.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYgCdABewkRwqvtLMGgAA/jyA0ZaL8O4A2E5Oi/rDm1IwWDIGsuPowheLw887ToVKkJTARU4L5xEKLPCEIRhy1hKw/AWgAAA=",
   "dominant": "#d7d6ca",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000122824/2df5c209e5e765630bd9a5946107b40db652fea6838ad17e3dcd4009b86614c7",
     "page": "https://www.nintendo.com/us/store/products/splatoon-raiders-switch-2/"
   },
-  "input": "c0b2033093c2f99e"
+  "input": "5a74df6c17eba831"
 }

@@ -1,65 +1,62 @@
 {
   "key": "007-first-light--1",
   "view": "hero",
-  "width": 1600,
-  "height": 900,
-  "aspect": 1.7778,
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/007-first-light/1-240.c36361e4.avif"
+        "src": "/products/007-first-light/1-240.d132bc2c.avif"
       },
       {
         "w": 480,
-        "src": "/products/007-first-light/1-480.5de6abc9.avif"
+        "src": "/products/007-first-light/1-480.4749c03f.avif"
       },
       {
         "w": 720,
-        "src": "/products/007-first-light/1-720.47207d72.avif"
+        "src": "/products/007-first-light/1-720.f4d8ff44.avif"
       },
       {
         "w": 960,
-        "src": "/products/007-first-light/1-960.93cfec38.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/007-first-light/1-1440.92a2e72c.avif"
+        "src": "/products/007-first-light/1-960.fa83644b.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/007-first-light/1-240.7c21445a.webp"
+        "src": "/products/007-first-light/1-240.3a1832a4.webp"
       },
       {
         "w": 480,
-        "src": "/products/007-first-light/1-480.f2ce550d.webp"
+        "src": "/products/007-first-light/1-480.ef30ebc6.webp"
       },
       {
         "w": 720,
-        "src": "/products/007-first-light/1-720.2deadf83.webp"
+        "src": "/products/007-first-light/1-720.de652b20.webp"
       },
       {
         "w": 960,
-        "src": "/products/007-first-light/1-960.fbea4637.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/007-first-light/1-1440.09749a80.webp"
+        "src": "/products/007-first-light/1-960.417f7986.webp"
       }
-    ],
-    "png": "/products/007-first-light/1-720.84a8b58a.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYwAAHAgF03lgAP7w3vgO7D/xx5om014QXahmMjDxTGnaYMJ60k0Z57mzasMgke2/+73/nCM49G8W+o9i3jZtIsG84AAA",
-  "dominant": "#050504",
+  "share": {
+    "src": "/products/007-first-light/1-1067.bc8bd20c.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADwAwCdASoNABQAPxFysVAsJqSisAgBgCIJYgC7ABwp5C9QiQh3YswwAP7o8Rm5rrLBYc4J4jSv5zLCbsKo5r6xWr0GmtTVIy4qkvanizPnhFer3oXKpr+rBa0pwOtXmQsQdGVKFTgAAA==",
+  "dominant": "#050404",
   "transparent": false,
   "background": null,
-  "kind": "hero",
+  "kind": "box-art",
   "credit": "IO Interactive",
   "source": {
-    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202506/0421/3f7672a695a9487071b261cc7c0d55ad7c25ebb39c8dc3ec.png",
-    "page": "https://store.playstation.com/en-gb/concept/10006560"
+    "url": "https://store-images.s-microsoft.com/image/apps.8071.14287567326939893.1fdb2217-3463-49e6-b44c-c16587b03bc8.d8033845-8141-4dc4-b49e-2a8e6749235d",
+    "page": "https://web.archive.org/web/20260610204144/https://www.xbox.com/en-us/games/store/007-first-light-standard-edition/9npf9f0dcvks"
   },
-  "input": "87e7ed84ed225b39"
+  "input": "7c86df0e1cf1babf"
 }

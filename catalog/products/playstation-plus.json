@@ -16,9 +16,9 @@
     "ckb": "Essential، Extra، Premium · یاریی ئۆنلاین و یاریی مانگانە · لەگەڵ وڵاتی هەژمار"
   },
   "description": {
-    "ar": "اشتراك PlayStation Plus لأجهزة PS5 وPS4 بثلاث فئات: Essential للعب الجماعي عبر الإنترنت والألعاب الشهرية والتخفيضات وحفظ الملفات سحابياً، وExtra تضيف مكتبة مئات الألعاب، وPremium تضيف الألعاب الكلاسيكية وتجارب الألعاب والبث السحابي. الرمز مرتبط بدولة ويجب أن يطابق دولة حسابك، وفي الحساب السعودي اسم الفئة العليا Deluxe بدلاً من Premium. يصلك الرمز بعد إتمام الدفع.",
-    "en": "PlayStation Plus for PS5 and PS4 in three tiers: Essential for online multiplayer, monthly games, discounts and cloud saves; Extra adds a catalogue of hundreds of games; Premium adds classics, game trials and cloud streaming. The code is tied to a country and must match your account's country; on Saudi accounts the top tier is Deluxe instead of Premium. The code is sent to you after payment.",
-    "ckb": "بەشداریی PlayStation Plus بۆ PS5 و PS4 بە سێ ئاست: Essential بۆ یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە، داشکاندن و پاشەکەوتی هەوری؛ Extra کتێبخانەیەکی سەدان یاری زیاد دەکات؛ Premium یاریی کلاسیک، تاقیکردنەوەی یاری و پەخشی هەوری زیاد دەکات. کۆدەکە بە وڵاتێکەوە بەستراوە و دەبێت لەگەڵ وڵاتی هەژمارەکەت یەک بگرێتەوە؛ لە هەژماری سعوودیدا ئاستی سەرەوە ناوی Deluxe ە لە جیاتی Premium. کۆدەکە دوای پارەدان بۆت دەنێردرێت."
+    "ar": "اشتراك PlayStation Plus لأجهزة PS5 وPS4 بثلاث فئات: Essential للعب الجماعي عبر الإنترنت والألعاب الشهرية والتخفيضات وحفظ الملفات سحابياً، وExtra تضيف مكتبة مئات الألعاب، وPremium تضيف الألعاب الكلاسيكية وتجارب الألعاب والبث السحابي. الرمز مرتبط بدولة ويجب أن يطابق دولة حسابك. في الحساب السعودي اسم الفئة العليا Deluxe بدلاً من Premium، وهي تشمل الكلاسيكيات وتجارب الألعاب دون البث السحابي لألعاب PS5. يصلك الرمز بعد إتمام الدفع.",
+    "en": "PlayStation Plus for PS5 and PS4 in three tiers: Essential for online multiplayer, monthly games, discounts and cloud saves; Extra adds a catalogue of hundreds of games; Premium adds classics, game trials and cloud streaming. The code is tied to a country and must match your account's country. On Saudi accounts the top tier is Deluxe instead of Premium: it has the classics and game trials but no PS5 cloud streaming. The code is sent to you after payment.",
+    "ckb": "بەشداریی PlayStation Plus بۆ PS5 و PS4 بە سێ ئاست: Essential بۆ یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە، داشکاندن و پاشەکەوتی هەوری؛ Extra کتێبخانەیەکی سەدان یاری زیاد دەکات؛ Premium یاریی کلاسیک، تاقیکردنەوەی یاری و پەخشی هەوری زیاد دەکات. کۆدەکە بە وڵاتێکەوە بەستراوە و دەبێت لەگەڵ وڵاتی هەژمارەکەت یەک بگرێتەوە. لە هەژماری سعوودیدا ئاستی سەرەوە ناوی Deluxe ە لە جیاتی Premium: یاریی کلاسیک و تاقیکردنەوەی یاری تێدایە بەڵام پەخشی هەوریی یارییەکانی PS5ی تێدا نییە. کۆدەکە دوای پارەدان بۆت دەنێردرێت."
   },
   "highlights": [
     {
@@ -46,22 +46,38 @@
     {
       "key": "tiers",
       "label": { "ar": "الفئات", "en": "Tiers", "ckb": "ئاستەکان" },
-      "value": { "ar": "Essential وExtra وPremium (في الحساب السعودي: Essential وExtra وDeluxe)", "en": "Essential, Extra, Premium (Saudi accounts: Essential, Extra, Deluxe)", "ckb": "Essential، Extra، Premium (هەژماری سعوودی: Essential، Extra، Deluxe)" }
+      "value": {
+        "ar": "Essential وExtra وPremium (في الحساب السعودي: Essential وExtra وDeluxe، وDeluxe = Extra + الكلاسيكيات + تجارب الألعاب، دون بث ألعاب PS5 سحابياً)",
+        "en": "Essential, Extra, Premium (Saudi accounts: Essential, Extra, Deluxe; Deluxe = Extra + Classics + game trials, without PS5 cloud streaming)",
+        "ckb": "Essential، Extra، Premium (هەژماری سعوودی: Essential، Extra، Deluxe؛ Deluxe = Extra + کلاسیکەکان + تاقیکردنەوەی یاری، بەبێ پەخشی هەوریی یارییەکانی PS5)"
+      }
     },
     {
       "key": "essential",
       "label": { "ar": "Essential", "en": "Essential", "ckb": "Essential" },
-      "value": { "ar": "لعب جماعي أونلاين، ألعاب شهرية، تخفيضات وحزم حصرية، حفظ سحابي، Share Play", "en": "Online multiplayer, monthly games, exclusive discounts and packs, cloud storage, Share Play", "ckb": "یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە، داشکاندن و پاکێجی تایبەت، پاشەکەوتی هەوری، Share Play" }
+      "value": {
+        "ar": "لعب جماعي أونلاين، ألعاب شهرية، تخفيضات وحزم حصرية، حفظ سحابي، Share Play",
+        "en": "Online multiplayer, monthly games, exclusive discounts and packs, cloud storage, Share Play",
+        "ckb": "یاریی ئۆنلاینی بەکۆمەڵ، یاریی مانگانە، داشکاندن و پاکێجی تایبەت، پاشەکەوتی هەوری، Share Play"
+      }
     },
     {
       "key": "extra",
       "label": { "ar": "Extra", "en": "Extra", "ckb": "Extra" },
-      "value": { "ar": "كل ما في Essential + مكتبة ألعاب PlayStation Plus + Ubisoft+ Classics", "en": "Everything in Essential + Game Catalog + Ubisoft+ Classics", "ckb": "هەموو شتەکانی Essential + کاتالۆگی یاری + Ubisoft+ Classics" }
+      "value": {
+        "ar": "كل ما في Essential + مكتبة ألعاب PlayStation Plus + Ubisoft+ Classics",
+        "en": "Everything in Essential + Game Catalog + Ubisoft+ Classics",
+        "ckb": "هەموو شتەکانی Essential + کاتالۆگی یاری + Ubisoft+ Classics"
+      }
     },
     {
       "key": "premium",
       "label": { "ar": "Premium", "en": "Premium", "ckb": "Premium" },
-      "value": { "ar": "كل ما في Extra + الكلاسيكيات + تجارب الألعاب + البث السحابي + أفلام Sony Pictures", "en": "Everything in Extra + Classics Catalog + game trials + cloud streaming + Sony Pictures Catalog", "ckb": "هەموو شتەکانی Extra + کاتالۆگی کلاسیک + تاقیکردنەوەی یاری + پەخشی هەوری + فیلمەکانی Sony Pictures" }
+      "value": {
+        "ar": "كل ما في Extra + الكلاسيكيات + تجارب الألعاب + البث السحابي + أفلام Sony Pictures",
+        "en": "Everything in Extra + Classics Catalog + game trials + cloud streaming + Sony Pictures Catalog",
+        "ckb": "هەموو شتەکانی Extra + کاتالۆگی کلاسیک + تاقیکردنەوەی یاری + پەخشی هەوری + فیلمەکانی Sony Pictures"
+      }
     },
     {
       "key": "durations",
@@ -91,7 +107,11 @@
     },
     {
       "sku": "PSPLUS-US-ESS-12M",
-      "title": { "ar": "حساب أمريكي · Essential · 12 شهراً", "en": "US account · Essential · 12 months", "ckb": "هەژماری ئەمریکی · Essential · 12 مانگ" },
+      "title": {
+        "ar": "حساب أمريكي · Essential · 12 شهراً",
+        "en": "US account · Essential · 12 months",
+        "ckb": "هەژماری ئەمریکی · Essential · 12 مانگ"
+      },
       "options": { "region": "United States", "tier": "Essential", "duration": "12 months" },
       "isDefault": true,
       "images": ["playstation-plus--1"]
@@ -146,9 +166,9 @@
       "deviceModel": "ps-portal",
       "status": "partial",
       "note": {
-        "ar": "PlayStation Portal يبث من جهاز PS5؛ الاشتراك يُفعّل على حساب PS5.",
-        "en": "PlayStation Portal streams from your PS5; the membership is activated on the PS5 account.",
-        "ckb": "PlayStation Portal لە PS5ەوە پەخش دەکات؛ بەشدارییەکە لەسەر هەژماری PS5 چالاک دەکرێت."
+        "ar": "PlayStation Portal يشغّل ألعاب جهاز PS5 عن بُعد، ومع Premium يمكنه أيضاً بث ألعاب PS5 مختارة من السحابة. يُفعَّل الاشتراك على حساب PlayStation نفسه.",
+        "en": "PlayStation Portal plays your PS5 remotely, and with Premium it can also stream select PS5 games from the cloud. The membership is activated on the same PlayStation account.",
+        "ckb": "PlayStation Portal یارییەکانی PS5ەکەت لە دوورەوە کار پێدەکات، و بە Premium دەتوانێت هەندێک یاریی PS5 لە هەورەوە پەخش بکات. بەشدارییەکە لەسەر هەمان هەژماری PlayStation چالاک دەکرێت."
       },
       "source": "https://www.playstation.com/en-us/ps-plus/"
     }
@@ -161,19 +181,19 @@
   "images": [
     {
       "key": "playstation-plus--1",
-      "file": ".cache/product-images/playstation-plus/1.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps-plus-black-badge-01-22sep20?$1600px--t$",
-      "sourcePage": "https://www.playstation.com/en-sa/ps-plus/",
+      "file": ".cache/product-images/playstation-plus/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202204/0810/803Pm8uJoZ2Cl9fJPvTaXHqG.png",
+      "sourcePage": "https://www.playstation.com/en-us/ps-plus/",
       "kind": "hero",
       "alt": {
-        "ar": "شعار PlayStation Plus",
-        "en": "PlayStation Plus logo",
-        "ckb": "هێمای PlayStation Plus"
+        "ar": "صورة اشتراك PlayStation Plus مع الشعار ورمز PlayStation Plus الذهبي",
+        "en": "PlayStation Plus membership tile with the logo and the gold PlayStation Plus symbol",
+        "ckb": "وێنەی بەشداریی PlayStation Plus لەگەڵ هێما و نیشانە زێڕینەکەی PlayStation Plus"
       },
       "credit": "Sony Interactive Entertainment",
-      "width": 1600,
-      "height": 355,
-      "transparent": true
+      "width": 1024,
+      "height": 1024,
+      "transparent": false
     },
     {
       "key": "playstation-plus--2",
@@ -198,14 +218,14 @@
       "title": "PlayStation Plus",
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
-      "supports": "three US tiers (Essential, Extra, Premium) and what each includes, 1/3/12-month plans, subscriptions continue until cancelled"
+      "supports": "three US tiers (Essential, Extra, Premium) and what each includes, 1/3/12-month subscriptions, cloud streaming to PS5 and PlayStation Portal with Premium, subscriptions continue until cancelled, membership tile image"
     },
     {
       "url": "https://www.playstation.com/en-sa/ps-plus/",
       "title": "PlayStation Plus (Saudi Arabia)",
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
-      "supports": "Saudi tiers are Essential, Extra and Deluxe (no Premium), images"
+      "supports": "Saudi tiers are Essential, Extra and Deluxe; Deluxe adds the Classics Catalogue and game trials to Extra, with no PS5 cloud streaming listed; prices now shown in Saudi riyals; promo image"
     },
     {
       "url": "https://www.playstation.com/en-us/support/store/redeem-ps-store-voucher-code/",
@@ -213,6 +233,13 @@
       "publisher": "Sony Interactive Entertainment",
       "retrieved": "2026-11-11",
       "supports": "voucher must be for the same region as the account, some subscription vouchers need a valid payment method on the account, PS Plus benefits on child accounts are limited by age ratings and parental controls"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/PlayStation_Plus",
+      "title": "PlayStation Plus",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-11",
+      "supports": "independent confirmation of the tier structure: Essential for all subscribers, Extra with the game catalogue and Ubisoft+ Classics, Premium (Deluxe in some regions) with classics, trials and, in some regions, cloud streaming"
     }
   ],
   "notes": {
@@ -221,12 +248,8 @@
     "ckb": "پێش کڕین وڵاتی هەژمارەکەت بپشکنە. هەندێک کۆدی بەشداری لەوانەیە پێش بەکارهێنان داوای ڕێگەیەکی پارەدانی دروست لە هەژمارەکە بکەن. لە هەژماری منداڵاندا سوودەکانی بەشداری پەیڕەوی پۆلێنی تەمەن و کۆنترۆڵی دایک و باوک دەکەن."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
-    "unverified": [
-      "What the Saudi Deluxe tier includes compared with Premium",
-      "Which tier and length codes Iraqi suppliers stock (variants list the US tiers as a starting point)",
-      "Second source is a second official Sony page, not independent press"
-    ]
+    "unverified": ["Which tier and length codes Iraqi suppliers stock (variants list the US tiers as a starting point)"]
   }
 }

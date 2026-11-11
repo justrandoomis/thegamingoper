@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-1440.ccaef694.webp"
       }
-    ],
-    "png": "/products/ea-sports-fc-27-nintendo-switch-2/1-720.167d6c85.png"
+    ]
+  },
+  "share": {
+    "src": "/products/ea-sports-fc-27-nintendo-switch-2/1-1200.edd4c1f5.jpg",
+    "width": 1200,
+    "height": 675,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAACQAwCdASoUAAsAPxFysVAsJqSisAgBgCIJZQAAUQ6Wb+Azk5gAAMnInelZA6OBhkm5bLzHwXA3cAr9IHgjChINZP6gqeVP8/8DUmfCCmM9bBvjIx1HBVyo/AA=",
   "dominant": "#b7b6b7",
@@ -61,5 +66,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000110123/ce773ca9bd3d7bb606fab8cd9fd91f2bcecaf53fdf753109e26fa46669ee9c6b",
     "page": "https://www.nintendo.com/us/store/products/ea-sports-fc-27-switch-2/"
   },
-  "input": "65cc88bd9177c7ff"
+  "input": "a63648aa71263f75"
 }

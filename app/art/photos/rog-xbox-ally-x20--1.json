@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/rog-xbox-ally-x20/1-1440.a2e662ab.webp"
       }
-    ],
-    "png": "/products/rog-xbox-ally-x20/1-720.6000c4e2.png"
+    ]
+  },
+  "share": {
+    "src": "/products/rog-xbox-ally-x20/1-1200.bc106460.png",
+    "width": 1200,
+    "height": 563,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSEMAAAARN0Amgpn9AEa7AE4vERF4rwJGsW21oe7BARL6vgqANAeJfxH/RUNE/yeAWcjce5OP8B+UFamF9J+KlC+TPKXhjDQcAFZQOCBKAAAAsAMAnQEqFAAJAD8RcrBQLCakorAIAYAiCWkAAGH3UJ1q+ZK9vmgA/r/EX708mZF9s8IPBhT2jScYvtVyu74KfJMCNO+pyjAAAAA=",
   "dominant": "#050505",
@@ -61,5 +66,5 @@
     "url": "https://dlcdnwebimgs.asus.com/gain/D797EEA6-B797-472F-9E8B-EC9E07963B27/",
     "page": "https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-xbox-ally-x20-2026/gallery/"
   },
-  "input": "4f7c7d7c7230a8ca"
+  "input": "4a7152335713101c"
 }

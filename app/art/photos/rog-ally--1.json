@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/rog-ally/1-1440.4602dff9.webp"
       }
-    ],
-    "png": "/products/rog-ally/1-720.3b07d308.png"
+    ]
+  },
+  "share": {
+    "src": "/products/rog-ally/1-1200.d9de3468.png",
+    "width": 1200,
+    "height": 578,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSD8AAAARP6AmAAg2p4VrbwlEREDdE1pBTSRbDblGAh4wkPvc4wL/M/9/kBDR/wlgRLs9uHm4qGqYPpj50zDtagGXYEQAVlA4IGwAAAAQBACdASoUAAoAPxFysFAsJqSisAgBgCIJYgDG9Ba2U1V9Mufld9oWgAD9+G0LXNgVWbDWwc3CQ0lGqbNEE23pzDP4pSoO7GeIy9g7bGsP95osMeE3V50MTKTRY061zwW/tjueHWS5b6YWYAA=",
   "dominant": "#e9e9e9",
@@ -61,5 +66,5 @@
     "url": "https://dlcdnwebimgs.asus.com/gain/9B345703-C095-4C0C-A86F-0E48FB76F93F/",
     "page": "https://rog.asus.com/gaming-handhelds/rog-ally/rog-ally-2023/gallery/"
   },
-  "input": "25107e45113732ee"
+  "input": "e1e779889c883509"
 }

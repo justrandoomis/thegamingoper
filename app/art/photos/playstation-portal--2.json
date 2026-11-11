@@ -2,56 +2,55 @@
   "key": "playstation-portal--2",
   "view": "hero",
   "width": 1600,
-  "height": 1239,
-  "aspect": 1.2914,
+  "height": 1076,
+  "aspect": 1.487,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-portal/2-240.60e153f3.avif"
+        "src": "/products/playstation-portal/2-240.e0489c69.avif"
       },
       {
         "w": 480,
-        "src": "/products/playstation-portal/2-480.a99965e3.avif"
+        "src": "/products/playstation-portal/2-480.321160fc.avif"
       },
       {
         "w": 720,
-        "src": "/products/playstation-portal/2-720.bb28c2fb.avif"
+        "src": "/products/playstation-portal/2-720.308b472f.avif"
       },
       {
         "w": 960,
-        "src": "/products/playstation-portal/2-960.1335cd1c.avif"
+        "src": "/products/playstation-portal/2-960.07760dc4.avif"
       },
       {
         "w": 1440,
-        "src": "/products/playstation-portal/2-1440.212c2638.avif"
+        "src": "/products/playstation-portal/2-1440.cb2e8344.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-portal/2-240.89a0afc5.webp"
+        "src": "/products/playstation-portal/2-240.a7b44e78.webp"
       },
       {
         "w": 480,
-        "src": "/products/playstation-portal/2-480.87c87512.webp"
+        "src": "/products/playstation-portal/2-480.bf03de30.webp"
       },
       {
         "w": 720,
-        "src": "/products/playstation-portal/2-720.c7b29820.webp"
+        "src": "/products/playstation-portal/2-720.b51278f1.webp"
       },
       {
         "w": 960,
-        "src": "/products/playstation-portal/2-960.4eeb91da.webp"
+        "src": "/products/playstation-portal/2-960.bc9b8454.webp"
       },
       {
         "w": 1440,
-        "src": "/products/playstation-portal/2-1440.025c7198.webp"
+        "src": "/products/playstation-portal/2-1440.1f78f4cd.webp"
       }
-    ],
-    "png": "/products/playstation-portal/2-720.86df5d13.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGQAAAART6CgbRs2VBbdvxERsBu6fRJua9tWoovGnw7cumCR0QEFeOZWACOhz7x60RIi+j8BOJdxW6/RXmN/oohf+HciulsAypyWNlB2KxPA1MuiAAA1/tMcLsCC7OGtAMpD3oDKbR0FVlA4IJIAAADwAwCdASoUAA8APxFysFAsJqSisAgBgCIJaA28wBteD7/zGUy7lbAgAP38uEcOCEc/2SnE9kMwUy6pXY5OqhTbv3d49XXPaPJfaAV0Du33QF8c8f0M53Hl85/ynAjq0xvZzmn5dcxA5f95ap/1+DowwfkDt5P0j+85H6pLOGWL/phGxR8JpZ7xP2cw2U73ZMwAAA==",
+  "placeholder": "data:image/webp;base64,UklGRhQBAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSGsAAAART6CgjSQ1dxr47pk/IgKozlXxe4Pb2raV6OKEHyrQAkjJLZXxbEpweQ2MNDCLW+//v4eI/k8AVArrWXrX9Cel0jLqgwuMv4UkxcPpYKB4py3NsUpuphDAvJBP+gBQvznT1aDao8A6NjblAABWUDggggAAAPADAJ0BKhQADQA/EXKwUCwmpKKwCAGAIglAAHyENqGHT7xjescz+YAA/mWOrWPZqem6oEaLIroVniz6ik7PgT4EwSmUFYktSU/EJCotnXrjGH3SIxrgc3PzruvzE7+e9XurXyQ12b9KbMnBXke+/R3xN8ZWE2hq4KW9j91F834IQAA=",
   "dominant": "#252529",
   "transparent": true,
   "background": null,
@@ -61,5 +60,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/Remote-Player-White-02-PS-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/playstation-portal-remote-player/buy-now/"
   },
-  "input": "9d47ff1d1a9e8709"
+  "input": "89a24e33ca79cf2d"
 }

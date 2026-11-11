@@ -43,11 +43,12 @@ import { Key } from "./Key";
  * destructive action is a neutral key with a red-ink label that states the consequence; the commit (red) key appears
  * in a dialog only when the dialog itself confirms an order step (`tone="commit"`).
  *
- * Behaviour: rendered in a portal (client only — nothing on the server), focus moves in and is trapped, Escape and the
- * scrim close it (`dismissible`), focus returns to the opener, the page behind is `inert` and does not scroll (no
- * layout shift: the scrollbar's gutter is kept). It drops in with 8px of travel and opacity (materialize) and leaves
- * the same way; reduced motion fades. `open` is the state: closing sets it false at once and the panel animates out
- * afterwards — nothing waits for the animation.
+ * Behaviour: rendered in a portal (client only — nothing on the server), focus moves in and is trapped, Escape, the
+ * scrim and Android's back gesture close it (`dismissible`), focus returns to the opener, the page behind is `inert`
+ * and does not scroll (no layout shift: the scrollbar's gutter is kept). It takes the opener's density and theme island
+ * (an admin dialog is admin-dense). It drops in with 8px of travel and opacity (materialize) and leaves the same way;
+ * reduced motion fades. `open` is the state: closing sets it false at once and the panel animates out afterwards —
+ * nothing waits for the animation. Props and examples: docs/ui/overlays.md.
  */
 
 /* ───────────────────────────── modal layers (shared by <Dialog> and <Sheet>) ───────────────────────────── */
@@ -55,10 +56,13 @@ import { Key } from "./Key";
 const FOCUSABLE =
   'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, iframe, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
 
-/** Elements Tab can reach inside `container`, in order (visible, not inert, one radio per checked group). */
+/**
+ * Elements Tab can reach inside `container`, in order (visible, not inert, not taken out of the tab order with
+ * tabindex="-1" — roving-tabindex groups such as tabs, chips and menus keep one stop — one radio per checked group).
+ */
 export function focusablesIn(container: HTMLElement): HTMLElement[] {
   return [...container.querySelectorAll<HTMLElement>(FOCUSABLE)].filter((element) => {
-    if (element.closest("[inert]") || element.getClientRects().length === 0) return false;
+    if (element.tabIndex < 0 || element.closest("[inert]") || element.getClientRects().length === 0) return false;
     if (element instanceof HTMLInputElement && element.type === "radio" && !element.checked && element.name) {
       const group = element.form ?? container;
       const checked = group.querySelector(`input[type="radio"][name="${CSS.escape(element.name)}"]:checked`);
@@ -114,9 +118,20 @@ function onLayerKeyDown(event: KeyboardEvent): void {
   }
   const index = active ? items.indexOf(active) : -1;
   if (index === -1) {
-    // On the panel itself (or somewhere it should not be): enter at the right end.
+    // Focus is on something outside the tab order: the panel itself, a roving item (tabindex -1), or outside the
+    // layer. Move to the tab stop that follows (or precedes) it in document order, wrapping at the ends.
     event.preventDefault();
-    (event.shiftKey ? items[items.length - 1] : items[0]).focus();
+    if (!active || !top.host.contains(active)) {
+      (event.shiftKey ? items[items.length - 1] : items[0]).focus();
+      return;
+    }
+    const after = items.findIndex((element) => (active.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
+    if (event.shiftKey) {
+      const before = after === -1 ? items.length - 1 : after - 1;
+      items[before >= 0 ? before : items.length - 1].focus();
+    } else {
+      items[after === -1 ? 0 : after].focus();
+    }
   } else if (event.shiftKey && index === 0) {
     event.preventDefault();
     items[items.length - 1].focus();
@@ -141,6 +156,62 @@ function installLayers(): void {
 /** Call in an overlay component that stays mounted while closed. */
 export function usePrimeLayers(): void {
   useEffect(installLayers, []);
+}
+
+/**
+ * Overlays render at the end of <body>, outside the subtree that opened them. They take that subtree's density (the
+ * admin's `data-density="admin"`) and theme island (`data-theme` below <html>) from the element that opened them, so
+ * an admin dialog is as compact as the table it came from.
+ */
+export function inheritSurface(from: Element | null | undefined, to: HTMLElement): void {
+  if (!from) return;
+  const density = from.closest("[data-density]")?.getAttribute("data-density");
+  if (density) to.setAttribute("data-density", density);
+  else to.removeAttribute("data-density");
+  const island = from.closest("[data-theme]");
+  const theme = island && island !== document.documentElement ? island.getAttribute("data-theme") : null;
+  if (theme) to.setAttribute("data-theme", theme);
+  else to.removeAttribute("data-theme");
+}
+
+type CloseWatcherLike = { onclose: (() => void) | null; destroy(): void };
+type CloseWatcherCtor = new () => CloseWatcherLike;
+
+/**
+ * Platform close requests for the top layer — Android's back button and back gesture — through Chromium's
+ * CloseWatcher (a native <dialog> gets this for free; a portal has to ask). Escape stays with the keydown handlers:
+ * they call preventDefault, and a cancelled Escape never reaches a close watcher. Where CloseWatcher does not exist
+ * this does nothing. If the layer is still open after `onClose` (it is busy and not dismissible), it listens again.
+ * Returns the function that stops listening.
+ */
+export function watchCloseRequests(onClose: () => void): () => void {
+  const Watcher = (globalThis as { CloseWatcher?: CloseWatcherCtor }).CloseWatcher;
+  if (typeof Watcher !== "function") return () => {};
+  let disposed = false;
+  let watcher: CloseWatcherLike | null = null;
+  const arm = () => {
+    if (disposed) return;
+    try {
+      watcher = new Watcher();
+    } catch {
+      watcher = null;
+      return;
+    }
+    watcher.onclose = () => {
+      watcher = null;
+      onClose();
+      setTimeout(arm, 0);
+    };
+  };
+  arm();
+  return () => {
+    disposed = true;
+    if (watcher) {
+      watcher.onclose = null;
+      watcher.destroy();
+      watcher = null;
+    }
+  };
 }
 
 let locks = 0;
@@ -197,9 +268,11 @@ export function useModalLayer(options: ModalLayerOptions): void {
           ? lastPressed
           : null;
     const layer: Layer = { root, host, escape: () => latest.current.onEscape() };
+    inheritSurface(opener, host);
     layers.push(layer);
     lockScroll();
     syncInert();
+    const unwatch = watchCloseRequests(() => latest.current.onEscape());
     if (!host.contains(document.activeElement)) {
       const target =
         latest.current.initialFocus?.() ??
@@ -209,6 +282,7 @@ export function useModalLayer(options: ModalLayerOptions): void {
       target.focus({ preventScroll: true });
     }
     return () => {
+      unwatch();
       const index = layers.lastIndexOf(layer);
       if (index >= 0) layers.splice(index, 1);
       unlockScroll();
@@ -237,11 +311,13 @@ export function useOverlayDepth(): number {
 
 /**
  * A portal root appended to <body> after hydration (null on the server and during hydration, so nothing overlays
- * the server HTML). `keep` marks it as staying interactive above modal layers (the toaster).
+ * the server HTML). `keep` marks it as staying interactive above modal layers (the toaster). `enabled: false`
+ * creates nothing (a menu inside a sheet renders into the sheet's host instead).
  */
-export function useOverlayRoot(keep = false): HTMLElement | null {
+export function useOverlayRoot(keep = false, enabled = true): HTMLElement | null {
   const [element, setElement] = useState<HTMLElement | null>(null);
   useLayoutEffect(() => {
+    if (!enabled) return;
     const div = document.createElement("div");
     div.setAttribute("data-overlay", "");
     if (keep) div.setAttribute("data-overlay-keep", "");
@@ -249,9 +325,10 @@ export function useOverlayRoot(keep = false): HTMLElement | null {
     setElement(div);
     return () => {
       div.remove();
+      setElement(null);
     };
-  }, [keep]);
-  return element;
+  }, [keep, enabled]);
+  return enabled ? element : null;
 }
 
 /** The nearest modal layer's wrapper: menus opened inside a sheet or dialog render into it (same stacking context). */
@@ -538,7 +615,12 @@ export function ConfirmDialog({
   const cancelRef = useRef<HTMLButtonElement | null>(null);
   const confirmRef = useRef<HTMLButtonElement | null>(null);
   // The first field; without fields, the least destructive key for a destructive action (WAI-ARIA alertdialog).
-  const focusTarget = () => (codes ? codeRef.current : options ? noteRef.current : tone === "destructive" ? cancelRef.current : confirmRef.current);
+  // (Typed through `unknown`: worker-configuration.d.ts merges HTMLRewriter's `remove(): Element` into the DOM's
+  // Element, so TypeScript no longer accepts an HTMLSelectElement as an HTMLElement. At runtime it is one.)
+  const focusTarget = (): HTMLElement | null => {
+    const target: unknown = codes ? codeRef.current : options ? noteRef.current : tone === "destructive" ? cancelRef.current : confirmRef.current;
+    return target instanceof HTMLElement ? target : null;
+  };
 
   const codeError = codes && !code ? t("dialog.codeMissing") : undefined;
   const noteError = noteRequired && note.trim().length < min ? t("dialog.reasonShort", { min }) : undefined;

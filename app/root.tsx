@@ -17,9 +17,26 @@ import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
 import { loadShell } from "~/server/shell.server";
+import { fontPreloadLinks } from "~/styles/fonts";
 import "./app.css";
 
 export const middleware: Route.MiddlewareFunction[] = [requestContextMiddleware];
+
+/** Brand files (public/, see scripts/logo/assets.mjs): favicons, the home-screen icon and the web app manifest. */
+export const links: Route.LinksFunction = () => [
+  { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+  { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+  { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+  { rel: "manifest", href: "/site.webmanifest" },
+];
+
+/**
+ * Browser chrome colour = the floor of each theme. Light is the manifest's theme_color; dark is --ground of the
+ * dark theme (app/styles/tokens.css). Two metas with media queries follow the system; an explicit choice paints
+ * both with its colour (ThemeSync keeps them in step after a switch).
+ */
+// lint-design: allow raw-colour — <meta name="theme-color"> needs literal colours; they mirror site.webmanifest and tokens.css
+const THEME_COLOR = { light: "#F3EFEC", dark: "#16171B" } as const;
 
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -61,16 +78,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content={theme === "dark" ? THEME_COLOR.dark : THEME_COLOR.light} />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content={theme === "light" ? THEME_COLOR.light : THEME_COLOR.dark} />
+        {/* the two critical font files of this language's script (app/styles/fonts.ts) */}
+        {fontPreloadLinks(LOCALES[locale].script).map((font) => (
+          <link key={font.href} rel="preload" as="font" href={font.href} type={font.type} crossOrigin="anonymous" />
+        ))}
         <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} suppressHydrationWarning />
         {/* Motion tier (data-motion + fx-low) before first paint — see app/motion/tier-script.ts */}
         <script nonce={data?.nonce} dangerouslySetInnerHTML={{ __html: MOTION_TIER_SCRIPT }} suppressHydrationWarning />
         <Meta />
-        <Links />
+        {/* The nonce comes from root data on both sides, so server and client render the same attribute. */}
+        <Links nonce={data?.nonce} />
       </head>
       <body>
         {children}
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={data?.nonce} />
+        <Scripts nonce={data?.nonce} />
       </body>
     </html>
   );
@@ -97,6 +121,11 @@ function ThemeSync() {
       } else {
         root.dataset.theme = theme;
         delete root.dataset.themeSource;
+      }
+      // browser chrome follows: system → each media query its own colour; an explicit choice → that colour on both
+      for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"][media]')) {
+        const forDark = meta.media.includes("dark");
+        meta.content = theme === "system" ? (forDark ? THEME_COLOR.dark : THEME_COLOR.light) : THEME_COLOR[theme];
       }
     };
     apply();

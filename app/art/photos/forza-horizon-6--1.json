@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/forza-horizon-6/1-960.c6f1fc74.webp"
       }
-    ],
-    "png": "/products/forza-horizon-6/1-720.1baf8feb.png"
+    ]
+  },
+  "share": {
+    "src": "/products/forza-horizon-6/1-1067.4bcd8ac8.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAACwAwCdASoNABQAPxFysVAsJqSisAgBgCIJQAAJ31HeNfLjCNHJAAD+4YuKZbs4zvfrP+VrTxXQcNbKJrWNdXqmcSCFCj/aCHx4rfeN3AHFR5ByiDvdFmpPvZO3/z7aUt1q+weJC2ISujSbCAA=",
   "dominant": "#fbfbfd",
@@ -53,5 +58,5 @@
     "url": "https://store-images.s-microsoft.com/image/apps.29856.14202278764680089.8e4c786a-0a1c-4737-a244-0bdfa34aab7b.64883cac-25a8-4715-a0dc-0dd42b0e5435",
     "page": "https://www.xbox.com/en-US/games/store/forza-horizon-6-standard-edition/9n431px143p8"
   },
-  "input": "b3a5d40bdd4b4d84"
+  "input": "876d34dcb5f03631"
 }

@@ -17,9 +17,9 @@
     "ckb": "تایبەت بە Nintendo Switch 2 · کارتی یاریی تەواو · PEGI 12"
   },
   "description": {
-    "ar": "إعادة صنع كاملة للعبة Nintendo 64 الكلاسيكية الصادرة عام 1998، بُنيت من الصفر حصرياً لجهاز Nintendo Switch 2. يتنقل لينك بين حقبتين من مملكة هايرول ليوقف غانوندورف، هذه المرة برسومات جديدة وموسيقى أوركسترالية ومشاهد مدبلجة وتحكم حديث. القصة وترتيب المراحل بقيا قريبين جداً من اللعبة الأصلية.",
-    "en": "A full remake of the 1998 Nintendo 64 classic, built from the ground up for Nintendo Switch 2 only. Link travels between two eras of Hyrule to stop Ganondorf, now with new visuals, orchestral music, voiced cutscenes and modern controls. The story and the order of its dungeons stay close to the original.",
-    "ckb": "دووبارە دروستکردنەوەیەکی تەواوی یارییە کلاسیکییەکەی Nintendo 64 ی ساڵی 1998، کە لە سفرەوە تەنها بۆ Nintendo Switch 2 دروستکراوە. لینک لە نێوان دوو سەردەمی هایروڵدا گەشت دەکات بۆ ئەوەی ڕێگە لە گانۆندۆرف بگرێت، ئەمجارە بە گرافیکی نوێ، مۆسیقای ئۆرکێسترا، دیمەنی دەنگدار و کۆنترۆڵی سەردەمیانە. چیرۆک و ڕیزبەندیی قۆناغەکان زۆر نزیکن لە یارییە ڕەسەنەکە."
+    "ar": "إعادة صنع كاملة للعبة Nintendo 64 الكلاسيكية الصادرة عام 1998، بُنيت من الصفر حصرياً لجهاز Nintendo Switch 2. يتنقل لينك بين حقبتين من مملكة هايرول ليوقف غانوندورف، هذه المرة برسومات جديدة وموسيقى أوركسترالية ومشاهد مدبلجة وتحكم حديث، مع الحفاظ على قصة اللعبة الأصلية وإيقاعها وبنيتها.",
+    "en": "A full remake of the 1998 Nintendo 64 classic, built from the ground up for Nintendo Switch 2 only. Link travels between two eras of Hyrule to stop Ganondorf, now with new visuals, orchestral music, voiced cutscenes and modern controls. It keeps the story, pacing and structure of the original.",
+    "ckb": "دووبارە دروستکردنەوەیەکی تەواوی یارییە کلاسیکییەکەی Nintendo 64 ی ساڵی 1998، کە لە سفرەوە تەنها بۆ Nintendo Switch 2 دروستکراوە. لینک لە نێوان دوو سەردەمی هایروڵدا گەشت دەکات بۆ ئەوەی ڕێگە لە گانۆندۆرف بگرێت، ئەمجارە بە گرافیکی نوێ، مۆسیقای ئۆرکێسترا، دیمەنی دەنگدار و کۆنترۆڵی سەردەمیانە. چیرۆک و ڕیتم و پێکهاتەی یارییە ڕەسەنەکەی پاراستووە."
   },
   "highlights": [
     {
@@ -56,7 +56,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "5 تشرين الثاني 2026", "en": "5 November 2026", "ckb": "5ی تشرینی دووەمی 2026" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "24.9 GB", "en": "24.9 GB", "ckb": "24.9 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1", "ckb": "یەک یاریزان" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 12 · ESRB E10+ (دماء كرتونية، عنف خيالي)", "en": "PEGI 12 · ESRB E10+ (Animated Blood, Fantasy Violence)", "ckb": "PEGI 12 · ESRB E10+ (خوێنی کارتۆنی، توندوتیژیی خەیاڵی)" } },
@@ -76,7 +76,7 @@
     {
       "sku": "NS2G-ZELDA-OOT",
       "title": {
-        "ar": "The Legend of Zelda: Ocarina of Time — نسخة فعلية لـ Nintendo Switch 2",
+        "ar": "The Legend of Zelda: Ocarina of Time — نسخة فيزيائية لـ Nintendo Switch 2",
         "en": "The Legend of Zelda: Ocarina of Time — Nintendo Switch 2 physical edition",
         "ckb": "The Legend of Zelda: Ocarina of Time — کۆپیی فیزیکی بۆ Nintendo Switch 2"
       },
@@ -238,7 +238,28 @@
       "title": "The Legend of Zelda: Ocarina of Time (2026 video game)",
       "publisher": "Wikipedia",
       "retrieved": "2026-11-11",
-      "supports": "remake of the 1998 Nintendo 64 game, developer Nintendo EPD, single-player, release date, first physical print run with textured foil cover"
+      "supports": "remake of the 1998 Nintendo 64 game, developer Nintendo EPD, single-player, release date, keeps the original story and stays faithful to its pacing and structure, first physical print run with textured foil cover, Young Link and Young Zelda amiibo planned for 2027"
+    },
+    {
+      "url": "https://pegi.info/search-pegi?q=Ocarina%20of%20Time",
+      "title": "PEGI search: The Legend of Zelda: Ocarina of Time",
+      "publisher": "PEGI (Pan European Game Information)",
+      "retrieved": "2026-11-11",
+      "supports": "independent check: PEGI 12 (moderate violence) for Nintendo Switch 2, European release 05/11/2026"
+    },
+    {
+      "url": "https://www.rpgsite.net/feature/17453-every-nintendo-switch-2-rpg-physical-release-complete-on-cartridge-no-game-key-cards-or-codes-needed",
+      "title": "Every Nintendo Switch 2 RPG Physical Release Complete on Cartridge",
+      "publisher": "RPG Site",
+      "retrieved": "2026-11-11",
+      "supports": "independent check of the format: the remake is listed among Switch 2 releases complete on the cartridge (a proper physical release with a Texture Foil cover)"
+    },
+    {
+      "url": "https://www.upcitemdb.com/upc/45496906788",
+      "title": "UPC 045496906788 - The Legend of Zelda: Ocarina of Time - Nintendo Switch 2",
+      "publisher": "UPCitemdb (barcode database)",
+      "retrieved": "2026-11-11",
+      "supports": "independent check: UPC 045496906788 is listed by US retailers for this game"
     },
     {
       "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/",
@@ -249,15 +270,14 @@
     }
   ],
   "notes": {
-    "ar": "أول دفعة من النسخ الفعلية تأتي بغلاف لامع بارز الملمس طالما توفرت. مجسما amiibo للينك الصغير وزيلدا الصغيرة سيصدران في 2027 ويفتحان أقنعة خاصة داخل اللعبة.",
+    "ar": "أول دفعة من النسخ الفيزيائية تأتي بغلاف لامع بارز الملمس طالما توفرت. مجسما amiibo للينك الصغير وزيلدا الصغيرة سيصدران في 2027 ويفتحان أقنعة خاصة داخل اللعبة.",
     "en": "The first print run of the physical edition has a textured foil cover while stocks last. Young Link and Young Zelda amiibo are due in 2027 and unlock special in-game masks.",
     "ckb": "یەکەم کۆمەڵەی کۆپییە فیزیکییەکان بەرگێکی فۆیڵی بەرجەستەیان هەیە تا کاتێک بەردەست بن. amiibo ی لینکی منداڵ و زێلدای منداڵ لە 2027 دەردەچن و ماسکی تایبەت لە ناو یارییەکەدا دەکەنەوە."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Full game card status is inferred from Nintendo's official box art (no game-key card label) and Nintendo's guidance on that label; no Nintendo page states it in words",
       "European EAN barcode not found on an official page"
     ]
   }

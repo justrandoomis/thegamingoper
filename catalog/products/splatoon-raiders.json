@@ -27,7 +27,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "23 تموز 2026", "en": "23 July 2026", "ckb": "23ی تەممووزی 2026" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "13.2 GB", "en": "13.2 GB", "ckb": "13.2 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد على الجهاز؛ 2–4 محلياً لاسلكياً أو عبر الإنترنت", "en": "1 per system; 2–4 local wireless or online", "ckb": "یەک یاریزان لەسەر ئامێر؛ 2–4 بێتەلی ناوخۆیی یان ئۆنلاین" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E10+ (عنف خيالي)", "en": "PEGI 7 · ESRB E10+ (Fantasy Violence)", "ckb": "PEGI 7 · ESRB E10+ (توندوتیژیی خەیاڵی)" } },
@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-SPLATOON-RAIDERS",
-      "title": { "ar": "Splatoon Raiders — نسخة فعلية لـ Nintendo Switch 2", "en": "Splatoon Raiders — Nintendo Switch 2 physical edition", "ckb": "Splatoon Raiders — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Splatoon Raiders — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Splatoon Raiders — Nintendo Switch 2 physical edition", "ckb": "Splatoon Raiders — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906634"],
       "isDefault": true,
@@ -128,16 +128,18 @@
   ],
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/splatoon-raiders-switch-2/", "title": "Splatoon Raiders – Nintendo Switch 2 Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date July 23, 2026, game file size 13.2 GB, players 1 / 2-4 local wireless / 2-4 online, Online Play and Save Data Cloud, languages, ESRB descriptor, amiibo, HDR" },
-    { "url": "https://www.nintendo.com/us/store/products/splatoon-raiders-125682/", "title": "Splatoon Raiders – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906634, box art with ESRB E10+" },
+    { "url": "https://www.nintendo.com/us/store/products/splatoon-raiders-125682/", "title": "Splatoon Raiders – Nintendo Switch 2 Exclusive (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906634, box art with ESRB E10+ and no Game-Key Card label" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Splatoon-Raiders-2846969.html", "title": "Splatoon Raiders | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, download size 13.2 GB, single-player focused, Spirhalite Islands story with Deep Cut, Salmonids, 11 weapon types and over 100 variations, Hideout Ship upgrades" },
     { "url": "https://en.wikipedia.org/wiki/Splatoon_Raiders", "title": "Splatoon Raiders", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developer Nintendo EPD, publisher Nintendo, release July 23, 2026, third-person shooter and action RPG" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Splatoon%20Raiders", "title": "PEGI search: Splatoon Raiders", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 7 (violence, fear) for Nintendo Switch 2, European release 23/07/2026" },
+    { "url": "https://insider-gaming.com/splatoon-raiders-physical-edition-cartridge/", "title": "Does Splatoon Raiders Have a Physical Edition & Cartridge?", "publisher": "Insider Gaming", "retrieved": "2026-11-11", "supports": "independent check of the format: the physical edition comes with the game on the cartridge, not a code in the box" },
+    { "url": "https://www.upcitemdb.com/upc/45496906634", "title": "UPC 045496906634 - Splatoon Raiders - Nintendo Switch 2", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496906634 is listed by US retailers for Splatoon Raiders – Nintendo Switch 2" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Full game card status inferred from the official box art (no game-key card label)",
       "European EAN barcode not found on an official page"
     ]
   }

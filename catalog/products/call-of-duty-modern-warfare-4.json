@@ -13,7 +13,7 @@
     "ckb": "PS5 · Xbox Series X · دیسک · مێنیو و ژێرنووسی عەرەبی"
   },
   "description": {
-    "ar": "جزء Call of Duty لعام 2026 من تطوير Infinity Ward، صدر في 23 تشرين الأول 2026. القصة تبدأ بغزو كوري شمالي شامل لكوريا الجنوبية، بينما يخوض Captain Price حرباً شخصية بعيداً عن الجبهة. تضم اللعبة حملة قصصية وطور Multiplayer وطور DMZ، وهي متوفرة على PS5 وXbox Series X|S فقط من بين أجهزة البلايستيشن والإكس بوكس، ولا تصدر على PS4 أو Xbox One.",
+    "ar": "جزء Call of Duty لعام 2026 من تطوير Infinity Ward، صدر في 23 تشرين الأول 2026. القصة تبدأ بغزو كوري شمالي شامل لكوريا الجنوبية، بينما يخوض Captain Price حرباً شخصية بعيداً عن الجبهة. تضم اللعبة حملة قصصية وطور Multiplayer وطور DMZ، وهي متوفرة على PS5 وXbox Series X|S فقط من بين أجهزة PlayStation وXbox، ولا تصدر على PS4 أو Xbox One.",
     "en": "The 2026 Call of Duty from Infinity Ward, released on 23 October 2026. The campaign opens with a full-scale North Korean invasion of South Korea while Captain Price fights a personal war away from the front line. It includes the campaign, Multiplayer and DMZ, and on PlayStation and Xbox it is made for PS5 and Xbox Series X|S only — there is no PS4 or Xbox One version.",
     "ckb": "بەشی ساڵی 2026ی Call of Duty لە گەشەپێدانی Infinity Ward، کە لە 23ی تشرینی یەکەمی 2026 دەرچوو. چیرۆکەکە بە هێرشێکی گشتی کۆریای باکوور بۆ سەر کۆریای باشوور دەست پێدەکات، لە کاتێکدا Captain Price دوور لە بەرەی جەنگ شەڕێکی کەسی دەکات. حەملەی چیرۆک، Multiplayer و DMZ ی تێدایە، و لە نێو ئامێرەکانی PlayStation و Xbox تەنها بۆ PS5 و Xbox Series X|S دەرچووە — وەشانی PS4 و Xbox One ی نییە."
   },
@@ -232,13 +232,13 @@
     },
     {
       "key": "call-of-duty-modern-warfare-4--2",
-      "file": ".cache/product-images/call-of-duty-modern-warfare-4/2.jpg",
-      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.4715.13559635275456449.72d1efe7-e297-4b01-9ff5-81f9541bc9a1.a25cb344-59ba-49dd-8858-37563c544636",
-      "sourcePage": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw",
-      "kind": "box-art",
-      "alt": { "ar": "ملصق Modern Warfare 4 العمودي", "en": "Modern Warfare 4 portrait poster", "ckb": "پۆستەری درێژی Modern Warfare 4" },
+      "file": ".cache/product-images/call-of-duty-modern-warfare-4/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/cod-mw4-screenshot-03-en-22may26?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/",
+      "kind": "screenshot",
+      "alt": { "ar": "لقطة قريبة لجندي ملتحٍ", "en": "Close-up of a bearded soldier", "ckb": "وێنەیەکی نزیکی سەربازێکی ڕیشدار" },
       "credit": "Activision",
-      "width": 1440, "height": 2160, "transparent": false
+      "width": 1600, "height": 900, "transparent": false
     },
     {
       "key": "call-of-duty-modern-warfare-4--3",
@@ -277,10 +277,14 @@
     { "url": "https://store.playstation.com/en-gb/product/EP0002-PPSA07950_00-CODMW4STANDARD01", "title": "Call of Duty: Modern Warfare 4 — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI 18, PS Plus required for online play, up to 60 online players, PS5 Pro Enhanced" },
     { "url": "https://www.playstation.com/en-gb/games/call-of-duty-modern-warfare-4/", "title": "Call of Duty: Modern Warfare 4 — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "editions, PEGI content descriptors, screenshots" },
     { "url": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw", "title": "Call of Duty: Modern Warfare 4 — Microsoft Store", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "ESRB Mature 17+, online multiplayer 2–60, split screen, 120 fps, cover art" },
-    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" }
+    { "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/", "title": "Disc Drive for PS5 Digital Edition consoles", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PS5 Digital Edition and PS5 Pro need the add-on disc drive" },
+    { "url": "https://store.playstation.com/en-ae/product/EP0002-PPSA07950_00-CODMW4STANDARD01", "title": "Call of Duty: Modern Warfare 4 — PlayStation Store (UAE)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "Arabic and English screen languages, English voice in the UAE listing, up to 60 online players with PS Plus, PS5 Pro Enhanced" },
+    { "url": "https://www.xbox.com/en-GB/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw", "title": "Call of Duty: Modern Warfare 4 — Microsoft Store (UK)", "publisher": "Microsoft", "retrieved": "2026-11-11", "supports": "independent confirmation of PEGI 18" },
+    { "url": "https://store.steampowered.com/app/4435490/", "title": "Call of Duty: Modern Warfare 4 — Steam", "publisher": "Steam (publisher store listing)", "retrieved": "2026-11-11", "supports": "independent check: Arabic interface and subtitles without Arabic audio, ESRB M, Infinity Ward / Activision" },
+    { "url": "https://en.wikipedia.org/wiki/Call_of_Duty:_Modern_Warfare_4", "title": "Call of Duty: Modern Warfare 4", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "release 23 October 2026 on Nintendo Switch 2, PS5, Windows and Xbox Series X|S; Infinity Ward / Activision" }
   ],
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Install size: the Microsoft Store lists a maximum install size of about 338 GB, which appears to include extra Call of Duty content, so no game size is recorded.",

@@ -24,8 +24,13 @@
         "w": 480,
         "src": "/products/ps5-disc-drive/1-480.e1b8e5dc.webp"
       }
-    ],
-    "png": "/products/ps5-disc-drive/1-599.d29003eb.png"
+    ]
+  },
+  "share": {
+    "src": "/products/ps5-disc-drive/1-599.70cab4b0.png",
+    "width": 599,
+    "height": 1063,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSFgAAAART6CokSQ1tR6YX4cREeAr2vHbgElt21LuJ8GMxuKwOCzuOeyPwXdIXoST9w8ZIvo/ASr2T5eR5gxftQG7DDgrB3DrakgVa/BKLHwAIQKe+SL731nSMEgCVlA4IGYAAACwAwCdASoLABQAPxFysFAsJqSisAgBgCIJZwDImCHo1JpY3XizgAD+3pfyCQ9we2un4oExtuhT1yAhBYngEwGyVu/TeO+9jqLkJMh9pZgwGc++zK1SL65O0RkvtSFwYOlBptMRoAA=",
   "dominant": "#d8dbe6",
@@ -37,5 +42,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/PS5_CFI2000_DISC_DRIVE_PR_01_sRGB_US-16x9-01-21may26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/product/PSD001-PSDE01836_79-PS5DISCDRI6OXN6E/"
   },
-  "input": "dfaec3d29b35549e"
+  "input": "b0ec314b415621ed"
 }

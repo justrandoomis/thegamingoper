@@ -72,7 +72,7 @@
     {
       "key": "age",
       "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
-      "value": { "ar": "PEGI 18 (مؤقت)", "en": "PEGI 18 (provisional)", "ckb": "PEGI 18 (کاتی)" }
+      "value": { "ar": "PEGI 18 (مؤقت)؛ تصنيف ESRB لم يصدر بعد", "en": "PEGI 18 (provisional); ESRB rating pending", "ckb": "PEGI 18 (کاتی)؛ پۆلێنی ESRB هێشتا دەرنەچووە" }
     },
     {
       "key": "developer",
@@ -195,7 +195,8 @@
     }
   ],
   "sources": [
-    { "url": "https://blog.playstation.com/2026/09/28/god-of-war-laufey-pre-orders-available-starting-september-29-editions-detailed/", "title": "God of War Laufey pre-orders available starting September 29, editions detailed", "publisher": "PlayStation.Blog", "retrieved": "2026-11-11", "supports": "PS5 release delayed to 20 May 2027 (update 4 Nov 2026), pre-orders from 29 Sep 2026, pre-order bonus, Digital Deluxe Edition, Collector Box (game sold separately)" },
+    { "url": "https://blog.playstation.com/2026/09/28/god-of-war-laufey-pre-orders-available-starting-september-29-editions-detailed/", "title": "God of War Laufey pre-orders available starting September 29, editions detailed", "publisher": "PlayStation.Blog", "retrieved": "2026-11-11", "supports": "PS5 release delayed to 20 May 2027 (update 4 Nov 2026), pre-orders from 29 Sep 2026, pre-order bonus via download code for the physical Standard Edition (internet and PlayStation account required), Digital Deluxe Edition, Collector Box (game sold separately, highly limited, direct from PlayStation)" },
+    { "url": "https://store.playstation.com/en-us/concept/10009461", "title": "God of War Laufey — PlayStation Store (US)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "release 20 May 2027, ESRB rating pending" },
     { "url": "https://www.playstation.com/en-gb/games/god-of-war-laufey/", "title": "God of War Laufey — PlayStation (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "story of Laufey (Faye), the Everywhen, PS5 only, pre-order bonus via download code" },
     { "url": "https://store.playstation.com/en-gb/concept/10009461", "title": "God of War Laufey — PlayStation Store (UK)", "publisher": "Sony Interactive Entertainment", "retrieved": "2026-11-11", "supports": "PEGI provisional 18, release 20 May 2027, editions, cover art" },
     { "url": "https://www.bestbuy.com/product/god-of-war-laufey-standard-edition-playstation-5/JXHQ37TZJS", "title": "God of War Laufey Standard Edition — PlayStation 5", "publisher": "Best Buy", "retrieved": "2026-11-11", "supports": "physical Standard Edition for PS5 on pre-order at retail" },
@@ -207,9 +208,10 @@
     "ckb": "Collector Box بە ژمارەیەکی زۆر کەم ڕاستەوخۆ لە PlayStation دەفرۆشرێت و یارییەکەی تێدا نییە. Digital Deluxe Edition تەنها دیجیتاڵە."
   },
   "verification": {
-    "checkedBy": "catalog research agent (playstation-xbox-games), 2026-11-11",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
+      "No official pack shot of the PS5 box was found; the first image is the official PlayStation Store cover art.",
       "Supported languages (including Arabic) are not published yet.",
       "Age rating is provisional (PEGI 18) until release.",
       "Online features, install size and PS5 Pro enhancements are not announced.",

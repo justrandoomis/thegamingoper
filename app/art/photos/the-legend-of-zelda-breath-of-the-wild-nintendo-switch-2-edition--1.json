@@ -1,65 +1,62 @@
 {
   "key": "the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1054,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6587,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-240.0b7a4065.avif"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-240.0c293e72.avif"
       },
       {
         "w": 480,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-480.c549547c.avif"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-480.bf4c32d3.avif"
       },
       {
         "w": 720,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-720.8eaa2c28.avif"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-720.b370f8a3.avif"
       },
       {
         "w": 960,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-960.7f736627.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-1440.09a2d27d.avif"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-960.f94bb658.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-240.f4569427.webp"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-240.475150d6.webp"
       },
       {
         "w": 480,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-480.4f42a9ac.webp"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-480.a0bef50c.webp"
       },
       {
         "w": 720,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-720.0e06c4ec.webp"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-720.8e47ef03.webp"
       },
       {
         "w": 960,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-960.5f43efb5.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-1440.e7a75da3.webp"
+        "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-960.abed847f.webp"
       }
-    ],
-    "png": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-720.ed876745.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABQBACdASoUABQAPxF8sVSsJ6QkKAqpgCIJaADBzA3ywpIH2RFaWdXbvxjgAP7t0LTFQt1H1SjRjWBPponaPxxpe+E3lz14BiTq507ejVD33e55lLW5FX//1GLy3Rq9r/hH9jhabYOPx7043l/3eZBMf0J4wGryfQbGTHYb2Tt6SsowAAA=",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "share": {
+    "src": "/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition/1-1054.bac10ce3.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDIAAAARJ0CQbTOD+YON4CDXiIjgNiBq20ZVGYxCGNyFwY4/tPtH9D8C0Kzq652ZOT+t6msAGlZQOCCMAAAAMAQAnQEqDQAUAD8RcrBQLCakorAIAYAiCWwAnTlBOAAKwgFBvr4Og/ZAAP4mMpd0OvyEG9T6OQA5Kewbi9iW6eNm0h7fEHdjX1jh5aifcPC05zM69JQShtKA7Sgc9YF7tuwn5Cso/Ug/ADSoeaIvfZam5HKMSh/vg76IWKQ06aYcBUvDnNknw8eXAAA=",
+  "dominant": "#040202",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/The%20Legend%20of%20Zelda%20Breath%20of%20the%20Wild%20%E2%80%93%20Nintendo%20Switch%202%20Edition/121508-nintendo-switch-2-the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-nintendo-switch-2-edition-121508/"
   },
-  "input": "17dcb17b40272cc0"
+  "input": "24b3712f43d98973"
 }

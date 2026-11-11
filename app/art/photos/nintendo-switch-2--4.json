@@ -2,56 +2,55 @@
   "key": "nintendo-switch-2--4",
   "view": "hero",
   "width": 1600,
-  "height": 1600,
-  "aspect": 1,
+  "height": 896,
+  "aspect": 1.7857,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/nintendo-switch-2/4-240.4ab9bf75.avif"
+        "src": "/products/nintendo-switch-2/4-240.c46a5179.avif"
       },
       {
         "w": 480,
-        "src": "/products/nintendo-switch-2/4-480.d3c9461c.avif"
+        "src": "/products/nintendo-switch-2/4-480.654fb50d.avif"
       },
       {
         "w": 720,
-        "src": "/products/nintendo-switch-2/4-720.e02bf917.avif"
+        "src": "/products/nintendo-switch-2/4-720.c5d2b584.avif"
       },
       {
         "w": 960,
-        "src": "/products/nintendo-switch-2/4-960.c496a93f.avif"
+        "src": "/products/nintendo-switch-2/4-960.6b30fd46.avif"
       },
       {
         "w": 1440,
-        "src": "/products/nintendo-switch-2/4-1440.996e8f2b.avif"
+        "src": "/products/nintendo-switch-2/4-1440.c7eb31a9.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/nintendo-switch-2/4-240.b1094a8b.webp"
+        "src": "/products/nintendo-switch-2/4-240.17f3bb2f.webp"
       },
       {
         "w": 480,
-        "src": "/products/nintendo-switch-2/4-480.33258b69.webp"
+        "src": "/products/nintendo-switch-2/4-480.52c805c4.webp"
       },
       {
         "w": 720,
-        "src": "/products/nintendo-switch-2/4-720.e3c5a81d.webp"
+        "src": "/products/nintendo-switch-2/4-720.0dc6999f.webp"
       },
       {
         "w": 960,
-        "src": "/products/nintendo-switch-2/4-960.1d27e277.webp"
+        "src": "/products/nintendo-switch-2/4-960.6f15512e.webp"
       },
       {
         "w": 1440,
-        "src": "/products/nintendo-switch-2/4-1440.ada16d5b.webp"
+        "src": "/products/nintendo-switch-2/4-1440.39572259.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2/4-720.10f98c0c.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAQBACdASoUABQAPxF6t1MsJ6WiqAqpgCIJZwAALncvCepNkKrgmxZAAAD+77Zo1WBXej4EHrVtxO+nhrJ/emJldQUPNQxgAwjsUxtznUDvAP/8z4l6V3p2lERvOOme5erOfgXyvsvlnkAA",
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwDG9CLF5Ol6GzlxwOcAAPsi88HtwYI15jM58N8njHX+yOx4P/RjrdOKgYfrp2N59iAT4JtOmxwRPQ5sQJq8GQb0pqzmT0n2JewJVQnKKM3AAAA=",
   "dominant": "#45464a",
   "transparent": false,
   "background": "#ffffff",
@@ -61,5 +60,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/123669-nintendo-switch-2-tabletop-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-system-123669/"
   },
-  "input": "d2033bb3579a8025"
+  "input": "ad9493e93f9a5c54"
 }

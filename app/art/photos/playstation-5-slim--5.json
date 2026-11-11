@@ -1,57 +1,56 @@
 {
   "key": "playstation-5-slim--5",
   "view": "hero",
-  "width": 1008,
-  "height": 615,
-  "aspect": 1.639,
+  "width": 989,
+  "height": 515,
+  "aspect": 1.9204,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-5-slim/5-240.c90ad7f6.avif"
+        "src": "/products/playstation-5-slim/5-240.d9365701.avif"
       },
       {
         "w": 480,
-        "src": "/products/playstation-5-slim/5-480.22276f5a.avif"
+        "src": "/products/playstation-5-slim/5-480.5258f035.avif"
       },
       {
         "w": 720,
-        "src": "/products/playstation-5-slim/5-720.757225d0.avif"
+        "src": "/products/playstation-5-slim/5-720.a9b6f79b.avif"
       },
       {
         "w": 960,
-        "src": "/products/playstation-5-slim/5-960.b5befc77.avif"
+        "src": "/products/playstation-5-slim/5-960.f6db6c40.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-5-slim/5-240.17e12b4e.webp"
+        "src": "/products/playstation-5-slim/5-240.5052461d.webp"
       },
       {
         "w": 480,
-        "src": "/products/playstation-5-slim/5-480.9c749067.webp"
+        "src": "/products/playstation-5-slim/5-480.55e5ad8d.webp"
       },
       {
         "w": 720,
-        "src": "/products/playstation-5-slim/5-720.32bc44f0.webp"
+        "src": "/products/playstation-5-slim/5-720.d2074a4a.webp"
       },
       {
         "w": 960,
-        "src": "/products/playstation-5-slim/5-960.a2243ba6.webp"
+        "src": "/products/playstation-5-slim/5-960.187cd282.webp"
       }
-    ],
-    "png": "/products/playstation-5-slim/5-720.8b0cf2c2.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSDUAAAARJ0CQbZPhzV9iOcQ5IiL4EooiSY24DIACggIk5PKvKvuLgIj+T8C80HrUMzQdyi+6oM4LDQBWUDggSgAAAHADAJ0BKhQADAA/EXKwUCwmpKKwCAGAIglpAABbxlqkiHnAAAD+6qX9gyjpzNBJjqUU0LStF/2S3L21TUSLtnOXfeyyYlB4YHAA",
-  "dominant": "#fdfdfe",
-  "transparent": true,
-  "background": null,
+  "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACwAwCdASoUAAoAPxFysFAsJqSisAgBgCIJZwDMHCG63sgOlo2AgAD+6wY06NOpVb7pNGrHoS40qRztdGe73jvEci3TRtozOpd1r8CWDgMkAAAA",
+  "dominant": "#f3f3f5",
+  "transparent": false,
+  "background": "#ffffff",
   "kind": "in-box",
   "credit": "Sony Interactive Entertainment",
   "source": {
     "url": "https://media.direct.playstation.com/is/image/sierialto/2025-PS5-Disc-in-the-box-packaging-console-dualsense-US-v2?fmt=png-alpha&wid=2000",
     "page": "https://direct.playstation.com/en-us/buy-consoles/playstation5-console-1-tb"
   },
-  "input": "915e54491fcfe6b2"
+  "input": "8bb122848e7b2a18"
 }

@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/access-controller/1-1440.9b4649b7.webp"
       }
-    ],
-    "png": "/products/access-controller/1-720.cc9590e5.png"
+    ]
+  },
+  "share": {
+    "src": "/products/access-controller/1-1200.74e22c9d.png",
+    "width": 1200,
+    "height": 797,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSGgAAAART6AmANA0SAJeh7lGRIBVpKWfE05r25aaw4z8rwPoADV0gEaiM7vExUb9lQIYbr156SGi/xMAEMxwQ4zfwflI0gg0x49S5pPcgl1+HY4/Fevdy5tD7sJTfsFLms7x3UN3PBIzA2gTfFZQOCCMAAAAEAQAnQEqFAANAD8RcrBQLCakorAIAYAiCWcAA+PBxCeCP1+wcczgKYAA/jFkSRx6xNpjk8GACz7sV41/sP6AvStAuyBCJ4ohMnuRwV0+RA4xvkce+AXBYKXL5vuSpTw1T7kth6v5bAQd1+GcMzqqCU5fnkpCybQXX5xG6Lent0kf3/7lf78I45hAAAA=",
   "dominant": "#e9ecf4",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/AccessController-01-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/access-controller/"
   },
-  "input": "2ecd395a99697223"
+  "input": "1464dc0767785ca3"
 }

@@ -1,49 +1,56 @@
 {
   "key": "xbox-game-pass--2",
   "view": "hero",
-  "width": 767,
-  "height": 1175,
-  "aspect": 0.6528,
+  "width": 982,
+  "height": 1004,
+  "aspect": 0.9781,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/xbox-game-pass/2-240.76fa98ed.avif"
+        "src": "/products/xbox-game-pass/2-240.5efedf56.avif"
       },
       {
         "w": 480,
-        "src": "/products/xbox-game-pass/2-480.dca57aaf.avif"
+        "src": "/products/xbox-game-pass/2-480.48c5d356.avif"
       },
       {
         "w": 720,
-        "src": "/products/xbox-game-pass/2-720.15bceeee.avif"
+        "src": "/products/xbox-game-pass/2-720.9437f481.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-game-pass/2-960.9aa9eb3e.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/xbox-game-pass/2-240.5e4a8dca.webp"
+        "src": "/products/xbox-game-pass/2-240.b1d8a3b0.webp"
       },
       {
         "w": 480,
-        "src": "/products/xbox-game-pass/2-480.a90b85bb.webp"
+        "src": "/products/xbox-game-pass/2-480.fff2e7db.webp"
       },
       {
         "w": 720,
-        "src": "/products/xbox-game-pass/2-720.30035587.webp"
+        "src": "/products/xbox-game-pass/2-720.d0842b6d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/xbox-game-pass/2-960.f865be08.webp"
       }
-    ],
-    "png": "/products/xbox-game-pass/2-720.5281398e.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAABQAwCdASoNABQAPxFysFAsJqSisAgBgCIJZwAAW7zPPfIIAAD+eSsqmI5Q25TZXFWd4b37sGml2JaDocgAAA==",
-  "dominant": "#181717",
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAAAwBACdASoUABQAPxF2slGsJySiqA1RgCIJYwAALnX+IH+y/ng25zzLWVAA/m8EShXXR3HKJcOebbY2Yyb534lhpVpTrfDRnXHfuK11A+9pxuBYv3BLm0efwcjqDgrJugUfE7ORW7D83bOJAAA=",
+  "dominant": "#385854",
   "transparent": false,
-  "background": "#181717",
-  "kind": "detail",
+  "background": "#4c4d4d",
+  "kind": "hero",
   "credit": "Microsoft (Xbox)",
   "source": {
-    "url": "https://cms-assets.xboxservices.com/assets/4b/b6/4bb6e926-4b54-4f47-b335-ca8a6bd7f994.jpg",
-    "page": "https://www.xbox.com/en-US/xbox-game-pass"
+    "url": "https://cms-assets.xboxservices.com/assets/4c/c2/4cc260a2-868b-4f21-9cdc-ca7f238ed529.jpg?n=Ultimate-Boxart-1080x1080.jpg",
+    "page": "https://www.xbox.com/en-US/games/store/game-pass-ultimate/CFQ7TTC0KHS0"
   },
-  "input": "94b46f9264d3cf40"
+  "input": "84cbeeb20a55abfb"
 }

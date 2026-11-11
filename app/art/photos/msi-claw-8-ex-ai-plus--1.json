@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/msi-claw-8-ex-ai-plus/1-1440.3f54622d.webp"
       }
-    ],
-    "png": "/products/msi-claw-8-ex-ai-plus/1-720.0ced8c7a.png"
+    ]
+  },
+  "share": {
+    "src": "/products/msi-claw-8-ex-ai-plus/1-1200.f85a78e7.png",
+    "width": 1200,
+    "height": 569,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRroAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSFAAAAARR6AmkhQ2+zXBAHS5QgIREQj6U7cFk9q2YjFj32sANwERiIBEIpFICvyhN0OGiP5PgCBm5ggp6P23U6b/qPPJtJMbJ39T6rv0x5IMAKBIAFZQOCBEAAAAcAMAnQEqFAAJAD8RcrBQLCakorAIAYAiCUAVgAQ3Vauk9kaAAP7jKtzPc58ceVV/Vs6prmy9Bjzc5SrqGp/AMuTIPAA=",
   "dominant": "#352839",
@@ -61,5 +66,5 @@
     "url": "https://storage-asset.msi.com/global/picture/product/product_1789350524d07b59314abe42ed6e70777585e51a91.png",
     "page": "https://www.msi.com/Handheld/Claw-8-EX-AI-Plus-CG3EMX/Gallery"
   },
-  "input": "4253cb57ee286f5a"
+  "input": "539ee1c65a914218"
 }

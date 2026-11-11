@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/dualsense-edge/1-1440.17a7d390.webp"
       }
-    ],
-    "png": "/products/dualsense-edge/1-720.3398755c.png"
+    ]
+  },
+  "share": {
+    "src": "/products/dualsense-edge/1-1200.2938696b.png",
+    "width": 1200,
+    "height": 840,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRiYBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGsAAAART6AmABI2SQdwXlLAiAjI2588w4lt205z6Uj+DOjFYXEsRoBCd0gcjkhU4nveeH8ZQ0T/JwCq9W05ju5hAi8SVsBXdIVHUq2Wma3M2mXOKXNPKhrG4ie5O9kA0JPTksGVZPkXxrG7Dg1CDwBWUDgglAAAADAEAJ0BKhQADgA/EXKwUCwmpKKwCAGAIglnAMKBi157fj1ylcad/65NIAD+ZqCh8VZy3sWguwN5SjMjjQvOb6T5CSa9hLhfxkTQOBtCSBmSZ+rJrcj4tb13pIyr7vlyGUZHzx1yweH36J4cN8vuxUkDD/bb8VIpGvogftc3TgwdWwkKBH6N3L0b/36jBMPXvNdakAA=",
   "dominant": "#060a15",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseEdge-White-01-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/dualsense-edge-wireless-controller/buy-now/"
   },
-  "input": "f152977aedf02b24"
+  "input": "a2e4e67e2301cfc5"
 }

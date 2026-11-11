@@ -1,7 +1,7 @@
 import type { CSSProperties, SyntheticEvent } from "react";
 import { preload } from "react-dom";
 
-import { artAspect, artName, artSrcSet, getArt, isPhoto, parseArtName, parsePhotoKey, type ArtView } from "./index";
+import { artAspect, artFallbackSrc, artName, artSrcSet, getArt, isPhoto, parseArtName, parsePhotoKey, type ArtView } from "./index";
 
 export interface ArtProps {
   /**
@@ -33,8 +33,9 @@ const DEFAULT_SIZES = "(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw";
 const FULL_SIDE = 1600;
 
 /**
- * A TamTam clay render or product photo, pre-built in AVIF and WebP at up to five widths with a PNG
- * fallback.
+ * A TamTam clay render or product photo, pre-built in AVIF and WebP at up to five widths. The `<img>`
+ * itself names one fallback file: the 720 px WebP of a photo (every browser the store supports
+ * decodes WebP), the PNG of a clay render.
  *
  *   <Art name="switch-2" alt={t("switch2")} sizes="(min-width: 768px) 320px, 45vw" className="w-full" />
  *   <Art name="ps5-slim" view="front" alt="" className="h-full w-full object-contain" />
@@ -50,9 +51,10 @@ const FULL_SIDE = 1600;
  * background colour, so it sits cleanly on a niche or stage; the radius is `--photo-radius`
  * (default `--r-md`). Every picture carries `data-transparent="true" | "false"` for CSS.
  *
- * A key that has no picture yet draws a neutral clay block of the expected shape instead, and warns
- * in the dev console. Pages can ship before their art does. Ask `hasArt(name)` / `artViews(key)` /
- * `productPhotos(slug)` from "~/art" when a layout must know.
+ * A key that has no picture yet draws a flat, translucent block of the expected shape instead (`--line`,
+ * so it sits on the floor, a niche or a stage in either theme), and warns in the dev console. Pages
+ * can ship before their art does. Ask `hasArt(name)` / `artViews(key)` / `productPhotos(slug)` from
+ * "~/art" when a layout must know.
  *
  * Purely presentational and safe on the server; it keeps no state.
  */
@@ -84,7 +86,7 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
         data-art={label}
         data-art-missing=""
         className={className}
-        style={style}
+        style={{ ...MISSING_STYLE, ...style }}
       />
     );
   }
@@ -108,7 +110,7 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
       <img
         ref={settle}
         onLoad={onLoad}
-        src={art.variants.png}
+        src={artFallbackSrc(art)}
         width={art.width}
         height={art.height}
         alt={alt}
@@ -162,29 +164,22 @@ function settle(img: HTMLImageElement | null) {
 const blocks = new Map<string, string>();
 
 /**
- * The stand-in for art that is not rendered yet: a soft, rounded, neutral block with the same
- * padding as a real render. Translucent greys only, so it sits on light and dark surfaces alike.
+ * The stand-in for art that is not rendered yet. The file is an empty SVG that only carries the
+ * shape (an image cannot read the page's tokens); the block itself is painted by `MISSING_STYLE`:
+ * the translucent `--line` tint, rounded like a photo frame, so it sits on any surface in both themes.
  */
 function placeholderBlock(width: number, height: number): string {
   const key = `${width}x${height}`;
   let uri = blocks.get(key);
   if (!uri) {
-    const pad = Math.round(Math.max(width, height) * 0.08);
-    const w = width - 2 * pad;
-    const h = height - 2 * pad;
-    const radius = Math.round(Math.min(w, h) * 0.14);
-    const box = `x="${pad}" y="${pad}" width="${w}" height="${h}" rx="${radius}"`;
-    const svg =
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">` +
-      `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">` +
-      `<stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/>` +
-      `<stop offset="1" stop-color="#000" stop-opacity=".07"/></linearGradient></defs>` +
-      `<rect ${box} fill="#8b8d93" fill-opacity=".17"/><rect ${box} fill="url(#g)"/></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"/>`;
     uri = `data:image/svg+xml,${encodeURIComponent(svg)}`;
     blocks.set(key, uri);
   }
   return uri;
 }
+
+const MISSING_STYLE: CSSProperties = { backgroundColor: "var(--line)", borderRadius: "var(--photo-radius, var(--r-md))" };
 
 const warned = new Set<string>();
 

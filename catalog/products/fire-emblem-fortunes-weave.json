@@ -13,20 +13,20 @@
     "ckb": "تایبەت بە Nintendo Switch 2 · ستراتیژیی تاکتیکی · PEGI 12"
   },
   "description": {
-    "ar": "لعبة تقمص أدوار واستراتيجية تكتيكية من سلسلة Fire Emblem. يعود إله شيطاني يُدعى Balor ليهدد إمبراطورية Dagda، فتقود أربعة أبطال — Cai و Dietrich و Theodora و Leda — عبر معارك على رقعة تكتيكية وتغيّر الماضي لإنقاذ المستقبل. يمكنك التنقل بين قصص الأبطال الأربعة في أي وقت.",
-    "en": "A tactical strategy RPG in the Fire Emblem series. When the demon god Balor returns to threaten the Dagdan Empire, you guide four heroes — Cai, Dietrich, Theodora and Leda — through grid-based battles and change the past to save the future. You can switch between the four heroes' stories at any time.",
-    "ckb": "یارییەکی ڕۆڵگێڕان و ستراتیژیی تاکتیکی لە زنجیرەی Fire Emblem. کاتێک خوداوەندی شەیتانی Balor دەگەڕێتەوە و هەڕەشە لە ئیمپراتۆریەتی Dagda دەکات، چوار پاڵەوان — Cai و Dietrich و Theodora و Leda — لە شەڕە تاکتیکییەکاندا ڕێنمایی دەکەیت و ڕابردوو دەگۆڕیت بۆ ڕزگارکردنی داهاتوو. هەر کاتێک بتەوێت دەتوانیت لە نێوان چیرۆکی چوار پاڵەوانەکەدا بگوازیتەوە."
+    "ar": "لعبة تقمص أدوار واستراتيجية تكتيكية من سلسلة Fire Emblem. يعود إله شيطاني يُدعى Balor ليهدد إمبراطورية Dagda، فتقود أربعة أبطال — Cai و Dietrich و Theodora و Leda — في معارك تكتيكية بالأدوار وتغيّر الماضي لإنقاذ المستقبل. ويمكنك الانتقال من قصة بطل إلى آخر بين المباريات.",
+    "en": "A tactical strategy RPG in the Fire Emblem series. When the demon god Balor returns to threaten the Dagdan Empire, you guide four heroes — Cai, Dietrich, Theodora and Leda — through turn-based tactical battles and change the past to save the future. Between matches you can switch from one hero's story to another.",
+    "ckb": "یارییەکی ڕۆڵگێڕان و ستراتیژیی تاکتیکی لە زنجیرەی Fire Emblem. کاتێک خوداوەندی شەیتانی Balor دەگەڕێتەوە و هەڕەشە لە ئیمپراتۆریەتی Dagda دەکات، چوار پاڵەوان — Cai و Dietrich و Theodora و Leda — لە شەڕە تاکتیکییە نۆرەییەکاندا ڕێنمایی دەکەیت و ڕابردوو دەگۆڕیت بۆ ڕزگارکردنی داهاتوو. لە نێوان یارییەکاندا دەتوانیت لە چیرۆکی پاڵەوانێکەوە بگوازیتەوە بۆ پاڵەوانێکی تر."
   },
   "highlights": [
     { "ar": "اللعبة كاملة على بطاقة اللعبة، وليست Game-Key Card", "en": "The full game is on the game card — not a Game-Key Card", "ckb": "تەواوی یارییەکە لەسەر کارتەکەیە — Game-Key Card نییە" },
     { "ar": "أربعة أبطال بقصص متشابكة يمكن لعبها بالتوازي", "en": "Four heroes with intertwined stories you can play in parallel", "ckb": "چوار پاڵەوان بە چیرۆکی تێکهەڵکێش کە دەتوانیت هاوکات یارییان پێ بکەیت" },
-    { "ar": "Expansion Pass مدفوع متوفر منفصلاً منذ 15 تشرين الأول 2026", "en": "Paid Expansion Pass sold separately since 15 October 2026", "ckb": "Expansion Pass ی پارەدار لە 15ی تشرینی یەکەمی 2026 ەوە بە جیا بەردەستە" },
+    { "ar": "Expansion Pass مدفوع يصدر على ثلاثة أجزاء ويُباع منفصلاً", "en": "A paid Expansion Pass, released in three parts, is sold separately", "ckb": "Expansion Pass ی پارەدار کە بە سێ بەش بڵاو دەکرێتەوە، بە جیا دەفرۆشرێت" },
     { "ar": "لاعب واحد · PEGI 12 / ESRB T · لا تدعم العربية", "en": "Single player · PEGI 12 / ESRB T · No Arabic", "ckb": "یەک یاریزان · PEGI 12 / ESRB T · عەرەبی تێدا نییە" }
   ],
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "17 أيلول 2026", "en": "17 September 2026", "ckb": "17ی ئەیلوولی 2026" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "27.5 GB", "en": "27.5 GB", "ckb": "27.5 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1", "ckb": "یەک یاریزان" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 12 · ESRB T (عنف خيالي، ألفاظ خفيفة، إيحاءات، تناول الكحول، مشتريات داخل اللعبة)", "en": "PEGI 12 · ESRB T (Fantasy Violence, Mild Language, Suggestive Themes, Use of Alcohol, In-Game Purchases)", "ckb": "PEGI 12 · ESRB T (توندوتیژیی خەیاڵی، وشەی سووک، ئاماژە، بەکارهێنانی ئەلکهول، کڕینی ناو یاری)" } },
@@ -40,7 +40,7 @@
   "variants": [
     {
       "sku": "NS2G-FIRE-EMBLEM-FW",
-      "title": { "ar": "Fire Emblem: Fortune's Weave — نسخة فعلية لـ Nintendo Switch 2", "en": "Fire Emblem: Fortune's Weave — Nintendo Switch 2 physical edition", "ckb": "Fire Emblem: Fortune's Weave — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Fire Emblem: Fortune's Weave — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Fire Emblem: Fortune's Weave — Nintendo Switch 2 physical edition", "ckb": "Fire Emblem: Fortune's Weave — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906696"],
       "isDefault": true,
@@ -128,20 +128,24 @@
   "sources": [
     { "url": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-switch-2/", "title": "Fire Emblem: Fortune's Weave for Nintendo Switch 2", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date September 17, 2026, game file size 27.5 GB, single player, Save Data Cloud, languages, ESRB descriptors, HDR, Expansion Pass and Dagdan Collection listings" },
     { "url": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-125688/", "title": "Fire Emblem: Fortune's Weave – Nintendo Switch 2 (Physical Copy)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906696, developer Intelligent Systems, box art with ESRB T" },
-    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Fire-Emblem-Fortune-s-Weave-2915498.html", "title": "Fire Emblem: Fortune's Weave | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, download size 27.5 GB, Switch 2 only, story and four heroes, Expansion Pass release 15/10/2026" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Fire-Emblem-Fortune-s-Weave-2915498.html", "title": "Fire Emblem: Fortune's Weave | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 12, languages, download size 27.5 GB, Switch 2 only, story of Balor and the Dagdan Empire, four heroes whose stories can be swapped between matches, Expansion Pass released in three parts" },
+    { "url": "https://www.nintendo.com/us/store/products/fire-emblem-fortunes-weave-dagdan-collection-128777/", "title": "Fire Emblem: Fortune's Weave Dagdan Collection", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "special edition with the game, steel case, artbook, character cards and map (US UPC 00045496907723)" },
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Fortune's%20Weave", "title": "PEGI search: Fire Emblem: Fortune's Weave", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 12 (violence, bad language, in-game purchases) for Nintendo Switch 2, European release 17/09/2026" },
+    { "url": "https://www.rpgsite.net/feature/17453-every-nintendo-switch-2-rpg-physical-release-complete-on-cartridge-no-game-key-cards-or-codes-needed", "title": "Every Nintendo Switch 2 RPG Physical Release Complete on Cartridge", "publisher": "RPG Site", "retrieved": "2026-11-11", "supports": "independent check of the format: Fortune's Weave gets a full cartridge release, plus a Dagdan Collector's Edition" },
+    { "url": "https://en.wikipedia.org/wiki/Fire_Emblem:_Fortune%27s_Weave", "title": "Fire Emblem: Fortune's Weave", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "worldwide release September 17, 2026; co-developed by Intelligent Systems and Nintendo, published by Nintendo for Nintendo Switch 2" },
+    { "url": "https://www.upcitemdb.com/upc/45496906696", "title": "UPC 045496906696 - Fire Emblem: Fortune's Weave", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496906696 is listed by US retailers for Fire Emblem: Fortune's Weave on Nintendo Switch 2" }
   ],
   "notes": {
-    "ar": "تعرض متاجر Nintendo أيضاً إصداراً خاصاً باسم Dagdan Collection؛ لم نتحقق من محتوياته.",
-    "en": "Nintendo's stores also list a special Dagdan Collection edition; its contents were not checked.",
-    "ckb": "فرۆشگاکانی Nintendo وەشانێکی تایبەتیش بە ناوی Dagdan Collection نیشان دەدەن؛ ناوەڕۆکەکەیمان نەپشکنیوە."
+    "ar": "يعرض متجر Nintendo الأمريكي أيضاً إصدار Dagdan Collection الذي يضم اللعبة مع علبة معدنية وكتاب رسومات وبطاقات للشخصيات وخريطة؛ هذا المنتج هو الإصدار العادي.",
+    "en": "Nintendo's US store also lists a Dagdan Collection edition with the game, a steel case, an art book, character cards and a map; this product is the standard edition.",
+    "ckb": "فرۆشگای ئەمریکیی Nintendo وەشانی Dagdan Collection یش نیشان دەدات کە یارییەکە لەگەڵ قوتوویەکی کانزایی، کتێبی هونەری، کارتی کارەکتەرەکان و نەخشەیەک لەخۆدەگرێت؛ ئەم بەرهەمە وەشانە ئاساییەکەیە."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Dagdan Collection contents and availability outside the US/UK stores",
-      "Full game card status inferred from the official box art (no game-key card label)",
+      "Dagdan Collection availability outside the US store",
       "European EAN barcode not found on an official page"
     ]
   }

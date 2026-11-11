@@ -79,6 +79,6 @@ export function formatMoney(
   }).format(value);
   const sym = symbol[locale];
   if (currency === "USD") return `${sym}${digits}`;
-  // "749,000 د.ع" in RTL locales, "IQD 749,000" in English.
-  return locale === "en" ? `${sym} ${digits}` : `${digits} ${sym}`;
+  // The figure first in every language (DESIGN.md §11): "749,000 د.ع", "749,000 IQD".
+  return `${digits} ${sym}`;
 }

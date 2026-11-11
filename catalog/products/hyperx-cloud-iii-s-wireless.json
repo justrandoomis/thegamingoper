@@ -6,11 +6,7 @@
   "brand": "HyperX",
   "status": "available",
   "releaseDate": "2025-05-12",
-  "name": {
-    "ar": "سماعة HyperX Cloud III S Wireless",
-    "en": "HyperX Cloud III S Wireless",
-    "ckb": "هێدسێتی HyperX Cloud III S Wireless"
-  },
+  "name": { "ar": "سماعة HyperX Cloud III S Wireless", "en": "HyperX Cloud III S Wireless", "ckb": "هێدسێتی HyperX Cloud III S Wireless" },
   "short": {
     "ar": "حتى 120 ساعة (2.4GHz) و200 ساعة (بلوتوث) · PS5 وPC وSwitch",
     "en": "Up to 120 h (2.4GHz) / 200 h (Bluetooth) · PS5, PC, Switch",
@@ -32,11 +28,7 @@
       "en": "2.4GHz via dongle (USB-A or USB-C) or Bluetooth 5.3",
       "ckb": "2.4GHz بە دۆنگڵ (USB-A یان USB-C) یان بلووتوس 5.3"
     },
-    {
-      "ar": "سماعات داخلية مائلة 53 ملم",
-      "en": "Angled 53 mm drivers",
-      "ckb": "دەنگدەری لاری 53 ملم"
-    },
+    { "ar": "سماعات داخلية مائلة 53 ملم", "en": "Angled 53 mm drivers", "ckb": "دەنگدەری لاری 53 ملم" },
     {
       "ar": "مايكروفون قابل للفصل بمؤشر كتم LED، ومايكروفون مدمج",
       "en": "Detachable boom mic with LED mute light, plus a built-in mic",
@@ -52,27 +44,47 @@
     {
       "key": "connection",
       "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" },
-      "value": { "ar": "لاسلكي 2.4GHz (دونجل USB) وبلوتوث 5.3؛ المدى حتى 20 متراً", "en": "2.4GHz wireless (USB dongle) and Bluetooth 5.3; range up to 20 m", "ckb": "بێ وایەری 2.4GHz (دۆنگڵی USB) و بلووتوس 5.3؛ مەودا تا 20 مەتر" }
+      "value": {
+        "ar": "لاسلكي 2.4GHz (دونجل USB) وبلوتوث 5.3؛ المدى حتى 20 متراً",
+        "en": "2.4GHz wireless (USB dongle) and Bluetooth 5.3; range up to 20 m",
+        "ckb": "بێ وایەری 2.4GHz (دۆنگڵی USB) و بلووتوس 5.3؛ مەودا تا 20 مەتر"
+      }
     },
     {
       "key": "battery",
       "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" },
-      "value": { "ar": "حتى 120 ساعة (2.4GHz) / 200 ساعة (بلوتوث) عند 50% من الصوت؛ الشحن الكامل 5 ساعات", "en": "Up to 120 h (2.4GHz) / 200 h (Bluetooth) at 50% volume; full charge 5 h", "ckb": "تا 120 کاتژمێر (2.4GHz) / 200 کاتژمێر (بلووتوس) لە 50%ی دەنگ؛ بارگاویی تەواو 5 کاتژمێر" }
+      "value": {
+        "ar": "حتى 120 ساعة (2.4GHz) / 200 ساعة (بلوتوث) عند 50% من الصوت؛ الشحن الكامل 5 ساعات",
+        "en": "Up to 120 h (2.4GHz) / 200 h (Bluetooth) at 50% volume; full charge 5 h",
+        "ckb": "تا 120 کاتژمێر (2.4GHz) / 200 کاتژمێر (بلووتوس) لە 50%ی دەنگ؛ بارگاویی تەواو 5 کاتژمێر"
+      }
     },
     {
       "key": "drivers",
       "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" },
-      "value": { "ar": "ديناميكية 53 ملم بمغناطيس نيوديميوم، 20 هرتز حتى 20 كيلوهرتز", "en": "Dynamic 53 mm, neodymium magnets, 20 Hz–20 kHz", "ckb": "داینامیکی 53 ملم، موگناتیسی نیۆدیمیۆم، 20 هێرتز تا 20 کیلۆهێرتز" }
+      "value": {
+        "ar": "ديناميكية 53 ملم بمغناطيس نيوديميوم، 20 هرتز حتى 20 كيلوهرتز",
+        "en": "Dynamic 53 mm, neodymium magnets, 20 Hz–20 kHz",
+        "ckb": "داینامیکی 53 ملم، موگناتیسی نیۆدیمیۆم، 20 هێرتز تا 20 کیلۆهێرتز"
+      }
     },
     {
       "key": "form_factor",
       "label": { "ar": "التصميم", "en": "Design", "ckb": "شێوە" },
-      "value": { "ar": "فوق الأذن، مغلقة من الخلف، إطار من الفولاذ والألمنيوم", "en": "Over-ear, closed-back, steel frame with aluminium forks", "ckb": "سەر گوێ، پشت داخراو، چوارچێوەی پۆڵا و ئەلەمنیۆم" }
+      "value": {
+        "ar": "فوق الأذن، مغلقة من الخلف، إطار من الفولاذ والألمنيوم",
+        "en": "Over-ear, closed-back, steel frame with aluminium forks",
+        "ckb": "سەر گوێ، پشت داخراو، چوارچێوەی پۆڵا و ئەلەمنیۆم"
+      }
     },
     {
       "key": "microphone",
       "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
-      "value": { "ar": "مايكروفون ذراع قابل للفصل أحادي الاتجاه + مايكروفون MEMS مدمج", "en": "Detachable uni-directional boom mic + built-in MEMS mic", "ckb": "مایکرۆفۆنی جیاکراوەی یەک ئاڕاستە + مایکرۆفۆنی MEMSی ناوەکی" }
+      "value": {
+        "ar": "مايكروفون ذراع قابل للفصل أحادي الاتجاه + مايكروفون MEMS مدمج",
+        "en": "Detachable uni-directional boom mic + built-in MEMS mic",
+        "ckb": "مایکرۆفۆنی جیاکراوەی یەک ئاڕاستە + مایکرۆفۆنی MEMSی ناوەکی"
+      }
     },
     {
       "key": "weight",
@@ -150,12 +162,7 @@
       "options": { "color": "White-Pink" },
       "modelNumber": "DG0R2AA",
       "barcodes": ["826581045021"],
-      "isDefault": false,
-      "notes": {
-        "ar": "لا توجد صورة خاصة بهذا اللون في الملف بعد.",
-        "en": "No picture of this colour is stored yet.",
-        "ckb": "هێشتا وێنەی ئەم ڕەنگە لێرە نییە."
-      }
+      "isDefault": false
     }
   ],
   "compatibility": [
@@ -180,13 +187,21 @@
     {
       "deviceModel": "switch-oled",
       "status": "verified",
-      "note": { "ar": "تذكر HyperX دعم Nintendo Switch.", "en": "HyperX lists Nintendo Switch support.", "ckb": "HyperX پشتگیریی Nintendo Switch دادەنێت." },
+      "note": {
+        "ar": "تذكر HyperX دعم Nintendo Switch.",
+        "en": "HyperX lists Nintendo Switch support.",
+        "ckb": "HyperX پشتگیریی Nintendo Switch دادەنێت."
+      },
       "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
     },
     {
       "deviceModel": "switch",
       "status": "verified",
-      "note": { "ar": "تذكر HyperX دعم Nintendo Switch.", "en": "HyperX lists Nintendo Switch support.", "ckb": "HyperX پشتگیریی Nintendo Switch دادەنێت." },
+      "note": {
+        "ar": "تذكر HyperX دعم Nintendo Switch.",
+        "en": "HyperX lists Nintendo Switch support.",
+        "ckb": "HyperX پشتگیریی Nintendo Switch دادەنێت."
+      },
       "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
     },
     {
@@ -201,7 +216,11 @@
     {
       "deviceModel": "windows-pc",
       "status": "verified",
-      "note": { "ar": "عبر الدونجل أو البلوتوث؛ برنامج NGENUITY للتخصيص.", "en": "Via dongle or Bluetooth; NGENUITY for settings.", "ckb": "بە دۆنگڵ یان بلووتوس؛ NGENUITY بۆ ڕێکخستن." },
+      "note": {
+        "ar": "عبر الدونجل أو البلوتوث؛ برنامج NGENUITY للتخصيص.",
+        "en": "Via dongle or Bluetooth; NGENUITY for settings.",
+        "ckb": "بە دۆنگڵ یان بلووتوس؛ NGENUITY بۆ ڕێکخستن."
+      },
       "source": "https://hyperx.com/products/hyperx-cloud-iii-s-wireless-gaming-headset"
     },
     {
@@ -324,21 +343,21 @@
       "title": "HyperX Cloud III S Wireless – Gaming Headset",
       "publisher": "HyperX (HP Inc.)",
       "retrieved": "2026-11-11",
-      "supports": "specs, battery, Bluetooth 5.3, compatibility list, colours with SKUs and UPC barcodes, box contents, 2-year warranty, images"
+      "supports": "specs (53 mm angled drivers, 20 Hz–20 kHz, Bluetooth 5.3, 20 m range, 5 h charge, 0.79 lb), battery 120/200 h, compatibility list (PC, Mac, PS5, PS4, Nintendo Switch, mobile), Instant Pair on select OMEN laptops, colours with SKUs and UPC barcodes, box contents, 2-year warranty, images"
     },
     {
       "url": "https://hyperx.com/products/hyperx-cloud-iii-wireless-gaming-headset",
       "title": "HyperX Cloud III Wireless (page marked discontinued)",
       "publisher": "HyperX (HP Inc.)",
       "retrieved": "2026-11-11",
-      "supports": "the earlier Cloud III Wireless is discontinued and HyperX points buyers to the Cloud III S Wireless"
+      "supports": "the earlier Cloud III Wireless page is marked Discontinued and points buyers to the Cloud III S Wireless"
     },
     {
       "url": "https://www.tomshardware.com/peripherals/gaming-headsets/hyperx-cloud-iii-s-wireless-review",
       "title": "HyperX Cloud III S Wireless Review",
       "publisher": "Tom's Hardware",
       "retrieved": "2026-11-11",
-      "supports": "launch on 12 May 2025, 2.4GHz + Bluetooth, battery figures, built-in plus detachable mic, no wired/analog connection"
+      "supports": "independent confirmation: launch on 12 May 2025, 2.4GHz + Bluetooth, 120/200 h battery, built-in MEMS mic plus detachable boom mic, no wired/analog connection"
     }
   ],
   "notes": {
@@ -347,12 +366,13 @@
     "ckb": "ئەم مۆدێلی S جێگرەوەی ئێستای Cloud III Wireless ە کە HyperX وەستاندوویەتی. لەگەڵ Xbox کار ناکات. Instant Pair تەنها لەگەڵ هەندێک لاپتۆپی OMEN کار دەکات."
   },
   "verification": {
-    "checkedBy": "TamTam research agent (accessories-storage-digital)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Nintendo Switch 2 support (HyperX only says Switch)",
       "Warranty length outside the US",
-      "Release dates of the later colours (Lavender, Black-Blue, White-Pink)"
+      "Release dates of the later colours (Lavender, Black-Blue, White-Pink)",
+      "No White-Pink photo in this file (the product keeps HyperX's six main shots)"
     ]
   }
 }

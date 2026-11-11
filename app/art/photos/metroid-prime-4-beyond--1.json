@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/metroid-prime-4-beyond/1-960.0e0e396f.webp"
       }
-    ],
-    "png": "/products/metroid-prime-4-beyond/1-720.5733247d.png"
+    ]
+  },
+  "share": {
+    "src": "/products/metroid-prime-4-beyond/1-1054.b6325395.png",
+    "width": 1054,
+    "height": 1600,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRugAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDMAAAARJ0CQbTOD+YtN4CDXiIjgNiBq20ZTGYzBKQzuwmDjD+3+Ef2PA5Aa1c3r7r4/jeqmAFIAVlA4II4AAACQBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoR3JoHh/gNc0iUj41bOTYAA/kBKCy+GvH2My88l4wgiH0VzcGd2U6dtEBjp0DCQBqrZfCHVZLMhTJCe74y+ecbyj3h81p8ZmKRfsjkr25+elyCQmkIj3+GfzPJLQfD5xJNEAiTuEeNRrhWnuAM7ANgA",
   "dominant": "#e70012",
@@ -53,5 +58,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Software/Metroid%20Prime%204%20Beyond%20-%20Switch%202/121491-nintendo-metroid-prime-4-beyond-nintendo-switch-2-edition-box-art-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/metroid-prime-4-beyond-nintendo-switch-2-edition-121491/"
   },
-  "input": "61f9b05f4dca9ca1"
+  "input": "c231b38c7869a58b"
 }

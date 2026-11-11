@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/nintendo-switch-2-gamecube-controller/1-1440.a36bcbdd.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2-gamecube-controller/1-720.d38852a9.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch-2-gamecube-controller/1-1200.bb9334ac.png",
+    "width": 1200,
+    "height": 881,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRiYBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSHcAAAART6CmbSM4VxIZ+9x0ERGi/gMXTmzbWpbv9z9CI7oNQJtbc2su0clu0eGMFxlDRP8nQPxrd5eXw2BCFmLNV5sQ9295YeenHPulFoDhEtBagBoD9DEQuALGigPRG6OPDrYLHszV2VKR7Wnr22w1xdeHbvd9m8riTwBWUDggiAAAAPADAJ0BKhQADwA/EXKwUCwmpKKwCAGAIglsALsAGXzCG6cF2aqe9kwA/rcm690z/8fMUMNoBtiAXMpBYIq+asGn7OCcRTqK8jaKmxyoa2T/Muol56dLRl9blGxRhqnk8feuTMeCz8ocU7rJBPqNVYXALnaeQUxTSDSGz8ecB4SRvCB2AmB2wAA=",
   "dominant": "#464987",
@@ -61,5 +66,5 @@
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Wireless%20Controllers/120833-nintendo-switch-2-nintendo-gamecube-controller-front-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-gamecube-controller-120833/"
   },
-  "input": "aa200858527aae5b"
+  "input": "92cb81dabf79afe4"
 }

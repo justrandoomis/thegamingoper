@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/xbox-series-x-2tb-galaxy-black/1-960.08dfa900.webp"
       }
-    ],
-    "png": "/products/xbox-series-x-2tb-galaxy-black/1-720.dd7ac02d.png"
+    ]
+  },
+  "share": {
+    "src": "/products/xbox-series-x-2tb-galaxy-black/1-1200.f0c94940.png",
+    "width": 1200,
+    "height": 1162,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRu4AAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSFgAAAART6CmbSQ2dxBu+l7Wi4jAj5ynNDCttm3H7b9+b2IFTWMFUVQ1UbOB96uSZ+DvSwaI6H9AMCsA2B75vQC8krT+eA9p9CKRmkyXGZLzGuFw/+I89YCZGQUAVlA4IHAAAADQBACdASoUABMAPxFytFMsJiSisBgIAYAiCUAKYAFjpStiSssaLAwkB9glQVUXwAD+7061CS8EFt/ZcPzdF7iYPQoHLV9QHkiAqbFE7YMSowFHRwqwZedp/KIG6+1JUPX5lMnLgBF8m4xCtFD04AAA",
   "dominant": "#191a19",
@@ -53,5 +58,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Xbox-Series-X-Galaxy-Black-Console-Angled?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-series-x/8wj714n3rbtl"
   },
-  "input": "bacd6a8baa44befe"
+  "input": "6067dec4f9b15781"
 }

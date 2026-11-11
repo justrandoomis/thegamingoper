@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/god-of-war-ragnarok/1-1440.2b24c9b7.webp"
       }
-    ],
-    "png": "/products/god-of-war-ragnarok/1-720.81ffeaa5.png"
+    ]
+  },
+  "share": {
+    "src": "/products/god-of-war-ragnarok/1-1200.0018d51f.jpg",
+    "width": 1200,
+    "height": 675,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYwCw7BrUkUvSNdDwHoAA+44CSRx/Sid4RQ961uUE4UbM5qHfnmssqdHRnDJR57ft9ri2S3/ADQedRo5kcWr6AKCNy/gEuv1njismkv7gAA==",
   "dominant": "#a8c5e8",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-raganok-clean-keyart-01-en-10mar22?$1600px$",
     "page": "https://www.playstation.com/en-gb/games/god-of-war-ragnarok/"
   },
-  "input": "b7d93426d87c7d6c"
+  "input": "99e4dda16df2a99e"
 }

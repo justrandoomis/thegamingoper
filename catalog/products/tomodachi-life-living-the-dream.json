@@ -18,7 +18,7 @@
     "ckb": "یارییەکی خۆشی لاساییکردنەوەی ژیان کە تێیدا ئاگات لە دوورگەیەکە کە کارەکتەرەکانی Mii ی تێدان و خۆت دروستیان دەکەیت — خێزان، هاوڕێ یان هەر کەسێک کە بیری لێ دەکەیتەوە. خواردنیان دەدەیتێ، جلیان لەبەر دەکەیت، ئامۆژگارییان دەکەیت و سەیری هاوڕێیەتی و خۆشەویستی و ساتە سەیرەکانیان دەکەیت. وەشانێکی تاقیکاریی بەخۆڕایی هەیە و پێشکەوتنەکەی دەگوازرێتەوە بۆ یارییە تەواوەکە."
   },
   "highlights": [
-    { "ar": "لعبة Nintendo Switch تعمل على Switch 2 دون مشاكل معروفة", "en": "A Nintendo Switch game that runs on Switch 2 with no known issues", "ckb": "یارییەکی Nintendo Switch ە کە بێ کێشەی ناسراو لەسەر Switch 2 کار دەکات" },
+    { "ar": "لعبة Nintendo Switch تؤكد Nintendo أنها مدعومة على Switch 2 وتعمل عليه كما على Switch", "en": "A Nintendo Switch game that Nintendo lists as supported on Switch 2, where it plays the same as on Switch", "ckb": "یارییەکی Nintendo Switch ە کە Nintendo دەڵێت لەسەر Switch 2 پشتگیری دەکرێت و وەک لەسەر Switch کار دەکات" },
     { "ar": "اصنع شخصيات Mii بتفاصيل كثيرة: الوجه والصوت والشخصية", "en": "Create Mii characters in detail: face, voice and personality", "ckb": "کارەکتەری Mii بە وردی دروست بکە: ڕوخسار، دەنگ و کەسایەتی" },
     { "ar": "نسخة تجريبية مجانية وينتقل تقدمها إلى اللعبة الكاملة", "en": "Free demo whose progress transfers to the full game", "ckb": "وەشانی تاقیکاریی بەخۆڕایی کە پێشکەوتنەکەی دەگوازرێتەوە بۆ یارییە تەواوەکە" },
     { "ar": "PEGI 3 · ESRB E · لا تدعم العربية", "en": "PEGI 3 · ESRB E · No Arabic", "ckb": "PEGI 3 · ESRB E · عەرەبی تێدا نییە" }
@@ -26,13 +26,13 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch (متوافقة مع Nintendo Switch 2)", "en": "Nintendo Switch (compatible with Nintendo Switch 2)", "ckb": "Nintendo Switch (گونجاو لەگەڵ Nintendo Switch 2)" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "16 نيسان 2026", "en": "16 April 2026", "ckb": "16ی نیسانی 2026" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "6.3 GB", "en": "6.3 GB", "ckb": "6.3 GB" } },
     { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد؛ 2 عبر الاتصال المحلي اللاسلكي", "en": "1; 2 over local wireless", "ckb": "یەک یاریزان؛ 2 بە بێتەلی ناوخۆیی" } },
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 3 · ESRB E (مزاح كوميدي، عنف خيالي خفيف)", "en": "PEGI 3 · ESRB E (Comic Mischief, Mild Fantasy Violence)", "ckb": "PEGI 3 · ESRB E (گاڵتەی کۆمیدی، توندوتیژیی خەیاڵیی سووک)" } },
     { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، ژاپۆنی، کۆری، چینی — بێ عەرەبی" } },
     { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "لا يوجد لعب عبر الإنترنت؛ الحفظ السحابي يحتاج Nintendo Switch Online", "en": "No online play; cloud saves need Nintendo Switch Online", "ckb": "یاریی ئۆنلاین نییە؛ پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە" } },
-    { "key": "publisher", "label": { "ar": "الناشر", "en": "Publisher", "ckb": "بڵاوکەرەوە" }, "value": { "ar": "Nintendo", "en": "Nintendo", "ckb": "Nintendo" } }
+    { "key": "developer", "label": { "ar": "المطوّر / الناشر", "en": "Developer / publisher", "ckb": "پەرەپێدەر / بڵاوکەرەوە" }, "value": { "ar": "Nintendo EPD / Nintendo", "en": "Nintendo EPD / Nintendo", "ckb": "Nintendo EPD / Nintendo" } }
   ],
   "inTheBox": [
     { "ar": "بطاقة لعبة Nintendo Switch داخل علبتها", "en": "Nintendo Switch game card in its case", "ckb": "کارتی یاریی Nintendo Switch لە ناو قوتووەکەیدا" }
@@ -40,7 +40,7 @@
   "variants": [
     {
       "sku": "NSG-TOMODACHI-LIFE-DREAM",
-      "title": { "ar": "Tomodachi Life: Living the Dream — نسخة فعلية لـ Nintendo Switch", "en": "Tomodachi Life: Living the Dream — Nintendo Switch physical edition", "ckb": "Tomodachi Life: Living the Dream — کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "title": { "ar": "Tomodachi Life: Living the Dream — نسخة فيزيائية لـ Nintendo Switch", "en": "Tomodachi Life: Living the Dream — Nintendo Switch physical edition", "ckb": "Tomodachi Life: Living the Dream — کۆپیی فیزیکی بۆ Nintendo Switch" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496906078"],
       "isDefault": true,
@@ -63,13 +63,14 @@
     "arabic": "none",
     "physicalFormat": "cartridge",
     "sizeGb": 6.3,
+    "developer": "Nintendo EPD",
     "publisher": "Nintendo"
   },
   "compatibility": [
     { "deviceModel": "switch", "status": "verified", "note": { "ar": "لعبة Nintendo Switch.", "en": "A Nintendo Switch game.", "ckb": "یاریی Nintendo Switch ە." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" },
     { "deviceModel": "switch-oled", "status": "verified", "note": { "ar": "مثل Nintendo Switch.", "en": "Same as Nintendo Switch.", "ckb": "وەک Nintendo Switch." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" },
     { "deviceModel": "switch-lite", "status": "verified", "note": { "ar": "تدعم الوضع المحمول؛ تنبّه Nintendo إلى أن التجربة قد تختلف على Switch Lite.", "en": "Handheld mode is supported; Nintendo notes the experience may differ on Switch Lite.", "ckb": "دۆخی دەستی پشتگیری دەکرێت؛ Nintendo ئاگادار دەکاتەوە کە ئەزموونەکە لەسەر Switch Lite لەوانەیە جیاواز بێت." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" },
-    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "تؤكد Nintendo أنها مدعومة على Switch 2 دون مشاكل معروفة.", "en": "Nintendo lists it as supported on Switch 2 with no issues found.", "ckb": "Nintendo دەڵێت لەسەر Switch 2 پشتگیری دەکرێت و هیچ کێشەیەک نەدۆزراوەتەوە." }, "source": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Tomodachi-Life-Living-the-Dream-2786386.html" }
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "تؤكد Nintendo أنها مدعومة على Switch 2 وأن اللعبة تعمل كما على Nintendo Switch.", "en": "Nintendo lists it as supported on Switch 2: the game behaves the same as on Nintendo Switch.", "ckb": "Nintendo دەڵێت لەسەر Switch 2 پشتگیری دەکرێت و یارییەکە وەک لەسەر Nintendo Switch کار دەکات." }, "source": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/" }
   ],
   "related": [
     { "slug": "nintendo-switch-2", "kind": "setup" },
@@ -116,15 +117,17 @@
     }
   ],
   "sources": [
-    { "url": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/", "title": "Tomodachi Life: Living the Dream for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date April 16, 2026, file size 6.3 GB on Switch and Switch 2, play modes including handheld, players 1 / 2 local wireless, Save Data Cloud, languages, ESRB descriptors, Mii support, Switch Lite note" },
+    { "url": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-switch/", "title": "Tomodachi Life: Living the Dream for Nintendo Switch", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date April 16, 2026, file size 6.3 GB on Switch and Switch 2, play modes including handheld, players 1 / 2 local wireless, Save Data Cloud, languages, ESRB descriptors, Mii support, Switch Lite note, Nintendo Switch 2 compatibility: 'Supported – game behavior is consistent with Nintendo Switch'" },
     { "url": "https://www.nintendo.com/us/store/products/tomodachi-life-living-the-dream-125240/", "title": "Tomodachi Life: Living the Dream – Physical Copy", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906078, box art with ESRB E" },
-    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Tomodachi-Life-Living-the-Dream-2786386.html", "title": "Tomodachi Life: Living the Dream | Nintendo UK", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 3, languages, download size 6.3 GB, Nintendo Switch 2 compatibility supported with no issues found, free demo with progress transfer, Mii creation and island care" }
+    { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Tomodachi-Life-Living-the-Dream-2786386.html", "title": "Tomodachi Life: Living the Dream | Nintendo UK", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 3, languages, download size 6.3 GB, players 1 / 2 local wireless, free demo on Switch and Switch 2 with progress transfer, Mii creation (looks, voice, personality) and island care" },
+    { "url": "https://pegi.info/search-pegi?q=Tomodachi%20Life", "title": "PEGI search: Tomodachi Life: Living the Dream", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 3 for Nintendo Switch, European release 16/04/2026" },
+    { "url": "https://en.wikipedia.org/wiki/Tomodachi_Life:_Living_the_Dream", "title": "Tomodachi Life: Living the Dream", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "Nintendo Switch social simulation game principally developed by Nintendo EPD, published by Nintendo, released worldwide April 16, 2026; demo released March 25, 2026" },
+    { "url": "https://www.upcitemdb.com/upc/45496906078", "title": "UPC 045496906078 - Tomodachi Life Living the Dream - Nintendo Switch", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496906078 is listed by US retailers for this game" }
   ],
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "Developer not stated on the Nintendo pages read",
       "European EAN barcode not found on an official page"
     ]
   }

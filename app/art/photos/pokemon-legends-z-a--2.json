@@ -1,65 +1,56 @@
 {
   "key": "pokemon-legends-z-a--2",
   "view": "hero",
-  "width": 1600,
+  "width": 1054,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6587,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/pokemon-legends-z-a/2-240.393301ac.avif"
+        "src": "/products/pokemon-legends-z-a/2-240.782a39e2.avif"
       },
       {
         "w": 480,
-        "src": "/products/pokemon-legends-z-a/2-480.48ef9b6d.avif"
+        "src": "/products/pokemon-legends-z-a/2-480.1e732d0d.avif"
       },
       {
         "w": 720,
-        "src": "/products/pokemon-legends-z-a/2-720.23b67ca9.avif"
+        "src": "/products/pokemon-legends-z-a/2-720.421bb3c7.avif"
       },
       {
         "w": 960,
-        "src": "/products/pokemon-legends-z-a/2-960.ba0d9c6a.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/pokemon-legends-z-a/2-1440.a3d5f476.avif"
+        "src": "/products/pokemon-legends-z-a/2-960.173a9659.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/pokemon-legends-z-a/2-240.fadadbf9.webp"
+        "src": "/products/pokemon-legends-z-a/2-240.cba32fd9.webp"
       },
       {
         "w": 480,
-        "src": "/products/pokemon-legends-z-a/2-480.c9732b9e.webp"
+        "src": "/products/pokemon-legends-z-a/2-480.05cc38fd.webp"
       },
       {
         "w": 720,
-        "src": "/products/pokemon-legends-z-a/2-720.50b3ba03.webp"
+        "src": "/products/pokemon-legends-z-a/2-720.910d6b36.webp"
       },
       {
         "w": 960,
-        "src": "/products/pokemon-legends-z-a/2-960.a6697e0e.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/pokemon-legends-z-a/2-1440.21cee1e0.webp"
+        "src": "/products/pokemon-legends-z-a/2-960.56ed2949.webp"
       }
-    ],
-    "png": "/products/pokemon-legends-z-a/2-720.f256f596.png"
+    ]
   },
-  "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJQBj8ge0aFJjAXMoRnIah4gAA/u3QsRcDJOVjn1mEZOZFdX1T8CcAXXyhefxR3SQfVDsjJMNU0bT5pmR4TRfvVM73Wruezc0sqqlSIKVl071+2AAAAA==",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDIAAAARJ0CQbTOD+YON4CDXiIjgNiBq20ZVGYxCGNyFwY4/tPtH9D8C0Kzq652ZOT+t6msAGlZQOCB4AAAA0AMAnQEqDQAUAD8RcrBQLCakorAIAYAiCUAVgAQ2iSxFZpgJaekAAPZDw/zVHqwhJsQ7qzXVum88fEf3hkBZNQZl5VZtPDdL0MZpFMlxghSAI3Xe1XdDyXvMuU+/1y1Waudq0wvUzhQWpnUU/kJmdolZBPyQr/AA",
+  "dominant": "#172646",
+  "transparent": true,
+  "background": null,
   "kind": "box-art",
   "credit": "Nintendo / The Pokémon Company",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%20Software/Pok%C3%A9mon%E2%84%A2%20Legends%3A%20Z-A%20%E2%80%93%20Nintendo%20Switch%20Edition/121292-nintendo-pokemon-legends-z-a-switch-box-art-2000x2000",
     "page": "https://www.nintendo.com/us/store/products/pokemon-legends-z-a-121292/"
   },
-  "input": "e62cc2f77664620f"
+  "input": "7c1a768184736706"
 }

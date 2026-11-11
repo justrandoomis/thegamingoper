@@ -13,6 +13,8 @@ import { getSettings } from "~/server/settings.server";
 import { ORDER_TIMELINE_KINDS, PREFERRED_WINDOWS, type OrderLineView, type OrderSummary, type OrderTimelineKind, type OrderView, type PreferredWindow, type ProofStatus, type ShipmentView, type TransferInstructions } from "./types";
 
 const TRANSFER_METHODS = new Set(["bank_transfer", "zaincash"]);
+/** Order payment states in which nothing more is owed (a shortfall accepted by an override included). */
+const SETTLED_PAYMENT = new Set<string>(["paid", "partially_refunded", "refunded"]);
 const STATUS_TIMELINE = new Set<string>(["confirmed", "preparing", "shipped", "delivered", "cancelled", "returned"]);
 const PLACEHOLDER = (alt: string): ImageRef => ({ artKey: null, mediaKey: null, alt, isIllustration: true });
 
@@ -121,8 +123,11 @@ export async function transferInstructions(db: Db, method: string | null): Promi
   return { method, number: values["payments.zaincash"].number };
 }
 
-/** The full shopper view of one order. The caller has already decided the shopper may see it. */
-export async function buildOrderView(db: Db, order: Order, locale: Locale): Promise<OrderView> {
+/**
+ * The full shopper view of one order. The caller has already decided the shopper may see it.
+ * `now` decides whether the proof-upload window is still open (default: the current time).
+ */
+export async function buildOrderView(db: Db, order: Order, locale: Locale, now: number = Date.now()): Promise<OrderView> {
   const [lines, geo, paymentRows, shipmentRows, eventRows, refundRows] = await Promise.all([
     db
       .select({
@@ -204,6 +209,9 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale): Prom
     }));
 
   const awaitingTransfer = order.status === "awaiting_payment" && TRANSFER_METHODS.has(order.paymentMethod ?? "");
+  // A proof can be sent while the transfer payment waits for one: first upload, or after a rejection.
+  const proofExpected = awaitingTransfer && (transferPayment?.status === "pending" || transferPayment?.status === "rejected");
+  const settled = SETTLED_PAYMENT.has(order.paymentStatus) || order.status === "cancelled";
   const window = PREFERRED_WINDOWS.includes(order.preferredWindow as PreferredWindow) ? (order.preferredWindow as PreferredWindow) : null;
   return {
     ref: order.ref,
@@ -231,7 +239,7 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale): Prom
     payment: {
       method: order.paymentMethod === "pos_cash" || order.paymentMethod === "pos_card" ? null : order.paymentMethod,
       status: order.paymentStatus,
-      amountDueIqd: order.status === "cancelled" ? 0 : Math.max(0, order.totalIqd - order.paidIqd),
+      amountDueIqd: settled ? 0 : Math.max(0, order.totalIqd - order.paidIqd),
       paidIqd: order.paidIqd,
       refundedIqd: order.refundedIqd,
       dueAt: awaitingTransfer ? order.paymentDueAt : null,
@@ -242,7 +250,7 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale): Prom
         declaredAmountIqd: proof?.declaredAmountIqd ?? null,
         rejectReason: proof?.status === "rejected" ? proof.reviewNote : null,
       },
-      canUploadProof: awaitingTransfer && transferPayment?.status === "pending" && proofStatus !== "submitted",
+      canUploadProof: proofExpected && proofStatus !== "submitted" && (order.paymentDueAt === null || now < order.paymentDueAt),
     },
     shipments: shipmentViews,
     refunds: refundRows.map((row) => ({ amountIqd: row.amountIqd, method: row.method, status: row.status === "paid" ? "paid" : "pending", at: row.paidAt ?? row.createdAt })),

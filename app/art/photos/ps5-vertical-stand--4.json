@@ -1,0 +1,56 @@
+{
+  "key": "ps5-vertical-stand--4",
+  "view": "hero",
+  "width": 1090,
+  "height": 1063,
+  "aspect": 1.0254,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ps5-vertical-stand/4-240.3ef0dfa3.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ps5-vertical-stand/4-480.bf77194f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ps5-vertical-stand/4-720.8eabb5c3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ps5-vertical-stand/4-960.501043ef.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ps5-vertical-stand/4-240.d6be5350.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ps5-vertical-stand/4-480.42de7526.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ps5-vertical-stand/4-720.c1107bc3.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ps5-vertical-stand/4-960.5a72b20f.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSDwAAAARP0AkAJn1gMYDH6wQEYG5jA41ke1E4RASDx8B10dCkBAL+C9ISR3R/wmQoLqbkQ2p32f9FfVjmwSSBAFWUDggcAAAABAEAJ0BKhQAFAA/EXq2U6wnpSKoCqmAIglnAFMAA84k2K4OTOjW0MMAAP7U3W5WXWAkDFnLjhDfwfty44FsWOMcCShKI9Lj/ryDr7nQK6dX5ctetegwrxmhOhwTZk0gyZO4fu2a8DaKFWyp1L7OIAA=",
+  "dominant": "#fbfbfb",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/VerticalStand-3D-16x9-01-28feb26$en?$native--t$",
+    "page": "https://www.playstation.com/en-gb/accessories/vertical-stand-for-ps5/product/PSD001-PSDE01836_15-PS5VERTICAFZNWRE/"
+  },
+  "input": "d115b2de4bbdcf96"
+}

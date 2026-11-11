@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/elden-ring-nightreign/1-960.5dbff8a4.webp"
       }
-    ],
-    "png": "/products/elden-ring-nightreign/1-720.77b31d65.png"
+    ]
+  },
+  "share": {
+    "src": "/products/elden-ring-nightreign/1-1067.3784e67c.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoNABQAPxFysFAsJqSisAgBgCIJbAC7MoADTVOWuN4TuwAA/ulBG17K6yMQXleYoG6YZv77+YGN9lsfEy7WduBVSdExhJjBWZpzD61vNKuIkaVNQy1vg2RKj3FGsIDljbszH0QAAAA=",
   "dominant": "#0b0c17",
@@ -53,5 +58,5 @@
     "url": "https://store-images.s-microsoft.com/image/apps.21572.14220340964291907.89c95a82-805b-43b9-8393-3be8df29bd15.019f9a77-d622-467b-a294-de28fe09f661",
     "page": "https://www.xbox.com/en-US/games/store/elden-ring-nightreign/9pj22qnvcz3g"
   },
-  "input": "90a6af574d5ed8e1"
+  "input": "415daff387ed7db3"
 }

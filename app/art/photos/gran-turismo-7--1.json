@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/gran-turismo-7/1-960.bab3c135.webp"
       }
-    ],
-    "png": "/products/gran-turismo-7/1-720.56959953.png"
+    ]
+  },
+  "share": {
+    "src": "/products/gran-turismo-7/1-1067.1ff97c3d.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJbACdABrT7WnaasthuFQAAP7Q7C9IUfl/QmLWa+qTnf0VgVmOPxZcLTaY5Ut7vEOWdRvAVQn5Z+wE0rGTYDNqaM0w6P7Gxje9UROWDYqcQZ3V1IZcp8j8AM7E0UK7TIj6H+PzrIne8s728ec7G5++AAA=",
   "dominant": "#020002",
@@ -53,5 +58,5 @@
     "url": "https://image.api.playstation.com/vulcan/ap/rnd/202202/2806/QDzid2jNv4e44kgumGXDCscF.png",
     "page": "https://store.playstation.com/en-ae/concept/10000956"
   },
-  "input": "d26261c4658ceaf4"
+  "input": "530d56f42611f45d"
 }

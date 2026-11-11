@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/nintendo-switch-2-sports-resort-bundle/1-1440.27bdf779.webp"
       }
-    ],
-    "png": "/products/nintendo-switch-2-sports-resort-bundle/1-720.618b6100.png"
+    ]
+  },
+  "share": {
+    "src": "/products/nintendo-switch-2-sports-resort-bundle/1-1200.e0c45dcf.png",
+    "width": 1200,
+    "height": 1233,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRmwBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSE0AAAART6CgjSQ1dRYYnz8iAqac+ON/BJvYtuI8sIACBgcMFhCwo4BJnQoJGdpUPL3ZutQR/Z8AvNY299EU9mPxOuXJx18QFsm5eQOEUZ3ARwBWUDgg+AAAALAGAJ0BKhMAFAA/EX61VawnpKMoCAGAIglsAJ0yhH0fs3FiUFdPPM7AA6W0iQwiYpisFSeKvSl3uaosEvDIAPogGss/RImwySh/ui8yXSNY80vivafHb8ya9Ex+MH4026CpOFtz95U5dhmk0+ysgXumsFVg2U/Bh355O/Blmj0MM+fAGc71uTD/m4od/qvDS7Tb/kUu+U4mHi2+5MexnQBTxFzc4xxjKaH7Y061EdCU/u0Ui4FQat/MQa8gBmJP2zmqw1pvV19ndcE4GVJNJ9P+pPsOM80q9WUWNvVgA2LOV85SOz/xfel6RLjP8HJio08qL6TfiIAA",
   "dominant": "#f3f3f3",
@@ -58,8 +63,8 @@
   "kind": "hero",
   "credit": "Nintendo",
   "source": {
-    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Hardware/129088-nintendo-switch-2-nintendo-sports-resort-bundle-box-art-2000x2000",
-    "page": "https://www.nintendo.com/us/store/products/nintendo-switch-2-nintendo-switch-sports-resort-bundle-129088/"
+    "url": "https://assets.nintendo.eu/image/private/f_png,q_100,c_limit,w_2000/gy6kslyoemwewkplsee6",
+    "page": "https://store.nintendo.com/en-gb/nintendo-switch-2-nintendo-switch-sports-resort-P00208"
   },
-  "input": "06b12e8b937d6d7e"
+  "input": "cbfe6a5424ea48f5"
 }

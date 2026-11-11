@@ -1,12 +1,15 @@
 /**
  * Product photos (scripts/products/images.mjs → app/art/photos + public/products):
  *   - every manifest is valid, matches its files (sizes, content hashes, formats, alpha) and its
- *     entry in catalog/products;
- *   - the registry and <Art> hand photos out next to the clay renders, opaque photos in a frame;
+ *     entry in catalog/products; AVIF and WebP only (no PNG fallback), plus one share picture per
+ *     product on its first photo; public/products holds exactly the files the manifests name;
+ *   - the registry and <Art> hand photos out next to the clay renders, opaque photos in a frame,
+ *     the 720 px WebP as the <img> fallback;
  *   - the background treatment (scripts/products/lib/cutout.mjs) keeps its promises on synthetic
- *     pictures — above all it never eats into an object; when in doubt the photo stays opaque.
+ *     pictures — above all it never eats into an object; when in doubt the photo stays opaque —
+ *     and its per-image options (scripts/products/image-options.json) do what they say.
  * Whether a real cut-out LOOKS right is judged on the review sheets images.mjs writes to
- * .cache/product-images/_sheets/.
+ * .cache/product-images/_sheets/ and on the contact sheets of scripts/products/contact-sheets.mjs.
  */
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
@@ -19,22 +22,35 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
 import { Art } from "../app/art/Art";
-import { artNames, artViews, getArt, getPhoto, hasArt, isPhoto, parsePhotoKey, photoKey, photoKeys, productPhotos, type PhotoManifest } from "../app/art/index";
+import { artFallbackSrc, artNames, artViews, getArt, getPhoto, hasArt, isPhoto, parsePhotoKey, photoKey, photoKeys, productPhotos, productShareImage, type PhotoManifest } from "../app/art/index";
 import { PAD, treat, type RawImage } from "../scripts/products/lib/cutout.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MANIFESTS = path.join(ROOT, "app/art/photos");
 const PUBLIC = path.join(ROOT, "public");
 const CATALOG = path.join(ROOT, "catalog/products");
+const OPTIONS = path.join(ROOT, "scripts/products/image-options.json");
 const WIDTHS = [240, 480, 720, 960, 1440];
+const SHARE_WIDTH = 1200;
 const KINDS = ["hero", "angle", "detail", "in-box", "box-art", "screenshot"] as const;
+/** Cloudflare Workers static assets: per file, and files per version. */
+const MAX_ASSET_BYTES = 25 * 1024 * 1024;
+const MAX_ASSET_FILES = 20_000;
 
 const KEY = /^([a-z0-9]+(?:-[a-z0-9]+)*)--(\d+)$/;
-const FILE = /^\/products\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(\d+)-(\d+)\.([0-9a-f]{8})\.(avif|webp|png)$/;
+const FILE = /^\/products\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(\d+)-(\d+)\.([0-9a-f]{8})\.(avif|webp|jpg|png)$/;
 const HEX = /^#[0-9a-f]{6}$/;
 const url = z.string().regex(/^https?:\/\/\S+$/);
 
 const variant = z.object({ w: z.number().int().positive(), src: z.string().regex(FILE) }).strict();
+const share = z
+  .object({
+    src: z.string().regex(FILE).regex(/\.(jpg|png)$/),
+    width: z.number().int().positive().max(SHARE_WIDTH),
+    height: z.number().int().positive(),
+    type: z.enum(["image/jpeg", "image/png"]),
+  })
+  .strict();
 const manifestSchema = z
   .object({
     key: z.string().regex(KEY),
@@ -42,7 +58,9 @@ const manifestSchema = z
     width: z.number().int().positive(),
     height: z.number().int().positive(),
     aspect: z.number().positive(),
-    variants: z.object({ avif: z.array(variant).min(1), webp: z.array(variant).min(1), png: z.string().regex(FILE) }).strict(),
+    // no PNG fallback: every browser the store supports decodes WebP
+    variants: z.object({ avif: z.array(variant).min(1), webp: z.array(variant).min(1) }).strict(),
+    share: share.optional(),
     placeholder: z.string().regex(/^data:image\/webp;base64,[A-Za-z0-9+/]+=*$/),
     dominant: z.string().regex(HEX),
     transparent: z.boolean(),
@@ -57,6 +75,8 @@ const manifestSchema = z
 const manifestFiles = existsSync(MANIFESTS) ? readdirSync(MANIFESTS).filter((file) => file.endsWith(".json")).sort() : [];
 const manifests = manifestFiles.map((file) => ({ file, manifest: JSON.parse(readFileSync(path.join(MANIFESTS, file), "utf8")) as PhotoManifest }));
 const sha8 = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex").slice(0, 8);
+/** Every public file a manifest names. */
+const filesOf = (manifest: PhotoManifest) => [...manifest.variants.avif, ...manifest.variants.webp].map((v) => v.src).concat(manifest.share ? [manifest.share.src] : []);
 
 interface CatalogImage { key: string; kind: string; credit: string; sourceUrl?: string }
 function catalogImages(slug: string): CatalogImage[] | null {
@@ -101,15 +121,23 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
     expect(manifest.kind).toBe(entry!.kind);
     expect(manifest.credit).toBe(entry!.credit.trim());
     expect(manifest.source.url).toBe(entry!.sourceUrl ?? null);
+    // the share picture (og:image) belongs to the product's first image, and only to it
+    expect(manifest.share !== undefined, `${manifest.key}: share picture ⇔ first image of ${slug}`).toBe(images[0].key === manifest.key);
   });
 
   it.each(manifests)("$file points at real files of the stated size, with alpha exactly when transparent", async ({ manifest }) => {
     const { slug, n } = parsePhotoKey(manifest.key)!;
+    const shareWidth = Math.min(SHARE_WIDTH, manifest.width);
     const files = [
       ...manifest.variants.avif.map((v) => ({ ...v, format: "heif" })),
       ...manifest.variants.webp.map((v) => ({ ...v, format: "webp" })),
-      { w: Math.min(720, manifest.width), src: manifest.variants.png, format: "png" },
+      ...(manifest.share ? [{ w: shareWidth, src: manifest.share.src, format: manifest.transparent ? "png" : "jpeg" }] : []),
     ];
+    if (manifest.share) {
+      expect(manifest.share.width).toBe(shareWidth);
+      expect(manifest.share.type).toBe(manifest.transparent ? "image/png" : "image/jpeg");
+      expect(manifest.share.src.endsWith(manifest.transparent ? ".png" : ".jpg")).toBe(true);
+    }
     for (const entry of files) {
       const file = path.join(PUBLIC, entry.src);
       expect(existsSync(file), `${entry.src} is missing from public/`).toBe(true);
@@ -127,14 +155,15 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
       expect(meta.width).toBe(entry.w);
       expect(Math.abs((meta.height ?? 0) - entry.w / manifest.aspect), `${entry.src} keeps the aspect`).toBeLessThanOrEqual(1);
       expect(meta.hasAlpha, `${entry.src}: alpha channel ⇔ transparent`).toBe(manifest.transparent);
+      if (entry.src === manifest.share?.src) expect(meta.height).toBe(manifest.share.height);
     }
 
-    // The PNG fallback really is see-through around the object when transparent (padding all round).
-    const png = sharp(readFileSync(path.join(PUBLIC, manifest.variants.png)));
+    // The <img> fallback really is see-through around the object when transparent (padding all round).
     if (manifest.transparent) {
-      const { data, info } = await png.raw().toBuffer({ resolveWithObject: true });
+      const fallback = readFileSync(path.join(PUBLIC, artFallbackSrc(manifest)));
+      const { data, info } = await sharp(fallback).raw().toBuffer({ resolveWithObject: true });
       const alphaAt = (x: number, y: number) => data[(y * info.width + x) * info.channels + 3];
-      expect((await sharp(readFileSync(path.join(PUBLIC, manifest.variants.png))).stats()).isOpaque).toBe(false);
+      expect((await sharp(fallback).stats()).isOpaque).toBe(false);
       const corners = [alphaAt(0, 0), alphaAt(info.width - 1, 0), alphaAt(0, info.height - 1), alphaAt(info.width - 1, info.height - 1)];
       expect(Math.max(...corners), "transparent corners").toBeLessThan(64);
     }
@@ -145,13 +174,44 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
     expect(placeholder.hasAlpha).toBe(manifest.transparent);
   });
 
-  it("leave no orphaned files in public/products", () => {
-    const referenced = new Set(manifests.flatMap(({ manifest }) => [...manifest.variants.avif, ...manifest.variants.webp].map((v) => v.src).concat(manifest.variants.png)));
+  it("leave public/products holding exactly the files the manifests name, within the Workers limits", () => {
+    const referenced = manifests.flatMap(({ manifest }) => filesOf(manifest));
+    expect(new Set(referenced).size, "no file is named twice").toBe(referenced.length);
     const root = path.join(PUBLIC, "products");
-    const onDisk = existsSync(root)
-      ? readdirSync(root).filter((slug) => statSync(path.join(root, slug)).isDirectory()).flatMap((slug) => readdirSync(path.join(root, slug)).map((file) => `/products/${slug}/${file}`))
-      : [];
-    expect(onDisk.filter((src) => !referenced.has(src))).toEqual([]);
+    const entries = existsSync(root) ? readdirSync(root) : [];
+    // only product folders, none of them empty
+    expect(entries.filter((entry) => !statSync(path.join(root, entry)).isDirectory()), "loose files in public/products").toEqual([]);
+    expect(entries.filter((slug) => readdirSync(path.join(root, slug)).length === 0), "empty folders in public/products").toEqual([]);
+    const onDisk = entries.flatMap((slug) => readdirSync(path.join(root, slug)).map((file) => `/products/${slug}/${file}`));
+    expect(onDisk.filter((src) => !referenced.includes(src)), "files no manifest names (run node scripts/products/images.mjs to prune them)").toEqual([]);
+    expect(referenced.filter((src) => !onDisk.includes(src)), "named files that are missing").toEqual([]);
+    expect(onDisk.length).toBeLessThan(MAX_ASSET_FILES / 2);
+    expect(onDisk.filter((src) => statSync(path.join(PUBLIC, src)).size > MAX_ASSET_BYTES)).toEqual([]);
+  });
+
+  it("give every product with photos exactly one share picture, on its first photo", () => {
+    const slugs = new Set(manifests.map(({ manifest }) => parsePhotoKey(manifest.key)!.slug));
+    for (const slug of slugs) {
+      const images = catalogImages(slug);
+      if (!images?.length) continue;
+      const shared = productPhotos(slug).filter((photo) => photo.share);
+      if (!getPhoto(images[0].key)) continue; // the first photo is not built (yet)
+      expect(shared.map((photo) => photo.key), slug).toEqual([images[0].key]);
+      expect(productShareImage(slug)).toEqual(getPhoto(images[0].key)!.share);
+    }
+    expect(productShareImage("no-such-product")).toBeUndefined();
+  });
+
+  it("have per-image options only for images in the catalogue, each with a reason", () => {
+    if (!existsSync(OPTIONS)) return;
+    const options = JSON.parse(readFileSync(OPTIONS, "utf8")) as Record<string, Record<string, unknown>>;
+    const known = new Set(readdirSync(CATALOG).filter((file) => file.endsWith(".json")).flatMap((file) => catalogImages(file.slice(0, -5))?.map((image) => image.key) ?? []));
+    for (const [key, entry] of Object.entries(options)) {
+      if (key.startsWith("$")) continue;
+      expect(known.has(key), `${key} is not a catalogue image`).toBe(true);
+      expect(typeof entry.why === "string" && entry.why.length > 10, `${key} needs a "why"`).toBe(true);
+      expect(Object.keys(entry).filter((name) => !["why", "cutout", "holes", "extend", "clean", "pad", "trim", "crop"].includes(name))).toEqual([]);
+    }
   });
 });
 
@@ -198,9 +258,20 @@ describe("<Art> with photos", () => {
     expect(markup).toContain('data-transparent="false"');
     expect(markup).toContain(`background-color:${opaque!.background}`);
     expect(markup).toContain("border-radius:var(--photo-radius, var(--r-md))");
-    expect(markup).toContain(`src="${opaque!.variants.png}"`);
+    expect(markup).toContain(`src="${artFallbackSrc(opaque!)}"`);
     expect(markup).toContain(`width="${opaque!.width}"`);
     expect(markup).toContain('class="w-full"');
+  });
+
+  it.skipIf(manifests.length === 0)("falls back to the 720 px WebP, never to a PNG", () => {
+    for (const { manifest } of manifests) {
+      const fallback = artFallbackSrc(manifest);
+      expect(fallback.endsWith(".webp")).toBe(true);
+      expect(manifest.variants.webp.some((v) => v.src === fallback)).toBe(true);
+      const width = Number(FILE.exec(fallback)![3]);
+      expect(width).toBe(manifest.width >= 720 ? 720 : manifest.variants.webp[manifest.variants.webp.length - 1].w);
+      expect(html({ name: manifest.key, alt: "" })).toContain(`src="${fallback}"`);
+    }
   });
 
   it.skipIf(!transparent)("draws a transparent photo like a render", () => {
@@ -220,6 +291,9 @@ describe("<Art> with photos", () => {
     const missing = html({ name: "no-such-product--1", alt: "Coming soon" });
     expect(missing).toContain('data-art-missing=""');
     expect(missing).not.toContain("<picture");
+    // painted with a token, not with colours baked into the file (the file only carries the shape)
+    expect(missing).toContain("background-color:var(--line)");
+    expect(decodeURIComponent(/src="data:image\/svg\+xml,([^"]+)"/.exec(missing)![1])).not.toMatch(/#[0-9a-f]{3,8}\b|rgb\(|fill=/i);
   });
 });
 
@@ -404,5 +478,74 @@ describe("background treatment", () => {
   it("is deterministic", () => {
     const image = paint(320, 200, WHITE, [{ shape: roundedRect(160, 100, 160, 90, 18), colour: [40, 42, 46] }]);
     expect(Buffer.from(treat(image).data).equals(Buffer.from(treat(image).data))).toBe(true);
+  });
+});
+
+describe("per-image options of the treatment", () => {
+  const dark = () => paint(320, 200, WHITE, [{ shape: roundedRect(160, 100, 160, 90, 18), colour: [40, 42, 46] }]);
+  const headband = () => {
+    const outer = minus(circle(160, 150, 120), circle(160, 150, 104));
+    const inner = minus(circle(160, 150, 80), circle(160, 150, 66));
+    const ends: Shape = (x, y) => y >= 140 && y < 150 && ((x > 38 && x < 96) || (x > 224 && x < 282));
+    return paint(320, 200, WHITE, [{ shape: (x, y) => (outer(x, y) || inner(x, y)) && y < 150, colour: [40, 42, 46] }, { shape: ends, colour: [40, 42, 46] }]);
+  };
+  /** Runs of opaque (alpha ≥ 128) pixels down the middle column. */
+  const opaqueRuns = (image: RawImage) => {
+    let runs = 0, inside = false;
+    for (let y = 0; y < image.height; y++) {
+      const opaque = rgbaAt(image, image.width >> 1, y)[3] >= 128;
+      if (opaque && !inside) runs++;
+      inside = opaque;
+    }
+    return runs;
+  };
+
+  it("cutout false keeps a clean photo opaque, trimmed on its own background", () => {
+    expect(treat(dark()).method).toBe("cutout");
+    const out = treat(dark(), { cutout: false });
+    expect(out.method).toBe("opaque");
+    expect(out.transparent).toBe(false);
+    expect(out.background).toBe("#ffffff");
+    expect(out.reason).toMatch(/image option/);
+    expect(Math.abs(out.width - 160 * (1 + 2 * PAD))).toBeLessThanOrEqual(3);
+    expect(rgbaAt(out, 0, 0)).toEqual([255, 255, 255, 255]);
+  });
+
+  it("trim false keeps the whole frame of an opaque photo", () => {
+    const out = treat(dark(), { cutout: false, trim: false });
+    expect(out.method).toBe("opaque");
+    expect([out.width, out.height]).toEqual([320, 200]);
+  });
+
+  it("pad sets the padding of a trimmed object", () => {
+    const out = treat(dark(), { pad: 0.12 });
+    expect(out.method).toBe("cutout");
+    expect(Math.abs(out.width - 160 * 1.24)).toBeLessThanOrEqual(3);
+    expect(Math.abs(out.height - (90 + 160 * 0.24))).toBeLessThanOrEqual(3);
+    expect(() => treat(dark(), { pad: 0.5 })).toThrow();
+  });
+
+  it("holes true cuts out the window between two bands instead of keeping the photo opaque", () => {
+    expect(treat(headband()).transparent).toBe(false);
+    const out = treat(headband(), { holes: true });
+    expect(out.method).toBe("cutout");
+    expect(Number(out.stats.holes)).toBeGreaterThan(0);
+    // down the middle: outer band, window (now see-through), inner band
+    expect(opaqueRuns(out)).toBe(2);
+    // the bands keep their colour up to the cut, no white rim around the window
+    for (let i = 0; i < out.data.length; i += 4) {
+      const a = out.data[i + 3];
+      if (a > 20 && a < 235) expect(Math.max(out.data[i], out.data[i + 1], out.data[i + 2])).toBeLessThan(90);
+    }
+  });
+
+  it("holes true never opens a light part that is not the background colour", () => {
+    // a light grey panel (≈ 8 ΔE from white) inside a dark ring stays opaque
+    const ring = minus(circle(160, 100, 80), circle(160, 100, 60));
+    const out = treat(paint(320, 200, WHITE, [{ shape: ring, colour: [40, 42, 46] }, { shape: circle(160, 100, 60), colour: [225, 225, 225] }]), { holes: true });
+    expect(out.method).toBe("cutout");
+    const centre = rgbaAt(out, out.width >> 1, out.height >> 1);
+    expect(centre[3]).toBe(255);
+    expect(centre[0]).toBeGreaterThan(215);
   });
 });

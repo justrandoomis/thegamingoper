@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/razer-blackshark-v2-x/1-1440.3d82ef45.webp"
       }
-    ],
-    "png": "/products/razer-blackshark-v2-x/1-720.9460a14a.png"
+    ]
+  },
+  "share": {
+    "src": "/products/razer-blackshark-v2-x/1-1200.f1083491.jpg",
+    "width": 1200,
+    "height": 800,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAAAwAwCdASoUAA0APxFysFAsJqSisAgBgCIJaQAAW+y6pbUAAP7r4qMubc3wMAYcOGoAAA==",
   "dominant": "#181d22",
@@ -61,5 +66,5 @@
     "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h47/h6d/9081232326686/Phoenix-Gallery-Blackshark-V2-X-1500x1000-4.jpg",
     "page": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240100-R3U1"
   },
-  "input": "2b945d7f61c504b2"
+  "input": "9ee5c5f59698871c"
 }

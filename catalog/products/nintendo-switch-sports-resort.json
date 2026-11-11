@@ -13,13 +13,13 @@
     "ckb": "تایبەت بە Nintendo Switch 2 · 12 وەرزش بە کۆنترۆڵی جووڵە · PEGI 7"
   },
   "description": {
-    "ar": "مجموعة من 12 رياضة على جزيرة Wuhu، تلعبها بتحريك وحدات Joy-Con 2 كأنها قوس أو مضرب أو مقود. تضم رياضات تنافسية مثل الملاكمة والتنس والبولينغ والغولف وكرة السلة، ورياضات ترفيهية مثل التزلج على اللوح والطائرة الشراعية لاستكشاف الجزيرة. تناسب العائلة حتى 4 لاعبين على جهاز واحد.",
-    "en": "A set of 12 sports on Wuhu Island, played by swinging Joy-Con 2 controllers as a bow, racket or handlebars. It mixes competitive sports such as boxing, tennis, bowling, golf and basketball with leisure ones like skateboarding and a prop plane for exploring the island. Up to 4 family members can play on one console.",
-    "ckb": "کۆمەڵەیەک لە 12 وەرزش لەسەر دوورگەی Wuhu، کە بە جووڵاندنی Joy-Con 2 وەک کەوان، ڕاکێت یان دەسکی ماتۆڕ یاری دەکرێن. وەرزشی ڕکابەری وەک بۆکسێن، تێنس، بۆڵینگ، گۆڵف و تۆپی سەبەتە لەگەڵ وەرزشی کاتبەسەربردن وەک سکەیتبۆرد و فڕۆکەی بچووک بۆ گەڕان بە دوورگەکەدا تێدایە. تا 4 ئەندامی خێزان دەتوانن لەسەر یەک کۆنسۆڵ یاری بکەن."
+    "ar": "مجموعة من 12 رياضة على جزيرة Wuhu، تُلعب غالباً بالتحكم بالحركة عبر وحدات Joy-Con 2. تضم رياضات تنافسية مثل الملاكمة والتنس والبولينغ والغولف وكرة السلة، ورياضات ترفيهية مثل التزلج على اللوح والطيران بطائرة صغيرة لاستكشاف الجزيرة. ويمكن لأربعة لاعبين اللعب معاً على جهاز واحد.",
+    "en": "A set of 12 sports on Wuhu Island, played mostly with Joy-Con 2 motion controls. It mixes competitive sports such as boxing, tennis, bowling, golf and basketball with leisure ones like skateboarding and a prop plane for exploring the island. Up to 4 players can play together on one console.",
+    "ckb": "کۆمەڵەیەک لە 12 وەرزش لەسەر دوورگەی Wuhu، کە زۆربەیان بە کۆنترۆڵی جووڵەی Joy-Con 2 یاری دەکرێن. وەرزشی ڕکابەری وەک بۆکسین، تێنس، بۆڵینگ، گۆڵف و تۆپی سەبەتە لەگەڵ وەرزشی کاتبەسەربردن وەک سکەیتبۆرد و فڕۆکەی بچووک بۆ گەڕان بە دوورگەکەدا تێدایە. تا 4 یاریزان دەتوانن پێکەوە لەسەر یەک کۆنسۆڵ یاری بکەن."
   },
   "highlights": [
     { "ar": "اللعبة كاملة على بطاقة اللعبة، وليست Game-Key Card", "en": "The full game is on the game card — not a Game-Key Card", "ckb": "تەواوی یارییەکە لەسەر کارتەکەیە — Game-Key Card نییە" },
-    { "ar": "12 رياضة: ملاكمة، تنس طاولة، رماية بالقوس، تنس، كرة طائرة، بولينغ، كرة سلة، غولف، مصارعة الإبهام، تزلج، دراجة مائية، طائرة شراعية", "en": "12 sports: boxing, table tennis, archery, tennis, volleyball, bowling, basketball, golf, thumb wrestling, skateboarding, power cruising and prop plane", "ckb": "12 وەرزش: بۆکسێن، تێنسی مێز، تیرهاوێژی، تێنس، تۆپی بالە، بۆڵینگ، تۆپی سەبەتە، گۆڵف، زۆرانبازیی پەنجەگەورە، سکەیتبۆرد، ماتۆڕی ئاوی و فڕۆکەی بچووک" },
+    { "ar": "12 رياضة: ملاكمة، تنس طاولة، رماية بالقوس، تنس، كرة طائرة، بولينغ، كرة سلة، غولف، مصارعة الإبهام، تزلج على اللوح، دراجة مائية، طيران بطائرة صغيرة", "en": "12 sports: boxing, table tennis, archery, tennis, volleyball, bowling, basketball, golf, thumb wrestling, skateboarding, power cruising and prop plane", "ckb": "12 وەرزش: بۆکسین، تێنسی مێز، تیرهاوێژی، تێنس، تۆپی باڵە، بۆڵینگ، تۆپی سەبەتە، گۆڵف، زۆرانبازیی پەنجەگەورە، سکەیتبۆرد، ماتۆڕی ئاوی و فڕۆکەی بچووک" },
     { "ar": "حتى 4 لاعبين على جهاز واحد، وحتى 16 عبر الإنترنت (البولينغ)", "en": "Up to 4 players on one console and up to 16 online (bowling)", "ckb": "تا 4 یاریزان لەسەر یەک کۆنسۆڵ و تا 16 بە ئۆنلاین (بۆڵینگ)" },
     { "ar": "لا تدعم الوضع المحمول: تُلعب على التلفاز أو بوضع الطاولة", "en": "No handheld mode: played on a TV or in tabletop mode", "ckb": "دۆخی دەستی پشتگیری ناکرێت: لەسەر تەلەفزیۆن یان دۆخی سەرمێز یاری دەکرێت" },
     { "ar": "PEGI 7 · ESRB E10+ · لا تدعم العربية", "en": "PEGI 7 · ESRB E10+ · No Arabic", "ckb": "PEGI 7 · ESRB E10+ · عەرەبی تێدا نییە" }
@@ -27,7 +27,7 @@
   "specs": [
     { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch 2 فقط", "en": "Nintendo Switch 2 only", "ckb": "تەنها Nintendo Switch 2" } },
     { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "22 تشرين الأول 2026", "en": "22 October 2026", "ckb": "22ی تشرینی یەکەمی 2026" } },
-    { "key": "format", "label": { "ar": "نوع النسخة الفعلية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة تحتوي اللعبة كاملة", "en": "Game card with the full game", "ckb": "کارتی یاری کە تەواوی یارییەکەی لەسەرە" } },
     { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "10.3 GB", "en": "10.3 GB", "ckb": "10.3 GB" } },
     { "key": "playModes", "label": { "ar": "أوضاع اللعب", "en": "Play modes", "ckb": "دۆخەکانی یاری" }, "value": { "ar": "التلفاز والطاولة فقط", "en": "TV and tabletop only", "ckb": "تەنها تەلەفزیۆن و سەرمێز" } },
     { "key": "controls", "label": { "ar": "التحكم", "en": "Controls", "ckb": "کۆنترۆڵ" }, "value": { "ar": "تحكم بالحركة عبر Joy-Con 2، وتحكم كفأرة في التزلج", "en": "Joy-Con 2 motion controls, with mouse controls for skateboarding", "ckb": "کۆنترۆڵی جووڵە بە Joy-Con 2، لەگەڵ کۆنترۆڵی ماوس بۆ سکەیتبۆرد" } },
@@ -35,7 +35,7 @@
     { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E10+ (عنف خفيف، مشتريات داخل اللعبة)", "en": "PEGI 7 · ESRB E10+ (Mild Violence, In-Game Purchases)", "ckb": "PEGI 7 · ESRB E10+ (توندوتیژیی سووک، کڕینی ناو یاری)" } },
     { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، البرتغالية، الروسية، البولندية، اليابانية، الكورية، الصينية، التايلاندية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Portuguese, Russian, Polish, Japanese, Korean, Chinese, Thai — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، پورتوگالی، ڕووسی، پۆڵەندی، ژاپۆنی، کۆری، چینی، تایلەندی — بێ عەرەبی" } },
     { "key": "online", "label": { "ar": "اللعب عبر الإنترنت", "en": "Online", "ckb": "ئۆنلاین" }, "value": { "ar": "اللعب عبر الإنترنت والحفظ السحابي يحتاجان Nintendo Switch Online", "en": "Online play and cloud saves need Nintendo Switch Online", "ckb": "یاریی ئۆنلاین و پاشەکەوتی هەوری پێویستیان بە Nintendo Switch Online هەیە" } },
-    { "key": "publisher", "label": { "ar": "الناشر", "en": "Publisher", "ckb": "بڵاوکەرەوە" }, "value": { "ar": "Nintendo", "en": "Nintendo", "ckb": "Nintendo" } }
+    { "key": "developer", "label": { "ar": "المطوّر / الناشر", "en": "Developer / publisher", "ckb": "پەرەپێدەر / بڵاوکەرەوە" }, "value": { "ar": "Nintendo EPD / Nintendo", "en": "Nintendo EPD / Nintendo", "ckb": "Nintendo EPD / Nintendo" } }
   ],
   "inTheBox": [
     { "ar": "بطاقة لعبة Nintendo Switch 2 داخل علبتها (وحدات Joy-Con 2 غير مشمولة)", "en": "Nintendo Switch 2 game card in its case (Joy-Con 2 controllers not included)", "ckb": "کارتی یاریی Nintendo Switch 2 لە ناو قوتووەکەیدا (Joy-Con 2 لەگەڵیدا نییە)" }
@@ -43,7 +43,7 @@
   "variants": [
     {
       "sku": "NS2G-SWITCH-SPORTS-RESORT",
-      "title": { "ar": "Nintendo Switch Sports Resort — نسخة فعلية لـ Nintendo Switch 2", "en": "Nintendo Switch Sports Resort — Nintendo Switch 2 physical edition", "ckb": "Nintendo Switch Sports Resort — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "Nintendo Switch Sports Resort — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch Sports Resort — Nintendo Switch 2 physical edition", "ckb": "Nintendo Switch Sports Resort — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906726"],
       "isDefault": true,
@@ -67,6 +67,7 @@
     "arabic": "none",
     "physicalFormat": "cartridge",
     "sizeGb": 10.3,
+    "developer": "Nintendo EPD",
     "publisher": "Nintendo"
   },
   "compatibility": [
@@ -115,7 +116,7 @@
       "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000125145/f4808a077d8fb54d01c340b1da50f110cfed32c3532ab697fc8bc65ad39344eb",
       "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-switch-2/",
       "kind": "screenshot",
-      "alt": { "ar": "مباراة ملاكمة في حلبة", "en": "A boxing match in the ring", "ckb": "یارییەکی بۆکسێن لە ناو گۆڕەپانەکەدا" },
+      "alt": { "ar": "مباراة ملاكمة في حلبة", "en": "A boxing match in the ring", "ckb": "یارییەکی بۆکسین لە ناو گۆڕەپانەکەدا" },
       "credit": "Nintendo", "width": 1920, "height": 1080, "transparent": false
     },
     {
@@ -132,7 +133,11 @@
     { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-switch-2/", "title": "Nintendo Switch Sports Resort – Nintendo Switch 2 Exclusive", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "release date October 22, 2026, game file size 10.3 GB, TV and tabletop play modes only, players 1-4 / 2-16 online, Online Play and Save Data Cloud, languages, Mii, HDR, publisher" },
     { "url": "https://www.nintendo.com/us/store/products/nintendo-switch-sports-resort-125691/", "title": "Nintendo Switch Sports Resort for Nintendo Switch 2 (Physical)", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "physical edition, US UPC 00045496906726, ESRB descriptors Mild Violence and In-Game Purchases, box art with ESRB E10+" },
     { "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/Nintendo-Switch-Sports-Resort-3115652.html", "title": "Nintendo Switch Sports Resort | Nintendo Switch 2 games", "publisher": "Nintendo UK", "retrieved": "2026-11-11", "supports": "PEGI 7, languages, download size 10.3 GB, the 12 sports and their offline/online player counts, Wuhu Island, Joy-Con 2 motion and mouse controls" },
-    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" }
+    { "url": "https://www.nintendo.com/us/whatsnew/not-sure-what-a-game-key-card-is-lets-talk-about-it/", "title": "Not sure what a game-key card is? Let's talk about it!", "publisher": "Nintendo of America", "retrieved": "2026-11-11", "supports": "game-key cards carry a label on the lower half of the case; the official box art has no such label" },
+    { "url": "https://pegi.info/search-pegi?q=Switch%20Sports%20Resort", "title": "PEGI search: Nintendo Switch Sports Resort", "publisher": "PEGI (Pan European Game Information)", "retrieved": "2026-11-11", "supports": "independent check: PEGI 7 (mild violence) for Nintendo Switch 2, European release 22/10/2026" },
+    { "url": "https://en.wikipedia.org/wiki/Nintendo_Switch_Sports_Resort", "title": "Nintendo Switch Sports Resort", "publisher": "Wikipedia", "retrieved": "2026-11-11", "supports": "developed by Nintendo EPD and published by Nintendo for Nintendo Switch 2; twelve sports; open-world Wuhu Island; Joy-Con 2 motion and mouse controls; worldwide release October 22, 2026" },
+    { "url": "https://www.ign.com/articles/pokemon-pokopia-looks-to-be-a-70-game-key-card-release-but-no-nintendo-hasnt-broken-its-promise-around-games-it-develops", "title": "Fans Claim Broken Promises After $70 Pokémon Pokopia Confirmed as First Nintendo-Published Game-Key Card Release", "publisher": "IGN", "retrieved": "2026-11-11", "supports": "Nintendo said it had no plans to use Game-Key Cards for Nintendo-developed games" },
+    { "url": "https://www.upcitemdb.com/upc/45496906726", "title": "UPC 045496906726 - Nintendo Switch Sports Resort - Nintendo Switch 2", "publisher": "UPCitemdb (barcode database)", "retrieved": "2026-11-11", "supports": "independent check: UPC 045496906726 is listed by US retailers for Nintendo Switch Sports Resort – Nintendo Switch 2" }
   ],
   "notes": {
     "ar": "اللعب بالحركة يعتمد على وحدات Joy-Con 2، لذا تأكد من توفر وحدات تحكم كافية قبل اللعب الجماعي.",
@@ -140,12 +145,11 @@
     "ckb": "یاریی جووڵە بە Joy-Con 2 دەکرێت، بۆیە پێش یاریی بەکۆمەڵ دڵنیابە کە دەسکی پێویستت هەیە."
   },
   "verification": {
-    "checkedBy": "Claude (nintendo-games research pass)",
+    "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
       "Exactly how many Joy-Con 2 controllers each sport needs per player was not stated on the pages read",
-      "Developer not stated on the Nintendo pages read",
-      "Full game card status inferred from the official box art (no game-key card label)",
+      "No page says in words that the card holds the full game; this rests on the cover (no Game-Key Card label), the US physical listing (no Game-Key Card notice) and Nintendo's stated policy for its own games (IGN)",
       "European EAN barcode not found on an official page"
     ]
   }

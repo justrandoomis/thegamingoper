@@ -48,8 +48,13 @@
         "w": 1440,
         "src": "/products/dualsense/1-1440.010c30cb.webp"
       }
-    ],
-    "png": "/products/dualsense/1-720.98403190.png"
+    ]
+  },
+  "share": {
+    "src": "/products/dualsense/1-1200.5ca6f1b7.png",
+    "width": 1200,
+    "height": 840,
+    "type": "image/png"
   },
   "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGkAAAART6CojSQ0tSKO4UcREfCo+KYYOI1t26kOGcnrAIvD4igBhc7J4S4SlWz44db7Qg0R/Z8AmOZTT1TuLvCwMgO+qhkRa61c5xY6b9EFG19ERH8ON04A4JZ8qeKwYkdK2Y9XIUWHDWFJEAAAVlA4IIwAAADwAwCdASoUAA4APxFysFAsJqSisAgBgCIJZwDG9B8u7xCMnN2tMU8AAP6yKCp88q/Z9YilJoe89UtOUBDUDaWtGXn4NzJNtSF5ZTlgKuyN8z83voUoef9TuEafbnTDeEl+a9vJTf327ogFs/8A/xUika+0AWMj6GXdchMhmpBH7AaX/BOSFfMXmoAAAA==",
   "dominant": "#d8dce6",
@@ -61,5 +66,5 @@
     "url": "https://gmedia.playstation.com/is/image/SIEPDC/DualsenseController-White01-16x9-01-28feb26$en?$native--t$",
     "page": "https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/"
   },
-  "input": "7e855a425b33f893"
+  "input": "3c5f7988d9851633"
 }

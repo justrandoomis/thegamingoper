@@ -40,8 +40,13 @@
         "w": 960,
         "src": "/products/minecraft/1-960.c91bd04c.webp"
       }
-    ],
-    "png": "/products/minecraft/1-720.0af2a518.png"
+    ]
+  },
+  "share": {
+    "src": "/products/minecraft/1-1024.0732e807.jpg",
+    "width": 1024,
+    "height": 1024,
+    "type": "image/jpeg"
   },
   "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4INIAAADQBgCdASoUABQAPxF2slGsJySiqA1RgCIJbACdMoR+ItxhAbZ3cAbyBvQAChuCVrqlpDVM/v6lOpfneUqHgsAA3g6Je3aORcAFmbfK6f8bjORcxtArU9TlDxyz5xKOmMQ4xG0m5k6nJr+yU9W96HVXtxT4eWNptJBUt8xJqWNpjMMOFkFjnvtkW1NZrp9cn6gJGknlo1XX29Zua1kzmcnoFTCzKiN3YRPJjSY6fgyWSFP6dj11YdGRYflWz9qqrrw7V01sRn/zT5DDCMQOe3gAAAA=",
   "dominant": "#89e3fe",
@@ -53,5 +58,5 @@
     "url": "https://image.api.playstation.com/vulcan/ap/rnd/202407/0401/670c294ded3baf4fa11068db2ec6758c63f7daeb266a35a1.png",
     "page": "https://store.playstation.com/en-ae/concept/212779"
   },
-  "input": "e789729c804cb56c"
+  "input": "e4e96fb25b94cbe0"
 }

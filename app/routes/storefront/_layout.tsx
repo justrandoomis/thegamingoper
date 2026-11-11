@@ -1,31 +1,80 @@
-import { data, isRouteErrorResponse, Outlet } from "react-router";
+import { data, isRouteErrorResponse, Outlet, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/_layout";
+import { messagesFor, type I18nPayload } from "~/i18n/i18n.server";
 import { isLocale } from "~/lib/locales";
+import { PageTransition } from "~/motion";
+import { getCtx } from "~/server/context.server";
+import { emptyStorefrontShell, loadStorefrontShell } from "./shell/data.server";
+import { shellMeta } from "./shell/meta";
+import { ShellError } from "./shell/ShellError";
+import { ShellFrame } from "./shell/ShellFrame";
+import type { ShellData } from "./shell/types";
 
 /**
- * Storefront layout: validates the optional locale segment and hosts the shopping shell
- * (header, navigation, footer, cart feedback) around every customer page.
+ * Storefront layout: validates the optional locale segment and renders the shopping shell (./shell/ShellFrame —
+ * header, mega menus, tab bar, categories sheet, footer, demo ribbon, toasts, offline banner) around every customer
+ * page, its error pages included.
+ *
+ * Loader data: `shell` (navigation taxonomy, delivery fee, payment switches, contact details, PUBLIC_ORIGIN) and the
+ * "shell" strings. A 404 for an unknown language prefix and a 503 when the store's data cannot be read are thrown
+ * WITH the strings, so the error page inside the shell speaks the shopper's language.
  */
-export function loader({ params }: Route.LoaderArgs) {
-  // "/xyz" matches ":locale?" with locale = "xyz" — anything that is not a non-default locale code is a 404.
-  if (params.locale !== undefined && (!isLocale(params.locale) || params.locale === "ar")) {
-    throw data({ error: "not_found" }, { status: 404 });
+export async function loader({ params, context }: Route.LoaderArgs) {
+  const ctx = getCtx(context);
+  const i18n = messagesFor(ctx.locale, "shell");
+  let shell: ShellData;
+  try {
+    shell = await loadStorefrontShell(ctx);
+  } catch (error) {
+    if (ctx.isDev) {
+      // Development without a migrated database: an empty shell, as the root loader does (app/server/shell.server.ts).
+      console.warn(`[storefront] shell data unavailable — empty menus (run "npm run db:reset"): ${error instanceof Error ? error.message : String(error)}`);
+      shell = emptyStorefrontShell(ctx);
+    } else {
+      // Production: a real failure, reported, and shown as "the store is not responding" inside the shell.
+      console.error("[storefront] shell data failed", error);
+      throw data({ error: "unavailable", i18n }, { status: 503 });
+    }
   }
-  return null;
+  // "/xyz" matches ":locale?" with locale = "xyz" — anything that is not a non-default locale code is a 404 (with the
+  // shell's data, so the error page has its menus).
+  if (params.locale !== undefined && (!isLocale(params.locale) || params.locale === "ar")) {
+    throw data({ error: "not_found", i18n, shell }, { status: 404 });
+  }
+  return { shell, i18n };
 }
 
-export default function StorefrontLayout() {
-  return <Outlet />;
+/**
+ * The shell's data changes with the language (labels, strings) and otherwise only when the catalogue does, so it is
+ * not reloaded on every navigation: only when the locale prefix changes (or React Router's default asks after a
+ * mutation that changed the locale). The cart badge comes from the root loader, which revalidates after mutations.
+ */
+export function shouldRevalidate({ currentParams, nextParams, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (currentParams.locale !== nextParams.locale) return defaultShouldRevalidate;
+  return false;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  const status = isRouteErrorResponse(error) ? error.status : 500;
+export const meta: Route.MetaFunction = (args) => shellMeta(args);
+
+export default function StorefrontLayout({ loaderData }: Route.ComponentProps) {
   return (
-    <main className="root-error">
-      <p className="root-error__code" dir="ltr">{status}</p>
-      <h1>{status === 404 ? "الصفحة غير موجودة" : "حدث خطأ غير متوقع"}</h1>
-      <a href="/">العودة إلى الرئيسية</a>
-    </main>
+    <ShellFrame shell={loaderData.shell} messages={loaderData.i18n.shell}>
+      <PageTransition>
+        <Outlet />
+      </PageTransition>
+    </ShellFrame>
+  );
+}
+
+export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
+  // The layout's data when a page below failed; the strings thrown with the error when the layout's own loader did.
+  const thrown = isRouteErrorResponse(error) ? (error.data as { i18n?: I18nPayload; shell?: ShellData } | null) : null;
+  const messages = loaderData?.i18n.shell ?? thrown?.i18n?.shell;
+  const shell = loaderData?.shell ?? thrown?.shell ?? null;
+  return (
+    <ShellFrame shell={shell} messages={messages}>
+      <ShellError error={error} platforms={shell?.nav.platforms ?? []} />
+    </ShellFrame>
   );
 }

@@ -40,8 +40,7 @@
         "w": 960,
         "src": "/products/xbox-elite-series-2/3-960.f71bedb0.webp"
       }
-    ],
-    "png": "/products/xbox-elite-series-2/3-720.0b3a9a3c.png"
+    ]
   },
   "placeholder": "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACwAgCdASoUAA0APxFysVCsJqSisAgBgCIJaQAAeyAA/vAG5t0on8HxzejPlaAA",
   "dominant": "#181819",
@@ -53,5 +52,5 @@
     "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Elite2-Controller-Carousel2?fmt=png-alpha&scl=1&bfc=off",
     "page": "https://www.microsoft.com/en-us/d/xbox-elite-wireless-controller-series-2/8rsn7j6375gg"
   },
-  "input": "a2b47a63891eea2b"
+  "input": "d61d383ca60f7883"
 }

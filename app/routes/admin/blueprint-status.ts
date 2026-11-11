@@ -399,44 +399,261 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   "08.07": planned(),
   "08.08": planned(),
 
-  // ── 09 Suppliers and purchasing
-  "09.01": planned(),
-  "09.02": planned(),
-  "09.03": planned(),
-  "09.04": planned(),
-  "09.05": planned(),
-  "09.06": planned(),
-  "09.07": planned(),
-  "09.08": planned(),
+  // ── 09 Suppliers and purchasing (owner: admin purchasing — docs/areas/admin-purchasing.md)
+  "09.01": {
+    status: "implemented",
+    route: "/admin/purchasing/suppliers",
+    note: n(
+      "Supplier profile: code, legal name, country, the currency it quotes in, payment terms, promised lead time, phone, email, address and contacts (one primary), status with a reason. Quality is the computed rating (09.08) plus staff reviews kept beside it.",
+      "ملف المورد: الرمز والاسم القانوني والبلد والعملة التي يسعّر بها وشروط الدفع ومدة التوريد الموعودة والهاتف والبريد والعنوان وجهات الاتصال (واحدة أساسية) والحالة مع السبب. الجودة هي التقييم المحسوب (09.08) ومراجعات الموظفين بجانبه.",
+    ),
+  },
+  "09.02": {
+    status: "implemented",
+    route: "/admin/purchasing/rfqs",
+    note: n(
+      "Requests for quotation by SKU; each supplier's quote (unit price, quantity available, lead time, warranty, validity) compared side by side in IQD at the store's rate; the award turns the chosen quote into a draft purchase order. Requests reach suppliers outside the system (no messaging provider) and are marked as sent.",
+      "طلبات عروض حسب SKU؛ عرض كل مورد (سعر القطعة والكمية المتوفرة ومدة التوريد والضمان والصلاحية) مقارن جنباً إلى جنب بالدينار بسعر المتجر؛ الترسية تحوّل العرض المختار إلى أمر شراء مسودة. تصل الطلبات إلى الموردين خارج النظام (لا مزود رسائل) وتُعلَّم كمرسلة.",
+    ),
+  },
+  "09.03": {
+    status: "partial",
+    route: "/admin/purchasing/orders",
+    note: n(
+      "Drafts, submission, a second person's approval above the spending limit (never whoever created, edited or submitted the order; bound to the request the approver saw), sending, closing, cancelling, printing. The total counts at the higher of the order's rate and the store's rate of the day, with what the same person approved alone for the same supplier in the last 7 days (split orders). The limit is one store-wide constant of 1,000,000 IQD until settings (22) holds the key; per-role limits need approval chains (15.06).",
+      "مسودات وإرسال للاعتماد وموافقة شخص ثانٍ فوق حد الإنفاق (ليس من أنشأ الأمر أو عدّله أو أرسله؛ والقرار مربوط بالطلب الذي رآه المعتمِد) وإرسال للمورد وإغلاق وإلغاء وطباعة. يُحسب المجموع بالسعر الأعلى بين سعر الأمر وسعر المتجر لليوم، ومع ما اعتمده الشخص نفسه وحده للمورد نفسه خلال آخر 7 أيام (الأوامر المجزّأة). الحد رقم واحد للمتجر كله (1,000,000 د.ع) ثابت في الكود حتى تضيف الإعدادات (22) مفتاحه؛ حدود لكل دور تحتاج مسارات الموافقة (15.06).",
+    ),
+  },
+  "09.04": {
+    status: "implemented",
+    route: "/admin/purchasing/receipts",
+    note: n(
+      "Partial receipts per order line with inspection (refused units and the reason) and one serial per unit, posted into stock through the stock core and into the books (Dr inventory, Cr accounts payable) through the core's posting; supplier invoices matched against the order and the receipts (units, unit prices, and shipping and other charges). Paying invoices and posting price or exchange differences belong to finance (10).",
+      "استلام جزئي لكل سطر مع الفحص (القطع المرفوضة وسببها) ورقم تسلسلي لكل قطعة، يُرحّل إلى المخزون عبر نواة المخزون وإلى اليومية (مدين المخزون، دائن ذمم الموردين) عبر ترحيل النواة؛ وفواتير الموردين تُطابَق مع الأمر والاستلامات (الكميات وأسعار القطع ورسوم الشحن والرسوم الأخرى). دفع الفواتير وترحيل فروق السعر والصرف من المالية (10).",
+    ),
+  },
+  "09.05": {
+    status: "partial",
+    route: "/admin/purchasing/receipts",
+    note: n(
+      "Freight, customs and other bills are spread over a draft receipt's accepted units by value, quantity or weight through the pricing module's allocation, and posted into the FIFO layers. A bill that arrives after the receipt is posted needs a cost-layer revaluation the commerce core does not have.",
+      "فواتير الشحن والجمارك وغيرها توزَّع على القطع المقبولة في استلام مسودة بالقيمة أو الكمية أو الوزن عبر توزيع وحدة التسعير، وتدخل طبقات FIFO. الفاتورة التي تصل بعد ترحيل الاستلام تحتاج إعادة تقييم للطبقات لا تملكها نواة التجارة.",
+    ),
+  },
+  "09.06": {
+    status: "partial",
+    route: "/admin/purchasing/claims",
+    note: n(
+      "Claims for shortages, damage, defects, wrong items, prices and returns, from a receipt's refused units or an order's missing ones, through submitted, accepted or rejected, credited and closed; goods go back to the supplier with a reason — units refused at inspection without a stock movement, the others through the stock core, never more than the receipt or order put into stock. Serial-tracked units in stock cannot leave yet (no single-serial core operation) and returns are not posted to the books.",
+      "مطالبات النقص والتلف والعيب والصنف الخطأ والسعر والإرجاع، من القطع المرفوضة في استلام أو الناقصة من أمر، مروراً بالإرسال والقبول أو الرفض والإشعار الدائن والإغلاق؛ والبضاعة تعود للمورد مع سبب — المرفوضة عند الفحص دون حركة مخزون، والباقي عبر نواة المخزون، ولا يتجاوز ما أدخله الاستلام أو الأمر إلى المخزون. القطع المتتبعة بالرقم التسلسلي في المخزون لا تخرج بعد (لا عملية لرقم واحد في النواة) والإرجاع لا يُقيَّد في اليومية.",
+    ),
+  },
+  "09.07": {
+    status: "implemented",
+    route: "/admin/purchasing/alerts",
+    note: n(
+      "Alerts read from the records: invoices billing more than was received, at another price or with more shipping and other charges than the order agreed (prices only with cost.read), units refused at inspection, lines received beyond the order, orders closed short and late orders, each with its next step; counted on the module's home. The shell's bell does not count them yet.",
+      "تنبيهات تُقرأ من السجلات: فواتير تحسب أكثر مما استُلم أو بسعر آخر أو برسوم شحن وأخرى أكثر مما اتُّفق عليه في الأمر (الأسعار لمن يرى التكلفة فقط)، وقطع مرفوضة عند الفحص، واستلام فوق المطلوب، وأوامر أُغلقت ناقصة، وأوامر متأخرة، مع الخطوة التالية لكل منها؛ تُعدّ في صفحة الوحدة. جرس الواجهة لا يعدّها بعد.",
+    ),
+  },
+  "09.08": {
+    status: "implemented",
+    route: "/admin/purchasing/suppliers",
+    note: n(
+      "Rating = 60 % on-time units + 40 % (1 − defect rate) over the last 365 days, from posted receipts, late and still-missing units, units that never came on orders closed short after their day, refused units and defect claims; no grade with fewer than 3 posted receipts. Explained on each supplier's page; staff reviews are kept beside it, never mixed in.",
+      "التقييم = 60% للقطع التي وصلت في موعدها + 40% × (1 − نسبة العيوب) عن آخر 365 يوماً، من الاستلامات المرحّلة والقطع المتأخرة والناقصة والتي لم تصل أبداً من أوامر أُغلقت ناقصة بعد موعدها والمرفوضة ومطالبات العيب؛ لا درجة بأقل من 3 استلامات مرحّلة. مشروح في صفحة كل مورد؛ ومراجعات الموظفين بجانبه ولا تدخل فيه.",
+    ),
+  },
 
   // ── 10 Finance and accounting
-  "10.01": planned(n("A double-entry journal with balanced, sealed entries and standard postings exists in the commerce core.", "دفتر القيد المزدوج بقيود متوازنة ومختومة موجود في نواة التجارة.")),
-  "10.02": planned(n("Cash-on-delivery collections and verified transfers are posted to the journal.", "تحصيل الدفع عند الاستلام والتحويلات المتحقق منها تُرحّل إلى الدفتر.")),
-  "10.03": planned(n("Sales are posted when an order is delivered.", "المبيعات تُرحّل عند تسليم الطلب.")),
-  "10.04": planned(n("Cost of goods at landed cost, discounts and refunds are posted (docs/metrics.md).", "تكلفة المبيعات بالتكلفة الواصلة والخصومات والاستردادات تُرحّل.")),
-  "10.05": planned(),
-  "10.06": planned(),
-  "10.07": planned(n("Enforced: an append-only ledger with no balance column and a rule against overdrafts.", "مطبّق: دفتر لا يقبل التعديل، بلا عمود رصيد، مع قاعدة تمنع السحب الزائد.")),
-  "10.08": planned(),
-  "10.09": planned(n("Closed periods reject postings; there is no close screen.", "الفترات المغلقة ترفض الترحيل، ولا توجد شاشة إغلاق.")),
-  "10.10": planned(n("Daily consistency checks store their findings; there is no screen.", "فحوصات الاتساق اليومية تخزن نتائجها، ولا توجد شاشة.")),
+  "10.01": {
+    status: "implemented",
+    route: "/admin/finance/journal",
+    note: n(
+      "The double-entry journal is the one source of the money: every sale, cost of goods, payment, refund, wallet credit, stock receipt and expense is a balanced entry the database seals. Journal with filters and CSV, each entry with its lines and reference, manual entries (balanced, never on the wallet account, never in a closed month) and reversals of manual entries, chart of accounts with the trial balance and each account's ledger (printable). The books need the cost permission.",
+      "دفتر القيد المزدوج هو المصدر الوحيد للمال: كل بيع وتكلفة ودفعة واسترداد ورصيد محفظة واستلام بضاعة ومصروف قيد متوازن تختمه قاعدة البيانات. دفتر بمرشحات وCSV، وكل قيد بأسطره ومرجعه، وقيود يدوية (متوازنة، لا على حساب المحافظ، لا في شهر مغلق) وعكسها، ودليل الحسابات مع ميزان المراجعة ودفتر كل حساب (قابل للطباعة). الدفاتر تحتاج صلاحية التكلفة.",
+    ),
+  },
+  "10.02": {
+    status: "partial",
+    route: "/admin/finance/settlements",
+    note: n(
+      "What each method owes and has settled (cash on delivery, card and Zain Cash transfers, wallet), statement CSV import (Arabic or English headers, re-import adds nothing), matching lines to paid payments (exact bulk match, a note for a difference), undo and set aside. Missing: carriers' cash settlements are recorded by shipping (11.04) and only shown here; a wallet top-up transfer can only be set aside with a note (statement lines link to order payments only); no online card gateway is configured.",
+      "ما تنتظره كل طريقة دفع وما سُوّي (الدفع عند الاستلام، تحويلات البطاقة وزين كاش، المحفظة)، واستيراد كشف CSV (عناوين عربية أو إنجليزية، وإعادة الاستيراد لا تضيف شيئاً)، ومطابقة السطور بالدفعات المدفوعة (مطابقة جماعية للمؤكد، وملاحظة للفرق)، والإلغاء والاستبعاد. ينقص: تسويات شركات الشحن تُسجَّل في قسم الشحن (11.04) وتُعرض هنا فقط، وحوالة شحن المحفظة تُستبعد بملاحظة لأن السطور ترتبط بدفعات الطلبات فقط، ولا بوابة دفع بالبطاقة مُعدّة.",
+    ),
+  },
+  "10.03": {
+    status: "implemented",
+    route: "/admin/finance/revenue",
+    note: n(
+      "Revenue recognised at delivery, read from the journal, against the orders still open now (paid in advance or still to collect), delivered orders whose cash is not recorded yet, and the customer control balance.",
+      "الإيراد المحقق عند التسليم من الدفاتر، مقابل الطلبات المفتوحة الآن (مدفوعة مقدماً أو لم تُحصَّل)، والطلبات المسلّمة التي لم يُسجَّل نقدها، ورصيد ذمم العملاء.",
+    ),
+  },
+  "10.04": {
+    status: "implemented",
+    route: "/admin/finance/revenue",
+    note: n(
+      "Cost of goods at FIFO landed cost (cost permission), discounts with the coupons behind them, refunds by method and those awaiting approval, goods back in stock or written off, gross margin (profit permission).",
+      "تكلفة البضاعة بالتكلفة الواصلة (صلاحية التكلفة)، والخصومات مع الكوبونات التي وراءها، والاستردادات حسب الطريقة والمعلقة، والبضاعة العائدة إلى المخزون أو المشطوبة، وهامش مجمل الربح (صلاحية الربح).",
+    ),
+  },
+  "10.05": {
+    status: "implemented",
+    route: "/admin/finance/expenses",
+    note: n(
+      "Operating, payroll, shipping and marketing expenses (and the accountant's own expense accounts) with cost centres and a private receipt photo. A draft enters the books only when approved — one entry through the accounting core, never twice; above 500,000 IQD someone other than whoever recorded it approves, and what one person records and approves alone counts together over 24 hours (no splitting); voiding a posted expense reverses it. The limit is a constant until settings hold it; payroll runs are module 15's.",
+      "مصروفات التشغيل والرواتب والشحن والتسويق (وحسابات المحاسب الخاصة) بمراكز تكلفة وصورة إيصال خاصة. المسودة لا تدخل الدفاتر إلا عند اعتمادها، بقيد واحد عبر نواة المحاسبة لا يتكرر؛ فوق 500,000 د.ع يعتمدها غير من سجّلها، وما يسجّله الشخص ويعتمده وحده يُجمع خلال 24 ساعة (لا تجزئة)؛ وإلغاء المرحّل يكون بقيد عكسي. الحد ثابت حتى تحمله الإعدادات؛ مسير الرواتب للقسم 15.",
+    ),
+  },
+  "10.06": {
+    status: "implemented",
+    route: "/admin/finance/reports",
+    note: n(
+      "Profit and loss exactly as docs/metrics.md defines it (cost lines only with the cost permission, profit lines with the profit permission too), cash flow by cause, inventory account against the stock it stands for with the differences explained; printable, CSV.",
+      "الأرباح والخسائر كما يعرّفها قاموس المقاييس (بنود التكلفة بصلاحية التكلفة، وبنود الربح بصلاحية الربح أيضاً)، والتدفق النقدي حسب السبب، وحساب المخزون مقابل المخزون الفعلي مع تفسير الفروق؛ قابل للطباعة وCSV.",
+    ),
+  },
+  "10.07": {
+    status: "implemented",
+    route: "/admin/finance/wallets",
+    note: n(
+      "The wallet is its ledger (no balance anyone can edit), shown read-only and checked against its account to the dinar. Top-up requests are decided here with the private proof: creditWallet once (\"topup:<id>\"), two people above 500,000 IQD (what one person approved alone for the customer in 24 hours counts with it), a reason the customer reads when rejected. Adjustments are requested by one employee and approved by another. Adjustments only credit: the core has no debit adjustment.",
+      "المحفظة هي دفترها (لا رصيد يُعدَّل)، تُعرض للقراءة فقط وتُطابَق مع حسابها بالدينار. طلبات الشحن تُقرر هنا مع الإثبات الخاص: إضافة واحدة عبر creditWallet، وشخصان فوق 500,000 د.ع (ويُحسب معه ما اعتمده الشخص وحده للعميل خلال 24 ساعة)، وسبب يقرؤه العميل عند الرفض. التسويات يطلبها موظف ويوافق عليها آخر. التسويات إضافة فقط: النواة لا تخصم بتسوية.",
+    ),
+  },
+  "10.08": {
+    status: "partial",
+    route: "/admin/finance/tax",
+    note: n(
+      "Editable tax configuration (rate, product kinds, channels, start date, with a reason) and a report of the tax included in delivered sales per active rate. No rate is configured: which taxes apply to the store in Iraq is the owner's decision with their accountant. Missing: checkout adds no tax and the chart has no tax-liability account, so a rate is reported, never collected or posted.",
+      "إعداد ضريبة قابل للتعديل (النسبة وأنواع المنتجات والقنوات وتاريخ البدء مع السبب) وتقرير الضريبة المشمولة في المبيعات المسلّمة لكل نسبة مفعّلة. لا نسبة مُعدّة: ما ينطبق على المتجر في العراق قرار المالك ومحاسبه. ينقص: الدفع لا يضيف ضريبة ولا حساب التزام ضريبي في الدليل، فالنسبة تُعرض في التقرير ولا تُحصَّل ولا تُرحَّل.",
+    ),
+  },
+  "10.09": {
+    status: "implemented",
+    route: "/admin/finance/close",
+    note: n(
+      "Monthly close with a checklist (the month is over, earlier months closed, entries balanced; warnings for draft expenses, waiting proofs, refunds and top-ups, unmatched statement lines, critical findings) and a reason; the database refuses every entry dated in a closed month and the services anything dated before the last closed month, so a closed month changes only through reversing or adjusting entries in an open month after it. No reopening.",
+      "إغلاق شهري بقائمة تحقق (انتهى الشهر، أُغلقت الأشهر السابقة، القيود متوازنة؛ وتنبيهات للمسودات والحوالات والاستردادات والشحن المعلق وسطور الكشوف غير المطابقة والتحذيرات الحرجة) وبسبب؛ وقاعدة البيانات ترفض أي قيد بتاريخ في شهر مغلق، والخدمات ترفض أي تاريخ قبل آخر شهر مغلق، فلا يتغير الشهر المغلق إلا بقيد عكسي أو تسوية في شهر مفتوح بعده. لا إعادة فتح.",
+    ),
+  },
+  "10.10": {
+    status: "implemented",
+    route: "/admin/finance/anomalies",
+    note: n(
+      "Deterministic checks run when the page opens — money that is not a whole number, accounts on their unusual side, the trial balance, wallets against their account, orders against their lines and payments, money without its posting, statement matches with a different amount, approved top-ups or adjustments not credited, expenses without their entry — next to the daily consistency job's findings.",
+      "فحوصات ثابتة تعمل عند فتح الصفحة: مبالغ ليست أعداداً صحيحة، وحسابات على غير جهتها، وميزان المراجعة، والمحافظ مقابل حسابها، والطلبات مقابل أسطرها ودفعاتها، ومال بلا قيد، ومطابقات بمبلغ مختلف، وشحن أو تسويات معتمدة لم تُضف، ومصروفات بلا قيد؛ بجانب نتائج الفحص اليومي.",
+    ),
+  },
 
   // ── 11 Shipping and delivery
-  "11.01": planned(n("Delivery is a flat 5,000 IQD to every governorate, overrides behind a setting; 19 governorates and 124 districts are seeded.", "التوصيل 5,000 د.ع لكل المحافظات والاستثناءات خلف إعداد، و19 محافظة و124 قضاء محمّلة.")),
-  "11.02": planned(),
-  "11.03": planned(),
-  "11.04": planned(),
-  "11.05": planned(n("A shipped order can come back with its goods restocked (commerce core).", "يمكن إرجاع طلب مشحون مع إعادة بضاعته إلى المخزون.")),
-  "11.06": planned(),
+  "11.01": {
+    status: "implemented",
+    route: "/admin/shipping/zones",
+    note: n(
+      "Governorates paused or offered, districts added, renamed (the id stays) or switched off, the flat fee and per-governorate fees with the governorates whose fee changes shown before confirming (reason, audit), delivery estimates in days. The storefront does not show the estimate yet (checkout's choice); it is never a promise.",
+      "إيقاف المحافظات أو إتاحتها، إضافة الأقضية وتغيير أسمائها (يبقى المعرّف) أو إيقافها، الرسم الموحّد والرسوم الخاصة مع عرض المحافظات التي يتغيّر رسمها قبل التأكيد (سبب وتدقيق)، والمدد التقديرية بالأيام. المتجر لا يعرض المدة بعد (قرار صفحة الدفع)، وهي ليست وعداً.",
+    ),
+  },
+  "11.02": {
+    status: "implemented",
+    route: "/admin/shipping/carriers",
+    note: n(
+      "Carriers and the store's drivers with their rate and estimate per governorate and service level, cash collection and its fee; on a parcel they are ranked by cost (rate + cash fee), and a rule gives the cheapest eligible one to many parcels. No courier API is connected: booking is by phone or the carrier's portal.",
+      "شركات الشحن وسائقو المتجر بسعر ومدة لكل محافظة ومستوى خدمة، والتحصيل وعمولته؛ في صفحة الطرد تُرتَّب بالكلفة (السعر + عمولة التحصيل)، وقاعدة تعطي الأرخص المؤهل لعدة طرود. لا ربط برمجي مع الشركات: الحجز بالهاتف أو من بوابة الشركة.",
+    ),
+  },
+  "11.03": {
+    status: "implemented",
+    route: "/admin/shipping/shipments",
+    note: n(
+      "Waybill on the orders module's parcels (carrier, level, the carrier's tracking number or the waybill number REF-n, cost, cash to collect), printed waybills with Code 128 and pickup manifests, pickup that ships the order through the orders module's rules, courier statuses and scan lookup. Statuses are typed or scanned by staff: no courier API sends them.",
+      "بوليصة على طرود قسم الطلبات (الشركة والمستوى ورقم تتبع الشركة أو رقم البوليصة والكلفة والنقد المطلوب)، بوالص مطبوعة بباركود Code 128 وقوائم استلام، تسليم للمندوب يشحن الطلب بقواعد قسم الطلبات، حالات الشركة والبحث بالمسح. الحالات يدخلها الموظفون: لا ربط برمجي يرسلها.",
+    ),
+  },
+  "11.04": {
+    status: "implemented",
+    route: "/admin/shipping/cod",
+    note: n(
+      "Drafts from the carrier's statement (cash per delivered parcel, the carrier's charge), the amount remitted, the difference; reconciling records each parcel's cash through recordCodCollection and posts the settlement (cash/bank, shipping costs, cash over/short). A difference — or a parcel's cash or charge corrected by hand (with a reason) — is reconciled by a second person who did not create, correct or submit it. Courier-held cash sits in the cash account until then (no separate account in the chart).",
+      "مسودات من كشف الشركة (النقد لكل طرد مُسلّم وعمولة الشركة)، والمبلغ المسلَّم والفرق؛ المطابقة تسجّل تحصيل كل طرد عبر recordCodCollection وتقيّد التسوية (الصندوق/المصرف، تكاليف الشحن، عجز وزيادة الصندوق). الفرق — أو نقد طرد أو عمولته المصحّحة يدوياً (بسبب) — يطابقه شخص ثانٍ لم ينشئها ولم يصحّحها ولم يرسلها. النقد لدى المندوبين يبقى في حساب الصندوق حتى ذلك (لا حساب منفصل في الدليل).",
+    ),
+  },
+  "11.05": {
+    status: "partial",
+    route: "/admin/shipping/attempts",
+    note: n(
+      "Failed tries with outcome, reason and next day, retries, sending back, and receiving parcels back: the order is returned through the core (goods restocked or written off, unpaid cash cancelled, paid money to a two-person refund). Missing: an order whose parcels split — one delivered, another back — cannot be closed here (the core has no partial return of a shipped order).",
+      "المحاولات الفاشلة بالنتيجة والسبب وموعد المحاولة القادمة، وإعادة المحاولة، والإرجاع، واستلام الطرود الراجعة: يُرجَع الطلب عبر النواة (البضاعة إلى المخزون أو تُشطب، يُلغى النقد غير المحصّل، والمدفوع إلى استرداد بشخصين). الناقص: طلب انقسمت طروده — طرد سُلّم وآخر رجع — لا يُغلق هنا (النواة لا ترجع جزءاً من طلب مشحون).",
+    ),
+  },
+  "11.06": {
+    status: "implemented",
+    route: "/admin/shipping/shipments",
+    note: n(
+      "A parcel with a console, a serial-tracked unit or a used device needs a private packing photo before this module hands it to the courier, and the receiver's name at delivery; the signed waybill's photo is the proof of receipt (private files). The orders module's own paths do not check them yet (requested): its packing-station handover ships without the packing photo, and its \"delivered\" step delivers without the receiver's name.",
+      "الطرد الذي فيه جهاز ألعاب أو قطعة برقم تسلسلي أو جهاز مستعمل يحتاج صورة تغليف خاصة قبل أن يسلّمه هذا القسم للمندوب، واسم المستلم عند التسليم؛ وصورة البوليصة الموقّعة هي إثبات الاستلام (ملفات خاصة). مسارات قسم الطلبات لا تتحقق منهما بعد (مطلوب): تسليمه من محطة التغليف يشحن بلا صورة التغليف، وخطوة «سُلّم» فيه تسلّم بلا اسم المستلم.",
+    ),
+  },
 
   // ── 12 Returns and warranty
-  "12.01": planned(),
-  "12.02": planned(n("The return window is a setting (7 days).", "مهلة الإرجاع إعداد (7 أيام).")),
-  "12.03": planned(),
-  "12.04": planned(n("Refunds to the original method, the wallet or cash exist in the commerce core, with a second person's approval.", "الاسترداد إلى الوسيلة الأصلية أو المحفظة أو نقداً موجود في نواة التجارة، بموافقة شخص ثانٍ.")),
-  "12.05": planned(n("Enforced by database rules: never more than was paid, never more units than were sold.", "مطبّق بقواعد قاعدة البيانات: لا أكثر مما دُفع ولا قطع أكثر مما بيع.")),
-  "12.06": planned(n("Warranties start when an order is delivered.", "الضمان يبدأ عند تسليم الطلب.")),
-  "12.07": planned(),
+  "12.01": {
+    status: "implemented",
+    route: "/admin/returns/new",
+    note: n(
+      "Staff open an RMA on the customer's behalf from the order: units by serial, reason, private photos, a return slip with a barcode. Customers cannot open one from their account yet (the account page sends them to support).",
+      "يفتح الموظف طلب الإرجاع نيابة عن العميل من رقم الطلب: القطع بأرقامها التسلسلية والسبب وصور خاصة وورقة إرجاع بباركود. لا يستطيع العميل فتحه من حسابه بعد (صفحة الحساب ترسله إلى الدعم).",
+    ),
+  },
+  "12.02": {
+    status: "implemented",
+    route: "/admin/returns/policies",
+    note: n(
+      "Rules by product kind, category, new or used: window, seal for change-of-mind returns, restocking fee; checked for every unit before an RMA opens (outside the rules only with a manager's reason). The general window is a setting.",
+      "قواعد حسب نوع المنتج وفئته وكونه جديداً أو مستعملاً: المدة والختم عند تغيير الرأي ورسوم إعادة التخزين، وتُفحص لكل قطعة قبل فتح الطلب (والاستثناء بسبب يكتبه مدير). المدة العامة إعداد.",
+    ),
+  },
+  "12.03": {
+    status: "implemented",
+    route: "/admin/returns",
+    note: n(
+      "Each unit is graded (sellable, opened, defective, damaged) after its serial is scanned; it goes back on sale, into quarantine or is written off through the commerce core, and its serial link is released.",
+      "تُصنف كل قطعة (صالحة، مفتوحة، معيبة، تالفة) بعد مسح رقمها التسلسلي، وتعود إلى البيع أو العزل أو تُشطب عبر نواة التجارة، ويُحرر ربط رقمها بالطلب.",
+    ),
+  },
+  "12.04": {
+    status: "implemented",
+    route: "/admin/returns",
+    note: n(
+      "Refunds of the units that came back (a unit kept by the customer only after its repair failed) to the original method, the customer's wallet (store credit) or cash, only through createRefund and a second person's approval; never above what is refundable, nor above the units' value minus the policy's restocking fee on a change of mind.",
+      "استرداد القطع التي رجعت (والقطعة التي بقيت مع العميل فقط إذا تعذر إصلاحها) إلى الوسيلة الأصلية أو محفظة العميل (رصيد) أو نقداً، عبر نواة التجارة وبموافقة شخص ثانٍ فقط؛ ولا يتجاوز القابل للاسترداد ولا قيمة القطع بعد رسوم إعادة التخزين التي تحددها القواعد عند تغيير الرأي.",
+    ),
+  },
+  "12.05": {
+    status: "implemented",
+    route: "/admin/returns?view=flagged",
+    note: n(
+      "A unit is in one return at a time and refunded once — also when two requests race for it (a guard inside the refund's own transaction), besides the return's, the core's and the database's checks; nine fraud rules are explained on every RMA.",
+      "القطعة في طلب إرجاع واحد في كل مرة وتُسترد مرة واحدة — حتى لو تسابق طلبان عليها (حارس داخل معاملة الاسترداد نفسها) — إضافة إلى فحص الطلب والنواة وقاعدة البيانات، وتسع قواعد احتيال مشروحة على كل طلب.",
+    ),
+  },
+  "12.06": {
+    status: "boundary",
+    route: "/admin/returns/warranties",
+    note: n(
+      "Built: dates, the maker's warranty shown apart, service history, replaced parts, extend and void with a reason. New products get a store warranty only once the owner sets the store's terms (products.warranty_months is empty, STATUS item 15); used devices carry theirs.",
+      "مبني: التواريخ وضمان الشركة المصنعة منفصلاً وتاريخ الصيانة والقطع المستبدلة والتمديد والإلغاء بسبب. لا يبدأ ضمان المتجر للمنتجات الجديدة حتى يحدد المالك شروطه (مدة الضمان فارغة)؛ الأجهزة المستعملة تحمل ضمانها.",
+    ),
+  },
+  "12.07": {
+    status: "partial",
+    route: "/admin/returns/repairs",
+    note: n(
+      "Repairs with SLA timers, quotes and parts; quarantine to refurbish or return to the supplier (a return claim). Missing: a replacement is store credit plus a new order (no free replacement shipment in the core), repair charges are not collected here, parts are not taken out of stock from the ticket, SLA targets are fixed in the module.",
+      "صيانة بمهل زمنية وأسعار وقطع، وعزل للتجديد أو للإرجاع إلى المورد (مطالبة إرجاع). الناقص: الاستبدال رصيد ثم طلب جديد (لا شحنة بديلة مجانية في النواة)، ولا يُحصّل ثمن الصيانة هنا، ولا تخرج القطع من المخزون من التذكرة، ومُهل الخدمة ثابتة في القسم.",
+    ),
+  },
 
   // ── 13 Devices, games and trade-in
   "13.01": planned(n("A serial is sold once (unique, guarded status).", "الرقم التسلسلي يُباع مرة واحدة.")),

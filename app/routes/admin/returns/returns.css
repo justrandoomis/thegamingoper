@@ -1,0 +1,268 @@
+/*
+ * Admin module 12 (returns) — the few pieces the design system does not have yet. Tokens only, logical properties
+ * only, components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; status = words with a dot; numbers tabular at the inline end.
+ */
+@layer components {
+  /* ── outlined fact tags (signals, demo, warranty, used) ── */
+  .ret-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+
+  /* ── facts (definition lists) ── */
+  .ret-facts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .ret-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ret-facts.ret-facts--single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .ret-facts dt {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .ret-facts dd {
+    font: var(--type-body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── a page with a side column from 1024px ── */
+  .ret-layout {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .ret-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+      align-items: start;
+    }
+  }
+  .ret-side {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  /* ── a row of action keys that wraps ── */
+  .ret-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+
+  /* ── phone cards in place of a dense table (< 768px) ── */
+  .ret-cards {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .ret-card {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  a.ret-card:hover {
+    background: var(--niche);
+  }
+  .ret-card__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+
+  /* ── one unit of an RMA: flat paper between hairlines ── */
+  .ret-items {
+    display: grid;
+    border-block-start: 1px solid var(--line);
+  }
+  .ret-item {
+    display: grid;
+    gap: var(--s-2);
+    padding-block: var(--s-3);
+    border-block-end: 1px solid var(--line);
+  }
+  .ret-item__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+
+  /* ── history (audit timeline, §10): a hairline with dots; solid = a person, hollow = automation or the customer ── */
+  .ret-timeline {
+    display: grid;
+    gap: var(--s-3);
+    padding-inline-start: var(--s-4);
+    border-inline-start: 1px solid var(--line-strong);
+  }
+  .ret-timeline > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+  }
+  .ret-timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 7px;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .ret-timeline > li[data-actor="system"]::before,
+  .ret-timeline > li[data-actor="guest"]::before,
+  .ret-timeline > li[data-actor="customer"]::before {
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--ink-2);
+  }
+  .ret-reason {
+    display: inline-flex;
+    padding-inline: 6px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink);
+    font: var(--type-caption);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── private photos: thumbnails in a grid ── */
+  .ret-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+    gap: var(--s-2);
+  }
+  .ret-photos a {
+    display: block;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    background: var(--niche);
+  }
+  .ret-photos img {
+    display: block;
+    inline-size: 100%;
+    block-size: 7.5rem;
+    object-fit: cover;
+  }
+
+  /* ── a small ledger: label at the start, figure at the end ── */
+  .ret-ledger {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .ret-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  .ret-ledger > div > dd {
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+  }
+
+  /* ── checklist rows of the new-RMA form ── */
+  .ret-line {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .ret-line[data-blocked="true"] {
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+
+  /* ── the printed return slip: the browser prints it; the admin's chrome is not printed ── */
+  .ret-doc {
+    display: grid;
+    gap: var(--s-4);
+    max-inline-size: 48rem;
+    padding: var(--s-6);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+  }
+  .ret-doc table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .ret-doc th,
+  .ret-doc td {
+    padding-block: 6px;
+    padding-inline: 8px;
+    border-block-end: 1px solid var(--line);
+    text-align: start;
+    vertical-align: top;
+  }
+  .ret-barcode {
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    block-size: 64px;
+    color: var(--ink);
+  }
+  .ret-sign {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-block-start: var(--s-6);
+  }
+  .ret-sign > div {
+    padding-block-start: var(--s-2);
+    border-block-start: 1px solid var(--line-strong);
+    font: var(--type-caption);
+    color: var(--ink-2);
+  }
+
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.ret-doc) .adm-rail,
+    body:has(.ret-doc) .adm-top,
+    body:has(.ret-doc) .adm-tabbar,
+    body:has(.ret-doc) .adm-skip,
+    body:has(.ret-doc) .ret-noprint {
+      display: none !important;
+    }
+    body:has(.ret-doc) .adm,
+    body:has(.ret-doc) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .ret-doc {
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+      max-inline-size: none;
+    }
+  }
+}

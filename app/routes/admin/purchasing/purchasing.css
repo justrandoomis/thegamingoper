@@ -1,0 +1,131 @@
+/*
+ * Admin module 09 (purchasing) — what the UI kit and the shell do not cover: KPI rows, document line rows, the quote
+ * comparison, the rating bar and the purchase-order print view. Tokens and logical properties only; nothing animates.
+ *
+ * Printing is the browser's (no printer integration): a page that holds `.pur-print` prints only that block — the
+ * shell's chrome (rail, tool bar, tab bar), the module's section links and anything marked `.pur-no-print` are
+ * dropped, and the block prints ink on paper also from a dark screen (usePrintInLight sets data-theme="light").
+ */
+@layer components {
+  /* KPI rows: two figures side by side on a phone, more as the page widens; a long figure (money) takes a row */
+  .pur-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pur-kpis > .adm-card {
+    min-inline-size: 0;
+  }
+  .pur-kpis > .pur-kpi--wide {
+    grid-column: span 2;
+  }
+  @media (min-width: 48rem) {
+    .pur-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    }
+  }
+
+  /* one line of a document form: a flat well so the rows read as rows */
+  .pur-line {
+    background: var(--niche);
+  }
+  /* side by side (wide screens) the rows read as a table under the first row's labels; stacked on a phone every row
+     keeps its labels. Hidden labels stay for screen readers (and each input also names its line). */
+  @media (min-width: 40rem) {
+    .pur-line--more .field__label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  /* the rating: a flat bar per component, ink on a well (never colour alone — the figure is written beside it) */
+  .pur-meter {
+    display: block;
+    inline-size: 100%;
+    block-size: 6px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--well);
+  }
+  .pur-meter > span {
+    display: block;
+    block-size: 100%;
+    background: var(--ink);
+  }
+
+  /* quote comparison: a matrix that scrolls sideways inside its own region */
+  .pur-scroll {
+    overflow-x: auto;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .pur-best {
+    font-weight: 600;
+  }
+
+  /* the purchase order as a document */
+  .pur-doc {
+    display: grid;
+    gap: var(--s-5);
+    padding: var(--s-6);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .pur-doc__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  .pur-doc__parties {
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+  .pur-doc__sign {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    padding-block-start: var(--s-8);
+  }
+  .pur-doc__sign > div {
+    padding-block-start: var(--s-2);
+    border-block-start: 1px solid var(--line-strong);
+  }
+
+  @media print {
+    :root:has(.pur-print),
+    :root:has(.pur-print) body {
+      background: none;
+    }
+    :root:has(.pur-print) .adm {
+      display: block;
+      background: none;
+    }
+    :root:has(.pur-print) .adm-rail,
+    :root:has(.pur-print) .adm-top,
+    :root:has(.pur-print) .adm-tabbar,
+    :root:has(.pur-print) .adm-skip,
+    :root:has(.pur-print) .pur-nav,
+    :root:has(.pur-print) .pur-no-print {
+      display: none;
+    }
+    :root:has(.pur-print) .adm-main {
+      padding: 0;
+    }
+    .pur-print .pur-doc {
+      padding: 0;
+      box-shadow: none;
+    }
+    .pur-print {
+      color: var(--ink);
+    }
+  }
+}

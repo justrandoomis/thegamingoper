@@ -170,6 +170,30 @@ Permissions: create / ship / cancel `inventory.transfer.create` (branch of the s
 ### `orders/returns.server.ts`
 `planReturnedGoods(…)` — what returned units do (restock / scrap, serials released) for refunds and `returned` transitions; used inside commerce core only.
 
+### `returns/receive.server.ts`  (added by admin 12 returns on 2026-11-11 — a commerce-core file with its own tests, `tests/admin-returns-receive.test.ts`)
+```ts
+returnGoodsStatements(db, { orderId, lines: { orderItemId, qty, serialIds? }[], to: { kind: "restock", locationId? } | { kind: "quarantine", locationId } | { kind: "scrap" }, actor, now, key, refType, refId, reason }): Promise<{ statements; units; uncostedUnits; restockedCostIqd [P]; scrappedCostIqd [P] }>
+exitQuarantine(db, actor, raw: { variantId, fromLocationId, qty, serialIds?, to: { kind: "stock", locationId } | { kind: "scrap" } | { kind: "supplier", reference }, refType, refId, reason, key }, now, extra?: (plan) => BatchStatement[]): Promise<{ units; uncostedUnits }>
+quarantineExitStatements(db, actor, raw, now)   // the plan exitQuarantine runs (re-planned up to 3× on COST_LAYER_CHANGED / STOCK_CHANGED)
+linkRefundStatements(db, { refundId, returnId, orderId }): BatchStatement[]   // refunds.return_id of an unlinked refund of the same order; moves no money
+translateReturnGoodsError(error)
+```
+Goods of a DELIVERED order coming back through a return (`return_not_delivered` otherwise), built on `planReturnedGoods` (never more back than left — guarded in the batch; cost slices of the order's own 'sale' movements; `order_item_serials.released_at` set, so the unit can be sold again): **restock** into a sellable active location (default: where it left from); **quarantine** into a NON-sellable active location (`location_not_quarantine` otherwise) — on hand there, a 'return' cost layer, serial-tracked units (and a used device's serial) `returned` so they are never available nor packable; **scrap** — 'return' + 'damage', serials scrapped. Books: `postReturnedGoods` once per `key` (`<key>:goods`). `returnGoodsStatements` needs `returns.rma.inspect`; it builds, the caller adds its guarded record update and audit to the same batch. Leaving quarantine: on_hand −= qty at the quarantine location (guarded ≥ reserved), its FIFO layers consumed (guarded); **stock** (`returns.rma.inspect`): 'transfer_out' / 'transfer_in' pairs, a twin layer per costed slice at a sellable location, serials `returned` → `in_stock` there; **scrap** (`returns.rma.inspect` + `inventory.stock.adjust`): 'damage', serials scrapped, Dr inventory adjustments / Cr inventory; **supplier** (`returns.supplier_return.manage`): 'adjust' with the supplier reference, serials `in_repair` with no location, Dr accounts payable / Cr inventory; postings keyed `<key>:exit`; unknown costs stay unknown. The caller's `extra` statements run AFTER the exit's in the same batch (a guard there sees the exit's movements). Errors: `forbidden`, `not_found`, `invalid` (fields `locationId` = `location_invalid` | `location_not_quarantine`, `items` = `serials_required` | `serial_not_on_line`, `serialIds` = `serials_required` | `serials_count` | `serial_not_in_quarantine` | `serials_not_tracked`), `return_not_delivered`, `return_exceeds_shipped`, `insufficient_stock`, `serial_not_in_quarantine`, `period_closed`, `already_posted`.
+
+### `orders/shipments.server.ts`  (added by admin 11 shipping on 2026-11-11 — a commerce-core file with its own tests, `tests/admin-shipping-core.test.ts`; flows in `tests/admin-shipping.test.ts`; races and the two-person rule in `tests/admin-shipping-review.test.ts`)
+```ts
+deliverParcel(db, actor, raw: { shipmentId, receivedByName?, proofFileId?, note?, from? }, now): Promise<{ orderDelivered; replayed }>   // shipping.shipment.update (+ orders.fulfillment.deliver for the last parcel)
+returnParcels(db, actor, raw: { orderId, reason, goods?: { orderItemId, qty, disposition: "restock"|"scrap", serialIds? }[], locationId? }, now): Promise<{ parcels; replayed }>   // shipping.attempt.manage
+syncParcels(db, actor, orderId, now): Promise<{ moved }> · syncParcelsStatements(db, actor, order, now): BatchStatement[] · parcelsOutOfStep(db, order): Promise<number>
+submitCodSettlement(db, actor, raw: { settlementId, receivedIqd /* < 0: the store paid the carrier */, note? }, now): Promise<{ varianceIqd; replayed }>   // shipping.cod.settle
+reconcileCodSettlement(db, actor, raw: { settlementId, receivedInto: "cash"|"bank_clearing", reason?, reference? }, now): Promise<{ journalEntryId; codRecorded; replayed }>
+postCodSettlement(db, { settlementId, ref, carrier, expectedIqd, feesIqd, receivedIqd, receivedInto, reference?, at, createdBy, isDemo }): BatchStatement[]   // key "cod_settlement:<id>"
+settlementSubmitter(db, settlementId) · parcelEventId · codSettlementPostingKey · SHIPMENT_ERROR_KEYS
+settlementPreparers(db, settlementId): Promise<{ submitter; correctors; corrected }> · settlementNeedsSecondPerson(settlement, preparers, actorId): { needsSecond; involved } · SETTLEMENT_CORRECTION_ACTION   // "shipping.cod.item"
+```
+Review 2026-11-11 (each with a test): `returnParcels` first moves the parcels on the road to `returning` in a guarded batch (no parcel of the order delivered — `parcel_partly_delivered`), then moves the order, so a delivery racing a return never leaves goods restocked that the customer has; `deliverParcel`'s batch requires the order still `shipped`/`delivered` (`order_not_shipped`); the two-person rule covers HAND CORRECTIONS too — a variance OR any `SETTLEMENT_CORRECTION_ACTION` audit event (a parcel's cash or charge changed by hand) makes the reconciliation a decision of somebody who neither created, corrected nor submitted it, with a reason (one person could otherwise book a courier's shortfall as a higher carrier charge, make the variance 0 and reconcile alone).
+`transitionOrder` never touches `shipments`; this file keeps parcels in step: the ORDER moves first (through `transitionOrder`: its permissions, guards, stock, warranties and postings), then the parcels follow in a guarded, idempotent batch whose one-per-parcel events have deterministic ids shared with the orders module (`sev_<id>_handover`, `_delivered`, `_returned`, `_cancelled`, `_cod_settled`). `deliverParcel`: one parcel delivered (`delivery_attempts` row "delivered", private `delivery_proof` file of that order, receiver's name); the LAST live parcel moves the order shipped → delivered first; two parcels delivered at once deliver the order once; an order on hold (`review_status` blocked, module 05's rule) is refused (`order_on_hold`). `returnParcels`: shipped → returned with the goods per line, then every in-flight parcel `returned`; refused when a parcel was delivered (`parcel_partly_delivered`: no partial return of a shipped order). `syncParcels`: shipped → pending/packed handed over; delivered → in-flight delivered; cancelled → pending/packed cancelled; returned undelivered → in-flight returned. Settlements (built as drafts by the shipping module): submit fixes the remittance and the totals (`variance = received − (expected − fees)`, a non-zero variance needs a note); reconcile — two people when the variance ≠ 0 or a parcel was corrected by hand (never the creator, a corrector or the submitter: `settlement_self_reconcile`, 403; a reason required) — records each parcel's cash still pending through `recordCodCollection` (its rules — `orders.payment.record`, a different amount `orders.payment.override` + reason — checked for every parcel before the first is recorded; a stopped run resumes, the core replays what was recorded), then ONE batch: settlement reconciled (guarded on status and totals), parcels `cod_settled_at` and `cost_iqd` = the carrier's actual charge, events, the posting (Dr cash / bank clearing received — Cr when negative; Dr shipping costs fees; Dr/Cr cash over/short −variance; Cr cash expected) and an audit event; demo and real orders never mix (`settlement_mixed_demo`). Courier-held cash sits in `cash` from `recordCodCollection` until the settlement moves it (the chart has no "cash held by couriers" account). Errors: `SHIPMENT_ERROR_KEYS` (shipment_changed, shipment_not_deliverable, order_not_shipped, order_on_hold, parcel_partly_delivered, proof_file_invalid, settlement_not_draft, settlement_not_submitted, settlement_empty, settlement_changed, settlement_self_reconcile, settlement_mixed_demo, settlement_item_invalid, settlement_amount_mismatch, variance_note_required) plus `transitionOrder`'s and `recordCodCollection`'s codes and `period_closed` / `already_posted` (texts: `admin-shipping` → `errors.*`).
+
 ### `accounting/post.server.ts`
 ```ts
 journalStatements(db, { at, memo, refType, refId, createdBy, lines: { accountCode /* system key */, debitIqd?, creditIqd?, costCenter? }[] }): BatchStatement[]   // balanced or it throws before touching the DB; closed periods rejected
@@ -177,6 +201,30 @@ standard postings: postPaymentReceived, postCodCollected, postTransferVerified, 
 receivingAccount(method): SystemAccountKey; posting keys: paymentPostingKey, salePostingKey, cogsPostingKey, refundPostingKey, returnedGoodsPostingKey, walletCreditPostingKey
 ```
 Profit follows `docs/metrics.md` (written by the core team): net revenue − COGS (landed) − commissions − shipping subsidy. Carrier costs (the shipping subsidy) and conversion rate are not measurable yet: the shipping module must post carrier costs to `shipping_costs`.
+
+### `accounting/reports.server.ts`  (added by admin 10 finance on 2026-11-11 — a commerce-core file with its own tests, `tests/admin-finance-core.test.ts`)
+```ts
+chartOfAccounts(db): ChartAccount[] · isDebitNormal(type, isContra) · naturalBalance(account, sums) · systemRoots(chart) · familyIds(chart, systemKey)
+accountSums(db, scope: { from?, to? /* exclusive */, includeDemo? }): Map<accountId, { debit; credit }>
+trialBalance(db, actor, { to?, includeDemo? }): { rows; totalDebit; totalCredit; balanced; entries }   // cost.read
+revenueRecognised(db, scope): RevenueSection   // gross, shipping income, discounts, refunds, net, other income, orders recognised — no cost involved
+profitAndLoss(db, actor, scope): ProfitAndLoss   // cost: null without cost.read · profit (+ margins in bps): null without cost.read AND profit.read
+cashFlow(db, actor, scope): CashFlow   // cost.read; opening/closing of the cash and bank family, in/out by CASH_FLOW_CATEGORIES
+inventoryAsset(db, actor): InventoryAsset   // cost.read; inventory account vs FIFO layers + used devices + shipped-not-delivered + in transit, the rest "unexplained"
+lastClosedPeriod(db): "YYYY-MM" | null · isLockedPeriod(db, period): boolean · openPeriodGuard(db, period): BatchStatement   // closed months (review 2026-11-11)
+```
+Closed months: a closed month is final for every month before it too — a posting dated on or before the last closed month is refused (`isLockedPeriod` before the batch, `openPeriodGuard` inside it → TT:PERIOD_CLOSED → `period_closed` through `mapPostingError`); the database trigger refuses only the closed month's own dates. Manual entries and expenses use both; a flow that posts dated `now` needs neither.
+The one implementation of docs/metrics.md §3–§5 for finance (10), dashboards (01) and reports (18): the caller checks its screen's permission, the field permissions are applied here (an absent figure is `null`, never 0). Only lines whose entry header exists count; demo postings are left out unless `includeDemo`; an accountant's sub-account rolls up to its nearest system parent (`systemRoots`). Cash flow classifies by the entry's `ref_type` (payment, refund, wallet, POS shift, manual) and otherwise by the counter-account's system root (payroll, marketing, shipping costs, commissions, inventory / payables → suppliers, cash-on-delivery receivable → customers, wallet liability → top-ups, operating expenses).
+
+### `accounting/expenses.server.ts`  (added by admin 10 finance on 2026-11-11 — a commerce-core file with its own tests, `tests/admin-finance-core.test.ts`)
+```ts
+createExpense(db, actor, { accountId, paidFromAccountId, costCenter?, amountIqd, vendor?, description, incurredOn: "YYYY-MM-DD", receiptFileId?, refType?, refId?, idempotencyKey }, now, { demo? }): { expenseId; replayed }   // a draft, not in the books
+approveExpense(db, actor, { expenseId, note? }, now): { status: "posted"; entryId; replayed }   // one entry, key "expense:<id>:posted"
+voidExpense(db, actor, { expenseId, reason }, now): { status: "void"; reversalId | null; replayed }   // posted → reversing entry dated now, key "expense:<id>:void"
+expenseAccounts(chart) · paidFromAccounts(chart) · expenseIdFor(key) · expenseInstant(day) · EXPENSE_SECOND_APPROVAL_ABOVE_IQD (500,000) · MAX_EXPENSE_IQD · EXPENSE_ERROR_KEYS · CreateExpenseInput
+selfApprovedRecentIqd(db, employeeId, now): number · needsOtherApprover(expense, approverId, recentSelfIqd): boolean · SELF_APPROVAL_WINDOW_MS (24 h)
+```
+`finance.expense.manage` for every call, checked before the input is read. Approving posts Dr the expense account (cost centre on the line) / Cr where the money came from (cash, bank clearing, accounts payable, owner's equity or a sub-account of those) in the same batch as the guarded draft → posted update, dated noon (Baghdad) of the day incurred — a closed month, or a month before the last closed one, refuses it (`period_closed`, also at creation). Above the limit the recorder cannot approve (`expense_self_approval`, 403); what one employee records AND approves alone counts together over 24 hours against the limit (no splitting), held inside the posting batch too. The cost of goods, stock write-offs, cash over/short, the wallet, customer control and inventory accounts are never expense or payment accounts here. Errors: `expense_not_draft`, `expense_not_posted`, `expense_self_approval`, `expense_account_invalid`, `expense_paid_from_invalid`, `cost_center_invalid`, `expense_date_future`, `period_closed`, `idempotency_mismatch` (texts: `admin-finance` → `errors.*`).
 
 ### `app/server/jobs.server.ts` (scheduled jobs)
 `runScheduledJobs(db, cron, now, env?)` is called by the Worker's `scheduled` handler (`workers/app.ts`, crons in `wrangler.jsonc`); `runJob(db, job, now, { origin, triggeredBy })` lets the operations module re-run a job (caller checks `ops.job.run`); `listJobRuns(db, job?, limit?)` for the ops screens (caller checks `ops.job.read`). Every run is a `job_runs` row. The daily `retention` job also runs the areas' purges (`purgeAreaData`): recommendation signals, abandoned trade-in photos and — since 2026-11-11 — `purgeExpiredAssistantSessions(db, now)`: stored assistant conversations past their `expires_at`, with their messages (the ticket keeps its note and loses the link; `consents` rows are append-only and stay).
@@ -358,3 +406,153 @@ issueInvoices(db, actor, orderIds, now): { issued; skipped } · printDocuments(d
 listPreorders(db, actor, locale, now) · exportOrdersCsv(db, actor, filters, headers, locale, now): { csv; rows } · notifyOrderContact(db, order, template, payload, dedupeKey, now)
 ```
 Errors (texts: `admin-orders` → `errors.*`): `order_on_hold` (also a "flag" on a held order: only a reviewer's clear lifts a hold), `packing_incomplete`, `pack_not_open`, `assign_not_open`, `assignee_not_packer`, `review_not_open`, `preorder_not_open`, `proof_not_shipped`, `parcel_packed`, `split_qty_exceeds`, `scan_serial_instead`, plus the core's codes and the `edit_*` codes of `orders/edit.server.ts`.
+
+#### 09 purchasing
+
+`services/admin/purchasing/` — authorization inside (`assertCan`; branch-limited employees act on their branch's locations); stock moves only through the commerce core (`receiveStock` with `ref { type: "receipt_item", id }` and the landed unit cost, `adjustStock` for returns to the supplier), the books through `postStockReceipt` (Dr inventory / Cr accounts payable, key `receipt:<id>:receipt`), landed costs through pricing's `addLandedCost` / `allocateLandedCost` / `removeLandedCost` on draft receipts. [P] prices, totals, rates, landed costs and claim amounts absent without cost.read (views, lists, print document, alerts). Details: `docs/areas/admin-purchasing.md`.
+
+```ts
+// rules.ts (pure, client-safe)
+toIqd(minor, currency, rateMicros) · poTotals(lines, shippingMinor, otherMinor) · poTotalsOrNull(…)   // null when too big to be exact (a field error, never a 500)
+needsApproval(totalIqd, limit = PO_SPENDING_LIMIT_IQD /* 1,000,000 */, windowIqd = 0) · SPLIT_WINDOW_DAYS (7)
+threeWayMatch(poLines, invoiceLines, invoicedElsewhere, charges?): MatchDiscrepancy[]   // field "qty" | "unit_cost" | "charges" (shipping + other above the order's)
+rateSupplier(facts): SupplierRating   // due units include unitsShortClosed · receiptStateOf(receipt) · isLate(order, now)
+CLAIM_TRANSITIONS · parseCount (Arabic-Indic / Persian digits) · list filters (PO_VIEWS, RECEIPT_FILTERS, INVOICE_FILTERS, CLAIM_FILTERS, RFQ_FILTERS, ALERT_KINDS)
+// suppliers.server.ts — 09.01 · rating.server.ts — 09.08
+listSuppliers(db, actor, parseSupplierFilters(params), now) · getSupplier(db, actor, supplierId, now) · supplierOptions(db, actor, { includeInactive? })
+createSupplier(db, actor, raw, now, { demo? }) · updateSupplier(db, actor, { supplierId, version, …fields }, now) · setSupplierStatus(db, actor, { supplierId, status, reason }, now)
+saveContact / removeContact(db, actor, raw, now) · reviewSupplier(db, actor, { supplierId, score 1–5, note }, now)   // supplier.rate; kept in the audit trail
+supplierRatings(db, supplierIds, now): Map<id, SupplierRating> · ratingFactsFor(db, supplierIds, now)
+// rfqs.server.ts — 09.02
+createRfq(db, actor, { title, neededBy?, notes?, lines: { code, qty }[], idempotencyKey }, now, locale) · markRfqSent · cancelRfq(…, { rfqId, reason })
+recordQuote(db, actor, { rfqId, supplierId, currency, leadTimeDays?, warrantyMonths?, validUntil?, notes?, lines: { rfqItemId, unitCost?, qtyAvailable? }[] }, now)   // replaces the supplier's quote
+awardQuote(db, actor, { rfqId, quoteId, locationId, fxRate?, expectedOn?, idempotencyKey }, now): { poId; replayed }   // draft PO; other quotes declined
+listRfqs(db, actor, parseRfqFilters(params)) · getRfq(db, actor, rfqId, locale, now)   // quotes compared (IQD, coverage, lead, warranty, best flags)
+// orders.server.ts — 09.03
+savePurchaseOrder(db, actor, { poId?, version?, supplierId, locationId, currency, fxRate?, expectedOn?, paymentTerms?, notes?, shipping?, other?, lines: { code, qty, unitCost }[], idempotencyKey? }, now, locale, { demo? }): { poId; ref; replayed }
+submitPurchaseOrder(db, actor, { poId, version, note? }, now): { status: "approved" | "pending_approval"; replayed }   // approvals row (kind "purchase_order") above the limit:
+//   the order weighs its total at the higher of its rate and the store's rate of the day, plus what the same person approved alone for the supplier in SPLIT_WINDOW_DAYS
+decidePurchaseOrder(db, actor, { poId, decision: "approve" | "reject", note?, approvalId? }, now)   // po.approve + cost.read; not whoever created, edited or submitted it
+//   (approver_is_requester); `approvalId` = the request the page showed (a newer one → po_changed); approve refuses a supplier no longer active
+limitWindow(db, supplierId, approvedBy, now, exceptPoId): { count; iqd }
+markOrderSent · markOrdersSent(db, actor, { poIds }, now): { sent; skipped } · cancelPurchaseOrder(…, { poId, reason })   // no live receipt, no live invoice (po_has_invoices)
+closePurchaseOrder(…, { poId, reason? })
+listPurchaseOrders(db, actor, parsePoFilters(params), now) · getPurchaseOrder(db, actor, poId, locale, now) · purchaseOrderDocument(…) · openOrderOptions(db, actor)
+planOrder / insertOrderStatements   // shared by save and the RFQ award
+// receipts.server.ts — 09.04
+receiveFormFor(db, actor, poId, locale) · createReceipt(db, actor, { poId, supplierDocNo?, receivedOn?, notes?, lines: { poItemId, received, rejected?, rejectReason?, serials? }[], idempotencyKey }, now)   // DRAFT; the batch re-checks what is outstanding
+postReceipt(db, actor, { receiptId }, now): { units; resumed; replayed }   // claim → lines read again → receiveStock per line → finish (lease "posting:<token>", resumable after 5 min)
+cancelReceipt(…, { receiptId, reason }) · listReceipts(db, actor, parseReceiptFilters(params)) · getReceipt(db, actor, receiptId, locale, now)
+// invoices.server.ts — 09.04 09.07
+recordInvoice(db, actor, { poId, invoiceNo, issuedOn?, dueOn?, fxRate?, shipping?, other?, lines: { poItemId, qty, unitCost }[], idempotencyKey }, now): { invoiceId; status; discrepancies; replayed }
+approveInvoice(db, actor, { invoiceId, reason? }, now)   // variances: reason + not the recorder · rematchInvoice · voidInvoice(…, { invoiceId, reason })   // all branch-limited
+//   an invoice of charges alone (freight billed apart) is allowed; charges above the order's shipping + other are a "charges" variance
+rematchStatements(db, poId, addedQtyByPoItem)   // in the receipt-posting batch · listInvoices · getInvoice · invoiceFormFor
+// claims.server.ts — 09.06
+createClaim(db, actor, { supplierId? | poId? | receiptId?, kind, description?, lines: { code, qty, serial? }[], amount?, idempotencyKey }, now, locale) · claimPrefill(db, actor, { receiptId? | poId? }, locale)
+moveClaim(db, actor, { claimId, to, note?, creditAmount?, creditReference? }, now) · returnClaimGoods(db, actor, { claimId, locationId, reason }, now, locale): { returned; fromStock; replayed }   // + inventory.stock.adjust
+//   units refused at inspection (a receipt's claim carries them first) go back without a stock movement; from stock at most what the receipt / order put in (return_exceeds_received)
+listClaims · getClaim
+// alerts.server.ts — 09.07, home
+listAlerts(db, actor, parseAlertFilters(params), locale, now) · purchasingOverview(db, actor, now)
+```
+Errors (texts: `admin-purchasing` → `errors.*`): `code_taken`, `supplier_changed`, `supplier_not_active`, `po_changed`, `po_not_draft`, `po_not_pending`, `po_not_open`, `po_has_receipts`, `po_has_invoices`, `receipts_open`, `return_exceeds_received`, `approver_is_requester` (403), `over_receipt`, `nothing_to_receive`, `receipt_not_draft`, `receipt_has_bills`, `landed_unallocated`, `posting_in_progress`, `receipt_cancelled`, `cost_unknown`, `invoice_no_taken`, `invoice_not_open`, `invoice_changed`, `variance_reason_required`, `claim_transition`, `claim_not_open`, `return_in_progress`, `nothing_to_return`, `serial_unknown`, `claim_not_returnable`, `rfq_closed`, `quote_expired`, `quote_not_received`, `quote_empty`, field keys such as `unknown_code`, `duplicate_line`, `bundle_not_purchasable`, `expected_past`, `fx_rate_required`, `reject_reason_required`, plus the core's codes (`serial_duplicate`, `serial_tracked`, `insufficient_stock`, `period_closed`).
+
+#### 10 finance
+
+`services/admin/finance/` — authorization inside (`assertCan`); money only through the core: `journalStatements` (manual entries and their reversal), `creditWallet` (top-ups key `topup:<id>`, adjustments key `adjustment:<approvalId>`), `accounting/expenses.server.ts` (§1); statements from `accounting/reports.server.ts` (§1). The module writes non-system accounts, cost centres, statement imports and lines, tax rates, `fiscal_periods`, `approvals` (kinds `wallet_topup`, `wallet_adjustment`) and top-up decisions, each with an audit event (`finance.*`). The books (journal, accounts, trial balance, cash flow, inventory) need `finance.journal.read` or `finance.report.read` AND cost.read; profit lines cost.read + profit.read; absent, never 0, in loader data, CSV and print. Details: `docs/areas/admin-finance.md`.
+
+```ts
+// types.ts (client-safe) — parseAmount (Arabic-Indic / Persian digits, integer IQD) · parsePercentBps · parseRange(params, now): RangeFilter (month or two Baghdad days ≤ 400, demo flag) · rangeSearch · periodOf · periodRange · shiftPeriod · REF_TYPES · MAX_MANUAL_LINES (20)
+// statement-csv.ts (pure) — parseStatementCsv(text): { rows, columns, problem } (Arabic or English headers, ≤ 2,000 rows / 1 MB) · normalizeReference
+// shared.server.ts — FINANCE_PERMISSIONS · financeAccess(actor): FinanceAccess · assertBooks(actor) · refLinks(db, refs) · closedPeriods(db) · customerLabels · employeeNames
+// ledger.server.ts — 10.01
+listJournal(db, actor, { …range, account?, refType?, q?, page }, locale) · getEntry(db, actor, entryId, locale) · exportJournalLines(…): { lines; truncated }   // audited, ≤ 10,000 lines
+postManualEntry(db, actor, { date, memo, reason, lines: { accountId, debitIqd?, creditIqd?, costCenter?, memo? }[], idempotencyKey }, now, { demo? }): { entryId; replayed }   // finance.journal.post; never dated on/before the last closed month; a key reused with other lines → idempotency_mismatch
+reverseEntry(db, actor, { entryId, reason }, now): { reversalId; replayed }   // manual entries only, once, dated now
+listAccounts(db, actor, range, locale) · saveAccount(db, actor, { id?, code, nameAr, nameEn?, type?, parentId? /* undefined keeps, null removes */, description?, isActive, reason }, now)   // finance.account.manage; system accounts keep code/type; an account holding postings keeps its family (account_family_locked)
+accountLedger(db, actor, accountId, range, page, locale) · manualEntryOptions(db, actor, locale)
+// settlements.server.ts — 10.02 (finance.settlement.reconcile)
+settlementOverview(db, actor, range) · listStatementLines(db, actor, filters) · unreconciledPayments(db, actor, range)
+previewStatement / importStatement(db, actor, { source: "bank_card"|"zaincash"|"carrier", csv }, now): { importId; inserted; skipped; errors }
+reviewStatementLine(db, actor, lineId, search) · matchStatementLine(db, actor, { lineId, paymentId, note? }, now) · unmatch / ignore / restoreStatementLine(db, actor, { lineId, reason }, now) · matchExactLines(db, actor, range, now) · countUnmatched
+// revenue.server.ts — 10.03 10.04 (finance.report.read) — realisedVsPending(db, actor, range) · salesDeductions(db, actor, range)   // [P] COGS, margin
+// expense-views.server.ts — 10.05 — listExpenses(…, locale, now?) · getExpense(db, actor, id, locale, now?) · expenseFormOptions · expenseReceiptFile · listCostCenters · saveCostCenter · countDecidableExpenses(db, actor, now?)   // needsOther counts the viewer's own 24-hour self-approvals
+// wallets.server.ts — 10.07 (finance.wallet.read; decisions customers.wallet.adjust; proof payment_proof.read)
+walletOverview(db, actor, range) · listWalletLedger · customerWallet(db, actor, customerId, page) · listTopups · getTopupReview(db, actor, id, proofUrl, now?) (+ soloApprovedIqd, soloRoomIqd) · topupProofFile
+decideTopup(db, actor, { topupId, decision: "approve"|"reject"|"return", amountIqd?, note? }, now): { status: "approved"|"rejected"|"awaiting_second"|"pending"; replayed; entryId? }   // two people above TOPUP_SECOND_APPROVAL_ABOVE_IQD (500,000), counting what the same person approved alone for the customer in 24 h
+requestWalletAdjustment(db, actor, { customerId, amountIqd, reason, idempotencyKey }, now) · decideWalletAdjustment(db, actor, { approvalId, decision, note? }, now)   // never the requester
+listAdjustments · walletQueue(db, actor): { topups; adjustments } | null
+// tax.server.ts — 10.08 (finance.tax.manage) — listTaxRates · saveTaxRate(db, actor, { id?, code, nameAr, nameEn?, rateBps, productKinds, channels, isActive, effectiveFrom?, reason, expectedUpdatedAt? }, now) · taxIncluded(amount, rateBps) · taxReport(db, actor, range, locale)
+// close.server.ts — 10.09 — listPeriods · closeChecklist(db, actor, period, now) · closePeriod(db, actor, { period, reason }, now)   // finance.period.close
+// anomalies.server.ts — 10.10 (finance.anomaly.read) — financeAnomalies(db, actor, now) · countCritical
+// overview.server.ts — financeOverview(db, actor, now)   // home cards and this month's figures, per permission
+```
+Errors (texts: `admin-finance` → `errors.*`): `LEDGER_ERROR_KEYS` (journal_unbalanced, journal_line_invalid, journal_wallet_manual, journal_account_inactive, journal_date_future, reverse_not_manual, reverse_reversal, already_reversed, account_code_taken, account_parent_invalid, account_system_locked, account_has_balance, account_has_children, account_family_locked), `SETTLEMENT_ERROR_KEYS` (statement_*, line_not_unmatched, line_not_matched, line_not_ignored, payment_already_matched, payment_not_paid, payment_method_mismatch, …), `WALLET_ADMIN_ERROR_KEYS` (topup_not_pending, topup_second_person, topup_amount_changed, topup_amount_note_required, topup_reject_reason_required, topup_nothing_to_return, adjustment_self_approval, adjustment_not_pending, customer_unavailable, wallet_insufficient), `TAX_ERROR_KEYS`, `CLOSE_ERROR_KEYS` (period_not_over, period_earlier_open, period_unbalanced, period_already_closed, period_close_blocked), the expense core's, plus `period_closed`, `idempotency_mismatch`.
+
+#### 11 shipping
+
+`services/admin/shipping/` — authorization inside (`assertCan`); order moves only through the orders module's `changeOrderStatus` (pickup → shipped) and the core file `orders/shipments.server.ts` (delivered, returned, settlements, §1); money only through `recordCodCollection` and `postCodSettlement`; the module itself writes carriers, carrier rates, override rows, governorate/district fields (estimates, availability, names), the waybill columns of `shipments`, delivery attempts, settlement drafts. Carrier rates and charges are cost data: sent only to who chooses carriers, manages or settles with them, or has cost.read (`canSeeCarrierCost` in `shared.server.ts`; absent — not null — for support / stock roles, in page data, JSON and parcel history); the delivery margin only with profit.read; phones masked without customer.phone.read_full; serials only with inventory.serial.read. Details: `docs/areas/admin-shipping.md`.
+
+```ts
+// rules.ts (client-safe): SHIPMENT_STATUS_LIST, SHIPMENT_TONE, ON_ROAD / IN_FLIGHT / DELIVERABLE / AT_STORE / FINAL, SIMPLE_MOVES, FAILURE_OUTCOMES, SERVICE_LEVELS,
+//   parcelCode(ref, n) → "REF-n" · parseParcelCode · codFeeFor(collected, carrier) · settlementTotals(items, received) · effectiveFee(policy, override) · feeChanges(zones, before, after, override?)
+//   parseShipmentFilters / shipmentSearch (URL state), SHIPMENT_VIEWS, view-model types (ShipmentListRow, ShipmentDetail, CodView, SettlementView…)
+// zones.server.ts — 11.01
+listZones(db, actor, locale) · getZone(db, actor, governorateId, locale) · feePolicy(db)
+setFlatFee(db, actor, { feeIqd, expectedFeeIqd, reason }, now) · setOverridesEnabled(db, actor, { enabled, expected, reason }, now)   // settings.shipping.manage, via setSetting
+setOverrideFee(db, actor, { governorateId | null, feeIqd | null, expectedIqd, reason }, now): { changes; applies; replayed }        // shipping.rate.manage
+setGovernorateAvailability · setGovernorateEta · saveDistrict · setDistrictActive(db, actor, { governorateId?, districtId, isActive, reason }, now)   // shipping.zone.manage; a district of another governorate is not_found
+// carriers.server.ts — 11.02
+listCarriers · getCarrier · saveCarrier(db, actor, raw, now, { demo? }) · setCarrierActive · applyCarrierRate(db, actor, { carrierId, governorateIds, serviceLevel, costIqd | null, etaDaysMin?, etaDaysMax? }, now)
+carrierOptions(db, { governorateId, serviceLevel?, codAmountIqd }): CarrierOption[]   // cheapest eligible first · carrierRate · carrierChoices · codOutstandingByCarrier
+// shipments.server.ts — 11.03 11.05 11.06
+listShipments(db, actor, filters, locale, now) · getShipment(db, actor, shipmentId, locale, now) · lookupParcel(db, actor, code) · shippingOverview(db, actor, now) · attemptsQueue(db, actor, locale)
+saveWaybill(db, actor, { shipmentId, carrierId, serviceLevel, trackingNo?, costIqd?, reason?, from? }, now) · assignByRule(db, actor, { shipmentIds, serviceLevel }, now)
+pickupParcels(db, actor, { shipmentIds }, now): { shipped; failed }   // + orders.fulfillment.ship · moveParcels(db, actor, { shipmentIds, to, note?, from? }, now)
+recordAttempt(db, actor, { shipmentId, outcome, reason?, notes?, nextAttemptDay?, from? }, now) · deliverShipment(…) · receiveReturn(db, actor, { shipmentId, reason, lines? }, now)
+addPackingPhoto(db, actor, { shipmentId, fileId, note? }, now) · addDeliveryProof(db, actor, { shipmentId, fileId, receivedByName }, now) · waybillDocs · manifestDocs   // manifest rows carry `shippable`; totals count only those
+assertDeliverable(db, actor, { shipmentId, receivedByName?, from? }): "deliver" | "replay"   // deliverShipment's refusals, BEFORE a proof photo is stored
+// cod.server.ts — 11.04 (drafts; submit / reconcile are the core's)
+listSettlements · parseSettlementFilters · settlementBacklog · eligibleParcels(db, actor, carrierId, locale) · getSettlement(db, actor, settlementId, locale)   // view: corrected, secondPerson, items[].rateIqd
+createSettlement(db, actor, { carrierId, shipmentIds, notes?, idempotencyKey }, now) · updateSettlementItem (cash ≠ due or charge ≠ suggestedCharge → reason) · removeSettlementItems · disputeSettlement · reopenSettlement · discardSettlement · attachStatement
+suggestedCharge(parcelCostIqd, collectedIqd, carrier) · assertStatementOpen(db, actor, settlementId)   // before a statement photo is stored
+// shared.server.ts
+canSeeCarrierCost(actor) · eventDataFor(actor, data) · shippingAccess(actor)   // carrierCost, read, waybill, update, attempts, proof, carriers, zones, rates, fee, cod, …
+// files.server.ts
+shippingFile(db, actor, fileId)   // packing_photo / delivery_proof: shipping.shipment.read · cod_statement: shipping.cod.settle
+```
+Errors (texts: `admin-shipping` → `errors.*`): the core file's `SHIPMENT_ERROR_KEYS`, plus `fee_changed`, `waybill_locked`, `carrier_no_cod`, `carrier_inactive`, `waybill_missing`, `packing_undocumented`, `shipment_not_at_store`, `shipment_not_on_road`, `proof_not_delivered`, `packing_after_pickup`, `parcel_not_eligible`, `parcel_already_settled`, field keys `tracking_taken`, `tracking_invalid`, `day_invalid`, `receiver_required`, `file_invalid`, `settlement_no_cash`, `settlement_amount_recorded`, `settlement_cash_missing`, `district_exists`, `code_taken`, `code_invalid`, `tracking_template_invalid`, `eta_both`, `eta_order`; and the orders module's `order_on_hold`, `packing_incomplete`.
+
+#### 12 returns
+
+`services/admin/returns/` — authorization inside (`assertCan`); goods only through `returns/receive.server.ts` (core, §1), money only through `createRefund` / `approveRefund`; no [P] column is selected for any view; phones masked without customer.phone.read_full (partial-digit search needs it). Every change is one guarded batch with its audit event. Details: `docs/areas/admin-returns.md`.
+
+```ts
+// types.ts (client-safe): statuses, reasons, resolutions, conditions, decisions, SLA, FRAUD_RULE_IDS + FRAUD_THRESHOLDS, URL filters (parseRmaFilters / rmaSearch, repairs, warranties), parseWhole, view-model types
+// policy.server.ts — 12.02
+evaluateOrder(db, order, at, locale, { sealed?, reasonCode?, exceptReturnId? }): EligibleLine[]   // returnable units, unit value, serials, verdict per line
+pickRule(rules, facts) · verdict(input)   // pure: category (nearest parent first) › kind › catch-all, new/used, then sort
+listPolicies(db, actor, locale) · savePolicy(db, actor, { id?, productKind, categoryId?, itemCondition, isReturnable, windowDays | null, requiresSealed, restockingFeeBps, note, sort, isActive, reason }, now)   // returns.policy.manage, audited before/after
+// rma.server.ts — 12.01
+returnsAccess(actor) · listReturns(db, actor, filters, locale, now) · queueCounts(db, actor, now)   // never one's own RMA to decide
+findOrderForReturn(db, actor, orderRef, locale, now) · openReturn(db, actor, { orderRef, items: { orderItemId, qty, serialIds?, sealed? }[], reasonCode, reason, requestedResolution, phone?, override?, overrideReason?, idempotencyKey }, now, locale): { returnId; rma; replayed }
+decideReturn(db, actor, returnId, { approve, note? }, now) · markInTransit · cancelReturn · closeReturn(db, actor, returnId, { resolution, note }, now) · addReturnNote
+//   closeReturn: the resolution must have happened (refund paid · store credit/exchange: a paid wallet refund · repair: a finished repair · supplier return: a unit set aside)
+//   markInTransit / addReturnNote / assertPhotoSlot: with returns.rma.create alone, only on RMAs the employee opened (else not_found)
+assertPhotoSlot / recordReturnPhoto / returnPhotoFile · getReturnDetail(db, actor, rma, locale, now, urls): RmaDetail · dueOf(row)   // items[].refundable, items[].feeIqd
+// inspect.server.ts — 12.03, 12.07
+inspectItem(db, actor, { returnId, itemId, condition, decision: "restock"|"refurbish"|"return_to_supplier"|"scrap"|"keep", locationId?, serial?, notes? }, now): { replayed; status }   // branch-limited: their branch's locations, a named restock location
+listQuarantine(db, actor, locale, now) · resolveQuarantine(db, actor, { itemId, to: "stock"|"scrap"|"supplier", locationId?, supplierId?, reason }, now): { claimRef; replayed }   // supplier → supplier_claims row, kind "return"; both locations in the actor's branch
+// refund.server.ts — 12.04, 12.05
+requestReturnRefund(db, actor, { returnId, paymentId, itemIds, amountIqd, method: "original"|"wallet"|"cash", reason, reference?, idempotencyKey }, now)   // key "rma:<return id>:<form key>"; units that came back (kept: after a failed repair); ≤ value − restocking fee; units guard inside createRefund's batch
+restockingFee(unitValueIqd, qty, bps)   // floor, per RMA line
+decideReturnRefund(db, actor, { returnId, refundId, approve, note?, reference? }, now)   // another return's refund → not_found
+// fraud.server.ts — fraudSignals(db, rows): Map<returnId, { id, vars }[]>
+// repair.server.ts — 12.07
+listRepairs · getRepair · changeRepairStatus(db, actor, { ticketId, from, to, note? }, now) · setDiagnosis · recordQuoteDecision · addPart · assignRepair · setRepairSla · addRepairNote
+openCounterRepair(db, actor, { phone, contactName?, deviceModelId? | deviceText, serial?, issue, idempotencyKey }, now, storeMode) · openReturnRepair(db, actor, { returnId, itemId, issue }, now) · technicians · deviceOptions · repairPhotoFile
+// warranty.server.ts — 12.06
+listWarranties · getWarranty · extendWarranty(db, actor, { warrantyId, endsOn: "YYYY-MM-DD", reason }, now) · voidWarranty(db, actor, { warrantyId, reason }, now) · endOfBaghdadDay(day)
+```
+Errors (texts: `admin-returns` → `errors.*`): `approver_is_requester` (403), `return_not_delivered`, `return_qty_exceeds`, `not_eligible`, `rma_changed`, `photo_limit`, `item_inspected`, `serial_mismatch`, `quarantine_resolved`, `no_suppliers`, `refund_exceeds_items`, `refund_exceeds_policy`, `refund_not_ready`, `repair_changed`, `transition_not_allowed`, `quote_not_approved`, `assignee_not_technician`, `warranty_void`, `warranty_changed`, field keys `items_required`, `used_unit_decision`, `override_reason_required`, `not_inspected`, `not_returned`, `items_not_inspected`, `refund_waiting`, `no_refund_issued`, `no_store_credit_issued`, `no_repair_done`, `no_supplier_unit`, `not_later`, plus the core's codes.

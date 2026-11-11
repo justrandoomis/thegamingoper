@@ -1,0 +1,283 @@
+/*
+ * Admin module 11 (shipping) — what the UI kit and the shell do not cover: the figures row, the waybill and the pickup
+ * manifest as printed documents, the Code 128 island, the timeline and the rates grid. Tokens and logical properties
+ * only; nothing animates.
+ *
+ * Printing is the browser's (no printer integration): a page that holds `.shp-docs` prints only the documents — the
+ * shell's chrome, the module's section links and anything marked `.shp-noprint` are dropped, each document starts a
+ * page, and the documents print ink on paper also from a dark screen (usePrintInLight sets data-theme="light").
+ */
+@layer components {
+  .shp-nav {
+    margin-block-end: var(--s-5);
+  }
+
+  .shp-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .shp-kpis > * {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .shp-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    }
+  }
+
+  .shp-decisions {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+
+  /* a parcel page: main column + side column from 1024px */
+  .shp-split {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .shp-split {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+      align-items: start;
+    }
+  }
+
+  .shp-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .shp-options {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .shp-option {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: var(--target);
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .shp-option:has(input:checked) {
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .shp-option[aria-disabled="true"] {
+    color: var(--ink-2);
+  }
+
+  .shp-ledger {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-data);
+  }
+  .shp-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-block: var(--s-1);
+    border-block-end: 1px solid var(--line);
+  }
+  .shp-ledger dt {
+    color: var(--ink-2);
+  }
+  .shp-ledger__total {
+    font-weight: 600;
+  }
+
+  .shp-timeline {
+    display: grid;
+    gap: var(--s-3);
+    padding-inline-start: var(--s-4);
+    border-inline-start: 1px solid var(--line-strong);
+  }
+  .shp-timeline > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+  }
+  .shp-timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inset-block-start: 7px;
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .shp-timeline > li[data-auto]::before {
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--ink-2);
+  }
+
+  .shp-photos {
+    display: grid;
+    gap: var(--s-2);
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  }
+  .shp-photos img {
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--r-xs);
+    background: var(--niche);
+  }
+
+  .shp-grid-form {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .shp-grid-form {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .shp-grid-form > .shp-wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .shp-checks {
+    display: grid;
+    gap: var(--s-1);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  }
+
+  .shp-sticky {
+    position: sticky;
+    inset-block-end: var(--adm-bottom, 0px);
+    z-index: var(--z-sticky);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    justify-content: flex-end;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--glass-solid);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* ── printed documents: waybills and pickup manifests ── */
+  .shp-docs {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .shp-doc {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    max-inline-size: 48rem;
+  }
+  .shp-doc table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .shp-doc th,
+  .shp-doc td {
+    padding-block: 6px;
+    padding-inline: 8px;
+    border-block-end: 1px solid var(--line);
+    text-align: start;
+  }
+  .shp-doc .is-num {
+    text-align: end;
+    white-space: nowrap;
+  }
+  /* a manifest row that must not be handed over: struck through, said in words in its last cell */
+  .shp-doc tr.shp-doc__off td:not(:last-child) {
+    color: var(--ink-2);
+    text-decoration: line-through;
+  }
+  .shp-doc__cols {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 40rem) {
+    .shp-doc__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .shp-doc__box {
+    display: grid;
+    gap: 2px;
+    padding: var(--s-3);
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .shp-doc__money {
+    padding: var(--s-3);
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 2px var(--ink);
+    font: 600 18px/1.4 var(--font-text);
+  }
+  .shp-sign {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+  .shp-sign > div {
+    display: grid;
+    gap: var(--s-6);
+    padding: var(--s-3);
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  /* the barcode island: ink bars on paper whatever the screen's theme */
+  .shp-barcode {
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    block-size: 64px;
+    padding-inline: var(--s-3);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  @media print {
+    :root:has(.shp-docs),
+    :root:has(.shp-docs) body {
+      background: none;
+    }
+    :root:has(.shp-docs) .adm {
+      display: block;
+      background: none;
+    }
+    :root:has(.shp-docs) .adm-rail,
+    :root:has(.shp-docs) .adm-top,
+    :root:has(.shp-docs) .adm-tabbar,
+    :root:has(.shp-docs) .adm-skip,
+    :root:has(.shp-docs) .shp-nav,
+    :root:has(.shp-docs) .shp-noprint {
+      display: none;
+    }
+    :root:has(.shp-docs) .adm-main {
+      padding: 0;
+    }
+    .shp-docs {
+      gap: 0;
+    }
+    .shp-doc {
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0;
+      max-inline-size: none;
+      break-after: page;
+      break-inside: avoid;
+    }
+    .shp-doc:last-child {
+      break-after: auto;
+    }
+  }
+}

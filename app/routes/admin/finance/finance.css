@@ -1,0 +1,228 @@
+/*
+ * Admin module 10 (finance) — the few pieces the design system does not have. Tokens only, logical properties only,
+ * components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; financial figures flat, high-contrast, tabular at the inline end; a negative is a minus sign in red-ink.
+ */
+@layer components {
+  /* ── module sections: link tabs that wrap; a held ink key marks the current one ── */
+  .fin-nav {
+    margin-block-end: var(--s-5);
+  }
+  .fin-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  @media (max-width: 47.99rem) {
+    .fin-nav__list {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 3px;
+      margin: -3px;
+      scrollbar-width: none;
+    }
+    .fin-nav__list > li {
+      flex: none;
+    }
+  }
+  .fin-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--target);
+    padding-inline: var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    font: var(--type-label);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .fin-nav__link:hover {
+    background: var(--niche);
+  }
+  .fin-nav__link[aria-current="page"] {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: none;
+  }
+  .fin-nav__link > svg {
+    flex: none;
+  }
+
+  /* ── outlined fact tags (demo, flags) ── */
+  .fin-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+
+  /* ── a small ledger (statements): label at the start, figure at the end ── */
+  .fin-ledger {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .fin-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding-block: 2px;
+  }
+  .fin-ledger > div > dd {
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+    white-space: nowrap;
+  }
+  .fin-ledger__total {
+    margin-block-start: var(--s-1);
+    padding-block-start: var(--s-2) !important;
+    border-block-start: 1px solid var(--line-strong);
+    font-weight: 600;
+  }
+  .fin-ledger__total:first-child {
+    margin-block-start: 0;
+    padding-block-start: 2px !important;
+    border-block-start: none;
+  }
+  .fin-ledger__indent > dt {
+    padding-inline-start: var(--s-4);
+    color: var(--ink-2);
+  }
+
+  /* ── KPI rows ── */
+  .fin-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  }
+
+  /* ── account depth in the chart ── */
+  .fin-depth-1 {
+    padding-inline-start: var(--s-4);
+  }
+  .fin-depth-2 {
+    padding-inline-start: var(--s-8);
+  }
+  .fin-depth-3 {
+    padding-inline-start: var(--s-12);
+  }
+
+  /* ── the manual entry's lines (one row per line; stacks on phones) ── */
+  .fin-lines {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .fin-line {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  @media (min-width: 64rem) {
+    .fin-line {
+      grid-template-columns: minmax(14rem, 2fr) minmax(8rem, 1fr) minmax(8rem, 1fr) minmax(7rem, 0.8fr) minmax(10rem, 1.2fr) auto;
+      align-items: end;
+    }
+  }
+
+  /* ── a proof picture at full width on a phone ── */
+  .fin-proof {
+    display: block;
+    inline-size: 100%;
+    max-block-size: 70dvh;
+    object-fit: contain;
+    border-radius: var(--r-sm);
+    background: var(--niche);
+  }
+
+  /* ── a sticky task bar at the bottom (mobile approvals): above the phone tab bar ── */
+  .fin-taskbar {
+    position: sticky;
+    inset-block-end: var(--adm-bottom, 0px);
+    z-index: var(--z-sticky);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    justify-content: flex-end;
+    margin-block-start: var(--s-4);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+  }
+
+  /* ── checklist rows (the monthly close) ── */
+  .fin-checks {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .fin-checks > li {
+    display: flex;
+    gap: var(--s-2);
+    align-items: flex-start;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .fin-checks > li[data-state="ok"] > svg {
+    color: var(--ok);
+  }
+  .fin-checks > li[data-state="warn"] > svg {
+    color: var(--warn);
+  }
+  .fin-checks > li[data-state="block"] > svg {
+    color: var(--red-ink);
+  }
+
+  /* ── printing (trial balance, statements, the P&L): the browser prints them without the admin's chrome ── */
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.fin-print) .adm-rail,
+    body:has(.fin-print) .adm-top,
+    body:has(.fin-print) .adm-tabbar,
+    body:has(.fin-print) .adm-skip,
+    body:has(.fin-print) .fin-noprint {
+      display: none !important;
+    }
+    body:has(.fin-print) .adm,
+    body:has(.fin-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .fin-print {
+      color: var(--ink);
+      background: var(--paper);
+    }
+    .fin-print .adm-card {
+      box-shadow: none;
+      border: 1px solid var(--line);
+    }
+    .fin-print .adm-section {
+      break-inside: avoid;
+    }
+  }
+  .fin-print-only {
+    display: none;
+  }
+  @media print {
+    .fin-print-only {
+      display: block;
+    }
+  }
+}

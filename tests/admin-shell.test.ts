@@ -648,7 +648,7 @@ describe("shell data", () => {
     const manager = await staff("manager");
     const clerk = await staff("inventory");
     const cashier = await staff("cashier");
-    await t.db.insert(inventoryLocations).values({ id: "loc_shell_shop", code: "SHELL-SHOP", name: "متجر الاختبار", kind: "shop" });
+    await t.db.insert(inventoryLocations).values({ id: "loc_shell_shop", code: "SHELL-SHOP", name: "متجر الاختبار", kind: "store" });
     await t.db.insert(cycleCounts).values([
       { id: "cc_shell_clerk", ref: "CC-SHELL-1", locationId: DEFAULT_LOCATION_ID, status: "review", startedBy: clerk.id, createdAt: NOW },
       { id: "cc_shell_manager", ref: "CC-SHELL-2", locationId: DEFAULT_LOCATION_ID, status: "review", startedBy: manager.id, createdAt: NOW },

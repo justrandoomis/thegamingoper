@@ -4,7 +4,8 @@
  * Message values:
  *   "Hello {name}"                                     simple interpolation
  *   { one: "{count} item", other: "{count} items" }    plural, selected by `vars.count` with Intl.PluralRules
- * Arabic uses up to six plural categories (zero, one, two, few, many, other); `other` is mandatory.
+ * Arabic uses up to six plural categories (zero, one, two, few, many, other); `other` is mandatory. A `zero` form
+ * is used for exactly 0 in every language, also where CLDR has no zero category (English, Sorani).
  */
 import { LOCALES, type Locale } from "~/lib/locales";
 
@@ -57,6 +58,9 @@ export function translate(tree: MessageTree | undefined, locale: Locale, key: st
   if (value === undefined) return undefined;
   if (typeof value === "string") return interpolate(value, vars);
   const count = typeof vars?.count === "number" ? vars.count : Number(vars?.count ?? 0);
+  // A message's `zero` form is used for exactly 0 in every language. CLDR gives English and Sorani no "zero"
+  // category (Intl.PluralRules picks "other" for 0), so without this their "no items" wording would never show.
+  if (count === 0 && value.zero !== undefined) return interpolate(value.zero, vars);
   const category = rules(locale).select(count);
   return interpolate(value[category] ?? value.other, vars);
 }

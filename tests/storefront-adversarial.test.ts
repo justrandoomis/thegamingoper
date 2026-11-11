@@ -39,6 +39,7 @@ import { hashPassword } from "~/server/crypto.server";
 import { customerSessions, files, otpCodes } from "~/server/db/schema";
 import { districtId, governorateId } from "~/server/db/seed/reference";
 import { limitKey, RATE_LIMITS } from "~/server/ratelimit.server";
+import { WISHLIST_CHANGES_PER_IP } from "~/server/services/wishlist.server";
 import { applySecurityHeaders } from "~/server/security.server";
 import { kvBlobStore, putFile } from "~/server/storage.server";
 import { saveTopupProof } from "~/server/services/account/topups.server";
@@ -700,7 +701,10 @@ describe("favourites — the page's form counts like the API", () => {
     const product = await make.product({ stock: 1 });
     const ip = freshIp();
     let last: Hit | null = null;
-    for (let i = 0; i < 61; i++) {
+    // Windows are aligned to the clock: a run that crosses a minute boundary splits its count over two windows, so
+    // allow twice the limit plus one (the loop still stops at the first 429, normally the 61st request).
+    const { limit } = WISHLIST_CHANGES_PER_IP;
+    for (let i = 0; i < 2 * limit + 1; i++) {
       last = await hit("/wishlist", wishlistPageAction as Handler, { form: { intent: "add", productId: product.productId }, ip });
       if (last.status === 429) break;
     }

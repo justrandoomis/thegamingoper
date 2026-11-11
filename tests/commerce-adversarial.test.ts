@@ -24,8 +24,8 @@
  *   · the unpaid-transfer job cancelled an order whose proof arrived while the job ran   orders/manage.server.ts, jobs.server.ts
  *   · the reservation-expiry job released the stock of an order whose proof arrived while it ran   inventory/stock.server.ts
  *   · optional checkout fields sent empty ("") the way HTML forms send them were refused   orders/place.server.ts
- * Still open (outside this module's files): INSERT OR REPLACE can rewrite an append-only ledger row
- * (the `test.fails` below; needs a migration by the data owner).
+ * Closed outside this module's files: INSERT OR REPLACE could rewrite an append-only ledger row; the
+ * database now refuses it (drizzle/0003_append_only_no_replace.sql, data owner).
  *
  * Real local D1 (tests/helpers/db.ts).
  */
@@ -1259,12 +1259,17 @@ describe("append-only history", () => {
     expect((await counts()).journal_lines).toBe(linesBefore);
   });
 
-  test("an audit event rewritten behind the triggers' back (INSERT OR REPLACE) is caught by the hash chain", async () => {
+  test("an audit event rewritten behind the triggers' back (guard dropped, then INSERT OR REPLACE) is caught by the hash chain", async () => {
     let sealed = await sealAudit(t.db, NOW + HOUR);
     while (sealed.remaining) sealed = await sealAudit(t.db, NOW + HOUR);
     expect((await verifyAuditChain(t.db)).ok).toBe(true);
     const victim = await t.d1.prepare("SELECT * FROM audit_events WHERE seq <= ? AND action = 'orders.order.place' ORDER BY seq DESC LIMIT 1").bind(sealed.lastSealedSeq).first<Record<string, unknown>>();
     expect(victim).toBeTruthy();
+    // The database refuses the rewrite (drizzle/0003_append_only_no_replace.sql). Someone with full
+    // database access can drop that guard first, and that is what the hash chain is there for.
+    await expect(replaceRow("audit_events", { ...victim!, reason: "rewritten without a trace?" })).rejects.toThrow("TT:IMMUTABLE:audit_events");
+    const guard = await t.d1.prepare("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = 'audit_events_no_replace'").first<{ sql: string }>();
+    await t.d1.prepare("DROP TRIGGER audit_events_no_replace").run();
     try {
       await replaceRow("audit_events", { ...victim!, reason: "rewritten without a trace?" });
       const report = await verifyAuditChain(t.db);
@@ -1272,17 +1277,17 @@ describe("append-only history", () => {
       expect(report.problems.map((problem) => problem.kind)).toContain("seal_hash");
     } finally {
       await replaceRow("audit_events", victim!);
+      await t.d1.prepare(guard!.sql).run();
     }
     expect((await verifyAuditChain(t.db)).ok).toBe(true);
   });
 
-  // STILL OPEN — outside this module's files. SQLite's REPLACE deletes the old row without firing the
-  // DELETE trigger (recursive_triggers is off on D1), so a ledger row can be rewritten in place; nothing
-  // like the audit hash chain watches the ledgers. Fix (data owner, new migration): a BEFORE INSERT
-  // trigger per append-only table that aborts with TT:IMMUTABLE:<table> when a row with the same id
-  // (or idempotency key) already exists. `.fails` makes this test pass while the hole exists; when
-  // the migration lands vitest reports it as unexpectedly passing — then delete `.fails`.
-  test.fails("STILL OPEN (data owner): INSERT OR REPLACE must not rewrite a wallet ledger row", async () => {
+  // Closed by the data owner (drizzle/0003_append_only_no_replace.sql). SQLite's REPLACE deletes the
+  // old row without firing the DELETE trigger (recursive_triggers is off on D1), so a ledger row could
+  // be rewritten in place, and nothing like the audit hash chain watches the ledgers. Every append-only
+  // table now refuses an INSERT OR REPLACE that meets an existing id or other UNIQUE key
+  // (TT:IMMUTABLE:<table>); tests/db-invariants.test.ts proves it table by table.
+  test("INSERT OR REPLACE must not rewrite a wallet ledger row", async () => {
     const original = await t.d1.prepare("SELECT * FROM wallet_ledger WHERE kind = 'topup' ORDER BY at, id LIMIT 1").first<Record<string, unknown>>();
     expect(original).toBeTruthy();
     try {
@@ -1291,6 +1296,41 @@ describe("append-only history", () => {
       expect(after?.amount_iqd).toBe(original!.amount_iqd);
     } finally {
       await replaceRow("wallet_ledger", original!).catch(() => undefined);
+    }
+  });
+
+  test("INSERT OR REPLACE is refused on every append-only row a real order wrote, by its id and by its idempotency key", async () => {
+    const p = await stocked({ priceIqd: 150_000, qty: 2, unitCostIqd: 90_000 });
+    const customerId = await customerWithWallet(600_000);
+    const order = await buy([{ variantId: p.variantId }], { paymentMethod: "wallet", marketingConsent: true }, { customerId });
+    await transitionOrder(t.db, ops(), order.orderId, "shipped", {}, NOW + MINUTE);
+    await transitionOrder(t.db, ops(), order.orderId, "delivered", {}, NOW + 2 * MINUTE);
+    let sealed = await sealAudit(t.db, NOW + 3 * MINUTE);
+    while (sealed.remaining) sealed = await sealAudit(t.db, NOW + 3 * MINUTE);
+
+    const rowOf = async (query: string, ...params: unknown[]) => {
+      const row = await t.d1.prepare(query).bind(...params).first<Record<string, unknown>>();
+      if (!row) throw new Error(`no row for ${query}`);
+      return row;
+    };
+    const wallet = await rowOf("SELECT * FROM wallet_ledger WHERE ref_id = ? LIMIT 1", order.orderId);
+    const entry = await rowOf("SELECT * FROM journal_entries WHERE ref_id = ? AND idempotency_key IS NOT NULL LIMIT 1", order.orderId);
+    const attacks: [table: string, row: Record<string, unknown>, rewrite: Record<string, unknown>][] = [
+      ["audit_events", await rowOf("SELECT * FROM audit_events WHERE entity_id = ? ORDER BY seq LIMIT 1", order.orderId), { reason: "تعديل" }],
+      ["audit_seals", await rowOf("SELECT * FROM audit_seals ORDER BY to_seq DESC LIMIT 1"), { hash: "0".repeat(64) }],
+      ["stock_movements", await rowOf("SELECT * FROM stock_movements WHERE ref_id = ? AND kind = 'sale' LIMIT 1", order.orderId), { unit_cost_iqd: 1 }],
+      ["order_events", await rowOf("SELECT * FROM order_events WHERE order_id = ? LIMIT 1", order.orderId), { kind: "nothing_happened" }],
+      ["consents", await rowOf("SELECT * FROM consents WHERE subject_id = ? LIMIT 1", customerId), { granted: 0 }],
+      ["journal_lines", await rowOf("SELECT l.* FROM journal_lines l JOIN journal_entries e ON e.id = l.entry_id WHERE e.ref_id = ? LIMIT 1", order.orderId), { debit_iqd: 1 }],
+      ["wallet_ledger", wallet, { amount_iqd: 1 }],
+      // The same idempotency key under a new id would have deleted the original entry.
+      ["wallet_ledger", wallet, { id: newId("wal"), amount_iqd: 1 }],
+      ["journal_entries", entry, { memo: "edited" }],
+      ["journal_entries", entry, { id: newId("je"), memo: "edited" }],
+    ];
+    for (const [table, row, rewrite] of attacks) {
+      await expect(replaceRow(table, { ...row, ...rewrite }), table).rejects.toThrow(`TT:IMMUTABLE:${table}`);
+      expect(await t.d1.prepare(`SELECT * FROM ${table} WHERE id = ?`).bind(row.id).first(), table).toEqual(row);
     }
   });
 });

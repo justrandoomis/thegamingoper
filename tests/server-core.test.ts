@@ -1669,7 +1669,7 @@ describe("audit trail", () => {
 
   test("tampering behind the triggers is detected, seal by seal", async () => {
     const triggers = (await t.d1.prepare("SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name IN ('audit_events', 'audit_seals')").all<{ name: string; sql: string }>()).results;
-    expect(triggers.map((trigger) => trigger.name).sort()).toEqual(["audit_events_no_delete", "audit_events_no_update", "audit_seals_no_delete", "audit_seals_no_update"]);
+    expect(triggers.map((trigger) => trigger.name).sort()).toEqual(["audit_events_no_delete", "audit_events_no_replace", "audit_events_no_update", "audit_seals_no_delete", "audit_seals_no_replace", "audit_seals_no_update"]);
     const seals = await t.db.select().from(auditSeals).orderBy(auditSeals.fromSeq);
     const last = seals.at(-1)!;
     const middle = seals.at(-2)!;

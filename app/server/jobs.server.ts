@@ -19,8 +19,9 @@
  *       ratelimits.cleanup             drops rate-limit counters older than one day.
  *       retention                      deletes expired customer/staff sessions and trusted devices (30 days
  *                                      after expiry or revocation), one-time codes (7 days after expiry),
- *                                      sign-in events older than 180 days and outbox rows (sent, failed or
- *                                      held) older than 90 days. `consents`, audit events, ledgers and
+ *                                      sign-in events older than 180 days, outbox rows (sent, failed or
+ *                                      held) older than 90 days, and job_runs older than 90 days except
+ *                                      the latest run of each job. `consents`, audit events, ledgers and
  *                                      order history are never deleted here.
  *       consistency.daily              stock vs movements, stock vs reservations, wallet ledger vs journal,
  *                                      journal balance, order totals vs lines / payments / refunds, money
@@ -42,7 +43,8 @@
  *
  * Must not import "cloudflare:workers".
  */
-import { and, asc, eq, inArray, isNull, lt, lte, ne, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, eq, exists, gt, inArray, isNull, lt, lte, ne, or, sql, type SQL } from "drizzle-orm";
+import { alias } from "drizzle-orm/sqlite-core";
 import { newId } from "~/lib/ids";
 import { systemActor } from "./actor";
 import { sealAudit } from "./audit.server";
@@ -89,6 +91,8 @@ export const RETENTION_DAYS = {
   authEvents: 180,
   /** Outgoing messages that were sent, failed for good, or held for lack of a provider. */
   outbox: 90,
+  /** Scheduled-job history (`job_runs`, about 900 rows a day). The latest run of each job is kept, however old. */
+  jobRuns: 90,
 } as const;
 
 /** What the Worker passes as `env`. Everything is optional; nothing here reads secrets. */
@@ -265,6 +269,32 @@ async function applyRetention(db: Db, { now }: JobContext): Promise<JobResult> {
         .run(),
     ),
   );
+  // Job history: an old run goes only when a later run of the same job exists, so the operations
+  // screens still show when a job that has been quiet for months last ran (and how it ended).
+  const newer = alias(jobRuns, "newer");
+  const laterRunExists = exists(
+    db
+      .select({ id: newer.id })
+      .from(newer)
+      .where(and(eq(newer.job, jobRuns.job), or(gt(newer.startedAt, jobRuns.startedAt), and(eq(newer.startedAt, jobRuns.startedAt), gt(newer.id, jobRuns.id))))),
+  );
+  const jobRunsDeleted = await deleteInRounds(async () =>
+    changesOf(
+      await db
+        .delete(jobRuns)
+        .where(
+          inArray(
+            jobRuns.id,
+            db
+              .select({ id: jobRuns.id })
+              .from(jobRuns)
+              .where(and(lt(jobRuns.startedAt, now - RETENTION_DAYS.jobRuns * DAY_MS), laterRunExists))
+              .limit(DELETE_BATCH),
+          ),
+        )
+        .run(),
+    ),
+  );
   return {
     stats: {
       customerSessions: customerSessionsDeleted,
@@ -273,6 +303,7 @@ async function applyRetention(db: Db, { now }: JobContext): Promise<JobResult> {
       otpCodes: otpDeleted,
       authEvents: authEventsDeleted,
       outbox: outboxDeleted,
+      jobRuns: jobRunsDeleted,
       days: RETENTION_DAYS,
     },
   };

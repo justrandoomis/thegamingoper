@@ -42,7 +42,7 @@ import { JournalEntryError } from "~/server/db/journal.server";
 import { DEFAULT_LOCATION_ID, accountId, districtId, governorateId } from "~/server/db/seed/reference";
 import { TRIGGER_ERROR_CODES, runBatch } from "~/server/db/tx.server";
 import { AppError, CORE_ERROR_KEYS, actionError, toAppError } from "~/server/errors";
-import { CRON_DAILY, CRON_FREQUENT, listJobRuns, listOpenFindings, runScheduledJobs } from "~/server/jobs.server";
+import { CRON_DAILY, CRON_FREQUENT, RETENTION_DAYS, listJobRuns, listOpenFindings, runJob, runScheduledJobs } from "~/server/jobs.server";
 import type { Permission } from "~/server/permissions";
 import { setSetting } from "~/server/settings.server";
 import { ACCOUNTING_ERROR_KEYS, journalStatements, mapPostingError, postSale } from "~/server/services/accounting/post.server";
@@ -734,6 +734,33 @@ describe("scheduled jobs", () => {
     const run = await runScheduledJobs(t.db, "0 * * * *", NOW);
     expect(run).toMatchObject({ ok: false, audit: null, jobs: [{ job: "scheduler", status: "skipped" }] });
     expect((await t.db.select().from(jobRuns).where(eq(jobRuns.id, run.jobs[0].runId)).get())?.error).toContain('Unknown cron expression "0 * * * *"');
+  });
+
+  test("retention prunes job history older than 90 days but keeps the latest run of every job, however old", async () => {
+    const tag = randomToken().slice(0, 8);
+    const busy = `test.retention.busy.${tag}`;
+    const quiet = `test.retention.quiet.${tag}`;
+    const ago = (days: number) => NOW - days * DAY;
+    const row = (id: string, job: string, startedAt: number, status: "succeeded" | "failed" = "succeeded") => ({ id: `job_${tag}_${id}`, job, status, origin: "cron" as const, startedAt, finishedAt: startedAt + 1_000, durationMs: 1_000 });
+    await t.db.insert(jobRuns).values([
+      row("b1", busy, ago(200)),
+      row("b2", busy, ago(91), "failed"),
+      row("b3", busy, ago(89)),
+      row("b4", busy, ago(1)),
+      // A job that last ran long ago keeps its last run; at the same start time the higher id is the later run.
+      row("q1", quiet, ago(400)),
+      row("q2", quiet, ago(300)),
+      row("q3", quiet, ago(300)),
+    ]);
+
+    const run = await runJob(t.db, "retention", NOW);
+    expect(run.status).toBe("succeeded");
+    expect(RETENTION_DAYS.jobRuns).toBe(90);
+    expect(Number(run.stats.jobRuns)).toBeGreaterThanOrEqual(4);
+    const left = await t.db.select({ id: jobRuns.id }).from(jobRuns).where(inArray(jobRuns.job, [busy, quiet])).orderBy(jobRuns.id);
+    expect(left.map((kept) => kept.id)).toEqual([`job_${tag}_b3`, `job_${tag}_b4`, `job_${tag}_q3`]);
+    // The pruning run is on record itself.
+    expect(await t.db.select({ status: jobRuns.status }).from(jobRuns).where(eq(jobRuns.id, run.runId)).get()).toEqual({ status: "succeeded" });
   });
 });
 

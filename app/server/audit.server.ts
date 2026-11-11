@@ -9,7 +9,8 @@
  * Put the audit statement in the SAME batch as the change it describes: either both are stored or
  * neither. `audit(db, event)` is for events that stand alone (a sign-in, a failed verification).
  *
- * `audit_events` is append-only (database triggers reject UPDATE and DELETE). On top of that,
+ * `audit_events` is append-only (database triggers reject UPDATE, DELETE and an INSERT OR REPLACE
+ * that would rewrite an existing event, drizzle/0003_append_only_no_replace.sql). On top of that,
  * `sealAudit()` chains SHA-256 hashes over the events into `audit_seals`, and `verifyAuditChain()`
  * recomputes them: an event that was edited, removed or inserted behind the triggers' back no longer
  * matches its seal. What the chain cannot see: events deleted before they were sealed, and a chain

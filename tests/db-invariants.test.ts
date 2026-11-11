@@ -238,7 +238,8 @@ const APPEND_ONLY_TABLES = [
 /** Every trigger the migrations must leave in place. A table rebuild that drops one fails this list. */
 const EXPECTED_TRIGGERS = [
   "_tx_guard_check",
-  ...APPEND_ONLY_TABLES.flatMap((table) => [`${table}_no_delete`, `${table}_no_update`]),
+  "_replace_guard_check",
+  ...APPEND_ONLY_TABLES.flatMap((table) => [`${table}_no_delete`, `${table}_no_update`, `${table}_no_replace`]),
   "stock_levels_available_insert",
   "stock_levels_available_update",
   "serials_status_guard",
@@ -287,7 +288,7 @@ describe("schema and migrations", () => {
 
   test("each migration splits into the same statements for wrangler and for the breakpoint marker", () => {
     const migrations = listMigrations();
-    expect(migrations.map((migration) => migration.name)).toEqual(expect.arrayContaining(["0000_base.sql", "0001_invariants.sql", "0002_search.sql"]));
+    expect(migrations.map((migration) => migration.name)).toEqual(expect.arrayContaining(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql"]));
     for (const migration of migrations) {
       const wranglerStatements = unstable_splitSqlQuery(readFileSync(path.join(MIGRATIONS_DIR, migration.name), "utf8"));
       expect(wranglerStatements.length, migration.name).toBe(migration.statements.length);
@@ -439,7 +440,7 @@ describe("resetting a database (scripts/db-reset.ts)", () => {
       const left = (await d1.prepare("SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite\\_%' ESCAPE '\\' AND name NOT LIKE '\\_cf\\_%' ESCAPE '\\'").all<{ name: string }>()).results;
       expect(left).toEqual([]);
 
-      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql"]);
+      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql"]);
       expect(await applyMigrations(d1)).toEqual([]);
       await seedReference(db, NOW);
       expect((await db.select().from(governorates)).length).toBe(19);
@@ -885,6 +886,218 @@ describe("append-only history (§7.8)", () => {
     expect(error).toMatchObject({ code: "IMMUTABLE", detail: "wallet_ledger" });
     expect(await scalar("SELECT sum(amount_iqd) FROM wallet_ledger WHERE customer_id = ?", customerId)).toBe(1_000);
   });
+
+  // ── INSERT OR REPLACE (drizzle/0003_append_only_no_replace.sql) ──────────────────────────────
+  // SQLite settles a REPLACE conflict by deleting the old row without firing DELETE triggers, so the
+  // UPDATE / DELETE triggers above cannot see it. Each [A] table has a <table>_no_replace guard: a
+  // REPLACE that meets an existing primary key or other UNIQUE key is refused, and every other way of
+  // inserting behaves exactly as it did without the guard.
+
+  type ReplaceTarget = {
+    table: (typeof APPEND_ONLY_TABLES)[number];
+    /** The protected row, as stored. */
+    row: Record<string, unknown>;
+    /** The columns of each UNIQUE key of the table, primary key first. */
+    keys: string[][];
+    /** Per key column, a value no row has: lets a statement meet ONE key and miss the others. */
+    fresh: Record<string, unknown>;
+    /** What the rewrite would change. */
+    change: [column: string, value: unknown];
+  };
+
+  /** One row in each of the fifteen tables, with every UNIQUE key filled in. */
+  async function replaceTargets(): Promise<ReplaceTarget[]> {
+    const customerId = await makeCustomer();
+    const order = await simpleOrder({ customerId });
+    const shipmentId = newId("shp");
+    const repairId = newId("rep");
+    const tradeInId = newId("tin");
+    const registerId = newId("reg");
+    const shiftId = newId("psh");
+    const id = {
+      audit: newId("aud"),
+      seal: newId("seal"),
+      version: newId("pv"),
+      price: newId("pc"),
+      movement: newId("mov"),
+      consent: newId("con"),
+      event: newId("oev"),
+      wallet: newId("wal"),
+      loyalty: newId("loy"),
+      shipmentEvent: newId("sev"),
+      repairEvent: newId("rev"),
+      tradeInEvent: newId("tev"),
+      entry: newId("je"),
+      reversal: newId("je"),
+      cash: newId("cm"),
+    };
+    // Seal ranges are UNIQUE across the log: stay clear of the ones other tests wrote.
+    const sealFrom = (await scalar<number>("SELECT coalesce(max(to_seq), 0) FROM audit_seals")) + 1_000;
+    const lines = (debit: string, credit: string) => [
+      { accountId: debit, debitIqd: 7_000 },
+      { accountId: credit, creditIqd: 7_000 },
+    ];
+    await runBatch(t.db, [
+      t.db.insert(auditEvents).values({ id: id.audit, at: NOW, actorKind: "system", action: "test.replace.target" }),
+      t.db.insert(auditSeals).values({ id: id.seal, fromSeq: sealFrom, toSeq: sealFrom + 1, hash: "a".repeat(64), createdAt: NOW }),
+      t.db.insert(productVersions).values({ id: id.version, productId: order.productId, version: 1, snapshot: { name: "x" }, createdAt: NOW }),
+      t.db.insert(priceChanges).values({ id: id.price, variantId: order.variantId, oldPriceIqd: 500_000, newPriceIqd: 490_000, status: "applied", createdAt: NOW }),
+      t.db.insert(stockMovements).values({ id: id.movement, variantId: order.variantId, locationId: DEFAULT_LOCATION_ID, kind: "receive", qtyDelta: 1, actorKind: "system", at: NOW }),
+      t.db.insert(consents).values({ id: id.consent, subjectType: "customer", subjectId: customerId, kind: "marketing", granted: true, at: NOW }),
+      t.db.insert(orderEvents).values({ id: id.event, orderId: order.orderId, kind: "placed", actorKind: "system", at: NOW }),
+      t.db.insert(walletLedger).values({ id: id.wallet, customerId, amountIqd: 25_000, kind: "topup", actorKind: "system", idempotencyKey: next("wallet"), at: NOW }),
+      t.db.insert(loyaltyLedger).values({ id: id.loyalty, customerId, points: 40, kind: "earn", actorKind: "system", idempotencyKey: next("loyalty"), at: NOW }),
+      t.db.insert(shipments).values({ id: shipmentId, orderId: order.orderId }),
+      t.db.insert(shipmentEvents).values({ id: id.shipmentEvent, shipmentId, kind: "packed", actorKind: "system", at: NOW }),
+      t.db.insert(repairTickets).values({ id: repairId, ref: next("RP"), phoneE164: phone(), issue: "لا يشحن", createdAt: NOW }),
+      t.db.insert(repairEvents).values({ id: id.repairEvent, ticketId: repairId, kind: "created", actorKind: "system", at: NOW }),
+      t.db.insert(tradeIns).values({ id: tradeInId, ref: next("TI"), phoneE164: phone(), createdAt: NOW }),
+      t.db.insert(tradeInEvents).values({ id: id.tradeInEvent, tradeInId, kind: "submitted", actorKind: "guest", at: NOW }),
+      t.db.insert(posRegisters).values({ id: registerId, code: next("REG"), name: "الكاشير 2", createdAt: NOW }),
+      t.db.insert(posShifts).values({ id: shiftId, registerId, openedBy: "emp_test", openedAt: NOW }),
+      t.db.insert(cashMovements).values({ id: id.cash, shiftId, kind: "pay_in", amountIqd: 5_000, actorKind: "employee", actorId: "emp_test", idempotencyKey: next("cash"), at: NOW }),
+      ...journalEntryStatements(t.db, { id: id.entry, at: NOW, idempotencyKey: next("posting"), lines: lines(accountId("cash"), accountId("sales_revenue")) }),
+      // The reversal carries all three UNIQUE keys of journal_entries.
+      ...journalEntryStatements(t.db, { id: id.reversal, at: NOW, idempotencyKey: next("posting"), reversesId: id.entry, lines: lines(accountId("sales_revenue"), accountId("cash")) }),
+    ]);
+
+    const target = async (table: ReplaceTarget["table"], rowId: string, keys: string[][], change: ReplaceTarget["change"], fresh: Record<string, unknown> = {}): Promise<ReplaceTarget> => {
+      const row = await t.d1.prepare(`SELECT * FROM ${table} WHERE id = ?`).bind(rowId).first<Record<string, unknown>>();
+      if (!row) throw new Error(`no ${table} row ${rowId}`);
+      return { table, row, keys, change, fresh: { id: `${rowId}.fresh`, ...fresh } };
+    };
+    return [
+      await target("audit_events", id.audit, [["seq"], ["id"]], ["reason", "rewritten"], { seq: (await scalar<number>("SELECT max(seq) FROM audit_events")) + 1_000_000 }),
+      await target("audit_seals", id.seal, [["id"], ["from_seq"], ["to_seq"]], ["hash", "f".repeat(64)], { from_seq: sealFrom + 500_000, to_seq: sealFrom + 500_001 }),
+      await target("product_versions", id.version, [["id"], ["product_id", "version"]], ["reason", "rewritten"], { version: 1_000 }),
+      await target("price_changes", id.price, [["id"]], ["new_price_iqd", 1]),
+      await target("stock_movements", id.movement, [["id"]], ["qty_delta", 1_000]),
+      await target("consents", id.consent, [["id"]], ["granted", 0]),
+      await target("order_events", id.event, [["id"]], ["kind", "nothing_happened"]),
+      await target("wallet_ledger", id.wallet, [["id"], ["idempotency_key"]], ["amount_iqd", 25_000_000], { idempotency_key: next("wallet") }),
+      await target("loyalty_ledger", id.loyalty, [["id"], ["idempotency_key"]], ["points", 40_000], { idempotency_key: next("loyalty") }),
+      await target("shipment_events", id.shipmentEvent, [["id"]], ["note", "rewritten"]),
+      await target("repair_events", id.repairEvent, [["id"]], ["note", "rewritten"]),
+      await target("trade_in_events", id.tradeInEvent, [["id"]], ["kind", "rewritten"]),
+      await target("journal_entries", id.reversal, [["id"], ["idempotency_key"], ["reverses_id"]], ["memo", "rewritten"], { idempotency_key: next("posting"), reverses_id: null }),
+      await target("journal_lines", `${id.reversal}.1`, [["id"]], ["memo", "rewritten"]),
+      await target("cash_movements", id.cash, [["id"], ["idempotency_key"]], ["amount_iqd", 5_000_000], { idempotency_key: next("cash") }),
+    ];
+  }
+
+  /** The row a statement sends to meet `target` on `key` only (every other UNIQUE key gets a fresh value), carrying the rewrite. */
+  function collidingRow(target: ReplaceTarget, key: string[]): Record<string, unknown> {
+    const row: Record<string, unknown> = { ...target.row, [target.change[0]]: target.change[1] };
+    for (const other of target.keys) {
+      if (other === key) continue;
+      for (const column of other) if (!key.includes(column) && column in target.fresh) row[column] = target.fresh[column];
+    }
+    return row;
+  }
+
+  /** `<verb> INTO table (…) VALUES (…)<tail>` for a raw row, the way a careless script or an attacker would write it. */
+  const insertRow = (table: string, row: Record<string, unknown>, verb: "INSERT" | "INSERT OR REPLACE" | "REPLACE" | "INSERT OR IGNORE" | "INSERT OR ABORT", tail = "") => {
+    const columns = Object.keys(row);
+    return t.d1
+      .prepare(`${verb} INTO ${table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})${tail}`)
+      .bind(...columns.map((column) => row[column] ?? null));
+  };
+
+  const stored = (target: ReplaceTarget) => t.d1.prepare(`SELECT * FROM ${target.table} WHERE id = ?`).bind(target.row.id).first();
+  const changesOf = (result: unknown) => (result as { meta: { changes: number } }).meta.changes;
+
+  test("INSERT OR REPLACE cannot rewrite a row of any [A] table, by its id or by any other UNIQUE key", async () => {
+    const targets = await replaceTargets();
+    expect(targets.map((target) => target.table).sort()).toEqual([...APPEND_ONLY_TABLES].sort());
+    for (const target of targets) {
+      const count = await scalar(`SELECT count(*) FROM ${target.table}`);
+      for (const key of target.keys) {
+        for (const verb of ["INSERT OR REPLACE", "REPLACE"] as const) {
+          expect(await refused(() => insertRow(target.table, collidingRow(target, key), verb).run()), `${verb} ${target.table} (${key.join(", ")})`).toMatchObject({
+            code: "IMMUTABLE",
+            detail: target.table,
+            kind: "trigger",
+            status: 409,
+          });
+        }
+      }
+      expect(await stored(target), target.table).toEqual(target.row);
+      expect(await scalar(`SELECT count(*) FROM ${target.table}`), `${target.table} row count`).toBe(count);
+    }
+    // The guard keeps no rows, and refuses one written to it directly.
+    expect(await scalar("SELECT count(*) FROM _replace_guard")).toBe(0);
+    expect(await refused(() => t.d1.prepare("INSERT INTO _replace_guard (tbl, probe) VALUES ('wallet_ledger', 1)").run())).toMatchObject({ code: "IMMUTABLE", detail: "wallet_ledger" });
+    expect(await scalar("SELECT count(*) FROM _replace_guard")).toBe(0);
+  });
+
+  test("the guard changes nothing else: DO NOTHING and OR IGNORE skip the row, a plain duplicate fails with the same UNIQUE error, a new row goes in", async () => {
+    const targets = await replaceTargets();
+    for (const target of targets) {
+      const count = await scalar(`SELECT count(*) FROM ${target.table}`);
+      for (const key of target.keys) {
+        const label = `${target.table} (${key.join(", ")})`;
+        const row = collidingRow(target, key);
+        // "Insert if missing" (how the demo seed and its --sql file write stock_movements): skipped, 0 rows changed.
+        expect(changesOf(await insertRow(target.table, row, "INSERT", " ON CONFLICT DO NOTHING").run()), `DO NOTHING ${label}`).toBe(0);
+        expect(changesOf(await insertRow(target.table, row, "INSERT", ` ON CONFLICT (${key.join(", ")}) DO NOTHING`).run()), `DO NOTHING on the key ${label}`).toBe(0);
+        expect(changesOf(await insertRow(target.table, row, "INSERT OR IGNORE").run()), `OR IGNORE ${label}`).toBe(0);
+        // A plain duplicate keeps SQLite's own error: the one creditWallet, sealAudit and mapPostingError read.
+        expect(await refused(() => insertRow(target.table, row, "INSERT").run()), `INSERT ${label}`).toMatchObject({ code: "UNIQUE", kind: "unique", table: target.table, columns: key, status: 409 });
+        // The documented side effect: an explicit OR ABORT is still refused, but names the guard's probe.
+        expect(await refused(() => insertRow(target.table, row, "INSERT OR ABORT").run()), `OR ABORT ${label}`).toMatchObject({ code: "NOT_NULL", table: "_replace_guard", columns: ["probe"] });
+      }
+      expect(await stored(target), target.table).toEqual(target.row);
+      expect(await scalar(`SELECT count(*) FROM ${target.table}`), `${target.table} row count`).toBe(count);
+    }
+    // A row that meets no existing key is no business of the guard, whatever the statement says.
+    const wallet = targets.find((target) => target.table === "wallet_ledger")!;
+    expect(changesOf(await insertRow("wallet_ledger", { ...wallet.row, id: newId("wal"), idempotency_key: next("wallet") }, "INSERT OR REPLACE").run())).toBe(1);
+    const movement = targets.find((target) => target.table === "stock_movements")!;
+    expect(changesOf(await insertRow("stock_movements", { ...movement.row, id: newId("mov") }, "REPLACE").run())).toBe(1);
+    expect(changesOf(await insertRow("stock_movements", { ...movement.row, id: newId("mov") }, "INSERT", " ON CONFLICT DO NOTHING").run())).toBe(1);
+  });
+
+  test("in a batch, a refused REPLACE rolls back everything before it, and 'insert if missing' still counts 0 for expectChanged", async () => {
+    const customerId = await makeCustomer();
+    const { orderId, variantId } = await simpleOrder({ customerId });
+    const key = next("wallet");
+    await t.db.insert(walletLedger).values({ id: newId("wal"), customerId, amountIqd: 10_000, kind: "topup", actorKind: "system", idempotencyKey: key, at: NOW });
+
+    const eventId = newId("oev");
+    const error = await refused(() =>
+      runBatch(t.db, [
+        t.db.insert(orderEvents).values({ id: eventId, orderId, kind: "wallet_payment", actorKind: "system", at: NOW }),
+        batchSql(t.db, sql`INSERT OR REPLACE INTO wallet_ledger (id, customer_id, amount_iqd, kind, actor_kind, idempotency_key, at) VALUES (${newId("wal")}, ${customerId}, ${10_000_000}, 'topup', 'system', ${key}, ${NOW})`),
+      ]),
+    );
+    expect(error).toMatchObject({ code: "IMMUTABLE", detail: "wallet_ledger" });
+    expect(await scalar("SELECT count(*) FROM order_events WHERE id = ?", eventId)).toBe(0);
+    expect(await scalar("SELECT sum(amount_iqd) FROM wallet_ledger WHERE customer_id = ?", customerId)).toBe(10_000);
+
+    // The demo seed's statement shape, guarded the way expectChanged() reads changes().
+    const movement = { id: newId("mov"), variantId, locationId: DEFAULT_LOCATION_ID, kind: "adjust" as const, qtyDelta: 2, actorKind: "system" as const, at: NOW };
+    const insertIfMissing = () => t.db.insert(stockMovements).values(movement).onConflictDoNothing({ target: stockMovements.id });
+    const first = await runBatch(t.db, [insertIfMissing(), expectChanged(t.db, 1, "MOVEMENT_ADDED")]);
+    expect(changesOf(first[0])).toBe(1);
+    expect(await refused(() => runBatch(t.db, [insertIfMissing(), expectChanged(t.db, 1, `MOVEMENT_ADDED:${movement.id}`)]))).toMatchObject({ code: "MOVEMENT_ADDED", detail: movement.id });
+    expect(changesOf((await runBatch(t.db, [insertIfMissing()]))[0])).toBe(0);
+    expect(await scalar("SELECT count(*) FROM stock_movements WHERE id = ?", movement.id)).toBe(1);
+  });
+
+  test("each [A] table's guard names every UNIQUE key of the table", async () => {
+    for (const table of APPEND_ONLY_TABLES) {
+      const guard = await scalar<string | undefined>("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = ?", `${table}_no_replace`);
+      expect(guard, table).toContain("BEFORE INSERT ON `" + table + "`");
+      // UNIQUE indexes (a TEXT primary key is one of them) and an INTEGER PRIMARY KEY (the rowid itself, no index).
+      const keys: string[][] = [];
+      const indexes = (await t.d1.prepare(`SELECT name FROM pragma_index_list('${table}') WHERE "unique" = 1`).all<{ name: string }>()).results;
+      for (const index of indexes) keys.push((await t.d1.prepare(`SELECT name FROM pragma_index_info('${index.name}') ORDER BY seqno`).all<{ name: string }>()).results.map((column) => column.name));
+      const primary = (await t.d1.prepare(`SELECT name, type FROM pragma_table_info('${table}') WHERE pk > 0`).all<{ name: string; type: string }>()).results;
+      if (primary.length === 1 && primary[0].type.toUpperCase() === "INTEGER") keys.push([primary[0].name]);
+      expect(keys.length, table).toBeGreaterThan(0);
+      for (const key of keys) expect(guard, `${table} (${key.join(", ")})`).toContain(`WHERE ${key.map((column) => `${column} = NEW.${column}`).join(" AND ")})`);
+    }
+  });
 });
 
 // ───────────────────────────────────────────────────────────────── §7.3 idempotency
@@ -1269,9 +1482,10 @@ describe("used units show real evidence (§7.11)", () => {
     await t.db.update(usedUnits).set({ checklist: completeChecklist }).where(eq(usedUnits.id, id));
     expect(await refused(() => list(id))).toMatchObject(notListable);
 
-    // An illustration (stock photo, clay render) is not a photo of this unit.
+    // An illustration (a stock photo, a render of the model) is not a photo of this unit. The art key
+    // plays no part in the rule; this one names no real picture.
     await addPhoto(id, { isIllustration: true });
-    await t.db.insert(media).values({ id: newId("med"), ownerType: "used_unit", ownerId: id, artKey: "ps5-slim", kind: "render" });
+    await t.db.insert(media).values({ id: newId("med"), ownerType: "used_unit", ownerId: id, artKey: "test-illustration--1", kind: "render" });
     expect(await refused(() => list(id))).toMatchObject(notListable);
 
     await addPhoto(id);

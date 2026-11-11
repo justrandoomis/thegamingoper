@@ -10,7 +10,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-export const MIGRATIONS_DIR = path.join(PROJECT_ROOT, "drizzle");
+/**
+ * ./drizzle — or the directory named by TT_MIGRATIONS_DIR, to run the suite against a draft copy
+ * of the migrations before a new file goes into ./drizzle (`TT_MIGRATIONS_DIR=<dir> npx vitest run`).
+ */
+export const MIGRATIONS_DIR = process.env.TT_MIGRATIONS_DIR ? path.resolve(process.env.TT_MIGRATIONS_DIR) : path.join(PROJECT_ROOT, "drizzle");
 /** wrangler's default bookkeeping table. */
 export const MIGRATIONS_TABLE = "d1_migrations";
 /** drizzle-kit's statement separator; hand-written migrations use it too. */

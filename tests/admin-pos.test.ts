@@ -144,7 +144,9 @@ describe("shifts and the drawer", () => {
     const moveKey = randomToken(16);
     expect(await moveCash(t.db, as("cashier"), { shiftId: opened.shiftId, kind: "pay_in", amountIqd: 10_000, reason: "فكّة", idempotencyKey: moveKey }, NOW)).toEqual({ replayed: false });
     expect(await moveCash(t.db, as("cashier"), { shiftId: opened.shiftId, kind: "pay_in", amountIqd: 10_000, reason: "فكّة", idempotencyKey: moveKey }, NOW)).toEqual({ replayed: true });
-    expect((await failureOf(moveCash(t.db, as("cashier"), { shiftId: opened.shiftId, kind: "drop", amountIqd: 60_000, reason: "إلى الخزنة", idempotencyKey: randomToken(16) }, NOW))).code).toBe("drawer_short");
+    // a supervisor taking the drawer over sees its figures: never below zero (the drawer's OWNER is never refused for an
+    // amount since the follow-up of 2026-11-12 — the refusal was a probe of the blind count; tests/admin-pos-followup)
+    expect((await failureOf(moveCash(t.db, as("manager"), { shiftId: opened.shiftId, kind: "drop", amountIqd: 60_000, reason: "إلى الخزنة", idempotencyKey: randomToken(16) }, NOW))).code).toBe("drawer_short");
     await moveCash(t.db, as("cashier"), { shiftId: opened.shiftId, kind: "drop", amountIqd: 50_000, reason: "إلى الخزنة", idempotencyKey: randomToken(16) }, NOW);
     // someone else's drawer: refused; a supervisor may take it over
     expect((await failureOf(moveCash(t.db, as("cashier2"), { shiftId: opened.shiftId, kind: "pay_in", amountIqd: 1_000, reason: "test", idempotencyKey: randomToken(16) }, NOW))).status).toBe(403);

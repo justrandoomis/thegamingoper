@@ -131,9 +131,7 @@ export default function TradeInPrint({ loaderData }: Route.ComponentProps) {
               <>
                 <div className="is-total">
                   <dt>{t("offer.amount")}</dt>
-                  <dd>
-                    <Money iqd={doc.offer.amountIqd} />
-                  </dd>
+                  <dd>{doc.offer.amountIqd !== null ? <Money iqd={doc.offer.amountIqd} /> : t("money.hidden")}</dd>
                 </div>
                 <div>
                   <dt>{t("offer.validUntil")}</dt>

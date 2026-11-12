@@ -14,6 +14,7 @@ npm run db:reset            local only: drop everything, migrate, seed reference
 | `0001_invariants.sql` | hand | `_tx_guard` and the invariant triggers (`TT:<CODE>:<detail>`) |
 | `0002_search.sql` | hand | the FTS5 table `search_index` |
 | `0003_append_only_no_replace.sql` | hand | `_replace_guard` and the `<table>_no_replace` triggers: append-only tables refuse `INSERT OR REPLACE` (section below) |
+| `0004_accounts_access_ops.sql` | drizzle-kit + hand | admin wave D (2026-11-12): tables `incident_links` (an incident's findings, runs and errors) and `employee_password_links` (one-time password-set links, hashes only); columns `roles.requires_mfa`, `consistency_findings.assigned_to` / `.incident_id`, `is_demo` on `error_reports` and `perf_rollups` (not in its key — a demo row needs a key of its own); then, hand-written, the system accounts `employee_advances` (1300), `gift_card_liability` (2150) and `salaries_payable` (2200) for a database whose chart was seeded before it (section below). No table rebuild, no trigger |
 | `meta/` | drizzle-kit | its journal and schema snapshots — do not edit |
 
 Tests build their own database from these files (`tests/helpers/db.ts`), so a migration that does
@@ -115,6 +116,21 @@ the rest of its batch commits. The table-by-table check:
 and `REPLACE INTO` are refused and leave the row as it was; `ON CONFLICT DO NOTHING` (with and without a
 target) and `INSERT OR IGNORE` change 0 rows; a plain duplicate fails with the same UNIQUE error; a
 refused REPLACE rolls its batch back; and each trigger names every UNIQUE key of its table.
+
+## Reference data in a migration (`0004`: new system accounts)
+
+The chart of accounts is reference data (`seedReference`, `CHART_OF_ACCOUNTS` in `app/server/db/seed/reference.ts`): a
+new database gets it from `/admin/setup` (`createFirstOwner`) or `db:reset`, never from a migration — a freshly migrated
+production database must stay EMPTY until setup (`tests/server-core.test.ts`, "an empty production database"). A new
+system account therefore goes in two places: the chart (for new databases) and a hand-written `INSERT … SELECT … WHERE`
+in the migration for databases whose chart already exists:
+
+- only `WHERE EXISTS (… system_key = 'cash')` — an empty database gets nothing;
+- never twice — `AND NOT EXISTS (… system_key = '<key>' OR id = 'acc_<key>')`, so a replay or a later seed changes nothing;
+- never failing on a renumbered chart — the code is `CASE WHEN EXISTS (code taken) THEN 'SYS-<key>' ELSE '<code>' END`:
+  services find accounts by `system_key`, so the key must exist after the migration, whatever its code;
+- the same names as the chart (`tests/db-invariants.test.ts`, "migration 0004" checks the statements on an empty
+  database, on a seeded one with a taken code, and replayed).
 
 ## What the database enforces
 

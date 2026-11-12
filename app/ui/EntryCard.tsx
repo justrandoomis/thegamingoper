@@ -34,7 +34,8 @@ export function EntryCard<C extends ElementType = typeof LocaleLink>({ title, te
   const Heading = `h${headingLevel}` as const;
   const mascot = art === "mascot";
   return (
-    <Tag {...rest} to={to} className={cx("entry group", className)} data-press="soft">
+    // without a picture the words take the whole card (no empty 96 / 160px column at the end)
+    <Tag {...rest} to={to} className={cx("entry group", !art && "grid-cols-1", className)} data-press="soft">
       <span className="grid min-w-0 content-center gap-1">
         <Heading className="entry__title">{title}</Heading>
         {text ? <span className="entry__text">{text}</span> : null}

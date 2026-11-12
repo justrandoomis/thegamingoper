@@ -19,7 +19,15 @@ import {
   carts,
   cashMovements,
   consents,
+  consistencyFindings,
   customers,
+  employeePasswordLinks,
+  employees,
+  errorReports,
+  incidentLinks,
+  incidents,
+  perfRollups,
+  roles,
   districts,
   files,
   fiscalPeriods,
@@ -208,6 +216,17 @@ const CONTRACT_COLUMNS: Record<string, string> = {
   recommendation_events: "id session_hash customer_id kind product_id source at",
   redirects: "from_path to_path code",
   inbound_events: "id",
+  // migration 0004 (ARCHITECTURE §6)
+  incident_links: "incident_id kind target_id created_by created_at",
+  employee_password_links: "id_hash employee_id purpose created_by created_at expires_at used_at revoked_at",
+};
+
+/** Columns migration 0004 adds to existing tables (each table's other columns are checked elsewhere). */
+const COLUMNS_0004: Record<string, string> = {
+  roles: "requires_mfa",
+  consistency_findings: "assigned_to incident_id",
+  error_reports: "is_demo",
+  perf_rollups: "is_demo",
 };
 
 /** Tables that ARCHITECTURE §6 names without listing columns. */
@@ -274,7 +293,7 @@ describe("schema and migrations", () => {
     expect(missingTables).toEqual([]);
 
     const missingColumns: string[] = [];
-    for (const [table, columns] of Object.entries(CONTRACT_COLUMNS)) {
+    for (const [table, columns] of [...Object.entries(CONTRACT_COLUMNS), ...Object.entries(COLUMNS_0004)]) {
       const actual = new Set((await t.d1.prepare(`SELECT name FROM pragma_table_info('${table}')`).all<{ name: string }>()).results.map((row) => row.name));
       for (const column of columns.split(" ")) if (!actual.has(column)) missingColumns.push(`${table}.${column}`);
     }
@@ -288,7 +307,7 @@ describe("schema and migrations", () => {
 
   test("each migration splits into the same statements for wrangler and for the breakpoint marker", () => {
     const migrations = listMigrations();
-    expect(migrations.map((migration) => migration.name)).toEqual(expect.arrayContaining(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql"]));
+    expect(migrations.map((migration) => migration.name)).toEqual(expect.arrayContaining(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql", "0004_accounts_access_ops.sql"]));
     for (const migration of migrations) {
       const wranglerStatements = unstable_splitSqlQuery(readFileSync(path.join(MIGRATIONS_DIR, migration.name), "utf8"));
       expect(wranglerStatements.length, migration.name).toBe(migration.statements.length);
@@ -440,7 +459,7 @@ describe("resetting a database (scripts/db-reset.ts)", () => {
       const left = (await d1.prepare("SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite\\_%' ESCAPE '\\' AND name NOT LIKE '\\_cf\\_%' ESCAPE '\\'").all<{ name: string }>()).results;
       expect(left).toEqual([]);
 
-      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql"]);
+      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql", "0004_accounts_access_ops.sql"]);
       expect(await applyMigrations(d1)).toEqual([]);
       await seedReference(db, NOW);
       expect((await db.select().from(governorates)).length).toBe(19);
@@ -448,6 +467,106 @@ describe("resetting a database (scripts/db-reset.ts)", () => {
     } finally {
       await fresh.dispose();
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── migration 0004
+
+describe("migration 0004 (system accounts, staff access, operations links)", () => {
+  /** The hand-written account statements of 0004, as wrangler would run them. */
+  const accountInserts = () => listMigrations().find((migration) => migration.name === "0004_accounts_access_ops.sql")!.statements.filter((statement) => /INSERT INTO `accounts`/.test(statement));
+  const NEW_KEYS = ["employee_advances", "gift_card_liability", "salaries_payable"] as const;
+  const keyed = async (d1: D1Database) =>
+    (await d1.prepare(`SELECT system_key AS key, code, type, is_system AS isSystem, name FROM accounts WHERE system_key IN ('employee_advances', 'gift_card_liability', 'salaries_payable') ORDER BY system_key`).all<{ key: string; code: string; type: string; isSystem: number; name: string }>()).results;
+
+  test("seedReference installs the three new system accounts with the chart", async () => {
+    expect(CHART_OF_ACCOUNTS.map((account) => account.key)).toEqual(expect.arrayContaining([...NEW_KEYS]));
+    const rows = await keyed(t.d1);
+    expect(rows.map((row) => [row.key, row.code, row.type, row.isSystem])).toEqual([
+      ["employee_advances", "1300", "asset", 1],
+      ["gift_card_liability", "2150", "liability", 1],
+      ["salaries_payable", "2200", "liability", 1],
+    ]);
+  });
+
+  test("its account statements add the accounts to a chart seeded before it, keep a renumbered code free, and add nothing to an empty database", async () => {
+    expect(accountInserts()).toHaveLength(3);
+    const fresh = await createTestDb({ seed: false });
+    try {
+      // An empty database (production before /admin/setup): nothing — seedReference will install the whole chart.
+      for (const statement of accountInserts()) await fresh.d1.prepare(statement).run();
+      expect(await fresh.d1.prepare("SELECT count(*) AS n FROM accounts").first<{ n: number }>()).toEqual({ n: 0 });
+
+      // A chart seeded before 0004 (no new keys), where an accountant already gave 2200 to an account of their own.
+      await seedReference(fresh.db, NOW);
+      await fresh.d1.prepare(`DELETE FROM accounts WHERE system_key IN ('employee_advances', 'gift_card_liability', 'salaries_payable')`).run();
+      await fresh.db.insert(accounts).values({ id: newId("acc"), code: "2200", name: { ar: "حساب المحاسب" }, type: "liability" });
+      for (const statement of accountInserts()) await fresh.d1.prepare(statement).run();
+      const rows = await keyed(fresh.d1);
+      expect(rows.map((row) => [row.key, row.code, row.type, row.isSystem])).toEqual([
+        ["employee_advances", "1300", "asset", 1],
+        ["gift_card_liability", "2150", "liability", 1],
+        ["salaries_payable", "SYS-salaries_payable", "liability", 1],
+      ]);
+      expect(JSON.parse(rows[2].name)).toEqual({ ar: "رواتب مستحقة الدفع", en: "Salaries payable", ckb: "مووچەی شایستەی پێدان" });
+      // the same names as the chart the seed installs
+      for (const row of rows) expect(JSON.parse(row.name)).toEqual(CHART_OF_ACCOUNTS.find((account) => account.key === row.key)?.name);
+
+      // Applied again (a replayed migration, a second seed): nothing changes.
+      for (const statement of accountInserts()) await fresh.d1.prepare(statement).run();
+      await seedReference(fresh.db, NOW);
+      expect((await keyed(fresh.d1)).map((row) => row.code)).toEqual(["1300", "2150", "SYS-salaries_payable"]);
+    } finally {
+      await fresh.dispose();
+    }
+  });
+
+  test("new columns start empty or false: roles do not require two-step, findings have nobody and no incident, records are not demo", async () => {
+    const roleRow = await t.d1.prepare("SELECT dflt_value AS value, \"notnull\" AS required FROM pragma_table_info('roles') WHERE name = 'requires_mfa'").first<{ value: string; required: number }>();
+    expect(roleRow).toEqual({ value: "false", required: 1 });
+    const roleId = newId("rol");
+    await t.db.insert(roles).values({ id: roleId, key: next("role_0004"), name: { ar: "دور" }, createdAt: NOW });
+    expect((await t.db.select({ requiresMfa: roles.requiresMfa }).from(roles).where(eq(roles.id, roleId)).get())?.requiresMfa).toBe(false);
+
+    const errorId = newId("err");
+    await t.db.insert(errorReports).values({ id: errorId, fingerprint: next("fp"), source: "server", message: "x", firstSeenAt: NOW, lastSeenAt: NOW });
+    expect((await t.db.select({ isDemo: errorReports.isDemo }).from(errorReports).where(eq(errorReports.id, errorId)).get())?.isDemo).toBe(false);
+    await t.db.insert(perfRollups).values({ day: "2026-11-10", area: "admin", route: `/admin/${next("route")}`, metric: "server_ms" });
+    expect(await scalar("SELECT count(*) FROM perf_rollups WHERE is_demo = 0 AND metric = 'server_ms'")).toBeGreaterThan(0);
+  });
+
+  test("incident links: three kinds only, one row per link, gone with their incident; a finding's incident is cleared when the incident goes", async () => {
+    const incidentId = newId("inc");
+    await t.db.insert(incidents).values({ id: incidentId, ref: next("INC"), title: "تجربة", startedAt: NOW, createdAt: NOW, updatedAt: NOW });
+    const findingId = newId("cfd");
+    await t.db.insert(consistencyFindings).values({ id: findingId, fingerprint: next("cfp"), checkKey: "stock.levels_vs_movements", message: "x", detectedAt: NOW, lastSeenAt: NOW, assignedTo: "emp_someone", incidentId });
+    await t.db.insert(incidentLinks).values([
+      { incidentId, kind: "finding", targetId: findingId, createdAt: NOW },
+      { incidentId, kind: "run", targetId: "job_x", createdAt: NOW },
+      { incidentId, kind: "error", targetId: "err_x", createdAt: NOW },
+    ]);
+    expect(await refused(() => t.db.insert(incidentLinks).values({ incidentId, kind: "order" as never, targetId: "ord_x", createdAt: NOW }))).toMatchObject({ code: "CHECK", constraint: "incident_links_kind_check" });
+    let twice: unknown;
+    try {
+      await t.db.insert(incidentLinks).values({ incidentId, kind: "run", targetId: "job_x", createdAt: NOW });
+    } catch (caught) {
+      twice = caught;
+    }
+    expect(isUniqueViolation(twice)).toBe(true);
+    expect(await refused(() => t.db.insert(incidentLinks).values({ incidentId: "inc_missing", kind: "run", targetId: "job_y", createdAt: NOW }))).toMatchObject({ code: "FOREIGN_KEY" });
+
+    await t.db.delete(incidents).where(eq(incidents.id, incidentId));
+    expect(await scalar("SELECT count(*) FROM incident_links WHERE incident_id = ?", incidentId)).toBe(0);
+    expect(await t.db.select({ incidentId: consistencyFindings.incidentId, assignedTo: consistencyFindings.assignedTo }).from(consistencyFindings).where(eq(consistencyFindings.id, findingId)).get()).toEqual({ incidentId: null, assignedTo: "emp_someone" });
+  });
+
+  test("password links belong to an employee and go with them; only the hash is a key", async () => {
+    const employeeId = await make.employee();
+    const idHash = next("hash");
+    await t.db.insert(employeePasswordLinks).values({ idHash, employeeId, purpose: "welcome", createdAt: NOW, expiresAt: NOW + 3_600_000 });
+    expect(await refused(() => t.db.insert(employeePasswordLinks).values({ idHash: next("hash"), employeeId: "emp_missing", purpose: "reset", createdAt: NOW, expiresAt: NOW }))).toMatchObject({ code: "FOREIGN_KEY" });
+    await t.db.delete(employees).where(eq(employees.id, employeeId));
+    expect(await scalar("SELECT count(*) FROM employee_password_links WHERE id_hash = ?", idHash)).toBe(0);
   });
 });
 

@@ -139,3 +139,9 @@ section; with it, Back from a product returns to the open grid at the same scrol
 rendered with a temporary dev switch (removed): shelf loading (a hub → hub push shows both placeholders at once),
 failure, rejected stream, offline (the retry keeps the hub). Screenshots: `…/scratchpad/ux/after/P5-devices-review/`.
 Not done: Safari/Firefox/real phones; the Sorani strings (and month names) need a native reader.
+
+## Wave G wiring (2026-11-12)
+
+- `components/reveal.ts` is gone: the section chips use the kit's `revealInRow` / `revealFocusedItem` (`~/ui/reveal`), the
+  comparison table the same with its sticky column as the row's start padding, and the recommendation rails rely on the kit's
+  Rail (a keyboard-focused card goes to the rail's start).

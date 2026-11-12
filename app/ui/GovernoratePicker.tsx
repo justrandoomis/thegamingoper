@@ -2,6 +2,7 @@ import { useId, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
+import { isolate } from "./BidiText";
 import { cx } from "./cx";
 import { useControllable } from "./roving";
 import { iqdText, isIqd } from "./PriceTag";
@@ -11,7 +12,9 @@ import { Sheet } from "./Sheet";
  * The governorate picker — Design System v2 §4.9: looks like a select (52px, a caret at the end); it opens a picker
  * (a bottom sheet on phones, a centred dialog from 768) with 52px radio rows from the admin's governorate list and, at
  * the top, «التوصيل 5,000 د.ع لكل المحافظات» (the fee from settings). A filter field appears when the list is longer
- * than 12. Choosing closes it and returns focus to the field. `name` submits the id with a <Form>.
+ * than 12. A click or a tap on a row, or Space / Enter on it, chooses it, closes the picker and returns focus to the
+ * field; the arrow keys only move through the rows (nothing closes while the shopper is looking — WCAG 3.2.2), and
+ * closing without a choice keeps the governorate there was. `name` submits the id with a <Form>.
  *
  *   <GovernoratePicker label={t("governorate")} required name="governorateId" feeIqd={settings.deliveryFeeIqd}
  *                      governorates={govs} value={gov} onChange={setGov} error={errors.governorateId} />
@@ -64,8 +67,12 @@ export function GovernoratePicker({
   const [current, setCurrent] = useControllable(value, defaultValue, onChange);
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
+  // The row the arrow keys have moved to: a draft, not a choice (WCAG 3.2.2 — moving through the list never closes it).
+  const [draft, setDraft] = useState<string | null>(null);
+  const pointer = useRef(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const chosen = governorates.find((g) => g.id === current) ?? null;
+  const marked = draft ?? current;
   const hintId = hint && !error ? `${base}-hint` : undefined;
   const errorId = `${base}-error`;
   const shown = useMemo(() => {
@@ -73,9 +80,11 @@ export function GovernoratePicker({
     return needle ? governorates.filter((g) => g.name.toLocaleLowerCase().includes(needle)) : governorates;
   }, [filter, governorates]);
 
+  /** A choice: a click or a tap on a row, or Space / Enter on it. It closes the picker (focus goes back to the field). */
   const choose = (next: Governorate) => {
     if (next.unserved) return;
-    setCurrent(next.id);
+    if (next.id !== current) setCurrent(next.id);
+    setDraft(null);
     setOpen(false);
   };
 
@@ -130,13 +139,14 @@ export function GovernoratePicker({
         onClose={() => {
           setOpen(false);
           setFilter("");
+          setDraft(null);
         }}
         title={typeof label === "string" ? label : t("governorate.title")}
         presentation="picker"
         flush
       >
         {isIqd(feeIqd) ? (
-          <p className="listrow__fee">{t("price.delivery", { price: "⁦" + iqdText(f, feeIqd) + "⁩" })}</p>
+          <p className="listrow__fee">{t("price.delivery", { price: isolate(iqdText(f, feeIqd)) })}</p>
         ) : null}
         {governorates.length > 12 ? (
           <div className="px-4 py-3">
@@ -159,10 +169,27 @@ export function GovernoratePicker({
                 className="choice__input"
                 name={`${base}-choice`}
                 value={g.id}
-                checked={g.id === current}
+                checked={g.id === marked}
                 disabled={g.unserved}
-                onChange={() => choose(g)}
-                onClick={() => (g.id === current ? setOpen(false) : undefined)}
+                // the arrow keys check the next radio (and fire a click with no pointer): that only moves the draft
+                onChange={() => setDraft(g.id)}
+                onPointerDown={() => {
+                  pointer.current = true;
+                }}
+                onClick={(event) => {
+                  const fromPointer = pointer.current || event.detail > 0;
+                  pointer.current = false;
+                  if (fromPointer) choose(g);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    choose(g);
+                  }
+                }}
+                onKeyUp={(event) => {
+                  if (event.key === " ") choose(g);
+                }}
               />
               <span className="choice__box" aria-hidden="true" />
               <span className="min-w-0 flex-1">{g.name}</span>

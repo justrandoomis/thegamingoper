@@ -8,9 +8,10 @@
  * purchase signal after a new order (devices area's recordPurchaseSignals — consent only, never in the commerce
  * core), and the signed-in customer's default address as the checkout's starting draft (account area).
  */
+import { env } from "cloudflare:workers";
 import { sha256Hex } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
-import { normalizeIraqPhone } from "~/lib/phone";
+import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
 import { serializeCookie, type RequestCtx } from "~/server/context.server";
 import type { Db } from "~/server/db/drizzle.server";
 import { AppError, toAppError } from "~/server/errors";
@@ -30,10 +31,12 @@ import {
   usedUnitVariantIds,
   type RecommendationResult,
 } from "~/server/services/recommendations.server";
+import { orderCodesOpenWith, revealOrderCodeForShopper } from "~/server/services/orders/digital.server";
 import { getOrderByAccessToken, getOrderForCustomer, lookupGuestOrder, normalizeOrderRef } from "~/server/services/orders/manage.server";
 import { CheckoutError, placeOrder, type CheckoutInput, type CheckoutWho } from "~/server/services/orders/place.server";
 import type { OrderView } from "~/server/services/orders/types";
-import { getPaymentInstructions } from "~/server/services/payments/payments.server";
+import { getPaymentInstructions, latestProofFileId } from "~/server/services/payments/payments.server";
+import { shopperFilePath } from "~/server/storage.server";
 import { getShippingFee, getShippingPolicy, listDistricts, listGovernorates, type DistrictOption } from "~/server/services/shipping/fees.server";
 import { getWalletBalance } from "~/server/services/wallet.server";
 import { OTHER_DISTRICT } from "./checkout-form";
@@ -141,7 +144,18 @@ export function checkoutInputFromForm(form: FormData): CheckoutInput {
     paymentMethod: text(form, "paymentMethod") as CheckoutInput["paymentMethod"],
     // A missing or malformed total is -1, which the core refuses as invalid (never a guessed number).
     expectedTotalIqd: /^\d{1,12}$/.test(total) ? Number(total) : -1,
+    // Since 2026-11-12: points to redeem, a friend's referral code, the wallet's part of a split payment ("" = none).
+    redeemPoints: wholeOrZero(text(form, "redeemPoints")),
+    referralCode: text(form, "referralCode"),
+    walletIqd: wholeOrZero(text(form, "walletIqd")),
   };
+}
+
+/** A whole number typed or posted (Latin or Arabic-Indic digits, separators allowed), 0 when empty; -1 (refused) otherwise. */
+function wholeOrZero(value: string): number {
+  const latin = toLatinDigits(value.trim()).replace(/[\s,٬،']/g, "");
+  if (latin === "") return 0;
+  return /^\d{1,12}$/.test(latin) ? Number(latin) : -1;
 }
 
 /**
@@ -152,7 +166,7 @@ export type CheckoutFailure = { ok: false; code: string; status: number; fields?
 
 /** The draft fields of a posted checkout form, as strings (what a page needs to show the form again). */
 export function postedValues(form: FormData): Record<string, string> {
-  const names = ["contactName", "phone", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow", "paymentMethod", "marketingConsent", "saveAddress"];
+  const names = ["contactName", "phone", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow", "paymentMethod", "marketingConsent", "saveAddress", "redeemPoints", "referralCode", "useWallet"];
   return Object.fromEntries(names.map((name) => [name, text(form, name).slice(0, 600)]));
 }
 export type CheckoutSuccess = { ok: true; ref: string; accessToken: string; replayed: boolean };
@@ -160,7 +174,10 @@ export type CheckoutSuccess = { ok: true; ref: string; accessToken: string; repl
 /** placeOrder, with its expected refusals as values. Unexpected errors are rethrown (the error page shows them). */
 export async function placeCheckout(db: Db, who: CheckoutWho, form: FormData, now: number): Promise<CheckoutSuccess | CheckoutFailure> {
   try {
-    const result = await placeOrder(db, who, checkoutInputFromForm(form), now);
+    const input = checkoutInputFromForm(form);
+    // Without script the «use my wallet» box posts alone: the wallet's part is the balance (the core checks it again).
+    if (who.customer && input.paymentMethod !== "wallet" && !input.walletIqd && ["on", "true", "1"].includes(text(form, "useWallet"))) input.walletIqd = await getWalletBalance(db, who.customer.id);
+    const result = await placeOrder(db, who, input, now);
     return { ok: true, ref: result.ref, accessToken: result.accessToken, replayed: result.replayed };
   } catch (error) {
     const appError = toAppError(error);
@@ -196,6 +213,45 @@ export async function findOrderForShopper(db: Db, input: { ref: string | undefin
     if (linked) return { order: linked, access: "token" };
   }
   return null;
+}
+
+/**
+ * The picture of the order's latest transfer proof, again after a reload (CONTRACTS §1 "Showing a stored proof back"):
+ * a path the private-file route authorizes on every request (the owner's session, or the confirmation token as `?t=`).
+ * Null when no proof was sent. Call only for an order already opened for this shopper.
+ */
+export async function storedProofPath(db: Db, order: Pick<OrderView, "ref" | "payment">, token: string | null): Promise<string | null> {
+  if (order.payment.proof.status === "none") return null;
+  const fileId = await latestProofFileId(db, order.ref);
+  return fileId ? shopperFilePath(fileId, token ?? undefined) : null;
+}
+
+/**
+ * True when this order's codes need its owner signed in: an ACCOUNT's order opened with its link (the commerce core's
+ * rule, orderCodesOpenWith — the link opens the order, never an account's codes; security review 2026-11-12). The page
+ * then says so, with the sign-in link, instead of «اعرض الرمز». False when there is nothing to open: no code lines, or
+ * only revoked codes and none still to come (a cancelled order).
+ */
+export async function codesNeedSignIn(db: Db, found: { order: Pick<OrderView, "ref" | "digital">; access: "customer" | "token" }): Promise<boolean> {
+  if (found.access !== "token") return false;
+  const open = (found.order.digital ?? []).some((line) => line.pending > 0 || line.codes.some((code) => code.status === "delivered"));
+  return open && (await orderCodesOpenWith(db, found.order.ref)) === "account";
+}
+
+/**
+ * «اعرض الرمز» on the order page: one digital code of the order, decrypted for its shopper (the commerce core checks the
+ * owner's session — or, for a guest's order, the confirmation token —, that the order is paid and the line not
+ * refunded; audited, limited per order).
+ */
+export async function revealCodeForShopper(db: Db, ctx: Pick<RequestCtx, "ip" | "requestId" | "now" | "locale">, input: { ref: string; token: string | null; customerId: string | null; codeId: string }): Promise<{ ok: true; codeId: string; code: string } | { ok: false; code: string; status: number; message?: string }> {
+  try {
+    const shown = await revealOrderCodeForShopper(db, (env as { DATA_KEY?: string }).DATA_KEY, { ref: input.ref, accessToken: input.token, customerId: input.customerId, codeId: input.codeId, ip: ctx.ip, requestId: ctx.requestId }, ctx.now);
+    return { ok: true, codeId: shown.codeId, code: shown.code };
+  } catch (error) {
+    const appError = toAppError(error);
+    if (!appError) throw error;
+    return { ok: false, code: appError.code, status: appError.status };
+  }
 }
 
 export type TrackResult = { ok: true; order: OrderView } | { ok: false; code: string; status: number; fields?: Record<string, string>; retryAfterSec?: number; values: { ref: string; phone: string } };

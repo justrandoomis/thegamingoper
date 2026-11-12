@@ -19,6 +19,10 @@ export default defineMessages({
       compareTitle: "قارن المنتجات",
       compare: "قارن حتى أربعة منتجات من النوع نفسه جنباً إلى جنب.",
     },
+    banners: {
+      label: "عروض هذا القسم",
+      open: "اعرض التفاصيل",
+    },
     hub: {
       home: "الرئيسية",
       all: "الكل",
@@ -260,6 +264,10 @@ export default defineMessages({
       compareTitle: "Compare products",
       compare: "Compare up to four products of the same kind side by side.",
     },
+    banners: {
+      label: "Offers in this department",
+      open: "See the details",
+    },
     hub: {
       home: "Home",
       all: "All",
@@ -482,6 +490,10 @@ export default defineMessages({
       search: "لە ئامێر و یاری و پاشکۆکانی تەمتەم بگەڕێ، بە عەرەبی یان ئینگلیزی یان کوردی.",
       compareTitle: "بەراوردی بەرهەمەکان",
       compare: "تا چوار بەرهەمی هەمان جۆر لە تەنیشت یەکتر بەراورد بکە.",
+    },
+    banners: {
+      label: "پێشکەشکراوەکانی ئەم بەشە",
+      open: "وردەکارییەکان ببینە",
     },
     hub: {
       home: "سەرەکی",

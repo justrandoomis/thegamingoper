@@ -33,6 +33,7 @@ import { cleanBlock } from "~/server/text.server";
 import { getWalletBalance, listWalletEntries } from "~/server/services/wallet.server";
 import { customerFlags } from "./flags.server";
 import { NO_FACTS, rfmFacts, storedSegments } from "./rfm.server";
+import { customerRules } from "./rules.server";
 import { changeableCustomer, customerById, customersAccess, employeeNames, hasLongDigitRun, num, phoneView, type CustomerRow } from "./shared.server";
 import {
   CONSENT_KIND_LIST,
@@ -106,6 +107,8 @@ export async function getCustomerProfile(db: Db, actor: Actor, customerId: strin
     .where(eq(customers.mergedIntoId, row.id))
     .orderBy(desc(customers.updatedAt));
   const noteSubjects = [row.id, ...mergedRows.map((merged) => merged.id)];
+  // the rules in force (the settings customers.rfm_rules / flag_rules / privacy_due_days — follow-up 2026-11-12)
+  const rules = await customerRules(db);
 
   const [header, statsRows, facts, orders, returnsRows, warrantyRows, repairRows, ticketRows, wallet, notes, consentRows, privacyRows, addressCount, activity] = await Promise.all([
     headerOf(db, actor, row, now),
@@ -156,7 +159,8 @@ export async function getCustomerProfile(db: Db, actor: Actor, customerId: strin
       firstOrderAt: stats?.first_at === null || stats?.first_at === undefined ? null : num(stats.first_at),
       lastOrderAt: stats?.last_at === null || stats?.last_at === undefined ? null : num(stats.last_at),
     },
-    rfm: rfmOf(facts.get(row.id) ?? NO_FACTS, now),
+    rfm: rfmOf(facts.get(row.id) ?? NO_FACTS, now, rules.rfm),
+    rules,
     orders,
     returns: returnsRows,
     warranties: warrantyRows,
@@ -244,6 +248,8 @@ async function profileTickets(db: Db, customerId: string): Promise<ProfileTicket
       escalated: ticket.escalated_at !== null,
       open,
       complaint: open && (ticket.category === "complaint" || ticket.escalated_at !== null),
+      // the ticket in the support module (14) — the section is sent only with support.ticket.read, which opens it
+      href: `/admin/support/tickets/${encodeURIComponent(ticket.ref)}`,
     };
   });
 }

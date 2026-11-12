@@ -41,6 +41,19 @@
  *   · Shipping: the fee of the chosen governorate, or — before one is chosen — the flat fee as an
  *     estimate. Null for an empty cart or a governorate that is not served.
  *
+ * PROMOTIONS (since 2026-11-12; orders/promotions.ts decides, orders/promotions.server.ts reads module 08's records):
+ *   · a running flash sale prices its variant: unit price = the sale price while the sale's allowance and this
+ *     shopper's per-customer limit cover the line — the line holds at most what they still cover (`qty_reduced`,
+ *     with `line.flash` saying why); placeOrder claims the units in its batch;
+ *   · after the subtotal: automatic rules (module 08's evaluateRule; stacking per rule), the coupon, the
+ *     membership discount (within the store's discount limits), redeemed points (`redeemPoints`, signed in) — every
+ *     one a line of `discounts`, Σ = `discountIqd`; free delivery (a member's tier or a rule) is `shippingWaiver`
+ *     and `shippingIqd` is already after it;
+ *   · a coupon a better non-stackable rule beats is not applied: `couponIssue.reason` "not_combinable";
+ *   · a typed referral code (`referralCode`) is checked and said in `referral` (it changes no price).
+ *   · a demo product never reports "low_stock" (the card rule: no demo scarcity).
+ *   CartLineData carries `productId` (move to favourites) and `optionValue` (the option the shopper chose).
+ *
  * Every service here takes `db` first and never imports "cloudflare:workers".
  */
 import { and, asc, desc, eq, isNull, ne, sql } from "drizzle-orm";
@@ -52,9 +65,12 @@ import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { cartItems, carts, customers, files, media, products, usedUnits, variants, type Cart } from "~/server/db/schema";
 import { runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, isAppError, notFound } from "~/server/errors";
-import { COUPON_ERROR_KEYS, evaluateCoupon, normalizeCouponCode, type CouponRejection } from "./coupons.server";
+import { COUPON_ERROR_KEYS, evaluateCoupon, normalizeCouponCode, type CouponLine, type CouponRejection } from "./coupons.server";
 import { getAvailability } from "./inventory/stock.server";
+import { applyDiscounts, flashLineCap, type AppliedDiscount, type DiscountOutcome, type FlashOffer, type PricingLine } from "./orders/promotions";
+import { checkReferralCode, loadPromotionFacts, runningFlashPrice, type PromotionFacts, type ReferralCheck, type ReferralIssue } from "./orders/promotions.server";
 import { computeTotals } from "./orders/totals";
+import type { DiscountLineView, FlashPriceView, ShippingWaiverView } from "./orders/types";
 import { getShippingFee, getShippingPolicy } from "./shipping/fees.server";
 
 // ───────────────────────────────────────────────────────────────── constants and types
@@ -74,17 +90,42 @@ const idSchema = z.string().regex(ID_PATTERN, "invalid");
 
 /** Who the cart belongs to: the cookie's token and/or the signed-in customer. */
 export type CartOwner = { cartToken: string | null; customerId: string | null };
-/** Owner plus how the returned view should be presented. */
-export type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null };
+/**
+ * Owner plus how the returned view should be presented. `redeemPoints` (signed-in customers) and `referralCode` are
+ * checkout choices: they are priced / checked on this read only and never stored on the cart.
+ */
+export type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null; redeemPoints?: number | null; referralCode?: string | null };
 
-/** Why a stored coupon is not applied right now. */
-export type CartCouponIssue = { code: string; reason: CouponRejection };
+/** Why a stored coupon is not applied right now. "not_combinable": a better automatic rule does not combine with it. */
+export type CartCouponIssue = { code: string; reason: CouponRejection | "not_combinable"; rule?: string };
+
+/** A cart line plus what the cart page needs beyond the kit's CartLine (kept assignable to it). */
+export type CartLineData = CartLine & {
+  /** The product of the line — «نقل إلى المفضلة» moves it to the favourites. */
+  productId: string;
+  /** The option the shopper chose («النسخة الدولية»), without the product's name; null when there is none. */
+  optionValue: string | null;
+  /** A running flash sale prices this line: the regular price, the sale's name and end, and the units it still covers. */
+  flash: (FlashPriceView & { cap: number | null }) | null;
+};
 
 /**
- * CartView (~/lib/dto) plus `couponIssue`: the stored coupon that did not apply on this read and why
- * (show it as `errors.coupon_<reason>`). Null when no coupon is stored or it applied.
+ * CartView (~/lib/dto) plus:
+ *   `couponIssue`     the stored coupon that did not apply on this read and why (`errors.coupon_<reason>`; the page
+ *                     words "not_combinable" itself); null when no coupon is stored or it applied
+ *   `discounts`       every discount as charged, in order (rules, coupon, membership, points) — Σ = discountIqd
+ *   `shippingWaiver`  the delivery fee not charged, and why (shippingIqd is already after it)
+ *   `points`          signed-in customers: their balance, a point's worth, what this read redeems and the most it could
+ *   `referral`        a referral code asked about on this read, and whether it can be recorded
  */
-export type CartViewData = CartView & { couponIssue: CartCouponIssue | null };
+export type CartViewData = Omit<CartView, "lines"> & {
+  lines: CartLineData[];
+  couponIssue: CartCouponIssue | null;
+  discounts: DiscountLineView[];
+  shippingWaiver: ShippingWaiverView | null;
+  points: { balance: number; pointValueIqd: number; used: number; max: number } | null;
+  referral: { code: string; status: "ok" | ReferralIssue } | null;
+};
 
 /** Problems that stop checkout. */
 const BLOCKING: ReadonlySet<CartLineProblem> = new Set<CartLineProblem>(["out_of_stock", "unavailable"]);
@@ -105,7 +146,23 @@ function normalizeOwner(owner: CartOwner): CartOwner {
 const localeOf = (request: { locale?: Locale | string | null }): Locale => (isLocale(request.locale) ? request.locale : DEFAULT_LOCALE);
 
 export function emptyCartView(): CartViewData {
-  return { id: null, lines: [], count: 0, subtotalIqd: 0, discountIqd: 0, coupon: null, shippingIqd: null, totalIqd: 0, blocked: false, couponIssue: null };
+  return { id: null, lines: [], count: 0, subtotalIqd: 0, discountIqd: 0, coupon: null, shippingIqd: null, totalIqd: 0, blocked: false, couponIssue: null, discounts: [], shippingWaiver: null, points: null, referral: null };
+}
+
+/**
+ * The option of a variant line without the product's name (Design System v2 §4.13 "the option value only"): the
+ * catalogue's titles read "<name> — <option>" or name the product themselves; the part after the first spaced dash
+ * when the part before it is (part of) the product's name, else the title as it is. Pure.
+ */
+export function optionValueOf(productName: string, title: string | null | undefined): string | null {
+  const text = title?.trim();
+  if (!text) return null;
+  const match = /\s[—–-]\s/.exec(text);
+  if (!match) return text === productName.trim() ? null : text;
+  const head = text.slice(0, match.index).trim().toLocaleLowerCase();
+  const rest = text.slice(match.index + match[0].length).trim();
+  const own = productName.trim().toLocaleLowerCase();
+  return head.length > 0 && rest.length > 0 && (own.includes(head) || head.includes(own)) ? rest : text;
 }
 
 // ───────────────────────────────────────────────────────────────── finding the cart
@@ -186,6 +243,7 @@ type StoredLine = {
   productName: L10n;
   productKind: string;
   productStatus: string;
+  productIsDemo: boolean;
   publishAt: number | null;
   warrantyMonths: number | null;
   usedSlug: string | null;
@@ -197,7 +255,7 @@ type StoredLine = {
 
 /** A priced line: the view line plus what an order line needs (server-side only). */
 export type PricedCartLine = {
-  line: CartLine;
+  line: CartLineData;
   /** Counts towards the totals and can be ordered. */
   purchasable: boolean;
   sku: string;
@@ -208,6 +266,16 @@ export type PricedCartLine = {
   /** New items: months from the product; used units: days from the unit. */
   warrantyMonths: number | null;
   warrantyDays: number | null;
+  /** The running flash sale item that prices this line (placeOrder claims `line.qty` units of it), or null. */
+  flash: (FlashOffer & { name: L10n; regularPriceIqd: number }) | null;
+};
+
+/** What the promotions of this read are, as placeOrder records and claims them (server-side only). */
+export type PricedPromotions = {
+  outcome: DiscountOutcome;
+  facts: PromotionFacts;
+  /** The referral code asked about, checked (null when none was asked about). */
+  referral: ReferralCheck | null;
 };
 
 /** The cart priced right now — what getCartView shows and what checkout orders. Server-side only. */
@@ -217,6 +285,8 @@ export type PricedCart = {
   lines: PricedCartLine[];
   /** The coupon as applied to this read (couponId for the redemption row), or null. */
   coupon: { couponId: string; code: string; discountIqd: number } | null;
+  /** The promotions of this read (null for an empty cart). */
+  promotions: PricedPromotions | null;
 };
 
 function isSellableProduct(status: string, publishAt: number | null, now: number): boolean {
@@ -241,6 +311,7 @@ async function loadStoredLines(db: Db, cartId: string): Promise<StoredLine[]> {
       productName: products.name,
       productKind: products.kind,
       productStatus: products.status,
+      productIsDemo: products.isDemo,
       publishAt: products.publishAt,
       warrantyMonths: products.warrantyMonths,
       usedSlug: usedUnits.slug,
@@ -324,19 +395,29 @@ type PriceOptions = {
   phoneE164?: string | null;
   /** Evaluate this code instead of the stored one (applyCoupon). */
   couponCode?: string | null;
+  /** Signed-in customers: points to redeem on this read (never stored). */
+  redeemPoints?: number | null;
+  /** A referral code to check on this read (never stored). */
+  referralCode?: string | null;
 };
 
+/** The points a request asks for, as a whole number ≥ 0 (anything else is none). */
+const pointsAsked = (value: unknown): number => (typeof value === "number" && Number.isSafeInteger(value) && value > 0 ? Math.min(value, 10_000_000) : 0);
+
 async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, options: PriceOptions, now: number): Promise<PricedCart> {
-  if (!cart) return { view: emptyCartView(), cartId: null, lines: [], coupon: null };
+  if (!cart) return { view: emptyCartView(), cartId: null, lines: [], coupon: null, promotions: null };
   const stored = await loadStoredLines(db, cart.id);
   const variantLineIds = stored.filter((row) => row.usedUnitId === null).map((row) => row.variantId);
-  const [availability, images] = await Promise.all([
+  // who the shopper is: per-customer coupon and flash limits count by account and by number
+  const phone = options.phoneE164 ?? (await customerPhone(db, options.customerId));
+  const [availability, images, facts] = await Promise.all([
     getAvailability(db, variantLineIds),
     loadImages(db, {
       variant: [...new Set(stored.filter((row) => row.usedUnitId === null).map((row) => row.variantId))],
       product: [...new Set(stored.map((row) => row.productId))],
       used_unit: stored.flatMap((row) => (row.usedUnitId ? [row.usedUnitId] : [])),
     }),
+    loadPromotionFacts(db, { variantIds: stored.map((row) => row.variantId), customerId: options.customerId, phoneE164: phone, locale: options.locale, now }),
   ]);
 
   const priced: PricedCartLine[] = stored.map((row) => {
@@ -347,6 +428,7 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
     let maxQty: number;
     let stock: StockState;
     let unitPriceIqd: number;
+    let flash: PricedCartLine["flash"] = null;
     let image = images.get(`variant:${row.variantId}`) ?? images.get(`product:${row.productId}`);
 
     if (row.usedUnitId) {
@@ -364,14 +446,27 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
     } else {
       unitPriceIqd = row.variantPriceIqd;
       const available = availability.get(row.variantId) ?? { available: 0, state: "out_of_stock" as const };
-      stock = available.state;
+      // a demo product never reports scarcity (the card rule of the read layer: no demo "low stock")
+      stock = row.productIsDemo && available.state === "low_stock" ? "in_stock" : available.state;
       maxQty = Math.min(MAX_LINE_QTY, available.available);
+      // a running flash sale: its price while its allowance and this shopper's limit cover the line
+      const offer = facts.flash.get(row.variantId);
+      const cap = flashLineCap(offer, row.variantPriceIqd, row.productIsDemo);
+      if (offer && cap > 0) {
+        unitPriceIqd = offer.salePriceIqd;
+        maxQty = Math.min(maxQty, cap);
+        flash = { ...offer, regularPriceIqd: row.variantPriceIqd };
+      }
       if (!row.variantActive || !isSellableProduct(row.productStatus, row.publishAt, now)) {
         problem = "unavailable";
         maxQty = 0;
+        flash = null;
+        unitPriceIqd = row.variantPriceIqd;
       } else if (available.available <= 0) {
         problem = "out_of_stock";
         maxQty = 0;
+        flash = null;
+        unitPriceIqd = row.variantPriceIqd;
       } else if (qty > maxQty) {
         qty = maxQty;
         problem = "qty_reduced";
@@ -381,7 +476,7 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
     const purchasable = problem === null || !BLOCKING.has(problem);
     const usedLabel = row.usedUnitId ? [variantTitle, row.usedGrade].filter(Boolean).join(" · ") || null : null;
 
-    const line: CartLine = {
+    const line: CartLineData = {
       id: row.id,
       kind: row.usedUnitId ? "used_unit" : "variant",
       variantId: row.variantId,
@@ -396,6 +491,9 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
       image: image ? { artKey: image.artKey, mediaKey: image.mediaKey, alt: pick(image._alt, options.locale) || name, isIllustration: image.isIllustration, ...(image.width ? { width: image.width, height: image.height } : {}) } : { artKey: null, mediaKey: null, alt: name, isIllustration: true },
       stock,
       problem,
+      productId: row.productId,
+      optionValue: row.usedUnitId ? usedLabel : optionValueOf(name, variantTitle),
+      flash: flash ? { label: flash.label, salePriceIqd: flash.salePriceIqd, regularPriceIqd: flash.regularPriceIqd, endsAt: flash.endsAt, cap: flash.left === null && flash.perCustomerLeft === null ? null : Math.min(flash.left ?? Number.MAX_SAFE_INTEGER, flash.perCustomerLeft ?? Number.MAX_SAFE_INTEGER) } : null,
     };
     return {
       line,
@@ -407,49 +505,74 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
       options: row.variantOptions,
       warrantyMonths: row.usedUnitId ? null : row.warrantyMonths,
       warrantyDays: row.usedUnitId ? row.usedWarrantyDays : null,
+      flash,
     };
   });
 
-  const buyable = priced.filter((entry) => entry.purchasable);
+  const buyable = priced.filter((entry) => entry.purchasable && entry.line.qty > 0);
   const subtotal = computeTotals({ lines: buyable.map((entry) => ({ unitPriceIqd: entry.line.unitPriceIqd, qty: entry.line.qty })), discountIqd: 0, shippingIqd: 0 }).subtotalIqd;
+  const couponLines: CouponLine[] = buyable.map((entry) => ({ variantId: entry.line.variantId as string, qty: entry.line.qty, unitPriceIqd: entry.line.unitPriceIqd }));
 
-  // Coupon: evaluated on every read against the lines that can be bought.
-  let coupon: PricedCart["coupon"] = null;
+  // Coupon: evaluated on every read against the lines that can be bought (at the prices they are sold at).
+  let couponOffer: { couponId: string; code: string; label: string; discountIqd: number } | null = null;
   let couponIssue: CartCouponIssue | null = null;
-  let couponView: CartView["coupon"] = null;
   const code = options.couponCode !== undefined ? options.couponCode : cart.couponCode;
   if (code) {
-    const phone = options.phoneE164 ?? (await customerPhone(db, options.customerId));
-    const result = await evaluateCoupon(
-      db,
-      { code, subtotalIqd: subtotal, lines: buyable.map((entry) => ({ variantId: entry.line.variantId as string, qty: entry.line.qty, unitPriceIqd: entry.line.unitPriceIqd })), customerId: options.customerId, phoneE164: phone },
-      now,
-    );
-    if (result.ok) {
-      coupon = { couponId: result.couponId, code: result.code, discountIqd: result.discountIqd };
-      couponView = { code: result.code, label: result.label };
-    } else {
-      couponIssue = { code: normalizeCouponCode(code) ?? code, reason: result.reason };
-    }
+    const result = await evaluateCoupon(db, { code, subtotalIqd: subtotal, lines: couponLines, customerId: options.customerId, phoneE164: phone }, now);
+    if (result.ok) couponOffer = { couponId: result.couponId, code: result.code, label: result.label, discountIqd: result.discountIqd };
+    else couponIssue = { code: normalizeCouponCode(code) ?? code, reason: result.reason };
   }
 
-  let shippingIqd: number | null = null;
+  let shippingFee: number | null = null;
   if (buyable.length > 0) {
     if (options.governorateId) {
       try {
-        shippingIqd = await getShippingFee(db, options.governorateId);
+        shippingFee = await getShippingFee(db, options.governorateId);
       } catch (error) {
         if (!isAppError(error, "shipping_unavailable")) throw error;
       }
     } else {
-      shippingIqd = (await getShippingPolicy(db)).flatFeeIqd;
+      shippingFee = (await getShippingPolicy(db)).flatFeeIqd;
     }
   }
 
+  // Rules, the coupon, the membership, points, free delivery — in that order (orders/promotions.ts).
+  const pricingLines: PricingLine[] = buyable.map((entry) => {
+    const known = facts.lines.get(entry.line.variantId as string);
+    return {
+      lineId: entry.line.id,
+      variantId: entry.line.variantId as string,
+      productId: entry.productId,
+      platformId: known?.platformId ?? null,
+      categoryChain: known?.categoryChain ?? [],
+      kind: known?.kind ?? entry.productKind,
+      isDemo: known?.isDemo ?? false,
+      qty: entry.line.qty,
+      unitPriceIqd: entry.line.unitPriceIqd,
+    };
+  });
+  const outcome = applyDiscounts({
+    lines: pricingLines,
+    subtotalIqd: subtotal,
+    shippingFeeIqd: buyable.length > 0 ? shippingFee : null,
+    coupon: couponOffer,
+    rules: facts.rules,
+    segmentIds: facts.segmentIds,
+    member: facts.member,
+    points: facts.points ? { balance: facts.points.balance, pointValueIqd: facts.points.pointValueIqd, requested: pointsAsked(options.redeemPoints) } : null,
+    limits: facts.limits,
+    now,
+  });
+  if (couponOffer && outcome.couponDropped) couponIssue = { code: couponOffer.code, reason: "not_combinable", rule: outcome.couponDropped.ruleLabel };
+  const coupon: PricedCart["coupon"] = outcome.coupon ? { couponId: outcome.coupon.couponId, code: outcome.coupon.code, discountIqd: outcome.coupon.discountIqd } : null;
+
+  // A referral code asked about: checked like module 08 checks one (the number, when known, too).
+  const referral = options.referralCode ? await checkReferralCode(db, options.referralCode, { phoneE164: options.phoneE164 ?? phone, customerId: options.customerId }) : null;
+
   const totals = computeTotals({
     lines: buyable.map((entry) => ({ unitPriceIqd: entry.line.unitPriceIqd, qty: entry.line.qty })),
-    discountIqd: coupon?.discountIqd ?? 0,
-    shippingIqd: shippingIqd ?? 0,
+    discountIqd: outcome.discountIqd,
+    shippingIqd: outcome.shippingIqd ?? 0,
   });
   const view: CartViewData = {
     id: cart.id,
@@ -457,13 +580,23 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
     count: priced.reduce((sum, entry) => sum + entry.line.qty, 0),
     subtotalIqd: totals.subtotalIqd,
     discountIqd: totals.discountIqd,
-    coupon: couponView,
-    shippingIqd,
+    coupon: outcome.coupon ? { code: outcome.coupon.code, label: outcome.coupon.label } : null,
+    shippingIqd: buyable.length > 0 ? outcome.shippingIqd : null,
     totalIqd: totals.totalIqd,
     blocked: priced.some((entry) => entry.line.problem !== null && BLOCKING.has(entry.line.problem)),
     couponIssue,
+    discounts: outcome.discounts.map(viewOfDiscount),
+    shippingWaiver: outcome.shippingWaiver ? { by: outcome.shippingWaiver.by, label: outcome.shippingWaiver.label, feeIqd: outcome.shippingWaiver.feeIqd, waivedIqd: outcome.shippingWaiver.waivedIqd } : null,
+    points: facts.points ? { balance: facts.points.balance, pointValueIqd: facts.points.pointValueIqd, used: outcome.pointsUsed, max: outcome.pointsMax } : null,
+    referral: referral ? { code: referral.code, status: referral.ok ? "ok" : referral.issue } : null,
   };
-  return { view, cartId: cart.id, lines: priced, coupon };
+  return { view, cartId: cart.id, lines: priced, coupon, promotions: { outcome, facts, referral } };
+}
+
+/** An applied discount as the shopper sees it (the stacking flag is the server's business). */
+function viewOfDiscount(entry: AppliedDiscount): DiscountLineView {
+  const { stackable: _stackable, ...view } = entry;
+  return view as DiscountLineView;
 }
 
 /**
@@ -479,7 +612,7 @@ function normalizeStatements(db: Db, cartId: string, priced: PricedCart): BatchS
       statements.push(db.update(cartItems).set({ qty: entry.line.qty }).where(and(eq(cartItems.id, entry.line.id), eq(cartItems.cartId, cartId))));
     }
   }
-  if (priced.view.couponIssue && PERMANENT_COUPON_FAILURES.has(priced.view.couponIssue.reason)) {
+  if (priced.view.couponIssue && PERMANENT_COUPON_FAILURES.has(priced.view.couponIssue.reason as CouponRejection)) {
     statements.push(db.update(carts).set({ couponCode: null }).where(eq(carts.id, cartId)));
   }
   return statements;
@@ -490,7 +623,21 @@ function normalizeStatements(db: Db, cartId: string, priced: PricedCart): BatchS
 /** The cart as the shopper sees it right now. Never writes. */
 export async function getCartView(db: Db, input: CartRequest, now: number): Promise<CartViewData> {
   const found = await findCart(db, input);
-  return (await priceCart(db, found?.cart ?? null, { locale: localeOf(input), customerId: normalizeOwner(input).customerId, governorateId: input.governorateId ?? null }, now)).view;
+  return (await priceCart(db, found?.cart ?? null, priceOptionsOf(input), now)).view;
+}
+
+/** How a request is priced: its owner, language and governorate, and the checkout choices (points, referral code). */
+function priceOptionsOf(input: CartRequest & { phoneE164?: string | null }): PriceOptions {
+  const customerId = normalizeOwner(input).customerId;
+  return {
+    locale: localeOf(input),
+    customerId,
+    governorateId: input.governorateId ?? null,
+    phoneE164: input.phoneE164 ?? null,
+    // points are a signed-in customer's; a guest's request for them is none
+    redeemPoints: customerId ? pointsAsked(input.redeemPoints) : 0,
+    referralCode: typeof input.referralCode === "string" && input.referralCode.trim() !== "" ? input.referralCode : null,
+  };
 }
 
 /**
@@ -500,7 +647,7 @@ export async function getCartView(db: Db, input: CartRequest, now: number): Prom
  */
 export async function getCheckoutCart(db: Db, input: CartRequest & { phoneE164?: string | null }, now: number): Promise<PricedCart> {
   const found = await findCart(db, input);
-  return priceCart(db, found?.cart ?? null, { locale: localeOf(input), customerId: normalizeOwner(input).customerId, governorateId: input.governorateId ?? null, phoneE164: input.phoneE164 ?? null }, now);
+  return priceCart(db, found?.cart ?? null, priceOptionsOf(input), now);
 }
 
 /** Number of items (sum of quantities) in the owner's cart. */
@@ -539,7 +686,7 @@ export type CartChangeResult = { cartToken: string | null; view: CartViewData };
 async function finish(db: Db, target: ChangeTarget, statements: BatchStatement[], request: CartRequest, now: number): Promise<CartChangeResult> {
   await runBatch(db, statements);
   const cart = await db.select({ id: carts.id, couponCode: carts.couponCode }).from(carts).where(eq(carts.id, target.cartId)).get();
-  const priced = await priceCart(db, cart ?? null, { locale: localeOf(request), customerId: normalizeOwner(request).customerId, governorateId: request.governorateId ?? null }, now);
+  const priced = await priceCart(db, cart ?? null, priceOptionsOf(request), now);
   const cleanup = cart ? normalizeStatements(db, cart.id, priced) : [];
   // The view already shows the reduced quantities and the dropped coupon; this only stores them.
   if (cleanup.length > 0) await runBatch(db, cleanup);
@@ -566,7 +713,7 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
   } else {
     const variantId = input.variantId as string;
     const variant = await db
-      .select({ id: variants.id, priceIqd: variants.priceIqd, isActive: variants.isActive, status: products.status, publishAt: products.publishAt })
+      .select({ id: variants.id, priceIqd: variants.priceIqd, isActive: variants.isActive, status: products.status, publishAt: products.publishAt, productIsDemo: products.isDemo })
       .from(variants)
       .innerJoin(products, eq(products.id, variants.productId))
       .where(eq(variants.id, variantId))
@@ -575,7 +722,9 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
     if (!variant.isActive || !isSellableProduct(variant.status, variant.publishAt, now)) throw new AppError("unavailable", 409, { detail: variantId });
     const available = (await getAvailability(db, [variantId])).get(variantId)?.available ?? 0;
     if (available <= 0) throw new AppError("out_of_stock", 409, { detail: variantId });
-    line = { variantId, usedUnitId: null, priceIqd: variant.priceIqd, cap: Math.min(MAX_LINE_QTY, available) };
+    // the price the shopper sees as they add it (a running flash sale's), so the line does not say "price changed"
+    const priceIqd = (await runningFlashPrice(db, variant, now)) ?? variant.priceIqd;
+    line = { variantId, usedUnitId: null, priceIqd, cap: Math.min(MAX_LINE_QTY, available) };
   }
 
   // Adding always leaves this device holding the cart's token (a new cart, or a re-keyed one).
@@ -657,7 +806,7 @@ export async function changeLineQty(db: Db, request: CartRequest, lineId: string
     return finish(db, target, statements, request, now);
   }
   const variant = await db
-    .select({ priceIqd: variants.priceIqd, isActive: variants.isActive, status: products.status, publishAt: products.publishAt })
+    .select({ id: variants.id, priceIqd: variants.priceIqd, isActive: variants.isActive, status: products.status, publishAt: products.publishAt, productIsDemo: products.isDemo })
     .from(variants)
     .innerJoin(products, eq(products.id, variants.productId))
     .where(eq(variants.id, row.variantId))
@@ -666,8 +815,9 @@ export async function changeLineQty(db: Db, request: CartRequest, lineId: string
   const available = (await getAvailability(db, [row.variantId])).get(row.variantId)?.available ?? 0;
   if (available <= 0) throw new AppError("out_of_stock", 409, { detail: row.variantId });
   const kept = Math.min(qty, MAX_LINE_QTY, available);
-  // Touching the line acknowledges today's price.
-  statements.push(db.update(cartItems).set({ qty: kept, priceSnapshotIqd: variant.priceIqd }).where(and(eq(cartItems.id, row.id), eq(cartItems.cartId, target.cartId))));
+  // Touching the line acknowledges today's price (a running flash sale's, when one prices it).
+  const priceIqd = (await runningFlashPrice(db, variant, now)) ?? variant.priceIqd;
+  statements.push(db.update(cartItems).set({ qty: kept, priceSnapshotIqd: priceIqd }).where(and(eq(cartItems.id, row.id), eq(cartItems.cartId, target.cartId))));
   return finish(db, target, statements, request, now);
 }
 
@@ -692,12 +842,14 @@ export async function changeCoupon(db: Db, request: CartRequest, code: string | 
   }
   let stored: string | null = null;
   if (wanted !== null) {
-    const priced = await priceCart(db, { id: target.cartId, couponCode: null }, { locale, customerId: normalizeOwner(request).customerId, governorateId: request.governorateId ?? null, couponCode: wanted }, now);
-    if (!priced.coupon) {
-      const reason = priced.view.couponIssue?.reason ?? "not_applicable";
+    const priced = await priceCart(db, { id: target.cartId, couponCode: null }, { ...priceOptionsOf(request), locale, couponCode: wanted }, now);
+    const issue = priced.view.couponIssue;
+    // A valid code that a better automatic offer beats right now is kept (the cart says why it does not apply).
+    if (!priced.coupon && issue?.reason === "not_combinable") stored = issue.code;
+    else if (!priced.coupon) {
+      const reason = issue?.reason ?? "not_applicable";
       throw new AppError(`coupon_${reason}`, 409, { fields: { code: `coupon_${reason}` }, detail: wanted });
-    }
-    stored = priced.coupon.code;
+    } else stored = priced.coupon.code;
   }
   return finish(db, target, [...target.statements, db.update(carts).set({ couponCode: stored }).where(eq(carts.id, target.cartId))], request, now);
 }

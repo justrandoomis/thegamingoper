@@ -102,7 +102,7 @@ export const DEMO_CATEGORIES: readonly CategorySeed[] = [
   {
     slug: "accessories",
     kind: "accessories",
-    name: t3("الملحقات", "Accessories", "پاشکۆکان"),
+    name: t3("الإكسسوارات", "Accessories", "پاشکۆکان"),
     description: t3(
       "قواعد ومقابض شحن، حقائب، حوامل، مشغّل الأقراص، كاميرا و PlayStation Portal.",
       "Charging stations and grips, cases, stands, the disc drive, a camera and PlayStation Portal.",

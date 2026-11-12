@@ -190,7 +190,9 @@ export type PurchasingQueueCounts = {
   /** Receipts whose posting stopped half way and may be resumed now (its lease ran out), in their branch.
    *  purchasing.receipt.create, else null. */
   stuck: number | null;
-  /** Supplier invoices the three-way match flagged, in their branch. purchasing.invoice.manage + cost.read, else null. */
+  /** Supplier invoices the three-way match flagged, in their branch — never one they recorded: accepting its variances
+   *  needs someone other than its recorder (approveInvoice: approver_is_requester; follow-up 2026-11-12, the count used
+   *  to include them). purchasing.invoice.manage + cost.read, else null. */
   mismatch: number | null;
 };
 
@@ -211,7 +213,7 @@ export async function purchasingQueueCounts(db: Db, actor: Actor, now: number): 
       ? countOf(db, sql`SELECT count(*) AS n FROM receipts AS r WHERE r.status = 'posted' AND r.received_by LIKE 'posting:%' AND r.posted_at + ${POSTING_LEASE_MS} <= ${now} AND ${branchCondition(actor, sql`r.location_id`)}`)
       : Promise.resolve(null),
     can(actor, "purchasing.invoice.manage") && withCost
-      ? countOf(db, sql`SELECT count(*) AS n FROM supplier_invoices AS i LEFT JOIN purchase_orders AS po ON po.id = i.po_id WHERE i.status = 'mismatch' AND ${branch}`)
+      ? countOf(db, sql`SELECT count(*) AS n FROM supplier_invoices AS i LEFT JOIN purchase_orders AS po ON po.id = i.po_id WHERE i.status = 'mismatch' AND coalesce(i.created_by, '') <> ${me} AND ${branch}`)
       : Promise.resolve(null),
   ]);
   return { approvals, stuck, mismatch };

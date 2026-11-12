@@ -2,17 +2,19 @@
 /**
  * Design lint — the checkable rules of docs/DESIGN.md §6.6 (Design System v2; also §5.5, §13) over app/**.
  *
- *   node scripts/lint-design.mjs                 report everything; exit 1 only if a DESIGN-SYSTEM file breaks a rule
- *   node scripts/lint-design.mjs --strict        exit 1 if ANY file breaks a rule (CI after the v2 migration)
+ *   node scripts/lint-design.mjs                 report everything; exit 1 if a design-system file breaks any rule, or
+ *                                                any storefront file breaks a v2 rule
+ *   node scripts/lint-design.mjs --strict        exit 1 if ANY file breaks ANY rule (CI)
  *   node scripts/lint-design.mjs --json          machine-readable findings
  *   node scripts/lint-design.mjs app/routes/x    only these files / folders
  *
- * Design-system files: app/app.css, app/styles/**, app/ui/**, the /design-system route and its folder. Every other
- * file is reported under "other owners" and, without --strict, never changes the exit code. The rules v2 added
- * (marked "v2" below) fail the exit code only in app/styles/** and app/app.css until the kit and the page areas have
- * migrated (docs/DESIGN.md §14, stage 4); in app/ui/** and /design-system they are reported under "v2 migration".
+ * Design-system files: app/app.css, app/styles/**, app/ui/** (the kit), the /design-system route and its folder —
+ * every rule fails the run there. Since stage 4 of the v2 migration (docs/DESIGN.md §6.7) the rules v2 added or
+ * changed (marked "v2" below: red, gel, plat, legacy-token, type, radius, shadow, blend, primary-count, deprecated)
+ * also fail it in every other file outside the admin: the page areas, the shell, the motion engine, shared code. The
+ * remaining 1.0 rules in those files are reported under "other owners" and fail only with --strict.
  * The admin (app/routes/admin/**, app/styles/admin.css, any rule under [data-density="admin"]) keeps the Lens & Clay
- * 1.0 materials and is exempt from the v2 material rules.
+ * 1.0 materials: it is exempt from the v2 material rules, and its findings fail only with --strict.
  *
  * Rules
  *   raw-colour          hex / rgb() / hsl() / oklch() … literals outside app/styles/tokens.css
@@ -26,10 +28,10 @@
  *                       filter utilities
  *   animated-property   transition/animation of anything but transform, translate, scale, rotate and opacity
  *   letter-spacing      any non-zero letter-spacing, Tailwind tracking-*, letterSpacing
- *   red                 --red / --red-hover / --hero (and 1.0 --red-face) outside the primary key, the card add button,
+ *   v2 red              --red / --red-hover / --hero (and 1.0 --red-face) outside the primary key, the card add button,
  *                       the bead, the fly-to-cart bead, the logo, the hero and wallet bands and the current step;
  *                       red surfaces via utilities
- *   gel                 --gel-* outside the dark cabinet light layers (.band__light, .ptile__light); assigning
+ *   v2 gel              --gel-* outside the dark cabinet light layers (.band__light, .ptile__light); assigning
  *                       `--gel: var(--gel-x)` to a subtree is fine
  *   img-size            <img> without width and height
  *   view-transition     view-transition-name set statically outside app/motion
@@ -41,12 +43,14 @@
  *   v2 radius           a border-radius that is not a --r-* token (the checkbox's 6px is --r-check)
  *   v2 shadow           a box-shadow written with lengths instead of an elevation token (the vocabulary is
  *                       --clay-cap/--clay-cast, --e-bar, --e-float, --e-overlay, --e-art, --rim)
- *   v2 blend            mix-blend-mode outside the opaque-photo rule ([data-transparent="false"] / [data-opaque])
+ *   v2 blend            mix-blend-mode outside the opaque-photo rule of app/styles/materials.css (a selector on
+ *                       [data-opaque]: box art and screenshots, also data-transparent="false", never blend)
  *   v2 plat             a platform surface (--plat*) outside the platform tile (.ptile) and the showcase band (.band)
  *   v2 primary-count    more than one primary key (<Key variant="primary"|"commit"> or a raw .key--primary/.key--red)
  *                       in one route module — one red primary per view; card add buttons are neutral
- *   v2 deprecated       the 1.0 kit names that stage 4 deletes: Socket, PlatformBank, StageTag, PlatformGlyph,
- *                       variant="commit" | "ink" | "quiet", <Glass variant="static">
+ *   v2 deprecated       the 1.0 kit names stage 4 retires outside the admin: Socket, PlatformBank, StageTag,
+ *                       PlatformGlyph, KeyBank (Segmented replaces it), variant="commit" | "ink" | "quiet",
+ *                       <Glass variant="static">
  *
  * Escape hatch (always give the reason): a comment `lint-design: allow <rule>[, <rule>] — why` disables those rules
  * on its own line and the next one; within the first three lines of a file it applies to the whole file.
@@ -65,13 +69,12 @@ const JSON_OUT = args.includes("--json");
 const targets = args.filter((a) => !a.startsWith("--"));
 
 const OWNED = [/^app\/app\.css$/, /^app\/styles\//, /^app\/ui\//, /^app\/routes\/storefront\/content\/design-system(\.tsx|\/)/];
-const SYSTEM = [/^app\/app\.css$/, /^app\/styles\//];
 const isOwned = (rel) => OWNED.some((re) => re.test(rel));
-const isSystem = (rel) => SYSTEM.some((re) => re.test(rel));
 /** The admin keeps the 1.0 materials (DESIGN.md §10). */
 const isAdmin = (rel) => rel.startsWith("app/routes/admin/") || rel === "app/styles/admin.css";
-/** Rules added by Design System v2: they fail only in app/styles until the kit and the areas have migrated. */
-const MIGRATION = new Set(["legacy-token", "type", "radius", "shadow", "blend", "plat", "primary-count", "deprecated"]);
+/** The rules Design System v2 added or changed (DESIGN.md §6.7). Since stage 4 they fail the run in every file outside
+ *  the admin, not only in the design-system files. */
+const V2_RULES = new Set(["red", "gel", "plat", "legacy-token", "type", "radius", "shadow", "blend", "primary-count", "deprecated"]);
 
 /* ───────────────────────────── files ───────────────────────────── */
 function walk(dir, out = []) {
@@ -113,8 +116,8 @@ function makeReporter(file, raw) {
   });
   return (rule, line, message) => {
     if (fileWide.has(rule) || lineAllow.get(line)?.has(rule)) return;
-    const migration = MIGRATION.has(rule) && isOwned(r) && !isSystem(r);
-    findings.push({ file: r, line, rule, message, owned: isOwned(r) && !migration, migration });
+    const owned = isOwned(r);
+    findings.push({ file: r, line, rule, message, owned, v2: !owned && !isAdmin(r) && V2_RULES.has(rule) });
   };
 }
 
@@ -254,8 +257,9 @@ function lintCss(file, raw) {
         if (/^border(-[a-z]+)*-radius$/.test(prop) && /\d*\.?\d+(px|%|em|rem)\b/.test(withoutVars(value).replace(/\b0(px|%|em|rem)?\b/g, ""))) report("radius", line, `${prop}: ${value} — radius only through the --r-* tokens`);
         // shadow: the elevation vocabulary
         if ((prop === "box-shadow" || /^--[\w-]*(shadow|cast)$/.test(prop)) && /\d*\.?\d+px/.test(withoutVars(value))) report("shadow", line, `${prop}: ${value.slice(0, 50)} — use an elevation token (--clay-cap, --clay-cast, --e-bar, --e-float, --e-overlay, --e-art, --rim)`);
-        // blend: only the interim opaque-photo rule
-        if (prop === "mix-blend-mode" && value !== "normal" && !/(\[data-opaque\]|\[data-transparent="false"\])/.test(sel)) report("blend", line, `mix-blend-mode in "${sel.slice(0, 60)}" — only the opaque-photo rule may blend`);
+        // blend: only the interim opaque-photo rule (materials.css, keyed on [data-opaque]: box art and screenshots are
+        // data-transparent="false" too, and must never blend)
+        if (prop === "mix-blend-mode" && value !== "normal" && !(isMaterials && /\[data-opaque\]/.test(sel))) report("blend", line, `mix-blend-mode in "${sel.slice(0, 60)}" — only the opaque-photo rule ([data-opaque], materials.css) may blend`);
         // platform surfaces: tiles and bands only
         if (/var\(--plat(-[a-z]+)*\)/.test(value) && prop !== "--plat" && prop !== "--plat-deep" && !PLAT_PLACES.test(sel)) report("plat", line, `${prop} paints a platform surface in "${sel.slice(0, 60)}" — platform colour is a surface only on .ptile and .band; elsewhere an 8px dot (--dot)`);
       }
@@ -451,11 +455,12 @@ function lintTs(file, raw) {
       const g = /<Glass\b([^>]*)>/.exec(window);
       if (g && !/variant\s*=\s*["'](static|solid)["']/.test(g[1])) report("glass-in-list", lineOf(raw, m.index + g.index), "live <Glass> inside a list — lists never carry live glass");
     }
-    // the 1.0 kit names that stage 4 deletes (the kit keeps them working as aliases until then)
+    // the 1.0 kit names stage 4 retires (the kit may keep an alias for the admin; nothing outside it uses one)
     if (!adminFile && !r.startsWith("app/ui/")) {
-      for (const m of code.matchAll(/import\s*\{([^}]*)\}\s*from\s*["']~\/ui\/(Socket|PlatformBank|Stage|PlatformLed)["']/g)) {
+      for (const m of code.matchAll(/import\s*\{([^}]*)\}\s*from\s*["']~\/ui\/(Socket|PlatformBank|Stage|PlatformLed|KeyBank)["']/g)) {
         for (const name of m[1].split(",").map((s) => s.trim().split(/\s+as\s+/)[0])) {
-          if (["Socket", "PlatformBank", "StageTag", "PlatformGlyph"].includes(name)) report("deprecated", lineOf(raw, m.index), `${name} is a 1.0 kit name — stage 4 deletes it (DESIGN.md §9 "Deprecated")`);
+          if (["Socket", "PlatformBank", "StageTag", "PlatformGlyph"].includes(name)) report("deprecated", lineOf(raw, m.index), `${name} is a retired 1.0 kit name (DESIGN.md §9 "Deprecated")`);
+          if (name === "KeyBank") report("deprecated", lineOf(raw, m.index), "KeyBank is retired from the storefront — use <Segmented> (DESIGN.md §9)");
         }
       }
       for (const m of code.matchAll(/<(Key|IconKey)\b[^>]*\bvariant\s*=\s*["'](commit|ink|quiet)["']/g)) {
@@ -515,8 +520,8 @@ for (const file of files) {
 }
 
 const own = findings.filter((f) => f.owned);
-const migration = findings.filter((f) => f.migration);
-const others = findings.filter((f) => !f.owned && !f.migration);
+const v2 = findings.filter((f) => f.v2);
+const others = findings.filter((f) => !f.owned && !f.v2);
 if (JSON_OUT) {
   console.log(JSON.stringify({ files: files.length, findings }, null, 2));
 } else {
@@ -524,14 +529,14 @@ if (JSON_OUT) {
     for (const f of list) console.log(`  ${f.file}:${f.line}  ${f.rule}  ${f.message}`);
   };
   console.log(`lint-design: ${files.length} files`);
-  console.log(`design-system files: ${own.length} finding(s)`);
+  console.log(`design-system files (styles, kit, /design-system): ${own.length} finding(s)`);
   print(own);
-  console.log(`v2 migration (kit and /design-system): ${migration.length} finding(s)${STRICT ? "" : " (reported only; --strict makes them fail)"}`);
-  print(migration);
-  console.log(`other owners: ${others.length} finding(s)${STRICT ? "" : " (reported only; --strict makes them fail)"}`);
+  console.log(`v2 rules in the other storefront files (pages, shell, motion, shared code): ${v2.length} finding(s)`);
+  print(v2);
+  console.log(`other owners (the admin; the 1.0 rules elsewhere): ${others.length} finding(s)${STRICT ? "" : " (reported only; --strict makes them fail)"}`);
   print(others);
   const byRule = {};
   for (const f of findings) byRule[f.rule] = (byRule[f.rule] ?? 0) + 1;
   if (findings.length) console.log(`by rule: ${Object.entries(byRule).map(([k, v]) => `${k} ${v}`).join(" · ")}`);
 }
-process.exit(own.length > 0 || (STRICT && findings.length > 0) ? 1 : 0);
+process.exit(own.length > 0 || v2.length > 0 || (STRICT && findings.length > 0) ? 1 : 0);

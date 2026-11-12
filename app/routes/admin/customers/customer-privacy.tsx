@@ -6,7 +6,8 @@ import { can } from "~/server/actor";
 import { throwAsResponse } from "~/server/errors";
 import { customerConsentHistory, customerPrivacyRequests } from "~/server/services/admin/customers/privacy.server";
 import { customerById } from "~/server/services/admin/customers/shared.server";
-import { PRIVACY_DUE_DAYS, PRIVACY_KIND_LIST, type ConsentState } from "~/server/services/admin/customers/types";
+import { customerRules } from "~/server/services/admin/customers/rules.server";
+import { PRIVACY_KIND_LIST, type ConsentState } from "~/server/services/admin/customers/types";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { Select, TextArea } from "~/ui/Field";
 import { Key } from "~/ui/Key";
@@ -29,7 +30,7 @@ export async function loader({ params, context }: Route.LoaderArgs) {
       can(actor, "customers.consent.read") ? customerConsentHistory(db, actor, row.id) : Promise.resolve(null),
       can(actor, "customers.privacy.manage") ? customerPrivacyRequests(db, actor, row.id, now) : Promise.resolve(null),
     ]);
-    return { consents, requests, canManage: can(actor, "customers.privacy.manage"), changeable: row.status === "active" || row.status === "blocked" };
+    return { consents, requests, canManage: can(actor, "customers.privacy.manage"), changeable: row.status === "active" || row.status === "blocked", dueDays: (await customerRules(db)).privacyDueDays };
   } catch (error) {
     throwAsResponse(error);
   }
@@ -44,7 +45,7 @@ export const meta: Route.MetaFunction = (args) => customersMeta(args, "customerP
 
 export default function CustomerPrivacyPage({ loaderData }: Route.ComponentProps) {
   const t = useCustomersT();
-  const { consents, requests, canManage, changeable } = loaderData;
+  const { consents, requests, canManage, changeable, dueDays } = loaderData;
   return (
     <div className="cus-layout">
       <div className="cus-main">
@@ -86,7 +87,7 @@ export default function CustomerPrivacyPage({ loaderData }: Route.ComponentProps
         ) : null}
       </div>
       <aside className="cus-side" aria-label={t("customerPrivacy.side")}>
-        {requests ? <RequestsSection requests={requests} canCreate={canManage && changeable} /> : null}
+        {requests ? <RequestsSection requests={requests} canCreate={canManage && changeable} dueDays={dueDays} /> : null}
       </aside>
     </div>
   );
@@ -130,7 +131,7 @@ function ConsentRow({ state, canWithdraw }: { state: ConsentState; canWithdraw: 
   );
 }
 
-function RequestsSection({ requests, canCreate }: { requests: NonNullable<Route.ComponentProps["loaderData"]["requests"]>; canCreate: boolean }) {
+function RequestsSection({ requests, canCreate, dueDays }: { requests: NonNullable<Route.ComponentProps["loaderData"]["requests"]>; canCreate: boolean; dueDays: number }) {
   const t = useCustomersT();
   const [kind, setKind] = useState<string>("export");
   const [details, setDetails] = useState("");
@@ -183,7 +184,7 @@ function RequestsSection({ requests, canCreate }: { requests: NonNullable<Route.
               {t("privacy.form.open")}
             </Key>
           </div>
-          <p className="type-caption text-ink-2">{t("privacy.form.due", { days: PRIVACY_DUE_DAYS })}</p>
+          <p className="type-caption text-ink-2">{t("privacy.form.due", { after: t("afterDays", { count: dueDays }) })}</p>
         </fetcher.Form>
       ) : null}
     </Section>

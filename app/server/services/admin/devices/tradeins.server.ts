@@ -63,6 +63,7 @@ import { actorRef, assertCan, can, canAny, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import {
+  cashMovements,
   customers,
   deviceModels,
   files,
@@ -88,11 +89,12 @@ import {
   type UsedGrade,
   type UsedUnitStatus,
 } from "~/server/db/schema";
-import { expectChanged, expectThat, isUniqueViolation, runBatch } from "~/server/db/tx.server";
+import { expectChanged, expectThat, isUniqueViolation, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, forbidden, invalid, notFound, toAppError, zodFieldErrors } from "~/server/errors";
 import { cleanBlock, cleanLine } from "~/server/text.server";
 import { getSetting } from "~/server/settings.server";
 import { journalStatements, mapPostingError, postedBy, postWalletCredit } from "~/server/services/accounting/post.server";
+import { releaseSoldSerialStatements } from "~/server/services/inventory/stock.server";
 import { normalizeTradeInRef } from "~/server/services/tradein.server";
 import { walletCreditStatement } from "~/server/services/wallet.server";
 import {
@@ -270,7 +272,10 @@ export function viewWhere(view: Exclude<TradeInFilters["view"], "all">, now: num
 export async function listTradeIns(db: Db, actor: Actor, filters: TradeInFilters, locale: Locale, now: number): Promise<TradeInPage> {
   assertReader(actor);
   const where: SQL[] = [];
-  if (filters.view !== "all") where.push(viewWhere(filters.view, now));
+  // "to_pay": what THIS employee can move on (payoutsWhere — the "to pay" card's own count); nothing without the
+  // payout or the verify permission
+  if (filters.view === "to_pay") where.push(payoutsWhere(actor, now) ?? sql`0 = 1`);
+  else if (filters.view !== "all") where.push(viewWhere(filters.view, now));
   if (filters.status) where.push(eq(tradeIns.status, filters.status));
   if (filters.from) where.push(sql`${tradeIns.createdAt} >= ${baghdadDayStart(filters.from)}`);
   if (filters.to) where.push(sql`${tradeIns.createdAt} < ${baghdadDayStart(filters.to) + DAY_MS}`);
@@ -319,6 +324,7 @@ export async function listTradeIns(db: Db, actor: Actor, filters: TradeInFilters
     db.select({ n: count() }).from(tradeIns).where(condition),
   ]);
   const total = Number(totals[0]?.n ?? 0);
+  const money = seesTradeInMoney(actor);
   return {
     rows: rows.map(
       (row): TradeInListRow => ({
@@ -331,7 +337,7 @@ export async function listTradeIns(db: Db, actor: Actor, filters: TradeInFilters
         contactName: row.contactName,
         phone: phoneView(actor, row.phone),
         estimate: row.estimateMin !== null && row.estimateMax !== null ? { minIqd: row.estimateMin, maxIqd: row.estimateMax } : null,
-        offerIqd: row.offer,
+        offerIqd: money ? row.offer : null,
         offerExpiresAt: row.offerExpiresAt,
         inspectionAt: row.inspectionAt,
         counter: Number(row.counter) === 1,
@@ -344,17 +350,47 @@ export async function listTradeIns(db: Db, actor: Actor, filters: TradeInFilters
   };
 }
 
+/**
+ * The accepted trade-ins (the list's "to_pay" view; "accepted" holds them all) THIS employee can move on, by the trade-in page's own rules: the
+ * data wipe with devices.ownership.verify while it is not confirmed; the payout with devices.tradein.payout once it is
+ * — never their own offer that only a second person may pay (payoutNeedsSecond: above the guide's suggestion, no
+ * suggestion, or a guide they set themselves; payOut refuses it, payout_second_person). Null when the employee holds
+ * neither permission. Follow-up 2026-11-12: `toPay` counted every accepted trade-in for anyone with either permission —
+ * a wipe they cannot confirm, a payout before the wipe, their own offer. The shell's bell had its own copy of this
+ * rule (shell/queues.server.ts payoutsWhere); this is the module's, for both to share.
+ */
+export function payoutsWhere(actor: Actor, now: number): SQL | null {
+  const wipes = can(actor, "devices.ownership.verify");
+  const pays = can(actor, "devices.tradein.payout");
+  if (!wipes && !pays) return null;
+  const me = actor.kind === "employee" ? actor.id : "";
+  const ownOfferForASecondPayer = sql`(${tradeIns.offeredBy} = ${me} AND ${tradeIns.finalOfferIqd} IS NOT NULL AND coalesce((
+      SELECT CASE
+        WHEN json_extract(e.data, '$.guideBy') = ${tradeIns.offeredBy} THEN 1
+        WHEN json_type(e.data, '$.suggestedIqd') IS NOT 'integer' THEN 1
+        WHEN ${tradeIns.finalOfferIqd} > json_extract(e.data, '$.suggestedIqd') THEN 1
+        ELSE 0
+      END
+      FROM trade_in_events AS e WHERE e.trade_in_id = ${tradeIns.id} AND e.kind = 'offered' ORDER BY e.at DESC, e.id DESC LIMIT 1), 1) = 1)`;
+  const steps: SQL[] = [];
+  if (wipes) steps.push(sql`coalesce(${tradeIns.dataWiped}, 0) = 0`);
+  if (pays) steps.push(sql`(${tradeIns.dataWiped} = 1 AND NOT ${ownOfferForASecondPayer})`);
+  return and(viewWhere("accepted", now), or(...steps)) as SQL;
+}
+
 /** What waits in the module for this employee (each null when they may not act on it). */
 export async function deviceQueueCounts(db: Db, actor: Actor, now: number): Promise<QueueCounts> {
   const one = async (where: SQL | undefined) => Number((await db.select({ n: count() }).from(tradeIns).where(where).get())?.n ?? 0);
   // Units: what the employee's own list shows (an employee limited to a branch: that branch's units).
   const units = async (statuses: UsedUnitStatus[]) => Number((await db.select({ n: count() }).from(usedUnits).where(and(inArray(usedUnits.status, statuses), unitBranchWhere(actor))).get())?.n ?? 0);
-  // Each count is its card's list (index.tsx links: ?view=new, inspected, offered, accepted) — the same viewWhere.
+  // Each count is its card's list (index.tsx links: ?view=new, inspected, offered, to_pay) — the same viewWhere;
+  // `toPay` only what this employee can move on (payoutsWhere, which the list's "to_pay" view applies too).
+  const payouts = payoutsWhere(actor, now);
   const [toInspect, toOffer, awaitingAnswer, toPay, unitsToInspect, toList] = await Promise.all([
     can(actor, "devices.tradein.inspect") ? one(viewWhere("new", now)) : null,
     can(actor, "devices.tradein.offer") ? one(viewWhere("inspected", now)) : null,
     canAny(actor, READERS) ? one(viewWhere("offered", now)) : null,
-    canAny(actor, ["devices.tradein.payout", "devices.ownership.verify"]) ? one(viewWhere("accepted", now)) : null,
+    payouts ? one(payouts) : null,
     can(actor, "devices.used.inspect") ? units(["intake", "testing", "returned"]) : null,
     can(actor, "devices.used.list") ? units(["ready"]) : null,
   ]);
@@ -477,6 +513,38 @@ async function photosOf(db: Db, tradeInId: string, url: (fileId: string) => stri
   }));
 }
 
+/**
+ * Whether this employee sees a trade-in's money: the offer, the guide's valuation and reference prices, the price
+ * difference, the amounts in its history. A paid offer IS the used unit's purchase cost (payOut: costIqd = the offer),
+ * so — like every cost figure — it is for cost.read, and for the people who work the money (devices.tradein.offer,
+ * devices.tradein.payout). Follow-up 2026-11-12: support staff (devices.tradein.read) saw every offer. The customer's
+ * own estimate (what the storefront told them) stays visible.
+ */
+export function seesTradeInMoney(actor: Actor): boolean {
+  return can(actor, "cost.read") || canAny(actor, ["devices.tradein.offer", "devices.tradein.payout"]);
+}
+
+/** Money keys of the trade-in events (makeOffer, recordAnswer, payOut, expiry) — dropped for those who do not see money. */
+const HISTORY_MONEY_KEYS = ["amountIqd", "suggestedIqd", "guideBaseIqd"] as const;
+
+/** A detail without its money (seesTradeInMoney false): amounts null or empty, history amounts marked hidden. */
+function withoutMoney(detail: TradeInDetail): TradeInDetail {
+  return {
+    ...detail,
+    money: false,
+    offer: detail.offer ? { ...detail.offer, amountIqd: null } : null,
+    valuation: null,
+    references: [],
+    difference: null,
+    history: detail.history.map((entry) => {
+      if (!HISTORY_MONEY_KEYS.some((key) => key in entry.data)) return entry;
+      const data: Record<string, unknown> = { ...entry.data, amountHidden: true };
+      for (const key of HISTORY_MONEY_KEYS) delete data[key];
+      return { ...entry, data };
+    }),
+  };
+}
+
 async function historyOf(db: Db, tradeInId: string): Promise<HistoryEntry[]> {
   const events = await db.select().from(tradeInEvents).where(eq(tradeInEvents.tradeInId, tradeInId)).orderBy(asc(tradeInEvents.at), asc(tradeInEvents.id));
   const names = await employeeNames(db, events.filter((event) => event.actorKind === "employee").map((event) => event.actorId));
@@ -585,6 +653,8 @@ export async function getTradeInDetail(db: Db, actor: Actor, ref: string, locale
     serialOrigin(db, inspection?.serial ?? null),
     lastOfferEvent(db, row.id),
   ]);
+  // the payer's till drawer, offered for a cash payout (only while one is to be made)
+  const drawer = row.status === "accepted" && can(actor, "devices.tradein.payout") ? await drawerOf(db, actor) : null;
   const template = inspection?.checklist?.templateId ? await templateById(db, inspection.checklist.templateId) : null;
   const fallbackTemplate = templates.find((entry) => entry.kind === device.kind) ?? null;
   const checklist = checklistView(template ?? fallbackTemplate, inspection?.checklist ?? null, locale, device.kind);
@@ -623,10 +693,12 @@ export async function getTradeInDetail(db: Db, actor: Actor, ref: string, locale
     if (locations.length === 0) payoutBlockers.push("location_invalid");
   }
 
-  return {
+  const detail: TradeInDetail = {
     id: row.id,
     ref: row.ref,
     status,
+    money: true,
+    drawer,
     offerExpired: expired,
     isDemo: row.isDemo,
     counter,
@@ -697,6 +769,7 @@ export async function getTradeInDetail(db: Db, actor: Actor, ref: string, locale
     offerBlockers,
     payoutBlockers,
   };
+  return seesTradeInMoney(actor) ? detail : withoutMoney(detail);
 }
 
 // ───────────────────────────────────────────────────────────────── a trade-in at the counter
@@ -721,6 +794,12 @@ export const CounterTradeInInput = z
     code: z.preprocess(blank, z.string().trim().max(80, "too_long").optional()),
     notes: text(500, true),
     ownershipDeclared: z.literal(true, { error: "ownership_required" }),
+    /**
+     * The employee saw that the store account with this number is the customer's own (signed in on their phone). Only
+     * then is the trade-in linked to it — a typed number is no proof (follow-up 2026-11-12: any account with the number
+     * was linked, so its owner could be paid store credit for someone else's device, and see it in their account).
+     */
+    accountConfirmed: z.boolean().default(false),
   })
   .refine((input) => Boolean(input.deviceModelId) !== Boolean(input.code), {
     message: "device_required",
@@ -730,8 +809,9 @@ export const CounterTradeInInput = z
   });
 
 /**
- * A trade-in for a customer who brings a device to the shop (devices.tradein.inspect): the customer's phone (a store
- * account with that number is linked, so store credit is possible), the device as a device model or a catalogue
+ * A trade-in for a customer who brings a device to the shop (devices.tradein.inspect): the customer's phone (the store
+ * account with that number is linked — so store credit is possible — only when the employee confirms the customer
+ * showed it is theirs, `accountConfirmed`; otherwise the number stays a contact and the payout is cash), the device as a device model or a catalogue
  * SKU / barcode (games and accessories have no device model), and notes. No estimate: the inspection prices it.
  * Idempotent on the form's key.
  */
@@ -764,7 +844,8 @@ export async function openCounterTradeIn(db: Db, actor: Actor, raw: unknown, now
     variantId = found.id;
     deviceModelId = found.modelId;
   }
-  const customer = await db.select({ id: customers.id }).from(customers).where(and(eq(customers.phoneE164, phone), notInArray(customers.status, ["merged", "deleted"]))).get();
+  const customer = input.accountConfirmed ? await db.select({ id: customers.id }).from(customers).where(and(eq(customers.phoneE164, phone), notInArray(customers.status, ["merged", "deleted"]))).get() : undefined;
+  if (input.accountConfirmed && !customer) throw invalid({ accountConfirmed: "no_account_for_phone" });
   const attempt = async (ref: string) => {
     await runBatch(db, [
       db
@@ -787,7 +868,7 @@ export async function openCounterTradeIn(db: Db, actor: Actor, raw: unknown, now
         .onConflictDoNothing({ target: tradeIns.id }),
       expectChanged(db, 1, { code: "NO_ROWS_CHANGED", detail: "trade_ins.id" }),
       db.insert(tradeInEvents).values(eventRow(id, "submitted", { counter: true, notes: input.notes, ownershipDeclared: true, estimate: "inspection" }, actor, now)),
-      auditStatement(db, { actor, action: "devices.tradein.open", entityType: "trade_in", entityId: id, summary: ref, after: { deviceModelId, variantId, counter: true }, at: now }),
+      auditStatement(db, { actor, action: "devices.tradein.open", entityType: "trade_in", entityId: id, summary: ref, after: { deviceModelId, variantId, counter: true, accountLinked: Boolean(customer) }, at: now }),
     ]);
     return { tradeInId: id, ref, replayed: false };
   };
@@ -1124,7 +1205,22 @@ export const PayoutInput = z.object({
   locationId: idField,
   /** Required when the method differs from the one the customer chose. */
   reason: text(300, true),
+  /**
+   * Cash paid from the payer's own till drawer: this open POS shift of theirs (follow-up 2026-11-12). The payout is then
+   * a drawer pay-out on that shift in the same batch, so the drawer's expected cash — and its blind count — stay right.
+   * Left out: the cash came from elsewhere (the safe).
+   */
+  shiftId: z.preprocess(blank, idField.optional()),
 });
+
+export const payoutDrawerKey = (tradeInId: string) => `tradein:${tradeInId}:drawer`;
+
+/** The employee's open POS shift (their till drawer) a cash payout can be paid from; null without one. */
+export async function drawerOf(db: Db, actor: Actor): Promise<{ shiftId: string; register: string } | null> {
+  if (actor.kind !== "employee" || !can(actor, "pos.cash.move")) return null;
+  const rows = await db.all<{ id: string; code: string }>(sql`SELECT s.id, r.code FROM pos_shifts AS s JOIN pos_registers AS r ON r.id = s.register_id WHERE s.opened_by = ${actor.id} AND s.status = 'open' ORDER BY s.opened_at DESC LIMIT 1`);
+  return rows[0] ? { shiftId: rows[0].id, register: rows[0].code } : null;
+}
 
 export const payoutWalletKey = (tradeInId: string) => `tradein:${tradeInId}:payout`;
 export const payoutJournalKey = (tradeInId: string) => `trade_in:${tradeInId}:payout`;
@@ -1220,6 +1316,16 @@ export async function payOut(db: Db, actor: Actor, raw: unknown, now: number, op
   } else {
     // Cash is never paid for a trade-in that already has its store credit (the credit completes instead).
     if (started.walletEntryId) throw new AppError("payout_started", 409);
+    if (input.shiftId) {
+      // from the payer's own open till drawer: a drawer pay-out in this batch, guarded on the shift still being open
+      const drawer = await drawerOf(db, actor);
+      if (!drawer || drawer.shiftId !== input.shiftId) throw new AppError("payout_drawer_invalid", 409, { fields: { shiftId: "payout_drawer_invalid" } });
+      const { actorKind, actorId: mover } = actorRef(actor);
+      money.push(
+        expectThat(db, sql`EXISTS (SELECT 1 FROM pos_shifts WHERE id = ${input.shiftId} AND status = 'open')`, { code: "PAYOUT_DRAWER_CLOSED", detail: input.shiftId }),
+        db.insert(cashMovements).values({ id: newId("cmv"), shiftId: input.shiftId, kind: "pay_out", amountIqd: -amount, reason: `trade_in ${row.ref}`, actorKind, actorId: mover, idempotencyKey: payoutDrawerKey(row.id), at: now }),
+      );
+    }
     payoutRef = newId("je");
     money.push(
       ...journalStatements(db, {
@@ -1268,16 +1374,9 @@ export async function payOut(db: Db, actor: Actor, raw: unknown, now: number, op
   const statements: BatchStatement[] = [];
   if (serialId && inspection.serial) {
     if (origin) {
-      // A unit the store sold before comes back: it is ours again, its old order line lets it go, its warranty ends.
-      statements.push(
-        db
-          .update(serials)
-          .set({ status: "in_stock", locationId: location.id, source: "trade_in", sourceRef: row.id, costIqd: amount, notes: row.ref, updatedAt: now })
-          .where(and(eq(serials.id, serialId), eq(serials.status, "sold"), eq(serials.variantId, variant.id))),
-        expectChanged(db, 1, { code: "SERIAL_CHANGED", detail: serialId }),
-        db.update(orderItemSerials).set({ releasedAt: now }).where(and(eq(orderItemSerials.serialId, serialId), isNull(orderItemSerials.releasedAt))),
-        db.update(warranties).set({ status: "void", voidReason: `traded_in:${row.ref}` }).where(and(eq(warranties.serialId, serialId), eq(warranties.status, "active"))),
-      );
+      // A unit the store sold before comes back: it is ours again, its old order line lets it go, its warranty ends
+      // (the commerce core's buy-back of a sold serial, CONTRACTS §1 inventory/stock.server).
+      statements.push(...releaseSoldSerialStatements(db, { serialId, variantId: variant.id, locationId: location.id, source: "trade_in", sourceRef: row.id, costIqd: amount, notes: row.ref, voidReason: `traded_in:${row.ref}`, now }));
     } else {
       statements.push(
         db.insert(serials).values({ id: serialId, serial: inspection.serial, variantId: variant.id, status: "in_stock", locationId: location.id, costIqd: amount, source: "trade_in", sourceRef: row.id, notes: row.ref, createdAt: now, updatedAt: now }),
@@ -1332,7 +1431,7 @@ export async function payOut(db: Db, actor: Actor, raw: unknown, now: number, op
       entityId: row.id,
       summary: row.ref,
       before: { status: "accepted", payout: row.payoutMethod },
-      after: { status: "paid", payout: method, amountIqd: amount, payoutRef, usedUnitId: unitId, serialId, reacquired: Boolean(origin), locationId: location.id },
+      after: { status: "paid", payout: method, amountIqd: amount, payoutRef, usedUnitId: unitId, serialId, reacquired: Boolean(origin), locationId: location.id, drawerShiftId: method === "cash" ? (input.shiftId ?? null) : null },
       reason: input.reason,
       at: now,
     }),
@@ -1349,6 +1448,8 @@ export async function payOut(db: Db, actor: Actor, raw: unknown, now: number, op
     }
     if (isUniqueViolation(error, "serials.serial")) throw invalid({ serial: "serial_in_stock" });
     if (toAppError(error)?.code === "payout_started") throw new AppError("payout_started", 409, { cause: error });
+    // the till shift was closed between the check and the batch: nothing was paid
+    if (mapDbError(error)?.code === "PAYOUT_DRAWER_CLOSED") throw new AppError("payout_drawer_invalid", 409, { fields: { shiftId: "payout_drawer_invalid" }, cause: error });
     settle(error);
   }
   return { usedUnitId: unitId, replayed: false, method };

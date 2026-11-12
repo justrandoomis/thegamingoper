@@ -18,6 +18,7 @@ export default defineMessages({
       tasks: "المهام",
       commissions: "العمولات",
       payroll: "الرواتب",
+      advances: "السلف",
       performance: "الأداء",
     },
     common: {
@@ -753,6 +754,7 @@ export default defineMessages({
       tasks: "Tasks",
       commissions: "Commissions",
       payroll: "Payroll",
+      advances: "Advances",
       performance: "Performance",
     },
     common: {
@@ -1488,6 +1490,7 @@ export default defineMessages({
       tasks: "ئەرکەکان",
       commissions: "کۆمیسیۆنەکان",
       payroll: "مووچە",
+      advances: "پێشەکییەکان",
       performance: "کارایی",
     },
     common: {

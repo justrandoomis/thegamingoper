@@ -24,13 +24,18 @@ export const SETTINGS_ERROR_KEYS = [
   "policy_no_draft",
   "policy_not_editable",
   "policy_empty",
+  "policy_no_approved",
+  "not_ascending",
+  "below_paired",
+  "step_1000",
   "reason_required",
 ] as const;
 
-export type FieldUnit = "iqd" | "minutes" | "hours" | "days" | "percent";
+export type FieldUnit = "iqd" | "minutes" | "hours" | "days" | "percent" | "count" | "points";
 
 export type FieldSpec =
-  | { kind: "int"; unit: FieldUnit; min: number; max: number }
+  /** `step`: the number must be a multiple of it (error `step_<step>`). */
+  | { kind: "int"; unit: FieldUnit; min: number; max: number; step?: number }
   /** A percentage typed by a person ("10", "12.5", "١٢٫٥"), stored as basis points. */
   | { kind: "bps"; min: number; max: number }
   | { kind: "bool" }
@@ -40,15 +45,26 @@ export type FieldSpec =
 
 export type ObjectField = { name: string; field: FieldSpec; optional?: boolean };
 
+/**
+ * Rules between an object's fields, the same ones its schema in settings.server.ts enforces — checked by the form
+ * too, so the field that breaks one is marked before anything is sent (review 2026-11-12: the change dialog said
+ * "check the highlighted fields" and none was). `ascending`: each name's number above the one before it
+ * (`not_ascending` on the later one); `notBelow`: [a, b] — a is never below b (`below_paired` on a).
+ */
+export type ObjectChecks = { ascending?: readonly (readonly string[])[]; notBelow?: readonly (readonly [string, string])[] };
+
 export type SettingEditor =
   | { kind: "value"; field: FieldSpec }
-  | { kind: "object"; fields: readonly ObjectField[] }
+  | { kind: "object"; fields: readonly ObjectField[]; checks?: ObjectChecks }
   /** Changed in another module, which shows the change's impact before it is made. */
   | { kind: "linked"; href: string; module: string }
   /** Stored, but nothing in the store reads it yet: shown read-only with the reason. */
   | { kind: "unused" };
 
 const iqd = (max: number, min = 0): FieldSpec => ({ kind: "int", unit: "iqd", min, max });
+const days = (max: number, min = 1): FieldSpec => ({ kind: "int", unit: "days", min, max });
+const count = (max: number, min = 1): FieldSpec => ({ kind: "int", unit: "count", min, max });
+const points = (max: number, min = 0): FieldSpec => ({ kind: "int", unit: "points", min, max });
 const toggle: ObjectField = { name: "enabled", field: { kind: "bool" } };
 
 /** Every setting key and how it is edited. A key missing here is shown read-only. */
@@ -95,6 +111,73 @@ export const SETTING_EDITORS: Record<string, SettingEditor> = {
       { name: "warranty_ending_days", field: { kind: "int", unit: "days", min: 1, max: 365 } },
     ],
   },
+  // module follow-up 2026-11-12: admin 07 customers and admin 08 promotions (settings.server.ts has the schemas)
+  "customers.rfm_rules": {
+    kind: "object",
+    fields: [
+      ...(["recency_5_days", "recency_4_days", "recency_3_days", "recency_2_days"] as const).map((name) => ({ name, field: days(3_650) })),
+      ...(["frequency_2", "frequency_3", "frequency_4", "frequency_5"] as const).map((name) => ({ name, field: count(10_000) })),
+      ...(["monetary_2_iqd", "monetary_3_iqd", "monetary_4_iqd", "monetary_5_iqd"] as const).map((name) => ({ name, field: iqd(10_000_000_000, 1) })),
+    ],
+    checks: {
+      ascending: [
+        ["recency_5_days", "recency_4_days", "recency_3_days", "recency_2_days"],
+        ["frequency_2", "frequency_3", "frequency_4", "frequency_5"],
+        ["monetary_2_iqd", "monetary_3_iqd", "monetary_4_iqd", "monetary_5_iqd"],
+      ],
+    },
+  },
+  "customers.flag_rules": {
+    kind: "object",
+    fields: [
+      { name: "vip_spend_iqd", field: iqd(10_000_000_000, 1) },
+      { name: "vip_purchases", field: count(10_000) },
+      { name: "vip_window_days", field: days(3_650) },
+      { name: "risk_cancelled", field: count(1_000) },
+      { name: "risk_cancelled_days", field: days(3_650) },
+      { name: "risk_rejected_proofs", field: count(1_000) },
+      { name: "risk_rejected_days", field: days(3_650) },
+      { name: "risk_returned", field: count(1_000) },
+      { name: "risk_returned_days", field: days(3_650) },
+    ],
+  },
+  "customers.privacy_due_days": { kind: "value", field: days(90) },
+  "promotions.discount_limits": {
+    kind: "object",
+    fields: [
+      { name: "percent_bps", field: { kind: "bps", min: 0, max: 10_000 } },
+      { name: "per_order_iqd", field: iqd(100_000_000) },
+    ],
+  },
+  "promotions.loyalty": {
+    kind: "object",
+    fields: [
+      { name: "points_per_thousand_iqd", field: points(1_000) },
+      { name: "point_value_iqd", field: iqd(100_000) },
+      { name: "expiry_days", field: days(3_650) },
+      { name: "adjust_second_person_points", field: points(100_000, 1) },
+      { name: "adjust_solo_day_points", field: points(1_000_000) },
+    ],
+  },
+  "promotions.referral": {
+    kind: "object",
+    fields: [
+      { name: "reward_points", field: points(100_000) },
+      { name: "default_max_uses", field: count(100) },
+      { name: "device_window_days", field: days(3_650) },
+    ],
+  },
+  "promotions.gift_card": {
+    kind: "object",
+    checks: { notBelow: [["max_iqd", "min_iqd"]] },
+    fields: [
+      { name: "min_iqd", field: { kind: "int", unit: "iqd", min: 1_000, max: 100_000_000, step: 1_000 } },
+      { name: "max_iqd", field: { kind: "int", unit: "iqd", min: 1_000, max: 100_000_000, step: 1_000 } },
+      { name: "solo_iqd", field: iqd(100_000_000) },
+      { name: "solo_day_iqd", field: iqd(1_000_000_000) },
+      { name: "max_valid_days", field: days(3_650) },
+    ],
+  },
 };
 
 /** How the keys that are not edited here read (their editor is "linked" or "unused"). */
@@ -109,7 +192,7 @@ export const SETTING_VIEWS: Record<string, SettingEditor> = {
 export const viewOf = (key: string, editor: SettingEditor): SettingEditor => SETTING_VIEWS[key] ?? editor;
 
 /** Groups in the order the settings page lists them. */
-export const SETTING_GROUP_ORDER = ["controls", "payments", "checkout", "policies", "service", "shipping", "store", "locale"] as const;
+export const SETTING_GROUP_ORDER = ["controls", "payments", "checkout", "policies", "service", "customers", "promotions", "shipping", "store", "locale"] as const;
 
 /** Arabic-Indic and Persian digits as 0–9. */
 export function latinDigits(value: string): string {
@@ -161,13 +244,16 @@ export const TEMPLATE_CATALOG = [
   { key: "payment_rejected", channel: "sms", variables: ["ref", "reason"], required: ["ref"] },
   { key: "preorder_date_changed", channel: "sms", variables: ["ref", "expectedDay"], required: ["ref", "expectedDay"] },
   { key: "otp", channel: "sms", variables: ["code"], required: ["code"] },
+  // admin 14 support (follow-up 2026-11-12): a written reply to a ticket, queued for WhatsApp, SMS or e-mail — the
+  // template frames the reply, which must stay in it ({body}); support/tickets.server queues { ticketRef, body }
+  { key: "support_reply", channel: "whatsapp", variables: ["ticketRef", "body"], required: ["body"] },
 ] as const;
 export type TemplateKey = (typeof TEMPLATE_CATALOG)[number]["key"];
 
 export const TEMPLATE_MAX_LENGTH = 640;
 
 /** Sample values for the preview (never real data). */
-export const TEMPLATE_SAMPLES: Record<string, string> = { ref: "TT-7K4M2Q9X", status: "shipped", trackingNo: "123456789", reason: "…", expectedDay: "2026-12-01", code: "123456" };
+export const TEMPLATE_SAMPLES: Record<string, string> = { ref: "TT-7K4M2Q9X", status: "shipped", trackingNo: "123456789", reason: "…", expectedDay: "2026-12-01", code: "123456", ticketRef: "SUP-7K4M2Q", body: "…" };
 
 /** The {variables} a template body uses. */
 export function templateVariables(body: string): string[] {

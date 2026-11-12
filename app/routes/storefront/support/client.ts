@@ -32,6 +32,51 @@ export function isFailure(value: unknown): value is FormFailure {
 }
 
 /**
+ * The named text fields of the form a `clientAction` is about to send — read from a copy of the request, before the
+ * server action reads the request itself. Pages whose one route holds several forms (`intent`) need them to tell which
+ * form a failure that never reached the store belongs to.
+ */
+export async function sentValues(request: Request, names: readonly string[]): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
+  try {
+    const form = await request.clone().formData();
+    for (const name of names) {
+      const value = form.get(name);
+      if (typeof value === "string") out[name] = value;
+    }
+  } catch {
+    // not a form: nothing to keep
+  }
+  return out;
+}
+
+/** A failure that never reached the store (keepFormOnFailure) carries no values: it gets the ones the form sent. */
+export function withSentValues<T>(result: T | FormFailure, values: Record<string, string>): T | FormFailure {
+  return isFailure(result) && !result.values ? { ...result, values } : result;
+}
+
+/**
+ * What the ticket page (/support/ticket) shows — one request card or the lookup form — and which of them says a
+ * failure. `posted`: the card the last post answered with; `kept`: the last card a post answered with on this page
+ * (the one a rating was sent from after a lookup by number + phone); `fromLink`: the private link's card.
+ *
+ * A rating that failed — the store refused it, or it never reached the store — keeps the card it was sent from, with
+ * the failure in its rating part (the form and the words typed stay; review 2026-11-12: the card used to turn into the
+ * lookup form). With no card left to show (a page sent without script after a lookup), the failure is said beside
+ * the lookup form. Any other failure is the lookup's. Pure.
+ */
+export function ticketView<C>(input: { posted: C | null; kept: C | null; fromLink: C | null; failure: FormFailure | null }): { card: C | null; ratingFailure: FormFailure | null; lookupFailure: FormFailure | null } {
+  const { posted, kept, fromLink, failure } = input;
+  if (posted) return { card: posted, ratingFailure: null, lookupFailure: null };
+  if (!failure) return { card: fromLink, ratingFailure: null, lookupFailure: null };
+  if (failure.values?.intent === "rate") {
+    const card = kept ?? fromLink;
+    return card ? { card, ratingFailure: failure, lookupFailure: null } : { card: null, ratingFailure: null, lookupFailure: failure };
+  }
+  return { card: null, ratingFailure: null, lookupFailure: failure };
+}
+
+/**
  * For a route's `shouldRevalidate` after a submission: a request that never reached the store (offline, a dropped
  * connection — the failure `keepFormOnFailure` kept) reloads nothing, because the reload would fail the same way and
  * an error panel would replace the form and everything typed in it. Anything else follows React Router's default.

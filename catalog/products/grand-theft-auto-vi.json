@@ -130,11 +130,6 @@
       "ar": "كود تحميل للعبة الكاملة على PlayStation Store أو Microsoft Store حسب نسخة الجهاز (لا يوجد قرص)",
       "en": "Download code for the full game on PlayStation Store or Microsoft Store, depending on the console version (no disc)",
       "ckb": "کۆدی داگرتنی یارییە تەواوەکە لە PlayStation Store یان Microsoft Store بەپێی وەشانی ئامێرەکە (دیسکی تێدا نییە)"
-    },
-    {
-      "ar": "علب الطلب المسبق: Vintage Vice City Pack ضمن نفس الكود",
-      "en": "Pre-order boxes: the Vintage Vice City Pack on the same code",
-      "ckb": "قوتووەکانی داواکاریی پێشوەخت: Vintage Vice City Pack لەسەر هەمان کۆد"
     }
   ],
   "variants": [
@@ -312,9 +307,9 @@
     { "url": "https://me.ign.com/ar/grand-theft-auto-vi/192817/shrk-rockstar-twkd-n-lnskh-lfyzyyy-mn-gta-6-stty-bdwn-qrs", "title": "Rockstar confirms GTA 6 physical copies come without a disc", "publisher": "IGN Middle East", "retrieved": "2026-11-11", "supports": "independent confirmation: code in box, physical copies from 12 Nov, launch 19 Nov 2026" }
   ],
   "notes": {
-    "ar": "حسب Rockstar، كود PS5 يعمل فقط على حساب PlayStation من مجموعة الدول التي صُنعت لها العلبة — مثلاً علب السعودية والإمارات تعمل فقط على حسابات سعودية أو إماراتية — أما كود Xbox فغير مقيّد بالمنطقة. العراق غير موجود في قوائم المتاجر لهذه اللعبة، لذلك طابِق العلبة مع بلد حساب PlayStation الخاص بالزبون. نسخة Ultimate Edition رقمية فقط، ويمكن لمالك العلبة شراء Ultimate Edition Upgrade بعد تفعيل الكود. علب الطلب المسبق تتضمن Vintage Vice City Pack، وكذلك الطلبات الرقمية قبل 20 تشرين الثاني 2026.",
-    "en": "Rockstar says a PS5 code only works on a PlayStation account from the country group the box was made for — for example, Saudi Arabia/UAE boxes only work on Saudi or UAE accounts — while Xbox codes are not region-locked. Iraq is not on the store lists for this game, so match the box to the country of the customer's PlayStation account. The Ultimate Edition is digital only; owners of the boxed game can buy the Ultimate Edition Upgrade after redeeming the code. Pre-order boxes include the Vintage Vice City Pack, as do digital orders placed before 20 November 2026.",
-    "ckb": "بەپێی Rockstar، کۆدی PS5 تەنها لەسەر هەژمارێکی PlayStation کار دەکات کە سەر بە ئەو گرووپە وڵاتە بێت کە قوتووەکەی بۆ دروستکراوە — بۆ نموونە قوتووی سعودیە و ئیمارات تەنها لەسەر هەژماری سعودی یان ئیماراتی کار دەکات — بەڵام کۆدی Xbox بە ناوچە سنووردار نییە. عێراق لە لیستی فرۆشگاکانی ئەم یارییەدا نییە، بۆیە قوتووەکە لەگەڵ وڵاتی هەژماری PlayStation ی کڕیار بگونجێنە. Ultimate Edition تەنها دیجیتاڵە، و خاوەنی قوتووەکە دەتوانێت دوای چالاککردنی کۆد Ultimate Edition Upgrade بکڕێت. قوتووەکانی داواکاریی پێشوەخت Vintage Vice City Pack یان تێدایە، هەروەها داواکارییە دیجیتاڵەکان پێش 20ی تشرینی دووەمی 2026."
+    "ar": "حسب Rockstar، كود PS5 يعمل فقط على حساب PlayStation من مجموعة الدول التي صُنعت لها العلبة — مثلاً علب السعودية والإمارات تعمل فقط على حسابات سعودية أو إماراتية — أما كود Xbox فغير مقيّد بالمنطقة. العراق غير موجود في قوائم المتاجر لهذه اللعبة، لذلك طابِق العلبة مع بلد حساب PlayStation الخاص بالزبون. نسخة Ultimate Edition رقمية فقط، ويمكن لمالك العلبة شراء Ultimate Edition Upgrade بعد تفعيل الكود.",
+    "en": "Rockstar says a PS5 code only works on a PlayStation account from the country group the box was made for — for example, Saudi Arabia/UAE boxes only work on Saudi or UAE accounts — while Xbox codes are not region-locked. Iraq is not on the store lists for this game, so match the box to the country of the customer's PlayStation account. The Ultimate Edition is digital only; owners of the boxed game can buy the Ultimate Edition Upgrade after redeeming the code.",
+    "ckb": "بەپێی Rockstar، کۆدی PS5 تەنها لەسەر هەژمارێکی PlayStation کار دەکات کە سەر بە ئەو گرووپە وڵاتە بێت کە قوتووەکەی بۆ دروستکراوە — بۆ نموونە قوتووی سعودیە و ئیمارات تەنها لەسەر هەژماری سعودی یان ئیماراتی کار دەکات — بەڵام کۆدی Xbox بە ناوچە سنووردار نییە. عێراق لە لیستی فرۆشگاکانی ئەم یارییەدا نییە، بۆیە قوتووەکە لەگەڵ وڵاتی هەژماری PlayStation ی کڕیار بگونجێنە. Ultimate Edition تەنها دیجیتاڵە، و خاوەنی قوتووەکە دەتوانێت دوای چالاککردنی کۆد Ultimate Edition Upgrade بکڕێت."
   },
   "verification": {
     "checkedBy": "fact-check",

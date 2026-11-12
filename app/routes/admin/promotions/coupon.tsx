@@ -7,14 +7,14 @@ import { can } from "~/server/actor";
 import { throwAsResponse } from "~/server/errors";
 import { conditionOptions, decideCoupon, getCoupon, saveCoupon, setCouponActive, tryCoupon, withdrawCouponRequest } from "~/server/services/admin/promotions/coupons.server";
 import { SECTION_READ, type PromotionsAccess } from "~/server/services/admin/promotions/shared.server";
-import { CHANNELS, COUPON_STATE_TONE, DISCOUNT_LIMITS, PRODUCT_KIND_OPTIONS, bpsToPercent, toBaghdadInput, type ConditionOptions, type CouponDetail, type CouponTerms } from "~/server/services/admin/promotions/types";
+import { CHANNELS, COUPON_STATE_TONE, PRODUCT_KIND_OPTIONS, bpsToPercent, toBaghdadInput, type ConditionOptions, type CouponDetail, type CouponTerms } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { Disclosure } from "~/ui/Disclosure";
 import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, ChoiceList, Code, ConfirmAction, DemoNote, Facts, Failure, History, Money, Notice, Num, Pct, PhoneText, Section, Tag, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Arrow, ChoiceList, Code, ConfirmAction, DemoNote, Facts, Failure, History, Money, Notice, Num, Pct, PhoneText, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/coupons/:couponId — 08.01, one coupon (":couponId" = "new" opens the empty form): its terms and
@@ -75,6 +75,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, null, undefined, args.loaderData?.coupon?.code ?? null);
 
 export default function CouponPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const { coupon, options } = loaderData;
   const layout = useRouteLoaderData(PROMOTIONS_LAYOUT_ID) as { access: PromotionsAccess } | undefined;
@@ -123,7 +124,7 @@ export default function CouponPage({ loaderData }: Route.ComponentProps) {
               <div className="prm-tags">
                 {coupon.approvalReasons.map((reason) => (
                   <Tag key={reason} icon="seal-check">
-                    {t(`reasons.${reason}`, { percent: DISCOUNT_LIMITS.percentBps / 100 })}
+                    {t(`reasons.${reason}`, { percent: program.limits.percentBps / 100 })}
                   </Tag>
                 ))}
               </div>
@@ -201,6 +202,7 @@ function TermsFacts({ terms, options }: { terms: CouponTerms; options: Condition
 }
 
 function CouponForm({ options, coupon }: { options: ConditionOptions; coupon: CouponDetail | null }) {
+  const program = useProgram();
   const t = usePromotionsT();
   const navigate = useNavigate();
   const fmt = useFormat();
@@ -230,7 +232,7 @@ function CouponForm({ options, coupon }: { options: ConditionOptions; coupon: Co
           required
           error={errors.value}
         />
-        {kind === "percent" ? <TextField name="maxDiscountIqd" label={t("coupons.f.maxDiscount")} hint={t("coupons.f.maxDiscountHint", { amount: fmt.iqd(DISCOUNT_LIMITS.perOrderIqd) })} defaultValue={terms?.maxDiscountIqd ?? ""} inputMode="numeric" error={errors.maxDiscountIqd} /> : null}
+        {kind === "percent" ? <TextField name="maxDiscountIqd" label={t("coupons.f.maxDiscount")} hint={t("coupons.f.maxDiscountHint", { amount: fmt.iqd(program.limits.perOrderIqd) })} defaultValue={terms?.maxDiscountIqd ?? ""} inputMode="numeric" error={errors.maxDiscountIqd} /> : null}
         <TextField name="minSubtotalIqd" label={t("coupons.f.minSubtotal")} defaultValue={terms?.minSubtotalIqd ?? ""} inputMode="numeric" error={errors.minSubtotalIqd} />
         <TextField name="usageLimit" label={t("coupons.f.usageLimit")} hint={t("coupons.f.usageLimitHint")} defaultValue={terms?.usageLimit ?? ""} inputMode="numeric" error={errors.usageLimit} />
         <TextField name="perCustomerLimit" label={t("coupons.f.perCustomer")} hint={t("coupons.f.perCustomerHint")} defaultValue={terms?.perCustomerLimit ?? ""} inputMode="numeric" error={errors.perCustomerLimit} />
@@ -261,7 +263,7 @@ function CouponForm({ options, coupon }: { options: ConditionOptions; coupon: Co
           <TextArea name="reason" label={t("coupons.f.why")} hint={t("coupons.f.whyHint")} rows={2} maxLength={500} error={errors.reason} />
         </>
       )}
-      <Notice icon="seal-check">{t("coupons.rule", { percent: DISCOUNT_LIMITS.percentBps / 100, amount: fmt.iqd(DISCOUNT_LIMITS.perOrderIqd) })}</Notice>
+      <Notice icon="seal-check">{t("coupons.rule", { percent: program.limits.percentBps / 100, amount: fmt.iqd(program.limits.perOrderIqd) })}</Notice>
       <Failure message={message} />
       <div className="prm-actions">
         <Key type="submit" loading={pending} icon={coupon ? "floppy-disk" : "plus"}>
@@ -313,6 +315,7 @@ function SwitchPanel({ coupon, manage }: { coupon: CouponDetail; manage: boolean
 }
 
 function PendingPanel({ coupon, options }: { coupon: CouponDetail; options: ConditionOptions | null }) {
+  const program = useProgram();
   const t = usePromotionsT();
   const pending = coupon.pending;
   if (!pending) return null;
@@ -328,7 +331,7 @@ function PendingPanel({ coupon, options }: { coupon: CouponDetail; options: Cond
       <div className="prm-tags">
         {pending.reasons.map((reason) => (
           <Tag key={reason} icon="seal-check">
-            {t(`reasons.${reason}`, { percent: DISCOUNT_LIMITS.percentBps / 100 })}
+            {t(`reasons.${reason}`, { percent: program.limits.percentBps / 100 })}
           </Tag>
         ))}
       </div>

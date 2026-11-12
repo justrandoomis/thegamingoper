@@ -6,6 +6,7 @@ import { sql } from "drizzle-orm";
 import type { Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
 import { flagCondition } from "~/server/services/admin/customers/flags.server";
+import { customerRules } from "~/server/services/admin/customers/rules.server";
 import { getSetting } from "~/server/settings.server";
 import { countDecidable } from "./approvals.server";
 import { PROMOTIONS_PERMISSIONS, assertAny, num, promotionsAccess } from "./shared.server";
@@ -20,7 +21,8 @@ export async function promotionsOverview(db: Db, actor: Actor, now: number): Pro
   const local = new Date(now + BAGHDAD_OFFSET_MS);
   const monthStart = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), 1) - BAGHDAD_OFFSET_MS;
   const pending = (kind: string) => one(db, sql`SELECT count(*) AS n FROM approvals WHERE kind = ${kind} AND status = 'pending'`);
-  const vip = flagCondition("vip", now);
+  // module 07's VIP rule with the thresholds in force (the setting customers.flag_rules), as the VIP page counts them
+  const vip = access.vip ? flagCondition("vip", now, (await customerRules(db)).flags) : null;
   const windowDays = access.points ? await getSetting(db, "returns.window_days") : 7;
   const [coupons, rules, flash, points, referrals, members, giftCards, experiments, decide] = await Promise.all([
     access.coupons

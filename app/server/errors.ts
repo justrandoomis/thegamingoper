@@ -109,6 +109,14 @@ export const CORE_ERROR_KEYS = [
   "setup_disabled",
   "setup_token_invalid",
   "setup_done",
+  // staff accounts and the hierarchy rule (auth/admin.server.ts, auth/employees.server.ts — SECURITY.md §6–7)
+  "target_more_privileged",
+  "grant_exceeds_own",
+  "own_account_here",
+  "email_taken",
+  "employee_already_active",
+  "password_link_invalid",
+  "mfa_required_by_role",
   // settings values
   "account_number_invalid",
   "url_invalid",

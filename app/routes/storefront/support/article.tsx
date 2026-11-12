@@ -70,7 +70,8 @@ export default function Article({ loaderData }: Route.ComponentProps) {
     <div className="page sup sup-article">
       <div className="sup-article__main">
         {/* the support sub-pages' shared navigation (§6.13): on phones (no breadcrumbs) the way back to the other guides */}
-        <SupportNav current="help" />
+        {/* a guide is part of the guides, not the support centre page itself */}
+        <SupportNav current="help" section />
         <article className="sup-article__text">
           <Breadcrumbs items={crumbs} jsonLd={layout?.shell?.publicOrigin ? { origin: layout.shell.publicOrigin } : undefined} />
           <header className="grid gap-3">

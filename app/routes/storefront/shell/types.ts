@@ -62,5 +62,12 @@ export type ShellHandle = {
      * history, back is always real history Back.
      */
     back?: string;
+    /**
+     * What the offline banner says on this page (v2 §4.23): "form" — «ما كتبته باقٍ في الصفحة؛ أرسله عند عودة
+     * الاتصال.» — on a page the shopper fills in; "store" — «سلتك محفوظة على هذا الجهاز.». Default: "form" in checkout,
+     * task flows and under /account (sign-in, sign-up, the account's forms), "store" everywhere else. A store page
+     * built around a form (e.g. /track) declares "form".
+     */
+    offline?: "form" | "store";
   };
 };

@@ -26,6 +26,11 @@
  *     (`expected: null`); every other reader still refuses it (getSetting throws).
  * Integration pass 2026-11-11 (additive): `pos.discount_limit_bps`, the cashier's discount limit (admin 06's former
  * constant), read by the POS sale check and the till.
+ * Module follow-up 2026-11-12 (additive): `customers.rfm_rules`, `customers.flag_rules`, `customers.privacy_due_days`
+ * (admin 07's RFM_RULES, FLAG_RULES, PRIVACY_DUE_DAYS) and `promotions.discount_limits`, `promotions.loyalty`,
+ * `promotions.referral`, `promotions.gift_card` (admin 08's DISCOUNT_LIMITS, LOYALTY, REFERRAL, GIFT_CARD), with
+ * the groups "customers" and "promotions". Defaults = the constants; the modules read them through
+ * services/admin/customers/rules.server.ts and services/admin/promotions/program.server.ts.
  */
 import { eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -76,6 +81,8 @@ const httpsUrl = z
     }
   }, "url_invalid");
 const numbering = z.enum(["latn", "arab"]);
+/** A whole number within [min, max] (the field errors every editor shows). */
+const wholeIn = (min: number, max: number) => z.number().int("invalid").min(min, "too_small").max(max, "too_big");
 
 type SettingDef<S extends z.ZodType = z.ZodType, Public extends boolean = boolean> = {
   schema: S;
@@ -90,7 +97,7 @@ type SettingDef<S extends z.ZodType = z.ZodType, Public extends boolean = boolea
   approver?: Permission;
   /** True when the storefront may show the value to shoppers. */
   public: Public;
-  group: "shipping" | "payments" | "checkout" | "policies" | "store" | "locale" | "controls" | "service";
+  group: "shipping" | "payments" | "checkout" | "policies" | "store" | "locale" | "controls" | "service" | "customers" | "promotions";
   label: { ar: string; en: string };
 };
 
@@ -297,6 +304,130 @@ export const SETTINGS = {
     public: false,
     group: "controls",
     label: { ar: "الخصم الذي يتجاوز هذه النسبة عند الكاشير يحتاج صلاحية التجاوز", en: "Cashier discounts deeper than this need the override permission" },
+  }),
+
+  // ── module follow-up 2026-11-12 (additive): the rules admin 07 customers and admin 08 promotions kept as constants.
+  // Each default is that constant, so nothing changes until somebody changes the setting. The ones that weaken a
+  // control when raised (fraud-risk thresholds, discount and gift-card limits, the points and referral programme) are
+  // money-control limits: a change by anyone without settings.change.approve (the owner) waits for a second person.
+
+  /** Admin 07 (07.02): the RFM score bounds — recency in days (≤ → 5, 4, 3, 2), purchases and IQD kept (≥ → 2, 3, 4, 5). */
+  "customers.rfm_rules": define({
+    schema: z
+      .strictObject({
+        recency_5_days: wholeIn(1, 3_650),
+        recency_4_days: wholeIn(1, 3_650),
+        recency_3_days: wholeIn(1, 3_650),
+        recency_2_days: wholeIn(1, 3_650),
+        frequency_2: wholeIn(1, 10_000),
+        frequency_3: wholeIn(1, 10_000),
+        frequency_4: wholeIn(1, 10_000),
+        frequency_5: wholeIn(1, 10_000),
+        monetary_2_iqd: wholeIn(1, 10_000_000_000),
+        monetary_3_iqd: wholeIn(1, 10_000_000_000),
+        monetary_4_iqd: wholeIn(1, 10_000_000_000),
+        monetary_5_iqd: wholeIn(1, 10_000_000_000),
+      })
+      .superRefine((value, ctx) => {
+        const ascending = (keys: readonly (keyof typeof value)[]) => {
+          for (let i = 1; i < keys.length; i++) if (value[keys[i]] <= value[keys[i - 1]]) ctx.addIssue({ code: "custom", path: [keys[i]], message: "not_ascending" });
+        };
+        ascending(["recency_5_days", "recency_4_days", "recency_3_days", "recency_2_days"]);
+        ascending(["frequency_2", "frequency_3", "frequency_4", "frequency_5"]);
+        ascending(["monetary_2_iqd", "monetary_3_iqd", "monetary_4_iqd", "monetary_5_iqd"]);
+      }),
+    default: { recency_5_days: 30, recency_4_days: 90, recency_3_days: 180, recency_2_days: 365, frequency_2: 2, frequency_3: 3, frequency_4: 5, frequency_5: 10, monetary_2_iqd: 100_000, monetary_3_iqd: 300_000, monetary_4_iqd: 750_000, monetary_5_iqd: 2_000_000 },
+    permission: "settings.manage",
+    public: false,
+    group: "customers",
+    label: { ar: "حدود درجات العملاء (الحداثة والتكرار والقيمة)", en: "Customer score bounds (recency, frequency, value)" },
+  }),
+  /** Admin 07 (07.06): the VIP and fraud-risk labels' thresholds (FLAG_RULES). Raising a risk threshold hides risk. */
+  "customers.flag_rules": define({
+    schema: z.strictObject({
+      vip_spend_iqd: wholeIn(1, 10_000_000_000),
+      vip_purchases: wholeIn(1, 10_000),
+      vip_window_days: wholeIn(1, 3_650),
+      risk_cancelled: wholeIn(1, 1_000),
+      risk_cancelled_days: wholeIn(1, 3_650),
+      risk_rejected_proofs: wholeIn(1, 1_000),
+      risk_rejected_days: wholeIn(1, 3_650),
+      risk_returned: wholeIn(1, 1_000),
+      risk_returned_days: wholeIn(1, 3_650),
+    }),
+    default: { vip_spend_iqd: 2_000_000, vip_purchases: 5, vip_window_days: 365, risk_cancelled: 2, risk_cancelled_days: 90, risk_rejected_proofs: 2, risk_rejected_days: 90, risk_returned: 2, risk_returned_days: 180 },
+    permission: "settings.manage",
+    approver: "settings.change.approve",
+    public: false,
+    group: "customers",
+    label: { ar: "قواعد وسوم العملاء المميزين ومخاطر الاحتيال", en: "VIP and fraud-risk label rules" },
+  }),
+  /** Admin 07 (07.04): the store's own target for answering a privacy request (PRIVACY_DUE_DAYS — not a legal deadline). */
+  "customers.privacy_due_days": define({
+    schema: wholeIn(1, 90),
+    default: 30,
+    permission: "settings.manage",
+    public: false,
+    group: "customers",
+    label: { ar: "الهدف للرد على طلب الخصوصية (يوم)", en: "Target to answer a privacy request (days)" },
+  }),
+  /** Admin 08 (08.01–08.02): terms beyond these need a second person (DISCOUNT_LIMITS). */
+  "promotions.discount_limits": define({
+    schema: z.strictObject({ percent_bps: wholeIn(0, 10_000), per_order_iqd: wholeIn(0, 100_000_000) }),
+    default: { percent_bps: 2_000, per_order_iqd: 50_000 },
+    permission: "settings.manage",
+    approver: "settings.change.approve",
+    public: false,
+    group: "promotions",
+    label: { ar: "حدود الخصم التي يقررها شخص ثانٍ", en: "Discount limits beyond which a second person decides" },
+  }),
+  /** Admin 08 (08.04): the points programme (LOYALTY, without its technical batch limits). */
+  "promotions.loyalty": define({
+    schema: z.strictObject({
+      points_per_thousand_iqd: wholeIn(0, 1_000),
+      point_value_iqd: wholeIn(0, 100_000),
+      expiry_days: wholeIn(1, 3_650),
+      adjust_second_person_points: wholeIn(1, 100_000),
+      adjust_solo_day_points: wholeIn(0, 1_000_000),
+    }),
+    default: { points_per_thousand_iqd: 1, point_value_iqd: 10, expiry_days: 365, adjust_second_person_points: 5_000, adjust_solo_day_points: 10_000 },
+    permission: "settings.manage",
+    approver: "settings.change.approve",
+    public: false,
+    group: "promotions",
+    label: { ar: "برنامج النقاط", en: "Points programme" },
+  }),
+  /** Admin 08 (08.05): referrals (REFERRAL, without the fixed cap on a code's uses). */
+  "promotions.referral": define({
+    schema: z.strictObject({ reward_points: wholeIn(0, 100_000), default_max_uses: wholeIn(1, 100), device_window_days: wholeIn(1, 3_650) }),
+    default: { reward_points: 500, default_max_uses: 10, device_window_days: 90 },
+    permission: "settings.manage",
+    approver: "settings.change.approve",
+    public: false,
+    group: "promotions",
+    label: { ar: "برنامج الإحالة", en: "Referral programme" },
+  }),
+  /** Admin 08 (08.07): gift-card amounts and the second-person limits (GIFT_CARD, without its step and rate limits). */
+  "promotions.gift_card": define({
+    schema: z
+      .strictObject({
+        min_iqd: wholeIn(1_000, 100_000_000),
+        max_iqd: wholeIn(1_000, 100_000_000),
+        solo_iqd: wholeIn(0, 100_000_000),
+        solo_day_iqd: wholeIn(0, 1_000_000_000),
+        max_valid_days: wholeIn(1, 3_650),
+      })
+      .superRefine((value, ctx) => {
+        // the settings form says why (catalog ObjectChecks.notBelow): not the generic "below the allowed minimum"
+        if (value.max_iqd < value.min_iqd) ctx.addIssue({ code: "custom", path: ["max_iqd"], message: "below_paired" });
+        for (const key of ["min_iqd", "max_iqd"] as const) if (value[key] % 1_000 !== 0) ctx.addIssue({ code: "custom", path: [key], message: "step_1000" });
+      }),
+    default: { min_iqd: 5_000, max_iqd: 1_000_000, solo_iqd: 100_000, solo_day_iqd: 250_000, max_valid_days: 730 },
+    permission: "settings.manage",
+    approver: "settings.change.approve",
+    public: false,
+    group: "promotions",
+    label: { ar: "حدود بطاقات الهدايا", en: "Gift-card limits" },
   }),
 } satisfies Record<SeededSettingKey, SettingDef> & Record<string, SettingDef>;
 

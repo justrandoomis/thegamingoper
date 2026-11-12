@@ -8,6 +8,7 @@
  *   shoppingTier({ preorder: false, st: 1 })                                     2 in stock · 1 coming soon · 0 sold out
  *   kindLabelOf({ kind: "console", families, ownPlatform: "playstation" }, "ar") «جهاز PS5»
  *   opaqueOf("playstation-5--1")                                                 { background: "#ffffff", tone: "light" }
+ *   shortModelName("ps5-slim-digital", "PlayStation 5 Slim Digital Edition")      "PS5 Slim Digital"
  *
  * HONESTY (spec §9, §13 row 8):
  *   · «جديد» only from real dates: the researched release date (attributes.catalogue.releaseDate), or the listing time
@@ -90,6 +91,46 @@ const FAMILY_NAMES: Readonly<Record<string, string>> = {
   "msi-claw": "MSI Claw",
   "windows-pc": "PC",
 };
+
+/**
+ * Short device-model names for tight places — the mega menu's model column and the platform hub's model switcher
+ * (spec §5.4 "short model names, not SKU titles", §6.2 "PS5 Pro · PS5 Slim · PS5 Slim Digital · PlayStation Portal ·
+ * PS VR2"). The platform's name already stands beside them, so its brand word is dropped ("Switch 2", "Series X");
+ * names that are short already stay whole. The same in every language (Latin names stay Latin); the qualifier of the
+ * 2020 PS5 models becomes the year. A model this table does not know keeps its full name (shortModelName).
+ */
+const MODEL_SHORT_NAMES: Readonly<Record<string, string>> = {
+  "switch-2": "Switch 2",
+  "switch-oled": "Switch OLED",
+  switch: "Switch",
+  "switch-lite": "Switch Lite",
+  "ps5-pro": "PS5 Pro",
+  "ps5-slim": "PS5 Slim",
+  "ps5-slim-digital": "PS5 Slim Digital",
+  ps5: "PS5 (2020)",
+  "ps5-digital": "PS5 Digital (2020)",
+  "ps-portal": "PlayStation Portal",
+  "ps-vr2": "PS VR2",
+  "xbox-series-x": "Series X",
+  "xbox-series-x-digital": "Series X Digital",
+  "xbox-series-s": "Series S",
+  "steam-deck-oled": "Steam Deck OLED",
+  "steam-deck-lcd": "Steam Deck LCD",
+  "rog-xbox-ally-x": "ROG Xbox Ally X",
+  "rog-xbox-ally": "ROG Xbox Ally",
+  "rog-ally-x": "ROG Ally X",
+  "rog-ally": "ROG Ally",
+  "legion-go-2": "Legion Go 2",
+  "legion-go-s": "Legion Go S",
+  "legion-go": "Legion Go",
+  "msi-claw-8-ex-ai-plus": "MSI Claw 8 EX AI+",
+  "msi-claw-a8": "MSI Claw A8",
+};
+
+/** A device model's short name (MODEL_SHORT_NAMES), else its full name as given. */
+export function shortModelName(slug: string, fullName: string): string {
+  return MODEL_SHORT_NAMES[slug] ?? fullName;
+}
 
 /** Platform names on the card line, as the glossary writes them (spec §9): Latin in every language. */
 const PLATFORM_NAMES: Readonly<Record<string, L10n>> = {

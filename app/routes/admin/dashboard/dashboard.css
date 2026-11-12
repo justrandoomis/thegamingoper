@@ -1,0 +1,319 @@
+/*
+ * Admin module 01 (command centre) — what the UI kit and the shell do not cover: the tool row (search + period), the
+ * urgent tiles' grid and their preview rows, the KPI grid with its comparison line, the funnel's bars (one ink series
+ * on a hairline track, DESIGN.md §10 "Charts"), the activity timeline (a 1px line with 7px dots: solid ink for a
+ * person, hollow for the system — §10 "Audit timeline"), the search results' groups, and the printed page.
+ * Tokens and logical properties only; nothing animates.
+ */
+@layer components {
+  .dash-tools {
+    display: grid;
+    gap: var(--s-3);
+    margin-block-end: var(--s-6);
+  }
+  .dash-search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--s-2);
+  }
+  .dash-search > :first-child {
+    flex: 1 1 18rem;
+    min-inline-size: 0;
+  }
+  .dash-period {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .dash-period__note {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-branch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--s-2);
+  }
+
+  /* what waits for the employee's own decision (the bell's queues): one raised card each, the whole card a link */
+  .dash-queues {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .adm-card.dash-queue {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    block-size: 100%;
+    min-block-size: 64px;
+    padding-block: var(--s-3);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .dash-queue > .type-kpi {
+    flex: none;
+    min-inline-size: 2ch;
+    text-align: center;
+  }
+  .dash-queue > svg {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--ink-2);
+  }
+
+  .dash-tiles {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+  .dash-tile {
+    align-content: start;
+  }
+  .dash-tile__head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .dash-tile__head > svg {
+    flex: none;
+    color: var(--ink-2);
+  }
+  .dash-rows {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dash-rows > li {
+    display: grid;
+    gap: 2px;
+    padding-block: var(--s-2);
+    border-block-start: 1px solid var(--line);
+    min-inline-size: 0;
+  }
+  .dash-rows__line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+  }
+  .dash-clip {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-inline-size: 0;
+  }
+
+  .dash-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dash-kpis > * {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .dash-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    }
+  }
+  .dash-kpi {
+    align-content: start;
+  }
+  .dash-kpi__delta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-kpi__delta > svg {
+    flex: none;
+  }
+  .dash-kpi[aria-busy="true"] .type-kpi {
+    color: var(--ink-3);
+  }
+
+  .dash-figures {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+  }
+  .dash-figures > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+    padding-block: var(--s-2);
+    border-block-start: 1px solid var(--line);
+  }
+  .dash-figures > div:first-child {
+    border-block-start: 0;
+  }
+  .dash-figures dt {
+    color: var(--ink);
+    font: var(--type-body);
+  }
+  .dash-figures dd {
+    margin: 0;
+    font: var(--type-label);
+  }
+
+  /* the funnel: label | bar | value, one ink series; the track is a hairline, the bar ends rounded at the value end */
+  .dash-funnel {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .dash-funnel {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: start;
+    }
+  }
+  .dash-steps {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dash-step {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .dash-step__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+  }
+  .dash-bar {
+    block-size: 12px;
+    border-block-end: 1px solid var(--line-strong);
+  }
+  .dash-bar__fill {
+    display: block;
+    block-size: 100%;
+    min-inline-size: 2px;
+    border-start-end-radius: var(--r-xs);
+    border-end-end-radius: var(--r-xs);
+    background: var(--ink);
+  }
+  .dash-notes {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dash-notes > li {
+    display: flex;
+    gap: var(--s-2);
+    align-items: flex-start;
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-notes > li > svg {
+    flex: none;
+    margin-block-start: 2px;
+  }
+
+  /* the activity timeline (DESIGN.md §10): flat paper, a 1px line, 7px dots — solid for a person, hollow for the system */
+  .dash-feed {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dash-feed > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    padding-block: var(--s-2) var(--s-3);
+    padding-inline-start: var(--s-6);
+    min-inline-size: 0;
+  }
+  .dash-feed > li::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 7px;
+    inline-size: 1px;
+    background: var(--line-strong);
+  }
+  .dash-feed > li::after {
+    content: "";
+    position: absolute;
+    inset-block-start: calc(var(--s-2) + 6px);
+    inset-inline-start: 4px;
+    inline-size: 7px;
+    block-size: 7px;
+    border: 1px solid var(--ink);
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .dash-feed > li[data-actor="system"]::after {
+    border-color: var(--ink-2);
+    background: var(--paper);
+  }
+  .dash-feed__line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-1) var(--s-2);
+  }
+
+  /* search results: one group per section, the quick actions as a row of small keys */
+  .dash-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+  .dash-groups {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  /* the printed command centre: figures and lists only — the shell's chrome and every control left out */
+  @media print {
+    @page {
+      margin: 14mm;
+    }
+    body:has(.dash-print) .adm-rail,
+    body:has(.dash-print) .adm-top,
+    body:has(.dash-print) .adm-tabbar,
+    body:has(.dash-print) .adm-skip,
+    body:has(.dash-print) .dash-noprint {
+      display: none !important;
+    }
+    /* the rail is gone: the page takes the whole sheet, not the rail's column of the shell's grid */
+    body:has(.dash-print) .adm {
+      display: block;
+      min-block-size: 0;
+      background: none;
+    }
+    body:has(.dash-print) .adm-main {
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+    }
+    .dash-print .adm-card {
+      break-inside: avoid;
+    }
+    .dash-print .dash-feed > li {
+      break-inside: avoid;
+    }
+  }
+}

@@ -49,6 +49,7 @@ import { walletCreditStatement } from "~/server/services/wallet.server";
 import { cleanBlock } from "~/server/text.server";
 import { ID, KEY, SECTION_READ, assertAny, canDecideApproval, assertMayDecide, customerLabels, employeeNames, historyOf, idFromKey, num } from "./shared.server";
 import { DAY_MS, GIFT_CARD, PAGE_SIZE, endOfBaghdadDay, latinDigits, parseWhole, type GiftCardDetail, type GiftCardFilters, type GiftCardPage, type GiftCardRow, type GiftCardSettlement, type GiftCardStatus, type GiftCardView, type PendingGiftCard } from "./types";
+import { programRules } from "./program.server";
 
 const KIND = "gift_card" as const;
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -232,7 +233,7 @@ export async function getGiftCard(db: Db, actor: Actor, cardId: string, now: num
 // ───────────────────────────────────────────────────────────────── issuing
 
 export const IssueInput = z.object({
-  amountIqd: z.preprocess((value) => (value === "" || value === null || value === undefined ? undefined : parseWhole(value) ?? Number.NaN), z.number({ error: (issue) => (issue.input === undefined ? "required" : "number_invalid") }).int("number_invalid").min(GIFT_CARD.minIqd, "too_small").max(GIFT_CARD.maxIqd, "too_big").refine((value) => value % GIFT_CARD.stepIqd === 0, "amount_step")),
+  amountIqd: z.preprocess((value) => (value === "" || value === null || value === undefined ? undefined : parseWhole(value) ?? Number.NaN), z.number({ error: (issue) => (issue.input === undefined ? "required" : "number_invalid") }).int("number_invalid").min(1_000, "too_small").max(100_000_000, "too_big").refine((value) => value % GIFT_CARD.stepIqd === 0, "amount_step")),
   expiresOn: z.preprocess((value) => (value === "" || value === null || value === undefined ? null : value), z.string().nullable()),
   note: z.string({ error: "required" }).overwrite(cleanBlock).trim().min(3, "reason_short").max(300, "too_long"),
   idempotencyKey: z.string({ error: "required" }).regex(KEY, "invalid"),
@@ -243,16 +244,21 @@ const soloSumSql = (employeeId: string, now: number) =>
   sql`(SELECT coalesce(sum(CAST(json_extract(after, '$.amountIqd') AS INTEGER)), 0) FROM audit_events WHERE action = 'promotions.gift_card.issue' AND actor_id = ${employeeId} AND at > ${now - DAY_MS} AND json_extract(after, '$.solo') = 1)`;
 
 export async function issueGiftCard(db: Db, actor: Actor, dataKey: string | null | undefined, raw: unknown, now: number, options: { demo?: boolean } = {}): Promise<{ status: "issued" | "requested"; cardId?: string; code?: string; approvalId?: string; replayed: boolean }> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12)
+  const giftCard = (await programRules(db)).giftCard;
   assertCan(actor, "promotions.gift_card.issue");
   const parsed = IssueInput.safeParse(raw);
   if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "gift_card.issue");
   const input = parsed.data;
+  // the amounts in force (the setting promotions.gift_card); the schema above only holds the absolute bounds
+  if (input.amountIqd < giftCard.minIqd) throw invalid({ amountIqd: "too_small" });
+  if (input.amountIqd > giftCard.maxIqd) throw invalid({ amountIqd: "too_big" });
   let expiresAt: number | null = null;
   if (input.expiresOn) {
     expiresAt = endOfBaghdadDay(input.expiresOn);
     if (expiresAt === null) throw invalid({ expiresOn: "invalid" });
     if (expiresAt <= now) throw invalid({ expiresOn: "expires_past" });
-    if (expiresAt > now + GIFT_CARD.maxValidDays * DAY_MS) throw invalid({ expiresOn: "too_far" });
+    if (expiresAt > now + giftCard.maxValidDays * DAY_MS) throw invalid({ expiresOn: "too_far" });
   }
   const key = requireKey(dataKey);
   const cardId = await idFromKey("gfc", actor, input.idempotencyKey);
@@ -265,7 +271,7 @@ export async function issueGiftCard(db: Db, actor: Actor, dataKey: string | null
   if (existingRequest) return { status: "requested", approvalId, replayed: true };
   const actorId = actor.kind === "employee" ? actor.id : "system";
   const soloSoFar = num((await db.all<{ n: number }>(sql`SELECT ${soloSumSql(actorId, now)} AS n`))[0]?.n);
-  const needsSecond = input.amountIqd > GIFT_CARD.soloIqd || soloSoFar + input.amountIqd > GIFT_CARD.soloDayIqd;
+  const needsSecond = input.amountIqd > giftCard.soloIqd || soloSoFar + input.amountIqd > giftCard.soloDayIqd;
   if (needsSecond) {
     await runBatch(db, [
       db.insert(approvals).values({ id: approvalId, kind: KIND, entityType: "gift_card", entityId: cardId, requestedBy: actorId, payload: { amountIqd: input.amountIqd, expiresAt, note: input.note, soloSoFar, demo: options.demo ?? false }, status: "pending", reason: input.note, createdAt: now }),
@@ -275,7 +281,7 @@ export async function issueGiftCard(db: Db, actor: Actor, dataKey: string | null
   }
   const { statements, code } = await cardStatements(db, actor, key, { id: cardId, amountIqd: input.amountIqd, expiresAt, note: input.note, createdBy: actorId, approvalId: null, isDemo: options.demo ?? false }, now);
   // the 24-hour window again inside the batch: two cards issued at once cannot both slip under it
-  await runBatch(db, [expectThat(db, sql`${soloSumSql(actorId, now)} + ${input.amountIqd} <= ${GIFT_CARD.soloDayIqd}`, { code: "GIFT_SOLO_LIMIT", detail: actorId }), ...statements]).catch(guard);
+  await runBatch(db, [expectThat(db, sql`${soloSumSql(actorId, now)} + ${input.amountIqd} <= ${giftCard.soloDayIqd}`, { code: "GIFT_SOLO_LIMIT", detail: actorId }), ...statements]).catch(guard);
   return { status: "issued", cardId, code, replayed: false };
 }
 
@@ -396,6 +402,15 @@ export const RedeemInput = z
   .refine(someone, { path: ["phone"], message: "required" });
 export const CheckRedeemInput = z.object(redeemFields).refine(someone, { path: ["phone"], message: "required" });
 
+/**
+ * A customer redeems in the storefront account (2026-11-12, the commerce core's request — the same guarded redemption,
+ * never a second path): only into their OWN wallet, named by id (never a number); staff hold gift_card.manage.
+ */
+function assertOwnWallet(actor: Actor, input: { customerId?: string; phone?: string }): void {
+  if (actor.kind !== "customer") return;
+  if (input.phone || input.customerId !== actor.id) throw new AppError("forbidden", 403, { detail: "own_wallet_only" });
+}
+
 /** The account a card goes into: by id, or by the number typed at the counter (guests have no wallet). */
 async function walletCustomerId(db: Db, input: { customerId?: string; phone?: string }): Promise<string> {
   if (input.customerId) return input.customerId;
@@ -410,7 +425,8 @@ async function walletCustomerId(db: Db, input: { customerId?: string; phone?: st
 async function cardByCode(db: Db, actor: Actor, code: string, now: number): Promise<GiftCard> {
   const card = await db.select().from(giftCards).where(eq(giftCards.codeHash, await giftCodeHash(code))).get();
   if (card) return card;
-  const verdict = await rateLimit(db, await limitKey("gift-miss", "employee", actor.kind === "employee" ? actor.id : "system"), GIFT_CARD.missLimit, now);
+  // wrong codes count per employee — and, for a customer redeeming in the account (2026-11-12), per customer
+  const verdict = await rateLimit(db, await limitKey("gift-miss", actor.kind === "customer" ? "customer" : "employee", actor.kind === "employee" || actor.kind === "customer" ? actor.id : "system"), GIFT_CARD.missLimit, now);
   if (!verdict.ok) throw rateLimited(verdict.retryAfterSec);
   throw new AppError("gift_card_unknown", 404);
 }
@@ -430,9 +446,10 @@ function redeemRefusal(card: GiftCard, customer: { status: string; isDemo: boole
  * dialog's impact). Reads only; the same checks and the same guessing limit as the redemption itself.
  */
 export async function checkGiftCardRedemption(db: Db, actor: Actor, raw: unknown, now: number): Promise<{ cardId: string; hint: string | null; amountIqd: number; expiresAt: number | null; customer: { id: string; name: string | null; phone: { display: string; full: boolean } | null } }> {
-  assertCan(actor, "promotions.gift_card.manage");
+  if (actor.kind !== "customer") assertCan(actor, "promotions.gift_card.manage");
   const parsed = CheckRedeemInput.safeParse(raw);
   if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "gift_card.check");
+  assertOwnWallet(actor, parsed.data);
   const customerId = await walletCustomerId(db, parsed.data);
   const customer = await db.select({ id: customers.id, status: customers.status, isDemo: customers.isDemo }).from(customers).where(eq(customers.id, customerId)).get();
   if (!customer) throw new AppError("wallet_requires_account", 409);
@@ -455,10 +472,11 @@ const walletRow = (db: Db, id: string): Promise<WalletRow | undefined> =>
  * the money would sit in a real wallet without a real posting. The customer must still be active INSIDE the batch.
  */
 export async function redeemGiftCard(db: Db, actor: Actor, raw: unknown, now: number): Promise<{ cardId: string; amountIqd: number; walletEntryId: string; replayed: boolean }> {
-  assertCan(actor, "promotions.gift_card.manage");
+  if (actor.kind !== "customer") assertCan(actor, "promotions.gift_card.manage");
   const parsed = RedeemInput.safeParse(raw);
   if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "gift_card.redeem");
   const input = parsed.data;
+  assertOwnWallet(actor, input);
   const customerId = await walletCustomerId(db, input);
   const walletEntryId = await idFromKey("wal", actor, input.idempotencyKey);
   const [customer, known, earlier] = await Promise.all([

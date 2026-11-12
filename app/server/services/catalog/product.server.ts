@@ -39,7 +39,7 @@ import { deviceModels, files, media, platforms, productRelations, products, vari
 import { batchSql, runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getSettings } from "~/server/settings.server";
-import { isNewProduct, withOpaque } from "./card-facts";
+import { isNewProduct, kindLabelOf, withOpaque } from "./card-facts";
 import { getCardsByIds } from "./cards.server";
 import {
   baghdadMidnight,
@@ -321,6 +321,7 @@ type DeviceRow = {
 type BundleRow = {
   bundle: string;
   qty: number;
+  price_iqd: number;
   variant_title: string | null;
   product_id: string;
   slug: string;
@@ -517,6 +518,7 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
       name: componentName,
       variantTitle,
       qty: Math.max(1, Math.trunc(component.qty)),
+      priceIqd: Number(component.price_iqd),
       image: imageFromJson(component.image, componentName, locale),
       linkable: isLive(component.status, component.publish_at, now),
     };
@@ -604,6 +606,8 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
     id: row.id,
     slug: row.slug,
     kind: row.kind,
+    // the noun alone (no device: the page names the platform beside it), the research's kind first (handheld PC, VR)
+    kindLabel: kindLabelOf({ kind: row.kind, researchKind: asString(catalogue.kind), families: [] }, locale),
     name,
     short: text(row.short, locale),
     description: text(row.description, locale),
@@ -676,7 +680,7 @@ function relatedShelves(relations: readonly RelationRow[], cards: readonly Produ
 /** Store-set components of the product's active variants, each with its first picture (variant's before product's). */
 function bundleStatement(productId: string): SQL {
   return sql`
-SELECT bi.bundle_variant_id AS bundle, bi.qty, v.title AS variant_title, p.id AS product_id, p.slug, p.name, p.status, p.publish_at,
+SELECT bi.bundle_variant_id AS bundle, bi.qty, v.price_iqd, v.title AS variant_title, p.id AS product_id, p.slug, p.name, p.status, p.publish_at,
   (SELECT COUNT(*) FROM variants AS vv WHERE vv.product_id = p.id AND vv.is_active = 1) AS variant_count,
   (
     SELECT json_object('a', m.art_key, 'k', CASE WHEN f.visibility = 'public' THEN f.storage_key END, 'w', f.width, 'h', f.height, 'alt', json(m.alt), 'i', m.is_illustration)

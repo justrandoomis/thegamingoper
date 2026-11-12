@@ -16,7 +16,8 @@
  *   customer_limit  this customer (by customer id OR phone number) reached per_customer_limit
  *   not_applicable  nothing in the cart matches the conditions (platforms, categories — including
  *                   sub-categories —, products, product kinds, customer segments, channel, first order
- *                   only, minimum quantity), or the cart is empty
+ *                   only, minimum quantity), or the cart is empty. A DEMO coupon (is_demo) counts demo
+ *                   goods only: it never discounts a real product (review 2026-11-12)
  *   min_subtotal    the cart subtotal is below min_subtotal_iqd
  *
  * Who the shopper is may not be known yet (a guest in the cart has given no phone). Then the
@@ -72,14 +73,14 @@ const refuse = (reason: CouponRejection): CouponEvaluation => ({ ok: false, reas
 
 const hasAny = (list: readonly string[] | undefined): list is readonly string[] => Array.isArray(list) && list.length > 0;
 
-/** Lines that satisfy the product-level conditions of a coupon. */
-async function eligibleLines(db: Db, conditions: CouponConditions, lines: readonly CouponLine[]): Promise<CouponLine[]> {
+/** Lines that satisfy the product-level conditions of a coupon (a demo coupon: demo goods only). */
+async function eligibleLines(db: Db, conditions: CouponConditions, lines: readonly CouponLine[], demoOnly = false): Promise<CouponLine[]> {
   const productFilters = hasAny(conditions.platformIds) || hasAny(conditions.categoryIds) || hasAny(conditions.productIds) || hasAny(conditions.productKinds);
-  if (!productFilters) return [...lines];
+  if (!productFilters && !demoOnly) return [...lines];
   const variantIds = [...new Set(lines.map((line) => line.variantId))];
   if (variantIds.length === 0) return [];
   const rows = await db
-    .select({ variantId: variants.id, productId: products.id, platformId: products.platformId, categoryId: products.categoryId, kind: products.kind })
+    .select({ variantId: variants.id, productId: products.id, platformId: products.platformId, categoryId: products.categoryId, kind: products.kind, isDemo: products.isDemo })
     .from(variants)
     .innerJoin(products, eq(products.id, variants.productId))
     .where(sql`${variants.id} IN (SELECT value FROM json_each(${JSON.stringify(variantIds)}))`);
@@ -100,6 +101,7 @@ async function eligibleLines(db: Db, conditions: CouponConditions, lines: readon
   return lines.filter((line) => {
     const product = byVariant.get(line.variantId);
     if (!product) return false;
+    if (demoOnly && !product.isDemo) return false;
     if (hasAny(conditions.productIds) && !conditions.productIds.includes(product.productId)) return false;
     if (hasAny(conditions.productKinds) && !conditions.productKinds.includes(product.kind)) return false;
     if (hasAny(conditions.platformIds) && (!product.platformId || !conditions.platformIds.includes(product.platformId))) return false;
@@ -178,17 +180,19 @@ export async function evaluateCoupon(db: Db, input: EvaluateCouponInput, now: nu
     if (previous) return refuse("not_applicable");
   }
 
-  const eligible = await eligibleLines(db, conditions, input.lines);
+  // a demo coupon (the seeded DEMO10 / DEMO5000, one made in demo mode) never discounts real goods — the rule the
+  // checkout's demo offers and flash sales follow (review 2026-11-12)
+  const eligible = await eligibleLines(db, conditions, input.lines, coupon.isDemo);
   if (eligible.length === 0) return refuse("not_applicable");
   const eligibleQty = eligible.reduce((sum, line) => sum + line.qty, 0);
   if (typeof conditions.minQty === "number" && eligibleQty < conditions.minQty) return refuse("not_applicable");
-  if (coupon.minSubtotalIqd !== null && input.subtotalIqd < coupon.minSubtotalIqd) return refuse("min_subtotal");
-
   let base = 0;
   for (const line of eligible) {
     base += line.unitPriceIqd * line.qty;
     if (!Number.isSafeInteger(base)) throw new RangeError("evaluateCoupon: eligible subtotal is too large");
   }
+  // a demo coupon's minimum is reached with demo goods alone (real goods never help it along)
+  if (coupon.minSubtotalIqd !== null && (coupon.isDemo ? base : input.subtotalIqd) < coupon.minSubtotalIqd) return refuse("min_subtotal");
   let discount = coupon.kind === "fixed" ? coupon.value : bpsOf(base, coupon.value);
   if (coupon.maxDiscountIqd !== null) discount = Math.min(discount, coupon.maxDiscountIqd);
   discount = Math.max(0, Math.min(discount, base, input.subtotalIqd));

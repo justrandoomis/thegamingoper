@@ -4,6 +4,7 @@ import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { CURRENCIES } from "~/lib/money";
 import { Band } from "./Band";
+import { isolate } from "./BidiText";
 import { cx } from "./cx";
 import { Key } from "./Key";
 import { Price } from "./Price";
@@ -102,7 +103,7 @@ export function WalletBalance({ balanceIqd, pendingIqd = null, entries = null, p
   }
 
   const after = payIqd === null ? null : walletAfter(balanceIqd, payIqd);
-  const iqd = (value: number) => "⁦" + iqdText(f, value) + "⁩";
+  const iqd = (value: number) => isolate(iqdText(f, value));
   const pending = isIqd(pendingIqd) && pendingIqd > 0 ? <Status tone="warn">{t("wallet.pending", { amount: iqd(pendingIqd) })}</Status> : null;
   const payment = after ? (
     after.enough ? (

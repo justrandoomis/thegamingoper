@@ -55,6 +55,7 @@ import { getSetting, getSettings } from "~/server/settings.server";
 import { cleanBlock, cleanLine } from "~/server/text.server";
 import { getFile, type BlobStore, type StoredFile } from "~/server/storage.server";
 import { mapPostingError, postCodCollected, postTransferVerified, postedBy } from "../accounting/post.server";
+import { assignOrderCodesStatements } from "../orders/digital.server";
 import { normalizeOrderRef } from "../orders/manage.server";
 
 /** Error keys this module produces (besides invalid / forbidden / not_found and the field keys). */
@@ -75,6 +76,12 @@ export const PAYMENT_ERROR_KEYS = [
 
 const HOUR_MS = 60 * 60 * 1000;
 const TRANSFER_METHODS = ["bank_transfer", "zaincash"] as const;
+
+/**
+ * The order's payment state once the money that completes it arrives: "paid" — or "partially_refunded" when part of what
+ * it was paid earlier (a split order's wallet part) was already refunded (review 2026-11-12).
+ */
+const paidStatusSql = sql<"paid" | "partially_refunded">`CASE WHEN ${orders.refundedIqd} > 0 THEN 'partially_refunded' ELSE 'paid' END`;
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
 const idSchema = z.string().regex(ID_PATTERN, "invalid");
 const isTransfer = (method: string | null | undefined): method is (typeof TRANSFER_METHODS)[number] => method === "bank_transfer" || method === "zaincash";
@@ -382,12 +389,14 @@ export async function verifyPayment(db: Db, actor: Actor, paymentId: string, raw
       ...guards("paid"),
       db
         .update(orders)
-        .set({ status: "confirmed", paymentStatus: "paid", paidIqd: sql`${orders.paidIqd} + ${received}`, confirmedAt: sql`coalesce(${orders.confirmedAt}, ${now})`, updatedAt: now })
+        .set({ status: "confirmed", paymentStatus: paidStatusSql, paidIqd: sql`${orders.paidIqd} + ${received}`, confirmedAt: sql`coalesce(${orders.confirmedAt}, ${now})`, updatedAt: now })
         .where(and(eq(orders.id, order.id), eq(orders.status, "payment_review"))),
       expectChanged(db, 1, { code: "ORDER_CHANGED", detail: order.id }),
       ...postTransferVerified(db, { paymentId: payment.id, orderId: order.id, ref: order.ref, method: payment.method as "bank_transfer" | "zaincash", receivedIqd: received, dueIqd: due, at: now, createdBy: actor.id, isDemo: order.isDemo }),
       db.insert(orderEvents).values({ id: `${eventId}.1`, orderId: order.id, kind: "payment_verified", data: { paymentId: payment.id, proofId: proof.id, amountIqd: received, override }, actorKind, actorId, at: now }),
       db.insert(orderEvents).values({ id: `${eventId}.2`, orderId: order.id, kind: "status_changed", data: { from: "payment_review", to: "confirmed", reason: null }, actorKind, actorId, at: now }),
+      // the order is paid now: its digital lines get their codes in this batch (orders/digital.server)
+      ...(await assignOrderCodesStatements(db, order, actor, now)),
       auditStatement(db, {
         actor,
         action: override ? "orders.payment.override" : "orders.payment.verify",
@@ -501,11 +510,13 @@ export async function recordCodCollection(db: Db, actor: Actor, orderId: string,
     expectChanged(db, 1, { code: "PAYMENT_CHANGED", detail: payment.id }),
     db
       .update(orders)
-      .set({ paymentStatus: "paid", paidIqd: sql`${orders.paidIqd} + ${amount.data}`, updatedAt: now })
+      .set({ paymentStatus: paidStatusSql, paidIqd: sql`${orders.paidIqd} + ${amount.data}`, updatedAt: now })
       .where(and(eq(orders.id, order.id), eq(orders.paymentStatus, "cod_due"))),
     expectChanged(db, 1, { code: "ORDER_CHANGED", detail: order.id }),
     ...postCodCollected(db, { paymentId: payment.id, orderId: order.id, ref: order.ref, receivedIqd: amount.data, dueIqd: due, at: now, createdBy: by, isDemo: order.isDemo }),
     db.insert(orderEvents).values({ id: newId("oev"), orderId: order.id, kind: "cod_collected", data: { paymentId: payment.id, amountIqd: amount.data, override }, actorKind, actorId, at: now }),
+    // the order is paid now: its digital lines get their codes in this batch (orders/digital.server)
+    ...(await assignOrderCodesStatements(db, order, actor, now)),
     auditStatement(db, {
       actor,
       action: override ? "orders.payment.override" : "orders.payment.record",

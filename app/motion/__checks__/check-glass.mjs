@@ -12,9 +12,11 @@
 //      rendered alone shows the chrome; an element is captured in exactly one place, so it is not in the page
 //      snapshots), and a language-switch anchor is marked, named and captured the same way;
 //   3. what shows through every live glass pane of the chrome, and through the open mega menu, is frosted: the pane is
-//      photographed with its own content hidden and its high-pass has no edges (p99.9 ≤ 3 of 255 levels). Two controls
-//      prove the measure sees the bug: the same pane with the old resting name put back on its chrome element, and the
-//      same pane with its backdrop-filter removed, both show sharp text (p99.9 ≫ 3);
+//      photographed with its own content hidden and its high-pass has no edges (p99.9 ≤ 3 of 255 levels). Controls
+//      prove the measure sees the bug: the same pane with its backdrop-filter removed shows sharp text (p99.9 ≫ 3), and
+//      so does a pane INSIDE a chrome element once the old resting name is put back on that element. (The v2 header
+//      is itself the glass: a name on the glass element is no backdrop root above it, so that control applies only to
+//      glass inside chrome — today the mega menu is opaque and every bar is its own glass.)
 //   4. the admin (local demo account from .dev.seed-credentials — never printed): /admin and one module page at 1440,
 //      light and dark — no names at rest, panes frosted.
 import { existsSync, readFileSync } from "node:fs";
@@ -40,8 +42,16 @@ const STORE_PAGES = ["/", "/support", "/platform/playstation", "/p/splatoon-raid
 
 /* ───────────────────────────── helpers ───────────────────────────── */
 
-/** Elements that carry a view-transition-name now (<html> aside), whether they are or contain glass, and leftover marks. */
+/** Elements that carry a view-transition-name now (<html> aside), whether they are or contain glass, and leftover marks.
+ *  A dev-server reload (another file saved) can land mid-read: wait for the page to be live again and read once more. */
 const namesNow = (page) =>
+  readNames(page).catch(async (error) => {
+    if (!/Execution context was destroyed/.test(String(error?.message))) throw error;
+    await page.waitForSelector("html[data-motion-ready]", { timeout: 30000 });
+    await sleep(400);
+    return readNames(page);
+  });
+const readNames = (page) =>
   page.evaluate(() => {
     const isGlass = (el) => el.classList?.contains("glass") || !["none", ""].includes(getComputedStyle(el).backdropFilter || "none");
     const label = (el) => el.tagName.toLowerCase() + (typeof el.className === "string" && el.className.trim() ? "." + el.className.trim().split(/\s+/).slice(0, 3).join(".") : "");
@@ -270,9 +280,9 @@ try {
     const support = await measurePanes(desk, `support-1440-${theme}`, { control: true });
     add(`/support at 1440 scrolled 1500px (${theme}): every live pane of the chrome is frosted — no legible text behind the header`, support.length > 0 && support.every((r) => frosted(r.now)), support);
     add(
-      `/support at 1440 (${theme}) controls: the old resting name and an unfrosted pane both show sharp text, so the measure sees the bug`,
-      support.some((r) => sharpText(r.restingName)) && support.every((r) => !r.live || sharpText(r.unfrosted)),
-      support.map((r) => ({ pane: r.pane, restingName: r.restingName?.p999, unfrosted: r.unfrosted?.p999 })),
+      `/support at 1440 (${theme}) controls: an unfrosted pane shows sharp text (and so does glass inside a chrome element under the old resting name), so the measure sees the bug`,
+      support.some((r) => r.live) && support.every((r) => !r.live || sharpText(r.unfrosted)) && support.every((r) => r.restingName === undefined || sharpText(r.restingName)),
+      support.map((r) => ({ pane: r.pane, restingName: r.restingName?.p999 ?? "n/a (the pane is the chrome element)", unfrosted: r.unfrosted?.p999 })),
     );
     {
       // the old engine, for the picture: the header named at rest
@@ -282,9 +292,10 @@ try {
       await tag.evaluate((el) => el.remove());
     }
 
-    // the mega menu over the hero
+    // the mega menu over the hero: a platform button of the desktop nav row (the header's first expandable button is
+    // the language menu)
     await goto(desk, "/");
-    const trigger = await desk.$('[data-motion-persist="header"] button[aria-expanded="false"]');
+    const trigger = await desk.$('.shell-navrow button[aria-expanded="false"]');
     if (trigger) {
       await trigger.click();
       await sleep(700);
@@ -295,7 +306,7 @@ try {
     await desk.screenshot({ path: shot(`mega-1440-${theme}-over-hero`), captureBeyondViewport: false });
     const mega = panel ? await measurePanes(desk, `mega-1440-${theme}`, { extra: panel, control: true }) : [];
     const panelResult = mega.find((r) => r.extra);
-    add(`mega menu open over the hero at 1440 (${theme}): no text over text — the page behind the menu is frosted or covered`, panel !== null && frosted(panelResult?.now), panel ? mega : "no mega-menu trigger ([data-motion-persist=header] button[aria-expanded]) or panel (aria-controls) found");
+    add(`mega menu open over the hero at 1440 (${theme}): no text over text — the page behind the menu is frosted or covered`, panel !== null && frosted(panelResult?.now), panel ? mega : "no mega-menu trigger (.shell-navrow button[aria-expanded]) or panel (aria-controls) found");
     if (panel && panelResult?.live) {
       add(`mega menu (${theme}) controls: with the old resting name / unfrosted, hero text shows through it`, sharpText(panelResult.unfrosted) && (panelResult.restingName === undefined || sharpText(panelResult.restingName)), { restingName: panelResult.restingName, unfrosted: panelResult.unfrosted });
       const tag = await desk.addStyleTag({ content: RESTING_NAME("header") });

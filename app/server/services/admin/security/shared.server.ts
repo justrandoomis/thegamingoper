@@ -106,7 +106,15 @@ const COST_ACTION_PREFIXES = ["pricing.cost", "pricing.landed", "pricing.margin"
 const COST_KEY = /cost|landed|cogs|supplier_?price|unit_?price_?minor|margin|profit/i;
 const PROFIT_KEY = /margin|profit/i;
 
+/**
+ * Families whose snapshots are people's pay (salaries, payroll runs and their items, advances — admin 15): withheld
+ * whole without staff.payroll.read, the permission the staff module itself asks before it shows any of it (follow-up
+ * 2026-11-12: an audit reader saw every salary change and payroll item through the trail).
+ */
+const PAY_ACTION_PREFIXES = ["staff.payroll."] as const;
+
 export function snapshotWithheld(actor: Actor, action: string): boolean {
+  if (!can(actor, "staff.payroll.read") && PAY_ACTION_PREFIXES.some((prefix) => action.startsWith(prefix))) return true;
   return !can(actor, "cost.read") && COST_ACTION_PREFIXES.some((prefix) => action.startsWith(prefix));
 }
 

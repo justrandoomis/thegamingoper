@@ -54,7 +54,7 @@ export default function Quarantine({ loaderData }: Route.ComponentProps) {
     <>
       <header className="adm-page-head">
         <h1 className="adm-title">{t("quarantine.title")}</h1>
-        <p className="max-w-[70ch] type-body text-ink-2">{t("quarantine.lead", { days: sla.quarantineDays })}</p>
+        <p className="max-w-[70ch] type-body text-ink-2">{t("quarantine.lead", { within: t("withinDays", { count: sla.quarantineDays }) })}</p>
       </header>
       {rows.length === 0 ? (
         <EmptyState title={t("quarantine.empty")} text={t("quarantine.emptyHint")} icon="package" />

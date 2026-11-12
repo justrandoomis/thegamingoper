@@ -4,8 +4,9 @@ import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { BidiLabel, textOf } from "./BidiText";
 import { cx } from "./cx";
-import { useControllable, useRovingRadio } from "./KeyBank";
 import { PlatformLed, type Gel } from "./PlatformLed";
+import { revealFocusedItem } from "./reveal";
+import { useControllable, useRovingRadio } from "./roving";
 
 /**
  * Chips — Design System v2 §4.6: a flat 40px pill (44 hit), paper with a --line-2 hairline, 14/600 ink words, an optional
@@ -163,7 +164,15 @@ export function ChipGroup({ options, value, defaultValue = null, onChange, "aria
     onChange: setCurrent,
   });
   return (
-    <div role="radiogroup" id={id} aria-label={ariaLabel} aria-labelledby={labelledBy} className={cx("chips", rail && "chips--rail [&>*]:shrink-0", rail && bleed && "chips--bleed", className)}>
+    <div
+      role="radiogroup"
+      id={id}
+      aria-label={ariaLabel}
+      aria-labelledby={labelledBy}
+      className={cx("chips", rail && "chips--rail [&>*]:shrink-0", rail && bleed && "chips--bleed", className)}
+      // a rail scrolls sideways on phones: the chip that takes the keyboard focus (Tab, the arrows) comes fully into view
+      onFocus={rail ? revealFocusedItem : undefined}
+    >
       {options.map((option, index) => (
         <button key={option.value} type="button" className="key key--chip" data-press="soft" disabled={option.disabled} {...itemProps(index)}>
           <ChipBody count={option.count} platform={option.platform} lead={<ChipMark />}>

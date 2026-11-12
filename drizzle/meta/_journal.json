@@ -29,6 +29,13 @@
       "when": 1794383898945,
       "tag": "0003_append_only_no_replace",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1794449544694,
+      "tag": "0004_accounts_access_ops",
+      "breakpoints": true
     }
   ]
 }

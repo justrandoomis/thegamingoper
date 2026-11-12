@@ -13,9 +13,9 @@ import type { Db } from "~/server/db/drizzle.server";
 import { costCenters, expenses } from "~/server/db/schema";
 import { mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, notFound } from "~/server/errors";
-import { expenseAccounts, expenseApprovalLimit, needsOtherApprover, paidFromAccounts, selfApprovedRecentIqd } from "~/server/services/accounting/expenses.server";
+import { createExpense, expenseAccounts, expenseApprovalLimit, needsOtherApprover, paidFromAccounts, selfApprovedRecentIqd, type CreateExpenseInput } from "~/server/services/accounting/expenses.server";
 import { postedBy } from "~/server/services/accounting/post.server";
-import { chartOfAccounts } from "~/server/services/accounting/reports.server";
+import { chartOfAccounts, lastClosedPeriod, systemRoots } from "~/server/services/accounting/reports.server";
 import { employeeNames } from "./shared.server";
 import { latinDigits, PAGE_SIZE, periodOf, type RangeFilter } from "./types";
 
@@ -48,8 +48,22 @@ export type ExpenseRow = {
   /** This employee recorded it, and its amount — with what they recorded and approved alone in the last 24 hours —
    *  is above the limit: someone else must approve it. */
   needsOther: boolean;
+  /**
+   * A draft whose posting month (the month it was incurred, or this month for a later day) is on or before the last
+   * closed month: approving it is refused (`period_closed`), so nobody is offered "approve" — it can be voided, or
+   * recorded again in an open month (follow-up 2026-11-12).
+   */
+  monthClosed: boolean;
   hasReceipt: boolean;
 };
+
+/** The month an approval would post a draft in: the month it was incurred, or this month for a later day. */
+function postingMonth(incurredOn: string, now: number): string {
+  const incurred = incurredOn.slice(0, 7);
+  const current = periodOf(now);
+  return incurred < current ? incurred : current;
+}
+const draftInClosedMonth = (row: { status: string; incurredOn: string }, lastClosed: string | null, now: number) => row.status === "draft" && lastClosed !== null && postingMonth(row.incurredOn, now) <= lastClosed;
 
 export type ExpensePage = {
   rows: ExpenseRow[];
@@ -81,7 +95,7 @@ export async function listExpenses(db: Db, actor: Actor, filters: ExpenseFilters
   const base = expenseWhere(filters, filters.demo);
   const where = filters.status ? sql`${base} AND x.status = ${filters.status}` : base;
   const offset = (filters.page - 1) * PAGE_SIZE;
-  const [rows, count, hidden, totals, byAccount, byCenter, chart, centers] = await Promise.all([
+  const [rows, count, hidden, totals, byAccount, byCenter, chart, centers, lastClosed] = await Promise.all([
     db.all<{
       id: string;
       incurredOn: string;
@@ -111,6 +125,7 @@ export async function listExpenses(db: Db, actor: Actor, filters: ExpenseFilters
     db.all<{ code: string | null; total: number }>(sql`SELECT x.cost_center AS code, coalesce(sum(x.amount_iqd), 0) AS total FROM expenses AS x WHERE ${base} AND x.status = 'posted' GROUP BY x.cost_center ORDER BY total DESC`),
     chartOfAccounts(db),
     db.select({ code: costCenters.code, name: costCenters.name }).from(costCenters),
+    lastClosedPeriod(db),
   ]);
   const nameOf = new Map(chart.map((account) => [account.id, `${account.code} · ${pick(account.name, locale)}`]));
   const centerName = new Map(centers.map((center) => [center.code, pick(center.name, locale)]));
@@ -136,6 +151,7 @@ export async function listExpenses(db: Db, actor: Actor, filters: ExpenseFilters
       journalEntryId: row.journalEntryId,
       isDemo: Boolean(row.isDemo),
       needsOther: row.status === "draft" && needsOtherApprover({ amountIqd: num(row.amount), createdBy: row.createdBy }, myId, selfApprovedIqd, threshold),
+      monthClosed: draftInClosedMonth(row, lastClosed, now),
       hasReceipt: Boolean(row.receiptFileId),
     })),
     total,
@@ -168,15 +184,17 @@ export async function getExpense(db: Db, actor: Actor, expenseId: string, locale
   const row = await db.select().from(expenses).where(eq(expenses.id, expenseId)).get();
   if (!row) throw notFound("expense");
   const myId = postedBy(actor);
-  const [chart, names, reversal, selfApprovedIqd, threshold] = await Promise.all([
+  const [chart, names, reversal, selfApprovedIqd, threshold, lastClosed] = await Promise.all([
     chartOfAccounts(db),
     employeeNames(db, [row.createdBy, row.approvedBy]),
     row.journalEntryId ? db.all<{ id: string }>(sql`SELECT id FROM journal_entries WHERE reverses_id = ${row.journalEntryId}`) : Promise.resolve([] as { id: string }[]),
     selfApprovedRecentIqd(db, myId, now),
     expenseApprovalLimit(db),
+    lastClosedPeriod(db),
   ]);
   const nameOf = new Map(chart.map((account) => [account.id, `${account.code} · ${pick(account.name, locale)}`]));
   const needsOther = row.status === "draft" && needsOtherApprover(row, myId, selfApprovedIqd, threshold);
+  const monthClosed = draftInClosedMonth(row, lastClosed, now);
   return {
     id: row.id,
     incurredOn: row.incurredOn,
@@ -195,12 +213,13 @@ export async function getExpense(db: Db, actor: Actor, expenseId: string, locale
     journalEntryId: row.journalEntryId,
     isDemo: row.isDemo,
     needsOther,
+    monthClosed,
     hasReceipt: Boolean(row.receiptFileId),
     period: row.period,
     refType: row.refType,
     refId: row.refId,
     reversalId: reversal[0]?.id ?? null,
-    canApprove: row.status === "draft" && !needsOther,
+    canApprove: row.status === "draft" && !needsOther && !monthClosed,
     canVoid: row.status === "draft" || row.status === "posted",
     threshold,
     selfApprovedIqd,
@@ -215,12 +234,41 @@ export type ExpenseFormOptions = {
 };
 
 /** What the expense form offers: expense accounts, where the money came from, active cost centres. */
+/**
+ * Expense families the staff module books itself (accounting/payroll.server: payroll runs, salary advances and
+ * commissions). Recording them here too counts payroll twice — the expenses page used to tell staff to do exactly
+ * that until payroll runs existed (follow-up 2026-11-12, `expenses.payrollNote` retired).
+ */
+const POSTED_BY_PAYROLL: readonly string[] = ["payroll", "commissions"];
+
+/** The expense accounts a person may record an expense on: the core's list without the payroll families (and their sub-accounts). */
+export function recordableExpenseAccounts(chart: Awaited<ReturnType<typeof chartOfAccounts>>) {
+  const roots = systemRoots(chart);
+  return expenseAccounts(chart).filter((account) => !POSTED_BY_PAYROLL.includes(roots.get(account.id) ?? ""));
+}
+
+/**
+ * Records an expense from the admin (createExpense of the accounting core), refusing the payroll families
+ * (`expense_account_payroll`, 409 on the account field) — the form never offers them.
+ */
+export async function recordExpense(db: Db, actor: Actor, input: CreateExpenseInput, now: number): Promise<{ expenseId: string; replayed: boolean }> {
+  await assertRecordableExpenseAccount(db, actor, input.accountId);
+  return createExpense(db, actor, input, now);
+}
+
+/** recordExpense's account check alone — for a form that must know before it stores anything (a receipt photo). */
+export async function assertRecordableExpenseAccount(db: Db, actor: Actor, accountId: string): Promise<void> {
+  requireExpenses(actor);
+  const roots = systemRoots(await chartOfAccounts(db));
+  if (POSTED_BY_PAYROLL.includes(roots.get(accountId) ?? "")) throw new AppError("expense_account_payroll", 409, { fields: { accountId: "expense_account_payroll" } });
+}
+
 export async function expenseFormOptions(db: Db, actor: Actor, locale: Locale): Promise<ExpenseFormOptions> {
   requireExpenses(actor);
   const [chart, centers] = await Promise.all([chartOfAccounts(db), db.select({ code: costCenters.code, name: costCenters.name }).from(costCenters).where(eq(costCenters.isActive, true))]);
   const label = (account: { code: string; name: L10n }) => `${account.code} · ${pick(account.name, locale)}`;
   return {
-    accounts: expenseAccounts(chart).map((account) => ({ id: account.id, label: label(account), systemKey: account.systemKey })),
+    accounts: recordableExpenseAccounts(chart).map((account) => ({ id: account.id, label: label(account), systemKey: account.systemKey })),
     paidFrom: paidFromAccounts(chart).map((account) => ({ id: account.id, label: label(account), systemKey: account.systemKey })),
     costCenters: centers.map((center) => ({ code: center.code, name: pick(center.name, locale) })).sort((a, b) => a.code.localeCompare(b.code)),
     threshold: await expenseApprovalLimit(db),
@@ -324,12 +372,19 @@ export async function saveCostCenter(db: Db, actor: Actor, raw: z.input<typeof S
 export async function countDecidableExpenses(db: Db, actor: Actor, now: number = Date.now()): Promise<number | null> {
   if (!can(actor, "finance.expense.manage")) return null;
   const myId = postedBy(actor);
-  const [limit, selfApproved] = await Promise.all([expenseApprovalLimit(db), selfApprovedRecentIqd(db, myId, now)]);
+  // ONE round trip (follow-up 2026-11-12 — the bell asks on every admin page; the limit and the 24-hour total used to
+  // be read first and the count after them): the drafts of open months with the amounts of this employee's own, and
+  // the limit check here. The posting month: min(the day's month, this month) — periodOf(min(dayNoon(incurred_on),
+  // now)) without the clock.
+  const [limit, selfApproved, rows] = await Promise.all([
+    expenseApprovalLimit(db),
+    selfApprovedRecentIqd(db, myId, now),
+    db.all<{ n: number; mine: string | null }>(sql`
+      SELECT count(*) AS n, group_concat(CASE WHEN x.created_by = ${myId ?? ""} THEN x.amount_iqd END) AS mine FROM expenses AS x WHERE x.status = 'draft'
+        AND NOT EXISTS (SELECT 1 FROM fiscal_periods AS p WHERE p.status = 'closed' AND p.period >= min(substr(x.incurred_on, 1, 7), ${periodOf(now)}))`),
+  ]);
   const room = limit - selfApproved;
-  // the posting month: min(the day's month, this month) — periodOf(min(dayNoon(incurred_on), now)) without the clock
-  const rows = await db.all<{ n: number }>(sql`
-    SELECT count(*) AS n FROM expenses AS x WHERE x.status = 'draft' AND NOT (x.created_by = ${myId ?? ""} AND x.amount_iqd > ${room})
-      AND NOT EXISTS (SELECT 1 FROM fiscal_periods AS p WHERE p.status = 'closed' AND p.period >= min(substr(x.incurred_on, 1, 7), ${periodOf(now)}))`);
-  return num(rows[0]?.n);
+  const mineAboveRoom = (rows[0]?.mine ?? "").split(",").filter((amount) => amount !== "" && Number(amount) > room).length;
+  return num(rows[0]?.n) - mineAboveRoom;
 }
 

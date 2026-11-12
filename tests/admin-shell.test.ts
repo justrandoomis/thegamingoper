@@ -1566,6 +1566,12 @@ describe("shell data", () => {
     // settings' requests), never one after the other
     for (const pattern of [/"pos_shifts"/, /"privacy_requests"/, /"trade_ins"/, /"used_units"/, /FROM auth_events/, /security\.access_review\.complete/]) expect(sent(pattern), String(pattern)).toBe(true);
     expect(sent(/"approvals"/, "settings")).toBe(true);
+    // …and wave D's (2026-11-12): promotions' requests, support's tickets, staff's leave and advances (counted with the
+    // staff module's other queues — review 2026-11-12: one module, one failure), the operations counts, the content
+    // module's policies
+    expect(sent(/"approvals"/, "coupon")).toBe(true);
+    expect(sent(/"approvals"/, "staff_advance")).toBe(true);
+    for (const pattern of [/FROM support_tickets/, /"leave_requests"/, /consistency_findings|job_runs|FROM incidents/, /FROM pages/]) expect(sent(pattern), String(pattern)).toBe(true);
 
     // Much more waits: 60 hand corrections on a settlement, 30 failed deliveries, 30 top-up requests.
     for (let i = 0; i < 60; i++) await audit(t.db, { actor: { kind: "employee", id: `emp_rows_${i % 3}`, permissions: [] }, action: "shipping.cod.item", entityType: "cod_settlement", entityId: "cod_rows", at: now });

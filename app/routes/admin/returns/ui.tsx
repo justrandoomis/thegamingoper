@@ -141,6 +141,7 @@ export function FlagExplanations({ signals }: { signals: readonly FraudSignal[] 
       {signals.map((signal) => {
         const vars: Record<string, string | number> = { ...signal.vars };
         for (const key of ["amount", "threshold"]) if (typeof vars[key] === "number") vars[key] = f.iqd(vars[key] as number);
+        if (typeof vars.days === "number") vars.within = t("withinDays", { count: vars.days });
         return (
           <li key={signal.id} className="flex items-start gap-2">
             <Icon name="warning" size={18} className="mt-0.5 flex-none text-warn" />

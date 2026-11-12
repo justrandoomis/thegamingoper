@@ -55,6 +55,8 @@ type ItemCommon = {
   id: string;
   /** What the row does, as a verb ("عدّل الطلب"). Also what typeahead matches. */
   label: string;
+  /** The label's own language — a language's name in its own script («English» on an Arabic page). */
+  lang?: string;
   disabled?: boolean;
 };
 
@@ -68,8 +70,9 @@ export type MenuActionItem = ItemCommon & {
   onSelect: () => void;
 };
 export type MenuLinkItem = ItemCommon & { kind: "link"; icon?: IconName; hint?: string; href: string; external?: boolean };
-export type MenuCheckboxItem = ItemCommon & { kind: "checkbox"; checked: boolean; onCheckedChange: (checked: boolean) => void };
-export type MenuRadioItem = ItemCommon & { kind: "radio"; checked: boolean; onSelect: () => void };
+/** `hint` on a choice row is a second line under its label — what the choice means («المتوفر أولاً، ثم «قريباً»…»). */
+export type MenuCheckboxItem = ItemCommon & { kind: "checkbox"; checked: boolean; hint?: string; onCheckedChange: (checked: boolean) => void };
+export type MenuRadioItem = ItemCommon & { kind: "radio"; checked: boolean; hint?: string; onSelect: () => void };
 export type MenuSeparator = { kind: "separator"; id: string };
 export type MenuItem = MenuActionItem | MenuLinkItem | MenuCheckboxItem | MenuRadioItem | MenuSeparator;
 
@@ -429,10 +432,13 @@ function rowsOf(element: HTMLElement): HTMLElement[] {
 }
 
 function MenuRow({ item, slot, onClose }: { item: Exclude<MenuItem, MenuSeparator>; slot: boolean; onClose: (returnFocus: boolean) => void }) {
+  const hintId = useId();
   const checkable = item.kind === "checkbox" || item.kind === "radio";
   const danger = (item.kind === undefined || item.kind === "action") && item.tone === "danger";
   const icon = item.kind === undefined || item.kind === "action" || item.kind === "link" ? item.icon : undefined;
+  // an action's hint is a count or a shortcut at the row's end; a choice's hint is a line that explains it
   const hint = item.kind === undefined || item.kind === "action" || item.kind === "link" ? item.hint : undefined;
+  const explain = checkable ? item.hint : undefined;
   const mark = checkable ? (item.checked ? <Icon name="check" size={18} /> : null) : icon ? <Icon name={icon} size={18} /> : null;
 
   const common = {
@@ -440,6 +446,7 @@ function MenuRow({ item, slot, onClose }: { item: Exclude<MenuItem, MenuSeparato
     "data-menu-label": item.label,
     tabIndex: -1,
     "aria-disabled": item.disabled || undefined,
+    "aria-describedby": explain ? hintId : undefined,
     // focus follows the pointer, so the keyboard and the mouse always agree on the highlighted row
     onPointerMove: (event: ReactMouseEvent<HTMLElement>) => {
       if (document.activeElement !== event.currentTarget) event.currentTarget.focus({ preventScroll: true });
@@ -449,12 +456,22 @@ function MenuRow({ item, slot, onClose }: { item: Exclude<MenuItem, MenuSeparato
   const content = (
     <>
       {slot ? (
-        <span className="grid size-5 shrink-0 place-items-center" aria-hidden="true">
+        <span className={cx("grid size-5 shrink-0 place-items-center", explain && "self-start mt-0.5")} aria-hidden="true">
           {mark}
         </span>
       ) : null}
-      <span className="min-w-0 flex-1">
-        <BidiLabel>{item.label}</BidiLabel>
+      <span className="grid min-w-0 flex-1">
+        {item.lang ? (
+          // a language's name in its own script reads in its own direction («English», «کوردی»)
+          <bdi lang={item.lang}>{item.label}</bdi>
+        ) : (
+          <BidiLabel>{item.label}</BidiLabel>
+        )}
+        {explain ? (
+          <span id={hintId} className="type-caption text-ink-2">
+            <BidiLabel>{explain}</BidiLabel>
+          </span>
+        ) : null}
       </span>
       {hint ? (
         <span className="shrink-0 type-caption text-ink-2 nums" aria-hidden="true">

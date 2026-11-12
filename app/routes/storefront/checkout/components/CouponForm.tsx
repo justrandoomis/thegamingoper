@@ -3,12 +3,24 @@ import { useState } from "react";
 import { useT } from "~/i18n/react";
 import type { CartView } from "~/lib/dto";
 import type { Locale } from "~/lib/locales";
+import type { CartViewData } from "~/server/services/cart.server";
+import { isolate } from "~/ui/BidiText";
 import { cartRequest } from "~/ui/cart-client";
 import { CouponField } from "~/ui/OrderSummary";
 import { TextLink } from "~/ui/TextLink";
 
-/** CartView as /api/cart sends it: plus the stored coupon that does not apply right now, and why. */
-export type CartWithIssue = CartView & { couponIssue?: { code: string; reason: string } | null };
+/**
+ * CartView as /api/cart sends it (CartViewData of the commerce core, the kit editors typing it as the kit's CartView):
+ * plus the stored coupon that does not apply right now and why, every discount as charged, the delivery waiver, the
+ * points, the referral code asked about.
+ */
+export type CartWithIssue = CartView & Partial<Pick<CartViewData, "discounts" | "shippingWaiver" | "points" | "referral">> & { couponIssue?: { code: string; reason: string; rule?: string } | null };
+
+/** The sentence for a stored coupon that does not apply right now. */
+export function couponIssueText(issue: { code: string; reason: string; rule?: string }, t: (key: string, vars?: Record<string, string | number>) => string, errorsT: (key: string) => string): string {
+  if (issue.reason === "not_combinable") return t("coupon.notCombinable", { code: isolate(issue.code), rule: isolate(issue.rule ?? "") });
+  return `${t("coupon.issue", { code: "⁦" + issue.code + "⁩" })} ${errorsT(`errors.coupon_${issue.reason}`)}`;
+}
 
 /**
  * The discount code inside the order summary's «لديك رمز خصم؟» disclosure (Design System v2 §4.13): the kit's
@@ -18,7 +30,7 @@ export type CartWithIssue = CartView & { couponIssue?: { code: string; reason: s
  * shows one line and «أزل الرمز» (the summary's discount row already names it). A stored code that stopped applying
  * (`couponIssue`) is explained the same way. In the checkout the answer is priced for the chosen governorate.
  */
-export function CouponForm({ cart, locale, governorateId = null, onCart }: { cart: CartWithIssue; locale: Locale; governorateId?: string | null; onCart: (cart: CartWithIssue) => void }) {
+export function CouponForm({ cart, locale, governorateId = null, pricing, onCart }: { cart: CartWithIssue; locale: Locale; governorateId?: string | null; pricing?: { points: number; referral: string }; onCart: (cart: CartWithIssue) => void }) {
   const t = useT("checkout");
   const errorsT = useT("errors");
   const [code, setCode] = useState("");
@@ -29,7 +41,8 @@ export function CouponForm({ cart, locale, governorateId = null, onCart }: { car
   const send = async (value: string | null, kind: "apply" | "remove") => {
     setBusy(kind);
     setError(null);
-    const answer = await cartRequest({ intent: "coupon", code: value ?? "", locale, governorateId: governorateId ?? undefined });
+    // the checkout's choices ride along, so the answer is priced as the page shows it (points, a referral code)
+    const answer = await cartRequest({ intent: "coupon", code: value ?? "", locale, governorateId: governorateId ?? undefined, points: pricing?.points || undefined, referral: pricing?.referral || undefined });
     setBusy(null);
     if (answer.ok) {
       onCart(answer.cart as CartWithIssue);
@@ -76,11 +89,7 @@ export function CouponForm({ cart, locale, governorateId = null, onCart }: { car
           pending={busy === "apply"}
         />
       )}
-      {issue ? (
-        <p className="type-xs text-warn">
-          {t("coupon.issue", { code: "⁦" + issue.code + "⁩" })} {errorsT(`errors.coupon_${issue.reason}`)}
-        </p>
-      ) : null}
+      {issue ? <p className={issue.reason === "not_combinable" ? "type-xs text-ink-2" : "type-xs text-warn"}>{couponIssueText(issue, t, errorsT)}</p> : null}
       <p className="sr-only" role="status" aria-live="polite">
         {said}
       </p>

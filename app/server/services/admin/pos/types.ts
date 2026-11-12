@@ -30,11 +30,33 @@ export const MAX_DRAWER_IQD = 1_000_000_000;
 export const SHIFT_STATES = ["open", "review", "closed"] as const;
 export type ShiftState = (typeof SHIFT_STATES)[number];
 
-/** open · review (counted with a difference nobody approved yet) · closed (final). */
-export function shiftStateOf(shift: { status: string; varianceIqd: number | null; approvedBy: string | null }): ShiftState {
+/**
+ * Why a counted shift waits for a second person (follow-up 2026-11-12):
+ *   difference   the count differs from what the system expected;
+ *   taken_over   someone other than the drawer's owner counted it — a supervisor taking a drawer over could see what
+ *                it should hold (they can add up its sales), so their count never closes a shift alone;
+ *   late_sale    a sale queued offline synced after the count and moved its figures — even back to no difference
+ *                (it used to drop out of the review queue then, and nobody looked at it again).
+ */
+export const SHIFT_REVIEW_REASONS = ["difference", "taken_over", "late_sale"] as const;
+export type ShiftReviewReason = (typeof SHIFT_REVIEW_REASONS)[number];
+
+type ShiftFacts = { status: string; varianceIqd: number | null; approvedBy: string | null; openedBy?: string; closedBy?: string | null; lateSales?: boolean };
+
+/** The reasons a counted, unapproved shift needs a review (empty: it closes as counted). */
+export function shiftReviewReasons(shift: ShiftFacts): ShiftReviewReason[] {
+  if (shift.status === "open" || shift.approvedBy) return [];
+  const reasons: ShiftReviewReason[] = [];
+  if ((shift.varianceIqd ?? 0) !== 0) reasons.push("difference");
+  if (shift.openedBy !== undefined && shift.closedBy !== undefined && (shift.closedBy ?? "") !== shift.openedBy) reasons.push("taken_over");
+  if (shift.lateSales) reasons.push("late_sale");
+  return reasons;
+}
+
+/** open · review (counted, waiting for a second person — see shiftReviewReasons) · closed (final). */
+export function shiftStateOf(shift: ShiftFacts): ShiftState {
   if (shift.status === "open") return "open";
-  if ((shift.varianceIqd ?? 0) !== 0 && !shift.approvedBy) return "review";
-  return "closed";
+  return shiftReviewReasons(shift).length > 0 ? "review" : "closed";
 }
 
 export const SHIFT_TONE: Record<ShiftState, "ok" | "warn" | "neutral"> = { open: "ok", review: "warn", closed: "neutral" };
@@ -238,6 +260,8 @@ export type ShiftView = {
   notes: string | null;
   sales: { count: number; totalIqd: number | null };
   mine: boolean;
+  /** Why it waits for a review (shiftReviewReasons) — for those who see the shift's figures only (null otherwise). */
+  reviewReasons: ShiftReviewReason[] | null;
 };
 
 export type ShiftReport = ShiftView & {

@@ -18,8 +18,9 @@ import type { Db } from "~/server/db/drizzle.server";
 import { runBatch } from "~/server/db/tx.server";
 import { customerFlags, flagCondition } from "./flags.server";
 import { segmentRowId, storedSegments } from "./rfm.server";
+import { customerRules } from "./rules.server";
 import { num, phoneView } from "./shared.server";
-import { NEW_ACCOUNT_DAYS, PAGE_SIZE, type CustomerFilters, type CustomerListPage, type CustomerListRow, type CustomerSort, type CustomerStatusKey } from "./types";
+import { FLAG_RULES, NEW_ACCOUNT_DAYS, PAGE_SIZE, type FlagRules, type CustomerFilters, type CustomerListPage, type CustomerListRow, type CustomerSort, type CustomerStatusKey } from "./types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 export const MAX_EXPORT_ROWS = 5000;
@@ -33,7 +34,7 @@ const ORDERS = sql`(SELECT count(*) FROM orders AS o WHERE o.customer_id = c.id)
 const escapeLike = (text: string) => text.replace(/[\\%_]/g, (ch) => `\\${ch}`);
 
 /** The WHERE of the list (and its export) for these filters, as this employee may search. */
-export function customerWhere(filters: CustomerFilters, actor: Actor, now: number): SQL {
+export function customerWhere(filters: CustomerFilters, actor: Actor, now: number, flagRules: FlagRules = FLAG_RULES): SQL {
   const parts: SQL[] = [];
   parts.push(filters.status ? sql`c.status = ${filters.status}` : sql`c.status IN ('active', 'blocked')`);
 
@@ -64,7 +65,7 @@ export function customerWhere(filters: CustomerFilters, actor: Actor, now: numbe
     case "vip":
     case "risk":
     case "complaints": {
-      const condition = flagCondition(filters.view, now);
+      const condition = flagCondition(filters.view, now, flagRules);
       if (condition) parts.push(condition);
       break;
     }
@@ -109,7 +110,7 @@ async function selectRows(db: Db, where: SQL, sort: CustomerSort, limit: number,
 /** One page of the customer list (07.01) with each row's labels (07.06) and stored segment (07.02). */
 export async function listCustomers(db: Db, actor: Actor, filters: CustomerFilters, now: number): Promise<CustomerListPage> {
   assertCan(actor, "customers.customer.read");
-  const where = customerWhere(filters, actor, now);
+  const where = customerWhere(filters, actor, now, (await customerRules(db)).flags);
   const [countRow] = await db.all<{ n: number }>(sql`SELECT count(*) AS n FROM customers AS c WHERE ${where}`);
   const total = num(countRow?.n);
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -148,8 +149,9 @@ export async function listCustomers(db: Db, actor: Actor, filters: CustomerFilte
 /** How many customers each label view holds right now (the module page's cards). */
 export async function customerQueues(db: Db, actor: Actor, now: number): Promise<{ vip: number; risk: number; complaints: number; blocked: number }> {
   assertCan(actor, "customers.customer.read");
+  const { flags: flagRules } = await customerRules(db);
   const count = async (view: "vip" | "risk" | "complaints" | "blocked") => {
-    const where = customerWhere({ q: "", view, status: null, segment: null, sort: "joined", page: 1 }, actor, now);
+    const where = customerWhere({ q: "", view, status: null, segment: null, sort: "joined", page: 1 }, actor, now, flagRules);
     const [row] = await db.all<{ n: number }>(sql`SELECT count(*) AS n FROM customers AS c WHERE ${where}`);
     return num(row?.n);
   };
@@ -166,7 +168,7 @@ export type CustomerExport = { header: string[]; rows: (string | number | null)[
 export async function exportCustomersCsv(db: Db, actor: Actor, filters: CustomerFilters, now: number, labels: { header: string[]; status: (status: CustomerStatusKey) => string; segment: (key: string | null) => string; flag: (id: string) => string }): Promise<CustomerExport> {
   assertCan(actor, "customers.customer.read");
   assertCan(actor, "customers.customer.export");
-  const where = customerWhere(filters, actor, now);
+  const where = customerWhere(filters, actor, now, (await customerRules(db)).flags);
   const rows = await selectRows(db, where, filters.sort, MAX_EXPORT_ROWS + 1, 0);
   const truncated = rows.length > MAX_EXPORT_ROWS;
   const kept = rows.slice(0, MAX_EXPORT_ROWS);

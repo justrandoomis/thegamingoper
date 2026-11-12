@@ -22,16 +22,17 @@ import { expectChanged, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError } from "~/server/errors";
 import { cleanBlock, cleanLine } from "~/server/text.server";
 import { changeableCustomer, hasLongDigitRun, num } from "./shared.server";
-import { FLAG_RULES, type CustomerFlag, type CustomerView } from "./types";
+import { customerRules } from "./rules.server";
+import { FLAG_RULES, type CustomerFlag, type CustomerView, type FlagRules } from "./types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** The numbers behind the labels, as correlated subqueries on `c` (an alias of customers). */
-function metrics(now: number) {
-  const vipSince = now - FLAG_RULES.vipWindowDays * DAY_MS;
-  const cancelSince = now - FLAG_RULES.riskCancelledDays * DAY_MS;
-  const rejectSince = now - FLAG_RULES.riskRejectedDays * DAY_MS;
-  const returnSince = now - FLAG_RULES.riskReturnedDays * DAY_MS;
+/** The numbers behind the labels, as correlated subqueries on `c` (an alias of customers), over the rules' windows. */
+function metrics(now: number, rules: FlagRules) {
+  const vipSince = now - rules.vipWindowDays * DAY_MS;
+  const cancelSince = now - rules.riskCancelledDays * DAY_MS;
+  const rejectSince = now - rules.riskRejectedDays * DAY_MS;
+  const returnSince = now - rules.riskReturnedDays * DAY_MS;
   return {
     spend: sql`(SELECT coalesce(sum(o.paid_iqd - o.refunded_iqd), 0) FROM orders AS o WHERE o.customer_id = c.id AND o.status <> 'cancelled' AND o.paid_iqd > o.refunded_iqd AND o.placed_at >= ${vipSince})`,
     purchases: sql`(SELECT count(*) FROM orders AS o WHERE o.customer_id = c.id AND o.status <> 'cancelled' AND o.paid_iqd > o.refunded_iqd AND o.placed_at >= ${vipSince})`,
@@ -43,14 +44,17 @@ function metrics(now: number) {
   };
 }
 
-/** SQL (on alias `c`) that is true for the customers a saved view of the list shows; null = no condition. */
-export function flagCondition(view: CustomerView, now: number): SQL | null {
-  const m = metrics(now);
+/**
+ * SQL (on alias `c`) that is true for the customers a saved view of the list shows; null = no condition. `rules`: the
+ * thresholds in force (customerRules — the setting customers.flag_rules); FLAG_RULES when left out.
+ */
+export function flagCondition(view: CustomerView, now: number, rules: FlagRules = FLAG_RULES): SQL | null {
+  const m = metrics(now, rules);
   switch (view) {
     case "vip":
-      return sql`(c.vip_tier IS NOT NULL OR ${m.spend} >= ${FLAG_RULES.vipSpendIqd} OR ${m.purchases} >= ${FLAG_RULES.vipPurchases})`;
+      return sql`(c.vip_tier IS NOT NULL OR ${m.spend} >= ${rules.vipSpendIqd} OR ${m.purchases} >= ${rules.vipPurchases})`;
     case "risk":
-      return sql`(c.fraud_flag = 1 OR ${m.cancelled} >= ${FLAG_RULES.riskCancelled} OR ${m.rejected} >= ${FLAG_RULES.riskRejectedProofs} OR ${m.returned} >= ${FLAG_RULES.riskReturned} OR ${m.duplicate} > 0)`;
+      return sql`(c.fraud_flag = 1 OR ${m.cancelled} >= ${rules.riskCancelled} OR ${m.rejected} >= ${rules.riskRejectedProofs} OR ${m.returned} >= ${rules.riskReturned} OR ${m.duplicate} > 0)`;
     case "complaints":
       return sql`${m.complaints} > 0`;
     default:
@@ -76,7 +80,10 @@ type FlagRow = {
 export async function customerFlags(db: Db, customerIds: readonly string[], now: number): Promise<Map<string, CustomerFlag[]>> {
   const out = new Map<string, CustomerFlag[]>();
   const ids = [...new Set(customerIds)];
-  const m = metrics(now);
+  if (ids.length === 0) return out;
+  // the thresholds in force (the setting customers.flag_rules — follow-up 2026-11-12)
+  const { flags: rules } = await customerRules(db);
+  const m = metrics(now, rules);
   // 60 ids per query: each subquery binds its own parameters and D1 allows 100 per statement.
   for (let i = 0; i < ids.length; i += 60) {
     const chunk = ids.slice(i, i + 60);
@@ -88,23 +95,23 @@ export async function customerFlags(db: Db, customerIds: readonly string[], now:
         chunk.map((id) => sql`${id}`),
         sql`, `,
       )})`);
-    for (const row of rows) out.set(row.id, flagsOf(row));
+    for (const row of rows) out.set(row.id, flagsOf(row, rules));
   }
   for (const id of ids) if (!out.has(id)) out.set(id, []);
   return out;
 }
 
-function flagsOf(row: FlagRow): CustomerFlag[] {
+function flagsOf(row: FlagRow, rules: FlagRules): CustomerFlag[] {
   const flags: CustomerFlag[] = [];
   const spend = num(row.spend);
   const purchases = num(row.purchases);
   if (row.vip_tier) flags.push({ id: "vip_manual", vars: { tier: row.vip_tier } });
-  if (spend >= FLAG_RULES.vipSpendIqd) flags.push({ id: "vip_spend", vars: { amount: spend, threshold: FLAG_RULES.vipSpendIqd, days: FLAG_RULES.vipWindowDays } });
-  if (purchases >= FLAG_RULES.vipPurchases) flags.push({ id: "vip_purchases", vars: { count: purchases, threshold: FLAG_RULES.vipPurchases, days: FLAG_RULES.vipWindowDays } });
+  if (spend >= rules.vipSpendIqd) flags.push({ id: "vip_spend", vars: { amount: spend, threshold: rules.vipSpendIqd, days: rules.vipWindowDays } });
+  if (purchases >= rules.vipPurchases) flags.push({ id: "vip_purchases", vars: { count: purchases, threshold: rules.vipPurchases, days: rules.vipWindowDays } });
   if (num(row.fraud_flag) === 1) flags.push({ id: "risk_manual", vars: { reason: row.fraud_reason ? maskPhonesIn(row.fraud_reason) : "—" } });
-  if (num(row.cancelled) >= FLAG_RULES.riskCancelled) flags.push({ id: "risk_cancelled", vars: { count: num(row.cancelled), threshold: FLAG_RULES.riskCancelled, days: FLAG_RULES.riskCancelledDays } });
-  if (num(row.rejected) >= FLAG_RULES.riskRejectedProofs) flags.push({ id: "risk_rejected_proofs", vars: { count: num(row.rejected), threshold: FLAG_RULES.riskRejectedProofs, days: FLAG_RULES.riskRejectedDays } });
-  if (num(row.returned) >= FLAG_RULES.riskReturned) flags.push({ id: "risk_returned", vars: { count: num(row.returned), threshold: FLAG_RULES.riskReturned, days: FLAG_RULES.riskReturnedDays } });
+  if (num(row.cancelled) >= rules.riskCancelled) flags.push({ id: "risk_cancelled", vars: { count: num(row.cancelled), threshold: rules.riskCancelled, days: rules.riskCancelledDays } });
+  if (num(row.rejected) >= rules.riskRejectedProofs) flags.push({ id: "risk_rejected_proofs", vars: { count: num(row.rejected), threshold: rules.riskRejectedProofs, days: rules.riskRejectedDays } });
+  if (num(row.returned) >= rules.riskReturned) flags.push({ id: "risk_returned", vars: { count: num(row.returned), threshold: rules.riskReturned, days: rules.riskReturnedDays } });
   if (num(row.duplicate) > 0) flags.push({ id: "risk_duplicate_proof", vars: { count: num(row.duplicate) } });
   if (num(row.complaints) > 0) flags.push({ id: "complaint_open", vars: { count: num(row.complaints) } });
   return flags;

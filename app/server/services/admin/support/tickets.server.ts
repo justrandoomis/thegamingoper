@@ -169,7 +169,7 @@ export type TicketDetail = {
   transitions: TicketStatus[];
   replyVia: ReplyVia[];
   /** handBack: the escalation's holder, or a cover who did not escalate it (escalation.server.ts settlesEscalation). */
-  can: { reply: boolean; assign: boolean; take: boolean; resolve: boolean; close: boolean; escalate: boolean; route: boolean; readOrders: boolean; readCustomers: boolean; returns: boolean; rmaCreate: boolean; handBack: boolean };
+  can: { reply: boolean; assign: boolean; take: boolean; resolve: boolean; close: boolean; escalate: boolean; route: boolean; readOrders: boolean; readCustomers: boolean; returns: boolean; rmaCreate: boolean; handBack: boolean; passOn: boolean };
   agents: AgentLoad[];
   canned: { id: string; title: string; category: TicketCategory | null }[];
 };
@@ -422,6 +422,9 @@ export async function getTicket(db: Db, actor: Actor, ref: string, locale: Local
       // the "return request" key opens module 12's form, which needs this permission
       rmaCreate: can(actor, "returns.rma.create"),
       handBack: ticket.escalatedTo !== null && settlesEscalation(actor, ticket, escalationTrail(events)) !== null,
+      // its holder (or a cover) may pass an escalation on to another decider — escalateTicket allows it; the page did
+      // not offer it (follow-up 2026-11-12)
+      passOn: ticket.escalatedTo !== null && can(actor, "support.ticket.escalate") && isOpenTicket(status) && settlesEscalation(actor, ticket, escalationTrail(events)) !== null,
     },
     agents,
     canned,

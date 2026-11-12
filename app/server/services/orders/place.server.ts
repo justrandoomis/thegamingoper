@@ -33,8 +33,27 @@
  *   wallet                     status confirmed,        payment paid      (paid from the ledger now)
  *   bank_transfer / zaincash   status awaiting_payment, payment unpaid    (payment row pending until a proof
  *                              is submitted; stock is held until `payment_due_at` = now + settings
- *                              "checkout.transfer_proof_hours", after which the scheduled job cancels it)
+ *                              "checkout.transfer_proof_hours" — never shorter than
+ *                              "checkout.reservation_minutes" — after which the scheduled job cancels it)
+ *   NOTHING TO PAY (review 2026-11-12): a total of 0 (points and free delivery covered everything) is paid when
+ *                              placed — cash on delivery: status new, payment paid (a paid payment row of 0: no
+ *                              cash to collect), its digital lines get their codes; a transfer of 0 is refused
+ *                              (payment_method_unavailable, detail "nothing_to_pay", field paymentMethod)
+ *   SPLIT (since 2026-11-12): `walletIqd` > 0 with cod / bank_transfer / zaincash — that much is paid from the
+ *   wallet now (a paid `wallet` payment row, its ledger debit and posting; trade-in store credit is wallet money
+ *   like any other) and the rest is a second payment row of the chosen method, which decides the order's status
+ *   as above (orders.paid_iqd = the wallet part). Signed-in customers only; the wallet part is below the total.
  *   In demo mode (STORE_MODE=demo) the order is flagged is_demo.
+ *
+ * PROMOTIONS (since 2026-11-12; ./promotions.ts and ./promotions.server.ts): the priced cart already carries the flash
+ * prices, the automatic rules, the coupon, the membership discount, redeemed points (`redeemPoints`, signed in) and
+ * the delivery waiver — the order's discount_iqd is their sum and shipping_iqd is after the waiver. The batch also
+ * claims each flash line's units from its sale's allowance (guarded: the sale still runs at that price and the
+ * allowance holds them; the per-customer limit counted with this order), writes the points' 'redeem' row (the
+ * loyalty overdraft trigger refuses more than the balance), records a typed referral code (module 08's rules: a
+ * code switched on and below its cap — guarded —, not the shopper's own, a number referred once) and the order event
+ * "promotions" with all of it, as charged. A paid order's digital lines get their codes in the same batch
+ * (./digital.server.ts).
  *
  * IDEMPOTENCY
  *   The checkout page sends `idempotencyKey` = randomToken() (22–128 URL-safe characters), one per
@@ -91,7 +110,9 @@ import { mapPostingError, postWalletPayment } from "../accounting/post.server";
 import { getCartView, getCheckoutCart, type CartViewData, type PricedCartLine } from "../cart.server";
 import { reserveStatements, reserveUsedUnitStatements } from "../inventory/stock.server";
 import { getShippingFee } from "../shipping/fees.server";
-import { walletDebitStatement } from "../wallet.server";
+import { getWalletBalance, walletDebitStatement } from "../wallet.server";
+import { assignDigitalCodesStatements } from "./digital.server";
+import { flashClaimStatements, flashLimitGuards, hasPromotions, pointsRedeemStatement, promotionsEventStatement, referralStatements, type FlashClaim, type PromotionsRecord } from "./promotions.server";
 import { PREFERRED_WINDOWS, type PlaceOrderResult } from "./types";
 
 export type { PlaceOrderResult } from "./types";
@@ -116,6 +137,15 @@ export const CHECKOUT_ERROR_KEYS = [
   "coupon_usage_limit",
   "coupon_customer_limit",
   "period_closed",
+  // since 2026-11-12 (promotions, split payments)
+  "points_insufficient",
+  "points_requires_account",
+  "referral_code_unknown",
+  "referral_code_inactive",
+  "referral_cap_reached",
+  "referral_self",
+  "referral_phone_used",
+  "wallet_split_invalid",
 ] as const;
 
 /** Methods a shopper can choose at checkout (POS methods are for the store's own till). */
@@ -157,6 +187,12 @@ export const CheckoutInput = z.object({
   paymentMethod: z.enum(CHECKOUT_METHODS),
   /** The total the shopper saw and confirmed, in IQD. */
   expectedTotalIqd: z.number().int("invalid").min(0, "too_small"),
+  /** Signed-in customers: loyalty points to redeem (0 = none). Priced like the cart showed them (never more than the balance). */
+  redeemPoints: z.number().int("invalid").min(0, "too_small").max(10_000_000, "too_big").optional().default(0),
+  /** A friend's referral code (optional; "" = none). It changes no price — module 08 rewards the referrer later. */
+  referralCode: z.string().trim().max(40, "too_long").optional().nullable().transform((value) => (value ? value : null)),
+  /** A split payment: this much from the wallet now, the rest by `paymentMethod` (cod / transfer). 0 = none. */
+  walletIqd: z.number().int("invalid").min(0, "too_small").max(1_000_000_000, "too_big").optional().default(0),
 });
 export type CheckoutInput = z.input<typeof CheckoutInput>;
 
@@ -209,9 +245,12 @@ export async function orderAccessToken(orderId: string, idempotencyKey: string):
   return base64Url(new Uint8Array(digest));
 }
 
-/** The payment status an order starts with, by method. */
-export function initialPaymentStatus(method: StoredPaymentMethod | null): PaymentStatus {
-  if (method === "wallet") return "paid";
+/**
+ * The payment status an order starts with, by method — and by total since the review of 2026-11-12: an order with
+ * nothing to pay (points and free delivery covered all of it) is paid when it is placed, whatever the method.
+ */
+export function initialPaymentStatus(method: StoredPaymentMethod | null, totalIqd?: number): PaymentStatus {
+  if (method === "wallet" || totalIqd === 0) return "paid";
   if (method === "cod") return "cod_due";
   return "unpaid";
 }
@@ -295,7 +334,7 @@ async function replayFor(db: Db, existing: ExistingOrder, who: CheckoutWho, idem
     same = cart !== undefined;
   }
   if (!same) throw new AppError("idempotency_conflict", 409);
-  return { ref: existing.ref, orderId: existing.id, accessToken: await orderAccessToken(existing.id, idempotencyKey), paymentStatus: initialPaymentStatus(existing.paymentMethod), totalIqd: existing.totalIqd, replayed: true };
+  return { ref: existing.ref, orderId: existing.id, accessToken: await orderAccessToken(existing.id, idempotencyKey), paymentStatus: initialPaymentStatus(existing.paymentMethod, existing.totalIqd), totalIqd: existing.totalIqd, replayed: true };
 }
 
 /**
@@ -329,9 +368,14 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
   const customerId = who.customer?.id ?? null;
   const method = input.paymentMethod;
   if (method === "wallet" && !customerId) throw new AppError("wallet_requires_account", 403, { fields: { paymentMethod: "wallet_requires_account" } });
+  // a split payment: part from the wallet (signed in), the rest by cash on delivery or a transfer
+  const split = method !== "wallet" && input.walletIqd > 0;
+  if (split && !customerId) throw new AppError("wallet_requires_account", 403, { fields: { walletIqd: "wallet_requires_account" } });
+  if (input.redeemPoints > 0 && !customerId) throw new AppError("points_requires_account", 403, { fields: { redeemPoints: "points_requires_account" } });
 
-  const settings = await getSettings(db, ["payments.cod", "payments.wallet", "payments.bank_transfer", "payments.zaincash", "checkout.transfer_proof_hours"]);
+  const settings = await getSettings(db, ["payments.cod", "payments.wallet", "payments.bank_transfer", "payments.zaincash", "checkout.transfer_proof_hours", "checkout.reservation_minutes"]);
   if (!settings[METHOD_SETTING[method]].enabled) throw new AppError("payment_method_unavailable", 409, { fields: { paymentMethod: "payment_method_unavailable" }, detail: method });
+  if (split && !settings["payments.wallet"].enabled) throw new AppError("payment_method_unavailable", 409, { fields: { walletIqd: "payment_method_unavailable" }, detail: "wallet" });
 
   if (customerId) {
     const customer = await db.select({ id: customers.id, status: customers.status }).from(customers).where(eq(customers.id, customerId)).get();
@@ -348,19 +392,37 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
     if (!district || district.governorateId !== input.governorateId || !district.isActive) throw invalid({ districtId: "district_invalid" });
   }
 
-  const cartRequest = { cartToken: who.cartToken, customerId, locale: who.locale, governorateId: input.governorateId };
+  const cartRequest = { cartToken: who.cartToken, customerId, locale: who.locale, governorateId: input.governorateId, redeemPoints: input.redeemPoints, referralCode: input.referralCode };
   const priced = await getCheckoutCart(db, { ...cartRequest, phoneE164: phone }, now);
   const freshView = () => getCartView(db, cartRequest, now).catch(() => null);
+  // The cart a refusal BEFORE the write shows (an empty or blocked cart, a total that moved): priced for this number —
+  // its total is what placeOrder will charge —, but its referral code said the way the cart page says it, without the
+  // typed number (security review 2026-11-12: a deliberately wrong total answered whether THAT number owns the code or
+  // was referred before, so anyone could test numbers against a public code without placing anything). The order
+  // itself still refuses such a number on the field below — after a correct, complete checkout.
+  const refusalView = async (): Promise<CartViewData> => (priced.view.referral ? { ...priced.view, referral: (await freshView())?.referral ?? null } : priced.view);
   const lines = priced.lines.filter((entry) => entry.purchasable);
   const cartId = priced.cartId;
   // An empty cart is "cart_empty"; a cart whose lines all sold out (or went off sale) is still a cart the page shows,
   // line by line, so it is "cart_blocked" like any other cart with a line that cannot be bought.
-  if (!cartId || priced.lines.length === 0) throw new CheckoutError("cart_empty", 409, priced.view);
-  if (lines.length === 0 || priced.view.blocked) throw new CheckoutError("cart_blocked", 409, priced.view);
+  if (!cartId || priced.lines.length === 0) throw new CheckoutError("cart_empty", 409, await refusalView());
+  if (lines.length === 0 || priced.view.blocked) throw new CheckoutError("cart_blocked", 409, await refusalView());
   if (priced.view.shippingIqd === null) throw new AppError("shipping_unavailable", 409, { fields: { governorateId: "shipping_unavailable" }, detail: input.governorateId });
   if (priced.view.totalIqd !== input.expectedTotalIqd) {
-    throw new CheckoutError("totals_changed", 409, priced.view, { detail: `${input.expectedTotalIqd}→${priced.view.totalIqd}` });
+    throw new CheckoutError("totals_changed", 409, await refusalView(), { detail: `${input.expectedTotalIqd}→${priced.view.totalIqd}` });
   }
+  // a referral code that cannot count says why, on its field (the order is not placed: the shopper removes or fixes it)
+  const referral = priced.promotions?.referral ?? null;
+  if (referral && !referral.ok) throw new AppError(referral.issue, 409, { fields: { referralCode: referral.issue }, detail: referral.code });
+  // Nothing to pay (points and free delivery covered everything): there is no transfer to send and no cash to collect
+  // (review 2026-11-12 — such an order stayed "cash due" for ever and its digital codes never came). Cash on delivery
+  // and the wallet place it as paid; a transfer of nothing is not asked for.
+  const nothingToPay = priced.view.totalIqd === 0;
+  if (nothingToPay && (method === "bank_transfer" || method === "zaincash")) throw new AppError("payment_method_unavailable", 409, { fields: { paymentMethod: "payment_method_unavailable" }, detail: "nothing_to_pay" });
+  // the wallet part of a split: below the total (all of it is the wallet method), within the balance
+  const walletPart = split ? input.walletIqd : 0;
+  if (split && walletPart >= priced.view.totalIqd) throw invalid({ walletIqd: "wallet_split_invalid" }, `${walletPart} ≥ ${priced.view.totalIqd}`);
+  if (split && customerId && (await getWalletBalance(db, customerId)) < walletPart) throw new AppError("wallet_insufficient", 409, { fields: { walletIqd: "wallet_insufficient" } });
 
   // What the order lines snapshot: variant titles and options, and the cost [P].
   const variantIds = [...new Set(lines.map((entry) => entry.line.variantId as string))];
@@ -406,9 +468,18 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
   const isDemo = who.storeMode === "demo";
   const transfer = method === "bank_transfer" || method === "zaincash";
   const paymentDueAt = transfer ? now + settings["checkout.transfer_proof_hours"] * HOUR_MS : null;
+  // the stock of an order waiting for its transfer is held for the proof window, never shorter than the store's
+  // reservation time (setting checkout.reservation_minutes); a proof that arrives keeps it held while staff review it
+  const reservationExpiresAt = paymentDueAt === null ? null : Math.max(paymentDueAt, now + settings["checkout.reservation_minutes"] * 60_000);
   const actor: Actor = customerId ? { kind: "customer", id: customerId, ip: who.ip, requestId: who.requestId ?? null } : { kind: "guest", ip: who.ip, requestId: who.requestId ?? null };
   const status: NewOrder["status"] = method === "cod" ? "new" : method === "wallet" ? "confirmed" : "awaiting_payment";
-  const paymentStatus: OrderPaymentStatus = initialPaymentStatus(method);
+  const paymentStatus: OrderPaymentStatus = initialPaymentStatus(method, totals.totalIqd);
+  /** Paid in full when placed: by the wallet, or nothing to pay (a cash-on-delivery order of 0 is recorded paid). */
+  const paidNow = method === "wallet" || nothingToPay;
+  const outcome = priced.promotions?.outcome ?? null;
+  const pointsUsed = outcome?.pointsUsed ?? 0;
+  /** What the wallet pays now: everything (wallet), a part (split), or nothing. */
+  const walletPays = method === "wallet" ? totals.totalIqd : walletPart;
 
   for (let attempt = 1; ; attempt++) {
     const orderId = newId("ord");
@@ -417,7 +488,8 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
     const accessTokenHash = await sha256Hex(accessToken);
     const guestContactId = customerId ? null : (guestContact?.id ?? newId("gst"));
     const paymentId = newId("pay");
-    const ledgerId = method === "wallet" ? newId("wal") : null;
+    const walletPaymentId = split ? newId("pay") : null;
+    const ledgerId = walletPays > 0 ? newId("wal") : null;
 
     const orderRow: NewOrder = {
       id: orderId,
@@ -434,7 +506,7 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
       shippingIqd: totals.shippingIqd ?? 0,
       taxIqd: 0,
       totalIqd: totals.totalIqd,
-      paidIqd: method === "wallet" ? totals.totalIqd : 0,
+      paidIqd: walletPays,
       refundedIqd: 0,
       couponId: coupon?.couponId ?? null,
       couponCode: coupon?.code ?? null,
@@ -495,7 +567,7 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
       batchSql(db, sql`DELETE FROM cart_items WHERE cart_id = ${cartId}`),
     );
     const stockLines = lines.filter((entry) => !entry.line.usedUnitId).map((entry) => ({ variantId: entry.line.variantId as string, qty: entry.line.qty }));
-    statements.push(...reserveStatements(db, { orderId, lines: stockLines, expiresAt: paymentDueAt, actor, now }));
+    statements.push(...reserveStatements(db, { orderId, lines: stockLines, expiresAt: reservationExpiresAt, actor, now }));
     for (const usedUnitId of usedIds) statements.push(...reserveUsedUnitStatements(db, { usedUnitId, orderId, now }));
     if (coupon) {
       statements.push(db.insert(couponRedemptions).values({ id: newId("crd"), couponId: coupon.couponId, orderId, customerId, phoneE164: phone, amountIqd: coupon.discountIqd, at: now }));
@@ -514,25 +586,77 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
         );
       }
     }
-    if (method === "wallet" && customerId && ledgerId && totals.totalIqd > 0) {
-      statements.push(walletDebitStatement(db, { id: ledgerId, customerId, amountIqd: totals.totalIqd, refType: "order", refId: orderId, idempotencyKey: `order:${orderId}:wallet`, actor, now }));
+    // ── promotions: the record (one "promotions" order event), the flash claims and the per-customer limits, points, referral
+    const itemIdOf = new Map(lines.map((entry, index) => [entry.line.id, itemRows[index]?.id as string]));
+    const claims: FlashClaim[] = lines.flatMap((entry) =>
+      entry.flash
+        ? [{ itemId: entry.flash.itemId, saleId: entry.flash.saleId, orderItemId: itemIdOf.get(entry.line.id) as string, variantId: entry.line.variantId as string, units: entry.line.qty, salePriceIqd: entry.flash.salePriceIqd, regularPriceIqd: entry.flash.regularPriceIqd, endsAt: entry.flash.endsAt, name: entry.flash.name, perCustomerLimit: entry.flash.perCustomerLimit }]
+        : [],
+    );
+    const facts = priced.promotions?.facts ?? null;
+    const referralId = referral?.ok ? newId("rfr") : null;
+    const record: PromotionsRecord = {
+      v: 1,
+      flash: claims,
+      discounts: (outcome?.discounts ?? []).map((entry): PromotionsRecord["discounts"][number] => {
+        switch (entry.kind) {
+          case "rule":
+            return { kind: "rule", ruleId: entry.ruleId, name: facts?.rules.find((rule) => rule.id === entry.ruleId)?.name ?? { ar: entry.label }, amountIqd: entry.amountIqd };
+          case "coupon":
+            return { kind: "coupon", code: entry.code, label: entry.label, amountIqd: entry.amountIqd };
+          case "member":
+            return { kind: "member", membershipId: facts?.member?.membershipId ?? "", tierId: facts?.member?.tierId ?? "", name: facts?.member?.name ?? { ar: entry.label }, bps: entry.bps, amountIqd: entry.amountIqd };
+          case "points":
+            return { kind: "points", points: entry.points, amountIqd: entry.amountIqd };
+        }
+      }),
+      shipping: outcome?.shippingWaiver
+        ? {
+            by: outcome.shippingWaiver.by,
+            ...(outcome.shippingWaiver.ruleId ? { ruleId: outcome.shippingWaiver.ruleId } : {}),
+            ...(outcome.shippingWaiver.by === "member" && facts?.member ? { membershipId: facts.member.membershipId } : {}),
+            name: outcome.shippingWaiver.by === "member" ? (facts?.member?.name ?? { ar: outcome.shippingWaiver.label }) : (facts?.rules.find((rule) => rule.id === outcome.shippingWaiver?.ruleId)?.name ?? { ar: outcome.shippingWaiver.label }),
+            feeIqd: outcome.shippingWaiver.feeIqd,
+            waivedIqd: outcome.shippingWaiver.waivedIqd,
+          }
+        : null,
+      referral: referral?.ok && referralId ? { code: referral.code, referralId } : null,
+    };
+    statements.push(...flashClaimStatements(db, claims, now));
+    if (hasPromotions(record)) statements.push(promotionsEventStatement(db, { orderId, record, actor, now }));
+    // after the event: this order's own units count against a per-customer limit
+    statements.push(...flashLimitGuards(db, claims, { customerId, phoneE164: phone }));
+    if (pointsUsed > 0 && customerId) statements.push(pointsRedeemStatement(db, { orderId, ref, customerId, points: pointsUsed, actor, now }));
+    if (referral?.ok && referralId) statements.push(...referralStatements(db, { referralId, codeId: referral.codeId, orderId, phoneE164: phone, customerId, now }));
+
+    // ── money: the wallet's part (all of it, or a split's part), then the rest by the chosen method
+    if (customerId && ledgerId && walletPays > 0) {
+      statements.push(walletDebitStatement(db, { id: ledgerId, customerId, amountIqd: walletPays, refType: "order", refId: orderId, idempotencyKey: `order:${orderId}:wallet`, actor, now }));
+    }
+    if (split && walletPaymentId) {
+      statements.push(
+        db.insert(payments).values({ id: walletPaymentId, orderId, method: "wallet", status: "paid", amountIqd: walletPays, idempotencyKey: `order:${orderId}:payment:wallet`, createdAt: now, paidAt: now, updatedAt: now, walletLedgerId: ledgerId }),
+        ...postWalletPayment(db, { paymentId: walletPaymentId, orderId, ref, amountIqd: walletPays, at: now, createdBy: `customer:${customerId}`, isDemo }),
+      );
     }
     statements.push(
       db.insert(payments).values({
         id: paymentId,
         orderId,
         method,
-        status: method === "wallet" ? "paid" : "pending",
-        amountIqd: totals.totalIqd,
+        status: paidNow ? "paid" : "pending",
+        amountIqd: totals.totalIqd - (split ? walletPays : 0),
         idempotencyKey: `order:${orderId}:payment`,
         createdAt: now,
-        paidAt: method === "wallet" ? now : null,
+        paidAt: paidNow ? now : null,
         updatedAt: now,
         walletLedgerId: method === "wallet" && totals.totalIqd > 0 ? ledgerId : null,
       }),
     );
-    if (method === "wallet") {
-      statements.push(...postWalletPayment(db, { paymentId, orderId, ref, amountIqd: totals.totalIqd, at: now, createdBy: `customer:${customerId}`, isDemo }));
+    if (method === "wallet") statements.push(...postWalletPayment(db, { paymentId, orderId, ref, amountIqd: totals.totalIqd, at: now, createdBy: `customer:${customerId}`, isDemo }));
+    if (paidNow) {
+      // paid now: the digital lines get their codes in this batch
+      statements.push(...(await assignDigitalCodesStatements(db, { orderId, lines: itemRows.map((row) => ({ orderItemId: row.id as string, variantId: row.variantId, qty: row.qty })), isDemo, actor, now })));
     }
     if (input.marketingConsent) {
       statements.push(
@@ -544,7 +668,7 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
         id: newId("oev"),
         orderId,
         kind: "placed",
-        data: { status, paymentStatus, paymentMethod: method, totalIqd: totals.totalIqd, lines: itemRows.length, isDemo },
+        data: { status, paymentStatus, paymentMethod: method, totalIqd: totals.totalIqd, lines: itemRows.length, isDemo, ...(split ? { walletIqd: walletPays } : {}) },
         actorKind: actor.kind,
         actorId: customerId,
         at: now,
@@ -554,7 +678,20 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
         action: "orders.order.place",
         entityType: "order",
         entityId: orderId,
-        after: { ref, status, paymentMethod: method, paymentStatus, totalIqd: totals.totalIqd, discountIqd: totals.discountIqd, shippingIqd: totals.shippingIqd, coupon: coupon?.code ?? null, lines: itemRows.length, isDemo },
+        after: {
+          ref,
+          status,
+          paymentMethod: method,
+          paymentStatus,
+          totalIqd: totals.totalIqd,
+          discountIqd: totals.discountIqd,
+          shippingIqd: totals.shippingIqd,
+          coupon: coupon?.code ?? null,
+          lines: itemRows.length,
+          isDemo,
+          ...(split ? { walletIqd: walletPays } : {}),
+          ...(hasPromotions(record) ? { promotions: { flash: claims.length, discounts: record.discounts.map((entry) => ({ kind: entry.kind, amountIqd: entry.amountIqd })), shippingWaivedIqd: record.shipping?.waivedIqd ?? 0, points: pointsUsed, referral: record.referral?.code ?? null } } : {}),
+        },
         at: now,
       }),
     );
@@ -581,8 +718,18 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
         case "COUPON_CUSTOMER_LIMIT":
           throw new CheckoutError("coupon_customer_limit", 409, await freshView(), { detail: info.detail, cause: error });
         case "WALLET_OVERDRAFT":
-          throw new AppError("wallet_insufficient", 409, { fields: { paymentMethod: "wallet_insufficient" }, cause: error });
+          throw new AppError("wallet_insufficient", 409, { fields: split ? { walletIqd: "wallet_insufficient" } : { paymentMethod: "wallet_insufficient" }, cause: error });
+        case "LOYALTY_OVERDRAFT":
+          // the points were spent meanwhile (another order, an expiry): the cart priced again says how many are left
+          throw new CheckoutError("points_insufficient", 409, await freshView(), { detail: info.detail, cause: error });
+        case "FLASH_CHANGED":
+        case "FLASH_LIMIT":
+          // the sale ended, its price changed or its allowance ran out meanwhile: the price moved
+          throw new CheckoutError("totals_changed", 409, await freshView(), { detail: `${info.code}:${info.detail}`, cause: error });
+        case "REFERRAL_CAP":
+          throw new AppError("referral_cap_reached", 409, { fields: { referralCode: "referral_cap_reached" }, detail: info.detail, cause: error });
         default:
+          if (isUniqueViolation(error, "referral_redemptions.referred_phone_e164")) throw new AppError("referral_phone_used", 409, { fields: { referralCode: "referral_phone_used" }, cause: error });
           throw error;
       }
     }

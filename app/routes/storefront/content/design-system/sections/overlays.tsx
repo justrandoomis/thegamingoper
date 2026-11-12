@@ -2,8 +2,8 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 
-import { useFormat, useLocale, useT } from "~/i18n/react";
-import type { Locale } from "~/lib/locales";
+import { useDir, useFormat, useLocale, useT } from "~/i18n/react";
+import { LOCALE_CODES, LOCALES, type Locale } from "~/lib/locales";
 import { Accordion } from "~/ui/Accordion";
 import { Blocks, type Block } from "~/ui/Blocks";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
@@ -186,6 +186,20 @@ const COPY = defineCopy({
     reasonCustomer: "طلب الزبون",
     reasonStock: "نفد المخزون",
     reasonFraud: "اشتباه احتيال",
+    stockAfter: "قطع في بغداد",
+    langMenu: "اللغة",
+    langRows: "صفوف بلغتها: كل اسم لغة بحروفه واتجاهه (lang)",
+    suggested: "المقترَح",
+    suggestedHint: "المتوفر أولاً، ثم «قريباً»، ثم ما نفد",
+    radioHint: "صف اختيار بسطر يشرحه (hint)",
+    stepsCompact: "compact: الأرقام، واسم الخطوة الحالية؛ كل خطوة منجزة رابط 44px",
+    stepsStatus: "status: أين وصل الطلب — الحالية بالحبر لا بالأحمر، والأسماء تحت الأقراص",
+    received: "استلمنا",
+    confirmed: "تأكيد",
+    preparing: "تجهيز",
+    onTheWay: "في الطريق",
+    delivered: "تم التسليم",
+    orderStatus: "حالة الطلب",
   },
   en: {
     layers: "Sheets and dialogs",
@@ -332,6 +346,20 @@ const COPY = defineCopy({
     reasonCustomer: "Customer request",
     reasonStock: "Out of stock",
     reasonFraud: "Suspected fraud",
+    stockAfter: "Units in Baghdad",
+    langMenu: "Language",
+    langRows: "Rows in their own language: each language's name in its script and direction (lang)",
+    suggested: "Suggested",
+    suggestedHint: "In stock first, then coming soon, then sold out",
+    radioHint: "A choice row with a line that explains it (hint)",
+    stepsCompact: "compact: the numbers and the current step's name; every done step a 44px link",
+    stepsStatus: "status: where the order is — the current step in ink, not red; names under the discs",
+    received: "Received",
+    confirmed: "Confirmed",
+    preparing: "Preparing",
+    onTheWay: "On the way",
+    delivered: "Delivered",
+    orderStatus: "Order status",
   },
   ckb: {
     layers: "پانێڵ و دیالۆگەکان",
@@ -372,7 +400,7 @@ const COPY = defineCopy({
     showArchived: "ئەرشیفکراوەکان پیشان بدە",
     cancelOrder: "داواکارییەکە هەڵبوەشێنەوە",
     cancelQ: "داواکاریی ⁦TT-7K4M2Q9X⁩ هەڵدەوەشێنیتەوە؟",
-    cancelWhat: "داواکارییەکە هەڵدەوەشێتەوە و کاڵاکانی دەگەڕێنەوە بۆ کۆگا. ناگەڕێتەوە.",
+    cancelWhat: "داواکارییەکە هەڵدەوەشێتەوە و بەرهەمەکانی دەگەڕێنەوە بۆ کۆگا. ناگەڕێتەوە.",
     stockBaghdad: "کۆگا لە بەغدا",
     cancelled: "داواکارییەکە هەڵوەشایەوە. ئەمە نموونەیە: هیچ نەگۆڕا.",
     sortBy: "ڕیزبەندی بەپێی",
@@ -473,11 +501,25 @@ const COPY = defineCopy({
     printLabels: "لەیبڵەکان چاپ بکە",
     cancelOrders: "داواکارییەکان هەڵبوەشێنەوە",
     cancelManyQ: "{count} داواکاری هەڵدەوەشێنیتەوە؟",
-    cancelManyWhat: "داواکارییە هەڵبژێردراوەکان هەڵدەوەشێنەوە و کاڵاکانیان دەگەڕێنەوە بۆ کۆگا.",
+    cancelManyWhat: "داواکارییە هەڵبژێردراوەکان هەڵدەوەشێنەوە و بەرهەمەکانیان دەگەڕێنەوە بۆ کۆگا.",
     labelsPrinted: "لەیبڵەکان ئامادە کران. ئەمە نموونەیە: هیچ چاپ نەکرا.",
     reasonCustomer: "داوای کڕیار",
     reasonStock: "کۆگا تەواو بوو",
     reasonFraud: "گومانی فێڵ",
+    stockAfter: "پارچە لە بەغدا",
+    langMenu: "زمان",
+    langRows: "ڕیز بە زمانی خۆیان: ناوی هەر زمانێک بە پیت و ئاراستەی خۆی (lang)",
+    suggested: "پێشنیارکراو",
+    suggestedHint: "سەرەتا بەردەستەکان، پاشان «بەم زووانە»، پاشان ئەوانەی نەماون",
+    radioHint: "ڕیزێکی هەڵبژاردن بە دێڕێک کە ڕوونی دەکاتەوە (hint)",
+    stepsCompact: "compact: ژمارەکان و ناوی هەنگاوی ئێستا؛ هەر هەنگاوێکی تەواوبوو بەستەرێکی 44px",
+    stepsStatus: "status: داواکارییەکە گەیشتووەتە کوێ — هەنگاوی ئێستا بە مەرەکەب، نەک سوور",
+    received: "وەرگیرا",
+    confirmed: "دووپاتکرایەوە",
+    preparing: "ئامادەکردن",
+    onTheWay: "لە ڕێگادایە",
+    delivered: "گەیەندرا",
+    orderStatus: "دۆخی داواکاری",
   },
 });
 
@@ -690,6 +732,10 @@ function Menus({ c }: { c: C }) {
   const [archived, setArchived] = useState(false);
   const [order, setOrder] = useState<"newest" | "priceLow" | "priceHigh">("newest");
   const [cancel, setCancel] = useState(false);
+  const [language, setLanguage] = useState<Locale>("ar");
+  const [sort, setSort] = useState<"suggested" | "priceLow">("suggested");
+  // a number-only impact row: "13 ← 12" reads from the right on an Arabic page (the kit keeps the page's direction)
+  const arrow = useDir() === "rtl" ? "←" : "→";
   const say = (item: string) => toast.info(fill(c.picked, { item }));
   const sortLabel = { newest: c.newest, priceLow: c.priceLow, priceHigh: c.priceHigh }[order];
   return (
@@ -732,6 +778,35 @@ function Menus({ c }: { c: C }) {
             />
           </div>
         </Specimen>
+        <Specimen label={`items={[{ kind: "radio", lang }]} · ${c.langRows}`}>
+          <div className="flex">
+            <Menu
+              label={c.langMenu}
+              trigger={(props) => (
+                <Key {...props} icon="globe" iconEnd="caret-down">
+                  {LOCALES[language].label}
+                </Key>
+              )}
+              items={LOCALE_CODES.map((code) => ({ id: code, kind: "radio" as const, label: LOCALES[code].label, lang: LOCALES[code].bcp47, checked: language === code, onSelect: () => setLanguage(code) }))}
+            />
+          </div>
+        </Specimen>
+        <Specimen label={`items={[{ kind: "radio", hint }]} · ${c.radioHint}`}>
+          <div className="flex">
+            <Menu
+              label={c.sortBy}
+              trigger={(props) => (
+                <Key {...props} iconEnd="caret-down">
+                  {sort === "suggested" ? c.suggested : c.priceLow}
+                </Key>
+              )}
+              items={[
+                { id: "suggested", kind: "radio" as const, label: c.suggested, hint: c.suggestedHint, checked: sort === "suggested", onSelect: () => setSort("suggested") },
+                { id: "priceLow", kind: "radio" as const, label: c.priceLow, checked: sort === "priceLow", onSelect: () => setSort("priceLow") },
+              ]}
+            />
+          </div>
+        </Specimen>
       </SpecimenGrid>
       <ConfirmDialog
         open={cancel}
@@ -740,7 +815,10 @@ function Menus({ c }: { c: C }) {
         title={c.cancelQ}
         consequence={c.cancelWhat}
         confirmLabel={c.cancelOrder}
-        impact={[{ label: c.stockBaghdad, value: "+1" }]}
+        impact={[
+          { label: c.stockBaghdad, value: "+1" },
+          { label: c.stockAfter, value: `12 ${arrow} 13` },
+        ]}
         reason
         onConfirm={() => {
           setCancel(false);
@@ -937,10 +1015,21 @@ function Navigation({ c }: { c: C }) {
         <Specimen label="<ProgressSteps steps current={1} />">
           <ProgressSteps current={1} steps={[{ label: c.address, href: "#overlays-nav" }, { label: c.payment }, { label: c.review }]} />
         </Specimen>
-        <Specimen label="<ProgressSteps current={3} /> — trade-in, five steps">
+        <Specimen label="<ProgressSteps current={3} /> — trade-in, five steps" wide>
           <ProgressSteps
             current={3}
             steps={[{ label: c.device, href: "#overlays-nav" }, { label: c.state, href: "#overlays-nav" }, { label: c.photos, href: "#overlays-nav" }, { label: c.estimate }, { label: c.inspection }]}
+          />
+        </Specimen>
+        <Specimen label={`<ProgressSteps variant="compact" /> · ${c.stepsCompact}`}>
+          <ProgressSteps variant="compact" current={2} steps={[{ label: c.address, href: "#overlays-nav" }, { label: c.payment, href: "#overlays-nav" }, { label: c.review }]} />
+        </Specimen>
+        <Specimen label={`<ProgressSteps variant="status" /> · ${c.stepsStatus}`}>
+          <ProgressSteps
+            variant="status"
+            aria-label={c.orderStatus}
+            current={2}
+            steps={[{ label: c.received }, { label: c.confirmed }, { label: c.preparing }, { label: c.onTheWay }, { label: c.delivered }]}
           />
         </Specimen>
       </SpecimenGrid>

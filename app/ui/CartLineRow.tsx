@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, type ReactNode } from "react";
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { CartLine, CartLineProblem } from "~/lib/dto";
-import { BidiText } from "./BidiText";
+import { BidiText, isolate } from "./BidiText";
 import { cartErrorKey, MAX_ADD_QTY } from "./cart-client";
 import { cx } from "./cx";
 import { IconKey } from "./IconKey";
@@ -125,7 +125,7 @@ export function CartLineRow({ line, removed = false, busy = false, error = null,
     };
     return (
       <Row ref={setRow} data-cart-line={line.id} data-removed="" aria-busy={busy || undefined} className={cx("cline cline--undo border-b border-line", className)}>
-        <p className="min-w-0 flex-1">{t("line.removed", { name: "⁨" + line.name + "⁩" })}</p>
+        <p className="min-w-0 flex-1">{t("line.removed", { name: isolate(line.name) })}</p>
         <span className="flex shrink-0 items-center gap-1">
           <Key ref={restoreKey} variant="ghost" size="sm" loading={busy} onClick={onRestore} aria-label={t("line.restoreNamed", { name: line.name })}>
             {t("line.restore")}
@@ -144,10 +144,10 @@ export function CartLineRow({ line, removed = false, busy = false, error = null,
     ? t(`line.problems.${line.problem}`, {
         max: f.number(line.maxQty),
         qty: f.number(line.qty),
-        price: "⁦" + iqdText(f, line.unitPriceIqd) + "⁩",
+        price: isolate(iqdText(f, line.unitPriceIqd)),
       })
     : null;
-  const unitPrice = !single && line.qty > 1 ? t("line.unitPrice", { price: "⁦" + iqdText(f, line.unitPriceIqd) + "⁩" }) : null;
+  const unitPrice = !single && line.qty > 1 ? t("line.unitPrice", { price: isolate(iqdText(f, line.unitPriceIqd)) }) : null;
   // the option value only (v2 §4.13): «النسخة الدولية · قطعة واحدة»
   const facts = [line.optionsLabel, single ? t("line.single") : null, unitPrice].filter(Boolean).join(" · ");
   const total = look?.blocking ? (

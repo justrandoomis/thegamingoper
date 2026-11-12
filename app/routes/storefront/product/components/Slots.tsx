@@ -48,7 +48,8 @@ export function compatRows(rows: readonly ProductCompatibility[]): { shown: Prod
   return { shown: ordered.slice(0, cut), rest: ordered.slice(cut) };
 }
 
-const listRows = (rows: readonly ProductCompatibility[]) => rows.map((row) => ({ status: row.status, device: row.deviceName, note: row.note }));
+/** The kit's rows; a device with a hub links to it (the row's whole width, the kit's CompatList `href`). */
+const listRows = (rows: readonly ProductCompatibility[]) => rows.map((row) => ({ status: row.status, device: row.deviceName, note: row.note, href: row.hasHub ? `/device/${row.deviceSlug}` : null }));
 
 /** «يعمل مع» — the product's compatibility as stated facts (nothing renders when no rule and no platform speaks). */
 export function CompatibilitySlot({ rows, className }: { rows: readonly ProductCompatibility[]; className?: string }) {

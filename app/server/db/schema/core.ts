@@ -8,7 +8,8 @@
  *   _tx_guard      batch guard table used by ~/server/db/tx.server
  *   search_index   FTS5 product search table used by ~/server/db/search.server
  */
-import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
+import { check, index, integer, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 import { ACTOR_KINDS, NOW_MS, at, flag, id, json, type Ref } from "../columns";
 
 // ───────────────────────────────────────────────────────────────── settings
@@ -328,6 +329,34 @@ export const incidentUpdates = sqliteTable(
 export type IncidentUpdate = typeof incidentUpdates.$inferSelect;
 export type NewIncidentUpdate = typeof incidentUpdates.$inferInsert;
 
+export const INCIDENT_LINK_KINDS = ["finding", "run", "error"] as const;
+export type IncidentLinkKind = (typeof INCIDENT_LINK_KINDS)[number];
+
+/**
+ * What an incident is about, by id (23.05, migration 0004): consistency findings, job runs, error reports — one row
+ * per link, removed when unlinked (the audit trail keeps who linked or unlinked what, and why). `target_id` has no
+ * foreign key: it points into one of three tables, by `kind`.
+ */
+export const incidentLinks = sqliteTable(
+  "incident_links",
+  {
+    incidentId: text("incident_id")
+      .notNull()
+      .references((): Ref => incidents.id, { onDelete: "cascade" }),
+    kind: text("kind", { enum: INCIDENT_LINK_KINDS }).notNull(),
+    targetId: text("target_id").notNull(),
+    createdBy: text("created_by"),
+    createdAt: at("created_at").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.incidentId, t.kind, t.targetId] }),
+    index("incident_links_target_idx").on(t.kind, t.targetId),
+    check("incident_links_kind_check", sql`${t.kind} IN ('finding', 'run', 'error')`),
+  ],
+);
+export type IncidentLink = typeof incidentLinks.$inferSelect;
+export type NewIncidentLink = typeof incidentLinks.$inferInsert;
+
 export const ERROR_REPORT_SOURCES = ["client", "server", "db", "job", "integration"] as const;
 export type ErrorReportSource = (typeof ERROR_REPORT_SOURCES)[number];
 export const ERROR_REPORT_LEVELS = ["warning", "error", "fatal"] as const;
@@ -357,6 +386,8 @@ export const errorReports = sqliteTable(
     resolvedBy: text("resolved_by"),
     resolvedAt: at("resolved_at"),
     incidentId: text("incident_id").references((): Ref => incidents.id, { onDelete: "set null" }),
+    /** A demo record (migration 0004): left out of real counts. The app's own recorder never sets it. */
+    isDemo: flag("is_demo").notNull().default(false),
   },
   (t) => [
     uniqueIndex("error_reports_fingerprint_uq").on(t.fingerprint),
@@ -399,6 +430,10 @@ export const consistencyFindings = sqliteTable(
     resolvedBy: text("resolved_by"),
     resolvedAt: at("resolved_at"),
     resolutionNote: text("resolution_note"),
+    /** Employee who has the finding now (migration 0004; null = nobody). The daily check never changes it. */
+    assignedTo: text("assigned_to"),
+    /** The incident the finding is evidence of (migration 0004); an incident's other links: `incident_links`. */
+    incidentId: text("incident_id").references((): Ref => incidents.id, { onDelete: "set null" }),
   },
   (t) => [
     uniqueIndex("consistency_findings_fingerprint_uq").on(t.fingerprint),
@@ -406,6 +441,8 @@ export const consistencyFindings = sqliteTable(
     index("consistency_findings_check_idx").on(t.checkKey, t.lastSeenAt),
     index("consistency_findings_entity_idx").on(t.entityType, t.entityId),
     index("consistency_findings_run_idx").on(t.runId),
+    index("consistency_findings_assigned_idx").on(t.assignedTo, t.status),
+    index("consistency_findings_incident_idx").on(t.incidentId),
   ],
 );
 export type ConsistencyFinding = typeof consistencyFindings.$inferSelect;
@@ -439,6 +476,11 @@ export const perfRollups = sqliteTable(
     needsImprovement: integer("needs_improvement").notNull().default(0),
     poor: integer("poor").notNull().default(0),
     updatedAt: at("updated_at").notNull().default(NOW_MS),
+    /**
+     * A demo row (migration 0004), left out of real figures. Not part of the key: a demo row needs a key of its own
+     * (its own day or route) so that a real sample's upsert never lands on it.
+     */
+    isDemo: flag("is_demo").notNull().default(false),
   },
   (t) => [primaryKey({ columns: [t.day, t.area, t.route, t.metric, t.device] }), index("perf_rollups_metric_idx").on(t.metric, t.day)],
 );

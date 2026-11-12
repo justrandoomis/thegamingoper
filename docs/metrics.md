@@ -105,3 +105,19 @@ Run by `runScheduledJobs` (cron `30 0 * * *`); every problem is a row in `consis
 | `orders.totals_vs_items` | `orders.subtotal_iqd` = Σ `order_items.total_iqd` (the CHECK constraints already enforce total = subtotal − discount + shipping + tax and line = unit × qty − discount) | critical |
 | `orders.paid_vs_payments` | `orders.paid_iqd` = Σ paid payments and `refunded_iqd` = Σ paid refunds | critical |
 | `money.missing_postings` | every paid payment, paid refund and delivered order has its journal entry | critical |
+
+## 8. Marketing (admin 16.04, 16.07)
+
+Computed by `services/admin/marketing/performance.server.ts` and `links.server.ts` exactly as written here (`marketing.report.read`). No cost, landed cost, margin or profit enters any of them, so none needs `cost.read` / `profit.read`; a profit-based customer value belongs to the reports (18), from the journal (§4). A figure that cannot be computed is "not available" with its reason — never 0.
+
+| Metric | Definition |
+|---|---|
+| **Marketing spend** | Σ of the entries staff record on a campaign per month (`campaigns.content.spend`: amount, month, reference, note; a correction is a negative entry; a month's total never goes below 0). Per campaign, spend is recorded only here — the finance books hold marketing expenses as a whole (account 6400, §4), not per campaign, and the two are not matched automatically. A month without an entry has no spend figure. Demo campaigns are left out unless asked for. |
+| **Customer** (marketing) | A person: the order's account, else the account that claimed the guest checkout (`guest_contacts.customer_id`), else the order's phone number. A **qualifying order** is not demo, not cancelled, and money arrived for it (`paid_iqd > 0`). Orders without any of the three (an anonymous till sale) count for nobody. |
+| **New customer** | A customer whose first qualifying order is placed in the month (Baghdad). |
+| **CAC** (blended) | Marketing spend of the month ÷ new customers of the month — every campaign together, every new customer. Not available without a spend entry or without new customers. |
+| **Attributed order** | An order that carries its source AND names a campaign: `orders.utm_link_id` (a campaign's link) or `orders.attribution.campaign` matching a campaign's `utm_campaign` (a demo campaign only when demo is asked for). An order whose source names no campaign carries a source but is not attributed — the months, the totals and the campaign rows count the same attributed orders. Nothing is modelled or guessed; until the storefront records the source, no order is attributed. |
+| **Attributed sales** | Σ (`paid_iqd` − `refunded_iqd`) of the attributed orders placed in the period, not cancelled (§3 "Paid sales", per order). |
+| **ROAS** | Attributed sales of a campaign ÷ its spend in the same period. Not available while no order carries its source, or without spend. |
+| **LTV** (revenue) | The average, over customers, of Σ (`paid_iqd` − `refunded_iqd`) of their qualifying orders to date. Shown for every customer and for the customers acquired in the period (their first qualifying order in it). |
+| **LTV ÷ CAC** | LTV of the period's new customers ÷ the period's blended CAC. |

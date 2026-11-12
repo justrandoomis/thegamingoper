@@ -15,5 +15,7 @@ export const contentRoutes: RouteConfigEntry[] = [
   route("accessibility", "routes/storefront/content/accessibility.tsx"),
   route("policies", "routes/storefront/content/policies.tsx"),
   route("policies/:slug", "routes/storefront/content/policy.tsx"),
+  // Landing pages staff publish in the content module (admin 17.01, LANDING_PATH_PREFIX "/pages").
+  route("pages/:slug", "routes/storefront/content/landing.tsx"),
   route("*", "routes/storefront/content/not-found.tsx"),
 ];

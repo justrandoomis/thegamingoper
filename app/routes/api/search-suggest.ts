@@ -21,21 +21,16 @@ import type { ProductCardData } from "~/lib/dto";
 import { isLocale } from "~/lib/locales";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { normalizeSearchText } from "~/server/db/search.server";
 import { isAppError } from "~/server/errors";
 import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
 import { getCardsByIds } from "~/server/services/catalog/cards.server";
-import { listProducts, MAX_SCOPE_IDS } from "~/server/services/catalog/listing.server";
-import { MAX_QUERY_LENGTH, MAX_SUGGESTIONS, matchQuery, suggestSearch } from "~/server/services/search.server";
+import { MAX_QUERY_LENGTH, suggestSearchWithTotal } from "~/server/services/search.server";
 import { isPlatform } from "~/ui/PlatformLed";
 
 /** Keystrokes are debounced (160 ms) by the field; a person typing fast stays far below this. */
 const SUGGEST_LIMIT: RateLimitRule = { limit: 120, windowSec: 60 };
 
 export type SuggestionRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string };
-
-/** A query the search reads at all (two characters or more once normalised) — the same rule as suggestSearch. */
-const searchable = (q: string) => [...normalizeSearchText(q).replace(/ /g, "")].length >= 2;
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -55,22 +50,15 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     );
   }
 
-  const items = await suggestSearch(db, locale, q, { now: ctx.now });
-  const products = items.filter((item) => item.kind === "product");
+  // ONE match of the words: the rows, their products' ids, and how many products /search lists for the same words
+  // (null when the query is too short to search)
+  const result = await suggestSearchWithTotal(db, locale, q, { now: ctx.now });
+  const items = result.items;
+  const total: number | undefined = result.total ?? undefined;
 
-  // the product rows' pictures, prices and kinds, and how many products /search lists for the same words
+  // the product rows' pictures, prices and kinds
   const cards = new Map<string, ProductCardData>();
-  let total: number | undefined = searchable(q) ? 0 : undefined;
-  if (products.length > 0) {
-    const match = await matchQuery(db, q, ctx.now);
-    const [found, listing] = await Promise.all([
-      // the candidates suggestSearch picks its product rows from (the best matches, published ones kept)
-      getCardsByIds(db, locale, match.ids.slice(0, MAX_SUGGESTIONS + 4), { now: ctx.now }),
-      listProducts(db, locale, { scope: { kind: "products", ids: match.ids.slice(0, MAX_SCOPE_IDS) }, limit: 1, now: ctx.now }),
-    ]);
-    for (const card of found) cards.set(`/p/${card.slug}`, card);
-    total = listing?.total ?? 0;
-  }
+  if (result.productIds.length > 0) for (const card of await getCardsByIds(db, locale, result.productIds, { now: ctx.now })) cards.set(`/p/${card.slug}`, card);
 
   const t = serverT(locale, "catalog");
   const ui = serverT(locale, "ui");

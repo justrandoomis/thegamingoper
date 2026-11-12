@@ -421,10 +421,27 @@ export type StoreBanner = {
 /** Most banners one placement shows at once. */
 export const BANNERS_PER_PLACEMENT = 3;
 
+type LinkTargetKind = "p" | "c" | "platform" | "device";
+
+/** The catalogue page a stored banner link opens ("/c/x?platform=y" → category x, platform y); null for anything else. */
+function linkTargetOf(link: string | null): { kind: LinkTargetKind; slug: string; platform: string | null } | null {
+  const match = /^\/(p|c|platform|device)\/([^/?#]+)\/?(?:\?([^#]*))?/.exec(link ?? "");
+  if (!match) return null;
+  let slug = match[2];
+  try {
+    slug = decodeURIComponent(slug);
+  } catch {
+    /* kept as stored */
+  }
+  const platform = match[3] ? new URLSearchParams(match[3]).get("platform") : null;
+  return { kind: match[1] as LinkTargetKind, slug, platform: platform || null };
+}
+
 /**
  * The banners a storefront slot shows now: published (or scheduled and due), inside their window, not demo (unless
  * `includeDemo`), by `sort`. `category_top` banners show on every category page; pass `categoryId` to add the ones
- * for that category. A banner linking to a product the catalogue no longer shows is left out.
+ * for that category. A banner linking to a store page that no longer opens (a product, category, platform or device
+ * switched off since) is left out.
  */
 export async function getActiveBanners(db: Db, locale: Locale, placement: (typeof BANNER_PLACEMENTS)[number], options: { now: number; categoryId?: string | null; includeDemo?: boolean }): Promise<StoreBanner[]> {
   const { now } = options;
@@ -444,21 +461,30 @@ export async function getActiveBanners(db: Db, locale: Locale, placement: (typeo
     .where(and(...conditions))
     .orderBy(asc(banners.sort), desc(banners.updatedAt))
     .limit(BANNERS_PER_PLACEMENT * 2);
-  const productSlugs = rows.map((row) => /^\/p\/([^/?#]+)/.exec(row.link ?? "")?.[1]).filter((slug): slug is string => Boolean(slug));
-  const liveSlugs = new Set<string>();
-  if (productSlugs.length > 0) {
-    const live = await db.all<{ slug: string }>(
-      sql`SELECT p.slug FROM products p WHERE p.slug IN (${sql.join(
-        productSlugs.map((slug) => sql`${slug}`),
-        sql`, `,
-      )}) AND (p.status = 'published' OR (p.status = 'scheduled' AND p.publish_at <= ${now})) AND EXISTS (SELECT 1 FROM variants v WHERE v.product_id = p.id AND v.is_active = 1)`,
+  // Every store link is checked again as it is served — a product, a category, a platform or a device page switched
+  // off after the banner was published would answer 404 (follow-up 2026-11-12: only product links were re-checked).
+  // A category link's ?platform= filter must still be a live platform too.
+  const targets = rows.map((row) => linkTargetOf(row.link));
+  const wanted = (kind: LinkTargetKind) => [...new Set(targets.flatMap((target) => (target?.kind === kind ? [target.slug] : [])))];
+  const platformSlugs = [...new Set([...wanted("platform"), ...targets.flatMap((target) => (target?.platform ? [target.platform] : []))])];
+  const listed = (values: readonly string[]) =>
+    sql.join(
+      values.map((value) => sql`${value}`),
+      sql`, `,
     );
-    for (const row of live) liveSlugs.add(row.slug);
-  }
+  const slugsOf = async (values: readonly string[], query: (list: SQL) => SQL) => new Set(values.length ? (await db.all<{ slug: string }>(query(listed(values)))).map((row) => row.slug) : []);
+  const [liveProducts, liveCategories, livePlatforms, liveDevices] = await Promise.all([
+    slugsOf(wanted("p"), (list) => sql`SELECT p.slug FROM products p WHERE p.slug IN (${list}) AND (p.status = 'published' OR (p.status = 'scheduled' AND p.publish_at <= ${now})) AND EXISTS (SELECT 1 FROM variants v WHERE v.product_id = p.id AND v.is_active = 1)`),
+    slugsOf(wanted("c"), (list) => sql`SELECT slug FROM categories WHERE slug IN (${list}) AND is_active = 1`),
+    slugsOf(platformSlugs, (list) => sql`SELECT slug FROM platforms WHERE slug IN (${list}) AND is_active = 1`),
+    slugsOf(wanted("device"), (list) => sql`SELECT slug FROM device_models WHERE slug IN (${list}) AND status = 'published'`),
+  ]);
+  const live: Record<LinkTargetKind, Set<string>> = { p: liveProducts, c: liveCategories, platform: livePlatforms, device: liveDevices };
   const out: StoreBanner[] = [];
-  for (const row of rows) {
-    const slug = /^\/p\/([^/?#]+)/.exec(row.link ?? "")?.[1];
-    if (slug && !liveSlugs.has(slug)) continue;
+  for (const [index, row] of rows.entries()) {
+    const target = targets[index];
+    if (target && !live[target.kind].has(target.slug)) continue;
+    if (target?.platform && !livePlatforms.has(target.platform)) continue;
     const textLocale: Locale = row.title[locale] ? locale : "ar";
     out.push({
       id: row.id,

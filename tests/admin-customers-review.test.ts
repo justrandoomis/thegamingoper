@@ -268,7 +268,8 @@ describe("field rules", () => {
     const plan = await planMerge(t.db, mergeOnly, { keepId: keep, mergeId: dup }, NOW);
     expect(plan.merge.walletIqd).toBeNull();
     expect(plan.keep.walletIqd).toBeNull();
-    expect(plan.blockers).toEqual([{ code: "wallet_balance" }]);
+    // since 2026-11-12 the money moves with the merge (the core's wallet transfer): no blocker, and no amount either
+    expect(plan.blockers).toEqual([]);
     expect(JSON.stringify(plan)).not.toMatch(/7350|7,350/);
     const candidates = await duplicateCandidates(t.db, mergeOnly, keep);
     const candidate = candidates.find((row) => row.customer.id === dup);
@@ -277,7 +278,7 @@ describe("field rules", () => {
     // the same plan for someone who reads wallets: the amount, and the same fingerprint
     const managerPlan = await planMerge(t.db, as("manager"), { keepId: keep, mergeId: dup }, NOW);
     expect(managerPlan.merge.walletIqd).toBe(7_350);
-    expect(managerPlan.blockers).toEqual([{ code: "wallet_balance", amount: 7_350 }]);
+    expect(managerPlan.blockers).toEqual([]);
     expect(managerPlan.fingerprint).toBe(plan.fingerprint);
 
     // the erasure plan of that account, for a privacy handler who may not read wallets

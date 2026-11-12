@@ -5,6 +5,7 @@ import { useT } from "~/i18n/react";
 import { announce, cartErrorKey, postForm, readFailure, showShopToast } from "./cart-client";
 import { cx } from "./cx";
 import { IconKey } from "./IconKey";
+import { Key } from "./Key";
 import { TextLink } from "./TextLink";
 
 /**
@@ -15,6 +16,8 @@ import { TextLink } from "./TextLink";
  * the FILLED heart in --red-ink (`.key--wish`); on a product photo it is the 32px `onImage` button (the card's top-end).
  *
  *   <WishlistKey productId={product.id} name={product.name} initial={isWished} />
+ *   <WishlistKey variant="text" productId={…} name={…} initial={…} />   a 40px ghost key «المفضلة» / «في المفضلة»
+ *                                                                        (the product page's row المفضلة · قارن · مشاركة)
  *
  * Expected answer: `{ ok: true, wished: boolean }` (when `wished` is missing the optimistic state is kept) or an
  * ActionFail `{ ok: false, code }`. Presses while a request is out are folded: the key always ends on the shopper's
@@ -27,7 +30,9 @@ export type WishlistKeyProps = {
   initial?: boolean;
   /** Called with the confirmed state. */
   onChange?: (wished: boolean) => void;
-  /** md 40 (default) · sm 36 · xs 32 (on a product photo). */
+  /** "icon" (default): the heart alone. "text": a 40px ghost key with the heart and its words (held = the filled heart). */
+  variant?: "icon" | "text";
+  /** md 40 (default) · sm 36 · xs 32 (on a product photo). Icon variant only. */
   size?: "md" | "sm" | "xs";
   /** On a product photo: paper at 88% with the glass edge. */
   onImage?: boolean;
@@ -37,7 +42,7 @@ export type WishlistKeyProps = {
   className?: string;
 };
 
-export function WishlistKey({ productId, name, initial = false, onChange, size = "md", onImage = false, message = "after", onMessage, className }: WishlistKeyProps) {
+export function WishlistKey({ productId, name, initial = false, onChange, variant = "icon", size = "md", onImage = false, message = "after", onMessage, className }: WishlistKeyProps) {
   const t = useT("ui-shop");
   const [wished, setWished] = useState(initial);
   const [error, setError] = useState<string | null>(null);
@@ -107,15 +112,29 @@ export function WishlistKey({ productId, name, initial = false, onChange, size =
 
   return (
     <>
-      <IconKey
-        icon="heart"
-        held={wished}
-        size={size}
-        label={t(wished ? "wishlist.remove" : "wishlist.add", { name })}
-        onClick={toggle}
-        variant={onImage ? "onImage" : "outline"}
-        className={cx("key--wish", className)}
-      />
+      {variant === "text" ? (
+        // a toggle key like «قارن» beside it: held = the ink face (aria-pressed), the filled heart and «في المفضلة»
+        <Key
+          variant="ghost"
+          size="sm"
+          held={wished}
+          icon={<Icon name="heart" size={20} filled={wished} />}
+          onClick={toggle}
+          className={className}
+        >
+          {t(wished ? "wishlist.textHeld" : "wishlist.text")}
+        </Key>
+      ) : (
+        <IconKey
+          icon="heart"
+          held={wished}
+          size={size}
+          label={t(wished ? "wishlist.remove" : "wishlist.add", { name })}
+          onClick={toggle}
+          variant={onImage ? "onImage" : "outline"}
+          className={cx("key--wish", className)}
+        />
+      )}
       {message === "after" && error ? (
         <p className={cx("relative flex w-full basis-full items-start gap-1.5 type-xs-strong text-danger")}>
           <Icon name="warning-circle" size={16} className="mt-0.5" />

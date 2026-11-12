@@ -3,17 +3,23 @@ import type { ReactNode } from "react";
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { CartView } from "~/lib/dto";
+import type { FlashPriceView } from "~/server/services/orders/types";
+import { isolate } from "~/ui/BidiText";
 import type { CartEditor } from "~/ui/cart-client";
 import { CartLineRow } from "~/ui/CartLineRow";
 import { cx } from "~/ui/cx";
+import { Disclosure } from "~/ui/Disclosure";
 import { Checkbox, FieldGroup, OptionCard, Select, TextArea, TextField } from "~/ui/Field";
 import { GovernoratePicker } from "~/ui/GovernoratePicker";
+import { Key } from "~/ui/Key";
 import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
-import { fillNodes } from "~/ui/PriceTag";
+import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
 import { WalletBalance } from "~/ui/WalletBalance";
-import { isTransferMethod, OTHER_DISTRICT, optionValue, type CheckoutDraft, type FieldIssue, type FieldIssues, type FieldName } from "../checkout-form";
+import { isTransferMethod, OTHER_DISTRICT, optionValue, parsePoints, type CheckoutDraft, type FieldIssue, type FieldIssues, type FieldName } from "../checkout-form";
 import type { CheckoutPageData } from "../checkout.server";
+import { withFlash } from "./Adjustments";
+import type { CartWithIssue } from "./CouponForm";
 import { TransferDetails } from "./TransferDetails";
 
 /**
@@ -184,14 +190,20 @@ export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, s
 
 // ───────────────────────────────────────────────────────────────── 2. payment
 
-export function PaymentStep({ draft, issues, onChange, data, cart, signedIn }: StepProps) {
+export function PaymentStep({ draft, issues, onChange, onBlur, data, cart, signedIn }: StepProps) {
   const t = useT("checkout");
   const f = useFormat();
   const issueText = useIssueText();
   const methods = data.methods;
   const walletBalance = data.walletBalanceIqd;
   const walletShort = walletBalance !== null && walletBalance < cart.totalIqd;
-  const anyMethod = methods.cod || (methods.wallet && signedIn) || methods.bankTransfer || methods.zaincash;
+  // nothing to pay (points and free delivery cover it): no transfer is asked for — the core refuses one of 0
+  const transferable = cart.totalIqd > 0;
+  const anyMethod = methods.cod || (methods.wallet && signedIn) || (transferable && (methods.bankTransfer || methods.zaincash));
+  // a split payment: the whole balance from the wallet, the rest by the method chosen (a balance below the total)
+  const canSplit = signedIn && methods.wallet && walletBalance !== null && walletBalance > 0 && walletShort;
+  const splitting = canSplit && draft.useWallet && draft.paymentMethod !== "wallet";
+  const toPay = splitting && walletBalance !== null ? cart.totalIqd - walletBalance : cart.totalIqd;
   let first = true;
   /** The first option carries the field's id, so focus can be sent to the group. */
   const idFor = () => {
@@ -217,8 +229,8 @@ export function PaymentStep({ draft, issues, onChange, data, cart, signedIn }: S
       <FieldGroup legend={t("payment.legend")} required error={issueText("paymentMethod", issues.paymentMethod)}>
         {methods.cod ? option("cod", t("payment.cod"), t("payment.codHint"), t("payment.codMark")) : null}
         {methods.wallet && signedIn ? option("wallet", t("payment.wallet"), <WalletBalance compact balanceIqd={walletBalance} payIqd={cart.totalIqd} />, t("payment.walletMark"), walletShort) : null}
-        {methods.bankTransfer ? option("bank_transfer", t("payment.bank"), t("payment.bankHint"), t("payment.bankMark")) : null}
-        {methods.zaincash ? option("zaincash", t("payment.zain"), t("payment.zainHint"), t("payment.zainMark")) : null}
+        {methods.bankTransfer && transferable ? option("bank_transfer", t("payment.bank"), t("payment.bankHint"), t("payment.bankMark")) : null}
+        {methods.zaincash && transferable ? option("zaincash", t("payment.zain"), t("payment.zainHint"), t("payment.zainMark")) : null}
       </FieldGroup>
 
       {methods.wallet && !signedIn ? (
@@ -230,6 +242,20 @@ export function PaymentStep({ draft, issues, onChange, data, cart, signedIn }: S
           </TextLink>
         </p>
       ) : null}
+
+      {canSplit && walletBalance !== null ? (
+        <Checkbox
+          id={fieldId("useWallet")}
+          name="useWallet"
+          checked={draft.useWallet}
+          onChange={(event) => onChange("useWallet", event.currentTarget.checked)}
+          label={t("split.label", { balance: isolate(iqdText(f, walletBalance)) })}
+          hint={t("split.hint", { rest: isolate(iqdText(f, Math.max(0, cart.totalIqd - walletBalance))) })}
+          error={issueText("useWallet", issues.useWallet)}
+        />
+      ) : null}
+
+      {signedIn ? <PointsBox draft={draft} issues={issues} onChange={onChange} onBlur={onBlur} cart={cart} /> : null}
 
       {isTransferMethod(draft.paymentMethod) ? (
         <section aria-labelledby="co-transfer" className="co-card grid gap-4">
@@ -247,7 +273,7 @@ export function PaymentStep({ draft, issues, onChange, data, cart, signedIn }: S
               <span className="co-tsteps__n" aria-hidden="true">
                 {f.number(2)}
               </span>
-              <span>{fillNodes(t("payment.transferSend"), { total: <bdi className="nums font-semibold">{f.iqd(cart.totalIqd)}</bdi> })}</span>
+              <span>{fillNodes(t("payment.transferSend"), { total: <bdi className="nums font-semibold">{f.iqd(toPay)}</bdi> })}</span>
             </li>
             <li>
               <span className="co-tsteps__n" aria-hidden="true">
@@ -277,6 +303,113 @@ export function PaymentStep({ draft, issues, onChange, data, cart, signedIn }: S
   );
 }
 
+/**
+ * The points a signed-in customer redeems on this order (module 08's programme; the commerce core prices them): the
+ * balance and a point's worth, the number to redeem (never more than `points.max` — the balance, and the goods left
+ * after the other discounts), «استخدم …» for all of them, and what comes off. The page prices the cart again when the
+ * number changes (GET /api/cart?points=).
+ */
+function PointsBox({ draft, issues, onChange, onBlur, cart }: Pick<StepProps, "draft" | "issues" | "onChange" | "onBlur" | "cart">) {
+  const t = useT("checkout");
+  const f = useFormat();
+  const issueText = useIssueText();
+  const points = (cart as CartWithIssue).points ?? null;
+  if (!points) return null;
+  if (points.balance <= 0) {
+    return (
+      <p className="co-note">
+        <Icon name="star" size={16} className="shrink-0 text-ink-2" />
+        <span className="min-w-0 flex-1">{t("points.none")}</span>
+      </p>
+    );
+  }
+  const asked = parsePoints(draft.redeemPoints);
+  const applied = (cart as CartWithIssue).discounts?.find((entry) => entry.kind === "points") ?? null;
+  return (
+    <section aria-labelledby="co-points" className="co-card co-extra">
+      <h2 id="co-points" className="type-h3 text-ink">
+        {t("points.title")}
+      </h2>
+      <p className="type-sm text-ink-2">
+        {t("points.balance", { count: points.balance, n: f.number(points.balance) })} {t("points.worth", { value: isolate(iqdText(f, points.pointValueIqd)) })}
+      </p>
+      <div className="co-extra__row">
+        <TextField
+          id={fieldId("redeemPoints")}
+          name="redeemPoints"
+          inputMode="numeric"
+          autoComplete="off"
+          optional
+          label={t("points.label")}
+          value={draft.redeemPoints}
+          onChange={(event) => onChange("redeemPoints", event.currentTarget.value)}
+          onBlur={() => onBlur("redeemPoints")}
+          hint={t("points.hint", { max: f.number(points.max) })}
+          error={issueText("redeemPoints", issues.redeemPoints)}
+        />
+        {points.max > 0 && asked !== points.max ? (
+          <Key size="sm" onClick={() => onChange("redeemPoints", String(points.max))}>
+            {t("points.useAll", { max: f.number(points.max) })}
+          </Key>
+        ) : null}
+      </div>
+      {applied && applied.kind === "points" ? <p className="type-xs-strong text-ok">{t("points.applied", { amount: isolate(iqdText(f, applied.amountIqd)) })}</p> : null}
+      {draft.redeemPoints.trim() !== "" ? (
+        <TextLink as="button" type="button" arrow={false} className="justify-self-start" onClick={() => onChange("redeemPoints", "")}>
+          {t("points.clear")}
+        </TextLink>
+      ) : null}
+    </section>
+  );
+}
+
+/**
+ * «لديك رمز إحالة من صديق؟» (module 08's referrals; the commerce core records it with the order): the code, «تحقق»
+ * (the page asks the server about it — known, switched on, below its cap), and what the server said. It changes no
+ * price; a refusal at «أكّد الطلب» lands on this field.
+ */
+function ReferralBox({ draft, issues, onChange, onBlur, cart, onCheck, pending }: Pick<StepProps, "draft" | "issues" | "onChange" | "onBlur" | "cart"> & { onCheck?: () => void; pending?: boolean }) {
+  const t = useT("checkout");
+  const errorsT = useT("errors");
+  const issueText = useIssueText();
+  const referral = (cart as CartWithIssue).referral ?? null;
+  const typed = draft.referralCode.trim();
+  const said = referral && typed !== "" && referral.code.replace(/[\s-]+/g, "").toUpperCase() === typed.replace(/[\s-]+/g, "").toUpperCase() ? referral : null;
+  return (
+    <Disclosure summary={t("referral.summary")} icon="users" defaultOpen={typed !== ""}>
+      <div className="co-extra pt-2">
+        <div className="co-extra__row">
+          <TextField
+            id={fieldId("referralCode")}
+            name="referralCode"
+            ltr
+            autoComplete="off"
+            optional
+            maxLength={40}
+            label={t("referral.label")}
+            value={draft.referralCode}
+            onChange={(event) => onChange("referralCode", event.currentTarget.value)}
+            onBlur={() => onBlur("referralCode")}
+            hint={t("referral.hint")}
+            error={issueText("referralCode", issues.referralCode) ?? (said && said.status !== "ok" ? errorsT(`errors.${said.status}`) : undefined)}
+          />
+          {onCheck ? (
+            <Key size="sm" loading={pending} disabled={typed === ""} onClick={onCheck}>
+              {t("referral.check")}
+            </Key>
+          ) : null}
+        </div>
+        {said && said.status === "ok" ? <p className="type-xs-strong text-ok">{t("referral.ok", { code: isolate(said.code) })}</p> : null}
+        {typed !== "" ? (
+          <TextLink as="button" type="button" arrow={false} className="justify-self-start" onClick={() => onChange("referralCode", "")}>
+            {t("referral.remove")}
+          </TextLink>
+        ) : null}
+      </div>
+    </Disclosure>
+  );
+}
+
 // ───────────────────────────────────────────────────────────────── 3. review
 
 export type ReviewStepProps = StepProps & {
@@ -286,9 +419,12 @@ export type ReviewStepProps = StepProps & {
   editor: CartEditor;
   /** Phones: the terms sentence and the demo-order line (from 1024 they sit in the summary card by the key). */
   foot?: ReactNode;
+  /** «تحقق» on the referral code: the page asks the server about it (priced again with the code). */
+  onReferralCheck?: () => void;
+  referralPending?: boolean;
 };
 
-export function ReviewStep({ draft, data, cart, notice, editor, foot }: ReviewStepProps) {
+export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice, editor, foot, onReferralCheck, referralPending }: ReviewStepProps) {
   const t = useT("checkout");
   const f = useFormat();
   const governorate = data.governorates.find((g) => g.id === draft.governorateId)?.name ?? "";
@@ -336,13 +472,15 @@ export function ReviewStep({ draft, data, cart, notice, editor, foot }: ReviewSt
         ) : null}
       </ReviewBlock>
 
+      <ReferralBox draft={draft} issues={issues} onChange={onChange} onBlur={onBlur} cart={cart} onCheck={onReferralCheck} pending={referralPending} />
+
       <ReviewBlock id="co-review-items" title={t("review.items", { count: cart.count, n: f.number(cart.count) })} editTo="/cart" editLabel={t("review.editCart")}>
         <ul className="co-lines" aria-label={t("review.items", { count: cart.count, n: f.number(cart.count) })}>
           {editor.rows.map((row) => (
             <CartLineRow
               // one key through removal: the row becomes its undo row and the kit moves the focus to «تراجع»
               key={row.line.id}
-              line={withOptionValue(row.line)}
+              line={withFlash(withOptionValue(row.line), (row.line as { flash?: FlashPriceView | null }).flash, t, f)}
               removed={row.removed}
               busy={row.busy}
               error={row.error}

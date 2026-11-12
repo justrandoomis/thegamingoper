@@ -44,9 +44,9 @@
       "ckb": "کێبڵ لەناو قوتووەکەدا نییە – کێبڵی USBی کە لەگەڵ PS5 هاتووە بەکاربهێنە"
     },
     {
-      "ar": "مجموعة Prism الشفافة (Flare Orange وEmerald Green وGraphite Gray) متاحة للطلب المسبق وتصدر في 4 فبراير 2027",
-      "en": "The transparent Prism Collection (Flare Orange, Emerald Green, Graphite Gray) is on pre-order for 4 February 2027",
-      "ckb": "کۆمەڵەی ڕوونی Prism (Flare Orange، Emerald Green، Graphite Gray) بە پێشوەختە داوا دەکرێت بۆ 4ی شوباتی 2027"
+      "ar": "مجموعة Prism الشفافة (Flare Orange وEmerald Green وGraphite Gray) تصدر في 4 شباط 2027، والطلب يفتح عند وصولها إلى المتجر",
+      "en": "The transparent Prism Collection (Flare Orange, Emerald Green, Graphite Gray) is out on 4 February 2027; orders open when it arrives in the store",
+      "ckb": "کۆمەڵەی ڕوونی Prism (Flare Orange، Emerald Green، Graphite Gray) لە 4ی شوباتی 2027 دەردەچێت؛ داواکردن کاتێک دەکرێتەوە کە دەگاتە فرۆشگاکە"
     }
   ],
   "specs": [
@@ -202,7 +202,7 @@
       "releaseDate": "2027-02-04",
       "isDefault": false,
       "images": ["dualsense--6"],
-      "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
+      "notes": { "ar": "تصدر في 4 شباط 2027.", "en": "Out on 4 February 2027.", "ckb": "لە 4ی شوباتی 2027 دەردەچێت." }
     },
     {
       "sku": "DSENSE-PRISM-EMERALD-GREEN",
@@ -210,7 +210,7 @@
       "options": { "color": "Emerald Green", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
-      "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
+      "notes": { "ar": "تصدر في 4 شباط 2027.", "en": "Out on 4 February 2027.", "ckb": "لە 4ی شوباتی 2027 دەردەچێت." }
     },
     {
       "sku": "DSENSE-PRISM-GRAPHITE-GRAY",
@@ -218,7 +218,7 @@
       "options": { "color": "Graphite Gray", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
-      "notes": { "ar": "طلب مسبق؛ الإصدار في 4 فبراير 2027.", "en": "Pre-order; releases on 4 February 2027.", "ckb": "پێشوەختە داواکردن؛ لە 4ی شوباتی 2027 دەردەچێت." }
+      "notes": { "ar": "تصدر في 4 شباط 2027.", "en": "Out on 4 February 2027.", "ckb": "لە 4ی شوباتی 2027 دەردەچێت." }
     }
   ],
   "compatibility": [

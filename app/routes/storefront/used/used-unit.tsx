@@ -14,7 +14,7 @@
  * an add that fails (the kit rolls back and says why beside the key) · offline (the shell's banner; the add key goes
  * flat with the reason beside it, v2 §6.17).
  */
-import { useId, useRef, useState, type FocusEvent } from "react";
+import { useRef, useState } from "react";
 import { data, useRouteLoaderData } from "react-router";
 
 import type { Route } from "./+types/used-unit";
@@ -32,7 +32,7 @@ import { getDb } from "~/server/db.server";
 import { getDeviceLink } from "~/server/services/devices.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { getOtherUsedUnits, getUsedUnitDetail } from "~/server/services/used.server";
-import { AddToCartKey, BuyControls } from "~/ui/AddToCartKey";
+import { BuyBar, BuyControls } from "~/ui/AddToCartKey";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
 import { useCartCount } from "~/ui/cart-client";
 import { ErrorState } from "~/ui/ErrorState";
@@ -41,7 +41,6 @@ import { Gallery } from "~/ui/Gallery";
 import { GradeBadge, gradeKey } from "~/ui/GradeBadge";
 import { InspectionCard } from "~/ui/InspectionCard";
 import { Key } from "~/ui/Key";
-import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
 import { fillNodes, iqdText, PriceTag, SafePrice } from "~/ui/PriceTag";
 import { BidiText } from "~/ui/ProductCard";
@@ -126,18 +125,9 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
   const variantLine = unit.subtitle && addsToName(unit.subtitle, unit.name) ? unit.subtitle : null;
   // Demo price and stock are marked beside the price while the store runs in demo mode (v2 §4.7).
   const demo = unit.isDemo && root?.storeMode !== "live";
-  // Offline (v2 §6.17): the add key goes flat, with the reason beside it — never a tap that can only fail.
-  const online = useOnline();
-  const reasonId = useId();
-  const buy = { item: { usedUnitId: unit.id }, name: unit.name, image: firstPhoto, optionsLabel: gradeWords, source: picture, onAdded: () => setAdded(true), disabled: !online };
-  const offlineReason = (where: "box" | "bar") =>
-    online ? null : (
-      <p id={`${reasonId}-${where}`} className="flex items-start gap-1.5 type-xs text-ink-2" role="status">
-        <Icon name="wifi-slash" size={16} className="mt-0.5 shrink-0" />
-        {t("unit.offline")}
-      </p>
-    );
-  const describedBy = (where: "box" | "bar") => (online ? undefined : `${reasonId}-${where}`);
+  // Offline (v2 §6.17): the kit's add key goes flat and says why itself — beside the key in the buy box, on the bar's
+  // own line in the task bar — never a tap that can only fail.
+  const buy = { item: { usedUnitId: unit.id }, name: unit.name, image: firstPhoto, optionsLabel: gradeWords, source: picture, onAdded: () => setAdded(true) };
 
   return (
     <div className="page grid grid-cols-[minmax(0,1fr)] gap-section pt-0 pb-6 md:pt-4 lg:pt-6">
@@ -231,10 +221,7 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
                 added ? (
                   <InCart />
                 ) : (
-                  <>
-                    <BuyControls {...buy} aria-describedby={describedBy("box")} />
-                    {offlineReason("box")}
-                  </>
+                  <BuyControls {...buy} />
                 )
               ) : (
                 <Key as="a" href={`#${OTHERS_ID}`} iconEnd="arrow-down" className="justify-self-start">
@@ -266,6 +253,8 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
         ownershipChecked={unit.ownershipChecked}
         dataWiped={unit.dataWiped}
         isDemo={unit.isDemo}
+        // the gallery already says, under the stage, when the pictures are illustrations (v2 §6.8: once)
+        illustrationNote={false}
         className="lg:max-w-[52rem]"
       />
 
@@ -285,56 +274,34 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
             shelf={{ key: "used-others", title: t("unit.others"), reason: t("unit.othersReason"), items: others }}
             href={USED_PATH}
             viewAllLabel={t("unit.allUsed")}
-            renderItem={(item) => (
-              <div className="contents" onFocus={keepCardInView}>
-                <UsedUnitCard unit={item} slot="used-others" />
-              </div>
-            )}
+            // the kit's rail brings a card that takes the keyboard's focus to its start
+            renderItem={(item) => <UsedUnitCard unit={item} slot="used-others" />}
           />
         )}
       </div>
 
       <TaskBar aria-label={t("unit.buy")} className="lg:hidden">
-        {listed && !added ? offlineReason("bar") : null}
-        {/* The buy bar's anatomy inside the task bar: the task bar already gives the 72px, the padding and the safe
-            area, so the inner grid drops its own (otherwise the bar is 96px and covers the stock line). */}
-        <div className="buybar min-h-0 p-0">
-          <div className="buybar__info">
-            {added ? (
-              <span className="buybar__added flex items-center gap-1">
-                <Icon name="check" size={16} />
-                {t("unit.inCart")}
-              </span>
-            ) : null}
-            {unit.status === "sold" ? (
-              <span className="type-sm-strong text-ink-2">{t("unit.sold")}</span>
-            ) : (
-              <SafePrice amountIqd={unit.priceIqd} size="lg" approx="off" as="span" />
-            )}
-            <span className="buybar__var">{unit.status === "reserved" ? t("unit.reserved") : gradeWords}</span>
+        {listed ? (
+          // the kit's bar, bare inside the shell's task bar: the price and the grade, «أضف إلى السلة» — then «✓ في
+          // السلة» and «عرض السلة (n)»; offline or a failed add say so on its own line
+          <BuyBar {...buy} bare priceIqd={unit.priceIqd} />
+        ) : (
+          // reserved or sold: no add key — the unit's state and the way to the other units
+          <div className="buybar min-h-0 p-0">
+            <div className="buybar__info">
+              {unit.status === "sold" ? <span className="type-sm-strong text-ink-2">{t("unit.sold")}</span> : <SafePrice amountIqd={unit.priceIqd} size="lg" approx="off" as="span" />}
+              <span className="buybar__var">{unit.status === "reserved" ? t("unit.reserved") : gradeWords}</span>
+            </div>
+            <div className="flex flex-wrap justify-end [&_.key]:min-w-[168px]">
+              <Key as="a" href={`#${OTHERS_ID}`}>
+                {t("unit.seeOthers")}
+              </Key>
+            </div>
           </div>
-          <div className="flex flex-wrap justify-end [&_.key]:min-w-[168px]">
-            {listed ? added ? <ViewCart /> : <AddToCartKey {...buy} aria-describedby={describedBy("bar")} variant="key" /> : <Key as="a" href={`#${OTHERS_ID}`}>{t("unit.seeOthers")}</Key>}
-          </div>
-        </div>
+        )}
       </TaskBar>
     </div>
   );
-}
-
-/**
- * Keyboard focus on a card of the phone rail scrolls that card to the rail's start. The browser's own "nearest" scroll
- * lands between two snap points and the rail's mandatory snap pulls it back, so every other card stayed ~80% off-screen
- * while focused (WCAG 2.4.11). Requested from the kit's Rail; this keeps the page usable meanwhile.
- */
-function keepCardInView(event: FocusEvent<HTMLElement>) {
-  const item = (event.target as HTMLElement).closest("li");
-  const rail = item?.parentElement;
-  if (!item || !rail || rail.scrollWidth <= rail.clientWidth + 1) return;
-  const card = item.getBoundingClientRect();
-  const box = rail.getBoundingClientRect();
-  if (card.left >= box.left - 1 && card.right <= box.right + 1) return;
-  item.scrollIntoView({ block: "nearest", inline: "start" });
 }
 
 /** After the add: the unit is in the cart (one unit = one line) — the next step is the cart. */

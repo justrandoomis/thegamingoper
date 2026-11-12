@@ -308,8 +308,12 @@ export const CHART_OF_ACCOUNTS: readonly AccountSeed[] = [
   { key: "bank_clearing", code: "1010", type: "asset", name: { ar: "مقاصة التحويلات (البطاقة المصرفية وزين كاش)", en: "Bank and transfer clearing", ckb: "پاککردنەوەی حەواڵەکان (کارتی بانکی و زەین کاش)" } },
   { key: "cod_receivable", code: "1020", type: "asset", name: { ar: "ذمم الدفع عند الاستلام", en: "Cash-on-delivery receivable", ckb: "وەرگیراوی پارەدان لە کاتی وەرگرتن" } },
   { key: "inventory", code: "1200", type: "asset", name: { ar: "المخزون", en: "Inventory", ckb: "کۆگا" } },
+  // since migration 0004 (which adds these three to a chart seeded before it): salary advances, unredeemed gift cards, pay owed
+  { key: "employee_advances", code: "1300", type: "asset", name: { ar: "سلف الموظفين", en: "Employee advances", ckb: "پێشینەی کارمەندان" } },
   { key: "accounts_payable", code: "2000", type: "liability", name: { ar: "ذمم الموردين", en: "Accounts payable", ckb: "قەرزی دابینکەران" } },
   { key: "wallet_liability", code: "2100", type: "liability", name: { ar: "أرصدة محافظ العملاء", en: "Customer wallet liability", ckb: "باڵانسی جزدانی کڕیاران" } },
+  { key: "gift_card_liability", code: "2150", type: "liability", name: { ar: "بطاقات هدايا لم تُستخدم بعد", en: "Gift cards outstanding", ckb: "کارتی دیاری کە هێشتا بەکارنەهاتوون" } },
+  { key: "salaries_payable", code: "2200", type: "liability", name: { ar: "رواتب مستحقة الدفع", en: "Salaries payable", ckb: "مووچەی شایستەی پێدان" } },
   { key: "owner_equity", code: "3000", type: "equity", name: { ar: "حقوق الملكية", en: "Owner's equity", ckb: "مافی خاوەندارێتی" } },
   { key: "sales_revenue", code: "4000", type: "revenue", name: { ar: "إيراد المبيعات", en: "Sales revenue", ckb: "داهاتی فرۆشتن" } },
   { key: "shipping_income", code: "4100", type: "revenue", name: { ar: "إيراد التوصيل", en: "Shipping income", ckb: "داهاتی گەیاندن" } },

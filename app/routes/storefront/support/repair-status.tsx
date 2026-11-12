@@ -21,6 +21,7 @@ import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { normalizeSupportRef, TICKET_REF_PREFIX } from "~/server/services/support/common.server";
 import { getRepairByAccessToken, lookupRepair } from "~/server/services/support/repairs.server";
 import type { RepairStatusKey, RepairStatusView } from "~/server/services/support/types";
 import { shellMeta } from "~/routes/storefront/shell/meta";
@@ -52,6 +53,8 @@ export async function loader({ context, url }: Route.LoaderArgs) {
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
   const values = textFields(await request.formData(), ["ref", "phone"]);
+  // a message-to-staff number typed here: it is followed on /support/ticket (said under the field, linked beside)
+  if (normalizeSupportRef(values.ref, TICKET_REF_PREFIX)) return data({ ok: false as const, code: "invalid", status: 400, fields: { ref: "ticket_ref" }, values }, { status: 400, headers: LOOKUP_PAGE_HEADERS });
   try {
     const view = await lookupRepair(getDb(), ctx.locale, values, { ip: ctx.ip }, ctx.now);
     // the address carries no token after a lookup; the form may show again (not found), so it must keep posting
@@ -177,6 +180,9 @@ export default function RepairStatusPage({ loaderData, actionData }: Route.Compo
           </TextLink>
           <TextLink as={LocaleLink} to="/support/repair">
             {t("status.book")}
+          </TextLink>
+          <TextLink as={LocaleLink} to="/support/ticket">
+            {t("ticket.title")}
           </TextLink>
           {view ? (
             <TextLink as={LocaleLink} to="/support/repair/status">

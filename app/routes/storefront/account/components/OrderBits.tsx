@@ -1,6 +1,5 @@
 import { useRouteLoaderData } from "react-router";
 
-import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import type { OrderStatus, PaymentStatus } from "~/lib/dto";
 import { MotionLink } from "~/motion";
@@ -11,7 +10,6 @@ import { Niche } from "~/ui/Niche";
 import { Price } from "~/ui/Price";
 import { ProductImage } from "~/ui/ProductCard";
 import { Status, type StatusTone } from "~/ui/Tag";
-import { VisuallyHidden } from "~/ui/VisuallyHidden";
 
 /** Words and tone of an order's status (dot + words, never colour alone). */
 export const ORDER_TONE: Record<OrderStatus, StatusTone> = {
@@ -108,8 +106,11 @@ export function OrderRow({ order }: { order: OrderSummaryRow }) {
   );
 }
 
-/** The five real states of an order, in the order a shopper lives them (Design System v2 §6.11). */
-const RAIL = ["received", "confirmed", "preparing", "shipped", "delivered"] as const;
+/**
+ * The five real states of an order, in the order a shopper lives them (Design System v2 §6.11) — the order page draws
+ * them with the kit's status rail (ProgressSteps variant="status"; a delivered order is done throughout).
+ */
+export const ORDER_RAIL = ["received", "confirmed", "preparing", "shipped", "delivered"] as const;
 
 /** Where an order stands on the rail; null for an order that left it (cancelled, returned). Pure. */
 export function railIndex(status: OrderStatus): number | null {
@@ -129,33 +130,4 @@ export function railIndex(status: OrderStatus): number | null {
     default:
       return null;
   }
-}
-
-/**
- * The order's rail: استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم. Done = an ink disc with a check, current = an ink
- * disc with a paper core (`aria-current="step"`), upcoming = a control-line ring. A delivered order is done throughout.
- */
-export function OrderRail({ status, className }: { status: OrderStatus; className?: string }) {
-  const t = useT("account");
-  const at = railIndex(status);
-  if (at === null) return null;
-  const finished = status === "delivered";
-  return (
-    <ol className={className ? `orail ${className}` : "orail"} aria-label={t("order.statusTitle")}>
-      {RAIL.map((step, index) => {
-        const state = finished || index < at ? "done" : index === at ? "current" : "upcoming";
-        return (
-          <li key={step} className="orail__step" data-state={state} aria-current={state === "current" ? "step" : undefined}>
-            <span className="orail__dot" aria-hidden="true">
-              {state === "done" ? <Icon name="check" size={14} /> : null}
-            </span>
-            <span className="orail__label">
-              {t(`order.rail.${step}`)}
-              {state === "done" ? <VisuallyHidden>{` (${t("overview.stepDone")})`}</VisuallyHidden> : null}
-            </span>
-          </li>
-        );
-      })}
-    </ol>
-  );
 }

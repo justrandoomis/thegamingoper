@@ -7,7 +7,8 @@ import { TextLink } from "./TextLink";
 
 /**
  * The contact card — Design System v2 §4.25: ONLY the channels the owner configured, from settings — WhatsApp (the
- * action «راسلنا على واتساب» → wa.me), a phone (a tel: link, the number isolated left-to-right), the address with
+ * action «راسلنا على واتساب» → wa.me), a phone (a tel: link, the number isolated left-to-right), an e-mail address (a
+ * mailto: link), the store's pages elsewhere by their sites' names (new-tab links), the address with
  * «افتح في الخرائط», opening hours with «مفتوح الآن / مغلق الآن» computed from the configured schedule (Iraq time), and
  * the usual reply time only when configured. With no channel configured it renders NOTHING — the caller shows «اكتب
  * لموظف» (the assistant hand-off) instead. Never «قريباً», never an invented number.
@@ -38,6 +39,10 @@ export type ContactChannels = {
   hoursText?: string | null;
   /** The usual reply time, as the owner wrote it («خلال ساعة»). */
   replyTime?: string | null;
+  /** An e-mail address (a mailto: link, read left to right). */
+  email?: string | null;
+  /** The store's pages elsewhere, each by its site's name: [{ label: "Instagram", url: "https://…" }]. */
+  links?: readonly { label: string; url: string }[] | null;
 };
 
 export type ContactCardProps = {
@@ -80,7 +85,12 @@ export function openNow(hours: readonly OpeningSlot[] | null | undefined, now: n
 
 /** Whether any channel is configured (the caller shows «اكتب لموظف» when not). Pure. */
 export function hasContact(channels: ContactChannels | null | undefined): boolean {
-  return Boolean(channels && (channels.whatsapp || channels.phone || channels.address));
+  return Boolean(channels && (channels.whatsapp || channels.phone || channels.address || channels.email || socialLinks(channels).length > 0));
+}
+
+/** The store's pages elsewhere that can be opened: a name and an http(s) address each. Pure. */
+export function socialLinks(channels: ContactChannels | null | undefined): { label: string; url: string }[] {
+  return (channels?.links ?? []).filter((link) => link.label.trim() !== "" && /^https?:\/\//i.test(link.url));
 }
 
 export function ContactCard({ channels, primary = false, layout = "card", now, className }: ContactCardProps) {
@@ -91,6 +101,7 @@ export function ContactCard({ channels, primary = false, layout = "card", now, c
   const digits = channels.whatsapp?.replace(/\D/g, "") ?? "";
   const phone = channels.phone ? (f.phone(channels.phone) ?? channels.phone) : null;
   const telHref = channels.phone ? `tel:${channels.phone.replace(/[^\d+]/g, "")}` : null;
+  const social = socialLinks(channels);
 
   const rows = [
     digits ? (
@@ -122,6 +133,26 @@ export function ContactCard({ channels, primary = false, layout = "card", now, c
             {t("contact.maps")}
           </TextLink>
         ) : null}
+      </li>
+    ) : null,
+    channels.email ? (
+      <li key="mail" className="contact__row">
+        <Icon name="envelope-simple" size={20} className="text-ink-2" />
+        <a href={`mailto:${channels.email.trim()}`} className="link min-w-0">
+          <span className="link__text break-all">
+            <bdi dir="ltr">{channels.email.trim()}</bdi>
+          </span>
+        </a>
+      </li>
+    ) : null,
+    social.length > 0 ? (
+      <li key="social" className="contact__row">
+        <Icon name="link" size={20} className="text-ink-2" />
+        {social.map((link) => (
+          <TextLink key={link.url} as="a" href={link.url} external>
+            <bdi dir="ltr">{link.label}</bdi>
+          </TextLink>
+        ))}
       </li>
     ) : null,
     channels.hoursText || open !== null ? (

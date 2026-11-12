@@ -49,6 +49,17 @@ const QUEUE_ICON: Record<ShellQueueId, IconName> = {
   signin_alerts: "warning-circle",
   access_reviews: "users",
   settings_changes: "sliders-horizontal",
+  promotion_approvals: "percent",
+  support_escalated: "lifebuoy",
+  support_unassigned: "ticket",
+  support_late: "hourglass",
+  staff_leave: "calendar-blank",
+  staff_payroll: "money",
+  staff_advances: "hand-coins",
+  ops_findings: "scales",
+  ops_jobs: "pulse",
+  ops_incidents: "fire",
+  cms_policies: "file-text",
 };
 import type { AdminShellData } from "./shell.server";
 

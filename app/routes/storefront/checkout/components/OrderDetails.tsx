@@ -10,6 +10,8 @@ import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { ORDER_STAGES, orderStage, splitLineName } from "../checkout-form";
+import { Adjustments, summaryCoupon, withFlash } from "./Adjustments";
+import { DigitalCodes } from "./DigitalCodes";
 import { ProofSection, type JustSent } from "./ProofSection";
 import { TransferDetails } from "./TransferDetails";
 
@@ -32,6 +34,10 @@ export type OrderDetailsProps = {
   mode: "owner" | "tracked";
   /** Owner mode: what the proof upload sends to prove access (the token, or nothing for a signed-in owner). */
   access?: { ref: string; token: string | null };
+  /** The stored transfer proof's picture (owner mode), shown again after a reload — a private path the file route authorizes. */
+  proofUrl?: string | null;
+  /** An account's order opened with its link: its digital codes open for the owner signed in (the core's rule) — say so. */
+  codesSignIn?: boolean;
   /** Heading level of the sections (the page's own heading is above them). */
   headingLevel?: 2 | 3;
   className?: string;
@@ -75,7 +81,7 @@ export function When({ at, f, kind = "dateTime" }: { at: number; f: Formatters; 
 
 const isTransfer = (method: string | null) => method === "bank_transfer" || method === "zaincash";
 
-export function OrderDetails({ order, mode, access, headingLevel = 2, className }: OrderDetailsProps) {
+export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn = false, headingLevel = 2, className }: OrderDetailsProps) {
   const t = useT("checkout");
   const f = useFormat();
   const H = `h${headingLevel}` as const;
@@ -135,8 +141,13 @@ export function OrderDetails({ order, mode, access, headingLevel = 2, className 
             ) : null}
           </>
         ) : null}
-        {transfer && order.status === "payment_review" ? <SubmittedProof order={order} justSent={justSent} /> : null}
+        {transfer && order.status === "payment_review" ? <SubmittedProof order={order} justSent={justSent} storedUrl={mode === "owner" ? proofUrl : null} /> : null}
       </section>
+
+      {/* ── digital codes: once paid, behind the token or the owner's session (revealed one at a time, audited) ── */}
+      {order.digital && order.digital.length > 0 ? (
+        <DigitalCodes lines={order.digital} mode={mode} token={access?.token ?? null} signInRef={codesSignIn ? order.ref : null} closed={order.status === "cancelled" || order.status === "returned"} headingLevel={headingLevel} />
+      ) : null}
 
       {/* ── shipments ── */}
       {order.shipments.length > 0 ? (
@@ -177,17 +188,23 @@ export function OrderDetails({ order, mode, access, headingLevel = 2, className 
           const { name, option } = splitLineName(line.name);
           const facts = lineFacts(line, t, f);
           // (not isolated: the page's direction orders «Nintendo Switch 2 Edition (نسخة فيزيائية)» as the cart line does)
-          return { id: line.id, name, optionsLabel: option ? `${option} · ${facts}` : facts, lineTotalIqd: line.lineTotalIqd, image: line.image };
+          return withFlash({ id: line.id, name, optionsLabel: option ? `${option} · ${facts}` : facts, lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], t, f);
         })}
         subtotalIqd={order.totals.subtotalIqd}
         discountIqd={order.totals.discountIqd}
         shippingIqd={order.totals.shippingIqd}
         totalIqd={order.totals.totalIqd}
         count={order.itemCount}
-        coupon={order.coupon ? { code: order.coupon.code, label: "" } : null}
+        coupon={summaryCoupon(order.adjustments?.discounts, order.coupon ? { code: order.coupon.code, label: "" } : null)}
         shipping="governorate"
         approx="off"
       >
+        {/* every discount as charged, the waived delivery, a split payment's wallet part */}
+        <Adjustments
+          discounts={order.adjustments?.discounts ?? []}
+          waiver={order.adjustments?.shippingWaiver ?? null}
+          split={(order.walletPaidIqd ?? 0) > 0 ? { walletIqd: order.walletPaidIqd ?? 0, restIqd: order.totals.totalIqd - (order.walletPaidIqd ?? 0) } : null}
+        />
         <div className="co-pair">
           <section aria-labelledby={`${order.ref}-payment`} className="grid content-start gap-2">
             <Sub id={`${order.ref}-payment`} className="type-sm-strong text-ink">
@@ -288,7 +305,8 @@ function NextStep({ order }: { order: OrderView }) {
   const payment = order.payment;
   const iqd = (amount: number) => <bdi className="nums font-semibold">{f.iqd(amount)}</bdi>;
   let next: ReactNode = null;
-  if (order.status === "new" && payment.method === "cod") {
+  // cash still to collect (an order of 0 — all points and free delivery — is placed paid: nothing to hand over)
+  if (order.status === "new" && payment.method === "cod" && payment.status === "cod_due") {
     next = fillNodes(t("order.next.cod"), { total: iqd(payment.amountDueIqd || order.totals.totalIqd) });
   } else if (order.status === "awaiting_payment") {
     if (payment.canUploadProof) {
@@ -335,8 +353,11 @@ function paymentStatusText(order: OrderView, t: (key: string, vars?: Record<stri
   return t(`order.payment.status.${payment.status}`);
 }
 
-/** The proof under review: the words, what the shopper declared, and the picture they just sent (this visit only). */
-function SubmittedProof({ order, justSent }: { order: OrderView; justSent: JustSent | null }) {
+/**
+ * The proof under review: the words, what the shopper declared, and its picture — the one just sent (this visit), or,
+ * after a reload, the stored one through the private-file route (CONTRACTS §1 "Showing a stored proof back").
+ */
+function SubmittedProof({ order, justSent, storedUrl = null }: { order: OrderView; justSent: JustSent | null; storedUrl?: string | null }) {
   const t = useT("checkout");
   const f = useFormat();
   const proof = order.payment.proof;
@@ -364,6 +385,13 @@ function SubmittedProof({ order, justSent }: { order: OrderView; justSent: JustS
           </span>
           <bdi className="min-w-0 truncate type-xs text-ink-2">{justSent.name}</bdi>
         </span>
+      ) : storedUrl ? (
+        <a href={storedUrl} target="_blank" rel="noopener" className="flex items-center gap-3 justify-self-start rounded-sm">
+          <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-sm bg-niche">
+            <img src={storedUrl} width={64} height={64} alt={t("proof.submitted.preview")} className="size-full object-cover" loading="lazy" decoding="async" />
+          </span>
+          <span className="type-xs text-ink-2 underline underline-offset-4">{t("proof.submitted.preview")}</span>
+        </a>
       ) : null}
     </div>
   );

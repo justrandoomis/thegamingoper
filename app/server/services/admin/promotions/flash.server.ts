@@ -44,6 +44,7 @@ import { approvals, flashSaleItems, flashSales, priceChanges, products, variants
 import { expectChanged, expectThat, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, zodFieldErrors } from "~/server/errors";
 import { costBasisFor } from "~/server/services/admin/pricing/facts.server";
+import { appliedPriceHistory } from "~/server/services/admin/pricing/reference.server";
 import { dropReferencePrice, evaluatePriceChange, isOnStep, MAX_PRICE_IQD, OVERRIDE_REASONS, PRICE_STEP_IQD, type AppliedChange, type ChangeReason } from "~/server/services/admin/pricing/rules";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getSetting } from "~/server/settings.server";
@@ -103,19 +104,8 @@ async function itemsOf(db: Db, saleId: string): Promise<ItemRow[]> {
     .orderBy(asc(flashSaleItems.variantId));
 }
 
-/** The applied price changes of these SKUs (pricing 03's history), for the 30-day high a cut is measured from. */
-async function appliedHistory(db: Db, variantIds: readonly string[]): Promise<Map<string, AppliedChange[]>> {
-  const out = new Map<string, AppliedChange[]>();
-  for (let i = 0; i < variantIds.length; i += 90) {
-    const rows = await db
-      .select({ variantId: priceChanges.variantId, at: priceChanges.createdAt, oldPriceIqd: priceChanges.oldPriceIqd, newPriceIqd: priceChanges.newPriceIqd, approvedBy: priceChanges.approvedBy })
-      .from(priceChanges)
-      .where(and(inArray(priceChanges.variantId, variantIds.slice(i, i + 90)), eq(priceChanges.status, "applied")))
-      .orderBy(asc(priceChanges.createdAt));
-    for (const row of rows) out.set(row.variantId, [...(out.get(row.variantId) ?? []), { at: row.at, oldPriceIqd: row.oldPriceIqd, newPriceIqd: row.newPriceIqd, approved: row.approvedBy !== null }]);
-  }
-  return out;
-}
+/** The applied price changes of these SKUs — pricing 03's own helper (follow-up 2026-11-12: this module kept a copy). */
+const appliedHistory = appliedPriceHistory;
 
 /**
  * Each item checked: pricing's evaluation exactly as a price change would be (the cut measured from the highest price

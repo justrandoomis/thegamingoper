@@ -119,3 +119,11 @@ Browser (Edge, puppeteer-core): every page at 390 and 1440, light and dark, ar a
 approver, a warehouse clerk (no cost) and a cashier (403); dialogs (approve, cancel, return, spread) and a validation
 error. Screenshots and scripts in `.shots/admin-purchasing/` (review shots in `review/`; demo records: suppliers
 `SUP-*`, location `DEMO-PUR`, the freight invoice `GGD-2026-0918-FRT` with a charges variance).
+
+## Module follow-up 2026-11-12
+
+`purchasingQueueCounts().mismatch` (the bell, the home) leaves out the invoices the employee recorded: only someone else may accept their variances (`approver_is_requester`).
+
+Tests (each failed before its change): `tests/admin-purchasing-followup.test.ts`.
+
+Review of the follow-up (2026-11-12): that count opens its own list — the invoices filter `to_accept` (mismatches the viewer did not record), which the home card links to, so the card's number is the list's; `mismatch` still lists them all. The bell's `invoice_mismatches` link should be `?status=to_accept` too (requested). Test: `tests/admin-purchasing-followup.test.ts` ("the card's count is the list it opens").

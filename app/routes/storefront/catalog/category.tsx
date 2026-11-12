@@ -4,6 +4,11 @@
  * the devices its products fit), the product list with filters, sorts and «اعرض المزيد», then the hubs of the devices
  * its products fit. An empty department says so and shows what arrived lately.
  * The used-devices category belongs to the used marketplace: /c/<used> redirects to /used.
+ *
+ * The content module (admin 17) reaches the page: the category's banners at the top (`category_top`, getStoreBanners),
+ * the filter groups in the order staff gave this category (else the default arrangement, else the page's own), the
+ * title, description and noindex staff wrote for search engines (`categories.seo`), and — for a category that does
+ * not exist (any more) — a redirect staff set for its address before the 404.
  */
 import { data, redirect } from "react-router";
 
@@ -11,6 +16,8 @@ import type { Route } from "./+types/category";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { localePath } from "~/lib/locales";
+import { StoreBanners } from "~/routes/storefront/content/components/StoreBanners";
+import { redirectIfMoved } from "~/routes/storefront/content/redirect.server";
 import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { getCustomer } from "~/server/auth/customer.server";
@@ -18,6 +25,7 @@ import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { getNewArrivals } from "~/server/services/catalog/cards.server";
 import { listProducts, scopePicks } from "~/server/services/catalog/listing.server";
+import { getStoreBanners, type ShopBanner } from "~/server/services/content.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
@@ -27,28 +35,50 @@ import { ChipRow, DeviceShortcuts, KeepInView, TitleRow, useHubLead, type RailOp
 import { ListingView } from "./components/ListingView";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
 import { LISTING_SORTS, filtersOf, readListingQuery, type FilterGroup } from "./listing-model";
-import { PAGE_SLUG, arrivalsShelf, listOf, wishedOf, withCursorFallback } from "./list.server";
+import { PAGE_SLUG, arrivalsShelf, categoryCmsOf, filterOrderOf, listOf, wishedOf, withCursorFallback } from "./list.server";
 import "./catalog.css";
 
-export async function loader({ params, request, context }: Route.LoaderArgs) {
+export async function loader({ params, request, context, url: pageUrl }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const slug = params.category;
-  if (!PAGE_SLUG.test(slug)) throw data({ error: "not_found" }, { status: 404 });
+  const db = getDb();
+  if (!PAGE_SLUG.test(slug)) {
+    await redirectIfMoved(db, pageUrl, ctx);
+    throw data({ error: "not_found" }, { status: 404 });
+  }
   const url = new URL(request.url);
   const query = readListingQuery(url.searchParams);
-  const db = getDb();
-  const result = await withCursorFallback(url, query.cursor !== null, () =>
-    listProducts(db, ctx.locale, { scope: { kind: "category", slug }, filters: filtersOf(query), sort: query.sort, cursor: query.cursor, cumulative: true, now: ctx.now }),
-  );
-  if (!result || !result.hub.category) throw data({ error: "not_found" }, { status: 404 });
+  // the list, and the content module's side of the page beside it (it needs only the slug): the category's id — for its
+  // banners and its filter arrangement — and its SEO words
+  const [result, cms] = await Promise.all([
+    withCursorFallback(url, query.cursor !== null, () =>
+      listProducts(db, ctx.locale, { scope: { kind: "category", slug }, filters: filtersOf(query), sort: query.sort, cursor: query.cursor, cumulative: true, now: ctx.now }),
+    ),
+    categoryCmsOf(db, slug, ctx.locale),
+  ]);
+  if (!result || !result.hub.category) {
+    // a category whose address staff redirected in the content module goes there (same-site only), else 404
+    await redirectIfMoved(db, pageUrl, ctx);
+    throw data({ error: "not_found" }, { status: 404 });
+  }
   if (result.hub.category.kind === "used") throw redirect(localePath("/used", ctx.locale));
-
-  const picks = result.total === 0 && result.scopeTotal > 0 ? await scopePicks(db, ctx.locale, { kind: "category", slug }, { limit: 4, now: ctx.now }) : [];
-  // an empty department: what arrived lately, so the page still leads somewhere (the shelf says «وصل حديثاً»: no «جديد»)
-  const arrivals = result.scopeTotal === 0 ? arrivalsShelf(await getNewArrivals(db, ctx.locale, { limit: 8, now: ctx.now })) : [];
+  // everything else the page reads, in one round: the staff's filter order and banners, the picks of a list filtered to
+  // nothing, the arrivals of an empty department (so the page still leads somewhere: the shelf says «وصل حديثاً», no
+  // «جديد») and the shopper (for the hearts)
+  const [filterOrder, banners, picks, arrivals, session] = await Promise.all([
+    filterOrderOf(db, cms?.id ?? null),
+    cms
+      ? getStoreBanners(db, ctx.locale, "category_top", { now: ctx.now, categoryId: cms.id, origins: [ctx.origin] }).catch((error: unknown): ShopBanner[] => {
+          console.error("[catalog] banners not read", error);
+          return [];
+        })
+      : Promise.resolve([] as ShopBanner[]),
+    result.total === 0 && result.scopeTotal > 0 ? scopePicks(db, ctx.locale, { kind: "category", slug }, { limit: 4, now: ctx.now }) : Promise.resolve([]),
+    result.scopeTotal === 0 ? getNewArrivals(db, ctx.locale, { limit: 8, now: ctx.now }).then(arrivalsShelf) : Promise.resolve([]),
+    getCustomer(ctx, db),
+  ]);
   const t = serverT(ctx.locale, "catalog");
   const category = result.hub.category;
-  const session = await getCustomer(ctx, db);
   const customerId = session?.customer.id ?? null;
   return {
     list: listOf(result),
@@ -63,15 +93,22 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
       { locale: ctx.locale, context: "search", platformSlugs: category.platform ? [category.platform] : undefined, personalOnly: true, now: ctx.now },
       8,
     ),
-    meta: { title: category.name, description: t("meta.category", { name: category.name, n: String(result.scopeTotal) }) },
+    filterOrder,
+    banners,
+    // what staff wrote for search engines wins over the page's own words (content module 17.04, categories.seo)
+    meta: {
+      title: cms?.seo.title ?? category.name,
+      description: cms?.seo.description ?? t("meta.category", { name: category.name, n: String(result.scopeTotal) }),
+      noindex: cms?.seo.noindex ?? false,
+    },
     i18n: messagesFor(ctx.locale, "catalog"),
   };
 }
 
-export const meta: Route.MetaFunction = (args) => shellMeta(args, { title: args.loaderData?.meta.title, description: args.loaderData?.meta.description });
+export const meta: Route.MetaFunction = (args) => shellMeta(args, { title: args.loaderData?.meta.title, description: args.loaderData?.meta.description, noindex: args.loaderData?.meta.noindex });
 
 export default function CategoryPage({ loaderData }: Route.ComponentProps) {
-  const { list, hub, picks, arrivals, wished } = loaderData;
+  const { list, hub, picks, arrivals, wished, banners, filterOrder } = loaderData;
   const t = useT("catalog");
   const ui = useT("ui");
   const f = useFormat();
@@ -117,6 +154,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="page catalog-page" onClickCapture={hold}>
       <TitleRow crumbs={crumbs} title={category.name} count={list.scopeTotal > 0 ? count : null} lead={lead} />
+      <StoreBanners banners={banners} label={t("banners.label")} ctaFallback={t("banners.open")} className="mb-6" />
       {list.scopeTotal === 0 ? (
         <>
           <EmptyState
@@ -150,6 +188,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
             picksTitle={t("zero.picksCategory")}
             elsewhere={rail ? [rail.group] : []}
             wished={wished}
+            filterOrder={filterOrder}
           />
           <DeviceShortcuts layout="grid" devices={hub.devices} title={t("hub.devicesByCategory")} note={t("hub.devicesByCategoryNote")} id="catalog-devices-title" slot="grid" className="catalog-after" />
         </>

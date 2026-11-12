@@ -33,7 +33,7 @@ export async function action({ request, context, params }: Route.ActionArgs) {
   try {
     switch (intent) {
       case "start":
-        return ok(intent, await startPolicyDraft(req.db, req.actor, { slug: params.slug, reason: text(form, "reason"), version }, req.now, req.ctx.storeMode));
+        return ok(intent, await startPolicyDraft(req.db, req.actor, { slug: params.slug, reason: text(form, "reason"), version, from: text(form, "from") === "approved" ? "approved" : undefined }, req.now, req.ctx.storeMode));
       case "save":
         return ok(intent, await savePolicyDraft(req.db, req.actor, { slug: params.slug, version, textAr: text(form, "textAr"), textEn: text(form, "textEn"), textCkb: text(form, "textCkb") }, req.now));
       case "publish":
@@ -55,7 +55,7 @@ export default function PolicyPage({ loaderData }: Route.ComponentProps) {
   const { editor } = loaderData;
   const version = editor.version === null ? "" : String(editor.version);
   const [texts, setTexts] = useState(editor.text);
-  const [dialog, setDialog] = useState<"start" | "publish" | "archive" | null>(null);
+  const [dialog, setDialog] = useState<"start" | "startApproved" | "publish" | "archive" | null>(null);
   const save = useFetcher<{ ok: boolean } & Record<string, unknown>>();
   const preview = textToBlocks(texts.ar);
   const dirty = texts.ar !== editor.text.ar || texts.en !== editor.text.en || texts.ckb !== editor.text.ckb;
@@ -81,10 +81,15 @@ export default function PolicyPage({ loaderData }: Route.ComponentProps) {
             <Note icon="file-text">
               <p>{editor.source === "none" ? t("policy.noRow") : t("policy.noDraft")}</p>
               {editor.can.edit ? (
-                <div>
+                <div className="sec-actions">
                   <Key size="sm" icon="copy" onClick={() => setDialog("start")}>
                     {t("policy.start")}
                   </Key>
+                  {editor.fromApproved ? (
+                    <Key size="sm" icon="seal-check" onClick={() => setDialog("startApproved")}>
+                      {t("policy.startApproved")}
+                    </Key>
+                  ) : null}
                 </div>
               ) : null}
             </Note>
@@ -113,6 +118,11 @@ export default function PolicyPage({ loaderData }: Route.ComponentProps) {
                     <Key size="sm" icon="copy" onClick={() => setDialog("start")}>
                       {t("policy.restart")}
                     </Key>
+                    {editor.fromApproved ? (
+                      <Key size="sm" icon="seal-check" onClick={() => setDialog("startApproved")}>
+                        {t("policy.startApproved")}
+                      </Key>
+                    ) : null}
                   </div>
                 ) : null}
               </save.Form>
@@ -161,6 +171,16 @@ export default function PolicyPage({ loaderData }: Route.ComponentProps) {
         confirmLabel={t("policy.start")}
         reason={{ label: t("common.reason") }}
         fields={{ intent: "start", version }}
+        successMessage={t("policy.started")}
+      />
+      <ActionDialog
+        open={dialog === "startApproved"}
+        onClose={() => setDialog(null)}
+        title={t("policy.startApprovedTitle")}
+        consequence={editor.row?.hasDraft ? t("policy.startApprovedReplace") : t("policy.startApprovedConsequence")}
+        confirmLabel={t("policy.startApproved")}
+        reason={{ label: t("common.reason") }}
+        fields={{ intent: "start", version, from: "approved" }}
         successMessage={t("policy.started")}
       />
       <ActionDialog

@@ -1,7 +1,7 @@
 import { Icon, type IconName } from "~/art/Icon";
-import { useT } from "~/i18n/react";
+import { LocaleLink, useT } from "~/i18n/react";
 import type { CompatibilityStatus } from "~/lib/dto";
-import { BidiText } from "./BidiText";
+import { BidiText, isolate } from "./BidiText";
 import { cx } from "./cx";
 
 /**
@@ -37,7 +37,7 @@ const LOOK: Record<CompatibilityStatus, Look> = {
 export function CompatBadge({ status, device, note, className }: CompatBadgeProps) {
   const t = useT("ui-shop");
   const look = LOOK[status] ?? LOOK.unverified;
-  const words = device ? t(`compat.${look.key}With`, { device: `⁨${device}⁩` }) : t(`compat.${look.key}`);
+  const words = device ? t(`compat.${look.key}With`, { device: isolate(device) }) : t(`compat.${look.key}`);
   return (
     <span className={cx("inline-grid gap-0.5", className)} data-compat={status}>
       <span className={cx("inline-flex items-start gap-1.5 type-sm-strong", look.tone)}>
@@ -49,9 +49,18 @@ export function CompatBadge({ status, device, note, className }: CompatBadgeProp
   );
 }
 
-export type CompatRow = { status: CompatibilityStatus; device: string; note?: string | null };
+export type CompatRow = {
+  status: CompatibilityStatus;
+  device: string;
+  note?: string | null;
+  /** The device's page (a locale-less path): the whole row becomes a link to it. */
+  href?: string | null;
+};
 
-/** Compatibility rows in one paper card: a mark, the device, and its state word («يعمل جزئياً · …»). */
+/**
+ * Compatibility rows in one paper card: a mark, the device, and its state word («يعمل جزئياً · …»). A row with `href`
+ * is one link to the device (its name is the link text; the whole row is the target; the ring goes round the row).
+ */
 export function CompatList({ rows, className }: { rows: readonly CompatRow[]; className?: string }) {
   const t = useT("ui-shop");
   if (rows.length === 0) return null;
@@ -59,13 +68,23 @@ export function CompatList({ rows, className }: { rows: readonly CompatRow[]; cl
     <ul className={cx("compat", className)}>
       {rows.map((row, index) => {
         const look = LOOK[row.status] ?? LOOK.unverified;
+        const name = <BidiText text={row.device} />;
         return (
-          <li key={`${row.device}-${index}`} className="compat__row" data-state={look.state}>
+          <li key={`${row.device}-${index}`} className={cx("compat__row", row.href && "relative")} data-state={look.state}>
             <span className="compat__mark">
               <Icon name={look.icon === "check-circle" ? "check" : look.icon === "x-circle" ? "x" : look.icon} size={16} />
             </span>
             <span className="compat__name">
-              <BidiText text={row.device} />
+              {row.href ? (
+                <LocaleLink
+                  to={row.href}
+                  className="underline decoration-line-2 underline-offset-4 outline-none after:absolute after:inset-0 after:rounded-lg hover:decoration-ink focus-visible:after:outline-2 focus-visible:after:outline-offset-[-2px] focus-visible:after:outline-(--focus)"
+                >
+                  {name}
+                </LocaleLink>
+              ) : (
+                name
+              )}
             </span>
             <span className="compat__state">
               {t(`compat.state.${look.key}`)}

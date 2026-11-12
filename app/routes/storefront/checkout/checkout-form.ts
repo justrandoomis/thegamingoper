@@ -52,6 +52,12 @@ export type CheckoutDraft = {
   marketingConsent: boolean;
   /** Signed-in customers: add this address to the address book once the order exists. Never pre-checked. */
   saveAddress: boolean;
+  /** Signed-in customers: points to redeem, as typed ("" = none). The server prices what may be redeemed. */
+  redeemPoints: string;
+  /** A friend's referral code (optional). It changes no price. */
+  referralCode: string;
+  /** Signed-in customers whose balance is below the total: pay the balance from the wallet, the rest by the chosen method. */
+  useWallet: boolean;
 };
 
 export type FieldName = keyof CheckoutDraft;
@@ -69,18 +75,23 @@ export const EMPTY_DRAFT: CheckoutDraft = {
   paymentMethod: "",
   marketingConsent: false,
   saveAddress: false,
+  redeemPoints: "",
+  referralCode: "",
+  useWallet: false,
 };
 
 /** The draft's yes/no fields (a checkbox each). */
-const FLAGS = new Set<FieldName>(["marketingConsent", "saveAddress"]);
+const FLAGS = new Set<FieldName>(["marketingConsent", "saveAddress", "useWallet"]);
 
 /**
  * Fields in the order they appear (the first one with a problem takes the focus). The delivery step ends with the
  * marketing consent and, for signed-in customers, "save this address" (Design System v2 §6.10).
  */
 export const ADDRESS_FIELDS = ["phone", "contactName", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow", "marketingConsent", "saveAddress"] as const satisfies readonly FieldName[];
-export const PAYMENT_FIELDS = ["paymentMethod"] as const satisfies readonly FieldName[];
-export const REVIEW_FIELDS = [] as const satisfies readonly FieldName[];
+/** The payment step: the method, the wallet's part of a split payment, the points to redeem. */
+export const PAYMENT_FIELDS = ["paymentMethod", "useWallet", "redeemPoints"] as const satisfies readonly FieldName[];
+/** The review step: the referral code (next to the summary). */
+export const REVIEW_FIELDS = ["referralCode"] as const satisfies readonly FieldName[];
 
 export function stepOfField(field: string): Step {
   if ((ADDRESS_FIELDS as readonly string[]).includes(field)) return "address";
@@ -127,7 +138,17 @@ export type ValidationContext = {
   methods: readonly string[];
   /** The wallet covers the total (signed-in customers only). */
   walletEnough: boolean;
+  /** The most points this cart can redeem now (0 = none: a guest, no balance). Optional for older callers. */
+  pointsMax?: number;
 };
+
+/** Points as typed: Latin or Arabic-Indic digits, separators allowed; "" is 0; anything else null. Pure. */
+export function parsePoints(text: string): number | null {
+  const latin = toLatinDigits(text.trim()).replace(/[\s,٬،']/g, "");
+  if (latin === "") return 0;
+  if (!/^\d{1,8}$/.test(latin)) return null;
+  return Number(latin);
+}
 
 const length = (value: string) => value.trim().length;
 
@@ -162,8 +183,17 @@ export function validateField(name: FieldName, draft: CheckoutDraft, context: Va
       if (!draft.paymentMethod) return { code: "required" };
       if (!context.methods.includes(draft.paymentMethod)) return { code: "unavailable" };
       return draft.paymentMethod === "wallet" && !context.walletEnough ? { code: "wallet_insufficient" } : null;
+    case "redeemPoints": {
+      const points = parsePoints(draft.redeemPoints);
+      if (points === null) return { code: "invalid" };
+      const max = context.pointsMax ?? 0;
+      return points > max ? { code: "too_many", count: max } : null;
+    }
+    case "referralCode":
+      return draft.referralCode.trim().length > 40 ? { code: "too_long", count: 40 } : null;
     case "marketingConsent":
     case "saveAddress":
+    case "useWallet":
       return null;
   }
 }
@@ -200,16 +230,26 @@ export function firstStepWithIssue(issues: FieldIssues): Step | null {
 export function issuesFromServer(fields: Record<string, string> | undefined | null): FieldIssues {
   const issues: FieldIssues = {};
   if (!fields) return issues;
-  for (const [field, key] of Object.entries(fields)) {
+  for (const [raw, key] of Object.entries(fields)) {
+    // the server's name for the wallet part of a split payment is this form's «use my wallet» box
+    const field = raw === "walletIqd" ? "useWallet" : raw;
     if (!(field in EMPTY_DRAFT)) continue;
     issues[field as FieldName] = { code: `server.${key}` };
   }
   return issues;
 }
 
-/** The fields placeOrder reads, as form values (what the page submits and what a no-script form posts). */
-export function draftToForm(draft: CheckoutDraft, extra: { idempotencyKey: string; expectedTotalIqd: number }): Record<string, string> {
+/**
+ * The fields placeOrder reads, as form values (what the page submits and what a no-script form posts). `walletIqd`:
+ * the wallet's part of a split payment (the page sends the balance when «use my wallet» is ticked; the server checks
+ * it again).
+ */
+export function draftToForm(draft: CheckoutDraft, extra: { idempotencyKey: string; expectedTotalIqd: number; walletIqd?: number }): Record<string, string> {
+  const points = parsePoints(draft.redeemPoints) ?? 0;
   return {
+    redeemPoints: points > 0 ? String(points) : "",
+    referralCode: draft.referralCode.trim(),
+    walletIqd: draft.useWallet && draft.paymentMethod !== "wallet" && (extra.walletIqd ?? 0) > 0 ? String(extra.walletIqd) : "",
     intent: "place",
     idempotencyKey: extra.idempotencyKey,
     expectedTotalIqd: String(extra.expectedTotalIqd),
@@ -374,7 +414,7 @@ const posted = (value: string | undefined) => value === "on" || value === "true"
 
 /** The fields of a plain form post (a page rendered without script), as a draft. */
 export function draftFromPosted(values: Record<string, string>): CheckoutDraft {
-  return cleanDraft({ ...values, marketingConsent: posted(values.marketingConsent), saveAddress: posted(values.saveAddress), preferredWindow: values.preferredWindow === "any" ? "" : values.preferredWindow });
+  return cleanDraft({ ...values, marketingConsent: posted(values.marketingConsent), saveAddress: posted(values.saveAddress), useWallet: posted(values.useWallet), preferredWindow: values.preferredWindow === "any" ? "" : values.preferredWindow });
 }
 
 /**

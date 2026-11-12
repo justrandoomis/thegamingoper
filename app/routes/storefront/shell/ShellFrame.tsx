@@ -46,29 +46,31 @@ export type ShellFrameProps = {
   messages: MessageTree | undefined;
   /** The layout's ErrorBoundary is rendering: the pages' handles (tabBar: false, chrome) no longer apply. */
   errored?: boolean;
+  /** Words the search fields start with (the header's and the phone sheet's): a missing product's slug words. */
+  searchQuery?: string;
   children: ReactNode;
 };
 
 type RootShellData = { storeMode?: "demo" | "live" };
 
-export function ShellFrame({ shell, messages, errored = false, children }: ShellFrameProps) {
+export function ShellFrame({ shell, messages, errored = false, searchQuery, children }: ShellFrameProps) {
   return (
     <ShellMessages messages={messages}>
-      <Frame shell={shell} errored={errored}>
+      <Frame shell={shell} errored={errored} searchQuery={searchQuery}>
         {children}
       </Frame>
     </ShellMessages>
   );
 }
 
-function Frame({ shell, errored, children }: { shell: ShellData | null; errored: boolean; children: ReactNode }) {
+function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | null; errored: boolean; searchQuery?: string; children: ReactNode }) {
   const t = useShellT();
   const root = useRouteLoaderData("root") as RootShellData | undefined;
   const demo = root?.storeMode !== "live";
   const matches = useMatches();
   const location = useLocation();
   const path = splitLocale(location.pathname).path;
-  const { chrome, tabBar, task, back } = shellChrome(matches, { errored, path });
+  const { chrome, tabBar, task, back, offline } = shellChrome(matches, { errored, path });
   const online = useOnline();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -92,19 +94,19 @@ function Frame({ shell, errored, children }: { shell: ShellData | null; errored:
         <>
           {demo ? <DemoStrip /> : null}
           <MegaHostContext value={megaHost}>
-            <Header shell={shell} demo={demo} task={task ? { back: back ?? backFallback(path) } : null} onSearch={() => setSearchOpen(true)} />
+            <Header shell={shell} demo={demo} task={task ? { back: back ?? backFallback(path) } : null} onSearch={() => setSearchOpen(true)} searchQuery={searchQuery} />
           </MegaHostContext>
           <div ref={setMegaHost} className="contents" />
         </>
       )}
-      <ShellOffline form={chrome !== "store"} />
+      <ShellOffline words={offline} />
       <main id="main" tabIndex={-1} className="shell-main">
         {children}
       </main>
       {chrome === "store" ? <Footer shell={shell} demo={demo} /> : <TaskFooter shell={shell} demo={demo} />}
       {tabBar ? <TabBar sheetOpen={sheetOpen} onCategories={() => setSheetOpen(true)} /> : null}
       {tabBar ? <CategoriesSheet open={sheetOpen} onClose={() => setSheetOpen(false)} shell={shell} /> : null}
-      {chrome !== "checkout" ? <SearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} platforms={shell?.nav.platforms ?? []} /> : null}
+      {chrome !== "checkout" ? <SearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} platforms={shell?.nav.platforms ?? []} query={searchQuery} /> : null}
       <Toaster offset="var(--shell-toast-top)" />
     </div>
   );

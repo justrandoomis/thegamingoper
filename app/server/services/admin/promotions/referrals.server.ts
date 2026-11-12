@@ -34,6 +34,7 @@ import { cleanBlock } from "~/server/text.server";
 import { rewardPointsStatement } from "./loyalty.server";
 import { ID, KEY, SECTION_READ, assertAny, customerLabels, employeeNames, idFromKey, num, phoneOf } from "./shared.server";
 import { DAY_MS, PAGE_SIZE, REFERRAL, latinDigits, parseWhole, type ReferralCodeRow, type ReferralFilters, type ReferralRow, type ReferralSignal, type ReferralsPage, type ReferralStatus, type ReferralView } from "./types";
+import { programRules } from "./program.server";
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -82,12 +83,14 @@ type RedemptionJoin = {
 };
 
 async function signalsFor(db: Db, rows: readonly RedemptionJoin[], now: number): Promise<Map<string, { signals: ReferralSignal[]; qualifies: boolean; orderRef: string | null }>> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12)
+  const referral = (await programRules(db)).referral;
   const out = new Map<string, { signals: ReferralSignal[]; qualifies: boolean; orderRef: string | null }>();
   if (rows.length === 0) return out;
   const windowDays = await getSetting(db, "returns.window_days");
   const orderIds = rows.map((row) => row.order_id).filter((id): id is string => Boolean(id));
   const people = [...new Set(rows.flatMap((row) => [row.referrer_id, row.referred_customer_id].filter((id): id is string => Boolean(id))))];
-  const since = now - REFERRAL.deviceWindowDays * DAY_MS;
+  const since = now - referral.deviceWindowDays * DAY_MS;
   const [orderRows, addressRows, sessionRows] = await Promise.all([
     orderIds.length ? db.select({ id: orders.id, ref: orders.ref, status: orders.status, deliveredAt: orders.deliveredAt, governorateId: orders.governorateId, addressText: orders.addressText }).from(orders).where(inArray(orders.id, orderIds)) : Promise.resolve([]),
     people.length ? db.select({ customerId: addresses.customerId, governorateId: addresses.governorateId, addressText: addresses.addressText }).from(addresses).where(inArray(addresses.customerId, people)) : Promise.resolve([]),
@@ -208,16 +211,21 @@ export const IssueCodeInput = z
     customerId: z.string().regex(ID, "invalid").optional(),
     /** Or the customer's account number, as staff type it. */
     phone: z.string().max(30, "too_long").optional(),
-    maxUses: z.preprocess((value) => (value === "" || value === null || value === undefined ? REFERRAL.defaultMaxUses : parseWhole(value) ?? Number.NaN), z.number({ error: "number_invalid" }).int("number_invalid").min(1, "too_small").max(REFERRAL.maxUsesCap, "too_big")),
+    // left blank: the default in force (the setting promotions.referral), applied by issueReferralCode
+    maxUses: z.preprocess((value) => (value === "" || value === null || value === undefined ? undefined : parseWhole(value) ?? Number.NaN), z.number({ error: "number_invalid" }).int("number_invalid").min(1, "too_small").max(REFERRAL.maxUsesCap, "too_big").optional()),
   })
   .refine((input) => Boolean(input.customerId || input.phone), { path: ["phone"], message: "required" });
 
 /** Gives a customer their referral code (one per customer; asking again returns the same code). */
 export async function issueReferralCode(db: Db, actor: Actor, raw: unknown, now: number): Promise<{ codeId: string; code: string; replayed: boolean }> {
-  assertCan(actor, "promotions.referral.manage");
+  if (actor.kind !== "customer") assertCan(actor, "promotions.referral.manage");
   const parsed = IssueCodeInput.safeParse(raw);
   if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "referral.code");
   const input = parsed.data;
+  // a customer asks for their OWN code in the storefront account (2026-11-12): by their id, never a number, the default cap
+  if (actor.kind === "customer" && (input.phone || input.customerId !== actor.id || input.maxUses !== undefined)) throw new AppError("forbidden", 403, { detail: "own_code_only" });
+  // a code's uses: as typed, or the default in force (the setting promotions.referral — follow-up 2026-11-12)
+  const maxUses = input.maxUses ?? (await programRules(db)).referral.defaultMaxUses;
   let customerId = input.customerId;
   if (!customerId) {
     const phone = normalizeIraqPhone(input.phone ?? "");
@@ -235,8 +243,8 @@ export async function issueReferralCode(db: Db, actor: Actor, raw: unknown, now:
     const code = randomCode();
     try {
       await runBatch(db, [
-        db.insert(referralCodes).values({ id: codeId, code, customerId: customer.id, maxUses: input.maxUses, uses: 0, isActive: true, createdAt: now }),
-        auditStatement(db, { actor, action: "promotions.referral.code", entityType: "customer", entityId: customer.id, after: { code, maxUses: input.maxUses }, at: now }),
+        db.insert(referralCodes).values({ id: codeId, code, customerId: customer.id, maxUses, uses: 0, isActive: true, createdAt: now }),
+        auditStatement(db, { actor, action: "promotions.referral.code", entityType: "customer", entityId: customer.id, after: { code, maxUses }, at: now }),
       ]);
       return { codeId, code, replayed: false };
     } catch (error) {
@@ -336,6 +344,10 @@ export const RewardInput = z.object({ referralId: z.string().regex(ID, "invalid"
 
 /** Rewards the referrer once the referred order qualifies (delivered, past the return window). */
 export async function rewardReferral(db: Db, actor: Actor, raw: unknown, now: number): Promise<{ points: number }> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12); the reward's points expire
+  // after the points programme's days in force too (review 2026-11-12: they kept the constant)
+  const program = await programRules(db);
+  const referral = program.referral;
   assertCan(actor, "promotions.referral.manage");
   const parsed = RewardInput.safeParse(raw);
   if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "referral.reward");
@@ -362,11 +374,11 @@ export async function rewardReferral(db: Db, actor: Actor, raw: unknown, now: nu
       .set({ status: "rewarded", rewardedAt: now })
       .where(and(eq(referralRedemptions.id, row.r.id), inArray(referralRedemptions.status, ["pending", "qualified"]))),
     expectChanged(db, 1, { code: "REFERRAL_CHANGED", detail: row.r.id }),
-    rewardPointsStatement(db, actor, { customerId: row.referrerId, points: REFERRAL.rewardPoints, referralId: row.r.id, code: row.code }, now),
-    auditStatement(db, { actor, action: "promotions.referral.reward", entityType: "referral", entityId: row.r.id, summary: row.code, after: { points: REFERRAL.rewardPoints, referrerId: row.referrerId, signals: facts.signals }, reason: parsed.data.note || null, at: now }),
+    rewardPointsStatement(db, actor, { customerId: row.referrerId, points: referral.rewardPoints, referralId: row.r.id, code: row.code, expiryDays: program.loyalty.expiryDays }, now),
+    auditStatement(db, { actor, action: "promotions.referral.reward", entityType: "referral", entityId: row.r.id, summary: row.code, after: { points: referral.rewardPoints, referrerId: row.referrerId, signals: facts.signals }, reason: parsed.data.note || null, at: now }),
   ];
   await runBatch(db, statements).catch(guard);
-  return { points: REFERRAL.rewardPoints };
+  return { points: referral.rewardPoints };
 }
 
 export const RejectInput = z.object({ referralId: z.string().regex(ID, "invalid"), reason: z.string({ error: "required" }).overwrite(cleanBlock).trim().min(3, "reason_short").max(500, "too_long") });

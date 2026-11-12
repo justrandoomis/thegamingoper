@@ -6,7 +6,7 @@ import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { checkGiftCardRedemption, decideGiftCard, expireGiftCards, issueGiftCard, listGiftCards, redeemGiftCard, withdrawGiftCardRequest } from "~/server/services/admin/promotions/giftcards.server";
 import { SECTION_READ } from "~/server/services/admin/promotions/shared.server";
-import { GIFT_CARD, GIFT_CARD_STATUS_TONE, GIFT_CARD_VIEWS, endOfBaghdadDay, giftCardSearch, parseGiftCardFilters, parseWhole, type GiftCardRow } from "~/server/services/admin/promotions/types";
+import { GIFT_CARD_STATUS_TONE, GIFT_CARD_VIEWS, endOfBaghdadDay, giftCardSearch, parseGiftCardFilters, parseWhole, type GiftCardRow } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { Disclosure } from "~/ui/Disclosure";
@@ -18,7 +18,7 @@ import { promotionsDataKey } from "./env.server";
 import { promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
 import { OnceCode } from "./gift-code";
-import { Boundary, ConfirmAction, DemoNote, Failure, Kpis, Money, newKey, Notice, Section, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Boundary, ConfirmAction, DemoNote, Failure, Kpis, Money, newKey, Notice, Section, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/gift-cards — 08.07: the settlement (issued, outstanding, redeemed — checked against the wallet
@@ -63,6 +63,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, "gift.title");
 
 export default function GiftCardsPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const f = useFormat();
   const { page, filters, dataKeyReady } = loaderData;
@@ -217,7 +218,7 @@ export default function GiftCardsPage({ loaderData }: Route.ComponentProps) {
           {page.can.issue ? <IssueForm disabled={!dataKeyReady} /> : null}
           {page.can.manage ? <RedeemForm /> : null}
           <Section id="prm-gift-rules" title={t("gift.rules.title")}>
-            <Notice icon="seal-check">{t("gift.rules.second", { solo: f.iqd(GIFT_CARD.soloIqd), day: f.iqd(GIFT_CARD.soloDayIqd) })}</Notice>
+            <Notice icon="seal-check">{t("gift.rules.second", { solo: f.iqd(program.giftCard.soloIqd), day: f.iqd(program.giftCard.soloDayIqd) })}</Notice>
             <Notice icon="lock">{t("gift.rules.codes")}</Notice>
             <Notice icon="wallet">{t("gift.rules.redeem")}</Notice>
           </Section>
@@ -233,6 +234,7 @@ export default function GiftCardsPage({ loaderData }: Route.ComponentProps) {
  * appear in place.
  */
 function IssueForm({ disabled }: { disabled: boolean }) {
+  const program = useProgram();
   const t = usePromotionsT();
   const f = useFormat();
   const [formKey, setFormKey] = useState(newKey);
@@ -248,13 +250,13 @@ function IssueForm({ disabled }: { disabled: boolean }) {
     },
   );
   return (
-    <Section id="prm-issue" title={t("gift.issue.title")} lead={t("gift.issue.lead", { min: f.iqd(GIFT_CARD.minIqd), max: f.iqd(GIFT_CARD.maxIqd) })}>
+    <Section id="prm-issue" title={t("gift.issue.title")} lead={t("gift.issue.lead", { min: f.iqd(program.giftCard.minIqd), max: f.iqd(program.giftCard.maxIqd) })}>
       {issued ? <OnceCode code={issued.code} amountIqd={issued.amountIqd} /> : null}
       <ConfirmDialog
         open={ask !== null}
         onClose={() => setAsk(null)}
         title={t("gift.issue.q", { amount: f.iqd(ask?.amountIqd ?? 0) })}
-        consequence={ask && ask.amountIqd > GIFT_CARD.soloIqd ? t("gift.issue.whatSecond", { solo: f.iqd(GIFT_CARD.soloIqd) }) : t("gift.issue.what", { day: f.iqd(GIFT_CARD.soloDayIqd) })}
+        consequence={ask && ask.amountIqd > program.giftCard.soloIqd ? t("gift.issue.whatSecond", { solo: f.iqd(program.giftCard.soloIqd) }) : t("gift.issue.what", { day: f.iqd(program.giftCard.soloDayIqd) })}
         confirmLabel={t("gift.issue.save")}
         impact={ask ? [{ label: t("gift.issue.impactAmount"), value: `+${f.iqd(ask.amountIqd)}` }, { label: t("gift.issue.expires"), value: ask.expiresAt ? f.date(ask.expiresAt) : t("gift.noExpiry") }] : undefined}
         pending={pending}
@@ -282,7 +284,7 @@ function IssueForm({ disabled }: { disabled: boolean }) {
         <input type="hidden" name="intent" value="issue" />
         <input type="hidden" name="idempotencyKey" value={formKey} />
         <TextField name="amountIqd" label={t("gift.issue.amount")} hint={t("gift.issue.amountHint")} inputMode="numeric" required error={errors.amountIqd} />
-        <TextField name="expiresOn" type="date" label={t("gift.issue.expires")} hint={t("gift.issue.expiresHint", { days: GIFT_CARD.maxValidDays })} error={errors.expiresOn} />
+        <TextField name="expiresOn" type="date" label={t("gift.issue.expires")} hint={t("gift.issue.expiresHint", { span: t("daySpan", { count: program.giftCard.maxValidDays }) })} error={errors.expiresOn} />
         <TextArea name="note" label={t("gift.issue.note")} hint={t("gift.issue.noteHint")} required rows={2} maxLength={300} error={errors.note} />
         <Failure message={message} />
         <div>

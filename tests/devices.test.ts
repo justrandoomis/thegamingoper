@@ -18,7 +18,7 @@ import { runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { isAppError } from "~/server/errors";
 import { decidingRule, getCompatibilityForProduct, resolveForModel, type RuleLite, type VariantLite } from "~/server/services/compatibility.server";
 import { getProductDetail } from "~/server/services/catalog/product.server";
-import { artSlug, buildComparison, getDeviceHub, groupSpecs, listDeviceHubs, type DeviceHub } from "~/server/services/devices.server";
+import { artSlug, buildComparison, buildFaq, cheapestAvailable, getDeviceHub, groupSpecs, isolateLatin, listDeviceHubs, type DeviceHub } from "~/server/services/devices.server";
 import {
   cheapestOrderable,
   currentSection,
@@ -450,6 +450,8 @@ describe("getDeviceHub — the demo catalogue", { timeout: 180_000 }, () => {
       const from = await fromPriceOf(t.db, "ar", hub, t.now);
       expect(from, slug).toBe(prices.length > 0 ? Math.min(...prices) : null);
       if (from !== null) expect(Number.isSafeInteger(from), slug).toBe(true);
+      // the service says the same itself (DeviceHub.fromIqd), without the page reading every edition again
+      expect(hub.fromIqd, slug).toBe(prices.length > 0 ? Math.min(...prices) : null);
       // a product that covers two models (the 2020 PS5 and its Digital Edition): the other model's version never counts
       if (variants.some((variant) => !own.has(variant.id))) shared++;
     }
@@ -463,7 +465,40 @@ describe("the hub's head price — the test world", () => {
     if (!hub) throw new Error("no hub for zz-alpha");
     // var_zz_device_a: 100,000 IQD, 5 in stock · var_zz_device_b: comes out later, no stock
     expect(await fromPriceOf(t.db, "en", hub, t.now)).toBe(100_000);
+    expect(hub.fromIqd).toBe(100_000);
     expect(hubSections(hub)).toEqual(["versions", "specs", "accessories", "games", "help", "faq"]);
+  });
+});
+
+describe("devices service — polish (data owner)", () => {
+  it("isolates only the Latin parts of a name inside a FAQ question: «PlayStation 5 (الطراز الأصلي 2020)» reads name first", () => {
+    const name = "PlayStation 5 (الطراز الأصلي 2020)";
+    const isolated = isolateLatin(name);
+    // the Latin name is one left-to-right isolate, the Arabic qualifier stays outside every isolate, nothing is lost
+    expect(isolated.startsWith("⁦PlayStation 5⁩")).toBe(true);
+    expect(isolated.replace(/⁦[^⁩]*⁩/g, "")).toContain("الطراز الأصلي");
+    expect(isolated.replace(/[⁦⁩]/g, "")).toBe(name);
+    expect(isolateLatin("Nintendo Switch 2")).toBe("⁦Nintendo Switch 2⁩");
+    const faq = buildFaq({ deviceName: name, specs: { storage: { ar: "825GB", en: "825GB" } } as never, games: { verified: 0, partial: 0, unverified: 0, incompatible: 0 }, inTheBox: [] }, "ar");
+    expect(faq[0].question).toContain("⁦PlayStation 5⁩ (الطراز الأصلي");
+    // never one isolate around the whole name (it made the Arabic qualifier lead)
+    expect(faq[0].question).not.toContain(`⁨${name}⁩`);
+  });
+
+  it("prices «من …» from the versions the cart accepts now (pure)", () => {
+    const versions = [
+      { id: "a", price_iqd: 500_000 },
+      { id: "b", price_iqd: 450_000 },
+      { id: "c", price_iqd: 400_000 },
+    ];
+    const available = new Map([
+      ["a", { available: 2 }],
+      ["b", { available: 1 }],
+      ["c", { available: 0 }],
+    ]);
+    expect(cheapestAvailable(versions, available)).toBe(450_000);
+    expect(cheapestAvailable(versions, new Map())).toBeNull();
+    expect(cheapestAvailable([], available)).toBeNull();
   });
 });
 

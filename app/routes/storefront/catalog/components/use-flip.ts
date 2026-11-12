@@ -4,7 +4,7 @@
  * FLIP on the children of one container that carry `data-flip="<stable key>"`: after React has committed new
  * content (the new results are ALREADY on screen and usable), every child that stayed slides from where it was to
  * where it is now (`settle` spring, transform only), and every new child grows in from the engine's bubble scale
- * (.94, `inflate` spring, opacity + transform, 45 ms apart, at most six staggered — `bubble` in ~/motion/tokens).
+ * (.94, `inflate` spring, opacity + transform, 45 ms apart, at most six staggered — `bubble`, exported by ~/motion).
  * Children that left are simply gone. Nothing waits for
  * the animation and nothing is animated off screen.
  *
@@ -16,8 +16,7 @@
  */
 import { useLayoutEffect, useRef, type RefObject } from "react";
 
-import { getMotionTier, springTiming } from "~/motion";
-import { bubble } from "~/motion/tokens";
+import { bubble, getMotionTier, springTiming } from "~/motion";
 
 type Box = { x: number; y: number };
 

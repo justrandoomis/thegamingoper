@@ -7,7 +7,7 @@ import { index, layout, prefix, route, type RouteConfigEntry } from "@react-rout
  *   /account/login · /account/signup · /account/forgot · /account/logout (POST)     no account needed
  *   /account/wallet/proof[/:fileId]                                                 resource route: top-up proof upload / private preview
  *   /account · /account/{orders,orders/:ref,wallet,addresses,devices,returns,      signed-in pages inside the account layout
- *              warranties,notifications,profile,settings}
+ *              warranties,notifications,profile,settings,rewards,privacy}
  *   /wishlist                                                                      favourites, for guests and customers
  */
 const at = (file: string) => `routes/storefront/account/${file}`;
@@ -31,6 +31,9 @@ export const accountRoutes: RouteConfigEntry[] = [
       route("notifications", at("notifications.tsx")),
       route("profile", at("profile.tsx")),
       route("settings", at("settings.tsx")),
+      // 2026-11-12: points, membership and the referral code; the privacy-request form
+      route("rewards", at("rewards.tsx")),
+      route("privacy", at("privacy.tsx")),
     ]),
   ]),
   route("wishlist", at("wishlist.tsx")),

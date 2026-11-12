@@ -4,7 +4,8 @@ import { Form, Link } from "react-router";
 import type { Route } from "./+types/privacy";
 import { throwAsResponse } from "~/server/errors";
 import { listPrivacyRequests, type PrivacyRequestRow } from "~/server/services/admin/customers/privacy.server";
-import { parsePrivacyFilters, PRIVACY_DUE_DAYS, PRIVACY_KIND_LIST, PRIVACY_VIEWS, privacySearch } from "~/server/services/admin/customers/types";
+import { customerRules } from "~/server/services/admin/customers/rules.server";
+import { parsePrivacyFilters, PRIVACY_KIND_LIST, PRIVACY_VIEWS, privacySearch } from "~/server/services/admin/customers/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { EmptyState } from "~/ui/EmptyState";
 import { Select, TextArea, TextField } from "~/ui/Field";
@@ -25,7 +26,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const { db, actor, now } = await openCustomers(context, "customers.privacy.manage");
   const filters = parsePrivacyFilters(new URL(request.url).searchParams);
   try {
-    return { page: await listPrivacyRequests(db, actor, filters, now), filters };
+    return { page: await listPrivacyRequests(db, actor, filters, now), filters, dueDays: (await customerRules(db)).privacyDueDays };
   } catch (error) {
     throwAsResponse(error);
   }
@@ -40,7 +41,7 @@ export const meta: Route.MetaFunction = (args) => customersMeta(args, "privacy.t
 
 export default function PrivacyQueuePage({ loaderData }: Route.ComponentProps) {
   const t = useCustomersT();
-  const { page, filters } = loaderData;
+  const { page, filters, dueDays } = loaderData;
   const columns: DataColumn<PrivacyRequestRow>[] = [
     {
       key: "ref",
@@ -92,7 +93,7 @@ export default function PrivacyQueuePage({ loaderData }: Route.ComponentProps) {
     <>
       <header className="adm-page-head">
         <h1 className="adm-title">{t("privacy.title")}</h1>
-        <p className="max-w-[70ch] type-body text-ink-2">{t("privacy.lead", { days: PRIVACY_DUE_DAYS })}</p>
+        <p className="max-w-[70ch] type-body text-ink-2">{t("privacy.lead", { within: t("withinDays", { count: dueDays }) })}</p>
       </header>
       <div className="cus-layout">
         <div className="cus-main">
@@ -153,14 +154,14 @@ export default function PrivacyQueuePage({ loaderData }: Route.ComponentProps) {
           </Section>
         </div>
         <aside className="cus-side" aria-label={t("privacy.side")}>
-          <NewRequest />
+          <NewRequest dueDays={dueDays} />
         </aside>
       </div>
     </>
   );
 }
 
-function NewRequest() {
+function NewRequest({ dueDays }: { dueDays: number }) {
   const t = useCustomersT();
   const [kind, setKind] = useState<string>("export");
   const [formKey, setFormKey] = useState(() => newKey());
@@ -189,7 +190,7 @@ function NewRequest() {
             {t("privacy.form.open")}
           </Key>
         </div>
-        <p className="type-caption text-ink-2">{t("privacy.form.due", { days: PRIVACY_DUE_DAYS })}</p>
+        <p className="type-caption text-ink-2">{t("privacy.form.due", { after: t("afterDays", { count: dueDays }) })}</p>
       </fetcher.Form>
     </Section>
   );

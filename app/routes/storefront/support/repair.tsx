@@ -405,20 +405,13 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
               />
               <TextField id={id("contactName")} label={t("repair.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
             </div>
-            <FieldGroup legend={t("repair.handover")} optional error={serverField("handover")}>
-              <OptionCard id={id("handover")} name="handover" value="drop_off" label={t("handover.drop_off")} defaultChecked={handoverValue === "drop_off"} />
+            {/* the fieldset carries the id the error summary links to (the kit's FieldGroup `id`) */}
+            <FieldGroup id={id("handover")} legend={t("repair.handover")} optional error={serverField("handover")}>
+              <OptionCard name="handover" value="drop_off" label={t("handover.drop_off")} defaultChecked={handoverValue === "drop_off"} />
               <OptionCard name="handover" value="pickup" label={t("handover.pickup")} hint={t("handover.pickupHint")} defaultChecked={handoverValue === "pickup"} />
               <OptionCard name="handover" value="" label={t("handover.none")} defaultChecked={handoverValue === ""} />
             </FieldGroup>
-            <PreferencePicker
-              name="preferredWindow"
-              defaultValue={windowValue as Period}
-              legend={
-                <>
-                  {t("repair.window")} <span className="field__mark">{ui("field.optional")}</span>
-                </>
-              }
-            />
+            <PreferencePicker id={id("preferredWindow")} name="preferredWindow" defaultValue={windowValue as Period} label={t("repair.window")} />
             <p className="type-xs text-ink-2">{t("repair.privacy")}</p>
           </fieldset>
 

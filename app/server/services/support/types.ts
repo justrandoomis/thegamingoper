@@ -225,3 +225,6 @@ export type RepairStatusView = {
 };
 
 export type CreatedTicket = { ticketId: string; ref: string; accessToken: string; replayed: boolean };
+
+/** The satisfaction scale a shopper rates solved help on (support_tickets.csat_rating, 1–5). Client-safe. */
+export const TICKET_RATING_SCALE = 5;

@@ -23,9 +23,14 @@ export default defineMessages({
       new: "وصل {name}",
       buy: "اشترِ {name}",
       details: "تفاصيل الجهاز",
+      productDetails: "تفاصيل المنتج",
     },
     platforms: {
       title: "تسوّق حسب المنصّة",
+    },
+    banners: {
+      label: "عروض المتجر",
+      open: "اعرض التفاصيل",
     },
     trust: {
       title: "التوصيل والدفع",
@@ -117,9 +122,14 @@ export default defineMessages({
       new: "Just arrived {name}",
       buy: "Buy {name}",
       details: "Device details",
+      productDetails: "Product details",
     },
     platforms: {
       title: "Shop by platform",
+    },
+    banners: {
+      label: "Store offers",
+      open: "See the details",
     },
     trust: {
       title: "Delivery and payment",
@@ -207,9 +217,14 @@ export default defineMessages({
       new: "{name} گەیشت",
       buy: "{name} بکڕە",
       details: "وردەکاریی ئامێرەکە",
+      productDetails: "وردەکاریی بەرهەمەکە",
     },
     platforms: {
       title: "بەپێی پلاتفۆرم بکڕە",
+    },
+    banners: {
+      label: "پێشکەشکراوەکانی فرۆشگا",
+      open: "وردەکارییەکان ببینە",
     },
     trust: {
       title: "گەیاندن و پارەدان",

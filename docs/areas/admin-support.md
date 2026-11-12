@@ -125,3 +125,9 @@ the writer who cannot approve; at ≥ 768 px the bulk-route confirmation); `prin
 - Customers (07): ticket refs link to `/admin/support/tickets/:ref`.
 - Security (20): finance has no `support.ticket.read`, so a financial complaint can only go to owner / manager.
 - Settings (22): the message template `support_reply` for when a provider is connected.
+
+## Module follow-up 2026-11-12
+
+`TicketDetail.can.passOn`: the holder of an open escalation (or a cover) who may escalate is offered passing it on (the page's escalate panel), as `escalateTicket` allowed.
+
+Tests (each failed before its change): `tests/admin-support-followup.test.ts`.

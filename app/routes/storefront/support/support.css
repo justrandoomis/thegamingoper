@@ -202,15 +202,8 @@
     color: var(--ink-2);
   }
 
-  /* ───────────────────────────── the sub-navigation (a segmented control of links) */
-  .sup-nav {
-    grid-auto-columns: minmax(max-content, 1fr);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .sup-nav::-webkit-scrollbar {
-    display: none;
-  }
+  /* ───────────────────────────── the sub-navigation (the kit's segmented control of links: it scrolls by itself when
+     its words do not fit, the current one kept in view) */
   .sup-nav > .seg__opt {
     padding-inline: var(--s-3);
   }

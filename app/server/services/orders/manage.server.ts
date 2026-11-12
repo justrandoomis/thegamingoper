@@ -35,10 +35,16 @@
  *   cancelled   stock reservations and reserved used units released, serials scanned while packing
  *               go back to stock, the coupon use is freed, unpaid payment rows are cancelled, and
  *               every PAID payment gets a pending refund of what is still refundable on it (the
- *               refund path: issued by approveRefund, four eyes).
+ *               refund path: issued by approveRefund, four eyes); since 2026-11-12 also the flash units
+ *               the order claimed go back to their sale's allowance and its redeemed points to the
+ *               customer (./promotions.server releasePromotionsStatements), and — review 2026-11-12 —
+ *               its delivered digital codes are revoked (also on "returned" from shipped).
  *   returned    from shipped: the goods come back (restocked by default; `opts.goods` decides per
  *               line, e.g. a damaged parcel is scrapped), the coupon use is freed, the unpaid
- *               cash-on-delivery payment is cancelled and paid payments get a pending refund.
+ *               cash-on-delivery payment is cancelled and paid payments get a pending refund; since
+ *               the review of 2026-11-12 also the flash units go back to their allowance and the
+ *               redeemed points to the customer (a parcel refused at the door is a sale that never
+ *               happened — releasePromotionsStatements, as for a cancellation).
  *               From delivered: status only — the goods and the money of a return after delivery
  *               go through createRefund (items with restock/scrap after inspection) first.
  *   Every transition writes an order event (kind "status_changed") and an audit event.
@@ -82,6 +88,8 @@ import { RATE_LIMITS, enforceRateLimit, limitKey } from "~/server/ratelimit.serv
 import { cogsPostingKey, mapPostingError, postCogs, postReturnedGoods, postSale, postedBy } from "../accounting/post.server";
 import { commitOrderReservationsStatements, releaseOrderReservationsStatements } from "../inventory/stock.server";
 import { getRefundableAmount, refundRequestStatements } from "../refunds.server";
+import { revokeDigitalCodesStatements } from "./digital.server";
+import { releasePromotionsStatements } from "./promotions.server";
 import { RETURN_DISPOSITIONS, planReturnedGoods, type ReturnLine } from "./returns.server";
 import { canTransition, isPaymentDriven, ORDER_TRANSITIONS } from "./state";
 import type { OrderSummary, OrderView } from "./types";
@@ -234,13 +242,34 @@ function unwindStatements(db: Db, ctx: Ctx): BatchStatement[] {
   ];
 }
 
-/** The order's payment status once nothing unpaid is owed any more: unchanged when money was received. */
+/** Payment states that say money is still owed — none is, once the order is cancelled or came back undelivered. */
+const OWED_PAYMENT_STATES = new Set<string>(["unpaid", "cod_due", "pending_verification", "rejected"]);
+
+/**
+ * The order's payment status once nothing unpaid is owed any more: "unpaid" when nothing was received; otherwise what
+ * was received stands — a split order's wallet part (review 2026-11-12: it stayed "cod_due" on a cancelled order) is
+ * "paid" (its refund waits), or "partially_refunded" when part of it already went back.
+ */
 function unwoundPaymentStatus(order: Order): NewOrder["paymentStatus"] {
-  return order.paidIqd > 0 ? order.paymentStatus : "unpaid";
+  if (order.paidIqd <= 0) return "unpaid";
+  if (!OWED_PAYMENT_STATES.has(order.paymentStatus)) return order.paymentStatus;
+  return order.refundedIqd > 0 ? "partially_refunded" : "paid";
+}
+
+/**
+ * The order's digital codes stop being the buyer's when the order is cancelled or comes back undelivered — revoked in
+ * the transition's batch (review 2026-11-12: they stayed "delivered" — and could be revealed — while the refund waited,
+ * and for ever when nothing was paid that a refund would give back). Nothing for an order without delivered codes.
+ */
+function revokeCodesOnUnwind(db: Db, ctx: Ctx): Promise<BatchStatement[]> {
+  return revokeDigitalCodesStatements(db, { orderId: ctx.order.id, items: [], all: true, actor: ctx.actor, reason: `order_${ctx.to}: ${ctx.reason}`.slice(0, 500), now: ctx.now });
 }
 
 async function planCancel(db: Db, ctx: Ctx): Promise<BatchStatement[]> {
   const refundPath = await refundPathStatements(db, ctx);
+  // the flash units the order claimed go back to their sale's allowance, its redeemed points to the customer
+  const promotionsBack = await releasePromotionsStatements(db, { orderId: ctx.order.id, ref: ctx.order.ref, actor: ctx.actor, now: ctx.now });
+  const codesBack = await revokeCodesOnUnwind(db, ctx);
   const itemsOfOrder = sql`(SELECT id FROM order_items WHERE order_id = ${ctx.order.id})`;
   return [
     ...statusStatements(db, ctx, { cancelledAt: ctx.now, cancelReason: ctx.reason, paymentStatus: unwoundPaymentStatus(ctx.order) }),
@@ -253,8 +282,10 @@ async function planCancel(db: Db, ctx: Ctx): Promise<BatchStatement[]> {
     ),
     batchSql(db, sql`UPDATE order_item_serials SET released_at = ${ctx.now} WHERE released_at IS NULL AND order_item_id IN ${itemsOfOrder}`),
     ...unwindStatements(db, ctx),
+    ...promotionsBack,
+    ...codesBack,
     ...refundPath.statements,
-    ...recordStatements(db, ctx, { refundRequests: refundPath.refundIds }),
+    ...recordStatements(db, ctx, { refundRequests: refundPath.refundIds, ...(promotionsBack.length > 0 ? { promotionsReleased: true } : {}) }),
   ];
 }
 
@@ -387,6 +418,10 @@ async function planReturned(db: Db, ctx: Ctx): Promise<BatchStatement[]> {
   const goods = await planReturnedGoods(db, { orderId: order.id, lines, actor: ctx.actor, now: ctx.now, reason: "order_returned_undelivered", locationId: ctx.options.locationId ?? null });
   const cogsPosted = await journalExists(db, cogsPostingKey(order.id));
   const refundPath = await refundPathStatements(db, ctx);
+  // the sale never happened (a parcel refused at the door): the flash units go back to their allowance and the redeemed
+  // points to the customer, as for a cancellation (review 2026-11-12 — a refused cash-on-delivery parcel kept both)
+  const promotionsBack = await releasePromotionsStatements(db, { orderId: order.id, ref: order.ref, actor: ctx.actor, now: ctx.now, why: "returned" });
+  const codesBack = await revokeCodesOnUnwind(db, ctx);
   return [
     ...statusStatements(db, ctx, { paymentStatus: unwoundPaymentStatus(order) }),
     ...goods.statements,
@@ -404,8 +439,10 @@ async function planReturned(db: Db, ctx: Ctx): Promise<BatchStatement[]> {
       isDemo: order.isDemo,
     }),
     ...unwindStatements(db, ctx),
+    ...promotionsBack,
+    ...codesBack,
     ...refundPath.statements,
-    ...recordStatements(db, ctx, { units: goods.units, refundRequests: refundPath.refundIds }),
+    ...recordStatements(db, ctx, { units: goods.units, refundRequests: refundPath.refundIds, ...(promotionsBack.length > 0 ? { promotionsReleased: true } : {}) }),
   ];
 }
 

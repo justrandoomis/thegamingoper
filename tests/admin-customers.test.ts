@@ -483,10 +483,11 @@ describe("merge (07.05)", () => {
 
     expect((await failureOf(planMerge(t.db, as("support"), { keepId: keep, mergeId: dup }, NOW))).code).toBe("forbidden");
     const blocked = await planMerge(t.db, as("manager"), { keepId: keep, mergeId: dup }, NOW);
-    expect(blocked.blockers).toEqual([{ code: "wallet_balance", amount: 5000 }]);
+    // since 2026-11-12 wallet money no longer blocks a merge: the commerce core's transfer moves it (tests/commerce-wallet-ops.test.ts)
+    expect(blocked.blockers).toEqual([]);
+    expect(blocked.merge.walletIqd).toBe(5000);
     expect(blocked.consentCarry).toEqual(["marketing"]);
     const verification = { method: "call_both_numbers" as const, verification: "اتصلت بالرقمين وأكد صاحبهما", reason: "حساب مكرر" };
-    expect((await failureOf(mergeCustomers(t.db, as("manager"), { keepId: keep, mergeId: dup, ...verification, fingerprint: blocked.fingerprint }, NOW))).code).toBe("merge_blocked");
 
     await t.db.insert(walletLedger).values({ id: newId("wal"), customerId: dup, amountIqd: -5000, kind: "purchase", refType: "order", refId: dupOrder.orderId, actorKind: "system", actorId: "test", idempotencyKey: `test:${randomToken()}`, at: NOW });
     const plan = await planMerge(t.db, as("manager"), { keepId: keep, mergeId: dup }, NOW);

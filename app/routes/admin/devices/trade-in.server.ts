@@ -106,7 +106,7 @@ export async function tradeInAction(ctx: Pick<AuthCtx, "locale" | "now">, db: Db
         return { ok: true, intent, replayed: result.replayed };
       }
       case "payout": {
-        const result = await payOut(db, actor, { tradeInId: row.id, method: text(form, "method"), locationId: text(form, "locationId"), reason: text(form, "reason") }, now, { labels: accessoryWords });
+        const result = await payOut(db, actor, { tradeInId: row.id, method: text(form, "method"), locationId: text(form, "locationId"), reason: text(form, "reason"), shiftId: text(form, "shiftId") }, now, { labels: accessoryWords });
         return { ok: true, intent, replayed: result.replayed, usedUnitId: result.usedUnitId, status: result.method };
       }
       case "cancel": {

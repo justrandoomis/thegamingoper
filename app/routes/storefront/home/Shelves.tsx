@@ -86,9 +86,9 @@ export function TrustFacts({ deliveryFeeIqd, payments }: { deliveryFeeIqd: numbe
       <VisuallyHidden as="h2" id={id}>
         {t("trust.title")}
       </VisuallyHidden>
-      {/* guest checkout is how the store works (no setting turns it off); a transfer fact names both methods, so it
-          stands only while both are switched on */}
-      <TrustStrip deliveryIqd={deliveryFeeIqd} cod={payments?.cod ?? false} transfer={Boolean(payments?.card && payments?.zaincash)} guest />
+      {/* guest checkout is how the store works (no setting turns it off); the transfer fact names the methods that
+          are switched on — both, or the one that is */}
+      <TrustStrip deliveryIqd={deliveryFeeIqd} cod={payments?.cod ?? false} transfer={{ zaincash: payments?.zaincash ?? false, card: payments?.card ?? false }} guest />
     </section>
   );
 }

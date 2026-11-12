@@ -108,16 +108,15 @@ export function VariantPicker({ variants, selector, value, onChange, form = true
           const next = variants.find((variant) => variant.sku === sku);
           if (next) onChange(next.id);
         }}
-        options={variants.map((variant) => {
-          const why = hint(variant);
-          return {
-            value: variant.sku,
-            // a sold-out colour is struck through («— غير متوفر» is added by the kit); a coming one names its date
-            name: why && variant.releaseAt !== null ? `${variant.label} · ${why}` : variant.label,
-            unavailable: !variant.orderable && variant.releaseAt === null,
-            thumb: variant.images[0] ? <ProductImage image={variant.images[0]} alt="" sizes="56px" /> : undefined,
-          };
-        })}
+        options={variants.map((variant) => ({
+          value: variant.sku,
+          name: variant.label,
+          // the kit strikes a colour that cannot be ordered now and says why in its name: a sold-out one «نفد حالياً»,
+          // a coming one its release day («يصدر 19 تشرين الثاني 2026» — never «غير متوفر», v2 §9)
+          unavailable: variant.orderable ? undefined : variant.releaseAt !== null ? ("soon" as const) : ("soldOut" as const),
+          reason: hint(variant),
+          thumb: variant.images[0] ? <ProductImage image={variant.images[0]} alt="" sizes="56px" /> : undefined,
+        }))}
       />
     );
     if (!form) return swatches;

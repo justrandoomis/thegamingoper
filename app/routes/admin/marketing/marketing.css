@@ -1,0 +1,333 @@
+/*
+ * Admin module 16 (marketing) — the few pieces the design system does not have yet. Tokens only, logical properties
+ * only, components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; status = words with a dot; numbers tabular at the inline end.
+ */
+@layer components {
+  /* ── outlined fact tags (reasons, variables, placements, demo) ── */
+  .mkt-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+  .mkt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+
+  /* ── codes, paths, URLs ── */
+  .mkt-code {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .mkt-url {
+    display: block;
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font: var(--type-caption);
+    overflow-wrap: anywhere;
+    user-select: all;
+  }
+
+  /* ── facts (definition lists) ── */
+  .mkt-facts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .mkt-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .mkt-facts dt {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .mkt-facts dd {
+    font: var(--type-body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── a page with a side column from 1024px ── */
+  .mkt-layout {
+    display: grid;
+    gap: var(--s-6);
+    margin-block-end: var(--s-8);
+  }
+  @media (min-width: 64rem) {
+    .mkt-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+      align-items: start;
+    }
+  }
+  .mkt-main,
+  .mkt-side {
+    display: grid;
+    gap: var(--s-6);
+    min-inline-size: 0;
+    align-content: start;
+  }
+  .mkt-side {
+    gap: var(--s-4);
+  }
+
+  /* ── a panel of paper with a hairline; a decision waits: a warn edge ── */
+  .mkt-panel {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .mkt-panel--decide {
+    box-shadow: inset 0 0 0 2px var(--warn);
+  }
+
+  /* ── the honest boundary note ── */
+  .mkt-boundary {
+    margin-block-end: var(--s-6);
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    border-inline-start: 3px solid var(--warn);
+  }
+
+  /* ── a row of action keys that wraps ── */
+  .mkt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+
+  /* ── forms: fields in a responsive grid ── */
+  .mkt-form {
+    display: grid;
+    gap: var(--s-4);
+    min-inline-size: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .mkt-grid {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .mkt-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 75rem) {
+    .mkt-grid--3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .mkt-span {
+    grid-column: 1 / -1;
+  }
+
+  /* ── multi-choice lists ── */
+  .mkt-choices {
+    display: grid;
+    gap: var(--s-1);
+    min-inline-size: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .mkt-choices__list {
+    display: grid;
+    max-block-size: 13rem;
+    overflow-y: auto;
+    padding: var(--s-1) var(--s-2);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .mkt-choice {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 36px;
+    font: var(--type-body);
+    cursor: pointer;
+  }
+  .mkt-choice input {
+    inline-size: 18px;
+    block-size: 18px;
+    accent-color: var(--ink);
+    flex: none;
+  }
+
+  /* ── flat KPI tiles ── */
+  .mkt-kpis {
+    display: grid;
+    gap: var(--s-2);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 48rem) {
+    .mkt-kpis {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .mkt-kpi {
+    display: grid;
+    gap: 2px;
+    align-content: start;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+
+  /* ── phone cards in place of a dense table (< 768px) ── */
+  .mkt-cards {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .mkt-card {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    min-inline-size: 0;
+  }
+  a.mkt-card:hover {
+    background: var(--niche);
+  }
+  .mkt-card__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+
+  /* ── flat rows between hairlines ── */
+  .mkt-rows {
+    display: grid;
+    border-block-start: 1px solid var(--line);
+  }
+  .mkt-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+    padding-block: var(--s-2);
+    border-block-end: 1px solid var(--line);
+    min-inline-size: 0;
+  }
+  .mkt-row > * {
+    min-inline-size: 0;
+  }
+
+  /* ── a flat share bar beside a count (ink on the niche; no animation) ── */
+  .mkt-bar {
+    display: inline-block;
+    inline-size: 6rem;
+    block-size: 6px;
+    border-radius: var(--r-full);
+    background: var(--niche-2);
+    overflow: hidden;
+  }
+  .mkt-bar > span {
+    display: block;
+    block-size: 100%;
+    background: var(--ink-2);
+  }
+
+  /* ── a message as the recipient would read it: paper, a hairline, the text as written ── */
+  .mkt-message {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font: var(--type-body);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    unicode-bidi: plaintext;
+  }
+
+  /* ── history (audit timeline, §10): a hairline with dots ── */
+  .mkt-history {
+    display: grid;
+    gap: var(--s-3);
+    padding-inline-start: var(--s-4);
+    border-inline-start: 1px solid var(--line-strong);
+  }
+  .mkt-history > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .mkt-history > li::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 7px;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+
+  /* ── a review's text: as written, never reformatted ── */
+  .mkt-quote {
+    font: var(--type-body);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    unicode-bidi: plaintext;
+  }
+
+  /* ── printing: only the block marked .mkt-print, ink on paper, no admin chrome ── */
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.mkt-print) .adm-rail,
+    body:has(.mkt-print) .adm-top,
+    body:has(.mkt-print) .adm-tabbar,
+    body:has(.mkt-print) .adm-skip,
+    body:has(.mkt-print) .mkt-noprint {
+      display: none !important;
+    }
+    body:has(.mkt-print) .adm,
+    body:has(.mkt-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .mkt-print {
+      color: var(--ink);
+      background: var(--paper);
+    }
+  }
+}

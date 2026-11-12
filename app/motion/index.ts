@@ -6,8 +6,9 @@
  * Loaded on demand (one chunk, fetched at idle): fly-to-cart, sheet physics, menus, theme cross-fade, rail behaviour.
  */
 
-// Tokens (DESIGN.md §7.1) and the same springs as Web Animations timing.
-export { durations, easings, springs, press, haptics, travel } from "./tokens";
+// Tokens (DESIGN.md §7.1) and the same springs as Web Animations timing. `bubble` is the arrival grammar
+// (fromScale .94, 45 ms stagger, six slots) for code that animates arriving content itself (a FLIP of results).
+export { durations, easings, springs, press, haptics, travel, bubble } from "./tokens";
 export type { DurationName, EasingName, HapticKind, PressKind, Spring, SpringName } from "./tokens";
 export { springTiming } from "./timing";
 export type { SpringTiming } from "./timing";

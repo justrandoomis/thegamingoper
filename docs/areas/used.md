@@ -85,3 +85,13 @@ wait), the census (focus walk: every stop shows its ring; one stop off-screen �
 that keyboard focus does not scroll into view, kit Rail/UsedUnitCard; contrast; targets — the small ones left are the
 shell's header/footer links) and a probe (one primary per view, Arabic under 13px only in tags). Chromium
 only; the Sorani strings need a native reader.
+
+## Wave G wiring (2026-11-12)
+
+- The `used.css` placement overrides for the used row and the five-step rail are gone: the kit stacks a narrow row and fits five
+  steps at 320–390 itself.
+- The unit page: `InspectionCard illustrationNote={false}` (the gallery says it once); the task bar holds the kit's
+  `<BuyBar bare>` for a listed unit (offline and a failed add on its own line — the page's own offline sentences are gone, the
+  kit's add key says it); the other-units rail relies on the kit's Rail for keyboard focus (the page's workaround is gone).
+- Verified: `/trade-in/:ref` shows the offered grade and the checklist before the shopper answers (P4; `tests/tradein.test.ts`
+  «before answering, the shopper sees what the inspection found»; browser lookup by phone of TI-5EBJS49V).

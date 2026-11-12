@@ -220,7 +220,16 @@ export async function checkStoreLink(db: Db, raw: string, now: number): Promise<
     case "c": {
       const rows = await db.all<{ is_active: number }>(sql`SELECT is_active FROM categories WHERE slug = ${second} LIMIT 1`);
       if (!rows[0]) return { state: "missing", kind: "category", path };
-      return { state: Number(rows[0].is_active) === 1 ? "ok" : "not_live", kind: "category", path };
+      if (Number(rows[0].is_active) !== 1) return { state: "not_live", kind: "category", path };
+      // a ?platform= filter must name a live platform too — getActiveBanners drops such a link as it is served
+      // (review 2026-11-12: it was accepted here, so a banner could be published that never shows)
+      const filter = (new URLSearchParams(parsed.query).get("platform") ?? "").trim().toLowerCase();
+      if (filter) {
+        const platform = await db.all<{ is_active: number }>(sql`SELECT is_active FROM platforms WHERE slug = ${filter} LIMIT 1`);
+        if (!platform[0]) return { state: "missing", kind: "platform", path };
+        if (Number(platform[0].is_active) !== 1) return { state: "not_live", kind: "platform", path };
+      }
+      return { state: "ok", kind: "category", path };
     }
     case "platform": {
       const rows = await db.all<{ is_active: number }>(sql`SELECT is_active FROM platforms WHERE slug = ${second} LIMIT 1`);

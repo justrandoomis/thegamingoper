@@ -71,7 +71,7 @@ export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, appro
   const figure = f.number(amountIqd);
   const main = (
     <Line className={cx("price", `price--${size}`, TONE_CLASS[look], amountIqd >= 1_000_000 && "price--long", className)}>
-      {was !== null && inline ? <Was amountIqd={was} /> : null}
+      {was !== null && inline ? <Was amountIqd={was} inline /> : null}
       <span className="price__num" aria-hidden="true">
         {figure}
       </span>
@@ -149,12 +149,15 @@ export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, appro
   );
 }
 
-/** The real previous price: 13px ink-2, struck, «السعر قبل التخفيض» for screen readers. */
-function Was({ amountIqd }: { amountIqd: number }) {
+/**
+ * The real previous price: 13px ink-2, struck, «السعر قبل التخفيض» for screen readers. Above the price it is a flex row
+ * of its own, so its line is the 13px figure's (≈16px), not the page's 16px body line (27px) it would inherit.
+ */
+function Was({ amountIqd, inline = false }: { amountIqd: number; inline?: boolean }) {
   const t = useT("ui");
   const f = useFormat();
   return (
-    <span className="price__was-line">
+    <span className={cx("price__was-line", !inline && "flex")}>
       <VisuallyHidden>{t("price.was")} </VisuallyHidden>
       <s className="price__was">
         <bdi>{f.number(amountIqd)}</bdi>

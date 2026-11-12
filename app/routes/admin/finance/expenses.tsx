@@ -74,6 +74,7 @@ export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
         <span className="inline-flex flex-wrap items-center gap-1">
           <StateTag group="expense" value={row.status} label={t(`expenseStatus.${row.status}`)} />
           {row.needsOther ? <Flag icon="users">{t("expenses.needsOther")}</Flag> : null}
+          {row.monthClosed ? <Flag icon="lock">{t("expenses.monthClosed")}</Flag> : null}
           {row.hasReceipt ? <Flag icon="paperclip">{t("expenses.receipt")}</Flag> : null}
           <DemoTag show={row.isDemo} />
         </span>
@@ -164,6 +165,7 @@ export default function ExpensesPage({ loaderData }: Route.ComponentProps) {
               <span className="flex flex-wrap items-center gap-1">
                 <StateTag group="expense" value={row.status} label={t(`expenseStatus.${row.status}`)} />
                 {row.needsOther ? <Flag icon="users">{t("expenses.needsOther")}</Flag> : null}
+                {row.monthClosed ? <Flag icon="lock">{t("expenses.monthClosed")}</Flag> : null}
                 <DemoTag show={row.isDemo} />
               </span>
             </Link>

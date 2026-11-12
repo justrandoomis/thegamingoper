@@ -6,7 +6,7 @@ import type { Route } from "./+types/coupons";
 import { throwAsResponse } from "~/server/errors";
 import { deactivateCoupons, listCoupons } from "~/server/services/admin/promotions/coupons.server";
 import { SECTION_READ, type PromotionsAccess } from "~/server/services/admin/promotions/shared.server";
-import { COUPON_SORTS, COUPON_STATE_TONE, COUPON_VIEWS, DISCOUNT_LIMITS, couponSearch, parseCouponFilters, type CouponRow } from "~/server/services/admin/promotions/types";
+import { COUPON_SORTS, COUPON_STATE_TONE, COUPON_VIEWS, couponSearch, parseCouponFilters, type CouponRow } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { Disclosure } from "~/ui/Disclosure";
 import { EmptyState } from "~/ui/EmptyState";
@@ -15,7 +15,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, Code, ConfirmAction, DemoNote, Money, Notice, Num, Pct, Section, ToneStatus, usePromotionsT, When } from "./ui";
+import { Arrow, Code, ConfirmAction, DemoNote, Money, Notice, Num, Pct, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/coupons — 08.01: every coupon with its state (live, scheduled, waiting for a second person, off,
@@ -51,6 +51,7 @@ function CouponValue({ row }: { row: Pick<CouponRow, "kind" | "value"> }) {
 }
 
 export default function CouponsPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const navigation = useNavigation();
   const f = useFormat();
@@ -120,7 +121,7 @@ export default function CouponsPage({ loaderData }: Route.ComponentProps) {
       <header className="adm-page-head">
         <p className="adm-eyebrow">{t("eyebrowFn", { id: "08.01" })}</p>
         <h1 className="adm-title">{t("coupons.title")}</h1>
-        <p className="max-w-[75ch] type-body text-ink-2">{t("coupons.lead", { percent: DISCOUNT_LIMITS.percentBps / 100, amount: f.iqd(DISCOUNT_LIMITS.perOrderIqd) })}</p>
+        <p className="max-w-[75ch] type-body text-ink-2">{t("coupons.lead", { percent: program.limits.percentBps / 100, amount: f.iqd(program.limits.perOrderIqd) })}</p>
         {manage ? (
           <div className="prm-actions">
             <Key as={Link} to="/admin/promotions/coupons/new" icon="plus">
@@ -238,7 +239,7 @@ export default function CouponsPage({ loaderData }: Route.ComponentProps) {
             </div>
           </>
         )}
-        <Notice icon="seal-check">{t("coupons.rule", { percent: DISCOUNT_LIMITS.percentBps / 100, amount: f.iqd(DISCOUNT_LIMITS.perOrderIqd) })}</Notice>
+        <Notice icon="seal-check">{t("coupons.rule", { percent: program.limits.percentBps / 100, amount: f.iqd(program.limits.perOrderIqd) })}</Notice>
       </Section>
     </>
   );

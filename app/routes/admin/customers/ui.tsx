@@ -129,6 +129,8 @@ export function FlagExplanations({ flags, empty }: { flags: readonly CustomerFla
       {flags.map((flag) => {
         const vars: Record<string, string | number> = { ...flag.vars };
         for (const key of ["amount", "threshold"]) if (typeof vars[key] === "number" && flag.id === "vip_spend") vars[key] = f.iqd(vars[key] as number);
+        // the windows are settings (1–3650 days): the noun agrees with the number
+        if (typeof vars.days === "number") vars.within = t("withinDays", { count: vars.days });
         const kind = flagKind(flag.id);
         return (
           <li key={flag.id} className="flex items-start gap-2">

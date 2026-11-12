@@ -42,28 +42,63 @@ const planned = (note?: BlueprintNote): BlueprintEntry => (note ? { status: "pla
 
 /** The status of every blueprint function. Module owners: edit your own module's block only. */
 export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEntry>> = {
-  // ── 01 Command center (owner: dashboard module; the admin home is a minimal landing by the admin shell)
-  "01.01": planned(n("Profit is defined in docs/metrics.md; the journal and cost-of-goods postings exist in the commerce core.", "تعريفات الربح مكتوبة، وقيود اليومية وتكلفة المبيعات موجودة في نواة التجارة.")),
+  // ── 01 Command center (owner: dashboard module, docs/areas/admin-dashboard.md)
+  "01.01": {
+    status: "implemented",
+    route: "/admin",
+    note: n(
+      "Paid sales, new orders, open orders and the average basket (docs/metrics.md) and net profit (the finance module's profit and loss; only with cost and profit permissions), each against the same span of the period before. Net profit is not available per branch: the books are kept for the whole store.",
+      "المبيعات المدفوعة والطلبات الجديدة والمفتوحة ومتوسط السلة (قاموس المقاييس) وصافي الربح (الأرباح والخسائر من القسم المالي؛ لمن يملك صلاحيتي التكلفة والربح فقط)، كلٌّ مقابل المدة نفسها من الفترة السابقة. صافي الربح غير متاح لفرع واحد: الدفاتر للمتجر كله.",
+    ),
+  },
   "01.02": {
+    status: "implemented",
+    route: "/admin",
+    note: n(
+      "Late orders, mismatched payments (statement lines matching no payment), low stock and urgent tickets (and those past their due time): each tile counts what its module's own list shows the employee and opens it; below them, what waits for the employee's own decision (the bell's queues).",
+      "الطلبات المتأخرة والدفعات غير المطابقة (سطور كشوف لا تطابق دفعة) والمخزون المنخفض والتذاكر العاجلة (وما تجاوز موعده): كل بطاقة تعدّ ما تعرضه قائمة قسمها للموظف وتفتحها، وتحتها ما ينتظر قرار الموظف نفسه (طوابير الجرس).",
+    ),
+  },
+  "01.03": {
     status: "partial",
     route: "/admin",
     note: n(
-      "The admin home lists transfer proofs awaiting verification and refunds awaiting a second approval, to the employees who may act on them. Late orders, low stock and critical tickets are not listed, and the review screens belong to module 05.",
-      "تعرض الصفحة الرئيسية إثباتات التحويل بانتظار التحقق والاستردادات بانتظار موافقة ثانية لمن يملك صلاحية التصرف بها. الطلبات المتأخرة والمخزون المنخفض والتذاكر الحرجة غير معروضة، وشاشات المراجعة من القسم 05.",
+      "Cart → order → paid → delivered from the store's own records, split by channel (website, point of sale), against the period before. Missing: the visit step (no analytics tool is connected — an owner's decision) and the split by device (carts and orders do not record the shopper's device — a schema change).",
+      "السلة ← الطلب ← الدفع ← التسليم من سجلات المتجر نفسها، مقسّمة حسب القناة (الموقع، نقطة البيع)، مقابل الفترة السابقة. ينقص: خطوة الزيارة (لا أداة تحليلات مربوطة — قرار المالك) والتقسيم حسب الجهاز (السلال والطلبات لا تسجل جهاز المتسوق — تغيير في قاعدة البيانات).",
     ),
   },
-  "01.03": planned(n("Conversion is not measurable yet: visits are not tracked.", "معدل التحويل غير قابل للقياس بعد، فالزيارات لا تُتتبع.")),
-  "01.04": planned(),
-  "01.05": planned(n("The shell already shows each role only its own modules and queues; role dashboards are not built.", "تعرض الواجهة لكل دور أقسامه وما ينتظره فقط، ولوحات الأدوار لم تُبنَ.")),
+  "01.04": {
+    status: "implemented",
+    route: "/admin?period=week",
+    note: n(
+      "Today, this week (from Saturday) and this month, each against the same span before, in Iraq time; demo data on request; a branch filter as soon as the store has branches (an employee limited to a branch sees their branch only).",
+      "اليوم وهذا الأسبوع (من السبت) وهذا الشهر، كلٌّ مقابل المدة نفسها قبلها بتوقيت العراق؛ البيانات التجريبية عند الطلب؛ وفلتر الفرع حالما تكون للمتجر فروع (الموظف المقيّد بفرع يرى فرعه فقط).",
+    ),
+  },
+  "01.05": {
+    status: "implemented",
+    route: "/admin?view=finance",
+    note: n(
+      "Role views — finance, warehouse, support — each shown only to employees holding the permissions of its cards, and each card only to holders of its own permission.",
+      "لوحات حسب الدور — المالية والمخزن والدعم — تظهر كلٌّ منها لمن يملك صلاحيات بطاقاتها فقط، وكل بطاقة لمن يملك صلاحيتها.",
+    ),
+  },
   "01.06": {
-    status: "partial",
-    route: "/admin",
+    status: "implemented",
+    route: "/admin/dashboard/search",
     note: n(
-      "Ctrl/⌘ K opens a palette of the modules, blueprint functions and actions the employee may use. Searching orders, customers, SKUs, serials and tickets is not built.",
-      "يفتح Ctrl/⌘ K لوحة بحث في الأقسام ووظائف المخطط والإجراءات المسموحة للموظف. البحث في الطلبات والعملاء والأصناف والأرقام التسلسلية والتذاكر غير منفذ.",
+      "Orders, customers, SKUs, serial numbers and tickets with quick actions, each group by its module's permission and field rules. The Ctrl/⌘ K palette does not search records yet (asked of the admin shell owner).",
+      "الطلبات والعملاء والأصناف والأرقام التسلسلية والتذاكر مع إجراءات سريعة، كل مجموعة بصلاحية قسمها وقواعد حقوله. لوحة Ctrl/⌘ K لا تبحث في السجلات بعد (مطلوب من مالك واجهة الإدارة).",
     ),
   },
-  "01.07": planned(n("Every change to stock, money, prices, permissions and settings is recorded in the audit trail.", "كل تغيير في المخزون والمال والأسعار والصلاحيات والإعدادات مسجل في سجل التدقيق.")),
+  "01.07": {
+    status: "implemented",
+    route: "/admin/dashboard/activity",
+    note: n(
+      "Price changes, returns and approvals from the audit trail, each line shown only to employees who may open its record's module.",
+      "تغييرات الأسعار والمرتجعات والموافقات من سجل التدقيق، ويظهر كل سطر لمن يملك فتح قسم سجله فقط.",
+    ),
+  },
 
   // ── 02 Product catalog
   "02.01": {
@@ -1000,13 +1035,62 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 16 Marketing and growth
-  "16.01": planned(n("No message provider is configured: messages are held and never reported as sent.", "لا يوجد مزود رسائل: الرسائل تُحجز ولا تُعدّ مرسلة.")),
-  "16.02": planned(n("No message provider is configured.", "لا يوجد مزود رسائل.")),
-  "16.03": planned(),
-  "16.04": planned(),
-  "16.05": planned(n("Recommendation rules (pin, exclude, boost) exist in the database.", "قواعد التوصيات (تثبيت، استبعاد، أولوية) موجودة في قاعدة البيانات.")),
-  "16.06": planned(n("No reviews are collected yet, and none are invented.", "لا تُجمع تقييمات بعد، ولا تُختلق.")),
-  "16.07": planned(),
+  "16.01": {
+    status: "boundary",
+    route: "/admin/marketing/campaigns",
+    note: n(
+      "Campaigns are prepared, approved by a second person (never the requester nor anyone who wrote it) and released, only to people with an explicit, current marketing consent (guest checkouts per number count; merged, deleted and blocked accounts never), within 2 marketing messages per person per 7 days, checked again inside the write. No SMS, WhatsApp or e-mail provider is connected: released messages are held in the outbox and never shown as sent. Releasing at the scheduled time is by hand until the jobs owner schedules releaseDueCampaigns.",
+      "تُجهَّز الحملات ويعتمدها شخص ثانٍ (لا من طلبها ولا من كتبها) وتوضع في صندوق الإرسال، لمن لديه موافقة تسويق صريحة وحالية فقط (موافقة الضيف لرقمه تُحسب؛ الحسابات المدموجة والمحذوفة والمحظورة لا يصلها شيء)، وبحد رسالتين تسويقيتين للشخص كل 7 أيام، ويُعاد الفحص لحظة الكتابة. لا يوجد مزوّد رسائل نصية أو واتساب أو بريد: الرسائل محجوزة ولا تُعرض مرسلة. الوضع في الموعد يدوي حتى يجدول مالك المهام releaseDueCampaigns.",
+    ),
+  },
+  "16.02": {
+    status: "boundary",
+    route: "/admin/marketing/carts",
+    note: n(
+      "Abandoned carts of known, consenting customers with a verdict each; one held reminder per cart, one cart reminder per person per 7 days, the marketing limit, quiet hours, nothing when the customer ordered since or nothing is buyable — checked again inside the write. No SMS provider: reminders are held, never delivered, and conversions after them are shown as not caused by them. Staff prepare reminders by hand until a scheduled job is added (requested of the jobs owner).",
+      "السلال المتروكة لعملاء معروفين موافقين مع حكم لكل سلة؛ تذكير محجوز واحد لكل سلة، وتذكير سلة واحد للشخص كل 7 أيام، وحد الرسائل التسويقية، وساعات الهدوء، ولا شيء إن طلب العميل بعدها أو لم يبقَ شيء متاح — ويُعاد الفحص لحظة الكتابة. لا مزوّد رسائل نصية: التذكيرات محجوزة لا تصل، والتحول بعدها يُعرض على أنه ليس بسببها. يجهّزها الموظفون يدوياً حتى تُضاف مهمة مجدولة (طُلبت من مالك المهام).",
+    ),
+  },
+  "16.03": {
+    status: "implemented",
+    route: "/admin/marketing/segments",
+    note: n(
+      "Who bought which platform in which period (accepted orders, Baghdad days), narrowed by module 07's stored segments (reused, not recomputed), with how many may be messaged now and why the others are left out; a campaign starts from the same audience.",
+      "من اشترى أي منصة وفي أي فترة (طلبات مؤكدة، أيام بغداد)، مضيّقاً بأقسام القسم 07 المحفوظة (يُعاد استخدامها دون إعادة حساب)، وكم منهم يمكن مراسلته الآن ولماذا استُبعد الباقون؛ وتبدأ الحملة من الجمهور نفسه.",
+    ),
+  },
+  "16.04": {
+    status: "partial",
+    route: "/admin/marketing/links",
+    note: n(
+      "Missing: the storefront does not record the source — no page reads utm_* or tt_l and placeOrder writes neither orders.utm_link_id nor orders.attribution (requested of the storefront and the commerce core), and nothing counts clicks. The link builder (CMS path rules, a page that does not exist is refused), the links per campaign and the attribution read are built; attribution counts only orders that really carry their source — none today, and the page says so.",
+      "الناقص: واجهة المتجر لا تسجل المصدر — لا صفحة تقرأ utm_* أو tt_l، ولا يكتب placeOrder حقلي orders.utm_link_id و orders.attribution (طُلب من الواجهة ونواة التجارة)، ولا شيء يعدّ النقرات. منشئ الروابط (بقواعد مسارات المحتوى، ويُرفض رابط لصفحة غير موجودة) وروابط كل حملة وقراءة الإسناد مبنية؛ والإسناد يحسب فقط طلبات تحمل مصدرها فعلاً — لا شيء اليوم، والصفحة تقول ذلك.",
+    ),
+  },
+  "16.05": {
+    status: "implemented",
+    route: "/admin/marketing/cross-sell",
+    note: n(
+      "Staff rules on the recommendation engine's pin / boost / exclude per device and shelf, with a window and a reason; a pin or a boost only for an add-on verified on the device (checked again when switched back on). Each rule says what it does on the storefront now, and the device's setup shelf is shown as shoppers see it.",
+      "قواعد الموظفين على تثبيت المحرك وأولويته واستبعاده لكل جهاز ورف، بمدة وسبب؛ التثبيت والأولوية لملحق متحقق من توافقه مع الجهاز فقط (ويُعاد الفحص عند إعادة التشغيل). كل قاعدة تقول ما تفعله في المتجر الآن، ويُعرض رف الجهاز كما يراه المتسوق.",
+    ),
+  },
+  "16.06": {
+    status: "partial",
+    route: "/admin/marketing/reviews",
+    note: n(
+      "Missing: customers cannot write a review from the store (no form; requested of the product area) and there is no customer photo content. Moderation is built: approve only a verified purchase that holds up inside the write (delivered order of the same customer and product), reject with a reason code, never because a review is negative; nothing creates or changes a rating.",
+      "الناقص: لا يستطيع العملاء كتابة مراجعة من المتجر (لا نموذج؛ طُلب من منطقة المنتج) ولا محتوى صور من العملاء. المراجعة مبنية: يُعتمد الشراء المؤكد فقط إن ثبت لحظة الكتابة (طلب مُسلَّم للعميل نفسه والمنتج نفسه)، ويُرفض بسبب مرمّز، ولا يُرفض لأنه سلبي؛ ولا شيء يصنع تقييماً أو يغيّره.",
+    ),
+  },
+  "16.07": {
+    status: "partial",
+    route: "/admin/marketing/performance",
+    note: n(
+      "Missing: ROAS cannot be computed — no order carries its source until the storefront records it (16.04). Built: spend entered per campaign and month (per campaign only here — the finance books hold marketing expenses as a whole, not per campaign; corrections as negative entries), blended CAC per month, LTV from real orders (paid minus refunded), LTV ÷ CAC, each with its definition (docs/metrics.md §8) and source; CSV (audited) and print. No cost or profit is used.",
+      "الناقص: لا يمكن حساب العائد على الإنفاق — لا طلب يحمل مصدره حتى تسجله الواجهة (16.04). المبني: الإنفاق يُسجَّل لكل حملة وشهر (لكل حملة هنا فقط — دفاتر المالية تحمل مصروفات التسويق جملةً لا لكل حملة؛ والتصحيح قيد سالب)، وتكلفة الاكتساب المجمعة لكل شهر، وقيمة العميل من الطلبات الحقيقية (المدفوع ناقص المسترد)، والنسبة بينهما، لكل منها تعريفه (docs/metrics.md §8) ومصدره؛ مع CSV (مدقق) وطباعة. لا تُستخدم تكلفة أو ربح.",
+    ),
+  },
 
   // ── 17 Content and storefront (owner: admin content module, docs/areas/admin-cms.md)
   "17.01": {
@@ -1059,23 +1143,125 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 18 Reports and BI
-  "18.01": planned(),
-  "18.02": planned(),
-  "18.03": planned(),
-  "18.04": planned(),
-  "18.05": planned(),
-  "18.06": planned(),
-  "18.07": planned(n("The metrics dictionary is written (docs/metrics.md); it is not in the admin.", "قاموس المقاييس مكتوب، لكنه ليس في لوحة الإدارة.")),
+  "18.01": {
+    status: "implemented",
+    route: "/admin/reports/sales",
+    note: n(
+      "Revenue recognised at delivery, discounts, refunds, delivery income and net revenue from the journal (the accounting core's own figures), split by Baghdad day, platform (each order's amounts split over its lines to the dinar), branch or channel — the rows plus what belongs to no order add up to the books, checked on every request; orders placed, order value, average basket, cancellations, paid sales, refund and return rates. Demo rows only when asked; printable, CSV and XLSX.",
+      "الإيراد المحقق عند التسليم والخصومات والاستردادات وإيراد التوصيل وصافي الإيراد من دفتر القيود (أرقام نواة المحاسبة نفسها)، مقسّمة حسب يوم بغداد أو المنصة (مبالغ كل طلب مقسّمة على أسطره بالدينار) أو الفرع أو القناة — ومجموع الصفوف مع ما لا يخص طلباً يساوي الدفتر ويُفحص في كل طلب؛ والطلبات المسجلة وقيمتها ومتوسط السلة والإلغاء والمبيعات المدفوعة ونسبتا الاسترداد والإرجاع. البيانات التجريبية عند الطلب فقط؛ قابل للطباعة وCSV وXLSX.",
+    ),
+  },
+  "18.02": {
+    status: "implemented",
+    route: "/admin/reports/margin",
+    note: n(
+      "The profit of every order delivered in the range (docs/metrics.md), split over its lines and summed per SKU: line value less its share of the discount and refunds, less the landed cost of goods from the FIFO layers (less what came back), less commissions, less the net delivery cost (the carrier's charge, cash-on-delivery fees included, minus the fee charged); today's landed cost from pricing beside it; uncosted units and parcels without a recorded charge are counted as incomplete; the books for the same dates beside it. Cost columns need the cost permission, profit columns the profit permission too — absent otherwise, in the page and the files. Card-terminal fees are not recorded anywhere, so they are not in it.",
+      "ربح كل طلب سُلّم في الفترة (قاموس المقاييس) مقسّماً على أسطره ومجموعاً لكل SKU: قيمة السطر ناقص حصته من الخصم والاستردادات، ناقص التكلفة الواصلة من طبقات FIFO (ناقص ما عاد)، ناقص العمولات، ناقص صافي كلفة التوصيل (ما تقاضته شركة الشحن مع رسوم الدفع عند الاستلام ناقص رسوم التوصيل)؛ والتكلفة الواصلة اليوم من التسعير بجانبه؛ والقطع بلا تكلفة والطرود بلا كلفة مسجلة تُعدّ ناقصة؛ ودفتر التواريخ نفسها بجانبه. أعمدة التكلفة تحتاج صلاحية التكلفة، وأعمدة الربح صلاحية الربح أيضاً — غائبة دونها في الصفحة والملفات. رسوم أجهزة البطاقة غير مسجلة في أي مكان، فلا تدخل فيه.",
+    ),
+  },
+  "18.03": {
+    status: "implemented",
+    route: "/admin/reports/inventory",
+    note: n(
+      "ABC by the range's net revenue or units (A = the first 80 % of the value, B the next 15 %, C the rest) with what is on hand now and the A items out of stock; stock turnover and dead stock are module 04's own report, reused (they need the inventory reports permission).",
+      "تحليل ABC حسب صافي إيراد الفترة أو قطعها (A أول 80% من القيمة، B الـ15% التالية، C الباقي) مع المخزون الآن ومنتجات A النافدة؛ ودوران المخزون والمخزون الراكد تقرير قسم المخزون نفسه يُعاد استخدامه (يحتاج صلاحية تقارير المخزون).",
+    ),
+  },
+  "18.04": {
+    status: "implemented",
+    route: "/admin/reports/customers",
+    note: n(
+      "Cohorts by the month of the first purchase with the share who bought in each later month (a month not reached yet is shown as not reached, never 0 %), repeat purchases and days to the second purchase, value per customer, and every customer's value by module 07's RFM segment. A purchase and its value are module 07's definitions (what the store kept: paid − refunded); guests are counted apart; aggregates only. A profit-based customer value (per-order profit over a customer's history) is not computed yet.",
+      "مجموعات حسب شهر أول شراء ونسبة من اشترى في كل شهر بعده (الشهر الذي لم يأتِ يُعرض كذلك، لا 0%)، وتكرار الشراء والأيام حتى الشراء الثاني، والقيمة لكل عميل، وقيمة العملاء حسب شرائح RFM للقسم 07. تعريف الشراء وقيمته من القسم 07 (ما احتفظ به المتجر: المدفوع − المردود)؛ والزوار يُعدّون منفصلين؛ أرقام مجمّعة فقط. قيمة العميل بالربح (ربح كل طلب عبر تاريخ العميل) لا تُحسب بعد.",
+    ),
+  },
+  "18.05": {
+    status: "implemented",
+    route: "/admin/reports/performance",
+    note: n(
+      "Suppliers by module 09's rating; employees' counter sales, refunds on them and packing by module 15's month performance (no cost, no pay); shipping per carrier — delivery success, first-attempt success, failed tries, days to deliver, cash-on-delivery settlement time and what still waits; customer service by module 14's response and resolution times. The employee and service sections also need their module's own permission.",
+      "الموردون بتقييم القسم 09؛ ومبيعات الموظفين في نقطة البيع والاستردادات عليها والتجهيز من أداء القسم 15 الشهري (بلا تكلفة ولا أجور)؛ والشحن لكل شركة — نجاح التوصيل والنجاح من أول محاولة والمحاولات الفاشلة وأيام التوصيل ووقت تسوية الدفع عند الاستلام وما ينتظر؛ وخدمة العملاء بأوقات الرد والحل للقسم 14. قسما الموظفين وخدمة العملاء يحتاجان صلاحية قسمهما أيضاً.",
+    ),
+  },
+  "18.06": {
+    status: "partial",
+    route: "/admin/reports/saved",
+    note: n(
+      "Saved reports (any report's view under a name, for oneself or shared with those who may open it; owner-only rename and delete with a reason, audited) and CSV / XLSX exports of every report with exactly the figures the page shows (formula-safe, audited). Missing: scheduled delivery — no e-mail provider is configured, so no schedule is offered.",
+      "التقارير المحفوظة (عرض أي تقرير باسم، لصاحبه أو مشتركاً مع من يملك صلاحية فتحه؛ يعدّله صاحبه أو يحذفه بسبب، مع سجل تدقيق) وتصدير كل تقرير CSV وXLSX بالأرقام التي تعرضها الصفحة نفسها (آمن من الصيغ، مسجّل). الناقص: الإرسال المجدول — لا مزود بريد مُعدّ، فلا يُعرض أي جدول.",
+    ),
+  },
+  "18.07": {
+    status: "implemented",
+    route: "/admin/reports/dictionary",
+    note: n(
+      "One dictionary in the admin: every metric of docs/metrics.md (a test keeps the two in step) with its source, the permission it needs, the reports that show it and the code that computes it, plus the reports' own figures written from those definitions. The period's revenue, cost and profit come from the accounting core alone; the profit of one order (net margin per SKU) follows the dictionary's own definition. Read-only by design: a definition changes with docs/metrics.md and its implementation, never through a form.",
+      "قاموس واحد في لوحة الإدارة: كل مقياس في docs/metrics.md (اختبار يبقيهما متطابقين) مع مصدره والصلاحية التي يحتاجها والتقارير التي تعرضه والكود الذي يحسبه، وأرقام التقارير مكتوبة من تلك التعريفات. إيراد الفترة وتكلفتها وربحها من نواة المحاسبة وحدها؛ وربح الطلب الواحد (صافي الهامش لكل SKU) بتعريف القاموس نفسه. للقراءة فقط عمداً: يتغير التعريف مع الوثيقة وحسابها، لا من نموذج.",
+    ),
+  },
 
   // ── 19 Automation and AI
-  "19.01": planned(),
-  "19.02": planned(),
-  "19.03": planned(),
-  "19.04": planned(),
-  "19.05": planned(),
-  "19.06": planned(),
-  "19.07": planned(),
-  "19.08": planned(n("Refunds already need approval by a second person.", "الاسترداد يحتاج أصلاً موافقة شخص ثانٍ.")),
+  "19.01": {
+    status: "partial",
+    route: "/admin/automation/rules",
+    note: n(
+      "Rules from a fixed catalogue (new order, stock at its reorder point, a ticket waiting, a price change) with typed conditions and actions that hand work to a person (a staff task, a notice inside the admin, a review flag, a purchase suggestion); every save a new version, audited; a run log. They run with the scheduled job only once the platform schedules runAutomation (requested); until then a person runs them with 'run the active rules now'. Notices are not sent by message (no provider).",
+      "قواعد من قائمة ثابتة (طلب جديد، مخزون عند حد إعادة الطلب، تذكرة تنتظر، تغيّر سعر) بشروط وإجراءات محددة تسلّم العمل لشخص (مهمة، تنبيه داخل الإدارة، علامة مراجعة، اقتراح شراء)؛ كل حفظ نسخة جديدة مدققة؛ وسجل تنفيذ. تعمل مع التشغيل المجدول فقط بعد أن تجدول المنصة runAutomation (طُلب ذلك)؛ وحتى ذلك يشغّلها شخص بزر «شغّل القواعد المفعّلة الآن». التنبيهات لا تُرسل برسائل (لا مزوّد).",
+    ),
+  },
+  "19.02": {
+    status: "partial",
+    route: "/admin/automation/suggestions",
+    note: n(
+      "Suggestions from the inventory module's reorder figures, one per SKU until new stock arrives, dismissed with a reason or turned into a draft purchase order of module 09 (whose approval rules apply). The stock is checked on its own only once the platform schedules runAutomation (requested); meanwhile 'check the stock now'. The admin bell does not count them yet (asked of the shell owner).",
+      "اقتراحات من أرقام إعادة الطلب في المخزون، اقتراح لكل صنف حتى تصل بضاعة جديدة، تُستبعد بسبب أو تصير مسودة أمر شراء في القسم 09 (بقواعد اعتماده). يُفحص المخزون تلقائياً فقط بعد أن تجدول المنصة runAutomation (طُلب ذلك)؛ وحتى ذلك «افحص المخزون الآن». جرس الإدارة لا يعدّها بعد (طُلب من مالك الواجهة).",
+    ),
+  },
+  "19.03": {
+    status: "partial",
+    route: "/admin/automation/tickets",
+    note: n(
+      "Topics and canned-reply suggestions by written keyword rules, labelled as rules, never as AI; the change and the reply happen on the ticket's page. Summaries and written reply suggestions need a language model, which is not configured.",
+      "مواضيع واقتراح ردود جاهزة بقواعد كلمات مكتوبة، معلنة كقواعد لا كذكاء اصطناعي؛ التغيير والرد في صفحة التذكرة. التلخيص واقتراح ردود مكتوبة يحتاجان نموذجاً لغوياً غير مُعدّ.",
+    ),
+  },
+  "19.04": {
+    status: "implemented",
+    route: "/admin/automation/anomalies",
+    note: n(
+      "Deterministic checks with written thresholds (large refunds, large discounts, orders far above usual, cost jumps with cost.read) next to finance 10.10's checks and purchasing 09.07's variances, for those who may read them; worked out when the page opens.",
+      "فحوص ثابتة بحدود مكتوبة (استردادات وخصومات كبيرة، طلبات أكبر بكثير من المعتاد، قفزات التكلفة لمن يرى التكلفة) بجانب فحوص المالية 10.10 وفروقات المشتريات 09.07 لمن يحق له؛ تُحسب عند فتح الصفحة.",
+    ),
+  },
+  "19.05": {
+    status: "implemented",
+    route: "/admin/automation/forecast",
+    note: n(
+      "A three-month moving average of units sold, times last year's index for the month once 12 months exist, with the months shown; launches from the catalogue's release dates with pre-orders; short history says so. Kept monthly in demand_forecasts once the platform schedules storeDemandForecasts (requested).",
+      "متوسط متحرك لثلاثة أشهر من الوحدات المباعة، مضروباً في مؤشر الشهر من العام الماضي بعد 12 شهراً، مع عرض الأشهر؛ والإطلاقات من تواريخ الإصدار مع الحجوزات المسبقة؛ والتاريخ القصير يُذكر كما هو. يُحفظ شهرياً بعد أن تجدول المنصة storeDemandForecasts (طُلب ذلك).",
+    ),
+  },
+  "19.06": {
+    status: "boundary",
+    route: "/admin/automation/assistant",
+    note: n("Needs a language model the owner chooses (provider, key, and a decision on which data may leave); none is configured. The page says what it would have to respect.", "يحتاج نموذجاً لغوياً يختاره المالك (مزوّد ومفتاح وقرار بما يجوز أن يغادر من البيانات)؛ لا شيء مُعدّ. الصفحة تقول ما يجب أن يلتزم به."),
+  },
+  "19.07": {
+    status: "implemented",
+    route: "/admin/automation/rules",
+    note: n(
+      "A rule is switched on only after a dry run of its current version (7 / 30 / 90 days; stock as it is now) that is at most 7 days old, and never by the author of that version; the dry run writes only its summary and samples.",
+      "لا تُفعّل قاعدة إلا بعد محاكاة نسختها الحالية (7 / 30 / 90 يوماً؛ المخزون كما هو الآن) لم يمضِ عليها أكثر من 7 أيام، ولا يفعّلها كاتب تلك النسخة؛ المحاكاة لا تكتب إلا ملخصها وعيناتها.",
+    ),
+  },
+  "19.08": {
+    status: "implemented",
+    route: "/admin/automation",
+    note: n(
+      "No automation action refunds, changes a price, moves stock or money or approves anything: refunds keep 05/12's second person, prices 03's approval limits, purchase orders 09's approval; a rule only creates a request for a person (tested by counting those tables).",
+      "لا إجراء أتمتة يسترد مالاً أو يغيّر سعراً أو يحرّك مخزوناً أو مالاً أو يعتمد شيئاً: الاسترداد يبقى بموافقة شخص ثانٍ في 05/12، والأسعار بحدود الموافقة في 03، وأوامر الشراء باعتماد 09؛ القاعدة تنشئ طلباً لشخص فقط (مختبر بعدّ تلك الجداول).",
+    ),
+  },
 
   // ── 20 Security and compliance
   "20.01": {
@@ -1144,12 +1330,54 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 21 Branches, channels and integrations
-  "21.01": planned(),
-  "21.02": planned(),
-  "21.03": planned(),
-  "21.04": planned(),
-  "21.05": planned(n("No payment, shipping or messaging provider is connected.", "لا يوجد مزود دفع أو شحن أو رسائل متصل.")),
-  "21.06": planned(),
+  "21.01": {
+    status: "partial",
+    route: "/admin/channels/branches",
+    note: n(
+      "Branches: add, edit (stale forms refused) and switch off — refused while active locations, registers, limited employees or price lists use it — with what belongs to each one in modules 03, 04, 06 and 20; per channel, where its stock, prices and delivery come from today (/admin/channels/sales), linked to the module that decides it. Missing: an existing location cannot be moved under a branch (module 04's location edit has no branch), the online checkout does not apply price lists (the commerce core), and the two built-in channels have no on/off switch that the checkout or the till would read.",
+      "الفروع: إضافة وتعديل (يُرفض النموذج القديم) وإيقاف — يُرفض ما دامت مواقع أو نقاط بيع أو موظفون مقيّدون أو قوائم أسعار فعالة تستخدمه — مع ما يخص كل فرع في الأقسام 03 و04 و06 و20؛ ولكل قناة من أين تأخذ مخزونها وأسعارها وتوصيلها اليوم (\u2066/admin/channels/sales\u2069) مع رابط القسم الذي يقرر ذلك. ناقص: لا يُنقل موقع موجود إلى فرع (تعديل الموقع في القسم 04 بلا فرع)، والدفع في المتجر لا يطبّق قوائم الأسعار (نواة التجارة)، والقناتان المدمجتان بلا مفتاح تشغيل يقرؤه الدفع أو نقطة البيع.",
+    ),
+  },
+  "21.02": {
+    status: "partial",
+    route: "/admin/channels/orders",
+    note: n(
+      "Orders of every channel for a period — placed, open, delivered, cancelled, returned, order value and average basket — each linked to the list that shows them (module 05 lists online and till orders together; module 06 the till's sales). Missing: a channel filter on module 05's list (requested); no outside marketplace is connected, so none of its orders can arrive.",
+      "طلبات كل قناة لفترة — المسجلة والمفتوحة والمسلّمة والملغاة والمرتجعة وقيمتها ومتوسط السلة — مع رابط القائمة التي تعرضها (القسم 05 يعرض طلبات المتجر ونقاط البيع معاً، والقسم 06 مبيعات نقاط البيع). ناقص: تصفية حسب القناة في قائمة القسم 05 (طُلبت)، ولا سوق خارجي متصل فلا تصل طلباته.",
+    ),
+  },
+  "21.03": {
+    status: "partial",
+    route: "/admin/channels/api",
+    note: n(
+      "API keys with scopes (only ones the creator holds — and only while they hold them: a key stops when its creator's account is disabled or limited to a branch), an expiry and a rate a minute — shown once, only the hash kept, revoked with a reason, audited; a read-only API (products, stock, orders: no cost, no customer data, every call audited) documented on /admin/channels/api/docs; webhooks with a signing secret encrypted with DATA_KEY, order events queued once and signed. Missing: GET /api/v1 is not registered in the server's routes yet (requested), the scheduled queue and delivery jobs are not registered (requested), and nothing is sent to an outside address (no safe transport — the boundary of 21.04).",
+      "مفاتيح API بصلاحيات (مما يملكه منشئها فقط، وما دام يملكها: يتوقف المفتاح إن عُطّل حساب منشئه أو قُيّد بفرع) وتاريخ انتهاء وحد في الدقيقة — تظهر مرة واحدة ولا يُحفظ إلا بصمتها، وتُلغى بسبب، ومسجلة في التدقيق؛ وواجهة للقراءة فقط (المنتجات والمخزون والطلبات: بلا تكلفة ولا بيانات زبائن، وكل طلب مسجل) موثقة في \u2066/admin/channels/api/docs\u2069؛ وWebhooks بسرّ توقيع مشفر بمفتاح DATA_KEY، وأحداث الطلبات تُصفّ مرة واحدة وتُوقّع. ناقص: المسار \u2066GET /api/v1\u2069 غير مسجل في مسارات الخادم بعد (طُلب)، ومهام الصف والإرسال المجدولة غير مسجلة (طُلبت)، ولا يُرسل شيء إلى عنوان خارجي (لا وسيلة إرسال آمنة — حدّ 21.04).",
+    ),
+  },
+  "21.04": {
+    status: "boundary",
+    route: "/admin/channels/monitor",
+    note: n(
+      "Built: one delivery per event per webhook, each attempt claimed before it is sent (two runs never send it twice), retries with backoff, given up after six attempts, a person's retry repeats the same delivery with its ids (never while an attempt is out), a burst of events larger than one scan is queued over the next runs, failures and incoming provider events on one page; an incoming event is stored with its effect in one batch, so a repeat never duplicates an order or an entry. Needs a delivery transport that refuses private and metadata addresses after DNS resolution, and a connected provider: none exists, so nothing is sent and no event arrives.",
+      "المنفذ: إرسال واحد لكل حدث لكل Webhook، وكل محاولة تُحجز قبل إرسالها (لا يرسلها تشغيلان مرتين)، وإعادة محاولة بفواصل متزايدة، والتوقف بعد ست محاولات، وإعادة شخص للمحاولة تكرر الإرسال نفسه بمعرّفاته (لا أثناء محاولة جارية)، ودفعة أحداث أكبر من فحص واحد تُصفّ في الجولات التالية، والإخفاقات والأحداث الواردة من المزوّدين في صفحة واحدة؛ والحدث الوارد يُخزَّن مع أثره في دفعة واحدة فلا يكرر تكراره طلباً ولا قيداً. يحتاج وسيلة إرسال ترفض العناوين الخاصة وعناوين البيانات الوصفية بعد حل الاسم، ومزوّداً متصلاً: لا يوجد، فلا يُرسل شيء ولا يرد حدث.",
+    ),
+  },
+  "21.05": {
+    status: "boundary",
+    route: "/admin/channels/providers",
+    note: n(
+      "Built: the registry of payment and messaging providers that operate in Iraq and the store's own couriers (module 11), each shown as not connected; the owner may keep a provider's settings and its secret ready — encrypted with DATA_KEY, never shown again, never logged — and remove it. Needs a provider agreement and an adapter for each provider: none is built, so nothing is ever shown as connected and messages stay held.",
+      "المنفذ: سجل مزوّدي الدفع والرسائل العاملين في العراق وشركات توصيل المتجر نفسه (القسم 11)، وكل منهم «غير متصل»؛ ويحفظ المالك إعدادات المزوّد وسرّه جاهزة — مشفرة بمفتاح DATA_KEY ولا تُعرض مرة أخرى ولا تُسجَّل — ويحذفها. يحتاج اتفاقاً مع المزوّد وربطاً برمجياً لكل منهم: لم يُبنَ أي ربط، فلا يظهر أي مزوّد متصلاً وتبقى الرسائل معلّقة.",
+    ),
+  },
+  "21.06": {
+    status: "implemented",
+    route: "/admin/channels/profit",
+    note: n(
+      "The channel list (/admin/channels/sales) and, per channel and the POS per branch, revenue, discounts, refunds and delivery fees from the journal; the cost of goods and carrier costs with cost.read; gross profit, the channel's contribution and margins with profit.read too — absent, never zero, without them, also when printed; what has no channel and the commissions booked with payroll on their own lines, adding up to the finance module's net profit (docs/metrics.md); printed on an A4 landscape sheet. For employees without a branch limit: the report covers every branch and the store's net profit. Added marketplace channels show no sales: none is connected.",
+      "قائمة القنوات (\u2066/admin/channels/sales\u2069)، ولكل قناة ولنقاط البيع حسب الفرع: الإيراد والخصومات والاستردادات ورسوم التوصيل من دفتر اليومية؛ وتكلفة البضاعة وكلفة الشحن مع صلاحية التكلفة؛ ومجمل الربح ومساهمة القناة والهوامش مع صلاحية الربح أيضاً — غائبة لا صفرية بدونها، وفي الطباعة أيضاً؛ وما بلا قناة والعمولات المقيدة مع الرواتب في سطرين خاصين، ومجموعها يطابق صافي ربح القسم المالي (\u2066docs/metrics.md\u2069)؛ ويُطبع على ورقة A4 بالعرض. للموظفين غير المقيّدين بفرع: التقرير يشمل الفروع كلها وصافي ربح المتجر. القنوات المضافة للأسواق بلا مبيعات: لا سوق متصل.",
+    ),
+  },
 
   // ── 22 Settings and administration
   "22.01": {

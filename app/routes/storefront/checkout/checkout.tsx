@@ -36,6 +36,7 @@ import {
   firstIssue,
   issuesFromServer,
   newAttemptKey,
+  parsePoints,
   readStoredCheckout,
   stepIndex,
   stepOf,
@@ -65,9 +66,11 @@ import {
   type CheckoutFailure,
   type SavedAddressPrefill,
 } from "./checkout.server";
+import type { FlashPriceView } from "~/server/services/orders/types";
+import { Adjustments, summaryCoupon, withFlash } from "./components/Adjustments";
 import { AddressStep, fieldId, NOJS_GOVERNORATE_ID, PaymentStep, ReviewStep, withOptionValue } from "./components/CheckoutSteps";
 import { CommitKey } from "./components/CommitKey";
-import { CouponForm, type CartWithIssue } from "./components/CouponForm";
+import { CouponForm, couponIssueText, type CartWithIssue } from "./components/CouponForm";
 import { SummaryBar } from "./components/SummaryBar";
 import "./checkout.css";
 
@@ -129,7 +132,12 @@ export async function action({ request, context }: Route.ActionArgs) {
     await recordPurchase(db, ctx, session?.customer.id ?? null, result);
     // «احفظ هذا العنوان لطلباتك القادمة» (signed in, ticked, a new order): the account's address book, best effort
     const unsaved = session && !result.replayed && wantsAddressSaved(form) ? !(await saveCheckoutAddress(db, { id: session.customer.id, ip: ctx.ip }, form, ctx.now)) : false;
-    const path = confirmationPath(result.ref, result.accessToken) + (unsaved ? "&address=0" : "");
+    // A guest lands on the order's link (CONTRACTS §1: the token is their only key). A signed-in shopper lands on their
+    // own order page WITHOUT the token (security review 2026-11-12): the address stays in the browser's history, and on a
+    // shared device the token would open the order — address, items, the transfer upload — after they sign out; their
+    // account opens it.
+    const base = session ? `/order/${encodeURIComponent(result.ref)}` : confirmationPath(result.ref, result.accessToken);
+    const path = base + (unsaved ? `${base.includes("?") ? "&" : "?"}address=0` : "");
     throw redirect(localePath(path, ctx.locale), { headers: NO_STORE });
   }
   return data(result, { status: result.status, headers: NO_STORE });
@@ -240,15 +248,30 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
     if (restored) writeStoredCheckout({ draft, key: attemptKey, submittedKey, cartId: cartIdRef.current ?? readStoredCheckout()?.cartId ?? null });
   }, [restored, draft, attemptKey, submittedKey]);
 
-  // ── the cart as priced for the chosen governorate (the server prices it: GET /api/cart) ──────────────
+  // ── the cart as priced for the chosen governorate, the points to redeem and the referral code asked about (the
+  //    server prices it: GET /api/cart?governorateId=&points= — or, with a referral code, POST intent=price, so the
+  //    code travels in a body and never in a URL that logs keep; security review 2026-11-12) ──────────────
   const [priced, setPriced] = useState<{ source: unknown; cart: CartView; governorateId: string | null }>({ source: loaderData.cart, cart: loaderData.cart, governorateId: null });
   const [pricing, setPricing] = useState<"idle" | "pending" | "failed">("idle");
   if (priced.source !== loaderData.cart) setPriced({ source: loaderData.cart, cart: loaderData.cart, governorateId: null });
+  /** The referral code the shopper asked about with «تحقق» (asked again while it stays the typed one). */
+  const [referralAsked, setReferralAsked] = useState<string>("");
+  const askedPoints = signedIn ? (parsePoints(draft.redeemPoints) ?? 0) : 0;
+  const referral = referralAsked && referralAsked === draft.referralCode.trim() ? referralAsked : "";
   const priceFor = useCallback(
-    async (governorateId: string) => {
+    async (governorateId: string | null, points: number, code: string) => {
       setPricing("pending");
       try {
-        const response = await fetch(`/api/cart?governorateId=${encodeURIComponent(governorateId)}&locale=${locale}`, { headers: { Accept: "application/json" }, credentials: "same-origin" });
+        const query = new URLSearchParams({ locale });
+        if (governorateId) query.set("governorateId", governorateId);
+        if (points > 0) query.set("points", String(points));
+        let response: Response;
+        if (code) {
+          const body = new URLSearchParams(query);
+          body.set("intent", "price");
+          body.set("referral", code);
+          response = await fetch("/api/cart", { method: "POST", body, headers: { Accept: "application/json" }, credentials: "same-origin" });
+        } else response = await fetch(`/api/cart?${query.toString()}`, { headers: { Accept: "application/json" }, credentials: "same-origin" });
         const json = (await response.json()) as { ok?: boolean; cart?: CartView };
         if (!response.ok || !json.ok || !json.cart) throw new Error(`cart ${response.status}`);
         setPriced((current) => ({ ...current, cart: json.cart as CartView, governorateId }));
@@ -261,24 +284,42 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   );
   const pricedFor = useRef<string | null>(null);
   useEffect(() => {
-    if (!restored || !draft.governorateId || pricedFor.current === `${draft.governorateId}|${String(loaderData.cart.id)}|${locale}`) return;
-    pricedFor.current = `${draft.governorateId}|${String(loaderData.cart.id)}|${locale}`;
-    void priceFor(draft.governorateId);
-  }, [restored, draft.governorateId, loaderData.cart.id, locale, priceFor]);
+    if (!restored) return;
+    const key = `${draft.governorateId}|${String(loaderData.cart.id)}|${locale}|${askedPoints}|${referral}`;
+    if (pricedFor.current === key) return;
+    // nothing chosen yet that changes the price: the loader's cart is the price
+    if (!draft.governorateId && askedPoints === 0 && !referral && pricedFor.current === null) return;
+    pricedFor.current = key;
+    // points are typed digit by digit: ask once the typing pauses
+    const timer = setTimeout(() => void priceFor(draft.governorateId || null, askedPoints, referral), askedPoints > 0 ? 350 : 0);
+    return () => clearTimeout(timer);
+  }, [restored, draft.governorateId, loaderData.cart.id, locale, askedPoints, referral, priceFor]);
   // The review edits the cart in place; every answer is priced for the governorate the totals are for.
   const editor = useCartEditor(priced.cart, { locale, governorateId: priced.governorateId });
   const cart = editor.view as CartWithIssue;
+  // An edit's answer (POST /api/cart) is priced without the points and the referral code: ask again with them.
+  useEffect(() => {
+    if (editor.view === priced.cart || editor.pending || (askedPoints === 0 && !referral)) return;
+    void priceFor(draft.governorateId || null, askedPoints, referral);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when an edit answered
+  }, [editor.view, editor.pending]);
 
   // ── checks ───────────────────────────────────────────────────────────────────
   const context: ValidationContext = useMemo(
     () => ({
       districtIds: (page.districts[draft.governorateId] ?? []).map((d) => d.id),
       days: offeredDays,
-      methods: [page.methods.cod ? "cod" : null, page.methods.wallet && signedIn ? "wallet" : null, page.methods.bankTransfer ? "bank_transfer" : null, page.methods.zaincash ? "zaincash" : null].filter((m): m is string => m !== null),
+      // a transfer of nothing is never asked for (an order of 0 — points and free delivery — is placed paid)
+      methods: [page.methods.cod ? "cod" : null, page.methods.wallet && signedIn ? "wallet" : null, page.methods.bankTransfer && cart.totalIqd > 0 ? "bank_transfer" : null, page.methods.zaincash && cart.totalIqd > 0 ? "zaincash" : null].filter((m): m is string => m !== null),
       walletEnough: page.walletBalanceIqd !== null && page.walletBalanceIqd >= cart.totalIqd,
+      pointsMax: cart.points?.max ?? 0,
     }),
-    [page, draft.governorateId, signedIn, cart.totalIqd, offeredDays],
+    [page, draft.governorateId, signedIn, cart.totalIqd, cart.points?.max, offeredDays],
   );
+  // a split payment: the balance from the wallet, the rest by the method chosen (only while the balance is below the total)
+  const walletBalance = page.walletBalanceIqd ?? 0;
+  const splitting = signedIn && page.methods.wallet && draft.useWallet && draft.paymentMethod !== "wallet" && walletBalance > 0 && walletBalance < cart.totalIqd;
+  const split = splitting ? { walletIqd: walletBalance, restIqd: cart.totalIqd - walletBalance } : null;
 
   const update = useCallback(
     <K extends FieldName>(name: K, value: CheckoutDraft[K]) => {
@@ -459,7 +500,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
     setNotice(null);
     setSubmittedKey(attemptKey);
     writeStoredCheckout({ draft, key: attemptKey, submittedKey: attemptKey, cartId: cartIdRef.current });
-    void submit(draftToForm({ ...draft, saveAddress: draft.saveAddress && offerSave }, { idempotencyKey: attemptKey, expectedTotalIqd: cart.totalIqd }), { method: "post" });
+    void submit(draftToForm({ ...draft, saveAddress: draft.saveAddress && offerSave, useWallet: splitting }, { idempotencyKey: attemptKey, expectedTotalIqd: cart.totalIqd, walletIqd: split?.walletIqd ?? 0 }), { method: "post" });
   };
 
   /** After a lost answer: ask again with the same key — the server answers with the order that key placed, if any. */
@@ -543,9 +584,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
         <p className="type-sm-strong text-ink">{noticeText(shownNotice.code, cart, t, errorsT, f)}</p>
         {couponIssue ? (
           // Why the discount went: e.g. the code was already used with this phone number (checked at checkout).
-          <p className="type-xs text-ink-2">
-            {t("coupon.issue", { code: "⁦" + couponIssue.code + "⁩" })} {errorsT(`errors.coupon_${couponIssue.reason}`)}
-          </p>
+          <p className="type-xs text-ink-2">{couponIssueText(couponIssue, t, errorsT)}</p>
         ) : null}
         {["insufficient_stock", "used_unit_not_available", "cart_blocked", "cart_changed", "cart_empty"].includes(shownNotice.code) ? (
           <TextLink as={LocaleLink} to="/cart" className="justify-self-start">
@@ -580,16 +619,20 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
       })}
     </p>
   );
-  const summaryLines = cart.lines.map((line) => withOptionValue({ id: line.id, name: line.name, optionsLabel: line.optionsLabel, lineTotalIqd: line.lineTotalIqd, image: line.image }));
+  const summaryLines = cart.lines.map((line) => withFlash(withOptionValue({ id: line.id, name: line.name, optionsLabel: line.optionsLabel, lineTotalIqd: line.lineTotalIqd, image: line.image }), (line as { flash?: FlashPriceView | null }).flash, t, f));
   const shipping = governorateChosen ? (cart.shippingIqd === null ? "unserved" : "governorate") : page.shipping.overridesEnabled ? "pending" : undefined;
+  // every discount as charged, the waived delivery, a split payment's parts — under each summary's rows
+  const adjustments = <Adjustments discounts={cart.discounts ?? []} waiver={cart.shippingWaiver ?? null} split={split} />;
   const coupon = (
-    <CouponForm cart={cart} locale={locale} governorateId={priced.governorateId} onCart={(fresh) => setPriced((current) => ({ ...current, cart: fresh }))} />
+    <CouponForm cart={cart} locale={locale} governorateId={priced.governorateId} pricing={{ points: askedPoints, referral }} onCart={(fresh) => setPriced((current) => ({ ...current, cart: fresh }))} />
   );
 
   return (
     <>
       <SummaryBar cart={cart} className="lg:hidden">
-        <OrderSummary {...cart} count={cart.count} title={null} lines={summaryLines} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} couponField={coupon} approx="off" />
+        <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} count={cart.count} title={null} lines={summaryLines} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} couponField={coupon} approx="off">
+          {adjustments}
+        </OrderSummary>
       </SummaryBar>
 
       <div className="page co-page co-split">
@@ -650,11 +693,15 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                       signedIn={signedIn}
                       notice={noticeNode}
                       editor={editor}
+                      onReferralCheck={() => setReferralAsked(draft.referralCode.trim())}
+                      referralPending={pricing === "pending" && referral !== ""}
                       foot={
                         // below 1024 the totals sit here too (the summary bar is folded away), then the terms (without
                         // script the terms are said once, by the plain-post key at the end of the form)
                         <div className="grid gap-3 lg:hidden">
-                          <OrderSummary {...cart} lines={null} count={cart.count} title={null} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} approx="off" />
+                          <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} lines={null} count={cart.count} title={null} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} approx="off">
+                            {adjustments}
+                          </OrderSummary>
                           <div className="co-js">{terms}</div>
                           {demo ? <DemoNote variant="line">{shopT("demo.orderLine")}</DemoNote> : null}
                         </div>
@@ -677,6 +724,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
         <aside className="co-aside max-lg:hidden" aria-label={t("checkout.summaryLabel")}>
           <OrderSummary
             {...cart}
+            coupon={summaryCoupon(cart.discounts, cart.coupon)}
             count={cart.count}
             lines={summaryLines}
             shipping={shipping}
@@ -692,7 +740,9 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
             }
             trust={<TrustStrip variant="line" cod={page.methods.cod} returnsTo="/policies/returns" />}
             demo={demo}
-          />
+          >
+            {adjustments}
+          </OrderSummary>
         </aside>
       </div>
 

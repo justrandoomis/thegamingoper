@@ -344,6 +344,9 @@ export default defineMessages({
       hint: { customer: "رقم الموبايل المسجّل في الحساب.", order: "مثل TT-7K4M2Q9X.", product: "رمز المتغير SKU أو slug المنتج.", warranty: "من صفحة الضمان.", repair: "مثل RP-7K4M2Q9X.", return: "مثل RMA-7K4M2Q9X." },
     },
     escalation: {
+      passTitle: "تمرير التصعيد",
+      passLead: "التصعيد عندك: مرّره إلى شخص آخر يملك القرار نفسه، مع السبب. يبقى السجل كاملاً.",
+      passOpen: "مرّر التصعيد",
       title: "تصعيد",
       lead: "شكوى مالية أو شكوى ضمان تذهب إلى من يملك صلاحية القرار. لا يُدفع ولا يُرجع شيء من هنا.",
       open: "صعّد الشكوى",
@@ -1065,6 +1068,9 @@ export default defineMessages({
       hint: { customer: "The mobile number on the account.", order: "Like TT-7K4M2Q9X.", product: "A variant's SKU or the product's slug.", warranty: "From the warranty's page.", repair: "Like RP-7K4M2Q9X.", return: "Like RMA-7K4M2Q9X." },
     },
     escalation: {
+      passTitle: "Pass the escalation on",
+      passLead: "The escalation is with you: pass it to someone else who can take the same decision, with the reason. The history stays complete.",
+      passOpen: "Pass it on",
       title: "Escalation",
       lead: "A financial or warranty complaint goes to someone allowed to decide it. Nothing is paid or returned from here.",
       open: "Escalate the complaint",
@@ -1786,6 +1792,9 @@ export default defineMessages({
       hint: { customer: "ژمارەی مۆبایلی سەر هەژمارەکە.", order: "وەک TT-7K4M2Q9X.", product: "SKUی گۆڕاوێک یان slugی بەرهەمەکە.", warranty: "لە پەڕەی گەرەنتییەکەوە.", repair: "وەک RP-7K4M2Q9X.", return: "وەک RMA-7K4M2Q9X." },
     },
     escalation: {
+      passTitle: "گواستنەوەی بەرزکردنەوە",
+      passLead: "بەرزکردنەوەکە لای تۆیە: بیگوازەوە بۆ کەسێکی تر کە هەمان بڕیاری هەیە، لەگەڵ هۆکار. مێژووەکە تەواو دەمێنێتەوە.",
+      passOpen: "بیگوازەوە",
       title: "بەرزکردنەوە",
       lead: "سکاڵای دارایی یان گەرەنتی دەچێت بۆ ئەو کەسەی مۆڵەتی بڕیاردانی هەیە. هیچ شتێک لێرەوە نادرێت یان ناگەڕێنرێتەوە.",
       open: "سکاڵاکە بەرز بکەرەوە",

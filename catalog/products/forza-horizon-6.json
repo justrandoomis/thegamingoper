@@ -8,9 +8,9 @@
   "releaseDate": "2026-05-19",
   "name": { "ar": "Forza Horizon 6", "en": "Forza Horizon 6", "ckb": "Forza Horizon 6" },
   "short": {
-    "ar": "Xbox Series X متوفرة · PS5 طلب مسبق ليوم 26 كانون الثاني 2027 · اليابان",
-    "en": "Xbox Series X out now · PS5 pre-order for 26 Jan 2027 · set in Japan",
-    "ckb": "Xbox Series X بەردەستە · PS5 داواکاری پێشوەخت بۆ 26ی کانوونی دووەمی 2027 · ژاپۆن"
+    "ar": "صدرت على Xbox Series X · نسخة PS5 تصدر 26 كانون الثاني 2027 · اليابان",
+    "en": "Out now on Xbox Series X · PS5 version out 26 Jan 2027 · set in Japan",
+    "ckb": "لەسەر Xbox Series X دەرچووە · وەشانی PS5 لە 26ی کانوونی دووەمی 2027 دەردەچێت · ژاپۆن"
   },
   "description": {
     "ar": "لعبة سباقات بعالم مفتوح من Playground Games تدور في اليابان، مع أكثر من 550 سيارة حقيقية وطوكيو كأكبر مدينة في تاريخ السلسلة. تبدأ كسائح وتتقدم حتى تصبح أسطورة في مهرجان Horizon، وتستطيع اللعب منفرداً أو مع الأصدقاء. صدرت على Xbox Series X|S وPC في 19 أيار 2026، ونسخة PS5 تصدر في 26 كانون الثاني 2027 على قرص أيضاً.",
@@ -130,7 +130,7 @@
     },
     {
       "sku": "FH6-PS5-STD",
-      "title": { "ar": "Forza Horizon 6 لجهاز PS5 — Standard Edition (طلب مسبق)", "en": "Forza Horizon 6 for PS5 — Standard Edition (pre-order)", "ckb": "Forza Horizon 6 بۆ PS5 — Standard Edition (داواکاری پێشوەخت)" },
+      "title": { "ar": "Forza Horizon 6 لجهاز PS5 — Standard Edition", "en": "Forza Horizon 6 for PS5 — Standard Edition", "ckb": "Forza Horizon 6 بۆ PS5 — Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "releaseDate": "2027-01-26",
       "isDefault": false,

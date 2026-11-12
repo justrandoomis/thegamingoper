@@ -19,6 +19,15 @@ export const ACCOUNT_ERROR_KEYS = [
   "topup_not_pending",
   "otp_unavailable",
   "session_unknown",
+  // the gift-card redemption and the privacy-request form of the account (2026-11-12; module 08's and 07's codes in the
+  // customer's words — staff read their own wording in those modules)
+  "gift_card_unknown",
+  "gift_card_used",
+  "gift_card_void",
+  "gift_card_expired",
+  "gift_card_not_active",
+  "gift_card_demo_mismatch",
+  "privacy_open_exists",
 ] as const;
 export type AccountErrorKey = (typeof ACCOUNT_ERROR_KEYS)[number];
 

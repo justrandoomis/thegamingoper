@@ -69,6 +69,12 @@ export const roles = sqliteTable(
     isSystem: flag("is_system").notNull().default(false),
     description: l10n("description"),
     createdAt: at("created_at").notNull().default(NOW_MS),
+    /**
+     * Two-step verification required for everyone holding this role (20.01, migration 0004). A member without it
+     * signs in to an enrolment-only session: My security's two-step setup, nothing else (auth/admin.server.ts).
+     * Switched with setRoleTwoStepRequired (auth/employees.server.ts) — never edited directly.
+     */
+    requiresMfa: flag("requires_mfa").notNull().default(false),
   },
   (t) => [uniqueIndex("roles_key_uq").on(t.key)],
 );
@@ -148,6 +154,36 @@ export const employeeTrustedDevices = sqliteTable(
 );
 export type EmployeeTrustedDevice = typeof employeeTrustedDevices.$inferSelect;
 export type NewEmployeeTrustedDevice = typeof employeeTrustedDevices.$inferInsert;
+
+export const PASSWORD_LINK_PURPOSES = ["welcome", "reset"] as const;
+export type PasswordLinkPurpose = (typeof PASSWORD_LINK_PURPOSES)[number];
+
+/**
+ * One-time links that let an employee set their own password (migration 0004): `welcome` for a new account
+ * (createEmployee), `reset` when a manager issues a new one (issuePasswordLink). The token itself is shown ONCE to the
+ * staff member who created it and never stored or sent (no message provider): only its SHA-256 is kept. A link works
+ * once, until `expires_at`, and only while it is the employee's newest one (an older link is revoked when a new one
+ * is made). Retention deletes links 30 days after they were used, revoked or ran out.
+ */
+export const employeePasswordLinks = sqliteTable(
+  "employee_password_links",
+  {
+    idHash: text("id_hash").primaryKey(),
+    employeeId: text("employee_id")
+      .notNull()
+      .references((): Ref => employees.id, { onDelete: "cascade" }),
+    purpose: text("purpose", { enum: PASSWORD_LINK_PURPOSES }).notNull(),
+    /** Who made the link (employee id; null for the system). */
+    createdBy: text("created_by"),
+    createdAt: at("created_at").notNull(),
+    expiresAt: at("expires_at").notNull(),
+    usedAt: at("used_at"),
+    revokedAt: at("revoked_at"),
+  },
+  (t) => [index("employee_password_links_employee_idx").on(t.employeeId, t.createdAt), index("employee_password_links_expires_idx").on(t.expiresAt)],
+);
+export type EmployeePasswordLink = typeof employeePasswordLinks.$inferSelect;
+export type NewEmployeePasswordLink = typeof employeePasswordLinks.$inferInsert;
 
 // ───────────────────────────────────────────────────────────────── approvals
 

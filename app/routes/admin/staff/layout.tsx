@@ -20,7 +20,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { i18n: staffI18n(locale), access: staffAccess(actor), me: { id: session.employee.id, name: session.employee.name } };
 }
 
-const SECTIONS: { value: string; path: string; allowed: (a: StaffAccess) => boolean }[] = [
+const SECTIONS: { value: string; path: string; label?: string; allowed: (a: StaffAccess) => boolean }[] = [
   { value: "overview", path: "", allowed: () => true },
   { value: "me", path: "/me", allowed: () => true },
   { value: "approvals", path: "/approvals", allowed: () => true },
@@ -31,6 +31,8 @@ const SECTIONS: { value: string; path: string; allowed: (a: StaffAccess) => bool
   { value: "tasks", path: "/tasks", allowed: () => true },
   { value: "commissions", path: "/commissions", allowed: (a) => a.commissionView },
   { value: "payroll", path: "/payroll", allowed: (a) => a.payrollView },
+  // a branch-limited employee: their branch's advances, never the store-wide payroll (StaffAccess.advancesView)
+  { value: "payroll", path: "/payroll/advances", label: "nav.advances", allowed: (a) => a.advancesView },
   { value: "performance", path: "/performance", allowed: (a) => a.performance },
 ];
 
@@ -39,7 +41,7 @@ export default function StaffLayout({ loaderData }: Route.ComponentProps) {
   const { pathname } = useLocation();
   const segment = pathname.replace(/^\/admin\/staff\/?/, "").split("/")[0] ?? "";
   const current = segment === "" ? "overview" : segment;
-  const items = SECTIONS.filter((section) => section.allowed(loaderData.access)).map((section) => ({ value: section.value, label: t(`nav.${section.value}`), href: `/admin/staff${section.path}` }));
+  const items = SECTIONS.filter((section) => section.allowed(loaderData.access)).map((section) => ({ value: section.value, label: t(section.label ?? `nav.${section.value}`), href: `/admin/staff${section.path}` }));
   return (
     <div className="grid min-w-0 gap-5">
       <Tabs aria-label={t("nav.label")} value={current} items={items} className="stf-noprint" />

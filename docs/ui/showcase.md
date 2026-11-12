@@ -8,6 +8,17 @@ groups) and `ui.ts`. Spec: Design System v2 §4.18–§4.27; CSS classes: `docs/
 Colour light belongs to showcases only (bands and platform tiles); everything else stays on paper. Copy never sits on
 a light core; text on a band is solid white in the light theme and ink in the dark one (set by the band).
 
+**Polish round (2026-11-12):** `PlatformTile selected` (render it `as="button"`) is a toggle — aria-pressed, held on its
+wall, a ring inside the face, a check disc (top start below 1024, the arrow disc's place from 1024). Below 1024 the
+words sit under the hardware at every width (768–1023 too: the name never sits on the hardware — «PlayStation» on the
+white PS5 Slim measured 1.48:1); a two-line name makes the tile taller. `SectionHead action` — your own action in the
+«عرض الكل» place; «عرض الكل» and the action sit ON the heading's line (baseline), the reason runs under both.
+`ReleaseBand` items: `detail` (a line under the name) and `platforms` (two dots for a multi-platform release; the
+label names them all). `TrustStrip transfer={{ zaincash, card }}` (one fact naming the methods that are on).
+`EntryCard` without `art` gives the words the whole card. `ContactCard` channels: `email` (mailto, left to right) and
+`links` ([{ label: "Instagram", url }], new-tab links) — either one is a configured channel. `CompatList` rows:
+`href` (the whole row is a link to the device). The compat words follow §4.1: يعمل · يعمل جزئياً · لا يعمل · لم نتحقق.
+
 ## Band — `~/ui/Band`
 
 `kind`: `hero` (crimson + the brand light) · `platform` (hub band, `--r-lg`, 104 → 160) · `device` (device-hub head,

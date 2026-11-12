@@ -211,7 +211,7 @@ function AnswerButtons({ ti }: Props) {
         onClose={() => setMode(null)}
         tone={mode === "decline" ? "destructive" : "neutral"}
         title={mode === "accept" ? t("answer.acceptTitle") : t("answer.declineTitle")}
-        consequence={mode === "accept" ? t("answer.acceptWhat", { amount: ti.offer ? f.iqd(ti.offer.amountIqd) : "—" }) : t("answer.declineWhat")}
+        consequence={mode === "accept" ? t("answer.acceptWhat", { amount: ti.offer?.amountIqd != null ? f.iqd(ti.offer.amountIqd) : "—" }) : t("answer.declineWhat")}
         confirmLabel={mode === "accept" ? t("answer.accept") : t("answer.decline")}
         reason={mode === "decline" ? { label: t("answer.reason"), noteRequired: false, minLength: 0 } : undefined}
         pending={pending}
@@ -271,6 +271,8 @@ function PayoutButton({ ti }: Props) {
   const [method, setMethod] = useState<"cash" | "store_credit">(chosen ?? (ti.customer.hasAccount ? "store_credit" : "cash"));
   const [locationId, setLocationId] = useState(ti.locations[0]?.id ?? "");
   const [reason, setReason] = useState("");
+  // cash from the payer's own till drawer by default (it then counts in that shift's expected cash), or from elsewhere
+  const [fromDrawer, setFromDrawer] = useState(Boolean(ti.drawer));
   const { fetcher, pending, message, fields } = useIntent("payout", "done.paid", () => setOpen(false));
   const amount = ti.offer?.amountIqd ?? 0;
   const blocked = ti.payoutBlockers.filter((key) => key !== "payout_method_required").length > 0;
@@ -295,13 +297,14 @@ function PayoutButton({ ti }: Props) {
         impact={impact}
         pending={pending}
         error={message}
-        onConfirm={() => fetcher.submit({ intent: "payout", method, locationId, reason }, { method: "post" })}
+        onConfirm={() => fetcher.submit({ intent: "payout", method, locationId, reason, shiftId: method === "cash" && fromDrawer && ti.drawer ? ti.drawer.shiftId : "" }, { method: "post" })}
       >
         <div className="grid gap-3">
           <FieldGroup legend={t("payout.method")} error={fields.method}>
             <Radio row name="payout-method" value="store_credit" label={t("payout.store_credit")} hint={ti.customer.hasAccount ? t("answer.creditHint") : t("answer.creditNeedsAccount")} checked={method === "store_credit"} disabled={!ti.customer.hasAccount} onChange={() => setMethod("store_credit")} />
             <Radio row name="payout-method" value="cash" label={t("payout.cash")} hint={t("answer.cashHint")} checked={method === "cash"} onChange={() => setMethod("cash")} />
           </FieldGroup>
+          {method === "cash" && ti.drawer ? <Checkbox label={t("payout.fromDrawer", { register: ti.drawer.register })} hint={t("payout.fromDrawerHint")} checked={fromDrawer} onChange={(event) => setFromDrawer(event.currentTarget.checked)} error={fields.shiftId} /> : null}
           {changed ? <TextField label={t("payout.changeReason")} required value={reason} onChange={(event) => setReason(event.target.value)} error={fields.reason} hint={t("payout.changeHint", { method: t(`payout.${chosen}`) })} /> : null}
           <Select label={t("payout.location")} value={locationId} onChange={(event) => setLocationId(event.target.value)} error={fields.locationId} options={ti.locations.map((location) => ({ value: location.id, label: `${location.code} · ${location.name}` }))} />
           {ti.can.payoutNeedsSecond ? <p className="type-caption text-ink-2">{t("payout.secondPersonNote")}</p> : null}
@@ -395,9 +398,7 @@ export function OfferSection({ ti }: Props) {
       <dl className="dev-ledger">
         <div className="is-total">
           <dt>{t("offer.amount")}</dt>
-          <dd>
-            <Money iqd={ti.offer.amountIqd} />
-          </dd>
+          <dd>{ti.offer.amountIqd !== null ? <Money iqd={ti.offer.amountIqd} /> : <span className="type-caption text-ink-2">{t("money.hidden")}</span>}</dd>
         </div>
         <div>
           <dt>{t("offer.validUntil")}</dt>
@@ -558,6 +559,12 @@ export function ValuationSection({ ti }: Props) {
   const t = useDevicesT();
   const f = useFormat();
   const v = ti.valuation;
+  if (!ti.money)
+    return (
+      <Section id="ti-valuation" title={t("valuation.title")}>
+        <p className="type-body text-ink-2">{t("money.hiddenWhy")}</p>
+      </Section>
+    );
   return (
     <Section id="ti-valuation" title={t("valuation.title")}>
       <p className="type-caption text-ink-2">{t("valuation.lead")}</p>
@@ -622,6 +629,8 @@ export function ValuationSection({ ti }: Props) {
 export function DifferenceSection({ ti, target }: Props & { target: string }) {
   const t = useDevicesT();
   const d = ti.difference;
+  // the difference starts from the offer (the purchase cost): not for those who do not see trade-in money
+  if (!ti.money) return null;
   return (
     <Section id="ti-difference" title={t("difference.title")}>
       <p className="type-caption text-ink-2">{t("difference.lead")}</p>
@@ -726,7 +735,7 @@ export function HistorySection({ ti }: Props) {
     <Section id="ti-history" title={t("history.title")}>
       <ol className="dev-timeline">
         {[...ti.history].reverse().map((entry) => {
-          const amount = typeof entry.data.amountIqd === "number" ? f.iqd(entry.data.amountIqd) : "";
+          const amount = typeof entry.data.amountIqd === "number" ? f.iqd(entry.data.amountIqd) : entry.data.amountHidden === true ? t("money.hidden") : "";
           const at = typeof entry.data.at === "number" ? f.dateTime(entry.data.at) : "";
           const payout = typeof entry.data.payout === "string" ? t(`payout.${entry.data.payout}`) : "";
           const reason = typeof entry.data.reason === "string" ? entry.data.reason : typeof entry.data.note === "string" ? entry.data.note : "";

@@ -27,6 +27,7 @@ import { ProductCard } from "~/ui/ProductCard";
 import { Sheet } from "~/ui/Sheet";
 import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
+import { CompareToggle } from "../CompareToggle";
 import { LISTING_PAGE_SIZE, NO_FILTERS, activeGroups, withoutGroup, type FilterGroup, type ListingFacets, type ListingFilters, type ListingQuery, type ListingSort } from "../listing-model";
 import { CatalogDock } from "./CompareTray";
 import { FilterPanel } from "./FilterPanel";
@@ -55,7 +56,12 @@ export type ListingViewProps = {
   inline?: ReactNode;
   /** Ids of the shopper's wishlist among these cards: the cards show the heart. Null: no hearts. */
   wished?: readonly string[] | null;
+  /** The listing's filter groups as staff arranged them (content module, getListingFilterOrder); null: the page's own. */
+  filterOrder?: readonly FilterGroup[] | null;
 };
+
+/** Consoles and handheld PCs (kind "console") carry «قارن» on their cards (v2 §6.5); other kinds compare on their page. */
+const COMPARABLE_ON_CARDS = new Set<ProductCardData["kind"]>(["console"]);
 
 /** Cards before the phone's inline block: two rows of two. */
 const INLINE_AFTER = 4;
@@ -105,23 +111,16 @@ function ActiveFilters({ filters, facets, nav, elsewhere }: { filters: ListingFi
   );
 }
 
-/** The sort as a menu of radio rows. `compact`: the phone's «الترتيب»; otherwise «الترتيب: المقترَح». */
+/**
+ * The sort as a menu of radio rows. `compact`: the phone's «الترتيب»; otherwise «الترتيب: المقترَح». «المقترَح» explains
+ * itself on its own row (the kit's radio `hint`: «المتوفر أولاً، ثم «قريباً»، ثم ما نفد»).
+ */
 function SortMenu({ nav, sorts, sort, disabled, compact = false, trigger }: { nav: ListingNav; sorts: readonly ListingSort[]; sort: ListingSort; disabled: boolean; compact?: boolean; trigger?: (props: MenuTriggerProps) => ReactNode }) {
   const t = useT("catalog");
-  const explain = sorts.includes("featured") ? (
-    <span className="grid gap-0.5">
-      <span>{t("sort.label")}</span>
-      <span className="type-xs text-ink-2">
-        {t("sort.featured")}: {t("sort.featuredNote")}
-      </span>
-    </span>
-  ) : (
-    t("sort.label")
-  );
   return (
     <Menu
       label={t("sort.label")}
-      title={explain}
+      title={t("sort.label")}
       align="end"
       trigger={
         trigger ??
@@ -140,7 +139,14 @@ function SortMenu({ nav, sorts, sort, disabled, compact = false, trigger }: { na
           </Key>
         ))
       }
-      items={sorts.map((value) => ({ id: value, kind: "radio" as const, label: t(`sort.${value}`), checked: value === sort, onSelect: () => nav.go({ sort: value === sorts[0] ? null : value }) }))}
+      items={sorts.map((value) => ({
+        id: value,
+        kind: "radio" as const,
+        label: t(`sort.${value}`),
+        hint: value === "featured" ? t("sort.featuredNote") : undefined,
+        checked: value === sort,
+        onSelect: () => nav.go({ sort: value === sorts[0] ? null : value }),
+      }))}
     />
   );
 }
@@ -161,7 +167,7 @@ function useScrolledPast(target: RefObject<HTMLElement | null>, enabled: boolean
   return past;
 }
 
-export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, heading, elsewhere = [], inline, wished = null }: ListingViewProps) {
+export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, heading, elsewhere = [], inline, wished = null, filterOrder = null }: ListingViewProps) {
   const t = useT("catalog");
   const f = useFormat();
   const location = useLocation();
@@ -205,7 +211,7 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
 
   // `chips`: short groups as chips in the sheet and the no-script panel; the 264px sidebar keeps rows
   const panel = (onChange: ((change: Partial<ListingQuery>) => void) | undefined, options: { className?: string; chips?: boolean } = {}) => (
-    <FilterPanel query={query} facets={list.facets} scope={scope} elsewhere={elsewhere} onChange={onChange} sorts={sorts} sort={sort} hidden={nav.extra} action={action} disabled={!online} chips={options.chips} className={options.className} />
+    <FilterPanel query={query} facets={list.facets} scope={scope} elsewhere={elsewhere} onChange={onChange} sorts={sorts} sort={sort} hidden={nav.extra} action={action} disabled={!online} chips={options.chips} order={filterOrder} className={options.className} />
   );
 
   return (
@@ -257,7 +263,14 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
                 {list.items.map((card, index) => (
                   <Fragment key={card.id}>
                     <li data-flip={card.id} className="catalog-grid__item">
-                      <ProductCard card={card} headingLevel={3} priority={firstPriority && index === 0} wishlist={hearts} wished={wishedIds.has(card.id)} />
+                      <ProductCard
+                        card={card}
+                        headingLevel={3}
+                        priority={firstPriority && index === 0}
+                        wishlist={hearts}
+                        wished={wishedIds.has(card.id)}
+                        compare={COMPARABLE_ON_CARDS.has(card.kind) ? <CompareToggle product={{ id: card.id, kind: card.kind, name: card.name, image: card.image }} showLink={false} /> : undefined}
+                      />
                     </li>
                     {inline && !pagingAlone && index === INLINE_AFTER - 1 && list.items.length > INLINE_AFTER ? <li className="catalog-grid__break">{inline}</li> : null}
                   </Fragment>

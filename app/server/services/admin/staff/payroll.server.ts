@@ -458,10 +458,22 @@ function lastPaidComputationSql(employeeId: SQL, runId: string) {
     FROM payroll_items AS pi JOIN payroll_runs AS r ON r.id = pi.run_id WHERE pi.employee_id = ${employeeId} AND r.status = 'paid' AND r.id <> ${runId}), 0)`;
 }
 
-/** The employees who may not approve a run: who prepared, recomputed or edited it, and who changed one of its salaries since that salary was last paid. */
+/**
+ * The authors of the commission plans this run pays under: whoever wrote any version of the plan of one of its
+ * commissions (commission_rules.created_by; a plan's versions are `<planId>.v<n>`). Follow-up 2026-11-12: a plan's
+ * author could approve the run that pays commissions at the rate they set.
+ */
+const planAuthorsSql = (runId: string) => {
+  const plan = sql`(CASE WHEN instr(c.rule_id, '.v') > 0 THEN substr(c.rule_id, 1, instr(c.rule_id, '.v') - 1) ELSE c.rule_id END)`;
+  return sql`SELECT DISTINCT v.created_by AS actorId FROM commissions AS c JOIN commission_rules AS v ON (v.id = ${plan} OR v.id LIKE ${plan} || '.v%')
+    WHERE c.payroll_run_id = ${runId} AND v.created_by IS NOT NULL AND v.created_by NOT LIKE 'system%'`;
+};
+
+/** The employees who may not approve a run: who prepared, recomputed or edited it, who changed one of its salaries since that salary was last paid, and who wrote a commission plan it pays under. */
 export async function runInvolved(db: Db, run: PayrollRun): Promise<{ ids: Set<string>; salaryChangers: Map<string, string[]> }> {
   const ids = await participants(db, "payroll_run", run.id, RUN_PARTICIPANT_ACTIONS);
   if (run.createdBy && !run.createdBy.startsWith("system")) ids.add(run.createdBy);
+  for (const author of await db.all<{ actorId: string }>(planAuthorsSql(run.id))) ids.add(author.actorId);
   const changes = await db.all<{ employeeId: string; actorId: string }>(sql`
     SELECT a.entity_id AS employeeId, a.actor_id AS actorId FROM audit_events AS a
     JOIN payroll_items AS i ON i.employee_id = a.entity_id AND i.run_id = ${run.id}
@@ -475,10 +487,11 @@ export async function runInvolved(db: Db, run: PayrollRun): Promise<{ ids: Set<s
   return { ids, salaryChangers };
 }
 
-/** SQL (for a guard inside the approval batch): the approver took part in the run or changed one of its salaries. */
+/** SQL (for a guard inside the approval batch): the approver took part in the run, changed one of its salaries or wrote a commission plan it pays under. */
 function approverInvolvedSql(runId: string, approverId: string) {
   return sql`(${tookPartSql("payroll_run", runId, RUN_PARTICIPANT_ACTIONS, approverId)}
     OR EXISTS (SELECT 1 FROM payroll_runs WHERE id = ${runId} AND created_by = ${approverId})
+    OR EXISTS (SELECT 1 FROM (${planAuthorsSql(runId)}) AS authors WHERE authors.actorId = ${approverId})
     OR EXISTS (SELECT 1 FROM audit_events AS a JOIN payroll_items AS i ON i.employee_id = a.entity_id AND i.run_id = ${runId}
       WHERE a.action = 'staff.payroll.salary_set' AND a.entity_type = 'employee' AND a.actor_kind = 'employee' AND a.actor_id = ${approverId}
         AND a.at >= ${lastPaidComputationSql(sql`a.entity_id`, runId)}))`;

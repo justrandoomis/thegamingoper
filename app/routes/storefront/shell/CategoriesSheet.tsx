@@ -10,6 +10,8 @@
  * Every link closes the sheet as it navigates. Client only (a <Sheet> renders nothing on the server); without script
  * the tab leads to the footer's shop column instead.
  */
+import type { ReactNode } from "react";
+
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink } from "~/i18n/react";
 import { CategoryTile } from "~/ui/CategoryTile";
@@ -96,8 +98,8 @@ export function CategoriesSheet({ open, onClose, shell }: CategoriesSheetProps) 
 
         <nav aria-label={t("sheet.services")}>
           <ul className="shell-csheet__rows">
-            <Row to="/trade-in" icon="recycle" title={t("links.tradeIn")} onPick={onClose} />
-            <Row to="/track" icon="package" title={t("links.track")} onPick={onClose} />
+            <ShellRow to="/trade-in" icon="recycle" title={t("links.tradeIn")} onPick={onClose} />
+            <ShellRow to="/track" icon="package" title={t("links.track")} onPick={onClose} />
           </ul>
         </nav>
 
@@ -138,7 +140,8 @@ export function PlatformTilesCompact({ platforms, onPick, className }: { platfor
   );
 }
 
-function Row({ to, icon, title, onPick }: { to: string; icon: IconName; title: string; onPick: () => void }) {
+/** A 56px row link (icon · words · caret) for a `.shell-csheet__rows` list: the categories sheet and the 404 page. */
+export function ShellRow({ to, icon, title, onPick }: { to: string; icon: IconName; title: ReactNode; onPick?: () => void }) {
   return (
     <li>
       <LocaleLink to={to} className="shell-row" onClick={onPick}>

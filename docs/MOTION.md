@@ -67,9 +67,11 @@ export default function StorefrontLayout() {
   `npx tsx app/motion/__checks__/gen-css.mjs` rewrites the block in `motion.css` after a retune.
 - Without `linear()` each spring uses the DESIGN.md fallback curve with its duration token (press → squish curve over
   180 ms; squish and inflate → squish curve over 240 ms; settle → settle curve over 320 ms; sheet → over 280 ms).
-- Two more token objects are exported: `press` (pressed scale and sink per `data-press` kind: `clay` .97 and 1px,
-  `soft` .98, `icon` .94) and `haptics` (the `navigator.vibrate` pattern per `haptic()` kind: `tap` 8 ms, `select`
-  12 ms, `success`, `warning`, `error`).
+- Three more token objects are exported: `press` (pressed scale and sink per `data-press` kind: `clay` .97 and 1px,
+  `soft` .98, `icon` .94), `haptics` (the `navigator.vibrate` pattern per `haptic()` kind: `tap` 8 ms, `select`
+  12 ms, `success`, `warning`, `error`) and `bubble` (`fromScale` .94, `staggerStep` 45 ms, `staggerSlots` 6,
+  `staggerMax` 400 ms — for code that animates arriving content itself, e.g. the catalogue's FLIP of results; import
+  it from `~/motion`, not `~/motion/tokens`).
 - Earlier names still work and point at the design token they now equal (marked `@deprecated`): springs
   `snappy`→press, `gentle`→inflate, `bouncy`→squish, `fly`→settle; durations `instant`→press, `quick`→exit
   (`slow` 480 is unused); curves `out`/`emphasized`→settle, `in`→exit, `inOut`→water.
@@ -438,12 +440,14 @@ npm test -- tests/motion.test.ts                  47 tests: spring solver → li
                                                   grammar, tokens ↔ motion.css ↔ app/styles/tokens.css, transform/opacity guard,
                                                   no view-transition-name at rest (every stylesheet of app/ names only under
                                                   html:active-view-transition; no script names an element but <html>)
-node app/motion/__checks__/check-glass.mjs        29: on the real storefront and admin — nothing named at rest, nothing named
+node app/motion/__checks__/check-glass.mjs        27: on the real storefront and admin — nothing named at rest, nothing named
                                                   that contains glass (93 page states: 10 pages × 390/1440 × light/dark × top/
                                                   scrolled, mega menu open, after transitions and a language switch); the chrome
                                                   and anchors keep both snapshots while a transition runs; what shows through
-                                                  every live pane and the open mega menu is frosted, with two controls that
-                                                  must show sharp text (the old resting name; the pane unfrosted)
+                                                  every live pane and the open mega menu (a platform button of the desktop
+                                                  nav row) is frosted or covered, with controls that must show sharp text:
+                                                  the pane unfrosted, and — for glass inside a chrome element — the old
+                                                  resting name (the v2 header is itself the glass, so it has none)
 node app/motion/__checks__/check-cart.mjs         14: fly-to-cart on a real product page at 390 and 1440 — lands 0 px from the
                                                   cart bead even on the first add (bead drawn after the tap), squish, the v2
                                                   bead; reduced motion: no flight, count at once, polite announcement

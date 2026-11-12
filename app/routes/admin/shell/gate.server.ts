@@ -21,10 +21,18 @@
  * Note on rendering: an error thrown by middleware before the loaders run is rendered by the ROOT error boundary
  * (React Router picks the first matched route with a loader), so the 403 of a built module that the employee cannot
  * see is the root's plain page, not the admin shell. That is the price of refusing before any module code runs.
+ *
+ * Three narrow exceptions, each by exact route pattern (2026-11-12):
+ *   · PUBLIC_PATTERNS — the password-set page of a one-time link (/admin/welcome): nobody is signed in there yet, the
+ *     link itself is the proof (auth/employees.server.ts); no session is read and the shell renders without data
+ *   · ANY_EMPLOYEE_POSTS — POST /admin/ops/report: every signed-in employee's browser reports its own errors and slow
+ *     loads (the operations module's resource route; it reads nothing back)
+ *   · a session that still owes two-step enrolment (a role requires it — session.restriction) opens My security only:
+ *     everything else is a document redirect to its two-step section (MFA_ENROLMENT_PATH)
  */
-import { createContext, data, type MiddlewareFunction, type RouterContextProvider } from "react-router";
+import { createContext, data, redirectDocument, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import { canAny, type Actor } from "~/server/actor";
-import { requireEmployee, type EmployeeSession } from "~/server/auth/admin.server";
+import { MFA_ENROLMENT_PATH, requireEmployee, type EmployeeSession } from "~/server/auth/admin.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import type { Permission } from "~/server/permissions";
@@ -39,6 +47,11 @@ export function getAdminSession(context: Readonly<RouterContextProvider>): Emplo
   const session = context.get(sessionContext);
   if (!session) throw new Error("No admin session: is this route inside the admin layout (app/routes/admin/_layout.tsx)?");
   return session;
+}
+
+/** The employee of this admin request, or null on a page that needs nobody signed in (PUBLIC_PATTERNS). */
+export function findAdminSession(context: Readonly<RouterContextProvider>): EmployeeSession | null {
+  return context.get(sessionContext);
 }
 
 /**
@@ -68,33 +81,55 @@ const SHELL_PATTERNS: ReadonlySet<string> = new Set(["admin", "admin/me", "admin
  *
  * Nothing else of the module opens with it (/admin/security/staff/… needs security.session.read): every other pattern
  * of the module still needs a permission of its group.
+ *
+ *   admin/staff/me                                       dashboard.overview.read (every built-in role holds it): My day
+ *       of module 15 — one's own clock, shifts, leave, tasks and pay, which its loaders and actions give every
+ *       employee about themselves (2026-11-12, asked by the staff module); nothing else of module 15 opens with it
  */
 const ALSO_OPENED_BY: ReadonlyMap<string, readonly Permission[]> = new Map<string, readonly Permission[]>([
   ["admin/security", ["staff.manage"]],
   ["admin/security/roles", ["staff.manage"]],
   ["admin/security/roles/:roleId", ["staff.manage"]],
+  ["admin/staff/me", ["dashboard.overview.read"]],
 ]);
+
+/** Shell pages for nobody signed in yet: the one-time password-set link's page (shell/welcome.tsx). */
+const PUBLIC_PATTERNS: ReadonlySet<string> = new Set(["admin/welcome"]);
+
+/** Module routes that every signed-in employee may POST to, whatever their roles (the browser's own reports). */
+const ANY_EMPLOYEE_POSTS: ReadonlySet<string> = new Set(["admin/ops/report"]);
 
 const normalized = (pattern: string) => pattern.split("/").filter(Boolean).join("/");
 
 /** `alsoOpenedBy` only on the patterns of ALSO_OPENED_BY. */
-export type GateRule = { kind: "module"; module: AdminModuleSlug; alsoOpenedBy?: readonly Permission[] } | { kind: "shell" } | { kind: "unmapped" };
+export type GateRule =
+  | { kind: "module"; module: AdminModuleSlug; alsoOpenedBy?: readonly Permission[] }
+  | { kind: "shell" }
+  /** any signed-in employee (ANY_EMPLOYEE_POSTS) */
+  | { kind: "employee" }
+  /** nobody needs to be signed in (PUBLIC_PATTERNS) */
+  | { kind: "public" }
+  | { kind: "unmapped" };
 
 /**
  * How the gate treats a matched route pattern: a module's route (checked against the module's permission group, and
  * the few permissions of another group that open that exact page — ALSO_OPENED_BY), one of the shell's own pages (any
- * signed-in employee; the page decides the rest), or neither — a route registered under /admin but outside
- * /admin/<module>/, which the gate cannot attribute to a permission group and therefore REFUSES (fail closed: a module
- * owner who registers /admin/payments instead of /admin/orders/payments finds out at once, instead of shipping a page
- * every employee can open).
+ * signed-in employee; the page decides the rest), a POST any employee may send (ANY_EMPLOYEE_POSTS), a page for nobody
+ * signed in yet (PUBLIC_PATTERNS), or none of these — a route registered under /admin but outside /admin/<module>/,
+ * which the gate cannot attribute to a permission group and therefore REFUSES (fail closed: a module owner who
+ * registers /admin/payments instead of /admin/orders/payments finds out at once, instead of shipping a page every
+ * employee can open).
  */
-export function gateRuleOf(pattern: string): GateRule {
+export function gateRuleOf(pattern: string, method = "GET"): GateRule {
+  const key = normalized(pattern);
+  if (PUBLIC_PATTERNS.has(key)) return { kind: "public" };
+  if (ANY_EMPLOYEE_POSTS.has(key) && method.toUpperCase() === "POST") return { kind: "employee" };
   const module = moduleOfPattern(pattern);
   if (module) {
-    const alsoOpenedBy = ALSO_OPENED_BY.get(normalized(pattern));
+    const alsoOpenedBy = ALSO_OPENED_BY.get(key);
     return alsoOpenedBy ? { kind: "module", module, alsoOpenedBy } : { kind: "module", module };
   }
-  return SHELL_PATTERNS.has(normalized(pattern)) ? { kind: "shell" } : { kind: "unmapped" };
+  return SHELL_PATTERNS.has(key) ? { kind: "shell" } : { kind: "unmapped" };
 }
 
 /** Whether the gate lets this actor through to a module route: a permission of the module's group, or one that opens that page. */
@@ -108,12 +143,24 @@ function returnPath(url: URL): string | null {
   return target && target !== ADMIN_HOME ? target : null;
 }
 
-export const adminGate: MiddlewareFunction<Response> = async ({ context, url, pattern }, next) => {
-  const ctx = getCtx(context);
-  const session = await requireEmployee(ctx, getDb(), undefined, { next: returnPath(url) });
-  context.set(sessionContext, session);
+/** Every admin response: never cached, never indexed. */
+function sealed(response: Response): Response {
+  response.headers.set("Cache-Control", "no-store");
+  response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return response;
+}
 
-  const rule = gateRuleOf(pattern);
+export const adminGate: MiddlewareFunction<Response> = async ({ request, context, url, pattern }, next) => {
+  const ctx = getCtx(context);
+  const rule = gateRuleOf(pattern, request.method);
+  // A page for nobody signed in yet: no session is read, so none is set (findAdminSession → null).
+  if (rule.kind === "public") return sealed(await next());
+
+  const session = await requireEmployee(ctx, getDb(), undefined, { next: returnPath(url), allowEnrolment: true });
+  context.set(sessionContext, session);
+  // A role requires two-step verification the employee has not turned on: My security only, until it is on.
+  if (session.restriction === "mfa_enrolment" && normalized(pattern) !== "admin/me") throw redirectDocument(MFA_ENROLMENT_PATH);
+
   // The refusal renders in the root ErrorBoundary, which has no loader data: it carries the admin language with it.
   const locale = ctx.locale === "en" ? "en" : "ar";
   if (rule.kind === "module" && !gateAllows(session.actor, rule)) {
@@ -124,8 +171,5 @@ export const adminGate: MiddlewareFunction<Response> = async ({ context, url, pa
     throw data({ error: "forbidden", locale }, { status: 403, headers: { "Cache-Control": "no-store" } });
   }
 
-  const response = await next();
-  response.headers.set("Cache-Control", "no-store");
-  response.headers.set("X-Robots-Tag", "noindex, nofollow");
-  return response;
+  return sealed(await next());
 };

@@ -3,13 +3,17 @@
  * with an opaque suggestions panel, in three places:
  *
  *   <SearchForm variant="header" />   the desktop header's 44px pill (from 1024): 320 wide, 560 from 1280 with the "/"
- *                                     shortcut chip ("/" anywhere outside a field focuses it); suggestions 420 wide under it
+ *                                     shortcut chip ("/" anywhere outside a field focuses it); suggestions 420 wide under it.
+ *                                     It is also the 404's one search field (./ShellError focuses it on desktop).
  *   <SearchSheet open onClose />      phones and tablets: the header's pill opens this full-screen sheet with the field at
  *                                     the top (focused) and the suggestions as a full-width list; the platforms under it
- *   <SearchForm variant="panel" />    the 404 page's field
+ *   <SearchForm variant="panel" />    a page's own field (the catalog's /search start page)
+ *
+ * `query`: the words the field starts with off the search page (a missing product's slug words on its 404); on /search
+ * the field follows `?q=`.
  *
  * Suggestions — rows by what they point at (the href says it): products with a 44px thumbnail on the product ground,
- * the name (two lines at most, isolated), the kind or department and the price when the endpoint sends them; typed rows
+ * the name (two lines at most, isolated), the kind label («جهاز PS5») — else the department — and the price; typed rows
  * with icons for a platform (its dot), a department, «كل شيء عن الجهاز» and the used list; «هل تقصد …؟» for a typo;
  * the last row «اعرض كل النتائج». With an empty field: the shopper's recent searches (kept on this device, only with
  * consent — catalog area's recent-searches) with «امسح». Keyboard: ↑ ↓ move (the active row has a --niche fill and an
@@ -18,10 +22,10 @@
  * SUGGESTIONS CONTRACT (catalog area, CONTRACTS.md §2 `GET /api/search/suggest`):
  *   GET /api/search/suggest?q=<text>&locale=<ar|en|ckb>
  *   200 { suggestions: { label, href, hint?, image?, priceIqd?, kindLabel? }[], total? }      href is locale-less
- *   `image` (an art key "<slug>--<n>"), `priceIqd` (integer IQD), `kindLabel` («جهاز PS5») and `total` (the result
- *   count for «اعرض كل النتائج (42)») are optional: rows show them when they come. The first 404 switches suggestions
- *   off for the rest of the visit (nothing is invented, nothing retried). Typing is debounced (160 ms) and a newer
- *   request aborts the older one.
+ *   `image` (an art key "<slug>--<n>"), `priceIqd` (integer IQD; left out while the product is sold out), `kindLabel`
+ *   («جهاز PS5») and `total` (the result count for «اعرض كل النتائج (42)») are optional: rows show them when they come.
+ *   The first 404 switches suggestions off for the rest of the visit (nothing is invented, nothing retried). Typing is
+ *   debounced (160 ms) and a newer request aborts the older one.
  */
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type Ref } from "react";
 import { Form, useLocation, useNavigate, useSearchParams } from "react-router";
@@ -48,7 +52,7 @@ export type SearchSuggestion = {
   image?: string;
   /** Optional: the product's price, integer IQD. */
   priceIqd?: number;
-  /** Optional: the product's kind («جهاز PS5»), shown before the hint. */
+  /** Optional: the product's kind («جهاز PS5»), shown in place of the department hint. */
   kindLabel?: string;
 };
 
@@ -126,6 +130,8 @@ const KIND_ICON: Record<Exclude<SuggestionKind, "product" | "platform">, IconNam
 export type SearchFormProps = {
   /** header: the desktop pill (hidden below 1024) · sheet: inside the phone search sheet · panel: a page's field. */
   variant?: "header" | "sheet" | "panel";
+  /** The words the field starts with off the search page (on /search it follows `?q=`). */
+  query?: string;
   className?: string;
   /** Focus the field when it mounts. */
   autoFocus?: boolean;
@@ -134,7 +140,7 @@ export type SearchFormProps = {
   onDone?: () => void;
 };
 
-export function SearchForm({ variant = "panel", className, autoFocus = false, inputRef, onDone }: SearchFormProps) {
+export function SearchForm({ variant = "panel", query: initial, className, autoFocus = false, inputRef, onDone }: SearchFormProps) {
   const t = useShellT();
   const href = useLocalePath();
   const navigate = useNavigate();
@@ -142,7 +148,7 @@ export function SearchForm({ variant = "panel", className, autoFocus = false, in
   const [params] = useSearchParams();
   const recent = useRecentSearches();
   const onSearchPage = splitLocale(location.pathname).path === "/search";
-  const current = onSearchPage ? (params.get("q") ?? "") : "";
+  const current = onSearchPage ? (params.get("q") ?? "") : (initial ?? "");
 
   const id = useId();
   const listId = `${id}-list`;
@@ -361,7 +367,8 @@ function OptionBody({ option, total }: { option: Option; total: number | null })
   const { item } = option;
   const kind = suggestionKind(item.href);
   if (kind === "product") {
-    const hint = [item.kindLabel, item.hint].filter(Boolean).join(" · ");
+    // one second line (v2 §5.5): the kind («جهاز PS5») says more than the department; the department when it is missing
+    const hint = item.kindLabel || item.hint;
     return (
       <>
         <span className="shell-suggest__thumb" aria-hidden="true">
@@ -402,16 +409,18 @@ export type SearchSheetProps = {
   open: boolean;
   onClose: () => void;
   platforms: NavPlatform[];
+  /** The words the field starts with (a missing product's slug words on its 404). */
+  query?: string;
 };
 
 /** Phones and tablets: the full-screen search sheet (the field at the top, focused; the platforms under it). */
-export function SearchSheet({ open, onClose, platforms }: SearchSheetProps) {
+export function SearchSheet({ open, onClose, platforms, query }: SearchSheetProps) {
   const t = useShellT();
   const nameOf = usePlatformName();
   const input = useRef<HTMLInputElement | null>(null);
   return (
     <Sheet open={open} onClose={onClose} title={t("search.label")} initialFocus={() => input.current} className="max-md:h-dvh! max-md:max-h-dvh!">
-      <SearchForm variant="sheet" inputRef={input} onDone={onClose} />
+      <SearchForm variant="sheet" query={query} inputRef={input} onDone={onClose} />
       {platforms.length > 0 ? (
         <nav aria-labelledby="shell-search-browse" className="shell-search-sheet__browse">
           <h2 id="shell-search-browse" className="shell-csheet__head">

@@ -14,25 +14,37 @@
  * platform's new arrivals are in the loader data, and shouldRevalidate below skips the loader when only `platform`
  * changed.
  *
+ * What staff set in the content module (admin 17.01) arrives here: a pinned hero (getHomeData keeps a pin only while
+ * its product can be bought and has a photo), the sections' order and what is hidden (the privacy panel always
+ * shows; the trust strip follows the platform tiles when they lead, else the hero), and the banners of the home strip
+ * under the trust strip (getStoreBanners: live, never demo, only links the store can open).
+ *
+ * "/old-name" — one path segment that is not a language — matches this route with an invalid locale (the layout
+ * answers 404): a redirect staff set for that path is followed first (./content/redirect.server), and the page's
+ * data is never read for it.
+ *
  * First visit on this device (no `tt_intro` cookie, landed here, not a bot): the intro overlay plays above the page.
  * Platforms picked there arrange this visit; they are remembered only if the shopper says yes in the row that asks
  * afterwards (`tt_consent`, ./personal.ts). The panel at the bottom shows what is remembered and lets them change or
  * delete it, or watch the intro again.
  */
-import { useEffect, useRef, useState } from "react";
-import { isRouteErrorResponse, useRevalidator, useRouteLoaderData, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { data, isRouteErrorResponse, useRevalidator, useRouteLoaderData, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/home";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
 import type { ProductCardData } from "~/lib/dto";
+import { DEFAULT_LOCALE, isLocale } from "~/lib/locales";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { getCardsByIds } from "~/server/services/catalog/cards.server";
-import { getHomeData, type HomeData } from "~/server/services/home.server";
+import { getStoreBanners, type ShopBanner } from "~/server/services/content.server";
+import { getHomeData, type HomeData, type HomePageSection } from "~/server/services/home.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
+import { StoreBanners } from "~/routes/storefront/content/components/StoreBanners";
+import { redirectIfMoved } from "~/routes/storefront/content/redirect.server";
 import { usePlatformName } from "~/routes/storefront/shell/MegaMenu";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import type { ShellData } from "~/routes/storefront/shell/types";
@@ -47,56 +59,74 @@ import { Intro, type IntroCorner, type IntroResult, type IntroTile } from "./Int
 import { ConsentRow, PersonalPanel, PlatformsSheet } from "./Onboarding";
 import { CONSENT_COOKIE, INTRO_COOKIE, PLATFORMS_COOKIE, parseConsent, parsePlatformList, readIntroSeen, saveConsent, saveIntroSeen, sendOnboarding } from "./personal";
 import { Departments, NewArrivals, PlatformDoors, Releases, RecentlyViewed, RecommendationShelves, Sections, ServiceEntries, TrustFacts, UsedShelf } from "./Shelves";
-import { deviceHubFor, featuredHero, hasShelf, MIN_SHELF, RELEASE_LIMIT, releasePlatformOf, resolveFocus, tileArt } from "./view";
+import { deviceHubFor, featuredHero, hasShelf, leadArt, MIN_SHELF, RELEASE_LIMIT, releasePlatformOf, resolveFocus, tileArt } from "./view";
 import "./home.css";
 
 /** The one "talk to a person" destination (v2 §6.13). */
 const HANDOFF = "/support/assistant?handoff=1#handoff";
 
 /**
- * What the page draws, and nothing else: each platform's hero and new arrivals (with their cards), the used units and
- * the soonest releases. (getHomeData also reads games, accessories and deals, which this page no longer shows.)
+ * What the page draws, and nothing else: each platform's hero, its lead device (the console the trade-in door and the
+ * intro show while a pin holds the stage) and new arrivals (with their cards), the used units and the soonest
+ * releases. (The loader asks getHomeData without the games, accessories and deals shelves: `extraShelves: false`.)
  */
 function forPage(data: HomeData) {
-  const platforms = data.platforms.map(({ slug, name, hero, newArrivals }) => ({ slug, name, hero, newArrivals }));
+  const platforms = data.platforms.map(({ slug, name, hero, lead, newArrivals }) => ({ slug, name, hero, lead, newArrivals }));
   const cards: Record<string, ProductCardData> = {};
   for (const platform of platforms) {
-    for (const id of [...(platform.hero ? [platform.hero.productId] : []), ...platform.newArrivals]) {
+    for (const id of [...(platform.hero ? [platform.hero.productId] : []), ...(platform.lead ? [platform.lead.productId] : []), ...platform.newArrivals]) {
       const card = data.cards[id];
       if (card) cards[id] = card;
     }
   }
-  return { platforms, cards, used: data.used, comingSoon: data.comingSoon.slice(0, RELEASE_LIMIT) };
+  return { platforms, cards, used: data.used, comingSoon: data.comingSoon.slice(0, RELEASE_LIMIT), sections: data.layout.sections };
 }
 
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ context, params, url }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
+  // "/old-name" is this route with locale "old-name": not a page of the store (the layout answers 404 for it) — a
+  // redirect staff set for the path wins; the home page's own data is never read for it
+  if (params.locale !== undefined && (!isLocale(params.locale) || params.locale === DEFAULT_LOCALE)) {
+    await redirectIfMoved(db, url, ctx);
+    throw data({ error: "not_found" }, { status: 404 });
+  }
   const consent = parseConsent(ctx.cookie(CONSENT_COOKIE));
   const prefs = {
     introSeen: ctx.cookie(INTRO_COOKIE) === "1",
     consent,
     platforms: consent === true ? parsePlatformList(ctx.cookie(PLATFORMS_COOKIE)) : [],
   };
-  const [data, session] = await Promise.all([getHomeData(db, { locale: ctx.locale, now: ctx.now }), getCustomer(ctx, db)]);
-  const home = forPage(data);
-  const releaseIds = home.comingSoon.filter((item) => item.variantCount === 0).map((item) => item.productId);
+  // the page shows no games, gear or deals shelves: the service leaves those reads out
+  const [homeData, session, banners] = await Promise.all([
+    getHomeData(db, { locale: ctx.locale, now: ctx.now, extraShelves: false }),
+    getCustomer(ctx, db),
+    // the content module's home strip: a banner that cannot be read never takes the page down with it
+    getStoreBanners(db, ctx.locale, "home_strip", { now: ctx.now, origins: [ctx.origin] }).catch((error: unknown): ShopBanner[] => {
+      console.error("[home] banners not read", error);
+      return [];
+    }),
+  ]);
+  const home = forPage(homeData);
   const arrivalIds = [...new Set(home.platforms.flatMap((platform) => platform.newArrivals))];
-  const [releaseCards, wished] = await Promise.all([
-    // the release band's platform line comes from the products' own cards; a failure costs that line only
-    releaseIds.length > 0 ? getCardsByIds(db, ctx.locale, releaseIds, { now: ctx.now }).catch(() => []) : [],
-    // which new arrivals the shopper keeps in the wishlist (filled hearts); unreadable → no hearts rather than wrong ones
+  // which new arrivals the shopper keeps in the wishlist (filled hearts); unreadable → no hearts rather than wrong ones
+  const wished =
     arrivalIds.length > 0
-      ? wishedAmong(db, wishlistWho(ctx.cookie, session?.customer.id ?? null), arrivalIds).then(
+      ? await wishedAmong(db, wishlistWho(ctx.cookie, session?.customer.id ?? null), arrivalIds).then(
           (ids) => [...ids],
           () => null,
         )
-      : Promise.resolve([] as string[]),
-  ]);
+      : ([] as string[]);
   return {
     home,
     wished,
-    releasePlatforms: Object.fromEntries(releaseCards.map((card) => [card.id, releasePlatformOf(card)])),
+    banners,
+    // the release band's platform line: the coming items carry their products' card facts (home.server.ts)
+    releasePlatforms: Object.fromEntries(
+      home.comingSoon
+        .filter((item) => item.variantCount === 0)
+        .map((item) => [item.productId, releasePlatformOf({ platformSlug: item.platformSlug, forPlatforms: item.forPlatforms, kindLabel: item.kindLabel ?? undefined })]),
+    ),
     prefs,
     /** The request's clock: the release band counts days from it on the server and in the browser alike. */
     now: ctx.now,
@@ -131,7 +161,7 @@ type Prefs = Route.ComponentProps["loaderData"]["prefs"];
 type RootData = { customer?: unknown; storeMode?: string } | undefined;
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { home, defaultFocus, recommendations, releasePlatforms, now, wished } = loaderData;
+  const { home, defaultFocus, recommendations, releasePlatforms, now, wished, banners } = loaderData;
   const t = useT("home");
   const nameOf = usePlatformName();
   const shell = (useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined)?.shell ?? null;
@@ -238,13 +268,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     // a chip only for a shelf the page draws (v2 §4.22: three cards at least)
     return cards.length >= MIN_SHELF ? [{ platform: platform.slug, cards }] : [];
   });
-  // the trade-in door shows an upright console that no tile shows: the PlayStation platform's lead device
+  // the trade-in door shows an upright console that no tile shows: the PlayStation platform's lead device — never a
+  // product staff pinned on its stage (a game is no "trade in your device")
   const playstation = home.platforms.find((platform) => platform.slug === "playstation");
-  const playstationLead = playstation?.hero ? (home.cards[playstation.hero.productId]?.image.artKey ?? null) : null;
+  const playstationLead = leadArt(playstation, home.cards);
   const playstationTile = navPlatforms.find((platform) => platform.slug === "playstation")?.artKey ?? null;
   const tradeInArt = playstationLead ?? playstationTile;
+  // the intro's corner objects are the platforms' consoles: their lead devices, pinned heroes or not
   const corners: IntroCorner[] = home.platforms.flatMap((entry) => {
-    const art = entry.hero ? home.cards[entry.hero.productId]?.image.artKey : null;
+    const art = leadArt(entry, home.cards);
     return art && isPlatform(entry.slug) ? [{ platform: entry.slug, artKey: art }] : [];
   });
   // the intro's tiles are the page's tiles: the same pictures (stepping away from a corner object's picture would show
@@ -288,6 +320,22 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     );
   }
 
+  // the sections in the order staff arranged (content module 17.01), else the page's own (home.server HOME_PAGE_SECTIONS)
+  const sectionOf: Record<HomePageSection, ReactNode> = {
+    platforms: <PlatformDoors platforms={navPlatforms} heroArt={heroArt} />,
+    new_arrivals: <NewArrivals shelves={shelves} focus={focus} onFocus={setFocus} inflate={focus !== firstFocus} wished={wished} />,
+    coming_soon: <Releases items={home.comingSoon} platforms={releasePlatforms} now={now} />,
+    used: <UsedShelf units={home.used} />,
+    used_repairs: <ServiceEntries tradeInArt={tradeInArt} />,
+    accessories: <Departments categories={shell?.nav.categories ?? []} />,
+    recently_viewed: <RecentlyViewed consent={prefs.consent} signedIn={signedIn} />,
+    recommendations: <RecommendationShelves result={recommendations} consent={prefs.consent} />,
+    personal,
+  };
+  // the trust strip follows the platform tiles when they lead (v2 §6.1), else the hero; the banners follow it
+  const tilesLead = home.sections[0] === "platforms";
+  const rest = tilesLead ? home.sections.slice(1) : home.sections;
+
   return (
     <div className="home">
       <VisuallyHidden as="h1">{t("title")}</VisuallyHidden>
@@ -297,6 +345,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             card={heroCard}
             platform={heroPlatform}
             mode={featured.hero.mode}
+            pin={featured.hero.pin ?? null}
             deviceHref={deviceHubFor(heroCard.name, navPlatforms.find((platform) => platform.slug === heroPlatform)?.devices ?? [])}
             deliveryFeeIqd={shell?.deliveryFeeIqd ?? null}
             cod={shell?.payments.cod ?? false}
@@ -304,16 +353,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           />
         ) : null}
         {consentRow}
-        <PlatformDoors platforms={navPlatforms} heroArt={heroArt} />
+        {tilesLead ? sectionOf.platforms : null}
         <TrustFacts deliveryFeeIqd={shell?.deliveryFeeIqd ?? null} payments={shell?.payments ?? null} />
-        <NewArrivals shelves={shelves} focus={focus} onFocus={setFocus} inflate={focus !== firstFocus} wished={wished} />
-        <Releases items={home.comingSoon} platforms={releasePlatforms} now={now} />
-        <UsedShelf units={home.used} />
-        <ServiceEntries tradeInArt={tradeInArt} />
-        <Departments categories={shell?.nav.categories ?? []} />
-        <RecentlyViewed consent={prefs.consent} signedIn={signedIn} />
-        <RecommendationShelves result={recommendations} consent={prefs.consent} />
-        {personal}
+        <StoreBanners banners={banners} label={t("banners.label")} ctaFallback={t("banners.open")} />
+        {rest.map((kind) => (
+          <Fragment key={kind}>{sectionOf[kind]}</Fragment>
+        ))}
       </Sections>
       {overlays}
     </div>

@@ -9,8 +9,10 @@
  *   // page.items: ProductCardData[] · page.total: every match · page.nextCursor: pass back for the next page (null = last page)
  *
  * What a card says (never more than the shop knows):
- *   · Only `published` products, and only active variants. The CARD VARIANT is the default variant (else the first
- *     active one by sort) — its price, compare-at price and id are what the card shows and what "add" adds.
+ *   · Only `published` products, and only active variants. The CARD VARIANT is the first version that can be bought
+ *     now — the default one when it can, else the next by sort — and the default when none can (sold out, coming
+ *     soon): its price, compare-at price and id are what the card shows and what "add" adds. A card never prices a
+ *     sold-out default while another version is on sale.
  *   · `stock` is a state, never a number. One-variant products: that variant's state. Products with several variants:
  *     the best state among them (the card opens a chooser). States follow the commerce core's getAvailability():
  *     sellable, active locations only; bundles count complete sets; low = at or below the reorder point (3 if unset).
@@ -21,7 +23,7 @@
  *   · `rating` counts approved, verified-purchase reviews only; null when there are none. Nothing is invented.
  *   · No cost, margin, serial or stock quantity ever leaves these functions.
  */
-import type { CategoryNode, PlatformSummary, ProductKind } from "~/lib/dto";
+import type { CategoryNode, ImageRef, PlatformSummary, ProductKind, StockState } from "~/lib/dto";
 
 /** listCards sort orders. "featured" = what can be bought now first, newest first within that (no popularity signal exists). */
 export const CARD_SORTS = ["featured", "newest", "price_asc", "price_desc"] as const;
@@ -74,7 +76,19 @@ export type ShelfOptions = {
 // ───────────────────────────────────────────────────────────────── navigation taxonomy
 
 /** A link in the navigation. `href` is locale-less ("/c/controllers?platform=xbox"); wrap it in <LocaleLink>. */
-export type NavLink = { label: string; href: string };
+export type NavLink = {
+  label: string;
+  href: string;
+  /**
+   * How many listed products are behind the link (the mega menu's counts, spec §5.4). A platform's category link:
+   * what that hub lists with the link's filter (its products for the platform). A platform's device link: the
+   * platform's listed products that work with the device — the count its shortcut shows on the platform hub. Absent
+   * on links to one product.
+   */
+  count?: number;
+  /** Device links only: the model's short name for tight places ("PS5 Pro" for "PlayStation 5 Pro"; card-facts.ts shortModelName). `label` keeps the full name. */
+  short?: string;
+};
 
 export type NavCategory = NavLink & {
   slug: string;
@@ -82,8 +96,34 @@ export type NavCategory = NavLink & {
   kind: string;
   /** Published products in the category and its sub-categories. */
   count: number;
-  /** Sub-categories that have published products. */
-  children: (NavLink & { slug: string; count: number })[];
+  /**
+   * The category's tile photo ("<slug>--<n>", categories.art_key — staff set it in the catalogue module), or null.
+   * Always set by the read layer (optional only so hand-written fixtures keep compiling).
+   */
+  artKey?: string | null;
+  /** Sub-categories that have published products (each with its own `artKey`, always set by the read layer). */
+  children: (NavLink & { slug: string; count: number; artKey?: string | null })[];
+};
+
+/**
+ * The product a platform's mega menu features (its tile: a 1:1 well with the photo, the name and the price — spec
+ * §5.4): the platform's lead device (the product its photo comes from) when it can be bought now, else its newest
+ * console that can; when none can, the lead device (else the newest console) with its true state — never a price
+ * that cannot be paid today without saying so.
+ */
+export type NavFeatured = {
+  productId: string;
+  /** "/p/<slug>". */
+  href: string;
+  label: string;
+  image: ImageRef;
+  /** The card's price (cards.server.ts: the version on sale), integer IQD. */
+  priceIqd: number;
+  /** The card's state: "in_stock" or "low_stock" can be bought now. */
+  stock: StockState;
+  /** Several versions: the price is the one on sale, not the only one. */
+  hasVariants: boolean;
+  isDemo: boolean;
 };
 
 /** One platform with everything its desktop mega menu and the categories sheet need. */
@@ -94,18 +134,23 @@ export type NavPlatform = PlatformSummary & {
   href: string;
   /** Published products of this platform. */
   productCount: number;
-  /** "Everything about this device" hubs: "/device/<slug>". */
+  /** "Everything about this device" hubs: "/device/<slug>", with `short` names and `count`s. */
   devices: NavLink[];
-  /** Controllers, headsets, storage, accessories, digital cards, parts… that have products for this platform. */
+  /** Controllers, headsets, storage, accessories, digital cards, parts… that have products for this platform (with `count`s). */
   accessories: NavLink[];
-  /** The platform's games categories. */
+  /** The platform's games categories (with `count`s). */
   games: NavLink[];
   /** Newest console products of the platform ("/p/<slug>"), at most 5. */
   consoles: NavLink[];
-  /** The platform's consoles category, when it has products. */
+  /** The platform's consoles category, when it has products (with its `count`). */
   allConsoles: NavLink | null;
-  /** "/used?platform=<slug>" while used units of the platform are listed; null when none are. */
+  /** "/used?platform=<slug>" while used units of the platform are listed (with their `count`); null when none are. */
   used: NavLink | null;
+  /**
+   * The mega menu's featured product with its price (NavFeatured); null when the platform lists no console. Always
+   * set by the read layer (optional only so hand-written fixtures keep compiling).
+   */
+  featured?: NavFeatured | null;
 };
 
 export type NavTaxonomy = {

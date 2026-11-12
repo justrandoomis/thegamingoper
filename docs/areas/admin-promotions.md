@@ -83,8 +83,8 @@ history or audit event. Profile links only with customers.customer.read.
 
 The checkout applies coupons and the wallet only. Rules, flash prices, points redemption and VIP discount / free
 delivery need the core hooks below; referral codes cannot be typed by shoppers; visitors are not assigned to A/B
-variants; gift cards cannot be sold for money (no liability account, no sale line). Programme limits are module
-constants (settings keys requested). Posting points / expiry / closing memberships are staff actions (no job yet).
+variants; gift cards cannot be sold for money (no liability account, no sale line). Programme limits are settings
+since 2026-11-12 (promotions.* — see the follow-up section). Posting points / expiry / closing memberships are staff actions (no job yet).
 A tier's member discount has no second-person rule yet (harmless until the core applies it; see Requests).
 
 ## Tests and verification
@@ -115,3 +115,11 @@ Browser: `.shots/admin-promotions/` (seed `seed-promotions.ts`, ids `refs.ts`), 
 - **Shell (queues)**: `countDecidable(db, actor)` (approvals.server.ts) → `/admin/promotions/approvals`.
 - **Storefront (account)**: show points, membership benefits, a referral code field and "add a gift card to my wallet"
   (service: `redeemGiftCard` with a customer actor needs a customer-facing variant — requested from the core).
+
+## Module follow-up 2026-11-12
+
+Programme rules in force: `program.server.ts` `programRules(db)` → `{ limits, loyalty, referral, giftCard }` in the constants' shapes (settings `promotions.discount_limits`, `.loyalty`, `.referral`, `.gift_card` — money-control limits; defaults = DISCOUNT_LIMITS, LOYALTY, REFERRAL, GIFT_CARD; batch sizes, rate limits, the step and the uses cap stay constants). Optional arguments: `discountApprovalReasons(terms, { limits })`, `couponReasons(terms, limits?)`, `ruleReasons(terms, limits?)`, `pointsFor(order, multiplierBps, pointsPerThousandIqd?)`. The layout sends `program`; pages read it with `useProgram()` (ui.tsx). `IssueCodeInput.maxUses` is optional (blank = the setting's default); `issueGiftCard` checks the in-force min/max (the schema keeps the absolute bounds). Spans of days use `daySpan`.
+
+Tests (each failed before its change): `tests/admin-settings-keys.test.ts`.
+
+Review of the follow-up (2026-11-12): VIP eligibility (`vipPage`'s list and count, the front page's `vip.eligible`) uses module 07's rule with the thresholds in force (`customerRules(db).flags`), like the flags beside each name; `VipPage.rule` carries them and the page states them (no fixed "2,000,000 IQD / 5 / 365 days"). Points given after a second person's approval and referral rewards expire after `promotions.loyalty.expiry_days` (`rewardPointsStatement` takes an optional `expiryDays`). Day counts that are settings read through `daySpan` (VIP flag lines, the return window on the points page). Tests: `tests/admin-followup-review.test.ts`.

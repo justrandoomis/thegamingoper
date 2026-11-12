@@ -108,6 +108,7 @@
       "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/My%20Nintendo%20Store/EN-US/Nintendo%20Switch%202/Controllers/Controller%20Accessories/120834-nintendo-switch-2-joy-con-2-wheel-set-of-2-back-2000x2000",
       "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-2-joy-con-2-wheel-set-of-2-120834/",
       "kind": "angle",
+      "view": "back",
       "alt": { "ar": "الجهة الخلفية للمقودين", "en": "Back of the two wheels", "ckb": "پشتەوەی هەردوو سووکانەکە" },
       "credit": "Nintendo",
       "width": 2000, "height": 2000, "transparent": false

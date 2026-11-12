@@ -20,6 +20,7 @@ import {
   type ApprovalReason,
   type CouponState,
   type CouponTerms,
+  type DiscountLimits,
   type DryRunSkip,
   type ExperimentMetric,
   type FlashState,
@@ -52,16 +53,18 @@ function topBps(terms: DiscountShape): number | null {
  * off one order (or no ceiling at all), and — for coupons — no usage limit of any kind. Empty = the person who
  * writes them may switch them on.
  */
-export function discountApprovalReasons(terms: DiscountShape, options: { coupon?: boolean } = {}): ApprovalReason[] {
+export function discountApprovalReasons(terms: DiscountShape, options: { coupon?: boolean; limits?: DiscountLimits } = {}): ApprovalReason[] {
+  // the limits in force (the setting promotions.discount_limits — programRules); DISCOUNT_LIMITS when left out
+  const limits = options.limits ?? DISCOUNT_LIMITS;
   const reasons: ApprovalReason[] = [];
   const bps = topBps(terms);
-  if (bps !== null && bps > DISCOUNT_LIMITS.percentBps) reasons.push("percent_over");
+  if (bps !== null && bps > limits.percentBps) reasons.push("percent_over");
   const ceiling = perOrderCeiling(terms);
   const percentLike = terms.kind === "percent" || terms.kind === "tiered" || terms.kind === "bogo";
   if (ceiling === null && (percentLike || terms.kind === "free_shipping")) {
     // free shipping without a ceiling is bounded by the flat fee itself
     if (terms.kind !== "free_shipping") reasons.push("uncapped");
-  } else if (ceiling !== null && ceiling > DISCOUNT_LIMITS.perOrderIqd) reasons.push("amount_over");
+  } else if (ceiling !== null && ceiling > limits.perOrderIqd) reasons.push("amount_over");
   if (options.coupon && (terms.usageLimit ?? null) === null && (terms.perCustomerLimit ?? null) === null) reasons.push("no_limits");
   return reasons;
 }
@@ -205,10 +208,10 @@ export const windowsOverlap = (a: { startsAt: number; endsAt: number }, b: { sta
  * Points one order earns: 1 point per whole 1,000 IQD of goods paid and kept — paid − refunded, never above the
  * goods (subtotal − discount: shipping earns nothing) — times a membership's multiplier (floored).
  */
-export function pointsFor(order: { paidIqd: number; refundedIqd: number; subtotalIqd: number; discountIqd: number }, multiplierBps: number | null = null): number {
+export function pointsFor(order: { paidIqd: number; refundedIqd: number; subtotalIqd: number; discountIqd: number }, multiplierBps: number | null = null, pointsPerThousandIqd: number = LOYALTY.pointsPerThousandIqd): number {
   const goods = Math.max(0, order.subtotalIqd - order.discountIqd);
   const kept = Math.max(0, Math.min(goods, order.paidIqd - order.refundedIqd));
-  const base = Math.floor(kept / 1_000) * LOYALTY.pointsPerThousandIqd;
+  const base = Math.floor(kept / 1_000) * pointsPerThousandIqd;
   if (multiplierBps === null || multiplierBps <= 10_000) return base;
   return Math.floor((base * multiplierBps) / 10_000);
 }

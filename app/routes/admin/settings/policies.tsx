@@ -98,6 +98,10 @@ export default function PoliciesPage({ loaderData }: Route.ComponentProps) {
                   <Key as={Link} to={`/admin/settings/policies/${policy.slug}`} size="sm" icon="pencil-simple">
                     {view.can.edit || view.can.publish ? t("policies.edit") : t("policies.view")}
                   </Key>
+                ) : policy.contentHref ? (
+                  <Key as={Link} to={policy.contentHref} size="sm" icon="pencil-simple">
+                    {t("policies.openInContent")}
+                  </Key>
                 ) : (
                   <span className="type-caption text-ink-2">{t("policies.contentModule")}</span>
                 )}

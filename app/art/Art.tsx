@@ -92,6 +92,9 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
 
   const photo = isPhoto(art) ? art : undefined;
   const opaque = photo !== undefined && !photo.transparent;
+  // A product photo on its own plain plate (white or black box): CSS blends it into the product ground
+  // (app/styles/materials.css [data-opaque]). Box art and screenshots fill their frame and never blend.
+  const plate = photo !== undefined && !photo.transparent && photo.kind !== "box-art" && photo.kind !== "screenshot";
   const avif = artSrcSet(art.variants.avif);
   const webp = artSrcSet(art.variants.webp);
   if (priority) {
@@ -116,6 +119,7 @@ export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, 
         fetchPriority={priority ? "high" : fetchPriority}
         data-art={artName(art.key, art.view)}
         data-transparent={opaque ? "false" : "true"}
+        data-opaque={plate ? "" : undefined}
         className={className}
         style={{ ...blurBehind(art.placeholder), ...(opaque ? frame(photo.background) : null), ...style }}
       />

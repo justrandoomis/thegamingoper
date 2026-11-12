@@ -34,6 +34,23 @@
  *   never delivered — nothing was recognised as revenue), Cr the account the money leaves from; and
  *   for returned goods the inventory / COGS / write-off entries of postReturnedGoods.
  *
+ * AFTER A DISCOUNT (2026-11-12)
+ *   Never more than was paid: the database's bounds above hold per payment and per order whatever the
+ *   discount (a refund of a discounted line is its share of what was paid — module 12 computes it with
+ *   the order's discount spread over its lines). Issuing also gives back the share of the points the
+ *   order redeemed (orders/promotions.server refundPointsStatements: the refund's share of the ORDER,
+ *   all of the rest with the last of the money) and revokes the digital codes beyond the units still
+ *   paid for (all of them with the last of the money; orders/digital.server). "The last of the money"
+ *   — everything paid gone back and nothing more to collect — is decided INSIDE the batch, so two
+ *   refunds approved at the same moment cannot both miss it (review 2026-11-12).
+ *   An order still waiting for money (a split order's cash on delivery or transfer) keeps its payment
+ *   state when part of what it was paid is refunded: the cash is still recorded, the proof still sent.
+ *
+ * A WALLET THAT CAN HOLD IT (review 2026-11-12)
+ *   A refund to the wallet needs the customer still active or blocked — an account erased or merged
+ *   since the order gets customer_unavailable (409), checked before and inside the batch; refund in
+ *   cash or by transfer instead.
+ *
  * Must not import "cloudflare:workers".
  */
 import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
@@ -44,6 +61,7 @@ import { auditStatement } from "~/server/audit.server";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import {
   approvals,
+  customers,
   journalEntries,
   orderEvents,
   orderItems,
@@ -58,10 +76,12 @@ import {
   type Refund,
   type RefundMethod,
 } from "~/server/db/schema";
-import { chunkRows, expectChanged, isUniqueViolation, mapDbError, runBatch } from "~/server/db/tx.server";
+import { chunkRows, expectChanged, expectThat, isUniqueViolation, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, forbidden, invalid, notFound, toAppError } from "~/server/errors";
 import { getSetting } from "~/server/settings.server";
 import { cogsPostingKey, mapPostingError, postRefund, postReturnedGoods, postedBy, salePostingKey } from "./accounting/post.server";
+import { revokeDigitalCodesStatements } from "./orders/digital.server";
+import { refundPointsStatements } from "./orders/promotions.server";
 import { RETURN_DISPOSITIONS, planReturnedGoods, type ReturnLine } from "./orders/returns.server";
 import { walletCreditStatement } from "./wallet.server";
 
@@ -77,6 +97,8 @@ export const REFUND_ERROR_KEYS = [
   "serials_required",
   "serial_not_on_line",
   "idempotency_mismatch",
+  // since the review of 2026-11-12: a wallet refund for an account erased or merged since the order
+  "customer_unavailable",
 ] as const;
 
 const ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
@@ -147,12 +169,24 @@ export async function getRefundableAmount(db: Db, paymentId: string): Promise<nu
   return Math.max(0, payment.amountIqd - Number(used?.total ?? 0));
 }
 
+/**
+ * Money refunded to a wallet needs a wallet that can still hold it (review 2026-11-12): an account erased or merged
+ * since the order — a cancelled order's refund may wait for days — gets nothing (customer_unavailable, 409); staff
+ * refund in cash or by transfer instead. Checked again inside the batch.
+ */
+async function assertWalletHolder(db: Db, customerId: string): Promise<void> {
+  const row = await db.select({ status: customers.status }).from(customers).where(eq(customers.id, customerId)).get();
+  if (!row || (row.status !== "active" && row.status !== "blocked")) throw new AppError("customer_unavailable", 409, { fields: { method: "customer_unavailable" }, detail: row?.status ?? "missing" });
+}
+
 function translateRefundError(error: unknown): unknown {
   const posting = mapPostingError(error);
   if (posting) return posting;
   const info = mapDbError(error);
   if (!info) return error;
   switch (info.code) {
+    case "CUSTOMER_UNAVAILABLE":
+      return new AppError("customer_unavailable", 409, { fields: { method: "customer_unavailable" }, detail: info.detail, cause: error });
     case "REFUND_EXCEEDS_PAYMENT":
     case "ORDER_REFUND_EXCEEDS_PAID":
       return new AppError("refund_exceeds_payment", 409, { detail: info.detail, cause: error });
@@ -200,6 +234,7 @@ async function issueStatements(
   const { refund, order, payment, actor, now } = args;
   const destination = refundDestination(refund.method, payment.method);
   if (destination.wallet && !order.customerId) throw new AppError("wallet_requires_account", 409, { fields: { method: "wallet_requires_account" } });
+  if (destination.wallet && order.customerId) await assertWalletHolder(db, order.customerId);
   if (destination.needsReference && !args.reference) throw invalid({ reference: "reference_required" });
 
   const goodsLines: ReturnLine[] = args.items.filter((item) => item.disposition).map((item) => ({ orderItemId: item.orderItemId, qty: item.qty, disposition: item.disposition!, serialIds: item.serialIds }));
@@ -234,12 +269,19 @@ async function issueStatements(
       .update(orders)
       .set({
         refundedIqd: sql`${orders.refundedIqd} + ${refund.amountIqd}`,
-        paymentStatus: sql`CASE WHEN ${orders.refundedIqd} + ${refund.amountIqd} >= ${orders.paidIqd} THEN 'refunded' ELSE 'partially_refunded' END`,
+        // An order still waiting for money (a split order's cash on delivery, its transfer) keeps its payment state: the
+        // cash is still recorded against "cod_due", the proof still expected (review 2026-11-12 — a refund of the wallet
+        // part marked such an order "refunded" and its cash could never be recorded). recordCodCollection / verifyPayment
+        // then land on partially_refunded.
+        paymentStatus: sql`CASE WHEN EXISTS (SELECT 1 FROM payments WHERE order_id = ${order.id} AND status IN ('pending', 'pending_verification', 'rejected')) THEN ${orders.paymentStatus}
+          WHEN ${orders.refundedIqd} + ${refund.amountIqd} >= ${orders.paidIqd} THEN 'refunded' ELSE 'partially_refunded' END`,
         updatedAt: now,
       })
       .where(eq(orders.id, order.id)),
   );
   if (ledgerId && order.customerId) {
+    // inside the batch too: merged or erased meanwhile, the money goes nowhere (customer_unavailable)
+    statements.push(expectThat(db, sql`EXISTS (SELECT 1 FROM customers WHERE id = ${order.customerId} AND status IN ('active', 'blocked'))`, { code: "CUSTOMER_UNAVAILABLE", detail: order.customerId }));
     statements.push(
       walletCreditStatement(db, {
         id: ledgerId,
@@ -259,6 +301,12 @@ async function issueStatements(
   statements.push(
     ...postRefund(db, { refundId: refund.id, orderId: order.id, ref: order.ref, amountIqd: refund.amountIqd, paidFrom: destination.account, revenueRecognized, at: now, createdBy: approvedBy, isDemo: order.isDemo }),
   );
+  // Since 2026-11-12: the points the order redeemed come back in proportion (all of them with the last of the money),
+  // and the digital codes beyond the units still paid for (all of them with the last of the money) are revoked. "The
+  // last of the money" is decided INSIDE the batch, after the updates above (review 2026-11-12: decided on this call's
+  // earlier read, two refunds approved at the same moment were each "not the last").
+  statements.push(...(await refundPointsStatements(db, { orderId: order.id, ref: order.ref, refundId: refund.id, amountIqd: refund.amountIqd, actor, now })));
+  statements.push(...(await revokeDigitalCodesStatements(db, { orderId: order.id, items: args.items.map((item) => ({ orderItemId: item.orderItemId, qty: item.qty })), all: false, actor, reason: `refund:${refund.id}`, now })));
   if (goods) {
     statements.push(
       ...postReturnedGoods(db, {
@@ -352,6 +400,7 @@ export async function createRefund(db: Db, actor: Actor, raw: CreateRefundInput,
   }
   const destination = refundDestination(input.method, payment.method);
   if (destination.wallet && !order.customerId) throw new AppError("wallet_requires_account", 409, { fields: { method: "wallet_requires_account" } });
+  if (destination.wallet && order.customerId) await assertWalletHolder(db, order.customerId);
 
   const threshold = await getSetting(db, "refunds.approval_threshold_iqd");
   const immediate = input.amountIqd <= threshold;

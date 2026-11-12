@@ -55,6 +55,8 @@ export type HeaderProps = {
   demo: boolean;
   /** The phone search pill was pressed: open the search sheet. */
   onSearch: () => void;
+  /** Words the desktop search field starts with (a missing product's slug words on its 404). */
+  searchQuery?: string;
 };
 
 /** True once the page has scrolled past the 24px sentinel at the top of the document. */
@@ -151,7 +153,7 @@ function SearchPill({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-export function Header({ shell, task = null, demo, onSearch }: HeaderProps) {
+export function Header({ shell, task = null, demo, onSearch, searchQuery }: HeaderProps) {
   const t = useShellT();
   const location = useLocation();
   const path = splitLocale(location.pathname).path;
@@ -178,7 +180,7 @@ export function Header({ shell, task = null, demo, onSearch }: HeaderProps) {
             </p>
           ) : null}
           <SearchPill onOpen={onSearch} />
-          <SearchForm variant="header" />
+          <SearchForm variant="header" query={searchQuery} />
           <div className="shell-end">
             <div className="shell-links">
               <TextLink as={LocaleLink} to="/trade-in" icon="recycle" arrow={false}>

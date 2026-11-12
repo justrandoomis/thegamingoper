@@ -26,7 +26,7 @@ import { ChipRow, DeviceShortcuts, HubBand, TitleRow, UsedShelf, useDevicesTitle
 import { ListingView } from "./components/ListingView";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
 import { LISTING_SORTS, filtersOf, readListingQuery } from "./listing-model";
-import { PAGE_SLUG, listOf, wishedOf, withCursorFallback } from "./list.server";
+import { PAGE_SLUG, filterOrderOf, listOf, wishedOf, withCursorFallback } from "./list.server";
 import "./catalog.css";
 
 export const handle = {
@@ -63,11 +63,13 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const platform = result.hub.platform;
   const ui = serverT(ctx.locale, "ui");
   const name = isPlatform(platform.slug) ? ui(`platform.${platform.slug}`) : platform.name;
-  const session = await getCustomer(ctx, db);
+  // the listing filters in the order staff gave every listing (content module 17.03; null: the page's own)
+  const [session, filterOrder] = await Promise.all([getCustomer(ctx, db), filterOrderOf(db, null)]);
   const customerId = session?.customer.id ?? null;
   return {
     list: listOf(result),
     hub: result.hub,
+    filterOrder,
     used,
     picks,
     wished: await wishedOf(db, ctx, customerId, [...result.items, ...picks].map((card) => card.id)),
@@ -82,7 +84,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
 export const meta: Route.MetaFunction = (args) => shellMeta(args, { title: args.loaderData?.meta.title, description: args.loaderData?.meta.description });
 
 export default function PlatformPage({ loaderData }: Route.ComponentProps) {
-  const { list, hub, used, picks, wished, recommendations } = loaderData;
+  const { list, hub, used, picks, wished, recommendations, filterOrder } = loaderData;
   const t = useT("catalog");
   const ui = useT("ui");
   const f = useFormat();
@@ -123,6 +125,7 @@ export default function PlatformPage({ loaderData }: Route.ComponentProps) {
         picksTitle={t("zero.picksPlatform", { name })}
         elsewhere={list.facets.categories.length >= 2 || nav.query.category ? ["category"] : []}
         wished={wished}
+        filterOrder={filterOrder}
         // inside the product list (phones): a part of it in the outline (h3), so the cards after it stay under the list's h2
         inline={<DeviceShortcuts layout="rail" devices={hub.devices} title={devices} note={t("hub.devicesNote")} id="catalog-devices-inline" slot="inline" headingLevel={3} />}
       />

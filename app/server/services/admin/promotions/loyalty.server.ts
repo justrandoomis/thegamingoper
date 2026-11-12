@@ -38,6 +38,7 @@ import { cleanBlock } from "~/server/text.server";
 import { pointsFor } from "./rules";
 import { ID, KEY, SECTION_READ, assertAny, assertMayDecide, canDecideApproval, customerLabels, employeeNames, idFromKey, num } from "./shared.server";
 import { DAY_MS, LOYALTY, PAGE_SIZE, parseWhole, type CustomerPoints, type LedgerFilters, type LedgerPage, type LedgerRow, type LoyaltyKind, type LoyaltyOverview, type PendingAdjustment } from "./types";
+import { programRules } from "./program.server";
 
 const KIND = "loyalty_adjustment" as const;
 export const earnKey = (orderId: string) => `loyalty:earn:${orderId}`;
@@ -114,6 +115,8 @@ async function expiryCandidates(db: Db, now: number, limit: number): Promise<Bal
 }
 
 export async function loyaltyOverview(db: Db, actor: Actor, now: number): Promise<LoyaltyOverview> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12)
+  const loyalty = (await programRules(db)).loyalty;
   assertAny(actor, SECTION_READ.points);
   const windowDays = await getSetting(db, "returns.window_days");
   const before = now - windowDays * DAY_MS;
@@ -136,7 +139,7 @@ export async function loyaltyOverview(db: Db, actor: Actor, now: number): Promis
   const outstanding = num(totals[0]?.points);
   return {
     outstandingPoints: outstanding,
-    outstandingValueIqd: outstanding * LOYALTY.pointValueIqd,
+    outstandingValueIqd: outstanding * loyalty.pointValueIqd,
     members: num(totals[0]?.members),
     earned30d: num(earned[0]?.n),
     expiringPoints30d: num(expiring[0]?.n),
@@ -193,6 +196,8 @@ export async function findCustomerId(db: Db, actor: Actor, input: { phone?: stri
 }
 
 export async function customerPoints(db: Db, actor: Actor, customerId: string, now: number): Promise<CustomerPoints> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12)
+  const loyalty = (await programRules(db)).loyalty;
   assertAny(actor, SECTION_READ.points);
   if (!ID.test(customerId)) throw notFound("customer");
   const customer = await db.select({ id: customers.id, status: customers.status }).from(customers).where(eq(customers.id, customerId)).get();
@@ -215,7 +220,7 @@ export async function customerPoints(db: Db, actor: Actor, customerId: string, n
     phone: label.get(customer.id)?.phone ?? null,
     status: customer.status,
     balance,
-    valueIqd: balance * LOYALTY.pointValueIqd,
+    valueIqd: balance * loyalty.pointValueIqd,
     expiringSoon: Math.min(balance, Math.max(0, num(sums[0]?.soon) - num(sums[0]?.debits))),
     multiplierBps: multiplier.get(customer.id) ?? null,
     entries,
@@ -239,18 +244,20 @@ export async function customerPoints(db: Db, actor: Actor, customerId: string, n
 
 /**
  * Posts what is due: earn rows for orders delivered and past their return window, then reversals for refunds paid
- * after an order earned. Idempotent (the keys above); at most LOYALTY.syncBatchOrders of each per run.
+ * after an order earned. Idempotent (the keys above); at most loyalty.syncBatchOrders of each per run.
  */
 export async function syncOrderPoints(db: Db, actor: Actor, now: number): Promise<{ earnedOrders: number; earnedPoints: number; reversed: number; reversedPoints: number; spent: number; more: boolean }> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12)
+  const loyalty = (await programRules(db)).loyalty;
   assertCan(actor, "promotions.loyalty.manage");
   const windowDays = await getSetting(db, "returns.window_days");
-  const candidates = await earnCandidates(db, now, windowDays, LOYALTY.syncBatchOrders + 1);
-  const more = candidates.length > LOYALTY.syncBatchOrders;
-  const batch = candidates.slice(0, LOYALTY.syncBatchOrders);
+  const candidates = await earnCandidates(db, now, windowDays, loyalty.syncBatchOrders + 1);
+  const more = candidates.length > loyalty.syncBatchOrders;
+  const batch = candidates.slice(0, loyalty.syncBatchOrders);
   const factor = await multipliers(db, batch.map((row) => row.customer_id), now);
   const { actorKind, actorId } = actorRef(actor);
   const rows = batch
-    .map((order) => ({ order, points: pointsFor({ paidIqd: num(order.paid_iqd), refundedIqd: num(order.refunded_iqd), subtotalIqd: num(order.subtotal_iqd), discountIqd: num(order.discount_iqd) }, factor.get(order.customer_id) ?? null) }))
+    .map((order) => ({ order, points: pointsFor({ paidIqd: num(order.paid_iqd), refundedIqd: num(order.refunded_iqd), subtotalIqd: num(order.subtotal_iqd), discountIqd: num(order.discount_iqd) }, factor.get(order.customer_id) ?? null, loyalty.pointsPerThousandIqd) }))
     .filter((entry) => entry.points > 0)
     .map(({ order, points }) => ({
       id: newId("lyl"),
@@ -260,7 +267,7 @@ export async function syncOrderPoints(db: Db, actor: Actor, now: number): Promis
       refType: "order",
       refId: order.id,
       reason: `${order.ref}`,
-      expiresAt: now + LOYALTY.expiryDays * DAY_MS,
+      expiresAt: now + loyalty.expiryDays * DAY_MS,
       actorKind,
       actorId,
       idempotencyKey: earnKey(order.id),
@@ -284,7 +291,7 @@ export async function syncOrderPoints(db: Db, actor: Actor, now: number): Promis
   let reversed = 0;
   let reversedPoints = 0;
   let spent = 0;
-  const lates = await reversalCandidates(db, LOYALTY.syncBatchOrders);
+  const lates = await reversalCandidates(db, loyalty.syncBatchOrders);
   for (const late of lates) {
     let points = reversalPoints(late);
     if (points <= 0) continue;
@@ -368,6 +375,8 @@ const soloGivenSql = (employeeId: string, now: number) =>
  * points expire like earned ones; taking more than the customer holds is refused (`points_insufficient`).
  */
 export async function adjustPoints(db: Db, actor: Actor, raw: unknown, now: number): Promise<{ status: "applied" | "requested"; replayed: boolean }> {
+  // the rules in force (the setting promotions.* — program.server.ts, follow-up 2026-11-12)
+  const loyalty = (await programRules(db)).loyalty;
   assertCan(actor, "promotions.loyalty.adjust");
   const parsed = AdjustInput.safeParse(raw);
   if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "loyalty.adjust");
@@ -382,8 +391,8 @@ export async function adjustPoints(db: Db, actor: Actor, raw: unknown, now: numb
   }
   const employeeId = actor.kind === "employee" ? actor.id : null;
   const soloSoFar = employeeId && input.points > 0 ? num((await db.all<{ n: number }>(sql`SELECT ${soloGivenSql(employeeId, now)} AS n`))[0]?.n) : 0;
-  const overDay = input.points > 0 && soloSoFar + input.points > LOYALTY.adjustSoloDayPoints;
-  if (Math.abs(input.points) > LOYALTY.adjustSecondPersonPoints || overDay) {
+  const overDay = input.points > 0 && soloSoFar + input.points > loyalty.adjustSoloDayPoints;
+  if (Math.abs(input.points) > loyalty.adjustSecondPersonPoints || overDay) {
     const approvalId = await idFromKey("apr", actor, `${input.idempotencyKey}:points`);
     const existing = await db.select({ id: approvals.id, payload: approvals.payload }).from(approvals).where(eq(approvals.id, approvalId)).get();
     if (existing) {
@@ -401,8 +410,8 @@ export async function adjustPoints(db: Db, actor: Actor, raw: unknown, now: numb
     await runBatch(db, [
       customerStillThere(db, customer.id),
       // the 24-hour window again inside the batch: two adjustments sent at once cannot both slip under it
-      ...(employeeId && input.points > 0 ? [expectThat(db, sql`${soloGivenSql(employeeId, now)} + ${input.points} <= ${LOYALTY.adjustSoloDayPoints}`, { code: "POINTS_SOLO_LIMIT", detail: employeeId })] : []),
-      db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: customer.id, points: input.points, kind: "adjust", refType: "manual", refId: null, reason: input.reason, expiresAt: input.points > 0 ? now + LOYALTY.expiryDays * DAY_MS : null, actorKind, actorId, idempotencyKey: key, at: now }),
+      ...(employeeId && input.points > 0 ? [expectThat(db, sql`${soloGivenSql(employeeId, now)} + ${input.points} <= ${loyalty.adjustSoloDayPoints}`, { code: "POINTS_SOLO_LIMIT", detail: employeeId })] : []),
+      db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: customer.id, points: input.points, kind: "adjust", refType: "manual", refId: null, reason: input.reason, expiresAt: input.points > 0 ? now + loyalty.expiryDays * DAY_MS : null, actorKind, actorId, idempotencyKey: key, at: now }),
       auditStatement(db, { actor, action: "promotions.loyalty.adjust", entityType: "customer", entityId: customer.id, after: { points: input.points }, reason: input.reason, at: now }),
     ]);
   } catch (error) {
@@ -429,6 +438,9 @@ export async function decideAdjustment(db: Db, actor: Actor, raw: unknown, now: 
   const payload = (approval.payload ?? {}) as { points?: number; key?: string };
   const points = num(payload.points);
   const customer = input.decision === "approve" ? await adjustableCustomer(db, approval.entityId) : { id: approval.entityId };
+  // the days in force (the setting promotions.loyalty), like a direct adjustment and earned points — review 2026-11-12:
+  // an approved adjustment kept the constant LOYALTY.expiryDays
+  const { expiryDays } = (await programRules(db)).loyalty;
   const actorId = actor.kind === "employee" ? actor.id : "system";
   const statements: BatchStatement[] = [
     db
@@ -442,7 +454,7 @@ export async function decideAdjustment(db: Db, actor: Actor, raw: unknown, now: 
     // the requester stays the author of the movement; the approver is in the audit event
     statements.push(
       customerStillThere(db, customer.id),
-      db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: customer.id, points, kind: "adjust", refType: "approval", refId: approval.id, reason: approval.reason, expiresAt: points > 0 ? now + LOYALTY.expiryDays * DAY_MS : null, actorKind: "employee", actorId: approval.requestedBy, idempotencyKey: payload.key, at: now }),
+      db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: customer.id, points, kind: "adjust", refType: "approval", refId: approval.id, reason: approval.reason, expiresAt: points > 0 ? now + expiryDays * DAY_MS : null, actorKind: "employee", actorId: approval.requestedBy, idempotencyKey: payload.key, at: now }),
     );
   }
   statements.push(auditStatement(db, { actor, action: input.decision === "approve" ? "promotions.loyalty.approve" : "promotions.loyalty.reject", entityType: "customer", entityId: customer.id, after: { approvalId: approval.id, points }, reason: input.note || approval.reason, at: now }));
@@ -465,8 +477,11 @@ export async function withdrawAdjustment(db: Db, actor: Actor, raw: { approvalId
   return { customerId: approval.entityId };
 }
 
-/** Posts referral reward points (used by referrals.server.ts inside its own batch). */
-export function rewardPointsStatement(db: Db, actor: Actor, input: { customerId: string; points: number; referralId: string; code: string }, now: number): BatchStatement {
+/**
+ * Posts referral reward points (used by referrals.server.ts inside its own batch). `expiryDays`: the programme's days
+ * in force (programRules — the setting promotions.loyalty; review 2026-11-12), LOYALTY.expiryDays when left out.
+ */
+export function rewardPointsStatement(db: Db, actor: Actor, input: { customerId: string; points: number; referralId: string; code: string; expiryDays?: number }, now: number): BatchStatement {
   const { actorKind, actorId } = actorRef(actor);
-  return db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: input.customerId, points: input.points, kind: "earn", refType: "referral", refId: input.referralId, reason: `referral ${input.code}`, expiresAt: now + LOYALTY.expiryDays * DAY_MS, actorKind, actorId, idempotencyKey: `referral:${input.referralId}:reward`, at: now });
+  return db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: input.customerId, points: input.points, kind: "earn", refType: "referral", refId: input.referralId, reason: `referral ${input.code}`, expiresAt: now + (input.expiryDays ?? LOYALTY.expiryDays) * DAY_MS, actorKind, actorId, idempotencyKey: `referral:${input.referralId}:reward`, at: now });
 }

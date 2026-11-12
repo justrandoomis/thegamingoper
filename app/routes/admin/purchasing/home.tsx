@@ -33,7 +33,8 @@ export default function PurchasingHome({ loaderData }: Route.ComponentProps) {
     { id: "approvals", count: waiting.approvals, href: "/admin/purchasing/orders?view=pending_approval" },
     { id: "stuck", count: waiting.receiptsStuck, href: "/admin/purchasing/receipts?state=posting" },
     { id: "drafts", count: waiting.receiptsDraft, href: "/admin/purchasing/receipts?state=draft" },
-    { id: "mismatch", count: waiting.invoicesMismatch, href: "/admin/purchasing/invoices?status=mismatch" },
+    // per person (never the invoices they recorded): its own filter, the same rule as the count
+    { id: "mismatch", count: waiting.invoicesMismatch, href: "/admin/purchasing/invoices?status=to_accept" },
     { id: "late", count: waiting.late, href: "/admin/purchasing/orders?view=late" },
     { id: "claims", count: waiting.claimsOpen, href: "/admin/purchasing/claims?status=active" },
     { id: "alerts", count: waiting.alerts, href: "/admin/purchasing/alerts" },

@@ -9,14 +9,14 @@ import { throwAsResponse } from "~/server/errors";
 import { conditionOptions } from "~/server/services/admin/promotions/coupons.server";
 import { decideRule, dryRun, getRule, saveRule, setRuleActive, withdrawRuleRequest } from "~/server/services/admin/promotions/discounts.server";
 import { SECTION_READ, type PromotionsAccess } from "~/server/services/admin/promotions/shared.server";
-import { CHANNELS, DISCOUNT_LIMITS, DRY_RUN_DAYS, DRY_RUN_SKIPS, PRODUCT_KIND_OPTIONS, RULE_KINDS, RULE_STATE_TONE, bpsToPercent, parseDryRun, toBaghdadInput, type ConditionOptions, type DryRun, type RuleDetail, type RuleKind } from "~/server/services/admin/promotions/types";
+import { CHANNELS, DRY_RUN_DAYS, DRY_RUN_SKIPS, PRODUCT_KIND_OPTIONS, RULE_KINDS, RULE_STATE_TONE, bpsToPercent, parseDryRun, toBaghdadInput, type ConditionOptions, type DryRun, type RuleDetail, type RuleKind } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { Disclosure } from "~/ui/Disclosure";
 import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, Boundary, ChoiceList, Code, ConfirmAction, DemoNote, Facts, Failure, History, Kpis, Money, newKey, Notice, Num, Pct, Section, Tag, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Arrow, Boundary, ChoiceList, Code, ConfirmAction, DemoNote, Facts, Failure, History, Kpis, Money, newKey, Notice, Num, Pct, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/rules/:ruleId — 08.02, one automatic discount rule (":ruleId" = "new" opens the empty form): its
@@ -75,6 +75,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, args.loaderData?.rule ? null : "rules.newTitle", undefined, args.loaderData?.rule?.name ?? null);
 
 export default function RulePage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const locale = useLocale();
   const { rule, options, run, window } = loaderData;
@@ -121,7 +122,7 @@ export default function RulePage({ loaderData }: Route.ComponentProps) {
                 <div className="prm-tags">
                   {rule.approvalReasons.map((reason) => (
                     <Tag key={reason} icon="seal-check">
-                      {t(`reasons.${reason}`, { percent: DISCOUNT_LIMITS.percentBps / 100 })}
+                      {t(`reasons.${reason}`, { percent: program.limits.percentBps / 100 })}
                     </Tag>
                   ))}
                 </div>

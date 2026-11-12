@@ -26,6 +26,13 @@
  *     the parcel) — edit_units_scanned (editLineFloors gives each line's floor for the form); nothing changes in
  *     lines once a parcel is packed — edit_parcel_packed
  *   · something must change — edit_no_change; at least one line must remain — edit_empty_order (cancel instead)
+ *   · PROMOTIONS (2026-11-12): a flash-priced line keeps its claim on the sale (edit_not_allowed, detail "flash_line");
+ *     an order priced with an automatic offer, a membership discount or redeemed points is not edited line by line at
+ *     all (edit_not_allowed, detail "promotions" — review 2026-11-12: they were worked out on the goods as ordered, and
+ *     an offer for one product kind stayed on the others); cancel it instead (its points and offer units come back).
+ *     A coupon is re-priced by its own rule (a demo coupon on demo goods only), a waived delivery fee stays waived on a
+ *     new governorate (a member's whole fee, a rule's up to what it waived), and either change appends a re-priced
+ *     "promotions" record (orders/promotions.server editedPromotionsRecord) — the order page and the invoice add up
  *   · the address's phone may be left out: the order keeps its number (employees without customer.phone.read_full
  *     never see it, so their form leaves it empty)
  *
@@ -86,6 +93,7 @@ import { expectChanged, expectThat, isDbError, mapDbError, runBatch } from "~/se
 import { AppError, invalid, notFound, toAppError } from "~/server/errors";
 import { releaseUsedUnitStatements, reserveStatements } from "../inventory/stock.server";
 import { getShippingFee } from "../shipping/fees.server";
+import { editedPromotionsRecord, promotionsEventStatement, promotionsRecordOf, type PromotionsRecord } from "./promotions.server";
 
 /** Error keys this module adds (besides invalid / forbidden / not_found / insufficient_stock / shipping_unavailable / order_changed). */
 export const EDIT_ERROR_KEYS = [
@@ -212,7 +220,7 @@ export type EditPlan = {
 /** Why the lines / the address of this order cannot be edited now (null = they can). Cheap: for the order page. */
 export async function orderEditBlockers(db: Db, order: Order): Promise<{ lines: string | null; address: string | null }> {
   if (order.channel !== "web" || !(EDITABLE_STATUSES as readonly string[]).includes(order.status)) return { lines: "edit_not_allowed", address: "edit_not_allowed" };
-  const [reviewing, refunded, packed, paid, invoiced] = await Promise.all([
+  const [reviewing, refunded, packed, paid, invoiced, record] = await Promise.all([
     db.select({ id: payments.id }).from(payments).where(and(eq(payments.orderId, order.id), eq(payments.status, "pending_verification"))).get(),
     db
       .select({ id: refunds.id })
@@ -226,10 +234,13 @@ export async function orderEditBlockers(db: Db, order: Order): Promise<{ lines: 
       .get(),
     db.select({ id: payments.id }).from(payments).where(and(eq(payments.orderId, order.id), eq(payments.status, "paid"))).get(),
     invoiceOf(db, order.id),
+    promotionsRecordOf(db, order.id),
   ]);
   if (reviewing) return { lines: "edit_payment_in_review", address: "edit_payment_in_review" };
   if (refunded) return { lines: "edit_has_refunds", address: "edit_has_refunds" };
-  const lines = order.paidIqd > 0 || paid ? "edit_paid_order" : invoiced ? "edit_invoiced" : packed ? "edit_parcel_packed" : null;
+  // an automatic offer, a membership discount or points: the lines stay as ordered (plan(), review 2026-11-12)
+  const promoted = (record?.discounts ?? []).some((entry) => entry.kind !== "coupon");
+  const lines = order.paidIqd > 0 || paid ? "edit_paid_order" : invoiced ? "edit_invoiced" : packed ? "edit_parcel_packed" : promoted ? "edit_not_allowed" : null;
   return { lines, address: null };
 }
 
@@ -255,9 +266,10 @@ async function couponDiscountFor(db: Db, couponId: string, lines: { variantId: s
   const conditions: CouponConditions = coupon.conditions ?? {};
   const has = (list: readonly string[] | undefined): list is readonly string[] => Array.isArray(list) && list.length > 0;
   let eligible = lines;
-  if (has(conditions.platformIds) || has(conditions.categoryIds) || has(conditions.productIds) || has(conditions.productKinds)) {
+  // a demo coupon discounts demo goods only (coupons.server.ts, review 2026-11-12)
+  if (coupon.isDemo || has(conditions.platformIds) || has(conditions.categoryIds) || has(conditions.productIds) || has(conditions.productKinds)) {
     const rows = await db
-      .select({ variantId: variants.id, productId: products.id, platformId: products.platformId, categoryId: products.categoryId, kind: products.kind })
+      .select({ variantId: variants.id, productId: products.id, platformId: products.platformId, categoryId: products.categoryId, kind: products.kind, isDemo: products.isDemo })
       .from(variants)
       .innerJoin(products, eq(products.id, variants.productId))
       .where(
@@ -277,6 +289,7 @@ async function couponDiscountFor(db: Db, couponId: string, lines: { variantId: s
     eligible = lines.filter((line) => {
       const product = byVariant.get(line.variantId);
       if (!product) return false;
+      if (coupon.isDemo && !product.isDemo) return false;
       if (has(conditions.productIds) && !conditions.productIds.includes(product.productId)) return false;
       if (has(conditions.productKinds) && !conditions.productKinds.includes(product.kind)) return false;
       if (has(conditions.platformIds) && (!product.platformId || !conditions.platformIds.includes(product.platformId))) return false;
@@ -290,8 +303,8 @@ async function couponDiscountFor(db: Db, couponId: string, lines: { variantId: s
   if (eligible.length === 0) return 0;
   const eligibleQty = eligible.reduce((sum, line) => sum + line.qty, 0);
   if (typeof conditions.minQty === "number" && eligibleQty < conditions.minQty) return 0;
-  if (coupon.minSubtotalIqd !== null && subtotalIqd < coupon.minSubtotalIqd) return 0;
   const base = eligible.reduce((sum, line) => sum + line.unitPriceIqd * line.qty, 0);
+  if (coupon.minSubtotalIqd !== null && (coupon.isDemo ? base : subtotalIqd) < coupon.minSubtotalIqd) return 0;
   let discount = coupon.kind === "fixed" ? coupon.value : bpsOf(base, coupon.value);
   if (coupon.maxDiscountIqd !== null) discount = Math.min(discount, coupon.maxDiscountIqd);
   return Math.max(0, Math.min(discount, base, subtotalIqd));
@@ -313,6 +326,8 @@ type Planned = {
   scanGuards: { orderItemId: string; maxUnits: number }[];
   /** The lines or the total change: the batch re-checks that no invoice was issued meanwhile. */
   guardInvoice: boolean;
+  /** The order's promotions record after this edit (the coupon re-priced, the delivery waiver on the new fee), or null when it stays. */
+  promotionsAfter: PromotionsRecord | null;
 };
 
 async function plan(db: Db, actor: Actor, orderId: string, raw: EditOrderInput): Promise<Planned> {
@@ -368,6 +383,16 @@ async function plan(db: Db, actor: Actor, orderId: string, raw: EditOrderInput):
   }));
   const changedLines = planLines.filter((line) => line.qtyAfter !== line.qtyBefore);
   const linesChanged = changedLines.length > 0;
+  // What the order's promotions recorded (2026-11-12): a flash-priced line keeps its claim on the sale's allowance — its
+  // quantity is not edited (cancel the order instead); a waived delivery fee stays waived on an address edit.
+  const promotionsRecord = await promotionsRecordOf(db, order.id);
+  const flashLines = new Set((promotionsRecord?.flash ?? []).map((claim) => claim.orderItemId));
+  if (changedLines.some((line) => flashLines.has(line.orderItemId))) throw new AppError("edit_not_allowed", 409, { detail: "flash_line" });
+  // An automatic offer, a membership discount or redeemed points were worked out on the goods as ordered (an offer may
+  // be for one product kind only): kept as they were on other goods they would be a discount nobody gave; worked out
+  // again they would need the offer's terms of that day. Such an order's lines are not edited — cancelling it gives
+  // back the points and the offer's units (review 2026-11-12: the headset's offer stayed on the console).
+  if (linesChanged && (promotionsRecord?.discounts ?? []).some((entry) => entry.kind !== "coupon")) throw new AppError("edit_not_allowed", 409, { detail: "promotions" });
   const scanGuards: Planned["scanGuards"] = [];
   if (linesChanged) {
     if (planLines.every((line) => line.qtyAfter === 0)) throw new AppError("edit_empty_order", 409, { detail: order.id });
@@ -397,6 +422,7 @@ async function plan(db: Db, actor: Actor, orderId: string, raw: EditOrderInput):
   // ── address
   let phoneE164: string | null = null;
   let shippingAfter = order.shippingIqd;
+  let waiverAfter: { feeIqd: number; waivedIqd: number } | null = null;
   let addressChanged = false;
   if (input.address) {
     const address = input.address;
@@ -407,7 +433,13 @@ async function plan(db: Db, actor: Actor, orderId: string, raw: EditOrderInput):
       const district = await db.select({ governorateId: districts.governorateId, isActive: districts.isActive }).from(districts).where(eq(districts.id, address.districtId)).get();
       if (!district || district.governorateId !== address.governorateId || !district.isActive) throw invalid({ districtId: "district_invalid" });
     }
-    if (address.governorateId !== order.governorateId) shippingAfter = await getShippingFee(db, address.governorateId);
+    if (address.governorateId !== order.governorateId) {
+      const fee = await getShippingFee(db, address.governorateId);
+      // a waived fee stays waived: a member's whole fee, a rule's up to what it waived — and the record says so
+      const waiver = promotionsRecord?.shipping ?? null;
+      if (waiver) waiverAfter = { feeIqd: fee, waivedIqd: waiver.by === "member" ? fee : Math.min(fee, waiver.waivedIqd) };
+      shippingAfter = waiverAfter ? fee - waiverAfter.waivedIqd : fee;
+    }
     addressChanged =
       (address.contactName ?? null) !== (order.contactName ?? null) ||
       phoneE164 !== order.contactPhoneE164 ||
@@ -427,13 +459,19 @@ async function plan(db: Db, actor: Actor, orderId: string, raw: EditOrderInput):
   let coupon: EditPlan["coupon"] = null;
   if (linesChanged) {
     if (order.couponId) {
-      discountAfter = await couponDiscountFor(
+      // the coupon's own part of the discount is re-applied by its rule; the rest (automatic rules, membership,
+      // redeemed points — 2026-11-12) stays as it was given, never above the goods left
+      const redeemed = await db.select({ amountIqd: couponRedemptions.amountIqd }).from(couponRedemptions).where(and(eq(couponRedemptions.orderId, order.id), eq(couponRedemptions.couponId, order.couponId), isNull(couponRedemptions.voidedAt))).get();
+      const couponBefore = Math.min(order.discountIqd, redeemed?.amountIqd ?? order.discountIqd);
+      const otherPart = order.discountIqd - couponBefore;
+      const couponAfter = await couponDiscountFor(
         db,
         order.couponId,
         kept.map((line) => ({ variantId: line.variantId, qty: line.qtyAfter, unitPriceIqd: line.unitPriceIqd })),
         subtotalAfter,
       );
-      coupon = { code: order.couponCode ?? "", beforeIqd: order.discountIqd, afterIqd: discountAfter, lost: discountAfter === 0 && order.discountIqd > 0 };
+      discountAfter = Math.min(subtotalAfter, couponAfter + otherPart);
+      coupon = { code: order.couponCode ?? "", beforeIqd: couponBefore, afterIqd: couponAfter, lost: couponAfter === 0 && couponBefore > 0 };
     } else {
       discountAfter = Math.min(order.discountIqd, subtotalAfter);
     }
@@ -523,6 +561,8 @@ async function plan(db: Db, actor: Actor, orderId: string, raw: EditOrderInput):
     paymentStatus: open?.status ?? null,
     scanGuards,
     guardInvoice,
+    // the order page and the invoice show the record's lines: re-priced with the order (review 2026-11-12)
+    promotionsAfter: promotionsRecord ? editedPromotionsRecord(promotionsRecord, { coupon: coupon ? { afterIqd: coupon.afterIqd, lost: coupon.lost } : null, shipping: waiverAfter }) : null,
   };
 }
 
@@ -678,6 +718,9 @@ function statementsFor(db: Db, actor: Actor, planned: Planned, eventId: string, 
       );
     }
   }
+
+  // 4b. what the order's promotions record says now (a newer "promotions" event; readers take the latest)
+  if (planned.promotionsAfter) statements.push(promotionsEventStatement(db, { orderId: order.id, record: planned.promotionsAfter, actor, now }));
 
   // 5. the payment difference: the open payment now asks for the new total
   if (p.payment && planned.paymentStatus) {

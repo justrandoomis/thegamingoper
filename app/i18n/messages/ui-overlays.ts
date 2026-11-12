@@ -223,8 +223,8 @@ export default defineMessages({
       more: "زیاتر پیشان بدە",
       shown: "{shown} لە {total} پیشان دراوە",
       all: "هەموو ئەنجامەکان پیشان دران ({total}).",
-      shownProducts: { one: "{shown} لە {total} کاڵا پیشان دراوە", other: "{shown} لە {total} کاڵا پیشان دراوە" },
-      moreProducts: { one: "{n} کاڵای تر پیشان بدە", other: "{n} کاڵای تر پیشان بدە" },
+      shownProducts: { one: "{shown} لە {total} بەرهەم پیشان دراوە", other: "{shown} لە {total} بەرهەم پیشان دراوە" },
+      moreProducts: { one: "{n} بەرهەمی تر پیشان بدە", other: "{n} بەرهەمی تر پیشان بدە" },
       end: "هیچی تر نییە بۆ پیشاندان",
     },
     steps: {

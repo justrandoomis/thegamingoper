@@ -110,6 +110,9 @@ for (const [slug, p] of all) {
       if (!im.file || !existsSync(path.join(ROOT, im.file))) errs.push(`images[${i}].file not found: ${im.file}`);
       if (!/^https?:\/\//.test(im.sourceUrl || "")) errs.push(`images[${i}].sourceUrl missing`);
       if (!IMAGE_KINDS.includes(im.kind)) errs.push(`images[${i}].kind must be one of ${IMAGE_KINDS.join("|")}`);
+      // "view": "back" marks a picture of the object's back (ports, stand): never a tile or a lead picture
+      if (im.view !== undefined && im.view !== "back") errs.push(`images[${i}].view must be "back" when given`);
+      if (im.view === "back" && i === 0) errs.push(`images[${i}]: the first image cannot be a back view`);
       if (!im.credit) errs.push(`images[${i}].credit missing`);
       l10n(im.alt, `images[${i}].alt`, errs);
     });

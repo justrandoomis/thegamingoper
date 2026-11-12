@@ -4,8 +4,11 @@ import { cx } from "~/ui/cx";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import type { ContactChannel } from "../content-model";
 
-/** The channels the kit's <ContactCard> draws itself (WhatsApp, phone; the map link beside the address). */
-const CARD_KINDS: ReadonlySet<ContactChannel["kind"]> = new Set(["phone", "whatsapp"]);
+/**
+ * The channels the kit's <ContactCard> draws itself: WhatsApp, the phone, the e-mail address and the store's pages
+ * elsewhere (its `email` and `links`); the map link beside the address.
+ */
+const CARD_KINDS: ReadonlySet<ContactChannel["kind"]> = new Set(["phone", "whatsapp", "email", "instagram", "facebook", "tiktok", "telegram"]);
 
 const ICON: Record<ContactChannel["kind"], IconName> = {
   phone: "phone",
@@ -19,9 +22,9 @@ const ICON: Record<ContactChannel["kind"], IconName> = {
 };
 
 /**
- * The channels beside the contact card: e-mail and the store's pages elsewhere (Instagram, Facebook, TikTok, Telegram),
- * and the map link when there is no address for the card to hang it on. Only what the owner filled in. Whatever the
- * card draws is left out, so nothing shows twice.
+ * The channels beside the contact card: today only the map link when there is no address for the card to hang it on
+ * (the card draws e-mail and the store's pages elsewhere itself since the kit's `email` / `links`). Only what the owner
+ * filled in. Whatever the card draws is left out, so nothing shows twice.
  */
 export function otherChannels(channels: readonly ContactChannel[], hasAddress: boolean): ContactChannel[] {
   return channels.filter((channel) => !CARD_KINDS.has(channel.kind) && !(channel.kind === "map" && hasAddress));

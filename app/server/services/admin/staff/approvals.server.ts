@@ -12,7 +12,7 @@
  *                      which permission decides — WITHOUT the request's payload (amounts, costs and prices stay with
  *                      the module that shows them to who may see them)
  */
-import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, or, sql } from "drizzle-orm";
 import type { Locale } from "~/lib/locales";
 import { can, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
@@ -138,20 +138,27 @@ export type StoreApprovals = {
 export async function storeApprovals(db: Db, actor: Actor, locale: Locale): Promise<StoreApprovals> {
   assertAny(actor, ["staff.approval.read"]);
   void locale;
+  // An employee limited to a branch sees their branch's: requests asked by its staff, its staff's leave — and no
+  // payroll run (a run covers every branch). Follow-up 2026-11-12: this view was store-wide for everyone.
+  const limited = branchLimit(actor) !== null;
+  // the branch's: asked by its staff — or an advance FOR one of its staff, whoever asked
+  const pending = limited
+    ? and(eq(approvals.status, "pending"), or(reachSql(actor, approvals.requestedBy), and(eq(approvals.kind, ADVANCE_APPROVAL_KIND), reachSql(actor, approvals.entityId))))
+    : eq(approvals.status, "pending");
   const [grouped, rows, leave, runs] = await Promise.all([
     db
       .select({ kind: approvals.kind, count: sql<number>`count(*)`, oldestAt: sql<number>`min(${approvals.createdAt})` })
       .from(approvals)
-      .where(eq(approvals.status, "pending"))
+      .where(pending)
       .groupBy(approvals.kind),
     db
       .select({ id: approvals.id, kind: approvals.kind, entityType: approvals.entityType, entityId: approvals.entityId, requestedBy: approvals.requestedBy, requiredPermission: approvals.requiredPermission, createdAt: approvals.createdAt, expiresAt: approvals.expiresAt })
       .from(approvals)
-      .where(eq(approvals.status, "pending"))
+      .where(pending)
       .orderBy(asc(approvals.createdAt))
       .limit(60),
-    db.select({ n: sql<number>`count(*)` }).from(leaveRequests).where(eq(leaveRequests.status, "pending")).get(),
-    db.select({ n: sql<number>`count(*)` }).from(payrollRuns).where(inArray(payrollRuns.status, ["draft", "approved"])).get(),
+    db.select({ n: sql<number>`count(*)` }).from(leaveRequests).where(and(eq(leaveRequests.status, "pending"), reachSql(actor, leaveRequests.employeeId))).get(),
+    limited ? Promise.resolve({ n: 0 }) : db.select({ n: sql<number>`count(*)` }).from(payrollRuns).where(inArray(payrollRuns.status, ["draft", "approved"])).get(),
   ]);
   const people = await peopleById(db, rows.map((row) => row.requestedBy));
   return {

@@ -6,6 +6,7 @@ import { useFormat } from "~/i18n/react";
 import { getRole, saveRolePermissions } from "~/server/services/admin/security/roles.server";
 import { performAccessReview } from "~/server/services/admin/security/retention.server";
 import { ACCESS_REVIEW_INTERVAL_DAYS, ACCESS_REVIEW_OUTCOMES, DAY_MS } from "~/server/services/admin/security/types";
+import { can } from "~/server/actor";
 import { invalid } from "~/server/errors";
 import { Checkbox, Radio, FieldGroup } from "~/ui/Field";
 import { Key } from "~/ui/Key";
@@ -24,7 +25,10 @@ import { sec } from "./security.server";
  */
 export async function loader({ context, params }: Route.LoaderArgs) {
   const { db, actor, locale, now } = await sec.open(context);
-  return { detail: await sec.orRespond(() => getRole(db, actor, params.roleId, locale)), now };
+  // Links only to pages this viewer may open: a staff.manage-only viewer (module 15, let in by the gate's ALSO_OPENED_BY)
+  // holds neither audit.read nor security.session.read, and was linked to two 403 pages (follow-up 2026-11-12).
+  const links = { history: can(actor, "audit.read"), staff: can(actor, "security.session.read") };
+  return { detail: await sec.orRespond(() => getRole(db, actor, params.roleId, locale)), now, links };
 }
 
 export async function action({ request, context, params }: Route.ActionArgs) {
@@ -52,7 +56,7 @@ type Detail = Route.ComponentProps["loaderData"]["detail"];
 export default function RolePage({ loaderData }: Route.ComponentProps) {
   const t = useModuleT();
   const f = useFormat();
-  const { detail, now } = loaderData;
+  const { detail, now, links } = loaderData;
   const { role } = detail;
   const last = detail.reviews[0] ?? null;
   const due = !last || now - last.at > ACCESS_REVIEW_INTERVAL_DAYS * DAY_MS;
@@ -67,9 +71,11 @@ export default function RolePage({ loaderData }: Route.ComponentProps) {
         title={role.name}
         lead={role.description ?? undefined}
         actions={
-          <Key as={Link} to={`/admin/security/audit?type=role&entity=${encodeURIComponent(role.id)}`} size="sm" icon="clipboard-text">
-            {t("role.history")}
-          </Key>
+          links.history ? (
+            <Key as={Link} to={`/admin/security/audit?type=role&entity=${encodeURIComponent(role.id)}`} size="sm" icon="clipboard-text">
+              {t("role.history")}
+            </Key>
+          ) : undefined
         }
       />
       <div className="sec-split mt-5">
@@ -84,9 +90,13 @@ export default function RolePage({ loaderData }: Route.ComponentProps) {
               <ul role="list" className="grid gap-1">
                 {detail.members.map((member) => (
                   <li key={member.id} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line py-1">
-                    <Link to={`/admin/security/staff/${member.id}`} className="adm-link">
-                      {member.name}
-                    </Link>
+                    {links.staff ? (
+                      <Link to={`/admin/security/staff/${member.id}`} className="adm-link">
+                        {member.name}
+                      </Link>
+                    ) : (
+                      <span>{member.name}</span>
+                    )}
                     <span className="flex gap-1">
                       {member.status === "disabled" ? <Status tone="bad">{t("staff.status.disabled")}</Status> : null}
                       <Status tone={member.twoStep ? "ok" : "warn"}>{member.twoStep ? t("staff.twoStepOn") : t("staff.twoStepOff")}</Status>

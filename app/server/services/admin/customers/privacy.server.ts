@@ -27,8 +27,8 @@
  *     person's checkout answers as a guest; orders, payments, refunds, the wallet ledger, consents and the audit trail
  *     are kept — never deleted. Refused while the account has open orders, money in the wallet, a pending top-up or
  *     adjustment, an open return or repair (the plan lists each with what to do; each is checked again in the batch).
- *     The admin has no way to pay a wallet out (adjustments are credits), so an account holding money waits until it
- *     is spent — the commerce core request in docs/areas/admin-customers.md.
+ *     An account holding money is paid out first through the commerce core (wallet.server.ts requestWalletPayout →
+ *     decideWalletPayout: a reason and a second person); a payout still waiting counts as a pending adjustment.
  *   · unsubscribe — records withdrawals (marketing; the others asked for) and completes the request — on the account
  *     and on the answers the person gave at checkout as a guest (guest contacts of the account or of its number), or
  *     for a visitor's number on its guest contacts only.
@@ -65,6 +65,7 @@ import { CONSENT_POLICY_VERSION, consentStatement } from "~/server/services/acco
 import { cleanBlock } from "~/server/text.server";
 import { currentConsents } from "./profile.server";
 import { actorId, changeableCustomer, customerById, employeeNames, ID, num, phoneView } from "./shared.server";
+import { customerRules } from "./rules.server";
 import {
   CONSENT_KIND_LIST,
   OPEN_ORDER_STATUSES,
@@ -377,8 +378,11 @@ export type CreateRequestInput = z.input<typeof CreateRequestInput>;
  * request to it. One open request per customer and kind (privacy_open_exists). Idempotent on the key.
  */
 export async function createPrivacyRequest(db: Db, actor: Actor, raw: CreateRequestInput, now: number): Promise<{ ref: string; replayed: boolean }> {
-  assertCan(actor, "customers.privacy.manage");
+  if (actor.kind !== "customer") assertCan(actor, "customers.privacy.manage");
   const input = CreateRequestInput.parse(raw);
+  // a customer files a request for their OWN account in the storefront (2026-11-12): by their id, never a number; staff
+  // verify it before anything happens (verifyPrivacyRequest)
+  if (actor.kind === "customer" && (input.customerId !== actor.id || input.phone)) throw new AppError("forbidden", 403, { detail: "own_account_only" });
   const id = `prq_${(await sha256Hex(`privacy:${input.idempotencyKey}`)).slice(0, 26)}`;
   const earlier = await db.select({ ref: privacyRequests.ref }).from(privacyRequests).where(eq(privacyRequests.id, id)).get();
   if (earlier) return { ref: earlier.ref, replayed: true };
@@ -409,10 +413,12 @@ export async function createPrivacyRequest(db: Db, actor: Actor, raw: CreateRequ
     .get();
   if (open) throw new AppError("privacy_open_exists", 409, { detail: open.ref });
   const ref = publicRef("PR");
+  // the store's target in force (the setting customers.privacy_due_days — follow-up 2026-11-12; PRIVACY_DUE_DAYS its default)
+  const { privacyDueDays } = await customerRules(db);
   try {
     await runBatch(db, [
-      db.insert(privacyRequests).values({ id, ref, customerId, phoneE164: phoneE164 as string, kind: input.kind, status: "open", details: input.details ?? null, dueAt: now + PRIVACY_DUE_DAYS * DAY_MS, createdAt: now }),
-      auditStatement(db, { actor, action: "customers.privacy.open", entityType: "privacy_request", entityId: id, after: { ref, kind: input.kind, customerId, dueDays: PRIVACY_DUE_DAYS }, reason: input.details ?? null, at: now }),
+      db.insert(privacyRequests).values({ id, ref, customerId, phoneE164: phoneE164 as string, kind: input.kind, status: "open", details: input.details ?? null, dueAt: now + privacyDueDays * DAY_MS, createdAt: now }),
+      auditStatement(db, { actor, action: "customers.privacy.open", entityType: "privacy_request", entityId: id, after: { ref, kind: input.kind, customerId, dueDays: privacyDueDays }, reason: input.details ?? null, at: now }),
     ]);
   } catch (error) {
     if (isUniqueViolation(error)) {
@@ -682,6 +688,11 @@ async function personOf(db: Db, customer: { id: string; phoneE164: string }): Pr
 const idsOf = (values: readonly string[]) => inList(values);
 /** Rows of the person (the account and its merged accounts) in a table with a `customer_id` column. */
 const ofPerson = (person: Person) => sql`customer_id IN (${idsOf(person.ids)})`;
+/** The person's sign-in log: the events of its accounts, and what was typed with its numbers (auth_events.identifier). */
+const personSignIns = (person: Person) =>
+  person.phones.length ? sql`((subject_kind = 'customer' AND subject_id IN (${idsOf(person.ids)})) OR identifier IN (${idsOf(person.phones)}))` : sql`(subject_kind = 'customer' AND subject_id IN (${idsOf(person.ids)}))`;
+/** The person's stored assistant conversations (their ids, for the statements that let go of them first). */
+const personAssistant = (person: Person) => sql`(SELECT id FROM assistant_sessions WHERE ${ofPerson(person)})`;
 /** The person's guest contacts (checkouts without an account): claimed by one of its accounts, or on one of its numbers. */
 const personGuests = (person: Person) => (person.phones.length ? sql`(${ofPerson(person)} OR phone_e164 IN (${idsOf(person.phones)}))` : ofPerson(person));
 
@@ -690,7 +701,7 @@ async function planFor(db: Db, customerId: string): Promise<ErasurePlan> {
   const customer = await customerById(db, customerId);
   const person = await personOf(db, customer);
   const one = async (query: SQL) => num((await db.all<{ n: number }>(query))[0]?.n);
-  const [addressN, deviceN, wishN, recentN, noticeN, sessionN, segmentN, cartN, guestN, browsingN, orderN, paymentN, walletN, walletSum, consentN, auditN, returnN, warrantyN, ticketN, tradeN, messageN, openOrders, topups, adjustments, openReturns, openRepairs] = await Promise.all([
+  const [addressN, deviceN, wishN, recentN, noticeN, sessionN, segmentN, cartN, guestN, browsingN, orderN, paymentN, walletN, walletSum, consentN, auditN, returnN, warrantyN, ticketN, tradeN, messageN, openOrders, topups, adjustments, openReturns, openRepairs, assistantN, signInN] = await Promise.all([
     one(sql`SELECT count(*) AS n FROM addresses WHERE ${ofPerson(person)}`),
     one(sql`SELECT count(*) AS n FROM saved_devices WHERE ${ofPerson(person)}`),
     one(sql`SELECT count(*) AS n FROM wishlist_items WHERE ${ofPerson(person)}`),
@@ -714,9 +725,11 @@ async function planFor(db: Db, customerId: string): Promise<ErasurePlan> {
     one(sql`SELECT count(*) AS n FROM outbox WHERE customer_id = ${customerId}`),
     one(sql`SELECT count(*) AS n FROM orders WHERE customer_id = ${customerId} AND status IN (${inList(OPEN_ORDER_STATUSES)})`),
     one(sql`SELECT count(*) AS n FROM wallet_topups WHERE customer_id = ${customerId} AND status = 'pending_verification'`),
-    one(sql`SELECT count(*) AS n FROM approvals WHERE kind = 'wallet_adjustment' AND entity_id = ${customerId} AND status = 'pending'`),
+    one(sql`SELECT count(*) AS n FROM approvals WHERE kind IN ('wallet_adjustment', 'wallet_payout') AND entity_id = ${customerId} AND status = 'pending'`),
     one(sql`SELECT count(*) AS n FROM returns WHERE ${customerReturns(customerId)} AND status IN (${inList(RETURN_OPEN)})`),
     one(sql`SELECT count(*) AS n FROM repair_tickets WHERE customer_id = ${customerId} AND status NOT IN (${inList(REPAIR_DONE)})`),
+    one(sql`SELECT count(*) AS n FROM assistant_sessions WHERE ${ofPerson(person)}`),
+    one(sql`SELECT count(*) AS n FROM auth_events WHERE ${personSignIns(person)}`),
   ]);
   const blockers: ErasureBlocker[] = [];
   if (customer.status === "merged") blockers.push({ code: "account_merged", count: 1 });
@@ -729,7 +742,7 @@ async function planFor(db: Db, customerId: string): Promise<ErasurePlan> {
   if (openRepairs > 0) blockers.push({ code: "open_repairs", count: openRepairs });
   return {
     customerId,
-    erased: { profile: 1, mergedAccounts: person.merged.length, addresses: addressN, savedDevices: deviceN, wishlist: wishN, recentlyViewed: recentN, browsing: browsingN, notifications: noticeN, sessions: sessionN, segments: segmentN, carts: cartN, guestContacts: guestN },
+    erased: { profile: 1, mergedAccounts: person.merged.length, addresses: addressN, savedDevices: deviceN, wishlist: wishN, recentlyViewed: recentN, browsing: browsingN, notifications: noticeN, sessions: sessionN, segments: segmentN, carts: cartN, guestContacts: guestN, assistant: assistantN, signIns: signInN },
     kept: { orders: orderN, payments: paymentN, wallet: walletN, consents: consentN, audit: auditN, returns: returnN, warranties: warrantyN, tickets: ticketN, tradeIns: tradeN, messages: messageN, request: 1 },
     blockers,
   };
@@ -817,7 +830,7 @@ export async function executeErasure(db: Db, actor: Actor, raw: EraseInput, now:
     expectThat(db, sql`(SELECT coalesce(sum(amount_iqd), 0) FROM wallet_ledger WHERE customer_id = ${customerId}) = 0`, { code: "ERASURE_BLOCKED", detail: "wallet_balance" }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM orders WHERE customer_id = ${customerId} AND status IN (${inList(OPEN_ORDER_STATUSES)}))`, { code: "ERASURE_BLOCKED", detail: "open_orders" }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM wallet_topups WHERE customer_id = ${customerId} AND status = 'pending_verification')`, { code: "ERASURE_BLOCKED", detail: "pending_topups" }),
-    expectThat(db, sql`NOT EXISTS (SELECT 1 FROM approvals WHERE kind = 'wallet_adjustment' AND entity_id = ${customerId} AND status = 'pending')`, { code: "ERASURE_BLOCKED", detail: "pending_adjustments" }),
+    expectThat(db, sql`NOT EXISTS (SELECT 1 FROM approvals WHERE kind IN ('wallet_adjustment', 'wallet_payout') AND entity_id = ${customerId} AND status = 'pending')`, { code: "ERASURE_BLOCKED", detail: "pending_adjustments" }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM returns WHERE ${customerReturns(customerId)} AND status IN (${inList(RETURN_OPEN)}))`, { code: "ERASURE_BLOCKED", detail: "open_returns" }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM repair_tickets WHERE customer_id = ${customerId} AND status NOT IN (${inList(REPAIR_DONE)}))`, { code: "ERASURE_BLOCKED", detail: "open_repairs" }),
     db
@@ -840,6 +853,13 @@ export async function executeErasure(db: Db, actor: Actor, raw: EraseInput, now:
     db.delete(customerSegmentMembers).where(inArray(customerSegmentMembers.customerId, person.ids)),
     db.delete(recommendationEvents).where(inArray(recommendationEvents.customerId, person.ids)),
     db.update(carts).set({ customerId: null }).where(inArray(carts.customerId, person.ids)),
+    // stored assistant conversations: a ticket keeps its own summary of one, and lets go of it first (as the nightly purge)
+    batchSql(db, sql`UPDATE support_tickets SET assistant_session_id = NULL WHERE assistant_session_id IN ${personAssistant(person)}`),
+    batchSql(db, sql`UPDATE repair_tickets SET assistant_session_id = NULL WHERE assistant_session_id IN ${personAssistant(person)}`),
+    batchSql(db, sql`DELETE FROM assistant_messages WHERE session_id IN ${personAssistant(person)}`),
+    batchSql(db, sql`DELETE FROM assistant_sessions WHERE ${ofPerson(person)}`),
+    // the sign-in log of the person (its accounts, its numbers)
+    batchSql(db, sql`DELETE FROM auth_events WHERE ${personSignIns(person)}`),
     batchSql(db, sql`UPDATE guest_contacts SET name = NULL WHERE ${personGuests(person)}`),
     ...answers.map((answer) => consentStatement(db, { subjectType: answer.subjectType, subjectId: answer.subjectId, kind: answer.kind, granted: false, source: "erasure", ip: null, now })),
     db

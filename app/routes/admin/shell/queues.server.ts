@@ -74,6 +74,33 @@
  *   settings_changes    settings    settings.change.approve      settings change requests this employee may decide:
  *                                   (+ settings.read)            never their own, not expired, only keys they may change
  *                                                                (countDecidableSettingChanges)
+ *   promotion_approvals promotions  every permission of a kind   coupon / rule terms past the limits, flash sales, large
+ *                                   (DECIDE_PERMISSIONS)         gift cards and point adjustments waiting for a second
+ *                                                                person — never the employee's own (countDecidable)
+ *   support_escalated   support     support.ticket.read          open tickets escalated to this employee (supportQueueCounts
+ *                                                                .escalatedToMe — only they or a cover settle them)
+ *   support_unassigned  support     support.ticket.assign        open tickets nobody holds (supportQueueCounts.unassigned)
+ *                                   (+ support.ticket.read)
+ *   support_late        support     support.ticket.reply         the employee's own tickets past their due time
+ *                                   (+ support.ticket.read)      (supportQueueCounts.mineLate) — each the inbox view
+ *                                                                QUEUE_LINKS names
+ *   staff_leave         staff       staff.leave.approve          leave requests to decide: never their own, nor one they
+ *                                                                recorded, within their branch (staffDecisions)
+ *   staff_payroll       staff       staff.payroll.approve        payroll runs to approve (never one they took part in, had
+ *                                                                a salary changed in, or that pays them) or to pay, and
+ *                                                                only without a branch limit (staffDecisions)
+ *   staff_advances      staff       staff.payroll.approve        salary advances waiting for a decision: never asked by or
+ *                                                                for the employee, within their branch (the module home's
+ *                                                                rule, advancesToDecide — counted with the staff module's
+ *                                                                other queues, so a failure hides all three of them and
+ *                                                                nothing else)
+ *   ops_findings        ops         ops.consistency.resolve      open critical consistency findings nobody has, within the
+ *                                                                employee's branch (opsQueueCounts.criticalFindings)
+ *   ops_jobs            ops         ops.job.run                  scheduled jobs failing, stuck or late (…failingJobs)
+ *   ops_incidents       ops         ops.incident.manage          open incidents past their target date (…overdueIncidents)
+ *   cms_policies        cms         cms.page.publish             the content module's policies (shipping, payment,
+ *                                                                privacy, terms) not approved yet or with a draft waiting —
+ *                                                                never one whose draft the employee saved last
  * plus notices about the employee's own account (two-step verification off, few recovery codes left).
  *
  * Not in the bell: the security module's flagged refunds (unreviewedCount) — that count includes refunds the reviewer
@@ -85,13 +112,23 @@
  * the shell and the module's own screens never count differently. A module whose count fails is logged and shows no
  * queue; the other queues and the page still load.
  */
-import { and, count, eq, isNull, ne, or, sql, type SQL } from "drizzle-orm";
+import { and, count, eq, inArray, isNull, ne, or, sql, type SQL } from "drizzle-orm";
 import type { EmployeeSession } from "~/server/auth/admin.server";
 import { can, canAny, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db.server";
-import { cycleCounts, employees, payments, refunds, stockTransfers, tradeIns } from "~/server/db/schema";
+import { approvals, cycleCounts, employees, pages, payments, refunds, stockTransfers, tradeIns } from "~/server/db/schema";
 import type { Permission } from "~/server/permissions";
+import { listPolicies } from "~/server/services/content.server";
+import { POLICIES_HERE } from "~/server/services/admin/cms/rules";
 import { privacyCounts } from "~/server/services/admin/customers/privacy.server";
+import { opsQueueCounts } from "~/server/services/admin/ops/overview.server";
+import { countDecidable as countDecidablePromotions } from "~/server/services/admin/promotions/approvals.server";
+import { DECIDE_PERMISSIONS } from "~/server/services/admin/promotions/shared.server";
+import { APPROVAL_KINDS as PROMOTION_APPROVAL_KINDS } from "~/server/services/admin/promotions/types";
+import { staffDecisions } from "~/server/services/admin/staff/approvals.server";
+import { ADVANCE_APPROVAL_KIND } from "~/server/services/admin/staff/types";
+import { supportQueueCounts } from "~/server/services/admin/support/inbox.server";
+import { QUEUE_LINKS as SUPPORT_QUEUE_LINKS } from "~/server/services/admin/support/types";
 import { deviceQueueCounts, viewWhere as tradeInViewWhere } from "~/server/services/admin/devices/tradeins.server";
 import { countDecidableExpenses } from "~/server/services/admin/finance/expense-views.server";
 import { baghdadDay, dayStart, DAY_MS, MAX_RANGE_DAYS, rangeSearch } from "~/server/services/admin/finance/types";
@@ -133,9 +170,37 @@ export type ShellQueueId =
   | "expenses"
   | "signin_alerts"
   | "access_reviews"
-  | "settings_changes";
+  | "settings_changes"
+  | "promotion_approvals"
+  | "support_escalated"
+  | "support_unassigned"
+  | "support_late"
+  | "staff_leave"
+  | "staff_payroll"
+  | "staff_advances"
+  | "ops_findings"
+  | "ops_jobs"
+  | "ops_incidents"
+  | "cms_policies";
 /** The module a queue belongs to (its navigation row carries the bead). */
-export type ShellQueueModule = "orders" | "pos" | "customers" | "shipping" | "returns" | "pricing" | "inventory" | "devices" | "purchasing" | "finance" | "security" | "settings";
+export type ShellQueueModule =
+  | "orders"
+  | "pos"
+  | "customers"
+  | "promotions"
+  | "shipping"
+  | "returns"
+  | "pricing"
+  | "inventory"
+  | "devices"
+  | "support"
+  | "purchasing"
+  | "finance"
+  | "staff"
+  | "cms"
+  | "security"
+  | "settings"
+  | "ops";
 export type ShellQueue = { id: ShellQueueId; module: ShellQueueModule; count: number; href: string };
 export type ShellNotice = { id: "mfa_off" | "recovery_low"; href: string; count?: number };
 export type ShellWaiting = { queues: ShellQueue[]; notices: ShellNotice[]; total: number };
@@ -167,6 +232,18 @@ export const QUEUE_HREF: Record<ShellQueueId, string> = {
   signin_alerts: "/admin/security/sign-ins?window=24h",
   access_reviews: "/admin/security/retention#reviews",
   settings_changes: "/admin/settings/changes",
+  promotion_approvals: "/admin/promotions/approvals",
+  support_escalated: SUPPORT_QUEUE_LINKS.escalatedToMe,
+  support_unassigned: SUPPORT_QUEUE_LINKS.unassigned,
+  support_late: SUPPORT_QUEUE_LINKS.mineLate,
+  // the leave list opens on the pending requests (parseLeaveFilters' default view)
+  staff_leave: "/admin/staff/leave",
+  staff_payroll: "/admin/staff/payroll",
+  staff_advances: "/admin/staff/payroll/advances?status=pending",
+  ops_findings: "/admin/ops/consistency?severity=critical&assignee=none",
+  ops_jobs: "/admin/ops/jobs?view=attention",
+  ops_incidents: "/admin/ops/incidents?view=overdue",
+  cms_policies: "/admin/cms/pages",
 };
 
 /**
@@ -232,6 +309,48 @@ export function payoutsWhere(actor: Actor, employeeId: string, now: number): SQL
 }
 
 /**
+ * The content module's policies waiting for a publisher (cms.page.publish): not approved yet — the store still serves
+ * the code's draft, marked as awaiting the owner — or approved with a new draft waiting; never one whose waiting draft
+ * this employee saved last (nobody is asked to approve their own text). The same "approved" as the module's own home
+ * card (content.server listPolicies, POLICIES_HERE).
+ */
+export async function policiesAwaiting(db: Db, employeeId: string, now: number): Promise<number> {
+  const [summaries, rows] = await Promise.all([
+    listPolicies(db, "ar", { now }),
+    db
+      .select({ slug: pages.slug, drafted: sql<number>`${pages.draft} IS NOT NULL`, updatedBy: pages.updatedBy })
+      .from(pages)
+      .where(and(eq(pages.kind, "policy"), eq(pages.isDemo, false), inArray(pages.slug, [...POLICIES_HERE]))),
+  ]);
+  const bySlug = new Map(rows.map((row) => [row.slug, row]));
+  const approved = new Set(summaries.filter((summary) => summary.approved).map((summary) => summary.slug));
+  return POLICIES_HERE.filter((slug) => {
+    const row = bySlug.get(slug);
+    const drafted = Number(row?.drafted ?? 0) === 1;
+    if (drafted && row?.updatedBy === employeeId) return false;
+    return !approved.has(slug) || drafted;
+  }).length;
+}
+
+/** Whether the employee may decide some kind of the promotions module's requests (countDecidable's own rule). */
+const decidesPromotions = (actor: Actor) => PROMOTION_APPROVAL_KINDS.some((kind) => DECIDE_PERMISSIONS[kind].every((permission) => can(actor, permission)));
+
+/**
+ * Salary advances waiting for this employee's decision (decideAdvance: never the requester, never the one it pays),
+ * within the branch of a limited approver — the staff module home's own rule (staffOverview.advancesToDecide) and the
+ * rows the advances list marks `canDecide`. Counted with the staff module's other queues (one module, one failure).
+ */
+export async function advancesToDecide(db: Db, employee: { id: string; branchId: string | null }): Promise<number> {
+  const reach = employee.branchId ? sql`AND ${approvals.entityId} IN (SELECT reach.id FROM employees AS reach WHERE reach.branch_id = ${employee.branchId})` : sql``;
+  const row = await db
+    .select({ n: count() })
+    .from(approvals)
+    .where(sql`${approvals.kind} = ${ADVANCE_APPROVAL_KIND} AND ${approvals.status} = 'pending' AND ${approvals.requestedBy} <> ${employee.id} AND coalesce(${approvals.entityId}, '') <> ${employee.id} ${reach}`)
+    .get();
+  return Number(row?.n ?? 0);
+}
+
+/**
  * `now` decides the time-bound rules (an expense approved alone in the last 24 hours, a receipt posting's lease, an
  * offer or a settings request past its date, the alerts' 24 hours, a review that is due): the request's clock
  * (ctx.now — shell.server.ts passes it), the real clock only when no request is behind the call.
@@ -269,6 +388,23 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
   const wantsAccessReviews = asks("security.access_review.perform", "security");
   // The requests are listed on /admin/settings/changes, which needs settings.read.
   const wantsSettingChanges = asks("settings.change.approve", "settings") && can(actor, "settings.read");
+  const wantsPromotions = canSeeModule(actor, "promotions") && decidesPromotions(actor);
+  // The inbox lists tickets only with support.ticket.read: none of the support queues without it.
+  const readsTickets = can(actor, "support.ticket.read");
+  const wantsEscalated = asks("support.ticket.read", "support");
+  const wantsUnassigned = asks("support.ticket.assign", "support") && readsTickets;
+  const wantsLate = asks("support.ticket.reply", "support") && readsTickets;
+  const wantsSupport = wantsEscalated || wantsUnassigned || wantsLate;
+  const wantsLeave = asks("staff.leave.approve", "staff");
+  // a payroll run covers every branch: never a decision for someone limited to one (staffDecisions' rule)
+  const wantsPayroll = asks("staff.payroll.approve", "staff") && !employee.branchId;
+  const wantsAdvances = asks("staff.payroll.approve", "staff");
+  const wantsOpsFindings = asks("ops.consistency.resolve", "ops");
+  const wantsOpsJobs = asks("ops.job.run", "ops");
+  const wantsOpsIncidents = asks("ops.incident.manage", "ops");
+  const wantsOps = wantsOpsFindings || wantsOpsJobs || wantsOpsIncidents;
+  const wantsPolicies = asks("cms.page.publish", "cms");
+  const wantsStaff = wantsLeave || wantsPayroll || wantsAdvances;
 
   // The two-person rule of counts (app/server/services/admin/inventory/counts.server.ts, tookPart): an employee who
   // started a count, or recorded any of its lines — now, or before a colleague re-counted them (the audit trail
@@ -279,7 +415,7 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
                AND a.action = 'inventory.count.record' AND a.actor_kind = 'employee' AND a.actor_id = ${employee.id}))`;
 
   // Everything at once: the batch and each module's own counts (a module's functions run side by side too).
-  const [[proofRows, refundRows, countRows, transferRows, accountRows], prices, shipping, rma, purchasing, finance, shifts, privacy, devices, security, settingChanges] = await Promise.all([
+  const [[proofRows, refundRows, countRows, transferRows, accountRows], prices, shipping, rma, purchasing, finance, shifts, privacy, devices, security, settingChanges, promotions, support, staff, ops, policies] = await Promise.all([
     db.batch([
       db
         .select({ n: count() })
@@ -341,7 +477,19 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
         })
       : null,
     wantsSettingChanges ? moduleCounts("settings", () => countDecidableSettingChanges(db, actor, now)) : null,
+    wantsPromotions ? moduleCounts("promotions", () => countDecidablePromotions(db, actor)) : null,
+    wantsSupport ? moduleCounts("support", () => supportQueueCounts(db, actor, now)) : null,
+    // the module's decisions and its advances together: one module, one failure (moduleCounts)
+    wantsStaff
+      ? moduleCounts("staff", async () => {
+          const [decisions, advances] = await Promise.all([wantsLeave || wantsPayroll ? staffDecisions(db, actor) : [], wantsAdvances ? advancesToDecide(db, employee) : null]);
+          return { decisions, advances };
+        })
+      : null,
+    wantsOps ? moduleCounts("ops", () => opsQueueCounts(db, actor, now)) : null,
+    wantsPolicies ? moduleCounts("cms", () => policiesAwaiting(db, employee.id, now)) : null,
   ]);
+  const decisions = staff?.decisions ?? [];
 
   // In navigation order (sales, stock, money, team, system). A module's count is null where its own rule says the
   // employee cannot act.
@@ -350,6 +498,7 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
     ["refunds", "orders", wantsRefunds, refundRows[0]?.n],
     ["pos_shifts", "pos", wantsShifts, shifts],
     ["privacy_requests", "customers", wantsPrivacy, privacy?.open],
+    ["promotion_approvals", "promotions", wantsPromotions, promotions],
     ["failed_deliveries", "shipping", wantsFailedDeliveries, shipping?.failed],
     ["cod_settlements", "shipping", wantsSettlements, shipping?.settlements],
     ["rmas", "returns", wantsRmas, rma?.decide],
@@ -362,15 +511,25 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
     ["tradein_payouts", "devices", wantsTradeinPayouts, devices?.toPay],
     ["used_inspections", "devices", wantsUsedInspections, devices?.unitsToInspect],
     ["used_listings", "devices", wantsUsedListings, devices?.toList],
+    ["support_escalated", "support", wantsEscalated, support?.escalatedToMe],
+    ["support_unassigned", "support", wantsUnassigned, support?.unassigned],
+    ["support_late", "support", wantsLate, support?.mineLate],
     ["po_approvals", "purchasing", wantsPoApprovals, purchasing?.approvals],
     ["stuck_receipts", "purchasing", wantsStuckReceipts, purchasing?.stuck],
     ["invoice_mismatches", "purchasing", wantsMismatches, purchasing?.mismatch],
     ["topups", "finance", wantsWallet, finance?.wallet?.topups],
     ["adjustments", "finance", wantsWallet, finance?.wallet?.adjustments],
     ["expenses", "finance", wantsExpenses, finance?.expenses],
+    ["staff_leave", "staff", wantsLeave && staff !== null, decisions.filter((item) => item.kind === "leave").length],
+    ["staff_payroll", "staff", wantsPayroll && staff !== null, decisions.filter((item) => item.kind === "payroll_run").length],
+    ["staff_advances", "staff", wantsAdvances && staff !== null, staff?.advances],
+    ["cms_policies", "cms", wantsPolicies, policies],
     ["signin_alerts", "security", wantsAlerts, security?.alerts],
     ["access_reviews", "security", wantsAccessReviews, security?.reviews],
     ["settings_changes", "settings", wantsSettingChanges, settingChanges],
+    ["ops_findings", "ops", wantsOpsFindings, ops?.criticalFindings],
+    ["ops_jobs", "ops", wantsOpsJobs, ops?.failingJobs],
+    ["ops_incidents", "ops", wantsOpsIncidents, ops?.overdueIncidents],
   ];
   const queues: ShellQueue[] = [];
   for (const [id, module, wanted, raw] of counted) {

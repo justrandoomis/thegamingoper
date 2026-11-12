@@ -130,6 +130,12 @@ export type BundleComponent = {
   /** The component variant's title when the product has several. */
   variantTitle: string | null;
   qty: number;
+  /**
+   * The component version's own selling price today, integer IQD (one unit; multiply by `qty`). What buying the
+   * parts separately would cost is the sum of these — a saving line only when that sum is above the set's price
+   * (and, while prices are demo values, under the demo marking: design v2 spec §6.7).
+   */
+  priceIqd: number;
   image: ImageRef;
   /** The component's product page is live (published) — link to it only then. */
   linkable: boolean;
@@ -151,6 +157,13 @@ export type ProductDetail = {
   id: string;
   slug: string;
   kind: ProductKind;
+  /**
+   * What the product is, in the shopper's language — the noun of the cards' platform line without the device (the
+   * page names the platform beside it): «جهاز» for a console, «جهاز محمول» for a handheld PC, «نظارة واقع افتراضي»
+   * for PS VR2, «لعبة», «يد تحكم», «سماعة»… The research's kind wins where it says more than `kind` (handheld PCs are
+   * stored as consoles, VR as accessories). card-facts.ts kindLabelOf. Always set by the read layer.
+   */
+  kindLabel?: string;
   name: string;
   /** One line under the name. */
   short: string | null;

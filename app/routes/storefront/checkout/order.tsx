@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { data, useRouteLoaderData, useSearchParams } from "react-router";
+import { data, useRouteLoaderData, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/order";
 import { Icon } from "~/art/Icon";
@@ -17,7 +17,7 @@ import { fillNodes } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { clearStoredCheckout, orderStage, readStoredCheckout } from "./checkout-form";
-import { findOrderForShopper, NO_STORE, orderShelves } from "./checkout.server";
+import { codesNeedSignIn, findOrderForShopper, NO_STORE, orderShelves, revealCodeForShopper, storedProofPath } from "./checkout.server";
 import { CopyKey } from "./components/CopyKey";
 import { OrderDetails, When } from "./components/OrderDetails";
 import { RecommendationsSlot } from "./components/RecommendationsSlot";
@@ -43,14 +43,43 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const customerId = session?.customer.id ?? null;
   const found = await findOrderForShopper(db, { ref: params.ref, token, customerId, locale: ctx.locale, now: ctx.now });
   const i18n = messagesFor(ctx.locale, "checkout", "errors");
-  if (!found) return data({ found: null, ref: normalizeOrderRef(params.ref), signedIn: session !== null, recommendations: null, i18n }, { status: 404, headers: NO_STORE });
+  if (!found) return data({ found: null, ref: normalizeOrderRef(params.ref), signedIn: session !== null, recommendations: null, proofUrl: null, codesSignIn: false, i18n }, { status: 404, headers: NO_STORE });
   // what completes what was bought (devices area, "post_purchase") — only once the shopper may see the order; streamed
   const recommendations = orderShelves(db, ctx, customerId, found.order.ref);
-  return data({ found, ref: found.order.ref, signedIn: session !== null, recommendations, i18n }, { headers: NO_STORE });
+  // the transfer photo the shopper sent, again after a reload (a private path the file route authorizes every time)
+  const proofUrl = await storedProofPath(db, found.order, found.access === "token" ? token : null);
+  // an account's order opened with its link: its codes open for its owner signed in, never for the link (the core's rule)
+  const codesSignIn = await codesNeedSignIn(db, found);
+  return data({ found, ref: found.order.ref, signedIn: session !== null, recommendations, proofUrl, codesSignIn, i18n }, { headers: NO_STORE });
+}
+
+/**
+ * «اعرض الرمز» (a paid order's digital code): `intent=reveal`, `codeId`, and the signed-in owner's session — or, for a
+ * guest's order, the confirmation token `t` (an account's order opened with its link shows «سجّل الدخول» instead:
+ * `codesSignIn`). The commerce core decides (whose order, paid, not refunded, this order's code; audited; limited).
+ */
+export async function action({ request, params, context }: Route.ActionArgs) {
+  const ctx = getCtx(context);
+  const db = getDb();
+  const form = await request.formData();
+  const field = (name: string) => {
+    const value = form.get(name);
+    return typeof value === "string" ? value : "";
+  };
+  if (field("intent") !== "reveal") return data({ ok: false as const, code: "invalid" }, { status: 400, headers: NO_STORE });
+  const session = await getCustomer(ctx, db);
+  const result = await revealCodeForShopper(db, ctx, { ref: params.ref ?? "", token: field("t") || null, customerId: session?.customer.id ?? null, codeId: field("codeId") });
+  return data(result, { status: result.ok ? 200 : result.status, headers: NO_STORE });
 }
 
 export function headers() {
   return NO_STORE;
+}
+
+/** A code shown on request changes nothing the page shows but that code: no reload of the order for it. */
+export function shouldRevalidate({ formData, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (formData?.get("intent") === "reveal") return false;
+  return defaultShouldRevalidate;
 }
 
 export const handle = { nav: "push", order: 10, group: "checkout" } satisfies MotionHandle;
@@ -144,7 +173,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           ) : null}
         </header>
 
-        <OrderDetails order={order} mode="owner" access={{ ref: order.ref, token }} headingLevel={2} />
+        <OrderDetails order={order} mode="owner" access={{ ref: order.ref, token }} proofUrl={loaderData.proofUrl} codesSignIn={loaderData.codesSignIn} headingLevel={2} />
       </div>
 
       <aside className="co-aside" aria-label={t("order.help.heading")}>

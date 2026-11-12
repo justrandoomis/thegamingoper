@@ -6,14 +6,14 @@ import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { adjustPoints, customerPoints, decideAdjustment, withdrawAdjustment } from "~/server/services/admin/promotions/loyalty.server";
 import { SECTION_READ } from "~/server/services/admin/promotions/shared.server";
-import { LOYALTY, LOYALTY_KIND_TONE, parseWhole, type LedgerRow } from "~/server/services/admin/promotions/types";
+import { LOYALTY_KIND_TONE, parseWhole, type LedgerRow } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { ConfirmAction, Failure, Kpis, newKey, Notice, Num, PhoneText, Section, ToneStatus, useChangeText, useIntent, usePromotionsT, When } from "./ui";
+import { ConfirmAction, Failure, Kpis, newKey, Notice, Num, PhoneText, Section, ToneStatus, useChangeText, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/points/:customerId — 08.04 for one customer: the balance (and what it is worth), points expiring in
@@ -50,6 +50,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, "points.title");
 
 export default function CustomerPointsPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const f = useFormat();
   const change = useChangeText();
@@ -131,11 +132,12 @@ export default function CustomerPointsPage({ loaderData }: Route.ComponentProps)
 }
 
 /**
- * A manual adjustment moves value (a point is worth LOYALTY.pointValueIqd): the form asks first — the balance before and
+ * A manual adjustment moves value (a point is worth program.loyalty.pointValueIqd): the form asks first — the balance before and
  * after, what the points are worth — then sends the form with its idempotency key. Input the server would refuse is
  * sent without asking, so its field errors appear in place.
  */
 function AdjustForm({ balance }: { balance: number }) {
+  const program = useProgram();
   const t = usePromotionsT();
   const f = useFormat();
   const change = useChangeText();
@@ -150,7 +152,7 @@ function AdjustForm({ balance }: { balance: number }) {
     },
   );
   return (
-    <Section id="prm-adjust" title={t("points.adjust.title")} lead={t("points.adjust.lead", { n: f.number(LOYALTY.adjustSecondPersonPoints), day: f.number(LOYALTY.adjustSoloDayPoints) })}>
+    <Section id="prm-adjust" title={t("points.adjust.title")} lead={t("points.adjust.lead", { n: f.number(program.loyalty.adjustSecondPersonPoints), day: f.number(program.loyalty.adjustSoloDayPoints) })}>
       <ConfirmDialog
         open={ask !== null}
         onClose={() => setAsk(null)}
@@ -161,7 +163,7 @@ function AdjustForm({ balance }: { balance: number }) {
           ask
             ? [
                 { label: t("points.k.balance"), value: change(f.number(balance), f.number(balance + ask.points)), negative: ask.points < 0 },
-                { label: t("points.adjust.worth"), value: f.iqd(ask.points * LOYALTY.pointValueIqd), negative: ask.points < 0 },
+                { label: t("points.adjust.worth"), value: f.iqd(ask.points * program.loyalty.pointValueIqd), negative: ask.points < 0 },
               ]
             : undefined
         }
@@ -189,7 +191,7 @@ function AdjustForm({ balance }: { balance: number }) {
         <input type="hidden" name="idempotencyKey" value={formKey} />
         <TextField name="points" label={t("points.adjust.points")} hint={t("points.adjust.pointsHint", { balance: f.number(balance) })} inputMode="numeric" required error={errors.points} />
         <TextArea name="reason" label={t("common.reason")} hint={t("common.reasonHint")} required rows={2} maxLength={500} error={errors.reason} />
-        <p className="type-caption text-ink-2">{t("points.adjust.value", { amount: f.iqd(LOYALTY.pointValueIqd) })}</p>
+        <p className="type-caption text-ink-2">{t("points.adjust.value", { amount: f.iqd(program.loyalty.pointValueIqd) })}</p>
         <Failure message={message} />
         <div>
           <Key type="submit" loading={pending} icon="coins">

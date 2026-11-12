@@ -114,3 +114,11 @@ answered 404 for the whole page.
   checked only at publish and save (the editor shows the link's state).
 - Banners take catalogue photos only (no upload); no A/B tests or campaign grouping (no campaign table in `cms`).
 - Suggested synonyms are spelling-based (no AI model configured). Sorani strings need a native reader.
+
+## Module follow-up 2026-11-12
+
+Hero pins overlap only with pins of the same kind (demo with demo, real with real — the store never shows a demo pin). `getActiveBanners` re-checks every catalogue link as it serves it — product, category, platform, device page, and a category link's `?platform=` filter.
+
+Tests (each failed before its change): `tests/admin-cms-followup.test.ts`.
+
+Review of the follow-up (2026-11-12): `checkStoreLink` applies the same platform-filter rule when a banner is saved live or published (and for redirects and tracked links): a category link whose `?platform=` names no platform, or one switched off, is `missing` / `not_live` (`link_missing`) — before, such a banner was published and then never served. Test: `tests/admin-cms-followup.test.ts` ("never published with a platform filter the store would drop").

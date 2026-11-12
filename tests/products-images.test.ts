@@ -54,7 +54,8 @@ const share = z
 const manifestSchema = z
   .object({
     key: z.string().regex(KEY),
-    view: z.literal("hero"),
+    // "back": the catalogue entry marks a picture of the object's back ("view": "back")
+    view: z.enum(["hero", "back"]),
     width: z.number().int().positive(),
     height: z.number().int().positive(),
     aspect: z.number().positive(),
@@ -78,7 +79,7 @@ const sha8 = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex")
 /** Every public file a manifest names. */
 const filesOf = (manifest: PhotoManifest) => [...manifest.variants.avif, ...manifest.variants.webp].map((v) => v.src).concat(manifest.share ? [manifest.share.src] : []);
 
-interface CatalogImage { key: string; kind: string; credit: string; sourceUrl?: string }
+interface CatalogImage { key: string; kind: string; credit: string; sourceUrl?: string; view?: string; alt?: { en?: string } }
 function catalogImages(slug: string): CatalogImage[] | null {
   const file = path.join(CATALOG, `${slug}.json`);
   if (!existsSync(file)) return null;
@@ -119,6 +120,9 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
     const entry = images.find((image) => image.key === manifest.key);
     expect(entry, `${manifest.key} is not in catalog/products/${slug}.json — run node scripts/products/images.mjs to prune it`).toBeDefined();
     expect(manifest.kind).toBe(entry!.kind);
+    // a picture of the object's back says so (no tile or lead picture may use it); every other one is the "hero" view
+    expect(manifest.view).toBe(entry!.view === "back" ? "back" : "hero");
+    if (/^(Back of|Back edge)|rear angle|at the back\b/i.test(entry!.alt?.en ?? "")) expect(entry!.view, `${manifest.key} shows the back: mark it "view": "back"`).toBe("back");
     expect(manifest.credit).toBe(entry!.credit.trim());
     expect(manifest.source.url).toBe(entry!.sourceUrl ?? null);
     // the share picture (og:image) belongs to the product's first image, and only to it

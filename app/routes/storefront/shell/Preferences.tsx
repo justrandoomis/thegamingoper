@@ -7,7 +7,8 @@
  *   <LanguageMenu />     the desktop header's globe button → a menu of the three languages
  *   <ThemeBank />        النظام · فاتح · داكن (segmented; themeMorph: the prefs cookie + a 200 ms cross-fade)
  *   <CurrencyPanel />    الدينار · الدولار (segmented) with the rate, its source and date, "you pay in dinars", and — when
- *                        the rate is the demo seed's placeholder — that it is a demo rate
+ *                        the rate is the demo seed's placeholder — that it is a demo rate (its source then in the
+ *                        shopper's language: the seed stores one Arabic sentence; an owner's real source shows as typed)
  *   <PreferenceGroup />  a labelled group for the footer and the sheet
  *
  * Display currency and theme are preferences (cookie `tt_prefs`, no request); the language is the URL prefix.
@@ -36,6 +37,13 @@ function isPlainClick(event: MouseEvent<HTMLAnchorElement>): boolean {
   return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 }
 
+/**
+ * Offline, a language switch cannot load the other language (React Router cannot even fetch the route manifest): it
+ * would leave the address in the new language over the old page. So it waits — the page stays as it is, and the
+ * offline banner under the header says why.
+ */
+const canSwitch = () => typeof navigator === "undefined" || navigator.onLine !== false;
+
 // ───────────────────────────────────────────────────────────────── language
 
 /**
@@ -62,6 +70,7 @@ export function LanguageBank({ onSwitch, className }: { onSwitch?: () => void; c
           onClick={(event) => {
             if (!isPlainClick(event)) return;
             event.preventDefault();
+            if (!canSwitch()) return;
             onSwitch?.();
             if (code !== locale) switchLanguage(code);
           }}
@@ -90,7 +99,7 @@ export function LanguageMenu({ className }: { className?: string }) {
         label: LOCALES[code].label,
         checked: code === locale,
         onSelect: () => {
-          if (code !== locale) switchLanguage(code);
+          if (code !== locale && canSwitch()) switchLanguage(code);
         },
       }))}
       trigger={(props) => <IconKey {...props} variant="plain" icon={<Icon name="globe" size={24} />} label={label} />}
@@ -128,7 +137,7 @@ export function CurrencyPanel({ className }: { className?: string }) {
         {fx && usdRate ? (
           <>
             <p>{t("currency.rate", { rate: "⁦" + `1 USD = ${f.number(usdRate)} ${CURRENCIES.IQD.symbol[f.locale]}` + "⁩" })}</p>
-            <p>{t("currency.source", { source: "⁨" + fx.source + "⁩", date: f.date(fx.updatedAt, "long") })}</p>
+            <p>{t("currency.source", { source: "⁨" + (root?.fxIsDemo ? t("currency.demoSource") : fx.source) + "⁩", date: f.date(fx.updatedAt, "long") })}</p>
             {root?.fxIsDemo ? <p className="text-ink">{t("currency.demoRate")}</p> : null}
           </>
         ) : (

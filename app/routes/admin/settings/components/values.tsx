@@ -115,6 +115,7 @@ export function valueOf(editor: SettingEditor, draft: Draft): { value: unknown; 
       if (Number.isNaN(number)) errors[name] = "whole_number";
       else if (number < spec.min) errors[name] = "too_small";
       else if (number > spec.max) errors[name] = "too_big";
+      else if (spec.step && number % spec.step !== 0) errors[name] = `step_${spec.step}`;
       return number;
     }
     if (spec.kind === "bps") {
@@ -140,6 +141,20 @@ export function valueOf(editor: SettingEditor, draft: Draft): { value: unknown; 
     for (const field of editor.fields) {
       const item = read(field.name, field.field, Boolean(field.optional));
       if (item !== undefined) out[field.name] = item;
+    }
+    // the rules between fields (catalog ObjectChecks — the schema's own), on fields that read as numbers
+    const numberOf = (name: string) => (errors[name] === undefined && typeof out[name] === "number" ? (out[name] as number) : null);
+    for (const names of editor.checks?.ascending ?? []) {
+      for (let index = 1; index < names.length; index++) {
+        const before = numberOf(names[index - 1]);
+        const current = numberOf(names[index]);
+        if (before !== null && current !== null && current <= before) errors[names[index]] = "not_ascending";
+      }
+    }
+    for (const [name, floor] of editor.checks?.notBelow ?? []) {
+      const value = numberOf(name);
+      const least = numberOf(floor);
+      if (value !== null && least !== null && value < least) errors[name] = "below_paired";
     }
     return { value: out, errors };
   }

@@ -7,7 +7,16 @@
  *        intent=set     lineId=…  qty=0–10                       (0 removes the line)
  *        intent=remove  lineId=…
  *        intent=coupon  code=DEMO10                              (empty code removes the coupon)
+ *        intent=price                                            changes nothing: the cart priced with the choices
+ *                                                                below — how the checkout asks about a referral code,
+ *                                                                in a body, never in a URL (security review 2026-11-12)
  *        every intent also takes  locale=ar|en|ckb  and  governorateId=…  for the returned view
+ *   GET and POST also take (since 2026-11-12) the checkout's choices, priced for this answer only and never stored:
+ *        points=1500        signed-in customers: points to redeem (the view says how many may be: `points.max`)
+ *        referral=ABCD2345  a referral code to check (the view's `referral`: ok, or why it cannot count) —
+ *                           every request asking about one, GET or POST, counts against ONE per-IP budget
+ *                           (REFERRAL_CHECKS, 20 a minute: codes are not to be guessed — security review 2026-11-12);
+ *                           send it in a POST (intent=price) — a GET puts it in the URL, which logs keep
  *
  * `cart` is CartViewData from ~/server/services/cart.server: the CartView of ~/lib/dto plus
  * `couponIssue` (why a stored coupon does not apply right now).
@@ -52,13 +61,22 @@ const integer = (min: number, max: number) =>
 const common = {
   locale: z.preprocess(blank, z.enum(LOCALE_CODES as [Locale, ...Locale[]]).optional()),
   governorateId: optionalId,
+  points: z.preprocess(blank, integer(0, 10_000_000).optional()),
+  referral: z.preprocess(blank, z.string().trim().max(40, "too_long").optional()),
 };
+
+/** Referral codes asked about per IP per minute (GET): enough for a person typing one, too few to guess codes. */
+const REFERRAL_CHECKS: RateLimitRule = { limit: 20, windowSec: 60 };
+
+/** `points=` as a whole number, or none. */
+const pointsParam = (value: string | null): number | null => (value && /^\d{1,8}$/.test(value) ? Number(value) : null);
 
 const CartIntent = z.discriminatedUnion("intent", [
   z.object({ intent: z.literal("add"), variantId: optionalId, usedUnitId: optionalId, qty: z.preprocess(blank, integer(1, MAX_LINE_QTY).optional()), ...common }),
   z.object({ intent: z.literal("set"), lineId: z.preprocess(blank, id), qty: integer(0, MAX_LINE_QTY), ...common }),
   z.object({ intent: z.literal("remove"), lineId: z.preprocess(blank, id), ...common }),
   z.object({ intent: z.literal("coupon"), code: z.preprocess(blank, z.string().trim().max(64, "too_long").optional()), ...common }),
+  z.object({ intent: z.literal("price"), ...common }),
 ]);
 
 function cartToken(ctx: RequestCtx): string | null {
@@ -91,6 +109,15 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const locale = url.searchParams.get("locale");
   const governorateId = url.searchParams.get("governorateId");
+  const referral = (url.searchParams.get("referral") ?? "").trim().slice(0, 40);
+  if (referral) {
+    try {
+      await enforceRateLimit(db, await limitKey("cart-referral", "ip", ctx.ip), REFERRAL_CHECKS, ctx.now);
+    } catch (error) {
+      const { status, retryAfterSec, ...failure } = actionError(error);
+      return data({ ...failure, ...(retryAfterSec === undefined ? {} : { retryAfterSec }) }, { status, headers: retryAfterSec === undefined ? NO_STORE : { ...NO_STORE, "Retry-After": String(retryAfterSec) } });
+    }
+  }
   const customer = await getCustomer(ctx, db);
   const cart = await getCartView(
     db,
@@ -99,6 +126,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       customerId: customer?.customer.id ?? null,
       locale: isLocale(locale) ? locale : ctx.locale,
       governorateId: governorateId && ID.test(governorateId) ? governorateId : null,
+      redeemPoints: pointsParam(url.searchParams.get("points")),
+      referralCode: referral || null,
     },
     ctx.now,
   );
@@ -112,10 +141,17 @@ export async function action({ request, context }: Route.ActionArgs) {
   try {
     await enforceRateLimit(db, await limitKey("cart", "ip", ctx.ip), CART_CHANGES, ctx.now);
     const body = CartIntent.parse(await readBody(request));
+    // A referral code asked about here is a check like the GET's, on the SAME per-address budget (security review
+    // 2026-11-12: any intent with `referral=` checked a code uncounted — a second door, three times as wide, for
+    // guessing codes). A change without a code never meets this budget.
+    if (body.referral) await enforceRateLimit(db, await limitKey("cart-referral", "ip", ctx.ip), REFERRAL_CHECKS, ctx.now);
     const token = cartToken(ctx);
     if (token) await enforceRateLimit(db, await limitKey("cart", "cart", token), CART_CHANGES, ctx.now);
     const customer = await getCustomer(ctx, db);
-    const cartRequest: CartRequest = { cartToken: token, customerId: customer?.customer.id ?? null, locale: body.locale ?? ctx.locale, governorateId: body.governorateId ?? null };
+    const cartRequest: CartRequest = { cartToken: token, customerId: customer?.customer.id ?? null, locale: body.locale ?? ctx.locale, governorateId: body.governorateId ?? null, redeemPoints: body.points ?? null, referralCode: body.referral ?? null };
+
+    // the checkout's pricing with the choices in a body (a referral code never goes into a URL): reads, changes nothing
+    if (body.intent === "price") return data({ ok: true as const, cart: await getCartView(db, cartRequest, ctx.now) }, { headers: NO_STORE });
 
     let result: CartChangeResult;
     let added: number | undefined;

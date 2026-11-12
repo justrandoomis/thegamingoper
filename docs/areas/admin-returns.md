@@ -134,3 +134,9 @@ back marked its RMA repaired; a branch-limited inspector moved goods at other br
 exchange / repair / supplier return when none happened, and a closed RMA still took refunds; a partial refund marked the
 RMA refunded (it left the refund queue); the restocking fee was only a suggestion (12.04 "per policy"). Also: the note
 form shows only to roles that may write notes; a return repair opens only while the RMA is received or inspected.
+
+## Module follow-up 2026-11-12
+
+`queueCounts(db, actor, now, { only? })`: only the counts asked for are queried (the SLA setting only for `warrantiesEnding`) — the bell needs `{ only: ["decide", "inspect"] }`. Spans of days are plural messages (`withinDays`, `policies.days`): the targets are settings (1–365 days).
+
+Tests (each failed before its change): `tests/admin-returns-followup.test.ts`.

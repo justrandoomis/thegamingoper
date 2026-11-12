@@ -166,3 +166,24 @@ at 360–1440 × ar/en/ckb; census and focus walk (no stop hidden or without a r
 13px); no-JS render; 320px reflow and 200% zoom; reduce-motion and theme switches persist; push between policies with
 Back/Forward/reload; the filled contact state rendered by rewriting the single-fetch payload in the browser
 (`filled-contact.mjs`, the database untouched).
+
+## The content module on the store (wave G wiring, 2026-11-12; `tests/storefront-wiring.test.ts`)
+
+- **Redirects** (admin 17.04): `findStoreRedirect` before a 404 — the `*` route, an unknown one-segment path (the home route under
+  an invalid locale), a missing product, category or landing page — through `redirect.server.ts` (`redirectIfMoved`; the hit
+  counted in `waitUntil`; a failed lookup leaves the 404). Whatever the row holds, the target must be a same-site storefront
+  path: another host, `javascript:`, `//host`, the admin, the API and reserved paths are refused, and so are a loop on itself and
+  a target that is redirected again (one hop, always — a chain is how two rows make a loop).
+- **Landing pages** `/pages/:slug` (`landing.tsx`, the CMS's `getLandingPage`): a 720px reading column, «آخر تحديث», the text as
+  blocks; the Arabic text with lang/dir when the page has none in the visitor's language; noindex honoured; listed in the
+  sitemap when live and not noindex. The description has its own fallback (the page's language, else Arabic, else English):
+  `content-model.ts textLangOf` tells it from its letters and the lead gets its lang/dir (review 2026-11-12: the Arabic
+  fallback read left-to-right on an English page).
+- **Banners:** `getStoreBanners` over the CMS's `getActiveBanners` drops any link the store cannot open (`bannerHref`);
+  `components/StoreBanners.tsx` draws them as showcase bands (a platform accent its surface, "brand" the crimson; the link a white
+  text link, never a second red key). One column on phones, two from 1024 — a third banner then takes the next row whole
+  (it stood at half width beside a hole) — and three from 1280.
+- **Navigation:** `getArrangedNav(db, nav, now)` / `arrangeNav` — ready for the shell's loader (cached 30 s per isolate); the shell
+  owns that call (requested).
+- **ContactCard** now draws the e-mail address and the store's pages elsewhere (`card.email`, `card.links`); the page's own rows
+  keep only the map link when there is no address.

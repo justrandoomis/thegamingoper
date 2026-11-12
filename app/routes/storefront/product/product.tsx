@@ -4,8 +4,9 @@
  *   phones (< 768)   the stage full bleed and square (1:1) under the header, its thumbnails below it; then the buy box:
  *                    platform and kind · h1 · one fact line · price + demo tag · stock and delivery · the payment
  *                    sentence · the versions (each with its own price) · المفضلة · قارن · مشاركة · the facts card ·
- *                    «قبل أن تطلب»; then the reading part. The BUY BAR replaces the tab bar at the bottom: price and
- *                    version at the start, «أضف إلى السلة» at the end — «✓ في السلة» + «عرض السلة (n)» after an add.
+ *                    «قبل أن تطلب»; then the reading part. The BUY BAR replaces the tab bar at the bottom (the kit's
+ *                    <BuyBar bare> inside the shell's <TaskBar>): price and version at the start, «أضف إلى السلة» at
+ *                    the end — «✓ في السلة» + «عرض السلة (n)» after an add.
  *   768–1023         one column, the stage 4:3 with --r-xl, the buy bar.
  *   ≥ 1024           7 + 5: the gallery sticky at the inline START, the buy box at the inline end with the buy controls
  *                    (stepper + «أضف إلى السلة») after the versions; no bottom bar. The breadcrumbs above both.
@@ -23,7 +24,7 @@
  * key. Once the page is on screen, and only with consent, the "view" signal goes to /api/events and the view to the
  * shopper's ONE recently-viewed list (home/personal → recordProductView).
  */
-import { useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { data, redirect, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/product";
@@ -44,9 +45,11 @@ import { getDeviceLink } from "~/server/services/devices.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { getReviewSummary } from "~/server/services/reviews.server";
 import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
+import { redirectIfMoved } from "~/routes/storefront/content/redirect.server";
 import { sendRecommendationEvent } from "~/routes/storefront/devices/components/signals";
 import { readConsent, recordProductView } from "~/routes/storefront/home/personal";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
+import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellData, ShellHandle } from "~/routes/storefront/shell/types";
 import { BuyBar, BuyControls } from "~/ui/AddToCartKey";
 import { BidiText } from "~/ui/BidiText";
@@ -73,14 +76,18 @@ import { onlyVariantChanged, useVariantInUrl } from "./useVariant";
 
 import "./product.css";
 
-export async function loader({ params, context, request }: Route.LoaderArgs) {
+export async function loader({ params, context, request, url }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
   // The related products come as the devices area's compatibility-checked shelves below, not as the raw links.
   const [product, session] = await Promise.all([getProductDetail(db, ctx.locale, params.slug, { now: ctx.now, related: false }), getCustomer(ctx, db)]);
-  // A missing product (spec §6.16): the shell's 404 panel — `what` and `query` (the slug as words) let it say «هذا المنتج
-  // لم يعد متوفراً أو تغيّر رابطه» and prefill its search once it draws the product variant (requested of the shell).
-  if (!product) throw data({ error: "not_found", what: "product", query: params.slug.replace(/[-_]+/g, " ").trim().slice(0, 80) }, { status: 404 });
+  if (!product) {
+    // A product whose address staff redirected in the content module (admin 17.04) goes there (same-site only).
+    await redirectIfMoved(db, url, ctx);
+    // A missing product (spec §6.16): the shell's 404 panel — `what` and `query` (the slug as words) let it say «هذا
+    // المنتج لم يعد متوفراً أو تغيّر رابطه» and prefill its search.
+    throw data({ error: "not_found", what: "product", query: params.slug.replace(/[-_]+/g, " ").trim().slice(0, 80) }, { status: 404 });
+  }
   if (product.slug !== params.slug) {
     // "/p/DualSense" → "/p/dualsense": one address per product (the chosen variant travels along).
     const v = new URL(request.url).searchParams.get("v");
@@ -149,33 +156,6 @@ type LayoutData = { shell?: Pick<ShellData, "publicOrigin" | "payments"> };
 /** A digital code (gift card, subscription): its own facts, no delivery fee (spec §6.7 states, §13 row 11). Pure. */
 export const isDigital = (product: Pick<ProductDetail, "kind" | "mediaFormat">) => product.kind === "digital" || product.mediaFormat === "digital";
 
-/**
- * The buy bar's real height on :root as `--shell-taskbar-h` — the shell's task-bar contract (shell.css turns it into
- * --shell-bottom: the page's bottom padding, the toasts' place and the global scroll padding). The bar grows from 72px
- * to three lines after an add («✓ في السلة» over the price), and on tablets the larger price makes it taller: without
- * this, a focused control could sit under it (WCAG 2.4.11). `host` wraps the bar; its first child is the bar itself
- * (0px from 1024, where the bar is not drawn). A value another bar set meanwhile is left alone.
- */
-function usePublishedBarHeight(host: RefObject<HTMLElement | null>) {
-  useLayoutEffect(() => {
-    const bar = host.current?.firstElementChild;
-    if (!(bar instanceof HTMLElement)) return;
-    const root = document.documentElement;
-    let published = "";
-    const publish = () => {
-      published = `${Math.round(bar.getBoundingClientRect().height)}px`;
-      root.style.setProperty("--shell-taskbar-h", published);
-    };
-    publish();
-    const observer = new ResizeObserver(publish);
-    observer.observe(bar);
-    return () => {
-      observer.disconnect();
-      if (root.style.getPropertyValue("--shell-taskbar-h") === published) root.style.removeProperty("--shell-taskbar-h");
-    };
-  }, [host]);
-}
-
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { product, reviews, storeMode, compatibility, wished, device, recommendations } = loaderData;
   const t = useProductT();
@@ -201,13 +181,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { variant, choose } = useVariantInUrl(product);
   const gallery = galleryFor(product, variant);
   const stage = useRef<HTMLDivElement>(null);
-  const barHost = useRef<HTMLDivElement>(null);
-  usePublishedBarHeight(barHost);
   const reasonId = useId();
   const offlineId = useId();
-  // a failed add from the buy bar: its sentence takes the bar's info line (the error toast carries «أعد المحاولة»)
-  const [barMessage, setBarMessage] = useState<string | null>(null);
-  useEffect(() => setBarMessage(null), [variant.id]);
 
   // The gallery stays put while the language changes (docs/MOTION.md "anchors") — below 1024 only, where it is full
   // width: from 1024 it sits at the inline start and would have to cross the page.
@@ -302,7 +277,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                 ),
               )}
               {platforms.length > 0 ? <span aria-hidden="true">·</span> : null}
-              <span>{kindLabelOf({ kind: product.kind, families: [] }, locale)}</span>
+              <span>{product.kindLabel ?? kindLabelOf({ kind: product.kind, families: [] }, locale)}</span>
             </p>
             <h1 className="type-h1 text-ink">
               <BidiText text={product.name} />
@@ -350,7 +325,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             </div>
           )}
 
-          <SecondaryActions product={{ id: product.id, kind: product.kind, name: product.name }} wished={wished} />
+          <SecondaryActions product={{ id: product.id, kind: product.kind, name: product.name, image: gallery.images[0] ?? null }} wished={wished} />
 
           <FactsCard
             delivery={product.delivery}
@@ -364,21 +339,13 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
         </div>
       </div>
 
-      {/* Phones and tablets: the buy bar in place of the tab bar (one bar per edge). It is the shell's task bar
-          (`.shell-taskbar`: the tab bar gives way, and its measured height becomes --shell-bottom). Fixed on screen, it
-          sits here in the reading order — right after the buy box, before the long reading part — as a named region. */}
-      <div ref={barHost} role="region" aria-label={t("bar.label", { name: product.name })} className="lg:hidden">
-        <BuyBar
-          {...buy}
-          className="shell-taskbar p-0 lg:hidden"
-          priceIqd={variant.priceIqd}
-          releaseAt={soon ? variant.releaseAt : null}
-          alternativesHref={localePath(alternatives, locale)}
-          message="none"
-          onMessage={setBarMessage}
-          optionsLabel={offline ? t("status.offlineShort") : (barMessage ?? buy.optionsLabel)}
-        />
-      </div>
+      {/* Phones and tablets: the buy bar in place of the tab bar (one bar per edge) — the kit's bar, bare, inside the
+          shell's <TaskBar> (the glass, the named region, the persisted name and the measured height that becomes
+          --shell-bottom). Fixed on screen, it sits here in the reading order — right after the buy box, before the long
+          reading part. A failed add and «لا يوجد اتصال» take the bar's own info line; a new version starts afresh. */}
+      <TaskBar aria-label={t("bar.label", { name: product.name })} className="lg:hidden">
+        <BuyBar key={variant.id} {...buy} bare priceIqd={variant.priceIqd} releaseAt={soon ? variant.releaseAt : null} alternativesHref={localePath(alternatives, locale)} />
+      </TaskBar>
 
       {/* The reading part: what it is, what it works with, what it is made of, what is in the box. */}
       <div className="page mt-(--gap-section) grid gap-(--gap-section)">

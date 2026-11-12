@@ -31,14 +31,17 @@ export function Name({ children, className }: { children: string; className?: st
 /**
  * The sub-pages' shared navigation (§6.13): four link segments — guides (the support centre), the assistant, book a
  * repair, track a repair. The route handles give the sideways push between them. Segments keep their words: on a
- * narrow phone the track scrolls sideways instead of cutting a label.
+ * narrow phone the track scrolls sideways instead of cutting a label (the kit's link Segmented). `section`: the page
+ * belongs to that segment's part of the site but is not the segment's own page (a guide, a message to staff) — the
+ * segment then says `aria-current="true"`, not "page".
  */
-export function SupportNav({ current, className }: { current: SupportSection; className?: string }) {
+export function SupportNav({ current, section = false, className }: { current: SupportSection; section?: boolean; className?: string }) {
   const t = useT("support");
   return (
     <Segmented
       aria-label={t("nav.label")}
       value={current}
+      current={section ? "true" : "page"}
       className={cx("sup-nav", className)}
       options={[
         { value: "help", label: t("nav.guides"), href: "/support" },

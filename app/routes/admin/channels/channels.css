@@ -1,0 +1,234 @@
+/*
+ * Admin module 21 (branches, channels and integrations) — what the UI kit and the shell do not cover: the figures row,
+ * the decision cards' grid, filter rows, a two-column page from 1024px, key/value facts, the "shown once" secret, the
+ * API reference's code blocks and the printed profitability report. Tokens and logical properties only; nothing
+ * animates.
+ */
+@layer components {
+  .ch-nav {
+    margin-block-end: var(--s-2);
+  }
+
+  /* notes, "shown once" panels and a page's sentence between the head and the sections keep a gap (sections have
+     their own bottom margin, notes none) */
+  .ch-page > .adm-notice,
+  .ch-page > .adm-card,
+  .ch-page > [role="alert"],
+  .ch-page > :not(.adm-section) > .adm-notice {
+    margin-block-end: var(--s-5);
+  }
+
+  .ch-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ch-kpis > * {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .ch-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    }
+  }
+
+  .ch-decisions {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+
+  .ch-cards {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  }
+  .ch-cards > * {
+    min-inline-size: 0;
+  }
+
+  .ch-split {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .ch-split {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+      align-items: start;
+    }
+  }
+
+  .ch-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .ch-filters {
+    display: grid;
+    gap: var(--s-3);
+    align-items: end;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  }
+  .ch-filters > div:last-child {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    gap: var(--s-2);
+  }
+  .ch-filters > div:last-child > * {
+    flex: none;
+  }
+
+  .ch-form {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 40rem) {
+    .ch-form--two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ch-form--two > .ch-span {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* key / value facts */
+  .ch-facts {
+    display: grid;
+    gap: var(--s-1) var(--s-4);
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+    margin: 0;
+  }
+  .ch-facts > dt {
+    color: var(--ink-2);
+  }
+  .ch-facts > dd {
+    margin: 0;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* a secret shown once: the value wraps (never a horizontal scroll), the copy key beside it */
+  .ch-secret {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .ch-secret__value {
+    flex: 1 1 16rem;
+    min-inline-size: 0;
+    padding: var(--s-2) var(--s-3);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    font: var(--type-data);
+    overflow-wrap: anywhere;
+    word-break: break-all;
+    text-align: start;
+  }
+
+  /* the API reference: requests and answers as written */
+  .ch-pre {
+    margin: 0;
+    max-block-size: 22rem;
+    overflow: auto;
+    padding: var(--s-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    font: var(--type-data);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    text-align: start;
+  }
+
+  .ch-list {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* a list drawn as a card keeps the card's inner space */
+  .ch-list.adm-card {
+    padding: var(--s-4);
+  }
+  .ch-list > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+    min-inline-size: 0;
+  }
+
+  .ch-steps {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding-inline-start: var(--s-5);
+  }
+
+  .ch-scopes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+
+  /* the profitability report prints without the shell's chrome or any control, on a landscape sheet (its own named
+     page: other pages keep the browser's), as the table — never the phone cards, which leave columns out (a sheet is
+     narrower than 768px) — whole, not cut at the scroll box; ink on paper from a dark screen too (usePrintInLight) */
+  @media print {
+    @page {
+      margin: 14mm;
+    }
+    @page ch-report {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+    body:has(.ch-print) .adm-rail,
+    body:has(.ch-print) .adm-top,
+    body:has(.ch-print) .adm-tabbar,
+    body:has(.ch-print) .adm-skip,
+    body:has(.ch-print) .ch-noprint {
+      display: none !important;
+    }
+    body:has(.ch-print) .adm-main {
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+    }
+    /* the whole document takes the named page (on the report alone, the browser would break to a new sheet before it) */
+    :root:has(.ch-print) {
+      page: ch-report;
+    }
+    .ch-print {
+      color: var(--ink);
+    }
+    .ch-print .ch-rl-table {
+      display: block !important;
+    }
+    .ch-print .ch-rl-cards {
+      display: none !important;
+    }
+    .ch-print .ch-rl-table .overflow-auto {
+      overflow: visible;
+    }
+    /* every column on the sheet: a header or an amount may break at its spaces ("1,503,250 / IQD") */
+    .ch-print table {
+      inline-size: 100%;
+      font-size: var(--fs-tag);
+    }
+    .ch-print table :is(th, td),
+    .ch-print table .whitespace-nowrap {
+      white-space: normal !important;
+    }
+    .ch-print table :is(th, td) {
+      padding-inline: var(--s-2);
+    }
+    .ch-print-block {
+      break-inside: avoid;
+    }
+  }
+}

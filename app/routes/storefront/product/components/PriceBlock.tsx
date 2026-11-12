@@ -2,7 +2,8 @@
  * The price block of the product page and the quick look — design v2 spec §6.7 items 6–7, §4.8 `PriceTag size="page"`:
  *
  *   667,750 د.ع  [سعر ومخزون تجريبيان]            price xl + the demo tag (demo data)
- *   ● متوفر · التوصيل 5,000 د.ع لكل المحافظات      stock words + the fee from settings (14/600)
+ *   ● متوفر · التوصيل 5,000 د.ع لكل المحافظات      stock words + the fee from settings (14/600); coming soon:
+ *                                                  «● يصدر 19 تشرين الثاني 2026» (PriceTag `status`)
  *   (one sentence when the chosen version cannot be ordered, or the fee depends on the governorate)
  *
  * Honest by construction: the previous price is struck only when it is real — or a demo value while the whole store is
@@ -76,13 +77,10 @@ export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, dig
   const struck = struckPrice(variant, demoStore);
   const look = priceLook(variant);
 
-  const reason = variant.orderable
-    ? null
-    : soon
-      ? t("status.soon", { date: f.date(variant.releaseAt as number, "long") })
-      : variants.some((entry) => entry.orderable)
-        ? t("status.outVariant")
-        : t("status.outAll");
+  // coming soon: the price line says when («● يصدر 19 تشرين الثاني 2026», the kit's `status` in the soon tone — the
+  // «قريباً» tag already leads the kind line), the sentence under it what that means for ordering
+  const soonStatus = soon ? t("picker.soon", { date: f.date(variant.releaseAt as number, "long") }) : undefined;
+  const reason = variant.orderable ? null : soon ? t("status.soonNote") : variants.some((entry) => entry.orderable) ? t("status.outVariant") : t("status.outAll");
   const life = lifecycle === "discontinued" || lifecycle === "limited" || lifecycle === "upcoming" ? t(`status.${lifecycle}`) : null;
 
   return (
@@ -95,6 +93,7 @@ export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, dig
       showSaving={look.showSaving}
       demo={isDemo || demoStore}
       stock={variant.orderable ? variant.stock : soon ? "preorder" : "out_of_stock"}
+      status={soonStatus}
       deliveryIqd={digital || delivery.overridesEnabled ? null : delivery.flatFeeIqd}
       aside={
         reason || life || offline || (!digital && delivery.overridesEnabled) ? (

@@ -9,7 +9,6 @@
  *   .acct-rows           a paper panel of rows divided by hairlines (orders, devices, notifications, sessions …)
  *   .acct-tiles          the overview's four quick tiles (2 × 2 on phones, 4-up from 768)
  *   .acct-steps          the first-steps checklist (a ring, or a filled check once done)
- *   .orail               the order's five real states (استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم)
  *   .acct-auth           sign in / sign up / reset: one centred 480px card and the guest note under it
  */
 @layer components {
@@ -410,74 +409,6 @@
   }
   .acct-step > .link {
     justify-self: start;
-  }
-
-  /* ───────────────────────────── the order's states (§6.11) ───────────────────────────── */
-  .orail {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .orail__step {
-    position: relative;
-    display: grid;
-    justify-items: center;
-    align-content: start;
-    gap: var(--s-2);
-    min-inline-size: 0;
-    text-align: center;
-  }
-  /* the line between two discs: from the previous disc's centre to this one's */
-  .orail__step + .orail__step::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 11px;
-    inset-inline-end: calc(50% + 14px);
-    inline-size: calc(100% - 28px);
-    block-size: 2px;
-    border-radius: var(--r-full);
-    background: var(--line-strong);
-  }
-  .orail__step:is([data-state="done"], [data-state="current"]) + .orail__step:is([data-state="done"], [data-state="current"])::before {
-    background: var(--ink);
-  }
-  .orail__dot {
-    position: relative;
-    display: grid;
-    place-items: center;
-    inline-size: 24px;
-    block-size: 24px;
-    border: 2px solid var(--line-strong);
-    border-radius: var(--r-full);
-    background: var(--paper);
-    color: var(--paper);
-  }
-  .orail__step[data-state="done"] .orail__dot,
-  .orail__step[data-state="current"] .orail__dot {
-    border-color: var(--ink);
-    background: var(--ink);
-  }
-  /* the current state: an ink disc with a paper ring inside, so it differs from "done" without colour */
-  .orail__step[data-state="current"] .orail__dot::after {
-    content: "";
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: var(--r-full);
-    background: var(--paper);
-  }
-  .orail__label {
-    font: var(--type-xs);
-    color: var(--ink-2);
-    overflow-wrap: anywhere;
-  }
-  .orail__step[data-state="done"] .orail__label {
-    color: var(--ink);
-  }
-  .orail__step[data-state="current"] .orail__label {
-    font: var(--type-xs-strong);
-    color: var(--ink);
   }
 
   /* ───────────────────────────── sign in, sign up, reset ───────────────────────────── */

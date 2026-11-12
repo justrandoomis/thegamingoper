@@ -159,3 +159,27 @@ the footer (144px at 1440: the page's own bottom padding + the shell footer's ma
 vanished — chips and focus now need `MIN_SHELF` items. Tests: `tests/home.test.ts` 38 (resolveFocus fixture moved to
 real shelf sizes on purpose; new: short shelves never focused, `pictureFailed`, `tileArt` never a console's back).
 Screens and scripts: `…/scratchpad/ux/after/P1-home-review/`, `…/scratchpad/work/pages-P1-home-review/tools/`.
+
+## The content module on the page (wave G wiring, 2026-11-12; `tests/storefront-wiring.test.ts`)
+
+- **Pinned hero** (admin 17.01, `getHomeHero`): `getHomeData` keeps a live, non-demo pin only while its product can be bought and
+  has a photo (`pinnedHero`, the automatic pick's own test) — else the platform's automatic hero, as if nothing were pinned.
+  `featuredHero` prefers a pin (the featured platform's, else the first pinned one). The band then shows the staff's headline
+  (h2; the pin's language, Arabic when it has none in the page's — lang/dir set), the product's **name under it on every
+  width** (the headline no longer names it) and the deck from 768. «تفاصيل الجهاز» reads «تفاصيل المنتج» when the product has
+  no device hub. A pin takes the STAGE only: `HomePlatform.lead` keeps the platform's own lead device (the automatic pick), and
+  the page's other pictures of a platform's console — the trade-in door's PlayStation, the intro's corner objects — use it
+  (`view.ts leadArt`); review 2026-11-12: a pinned game had become the «استبدل جهازك» picture.
+- **The key:** a product with versions opens the quick look (as before); one with a single version is the kit's on-band add key
+  (`AddToCartKey look="onBand"`: the flight, «تراجع», flat with its reason offline). A name longer than 24 characters keeps the
+  kit's own words («أضف إلى السلة» / «اختر نسخة») instead of a cut «اشترِ …».
+- **Sections** (`getHomeLayout` → `home.layout`, `homeLayoutOf`): the page's own order (`HOME_PAGE_SECTIONS`: platforms, new
+  arrivals, coming soon, used, the trade-in and support doors = `used_repairs`, departments = `accessories`, recently viewed,
+  recommendations, personal) until staff save an arrangement; the module's untouched default list reads as "not arranged".
+  "games" and "deals" have no section here. The trust strip follows the platform tiles when they lead, else the hero.
+- **Banners** (`home_strip`, `getStoreBanners`) under the trust strip (`content/components/StoreBanners.tsx`): never demo, never a
+  link the store cannot open; a failed read leaves the page without them.
+- **Kit requests applied:** the intro's tiles are the kit's `PlatformTile selected` (the page's own toggle CSS removed);
+  `TrustStrip transfer={{ zaincash, card }}` (one fact naming the methods that are on).
+- "/old-name" (one segment, no language) is this route under an invalid locale: a redirect staff set is followed
+  (`redirectIfMoved`), and the page's data is never read for it.

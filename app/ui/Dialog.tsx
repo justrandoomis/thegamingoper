@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { dematerialize, durations, easings, getMotionTier, materialize } from "~/motion";
+import { BidiValue } from "./BidiText";
 import { cx } from "./cx";
 import { Select, TextArea } from "./Field";
 import { Glass } from "./Glass";
@@ -687,7 +688,8 @@ export function ConfirmDialog({
                 <div key={index} className="flex items-baseline justify-between gap-4">
                   <dt className="type-label text-ink">{row.label}</dt>
                   <dd className={cx("type-data whitespace-nowrap", row.negative ? "text-danger" : "text-ink")}>
-                    <bdi>{row.value}</bdi>
+                    {/* a value of numbers only ("300 ← 450") keeps the page's direction, each number left to right */}
+                    {typeof row.value === "string" ? <BidiValue text={row.value} /> : <bdi>{row.value}</bdi>}
                   </dd>
                 </div>
               ))}

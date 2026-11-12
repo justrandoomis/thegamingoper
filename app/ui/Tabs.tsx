@@ -1,10 +1,11 @@
-import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
+import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type RefObject } from "react";
 
 import { useFormat } from "~/i18n/react";
 import { getMotionTier, springTiming, travel } from "~/motion";
 import { cx } from "./cx";
-import { useControllable } from "./KeyBank";
 import { HrefLink } from "./Pagination";
+import { revealFocusedItem, useKeepInView } from "./reveal";
+import { useControllable } from "./roving";
 
 /**
  * Tabs — sibling views of one thing (a device hub's guides / accessories / repairs; an order's lines / payments /
@@ -28,7 +29,8 @@ import { HrefLink } from "./Pagination";
  *     (`activation="manual"`: Enter / Space choose). The new panel slides 24px in from the side it comes from
  *     (next = from the inline end, DESIGN.md §7.2 "sideways push") — reduced motion: a 120ms fade.
  *
- * Long rows scroll sideways. Labels keep their width when they turn bold, so nothing shifts.
+ * Long rows scroll sideways, and the current tab is kept in view — on the first paint (a link tab opened from far down
+ * the row) and whenever the choice or the focus moves. Labels keep their width when they turn bold, so nothing shifts.
  */
 export type TabItem = {
   value: string;
@@ -81,11 +83,13 @@ export function Tabs({
   const firstEnabled = items.find((item) => !item.disabled)?.value ?? "";
   const [current, setCurrent] = useControllable<string>(value, defaultValue ?? firstEnabled, onChange);
   const linkTabs = items.length > 0 && items.every((item) => typeof item.href === "string");
+  const linkList = useRef<HTMLUListElement | null>(null);
+  useCurrentInView(linkList, linkTabs ? current : null);
 
   if (linkTabs) {
     return (
       <nav aria-label={aria["aria-label"]} aria-labelledby={aria["aria-labelledby"]} className={cx("min-w-0", className)}>
-        <ul role="list" className={cx(LIST, listClassName)}>
+        <ul ref={linkList} role="list" className={cx(LIST, listClassName)} onFocus={revealFocused}>
           {items.map((item) => {
             const selected = item.value === current;
             return (
@@ -147,8 +151,10 @@ function PanelTabs({
 }) {
   const id = useId();
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const list = useRef<HTMLDivElement | null>(null);
   const panel = useRef<HTMLDivElement | null>(null);
   const selected = items.findIndex((item) => item.value === current);
+  useCurrentInView(list, current);
   const firstEnabled = items.findIndex((item) => !item.disabled);
   // Roving tab stop: the focused tab while focus is in the list, else the selected one.
   const [focused, setFocused] = useState<number | null>(null);
@@ -197,10 +203,12 @@ function PanelTabs({
   return (
     <div className={cx("grid min-w-0 gap-4", className)}>
       <div
+        ref={list}
         role="tablist"
         aria-label={aria["aria-label"]}
         aria-labelledby={aria["aria-labelledby"]}
         className={cx(LIST, listClassName)}
+        onFocus={revealFocused}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(null);
         }}
@@ -256,6 +264,14 @@ function PanelTabs({
     </div>
   );
 }
+
+/** Keep the current tab ([data-selected]) fully inside the row that scrolls sideways (./reveal useKeepInView). */
+function useCurrentInView(row: RefObject<HTMLElement | null>, current: string | null) {
+  useKeepInView(row, "[data-selected]", current);
+}
+
+/** A tab that takes the keyboard focus (Tab, the arrow keys) scrolls fully into the row — the row only, never the page. */
+const revealFocused = revealFocusedItem;
 
 /** The label twice in one grid cell: the bold copy (invisible) reserves the width, so turning bold moves nothing. */
 function TabLabel({ item }: { item: TabItem }) {

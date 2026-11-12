@@ -113,3 +113,11 @@ Screenshots: `.shots/admin-security/` (`set-*`).
 - **Storefront shell / i18n**: `locale.numbering` as each language's default numerals; translation overrides unread.
 - **Commerce core**: `checkout.reservation_minutes` is not read by the reservation code.
 - **Outbox sender (21)**: render `message_templates` (active row for key + locale, else the code's text).
+
+## Module follow-up 2026-11-12
+
+Seven keys (additive, defaults = the modules' constants): `customers.rfm_rules`, `customers.flag_rules` (approver), `customers.privacy_due_days`, `promotions.discount_limits`, `promotions.loyalty`, `promotions.referral`, `promotions.gift_card` (approver) — groups `customers`, `promotions`; editor units `count`, `points`; field errors `not_ascending`, `step_1000`. Template `support_reply` (`ticketRef`, `body` — required). `PolicyListItem.contentHref` (/admin/cms/pages/<slug> for whoever may open it); `startPolicyDraft({ from: "approved" })` (`policy_no_approved`), `PolicyEditor.fromApproved`; numbered lines accept Persian digits.
+
+Tests (each failed before its change): `tests/admin-settings-followup.test.ts`, `tests/admin-settings-keys.test.ts`.
+
+Review of the follow-up (2026-11-12): the object editors declare the rules between their fields (`SettingEditor.object.checks` — `ascending`, `notBelow` — and `FieldSpec.int.step`), the same ones the schemas enforce, so the form marks the field that breaks one before anything is sent (`not_ascending`, `below_paired`, `step_1000`); before, the change dialog said "check the highlighted fields" with none highlighted. `promotions.gift_card` refuses a maximum below the minimum with `below_paired`. Test: `tests/admin-followup-review.test.ts`.

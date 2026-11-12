@@ -656,6 +656,7 @@ describe("scheduled jobs", () => {
       ["orders.expire_unpaid", "succeeded"],
       ["inventory.reservations.expire", "succeeded"],
       ["catalog.publish_due", "succeeded"],
+      ["support.tickets.route", "succeeded"],
       ["outbox.deliver", "skipped"],
     ]);
     expect(run.jobs[0].stats).toMatchObject({ cancelled: expect.any(Number), failed: 0 });
@@ -708,6 +709,13 @@ describe("scheduled jobs", () => {
       ["tradein.drafts.purge", "skipped"],
       ["devices.tradein_offers.expire", "succeeded"],
       ["customers.segments.recompute", "succeeded"],
+      // wave D (2026-11-12): the admin modules' own daily work, one job each
+      ["promotions.memberships.close", "succeeded"],
+      ["promotions.points.sync", "succeeded"],
+      ["promotions.points.expire", "succeeded"],
+      ["promotions.gift_cards.expire", "succeeded"],
+      ["staff.commissions.sync", "succeeded"],
+      ["ops.telemetry.purge", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);
     expect(run.ok).toBe(true);
@@ -833,6 +841,12 @@ describe("scheduled jobs", () => {
       ["tradein.drafts.purge", "succeeded"],
       ["devices.tradein_offers.expire", "succeeded"],
       ["customers.segments.recompute", "succeeded"],
+      ["promotions.memberships.close", "succeeded"],
+      ["promotions.points.sync", "succeeded"],
+      ["promotions.points.expire", "succeeded"],
+      ["promotions.gift_cards.expire", "succeeded"],
+      ["staff.commissions.sync", "succeeded"],
+      ["ops.telemetry.purge", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);
     // one row each, with its counters

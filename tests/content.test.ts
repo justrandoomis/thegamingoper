@@ -411,7 +411,8 @@ describe("contact details", () => {
     expect(en.address).toBe("Karrada, Baghdad");
     expect(en.hours).toBe("كل يوم 10–22"); // no English hours: the Arabic source
     // the kit's <ContactCard> shape: WhatsApp as international digits, the phone in E.164, the owner's words for the
-    // hours and no schedule (so no invented open / closed state)
+    // hours and no schedule (so no invented open / closed state); the e-mail address and the store's pages elsewhere by
+    // their sites' names (the kit's `email` / `links`, drawn by the card itself since wave G)
     expect(en.card).toEqual({
       whatsapp: "9647801234567",
       phone: "+9647701234567",
@@ -420,16 +421,18 @@ describe("contact details", () => {
       hours: null,
       hoursText: "كل يوم 10–22",
       replyTime: null,
+      email: "help@example.com",
+      links: [{ label: "Instagram", url: "https://www.instagram.com/tamtam.example/" }],
     });
     expect(contactView({ address: { ar: "الموصل" } }, "ckb")).toEqual({
       channels: [],
       address: "الموصل",
       hours: null,
-      card: { whatsapp: null, phone: null, address: "الموصل", mapsUrl: null, hours: null, hoursText: null, replyTime: null },
+      card: { whatsapp: null, phone: null, address: "الموصل", mapsUrl: null, hours: null, hoursText: null, replyTime: null, email: null, links: [] },
       isEmpty: false,
     });
-    // only social pages: no card (nothing for it to draw), the page lists the pages as rows
-    expect(contactView({ instagram: "https://instagram.com/x" }, "en")).toMatchObject({ card: null, isEmpty: false });
+    // only social pages: the card draws them (its `links`); nothing else is invented
+    expect(contactView({ instagram: "https://instagram.com/x" }, "en")).toMatchObject({ card: { whatsapp: null, phone: null, address: null, email: null, links: [{ label: "Instagram", url: "https://instagram.com/x" }] }, isEmpty: false });
   });
 });
 

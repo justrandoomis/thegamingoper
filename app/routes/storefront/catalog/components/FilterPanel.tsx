@@ -13,6 +13,12 @@
  * Every value says how many products choosing it gives (counted with the other filters applied); a group that offers
  * nothing (one option and nothing chosen) is not shown, and groups the page shows elsewhere (the chip row) are left
  * out — their values ride along as hidden fields, so a submitted form keeps them.
+ *
+ * ORDER: the page's own (availability, platform, category, device, price, Arabic, format) until staff arrange the
+ * listing's filters in the content module (admin 17.03, getListingFilterOrder): then `order` names the groups to offer,
+ * in their order — the availability group stands where its first part (in stock, deals) is, with only the parts
+ * named. A group left out is not offered; a value of it that a link brought along still filters (its chip above the
+ * results removes it) and rides along as a hidden field.
  */
 import { useState, type FormEvent, type ReactNode } from "react";
 
@@ -48,8 +54,28 @@ export type FilterPanelProps = {
    * two chips with a dot and a count do not fit its width, and stacked chips read worse than aligned rows.
    */
   chips?: boolean;
+  /** The staff's arrangement (content module): the groups to offer, in order. Null or omitted: the page's own order. */
+  order?: readonly FilterGroup[] | null;
   className?: string;
 };
+
+/** The panel's own order of its groups ("availability" holds the in-stock switch and the deals box). */
+const OWN_ORDER = ["availability", "platforms", "category", "device", "price", "arabic", "formats"] as const;
+type PanelGroup = (typeof OWN_ORDER)[number];
+
+/**
+ * The panel's groups in the order to draw them, and which availability parts to offer: the page's own order without
+ * an arrangement; with one, the named groups in its order — availability where its first named part is. Pure.
+ */
+export function panelOrder(order: readonly FilterGroup[] | null | undefined): { groups: PanelGroup[]; inStock: boolean; deals: boolean } {
+  if (!order) return { groups: [...OWN_ORDER], inStock: true, deals: true };
+  const groups: PanelGroup[] = [];
+  for (const group of order) {
+    const part: PanelGroup = group === "inStock" || group === "deals" ? "availability" : group;
+    if (!groups.includes(part)) groups.push(part);
+  }
+  return { groups, inStock: order.includes("inStock"), deals: order.includes("deals") };
+}
 
 /** Six or fewer short values read best as chips (v2 §6.3: "chips for ≤6 short values"); longer lists as rows. */
 const SHORT_LIST = 6;
@@ -67,12 +93,15 @@ function Opt({ label, count }: { label: ReactNode; count: number }) {
   );
 }
 
-export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, sorts, sort, hidden = {}, action, disabled = false, chips = false, className }: FilterPanelProps) {
+export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, sorts, sort, hidden = {}, action, disabled = false, chips = false, order = null, className }: FilterPanelProps) {
   const t = useT("catalog");
   const f = useFormat();
   const change = (next: Partial<ListingQuery>) => onChange?.(next);
   const chipsFit = (labels: readonly string[]) => chips && shortList(labels);
   const away = (group: FilterGroup) => elsewhere.includes(group);
+  const arranged = panelOrder(order);
+  // a group staff left out of this listing is not offered here (its value, if a link brought one, still applies)
+  const offered = (group: PanelGroup) => arranged.groups.includes(group);
   const ui = useT("ui");
   // the dot and the name in the row's own weight (the bold label belongs to running text)
   const platformLabel = (slug: string, fallback: string) =>
@@ -85,22 +114,37 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
       fallback
     );
 
-  // values of the groups shown elsewhere travel with a submitted form
+  // values of the groups shown elsewhere — or not offered in this listing — travel with a submitted form
   const kept: [string, string][] = [];
-  if (away("platforms")) for (const platform of query.platforms) kept.push(["platform", platform]);
-  if (away("category") && query.category) kept.push(["cat", query.category]);
-  if (away("device") && query.device) kept.push(["device", query.device]);
+  if (away("platforms") || !offered("platforms")) for (const platform of query.platforms) kept.push(["platform", platform]);
+  if ((away("category") || !offered("category")) && query.category) kept.push(["cat", query.category]);
+  if ((away("device") || !offered("device")) && query.device) kept.push(["device", query.device]);
+  if (!offered("price")) {
+    if (query.priceMin !== null) kept.push(["min", String(query.priceMin)]);
+    if (query.priceMax !== null) kept.push(["max", String(query.priceMax)]);
+  }
+  if ((!offered("availability") || !arranged.inStock) && query.inStock) kept.push(["stock", "1"]);
+  if ((!offered("availability") || !arranged.deals) && query.deals) kept.push(["deals", "1"]);
+  if (!offered("arabic") && query.arabic) kept.push(["arabic", query.arabic]);
+  if (!offered("formats")) for (const format of query.formats) kept.push(["format", format]);
 
-  const groups: ReactNode[] = [];
+  // each group by its name; drawn below in the listing's order
+  const parts: Partial<Record<PanelGroup, ReactNode>> = {};
+  const set = (group: PanelGroup, node: ReactNode) => {
+    parts[group] = node;
+  };
 
-  // availability: the in-stock switch and genuine reductions
-  if (facets.inStock > 0 || query.inStock || facets.deals > 0 || query.deals) {
-    groups.push(
+  // availability: the in-stock switch and genuine reductions (only the parts this listing offers)
+  const stockShown = arranged.inStock && (facets.inStock > 0 || query.inStock);
+  const dealsShown = arranged.deals && (facets.deals > 0 || query.deals);
+  if (stockShown || dealsShown) {
+    set(
+      "availability",
       <FieldGroup key="availability" legend={t("filter.availability")} className="catalog-facet">
-        {facets.inStock > 0 || query.inStock ? (
+        {stockShown ? (
           <Switch name="stock" value="1" checked={query.inStock} disabled={disabled} onChange={(event) => change({ inStock: event.target.checked })} label={<Opt label={t("filter.inStock")} count={facets.inStock} />} />
         ) : null}
-        {facets.deals > 0 || query.deals ? (
+        {dealsShown ? (
           <Checkbox name="deals" value="1" checked={query.deals} disabled={disabled} onChange={(event) => change({ deals: event.target.checked })} label={<Opt label={t("filter.deals")} count={facets.deals} />} />
         ) : null}
       </FieldGroup>,
@@ -110,7 +154,8 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   if (scope !== "platform" && !away("platforms") && (facets.platforms.length >= 2 || query.platforms.length > 0)) {
     const nameOf = (option: { value: string; label: string }) => (isPlatform(option.value) ? ui(`platform.${option.value}`) : option.label);
     const toggle = (value: string, on: boolean) => change({ platforms: on ? query.platforms.filter((p) => p !== value) : [...query.platforms, value] });
-    groups.push(
+    set(
+      "platforms",
       <FieldGroup key="platforms" legend={t("filter.platform")} className="catalog-facet">
         {chipsFit(facets.platforms.map(nameOf)) ? (
           <div className="chips">
@@ -144,7 +189,8 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   }
 
   if (!away("category") && (facets.categories.length >= 2 || query.category !== null)) {
-    groups.push(
+    set(
+      "category",
       <FieldGroup key="category" legend={t("filter.category")} className="catalog-facet">
         {chipsFit(facets.categories.map((option) => option.label)) ? (
           <div className="chips">
@@ -178,7 +224,8 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   }
 
   if (!away("device") && (facets.devices.length >= 2 || query.device !== null)) {
-    groups.push(
+    set(
+      "device",
       <FieldGroup key="device" legend={t("filter.device")} hint={t("filter.deviceHint")} className="catalog-facet">
         <Radio name="device" value="" checked={query.device === null} disabled={disabled} onChange={() => change({ device: null })} label={t("filter.any")} />
         {facets.devices.map((option) => (
@@ -198,11 +245,12 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   }
 
   const price = <PriceGroup key="price" query={query} facets={facets} onChange={change} live={Boolean(onChange)} disabled={disabled} />;
-  if ((facets.price && facets.price.min < facets.price.max) || query.priceMin !== null || query.priceMax !== null) groups.push(price);
+  if ((facets.price && facets.price.min < facets.price.max) || query.priceMin !== null || query.priceMax !== null) set("price", price);
 
   if (facets.arabic.length > 0 || query.arabic !== null) {
     const levelName = (value: string) => t(`filter.arabicLevel.${value}`);
-    groups.push(
+    set(
+      "arabic",
       <FieldGroup key="arabic" legend={t("filter.arabic")} hint={t("filter.arabicHint")} className="catalog-facet">
         {chipsFit(facets.arabic.map((option) => levelName(option.value))) ? (
           <div className="chips">
@@ -238,7 +286,8 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   if (facets.formats.length >= 2 || query.formats.length > 0) {
     const formatName = (value: string) => t(`filter.formatValue.${value}`);
     const toggle = (value: (typeof query.formats)[number], on: boolean) => change({ formats: on ? query.formats.filter((v) => v !== value) : [...query.formats, value] });
-    groups.push(
+    set(
+      "formats",
       <FieldGroup key="formats" legend={t("filter.format")} hint={t("filter.formatHint")} className="catalog-facet">
         {chipsFit(facets.formats.map((option) => formatName(option.value))) ? (
           <div className="chips">
@@ -272,15 +321,16 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   }
 
   // no script: the sort as radio rows, then the submit key (the script path sorts from the toolbar)
-  if (sorts.length > 1) {
-    groups.push(
+  const sortGroup =
+    sorts.length > 1 ? (
       <FieldGroup key="sort" legend={t("sort.label")} className="catalog-facet catalog-nojs">
         {sorts.map((value) => (
           <Radio key={value} name="sort" value={value} defaultChecked={sort === value} label={t(`sort.${value}`)} />
         ))}
-      </FieldGroup>,
-    );
-  }
+      </FieldGroup>
+    ) : null;
+  // the listing's order (staff's, or the page's own); only the groups that offer something here
+  const groups = arranged.groups.flatMap((group) => (offered(group) && parts[group] ? [parts[group]] : []));
 
   const onSubmit = (event: FormEvent) => {
     // with script every control applies itself; Enter in a price field is handled by its group
@@ -296,6 +346,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
         <input key={`k:${name}:${index}`} type="hidden" name={name} value={value} />
       ))}
       {groups}
+      {sortGroup}
       <div className="catalog-nojs grid gap-3">
         <Key type="submit" variant="secondary" block>
           {t("filter.submit")}

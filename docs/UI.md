@@ -127,15 +127,21 @@ ever.** Sorani headings use Plex 600 until a native reader approves Noto Kufi's 
 - Motion: only transform, translate, scale, rotate and opacity. Shadows, blur and colours never animate (a hover colour is instant).
 - One primary key per route view (card add buttons are neutral). `--red`/`--hero` only in the primary key, bead, logo,
   hero/wallet bands and the current step; `--plat-*` surfaces only on tiles and bands; `--gel-*` only in dark cabinets.
-- v2 rules (fail in `app/styles` now; reported for the kit and the areas until stage 4): no 1.0 material tokens or
-  utilities outside the admin; no `font-weight: 500` / `font-medium`; integer font sizes; radius only through `--r-*`;
-  box shadows only from the elevation tokens; `mix-blend-mode` only in the opaque-photo rule; the deprecated kit names.
+- v2 rules (since stage 4 they fail the run in every file outside the admin): no 1.0 material tokens or utilities
+  outside the admin; no `font-weight: 500` / `font-medium`; integer font sizes; radius only through `--r-*`; box
+  shadows only from the elevation tokens; `mix-blend-mode` only in the opaque-photo rule (`[data-opaque]`,
+  materials.css); the retired kit names (`Socket`, `PlatformBank`, `StageTag`, `PlatformGlyph`, `KeyBank`, `variant=
+  "commit" | "ink" | "quiet"`, `<Glass variant="static">`).
+- Pictures: put a product photo in a `.render-slot` that stands directly on its ground (`<Niche>`, `<Stage>`, a
+  thumbnail): an opaque photo (`data-opaque`) blends there, on the slot, into the light ground. Showcase surfaces
+  (`.band`, `.ptile`, `.release`) keep its plate. Box art and screenshots never blend.
 - `<img>` always has `width` and `height` (or use `<Art>`).
 - Escape hatch, with a reason: `// lint-design: allow <rule> — why` (line + next line; first 3 lines = whole file).
 - 44×44 minimum target on everything pressable. Focus ring is automatic (2px, 2px offset; white inside light bands).
 - Latin names and numbers inside Arabic/Kurdish text: `<BidiText text>`; kit labels isolate themselves (`BidiLabel`).
   Never wrap mixed text in a bare `<bdi>`. Inside a plain string use U+2066…U+2069. Phone numbers, references and
-  amounts stay left-to-right. Card and line titles use `unicode-bidi: plaintext` aligned to the page start.
+  amounts stay left-to-right. Card and line titles are isolated (`unicode-bidi: isolate`) and aligned to the page
+  start in the page's direction — never `plaintext` (a Latin name would sit flush left in an Arabic card).
 - Every user-facing string exists in `ar`, `en` and `ckb`.
 - Token contrast: `node scripts/contrast.mjs` must pass (100 pairs; 2 documented demonstrations).
 
@@ -174,7 +180,10 @@ only when the page draws one of its characters (latin-ext only for names like "Y
 `font-synthesis-weight: none`. Measured: an Arabic page requests at most six files (182.5 KB); English four.
 `font-display: swap` with metric-adjusted local fallbacks: "Kufi Fallback" / "Plex Fallback" (Segoe UI, Windows) and
 "… Fallback Noto" (Noto Sans Arabic, Android, measured from Google's cut as a stand-in); iOS is unmeasured. The two
-critical files are preloaded by `root.tsx` from `fontPreloadLinks(LOCALES[locale].script)` in `~/styles/fonts`.
+critical files are preloaded with `preloadFonts(LOCALES[locale].script)` from `~/styles/fonts` — React's `preload()`
+while the document renders. Not as `<link>` elements: in development `<StrictMode>` remounts those right after
+hydration, each file is fetched again and Chrome logs "preloaded but not used" (`root.tsx` still maps
+`fontPreloadLinks()` to `<link>` elements until the lead moves it).
 Licences: `public/fonts/OFL-Noto-Kufi-Arabic.txt`, `public/fonts/OFL-IBM-Plex-Sans-Arabic.txt`.
 
 ## 9. The /design-system page

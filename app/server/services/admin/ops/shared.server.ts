@@ -205,6 +205,9 @@ export async function entityViews(db: Db, actor: Actor, refs: readonly EntityRef
   const orderPage = can(actor, "orders.order.read");
   const stockPage = can(actor, "inventory.stock.read");
   const walletPage = can(actor, "finance.wallet.read");
+  // A customer appears in the wallet checks only: who has a wallet problem is wallet information — the name only with a
+  // wallet permission, the opaque id otherwise (follow-up 2026-11-12: the amount was hidden, the name was not).
+  const walletReader = canAny(actor, ["customers.wallet.read", "finance.wallet.read"]);
   const booksPage = canAny(actor, ["finance.journal.read", "finance.report.read"]) && can(actor, "cost.read");
 
   const out = new Map<string, EntityView>();
@@ -230,7 +233,7 @@ export async function entityViews(db: Db, actor: Actor, refs: readonly EntityRef
         break;
       }
       case "customer":
-        label = (id && customerName.get(id)) || id;
+        label = walletReader ? (id && customerName.get(id)) || id : id;
         href = walletPage && id ? `/admin/finance/wallets/${encodeURIComponent(id)}` : null;
         break;
       case "account":

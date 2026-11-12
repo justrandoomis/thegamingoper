@@ -16,7 +16,8 @@ import { cx } from "./cx";
  *
  * `data-gel` sets `--dot` (and `--plat`, `--plat-deep`, `--gel`) for a whole subtree: put it on a tile, a band or a nav
  * link and every dot inside takes that platform's colour. Dark mode uses the lighter dark-theme dots by itself.
- * 1.0: `solid` and `on` are accepted and ignored (a dot has one brightness); `PlatformGlyph` renders nothing (§4.2).
+ * 1.0: `solid` and `on` are accepted and ignored (a dot has one brightness). The 1.0 pictograms (`PlatformGlyph`) are
+ * gone (§4.2, stage 4): platforms are recognised by name, colour and real photos.
  */
 export const PLATFORMS = ["nintendo", "playstation", "xbox", "handheld"] as const;
 export type Platform = (typeof PLATFORMS)[number];
@@ -60,9 +61,4 @@ export function PlatformLabel({ platform, label, className }: PlatformLabelProps
       <BidiLabel>{text}</BidiLabel>
     </span>
   );
-}
-
-/** 1.0 device pictogram — retired (§4.2): platforms are recognised by name, colour and real photos. Renders nothing. */
-export function PlatformGlyph(_props: { platform: Platform; size?: number; className?: string }) {
-  return null;
 }

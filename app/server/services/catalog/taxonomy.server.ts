@@ -11,10 +11,18 @@
  * verified/partial compatibility rules). So a game sold for PS5 and Xbox counts for both platforms (once in its
  * department), and the PlayStation menu links the headsets made for PlayStation and others.
  *
+ * WHAT THE MEGA MENU GETS BEYOND LINKS (design v2 spec §5.4): every category, device and used link of a platform
+ * carries its `count` (what the linked page lists for the platform — a device link counts what the platform hub's
+ * device shortcut counts, from the hubs' own rows: listing.server.ts loadListingRows), device links a `short` name
+ * ("PS5 Pro"; card-facts.ts shortModelName), categories their tile photo (`artKey`), and each platform a `featured`
+ * product with its card price and state (pickFeatured: its lead device when it can be bought now, else its newest
+ * console that can, else the lead device as it is).
+ *
  * getNavTaxonomy() is read on every storefront document request, so it is cached PER ISOLATE (per database binding
  * and locale) and guarded by a VERSION KEY: a one-statement fingerprint of what the menu is built from (published
- * products and device models — count and last update —, active variants, compatibility rules, platforms,
- * categories, listed used units).
+ * products and device models — count and last update —, active variants and their prices, compatibility rules,
+ * platforms, categories, listed used units). Stock is not in it: the featured tile's state may lag a sale by up to
+ * NAV_MAX_AGE_MS (the product page and the cart always read stock live).
  *   · within NAV_CHECK_MS of the last check: served from memory, no query at all;
  *   · after that: the fingerprint is read (one small query); unchanged → the snapshot is kept, changed → rebuilt;
  *   · a snapshot older than NAV_MAX_AGE_MS is rebuilt whatever the fingerprint says (renames the fingerprint
@@ -28,14 +36,16 @@
  * Services take `db` first and never import "cloudflare:workers".
  */
 import { sql } from "drizzle-orm";
-import type { CategoryNode, PlatformSummary } from "~/lib/dto";
+import type { CategoryNode, PlatformSummary, ProductCardData } from "~/lib/dto";
 import { pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
-import { researchedPlatformSql } from "./cards.server";
-import type { NavCategory, NavLink, NavPlatform, NavTaxonomy } from "./types";
+import { shortModelName } from "./card-facts";
+import { getCardsByIds, MAX_CARD_IDS, researchedPlatformSql } from "./cards.server";
+import { loadListingRows } from "./listing.server";
+import type { NavCategory, NavFeatured, NavLink, NavPlatform, NavTaxonomy } from "./types";
 
-export type { NavCategory, NavLink, NavPlatform, NavTaxonomy } from "./types";
+export type { NavCategory, NavFeatured, NavLink, NavPlatform, NavTaxonomy } from "./types";
 
 /** How long a snapshot is served without looking at the database. */
 export const NAV_CHECK_MS = 30_000;
@@ -58,10 +68,10 @@ const rowsOf = <T>(result: unknown): T[] => ((result as { results?: T[] } | null
 // ───────────────────────────────────────────────────────────────── platforms and categories
 
 type PlatformRow = { id: string; slug: string; name: string; accent: string; art_key: string | null };
-type CategoryRow = { id: string; parent_id: string | null; slug: string; name: string; kind: string; sort: number };
+type CategoryRow = { id: string; parent_id: string | null; slug: string; name: string; kind: string; sort: number; art_key: string | null };
 
 const PLATFORMS_SQL = sql`SELECT id, slug, name, accent, art_key FROM platforms WHERE is_active = 1 ORDER BY sort, id`;
-const CATEGORIES_SQL = sql`SELECT id, parent_id, slug, name, kind, sort FROM categories WHERE is_active = 1 ORDER BY sort, id`;
+const CATEGORIES_SQL = sql`SELECT id, parent_id, slug, name, kind, sort, art_key FROM categories WHERE is_active = 1 ORDER BY sort, id`;
 
 /** Active platforms in menu order. */
 export async function getPlatforms(db: Db, locale: Locale): Promise<PlatformSummary[]> {
@@ -92,8 +102,34 @@ function buildTree(rows: readonly CategoryRow[], locale: Locale): CategoryNode[]
 type DeviceRow = { platform_id: string; slug: string; name: string };
 type CategoryCountRow = { category_id: string | null; n: number };
 type PlatformCountRow = { platform_id: string; category_id: string | null; n: number };
-type ConsoleRow = { platform_id: string | null; slug: string; name: string };
+type ConsoleRow = { id: string; platform_id: string | null; slug: string; name: string };
 type UsedRow = { platform_id: string | null; n: number };
+
+/** A card that can be bought now (the featured tile prefers one). */
+const buyable = (card: ProductCardData | undefined): card is ProductCardData => card !== undefined && (card.stock === "in_stock" || card.stock === "low_stock");
+
+/**
+ * The mega menu's featured product of one platform (NavFeatured): among its listed consoles (newest first) the one
+ * its photo comes from (`platforms.art_key` = "<product-slug>--<n>") leads; the first of them that can be bought now
+ * wins, else the first of them with its true state. Null when the platform lists no console (or no card came back).
+ */
+export function pickFeatured(consoles: readonly { id: string; slug: string }[], artKey: string | null, cards: ReadonlyMap<string, ProductCardData>): NavFeatured | null {
+  const lead = artKey ? artKey.replace(/--\d+$/, "") : null;
+  const ordered = [...consoles.filter((row) => row.slug === lead), ...consoles.filter((row) => row.slug !== lead)];
+  const known = ordered.map((row) => cards.get(row.id)).filter((card): card is ProductCardData => card !== undefined);
+  const card = known.find(buyable) ?? known[0];
+  if (!card) return null;
+  return {
+    productId: card.id,
+    href: `/p/${card.slug}`,
+    label: card.name,
+    image: card.image,
+    priceIqd: card.priceIqd,
+    stock: card.stock,
+    hasVariants: card.hasVariants,
+    isDemo: card.isDemo,
+  };
+}
 
 /** Kinds of top-level category that go into the mega menu's "games" and "consoles" columns; the rest are accessories. */
 const GAME_KINDS = new Set(["games"]);
@@ -107,26 +143,31 @@ const SKIP_KINDS = new Set(["used"]);
 const LISTED = sql`p.status = 'published' AND EXISTS (SELECT 1 FROM variants AS lv WHERE lv.product_id = p.id AND lv.is_active = 1)`;
 
 async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<NavTaxonomy> {
-  const [platformResult, categoryResult, deviceResult, categoryCountResult, platformCountResult, consoleResult, usedResult] = await runBatch(db, [
-    batchSql(db, PLATFORMS_SQL),
-    batchSql(db, CATEGORIES_SQL),
-    batchSql(db, sql`SELECT platform_id, slug, name FROM device_models WHERE status = 'published' ORDER BY sort, id`),
-    // each listed product once, on its category
-    batchSql(db, sql`SELECT p.category_id, COUNT(*) AS n FROM products AS p WHERE ${LISTED} GROUP BY p.category_id`),
-    // each listed product once per platform it is RESEARCHED for (a game sold for PS5 and Xbox counts for both)
-    batchSql(
-      db,
-      sql`SELECT pl.id AS platform_id, p.category_id, COUNT(*) AS n
-        FROM products AS p JOIN platforms AS pl ON pl.is_active = 1 AND ${researchedPlatformSql("p", "pl")}
-        WHERE ${LISTED}
-        GROUP BY pl.id, p.category_id`,
-    ),
-    batchSql(db, sql`SELECT p.platform_id, p.slug, p.name FROM products AS p WHERE ${LISTED} AND p.kind = 'console' ORDER BY COALESCE(p.published_at, p.created_at) DESC, p.id DESC`),
-    batchSql(db, sql`
-      SELECT p.platform_id, COUNT(*) AS n
-      FROM used_units AS u JOIN variants AS v ON v.id = u.variant_id JOIN products AS p ON p.id = v.product_id
-      WHERE u.status = 'listed'
-      GROUP BY p.platform_id`),
+  const [[platformResult, categoryResult, deviceResult, categoryCountResult, platformCountResult, consoleResult, usedResult], universe] = await Promise.all([
+    runBatch(db, [
+      batchSql(db, PLATFORMS_SQL),
+      batchSql(db, CATEGORIES_SQL),
+      batchSql(db, sql`SELECT platform_id, slug, name FROM device_models WHERE status = 'published' ORDER BY sort, id`),
+      // each listed product once, on its category
+      batchSql(db, sql`SELECT p.category_id, COUNT(*) AS n FROM products AS p WHERE ${LISTED} GROUP BY p.category_id`),
+      // each listed product once per platform it is RESEARCHED for (a game sold for PS5 and Xbox counts for both)
+      batchSql(
+        db,
+        sql`SELECT pl.id AS platform_id, p.category_id, COUNT(*) AS n
+          FROM products AS p JOIN platforms AS pl ON pl.is_active = 1 AND ${researchedPlatformSql("p", "pl")}
+          WHERE ${LISTED}
+          GROUP BY pl.id, p.category_id`,
+      ),
+      batchSql(db, sql`SELECT p.id, p.platform_id, p.slug, p.name FROM products AS p WHERE ${LISTED} AND p.kind = 'console' ORDER BY COALESCE(p.published_at, p.created_at) DESC, p.id DESC`),
+      batchSql(db, sql`
+        SELECT p.platform_id, COUNT(*) AS n
+        FROM used_units AS u JOIN variants AS v ON v.id = u.variant_id JOIN products AS p ON p.id = v.product_id
+        WHERE u.status = 'listed'
+        GROUP BY p.platform_id`),
+    ]),
+    // the hubs' own rows (listing.server.ts): which listed products each device fits, per researched platform — the
+    // device links count exactly what the platform hub's device shortcuts count
+    loadListingRows(db, { kind: "all" }, now),
   ]);
   const platforms = rowsOf<PlatformRow>(platformResult);
   const categories = rowsOf<CategoryRow>(categoryResult);
@@ -185,10 +226,15 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
       label: label(row),
       href: `/c/${row.slug}`,
       count: subtreeTotal.get(row.id) ?? 0,
+      artKey: row.art_key ?? null,
       children: categories
         .filter((child) => child.parent_id === row.id && (subtreeTotal.get(child.id) ?? 0) > 0)
-        .map((child) => ({ slug: child.slug, label: label(child), href: `/c/${child.slug}`, count: subtreeTotal.get(child.id) ?? 0 })),
+        .map((child) => ({ slug: child.slug, label: label(child), href: `/c/${child.slug}`, count: subtreeTotal.get(child.id) ?? 0, artKey: child.art_key ?? null })),
     }));
+
+  // the featured tiles' cards (cards.server.ts rules: price of the version on sale, state, demo flag) — one statement
+  const consoleIds = [...new Set(platforms.flatMap((platform) => consoles.filter((row) => row.platform_id === platform.id).map((row) => row.id)))].slice(0, MAX_CARD_IDS);
+  const cards = new Map((consoleIds.length > 0 ? await getCardsByIds(db, locale, consoleIds, { now }) : []).map((card) => [card.id, card]));
 
   const usedBy = new Map(used.map((row) => [row.platform_id, Number(row.n)]));
   const navPlatforms: NavPlatform[] = platforms.map((platform) => {
@@ -200,12 +246,20 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
       if ((own?.get(row.id) ?? 0) === 0) continue;
       const root = rootOf(row.id);
       if (!root || SKIP_KINDS.has(root.kind)) continue;
-      const link: NavLink = { label: label(row), href: holdsOthers(row.id, platform.id) ? `/c/${row.slug}?platform=${platform.slug}` : `/c/${row.slug}` };
+      const link: NavLink = {
+        label: label(row),
+        href: holdsOthers(row.id, platform.id) ? `/c/${row.slug}?platform=${platform.slug}` : `/c/${row.slug}`,
+        // what the linked hub lists with the link's filter: the category's products for this platform
+        count: subtreeOf.get(platform.id)?.get(row.id) ?? 0,
+      };
       if (GAME_KINDS.has(root.kind)) games.push(link);
       else if (CONSOLE_KINDS.has(root.kind)) allConsoles ??= link;
       else accessories.push(link);
     }
     const usedCount = usedBy.get(platform.id) ?? 0;
+    const platformConsoles = consoles.filter((row) => row.platform_id === platform.id);
+    // the platform hub's rows (scope: researched for this platform) that fit each device
+    const hubRows = universe.rows.filter((row) => row.platforms.includes(platform.slug));
     return {
       id: platform.id,
       slug: platform.slug,
@@ -215,16 +269,21 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
       href: `/platform/${platform.slug}`,
       // = the platform hub's count: every listed product researched for it, whatever its category
       productCount: platformTotal.get(platform.id) ?? 0,
-      devices: devices.filter((row) => row.platform_id === platform.id).map((row) => ({ label: label(row), href: `/device/${row.slug}` })),
+      devices: devices
+        .filter((row) => row.platform_id === platform.id)
+        .map((row) => ({
+          label: label(row),
+          href: `/device/${row.slug}`,
+          short: shortModelName(row.slug, label(row)),
+          count: hubRows.filter((hubRow) => hubRow.devices.includes(row.slug)).length,
+        })),
       accessories,
       games,
-      consoles: consoles
-        .filter((row) => row.platform_id === platform.id)
-        .slice(0, CONSOLES_PER_PLATFORM)
-        .map((row) => ({ label: label(row), href: `/p/${row.slug}` })),
+      consoles: platformConsoles.slice(0, CONSOLES_PER_PLATFORM).map((row) => ({ label: label(row), href: `/p/${row.slug}` })),
       allConsoles,
       // label = the platform's name; the shell words the link ("مستعمل {name}")
-      used: usedCount > 0 ? { label: label(platform), href: `/used?platform=${platform.slug}` } : null,
+      used: usedCount > 0 ? { label: label(platform), href: `/used?platform=${platform.slug}`, count: usedCount } : null,
+      featured: pickFeatured(platformConsoles, platform.art_key, cards),
     };
   });
 
@@ -241,7 +300,7 @@ const FINGERPRINT_SQL = sql`SELECT
   (SELECT COUNT(*) || ':' || COALESCE(MAX(updated_at), 0) FROM products WHERE status = 'published') || '|' ||
   (SELECT COALESCE(MAX(updated_at), 0) FROM products) || '|' ||
   (SELECT COUNT(*) || ':' || COALESCE(MAX(updated_at), 0) FROM device_models WHERE status = 'published') || '|' ||
-  (SELECT COUNT(*) || ':' || TOTAL(rowid * is_active) FROM variants) || '|' ||
+  (SELECT COUNT(*) || ':' || TOTAL(rowid * is_active) || ':' || TOTAL(price_iqd) FROM variants) || '|' ||
   (SELECT COUNT(*) || ':' || TOTAL(rowid * (CASE status WHEN 'verified' THEN 1 WHEN 'partial' THEN 2 ELSE 3 END)) FROM compatibility_rules WHERE subject_type = 'product') || '|' ||
   (SELECT COUNT(*) || ':' || TOTAL(is_active) || ':' || TOTAL(sort) || ':' || TOTAL(length(name)) || ':' || COALESCE(GROUP_CONCAT(art_key), '') FROM platforms) || '|' ||
   (SELECT COUNT(*) || ':' || TOTAL(is_active) || ':' || TOTAL(sort) || ':' || TOTAL(length(name)) || ':' || TOTAL(length(slug)) FROM categories) || '|' ||

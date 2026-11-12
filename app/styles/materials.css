@@ -341,8 +341,10 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   transition-duration: var(--t-press);
   transition-timing-function: ease-out;
 }
-/* selected / held (a toggle that is on, a chosen chip or segment): ink fill means "selected", never "action" */
-.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) {
+/* selected / held (a toggle that is on, a chosen chip or segment): ink fill means "selected", never "action". Icon
+   buttons are not selected chips: a held icon button keeps its own face (below), so they are left out here — an
+   exception written after this rule would lose to it (the :has() argument weighs more). */
+.key:not(.key--round):is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) {
   --face: var(--ink);
   --hover-face: var(--ink);
   --edge: var(--ink);
@@ -402,16 +404,10 @@ html:not([data-motion-ready]) .key:active > .key__cap {
 .key--round.key--outline:is(:disabled, [aria-disabled="true"]) {
   --edge: var(--line);
 }
-/* a held icon button keeps its face: the filled glyph and aria-pressed say "on" (the heart fills in --red-ink) */
+/* a held icon button keeps the face of its variant (outline, ghost, on-image, on-colour): the filled glyph and
+   aria-pressed say "on", never an ink disc; the label is ink (the heart fills in --red-ink) */
 .key--round:is([aria-pressed="true"], [data-held]) {
-  --face: var(--paper);
-  --hover-face: var(--niche);
-  --edge: var(--line-2);
   --on: var(--ink);
-}
-.key--round:is(.key--ghost, .key--quiet, .key--plain):is([aria-pressed="true"], [data-held]) {
-  --face: transparent;
-  --edge: transparent;
 }
 .key--round.key--wish:is([aria-pressed="true"], [data-held]) {
   --on: var(--red-ink);
@@ -598,9 +594,11 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   background: radial-gradient(closest-side, var(--hero-contact), transparent);
   pointer-events: none;
 }
-/* platform hub band and device-hub head: as a tile, without clay; light from the hardware's corner */
+/* platform hub band and device-hub head: as a tile, without clay; light from the hardware's corner. The sheen sits at
+   --light-y (60% by default); a page that places its hardware elsewhere moves it there. */
 .band--platform,
 .band--device {
+  --light-y: 60%;
   border-radius: var(--r-lg);
   background-color: color-mix(in srgb, var(--plat, var(--hero-face)) calc(var(--unlit) * 100%), var(--cab));
 }
@@ -610,7 +608,7 @@ html:not([data-motion-ready]) .key:active > .key__cap {
 .band--platform > .band__light,
 .band--device > .band__light {
   background:
-    radial-gradient(48% 70% at var(--light-x) 60%, var(--tile-sheen), transparent 70%),
+    radial-gradient(48% 70% at var(--light-x) var(--light-y), var(--tile-sheen), transparent 70%),
     radial-gradient(70% 90% at calc(50% + 50% * var(--dir)) 100%, rgb(var(--gel, var(--gel-brand)) / var(--tile-gel-a)), transparent 72%);
 }
 /* wallet card: crimson, no light (light); a cabinet with the brand light (dark) */
@@ -961,12 +959,29 @@ html:not([data-motion-ready]) .ptile:active > .ptile__cap {
   }
 }
 
-/* an opaque photo (manifest transparent: false, drawn by <Art> with data-transparent="false") until it is re-cut: it
-   melts into the light ground; in dark it keeps its own background as a white --r-sm plate. The only mix-blend-mode
-   in the app. */
-img:is([data-transparent="false"], [data-opaque]) {
+/* a picture that kept its own background (manifest transparent: false; <Art> marks it data-transparent="false") is
+   drawn on a plate of that colour with --r-sm corners; box art and digital cards keep their --r-xs */
+img[data-transparent="false"] {
   --photo-radius: var(--r-sm);
+}
+.niche:is([data-kind="box"], [data-kind="card"]) img[data-transparent="false"] {
+  --photo-radius: var(--r-xs);
+}
+/* an opaque PRODUCT photo (not cut out yet, v2 §7.5; data-opaque on its <img>, DESIGN.md §12.5 — box art and
+ * screenshots are framed rectangles by design and never blend) melts into the light product ground: its plate
+ * multiplies away. In dark, and
+ * on every showcase surface, it keeps the plate. The blend sits on the render slot, the box that stands directly on the
+ * ground: any stacking context between the picture and the ground (the slot's z-index and size containment, a sold-out
+ * photo's opacity, the hover scale) would otherwise make the picture blend with an empty layer and show a white box.
+ * A bare <Art> outside a slot blends itself. The only mix-blend-mode in the app. */
+.render-slot:has(img[data-opaque]),
+img[data-opaque]:not(.render-slot img) {
   mix-blend-mode: var(--opaque-blend);
+}
+/* crimson, a platform colour and the graphite band are not the product ground: multiplied into them, the plate (and
+   the product) would take their colour */
+:is(.band, .ptile, .release) {
+  --opaque-blend: normal;
 }
 
 /* the stage: the product page's picture — the same neutral ground, bigger. 1:1 and full bleed on phones, 4:3 with
@@ -993,14 +1008,14 @@ img:is([data-transparent="false"], [data-opaque]) {
   place-items: end center;
 }
 /* a render: one box sized from the picture's aspect ratio inside a size container (the slot), bottom-aligned on the
-   floor line. No tilt, no filter. */
+   floor line. No tilt, no filter, and no isolation of its own (1.0's contact shadow behind the picture is gone; the
+   contact ellipse belongs to the well). */
 .render {
   position: relative;
   display: block;
   inline-size: min(100cqi, calc(100cqb * var(--aspect, 1)));
   aspect-ratio: var(--aspect, 1);
   line-height: 0;
-  isolation: isolate;
 }
 .render > img,
 .render > picture > img {

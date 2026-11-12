@@ -14,6 +14,8 @@
  *              and digital PS5 each list only their own variant and their own used units.
  *   versions   those variants with the maker's model number (`options.model`), a later release date
  *              (`attributes.variantReleaseDates`) and the research note per version; `notes` = the products' notes.
+ *   fromIqd    «من …»: the cheapest of those versions the cart accepts now (the commerce core's getAvailability), or
+ *              null when none can be ordered.
  *   specs      the researched spec sheet (`device_models.specs`, each value carrying its own label), grouped.
  *   games      games whose researched `game.platforms` lists the model, plus games with a rule for it — each with the
  *              status of the box the store sells (compatibility.server.ts: model › generation › platform rules,
@@ -41,6 +43,8 @@ import { pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { getCardsByIds, getUsedSpotlight, MAX_CARD_IDS } from "~/server/services/catalog/cards.server";
+import { getAvailability } from "~/server/services/inventory/stock.server";
+import { splitBidi } from "~/ui/BidiText";
 import {
   compatibilityStatements,
   readCompatibility,
@@ -106,6 +110,13 @@ export type DeviceHub = {
   model: HubModel;
   editions: ProductCardData[];
   versions: HubVersion[];
+  /**
+   * «من …» (design v2 spec §6.6): the price of the cheapest version OF THIS DEVICE (`versions` — one product may cover
+   * two models, the 2020 PS5 and its Digital Edition) that the cart accepts now: an active version of a published
+   * product with units available (the commerce core's getAvailability, exactly like the product page's `orderable`).
+   * Integer IQD; null when no version can be ordered now (sold out, or coming soon).
+   */
+  fromIqd: number | null;
   notes: HubNote[];
   highlights: string[];
   inTheBox: string[];
@@ -271,6 +282,22 @@ export function buildComparison(current: ComparableModel, siblings: readonly Com
   };
 }
 
+// ───────────────────────────────────────────────────────────────── «من …»
+
+/**
+ * The cheapest price among versions the cart accepts now (units available, as getAvailability() says), integer IQD;
+ * null when none can be ordered. Pure.
+ */
+export function cheapestAvailable(versions: readonly { id: string; price_iqd: number }[], availability: ReadonlyMap<string, { available: number }>): number | null {
+  let best: number | null = null;
+  for (const version of versions) {
+    const price = Number(version.price_iqd);
+    if ((availability.get(version.id)?.available ?? 0) <= 0 || !Number.isSafeInteger(price) || price <= 0) continue;
+    if (best === null || price < best) best = price;
+  }
+  return best;
+}
+
 // ───────────────────────────────────────────────────────────────── FAQ
 
 type FaqFacts = {
@@ -280,10 +307,21 @@ type FaqFacts = {
   inTheBox: string[];
 };
 
+/**
+ * A device name inside a question: each Latin run (and number) is a left-to-right isolate (U+2066 … U+2069) and the
+ * rest keeps the sentence's direction — the kit's BidiText rule as a string — so «PlayStation 5 (الطراز الأصلي 2020)»
+ * reads name first, qualifier second; one isolate around the whole name made the Arabic qualifier lead.
+ */
+export function isolateLatin(text: string): string {
+  return splitBidi(text)
+    .map((part) => (part.ltr ? `⁦${part.text}⁩` : part.text))
+    .join("");
+}
+
 /** Questions answered only from stored facts (a question without a fact is left out). */
 export function buildFaq(facts: FaqFacts, locale: Locale): HubFaq[] {
   const t = serverT(locale, "devices");
-  const device = `⁨${facts.deviceName}⁩`;
+  const device = isolateLatin(facts.deviceName);
   const yesNo = (yes: boolean) => t(yes ? "specs.yes" : "specs.no");
   const spec = (key: string) => specValueText(facts.specs?.[key], locale, yesNo);
   const faq: HubFaq[] = [];
@@ -354,7 +392,7 @@ type ModelRow = {
 };
 
 type DeviceProductRow = { id: string; slug: string; kind: string; name: string; attributes: string | null; warranty_months: number | null; device_model_id: string | null; pub: number };
-type DeviceVariantRow = { id: string; product_id: string; sku: string; title: string | null; options: string | null; is_default: number; sort: number; art_key: string | null };
+type DeviceVariantRow = { id: string; product_id: string; sku: string; title: string | null; options: string | null; is_default: number; sort: number; price_iqd: number; art_key: string | null };
 type PlatformModelRow = { id: string; slug: string; name: string; specs: string | null; art_key: string | null; sort: number; generation_id: string | null; released_on: string | null; device_kind: string; category_id: string | null };
 type ArticleRow = { slug: string; kind: string; title: string; summary: string | null; device_model_id: string | null; model_name: string | null };
 type TreeRow = { symptom_key: string; title: string; device_model_id: string | null; platform_id: string | null };
@@ -445,7 +483,7 @@ ORDER BY CASE WHEN p.slug = ${mainSlug} THEN 0 ELSE 1 END, pub DESC, p.id`,
       ),
       batchSql(
         db,
-        sql`SELECT v.id, v.product_id, v.sku, v.title, v.options, v.is_default, v.sort,
+        sql`SELECT v.id, v.product_id, v.sku, v.title, v.options, v.is_default, v.sort, v.price_iqd,
   (SELECT m.art_key FROM media AS m WHERE m.owner_type = 'variant' AND m.owner_id = v.id ORDER BY m.sort, m.id LIMIT 1) AS art_key
 FROM variants AS v
 JOIN products AS p ON p.id = v.product_id
@@ -583,10 +621,16 @@ ORDER BY COALESCE(u.listed_at, u.created_at) DESC, u.id DESC`,
     .map((row) => row.id);
   const chunks: string[][] = [];
   for (let i = 0; i < cardIds.length; i += MAX_CARD_IDS) chunks.push(cardIds.slice(i, i + MAX_CARD_IDS));
-  const [cardLists, usedCards] = await Promise.all([
+  const [cardLists, usedCards, availability] = await Promise.all([
     Promise.all(chunks.map((chunk) => getCardsByIds(db, locale, chunk, { now }))),
     usedIds.length > 0 ? getUsedSpotlight(db, locale, { platform: target.platformSlug, limit: 60 }) : Promise.resolve([] as UsedUnitCardData[]),
+    // what the cart accepts of this device's own versions right now (the «من …» price)
+    getAvailability(
+      db,
+      ownVariants.map((variant) => variant.id),
+    ),
   ]);
+  const fromIqd = cheapestAvailable(ownVariants, availability);
   const cards = new Map(cardLists.flat().map((card) => [card.id, card]));
   const itemOf = (entry: Pending): CompatItem | null => {
     const card = cards.get(entry.productId);
@@ -662,6 +706,7 @@ ORDER BY COALESCE(u.listed_at, u.created_at) DESC, u.id DESC`,
     },
     editions,
     versions,
+    fromIqd,
     notes,
     highlights,
     inTheBox,

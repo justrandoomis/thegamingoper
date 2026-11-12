@@ -57,7 +57,8 @@ export async function staffOverview(db: Db, actor: Actor, now: number): Promise<
     leavePending: access.leave ? n("leavePending") : null,
     tasks: { open: access.tasksView ? n("tasksOpen") : n("tasksMine"), overdue: access.tasksView ? n("tasksOverdue") : 0, mine: n("tasksMine") },
     commissions: access.commissionView ? { period, netIqd: n("commissionNet"), accruedIqd: n("commissionAccrued") } : null,
-    payroll: access.payrollView ? { drafts: n("drafts"), approved: n("approved"), advancesPending: can(actor, "staff.payroll.approve") ? n("advancesToDecide") : 0 } : null,
+    // a branch-limited approver: no store-wide runs, but their branch's advances (advancesToDecide is scoped by theirs())
+    payroll: access.payrollView || access.advancesView ? { drafts: access.payrollView ? n("drafts") : 0, approved: access.payrollView ? n("approved") : 0, advancesPending: can(actor, "staff.payroll.approve") ? n("advancesToDecide") : 0 } : null,
     me: { clockedInSince: row?.mySince === null || row?.mySince === undefined ? null : Number(row.mySince) },
   };
 }

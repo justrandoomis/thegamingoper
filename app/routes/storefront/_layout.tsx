@@ -5,6 +5,7 @@ import { messagesFor, type I18nPayload } from "~/i18n/i18n.server";
 import { isLocale } from "~/lib/locales";
 import { PageTransition } from "~/motion";
 import { getCtx } from "~/server/context.server";
+import { missingProduct } from "./shell/chrome";
 import { emptyStorefrontShell, loadStorefrontShell } from "./shell/data.server";
 import { shellMeta } from "./shell/meta";
 import { ShellError } from "./shell/ShellError";
@@ -73,9 +74,10 @@ export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
   const thrown = isRouteErrorResponse(error) ? (error.data as { i18n?: I18nPayload; shell?: ShellData } | null) : null;
   const messages = loaderData?.i18n.shell ?? thrown?.i18n?.shell;
   const shell = loaderData?.shell ?? thrown?.shell ?? null;
-  // `errored`: the failed page's handle (e.g. a product's tabBar: false) no longer applies — its task bar is gone
+  // `errored`: the failed page's handle (e.g. a product's tabBar: false) no longer applies — its task bar is gone.
+  // A missing product's slug words start the search fields (v2 §6.16 "search prefilled from the slug").
   return (
-    <ShellFrame shell={shell} messages={messages} errored>
+    <ShellFrame shell={shell} messages={messages} errored searchQuery={missingProduct(error) || undefined}>
       <ShellError error={error} platforms={shell?.nav.platforms ?? []} />
     </ShellFrame>
   );

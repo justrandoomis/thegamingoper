@@ -18,6 +18,8 @@ export default defineMessages({
     no: "لا",
     phoneMasked: "الرقم مخفي جزئياً: رؤية الرقم كاملاً تحتاج صلاحية خاصة.",
     late: "متأخر",
+    /** A span of days after «خلال», with the noun agreeing with the number (3–10 «أيام», 11–99 «يوماً», 100 «يوم»). */
+    withinDays: { zero: "اليوم نفسه", one: "خلال يوم واحد", two: "خلال يومين", few: "خلال {count} أيام", many: "خلال {count} يوماً", other: "خلال {count} يوم" },
     nav: {
       label: "أقسام المرتجعات والضمان",
       list: "طلبات الإرجاع",
@@ -108,7 +110,10 @@ export default defineMessages({
       lead: "قواعد ثابتة تشرح نفسها. لا تمنع شيئاً وحدها: الحدود الصارمة في قاعدة البيانات وموافقة شخص ثانٍ على المال.",
       none: "لا توجد إشارات على هذا الطلب.",
       rules: {
-        repeat_returner: { title: "إرجاع متكرر", why: "فتح هذا الرقم أو العميل {count} طلبات إرجاع خلال {days} يوماً." },
+        repeat_returner: {
+          title: "إرجاع متكرر",
+          why: { one: "فتح هذا الرقم أو العميل طلب إرجاع واحداً {within}.", two: "فتح هذا الرقم أو العميل طلبَي إرجاع {within}.", few: "فتح هذا الرقم أو العميل {count} طلبات إرجاع {within}.", many: "فتح هذا الرقم أو العميل {count} طلبَ إرجاع {within}.", other: "فتح هذا الرقم أو العميل {count} طلب إرجاع {within}." },
+        },
         high_value: { title: "قيمة عالية", why: "قيمة القطع المرتجعة {amount}، والحد {threshold}." },
         quick_return: { title: "إرجاع سريع بعد التسليم", why: "طلب إرجاع لتغيير الرأي خلال {hours} ساعة من التسليم." },
         customer_flagged: { title: "حساب مُعلَّم", why: "حساب العميل عليه علامة احتيال." },
@@ -128,7 +133,7 @@ export default defineMessages({
       refundApproval: { label: "استردادات تنتظر موافقتك", some: { one: "استرداد واحد ينتظر", two: "استردادان ينتظران", few: "{count} استردادات تنتظر", many: "{count} استرداداً ينتظر", other: "{count} استرداد ينتظر" }, none: "لا شيء ينتظر موافقتك.", open: "افتح القائمة" },
       quarantine: { label: "في العزل", some: { one: "قطعة واحدة تنتظر قراراً", two: "قطعتان تنتظران قراراً", few: "{count} قطع تنتظر قراراً", many: "{count} قطعة تنتظر قراراً", other: "{count} قطعة تنتظر قراراً" }, none: "العزل فارغ.", open: "افتح العزل" },
       repairsLate: { label: "صيانة متأخرة", some: { one: "تذكرة واحدة تجاوزت موعدها", two: "تذكرتان تجاوزتا موعدهما", few: "{count} تذاكر تجاوزت موعدها", many: "{count} تذكرة تجاوزت موعدها", other: "{count} تذكرة تجاوزت موعدها" }, none: "لا صيانة متأخرة.", open: "افتح الصيانة" },
-      warrantiesEnding: { label: "ضمانات تنتهي قريباً", some: { one: "ضمان واحد خلال {days} يوماً", two: "ضمانان خلال {days} يوماً", few: "{count} ضمانات خلال {days} يوماً", many: "{count} ضماناً خلال {days} يوماً", other: "{count} ضمان خلال {days} يوماً" }, none: "لا ضمان ينتهي خلال {days} يوماً.", open: "افتح الضمانات" },
+      warrantiesEnding: { label: "ضمانات تنتهي قريباً", some: { one: "ضمان واحد {within}", two: "ضمانان {within}", few: "{count} ضمانات {within}", many: "{count} ضماناً {within}", other: "{count} ضمان {within}" }, none: "لا ضمان ينتهي {within}.", open: "افتح الضمانات" },
     },
     list: {
       title: "طلبات الإرجاع",
@@ -391,7 +396,7 @@ export default defineMessages({
     policies: {
       title: "قواعد الإرجاع",
       lead: "تحدد القواعد ما يُرجع ومتى: حسب نوع المنتج وفئته وكونه جديداً أو مستعملاً. تُطبق القاعدة الأدق: الفئة ثم النوع ثم العامة.",
-      window: "مدة الإرجاع العامة: {days} يوم من التسليم",
+      window: "مدة الإرجاع العامة: {span} من التسليم",
       windowHint: "تُطبق حين لا تنطبق أي قاعدة أو حين تترك القاعدة المدة فارغة. تُغيَّر من الإعدادات.",
       rules: "القواعد",
       empty: "لا قواعد بعد.",
@@ -608,7 +613,7 @@ export default defineMessages({
     },
     quarantine: {
       title: "العزل",
-      lead: "قطع مرتجعة محفوظة في مواقع لا يُباع منها: تنتظر تجديدها أو إرجاعها إلى المورد أو شطبها. الهدف قرار خلال {days} يوماً.",
+      lead: "قطع مرتجعة محفوظة في مواقع لا يُباع منها: تنتظر تجديدها أو إرجاعها إلى المورد أو شطبها. الهدف قرار {within}.",
       empty: "العزل فارغ.",
       emptyHint: "تصل القطع إلى هنا من فحص طلبات الإرجاع حين يكون القرار تجديدها أو إرجاعها للمورد.",
       col: { unit: "القطعة", rma: "طلب الإرجاع", decision: "القرار", location: "الموقع", waiting: "الانتظار", due: "الموعد" },
@@ -706,6 +711,7 @@ export default defineMessages({
     no: "No",
     phoneMasked: "The number is partly hidden: seeing it in full needs a special permission.",
     late: "Late",
+    withinDays: { zero: "the same day", one: "within {count} day", other: "within {count} days" },
     nav: {
       label: "Returns and warranty sections",
       list: "Return requests",
@@ -796,7 +802,7 @@ export default defineMessages({
       lead: "Fixed rules that explain themselves. They block nothing on their own: the hard limits are in the database and money needs a second person.",
       none: "No signals on this return.",
       rules: {
-        repeat_returner: { title: "Repeat returns", why: "This phone or customer opened {count} returns within {days} days." },
+        repeat_returner: { title: "Repeat returns", why: { one: "This phone or customer opened {count} return {within}.", other: "This phone or customer opened {count} returns {within}." } },
         high_value: { title: "High value", why: "The returned units are worth {amount}; the threshold is {threshold}." },
         quick_return: { title: "Quick return after delivery", why: "A change-of-mind return asked for within {hours} hours of delivery." },
         customer_flagged: { title: "Flagged account", why: "The customer's account carries a fraud flag." },
@@ -816,7 +822,7 @@ export default defineMessages({
       refundApproval: { label: "Refunds awaiting your approval", some: { one: "{count} refund waiting", other: "{count} refunds waiting" }, none: "Nothing awaits your approval.", open: "Open the list" },
       quarantine: { label: "In quarantine", some: { one: "{count} unit awaits a decision", other: "{count} units await a decision" }, none: "Quarantine is empty.", open: "Open quarantine" },
       repairsLate: { label: "Late repairs", some: { one: "{count} ticket is past its due time", other: "{count} tickets are past their due time" }, none: "No late repairs.", open: "Open repairs" },
-      warrantiesEnding: { label: "Warranties ending soon", some: { one: "{count} warranty within {days} days", other: "{count} warranties within {days} days" }, none: "No warranty ends within {days} days.", open: "Open warranties" },
+      warrantiesEnding: { label: "Warranties ending soon", some: { one: "{count} warranty {within}", other: "{count} warranties {within}" }, none: "No warranty ends {within}.", open: "Open warranties" },
     },
     list: {
       title: "Return requests",
@@ -1079,7 +1085,7 @@ export default defineMessages({
     policies: {
       title: "Return rules",
       lead: "Rules decide what can be returned and when: by product kind, category and whether it is new or used. The most specific rule applies: category, then kind, then the general one.",
-      window: "General return window: {days} days from delivery",
+      window: "General return window: {span} from delivery",
       windowHint: "Applies when no rule matches or a rule leaves the window empty. Changed in settings.",
       rules: "Rules",
       empty: "No rules yet.",
@@ -1296,7 +1302,7 @@ export default defineMessages({
     },
     quarantine: {
       title: "Quarantine",
-      lead: "Returned units kept in locations nothing is sold from: waiting to be refurbished, returned to the supplier or written off. The target is a decision within {days} days.",
+      lead: "Returned units kept in locations nothing is sold from: waiting to be refurbished, returned to the supplier or written off. The target is a decision {within}.",
       empty: "Quarantine is empty.",
       emptyHint: "Units arrive here from return inspections when the decision is to refurbish them or return them to the supplier.",
       col: { unit: "Unit", rma: "Return", decision: "Decision", location: "Location", waiting: "Waiting", due: "Due" },
@@ -1394,6 +1400,7 @@ export default defineMessages({
     no: "نەخێر",
     phoneMasked: "ژمارەکە بەشێکی شاراوەیە: بینینی تەواوی ڕێگەپێدانی تایبەتی دەوێت.",
     late: "دواکەوتوو",
+    withinDays: { zero: "هەمان ڕۆژ", one: "لە ماوەی {count} ڕۆژدا", other: "لە ماوەی {count} ڕۆژدا" },
     nav: {
       label: "بەشەکانی گەڕاندنەوە و گەرەنتی",
       list: "داواکارییەکانی گەڕاندنەوە",
@@ -1484,7 +1491,7 @@ export default defineMessages({
       lead: "یاسای جێگیر کە خۆیان ڕوون دەکەنەوە. بە تەنها هیچ ڕێگری ناکەن: سنوورە توندەکان لە بنکەدراوەدان و پارە پێویستی بە کەسی دووەمە.",
       none: "هیچ ئاماژەیەک لەسەر ئەم گەڕاندنەوەیە نییە.",
       rules: {
-        repeat_returner: { title: "گەڕاندنەوەی دووبارە", why: "ئەم ژمارەیە یان کڕیارە {count} گەڕاندنەوەی لە ماوەی {days} ڕۆژدا کردووەتەوە." },
+        repeat_returner: { title: "گەڕاندنەوەی دووبارە", why: "ئەم ژمارەیە یان کڕیارە {count} گەڕاندنەوەی {within} کردووەتەوە." },
         high_value: { title: "بەهای بەرز", why: "بەهای پارچە گەڕاوەکان {amount}ە؛ سنوورەکە {threshold}ە." },
         quick_return: { title: "گەڕاندنەوەی خێرا دوای گەیاندن", why: "گەڕاندنەوە بەهۆی گۆڕینی بیر لە ماوەی {hours} کاتژمێر لە گەیاندنەوە." },
         customer_flagged: { title: "هەژماری نیشانەکراو", why: "هەژماری کڕیار نیشانەی ساختەکاری لەسەرە." },
@@ -1504,7 +1511,7 @@ export default defineMessages({
       refundApproval: { label: "گەڕاندنەوەی پارە چاوەڕێی پەسەندکردنی تۆن", some: { one: "{count} گەڕاندنەوەی پارە چاوەڕێیە", other: "{count} گەڕاندنەوەی پارە چاوەڕێن" }, none: "هیچ شتێک چاوەڕێی پەسەندکردنی تۆ نییە.", open: "لیستەکە بکەرەوە" },
       quarantine: { label: "لە جیاکردنەوەدا", some: { one: "{count} پارچە چاوەڕێی بڕیارە", other: "{count} پارچە چاوەڕێی بڕیارن" }, none: "جیاکردنەوە بەتاڵە.", open: "جیاکردنەوە بکەرەوە" },
       repairsLate: { label: "چاککردنەوەی دواکەوتوو", some: { one: "{count} تیکێت کاتەکەی تێپەڕاندووە", other: "{count} تیکێت کاتەکەیان تێپەڕاندووە" }, none: "هیچ چاککردنەوەیەکی دواکەوتوو نییە.", open: "چاککردنەوە بکەرەوە" },
-      warrantiesEnding: { label: "گەرەنتی کە بەم زووانە کۆتایی دێت", some: { one: "{count} گەرەنتی لە ماوەی {days} ڕۆژدا", other: "{count} گەرەنتی لە ماوەی {days} ڕۆژدا" }, none: "هیچ گەرەنتییەک لە ماوەی {days} ڕۆژدا کۆتایی نایەت.", open: "گەرەنتییەکان بکەرەوە" },
+      warrantiesEnding: { label: "گەرەنتی کە بەم زووانە کۆتایی دێت", some: { one: "{count} گەرەنتی {within}", other: "{count} گەرەنتی {within}" }, none: "هیچ گەرەنتییەک {within} کۆتایی نایەت.", open: "گەرەنتییەکان بکەرەوە" },
     },
     list: {
       title: "داواکارییەکانی گەڕاندنەوە",
@@ -1767,7 +1774,7 @@ export default defineMessages({
     policies: {
       title: "یاساکانی گەڕاندنەوە",
       lead: "یاساکان دیاری دەکەن چی و کەی دەگەڕێنرێتەوە: بەپێی جۆری بەرهەم و پۆل و نوێ یان بەکارهاتوو. وردترین یاسا جێبەجێ دەبێت: پۆل، پاشان جۆر، پاشان گشتی.",
-      window: "ماوەی گشتیی گەڕاندنەوە: {days} ڕۆژ لە گەیاندنەوە",
+      window: "ماوەی گشتیی گەڕاندنەوە: {span} لە گەیاندنەوە",
       windowHint: "کاتێک هیچ یاسایەک ناگونجێت یان یاسایەک ماوەکە بەتاڵ دەهێڵێت جێبەجێ دەبێت. لە ڕێکخستنەکان دەگۆڕدرێت.",
       rules: "یاساکان",
       empty: "هێشتا یاسا نییە.",
@@ -1984,7 +1991,7 @@ export default defineMessages({
     },
     quarantine: {
       title: "جیاکردنەوە",
-      lead: "پارچە گەڕاوەکان لە شوێنانێکدا هەڵگیراون کە لێیان نافرۆشرێت: چاوەڕێی نوێکردنەوە یان گەڕاندنەوە بۆ دابینکەر یان سڕینەوەن. ئامانج بڕیارە لە ماوەی {days} ڕۆژدا.",
+      lead: "پارچە گەڕاوەکان لە شوێنانێکدا هەڵگیراون کە لێیان نافرۆشرێت: چاوەڕێی نوێکردنەوە یان گەڕاندنەوە بۆ دابینکەر یان سڕینەوەن. ئامانج بڕیارە {within}.",
       empty: "جیاکردنەوە بەتاڵە.",
       emptyHint: "پارچەکان لە پشکنینی گەڕاندنەوەکانەوە دێنە ئێرە کاتێک بڕیار نوێکردنەوە یان گەڕاندنەوە بۆ دابینکەرە.",
       col: { unit: "پارچە", rma: "گەڕاندنەوە", decision: "بڕیار", location: "شوێن", waiting: "چاوەڕوانی", due: "کات" },

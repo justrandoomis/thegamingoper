@@ -4,21 +4,30 @@ import { useT } from "~/i18n/react";
 import { cx } from "./cx";
 
 /**
- * The delivery-time preference — Design System v2 §4.9 (G8): OPTIONAL. 48px cells (--r-sm, a 1px control boundary, a 2px
+ * A preferred time (a delivery by default; a hand-over or a call with `label`) — Design System v2 §4.9 (G8): OPTIONAL.
+ * 48px cells (--r-sm, a 1px control boundary, a 2px
  * ink border when chosen, 600 labels), two columns on phones and four from 600, as native radio groups (they submit
  * with a <Form>; arrows are native). The period: «أي وقت · صباحاً · بعد الظهر · مساءً». Day cells appear ONLY when the
  * owner has configured dispatch days in the admin (`days`) — until then the preference is the period alone, and no
  * day or date is offered. Under it, always: «وقت مفضّل وليس موعداً مؤكداً.» — never a promise.
  *
- *   <PreferencePicker name="period" value={period} onChange={setPeriod} />
+ *   <PreferencePicker name="period" value={period} onChange={setPeriod} />                        delivery (checkout)
+ *   <PreferencePicker name="period" label={t("handoverTime")} id="f-window" />                    any other visit or call
  *   <PreferencePicker name="period" days={dispatchDays} dayName="day" dayValue={day} onDayChange={setDay} … />
  */
 export const PERIODS = ["any", "morning", "afternoon", "evening"] as const;
 export type Period = (typeof PERIODS)[number];
 
 export type PreferencePickerProps = {
-  /** Default «الوقت المفضّل للتوصيل (اختياري)». */
+  /**
+   * What the time is for, in your words («الوقت المفضّل لتسليم الجهاز») — the kit adds «(اختياري)». Default: the delivery
+   * question «الوقت المفضّل للتوصيل».
+   */
+  label?: ReactNode;
+  /** The whole legend, mark included (1.0; prefer `label`). */
   legend?: ReactNode;
+  /** The fieldset's id — what an error summary item links to. */
+  id?: string;
   name: string;
   value?: Period | null;
   defaultValue?: Period;
@@ -31,16 +40,16 @@ export type PreferencePickerProps = {
   className?: string;
 };
 
-export function PreferencePicker({ legend, name, value, defaultValue = "any", onChange, days, dayName, dayValue, onDayChange, className }: PreferencePickerProps) {
+export function PreferencePicker({ label, legend, id, name, value, defaultValue = "any", onChange, days, dayName, dayValue, onDayChange, className }: PreferencePickerProps) {
   const t = useT("ui-shop");
   const hintId = useId();
   const controlled = value !== undefined;
   return (
-    <fieldset className={cx("field field--group grid gap-3", className)} aria-describedby={hintId}>
+    <fieldset id={id} className={cx("field field--group grid gap-3", className)} aria-describedby={hintId}>
       <legend className="field__label">
         {legend ?? (
           <>
-            {t("preference.legend")} <span className="field__mark">{t("preference.optional")}</span>
+            {label ?? t("preference.legend")} <span className="field__mark">{t("preference.optional")}</span>
           </>
         )}
       </legend>

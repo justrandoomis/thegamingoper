@@ -15,9 +15,9 @@
     "ckb": "1TB · سەوزی ڕوونی OG Green · ‏25,000 کۆنسۆڵی ژمارەدار"
   },
   "description": {
-    "ar": "إصدار محدود من Xbox Series X بمناسبة مرور 25 عاماً على Xbox، بهيكل أخضر شفاف مستوحى من جهاز Xbox الأصلي، وشعار Xbox 25 في الواجهة، وعلامة X تضيء بالأخضر عند التشغيل. العتاد نفسه في Series X: ‏SSD سعة 1TB ومشغل أقراص 4K UHD Blu-ray. كل جهاز محفور برقم خاص، ومعه يد Xbox Wireless Controller X25 Special Edition ونسخة رقمية كاملة من Halo: Campaign Evolved. يصدر في 13 تشرين الثاني 2026، والطلبات المسبقة نفدت بسرعة.",
-    "en": "A limited Xbox Series X made for Xbox's 25th anniversary: a translucent green shell inspired by the original Xbox, an Xbox 25 logo on the front and an X that lights up green at start-up. Inside it is a standard Series X with a 1TB SSD and a 4K UHD Blu-ray drive. Every console is engraved with its own number and comes with the Xbox Wireless Controller X25 Special Edition and a full-game download of Halo: Campaign Evolved. It launches on 13 November 2026; pre-orders sold out quickly.",
-    "ckb": "وەشانێکی سنوورداری Xbox Series X بۆ 25 ساڵەی Xbox: ڕووکاری سەوزی ڕوون کە لە Xbox ـی یەکەمەوە وەرگیراوە، لۆگۆی Xbox 25 لە پێشەوە و X ێک کە لە کاتی هەڵکردندا بە سەوزی ڕووناک دەبێتەوە. لەناوەوە هەمان Series X ـە بە SSD ـی 1TB و خوێنەری دیسکی 4K UHD Blu-ray. هەر کۆنسۆڵێک ژمارەی تایبەتی خۆی لەسەر هەڵکەندراوە و دەسکی Xbox Wireless Controller X25 Special Edition و داگرتنی تەواوی یاریی Halo: Campaign Evolved ـی لەگەڵە. لە 13ی تشرینی دووەمی 2026 دەردەچێت؛ پێشفرۆشتنەکان زوو تەواو بوون."
+    "ar": "إصدار محدود من Xbox Series X بمناسبة مرور 25 عاماً على Xbox، بهيكل أخضر شفاف مستوحى من جهاز Xbox الأصلي، وشعار Xbox 25 في الواجهة، وعلامة X تضيء بالأخضر عند التشغيل. العتاد نفسه في Series X: ‏SSD سعة 1TB ومشغل أقراص 4K UHD Blu-ray. كل جهاز محفور برقم خاص، ومعه يد Xbox Wireless Controller X25 Special Edition ونسخة رقمية كاملة من Halo: Campaign Evolved. يصدر في 13 تشرين الثاني 2026، والطلب يفتح عند وصوله إلى المتجر.",
+    "en": "A limited Xbox Series X made for Xbox's 25th anniversary: a translucent green shell inspired by the original Xbox, an Xbox 25 logo on the front and an X that lights up green at start-up. Inside it is a standard Series X with a 1TB SSD and a 4K UHD Blu-ray drive. Every console is engraved with its own number and comes with the Xbox Wireless Controller X25 Special Edition and a full-game download of Halo: Campaign Evolved. It launches on 13 November 2026; orders open when it arrives in the store.",
+    "ckb": "وەشانێکی سنوورداری Xbox Series X بۆ 25 ساڵەی Xbox: ڕووکاری سەوزی ڕوون کە لە Xbox ـی یەکەمەوە وەرگیراوە، لۆگۆی Xbox 25 لە پێشەوە و X ێک کە لە کاتی هەڵکردندا بە سەوزی ڕووناک دەبێتەوە. لەناوەوە هەمان Series X ـە بە SSD ـی 1TB و خوێنەری دیسکی 4K UHD Blu-ray. هەر کۆنسۆڵێک ژمارەی تایبەتی خۆی لەسەر هەڵکەندراوە و دەسکی Xbox Wireless Controller X25 Special Edition و داگرتنی تەواوی یاریی Halo: Campaign Evolved ـی لەگەڵە. لە 13ی تشرینی دووەمی 2026 دەردەچێت؛ داواکردن کاتێک دەکرێتەوە کە دەگاتە فرۆشگاکە."
   },
   "highlights": [
     {
@@ -41,9 +41,9 @@
       "ckb": "هەمان ئامێری Xbox Series X: ‏SSD ـی 1TB، خوێنەری دیسکی 4K UHD Blu-ray، ‏4K تا 120 FPS"
     },
     {
-      "ar": "موعد الإصدار 13 تشرين الثاني 2026، وكانت الطلبات المسبقة محدودة بجهاز واحد لكل زبون",
-      "en": "Launches 13 November 2026; pre-orders were limited to one per customer",
-      "ckb": "لە 13ی تشرینی دووەمی 2026 دەردەچێت؛ پێشفرۆشتن بۆ هەر کڕیارێک یەک دانە بوو"
+      "ar": "موعد الإصدار 13 تشرين الثاني 2026، وهو إصدار من 25,000 جهاز مرقّم",
+      "en": "Launches 13 November 2026 as an edition of 25,000 numbered consoles",
+      "ckb": "لە 13ی تشرینی دووەمی 2026 دەردەچێت، وەشانێکە لە 25,000 کۆنسۆڵی ژمارەدار"
     }
   ],
   "specs": [
@@ -191,6 +191,7 @@
       "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/XSX25-LE_MS-Store_Image-Buy-Box-0_02_2000x2000_02?fmt=png-alpha&scl=1&bfc=off",
       "sourcePage": "https://www.microsoft.com/en-us/d/XBOX-Series-X25-Limited-Edition/8wg5vqp0x4h3",
       "kind": "angle",
+      "view": "back",
       "alt": {
         "ar": "الجهة الخلفية من Xbox Series X25 مع المنافذ",
         "en": "Back of the Xbox Series X25 with its ports",

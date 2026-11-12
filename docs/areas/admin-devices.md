@@ -114,3 +114,11 @@ npx tsx --tsconfig tsconfig.cloudflare.json .shots/admin-devices/seed-devices.ts
 node .shots/admin-devices/shots.mjs                                                 # screenshots .shots/admin-devices/
 node .shots/admin-devices/flow.mjs [TI-…]                                          # the workflow in the browser (a ref resumes one)
 ```
+
+## Module follow-up 2026-11-12
+
+`payoutsWhere(actor, now)`: the accepted trade-ins this employee can move on (the wipe with ownership.verify, the payout with tradein.payout after it, never their own offer a second person pays) — `toPay` counts it; the shell's bell may import it instead of its copy. `seesTradeInMoney(actor)` (cost.read, or tradein.offer / .payout): otherwise `TradeInDetail.money` is false, `offer.amountIqd` null, no valuation, references or difference, history amounts replaced by `data.amountHidden`, list `offerIqd` null. `CounterTradeInInput.accountConfirmed`: the account with the number is linked only when the employee confirms it is the customer's (`no_account_for_phone` otherwise). `PayoutInput.shiftId` + `drawerOf(db, actor)` + `payoutDrawerKey(id)`: a cash payout from the payer's own open shift is a drawer pay-out in the same batch (`payout_drawer_invalid`); `TradeInDetail.drawer`.
+
+Tests (each failed before its change): `tests/admin-devices-followup.test.ts`.
+
+Review of the follow-up (2026-11-12): `toPay` counts per person, so its card now opens the list's own per-person view — `TRADE_IN_VIEWS` gains `to_pay` (`listTradeIns` applies `payoutsWhere`; nothing without the payout or verify permission; its chip shows only to those who wipe or pay), and the module's rule "a card never counts what its list does not show" holds again. The shell's `tradein_payouts` link should point at `?view=to_pay` too (requested). Test: `tests/admin-devices-followup.test.ts` ("the 'to pay' card opens a list that holds exactly what it counts").

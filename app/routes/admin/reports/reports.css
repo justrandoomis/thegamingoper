@@ -1,0 +1,277 @@
+/*
+ * Admin module 18 (reports) — the few pieces the design system does not have. Tokens only, logical properties only,
+ * components layer (utilities still win). DESIGN.md §10: data has no material; figures flat, high-contrast, tabular at
+ * the inline end; a negative is a minus sign in red-ink; charts are ink on a hairline grid.
+ */
+@layer components {
+  /* ── module sections: link tabs that wrap; a held ink key marks the current one ── */
+  .rep-nav {
+    margin-block-end: var(--s-5);
+  }
+  .rep-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  @media (max-width: 47.99rem) {
+    .rep-nav__list {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 3px;
+      margin: -3px;
+      scrollbar-width: none;
+    }
+    .rep-nav__list > li {
+      flex: none;
+    }
+  }
+  .rep-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--target);
+    padding-inline: var(--s-3);
+    border-radius: var(--r-xs);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    font: var(--type-label);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .rep-nav__link:hover {
+    background: var(--niche);
+  }
+  .rep-nav__link[aria-current="page"] {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: none;
+  }
+  .rep-nav__link > svg {
+    flex: none;
+  }
+
+  /* ── KPI rows ── */
+  .rep-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  }
+
+  /* ── the report cards of the module's front page ── */
+  .rep-cards-grid {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+  .rep-entry {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .rep-entry:hover {
+    background: var(--niche);
+  }
+  .rep-entry__head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font: var(--type-label);
+  }
+
+  /* ── a share bar beside a figure (ABC, segments): ink on a hairline track, no animation ── */
+  .rep-bar {
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 4rem;
+    block-size: 6px;
+    border-radius: var(--r-xs);
+    background: var(--niche-2);
+    overflow: hidden;
+  }
+  .rep-bar > span {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    background: var(--ink);
+  }
+
+  /* ── the cohort grid: one cell per month, shaded by the share (ink at an opacity — no colour scale) ── */
+  .rep-cohorts {
+    border-collapse: collapse;
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .rep-cohorts th,
+  .rep-cohorts td {
+    block-size: var(--row);
+    padding-inline: var(--s-2);
+    border-block-end: 1px solid var(--line);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .rep-cohorts thead th {
+    position: sticky;
+    inset-block-start: 0;
+    background: var(--niche);
+    color: var(--ink-2);
+    font-weight: 600;
+    border-block-end: 1px solid var(--line-strong);
+  }
+  .rep-cohorts th[scope="row"] {
+    text-align: start;
+    font-weight: 600;
+  }
+  .rep-cohorts td[data-level] {
+    position: relative;
+  }
+  .rep-cohorts td[data-level]::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: var(--r-xs);
+    background: var(--ink);
+    /* at most a light shade, so the figure keeps its contrast in both themes */
+    opacity: calc(var(--level, 0) * 0.22);
+  }
+  .rep-cohorts td[data-level] > bdi {
+    position: relative;
+  }
+  .rep-cohorts td[data-empty] {
+    color: var(--ink-3);
+  }
+
+  /* ── outlined fact tags (demo, used, class) ── */
+  .rep-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+  .rep-class {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 26px;
+    block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    font: var(--type-label);
+  }
+  .rep-class[data-class="A"] {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: none;
+  }
+
+  /* ── a small ledger: label at the start, figure at the end ── */
+  .rep-ledger {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .rep-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding-block: 2px;
+  }
+  .rep-ledger > div > dd {
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+    white-space: nowrap;
+  }
+  .rep-ledger__total {
+    margin-block-start: var(--s-1);
+    padding-block-start: var(--s-2) !important;
+    border-block-start: 1px solid var(--line-strong);
+    font-weight: 600;
+  }
+  .rep-ledger__total:first-child {
+    margin-block-start: 0;
+    padding-block-start: 2px !important;
+    border-block-start: none;
+  }
+
+  /* ── printing: the browser prints a report without the admin's chrome ── */
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.rep-print) .adm-rail,
+    body:has(.rep-print) .adm-top,
+    body:has(.rep-print) .adm-tabbar,
+    body:has(.rep-print) .adm-skip,
+    body:has(.rep-print) .rep-noprint {
+      display: none !important;
+    }
+    body:has(.rep-print) .adm,
+    body:has(.rep-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .rep-print {
+      color: var(--ink);
+      background: var(--paper);
+    }
+    .rep-print .adm-card {
+      box-shadow: none;
+      border: 1px solid var(--line);
+    }
+    .rep-print .rep-table {
+      display: block !important;
+    }
+    .rep-print .rep-cards {
+      display: none !important;
+    }
+    /* a wide table prints whole: no scroll region on paper, tighter cells, no sticky head, columns that may wrap */
+    .rep-print .rep-table .overflow-auto {
+      overflow: visible !important;
+    }
+    .rep-print .rep-table .table {
+      inline-size: 100%;
+      font-size: 12px;
+    }
+    .rep-print .rep-table .table th,
+    .rep-print .rep-table .table td {
+      position: static;
+      block-size: auto;
+      padding-inline: 4px;
+    }
+    .rep-print .rep-table [class*="min-w-"] {
+      min-inline-size: 0 !important;
+    }
+    .rep-print .rep-table .table .whitespace-nowrap,
+    .rep-print .rep-table .table th,
+    .rep-print .rep-table .table th * {
+      white-space: normal !important;
+    }
+    .rep-print .adm-section {
+      break-inside: avoid;
+    }
+  }
+  .rep-print-only {
+    display: none;
+  }
+  @media print {
+    .rep-print-only {
+      display: block;
+    }
+  }
+}

@@ -5,8 +5,8 @@ import { useFormat } from "~/i18n/react";
 import { randomToken } from "~/lib/ids";
 import { MAX_UPLOAD_BODY_BYTES, readFormData } from "~/server/body.server";
 import { RATE_LIMITS, enforceRateLimit, limitKey } from "~/server/ratelimit.server";
-import { createExpense, CreateExpenseInput, expenseIdFor } from "~/server/services/accounting/expenses.server";
-import { expenseFormOptions } from "~/server/services/admin/finance/expense-views.server";
+import { CreateExpenseInput, expenseIdFor } from "~/server/services/accounting/expenses.server";
+import { assertRecordableExpenseAccount, expenseFormOptions, recordExpense } from "~/server/services/admin/finance/expense-views.server";
 import { baghdadDay } from "~/server/services/admin/finance/types";
 import { saveImageUpload } from "~/server/uploads.server";
 import { Select, TextArea, TextField } from "~/ui/Field";
@@ -47,6 +47,7 @@ export async function action({ request, context }: Route.ActionArgs) {
     };
     // the form's own mistakes first: a photo is stored only for a form that can be saved (no orphaned private files)
     CreateExpenseInput.parse(input);
+    await assertRecordableExpenseAccount(req.db, req.actor, input.accountId);
     let receiptFileId: string | undefined;
     const file = form.get("receipt");
     if (file instanceof File && file.size > 0 && key.length >= 8) {
@@ -54,7 +55,8 @@ export async function action({ request, context }: Route.ActionArgs) {
       const saved = await saveImageUpload(req.db, financeBlobStore(), file, { visibility: "private", kind: RECEIPT_KIND, ownerType: "expense", ownerId: await expenseIdFor(key), createdBy: req.actor, now: req.now });
       receiptFileId = saved.file.id;
     }
-    const { expenseId } = await createExpense(req.db, req.actor, { ...input, receiptFileId }, req.now);
+    // never the payroll families (posted by the staff module's payroll runs): recordExpense refuses them
+    const { expenseId } = await recordExpense(req.db, req.actor, { ...input, receiptFileId }, req.now);
     return redirect(`/admin/finance/expenses/${expenseId}?created=1`);
   } catch (error) {
     return failed(error, req.locale, "create");

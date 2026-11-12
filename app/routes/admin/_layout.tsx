@@ -4,9 +4,10 @@ import type { Route } from "./+types/_layout";
 import { messagesFor, type I18nPayload } from "~/i18n/i18n.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { opsTimingMiddleware } from "./ops/observe.server";
 import { AdminShell } from "./shell/AdminShell";
 import { AdminErrorPage } from "./shell/ErrorPage";
-import { adminGate, getAdminSession } from "./shell/gate.server";
+import { adminGate, findAdminSession } from "./shell/gate.server";
 import { adminMeta } from "./shell/meta";
 import { loadAdminShell, type AdminShellData } from "./shell/shell.server";
 
@@ -15,24 +16,33 @@ import { loadAdminShell, type AdminShellData } from "./shell/shell.server";
  *
  *   middleware   adminGate (./shell/gate.server.ts): requireEmployee on EVERY document and data request — nobody signed
  *                in → document redirect to /admin/login?next=…; a module the role cannot see → 403 before any of the
- *                module's loaders or actions run; Cache-Control: no-store and X-Robots-Tag: noindex on every response
+ *                module's loaders or actions run; Cache-Control: no-store and X-Robots-Tag: noindex on every response.
+ *                Then opsTimingMiddleware (module 23, ./ops/observe.server.ts): the server time of every admin request
+ *                that got past the gate, recorded only when it was slow or failed (one upsert) — timed once even where
+ *                the operations module's own layout carries it too
  *   loader       the shell's data: employee, visible modules (from the permission catalogue), what is waiting for them,
  *                the admin language (tt_admin_locale cookie, read by the root middleware) and the "admin" strings.
- *                React Router revalidates it on every navigation, so a revoked session or a changed role shows at once
+ *                React Router revalidates it on every navigation, so a revoked session or a changed role shows at once.
+ *                On the one page for nobody signed in (the password-set link, /admin/welcome) there is no shell data:
+ *                the frame renders without navigation
  *   component    <AdminShell>: rail, tool bar, tab bar, sections sheet, command palette (Ctrl/⌘ K), notifications,
- *                employee menu, toasts — in admin density, Arabic-first RTL or English, light or dark
+ *                employee menu, toasts, the browser's error and speed reporter — in admin density, Arabic-first RTL
+ *                or English, light or dark
  *
  * Module pages still start every loader and action with requireEmployee(ctx, db, "<permission>") and their services
  * with assertCan(…): the shell's gate is the coarse outer check, not the only one.
  */
-export const middleware: Route.MiddlewareFunction[] = [adminGate];
+export const middleware: Route.MiddlewareFunction[] = [adminGate, opsTimingMiddleware];
 
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const i18n = messagesFor(ctx.locale, "admin");
+  const session = findAdminSession(context);
+  // the gate let a request through without a session only for a page that needs none (PUBLIC_PATTERNS)
+  if (!session) return { shell: null, i18n };
   let shell: AdminShellData;
   try {
-    shell = await loadAdminShell(ctx, getDb(), getAdminSession(context));
+    shell = await loadAdminShell(ctx, getDb(), session);
   } catch (error) {
     // Reported, and shown inside the frame in the employee's language (the strings travel with the error).
     console.error("[admin] shell data failed", error);

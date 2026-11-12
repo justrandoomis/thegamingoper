@@ -10,7 +10,7 @@ import { useFetcher, useRouteLoaderData } from "react-router";
 import { Icon, type IconName } from "~/art/Icon";
 import { useDir, useFormat, useLocale, useT } from "~/i18n/react";
 import { translate, type MessageTree, type TFunction } from "~/i18n/translate";
-import { PROMOTIONS_NS, bpsToPercent, type HistoryRow, type Tone } from "~/server/services/admin/promotions/types";
+import { DEFAULT_PROGRAM, PROMOTIONS_NS, bpsToPercent, type HistoryRow, type ProgramRules, type Tone } from "~/server/services/admin/promotions/types";
 import { cx } from "~/ui/cx";
 import { ConfirmDialog, type ImpactRow } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
@@ -29,6 +29,15 @@ export function usePromotionsT(): TFunction {
     if (!mine) return fallback;
     return (key: string, vars?: Record<string, string | number>) => translate(mine, locale, key, vars) ?? (key.startsWith("errors.") ? translate(shared, locale, key, vars) : undefined) ?? key;
   }, [layout, locale, fallback]);
+}
+
+/**
+ * The programme rules in force — discount limits, points, referrals, gift cards (the settings promotions.*, sent by the
+ * layout's loader; follow-up 2026-11-12). The constants are only the fallback before that data exists.
+ */
+export function useProgram(): ProgramRules {
+  const layout = useRouteLoaderData(PROMOTIONS_LAYOUT_ID) as { program?: ProgramRules } | undefined;
+  return layout?.program ?? DEFAULT_PROGRAM;
 }
 
 /** From what was to what will be, in reading order: "→" on a left-to-right page, "←" on a right-to-left one. */

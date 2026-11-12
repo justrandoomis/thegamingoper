@@ -114,3 +114,9 @@ node scripts/lint-design.mjs app/routes/admin/pricing
 Browser (puppeteer-core + Edge, signed in): every page at 390 and 1440, light and dark, ar and en; confirm dialogs (price
 change, approve, reject, cost, fx), a validation error, 403 inside the shell for a custom role without cost.read, the
 gate's 403 for a cashier. Screenshots in `.shots/admin-pricing/`.
+
+## Module follow-up 2026-11-12
+
+`reference.server.ts`: `referencePrices(db, variantIds, now)` → Map<variantId, IQD> — the 30-day reference price (the drop window's highest price, never below today's) of a list of SKUs; `appliedPriceHistory(db, variantIds)`. Admin 08's flash check uses it instead of its own copy.
+
+Tests (each failed before its change): `tests/admin-pricing-followup.test.ts`.

@@ -19,19 +19,21 @@ import { adminMeta } from "./meta";
 
 /**
  * /admin/me — "My security": the signed-in employee's two-step verification, password and sessions. Needs a signed-in
- * employee only (it is about their own account); every change is made, checked and audited by the server core.
+ * employee only (it is about their own account); every change is made, checked and audited by the server core. The one
+ * page an enrolment-only session opens (a role requires two-step verification the employee has not turned on): it then
+ * says so first, and enrolling here opens the rest of the admin.
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const session = await requireEmployee(ctx, db);
+  const session = await requireEmployee(ctx, db, undefined, { allowEnrolment: true });
   return loadMySecurity(ctx, db, session);
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const session = await requireEmployee(ctx, db);
+  const session = await requireEmployee(ctx, db, undefined, { allowEnrolment: true });
   const result = await mySecurityAction(ctx, db, session, adminSecrets(), await request.formData());
   return result.ok ? result : data(result, { status: result.status });
 }
@@ -45,7 +47,7 @@ export default function MySecurity({ loaderData }: Route.ComponentProps) {
   const t = useAdminT();
   const f = useFormat();
   const shell = useAdminShell();
-  const { employee, sessions, recoveryCodesLeft, now } = loaderData;
+  const { employee, sessions, recoveryCodesLeft, now, enrolmentRequired } = loaderData;
 
   return (
     <div className="adm-narrow">
@@ -80,7 +82,7 @@ export default function MySecurity({ loaderData }: Route.ComponentProps) {
         </dl>
       </section>
 
-      <TwoStep enabled={employee.totpEnabled} recoveryCodesLeft={recoveryCodesLeft} />
+      <TwoStep enabled={employee.totpEnabled} recoveryCodesLeft={recoveryCodesLeft} required={enrolmentRequired} />
       <PasswordForm />
       <Sessions sessions={sessions} now={now} />
     </div>
@@ -89,7 +91,8 @@ export default function MySecurity({ loaderData }: Route.ComponentProps) {
 
 /* ───────────────────────────── two-step verification ───────────────────────────── */
 
-function TwoStep({ enabled, recoveryCodesLeft }: { enabled: boolean; recoveryCodesLeft: number | null }) {
+/** `required`: a role requires two-step verification and it is off — the admin opens nothing else until it is on. */
+function TwoStep({ enabled, recoveryCodesLeft, required = false }: { enabled: boolean; recoveryCodesLeft: number | null; required?: boolean }) {
   const t = useAdminT();
   // "Start again" opens a fresh round (a new fetcher), back to the form that asks for the password.
   const [round, setRound] = useState(0);
@@ -121,6 +124,14 @@ function TwoStep({ enabled, recoveryCodesLeft }: { enabled: boolean; recoveryCod
         </h2>
         <Status tone={enabled ? "ok" : "warn"}>{enabled ? t("me.twoStep.on") : t("me.twoStep.off")}</Status>
       </div>
+
+      {/* here, not above the page title: an enrolment-only session lands on #two-step */}
+      {required && !enabled ? (
+        <div className="adm-notice adm-notice--warn" role="alert">
+          <Icon name="shield-check" size={18} />
+          <p className="type-strong text-ink">{t("notices.mfa_required")}</p>
+        </div>
+      ) : null}
 
       {confirmed && !codesHidden ? <RecoveryCodes codes={confirmed.recoveryCodes} onDone={() => setCodesHidden(true)} /> : null}
 

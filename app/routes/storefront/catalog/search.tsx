@@ -41,7 +41,7 @@ import { BrowseStore, DidYouMean, SearchJumps, SearchStart } from "./components/
 import { useRecentSearches } from "./components/recent-searches";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
 import { SEARCH_SORTS, activeGroups, filtersOf, readListingQuery } from "./listing-model";
-import { arrivalsShelf, listOf, storeBrowse, wishedOf, withCursorFallback } from "./list.server";
+import { arrivalsShelf, filterOrderOf, listOf, storeBrowse, wishedOf, withCursorFallback } from "./list.server";
 import "./catalog.css";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -60,10 +60,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const platformSlugs = consent ? parsePlatformList(ctx.cookie(PLATFORMS_COOKIE)) : [];
     const recommendations = recommendationsFor(db, who, { locale: ctx.locale, context: "search", platformSlugs, now: ctx.now }, 8);
     const browse = await storeBrowse(db, ctx.locale, ctx.now);
-    return { q: "", result: null, browse, arrivals: [], wished: null, recommendations, meta: { title: t("meta.searchStart"), description: t("meta.search") }, i18n };
+    return { q: "", result: null, browse, arrivals: [], wished: null, filterOrder: null, recommendations, meta: { title: t("meta.searchStart"), description: t("meta.search") }, i18n };
   }
 
   const query = readListingQuery(url.searchParams, SEARCH_SORTS);
+  // the listing filters in the order staff gave every listing (content module 17.03; null: the page's own) — read beside
+  // the search, not after it (filterOrderOf never rejects)
+  const filterOrderRead = filterOrderOf(db, null);
   const result = await withCursorFallback(url, query.cursor !== null, () =>
     searchProducts(db, ctx.locale, q, { filters: filtersOf(query), sort: query.sort, cursor: query.cursor, cumulative: true, now: ctx.now }),
   );
@@ -90,6 +93,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     browse: noMatch ? await storeBrowse(db, ctx.locale, ctx.now) : null,
     arrivals,
     wished: await wishedOf(db, ctx, who.customerId, shown),
+    filterOrder: await filterOrderRead,
     // below real results only: the shopper's own shelf, with consent (zero results already offer picks of their own)
     recommendations: result.total > 0 ? recommendationsFor(db, who, { locale: ctx.locale, context: "search", personalOnly: true, now: ctx.now }, 8) : null,
     meta: { title: t("meta.searchTitle", { q }), description: t("meta.search") },
@@ -179,6 +183,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
         picksTitle={t("zero.picksSearch")}
         elsewhere={chips ? ["category"] : []}
         wished={wished}
+        filterOrder={loaderData.filterOrder}
       />
       <RecommendationShelves result={loaderData.recommendations} source="search" />
     </div>

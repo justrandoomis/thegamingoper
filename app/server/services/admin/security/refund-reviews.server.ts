@@ -99,16 +99,19 @@ export async function listRefundReviews(db: Db, actor: Actor, filters: RefundFil
     raw.map((row) => row.id),
   );
   const me = actorIdOf(actor);
+  const mayReview = (row: Raw) => me !== null && me !== row.createdBy && me !== row.approvedBy;
   const evaluated = raw.map((row) => ({ row, signals: signalsOf(row, raw), review: reviews.get(row.id) ?? null }));
+  // "unreviewed" is this reviewer's queue: flagged, not reviewed yet, and theirs to review (never one they asked for or
+  // approved — reviewRefund refuses those). Review 2026-11-12: the module's card (unreviewedCount) counted that, the
+  // list it opens also held their own refunds. Those stay in sight under "flagged" and "all", marked canReview false.
+  const waits = (entry: (typeof evaluated)[number]) => entry.signals.length > 0 && !entry.review && mayReview(entry.row);
   const counts = {
     flagged: evaluated.filter((entry) => entry.signals.length > 0).length,
-    unreviewed: evaluated.filter((entry) => entry.signals.length > 0 && !entry.review).length,
+    unreviewed: evaluated.filter(waits).length,
     suspicious: evaluated.filter((entry) => entry.review?.outcome === "suspicious").length,
     all: evaluated.length,
   };
-  const visible = evaluated.filter((entry) =>
-    filters.view === "all" ? true : filters.view === "flagged" ? entry.signals.length > 0 : filters.view === "unreviewed" ? entry.signals.length > 0 && !entry.review : entry.review?.outcome === "suspicious",
-  );
+  const visible = evaluated.filter((entry) => (filters.view === "all" ? true : filters.view === "flagged" ? entry.signals.length > 0 : filters.view === "unreviewed" ? waits(entry) : entry.review?.outcome === "suspicious"));
   const pageRows = visible.slice((filters.page - 1) * PAGE_SIZE, filters.page * PAGE_SIZE);
   const names = await employeeNames(db, pageRows.flatMap((entry) => [entry.row.createdBy, entry.row.approvedBy]));
   return {
@@ -127,7 +130,7 @@ export async function listRefundReviews(db: Db, actor: Actor, filters: RefundFil
       approvedById: row.approvedBy,
       signals,
       review,
-      canReview: me !== null && me !== row.createdBy && me !== row.approvedBy,
+      canReview: mayReview(row),
     })),
     total: visible.length,
     page: filters.page,
@@ -154,9 +157,34 @@ export async function reviewRefund(db: Db, actor: Actor, raw: unknown, now: numb
   return { id };
 }
 
-/** For the module's front page: flagged refunds of the last 90 days that nobody reviewed yet. */
+/**
+ * For the module's front page (and the bell): flagged refunds of the last 90 days that nobody reviewed yet — exactly
+ * the list's "unreviewed" view. Follow-up 2026-11-12: only refunds THIS reviewer may review (never one they asked for or approved — reviewRefund
+ * refuses them), and counted by the database in ONE statement that returns one row — light enough for the admin bell
+ * on every page. It used to list every refund of 90 days (and their reviews) into the worker and count them all.
+ * The signals are signalsOf's, in SQL: the same window (90 days, never rejected, a payment behind it), the same
+ * thresholds (types.ts REFUND_THRESHOLDS).
+ */
 export async function unreviewedCount(db: Db, actor: Actor, now: number): Promise<number | null> {
   if (!can(actor, "security.fraud.review")) return null;
-  return (await listRefundReviews(db, actor, { view: "unreviewed", page: 1 }, now)).counts.unreviewed;
+  const since = now - LOOKBACK_DAYS * DAY_MS;
+  const me = actorIdOf(actor) ?? "";
+  const rows = await db.all<{ n: number }>(sql`
+    WITH w AS (
+      SELECT r.id, r.order_id, r.amount_iqd, r.method, r.status, r.created_at, r.created_by, r.approved_by, o.customer_id, o.contact_phone_e164 AS phone
+      FROM refunds r JOIN orders o ON o.id = r.order_id JOIN payments p ON p.id = r.payment_id
+      WHERE r.created_at >= ${since} AND r.status <> 'rejected'
+    )
+    SELECT count(*) AS n FROM w
+    WHERE coalesce(w.created_by, '') <> ${me} AND coalesce(w.approved_by, '') <> ${me}
+      AND NOT EXISTS (SELECT 1 FROM audit_events AS a WHERE a.action = ${REFUND_REVIEW_ACTION} AND a.entity_type = 'refund' AND a.entity_id = w.id)
+      AND (
+        w.amount_iqd >= ${REFUND_THRESHOLDS.highValueIqd}
+        OR w.method <> 'original'
+        OR (w.status = 'paid' AND (w.approved_by IS NULL OR w.approved_by = w.created_by))
+        OR (w.created_by IS NOT NULL AND (SELECT count(*) FROM w AS b WHERE b.created_by = w.created_by AND abs(b.created_at - w.created_at) <= ${DAY_MS}) >= ${REFUND_THRESHOLDS.burstCount})
+        OR (SELECT count(*) FROM w AS c WHERE c.order_id <> w.order_id AND ((w.customer_id IS NOT NULL AND c.customer_id = w.customer_id) OR (w.phone IS NOT NULL AND c.phone = w.phone))) >= ${REFUND_THRESHOLDS.repeatCount}
+      )`);
+  return Number(rows[0]?.n ?? 0);
 }
 

@@ -47,6 +47,12 @@ export type StaffAccess = {
   tasksView: boolean;
   commissionView: boolean;
   payrollView: boolean;
+  /**
+   * The advances page (/admin/staff/payroll/advances) as a section of its own: for an employee limited to a branch,
+   * who may never open the store-wide payroll but decides their branch's advances (follow-up 2026-11-12: they reached
+   * it only by typing its address — its one link was on the payroll page, a 403 for them).
+   */
+  advancesView: boolean;
 };
 
 export function staffAccess(actor: Actor): StaffAccess {
@@ -87,6 +93,7 @@ export function staffAccess(actor: Actor): StaffAccess {
     tasksView: tasks || read,
     commissionView: commissions || payrollRead,
     payrollView: (payrollRead || payrollRun || payrollApprove) && !limited,
+    advancesView: (payrollRead || payrollRun || payrollApprove) && limited,
   };
 }
 

@@ -348,10 +348,13 @@ describe("1 setup: once, only with the token", () => {
       }
     }
     const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
-    const medians = Object.fromEntries(Object.entries(samples).map(([key, values]) => [key, median(values)]));
-    // Hashing a 4,000-character string costs microseconds; a byte-by-byte early exit is what this would catch
-    // only if it were large, so the bound is loose on purpose: no candidate stands out by more than half a millisecond.
-    expect(Math.max(...Object.values(medians)) - Math.min(...Object.values(medians)), JSON.stringify(medians)).toBeLessThan(0.5);
+    // Compared round by round (each candidate against "far" measured a moment before it): a busy machine slows a
+    // whole round, not one candidate, so the paired difference cancels the load that made the plain medians flaky
+    // (2026-11-12: a 1.9 ms spread under a full parallel suite). Hashing a 4,000-character string costs microseconds;
+    // a byte-by-byte early exit is what this would catch only if it were large, so the bound is loose on purpose: no
+    // candidate stands out by more than half a millisecond.
+    const paired = Object.fromEntries((["near", "tiny", "huge"] as const).map((key) => [key, median(samples[key].map((ms, round) => ms - samples.far[round]))]));
+    expect(Math.max(...Object.values(paired).map(Math.abs)), JSON.stringify({ paired, far: median(samples.far) })).toBeLessThan(0.5);
     expect(await count(employees)).toBe(0);
   });
 

@@ -22,6 +22,9 @@
  *     takes effect on their very next click
  *   · half-open after the password when two-step verification is on: it can only be used to submit
  *     the code, for 10 minutes; the token is replaced when the code is accepted
+ *   · enrolment-only while a role of the employee requires two-step verification (roles.requires_mfa) that they
+ *     have not turned on: no permission at all, every admin page sends them to My security's two-step setup
+ *     (MFA_ENROLMENT_PATH); enrolling there turns it into a full session (same token rules as any enrolment)
  *   · replaced by a new token (same start and end) when the employee changes the password or turns
  *     two-step verification on or off on it; every other session of theirs ends, and so does any copy
  *     of the old cookie
@@ -38,7 +41,7 @@ import { assertCan, can, systemActor, type Actor, type EmployeeActor, type Reque
 import { auditStatement } from "../audit.server";
 import { TOTP_DEFAULTS, decryptSecret, encryptSecret, findRecoveryCode, generateRecoveryCodes, generateTotpSecret, hashPassword, hashRecoveryCode, needsRehash, otpauthUri, verifyPassword, verifyTotp } from "../crypto.server";
 import type { BatchStatement, Db } from "../db/drizzle.server";
-import { employeeRoles, employeeSessions, employees, rolePermissions, roles } from "../db/schema";
+import { employeePasswordLinks, employeeRoles, employeeSessions, employees, rolePermissions, roles } from "../db/schema";
 import { seedReference } from "../db/seed/reference";
 import { expectChanged, expectThat, isDbError, runBatch } from "../db/tx.server";
 import { AppError, conflict, invalid, notFound, rateLimited, unauthorized } from "../errors";
@@ -97,7 +100,16 @@ export type EmployeeSession = {
   /** Keys of the employee's roles ("owner", "cashier", …). */
   roles: string[];
   session: { id: string; createdAt: number; expiresAt: number; mfaOk: boolean };
+  /**
+   * "mfa_enrolment": a role of this employee requires two-step verification (roles.requires_mfa) and they have not
+   * turned it on. The session can only enrol (My security) and sign out: its actor holds NO permission, and
+   * requireEmployee sends every other request to MFA_ENROLMENT_PATH. Absent on a normal session.
+   */
+  restriction?: "mfa_enrolment";
 };
+
+/** Where an employee who owes two-step enrolment is sent (My security's two-step section). */
+export const MFA_ENROLMENT_PATH = "/admin/me#two-step";
 
 // ───────────────────────────────────────────────────────────────── cookies
 
@@ -138,7 +150,7 @@ function sessionQuery(db: Db, idHash: string) {
 /** Roles and their permissions for the employee behind a session. One row per (role, permission). */
 function grantsQuery(db: Db, idHash: string) {
   return db
-    .select({ role: roles.key, permission: rolePermissions.permission })
+    .select({ role: roles.key, permission: rolePermissions.permission, requiresMfa: roles.requiresMfa })
     .from(employeeSessions)
     .innerJoin(employeeRoles, eq(employeeRoles.employeeId, employeeSessions.employeeId))
     .innerJoin(roles, eq(roles.id, employeeRoles.roleId))
@@ -173,13 +185,21 @@ async function loadByHash(ctx: AuthCtx, db: Db, idHash: string): Promise<Loaded>
 
   const permissions = new Set<string>();
   const roleKeys = new Set<string>();
+  let mfaRequired = false;
   for (const grant of grants) {
     roleKeys.add(grant.role);
     if (grant.permission) permissions.add(grant.permission);
+    if (grant.requiresMfa) mfaRequired = true;
   }
+  // A role that requires two-step verification, an employee without it: an enrolment-only session (no permission at
+  // all, whatever the roles grant) until it is on — checked on every request, so a requirement switched on later
+  // applies at the employee's next click, and so does a reset of their two-step verification.
+  const restricted = mfaRequired && !row.totpEnabled;
+  if (restricted) permissions.clear();
   return {
     state: "active",
     session: {
+      ...(restricted ? { restriction: "mfa_enrolment" as const } : {}),
       employee: {
         id: row.employeeId,
         email: row.email,
@@ -234,14 +254,18 @@ export async function getPendingMfa(ctx: AuthCtx, db: Db): Promise<{ employeeId:
  *   · nobody signed in (or the second step is still owed) → document redirect to /admin/login
  *     (`redirectDocument`: the sign-in page sits behind a Cloudflare challenge a data fetch cannot pass)
  *   · signed in without `permission` → a 403 response (rendered by the error boundary)
+ *   · signed in, but a role requires two-step verification they have not turned on (session.restriction) →
+ *     document redirect to MFA_ENROLMENT_PATH — unless `allowEnrolment` (My security, and the shell's gate, which
+ *     routes such a session itself). Such a session holds no permission either way.
  * `next` is the admin path to return to after signing in.
  */
-export async function requireEmployee(ctx: AuthCtx, db: Db, permission?: Permission, options: { next?: string | null } = {}): Promise<EmployeeSession> {
+export async function requireEmployee(ctx: AuthCtx, db: Db, permission?: Permission, options: { next?: string | null; allowEnrolment?: boolean } = {}): Promise<EmployeeSession> {
   const session = await getEmployee(ctx, db);
   if (!session) {
     const next = options.next ? safeNextPath(options.next, "", ADMIN_COOKIE_PATH) : "";
     throw redirectDocument(next ? `${ADMIN_LOGIN_PATH}?next=${encodeURIComponent(next)}` : ADMIN_LOGIN_PATH);
   }
+  if (session.restriction === "mfa_enrolment" && !options.allowEnrolment) throw redirectDocument(MFA_ENROLMENT_PATH);
   if (permission && !can(session.actor, permission)) throw data({ error: "forbidden", permission }, { status: 403 });
   return session;
 }
@@ -589,16 +613,28 @@ export async function confirmTotpEnrollment(ctx: AuthCtx, db: Db, raw: unknown, 
 
 const DisableTotpInput = z.object({ password: z.string({ error: "required" }).min(1, "required"), code: z.string({ error: "required" }).trim().min(1, "required").max(40, "mfa_invalid") });
 
+/** SQL: a role of this employee requires two-step verification (roles.requires_mfa). */
+const requiredByRoleSql = (employeeId: string) =>
+  sql`EXISTS (SELECT 1 FROM employee_roles AS er JOIN roles AS r ON r.id = er.role_id WHERE er.employee_id = ${employeeId} AND r.requires_mfa = 1)`;
+
+/** True when a role of the employee requires two-step verification (the security module switches it per role). */
+export async function twoStepRequiredFor(db: Db, employeeId: string): Promise<boolean> {
+  const row = await db.get<{ required: number }>(sql`SELECT ${requiredByRoleSql(employeeId)} AS required`);
+  return Number(row?.required ?? 0) === 1;
+}
+
 /**
  * The signed-in employee turns their own two-step verification off. Needs the password AND a
  * current code (or a recovery code). Signs the other devices out and gives this one a new session token (set on `ctx`).
- * Throws `invalid` (fields.password) or `mfa_invalid`.
+ * Throws `invalid` (fields.password), `mfa_invalid`, or `mfa_required_by_role` (409) while a role of theirs requires
+ * it — checked again inside the change's batch.
  */
 export async function disableOwnTotp(ctx: AuthCtx, db: Db, raw: unknown, secrets: Pick<AuthSecrets, "DATA_KEY">): Promise<void> {
   const input = DisableTotpInput.parse(raw);
   const current = await requireSession(ctx, db);
   const employeeId = current.employee.id;
   if (!current.employee.totpEnabled) throw conflict("mfa_not_enabled");
+  if (await twoStepRequiredFor(db, employeeId)) throw conflict("mfa_required_by_role");
   await enforceRateLimit(db, await limitKey("admin-mfa", "employee", employeeId), RATE_LIMITS.mfaVerify, ctx.now);
 
   const row = await db.select({ passwordHash: employees.passwordHash }).from(employees).where(eq(employees.id, employeeId)).get();
@@ -616,12 +652,19 @@ export async function disableOwnTotp(ctx: AuthCtx, db: Db, raw: unknown, secrets
   }
 
   const rotation = await sessionRotation(ctx, db, current);
-  await runBatch(db, [
-    db.update(employees).set({ totpEnabled: false, totpSecretEnc: null, recoveryCodes: null, updatedAt: ctx.now }).where(eq(employees.id, employeeId)),
-    ...rotation.statements,
-    auditStatement(db, { actor: current.actor, action: "security.mfa.disable", entityType: "employee", entityId: employeeId, at: ctx.now }),
-    authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, kind: "mfa_enroll", success: true, details: { change: "disabled" } }),
-  ]);
+  try {
+    await runBatch(db, [
+      // a requirement switched on for one of their roles a moment ago still counts
+      expectThat(db, sql`NOT ${requiredByRoleSql(employeeId)}`, { code: "MFA_REQUIRED_BY_ROLE", detail: employeeId }),
+      db.update(employees).set({ totpEnabled: false, totpSecretEnc: null, recoveryCodes: null, updatedAt: ctx.now }).where(eq(employees.id, employeeId)),
+      ...rotation.statements,
+      auditStatement(db, { actor: current.actor, action: "security.mfa.disable", entityType: "employee", entityId: employeeId, at: ctx.now }),
+      authEventStatement(db, ctx, { subjectKind: "employee", subjectId: employeeId, kind: "mfa_enroll", success: true, details: { change: "disabled" } }),
+    ]);
+  } catch (error) {
+    if (isDbError(error, "MFA_REQUIRED_BY_ROLE")) throw conflict("mfa_required_by_role");
+    throw error;
+  }
   await rotation.commit();
 }
 
@@ -636,7 +679,7 @@ const ReasonedTarget = z.object({ employeeId: z.string().min(1), reason: z.strin
  * a permission given to the target a moment before is counted. A stored string that is no permission (any more) grants
  * nothing and is ignored. Null when there is nothing to check: the system and an owner hold everything.
  */
-function holdsEverythingOf(db: Db, actor: Actor, employeeId: string): BatchStatement | null {
+export function holdsEverythingOf(db: Db, actor: Actor, employeeId: string): BatchStatement | null {
   if (actor.kind === "system") return null;
   const held = new Set<string>(actor.kind === "employee" ? actor.permissions : []);
   if (held.has(WILDCARD_PERMISSION)) return null;
@@ -649,8 +692,8 @@ function holdsEverythingOf(db: Db, actor: Actor, employeeId: string): BatchState
   );
 }
 
-/** The refusal of holdsEverythingOf (403; texts: admin-security `errors.target_more_privileged`). */
-const targetMorePrivileged = (employeeId: string) => new AppError("target_more_privileged", 403, { detail: employeeId });
+/** The refusal of holdsEverythingOf (403; texts: `errors.target_more_privileged` — a CORE_ERROR_KEYS entry). */
+export const targetMorePrivileged = (employeeId: string) => new AppError("target_more_privileged", 403, { detail: employeeId });
 
 /**
  * An administrator removes an employee's two-step verification (lost phone). Needs `security.mfa.manage` and every
@@ -698,14 +741,18 @@ export function revokeEmployeeSessionsStatement(db: Db, employeeId: string, now:
 }
 
 /**
- * Ends one session. Employees may end their own; ending someone else's needs
- * `security.session.revoke`. Recorded in the audit trail. False when the session was not live.
+ * Ends one session. Employees may end their own; ending someone else's needs `security.session.revoke` AND everything
+ * that employee holds (the hierarchy rule, holdsEverythingOf — `target_more_privileged`, 403: signing a stronger
+ * account out, again and again, is locking it out; read inside the batch). Recorded in the audit trail. False when the
+ * session was not live.
  */
 export async function revokeEmployeeSession(db: Db, actor: Actor, input: { employeeId: string; sessionId: string; reason?: string | null }, now: number): Promise<boolean> {
   const own = actor.kind === "employee" && actor.id === input.employeeId;
   if (!own) assertCan(actor, "security.session.revoke");
+  const hierarchy = own ? null : holdsEverythingOf(db, actor, input.employeeId);
   try {
     await runBatch(db, [
+      ...(hierarchy ? [hierarchy] : []),
       db
         .update(employeeSessions)
         .set({ revokedAt: now })
@@ -715,25 +762,46 @@ export async function revokeEmployeeSession(db: Db, actor: Actor, input: { emplo
     ]);
     return true;
   } catch (error) {
+    if (isDbError(error, "TARGET_MORE_PRIVILEGED")) throw targetMorePrivileged(input.employeeId);
     if (isDbError(error, "SESSION_NOT_LIVE")) return false;
     throw error;
   }
 }
 
-/** Ends all of an employee's sessions (same permission rule as revokeEmployeeSession). */
+/** Ends all of an employee's sessions (same permission and hierarchy rule as revokeEmployeeSession). */
 export async function revokeAllEmployeeSessions(db: Db, actor: Actor, input: { employeeId: string; exceptSessionId?: string | null; reason?: string | null }, now: number): Promise<void> {
   const own = actor.kind === "employee" && actor.id === input.employeeId;
   if (!own) assertCan(actor, "security.session.revoke");
-  await runBatch(db, [
-    revokeEmployeeSessionsStatement(db, input.employeeId, now, input.exceptSessionId),
-    auditStatement(db, { actor, action: "security.session.revoke", entityType: "employee", entityId: input.employeeId, reason: input.reason ?? null, after: { scope: "all" }, at: now }),
-  ]);
+  const hierarchy = own ? null : holdsEverythingOf(db, actor, input.employeeId);
+  try {
+    await runBatch(db, [
+      ...(hierarchy ? [hierarchy] : []),
+      revokeEmployeeSessionsStatement(db, input.employeeId, now, input.exceptSessionId),
+      auditStatement(db, { actor, action: "security.session.revoke", entityType: "employee", entityId: input.employeeId, reason: input.reason ?? null, after: { scope: "all" }, at: now }),
+    ]);
+  } catch (error) {
+    if (isDbError(error, "TARGET_MORE_PRIVILEGED")) throw targetMorePrivileged(input.employeeId);
+    throw error;
+  }
 }
 
 // ───────────────────────────────────────────────────────────────── account state
 
 /**
- * Disables an employee: they are locked out on their next request and every session is ended.
+ * Batch item: every unused one-time password-set link of the employee stops working (auth/employees.server.ts).
+ * Run whenever an account is disabled or re-opened, and whenever a new link replaces the older ones.
+ */
+export function revokePasswordLinksStatement(db: Db, employeeId: string, now: number): BatchStatement {
+  return db
+    .update(employeePasswordLinks)
+    .set({ revokedAt: now })
+    .where(and(eq(employeePasswordLinks.employeeId, employeeId), isNull(employeePasswordLinks.usedAt), isNull(employeePasswordLinks.revokedAt)));
+}
+
+/**
+ * Disables an employee: they are locked out on their next request, every session is ended and every unused
+ * password-set link stops working for good (a link handed to the wrong person is a reason to close an account —
+ * opening the account again must not bring the link back; review 2026-11-12).
  * Needs `staff.manage` and every permission the employee holds (`target_more_privileged`, 403 —
  * holdsEverythingOf: only an owner disables an owner). Refuses to disable yourself
  * (`cannot_disable_self`) or the last active owner (`last_owner`) — both 409.
@@ -760,6 +828,7 @@ export async function disableEmployee(db: Db, actor: Actor, raw: unknown, now: n
         .where(and(eq(employees.id, id), eq(employees.status, "active"))),
       expectChanged(db, 1, { code: "EMPLOYEE_NOT_ACTIVE", detail: id }),
       revokeEmployeeSessionsStatement(db, id, now),
+      revokePasswordLinksStatement(db, id, now),
       auditStatement(db, { actor, action: "staff.employee.disable", entityType: "employee", entityId: id, before: { status: "active" }, after: { status: "disabled" }, reason: input.reason, at: now }),
     ]);
   } catch (error) {

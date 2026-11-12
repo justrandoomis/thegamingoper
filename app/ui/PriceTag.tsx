@@ -74,6 +74,13 @@ export type PriceTagProps = {
   tone?: PriceProps["tone"];
   /** page: the stock state for the line under the price. */
   stock?: StockState | null;
+  /**
+   * page: the line's status in your own words, in place of the stock word — «قريباً · 19 تشرين الثاني» for a product
+   * that is coming. It keeps the stock's dot and tone.
+   */
+  status?: ReactNode;
+  /** The previous price is demo data (dto `compareAtDemo`): it may be struck under the demo marking, but no saving is said. */
+  compareAtDemo?: boolean;
   /** page: the delivery fee from settings for the line under the price. Nothing is assumed. */
   deliveryIqd?: number | null;
   /** page: «سعر ومخزون تجريبيان» beside the price (demo data in demo mode). */
@@ -87,11 +94,26 @@ export type PriceTagProps = {
   className?: string;
 };
 
-export function PriceTag({ priceIqd, compareAtIqd = null, size = "card", tone, stock = null, deliveryIqd = null, demo = false, aside, showSaving, approx = "auto", className }: PriceTagProps) {
+export function PriceTag({
+  priceIqd,
+  compareAtIqd = null,
+  size = "card",
+  tone,
+  stock = null,
+  status,
+  compareAtDemo = false,
+  deliveryIqd = null,
+  demo = false,
+  aside,
+  showSaving,
+  approx = "auto",
+  className,
+}: PriceTagProps) {
   if (size !== "page") {
     return <SafePrice amountIqd={priceIqd} compareAtIqd={compareAtIqd} size={size === "line" ? "sm" : "md"} tone={tone} approx={approx} className={className} />;
   }
-  const saving = (showSaving ?? true) ? <SavingNote priceIqd={priceIqd} compareAtIqd={compareAtIqd} /> : null;
+  // a demo previous price may be struck under the demo marking; a saving computed from it is never said (§11.8)
+  const saving = (showSaving ?? !compareAtDemo) ? <SavingNote priceIqd={priceIqd} compareAtIqd={compareAtIqd} /> : null;
   return (
     <div className={cx("grid min-w-0 justify-items-start gap-2", className)}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -99,14 +121,17 @@ export function PriceTag({ priceIqd, compareAtIqd = null, size = "card", tone, s
         {demo ? <DemoNote variant="tag" what="priceStock" /> : null}
       </div>
       {saving}
-      <PriceLine stock={stock} deliveryIqd={deliveryIqd} />
+      <PriceLine stock={stock} status={status} deliveryIqd={deliveryIqd} />
       {aside}
     </div>
   );
 }
 
-/** «● متوفر · التوصيل 5,000 د.ع لكل المحافظات» — 14/600, the dot in the stock colour. Nothing when both are unknown. */
-export function PriceLine({ stock, deliveryIqd, className }: { stock?: StockState | null; deliveryIqd?: number | null; className?: string }) {
+/**
+ * «● متوفر · التوصيل 5,000 د.ع لكل المحافظات» — 14/600, the dot in the stock colour. `status` replaces the stock's word
+ * («قريباً · 19 تشرين الثاني»). Nothing when both are unknown.
+ */
+export function PriceLine({ stock, status, deliveryIqd, className }: { stock?: StockState | null; status?: ReactNode; deliveryIqd?: number | null; className?: string }) {
   const words = useStockWords();
   const demo = useDemoMode();
   const hasFee = isIqd(deliveryIqd);
@@ -115,7 +140,7 @@ export function PriceLine({ stock, deliveryIqd, className }: { stock?: StockStat
     <p className={cx("price-line", className)}>
       {stock ? (
         <Status tone={stockLook(stock, demo)} size="lg">
-          {words(stock)}
+          {status ?? words(stock)}
         </Status>
       ) : null}
       {stock && hasFee ? <span aria-hidden="true">·</span> : null}

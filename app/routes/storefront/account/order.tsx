@@ -1,7 +1,8 @@
-import { data } from "react-router";
+import { data, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/order";
 import { Icon } from "~/art/Icon";
+import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
@@ -14,11 +15,15 @@ import { Key } from "~/ui/Key";
 import { OrderSummary, type SummaryLine } from "~/ui/OrderSummary";
 import { Price } from "~/ui/Price";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
+import { ProgressSteps } from "~/ui/ProgressSteps";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
+import { revealCodeForShopper } from "../checkout/checkout.server";
+import { Adjustments, summaryCoupon, withFlash } from "../checkout/components/Adjustments";
+import { DigitalCodes } from "../checkout/components/DigitalCodes";
 import { requireSignedIn } from "./account.server";
 import { CopyKey, Notice } from "./components/FormBits";
-import { OrderRail, OrderStatusLine, PaymentStatusLine, splitOption } from "./components/OrderBits";
+import { ORDER_RAIL, OrderStatusLine, PaymentStatusLine, railIndex, splitOption } from "./components/OrderBits";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
 import { amount, grouped, HANDOFF } from "./components/text";
@@ -39,7 +44,26 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   const ref = normalizeOrderRef(params.ref);
   const order = ref ? await getOrderForCustomer(db, customer.id, ref, ctx.locale, ctx.now) : null;
   if (!order) throw data({ error: "not_found" }, { status: 404 });
-  return { order, now: ctx.now };
+  // the discount lines and the digital codes are the checkout area's components (their words: "checkout", "errors")
+  return { order, now: ctx.now, i18n: messagesFor(ctx.locale, "checkout", "errors") };
+}
+
+/** «اعرض الرمز»: one digital code of this order, for its signed-in owner (the commerce core checks it all; audited). */
+export async function action({ request, context, params }: Route.ActionArgs) {
+  const ctx = getCtx(context);
+  const db = getDb();
+  const { customer } = await requireSignedIn(request, ctx, db);
+  const form = await request.formData();
+  if (form.get("intent") !== "reveal") return data({ ok: false as const, code: "invalid" }, { status: 400 });
+  const codeId = form.get("codeId");
+  const result = await revealCodeForShopper(db, ctx, { ref: params.ref ?? "", token: null, customerId: customer.id, codeId: typeof codeId === "string" ? codeId : "" });
+  return data(result, { status: result.ok ? 200 : result.status });
+}
+
+/** A code shown on request changes nothing else on the page. */
+export function shouldRevalidate({ formData, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (formData?.get("intent") === "reveal") return false;
+  return defaultShouldRevalidate;
 }
 
 export const meta: Route.MetaFunction = (args) => accountMeta(args, "order", { ref: args.loaderData?.order.ref ?? "" });
@@ -48,9 +72,10 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
   const t = useT("account");
   const f = useFormat();
   const { order } = loaderData;
+  const checkoutT = useT("checkout");
   const lines: SummaryLine[] = order.lines.map((line) => {
     const { name, option } = splitOption(line.name);
-    return { id: line.id, name, optionsLabel: lineFacts(line, option), lineTotalIqd: line.lineTotalIqd, image: line.image };
+    return withFlash({ id: line.id, name, optionsLabel: lineFacts(line, option), lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], checkoutT, f);
   });
 
   /** The option value only, then the pieces in words, the unit price, the warranty as sold and what was refunded. */
@@ -88,12 +113,21 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           <p className="type-body text-ink-2">{t("order.cancelledOn", { date: f.date(order.cancelledAt ?? order.placedAt, "long") })}</p>
         ) : order.status === "returned" ? (
           <p className="type-body text-ink-2">{t("order.returnedNote")}</p>
-        ) : (
-          <OrderRail status={order.status} className="pt-2" />
-        )}
+        ) : railIndex(order.status) !== null ? (
+          // the kit's status rail (v2 polish, ProgressSteps variant="status"): where the order IS, the current step in ink
+          <ProgressSteps
+            variant="status"
+            className="pt-2"
+            aria-label={t("order.statusTitle")}
+            current={order.status === "delivered" ? ORDER_RAIL.length : (railIndex(order.status) ?? 0)}
+            steps={ORDER_RAIL.map((step) => ({ label: t(`order.rail.${step}`) }))}
+          />
+        ) : null}
       </section>
 
       <NextStep order={order} now={loaderData.now} />
+
+      {order.digital && order.digital.length > 0 ? <DigitalCodes lines={order.digital} mode="owner" token={null} closed={order.status === "cancelled" || order.status === "returned"} headingLevel={2} /> : null}
 
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_20rem] 2xl:items-start">
         <div className="grid min-w-0 content-start gap-6">
@@ -103,11 +137,18 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
             shippingIqd={order.totals.shippingIqd}
             totalIqd={order.totals.totalIqd}
             count={order.itemCount}
-            coupon={order.coupon ? { code: order.coupon.code, label: order.coupon.code } : null}
+            coupon={summaryCoupon(order.adjustments?.discounts, order.coupon ? { code: order.coupon.code, label: order.coupon.code } : null)}
             lines={lines}
             approx="off"
             demo={order.isDemo}
-          />
+          >
+            {/* every discount as charged, the waived delivery, a split payment's wallet part (the checkout area's piece) */}
+            <Adjustments
+              discounts={order.adjustments?.discounts ?? []}
+              waiver={order.adjustments?.shippingWaiver ?? null}
+              split={(order.walletPaidIqd ?? 0) > 0 ? { walletIqd: order.walletPaidIqd ?? 0, restIqd: order.totals.totalIqd - (order.walletPaidIqd ?? 0) } : null}
+            />
+          </OrderSummary>
 
           {order.shipments.length > 0 ? (
             <section aria-labelledby="order-shipping-title" className="acct-card">
@@ -209,7 +250,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
                   {order.contact.phoneMasked}
                 </bdi>
               </p>
-              <p className="type-sm text-ink-2">{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join("، ")}</p>
+              <p className="type-sm text-ink-2">{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(f.locale === "en" ? ", " : "، ")}</p>
               {order.delivery.address ? <p className="type-sm text-ink-2">{order.delivery.address}</p> : null}
               {order.delivery.notes ? <p className="type-xs text-ink-2">{order.delivery.notes}</p> : null}
             </div>

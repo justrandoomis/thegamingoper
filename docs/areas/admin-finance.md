@@ -120,3 +120,9 @@ Browser (Edge, puppeteer-core): every page at 390 and 1440, light and dark, ar a
 clerks (four eyes), a manager and a cashier (403); dialogs (reverse, add account, approve expense, approve/reject
 top-up, add tax rate), validation errors. Scripts and screenshots in `.shots/admin-finance/` (demo records: memo or
 description ending "(تجريبي)", staff `demo.finance.*@tamtam.local`, statement references `DEMO-*`).
+
+## Module follow-up 2026-11-12
+
+`ExpenseRow.monthClosed` / `ExpenseDetail.monthClosed`: a draft whose posting month is on or before the last closed one — `canApprove` false, flagged in the list. `recordExpense(db, actor, input, now)` (the form's path) and `assertRecordableExpenseAccount(db, actor, accountId)` refuse the payroll and commissions families (`expense_account_payroll`, 409): payroll runs post them; `recordableExpenseAccounts(chart)` is what the form offers; the old note that told staff to record payroll here is retired. `countDecidableExpenses` answers in one round trip.
+
+Tests (each failed before its change): `tests/admin-finance-followup.test.ts`.

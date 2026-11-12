@@ -4,8 +4,10 @@ Owner: account. Sign-in and sign-up, the customer's account pages, favourites (b
 System v2 spec §6.12, §6.11 for the order page, §6.17 states, §9 copy). Files: `app/routes/storefront/account/**`
 (routes, `components/`, `account.css`), `app/routes/api/wishlist.ts` (+ its line in `app/routes/api/_routes.ts`),
 `app/server/services/account/**`, `app/server/services/wishlist.server.ts`, `app/i18n/messages/account.ts`,
-`tests/account.test.ts`, `tests/wishlist.test.ts`. Orders, payments and the wallet ledger are the commerce core's
-(CONTRACTS §1): read through it, never written here.
+`tests/account.test.ts`, `tests/wishlist.test.ts`, `tests/account-rewards.test.ts`. Orders, payments and the wallet
+ledger are the commerce core's (CONTRACTS §1): read through it, never written here. Points, memberships, referral codes
+and gift cards are module 08's, privacy requests module 07's: the account calls their services for the customer's own
+account (2026-11-12).
 
 ## Design System v2 (stage 3, 2026-11-12) — what changed
 
@@ -99,6 +101,9 @@ order rail and the sign-in card. Everything else is the kit (`.panel`, `.callout
 | `/account/devices` | Published device models by platform; «أملكه» chips; each name links to its hub |
 | `/account/returns`, `/account/warranties`, `/account/notifications` | Read-only lists (returns window, RMAs; warranties from delivery; notifications read one / all) |
 | `/account/profile`, `/account/settings` | Profile (audited); consents, channels (providers only), phone confirmation (provider only), password, sessions |
+| `/account/rewards` (2026-11-12) | «النقاط والعضوية»: the points balance and its worth, what expires within 30 days and the next date points really expire (module 08's FIFO rule), the earn and expiry rules in words from the programme in force, the history (an order's reference only for the customer's own orders; a cancelled order's points «أُعيدت إليك»); the active membership as the checkout applies it (the tier's rate within the store's discount limits, «حتى 50,000 د.ع في الطلب الواحد», free delivery, the points multiplier) or «ليست لديك عضوية الآن» (memberships are granted by the store); the referral code to copy with its uses, or «احصل على رمز إحالة» (module 08's `issueReferralCode` for the customer, once). `account/rewards.server` |
+| `/account/privacy` (2026-11-12) | «الخصوصية وبياناتك»: a copy of my data · correct my data (details required) · delete my account (what is kept, the wallet paid out first) → module 07's `createPrivacyRequest` for the own account (`account/privacy.server`: 5 filings a day per customer and per address, one open request per kind, the same form twice is one request); «نرد قبل …»; nothing happens until a staff member confirms who is asking. Stopping messages points to the settings switches. Works without script (the page answers the document post) |
+| `/account/wallet` gift card (2026-11-12) | «بطاقة هدية»: the code → «تحقق من البطاقة» (the amount; nothing changes) → a confirm dialog «أضف 60,000 د.ع إلى محفظتك؟» → module 08's guarded redemption into the customer's own wallet (`account/giftcards.server`: 10 checks per 10 minutes per customer and per address); the band's balance reads again. Refusals in the customer's words (`gift_card_*`). Without script the check answers with a plain confirm form |
 | `/wishlist` | Favourites for guests and customers; `private, no-store` |
 | `/api/wishlist` | GET `{ ok, ids }` · POST `intent=toggle\|add\|remove, productId` → `{ ok, wished, count }`; what `~/ui/WishlistKey` calls |
 
@@ -146,7 +151,25 @@ also passes `tt_wish` and sees moved rows at once.
   `clearRecentlyViewed` · `account/notifications.server`: `notificationStatement` · `account/topups.server`:
   `getPendingTopupTotal`, `listWalletTopups` · `account/preferences.server`: `getConsent`, `recordConsent`.
 - Route modules: `layout.tsx` `ACCOUNT_LAYOUT_ID`, `useAccountData()`; `components/AccountNav.tsx` `ACCOUNT_SECTIONS`,
-  `sectionOrder`; `components/OrderBits.tsx` `splitOption`, `railIndex` (pure, tested). No other area imports them.
+  `sectionOrder`; `components/OrderBits.tsx` `splitOption`, `railIndex` (pure, tested), `ORDER_RAIL`. No other area
+  imports them.
+- 2026-11-12: `account/rewards.server` `getRewards`, `issueOwnReferralCode`; `account/giftcards.server`
+  `checkOwnGiftCard`, `redeemOwnGiftCard`, `GIFT_ATTEMPTS`; `account/privacy.server` `listOwnPrivacyRequests`,
+  `fileOwnPrivacyRequest`, `OWN_PRIVACY_KINDS`, `PRIVACY_FILINGS` (tests: `tests/account-rewards.test.ts`).
+- The order page (2026-11-12): the kit's status rail (`ProgressSteps variant="status"`, the kit's page request — the
+  page's own `.orail` is gone), the checkout area's `Adjustments` (every discount as charged, the waived delivery, a split
+  payment's parts) and `DigitalCodes` («اعرض الرمز»: the page's `action` asks the core with the owner's session; audited,
+  rate-limited); its loader returns the `checkout` and `errors` words for them. Since the core review of 2026-11-12 a
+  cancelled or returned order's codes are revoked (shown as such, never revealed) and the rewards page lists each
+  points give-back by order («أُعيدت إليك» — a cancellation, a parcel refused at the door, a refund's share).
+- Security review 2026-11-12 (`tests/commerce-core-security.test.ts`, SECURITY §18): the new pages, their actions and
+  `/api/cart?points=` were attacked for another customer's points, codes, wallet and privacy requests (none reachable:
+  every service takes the session's customer, a posted `customerId` or `phone` changes nothing, another customer's
+  order is the same 404 as none); the gift-card and privacy budgets hold per ADDRESS across free accounts; a guest is
+  sent to sign in and nothing is written; another site's post is refused. An account's order shows its codes ONLY here
+  or on `/order/<ref>` signed in as its owner — never to the order's link (the core's `orderCodesOpenWith`); a reveal is
+  audited with `access: "account"`. A revoked code on a cancelled or returned order says «أُلغي هذا الرمز لأن الطلب أُلغي
+  أو أُعيد.» (`DigitalCodes closed`).
 
 ## Recently viewed — one store per shopper
 

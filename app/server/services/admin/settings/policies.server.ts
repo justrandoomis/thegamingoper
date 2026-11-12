@@ -17,7 +17,7 @@ import { z } from "zod";
 import { newId } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { POLICY_SLUGS, type PolicySlug } from "~/routes/storefront/content/content-model";
-import { assertCan, can, type Actor } from "~/server/actor";
+import { assertCan, can, canAny, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import type { Db } from "~/server/db/drizzle.server";
 import type { LocalizedBlocks, StoredBlock } from "~/server/db/columns";
@@ -34,7 +34,7 @@ import { taxSummary, type TaxSummary } from "./system.server";
 type StoreMode = "demo" | "live";
 
 export type PolicyRowState = { status: string; publishedAt: number | null; updatedAt: number; hasDraft: boolean; isDemo: boolean } | null;
-export type PolicyListItem = { slug: PolicySlug; title: string; approved: boolean; editable: boolean; row: PolicyRowState };
+export type PolicyListItem = { slug: PolicySlug; title: string; approved: boolean; editable: boolean; /** The content module's page of a policy it approves, for whoever may open it; null otherwise. */ contentHref: string | null; row: PolicyRowState };
 
 export type PoliciesView = {
   shipping: { flatFeeIqd: number; overridesEnabled: boolean };
@@ -73,6 +73,8 @@ export async function policiesView(db: Db, actor: Actor, locale: Locale, now: nu
         title: summary?.title ?? slug,
         approved: summary?.approved ?? false,
         editable: isEditablePolicy(slug),
+        // a policy the content module approves: its page there, for whoever may open it (cms.page.manage or .publish)
+        contentHref: !isEditablePolicy(slug) && canAny(actor, ["cms.page.manage", "cms.page.publish"]) ? `/admin/cms/pages/${slug}` : null,
         row: row ? { status: row.status, publishedAt: row.publishedAt, updatedAt: row.updatedAt, hasDraft: Boolean(row.draft), isDemo: row.isDemo } : null,
       };
     }),
@@ -90,6 +92,8 @@ export type PolicyEditor = {
   /** The text in force on the storefront now, as blocks of the editor's language (CMS or the code's draft). */
   live: { approved: boolean; blocks: PolicyBlock[] };
   version: number | null;
+  /** A text was approved (published, or withdrawn since): a draft may start from it (startPolicyDraft from: "approved"). */
+  fromApproved: boolean;
   can: { edit: boolean; publish: boolean };
 };
 
@@ -112,6 +116,7 @@ export async function getPolicyEditor(db: Db, actor: Actor, slug: string, locale
     text,
     live: { approved, blocks: liveBlocks as PolicyBlock[] },
     version: row?.updatedAt ?? null,
+    fromApproved: approvedBody(row) !== null,
     can: { edit: can(actor, "cms.page.manage"), publish: can(actor, "cms.page.publish") },
   };
 }
@@ -119,9 +124,21 @@ export async function getPolicyEditor(db: Db, actor: Actor, slug: string, locale
 const Reason = z.string({ error: "required" }).trim().min(3, "reason_required").max(500, "too_long");
 const Version = z.preprocess((value) => (value === "" || value === null || value === undefined ? null : Number(value)), z.number().int().nullable());
 
-const StartInput = z.object({ slug: z.string(), reason: Reason, version: Version });
+const StartInput = z.object({ slug: z.string(), reason: Reason, version: Version, from: z.enum(["code", "approved"], { error: "invalid" }).optional() });
 
-/** Copies the code's current draft (today's settings filled in, ar/en/ckb) into the CMS row's draft. */
+/** The text approved last — published, or the one withdrawn (archived keeps its body) — or null. */
+function approvedBody(row: Awaited<ReturnType<typeof pageOf>>): LocalizedBlocks | null {
+  if (!row || (row.status !== "published" && row.status !== "archived")) return null;
+  const body = row.body as LocalizedBlocks | null;
+  return blocksOf(body?.ar).length > 0 ? body : null;
+}
+
+/**
+ * Copies the code's current draft (today's settings filled in, ar/en/ckb) into the CMS row's draft — or, with
+ * `from: "approved"`, the text approved last, so a small change to an approved policy never means redoing every edit
+ * (follow-up 2026-11-12: the editor promised that start, the service only had the code's draft — module 17's gap,
+ * fixed there in its review). Refused when nothing was ever approved (`policy_no_approved`).
+ */
 export async function startPolicyDraft(db: Db, actor: Actor, raw: unknown, now: number, storeMode: StoreMode): Promise<{ created: boolean }> {
   assertCan(actor, "cms.page.manage");
   const input = StartInput.parse(raw);
@@ -129,9 +146,14 @@ export async function startPolicyDraft(db: Db, actor: Actor, raw: unknown, now: 
   const row = await pageOf(db, input.slug);
   if ((row?.updatedAt ?? null) !== input.version) throw new AppError("policy_changed", 409);
   const draft = await getPolicyDraftL10n(db, input.slug, { storeMode });
-  const body: LocalizedBlocks = { ar: draft.body.ar as StoredBlock[], en: draft.body.en as StoredBlock[], ckb: draft.body.ckb as StoredBlock[] };
+  const fromApproved = input.from === "approved";
+  const approved = fromApproved ? approvedBody(row) : null;
+  if (fromApproved && !approved) throw new AppError("policy_no_approved", 409);
+  const body: LocalizedBlocks = approved
+    ? { ar: blocksOf(approved.ar), ...(approved.en ? { en: blocksOf(approved.en) } : {}), ...(approved.ckb ? { ckb: blocksOf(approved.ckb) } : {}) }
+    : { ar: draft.body.ar as StoredBlock[], en: draft.body.en as StoredBlock[], ckb: draft.body.ckb as StoredBlock[] };
   const updatedBy = actor.kind === "employee" ? actor.id : null;
-  const audit = auditStatement(db, { actor, action: "settings.policy.start", entityType: "policy", entityId: input.slug, after: { blocks: body.ar.length, from: "code_draft" }, reason: input.reason, at: now });
+  const audit = auditStatement(db, { actor, action: "settings.policy.start", entityType: "policy", entityId: input.slug, after: { blocks: body.ar.length, from: approved ? (row?.status === "archived" ? "withdrawn" : "approved") : "code_draft" }, reason: input.reason, at: now });
   if (!row) {
     await runBatch(db, [db.insert(pages).values({ id: newId("pag"), slug: input.slug, kind: "policy", title: draft.title, draft: body, status: "draft", isDemo: false, updatedBy, createdAt: now, updatedAt: now }), audit]).catch((error) => {
       if (mapDbError(error)?.kind === "unique") throw new AppError("policy_changed", 409);
@@ -139,7 +161,7 @@ export async function startPolicyDraft(db: Db, actor: Actor, raw: unknown, now: 
     });
     return { created: true };
   }
-  await guardedUpdate(db, row.id, row.updatedAt, { draft: body, title: draft.title, updatedBy, updatedAt: now }, audit);
+  await guardedUpdate(db, row.id, row.updatedAt, { draft: body, title: approved ? row.title : draft.title, updatedBy, updatedAt: now }, audit);
   return { created: false };
 }
 

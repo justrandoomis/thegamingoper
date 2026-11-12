@@ -69,6 +69,11 @@ export type InspectionCardProps = {
   isDemo?: boolean;
   /** «سعره جديداً في المتجر 524,750 د.ع» — the store's price for the same model new, when it sells it. */
   newPriceIqd?: number | null;
+  /**
+   * Without a real photo the card says the pictures are illustrations. `false`: the page already says it once (the
+   * gallery's line under the stage), so the card leaves its photos part out instead of saying it a second time.
+   */
+  illustrationNote?: boolean;
   headingLevel?: 2 | 3;
   className?: string;
 };
@@ -98,6 +103,7 @@ export function InspectionCard({
   dataWiped = false,
   isDemo = false,
   newPriceIqd = null,
+  illustrationNote = true,
   headingLevel = 2,
   className,
 }: InspectionCardProps) {
@@ -129,30 +135,32 @@ export function InspectionCard({
         {isDemo ? <DemoNote variant="tag" what="data" className="justify-self-start" /> : null}
       </div>
 
-      <Part title={t("inspection.photos")} Sub={Sub}>
-        {real.length > 0 ? (
-          <>
-            <p className="flex items-start gap-1.5 type-xs text-ink-2">
-              <Icon name="camera" size={16} className="mt-0.5 shrink-0" />
-              {t("inspection.photosNote")}
+      {real.length === 0 && !illustrationNote ? null : (
+        <Part title={t("inspection.photos")} Sub={Sub}>
+          {real.length > 0 ? (
+            <>
+              <p className="flex items-start gap-1.5 type-xs text-ink-2">
+                <Icon name="camera" size={16} className="mt-0.5 shrink-0" />
+                {t("inspection.photosNote")}
+              </p>
+              <ul className="flex flex-wrap gap-2">
+                {real.map((photo, index) => (
+                  <li key={photo.mediaKey ?? photo.artKey ?? index} className="relative size-20 overflow-hidden rounded-sm border border-line bg-niche">
+                    <span className="render-slot size-full">
+                      <ProductImage image={photo} sizes="80px" fit="cover" />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="flex items-start gap-1.5 type-xs-strong text-warn">
+              <Icon name="image" size={16} className="mt-0.5 shrink-0" />
+              {t("inspection.noPhotos")}
             </p>
-            <ul className="flex flex-wrap gap-2">
-              {real.map((photo, index) => (
-                <li key={photo.mediaKey ?? photo.artKey ?? index} className="relative size-20 overflow-hidden rounded-sm border border-line bg-niche">
-                  <span className="render-slot size-full">
-                    <ProductImage image={photo} sizes="80px" fit="cover" />
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <p className="flex items-start gap-1.5 type-xs-strong text-warn">
-            <Icon name="image" size={16} className="mt-0.5 shrink-0" />
-            {t("inspection.noPhotos")}
-          </p>
-        )}
-      </Part>
+          )}
+        </Part>
+      )}
 
       <Part title={t("inspection.checklist")} Sub={Sub}>
         <ul className="inspect__rows">

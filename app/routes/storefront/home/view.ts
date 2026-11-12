@@ -7,18 +7,36 @@ import { parsePhotoKey, productPhotos } from "~/art";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
 
 /** The part of a home platform these rules read (HomePlatform in ~/server/services/home.server). */
-export type FocusablePlatform = { slug: string; hero: { productId: string } | null; newArrivals: readonly string[] };
+export type FocusablePlatform = { slug: string; hero: { productId: string; pin?: unknown } | null; newArrivals: readonly string[] };
 
 /**
- * The platform whose lead device the hero features until staff pin a product in the CMS (Design System v2 §13 #13:
- * "Nintendo Switch 2, «العب على / Nintendo Switch 2»"). When that platform has nothing buyable to feature, the next
- * platform in the store's order that has does.
+ * The platform whose lead device the hero features while staff pin nothing in the content module (Design System v2
+ * §13 #13: "Nintendo Switch 2, «العب على / Nintendo Switch 2»"). When that platform has nothing buyable to feature,
+ * the next platform in the store's order that has does.
  */
 export const FEATURED_PLATFORM: Platform = "nintendo";
 
-/** The hero's product: the featured platform's hero, else the first platform's (store order) that has one. */
+/**
+ * The hero's product. A PINNED hero first (admin 17.01 — staff chose it for this period; the service keeps a pin only
+ * while its product can be bought and has a photo): the featured platform's pin, else the first pinned platform in
+ * the store's order. Without a standing pin: the featured platform's automatic hero, else the first platform's that
+ * has one.
+ */
 export function featuredHero<P extends FocusablePlatform>(platforms: readonly P[], preferred: string = FEATURED_PLATFORM): P | null {
+  const pinned = platforms.filter((platform) => Boolean(platform.hero?.pin));
+  if (pinned.length > 0) return pinned.find((platform) => platform.slug === preferred) ?? pinned[0];
   return platforms.find((platform) => platform.slug === preferred && platform.hero) ?? platforms.find((platform) => platform.hero) ?? null;
+}
+
+/**
+ * The picture of a platform's console wherever the page shows one outside the hero band — the trade-in door, the
+ * intro's corner objects: its LEAD device (HomePlatform.lead, the store's automatic pick), never the hero. A staff pin
+ * puts a campaign product on the stage (a game, a headset), and a game is no "trade in your device" (review
+ * 2026-11-12). Null when the platform has no lead device or its card is missing.
+ */
+export function leadArt(platform: { hero?: { productId: string } | null; lead?: { productId: string } | null } | null | undefined, cards: Readonly<Record<string, { image: { artKey: string | null } } | undefined>>): string | null {
+  const lead = platform?.lead;
+  return lead ? (cards[lead.productId]?.image.artKey ?? null) : null;
 }
 
 /** A shelf below this many items is not drawn (v2 §4.22) — the new arrivals, the used units and the personal shelves. */
@@ -192,7 +210,8 @@ export function otherView(artKey: string | null | undefined, avoid: string | nul
   if (artKey !== avoid) return artKey;
   const parsed = parsePhotoKey(artKey);
   if (!parsed) return artKey;
-  const next = productPhotos(parsed.slug).find((photo) => photo.key !== artKey && photo.transparent && (photo.kind === "angle" || photo.kind === "in-box"));
+  // never a picture of the back (the catalogue marks them: view "back")
+  const next = productPhotos(parsed.slug).find((photo) => photo.key !== artKey && photo.transparent && photo.view !== "back" && (photo.kind === "angle" || photo.kind === "in-box"));
   return next?.key ?? artKey;
 }
 

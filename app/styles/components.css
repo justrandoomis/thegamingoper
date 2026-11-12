@@ -203,6 +203,10 @@
   padding-block: 2px;
   scrollbar-width: none;
 }
+/* a chip in a rail keeps its width: the row scrolls, the chips never squeeze */
+.chips--rail > * {
+  flex: none;
+}
 .chips--rail::-webkit-scrollbar {
   display: none;
 }
@@ -812,6 +816,10 @@ select.field__input {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
+/* the chosen ring and the focus ring are both ink: focus moves the ring out, as on the gallery thumbnails */
+.swatch:is([aria-checked="true"], [aria-pressed="true"]):focus-visible {
+  outline-offset: 4px;
+}
 .swatch[data-unavailable]::before {
   content: "";
   position: absolute;
@@ -1051,8 +1059,8 @@ select.field__input {
   overflow: hidden;
   font: var(--type-card);
   color: var(--ink);
-  unicode-bidi: plaintext;
-  text-align: match-parent; /* the page's start, whatever the name's own direction */
+  /* aligned to the page's start in the page's direction; the kit isolates the name (unicode-bidi: isolate) and its
+     Latin parts (BidiText) — `plaintext` would make a Latin name its own LTR paragraph, flush left in an Arabic card */
 }
 .pcard__link {
   color: inherit;
@@ -1214,8 +1222,6 @@ select.field__input {
 .cline__name {
   font: var(--type-card);
   color: var(--ink);
-  unicode-bidi: plaintext;
-  text-align: match-parent;
 }
 .cline__opt {
   font: var(--type-xs);
@@ -1629,8 +1635,6 @@ select.field__input {
 }
 .release__name {
   font: 600 var(--fs-body) / 1.4 var(--font-text);
-  unicode-bidi: plaintext;
-  text-align: match-parent;
 }
 .release__price {
   font: 700 var(--price-md) / 1.2 var(--font-display);
@@ -1682,6 +1686,7 @@ select.field__input {
 }
 .sechead__chips {
   flex-basis: 100%;
+  min-inline-size: 0; /* a chip rail scrolls inside the head instead of widening it */
 }
 @media (min-width: 64rem) {
   .sechead {
@@ -1785,7 +1790,8 @@ select.field__input {
 .entry__art--mark {
   background: var(--red-tint);
 }
-.entry__art > img {
+/* a picture handed in as the art node (an <Art>, whatever wraps it); a <Render> sizes its own image */
+.entry__art img:not(.render img) {
   position: absolute;
   inset: 8%;
   inline-size: 84%;
@@ -1835,7 +1841,7 @@ select.field__input {
   background: var(--product-ground);
   overflow: hidden;
 }
-.cat__art > img {
+.cat__art img:not(.render img) {
   position: absolute;
   inset: 14%;
   inline-size: 72%;
@@ -1851,7 +1857,7 @@ select.field__input {
   color: var(--ink-2);
 }
 @media (hover: hover) {
-  :is(.entry, .cat):hover :is(.entry__art, .cat__art) > img {
+  :is(.entry, .cat):hover :is(.entry__art, .cat__art) img:not(.render img) {
     scale: 1.03;
   }
 }
@@ -2134,7 +2140,9 @@ select.field__input {
 .crumbs__link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-block-size: var(--target);
+  min-inline-size: var(--target); /* a short crumb («PS5») is still a 44 × 44 target */
   color: var(--ink-2);
   text-decoration: none;
 }

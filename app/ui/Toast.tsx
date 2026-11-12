@@ -42,7 +42,7 @@ import { toastStore, useToasts, type Toast, type ToastKind } from "./toast-store
  *
  * Motion: drops in with 8px of travel and opacity (materialize) and leaves the same way; a new toast cross-fades with
  * the one it replaces. Swipe sideways, up or down to dismiss (it follows the finger, then keeps going or springs back).
- * Reduced motion: opacity only; swiping still works.
+ * Reduced motion: opacity only; swiping still works. Print: toasts are never printed (`print:hidden` on the region).
  */
 export type ToasterProps = {
   /** From 1024: the distance from the top of the viewport (under the header). Default `calc(var(--safe-top) + var(--s-2))`. */
@@ -167,8 +167,9 @@ function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset"
           aria-label={t("toast.region")}
           aria-keyshortcuts="F6"
           onKeyDown={onRegionKeyDown}
+          // never on paper: a printed receipt, waybill or report must not carry a toast over its figures
           className={cx(
-            "pointer-events-none fixed start-(--gutter) end-(--gutter) z-(--z-toast) grid max-lg:bottom-[max(calc(var(--shell-bottom)+12px),calc(var(--safe-bottom)+12px))] lg:start-auto lg:top-(--toaster-top) lg:w-[380px]",
+            "pointer-events-none fixed start-(--gutter) end-(--gutter) z-(--z-toast) grid max-lg:bottom-[max(calc(var(--shell-bottom)+12px),calc(var(--safe-bottom)+12px))] lg:start-auto lg:top-(--toaster-top) lg:w-[380px] print:hidden",
             className,
           )}
           style={{ "--toaster-top": offset } as CSSProperties}

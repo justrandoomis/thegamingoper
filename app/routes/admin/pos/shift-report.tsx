@@ -6,7 +6,7 @@ import { Logo } from "~/art/Logo";
 import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { reviewShift, shiftReport } from "~/server/services/admin/pos/shifts.server";
-import { IQD_DENOMINATIONS } from "~/server/services/admin/pos/types";
+import { IQD_DENOMINATIONS, type ShiftReviewReason } from "~/server/services/admin/pos/types";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
 import { posMeta } from "./meta";
@@ -59,7 +59,7 @@ export default function ShiftReportPage({ loaderData }: Route.ComponentProps) {
           <p className="max-w-[70ch] type-body text-ink-2">{reviewer ? t("report.leadReviewer") : t("report.leadOwn")}</p>
         </header>
         {closed ? <Notice tone={closed === "review" ? "warn" : "ok"}>{closed === "review" ? t("shift.closedReview") : t("shift.closedOk")}</Notice> : null}
-        {report.canReview ? <ReviewCard shiftId={report.id} variance={report.varianceIqd ?? 0} closedBy={report.closedBy?.name ?? "—"} /> : null}
+        {report.canReview ? <ReviewCard shiftId={report.id} variance={report.varianceIqd ?? 0} closedBy={report.closedBy?.name ?? "—"} reasons={report.reviewReasons ?? []} /> : null}
         {report.reviewBlocked ? <Notice tone="warn" icon="lock">{t("report.ownShift")}</Notice> : null}
         <div className="pos-actions">
           <Key icon="printer" onClick={() => window.print()}>
@@ -160,35 +160,47 @@ function Row({ label, value, strong = false }: { label: string; value: React.Rea
   );
 }
 
-/** The decision a supervisor takes (raised: a person must act), mobile-first. */
-function ReviewCard({ shiftId, variance, closedBy }: { shiftId: string; variance: number; closedBy: string }) {
+/**
+ * The decision a supervisor takes (raised: a person must act), mobile-first. A shift can wait without a difference —
+ * a take-over count, or a late sale that brought it back to 0 (shiftReviewReasons): then approving posts nothing.
+ */
+function ReviewCard({ shiftId, variance, closedBy, reasons }: { shiftId: string; variance: number; closedBy: string; reasons: readonly ShiftReviewReason[] }) {
   const t = usePosT();
   const [open, setOpen] = useState(false);
   const { fetcher, pending, message } = useIntent("review", "done.reviewed", () => setOpen(false));
+  const even = variance === 0;
+  const why = reasons.filter((reason) => reason !== "difference");
   return (
     <section className="adm-card adm-card--act" aria-labelledby="review-head">
       <h2 id="review-head" className="adm-h3">
         {t("report.reviewHead")}
       </h2>
-      <p className="type-body">{t(variance < 0 ? "report.reviewShort" : "report.reviewOver", { name: closedBy })}</p>
+      <p className="type-body">{t(even ? "report.reviewEven" : variance < 0 ? "report.reviewShort" : "report.reviewOver", { name: closedBy })}</p>
+      {why.length ? (
+        <ul className="grid gap-1 type-body">
+          {why.map((reason) => (
+            <li key={reason}>{t(`report.why.${reason}`)}</li>
+          ))}
+        </ul>
+      ) : null}
       <p className="type-kpi">
         <Money iqd={variance} signed />
       </p>
       <div className="pos-actions">
         <Key variant="commit" icon="check" onClick={() => setOpen(true)}>
-          {t("report.approve")}
+          {t(even ? "report.approveEven" : "report.approve")}
         </Key>
       </div>
       <ConfirmDialog
         open={open}
         onClose={() => setOpen(false)}
         tone="commit"
-        title={t("report.approveQ")}
-        consequence={t(variance < 0 ? "report.approveShortWhat" : "report.approveOverWhat")}
-        confirmLabel={t("report.approve")}
+        title={t(even ? "report.approveEvenQ" : "report.approveQ")}
+        consequence={t(even ? "report.approveEvenWhat" : variance < 0 ? "report.approveShortWhat" : "report.approveOverWhat")}
+        confirmLabel={t(even ? "report.approveEven" : "report.approve")}
         impact={[
           { label: t("report.variance"), value: <Money iqd={variance} signed />, negative: variance < 0 },
-          { label: t("report.books"), value: t(variance < 0 ? "report.booksShort" : "report.booksOver") },
+          { label: t("report.books"), value: t(even ? "report.booksNone" : variance < 0 ? "report.booksShort" : "report.booksOver") },
         ]}
         reason={{ label: t("report.note"), hint: t("report.noteHint") }}
         pending={pending}

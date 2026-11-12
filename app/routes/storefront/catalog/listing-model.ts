@@ -173,7 +173,8 @@ export type ListingFacets = {
 };
 
 /** A device model shortcut (→ /device/<slug>, the devices area's hub). */
-export type DeviceShortcut = { slug: string; name: string; platform: string; artKey: string | null; count: number };
+/** `short`: the model's short name for the hub's model switcher ("PS5 Pro"; catalogue read layer, card-facts.ts shortModelName). */
+export type DeviceShortcut = { slug: string; name: string; short?: string; platform: string; artKey: string | null; count: number };
 
 /** What the search start and the zero-result page offer to browse: every platform and department, with the hubs' counts. */
 export type StoreBrowse = {

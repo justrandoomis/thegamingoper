@@ -4,7 +4,9 @@ Owner: checkout. Cart, guest checkout, order confirmation, guest tracking and th
 §12, §14; Design System v2 §6.10, §6.11, §5.8 — the redesign spec `…/scratchpad/ux/design-v2-spec.md`). UI over the
 commerce core only (CONTRACTS §1): nothing here writes a commerce table, prices anything or decides access —
 `checkout.server.ts` reads, `placeOrder` / `submitPaymentProof` write. Files: `app/routes/storefront/checkout/**`,
-`app/routes/api/upload-proof.ts`, `app/i18n/messages/checkout.ts`, `tests/checkout-flow.test.ts`.
+`app/routes/api/upload-proof.ts`, `app/i18n/messages/checkout.ts`, `tests/checkout-flow.test.ts`,
+`tests/checkout-extras.test.ts` (the points / referral / wallet-split fields, 2026-11-12), `tests/commerce-core-security.test.ts`
+(the core's security review of 2026-11-12: the codes, the referral checks, the landing after checkout).
 
 ## Routes
 
@@ -93,10 +95,60 @@ of the transfer photo only while a proof is due; its account aside is two senten
 | Sold out / soon | lines «لا يُحتسب في المجموع», the key blocked | taken out with undo on a race | — | — |
 | Demo | the demo-order line | «طلب تجريبي» (bar) + the line | the tag + the line | the tag on the found order |
 
+## Promotions, points, split payments, digital codes (2026-11-12, commerce core)
+
+Everything is priced by the core (`getCartView` / `placeOrder`, CONTRACTS §1) — the pages only show it, as charged:
+
+- **Cart lines**: a flash-priced line says so under its name («عرض سريع (تجريبي): سعر العرض حتى …، بدلاً من 62,250 د.ع»,
+  and how many units the price still covers — `withFlash`); «نقل إلى المفضلة» beside «إزالة» (`components/MoveToWishlist`:
+  `POST /api/wishlist` then the editor's removal with its undo row; variant lines only).
+- **The summary** (`components/Adjustments.tsx`, under the kit `OrderSummary`'s rows — the kit shows one discount row):
+  every part of «الخصم» on its own line (an offer, the coupon, the membership discount with its rate, the redeemed
+  points), the delivery a membership or an offer waived (words only: «التوصيل مجاني لعضوية … بدلاً من 5,000 د.ع» — the
+  delivery row already shows 0), and a split payment's two parts («من محفظة طمطم» · «الباقي للدفع»). The kit's discount
+  row names the coupon only when the coupon IS the whole discount (`summaryCoupon`). A coupon a better non-stackable
+  offer beats is kept and named («لا يُجمع الرمز … مع عرض «…»، فطبّقنا العرض الأفضل لك.»). On the cart, the cart and checkout sticky summaries, the
+  review, the order page, /track and the account's order page.
+- **Payment step**: «نقاطك» for a signed-in customer with points (`PointsBox`: the balance and its worth, the field —
+  Latin or Arabic digits — «استخدم 3,000», «لا تستخدم نقاطي», what comes off; the page re-prices through `GET
+  /api/cart?points=`), and «ادفع … من رصيد محفظتك، والباقي بالطريقة التي تختارها» when the wallet holds part of the total
+  (`useWallet` → `walletIqd`). **Review step**: «لديك رمز إحالة من صديق؟» (a disclosure; «تحقق» checks it against the core
+  and says why a code cannot be used). Field errors map back to their step (`walletIqd` → the wallet box).
+- **Order page**: «رموزك الرقمية» once paid — each code behind «اعرض الرمز» (`components/DigitalCodes.tsx`, `intent=reveal`
+  on the page's own route with the token or the owner's session; rate-limited and audited by the core; «انسخ» after);
+  revoked codes say so; units still waiting for a code are counted. /track shows that codes exist but opens none.
+  The stored transfer proof is shown again after a reload (`storedProofPath`).
+- Without script: the points field, the wallet box and the referral code post with the form (`draftFromPosted`); a
+  reveal needs script (it is a fetcher on the order page).
+- **Nothing to pay** (core review 2026-11-12): when points and free delivery bring the total to 0 the payment step offers no
+  bank transfer or Zain Cash (the core refuses a transfer of 0 — `payment_method_unavailable` on the field), cash on
+  delivery places the order already paid, and the order page's next step says «استلمنا طلبك وسنراجعه.» (no «تدفع 0 د.ع
+  نقداً»: the cash line shows only while the payment is `cod_due`). A cancelled order's codes are revoked and its page
+  offers none («اعرض الرمز» gone; nothing due). Verified in Edge at 1440 ar and 390 en (light, and the cancelled page in
+  dark): scripts and shots in the session scratchpad `work/f2-core-review/`.
+- **Security review 2026-11-12** (`tests/commerce-core-security.test.ts`, SECURITY §18):
+  - An ACCOUNT's order opened with its link (nobody signed in as its owner) shows its codes but no «اعرض الرمز»: the
+    codes card says «هذا الطلب مرتبط بحساب: تفتح رموزه لصاحب الحساب بعد تسجيل الدخول…» with «سجّل الدخول لعرض الرموز»
+    (→ `/account/login?next=/order/<ref>`) — the loader's `codesSignIn` (`codesNeedSignIn`, the core's
+    `orderCodesOpenWith`); a guest's order keeps «اعرض الرمز» behind its link. /track's sentence says the codes open
+    from the account, or from the link of an order placed without one.
+  - A signed-in shopper's checkout lands on `/order/<ref>` WITHOUT the token (`?address=0` when the address was not
+    saved); a guest still lands on the link.
+  - A revoked code says why in words true for the order: «أُلغي هذا الرمز لأن الطلب أُلغي أو أُعيد.» on a cancelled or
+    returned order (`DigitalCodes closed`), «…مع الاسترداد.» otherwise; its tag is the short «ملغى».
+  - The review's referral check posts its code (`POST /api/cart intent=price`) instead of a `?referral=` URL; the hint
+    says the store reviews the referral before rewarding its owner.
+
 ## Exports other areas use (keep their signatures)
 
 - `checkout-form.ts`: `STEPS`, `stepOf`, `stepIndex`, `Step` (the shell's checkout rail), the draft helpers,
-  `optionValue` / `splitLineName` (a line's option value).
+  `optionValue` / `splitLineName` (a line's option value), `parsePoints` (2026-11-12).
+- `components/Adjustments.tsx` (`Adjustments`, `summaryCoupon`, `withFlash`, `discountLabel`) and
+  `components/DigitalCodes.tsx` — the account's order page shows them too (they import `checkout.css` themselves; a page
+  using them returns `i18n: messagesFor(locale, "checkout", "errors")`).
+- `checkout.server.ts`: `revealCodeForShopper(db, ctx, { ref, token, customerId, codeId })`, `storedProofPath`,
+  `codesNeedSignIn(db, found)` (security review 2026-11-12). `DigitalCodes` takes `closed?` and `signInRef?` (both
+  optional; `OrderDetails` passes them — `codesSignIn?` on `OrderDetails`).
 - `checkout.server.ts`: `addressPrefill`, `cartShelves`, `recordPurchase`, `confirmationPath` (tests and the integration
   wiring), `NO_STORE`.
 - `proof.server.ts`: `handleProofUpload`, `MAX_PROOF_BODY_BYTES`.
@@ -109,10 +161,12 @@ of the transfer photo only while a proof is due; its account aside is two senten
 - Demo: prices and stock; orders placed in demo mode say «طلب تجريبي» on the order page.
 - Boundary: linking a guest order to an account needs a phone code — no SMS provider; the order page does not promise
   it (it says the order stays reachable by its link and /track, and that an account gathers the next orders). No notice
-  when staff approve or reject a proof (no provider). «نقل إلى المفضلة» on cart lines waits for a `productId` on
-  `CartLine` (commerce core). Dispatch days: no setting exists, so no day is offered.
-- The stored proof is shown back from the upload answer's `previewUrl` during the visit; after a reload the order page
-  shows the review state in words (the loader slot: `latestProofFileId` + `shopperFilePath`).
+  when staff approve or reject a proof (no provider). Dispatch days: no setting exists, so no day is offered.
+- The stored proof is shown back from the upload answer's `previewUrl` during the visit, and after a reload from
+  `latestProofFileId` + `shopperFilePath` (`storedProofPath`, 2026-11-12).
+- Points, memberships, offers, flash sales, gift cards and digital codes are the store's own records (module 08 / 13);
+  the demo ones say «(تجريبي)» in their names. Digital stock: imported codes add no stock count yet (module 13 request) —
+  a digital product sells only as far as its stock row allows.
 
 ## Verified (2026-11-12, headless Edge against the dev server; scripts in the session scratchpad `work/pages-P6-checkout/`)
 

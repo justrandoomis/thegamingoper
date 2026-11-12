@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { Icon } from "~/art/Icon";
-import { useT } from "~/i18n/react";
+import { useFormat, useT } from "~/i18n/react";
 import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
@@ -225,11 +225,27 @@ type ChoiceProps = Omit<ComponentPropsWithRef<"input">, "type" | "className"> & 
   className?: string;
 };
 
-export type CheckboxProps = ChoiceProps & { indeterminate?: boolean };
+/*
+ * A disabled choice that is checked keeps its mark (a reviewer reads what a role grants without being able to change
+ * it): the stylesheet's disabled box (a --niche fill, a --line border) outweighs the checked one and hid the paper
+ * check — restated here, after it: an --ink-3 fill (checkbox) or ring (radio), the mark in paper.
+ */
+const CHECKED_DISABLED_BOX =
+  "peer-checked:peer-disabled:border-ink-3 peer-checked:peer-disabled:bg-ink-3 peer-indeterminate:peer-disabled:border-ink-3 peer-indeterminate:peer-disabled:bg-ink-3";
+const CHECKED_DISABLED_RING = "peer-checked:peer-disabled:border-ink-3";
+
+export type CheckboxProps = ChoiceProps & {
+  indeterminate?: boolean;
+  /** A count at the row's end (a filter value: «Nintendo  18»), in ink-2 tabular figures. */
+  count?: number;
+  /** Anything else at the row's end. */
+  end?: ReactNode;
+};
 
 /** A paper box with a real border; checked = ink with a check. The whole row (≥ 44px) is the target. */
-export function Checkbox({ label, hint, error, className, id, indeterminate = false, ...input }: CheckboxProps) {
+export function Checkbox({ label, hint, error, className, id, indeterminate = false, count, end, ...input }: CheckboxProps) {
   const ids = useFieldIds(id, hint, error);
+  const f = useFormat();
   const ref = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     if (ref.current) ref.current.indeterminate = indeterminate;
@@ -247,14 +263,21 @@ export function Checkbox({ label, hint, error, className, id, indeterminate = fa
           }}
           id={ids.id}
           type="checkbox"
-          className="choice__input"
+          className="choice__input peer"
           aria-invalid={error ? true : undefined}
           aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
         />
-        <span className="choice__box" aria-hidden="true">
+        <span className={cx("choice__box", CHECKED_DISABLED_BOX)} aria-hidden="true">
           <Icon name={indeterminate ? "minus" : "check"} size={16} />
         </span>
         <span className="choice__text">{label}</span>
+        {typeof count === "number" && Number.isFinite(count) ? (
+          <span className="choice__end type-xs text-ink-2 nums">
+            <bdi>{f.number(count)}</bdi>
+          </span>
+        ) : end ? (
+          <span className="choice__end">{end}</span>
+        ) : null}
       </label>
       <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />
     </div>
@@ -277,10 +300,10 @@ export function Radio({ label, hint, error, className, id, row = false, end, ...
         {...input}
         id={ids.id}
         type="radio"
-        className="choice__input"
+        className="choice__input peer"
         aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
       />
-      <span className="choice__box" aria-hidden="true" />
+      <span className={cx("choice__box", CHECKED_DISABLED_RING)} aria-hidden="true" />
       <span className="choice__text">
         <span>{label}</span>
         {hint ? (
@@ -289,7 +312,8 @@ export function Radio({ label, hint, error, className, id, row = false, end, ...
           </span>
         ) : null}
       </span>
-      {end ? <span className="choice__end">{end}</span> : null}
+      {/* the option's own price keeps «667,500 د.ع» on one line (a price wraps its currency by default) */}
+      {end ? <span className="choice__end [&_.price]:flex-nowrap">{end}</span> : null}
     </label>
   );
 }
@@ -380,15 +404,17 @@ export type FieldGroupProps = {
   optional?: boolean;
   /** Lay the children out as a column of option rows (default) or a wrapping row. */
   layout?: "column" | "row";
+  /** The fieldset's id — what an error summary item links to (`<FormErrorSummary errors={[{ id, label }]} />`). */
+  id?: string;
   className?: string;
   children: ReactNode;
 };
 
 /** A <fieldset> with a legend, help and an error for a set of radios, checkboxes or chips. */
-export function FieldGroup({ legend, hint, error, required, optional, layout = "column", className, children }: FieldGroupProps) {
-  const ids = useFieldIds(undefined, hint, error);
+export function FieldGroup({ legend, hint, error, required, optional, layout = "column", id, className, children }: FieldGroupProps) {
+  const ids = useFieldIds(id, hint, error);
   return (
-    <fieldset className={cx("field field--group", className)} data-invalid={error ? "" : undefined} aria-describedby={ids.describedBy}>
+    <fieldset id={id} className={cx("field field--group", className)} data-invalid={error ? "" : undefined} aria-describedby={ids.describedBy}>
       <FieldLabel as="legend" label={legend} required={required} optional={optional} />
       <div className={cx("field__options", layout === "row" && "field__options--row")}>{children}</div>
       <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />

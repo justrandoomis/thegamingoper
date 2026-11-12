@@ -1,7 +1,8 @@
 /**
  * Pure decisions behind the shell's chrome (client-safe, unit-tested in tests/shell.test.ts):
  *
- *   shellChrome(matches, { errored, path })  which shell a page gets (store · checkout · task) and its bars
+ *   shellChrome(matches, { errored, path })  which shell a page gets (store · checkout · task), its bars and the
+ *                                             offline banner's words
  *   backFallback(path)                        where the task header's back key leads when there is no page to go back to
  *   canonicalSearch(search)                   a query string exactly as the server renders it (hydration-safe hrefs)
  *   tabOf(path)                               which tab of the tab bar a page belongs to
@@ -10,6 +11,8 @@
  *   suggestionKind(href)                      what a search suggestion points at (its row's icon and words)
  *   sheetCategories(categories)               the departments of the categories sheet, in order
  *   errorKind(error, online)                  which error panel a failure gets (offline is never a 500)
+ *   missingProduct(error)                     the words of a product address that led nowhere (the product 404)
+ *   platformForQuery(query, platforms)        the platform those words name, if any
  */
 import { isRouteErrorResponse } from "react-router";
 
@@ -17,6 +20,9 @@ import { STEPS, stepIndex, stepOf, type Step } from "~/routes/storefront/checkou
 import type { PolicySlug } from "~/routes/storefront/content/content-model";
 import { LAYOUT_ROUTE_ID } from "./meta";
 import type { NavCategory, NavLink, NavPlatform, ShellChromeKind, ShellHandle } from "./types";
+
+/** What the offline banner says: what was typed stays (forms) · the cart is kept (everywhere else). */
+export type OfflineWords = "form" | "store";
 
 /**
  * The policy pages the footer links (`/policies/<slug>`, content area), by column (Design System v2 §5.9): الدعم —
@@ -47,9 +53,15 @@ export type ShellChrome = {
   task: boolean;
   /** The deepest `handle.shell.back`, if a page declared one (locale-less path). */
   back: string | null;
+  /**
+   * The offline banner's words: the deepest `handle.shell.offline`; else "form" in checkout, task flows and under
+   * /account (sign-in, sign-up and the account's forms), "store" elsewhere — and on an error page (no form on screen).
+   */
+  offline: OfflineWords;
 };
 
 const CHECKOUT_PATH = /^\/checkout(\/|$)/;
+const ACCOUNT_PATH = /^\/account(\/|$)/;
 /** A path on this site: "/x", never "//host" (protocol-relative) or a full URL. */
 const SITE_PATH = /^\/(?!\/)/;
 
@@ -64,14 +76,17 @@ export function shellChrome(matches: readonly ShellMatch[], options: { errored?:
   let declared: Exclude<ShellChromeKind, "store"> | null = null;
   let ownBar = false;
   let back: string | null = null;
+  let offline: OfflineWords | null = null;
   for (const match of considered) {
     const shell = (match.handle as ShellHandle | null | undefined)?.shell;
     if (shell?.chrome === "checkout" || shell?.chrome === "task") declared = shell.chrome;
     if (shell?.tabBar === false) ownBar = true;
     if (typeof shell?.back === "string" && SITE_PATH.test(shell.back)) back = shell.back;
+    if (shell?.offline === "form" || shell?.offline === "store") offline = shell.offline;
   }
   const chrome: ShellChromeKind = declared ?? (!options.errored && options.path !== undefined && CHECKOUT_PATH.test(options.path) ? "checkout" : "store");
-  return { chrome, tabBar: chrome === "store", task: chrome === "task" || (chrome === "store" && ownBar), back };
+  const forms = chrome !== "store" || (!options.errored && options.path !== undefined && ACCOUNT_PATH.test(options.path));
+  return { chrome, tabBar: chrome === "store", task: chrome === "task" || (chrome === "store" && ownBar), back, offline: offline ?? (forms ? "form" : "store") };
 }
 
 /**
@@ -187,21 +202,61 @@ export function sheetCategories(categories: readonly NavCategory[]): NavCategory
 
 export type ErrorKind = "notFound" | "forbidden" | "unavailable" | "offline" | "error";
 
-/** A fetch that never got an answer: the browser's network failure, not a status from the store. */
+/**
+ * A fetch that never got an answer: the BROWSER's network failure, not a status from the store — Chromium "Failed to
+ * fetch" (also "… dynamically imported module"), Firefox "NetworkError when attempting to fetch resource.", Safari "Load
+ * failed" / "The network connection was lost." The same words app/root.tsx tests; never Node's server-side "fetch
+ * failed" (a store failure, which reaches the browser as itself in development and must stay a 500 there too).
+ */
 export function isNetworkFailure(error: unknown): boolean {
-  return error instanceof TypeError && /fetch|network|load failed/i.test(error.message);
+  return error instanceof TypeError && /failed to fetch|networkerror|network error|load failed|network connection was lost/i.test(error.message);
 }
 
 /**
  * Which error panel a failure gets (v2 §6.16). `online` is the browser's belief (always true on the server and while
- * hydrating). A request that never reached the store is "offline" — never a 500, never "an error on our side".
+ * hydrating). A request that never reached the store is "offline" — never a 500, never "an error on our side" — the
+ * same rule and the same words (`errors.offline`) as the root boundary (app/root.tsx). Only in the browser
+ * (`inBrowser`): on the server a fetch TypeError is the store's own failure (an upstream it called) and stays a 500.
  */
-export function errorKind(error: unknown, online: boolean): { kind: ErrorKind; status: number } {
+export function errorKind(error: unknown, online: boolean, inBrowser = typeof window !== "undefined"): { kind: ErrorKind; status: number } {
   if (isRouteErrorResponse(error)) {
     const status = error.status;
     return { status, kind: status === 404 ? "notFound" : status === 403 || status === 401 ? "forbidden" : status === 503 ? "unavailable" : "error" };
   }
-  return { status: 500, kind: isNetworkFailure(error) || !online ? "offline" : "error" };
+  return { status: 500, kind: inBrowser && (isNetworkFailure(error) || !online) ? "offline" : "error" };
+}
+
+/**
+ * The words of a product address that led nowhere: the product page throws its 404 with
+ * `{ error: "not_found", what: "product", query }` (the slug's words) — the panel then says the product is gone or its
+ * link changed and searches those words (v2 §6.16 "missing product"). Null for any other failure.
+ */
+export function missingProduct(error: unknown): string | null {
+  if (!isRouteErrorResponse(error) || error.status !== 404) return null;
+  const data = error.data as { what?: unknown; query?: unknown } | null;
+  if (!data || data.what !== "product") return null;
+  const query = typeof data.query === "string" ? data.query.replace(/\s+/g, " ").trim().slice(0, 80) : "";
+  return query;
+}
+
+const words = (text: string) => ` ${text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim()} `;
+
+/**
+ * The platform a missing product's words name — by the platform's slug or one of its device hubs or consoles (whole
+ * words: "ps5 pro 2tb" → PlayStation, "nintendo switch 2 …" → Nintendo, "steam deck oled …" → the handhelds) — or null
+ * (a game title alone names no platform; the panel then offers all four).
+ */
+export function platformForQuery(query: string, platforms: readonly NavPlatform[]): NavPlatform | null {
+  const text = words(query);
+  if (text.trim() === "") return null;
+  const slugOf = (href: string) => href.replace(/^\/(device|p)\//, "").split(/[/?#]/)[0];
+  return (
+    platforms.find((platform) =>
+      [platform.slug, ...platform.devices.map((link) => slugOf(link.href)), ...platform.consoles.map((link) => slugOf(link.href))]
+        .map((token) => words(token))
+        .some((token) => token.trim() !== "" && text.includes(token)),
+    ) ?? null
+  );
 }
 
 export type SuggestionKind = "product" | "platform" | "category" | "device" | "used" | "correction" | "other";

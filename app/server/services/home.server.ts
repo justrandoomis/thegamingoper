@@ -2,12 +2,21 @@
  * The home page's data (docs/areas/home.md) — composed from the catalogue read layer (catalog/cards.server.ts) and a
  * few reads of its own. Read-only, except recordPersonalizationConsent (one consent row).
  *
- *   const home = await getHomeData(db, { locale: ctx.locale, now: ctx.now });
+ *   const home = await getHomeData(db, { locale: ctx.locale, now: ctx.now, extraShelves: false });
  *   home.platforms        the four platforms of the key bank, each with its hero and its shelves (product ids)
  *   home.cards            every product card those lists name, once (id → ProductCardData)
  *   home.deals            genuine reductions only (getDeals: compare-at above the price), store-wide
  *   home.used             listed used units (getUsedSpotlight)
- *   home.comingSoon       pre-orders and unreleased variants, with the release dates from the research
+ *   home.comingSoon       pre-orders and unreleased variants, with the release dates from the research and their
+ *                         platform line (platformSlug, forPlatforms, kindLabel — no second card read needed)
+ *   home.layout           the sections below the hero in the order the page draws them: the staff's arrangement from
+ *                         the content module (getHomeLayout, admin 17.01) once they saved one, else the page's own
+ *   `extraShelves: false` leaves out the games and gear shelves and the deals (empty), which the v2 page does not show.
+ *
+ * THE PINNED HERO (admin 17.01, getHomeHero): staff may pin a product and a headline on a platform's stage for a
+ * period. The pin is used only while its product can be bought now and has a photo (the same test as the automatic
+ * pick) — otherwise the platform's automatic hero stands, as if nothing were pinned. Demo pins are never read. A pin
+ * takes the stage only: the platform's own lead device stays in `lead` for the page's other pictures of its console.
  *
  * HONESTY RULES (what the page may say)
  *   · Shelves are store suggestions with a written rule ("the newest in stock"), never "trending" or "customers also
@@ -40,7 +49,11 @@ import type { Db } from "~/server/db/drizzle.server";
 import { consents } from "~/server/db/schema";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { invalid } from "~/server/errors";
+import { getHomeHero, getHomeLayout, type HeroPinView } from "~/server/services/admin/cms/home.server";
+import { HOME_SECTIONS, type HomeSectionKind } from "~/server/services/admin/cms/rules";
+import { kindLabelOf } from "~/server/services/catalog/card-facts";
 import { MAX_CARD_IDS, getCardsByIds, getDeals, getUsedSpotlight } from "~/server/services/catalog/cards.server";
+import { gelOfPlatformName } from "~/server/services/catalog/product-types";
 
 // ───────────────────────────────────────────────────────────────── constants
 
@@ -76,17 +89,45 @@ const BAGHDAD_OFFSET_MS = 3 * 60 * 60 * 1000;
 
 export type HomeHero = {
   productId: string;
-  /** "new": a base model released within NEW_RELEASE_DAYS. "lead": the platform's lead device. */
+  /** "new": a base model released within NEW_RELEASE_DAYS. "lead": the platform's lead device (and a pinned hero). */
   mode: "new" | "lead";
   /** The release date from the research ("YYYY-MM-DD"), when known. */
   releasedOn: string | null;
+  /** Staff pinned this product with their own headline (admin 17.01); null for the automatic pick. */
+  pin?: HomeHeroPin | null;
+};
+
+/** A pinned hero's words, in the page's language when the pin has them, else in Arabic (`textLocale`). */
+export type HomeHeroPin = { pinId: string; headline: string; deck: string | null; textLocale: Locale };
+
+/**
+ * The home page's sections below the hero in the page's OWN order (Design System v2 §6.1): the platform tiles (the
+ * trust strip follows them), new arrivals, the release band, used units, the trade-in and support doors
+ * ("used_repairs"), the departments ("accessories"), the personal shelves and the personalisation panel. The content
+ * module's other kinds ("games", "deals") have no section on this page.
+ */
+export const HOME_PAGE_SECTIONS = ["platforms", "new_arrivals", "coming_soon", "used", "used_repairs", "accessories", "recently_viewed", "recommendations", "personal"] as const satisfies readonly HomeSectionKind[];
+export type HomePageSection = (typeof HOME_PAGE_SECTIONS)[number];
+
+export type HomeLayout = {
+  /** The sections to draw, in order ("personal" is always there: it holds the shopper's privacy controls). */
+  sections: HomePageSection[];
+  /** True once staff saved an arrangement (else the page's own order). */
+  arranged: boolean;
 };
 
 export type HomePlatform = {
   slug: HomePlatformSlug;
   /** The platform's name from the catalogue (the page prefers the design system's names for the known four). */
   name: string;
+  /** What the hero band features for this platform: a standing staff pin, else the lead device (`lead`). */
   hero: HomeHero | null;
+  /**
+   * The platform's own lead device (pickHero) — the hero whenever nothing is pinned. The page's other pictures of the
+   * platform's console (the trade-in door, the intro's corner objects) use it while a pin stands: a pinned game is the
+   * campaign, never "trade in your device" (review 2026-11-12).
+   */
+  lead: HomeHero | null;
   /** Product ids, newest in the store first, all buyable now. */
   newArrivals: string[];
   /** Games for the platform, newest first, without the ones already in newArrivals. */
@@ -110,6 +151,20 @@ export type ComingSoonItem = {
   priceIqd: number;
   image: ImageRef;
   isDemo: boolean;
+  /**
+   * The one platform the coming item is for (its dot): for a product, its single researched platform (the card's
+   * `forPlatforms`, else its own platform); for later versions of a product, the platform those versions name
+   * (variant option "PS5" → "playstation"), else the product's. Null when it is for several platforms or none.
+   */
+  platformSlug: string | null;
+  /** Every platform it is for, in menu order (two dots for a multi-platform item); [] when none is known. */
+  forPlatforms: string[];
+  /**
+   * Its platform line, localized: the product card's `kindLabel` («لعبة PS5», «سماعة · PS5», «لعبة متعددة المنصات»);
+   * for versions that name another platform than the product's line, the kind with that platform («لعبة PlayStation»).
+   * Null when unknown.
+   */
+  kindLabel: string | null;
 };
 
 export type HomeData = {
@@ -118,6 +173,8 @@ export type HomeData = {
   deals: string[];
   used: UsedUnitCardData[];
   comingSoon: ComingSoonItem[];
+  /** The sections below the hero and their order (homeLayoutOf). */
+  layout: HomeLayout;
 };
 
 // ───────────────────────────────────────────────────────────────── reads
@@ -138,8 +195,9 @@ function parseL10n(value: unknown): L10n | null {
  * Which products are on which platform, ranked newest first (COALESCE(published_at, created_at): when the store put
  * them on sale) — overall (rn_all) and within their shelf group (rn_kind: g = games, a = gear, o = the rest).
  * Platform membership: see the file header. Each CTE is referenced once (D1's nesting limit, cards.server.ts).
+ * `perKind` false: only the overall candidates (the games and gear shelves are not wanted).
  */
-function membershipStatement() {
+function membershipStatement(perKind = true) {
   const gear = sql.join(
     GEAR_KINDS.map((kind) => sql`${kind}`),
     sql`, `,
@@ -174,7 +232,7 @@ ranked AS (
 )
 SELECT product_id, platform, grp, rn_all, rn_kind
 FROM ranked
-WHERE rn_all <= ${CANDIDATES.all} OR (grp <> 'o' AND rn_kind <= ${CANDIDATES.kind})
+WHERE rn_all <= ${CANDIDATES.all}${perKind ? sql` OR (grp <> 'o' AND rn_kind <= ${CANDIDATES.kind})` : sql``}
 ORDER BY platform, rn_all`;
 }
 
@@ -213,13 +271,14 @@ type ConsoleRow = {
 function comingSoonStatement(now: number) {
   return sql`
 SELECT p.id AS product_id, p.preorder_release_at AS release_at, NULL AS sku, NULL AS release_day, NULL AS title,
-  NULL AS price_iqd, NULL AS art_key, NULL AS alt
+  NULL AS price_iqd, NULL AS art_key, NULL AS alt, NULL AS platform_option
 FROM products AS p
 WHERE p.status = 'published' AND p.preorder_release_at > ${now}
 UNION ALL
 SELECT p.id, NULL, v.sku, je.value, v.title, v.price_iqd,
   (SELECT m.art_key FROM media AS m WHERE m.owner_type = 'variant' AND m.owner_id = v.id AND m.art_key IS NOT NULL AND m.kind IN ('image', 'render') ORDER BY m.sort, m.id LIMIT 1),
-  (SELECT m.alt FROM media AS m WHERE m.owner_type = 'variant' AND m.owner_id = v.id AND m.art_key IS NOT NULL AND m.kind IN ('image', 'render') ORDER BY m.sort, m.id LIMIT 1)
+  (SELECT m.alt FROM media AS m WHERE m.owner_type = 'variant' AND m.owner_id = v.id AND m.art_key IS NOT NULL AND m.kind IN ('image', 'render') ORDER BY m.sort, m.id LIMIT 1),
+  CASE WHEN json_valid(v.options) THEN json_extract(v.options, '$.platform') END
 FROM products AS p
 JOIN json_each(p.attributes, '$.variantReleaseDates') AS je
 JOIN variants AS v ON v.product_id = p.id AND v.sku = je.key AND v.is_active = 1
@@ -235,6 +294,8 @@ export type ComingRow = {
   price_iqd: number | null;
   art_key: string | null;
   alt: string | null;
+  /** The version's platform option ("PS5", "Xbox Series X"), when it has one (variant rows only). */
+  platform_option?: string | null;
 };
 
 // ───────────────────────────────────────────────────────────────── rules (pure, exported for tests)
@@ -334,6 +395,26 @@ function unique(ids: readonly string[]): string[] {
   return [...new Set(ids)];
 }
 
+/** The platforms a card is for (its dots), in menu order: its researched platforms, else its own platform. */
+const platformsOfCard = (card: ProductCardData): string[] => (card.forPlatforms && card.forPlatforms.length > 0 ? [...card.forPlatforms] : card.platformSlug ? [card.platformSlug] : []);
+
+/** A coming item's platform line from its product's card (ComingSoonItem.platformSlug / forPlatforms / kindLabel). */
+function cardPlatformFacts(card: ProductCardData): Pick<ComingSoonItem, "platformSlug" | "forPlatforms" | "kindLabel"> {
+  const platforms = platformsOfCard(card);
+  return { platformSlug: platforms.length === 1 ? platforms[0] : null, forPlatforms: platforms, kindLabel: card.kindLabel ?? null };
+}
+
+/**
+ * The platform line of a later version: the platform its option names ("PS5" → playstation: the PS5 version of a game
+ * that is out on Xbox) when that says more than the product's line, else the product's line.
+ */
+function versionPlatformFacts(card: ProductCardData, option: string | null | undefined, locale: Locale): Pick<ComingSoonItem, "platformSlug" | "forPlatforms" | "kindLabel"> {
+  const facts = cardPlatformFacts(card);
+  const named = gelOfPlatformName(option);
+  if (!named || facts.platformSlug === named) return facts;
+  return { platformSlug: named, forPlatforms: [named], kindLabel: kindLabelOf({ kind: card.kind, families: [], ownPlatform: named }, locale) };
+}
+
 /** Pre-orders and unreleased variants still ahead of `now`, soonest first; variants of one product and day grouped. */
 export function composeComingSoon(rows: readonly ComingRow[], cards: ReadonlyMap<string, ProductCardData>, locale: Locale, now: number): ComingSoonItem[] {
   const items = new Map<string, ComingSoonItem>();
@@ -352,6 +433,7 @@ export function composeComingSoon(rows: readonly ComingRow[], cards: ReadonlyMap
       priceIqd: card.priceIqd,
       image: card.image,
       isDemo: card.isDemo,
+      ...cardPlatformFacts(card),
     });
   }
   for (const row of rows) {
@@ -361,11 +443,14 @@ export function composeComingSoon(rows: readonly ComingRow[], cards: ReadonlyMap
     if (releaseAt === null || releaseAt <= now) continue;
     const key = `${row.product_id}:${row.release_day}`;
     const title = pick(parseL10n(row.title), locale) || null;
+    const facts = versionPlatformFacts(card, row.platform_option, locale);
     const existing = items.get(key);
     if (existing) {
       existing.variantCount += 1;
       existing.priceIqd = Math.min(existing.priceIqd, row.price_iqd ?? existing.priceIqd);
       if (existing.image.artKey === card.image.artKey && row.art_key) existing.image = { artKey: row.art_key, mediaKey: null, alt: pick(parseL10n(row.alt), locale) || title || card.name, isIllustration: false };
+      // versions of one day for different platforms: the product's own line covers them all
+      if (existing.platformSlug !== facts.platformSlug) Object.assign(existing, cardPlatformFacts(card));
       continue;
     }
     items.set(key, {
@@ -379,9 +464,43 @@ export function composeComingSoon(rows: readonly ComingRow[], cards: ReadonlyMap
       priceIqd: typeof row.price_iqd === "number" ? row.price_iqd : card.priceIqd,
       image: row.art_key ? { artKey: row.art_key, mediaKey: null, alt: pick(parseL10n(row.alt), locale) || title || card.name, isIllustration: false } : card.image,
       isDemo: card.isDemo,
+      ...facts,
     });
   }
   return [...items.values()].sort((a, b) => a.releaseAt - b.releaseAt || a.name.localeCompare(b.name));
+}
+
+/**
+ * The sections the page draws, in order: the staff's arrangement (getHomeLayout: hidden ones left out, "personal"
+ * always kept) once they saved one, else the page's own order (HOME_PAGE_SECTIONS). getHomeLayout answers the content
+ * module's default list until something is saved, so exactly that list reads as "not arranged" — the module's preview
+ * calls it «الصفحة بترتيبها الأصلي». Kinds without a section on this page are skipped. Pure.
+ */
+export function homeLayoutOf(layout: readonly string[] | null | undefined): HomeLayout {
+  const untouched = !layout || (layout.length === HOME_SECTIONS.length && layout.every((kind, index) => kind === HOME_SECTIONS[index]));
+  if (untouched) return { sections: [...HOME_PAGE_SECTIONS], arranged: false };
+  const sections: HomePageSection[] = [];
+  for (const kind of layout) if ((HOME_PAGE_SECTIONS as readonly string[]).includes(kind) && !sections.includes(kind as HomePageSection)) sections.push(kind as HomePageSection);
+  if (!sections.includes("personal")) sections.push("personal");
+  return { sections, arranged: true };
+}
+
+/** A card the hero may feature: buyable now and with a photo (the hero stands on the stage as its photo). */
+const heroWorthy = (card: ProductCardData | undefined): card is ProductCardData => isBuyable(card) && Boolean(card.image.artKey || card.image.mediaKey);
+
+/**
+ * A platform's pinned hero, or null when the pin cannot stand: its product is not buyable now or has no photo — then
+ * the automatic pick stays (pickHero). The words: the page's language when the pin has a headline in it, else Arabic
+ * (the pin's source language); the deck only in that same language. Pure.
+ */
+export function pinnedHero(pin: Pick<HeroPinView, "pinId" | "productId" | "headline" | "deck"> | undefined, cards: ReadonlyMap<string, ProductCardData>, locale: Locale): HomeHero | null {
+  if (!pin || !heroWorthy(cards.get(pin.productId))) return null;
+  const own = (pin.headline[locale] ?? "").trim();
+  const textLocale: Locale = own ? locale : "ar";
+  const headline = (pin.headline[textLocale] ?? "").trim();
+  if (!headline) return null;
+  const deck = pin.deck ? (pin.deck[textLocale] ?? "").trim() || null : null;
+  return { productId: pin.productId, mode: "lead", releasedOn: null, pin: { pinId: pin.pinId, headline, deck, textLocale } };
 }
 
 // ───────────────────────────────────────────────────────────────── public API
@@ -394,27 +513,39 @@ async function cardsFor(db: Db, locale: Locale, ids: readonly string[], now: num
   return new Map(pages.flat().map((card) => [card.id, card]));
 }
 
+export type HomeDataOptions = {
+  locale: Locale;
+  now: number;
+  /**
+   * false: leave out what the v2 home page no longer shows — the games and gear shelves (HomePlatform.games / .gear
+   * come back empty) and the store-wide deals (HomeData.deals empty): fewer candidates, fewer cards and one card
+   * query less on every home request. Default true (everything).
+   */
+  extraShelves?: boolean;
+};
+
 /**
  * Everything the home page shows, for one language. `now` decides pre-orders and "new". Never throws for an empty
  * catalogue: platforms without products have no hero and empty shelves.
  */
-export async function getHomeData(db: Db, options: { locale: Locale; now: number }): Promise<HomeData> {
+export async function getHomeData(db: Db, options: HomeDataOptions): Promise<HomeData> {
   const { locale, now } = options;
-  const [platformResult, memberResult, consoleResult, comingResult] = await runBatch(db, [
-    batchSql(db, PLATFORMS_SQL),
-    batchSql(db, membershipStatement()),
-    batchSql(db, CONSOLES_SQL),
-    batchSql(db, comingSoonStatement(now)),
+  const extras = options.extraShelves !== false;
+  const [[platformResult, memberResult, consoleResult, comingResult], pins, arrangement] = await Promise.all([
+    runBatch(db, [batchSql(db, PLATFORMS_SQL), batchSql(db, membershipStatement(extras)), batchSql(db, CONSOLES_SQL), batchSql(db, comingSoonStatement(now))]),
+    // the content module (admin 17.01): pinned heroes running now (never demo pins) and the sections' arrangement
+    getHomeHero(db, now),
+    getHomeLayout(db),
   ]);
   const platforms = rowsOf<PlatformRow>(platformResult).filter((row): row is PlatformRow & { slug: HomePlatformSlug } => isHomePlatform(row.slug));
   const members = rowsOf<MemberRow>(memberResult);
   const consoles = rowsOf<ConsoleRow>(consoleResult);
   const coming = rowsOf<ComingRow>(comingResult);
 
-  const ids = [...consoles.map((row) => row.id), ...members.map((row) => row.product_id), ...coming.map((row) => row.product_id)];
+  const ids = [...consoles.map((row) => row.id), ...members.map((row) => row.product_id), ...coming.map((row) => row.product_id), ...pins.map((pin) => pin.productId)];
   const [cards, deals, used] = await Promise.all([
     cardsFor(db, locale, ids, now),
-    getDeals(db, locale, { limit: DEALS_LIMIT, now }),
+    extras ? getDeals(db, locale, { limit: DEALS_LIMIT, now }) : Promise.resolve([] as ProductCardData[]),
     getUsedSpotlight(db, locale, { limit: USED_LIMIT }),
   ]);
 
@@ -430,14 +561,25 @@ export async function getHomeData(db: Db, options: { locale: Locale; now: number
         discontinued: row.research_status === "discontinued",
         pub: Number(row.pub),
       }));
+    const shelves = composeShelves(
+      members.filter((row) => row.platform === platform.slug),
+      cards,
+    );
+    const lead = pickHero(candidates, cards, now);
     return {
       slug: platform.slug,
       name: pick(parseL10n(platform.name), locale) || platform.slug,
-      hero: pickHero(candidates, cards, now),
-      ...composeShelves(
-        members.filter((row) => row.platform === platform.slug),
-        cards,
-      ),
+      // a pin stands only while its product can be bought and has a photo; else the automatic pick, as without one
+      hero:
+        pinnedHero(
+          pins.find((pin) => pin.platform === platform.slug),
+          cards,
+          locale,
+        ) ?? lead,
+      lead,
+      newArrivals: shelves.newArrivals,
+      games: extras ? shelves.games : [],
+      gear: extras ? shelves.gear : [],
     };
   });
 
@@ -445,6 +587,7 @@ export async function getHomeData(db: Db, options: { locale: Locale; now: number
   const named = new Set<string>();
   for (const platform of homePlatforms) {
     if (platform.hero) named.add(platform.hero.productId);
+    if (platform.lead) named.add(platform.lead.productId);
     for (const id of [...platform.newArrivals, ...platform.games, ...platform.gear]) named.add(id);
   }
   const out: Record<string, ProductCardData> = {};
@@ -460,6 +603,7 @@ export async function getHomeData(db: Db, options: { locale: Locale; now: number
     deals: deals.map((card) => card.id),
     used,
     comingSoon: composeComingSoon(coming, cards, locale, now),
+    layout: homeLayoutOf(arrangement),
   };
 }
 

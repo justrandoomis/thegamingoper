@@ -31,7 +31,8 @@ const QUEUES: { id: keyof QueueCounts; to: string; icon: IconName; decide: boole
   { id: "toInspect", to: "/admin/devices/trade-ins?view=new", icon: "magnifying-glass", decide: true },
   { id: "toOffer", to: "/admin/devices/trade-ins?view=inspected", icon: "scales", decide: true },
   { id: "awaitingAnswer", to: "/admin/devices/trade-ins?view=offered", icon: "hourglass", decide: false },
-  { id: "toPay", to: "/admin/devices/trade-ins?view=accepted", icon: "hand-coins", decide: true },
+  // per person (the wipe, then the payout — never one's own offer a second person pays): its own view, the same rule
+  { id: "toPay", to: "/admin/devices/trade-ins?view=to_pay", icon: "hand-coins", decide: true },
   { id: "unitsToInspect", to: "/admin/devices/used?view=todo", icon: "clipboard-text", decide: true },
   { id: "toList", to: "/admin/devices/used?view=ready", icon: "storefront", decide: true },
 ];

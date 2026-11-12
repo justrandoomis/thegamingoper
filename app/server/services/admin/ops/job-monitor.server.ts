@@ -20,7 +20,7 @@ import { assertCan, type Actor } from "~/server/actor";
 import { auditRow } from "~/server/audit.server";
 import type { Db } from "~/server/db/drizzle.server";
 import { auditEvents, jobRuns, orders, outbox, products, stockReservations } from "~/server/db/schema";
-import { isUniqueViolation } from "~/server/db/tx.server";
+import { expectThat, isDbError, isUniqueViolation, runBatch } from "~/server/db/tx.server";
 import { AppError, conflict, notFound } from "~/server/errors";
 import { CONSISTENCY_CHECKS, JOB_NAMES, RETENTION_DAYS, SCHEDULES, runJob, type JobName, type ScheduledJobsEnv } from "~/server/jobs.server";
 import { RECOMMENDATION_EVENT_RETENTION_DAYS } from "~/server/services/recommendations.server";
@@ -402,23 +402,28 @@ export async function runJobNow(db: Db, actor: Actor, raw: unknown, now: number,
   const earlier = await replay();
   if (earlier) return earlier;
 
-  const running = await db
-    .select({ id: jobRuns.id })
-    .from(jobRuns)
-    .where(and(eq(jobRuns.job, job), eq(jobRuns.status, "running"), gt(jobRuns.startedAt, now - RUN_STUCK_MS)))
-    .limit(1)
-    .get();
-  if (running) throw conflict("job_running", job);
+  // In flight: a run of this job still running, or a claim by hand (someone else's form, another tab) whose run has not
+  // finished — it may not have started yet. Checked INSIDE the claim's batch (follow-up 2026-11-12): two "run now" clicks
+  // with different keys both passed a check made before the claim, and both started the job.
+  const inFlight = sql`(EXISTS (SELECT 1 FROM job_runs AS r WHERE r.job = ${job} AND r.status = 'running' AND r.started_at > ${now - RUN_STUCK_MS})
+    OR EXISTS (SELECT 1 FROM audit_events AS a WHERE a.action = ${RUN_JOB_ACTION} AND a.entity_type = 'job' AND a.entity_id = ${job} AND a.at > ${now - RUN_STUCK_MS}
+      AND NOT EXISTS (SELECT 1 FROM job_runs AS f WHERE f.job = a.entity_id AND f.origin = 'manual' AND f.started_at = a.at AND coalesce(f.triggered_by, '') = coalesce(a.actor_id, '') AND f.status <> 'running')))`;
+  const busy = await db.all<{ n: number }>(sql`SELECT ${inFlight} AS n`);
+  if (Number(busy[0]?.n ?? 0)) throw conflict("job_running", job);
 
   try {
-    await db.insert(auditEvents).values(
-      auditRow({ id: claimId, actor, action: RUN_JOB_ACTION, entityType: "job", entityId: job, summary: `${job} run by hand`, after: { job, origin: "manual" }, reason: input.reason, at: now }),
-    );
+    await runBatch(db, [
+      expectThat(db, sql`NOT ${inFlight}`, { code: "JOB_RUNNING", detail: job }),
+      db.insert(auditEvents).values(
+        auditRow({ id: claimId, actor, action: RUN_JOB_ACTION, entityType: "job", entityId: job, summary: `${job} run by hand`, after: { job, origin: "manual" }, reason: input.reason, at: now }),
+      ),
+    ]);
   } catch (error) {
     if (isUniqueViolation(error)) {
       const again = await replay();
       if (again) return again;
     }
+    if (isDbError(error, "JOB_RUNNING")) throw conflict("job_running", job);
     throw error;
   }
   const outcome = await runJob(db, job, now, { origin: "manual", triggeredBy: by, env });

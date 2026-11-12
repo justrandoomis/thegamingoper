@@ -7,7 +7,7 @@
  *
  *   npm test -- tests/ui-kit.test.ts
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
@@ -21,12 +21,14 @@ import { hasContact, openNow } from "~/ui/ContactCard";
 import { LAYER_BEHIND } from "~/ui/Dialog";
 import { LIVE_GLASS } from "~/ui/Glass";
 import { KEY_LOOK, keyPress } from "~/ui/Key";
-import { PlatformGlyph } from "~/ui/PlatformLed";
+import * as led from "~/ui/PlatformLed";
 import { iqdText } from "~/ui/PriceTag";
-import { releaseDay, wellKind } from "~/ui/ProductCard";
+import { pictureFailed, releaseDay, wellKind } from "~/ui/ProductCard";
 import { daysUntil, iraqDay } from "~/ui/ReleaseBand";
-import { StageTag } from "~/ui/Stage";
+import { revealDelta } from "~/ui/reveal";
+import * as stage from "~/ui/Stage";
 import { stockLook } from "~/ui/StockNote";
+import { transferMethods } from "~/ui/TrustStrip";
 
 const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), "utf8");
 const components = read("../app/styles/components.css");
@@ -72,10 +74,6 @@ describe("the stage band: the commit key keeps its whole label", () => {
     expect(components).toMatch(/@container stage \(max-width: 24rem\) \{\s*\.gtag\[data-long\] \{\s*--price-lg: var\(--price-md\);/);
   });
 
-  // v2 §4.2, §4.14: the glass price tag on the stage is retired — it renders nothing (the price sits beside the action).
-  it("retires the stage tag: <StageTag> renders nothing", () => {
-    expect(StageTag({ name: "PlayStation 5 Pro", priceIqd: 1_099_000 })).toBeNull();
-  });
 });
 
 describe("v2 keys (§4.3): one family, 1.0 names as aliases", () => {
@@ -99,9 +97,84 @@ describe("v2 keys (§4.3): one family, 1.0 names as aliases", () => {
   });
 });
 
-describe("retired 1.0 pieces (§4.2) keep their exports and render nothing", () => {
-  it("draws no platform pictograms", () => {
-    expect(PlatformGlyph({ platform: "xbox" })).toBeNull();
+// Stage 4 of the v2 build (spec §4.2, §12): the retired 1.0 pieces nothing imports any more are deleted. The 1.0 key
+// names (`commit` / `ink` / `quiet` / `clay`) and <Glass variant="static"> stay while the admin (1.0 materials) uses them.
+describe("retired 1.0 pieces (§4.2): deleted once nothing imports them", () => {
+  it("has no red socket, no platform bank, no stage price tag and no platform pictograms", () => {
+    expect(existsSync(fileURLToPath(new URL("../app/ui/Socket.tsx", import.meta.url)))).toBe(false);
+    expect(existsSync(fileURLToPath(new URL("../app/ui/PlatformBank.tsx", import.meta.url)))).toBe(false);
+    expect("StageTag" in stage).toBe(false);
+    expect("PlatformGlyph" in led).toBe(false);
+  });
+});
+
+// Polish round (digests: storefront K, admin "UI kit"). What the components draw is checked in Chromium on
+// /design-system and on the pages that reported each defect (screenshots and measurements in the K-kit report).
+describe("rows that scroll sideways keep the focused or current item in view (rails, tabs, link segments)", () => {
+  const row = { left: 0, right: 390 };
+  it("moves nothing when the item is already inside", () => {
+    expect(revealDelta(row, { left: 16, right: 177 }, { rtl: false, align: "start", padStart: 16 })).toBe(0);
+  });
+
+  it("brings a half-hidden card to the rail's start — a snap point, so the snap cannot pull it back", () => {
+    // left to right: a card cut at the end edge goes to the start edge (16px of scroll padding)
+    expect(revealDelta(row, { left: 362, right: 523 }, { rtl: false, align: "start", padStart: 16 })).toBe(346);
+    // right to left (scrollLeft runs negative): a card cut at the left edge comes to the right-hand start edge
+    expect(revealDelta(row, { left: -133, right: 28 }, { rtl: true, align: "start", padStart: 16 })).toBe(-346);
+  });
+
+  it("moves a tab the least: its hidden side to the row's edge", () => {
+    expect(revealDelta(row, { left: 360, right: 420 }, { rtl: false, align: "nearest" })).toBe(30);
+    expect(revealDelta(row, { left: -40, right: 20 }, { rtl: false, align: "nearest" })).toBe(-40);
+    expect(revealDelta(row, { left: -40, right: 20 }, { rtl: true, align: "nearest" })).toBe(-40);
+    expect(revealDelta(row, { left: 360, right: 420 }, { rtl: true, align: "nearest" })).toBe(30);
+  });
+});
+
+describe("the trust strip names only the transfer methods that are switched on", () => {
+  it("says both, one or none", () => {
+    expect(transferMethods(true)).toBe("both");
+    expect(transferMethods({ zaincash: true, card: true })).toBe("both");
+    expect(transferMethods({ zaincash: true })).toBe("zaincash");
+    expect(transferMethods({ card: true, zaincash: false })).toBe("card");
+    expect(transferMethods({})).toBeNull();
+    expect(transferMethods(false)).toBeNull();
+    for (const locale of LOCALE_CODES) {
+      expect(shop[locale].trust.transferZain.length).toBeGreaterThan(2);
+      expect(shop[locale].trust.transferCard.length).toBeGreaterThan(2);
+    }
+  });
+});
+
+describe("a card picture that failed before hydration is found after it", () => {
+  it("reads `complete` with no width as failed; a lazy picture not started yet is not", () => {
+    expect(pictureFailed({ complete: true, naturalWidth: 0, currentSrc: "/p.avif", src: "/p.avif" })).toBe(true);
+    expect(pictureFailed({ complete: false, naturalWidth: 0, currentSrc: "", src: "/p.avif" })).toBe(false);
+    expect(pictureFailed({ complete: true, naturalWidth: 480, currentSrc: "/p.avif", src: "/p.avif" })).toBe(false);
+    expect(pictureFailed(null)).toBe(false);
+  });
+});
+
+describe("kit restatements that outweigh the stylesheet (utilities layer)", () => {
+  it("draws the PDP stage's image box 4% / 2% / 5% (the cut-outs carry ~5% margin of their own); opaque photos keep 8% / 6% / 9%", () => {
+    const source = read("../app/ui/Stage.tsx");
+    expect(source).toMatch(/inset-\[4%_2%_5%\]/);
+    expect(source).toMatch(/has-\[img\[data-transparent=false\]\]:inset-\[8%_6%_9%\]/);
+  });
+
+  it("keeps the tick of a disabled checked checkbox and the ring of a disabled chosen radio", () => {
+    const source = read("../app/ui/Field.tsx");
+    expect(source).toMatch(/className="choice__input peer"/);
+    expect(source).toMatch(/peer-checked:peer-disabled:bg-ink-3/);
+    expect(source).toMatch(/peer-checked:peer-disabled:border-ink-3/);
+  });
+
+  it("never prints a toast", () => {
+    expect(read("../app/ui/Toast.tsx")).toMatch(/lg:w-\[380px\] print:hidden/);
+  });
+
+  it("draws the offline banner on graphite, never the demo strip's amber", () => {
+    expect(read("../app/ui/OfflineBanner.tsx")).toMatch(/bg-band text-on-band/);
   });
 });
 

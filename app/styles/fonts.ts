@@ -2,20 +2,24 @@
  * Font files the shell preloads — app/styles/fonts.css declares every face; this list says which two files are on
  * the critical path (docs/DESIGN.md §5.5: "Preload exactly two"). Client- and server-safe, no DOM.
  *
- *   // a layout or root route module (app/root.tsx does this)
- *   import { fontPreloadLinks } from "~/styles/fonts";
- *   export const links: Route.LinksFunction = () => fontPreloadLinks("Arab");   // or LOCALES[locale].script
+ *   // the document's layout (app/root.tsx): while rendering, through React's resource API
+ *   import { preloadFonts } from "~/styles/fonts";
+ *   preloadFonts(LOCALES[locale].script);       // "Arab" (ar, ckb) or "Latn" (en)
  *
- *   // or from a component (React 19 hoists it into <head>)
- *   import { preload } from "react-dom";
- *   for (const f of criticalFonts("Latn")) preload(f.href, { as: "font", type: f.type, crossOrigin: "anonymous" });
+ * preloadFonts() calls react-dom's preload() for the two files: React writes the two <link rel="preload"> tags at the
+ * top of the server's <head> and, on the client, finds them there and leaves them alone. Do not render the links as
+ * <link> elements instead (fontPreloadLinks() mapped to JSX, or a route `links` export): React manages those as
+ * hoistable elements, and in development <StrictMode> unmounts and remounts them right after hydration — each
+ * re-inserted link fetches its font again after the page already has it, and Chrome reports "preloaded but not used"
+ * on every page (measured 2026-11-12: …/scratchpad/work/polish-S-styles/fonts-exp.mjs).
  *
  * Arabic-script pages (ar, ckb) preload Plex 400 Arabic + Noto Kufi 700 Arabic (86.7 KB together); Latin pages (en)
- * preload the Latin cuts of the same two (29.5 KB). Everything else (Plex 600, the other script, latin-ext) loads on
- * first use through `unicode-range`. Worst case on an Arabic page: six files, 182.5 KB (plus latin-ext on demand).
- * Font preloads must be CORS requests (`crossOrigin: "anonymous"`) even on the same origin, or the browser downloads
- * the file twice.
+ * preload the Latin cuts of the same two (29.5 KB). Both are drawn on the first screen (a Kufi heading or price,
+ * Plex body text). Everything else (Plex 600, the other script, latin-ext) loads on first use through
+ * `unicode-range`. Worst case on an Arabic page: six files, 182.5 KB (plus latin-ext on demand). Font preloads must
+ * be CORS requests (`crossOrigin: "anonymous"`) even on the same origin, or the browser downloads the file twice.
  */
+import { preload } from "react-dom";
 
 export type FontScript = "Arab" | "Latn";
 /** "Latn-ext": accented Latin beyond Latin-1 (ō, ş, ł …) — never preloaded. */
@@ -50,7 +54,18 @@ export function criticalFonts(script: FontScript): FontFile[] {
   return FONT_FILES.filter((f) => f.script === script && (f.family === "Noto Kufi Arabic" || f.weight === "400"));
 }
 
-/** `<link rel="preload">` descriptors for a route's `links` export. */
+/**
+ * Preloads the two critical files of a page written in `script` (call it while rendering the document, on the server
+ * and the client alike). React dedupes repeated calls.
+ */
+export function preloadFonts(script: FontScript): void {
+  for (const f of criticalFonts(script)) preload(f.href, { as: "font", type: f.type, crossOrigin: "anonymous" });
+}
+
+/**
+ * `<link rel="preload">` descriptors of the same two files — for budgets and checks. Rendered as `<link>` elements
+ * they are fetched twice in development (see the note at the top); pages call preloadFonts().
+ */
 export function fontPreloadLinks(script: FontScript) {
   return criticalFonts(script).map((f) => ({ rel: "preload", as: "font", href: f.href, type: f.type, crossOrigin: "anonymous" as const }));
 }

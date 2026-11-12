@@ -31,7 +31,7 @@
  * pos_location_invalid, shift_not_open, shift_not_in_review, shift_changed, drawer_short, idempotency_mismatch (409),
  * shift_self_review (403).
  */
-import { and, asc, desc, eq, inArray, ne, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import { newId, sha256Hex } from "~/lib/ids";
 import { type Locale } from "~/lib/locales";
@@ -49,6 +49,7 @@ import {
   CASH_MOVE_KINDS,
   IQD_DENOMINATIONS,
   MAX_DRAWER_IQD,
+  shiftReviewReasons,
   shiftStateOf,
   type ShiftFilters,
   type ShiftListRow,
@@ -75,6 +76,22 @@ export function denominationTotal(denominations: Record<string, number>): number
 /** Expected cash of a shift, as SQL (opening float + every cash movement). */
 const expectedSql = (shiftId: SQL | string) =>
   sql`(SELECT s.opening_float_iqd + coalesce((SELECT sum(m.amount_iqd) FROM cash_movements AS m WHERE m.shift_id = s.id), 0) FROM pos_shifts AS s WHERE s.id = ${shiftId})`;
+
+/** The core marks the cash of a sale queued offline that synced after the drawer was counted (pos-sale.server.ts). */
+const LATE_SALE_REASON = "pos_sale_after_close";
+/** Whether a late sale landed on the shift of the outer query (pos_shifts). */
+const lateSalesSql = sql<number>`EXISTS (SELECT 1 FROM cash_movements AS lm WHERE lm.shift_id = ${posShifts.id} AND lm.reason = ${LATE_SALE_REASON})`;
+/**
+ * A counted shift that waits for a second person — the SQL of types.ts shiftReviewReasons: a difference, a count by
+ * someone other than the drawer's owner (take-over), or a late sale since the count (even one that brought the
+ * difference back to 0).
+ */
+const inReviewSql = sql`(${posShifts.status} = 'closed' AND ${posShifts.approvedBy} IS NULL AND (coalesce(${posShifts.varianceIqd}, 0) <> 0 OR coalesce(${posShifts.closedBy}, '') <> ${posShifts.openedBy} OR ${lateSalesSql}))`;
+
+async function hasLateSales(db: Db, shiftId: string): Promise<boolean> {
+  const row = await db.select({ id: cashMovements.id }).from(cashMovements).where(and(eq(cashMovements.shiftId, shiftId), eq(cashMovements.reason, LATE_SALE_REASON))).limit(1).get();
+  return Boolean(row);
+}
 
 async function shiftRow(db: Db, shiftId: string) {
   const row = await db
@@ -210,7 +227,13 @@ export const MoveCashInput = z.object({
   idempotencyKey: z.string().regex(KEY_PATTERN, "invalid"),
 });
 
-/** Cash into the drawer (pay_in) or out of it (pay_out, drop to the safe). Never takes the drawer below zero. */
+/**
+ * Cash into the drawer (pay_in) or out of it (pay_out, drop to the safe). Someone who sees the shift's figures (a
+ * supervisor taking a drawer over) cannot take it below zero (`drawer_short`). The drawer's OWNER is never refused for
+ * the amount: a refusal would tell them the drawer expects less than that — a probe of the blind count (review
+ * 2026-11-11, fixed 2026-11-12). Their move is recorded as they state it; cash they did not have shows as a
+ * difference when the drawer is counted, which a second person reviews.
+ */
 export async function moveCash(db: Db, actor: Actor, raw: z.input<typeof MoveCashInput>, now: number): Promise<{ replayed: boolean }> {
   assertCan(actor, "pos.cash.move");
   const input = MoveCashInput.parse(raw);
@@ -234,7 +257,8 @@ export async function moveCash(db: Db, actor: Actor, raw: z.input<typeof MoveCas
     expectThat(db, sql`EXISTS (SELECT 1 FROM pos_shifts WHERE id = ${shift.id} AND status = 'open')`, { code: "SHIFT_NOT_OPEN", detail: shift.id }),
     db.insert(cashMovements).values({ id: newId("cmv"), shiftId: shift.id, kind: input.kind, amountIqd: signed, reason: input.reason, actorKind, actorId, idempotencyKey: key, at: now }),
   ];
-  if (signed < 0) statements.push(expectThat(db, sql`${expectedSql(shift.id)} >= 0`, { code: "DRAWER_SHORT", detail: shift.id }));
+  // Blind count: the drawer's owner gets the same answer whatever the drawer is expected to hold.
+  if (signed < 0 && seesShiftFigures(actor, shift)) statements.push(expectThat(db, sql`${expectedSql(shift.id)} >= 0`, { code: "DRAWER_SHORT", detail: shift.id }));
   statements.push(
     auditStatement(db, { actor, action: `pos.cash.${input.kind}`, entityType: "pos_shift", entityId: shift.id, summary: `${register.code}: ${input.kind} ${input.amountIqd} IQD`, after: { kind: input.kind, amountIqd: signed }, reason: input.reason, at: now }),
   );
@@ -281,7 +305,7 @@ export async function closeShift(db: Db, actor: Actor, raw: z.input<typeof Close
   const reviewer = seesShiftFigures(actor, shift);
   const closer = actor.kind === "employee" ? actor.id : "system";
   if (shift.status !== "open") {
-    if (shift.closedBy === closer && shift.countedCashIqd === counted) return { needsReview: (shift.varianceIqd ?? 0) !== 0 && !shift.approvedBy, varianceIqd: reviewer ? shift.varianceIqd : null, replayed: true };
+    if (shift.closedBy === closer && shift.countedCashIqd === counted) return { needsReview: shiftStateOf({ ...shift, lateSales: await hasLateSales(db, shift.id) }) === "review", varianceIqd: reviewer ? shift.varianceIqd : null, replayed: true };
     throw new AppError("shift_not_open", 409);
   }
   try {
@@ -310,7 +334,8 @@ export async function closeShift(db: Db, actor: Actor, raw: z.input<typeof Close
   // The trail keeps what the system expected (readers of the audit trail are allowed to see it).
   await runBatch(db, [auditStatement(db, { actor, action: "pos.shift.variance", entityType: "pos_shift", entityId: shift.id, after: { expectedCashIqd: after?.expectedCashIqd ?? null, varianceIqd: after?.varianceIqd ?? null }, at: now })]);
   const variance = after?.varianceIqd ?? 0;
-  return { needsReview: variance !== 0, varianceIqd: reviewer ? variance : null, replayed: false };
+  // A take-over count (someone other than the drawer's owner) waits for a second person even without a difference.
+  return { needsReview: variance !== 0 || closer !== shift.openedBy, varianceIqd: reviewer ? variance : null, replayed: false };
 }
 
 // ───────────────────────────────────────────────────────────────── review (second person)
@@ -322,7 +347,11 @@ export const ReviewShiftInput = z.object({
   note: reasonText,
 });
 
-/** Approves a counted difference and posts it to cash over/short — never by the employee who opened or closed the shift. */
+/**
+ * Approves a counted shift that waits for a review (shiftReviewReasons) and posts its difference to cash over/short —
+ * never by the employee who opened or closed the shift. A shift reviewed without a difference (a take-over count, or a
+ * late sale that brought it back to 0) posts nothing.
+ */
 export async function reviewShift(db: Db, actor: Actor, raw: z.input<typeof ReviewShiftInput>, now: number): Promise<{ replayed: boolean; journalEntryId: string | null }> {
   assertCan(actor, "pos.shift.review");
   const input = ReviewShiftInput.parse(raw);
@@ -333,37 +362,41 @@ export async function reviewShift(db: Db, actor: Actor, raw: z.input<typeof Revi
     if (shift.approvedBy === reviewer) return { replayed: true, journalEntryId: null };
     throw new AppError("shift_not_in_review", 409);
   }
-  if (shift.status !== "closed" || (shift.varianceIqd ?? 0) === 0) throw new AppError("shift_not_in_review", 409);
+  if (shift.status !== "closed" || shiftStateOf({ ...shift, lateSales: await hasLateSales(db, shift.id) }) !== "review") throw new AppError("shift_not_in_review", 409);
   if (actor.kind === "employee" && (shift.openedBy === actor.id || shift.closedBy === actor.id)) throw new AppError("shift_self_review", 403);
-  if (shift.varianceIqd !== input.expectedVarianceIqd) throw new AppError("shift_changed", 409, { detail: `${shift.varianceIqd}` });
-  const variance = shift.varianceIqd as number;
+  if ((shift.varianceIqd ?? 0) !== input.expectedVarianceIqd) throw new AppError("shift_changed", 409, { detail: `${shift.varianceIqd}` });
+  const variance = shift.varianceIqd ?? 0;
   const demoOrders = await db.select({ demo: sql<number>`sum(CASE WHEN ${orders.isDemo} THEN 1 ELSE 0 END)`, all: sql<number>`count(*)` }).from(orders).where(eq(orders.posShiftId, shift.id)).get();
   const isDemo = (await isDemoEmployee(db, shift.openedBy)) || (Number(demoOrders?.all ?? 0) > 0 && Number(demoOrders?.demo ?? 0) === Number(demoOrders?.all ?? 0));
-  const posting = journalStatements(db, {
-    at: now,
-    memo: `POS shift ${register.code}: cash ${variance < 0 ? "short" : "over"} ${Math.abs(variance)} IQD`,
-    refType: "pos_shift",
-    refId: shift.id,
-    createdBy: postedBy(actor),
-    idempotencyKey: `pos_shift:${shift.id}:variance`,
-    isDemo,
-    lines:
-      variance < 0
-        ? [
-            { accountCode: "cash_over_short", debitIqd: -variance },
-            { accountCode: "cash", creditIqd: -variance },
-          ]
-        : [
-            { accountCode: "cash", debitIqd: variance },
-            { accountCode: "cash_over_short", creditIqd: variance },
-          ],
-  });
+  // Nothing to post without a difference (a take-over count or a late sale reviewed at 0).
+  const posting =
+    variance === 0
+      ? []
+      : journalStatements(db, {
+          at: now,
+          memo: `POS shift ${register.code}: cash ${variance < 0 ? "short" : "over"} ${Math.abs(variance)} IQD`,
+          refType: "pos_shift",
+          refId: shift.id,
+          createdBy: postedBy(actor),
+          idempotencyKey: `pos_shift:${shift.id}:variance`,
+          isDemo,
+          lines:
+            variance < 0
+              ? [
+                  { accountCode: "cash_over_short", debitIqd: -variance },
+                  { accountCode: "cash", creditIqd: -variance },
+                ]
+              : [
+                  { accountCode: "cash", debitIqd: variance },
+                  { accountCode: "cash_over_short", creditIqd: variance },
+                ],
+        });
   try {
     await runBatch(db, [
       db
         .update(posShifts)
         .set({ approvedBy: reviewer, varianceReason: input.note })
-        .where(and(eq(posShifts.id, shift.id), eq(posShifts.status, "closed"), sql`${posShifts.approvedBy} IS NULL`, eq(posShifts.varianceIqd, variance))),
+        .where(and(eq(posShifts.id, shift.id), eq(posShifts.status, "closed"), sql`${posShifts.approvedBy} IS NULL`, sql`coalesce(${posShifts.varianceIqd}, 0) = ${variance}`)),
       expectChanged(db, 1, { code: "SHIFT_CHANGED", detail: shift.id }),
       ...posting,
       auditStatement(db, { actor, action: "pos.shift.review", entityType: "pos_shift", entityId: shift.id, summary: `${register.code}: difference of ${variance} IQD approved`, before: { approvedBy: null }, after: { approvedBy: reviewer, varianceIqd: variance }, reason: input.note, at: now }),
@@ -374,13 +407,14 @@ export async function reviewShift(db: Db, actor: Actor, raw: z.input<typeof Revi
     if (isDbError(error, "SHIFT_CHANGED")) throw new AppError("shift_changed", 409);
     throw error;
   }
+  if (variance === 0) return { replayed: false, journalEntryId: null };
   const entry = await db.all<{ id: string }>(sql`SELECT id FROM journal_entries WHERE idempotency_key = ${`pos_shift:${shift.id}:variance`}`);
   return { replayed: false, journalEntryId: entry[0]?.id ?? null };
 }
 
 // ───────────────────────────────────────────────────────────────── reads
 
-type ShiftJoin = { shift: typeof posShifts.$inferSelect; register: typeof posRegisters.$inferSelect; location: typeof inventoryLocations.$inferSelect | null };
+type ShiftJoin = { shift: typeof posShifts.$inferSelect; register: typeof posRegisters.$inferSelect; location: typeof inventoryLocations.$inferSelect | null; lateSales: number | boolean | null };
 
 async function salesOf(db: Db, shiftIds: readonly string[]): Promise<Map<string, { count: number; totalIqd: number }>> {
   if (shiftIds.length === 0) return new Map();
@@ -396,9 +430,11 @@ function viewOf(row: ShiftJoin, names: Map<string, string>, sales: { count: numb
   const { shift, register, location } = row;
   const reviewer = seesShiftFigures(actor, shift);
   const mine = actor.kind === "employee" && shift.openedBy === actor.id;
+  const facts = { ...shift, lateSales: Boolean(row.lateSales) };
   return {
     id: shift.id,
-    state: shiftStateOf(shift),
+    state: shiftStateOf(facts),
+    reviewReasons: reviewer ? shiftReviewReasons(facts) : null,
     register: { id: register.id, code: register.code, name: register.name },
     location: location ? { id: location.id, code: location.code, name: location.name } : null,
     openedBy: person(names, shift.openedBy) ?? { id: shift.openedBy, name: shift.openedBy },
@@ -420,7 +456,7 @@ function viewOf(row: ShiftJoin, names: Map<string, string>, sales: { count: numb
 
 async function joinShifts(db: Db, where: SQL | undefined, order: SQL[], limit?: number, offset?: number): Promise<ShiftJoin[]> {
   const query = db
-    .select({ shift: posShifts, register: posRegisters, location: inventoryLocations })
+    .select({ shift: posShifts, register: posRegisters, location: inventoryLocations, lateSales: lateSalesSql })
     .from(posShifts)
     .innerJoin(posRegisters, eq(posRegisters.id, posShifts.registerId))
     .leftJoin(inventoryLocations, eq(inventoryLocations.id, posRegisters.locationId))
@@ -455,8 +491,8 @@ export async function listShifts(db: Db, actor: Actor, filters: ShiftFilters, _l
     conditions.push(sql`${posShifts.openedAt} >= ${range.from} AND ${posShifts.openedAt} < ${range.to}`);
   }
   if (filters.state === "open") conditions.push(eq(posShifts.status, "open"));
-  if (filters.state === "review") conditions.push(and(eq(posShifts.status, "closed"), ne(posShifts.varianceIqd, 0), sql`${posShifts.approvedBy} IS NULL`));
-  if (filters.state === "closed") conditions.push(and(eq(posShifts.status, "closed"), or(eq(posShifts.varianceIqd, 0), sql`${posShifts.varianceIqd} IS NULL`, sql`${posShifts.approvedBy} IS NOT NULL`)));
+  if (filters.state === "review") conditions.push(inReviewSql);
+  if (filters.state === "closed") conditions.push(and(eq(posShifts.status, "closed"), sql`NOT ${inReviewSql}`));
   const where = and(...conditions);
   const totalRow = await db
     .select({ n: sql<number>`count(*)` })
@@ -486,7 +522,7 @@ export async function listShifts(db: Db, actor: Actor, filters: ShiftFilters, _l
   };
 }
 
-/** Closed shifts with a difference this employee may approve (not their own), for the module's tab and home. */
+/** Counted shifts waiting for a review this employee may give (not their own), for the module's tab, home and the bell. */
 export async function countReviewable(db: Db, actor: Actor): Promise<number | null> {
   if (!can(actor, "pos.shift.review")) return null;
   const self = actor.kind === "employee" ? actor.id : "";
@@ -495,7 +531,7 @@ export async function countReviewable(db: Db, actor: Actor): Promise<number | nu
     .select({ n: sql<number>`count(*)` })
     .from(posShifts)
     .innerJoin(posRegisters, eq(posRegisters.id, posShifts.registerId))
-    .where(and(eq(posShifts.status, "closed"), ne(posShifts.varianceIqd, 0), sql`${posShifts.approvedBy} IS NULL`, ne(posShifts.openedBy, self), sql`coalesce(${posShifts.closedBy}, '') <> ${self}`, branchId ? eq(posRegisters.branchId, branchId) : undefined))
+    .where(and(inReviewSql, ne(posShifts.openedBy, self), sql`coalesce(${posShifts.closedBy}, '') <> ${self}`, branchId ? eq(posRegisters.branchId, branchId) : undefined))
     .get();
   return Number(row?.n ?? 0);
 }

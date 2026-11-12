@@ -58,6 +58,7 @@ export const meta: Route.MetaFunction = (args) => promotionsMeta(args, "vip.titl
 
 export default function VipPage({ loaderData }: Route.ComponentProps) {
   const t = usePromotionsT();
+  const f = useFormat();
   const { page, filters } = loaderData;
   const manage = page.can.manage;
   const activeTiers = page.tiers.filter((tier) => tier.isActive);
@@ -173,7 +174,8 @@ export default function VipPage({ loaderData }: Route.ComponentProps) {
         </div>
         <aside className="prm-side" aria-label={t("common.side")}>
           <Section id="prm-vip-rule" title={t("vip.rule.title")}>
-            <Notice icon="star">{t("vip.rule.text")}</Notice>
+            {/* module 07's rule as it is in force (the setting customers.flag_rules), never a fixed sentence */}
+            <Notice icon="star">{t("vip.rule.text", { amount: f.iqd(page.rule.spendIqd), purchases: f.number(page.rule.purchases), span: t("daySpan", { count: page.rule.windowDays }) })}</Notice>
             <Notice icon="info">{t("vip.rule.decide")}</Notice>
           </Section>
           {manage ? (
@@ -282,7 +284,8 @@ function EligibleItem({ row, tiers, manage, seeProfiles }: { row: EligibleRow; t
           <PhoneText phone={row.phone} />
         </span>
         <span className="type-caption text-ink-2">
-          {row.flags.map((flag) => t(`vip.flag.${flag.id}`, { ...flag.vars, amount: typeof flag.vars.amount === "number" ? f.iqd(flag.vars.amount) : (flag.vars.amount ?? "") })).join(" · ")}
+          {/* the window is a setting (any 1–3650 days): its noun agrees with the number (daySpan) */}
+          {row.flags.map((flag) => t(`vip.flag.${flag.id}`, { ...flag.vars, amount: typeof flag.vars.amount === "number" ? f.iqd(flag.vars.amount) : (flag.vars.amount ?? ""), span: typeof flag.vars.days === "number" ? t("daySpan", { count: flag.vars.days }) : "" })).join(" · ")}
         </span>
       </span>
       {manage && tiers.length ? (

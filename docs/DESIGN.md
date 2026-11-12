@@ -231,7 +231,7 @@ Rules: labels on red, crimson or a platform surface are 600 weight and at least 
 | Noto Kufi Arabic (static instance) | 700 | arabic `kufi-arabic-700` · latin `kufi-latin-700` · latin-ext `kufi-latin-ext-wght` (variable, served at 700, on demand) | 43.9 · 10.4 · 16.5 KB |
 | IBM Plex Sans Arabic | 400 / 600 | arabic `plex-arabic-400/600` · latin `plex-latin-400/600` · latin-ext `plex-latin-ext-400/600` (on demand) | 42.8/45.7 · 19.2/20.5 · 6.7/6.7 KB |
 
-Licences: `public/fonts/OFL-Noto-Kufi-Arabic.txt`, `public/fonts/OFL-IBM-Plex-Sans-Arabic.txt` (SIL OFL 1.1). **Preload exactly two** (`app/styles/fonts.ts`, read by `root.tsx`): Plex 400 and Kufi 700 of the page's script (86.7 KB on Arabic and Sorani pages, 29.5 KB on English). Measured on the running site: an Arabic home page requests six files, 182.5 KB, no Kufam, no Plex 500; a page that draws a latin-ext character (ō) adds a 6.7 KB file. `html` sets `font-synthesis-weight: none`: a request for 500 draws 400, 700 in Plex draws 600.
+Licences: `public/fonts/OFL-Noto-Kufi-Arabic.txt`, `public/fonts/OFL-IBM-Plex-Sans-Arabic.txt` (SIL OFL 1.1). **Preload exactly two** (`app/styles/fonts.ts`, read by `root.tsx`): Plex 400 and Kufi 700 of the page's script (86.7 KB on Arabic and Sorani pages, 29.5 KB on English); both are drawn on the first screen (a Kufi heading or price, Plex body text — measured on home, cart, sign-in and the English home). They are preloaded with `preloadFonts(script)` — React's `preload()` while the document renders — never as `<link>` elements in the tree: React treats those as hoistable elements, and in development `<StrictMode>` unmounts and remounts them right after hydration, so each file is fetched a second time after the page already has it and Chrome reports "preloaded but not used" on every page (measured 2026-11-12; `preload()` leaves the server's links alone). Measured on the running site: an Arabic home page requests six files, 182.5 KB, no Kufam, no Plex 500; a page that draws a latin-ext character (ō) adds a 6.7 KB file. `html` sets `font-synthesis-weight: none`: a request for 500 draws 400, 700 in Plex draws 600.
 
 **Fallbacks** with matched metrics (`fonts.css`): "Kufi Fallback" and "Plex Fallback" against Segoe UI (Windows), "Kufi Fallback Noto" and "Plex Fallback Noto" against Noto Sans Arabic (Android; measured from Google's variable cut as a stand-in). size-adjust = web width ÷ local width over the same storefront copy; ascent/descent overrides = the web font's own metrics ÷ size-adjust. iOS could not be measured.
 
@@ -386,7 +386,7 @@ Budget: the hero image is the only image preload (`fetchpriority="high"`); every
 
 Kept from 1.0: logical properties only; no colour literal outside `tokens.css`; `backdrop-filter` only in `materials.css` (`<Glass>`); no mask or clip-path on a glass rule; no live glass in a list; no CSS `filter` (images included) and no SVG filters; motion animates only transform, translate, scale, rotate and opacity; no letter-spacing; `<img>` sized; `view-transition-name` never static; ui namespaces have the same keys in ar, en and ckb.
 
-Added or changed by v2 (they fail in `app/styles` now and are reported for the kit and the areas until stage 4):
+Added or changed by v2. Since stage 4 (2026-11-12) they fail the run in every file outside the admin — styles, kit, pages, shell, motion and shared code; the 1.0 rules above fail in the design-system files and, with `--strict` (CI), everywhere. The admin keeps the 1.0 materials and is exempt from the material rules:
 
 - `red` — `--red`, `--red-hover`, `--hero` only in the primary key, the card add button, the bead, the fly bead, the logo, the hero and wallet bands and the current step's disc.
 - `gel` — `--gel-*` only in the dark cabinet light layers.
@@ -395,9 +395,9 @@ Added or changed by v2 (they fail in `app/styles` now and are reported for the k
 - `type` — no `font-weight: 500` (`font-medium`), no non-integer font size.
 - `radius` — only `--r-*` tokens (the checkbox's 6px is `--r-check`).
 - `shadow` — box shadows only from the elevation tokens.
-- `blend` — `mix-blend-mode` only in the opaque-photo rule.
+- `blend` — `mix-blend-mode` only in the opaque-photo rule of `materials.css` (a selector on `[data-opaque]`, §12.5).
 - `primary-count` — one `variant="primary"` (or the alias `commit`) per route view; card add buttons are neutral.
-- `deprecated` — `Socket`, `PlatformBank`, `StageTag`, `PlatformGlyph`, `variant="commit" | "ink" | "quiet"`, `<Glass variant="static">`.
+- `deprecated` — `Socket`, `PlatformBank`, `StageTag`, `PlatformGlyph`, `KeyBank` (outside the admin; `Segmented` replaces it), `variant="commit" | "ink" | "quiet"`, `<Glass variant="static">`.
 
 Escape hatch, always with a reason: `// lint-design: allow <rule> — why`.
 
@@ -641,7 +641,7 @@ A pill 48 (40 compact) with a 1px `--line-2` border; two 40px round ghost icon b
 
 ### 9.9 Product card (`ProductCard`, the well `Niche`, the add button)
 
-The well: 1:1, `--r-lg`, the product ground; badge top-start; wishlist top-end (32 on the image); the image inset by kind (§12) and bottom-aligned with the contact ellipse. Below it, no container: the kind label (8px dot + «جهاز PS5», 13/600 `--ink-2`), the title (`type-card`, two lines, `unicode-bidi: plaintext`, aligned to the page start), at most two facts (13 `--ink-2`), and a foot pinned to the bottom with price md at the start and the add button at the end. The whole card is one link (the title's stretched pseudo-element) with the zoom; the add button and the wishlist sit above it.
+The well: 1:1, `--r-lg`, the product ground; badge top-start; wishlist top-end (32 on the image); the image inset by kind (§12) and bottom-aligned with the contact ellipse. Below it, no container: the kind label (8px dot + «جهاز PS5», 13/600 `--ink-2`), the title (`type-card`, two lines, isolated with `unicode-bidi: isolate`, aligned to the page start — §13), at most two facts (13 `--ink-2`), and a foot pinned to the bottom with price md at the start and the add button at the end. The whole card is one link (the title's stretched pseudo-element) with the zoom; the add button and the wishlist sit above it.
 
 **Add button:** a 40px circle, `--paper`, 1px `--line-2`, an ink bag-plus; under the pointer a red fill and a white glyph; after an add a check in `--ok` («{name} في السلة. أضف قطعة أخرى»); a product with required options opens the quick look («اختر نسخة {name}»). Hover: photo 1.03, the well overlay, the title underline; no lift, no shadow.
 
@@ -834,7 +834,7 @@ Decided by the client on 2026-11-11: **no 3D renders.** Every product is shown w
 | PDP stage | 8% / 6% / 9% | compact hardware covers ≥60% of the stage |
 
 4. **Never:** CSS tilt (`--pose` is 0), `filter: drop-shadow` or any `filter` on images, coloured pools under products, reflections, light under box art, kind captions.
-5. **Opaque photos** (`<Art>` marks them `data-transparent="false"`): re-cut them through the image pipeline. Until then they get `mix-blend-mode: multiply` on the light ground and keep their own background as a white `--r-sm` plate in dark — the only blend in the app. The pipeline refuses a new opaque photo whose background differs from `--niche` by more than ΔE 3, unless it is box art or a screenshot.
+5. **Opaque photos.** `<Art>` marks every picture that kept its own background `data-transparent="false"`: it is drawn on a plate of that colour with `--r-sm` corners (`--r-xs` for box art and digital cards in a well). Box art and screenshots are framed rectangles by design and never blend. An opaque *product* photo (not box art, not a screenshot: the predicate of `opaqueOf` in `services/catalog/card-facts.ts`, marked `data-opaque` on its `<img>` — the `<Art>` change is requested from the photo-pipeline owner, 2026-11-12; until it lands these photos still show their white plate) waits to be re-cut through the image pipeline; until then its plate melts into the light product ground with `mix-blend-mode: multiply` — the only blend in the app — and keeps its white `--r-sm` plate in dark and on every showcase surface (bands, tiles, the release band, where `--opaque-blend` is `normal`). The blend sits on the render slot (`.render-slot:has(img[data-opaque])`), the box standing directly on the ground: a stacking context between the picture and the ground (the slot's z-index and size containment, a sold-out photo's opacity, the hover scale) would make a blend on the picture itself mix with an empty layer and show the white box. A bare `<Art>` outside a slot blends itself. Measured 2026-11-12 with the marker set in the page: the plate equals the ground (243, 241, 238) in cards, rows, category tiles, the product stage and its thumbnails; box art and screenshots unchanged. The pipeline refuses a new opaque photo whose background differs from `--niche` by more than ΔE 3, unless it is box art or a screenshot.
 6. **First image by kind:** hardware = the device as sold, front or three-quarter; game = the case pack shot; bundle = a composite; gift card = the face. Never key art first. A different view per surface.
 7. **Delivery:** AVIF and WebP at 240 / 480 / 720 / 960 / 1440 with `sizes` per frame; explicit size or aspect ratio; a blurred LQIP and the dominant colour as placeholder; lazy below the fold; the hero image is the only preload; tile hardware at 480w with `fetchpriority="low"`. Budget ≤900 KB of images on the first load of home at 390.
 8. **Alt text:** card images `alt=""` (the name is the link text); PDP images describe the view; used photos say whether they show the unit. Credits live in the footer line and the PDP sources disclosure; the owner confirms usage rights before launch.
@@ -850,7 +850,7 @@ Decided by the client on 2026-11-11: **no 3D renders.** Every product is shown w
 - **Forms:** labels above; hints and errors via `aria-describedby`; `aria-invalid`; `aria-required`; the error summary `role="alert"` with links; autocomplete (`tel-national`, `name`, `address-level1/2/3`, `street-address`); `inputmode`; phone and code fields LTR; errors never by colour alone (icon + words).
 - **Live regions:** cart count (polite), results count (polite, after filtering settles), gallery counter (on change), toasts `role="status"`, the error summary `role="alert"`.
 - **Preferences:** reduced motion (engine tier, §7.3); reduced transparency (glass solid); `prefers-contrast: more` and `forced-colors` (§6.6).
-- **Language and direction:** `lang` and `dir` per locale; Latin names, numbers, codes and phone numbers isolated (`BidiText`, `<bdi>`, U+2066…U+2069 inside strings); card titles `unicode-bidi: plaintext` aligned to the page start; no forced `direction` on block elements; sideways transforms multiply by `--dir` (switch knob, sheet entry, arrow nudge, push); directional glyphs mirror (`.i--dir`, the icon's `rtl:` flip), nothing else; counters in words; dates day-first. Every user-facing string exists in ar, en and ckb; layouts are checked at 360, 390 and 430.
+- **Language and direction:** `lang` and `dir` per locale; Latin names, numbers, codes and phone numbers isolated (`BidiText`, `<bdi>`, U+2066…U+2069 inside strings); card and line titles aligned to the page start in the page's direction, the name isolated (`unicode-bidi: isolate`) with its Latin parts in `BidiText` — never `plaintext`, which makes a Latin name its own left-to-right paragraph, flush left in an Arabic card; no forced `direction` on block elements; sideways transforms multiply by `--dir` (switch knob, sheet entry, arrow nudge, push); directional glyphs mirror (`.i--dir`, the icon's `rtl:` flip), nothing else; counters in words; dates day-first. Every user-facing string exists in ar, en and ckb; layouts are checked at 360, 390 and 430.
 - **Arabic size:** no Arabic or Sorani run under 13px except 600-weight tags and the bead.
 - **QA adds:** 200% zoom and 320px reflow on home, PDP and checkout; a `forced-colors` and a `prefers-contrast` render; NVDA on add-to-cart, filters and checkout.
 
@@ -864,6 +864,12 @@ Decided by the client on 2026-11-11: **no 3D renders.** Every product is shown w
 - Fonts: an Arabic home page requests six files, 182.5 KB, no Kufam, no Plex 500, exactly two preloads; English requests four (92.9 KB, including the Arabic cut for «العربية»); Sorani six (182.5 KB).
 - The admin (dashboard, orders, a dialog, the command palette at 1440, light and dark): keys, chips, decision cards and the held nav key keep the 1.0 look; floor, paper, ink, lines and the headline face changed.
 - `node scripts/lint-design.mjs app/styles app/app.css`: no finding.
+
+**Verified (2026-11-12, stage 4 polish)**
+
+- The lint's v2 rules fail the run outside the admin (§6.7).
+- Opaque photos: with `data-opaque` set in the page, the plate equals the light ground in cards, rows, category tiles, the stage and thumbnails (it was 255, 255, 255 on 243, 241, 238); white `--r-sm` plates in dark; box art and screenshots never blend (§12.5).
+- Fonts: `preload()` keeps the two preloads to one request each under `<StrictMode>`; `<link>` elements were fetched twice and logged "preloaded but not used" (§5.5).
 
 **Not verified:** real phones, Safari and iOS (and the iOS fallback metrics), screen readers beyond QA, production bundle performance, the rendered composites of the new bands and tiles (they are built in the kit and page stages).
 

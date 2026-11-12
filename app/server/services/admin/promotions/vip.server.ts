@@ -7,9 +7,12 @@
  *   grantMembership(db, actor, { customerId, tierId, days?, reason }, now)   one active membership per customer
  *   endMembership(db, actor, { membershipId, reason }, now) · closeEndedMemberships(db, actor, now)
  *
- * Who is a VIP is module 07's rule, reused, not forked: `flagCondition("vip", now)` and `customerFlags` from
- * services/admin/customers/flags.server.ts (a manual VIP label, or ≥ 2,000,000 IQD / ≥ 5 purchases in 365 days). This
- * module turns an eligible customer into a member of a tier, by a person, with a reason.
+ * Who is a VIP is module 07's rule, reused, not forked: `flagCondition("vip", now, rules)` and `customerFlags` from
+ * services/admin/customers/flags.server.ts with the thresholds in force (customerRules — the setting
+ * customers.flag_rules: a manual VIP label, or ≥ the spend / ≥ the purchases within the window; by default 2,000,000
+ * IQD / 5 purchases / 365 days). Review 2026-11-12: the list and its count still used the constants while the flags
+ * beside each name followed the setting. This module turns an eligible customer into a member of a tier, by a person,
+ * with a reason.
  *
  * What a benefit does today: the points multiplier is applied when points are posted (08.04, this module). The
  * member discount, free shipping and early access are written terms the commerce core does not read yet: `priceCart`
@@ -27,6 +30,7 @@ import { customers, membershipTiers, memberships, type MembershipBenefits } from
 import { expectChanged, expectThat, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, zodFieldErrors } from "~/server/errors";
 import { customerFlags, flagCondition } from "~/server/services/admin/customers/flags.server";
+import { customerRules } from "~/server/services/admin/customers/rules.server";
 import { cleanBlock, cleanLine } from "~/server/text.server";
 import { stableText } from "./rules";
 import { ID, SECTION_READ, assertAny, customerLabels, employeeNames, num } from "./shared.server";
@@ -59,7 +63,9 @@ const tierFingerprint = (row: { key: string; name: L10n; benefits: MembershipBen
 
 export async function vipPage(db: Db, actor: Actor, now: number, locale: Locale, filters: VipFilters = { members: "current", page: 1 }): Promise<VipPage> {
   assertAny(actor, SECTION_READ.vip);
-  const vip = flagCondition("vip", now);
+  // module 07's VIP rule with the thresholds in force (the same ones customerFlags explains each name with)
+  const { flags: rules } = await customerRules(db);
+  const vip = flagCondition("vip", now, rules);
   const active = sql`EXISTS (SELECT 1 FROM memberships AS m WHERE m.customer_id = c.id AND m.status = 'active' AND (m.ends_at IS NULL OR m.ends_at > ${now}))`;
   // "current" is exactly what the front page counts as members; the list pages through the chosen view and its count
   const current = sql`(${memberships.status} = 'active' AND (${memberships.endsAt} IS NULL OR ${memberships.endsAt} > ${now}))`;
@@ -110,6 +116,7 @@ export async function vipPage(db: Db, actor: Actor, now: number, locale: Locale,
     endedWaiting: num(ended?.n),
     eligible: ids.map((id): EligibleRow => ({ customerId: id, customer: labels.get(id)?.name ?? null, phone: labels.get(id)?.phone ?? null, flags: (flags.get(id) ?? []).filter((flag) => flag.id.startsWith("vip_")).map((flag) => ({ id: flag.id, vars: flag.vars as Record<string, string | number> })) })),
     eligibleTotal: num(eligibleTotal[0]?.n),
+    rule: { spendIqd: rules.vipSpendIqd, purchases: rules.vipPurchases, windowDays: rules.vipWindowDays },
     can: { manage: can(actor, "promotions.membership.manage"), seeProfiles: can(actor, "customers.customer.read") },
   };
 }

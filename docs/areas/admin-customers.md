@@ -93,7 +93,7 @@ checked before anything is read, then the service checks it again (`assertCan`) 
 - The immutable audit trail keeps names written in earlier events (phones are masked there): erasure cannot reach it.
   Stored assistant conversations and sign-in events keep their own retention (expiry; 180 days): erasure does not
   shorten it.
-- Rules and thresholds are module constants (settings 22); no scheduled RFM recompute (jobs owner).
+- Rules and thresholds are settings since 2026-11-12 (customers.rfm_rules, customers.flag_rules, customers.privacy_due_days — see the follow-up section); no scheduled RFM recompute (jobs owner).
 
 ## Tests
 
@@ -129,3 +129,9 @@ demo records `cus_demo_crm_r1`–`r6` and request `PR-HT4M4EDP` (`.shots/admin-c
   with a customer actor, or its own service writing `privacy_requests`.
 - **Jobs:** an optional daily `recomputeSegments(db, systemActor("customers.rfm"), now)`.
 - **Settings (22):** keys for `RFM_RULES`, `FLAG_RULES`, `PRIVACY_DUE_DAYS`.
+
+## Module follow-up 2026-11-12
+
+Rules in force: `rules.server.ts` `customerRules(db)` → `{ rfm, flags, privacyDueDays }` (settings `customers.rfm_rules`, `customers.flag_rules` — a money-control limit —, `customers.privacy_due_days`; defaults = RFM_RULES, FLAG_RULES, PRIVACY_DUE_DAYS). Optional last arguments, signatures otherwise unchanged: `rfmOf(facts, now, rules?)`, `scoreRecency/Frequency/Monetary(…, bounds?)`, `flagCondition(view, now, rules?)`, `customerWhere(filters, actor, now, flagRules?)`. `CustomerProfile.rules`, `SegmentOverview.rules`; `ProfileTicket.href` (/admin/support/tickets/<ref>). Erasure also removes the person's stored assistant conversations (tickets let go of them) and their sign-in log (`RETENTION.erased` + `assistant`, `signIns`). Names inside earlier audit events stay (the trail is append-only and chained).
+
+Tests (each failed before its change): `tests/admin-customers-followup.test.ts`, `tests/admin-settings-keys.test.ts`.

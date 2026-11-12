@@ -375,3 +375,37 @@ describe("badges and small rules", () => {
     expect(lineProblemLook("price_changed")).toMatchObject({ blocking: false, tone: "info" });
   });
 });
+
+// Polish round (digest K, §4.1, §9 glossary): the words the commerce components say.
+describe("words: compatibility, swatches, the total, one Sorani word for «product»", () => {
+  it("states compatibility with §4.1's words — يعمل · يعمل جزئياً · لا يعمل · لم نتحقق", () => {
+    const ar = messages.ar.compat;
+    expect([ar.verified, ar.partial, ar.incompatible, ar.unverified]).toEqual(["يعمل", "يعمل جزئياً", "لا يعمل", "لم نتحقق"]);
+    expect(ar.verifiedWith).toBe("يعمل مع {device}");
+    expect(JSON.stringify(ar)).not.toMatch(/متوافق/);
+  });
+
+  it("never calls a colour that is not out yet «غير متوفر»: sold out and coming soon have their own words", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      for (const key of ["unavailable", "soldOut", "soon"] as const) expect(messages[locale].swatch[key]).toContain("{name}");
+    }
+    expect(messages.ar.swatch.soldOut).toBe("{name} — نفد حالياً");
+    expect(messages.ar.swatch.soon).toBe("{name} — قريباً");
+  });
+
+  it("calls the payable amount «الإجمالي», never «المجموع»", () => {
+    expect(messages.ar.summary.updating).toBe("جارٍ تحديث الإجمالي");
+    expect(messages.ar.summary.error).toContain("الإجمالي");
+  });
+
+  it("uses one Sorani word for «product» (بەرهەم, as the storefront areas do)", () => {
+    expect(JSON.stringify(messages.ckb)).not.toMatch(/کاڵا/);
+  });
+
+  it("explains a flat add key offline, in every language", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      expect(messages[locale].add.offline.length).toBeGreaterThan(5);
+      expect(messages[locale].add.chooseOffline).toContain("{name}");
+    }
+  });
+});

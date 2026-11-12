@@ -647,6 +647,7 @@ const tree: Tree = {
     filters: {
       open: m("مفتوحة", "Open", "کراوە"),
       mismatch: m("فيها فروقات", "With variances", "جیاوازیی تێدایە"),
+      to_accept: m("فروقات بانتظار قبولك", "Variances for you to accept", "جیاوازییەکان چاوەڕێی پەسەندکردنی تۆن"),
       matched: m("مطابقة", "Matched", "گونجاو"),
       approved: m("معتمدة", "Approved", "پەسەندکراو"),
       void: m("ملغاة", "Void", "هەڵوەشاوە"),

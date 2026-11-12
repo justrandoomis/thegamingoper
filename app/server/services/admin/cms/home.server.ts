@@ -248,7 +248,7 @@ export async function getHeroPinEditor(db: Db, actor: Actor, pinId: string, loca
   const stagedWindow = (row.draftConfig ?? {}) as { startsAt?: number | null; endsAt?: number | null };
   const values = staged ? { ...staged, startsAt: stagedWindow.startsAt ?? row.startsAt, endsAt: stagedWindow.endsAt ?? row.endsAt } : live ? { ...live, startsAt: row.startsAt, endsAt: row.endsAt } : null;
   const product = values ? await pinProduct(db, values.productId, locale, Math.max(now, values.startsAt ?? now), now) : null;
-  const others = values ? await overlapping(db, values.platform, values.startsAt, values.endsAt, row.id) : [];
+  const others = values ? await overlapping(db, values.platform, values.startsAt, values.endsAt, row.id, row.isDemo) : [];
   return {
     pin: { id: row.id, published: row.isActive, state: stateOf(row, now), pending: row.draftConfig !== null, isDemo: row.isDemo, version: row.updatedAt },
     values,
@@ -258,12 +258,16 @@ export async function getHeroPinEditor(db: Db, actor: Actor, pinId: string, loca
   };
 }
 
-/** Published pins of a platform whose window overlaps [startsAt, endsAt) (excluding one pin). */
-async function overlapping(db: Db, platform: HeroPlatform, startsAt: number | null, endsAt: number | null, exceptId: string | null): Promise<HomeSection[]> {
+/**
+ * Published pins of a platform whose window overlaps [startsAt, endsAt) (excluding one pin) — of the same kind only:
+ * a demo pin competes with demo pins, a real one with real ones. The store never shows a demo pin (getHomeHero), so a
+ * published demo pin used to block every real pin of its platform for its whole window (follow-up 2026-11-12).
+ */
+async function overlapping(db: Db, platform: HeroPlatform, startsAt: number | null, endsAt: number | null, exceptId: string | null, isDemo: boolean): Promise<HomeSection[]> {
   const rows = await db
     .select()
     .from(homeSections)
-    .where(and(eq(homeSections.kind, HERO_PIN_KIND), eq(homeSections.isActive, true), exceptId ? ne(homeSections.id, exceptId) : undefined));
+    .where(and(eq(homeSections.kind, HERO_PIN_KIND), eq(homeSections.isActive, true), eq(homeSections.isDemo, isDemo), exceptId ? ne(homeSections.id, exceptId) : undefined));
   return rows.filter((row) => readPinConfig(row.config)?.platform === platform && windowsOverlap({ startsAt: row.startsAt, endsAt: row.endsAt }, { startsAt, endsAt }));
 }
 
@@ -325,7 +329,7 @@ function windowOf(input: { startsAt: string; endsAt: string }, now: number, requ
 }
 
 /** Everything a pin must satisfy to be published (see the file header). */
-async function assertPublishable(db: Db, config: HeroPinConfig, window: { startsAt: number; endsAt: number }, now: number, exceptId: string | null): Promise<void> {
+async function assertPublishable(db: Db, config: HeroPinConfig, window: { startsAt: number; endsAt: number }, now: number, exceptId: string | null, isDemo: boolean): Promise<void> {
   if (window.endsAt <= now) throw invalid({ endsAt: "schedule_past" });
   await assertProductReady(db, config.productId, Math.max(now, window.startsAt));
   const [platform, photo] = await Promise.all([
@@ -334,15 +338,15 @@ async function assertPublishable(db: Db, config: HeroPinConfig, window: { starts
   ]);
   if (Number(platform[0]?.n ?? 0) === 0) throw cmsError("pin_platform", 409, { fields: { productId: "pin_platform" } });
   if (Number(photo[0]?.n ?? 0) === 0) throw cmsError("pin_photo", 409, { fields: { productId: "pin_photo" } });
-  const others = await overlapping(db, config.platform, window.startsAt, window.endsAt, exceptId);
+  const others = await overlapping(db, config.platform, window.startsAt, window.endsAt, exceptId, isDemo);
   if (others.length > 0) throw cmsError("pin_overlap", 409, { fields: { startsAt: "pin_overlap" }, detail: others[0].id });
 }
 
-/** No other published pin of the platform overlaps — inside the batch, so two people publishing at once cannot both win. */
-function noOverlapGuard(db: Db, platform: HeroPlatform, window: { startsAt: number; endsAt: number }, pinId: string): BatchStatement {
+/** No other published pin of the platform (and of the same kind, demo or real) overlaps — inside the batch, so two people publishing at once cannot both win. */
+function noOverlapGuard(db: Db, platform: HeroPlatform, window: { startsAt: number; endsAt: number }, pinId: string, isDemo: boolean): BatchStatement {
   return expectThat(
     db,
-    sql`NOT EXISTS (SELECT 1 FROM home_sections WHERE kind = ${HERO_PIN_KIND} AND is_active = 1 AND id <> ${pinId} AND json_extract(config, '$.platform') = ${platform}
+    sql`NOT EXISTS (SELECT 1 FROM home_sections WHERE kind = ${HERO_PIN_KIND} AND is_active = 1 AND id <> ${pinId} AND is_demo = ${isDemo ? 1 : 0} AND json_extract(config, '$.platform') = ${platform}
       AND COALESCE(starts_at, -1) < ${window.endsAt} AND COALESCE(ends_at, 9007199254740991) > ${window.startsAt})`,
     { code: "PIN_OVERLAP", detail: pinId },
   );
@@ -394,9 +398,9 @@ export async function publishHeroPin(db: Db, actor: Actor, raw: unknown, now: nu
   const config = readPinConfig(source);
   if (!config) throw cmsError("pin_not_found", 409);
   const window = { startsAt: (row.isActive ? source?.startsAt : row.startsAt) ?? row.startsAt ?? now, endsAt: (row.isActive ? source?.endsAt : row.endsAt) ?? row.endsAt ?? now };
-  await assertPublishable(db, config, window, now, row.id);
+  await assertPublishable(db, config, window, now, row.id, row.isDemo);
   await runBatch(db, [
-    noOverlapGuard(db, config.platform, window, row.id),
+    noOverlapGuard(db, config.platform, window, row.id, row.isDemo),
     db
       .update(homeSections)
       .set({ config: config as Record<string, unknown>, draftConfig: null, isActive: true, startsAt: window.startsAt, endsAt: window.endsAt, updatedBy: actorIdOf(actor), updatedAt: now })

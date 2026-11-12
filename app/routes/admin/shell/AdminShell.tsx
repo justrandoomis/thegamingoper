@@ -3,7 +3,8 @@
  * page, and by its ErrorBoundary around the 403/404/500 panel, so an error keeps the navigation.
  *
  *   skip link → rail (≥ 1200) → [tool bar → <main id="main">] → tab bar (< 768) → sections sheet → command palette
- *   → toasts
+ *   → toasts → <OpsReporter/> (module 23: this window's script errors and slow loads, POSTed to /admin/ops/report —
+ *   every signed-in employee may; one reporter per window, so the operations module's own copy stays silent)
  *
  * `data-density="admin"` puts every key, field, table and overlay below it in admin density (app/styles/admin.css).
  * No page transitions and no ambient motion: the admin is for work (no heavy animation near tables); key presses keep
@@ -23,6 +24,7 @@ import { Sheet } from "~/ui/Sheet";
 import { Toaster } from "~/ui/Toast";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { BLUEPRINT_STATUS } from "../blueprint-status";
+import { OpsReporter } from "../ops/components/Reporter";
 import { useShellActions } from "./actions";
 import { AdminMessages, useAdminT } from "./i18n";
 import { NavList, Rail, TabBar } from "./Nav";
@@ -83,7 +85,7 @@ function Frame({ data, children }: { data: AdminShellData | null; children: Reac
   const closePalette = useCallback(() => setPaletteOpen(false), []);
 
   return (
-    <div className="adm" data-density="admin" data-rail={rail}>
+    <div className="adm" data-density="admin" data-rail={rail} data-nav={data ? undefined : "none"}>
       <MotionRoot />
       <VisuallyHidden as="a" href="#main" focusable className="adm-skip">
         {t("skip")}
@@ -104,6 +106,8 @@ function Frame({ data, children }: { data: AdminShellData | null; children: Reac
             </div>
           </Sheet>
           <Palette open={paletteOpen} onClose={closePalette} data={data} statuses={BLUEPRINT_STATUS} rail={rail} onToggleRail={toggleRail} />
+          {/* only with a signed-in employee: the report endpoint needs one (the password-set page has no shell data) */}
+          <OpsReporter />
         </>
       ) : null}
       <Toaster offset="calc(var(--safe-top) + var(--adm-top-h) + var(--s-2))" />

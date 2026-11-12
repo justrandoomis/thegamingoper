@@ -1815,7 +1815,23 @@ describe("settings", () => {
     // Keys beyond §10 are internal controls: never shown to shoppers, and they work without a seeded row.
     const extra = SETTING_KEYS.filter((key) => !seeded.includes(key as (typeof seeded)[number]));
     // + the limits the admin modules asked for (settings module 22, 2026-11-11): their defaults are the modules' constants
-    expect(extra).toEqual(["refunds.approval_threshold_iqd", "pricing.drop_approval_bps", "purchasing.po_approval_limit_iqd", "finance.topup_second_approval_iqd", "finance.expense_second_approval_iqd", "returns.sla", "pos.discount_limit_bps"]);
+    expect(extra).toEqual([
+      "refunds.approval_threshold_iqd",
+      "pricing.drop_approval_bps",
+      "purchasing.po_approval_limit_iqd",
+      "finance.topup_second_approval_iqd",
+      "finance.expense_second_approval_iqd",
+      "returns.sla",
+      "pos.discount_limit_bps",
+      // module follow-up 2026-11-12: admin 07 customers and admin 08 promotions
+      "customers.rfm_rules",
+      "customers.flag_rules",
+      "customers.privacy_due_days",
+      "promotions.discount_limits",
+      "promotions.loyalty",
+      "promotions.referral",
+      "promotions.gift_card",
+    ]);
     expect([...PUBLIC_SETTING_KEYS].sort()).toEqual([...seeded].sort());
     for (const key of SETTING_KEYS) {
       expect(isPermission(SETTINGS[key].permission), key).toBe(true);

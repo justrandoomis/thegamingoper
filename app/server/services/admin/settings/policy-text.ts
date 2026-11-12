@@ -63,7 +63,8 @@ export function textToBlocks(text: string): PolicyBlock[] {
       const prev = last();
       if (prev && prev.type === "ul") prev.items.push(item);
       else out.push({ type: "ul", items: [item] });
-    } else if ((match = /^[0-9٠-٩]{1,3}[.)]\s+(.+)$/.exec(line))) {
+    } else if ((match = /^[0-9٠-٩۰-۹]{1,3}[.)]\s+(.+)$/.exec(line))) {
+      // Latin, Arabic-Indic and Persian digits (follow-up 2026-11-12: "۱. ..." typed on a Persian keyboard was a paragraph)
       const item = clean(match[1]);
       const prev = last();
       if (prev && prev.type === "ol") prev.items.push(item);

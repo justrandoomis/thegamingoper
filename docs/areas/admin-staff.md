@@ -128,3 +128,9 @@ approved, leave recorded and approved, a demo employee's access ended. Demo data
 - **Finance**: replace `expenses.payrollNote` (payroll is now posted by staff runs; recording it as an expense too counts it twice
   — the run page warns).
 - **Security 20**: withhold `staff.payroll.*` audit snapshots from readers without staff.payroll.read.
+
+## Module follow-up 2026-11-12
+
+A payroll run's involved people include the authors of the commission plans it pays under (`runInvolved`, and the approval batch's guard): they never approve it. `storeApprovals` and `syncCommissions` follow branch limits (a limited employee: their branch's requests — an advance FOR their staff included —, no store-wide runs; a sync writes their branch's sellers only). `StaffAccess.advancesView`: a branch-limited payroll approver gets the advances page as a section and its card on the home.
+
+Tests (each failed before its change): `tests/admin-staff-followup.test.ts`.

@@ -434,4 +434,78 @@
     margin-block-start: 2px;
     color: var(--ink);
   }
+
+  /* ───────────────────────────── what the discount is made of (2026-11-12) ─────────────────────────────
+     Under the kit summary's rows: each discount, the delivery waiver, a split payment's parts — the summary's own
+     tabular type, ink-2, a hairline above. */
+  .co-adjust {
+    display: grid;
+    gap: var(--s-2);
+    padding-block-start: var(--s-2);
+    border-block-start: 1px dashed var(--line);
+  }
+  .co-adjust__list,
+  .co-adjust__split {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .co-adjust__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin: 0;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .co-adjust__row > dd {
+    margin: 0;
+  }
+  .co-adjust__row--ok {
+    color: var(--ok);
+  }
+  .co-adjust__row--strong {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+
+  /* the payment step's points and wallet boxes, the review's referral code (2026-11-12) */
+  .co-extra {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .co-extra__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--s-2) var(--s-3);
+  }
+  .co-extra__row > .field {
+    flex: 1 1 12rem;
+    min-inline-size: 0;
+  }
+
+  /* digital codes on the order page: one row per code, the code in the code type once revealed */
+  .co-codes {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .co-codes > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-3);
+    min-block-size: var(--target);
+    padding-block: var(--s-2);
+    border-block-end: 1px solid var(--line);
+  }
+  .co-codes > li:last-child {
+    border-block-end: 0;
+  }
 }

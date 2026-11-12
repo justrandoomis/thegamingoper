@@ -30,6 +30,8 @@ export type MySession = { id: string; current: boolean; createdAt: number; lastS
 
 export type MySecurityData = {
   employee: { name: string; email: string; passwordChangedAt: number | null; totpEnabled: boolean };
+  /** A role requires two-step verification and it is off: this session opens nothing else until it is on. */
+  enrolmentRequired: boolean;
   recoveryCodesLeft: number | null;
   sessions: MySession[];
   now: number;
@@ -43,6 +45,7 @@ export async function loadMySecurity(ctx: AuthCtx, db: Db, session: EmployeeSess
   ]);
   return {
     employee: { name: employee.name, email: employee.email, passwordChangedAt: employee.passwordChangedAt, totpEnabled: employee.totpEnabled },
+    enrolmentRequired: session.restriction === "mfa_enrolment",
     recoveryCodesLeft: employee.totpEnabled ? (row?.recoveryCodes?.length ?? 0) : null,
     sessions: sessions.map((entry) => ({
       id: entry.id,

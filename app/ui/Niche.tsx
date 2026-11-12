@@ -84,7 +84,7 @@ export function Niche<C extends ElementType = "div">({
     >
       {fill ? <span className="niche__fill">{children}</span> : <span className="niche__slot render-slot">{children}</span>}
       {tag ? <span className="niche__tag">{tag}</span> : null}
-      {note ? <span className="absolute start-2.5 bottom-2.5 z-2 flex">{note}</span> : null}
+      {note ? <span className={cx("absolute z-2 flex", size === "sm" ? "start-1 bottom-1" : "start-2.5 bottom-2.5")}>{note}</span> : null}
       {fav ? <span className="niche__fav">{fav}</span> : null}
     </Tag>
   );

@@ -24,7 +24,6 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties
 import { createPortal } from "react-dom";
 
 import { Art } from "~/art/Art";
-import { Icon } from "~/art/Icon";
 import { Logo } from "~/art/Logo";
 import { useT } from "~/i18n/react";
 import { easings, getMotionTier, springTiming, type MotionTier } from "~/motion";
@@ -139,23 +138,8 @@ export function Intro({ corners, tiles, onLeave, onDone }: IntroProps) {
               const on = chosen.includes(tile.platform);
               return (
                 <li key={tile.platform} className="intro__tile" style={{ "--i": index } as CSSProperties}>
-                  <PlatformTile
-                    as="button"
-                    type="button"
-                    platform={tile.platform}
-                    name={tile.name}
-                    count={tile.count}
-                    aria-pressed={on}
-                    onClick={() => toggle(tile.platform)}
-                    art={
-                      <>
-                        {tile.artKey ? <Art name={tile.artKey} alt="" sizes="(min-width: 1024px) 240px, (min-width: 768px) 20vw, 40vw" fetchPriority="low" className="ptile__img" /> : null}
-                        <span className="intro__check">
-                          <Icon name="check" size={20} />
-                        </span>
-                      </>
-                    }
-                  />
+                  {/* the kit's toggle tile: held on its wall, ringed and checked while chosen (aria-pressed), no arrow */}
+                  <PlatformTile as="button" type="button" platform={tile.platform} name={tile.name} count={tile.count} selected={on} onClick={() => toggle(tile.platform)} art={tile.artKey ?? undefined} />
                 </li>
               );
             })}

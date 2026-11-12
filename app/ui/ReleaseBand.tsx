@@ -4,9 +4,9 @@ import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
 import { CKB_MONTHS } from "~/lib/dates";
 import { LOCALES, type Locale } from "~/lib/locales";
-import { BidiText } from "./BidiText";
+import { BidiLabel, BidiText } from "./BidiText";
 import { cx } from "./cx";
-import { PlatformLabel, type Gel } from "./PlatformLed";
+import { PlatformLabel, PlatformLed, type Gel } from "./PlatformLed";
 import { Price } from "./Price";
 import { isIqd } from "./PriceTag";
 import { ProductImage } from "./ProductCard";
@@ -32,8 +32,12 @@ export type ReleaseItem = {
   /** The announced release day (epoch ms). */
   releaseAt: number;
   platform?: Gel | null;
-  /** The platform's words when they are not the platform's own name ("Nintendo Switch 2"). */
+  /** A release for several platforms: up to two dots (the first is `platform`'s place); the label names them all. */
+  platforms?: readonly Gel[] | null;
+  /** The platform's words when they are not the platform's own name ("Nintendo Switch 2", "PS5 · Xbox Series X|S"). */
   platformLabel?: string;
+  /** One line under the name — the edition or the kind («نسخة الأقراص», «لعبة»), in the page's language. */
+  detail?: string | null;
   /** Only when the store has set a price. */
   priceIqd?: number | null;
   image?: ImageRef | null;
@@ -62,6 +66,28 @@ export function iraqDay(ms: number): { day: number; month: number; year: number 
 export function daysUntil(at: number, now: number): number {
   const day = (ms: number) => Math.floor((ms + BAGHDAD) / DAY_MS);
   return day(at) - day(now);
+}
+
+/**
+ * The release's platforms on the band: one platform's dot and name, or — for a multi-platform release — up to two
+ * dots before the label that names them all («PS5 · Xbox Series X|S»; without a label, the names joined).
+ */
+function ReleasePlatforms({ item }: { item: ReleaseItem }) {
+  const t = useT("ui");
+  const many = (item.platforms ?? []).filter((p, index, list) => list.indexOf(p) === index);
+  if (many.length > 1) {
+    const label = item.platformLabel ?? many.map((p) => (p === "brand" ? "" : t(`platform.${p}`))).filter(Boolean).join(" · ");
+    return (
+      <span className="plat text-on-band-2">
+        {many.slice(0, 2).map((p) => (
+          <PlatformLed key={p} platform={p} />
+        ))}
+        <BidiLabel>{label}</BidiLabel>
+      </span>
+    );
+  }
+  const one = item.platform ?? many[0] ?? null;
+  return one ? <PlatformLabel platform={one} label={item.platformLabel} className="text-on-band-2" /> : null;
 }
 
 /** "تشرين الثاني 2026" · "November 2026" · "تشرینی دووەم 2026" (Western digits). */
@@ -109,7 +135,12 @@ export function ReleaseBand({ items, now, title, headingLevel = 2, className }: 
                 <span className="release__name [unicode-bidi:isolate]">
                   <BidiText text={item.name} />
                 </span>
-                {item.platform ? <PlatformLabel platform={item.platform} label={item.platformLabel} className="text-on-band-2" /> : null}
+                {item.detail ? (
+                  <span className="type-xs text-on-band-2">
+                    <BidiLabel>{item.detail}</BidiLabel>
+                  </span>
+                ) : null}
+                <ReleasePlatforms item={item} />
                 {isIqd(item.priceIqd) ? <Price amountIqd={item.priceIqd} size="md" tone="onColor" approx="off" as="span" /> : null}
                 <span className="release__note">{t("release.note")}</span>
               </LocaleLink>

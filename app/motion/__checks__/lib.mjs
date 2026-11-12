@@ -57,7 +57,8 @@ export async function openPage(browser, options = {}) {
   const errors = [];
   page.on("pageerror", (e) => errors.push("pageerror: " + String(e?.message ?? e).slice(0, 400)));
   page.on("console", (m) => {
-    if (m.type() === "error") errors.push("console.error: " + m.text().slice(0, 400));
+    // a failed resource names itself only in the message's location
+    if (m.type() === "error") errors.push("console.error: " + m.text().slice(0, 400) + (/^Failed to load resource/.test(m.text()) && m.location()?.url ? ` (${m.location().url.slice(0, 200)})` : ""));
   });
   page.on("requestfailed", (r) => {
     const failure = r.failure()?.errorText ?? "";
@@ -190,13 +191,22 @@ export async function record(page, name, action, tailMs = 600) {
   return { files, times: frames.map((f) => Math.round((f.t - t0) * 1000)) };
 }
 
-export async function goto(page, pathname) {
-  const response = await page.goto(ORIGIN + pathname, { waitUntil: "networkidle2", timeout: 60000 });
-  await page.evaluate(() => document.fonts && document.fonts.ready);
-  // <MotionRoot> marks <html data-motion-ready> once it is live (after hydration).
-  await page.waitForSelector("html[data-motion-ready]", { timeout: 30000 });
-  await sleep(250);
-  return response;
+/** A load cut short by the dev server reloading the page (another file was saved): worth one more try. */
+const isReload = (error) => /Execution context was destroyed|net::ERR_ABORTED|Navigating frame was detached/.test(String(error?.message ?? error));
+
+export async function goto(page, pathname, attempts = 3) {
+  try {
+    const response = await page.goto(ORIGIN + pathname, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.evaluate(() => document.fonts && document.fonts.ready);
+    // <MotionRoot> marks <html data-motion-ready> once it is live (after hydration).
+    await page.waitForSelector("html[data-motion-ready]", { timeout: 30000 });
+    await sleep(250);
+    return response;
+  } catch (error) {
+    if (attempts <= 1 || !isReload(error)) throw error;
+    await sleep(1500);
+    return goto(page, pathname, attempts - 1);
+  }
 }
 
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

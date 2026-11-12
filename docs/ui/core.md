@@ -1,5 +1,42 @@
 # Core components — props and examples
 
+## Polish round and stage 4 (2026-11-12)
+
+- **Stage 4 (spec §4.2, §12):** `Socket`, `PlatformBank`, `StageTag` and `PlatformGlyph` are **deleted** — nothing
+  imported them any more. Kept, because the admin (Lens & Clay 1.0) still uses them: Key `variant="commit" | "clay" |
+  "ink" | "quiet"` and IconKey `variant="quiet"` (≈130 admin call sites), `<Glass variant="static">`
+  (`app/routes/admin/shell/Nav.tsx`, `Palette.tsx`). `KeyBank` is not in §4.2's list and stays (`Chip` and `Tabs` use
+  the roving helpers it re-exports; new code imports them from `~/ui/roving`). The storefront and the kit use none of
+  the 1.0 names (`node scripts/lint-design.mjs --strict app/routes/storefront app/ui`: 0).
+- **Bidi in sentences:** an amount or a name inside a translated sentence is a FIRST-STRONG isolate —
+  `isolate(text)` (U+2068 … U+2069) from `~/ui/BidiText` — so «التوصيل 5,000 د.ع» reads the figure first in Arabic (the
+  left-to-right isolate U+2066 put «د.ع» first). Card facts are `<BidiLabel>`s («512GB أو 1TB» reads from the right).
+  `<BidiValue text>`: a value with numbers (impact rows, cells) — each standalone signed number one left-to-right run,
+  the rest in the page's direction ("300 ← 450" reads 300, then on to 450). `latinName(name, dir)`: a clamped Latin
+  name on an Arabic page is laid out left to right (its ellipsis at its own end) and aligned to the page's start.
+- **Rows that scroll sideways** (`~/ui/reveal`): `<Rail>` brings a card that takes the KEYBOARD focus to the rail's
+  start (a snap point — the snap can no longer pull it back ~80% off-screen); pointer focus never scrolls; the rail's
+  own ring is drawn inside its edges. `<Tabs>` and link-mode `<Segmented>` keep their current item in view (first
+  paint, change, fonts loaded, resize); they and `<ChipGroup rail>` bring a keyboard-focused item into view
+  (`revealFocusedItem`; a pointer press never scrolls the row under it); `revealDelta` is the pure geometry.
+- **Segmented (links):** each segment at least its words' width, the track scrolls when they do not fit (no cut
+  labels); `current="true"` for a section (`aria-current="true"`), default `"page"`.
+- **Fields:** a disabled CHECKED checkbox keeps its tick (an `--ink-3` fill; a disabled chosen radio an `--ink-3`
+  ring) — the stylesheet's disabled box hid it. `Checkbox count={18}` / `end` (a filter row's count). `FieldGroup id`
+  (an error-summary target). `Radio`/`OptionCard` `end`: a price keeps «667,500 د.ع» on one line.
+- **Price:** the struck previous price above a price is its own 13px line (it inherited the 27px body line).
+  `PriceTag size="page"`: `status` (the line's words, «قريباً · 19 تشرين الثاني») and `compareAtDemo` (struck, no
+  «توفّر»).
+- **PlatformTile:** `selected` (with `as="button"`) = a toggle — `aria-pressed`, held on its wall, a ring inside the face
+  and a check disc. Below 1024 the words sit UNDER the hardware (768–1023 included: beside the name, the white PS5 Slim
+  sat under «PlayStation», 1.48:1); a two-line name makes the tile taller instead of running into the picture.
+- **Stage (pdp):** the image box is inset 4% / 2% / 5% (the cut-outs carry ~5% margin of their own, so the object stands
+  at the spec's 8% / 6% / 9%); Switch 2 fills 63% of the 390 stage (was 52%). Opaque photos keep 8% / 6% / 9%.
+- **OfflineBanner:** graphite (`--band`, white words) — never the demo strip's amber.
+- **Swatches:** `unavailable` `"soldOut"` («نفد حالياً») · `"soon"` («قريباً») · `true` («غير متوفر»: not made in this
+  version) · `reason` (your words). Never «غير متوفر» for a colour that is not out yet (§9).
+- **Retired:** see the first item. The 1.0 sections further down are kept for the props that did not change.
+
 ## Design System v2 (2026-11-11) — read this first
 
 The kit was rebuilt to Design System v2 (spec: the redesign's `design-v2-spec.md` §4; CSS classes: `docs/UI.md` §2,
@@ -19,7 +56,7 @@ physics: `keyPress(look)` → `data-press="clay"` for primary/onBand, `"soft"` o
 
 **Choices** — `Segmented` (new; `.seg`): a radiogroup with roving focus, or link mode when every option has `href`
 (`aria-current="page"`); `inline` shrinks it to its content. `KeyBank kind="segment"` now renders `<Segmented inline>`;
-`kind="platform" | "thumb"` keep the `.bank`. `PlatformBank` is retired (renders KeyBank). `Chip`: `count` (tabular,
+`kind="platform" | "thumb"` keep the `.bank`. `PlatformBank` is deleted (stage 4; `PlatformTile`). `Chip`: `count` (tabular,
 in the chip), `platform` (dot after the label), `removable`; `ChipGroup rail bleed` scrolls on phones (chips never
 shrink) and wraps from 768. Roving helpers moved to `~/ui/roving` (`useRovingRadio`, `useControllable`).
 
@@ -36,11 +73,11 @@ popover below) · `tag` (`what`: price · priceStock · order · data; `onColor`
 
 **Grounds** — `Niche`: 1:1 by default, `kind` hardware | wide | box | card | used (`data-kind`), `size="sm"` (64–120px
 wells: cart lines, summaries — use it instead of `rounded-md`), `fav` and `note` slots, `state="out"`. `Stage
-size="pdp"` (default): straight, no tilt, no halo, a count chip and a tools slot; `StageTag` renders nothing (retired).
+size="pdp"` (default): straight, no tilt, no halo, a count chip and a tools slot; the 1.0 `StageTag` is deleted.
 `Render` ignores the 1.0 `pose`/`shadow`.
 
-**Platforms** — `PlatformLed` is an 8px dot (`.led`); `PlatformLabel` = dot + name; `PlatformGlyph` returns null (no
-logos). **Glass** is for bars and sheet heads only (`variant="live"`); `static` is retired.
+**Platforms** — `PlatformLed` is an 8px dot (`.led`); `PlatformLabel` = dot + name; no pictograms (`PlatformGlyph` is
+deleted). **Glass** is for bars and sheet heads only (`variant="live"`); `static` is the admin's (1.0) until it moves.
 
 **Forms** — `Field` family: the error REPLACES the hint (one description), `aria-required` on required inputs.
 New: `OptionCard` (`pay` with a 72px `mark`, words not logos), `FormErrorSummary errors={[{ id, label }]}` (role=alert,
@@ -50,9 +87,9 @@ afternoon · evening, day cells only when the owner configured `days`; always «
 `Swatches` (colour dots or 56px thumbs; the chosen name printed above; `unavailable` crossed out). `Stepper`: no well,
 plain icon keys, the stock limit is hidden in demo mode.
 
-**Retired names (still exported, render the v2 look):** `Socket` (→ `IconKey` `cadd` / `CardAddButton`),
-`PlatformBank`, `StageTag`, `Stage size="hero" | "compact"`, `KeyBank kind="segment"`, Key `commit/clay/ink/quiet`,
-`Glass variant="static"`, `PlatformGlyph`. Migrate when you next touch the caller.
+**Retired names:** deleted in stage 4 — `Socket` (→ `CardAddButton`), `PlatformBank` (→ `PlatformTile`), `StageTag`,
+`PlatformGlyph`. Still exported for the admin's 1.0 look: Key `commit/clay/ink/quiet`, IconKey `quiet`,
+`Glass variant="static"`, `Stage size="hero" | "compact"`, `KeyBank kind="segment"`. Storefront code uses the v2 names.
 
 ---
 
@@ -200,15 +237,14 @@ say so). Delivery copy: `t("delivery", …)` around `<Price amountIqd={fee} size
 <Niche as={MotionLink} nav="zoom" to={`/p/${slug}`} aria-label={name} tag={<Tag kind="used" detail={grade} />}>
   <SharedElement name={`product-image:${id}`}><Render name={art} alt="" sizes="(min-width: 1200px) 200px, 45vw" /></SharedElement>
 </Niche>
-<Niche variant="panel" className="flex items-center gap-3 p-3"><Socket state="empty" inset />…</Niche>
+<Niche variant="panel" className="flex items-center gap-3 p-3">…</Niche>
 ```
 
-## Stage, StageTag, Render — `~/ui/Stage`
+## Stage, Render — `~/ui/Stage`
 
-`<Stage size="hero" | "product" | "compact" gel tag action top bottom flush>` — the lit stage (194→452, 318→520,
-132→160px). `gel` (`"nintendo" | "playstation" | "xbox" | "handheld" | "brand" | null`) cross-fades pre-painted light
-layers when it changes. `tag`/`action` hang off the rim (band below the stage); `top`/`bottom` sit inside (orbs,
-gallery). `<StageTag name priceIqd />` is the static-glass price tag.
+`<Stage size="pdp">` — see the v2 section at the top. 1.0: `<Stage size="hero" | "product" | "compact" gel tag action
+top bottom flush>` — the stage geometry (194→452, 318→520, 132→160px); `gel` is ignored in v2. `tag`/`action` hang off
+the rim (band below the stage); `top`/`bottom` sit inside. (The 1.0 static-glass price tag `StageTag` is deleted.)
 The band never cuts the commit key's label: the tag gives way first (its name keeps to one line of whole words and
 only its price must fit), a price of 1,000,000 or more steps down from 21 to 17px on a stage narrower than 24rem
 (`data-long`; a 390 phone keeps tag and key side by side), and only when the price and the key still do not fit
@@ -217,11 +253,11 @@ only its price must fit), a price of 1,000,000 or more steps down from 21 to 17p
 its slot, with a percentage contact shadow; a changed `name` inflates in (never on first paint). Only the LCP render
 gets `priority`.
 
-## PlatformLed, PlatformLabel, PlatformGlyph — `~/ui/PlatformLed`
+## PlatformLed, PlatformLabel — `~/ui/PlatformLed`
 
-`<PlatformLed platform? solid? on? />` (16×5; inherits the subtree's `data-gel` when `platform` is omitted),
-`<PlatformLabel platform label? glyph? />` (LED + name as text — default names from `ui:platform.*`),
-`<PlatformGlyph platform size? />` (neutral device pictogram). `PLATFORMS`, `isPlatform()`, types `Platform`, `Gel`.
+`<PlatformLed platform? />` (the 8px dot; inherits the subtree's `data-gel` when `platform` is omitted; 1.0 `solid`/`on`
+ignored), `<PlatformLabel platform label? />` (dot + name as text — default names from `ui:platform.*`).
+`PLATFORMS`, `isPlatform()`, types `Platform`, `Gel`.
 
 ## TextLink — `~/ui/TextLink`
 
@@ -238,13 +274,7 @@ tab or task bar — turns solid (`materials.css`), so the layer's own strip is t
 development `<Glass>` warns when more than two live panes are in the viewport (counted half a second after a live pane
 mounts: drawn, on screen, not behind an open layer); `liveGlassPanes(document)` lists them.
 
-## Socket — `~/ui/Socket`
-
-`<Socket name state="ready" | "added" | "empty" onAdd loading? disabled? inset? />` — the card's red key seated in a
-well; children replace the default add key. `useAddedFlash(ms = 1200)` → `[added, flash]`. `AddGlyph` is the
-bag-plus glyph for the commit key.
-
-## BidiText, BidiLabel, splitBidi — `~/ui/BidiText`
+## BidiText, BidiLabel, BidiValue, isolate, splitBidi — `~/ui/BidiText`
 
 Mixed scripts (DESIGN.md §5.5, §13). `<BidiText text>` takes a name or a sentence and returns inline nodes: a text
 without Arabic script is one `<bdi dir="ltr">`; inside Arabic or Sorani text each Latin NAME and each number is one

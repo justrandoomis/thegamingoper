@@ -23,10 +23,13 @@ import { TrustStrip } from "~/ui/TrustStrip";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
+import type { CartLineData } from "~/server/services/cart.server";
 import { cartShelves, cartTokenOf, emptyCartShelves, loadCartFacts, NO_STORE } from "./checkout.server";
+import { Adjustments, summaryCoupon, withFlash } from "./components/Adjustments";
 import { withOptionValue } from "./components/CheckoutSteps";
 import { CommitKey } from "./components/CommitKey";
 import { CouponForm, type CartWithIssue } from "./components/CouponForm";
+import { MoveToWishlist } from "./components/MoveToWishlist";
 import { RecommendationsSlot } from "./components/RecommendationsSlot";
 import "./checkout.css";
 
@@ -135,27 +138,33 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
             </div>
           ) : null}
           <ul className="co-lines" aria-label={t("cart.linesLabel")}>
-            {editor.rows.map((row) => (
-              <CartLineRow
-                // One key per line through removal: the row itself turns into its undo row, so the kit can move the
-                // focus from «إزالة» to «تراجع» (a new key would remount it and drop the focus to the page).
-                key={row.line.id}
-                line={withOptionValue(row.line)}
-                removed={row.removed}
-                busy={row.busy}
-                error={row.error}
-                onQtyChange={(qty) => editor.setQty(row.line.id, qty)}
-                onRemove={() => editor.remove(row.line.id)}
-                onRestore={() => editor.restore(row.line.id)}
-                onDismiss={() => editor.dismiss(row.line.id)}
-              />
-            ))}
+            {editor.rows.map((row) => {
+              const extra = row.line as Partial<CartLineData>;
+              return (
+                <CartLineRow
+                  // One key per line through removal: the row itself turns into its undo row, so the kit can move the
+                  // focus from «إزالة» to «تراجع» (a new key would remount it and drop the focus to the page).
+                  key={row.line.id}
+                  line={withFlash(withOptionValue(row.line), extra.flash, t, f)}
+                  removed={row.removed}
+                  busy={row.busy}
+                  error={row.error}
+                  onQtyChange={(qty) => editor.setQty(row.line.id, qty)}
+                  onRemove={() => editor.remove(row.line.id)}
+                  onRestore={() => editor.restore(row.line.id)}
+                  onDismiss={() => editor.dismiss(row.line.id)}
+                  // «نقل إلى المفضلة» (§4.13): the product to the favourites, the line out of the cart with its undo row
+                  actions={row.line.kind === "variant" && extra.productId ? <MoveToWishlist productId={extra.productId} name={row.line.name} onMoved={() => editor.remove(row.line.id)} /> : undefined}
+                />
+              );
+            })}
           </ul>
         </div>
 
         <aside className="co-aside" aria-label={t("cart.summaryLabel")}>
           <OrderSummary
             {...view}
+            coupon={summaryCoupon(view.discounts, view.coupon)}
             lines={null}
             count={view.count}
             shipping={facts.overridesEnabled ? "pending" : "flat"}
@@ -171,10 +180,14 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
             trust={<TrustStrip variant="line" cod={facts.cod} guest returnsTo="/policies/returns" />}
             demo={demo}
           >
-            <p className="flex items-start gap-2 type-xs text-ink-2">
-              <Icon name="truck" size={16} className="mt-0.5 shrink-0" />
-              <span>{note}</span>
-            </p>
+            <Adjustments discounts={view.discounts ?? []} waiver={view.shippingWaiver ?? null} />
+            {/* the store's fee sentence, unless this cart's delivery is waived (the line above says so and from what) */}
+            {view.shippingWaiver ? null : (
+              <p className="flex items-start gap-2 type-xs text-ink-2">
+                <Icon name="truck" size={16} className="mt-0.5 shrink-0" />
+                <span>{note}</span>
+              </p>
+            )}
           </OrderSummary>
         </aside>
 

@@ -129,3 +129,9 @@ confirm keys truncated at 390.
   orders with known costs and no `order:<id>:cogs` entry (the profit side of 23.06).
 - **Schema owner:** `consistency_findings.assigned_to`, `.incident_id` and an `incident_links` table (today: a task and
   audit events); `error_reports`/`perf_rollups` `is_demo`.
+
+## Module follow-up 2026-11-12
+
+`runJobNow`: a run in progress or a claim by hand whose run has not finished blocks another — checked inside the claim's batch. A wallet finding names its customer only to someone with a wallet permission (the id otherwise).
+
+Tests (each failed before its change): `tests/admin-ops-followup.test.ts`.

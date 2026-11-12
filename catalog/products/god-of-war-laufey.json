@@ -8,25 +8,20 @@
   "releaseDate": "2027-05-20",
   "name": { "ar": "God of War Laufey", "en": "God of War Laufey", "ckb": "God of War Laufey" },
   "short": {
-    "ar": "حصرية PS5 · طلب مسبق · تصدر 20 أيار 2027",
-    "en": "PS5 exclusive · pre-order · out 20 May 2027",
-    "ckb": "تایبەت بە PS5 · داواکاری پێشوەخت · 20ی ئایاری 2027 دەردەچێت"
+    "ar": "حصرية PS5 · قريباً · تصدر 20 أيار 2027",
+    "en": "PS5 exclusive · coming soon · out 20 May 2027",
+    "ckb": "تایبەت بە PS5 · بەم زووانە · 20ی ئایاری 2027 دەردەچێت"
   },
   "description": {
-    "ar": "الجزء الجديد من سلسلة God of War من Santa Monica Studio، وبطلته Laufey (Faye)، زوجة Kratos وأم Atreus. بعد موتها تستيقظ Faye في Everywhen، عالم ما بعد الموت للآلهة، وتقاتل آلهة من أساطير مختلفة لتعود وتحمي عائلتها. اللعبة حصرية لـ PS5، وتأجل موعدها إلى 20 أيار 2027 والطلبات المسبقة مفتوحة.",
-    "en": "The new God of War game from Santa Monica Studio, starring Laufey (Faye), wife of Kratos and mother of Atreus. After her death, Faye wakes up in the Everywhen, the afterlife of the gods, and fights gods from many mythologies to find her way home and protect her family. It is a PS5 exclusive, now set for 20 May 2027, with pre-orders open.",
-    "ckb": "بەشی نوێی زنجیرەی God of War لە Santa Monica Studio، کە پاڵەوانەکەی Laufey (Faye) ە، هاوسەری Kratos و دایکی Atreus. دوای مردنی، Faye لە Everywhen، جیهانی دوای مردنی خواوەندەکان، بەئاگا دێتەوە و لەگەڵ خواوەندانی ئەفسانە جیاوازەکان دەجەنگێت بۆ گەڕانەوە و پاراستنی خێزانەکەی. یارییەکە تایبەتە بە PS5، بەروارەکەی دواخراوە بۆ 20ی ئایاری 2027 و داواکاری پێشوەخت کراوەیە."
+    "ar": "الجزء الجديد من سلسلة God of War من Santa Monica Studio، وبطلته Laufey (Faye)، زوجة Kratos وأم Atreus. بعد موتها تستيقظ Faye في Everywhen، عالم ما بعد الموت للآلهة، وتقاتل آلهة من أساطير مختلفة لتعود وتحمي عائلتها. اللعبة حصرية لـ PS5، وتأجل موعدها إلى 20 أيار 2027. الطلب يفتح عند وصولها إلى المتجر.",
+    "en": "The new God of War game from Santa Monica Studio, starring Laufey (Faye), wife of Kratos and mother of Atreus. After her death, Faye wakes up in the Everywhen, the afterlife of the gods, and fights gods from many mythologies to find her way home and protect her family. It is a PS5 exclusive, now set for 20 May 2027. Orders open when it arrives in the store.",
+    "ckb": "بەشی نوێی زنجیرەی God of War لە Santa Monica Studio، کە پاڵەوانەکەی Laufey (Faye) ە، هاوسەری Kratos و دایکی Atreus. دوای مردنی، Faye لە Everywhen، جیهانی دوای مردنی خواوەندەکان، بەئاگا دێتەوە و لەگەڵ خواوەندانی ئەفسانە جیاوازەکان دەجەنگێت بۆ گەڕانەوە و پاراستنی خێزانەکەی. یارییەکە تایبەتە بە PS5، بەروارەکەی دواخراوە بۆ 20ی ئایاری 2027. داواکردن کاتێک دەکرێتەوە کە دەگاتە فرۆشگاکە."
   },
   "highlights": [
     {
-      "ar": "حصرية لـ PS5، والطلب المسبق مفتوح للصدور في 20 أيار 2027.",
-      "en": "PS5 exclusive, open for pre-order ahead of 20 May 2027.",
-      "ckb": "تایبەت بە PS5، داواکاری پێشوەخت کراوەیە بۆ 20ی ئایاری 2027."
-    },
-    {
-      "ar": "مكافأة الطلب المسبق: درع Last Wish ومظهر Golden Leaves لـ Phranque وحزمة موارد (عبر كود).",
-      "en": "Pre-order bonus: Last Wish Armor Set, Phranque's Golden Leaves look and a resource pack (via code).",
-      "ckb": "دیاری داواکاری پێشوەخت: زرێی Last Wish، ڕووکاری Golden Leaves بۆ Phranque و بەستەی کەرەستە (بە کۆد)."
+      "ar": "حصرية لـ PS5، وتصدر في 20 أيار 2027. الطلب يفتح عند وصولها إلى المتجر.",
+      "en": "PS5 exclusive, out 20 May 2027. Orders open when it arrives in the store.",
+      "ckb": "تایبەت بە PS5، لە 20ی ئایاری 2027 دەردەچێت. داواکردن کاتێک دەکرێتەوە کە دەگاتە فرۆشگاکە."
     },
     {
       "ar": "قصة Faye تبدأ بعد وفاتها، في اللحظة التي تبدأ فيها أحداث God of War (2018).",
@@ -86,14 +81,14 @@
   "variants": [
     {
       "sku": "GOWL-PS5-STD",
-      "title": { "ar": "God of War Laufey لجهاز PS5 — Standard Edition (طلب مسبق)", "en": "God of War Laufey for PS5 — Standard Edition (pre-order)", "ckb": "God of War Laufey بۆ PS5 — Standard Edition (داواکاری پێشوەخت)" },
+      "title": { "ar": "God of War Laufey لجهاز PS5 — Standard Edition", "en": "God of War Laufey for PS5 — Standard Edition", "ckb": "God of War Laufey بۆ PS5 — Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["god-of-war-laufey--1", "god-of-war-laufey--2", "god-of-war-laufey--3", "god-of-war-laufey--4"],
       "notes": {
-        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص. مكافأة الطلب المسبق تأتي ككود وتحتاج إنترنت وحساب PlayStation.",
-        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs. The pre-order bonus comes as a code and needs internet and a PlayStation account.",
-        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە. دیاری داواکاری پێشوەخت وەک کۆد دێت و ئینتەرنێت و هەژماری PlayStation ی پێویستە."
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
       }
     }
   ],
@@ -104,9 +99,9 @@
     ],
     "players": "1",
     "online": {
-      "ar": "لم تُعلن متطلبات اللعب أونلاين؛ مكافآت الطلب المسبق تحتاج إنترنت.",
-      "en": "Online requirements not announced; pre-order bonuses need internet.",
-      "ckb": "پێداویستییەکانی یاری ئۆنلاین ڕانەگەیەنراون؛ دیارییەکانی داواکاری پێشوەخت ئینتەرنێتیان پێویستە."
+      "ar": "لم تُعلن متطلبات اللعب أونلاين.",
+      "en": "Online requirements not announced.",
+      "ckb": "پێداویستییەکانی یاری ئۆنلاین ڕانەگەیەنراون."
     },
     "ageRating": { "pegi": 18 },
     "arabic": "unknown",

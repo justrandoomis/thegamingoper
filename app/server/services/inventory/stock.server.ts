@@ -57,6 +57,8 @@ import {
   usedUnits,
   variantCosts,
   variants,
+  warranties,
+  SERIAL_SOURCES as SERIAL_SOURCE_LIST,
   type NewCostLayer,
   type NewSerial,
   type NewStockMovement,
@@ -970,6 +972,31 @@ export function releaseUsedUnitStatements(db: Db, input: { usedUnitId: string; n
       .update(usedUnits)
       .set({ status: "listed", updatedAt: now })
       .where(and(eq(usedUnits.id, usedUnitId), eq(usedUnits.status, "reserved"))),
+  ];
+}
+
+/**
+ * A unit the store SOLD comes back to the store as its own (since 2026-11-12 — module 13's trade-in payout buys it
+ * back; any other buy-back may use it): for the caller's batch, after the caller's own guards. The serial goes from
+ * "sold" to "in_stock" at `locationId` with its new source, cost [P] and note — guarded on still being sold and of this
+ * variant (SERIAL_CHANGED otherwise: nothing in the batch applies) —, its open order-line link is released (the old sale
+ * keeps its history; the unit can be sold again) and its active warranty ends (`void`, with the reason). It moves no
+ * stock level: a bought-back unit becomes a used unit (module 13's `used_units`), not new stock.
+ */
+export function releaseSoldSerialStatements(
+  db: Db,
+  input: { serialId: string; variantId: string; locationId: string; source: (typeof SERIAL_SOURCE_LIST)[number]; sourceRef: string; costIqd: number | null; notes: string | null; voidReason: string; now: number },
+): BatchStatement[] {
+  const serialId = assertId(input.serialId, "releaseSoldSerialStatements.serialId");
+  const now = assertTime(input.now, "releaseSoldSerialStatements.now");
+  return [
+    db
+      .update(serials)
+      .set({ status: "in_stock", locationId: input.locationId, source: input.source, sourceRef: input.sourceRef, costIqd: input.costIqd, notes: input.notes, updatedAt: now })
+      .where(and(eq(serials.id, serialId), eq(serials.status, "sold"), eq(serials.variantId, input.variantId))),
+    expectChanged(db, 1, { code: "SERIAL_CHANGED", detail: serialId }),
+    db.update(orderItemSerials).set({ releasedAt: now }).where(and(eq(orderItemSerials.serialId, serialId), sql`${orderItemSerials.releasedAt} IS NULL`)),
+    db.update(warranties).set({ status: "void", voidReason: input.voidReason }).where(and(eq(warranties.serialId, serialId), eq(warranties.status, "active"))),
   ];
 }
 

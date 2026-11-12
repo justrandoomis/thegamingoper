@@ -61,6 +61,52 @@ export function hasRtl(text: string): boolean {
   return RTL.test(text);
 }
 
+/**
+ * A clamped name (card titles, cart lines, release items) without Arabic script on a right-to-left page is laid out
+ * left to right — so its ellipsis cuts its logical end («Pokémon Legends: Z-A – Nintendo…», never «…art World») — and
+ * aligned to the page's start edge (`text-align: end` of a left-to-right line is the right edge). Spread the result on
+ * the name's element. Pure.
+ */
+export function latinName(name: string, page: "ltr" | "rtl"): { dir?: "ltr"; className?: string } {
+  return page === "rtl" && /\p{L}/u.test(name) && !hasRtl(name) ? { dir: "ltr", className: "text-end" } : {};
+}
+
+/** First-strong isolate (U+2068) and its end (U+2069). */
+export const FSI = "⁨";
+export const PDI = "⁩";
+
+/**
+ * A run isolated inside a plain string (a translated sentence): it takes the direction of its own first strong letter,
+ * so an amount keeps its figure first in every language — «التوصيل 5,000 د.ع» reads the figure, then «د.ع» (a
+ * left-to-right isolate, U+2066, would put «د.ع» first in Arabic). Names: «{name} في السلة».
+ */
+export function isolate(text: string): string {
+  return FSI + text + PDI;
+}
+
+/**
+ * A standalone signed number with its separators and an optional per-cent sign — "−2", "+3,000", "12.5%", "300" —
+ * never the digits of a name ("PS5", "Switch 2" keep theirs).
+ */
+const NUMBER_RUN = /(?<![\p{L}\p{M}\p{Nd}])[+\-−]?\p{Nd}[\p{Nd},.٫٬]*%?(?![\p{L}\p{M}\p{Nd}])/gu;
+
+/**
+ * A value cut into its standalone signed numbers (left-to-right parts) and what lies between them (plain parts, in
+ * the page's direction). Joining the parts gives the text back. Pure.
+ */
+export function splitNumbers(text: string): BidiPart[] {
+  const parts: BidiPart[] = [];
+  let last = 0;
+  for (const match of text.matchAll(NUMBER_RUN)) {
+    const index = match.index ?? 0;
+    if (index > last) parts.push({ text: text.slice(last, index), ltr: false });
+    parts.push({ text: match[0], ltr: true });
+    last = index + match[0].length;
+  }
+  if (last < text.length) parts.push({ text: text.slice(last), ltr: false });
+  return parts;
+}
+
 function canStart(chars: string[], i: number): boolean {
   const c = chars[i];
   if (isWord(c)) return true;
@@ -245,6 +291,38 @@ export function BidiText({ text }: { text: string }) {
         ),
       )}
     </>
+  );
+}
+
+/**
+ * A value — an impact row, a table cell, a summary figure ("−2 قطعة", "−445,000 د.ع", "300 ← 450", "+3,000"): each
+ * standalone signed number is one left-to-right run (its sign stays on its digits) and the rest keeps the page's
+ * direction, so on an Arabic page "300 ← 450" reads from the right — 300, then the arrow on to 450. (A bare <bdi> lays
+ * a value of numbers only out left to right, its digits having no direction of their own, and the arrow points back
+ * at the old value.) Latin text without Arabic script stays one left-to-right isolate, like <BidiLabel>.
+ */
+export function BidiValue({ text, className }: { text: string; className?: string }) {
+  if (/\p{L}/u.test(text) && !hasRtl(text)) {
+    return (
+      <bdi dir="ltr" className={className}>
+        {text}
+      </bdi>
+    );
+  }
+  return (
+    <span className={cx("bidi", className)}>
+      {splitNumbers(text).map((part, index) =>
+        part.ltr ? (
+          <bdi key={index} dir="ltr">
+            {part.text}
+          </bdi>
+        ) : hasRtl(part.text) ? (
+          <BidiText key={index} text={part.text} />
+        ) : (
+          part.text
+        ),
+      )}
+    </span>
   );
 }
 

@@ -639,23 +639,38 @@ async function placeOnce(db: Db, actor: Actor, input: ParsedSale, keyHash: strin
       let need = part.qty * plan.input.qty;
       const pool = pools.get(part.variantId) ?? [];
       const allocations: { locationId: string; qty: number; oversell: boolean }[] = [];
-      // Serial-tracked units leave from where their scanned serials are (when that location has them free), so each
-      // location's count keeps matching the serials on it (review 2026-11-11: a unit scanned from a shelf used to come
-      // off the store's own count when that had more free units). The rest comes from the pool below.
+      // Serial-tracked units leave from where their scanned serials are, so each location's count keeps matching the
+      // serials on it (review 2026-11-11: a unit scanned from a shelf used to come off the store's own count when that
+      // had more free units). ONLY from there (follow-up 2026-11-12): when the serial's shelf has no free unit — all
+      // promised to web orders — taking the count from another location left the shelf counting a unit that is gone
+      // and the other one missing a unit that is still there. Such a unit is held: refused like any held stock
+      // (insufficient_stock), or sold as an authorised oversell FROM ITS SHELF. A serial in a location the till does
+      // not sell from (inactive, not sellable) has no count here at all: serial_not_available.
       if (part.tracked) {
-        const where = new Map<string, number>();
+        const where = new Map<string, { count: number; serialId: string }>();
         for (const id of plan.serialIds) {
           const serial = serialOf.get(id);
-          if (serial?.variantId === part.variantId && serial.locationId) where.set(serial.locationId, (where.get(serial.locationId) ?? 0) + 1);
+          if (serial?.variantId === part.variantId && serial.locationId) where.set(serial.locationId, { count: (where.get(serial.locationId)?.count ?? 0) + 1, serialId: id });
         }
-        for (const [locationId, count] of where) {
+        for (const [locationId, { count, serialId }] of where) {
           const slot = pool.find((entry) => entry.locationId === locationId);
-          const take = slot ? Math.min(slot.free, count, need) : 0;
-          if (!slot || take <= 0) continue;
-          slot.free -= take;
-          slot.take += take;
-          need -= take;
-          allocations.push({ locationId, qty: take, oversell: false });
+          if (!slot) throw new AppError("serial_not_available", 409, { detail: serialId, fields: { [`lines.${plan.index}.serialIds`]: "serial_not_available" } });
+          const units = Math.min(count, need);
+          const take = Math.min(slot.free, units);
+          if (take > 0) {
+            slot.free -= take;
+            slot.take += take;
+            need -= take;
+            allocations.push({ locationId, qty: take, oversell: false });
+          }
+          const held = units - take;
+          if (held > 0) {
+            if (!input.allowOversell || slot.onHand - slot.take < held) throw new AppError("insufficient_stock", 409, { detail: plan.variantId, fields: { [`lines.${plan.index}.qty`]: "insufficient_stock" } });
+            slot.take += held;
+            need -= held;
+            oversoldUnits += held;
+            allocations.push({ locationId, qty: held, oversell: true });
+          }
         }
       }
       for (const slot of pool) {

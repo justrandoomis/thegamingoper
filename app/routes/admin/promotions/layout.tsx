@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router";
 
 import type { Route } from "./+types/layout";
 import { countDecidable } from "~/server/services/admin/promotions/approvals.server";
+import { programRules } from "~/server/services/admin/promotions/program.server";
 import { PROMOTIONS_PERMISSIONS, promotionsAccess } from "~/server/services/admin/promotions/shared.server";
 import { Tabs } from "~/ui/Tabs";
 import { openPromotions, promotionsI18n } from "./promotions.server";
@@ -18,7 +19,9 @@ import "./promotions.css";
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const { db, actor, locale } = await openPromotions(context, PROMOTIONS_PERMISSIONS);
-  return { i18n: promotionsI18n(locale), access: promotionsAccess(actor), decide: await countDecidable(db, actor) };
+  // the programme rules in force (the settings promotions.* — follow-up 2026-11-12) for every page's words
+  const [decide, program] = await Promise.all([countDecidable(db, actor), programRules(db)]);
+  return { i18n: promotionsI18n(locale), access: promotionsAccess(actor), decide, program };
 }
 
 const SECTIONS = [

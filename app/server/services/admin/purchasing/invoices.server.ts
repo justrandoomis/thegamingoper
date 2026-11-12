@@ -379,7 +379,11 @@ export async function listInvoices(db: Db, actor: Actor, filters: InvoiceFilters
     const like = likePattern(filters.q);
     base.push(sql`(i.invoice_no LIKE ${like} ESCAPE '\\' OR s.name LIKE ${like} ESCAPE '\\' OR s.code LIKE ${like} ESCAPE '\\' OR coalesce(po.ref, '') LIKE ${like} ESCAPE '\\')`);
   }
-  const statusCondition = (status: InvoiceFilter) => (status === "all" ? sql`1 = 1` : status === "open" ? sql`i.status IN ('matched', 'mismatch')` : sql`i.status = ${status}`);
+  // "to_accept": the mismatches this employee may accept — never one they recorded (approveInvoice: approver_is_requester);
+  // what the bell and the purchasing home count (purchasingQueueCounts.mismatch), so the card opens exactly its rows
+  const me = actorId(actor) ?? "";
+  const statusCondition = (status: InvoiceFilter) =>
+    status === "all" ? sql`1 = 1` : status === "open" ? sql`i.status IN ('matched', 'mismatch')` : status === "to_accept" ? sql`i.status = 'mismatch' AND coalesce(i.created_by, '') <> ${me}` : sql`i.status = ${status}`;
   const from = sql`supplier_invoices AS i JOIN suppliers AS s ON s.id = i.supplier_id LEFT JOIN purchase_orders AS po ON po.id = i.po_id`;
   const countRows = await Promise.all(
     INVOICE_FILTERS.map(async (status) => {

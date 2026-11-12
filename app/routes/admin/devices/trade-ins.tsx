@@ -143,7 +143,8 @@ export default function TradeInsPage({ loaderData }: Route.ComponentProps) {
           {t("tradeIns.title")}
         </h2>
         <nav aria-label={t("list.viewsLabel")} className="flex flex-wrap gap-2">
-          {TRADE_IN_VIEWS.map((view) => {
+          {/* "to pay" is a person's own queue: only for those who confirm wipes or pay out */}
+          {TRADE_IN_VIEWS.filter((view) => view !== "to_pay" || layout?.access?.tradePayout || layout?.access?.verify || filters.view === "to_pay").map((view) => {
             const active = filters.view === view && !filtered;
             return (
               <Key key={view} as={Link} to={`/admin/devices/trade-ins${tradeInSearch({ view })}`} size="sm" held={active} aria-current={active ? "true" : undefined}>

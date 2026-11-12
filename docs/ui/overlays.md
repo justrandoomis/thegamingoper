@@ -1,5 +1,23 @@
 # Overlays, navigation and states — props and examples
 
+## Polish round (2026-11-12)
+
+- **Rail** — keyboard focus on a card that is partly hidden brings it to the rail's start (a snap point; pointer focus
+  never scrolls); the rail's own focus ring is drawn inside its edges. **Tabs** keep the current tab in view (first
+  paint, change, fonts loaded, resize) and bring a focused tab into view — the row only, never the page.
+- **ProgressSteps** — every step a 44px target (the compact rail's done links too); the current step's words wrap
+  between words rather than being cut; more than three steps on a phone fit 320–390px in every language (smaller joins
+  and gaps, items never narrower than their content, 32px discs under 360px with 44px hit areas).
+  `variant="status"`: where an order IS — labels under the discs, the current step in ink (an ink disc with a paper
+  core), done = a check, upcoming = a ring, no links (`current` past the last step = all done).
+- **Menu** — `lang` on any row (a language's name in its own script and direction); `hint` on a radio or checkbox row is
+  a second line that explains it (`aria-describedby`). Action and link rows keep their end hint (count, shortcut).
+- **ConfirmDialog** — a string impact value goes through `<BidiValue>`: "12 ← 13" reads from the right on an Arabic
+  page, a sign stays on its digits.
+- **Toast** — never printed (`print:hidden` on the region). **OfflineBanner** — graphite with white words, unlike the
+  amber demo strip.
+- **Segmented** (links) — scrolls when its words do not fit, the current segment in view; `current="true"`.
+
 ## Design System v2 (2026-11-11) — read this first
 
 Where a section further down disagrees with this one, **this one wins**. Live: `/design-system#overlays`.

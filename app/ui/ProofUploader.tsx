@@ -2,6 +2,7 @@ import { useEffect, useId, useReducer, useRef, useState, type CSSProperties, typ
 
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
+import { isolate } from "./BidiText";
 import { cx } from "./cx";
 import { Key } from "./Key";
 import { Status } from "./Tag";
@@ -146,6 +147,11 @@ export type ProofUploaderProps = {
   onUploaded?: (result: Extract<ProofUploadResult, { ok: true }>) => void;
   /** Default "ارفع صورة الحوالة" (the trade-in wizard passes its own). */
   title?: ReactNode;
+  /**
+   * The upload is the view's one forward action (an order waiting for its transfer photo): «اختر صورة» — and «أكمل
+   * الرفع» / «أعد المحاولة» when a send stopped — is the red primary. Default: secondary keys.
+   */
+  primary?: boolean;
   maxBytes?: number;
   disabled?: boolean;
   /** Start in a given state — previews and the /design-system page show every state this way. */
@@ -153,7 +159,7 @@ export type ProofUploaderProps = {
   className?: string;
 };
 
-export function ProofUploader({ onUpload, status = null, current = null, onUploaded, title, maxBytes = PROOF_MAX_BYTES, disabled = false, defaultState, className }: ProofUploaderProps) {
+export function ProofUploader({ onUpload, status = null, current = null, onUploaded, title, primary = false, maxBytes = PROOF_MAX_BYTES, disabled = false, defaultState, className }: ProofUploaderProps) {
   const t = useT("ui-shop");
   const f = useFormat();
   const [state, dispatch] = useReducer(proofReducer, defaultState ?? PROOF_IDLE);
@@ -295,10 +301,12 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
     );
   }
 
-  const keys = (primary: "choose" | "replace" | "another") => (
+  // `lead`: this key is the step forward here (the first photo, or another one when nothing can be retried); replacing
+  // a photo that was sent is not
+  const keys = (kind: "choose" | "replace" | "another", lead = kind === "choose") => (
     <div className="flex flex-wrap items-center gap-2">
-      <Key size="sm" icon={primary === "replace" ? "arrow-counter-clockwise" : "image"} onClick={choose} disabled={disabled}>
-        {t(primary === "replace" ? "proof.replace" : primary === "another" ? "proof.chooseAnother" : "proof.choose")}
+      <Key size="sm" variant={primary && lead ? "primary" : "secondary"} icon={kind === "replace" ? "arrow-counter-clockwise" : "image"} onClick={choose} disabled={disabled}>
+        {t(kind === "replace" ? "proof.replace" : kind === "another" ? "proof.chooseAnother" : "proof.choose")}
       </Key>
       <Key size="sm" icon="camera" onClick={shoot} disabled={disabled} className="hidden pointer-coarse:inline-flex">
         {t("proof.camera")}
@@ -313,7 +321,7 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
       body = (
         <div className="grid gap-2">
           <p className="flex items-baseline justify-between gap-3 type-sm text-ink">
-            <span className="min-w-0 truncate">{t("proof.uploading", { name: "⁨" + state.file.name + "⁩" })}</span>
+            <span className="min-w-0 truncate">{t("proof.uploading", { name: isolate(state.file.name) })}</span>
             <bdi className="nums shrink-0 font-semibold">{pct(state.progress)}</bdi>
           </p>
           <div role="progressbar" aria-label={t("proof.progress")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} className="proof__bar">
@@ -337,7 +345,7 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
             </span>
           </p>
           <div className="flex flex-wrap items-center gap-2">
-            <Key size="sm" variant="ink" icon="arrow-counter-clockwise" onClick={again}>
+            <Key size="sm" variant={primary ? "primary" : "secondary"} icon="arrow-counter-clockwise" onClick={again}>
               {t("proof.resume")}
             </Key>
             <TextLink as="button" type="button" arrow={false} onClick={choose}>
@@ -356,11 +364,11 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
           </p>
           <div className="flex flex-wrap items-center gap-2">
             {state.retry ? (
-              <Key size="sm" variant="ink" icon="arrow-counter-clockwise" onClick={again}>
+              <Key size="sm" variant={primary ? "primary" : "secondary"} icon="arrow-counter-clockwise" onClick={again}>
                 {t("proof.retry")}
               </Key>
             ) : null}
-            {keys("another")}
+            {keys("another", !state.retry)}
           </div>
         </div>
       );
@@ -399,7 +407,7 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
           ) : state.phase === "idle" && state.cancelled ? (
             <p className="type-xs text-ink-2">{t("proof.cancelled")}</p>
           ) : null}
-          <div className="mt-1">{keys(problem ? "another" : "choose")}</div>
+          <div className="mt-1">{keys(problem ? "another" : "choose", true)}</div>
         </div>
       );
     }

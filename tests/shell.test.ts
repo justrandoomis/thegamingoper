@@ -7,11 +7,15 @@
  *   · the checkout bar's step rail from `?step=`;
  *   · what a platform's mega menu lists (the cross-platform games category leaves navigation, five links at most);
  *   · what a search suggestion points at; the categories sheet's departments; which error panel a failure gets
- *     (offline is never a 500);
+ *     (offline is never a 500 — and the panel's offline words are the root boundary's `errors.offline`);
+ *   · what the offline banner says (form wording on checkout, task flows and /account; the cart elsewhere);
+ *   · the product 404: the slug's words, and the platform they name;
  *   · the footer links every policy page the content area publishes.
  */
 import { describe, expect, it } from "vitest";
-import { switchLocalePath } from "~/lib/locales";
+import errorMessages from "~/i18n/messages/errors";
+import shellMessages from "~/i18n/messages/shell";
+import { LOCALE_CODES, switchLocalePath } from "~/lib/locales";
 import { POLICY_SLUGS } from "~/routes/storefront/content/content-model";
 import {
   backFallback,
@@ -23,6 +27,8 @@ import {
   MEGA_LINKS,
   megaFeature,
   megaPlan,
+  missingProduct,
+  platformForQuery,
   sheetCategories,
   shellChrome,
   suggestionKind,
@@ -95,7 +101,8 @@ describe("shellChrome — the shell a page asks for", () => {
   const declaredCheckout = { id: "routes/storefront/checkout/checkout", handle: { shell: { chrome: "checkout" } } };
   const tradeIn = { id: "routes/storefront/used/trade-in", handle: { shell: { chrome: "task" }, nav: "push" } };
   const page = { id: "routes/storefront/support/help", handle: { nav: "push" } };
-  const store = { chrome: "store", tabBar: true, task: false, back: null };
+  // `offline`: the offline banner's words (added 2026-11-12 — every expectation below names them on purpose)
+  const store = { chrome: "store", tabBar: true, task: false, back: null, offline: "store" };
 
   it("store pages: the tab bar, no task header", () => {
     expect(shellChrome([root, layout, page])).toEqual(store);
@@ -104,13 +111,13 @@ describe("shellChrome — the shell a page asks for", () => {
   });
 
   it("a page with its own task bar keeps the drawn tab bar (it gives way by CSS, so an empty cart keeps it) and gets the task header", () => {
-    expect(shellChrome([root, layout, product])).toEqual({ chrome: "store", tabBar: true, task: true, back: null });
-    expect(shellChrome([root, layout, cart], { path: "/cart" })).toEqual({ chrome: "store", tabBar: true, task: true, back: null });
+    expect(shellChrome([root, layout, product])).toEqual({ chrome: "store", tabBar: true, task: true, back: null, offline: "store" });
+    expect(shellChrome([root, layout, cart], { path: "/cart" })).toEqual({ chrome: "store", tabBar: true, task: true, back: null, offline: "store" });
   });
 
   it("checkout: one bar, no tab bar, no task header — from its handle, and on /checkout before the handle says so", () => {
-    expect(shellChrome([root, layout, declaredCheckout])).toEqual({ chrome: "checkout", tabBar: false, task: false, back: null });
-    expect(shellChrome([root, layout, checkout], { path: "/checkout" })).toEqual({ chrome: "checkout", tabBar: false, task: false, back: "/cart" });
+    expect(shellChrome([root, layout, declaredCheckout])).toEqual({ chrome: "checkout", tabBar: false, task: false, back: null, offline: "form" });
+    expect(shellChrome([root, layout, checkout], { path: "/checkout" })).toEqual({ chrome: "checkout", tabBar: false, task: false, back: "/cart", offline: "form" });
     expect(shellChrome([root, layout, checkout], { path: "/checkout/" })).toMatchObject({ chrome: "checkout" });
     // the cart and the order page are store pages
     expect(shellChrome([root, layout, cart], { path: "/cart" }).chrome).toBe("store");
@@ -119,7 +126,25 @@ describe("shellChrome — the shell a page asks for", () => {
   });
 
   it("task flows: the store header (task header after scroll), no tab bar", () => {
-    expect(shellChrome([root, layout, tradeIn], { path: "/trade-in" })).toEqual({ chrome: "task", tabBar: false, task: true, back: null });
+    expect(shellChrome([root, layout, tradeIn], { path: "/trade-in" })).toEqual({ chrome: "task", tabBar: false, task: true, back: null, offline: "form" });
+  });
+
+  it("the offline banner keeps its word to forms: checkout, task flows and /account say what was typed stays; elsewhere the cart", () => {
+    const login = { id: "routes/storefront/account/login", handle: undefined };
+    const orders = { id: "routes/storefront/account/orders", handle: undefined };
+    expect(shellChrome([root, layout, login], { path: "/account/login" }).offline).toBe("form");
+    expect(shellChrome([root, layout, orders], { path: "/account/orders" }).offline).toBe("form");
+    expect(shellChrome([root, layout, orders], { path: "/account" }).offline).toBe("form");
+    expect(shellChrome([root, layout, page], { path: "/accounts" }).offline).toBe("store");
+    expect(shellChrome([root, layout, page], { path: "/wishlist" }).offline).toBe("store");
+    expect(shellChrome([root, layout, product], { path: "/p/nintendo-switch-2" }).offline).toBe("store");
+    // a page says so itself: a store page built around a form, or an account page with nothing to type
+    expect(shellChrome([root, layout, { id: "x", handle: { shell: { offline: "form" } } }], { path: "/track" }).offline).toBe("form");
+    expect(shellChrome([root, layout, { id: "x", handle: { shell: { offline: "store" } } }], { path: "/account/warranties" }).offline).toBe("store");
+    expect(shellChrome([root, layout, { id: "x", handle: { shell: { offline: "loud" } } }], { path: "/support" }).offline).toBe("store");
+    // an error page has no form on screen
+    expect(shellChrome([root, layout, login], { errored: true, path: "/account/login" }).offline).toBe("store");
+    expect(shellChrome([root, layout, checkout], { errored: true, path: "/checkout" }).offline).toBe("store");
   });
 
   it("ignores the failed page's handle on the error page (an unknown product URL gets the store shell and its tab bar)", () => {
@@ -305,9 +330,90 @@ describe("errorKind — which error panel a failure gets", () => {
     expect(isNetworkFailure(new TypeError("NetworkError when attempting to fetch resource."))).toBe(true);
     expect(isNetworkFailure(new TypeError("Load failed"))).toBe(true);
     expect(isNetworkFailure(new TypeError("x is not a function"))).toBe(false);
-    expect(errorKind(new TypeError("Failed to fetch"), true).kind).toBe("offline");
-    expect(errorKind(new Error("boom"), false).kind).toBe("offline");
-    expect(errorKind(new Error("boom"), true)).toEqual({ status: 500, kind: "error" });
+    // in the browser (the third argument; these tests run in Node, where it defaults to false)
+    expect(errorKind(new TypeError("Failed to fetch"), true, true).kind).toBe("offline");
+    expect(errorKind(new Error("boom"), false, true).kind).toBe("offline");
+    expect(errorKind(new Error("boom"), true, true)).toEqual({ status: 500, kind: "error" });
+  });
+
+  it("on the server a fetch TypeError is the store's own failure (an upstream it called), as in the root boundary", () => {
+    expect(errorKind(new TypeError("fetch failed"), true, false)).toEqual({ status: 500, kind: "error" });
+    expect(errorKind(new TypeError("Failed to fetch"), true)).toEqual({ status: 500, kind: "error" });
+    // Node's own words for a failed server-side fetch reach the browser in development: still the store's failure
+    expect(isNetworkFailure(new TypeError("fetch failed"))).toBe(false);
+    expect(errorKind(new TypeError("fetch failed"), true, true)).toEqual({ status: 500, kind: "error" });
+    expect(isNetworkFailure(new TypeError("Failed to fetch dynamically imported module: /app/x.tsx"))).toBe(true);
+    expect(isNetworkFailure(new TypeError("The network connection was lost."))).toBe(true);
+  });
+
+  it("the offline panel says the root boundary's sentence word for word (errors.offline), in every language", () => {
+    for (const locale of LOCALE_CODES) {
+      const error = shellMessages[locale].error as Record<string, string>;
+      const errors = errorMessages[locale].errors as Record<string, string>;
+      expect(`${error.offlineTitle}. ${error.offlineText}`, locale).toBe(errors.offline);
+    }
+  });
+});
+
+describe("shell copy (v2 §9)", () => {
+  it("names the payable amount «الإجمالي», never «المجموع», when the total changed under the shopper", () => {
+    const ar = errorMessages.ar.errors as Record<string, string>;
+    expect(ar.totals_changed).toContain("الإجمالي");
+    expect(ar.totals_changed).not.toContain("المجموع");
+  });
+
+  it("gives the demo rate's source in the page's language (the seed stores one Arabic sentence)", () => {
+    const arabicScript = /[؀-ۿ]/;
+    expect((shellMessages.en.currency as Record<string, string>).demoSource).not.toMatch(arabicScript);
+    expect((shellMessages.ckb.currency as Record<string, string>).demoSource).not.toBe((shellMessages.ar.currency as Record<string, string>).demoSource);
+  });
+});
+
+describe("missingProduct / platformForQuery — the product 404 (v2 §6.16)", () => {
+  const thrown = (status: number, data: unknown) => ({ status, statusText: "", internal: false, data });
+
+  it("reads the slug's words from the product page's 404, and nothing else", () => {
+    expect(missingProduct(thrown(404, { error: "not_found", what: "product", query: "god of war laufey" }))).toBe("god of war laufey");
+    expect(missingProduct(thrown(404, { error: "not_found", what: "product", query: "  ps5   pro  " }))).toBe("ps5 pro");
+    expect(missingProduct(thrown(404, { error: "not_found", what: "product" }))).toBe("");
+    expect(missingProduct(thrown(404, { error: "not_found" }))).toBeNull();
+    expect(missingProduct(thrown(404, null))).toBeNull();
+    expect(missingProduct(thrown(500, { what: "product", query: "x" }))).toBeNull();
+    expect(missingProduct(new Error("boom"))).toBeNull();
+  });
+
+  const NINTENDO: NavPlatform = {
+    ...PLATFORM,
+    id: "p2",
+    slug: "nintendo",
+    name: "نينتندو",
+    accent: "nintendo",
+    artKey: null,
+    href: "/platform/nintendo",
+    devices: [{ label: "Nintendo Switch 2", href: "/device/nintendo-switch-2" }],
+    consoles: [{ label: "Nintendo Switch 2", href: "/p/nintendo-switch-2" }],
+  };
+  const HANDHELD: NavPlatform = {
+    ...PLATFORM,
+    id: "p3",
+    slug: "handheld",
+    name: "الأجهزة المحمولة",
+    accent: "handheld",
+    artKey: null,
+    href: "/platform/handheld",
+    devices: [{ label: "Steam Deck OLED", href: "/device/steam-deck-oled" }],
+    consoles: [],
+  };
+  const platforms = [NINTENDO, PLATFORM, HANDHELD];
+
+  it("names the platform by its slug, a device hub or a console — whole words only", () => {
+    expect(platformForQuery("playstation 5 pro limited", platforms)?.slug).toBe("playstation");
+    expect(platformForQuery("ps5 pro 2tb", platforms)?.slug).toBe("playstation");
+    expect(platformForQuery("nintendo switch 2 mario kart bundle", platforms)?.slug).toBe("nintendo");
+    expect(platformForQuery("Steam Deck OLED 1TB", platforms)?.slug).toBe("handheld");
+    expect(platformForQuery("god of war laufey", platforms)).toBeNull();
+    expect(platformForQuery("xps5 cable", platforms)).toBeNull();
+    expect(platformForQuery("", platforms)).toBeNull();
   });
 });
 

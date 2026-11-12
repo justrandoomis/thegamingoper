@@ -6,7 +6,7 @@ import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { getCustomerProfile } from "~/server/services/admin/customers/profile.server";
-import { FLAG_RULES, ORDER_STATUS_TONE, RFM_RULES, type CustomerAccess, type CustomerProfile } from "~/server/services/admin/customers/types";
+import { ORDER_STATUS_TONE, type CustomerAccess, type CustomerProfile } from "~/server/services/admin/customers/types";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
@@ -124,9 +124,9 @@ function RfmSection({ profile }: Props) {
   const { rfm } = profile;
   const stored = profile.header.segment;
   const bounds = {
-    r: RFM_RULES.recencyDays.map((days) => f.number(days)).join(" / "),
-    f: RFM_RULES.frequency.map((n) => f.number(n)).join(" / "),
-    m: RFM_RULES.monetaryIqd.map((iqd) => f.iqd(iqd)).join(" / "),
+    r: profile.rules.rfm.recencyDays.map((days) => f.number(days)).join(" / "),
+    f: profile.rules.rfm.frequency.map((n) => f.number(n)).join(" / "),
+    m: profile.rules.rfm.monetaryIqd.map((iqd) => f.iqd(iqd)).join(" / "),
   };
   const rows = [
     { axis: "r", score: rfm.r, value: rfm.recencyDays === null ? t("rfm.noPurchase") : t("rfm.daysAgo", { count: rfm.recencyDays }), rule: t("rfm.rule.r", { bounds: bounds.r }) },
@@ -189,7 +189,7 @@ function LabelActions({ profile, access }: Props & { access: CustomerAccess }) {
       {access.update ? <VipButton profile={profile} /> : null}
       {access.block ? <FlagButton flagged={header.fraudFlag} /> : null}
       {access.block ? <BlockButton blocked={header.status === "blocked"} openOrders={profile.stats.openOrders} /> : null}
-      <span className="type-caption text-ink-2">{t("profile.flags.rulesNote", { days: FLAG_RULES.vipWindowDays })}</span>
+      <span className="type-caption text-ink-2">{t("profile.flags.rulesNote", { within: t("withinDays", { count: profile.rules.flags.vipWindowDays }) })}</span>
     </div>
   );
 }
@@ -423,7 +423,10 @@ function TicketsSection({ profile }: Props) {
             <li key={ticket.id} className="cus-row">
               <span className="grid min-w-0">
                 <span className="type-strong">
-                  <Ref value={ticket.ref} /> · {ticket.subject}
+                  <Link to={ticket.href} className="adm-link">
+                    <Ref value={ticket.ref} />
+                  </Link>{" "}
+                  · {ticket.subject}
                 </span>
                 <span className="type-caption text-ink-2">
                   <When at={ticket.createdAt} /> · {t(`ticketCategory.${ticket.category}`)}

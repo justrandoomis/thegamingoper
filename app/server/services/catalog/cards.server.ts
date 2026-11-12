@@ -28,11 +28,11 @@
  * HOW (one round trip per call, no N+1)
  *   Every card query is ONE SQL statement built from the linear CTE chain in cardCtes():
  *     [filter CTEs: plat (researched platforms), cat (category subtree), fb/fit (device model), hit (search)]
- *     cv    active variants of published products that pass the product-level filters, ranked so the card
- *           variant (default, else first by sort) is rn = 1, with free units, low-stock threshold and complete
- *           bundle sets read by indexed correlated subqueries
- *     vs    the stock state of each variant (0 out · 1 low · 2 in, exactly as getAvailability() decides it) and
- *           the best state per product (window)
+ *     cv    active variants of published products that pass the product-level filters, with free units, low-stock
+ *           threshold and complete bundle sets read by indexed correlated subqueries
+ *     vs    the stock state of each variant (0 out · 1 low · 2 in, exactly as getAvailability() decides it), the
+ *           best state per product, and the card variant as rn = 1 (CARD_VARIANT_ORDER_OF_CV: the first version on
+ *           sale — the default when it is —, else the default)
  *     c     one row per product: card variant price, state, preorder flag, the shopping tier, the previous-price
  *           evidence (was), the release facts
  *   then filters on c, sort + keyset cursor, LIMIT, and — only for the rows of the page — the first picture, the
@@ -124,6 +124,25 @@ const freeUnits = (variantId: SQL, alias: string): SQL => {
 };
 
 /**
+ * The stock state of one variant row of `cv` (0 out · 1 low · 2 in), exactly as getAvailability() decides it: a store
+ * set counts complete sets, anything else its free units against the low-stock threshold.
+ */
+export const VARIANT_STATE_OF_CV = sql`(CASE
+      WHEN cv.sets IS NOT NULL THEN (CASE WHEN cv.sets <= 0 THEN 0 WHEN cv.sets <= ${DEFAULT_LOW_STOCK} THEN 1 ELSE 2 END)
+      WHEN COALESCE(cv.free, 0) <= 0 THEN 0
+      WHEN cv.free <= cv.low THEN 1
+      ELSE 2
+    END)`;
+
+/**
+ * Which variant a product's card shows (rn = 1 in the window): the first version that can be bought now — the default
+ * one when it can, else the next by sort — and the default only when no version can (sold out, or coming soon). A card
+ * never prices a sold-out default while another version is on sale (the Steam Deck LCD: its default 256GB is sold out,
+ * the 512GB is not), and the product page opens on that same version (product/useVariant.ts).
+ */
+export const CARD_VARIANT_ORDER_OF_CV = sql`CASE WHEN ${VARIANT_STATE_OF_CV} > 0 THEN 0 ELSE 1 END, cv.is_default DESC, cv.sort ASC, cv.id ASC`;
+
+/**
  * The CTE chain shared by every card query (see the file header).
  *
  * D1 (workerd's SQLite) refuses a statement whose CTE references fan out too far ("VIEWs and/or subqueries nested
@@ -136,8 +155,7 @@ function cardCtes(scope: Scope, now: number): SQL {
   const extra = scope.ctes.length > 0 ? sql`${sql.join(scope.ctes, sql`,\n`)},\n` : sql``;
   return sql`WITH RECURSIVE
 ${extra}cv AS (
-  SELECT v.id, v.product_id, v.price_iqd, v.compare_at_iqd,
-    ROW_NUMBER() OVER (PARTITION BY v.product_id ORDER BY v.is_default DESC, v.sort ASC, v.id ASC) AS rn,
+  SELECT v.id, v.product_id, v.price_iqd, v.compare_at_iqd, v.is_default, v.sort,
     COUNT(*) OVER (PARTITION BY v.product_id) AS n,
     ${freeUnits(sql`v.id`, "f")} AS free,
     (SELECT CASE WHEN COUNT(ts.reorder_point) > 0 THEN SUM(ts.reorder_point) ELSE ${DEFAULT_LOW_STOCK} END
@@ -150,13 +168,9 @@ ${extra}cv AS (
   WHERE v.is_active = 1 AND p.status = 'published' AND ${andAll(scope.where)}
 ),
 vs AS (
-  SELECT cv.id, cv.product_id, cv.rn, cv.n, cv.price_iqd, cv.compare_at_iqd,
-    MAX(CASE
-      WHEN cv.sets IS NOT NULL THEN (CASE WHEN cv.sets <= 0 THEN 0 WHEN cv.sets <= ${DEFAULT_LOW_STOCK} THEN 1 ELSE 2 END)
-      WHEN COALESCE(cv.free, 0) <= 0 THEN 0
-      WHEN cv.free <= cv.low THEN 1
-      ELSE 2
-    END) OVER (PARTITION BY cv.product_id) AS best
+  SELECT cv.id, cv.product_id, cv.n, cv.price_iqd, cv.compare_at_iqd,
+    ROW_NUMBER() OVER (PARTITION BY cv.product_id ORDER BY ${CARD_VARIANT_ORDER_OF_CV}) AS rn,
+    MAX(${VARIANT_STATE_OF_CV}) OVER (PARTITION BY cv.product_id) AS best
   FROM cv
 ),
 c AS (

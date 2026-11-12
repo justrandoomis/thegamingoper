@@ -8,14 +8,16 @@ import { Niche } from "~/ui/Niche";
 import { SectionHead } from "~/ui/SectionHead";
 import { Render } from "~/ui/Stage";
 import { deviceIn, isolateName, researchDate } from "./format";
-import { revealInline } from "./reveal";
+import { revealInRow } from "~/ui/reveal";
 
 /** A link inside the scrolling table took focus: bring it fully into view, clear of the sticky first column. */
 function revealFocused(event: FocusEvent<HTMLDivElement>) {
   const region = event.currentTarget;
   if (event.target === region || !(event.target instanceof HTMLElement)) return;
   const sticky = region.querySelector("thead th")?.getBoundingClientRect().width ?? 0;
-  revealInline(region, event.target, { start: sticky });
+  // the sticky first column covers the row's start: it is the row's start padding for the kit's reveal
+  region.style.scrollPaddingInlineStart = `${Math.round(sticky)}px`;
+  revealInRow(region, event.target, "nearest");
 }
 
 /**

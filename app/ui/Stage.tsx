@@ -19,7 +19,7 @@ import type { Gel } from "./PlatformLed";
  *
  * 1.0 sizes keep their geometry until their areas move to ./Band (hero, hubs, the mega menu's featured tile): `hero`,
  * `product`, `compact` render the same neutral ground; `gel` is accepted and ignored; `tag` and `action` still hang
- * off the rim, but <StageTag> is retired and renders nothing (§4.2).
+ * off the rim. 1.0's glass price tag (`StageTag`) is gone (§4.2, stage 4): the price sits beside the action.
  */
 export type StageSize = "pdp" | /* 1.0 */ "hero" | "product" | "compact";
 
@@ -51,7 +51,11 @@ export function Stage({ size = "pdp", children, count, tools, tag, action, top, 
   if (size === "pdp") {
     return (
       <div className={cx("stage stage--pdp", className)} style={style}>
-        <div className="stage__slot render-slot">{children}</div>
+        {/* the object at 8% / 6% / 9% from the stage's edges (§4.14, §7.3): the catalogue's cut-outs carry about 5% of
+            transparent margin of their own, so the image box is inset 4% / 2% / 5% — the product then covers ≥60% of
+            the stage (52% for Switch 2 at 390 with the box at 8% / 6% / 9%). An opaque photo has no margin of its own
+            (and a plate in dark), so it keeps the box at 8% / 6% / 9%. */}
+        <div className="stage__slot render-slot inset-[4%_2%_5%] has-[img[data-transparent=false]]:inset-[8%_6%_9%]">{children}</div>
         {count ? <span className="stage__count">{count}</span> : null}
         {tools ? <div className="stage__tools">{tools}</div> : null}
       </div>
@@ -73,17 +77,6 @@ export function Stage({ size = "pdp", children, count, tools, tag, action, top, 
       ) : null}
     </div>
   );
-}
-
-export type StageTagProps = {
-  name: ReactNode;
-  priceIqd: number;
-  className?: string;
-};
-
-/** 1.0's glass price tag on the stage's rim — RETIRED (§4.2, §11.5): renders nothing. The price lives beside the action. */
-export function StageTag(_props: StageTagProps) {
-  return null;
 }
 
 export type RenderProps = {

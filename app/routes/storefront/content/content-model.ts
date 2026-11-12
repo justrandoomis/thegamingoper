@@ -28,6 +28,19 @@ export function aboutLinks(hasContact: boolean): AboutLink[] {
   return hasContact ? ["policies", "contact", "accessibility"] : ["policies", "accessibility"];
 }
 
+/**
+ * The language of a CMS text that came back in another language than the page's — the content module answers the
+ * page's language, else Arabic, else English (pick) — told from its letters: Arabic letters on an English page are the
+ * Arabic text; words with Latin letters and no Arabic ones on an Arabic or Sorani page are the English text. Null: the
+ * page's own (or nothing to tell by). For a short line with no language of its own (a landing page's description): its
+ * `lang` and `dir` (review 2026-11-12: the Arabic fallback read left-to-right on an English page). Pure.
+ */
+export function textLangOf(text: string, locale: Locale): Locale | null {
+  const arabicLetters = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/.test(text);
+  if (locale === "en") return arabicLetters ? "ar" : null;
+  return !arabicLetters && /[A-Za-z]/.test(text) ? "en" : null;
+}
+
 /** The store's policies, in the order the pages list them. The footer links the first five plus /policies/privacy and /policies/terms. */
 export const POLICY_SLUGS = ["shipping", "returns", "warranty", "payment", "privacy", "terms"] as const;
 export type PolicySlug = (typeof POLICY_SLUGS)[number];

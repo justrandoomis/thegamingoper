@@ -189,6 +189,7 @@
       "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-turquoise/110663-nintendo-switch-lite-turquoise-back-1200x675",
       "sourcePage": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-turquoise/",
       "kind": "angle",
+      "view": "back",
       "alt": { "ar": "الجهة الخلفية للجهاز الفيروزي", "en": "Back of the Turquoise model", "ckb": "پشتەوەی مۆدێلی فیرۆزەیی" },
       "credit": "Nintendo",
       "width": 1200, "height": 675, "transparent": false

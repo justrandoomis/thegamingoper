@@ -37,6 +37,7 @@ export async function action({ request, context }: Route.ActionArgs) {
         code: text(form, "code"),
         notes: text(form, "notes"),
         ownershipDeclared: form.get("ownershipDeclared") === "on" ? true : undefined,
+        accountConfirmed: form.get("accountConfirmed") === "on",
       },
       now,
       devicesStoreMode(),
@@ -92,6 +93,7 @@ export default function CounterTradeIn({ loaderData }: Route.ComponentProps) {
           </fieldset>
           <TextArea name="notes" label={t("counter.notes")} optional hint={t("counter.notesHint")} error={fields.notes} />
           <Checkbox name="ownershipDeclared" label={t("counter.ownership")} hint={t("counter.ownershipHint")} error={fields.ownershipDeclared} />
+          <Checkbox name="accountConfirmed" label={t("counter.account")} hint={t("counter.accountHint")} error={fields.accountConfirmed} />
           <Failure message={failure && !failure.fields ? failure.message : null} />
           <div className="dev-actions">
             <Key type="submit" variant="ink" icon="plus" loading={busy}>

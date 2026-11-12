@@ -15,11 +15,11 @@
  * limits keep counting) and reviews (unless the kept account reviewed the same product) move; its sessions end; it
  * becomes status "merged" with merged_into_id → the kept account, and can no longer sign in.
  *
- * What never moves:
- *   · the WALLET. Its ledger is append-only and a balance can only change through the wallet service — which has no
- *     transfer or debit (commerce core request). A duplicate that still holds money, a pending top-up or a pending
- *     adjustment is refused (merge_blocked: wallet_balance…), with a link to its wallet page; the duplicate's ledger
- *     stays readable under it. Loyalty points likewise (no writer exists yet).
+ * The WALLET's money moves too (since 2026-11-12): the commerce core's `walletTransferStatements` in the merge's batch
+ * — a debit row on the duplicate's append-only ledger, a credit row on the kept account's, the duplicate left at exactly
+ * 0 (re-checked in the batch: merge_plan_changed when money arrived meanwhile); the duplicate's ledger stays readable
+ * under it. What never moves:
+ *   · a pending top-up or a pending adjustment (merge_blocked, with a link to its wallet page) and loyalty points.
  *   · CONSENTS: never carried over as a grant. Per question, when the duplicate's newest answer is a withdrawal newer
  *     than the kept account's answer, a withdrawal is recorded on the kept account (source "merge").
  *   · the audit trail and the duplicate's own history.
@@ -42,6 +42,7 @@ import { auditEvents, customers, orderEvents, orders } from "~/server/db/schema"
 import { batchSql, chunkRows, expectChanged, expectThat, mapDbError, runBatch } from "~/server/db/tx.server";
 import { AppError } from "~/server/errors";
 import { consentStatement } from "~/server/services/account/preferences.server";
+import { walletTransferStatements } from "~/server/services/wallet.server";
 import { cleanBlock } from "~/server/text.server";
 import { customerById, employeeNames, ID, num, phoneView } from "./shared.server";
 import { CONSENT_KIND_LIST, MERGE_VERIFY_METHODS, type ConsentKindKey, type DuplicateReason, type PhoneView } from "./types";
@@ -215,7 +216,7 @@ async function buildPlan(db: Db, actor: Actor, keepId: string, mergeId: string):
     one(db, sql`SELECT count(*) AS n FROM wallet_topups WHERE customer_id = ${m}`),
     one(db, sql`SELECT count(*) AS n FROM consents WHERE subject_type = 'customer' AND subject_id = ${m}`),
     one(db, sql`SELECT count(*) AS n FROM wallet_topups WHERE customer_id = ${m} AND status = 'pending_verification'`),
-    one(db, sql`SELECT count(*) AS n FROM approvals WHERE kind = 'wallet_adjustment' AND entity_id = ${m} AND status = 'pending'`),
+    one(db, sql`SELECT count(*) AS n FROM approvals WHERE kind IN ('wallet_adjustment', 'wallet_payout') AND entity_id = ${m} AND status = 'pending'`),
     one(db, sql`SELECT coalesce(sum(points), 0) AS n FROM loyalty_ledger WHERE customer_id = ${m}`),
     one(db, sql`SELECT count(*) AS n FROM privacy_requests WHERE customer_id = ${m} AND status IN ('open', 'verifying', 'in_progress')`),
     one(db, sql`SELECT (SELECT count(*) FROM memberships WHERE customer_id = ${m}) + (SELECT count(*) FROM referral_codes WHERE customer_id = ${m}) AS n`),
@@ -228,7 +229,6 @@ async function buildPlan(db: Db, actor: Actor, keepId: string, mergeId: string):
   // a block or a fraud flag must not vanish with the account that carries it
   if (merge.status === "blocked" && keep.status !== "blocked") blockers.push({ code: "duplicate_blocked" });
   if (merge.fraudFlag && !keep.fraudFlag) blockers.push({ code: "duplicate_flagged" });
-  if (merge.walletIqd !== 0) blockers.push({ code: "wallet_balance", amount: merge.walletIqd });
   if (pendingTopups > 0) blockers.push({ code: "pending_topups", count: pendingTopups });
   if (pendingAdjustments > 0) blockers.push({ code: "pending_adjustments", count: pendingAdjustments });
   if (loyalty !== 0) blockers.push({ code: "loyalty_balance", amount: loyalty });
@@ -273,7 +273,8 @@ export const MergeInput = MergeRefInput.extend({
 });
 export type MergeInput = z.input<typeof MergeInput>;
 
-const MERGE_GUARDS: Record<string, string> = { MERGE_BLOCKED: "merge_blocked", MERGE_CHANGED: "merge_plan_changed" };
+// WALLET_DEMO_MISMATCH: the commerce core's walletTransferStatements never moves a demo account's money into a real one (review 2026-11-12)
+const MERGE_GUARDS: Record<string, string> = { MERGE_BLOCKED: "merge_blocked", MERGE_CHANGED: "merge_plan_changed", WALLET_DEMO_MISMATCH: "merge_blocked" };
 
 /** Folds the duplicate into the kept account in ONE batch (see the header). Idempotent: a repeat says `replayed`. */
 export async function mergeCustomers(db: Db, actor: Actor, raw: MergeInput, now: number): Promise<{ replayed: boolean; moved: MergeMoves | null }> {
@@ -296,9 +297,10 @@ export async function mergeCustomers(db: Db, actor: Actor, raw: MergeInput, now:
     expectThat(db, sql`NOT ((SELECT status FROM customers WHERE id = ${mergeId}) = 'blocked' AND (SELECT status FROM customers WHERE id = ${keepId}) <> 'blocked')`, { code: "MERGE_BLOCKED", detail: "duplicate_blocked" }),
     expectThat(db, sql`NOT ((SELECT fraud_flag FROM customers WHERE id = ${mergeId}) = 1 AND (SELECT fraud_flag FROM customers WHERE id = ${keepId}) = 0)`, { code: "MERGE_BLOCKED", detail: "duplicate_flagged" }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM memberships WHERE customer_id = ${mergeId}) AND NOT EXISTS (SELECT 1 FROM referral_codes WHERE customer_id = ${mergeId})`, { code: "MERGE_BLOCKED", detail: "growth_records" }),
-    expectThat(db, sql`(SELECT coalesce(sum(amount_iqd), 0) FROM wallet_ledger WHERE customer_id = ${mergeId}) = 0`, { code: "MERGE_BLOCKED", detail: "wallet_balance" }),
+    // the duplicate's wallet money moves to the kept account (commerce core), the duplicate left at exactly 0
+    ...walletTransferStatements(db, { transferId: `merge:${mergeId}`, fromCustomerId: mergeId, toCustomerId: keepId, amountIqd: plan.merge.walletIqd, reason: input.reason, actor, now, drain: { code: "MERGE_CHANGED" } }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM wallet_topups WHERE customer_id = ${mergeId} AND status = 'pending_verification')`, { code: "MERGE_BLOCKED", detail: "pending_topups" }),
-    expectThat(db, sql`NOT EXISTS (SELECT 1 FROM approvals WHERE kind = 'wallet_adjustment' AND entity_id = ${mergeId} AND status = 'pending')`, { code: "MERGE_BLOCKED", detail: "pending_adjustments" }),
+    expectThat(db, sql`NOT EXISTS (SELECT 1 FROM approvals WHERE kind IN ('wallet_adjustment', 'wallet_payout') AND entity_id = ${mergeId} AND status = 'pending')`, { code: "MERGE_BLOCKED", detail: "pending_adjustments" }),
     expectThat(db, sql`(SELECT coalesce(sum(points), 0) FROM loyalty_ledger WHERE customer_id = ${mergeId}) = 0`, { code: "MERGE_BLOCKED", detail: "loyalty_balance" }),
     expectThat(db, sql`NOT EXISTS (SELECT 1 FROM privacy_requests WHERE customer_id = ${mergeId} AND status IN ('open', 'verifying', 'in_progress'))`, { code: "MERGE_BLOCKED", detail: "open_privacy" }),
     db

@@ -52,27 +52,35 @@ export const RFM_RULES = {
   monetaryIqd: [100_000, 300_000, 750_000, 2_000_000],
 } as const;
 
+/** Four ascending bounds (an axis's scores 5…2 or 2…5). */
+export type Bounds4 = readonly [number, number, number, number];
+/**
+ * The RFM bounds in force: the setting `customers.rfm_rules` (module follow-up 2026-11-12; rules.server.ts reads it),
+ * RFM_RULES its default. The pure functions below take them as an optional last argument (RFM_RULES when left out).
+ */
+export type RfmRules = { readonly recencyDays: Bounds4; readonly frequency: Bounds4; readonly monetaryIqd: Bounds4 };
+
 export type RfmScore = 0 | 1 | 2 | 3 | 4 | 5;
 export type RfmFacts = { purchases: number; monetaryIqd: number; lastPurchaseAt: number | null };
 export type Rfm = { r: RfmScore; f: RfmScore; m: RfmScore; recencyDays: number | null; frequency: number; monetaryIqd: number; segment: RfmSegment };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export function scoreRecency(days: number | null): RfmScore {
+export function scoreRecency(days: number | null, bounds: Bounds4 = RFM_RULES.recencyDays): RfmScore {
   if (days === null || !Number.isFinite(days)) return 0;
-  const [a, b, c, d] = RFM_RULES.recencyDays;
+  const [a, b, c, d] = bounds;
   return days <= a ? 5 : days <= b ? 4 : days <= c ? 3 : days <= d ? 2 : 1;
 }
 
-export function scoreFrequency(purchases: number): RfmScore {
+export function scoreFrequency(purchases: number, bounds: Bounds4 = RFM_RULES.frequency): RfmScore {
   if (!(purchases > 0)) return 0;
-  const [a, b, c, d] = RFM_RULES.frequency;
+  const [a, b, c, d] = bounds;
   return purchases >= d ? 5 : purchases >= c ? 4 : purchases >= b ? 3 : purchases >= a ? 2 : 1;
 }
 
-export function scoreMonetary(iqd: number, purchases: number): RfmScore {
+export function scoreMonetary(iqd: number, purchases: number, bounds: Bounds4 = RFM_RULES.monetaryIqd): RfmScore {
   if (!(purchases > 0)) return 0;
-  const [a, b, c, d] = RFM_RULES.monetaryIqd;
+  const [a, b, c, d] = bounds;
   return iqd >= d ? 5 : iqd >= c ? 4 : iqd >= b ? 3 : iqd >= a ? 2 : 1;
 }
 
@@ -117,11 +125,11 @@ export function segmentOf(r: RfmScore, f: RfmScore): RfmSegment {
   return "lost";
 }
 
-export function rfmOf(facts: RfmFacts, now: number): Rfm {
+export function rfmOf(facts: RfmFacts, now: number, rules: RfmRules = RFM_RULES): Rfm {
   const recencyDays = facts.lastPurchaseAt === null ? null : Math.max(0, Math.floor((now - facts.lastPurchaseAt) / DAY_MS));
-  const r = facts.purchases > 0 ? scoreRecency(recencyDays) : 0;
-  const f = scoreFrequency(facts.purchases);
-  const m = scoreMonetary(facts.monetaryIqd, facts.purchases);
+  const r = facts.purchases > 0 ? scoreRecency(recencyDays, rules.recencyDays) : 0;
+  const f = scoreFrequency(facts.purchases, rules.frequency);
+  const m = scoreMonetary(facts.monetaryIqd, facts.purchases, rules.monetaryIqd);
   return { r, f, m, recencyDays: facts.purchases > 0 ? recencyDays : null, frequency: facts.purchases, monetaryIqd: facts.monetaryIqd, segment: segmentOf(r, f) };
 }
 
@@ -146,6 +154,9 @@ export const FLAG_RULES = {
   riskReturned: 2,
   riskReturnedDays: 180,
 } as const;
+
+/** The VIP and fraud-risk thresholds in force: the setting `customers.flag_rules` (rules.server.ts), FLAG_RULES its default. */
+export type FlagRules = { readonly [K in keyof typeof FLAG_RULES]: number };
 
 export const FLAG_IDS = [
   "vip_manual",
@@ -278,7 +289,9 @@ export function privacySearch(filters: Partial<PrivacyFilters>): string {
 
 /** What an erasure removes, and what it keeps (and why) — shown in the plan before anyone confirms (privacy.server.ts). */
 export const RETENTION = {
-  erased: ["profile", "mergedAccounts", "addresses", "savedDevices", "wishlist", "recentlyViewed", "browsing", "notifications", "sessions", "segments", "carts", "guestContacts"] as const,
+  // follow-up 2026-11-12: + the stored maintenance-assistant conversations and the sign-in log, which used to wait for
+  // their own retention (30 / 90 days) after an erasure
+  erased: ["profile", "mergedAccounts", "addresses", "savedDevices", "wishlist", "recentlyViewed", "browsing", "notifications", "sessions", "segments", "carts", "guestContacts", "assistant", "signIns"] as const,
   kept: ["orders", "payments", "wallet", "consents", "audit", "returns", "warranties", "tickets", "tradeIns", "messages", "request"] as const,
 };
 export type ErasedPart = (typeof RETENTION.erased)[number];
@@ -388,7 +401,7 @@ export type CustomerHeader = {
 export type MoneyFact = number | null;
 
 export type ProfileOrder = { id: string; ref: string; status: string; paymentStatus: string; totalIqd: number; paidIqd: number; refundedIqd: number; placedAt: number; items: number; isDemo: boolean };
-export type ProfileTicket = { id: string; ref: string; subject: string; category: string; status: string; priority: string; createdAt: number; escalated: boolean; open: boolean; complaint: boolean };
+export type ProfileTicket = { id: string; ref: string; subject: string; category: string; status: string; priority: string; createdAt: number; escalated: boolean; open: boolean; complaint: boolean; /** /admin/support/tickets/<ref> (follow-up 2026-11-12). */ href: string };
 export type ProfileReturn = { id: string; rma: string; status: string; orderRef: string | null; reasonCode: string | null; createdAt: number };
 export type ProfileWarranty = { id: string; itemName: string; sku: string | null; serial: string | null; startsAt: number; endsAt: number; status: string; state: "active" | "ending" | "expired" | "void" };
 export type ProfileRepair = { id: string; ref: string; status: string; createdAt: number; issue: string };
@@ -401,6 +414,8 @@ export type CustomerProfile = {
   header: CustomerHeader;
   stats: { orders: number; purchases: number; openOrders: number; spentIqd: number; refundedIqd: number; aovIqd: number | null; firstOrderAt: number | null; lastOrderAt: number | null };
   rfm: Rfm;
+  /** The rules in force (rules.server customerRules): the bounds and windows the page explains. */
+  rules: { rfm: RfmRules; flags: FlagRules; privacyDueDays: number };
   orders: ProfileOrder[] | null;
   returns: ProfileReturn[] | null;
   warranties: ProfileWarranty[] | null;

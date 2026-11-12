@@ -1,4 +1,6 @@
 // lint-design: allow primary-count — each showcase band carries its own action; the page is a reference, not a view.
+import { useState } from "react";
+
 import { LocaleLink, useT } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
 import { Band } from "~/ui/Band";
@@ -85,6 +87,19 @@ const COPY = defineCopy({
     compatNote: "أيقونة وكلمة حالة لكل جهاز: يعمل · يعمل جزئياً · لا يعمل · لم نتحقق.",
     partialNote: "يحتاج تحديث البرنامج",
     sample: "الأسعار والأرقام في هذا القسم أمثلة للعرض.",
+    tileToggle: "بلاطة كمفتاح اختيار (المقدّمة): المختارة مثبّتة على جدارها بحلقة داخلية وعلامة صح، وaria-pressed.",
+    tileTablet: "من 768 إلى 1023 الجهاز فوق والنص تحته كما في الهاتف، فلا يجلس اسم المنصة على جسم الجهاز الأبيض. اسم من سطرين يطيل البلاطة.",
+    transferOne: "طريقة تحويل واحدة مفعّلة: يُذكر اسمها وحده.",
+    sectionAction: "إجراء خاص في مكان «عرض الكل»، على سطر العنوان.",
+    clear: "امسح",
+    releaseDetail: "سطر تفصيل تحت الاسم، ونقطتان لإصدار على أكثر من منصة.",
+    disc: "نسخة الأقراص",
+    entryNoArt: "بطاقة خدمة بلا صورة: الكلمات تأخذ البطاقة كلها.",
+    track: "تتبّع طلبك",
+    trackLine: "برقم الطلب ورقم موبايلك.",
+    trackCta: "تتبّع الآن",
+    contactMore: "البريد وصفحات المتجر الأخرى (أمثلة للعرض)",
+    compatLinks: "صف بـ href: الصف كله رابط إلى صفحة الجهاز.",
   },
   en: {
     bands: "Bands",
@@ -139,10 +154,23 @@ const COPY = defineCopy({
     compatNote: "An icon and a state word per device: works · works partly · does not work · not checked.",
     partialNote: "Needs a software update",
     sample: "Prices and numbers in this section are display examples.",
+    tileToggle: "A tile as a toggle (the intro): the chosen one is held on its wall, ringed inside and checked; aria-pressed.",
+    tileTablet: "From 768 to 1023 the hardware stands above and the words sit under it, as on phones, so a platform's name never sits on a white console. A two-line name makes the tile taller.",
+    transferOne: "One transfer method switched on: only its name is said.",
+    sectionAction: "Your own action in the «View all» place, on the heading's line.",
+    clear: "Clear",
+    releaseDetail: "A detail line under the name, and two dots for a release on more than one platform.",
+    disc: "Disc edition",
+    entryNoArt: "A service card without a picture: the words take the whole card.",
+    track: "Track your order",
+    trackLine: "With the order number and your mobile number.",
+    trackCta: "Track now",
+    contactMore: "E-mail and the store's pages elsewhere (display examples)",
+    compatLinks: "A row with href: the whole row links to the device's page.",
   },
   ckb: {
     bands: "شریتەکان",
-    bandsNote: "ڕووناکیی ڕەنگاوڕەنگ تەنها بۆ پیشانگاکانە: شریتێکی قرمزی بە یەک ڕووناکی لە پشت کاڵاکەوە لە ڕووکاری ڕووندا، و کابینەیەکی ڕووناک لە تاریکدا.",
+    bandsNote: "ڕووناکیی ڕەنگاوڕەنگ تەنها بۆ پیشانگاکانە: شریتێکی قرمزی بە یەک ڕووناکی لە پشت بەرهەمەکەوە لە ڕووکاری ڕووندا، و کابینەیەکی ڕووناک لە تاریکدا.",
     playOn: "یاری بکە لەسەر",
     heroLine: "شاشەی 7.9 ئینج · 256GB · تا 4K لەسەر تەلەفزیۆن",
     buy: "Nintendo Switch 2 بکڕە",
@@ -171,7 +199,7 @@ const COPY = defineCopy({
     newTitle: "تازە گەیشتوو",
     newReason: "نوێترین ئەوەی زیادمان کرد، ئێستا بەردەستە",
     entries: "کارتی خزمەتگوزاری و پۆلەکان",
-    entriesNote: "کارتی خزمەتگوزاری یەک بەستەرە بە وێنەیەک لەسەر زەوی کاڵا یان دروشمەکە. تایلی پۆل بیرێکی چوارگۆشە و ناو و ژمارەیەکە.",
+    entriesNote: "کارتی خزمەتگوزاری یەک بەستەرە بە وێنەیەک لەسەر زەوی بەرهەم یان دروشمەکە. تایلی پۆل بیرێکی چوارگۆشە و ناو و ژمارەیەکە.",
     used: "بەکارهاتوو و پشکنراو",
     usedLine: "ئامێرێک کە پشکنیمان، بە ڕاپۆرت و وێنەی هەر یەکەیان.",
     usedCta: "بەکارهاتووەکان ببینە",
@@ -193,6 +221,19 @@ const COPY = defineCopy({
     compatNote: "ئایکۆن و وشەی دۆخ بۆ هەر ئامێرێک: کار دەکات · بەشێکی کار دەکات · کار ناکات · نەپشکنراوە.",
     partialNote: "پێویستی بە نوێکردنەوەی نەرمەکاڵا هەیە",
     sample: "نرخ و ژمارەکانی ئەم بەشە نموونەی پیشاندانن.",
+    tileToggle: "تایل وەک دوگمەی هەڵبژاردن (دەستپێک): هەڵبژێردراو لەسەر دیوارەکەی دەمێنێتەوە، بازنەیەکی ناوەوە و نیشانەی ڕاست؛ aria-pressed.",
+    tileTablet: "لە 768 تا 1023 ئامێرەکە لە سەرەوەیە و وشەکان لە ژێریدا، وەک مۆبایل. ناوێکی دوو دێڕی تایلەکە درێژتر دەکات.",
+    transferOne: "تەنها یەک ڕێگای گواستنەوە چالاکە: تەنها ناوی ئەو دەگوترێت.",
+    sectionAction: "کارێکی تایبەت لە شوێنی «هەمووی ببینە»، لەسەر دێڕی ناونیشان.",
+    clear: "بیسڕەوە",
+    releaseDetail: "دێڕێکی وردەکاری لە ژێر ناوەکە، و دوو خاڵ بۆ دەرچوونێک لەسەر زیاتر لە یەک پلاتفۆرم.",
+    disc: "وەشانی دیسک",
+    entryNoArt: "کارتی خزمەتگوزاری بێ وێنە: وشەکان هەموو کارتەکە دەگرن.",
+    track: "بەدوای داواکارییەکەتدا بچۆ",
+    trackLine: "بە ژمارەی داواکاری و ژمارەی مۆبایلەکەت.",
+    trackCta: "ئێستا بەدوایدا بچۆ",
+    contactMore: "ئیمەیڵ و پەڕەکانی تری فرۆشگا (نموونەی پیشاندان)",
+    compatLinks: "ڕیزێک بە href: هەموو ڕیزەکە بەستەرە بۆ پەڕەی ئامێرەکە.",
   },
 });
 
@@ -300,13 +341,30 @@ function Bands({ c }: { c: C }) {
 
 function Tiles({ c }: { c: C }) {
   const t = useT("ui");
+  const [chosen, setChosen] = useState<Platform[]>(["playstation"]);
   return (
-    <DsBlock id="showcase-tiles" title={c.tiles} note={c.tilesNote}>
+    <DsBlock id="showcase-tiles" title={c.tiles} note={`${c.tilesNote} ${c.tileTablet}`}>
       <PlatformTiles label={c.tilesLabel}>
         {PLATFORMS.map((p) => (
           <PlatformTile key={p} platform={p} to={`/platform/${p}`} count={TILE_COUNT[p]} art={TILE_ART[p]} />
         ))}
       </PlatformTiles>
+      <Specimen label={`<PlatformTile as="button" selected> · ${c.tileToggle}`} wide>
+        <div className="ptiles">
+          {PLATFORMS.map((p) => (
+            <PlatformTile
+              key={p}
+              as="button"
+              type="button"
+              platform={p}
+              count={TILE_COUNT[p]}
+              art={TILE_ART[p]}
+              selected={chosen.includes(p)}
+              onClick={() => setChosen((list) => (list.includes(p) ? list.filter((x) => x !== p) : [...list, p]))}
+            />
+          ))}
+        </div>
+      </Specimen>
       <Specimen label="<PlatformTile compact>" wide>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {PLATFORMS.map((p) => (
@@ -327,6 +385,12 @@ function Trust({ c }: { c: C }) {
       <SpecimenGrid wide>
         <Specimen label='<TrustStrip variant="line" cod returnsTo>'>
           <TrustStrip variant="line" cod transfer returnsTo="/policies/returns" />
+        </Specimen>
+        <Specimen label={`<TrustStrip transfer={{ zaincash }}> · ${c.transferOne}`}>
+          <div className="grid gap-3">
+            <TrustStrip variant="line" transfer={{ zaincash: true }} />
+            <TrustStrip variant="line" transfer={{ card: true }} />
+          </div>
         </Specimen>
         <Specimen label="<FactList facts>">
           <FactList
@@ -363,9 +427,33 @@ function Release({ c }: { c: C }) {
           { id: "r4", to: "/p/joy-con-2", name: "Joy-Con 2", releaseAt: NOW_SAMPLE + 60 * DAY, platform: "nintendo", priceIqd: 105_000, image: photo("joy-con-2--1") },
         ]}
       />
-      <Specimen label={`<SectionHead title reason href> · ${c.sectionHeadNote}`} wide className="mt-8">
-        <SectionHead title={c.newTitle} reason={c.newReason} href="/c/new" />
+      <Specimen label={`<ReleaseBand items={[{ detail, platforms }]}> · ${c.releaseDetail}`} wide className="mt-8">
+        <ReleaseBand
+          now={NOW_SAMPLE}
+          title={c.release}
+          headingLevel={3}
+          items={[
+            { id: "m1", to: "/p/grand-theft-auto-vi", name: "Grand Theft Auto VI", releaseAt: NOW_SAMPLE + 12 * DAY, platforms: ["playstation", "xbox"], detail: c.disc, priceIqd: 99_000, image: photo("grand-theft-auto-vi--1") },
+            { id: "m2", to: "/p/007-first-light", name: "007 First Light", releaseAt: NOW_SAMPLE + 40 * DAY, platforms: ["playstation", "xbox", "nintendo"], platformLabel: "PS5 · Xbox Series X|S · Switch 2", priceIqd: null, image: photo("007-first-light--1") },
+          ]}
+        />
       </Specimen>
+      <SpecimenGrid wide className="mt-8">
+        <Specimen label={`<SectionHead title reason href> · ${c.sectionHeadNote}`}>
+          <SectionHead title={c.newTitle} reason={c.newReason} href="/c/new" />
+        </Specimen>
+        <Specimen label={`<SectionHead action> · ${c.sectionAction}`}>
+          <SectionHead
+            title={c.newTitle}
+            reason={c.newReason}
+            action={
+              <Key size="sm" variant="ghost" icon="x">
+                {c.clear}
+              </Key>
+            }
+          />
+        </Specimen>
+      </SpecimenGrid>
     </DsBlock>
   );
 }
@@ -387,6 +475,9 @@ function Entries({ c }: { c: C }) {
         </Specimen>
         <Specimen label='<EntryCard art="mascot">'>
           <EntryCard to="/support" title={c.support} text={c.supportLine} cta={c.supportCta} art="mascot" />
+        </Specimen>
+        <Specimen label={`<EntryCard> · ${c.entryNoArt}`}>
+          <EntryCard to="/track" title={c.track} text={c.trackLine} cta={c.trackCta} />
         </Specimen>
       </SpecimenGrid>
       <Specimen label="<CategoryTiles> · <CategoryTile label count art>" wide>
@@ -418,6 +509,17 @@ function Contact({ c }: { c: C }) {
             }}
           />
         </Specimen>
+        <Specimen label={`<ContactCard channels={{ email, links }}> · ${c.contactMore}`}>
+          <ContactCard
+            channels={{
+              email: "shop@example.com",
+              links: [
+                { label: "Instagram", url: "https://www.instagram.com/" },
+                { label: "Telegram", url: "https://t.me/" },
+              ],
+            }}
+          />
+        </Specimen>
         <Specimen label="<ContactCard channels={null}> renders nothing">
           <span className="block min-h-11 rounded-sm border border-dashed border-line-2">
             <ContactCard channels={null} />
@@ -430,6 +532,14 @@ function Contact({ c }: { c: C }) {
               { status: "partial", device: "PlayStation 5", note: c.partialNote },
               { status: "incompatible", device: "PlayStation 4" },
               { status: "unverified", device: "PlayStation 5 Pro" },
+            ]}
+          />
+        </Specimen>
+        <Specimen label={`<CompatList rows={[{ href }]}> · ${c.compatLinks}`}>
+          <CompatList
+            rows={[
+              { status: "verified", device: "PlayStation 5 Slim", href: "/device/playstation-5-slim" },
+              { status: "partial", device: "PlayStation 5", note: c.partialNote, href: "/device/playstation-5" },
             ]}
           />
         </Specimen>

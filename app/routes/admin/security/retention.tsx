@@ -33,7 +33,6 @@ export default function RetentionPage({ loaderData }: Route.ComponentProps) {
   const t = useModuleT();
   const f = useFormat();
   const { view, roles, canReview } = loaderData;
-  const stats = (view.lastRun?.stats ?? {}) as Record<string, unknown>;
   const columns: DataColumn<RoleRow>[] = [
     { key: "name", header: t("roles.col.name"), cell: (row) => <RowLink to={`/admin/security/roles/${row.id}#review`}>{row.name}</RowLink> },
     { key: "members", header: t("roles.col.members"), numeric: true, cell: (row) => f.number(row.activeMembers) },
@@ -53,7 +52,7 @@ export default function RetentionPage({ loaderData }: Route.ComponentProps) {
                 <span className="type-strong">{t(`retention.row.${row.key}`)}</span>
                 <span className="type-kpi nums">{t("common.days", { count: row.days })}</span>
                 <span className="type-caption text-ink-2">{t(`retention.after.${row.after}`)}</span>
-                {typeof stats[row.key] === "number" ? <span className="type-caption">{t("retention.lastDeleted", { count: stats[row.key] as number })}</span> : null}
+                {row.deleted !== null ? <span className="type-caption">{t("retention.lastDeleted", { count: row.deleted })}</span> : null}
               </li>
             ))}
           </ul>
@@ -63,16 +62,22 @@ export default function RetentionPage({ loaderData }: Route.ComponentProps) {
           </Note>
           <div className="adm-card gap-1">
             <h3 className="adm-h3">{t("retention.lastRun")}</h3>
-            {view.lastRun ? (
-              <>
-                <Pair label={t("retention.ranAt")}>
-                  <When at={view.lastRun.at} />
-                </Pair>
-                <Pair label={t("retention.status")}>
-                  <Status tone={view.lastRun.status === "succeeded" ? "ok" : view.lastRun.status === "failed" ? "bad" : "neutral"}>{t(`retention.run.${view.lastRun.status}`)}</Status>
-                </Pair>
-                {view.lastRun.error ? <p className="type-caption text-red-ink">{view.lastRun.error}</p> : null}
-              </>
+            {view.runs.length ? (
+              <ul role="list" className="grid gap-3">
+                {/* each purge runs as its own job (the nightly retention job and the purges that left it, 2026-11-11) */}
+                {view.runs.map((run) => (
+                  <li key={run.job} className="grid gap-1">
+                    <span className="type-strong">{t(`retention.job.${run.job.replaceAll(".", "_")}`)}</span>
+                    <Pair label={t("retention.ranAt")}>
+                      <When at={run.at} />
+                    </Pair>
+                    <Pair label={t("retention.status")}>
+                      <Status tone={run.status === "succeeded" ? "ok" : run.status === "failed" ? "bad" : "neutral"}>{t(`retention.run.${run.status}`)}</Status>
+                    </Pair>
+                    {run.error ? <p className="type-caption text-red-ink">{run.error}</p> : null}
+                  </li>
+                ))}
+              </ul>
             ) : (
               <p className="type-body text-ink-2">{t("retention.neverRan")}</p>
             )}

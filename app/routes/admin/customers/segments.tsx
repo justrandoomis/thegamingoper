@@ -5,7 +5,7 @@ import type { Route } from "./+types/segments";
 import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { segmentOverview } from "~/server/services/admin/customers/rfm.server";
-import { customerSearch, RFM_RULES } from "~/server/services/admin/customers/types";
+import { customerSearch } from "~/server/services/admin/customers/types";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
 import { segmentsAction } from "./actions.server";
@@ -112,9 +112,9 @@ export default function SegmentsPage({ loaderData }: Route.ComponentProps) {
       <Section id="segments-rules" title={t("segments.rulesTitle")}>
         <ul className="grid gap-2">
           <li className="type-body">{t("segments.purchaseRule")}</li>
-          <li className="type-body">{t("rfm.rule.r", { bounds: RFM_RULES.recencyDays.map((days) => f.number(days)).join(" / ") })}</li>
-          <li className="type-body">{t("rfm.rule.f", { bounds: RFM_RULES.frequency.map((n) => f.number(n)).join(" / ") })}</li>
-          <li className="type-body">{t("rfm.rule.m", { bounds: RFM_RULES.monetaryIqd.map((iqd) => f.iqd(iqd)).join(" / ") })}</li>
+          <li className="type-body">{t("rfm.rule.r", { bounds: overview.rules.recencyDays.map((days) => f.number(days)).join(" / ") })}</li>
+          <li className="type-body">{t("rfm.rule.f", { bounds: overview.rules.frequency.map((n) => f.number(n)).join(" / ") })}</li>
+          <li className="type-body">{t("rfm.rule.m", { bounds: overview.rules.monetaryIqd.map((iqd) => f.iqd(iqd)).join(" / ") })}</li>
         </ul>
         <Notice>{t("segments.constantsNote")}</Notice>
       </Section>

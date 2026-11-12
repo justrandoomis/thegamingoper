@@ -122,3 +122,21 @@ focus walk, rendered contrast, reflow at 320 and 200%) and `<scratch>/ux/after/P
   start, or the snap pulled it back half off-screen) until the kit does (requested). The kit's `ShelfRail` (the
   «وصل حديثاً» shelves on phones) still leaves a focused card off-screen — the kit's to fix.
 - Sorani copy needs a native reader. Chromium only.
+
+## The content module on the pages (wave G wiring, 2026-11-12; `tests/storefront-wiring.test.ts`)
+
+- **Filter order** (admin 17.03): `filterOrderOf(db, categoryId)` (`list.server.ts`) → the groups to offer, in order — the
+  category's own arrangement, else the default one; **null while nothing is arranged** (the panel keeps its own order:
+  availability, platform, category, device, price, Arabic, format). `FilterPanel order` / `panelOrder`: availability stands
+  where its first named part is, with only the named parts; a group left out is not offered, but a value a link brought still
+  filters (its chip removes it) and rides along as a hidden field. Category, platform hub and search all apply it.
+- **Category meta** (17.04, `categoryCmsOf`): the title, description and noindex staff wrote in `categories.seo` win.
+- **Cost:** the category loader reads `categoryCmsOf` beside the list (it needs only the slug), then the filter order, the
+  banners, the picks or arrivals and the shopper in ONE round; search reads its filter order beside the search (review
+  2026-11-12: the CMS reads had added two to three sequential round trips).
+- **Banners** at the top of a category (`category_top` + the category's own, `getStoreBanners`).
+- **Redirects** before both category 404s (`redirectIfMoved`).
+- **Kit requests applied:** «قارن» in the card's `compare` slot on console and handheld cards (kind "console"; the tray shows their
+  thumbnails); the sort's explanation as the «المقترَح» row's radio `hint`; `use-flip.ts` takes `bubble` from `~/motion`.
+- Known: in a grid row that mixes a card with the compare slot and one without, the price rows do not line up (the slot sits
+  under the pinned foot) — asked of the kit.

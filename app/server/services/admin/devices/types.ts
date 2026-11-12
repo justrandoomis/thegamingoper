@@ -98,12 +98,14 @@ export function baghdadParts(at: number): { day: string; time: string } {
 export const MAX_TRADE_IN_PHOTOS = 12;
 export const MAX_UNIT_PHOTOS = 12;
 
-export const TRADE_IN_VIEWS = ["all", "new", "scheduled", "inspected", "offered", "accepted", "done"] as const;
+export const TRADE_IN_VIEWS = ["all", "new", "scheduled", "inspected", "offered", "accepted", "to_pay", "done"] as const;
 export type TradeInView = (typeof TRADE_IN_VIEWS)[number];
 /**
  * The statuses of each saved view. "new" is every request still to inspect (booked or not); "inspected" also holds an
  * offer past its date that nothing recorded yet, and "offered" only offers still open — tradeins.server's `viewWhere`
  * adds that time rule, and the queue counts use the same function, so a card never counts what its list does not show.
+ * "to_pay" is the accepted trade-ins THIS employee can move on (the wipe, then the payout — tradeins.server
+ * payoutsWhere, the "to pay" card's count; review 2026-11-12: the card counted per person, its list was everyone's).
  */
 export const TRADE_IN_VIEW_STATUSES: Record<Exclude<TradeInView, "all">, readonly TradeInStatusKey[]> = {
   new: ["submitted", "estimated", "inspection_scheduled"],
@@ -111,6 +113,7 @@ export const TRADE_IN_VIEW_STATUSES: Record<Exclude<TradeInView, "all">, readonl
   inspected: ["inspected", "declined", "expired"],
   offered: ["offered"],
   accepted: ["accepted"],
+  to_pay: ["accepted"],
   done: ["paid", "cancelled"],
 };
 
@@ -261,6 +264,14 @@ export type TradeInDetail = {
   id: string;
   ref: string;
   status: TradeInStatusKey;
+  /**
+   * Whether this employee sees the money (seesTradeInMoney: cost.read, or the offer / payout permissions). When false:
+   * offer.amountIqd is null, no valuation, references or difference, and history amounts are replaced by
+   * data.amountHidden — a paid offer is the used unit's purchase cost (follow-up 2026-11-12).
+   */
+  money: boolean;
+  /** The payer's open POS shift a cash payout can come out of (drawerOf; follow-up 2026-11-12), else null. */
+  drawer: { shiftId: string; register: string } | null;
   offerExpired: boolean;
   isDemo: boolean;
   counter: boolean;
@@ -286,7 +297,8 @@ export type TradeInDetail = {
   ownershipOk: boolean | null;
   accountLockOk: boolean | null;
   dataWiped: boolean;
-  offer: { amountIqd: number; expiresAt: number | null; offeredAt: number | null; offeredBy: string | null } | null;
+  /** amountIqd null when `money` is false. */
+  offer: { amountIqd: number | null; expiresAt: number | null; offeredAt: number | null; offeredBy: string | null } | null;
   payout: { method: Payout | null; paidAt: number | null; ref: string | null };
   acceptedAt: number | null;
   declinedAt: number | null;

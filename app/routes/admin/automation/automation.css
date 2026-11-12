@@ -1,0 +1,184 @@
+/*
+ * Admin module 19 (automation) — what the UI kit and the shell do not cover: the figures row, the decision cards'
+ * grid, a two-column page from 1024px, the rule builder's event cards and option grids, the rule's sentence blocks,
+ * key/value facts and the forecast's month bars. Tokens and logical properties only; nothing animates.
+ */
+@layer components {
+  .auto-nav {
+    margin-block-end: var(--s-2);
+  }
+
+  .auto-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .auto-kpis > * {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .auto-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    }
+  }
+
+  .auto-decisions {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+
+  .auto-split {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .auto-split {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+      align-items: start;
+    }
+  }
+
+  .auto-filters {
+    display: grid;
+    gap: var(--s-3);
+    align-items: end;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  }
+  .auto-filters > div:last-child {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    gap: var(--s-2);
+  }
+  .auto-filters > div:last-child > * {
+    flex: none;
+  }
+
+  /* the builder: one card per event (links: URL state), option grids, the actions */
+  .auto-events {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+  .auto-event {
+    display: grid;
+    gap: var(--s-1);
+    align-content: start;
+    min-block-size: var(--target);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .auto-event:hover {
+    background: var(--niche);
+  }
+  .auto-event[aria-current="true"] {
+    border: 2px solid var(--ink);
+    padding: calc(var(--s-3) - 1px) calc(var(--s-4) - 1px);
+  }
+
+  .auto-form {
+    display: grid;
+    gap: var(--s-5);
+    max-inline-size: 56rem;
+  }
+  .auto-fieldset {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    min-inline-size: 0;
+  }
+  .auto-fieldset > legend {
+    padding-inline: var(--s-1);
+  }
+  .auto-grid {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  }
+  .auto-options {
+    display: grid;
+    gap: var(--s-1) var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+  }
+  .auto-action {
+    display: grid;
+    gap: var(--s-3);
+    padding-block: var(--s-3);
+    border-block-start: 1px solid var(--line);
+  }
+  .auto-action:first-of-type {
+    border-block-start: 0;
+  }
+  .auto-action__fields {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    padding-inline-start: var(--s-6);
+  }
+
+  /* a rule's sentences */
+  .auto-lines {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding-inline-start: var(--s-5);
+    list-style: disc;
+  }
+  /* a link that is a line of the list stays inline (the line keeps its bullet and rhythm); on touch screens its
+     padding, not its box, makes the 44px target */
+  @media (pointer: coarse) {
+    .auto-lines .adm-link {
+      display: inline;
+      min-block-size: 0;
+      padding-block: 10px;
+    }
+  }
+
+  /* key / value facts */
+  .auto-facts {
+    display: grid;
+    gap: var(--s-1) var(--s-4);
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+    margin: 0;
+  }
+  .auto-facts > dt {
+    color: var(--ink-2);
+  }
+  .auto-facts > dd {
+    margin: 0;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* the forecast: twelve months as bars with their numbers (data has no material: flat ink on the hairline grid) */
+  .auto-months {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    gap: 2px;
+    block-size: 2rem;
+    min-inline-size: 7rem;
+    border-block-end: 1px solid var(--line-strong);
+  }
+  .auto-months > span {
+    display: block;
+    background: var(--ink-2);
+    min-block-size: 1px;
+  }
+  .auto-months > span[data-zero] {
+    background: var(--line);
+  }
+
+  .auto-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+}

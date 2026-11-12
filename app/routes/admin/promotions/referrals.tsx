@@ -5,7 +5,7 @@ import type { Route } from "./+types/referrals";
 import { throwAsResponse } from "~/server/errors";
 import { issueReferralCode, listReferrals, recordReferral, rejectReferral, rewardReferral, setReferralCodeActive } from "~/server/services/admin/promotions/referrals.server";
 import { SECTION_READ, type PromotionsAccess } from "~/server/services/admin/promotions/shared.server";
-import { REFERRAL, REFERRAL_STATUS_TONE, REFERRAL_VIEWS, parseReferralFilters, referralSearch, type ReferralCodeRow, type ReferralRow } from "~/server/services/admin/promotions/types";
+import { REFERRAL_STATUS_TONE, REFERRAL_VIEWS, parseReferralFilters, referralSearch, type ReferralCodeRow, type ReferralRow } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { Disclosure } from "~/ui/Disclosure";
 import { EmptyState } from "~/ui/EmptyState";
@@ -14,7 +14,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Boundary, Code, ConfirmAction, Failure, newKey, Notice, Num, PhoneText, Section, Tag, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Boundary, Code, ConfirmAction, Failure, newKey, Notice, Num, PhoneText, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/referrals — 08.05: the abuse rules in words, the referrals to review with their signals (same
@@ -58,6 +58,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, "referrals.title");
 
 export default function ReferralsPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const layout = useRouteLoaderData(PROMOTIONS_LAYOUT_ID) as { access: PromotionsAccess } | undefined;
   const { page, filters } = loaderData;
@@ -95,7 +96,7 @@ export default function ReferralsPage({ loaderData }: Route.ComponentProps) {
       <header className="adm-page-head">
         <p className="adm-eyebrow">{t("eyebrowFn", { id: "08.05" })}</p>
         <h1 className="adm-title">{t("referrals.title")}</h1>
-        <p className="max-w-[75ch] type-body text-ink-2">{t("referrals.lead", { points: REFERRAL.rewardPoints })}</p>
+        <p className="max-w-[75ch] type-body text-ink-2">{t("referrals.lead", { points: program.referral.rewardPoints })}</p>
       </header>
       <Boundary>{t("referrals.boundary")}</Boundary>
       <div className="prm-layout">
@@ -135,11 +136,11 @@ export default function ReferralsPage({ loaderData }: Route.ComponentProps) {
             <ul className="grid gap-2">
               {(["self", "phone", "cap", "order"] as const).map((rule) => (
                 <li key={rule}>
-                  <Notice icon="shield-check">{t(`referrals.rules.${rule}`, { n: REFERRAL.defaultMaxUses })}</Notice>
+                  <Notice icon="shield-check">{t(`referrals.rules.${rule}`, { n: program.referral.defaultMaxUses })}</Notice>
                 </li>
               ))}
               <li>
-                <Notice icon="eye">{t("referrals.rules.signals", { days: REFERRAL.deviceWindowDays })}</Notice>
+                <Notice icon="eye">{t("referrals.rules.signals", { span: t("daySpan", { count: program.referral.deviceWindowDays }) })}</Notice>
               </li>
             </ul>
           </Section>
@@ -152,6 +153,7 @@ export default function ReferralsPage({ loaderData }: Route.ComponentProps) {
 }
 
 function ReferralCard({ row, manage }: { row: ReferralRow; manage: boolean }) {
+  const program = useProgram();
   const t = usePromotionsT();
   const open = row.status === "pending" || row.status === "qualified";
   return (
@@ -196,10 +198,10 @@ function ReferralCard({ row, manage }: { row: ReferralRow; manage: boolean }) {
               intent="reward"
               label={t("referrals.reward")}
               title={t("referrals.rewardQ")}
-              consequence={row.qualifies ? t("referrals.rewardWhat", { points: REFERRAL.rewardPoints, name: row.referrer ?? "—" }) : t("referrals.notYet")}
+              consequence={row.qualifies ? t("referrals.rewardWhat", { points: program.referral.rewardPoints, name: row.referrer ?? "—" }) : t("referrals.notYet")}
               confirmLabel={t("referrals.reward")}
               values={{ referralId: row.id }}
-              impact={[{ label: t("referrals.impact.points"), value: `+${REFERRAL.rewardPoints}` }, ...(row.signals.length ? [{ label: t("referrals.impact.signals"), value: String(row.signals.length) }] : [])]}
+              impact={[{ label: t("referrals.impact.points"), value: `+${program.referral.rewardPoints}` }, ...(row.signals.length ? [{ label: t("referrals.impact.signals"), value: String(row.signals.length) }] : [])]}
               reasonField="note"
               reasonLabel={t("common.note")}
               disabled={!row.qualifies}
@@ -239,6 +241,7 @@ function RecordForm() {
 }
 
 function IssueForm() {
+  const program = useProgram();
   const t = usePromotionsT();
   const { fetcher, pending, message, fields: errors, data } = useIntent("issue", (result) => (result.replayed ? "done.codeExists" : "done.codeIssued"));
   return (
@@ -246,7 +249,7 @@ function IssueForm() {
       <fetcher.Form method="post" className="prm-form" noValidate>
         <input type="hidden" name="intent" value="issue" />
         <TextField name="phone" type="tel" label={t("referrals.issue.phone")} hint={t("referrals.issue.phoneHint")} required error={errors.phone} />
-        <TextField name="maxUses" label={t("referrals.issue.cap")} hint={t("referrals.issue.capHint", { n: REFERRAL.defaultMaxUses, max: REFERRAL.maxUsesCap })} inputMode="numeric" error={errors.maxUses} />
+        <TextField name="maxUses" label={t("referrals.issue.cap")} hint={t("referrals.issue.capHint", { n: program.referral.defaultMaxUses, max: program.referral.maxUsesCap })} inputMode="numeric" error={errors.maxUses} />
         <Failure message={message} />
         <div>
           <Key type="submit" loading={pending} icon="ticket">

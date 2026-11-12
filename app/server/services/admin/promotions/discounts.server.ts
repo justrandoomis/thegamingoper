@@ -52,7 +52,9 @@ import {
   type RuleState,
   type RuleTerms,
   type RuleView,
+  type DiscountLimits,
 } from "./types";
+import { programRules } from "./program.server";
 
 const KIND = "promotion_rule" as const;
 
@@ -91,7 +93,10 @@ export function ruleTerms(row: Pick<Promotion, "kind" | "value" | "config" | "sc
   };
 }
 
-export const ruleReasons = (terms: RuleTerms): ApprovalReason[] => discountApprovalReasons({ kind: terms.kind, value: terms.value, maxDiscountIqd: terms.maxDiscountIqd, tiers: terms.tiers });
+/** Why these terms need a second person, against the limits in force (`limits`: programRules; DISCOUNT_LIMITS when left out). */
+export const ruleReasons = (terms: RuleTerms, limits?: DiscountLimits): ApprovalReason[] => discountApprovalReasons({ kind: terms.kind, value: terms.value, maxDiscountIqd: terms.maxDiscountIqd, tiers: terms.tiers }, { limits });
+/** The discount limits in force (the setting promotions.discount_limits — follow-up 2026-11-12). */
+const limitsInForce = async (db: Db) => (await programRules(db)).limits;
 
 function columnsOf(terms: RuleTerms, keepScope: PromotionScope | null) {
   const scope: PromotionScope = {};
@@ -179,7 +184,7 @@ export async function getRule(db: Db, actor: Actor, ruleId: string, now: number)
     fingerprint,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
-    approvalReasons: ruleReasons(terms),
+    approvalReasons: ruleReasons(terms, await limitsInForce(db)),
     approvedTerms: approved,
     pending: view ? { ...view, terms: null } : null,
     history,
@@ -307,7 +312,7 @@ export async function saveRule(db: Db, actor: Actor, raw: unknown, now: number, 
   const input = parsed.data;
   await assertKnownIds(db, input);
   const terms = termsFromInput(input);
-  const reasons = ruleReasons(terms);
+  const reasons = ruleReasons(terms, await limitsInForce(db));
   const fingerprint = termsFingerprint(terms);
   const actorId = actor.kind === "employee" ? actor.id : "system";
   const name = l10n(input.nameAr, input.nameEn);
@@ -389,7 +394,7 @@ export async function setRuleActive(db: Db, actor: Actor, raw: unknown, now: num
   const actorId = actor.kind === "employee" ? actor.id : "system";
   if (input.active) {
     if (terms.endsAt !== null && terms.endsAt <= now) throw invalid({ endsAt: "ends_past" });
-    const reasons = ruleReasons(terms);
+    const reasons = ruleReasons(terms, await limitsInForce(db));
     const fingerprint = termsFingerprint(terms);
     if (reasons.length > 0 && !(await approvedFingerprint(db, KIND, row.id, fingerprint))) {
       if (await pendingApprovalOf(db, KIND, row.id)) throw new AppError("change_pending", 409);

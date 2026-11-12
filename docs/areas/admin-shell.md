@@ -12,7 +12,8 @@ SECURITY.md §6–7, CONTRACTS.md §4). Arabic first (right to left), English as
 | `/admin/logout` | `POST scope=one\|all` → document redirect to the sign-in page, which says what happened | signed in |
 | `/admin/locale` | `POST locale=ar\|en, back=<admin path>` → `tt_admin_locale` cookie (Path=/), document redirect | anyone |
 | `/admin` | Minimal home until module 01 is built: what waits for this employee (raised clay cards only for things that need a decision), the two-step nudge, the employee's sections, module 01's blueprint status | signed in |
-| `/admin/me` | My security: two-step verification (QR + typed key, recovery codes shown once with copy/download, turn off), password change, own sessions with "end" and "sign out the other devices". A password change and turning two-step on or off sign the other devices out and move this one to a new `tt_adm` token (both cookie paths, same session end; server pass 2026-11-11): a copy of the old cookie stops working | signed in |
+| `/admin/me` | My security: two-step verification (QR + typed key, recovery codes shown once with copy/download, turn off), password change, own sessions with "end" and "sign out the other devices". A password change and turning two-step on or off sign the other devices out and move this one to a new `tt_adm` token (both cookie paths, same session end; server pass 2026-11-11): a copy of the old cookie stops working. The ONLY page of an enrolment-only session (a role requires two-step verification the employee has not turned on — 2026-11-12): every other admin page sends them to `#two-step`, which then says why; turning it off is refused while a role requires it | signed in (enrolment-only too) |
+| `/admin/welcome#<token>` | Set one's password with the one-time link the staff member who created (or re-opened) the account gave (`createEmployee`, `issuePasswordLink`, `enableEmployee` — auth core). The token stays in the fragment (never sent, never logged), is read once and taken out of the address bar; the page asks who the link is for, then posts it with the password typed twice. Done → "sign in" (a document link). A used, replaced or run-out link says so and what to do. The frame shows no navigation | nobody (the gate's `PUBLIC_PATTERNS`) |
 | `/admin/blueprint` | 176 functions × status: legend with counts, sections × status matrix (counts link to the filtered list), filters in the URL (status, priority, section, text) | signed in, with at least one admin permission |
 | `/admin/<slug>` | Landing page of a module that has no page yet: blueprint number, priority, title, status of its functions. 403 inside the shell when the role cannot see the module, 404 for an unknown name | signed in |
 | `/admin/*` | 404 inside the shell | signed in |
@@ -35,9 +36,16 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
    module whose permission group the employee holds nothing of — by the matched route pattern, before your loaders
    run. Your loaders and actions still start with `requireEmployee(ctx, getDb(), "<permission>")`, and your services
    with `assertCan`. A route registered outside `/admin/<slug>/` is refused (403) for everyone unless the gate has a rule for it — ask the shell owner.
-   The one cross-group rule (`ALSO_OPENED_BY`, by exact pattern): `staff.manage` (group "staff") also opens module 20's
+   The cross-group rules (`ALSO_OPENED_BY`, by exact pattern): `staff.manage` (group "staff") also opens module 20's
    role editor — `admin/security/roles`, `admin/security/roles/:roleId` — and the frame's front page `admin/security`
    (its tab bar links there; every figure on it is null for that permission alone); nothing else of module 20.
+   `dashboard.overview.read` (every built-in role) opens module 15's My day, `admin/staff/me` (2026-11-12); nothing else
+   of module 15. Two more narrow rules (2026-11-12): `POST admin/ops/report` is open to every signed-in employee
+   (`ANY_EMPLOYEE_POSTS` — the browser's own reports; a GET there is module 23's), and `admin/welcome` needs nobody
+   signed in (`PUBLIC_PATTERNS`, the password-set link). An enrolment-only session opens `admin/me` only.
+   The layout's middleware is `[adminGate, opsTimingMiddleware]`: module 23 times every admin request that got past
+   the gate (only slow or failed ones are written; once per request even under the ops layout's own copy), and the
+   shell mounts module 23's `<OpsReporter/>` for every signed-in page (one reporter per window).
 3. **Page skeleton:** no `<main>` of your own (the shell's is the landmark); start with
    `<h1 className="adm-title">`; section heads `adm-h2` / `adm-h3` (Kufam only for page titles and KPI figures, §10);
    `export const meta = (args) => adminMeta(args, (t) => t("modules.orders"))` from `shell/meta` (keeps noindex and the
@@ -115,6 +123,27 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
    - settings: change requests this employee may decide — never their own, not expired, only keys they may change
      (`countDecidableSettingChanges`; settings.change.approve + settings.read, which the list needs) →
      `/admin/settings/changes`
+   - promotions (2026-11-12): requests of the module this employee may decide — coupon and rule terms past the limits,
+     flash sales, large gift cards and point adjustments — never their own (`countDecidable`; every permission of a
+     kind, `DECIDE_PERMISSIONS`) → `/admin/promotions/approvals` (its "to decide" list is exactly those)
+   - support (2026-11-12, `supportQueueCounts` — one query; each needs support.ticket.read, without which the inbox
+     lists nothing): open tickets escalated to this employee → `/admin/support?view=escalated_me`; open tickets nobody
+     holds (support.ticket.assign) → `?view=unassigned&kind=ticket`; their own tickets past due (support.ticket.reply)
+     → `?view=late&kind=ticket&assignee=me` (the module's `QUEUE_LINKS`; each count is that view's total)
+   - staff (2026-11-12): leave requests to decide — never their own, nor one they recorded, within their branch
+     (staff.leave.approve; `staffDecisions`) → `/admin/staff/leave` (its default view: pending); payroll runs to
+     approve or pay — never one they took part in, changed a salary in or that pays them, and never for a
+     branch-limited approver (staff.payroll.approve; `staffDecisions`) → `/admin/staff/payroll`; salary advances
+     waiting for a decision — never asked by or for the employee, within their branch (staff.payroll.approve; the
+     module home's own rule, `advancesToDecide` — counted with the module's other two queues, so a failure hides all
+     three and nothing else; review 2026-11-12) → `/admin/staff/payroll/advances?status=pending`
+   - operations (2026-11-12, `opsQueueCounts`): open critical findings nobody has (ops.consistency.resolve) →
+     `/admin/ops/consistency?severity=critical&assignee=none`; jobs failing, stuck or late (ops.job.run) →
+     `/admin/ops/jobs?view=attention`; open incidents past their target date (ops.incident.manage) →
+     `/admin/ops/incidents?view=overdue`
+   - content (2026-11-12, optional): the content module's policies (shipping, payment, privacy, terms) not approved yet
+     or with a draft waiting, never one whose draft this employee saved last (cms.page.publish; `policiesAwaiting`, the
+     module home's "approved") → `/admin/cms/pages`
 
    The module counts run at the same time as the shell's own batch (the "speed" test records every statement: the
    batch and every module's first query — the later modules' too — are sent before any comes back, and 60 more audit
@@ -131,9 +160,17 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
 
 - Every admin response: `Cache-Control: no-store`, `X-Robots-Tag: noindex, nofollow`, `<meta name="robots">`.
 - The gate's 403 for a module the role cannot see is thrown in middleware, so React Router renders it with the ROOT
-  error boundary (Arabic, no shell): that is the price of refusing before any module code runs. The landing page's 403
-  renders inside the shell. Asked of the lead: let `root.tsx`'s ErrorBoundary hand `/admin` paths to the shell's
-  `AdminErrorPage` (`shell/ErrorPage.tsx`).
+  error boundary (no shell): that is the price of refusing before any module code runs. It carries the admin's
+  language: an English admin reads English first, then the Arabic line, and "Back to the admin" (seen in the browser
+  2026-11-12, `.shots/platform/out/forbidden-cashier-1440-en.png`). The landing page's 403 renders inside the shell.
+- Server errors: `entry.server.tsx`'s `handleError` records what React Router catches on the server (not aborted
+  requests, not thrown Responses / `data()`) through module 23's `recordError`, inside `waitUntil` (2026-11-12) —
+  never a failed query's bound values (`describeServerError`: Drizzle writes them after "params:" in the message and
+  the stack; the record keeps the SQL and the database's reason), and a splat route under its pattern (`/admin/*`,
+  never one row per address). Review 2026-11-12, `tests/admin-platform-review.test.ts`.
+- `/admin/welcome`: nobody is signed in there, so its look-ups ("who is this link for?") count per address like the
+  password it sets (`checkPasswordLink(…, origin)`, the sign-in limit on a counter of its own); a page asked too often
+  says so (`rate_limited`) without the "open the full link" hint.
 - `next`: `adminNextPath()` = `safeNextPath(…, "/admin")` + a second decode check + never back to login/setup/logout.
 - The hop: only when `Sec-Fetch-Site: cross-site`, no session cookie visible and no `hop` marker yet; the page then
   `location.replace`s itself from its own origin (a link for no-JS). Browsers without fetch metadata just see the form.
@@ -157,6 +194,15 @@ npx vitest run tests/admin-shell.test.ts      # 36 tests: registry vs blueprint 
                                               # against the linked pages — each accepted trade-in's own page for the payouts —,
                                               # failures, speed, ctx.now, trade-in payouts per person, words), My security,
                                               # sign-out, language
+npx vitest run tests/admin-platform.test.ts   # 25 tests (2026-11-12): wave D's queues (promotions, support, staff, ops,
+                                              # content; a failing module hides only its own), the gate's exceptions
+                                              # (My day, the report POST, the password page, the enrolment-only session),
+                                              # the timing middleware and reporter, the wave's jobs, staff accounts and links,
+                                              # the hierarchy rule on sessions, two-step per role, handleError
+npx vitest run tests/admin-platform-review.test.ts # 8 tests (review 2026-11-12): a closed account's link stays dead,
+                                              # a new hire's unknown branch is a field error, the welcome page's look-ups
+                                              # are limited, a failing staff module hides its advances too, the commissions
+                                              # job keeps no pay, handleError keeps no query values and files splats by pattern
 npx vitest run tests/admin-integration.test.ts # what the modules take from each other (2026-11-11): shipping's guarded fee,
                                               # returns' targets and queues, pricing's limit words, every setting's help text,
                                               # finance's expenses and home link, customer names → profile
@@ -179,7 +225,11 @@ and 1440, light and dark, ar and en (`.shots/admin/`), no horizontal overflow, n
   devices module's card still counts every accepted trade-in: the two differ for an employee who cannot act on some
   of them — asked of the devices owner to count `toPay` the same way (then the shell can take it back).
 - Records (orders, customers, SKUs, serials, tickets) are not searchable from the palette (blueprint 01.06, module 01).
-- Trusted devices, requiring two-step verification for a role, other employees' sessions, disabling staff: modules 15/20.
+- Trusted devices: not built (module 20 / auth core). Requiring two-step verification per role is in the auth core
+  (2026-11-12) — the switch on module 20's role page is asked of that module; creating, enabling and password links
+  for staff are in the auth core — their screens are module 15's (asked).
+- The 15.06 approvals page lists the bell's queues AND the module's own leave and payroll decisions, which the bell
+  now counts too (2026-11-12): until module 15 drops its own copies there, they show twice on that page.
 - Recovery codes cannot be regenerated without turning two-step verification off and on (no service for it).
 - The admin offers Arabic and English only; the Sorani strings exist for the catalogue test and need a native reader.
 - Chromium only (no Safari/Firefox/real phones).

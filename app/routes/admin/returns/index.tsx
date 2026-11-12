@@ -265,7 +265,8 @@ function QueueCards({ counts, sla }: { counts: QueueCounts | null; sla: SlaTarge
       <div className="adm-grid">
         {cards.map((card) => {
           const count = counts[card.id] ?? 0;
-          const vars = { count, days: sla.warrantyEndingDays };
+          // The window is a setting (1–365 days): its noun agrees with the number (withinDays), never a fixed «يوماً».
+          const vars = { count, days: sla.warrantyEndingDays, within: t("withinDays", { count: sla.warrantyEndingDays }) };
           return (
             <article key={card.id} className={card.decide && count > 0 ? "adm-card adm-card--act" : "adm-card"}>
               <p className="flex items-center gap-2 type-caption text-ink-2">

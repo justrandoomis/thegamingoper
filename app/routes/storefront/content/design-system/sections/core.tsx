@@ -122,6 +122,17 @@ const COPY = defineCopy({
     scrollMe: "مرّر هنا: المحتوى يمر تحت الشريط الزجاجي.",
     results: "24 منتجاً",
     sample: "الأسعار وأسماء المنتجات هنا أمثلة للعرض.",
+    pageSoon: "قريباً · 19 تشرين الثاني",
+    pageStatus: "سطر الحالة بكلماتك (منتج قادم)، والسعر السابق على سطر 13px",
+    pageDemoWas: "سعر سابق تجريبي: يُشطب ولا يُقال «توفّر»",
+    segScroll: "روابط لا تتسع: المسار يتمرر جانبياً ويبقى الحالي ظاهراً (aria-current=\"true\" لقسم)",
+    assistant: "المساعد",
+    status: "حالة الصيانة",
+    tabsInView: "صف تبويبات أطول من مكانه: التبويب الحالي يبقى ظاهراً",
+    tabMore: "الأسئلة",
+    tabUsed: "المستعمل",
+    tabGuides: "الأدلة",
+    tabRepairs: "الصيانة",
   },
   en: {
     colours: "Colour and surfaces",
@@ -214,10 +225,21 @@ const COPY = defineCopy({
     scrollMe: "Scroll here: the content passes under the glass bar.",
     results: "24 products",
     sample: "Prices and product names here are display examples.",
+    pageSoon: "Coming soon · 19 November",
+    pageStatus: "The status line in your words (a coming product); the previous price on a 13px line",
+    pageDemoWas: "A demo previous price: struck, no «You save»",
+    segScroll: "Links that do not fit: the track scrolls sideways, the current one in view (aria-current=\"true\" for a section)",
+    assistant: "Assistant",
+    status: "Repair status",
+    tabsInView: "A row of tabs longer than its room: the current tab stays in view",
+    tabMore: "Questions",
+    tabUsed: "Used",
+    tabGuides: "Guides",
+    tabRepairs: "Repairs",
   },
   ckb: {
     colours: "ڕەنگ و ڕووکارەکان",
-    coloursNote: "سوور و سپی ناسنامەی فرۆشگایە، چوار ڕەنگی پلاتفۆرمەکان دەرگاکانین. هەموو شتێکی تر سپیی گەرم و گرافیت و هێڵی باریکە. --niche تەنها زەوی کاڵایە.",
+    coloursNote: "سوور و سپی ناسنامەی فرۆشگایە، چوار ڕەنگی پلاتفۆرمەکان دەرگاکانین. هەموو شتێکی تر سپیی گەرم و گرافیت و هێڵی باریکە. --niche تەنها زەوی بەرهەمە.",
     type: "فۆنت",
     typeNote: "نۆتۆ کووفی عەرەبی 700 بۆ ناونیشان لە 18 پیکسڵ بەرەوژوور و بۆ نرخ؛ پلێکس عەرەبی 400/600 بۆ هەموو ئەوەی دەخوێندرێتەوە. تەنها قەبارەی تەواو.",
     displaySample: "یاری بکە لەسەر",
@@ -255,10 +277,10 @@ const COPY = defineCopy({
     favAdd: "PlayStation 5 Slim بخە ناو دڵخوازەکان",
     favRemove: "PlayStation 5 Slim لە دڵخوازەکان لابە",
     next: "بازاڕی Xbox بکە",
-    share: "ئەم کاڵایە هاوبەش بکە",
+    share: "ئەم بەرهەمە هاوبەش بکە",
     links: "بەستەرەکان",
     linksNote: "مەرەکەبی 600 لەگەڵ هێڵێکی باریک کە لە ژێر نیشاندەردا مەرەکەب دەبێت، و تیرێک کە لەگەڵ ئاراستەی خوێندنەوە هەڵدەگەڕێتەوە. بەستەر هەرگیز سوور نییە.",
-    allOf: "هەموو کاڵاکانی PlayStation",
+    allOf: "هەموو بەرهەمەکانی PlayStation",
     edit: "ناونیشانەکە دەستکاری بکە",
     returnsBefore: "دەتوانیت ئامێرەکە لە ماوەی 7 ڕۆژدا بگەڕێنیتەوە. پێش داواکردن",
     returnsLink: "سیاسەتی گەڕاندنەوە",
@@ -304,8 +326,19 @@ const COPY = defineCopy({
     glass: "شووشە",
     glassNote: "شووشە تەنها بۆ شریتە باریکە جێگیرەکانە، لە هەر شاشەیەکدا دووان بە زۆری. لیست و پەڕە و دیالۆگ و ئاگادارکردنەوەکان ناڕوونن.",
     scrollMe: "لێرە بخولێنەوە: ناوەڕۆکەکە بە ژێر شریتە شووشەییەکەدا تێدەپەڕێت.",
-    results: "24 کاڵا",
-    sample: "نرخ و ناوی کاڵاکان لێرە نموونەی پیشاندانن.",
+    results: "24 بەرهەم",
+    sample: "نرخ و ناوی بەرهەمەکان لێرە نموونەی پیشاندانن.",
+    pageSoon: "بەم زووانە · 19ی تشرینی دووەم",
+    pageStatus: "دێڕی دۆخ بە وشەی خۆت (بەرهەمێکی داهاتوو)؛ نرخی پێشوو لە دێڕێکی 13px",
+    pageDemoWas: "نرخی پێشووی نموونەیی: هێڵی بەسەردا دێت، «پاشەکەوت» ناگوترێت",
+    segScroll: "بەستەرێک کە جێی نابێتەوە: ڕێڕەوەکە بە لادا دەجووڵێت و ئێستاکە دیار دەمێنێت (aria-current=\"true\" بۆ بەشێک)",
+    assistant: "یاریدەدەر",
+    status: "دۆخی چاککردنەوە",
+    tabsInView: "ڕیزێک تاب درێژتر لە شوێنەکەی: تابی ئێستا دیار دەمێنێت",
+    tabMore: "پرسیارەکان",
+    tabUsed: "بەکارهاتوو",
+    tabGuides: "ڕێبەرەکان",
+    tabRepairs: "چاککردنەوە",
   },
 });
 
@@ -733,6 +766,21 @@ function Choices({ c }: { c: C }) {
             ]}
           />
         </Specimen>
+        <Specimen label={`<Segmented current="true"> · ${c.segScroll}`}>
+          <div className="max-w-[17rem]">
+            <Segmented
+              aria-label={c.supportNav}
+              value="status"
+              current="true"
+              options={[
+                { value: "help", label: c.help, href: "/support" },
+                { value: "assistant", label: c.assistant, href: "/support/assistant" },
+                { value: "repair", label: c.repair, href: "/support/repair" },
+                { value: "status", label: c.status, href: "/support/repair/status" },
+              ]}
+            />
+          </div>
+        </Specimen>
         <Specimen label="<Tabs> (panels switch in place; 2px ink underline)" wide>
           <Tabs
             aria-label={c.specs}
@@ -742,6 +790,23 @@ function Choices({ c }: { c: C }) {
               { value: "compat", label: c.compat, content: <p className="type-body">{c.compatText}</p> },
             ]}
           />
+        </Specimen>
+        <Specimen label={`<Tabs defaultValue> · ${c.tabsInView}`}>
+          <div className="max-w-[17rem]">
+            <Tabs
+              aria-label={c.specs}
+              defaultValue="more"
+              items={[
+                { value: "specs", label: c.specs, content: <p className="type-body">{c.specsText}</p> },
+                { value: "box", label: c.inBox, content: <p className="type-body">{c.inBoxText}</p> },
+                { value: "compat", label: c.compat, content: <p className="type-body">{c.compatText}</p> },
+                { value: "guides", label: c.tabGuides, content: <p className="type-body">{c.tabGuides}</p> },
+                { value: "repairs", label: c.tabRepairs, content: <p className="type-body">{c.tabRepairs}</p> },
+                { value: "used", label: c.tabUsed, content: <p className="type-body">{c.tabUsed}</p> },
+                { value: "more", label: c.tabMore, content: <p className="type-body">{c.tabMore}</p> },
+              ]}
+            />
+          </div>
         </Specimen>
       </SpecimenGrid>
     </DsBlock>
@@ -852,6 +917,12 @@ function Prices({ c }: { c: C }) {
         </Specimen>
         <Specimen label='<PriceTag size="page" stock deliveryIqd demo>' wide>
           <PriceTag size="page" priceIqd={667_750} stock="in_stock" deliveryIqd={5_000} demo />
+        </Specimen>
+        <Specimen label={`<PriceTag size="page" compareAtIqd stock="preorder" status> · ${c.pageStatus}`} wide>
+          <PriceTag size="page" priceIqd={99_000} compareAtIqd={115_000} stock="preorder" status={c.pageSoon} deliveryIqd={5_000} />
+        </Specimen>
+        <Specimen label={`<PriceTag size="page" compareAtIqd compareAtDemo demo> · ${c.pageDemoWas}`} wide>
+          <PriceTag size="page" priceIqd={435_000} compareAtIqd={455_000} compareAtDemo stock="in_stock" deliveryIqd={5_000} demo />
         </Specimen>
         <Specimen label="<SafePrice amountIqd={NaN}> (never a number)">
           <SafePrice amountIqd={Number.NaN} />

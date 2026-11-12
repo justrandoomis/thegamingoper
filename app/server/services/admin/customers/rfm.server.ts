@@ -19,7 +19,8 @@ import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { customerSegmentMembers, customerSegments } from "~/server/db/schema";
 import { chunkRows, runBatch } from "~/server/db/tx.server";
 import { actorId, num } from "./shared.server";
-import { RFM_RULES, RFM_SEGMENTS, rfmOf, rfmSegmentKey, type RfmFacts, type RfmScore, type RfmSegment } from "./types";
+import { customerRules } from "./rules.server";
+import { RFM_SEGMENTS, rfmOf, rfmSegmentKey, type RfmFacts, type RfmRules, type RfmScore, type RfmSegment } from "./types";
 
 export const NO_FACTS: RfmFacts = { purchases: 0, monetaryIqd: 0, lastPurchaseAt: null };
 
@@ -68,13 +69,13 @@ export async function rfmFacts(db: Db, customerIds?: readonly string[]): Promise
 }
 
 /** Every customer that can be a member (not merged, not erased) with its live segment. */
-async function liveSegments(db: Db, now: number): Promise<{ members: Map<RfmSegment, string[]>; grid: number[][] }> {
+async function liveSegments(db: Db, now: number, rules: RfmRules): Promise<{ members: Map<RfmSegment, string[]>; grid: number[][] }> {
   const [customersRows, facts] = await Promise.all([db.all<{ id: string }>(sql`SELECT id FROM customers WHERE status IN ('active', 'blocked')`), rfmFacts(db)]);
   const members = new Map<RfmSegment, string[]>(RFM_SEGMENTS.map((segment) => [segment, []]));
   // grid[r][f] for r, f in 0..5 (0 = no purchase)
   const grid = Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => 0));
   for (const { id } of customersRows) {
-    const rfm = rfmOf(facts.get(id) ?? NO_FACTS, now);
+    const rfm = rfmOf(facts.get(id) ?? NO_FACTS, now, rules);
     members.get(rfm.segment)?.push(id);
     grid[rfm.r][rfm.f]++;
   }
@@ -91,14 +92,17 @@ export type SegmentOverview = {
   /** True when the stored membership no longer matches what the orders say now. */
   stale: boolean;
   canRecompute: boolean;
+  /** The bounds in force (the setting customers.rfm_rules — follow-up 2026-11-12; RFM_RULES its default). */
+  rules: RfmRules;
 };
 
 /** The segments page (07.02): stored membership from the last recompute next to what the orders say now. */
 export async function segmentOverview(db: Db, actor: Actor, now: number): Promise<SegmentOverview> {
   assertCan(actor, "customers.customer.read");
+  const { rfm: rules } = await customerRules(db);
   const [stored, live] = await Promise.all([
     db.select({ key: customerSegments.key, count: customerSegments.memberCount, computedAt: customerSegments.computedAt }).from(customerSegments).where(like(customerSegments.key, "rfm.%")),
-    liveSegments(db, now),
+    liveSegments(db, now, rules),
   ]);
   const byKey = new Map(stored.map((row) => [row.key, row]));
   const rows: SegmentRow[] = RFM_SEGMENTS.map((segment) => {
@@ -108,7 +112,7 @@ export async function segmentOverview(db: Db, actor: Actor, now: number): Promis
   const computedAt = stored.reduce<number | null>((latest, row) => (row.computedAt !== null && (latest === null || row.computedAt > latest) ? row.computedAt : latest), null);
   const grid = ([5, 4, 3, 2, 1, 0] as RfmScore[]).map((r) => ({ r, cells: ([0, 1, 2, 3, 4, 5] as RfmScore[]).map((f) => ({ f, count: live.grid[r][f] })) }));
   const total = rows.reduce((sum, row) => sum + row.now, 0);
-  return { rows, grid, computedAt, total, stale: rows.some((row) => row.stored !== row.now), canRecompute: can(actor, "customers.segment.manage") };
+  return { rows, grid, computedAt, total, stale: rows.some((row) => row.stored !== row.now), canRecompute: can(actor, "customers.segment.manage"), rules };
 }
 
 /**
@@ -117,7 +121,8 @@ export async function segmentOverview(db: Db, actor: Actor, now: number): Promis
  */
 export async function recomputeSegments(db: Db, actor: Actor, now: number): Promise<{ counts: Record<RfmSegment, number>; total: number }> {
   assertCan(actor, "customers.segment.manage");
-  const { members } = await liveSegments(db, now);
+  const { rfm: rules } = await customerRules(db);
+  const { members } = await liveSegments(db, now, rules);
   const counts = Object.fromEntries(RFM_SEGMENTS.map((segment) => [segment, members.get(segment)?.length ?? 0])) as Record<RfmSegment, number>;
   const segmentIds = RFM_SEGMENTS.map(segmentRowId);
   const statements: BatchStatement[] = [];
@@ -127,7 +132,7 @@ export async function recomputeSegments(db: Db, actor: Actor, now: number): Prom
       key: rfmSegmentKey(segment),
       name: SEGMENT_NAMES[segment],
       description: `RFM segment "${segment}" (admin 07.02)`,
-      rules: { kind: "rfm", segment, rules: RFM_RULES },
+      rules: { kind: "rfm", segment, rules },
       isDynamic: true,
       memberCount: counts[segment],
       computedAt: now,
@@ -146,7 +151,7 @@ export async function recomputeSegments(db: Db, actor: Actor, now: number): Prom
   const rows = RFM_SEGMENTS.flatMap((segment) => (members.get(segment) ?? []).map((customerId) => ({ segmentId: segmentRowId(segment), customerId, addedAt: now })));
   for (const chunk of chunkRows(customerSegmentMembers, rows)) statements.push(db.insert(customerSegmentMembers).values(chunk));
   const total = rows.length;
-  statements.push(auditStatement(db, { actor, action: "customers.segment.recompute", entityType: "customer_segment", entityId: "rfm", after: { counts, total, rules: RFM_RULES }, at: now }));
+  statements.push(auditStatement(db, { actor, action: "customers.segment.recompute", entityType: "customer_segment", entityId: "rfm", after: { counts, total, rules }, at: now }));
   await runBatch(db, statements);
   return { counts, total };
 }

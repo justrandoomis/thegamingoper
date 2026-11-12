@@ -19,7 +19,7 @@ import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
 import { loadShell } from "~/server/shell.server";
-import { fontPreloadLinks } from "~/styles/fonts";
+import { preloadFonts } from "~/styles/fonts";
 import "./app.css";
 
 export const middleware: Route.MiddlewareFunction[] = [requestContextMiddleware];
@@ -108,6 +108,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // Root data is missing when a page fails before any loader ran (the admin gate refuses in middleware): the nonce
   // then comes from the server render or from the document (app/lib/nonce.tsx), the same on both sides.
   const nonce = useNonce(data?.nonce);
+  // The two critical font files of this language's script (app/styles/fonts.ts), through React's preload():
+  // React hoists them into <head> once — <link> elements were fetched twice in development (StrictMode remounts).
+  preloadFonts(LOCALES[locale].script);
   return (
     <html lang={LOCALES[locale].bcp47} dir={LOCALES[locale].dir} data-theme={theme} data-store-mode={data?.storeMode} suppressHydrationWarning>
       <head>
@@ -116,10 +119,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="color-scheme" content="light dark" />
         <meta name="theme-color" media="(prefers-color-scheme: light)" content={theme === "dark" ? THEME_COLOR.dark : THEME_COLOR.light} />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content={theme === "light" ? THEME_COLOR.light : THEME_COLOR.dark} />
-        {/* the two critical font files of this language's script (app/styles/fonts.ts) */}
-        {fontPreloadLinks(LOCALES[locale].script).map((font) => (
-          <link key={font.href} rel="preload" as="font" href={font.href} type={font.type} crossOrigin="anonymous" />
-        ))}
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} suppressHydrationWarning />
         {/* Motion tier (data-motion + fx-low) before first paint — see app/motion/tier-script.ts */}
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: MOTION_TIER_SCRIPT }} suppressHydrationWarning />

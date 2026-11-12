@@ -1,10 +1,11 @@
-import { useId, type CSSProperties, type ReactNode } from "react";
+import { useId, useRef, type CSSProperties, type ReactNode } from "react";
 
 import type { IconName } from "~/art/Icon";
 import { LocaleLink } from "~/i18n/react";
 import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { keyIcon } from "./Key";
+import { revealFocusedItem, useKeepInView } from "./reveal";
 import { useControllable, useRovingRadio } from "./roving";
 
 /**
@@ -19,7 +20,10 @@ import { useControllable, useRovingRadio } from "./roving";
  *   <Segmented aria-label={t("support")} value="help" options={[{ value: "help", label: …, href: "/support" }, …]} />
  *
  * Choice mode is a radiogroup: one tab stop, arrows follow the reading direction, Home/End, selection follows focus.
- * Link mode (every option has `href`) is a <nav> of links with `aria-current="page"` on the current one.
+ * Link mode (every option has `href`) is a <nav> of links with `aria-current="page"` on the current one (`current="true"`
+ * when the segment is the section the page belongs to, not the page itself). Its segments keep their words: when they
+ * do not fit (Sorani or English on a narrow phone) the track scrolls sideways — the current one kept in view, a focused
+ * one brought into view — instead of cutting a label.
  */
 export type SegmentedOption = {
   value: string;
@@ -47,12 +51,28 @@ export type SegmentedProps = {
   name?: string;
   /** Shrink to the content instead of filling the row. */
   inline?: boolean;
+  /** Link mode: `aria-current` of the current segment — "page" (default) or "true" (a section of the site). */
+  current?: "page" | "true";
   className?: string;
   style?: CSSProperties;
 };
 
-export function Segmented({ options, value, defaultValue = null, onChange, onIntent, "aria-label": ariaLabel, "aria-labelledby": labelledBy, name, inline = false, className, style }: SegmentedProps) {
+export function Segmented({
+  options,
+  value,
+  defaultValue = null,
+  onChange,
+  onIntent,
+  "aria-label": ariaLabel,
+  "aria-labelledby": labelledBy,
+  name,
+  inline = false,
+  current: currentKind = "page",
+  className,
+  style,
+}: SegmentedProps) {
   const id = useId();
+  const nav = useRef<HTMLElement | null>(null);
   const [current, setCurrent] = useControllable(value, defaultValue, onChange);
   const { itemProps } = useRovingRadio({
     values: options.map((option) => option.value),
@@ -61,6 +81,8 @@ export function Segmented({ options, value, defaultValue = null, onChange, onInt
     onChange: setCurrent,
   });
   const links = options.length > 0 && options.every((option) => option.href);
+  // link mode scrolls when its words do not fit: the current segment in view on the first paint and on each change
+  useKeepInView(nav, "[aria-current]", links ? current : null);
   const body = (option: SegmentedOption) => (
     <>
       {keyIcon(option.icon, 20)}
@@ -76,14 +98,26 @@ export function Segmented({ options, value, defaultValue = null, onChange, onInt
 
   if (links) {
     return (
-      <nav aria-label={ariaLabel} aria-labelledby={labelledBy} className={cx("seg", inline && "seg--inline justify-self-start", className)} style={style}>
+      <nav
+        ref={nav}
+        aria-label={ariaLabel}
+        aria-labelledby={labelledBy}
+        // each segment at least its words' width, the spare room shared out; past the row's width the track scrolls
+        className={cx(
+          "seg [grid-auto-columns:minmax(max-content,1fr)] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>a:focus-visible]:-outline-offset-2",
+          inline && "seg--inline justify-self-start",
+          className,
+        )}
+        style={style}
+        onFocus={revealFocusedItem}
+      >
         {options.map((option) => (
           <LocaleLink
             key={option.value}
             to={option.href as string}
             className="seg__opt"
             data-press="soft"
-            aria-current={option.value === current ? "page" : undefined}
+            aria-current={option.value === current ? currentKind : undefined}
             aria-label={option.ariaLabel}
           >
             {body(option)}

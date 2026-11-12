@@ -18,6 +18,9 @@ export const ACCOUNT_SECTIONS = [
   { key: "notifications", to: "/account/notifications", icon: "bell", order: 7 },
   { key: "profile", to: "/account/profile", icon: "user-gear", order: 8 },
   { key: "settings", to: "/account/settings", icon: "gear", order: 9 },
+  // 2026-11-12 — between the wallet and the addresses, and after the settings (the push order follows the list)
+  { key: "rewards", to: "/account/rewards", icon: "star", order: 2.5 },
+  { key: "privacy", to: "/account/privacy", icon: "lock", order: 9.5 },
 ] as const satisfies readonly { key: string; to: string; icon: IconName; order: number }[];
 
 export type AccountSectionKey = (typeof ACCOUNT_SECTIONS)[number]["key"];
@@ -32,8 +35,8 @@ export const sectionOrder = (key: AccountSectionKey): number => ACCOUNT_SECTIONS
  */
 const GROUPS: readonly { key: "groupOrders" | "groupMoney" | "groupAccount"; items: readonly NavKey[] }[] = [
   { key: "groupOrders", items: ["orders", "returns", "warranties"] },
-  { key: "groupMoney", items: ["wallet"] },
-  { key: "groupAccount", items: ["addresses", "devices", "wishlist", "notifications", "profile", "settings"] },
+  { key: "groupMoney", items: ["wallet", "rewards"] },
+  { key: "groupAccount", items: ["addresses", "devices", "wishlist", "notifications", "profile", "settings", "privacy"] },
 ];
 
 const WISHLIST = { key: "wishlist", to: "/wishlist", icon: "heart", order: 10 } as const;

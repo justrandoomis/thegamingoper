@@ -103,7 +103,7 @@ export default function TicketPage({ loaderData }: Route.ComponentProps) {
           {ticket.can.assign ? <TriagePanel ticket={ticket} /> : null}
           <ContactPanel ticket={ticket} />
           <LinksPanel ticket={ticket} />
-          {ticket.can.escalate && !escalatedAway ? <EscalatePanel data={loaderData} /> : null}
+          {ticket.can.escalate && (!escalatedAway || ticket.can.passOn) ? <EscalatePanel data={loaderData} passOn={Boolean(escalatedAway && ticket.can.passOn)} /> : null}
           {ticket.assistant ? <AssistantPanel ticket={ticket} /> : null}
           {ticket.photos.length ? <PhotosPanel ticket={ticket} /> : null}
         </aside>
@@ -771,7 +771,8 @@ function EscalationBanner({ data }: { data: Data }) {
   );
 }
 
-function EscalatePanel({ data }: { data: Data }) {
+/** Escalate to a decider — or, for the holder of an open escalation (or a cover), pass it on to another one. */
+function EscalatePanel({ data, passOn = false }: { data: Data; passOn?: boolean }) {
   const t = useSupportT();
   const { ticket, targets } = data;
   const [open, setOpen] = useState(false);
@@ -783,12 +784,12 @@ function EscalatePanel({ data }: { data: Data }) {
   return (
     <section className="sup-panel sup-noprint" aria-labelledby="ticket-escalate">
       <h2 id="ticket-escalate" className="adm-h3">
-        {t("escalation.title")}
+        {t(passOn ? "escalation.passTitle" : "escalation.title")}
       </h2>
-      <p className="type-caption text-ink-2">{t("escalation.lead")}</p>
+      <p className="type-caption text-ink-2">{t(passOn ? "escalation.passLead" : "escalation.lead")}</p>
       <div>
         <Key size="sm" icon="flag" onClick={() => setOpen(true)}>
-          {t("escalation.open")}
+          {t(passOn ? "escalation.passOpen" : "escalation.open")}
         </Key>
       </div>
       {open ? (

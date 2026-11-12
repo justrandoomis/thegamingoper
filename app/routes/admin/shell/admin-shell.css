@@ -46,6 +46,10 @@
     .adm {
       grid-template-columns: var(--adm-rail-w) minmax(0, 1fr);
     }
+    /* no rail without shell data (the password-set page, a shell whose own data failed): one column */
+    .adm[data-nav="none"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .adm-skip:focus-visible {
@@ -247,6 +251,10 @@
   @media (min-width: 75rem) {
     .adm-top .adm-top__brand {
       display: none;
+    }
+    /* …unless there is no rail to carry the logo */
+    .adm[data-nav="none"] .adm-top .adm-top__brand {
+      display: flex;
     }
   }
   .adm-top__spacer {

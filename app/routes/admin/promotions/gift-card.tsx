@@ -6,12 +6,12 @@ import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { getGiftCard, revealGiftCardCode, voidGiftCard } from "~/server/services/admin/promotions/giftcards.server";
 import { SECTION_READ } from "~/server/services/admin/promotions/shared.server";
-import { GIFT_CARD, GIFT_CARD_STATUS_TONE } from "~/server/services/admin/promotions/types";
+import { GIFT_CARD_STATUS_TONE } from "~/server/services/admin/promotions/types";
 import { promotionsDataKey } from "./env.server";
 import { promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
 import { OnceCode } from "./gift-code";
-import { ConfirmAction, DemoNote, Facts, History, Money, Notice, Section, ToneStatus, usePromotionsT, When } from "./ui";
+import { ConfirmAction, DemoNote, Facts, History, Money, Notice, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/gift-cards/:cardId — 08.07, one card: amount, balance, state, dates, who issued and redeemed it,
@@ -41,6 +41,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, "gift.cardTitle", { hint: args.loaderData?.card.hint ?? "" });
 
 export default function GiftCardPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const { card } = loaderData;
   const f = useFormat();
@@ -101,7 +102,7 @@ export default function GiftCardPage({ loaderData }: Route.ComponentProps) {
         <aside className="prm-side prm-noprint" aria-label={t("common.side")}>
           <div className="prm-panel">
             <p className="adm-h3">{t("gift.code.title")}</p>
-            <p className="type-body text-ink-2">{t("gift.code.what", { n: GIFT_CARD.revealLimit.limit })}</p>
+            <p className="type-body text-ink-2">{t("gift.code.what", { n: program.giftCard.revealLimit.limit })}</p>
             {!card.dataKeyReady ? <Notice tone="warn" icon="warning">{t("errors.data_key_missing")}</Notice> : null}
             {card.can.reveal ? (
               <ConfirmAction

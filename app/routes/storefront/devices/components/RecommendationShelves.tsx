@@ -30,7 +30,7 @@
  * React Suspense here on purpose: a revealed boundary that suspends again would hold the whole navigation (hub
  * filters) until the suggestions arrive.
  */
-import { useEffect, useId, useState, type FocusEvent, type MouseEvent } from "react";
+import { useEffect, useId, useState, type MouseEvent } from "react";
 
 import type { ProductCardData, Shelf } from "~/lib/dto";
 import { Bubble, BubbleGroup } from "~/motion";
@@ -44,7 +44,6 @@ import { SectionHead } from "~/ui/SectionHead";
 import { ShelfRail } from "~/ui/ShelfRail";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { drawableShelves } from "./format";
-import { revealInline } from "./reveal";
 import { useSafeRetry } from "./retry";
 import { sendRecommendationEvent } from "./signals";
 
@@ -141,17 +140,6 @@ export function RecommendationShelves({ result, source, headingLevel, sizes, lay
 
 /* ───────────────────────────── the pieces (the device hub's streamed setup shelf draws with them too) ───────────────────────────── */
 
-/**
- * A card of a phone rail that takes keyboard focus is brought fully into the rail (WCAG 2.4.11): browsers leave a
- * partly shown card where it is. The rail scrolls, never the page; from 1024 the rail is a grid and nothing moves.
- */
-function revealCard(event: FocusEvent<HTMLElement>) {
-  const target = event.target instanceof HTMLElement ? event.target : null;
-  const rail = target?.closest<HTMLElement>("ul");
-  const item = target?.closest<HTMLElement>("li");
-  if (rail && item && event.currentTarget.contains(rail)) revealInline(rail, item);
-}
-
 /** Cards in a narrower column (cart, order): at most four whole cards from 1024 (the kit's rail is five from 1280). */
 const COLUMN_RAIL = "2xl:grid-cols-4 2xl:[&>li:nth-child(5)]:hidden";
 const COLUMN_SIZES = "(min-width: 1024px) 200px, (min-width: 768px) 30vw, 46vw";
@@ -166,7 +154,7 @@ export function ShelfStack({ shelves, headingLevel = 2, sizes, layout = "page" }
   return (
     <>
       {shelves.map((shelf) => (
-        <BubbleGroup key={shelf.key} stagger className="min-w-0" onFocus={revealCard}>
+        <BubbleGroup key={shelf.key} stagger className="min-w-0">
           {layout === "column" ? (
             <ColumnShelf shelf={shelf} headingLevel={headingLevel} sizes={sizes ?? COLUMN_SIZES} cardLevel={cardLevel} />
           ) : (

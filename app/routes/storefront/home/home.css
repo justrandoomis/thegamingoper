@@ -25,7 +25,8 @@
   .home-hero__body {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "pill" "title" "media" "price" "buy" "line";
+    /* "facts" is empty on phones (no fact line there) but for a pinned hero's product name */
+    grid-template-areas: "pill" "title" "facts" "media" "price" "buy" "line";
     justify-items: start;
     padding: 20px;
   }
@@ -41,6 +42,20 @@
   }
   .home-hero__facts {
     grid-area: facts;
+    display: none;
+  }
+  /* a pinned hero (content module): the staff's headline no longer names the product, so its name shows under it on
+   * every width (card type, the band's ink); the staff's deck follows it from 768 */
+  .home-hero__facts--pinned {
+    display: grid;
+    gap: var(--s-1);
+    margin-block-start: var(--s-1);
+  }
+  .home-hero__name {
+    font: var(--type-card);
+    color: var(--on-showcase);
+  }
+  .home-hero__deck {
     display: none;
   }
   .home-hero__media {
@@ -124,6 +139,12 @@
       margin-block-start: var(--s-2);
       font: var(--type-lead);
       color: var(--on-showcase-2);
+    }
+    .home-hero__facts--pinned {
+      display: grid;
+    }
+    .home-hero__deck {
+      display: block;
     }
     /* the product takes the band's full height but for a little air (it reaches into the band's padding) */
     .home-hero__media {
@@ -387,40 +408,8 @@
       animation-timing-function: var(--spring-inflate);
     }
   }
-  /* a tile is a toggle here, not a door: no arrow; chosen = held on its wall, ringed inside, and checked. It is a
-   * <button>, so its words take the reading edge explicitly (a button centres its text by default) */
-  .intro__tiles .ptile {
-    text-align: start;
-  }
-  .intro .ptile__go {
-    display: none;
-  }
-  .intro__check {
-    position: absolute;
-    inset-block-start: 10px;
-    inset-inline-start: 10px;
-    display: grid;
-    place-items: center;
-    inline-size: 32px;
-    block-size: 32px;
-    border-radius: var(--r-full);
-    background: var(--on-color);
-    color: var(--on-white);
-    opacity: 0;
-    scale: 0.6;
-    transition:
-      opacity var(--t-micro) var(--ease-water),
-      scale var(--spring-inflate-t) var(--spring-inflate);
-  }
-  .intro .intro__tiles .ptile[aria-pressed="true"] > .ptile__cap {
-    transform: translateY(var(--wall));
-    outline: 3px solid currentColor;
-    outline-offset: -7px;
-  }
-  .intro__tiles .ptile[aria-pressed="true"] .intro__check {
-    opacity: 1;
-    scale: 1;
-  }
+  /* a tile is a toggle here, not a door: the kit's `selected` tile (PlatformTile) draws it — no arrow; chosen = held
+   * on its wall, ringed inside and checked, its words at the reading edge */
   .intro__hint {
     font: var(--type-sm);
     color: var(--ink-2);
@@ -439,10 +428,6 @@
     .intro__panel {
       inline-size: min(100%, 44rem);
     }
-    .intro__check {
-      inset-block: auto 16px;
-      inset-inline-start: 18px;
-    }
     .intro__start {
       justify-self: center;
       inline-size: min(100%, 20rem);
@@ -455,12 +440,6 @@
     .intro__panel {
       inline-size: min(100%, 1020px); /* four 240px tiles and their gaps */
     }
-    .intro__check {
-      inset-block-end: 18px;
-      inset-inline-start: 22px;
-      inline-size: 40px;
-      block-size: 40px;
-    }
   }
   /* any tap during the sequence jumps to the end; reduced motion shows the still composition; the lite tier has no
    * staggered inflate (DESIGN.md §6.5, §7.3) */
@@ -468,19 +447,11 @@
     :is(.intro__logo, .intro__logo [data-part], .intro__corner, .intro__line, .intro__tile, .intro__hint, .intro__start) {
     animation: none;
   }
-  .intro:is([data-tier="reduced"], [data-tier="lite"]) .intro__check {
-    transition: none;
-  }
   .intro[data-tier="reduced"] .intro__floor {
     animation-duration: 120ms;
   }
   .intro[data-leaving] {
     pointer-events: none;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .intro__check {
-      transition: none;
-    }
   }
 
   @keyframes intro-fade {

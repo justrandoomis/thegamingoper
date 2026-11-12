@@ -71,6 +71,7 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
       "sourceUrl": "https://assets.nintendo.com/…",
       "sourcePage": "https://www.nintendo.com/…",
       "kind": "hero",                          // hero | angle | detail | in-box | box-art | screenshot
+      "view": "back",                          // optional: the picture shows the object's back (ports, stand) — never a tile or lead picture; never the first image
       "alt": { "ar": "…", "en": "…", "ckb": "…" },
       "credit": "Nintendo",
       "width": 1600, "height": 1200, "transparent": true

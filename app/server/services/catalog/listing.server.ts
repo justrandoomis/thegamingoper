@@ -71,8 +71,8 @@ import type { Db } from "~/server/db/drizzle.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { invalid, zodFieldErrors } from "~/server/errors";
 import { DEFAULT_LOW_STOCK } from "~/server/services/inventory/stock.server";
-import { shoppingTier, shownStockRank } from "./card-facts";
-import { getCardsByIds, MAX_CARD_IDS, previousPriceEvidence } from "./cards.server";
+import { shoppingTier, shortModelName, shownStockRank } from "./card-facts";
+import { CARD_VARIANT_ORDER_OF_CV, getCardsByIds, MAX_CARD_IDS, previousPriceEvidence, VARIANT_STATE_OF_CV } from "./cards.server";
 
 export {
   ARABIC_LEVELS,
@@ -252,8 +252,7 @@ function universeStatement(scope: ListingScope, now: number): SQL {
   const extra = ctes.length > 0 ? sql`${sql.join(ctes, sql`,\n`)},\n` : sql``;
   return sql`WITH RECURSIVE
 ${extra}cv AS (
-  SELECT v.id, v.product_id, v.price_iqd, v.compare_at_iqd,
-    ROW_NUMBER() OVER (PARTITION BY v.product_id ORDER BY v.is_default DESC, v.sort ASC, v.id ASC) AS rn,
+  SELECT v.id, v.product_id, v.price_iqd, v.compare_at_iqd, v.is_default, v.sort,
     ${freeUnits(sql`v.id`, "f")} AS free,
     (SELECT CASE WHEN COUNT(ts.reorder_point) > 0 THEN SUM(ts.reorder_point) ELSE ${DEFAULT_LOW_STOCK} END
        FROM stock_levels AS ts JOIN inventory_locations AS tl ON tl.id = ts.location_id
@@ -265,13 +264,9 @@ ${extra}cv AS (
   WHERE v.is_active = 1 AND p.status = 'published' AND ${where}
 ),
 vs AS (
-  SELECT cv.id, cv.product_id, cv.rn, cv.price_iqd, cv.compare_at_iqd,
-    MAX(CASE
-      WHEN cv.sets IS NOT NULL THEN (CASE WHEN cv.sets <= 0 THEN 0 WHEN cv.sets <= ${DEFAULT_LOW_STOCK} THEN 1 ELSE 2 END)
-      WHEN COALESCE(cv.free, 0) <= 0 THEN 0
-      WHEN cv.free <= cv.low THEN 1
-      ELSE 2
-    END) OVER (PARTITION BY cv.product_id) AS best
+  SELECT cv.id, cv.product_id, cv.price_iqd, cv.compare_at_iqd,
+    ROW_NUMBER() OVER (PARTITION BY cv.product_id ORDER BY ${CARD_VARIANT_ORDER_OF_CV}) AS rn,
+    MAX(${VARIANT_STATE_OF_CV}) OVER (PARTITION BY cv.product_id) AS best
   FROM cv
 ),
 c AS (
@@ -695,7 +690,10 @@ function categoryChain(dict: Dictionaries): (categoryId: string | null) => strin
 
 function hubOf(scope: ListingScope, rows: readonly ListingRow[], dict: Dictionaries, locale: Locale): ListingHub | null {
   const deviceCount = (slug: string) => rows.filter((row) => row.devices.includes(slug)).length;
-  const shortcut = (row: DeviceRow): DeviceShortcut => ({ slug: row.slug, name: pick(l10n(row.name), locale), platform: row.platform, artKey: row.art_key, count: deviceCount(row.slug) });
+  const shortcut = (row: DeviceRow): DeviceShortcut => {
+    const name = pick(l10n(row.name), locale);
+    return { slug: row.slug, name, short: shortModelName(row.slug, name), platform: row.platform, artKey: row.art_key, count: deviceCount(row.slug) };
+  };
 
   if (scope.kind === "platform") {
     const platform = dict.platforms.find((row) => row.slug === scope.slug);

@@ -336,6 +336,30 @@ export function postWalletCredit(
 }
 
 /**
+ * Money paid OUT of a customer's wallet (since 2026-11-12 — wallet.server.ts decideWalletPayout: an erasure, an account
+ * closed): Dr wallet liability, Cr where the money leaves from (cash handed over, or a bank transfer). The opposite of
+ * postWalletCredit; keyed per ledger row like it (`wallet:<ledger id>`).
+ */
+export function postWalletDebit(
+  db: Db,
+  input: PostingContext & { ledgerEntryId: string; customerId: string; amountIqd: number; creditAccount: "cash" | "bank_clearing"; memo?: string },
+): BatchStatement[] {
+  return journalStatements(db, {
+    at: input.at,
+    memo: input.memo ?? "Wallet paid out",
+    refType: "wallet_ledger",
+    refId: input.ledgerEntryId,
+    createdBy: input.createdBy,
+    idempotencyKey: walletCreditPostingKey(input.ledgerEntryId),
+    isDemo: input.isDemo,
+    lines: [
+      { accountCode: "wallet_liability", debitIqd: input.amountIqd },
+      { accountCode: input.creditAccount, creditIqd: input.amountIqd },
+    ],
+  });
+}
+
+/**
  * Goods received into stock at landed cost [P]: Dr inventory, Cr what pays for them (accounts
  * payable for a supplier invoice, cash or bank clearing when paid at once, owner equity for an
  * opening balance). For the purchasing module; receiveStock() does not post by itself.

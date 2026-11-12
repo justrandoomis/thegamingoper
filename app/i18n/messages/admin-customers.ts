@@ -9,6 +9,9 @@ import { defineMessages } from "../translate";
 export default defineMessages({
   ar: {
     title: "العملاء وإدارة العلاقة",
+    /** A span of days whose noun agrees with the number (the windows are settings since 2026-11-12: any 1–3650). */
+    withinDays: { zero: "اليوم نفسه", one: "خلال يوم واحد", two: "خلال يومين", few: "خلال {count} أيام", many: "خلال {count} يوماً", other: "خلال {count} يوم" },
+    afterDays: { zero: "يوم", one: "بعد يوم واحد", two: "بعد يومين", few: "بعد {count} أيام", many: "بعد {count} يوماً", other: "بعد {count} يوم" },
     lead: "ملف كل عميل كاملاً: مشترياته ومرتجعاته وضماناته ومحفظته وموافقاته وما كُتب عنه. الأرقام من الطلبات الحقيقية، وكل وسم يأتي مع سببه، وكل تغيير يُسجَّل مع الفاعل والسبب.",
     eyebrow: "القسم {id} · {priority}",
     demo: "تجريبي",
@@ -87,12 +90,12 @@ export default defineMessages({
       kind: { vip: "مميز", risk: "خطر", complaint: "شكوى" },
       rules: {
         vip_manual: { title: "مميز بوسم يدوي", why: "وضع موظف الوسم «{tier}»." },
-        vip_spend: { title: "مميز: قيمة مشتريات عالية", why: "دفع {amount} خلال {days} يوماً، والحد {threshold}." },
-        vip_purchases: { title: "مميز: يشتري كثيراً", why: "{count} مشتريات خلال {days} يوماً، والحد {threshold}." },
+        vip_spend: { title: "مميز: قيمة مشتريات عالية", why: "دفع {amount} {within}، والحد {threshold}." },
+        vip_purchases: { title: "مميز: يشتري كثيراً", why: "{count} مشتريات {within}، والحد {threshold}." },
         risk_manual: { title: "وسم احتيال يدوي", why: "السبب المكتوب: {reason}. طلباته تذهب إلى المراجعة البشرية." },
-        risk_cancelled: { title: "طلبات ملغاة كثيرة", why: "{count} طلبات ملغاة خلال {days} يوماً، والحد {threshold}." },
-        risk_rejected_proofs: { title: "إثباتات تحويل مرفوضة", why: "رُفض {count} إثبات خلال {days} يوماً، والحد {threshold}." },
-        risk_returned: { title: "طلبات أُعيدت", why: "أُعيد {count} طلب خلال {days} يوماً، والحد {threshold}." },
+        risk_cancelled: { title: "طلبات ملغاة كثيرة", why: "{count} طلبات ملغاة {within}، والحد {threshold}." },
+        risk_rejected_proofs: { title: "إثباتات تحويل مرفوضة", why: "رُفض {count} إثبات {within}، والحد {threshold}." },
+        risk_returned: { title: "طلبات أُعيدت", why: "أُعيد {count} طلب {within}، والحد {threshold}." },
         risk_duplicate_proof: { title: "إثبات تحويل مكرر", why: "{count} إثبات طابق صورة أو مرجعاً أُرسل من قبل." },
         complaint_open: { title: "شكوى مفتوحة", why: "{count} تذكرة شكوى أو تذكرة مصعّدة لم تُحل." },
       },
@@ -115,8 +118,8 @@ export default defineMessages({
       segmentNow: "الشريحة الآن:",
       axis: { r: "حداثة آخر شراء", f: "عدد المشتريات", m: "قيمة المشتريات" },
       rule: {
-        r: "خلال {bounds} يوماً = 5 / 4 / 3 / 2، وأقدم = 1.",
-        f: "على الأقل {bounds} مشتريات = 2 / 3 / 4 / 5، ومشترى واحد = 1.",
+        r: "الأيام منذ آخر شراء — حتى {bounds} = 5 / 4 / 3 / 2، وأكثر = 1.",
+        f: "عدد المشتريات — {bounds} على الأقل = 2 / 3 / 4 / 5، ومشترى واحد = 1.",
         m: "على الأقل {bounds} = 2 / 3 / 4 / 5، وأقل = 1.",
       },
       score: "{score} من 5",
@@ -153,7 +156,7 @@ export default defineMessages({
       },
       flags: {
         title: "الوسوم وأسبابها",
-        rulesNote: "القواعد ثابتة ومكتوبة: قيمة أو تكرار خلال {days} يوماً، طلبات ملغاة أو مُعادة، إثباتات مرفوضة أو مكررة، شكاوى مفتوحة.",
+        rulesNote: "القواعد مكتوبة وتُضبط من الإعدادات: قيمة أو تكرار {within}، طلبات ملغاة أو مُعادة، إثباتات مرفوضة أو مكررة، شكاوى مفتوحة.",
       },
       vip: {
         set: "ضع وسم مميز",
@@ -205,7 +208,7 @@ export default defineMessages({
         title: "تذاكر الدعم",
         none: "لا تذاكر.",
         complaint: "شكوى",
-        boundary: "التذاكر تُعرض هنا للقراءة؛ إدارتها في قسم خدمة العملاء عند بنائه.",
+        boundary: "التذاكر تُعرض هنا للقراءة؛ افتح التذكرة لإدارتها في قسم خدمة العملاء.",
       },
       activity: { title: "ما تغيّر في الحساب" },
       wallet: {
@@ -419,7 +422,7 @@ export default defineMessages({
     },
     privacy: {
       title: "طلبات الخصوصية",
-      lead: "طلبات نسخ البيانات وحذفها وتصحيحها وإلغاء الاشتراك. الهدف الرد خلال {days} يوماً (هدف المتجر، لا مهلة قانونية مُعدّة). لا يُسلَّم ولا يُحذف شيء قبل التحقق من صاحب الطلب.",
+      lead: "طلبات نسخ البيانات وحذفها وتصحيحها وإلغاء الاشتراك. الهدف الرد {within} (هدف المتجر، لا مهلة قانونية مُعدّة). لا يُسلَّم ولا يُحذف شيء قبل التحقق من صاحب الطلب.",
       side: "طلب جديد",
       listTitle: "الطلبات",
       viewsLabel: "عروض الطلبات",
@@ -449,7 +452,7 @@ export default defineMessages({
         detailsHint: "ما طلبه العميل بالضبط ومتى وكيف.",
         open: "افتح الطلب",
         opened: "فُتح الطلب",
-        due: "الموعد المستهدف بعد {days} يوماً من الفتح.",
+        due: "الموعد المستهدف {after} من الفتح.",
       },
     },
     privacyRequest: {
@@ -535,6 +538,8 @@ export default defineMessages({
       segments: "الشرائح",
       carts: "ربط السلال بالحساب",
       guestContacts: "اسمه على مشترياته كزائر (وتُسحب موافقاتها)",
+      assistant: "محادثات مساعد الصيانة المحفوظة",
+      signIns: "سجل محاولات الدخول بحساباته وأرقامه",
     },
     keptPart: {
       orders: "الطلبات",
@@ -613,7 +618,7 @@ export default defineMessages({
       total: { zero: "لا عملاء", one: "عميل واحد", two: "عميلان", few: "{count} عملاء", many: "{count} عميلاً", other: "{count} عميل" },
       rulesTitle: "كيف تُحسب",
       purchaseRule: "الشراء = طلب غير ملغى دُفع للمتجر ولم يُرد مبلغه كاملاً. القيمة = ما دُفع ناقص ما رُدّ.",
-      constantsNote: "الحدود ثابتة في هذا القسم حتى تصبح إعداداً يملكه قسم الإعدادات.",
+      constantsNote: "الحدود إعداد في قسم الإعدادات (حدود درجات العملاء)؛ تغييرها يُطبَّق عند إعادة الحساب التالية.",
       gridTitle: "توزيع العملاء: الحداثة × التكرار",
       gridLead: "كل خانة عدد العملاء الآن. 0 = بلا شراء.",
       gridCorner: "الحداثة ↓ التكرار",
@@ -775,6 +780,8 @@ export default defineMessages({
   },
   en: {
     title: "Customers & CRM",
+    withinDays: { zero: "the same day", one: "in {count} day", other: "in {count} days" },
+    afterDays: { zero: "the day", one: "{count} day after", other: "{count} days after" },
     lead: "Each customer's whole record: what they bought, returned and keep under warranty, their wallet, their consents and what staff wrote about them. The numbers come from real orders, every label comes with its reason, and every change is recorded with who and why.",
     eyebrow: "Module {id} · {priority}",
     demo: "Demo",
@@ -853,12 +860,12 @@ export default defineMessages({
       kind: { vip: "VIP", risk: "Risk", complaint: "Complaint" },
       rules: {
         vip_manual: { title: "VIP by a manual label", why: "An employee set the label “{tier}”." },
-        vip_spend: { title: "VIP: high purchase value", why: "Paid {amount} in {days} days; the bar is {threshold}." },
-        vip_purchases: { title: "VIP: buys often", why: "{count} purchases in {days} days; the bar is {threshold}." },
+        vip_spend: { title: "VIP: high purchase value", why: "Paid {amount} {within}; the bar is {threshold}." },
+        vip_purchases: { title: "VIP: buys often", why: "{count} purchases {within}; the bar is {threshold}." },
         risk_manual: { title: "Manual fraud flag", why: "Reason given: {reason}. Their orders go to human review." },
-        risk_cancelled: { title: "Many cancelled orders", why: "{count} cancelled orders in {days} days; the bar is {threshold}." },
-        risk_rejected_proofs: { title: "Rejected transfer proofs", why: "{count} proofs rejected in {days} days; the bar is {threshold}." },
-        risk_returned: { title: "Orders sent back", why: "{count} orders sent back in {days} days; the bar is {threshold}." },
+        risk_cancelled: { title: "Many cancelled orders", why: "{count} cancelled orders {within}; the bar is {threshold}." },
+        risk_rejected_proofs: { title: "Rejected transfer proofs", why: "{count} proofs rejected {within}; the bar is {threshold}." },
+        risk_returned: { title: "Orders sent back", why: "{count} orders sent back {within}; the bar is {threshold}." },
         risk_duplicate_proof: { title: "Duplicate transfer proof", why: "{count} proofs matched a picture or reference sent before." },
         complaint_open: { title: "Open complaint", why: "{count} complaint or escalated tickets not resolved." },
       },
@@ -919,7 +926,7 @@ export default defineMessages({
       },
       flags: {
         title: "Labels and their reasons",
-        rulesNote: "Fixed, written rules: value or frequency over {days} days, cancelled or returned orders, rejected or duplicate proofs, open complaints.",
+        rulesNote: "Written rules, set in the settings: value or frequency {within}, cancelled or returned orders, rejected or duplicate proofs, open complaints.",
       },
       vip: {
         set: "Set a VIP label",
@@ -971,7 +978,7 @@ export default defineMessages({
         title: "Support tickets",
         none: "No tickets.",
         complaint: "Complaint",
-        boundary: "Tickets are shown here to read; they are handled in the support module once it is built.",
+        boundary: "Tickets are shown here to read; open a ticket to handle it in the support module.",
       },
       activity: { title: "What changed on the account" },
       wallet: {
@@ -1185,7 +1192,7 @@ export default defineMessages({
     },
     privacy: {
       title: "Privacy requests",
-      lead: "Requests for a copy of the data, its deletion or correction, and unsubscribes. The aim is to answer within {days} days (the store's own target; no legal deadline is configured). Nothing is handed out or erased before the requester is verified.",
+      lead: "Requests for a copy of the data, its deletion or correction, and unsubscribes. The aim is to answer {within} (the store's own target; no legal deadline is configured). Nothing is handed out or erased before the requester is verified.",
       side: "New request",
       listTitle: "Requests",
       viewsLabel: "Request views",
@@ -1215,7 +1222,7 @@ export default defineMessages({
         detailsHint: "Exactly what the customer asked for, when and how.",
         open: "Open the request",
         opened: "Request opened",
-        due: "Target date: {days} days after it is opened.",
+        due: "Target date: {after} it is opened.",
       },
     },
     privacyRequest: {
@@ -1301,6 +1308,8 @@ export default defineMessages({
       segments: "Segments",
       carts: "Carts linked to the account",
       guestContacts: "The name on guest checkouts (their consents are withdrawn)",
+      assistant: "Stored maintenance-assistant conversations",
+      signIns: "The sign-in log of their accounts and numbers",
     },
     keptPart: {
       orders: "Orders",
@@ -1379,7 +1388,7 @@ export default defineMessages({
       total: { one: "{count} customer", other: "{count} customers" },
       rulesTitle: "How it is computed",
       purchaseRule: "A purchase = an order that was not cancelled, was paid to the store and was not refunded in full. Value = paid minus refunded.",
-      constantsNote: "The bounds are fixed in this module until they become a setting owned by the Settings module.",
+      constantsNote: "The bounds are a setting in the Settings module (customer score bounds); a change applies at the next recompute.",
       gridTitle: "Where customers are: recency × frequency",
       gridLead: "Each cell is the number of customers now. 0 = no purchase.",
       gridCorner: "Recency ↓ Frequency",
@@ -1541,6 +1550,8 @@ export default defineMessages({
   },
   ckb: {
     title: "کڕیاران و بەڕێوەبردنی پەیوەندی",
+    withinDays: { zero: "هەمان ڕۆژ", one: "لە {count} ڕۆژدا", other: "لە {count} ڕۆژدا" },
+    afterDays: { zero: "ڕۆژی", one: "{count} ڕۆژ دوای", other: "{count} ڕۆژ دوای" },
     lead: "تۆماری تەواوی هەر کڕیارێک: ئەوەی کڕیویەتی و گەڕاندوویەتەوە و لە ژێر گەرەنتیدایە، جزدانەکەی، ڕەزامەندییەکانی و ئەوەی ستاف دەربارەی نووسیویەتی. ژمارەکان لە داواکارییە ڕاستەقینەکانەوە دێن، هەر نیشانەیەک هۆکاری خۆی هەیە، و هەر گۆڕانکارییەک لەگەڵ کەس و هۆکار تۆمار دەکرێت.",
     eyebrow: "بەشی {id} · {priority}",
     demo: "تاقیکاری",
@@ -1619,12 +1630,12 @@ export default defineMessages({
       kind: { vip: "تایبەت", risk: "مەترسی", complaint: "سکاڵا" },
       rules: {
         vip_manual: { title: "تایبەت بە نیشانەی دەستی", why: "کارمەندێک نیشانەی «{tier}» داناوە." },
-        vip_spend: { title: "تایبەت: بەهای کڕینی بەرز", why: "لە {days} ڕۆژدا {amount} پارەی داوە؛ سنوورەکە {threshold}ـە." },
-        vip_purchases: { title: "تایبەت: زۆر دەکڕێت", why: "{count} کڕین لە {days} ڕۆژدا؛ سنوورەکە {threshold}ـە." },
+        vip_spend: { title: "تایبەت: بەهای کڕینی بەرز", why: "{within} {amount} پارەی داوە؛ سنوورەکە {threshold}ـە." },
+        vip_purchases: { title: "تایبەت: زۆر دەکڕێت", why: "{count} کڕین {within}؛ سنوورەکە {threshold}ـە." },
         risk_manual: { title: "نیشانەی دەستیی فێڵ", why: "هۆکاری نووسراو: {reason}. داواکارییەکانی دەچنە پێداچوونەوەی مرۆیی." },
-        risk_cancelled: { title: "داواکاریی هەڵوەشاوەی زۆر", why: "{count} داواکاری هەڵوەشاوە لە {days} ڕۆژدا؛ سنوورەکە {threshold}ـە." },
-        risk_rejected_proofs: { title: "بەڵگەی حەواڵەی ڕەتکراوە", why: "{count} بەڵگە لە {days} ڕۆژدا ڕەتکرانەوە؛ سنوورەکە {threshold}ـە." },
-        risk_returned: { title: "داواکاریی گەڕێندراوە", why: "{count} داواکاری لە {days} ڕۆژدا گەڕێندرانەوە؛ سنوورەکە {threshold}ـە." },
+        risk_cancelled: { title: "داواکاریی هەڵوەشاوەی زۆر", why: "{count} داواکاری هەڵوەشاوە {within}؛ سنوورەکە {threshold}ـە." },
+        risk_rejected_proofs: { title: "بەڵگەی حەواڵەی ڕەتکراوە", why: "{count} بەڵگە {within} ڕەتکرانەوە؛ سنوورەکە {threshold}ـە." },
+        risk_returned: { title: "داواکاریی گەڕێندراوە", why: "{count} داواکاری {within} گەڕێندرانەوە؛ سنوورەکە {threshold}ـە." },
         risk_duplicate_proof: { title: "بەڵگەی حەواڵەی دووبارە", why: "{count} بەڵگە لەگەڵ وێنە یان ئاماژەیەکی پێشوو یەکیگرتەوە." },
         complaint_open: { title: "سکاڵای کراوە", why: "{count} پسوولەی سکاڵا یان بەرزکراوە کە چارەسەر نەکراون." },
       },
@@ -1685,7 +1696,7 @@ export default defineMessages({
       },
       flags: {
         title: "نیشانەکان و هۆکارەکانیان",
-        rulesNote: "یاسای جێگیر و نووسراو: بەها یان دووبارەبوونەوە لە {days} ڕۆژدا، داواکاریی هەڵوەشاوە یان گەڕێندراوە، بەڵگەی ڕەتکراوە یان دووبارە، سکاڵای کراوە.",
+        rulesNote: "یاسای نووسراو کە لە ڕێکخستنەکان دادەنرێت: بەها یان دووبارەبوونەوە {within}، داواکاریی هەڵوەشاوە یان گەڕێندراوە، بەڵگەی ڕەتکراوە یان دووبارە، سکاڵای کراوە.",
       },
       vip: {
         set: "نیشانەی تایبەت دابنێ",
@@ -1737,7 +1748,7 @@ export default defineMessages({
         title: "پسوولەکانی پاڵپشتی",
         none: "هیچ پسوولەیەک نییە.",
         complaint: "سکاڵا",
-        boundary: "پسوولەکان لێرە بۆ خوێندنەوە پیشان دەدرێن؛ کاتێک بەشی پاڵپشتی دروست بکرێت لەوێ بەڕێوە دەبرێن.",
+        boundary: "پسوولەکان لێرە بۆ خوێندنەوە پیشان دەدرێن؛ پسوولەکە بکەرەوە بۆ بەڕێوەبردنی لە بەشی پاڵپشتی.",
       },
       activity: { title: "ئەوەی لە هەژمارەکەدا گۆڕا" },
       wallet: {
@@ -1951,7 +1962,7 @@ export default defineMessages({
     },
     privacy: {
       title: "داواکارییەکانی تایبەتمەندی",
-      lead: "داواکاریی کۆپیی زانیاری، سڕینەوەی یان ڕاستکردنەوەی، و بەتاڵکردنەوەی بەشداری. ئامانج وەڵامدانەوەیە لە ماوەی {days} ڕۆژدا (ئامانجی فرۆشگا خۆی؛ هیچ ماوەیەکی یاسایی ڕێکنەخراوە). هیچ شتێک نادرێت یان ناسڕدرێتەوە پێش پشتڕاستکردنەوەی داواکار.",
+      lead: "داواکاریی کۆپیی زانیاری، سڕینەوەی یان ڕاستکردنەوەی، و بەتاڵکردنەوەی بەشداری. ئامانج وەڵامدانەوەیە {within} (ئامانجی فرۆشگا خۆی؛ هیچ ماوەیەکی یاسایی ڕێکنەخراوە). هیچ شتێک نادرێت یان ناسڕدرێتەوە پێش پشتڕاستکردنەوەی داواکار.",
       side: "داواکاریی نوێ",
       listTitle: "داواکارییەکان",
       viewsLabel: "پیشاندانەکانی داواکاری",
@@ -1981,7 +1992,7 @@ export default defineMessages({
         detailsHint: "بە ووردی کڕیار داوای چی کرد، کەی و چۆن.",
         open: "داواکارییەکە بکەرەوە",
         opened: "داواکاری کرایەوە",
-        due: "بەرواری ئامانج: {days} ڕۆژ دوای کردنەوەی.",
+        due: "بەرواری ئامانج: {after} کردنەوەی.",
       },
     },
     privacyRequest: {
@@ -2067,6 +2078,8 @@ export default defineMessages({
       segments: "پۆلەکان",
       carts: "سەبەتە بەستراوەکان بە هەژمار",
       guestContacts: "ناو لەسەر کڕینەکان وەک میوان (ڕەزامەندییەکانیان دەکشێنرێنەوە)",
+      assistant: "گفتوگۆی پاشەکەوتکراوی یاریدەدەری چاککردنەوە",
+      signIns: "تۆماری چوونەژوورەوەی هەژمار و ژمارەکانی",
     },
     keptPart: {
       orders: "داواکارییەکان",
@@ -2145,7 +2158,7 @@ export default defineMessages({
       total: { one: "{count} کڕیار", other: "{count} کڕیار" },
       rulesTitle: "چۆن دەژمێردرێت",
       purchaseRule: "کڕین = داواکارییەک کە هەڵنەوەشاوەتەوە، پارەی دراوە بە فرۆشگا و بە تەواوی نەگەڕێندراوەتەوە. بەها = دراو کەمکراو لە گەڕێندراو.",
-      constantsNote: "سنوورەکان لەم بەشەدا جێگیرن تا دەبنە ڕێکخستنێک کە بەشی ڕێکخستنەکان خاوەنیەتی.",
+      constantsNote: "سنوورەکان ڕێکخستنێکن لە بەشی ڕێکخستنەکان (سنوورەکانی پلەی کڕیار)؛ گۆڕینیان لە ژماردنەوەی داهاتوودا جێبەجێ دەبێت.",
       gridTitle: "کڕیاران لە کوێن: نوێیی × دووبارەبوونەوە",
       gridLead: "هەر خانەیەک ژمارەی کڕیارانی ئێستایە. 0 = بێ کڕین.",
       gridCorner: "نوێیی ↓ دووبارەبوونەوە",

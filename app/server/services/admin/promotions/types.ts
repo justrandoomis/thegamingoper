@@ -75,6 +75,22 @@ export const GIFT_CARD = {
   missLimit: { limit: 10, windowSec: 10 * 60 },
 } as const;
 
+/** A constant's shape with its numbers widened (the value in force may differ from the constant). */
+type Widened<T> = { readonly [K in keyof T]: T[K] extends number ? number : T[K] };
+/**
+ * The programme rules in force (module follow-up 2026-11-12): the settings promotions.discount_limits, .loyalty,
+ * .referral and .gift_card (app/server/settings.server.ts) in the constants' shapes — program.server.ts programRules.
+ * The constants above are their defaults; the technical limits (batch sizes, rate limits, the step, the cap on a
+ * code's uses) stay constants.
+ */
+export type DiscountLimits = Widened<typeof DISCOUNT_LIMITS>;
+export type LoyaltyRules = Widened<typeof LOYALTY>;
+export type ReferralRules = Widened<typeof REFERRAL>;
+export type GiftCardRules = Widened<typeof GIFT_CARD>;
+export type ProgramRules = { limits: DiscountLimits; loyalty: LoyaltyRules; referral: ReferralRules; giftCard: GiftCardRules };
+/** The defaults (the constants) — what a page shows before its layout's data arrives. */
+export const DEFAULT_PROGRAM: ProgramRules = { limits: DISCOUNT_LIMITS, loyalty: LOYALTY, referral: REFERRAL, giftCard: GIFT_CARD };
+
 /** Flash sales (08.03). */
 export const FLASH = { maxItems: 60, maxDays: 14, maxAllowance: 10_000, maxPerCustomer: 20 } as const;
 
@@ -435,7 +451,21 @@ export const MEMBER_VIEWS = ["current", "ended"] as const;
 export type MemberView = (typeof MEMBER_VIEWS)[number];
 export type VipFilters = { members: MemberView; page: number };
 /** `memberTotal` is the number of rows of the chosen view (the list pages through exactly those). */
-export type VipPage = { tiers: TierRow[]; members: MemberRow[]; memberView: MemberView; memberTotal: number; memberCounts: Record<MemberView, number>; page: number; pageCount: number; endedWaiting: number; eligible: EligibleRow[]; eligibleTotal: number; can: { manage: boolean; seeProfiles: boolean } };
+export type VipPage = {
+  tiers: TierRow[];
+  members: MemberRow[];
+  memberView: MemberView;
+  memberTotal: number;
+  memberCounts: Record<MemberView, number>;
+  page: number;
+  pageCount: number;
+  endedWaiting: number;
+  eligible: EligibleRow[];
+  eligibleTotal: number;
+  /** Module 07's VIP rule in force (the setting customers.flag_rules — review 2026-11-12), as the page states it. */
+  rule: { spendIqd: number; purchases: number; windowDays: number };
+  can: { manage: boolean; seeProfiles: boolean };
+};
 
 // ───────────────────────────────────────────────────────────────── gift cards (08.07)
 

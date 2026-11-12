@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-import { getMotionTier } from "~/motion";
 import { Chip } from "~/ui/Chip";
+import { revealFocusedItem, revealInRow } from "~/ui/reveal";
 import { currentSection } from "./format";
-import { revealInline } from "./reveal";
 
 /**
  * The hub's sticky anchor nav — Design System v2 §6.6: one row of the kit's chips (40px, a 44px hit) under the header:
@@ -57,14 +56,14 @@ export function SectionNav({ sections, label }: { sections: readonly SectionLink
     const row = list.current;
     if (!row || !current || row.contains(document.activeElement)) return;
     const link = row.querySelector<HTMLElement>(`a[href="#${current}"]`);
-    if (link) revealInline(row, link, { behavior: getMotionTier() === "full" ? "smooth" : "auto" });
+    if (link) revealInRow(row, link, "nearest");
   }, [current]);
 
   if (sections.length < 2) return null;
   return (
     <nav aria-label={label} className="devhub-nav">
-      {/* a chip that takes keyboard focus is brought fully into the row (browsers leave a half-shown one where it is) */}
-      <ul ref={list} role="list" className="devhub-nav__list" onFocus={(event) => list.current && event.target instanceof HTMLElement && revealInline(list.current, event.target)}>
+      {/* a chip that takes the keyboard's focus is brought fully into the row (the kit's reveal: the row scrolls, never the page) */}
+      <ul ref={list} role="list" className="devhub-nav__list" onFocus={revealFocusedItem}>
         {sections.map((section) => (
           <li key={section.id}>
             <Chip as="a" href={`#${section.id}`} selected={current === section.id} onClick={() => setCurrent(section.id)}>

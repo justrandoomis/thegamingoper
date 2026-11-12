@@ -29,9 +29,10 @@ import { searchIndexStatements } from "~/server/db/search.server";
 import { seedDemo } from "~/server/db/seed/demo";
 import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { runBatch, type BatchStatement } from "~/server/db/tx.server";
-import { DAY_MS, isNewProduct, kindLabelOf, NEW_WINDOW_DAYS, opaqueOf, shoppingTier, shownStockRank, type DeviceFamily } from "~/server/services/catalog/card-facts";
+import { DAY_MS, isNewProduct, kindLabelOf, NEW_WINDOW_DAYS, opaqueOf, shoppingTier, shortModelName, shownStockRank, type DeviceFamily } from "~/server/services/catalog/card-facts";
 import { getCardsByIds, getDeals, getNewArrivals, getUsedSpotlight, listCards, MAX_CARD_PAGE } from "~/server/services/catalog/cards.server";
-import { loadListingRows } from "~/server/services/catalog/listing.server";
+import { listProducts, loadListingRows } from "~/server/services/catalog/listing.server";
+import { getProductDetail } from "~/server/services/catalog/product.server";
 import { baghdadMidnight } from "~/server/services/catalog/product-types";
 import { getCategoryTree, getNavTaxonomy, getPlatforms, invalidateNavTaxonomy, NAV_CHECK_MS } from "~/server/services/catalog/taxonomy.server";
 import type { CardSort } from "~/server/services/catalog/types";
@@ -296,11 +297,30 @@ describe("listCards — what is listed", () => {
     }
   });
 
-  it("shows the default variant, and never an inactive one", async () => {
-    const [before] = await getCardsByIds(t.db, "en", [P.twoVariants.id]);
-    expect(before.variantId).toBe(P.twoVariants.v);
-    expect(before.priceIqd).toBe(90_000);
+  it("shows the version on sale: the default when it can be bought, else the next one — never a sold-out default's price — and never an inactive one", async () => {
+    const card = async () => (await getCardsByIds(t.db, "en", [P.twoVariants.id]))[0];
+    const onHand = (variantId: string, n: number) => t.d1.prepare("UPDATE stock_levels SET on_hand = ? WHERE variant_id = ?").bind(n, variantId).run();
+    // the default (90,000) is sold out and the second version (95,000) is not: the card prices what can be bought
+    const before = await card();
+    expect(before.variantId).toBe(P.twoVariants.v2);
+    expect(before.priceIqd).toBe(95_000);
     expect(before.hasVariants).toBe(true);
+    expect(before.stock).toBe("in_stock");
+    // the listing universe (filters, price sorts) reads the same version
+    const { rows: universe } = await loadListingRows(t.db, { kind: "products", ids: [P.twoVariants.id] }, t.now);
+    expect(universe[0]?.price).toBe(95_000);
+    try {
+      // the default can be bought again: it leads
+      await onHand(P.twoVariants.v, 6);
+      expect(await card()).toMatchObject({ variantId: P.twoVariants.v, priceIqd: 90_000 });
+      // nothing can be bought: the default, as it is
+      await onHand(P.twoVariants.v, 0);
+      await onHand(P.twoVariants.v2, 0);
+      expect(await card()).toMatchObject({ variantId: P.twoVariants.v, priceIqd: 90_000, stock: "out_of_stock" });
+    } finally {
+      await onHand(P.twoVariants.v, 0);
+      await onHand(P.twoVariants.v2, 8);
+    }
     await t.d1.prepare("UPDATE variants SET is_active = 0 WHERE id = ?").bind(P.twoVariants.v).run();
     try {
       const [after] = await getCardsByIds(t.db, "en", [P.twoVariants.id]);
@@ -449,9 +469,12 @@ describe("listCards — filters", () => {
 
   it("filters by price range, inclusively, on the card variant's price", async () => {
     const page = await world({ priceMin: 60_000, priceMax: 90_000 });
-    // 60,000 ×2 (game, controller), 70,000 (preorder), 90,000 — the two-variant product by its default variant
-    expect(sorted(ids(page.items))).toEqual(sorted([P.game.id, P.controller.id, P.preorder.id, P.twoVariants.id]));
+    // 60,000 ×2 (game, controller), 70,000 (preorder) — the two-variant product is priced by its version on sale
+    // (95,000: its 90,000 default is sold out), so it is not in this range…
+    expect(sorted(ids(page.items))).toEqual(sorted([P.game.id, P.controller.id, P.preorder.id]));
     expect((await world({ priceMin: 90_001, priceMax: 94_999 })).total).toBe(0);
+    // …but in the one of the price it shows
+    expect(ids((await world({ priceMin: 95_000, priceMax: 95_000 })).items)).toEqual([P.twoVariants.id]);
   });
 
   it("keeps only what can be bought now with inStockOnly", async () => {
@@ -831,21 +854,35 @@ describe("taxonomy", () => {
     expect(zz.href).toBe(`/platform/${PLATFORM}`);
     expect(zz.name).toBe("Test platform");
     expect(zz.productCount).toBe(LISTED.length); // what the hub lists: the draft and the variant-less product are not counted
+    // device links: the full name, a short one (a model the short-name table does not know keeps its name) and how
+    // many of the platform's products work with it
     expect(zz.devices).toEqual([
-      { label: "Model A", href: "/device/zz-model-a" },
-      { label: "Model B", href: "/device/zz-model-b" },
+      { label: "Model A", href: "/device/zz-model-a", short: "Model A", count: 3 },
+      { label: "Model B", href: "/device/zz-model-b", short: "Model B", count: 2 },
     ]);
     expect(zz.consoles).toEqual([{ label: "Zorblax console", href: "/p/zz-console" }]);
     expect(zz.accessories.map((link) => link.href).sort()).toEqual(["/c/zz-child", "/c/zz-parent"]);
     expect(zz.games).toEqual([]);
     expect(zz.used).toBeNull();
+    // the featured tile: the platform's console with its card's price and state
+    const [consoleCard] = await getCardsByIds(t.db, "en", [P.console.id], { now: t.now });
+    expect(zz.featured).toEqual({
+      productId: P.console.id,
+      href: "/p/zz-console",
+      label: "Zorblax console",
+      image: consoleCard.image,
+      priceIqd: consoleCard.priceIqd,
+      stock: consoleCard.stock,
+      hasVariants: consoleCard.hasVariants,
+      isDemo: consoleCard.isDemo,
+    });
 
     // researched platforms: products sold for several count for each; a shared department's link filters by platform
     const multi = nav.platforms.find((platform) => platform.slug === MULTI.platform)!;
     const other = nav.platforms.find((platform) => platform.slug === MULTI.other)!;
     expect([multi.productCount, other.productCount]).toEqual([3, 4]);
-    expect(multi.accessories).toEqual([{ label: "Multi-platform department", href: `/c/${MULTI.category}?platform=${MULTI.platform}` }]);
-    expect(other.accessories).toEqual([{ label: "Multi-platform department", href: `/c/${MULTI.category}?platform=${MULTI.other}` }]);
+    expect(multi.accessories).toEqual([{ label: "Multi-platform department", href: `/c/${MULTI.category}?platform=${MULTI.platform}`, count: 3 }]);
+    expect(other.accessories).toEqual([{ label: "Multi-platform department", href: `/c/${MULTI.category}?platform=${MULTI.other}`, count: 4 }]);
     expect(other.consoles).toEqual([{ label: `Product ${M.own}`, href: `/p/${M.own.replace(/^prd_/, "").replace(/_/g, "-")}` }]);
     expect(nav.categories.find((category) => category.slug === MULTI.category)!.count).toBe(6); // each product once
 
@@ -855,7 +892,13 @@ describe("taxonomy", () => {
     // top-level departments with products, sub-categories counted in; the "used" group is not a department
     const parent = nav.categories.find((category) => category.slug === "zz-parent")!;
     expect(parent.count).toBe(5);
-    expect(parent.children).toEqual([{ slug: "zz-child", label: "Test branch", href: "/c/zz-child", count: 3 }]);
+    expect(parent.children).toEqual([{ slug: "zz-child", label: "Test branch", href: "/c/zz-child", count: 3, artKey: null }]);
+    // every department carries its tile photo (categories.art_key) — the demo seed's, here
+    for (const category of nav.categories) {
+      const [row] = await rows<{ art_key: string | null }>("SELECT art_key FROM categories WHERE slug = ?", category.slug);
+      expect(category.artKey, category.slug).toBe(row.art_key ?? null);
+    }
+    expect(nav.categories.some((category) => category.artKey)).toBe(true);
     expect(nav.categories.some((category) => category.kind === "used")).toBe(false);
   });
 
@@ -880,6 +923,23 @@ describe("taxonomy", () => {
         const holdsOthers = department.some((row) => !row.platforms.includes(platform.slug));
         expect(query === `platform=${platform.slug}`, link.href).toBe(holdsOthers);
         if (holdsOthers && !platform.slug.startsWith("zz-")) shared++;
+        // the mega menu's count: what that hub lists with the link's filter
+        expect(link.count, `${platform.slug} ${link.href}`).toBe(department.filter((row) => !query || row.platforms.includes(platform.slug)).length);
+      }
+      // a device link counts what the platform hub's device shortcut counts (its rows that fit the device), and has
+      // a short name
+      for (const link of platform.devices) {
+        const slug = link.href.slice("/device/".length);
+        expect(link.count, `${platform.slug} ${link.href}`).toBe(hub.filter((row) => row.devices.includes(slug)).length);
+        expect(link.short?.length, link.href).toBeGreaterThan(0);
+      }
+      // the featured tile: one of the platform's listed consoles; one that can be bought now whenever there is one
+      const consoleIds = hub.filter((row) => row.kind === "console" && row.ownPlatform === platform.slug).map((row) => row.id);
+      if (consoleIds.length === 0) expect(platform.featured ?? null, platform.slug).toBeNull();
+      else {
+        expect(consoleIds, platform.slug).toContain(platform.featured?.productId);
+        const buyable = hub.some((row) => consoleIds.includes(row.id) && row.st > 0 && !row.preorder);
+        if (buyable) expect(["in_stock", "low_stock"], platform.slug).toContain(platform.featured?.stock);
       }
       // …and no department of this platform's products is missing (consoles have one "all consoles" link)
       const linked = new Set(departmentLinks.map((link) => link.href.split("?")[0].slice("/c/".length)));
@@ -1103,5 +1163,64 @@ describe("opaque photos (design v2 spec §7.5)", () => {
     }
     expect(light).toBeGreaterThan(0);
     expect(dark).toBeGreaterThan(0);
+  });
+});
+
+describe("short model names, the product page's kind and a store set's parts (polish)", () => {
+  it("names every published device model shortly, Latin in every language; an unknown model keeps its name", async () => {
+    const models = await rows<{ slug: string; name: string }>("SELECT dm.slug, dm.name FROM device_models dm JOIN platforms pl ON pl.id = dm.platform_id WHERE dm.status = 'published' AND pl.is_active = 1");
+    expect(models.length).toBeGreaterThan(10);
+    for (const model of models) {
+      const name = JSON.parse(model.name) as L10n;
+      // every seeded model has an English name; L10n only guarantees the Arabic one
+      const en = name.en ?? name.ar;
+      const short = shortModelName(model.slug, en);
+      expect(short.length, model.slug).toBeGreaterThan(0);
+      expect(short.length, model.slug).toBeLessThanOrEqual(en.length);
+      // the same short name whatever the page's language (the Arabic name's qualifier becomes the year)
+      if (!model.slug.startsWith("zz-")) expect(shortModelName(model.slug, name.ar), model.slug).toBe(short);
+      expect(short, model.slug).not.toMatch(/[؀-ۿ]/);
+    }
+    expect(["ps5-pro", "ps5-slim", "ps5-slim-digital", "ps-portal", "ps-vr2"].map((slug) => shortModelName(slug, slug))).toEqual(["PS5 Pro", "PS5 Slim", "PS5 Slim Digital", "PlayStation Portal", "PS VR2"]);
+    expect(shortModelName("zz-new-model", "A New Model")).toBe("A New Model");
+    // the platform hub's model switcher gets them too
+    const hub = (await listProducts(t.db, "en", { scope: { kind: "platform", slug: "playstation" }, now: t.now }))!;
+    expect(hub.hub.devices.find((device) => device.slug === "ps5-pro")).toMatchObject({ name: "PlayStation 5 Pro", short: "PS5 Pro" });
+  });
+
+  it("the product page says what the product is from the research's kind: handheld PCs and VR are not «جهاز» and «إكسسوار»", async () => {
+    const research = await rows<{ slug: string; kind: string; research: string | null }>(
+      "SELECT slug, kind, json_extract(attributes, '$.catalogue.kind') AS research FROM products WHERE status = 'published' AND json_valid(attributes) AND json_extract(attributes, '$.catalogue.kind') IN ('handheld_pc', 'vr', 'console', 'game')",
+    );
+    const handheld = research.find((row) => row.research === "handheld_pc");
+    const vr = research.find((row) => row.research === "vr");
+    const console_ = research.find((row) => row.research === "console");
+    expect(handheld && vr && console_).toBeTruthy();
+    const detail = async (slug: string, locale: Locale) => (await getProductDetail(t.db, locale, slug, { now: t.now, related: false }))!;
+    expect((await detail(handheld!.slug, "ar")).kindLabel).toBe("جهاز محمول");
+    expect((await detail(handheld!.slug, "en")).kindLabel).toBe("Handheld PC");
+    expect((await detail(vr!.slug, "ar")).kindLabel).toBe("نظارة واقع افتراضي");
+    expect((await detail(console_!.slug, "ar")).kindLabel).toBe("جهاز");
+    // the noun alone: the page names the platform beside it
+    expect((await detail(handheld!.slug, "en")).kindLabel).toBe(kindLabelOf({ kind: "console", researchKind: "handheld_pc", families: [] }, "en"));
+  });
+
+  it("a store set's parts carry their own prices (what buying them separately costs)", async () => {
+    const [set] = await rows<{ slug: string; bundle: string }>(
+      "SELECT p.slug, v.id AS bundle FROM bundle_items bi JOIN variants v ON v.id = bi.bundle_variant_id JOIN products p ON p.id = v.product_id WHERE p.status = 'published' LIMIT 1",
+    );
+    expect(set).toBeDefined();
+    const detail = (await getProductDetail(t.db, "ar", set.slug, { now: t.now, related: false }))!;
+    const parts = detail.variants.find((variant) => variant.id === set.bundle)!.bundle!;
+    expect(parts.length).toBeGreaterThanOrEqual(2);
+    const prices = await rows<{ slug: string; price_iqd: number; qty: number }>(
+      "SELECT p.slug, v.price_iqd, bi.qty FROM bundle_items bi JOIN variants v ON v.id = bi.component_variant_id JOIN products p ON p.id = v.product_id WHERE bi.bundle_variant_id = ?",
+      set.bundle,
+    );
+    for (const part of parts) {
+      const row = prices.find((entry) => entry.slug === part.slug)!;
+      expect(part.priceIqd, part.slug).toBe(Number(row.price_iqd));
+      expect(Number.isSafeInteger(part.priceIqd) && part.priceIqd > 0).toBe(true);
+    }
   });
 });

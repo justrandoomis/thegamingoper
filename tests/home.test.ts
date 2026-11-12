@@ -8,7 +8,9 @@ import type { ProductCardData } from "~/lib/dto";
 import { seedDemo } from "~/server/db/seed/demo";
 import { isAppError } from "~/server/errors";
 import { getCardsByIds, getDeals, getUsedSpotlight } from "~/server/services/catalog/cards.server";
+import { gelOfPlatformName } from "~/server/services/catalog/product-types";
 import {
+  HOME_PAGE_SECTIONS,
   HOME_PLATFORMS,
   NEW_RELEASE_DAYS,
   RECENT_MAX as SERVER_RECENT_MAX,
@@ -106,7 +108,8 @@ afterAll(async () => {
 
 describe("getHomeData — a migrated database with no catalogue", () => {
   it("answers with nothing rather than failing", () => {
-    expect(empty).toEqual({ platforms: [], cards: {}, deals: [], used: [], comingSoon: [] });
+    // the sections in the page's own order: nothing arranged in the content module (admin 17.01)
+    expect(empty).toEqual({ platforms: [], cards: {}, deals: [], used: [], comingSoon: [], layout: { sections: [...HOME_PAGE_SECTIONS], arranged: false } });
   });
 });
 
@@ -408,6 +411,44 @@ describe("getHomeData — coming soon", () => {
     const last = home.comingSoon[home.comingSoon.length - 1];
     const later = await getHomeData(t.db, { locale: "ar", now: last.releaseAt + DAY_MS });
     expect(later.comingSoon).toEqual([]);
+  });
+
+  it("carries each item's platform line, so the page needs no second card read (data owner)", async () => {
+    const productItems = home.comingSoon.filter((item) => item.variantCount === 0);
+    const cards = new Map((await getCardsByIds(t.db, "ar", productItems.map((item) => item.productId), { now: t.now })).map((card) => [card.id, card]));
+    for (const item of productItems) {
+      const card = cards.get(item.productId)!;
+      const platforms = card.forPlatforms?.length ? card.forPlatforms : card.platformSlug ? [card.platformSlug] : [];
+      expect(item.forPlatforms, item.slug).toEqual(platforms);
+      expect(item.platformSlug, item.slug).toBe(platforms.length === 1 ? platforms[0] : null);
+      expect(item.kindLabel, item.slug).toBe(card.kindLabel ?? null);
+    }
+    // a later version for one platform (a PS5 version of a game out on Xbox) is that platform's, whatever the product's line
+    const versions = await rows<{ product_id: string; platform: string | null }>(
+      `SELECT p.id AS product_id, json_extract(v.options, '$.platform') AS platform FROM products p JOIN json_each(p.attributes, '$.variantReleaseDates') je
+       JOIN variants v ON v.product_id = p.id AND v.sku = je.key AND v.is_active = 1 WHERE p.status = 'published' AND json_valid(v.options)`,
+    );
+    for (const item of home.comingSoon.filter((entry) => entry.variantCount > 0)) {
+      const named = versions.filter((row) => row.product_id === item.productId).map((row) => gelOfPlatformName(row.platform)).filter(Boolean);
+      if (named.length === 1) expect(item.platformSlug, item.key).toBe(named[0]);
+      expect(item.forPlatforms.length, item.key).toBeGreaterThan(0);
+      expect(item.kindLabel?.length, item.key).toBeGreaterThan(0);
+    }
+  });
+
+  it("leaves out the games, gear and deals shelves when the page does not want them (extraShelves: false)", async () => {
+    const lean = await getHomeData(t.db, { locale: "ar", now: t.now, extraShelves: false });
+    expect(lean.deals).toEqual([]);
+    for (const platform of lean.platforms) {
+      expect(platform.games).toEqual([]);
+      expect(platform.gear).toEqual([]);
+      const full = home.platforms.find((entry) => entry.slug === platform.slug)!;
+      // what the page shows stays the same
+      expect(platform.hero).toEqual(full.hero);
+      expect(platform.newArrivals).toEqual(full.newArrivals);
+    }
+    expect(lean.comingSoon).toEqual(home.comingSoon);
+    expect(lean.used).toEqual(home.used);
   });
 });
 

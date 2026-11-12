@@ -92,6 +92,44 @@ export type OrderTimelineKind = (typeof ORDER_TIMELINE_KINDS)[number];
 
 export type OrderRefundView = { amountIqd: number; method: "original" | "wallet" | "cash"; status: "pending" | "paid"; at: number };
 
+// ───────────────────────────────────────────────────────────────── promotions, as charged (2026-11-12)
+
+/**
+ * One discount of a cart or an order, exactly as charged (orders/promotions.ts decides them; Σ amountIqd of the list =
+ * the order's discount). In display order: automatic rules, the coupon, the membership discount, redeemed points.
+ */
+export type DiscountLineView =
+  | { kind: "rule"; ruleId: string; label: string; amountIqd: number }
+  | { kind: "coupon"; code: string; label: string; amountIqd: number }
+  | { kind: "member"; label: string; bps: number; amountIqd: number }
+  | { kind: "points"; points: number; amountIqd: number };
+
+/** The delivery fee an order did not charge, and why (`shippingIqd` is already after it). */
+export type ShippingWaiverView = { by: "member" | "rule"; label: string; feeIqd: number; waivedIqd: number };
+
+/** A line sold at a running flash sale's price: what it costs outside the sale, and when the sale ends. */
+export type FlashPriceView = { label: string; salePriceIqd: number; regularPriceIqd: number; endsAt: number };
+
+/** What the order recorded about its promotions (the order event "promotions"), for the order page and the invoice. */
+export type OrderAdjustmentsView = {
+  discounts: DiscountLineView[];
+  shippingWaiver: ShippingWaiverView | null;
+  /** Order line id → its flash price facts. */
+  flash: Record<string, FlashPriceView>;
+  /** A referral code recorded with the order (the reward is the referrer's, after delivery and the return window). */
+  referralCode: string | null;
+};
+
+/** A paid digital line's codes (never the code text: that is revealed on request, audited). */
+export type OrderDigitalLineView = {
+  orderItemId: string;
+  name: string;
+  qty: number;
+  codes: { id: string; status: "delivered" | "revoked"; revealedAt: number | null }[];
+  /** Units paid for that have no code yet (none in stock when it was paid): staff add them. */
+  pending: number;
+};
+
 export type OrderView = {
   ref: string;
   status: OrderStatus;
@@ -122,6 +160,12 @@ export type OrderView = {
   shipments: ShipmentView[];
   refunds: OrderRefundView[];
   timeline: { kind: OrderTimelineKind; at: number }[];
+  /** Every discount, the delivery waiver and the flash-priced lines, exactly as charged (absent on orders without any). */
+  adjustments?: OrderAdjustmentsView | null;
+  /** Part of the order paid from the TamTam wallet when another method pays the rest (a split payment). */
+  walletPaidIqd?: number;
+  /** Paid digital lines and their codes (only once the order is paid). */
+  digital?: OrderDigitalLineView[];
 };
 
 /** One row of "my orders". */
@@ -150,3 +194,6 @@ export type PlaceOrderResult = {
   /** True when this call returned an order placed by an earlier call with the same key. */
   replayed: boolean;
 };
+
+/** The digital-code reveal answer (the order page's «اعرض الرمز»). */
+export type CodeRevealResult = { codeId: string; code: string };

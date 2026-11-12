@@ -151,3 +151,28 @@ Chromium only; no phone; Sorani strings need a native reader.
 - Opaque photos (Nintendo Switch Lite, PS5 2020) keep their white box on the light ground: `.render { isolation:
   isolate }` (and the slot's size containment) stop the `multiply` blend (styles owner).
 - At 320px the last repair step's «أرسل طلب الصيانة» is cut with an ellipsis in the task bar (fits from 360).
+
+## Wave G wiring (2026-11-12; `tests/storefront-wiring.test.ts`)
+
+- **/support/ticket** — a message to staff ("SP-…") followed by its number AND the phone it was sent with (`lookupTicket`: rate
+  limited per IP and per number, a wrong number and a wrong phone read the same), or by the receipt's link (`?ref&tk`). A repair
+  number typed there says where it is followed (and the repair status page says the same of an SP number).
+- **The satisfaction rating** (admin 14.05 asked for it): once staff resolved or closed the request — five rows 1–5 with words,
+  an optional comment — `rateTicket` writes `csat_rating` / `csat_comment` ONCE (a guarded update; a second answer reads
+  «قيّمت هذه المساعدة من قبل»), audited `support.ticket.rate`; never a default. The hand-off receipt links to it («قيّم المساعدة»,
+  else «تابع طلبك لاحقاً برقمه ورقم موبايلك»).
+- **Review fixes (2026-11-12, `tests/storefront-wiring-review.test.ts`):** a rating that never reached the store (offline, a
+  dropped connection) keeps its card, the choice and the comment, and says so in the rating part — the page's `clientAction`
+  adds the form's `intent` and words to such a failure (never the token or the phone) and `client.ts ticketView` places it (the
+  card used to turn into the lookup form, the words gone). The private link's card that holds the rating form is served
+  `Referrer-Policy: same-origin` (`ticketPageHeaders`): under `no-referrer` a browser posts it with `Origin: null` and the
+  store refused it — the rating failed without script (400). A card without a form keeps `no-referrer`.
+- **From an order's page** (`/support/assistant?handoff=1&order=TT-…#handoff`): the form says «عن الطلب TT-…» and sends it; the
+  ticket is category "order", its subject names the order, and it is LINKED (`order_id`) only when the order is the shopper's (its
+  phone, or their account) — else the internal note says it was named but not verified (`ticketOrderOf`). The order pages still
+  link the plain hand-off: asked to add `&order=<ref>`.
+- **Routing on arrival:** right after a hand-off's answer (`waitUntil`), `routeOnArrival` runs the support module's `routeTicket`
+  as the system; failures only log (the scheduled job routes what it misses).
+- **Kit requests applied:** `SupportNav section` → `aria-current="true"` (a guide, the ticket page); the support.css scroll
+  workaround is gone (the kit's link Segmented scrolls); the repair form's hand-over group carries the summary's `id`
+  (`FieldGroup id`), the time preference uses `PreferencePicker label/id`.

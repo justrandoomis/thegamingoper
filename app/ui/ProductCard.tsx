@@ -1,15 +1,15 @@
-import { lazy, Suspense, useId, useRef, useState, type MouseEvent, type ReactNode, type SyntheticEvent } from "react";
+import { useEffect, useId, useRef, useState, type MouseEvent, type ReactNode, type SyntheticEvent } from "react";
 import { useRouteLoaderData } from "react-router";
 
 import { artAspect, getArt, isPhoto } from "~/art";
-import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
+import { LocaleLink, useDir, useLocale, useT } from "~/i18n/react";
 import type { ImageRef, ProductCardData } from "~/lib/dto";
 import { CKB_MONTHS } from "~/lib/dates";
 import { LOCALES, type Locale } from "~/lib/locales";
 import { MotionLink, SharedElement } from "~/motion";
 import { CardAddButton } from "./AddToCartKey";
-import { BidiText } from "./BidiText";
-import { mediaUrl } from "./cart-client";
+import { BidiLabel, BidiText, latinName } from "./BidiText";
+import { mediaUrl, showShopToast } from "./cart-client";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
 import { IconKey } from "./IconKey";
@@ -60,6 +60,13 @@ export type ProductCardProps = {
   /** Show the heart on the well (pass `wished` from the page's wishlist read). */
   wishlist?: boolean;
   wished?: boolean;
+  /** The heart's confirmed state after a toggle (the page's own list of favourites follows it). */
+  onWishedChange?: (wished: boolean) => void;
+  /**
+   * A compare toggle (the catalogue's <CompareToggle>, a 40px text key «قارن») under the price row, above the card's
+   * link — for console and handheld cards (v2 §6.5). Give every card of a row the slot or none, so prices stay aligned.
+   */
+  compare?: ReactNode;
   /** Force the demo note on or off. Default: on for demo rows when the store is not in demo mode. */
   demoNote?: boolean;
   className?: string;
@@ -75,8 +82,22 @@ export function priceFit(_priceIqd: number): string {
 type RootStore = { storeMode?: string };
 
 /** The product area's quick look — its code is fetched only when a shopper reaches for a card's button. */
-const loadQuickPreview = () => import("~/routes/storefront/product/QuickPreview");
-const QuickPreview = lazy(() => loadQuickPreview().then((module) => ({ default: module.QuickPreview })));
+type QuickPreviewModule = typeof import("~/routes/storefront/product/QuickPreview");
+type QuickPreviewView = QuickPreviewModule["QuickPreview"];
+let quickModule: QuickPreviewModule | null = null;
+let quickLoading: Promise<QuickPreviewModule> | null = null;
+/** The quick look's code, fetched once; a failed fetch (offline) is forgotten, so the next tap tries again. */
+function loadQuickPreview(): Promise<QuickPreviewModule> {
+  if (quickModule) return Promise.resolve(quickModule);
+  quickLoading ??= import("~/routes/storefront/product/QuickPreview").then(
+    (module) => (quickModule = module),
+    (error: unknown) => {
+      quickLoading = null;
+      throw error;
+    },
+  );
+  return quickLoading;
+}
 const warmQuickPreview = () => void loadQuickPreview().catch(() => undefined);
 
 /** How the picture fits its well (v2 §7.3): box art, digital cards, wide objects, or hardware. Pure. */
@@ -98,12 +119,27 @@ export function releaseDay(ms: number, locale: Locale): string {
   return new Intl.DateTimeFormat(`${LOCALES[locale].bcp47}-u-nu-latn`, { day: "numeric", month: "long", timeZone: "Asia/Baghdad" }).format(ms);
 }
 
-export function ProductCard({ card, priority = false, sharedName, slot, sizes = CARD_SIZES, headingLevel = 3, layout = "grid", wishlist = false, wished = false, demoNote, className }: ProductCardProps) {
+export function ProductCard({
+  card,
+  priority = false,
+  sharedName,
+  slot,
+  sizes = CARD_SIZES,
+  headingLevel = 3,
+  layout = "grid",
+  wishlist = false,
+  wished = false,
+  onWishedChange,
+  compare,
+  demoNote,
+  className,
+}: ProductCardProps) {
   const root = useRef<HTMLElement>(null);
   const titleId = useId();
   const store = useRouteLoaderData("root") as RootStore | undefined;
   const words = useT("ui-card");
   const locale = useLocale();
+  const dir = useDir();
   const demoMode = store?.storeMode === "demo";
   const showDemo = demoNote ?? (card.isDemo && !demoMode);
   const href = `/p/${card.slug}`;
@@ -113,11 +149,12 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
   // a demo previous price is struck only under the demo marking, in demo mode (dto: compareAtDemo)
   const compareAt = card.compareAtIqd !== null && card.compareAtIqd > card.priceIqd && (!card.compareAtDemo || demoMode) ? card.compareAtIqd : null;
   const state = out ? "out" : soon ? "soon" : compareAt !== null ? "sale" : "in";
+  // «تخفيض» only beside a previous price the card actually strikes (a "deal" badge alone is not a reduction)
   const badge = out ? (
     <Tag kind="out" />
   ) : soon || card.badge === "preorder" ? (
     <Tag kind="soon" />
-  ) : compareAt !== null || card.badge === "deal" ? (
+  ) : compareAt !== null ? (
     <Tag kind="sale" />
   ) : card.badge === "new" || card.isNew ? (
     <Tag kind="new" />
@@ -128,11 +165,13 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
   const facts = (card.subtitle ?? "").split(" · ").map((fact) => fact.trim()).filter(Boolean).slice(0, 2);
   const row = layout === "row";
   const price = <SafePrice amountIqd={card.priceIqd} compareAtIqd={compareAt} tone={out ? "muted" : undefined} approx="off" />;
+  const title = latinName(card.name, dir);
 
   return (
     <article
       ref={root}
-      className={cx("pcard", row && "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3", className)}
+      // full width of its cell: the card is an inline-size container, which has no width of its own in a flex row
+      className={cx("pcard w-full", row && "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3", className)}
       data-state={state}
       data-layout={layout}
       data-product={card.id}
@@ -158,10 +197,11 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
               {kindLabel ? <span className="min-w-0 truncate">{kindLabel}</span> : null}
             </span>
           ) : null}
-          {/* the page's start edge: with `unicode-bidi: plaintext` Chromium aligns a Latin name to the left of an
-              Arabic card (match-parent resolves against the name's own direction). BidiText already isolates the
-              name, so the title keeps the page's direction. */}
-          <Name id={titleId} className="pcard__title [unicode-bidi:isolate]">
+          {/* the page's start edge, the ellipsis at the name's own end: a Latin name on an Arabic page is a
+              left-to-right line aligned to the right (latinName); a name with Arabic in it keeps the page's
+              direction, its Latin parts isolated (BidiText). Never `unicode-bidi: plaintext` (Chromium aligned
+              those names to the left of an Arabic card). */}
+          <Name id={titleId} dir={title.dir} className={cx("pcard__title [unicode-bidi:isolate]", title.className)}>
             <BidiText text={card.name} />
           </Name>
           {facts.length ? (
@@ -169,7 +209,9 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
               {facts.map((fact, index) => (
                 <span key={index}>
                   {index > 0 ? " · " : null}
-                  <bdi>{fact}</bdi>
+                  {/* a fact keeps the page's direction with its Latin parts isolated: «512GB أو 1TB» (a bare <bdi>
+                      took the direction of "512GB" and read the Arabic word backwards) */}
+                  <BidiLabel>{fact}</BidiLabel>
                 </span>
               ))}
             </span>
@@ -180,7 +222,7 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
       </MotionLink>
       {wishlist && !row ? (
         <span className="absolute end-1.5 top-1.5 z-2">
-          <WishlistKey productId={card.id} name={card.name} initial={wished} onImage size="xs" message="none" />
+          <WishlistKey productId={card.id} name={card.name} initial={wished} onChange={onWishedChange} onImage size="xs" message="none" />
         </span>
       ) : null}
       <div className={cx("pcard__foot", row && "mt-0 pt-0")}>
@@ -203,6 +245,7 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
           />
         )}
       </div>
+      {compare ? <div className={cx("relative z-2 flex min-w-0 flex-wrap items-center", row && "col-span-full")}>{compare}</div> : null}
       {showDemo ? <DemoNote variant="tag" what="data" className="relative z-2 mt-1 self-start" /> : null}
     </article>
   );
@@ -211,17 +254,37 @@ export function ProductCard({ card, priority = false, sharedName, slot, sizes = 
 /**
  * The add button of a product with options: opens the product area's quick look over the page (choose, then add) —
  * the page behind keeps its URL and scroll. A real link to the product page underneath (no script, new tab, a modified
- * click). Focus returns to this button when the sheet closes.
+ * click). Focus returns to this button when the sheet closes. When the quick look's code cannot be fetched: offline,
+ * an error toast says so (and the next tap tries again); online (a new deploy replaced it), the link goes to the
+ * product page itself.
  */
 function QuickLookButton({ card, href }: { card: ProductCardData; href: string }) {
   const shop = useT("ui-shop");
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [View, setView] = useState<QuickPreviewView | null>(() => quickModule?.QuickPreview ?? null);
+  const [busy, setBusy] = useState(false);
   const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
-    setMounted(true);
-    setOpen(true);
+    if (View) {
+      setOpen(true);
+      return;
+    }
+    if (busy) return;
+    const link = event.currentTarget.href;
+    setBusy(true);
+    loadQuickPreview().then(
+      (module) => {
+        setBusy(false);
+        setView(() => module.QuickPreview);
+        setOpen(true);
+      },
+      () => {
+        setBusy(false);
+        if (typeof navigator !== "undefined" && navigator.onLine === false) showShopToast({ kind: "error", title: shop("add.chooseOffline", { name: card.name }) });
+        else window.location.assign(link);
+      },
+    );
   };
   return (
     <>
@@ -233,16 +296,13 @@ function QuickLookButton({ card, href }: { card: ProductCardData; href: string }
         label={shop("add.chooseNamed", { name: card.name })}
         aria-haspopup="dialog"
         className="cadd"
+        loading={busy}
         onClick={onClick}
         onPointerEnter={warmQuickPreview}
         onFocus={warmQuickPreview}
         onTouchStart={warmQuickPreview}
       />
-      {mounted ? (
-        <Suspense fallback={null}>
-          <QuickPreview slug={card.slug} name={card.name} card={card} open={open} onClose={() => setOpen(false)} />
-        </Suspense>
-      ) : null}
+      {View ? <View slug={card.slug} name={card.name} card={card} open={open} onClose={() => setOpen(false)} /> : null}
     </>
   );
 }
@@ -252,6 +312,12 @@ function CardImage({ image, sizes, priority }: { image: ImageRef; sizes: string;
   const words = useT("ui-card");
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const box = useRef<HTMLSpanElement>(null);
+  // A picture that failed before hydration fired its error before React listened, and the browser kept its broken
+  // frame: look once after mounting (and after a retry) — `complete` with no width is a failed load.
+  useEffect(() => {
+    if (pictureFailed(box.current?.querySelector("img"))) setFailed(true);
+  }, [attempt]);
   if (failed) {
     return (
       <span className="absolute inset-0 z-2 grid place-content-center justify-items-center gap-1 p-3 text-center">
@@ -272,10 +338,15 @@ function CardImage({ image, sizes, priority }: { image: ImageRef; sizes: string;
     );
   }
   return (
-    <span key={attempt} className="contents" onErrorCapture={() => setFailed(true)}>
+    <span key={attempt} ref={box} className="contents" onErrorCapture={() => setFailed(true)}>
       <ProductImage image={image} alt="" sizes={sizes} priority={priority} />
     </span>
   );
+}
+
+/** An <img> that finished loading and has no picture: it failed (a lazy one not started yet is not `complete`). Pure. */
+export function pictureFailed(img: Pick<HTMLImageElement, "complete" | "naturalWidth" | "currentSrc" | "src"> | null | undefined): boolean {
+  return Boolean(img && img.complete && img.naturalWidth === 0 && (img.currentSrc || img.src));
 }
 
 /**

@@ -92,7 +92,7 @@ export default function StaffHome({ loaderData }: Route.ComponentProps) {
               to="/admin/staff/commissions"
             />
           ) : null}
-          {overview.payroll ? <Kpi icon="money" label={t("home.runs")} value={f.number(overview.payroll.drafts + overview.payroll.approved)} hint={t("home.runsHint", { drafts: overview.payroll.drafts, approved: overview.payroll.approved })} to="/admin/staff/payroll" /> : null}
+          {overview.payroll && access?.payrollView ? <Kpi icon="money" label={t("home.runs")} value={f.number(overview.payroll.drafts + overview.payroll.approved)} hint={t("home.runsHint", { drafts: overview.payroll.drafts, approved: overview.payroll.approved })} to="/admin/staff/payroll" /> : null}
         </div>
       </Section>
 

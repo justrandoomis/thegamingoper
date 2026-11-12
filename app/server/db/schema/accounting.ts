@@ -57,6 +57,13 @@ export const SYSTEM_ACCOUNT_KEYS = [
   "payroll",
   "marketing",
   "cash_over_short",
+  // migration 0004 (added to databases whose chart was already seeded; seedReference installs them on a new one)
+  /** Gift cards sold or issued and not redeemed yet (admin 08.07). */
+  "gift_card_liability",
+  /** Pay owed to employees between a payroll run's approval and its payment (admin 15.04). */
+  "salaries_payable",
+  /** Salary advances handed out and not yet deducted from a payroll run (admin 15.04). */
+  "employee_advances",
 ] as const;
 export type SystemAccountKey = (typeof SYSTEM_ACCOUNT_KEYS)[number];
 

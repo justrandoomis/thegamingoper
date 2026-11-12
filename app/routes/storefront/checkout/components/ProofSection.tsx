@@ -87,7 +87,9 @@ export function ProofSection({ order, access, onSent, headingLevel = 3 }: { orde
       <TextField id="proof-reference" name="reference" label={t("proof.reference")} optional ltr maxLength={100} autoComplete="off" value={reference} onChange={(event) => setReference(event.currentTarget.value)} hint={t("proof.referenceHint")} />
       <TextArea id="proof-note" name="note" label={t("proof.note")} optional maxLength={500} rows={2} value={note} onChange={(event) => setNote(event.currentTarget.value)} />
       <div className="grid gap-2">
+        {/* the upload is the page's one step forward: the kit's primary «اختر صورة» (v2 polish, ProofUploader `primary`) */}
         <ProofUploader
+          primary
           onUpload={upload}
           disabled={amountIssue !== null}
           status={rejected ? { state: "rejected", note: order.payment.proof.rejectReason } : null}

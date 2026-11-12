@@ -55,11 +55,12 @@
  * as before, counted in the summary, and listed by --opaque-report until they are re-cut (owner input,
  * spec §13 row 7). The storefront flags every one of them (ImageRef.opaque) so the well treats it.
  *
- * Manifest = the clay-render manifest (app/art/index.ts ArtManifest, view "hero", without the PNG) plus
+ * Manifest = the clay-render manifest (app/art/index.ts ArtManifest, without the PNG; view "hero", or "back" when the
+ * catalogue entry says `"view": "back"` — a picture of the object's back, which no tile or lead picture may use) plus
  *   transparent, background ("#rrggbb" | null), kind, credit, source { url, page }, share (first image
  *   only) and input — a hash of the original, of its options and of every treatment and encoder
  *   setting. An image whose manifest carries the same input hash and whose files all exist is skipped
- *   (only its credit / source are refreshed).
+ *   (only its view, credit and source are refreshed).
  * Output is deterministic and file names carry a hash of their content, so /products/* can be cached
  * forever and a rebuild that changes nothing rewrites no file.
  */
@@ -226,8 +227,11 @@ async function readCatalog(only, options) {
       if (!match || match[1] !== slug) { problems.push(`${where}: key "${image?.key}" must be "${slug}--<n>"`); continue; }
       if (!PHOTO_KINDS.includes(image.kind)) { problems.push(`${where}: kind "${image.kind}" must be one of ${PHOTO_KINDS.join(' | ')}`); continue; }
       if (!image.file && !image.sourceUrl) { problems.push(`${where}: neither "file" nor "sourceUrl"`); continue; }
+      if (image.view !== undefined && image.view !== 'back') { problems.push(`${where}: view "${image.view}" must be "back" when given`); continue; }
       jobs.push({
         key: image.key, slug, n: Number(match[2]), kind: image.kind,
+        // a picture of the object's back (ports, stand) — the manifest says so (view "back"), so no surface leads with it
+        view: image.view === 'back' ? 'back' : 'hero',
         file: image.file ? path.resolve(ROOT, image.file) : path.join(CACHE, slug, `${match[2]}.bin`),
         credit: String(image.credit ?? '').trim(),
         source: { url: image.sourceUrl ?? null, page: image.sourcePage ?? null },
@@ -312,7 +316,7 @@ async function writeIfChanged(file, content) {
 
 function manifestOf(job, files, input) {
   return {
-    key: job.key, view: 'hero',
+    key: job.key, view: job.view,
     width: files.width, height: files.height, aspect: +(files.width / files.height).toFixed(4),
     variants: files.variants,
     ...(files.share ? { share: files.share } : {}),
@@ -442,7 +446,7 @@ async function processImage(job) {
   const input = sha(Buffer.concat([Buffer.from(`${SETTINGS}|${job.kind}|${options}|`), bytes]), 16);
   const previous = await readManifest(job.key);
   if (!flags.force && previous?.input === input && referencedFiles(previous).every((src) => existsSync(path.join(ROOT, 'public', src)))) {
-    const refreshed = { ...previous, kind: job.kind, credit: job.credit, source: { url: job.source.url, page: job.source.page } };
+    const refreshed = { ...previous, view: job.view, kind: job.kind, credit: job.credit, source: { url: job.source.url, page: job.source.page } };
     const changed = await writeIfChanged(path.join(MANIFESTS, `${job.key}.json`), JSON.stringify(refreshed, null, 2) + '\n');
     return { job, status: changed ? 'refreshed' : 'current', manifest: refreshed };
   }

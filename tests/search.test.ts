@@ -25,6 +25,7 @@ import {
   recordSearchQuery,
   searchProducts,
   suggestSearch,
+  suggestSearchWithTotal,
   trigramsOf,
 } from "~/server/services/search.server";
 import { createTestDb, type TestDb } from "./helpers/db";
@@ -321,6 +322,33 @@ describe("autocomplete (suggestSearch)", () => {
 
   it("asks for two characters", async () => {
     expect(await suggestSearch(t.db, "en", "p", { now: t.now })).toEqual([]);
+  });
+
+  it("with its total and product ids, from one match: the same rows, the count /search lists (data owner)", async () => {
+    for (const [locale, q] of [["en", "playstation"], ["ar", "بلايستيشن"], ["en", "playstaion"], ["ckb", "xbox"]] as const) {
+      const result = await suggestSearchWithTotal(t.db, locale, q, { now: t.now });
+      expect(result.items.map(({ id: _id, ...item }) => item), q).toEqual((await suggestSearch(t.db, locale, q, { now: t.now })).map(({ id: _id, ...item }) => item));
+      expect(result.productIds, q).toEqual(result.items.filter((item) => item.kind === "product").map((item) => item.id));
+      expect(result.productIds.length, q).toBeGreaterThan(0);
+      expect(result.total, q).toBe((await searchProducts(t.db, locale, q, { now: t.now })).total);
+    }
+    expect(await suggestSearchWithTotal(t.db, "en", "p", { now: t.now })).toEqual({ items: [], productIds: [], total: null });
+    expect((await suggestSearchWithTotal(t.db, "en", "zzzzqqxx", { now: t.now })).total).toBe(0);
+  });
+});
+
+describe("«ابحث عنها كما كتبتها»: the words as typed (asTyped)", () => {
+  it("never corrects the spelling: a typo finds what the typo finds — nothing here — and says no corrected query", async () => {
+    const corrected = await searchProducts(t.db, "en", "playstaion", { now: t.now });
+    expect(corrected.correctedQuery).toBe("playstation");
+    expect(corrected.total).toBeGreaterThan(0);
+    const typed = await searchProducts(t.db, "en", "playstaion", { now: t.now, asTyped: true });
+    expect(typed.correctedQuery).toBeNull();
+    expect(typed.query).toBe("playstaion");
+    expect(typed.total).toBe(0);
+    // a query that needs no correction finds the same either way
+    const plain = await searchProducts(t.db, "en", "playstation", { now: t.now });
+    expect((await searchProducts(t.db, "en", "playstation", { now: t.now, asTyped: true })).total).toBe(plain.total);
   });
 });
 

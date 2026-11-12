@@ -7,7 +7,8 @@
  *
  * The chrome budget, published on :root so portals, pages and base.css read it (v2 §5.1, §2.7):
  *   --shell-header-h   the sticky top bar: 56 below 1024; 108 (64 + 44) from 1024; checkout 56 / 64
- *   --shell-top        what sticks at the top: the header + the safe area (+ 40 while the offline banner shows)
+ *   --shell-top        what sticks at the top: the header + the safe area + the offline banner pinned under it while it
+ *                      shows (--shell-offline-h, its measured height, published by ./Banners ShellOffline)
  *   --shell-bottom     what is fixed at the bottom: the floating tab bar (64 + 10 + safe area), a page's <TaskBar>
  *                      (its measured height, --shell-taskbar-h), or 0. Sticky page elements sit at
  *                      `inset-block-end: var(--shell-bottom)`; the footer pads by it.
@@ -20,12 +21,9 @@
   :root:has(.shell) {
     --shell-header-h: var(--h-header);
     --shell-tabbar-h: calc(var(--h-tabbar) + 10px + var(--safe-bottom));
-    --shell-top: calc(var(--shell-header-h) + var(--safe-top));
+    --shell-top: calc(var(--shell-header-h) + var(--safe-top) + var(--shell-offline-h, 0px));
     --shell-bottom: 0px;
     --shell-toast-top: calc(var(--shell-top) + var(--s-2));
-  }
-  :root:has(.shell[data-offline]) {
-    --shell-top: calc(var(--shell-header-h) + var(--safe-top) + 40px);
   }
   @media (max-width: 63.99rem) {
     :root:has(.shell[data-chrome="store"]) {
@@ -327,13 +325,18 @@
     outline: var(--focus-w) solid var(--focus);
     outline-offset: var(--focus-offset);
   }
+  /* the key and the field fill the pill's whole height, over its 1px border: 44px targets in a 44px pill */
+  .shell-search__submit,
+  .shell-search__input {
+    block-size: calc(100% + 2px);
+    margin-block: -1px;
+  }
   .shell-search__submit {
     position: relative;
     display: grid;
     flex: none;
     place-items: center;
     inline-size: 44px;
-    block-size: 100%;
     border: 0;
     border-radius: var(--r-full);
     background: none;
@@ -343,7 +346,6 @@
   .shell-search__input {
     flex: 1 1 auto;
     min-inline-size: 0;
-    block-size: 100%;
     padding-inline: 0 var(--s-4);
     border: 0;
     background: none;
@@ -775,6 +777,13 @@
     gap: 4px;
     block-size: var(--h-checkout);
   }
+  /* the keys, the mascot and the tag keep their size (a key never under 44px): only the step rail gives */
+  .shell-cobar__back,
+  .shell-cobar__brand,
+  .shell-cobar__tag,
+  .shell-cobar__help {
+    flex: none;
+  }
   .shell-cobar__back {
     margin-inline-start: -8px;
   }
@@ -799,6 +808,12 @@
   .shell-cobar__brand .shell-lockup__word {
     display: none;
   }
+  /* 320px reflow (and 200% zoom on a small phone): the back key, the rail, the tag and help — the mascot goes */
+  @media (max-width: 22.49rem) {
+    .shell-cobar__brand {
+      display: none;
+    }
+  }
   @media (min-width: 48rem) {
     .shell-cobar__bar {
       gap: var(--s-3);
@@ -807,7 +822,10 @@
       display: block;
     }
   }
-  /* the kit's step rail (<ProgressSteps>), in the bar: all the labels from 430, centred and at most 480 wide */
+  /* the kit's step rail (<ProgressSteps>), in the bar: centred and at most 480 wide. All the labels from 600 (they do
+     not fit beside the keys and the tag below that); below 600 the numbers and the current step's label — when it fits:
+     only the current step gives way (the utilities block at the end of this file), its label going first, so nothing
+     ever runs under the demo tag; below 375 the numbers alone (the page's <h1> names the step). */
   .shell-cobar__steps {
     display: flex;
     flex: 1 1 auto;
@@ -819,18 +837,18 @@
     gap: 6px;
     min-inline-size: 0;
   }
-  .shell-cobar__steps .steps > li {
-    gap: 6px;
+  @media (max-width: 37.49rem) {
+    .shell-cobar__steps > .steps {
+      gap: 4px;
+    }
   }
   @media (min-width: 64rem) {
-    .shell-cobar__steps .steps > li,
     .shell-cobar__steps > .steps {
       gap: var(--s-2);
     }
   }
-  /* below 430px: the numbers, and the current step's label; below 375px the numbers alone (the page's <h1> names the
-     step). Hidden labels stay readable for assistive technology. */
-  @media (max-width: 26.86rem) {
+  /* Hidden labels stay readable for assistive technology. */
+  @media (max-width: 37.49rem) {
     .shell-cobar__steps .step:not([aria-current="step"]) .step__label {
       position: absolute;
       inline-size: 1px;
@@ -849,9 +867,6 @@
       clip-path: inset(50%);
       white-space: nowrap;
     }
-  }
-  .shell-cobar__tag {
-    flex: none;
   }
   .shell-cobar__long {
     display: none;
@@ -906,9 +921,11 @@
     }
   }
 
-  /* the offline banner sits right under the sticky header */
+  /* the offline banner: pinned right under the sticky header for the whole page (sticky in the shell's column — inside a
+     wrapper of its own height it would scroll away while --shell-top still counts it); under the menu scrim and sheets */
   .shell-offline {
-    position: relative;
+    position: sticky;
+    inset-block-start: calc(var(--safe-top) + var(--shell-header-h));
     z-index: calc(var(--z-nav) - 2);
   }
 
@@ -1139,19 +1156,16 @@
       padding-block-end: 0;
     }
   }
+  /* 44 × 44 at least at every width (a short label such as «الضمان» keeps a 44px-wide target) */
   .shell-flink {
     display: inline-flex;
     align-items: center;
     gap: var(--s-2);
-    min-block-size: 40px;
+    min-inline-size: var(--target);
+    min-block-size: var(--target);
     color: var(--ink-2);
     font: var(--type-sm);
     text-decoration: none;
-  }
-  @media (max-width: 47.99rem) {
-    .shell-flink {
-      min-block-size: var(--target);
-    }
   }
   .shell-flink__text {
     text-decoration: underline;
@@ -1248,6 +1262,8 @@
   .shell-tfoot__link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    min-inline-size: var(--target);
     min-block-size: var(--target);
     color: var(--ink-2);
     text-decoration: underline;
@@ -1404,6 +1420,59 @@
     .shell-navitem::after,
     .shell-progress > span {
       background: Highlight;
+    }
+  }
+}
+
+/*
+ * PLACEMENT ONLY — the step rail inside the checkout bar. The kit's <ProgressSteps> sizes its steps with utilities (each
+ * step at least 44px wide, `min-w-11`; every step after the first `flex-1 min-w-0`, so the rail is shared out in equal
+ * parts), which a 56px bar beside the back key, the mascot, the demo tag and help cannot hold on a phone: the current
+ * step's words ran under «تجريبي» at 375–429 and the discs overlapped at 320. In the utilities layer because those sizes
+ * are utilities. In the bar:
+ *   · each step is its disc (and, from 600, its words); a done step's link keeps a 44 × 44 hit area through its ::after
+ *     (the joins keep 20px between two discs, so two hit areas never overlap);
+ *   · the joins take the room that is left; only the CURRENT step gives way when there is not enough, and its words go
+ *     first: they wrap to a second line that the step's 44px box clips (still read by assistive technology) — so the
+ *     words show whenever they fit, and nothing runs under the tag.
+ */
+@layer utilities {
+  .shell-cobar__steps .steps > li {
+    flex: 0 0 auto;
+  }
+  .shell-cobar__steps .steps > li + li {
+    flex: 1 0 auto;
+  }
+  .shell-cobar__steps .steps > li:has(> .step[aria-current="step"]) {
+    flex-shrink: 1;
+    min-inline-size: 0;
+  }
+  /* the disc right after its join (the kit centres it in a 44px box) */
+  .shell-cobar__steps .step {
+    justify-content: flex-start;
+    min-inline-size: 0;
+  }
+  .shell-cobar__steps .step[aria-current="step"] {
+    flex-wrap: wrap;
+    align-content: flex-start;
+    row-gap: var(--s-3);
+    min-inline-size: 24px;
+    block-size: var(--target);
+    padding-block: 10px;
+    overflow: hidden;
+  }
+  @media (max-width: 37.49rem) {
+    .shell-cobar__steps .steps > li {
+      gap: 4px;
+    }
+    .shell-cobar__steps a.step {
+      position: relative;
+    }
+    .shell-cobar__steps a.step::after {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline: -10px;
     }
   }
 }

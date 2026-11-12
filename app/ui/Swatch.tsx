@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 import { useT } from "~/i18n/react";
+import type { TFunction } from "~/i18n/translate";
 import { cx } from "./cx";
 import { useControllable, useRovingRadio } from "./roving";
 
@@ -25,9 +26,22 @@ export type SwatchOption = {
   color?: string;
   /** A 56px picture instead of a dot. */
   thumb?: ReactNode;
-  /** Not available in this variant: a stroke, the reason in its name, still focusable. */
-  unavailable?: boolean;
+  /**
+   * Not available now: a diagonal stroke and the reason in its name, still focusable. `"soldOut"` «نفد حالياً»,
+   * `"soon"` «قريباً» (a colour that is not out yet — never «غير متوفر», §9), `true` «غير متوفر» (not made in this
+   * version).
+   */
+  unavailable?: boolean | "soldOut" | "soon";
+  /** The reason in your own words, in place of the kit's («يصدر 19 تشرين الثاني»). */
+  reason?: string;
 };
+
+/** The swatch's accessible name: the colour, then why it cannot be chosen now. Pure but for `t`. */
+function swatchName(option: SwatchOption, t: TFunction): string {
+  if (!option.unavailable) return option.name;
+  if (option.reason) return `${option.name} — ${option.reason}`;
+  return t(option.unavailable === "soldOut" ? "swatch.soldOut" : option.unavailable === "soon" ? "swatch.soon" : "swatch.unavailable", { name: option.name });
+}
 
 export type SwatchesProps = {
   label: string;
@@ -51,7 +65,7 @@ export function Swatches({ label, options, value, defaultValue = null, onChange,
         {chosen ? (
           <>
             {": "}
-            <b className="font-semibold text-ink">{chosen.name}</b>
+            <b className="font-semibold text-ink">{chosen.unavailable ? swatchName(chosen, t) : chosen.name}</b>
           </>
         ) : null}
       </p>
@@ -64,7 +78,7 @@ export function Swatches({ label, options, value, defaultValue = null, onChange,
             className={cx("swatch focus-visible:outline-offset-4", option.thumb ? "swatch--thumb" : undefined)}
             style={option.color ? ({ "--swatch": option.color } as CSSProperties) : undefined}
             data-unavailable={option.unavailable ? "" : undefined}
-            aria-label={option.unavailable ? t("swatch.unavailable", { name: option.name }) : option.name}
+            aria-label={swatchName(option, t)}
             data-press="soft"
             {...itemProps(index)}
           >

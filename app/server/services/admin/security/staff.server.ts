@@ -186,9 +186,9 @@ export async function getStaffSecurity(db: Db, actor: Actor, employeeId: string,
     sessions: sessions.map((session) => ({ id: session.id, createdAt: session.createdAt, lastSeenAt: session.lastSeenAt, expiresAt: session.expiresAt, ip: session.ip, ...deviceOf(session.userAgent), mfaOk: session.mfaOk, current: session.current })),
     events: eventRows.map((event) => authEventView(actor, event, row.name)),
     isSelf,
-    outranked: !isSelf && outranked && (manage || can(actor, "security.mfa.manage")),
+    outranked: !isSelf && outranked && (manage || can(actor, "security.mfa.manage") || can(actor, "security.session.revoke")),
     can: {
-      revoke: !isSelf && can(actor, "security.session.revoke"),
+      revoke: !isSelf && can(actor, "security.session.revoke") && !outranked,
       resetTwoStep: !isSelf && row.totpEnabled && can(actor, "security.mfa.manage") && !outranked,
       assignRoles: !isSelf && manage,
       setBranch: !isSelf && manage && !outranked,
@@ -239,12 +239,22 @@ async function existing(db: Db, employeeId: string) {
   return row;
 }
 
+/**
+ * Never the sessions of someone who holds a permission the actor does not (`target_more_privileged`, follow-up
+ * 2026-11-12 — the rule of resetStaffTwoStep and the role editor): signing a stronger account out on demand, again and
+ * again, keeps its holder from working (the owner in the middle of a close, a payroll run).
+ */
+async function notOutranked(db: Db, actor: Actor, employeeId: string): Promise<void> {
+  if (!holdsAll(actor, await storedPermissionsOf(db, employeeId))) throw new AppError("target_more_privileged", 403);
+}
+
 /** Ends one of an employee's sessions; false when it had already ended. */
 export async function endStaffSession(db: Db, actor: Actor, raw: unknown, now: number): Promise<{ ended: boolean }> {
   assertCan(actor, "security.session.revoke");
   const input = SessionInput.parse(raw);
   notSelf(actor, input.employeeId);
   await existing(db, input.employeeId);
+  await notOutranked(db, actor, input.employeeId);
   return { ended: await revokeEmployeeSession(db, actor, { employeeId: input.employeeId, sessionId: input.sessionId, reason: input.reason }, now) };
 }
 
@@ -254,6 +264,7 @@ export async function endAllStaffSessions(db: Db, actor: Actor, raw: unknown, no
   const input = TargetInput.parse(raw);
   notSelf(actor, input.employeeId);
   await existing(db, input.employeeId);
+  await notOutranked(db, actor, input.employeeId);
   const live = await db.select({ n: sql<number>`count(*)` }).from(employeeSessions).where(and(eq(employeeSessions.employeeId, input.employeeId), sql`${employeeSessions.revokedAt} IS NULL`, sql`${employeeSessions.expiresAt} > ${now}`)).get();
   await revokeAllEmployeeSessions(db, actor, { employeeId: input.employeeId, reason: input.reason }, now);
   return { ended: Number(live?.n ?? 0) };

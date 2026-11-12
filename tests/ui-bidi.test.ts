@@ -12,7 +12,7 @@ import { createElement, Fragment } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { BidiLabel, BidiText, hasRtl, splitBidi, textOf } from "~/ui/BidiText";
+import { BidiLabel, BidiText, BidiValue, FSI, hasRtl, isolate, latinName, PDI, splitBidi, splitNumbers, textOf } from "~/ui/BidiText";
 
 /** The left-to-right runs of a text, in reading order. */
 const runs = (text: string) => splitBidi(text).filter((part) => part.ltr).map((part) => part.text);
@@ -165,6 +165,67 @@ describe("<BidiLabel> — labels of keys, chips, banks, crumbs, menus, steps and
   it("follows the page's direction when it cannot read the label (a component that takes its words as props)", () => {
     const Count = ({ n }: { n: number }) => createElement("span", null, `(${n})`);
     expect(label(createElement(Count, { n: 3 }))).toBe('<span class="bidi"><span>(3)</span></span>');
+  });
+});
+
+// Polish round (digest K): «5,000 د.ع» inside an Arabic sentence was a left-to-right isolate (U+2066), which put «د.ع»
+// before the figure; card facts in a bare <bdi> read «512GB أو 1TB» backwards; number-only impact rows pointed their
+// arrow at the old value; a Latin card title clamped with the ellipsis on its left.
+describe("amounts and names inside sentences: first-strong isolates", () => {
+  it("isolates with U+2068 … U+2069, never the left-to-right isolate", () => {
+    expect(isolate("5,000 د.ع")).toBe(`${FSI}5,000 د.ع${PDI}`);
+    expect(FSI).toBe("⁨");
+    expect(PDI).toBe("⁩");
+  });
+
+  it("no kit component wraps an amount in a left-to-right isolate any more", () => {
+    for (const file of ["TrustStrip", "CartLineRow", "GovernoratePicker", "WalletBalance"]) {
+      const source = readFileSync(fileURLToPath(new URL(`../app/ui/${file}.tsx`, import.meta.url)), "utf8");
+      expect(source, file).not.toMatch(/⁦/);
+      expect(source, file).toMatch(/isolate\(/);
+    }
+  });
+});
+
+describe("a card fact keeps the page's direction (<BidiLabel>)", () => {
+  it("reads «512GB أو 1TB» from the right, each size its own left-to-right run", () => {
+    expect(label("512GB أو 1TB")).toBe('<span class="bidi"><bdi dir="ltr">512GB</bdi> أو <bdi dir="ltr">1TB</bdi></span>');
+  });
+});
+
+describe("<BidiValue> — impact rows and other values with numbers", () => {
+  const value = (text: string) => renderToStaticMarkup(createElement(BidiValue, { text }));
+
+  it("cuts standalone signed numbers out, never the digits of a name", () => {
+    expect(splitNumbers("300 ← 450")).toEqual([
+      { text: "300", ltr: true },
+      { text: " ← ", ltr: false },
+      { text: "450", ltr: true },
+    ]);
+    expect(splitNumbers("−445,000 د.ع")).toEqual([
+      { text: "−445,000", ltr: true },
+      { text: " د.ع", ltr: false },
+    ]);
+    expect(splitNumbers("PS5 +2").map((part) => part.text)).toEqual(["PS5 ", "+2"]);
+  });
+
+  it("lays a value of numbers only out in the page's direction, the sign glued to its digits", () => {
+    expect(value("300 ← 450")).toBe('<span class="bidi"><bdi dir="ltr">300</bdi> ← <bdi dir="ltr">450</bdi></span>');
+    expect(value("−2 قطعة")).toBe('<span class="bidi"><bdi dir="ltr">−2</bdi> قطعة</span>');
+    expect(value("+3,000")).toBe('<span class="bidi"><bdi dir="ltr">+3,000</bdi></span>');
+  });
+
+  it("keeps Latin text one left-to-right isolate", () => {
+    expect(value("PS5 Pro")).toBe('<bdi dir="ltr">PS5 Pro</bdi>');
+  });
+});
+
+describe("latinName — a clamped Latin name on a right-to-left page", () => {
+  it("is laid out left to right (its ellipsis at its own end) and aligned to the page's start edge", () => {
+    expect(latinName("Pokémon Legends: Z-A – Nintendo Switch 2 Edition", "rtl")).toEqual({ dir: "ltr", className: "text-end" });
+    expect(latinName("PlayStation 5 Slim (نسخة الأقراص)", "rtl")).toEqual({});
+    expect(latinName("Nintendo Switch 2", "ltr")).toEqual({});
+    expect(latinName("2026", "rtl")).toEqual({});
   });
 });
 

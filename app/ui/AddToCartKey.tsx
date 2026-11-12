@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
@@ -9,6 +9,7 @@ import { cx } from "./cx";
 import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
 import { Key, type KeySize } from "./Key";
+import { useOnline } from "./OfflineBanner";
 import { useControllable } from "./roving";
 import { SafePrice } from "./PriceTag";
 import { Stepper, type StepperProps } from "./Stepper";
@@ -24,8 +25,14 @@ import { TextLink } from "./TextLink";
  *
  *   <CardAddButton item={{ variantId }} name={name} source={() => wellEl} image={card.image} />   the neutral card button
  *   <AddToCartKey variant="key" item={{ variantId }} name={name} qty={qty} block />            the primary «أضف إلى السلة»
+ *   <AddToCartKey variant="key" look="onBand" chooseHref={…} label={t("buy", { name })} … />   the white key on a band
  *   <BuyControls item={{ variantId }} name={name} aside={<WishlistKey … />} links={…} />        ≥1024, the PDP column
  *   <BuyBar item={{ variantId }} name={name} priceIqd={price} optionsLabel={variantName} />    phones and tablets
+ *   <TaskBar aria-label={…}><BuyBar bare … /></TaskBar>                                        inside the shell's task bar
+ *
+ * Offline (`navigator.onLine` false): the labelled key goes flat with its reason «لا يوجد اتصال. أضف إلى السلة عند
+ * عودة الاتصال.» beside it (pointed at by aria-describedby); the card button keeps its place and a tap says the same in
+ * an error toast instead of flying — nothing is queued that cannot be sent.
  *
  * The card add button (G14): a NEUTRAL 40px circle (paper, a --line-2 hairline, the ink bag-plus) that fills red under
  * the pointer; after an add it shows a check in --ok for the rest of the session, named «{name} في السلة. أضف قطعة
@@ -42,6 +49,10 @@ export type AddToCartKeyProps = {
   name: string;
   /** "socket" (default, the 1.0 name): the card add button. "key": the labelled primary key. */
   variant?: "socket" | "key";
+  /** key variant: "primary" (default) · "onBand" — the white clay key on the crimson hero or wallet band. */
+  look?: "primary" | "onBand";
+  /** key variant: the key's words instead of «أضف إلى السلة» / «اختر نسخة» (the hero's «اشترِ {name}»). */
+  label?: ReactNode;
   /** Units per press. Default 1. */
   qty?: number;
   /** out_of_stock → nothing on a card (the card says «نفد حالياً»), a flat «نفد حالياً» key with its reason. */
@@ -61,9 +72,12 @@ export type AddToCartKeyProps = {
   "aria-describedby"?: string;
   /** "after" (default): the failure sentence follows the key. "none": nothing is rendered; use `onMessage`. */
   message?: "after" | "none";
-  onMessage?: (message: string | null) => void;
+  /** The failure (or partial-add) sentence, and its tone; null when it is cleared. */
+  onMessage?: (message: string | null, tone?: "error" | "warn") => void;
   /** Called once per server-confirmed add (once per coalesced request). */
   onAdded?: (cart: CartView, added: number) => void;
+  /** Previews (/design-system): draw the offline state whatever the connection. */
+  offline?: boolean;
   className?: string;
 };
 
@@ -112,10 +126,12 @@ function landing(): { promise: Promise<void>; arrive: () => void } {
 }
 
 export function AddToCartKey(props: AddToCartKeyProps) {
-  const { item, name, variant = "socket", qty = 1, stock, chooseHref, source, image, optionsLabel, size, block, disabled = false, message = "after", onMessage, onAdded, className } = props;
+  const { item, name, variant = "socket", look = "primary", label, qty = 1, stock, chooseHref, source, image, optionsLabel, size, block, disabled = false, message = "after", onMessage, onAdded, className } = props;
   const t = useT("ui-shop");
   const ui = useT("ui");
   const locale = useLocale();
+  const online = useOnline() && !props.offline;
+  const reasonId = useId();
   const key = itemKey(item);
   const [added, markAdded] = useAddedInSession(key);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -133,7 +149,7 @@ export function AddToCartKey(props: AddToCartKeyProps) {
 
   const show = (next: Notice | null) => {
     if (mounted.current) setNotice(next);
-    live.current.onMessage?.(next?.text ?? null);
+    live.current.onMessage?.(next?.text ?? null, next?.tone);
   };
 
   /** Once per request outcome (the taps of one batch share it); the flight is undone per tap. */
@@ -190,6 +206,11 @@ export function AddToCartKey(props: AddToCartKeyProps) {
   };
 
   const press = (event: MouseEvent<HTMLElement>) => {
+    // offline: nothing flies and nothing is queued that cannot be sent — say so where the shopper looked
+    if (!online || (typeof navigator !== "undefined" && navigator.onLine === false)) {
+      showShopToast({ kind: "error", title: t("add.offline"), detail: name });
+      return;
+    }
     const units = Math.max(1, Math.trunc(qty));
     run(units, resolveSource(source) ?? event.currentTarget);
   };
@@ -199,6 +220,10 @@ export function AddToCartKey(props: AddToCartKeyProps) {
   };
 
   const soldOut = stock === "out_of_stock";
+  const keyLook = look === "onBand" ? "onBand" : "primary";
+  // the labelled key goes flat while offline, its reason beside it (a sold-out key already says why it is flat)
+  const offline = variant === "key" && !online && !soldOut && !chooseHref;
+  const describedBy = cx(props["aria-describedby"], offline && message === "after" && reasonId) || undefined;
   let control: ReactNode;
   if (variant === "socket") {
     if (soldOut) control = null;
@@ -219,30 +244,30 @@ export function AddToCartKey(props: AddToCartKeyProps) {
     }
   } else if (soldOut) {
     control = (
-      <Key variant="primary" size={size} block={block} disabled icon="bag-plus" aria-describedby={props["aria-describedby"]} className={className}>
+      <Key variant={keyLook} size={size} block={block} disabled icon="bag-plus" aria-describedby={props["aria-describedby"]} className={className}>
         {t("add.soldOut")}
       </Key>
     );
   } else if (chooseHref) {
     control = (
-      <Key as={MotionLink} nav="zoom" to={chooseHref} variant="primary" size={size} block={block} icon="bag-plus" className={className}>
-        {t("add.choose")}
+      <Key as={MotionLink} nav="zoom" to={chooseHref} variant={keyLook} size={size} block={block} icon="bag-plus" className={className}>
+        {label ?? t("add.choose")}
       </Key>
     );
   } else {
     control = (
       <Key
-        variant="primary"
+        variant={keyLook}
         size={size}
         block={block}
-        disabled={disabled}
-        aria-describedby={props["aria-describedby"]}
+        disabled={disabled || offline}
+        aria-describedby={describedBy}
         icon="bag-plus"
         data-state={added ? "added" : "ready"}
         onClick={press}
         className={className}
       >
-        {t("add.label")}
+        {label ?? t("add.label")}
       </Key>
     );
   }
@@ -250,6 +275,12 @@ export function AddToCartKey(props: AddToCartKeyProps) {
   return (
     <>
       {control}
+      {message === "after" && offline ? (
+        <p id={reasonId} className="relative flex w-full basis-full items-center gap-x-2 type-xs-strong text-ink-2">
+          <Icon name="wifi-slash" size={16} />
+          <span className="min-w-0">{t("add.offline")}</span>
+        </p>
+      ) : null}
       {message === "after" && notice ? (
         <p className={cx("relative flex w-full basis-full flex-wrap items-center gap-x-2 type-xs-strong", notice.tone === "error" ? "text-danger" : "text-warn")}>
           <Icon name={notice.tone === "error" ? "warning-circle" : "info"} size={16} />
@@ -325,6 +356,15 @@ export type BuyBarProps = BuyControlsProps & {
   alternativesHref?: string;
   /** false: sticky inside a scrolling box (the /design-system specimen). */
   fixed?: boolean;
+  /**
+   * Content only — no glass, no fixed position, no padding of its own: for a page that puts the bar inside the shell's
+   * <TaskBar>, which owns the glass, the named region, the persisted name and the height it publishes.
+   */
+  bare?: boolean;
+  /** The bar's accessible name: it becomes a named region (not with `bare` — name the <TaskBar>). */
+  "aria-label"?: string;
+  /** Kept in place through page transitions (`data-motion-persist`, e.g. "bar"). Not with `bare`. */
+  "data-motion-persist"?: string;
 };
 
 /**
@@ -333,16 +373,35 @@ export type BuyBarProps = BuyControlsProps & {
  * «أضف إلى السلة» (48, min 168px). After an add of this variant the start says «✓ في السلة» over the price and the key
  * becomes «عرض السلة (2)» (to the cart); another variant restores «أضف إلى السلة». Sold out: «نفد حالياً» + «شاهد بدائل».
  * Coming soon: «يصدر 19 تشرين الثاني 2026 · الطلب يفتح عند وصوله», no button. No stepper (quantity lives in the cart).
+ * A failed add says why on the variant's line (red-ink; the error toast carries the retry), so the bar never grows;
+ * offline the key goes flat and that line says «لا يوجد اتصال».
  */
-export function BuyBar({ fixed = true, className, priceIqd = null, releaseAt = null, alternativesHref, onAdded, ...controls }: BuyBarProps & { className?: string }) {
+export function BuyBar({
+  fixed = true,
+  bare = false,
+  className,
+  priceIqd = null,
+  releaseAt = null,
+  alternativesHref,
+  onAdded,
+  "aria-label": label,
+  "data-motion-persist": persist,
+  ...controls
+}: BuyBarProps & { className?: string }) {
   const t = useT("ui-shop");
   const f = useFormat();
+  const online = useOnline() && !controls.offline;
   const { count } = useCartCount();
   const key = itemKey(controls.item);
   const [addedKey, setAddedKey] = useState<string | null>(null);
+  const [said, setSaid] = useState<{ text: string; tone: "error" | "warn" } | null>(null);
   const added = addedKey === key;
   const soldOut = controls.stock === "out_of_stock";
   const soon = controls.stock === "preorder";
+  // the caller who asked for no message renders its own (P3's page did); otherwise the bar's line says it
+  const own = controls.message !== "none";
+  const line = !soon && !soldOut && !added && !online ? { text: t("add.offlineShort"), tone: "warn" as const } : own ? said : null;
+  const lineId = useId();
 
   let end: ReactNode;
   if (soon) end = null;
@@ -364,6 +423,12 @@ export function BuyBar({ fixed = true, className, priceIqd = null, releaseAt = n
         {...controls}
         variant="key"
         qty={1}
+        message="none"
+        aria-describedby={cx(controls["aria-describedby"], line && lineId) || undefined}
+        onMessage={(text, tone) => {
+          setSaid(text ? { text, tone: tone ?? "error" } : null);
+          controls.onMessage?.(text, tone);
+        }}
         onAdded={(cart, units) => {
           setAddedKey(key);
           onAdded?.(cart, units);
@@ -372,30 +437,46 @@ export function BuyBar({ fixed = true, className, priceIqd = null, releaseAt = n
     );
   }
 
-  return (
-    <Glass edge="bottom" className={cx(fixed ? "fixed inset-x-0 bottom-0" : "sticky bottom-0", "z-(--z-nav)", className)}>
-      <div className="buybar mx-auto max-w-[40rem]">
-        <div className="buybar__info">
-          {added ? (
-            <span className="buybar__added flex items-center gap-1">
-              <Icon name="check" size={16} />
-              {t("add.inCart")}
-            </span>
-          ) : null}
-          {soon ? (
-            <span className="type-xs-strong text-ink">
-              {releaseAt ? t("add.soonOn", { date: f.date(releaseAt, "long") }) : t("stock.soon")}
-              <span className="font-normal text-ink-2"> · {t("add.soonNote")}</span>
-            </span>
-          ) : soldOut ? (
-            <span className="type-sm-strong text-ink-2">{t("add.soldOut")}</span>
-          ) : priceIqd !== null ? (
-            <SafePrice amountIqd={priceIqd} size="lg" approx="off" as="span" />
-          ) : null}
-          {controls.optionsLabel && !soon ? <span className="buybar__var">{controls.optionsLabel}</span> : null}
-        </div>
-        {end ? <div className="flex flex-wrap justify-end [&_.key]:min-w-[168px]">{end}</div> : null}
+  const content = (
+    <div className={cx("buybar mx-auto max-w-[40rem]", bare && "min-h-0 p-0", bare && className)}>
+      <div className="buybar__info">
+        {added ? (
+          <span className="buybar__added flex items-center gap-1">
+            <Icon name="check" size={16} />
+            {t("add.inCart")}
+          </span>
+        ) : null}
+        {soon ? (
+          <span className="type-xs-strong text-ink">
+            {releaseAt ? t("add.soonOn", { date: f.date(releaseAt, "long") }) : t("stock.soon")}
+            <span className="font-normal text-ink-2"> · {t("add.soonNote")}</span>
+          </span>
+        ) : soldOut ? (
+          <span className="type-sm-strong text-ink-2">{t("add.soldOut")}</span>
+        ) : priceIqd !== null ? (
+          <SafePrice amountIqd={priceIqd} size="lg" approx="off" as="span" />
+        ) : null}
+        {line ? (
+          <span id={lineId} className={cx("buybar__var font-semibold", line.tone === "error" ? "text-danger" : "text-warn")}>
+            {line.text}
+          </span>
+        ) : controls.optionsLabel && !soon ? (
+          <span className="buybar__var">{controls.optionsLabel}</span>
+        ) : null}
       </div>
+      {end ? <div className="flex flex-wrap justify-end [&_.key]:min-w-[168px]">{end}</div> : null}
+    </div>
+  );
+  if (bare) return content;
+  return (
+    <Glass
+      edge="bottom"
+      role={label ? "region" : undefined}
+      aria-label={label}
+      data-motion-persist={persist}
+      className={cx(fixed ? "fixed inset-x-0 bottom-0" : "sticky bottom-0", "z-(--z-nav)", className)}
+    >
+      {content}
     </Glass>
   );
 }

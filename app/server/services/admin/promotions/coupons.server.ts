@@ -51,7 +51,9 @@ import {
   type CouponTerms,
   type CouponView,
   type PendingChange,
+  type DiscountLimits,
 } from "./types";
+import { programRules } from "./program.server";
 
 const KIND = "coupon" as const;
 
@@ -100,7 +102,10 @@ export function couponTerms(row: Pick<Coupon, "kind" | "value" | "minSubtotalIqd
   };
 }
 
-export const couponReasons = (terms: CouponTerms): ApprovalReason[] => discountApprovalReasons({ ...terms, value: terms.value }, { coupon: true });
+/** Why these terms need a second person, against the limits in force (`limits`: programRules; DISCOUNT_LIMITS when left out). */
+export const couponReasons = (terms: CouponTerms, limits?: DiscountLimits): ApprovalReason[] => discountApprovalReasons({ ...terms, value: terms.value }, { coupon: true, limits });
+/** The discount limits in force (the setting promotions.discount_limits — follow-up 2026-11-12). */
+const limitsInForce = async (db: Db) => (await programRules(db)).limits;
 
 /** SQL: the coupon row still has exactly these terms, this switch state and this description. */
 function sameRow(row: { id: string; isActive: boolean; description: string | null; conditionsText: string | null }, terms: CouponTerms) {
@@ -254,7 +259,7 @@ export async function getCoupon(db: Db, actor: Actor, couponId: string, now: num
     used: counts.used,
     voided: counts.voided,
     discountGivenIqd: counts.discountIqd,
-    approvalReasons: couponReasons(terms),
+    approvalReasons: couponReasons(terms, await limitsInForce(db)),
     approvedTerms: approved,
     pending: await pendingChangeView(db, actor, pending),
     redemptions: redemptionRows.map((entry) => ({
@@ -393,7 +398,7 @@ export async function saveCoupon(db: Db, actor: Actor, raw: unknown, now: number
     if (!code || !COUPON_CODE.test(code)) throw invalid({ code: code ? "code_invalid" : "required" });
     if (input.endsAt !== null && input.endsAt <= now) throw invalid({ endsAt: "ends_past" });
     const terms = termsFromInput(input, null);
-    const reasons = couponReasons(terms);
+    const reasons = couponReasons(terms, await limitsInForce(db));
     const fingerprint = termsFingerprint(terms);
     const existing = await db.select({ coupon: coupons, conditionsText: sql<string | null>`CAST(${coupons.conditions} AS TEXT)` }).from(coupons).where(sql`upper(${coupons.code}) = ${code}`).get();
     if (existing) {
@@ -425,9 +430,9 @@ export async function saveCoupon(db: Db, actor: Actor, raw: unknown, now: number
   const terms = termsFromInput(input, current.conditions);
   const fingerprint = termsFingerprint(terms);
   const description = input.description || null;
-  if (fingerprint === currentFingerprint && description === (row.description ?? null)) return { couponId: row.id, status: "unchanged", reasons: couponReasons(terms) };
+  if (fingerprint === currentFingerprint && description === (row.description ?? null)) return { couponId: row.id, status: "unchanged", reasons: couponReasons(terms, await limitsInForce(db)) };
   if (await pendingApprovalOf(db, KIND, row.id)) throw new AppError("change_pending", 409);
-  const reasons = couponReasons(terms);
+  const reasons = couponReasons(terms, await limitsInForce(db));
   const termsChanged = fingerprint !== currentFingerprint;
   const needsSecond = termsChanged && reasons.length > 0 && !(await approvedFingerprint(db, KIND, row.id, fingerprint));
   if (needsSecond) {
@@ -476,7 +481,7 @@ export async function setCouponActive(db: Db, actor: Actor, raw: unknown, now: n
   const actorId = actor.kind === "employee" ? actor.id : "system";
   if (input.active) {
     if (input.active && terms.endsAt !== null && terms.endsAt <= now) throw invalid({ endsAt: "ends_past" });
-    const reasons = couponReasons(terms);
+    const reasons = couponReasons(terms, await limitsInForce(db));
     if (reasons.length > 0 && !(await approvedFingerprint(db, KIND, row.id, fingerprint))) {
       if (await pendingApprovalOf(db, KIND, row.id)) throw new AppError("change_pending", 409);
       await runBatch(db, [

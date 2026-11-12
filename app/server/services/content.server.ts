@@ -38,6 +38,11 @@ import { batchSql, runBatch } from "~/server/db/tx.server";
 import { RETENTION_DAYS } from "~/server/jobs.server";
 import { getSetting, getSettings, type SettingKey, type SettingValue } from "~/server/settings.server";
 import { CART_COOKIE_MAX_AGE_SEC } from "~/server/services/cart.server";
+import { getActiveBanners, type StoreBanner } from "~/server/services/admin/cms/banners.server";
+import { getNavArrangement } from "~/server/services/admin/cms/navigation.server";
+import { resolveRedirect } from "~/server/services/admin/cms/redirects.server";
+import { LANDING_PATH_PREFIX, LANDING_SLUG_MAX, LANDING_SLUG_RE, arrangeBySlug, isSafeExternalUrl, normalizeStorePath, ownStorePath, type BannerPlacementKey, type NavArrangement } from "~/server/services/admin/cms/rules";
+import type { NavTaxonomy } from "~/server/services/catalog/types";
 import { getShippingFee, listGovernorates } from "~/server/services/shipping/fees.server";
 import { CART_COOKIE } from "~/server/shell.server";
 import { parseBlocks, type Block } from "~/ui/Blocks";
@@ -607,14 +612,25 @@ export function contactView(contact: SettingValue<"store.contact">, locale: Loca
   if (contact.map_url) channels.push({ kind: "map", value: hostLabel(contact.map_url), href: contact.map_url, external: true });
   const address = contact.address ? pick(contact.address, locale).trim() || null : null;
   const hours = contact.hours ? pick(contact.hours, locale).trim() || null : null;
-  // the kit's <ContactCard>: WhatsApp as international digits, the phone in E.164, the hours in the owner's words (the
-  // setting stores no schedule, so the card computes no open / closed state) — the same mapping as the shell's footer
+  // the kit's <ContactCard>: WhatsApp as international digits, the phone in E.164, the e-mail address, the store's
+  // pages elsewhere by their sites' names (Latin brand names in every language), the hours in the owner's words (the
+  // setting stores no schedule, so the card computes no open / closed state)
+  const email = contact.email ? contact.email.trim() || null : null;
+  const links = SOCIAL_SITES.flatMap(({ kind, label }) => (contact[kind] ? [{ label, url: contact[kind] as string }] : []));
   const card =
-    phone || whatsapp || address
-      ? { whatsapp: whatsapp ? whatsapp.slice(1) : null, phone, address, mapsUrl: contact.map_url ?? null, hours: null, hoursText: hours, replyTime: null }
+    phone || whatsapp || address || email || links.length > 0
+      ? { whatsapp: whatsapp ? whatsapp.slice(1) : null, phone, address, mapsUrl: contact.map_url ?? null, hours: null, hoursText: hours, replyTime: null, email, links }
       : null;
   return { channels, address, hours, card, isEmpty: channels.length === 0 && !address && !hours };
 }
+
+/** The store's pages elsewhere the settings can hold, with the names the card shows for them. */
+const SOCIAL_SITES = [
+  { kind: "instagram", label: "Instagram" },
+  { kind: "facebook", label: "Facebook" },
+  { kind: "tiktok", label: "TikTok" },
+  { kind: "telegram", label: "Telegram" },
+] as const;
 
 /** "https://www.instagram.com/tamtam.games/" → "instagram.com/tamtam.games" */
 function hostLabel(url: string): string {
@@ -658,10 +674,12 @@ const noindexOf = (seo: string | null) => parseJson<{ noindex?: unknown }>(seo)?
  *   devices    published device models on an active platform (/device/:model)
  *   used units listed (/used/:slug) · articles approved and public (/support/article/:slug)
  *   policies   approved CMS policies only — drafts are noindex
+ *   landing    CMS landing pages (/pages/:slug) exactly as the page serves them (getLandingPage's rules: published or
+ *              due, inside their window, not demo, with Arabic text and a title) — not the ones marked noindex
  *   static     home, used, trade-in, support, the policy index, about, contact, accessibility
  */
 export async function getSitemapEntries(db: Db, now: number): Promise<SitemapEntry[]> {
-  const [products, categories, platforms, devices, used, articles, pages] = await runBatch(db, [
+  const [products, categories, platforms, devices, used, articles, pages, landing] = await runBatch(db, [
     batchSql(
       db,
       sql`SELECT p.slug, p.updated_at, p.seo, p.category_id, p.platform_id FROM products AS p
@@ -674,6 +692,7 @@ export async function getSitemapEntries(db: Db, now: number): Promise<SitemapEnt
     batchSql(db, sql`SELECT slug, updated_at FROM used_units WHERE status = 'listed' ORDER BY slug`),
     batchSql(db, sql`SELECT slug, updated_at FROM knowledge_articles WHERE status = 'approved' AND audience = 'public' ORDER BY slug`),
     batchSql(db, sql`SELECT ${PAGE_COLUMNS} FROM pages WHERE kind = 'policy' AND is_demo = 0 AND status IN ('published', 'scheduled') ORDER BY slug`),
+    batchSql(db, sql`SELECT ${PAGE_COLUMNS} FROM pages WHERE kind IN ('landing', 'custom') AND is_demo = 0 AND status IN ('published', 'scheduled') ORDER BY slug`),
   ]);
   const productRows = rowsOf<ProductRow>(products);
   const categoryRows = rowsOf<CategoryRow>(categories);
@@ -718,6 +737,11 @@ export async function getSitemapEntries(db: Db, now: number): Promise<SitemapEnt
     if (!SLUG_RE.test(row.slug)) continue;
     const page = resolvePage(row, DEFAULT_LOCALE, now);
     if (page && !page.noindex) add(`/policies/${row.slug}`, page.updatedAt);
+  }
+  for (const row of rowsOf<PageRow>(landing)) {
+    if (!isLandingSlug(row.slug)) continue;
+    const page = resolvePage(row, DEFAULT_LOCALE, now);
+    if (page && !page.noindex) add(landingPath(row.slug), page.updatedAt);
   }
 
   // one entry per path (a slug could in theory repeat across kinds of rows only through a bug elsewhere)
@@ -807,4 +831,159 @@ export function buildRobotsTxt(input: { indexable: boolean; origin: string }): s
   }
   lines.push("");
   return lines.join("\n");
+}
+
+// ───────────────────────────────────────────────────────────────── the content module on the store (admin 17)
+//
+// What staff set in /admin/cms reaches the shopper through these reads (docs/areas/content.md "The CMS on the store"):
+// redirects before a 404, the menu's arrangement, landing pages and their sitemap entries, banners. The CMS's own
+// read services are the source; this file adds the storefront's rules on top — never trusting what a row holds.
+
+/** A landing page's slug as the CMS allows it (lower-case words joined by hyphens, at most LANDING_SLUG_MAX). Pure. */
+export function isLandingSlug(slug: unknown): slug is string {
+  return typeof slug === "string" && slug.length <= LANDING_SLUG_MAX && LANDING_SLUG_RE.test(slug);
+}
+
+/** "/pages/<slug>" — where a landing page lives on the store (locale-less). Pure. */
+export const landingPath = (slug: string): string => `${LANDING_PATH_PREFIX}/${slug}`;
+
+export type StoreRedirect = {
+  /** The redirect's row (its hit is counted after the response). */
+  id: string;
+  /** The same-site path to send the shopper to, in their language, percent-encoded (a header-safe Location). */
+  location: string;
+  code: 301 | 302;
+};
+
+/**
+ * Where a stored redirect target may send a shopper, WHATEVER the database holds: a same-site storefront path only.
+ * A full address counts only when it is the store's own (tamtamgames.com, www., or one of `origins` — the request's
+ * origin): it is the path it names. Refused (null): another host, any other scheme (javascript:, data:, //host), the
+ * admin, the API and every reserved path (normalizeStorePath), a malformed path, and the source path itself (a loop,
+ * whatever its query or language prefix). Pure.
+ */
+export function safeRedirectTarget(to: unknown, from: unknown, origins: readonly string[] = []): { path: string; query: string } | null {
+  if (typeof to !== "string" || typeof from !== "string") return null;
+  const raw = to.trim();
+  const own = /^[a-z][a-z0-9+.-]*:/i.test(raw) ? ownStorePath(raw, origins) : raw;
+  if (own === null) return null;
+  const target = normalizeStorePath(own, { query: true });
+  if (!target.ok) return null;
+  const source = normalizeStorePath(from, { query: true });
+  if (source.ok && source.path === target.path) return null;
+  return { path: target.path, query: target.query };
+}
+
+/** A same-origin path and query as a Location header may carry it (non-ASCII percent-encoded); null if it is not one. */
+function headerSafePath(pathAndQuery: string): string | null {
+  const base = "https://store.invalid";
+  try {
+    const url = new URL(pathAndQuery, base);
+    if (url.origin !== base || !url.pathname.startsWith("/") || url.pathname.startsWith("//")) return null;
+    return `${url.pathname}${url.search}`;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The redirect staff set for a path the store would answer 404 for (the CMS's resolveRedirect), made safe for the
+ * shopper: the target must pass safeRedirectTarget AND must not be redirected itself (one hop, always — a chain is how
+ * two rows make a loop). The location carries the visitor's language prefix. Null when there is none or it is
+ * refused. Call it ONLY where the page would answer 404: a redirect never hides a page that exists.
+ *
+ *   const hit = await findStoreRedirect(db, url.pathname, ctx.locale, { origins: [ctx.origin] });
+ */
+export async function findStoreRedirect(db: Db, pathname: string, locale: Locale, options: { origins?: readonly string[] } = {}): Promise<StoreRedirect | null> {
+  const hit = await resolveRedirect(db, pathname);
+  if (!hit) return null;
+  const target = safeRedirectTarget(hit.to, pathname, options.origins ?? []);
+  if (!target) return null;
+  if (await resolveRedirect(db, target.path)) return null;
+  const location = headerSafePath(`${localePath(target.path, locale)}${target.query}`);
+  if (!location) return null;
+  return { id: hit.id, location, code: hit.code === 302 ? 302 : 301 };
+}
+
+/** The navigation taxonomy as staff arranged it: every platform and top-level category carries `featured`. */
+export type ArrangedNav = Omit<NavTaxonomy, "platforms" | "categories"> & {
+  platforms: Array<NavTaxonomy["platforms"][number] & { featured: boolean }>;
+  categories: Array<NavTaxonomy["categories"][number] & { featured: boolean }>;
+};
+
+/**
+ * The menu in the order staff published (admin 17.03, arrangeBySlug): the placed platforms and categories first,
+ * hidden ones left out, `featured` marked; whatever the arrangement does not name yet (a new category) follows in the
+ * catalogue's order. No arrangement: the catalogue's order, nothing featured. The catalogue still decides what may
+ * appear at all (only entries with listed products are in the taxonomy). Pure.
+ */
+export function arrangeNav(nav: NavTaxonomy, arrangement: Pick<NavArrangement, "platforms" | "categories"> | null | undefined): ArrangedNav {
+  return { ...nav, platforms: arrangeBySlug(nav.platforms, arrangement?.platforms), categories: arrangeBySlug(nav.categories, arrangement?.categories) };
+}
+
+/** How long one isolate keeps the published arrangement (the shell reads the menu on every document request). */
+export const NAV_ARRANGEMENT_TTL_MS = 30_000;
+const arrangementCache = new WeakMap<object, { at: number; value: Promise<NavArrangement> }>();
+
+/** getNavArrangement at most once per NAV_ARRANGEMENT_TTL_MS for one database (a failed read is not kept). */
+export function readNavArrangement(db: Db, now: number): Promise<NavArrangement> {
+  const cached = arrangementCache.get(db);
+  if (cached && now - cached.at >= 0 && now - cached.at < NAV_ARRANGEMENT_TTL_MS) return cached.value;
+  const value = getNavArrangement(db);
+  arrangementCache.set(db, { at: now, value });
+  value.catch(() => arrangementCache.delete(db));
+  return value;
+}
+
+/**
+ * The shell's menu (getNavTaxonomy) in the staff's order — for the shell's loader, right after the taxonomy:
+ *
+ *   const nav = await getArrangedNav(db, await getNavTaxonomy(db, ctx.locale, { now: ctx.now }), ctx.now);
+ *
+ * An arrangement that cannot be read leaves the catalogue's order (logged): the menu never disappears for it.
+ */
+export async function getArrangedNav(db: Db, nav: NavTaxonomy, now: number): Promise<ArrangedNav> {
+  try {
+    return arrangeNav(nav, await readNavArrangement(db, now));
+  } catch (error) {
+    console.error("[content] navigation arrangement not read — catalogue order", error);
+    return arrangeNav(nav, null);
+  }
+}
+
+/** A banner's link as the store may open it: a same-site path (not reserved), or another site's https address. */
+export type BannerHref = { kind: "path"; to: string } | { kind: "external"; href: string };
+
+/**
+ * Where a stored banner link may lead, whatever the row holds: a locale-less storefront path that is not the admin, the
+ * API or another reserved path (the query kept), a full address of the store itself as the path it names, or an
+ * https address of another site (isSafeExternalUrl: no credentials). Null: anything else. Pure.
+ */
+export function bannerHref(link: unknown, origins: readonly string[] = []): BannerHref | null {
+  if (typeof link !== "string" || link.trim() === "") return null;
+  const raw = link.trim();
+  const own = /^[a-z][a-z0-9+.-]*:/i.test(raw) ? ownStorePath(raw, origins) : raw;
+  if (own === null) return /^https:\/\//i.test(raw) && isSafeExternalUrl(raw) ? { kind: "external", href: raw } : null;
+  const target = normalizeStorePath(own, { query: true });
+  return target.ok ? { kind: "path", to: `${target.path}${target.query}` } : null;
+}
+
+/** A banner as a store slot draws it: the CMS's StoreBanner with its link checked (bannerHref). */
+export type ShopBanner = Omit<StoreBanner, "link" | "external"> & { href: BannerHref | null };
+
+/**
+ * The banners a storefront slot shows now (getActiveBanners: live, not demo, by sort, at most three; links to products,
+ * categories, platforms and device hubs that the store no longer shows are already left out there). On top of it: a
+ * banner whose link the store may not open (bannerHref) is left out — a banner with no link at all stays (words only).
+ * `category_top` needs the category's id.
+ */
+export async function getStoreBanners(db: Db, locale: Locale, placement: BannerPlacementKey, options: { now: number; categoryId?: string | null; origins?: readonly string[] }): Promise<ShopBanner[]> {
+  const rows = await getActiveBanners(db, locale, placement, { now: options.now, categoryId: options.categoryId ?? null });
+  const out: ShopBanner[] = [];
+  for (const { link, external: _external, ...banner } of rows) {
+    const href = link === null || link.trim() === "" ? null : bannerHref(link, options.origins ?? []);
+    if (link !== null && link.trim() !== "" && href === null) continue;
+    out.push({ ...banner, href });
+  }
+  return out;
 }

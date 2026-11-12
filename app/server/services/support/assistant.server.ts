@@ -44,7 +44,7 @@ import { findArticlesMentioning, findDevice, findPlatform, getSupportDirectory, 
 import { describesProblem, hasDangerSign, interpretText, KNOWN_TOPICS, matchDevice, type Interpretation } from "./matcher";
 import { DEVICE_OTHER, assistantSearch, type AssistantState } from "./state";
 import { summarizeConversation } from "./summary";
-import { enforceSupportLimits, existingTicket, fileRowStatements, newTicketIdentity, optionalText, phoneOf, planSupportTicket, ticketGuard } from "./tickets.server";
+import { enforceSupportLimits, existingTicket, fileRowStatements, newTicketIdentity, optionalText, phoneOf, planSupportTicket, ticketGuard, ticketOrderOf } from "./tickets.server";
 import type {
   ArticleSummary,
   AssistantBotTurn,
@@ -402,6 +402,8 @@ export const HandoffInput = z.object({
   phone: z.string().trim().min(1, "required").max(40, "phone_invalid"),
   contactName: optionalText(80),
   note: optionalText(2000, true),
+  /** The order the shopper is asking about (`?order=TT-…` from the order page): linked only when it is theirs (ticketOrderOf). */
+  order: optionalText(40),
   /** "Share this conversation and my number with TamTam staff" — without it nothing may be stored. */
   consent: z.preprocess((value) => value === true || value === "on" || value === "1" || value === "true", z.literal(true, "required")),
 });
@@ -481,21 +483,26 @@ export async function handOffToStaff(
   const sessionId = newId("ast");
   const problem = staffView.symptom?.title ?? staffT("handoff.noProblem");
   const deviceName = staffView.device?.name ?? (staffView.deviceOther ? staffT("assistant.deviceOther") : staffT("handoff.noDevice"));
-  const subject = staffT("handoff.subject", { problem, device: deviceName }).slice(0, 140);
+  // asked from an order's page: about that order — linked to it only when it is the shopper's (their phone or account)
+  const order = input.order ? await ticketOrderOf(db, input.order, who, phoneE164) : null;
+  const subject = (order ? staffT("handoff.subjectOrder", { ref: order.ref }) : staffT("handoff.subject", { problem, device: deviceName })).slice(0, 140);
+  const orderNote = order ? staffT(order.orderId ? "handoff.orderLinked" : "handoff.orderUnverified", { ref: order.ref }) : null;
 
   try {
     const ticketStatements = await planSupportTicket(
       db,
       who,
-      { idempotencyKey: input.idempotencyKey, phoneE164, contactName: input.contactName, subject, message: input.note, category: shopperView.device || shopperView.deviceOther ? "repair" : "other", locale },
+      { idempotencyKey: input.idempotencyKey, phoneE164, contactName: input.contactName, subject, message: input.note, category: order ? "order" : shopperView.device || shopperView.deviceOther ? "repair" : "other", locale },
       ticket,
       now,
       {
         channel: "assistant",
         assistantSessionId: sessionId,
-        internalNote: staffSummary,
+        internalNote: orderNote ? `${orderNote}
+${staffSummary}` : staffSummary,
         photos,
-        tags: ["assistant", ...(shopperView.symptom ? [shopperView.symptom.key] : []), ...(shopperView.device ? [shopperView.device.slug] : [])],
+        orderId: order?.orderId ?? null,
+        tags: ["assistant", ...(order ? ["order"] : []), ...(shopperView.symptom ? [shopperView.symptom.key] : []), ...(shopperView.device ? [shopperView.device.slug] : [])],
       },
     );
     const statements: BatchStatement[] = [

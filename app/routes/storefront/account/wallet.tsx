@@ -9,6 +9,7 @@ import { CURRENCIES } from "~/lib/money";
 import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { checkOwnGiftCard, redeemOwnGiftCard } from "~/server/services/account/giftcards.server";
 import { cancelWalletTopup, getTopupDestinations, listWalletTopups, requestWalletTopup, TOPUP_MAX_IQD, TOPUP_MIN_IQD } from "~/server/services/account/topups.server";
 import type { TopupView } from "~/server/services/account/types";
 import { listWalletEntries } from "~/server/services/wallet.server";
@@ -72,6 +73,15 @@ export async function action({ request, context }: Route.ActionArgs) {
       await cancelWalletTopup(db, actor, fields.topupId ?? "", ctx.now);
       return data({ ok: true as const, done: "cancel" as const });
     }
+    // a gift card into this wallet: checked first (its amount, nothing changes), then redeemed (module 08's batch)
+    if (fields.intent === "gift_check") {
+      const card = await checkOwnGiftCard(db, actor, { code: fields.code }, ctx.now);
+      return data({ ok: true as const, done: "gift_check" as const, amountIqd: card.amountIqd, expiresAt: card.expiresAt, code: fields.code ?? "" });
+    }
+    if (fields.intent === "gift_redeem") {
+      const done = await redeemOwnGiftCard(db, actor, { code: fields.code, idempotencyKey: fields.idempotencyKey }, ctx.now);
+      return data({ ok: true as const, done: "gift_redeem" as const, amountIqd: done.amountIqd });
+    }
     return data({ ok: false as const, code: "invalid" }, { status: 400 });
   } catch (error) {
     const failure = accountFailure(error, ctx.locale);
@@ -83,7 +93,7 @@ export const meta: Route.MetaFunction = (args) => accountMeta(args, new URLSearc
 
 const TOPUP_TONE: Record<TopupView["status"], StatusTone> = { pending_verification: "warn", approved: "ok", rejected: "bad", cancelled: "neutral" };
 
-export default function Wallet({ loaderData }: Route.ComponentProps) {
+export default function Wallet({ loaderData, actionData }: Route.ComponentProps) {
   const t = useT("account");
   const [params] = useSearchParams();
   const account = useAccountData();
@@ -129,8 +139,115 @@ export default function Wallet({ loaderData }: Route.ComponentProps) {
           </TextLink>
         </Notice>
       ) : null}
+      <GiftCardForm attempt={loaderData.attempt} posted={(actionData ?? null) as GiftAnswer | null} />
       <TopupList topups={loaderData.topups} />
     </>
+  );
+}
+
+/**
+ * «بطاقة هدية» (module 08's gift cards, redeemed through its own guarded redemption — account/giftcards.server): the
+ * code, «تحقق من البطاقة» (the amount, nothing changes), then a confirm dialog «أضف … إلى محفظتك؟» — once confirmed the
+ * card's whole value is in the wallet (the balance above updates) and pays at checkout like any other balance.
+ */
+type GiftAnswer = ActionAnswer & { done?: string; amountIqd?: number; expiresAt?: number | null; code?: string; intent?: string | null };
+
+function GiftCardForm({ attempt, posted }: { attempt: string; posted: GiftAnswer | null }) {
+  const t = useT("account");
+  const f = useFormat();
+  const checker = useFetcher<typeof action>();
+  const redeemer = useFetcher<typeof action>();
+  const revalidator = useRevalidator();
+  const [code, setCode] = useState("");
+  const [card, setCard] = useState<{ code: string; amountIqd: number; expiresAt: number | null } | null>(null);
+  const [redeemError, setRedeemError] = useState<string | null>(null);
+  // one redemption key per card: a double click replays the first answer, the next card gets its own
+  const round = useRef(0);
+  const handled = useRef<unknown>(null);
+  const redeemed = useRef<unknown>(null);
+  const checked = (checker.data ?? null) as GiftAnswer | null;
+  const done = (redeemer.data ?? null) as GiftAnswer | null;
+
+  useEffect(() => {
+    if (checker.state !== "idle" || !checked || handled.current === checked) return;
+    handled.current = checked;
+    if (checked.ok && checked.done === "gift_check" && typeof checked.amountIqd === "number") {
+      setRedeemError(null);
+      setCard({ code: String(checked.code ?? code), amountIqd: checked.amountIqd, expiresAt: checked.expiresAt ?? null });
+    }
+  }, [checker.state, checked, code]);
+  useEffect(() => {
+    if (redeemer.state !== "idle" || !done || redeemed.current === done) return;
+    redeemed.current = done;
+    if (done.ok && done.done === "gift_redeem") {
+      round.current += 1;
+      setCard(null);
+      setCode("");
+      toast.success(t("gift.added", { amount: amount(iqdText(f, Number(done.amountIqd ?? 0))) }));
+      // the balance on the band (the layout's figure) is read again
+      void revalidator.revalidate();
+    } else if (!done.ok) setRedeemError(done.message ?? t("common.errorText"));
+  }, [redeemer.state, done, t, f, revalidator]);
+
+  // Without script the forms post as documents: the page answers with the check (a plain confirm form) or the result.
+  const postedCheck = posted?.ok && posted.done === "gift_check" && typeof posted.amountIqd === "number" ? posted : null;
+  const postedFailure = posted && posted.ok === false && (posted.intent === "gift_check" || posted.intent === "gift_redeem") ? posted : null;
+  const checkFailed = checked && checked.ok === false ? checked : postedFailure;
+  return (
+    <Section id="gift-card" title={t("gift.title")} reason={t("gift.lead")}>
+      {posted?.ok && posted.done === "gift_redeem" ? (
+        <Notice tone="ok">
+          <p>{t("gift.added", { amount: amount(iqdText(f, Number(posted.amountIqd ?? 0))) })}</p>
+        </Notice>
+      ) : null}
+      {postedCheck ? (
+        <form method="post" className="acct-card acct-narrow">
+          <input type="hidden" name="intent" value="gift_redeem" />
+          <input type="hidden" name="code" value={String(postedCheck.code ?? "")} />
+          <input type="hidden" name="idempotencyKey" value={`${attempt}-gift`} />
+          <p className="type-body-strong text-ink">{t("gift.confirmQ", { amount: amount(iqdText(f, postedCheck.amountIqd ?? 0)) })}</p>
+          <p className="type-sm text-ink-2">{t("gift.confirmWhat")}</p>
+          <Key type="submit" variant="primary" icon="gift" className="justify-self-start">
+            {t("gift.confirm")}
+          </Key>
+        </form>
+      ) : null}
+      <checker.Form method="post" className="acct-card acct-narrow" noValidate>
+        <input type="hidden" name="intent" value="gift_check" />
+        <FormFailure answer={checkFailed && !checkFailed.fields ? checkFailed : null} />
+        <TextField
+          id="gift-code"
+          name="code"
+          ltr
+          autoComplete="off"
+          maxLength={40}
+          label={t("gift.code")}
+          hint={t("gift.codeHint")}
+          required
+          value={code}
+          onChange={(event) => setCode(event.currentTarget.value)}
+          error={fieldError(checkFailed, "code")}
+        />
+        <SubmitKey pending={checker.state !== "idle"} icon="gift">
+          {t("gift.check")}
+        </SubmitKey>
+      </checker.Form>
+      <ConfirmDialog
+        open={card !== null}
+        onClose={() => setCard(null)}
+        title={t("gift.confirmQ", { amount: amount(iqdText(f, card?.amountIqd ?? 0)) })}
+        consequence={[t("gift.confirmWhat"), card?.expiresAt ? t("gift.expires", { date: f.date(card.expiresAt, "long") }) : null].filter(Boolean).join(" ")}
+        confirmLabel={t("gift.confirm")}
+        cancelLabel={t("common.cancel")}
+        pending={redeemer.state !== "idle"}
+        error={redeemError ?? undefined}
+        onConfirm={() => {
+          if (!card) return;
+          setRedeemError(null);
+          redeemer.submit({ intent: "gift_redeem", code: card.code, idempotencyKey: `${attempt}-gift${round.current}` }, { method: "post" });
+        }}
+      />
+    </Section>
   );
 }
 

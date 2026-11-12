@@ -128,6 +128,11 @@ export default function ExpensePage({ loaderData }: Route.ComponentProps) {
         ) : (
           <p className="type-body text-ink-2">{t("expense.notInBooks")}</p>
         )}
+        {expense.monthClosed ? (
+          <Note icon="lock" tone="warn">
+            <p>{t("expense.monthClosed")}</p>
+          </Note>
+        ) : null}
         {expense.needsOther ? (
           <Note icon="users" tone="warn">
             <p>{t("expense.needsOther", { limit: f.iqd(expense.threshold) })}</p>

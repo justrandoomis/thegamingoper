@@ -258,19 +258,23 @@ export async function listReturns(db: Db, actor: Actor, filters: RmaFilters, loc
  * What waits for this employee in the module (null where they cannot act). Never their own RMA to decide. The RMAs to
  * decide, receive and inspect are listed on /admin/returns, which shows every RMA only with returns.rma.read (without
  * it, one's own at most): without it those three are null — no card counts rows its list cannot show (the bell's rule).
+ *
+ * `only` (follow-up 2026-11-12, additive): the counts a caller needs — the others are null and never queried. The bell
+ * reads `decide` and `inspect` on every admin page; without it the eight counts (and the SLA setting, needed by the
+ * warranties-ending count only) were all read for two numbers.
  */
-export async function queueCounts(db: Db, actor: Actor, now: number): Promise<QueueCounts> {
+export async function queueCounts(db: Db, actor: Actor, now: number, options: { only?: readonly (keyof QueueCounts)[] } = {}): Promise<QueueCounts> {
   const me = actor.kind === "employee" ? actor.id : null;
   const count = async (query: Promise<{ n: number } | undefined>) => Number((await query)?.n ?? 0);
   const n = sql<number>`count(*)`;
-  const sla = await slaTargets(db);
+  const wants = (key: keyof QueueCounts) => !options.only || options.only.includes(key);
   const reads = can(actor, "returns.rma.read");
   const [decide, receive, inspect, refund, refundApproval, quarantine, repairsLate, warrantiesEnding] = await Promise.all([
-    can(actor, "returns.rma.approve") && reads ? count(db.select({ n }).from(returns).where(and(eq(returns.status, "requested"), me ? sql`NOT ${openedBy(me)}` : undefined)).get()) : null,
-    can(actor, "returns.rma.inspect") && reads ? count(db.select({ n }).from(returns).where(inArray(returns.status, ["approved", "in_transit"])).get()) : null,
-    can(actor, "returns.rma.inspect") && reads ? count(db.select({ n }).from(returns).where(eq(returns.status, "received")).get()) : null,
-    can(actor, "orders.refund.create") && can(actor, "returns.rma.read") ? count(db.select({ n }).from(returns).where(eq(returns.status, "inspected")).get()) : null,
-    can(actor, "orders.refund.approve") && can(actor, "returns.rma.read")
+    wants("decide") && can(actor, "returns.rma.approve") && reads ? count(db.select({ n }).from(returns).where(and(eq(returns.status, "requested"), me ? sql`NOT ${openedBy(me)}` : undefined)).get()) : null,
+    wants("receive") && can(actor, "returns.rma.inspect") && reads ? count(db.select({ n }).from(returns).where(inArray(returns.status, ["approved", "in_transit"])).get()) : null,
+    wants("inspect") && can(actor, "returns.rma.inspect") && reads ? count(db.select({ n }).from(returns).where(eq(returns.status, "received")).get()) : null,
+    wants("refund") && can(actor, "orders.refund.create") && can(actor, "returns.rma.read") ? count(db.select({ n }).from(returns).where(eq(returns.status, "inspected")).get()) : null,
+    wants("refundApproval") && can(actor, "orders.refund.approve") && can(actor, "returns.rma.read")
       ? count(
           db
             .select({ n })
@@ -279,7 +283,7 @@ export async function queueCounts(db: Db, actor: Actor, now: number): Promise<Qu
             .get(),
         )
       : null,
-    canAny(actor, ["returns.rma.inspect", "returns.supplier_return.manage"])
+    wants("quarantine") && canAny(actor, ["returns.rma.inspect", "returns.supplier_return.manage"])
       ? count(
           db
             .select({ n })
@@ -294,7 +298,7 @@ export async function queueCounts(db: Db, actor: Actor, now: number): Promise<Qu
             .get(),
         )
       : null,
-    can(actor, "returns.repair.manage")
+    wants("repairsLate") && can(actor, "returns.repair.manage")
       ? count(
           db
             .select({ n })
@@ -303,13 +307,15 @@ export async function queueCounts(db: Db, actor: Actor, now: number): Promise<Qu
             .get(),
         )
       : null,
-    can(actor, "returns.warranty.read")
-      ? count(
-          db
-            .select({ n })
-            .from(warranties)
-            .where(and(eq(warranties.status, "active"), gte(warranties.endsAt, now), lte(warranties.endsAt, now + sla.warrantyEndingDays * DAY_MS)))
-            .get(),
+    wants("warrantiesEnding") && can(actor, "returns.warranty.read")
+      ? slaTargets(db).then((sla) =>
+          count(
+            db
+              .select({ n })
+              .from(warranties)
+              .where(and(eq(warranties.status, "active"), gte(warranties.endsAt, now), lte(warranties.endsAt, now + sla.warrantyEndingDays * DAY_MS)))
+              .get(),
+          ),
         )
       : null,
   ]);

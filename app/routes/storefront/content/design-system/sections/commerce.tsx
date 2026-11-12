@@ -3,9 +3,11 @@ import { useState, type ReactNode } from "react";
 
 import type { CartLine, ImageRef, ProductCardData, Shelf, UsedUnitCardData } from "~/lib/dto";
 import { AddToCartKey, BuyBar, BuyControls, CardAddButton } from "~/ui/AddToCartKey";
+import { Band } from "~/ui/Band";
 import { CartLineRow } from "~/ui/CartLineRow";
 import { ChipGroup } from "~/ui/Chip";
 import { Gallery } from "~/ui/Gallery";
+import { Glass } from "~/ui/Glass";
 import { InspectionCard } from "~/ui/InspectionCard";
 import { Key } from "~/ui/Key";
 import { CouponField, OrderSummary } from "~/ui/OrderSummary";
@@ -115,6 +117,22 @@ const COPY = defineCopy({
     defect1: "خدش خفيف على الحافة العلوية للشاشة.",
     included1: "القاعدة وكابل HDMI",
     included2: "ذراعا Joy-Con مع الحامل",
+    subStorage: "512GB أو 1TB · نسخة الأقراص",
+    factsBidi: "حقائق مختلطة: «512GB أو 1TB» تُقرأ من اليمين",
+    longName: "اسم لاتيني طويل: النقاط في نهايته",
+    withCompare: "خانة «قارن» (أجهزة الألعاب والمحمولة)",
+    onBandKey: "على الشريط القرمزي، بكلمات خاصة",
+    buyName: "اشترِ Nintendo Switch 2",
+    offlineKey: "بلا اتصال: المفتاح مسطّح وسببه بجانبه",
+    barOffline: "شريط الشراء بلا اتصال",
+    barBare: "bare داخل شريط المهام (الصفحة تملك الزجاج والاسم)",
+    pageSoon: "قريباً · 19 تشرين الثاني",
+    pageStatus: "سطر الحالة بكلماتك، والسعر السابق بسطر 13px",
+    pageDemoWas: "سعر سابق تجريبي: يُشطب ولا يُقال «توفّر»",
+    usedNarrow: "صف في عمود ضيق: الرابط تحت الكلمات، و«صورة توضيحية» على الصورة",
+    inspectOnce: "بلا ملاحظة الصور: الصفحة قالتها مرة تحت المعرض",
+    proofPrimary: "primary: الصورة الأولى هي خطوة الصفحة الوحيدة",
+    wishText: "المفضلة كمفتاح نصي (صف المفضلة · قارن · مشاركة)",
   },
   en: {
     sample: "Sample data: the names are real; prices and stock come from the demo store. Adding to the cart really works on this browser's demo cart.",
@@ -202,11 +220,27 @@ const COPY = defineCopy({
     defect1: "A light scratch on the top edge of the screen.",
     included1: "The dock and an HDMI cable",
     included2: "Two Joy-Con with the grip",
+    subStorage: "512GB or 1TB · Disc edition",
+    factsBidi: "Mixed facts: «512GB أو 1TB» reads from the right in Arabic",
+    longName: "A long Latin name: the ellipsis at its own end",
+    withCompare: "The «Compare» slot (consoles and handhelds)",
+    onBandKey: "On the crimson band, in its own words",
+    buyName: "Buy Nintendo Switch 2",
+    offlineKey: "Offline: the key goes flat, its reason beside it",
+    barOffline: "The buy bar offline",
+    barBare: "bare inside the task bar (the page owns the glass and the name)",
+    pageSoon: "Coming soon · 19 November",
+    pageStatus: "The status line in your words; the previous price on a 13px line",
+    pageDemoWas: "A demo previous price: struck, no «You save»",
+    usedNarrow: "A row in a narrow column: the link under the words, «Illustration» on the photo",
+    inspectOnce: "Without the photo note: the page said it once under the gallery",
+    proofPrimary: "primary: the first photo is the page's one step forward",
+    wishText: "Favourite as a text key (the row Favourite · Compare · Share)",
   },
   ckb: {
     sample: "داتای نموونە: ناوەکان ڕاستەقینەن؛ نرخ و کۆگا لە فرۆشگای تاقیکارییەوەن. زیادکردن بۆ سەبەتە لەسەر سەبەتەی تاقیکاریی ئەم وێبگەڕە کار دەکات.",
-    cards: "کارتی کاڵا",
-    cardsNote: "یەک کارت بێ چوارچێوە: بیرێکی چوارگۆشە لەسەر زەوی کاڵا، نیشانە لە سەرەتا و دڵ لە کۆتایی؛ لە خوارەوە هێڵی پلاتفۆرم و ناو بە دوو دێڕ و دوو ڕاستی، پاشان نرخ و دوگمەی زیادکردنی بێلایەن.",
+    cards: "کارتی بەرهەم",
+    cardsNote: "یەک کارت بێ چوارچێوە: بیرێکی چوارگۆشە لەسەر زەوی بەرهەم، نیشانە لە سەرەتا و دڵ لە کۆتایی؛ لە خوارەوە هێڵی پلاتفۆرم و ناو بە دوو دێڕ و دوو ڕاستی، پاشان نرخ و دوگمەی زیادکردنی بێلایەن.",
     inStock: "بەردەستە",
     isNew: "نوێ",
     sale: "داشکاندنی ڕاستەقینە",
@@ -236,10 +270,10 @@ const COPY = defineCopy({
     barOut: "نەماوە",
     barSoon: "بەم زووانە",
     gallery: "پیشانگا و شانۆ",
-    galleryNote: "زەوییەکی بێلایەن؛ کاڵاکە ڕاست و گەورە لەسەر هێڵی زەوی. لە ناو شانۆدا تەنها ژمێرەر و دوگمەی شاشەی پڕ؛ وێنە بچووکەکان لە خوارەوە.",
+    galleryNote: "زەوییەکی بێلایەن؛ بەرهەمەکە ڕاست و گەورە لەسەر هێڵی زەوی. لە ناو شانۆدا تەنها ژمێرەر و دوگمەی شاشەی پڕ؛ وێنە بچووکەکان لە خوارەوە.",
     galleryUsed: "بەکارهاتوو: وێنەی ڕوونکردنەوە",
     shelf: "ڕەف",
-    shelfNote: "سەری بەش، پاشان ڕیزێک کە لە مۆبایلدا دەخولێتەوە و تۆڕێکی کارتی تەواو لە 1024 بەرەوژوور. ڕەفی کەمتر لە 3 کاڵا دەرناکەوێت.",
+    shelfNote: "سەری بەش، پاشان ڕیزێک کە لە مۆبایلدا دەخولێتەوە و تۆڕێکی کارتی تەواو لە 1024 بەرەوژوور. ڕەفی کەمتر لە 3 بەرهەم دەرناکەوێت.",
     shelfTitle: "تازە گەیشتوو",
     shelfReason: "نوێترین ئەوەی زیادمان کرد — نموونە",
     all: "هەموو",
@@ -289,6 +323,22 @@ const COPY = defineCopy({
     defect1: "خەتێکی سووک لەسەر لێواری سەرەوەی شاشە.",
     included1: "بنکە و کێبڵی HDMI",
     included2: "دوو Joy-Con لەگەڵ هەڵگرەکە",
+    subStorage: "512GB یان 1TB · وەشانی دیسک",
+    factsBidi: "ڕاستیی تێکەڵ: «512GB یان 1TB» لە ڕاستەوە دەخوێندرێتەوە",
+    longName: "ناوێکی لاتینیی درێژ: خاڵەکان لە کۆتاییەکەیدا",
+    withCompare: "شوێنی «بەراورد» (ئامێرەکان و دەستییەکان)",
+    onBandKey: "لەسەر شریتی قرمزی، بە وشەی خۆی",
+    buyName: "Nintendo Switch 2 بکڕە",
+    offlineKey: "بێ هێڵ: دوگمەکە تەخت دەبێت و هۆکارەکەی لە تەنیشتی",
+    barOffline: "شریتی کڕین بێ هێڵ",
+    barBare: "bare لەناو شریتی ئەرکدا (پەڕەکە شووشە و ناوەکەی هەیە)",
+    pageSoon: "بەم زووانە · 19ی تشرینی دووەم",
+    pageStatus: "دێڕی دۆخ بە وشەی خۆت؛ نرخی پێشوو لە دێڕێکی 13px",
+    pageDemoWas: "نرخی پێشووی نموونەیی: هێڵی بەسەردا دێت، «پاشەکەوت» ناگوترێت",
+    usedNarrow: "ڕیزێک لە ستوونێکی تەسکدا: بەستەرەکە لە ژێر وشەکان، «وێنەی ڕوونکردنەوە» لەسەر وێنەکە",
+    inspectOnce: "بێ تێبینیی وێنەکان: پەڕەکە یەک جار لە ژێر گەلەرییەکە وتی",
+    proofPrimary: "primary: یەکەم وێنە تاکە هەنگاوی پەڕەکەیە بۆ پێشەوە",
+    wishText: "دڵخواز وەک دوگمەی دەق (ڕیزی دڵخواز · بەراورد · هاوبەشکردن)",
   },
 });
 
@@ -326,6 +376,8 @@ function sampleCards(c: C): Record<string, ProductCardData> {
     card: { ...base, id: "prd_nintendo-eshop-card", slug: "nintendo-eshop-card", kind: "digital", name: "Nintendo eShop Card $20", subtitle: c.subCard, kindLabel: c.kindCard, variantId: "var_eshop-20", priceIqd: 32_000, image: photo("nintendo-eshop-card--1") },
     legion: { ...base, id: "prd_lenovo-legion-go-2", slug: "lenovo-legion-go-2", name: "Lenovo Legion Go 2", subtitle: c.subLegion, kindLabel: c.kindHandheld, platformSlug: "handheld", platformName: "Handheld", variantId: "var_lgo2-512", priceIqd: 1_099_000, image: photo("lenovo-legion-go-2--1") },
     failing: { ...base, id: "prd_design-system-missing", slug: "xbox-series-s", name: "Xbox Series S", subtitle: "512GB", kindLabel: c.kindXbox, platformSlug: "xbox", platformName: "Xbox", variantId: "var_design-system-missing", priceIqd: 485_000, image: { artKey: null, mediaKey: "design-system/missing.webp", alt: "", isIllustration: false } },
+    slim: { ...base, id: "prd_playstation-5-slim", slug: "playstation-5-slim", name: "PlayStation 5 Slim", subtitle: c.subStorage, kindLabel: c.kindConsolePs5, platformSlug: "playstation", platformName: "PlayStation", variantId: "var_ps5-slim-1tb", priceIqd: 667_750, image: photo("playstation-5-slim--1") },
+    pokemon: { ...base, id: "prd_pokemon-legends-z-a", slug: "pokemon-legends-z-a", kind: "game", name: "Pokémon Legends: Z-A – Nintendo Switch 2 Edition", subtitle: null, kindLabel: c.kindGame, variantId: "var_plza-nsw2", priceIqd: 95_000, image: photo("pokemon-legends-z-a--1") },
   };
 }
 
@@ -462,6 +514,22 @@ function Cards({ c, cards }: { c: C; cards: Record<string, ProductCardData> }) {
     [c.wish, "wishlist wished", <ProductCard key="h" card={{ ...cards.switch2, id: "prd_nintendo-switch-2" }} slot="wish" wishlist wished />],
     [c.failing, "image failed → retry", <ProductCard key="f" card={cards.failing} />],
     [c.loading, "<ProductCardPlaceholder>", <ProductCardPlaceholder key="l" />],
+    [c.factsBidi, "subtitle (each fact a <BidiLabel>)", <ProductCard key="fx" card={cards.slim} />],
+    [c.longName, "latinName → dir=ltr, text-end", <ProductCard key="ln" card={cards.pokemon} />],
+    [
+      c.withCompare,
+      "compare={<CompareToggle>}",
+      <ProductCard
+        key="cmp"
+        card={{ ...cards.pro, id: "prd_playstation-5-pro-cmp" }}
+        slot="compare"
+        compare={
+          <Key variant="ghost" size="sm" icon="scales">
+            {c.compare}
+          </Key>
+        }
+      />,
+    ],
   ];
   return (
     <DsBlock id="commerce-cards" title={c.cards} note={c.cardsNote}>
@@ -507,6 +575,16 @@ function AddButtons({ c, cards }: { c: C; cards: Record<string, ProductCardData>
         <Spec title={c.out} code='variant="key" stock="out_of_stock"'>
           <AddToCartKey variant="key" item={{ variantId: cards.lite.variantId }} name={cards.lite.name} stock="out_of_stock" />
         </Spec>
+        <Spec title={c.offlineKey} code='variant="key" (offline)'>
+          <div className="flex flex-wrap gap-y-1.5">
+            <AddToCartKey variant="key" item={{ variantId: cards.switch2.variantId }} name={cards.switch2.name} offline />
+          </div>
+        </Spec>
+        <Spec title={c.onBandKey} code='variant="key" look="onBand" label chooseHref' wide>
+          <Band kind="wallet" as="div" className="p-5" contentClassName="grid justify-items-start">
+            <AddToCartKey variant="key" look="onBand" item={{ variantId: cards.switch2.variantId }} name={cards.switch2.name} chooseHref="/p/nintendo-switch-2" label={c.buyName} />
+          </Band>
+        </Spec>
       </SpecimenGrid>
     </DsBlock>
   );
@@ -517,9 +595,7 @@ function Buy({ c }: { c: C }) {
   const item = { variantId: "var_nsw2-con-256" };
   const links = (
     <>
-      <Key variant="ghost" size="sm" icon="heart">
-        {c.wishlist}
-      </Key>
+      <WishlistKey variant="text" productId="prd_nintendo-switch-2" name={c.nameSwitch} message="none" />
       <Key variant="ghost" size="sm" icon="scales">
         {c.compare}
       </Key>
@@ -541,6 +617,7 @@ function Buy({ c }: { c: C }) {
             [c.barDefault, {}],
             [c.barOut, { stock: "out_of_stock" as const, alternativesHref: "#commerce-shelf" }],
             [c.barSoon, { stock: "preorder" as const, releaseAt: NOW_SAMPLE + 8 * DAY }],
+            [c.barOffline, { offline: true }],
           ] as const
         ).map(([title, extra]) => (
           <Spec key={title} title={title} code="<BuyBar fixed={false}>">
@@ -552,6 +629,12 @@ function Buy({ c }: { c: C }) {
             </div>
           </Spec>
         ))}
+        <Spec title={c.barBare} code="<TaskBar><BuyBar bare /></TaskBar>">
+          {/* a stand-in for the shell's task bar: it owns the glass, the named region and the padding */}
+          <Glass edge="bottom" role="region" aria-label={c.nameSwitch} className="px-4 py-3">
+            <BuyBar bare item={item} name={c.nameSwitch} priceIqd={675_000} optionsLabel={c.variant} />
+          </Glass>
+        </Spec>
       </SpecimenGrid>
     </DsBlock>
   );
@@ -615,6 +698,11 @@ function Used({ c }: { c: C }) {
         <Spec code='<UsedUnitCard layout="row">'>
           <UsedUnitCard unit={unit} layout="row" slot="row" />
         </Spec>
+        <Spec title={c.usedNarrow} code='layout="row" (a card under 36rem)'>
+          <div className="max-w-[22rem]">
+            <UsedUnitCard unit={unit} layout="row" slot="row-narrow" />
+          </div>
+        </Spec>
         <Spec code="<InspectionCard>" wide>
           <InspectionCard
             grade="A"
@@ -635,6 +723,18 @@ function Used({ c }: { c: C }) {
             dataWiped
             isDemo
             newPriceIqd={435_000}
+            headingLevel={3}
+          />
+        </Spec>
+        <Spec title={c.inspectOnce} code="illustrationNote={false}" wide>
+          <InspectionCard
+            grade="B"
+            inspectedAt={NOW_SAMPLE - 5 * DAY}
+            batteryHealthPct={null}
+            checklist={[{ key: "screen", label: c.checkScreen, ok: true }]}
+            photos={[photo("nintendo-switch-oled--1", "", true)]}
+            warrantyDays={0}
+            illustrationNote={false}
             headingLevel={3}
           />
         </Spec>
@@ -717,6 +817,9 @@ function Proof({ c }: { c: C }) {
       <SpecimenGrid wide>
         <Spec title={c.simulated} code="<ProofUploader onUpload>">
           <ProofUploader onUpload={simulated} />
+        </Spec>
+        <Spec title={c.proofPrimary} code="<ProofUploader primary>">
+          <ProofUploader onUpload={refuse} primary />
         </Spec>
         <Spec title={c.simulatedBreak} code="interrupted → resume">
           <ProofUploader onUpload={breaking} />

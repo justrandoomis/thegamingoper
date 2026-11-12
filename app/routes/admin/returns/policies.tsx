@@ -104,7 +104,7 @@ export default function Policies({ loaderData }: Route.ComponentProps) {
 
       <section className="adm-card" aria-labelledby="policy-window">
         <h2 id="policy-window" className="adm-h3">
-          {t("policies.window", { days: windowDays })}
+          {t("policies.window", { span: t("policies.days", { count: windowDays }) })}
         </h2>
         <p className="type-caption text-ink-2">{t("policies.windowHint")}</p>
       </section>

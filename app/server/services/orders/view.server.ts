@@ -10,6 +10,8 @@ import { maskPhone } from "~/lib/phone";
 import type { Db } from "~/server/db/drizzle.server";
 import { carriers, districts, files, governorates, media, orderEvents, orderItems, paymentProofs, payments, products, refunds, shipmentEvents, shipments, usedUnits, variants, type Order } from "~/server/db/schema";
 import { getSettings } from "~/server/settings.server";
+import { orderDigitalLines } from "./digital.server";
+import { adjustmentsView, PROMOTIONS_EVENT, type PromotionsRecord } from "./promotions.server";
 import { ORDER_TIMELINE_KINDS, PREFERRED_WINDOWS, type OrderLineView, type OrderSummary, type OrderTimelineKind, type OrderView, type PreferredWindow, type ProofStatus, type ShipmentView, type TransferInstructions } from "./types";
 
 const TRANSFER_METHODS = new Set(["bank_transfer", "zaincash"]);
@@ -150,7 +152,7 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale, now: 
       order.governorateId ? db.select({ name: governorates.name }).from(governorates).where(eq(governorates.id, order.governorateId)).get() : Promise.resolve(undefined),
       order.districtId ? db.select({ name: districts.name }).from(districts).where(eq(districts.id, order.districtId)).get() : Promise.resolve(undefined),
     ]),
-    db.select({ id: payments.id, method: payments.method, status: payments.status }).from(payments).where(eq(payments.orderId, order.id)).orderBy(asc(payments.createdAt), asc(payments.id)),
+    db.select({ id: payments.id, method: payments.method, status: payments.status, amountIqd: payments.amountIqd }).from(payments).where(eq(payments.orderId, order.id)).orderBy(asc(payments.createdAt), asc(payments.id)),
     db
       .select({ id: shipments.id, status: shipments.status, trackingNo: shipments.trackingNo, shippedAt: shipments.shippedAt, deliveredAt: shipments.deliveredAt, carrierName: carriers.name, template: carriers.trackingUrlTemplate })
       .from(shipments)
@@ -167,7 +169,7 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale, now: 
 
   const transfer = paymentRows.filter((row) => TRANSFER_METHODS.has(row.method));
   const transferPayment = transfer[transfer.length - 1];
-  const [proof, shipmentEventRows, lineList, instructions] = await Promise.all([
+  const [proof, shipmentEventRows, lineList, instructions, digital] = await Promise.all([
     transferPayment
       ? db
           .select({ status: paymentProofs.status, createdAt: paymentProofs.createdAt, declaredAmountIqd: paymentProofs.declaredAmountIqd, reviewNote: paymentProofs.reviewNote })
@@ -186,7 +188,13 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale, now: 
       : Promise.resolve([]),
     lineViews(db, lines as LineRow[], locale),
     order.status === "awaiting_payment" ? transferInstructions(db, order.paymentMethod) : Promise.resolve(null),
+    orderDigitalLines(db, order, locale),
   ]);
+  // what the order recorded about its promotions (its latest "promotions" event — an edit that re-priced the coupon or
+  // the delivery appends one), and a split payment's wallet part
+  const promotionsEvent = [...eventRows].reverse().find((event) => event.kind === PROMOTIONS_EVENT && event.data);
+  const adjustments = promotionsEvent ? adjustmentsView(promotionsEvent.data as unknown as PromotionsRecord, locale) : null;
+  const walletPaidIqd = order.paymentMethod !== "wallet" ? paymentRows.filter((row) => row.method === "wallet" && row.status === "paid").reduce((sum, row) => sum + row.amountIqd, 0) : 0;
 
   const proofStatus: ProofStatus = proof ? proof.status : "none";
   const timeline: OrderView["timeline"] = [];
@@ -255,6 +263,9 @@ export async function buildOrderView(db: Db, order: Order, locale: Locale, now: 
     shipments: shipmentViews,
     refunds: refundRows.map((row) => ({ amountIqd: row.amountIqd, method: row.method, status: row.status === "paid" ? "paid" : "pending", at: row.paidAt ?? row.createdAt })),
     timeline,
+    adjustments,
+    walletPaidIqd,
+    digital,
   };
 }
 

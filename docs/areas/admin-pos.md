@@ -124,3 +124,9 @@ node scripts/lint-design.mjs app/routes/admin/pos
 node .shots/admin-pos/shots.mjs                       # builder's matrix, .shots/admin-pos/
 node .shots/admin-pos/review/review.mjs [flows|queue|matrix]   # review: printing, blind count, wallet, queue
 ```
+
+## Module follow-up 2026-11-12
+
+A counted shift waits for a second person on a difference, a take-over count (counted by someone other than its owner) or a late offline sale — `shiftReviewReasons` / `SHIFT_REVIEW_REASONS` (types.ts), `ShiftView.reviewReasons` for those who see the figures; `reviewShift` approves one at 0 without posting. `moveCash` never refuses the drawer's owner for an amount (no probe of the blind count); `drawer_short` only for those who see the figures. Core `orders/pos-sale.server.ts`: a scanned serial's unit leaves ONLY from the serial's own location — held there for web orders → `insufficient_stock` (or an authorised oversell from that location); a serial in a location the till does not sell from → `serial_not_available`. A cash trade-in payout may come out of the payer's own open shift (admin 13 `payOut({ shiftId })`): a `pay_out` cash movement in the payout's batch.
+
+Tests (each failed before its change): `tests/admin-pos-followup.test.ts`, `tests/admin-devices-followup.test.ts (the drawer payout)`.

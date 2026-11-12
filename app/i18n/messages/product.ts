@@ -26,6 +26,7 @@ export default defineMessages({
     separator: "، ",
     status: {
       soon: "يصدر {date} · الطلب يفتح عند وصوله",
+      soonNote: "الطلب يفتح عند وصوله.",
       outVariant: "نفدت هذه النسخة حالياً. اختر نسخة أخرى.",
       outAll: "نفد هذا المنتج حالياً، ولا يمكن طلبه حتى يتوفّر من جديد.",
       offline: "لا يوجد اتصال. تعود الإضافة إلى السلة مع عودة الاتصال.",
@@ -195,6 +196,7 @@ export default defineMessages({
     separator: ", ",
     status: {
       soon: "Out {date} · Orders open when it arrives",
+      soonNote: "Orders open when it arrives.",
       outVariant: "This version is sold out. Choose another version.",
       outAll: "This product is sold out. It cannot be ordered until it is back in stock.",
       offline: "No connection. Adding to the cart comes back with the connection.",
@@ -365,6 +367,7 @@ export default defineMessages({
     separator: "، ",
     status: {
       soon: "لە {date} دەردەچێت · داواکردن کاتێک دەکرێتەوە کە دەگات",
+      soonNote: "داواکردن کاتێک دەکرێتەوە کە دەگات.",
       outVariant: "ئەم وەشانە ئێستا نەماوە. وەشانێکی تر هەڵبژێرە.",
       outAll: "ئەم بەرهەمە ئێستا نەماوە، و تا دووبارە بەردەست نەبێتەوە داوا ناکرێت.",
       offline: "هێڵی ئینتەرنێت نییە. زیادکردن بۆ سەبەتە لەگەڵ گەڕانەوەی هێڵ دەگەڕێتەوە.",

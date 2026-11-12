@@ -4,17 +4,21 @@
  *   <DemoStrip />       while STORE_MODE is "demo": the kit's amber strip (<DemoNote variant="strip">) above the phone
  *                       header — never inverted, never sticky, gone from 1024 (the nav row's demo chip takes over). The
  *                       whole strip is one link to the footer's full statement (#shell-demo).
- *   <ShellOffline />    the kit's offline banner pinned right under the sticky header: on task screens (checkout,
- *                       trade-in, repair, the assistant) it says the form is kept; elsewhere that the cart is.
+ *   <ShellOffline />    the kit's offline banner, pinned right under the sticky header for the whole page (sticky in the
+ *                       shell's column, so it never scrolls away while the shell counts it): on pages the shopper fills
+ *                       in (checkout, task flows, /account — ./chrome shellChrome `offline`) «ما كتبته باقٍ في الصفحة»;
+ *                       elsewhere «سلتك محفوظة على هذا الجهاز». Its measured height (0 while online; 40, or more when the
+ *                       words wrap; also the three seconds of «عاد الاتصال») is `--shell-offline-h`, which shell.css adds
+ *                       to `--shell-top` — so sticky page rows sit right under it and a focused control never hides there.
  *   <PageProgress />    a 2px ink bar under the header once a navigation has waited 150ms (filters, search, trade-in
  *                       steps), so a slow network never looks like a dead tap.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigation } from "react-router";
 
 import { DemoNote } from "~/ui/DemoNote";
 import { OfflineBanner } from "~/ui/OfflineBanner";
-import { useShellT } from "./i18n";
+import type { OfflineWords } from "./chrome";
 
 /** Where the full demo statement lives: the footer's legal row (both footers render it in demo mode). */
 export const DEMO_NOTE_ID = "shell-demo";
@@ -23,11 +27,28 @@ export function DemoStrip() {
   return <DemoNote variant="strip" to={`#${DEMO_NOTE_ID}`} className="shell-strip lg:hidden" />;
 }
 
-export function ShellOffline({ form }: { form: boolean }) {
-  const t = useShellT();
+export function ShellOffline({ words }: { words: OfflineWords }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const root = document.documentElement;
+    const publish = () => {
+      const height = Math.round(element.getBoundingClientRect().height);
+      if (height > 0) root.style.setProperty("--shell-offline-h", `${height}px`);
+      else root.style.removeProperty("--shell-offline-h");
+    };
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty("--shell-offline-h");
+    };
+  }, []);
   return (
-    <div className="shell-offline">
-      <OfflineBanner message={form ? t("offline.form") : "store"} offset="calc(var(--safe-top) + var(--shell-header-h))" />
+    <div ref={ref} className="shell-offline">
+      <OfflineBanner message={words} pinned={false} />
     </div>
   );
 }

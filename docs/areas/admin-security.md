@@ -123,3 +123,11 @@ Screenshots: `.shots/admin-security/` (390/1440 × light/dark × ar/en; dialogs,
 - **Kit owner** (`app/styles/components.css`): `.choice:has(> .choice__input:disabled) .choice__box` paints the box
   `--niche` while the tick keeps `--paper` / `--on-sel`, so a disabled CHECKED checkbox looks unchecked in both themes
   (seen on the role editor before it switched to facts). A disabled checked box should keep a visible ink tick.
+
+## Module follow-up 2026-11-12
+
+`unreviewedCount`: one statement, one row back, and only refunds this reviewer may review — ready for the bell. `RetentionRow.job` / `.deleted` and `RetentionView.runs` (`RETENTION_JOBS`): each row reads its own purge job's last run (incl. the ops telemetry purge). The role page links to the audit trail and members' pages only with audit.read / security.session.read. `endStaffSession` / `endAllStaffSessions` refuse an account holding more than the actor (`target_more_privileged`). `snapshotWithheld`: `staff.payroll.*` snapshots need staff.payroll.read.
+
+Tests (each failed before its change): `tests/admin-security-followup.test.ts`.
+
+Review of the follow-up (2026-11-12): the refunds list's `unreviewed` view (and its chip count) is this reviewer's queue — flagged, not reviewed, and neither asked for nor approved by them — exactly what `unreviewedCount` (the home card, the bell) counts; their own refunds stay under "flagged" and "all" with `canReview` false. The view is labelled "For your review". Test: `tests/admin-security-followup.test.ts` ("the module's card count is the list it opens").

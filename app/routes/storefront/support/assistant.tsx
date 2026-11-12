@@ -12,7 +12,10 @@
  * Everything the shopper reads comes from approved trees and guides (services/support/assistant.server — no AI model
  * is configured, and the page says so). The conversation is the query string: every reply is a link, Back undoes the
  * last answer, nothing is stored. "Talk to a person" (?handoff=1) opens the hand-off form; sending it (with consent)
- * stores the conversation, opens a ticket and comes back here with the ticket's reference and access token.
+ * stores the conversation, opens a ticket and comes back here with the ticket's reference and access token. The
+ * ticket is routed by the support module's rules right after the answer (routeOnArrival; the scheduled job catches what
+ * that misses). Opened from an order's page (`?order=TT-…`), the form says which order it is about and sends it along:
+ * the ticket is linked to that order only when it is the shopper's (services/support/tickets.server ticketOrderOf).
  */
 import { useId } from "react";
 import { data, Form, redirect, type ShouldRevalidateFunctionArgs } from "react-router";
@@ -27,7 +30,10 @@ import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { handOffToStaff, runAssistant } from "~/server/services/support/assistant.server";
 import { assistantSearch, parseAssistantState, type AssistantState } from "~/server/services/support/state";
-import { getTicketByAccessToken } from "~/server/services/support/tickets.server";
+import { routeOnArrival } from "~/server/services/support/routing.server";
+import { normalizeSupportRef } from "~/server/services/support/common.server";
+import { getTicketByAccessToken, ORDER_REF_PREFIX } from "~/server/services/support/tickets.server";
+import { afterResponse } from "~/routes/storefront/content/redirect.server";
 import type { AssistantView } from "~/server/services/support/types";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
@@ -52,6 +58,8 @@ export async function loader({ context, url }: Route.LoaderArgs) {
   const db = getDb();
   const state = parseAssistantState(url.searchParams);
   const ticketRef = url.searchParams.get("ticket");
+  // «سؤال عن طلبك؟» on an order's page opens the hand-off with the order's reference
+  const orderRef = normalizeSupportRef(url.searchParams.get("order"), ORDER_REF_PREFIX);
   const [view, person, receipt] = await Promise.all([
     runAssistant(db, ctx.locale, state),
     supportWho(ctx, db),
@@ -59,7 +67,7 @@ export async function loader({ context, url }: Route.LoaderArgs) {
   ]);
   const headers = receipt ? PRIVATE_PAGE_HEADERS : undefined;
   return data(
-    { view, receipt, contact: view.handoff ? person.contact : null, formKey: view.handoff && !receipt ? formKey() : null, i18n: messagesFor(ctx.locale, "support", "errors") },
+    { view, receipt, ticketToken: receipt ? url.searchParams.get("tk") : null, orderRef: view.handoff ? orderRef : null, contact: view.handoff ? person.contact : null, formKey: view.handoff && !receipt ? formKey() : null, i18n: messagesFor(ctx.locale, "support", "errors") },
     { headers },
   );
 }
@@ -80,11 +88,13 @@ export async function action({ request, context }: Route.ActionArgs) {
   const form = await readSupportForm(request);
   if (!(form instanceof FormData)) return form;
   if (form.get("intent") !== "handoff") throw data({ error: "invalid" }, { status: 400 });
-  const values = textFields(form, ["idempotencyKey", "phone", "contactName", "note", "consent"]);
+  const values = textFields(form, ["idempotencyKey", "phone", "contactName", "note", "consent", "order"]);
   const state = stateFromForm(form);
   try {
     const { who } = await supportWho(ctx, db);
     const ticket = await handOffToStaff(db, who, ctx.locale, state, values, ctx.now, { store: photoStore(), photos: formFiles(form, "photos") });
+    // to the right person by the support module's rules, after the answer (never delays or fails the shopper's send)
+    if (!ticket.replayed) afterResponse(routeOnArrival(db, ticket.ticketId, ctx.now), "ticket routing");
     const params = new URLSearchParams(assistantSearch({ ...state, handoff: false }).slice(1));
     params.set("ticket", ticket.ref);
     params.set("tk", ticket.accessToken);
@@ -169,7 +179,11 @@ export default function Assistant({ loaderData, actionData }: Route.ComponentPro
 
         {view.stage === "done" && talking ? <NextSteps view={view} staffHref={staffHref} /> : null}
 
-        {receipt ? <HandoffReceiptCard receipt={receipt} summary={view.summary} /> : formOpen && loaderData.formKey ? <HandoffForm view={view} formKey={loaderData.formKey} contact={contact} failure={failure} /> : null}
+        {receipt ? (
+          <HandoffReceiptCard receipt={receipt} summary={view.summary} token={loaderData.ticketToken} />
+        ) : formOpen && loaderData.formKey ? (
+          <HandoffForm view={view} formKey={loaderData.formKey} contact={contact} failure={failure} orderRef={loaderData.orderRef} />
+        ) : null}
 
         {talking ? (
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">

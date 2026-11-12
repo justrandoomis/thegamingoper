@@ -8,6 +8,8 @@
  *   result.zeroResultHelp                       nothing found: the filter to remove, the word to drop, three picks
  *
  *   const { suggestions } = await suggestSearch(db, ctx.locale, "بليستيشن");   // the header's autocomplete
+ *   const { items, productIds, total } = await suggestSearchWithTotal(db, ctx.locale, q);   // + cards' ids and the /search count, one match
+ *   await searchProducts(db, ctx.locale, "playstaion", { asTyped: true });     // «ابحث عنها كما كتبتها»: no correction
  *   await recordSearchQuery(db, { locale, q, total, now });                    // anonymous daily counts
  *
  * HOW A QUERY IS READ
@@ -21,7 +23,8 @@
  *      One statement per group, all in one db.batch.
  *   4. TYPOS: a plain word of 4+ letters that matches nothing is corrected — its trigrams find candidate rows, and
  *      the closest word of those rows within 1–2 edits (Damerau–Levenshtein) replaces it ("playstaion" →
- *      "playstation"). The result says which spelling it used. Only when the query as typed finds nothing.
+ *      "playstation"). The result says which spelling it used. Only when the query as typed finds nothing, and never
+ *      with `asTyped` (the shopper asked for the words as typed).
  *   5. RANK ("relevance"): exact name first (the name IS the query › starts with it › contains it as words), then
  *      how many groups the NAME covers, then bm25 (name 10 · keywords 4 · body 1), then what can be bought now.
  *      So "xbox series x" puts the Series X before the Series S, which only shares two of the three words.
@@ -39,7 +42,7 @@ import { searchQueryStats } from "~/server/db/schema";
 import { normalizeSearchText } from "~/server/db/search.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { getNewArrivals } from "./catalog/cards.server";
-import { listProducts, type ListingResult } from "./catalog/listing.server";
+import { listProducts, MAX_SCOPE_IDS, type ListingResult } from "./catalog/listing.server";
 
 /** Longest query read (the header field allows the same). */
 export const MAX_QUERY_LENGTH = 120;
@@ -387,8 +390,17 @@ function intersect(hits: readonly GroupHits[]): string[] {
   return [...first.keys()].filter((id) => rest.every((map) => map.has(id)));
 }
 
+/** How a query is matched. */
+export type MatchOptions = {
+  /**
+   * The words exactly as typed: no corrected spelling, even when nothing matches («ابحث عنها كما كتبتها», design v2
+   * spec §6.4 — the way back from a corrected search; synonyms still apply). Default false.
+   */
+  asTyped?: boolean;
+};
+
 /** Matches a query against the search index (see the file header). Empty query → nothing. */
-export async function matchQuery(db: Db, q: string, now: number = Date.now()): Promise<QueryMatch> {
+export async function matchQuery(db: Db, q: string, now: number = Date.now(), options: MatchOptions = {}): Promise<QueryMatch> {
   const query = normalizeSearchText(String(q ?? "").slice(0, MAX_QUERY_LENGTH));
   const empty: QueryMatch = { query, correctedQuery: null, groups: [], ids: [], rank: new Map(), partial: [] };
   if (!query) return empty;
@@ -399,7 +411,7 @@ export async function matchQuery(db: Db, q: string, now: number = Date.now()): P
   let ids = intersect(hits);
   let correctedQuery: string | null = null;
 
-  if (ids.length === 0) {
+  if (ids.length === 0 && !options.asTyped) {
     const corrected = await correctGroups(db, groups, hits, vocab);
     if (corrected) {
       const changed = corrected.map((group, i) => group !== groups[i]);
@@ -499,6 +511,11 @@ export type ZeroResultHelp = {
 };
 
 export type SearchOptions = {
+  /**
+   * Search the words exactly as typed (no corrected spelling; MatchOptions.asTyped) — the link «ابحث عنها كما كتبتها»
+   * under a corrected search's title (design v2 spec §6.4). Default false.
+   */
+  asTyped?: boolean;
   filters?: Partial<ListingFilters>;
   /** Default "relevance". */
   sort?: ListingSort | null;
@@ -536,7 +553,7 @@ const EMPTY_FACETS: ListingFacets = {
  */
 export async function searchProducts(db: Db, locale: Locale, q: string, options: SearchOptions = {}): Promise<SearchResult> {
   const now = options.now ?? Date.now();
-  const match = await matchQuery(db, q, now);
+  const match = await matchQuery(db, q, now, { asTyped: options.asTyped === true });
   const vocab = match.query ? await vocabFor(db, now) : null;
   const suggestions = vocab ? jumpsFor(match, vocab.entities, locale) : [];
   const filters: ListingFilters = { ...NO_FILTERS, ...options.filters };
@@ -582,7 +599,21 @@ export async function searchProducts(db: Db, locale: Locale, q: string, options:
 // ───────────────────────────────────────────────────────────────── autocomplete
 
 export type SuggestionKind = "product" | "correction" | SearchJump["kind"];
-export type SearchSuggestionItem = { kind: SuggestionKind; label: string; href: string; hint?: string };
+/** `id`: the product's id, on "product" items only (for its card: picture, price, kind). */
+export type SearchSuggestionItem = { kind: SuggestionKind; label: string; href: string; hint?: string; id?: string };
+
+/** suggestSearchWithTotal(): the suggestions, their products' ids, and how many products /search lists for the words. */
+export type SuggestSearchResult = {
+  items: SearchSuggestionItem[];
+  /** The ids of the "product" items, in their order — what the header needs cards for. */
+  productIds: string[];
+  /**
+   * How many products /search?q= lists for the same words (the matches that are published with an active version:
+   * listProducts' total without filters) — the count of «اعرض كل النتائج (42)». Null when the query is too short to
+   * search (fewer than two characters).
+   */
+  total: number | null;
+};
 
 /**
  * Suggestions for the header's search field: a corrected spelling, the platforms / categories / device hubs the query
@@ -590,31 +621,53 @@ export type SearchSuggestionItem = { kind: SuggestionKind; label: string; href: 
  * characters → nothing.
  */
 export async function suggestSearch(db: Db, locale: Locale, q: string, options: { now?: number; limit?: number } = {}): Promise<SearchSuggestionItem[]> {
+  return (await suggestSearchWithTotal(db, locale, q, options)).items;
+}
+
+/**
+ * suggestSearch() with what the header field shows around it, from ONE match of the words: the product items' ids
+ * (their cards give the picture, price and kind) and the number of products /search lists for the same words.
+ */
+export async function suggestSearchWithTotal(db: Db, locale: Locale, q: string, options: { now?: number; limit?: number } = {}): Promise<SuggestSearchResult> {
   const now = options.now ?? Date.now();
   const limit = Math.min(Math.max(1, Math.floor(options.limit ?? MAX_SUGGESTIONS)), MAX_SUGGESTIONS);
   const query = normalizeSearchText(String(q ?? "").slice(0, MAX_QUERY_LENGTH));
-  if ([...query.replace(/ /g, "")].length < 2) return [];
+  if ([...query.replace(/ /g, "")].length < 2) return { items: [], productIds: [], total: null };
   const match = await matchQuery(db, query, now);
   const vocab = await vocabFor(db, now);
   const out: SearchSuggestionItem[] = [];
   if (match.correctedQuery) out.push({ kind: "correction", label: match.correctedQuery, href: searchPath(match.correctedQuery) });
   for (const jump of jumpsFor(match, vocab.entities, locale)) out.push({ kind: jump.kind, label: jump.label, href: jump.href });
   const room = limit - out.length;
-  if (room > 0 && match.ids.length > 0) {
-    const top = match.ids.slice(0, room + 4);
-    const rows = await db.all<{ id: string; slug: string; name: string; category: string | null }>(sql`
+  const top = room > 0 ? match.ids.slice(0, room + 4) : [];
+  const [rows, counted] = await Promise.all([
+    top.length > 0
+      ? db.all<{ id: string; slug: string; name: string; category: string | null }>(sql`
       SELECT p.id, p.slug, p.name, c.name AS category
       FROM products AS p LEFT JOIN categories AS c ON c.id = p.category_id AND c.is_active = 1
-      WHERE p.status = 'published' AND p.id IN (SELECT value FROM json_each(${JSON.stringify(top)}))`);
-    const byId = new Map(rows.map((row) => [row.id, row]));
-    for (const id of top) {
-      const row = byId.get(id);
-      if (!row || out.length >= limit) continue;
-      const hint = pick(parseJson<L10n>(row.category), locale);
-      out.push({ kind: "product", label: pick(parseJson<L10n>(row.name), locale) || row.slug, href: `/p/${row.slug}`, ...(hint ? { hint } : {}) });
-    }
+      WHERE p.status = 'published' AND p.id IN (SELECT value FROM json_each(${JSON.stringify(top)}))`)
+      : Promise.resolve([]),
+    // what /search lists for these words: the matches that are published with an active version (listing.server.ts)
+    match.ids.length > 0
+      ? db.all<{ n: number }>(sql`
+      SELECT COUNT(*) AS n FROM products AS p
+      WHERE p.status = 'published' AND p.id IN (SELECT value FROM json_each(${JSON.stringify(match.ids.slice(0, MAX_SCOPE_IDS))}))
+        AND EXISTS (SELECT 1 FROM variants AS v WHERE v.product_id = p.id AND v.is_active = 1)`)
+      : Promise.resolve([{ n: 0 }]),
+  ]);
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  for (const id of top) {
+    const row = byId.get(id);
+    if (!row || out.length >= limit) continue;
+    const hint = pick(parseJson<L10n>(row.category), locale);
+    out.push({ kind: "product", label: pick(parseJson<L10n>(row.name), locale) || row.slug, href: `/p/${row.slug}`, ...(hint ? { hint } : {}), id: row.id });
   }
-  return out.slice(0, limit);
+  const items = out.slice(0, limit);
+  return {
+    items,
+    productIds: items.filter((item) => item.kind === "product" && item.id).map((item) => item.id as string),
+    total: Number(counted[0]?.n ?? 0),
+  };
 }
 
 // ───────────────────────────────────────────────────────────────── anonymous query statistics

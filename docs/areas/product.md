@@ -158,3 +158,15 @@ the card), quick look loading / failed / gone / offline. Chromium (Edge) only.
 - The research text still contains pre-order sentences; the page leaves them out (`text.ts`) — asked of the data owner.
 - The Sorani strings need a native reader; the Sorani brand spelling stays «تەمتەم» as in the other namespaces until
   the owner decides (spec §13 row 12).
+
+## Wave G wiring (2026-11-12)
+
+- **Buy bar:** the kit's `<BuyBar bare>` inside the shell's `<TaskBar>` (the named region, the persisted name, the height it
+  publishes) — the page's own height hook and failure line are gone: a failed add and «لا يوجد اتصال» take the bar's own line; a
+  new version starts afresh (keyed by variant).
+- `WishlistKey variant="text"` in the actions row; `CompareToggle` gets the gallery's first picture (the tray's thumbnail).
+- Coming soon: the price line's status says «● يصدر 19 تشرين الثاني 2026» (`PriceTag status`), the sentence under it «الطلب يفتح
+  عند وصوله.» (`status.soonNote`).
+- «يعمل مع» rows link to the device's hub when it has one (`CompatList` `href`); colour swatches say why one cannot be ordered
+  («نفد حالياً», or its release day — never «غير متوفر»: `unavailable: "soldOut" | "soon"` + `reason`).
+- A missing product: a redirect staff set in the content module is followed before the 404 (`redirectIfMoved`).

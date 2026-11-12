@@ -39,7 +39,7 @@ import { pick, type Locale } from "~/lib/locales";
 import { can, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import type { Db } from "~/server/db/drizzle.server";
-import { categories, commissionRules, commissions, employeeRoles, roles, type Commission, type CommissionRule } from "~/server/db/schema";
+import { categories, commissionRules, commissions, employeeRoles, employees, roles, type Commission, type CommissionRule } from "~/server/db/schema";
 import { chunkRows, expectThat, isDbError, isUniqueViolation, runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { AppError, invalid, notFound } from "~/server/errors";
 import { allocateAmount } from "../pricing/rules";
@@ -482,6 +482,16 @@ async function candidateLines(db: Db, period: string): Promise<SaleLineFacts[]> 
 
 export type SyncResult = { period: string; lines: number; earned: number; clawbacks: number; earnIqd: number; clawbackIqd: number; uncosted: number; noPlan: number; unchanged: number };
 
+/** The lines whose seller works in `branchId`. */
+async function withinBranch<T extends { sellerId: string }>(db: Db, lines: T[], branchId: string): Promise<T[]> {
+  const sellers = [...new Set(lines.map((line) => line.sellerId))];
+  const inBranch = new Set<string>();
+  for (let at = 0; at < sellers.length; at += 90) {
+    for (const row of await db.select({ id: employees.id }).from(employees).where(and(inArray(employees.id, sellers.slice(at, at + 90)), eq(employees.branchId, branchId)))) inBranch.add(row.id);
+  }
+  return lines.filter((line) => inBranch.has(line.sellerId));
+}
+
 /**
  * Computes the commissions of a month (staff.commission.manage or staff.payroll.run), see the file header. Writes only
  * differences: running it twice writes nothing the second time.
@@ -493,7 +503,10 @@ export async function syncCommissions(db: Db, actor: Actor, raw: { period: strin
     .regex(/^\d{4}-(0[1-9]|1[0-2])$/, "invalid")
     .parse(raw.period);
   if (period > periodOf(now)) throw invalid({ period: "period_future" });
-  const lines = await candidateLines(db, period);
+  // An employee limited to a branch syncs their branch's sellers only (follow-up 2026-11-12: a sync from a branch
+  // wrote every branch's commissions). The scheduled job runs as the system: the whole store.
+  const limit = branchLimit(actor);
+  const lines = limit ? await withinBranch(db, await candidateLines(db, period), limit) : await candidateLines(db, period);
   const result: SyncResult = { period, lines: lines.length, earned: 0, clawbacks: 0, earnIqd: 0, clawbackIqd: 0, uncosted: 0, noPlan: 0, unchanged: 0 };
   if (!lines.length) return result;
   const itemIds = lines.map((line) => line.orderItemId);

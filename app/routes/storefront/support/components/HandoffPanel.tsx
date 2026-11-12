@@ -19,16 +19,22 @@ import { DemoNote } from "~/ui/DemoNote";
 import { Checkbox, FormErrorSummary, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
+import { fillNodes } from "~/ui/PriceTag";
 import { Status, type StatusTone } from "~/ui/Tag";
+import { TextLink } from "~/ui/TextLink";
 import { fieldMessage, formMessage, phoneProblem, type FormFailure } from "../client";
 import { CopyKey, CopyLinkKey } from "./parts";
 import { PhotoPicker } from "./PhotoPicker";
 
-export type HandoffReceipt = { ref: string; createdAt: number; phoneMasked: string; status: string; isDemo: boolean; replies?: Array<{ at: number; body: string }> };
+export type HandoffReceipt = { ref: string; createdAt: number; phoneMasked: string; status: string; isDemo: boolean; replies?: Array<{ at: number; body: string }>; canRate?: boolean };
 
 const STATUS_TONE: Record<string, StatusTone> = { open: "warn", pending_staff: "warn", pending_customer: "info", on_hold: "neutral", resolved: "ok", closed: "neutral" };
 
-export function HandoffReceiptCard({ receipt, summary }: { receipt: HandoffReceipt; summary: string }) {
+/**
+ * The receipt after sending. `token`: the receipt's own access token — its page /support/ticket shows the same request
+ * by the same private link, and asks for the rating once staff solved it («قيّم المساعدة»).
+ */
+export function HandoffReceiptCard({ receipt, summary, token = null }: { receipt: HandoffReceipt; summary: string; token?: string | null }) {
   const t = useT("support");
   const f = useFormat();
   const headingId = useId();
@@ -52,9 +58,12 @@ export function HandoffReceiptCard({ receipt, summary }: { receipt: HandoffRecei
             {t("handoff.success.title")}
           </h2>
           <p className="type-sm text-ink-2">{t("handoff.success.text")}</p>
-          {/* this page's link is the only way back to the reply: a key copies it */}
-          <div className="mt-2">
+          {/* this page's link is one way back to the reply (a key copies it); the reference and the phone are the other */}
+          <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1">
             <CopyLinkKey />
+            <TextLink as={LocaleLink} to={token ? `/support/ticket?ref=${encodeURIComponent(receipt.ref)}&tk=${encodeURIComponent(token)}${receipt.canRate ? "#rate" : ""}` : "/support/ticket"}>
+              {receipt.canRate ? t("handoff.rate") : t("handoff.follow")}
+            </TextLink>
           </div>
         </div>
       </div>
@@ -113,9 +122,11 @@ type Props = {
   formKey: string;
   contact: { name: string; phone: string } | null;
   failure: FormFailure | null;
+  /** Opened from an order's page (`?order=TT-…`): the order it is about — said here, and sent along. */
+  orderRef?: string | null;
 };
 
-export function HandoffForm({ view, formKey, contact, failure }: Props) {
+export function HandoffForm({ view, formKey, contact, failure, orderRef = null }: Props) {
   const t = useT("support");
   const errorsT = useT("errors");
   const headingId = useId();
@@ -197,6 +208,12 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
           {t("handoff.title")}
         </h2>
         <p className="type-sm text-ink-2">{t("handoff.text")}</p>
+        {orderRef ? (
+          <p className="flex flex-wrap items-center gap-x-1.5 type-sm-strong text-ink" data-handoff-order={orderRef}>
+            <Icon name="package" size={16} />
+            {fillNodes(t("handoff.about"), { ref: <bdi dir="ltr" className="nums">{orderRef}</bdi> })}
+          </p>
+        ) : null}
       </div>
       <div className="grid gap-1 rounded-sm bg-niche px-4 py-3">
         <p className="type-sm-strong text-ink">{t("handoff.preview")}</p>
@@ -205,6 +222,7 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
       <form ref={formRef} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="grid gap-5">
         <input type="hidden" name="intent" value="handoff" />
         <input type="hidden" name="idempotencyKey" value={formKey} />
+        {orderRef ? <input type="hidden" name="order" value={orderRef} /> : null}
         {[...fields.entries()].map(([name, value], index) => (
           <input key={`${name}:${index}`} type="hidden" name={name} value={value} />
         ))}

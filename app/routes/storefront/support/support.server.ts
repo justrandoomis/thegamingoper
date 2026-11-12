@@ -42,6 +42,16 @@ export function repairStatusHeaders(showsRequest: boolean) {
   return showsRequest ? PRIVATE_PAGE_HEADERS : LOOKUP_PAGE_HEADERS;
 }
 
+/**
+ * The ticket page (/support/ticket): the card behind the private link sends its address nowhere — unless the card holds
+ * the rating form (staff solved the request, the shopper has not answered): under `no-referrer` a browser posts that
+ * form with `Origin: null` and the store refuses it, so the rating failed without script (review 2026-11-12). That
+ * card, like the lookup form (no card), keeps its address to the store's own origin.
+ */
+export function ticketPageHeaders(card: { canRate: boolean } | null) {
+  return card && !card.canRate ? PRIVATE_PAGE_HEADERS : LOOKUP_PAGE_HEADERS;
+}
+
 /** Private uploads (repair and support photos) live in the KV-backed blob store. */
 export function photoStore(): BlobStore {
   return kvBlobStore(env.KV);

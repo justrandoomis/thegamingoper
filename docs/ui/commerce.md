@@ -1,5 +1,39 @@
 # Commerce components — props and examples
 
+## Polish round (2026-11-12)
+
+- **ProductCard:** `compare` — a slot under the price row for the catalogue's `<CompareToggle>` (console and handheld
+  cards; give every card of a row the slot or none); `onWishedChange` — the heart's confirmed state; facts are
+  `<BidiLabel>`s («512GB أو 1TB» reads from the right); a Latin name on an Arabic page clamps with the ellipsis at its
+  own end and stays aligned to the page's start; «تخفيض» only beside a previous price the card actually strikes; a
+  picture that failed before hydration is found on mount (`pictureFailed`) and shows the failed state, not the
+  browser's broken frame; the card fills its cell (`w-full`: it is an inline-size container). The quick look's code is
+  fetched on the first tap: offline, an error toast says so (the next tap tries again); online and missing (a new
+  deploy), the link opens the product page.
+- **AddToCartKey:** `look="onBand"` (the white clay key on a crimson band) and `label` (the key's words: «اشترِ {name}»);
+  offline, the labelled key goes flat with «لا يوجد اتصال. أضف إلى السلة عند عودة الاتصال.» beside it, and a card
+  button says the same in an error toast instead of flying (`offline` forces the state for previews). `onMessage`
+  passes the tone too.
+- **BuyBar:** `bare` — content only, to sit inside the shell's `<TaskBar>` (which owns the glass, the named region, the
+  persisted name and the height it publishes); otherwise `aria-label` (a named region) and `data-motion-persist` are
+  forwarded to its glass. A failed add says why on the variant's line (red-ink; the toast carries the retry) — the bar
+  never grows; offline that line says «لا يوجد اتصال» and the key is flat.
+- **PriceTag `size="page"`:** `status` (the stock line's words for a coming product) and `compareAtDemo` (no «توفّر»
+  from a demo previous price); the struck price is its own 13px line.
+- **UsedUnitCard `layout="row"`:** in a card narrower than 36rem (phones; each of two columns at 1024–1279) the
+  «اعرض تقرير الفحص» link goes under the words, in line with them; an illustration says «صورة توضيحية» ON the 96px
+  photo. **InspectionCard** `illustrationNote={false}`: the page already said the pictures are illustrations (the
+  gallery's line), so the card leaves its photos part out.
+- **ProofUploader** `primary`: the upload is the view's one step forward — «اختر صورة» (and «أكمل الرفع» / «أعد
+  المحاولة») is the red primary. No 1.0 `ink` key left inside.
+- **WishlistKey** `variant="text"`: a 40px ghost key «المفضلة» / «في المفضلة» with the heart (held = aria-pressed),
+  for the product page's row المفضلة · قارن · مشاركة.
+- **CartLineRow, WalletBalance, GovernoratePicker, TrustStrip:** amounts inside sentences are first-strong isolates.
+  **TrustStrip** `transfer={{ zaincash, card }}` names only the methods that are switched on. **GovernoratePicker:**
+  the arrow keys move through the rows without choosing or closing; a click, Space or Enter chooses and closes.
+- **CompatBadge / CompatList:** the words of §4.1 — يعمل · يعمل جزئياً · لا يعمل · لم نتحقق; a row with `href` is one
+  link to the device. **Swatches:** see `docs/ui/core.md`.
+
 ## Design System v2 (2026-11-11) — read this first
 
 Where a section further down disagrees with this one, **this one wins**. Live, every state: `/design-system#commerce`.
@@ -169,11 +203,10 @@ honest `reason` line ("متوافق مع Nintendo Switch 2", "اقتراحات �
 data) at the start, the one "عرض الكل" link at the end, then `~/ui/Rail` (native scroll-snap, arrow keys, step keys
 from 1024px, edge fade). An empty shelf renders nothing, or `emptyText` — never placeholder products.
 
-## PlatformBank — `~/ui/PlatformBank`
+## PlatformBank — deleted (stage 4, 2026-11-12)
 
-`<PlatformBank value onChange onIntent? name? label? platforms? names? />` — the four platform keys in a well under the
-home stage (§2, `a.png`): neutral pictograms, a 16×5 LED, the name as text; radio semantics, arrows follow the reading
-direction. `<PlatformBank multiple values onToggle />` for onboarding (toggles, `aria-pressed`).
+The 1.0 platform keys are gone: the doors are `PlatformTile`s (`docs/ui/showcase.md`; `selected` for toggles, as the
+intro uses them).
 
 ## Gallery — `~/ui/Gallery`
 

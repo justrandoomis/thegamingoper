@@ -14,6 +14,8 @@
  *       catalog.publish_due            scheduled products whose publish time has come go live (lists, search,
  *                                      menus), or back to draft when they are no longer complete
  *                                      (publishDueProducts, admin module 02 — 50 per run, guarded by version).
+ *       support.tickets.route          support tickets waiting for a person are routed by the support module's rules
+ *                                      (admin 14.03, routeWaitingTickets as systemActor("support.route"), 50 per run)
  *       outbox.deliver                 sends queued messages — only when message providers are passed in
  *                                      `env.providers`. None is configured, so it is recorded as skipped.
  *   "30 0 * * *"     DAILY — 00:30 UTC = 03:30 Asia/Baghdad
@@ -23,8 +25,9 @@
  *       retention                      deletes expired customer/staff sessions and trusted devices (30 days
  *                                      after expiry or revocation), one-time codes (7 days after expiry),
  *                                      sign-in events older than 180 days, outbox rows (sent, failed or
- *                                      held) older than 90 days, and job_runs older than 90 days except
- *                                      the latest run of each job; then the areas' own purges
+ *                                      held) older than 90 days, job_runs older than 90 days except
+ *                                      the latest run of each job, staff password-set links 30 days after they
+ *                                      were used, revoked or ran out; then the areas' own purges
  *                                      (purgeAreaData: wallet top-up proofs no request uses, stored
  *                                      assistant conversations past their expiry). `consents`,
  *                                      audit events, ledgers and order history are never deleted here.
@@ -37,10 +40,20 @@
  *                                      (admin 13, expireTradeInOffers — 200 per run)
  *       customers.segments.recompute   every customer's RFM segment from the orders, stored in one audited
  *                                      batch (admin 07.02, recomputeSegments as the system)
+ *       promotions.memberships.close   VIP memberships past their end → expired (admin 08.06, closeEndedMemberships)
+ *       promotions.points.sync         points of delivered orders past the return window, reversals of refunds
+ *                                      (admin 08.04, syncOrderPoints — keyed, a second run adds nothing)
+ *       promotions.points.expire       points past their expiry, FIFO (admin 08.04, postExpiry)
+ *       promotions.gift_cards.expire   gift cards past their date → expired (admin 08.07, expireGiftCards)
+ *       staff.commissions.sync         last and this month's commissions, differences only (admin 15.03,
+ *                                      syncCommissionsJob)
+ *       ops.telemetry.purge            error reports and slow-request rollups older than 90 days, an incident's
+ *                                      evidence kept (admin 23.01/23.02, purgeOpsTelemetry)
  *       consistency.daily              stock vs movements, stock vs reservations, wallet ledger vs journal,
  *                                      journal balance, order totals vs lines / payments / refunds, money
- *                                      vs postings → `consistency_findings` (one row per problem, updated
- *                                      while it persists, closed automatically when it is gone).
+ *                                      vs postings, delivered orders vs their cost-of-goods posting →
+ *                                      `consistency_findings` (one row per problem, updated while it persists,
+ *                                      closed automatically when it is gone).
  *
  *   // workers/app.ts (lead)
  *   async scheduled(controller, env, ctx) {
@@ -54,9 +67,10 @@
  * error), so the operations module (23.03) can show and re-run them (runJob, with ops.job.run checked
  * by the caller). A failing job never stops the others: each area's daily work is a job of its own
  * (since 2026-11-11 the recommendation and trade-in-draft purges too — they were inside `retention`,
- * where a failure was only a counter of a run that "succeeded"), so a failure shows as that job's
- * failed run and `ok: false`. Jobs are safe to run twice at the same time: each change they make is
- * guarded.
+ * where a failure was only a counter of a run that "succeeded"; since 2026-11-12 the admin modules'
+ * scheduled work of wave D and the operations telemetry purge, until then only run now and then by
+ * the ops recorder itself), so a failure shows as that job's failed run and `ok: false`. Jobs are safe
+ * to run twice at the same time: each change they make is guarded.
  *
  * Must not import "cloudflare:workers".
  */
@@ -72,6 +86,7 @@ import {
   authEvents,
   consistencyFindings,
   customerSessions,
+  employeePasswordLinks,
   employeeSessions,
   employeeTrustedDevices,
   jobRuns,
@@ -92,6 +107,12 @@ import { purgeUnusedTopupProofs } from "./services/account/topups.server";
 import { publishDueProducts } from "./services/admin/catalog/workflow.server";
 import { recomputeSegments } from "./services/admin/customers/rfm.server";
 import { expireTradeInOffers } from "./services/admin/devices/tradeins.server";
+import { purgeOpsTelemetry } from "./services/admin/ops/telemetry.server";
+import { expireGiftCards } from "./services/admin/promotions/giftcards.server";
+import { postExpiry, syncOrderPoints } from "./services/admin/promotions/loyalty.server";
+import { closeEndedMemberships } from "./services/admin/promotions/vip.server";
+import { syncCommissionsJob } from "./services/admin/staff/commissions.server";
+import { routeWaitingTickets } from "./services/admin/support/routing.server";
 import { expireReservations } from "./services/inventory/stock.server";
 import { transitionOrder } from "./services/orders/manage.server";
 import { purgeRecommendationEvents } from "./services/recommendations.server";
@@ -108,6 +129,7 @@ export const JOB_NAMES = [
   "orders.expire_unpaid",
   "inventory.reservations.expire",
   "catalog.publish_due",
+  "support.tickets.route",
   "outbox.deliver",
   "audit.seal",
   "ratelimits.cleanup",
@@ -116,14 +138,36 @@ export const JOB_NAMES = [
   "tradein.drafts.purge",
   "devices.tradein_offers.expire",
   "customers.segments.recompute",
+  "promotions.memberships.close",
+  "promotions.points.sync",
+  "promotions.points.expire",
+  "promotions.gift_cards.expire",
+  "staff.commissions.sync",
+  "ops.telemetry.purge",
   "consistency.daily",
 ] as const;
 export type JobName = (typeof JOB_NAMES)[number];
 
 /** Which jobs each cron expression runs, in order (the consistency checks last: they look at what the others left). */
 export const SCHEDULES: Record<string, readonly JobName[]> = {
-  [CRON_FREQUENT]: ["orders.expire_unpaid", "inventory.reservations.expire", "catalog.publish_due", "outbox.deliver"],
-  [CRON_DAILY]: ["audit.seal", "ratelimits.cleanup", "retention", "recommendations.events.purge", "tradein.drafts.purge", "devices.tradein_offers.expire", "customers.segments.recompute", "consistency.daily"],
+  [CRON_FREQUENT]: ["orders.expire_unpaid", "inventory.reservations.expire", "catalog.publish_due", "support.tickets.route", "outbox.deliver"],
+  [CRON_DAILY]: [
+    "audit.seal",
+    "ratelimits.cleanup",
+    "retention",
+    "recommendations.events.purge",
+    "tradein.drafts.purge",
+    "devices.tradein_offers.expire",
+    "customers.segments.recompute",
+    // memberships first: an ended membership no longer multiplies the points synced after it
+    "promotions.memberships.close",
+    "promotions.points.sync",
+    "promotions.points.expire",
+    "promotions.gift_cards.expire",
+    "staff.commissions.sync",
+    "ops.telemetry.purge",
+    "consistency.daily",
+  ],
 };
 
 /** Retention windows (days). Owner-editable settings can replace these later (security.retention.manage). */
@@ -136,8 +180,10 @@ export const RETENTION_DAYS = {
   authEvents: 180,
   /** Outgoing messages that were sent, failed for good, or held for lack of a provider. */
   outbox: 90,
-  /** Scheduled-job history (`job_runs`, about 1,160 rows a day: 4 every 5 minutes, 8 at night). The latest run of each job is kept, however old. */
+  /** Scheduled-job history (`job_runs`, about 1,454 rows a day: 5 every 5 minutes, 14 at night). The latest run of each job is kept, however old. */
   jobRuns: 90,
+  /** Staff password-set links (`employee_password_links`): after they were used, revoked or ran out. */
+  passwordLinks: 30,
 } as const;
 
 /**
@@ -350,6 +396,25 @@ async function applyRetention(db: Db, { now, env }: JobContext): Promise<JobResu
         .run(),
     ),
   );
+  // Staff password-set links (auth/employees.server.ts): kept a while after they stopped working, then deleted.
+  const linkCutoff = now - RETENTION_DAYS.passwordLinks * DAY_MS;
+  const passwordLinksDeleted = await deleteInRounds(async () =>
+    changesOf(
+      await db
+        .delete(employeePasswordLinks)
+        .where(
+          inArray(
+            employeePasswordLinks.idHash,
+            db
+              .select({ id: employeePasswordLinks.idHash })
+              .from(employeePasswordLinks)
+              .where(or(lt(employeePasswordLinks.expiresAt, linkCutoff), lt(employeePasswordLinks.usedAt, linkCutoff), lt(employeePasswordLinks.revokedAt, linkCutoff)))
+              .limit(DELETE_BATCH),
+          ),
+        )
+        .run(),
+    ),
+  );
   return {
     stats: {
       customerSessions: customerSessionsDeleted,
@@ -359,6 +424,7 @@ async function applyRetention(db: Db, { now, env }: JobContext): Promise<JobResu
       authEvents: authEventsDeleted,
       outbox: outboxDeleted,
       jobRuns: jobRunsDeleted,
+      passwordLinks: passwordLinksDeleted,
       ...(await purgeAreaData(db, now, env)),
       days: RETENTION_DAYS,
     },
@@ -460,6 +526,55 @@ async function expireOldTradeInOffers(db: Db, { now }: JobContext): Promise<JobR
 async function recomputeCustomerSegments(db: Db, { now }: JobContext): Promise<JobResult> {
   const { counts, total } = await recomputeSegments(db, systemActor("customers.segments.recompute"), now);
   return { stats: { total, segments: counts } };
+}
+
+// ───────────────────────────────────────────────────────────────── the admin modules' jobs (wave D, 2026-11-12)
+
+/**
+ * Tickets waiting for a person, routed by the support module's rules (admin 14.03, routeWaitingTickets as
+ * systemActor("support.route"); 50 per run, each one guarded — a ticket taken meanwhile is skipped).
+ */
+async function routeTickets(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: await routeWaitingTickets(db, systemActor("support.route"), now) };
+}
+
+/** VIP memberships whose end date passed: active → expired (admin 08.06, closeEndedMemberships; 500 per run). */
+async function closeMemberships(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: await closeEndedMemberships(db, systemActor("promotions.memberships.close"), now) };
+}
+
+/**
+ * Points of delivered orders once their return window closed, and the reversals of refunds (admin 08.04,
+ * syncOrderPoints; one ledger row per fact, keyed, so a second run adds nothing). `more`: the next run takes the rest.
+ */
+async function syncPoints(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: await syncOrderPoints(db, systemActor("promotions.points.sync"), now) };
+}
+
+/** Points past their expiry, first in first out (admin 08.04, postExpiry; keyed per customer and credits). */
+async function expirePoints(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: await postExpiry(db, systemActor("promotions.points.expire"), now) };
+}
+
+/** Gift cards past their date: active → expired, audited with their count and value (admin 08.07, expireGiftCards). */
+async function expireCards(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: await expireGiftCards(db, systemActor("promotions.gift_cards.expire"), now) };
+}
+
+/**
+ * Last month's and this month's commissions brought up to date — differences only (admin 15.03, syncCommissionsJob).
+ * The run keeps COUNTS only: `job_runs.stats` is shown to every ops.job.read holder, and the operations module withholds
+ * cost and profit keys there, not pay — the month's commission amounts (earnIqd, clawbackIqd) are pay data, for
+ * staff.payroll.* holders on module 15's own screens (review 2026-11-12).
+ */
+async function syncCommissionLedger(db: Db, { now }: JobContext): Promise<JobResult> {
+  const periods = await syncCommissionsJob(db, systemActor("staff.commissions.sync"), now);
+  return { stats: { periods: periods.map(({ period, lines, earned, clawbacks, uncosted, noPlan, unchanged }) => ({ period, lines, earned, clawbacks, uncosted, noPlan, unchanged })) } };
+}
+
+/** Error reports and slow-request rollups past their 90 days (admin 23.01/23.02, purgeOpsTelemetry — an incident's evidence stays). */
+async function purgeTelemetry(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: await purgeOpsTelemetry(db, now) };
 }
 
 // ───────────────────────────────────────────────────────────────── consistency checks (23.06)
@@ -671,6 +786,36 @@ export const CONSISTENCY_CHECKS: readonly Check[] = [
       }));
     },
   },
+  {
+    // Every delivered order whose goods had a known cost carries its cost-of-goods posting (postCogs, key
+    // `order:<id>:cogs`, 23.06): the same cost the delivery posts — its own `sale` movements at their unit cost plus
+    // the used units' acquisition cost. Goods without a known cost post nothing and are not a finding. Cost data
+    // [P]: the operations module shows these numbers only with cost.read (the key names "cogs").
+    key: "money.missing_cogs",
+    run: async (db) => {
+      const rows = await db.all<{ orderId: string; ref: string; cost: number }>(sql`
+        WITH sold AS (
+          SELECT ref_id AS order_id, sum(-qty_delta * unit_cost_iqd) AS cost FROM stock_movements
+          WHERE ref_type = 'order' AND kind = 'sale' AND unit_cost_iqd IS NOT NULL GROUP BY ref_id
+        ), used AS (
+          SELECT i.order_id AS order_id, sum(u.acquisition_cost_iqd) AS cost FROM used_units AS u JOIN order_items AS i ON i.id = u.sold_order_item_id
+          WHERE u.acquisition_cost_iqd IS NOT NULL GROUP BY i.order_id
+        )
+        SELECT o.id AS orderId, o.ref AS ref, coalesce(s.cost, 0) + coalesce(u.cost, 0) AS cost
+        FROM orders AS o LEFT JOIN sold AS s ON s.order_id = o.id LEFT JOIN used AS u ON u.order_id = o.id
+        WHERE o.delivered_at IS NOT NULL AND coalesce(s.cost, 0) + coalesce(u.cost, 0) > 0
+          AND NOT EXISTS (SELECT 1 FROM journal_entries AS e WHERE e.idempotency_key = 'order:' || o.id || ':cogs')
+        LIMIT ${FINDINGS_PER_CHECK + 1}`);
+      return rows.map((row) => ({
+        checkKey: "money.missing_cogs",
+        severity: "critical",
+        entityType: "order",
+        entityId: row.orderId,
+        message: `Delivered order ${row.ref} has no cost-of-goods posting (its goods cost ${num(row.cost)} IQD).`,
+        details: { ref: row.ref, cogsIqd: num(row.cost) },
+      }));
+    },
+  },
 ];
 
 const fingerprintOf = (finding: ConsistencyFinding) => `${finding.checkKey}|${finding.entityType ?? ""}|${finding.entityId ?? ""}`;
@@ -763,6 +908,7 @@ const JOBS: Record<JobName, (db: Db, ctx: JobContext) => Promise<JobResult>> = {
   "orders.expire_unpaid": expireUnpaidOrders,
   "inventory.reservations.expire": expireStockReservations,
   "catalog.publish_due": publishDue,
+  "support.tickets.route": routeTickets,
   "outbox.deliver": deliverMessages,
   "audit.seal": sealAuditChain,
   "ratelimits.cleanup": cleanupLimits,
@@ -771,6 +917,12 @@ const JOBS: Record<JobName, (db: Db, ctx: JobContext) => Promise<JobResult>> = {
   "tradein.drafts.purge": purgeTradeInDraftPhotos,
   "devices.tradein_offers.expire": expireOldTradeInOffers,
   "customers.segments.recompute": recomputeCustomerSegments,
+  "promotions.memberships.close": closeMemberships,
+  "promotions.points.sync": syncPoints,
+  "promotions.points.expire": expirePoints,
+  "promotions.gift_cards.expire": expireCards,
+  "staff.commissions.sync": syncCommissionLedger,
+  "ops.telemetry.purge": purgeTelemetry,
   "consistency.daily": runConsistencyChecks,
 };
 

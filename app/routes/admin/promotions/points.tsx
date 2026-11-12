@@ -5,7 +5,7 @@ import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { findCustomerId, listLedger, loyaltyOverview, postExpiry, syncOrderPoints } from "~/server/services/admin/promotions/loyalty.server";
 import { SECTION_READ, type PromotionsAccess } from "~/server/services/admin/promotions/shared.server";
-import { LOYALTY, LOYALTY_KINDS, LOYALTY_KIND_TONE, ledgerSearch, parseLedgerFilters, type LedgerRow } from "~/server/services/admin/promotions/types";
+import { LOYALTY_KINDS, LOYALTY_KIND_TONE, ledgerSearch, parseLedgerFilters, type LedgerRow } from "~/server/services/admin/promotions/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { EmptyState } from "~/ui/EmptyState";
 import { Select, TextField } from "~/ui/Field";
@@ -13,7 +13,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent } from "./promotions.server";
-import { Boundary, ConfirmAction, Facts, Kpis, Money, Num, PhoneText, Section, ToneStatus, usePromotionsT, When } from "./ui";
+import { Boundary, ConfirmAction, Facts, Kpis, Money, Num, PhoneText, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/points — 08.04: the programme's rules, the points outstanding and what they are worth, what is due
@@ -52,6 +52,7 @@ export async function action({ request, context }: Route.ActionArgs) {
 export const meta: Route.MetaFunction = (args) => promotionsMeta(args, "points.title");
 
 export default function PointsPage({ loaderData }: Route.ComponentProps) {
+  const program = useProgram();
   const t = usePromotionsT();
   const f = useFormat();
   const layout = useRouteLoaderData(PROMOTIONS_LAYOUT_ID) as { access: PromotionsAccess } | undefined;
@@ -84,7 +85,7 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("points.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("points.lead")}</p>
       </header>
-      <Boundary>{t("points.boundary", { value: f.iqd(LOYALTY.pointValueIqd) })}</Boundary>
+      <Boundary>{t("points.boundary", { value: f.iqd(program.loyalty.pointValueIqd) })}</Boundary>
       <div className="prm-block">
       <Kpis
         items={[
@@ -153,7 +154,8 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
           </Section>
           <div className={overview.ordersWaiting + overview.reversalsWaiting > 0 && manage ? "prm-panel prm-panel--decide" : "prm-panel"}>
             <p className="adm-h3">{t("points.due.title")}</p>
-            <p className="type-body">{t("points.due.orders", { count: overview.ordersWaiting, days: overview.returnWindowDays })}</p>
+            {/* the return window is a setting (returns.window_days): its noun agrees with the number (daySpan) */}
+            <p className="type-body">{t("points.due.orders", { count: overview.ordersWaiting, span: t("daySpan", { count: overview.returnWindowDays }) })}</p>
             <p className="type-body">{t("points.due.reversals", { count: overview.reversalsWaiting })}</p>
             {manage ? (
               <ConfirmAction
@@ -174,17 +176,17 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
             ) : null}
             <p className="type-body">{t("points.due.expiry", { count: overview.expiryWaiting })}</p>
             {manage ? (
-              <ConfirmAction intent="expire" label={t("points.due.expire")} title={t("points.due.expireQ")} consequence={t("points.due.expireWhat", { days: LOYALTY.expiryDays })} confirmLabel={t("points.due.expire")} reason={false} icon="hourglass" disabled={overview.expiryWaiting === 0} doneKey={(result) => (Number(result.customers) > 0 ? "done.expired" : "done.nothing")} />
+              <ConfirmAction intent="expire" label={t("points.due.expire")} title={t("points.due.expireQ")} consequence={t("points.due.expireWhat", { span: t("daySpan", { count: program.loyalty.expiryDays }) })} confirmLabel={t("points.due.expire")} reason={false} icon="hourglass" disabled={overview.expiryWaiting === 0} doneKey={(result) => (Number(result.customers) > 0 ? "done.expired" : "done.nothing")} />
             ) : null}
           </div>
           <Section id="prm-program" title={t("points.program.title")}>
             <Facts
               rows={[
-                { label: t("points.program.earn"), value: t("points.program.earnValue", { n: LOYALTY.pointsPerThousandIqd }) },
-                { label: t("points.program.value"), value: <Money iqd={LOYALTY.pointValueIqd} /> },
-                { label: t("points.program.expiry"), value: t("points.program.expiryValue", { days: LOYALTY.expiryDays }) },
-                { label: t("points.program.when"), value: t("points.program.whenValue", { days: overview.returnWindowDays }) },
-                { label: t("points.program.second"), value: t("points.program.secondValue", { n: f.number(LOYALTY.adjustSecondPersonPoints), day: f.number(LOYALTY.adjustSoloDayPoints) }) },
+                { label: t("points.program.earn"), value: t("points.program.earnValue", { n: program.loyalty.pointsPerThousandIqd }) },
+                { label: t("points.program.value"), value: <Money iqd={program.loyalty.pointValueIqd} /> },
+                { label: t("points.program.expiry"), value: t("points.program.expiryValue", { span: t("daySpan", { count: program.loyalty.expiryDays }) }) },
+                { label: t("points.program.when"), value: t("points.program.whenValue", { span: t("daySpan", { count: overview.returnWindowDays }) }) },
+                { label: t("points.program.second"), value: t("points.program.secondValue", { n: f.number(program.loyalty.adjustSecondPersonPoints), day: f.number(program.loyalty.adjustSoloDayPoints) }) },
               ]}
             />
           </Section>

@@ -73,6 +73,16 @@ const COPY = defineCopy({
     summaryNote: "عند الإرسال: كتلة واحدة role=alert فوق النموذج، وكل بند رابط إلى حقله، والتركيز ينتقل إلى أول حقل خاطئ.",
     stepper: "العدّاد",
     stepperNote: "حبّة بخط رفيع 48 بكسل (40 مضغوط). الناقص في البداية والزائد في النهاية بكل اللغات. «بقي 2 فقط» من المخزون الحقيقي وحده، ولا يظهر في الوضع التجريبي.",
+    readOnly: "معطّل ومحدد: العلامة تبقى ظاهرة (صلاحية لا يغيّرها المراجع)",
+    grantOrders: "يرى الطلبات",
+    grantRefunds: "يصرف المبالغ المسترجعة",
+    counted: "صفوف بعدد في نهايتها (فلتر)",
+    govKeys: "الأسهم تتنقل بين الصفوف ولا تغلق الصفيحة؛ النقر أو المسافة أو Enter يختار ويغلق",
+    preferenceLabel: "label: الوقت لغير التوصيل، والكلمة «(اختياري)» من المكوّن",
+    handover: "الوقت المفضّل لتسليم الجهاز",
+    swatchReasons: "غير متاح بسببه: نفد حالياً · قريباً · غير متوفر في هذه النسخة",
+    green: "أخضر · Sterling Silver",
+    groupId: "id على المجموعة: عنصر في ملخص الأخطاء يرسل إليها",
   },
   en: {
     fields: "Fields",
@@ -126,6 +136,16 @@ const COPY = defineCopy({
     summaryNote: "On submit: one role=alert block above the form; every item links to its field and focus moves to the first wrong field.",
     stepper: "Stepper",
     stepperNote: "A 48px hairline pill (40 compact). Minus at the start, plus at the end in every language. «Only 2 left» from real stock only, never in demo mode.",
+    readOnly: "Disabled and checked: the mark stays visible (a permission the reviewer cannot change)",
+    grantOrders: "Sees orders",
+    grantRefunds: "Pays out refunds",
+    counted: "Rows with a count at their end (a filter)",
+    govKeys: "The arrow keys move through the rows and never close the sheet; a click, Space or Enter chooses and closes",
+    preferenceLabel: "label: the time for something other than a delivery; «(optional)» comes from the component",
+    handover: "Preferred time to hand over the device",
+    swatchReasons: "Not available, and why: sold out · coming soon · not made in this version",
+    green: "Green · Sterling Silver",
+    groupId: "id on the group: an error summary item takes you there",
   },
   ckb: {
     fields: "خانەکان",
@@ -179,6 +199,16 @@ const COPY = defineCopy({
     summaryNote: "لە کاتی ناردندا: یەک بلۆکی role=alert لە سەرەوەی فۆڕمەکە؛ هەر بڕگەیەک بەستەرە بۆ خانەکەی.",
     stepper: "ژمێرەر",
     stepperNote: "حەبێکی 48 پیکسڵی (40 بچووک). کەمکردنەوە لە سەرەتا و زیادکردن لە کۆتایی. «تەنها 2 ماوە» تەنها لە کۆگای ڕاستەقینەوە.",
+    readOnly: "ناچالاک و هەڵبژێردراو: نیشانەکە دیار دەمێنێت (مۆڵەتێک کە پشکنەر ناتوانێت بیگۆڕێت)",
+    grantOrders: "داواکارییەکان دەبینێت",
+    grantRefunds: "پارەی گەڕاوە دەدات",
+    counted: "ڕیز بە ژمارەیەک لە کۆتاییدا (فلتەر)",
+    govKeys: "تیرەکان لە نێوان ڕیزەکاندا دەجووڵێن و پەڕەکە دانادەخەن؛ کرتە، Space یان Enter هەڵدەبژێرێت و دادەخات",
+    preferenceLabel: "label: کات بۆ شتێک جگە لە گەیاندن؛ «(ئارەزوومەندانە)» لە پێکهاتەکەوە دێت",
+    handover: "کاتی دڵخواز بۆ ڕادەستکردنی ئامێرەکە",
+    swatchReasons: "بەردەست نییە، و هۆکارەکەی: ئێستا نەماوە · بەم زووانە · لەم وەشانەدا نییە",
+    green: "سەوز · Sterling Silver",
+    groupId: "id لەسەر کۆمەڵەکە: بڕگەیەک لە پوختەی هەڵەکاندا دەتباتە ئەوێ",
   },
 });
 
@@ -291,6 +321,26 @@ function Choices({ c }: { c: C }) {
             <Radio name="ds-radio" value="basra" label={c.basra} />
           </FieldGroup>
         </Specimen>
+        <Specimen label={`Checkbox · Radio — disabled checked · ${c.readOnly}`}>
+          <div className="grid">
+            <Checkbox label={c.grantOrders} name="ds-grant-orders" defaultChecked disabled />
+            <Checkbox label={c.grantRefunds} name="ds-grant-refunds" disabled />
+            <Radio name="ds-radio-ro" value="baghdad" label={c.baghdad} defaultChecked disabled />
+          </div>
+        </Specimen>
+        <Specimen label={`<Checkbox count> · ${c.counted}`}>
+          <div className="grid">
+            <Checkbox label="Nintendo" name="ds-count-n" count={39} defaultChecked />
+            <Checkbox label="PlayStation" name="ds-count-p" count={42} />
+            <Checkbox label="Xbox" name="ds-count-x" count={28} />
+          </div>
+        </Specimen>
+        <Specimen label={`<FieldGroup id error> · ${c.groupId}`}>
+          <FieldGroup id="ds-group-city" legend={c.city} error={c.governorateError}>
+            <Radio name="ds-radio-err" value="baghdad" label={c.baghdad} />
+            <Radio name="ds-radio-err" value="basra" label={c.basra} />
+          </FieldGroup>
+        </Specimen>
       </SpecimenGrid>
     </DsBlock>
   );
@@ -302,7 +352,7 @@ function Pickers({ c }: { c: C }) {
   const [colour, setColour] = useState<string | null>("white");
   return (
     <>
-      <DsBlock id="forms-governorate" title={c.governorate} note={c.governorateNote}>
+      <DsBlock id="forms-governorate" title={c.governorate} note={`${c.governorateNote} ${c.govKeys}`}>
         <SpecimenGrid wide>
           <Specimen label="<GovernoratePicker feeIqd governorates>">
             <GovernoratePicker label={c.governorate} required name="ds-gov" feeIqd={5_000} governorates={GOVERNORATES(c)} value={gov} onChange={setGov} />
@@ -317,6 +367,9 @@ function Pickers({ c }: { c: C }) {
           <Specimen label="<PreferencePicker> (periods only)" wide>
             <PreferencePicker name="ds-period" value={period} onChange={setPeriod} />
           </Specimen>
+          <Specimen label={`<PreferencePicker label id> · ${c.preferenceLabel}`} wide>
+            <PreferencePicker id="ds-handover" name="ds-handover" label={c.handover} />
+          </Specimen>
         </SpecimenGrid>
       </DsBlock>
       <DsBlock id="forms-swatches" title={c.swatches} note={c.swatchesNote}>
@@ -330,6 +383,17 @@ function Pickers({ c }: { c: C }) {
                 { value: "white", name: c.white, color: "var(--paper)" },
                 { value: "black", name: c.black, color: "var(--ink)" },
                 { value: "red", name: c.red, color: "var(--red-ink)", unavailable: true },
+              ]}
+            />
+          </Specimen>
+          <Specimen label={`<Swatches> unavailable="soldOut" | "soon" | true · ${c.swatchReasons}`}>
+            <Swatches
+              label={c.colour}
+              defaultValue="red"
+              options={[
+                { value: "red", name: c.red, color: "var(--red-ink)", unavailable: "soldOut" },
+                { value: "green", name: c.green, color: "var(--ok)", unavailable: "soon" },
+                { value: "black", name: c.black, color: "var(--ink)", unavailable: true },
               ]}
             />
           </Specimen>

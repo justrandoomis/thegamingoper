@@ -80,12 +80,22 @@ export async function loader({ context }: Route.LoaderArgs) {
 export type RootLoaderData = Awaited<ReturnType<typeof loader>>;
 
 /** Root data is refreshed after mutations (cart badge, sign-in) but not on plain navigations. */
-export function shouldRevalidate({ formMethod, currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+export function shouldRevalidate({ formMethod, actionResult, currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  // A form that failed because the device is offline changed nothing on the server: reloading the root data would
+  // only fail again and replace the page (and its kept form values) with an error.
+  if (isOfflineResult(actionResult)) return false;
   if (formMethod && formMethod.toUpperCase() !== "GET") return true;
   // Language is part of the path: reload shell strings when the locale prefix changes.
   const localeOf = (pathname: string) => pathname.split("/")[1] ?? "";
   if (localeOf(currentUrl.pathname) !== localeOf(nextUrl.pathname)) return defaultShouldRevalidate;
   return false;
+}
+
+/** An action answer of the form `{ ok: false, code: "network" | "offline" }` (the support forms send it). */
+function isOfflineResult(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return false;
+  const result = value as { ok?: unknown; code?: unknown };
+  return result.ok === false && (result.code === "network" || result.code === "offline");
 }
 
 /** Sets data-theme before first paint when the shopper follows the system setting. */

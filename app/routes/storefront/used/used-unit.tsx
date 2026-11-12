@@ -49,6 +49,7 @@ import { TextLink } from "~/ui/TextLink";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { USED_PATH } from "./components/UsedFilters";
 import { useUsedT } from "./i18n";
+import { bindDashes } from "./names";
 import "./used.css";
 
 export const handle = { shell: { tabBar: false, back: USED_PATH } } satisfies ShellHandle;
@@ -122,7 +123,8 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
   const firstPhoto = unit.photos[0] ?? null;
   // «A+ · كالجديد» — the grade isolated left to right, so it never reads "+A" inside Arabic or Sorani.
   const gradeWords = `⁦${unit.grade}⁩ · ${shop(`grade.words.${gradeKey(unit.grade)}`)}`;
-  const variantLine = unit.subtitle && addsToName(unit.subtitle, unit.name) ? unit.subtitle : null;
+  // the one fact line under the h1: what the variant adds to the name («أبيض»), never the name again (used.server)
+  const variantLine = unit.subtitle;
   // Demo price and stock are marked beside the price while the store runs in demo mode (v2 §4.7).
   const demo = unit.isDemo && root?.storeMode !== "live";
   // Offline (v2 §6.17): the kit's add key goes flat and says why itself — beside the key in the buy box, on the bar's
@@ -150,8 +152,9 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
           <div className="grid min-w-0 content-start gap-4 lg:col-span-5">
             <div className="grid gap-2">
               {unit.platform ? isPlatform(unit.platform.slug) ? <PlatformLabel platform={unit.platform.slug} /> : <span className="type-sm-strong text-ink-2">{unit.platform.name}</span> : null}
+              {/* a spaced dash stays with the word before it: the balanced h1 never starts a line with «– OLED Model» */}
               <h1 className="type-h1 text-ink [text-wrap:balance]">
-                <BidiText text={unit.name} />
+                <BidiText text={bindDashes(unit.name)} />
               </h1>
               {variantLine ? (
                 <p className="type-sm text-ink-2">
@@ -351,13 +354,6 @@ function UnitFacts({ payments, returnDays, className }: { payments: ShellPayment
       <FactList facts={facts} />
     </section>
   );
-}
-
-/** True when the variant's title says something the product name does not (a word of it is missing from the name). */
-function addsToName(subtitle: string, name: string): boolean {
-  const words = (text: string) => text.toLocaleLowerCase("en").split(/[\s()\-–—·,،]+/).filter(Boolean);
-  const inName = new Set(words(name));
-  return words(subtitle).some((word) => !inName.has(word));
 }
 
 /** Keys of what-is-included that have their own words in this namespace (others use "ملحق آخر" when unlabelled). */

@@ -146,11 +146,25 @@ export type ShowMoreProps = {
  * Show more — Design System v2 §4.22: «عرضنا 12 من 42 منتجاً» (14 ink-2, announced when it changes), a 200×4 progress
  * bar (ink on --niche-2) and the secondary «اعرض 12 منتجاً آخر»; at the end «لا يوجد المزيد لعرضه».
  */
+/**
+ * Whether a show-more row has anything to say. An empty list, or one that fits on its first page (`step` is the page
+ * size), has nothing to count or to load — no «عرضنا 1 من منتج واحد» with a full bar under a single card (QA
+ * 2026-11-12). A list that paged to its end keeps the row («لا يوجد المزيد لعرضه»). Pure.
+ */
+export function showMoreVisible({ shown, total, step, canLoad }: { shown: number; total?: number | null; step?: number; canLoad: boolean }): boolean {
+  const known = typeof total === "number" && Number.isFinite(total);
+  if (!known) return canLoad;
+  if (shown < total && canLoad) return true;
+  if (total <= 0) return false;
+  return !(step !== undefined && total <= step);
+}
+
 export function ShowMore({ shown, total, href, onMore, loading = false, label, products = false, step, className }: ShowMoreProps) {
   const t = useT("ui-overlays");
   const f = useFormat();
   const known = typeof total === "number" && Number.isFinite(total);
   const more = (known ? shown < (total as number) : true) && Boolean(href || onMore);
+  if (!showMoreVisible({ shown, total, step, canLoad: Boolean(href || onMore) })) return null;
   const share = known && (total as number) > 0 ? Math.min(100, Math.round((shown / (total as number)) * 100)) : null;
   const next = known && step ? Math.min(step, (total as number) - shown) : null;
   const words =

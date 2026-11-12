@@ -118,7 +118,7 @@
   "variants": [
     {
       "sku": "FH6-XSX-STD",
-      "title": { "ar": "Forza Horizon 6 لجهاز Xbox Series X — Standard Edition", "en": "Forza Horizon 6 for Xbox Series X — Standard Edition", "ckb": "Forza Horizon 6 بۆ Xbox Series X — Standard Edition" },
+      "title": { "ar": "لجهاز Xbox Series X · Standard Edition", "en": "Xbox Series X · Standard Edition", "ckb": "بۆ Xbox Series X · Standard Edition" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["forza-horizon-6--1", "forza-horizon-6--2", "forza-horizon-6--3", "forza-horizon-6--4"],
@@ -130,7 +130,7 @@
     },
     {
       "sku": "FH6-PS5-STD",
-      "title": { "ar": "Forza Horizon 6 لجهاز PS5 — Standard Edition", "en": "Forza Horizon 6 for PS5 — Standard Edition", "ckb": "Forza Horizon 6 بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "releaseDate": "2027-01-26",
       "isDefault": false,

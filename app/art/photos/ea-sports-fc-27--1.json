@@ -1,70 +1,62 @@
 {
   "key": "ea-sports-fc-27--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1067,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6669,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/ea-sports-fc-27/1-240.6f1ed78c.avif"
+        "src": "/products/ea-sports-fc-27/1-240.69c228e9.avif"
       },
       {
         "w": 480,
-        "src": "/products/ea-sports-fc-27/1-480.515acacb.avif"
+        "src": "/products/ea-sports-fc-27/1-480.dea604e4.avif"
       },
       {
         "w": 720,
-        "src": "/products/ea-sports-fc-27/1-720.7db9f5dc.avif"
+        "src": "/products/ea-sports-fc-27/1-720.8b338ffa.avif"
       },
       {
         "w": 960,
-        "src": "/products/ea-sports-fc-27/1-960.b8981e3e.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/ea-sports-fc-27/1-1440.986fe17f.avif"
+        "src": "/products/ea-sports-fc-27/1-960.5230e0bc.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/ea-sports-fc-27/1-240.8c3bf555.webp"
+        "src": "/products/ea-sports-fc-27/1-240.bb8810a6.webp"
       },
       {
         "w": 480,
-        "src": "/products/ea-sports-fc-27/1-480.25c6c68f.webp"
+        "src": "/products/ea-sports-fc-27/1-480.254dce57.webp"
       },
       {
         "w": 720,
-        "src": "/products/ea-sports-fc-27/1-720.5986af74.webp"
+        "src": "/products/ea-sports-fc-27/1-720.4c0d131e.webp"
       },
       {
         "w": 960,
-        "src": "/products/ea-sports-fc-27/1-960.b15f7c7b.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/ea-sports-fc-27/1-1440.507c934b.webp"
+        "src": "/products/ea-sports-fc-27/1-960.29837ace.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/ea-sports-fc-27/1-1200.a8a71fb9.jpg",
-    "width": 1200,
-    "height": 1200,
+    "src": "/products/ea-sports-fc-27/1-1067.bd00a2e5.jpg",
+    "width": 1067,
+    "height": 1600,
     "type": "image/jpeg"
   },
-  "placeholder": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQBACdASoUABQAPxGAtlWsJ6SjKAgBgCIJZQDCgBDeBIe4cI+bQZGv5tQPK3frAAD41Rk+TvJfu1TY9w9MMf1ZfMoFb9wkxBzKF2w1RQlH/ZTADDQsIijfOYHbtGOHuwhXSQk5Y2u4/H58k9ax2SIqxt5tiMND/KK10CSUNg/4AA==",
-  "dominant": "#fbfcf6",
+  "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAACQAwCdASoNABQAPxFwsFAsJiSisAgBgCIJZQDE2BITPZPLUQ50APzLstI8bMRs30/4Vyy1RKOwC8Lehr+AS9WyHwFXNEM/T9Tnr+hxdGROrLCMoIdCpz3W7r77EbhgGa9wYSGjULmOB8AA",
+  "dominant": "#fbfcf7",
   "transparent": false,
   "background": null,
   "kind": "box-art",
   "credit": "Electronic Arts",
   "source": {
-    "url": "https://drop-assets.ea.com/images/5K1irdzIk8dr7VqEfe2yRm/993ad991664df96b85b6910197bb5143/fc-27-standard-key-art-1x1.jpg",
-    "page": "https://www.ea.com/games/ea-sports-fc/fc-27"
+    "url": "https://store-images.s-microsoft.com/image/apps.27809.13618679251812087.f1d2dec5-00f3-41fb-9f2b-37e86fac8773.c75bdc92-b4b8-448c-9bbc-e6106fedd0c4",
+    "page": "https://www.xbox.com/en-US/games/store/x/9NJ2N85T2ZGS"
   },
-  "input": "096e54d464a6ecb3"
+  "input": "0f5fa1b6d120473f"
 }

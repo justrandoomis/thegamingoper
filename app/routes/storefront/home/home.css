@@ -13,12 +13,15 @@
   }
 
   /* ───────────────────────────── hero: the crimson band ─────────────────────────────
-   * Phones (one column, ≤ 440px tall at 390): pill · headline · the product (168px) · price · key · delivery line.
-   * From 768: the copy at the inline start (7/12; 6/12 from 1280) and the product at the inline end across the band's
-   * height, the copy centred by the two flexible rows around it. Grid columns follow the reading direction, so English
-   * mirrors by itself. The headline's size per range comes from the page (./view heroTitleSizes → --hero-fs-*), and
-   * the copy-column widths below are its inputs (HERO_COPY_MIN): change both together. The band's one light sits
-   * behind the product (--light-x / --light-y are the band's own knobs). */
+   * Phones (one column, 428px tall at 390 — the cap is 440): pill · headline · the product (168px, right under the
+   * headline) · price · key · the ONE-line delivery fact. From 768: the copy at the inline start (3/5 to 1023 — wide
+   * enough for «Nintendo Switch 2» at the 40px display size; 7/12 from 1024; 6/12 from 1280) and the product at the
+   * inline end across the band's height, the copy centred by the two flexible rows around it. Grid columns follow the
+   * reading direction, so English mirrors by itself. The headline's size per range comes from the page (./view
+   * heroTitleSizes → --hero-fs-*), and the copy-column widths below are its inputs (HERO_COPY_MIN): change both
+   * together. The band's one light sits behind the product (--light-x / --light-y are the band's own knobs).
+   * Red share (v2 §6.1, judge-brand fullshare): the band is most of the first screen's red — 404px from 1280, with the
+   * product reaching 8px further into its padding, keeps the 1440 first screen at ≤ 35% (QA 2026-11-12: 36.7% at 420). */
   .home-hero.band--hero {
     --light-y: 48%;
   }
@@ -64,7 +67,6 @@
     isolation: isolate;
     justify-self: stretch;
     block-size: 168px;
-    margin-block-start: 4px;
   }
   .home-hero__link {
     display: block;
@@ -81,13 +83,13 @@
   .home-hero__media {
     --opaque-blend: normal;
   }
+  /* phones: the price right under the product's box (the cut-out keeps its own air inside it) */
   .home-hero__price {
     grid-area: price;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s-2) var(--s-3);
-    margin-block-start: 4px;
   }
   .home-hero__buy {
     grid-area: buy;
@@ -114,8 +116,10 @@
       --light-x: calc(50% + 29% * var(--dir));
       --light-y: 50%;
     }
+    /* 768–1023: copy 3/5 and a 16px gap — at 768 the column is 388px, so «Nintendo Switch 2» stays at the range's
+       40px display size (7/12 with a 24px gap was 373px and stepped it down to a size off the scale) */
     .home-hero__body {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
       grid-template-rows: 1fr repeat(6, auto) 1fr;
       grid-template-areas:
         ". media"
@@ -126,7 +130,7 @@
         "buy media"
         "line media"
         ". media";
-      column-gap: 24px;
+      column-gap: 16px;
       min-block-size: 360px;
       padding: 28px;
     }
@@ -168,6 +172,7 @@
   }
   @media (min-width: 64rem) {
     .home-hero__body {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       column-gap: 32px;
       min-block-size: 400px;
       padding: 32px 40px;
@@ -183,13 +188,17 @@
     .home-hero.band--hero {
       --light-x: calc(50% + 25% * var(--dir));
     }
+    /* 404px: the copy (≈ 356px) in 24px of padding; the product reaches 8px further into it, so it draws larger */
     .home-hero__body {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      min-block-size: 420px;
-      padding: 32px 48px;
+      min-block-size: 404px;
+      padding: 24px 48px;
     }
     .home-hero__title {
       font-size: var(--hero-fs-xl, var(--fs-display));
+    }
+    .home-hero__media {
+      margin-block: -24px -16px;
     }
   }
 

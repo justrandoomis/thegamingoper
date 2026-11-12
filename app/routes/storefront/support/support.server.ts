@@ -14,6 +14,7 @@ import { actionError, AppError, isAppError } from "~/server/errors";
 import type { SupportWho } from "~/server/services/support/common.server";
 import { kvBlobStore, type BlobStore } from "~/server/storage.server";
 import type { UploadSource } from "~/server/uploads.server";
+import { answerStatus } from "./client";
 
 /** The person behind the request, and what may prefill their contact fields (never sent for guests). */
 export async function supportWho(ctx: RequestCtx, db: Db): Promise<{ who: SupportWho; contact: { name: string; phone: string } | null }> {
@@ -79,12 +80,13 @@ export function formFiles(form: FormData, name: string): UploadSource[] {
 
 /**
  * The response of a failed action: the error CODE (the page words it — this area's sentence first, then the
- * "errors" namespace), field codes, and the values typed (so a page sent without JavaScript keeps them).
- * Unexpected errors are rethrown to the error boundary.
+ * "errors" namespace), field codes, and the values typed (so a page sent without JavaScript keeps them). Fields the
+ * shopper can fix answer 200 (client.ts answerStatus: an answer, not a failed request); a body that is not a form,
+ * too large or rate-limited keeps its 4xx. Unexpected errors are rethrown to the error boundary.
  */
 export function failed(error: unknown, values: Record<string, string>) {
   const failure = actionError(error);
-  return data({ ...failure, values }, { status: failure.status, headers: { "Cache-Control": "no-store" } });
+  return data({ ...failure, values }, { status: answerStatus(failure), headers: { "Cache-Control": "no-store" } });
 }
 
 /**

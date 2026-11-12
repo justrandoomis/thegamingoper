@@ -89,7 +89,7 @@
   "variants": [
     {
       "sku": "PS-PULSE-HEADSET-WHITE",
-      "title": { "ar": "PlayStation PULSE – أبيض", "en": "PlayStation PULSE – White", "ckb": "PlayStation PULSE – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZWH3E",
       "isDefault": true,
@@ -97,7 +97,7 @@
     },
     {
       "sku": "PS-PULSE-HEADSET-MIDNIGHT-BLACK",
-      "title": { "ar": "PlayStation PULSE – أسود Midnight Black", "en": "PlayStation PULSE – Midnight Black", "ckb": "PlayStation PULSE – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["playstation-pulse-wireless-headset--4"]

@@ -7,6 +7,11 @@
  */
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { and, eq } from "drizzle-orm";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
+import { messagesFor } from "~/i18n/i18n.server";
+import RepairStatusPage from "~/routes/storefront/support/repair-status";
 import { randomToken } from "~/lib/ids";
 import { seedDemo } from "~/server/db/seed/demo";
 import {
@@ -27,7 +32,7 @@ import {
   type TroubleshootingNode,
   type TroubleshootingTree,
 } from "~/server/db/schema";
-import { isAppError } from "~/server/errors";
+import { AppError, isAppError } from "~/server/errors";
 import { kvBlobStore } from "~/server/storage.server";
 import { baghdadDay, nextDays, normalizeSupportRef, validPreferredDay, type SupportWho } from "~/server/services/support/common.server";
 import { checkTree, handOffToStaff, runAssistant, type AssistantModel } from "~/server/services/support/assistant.server";
@@ -40,8 +45,9 @@ import { createSupportTicket, getTicketByAccessToken, SUPPORT_ERROR_KEYS } from 
 import type { AssistantBotTurn, AssistantView } from "~/server/services/support/types";
 import errorsMessages from "~/i18n/messages/errors";
 import supportMessages from "~/i18n/messages/support";
-import { revalidateAfter, stepBack } from "~/routes/storefront/support/client";
-import { PRIVATE_PAGE_HEADERS, repairStatusHeaders } from "~/routes/storefront/support/support.server";
+import { answerStatus, revalidateAfter, stepBack, withServerErrors } from "~/routes/storefront/support/client";
+import { acceptPhotos, checkPhotoFile, photoFormat } from "~/routes/storefront/support/photo-check";
+import { failed, PRIVATE_PAGE_HEADERS, repairStatusHeaders } from "~/routes/storefront/support/support.server";
 import { makeT } from "~/i18n/translate";
 import { createTestDb, type TestDb } from "./helpers/db";
 
@@ -646,6 +652,25 @@ describe("support copy", () => {
     expect(tAr("assistant.notDiagnosis")).toBe("ليس تشخيصاً");
   });
 
+  // QA 2026-11-12: the assistant and the search said «من أدلة طمطم المعتمدة» / "approved guides" while the help centre
+  // and every guide say no store technician has reviewed them yet. Until one has, nothing calls them approved.
+  test("the guides are never called approved or verified while no technician has reviewed them", () => {
+    expect(JSON.stringify(supportMessages.ar)).not.toMatch(/معتمد/);
+    expect(JSON.stringify(supportMessages.en)).not.toMatch(/\b(approved|verified) guides?\b|\ban approved guide\b/i);
+    expect(JSON.stringify(supportMessages.ckb)).not.toMatch(/پەسەندکراو/);
+    expect(tAr("assistant.source")).toMatch(/^الإجابات من أدلة طمطم، وليست تشخيصاً/);
+    expect(tEn("assistant.source")).toMatch(/^Answers come from TamTam's guides, not from an AI diagnosis/);
+    // the one demo line on each page says what the guides are
+    expect(tAr("help.demo")).toContain("لم يراجعها فني المتجر بعد");
+    expect(tAr("assistant.demo")).toContain("لم يراجعها فني المتجر بعد");
+  });
+
+  // QA 2026-11-12: "Type your device's name or the problem" needed 286px; the composer field is 236px wide at 360.
+  test("the composer's hint fits the phone composer in English (≈7.5px a character at 15px)", () => {
+    expect(tEn("assistant.composer.placeholder").length).toBeLessThanOrEqual(28);
+    expect(tEn("assistant.composer.placeholder")).toBe("Your device or the problem");
+  });
+
   test("every string exists in ar, en and ckb", () => {
     const ar = leafPaths(supportMessages.ar).sort();
     expect(leafPaths(supportMessages.en).sort()).toEqual(ar);
@@ -691,6 +716,23 @@ describe("keeping a form when the request never reached the store", () => {
     expect(repairStatusHeaders(false)).toEqual({ "Cache-Control": "private, no-store", "Referrer-Policy": "same-origin" });
   });
 
+  // QA 2026-11-12: every refused field answered 400, so the browser logged "Failed to load resource" for an ordinary
+  // mistake. What the shopper can fix is an answer (200), like a lookup that found nothing; nothing changed in the
+  // store, so nothing is reloaded after it.
+  test("a refusal the shopper can fix answers 200; a malformed, too large or abusive request keeps its status", () => {
+    const refusal = failed(new AppError("invalid", 400, { fields: { phone: "required" } }), { phone: "" });
+    expect(refusal.init?.status).toBe(200);
+    expect(refusal.data).toMatchObject({ ok: false, code: "invalid", fields: { phone: "required" }, values: { phone: "" } });
+    expect(failed(new AppError("invalid", 400), {}).init?.status).toBe(400);
+    expect(failed(new AppError("upload_too_large", 413), {}).init?.status).toBe(413);
+    expect(failed(new AppError("rate_limited", 429, { retryAfterSec: 60 }), {}).init?.status).toBe(429);
+    expect(answerStatus({ code: "invalid", status: 400, fields: { photos: "upload_type" } })).toBe(200);
+    expect(answerStatus({ code: "invalid", status: 400, fields: {} })).toBe(400);
+    expect(answerStatus({ code: "idempotency_conflict", status: 409, fields: { phone: "x" } })).toBe(409);
+    expect(revalidateAfter({ actionResult: { ok: false, code: "invalid", status: 400, fields: { phone: "required" } }, defaultShouldRevalidate: true })).toBe(false);
+    expect(revalidateAfter({ actionResult: { ok: false, code: "not_found", status: 200 }, defaultShouldRevalidate: true })).toBe(false);
+  });
+
   test("the repair steps' «رجوع» is the browser's Back when the step was reached from the previous one", () => {
     // device → photos → contact by «تابع»: «رجوع» on contact goes back in history, so the browser's Back then reaches
     // the device step (a pushed «رجوع» made the browser's Back return to contact)
@@ -700,6 +742,37 @@ describe("keeping a form when the request never reached the store", () => {
     expect(stepBack("photos", null)).toBe("push");
     expect(stepBack("photos", undefined)).toBe("push");
     expect(stepBack("photos", "photos")).toBe("push");
+  });
+});
+
+// QA 2026-11-12: a text file named .jpg joined the repair form as a broken thumbnail, the store refused it on sending
+// (upload_type) — and the form moved to the photo step without saying why: the action's answer is gone after that move.
+describe("photos the store would refuse (repair and hand-off forms)", () => {
+  test("a photo is judged by its first bytes, as the store judges it: a renamed text file never joins the form", async () => {
+    expect(photoFormat(PNG)).toBe("png");
+    expect(photoFormat(Uint8Array.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]))).toBe("jpeg");
+    expect(photoFormat(new TextEncoder().encode("RIFF$\u0000\u0000\u0000WEBPVP8 "))).toBe("webp");
+    expect(photoFormat(new TextEncoder().encode("this is not an image"))).toBeNull();
+    expect(photoFormat(new Uint8Array())).toBeNull();
+    const fake = new File(["this is not an image, just text pretending to be a JPEG"], "not-an-image.jpg", { type: "image/jpeg" });
+    expect(await checkPhotoFile(fake)).toBe("upload_type");
+    expect(await checkPhotoFile(png())).toBeNull();
+    // the picker adds the readable photos and says why the other one stayed out (the store's own sentence)
+    const picked = acceptPhotos([], [fake, png("ok.png")], new Map([[fake, "upload_type" as const]]));
+    expect(picked.files.map((file) => file.name)).toEqual(["ok.png"]);
+    expect(picked.problem).toBe("upload_type");
+    // what the browser says about a file still counts: another type, past 8 MB, a fourth photo
+    expect(acceptPhotos([], [new File(["GIF89a"], "a.gif", { type: "image/gif" })]).problem).toBe("upload_type");
+    expect(acceptPhotos([], [new File([new Uint8Array(8 * 1024 * 1024 + 1)], "big.png", { type: "image/png" })]).problem).toBe("upload_too_large");
+    expect(acceptPhotos([png(), png(), png()], [png()]).problem).toBe("too_big");
+  });
+
+  test("a field the store refused keeps its sentence after the form moves to that field's step", () => {
+    const errorsAr = makeT(errorsMessages.ar, "ar", "errors");
+    const local = withServerErrors({ photos: undefined, phone: "اكتب رقم موبايلك." }, { photos: "upload_type" }, tAr, errorsAr);
+    expect(local).toEqual({ photos: "نقبل صور JPG أو PNG أو WebP فقط.", phone: "اكتب رقم موبايلك." });
+    expect(withServerErrors({}, { photos: "too_big" }, tAr, errorsAr)).toEqual({ photos: "أرفق 3 صور على الأكثر." });
+    expect(withServerErrors({ issue: "x" }, undefined, tAr, errorsAr)).toEqual({ issue: "x" });
   });
 });
 
@@ -757,6 +830,26 @@ describe("repair requests", () => {
     await expectAppError(lookupRepair(t.db, "ar", { ref: "nope", phone: "" }, { ip }, t.now), "invalid", "ref", "invalid");
     for (let i = 0; i < 7; i++) await lookupRepair(t.db, "ar", { ref: "RP-ZZZZZZZZ", phone: input.phone }, { ip }, t.now);
     await expectAppError(lookupRepair(t.db, "ar", { ref: created.ref, phone: input.phone }, { ip }, t.now), "rate_limited");
+  });
+
+  // QA 2026-11-12: after sending, focus fell to <body> on the status page: the confirmation was a newly mounted
+  // role=status region, which screen readers do not reliably read. Its heading takes focus instead.
+  test("just sent: the confirmation is a heading that takes focus", async () => {
+    const created = await createRepairTicket(t.db, who(), await validRepair(), t.now);
+    const view = await getRepairByAccessToken(t.db, "ar", created.ref, created.accessToken);
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: ":locale?/support/repair/status", Component: RepairStatusPage as never }] }]);
+    const html = renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [`/support/repair/status?ref=${created.ref}&new=1`],
+        hydrationData: {
+          loaderData: {
+            root: { locale: "ar", dir: "rtl", fx: null, storeMode: "demo", i18n: messagesFor("ar", "common", "ui", "ui-card", "ui-shop", "ui-overlays") },
+            page: { view, created: true, replayed: false, askedRef: created.ref, i18n: messagesFor("ar", "support", "errors") } as never,
+          },
+        },
+      }),
+    );
+    expect(html).toMatch(/<h2(?=[^>]*tabindex="-1")[^>]*>استلمنا طلب الصيانة<\/h2>/);
   });
 
   test("staff status changes and a quote appear on the status page; notes do not", async () => {

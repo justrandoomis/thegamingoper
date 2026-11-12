@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NSG-MARIO-GALAXY-1-2",
-      "title": { "ar": "Super Mario Galaxy + Super Mario Galaxy 2 — نسخة فيزيائية لـ Nintendo Switch", "en": "Super Mario Galaxy + Super Mario Galaxy 2 — Nintendo Switch physical edition", "ckb": "Super Mario Galaxy + Super Mario Galaxy 2 — کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch", "en": "Nintendo Switch physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496905651"],
       "isDefault": true,

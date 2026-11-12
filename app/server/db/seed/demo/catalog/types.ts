@@ -94,6 +94,12 @@ export type CatalogProduct = {
   /** "YYYY-MM-DD" of the first release of this product or edition. */
   releaseDate?: string;
   name: CatalogL10n;
+  /**
+   * The words a Latin title leaves out (design v2 spec §4.11): «PlayStation 5 Slim · 1TB» + «نسخة الأقراص». A name
+   * that opens with Latin never carries Arabic-script words (they reordered in RTL rows); they go here, and the
+   * storefront prints them on the meta line. "" in a language whose name already says it.
+   */
+  qualifier?: CatalogL10n;
   short: CatalogL10n;
   description: CatalogL10n;
   highlights: CatalogL10n[];

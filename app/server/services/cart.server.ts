@@ -54,6 +54,14 @@
  *   · a demo product never reports "low_stock" (the card rule: no demo scarcity).
  *   CartLineData carries `productId` (move to favourites) and `optionValue` (the option the shopper chose).
  *
+ * THE NUMBER TYPED AT CHECKOUT (QA 2026-11-12): `phoneE164` on a request prices the cart for that number — a
+ * once-per-customer coupon it used (`couponIssue` "customer_limit"), a first-order coupon, a flash limit — so the review
+ * shows the total the order will charge instead of a discount «أكّد الطلب» then refuses. A read still checks a
+ * referral code with the account's number only: the typed number answers about a code at the order (getCheckoutCart),
+ * never on a read (security review 2026-11-12). /api/cart takes the number in a body and budgets it per address
+ * (PHONE_PRICING_PER_IP). `payableCount` is the units the totals are for: `count` (the badge) less the lines that cannot
+ * be bought, which stay in the cart and out of the money.
+ *
  * Every service here takes `db` first and never imports "cloudflare:workers".
  */
 import { and, asc, desc, eq, isNull, ne, sql } from "drizzle-orm";
@@ -65,6 +73,7 @@ import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { cartItems, carts, customers, files, media, products, usedUnits, variants, type Cart } from "~/server/db/schema";
 import { runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, isAppError, notFound } from "~/server/errors";
+import type { RateLimitRule } from "~/server/ratelimit.server";
 import { COUPON_ERROR_KEYS, evaluateCoupon, normalizeCouponCode, type CouponLine, type CouponRejection } from "./coupons.server";
 import { getAvailability } from "./inventory/stock.server";
 import { applyDiscounts, flashLineCap, type AppliedDiscount, type DiscountOutcome, type FlashOffer, type PricingLine } from "./orders/promotions";
@@ -79,6 +88,13 @@ export const MAX_LINE_QTY = 10;
 export const MAX_CART_LINES = 50;
 /** `tt_cart` lives 60 days and is renewed on every change. */
 export const CART_COOKIE_MAX_AGE_SEC = 60 * 24 * 60 * 60;
+/**
+ * Numbers the cart may be priced for (POST /api/cart `phone`), per address. An answer priced for a number says what that
+ * number has used (a once-per-customer code, a first order, a flash limit), so it is counted — about twice the checkout's
+ * own budget (RATE_LIMITS.checkout), far more than a review needs. Past it the cart is priced as without a number: the
+ * page keeps working and the order still checks the number itself.
+ */
+export const PHONE_PRICING_PER_IP: RateLimitRule = { limit: 20, windowSec: 10 * 60 };
 
 /** Error keys the cart can answer with (besides the coupon_* keys and the generic invalid / not_found / rate_limited). */
 export const CART_ERROR_KEYS = ["unavailable", "out_of_stock", "insufficient_stock", "max_qty_reached", "cart_full", ...COUPON_ERROR_KEYS] as const;
@@ -92,9 +108,11 @@ const idSchema = z.string().regex(ID_PATTERN, "invalid");
 export type CartOwner = { cartToken: string | null; customerId: string | null };
 /**
  * Owner plus how the returned view should be presented. `redeemPoints` (signed-in customers) and `referralCode` are
- * checkout choices: they are priced / checked on this read only and never stored on the cart.
+ * checkout choices: they are priced / checked on this read only and never stored on the cart. `phoneE164` (QA
+ * 2026-11-12) is the number typed at checkout, normalised (`normalizeIraqPhone`): the cart is priced for it — per-customer
+ * coupon and flash limits, first-order coupons — while a referral code is still checked with the account's number only.
  */
-export type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null; redeemPoints?: number | null; referralCode?: string | null };
+export type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null; redeemPoints?: number | null; referralCode?: string | null; phoneE164?: string | null };
 
 /** Why a stored coupon is not applied right now. "not_combinable": a better automatic rule does not combine with it. */
 export type CartCouponIssue = { code: string; reason: CouponRejection | "not_combinable"; rule?: string };
@@ -117,9 +135,13 @@ export type CartLineData = CartLine & {
  *   `shippingWaiver`  the delivery fee not charged, and why (shippingIqd is already after it)
  *   `points`          signed-in customers: their balance, a point's worth, what this read redeems and the most it could
  *   `referral`        a referral code asked about on this read, and whether it can be recorded
+ *   `payableCount`    the units the totals are for: `count` (what the cart holds — the badge, «السلة (n)») less the lines
+ *                     that cannot be bought (sold out, off sale); a reduced line counts what can be sold. The number
+ *                     beside «المجموع الفرعي» and the total (QA 2026-11-12: «(قطعتان) 55,000» for the money of one)
  */
 export type CartViewData = Omit<CartView, "lines"> & {
   lines: CartLineData[];
+  payableCount: number;
   couponIssue: CartCouponIssue | null;
   discounts: DiscountLineView[];
   shippingWaiver: ShippingWaiverView | null;
@@ -146,7 +168,7 @@ function normalizeOwner(owner: CartOwner): CartOwner {
 const localeOf = (request: { locale?: Locale | string | null }): Locale => (isLocale(request.locale) ? request.locale : DEFAULT_LOCALE);
 
 export function emptyCartView(): CartViewData {
-  return { id: null, lines: [], count: 0, subtotalIqd: 0, discountIqd: 0, coupon: null, shippingIqd: null, totalIqd: 0, blocked: false, couponIssue: null, discounts: [], shippingWaiver: null, points: null, referral: null };
+  return { id: null, lines: [], count: 0, payableCount: 0, subtotalIqd: 0, discountIqd: 0, coupon: null, shippingIqd: null, totalIqd: 0, blocked: false, couponIssue: null, discounts: [], shippingWaiver: null, points: null, referral: null };
 }
 
 /**
@@ -391,8 +413,14 @@ type PriceOptions = {
   locale: Locale;
   customerId: string | null;
   governorateId?: string | null;
-  /** The phone given at checkout, for per-customer coupon limits of guests. */
+  /** The number typed at checkout: per-customer coupon and flash limits, first-order coupons (else the account's). */
   phoneE164?: string | null;
+  /**
+   * Check a referral code with the typed number too — the order only (getCheckoutCart). A read checks it with the
+   * account's number alone, so it never says whether a TYPED number owns a code or was referred before (security review
+   * 2026-11-12).
+   */
+  referralByTypedPhone?: boolean;
   /** Evaluate this code instead of the stored one (applyCoupon). */
   couponCode?: string | null;
   /** Signed-in customers: points to redeem on this read (never stored). */
@@ -408,8 +436,10 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
   if (!cart) return { view: emptyCartView(), cartId: null, lines: [], coupon: null, promotions: null };
   const stored = await loadStoredLines(db, cart.id);
   const variantLineIds = stored.filter((row) => row.usedUnitId === null).map((row) => row.variantId);
-  // who the shopper is: per-customer coupon and flash limits count by account and by number
-  const phone = options.phoneE164 ?? (await customerPhone(db, options.customerId));
+  // who the shopper is: per-customer coupon and flash limits count by account and by number — the number typed at
+  // checkout when there is one (the review, the order), else the account's
+  const accountPhone = await customerPhone(db, options.customerId);
+  const phone = options.phoneE164 ?? accountPhone;
   const [availability, images, facts] = await Promise.all([
     getAvailability(db, variantLineIds),
     loadImages(db, {
@@ -566,8 +596,9 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
   if (couponOffer && outcome.couponDropped) couponIssue = { code: couponOffer.code, reason: "not_combinable", rule: outcome.couponDropped.ruleLabel };
   const coupon: PricedCart["coupon"] = outcome.coupon ? { couponId: outcome.coupon.couponId, code: outcome.coupon.code, discountIqd: outcome.coupon.discountIqd } : null;
 
-  // A referral code asked about: checked like module 08 checks one (the number, when known, too).
-  const referral = options.referralCode ? await checkReferralCode(db, options.referralCode, { phoneE164: options.phoneE164 ?? phone, customerId: options.customerId }) : null;
+  // A referral code asked about: checked like module 08 checks one — with the typed number at the order only; a read
+  // (the cart, the review) checks it with the account's number (security review 2026-11-12).
+  const referral = options.referralCode ? await checkReferralCode(db, options.referralCode, { phoneE164: options.referralByTypedPhone ? phone : accountPhone, customerId: options.customerId }) : null;
 
   const totals = computeTotals({
     lines: buyable.map((entry) => ({ unitPriceIqd: entry.line.unitPriceIqd, qty: entry.line.qty })),
@@ -578,6 +609,7 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
     id: cart.id,
     lines: priced.map((entry) => entry.line),
     count: priced.reduce((sum, entry) => sum + entry.line.qty, 0),
+    payableCount: buyable.reduce((sum, entry) => sum + entry.line.qty, 0),
     subtotalIqd: totals.subtotalIqd,
     discountIqd: totals.discountIqd,
     coupon: outcome.coupon ? { code: outcome.coupon.code, label: outcome.coupon.label } : null,
@@ -626,14 +658,14 @@ export async function getCartView(db: Db, input: CartRequest, now: number): Prom
   return (await priceCart(db, found?.cart ?? null, priceOptionsOf(input), now)).view;
 }
 
-/** How a request is priced: its owner, language and governorate, and the checkout choices (points, referral code). */
-function priceOptionsOf(input: CartRequest & { phoneE164?: string | null }): PriceOptions {
+/** How a request is priced: its owner, language and governorate, and the checkout choices (points, referral code, number). */
+function priceOptionsOf(input: CartRequest): PriceOptions {
   const customerId = normalizeOwner(input).customerId;
   return {
     locale: localeOf(input),
     customerId,
     governorateId: input.governorateId ?? null,
-    phoneE164: input.phoneE164 ?? null,
+    phoneE164: typeof input.phoneE164 === "string" && input.phoneE164.trim() !== "" ? input.phoneE164 : null,
     // points are a signed-in customer's; a guest's request for them is none
     redeemPoints: customerId ? pointsAsked(input.redeemPoints) : 0,
     referralCode: typeof input.referralCode === "string" && input.referralCode.trim() !== "" ? input.referralCode : null,
@@ -643,11 +675,12 @@ function priceOptionsOf(input: CartRequest & { phoneE164?: string | null }): Pri
 /**
  * The cart priced for checkout — the view plus, per line, what an order line snapshots (sku, name,
  * options, warranty) and the applied coupon's id. Server-side only; placeOrder builds the order
- * from this, never from what the browser sent.
+ * from this, never from what the browser sent. Unlike a read, a referral code is checked with the
+ * typed number too (the order refuses a number that owns the code or was referred before).
  */
 export async function getCheckoutCart(db: Db, input: CartRequest & { phoneE164?: string | null }, now: number): Promise<PricedCart> {
   const found = await findCart(db, input);
-  return priceCart(db, found?.cart ?? null, priceOptionsOf(input), now);
+  return priceCart(db, found?.cart ?? null, { ...priceOptionsOf(input), referralByTypedPhone: true }, now);
 }
 
 /** Number of items (sum of quantities) in the owner's cart. */

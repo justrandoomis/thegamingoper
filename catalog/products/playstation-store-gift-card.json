@@ -216,17 +216,17 @@
     {
       "key": "playstation-store-gift-card--1",
       "file": ".cache/product-images/playstation-store-gift-card/1.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps-store-credit-image-block-01-en-21oct21?$1600px$",
-      "sourcePage": "https://www.playstation.com/en-ae/playstation-gift-cards/",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gift-card-faceplate-gifting-image-block-en-01-07july23?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-us/playstation-gift-cards/",
       "kind": "hero",
       "alt": {
-        "ar": "تصميم بطاقة PlayStation Store الزرقاء مع شعار PlayStation",
-        "en": "Blue PlayStation Store card design with the PlayStation logo",
-        "ckb": "دیزاینی کارتی شینی PlayStation Store لەگەڵ هێمای PlayStation"
+        "ar": "وجه بطاقة PlayStation Store: شخصيات ألعاب PlayStation مع شعار PlayStation",
+        "en": "PlayStation Store gift card face: PlayStation game characters with the PlayStation logo",
+        "ckb": "ڕووی کارتی PlayStation Store: کارەکتەرەکانی یارییەکانی PlayStation لەگەڵ هێمای PlayStation"
       },
       "credit": "Sony Interactive Entertainment",
       "width": 1600,
-      "height": 1600,
+      "height": 1067,
       "transparent": false
     },
     {

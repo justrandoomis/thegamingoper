@@ -15,8 +15,16 @@
  * event's snapshot, the checklist in words, no staff-only data) · the database rule that an estimate is not an offer.
  */
 import { and, eq } from "drizzle-orm";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import { newId, randomToken } from "~/lib/ids";
+import type { Locale } from "~/lib/locales";
+import { splitQualifier } from "~/routes/storefront/used/names";
+import TradeIn from "~/routes/storefront/used/trade-in";
+import TradeInStatus from "~/routes/storefront/used/trade-in-status";
 import { loadWizard } from "~/routes/storefront/used/trade-in.server";
 import { answeredQuestionSearch, filterGroups, searchText, wizardOrder } from "~/routes/storefront/used/wizard";
 import { files, tradeInEvents, tradeIns } from "~/server/db/schema";
@@ -592,5 +600,77 @@ describe("the shopper's answer to a final offer", () => {
     // The row itself is the daily job's to close.
     const [row] = await rows<{ status: string }>("SELECT status FROM trade_ins WHERE id = ?", made.tradeInId);
     expect(row.status).toBe("offered");
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── the pages (rendered)
+
+function renderPage(Component: unknown, path: string, entry: string, loaderData: unknown, locale: Locale): string {
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path, Component: Component as never }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: [entry],
+      hydrationData: {
+        loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: loaderData as never },
+      },
+    }),
+  );
+}
+
+async function wizardPage(search: string, locale: Locale = "ar"): Promise<string> {
+  const wizard = await loadWizard(t.db, locale, new URL(`http://tamtam.test/trade-in${search}`), null, NOW);
+  const prefix = locale === "ar" ? "" : `/${locale}`;
+  return renderPage(TradeIn, ":locale?/trade-in", `${prefix}/trade-in${search}`, { ...wizard, meta: { title: "", description: "" }, i18n: messagesFor(locale, "used", "errors") }, locale);
+}
+
+describe("the wizard's pages (rendered)", () => {
+  // QA 2026-11-12: the tiles' two-line clamp cut «PlayStation 5 Digital Edition (الطراز الأصلي…» — the part that tells
+  // the original model from the Slim — and at 1440 in English "· estimate" started a line of its own.
+  test("device tiles: a qualifier on its own line under the name; the estimate never splits from its amount", async () => {
+    expect(splitQualifier("PlayStation 5 Digital Edition (الطراز الأصلي 2020)")).toEqual({ base: "PlayStation 5 Digital Edition", qualifier: "الطراز الأصلي 2020" });
+    expect(splitQualifier("PlayStation 5 (original 2020 model)")).toEqual({ base: "PlayStation 5", qualifier: "original 2020 model" });
+    expect(splitQualifier("Nintendo Switch – OLED Model")).toEqual({ base: "Nintendo Switch – OLED Model", qualifier: null });
+    expect(splitQualifier("Joy-Con 2 (L)/(R)")).toEqual({ base: "Joy-Con 2 (L)/(R)", qualifier: null });
+    expect(splitQualifier("(2020)")).toEqual({ base: "(2020)", qualifier: null });
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const devices = await listTradeInDevices(t.db, locale);
+      const html = await wizardPage("", locale);
+      const names = [...html.matchAll(/class="used-device__name">(.*?)<\/span>/g)].map((match) => match[1]);
+      expect(names.length, locale).toBe(devices.length);
+      for (const name of names) expect(name, locale).not.toMatch(/[()]/);
+      expect(html.match(/class="used-device__meta"/g)?.length ?? 0, locale).toBe(devices.filter((device) => splitQualifier(device.name).qualifier !== null).length);
+      // «حتى 300,000 د.ع · تقديري»: the amount is one unbreakable run, and «· تقديري» is bound to it
+      const amounts = [...html.matchAll(/class="used-device__up">(.*?)<\/span>/g)].map((match) => match[1]).filter((text) => text.includes("⁨"));
+      expect(amounts.length, locale).toBe(devices.filter((device) => device.upToIqd !== null).length);
+      for (const text of amounts) {
+        expect(text, locale).toMatch(/⁩ · /);
+        expect(text.match(/⁨([^⁩]*)⁩/)?.[1], locale).not.toContain(" ");
+      }
+    }
+  });
+
+  // QA 2026-11-12: after «تابع» focus stayed on the task bar's key: nothing told a screen reader the question changed.
+  test("every step's heading is the place focus goes after a move between steps", async () => {
+    const answers = new URLSearchParams(answerPairs(bestAnswers(homeConsole))).toString();
+    const searches = ["", `?step=condition&device=${homeConsole.slug}`, `?step=condition&device=${homeConsole.slug}&q=body`, `?step=photos&device=${homeConsole.slug}&${answers}`, `?step=estimate&device=${homeConsole.slug}&${answers}`, `?step=inspection&device=${homeConsole.slug}&${answers}`];
+    for (const search of searches) {
+      const html = await wizardPage(search);
+      const headings = html.match(/<h1\b[^>]*>/g) ?? [];
+      expect(headings.length, search).toBe(1);
+      expect(headings[0], search).toMatch(/tabindex="-1"/);
+      expect(headings[0], search).toMatch(/data-step-heading=""/);
+    }
+  });
+
+  // QA 2026-11-12: the tracking page tagged a trade-in request "Demo order" (the generic order tag).
+  test("the tracking page tags a demo request as a request", async () => {
+    const made = await createTradeIn(t.db, who(), input(homeConsole), NOW);
+    for (const [locale, words, never] of [["en", "Demo request", "Demo order"], ["ar", "طلب تجريبي", null], ["ckb", "داواکاری تاقیکاری", null]] as const) {
+      const view = (await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, locale, NOW))!;
+      const loaderData = { ref: made.ref, view: { ...view, questions: questionsFor(view.device) }, created: false, meta: { title: "" }, i18n: messagesFor(locale, "used", "errors") };
+      const html = renderPage(TradeInStatus, ":locale?/trade-in/:ref", `${locale === "ar" ? "" : `/${locale}`}/trade-in/${made.ref}`, loaderData, locale);
+      expect(html, locale).toContain(words);
+      if (never) expect(html, locale).not.toContain(never);
+    }
   });
 });

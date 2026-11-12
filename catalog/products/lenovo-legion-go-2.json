@@ -183,9 +183,9 @@
     {
       "sku": "LEGO2-Z2E-32-1TB",
       "title": {
-        "ar": "Legion Go 2 Z2 Extreme 32GB / 1TB (Windows 11)",
-        "en": "Legion Go 2 Z2 Extreme 32GB / 1TB (Windows 11)",
-        "ckb": "Legion Go 2 Z2 Extreme 32GB / 1TB (Windows 11)"
+        "ar": "Z2 Extreme 32GB / 1TB (Windows 11)",
+        "en": "Z2 Extreme 32GB / 1TB (Windows 11)",
+        "ckb": "Z2 Extreme 32GB / 1TB (Windows 11)"
       },
       "options": { "os": "Windows 11 Home", "chip": "Ryzen Z2 Extreme", "memory": "32GB", "storage": "1TB", "color": "Eclipse Black" },
       "modelNumber": "83N0",
@@ -195,9 +195,9 @@
     {
       "sku": "LEGO2-Z2E-32-2TB",
       "title": {
-        "ar": "Legion Go 2 Z2 Extreme 32GB / 2TB (Windows 11)",
-        "en": "Legion Go 2 Z2 Extreme 32GB / 2TB (Windows 11)",
-        "ckb": "Legion Go 2 Z2 Extreme 32GB / 2TB (Windows 11)"
+        "ar": "Z2 Extreme 32GB / 2TB (Windows 11)",
+        "en": "Z2 Extreme 32GB / 2TB (Windows 11)",
+        "ckb": "Z2 Extreme 32GB / 2TB (Windows 11)"
       },
       "options": { "os": "Windows 11 Home", "chip": "Ryzen Z2 Extreme", "memory": "32GB", "storage": "2TB", "color": "Eclipse Black" },
       "modelNumber": "83N0",

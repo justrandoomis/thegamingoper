@@ -17,6 +17,7 @@
 import { and, eq } from "drizzle-orm";
 import { RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import ordersMessages from "~/i18n/messages/admin-orders";
 import { newId, randomToken } from "~/lib/ids";
 import { loader as editLoader } from "~/routes/admin/orders/edit";
 import { loader as orderLoader } from "~/routes/admin/orders/order";
@@ -884,6 +885,17 @@ describe("pure helpers", () => {
     expect(filters).toMatchObject({ q: "TT-7K4M", status: ["new"], payment: ["paid"], method: ["cod", "zaincash"], flags: ["late"], from: null, to: "2026-11-10", sort: "total_desc", page: 3, assigned: "me", governorate: "gov_baghdad" });
     expect(parseListFilters(new URLSearchParams(listSearch(filters).slice(1)))).toEqual(filters);
     expect(parseListFilters(new URLSearchParams("from=2026-11-12&to=2026-11-01"))).toMatchObject({ from: "2026-11-01", to: "2026-11-12" });
+  });
+
+  test("calls the payable amount «الإجمالي», never «المجموع»: the detail (print, edit, proof and pre-orders share it), the list, the CSV, the history", () => {
+    const ar = ordersMessages.ar;
+    expect(ar.detail.total).toBe("الإجمالي");
+    expect(ar.list.col.total).toBe("الإجمالي (د.ع)");
+    expect(ar.csv.totalIqd).toBe("الإجمالي (د.ع)");
+    expect(ar.history.edited).toContain("الإجمالي");
+    for (const text of [ar.detail.total, ar.list.col.total, ar.csv.totalIqd, ar.history.edited, ar.preorder.depositBoundary]) expect(text).not.toMatch(/المجموع(?! الفرعي)/);
+    // the subtotal keeps its own term
+    expect(ar.detail.subtotal).toBe("المجموع الفرعي");
   });
 
   test("Code 128: every symbol is 11 modules (stop 13), checksum per ISO/IEC 15417", () => {

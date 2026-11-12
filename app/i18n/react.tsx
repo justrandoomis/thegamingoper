@@ -9,7 +9,7 @@
  *   f.money(749000)                 → "749,000 د.ع" (or the shopper's display currency, marked approximate by <Price>)
  *   <LocaleLink to="/cart">         → "/cart", "/en/cart" or "/ckb/cart" + prefetch on intent
  */
-import { useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { Link, NavLink, useMatches, useRouteLoaderData, type LinkProps, type NavLinkProps } from "react-router";
 import { formatDate, formatDateTime, type DateStyle } from "~/lib/dates";
 import { DEFAULT_LOCALE, LOCALES, localePath, type Dir, type Locale } from "~/lib/locales";
@@ -60,15 +60,50 @@ export function useLocalePath(): (path: string) => string {
 
 type ToProp = { to: string };
 
-/** <Link> that keeps the shopper in their language and prefetches on hover/focus/touch. */
+/**
+ * Online or not (true on the server and during hydration, so both sides render the same links). A local copy of the
+ * kit's useOnline: the kit imports this module, so importing it back here would make a cycle.
+ */
+function subscribeOnline(onChange: () => void) {
+  window.addEventListener("online", onChange);
+  window.addEventListener("offline", onChange);
+  return () => {
+    window.removeEventListener("online", onChange);
+    window.removeEventListener("offline", onChange);
+  };
+}
+function useOnlineNow(): boolean {
+  return useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true);
+}
+
+/**
+ * <Link> that keeps the shopper in their language and prefetches on hover/focus/touch — but never while offline:
+ * a prefetch that cannot load the target's route module makes React Router reload the whole page into the browser's
+ * own "not connected" screen (QA 2026-11-12).
+ */
 export function LocaleLink({ to, prefetch = "intent", ...rest }: Omit<LinkProps, "to"> & ToProp) {
   const href = useLocalePath();
-  return <Link to={/^(https?:|mailto:|tel:|#)/.test(to) ? to : href(to)} prefetch={prefetch} {...rest} />;
+  const online = useOnlineNow();
+  return <Link to={/^(https?:|mailto:|tel:|#)/.test(to) ? to : href(to)} prefetch={online ? prefetch : "none"} {...rest} />;
 }
 
 export function LocaleNavLink({ to, prefetch = "intent", ...rest }: Omit<NavLinkProps, "to"> & ToProp) {
   const href = useLocalePath();
-  return <NavLink to={href(to)} prefetch={prefetch} {...rest} />;
+  const online = useOnlineNow();
+  return <NavLink to={href(to)} prefetch={online ? prefetch : "none"} {...rest} />;
+}
+
+const ARABIC_INDIC_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+
+/**
+ * A percentage with at most one decimal ("94%", "12.5%"; Arabic-Indic "٩٤٪", "١٢٫٥٪"), built by hand: Intl has no
+ * Sorani data, so a browser falls back to its own language and adds bidi marks the server does not — a hydration
+ * failure on every Sorani page that shows a percentage (QA 2026-11-12).
+ */
+export function formatPercent(ratio: number, numbering: NumberingSystem): string {
+  const text = String(Math.round(ratio * 1000) / 10);
+  if (numbering !== "arab") return `${text}%`;
+  return `${text.replace(/[0-9]/g, (digit) => ARABIC_INDIC_DIGITS[Number(digit)]).replace(".", "٫")}٪`;
 }
 
 export type Formatters = {
@@ -111,7 +146,7 @@ export function useFormat(): Formatters {
       moneyParts,
       money: (amount) => moneyParts(amount).text,
       number: (value, options) => new Intl.NumberFormat(tag, options).format(value),
-      percent: (ratio) => new Intl.NumberFormat(tag, { style: "percent", maximumFractionDigits: 1 }).format(ratio),
+      percent: (ratio) => formatPercent(ratio, numbering),
       date: (ms, style = "medium") => formatDate(ms, style, locale, numbering),
       dateTime: (ms) => formatDateTime(ms, locale, numbering),
       relative: (ms, nowMs = Date.now()) => {

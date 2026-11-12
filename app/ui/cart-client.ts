@@ -444,7 +444,32 @@ export type CartEditor = {
   pending: boolean;
 };
 
-type Ghost = { line: CartLine; index: number };
+type Ghost = { line: CartLine };
+
+/** A cart line's identity across a removal and its undo (the restored line comes back under a new id). Pure. */
+export function lineIdentity(line: Pick<CartLine, "variantId" | "usedUnitId">): string {
+  return line.usedUnitId ? `unit:${line.usedUnitId}` : `variant:${line.variantId ?? ""}`;
+}
+
+/**
+ * The lines in the order the shopper has been seeing them: a line already shown keeps its place — a removed line put
+ * back with «تراجع» returns where it was, though the server adds it again as a new line at the end (QA 2026-11-12: the
+ * cart reordered itself after an undo) — and lines not shown before follow in the server's order. Returns the sorted
+ * lines and the order to remember for next time. Pure.
+ */
+export function keepLineOrder<T extends Pick<CartLine, "variantId" | "usedUnitId">>(lines: readonly T[], order: readonly string[]): { lines: T[]; order: string[] } {
+  const next = [...order];
+  const rank = new Map(next.map((id, index) => [id, index]));
+  for (const line of lines) {
+    const id = lineIdentity(line);
+    if (!rank.has(id)) {
+      rank.set(id, next.length);
+      next.push(id);
+    }
+  }
+  const sorted = [...lines].sort((a, b) => (rank.get(lineIdentity(a)) ?? 0) - (rank.get(lineIdentity(b)) ?? 0));
+  return { lines: sorted, order: next };
+}
 
 const without = <K, V>(map: ReadonlyMap<K, V>, key: K) => {
   const next = new Map(map);
@@ -477,6 +502,8 @@ export function useCartEditor(initial: CartView, options: { locale?: Locale; gov
   const [errors, setErrors] = useState<ReadonlyMap<string, string>>(() => new Map());
 
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+  /** The line identities in the order they have been shown (keepLineOrder). */
+  const order = useRef<string[]>([]);
   const unsent = useRef(new Map<string, number>()); // optimistic delta per line not yet sent
   const versions = useRef(new Map<string, number>());
   const latest = useRef({ view, ghosts, drafts });
@@ -550,8 +577,7 @@ export function useCartEditor(initial: CartView, options: { locale?: Locale; gov
   );
 
   const remove = useCallback(async (lineId: string) => {
-    const index = latest.current.view.lines.findIndex((l) => l.id === lineId);
-    const line = latest.current.view.lines[index];
+    const line = latest.current.view.lines.find((l) => l.id === lineId);
     if (!line) return;
     // A quantity change still waiting is overtaken by the removal.
     clearTimeout(timers.current.get(lineId));
@@ -564,7 +590,7 @@ export function useCartEditor(initial: CartView, options: { locale?: Locale; gov
     setDrafts((map) => without(map, lineId));
     const delta = -line.qty;
     dispatch({ type: "optimistic", delta });
-    setGhosts((map) => withEntry(map, lineId, { line: { ...line, qty: shown, lineTotalIqd: line.unitPriceIqd * shown }, index }));
+    setGhosts((map) => withEntry(map, lineId, { line: { ...line, qty: shown, lineTotalIqd: line.unitPriceIqd * shown } }));
     clearError(lineId);
     startBusy(lineId);
     const answer = await cartRequest({ intent: "remove", lineId, ...common() });
@@ -606,18 +632,23 @@ export function useCartEditor(initial: CartView, options: { locale?: Locale; gov
     setErrors((map) => without(map, lineId));
   }, []);
 
-  const rows: CartEditorRow[] = view.lines
+  // Every line — kept and removed (its undo row) — in the order the shopper has been seeing them (keepLineOrder): an
+  // undone removal comes back in its old place. The remembered order only grows, and the same lines give the same
+  // order, so rendering twice is harmless.
+  const live: CartEditorRow[] = view.lines
     .filter((line) => !ghosts.has(line.id))
     .map((line) => {
       const draft = drafts.get(line.id);
       const shown = draft === undefined ? line : { ...line, qty: draft, lineTotalIqd: line.unitPriceIqd * draft };
       return { line: shown, removed: false, busy: busy.has(line.id) || draft !== undefined, error: errors.get(line.id) ?? null };
     });
-  [...ghosts.entries()]
-    .sort((a, b) => a[1].index - b[1].index)
-    .forEach(([id, ghost]) => {
-      rows.splice(Math.min(ghost.index, rows.length), 0, { line: ghost.line, removed: true, busy: busy.has(id), error: errors.get(id) ?? null });
-    });
+  const removed: CartEditorRow[] = [...ghosts.entries()].map(([id, ghost]) => ({ line: ghost.line, removed: true, busy: busy.has(id), error: errors.get(id) ?? null }));
+  const ordered = keepLineOrder(
+    [...live, ...removed].map((row) => ({ variantId: row.line.variantId, usedUnitId: row.line.usedUnitId, row })),
+    order.current,
+  );
+  order.current = ordered.order;
+  const rows = ordered.lines.map((entry) => entry.row);
 
   return {
     view,

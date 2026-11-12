@@ -125,9 +125,9 @@
     {
       "sku": "PS5-SLIM-DE-825GB",
       "title": {
-        "ar": "PS5 Slim Digital Edition – 825GB (الإنتاج الحالي)",
-        "en": "PS5 Slim Digital Edition – 825GB (current production)",
-        "ckb": "PS5 Slim Digital Edition – 825GB (بەرهەمی ئێستا)"
+        "ar": "الإنتاج الحالي · 825GB",
+        "en": "825GB (current production)",
+        "ckb": "بەرهەمی ئێستا · 825GB"
       },
       "options": { "edition": "Digital", "storage": "825GB", "color": "White" },
       "modelNumber": "CFI-2116B01Y",
@@ -142,9 +142,9 @@
     {
       "sku": "PS5-SLIM-DE-1TB",
       "title": {
-        "ar": "PS5 Slim Digital Edition – 1TB (مخزون 2023–2025)",
-        "en": "PS5 Slim Digital Edition – 1TB (2023–2025 stock)",
-        "ckb": "PS5 Slim Digital Edition – 1TB (کاڵای 2023–2025)"
+        "ar": "مخزون 2023–2025 · 1TB",
+        "en": "1TB (2023–2025 stock)",
+        "ckb": "کاڵای 2023–2025 · 1TB"
       },
       "options": { "edition": "Digital", "storage": "1TB", "color": "White" },
       "isDefault": false,

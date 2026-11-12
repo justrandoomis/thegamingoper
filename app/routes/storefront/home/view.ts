@@ -4,7 +4,9 @@
  * uses. Nothing here reads the DOM or the clock.
  */
 import { parsePhotoKey, productPhotos } from "~/art";
+import type { ComingSoonItem } from "~/server/services/home.server";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
+import type { ReleaseItem } from "~/ui/ReleaseBand";
 
 /** The part of a home platform these rules read (HomePlatform in ~/server/services/home.server). */
 export type FocusablePlatform = { slug: string; hero: { productId: string; pin?: unknown } | null; newArrivals: readonly string[] };
@@ -72,6 +74,18 @@ export const isolate = (text: string): string => `⁨${text}⁩`;
  */
 export function pictureFailed(img: { complete: boolean; naturalWidth: number } | null | undefined): boolean {
   return Boolean(img && img.complete && img.naturalWidth === 0);
+}
+
+/**
+ * A final «ى» (U+0649) or Sorani «ی» (U+06CC) after a beh- or feh-shaped letter (ب ت ث ن ي ئ پ ی ف ڤ), with a zero-width
+ * joiner between them. IBM Plex Sans Arabic draws those pairs as required ligatures (rlig) that curl the yeh into a
+ * bowl under the tooth: «حتى» reads «حق», «کاتی» reads «کاق» (QA 2026-11-12: «حق 4K على التلفاز» in the hero — the
+ * text was right). The joiner keeps both letters joined and stops the ligature; turning rlig off would also break «لا».
+ * For display text only (the hero's lines) until the font is fixed for the whole store (requested of the design-system
+ * owner). Removing every U+200D gives the text back.
+ */
+export function plainFinalYeh(text: string): string {
+  return text.replace(/([بتثنيئپیفڤ])(?=[ىی](?![\p{L}\p{M}]))/gu, "$1‍");
 }
 
 /** "2026-11-19" → epoch ms of midnight in Baghdad that day (UTC+3, no DST); null for anything else. */
@@ -176,24 +190,35 @@ export type HeroBreakpoint = "sm" | "md" | "lg" | "xl";
 
 /**
  * The narrowest the hero's copy column gets in each range (px) — read off home.css (`.home-hero__body`): phones from
- * 360 (the band inside the 16px gutter, padding 20), 768 (copy 7/12 beside the product, padding 28, gap 24), 1024
- * (7/12, padding 40, gap 32), 1280 (6/12, padding 48, gap 32). Change both together.
+ * 360 (the band inside the 16px gutter, padding 20), 768 (copy 3/5 beside the product, padding 28, gap 16 — wide
+ * enough for «Nintendo Switch 2» at 40px), 1024 (7/12, padding 40, gap 32), 1280 (6/12, padding 48, gap 32). Change
+ * both together.
  */
-export const HERO_COPY_MIN: Record<HeroBreakpoint, number> = { sm: 288, md: 373, lg: 494, xl: 544 };
+export const HERO_COPY_MIN: Record<HeroBreakpoint, number> = { sm: 288, md: 388, lg: 494, xl: 544 };
 
-/** The display role's size per range (v2 §2.6: 28 → 40 → 48 → 56) and the scale steps a long name steps down to. */
-const DISPLAY_PX: Record<HeroBreakpoint, number> = { sm: 28, md: 40, lg: 48, xl: 56 };
-const HEADLINE_STEPS = [56, 48, 40, 36, 32, 28, 26, 24, 22] as const;
+/**
+ * The sizes a headline may take in each range, largest first: the display size (v2 §2.6: 28 → 40 → 48 → 56), then the
+ * Kufi sizes the same range already draws — price xl, h1, and the range's h2 last. A size from another range's scale
+ * would be one more size on the page (QA 2026-11-12: 36px at 768, where the scale has 40, 32 and 30).
+ */
+const HEADLINE_STEPS: Record<HeroBreakpoint, readonly number[]> = {
+  sm: [28, 26, 22],
+  md: [40, 32, 30, 24],
+  lg: [48, 34, 32, 26],
+  xl: [56, 36, 28],
+};
 
 /**
  * The hero headline's size in each range: the display size when its longest line fits the copy column on one line,
- * else the next step of the type scale that does (integer sizes from the scale only — never a fluid size), else the
- * smallest step, where a very long name wraps (balanced). Same on the server and in the browser.
+ * else the next step of that range's scale that does (integer sizes only — never a fluid size), else the range's
+ * smallest step (its h2), where a very long name wraps (balanced). Same on the server and in the browser.
  */
 export function heroTitleSizes(lines: readonly string[], face: HeadlineFace = "kufi"): Record<HeroBreakpoint, number> {
   const em = Math.max(0, ...lines.filter(Boolean).map((line) => headlineEm(line, face)));
-  const fit = (range: HeroBreakpoint) =>
-    HEADLINE_STEPS.find((step) => step <= DISPLAY_PX[range] && em * step <= HERO_COPY_MIN[range]) ?? HEADLINE_STEPS[HEADLINE_STEPS.length - 1];
+  const fit = (range: HeroBreakpoint) => {
+    const steps = HEADLINE_STEPS[range];
+    return steps.find((step) => em * step <= HERO_COPY_MIN[range]) ?? steps[steps.length - 1];
+  };
   return { sm: fit("sm"), md: fit("md"), lg: fit("lg"), xl: fit("xl") };
 }
 
@@ -228,15 +253,57 @@ export function tileArt(artKey: string | null | undefined, heroArt: string | nul
 /** The release band shows the soonest four (one row of four columns from 768; v2 §4.21). */
 export const RELEASE_LIMIT = 4;
 
+/** A release's platform line on the band: one platform's dot and words, or several platforms' dots and names. */
+export type ReleaseLine = { platform: Platform | null; platforms: Platform[] | null; label: string | null };
+
 /**
- * The platform line of a coming-soon product in the release band, from its card: the platform's dot and the card's own
- * kind label («جهاز Xbox Series X|S», «سماعة · PS5»). Only for a product of ONE platform: the band's line carries a
- * single dot, and one platform's colour beside «متعددة المنصات» would say the wrong thing.
+ * The platform line of a coming-soon item (v2 §4.21: every item has one), from the facts its card carries: ONE
+ * platform → its dot and the card's own kind label («جهاز Xbox Series X|S», «سماعة · PS5», «لعبة PlayStation»);
+ * SEVERAL → a dot for each (the band draws two) and no label, so the band names them all («PlayStation · Xbox») — never
+ * one platform's colour beside «لعبة متعددة المنصات», which names none.
  */
-export function releasePlatformOf(card: { platformSlug: string | null; forPlatforms?: string[]; kindLabel?: string }): { platform: Platform | null; label: string | null } {
-  const platforms = (card.forPlatforms?.length ? card.forPlatforms : card.platformSlug ? [card.platformSlug] : []).filter(isPlatform);
-  if (platforms.length !== 1) return { platform: null, label: null };
-  return { platform: platforms[0], label: card.kindLabel ?? null };
+export function releasePlatformOf(card: { platformSlug: string | null; forPlatforms?: readonly string[]; kindLabel?: string | null }): ReleaseLine {
+  const platforms = [...new Set((card.forPlatforms?.length ? card.forPlatforms : card.platformSlug ? [card.platformSlug] : []).filter(isPlatform))];
+  if (platforms.length === 0) return { platform: null, platforms: null, label: null };
+  if (platforms.length === 1) return { platform: platforms[0], platforms: null, label: card.kindLabel ?? null };
+  return { platform: platforms[0], platforms, label: null };
+}
+
+/** What the release band reads of a coming-soon item (ComingSoonItem in ~/server/services/home.server). */
+export type ComingFacts = Pick<ComingSoonItem, "key" | "slug" | "name" | "variantCount" | "releaseAt" | "priceIqd" | "image" | "platformSlug" | "forPlatforms" | "kindLabel">;
+
+/**
+ * A coming-soon item as the release band draws it: the product's name; for a later version of a product that is out
+ * already, «نسخة جديدة» on the line under the name (the catalogue's version titles are not shown — they can say «طلب
+ * مسبق»); and the platform line of EVERY item — a dated version's from the platform that version is for (the PS5
+ * version of a game out on Xbox reads «لعبة PlayStation»). QA 2026-11-12: versions had no platform line at all.
+ * `versions` words the count («نسخة جديدة», «نسختان جديدتان»).
+ */
+export function releaseItemOf(item: ComingFacts, versions: (count: number) => string): ReleaseItem {
+  const line = releasePlatformOf(item);
+  return {
+    id: item.key,
+    to: `/p/${item.slug}`,
+    name: item.name,
+    detail: item.variantCount > 0 ? versions(item.variantCount) : null,
+    releaseAt: item.releaseAt,
+    platform: line.platform,
+    platforms: line.platforms,
+    platformLabel: line.label ?? undefined,
+    priceIqd: item.priceIqd,
+    image: item.image,
+  };
+}
+
+/**
+ * Where the focus goes once the intro has left, when it has nowhere to be (on <body>, or still on the leaving overlay):
+ * back to the key that opened it («شاهد المقدّمة مرة أخرى»), else — a first landing has no opener — to the page's main
+ * landmark (QA 2026-11-12: after Escape a keyboard or screen-reader user started again from the top of the document).
+ * Null when something on the page holds the focus already, or there is nowhere to go. Generic: testable without a DOM.
+ */
+export function focusAfterIntro<E>(active: E | null, body: E, inOverlay: (element: E) => boolean, opener: E | null, main: E | null): E | null {
+  if (active !== null && active !== body && !inOverlay(active)) return null;
+  return opener ?? main;
 }
 
 const normalizeName = (text: string) => text.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();

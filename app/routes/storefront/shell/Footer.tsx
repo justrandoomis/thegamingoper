@@ -29,7 +29,7 @@ import { ContactCard } from "~/ui/ContactCard";
 import { DemoNote } from "~/ui/DemoNote";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
 import { DEMO_NOTE_ID } from "./Banners";
-import { FOOTER_POLICIES, TASK_FOOTER_LINKS } from "./chrome";
+import { FOOTER_POLICIES, TASK_FOOTER_LABELS, TASK_FOOTER_LINKS } from "./chrome";
 import { Lockup } from "./Header";
 import { usePlatformName } from "./MegaMenu";
 import { CurrencyPanel, LanguageBank, PreferenceGroup, ThemeBank } from "./Preferences";
@@ -186,19 +186,13 @@ export function Footer({ shell, demo }: { shell: ShellData | null; demo: boolean
 /** Checkout and task flows: one line of links (v2 §5.8), the © and the demo statement. */
 export function TaskFooter({ shell, demo }: { shell: ShellData | null; demo: boolean }) {
   const t = useShellT();
-  const label: Record<(typeof TASK_FOOTER_LINKS)[number], string> = {
-    "/policies/returns": t("footer.returns"),
-    "/policies/privacy": t("footer.privacy"),
-    "/policies/terms": t("footer.terms"),
-    "/support": t("footer.helpCentre"),
-  };
   return (
     <footer className="shell-tfoot">
       <div className="page">
         <nav aria-label={t("footer.legal")} className="shell-tfoot__row">
           {TASK_FOOTER_LINKS.map((to) => (
             <LocaleLink key={to} to={to} prefetch="none" className="shell-tfoot__link">
-              {label[to]}
+              {t(TASK_FOOTER_LABELS[to])}
             </LocaleLink>
           ))}
           <span className="shell-tfoot__copy">{shell ? t("footer.rights", { year: shell.year }) : null}</span>

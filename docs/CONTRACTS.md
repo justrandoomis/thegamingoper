@@ -43,8 +43,13 @@ listDistricts(db, locale, governorateId): Promise<DistrictOption[]>
 ### `cart.server.ts`  (+ resource route `POST /api/cart`)
 ```ts
 type CartOwner = { cartToken: string | null; customerId: string | null }
-type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null; redeemPoints?: number; referralCode?: string | null }   // points / referral since 2026-11-12
+type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null; redeemPoints?: number; referralCode?: string | null; phoneE164?: string | null }   // points / referral since 2026-11-12; phoneE164 (QA 2026-11-12): the number typed at checkout
 getCartView(db, request: CartRequest, now): Promise<CartViewData>      // CartView (~/lib/dto) + couponIssue: { code, reason, rule? } | null — re-prices and re-checks stock on every read; sets line.problem
+// With `phoneE164` the cart is priced for that number (QA 2026-11-12) — a once-per-customer coupon it used → couponIssue 'customer_limit',
+//   no discount; a first-order coupon and flash limits count it — so the review shows what the order will charge. A read still checks a
+//   referral code with the ACCOUNT's number only (security review 2026-11-12); getCheckoutCart checks it with the typed number too.
+// CartViewData.payableCount (QA 2026-11-12): the units the totals are for — `count` (what the cart holds: the badge, «السلة (n)») less the
+//   lines that cannot be bought (sold out, off sale); a reduced line counts what can be sold. The number beside «المجموع الفرعي» and the total.
 // CartViewData since 2026-11-12 (every amount as it will be charged — the same pricing placeOrder uses):
 //   lines[]: CartLine & { productId; optionValue: string | null; flash: FlashPriceView & { cap } | null }   // a running flash price, and how many units it still covers for this shopper
 //   discounts: DiscountLineView[]            // rule | coupon | member | points, each with its amountIqd (they add up to discountIqd)
@@ -62,7 +67,7 @@ applyCoupon(db, request, code | null, now): Promise<CartViewData>
 changeLineQty / deleteLine / changeCoupon(…, options?: { rekey? }): Promise<{ cartToken: string | null; view }>   // the same changes, for callers that may rotate the cart token
 mergeGuestCart(db, owner: CartOwner, now): Promise<void>               // on sign-in
 ```
-`POST /api/cart` form fields: `intent` = `add` | `set` | `remove` | `coupon` | `price` (security review 2026-11-12: changes nothing, answers the priced cart — how the checkout asks about a referral code, in a body, never in a URL), plus `variantId` | `usedUnitId`, `qty`, `lineId`, `code`. Response JSON: `ActionResult<{ cart: CartView }>`. Rate-limited; never trusts client prices; cross-site posts get 403. Since 2026-11-12 every intent and `GET /api/cart` also take `points` (points to redeem) and `referral` (a code to check), so the page re-prices with them; every request carrying a `referral`, GET or POST, counts against ONE per-address budget (20 a minute; the POST was not counted before the security review of 2026-11-12).
+`POST /api/cart` form fields: `intent` = `add` | `set` | `remove` | `coupon` | `price` (security review 2026-11-12: changes nothing, answers the priced cart — how the checkout asks about a referral code, in a body, never in a URL), plus `variantId` | `usedUnitId`, `qty`, `lineId`, `code`. Response JSON: `ActionResult<{ cart: CartView }>`. Rate-limited; never trusts client prices; cross-site posts get 403. Since 2026-11-12 every intent and `GET /api/cart` also take `points` (points to redeem) and `referral` (a code to check), so the page re-prices with them; every request carrying a `referral`, GET or POST, counts against ONE per-address budget (20 a minute; the POST was not counted before the security review of 2026-11-12). Since the QA round of 2026-11-12 every POST intent also takes `phone` — the number typed at checkout, as typed (normalised with `normalizeIraqPhone`; anything else is no number): the answer is priced for it (`CartRequest.phoneE164`), so the review shows the total «أكّد الطلب» will charge and why a code does not apply. A body field only — `GET /api/cart` never reads a number from its URL. Such an answer says what a number has used, so usable numbers count against a per-address budget of their own (`PHONE_PRICING_PER_IP`, 20 per 10 minutes, scope `cart-phone`); past it the answer is priced as without a number (no error: the page keeps working, and the order still checks the number itself).
 
 ### `coupons.server.ts`
 ```ts

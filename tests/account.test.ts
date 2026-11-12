@@ -47,10 +47,15 @@ import DevicesPage from "~/routes/storefront/account/devices";
 import ProfilePage from "~/routes/storefront/account/profile";
 import { action as signupAction } from "~/routes/storefront/account/signup";
 import { railIndex, splitOption } from "~/routes/storefront/account/components/OrderBits";
+import { addressFieldIssue, addressIssues } from "~/routes/storefront/account/components/address-checks";
+import { accountFailure } from "~/routes/storefront/account/account.server";
+import { AddressInput } from "~/server/services/account/addresses.server";
 import { messagesFor } from "~/i18n/i18n.server";
 import type { Locale } from "~/lib/locales";
 import { createElement } from "react";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
+import checkoutMessages from "~/i18n/messages/checkout";
 import errorMessages from "~/i18n/messages/errors";
 import { createTestDb, TEST_NOW, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -712,7 +717,7 @@ describe("v2 account screens", () => {
  * An account page as the server renders it — what a shopper without script gets, and what the browser shows before
  * hydration — with its loader's data and the strings the account layout would carry.
  */
-function renderAccountPage(Component: unknown, url: string, loaderData: Record<string, unknown>, locale: Locale = "ar"): string {
+function renderAccountPage(Component: unknown, url: string, loaderData: Record<string, unknown>, locale: Locale = "ar", actionData?: unknown): string {
   const path = url.split("?")[0].replace(/^\//, "");
   const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path, Component: Component as never }] }]);
   return renderToStaticMarkup(
@@ -723,6 +728,7 @@ function renderAccountPage(Component: unknown, url: string, loaderData: Record<s
           root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") },
           page: { ...loaderData, i18n: messagesFor(locale, "account") },
         },
+        ...(actionData ? { actionData: { page: actionData as never } } : {}),
       },
     }),
   );
@@ -814,5 +820,100 @@ describe("honest copy (P7 review)", () => {
         expect(form, locale).not.toContain(accountMessages[locale].returns.policy);
       }
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── QA fixes (the transaction matrix, 2026-11-12)
+
+describe("the address book checks an address as the checkout does (QA 2026-11-12)", () => {
+  const EMPTY = { label: "", recipientName: "", phone: "", governorateId: "", districtId: "", areaText: "", addressText: "", notes: "" };
+
+  test("each problem is found on the page before any request, and said in the checkout's own words", () => {
+    // Found in the browser: «احفظ العنوان» with empty fields went to the server (400) and came back as three «هذا الحقل
+    // مطلوب.», while the checkout says «اكتب المنطقة أو الحي.» on blur — one address, two kinds of errors.
+    expect(addressIssues(EMPTY)).toEqual({ governorateId: { code: "required" }, areaText: { code: "required" }, addressText: { code: "required" } });
+    expect(addressIssues({ ...EMPTY, governorateId: governorateId("baghdad"), recipientName: "ع", phone: "0770 123", areaText: "ك", addressText: "شارع" })).toEqual({
+      recipientName: { code: "too_short" },
+      phone: { code: "short", count: 4 },
+      areaText: { code: "too_short" },
+      addressText: { code: "too_short" },
+    });
+    // the recipient's number is optional: empty is fine, anything typed is checked like the checkout's
+    expect(addressFieldIssue("phone", "")).toBeNull();
+    expect(addressFieldIssue("phone", "0770 123 4567")).toBeNull();
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const own = accountMessages[locale].addresses.fields;
+      const checkout = checkoutMessages[locale].fields;
+      expect(own.governorateId.required, locale).toBe(checkout.governorateId.required);
+      expect(own.areaText.required, locale).toBe(checkout.areaText.required);
+      expect(own.areaText.too_short, locale).toBe(checkout.areaText.too_short);
+      expect(own.addressText.required, locale).toBe(checkout.addressText.required);
+      expect(own.addressText.too_short, locale).toBe(checkout.addressText.too_short);
+      expect(own.phone, locale).toEqual(checkout.phone);
+    }
+  });
+
+  test("the page's checks are the address service's rules: the same answer at every edge", () => {
+    const base = { governorateId: governorateId("baghdad"), areaText: "الكرادة", addressText: "شارع 62، دار 14" };
+    const cases: Array<[keyof typeof EMPTY, string]> = [
+      ["areaText", "ك"],
+      ["areaText", "كك"],
+      ["areaText", "ك".repeat(120)],
+      ["areaText", "ك".repeat(121)],
+      ["addressText", "شارع"],
+      ["addressText", "شارع 6"],
+      ["addressText", "ش".repeat(300)],
+      ["addressText", "ش".repeat(301)],
+      ["notes", "ن".repeat(300)],
+      ["notes", "ن".repeat(301)],
+      ["label", "ب".repeat(40)],
+      ["label", "ب".repeat(41)],
+      ["recipientName", "ع"],
+      ["recipientName", "عل"],
+      ["recipientName", "ع".repeat(80)],
+      ["recipientName", "ع".repeat(81)],
+      ["phone", "0770 123 4567"],
+      ["phone", "0770 123"],
+      ["phone", "0660 123 4567"],
+      ["phone", "   "],
+      ["governorateId", ""],
+    ];
+    for (const [field, value] of cases) {
+      const server = AddressInput.safeParse({ ...base, [field]: value });
+      const serverSays = server.success ? null : (server.error.issues.find((issue) => issue.path[0] === field)?.message ?? "other");
+      const pageSays = addressFieldIssue(field, value);
+      expect(pageSays === null, `${field} (${value.length} characters): the service says ${serverSays}, the page ${JSON.stringify(pageSays)}`).toBe(serverSays === null);
+    }
+  });
+
+  test("a save posted without script names each problem in the page's words, not «هذا الحقل مطلوب.», with the summary", async () => {
+    const { actor } = await customer();
+    const values = { intent: "save", ...EMPTY };
+    const error = await failure(() => saveAddress(t.db, actor, values as never, NOW));
+    const answer = { ...accountFailure(error, "ar"), intent: "save", values };
+    const geography = await listGeography(t.db, "ar");
+    const html = renderAccountPage(AddressesPage, "/account/addresses?new=1", { addresses: [], geography, max: MAX_ADDRESSES }, "ar", answer);
+    for (const sentence of ["اختر المحافظة التي نوصل إليها.", "اكتب المنطقة أو الحي.", "اكتب العنوان بالتفصيل: الشارع والمحلة وأقرب نقطة دالة."]) expect(html).toContain(sentence);
+    expect(html).not.toContain("هذا الحقل مطلوب.");
+    expect(html).toMatch(/role="alert"[\s\S]*?href="#address-governorate"[\s\S]*?href="#address-area"[\s\S]*?href="#address-text"/);
+  });
+
+  test("with script the form checks a field when it is left, and every field before it is sent", () => {
+    const source = readFileSync(new URL("../app/routes/storefront/account/addresses.tsx", import.meta.url), "utf8");
+    expect(source).toMatch(/onBlur[:=]\s*\(?\{?\s*\(?event/);
+    expect(source).toMatch(/onSubmit=\{/);
+    expect(source).toMatch(/addressIssues\(/);
+    expect(source).toMatch(/<FormErrorSummary\b/);
+  });
+});
+
+describe("a privacy request's confirmation (QA 2026-11-12)", () => {
+  test("promises no contact: a staff member checks who you are, and the request's state is on this page", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const sent = accountMessages[locale].privacy.sent;
+      expect(sent, locale).toContain("{ref}");
+      expect(sent, locale).not.toMatch(/يتواصل|نتواصل|نتصل|سنتصل|contact|call you|پەیوەندی/);
+    }
+    expect(accountMessages.ar.privacy.sent).toBe("استلمنا طلبك {ref}. يتحقق موظف من هويتك قبل أي إجراء، وتجد حالة الطلب هنا.");
   });
 });

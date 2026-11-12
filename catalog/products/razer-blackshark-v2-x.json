@@ -125,7 +125,7 @@
     },
     {
       "sku": "RAZER-BSV2X-QTZ",
-      "title": { "ar": "Quartz وردي", "en": "Quartz (pink)", "ckb": "Quartz (پەمەیی)" },
+      "title": { "ar": "وردي Quartz", "en": "Quartz (pink)", "ckb": "پەمەیی Quartz" },
       "options": { "color": "Quartz" },
       "modelNumber": "RZ04-03240800-R3U1",
       "isDefault": false,
@@ -232,19 +232,19 @@
   "images": [
     {
       "key": "razer-blackshark-v2-x--1",
-      "file": ".cache/product-images/razer-blackshark-v2-x/1.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h47/h6d/9081232326686/Phoenix-Gallery-Blackshark-V2-X-1500x1000-4.jpg",
+      "file": ".cache/product-images/razer-blackshark-v2-x/1.png",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h87/h82/9807445884958/240820-Razer-BlackShark-V2-X-500x500.png",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240100-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X السوداء مع المايكروفون من زاوية مائلة",
-        "en": "Black Razer BlackShark V2 X with mic, angled view",
-        "ckb": "Razer BlackShark V2 Xی ڕەش لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
+        "ar": "سماعة Razer BlackShark V2 X السوداء من الجانب مع المايكروفون",
+        "en": "Black Razer BlackShark V2 X from the side, with the mic",
+        "ckb": "Razer BlackShark V2 Xی ڕەش لە تەنیشتەوە لەگەڵ مایکرۆفۆن"
       },
       "credit": "Razer",
-      "width": 1500,
-      "height": 1000,
-      "transparent": false
+      "width": 500,
+      "height": 500,
+      "transparent": true
     },
     {
       "key": "razer-blackshark-v2-x--2",
@@ -272,51 +272,51 @@
     },
     {
       "key": "razer-blackshark-v2-x--4",
-      "file": ".cache/product-images/razer-blackshark-v2-x/4.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h3f/h08/9368738791454/220218-blackshark-v2-x-white-1500x1000-2.jpg",
+      "file": ".cache/product-images/razer-blackshark-v2-x/4.png",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hc3/h7a/9399589797918/2-blackshark-v2-x-white-500x500.png",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240700-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X باللون الأبيض مع المايكروفون من زاوية مائلة",
-        "en": "Razer BlackShark V2 X in white with mic, angled view",
-        "ckb": "Razer BlackShark V2 X بە ڕەنگی سپی لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
+        "ar": "سماعة Razer BlackShark V2 X باللون الأبيض من الجانب مع المايكروفون",
+        "en": "Razer BlackShark V2 X in white from the side, with the mic",
+        "ckb": "Razer BlackShark V2 X بە ڕەنگی سپی لە تەنیشتەوە لەگەڵ مایکرۆفۆن"
       },
       "credit": "Razer",
-      "width": 1500,
-      "height": 1000,
-      "transparent": false
+      "width": 500,
+      "height": 500,
+      "transparent": true
     },
     {
       "key": "razer-blackshark-v2-x--5",
-      "file": ".cache/product-images/razer-blackshark-v2-x/5.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hd4/ha5/9446069927966/221015-blackshark-v2-x-quartz-1500x1000-4.jpg",
+      "file": ".cache/product-images/razer-blackshark-v2-x/5.png",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h31/h0e/9447199211550/blackshark-v2-x-quartz-500x500.png",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240800-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X بلون Quartz الوردي مع المايكروفون من زاوية مائلة",
-        "en": "Razer BlackShark V2 X in Quartz pink with mic, angled view",
-        "ckb": "Razer BlackShark V2 X بە ڕەنگی پەمەیی Quartz لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
+        "ar": "سماعة Razer BlackShark V2 X بلون Quartz الوردي من الجانب مع المايكروفون",
+        "en": "Razer BlackShark V2 X in Quartz pink from the side, with the mic",
+        "ckb": "Razer BlackShark V2 X بە ڕەنگی پەمەیی Quartz لە تەنیشتەوە لەگەڵ مایکرۆفۆن"
       },
       "credit": "Razer",
-      "width": 1500,
-      "height": 1000,
-      "transparent": false
+      "width": 500,
+      "height": 500,
+      "transparent": true
     },
     {
       "key": "razer-blackshark-v2-x--6",
-      "file": ".cache/product-images/razer-blackshark-v2-x/6.jpg",
-      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hf5/h02/9242258997278/210928-blackshark-v2-x-green-1500x1000-2.jpg",
+      "file": ".cache/product-images/razer-blackshark-v2-x/6.png",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h8b/h62/9242259816478/blackshark-v2-x-green-500x500.png",
       "sourcePage": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240600-R3U1",
       "kind": "hero",
       "alt": {
-        "ar": "سماعة Razer BlackShark V2 X باللون الأخضر مع المايكروفون من زاوية مائلة",
-        "en": "Razer BlackShark V2 X in green with mic, angled view",
-        "ckb": "Razer BlackShark V2 X بە ڕەنگی سەوز لەگەڵ مایکرۆفۆن، لە گۆشەیەکی لارەوە"
+        "ar": "سماعة Razer BlackShark V2 X باللون الأخضر من الجانب مع المايكروفون",
+        "en": "Razer BlackShark V2 X in green from the side, with the mic",
+        "ckb": "Razer BlackShark V2 X بە ڕەنگی سەوز لە تەنیشتەوە لەگەڵ مایکرۆفۆن"
       },
       "credit": "Razer",
-      "width": 1500,
-      "height": 1000,
-      "transparent": false
+      "width": 500,
+      "height": 500,
+      "transparent": true
     }
   ],
   "sources": [

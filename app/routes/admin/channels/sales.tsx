@@ -96,7 +96,7 @@ export default function SalesChannelsPage({ loaderData }: Route.ComponentProps) 
             <div className="ch-form ch-form--two">
               <TextField name="key" label={t("sales.field.key")} hint={t("sales.field.keyHint")} required ltr maxLength={24} error={createFields.key} />
               <TextField name="nameAr" label={t("sales.field.nameAr")} required maxLength={60} error={createFields.nameAr} />
-              <TextField name="nameEn" label={t("sales.field.nameEn")} optional dir="ltr" maxLength={60} error={createFields.nameEn} />
+              <TextField name="nameEn" label={t("sales.field.nameEn")} optional ltr lang="en" maxLength={60} error={createFields.nameEn} />
               <FieldGroup legend={t("sales.field.kind")} required error={createFields.kind}>
                 {NEW_CHANNEL_KINDS.map((kind, index) => (
                   <Radio key={kind} name="kind" value={kind} label={t(`kind.${kind}`)} defaultChecked={index === 0} />
@@ -185,7 +185,7 @@ function ChannelCard({ row, manage, links, result }: { row: ChannelRow; manage: 
               <input type="hidden" name="channelId" value={row.id} />
               <input type="hidden" name="fingerprint" value={row.fingerprint} />
               <TextField name="nameAr" label={t("sales.field.nameAr")} required maxLength={60} defaultValue={row.nameAr} error={fields.nameAr} />
-              <TextField name="nameEn" label={t("sales.field.nameEn")} optional dir="ltr" maxLength={60} defaultValue={row.nameEn} error={fields.nameEn} />
+              <TextField name="nameEn" label={t("sales.field.nameEn")} optional ltr lang="en" maxLength={60} defaultValue={row.nameEn} error={fields.nameEn} />
               <TextField name="reason" label={t("common.reason")} required maxLength={500} error={fields.reason} />
               <FormError message={result && !result.ok ? (result.fields ? t("common.checkFields") : failureText(t, result)) : null} />
               {result?.ok ? <p className="type-caption text-ink-2">{t(result.changed ? "sales.renamed" : "branch.unchanged")}</p> : null}

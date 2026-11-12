@@ -43,7 +43,7 @@
   "variants": [
     {
       "sku": "NS2G-SWITCH-SPORTS-RESORT",
-      "title": { "ar": "Nintendo Switch Sports Resort — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch Sports Resort — Nintendo Switch 2 physical edition", "ckb": "Nintendo Switch Sports Resort — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906726"],
       "isDefault": true,

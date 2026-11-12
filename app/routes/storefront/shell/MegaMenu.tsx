@@ -4,10 +4,13 @@
  * Each platform is ONE 44px menu button (8px dot + name + caret; no separate caret key) with a 3px underline in the
  * platform's dot colour on hover, open and current. Its mega menu is an OPAQUE paper panel under the header, across
  * the page with its content in the 1280 wrap: a first row «كل منتجات PlayStation · 42» (to the platform hub); four
- * columns — الأجهزة (device models), الألعاب (the platform's own games, then all of them, multi-platform ones
- * included — the cross-platform category leaves navigation), الإكسسوارات, البطاقات والخدمات (cards, used units) — of
- * at most five short names; and a featured tile at the inline end (a 1:1 well with the product photo and its name).
- * The page behind gets the light menu scrim.
+ * columns — الأجهزة (device models by their SHORT model names, «PS5 Digital (2020)», the full name in the tooltip),
+ * الألعاب (the platform's own games, then all of them, multi-platform ones included — the cross-platform category
+ * leaves navigation), الإكسسوارات, البطاقات والخدمات (cards, used units) — of at most five links, each with the read
+ * layer's count in --ink-2, rows 4px apart so a wrapped name stays one item; and a featured tile at the inline end: a
+ * 1:1 well with the product photo, its name and its price (the read layer's `featured`; «نفد حالياً» / «قريباً» when it
+ * cannot be bought today; a demo row marked as a product card marks it — in demo mode the nav row's chip already says
+ * so). The page behind gets the light menu scrim.
  *
  * The panel and its scrim are rendered through a portal into the host <ShellFrame> places right after the header —
  * a sibling of the header, never inside the element that carries the view-transition name during page transitions.
@@ -23,16 +26,23 @@ import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffe
 import { createPortal } from "react-dom";
 import { useLocation } from "react-router";
 
+import { productPhotos } from "~/art";
 import { Art } from "~/art/Art";
 import { Icon } from "~/art/Icon";
-import { LocaleLink, useT } from "~/i18n/react";
+import { LocaleLink, useDir, useFormat, useT } from "~/i18n/react";
 import { dematerialize, materialize } from "~/motion";
+import { BidiText, latinName } from "~/ui/BidiText";
+import { mediaUrl } from "~/ui/cart-client";
+import { cx } from "~/ui/cx";
+import { DemoNote } from "~/ui/DemoNote";
 import { focusablesIn } from "~/ui/Dialog";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
+import { SafePrice } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
-import { megaFeature, megaPlan } from "./chrome";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
+import { megaFeature, megaPlan, megaWords, type MegaFeature, type MegaLink } from "./chrome";
 import { useShellT } from "./i18n";
-import type { NavLink, NavPlatform } from "./types";
+import type { NavPlatform } from "./types";
 
 const OPEN_DELAY = 140;
 const CLOSE_DELAY = 200;
@@ -55,11 +65,13 @@ export type PlatformNavProps = {
   platforms: NavPlatform[];
   /** The platform whose hub is on screen (its button carries the underline and `aria-current`). */
   current?: string | null;
+  /** STORE_MODE is "demo" (the nav row's chip marks every price): a demo row's price then needs no tag of its own. */
+  demo?: boolean;
   /** The rest of the nav row (separator, text links), after the platforms. */
   children?: ReactNode;
 };
 
-export function PlatformNav({ platforms, current = null, children }: PlatformNavProps) {
+export function PlatformNav({ platforms, current = null, demo = true, children }: PlatformNavProps) {
   const t = useShellT();
   const nameOf = usePlatformName();
   const location = useLocation();
@@ -251,7 +263,7 @@ export function PlatformNav({ platforms, current = null, children }: PlatformNav
                 onPointerLeave={(event) => event.pointerType === "mouse" && hoverOut()}
                 onKeyDown={onPanelKey}
               >
-                <MegaContent platform={shownPlatform} name={nameOf(shownPlatform)} />
+                <MegaContent platform={shownPlatform} name={nameOf(shownPlatform)} demo={demo} />
               </div>
             </>,
             host,
@@ -261,17 +273,21 @@ export function PlatformNav({ platforms, current = null, children }: PlatformNav
   );
 }
 
-type Column = { id: string; title: string; links: NavLink[]; all: NavLink | null; dot?: boolean };
+type Column = { id: string; title: string; links: MegaLink[]; all: { label: string; href: string } | null; dot?: boolean };
 
-function MegaContent({ platform, name }: { platform: NavPlatform; name: string }) {
+/** A product's first catalogue photo ("<slug>--<n>"), or null: the featured tile never draws the glyph while one exists. */
+const firstPhoto = (slug: string): string | null => productPhotos(slug)[0]?.key ?? null;
+
+function MegaContent({ platform, name, demo }: { platform: NavPlatform; name: string; demo: boolean }) {
   const t = useShellT();
   const plan = megaPlan(platform);
-  const feature = megaFeature(platform);
+  const feature = megaFeature(platform, firstPhoto);
+  const words = megaWords(t, platform.slug, name);
   const columns: Column[] = [
-    { id: "devices", title: t("nav.devices"), links: plan.devices, all: plan.allDevices ? { label: t("nav.allDevices", { name }), href: plan.allDevices } : null, dot: true },
+    { id: "devices", title: t("nav.devices"), links: plan.devices, all: plan.allDevices ? { label: words.allDevices, href: plan.allDevices } : null, dot: true },
     { id: "games", title: t("nav.gamesColumn"), links: plan.games, all: plan.allGames ? { label: t("nav.allGames", { name }), href: plan.allGames } : null },
     { id: "accessories", title: t("nav.accessoriesColumn"), links: plan.accessories, all: null },
-    { id: "cards", title: t("nav.cards"), links: plan.used ? [...plan.cards, { label: t("nav.usedOf", { name }), href: plan.used }] : plan.cards, all: null },
+    { id: "cards", title: t("nav.cards"), links: plan.used ? [...plan.cards, { label: words.usedOf, href: plan.used.href, count: plan.used.count }] : plan.cards, all: null },
   ].filter((column) => column.links.length > 0 || column.all !== null);
 
   return (
@@ -288,16 +304,7 @@ function MegaContent({ platform, name }: { platform: NavPlatform; name: string }
           <MegaColumn key={column.id} column={column} />
         ))}
         {columns.length > 0 && columns.length < 4 ? <div style={{ gridColumn: `span ${4 - columns.length}` }} aria-hidden="true" /> : null}
-        {feature ? (
-          <LocaleLink to={feature.href} className="shell-mega__feature">
-            <span className="shell-mega__well">
-              {feature.artKey ? <Art name={feature.artKey} alt="" sizes="132px" /> : <Icon name="game-controller" size={32} />}
-            </span>
-            <span className="shell-mega__name">
-              <span className="shell-mega__text">{feature.label}</span>
-            </span>
-          </LocaleLink>
-        ) : null}
+        {feature ? <MegaFeatureTile feature={feature} demo={demo} /> : null}
       </div>
     </div>
   );
@@ -311,12 +318,13 @@ function MegaColumn({ column }: { column: Column }) {
         {column.dot ? <PlatformLed /> : null}
         {column.title}
       </h2>
-      <ul>
+      <ul className="shell-mega__list">
         {column.links.map((link) => (
           <li key={link.href}>
-            <LocaleLink to={link.href} className="shell-mega__link">
+            <LocaleLink to={link.href} className="shell-mega__link" title={link.full}>
               <span className="shell-mega__line">
                 <span className="shell-mega__text">{link.label}</span>
+                {link.count !== null ? <MegaCount count={link.count} /> : null}
               </span>
             </LocaleLink>
           </li>
@@ -332,5 +340,57 @@ function MegaColumn({ column }: { column: Column }) {
         ) : null}
       </ul>
     </section>
+  );
+}
+
+/** A link's count: the figure in --ink-2 on screen; «، 38 منتجاً» for assistive technology (the figure alone says little). */
+function MegaCount({ count }: { count: number }) {
+  const t = useShellT();
+  const f = useFormat();
+  return (
+    <span className="shell-mega__count">
+      <span aria-hidden="true">{f.number(count)}</span>
+      <VisuallyHidden>{` · ${t("nav.count", { count })}`}</VisuallyHidden>
+    </span>
+  );
+}
+
+/**
+ * The featured product (§5.4): a 1:1 well with its photo, its name and its price — the price muted with «نفد حالياً»
+ * when it is sold out, «قريباً» when it is not out yet. A demo row is tagged «سعر تجريبي» as a product card tags it:
+ * only when the store is live (in demo mode the nav row's chip marks every price on the page).
+ */
+function MegaFeatureTile({ feature, demo }: { feature: MegaFeature; demo: boolean }) {
+  const card = useT("ui-card");
+  const out = feature.stock === "out_of_stock";
+  const soon = feature.stock === "preorder";
+  // as a product card writes a name: a Latin name on an Arabic page is a left-to-right line at the page's start edge;
+  // a name with Arabic in it keeps the page's direction, its Latin parts isolated
+  const title = latinName(feature.label, useDir());
+  return (
+    <LocaleLink to={feature.href} className="shell-mega__feature" data-state={out ? "out" : soon ? "soon" : undefined}>
+      <span className="shell-mega__well">
+        {feature.artKey ? (
+          <Art name={feature.artKey} alt="" sizes="176px" />
+        ) : feature.mediaKey ? (
+          // an uploaded photo: contained in the square well (its own size is unknown here)
+          <img src={mediaUrl(feature.mediaKey)} alt="" width={176} height={176} loading="lazy" decoding="async" />
+        ) : (
+          <Icon name="game-controller" size={32} />
+        )}
+      </span>
+      <span className="shell-mega__name">
+        <span dir={title.dir} className={cx("shell-mega__fname", title.className)}>
+          <BidiText text={feature.label} />
+        </span>
+        {feature.priceIqd !== null ? (
+          <span className="shell-mega__price">
+            <SafePrice amountIqd={feature.priceIqd} size="md" as="span" approx="off" tone={out ? "muted" : undefined} />
+          </span>
+        ) : null}
+        {out || soon ? <span className="shell-mega__status">{card(out ? "outNow" : "soon")}</span> : null}
+        {feature.isDemo && !demo && feature.priceIqd !== null ? <DemoNote variant="tag" what="price" /> : null}
+      </span>
+    </LocaleLink>
   );
 }

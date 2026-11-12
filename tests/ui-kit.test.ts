@@ -173,8 +173,18 @@ describe("kit restatements that outweigh the stylesheet (utilities layer)", () =
     expect(read("../app/ui/Toast.tsx")).toMatch(/lg:w-\[380px\] print:hidden/);
   });
 
-  it("draws the offline banner on graphite, never the demo strip's amber", () => {
-    expect(read("../app/ui/OfflineBanner.tsx")).toMatch(/bg-band text-on-band/);
+  it("draws the offline banner in the warn treatment of §4.23, told apart from the demo strip by its bar (not the black ribbon §11.7 removed)", () => {
+    const source = read("../app/ui/OfflineBanner.tsx");
+    expect(source).not.toMatch(/bg-band|text-on-band/);
+    const offline = rule(components, ".offline");
+    expect(offline).toMatch(/background: var\(--warn-tint\)/);
+    expect(offline).toMatch(/color: var\(--warn\)/);
+    expect(offline).toMatch(/font: var\(--type-sm-strong\)/);
+    expect(offline).toMatch(/border-inline-start: 3px solid var\(--warn\)/);
+    // the demo strip keeps its own amber pair and no bar: the two never read as one message
+    const strip = rule(components, ".demo-strip");
+    expect(strip).toMatch(/background: var\(--demo-bg\)/);
+    expect(strip).not.toMatch(/border-inline-start/);
   });
 });
 
@@ -190,7 +200,8 @@ describe("the product well (§4.11, §7.3): one fit rule per kind", () => {
   it("writes a release day in Iraq time with Western digits («يصدر 19 تشرين الثاني»)", () => {
     const day = Date.UTC(2026, 10, 18, 21, 0); // 00:00 on 19 November in Baghdad
     expect(releaseDay(day, "ar")).toMatch(/^19 /);
-    expect(releaseDay(day, "en")).toMatch(/19/);
+    // day first in every language (§2.6, §10): "19 November", never "November 19"
+    expect(releaseDay(day, "en")).toBe("19 November");
     expect(releaseDay(day, "ckb")).toBe("19ی تشرینی دووەم");
   });
 });
@@ -270,14 +281,14 @@ describe("text helpers", () => {
     expect(rule(components, ".bidi")).toMatch(/unicode-bidi:\s*isolate/);
   });
 
-  it("writes an amount in a sentence exactly as before, now through f.iqd (figure first, then the currency)", () => {
+  it("writes an amount in a sentence through f.iqd: figure first, a no-break space, then the currency", () => {
     for (const locale of LOCALE_CODES) {
       for (const amount of [0, 5000, 25000, 1095000]) {
         const f = { iqd: (value: number) => formatMoney(value, "IQD", locale, "latn") };
-        const before = `${new Intl.NumberFormat(`${LOCALES[locale].bcp47}-u-nu-latn`).format(amount)} ${CURRENCIES.IQD.symbol[locale]}`;
+        const before = `${new Intl.NumberFormat(`${LOCALES[locale].bcp47}-u-nu-latn`).format(amount)}\u00a0${CURRENCIES.IQD.symbol[locale]}`;
         expect(iqdText(f, amount)).toBe(before);
       }
     }
-    expect(iqdText({ iqd: (value) => formatMoney(value, "IQD", "ar") }, 25000)).toBe("25,000 د.ع");
+    expect(iqdText({ iqd: (value) => formatMoney(value, "IQD", "ar") }, 25000)).toBe("25,000\u00a0د.ع");
   });
 });

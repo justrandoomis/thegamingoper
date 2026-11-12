@@ -90,64 +90,64 @@
   "variants": [
     {
       "sku": "XWC-BLK",
-      "title": { "ar": "Xbox Wireless Controller أسود Carbon Black", "en": "Xbox Wireless Controller – Carbon Black", "ckb": "Xbox Wireless Controller ـی ڕەشی Carbon Black" },
+      "title": { "ar": "أسود Carbon Black", "en": "Carbon Black", "ckb": "ڕەشی Carbon Black" },
       "options": { "color": "Carbon Black" },
       "isDefault": true,
       "images": ["xbox-wireless-controller--1", "xbox-wireless-controller--2"]
     },
     {
       "sku": "XWC-WHT",
-      "title": { "ar": "Xbox Wireless Controller أبيض Robot White", "en": "Xbox Wireless Controller – Robot White", "ckb": "Xbox Wireless Controller ـی سپیی Robot White" },
+      "title": { "ar": "أبيض Robot White", "en": "Robot White", "ckb": "سپیی Robot White" },
       "options": { "color": "Robot White" },
       "isDefault": false,
       "images": ["xbox-wireless-controller--3"]
     },
     {
       "sku": "XWC-BLU",
-      "title": { "ar": "Xbox Wireless Controller أزرق Shock Blue", "en": "Xbox Wireless Controller – Shock Blue", "ckb": "Xbox Wireless Controller ـی شینی Shock Blue" },
+      "title": { "ar": "أزرق Shock Blue", "en": "Shock Blue", "ckb": "شینی Shock Blue" },
       "options": { "color": "Shock Blue" },
       "isDefault": false,
       "images": ["xbox-wireless-controller--4"]
     },
     {
       "sku": "XWC-RED",
-      "title": { "ar": "Xbox Wireless Controller أحمر Pulse Red", "en": "Xbox Wireless Controller – Pulse Red", "ckb": "Xbox Wireless Controller ـی سووری Pulse Red" },
+      "title": { "ar": "أحمر Pulse Red", "en": "Pulse Red", "ckb": "سووری Pulse Red" },
       "options": { "color": "Pulse Red" },
       "isDefault": false,
       "images": ["xbox-wireless-controller--5"]
     },
     {
       "sku": "XWC-PNK",
-      "title": { "ar": "Xbox Wireless Controller وردي Deep Pink", "en": "Xbox Wireless Controller – Deep Pink", "ckb": "Xbox Wireless Controller ـی پەمەیی Deep Pink" },
+      "title": { "ar": "وردي Deep Pink", "en": "Deep Pink", "ckb": "پەمەیی Deep Pink" },
       "options": { "color": "Deep Pink" },
       "isDefault": false,
       "images": ["xbox-wireless-controller--2"]
     },
     {
       "sku": "XWC-GRN",
-      "title": { "ar": "Xbox Wireless Controller أخضر Velocity Green", "en": "Xbox Wireless Controller – Velocity Green", "ckb": "Xbox Wireless Controller ـی سەوزی Velocity Green" },
+      "title": { "ar": "أخضر Velocity Green", "en": "Velocity Green", "ckb": "سەوزی Velocity Green" },
       "options": { "color": "Velocity Green" },
       "isDefault": false,
       "images": ["xbox-wireless-controller--2"]
     },
     {
       "sku": "XWC-VLT",
-      "title": { "ar": "Xbox Wireless Controller أصفر Electric Volt", "en": "Xbox Wireless Controller – Electric Volt", "ckb": "Xbox Wireless Controller ـی زەردی Electric Volt" },
+      "title": { "ar": "أصفر Electric Volt", "en": "Electric Volt", "ckb": "زەردی Electric Volt" },
       "options": { "color": "Electric Volt" },
       "isDefault": false
     },
     {
       "sku": "XWC-PUR",
-      "title": { "ar": "Xbox Wireless Controller بنفسجي Astral Purple", "en": "Xbox Wireless Controller – Astral Purple", "ckb": "Xbox Wireless Controller ـی مۆری Astral Purple" },
+      "title": { "ar": "بنفسجي Astral Purple", "en": "Astral Purple", "ckb": "مۆری Astral Purple" },
       "options": { "color": "Astral Purple" },
       "isDefault": false
     },
     {
       "sku": "XWC-X25",
       "title": {
-        "ar": "Xbox Wireless Controller X25 Special Edition أخضر شفاف",
-        "en": "Xbox Wireless Controller X25 Special Edition",
-        "ckb": "Xbox Wireless Controller X25 Special Edition ـی سەوزی ڕوون"
+        "ar": "X25 Special Edition · أخضر شفاف",
+        "en": "X25 Special Edition",
+        "ckb": "X25 Special Edition · سەوزی ڕوون"
       },
       "options": { "edition": "X25 Special Edition", "color": "Translucent OG Green" },
       "isDefault": false,

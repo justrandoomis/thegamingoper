@@ -8,7 +8,7 @@
   "name": {
     "ar": "قاعدة الشحن DualSense Charging Station",
     "en": "DualSense Charging Station",
-    "ckb": "DualSense Charging Station (وێستگەی شەحن)"
+    "ckb": "وێستگەی شەحنی DualSense Charging Station"
   },
   "short": {
     "ar": "تشحن يدَي تحكم معاً · DualSense وDualSense Edge · بدون الحاجة لجهاز PS5",
@@ -73,7 +73,7 @@
   "variants": [
     {
       "sku": "DSENSE-CHARGING-STATION",
-      "title": { "ar": "قاعدة شحن DualSense", "en": "DualSense Charging Station", "ckb": "وێستگەی شەحنی DualSense" },
+      "title": { "ar": "قاعدة الشحن DualSense Charging Station", "en": "DualSense Charging Station", "ckb": "وێستگەی شەحنی DualSense Charging Station" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZDS1",
       "isDefault": true,

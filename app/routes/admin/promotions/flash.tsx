@@ -142,7 +142,7 @@ function CreateSale() {
         <input type="hidden" name="idempotencyKey" value={formKey} />
         <div className="prm-grid">
           <TextField name="nameAr" label={t("flash.f.nameAr")} required maxLength={120} error={errors.nameAr} />
-          <TextField name="nameEn" label={t("flash.f.nameEn")} maxLength={120} dir="ltr" error={errors.nameEn} />
+          <TextField name="nameEn" label={t("flash.f.nameEn")} maxLength={120} ltr lang="en" error={errors.nameEn} />
           <TextField name="startsAt" type="datetime-local" label={t("coupons.f.startsAt")} hint={t("common.baghdadTime")} required error={errors.startsAt} />
           <TextField name="endsAt" type="datetime-local" label={t("coupons.f.endsAt")} hint={t("flash.f.endsHint", { days: FLASH.maxDays })} required error={errors.endsAt} />
         </div>

@@ -219,7 +219,7 @@ function RuleForm({ options, rule }: { options: ConditionOptions; rule: RuleDeta
       {rule ? <input type="hidden" name="expectedUpdatedAt" value={rule.updatedAt} /> : <input type="hidden" name="idempotencyKey" value={formKey} />}
       <div className="prm-grid prm-grid--3">
         <TextField name="nameAr" label={t("rules.f.nameAr")} defaultValue={rule?.name.ar ?? ""} required maxLength={120} error={errors.nameAr} />
-        <TextField name="nameEn" label={t("rules.f.nameEn")} defaultValue={rule?.name.en ?? ""} maxLength={120} dir="ltr" error={errors.nameEn} />
+        <TextField name="nameEn" label={t("rules.f.nameEn")} defaultValue={rule?.name.en ?? ""} maxLength={120} ltr lang="en" error={errors.nameEn} />
         <Select name="kind" label={t("rules.f.kind")} value={kind} onChange={(event) => setKind(event.currentTarget.value as RuleKind)} options={RULE_KINDS.map((entry) => ({ value: entry, label: t(`rules.kind.${entry}`) }))} />
         {kind === "percent" || kind === "fixed" ? (
           <TextField key={kind} name="value" label={kind === "percent" ? t("coupons.f.percent") : t("coupons.f.amount")} defaultValue={terms && terms.kind === kind && terms.value !== null ? (kind === "percent" ? bpsToPercent(terms.value) : String(terms.value)) : ""} inputMode="decimal" required error={errors.value} />
@@ -266,7 +266,7 @@ function RuleForm({ options, rule }: { options: ConditionOptions; rule: RuleDeta
       </fieldset>
       <div className="prm-grid">
         <TextField name="descriptionAr" label={t("rules.f.descriptionAr")} defaultValue={rule?.description?.ar ?? ""} maxLength={300} />
-        <TextField name="descriptionEn" label={t("rules.f.descriptionEn")} defaultValue={rule?.description?.en ?? ""} maxLength={300} dir="ltr" />
+        <TextField name="descriptionEn" label={t("rules.f.descriptionEn")} defaultValue={rule?.description?.en ?? ""} maxLength={300} ltr lang="en" />
       </div>
       {rule ? (
         <TextArea name="reason" label={t("common.reason")} hint={t("common.reasonHint")} required rows={2} maxLength={500} error={errors.reason} />

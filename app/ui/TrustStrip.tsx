@@ -85,7 +85,8 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
         {returnsTo ? (
           <li className="trust__cell">
             <Icon name="arrow-counter-clockwise" size={16} className="trust__icon" />
-            <TextLink as={LocaleLink} to={returnsTo} inline arrow={false}>
+            {/* a fact of its own, not a word in a sentence: a 44px target around the 13px words (§10) */}
+            <TextLink as={LocaleLink} to={returnsTo} inline arrow={false} className="relative hit-44">
               {t("trust.returns")}
             </TextLink>
           </li>

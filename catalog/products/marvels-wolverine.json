@@ -96,7 +96,7 @@
   "variants": [
     {
       "sku": "WOLV-PS5-STD",
-      "title": { "ar": "Marvel's Wolverine لجهاز PS5 — Standard Edition", "en": "Marvel's Wolverine for PS5 — Standard Edition", "ckb": "Marvel's Wolverine بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["marvels-wolverine--1", "marvels-wolverine--2", "marvels-wolverine--3", "marvels-wolverine--4"],

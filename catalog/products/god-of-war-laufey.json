@@ -81,7 +81,7 @@
   "variants": [
     {
       "sku": "GOWL-PS5-STD",
-      "title": { "ar": "God of War Laufey لجهاز PS5 — Standard Edition", "en": "God of War Laufey for PS5 — Standard Edition", "ckb": "God of War Laufey بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["god-of-war-laufey--1", "god-of-war-laufey--2", "god-of-war-laufey--3", "god-of-war-laufey--4"],

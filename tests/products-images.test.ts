@@ -106,8 +106,10 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
       const widths = manifest.variants[format].map((v) => v.w);
       expect(widths, `${format} widths ascend`).toEqual([...widths].sort((a, b) => a - b));
       expect(new Set(widths).size).toBe(widths.length);
-      // the standard widths, never upscaled; a picture narrower than 240 px ships at its own width
-      expect(widths).toEqual(manifest.width >= WIDTHS[0] ? WIDTHS.filter((w) => w <= manifest.width) : [manifest.width]);
+      // the standard widths, never upscaled; a picture narrower than 480 px also ships at its own width (a 2× screen
+      // gets every pixel of a maker's small cut-out), one narrower than 240 px at its own width only
+      const standard = WIDTHS.filter((w) => w <= manifest.width);
+      expect(widths).toEqual(manifest.width < WIDTHS[1] && !standard.includes(manifest.width) ? [...standard, manifest.width] : standard);
       for (const v of manifest.variants[format]) expect(v.src.endsWith(`.${format}`)).toBe(true);
     }
     expect(manifest.variants.avif.map((v) => v.w)).toEqual(manifest.variants.webp.map((v) => v.w));
@@ -214,7 +216,9 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
       if (key.startsWith("$")) continue;
       expect(known.has(key), `${key} is not a catalogue image`).toBe(true);
       expect(typeof entry.why === "string" && entry.why.length > 10, `${key} needs a "why"`).toBe(true);
-      expect(Object.keys(entry).filter((name) => !["why", "cutout", "holes", "extend", "clean", "pad", "trim", "crop"].includes(name))).toEqual([]);
+      // "opaque": the opaque-photo gate accepts this photo after looking (a gift card's printed face, …)
+      expect(Object.keys(entry).filter((name) => !["why", "cutout", "holes", "extend", "clean", "pad", "trim", "crop", "opaque"].includes(name))).toEqual([]);
+      if ("opaque" in entry) expect(entry.opaque, `${key}: "opaque" is true or absent`).toBe(true);
     }
   });
 });

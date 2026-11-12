@@ -93,7 +93,7 @@
   "variants": [
     {
       "sku": "PULSE-ELITE-WHITE",
-      "title": { "ar": "PULSE Elite – أبيض", "en": "PULSE Elite – White", "ckb": "PULSE Elite – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZWH2EC",
       "isDefault": true,
@@ -101,7 +101,7 @@
     },
     {
       "sku": "PULSE-ELITE-MIDNIGHT-BLACK",
-      "title": { "ar": "PULSE Elite – أسود Midnight Black", "en": "PULSE Elite – Midnight Black", "ckb": "PULSE Elite – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["pulse-elite--5"],

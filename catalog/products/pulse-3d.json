@@ -83,21 +83,21 @@
   "variants": [
     {
       "sku": "PULSE3D-WHITE",
-      "title": { "ar": "PULSE 3D – أبيض", "en": "PULSE 3D – White", "ckb": "PULSE 3D – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "isDefault": true,
       "images": ["pulse-3d--1", "pulse-3d--2", "pulse-3d--5"]
     },
     {
       "sku": "PULSE3D-MIDNIGHT-BLACK",
-      "title": { "ar": "PULSE 3D – أسود Midnight Black", "en": "PULSE 3D – Midnight Black", "ckb": "PULSE 3D – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["pulse-3d--3"]
     },
     {
       "sku": "PULSE3D-GRAY-CAMO",
-      "title": { "ar": "PULSE 3D – مموّه رمادي Gray Camouflage", "en": "PULSE 3D – Gray Camouflage", "ckb": "PULSE 3D – کامۆفلاژی خۆڵەمێشی" },
+      "title": { "ar": "مموّه رمادي Gray Camouflage", "en": "Gray Camouflage", "ckb": "کامۆفلاژی خۆڵەمێشی" },
       "options": { "color": "Gray Camouflage" },
       "isDefault": false,
       "images": ["pulse-3d--4"],

@@ -109,7 +109,7 @@
   "variants": [
     {
       "sku": "007FL-PS5-STD",
-      "title": { "ar": "007 First Light لجهاز PS5", "en": "007 First Light for PS5", "ckb": "007 First Light بۆ PS5" },
+      "title": { "ar": "لجهاز PS5", "en": "PS5 edition", "ckb": "بۆ PS5" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["007-first-light--1", "007-first-light--2", "007-first-light--3", "007-first-light--4"],
@@ -121,7 +121,7 @@
     },
     {
       "sku": "007FL-XSX-STD",
-      "title": { "ar": "007 First Light لجهاز Xbox Series X", "en": "007 First Light for Xbox Series X", "ckb": "007 First Light بۆ Xbox Series X" },
+      "title": { "ar": "لجهاز Xbox Series X", "en": "Xbox Series X edition", "ckb": "بۆ Xbox Series X" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["007-first-light--1", "007-first-light--2", "007-first-light--3"],

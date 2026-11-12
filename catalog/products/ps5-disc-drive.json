@@ -9,7 +9,7 @@
   "name": {
     "ar": "قارئ الأقراص Disc Drive for PS5 Digital Edition",
     "en": "Disc Drive for PS5 Digital Edition Consoles",
-    "ckb": "Disc Drive for PS5 Digital Edition (دڕایڤی دیسک)"
+    "ckb": "دڕایڤی دیسکی Disc Drive for PS5 Digital Edition"
   },
   "short": {
     "ar": "Ultra HD Blu-ray · لـ PS5 Slim Digital وPS5 Pro فقط · ربط عبر الإنترنت",
@@ -79,7 +79,7 @@
   "variants": [
     {
       "sku": "PS5-DISC-DRIVE",
-      "title": { "ar": "قارئ أقراص PS5 – أبيض", "en": "PS5 Disc Drive – White", "ckb": "دڕایڤی دیسکی PS5 – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZDD1",
       "isDefault": true,

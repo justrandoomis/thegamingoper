@@ -341,12 +341,14 @@
     padding-block-start: var(--s-4);
   }
 
-  /* ───────────────────────────── the floating dock: the compare tray and the filter pill ───────────────────────────── */
+  /* ───────────────────────────── the floating dock: the compare tray and the filter pill ─────────────────────────────
+     It floats --catalog-dock-inset above the bottom chrome (12px on phones, above the tab bar; 24px from 1024, where
+     the tray sits at the bottom end); the root's scroll padding below reads the same inset. */
   .catalog-dock {
     position: fixed;
     z-index: var(--z-sticky);
     inset-inline: 0;
-    inset-block-end: calc(var(--shell-bottom) + var(--s-3));
+    inset-block-end: calc(var(--shell-bottom) + var(--catalog-dock-inset, var(--s-3)));
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -360,7 +362,6 @@
   @media (min-width: 64rem) {
     .catalog-dock {
       align-items: flex-end;
-      inset-block-end: calc(var(--shell-bottom) + var(--s-6));
     }
   }
   /* «الفلاتر | الترتيب»: solid paper with the float shadow (the header and the tab bar are the two live glass panes) */
@@ -450,10 +451,18 @@
     gap: var(--s-2);
     margin-inline-start: auto;
   }
-  /* while the dock shows, a focused control scrolls clear of it too (the shell's scroll padding counts the bars; the
-     dock publishes its measured height as --catalog-dock — one line or two, tray and pill) */
+  /* while the dock shows, a focused control scrolls clear of it too, with the shell's 12px of air: the bars, the
+     dock's inset, its measured height (--catalog-dock, published by the dock — one line or two, tray and pill) and the
+     air. QA 2026-11-12: from 1024 the padding counted a 12px inset where the tray floats 24px up, and a focused card
+     key ended 12px under the tray. */
   :root:has(.catalog-dock) {
-    scroll-padding-block-end: calc(var(--shell-bottom) + var(--s-3) + var(--catalog-dock, 72px));
+    --catalog-dock-inset: var(--s-3);
+    scroll-padding-block-end: calc(var(--shell-bottom) + var(--catalog-dock-inset) + var(--catalog-dock, 72px) + var(--s-3));
+  }
+  @media (min-width: 64rem) {
+    :root:has(.catalog-dock) {
+      --catalog-dock-inset: var(--s-6);
+    }
   }
 
   /* ───────────────────────────── device tiles ("everything about your device") ───────────────────────────── */
@@ -604,16 +613,23 @@
     gap: var(--s-2);
   }
   /* «أزل» right beside its own picture, and the add button right after its own price: in a wide column, pushed to the
-     far end, they sat next to the NEIGHBOURING product (a remove or an add that reads as the other product's) */
+     far end, they sat next to the NEIGHBOURING product (a remove or an add that reads as the other product's). The
+     44×44 key never shrinks and never leaves its own cell: in a narrow column (four products at 768, a 360 phone) the
+     well gives way instead — the key had overhung the column's edge and the next header cell, painted later, covered
+     half of it (QA 2026-11-12: «<» for ×, half a focus ring, half the hit area). */
   .catalog-compare__top {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     gap: var(--s-2);
+    min-inline-size: 0;
   }
   .catalog-compare__well {
-    inline-size: 96px;
-    max-inline-size: 70%;
+    flex: 0 1 96px;
+    min-inline-size: 0;
+  }
+  .catalog-compare__remove {
+    flex: none;
   }
   /* a product's name: two lines at most, a 44px target */
   .catalog-compare__name {
@@ -633,6 +649,15 @@
     -webkit-line-clamp: 2;
     line-clamp: 2;
     overflow: hidden;
+  }
+  /* A Latin name on an Arabic page is ONE left-to-right line set at the page's start edge (compare.tsx CompareName,
+     the kit's latinName), so the clamp cuts its logical end. Chromium aligns the clamped last line WITHOUT its
+     ellipsis and then appends the ellipsis past the edge, where the clip hides it («Nintendo Switch» with no sign that
+     the name goes on; «Zelda ..»). The ellipsis gets this padding to hang in; the negative margin keeps the text's edge
+     where it was. */
+  .catalog-compare__name > span[dir="ltr"] {
+    padding-inline-end: 1em;
+    margin-inline-end: -1em;
   }
   @media (hover: hover) {
     .catalog-compare__name:hover > span {

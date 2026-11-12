@@ -1,23 +1,27 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router";
 
 import type { Route } from "./+types/employee";
 import { useFormat } from "~/i18n/react";
+import { enableEmployee, issuePasswordLink } from "~/server/auth/employees.server";
 import { invalid } from "~/server/errors";
 import { endEmployeeSession, endEmployeeSessions, getEmployeeProfile, setBaseSalary, terminateEmployee, terminationPlan, updateEmployeeProfile } from "~/server/services/admin/staff/employees.server";
+import type { HandedLink } from "~/server/services/admin/staff/types";
 import { Disclosure } from "~/ui/Disclosure";
-import { TextField } from "~/ui/Field";
+import { Checkbox, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { staffMeta } from "./meta";
-import { amount, failed, int, intOrNull, ok, openStaff, optional, orRespond, staffT, text } from "./staff.server";
-import { ActionDialog, Code, DemoTag, Flag, FormDialog, Ledger, Money, Note, PageHead, Pair, PeriodName, Section, StateTag, When, tOr, useListSep, useStaffT } from "./ui";
+import { amount, checked, failed, handedLink, int, intOrNull, ok, openStaff, optional, orRespond, staffT, text } from "./staff.server";
+import { ActionDialog, Code, DemoTag, Flag, FormDialog, Ledger, LinkOnce, Money, Note, PageHead, Pair, PeriodName, Section, StateTag, When, tOr, useListSep, useStaffT, type ActionAnswer } from "./ui";
 
 /**
  * /admin/staff/employees/:employeeId — one employee's file: HR facts (staff.manage edits them), the pay
  * (staff.payroll.read sees it, staff.payroll.run sets the base salary — never one's own), what their roles grant
- * (15.01, read-only: the role editor is module 20's), this month at a glance, their live sessions and sign-in log, and
- * ending their access on termination (15.07: staff.manage, a reason, the impact shown first).
+ * (15.01, read-only: the role editor is module 20's), this month at a glance, their live sessions and sign-in log,
+ * signing in (staff.manage: a new one-time password link for an active account — issuePasswordLink —, re-enabling a
+ * closed one — enableEmployee, optionally with a new link; never one's own, never a stronger account; the link shown
+ * once), and ending their access on termination (15.07: staff.manage, a reason, the impact shown first).
  */
 export async function loader({ context, params }: Route.LoaderArgs) {
   const { db, actor, locale, now, session } = await openStaff(context);
@@ -52,6 +56,15 @@ export async function action({ request, context, params }: Route.ActionArgs) {
         const result = await terminateEmployee(req.db, req.actor, { employeeId, reason: text(form, "reason") }, req.now);
         return ok(intent, { message: t("employee.terminated", { sessions: result.sessionsEnded, shifts: result.shiftsCancelled }) });
       }
+      case "password-link": {
+        // the auth core: staff.manage, never one's own, everything the employee holds; the older links stop working
+        const { link } = await issuePasswordLink(req.db, req.actor, { employeeId, reason: text(form, "reason") }, req.now);
+        return ok(intent, { message: t("access.linkMade"), link: handedLink(req.ctx.origin, link) });
+      }
+      case "enable": {
+        const result = await enableEmployee(req.db, req.actor, { employeeId, reason: text(form, "reason"), newPasswordLink: checked(form, "newLink") }, req.now);
+        return ok(intent, { message: t("access.enabled"), link: result.link ? handedLink(req.ctx.origin, result.link) : null });
+      }
       default:
         throw invalid({ intent: "invalid" });
     }
@@ -69,6 +82,8 @@ export default function EmployeePage({ loaderData }: Route.ComponentProps) {
   const t = useStaffT();
   const { profile, plan, now } = loaderData;
   const { employee } = profile;
+  // the one-time link the last action answered: shown once, here, until dismissed or the page is left
+  const [handed, setHanded] = useState<HandedLink | null>(null);
   return (
     <>
       <PageHead
@@ -104,6 +119,11 @@ export default function EmployeePage({ loaderData }: Route.ComponentProps) {
           </p>
         </Note>
       ) : null}
+      {handed ? (
+        <div className="mt-5">
+          <LinkOnce link={handed} name={employee.name} onDismiss={() => setHanded(null)} />
+        </div>
+      ) : null}
 
       <div className="stf-split mt-5">
         <div className="grid min-w-0 gap-5">
@@ -114,11 +134,105 @@ export default function EmployeePage({ loaderData }: Route.ComponentProps) {
         </div>
         <aside className="grid min-w-0 gap-5">
           <HrFacts profile={profile} />
+          {profile.can.editProfile && !profile.isSelf ? <Access profile={profile} onLink={setHanded} /> : null}
           {profile.salary ? <Pay profile={profile} /> : null}
           {employee.status === "active" && !profile.isSelf ? <EndAccess profile={profile} plan={plan} /> : null}
         </aside>
       </div>
     </>
+  );
+}
+
+/**
+ * Signing in (staff.manage): whether the employee has set a password; a new one-time link for an active account
+ * (the older ones stop working); re-enabling a closed account — its roles as they were, no link made before the
+ * closing works again, a new link on request (asked by default: a returning employee's old password is not to be
+ * trusted, and one who never set a password cannot sign in without it). The link is shown once, above the file.
+ */
+function Access({ profile, onLink }: { profile: Profile; onLink: (link: HandedLink) => void }) {
+  const t = useStaffT();
+  const sep = useListSep();
+  const [asking, setAsking] = useState<"link" | "enable" | null>(null);
+  const [newLink, setNewLink] = useState(true);
+  const { employee } = profile;
+  const close = useCallback(() => setAsking(null), []);
+  const done = useCallback(
+    (answer: ActionAnswer) => {
+      const link = answer.link as HandedLink | null | undefined;
+      if (link) onLink(link);
+    },
+    [onLink],
+  );
+  return (
+    <Section id="access" title={t("access.title")}>
+      <div className="adm-card gap-2">
+        <Pair label={t("access.password")}>
+          <Status tone={employee.hasPassword ? "ok" : "warn"}>{employee.hasPassword ? t("access.set") : t("access.notSet")}</Status>
+        </Pair>
+        {employee.passwordChangedAt ? (
+          <Pair label={t("access.changedAt")}>
+            <When at={employee.passwordChangedAt} />
+          </Pair>
+        ) : null}
+        {!employee.hasPassword && employee.status === "active" ? <p className="type-caption text-ink-2">{t("access.notSetHint")}</p> : null}
+        {employee.status === "disabled" ? <p className="type-caption text-ink-2">{t("access.enableLead")}</p> : null}
+        {profile.can.passwordLink || profile.can.enable ? (
+          <div className="flex flex-wrap gap-2 pt-1 stf-noprint">
+            {profile.can.passwordLink ? (
+              <Key size="sm" icon="link" onClick={() => setAsking("link")}>
+                {t("access.newLink")}
+              </Key>
+            ) : null}
+            {profile.can.enable ? (
+              <Key
+                size="sm"
+                icon="arrow-counter-clockwise"
+                onClick={() => {
+                  setNewLink(true);
+                  setAsking("enable");
+                }}
+              >
+                {t("access.enable")}
+              </Key>
+            ) : null}
+          </div>
+        ) : profile.outranked ? (
+          <p className="type-caption text-ink-2">{t("access.outranked")}</p>
+        ) : null}
+      </div>
+      <ActionDialog
+        open={asking === "link"}
+        onClose={close}
+        title={t("access.newLinkQ", { name: employee.name })}
+        consequence={t(employee.hasPassword ? "access.newLinkWhatReset" : "access.newLinkWhatWelcome")}
+        confirmLabel={t("access.newLinkKey")}
+        reason={{ minLength: 3, hint: t("access.newLinkHint") }}
+        fields={{ intent: "password-link" }}
+        successMessage={t("access.linkMade")}
+        onDone={done}
+      />
+      <ActionDialog
+        open={asking === "enable"}
+        onClose={close}
+        tone="commit"
+        title={t("access.enableQ", { name: employee.name })}
+        consequence={t("access.enableWhat")}
+        confirmLabel={t("access.enable")}
+        impact={[{ label: t("employee.roles"), value: employee.roles.length ? employee.roles.map((role) => role.name).join(sep) : t("employees.noRole") }]}
+        reason={{ minLength: 3, hint: t("access.enableHint") }}
+        fields={{ intent: "enable", newLink: newLink ? "on" : "" }}
+        successMessage={t("access.enabled")}
+        onDone={done}
+      >
+        <Checkbox
+          name="newLinkChoice"
+          checked={newLink}
+          onChange={(event) => setNewLink(event.currentTarget.checked)}
+          label={t("access.enableLink")}
+          hint={employee.hasPassword ? t("access.enableLinkHintOld") : t("access.enableLinkHintNever")}
+        />
+      </ActionDialog>
+    </Section>
   );
 }
 

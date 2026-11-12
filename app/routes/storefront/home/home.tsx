@@ -59,7 +59,7 @@ import { Intro, type IntroCorner, type IntroResult, type IntroTile } from "./Int
 import { ConsentRow, PersonalPanel, PlatformsSheet } from "./Onboarding";
 import { CONSENT_COOKIE, INTRO_COOKIE, PLATFORMS_COOKIE, parseConsent, parsePlatformList, readIntroSeen, saveConsent, saveIntroSeen, sendOnboarding } from "./personal";
 import { Departments, NewArrivals, PlatformDoors, Releases, RecentlyViewed, RecommendationShelves, Sections, ServiceEntries, TrustFacts, UsedShelf } from "./Shelves";
-import { deviceHubFor, featuredHero, hasShelf, leadArt, MIN_SHELF, RELEASE_LIMIT, releasePlatformOf, resolveFocus, tileArt } from "./view";
+import { deviceHubFor, featuredHero, hasShelf, leadArt, MIN_SHELF, RELEASE_LIMIT, resolveFocus, tileArt } from "./view";
 import "./home.css";
 
 /** The one "talk to a person" destination (v2 §6.13). */
@@ -121,12 +121,6 @@ export async function loader({ context, params, url }: Route.LoaderArgs) {
     home,
     wished,
     banners,
-    // the release band's platform line: the coming items carry their products' card facts (home.server.ts)
-    releasePlatforms: Object.fromEntries(
-      home.comingSoon
-        .filter((item) => item.variantCount === 0)
-        .map((item) => [item.productId, releasePlatformOf({ platformSlug: item.platformSlug, forPlatforms: item.forPlatforms, kindLabel: item.kindLabel ?? undefined })]),
-    ),
     prefs,
     /** The request's clock: the release band counts days from it on the server and in the browser alike. */
     now: ctx.now,
@@ -161,7 +155,7 @@ type Prefs = Route.ComponentProps["loaderData"]["prefs"];
 type RootData = { customer?: unknown; storeMode?: string } | undefined;
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { home, defaultFocus, recommendations, releasePlatforms, now, wished, banners } = loaderData;
+  const { home, defaultFocus, recommendations, now, wished, banners } = loaderData;
   const t = useT("home");
   const nameOf = usePlatformName();
   const shell = (useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined)?.shell ?? null;
@@ -324,7 +318,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const sectionOf: Record<HomePageSection, ReactNode> = {
     platforms: <PlatformDoors platforms={navPlatforms} heroArt={heroArt} />,
     new_arrivals: <NewArrivals shelves={shelves} focus={focus} onFocus={setFocus} inflate={focus !== firstFocus} wished={wished} />,
-    coming_soon: <Releases items={home.comingSoon} platforms={releasePlatforms} now={now} />,
+    coming_soon: <Releases items={home.comingSoon} now={now} />,
     used: <UsedShelf units={home.used} />,
     used_repairs: <ServiceEntries tradeInArt={tradeInArt} />,
     accessories: <Departments categories={shell?.nav.categories ?? []} />,

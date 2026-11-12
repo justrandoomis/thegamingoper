@@ -29,12 +29,13 @@ import { searchIndexStatements } from "~/server/db/search.server";
 import { seedDemo } from "~/server/db/seed/demo";
 import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { runBatch, type BatchStatement } from "~/server/db/tx.server";
-import { DAY_MS, isNewProduct, kindLabelOf, NEW_WINDOW_DAYS, opaqueOf, shoppingTier, shortModelName, shownStockRank, type DeviceFamily } from "~/server/services/catalog/card-facts";
+import { DAY_MS, isNewProduct, kindLabelOf, NEW_WINDOW_DAYS, opaqueOf, qualifiedLine, qualifierOf, shoppingTier, shortModelName, shownStockRank, type DeviceFamily } from "~/server/services/catalog/card-facts";
 import { getCardsByIds, getDeals, getNewArrivals, getUsedSpotlight, listCards, MAX_CARD_PAGE } from "~/server/services/catalog/cards.server";
 import { listProducts, loadListingRows } from "~/server/services/catalog/listing.server";
 import { getProductDetail } from "~/server/services/catalog/product.server";
 import { baghdadMidnight } from "~/server/services/catalog/product-types";
 import { getCategoryTree, getNavTaxonomy, getPlatforms, invalidateNavTaxonomy, NAV_CHECK_MS } from "~/server/services/catalog/taxonomy.server";
+import { suggestSearchWithTotal } from "~/server/services/search.server";
 import type { CardSort } from "~/server/services/catalog/types";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { createTestDb, type TestDb } from "./helpers/db";
@@ -870,6 +871,7 @@ describe("taxonomy", () => {
       productId: P.console.id,
       href: "/p/zz-console",
       label: "Zorblax console",
+      qualifier: null, // its name says everything (a qualifier would sit here, never inside the label)
       image: consoleCard.image,
       priceIqd: consoleCard.priceIqd,
       stock: consoleCard.stock,
@@ -1222,5 +1224,98 @@ describe("short model names, the product page's kind and a store set's parts (po
       expect(part.priceIqd, part.slug).toBe(Number(row.price_iqd));
       expect(Number.isSafeInteger(part.priceIqd) && part.priceIqd > 0).toBe(true);
     }
+  });
+});
+
+describe("the qualifier: a Latin title stays Latin, its qualifier opens the meta line (design v2 spec §4.11)", () => {
+  const ARABIC = /[؀-ۿ]/;
+  const opensLatin = (text: string) => /^[^A-Za-z؀-ۿ]*[A-Za-z]/.test(text);
+
+  it("reads the qualifier of a row and joins it in front of the meta facts", () => {
+    const attributes = JSON.stringify({ qualifier: { ar: "نسخة الأقراص", en: "Disc edition", ckb: "وەشانی دیسک" } });
+    expect(qualifierOf(attributes, "ar")).toBe("نسخة الأقراص");
+    expect(qualifierOf(JSON.parse(attributes), "ckb")).toBe("وەشانی دیسک");
+    expect(qualifierOf(JSON.stringify({ qualifier: { ar: "", en: "With heatsink", ckb: "" } }), "ar")).toBe("");
+    for (const broken of [null, "", "{", "[]", JSON.stringify({ qualifier: "نسخة" }), JSON.stringify({ catalogue: {} })]) expect(qualifierOf(broken, "ar")).toBe("");
+    expect(qualifiedLine("نسخة الأقراص", "قارئ أقراص · DualSense في العلبة")).toBe("نسخة الأقراص · قارئ أقراص · DualSense في العلبة");
+    expect(qualifiedLine("", "1TB · 7,450MB/s")).toBe("1TB · 7,450MB/s");
+    expect(qualifiedLine("Disc edition", null)).toBe("Disc edition");
+    expect(qualifiedLine(" ", "")).toBeNull();
+  });
+
+  it("over the demo catalogue: no card name opens with Latin and hides Arabic-script words inside", async () => {
+    for (const locale of ["ar", "ckb"] as const) {
+      const all = (await allPages({ sort: "newest", limit: MAX_CARD_PAGE }, locale)).items;
+      for (const card of all) expect(opensLatin(card.name) && ARABIC.test(card.name), `${card.slug} (${locale}): «${card.name}»`).toBe(false);
+    }
+  });
+
+  it("prints every product's qualifier first on its card's meta line and under the product page's name", async () => {
+    const qualified = await rows<{ id: string; slug: string; short: string | null; qualifier: string }>(
+      "SELECT id, slug, short, json_extract(attributes, '$.qualifier') AS qualifier FROM products WHERE status = 'published' AND json_valid(attributes) AND json_type(attributes, '$.qualifier') = 'object'",
+    );
+    expect(qualified.length).toBeGreaterThanOrEqual(2); // «PlayStation 5 Slim · 1TB» + «نسخة الأقراص», «PlayStation 5 (2020)» + «الطراز الأصلي»
+    for (const locale of LOCALE_CODES) {
+      const cards = await getCardsByIds(t.db, locale, qualified.map((row) => row.id), { now: t.now });
+      expect(cards.length).toBe(qualified.length);
+      for (const row of qualified) {
+        const card = cards.find((entry) => entry.id === row.id)!;
+        const qualifier = pick(parse(row.qualifier), locale).trim();
+        const short = pick(parse(row.short), locale).trim();
+        expect(card.subtitle, `${row.slug} (${locale})`).toBe([qualifier, short].filter(Boolean).join(" · "));
+        // the card meta line shows the first two facts: the qualifier is always one of them
+        if (qualifier) expect((card.subtitle ?? "").split(" · ")[0]).toBe(qualifier);
+        const detail = (await getProductDetail(t.db, locale, row.slug, { now: t.now, related: false }))!;
+        expect(detail.qualifier, `${row.slug} (${locale})`).toBe(qualifier || null);
+        expect(detail.short, `${row.slug} (${locale})`).toBe([qualifier, short].filter(Boolean).join(" · ") || null);
+      }
+    }
+  });
+
+  it("hands the mega menu's console links and featured tile the qualifier beside their Latin label", async () => {
+    const qualified = new Map(
+      (await rows<{ slug: string; qualifier: string }>("SELECT slug, json_extract(attributes, '$.qualifier') AS qualifier FROM products WHERE json_valid(attributes) AND json_type(attributes, '$.qualifier') = 'object'")).map((row) => [row.slug, parse(row.qualifier)!]),
+    );
+    invalidateNavTaxonomy();
+    let seen = 0;
+    for (const locale of LOCALE_CODES) {
+      const nav = await getNavTaxonomy(t.db, locale, { now: t.now });
+      for (const platform of nav.platforms) {
+        for (const link of [...platform.consoles, ...(platform.featured ? [{ label: platform.featured.label, href: platform.featured.href, qualifier: platform.featured.qualifier ?? undefined }] : [])]) {
+          const slug = link.href.replace(/^\/p\//, "");
+          const expected = qualified.has(slug) ? pick(qualified.get(slug)!, locale) || undefined : undefined;
+          expect(link.qualifier, `${slug} (${locale})`).toBe(expected);
+          if (expected) seen++;
+          expect(opensLatin(link.label) && ARABIC.test(link.label), `${slug} (${locale}): «${link.label}»`).toBe(false);
+        }
+      }
+    }
+    expect(seen).toBeGreaterThan(0);
+  });
+
+  it("gives the header's product suggestions the qualifier on its own field, the label staying the Latin title", async () => {
+    const [slim] = await rows<{ id: string; name: string; qualifier: string }>(
+      "SELECT id, name, json_extract(attributes, '$.qualifier') AS qualifier FROM products WHERE status = 'published' AND json_valid(attributes) AND json_type(attributes, '$.qualifier') = 'object' ORDER BY slug LIMIT 1",
+    );
+    expect(slim).toBeDefined();
+    for (const locale of LOCALE_CODES) {
+      const name = pick(parse(slim.name), locale);
+      const { items } = await suggestSearchWithTotal(t.db, locale, name, { now: t.now });
+      const item = items.find((entry) => entry.id === slim.id);
+      expect(item, `${name} (${locale})`).toBeDefined();
+      expect(item!.label).toBe(name);
+      expect(item!.qualifier).toBe(pick(parse(slim.qualifier), locale) || undefined);
+    }
+    // a product without one carries no qualifier field at all
+    const { items } = await suggestSearchWithTotal(t.db, "en", "Zorblax", { now: t.now });
+    expect(items.find((entry) => entry.id === P.console.id)).not.toHaveProperty("qualifier");
+  });
+
+  it("leaves every card without a qualifier exactly as its short line says", async () => {
+    const [plain] = await rows<{ id: string; short: string }>(
+      "SELECT id, short FROM products WHERE status = 'published' AND short IS NOT NULL AND (attributes IS NULL OR NOT json_valid(attributes) OR json_type(attributes, '$.qualifier') IS NULL) AND kind = 'console' LIMIT 1",
+    );
+    const [card] = await getCardsByIds(t.db, "ar", [plain.id], { now: t.now });
+    expect(card.subtitle).toBe(pick(parse(plain.short), "ar"));
   });
 });

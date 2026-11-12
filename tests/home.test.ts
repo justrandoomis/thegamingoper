@@ -34,12 +34,15 @@ import {
   baghdadDay,
   deviceHubFor,
   featuredHero,
+  focusAfterIntro,
   hasShelf,
   headlineEm,
   heroTitleSizes,
   keepTogether,
   otherView,
   pictureFailed,
+  plainFinalYeh,
+  releaseItemOf,
   releasePlatformOf,
   resolveFocus,
   splitHeadline,
@@ -662,15 +665,21 @@ describe("client rules", () => {
     expect(headlineEm("")).toBe(1);
   });
 
-  it("sizes the hero headline on the type scale, one step down until its longest line fits the copy column", () => {
-    const steps = [56, 48, 40, 36, 32, 28, 26, 24, 22];
+  it("sizes the hero headline on its own range's type scale, one step down until its longest line fits the copy column", () => {
+    // v2 §2.6: the Kufi sizes each range already draws, display first (display, price xl, h1, h2). QA 2026-11-12: the
+    // featured console's headline was 36px at 768 — a size that range does not have (the copy column missed 40px by 1px)
+    const scale: Record<HeroBreakpoint, number[]> = { sm: [28, 26, 22], md: [40, 32, 30, 24], lg: [48, 34, 32, 26], xl: [56, 36, 28] };
     const switch2 = heroTitleSizes(["العب على", keepTogether("Nintendo Switch 2")]);
-    expect(switch2).toEqual({ sm: 28, md: 36, lg: 48, xl: 56 });
+    // the featured console's name fits every range at the display size (the 768 copy column is wide enough for 40px)
+    expect(switch2).toEqual({ sm: 28, md: 40, lg: 48, xl: 56 });
     for (const [range, px] of Object.entries(switch2) as [HeroBreakpoint, number][]) expect(headlineEm("Nintendo Switch 2") * px).toBeLessThanOrEqual(HERO_COPY_MIN[range]);
-    // a long name steps down the scale and, below the smallest step, wraps there (balanced) instead of shrinking further
+    // a long name steps down its range's scale and, below the smallest step (the range's h2), wraps there (balanced)
+    // instead of shrinking further
     const long = heroTitleSizes(["Play on", "Nintendo Switch – OLED Model"]);
-    expect(long.sm).toBe(22);
-    for (const px of [...Object.values(long), ...Object.values(switch2)]) expect(steps).toContain(px);
+    expect(long).toEqual({ sm: 22, md: 24, lg: 26, xl: 28 });
+    const names = [["العب على", "PlayStation 5 Pro"], ["Play on", "Lenovo Legion Go 2"], ["وصل", "Xbox Series X|S – Galaxy Black Edition"]];
+    const all = [switch2, long, ...names.map((lines) => heroTitleSizes(lines)), heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"], "plex")];
+    for (const sizes of all) for (const range of Object.keys(scale) as HeroBreakpoint[]) expect(scale[range], `${range} ${sizes[range]}px`).toContain(sizes[range]);
     // Sorani is set in Plex: the narrower face keeps a larger size for the same name
     expect(heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"], "plex").xl).toBeGreaterThanOrEqual(heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"]).xl);
   });
@@ -694,11 +703,64 @@ describe("client rules", () => {
     expect(deviceHubFor("Nintendo Switch 2 + Mario Kart World Bundle", devices)).toBeNull();
   });
 
-  it("labels a release with its one platform, never one platform's dot for several", () => {
-    expect(releasePlatformOf({ platformSlug: "xbox", kindLabel: "جهاز Xbox Series X|S" })).toEqual({ platform: "xbox", label: "جهاز Xbox Series X|S" });
-    expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation"], kindLabel: "سماعة · PS5" })).toEqual({ platform: "playstation", label: "سماعة · PS5" });
-    expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation", "xbox"], kindLabel: "لعبة متعددة المنصات" })).toEqual({ platform: null, label: null });
-    expect(releasePlatformOf({ platformSlug: "pc" })).toEqual({ platform: null, label: null });
+  it("labels a release with its platforms: one platform's dot and its card's words, or every platform named — never one platform's dot for several", () => {
+    expect(releasePlatformOf({ platformSlug: "xbox", kindLabel: "جهاز Xbox Series X|S" })).toEqual({ platform: "xbox", platforms: null, label: "جهاز Xbox Series X|S" });
+    expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation"], kindLabel: "سماعة · PS5" })).toEqual({ platform: "playstation", platforms: null, label: "سماعة · PS5" });
+    // a game for PS5 and Xbox: both dots and both names (the band names them; «لعبة متعددة المنصات» names neither)
+    expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation", "xbox"], kindLabel: "لعبة متعددة المنصات" })).toEqual({ platform: "playstation", platforms: ["playstation", "xbox"], label: null });
+    expect(releasePlatformOf({ platformSlug: "pc" })).toEqual({ platform: null, platforms: null, label: null });
+  });
+
+  it("gives every release on the band its platform line — a dated later version is that version's platform's (QA 2026-11-12)", () => {
+    const image = { artKey: "forza-horizon-6--1", mediaKey: null, alt: "", isIllustration: false };
+    const base = { key: "prd_forza-horizon-6:2027-01-26", slug: "forza-horizon-6", name: "Forza Horizon 6", releaseAt: Date.UTC(2027, 0, 25, 21), priceIqd: 89_250, image };
+    const words = (count: number) => (count === 1 ? "نسخة جديدة" : `${count} نسخ جديدة`);
+    // the PS5 version of a game that is out on Xbox: the PlayStation line, «نسخة جديدة» under the name, never in it
+    const version = releaseItemOf({ ...base, variantCount: 1, platformSlug: "playstation", forPlatforms: ["playstation"], kindLabel: "لعبة PlayStation" }, words);
+    expect(version).toMatchObject({ id: base.key, to: "/p/forza-horizon-6", name: "Forza Horizon 6", detail: "نسخة جديدة", platform: "playstation", platformLabel: "لعبة PlayStation" });
+    // a pre-order for two platforms: both named, no detail
+    const both = releaseItemOf({ ...base, key: "prd_grand-theft-auto-vi", slug: "grand-theft-auto-vi", name: "Grand Theft Auto VI", variantCount: 0, platformSlug: null, forPlatforms: ["playstation", "xbox"], kindLabel: "لعبة متعددة المنصات" }, words);
+    expect(both).toMatchObject({ name: "Grand Theft Auto VI", detail: null, platform: "playstation", platforms: ["playstation", "xbox"] });
+    expect(both.platformLabel).toBeUndefined();
+    // the demo catalogue: every coming item for a store platform carries its line, versions included
+    expect(home.comingSoon.some((item) => item.variantCount > 0)).toBe(true);
+    for (const item of home.comingSoon.filter((entry) => entry.forPlatforms.some((slug) => (PLATFORMS as readonly string[]).includes(slug)))) {
+      const shown = releaseItemOf(item, words);
+      expect(shown.platform, item.key).toBeTruthy();
+      expect(shown.name, item.key).toBe(item.name);
+    }
+  });
+
+  it("keeps a final «ى» / «ی» after a beh- or feh-shaped letter out of Plex's bowl ligature, so «حتى» never reads «حق» (QA 2026-11-12)", () => {
+    const ZWJ = "‍";
+    expect(plainFinalYeh("256GB · شاشة 7.9 بوصة بدقة 1080p · حتى 4K على التلفاز")).toBe(`256GB · شاشة 7.9 بوصة بدقة 1080p · حت${ZWJ}ى 4K على التلفاز`);
+    expect(plainFinalYeh("متى · معنى · فى")).toBe(`مت${ZWJ}ى · معن${ZWJ}ى · ف${ZWJ}ى`);
+    // Sorani: the same bowl on a final «ی» («کاتی» read «کاق»); a «ی» inside a word stays as it is
+    expect(plainFinalYeh("پارەدان لە کاتی وەرگرتن")).toBe(`پارەدان لە کات${ZWJ}ی وەرگرتن`);
+    expect(plainFinalYeh("بینی")).toBe(`بین${ZWJ}ی`);
+    // letters that do not join forward, other finals, lam-alef and Latin are left alone; the text reads back the same
+    for (const text of ["على", "إلى", "الأعلى", "هەموو", "لاسلكي", "في", "Nintendo Switch 2", ""]) expect(plainFinalYeh(text)).toBe(text);
+    expect(plainFinalYeh("حتى متى").replaceAll(ZWJ, "")).toBe("حتى متى");
+  });
+
+  it("hands the focus back to the key that opened the intro, else to the page's main landmark — never <body> (QA 2026-11-12)", () => {
+    const body = { id: "body" };
+    const main = { id: "main" };
+    const host = { id: "intro" };
+    const skip = { id: "intro skip" };
+    const replay = { id: "«شاهد المقدّمة مرة أخرى»" };
+    const inIntro = (element: { id: string }) => element === host || element === skip;
+    // Escape or «تخطَّ» on a first landing: nothing opened the overlay, so the focus fell to <body> or stayed on it
+    expect(focusAfterIntro(body, body, inIntro, null, main)).toBe(main);
+    expect(focusAfterIntro(skip, body, inIntro, null, main)).toBe(main);
+    expect(focusAfterIntro(null, body, inIntro, null, main)).toBe(main);
+    // replayed from the personal panel: back to that key — also when the focus was left on the leaving overlay (React's
+    // commit put it back on the intro after the modal layer had returned it)
+    expect(focusAfterIntro(host, body, inIntro, replay, main)).toBe(replay);
+    expect(focusAfterIntro(body, body, inIntro, replay, main)).toBe(replay);
+    // something on the page holds the focus already (the layer's own return worked): leave it there
+    expect(focusAfterIntro(replay, body, inIntro, replay, main)).toBeNull();
+    expect(focusAfterIntro(body, body, inIntro, null, null)).toBeNull();
   });
 
   it("reads release days as midnight in Baghdad, on the server and in the browser alike", () => {

@@ -40,7 +40,7 @@ import type { CategoryNode, PlatformSummary, ProductCardData } from "~/lib/dto";
 import { pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
-import { shortModelName } from "./card-facts";
+import { qualifierOf, shortModelName } from "./card-facts";
 import { getCardsByIds, MAX_CARD_IDS, researchedPlatformSql } from "./cards.server";
 import { loadListingRows } from "./listing.server";
 import type { NavCategory, NavFeatured, NavLink, NavPlatform, NavTaxonomy } from "./types";
@@ -102,7 +102,8 @@ function buildTree(rows: readonly CategoryRow[], locale: Locale): CategoryNode[]
 type DeviceRow = { platform_id: string; slug: string; name: string };
 type CategoryCountRow = { category_id: string | null; n: number };
 type PlatformCountRow = { platform_id: string; category_id: string | null; n: number };
-type ConsoleRow = { id: string; platform_id: string | null; slug: string; name: string };
+/** `attributes`: the product's attributes JSON (its qualifier — card-facts.ts qualifierOf). */
+type ConsoleRow = { id: string; platform_id: string | null; slug: string; name: string; attributes: string | null };
 type UsedRow = { platform_id: string | null; n: number };
 
 /** A card that can be bought now (the featured tile prefers one). */
@@ -113,7 +114,12 @@ const buyable = (card: ProductCardData | undefined): card is ProductCardData => 
  * its photo comes from (`platforms.art_key` = "<product-slug>--<n>") leads; the first of them that can be bought now
  * wins, else the first of them with its true state. Null when the platform lists no console (or no card came back).
  */
-export function pickFeatured(consoles: readonly { id: string; slug: string }[], artKey: string | null, cards: ReadonlyMap<string, ProductCardData>): NavFeatured | null {
+export function pickFeatured(
+  consoles: readonly { id: string; slug: string }[],
+  artKey: string | null,
+  cards: ReadonlyMap<string, ProductCardData>,
+  qualifiers: ReadonlyMap<string, string> = new Map(),
+): NavFeatured | null {
   const lead = artKey ? artKey.replace(/--\d+$/, "") : null;
   const ordered = [...consoles.filter((row) => row.slug === lead), ...consoles.filter((row) => row.slug !== lead)];
   const known = ordered.map((row) => cards.get(row.id)).filter((card): card is ProductCardData => card !== undefined);
@@ -123,6 +129,7 @@ export function pickFeatured(consoles: readonly { id: string; slug: string }[], 
     productId: card.id,
     href: `/p/${card.slug}`,
     label: card.name,
+    qualifier: qualifiers.get(card.id) || null,
     image: card.image,
     priceIqd: card.priceIqd,
     stock: card.stock,
@@ -158,7 +165,7 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
           WHERE ${LISTED}
           GROUP BY pl.id, p.category_id`,
       ),
-      batchSql(db, sql`SELECT p.id, p.platform_id, p.slug, p.name FROM products AS p WHERE ${LISTED} AND p.kind = 'console' ORDER BY COALESCE(p.published_at, p.created_at) DESC, p.id DESC`),
+      batchSql(db, sql`SELECT p.id, p.platform_id, p.slug, p.name, p.attributes FROM products AS p WHERE ${LISTED} AND p.kind = 'console' ORDER BY COALESCE(p.published_at, p.created_at) DESC, p.id DESC`),
       batchSql(db, sql`
         SELECT p.platform_id, COUNT(*) AS n
         FROM used_units AS u JOIN variants AS v ON v.id = u.variant_id JOIN products AS p ON p.id = v.product_id
@@ -176,6 +183,8 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
   const platformCounts = rowsOf<PlatformCountRow>(platformCountResult);
   const consoles = rowsOf<ConsoleRow>(consoleResult);
   const used = rowsOf<UsedRow>(usedResult);
+  // the words each console's Latin title leaves out («نسخة الأقراص»): printed beside the name, never inside it
+  const qualifiers = new Map(consoles.map((row) => [row.id, qualifierOf(row.attributes, locale)] as const).filter(([, text]) => text !== ""));
 
   // Categories: names, parents, the top-level ancestor of each, and product counts per subtree.
   const byId = new Map(categories.map((row) => [row.id, row]));
@@ -279,11 +288,14 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
         })),
       accessories,
       games,
-      consoles: platformConsoles.slice(0, CONSOLES_PER_PLATFORM).map((row) => ({ label: label(row), href: `/p/${row.slug}` })),
+      consoles: platformConsoles.slice(0, CONSOLES_PER_PLATFORM).map((row): NavLink => {
+        const qualifier = qualifiers.get(row.id);
+        return qualifier ? { label: label(row), href: `/p/${row.slug}`, qualifier } : { label: label(row), href: `/p/${row.slug}` };
+      }),
       allConsoles,
       // label = the platform's name; the shell words the link ("مستعمل {name}")
       used: usedCount > 0 ? { label: label(platform), href: `/used?platform=${platform.slug}`, count: usedCount } : null,
-      featured: pickFeatured(platformConsoles, platform.art_key, cards),
+      featured: pickFeatured(platformConsoles, platform.art_key, cards, qualifiers),
     };
   });
 

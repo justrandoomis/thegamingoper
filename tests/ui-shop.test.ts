@@ -21,6 +21,8 @@ import {
   INITIAL_COUNT,
   isCartView,
   itemKey,
+  keepLineOrder,
+  lineIdentity,
   MAX_ADD_QTY,
   mediaUrl,
   readCartAnswer,
@@ -182,6 +184,25 @@ describe("cart requests — taps on one item within 250 ms are one request", () 
   it("keys variants and used units apart", () => {
     expect(itemKey({ variantId: "var_x" })).toBe("v:var_x");
     expect(itemKey({ usedUnitId: "usd_y" })).toBe("u:usd_y");
+  });
+});
+
+describe("the cart editor's order — «تراجع» puts a line back where it was", () => {
+  const line = (id: string, variantId: string | null, usedUnitId: string | null = null) => ({ id, variantId, usedUnitId });
+
+  it("keeps the shown order when the server returns a restored line as a new one at the end", () => {
+    const first = keepLineOrder([line("l1", "switch"), line("l2", "dualsense"), line("l3", "case")], []);
+    expect(first.lines.map((l) => l.id)).toEqual(["l1", "l2", "l3"]);
+    // DualSense removed, then «تراجع»: the server adds it again — a new id, last in its list
+    const restored = keepLineOrder([line("l1", "switch"), line("l3", "case"), line("l9", "dualsense")], first.order);
+    expect(restored.lines.map((l) => l.id)).toEqual(["l1", "l9", "l3"]);
+  });
+
+  it("puts lines it has not shown yet after the known ones, in the server's order, and tells used units apart", () => {
+    const shown = keepLineOrder([line("l1", "switch"), line("l2", null, "unit-7")], []);
+    const next = keepLineOrder([line("l4", "pad"), line("l2", null, "unit-7"), line("l1", "switch"), line("l5", null, "unit-8")], shown.order);
+    expect(next.lines.map((l) => l.id)).toEqual(["l1", "l2", "l4", "l5"]);
+    expect(lineIdentity(line("x", null, "unit-7"))).not.toBe(lineIdentity(line("y", "unit-7")));
   });
 });
 

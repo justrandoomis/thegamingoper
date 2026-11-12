@@ -76,9 +76,9 @@
     {
       "sku": "NS2G-ZELDA-OOT",
       "title": {
-        "ar": "The Legend of Zelda: Ocarina of Time — نسخة فيزيائية لـ Nintendo Switch 2",
-        "en": "The Legend of Zelda: Ocarina of Time — Nintendo Switch 2 physical edition",
-        "ckb": "The Legend of Zelda: Ocarina of Time — کۆپیی فیزیکی بۆ Nintendo Switch 2"
+        "ar": "نسخة فيزيائية لـ Nintendo Switch 2",
+        "en": "Nintendo Switch 2 physical edition",
+        "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2"
       },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906788"],

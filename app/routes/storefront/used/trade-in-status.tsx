@@ -29,6 +29,7 @@ import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { shellMeta } from "~/routes/storefront/shell/meta";
+import { answerStatus } from "~/routes/storefront/support/client";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
@@ -101,7 +102,9 @@ export async function action({ params, request, context }: Route.ActionArgs) {
     return data({ intent: null, ok: false as const, code: "invalid" }, { status: 400 });
   } catch (error) {
     const failure = actionError(error, errorsT);
-    return data({ intent: intent === "lookup" || intent === "respond" ? intent : null, ...failure }, { status: failure.status });
+    // a lookup without a usable phone, or an answer with a field to fix, is an answer (200 — answerStatus): the console
+    // logs no failed request for an ordinary mistake; a limit, a closed offer or a refusal keeps its 4xx
+    return data({ intent: intent === "lookup" || intent === "respond" ? intent : null, ...failure }, { status: answerStatus(failure) });
   }
 }
 
@@ -164,7 +167,12 @@ function Tracking({ view, created, viaLink }: { view: StatusView; created: boole
           <Status tone={TONE[view.status] ?? "neutral"} size="lg">
             {t(`track.status.${view.status}`)}
           </Status>
-          {view.isDemo ? <DemoNote variant="tag" what="order" /> : null}
+          {/* a trade-in is a request, not an order: «طلب تجريبي» / "Demo request", as on the repair and ticket pages */}
+          {view.isDemo ? (
+            <DemoNote variant="tag" what="order">
+              {t("track.demo")}
+            </DemoNote>
+          ) : null}
         </div>
       </header>
 

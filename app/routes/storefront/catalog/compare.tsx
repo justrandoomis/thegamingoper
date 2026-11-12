@@ -15,12 +15,13 @@ import { useNavigate } from "react-router";
 
 import type { Route } from "./+types/compare";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
-import { LocaleLink, useFormat, useLocalePath, useT } from "~/i18n/react";
+import { LocaleLink, useDir, useFormat, useLocalePath, useT } from "~/i18n/react";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { getComparison } from "~/server/services/catalog/listing.server";
 import { CardAddButton } from "~/ui/AddToCartKey";
+import { BidiText, latinName } from "~/ui/BidiText";
 import { cx } from "~/ui/cx";
 import { EmptyState } from "~/ui/EmptyState";
 import { Switch } from "~/ui/Field";
@@ -59,6 +60,21 @@ type Row = { key: string; label: string; values: Cell[]; same: boolean };
 
 const sameValues = (values: Cell[]) => values.length > 1 && values.every((value) => String(value ?? "∅") === String(values[0] ?? "∅"));
 
+/**
+ * A product's name, two lines at most, with the card title's treatment (the kit's ProductCard): a Latin name on an
+ * Arabic page is ONE left-to-right line set at the page's start edge, so the clamp's ellipsis cuts its logical end
+ * («Nintendo Switch 2 – The Legend…»); laid out as a right-to-left paragraph it cut the start of line 2 instead
+ * («…e Legend of Zelda –», QA 2026-11-12). A name with Arabic in it keeps the page's direction, its Latin runs isolated.
+ */
+function CompareName({ name }: { name: string }) {
+  const title = latinName(name, useDir());
+  return (
+    <span dir={title.dir} className={cx("[unicode-bidi:isolate]", title.className)}>
+      <BidiText text={name} />
+    </span>
+  );
+}
+
 /** Nothing (or nothing listed any more) in the URL: back to the list this device keeps, else the empty state. */
 function NothingToCompare({ asked }: { asked: number }) {
   const t = useT("catalog");
@@ -72,13 +88,13 @@ function NothingToCompare({ asked }: { asked: number }) {
     if (reopen) void navigate(localePath(compareHref(saved.ids)), { replace: true });
   }, [reopen, saved.ids, navigate, localePath]);
 
-  // a list on this device (the link's products are gone): offer it — never «لا شيء للمقارنة بعد» beside a saved list
+  // a list on this device (the link's products are gone): offer it — never «لا شيء للمقارنة بعد» beside a saved list.
+  // The picture is the mascot in its disc (v2 §4.23), as on the 404 — not an icon
   const state = (keep: boolean) => {
     const open = keep && saved.ids.length > 0;
     return (
       <EmptyState
         layout="stack"
-        icon="scales"
         title={open ? t("compare.allGone") : t("compare.emptyTitle")}
         text={open ? undefined : t("compare.emptyText")}
         action={
@@ -98,7 +114,14 @@ function NothingToCompare({ asked }: { asked: number }) {
         {state(false)}
       </div>
       <div className="catalog-js-only min-h-80">
-        {!hydrated ? null : reopen ? (
+        {/* before hydration the empty state's own geometry, unseen (nothing may claim "nothing to compare" beside a saved
+            list): the 320px reserve alone was shorter than the state, so the footer — on the first screen — jumped when
+            it arrived (CLS 0.13–0.26 at 390 px, acceptance run 2026-11-12) */}
+        {!hydrated ? (
+          <div aria-hidden="true" className="invisible">
+            {state(false)}
+          </div>
+        ) : reopen ? (
           <p className="type-body text-ink-2" role="status">
             {t("compare.opening")}
           </p>
@@ -212,10 +235,10 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
                       <Niche as="span" size="sm" kind={wellKind(card)} className="catalog-compare__well">
                         <ProductImage image={card.image} alt="" sizes="96px" />
                       </Niche>
-                      <IconKey as={LocaleLink} to={without(card.id)} icon="x" variant="plain" label={t("compare.removeNamed", { name: card.name })} />
+                      <IconKey as={LocaleLink} to={without(card.id)} icon="x" variant="plain" className="catalog-compare__remove" label={t("compare.removeNamed", { name: card.name })} />
                     </div>
                     <LocaleLink to={`/p/${card.slug}`} className="catalog-compare__name">
-                      <span>{card.name}</span>
+                      <CompareName name={card.name} />
                     </LocaleLink>
                     <div className="catalog-compare__foot">
                       <PriceTag priceIqd={card.priceIqd} compareAtIqd={card.compareAtDemo ? null : card.compareAtIqd} size="line" approx="off" />
@@ -265,7 +288,7 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
                 </Niche>
                 <span className="catalog-compare__info">
                   <LocaleLink to={`/p/${card.slug}`} className="catalog-compare__name catalog-compare__name--sm">
-                    <span>{card.name}</span>
+                    <CompareName name={card.name} />
                   </LocaleLink>
                   <PriceTag priceIqd={card.priceIqd} size="line" approx="off" />
                 </span>

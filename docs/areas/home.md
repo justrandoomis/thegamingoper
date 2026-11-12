@@ -29,17 +29,27 @@ Unchanged in v2: `personal.ts`, `personal.server.ts` and both API files (other a
    headline in two lines («العب على» / «Nintendo Switch 2», the name isolated, one edge, `splitHeadline`) · the
    product in a 168px box (the page's only preload, `fetchpriority="high"`, the shared element `product-image:<id>`
    slot `hero`, a link into `/p/<slug>` with the zoom) · the price (xl, white) + «سعر تجريبي» · the on-band key
-   «اشترِ Nintendo Switch 2», full width · «التوصيل 5,000 د.ع لكل المحافظات · الدفع عند الاستلام» (fee and COD from the
-   settings). ≥ 768: copy 7/12 at the inline start (6/12 from 1280) + the fact line (`card.subtitle`) and «تفاصيل
-   الجهاز» → the device hub named like the product (`deviceHubFor`, else the product page); the product at the inline
-   end on the band's light. Measured: 436px at 390 (≤ 440), 400 at 1024, 420 at 1440.
+   «اشترِ Nintendo Switch 2», full width · ONE line «التوصيل 5,000 د.ع لكل المحافظات · الدفع عند الاستلام» (fee and COD
+   from the settings; the delivery half is the page's own `hero.delivery` — "Delivery 5,000 IQD" / «گەیاندن 5,000 د.ع»
+   — because the kit's English and Sorani sentences took two lines on a 390 phone). The product box sits right under the
+   headline and the price right under the box (no 4px margins). ≥ 768: copy 3/5 at the inline start to 1023 (7/12 from
+   1024, 6/12 from 1280) + the fact line (`card.subtitle`) and «تفاصيل الجهاز» → the device hub named like the product
+   (`deviceHubFor`, else the product page); the product at the inline end on the band's light. From 1280 the band is
+   404px (padding 24) and the product reaches 8px further into it (the red-share cap, below). Measured: 428px at 390
+   (423 in English; the cap is 440), 397 at 768, 400 at 1024, 404 at 1440.
    - **The key** opens the product area's quick look (`QuickPreview`, lazy) on the version choice; the page keeps its
      URL and scroll; a real link to the product page underneath (new tab, no script). Dark theme: the band is a lit
      cabinet and the key renders as the red primary (kit CSS).
-   - **Headline size** steps down the type scale until its longest line fits the copy column (`heroTitleSizes`:
-     Noto Kufi 700 widths measured in Edge, Plex 600 for Sorani; the column minimums `HERO_COPY_MIN` mirror
-     `home.css` — change both together). Integer sizes from the scale only, never fluid. Short last words never break
-     (`keepTogether`: «Switch 2», «5 Pro», «Go 2»).
+   - **Headline size** steps down its RANGE's own Kufi sizes until its longest line fits the copy column
+     (`heroTitleSizes`: 28 → 26 → 22 on phones, 40 → 32 → 30 → 24 at 768, 48 → 34 → 32 → 26 at 1024, 56 → 36 → 28 from
+     1280 — display, price xl, h1, then the range's h2, where a very long name wraps; Noto Kufi 700 widths measured in
+     Edge, Plex 600 for Sorani; the column minimums `HERO_COPY_MIN` mirror `home.css` — change both together). Integer
+     sizes only, never fluid, never another range's size (QA 2026-11-12: 36px at 768). «Nintendo Switch 2» is 28 / 40
+     / 48 / 56. Short last words never break (`keepTogether`: «Switch 2», «5 Pro», «Go 2»).
+   - **Plex's bowl ligature:** IBM Plex Sans Arabic draws a final «ى» / «ی» after a beh- or feh-shaped letter as a
+     required ligature that reads «حتى» as «حق» and «کاتی» as «کاق». The hero's lines (fact line, deck, pinned headline,
+     delivery line) pass through `plainFinalYeh` (a zero-width joiner between the two letters: joined, no ligature) until
+     the font is fixed for the whole store (asked of the design-system owner).
 2. **«تسوّق حسب المنصّة»** (`PlatformDoors`): the four `PlatformTile`s (2×2 → 4-up) with the real product counts and
    hubs. A tile never repeats the hero's picture (`tileArt` → `otherView`: the Nintendo tile shows Switch 2 in its
    dock); nothing else makes it step away from its own picture — the next "angle" of a device can be its back (Xbox
@@ -54,10 +64,14 @@ Unchanged in v2: `personal.ts`, `personal.server.ts` and both API files (other a
    only for a platform with a drawn shelf (`hasShelf`: `MIN_SHELF` = 3 new arrivals); the chip starts on the URL's
    platform, else the shopper's saved one, else the featured one (`resolveFocus`) — never on a short shelf, which would
    take the whole section and the other platforms' chips with it. New cards bubble in after a chip change.
-5. **«قريباً»** (`Releases` → the kit's `ReleaseBand`): the soonest four (`RELEASE_LIMIT`), only with ≥ 2 dated items;
-   an unreleased version of a released product reads «Forza Horizon 6 · نسخة جديدة» (the catalogue's version titles are
-   not shown — they can say «طلب مسبق»). The platform line comes from each pre-order product's own card (the loader
-   reads them with `getCardsByIds`; one platform only — one colour dot beside «متعددة المنصات» would mislead).
+5. **«قريباً»** (`Releases` → the kit's `ReleaseBand`, items from `view.ts releaseItemOf`): the soonest four
+   (`RELEASE_LIMIT`), only with ≥ 2 dated items. EVERY item has its platform line (v2 §4.21; QA 2026-11-12: dated
+   versions had none), from the facts the coming items carry (`home.server.ts`, no second card read): one platform → its
+   dot and the card's words («جهاز Xbox Series X|S», «سماعة · PS5»); several → both dots and the platforms named
+   («PlayStation · Xbox» for Grand Theft Auto VI — never one colour beside «لعبة متعددة المنصات»); a later version of a
+   product that is out already → the platform that version is for («لعبة PlayStation» for the PS5 version of Forza
+   Horizon 6) and «نسخة جديدة» on the line under its name (the catalogue's version titles are not shown — they can say
+   «طلب مسبق»).
 6. **«مستعمل ومفحوص»** (`UsedShelf` → `ShelfRail` + `UsedUnitCard`), «كل المستعمل» → `/used`; hidden under 3 units.
 7. **Trade-in and support doors** (`ServiceEntries`, two `EntryCard`s, h2 titles): «استبدل جهازك» (the PlayStation
    lead device's photo) and «الدعم» (the mascot).
@@ -84,7 +98,11 @@ tilt); on «ابدأ» they lean in 8 px and leave along their diagonals, the lo
 choices are four `PlatformTile`s as toggle buttons (`aria-pressed`; 2×2 on phones, 4 × 240px from 1024) — a chosen tile
 stays down on its wall, ringed inside and checked; «تخطَّ» is a visible secondary key from the first frame; «ابدأ» is
 the view's one primary. Escape / Android back = skip; focus trapped; the page inert until it leaves. Reduced motion:
-the still composition and a 120 ms fade.
+the still composition and a 120 ms fade. Once it has left, the focus is never on `<body>` (QA 2026-11-12): it goes back
+to the key that opened it («شاهد المقدّمة مرة أخرى» — the intro remembers it, because React's commit puts the focus
+back on the leaving overlay after the kit's modal layer returned it), else (a first landing) to the shell's
+`<main id="main" tabindex="-1">` (no ring), so the next Tab is the hero's product link; after «ابدأ» the consent row
+takes it (`landFocus`, `view.ts focusAfterIntro`).
 
 **Consent asked honestly:** the 1.0 consent sheet is gone. After an intro with platforms chosen (and consent never
 asked), a NON-BLOCKING row under the hero asks «نحفظ اختيارك على هذا الجهاز؟» with what would be kept, and two equal
@@ -140,9 +158,10 @@ tiles inside 900px (bottom 885) · census (sizes on the scale, Kufi 700 + Plex 4
 recipes, no image filter, no target under 44px, no Arabic run under 13px, 0 contrast fails except below) · focus walk
 (0 stops under a bar at 390/768/1440) · screenshots `…/scratchpad/ux/after/P1-home/`.
 
-**Known gaps:** red share of the first screen 40.2% at 390 and 36.7% at 1440 (targets ≤ 40 / ≤ 35; A measured 46 / 39),
-whole page 6.8–7.5% (target 8–12: the page is longer than A's) — the band (≈ 31%) and the Nintendo tile (≈ 10% at 390)
-fill the first screen at the spec's own sizes, so the targets conflict with the hero geometry; at 768–1023 the
+**Known gaps:** red share of the whole page 6.9–7.3% light (target 8–12) — the first screen meets its caps since the QA
+fixes (39.4% ar / 38.9% en at 390, 34.6% at 1440; caps 40 / 35), but the hero band holds 84% of the page's red
+(6.1 of 7.3 points at 1440; the Nintendo tile 0.6, everything else crumbs) and nothing lower on the page is red by the
+spec or allowed red by the design lint — asked of the design owner; at 768–1023 the
 PlayStation tile's name «PlayStation» lies on the tall white PS5 Slim cut-out (kit layout: hardware 58% wide, no
 text limit below 1024; p10 contrast 1.48 — in the intro too); a focused card in a phone rail stays partly off-screen
 (kit / motion rail: Chrome does not scroll a link with 28px visible); departments show glyphs (no category picture in
@@ -183,3 +202,19 @@ Screens and scripts: `…/scratchpad/ux/after/P1-home-review/`, `…/scratchpad/
   `TrustStrip transfer={{ zaincash, card }}` (one fact naming the methods that are on).
 - "/old-name" (one segment, no language) is this route under an invalid locale: a redirect staff set is followed
   (`redirectIfMoved`), and the page's data is never read for it.
+
+## QA fixes (2026-11-12, after the five-auditor matrix)
+
+| Defect | Fix | Measured after |
+|---|---|---|
+| Hero headline 36px at 768–1023 (off that range's scale) | `HEADLINE_STEPS` per range; copy column 3/5 with a 16px gap at 768–1023 (`HERO_COPY_MIN.md` 388) | 40px at 768 in ar/en/ckb; the auditors' measure: no off-scale size on home at 768 |
+| First-screen red share 36.7% at 1440, 40.2–40.9% at 390 | 404px band from 1280 (padding 24, the product 8px further into it); phones: no 4px margins above the product and the price; one-line delivery fact | 34.6% at 1440 (ar, en), 39.4% ar / 38.9% en at 390 (fullshare method) |
+| Hero 450/456px in en/ckb at 390; tile counts under the tab bar (ckb 390, ar 360) | `hero.delivery` («Delivery 5,000 IQD · Cash on delivery», one line); the tighter phone hero | hero 428 / 423 / 428 at 390, first tile row 631 / 624 / 631; ar 360: counts end at 766 (tab bar 770) |
+| Release items without a platform line (GTA VI, Forza Horizon 6) | `releasePlatformOf` names several platforms; `releaseItemOf` for every item, versions included | GTA VI «PlayStation · Xbox» (two dots), Forza «لعبة PlayStation» + «نسخة جديدة» under the name, in ar/en/ckb |
+| Focus on `<body>` after Escape / «تخطَّ» | `landFocus` → the opener, else `<main>` | Escape and Skip → `MAIN#main` (no ring), next Tab → the hero's link; replay → back to its key; Start → the consent row (390 ar, 768 ckb, 1440 en reduced) |
+| «حق 4K على التلفاز» | not a typo (the data says «حتى»): Plex's rlig ligature; `plainFinalYeh` on the hero's lines | «حتى 4K» drawn at 768–1440; ckb «کاتی» no longer «کاق» |
+
+Not fixed here: the whole-page red share (6.9–7.3%, see Known gaps). Tests: `tests/home.test.ts` 43 (new: per-range
+headline scale, release lines for versions and multi-platform items, focus after the intro, `plainFinalYeh`). Tools and
+screens: `…/scratchpad/work/Q-fix-pages-browse/` (home-measure, red-regions, red-try, intro-focus, release-shot, liga*)
+and `…/scratchpad/ux/after/Q-fix-pages-browse/`.

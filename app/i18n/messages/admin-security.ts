@@ -80,6 +80,7 @@ export default defineMessages({
       noRole: "بلا دور",
       col: { name: "الموظف", email: "البريد", roles: "الأدوار", twoStep: "التحقق بخطوتين", status: "الحالة", sessions: "جلسات فعالة", lastLogin: "آخر دخول" },
       status: { active: "نشط", disabled: "موقوف" },
+      add: "أضف موظفاً",
     },
     employee: {
       title: "أمان {name}",
@@ -87,6 +88,7 @@ export default defineMessages({
       self: "هذا حسابك. جلساتك وكلمة المرور والتحقق بخطوتين في",
       mySecurity: "أماني",
       account: "الحساب",
+      staffFile: "رابط كلمة المرور وإعادة التفعيل: ملفه في قسم الموظفين",
       passwordChanged: "آخر تغيير لكلمة المرور",
       permissions: "الصلاحيات",
       allPermissions: "كل الصلاحيات",
@@ -597,6 +599,7 @@ export default defineMessages({
       noRole: "No role",
       col: { name: "Employee", email: "Email", roles: "Roles", twoStep: "Two-step", status: "Status", sessions: "Live sessions", lastLogin: "Last sign-in" },
       status: { active: "Active", disabled: "Disabled" },
+      add: "Add an employee",
     },
     employee: {
       title: "{name}'s security",
@@ -604,6 +607,7 @@ export default defineMessages({
       self: "This is your account. Your sessions, password and two-step verification are in",
       mySecurity: "My security",
       account: "Account",
+      staffFile: "Password link and re-enabling: their file in Staff",
       passwordChanged: "Password last changed",
       permissions: "Permissions",
       allPermissions: "All permissions",
@@ -1114,6 +1118,7 @@ export default defineMessages({
       noRole: "بێ ڕۆڵ",
       col: { name: "کارمەند", email: "ئیمەیڵ", roles: "ڕۆڵەکان", twoStep: "دوو هەنگاوی", status: "دۆخ", sessions: "دانیشتنی چالاک", lastLogin: "دوایین چوونەژوورەوە" },
       status: { active: "چالاک", disabled: "ڕاگیراو" },
+      add: "کارمەندێک زیاد بکە",
     },
     employee: {
       title: "ئاسایشی {name}",
@@ -1121,6 +1126,7 @@ export default defineMessages({
       self: "ئەمە هەژمارەکەی خۆتە. دانیشتن و وشەی نهێنی و دوو هەنگاوییەکەت لە",
       mySecurity: "ئاسایشی من",
       account: "هەژمار",
+      staffFile: "بەستەری وشەی نهێنی و دووبارە چالاککردنەوە: فایلەکەی لە بەشی کارمەندان",
       passwordChanged: "دوایین گۆڕینی وشەی نهێنی",
       permissions: "ڕێگەپێدانەکان",
       allPermissions: "هەموو ڕێگەپێدانەکان",

@@ -17,7 +17,8 @@
  *              rounded to 250 IQD without leaving that band.
  *   stock      out of stock ≈ 8 %, low ≈ 18 %, the rest in stock; discontinued and limited
  *              editions 0–2 units; pre-orders (the product's or the variant's release date still
- *              ahead) and digital codes none.
+ *              ahead) none; a digital variant DEMO_CODES_PER_VARIANT — as many as its demo codes
+ *              (./codes.ts), one code per unit sold.
  */
 import type { ProductKind } from "../../schema";
 import type { CatalogKind, CatalogProduct, CatalogVariant } from "./catalog/types";
@@ -350,7 +351,7 @@ export function demoCost(kind: ProductKind, sku: string, priceIqd: number): Demo
 
 // ───────────────────────────────────────────────────────────────── stock
 
-/** At or below this many units an item is "low on stock". Digital codes have no stock level. */
+/** At or below this many units an item is "low on stock". Digital codes have no reorder point (see DEMO_CODES_PER_VARIANT). */
 export const REORDER_POINTS: Record<ProductKind, number | null> = {
   console: 2,
   controller: 3,
@@ -370,11 +371,30 @@ export const productKindOf = (kind: CatalogKind): ProductKind => (kind === "hand
 
 export type DemoStock = { onHand: number; reorderPoint: number | null };
 
+/**
+ * DEMO codes of each digital variant (./codes.ts), and so its units on hand: one unit sold = one code delivered once
+ * the order is paid (orders/digital.server.ts). Design QA 2026-11-12: with none on hand every gift card and
+ * subscription read «نفد حالياً», and the digital template's orderable state could not be seen in the demo.
+ */
+export const DEMO_CODES_PER_VARIANT = 5;
+
+/**
+ * Demo codes (= units on hand) of each variant of a code product: DEMO_CODES_PER_VARIANT; the last 2 of a discontinued
+ * or limited one (as for any discontinued item: 0–2 units — the Steam cards Valve stops selling through shops); none
+ * while it is not out. 0 for anything that is not a code product.
+ */
+export function demoCodeCount(product: CatalogProduct): number {
+  if (product.kind !== "digital" || product.status === "upcoming") return 0;
+  return product.status === "discontinued" || product.status === "limited" ? 2 : DEMO_CODES_PER_VARIANT;
+}
+
 /** Units on hand at the main location for a variant, as of `now`. */
 export function demoStock(product: CatalogProduct, variant: CatalogVariant, now: number): DemoStock {
   const kind = productKindOf(product.kind);
   const reorderPoint = REORDER_POINTS[kind];
-  if (product.kind === "digital" || reorderPoint === null) return { onHand: 0, reorderPoint: null };
+  // a code product: its demo codes (no reorder point — codes are imported in batches, not reordered by count)
+  if (product.kind === "digital") return { onHand: demoCodeCount(product), reorderPoint: null };
+  if (reorderPoint === null) return { onHand: 0, reorderPoint: null };
   // Not out yet — the product, or this variant (a later colour or platform version): sold as a
   // pre-order (or not at all), never from stock.
   if (product.status === "upcoming" || (variantReleaseAtOf(product, variant) ?? 0) > now) return { onHand: 0, reorderPoint };

@@ -155,6 +155,14 @@ async function main(): Promise<number> {
         try {
           const result = await seedDemo(db, now, { d1, kv: proxy.env.KV, env: proxy.env });
           console.log(`Demo data: seeded${result === undefined ? "" : ` ${JSON.stringify(result)}`}.`);
+          // Demo digital codes are encrypted with this environment's DATA_KEY, so they come after the plain seed.
+          const codesModule = path.join(path.dirname(DEMO_SEED), "demo", "codes.ts");
+          if (existsSync(codesModule)) {
+            const { seedDemoDigitalCodes } = (await import(pathToFileURL(codesModule).href)) as {
+              seedDemoDigitalCodes: (db: unknown, now: number, options: { dataKey?: string | null }) => Promise<unknown>;
+            };
+            console.log(`Demo digital codes: ${JSON.stringify(await seedDemoDigitalCodes(db, now, { dataKey: proxy.env.DATA_KEY }))}.`);
+          }
         } catch (error) {
           const rule = mapDbError(error);
           console.error("Demo data: the demo seed FAILED — the database has migrations and reference data, but no (or partial) demo data.");

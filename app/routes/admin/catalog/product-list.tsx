@@ -136,7 +136,7 @@ export default function ProductList({ loaderData }: Route.ComponentProps) {
           <Thumb image={row.image} size={40} />
           <span className="grid min-w-0 gap-0.5">
             <Link to={`/admin/catalog/products/${row.id}`} className="adm-link line-clamp-2">
-              {row.name}
+              <bdi>{row.name}</bdi>
             </Link>
             <span className="type-caption text-ink-2">
               <bdi dir="ltr">{row.skus.length > 0 ? row.skus.slice(0, 2).join(" · ") : row.slug}</bdi>
@@ -328,7 +328,9 @@ export default function ProductList({ loaderData }: Route.ComponentProps) {
                   <Link to={`/admin/catalog/products/${row.id}`} className="adm-card flex items-center gap-3 no-underline">
                     <Thumb image={row.image} size={56} />
                     <span className="grid min-w-0 flex-1 gap-1">
-                      <span className="type-strong line-clamp-2 text-ink">{row.name}</span>
+                      <span className="type-strong line-clamp-2 text-ink">
+                        <bdi>{row.name}</bdi>
+                      </span>
                       <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
                         <StatusBadge status={row.status} publishAt={row.publishAt} live={row.live} />
                         {row.complete ? <Status tone="ok" className="whitespace-nowrap">{t("list.ready")}</Status> : <Status tone="warn" className="whitespace-nowrap">{t("list.missing", { count: row.missing.length })}</Status>}

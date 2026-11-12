@@ -10,8 +10,11 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { decryptSecret } from "~/server/crypto.server";
 import { createDb } from "~/server/db/drizzle.server";
 import { normalizeSearchText, searchProductIds } from "~/server/db/search.server";
+import { codeHashOf, demoCodeId, demoCodeText, seedDemoDigitalCodes } from "~/server/db/seed/demo/codes";
+import { codeContext } from "~/server/services/admin/devices/codes.server";
 import { assertDemoDataConsistent, buildDemoData, demoId, demoSerialsOf, demoTradeInGuides, demoUsedUnits, loadDemoCatalog, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
 import type { CatalogProduct } from "~/server/db/seed/demo/catalog/types";
 import { DEMO_CATEGORIES } from "~/server/db/seed/demo/categories";
@@ -19,14 +22,14 @@ import { DEMO_COUPONS, DEMO_FX_RATE } from "~/server/db/seed/demo/commerce";
 import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS, deviceModelsOfProducts } from "~/server/db/seed/demo/devices";
 import { capacityGb, catalogImportProblems } from "~/server/db/seed/demo/import";
 import { DEMO_ARTICLES } from "~/server/db/seed/demo/knowledge";
-import { COST_SHARE, DEAL_MIN_DAYS_ON_SALE, PRICE_REFERENCE_DATE, demoCost, demoStock, isPreorderAt, unitHash } from "~/server/db/seed/demo/pricing";
+import { COST_SHARE, DEAL_MIN_DAYS_ON_SALE, DEMO_CODES_PER_VARIANT, PRICE_REFERENCE_DATE, demoCodeCount, demoCost, demoStock, isPreorderAt, unitHash } from "~/server/db/seed/demo/pricing";
 import { DEMO_SYNONYM_GROUPS, NICKNAMED_PRODUCTS } from "~/server/db/seed/demo/search";
 import { DEMO_STORE_SETS } from "~/server/db/seed/demo/sets";
 import { inlineParams, recordWrites, sqlLiteral, statementToSql, toSqlScript, type RecordedStatement } from "~/server/db/seed/demo/sql";
 import { DEMO_TREES } from "~/server/db/seed/demo/trees";
 import { DEMO_USED_UNITS, TRADE_IN_GRADE_MULTIPLIERS } from "~/server/db/seed/demo/used";
 import { DEFAULT_LOCATION_ID, seedReference } from "~/server/db/seed/reference";
-import { createTestDb, type TestDb } from "./helpers/db";
+import { createTestDb, TEST_VARS, type TestDb } from "./helpers/db";
 import { PROJECT_ROOT, applyMigrations, dropEverything } from "./helpers/migrations";
 
 // ───────────────────────────────────────────────────────────────── the catalogue
@@ -417,6 +420,26 @@ describe("imported catalogue", () => {
     }
   });
 
+  it("keeps a Latin title clean: the words it leaves out are the qualifier, stored for the cards' meta line (v2 §4.11)", () => {
+    const ARABIC = /[؀-ۿ]/;
+    const opensLatin = (text: string) => /^[^A-Za-z؀-ۿ]*[A-Za-z]/.test(text);
+    let qualified = 0;
+    for (const product of catalog.products) {
+      const row = products.get(product.slug)!;
+      const name = parse<L10nValue>(row.name);
+      // «PlayStation 5 (الطراز الأصلي 2020)» reordered in RTL rows: a name that opens with Latin carries no Arabic script
+      for (const locale of ["ar", "en", "ckb"] as const) {
+        const text = name[locale] ?? "";
+        expect(opensLatin(text) && ARABIC.test(text), `${product.slug} name.${locale}`).toBe(false);
+      }
+      const attributes = parse<{ qualifier?: L10nValue | null }>(row.attributes);
+      expect(attributes.qualifier ?? null, product.slug).toEqual(product.qualifier ?? null);
+      if (product.qualifier) qualified++;
+    }
+    // the two PS5 consoles at least: «PlayStation 5 Slim · 1TB» + «نسخة الأقراص», «PlayStation 5 (2020)» + «الطراز الأصلي»
+    expect(qualified).toBeGreaterThanOrEqual(2);
+  });
+
   it("rates games PEGI first, and records the region where all variants share one", () => {
     for (const product of catalog.products) {
       const row = products.get(product.slug)!;
@@ -552,6 +575,22 @@ describe("imported catalogue", () => {
     expect(await scalar("SELECT count(*) FROM products WHERE name IS NULL OR short IS NULL OR description IS NULL OR search_keywords IS NULL")).toBe(0);
   });
 
+  it("never hides Arabic-script words inside a Latin name: products, device models, categories, store sets (v2 §4.11)", async () => {
+    const ARABIC = /[؀-ۿ]/;
+    const opensLatin = (text: string) => /^[^A-Za-z؀-ۿ]*[A-Za-z]/.test(text);
+    for (const table of ["products", "device_models", "device_generations", "platforms", "categories"]) {
+      const named = await rows<{ slug: string; name: string }>(`SELECT slug, name FROM ${table}`);
+      expect(named.length, table).toBeGreaterThan(0);
+      for (const row of named) {
+        const name = parse<L10nValue>(row.name);
+        for (const locale of ["ar", "en", "ckb"] as const) {
+          const text = name[locale] ?? "";
+          expect(opensLatin(text) && ARABIC.test(text), `${table} ${row.slug} name.${locale}: «${text}»`).toBe(false);
+        }
+      }
+    }
+  });
+
   it("builds the device graph: every device the catalogue names, on its platform and generation, with the researched specs", async () => {
     const models = await rows<{ slug: string; status: string; specs: string | null; released_on: string | null; device_kind: string; platform: string; generation: string; platform_active: number }>(
       "SELECT m.slug, m.status, m.specs, m.released_on, m.device_kind, p.slug AS platform, p.is_active AS platform_active, g.slug AS generation FROM device_models m JOIN platforms p ON p.id = m.platform_id JOIN device_generations g ON g.id = m.generation_id ORDER BY m.sort",
@@ -638,8 +677,12 @@ describe("seeded stock", () => {
     expect(out.length).toBeGreaterThan(5);
     expect(low.length).toBeGreaterThan(10);
     expect(physical.length - out.length - low.length).toBeGreaterThan(100);
-    // Digital codes are not loaded in the demo, so nothing is on hand.
-    expect(states.filter((row) => row.kind === "digital").every((row) => row.on_hand === 0 && row.reorder_point === null)).toBe(true);
+    // A digital variant has as many units on hand as its demo codes (demo/codes.ts): orderable, one code per unit —
+    // DEMO_CODES_PER_VARIANT, the last 2 of a discontinued card, never a reorder point.
+    const digital = states.filter((row) => row.kind === "digital");
+    expect(digital.length).toBeGreaterThan(30);
+    for (const row of digital) expect([row.on_hand, row.reorder_point], row.sku).toEqual([demoCodeCount(data.variantsBySku.get(row.sku)!.product.source!), null]);
+    expect(digital.filter((row) => row.on_hand === DEMO_CODES_PER_VARIANT).length).toBeGreaterThan(25);
   });
 
   it("tracks consoles and handheld PCs by serial, one in-stock serial per unit on hand", async () => {
@@ -1011,6 +1054,61 @@ describe("seeded rate, coupons and knowledge", () => {
 });
 
 // ───────────────────────────────────────────────────────────────── SQL file
+
+describe("demo digital codes (demo/codes.ts)", () => {
+  let c: TestDb;
+  beforeAll(async () => {
+    c = await createTestDb();
+    await seedReference(c.db, c.now);
+    await seedDemo(c.db, c.now, { catalog });
+  });
+  afterAll(async () => {
+    await c?.dispose();
+  });
+  const codeRows = async () =>
+    (
+      await c.d1
+        .prepare("SELECT d.id, d.code_enc, d.code_hash, d.status, d.is_demo, d.cost_iqd, d.expires_at, d.order_item_id, v.sku, p.kind, p.status AS product_status FROM digital_codes d JOIN variants v ON v.id = d.variant_id JOIN products p ON p.id = v.product_id ORDER BY d.id")
+        .all<{ id: string; code_enc: string; code_hash: string; status: string; is_demo: number; cost_iqd: number | null; expires_at: number | null; order_item_id: string | null; sku: string; kind: string; product_status: string }>()
+    ).results;
+
+  it("writes nothing without the environment's DATA_KEY (a code its store could not decrypt is worse than none)", async () => {
+    expect(await seedDemoDigitalCodes(c.db, c.now, { catalog, dataKey: null })).toEqual({ written: 0, defined: 0, skipped: "no_data_key" });
+    expect(await seedDemoDigitalCodes(c.db, c.now, { catalog, dataKey: "  " })).toEqual({ written: 0, defined: 0, skipped: "no_data_key" });
+    expect(await codeRows()).toEqual([]);
+  });
+
+  it("gives every digital variant as many demo codes as it has units on hand, each one its own, DEMO and readable only with its key and row", async () => {
+    const first = await seedDemoDigitalCodes(c.db, c.now, { catalog, dataKey: TEST_VARS.DATA_KEY });
+    const digital = data.products.filter((product) => product.kind === "digital" && product.source).flatMap((product) => product.variants.map((variant) => ({ variant, count: demoCodeCount(product.source!) })));
+    expect(digital.length).toBeGreaterThan(30);
+    const total = digital.reduce((sum, entry) => sum + entry.count, 0);
+    expect(total).toBeGreaterThan(25 * DEMO_CODES_PER_VARIANT);
+    expect(first).toEqual({ written: total, defined: total });
+    const codes = await codeRows();
+    expect(codes.every((row) => row.kind === "digital" && row.status === "available" && row.is_demo === 1 && row.expires_at === null && row.order_item_id === null)).toBe(true);
+    expect(new Set(codes.map((row) => row.code_hash)).size).toBe(codes.length);
+    for (const { variant, count } of digital) {
+      const own = codes.filter((row) => row.sku === variant.sku);
+      expect(own.length, variant.sku).toBe(count);
+      // as many codes as units on hand (pricing.ts demoStock): one code per unit sold
+      expect(Number((await c.d1.prepare("SELECT on_hand FROM stock_levels WHERE variant_id = ?").bind(demoId.variant(variant.sku)).first<{ on_hand: number }>())?.on_hand), variant.sku).toBe(count);
+      for (const [index, row] of own.entries()) {
+        expect(row.id).toBe(demoCodeId(variant.sku, index + 1));
+        expect(row.cost_iqd, variant.sku).toBe(variant.cost?.landedCostIqd ?? null);
+        // the text says DEMO; it is module 13's encryption, bound to this row (another row's context refuses it)
+        const text = await decryptSecret(row.code_enc, TEST_VARS.DATA_KEY, codeContext(row.id));
+        expect(text).toBe(demoCodeText(variant.sku, index + 1));
+        expect(text.startsWith("DEMO-")).toBe(true);
+        expect(row.code_hash).toBe(await codeHashOf(text));
+        await expect(decryptSecret(row.code_enc, TEST_VARS.DATA_KEY, codeContext(`${row.id}x`))).rejects.toThrow();
+      }
+    }
+    // a second run finds every code and writes nothing
+    expect(await seedDemoDigitalCodes(c.db, c.now + 60_000, { catalog, dataKey: TEST_VARS.DATA_KEY })).toEqual(first.defined === 0 ? first : { written: 0, defined: first.defined });
+    expect((await codeRows()).length).toBe(codes.length);
+  });
+});
 
 describe("SQL export of the seed", () => {
   it("writes literals exactly as D1 would have bound them", () => {

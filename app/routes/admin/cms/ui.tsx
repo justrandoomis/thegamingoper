@@ -433,7 +433,8 @@ export function L10nFields({
           hint: lang.code === "ckb" ? t("common.sorani") : undefined,
           ...(onChange ? { value: values?.[lang.code] ?? "", onChange: (event: { currentTarget: { value: string } }) => onChange(lang.code, event.currentTarget.value) } : { defaultValue: values?.[lang.code] ?? "" }),
         };
-        return multiline ? <TextArea key={lang.code} {...common} rows={2} /> : <TextField key={lang.code} {...common} />;
+        // a textarea keeps the `dir` it is given; the kit's one-line field keeps only its `ltr` flag (QA 2026-11-12)
+        return multiline ? <TextArea key={lang.code} {...common} rows={2} /> : <TextField key={lang.code} {...common} ltr={lang.dir === "ltr"} />;
       })}
     </fieldset>
   );

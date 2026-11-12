@@ -164,8 +164,15 @@ export type ProductDetail = {
    * stored as consoles, VR as accessories). card-facts.ts kindLabelOf. Always set by the read layer.
    */
   kindLabel?: string;
+  /** The product's name — a Latin title stays Latin («PlayStation 5 Slim · 1TB»): its qualifier is below. */
   name: string;
-  /** One line under the name. */
+  /**
+   * The words a Latin title leaves out, in the shopper's language («نسخة الأقراص» for «PlayStation 5 Slim · 1TB»,
+   * design v2 spec §4.11), or null. `short` already opens with it: print it on its own only where `short` is not shown.
+   * Always set by the read layer (optional only so hand-written fixtures keep compiling).
+   */
+  qualifier?: string | null;
+  /** One line under the name: the qualifier first when there is one, then the researched short line. */
   short: string | null;
   description: string | null;
   brand: string | null;

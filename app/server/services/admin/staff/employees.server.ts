@@ -1,13 +1,15 @@
 /**
- * Admin 15.01 and 15.07 — the employee directory, one employee's file (HR facts, roles and the permissions they
- * actually hold, read-only), the salary (payroll permissions only), and access revocation on termination with the
- * employee's sessions and sign-in log.
+ * Admin 15.01 and 15.07 — the employee directory, adding an employee, one employee's file (HR facts, roles and the
+ * permissions they actually hold, read-only), the salary (payroll permissions only), the account's password link and
+ * re-enabling it, and access revocation on termination with the employee's sessions and sign-in log.
  *
  * Roles are edited in ONE place, module 20's role editor (/admin/security/roles): this module shows each employee's
  * effective permissions — every permission their roles grant, the protected-data ones marked, and which role grants
- * it — and links there. Accounts are created and given passwords only by the sign-in service (app/server/auth/**),
- * which has no function for a new employee yet (CONTRACTS §4 "15 staff" lists the request): nothing here writes an
- * account, a password, a role or a session row.
+ * it — and links there. Accounts and passwords belong to the sign-in service (app/server/auth/employees.server.ts):
+ * a new employee is its createEmployee (hireEmployee adds this module's rule on the phone first), a new password link
+ * its issuePasswordLink, re-opening an account its enableEmployee — each with staff.manage and the hierarchy rule,
+ * audited there; the routes call them and show the one-time link once. Nothing here writes an account, a password, a
+ * role or a session row itself.
  *
  * Termination is the auth service's disableEmployee (staff.manage, a reason; the employee is locked out on their next
  * request and every session ends — audited there as staff.employee.disable), then this module's own housekeeping in
@@ -15,7 +17,7 @@
  *
  * Errors: not_found, forbidden, invalid (fields), employee_changed, employee_inactive, own_account_here,
  * target_more_privileged (403), salary_self_change (403), and the auth service's cannot_disable_self, last_owner,
- * employee_not_active.
+ * employee_not_active, employee_already_active, grant_exceeds_own (fields.roleIds), email_taken (fields.email).
  */
 import { and, asc, desc, eq, gt, inArray, isNull, or, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
@@ -23,18 +25,22 @@ import { pick, type Locale } from "~/lib/locales";
 import { can, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import { disableEmployee, listEmployeeSessions } from "~/server/auth/admin.server";
+import { CreateEmployeeInput, createEmployee, type PasswordLink } from "~/server/auth/employees.server";
 import type { Db } from "~/server/db/drizzle.server";
-import { attendance, auditEvents, authEvents, employeeRoles, employeeSessions, employees, leaveRequests, rolePermissions, roles, shifts } from "~/server/db/schema";
+import { attendance, auditEvents, authEvents, branches, employeeRoles, employeeSessions, employees, leaveRequests, rolePermissions, roles, shifts } from "~/server/db/schema";
 import { expectThat, isDbError, runBatch } from "~/server/db/tx.server";
-import { AppError } from "~/server/errors";
+import { AppError, zodFieldErrors, type FieldErrors } from "~/server/errors";
 import { FIELD_PERMISSIONS, PERMISSION_GROUPS, PERMISSIONS, PERMISSION_DEFS, WILDCARD_PERMISSION, expandPermissions, type Permission } from "~/server/permissions";
 import { canSeeModule } from "~/routes/admin/shell/access.server";
 import { deviceOf, holdsAll, storedPermissionsOf } from "../security/shared.server";
 import { authEventView, endAllStaffSessions, endStaffSession } from "../security/staff.server";
 import { actorId, assertAny, assertReach, assertReachOf, branchLimit, branchNames, cleanLine, employeeFacts, IdSchema, peopleById, Reason, rolesOf, staffAccess, wholeIqd } from "./shared.server";
-import { ADVANCE_APPROVAL_KIND, MAX_PAY_IQD, PAGE_SIZE, periodOf, periodRange, type EmployeeFilters, type EmployeeRow, type PermissionGroupView, type RoleRef, type SessionRow, type SignInRow } from "./types";
+import { ADVANCE_APPROVAL_KIND, MAX_PAY_IQD, PAGE_SIZE, periodOf, periodRange, type EmployeeFilters, type EmployeeRow, type HireOptions, type PermissionGroupView, type RoleRef, type SessionRow, type SignInRow } from "./types";
 
 const READERS = ["staff.employee.read", "staff.manage"] as const;
+
+/** A phone as HR types it (the HR facts' rule, also on a new employee): digits, spaces, + ( ) -, 6–30 characters. */
+const PHONE = /^[+\d\s()\-٠-٩۰-۹]{6,30}$/;
 
 function escapeLike(text: string): string {
   return `%${text.replace(/[%_\\]/g, (c) => `\\${c}`)}%`;
@@ -120,6 +126,64 @@ export async function listEmployees(db: Db, actor: Actor, filters: EmployeeFilte
   };
 }
 
+// ───────────────────────────────────────────────────────────────── adding an employee (15.01)
+
+/**
+ * What the «add an employee» form offers, or null for anyone without staff.manage (the form is not shown; the
+ * service refuses them anyway). Each role says whether this person may give it — they hold every permission it grants
+ * (the owner's wildcard only an owner gives) — so the form never offers what the auth core would refuse.
+ */
+export async function hireOptions(db: Db, actor: Actor, locale: Locale): Promise<HireOptions | null> {
+  if (!can(actor, "staff.manage")) return null;
+  const limit = branchLimit(actor);
+  const [roleRows, grants, branchRows] = await Promise.all([
+    db.select({ id: roles.id, key: roles.key, name: roles.name, description: roles.description, requiresMfa: roles.requiresMfa }).from(roles).orderBy(asc(roles.key)),
+    db.select({ roleId: rolePermissions.roleId, permission: rolePermissions.permission }).from(rolePermissions),
+    // a branch-limited person hires for their own branch only (the auth core's rule): that branch, whatever its state
+    limit
+      ? db.select({ id: branches.id, name: branches.name }).from(branches).where(eq(branches.id, limit))
+      : db.select({ id: branches.id, name: branches.name }).from(branches).where(eq(branches.isActive, true)).orderBy(asc(branches.code)),
+  ]);
+  const grantsOf = new Map<string, string[]>();
+  for (const grant of grants) grantsOf.set(grant.roleId, [...(grantsOf.get(grant.roleId) ?? []), grant.permission]);
+  const branchList = branchRows.map((row) => ({ id: row.id, name: pick(row.name, locale) }));
+  return {
+    roles: roleRows.map((role) => ({
+      id: role.id,
+      key: role.key,
+      name: pick(role.name, locale),
+      description: role.description ? pick(role.description, locale) || null : null,
+      assignable: holdsAll(actor, grantsOf.get(role.id) ?? []),
+      twoStep: role.requiresMfa,
+    })),
+    branches: limit ? [] : branchList,
+    branch: limit ? (branchList[0] ?? { id: limit, name: limit }) : null,
+  };
+}
+
+const HirePhone = z
+  .string()
+  .overwrite(cleanLine)
+  .refine((value) => value === "" || PHONE.test(value), "phone_invalid");
+
+/**
+ * A new employee (staff.manage): the form is checked whole — the auth core's fields and this module's rule on the phone
+ * (as the HR facts editor) — so every mistake comes back at once; then the auth core's createEmployee: the account
+ * without a password, its roles (every permission of each held by this person: grant_exceeds_own on fields.roleIds),
+ * this person's branch when they are limited to one, audited as staff.employee.create; the same email twice →
+ * email_taken (fields.email). Answers the one-time password-set link — the route shows it once and never keeps it.
+ */
+export async function hireEmployee(db: Db, actor: Actor, raw: z.input<typeof CreateEmployeeInput>, now: number, options: { demo?: boolean } = {}): Promise<{ employeeId: string; name: string; link: PasswordLink }> {
+  assertAny(actor, ["staff.manage"]);
+  const parsed = CreateEmployeeInput.safeParse(raw);
+  const fields: FieldErrors = parsed.success ? {} : zodFieldErrors(parsed.error);
+  const phone = HirePhone.safeParse(raw.phone ?? "");
+  if (!phone.success) fields.phone ??= "phone_invalid";
+  if (!parsed.success || !phone.success) throw new AppError("invalid", 400, { fields });
+  const created = await createEmployee(db, actor, { ...parsed.data, phone: phone.data || null }, now, options);
+  return { employeeId: created.employeeId, name: parsed.data.name, link: created.link };
+}
+
 // ───────────────────────────────────────────────────────────────── effective permissions (15.01, read-only)
 
 /**
@@ -160,7 +224,8 @@ export async function effectivePermissions(db: Db, employeeId: string, locale: L
 // ───────────────────────────────────────────────────────────────── one employee
 
 export type EmployeeProfile = {
-  employee: EmployeeRow & { phone: string | null; twoStep: boolean; passwordChangedAt: number | null; updatedAt: number };
+  /** `hasPassword`: false until the employee sets one with their link (a new account has none). */
+  employee: EmployeeRow & { phone: string | null; twoStep: boolean; hasPassword: boolean; passwordChangedAt: number | null; updatedAt: number };
   /** staff.payroll.read only; null otherwise (absent from the page data, never 0). */
   salary: { baseSalaryIqd: number | null; changedAt: number | null; changedBy: string | null; openAdvancesIqd: number; pendingAdvancesIqd: number } | null;
   permissions: Awaited<ReturnType<typeof effectivePermissions>>;
@@ -174,7 +239,11 @@ export type EmployeeProfile = {
   /** This employee holds a permission the viewer does not: the viewer may not terminate them. */
   outranked: boolean;
   links: { roleEditor: boolean; securityPage: boolean };
-  can: { editProfile: boolean; setSalary: boolean; terminate: boolean; revoke: boolean };
+  /**
+   * `passwordLink`: a new one-time link for this active account (issuePasswordLink); `enable`: re-open this closed one
+   * (enableEmployee) — both staff.manage, never one's own account, never one that holds more than the viewer.
+   */
+  can: { editProfile: boolean; setSalary: boolean; terminate: boolean; revoke: boolean; passwordLink: boolean; enable: boolean };
 };
 
 export async function getEmployeeProfile(db: Db, actor: Actor, employeeId: string, locale: Locale, now: number, currentSessionId: string | null = null): Promise<EmployeeProfile> {
@@ -183,7 +252,7 @@ export async function getEmployeeProfile(db: Db, actor: Actor, employeeId: strin
   assertReach(actor, facts);
   const access = staffAccess(actor);
   const row = await db
-    .select({ phone: employees.phone, totpEnabled: employees.totpEnabled, lastLoginAt: employees.lastLoginAt, passwordChangedAt: employees.passwordChangedAt, updatedAt: employees.updatedAt })
+    .select({ phone: employees.phone, totpEnabled: employees.totpEnabled, lastLoginAt: employees.lastLoginAt, passwordChangedAt: employees.passwordChangedAt, updatedAt: employees.updatedAt, hasPassword: sql<number>`${employees.passwordHash} IS NOT NULL` })
     .from(employees)
     .where(eq(employees.id, facts.id))
     .get();
@@ -246,6 +315,7 @@ export async function getEmployeeProfile(db: Db, actor: Actor, employeeId: strin
       isDemo: facts.isDemo,
       phone: row?.phone ?? null,
       twoStep: row?.totpEnabled ?? false,
+      hasPassword: Number(row?.hasPassword ?? 0) === 1,
       passwordChangedAt: row?.passwordChangedAt ?? null,
       updatedAt: row?.updatedAt ?? facts.createdAt,
     },
@@ -268,6 +338,8 @@ export async function getEmployeeProfile(db: Db, actor: Actor, employeeId: strin
       setSalary: access.payrollRun && !isSelf && facts.status === "active",
       terminate: access.manage && !isSelf && facts.status === "active" && !outranked,
       revoke: access.revoke && !isSelf,
+      passwordLink: access.manage && !isSelf && facts.status === "active" && !outranked,
+      enable: access.manage && !isSelf && facts.status === "disabled" && !outranked,
     },
   };
 }
@@ -301,7 +373,7 @@ const ProfileInput = z.object({
     .string()
     .overwrite(cleanLine)
     .max(30, "too_long")
-    .refine((value) => value === "" || /^[+\d\s()\-٠-٩۰-۹]{6,30}$/.test(value), "phone_invalid")
+    .refine((value) => value === "" || PHONE.test(value), "phone_invalid")
     .nullish()
     .transform((value) => value || null),
   reason: Reason,

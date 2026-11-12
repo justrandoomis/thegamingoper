@@ -60,6 +60,13 @@ export type AddressView = {
   isDefault: boolean;
 };
 
+/**
+ * The address book's limits, in characters after trimming — one source for the service's schema (AddressInput in
+ * ./addresses.server) and the page's own checks (routes/storefront/account/components/address-checks), so the page
+ * refuses exactly what the service would. `*Min`: the shortest accepted text of a field that is filled in.
+ */
+export const ADDRESS_LIMITS = { label: 40, recipientMin: 2, recipient: 80, phone: 40, areaMin: 2, area: 120, addressMin: 5, address: 300, notes: 300 } as const;
+
 /** Governorates with their districts, for the address form (no-script: districts grouped per governorate). */
 export type GeographyOption = { id: string; name: string; districts: { id: string; name: string }[] };
 

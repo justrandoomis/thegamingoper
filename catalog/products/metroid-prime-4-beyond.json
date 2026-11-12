@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-METROID-PRIME-4",
-      "title": { "ar": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (physical)", "ckb": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "نسخة فيزيائية · Nintendo Switch 2 Edition", "en": "Nintendo Switch 2 Edition (physical)", "ckb": "کۆپیی فیزیکی · Nintendo Switch 2 Edition" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905613"],
       "isDefault": true,
@@ -50,7 +50,7 @@
     },
     {
       "sku": "NSG-METROID-PRIME-4",
-      "title": { "ar": "Metroid Prime 4: Beyond — نسخة Nintendo Switch (فيزيائية)", "en": "Metroid Prime 4: Beyond — Nintendo Switch version (physical)", "ckb": "Metroid Prime 4: Beyond — وەشانی Nintendo Switch (فیزیکی)" },
+      "title": { "ar": "نسخة Nintendo Switch (فيزيائية)", "en": "Nintendo Switch version (physical)", "ckb": "وەشانی Nintendo Switch (فیزیکی)" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496591748"],
       "isDefault": false,

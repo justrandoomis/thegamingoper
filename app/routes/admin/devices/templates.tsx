@@ -104,7 +104,7 @@ export default function TemplatesPage({ loaderData }: Route.ComponentProps) {
               <input type="hidden" name="expectedVersion" value={editor.current?.version ?? ""} />
               <div className="grid gap-3 sm:grid-cols-3">
                 <TextField name="nameAr" label={t("templates.nameAr")} required defaultValue={editor.current?.name.ar ?? ""} error={fields["name.ar"]} />
-                <TextField name="nameEn" label={t("templates.nameEn")} required defaultValue={editor.current?.name.en ?? ""} error={fields["name.en"]} dir="ltr" />
+                <TextField name="nameEn" label={t("templates.nameEn")} required defaultValue={editor.current?.name.en ?? ""} error={fields["name.en"]} ltr lang="en" />
                 <TextField name="nameCkb" label={t("templates.nameCkb")} optional defaultValue={editor.current?.name.ckb ?? ""} />
               </div>
               <div className="dev-rows">
@@ -115,10 +115,10 @@ export default function TemplatesPage({ loaderData }: Route.ComponentProps) {
                     <div className="dev-fields dev-fields--4">
                       <TextField name={`i.${index}.key`} label={t("templates.key")} defaultValue={item?.key ?? ""} ltr error={fields[`items.${index}.key`]} hint={isNew ? t("templates.keyHint") : undefined} readOnly={!isNew} />
                       <TextField name={`i.${index}.ar`} label={t("templates.labelAr")} defaultValue={item?.label.ar ?? ""} error={fields[`items.${index}.label.ar`]} />
-                      <TextField name={`i.${index}.en`} label={t("templates.labelEn")} defaultValue={item?.label.en ?? ""} error={fields[`items.${index}.label.en`]} dir="ltr" />
+                      <TextField name={`i.${index}.en`} label={t("templates.labelEn")} defaultValue={item?.label.en ?? ""} error={fields[`items.${index}.label.en`]} ltr lang="en" />
                       <TextField name={`i.${index}.ckb`} label={t("templates.labelCkb")} optional defaultValue={item?.label.ckb ?? ""} />
                       <TextField name={`i.${index}.hintAr`} label={t("templates.hintAr")} optional defaultValue={item?.hint?.ar ?? ""} />
-                      <TextField name={`i.${index}.hintEn`} label={t("templates.hintEn")} optional defaultValue={item?.hint?.en ?? ""} dir="ltr" />
+                      <TextField name={`i.${index}.hintEn`} label={t("templates.hintEn")} optional defaultValue={item?.hint?.en ?? ""} ltr lang="en" />
                       <Select name={`i.${index}.input`} label={t("templates.input")} defaultValue={item?.input ?? "pass_fail"} options={INPUT_LIST.map((input) => ({ value: input, label: t(`input.${input}`) }))} />
                       <TextField name={`i.${index}.position`} label={t("templates.position")} inputMode="numeric" ltr defaultValue={String(index + 1)} />
                     </div>

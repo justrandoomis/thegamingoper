@@ -162,9 +162,9 @@
     {
       "sku": "CLAW8EX-G3E-1TB",
       "title": {
-        "ar": "MSI Claw 8 EX AI+ Arc G3 Extreme 32GB / 1TB",
-        "en": "MSI Claw 8 EX AI+ Arc G3 Extreme 32GB / 1TB",
-        "ckb": "MSI Claw 8 EX AI+ Arc G3 Extreme 32GB / 1TB"
+        "ar": "Arc G3 Extreme 32GB / 1TB",
+        "en": "Arc G3 Extreme 32GB / 1TB",
+        "ckb": "Arc G3 Extreme 32GB / 1TB"
       },
       "options": { "chip": "Intel Arc G3 Extreme", "memory": "32GB", "storage": "1TB", "color": "Void Purple" },
       "modelNumber": "CG3EM",
@@ -174,9 +174,9 @@
     {
       "sku": "CLAW8EX-G3-512",
       "title": {
-        "ar": "MSI Claw 8 EX AI+ Arc G3 32GB / 512GB",
-        "en": "MSI Claw 8 EX AI+ Arc G3 32GB / 512GB",
-        "ckb": "MSI Claw 8 EX AI+ Arc G3 32GB / 512GB"
+        "ar": "Arc G3 32GB / 512GB",
+        "en": "Arc G3 32GB / 512GB",
+        "ckb": "Arc G3 32GB / 512GB"
       },
       "options": { "chip": "Intel Arc G3", "memory": "32GB", "storage": "512GB" },
       "modelNumber": "CG3M",

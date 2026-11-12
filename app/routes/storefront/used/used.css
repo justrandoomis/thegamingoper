@@ -224,7 +224,8 @@
     }
   }
 
-  /* the device tiles: the photo on the product ground, the name (two lines), «حتى 350,000 د.ع · تقديري» */
+  /* the device tiles: the photo on the product ground, the name (two lines), a qualifier line when the name has one,
+     «حتى 350,000 د.ع · تقديري» */
   .used-devices {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -263,6 +264,11 @@
     overflow: hidden;
     font: var(--type-card);
     color: var(--ink);
+  }
+  /* the qualifier that tells two models apart («الطراز الأصلي 2020»): its own line, never cut by the name's clamp */
+  .used-device__meta {
+    font: var(--type-xs);
+    color: var(--ink-2);
   }
   .used-device__up {
     font: var(--type-xs);

@@ -53,8 +53,9 @@ export async function loader({ context, url }: Route.LoaderArgs) {
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
   const values = textFields(await request.formData(), ["ref", "phone"]);
-  // a message-to-staff number typed here: it is followed on /support/ticket (said under the field, linked beside)
-  if (normalizeSupportRef(values.ref, TICKET_REF_PREFIX)) return data({ ok: false as const, code: "invalid", status: 400, fields: { ref: "ticket_ref" }, values }, { status: 400, headers: LOOKUP_PAGE_HEADERS });
+  // a message-to-staff number typed here: it is followed on /support/ticket (said under the field, linked beside) —
+  // an answer about a field, so 200 (client.ts answerStatus)
+  if (normalizeSupportRef(values.ref, TICKET_REF_PREFIX)) return data({ ok: false as const, code: "invalid", status: 400, fields: { ref: "ticket_ref" }, values }, { status: 200, headers: LOOKUP_PAGE_HEADERS });
   try {
     const view = await lookupRepair(getDb(), ctx.locale, values, { ip: ctx.ip }, ctx.now);
     // the address carries no token after a lookup; the form may show again (not found), so it must keep posting
@@ -119,10 +120,10 @@ export default function RepairStatusPage({ loaderData, actionData }: Route.Compo
         <h1 className="type-h1 text-ink">{t("status.title")}</h1>
 
         {loaderData.created && view ? (
-          <div role="status" className="sup-callout sup-callout--ok">
+          <div className="sup-callout sup-callout--ok">
             <Icon name="check-circle" size={20} className="sup-callout__icon" />
             <div className="grid min-w-0 gap-1">
-              <p className="sup-callout__title">{t("status.created.title")}</p>
+              <CreatedTitle>{t("status.created.title")}</CreatedTitle>
               <p className="type-sm text-ink">{loaderData.replayed ? t("status.replayed") : t("status.created.text")}</p>
               <p className="type-xs text-ink-2">{t("status.created.save")}</p>
               <div className="mt-1">
@@ -192,6 +193,22 @@ export default function RepairStatusPage({ loaderData, actionData }: Route.Compo
         </div>
       </aside>
     </div>
+  );
+}
+
+/**
+ * «استلمنا طلب الصيانة» — just after sending, the confirmation's heading takes focus, so a screen reader starts with
+ * the outcome (a newly mounted status region is not reliably read; focus used to fall to the page — QA 2026-11-12).
+ */
+function CreatedTitle({ children }: { children: string }) {
+  const ref = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    ref.current?.focus({ preventScroll: true });
+  }, []);
+  return (
+    <h2 ref={ref} tabIndex={-1} className="sup-callout__title">
+      {children}
+    </h2>
   );
 }
 

@@ -8,7 +8,9 @@ import { defineMessages } from "../translate";
  *
  * Voice (v2 §9): plain, specific, no promise the store cannot keep, no call promise. The game-turn voice survives in
  * ONE line only, the intro's `intro.line`; nowhere else on the page. Shared words come from the kit (ui-shop): the
- * delivery fact, «الدفع عند الاستلام», «سعر تجريبي», «عرض الكل», the release band and the tile counts.
+ * trust strip's delivery fact, «الدفع عند الاستلام», «سعر تجريبي», «عرض الكل», the release band and the tile counts.
+ * The hero's delivery fact is the page's own (`hero.delivery`): it must stay ONE line on a 390px phone beside «الدفع
+ * عند الاستلام», which the kit's longer English and Sorani sentences do not (QA 2026-11-12).
  *
  * {name} is a product name as the catalogue writes it (Latin names stay Latin). `hero.lead` / `hero.new` are split
  * around {name}: the words before it are the headline's first line, the name (with any words after it) the second.
@@ -24,6 +26,8 @@ export default defineMessages({
       buy: "اشترِ {name}",
       details: "تفاصيل الجهاز",
       productDetails: "تفاصيل المنتج",
+      // the hero's delivery fact, before «الدفع عند الاستلام»: ONE line on a 390px phone in every language (v2 §6.1)
+      delivery: "التوصيل {price} لكل المحافظات",
     },
     platforms: {
       title: "تسوّق حسب المنصّة",
@@ -123,6 +127,7 @@ export default defineMessages({
       buy: "Buy {name}",
       details: "Device details",
       productDetails: "Product details",
+      delivery: "Delivery {price}",
     },
     platforms: {
       title: "Shop by platform",
@@ -152,7 +157,7 @@ export default defineMessages({
     },
     releases: {
       versions: {
-        one: "a new version",
+        one: "New version",
         other: "{count} new versions",
       },
     },
@@ -218,6 +223,7 @@ export default defineMessages({
       buy: "{name} بکڕە",
       details: "وردەکاریی ئامێرەکە",
       productDetails: "وردەکاریی بەرهەمەکە",
+      delivery: "گەیاندن {price}",
     },
     platforms: {
       title: "بەپێی پلاتفۆرم بکڕە",

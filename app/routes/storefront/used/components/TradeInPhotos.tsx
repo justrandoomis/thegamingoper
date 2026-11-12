@@ -1,8 +1,10 @@
 /**
  * The trade-in wizard's photos (Design System v2 §6.14 "photos: the ProofUploader pattern", §4.24): the kit's paper drop
  * area with a dashed control line (.proof__drop), «اختر صوراً» and, on touch screens, «التقط صورة»; several photos, up
- * to the limit; each one is checked here first (JPEG, PNG or WebP within the size limit — the server decides again from
- * the bytes), shown at once from the device, and sent one at a time to POST /api/upload/tradein with an ink progress
+ * to the limit; each one is checked here first (JPEG, PNG or WebP within the size limit, then — like the server — by
+ * its first bytes, whether the browser can draw it and its size in pixels: ~/routes/storefront/support/photo-check, so
+ * a renamed text file is said at once and never sent to be refused), shown at once from the device, and sent one at
+ * a time to POST /api/upload/tradein with an ink progress
  * bar and its %. A failure says why, beside that photo (danger callout), with a retry when retrying can help; a removed
  * photo is deleted on the server. The photos are private: only this browser's draft (httpOnly cookie) and, after
  * submission, store staff can see them.
@@ -18,6 +20,7 @@ import { IconKey } from "~/ui/IconKey";
 import { Key } from "~/ui/Key";
 import { checkProofFile, proofFailure, PROOF_TYPES } from "~/ui/ProofUploader";
 import { TextLink } from "~/ui/TextLink";
+import { checkPhotoFile } from "~/routes/storefront/support/photo-check";
 import { useUsedT } from "../i18n";
 
 const ENDPOINT = "/api/upload/tradein";
@@ -182,16 +185,34 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
     }
   };
 
-  const take = (chosen: FileList | File[] | null | undefined) => {
+  const take = async (chosen: FileList | File[] | null | undefined) => {
     if (!chosen) return;
+    // read before anything else: the input is emptied (and a drop's files are gone) once this returns its promise
+    const list = Array.from(chosen);
+    // What each file really is — its first bytes, whether the browser can draw it, its size in pixels — before it shows
+    // or is sent: a renamed text file is said here, never sent to be refused (QA 2026-11-12: a 415 in the console).
+    // One file at a time: a phone decodes one photo, not six.
+    const found = new Map<File, string>();
+    for (const file of list) {
+      if (checkProofFile({ name: file.name, size: file.size, type: file.type }, { maxBytes })) continue;
+      const problem = await checkPhotoFile(file);
+      if (problem) found.set(file, problem);
+    }
+    // the photos on screen now (a removal or another choice may have landed while the files were read)
+    const keptNow = latest.current.filter((entry) => entry.state !== "failed").length;
     const added: Entry[] = [];
-    let space = room;
-    for (const file of Array.from(chosen)) {
-      const name = file.name || t("tradein.photos.photo", { n: f.number(kept.length + added.length + 1) });
+    let space = Math.max(0, limit - keptNow);
+    for (const file of list) {
+      const name = file.name || t("tradein.photos.photo", { n: f.number(keptNow + added.length + 1) });
       const problem = checkProofFile({ name: file.name, size: file.size, type: file.type }, { maxBytes });
       if (problem) {
         const text = t(`tradein.photos.errors.${problem}`, { name: named(name), size: mb(file.size), max: mb(maxBytes) });
         added.push({ key: nextKey(), id: null, name, src: null, local: false, state: "failed", progress: 0, problem: text, retry: false });
+        continue;
+      }
+      const unreadable = found.get(file);
+      if (unreadable) {
+        added.push({ key: nextKey(), id: null, name, src: null, local: false, state: "failed", progress: 0, problem: problemOf(unreadable, name, 0).text, retry: false });
         continue;
       }
       if (space <= 0) {
@@ -276,7 +297,7 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
           event.preventDefault();
           depth.current = 0;
           setDragging(false);
-          take(event.dataTransfer.files);
+          void take(event.dataTransfer.files);
         }}
         className="proof__drop used-photos__drop"
       >
@@ -309,7 +330,7 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
           multiple
           hidden
           onChange={(event) => {
-            take(event.currentTarget.files);
+            void take(event.currentTarget.files);
             event.currentTarget.value = "";
           }}
         />
@@ -320,7 +341,7 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
           capture="environment"
           hidden
           onChange={(event) => {
-            take(event.currentTarget.files);
+            void take(event.currentTarget.files);
             event.currentTarget.value = "";
           }}
         />

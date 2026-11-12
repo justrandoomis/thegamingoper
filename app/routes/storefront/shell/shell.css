@@ -649,10 +649,16 @@
     display: flex;
     align-items: center;
   }
+  /* four link columns and the featured product; 24px apart at 1024–1279 so a short model name and its count keep one line */
   .shell-mega__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(260px, 1.3fr);
-    gap: var(--s-8);
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.25fr);
+    gap: var(--s-6);
+  }
+  @media (min-width: 80rem) {
+    .shell-mega__grid {
+      gap: var(--s-8);
+    }
   }
   .shell-mega__col {
     min-inline-size: 0;
@@ -666,10 +672,16 @@
     color: var(--ink-2);
     font: var(--type-sm-strong);
   }
+  /* rows 4px apart, each with 4px of its own above and below: a name that wraps stays ONE item, never a block of lines */
+  .shell-mega__list {
+    display: grid;
+    gap: var(--s-1);
+  }
   .shell-mega__link {
     display: flex;
     align-items: center;
     min-block-size: var(--target);
+    padding-block: var(--s-1);
     color: var(--ink);
     font: var(--type-body);
     line-height: 1.35;
@@ -677,6 +689,14 @@
   }
   .shell-mega__link--all {
     font-weight: 600;
+  }
+  /* the read layer's count after the name (the name is its own isolate, so the figure follows it in either direction) */
+  .shell-mega__count {
+    margin-inline-start: var(--s-2);
+    color: var(--ink-2);
+    font: var(--type-sm);
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
   }
   .shell-mega__text {
     text-decoration: underline;
@@ -689,12 +709,14 @@
       text-decoration-color: currentColor;
     }
   }
+  /* the featured product as a card reads: the well, then its name (two lines at most), then its price */
   .shell-mega__feature {
     display: grid;
-    grid-template-columns: 132px minmax(0, 1fr);
-    align-items: center;
-    gap: var(--s-4);
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-3);
     align-self: start;
+    min-inline-size: 0;
     color: var(--ink);
     text-decoration: none;
   }
@@ -702,12 +724,23 @@
     position: relative;
     display: grid;
     place-items: center;
+    inline-size: min(100%, 152px);
     aspect-ratio: 1;
     border-radius: var(--r-lg);
     background: var(--product-ground);
     overflow: hidden;
   }
+  @media (min-width: 80rem) {
+    .shell-mega__well {
+      inline-size: min(100%, 176px);
+    }
+  }
+  /* pinned in the well (a percentage height does not resolve against an aspect-ratio box): a tall photo — the PS5
+     Slim stands 1:1.9 — is contained whole, never cut by the well's edge */
   .shell-mega__well img {
+    position: absolute;
+    inset: 0;
+    margin: auto;
     inline-size: 84%;
     block-size: 84%;
     object-fit: contain;
@@ -717,12 +750,36 @@
     .shell-mega__feature:hover .shell-mega__well img {
       scale: 1.03;
     }
-    .shell-mega__feature:hover .shell-mega__text {
+    .shell-mega__feature:hover .shell-mega__fname {
       text-decoration-color: currentColor;
     }
   }
+  /* name · price (· «نفد حالياً») (· «سعر تجريبي» in a live store) */
   .shell-mega__name {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-1);
+    min-inline-size: 0;
+  }
+  .shell-mega__fname {
+    display: -webkit-box;
+    justify-self: stretch;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     font: var(--type-card);
+    unicode-bidi: isolate;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+  }
+  .shell-mega__price {
+    display: block;
+  }
+  .shell-mega__status {
+    color: var(--ink-2);
+    font: var(--type-xs);
   }
   .shell-mega__empty {
     grid-column: 1 / -1;
@@ -749,6 +806,7 @@
       display: none;
     }
     .shell-header[data-task][data-scrolled] .shell-task--title {
+      position: relative;
       display: block;
       flex: 1 1 auto;
       min-inline-size: 0;
@@ -756,11 +814,21 @@
       color: var(--ink);
       font: var(--type-card);
       white-space: nowrap;
+      /* the words are cut between words by the component (Header.tsx TaskTitle); this is only the last resort */
       text-overflow: ellipsis;
-      /* the title in its own direction, cut at its logical end, centred between back and the cart */
+      /* the title in its own direction, its «…» at its logical end, centred between back and the cart */
       unicode-bidi: plaintext;
       text-align: center;
     }
+  }
+  /* measures a candidate title in the title's font; clipped by the title's own box, never seen */
+  .shell-task__probe {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    visibility: hidden;
+    white-space: nowrap;
+    pointer-events: none;
   }
 
   /* ───────────────────────────── checkout bar (§5.8): one 56px bar (64 from 1024) with the step rail inline ───────────────────────────── */
@@ -808,9 +876,16 @@
   .shell-cobar__brand .shell-lockup__word {
     display: none;
   }
-  /* 320px reflow (and 200% zoom on a small phone): the back key, the rail, the tag and help — the mascot goes */
-  @media (max-width: 22.49rem) {
+  /* below 430px the mascot gives way FIRST, so the whole «طلب تجريبي» tag and the current step's words stay (the
+     store's name is one tap back, on the cart) */
+  @media (max-width: 26.86rem) {
     .shell-cobar__brand {
+      display: none;
+    }
+  }
+  /* Sorani's tag («داواکاریی تاقیکاری», 102px) and last step («پێداچوونەوە») are longer: the mascot gives way up to 480 */
+  @media (max-width: 29.99rem) {
+    .shell-cobar__brand:lang(ckb) {
       display: none;
     }
   }
@@ -823,9 +898,10 @@
     }
   }
   /* the kit's step rail (<ProgressSteps>), in the bar: centred and at most 480 wide. All the labels from 600 (they do
-     not fit beside the keys and the tag below that); below 600 the numbers and the current step's label — when it fits:
-     only the current step gives way (the utilities block at the end of this file), its label going first, so nothing
-     ever runs under the demo tag; below 375 the numbers alone (the page's <h1> names the step). */
+     not fit beside the keys and the tag below that); below 600 the numbers and the current step's label (§4.22, §5.8)
+     — from 360 up in every language: only the current step gives way (the utilities block at the end of this file),
+     its words cut at their logical end in the rare case they still do not fit, so nothing ever runs under the demo
+     tag; below 360 (320 reflow, 200% zoom) the numbers alone (the page's <h1> names the step). */
   .shell-cobar__steps {
     display: flex;
     flex: 1 1 auto;
@@ -858,7 +934,7 @@
       white-space: nowrap;
     }
   }
-  @media (max-width: 23.43rem) {
+  @media (max-width: 22.49rem) {
     .shell-cobar__steps .step__label {
       position: absolute;
       inline-size: 1px;
@@ -866,17 +942,6 @@
       overflow: hidden;
       clip-path: inset(50%);
       white-space: nowrap;
-    }
-  }
-  .shell-cobar__long {
-    display: none;
-  }
-  @media (min-width: 26.875rem) {
-    .shell-cobar__short {
-      display: none;
-    }
-    .shell-cobar__long {
-      display: inline;
     }
   }
 
@@ -1421,6 +1486,19 @@
     .shell-progress > span {
       background: Highlight;
     }
+    /* the glass bars lose their fill and their shadow: draw their edge, or the page seems to run into them (v2 §10) */
+    .shell-tabbar {
+      border: 1px solid CanvasText;
+    }
+    .shell-taskbar {
+      border-block-start: 1px solid CanvasText;
+    }
+    /* drawn over the first pixel under it, so the chrome budget (--shell-top) stays exact */
+    .shell-header,
+    .shell-cobar {
+      margin-block-end: -1px;
+      border-block-end: 1px solid CanvasText;
+    }
   }
 }
 
@@ -1431,10 +1509,12 @@
  * step's words ran under «تجريبي» at 375–429 and the discs overlapped at 320. In the utilities layer because those sizes
  * are utilities. In the bar:
  *   · each step is its disc (and, from 600, its words); a done step's link keeps a 44 × 44 hit area through its ::after
- *     (the joins keep 20px between two discs, so two hit areas never overlap);
- *   · the joins take the room that is left; only the CURRENT step gives way when there is not enough, and its words go
- *     first: they wrap to a second line that the step's 44px box clips (still read by assistive technology) — so the
- *     words show whenever they fit, and nothing runs under the tag.
+ *     (two done links keep 20px between their discs, so two hit areas never overlap; every other join may be 4px);
+ *   · the joins take the room that is left; only the CURRENT step gives way when there is not enough: its words stay
+ *     on the disc's line and are cut at their logical end («…») — never hidden while the rail has room for a few
+ *     letters (§4.22: numbers plus the current label), never under the tag. The whole label stays readable for
+ *     assistive technology. Below 430 the mascot has already given way (above), so the words fit whole at 360 in
+ *     Arabic and English.
  */
 @layer utilities {
   .shell-cobar__steps .steps > li {
@@ -1453,17 +1533,26 @@
     min-inline-size: 0;
   }
   .shell-cobar__steps .step[aria-current="step"] {
-    flex-wrap: wrap;
-    align-content: flex-start;
-    row-gap: var(--s-3);
+    flex-wrap: nowrap;
     min-inline-size: 24px;
-    block-size: var(--target);
-    padding-block: 10px;
     overflow: hidden;
   }
+  .shell-cobar__steps .step[aria-current="step"] .step__label {
+    min-inline-size: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   @media (max-width: 37.49rem) {
-    .shell-cobar__steps .steps > li {
+    .shell-cobar__steps .steps > li,
+    .shell-cobar__steps .step {
       gap: 4px;
+    }
+    .shell-cobar__steps .step__sep {
+      min-inline-size: 4px;
+    }
+    .shell-cobar__steps .steps > li:has(> a.step) + li:has(> a.step) > .step__sep {
+      min-inline-size: 12px;
     }
     .shell-cobar__steps a.step {
       position: relative;

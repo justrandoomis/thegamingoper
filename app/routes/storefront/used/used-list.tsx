@@ -38,6 +38,7 @@ import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
 import { HrefLink, ShowMore } from "~/ui/Pagination";
 import { Sheet } from "~/ui/Sheet";
+import { TextLink } from "~/ui/TextLink";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { ActiveFilters, clearedHref, FilterForm, FilterSheetShow, PlatformRail, searchWith, SortList, SortSelect, USED_PATH } from "./components/UsedFilters";
 import { useUsedT } from "./i18n";
@@ -138,6 +139,7 @@ export default function UsedList({ loaderData }: Route.ComponentProps) {
       />
     );
   } else if (list.total === 0) {
+    // v2 §4.23: one primary (the way out of these filters) and one recovery link
     results = (
       <EmptyState
         layout="stack"
@@ -146,9 +148,15 @@ export default function UsedList({ loaderData }: Route.ComponentProps) {
         title={t("list.emptyFiltered")}
         text={t("list.emptyFilteredText")}
         action={
-          <Key as={HrefLink} to={clearedHref(filters)} disabled={!online} preventScrollReset>
+          // lint-design: allow primary-count — this empty state and the "nothing listed" one above are never on screen together
+          <Key as={HrefLink} to={clearedHref(filters)} variant="primary" disabled={!online} preventScrollReset>
             {t("list.clearFilters")}
           </Key>
+        }
+        recovery={
+          <TextLink as={LocaleLink} to="/">
+            {t("list.shopNew")}
+          </TextLink>
         }
       />
     );
@@ -173,7 +181,9 @@ export default function UsedList({ loaderData }: Route.ComponentProps) {
         <header className="grid gap-1">
           <h1 className="type-h1 text-ink">{t("list.title")}</h1>
           <p className="type-sm text-ink-2">
-            {listed !== null && listed > 0 ? <span className="font-semibold text-ink">{t("list.count", { count: listed, n: f.number(listed) })} · </span> : null}
+            {/* the store-wide count only while no filter is on: the toolbar says how many match the filters (QA
+                2026-11-12: «6 أجهزة» above «لا أجهزة» on one screen) */}
+            {listed !== null && listed > 0 && activeCount === 0 ? <span className="font-semibold text-ink">{t("list.count", { count: listed, n: f.number(listed) })} · </span> : null}
             {t("list.lead")}
           </p>
         </header>

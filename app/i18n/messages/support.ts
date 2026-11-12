@@ -7,7 +7,9 @@ import { defineMessages } from "../translate";
  * Voice (DESIGN.md §11, Design System v2 §9): plain, specific, active; no promises the store cannot keep — no call or
  * contact promise anywhere (a preferred time is a preference, a description is never a diagnosis, nothing is "sent" by
  * SMS: no provider). One term per concept: «مركز الدعم» (page title), «الدعم» (navigation), «تحدّث مع موظف» /
- * "Talk to a person", «رقم الموبايل». Service error codes are worded by the "errors" namespace;
+ * "Talk to a person", «رقم الموبايل». The guides are «أدلة طمطم» / "TamTam's guides" — never «المعتمدة» /
+ * "approved" / "verified" while no store technician has reviewed them (each page says so once: help.demo,
+ * assistant.demo, article.notReviewed). Service error codes are worded by the "errors" namespace;
  * `fieldErrors.<field>.<code>` are this area's more specific sentences for its own fields.
  * The Sorani strings need a native reader, as everywhere.
  */
@@ -23,7 +25,7 @@ export default defineMessages({
     },
     meta: {
       help: { title: "مركز الدعم", description: "أدلة آمنة لأجهزتك، ومساعد صيانة خطوة بخطوة، وطلب صيانة تتابع حالته، وموظف تكتب له." },
-      assistant: { title: "مساعد الصيانة", description: "أسئلة قصيرة وخطوات آمنة من أدلة طمطم المعتمدة، وتحويل المحادثة إلى موظف عند الحاجة." },
+      assistant: { title: "مساعد الصيانة", description: "أسئلة قصيرة وخطوات آمنة من أدلة طمطم، وتحويل المحادثة إلى موظف عند الحاجة." },
       repair: { title: "احجز صيانة", description: "صِف المشكلة وأرفق صوراً. يحدد الفني العطل بعد الفحص، ولا يبدأ أي عمل مدفوع قبل موافقتك على السعر." },
       status: { title: "متابعة طلب الصيانة", description: "تابع حالة طلب الصيانة برقم الطلب ورقم الموبايل." },
     },
@@ -38,8 +40,8 @@ export default defineMessages({
         count: { zero: "لا أدلة تطابق بحثك", one: "دليل واحد يطابق بحثك", two: "دليلان يطابقان بحثك", few: "{count} أدلة تطابق بحثك", many: "{count} دليلاً يطابق بحثك", other: "{count} دليل يطابق بحثك" },
         dangerTitle: "توقف: ما وصفته قد يكون خطراً",
         dangerText: "افصل الجهاز عن الكهرباء، ولا تشحنه ولا تشغّله ولا تفتحه، واحجز صيانة ليفحصه فني.",
-        codeFound: "هذه الأدلة المعتمدة تذكر رمز الخطأ {code}:",
-        codeNone: "رمز الخطأ {code}: لا يذكره أي دليل معتمد لدينا بعد، فلا نستطيع أن نقول ما معناه. يمكن لموظف أن يبحث عنه.",
+        codeFound: "هذه الأدلة تذكر رمز الخطأ {code}:",
+        codeNone: "رمز الخطأ {code}: لا يذكره أي دليل لدينا بعد، فلا نستطيع أن نقول ما معناه. يمكن لموظف أن يبحث عنه.",
         none: "لم نجد دليلاً لـ «{query}»",
         noneText: "جرّب كلمات أقصر أو اسم الجهاز، أو اسأل المساعد خطوة بخطوة.",
         ask: "اسأل المساعد عن هذه المشكلة",
@@ -101,9 +103,9 @@ export default defineMessages({
     assistant: {
       title: "مساعد الصيانة",
       notDiagnosis: "ليس تشخيصاً",
-      source: "الإجابات من أدلة طمطم المعتمدة، وليست تشخيصاً بالذكاء الاصطناعي. لا يمكن تأكيد عطل في الجهاز من الوصف وحده: يحدده فني يفحص الجهاز.",
+      source: "الإجابات من أدلة طمطم، وليست تشخيصاً بالذكاء الاصطناعي. لا يمكن تأكيد عطل في الجهاز من الوصف وحده: يحدده فني يفحص الجهاز.",
       how: {
-        keywords: "يطابق كلماتك مع الأدلة المعتمدة بكلمات مفتاحية؛ لا يفهم اللغة ولا يكتب خطوات من عنده.",
+        keywords: "يطابق كلماتك مع أدلة طمطم بكلمات مفتاحية؛ لا يفهم اللغة ولا يكتب خطوات من عنده.",
         ai: "لا يوجد نموذج ذكاء اصطناعي مفعّل في هذا المتجر.",
         storage: "لا نحفظ المحادثة إلا إذا طلبت التحدث مع موظف ووافقت على مشاركتها.",
         url: "المحادثة في رابط هذه الصفحة: الرجوع إلى الخلف يلغي آخر إجابة.",
@@ -123,10 +125,10 @@ export default defineMessages({
         ask_model: "أي جهاز {platform} لديك؟",
         ask_problem: "ما المشكلة؟ اختر الأقرب، أو اكتبها بكلماتك، أو اكتب رمز الخطأ.",
         matched: "على الأغلب تقصد: «{title}». نمشي في الفحوص الآمنة واحداً بعد الآخر.",
-        unmatched: "لم أجد دليلاً معتمداً يطابق ما كتبت. اختر أقرب مشكلة من القائمة، أو تحدّث مع موظف.",
-        code: "رمز الخطأ {code}: لا يذكره أي دليل معتمد لدينا بعد، فلا نستطيع أن نقول ما معناه. يمكن لموظف أن يبحث عنه، أو اختر أقرب مشكلة.",
-        code_found: "هذه الأدلة المعتمدة تذكر رمز الخطأ {code}:",
-        topic: "قد تساعدك هذه الأدلة المعتمدة:",
+        unmatched: "لم أجد دليلاً يطابق ما كتبت. اختر أقرب مشكلة من القائمة، أو تحدّث مع موظف.",
+        code: "رمز الخطأ {code}: لا يذكره أي دليل لدينا بعد، فلا نستطيع أن نقول ما معناه. يمكن لموظف أن يبحث عنه، أو اختر أقرب مشكلة.",
+        code_found: "هذه الأدلة تذكر رمز الخطأ {code}:",
+        topic: "قد تساعدك هذه الأدلة:",
         danger: "توقف الآن. ما وصفته قد يكون خطراً: افصل الجهاز عن الكهرباء، ولا تشحنه ولا تشغّله ولا تفتحه، واحجز صيانة ليفحصه فني.",
         question: "سؤال",
         step: "خطوة",
@@ -378,7 +380,7 @@ export default defineMessages({
     },
     meta: {
       help: { title: "Support centre", description: "Safe guides for your devices, a step-by-step maintenance assistant, repair requests you can follow, and a person to write to." },
-      assistant: { title: "Maintenance assistant", description: "Short questions and safe steps from TamTam's verified guides, and a handover to a person when you need one." },
+      assistant: { title: "Maintenance assistant", description: "Short questions and safe steps from TamTam's guides, and a handover to a person when you need one." },
       repair: { title: "Book a repair", description: "Describe the problem and add photos. A technician finds the fault after checking the device, and no paid work starts before you approve the price." },
       status: { title: "Track a repair", description: "See the status of a repair request with its number and your mobile number." },
     },
@@ -393,8 +395,8 @@ export default defineMessages({
         count: { zero: "No guides match your search", one: "{count} guide matches your search", other: "{count} guides match your search" },
         dangerTitle: "Stop: what you describe can be dangerous",
         dangerText: "Unplug the device, do not charge it, switch it on or open it, and book a repair so a technician can check it.",
-        codeFound: "These approved guides mention error code {code}:",
-        codeNone: "Error code {code}: none of our approved guides mention it yet, so we can't tell you what it means. A member of staff can look it up.",
+        codeFound: "These guides mention error code {code}:",
+        codeNone: "Error code {code}: none of our guides mention it yet, so we can't tell you what it means. A member of staff can look it up.",
         none: "No guide found for “{query}”",
         noneText: "Try fewer words or your device's name, or ask the assistant step by step.",
         ask: "Ask the assistant about this problem",
@@ -456,9 +458,9 @@ export default defineMessages({
     assistant: {
       title: "Maintenance assistant",
       notDiagnosis: "Not a diagnosis",
-      source: "Answers come from TamTam's verified guides, not from an AI diagnosis. A hardware fault cannot be confirmed from a description alone: a technician who checks the device decides that.",
+      source: "Answers come from TamTam's guides, not from an AI diagnosis. A hardware fault cannot be confirmed from a description alone: a technician who checks the device decides that.",
       how: {
-        keywords: "It matches your words to approved guides by keywords; it does not understand language and never writes steps of its own.",
+        keywords: "It matches your words to TamTam's guides by keywords; it does not understand language and never writes steps of its own.",
         ai: "No AI model is switched on in this store.",
         storage: "Nothing is stored unless you ask to talk to a person and agree to share the conversation.",
         url: "The conversation lives in this page's address: going back undoes your last answer.",
@@ -478,10 +480,10 @@ export default defineMessages({
         ask_model: "Which {platform} device do you have?",
         ask_problem: "What is the problem? Pick the closest one, describe it in your own words, or type the error code.",
         matched: "This most likely matches “{title}”. Let's go through the safe checks one at a time.",
-        unmatched: "I couldn't match your words to an approved guide. Pick the closest problem from the list, or talk to a person.",
-        code: "Error code {code}: none of our approved guides mention it yet, so we can't tell you what it means. A member of staff can look it up, or pick the closest problem.",
-        code_found: "These approved guides mention error code {code}:",
-        topic: "These approved guides may help:",
+        unmatched: "I couldn't match your words to one of our guides. Pick the closest problem from the list, or talk to a person.",
+        code: "Error code {code}: none of our guides mention it yet, so we can't tell you what it means. A member of staff can look it up, or pick the closest problem.",
+        code_found: "These guides mention error code {code}:",
+        topic: "These guides may help:",
         danger: "Stop now. What you describe can be dangerous: unplug the device, do not charge it, switch it on or open it, and book a repair so a technician can check it.",
         question: "Question",
         step: "Step",
@@ -509,7 +511,7 @@ export default defineMessages({
       },
       composer: {
         label: "Your message to the assistant",
-        placeholder: "Type your device's name or the problem",
+        placeholder: "Your device or the problem",
         send: "Send",
         offline: "No connection. What you typed stays here; send it when the connection is back.",
       },
@@ -733,7 +735,7 @@ export default defineMessages({
     },
     meta: {
       help: { title: "ناوەندی پشتگیری", description: "ڕێنمایی سەلامەت بۆ ئامێرەکانت، یاریدەدەری چاککردنەوە هەنگاو بە هەنگاو، داواکاری چاککردنەوە کە دۆخەکەی دەبینیت، و کارمەندێک کە بۆی دەنووسیت." },
-      assistant: { title: "یاریدەدەری چاککردنەوە", description: "پرسیاری کورت و هەنگاوی سەلامەت لە ڕێنماییە پەسەندکراوەکانی طمطم، و ناردنی گفتوگۆکە بۆ کارمەند کاتێک پێویست بوو." },
+      assistant: { title: "یاریدەدەری چاککردنەوە", description: "پرسیاری کورت و هەنگاوی سەلامەت لە ڕێنماییەکانی طمطم، و ناردنی گفتوگۆکە بۆ کارمەند کاتێک پێویست بوو." },
       repair: { title: "چاککردنەوە تۆمار بکە", description: "کێشەکە باس بکە و وێنە هاوپێچ بکە. تەکنیکار دوای پشکنین تێکچوونەکە دیاری دەکات، و هیچ کارێکی پارەدار پێش ڕەزامەندیت لەسەر نرخ دەست پێ ناکات." },
       status: { title: "بەدواداچوونی داواکاری چاککردنەوە", description: "دۆخی داواکاری چاککردنەوە بە ژمارەی داواکاری و ژمارەی مۆبایل ببینە." },
     },
@@ -748,8 +750,8 @@ export default defineMessages({
         count: { zero: "هیچ ڕێنماییەک لەگەڵ گەڕانەکەت ناگونجێت", one: "{count} ڕێنمایی لەگەڵ گەڕانەکەت دەگونجێت", other: "{count} ڕێنمایی لەگەڵ گەڕانەکەت دەگونجێن" },
         dangerTitle: "بوەستە: ئەوەی باسی دەکەیت دەتوانێت مەترسیدار بێت",
         dangerText: "ئامێرەکە لە کارەبا بپچڕێنە، بارگاوی مەکە، دایمەگیرسێنە و مەیکەرەوە، و چاککردنەوە تۆمار بکە تا تەکنیکارێک بیپشکنێت.",
-        codeFound: "ئەم ڕێنماییە پەسەندکراوانە باسی کۆدی هەڵەی {code} دەکەن:",
-        codeNone: "کۆدی هەڵەی {code}: هیچ کام لە ڕێنماییە پەسەندکراوەکانمان هێشتا باسی ناکەن، بۆیە ناتوانین بڵێین مانای چییە. کارمەندێک دەتوانێت بیگەڕێت.",
+        codeFound: "ئەم ڕێنماییانە باسی کۆدی هەڵەی {code} دەکەن:",
+        codeNone: "کۆدی هەڵەی {code}: هیچ کام لە ڕێنماییەکانمان هێشتا باسی ناکەن، بۆیە ناتوانین بڵێین مانای چییە. کارمەندێک دەتوانێت بیگەڕێت.",
         none: "هیچ ڕێنماییەک بۆ «{query}» نەدۆزرایەوە",
         noneText: "وشەی کورتتر یان ناوی ئامێرەکەت تاقی بکەرەوە، یان هەنگاو بە هەنگاو لە یاریدەدەرەکە بپرسە.",
         ask: "دەربارەی ئەم کێشەیە لە یاریدەدەرەکە بپرسە",
@@ -811,9 +813,9 @@ export default defineMessages({
     assistant: {
       title: "یاریدەدەری چاککردنەوە",
       notDiagnosis: "دەستنیشانکردن نییە",
-      source: "وەڵامەکان لە ڕێنماییە پەسەندکراوەکانی طمطمەوەن، نەک دەستنیشانکردنی زیرەکی دەستکرد. تێکچوونی ئامێرەکە تەنها لە وەسفەوە پشتڕاست ناکرێتەوە: تەکنیکارێک کە ئامێرەکە دەپشکنێت بڕیار دەدات.",
+      source: "وەڵامەکان لە ڕێنماییەکانی طمطمەوەن، نەک دەستنیشانکردنی زیرەکی دەستکرد. تێکچوونی ئامێرەکە تەنها لە وەسفەوە پشتڕاست ناکرێتەوە: تەکنیکارێک کە ئامێرەکە دەپشکنێت بڕیار دەدات.",
       how: {
-        keywords: "وشەکانت بە وشەی سەرەکی لەگەڵ ڕێنماییە پەسەندکراوەکان بەراورد دەکات؛ زمان تێناگات و هەرگیز هەنگاوی خۆی نانووسێت.",
+        keywords: "وشەکانت بە وشەی سەرەکی لەگەڵ ڕێنماییەکانی طمطم بەراورد دەکات؛ زمان تێناگات و هەرگیز هەنگاوی خۆی نانووسێت.",
         ai: "هیچ مۆدێلێکی زیرەکی دەستکرد لەم فرۆشگایەدا چالاک نییە.",
         storage: "هیچ شتێک پاشەکەوت ناکرێت مەگەر داوای قسەکردن لەگەڵ کارمەند بکەیت و ڕازی بیت بە هاوبەشکردنی گفتوگۆکە.",
         url: "گفتوگۆکە لە ناونیشانی ئەم پەڕەیەدایە: گەڕانەوە بۆ دواوە دوایین وەڵامت هەڵدەوەشێنێتەوە.",
@@ -833,10 +835,10 @@ export default defineMessages({
         ask_model: "کام ئامێری {platform}ـت هەیە؟",
         ask_problem: "کێشەکە چییە؟ نزیکترینیان هەڵبژێرە، یان بە وشەکانی خۆت باسی بکە، یان کۆدی هەڵەکە بنووسە.",
         matched: "بە ئەگەری زۆر مەبەستت «{title}»ـە. یەک لە دوای یەک بە پشکنینە سەلامەتەکاندا دەڕۆین.",
-        unmatched: "نەمتوانی وشەکانت لەگەڵ ڕێنماییەکی پەسەندکراو بگونجێنم. نزیکترین کێشە لە لیستەکە هەڵبژێرە، یان لەگەڵ کارمەندێک قسە بکە.",
-        code: "کۆدی هەڵەی {code}: هیچ کام لە ڕێنماییە پەسەندکراوەکانمان هێشتا باسی ناکەن، بۆیە ناتوانین بڵێین مانای چییە. کارمەندێک دەتوانێت بیگەڕێت، یان نزیکترین کێشە هەڵبژێرە.",
-        code_found: "ئەم ڕێنماییە پەسەندکراوانە باسی کۆدی هەڵەی {code} دەکەن:",
-        topic: "ئەم ڕێنماییە پەسەندکراوانە لەوانەیە یارمەتیت بدەن:",
+        unmatched: "نەمتوانی وشەکانت لەگەڵ هیچ کام لە ڕێنماییەکانمان بگونجێنم. نزیکترین کێشە لە لیستەکە هەڵبژێرە، یان لەگەڵ کارمەندێک قسە بکە.",
+        code: "کۆدی هەڵەی {code}: هیچ کام لە ڕێنماییەکانمان هێشتا باسی ناکەن، بۆیە ناتوانین بڵێین مانای چییە. کارمەندێک دەتوانێت بیگەڕێت، یان نزیکترین کێشە هەڵبژێرە.",
+        code_found: "ئەم ڕێنماییانە باسی کۆدی هەڵەی {code} دەکەن:",
+        topic: "ئەم ڕێنماییانە لەوانەیە یارمەتیت بدەن:",
         danger: "ئێستا بوەستە. ئەوەی باسی دەکەیت دەتوانێت مەترسیدار بێت: ئامێرەکە لە کارەبا بپچڕێنە، بارگاوی مەکە، دایمەگیرسێنە و مەیکەرەوە، و چاککردنەوە تۆمار بکە تا تەکنیکارێک بیپشکنێت.",
         question: "پرسیار",
         step: "هەنگاو",

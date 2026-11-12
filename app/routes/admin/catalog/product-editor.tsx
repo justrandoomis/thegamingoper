@@ -103,7 +103,10 @@ export default function ProductEditor({ loaderData }: Route.ComponentProps) {
         </Link>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="grid min-w-0 gap-1">
-            <h1 className="adm-title">{pick(product.name, locale)}</h1>
+            {/* the name in its own direction (a Latin «007 First Light» stays in order in the Arabic admin), the title still at the page's start */}
+            <h1 className="adm-title">
+              <bdi>{pick(product.name, locale)}</bdi>
+            </h1>
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 type-caption text-ink-2">
               <span>{kindLabel(product.kind)}</span>
               <bdi dir="ltr">{product.slug}</bdi>

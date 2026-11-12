@@ -809,8 +809,12 @@ html:not([data-motion-ready]) .ptile:active > .ptile__cap {
   transition-duration: var(--t-press);
   transition-timing-function: ease-out;
 }
-/* compact (the categories sheet, the 404 page): 96px tall, the hardware inside the tile */
+/* compact (the categories sheet, the 404 page): 96px tall, the hardware inside the tile. The words keep their own
+   column (48% of the tile, as on the large tile) and the hardware the other half, so a name never runs onto the
+   picture (QA 2026-11-12: «Nintendo» sat on the Switch 2's edge). A tile narrower than ~220px (two in a row on a
+   phone) gives the words more room and stands a smaller picture in the bottom inline-end corner. */
 .ptile--compact {
+  container-type: inline-size;
   min-block-size: 96px;
 }
 .ptile--compact .ptile__cap {
@@ -830,10 +834,20 @@ html:not([data-motion-ready]) .ptile:active > .ptile__cap {
   block-size: calc(100% - 20px);
 }
 .ptile--compact .ptile__text {
-  max-inline-size: 56%;
+  max-inline-size: 48%;
 }
 .ptile--compact .ptile__go {
   display: none;
+}
+@container (max-width: 220px) {
+  .ptile--compact .ptile__text {
+    max-inline-size: 62%;
+  }
+  .ptile--compact .ptile__img {
+    inset-block: auto 10px;
+    inline-size: 32%;
+    block-size: 58%;
+  }
 }
 
 /* ───────────────────────────── the product ground: wells, stage, renders (§6.4d, §12) ─────────────────────────────
@@ -910,12 +924,20 @@ html:not([data-motion-ready]) .ptile:active > .ptile__cap {
 .niche:is([data-kind="box"], [data-kind="card"]) .render {
   box-shadow: var(--e-art);
 }
-/* a used unit shown with a «صورة توضيحية» photo: raised 10% so the chip never covers the object */
+/* a used unit shown with a «صورة توضيحية» photo: the picture stands above the chip (10px from the bottom, 24px tall,
+   + 6px of air) so the chip never covers the object (§7.3) — at least the spec's 10% raise; a small well (a /used row,
+   96px: the chip 4px from the bottom) keeps the chip's 28px + 4px under its picture */
 .niche[data-kind="used"] .niche__slot {
-  inset-block-end: 19.5%;
+  inset-block-end: max(19.5%, 40px);
 }
 .niche[data-kind="used"]::before {
-  inset-block-end: 17%;
+  inset-block-end: max(17%, 36px);
+}
+.niche--sm[data-kind="used"] .niche__slot {
+  inset-block: 6% 32px;
+}
+.niche--sm[data-kind="used"]::before {
+  inset-block-end: 29px;
 }
 /* a real photo filling the well (a used unit's own photos) */
 .niche__fill {

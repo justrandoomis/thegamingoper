@@ -232,3 +232,32 @@ the no-script checkout, offline); a sold-out line (the `/api/cart` answer rewrit
 390×844, 390×420 and 1440; census (ar light/dark, en, ckb at 390/1440) 0 off-scale sizes, radii, image filters, targets
 under 44 or Arabic under 13, 0 contrast failures; no overflow at 320, 360, 390, 720×450 (200% zoom), 768, 1024, 1440;
 /en mirrors. Screenshots: `…/scratchpad/ux/after/P6-checkout-review/`.
+
+## QA fixes (2026-11-12, the transaction matrix)
+
+1. **The step's one primary was cut with an ellipsis** in English and Sorani below 1024 («Continue to paym…» at 360,
+   «داواکارییەکە پشتڕاست بکەر…» at 360/390, the Sorani cart key at 320) and in the summary card at 1024 (the Sorani
+   confirm-with-total, unreported). `<CommitKey>` now carries `.co-commit`: its words wrap to a second line, balanced and
+   centred, inside the 48px key (2 × 20px of the button type) — never an ellipsis; in the task bar the key's inline
+   padding is 16px (the small key's) before it wraps. In the summary card «أكّد الطلب · {total}» keeps the action
+   (with its dot) and the total each whole (`.co-commit__part`), so a wrap reads «…پشتڕاست بکەرەوە ·» / «1,594,000
+   د.ع», never a split verb. The strings are unchanged (the Sorani column still needs a native reader; shorter Sorani
+   keys would let more of them sit on one line).
+2. **Focus started on the step's h1 after /checkout loaded**, so the first Tab skipped the skip link and the checkout bar:
+   React StrictMode runs a mount effect twice and the once-only «first render» flag let the second run focus the heading.
+   The effect remembers the step it last acted on (`stepFocusTarget` in `checkout-form.ts`, pure): focus moves only when
+   the step changes — the new step's h1, or the field a refused «تابع» sends the shopper to.
+3. **«تحقق» (the referral code) and «استخدم …» (points) sat below their field** when a hint or an error showed
+   (`align-items: flex-end` on the whole field): in `.co-extra__row` the field's parts join the row's grid
+   (`display: contents`) — the label over both columns, the input and the key in one row, centred, the hint and the error
+   under the input — so the key stays level with the input as the kit's coupon field keeps «طبّق», even when a narrow
+   field (the points box at 320 in Sorani) would have wrapped its label to two lines.
+
+Tests (`tests/checkout-flow.test.ts`, "QA fixes", +3, each failed first): every primary of the cart and the three steps
+(server HTML, Sorani) carries `.co-commit` and the area CSS lets its label wrap without an ellipsis; `stepFocusTarget`
+(first render, a replay of the same step, a step change, a requested field) and no `firstStep` flag in the page; the
+`.co-extra__row` grid rule (the key in the input's row). Browser (headless Edge, `…/scratchpad/ux/after/Q-fix-pages-transaction/`): the task
+bar and summary keys at 320/360/390 × ar/en/ckb × two carts (926,250 and 1,594,000 IQD) × the cart and three steps,
+light and dark, guest and signed in, and 1024/1280: 0 labels cut (two lines where needed, the key 48px); after load
+`document.activeElement` is `<body>` and Tab goes skip link → «رجوع إلى السلة» → «الدعم»; «تابع إلى الدفع» focuses the
+payment h1; «تحقق» with an unknown code: the key's centre is the input's (0px) in ar/en/ckb at 320–390, light and dark.

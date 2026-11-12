@@ -1,7 +1,9 @@
 /**
  * Small client-safe helpers of the device hub (no server imports: the hub's components and the tests use them).
  */
+import type { IconName } from "~/art/Icon";
 import type { Formatters } from "~/i18n/react";
+import type { TFunction } from "~/i18n/translate";
 import type { CompatibilityStatus, ProductCardData, Shelf, StockState } from "~/lib/dto";
 import { LOCALES } from "~/lib/locales";
 import type { CompatGroup, DeviceHub } from "~/server/services/devices.server";
@@ -46,6 +48,32 @@ export function researchDate(value: string | null | undefined, f: Formatters): R
     return { kind: "year", text, year: text };
   }
   return null;
+}
+
+/** One fact of the hub's head: its icon, its words, and the shorter words a phone shows instead (the release year). */
+export type HeadFact = { icon: IconName; text: string; phone?: string };
+
+/**
+ * The facts row of the hub's head, in the spec's order (v2 §6.6: the release date, the generation, the games and the
+ * accessories the store has for it — verified records only; a zero or an unknown fact is not said). The row is ONE
+ * line (devices.css: the facts that fit, the rest clipped and still read by screen readers); on a phone the release
+ * date says its year only («صدر عام 2025»), so two facts share the line there. `n` formats a count. Pure.
+ */
+export function headFacts(
+  facts: { released: ResearchDate | null; generation: string | null; games: number; accessories: number },
+  t: TFunction,
+  n: (value: number) => string,
+): HeadFact[] {
+  const out: HeadFact[] = [];
+  const { released, generation, games, accessories } = facts;
+  if (released) {
+    const year = t("hero.releasedYear", { year: released.year });
+    out.push(released.kind === "year" ? { icon: "calendar-blank", text: year } : { icon: "calendar-blank", text: t("hero.released", { date: released.text }), phone: year });
+  }
+  if (generation) out.push({ icon: "stack", text: t("hero.generation", { generation: isolateName(generation) }) });
+  if (games > 0) out.push({ icon: "game-controller", text: t("hero.games", { count: games, n: n(games) }) });
+  if (accessories > 0) out.push({ icon: "plug", text: t("hero.accessories", { count: accessories, n: n(accessories) }) });
+  return out;
 }
 
 /** The platform of a platform accent token ("nintendo", …) — its band surface and dot; null for anything else. */

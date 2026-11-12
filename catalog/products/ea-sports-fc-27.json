@@ -121,7 +121,7 @@
   "variants": [
     {
       "sku": "FC27-PS5-STD",
-      "title": { "ar": "EA SPORTS FC 27 لجهاز PS5 — Standard Edition", "en": "EA SPORTS FC 27 for PS5 — Standard Edition", "ckb": "EA SPORTS FC 27 بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["ea-sports-fc-27--1", "ea-sports-fc-27--2", "ea-sports-fc-27--3", "ea-sports-fc-27--4"],
@@ -133,7 +133,7 @@
     },
     {
       "sku": "FC27-XSX-STD",
-      "title": { "ar": "EA SPORTS FC 27 لجهاز Xbox Series X — Standard Edition", "en": "EA SPORTS FC 27 for Xbox Series X — Standard Edition", "ckb": "EA SPORTS FC 27 بۆ Xbox Series X — Standard Edition" },
+      "title": { "ar": "لجهاز Xbox Series X · Standard Edition", "en": "Xbox Series X · Standard Edition", "ckb": "بۆ Xbox Series X · Standard Edition" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["ea-sports-fc-27--1", "ea-sports-fc-27--2", "ea-sports-fc-27--3"],
@@ -225,12 +225,12 @@
     {
       "key": "ea-sports-fc-27--1",
       "file": ".cache/product-images/ea-sports-fc-27/1.jpg",
-      "sourceUrl": "https://drop-assets.ea.com/images/5K1irdzIk8dr7VqEfe2yRm/993ad991664df96b85b6910197bb5143/fc-27-standard-key-art-1x1.jpg",
-      "sourcePage": "https://www.ea.com/games/ea-sports-fc/fc-27",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.27809.13618679251812087.f1d2dec5-00f3-41fb-9f2b-37e86fac8773.c75bdc92-b4b8-448c-9bbc-e6106fedd0c4",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/x/9NJ2N85T2ZGS",
       "kind": "box-art",
       "alt": { "ar": "غلاف EA SPORTS FC 27 — Standard Edition مع Kylian Mbappé", "en": "EA SPORTS FC 27 Standard Edition cover art with Kylian Mbappé", "ckb": "وێنەی بەرگی EA SPORTS FC 27 — Standard Edition لەگەڵ Kylian Mbappé" },
       "credit": "Electronic Arts",
-      "width": 1920, "height": 1920, "transparent": false
+      "width": 1440, "height": 2160, "transparent": false
     },
     {
       "key": "ea-sports-fc-27--2",

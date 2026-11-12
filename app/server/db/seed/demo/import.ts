@@ -60,6 +60,12 @@ export type DemoImage = { key: string; alt: T3 };
 export type ProductAttributes = {
   /** The research record: group, kind and platform as researched, availability on the research date, release date. */
   catalogue: { group: string; kind: string; platform: string; status: CatalogStatus; releaseDate: string | null; family: string | null; deviceModel: string | null };
+  /**
+   * The words the product's Latin title leaves out («نسخة الأقراص» for «PlayStation 5 Slim · 1TB»), printed on the
+   * cards' meta line and under the product page's name (catalog/card-facts.ts qualifierOf). Null when the name says
+   * everything.
+   */
+  qualifier: L10n | null;
   highlights: L10n[];
   inTheBox: L10n[];
   notes: L10n | null;
@@ -180,6 +186,11 @@ export function catalogImportProblems(catalog: DemoCatalog): string[] {
     if (!(CATALOG_STATUSES as readonly string[]).includes(product.status)) problems.push(`${at}: unknown status "${product.status}"`);
     if (product.releaseDate !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(product.releaseDate)) problems.push(`${at}: releaseDate must be YYYY-MM-DD`);
     for (const field of ["name", "short", "description"] as const) if (!isL10n(product[field])) problems.push(`${at}: ${field} is not complete in ar/en/ckb`);
+    if (product.qualifier !== undefined) {
+      const qualifier = product.qualifier as Partial<Record<(typeof LOCALES)[number], unknown>> | null;
+      const texts = LOCALES.map((locale) => qualifier?.[locale]);
+      if (!texts.every((text) => typeof text === "string") || texts.every((text) => !String(text).trim())) problems.push(`${at}: qualifier needs ar, en and ckb ("" where the name says it) and words in at least one`);
+    }
     try {
       if (!categories.has(categoryOf(product))) problems.push(`${at}: category "${categoryOf(product)}" does not exist`);
     } catch (error) {
@@ -334,6 +345,7 @@ function attributesOf(product: CatalogProduct, deviceModel: string | null): Prod
   }
   return {
     catalogue: { group: product.group, kind: product.kind, platform: product.platform, status: product.status, releaseDate: product.releaseDate ?? null, family: product.family ?? null, deviceModel },
+    qualifier: product.qualifier ? t3Of(product.qualifier) : null,
     highlights: product.highlights.map(t3Of),
     inTheBox: (product.inTheBox ?? []).map(t3Of),
     notes: product.notes ? t3Of(product.notes) : null,

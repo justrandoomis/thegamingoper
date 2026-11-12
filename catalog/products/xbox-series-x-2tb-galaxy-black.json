@@ -144,9 +144,9 @@
     {
       "sku": "XSX-2TB-GALAXY",
       "title": {
-        "ar": "Xbox Series X ‏2TB مع مشغل أقراص، Galaxy Black Special Edition",
-        "en": "Xbox Series X 2TB, Disc Drive, Galaxy Black Special Edition",
-        "ckb": "Xbox Series X ‏2TB لەگەڵ خوێنەری دیسک، Galaxy Black Special Edition"
+        "ar": "2TB مع مشغل أقراص · Galaxy Black Special Edition",
+        "en": "2TB · Disc Drive · Galaxy Black Special Edition",
+        "ckb": "2TB لەگەڵ خوێنەری دیسک · Galaxy Black Special Edition"
       },
       "options": { "edition": "Galaxy Black Special Edition", "storage": "2TB", "color": "Galaxy Black" },
       "isDefault": true,

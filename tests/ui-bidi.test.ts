@@ -13,6 +13,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { BidiLabel, BidiText, BidiValue, FSI, hasRtl, isolate, latinName, PDI, splitBidi, splitNumbers, textOf } from "~/ui/BidiText";
+import { FactLine, hasRtlLetter } from "~/ui/FactLine";
 
 /** The left-to-right runs of a text, in reading order. */
 const runs = (text: string) => splitBidi(text).filter((part) => part.ltr).map((part) => part.text);
@@ -190,6 +191,32 @@ describe("amounts and names inside sentences: first-strong isolates", () => {
 describe("a card fact keeps the page's direction (<BidiLabel>)", () => {
   it("reads «512GB أو 1TB» from the right, each size its own left-to-right run", () => {
     expect(label("512GB أو 1TB")).toBe('<span class="bidi"><bdi dir="ltr">512GB</bdi> أو <bdi dir="ltr">1TB</bdi></span>');
+  });
+});
+
+describe("<FactLine> — one line of whole facts, never cut through a Latin name (QA 2026-11-12)", () => {
+  const line = (facts: (string | null)[], lines?: 1 | 2) => renderToStaticMarkup(createElement(FactLine, { facts, lines }));
+
+  it("gives each fact its own box and its « · » to the fact it introduces, so a fact drops out with its separator", () => {
+    expect(line(["Ryzen AI Z2 Extreme", "24GB RAM"])).toBe(
+      '<span class="factline"><span class="factline__fact"><bdi dir="ltr" class="factline__text">Ryzen AI Z2 Extreme</bdi></span>' +
+        '<span class="factline__fact"><span class="factline__sep"> · </span><bdi dir="ltr" class="factline__text">24GB RAM</bdi></span></span>',
+    );
+  });
+
+  it("keeps a fact with Arabic words in the page's direction, each Latin run one isolate, the opening one marked", () => {
+    const html = line(["جهاز Switch 2 بسعة 256GB + Pokémon Legends: Z-A (تنزيل رقمي)"]);
+    expect(html).toContain('<span class="factline__text bidi">جهاز <bdi dir="ltr">Switch 2</bdi> بسعة <bdi dir="ltr">256GB + Pokémon Legends: Z-A</bdi> (تنزيل رقمي)</span>');
+    expect(line(["Nintendo Switch 2 Edition أو نسخة Nintendo Switch"])).toContain('<bdi dir="ltr" class="factline__lead">Nintendo Switch 2 Edition</bdi>');
+  });
+
+  it("treats a Latin list with Arabic commas as one left-to-right fact, skips empty facts, and renders nothing for none", () => {
+    expect(hasRtlLetter("SteamOS، Z1 Extreme 32GB / 1TB، Nebula Nocturne")).toBe(false);
+    expect(hasRtlLetter("جهاز PS5")).toBe(true);
+    expect(line(["SteamOS، Z1 Extreme 32GB / 1TB، Nebula Nocturne"])).toContain('<bdi dir="ltr" class="factline__text">SteamOS، Z1 Extreme');
+    expect(line([null, " ", "PS5"])).toBe('<span class="factline"><span class="factline__fact"><bdi dir="ltr" class="factline__text">PS5</bdi></span></span>');
+    expect(line([null, ""])).toBe("");
+    expect(line(["a", "b"], 2)).toMatch(/^<span class="factline factline--2">/);
   });
 });
 

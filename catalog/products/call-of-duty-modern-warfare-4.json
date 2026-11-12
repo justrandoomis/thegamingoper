@@ -121,7 +121,7 @@
   "variants": [
     {
       "sku": "MW4-PS5-STD",
-      "title": { "ar": "Call of Duty: Modern Warfare 4 لجهاز PS5", "en": "Call of Duty: Modern Warfare 4 for PS5", "ckb": "Call of Duty: Modern Warfare 4 بۆ PS5" },
+      "title": { "ar": "لجهاز PS5", "en": "PS5 edition", "ckb": "بۆ PS5" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["call-of-duty-modern-warfare-4--1", "call-of-duty-modern-warfare-4--2", "call-of-duty-modern-warfare-4--3", "call-of-duty-modern-warfare-4--4", "call-of-duty-modern-warfare-4--5"],
@@ -133,7 +133,7 @@
     },
     {
       "sku": "MW4-XSX-STD",
-      "title": { "ar": "Call of Duty: Modern Warfare 4 لجهاز Xbox Series X", "en": "Call of Duty: Modern Warfare 4 for Xbox Series X", "ckb": "Call of Duty: Modern Warfare 4 بۆ Xbox Series X" },
+      "title": { "ar": "لجهاز Xbox Series X", "en": "Xbox Series X edition", "ckb": "بۆ Xbox Series X" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["call-of-duty-modern-warfare-4--1", "call-of-duty-modern-warfare-4--2", "call-of-duty-modern-warfare-4--3"],
@@ -223,12 +223,12 @@
     {
       "key": "call-of-duty-modern-warfare-4--1",
       "file": ".cache/product-images/call-of-duty-modern-warfare-4/1.jpg",
-      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.59792.13559635275456449.72d1efe7-e297-4b01-9ff5-81f9541bc9a1.f8f4e212-4f83-45fe-8db7-bbb19d5a9582",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.4715.13559635275456449.72d1efe7-e297-4b01-9ff5-81f9541bc9a1.a25cb344-59ba-49dd-8858-37563c544636",
       "sourcePage": "https://www.xbox.com/en-US/games/store/call-of-duty-modern-warfare-4/9p36pb4n42gw",
       "kind": "box-art",
       "alt": { "ar": "غلاف Call of Duty: Modern Warfare 4", "en": "Call of Duty: Modern Warfare 4 cover art", "ckb": "وێنەی بەرگی Call of Duty: Modern Warfare 4" },
       "credit": "Activision",
-      "width": 2160, "height": 2160, "transparent": false
+      "width": 1440, "height": 2160, "transparent": false
     },
     {
       "key": "call-of-duty-modern-warfare-4--2",

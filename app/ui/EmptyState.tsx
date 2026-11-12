@@ -48,8 +48,8 @@ export function EmptyState({ title, text, action, recovery, icon, art, shelf, la
   if (layout === "stack") {
     const Title = `h${headingLevel ?? 2}` as const;
     const well = typeof art === "string";
-    return (
-      <div className={cx("empty", className)}>
+    const column = (
+      <div className={cx("empty", !shelf && className)}>
         <span className={cx("empty__art", well && "empty__art--well")} aria-hidden="true">
           {well ? (
             <span className="render-slot relative size-full p-[12%]">
@@ -73,7 +73,15 @@ export function EmptyState({ title, text, action, recovery, icon, art, shelf, la
             {recovery}
           </div>
         ) : null}
-        {shelf ? <div className="mt-6 w-full">{shelf}</div> : null}
+      </div>
+    );
+    if (!shelf) return column;
+    // The shelf is the page's width, not the 560px column's: inside the column it was squeezed to the width of the
+    // sentence (four ~65px wells at 1440, names broken mid-word; QA 2026-11-12). It lays out like any shelf.
+    return (
+      <div className={cx("empty-page", className)}>
+        {column}
+        <div className="empty__shelf">{shelf}</div>
       </div>
     );
   }
@@ -89,7 +97,9 @@ export function EmptyState({ title, text, action, recovery, icon, art, shelf, la
         {text ? <p className="type-caption text-ink-2">{text}</p> : null}
       </div>
       {action || recovery ? (
-        <div className="flex shrink-0 flex-wrap items-center gap-x-4">
+        // A full row under the words on a narrow card, beside them when there is room; never wider than the card — a
+        // long link («اسأل المساعد عن هذه المشكلة») wraps inside it instead of pushing the page sideways (QA 2026-11-12).
+        <div className="flex min-w-0 max-w-full basis-full flex-wrap items-center gap-x-4 sm:basis-auto [&_.link]:max-w-full [&_.link__text]:min-w-0">
           {action}
           {recovery}
         </div>

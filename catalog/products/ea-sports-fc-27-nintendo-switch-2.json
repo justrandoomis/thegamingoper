@@ -7,9 +7,9 @@
   "status": "available",
   "releaseDate": "2026-09-25",
   "name": {
-    "ar": "EA SPORTS FC 27 لجهاز Nintendo Switch 2",
-    "en": "EA SPORTS FC 27 for Nintendo Switch 2",
-    "ckb": "EA SPORTS FC 27 بۆ Nintendo Switch 2"
+    "ar": "EA SPORTS FC 27 · Nintendo Switch 2",
+    "en": "EA SPORTS FC 27 · Nintendo Switch 2",
+    "ckb": "EA SPORTS FC 27 · Nintendo Switch 2"
   },
   "short": {
     "ar": "Nintendo Switch 2 · Game-Key Card (تنزيل 76–82 GB) · PEGI 16",
@@ -45,7 +45,7 @@
   "variants": [
     {
       "sku": "NS2G-EA-FC27",
-      "title": { "ar": "EA SPORTS FC 27 — نسخة Game-Key Card لـ Nintendo Switch 2", "en": "EA SPORTS FC 27 — Nintendo Switch 2 Game-Key Card edition", "ckb": "EA SPORTS FC 27 — وەشانی Game-Key Card بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة Game-Key Card", "en": "Game-Key Card edition", "ckb": "وەشانی Game-Key Card" },
       "options": { "edition": "Standard", "format": "Game-Key Card", "platform": "Nintendo Switch 2" },
       "barcodes": ["014633385878"],
       "isDefault": true,
@@ -98,11 +98,11 @@
     {
       "key": "ea-sports-fc-27-nintendo-switch-2--1",
       "file": ".cache/product-images/ea-sports-fc-27-nintendo-switch-2/1.jpg",
-      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch2/70010000110123/ce773ca9bd3d7bb606fab8cd9fd91f2bcecaf53fdf753109e26fa46669ee9c6b",
-      "sourcePage": "https://www.nintendo.com/us/store/products/ea-sports-fc-27-switch-2/",
-      "kind": "hero",
-      "alt": { "ar": "صورة EA SPORTS FC 27 Standard Edition مع لاعب أمام أفق مدينة", "en": "EA SPORTS FC 27 Standard Edition key art with a player in front of a city skyline", "ckb": "وێنەی EA SPORTS FC 27 Standard Edition لەگەڵ یاریزانێک لە بەردەم دیمەنی شارێکدا" },
-      "credit": "Electronic Arts", "width": 1920, "height": 1080, "transparent": false
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.27809.13618679251812087.f1d2dec5-00f3-41fb-9f2b-37e86fac8773.c75bdc92-b4b8-448c-9bbc-e6106fedd0c4",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/x/9NJ2N85T2ZGS",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف EA SPORTS FC 27 — Standard Edition مع Kylian Mbappé", "en": "EA SPORTS FC 27 Standard Edition cover art with Kylian Mbappé", "ckb": "وێنەی بەرگی EA SPORTS FC 27 — Standard Edition لەگەڵ Kylian Mbappé" },
+      "credit": "Electronic Arts", "width": 1440, "height": 2160, "transparent": false
     },
     {
       "key": "ea-sports-fc-27-nintendo-switch-2--2",

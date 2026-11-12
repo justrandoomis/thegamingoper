@@ -164,9 +164,9 @@
     {
       "sku": "XALLYX-1TB",
       "title": {
-        "ar": "ROG Xbox Ally X 24GB / 1TB أسود",
-        "en": "ROG Xbox Ally X 24GB / 1TB, Black",
-        "ckb": "ROG Xbox Ally X 24GB / 1TB، ڕەش"
+        "ar": "24GB / 1TB أسود",
+        "en": "24GB / 1TB · Black",
+        "ckb": "24GB / 1TB · ڕەش"
       },
       "options": { "memory": "24GB", "storage": "1TB", "color": "Black" },
       "modelNumber": "RC73XA",

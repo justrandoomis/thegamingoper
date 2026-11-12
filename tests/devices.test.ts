@@ -25,6 +25,7 @@ import {
   deviceIn,
   drawableShelves,
   expandedGrids,
+  headFacts,
   headPrice,
   hubSections,
   keepTogether,
@@ -32,6 +33,8 @@ import {
   toggleGrid,
 } from "~/routes/storefront/devices/components/format";
 import { fromPriceOf } from "~/routes/storefront/devices/hub.server";
+import devicesMessages from "~/i18n/messages/devices";
+import { makeT, type MessageTree } from "~/i18n/translate";
 import { createTestDb, type TestDb } from "./helpers/db";
 
 let t: TestDb;
@@ -565,6 +568,21 @@ describe("pure helpers", () => {
     expect(deviceIn("PlayStation 5 (الطراز الأصلي 2020)")).toBe("⁦PlayStation 5⁩ (الطراز الأصلي ⁦2020⁩)");
     expect(deviceIn("Nintendo Switch 2")).toBe("⁦Nintendo Switch 2⁩");
     expect(deviceIn("PlayStation 5 (original 2020 model)")).toBe("⁦PlayStation 5 (original 2020 model)⁩");
+  });
+
+  it("gives the head's facts in the spec's order, the release as its year alone on a phone (the row is one line)", () => {
+    // the devices strings themselves, as the page renders them (Arabic plurals included)
+    const t = makeT(devicesMessages.ar as unknown as MessageTree, "ar", "devices");
+    const n = (value: number) => String(value);
+    const day = { kind: "day" as const, text: "5 حزيران 2025", year: "2025" };
+    const facts = headFacts({ released: day, generation: "PlayStation 5", games: 16, accessories: 12 }, t, n);
+    expect(facts.map((fact) => fact.icon)).toEqual(["calendar-blank", "stack", "game-controller", "plug"]);
+    expect(facts[0]).toEqual({ icon: "calendar-blank", text: "صدر في 5 حزيران 2025", phone: "صدر عام 2025" });
+    expect(facts[1].text).toBe("من \u2066PlayStation 5\u2069");
+    expect(facts.slice(1).every((fact) => fact.phone === undefined)).toBe(true);
+    // a year is already short; nothing unknown or zero is said
+    expect(headFacts({ released: { kind: "year", text: "2017", year: "2017" }, generation: null, games: 0, accessories: 0 }, t, n)).toEqual([{ icon: "calendar-blank", text: "صدر عام 2017" }]);
+    expect(headFacts({ released: null, generation: null, games: 1, accessories: 0 }, t, n).map((fact) => fact.icon)).toEqual(["game-controller"]);
   });
 
   it("says in the head when nothing of THIS device can be ordered — even when its shared product's card is in stock", () => {

@@ -114,6 +114,11 @@ npx tsx --tsconfig tsconfig.cloudflare.json .shots/admin-orders/inspect.ts   (re
 The admin runs in Arabic and English only (`tt_admin_locale=ckb` falls back to Arabic), so the Sorani strings of this
 module are not visible in the admin yet and still need a native reader.
 
+Glossary (design v2 §9, QA fix 2026-11-12): the payable amount is «الإجمالي» everywhere — the detail's totals (also on print,
+edit, proof and pre-orders, which share `detail.total`), the list's column, the CSV header, the history's edit line and the
+deposit note; «المجموع الفرعي» stays the subtotal and «المجموع» only a line's own sum. Test: "calls the payable amount
+«الإجمالي»" in `tests/admin-orders.test.ts`.
+
 ## Requests to other owners
 
 - **Shell** (`shell/queues.server.ts`): proofs queue href `/admin/orders/proofs`, refunds `/admin/orders/refunds`.

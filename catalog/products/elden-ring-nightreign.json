@@ -109,7 +109,7 @@
   "variants": [
     {
       "sku": "ERNR-PS5-STD",
-      "title": { "ar": "ELDEN RING NIGHTREIGN لجهاز PS5", "en": "ELDEN RING NIGHTREIGN for PS5", "ckb": "ELDEN RING NIGHTREIGN بۆ PS5" },
+      "title": { "ar": "لجهاز PS5", "en": "PS5 edition", "ckb": "بۆ PS5" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["elden-ring-nightreign--1", "elden-ring-nightreign--2", "elden-ring-nightreign--3", "elden-ring-nightreign--4"],
@@ -121,7 +121,7 @@
     },
     {
       "sku": "ERNR-XSX-STD",
-      "title": { "ar": "ELDEN RING NIGHTREIGN لجهاز Xbox Series X", "en": "ELDEN RING NIGHTREIGN for Xbox Series X", "ckb": "ELDEN RING NIGHTREIGN بۆ Xbox Series X" },
+      "title": { "ar": "لجهاز Xbox Series X", "en": "Xbox Series X edition", "ckb": "بۆ Xbox Series X" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["elden-ring-nightreign--1", "elden-ring-nightreign--2", "elden-ring-nightreign--3"],

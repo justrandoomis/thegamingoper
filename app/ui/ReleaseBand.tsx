@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from "react";
+import { useId, useRef, type FocusEvent, type ReactNode } from "react";
 
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
@@ -10,6 +10,7 @@ import { PlatformLabel, PlatformLed, type Gel } from "./PlatformLed";
 import { Price } from "./Price";
 import { isIqd } from "./PriceTag";
 import { ProductImage } from "./ProductCard";
+import { revealInRow } from "./reveal";
 
 /**
  * The release band — Design System v2 §4.21: the page's one dark band (graphite --band, --r-xl; in the dark theme a
@@ -102,8 +103,20 @@ export function ReleaseBand({ items, now, title, headingLevel = 2, className }: 
   const f = useFormat();
   const locale = useLocale();
   const headingId = useId();
+  const pointer = useRef(0);
   const Heading = `h${headingLevel}` as const;
   if (items.length === 0) return null;
+  // Below 768 the items are a snap rail: an item that takes the KEYBOARD focus half off-screen is brought to the rail's
+  // start (a snap point; Chromium does not scroll a partly visible element on focus — QA 2026-11-12). A pointer press
+  // never scrolls the rail from under the finger.
+  const onFocus = (event: FocusEvent<HTMLUListElement>) => {
+    const row = event.currentTarget;
+    const target = event.target;
+    if (target === row || !(target instanceof Element)) return;
+    if (performance.now() - pointer.current < 800 || !target.matches(":focus-visible")) return;
+    const item = [...row.children].find((child) => child.contains(target));
+    if (item) revealInRow(row, item, "start");
+  };
   const clock = now ?? Date.now();
   return (
     <section className={cx("release min-w-0", className)} aria-labelledby={headingId}>
@@ -113,7 +126,13 @@ export function ReleaseBand({ items, now, title, headingLevel = 2, className }: 
         </Heading>
         <p className="release__lead">{t("release.lead")}</p>
       </div>
-      <ul className="release__list mt-6">
+      <ul
+        className="release__list mt-6"
+        onFocus={onFocus}
+        onPointerDown={() => {
+          pointer.current = performance.now();
+        }}
+      >
         {items.map((item) => {
           const days = daysUntil(item.releaseAt, clock);
           const soon = days >= 0 && days <= 30;

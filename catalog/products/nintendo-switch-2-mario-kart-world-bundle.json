@@ -120,9 +120,9 @@
     {
       "sku": "NS2-MKW-2026",
       "title": {
-        "ar": "حزمة 2026: Switch 2 + Mario Kart World + اشتراك Nintendo Switch Online لـ3 أشهر",
-        "en": "2026 bundle: Switch 2 + Mario Kart World + 3-month Nintendo Switch Online",
-        "ckb": "پاکێجی 2026: Switch 2 + Mario Kart World + 3 مانگ Nintendo Switch Online"
+        "ar": "حزمة 2026 · مع اشتراك Nintendo Switch Online لـ3 أشهر",
+        "en": "2026 bundle · with 3 months of Nintendo Switch Online",
+        "ckb": "پاکێجی 2026 · لەگەڵ 3 مانگ Nintendo Switch Online"
       },
       "options": { "edition": "Mario Kart World Bundle (2026)", "storage": "256GB", "extras": "3-month Nintendo Switch Online" },
       "barcodes": ["0045496886707"],
@@ -137,9 +137,9 @@
     {
       "sku": "NS2-MKW-2025",
       "title": {
-        "ar": "حزمة الإطلاق 2025: Switch 2 + Mario Kart World",
-        "en": "2025 launch bundle: Switch 2 + Mario Kart World",
-        "ckb": "پاکێجی دەستپێکی 2025: Switch 2 + Mario Kart World"
+        "ar": "حزمة الإطلاق 2025",
+        "en": "2025 launch bundle",
+        "ckb": "پاکێجی دەستپێکی 2025"
       },
       "options": { "edition": "Mario Kart World Bundle (2025 launch)", "storage": "256GB" },
       "isDefault": false,

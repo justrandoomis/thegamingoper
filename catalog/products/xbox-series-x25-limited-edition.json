@@ -131,9 +131,9 @@
     {
       "sku": "XSX25-LE-1TB",
       "title": {
-        "ar": "Xbox Series X25 Limited Edition ‏1TB، أخضر شفاف OG Green",
-        "en": "Xbox Series X25 Limited Edition 1TB, Translucent OG Green",
-        "ckb": "Xbox Series X25 Limited Edition ‏1TB، سەوزی ڕوونی OG Green"
+        "ar": "1TB · أخضر شفاف OG Green",
+        "en": "1TB · Translucent OG Green",
+        "ckb": "1TB · سەوزی ڕوونی OG Green"
       },
       "options": { "edition": "X25 Limited Edition", "storage": "1TB", "color": "Translucent OG Green" },
       "isDefault": true,

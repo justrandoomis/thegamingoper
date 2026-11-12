@@ -46,6 +46,7 @@ import {
   parseAmountInput,
   phoneIssue,
   splitLineName,
+  stepFocusTarget,
   stepOf,
   stepOfField,
   validateStep,
@@ -621,5 +622,66 @@ describe("review fixes (design v2, P6 review)", () => {
       expect(keys.length, file).toBeGreaterThan(0);
       for (const key of keys) expect(key, file).not.toMatch(/removed/);
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── QA fixes (the transaction matrix, 2026-11-12)
+
+const checkoutCss = () => readFileSync(new URL("../app/routes/storefront/checkout/checkout.css", import.meta.url), "utf8");
+/** One CSS rule's body (the first rule whose selector list is exactly `selector`). */
+const cssRule = (css: string, selector: string) => new RegExp(`(?:^|[}\\s])${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ?? null;
+
+describe("QA fixes (transaction matrix, 2026-11-12)", () => {
+  test("the one primary of the cart and of every checkout step wraps its words inside the key and never cuts them", async () => {
+    // Found at 320–390 in English and Sorani: «Continue to paym…», «داواکارییەکە پشتڕاست بکەر…», and at 1024 in the
+    // summary card «داواکارییەکە پشتڕاست بکەرەوە · 1,594,000 د.ع» — the kit's key cuts its label with an ellipsis.
+    const cart = await cartWith();
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "ckb" }, NOW);
+    const facts = await loadCartFacts(t.db);
+    const page = await loadCheckoutData(t.db, { locale: "ckb", now: NOW, customerId: null });
+    const pages = [
+      renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: view, facts, demo: true, recommendations: null, i18n: pageStrings("ckb") }, locale: "ckb" }),
+      ...(["address", "payment", "review"] as const).map((step) =>
+        renderPage(CheckoutPage, { path: "checkout", url: `/checkout?step=${step}`, loaderData: { cart: view, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, i18n: pageStrings("ckb") }, locale: "ckb" }),
+      ),
+    ];
+    for (const html of pages) {
+      const primaries = [...html.matchAll(/<(?:a|button)\b[^>]*\bclass="([^"]*\bkey--primary\b[^"]*)"/g)].map((match) => match[1]);
+      // the task bar's key and the summary card's key (and, in the checkout, the key of a page without script)
+      expect(primaries.length).toBeGreaterThanOrEqual(2);
+      for (const name of primaries) expect(name).toMatch(/\bco-commit\b/);
+    }
+    // the summary card's «confirm · total»: the action and the total each stay whole (a wrap never splits the verb)
+    expect(pages[3]).toMatch(/<span class="co-commit__part">داواکارییەکە پشتڕاست بکەرەوە ·<\/span> <span class="co-commit__part">⁨[^<]*⁩<\/span>/);
+    const css = checkoutCss();
+    expect(cssRule(css, ".co-commit")).toMatch(/white-space:\s*normal/);
+    const label = cssRule(css, ".co-commit .key__label") ?? "";
+    expect(label).toMatch(/overflow:\s*visible/);
+    expect(label).toMatch(/text-overflow:\s*clip/);
+  });
+
+  test("focus moves to a step only when the step changes — never on the first render, nor when React runs the effect again", () => {
+    // Found in the browser: after loading /checkout the step's h1 had the focus, so the first Tab skipped the skip link
+    // and the checkout bar. React StrictMode runs a mount effect twice; a once-only «first render» flag let the second
+    // run focus the heading.
+    expect(stepFocusTarget(null, "address", null)).toBeNull();
+    expect(stepFocusTarget("address", "address", null)).toBeNull();
+    expect(stepFocusTarget("review", "review", "phone")).toBeNull();
+    expect(stepFocusTarget("address", "payment", null)).toBe("heading");
+    expect(stepFocusTarget("review", "address", "phone")).toBe("phone");
+    const source = readFileSync(new URL("../app/routes/storefront/checkout/checkout.tsx", import.meta.url), "utf8");
+    expect(source).not.toMatch(/\bfirstStep\b/);
+    expect(source).toMatch(/stepFocusTarget\(/);
+  });
+
+  test("a key beside a field («تحقق», «استخدم كل النقاط») stays level with the field's input when a hint or an error shows", () => {
+    // Found at 390: with an error under the input, «تحقق» (aligned to the bottom of the whole field) sat ~35px below
+    // the input. The field's parts join the row's grid and the key takes the input's row (the label over both columns,
+    // so a narrow field's label wrapping to two lines cannot move the input away from the key either).
+    const css = checkoutCss();
+    expect(cssRule(css, ".co-extra__row")).toMatch(/display:\s*grid/);
+    expect(cssRule(css, ".co-extra__row > .field")).toMatch(/display:\s*contents/);
+    expect(cssRule(css, ".co-extra__row > .field > :first-child")).toMatch(/grid-column:\s*1 \/ -1/);
+    expect(cssRule(css, ".co-extra__row > .key")).toMatch(/grid-row:\s*2/);
   });
 });

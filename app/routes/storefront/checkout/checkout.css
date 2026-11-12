@@ -292,6 +292,31 @@
     gap: 2px;
   }
 
+  /* ───────────────────────────── the commit key's words (<CommitKey>, QA 2026-11-12) ─────────────────────────────
+     The kit's key keeps its label on one line and cuts the rest with an ellipsis. The one primary of the cart and of
+     each checkout step never loses words: where they do not fit («داواکارییەکە پشتڕاست بکەرەوە» beside the total at
+     360, "Continue to payment" at 320, the Sorani confirm-with-total in the summary card at 1024) they take a second
+     line, balanced and centred. Two lines of the button type (2 × 20px) sit inside the 48px face, so the key and the
+     task bar keep their heights. */
+  .co-commit {
+    white-space: normal;
+  }
+  .co-commit .key__label {
+    overflow: visible;
+    text-overflow: clip;
+    text-wrap: balance;
+  }
+  /* in the task bar, beside the total, the key gives up 8px of its inline padding on each side before its words wrap
+     (the 16px of the small key; the face still spans the whole column) */
+  .co-taskbar .co-commit {
+    --px: var(--s-4);
+  }
+  /* «أكّد الطلب · 1,594,000 د.ع»: the action and the total each stay whole; a line breaks only between them (each still
+     wraps inside itself if it alone is wider than the key) */
+  .co-commit__part {
+    display: inline-block;
+  }
+
   /* ───────────────────────────── order: the thank-you header (§6.11) ───────────────────────────── */
   .co-thanks {
     display: grid;
@@ -477,15 +502,37 @@
     display: grid;
     gap: var(--s-3);
   }
+  /* a field and the small key beside it («تحقق», «استخدم كل النقاط»): the key level with the field's INPUT, as the kit's
+     coupon field places «طبّق» — never with the whole field, whose hint or error under the input moved it (QA
+     2026-11-12: «تحقق» sat ~35px below the input with an error shown). The field's parts join the row's grid: the label
+     over both columns (one line where the field alone would wrap it), the input and the key in the second row, centred,
+     the hint and the error under the input. The field's 6px between its parts become margins, so the input's row holds
+     the input alone; the empty error region (kept for its announcement) takes no room. */
   .co-extra__row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: var(--s-2) var(--s-3);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--s-3);
   }
   .co-extra__row > .field {
-    flex: 1 1 12rem;
-    min-inline-size: 0;
+    display: contents;
+  }
+  .co-extra__row > .field > * {
+    grid-column: 1;
+  }
+  .co-extra__row > .field > :first-child {
+    grid-column: 1 / -1;
+    margin-block-end: 6px;
+  }
+  .co-extra__row > .field > :is(.field__hint, .field__error) {
+    margin-block-start: 6px;
+  }
+  .co-extra__row > .field > .field__error:empty {
+    margin-block-start: 0;
+  }
+  .co-extra__row > .key {
+    grid-column: 2;
+    grid-row: 2;
   }
 
   /* digital codes on the order page: one row per code, the code in the code type once revealed */

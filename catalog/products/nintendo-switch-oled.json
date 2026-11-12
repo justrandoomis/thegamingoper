@@ -119,7 +119,7 @@
   "variants": [
     {
       "sku": "NSW-OLED-WHT",
-      "title": { "ar": "Nintendo Switch – OLED Model — أبيض", "en": "Nintendo Switch – OLED Model — White", "ckb": "Nintendo Switch – OLED Model — سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "edition": "Standard", "storage": "64GB", "color": "White" },
       "modelNumber": "HEG-001",
       "barcodes": ["0045496883386"],
@@ -129,7 +129,7 @@
     },
     {
       "sku": "NSW-OLED-NEON",
-      "title": { "ar": "Nintendo Switch – OLED Model — أزرق نيون / أحمر نيون", "en": "Nintendo Switch – OLED Model — Neon Blue / Neon Red", "ckb": "Nintendo Switch – OLED Model — شینی نیۆن / سووری نیۆن" },
+      "title": { "ar": "أزرق نيون / أحمر نيون", "en": "Neon Blue / Neon Red", "ckb": "شینی نیۆن / سووری نیۆن" },
       "options": { "edition": "Standard", "storage": "64GB", "color": "Neon Blue / Neon Red" },
       "modelNumber": "HEG-001",
       "barcodes": ["0045496883409"],

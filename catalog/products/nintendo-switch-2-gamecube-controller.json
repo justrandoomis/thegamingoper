@@ -84,7 +84,7 @@
   "variants": [
     {
       "sku": "NS2-GCN-PAD",
-      "title": { "ar": "Nintendo GameCube Controller لـ Nintendo Switch 2", "en": "Nintendo GameCube Controller for Nintendo Switch 2", "ckb": "Nintendo GameCube Controller بۆ Nintendo Switch 2" },
+      "title": { "ar": "لـ Nintendo Switch 2", "en": "For Nintendo Switch 2", "ckb": "بۆ Nintendo Switch 2" },
       "options": { "color": "Purple" },
       "barcodes": ["0045496884796"],
       "isDefault": true,

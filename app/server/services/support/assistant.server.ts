@@ -20,7 +20,8 @@
  * THE MODEL BOUNDARY. `AssistantModel` is where a language model can be plugged in later. It may only map the shopper's
  * words to keys that already exist (an approved symptom tree or a topic), so it can never invent a repair step; danger
  * signs and error codes are never left to it. `configuredAssistantModel()` returns null — nothing is configured — and
- * the page says that the answers come from TamTam's verified guides, not from an AI diagnosis.
+ * the page says that the answers come from TamTam's guides, not from an AI diagnosis (never "approved" or "verified":
+ * no store technician has reviewed the demo guides yet, and the help centre and every guide say so).
  *
  * Handoff (talk to staff) needs the shopper's consent; only then is anything stored: an `assistant_sessions` row
  * (status "escalated", log_consent = 1), the transcript as `assistant_messages`, a "support_log" consent, and a support

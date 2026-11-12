@@ -106,7 +106,7 @@
   "variants": [
     {
       "sku": "PS-PORTAL-WHITE",
-      "title": { "ar": "PlayStation Portal – أبيض", "en": "PlayStation Portal – White", "ckb": "PlayStation Portal – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-Y1016",
       "isDefault": true,
@@ -114,7 +114,7 @@
     },
     {
       "sku": "PS-PORTAL-MIDNIGHT-BLACK",
-      "title": { "ar": "PlayStation Portal – أسود Midnight Black", "en": "PlayStation Portal – Midnight Black", "ckb": "PlayStation Portal – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["playstation-portal--4"],

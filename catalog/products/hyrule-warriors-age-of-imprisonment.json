@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-HYRULE-WARRIORS-AOI",
-      "title": { "ar": "Hyrule Warriors: Age of Imprisonment — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Hyrule Warriors: Age of Imprisonment — Nintendo Switch 2 physical edition", "ckb": "Hyrule Warriors: Age of Imprisonment — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905934"],
       "isDefault": true,

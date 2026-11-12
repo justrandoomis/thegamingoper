@@ -22,8 +22,8 @@
  * what was chosen and typed stays) · demo mode (the request is recorded as a demo). The browser's Back from a question
  * shows the previous question with its answer chosen (the history entry is rewritten before moving on).
  */
-import { useEffect, useId, useState, type FormEvent, type ReactNode } from "react";
-import { data, Form, redirect, useActionData, useLocation, useNavigation, useRouteLoaderData } from "react-router";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { data, Form, redirect, useActionData, useLocation, useNavigation, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/trade-in";
 import { Icon } from "~/art/Icon";
@@ -34,6 +34,7 @@ import { normalizeIraqPhone } from "~/lib/phone";
 import type { MotionHandle } from "~/motion";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
+import { answerStatus, revalidateAfter } from "~/routes/storefront/support/client";
 import type { ShellContact, ShellHandle } from "~/routes/storefront/shell/types";
 import { getCustomer } from "~/server/auth/customer.server";
 import { clearCookie, getCtx } from "~/server/context.server";
@@ -58,6 +59,7 @@ import { TextLink } from "~/ui/TextLink";
 import { AnswerList, DeviceSummary, EstimatePanel, Journey, useAccessoryLabel, WhatNext } from "./components/TradeInParts";
 import { TradeInPhotos } from "./components/TradeInPhotos";
 import { combinedErrorT, useErrorText, useUsedT } from "./i18n";
+import { bindDashes, splitQualifier } from "./names";
 import { loadWizard, type WizardView } from "./trade-in.server";
 import { answeredQuestionSearch, filterGroups, TRADE_IN_PATH, WIZARD_STEPS, wizardOrder } from "./wizard";
 import "./used.css";
@@ -68,12 +70,15 @@ export const handle = { shell: { chrome: "task" }, nav: "push", group: "trade-in
 /** The one "talk to a person" destination of the store (v2 §6.13). */
 const HANDOFF = "/support/assistant?handoff=1#handoff";
 const FORM_ID = "ti-form";
+/** Each step's h1: where focus goes after a move between steps (TradeIn). */
+const STEP_HEADING = { tabIndex: -1, "data-step-heading": "" } as const;
 /**
  * First-strong isolate (U+2068) and its end (U+2069) around an amount inside a sentence: «350,000 د.ع» keeps the
  * figure first in Arabic and Sorani (a left-to-right isolate would put the currency first there).
  */
 const FSI = String.fromCharCode(0x2068);
 const PDI = String.fromCharCode(0x2069);
+const NBSP = String.fromCharCode(0xa0);
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -85,6 +90,11 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export const meta: Route.MetaFunction = (args) =>
   // Steps after the first carry the shopper's answers in the query: only the first step is a page for search engines.
   shellMeta(args, { title: args.loaderData?.meta.title, description: args.loaderData?.meta.description, noindex: args.location.search !== "" });
+
+/** A request the store refused (fields to fix) changed nothing: nothing is reloaded after it. Steps load as usual. */
+export function shouldRevalidate(args: ShouldRevalidateFunctionArgs) {
+  return args.formMethod?.toUpperCase() === "POST" ? revalidateAfter(args) : args.defaultShouldRevalidate;
+}
 
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
@@ -122,7 +132,9 @@ export async function action({ request, context }: Route.ActionArgs) {
     return redirect(localePath(`/trade-in/${made.ref}?t=${encodeURIComponent(made.accessToken)}&new=1`, ctx.locale));
   } catch (error) {
     const failure = actionError(error, combinedErrorT(serverT(ctx.locale, "used"), serverT(ctx.locale, "errors")));
-    return data({ ...failure, values }, { status: failure.status });
+    // fields the shopper can fix are an answer (200, no "failed request" in the console); a limit or a conflict keeps
+    // its 4xx (answerStatus)
+    return data({ ...failure, values }, { status: answerStatus(failure) });
   }
 }
 
@@ -133,10 +145,21 @@ export default function TradeIn({ loaderData }: Route.ComponentProps) {
   const { view, stepIndex, rail } = loaderData;
   const steps = WIZARD_STEPS.map((step, index) => ({ label: t(`tradein.steps.${step}`), href: rail[index] ?? undefined }));
   const keys = stepKeys(view);
+  const location = useLocation();
+  const main = useRef<HTMLDivElement>(null);
+  // After a move to another step or question (not the page's first view — Back and Forward included), the new step's
+  // heading takes focus: a screen reader reads the new question, and the keyboard goes on from it (QA 2026-11-12: focus
+  // stayed on «تابع», and nothing said the question had changed — the repair form does the same with its step heading).
+  const shown = useRef(location.search);
+  useEffect(() => {
+    if (shown.current === location.search) return;
+    shown.current = location.search;
+    main.current?.querySelector<HTMLElement>("[data-step-heading]")?.focus({ preventScroll: true });
+  }, [location.search]);
   return (
     <div className="page pt-4 pb-6 lg:pt-8">
       <div className={cx("used-wizard", view.step !== "device" && "used-wizard--aside")}>
-        <div className="used-wizard__main">
+        <div ref={main} className="used-wizard__main">
           <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} />
           <Step view={view} />
           {keys ? <StepKeys keys={keys} className="max-lg:hidden" /> : null}
@@ -271,7 +294,7 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
   if (view.groups.length === 0) {
     return (
       <section aria-labelledby="ti-title" className="grid gap-2">
-        <h1 id="ti-title" className="type-h1 text-ink">
+        <h1 id="ti-title" {...STEP_HEADING} className="type-h1 text-ink outline-none">
           {t("tradein.title")}
         </h1>
         <EmptyState
@@ -291,7 +314,7 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
   return (
     <section aria-labelledby="ti-title" className="grid gap-8">
       <header className="grid gap-2">
-        <h1 id="ti-title" className="type-h1 text-ink">
+        <h1 id="ti-title" {...STEP_HEADING} className="type-h1 text-ink outline-none">
           {t("tradein.title")}
         </h1>
         <p className="type-lead text-ink-2">{t("tradein.intro")}</p>
@@ -365,10 +388,17 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
   );
 }
 
-/** A device the store buys: its photo on the product ground, the name, and «حتى 350,000 د.ع · تقديري». */
+/**
+ * A device the store buys: its photo on the product ground, the name (two lines at most), the qualifier that tells two
+ * models apart on a meta line of its own («الطراز الأصلي 2020» — the clamp used to cut it, v2 §4.11), and «حتى 350,000
+ * د.ع · تقديري» with the amount and «· تقديري» kept on one line (no-break spaces: QA 2026-11-12, "· estimate" started a
+ * line at 1440).
+ */
 function DeviceTile({ device, current }: { device: TradeInDevice; current: boolean }) {
   const t = useUsedT();
   const f = useFormat();
+  const name = splitQualifier(device.name);
+  const amount = device.upToIqd !== null ? iqdText(f, device.upToIqd).replace(/ /g, NBSP) : null;
   return (
     <LocaleLink
       to={`${TRADE_IN_PATH}?step=condition&device=${encodeURIComponent(device.slug)}`}
@@ -378,11 +408,14 @@ function DeviceTile({ device, current }: { device: TradeInDevice; current: boole
     >
       <Niche as="span">{device.image ? <ProductImage image={device.image} alt="" sizes="(min-width: 768px) 160px, 44vw" /> : null}</Niche>
       <span className="used-device__name">
-        <BidiText text={device.name} />
+        <BidiText text={bindDashes(name.base)} />
       </span>
-      <span className="used-device__up">
-        {device.upToIqd !== null ? t("tradein.device.upTo", { price: `${FSI}${iqdText(f, device.upToIqd)}${PDI}` }) : t("tradein.device.afterInspection")}
-      </span>
+      {name.qualifier ? (
+        <span className="used-device__meta">
+          <BidiText text={name.qualifier} />
+        </span>
+      ) : null}
+      <span className="used-device__up">{amount !== null ? t("tradein.device.upTo", { price: `${FSI}${amount}${PDI}` }) : t("tradein.device.afterInspection")}</span>
     </LocaleLink>
   );
 }
@@ -416,7 +449,9 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
   const legend = (
     <>
       <span className="block pb-1 type-xs text-ink-2">{t("tradein.question.counter", { n: f.number(view.index), total: f.number(view.total) })}</span>
-      <h1 className="type-h1 text-ink">{t(`tradein.q.${question}.title`)}</h1>
+      <h1 {...STEP_HEADING} className="type-h1 text-ink outline-none">
+        {t(`tradein.q.${question}.title`)}
+      </h1>
       <span className="block pt-2 pb-2 type-sm font-normal text-ink-2">{t(`tradein.q.${question}.hint`)}</span>
     </>
   );
@@ -465,7 +500,7 @@ function PhotosStep({ view }: { view: ViewOf<"photos"> }) {
     <section aria-labelledby="ti-photos" className="grid gap-6">
       <DeviceSummary name={view.device.name} image={view.device.image} className="2xl:hidden" />
       <header className="grid gap-2">
-        <h1 id="ti-photos" className="type-h1 text-ink">
+        <h1 id="ti-photos" {...STEP_HEADING} className="type-h1 text-ink outline-none">
           {t("tradein.photos.title")} <span className="type-body text-ink-2">{t("tradein.photos.optional")}</span>
         </h1>
         <p className="type-body text-ink-2">{t("tradein.photos.text")}</p>
@@ -487,7 +522,7 @@ function EstimateStep({ view }: { view: ViewOf<"estimate"> }) {
   return (
     <section aria-labelledby="ti-estimate" className="grid gap-6">
       <DeviceSummary name={view.device.name} image={view.device.image} className="2xl:hidden" />
-      <h1 id="ti-estimate" className="type-h1 text-ink">
+      <h1 id="ti-estimate" {...STEP_HEADING} className="type-h1 text-ink outline-none">
         {t("tradein.estimate.title")}
       </h1>
       {estimate.kind === "refused" ? (
@@ -599,7 +634,7 @@ function InspectionStep({ view }: { view: ViewOf<"inspection"> }) {
       </div>
 
       <header className="grid gap-2">
-        <h1 id="ti-contact" className="type-h1 text-ink">
+        <h1 id="ti-contact" {...STEP_HEADING} className="type-h1 text-ink outline-none">
           {t("tradein.contact.title")}
         </h1>
         <p className="type-body text-ink-2">{t("tradein.contact.text")}</p>

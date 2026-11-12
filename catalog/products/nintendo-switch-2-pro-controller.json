@@ -93,7 +93,7 @@
   "variants": [
     {
       "sku": "NS2-PRO",
-      "title": { "ar": "Nintendo Switch 2 Pro Controller — أسود", "en": "Nintendo Switch 2 Pro Controller — Black", "ckb": "Nintendo Switch 2 Pro Controller — ڕەش" },
+      "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
       "options": { "edition": "Standard", "color": "Black" },
       "barcodes": ["0045496885861"],
       "isDefault": true,
@@ -103,9 +103,9 @@
     {
       "sku": "NS2-PRO-ZELDA40",
       "title": {
-        "ar": "Nintendo Switch 2 Pro Controller – The Legend of Zelda – 40th Anniversary Edition",
-        "en": "Nintendo Switch 2 Pro Controller – The Legend of Zelda – 40th Anniversary Edition",
-        "ckb": "Nintendo Switch 2 Pro Controller – The Legend of Zelda – 40th Anniversary Edition"
+        "ar": "The Legend of Zelda – 40th Anniversary Edition",
+        "en": "The Legend of Zelda – 40th Anniversary Edition",
+        "ckb": "The Legend of Zelda – 40th Anniversary Edition"
       },
       "options": { "edition": "The Legend of Zelda 40th Anniversary", "color": "Black, gold and green" },
       "barcodes": ["0045496886325"],
@@ -120,9 +120,9 @@
     {
       "sku": "NS2-PRO-RE9",
       "title": {
-        "ar": "Nintendo Switch 2 Pro Controller Resident Evil Requiem Edition",
-        "en": "Nintendo Switch 2 Pro Controller Resident Evil Requiem Edition",
-        "ckb": "Nintendo Switch 2 Pro Controller Resident Evil Requiem Edition"
+        "ar": "Resident Evil Requiem Edition",
+        "en": "Resident Evil Requiem Edition",
+        "ckb": "Resident Evil Requiem Edition"
       },
       "options": { "edition": "Resident Evil Requiem", "color": "Gunmetal black" },
       "barcodes": ["0045496886288"],

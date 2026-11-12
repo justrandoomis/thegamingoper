@@ -72,11 +72,10 @@ export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, appro
   const main = (
     <Line className={cx("price", `price--${size}`, TONE_CLASS[look], amountIqd >= 1_000_000 && "price--long", className)}>
       {was !== null && inline ? <Was amountIqd={was} inline /> : null}
-      <span className="price__num" aria-hidden="true">
-        {figure}
-      </span>
-      <span className="price__cur" aria-hidden="true">
-        {CURRENCIES.IQD.symbol[f.locale]}
+      {/* the figure and «د.ع» are one unbreakable unit (§2.6, §4.8): at 320px they wrapped apart («667,750» / «د.ع») */}
+      <span className="price__amount" aria-hidden="true">
+        <span className="price__num">{figure}</span>
+        <span className="price__cur">{CURRENCIES.IQD.symbol[f.locale]}</span>
       </span>
       <VisuallyHidden>{t("price.aria", { amount: figure })}</VisuallyHidden>
     </Line>

@@ -108,7 +108,7 @@
   "variants": [
     {
       "sku": "XWH-2024-BLK",
-      "title": { "ar": "Xbox Wireless Headset (إصدار 2024)", "en": "Xbox Wireless Headset (2024 version)", "ckb": "Xbox Wireless Headset (وەشانی 2024)" },
+      "title": { "ar": "إصدار 2024", "en": "2024 version", "ckb": "وەشانی 2024" },
       "options": { "edition": "2024", "color": "Black" },
       "isDefault": true,
       "images": ["xbox-wireless-headset--1", "xbox-wireless-headset--2", "xbox-wireless-headset--3"]

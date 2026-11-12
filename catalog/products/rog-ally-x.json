@@ -157,7 +157,7 @@
   "variants": [
     {
       "sku": "ROG-ALLYX-1TB",
-      "title": { "ar": "ROG Ally X 24GB / 1TB أسود", "en": "ROG Ally X 24GB / 1TB, Black", "ckb": "ROG Ally X 24GB / 1TB، ڕەش" },
+      "title": { "ar": "24GB / 1TB أسود", "en": "24GB / 1TB · Black", "ckb": "24GB / 1TB · ڕەش" },
       "options": { "memory": "24GB", "storage": "1TB", "color": "Black" },
       "modelNumber": "RC72LA",
       "isDefault": true,
@@ -165,7 +165,7 @@
     },
     {
       "sku": "ROG-ALLYX-2TB",
-      "title": { "ar": "ROG Ally X 24GB / 2TB أسود", "en": "ROG Ally X 24GB / 2TB, Black", "ckb": "ROG Ally X 24GB / 2TB، ڕەش" },
+      "title": { "ar": "24GB / 2TB أسود", "en": "24GB / 2TB · Black", "ckb": "24GB / 2TB · ڕەش" },
       "options": { "memory": "24GB", "storage": "2TB", "color": "Black" },
       "modelNumber": "RC72LA",
       "isDefault": false,

@@ -90,7 +90,7 @@
   "variants": [
     {
       "sku": "PS-ACCESS-CONTROLLER",
-      "title": { "ar": "Access controller – أبيض", "en": "Access controller – White", "ckb": "Access controller – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZAC1",
       "isDefault": true,

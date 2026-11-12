@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-SPLATOON-RAIDERS",
-      "title": { "ar": "Splatoon Raiders — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Splatoon Raiders — Nintendo Switch 2 physical edition", "ckb": "Splatoon Raiders — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906634"],
       "isDefault": true,

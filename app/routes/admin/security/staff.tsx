@@ -2,6 +2,7 @@ import { Form, Link } from "react-router";
 
 import type { Route } from "./+types/staff";
 import { useFormat } from "~/i18n/react";
+import { can } from "~/server/actor";
 import { listStaffSecurity } from "~/server/services/admin/security/staff.server";
 import { parseStaffFilters, staffSearch, type StaffRow } from "~/server/services/admin/security/types";
 import type { DataColumn } from "~/ui/DataTable";
@@ -17,12 +18,13 @@ import { sec } from "./security.server";
 /**
  * /admin/security/staff — 20.01: every employee with their two-step state, roles, live sessions and last sign-in,
  * the people without two-step verification first; two-step coverage per role. Filters in the URL (GET form, works
- * without script). One employee's sessions and the actions on them are on their own page.
+ * without script). One employee's sessions and the actions on them are on their own page. A new employee is added in
+ * module 15 (/admin/staff/employees?add=1 opens its form): the key shows for staff.manage only.
  */
 export async function loader({ context, request }: Route.LoaderArgs) {
   const { db, actor, locale, now } = await sec.open(context, "security.session.read");
   const filters = parseStaffFilters(new URL(request.url).searchParams);
-  return { page: await sec.orRespond(() => listStaffSecurity(db, actor, filters, locale, now)), filters };
+  return { page: await sec.orRespond(() => listStaffSecurity(db, actor, filters, locale, now)), filters, canHire: can(actor, "staff.manage") };
 }
 
 export const meta: Route.MetaFunction = (args) => securityMeta(args, "staff.title");
@@ -45,7 +47,17 @@ export default function StaffPage({ loaderData }: Route.ComponentProps) {
   const coveragePct = page.coverage.active ? Math.floor((page.coverage.withTwoStep * 100) / page.coverage.active) : 0;
   return (
     <>
-      <PageHead title={t("staff.title")} lead={t("staff.lead")} />
+      <PageHead
+        title={t("staff.title")}
+        lead={t("staff.lead")}
+        actions={
+          loaderData.canHire ? (
+            <Key as={Link} to="/admin/staff/employees?add=1" icon="plus" variant="ink">
+              {t("staff.add")}
+            </Key>
+          ) : null
+        }
+      />
 
       <Section id="coverage" title={t("staff.coverage")} aside={<span className="type-caption text-ink-2">{t("staff.coverageLine", { count: page.coverage.withTwoStep, total: page.coverage.active, pct: coveragePct })}</span>}>
         <ul role="list" className="sec-kpis">

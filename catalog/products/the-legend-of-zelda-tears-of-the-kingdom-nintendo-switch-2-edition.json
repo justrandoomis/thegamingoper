@@ -45,7 +45,7 @@
   "variants": [
     {
       "sku": "NS2G-ZELDA-TOTK",
-      "title": { "ar": "Tears of the Kingdom – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Tears of the Kingdom – Nintendo Switch 2 Edition (physical)", "ckb": "Tears of the Kingdom – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "نسخة فيزيائية · Nintendo Switch 2 Edition", "en": "Nintendo Switch 2 Edition (physical)", "ckb": "کۆپیی فیزیکی · Nintendo Switch 2 Edition" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905736"],
       "isDefault": true,

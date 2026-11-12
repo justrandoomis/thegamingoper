@@ -151,9 +151,9 @@
     {
       "sku": "XALLY-512",
       "title": {
-        "ar": "ROG Xbox Ally 16GB / 512GB أبيض",
-        "en": "ROG Xbox Ally 16GB / 512GB, White",
-        "ckb": "ROG Xbox Ally 16GB / 512GB، سپی"
+        "ar": "16GB / 512GB أبيض",
+        "en": "16GB / 512GB · White",
+        "ckb": "16GB / 512GB · سپی"
       },
       "options": { "memory": "16GB", "storage": "512GB", "color": "White" },
       "modelNumber": "RC73YA",

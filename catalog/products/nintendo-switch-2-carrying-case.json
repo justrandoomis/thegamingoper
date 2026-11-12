@@ -64,7 +64,7 @@
   "variants": [
     {
       "sku": "NS2-CASE-SP",
-      "title": { "ar": "حقيبة حمل Nintendo Switch 2 + واقي شاشة — أسود", "en": "Nintendo Switch 2 Carrying Case & Screen Protector — Black", "ckb": "جانتای Nintendo Switch 2 + پارێزەری شاشە — ڕەش" },
+      "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
       "options": { "edition": "Standard", "color": "Black" },
       "barcodes": ["0045496886073"],
       "isDefault": true,
@@ -74,9 +74,9 @@
     {
       "sku": "NS2-CASE-SP-ZELDA40",
       "title": {
-        "ar": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition",
-        "en": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition",
-        "ckb": "Nintendo Switch 2 Carrying Case & Screen Protector – The Legend of Zelda – 40th Anniversary Edition"
+        "ar": "The Legend of Zelda – 40th Anniversary Edition",
+        "en": "The Legend of Zelda – 40th Anniversary Edition",
+        "ckb": "The Legend of Zelda – 40th Anniversary Edition"
       },
       "options": { "edition": "The Legend of Zelda 40th Anniversary" },
       "barcodes": ["0045496886318"],

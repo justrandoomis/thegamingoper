@@ -7,17 +7,24 @@
  *   canonicalSearch(search)                   a query string exactly as the server renders it (hydration-safe hrefs)
  *   tabOf(path)                               which tab of the tab bar a page belongs to
  *   checkoutRail(search)                      the checkout bar's step rail from `?step=`
- *   megaPlan(platform) / megaFeature(platform)  what a platform's mega menu lists
+ *   megaPlan(platform) / megaFeature(platform)  what a platform's mega menu lists, and the product it features
+ *   megaWords(t, slug, name)                  the menu's «كل أجهزة …» / «… المستعملة» words, one string per platform
  *   suggestionKind(href)                      what a search suggestion points at (its row's icon and words)
  *   sheetCategories(categories)               the departments of the categories sheet, in order
  *   errorKind(error, online)                  which error panel a failure gets (offline is never a 500)
  *   missingProduct(error)                     the words of a product address that led nowhere (the product 404)
  *   platformForQuery(query, platforms)        the platform those words name, if any
+ *   focusNudge(field, edges)                  how far to scroll so a focused field is not under a bar (WCAG 2.4.11)
+ *   clampWords(text, fits)                    a title cut between words, «…» at its logical end (the task header)
+ *   rateText(figure, symbol)                  «1 USD = 1,310 د.ع» with only the foreign side isolated
  */
 import { isRouteErrorResponse } from "react-router";
 
+import type { TFunction } from "~/i18n/translate";
+import type { StockState } from "~/lib/dto";
 import { STEPS, stepIndex, stepOf, type Step } from "~/routes/storefront/checkout/checkout-form";
 import type { PolicySlug } from "~/routes/storefront/content/content-model";
+import { isPlatform } from "~/ui/PlatformLed";
 import { LAYOUT_ROUTE_ID } from "./meta";
 import type { NavCategory, NavLink, NavPlatform, ShellChromeKind, ShellHandle } from "./types";
 
@@ -37,6 +44,17 @@ export const FOOTER_POLICIES = {
 
 /** The one-line footer of checkout and task flows (§5.8): الإرجاع · الخصوصية · الشروط · الدعم. */
 export const TASK_FOOTER_LINKS = ["/policies/returns", "/policies/privacy", "/policies/terms", "/support"] as const;
+
+/**
+ * Each one-line footer link's words (keys of the shell's strings). Support is named with the NAVIGATION term «الدعم»
+ * / "Support" (v2 §9 glossary): «مركز الدعم» is the title of the page it opens, not a link's name.
+ */
+export const TASK_FOOTER_LABELS = {
+  "/policies/returns": "footer.returns",
+  "/policies/privacy": "footer.privacy",
+  "/policies/terms": "footer.terms",
+  "/support": "nav.support",
+} as const satisfies Record<(typeof TASK_FOOTER_LINKS)[number], string>;
 
 /** The part of a route match the shell reads (`useMatches()` items). */
 export type ShellMatch = { id: string; handle?: unknown };
@@ -148,45 +166,105 @@ const DIGITAL_CATEGORY = /^\/c\/(gift-cards|subscriptions|digital-cards)(\?|$)/;
 /** The cross-platform games category leaves navigation: each platform lists its own games, multi-platform ones included. */
 const CROSS_PLATFORM_GAMES = /^\/c\/multiplatform-games(\?|$)/;
 
+/**
+ * One link of a mega-menu column as the menu shows it: the SHORT name (a device model's `short`, «PS5 Digital (2020)»,
+ * never the SKU title), the read layer's count (null when the data has none — never invented) and, when the short
+ * name differs, the `full` name for the pointer's tooltip.
+ */
+export type MegaLink = { label: string; href: string; count: number | null; full?: string };
+
 export type MegaPlan = {
   /** The platform's device models (their device hubs), and the platform's consoles category. */
-  devices: NavLink[];
+  devices: MegaLink[];
   allDevices: string | null;
   /** The platform's own games categories; "all" = every game for the platform (multi-platform ones included). */
-  games: NavLink[];
+  games: MegaLink[];
   allGames: string | null;
   /** Controllers, headsets, storage, accessories … (filtered to the platform). */
-  accessories: NavLink[];
-  /** Gift cards and subscriptions, and the platform's used units. */
-  cards: NavLink[];
-  used: string | null;
+  accessories: MegaLink[];
+  /** Gift cards and subscriptions; the platform's used units come last (their words are the menu's, `megaWords`). */
+  cards: MegaLink[];
+  used: { href: string; count: number | null } | null;
 };
+
+const countOf = (link: Pick<NavLink, "count">): number | null =>
+  typeof link.count === "number" && Number.isSafeInteger(link.count) && link.count >= 0 ? link.count : null;
+
+function megaLink(link: NavLink): MegaLink {
+  const short = link.short?.trim();
+  const shown: MegaLink = { label: short || link.label, href: link.href, count: countOf(link) };
+  if (short && short !== link.label) shown.full = link.label;
+  return shown;
+}
 
 /** What a platform's mega menu lists (§5.4), from the navigation taxonomy. Empty columns are left out by the menu. */
 export function megaPlan(platform: NavPlatform): MegaPlan {
   const games = platform.games.filter((link) => !CROSS_PLATFORM_GAMES.test(link.href));
   return {
-    devices: platform.devices.slice(0, MEGA_LINKS),
+    devices: platform.devices.slice(0, MEGA_LINKS).map(megaLink),
     allDevices: platform.allConsoles?.href ?? null,
-    games: games.slice(0, MEGA_LINKS),
+    games: games.slice(0, MEGA_LINKS).map(megaLink),
     allGames: platform.games.length > 0 ? `/c/games?platform=${encodeURIComponent(platform.slug)}` : null,
-    accessories: platform.accessories.filter((link) => !DIGITAL_CATEGORY.test(link.href)).slice(0, MEGA_LINKS),
-    cards: platform.accessories.filter((link) => DIGITAL_CATEGORY.test(link.href)).slice(0, MEGA_LINKS - 1),
-    used: platform.used?.href ?? null,
+    accessories: platform.accessories.filter((link) => !DIGITAL_CATEGORY.test(link.href)).slice(0, MEGA_LINKS).map(megaLink),
+    cards: platform.accessories.filter((link) => DIGITAL_CATEGORY.test(link.href)).slice(0, MEGA_LINKS - 1).map(megaLink),
+    used: platform.used ? { href: platform.used.href, count: countOf(platform.used) } : null,
   };
 }
 
+/** The mega menu's featured tile (§5.4): a 1:1 well with the product's photo, its name and its price. */
+export type MegaFeature = {
+  href: string;
+  label: string;
+  /** A catalogue photo ("<slug>--<n>"); null with no `mediaKey` either draws the glyph. */
+  artKey: string | null;
+  /** An uploaded photo (/media/<key>) when the product has no catalogue photo. */
+  mediaKey: string | null;
+  /** Integer IQD — the card's price (the version on sale); null when the navigation data carries none. */
+  priceIqd: number | null;
+  /** The card's state (a price that cannot be paid today is never shown without saying so); null without data. */
+  stock: StockState | null;
+  /** A demo row (the tile marks its price the way a product card does). */
+  isDemo: boolean;
+};
+
+const slugOfProduct = (href: string) => /^\/p\/([^/?#]+)/.exec(href)?.[1] ?? null;
+
 /**
- * The mega menu's featured tile: the product whose official photo leads the platform (`artKey`, "<slug>--<n>"), when
- * it is one of the platform's listed consoles; else the newest console. Null when the platform lists none. Its price
- * is not in the navigation data yet, so the tile shows the photo and the name only.
+ * The mega menu's featured product. The read layer picks it (`featured`: the platform's lead device when it can be
+ * bought now, else its newest console that can — with its price, state and demo flag); null there means nothing to
+ * feature. Without that pick (hand-written data): the console whose photo leads the platform (`artKey`, "<slug>--<n>"),
+ * else the first console that HAS a photo, else the newest console. Never the glyph for a product that has a photo:
+ * `photoOf(slug)` is the catalogue's first photo of a product (MegaMenu passes ~/art's productPhotos).
  */
-export function megaFeature(platform: NavPlatform): { href: string; label: string; artKey: string | null } | null {
-  const slug = platform.artKey ? platform.artKey.replace(/--\d+$/, "") : null;
-  const lead = slug ? platform.consoles.find((link) => link.href === `/p/${slug}`) : undefined;
-  if (lead) return { href: lead.href, label: lead.label, artKey: platform.artKey };
+export function megaFeature(platform: NavPlatform, photoOf: (slug: string) => string | null): MegaFeature | null {
+  const featured = platform.featured;
+  if (featured === null) return null;
+  if (featured) {
+    const slug = slugOfProduct(featured.href);
+    const artKey = featured.image.artKey ?? (featured.image.mediaKey || !slug ? null : photoOf(slug));
+    return { href: featured.href, label: featured.label, artKey, mediaKey: featured.image.artKey ? null : featured.image.mediaKey, priceIqd: featured.priceIqd, stock: featured.stock, isDemo: featured.isDemo };
+  }
+  const bare = (link: NavLink, artKey: string | null): MegaFeature => ({ href: link.href, label: link.label, artKey, mediaKey: null, priceIqd: null, stock: null, isDemo: false });
+  const leadSlug = platform.artKey ? platform.artKey.replace(/--\d+$/, "") : null;
+  const lead = leadSlug ? platform.consoles.find((link) => link.href === `/p/${leadSlug}`) : undefined;
+  if (lead) return bare(lead, platform.artKey);
+  for (const link of platform.consoles) {
+    const slug = slugOfProduct(link.href);
+    const photo = slug ? photoOf(slug) : null;
+    if (photo) return bare(link, photo);
+  }
   const first = platform.consoles[0];
-  return first ? { href: first.href, label: first.label, artKey: null } : null;
+  return first ? bare(first, null) : null;
+}
+
+/**
+ * The mega menu's «كل أجهزة …» and «أجهزة … المستعملة» words: one string per platform the design system names (v2 §9 —
+ * the handheld platform's name is itself a noun phrase, «الأجهزة المحمولة», so a template doubled it: «كل أجهزة
+ * الأجهزة المحمولة», "All Handheld PCs consoles"); the `{name}` templates only for a platform it does not know.
+ */
+export function megaWords(t: TFunction, slug: string, name: string): { allDevices: string; usedOf: string } {
+  if (isPlatform(slug)) return { allDevices: t(`nav.allDevicesOf.${slug}`), usedOf: t(`nav.usedOfPlatform.${slug}`) };
+  return { allDevices: t("nav.allDevices", { name }), usedOf: t("nav.usedOf", { name }) };
 }
 
 /**
@@ -270,4 +348,79 @@ export function suggestionKind(href: string): SuggestionKind {
   if (/^\/used(\/|\?|$)/.test(href)) return "used";
   if (/^\/search\?/.test(href)) return "correction";
   return "other";
+}
+
+/** The room a focused control must stay in, in viewport pixels: under the sticky top, above the fixed bottom bar. */
+export type FocusEdges = { top: number; bottom: number };
+
+/**
+ * How far to scroll (px, positive = down) so a focused field is not under the sticky header or a bottom bar (WCAG
+ * 2.4.11). The global `scroll-padding-block` covers a field the browser scrolls to; but a browser does not scroll a
+ * field that is already partly in view, so «ملاحظات للمندوب» stayed with its lower 29px under the checkout task bar.
+ * `field` is the control's rect, `edges` the room (viewport coordinates); `margin` the space kept from a bar. A field
+ * taller than the room keeps its top in view (it is never pushed under the header).
+ */
+export function focusNudge(field: { top: number; bottom: number }, edges: FocusEdges, margin = 12): number {
+  if (field.top < edges.top) return field.top - edges.top - margin;
+  if (field.bottom > edges.bottom) {
+    const down = field.bottom - edges.bottom + margin;
+    const room = field.top - edges.top - margin;
+    return Math.max(0, Math.min(down, room));
+  }
+  return 0;
+}
+
+/**
+ * The longest start of `text` that fits, cut BETWEEN words with «…» at its logical end — the task header's one-line
+ * title (§5.2). CSS `text-overflow` cuts at a visual edge: an Arabic title that ends in a Latin name («قاعدة الشحن
+ * DualSense Charging Station») lost the START of the name («…lSense Charging Station»). `fits(candidate)` measures a
+ * candidate in place. It never stops inside brackets («… Station (وێستگەی…» read as a broken bracket): the words a
+ * bracket opens go together. A first word that alone does not fit is left whole (the CSS ellipsis then cuts it).
+ */
+export function clampWords(text: string, fits: (candidate: string) => boolean): string {
+  if (fits(text)) return text;
+  const words = text.split(/\s+/).filter(Boolean);
+  let low = 1;
+  let high = words.length - 1;
+  let best = 0;
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    if (fits(`${words.slice(0, middle).join(" ")}…`)) {
+      best = middle;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+  // never inside brackets, never on a joiner («–…», «+…»); fewer words are narrower, so a shorter start still fits
+  while (best > 0 && (openBrackets(words.slice(0, best).join(" ")) > 0 || !WORDLIKE.test(words[best - 1]))) best--;
+  if (best === 0) return text;
+  // nor on a colon or a comma: «Pokémon Legends…», not «Pokémon Legends:…»
+  return `${words.slice(0, best).join(" ").replace(/[,،:;]+$/u, "")}…`;
+}
+
+const WORDLIKE = /[\p{L}\p{N}]/u;
+
+/** How many brackets the text opens and does not close. */
+function openBrackets(text: string): number {
+  let open = 0;
+  for (const char of text) {
+    if (char === "(" || char === "[") open++;
+    else if ((char === ")" || char === "]") && open > 0) open--;
+  }
+  return open;
+}
+
+const LRI = "⁦";
+const FSI = "⁨";
+const PDI = "⁩";
+
+/**
+ * The exchange rate in the footer's and the sheet's currency panel: «1 USD = 1,310 د.ع» inside the page's sentence
+ * («سعر الصرف: …»). Only the foreign side is a left-to-right isolate; the dinar amount is a first-strong isolate with its
+ * figure first and a no-break space before the currency (v2 §2.6) — the whole line in one left-to-right isolate put
+ * «د.ع» before the figure in Arabic and Sorani, the opposite of every other price on the page.
+ */
+export function rateText(figure: string, symbol: string): string {
+  return `${LRI}1 USD${PDI} = ${FSI}${figure} ${symbol}${PDI}`;
 }

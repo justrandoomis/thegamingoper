@@ -36,6 +36,13 @@
     overflow: visible;
     white-space: normal;
   }
+  /* a list of contents cut into its parts (text.ts factRow): one line on a phone like any fact row — the parts that fit,
+     each whole — and every part from 768, where the buy box has the room */
+  @media (min-width: 48rem) {
+    .pp-facts--parts {
+      max-block-size: none;
+    }
+  }
 
   /* from 1024 the gallery stays in view beside the buy box, just under the sticky header */
   @media (min-width: 64rem) {

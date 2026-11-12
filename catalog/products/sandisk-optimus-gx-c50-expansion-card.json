@@ -90,9 +90,9 @@
     {
       "sku": "SDK-C50-512",
       "title": {
-        "ar": "SANDISK Optimus GX C50 ‏512GB لـ Xbox Series X|S",
-        "en": "SANDISK Optimus GX C50 512GB for Xbox Series X|S",
-        "ckb": "SANDISK Optimus GX C50 ‏512GB بۆ Xbox Series X|S"
+        "ar": "512GB",
+        "en": "512GB",
+        "ckb": "512GB"
       },
       "options": { "storage": "512GB" },
       "modelNumber": "SDCEOGN-512G-GNAGX",
@@ -108,9 +108,9 @@
     {
       "sku": "SDK-C50-1TB",
       "title": {
-        "ar": "SANDISK Optimus GX C50 ‏1TB لـ Xbox Series X|S",
-        "en": "SANDISK Optimus GX C50 1TB for Xbox Series X|S",
-        "ckb": "SANDISK Optimus GX C50 ‏1TB بۆ Xbox Series X|S"
+        "ar": "1TB",
+        "en": "1TB",
+        "ckb": "1TB"
       },
       "options": { "storage": "1TB" },
       "modelNumber": "SDCEOGN-1T00-GNAGX",
@@ -126,9 +126,9 @@
     {
       "sku": "SDK-C50-2TB",
       "title": {
-        "ar": "SANDISK Optimus GX C50 ‏2TB لـ Xbox Series X|S",
-        "en": "SANDISK Optimus GX C50 2TB for Xbox Series X|S",
-        "ckb": "SANDISK Optimus GX C50 ‏2TB بۆ Xbox Series X|S"
+        "ar": "2TB",
+        "en": "2TB",
+        "ckb": "2TB"
       },
       "options": { "storage": "2TB" },
       "modelNumber": "SDCEOGN-2T00-GNAGX",

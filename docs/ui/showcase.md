@@ -42,14 +42,17 @@ never a separate `dir="ltr"` block.
 
 The four doors: `platform`, `to`, `name`, `count` («42 منتجاً», omitted when unknown), `art` (a render key), `compact`
 (the short row variant). The hardware stands on the tile's floor; the white disc with the arrow mirrors in RTL.
-`PlatformTiles` is the `nav` grid around them (`label` names it).
+`PlatformTiles` is the `nav` grid around them (`label` names it). `compact` keeps the words in their own column (48% of
+the tile, as on the large tile) and the hardware in the other half; a compact tile narrower than ~220px (a container
+query: two in a row on a phone, the 404 page's row of four) gives the words 62% and stands a smaller picture in the
+bottom inline-end corner — «Nintendo» no longer sits on the Switch 2 (QA 2026-11-12).
 
 ## TrustStrip — `~/ui/TrustStrip`
 
 Only true facts, each shown only when its prop is given (they come from settings): `deliveryIqd` («التوصيل 5,000 د.ع
 لكل المحافظات»), `cod`, `transfer` (Zain Cash / card transfer, «نراجع كل تحويل قبل تأكيد الطلب»), `guest`. `variant="line"`:
-the one-line form under a commit key (COD short + the returns link `returnsTo`). Never ratings, counts or delivery
-times.
+the one-line form under a commit key (COD short + the returns link `returnsTo`, a 44px hit area around its 13px
+words). Never ratings, counts or delivery times.
 
 ## FactList — `~/ui/FactList`
 
@@ -62,7 +65,8 @@ The page's one dark band: «قريباً» + the honest lead («مواعيد ا�
 بعد.»), then items `{ id, to, name, releaseAt, platform, platformLabel?, priceIqd?, image }`: the day in large Kufi
 numerals, «تشرين الثاني 2026», a relative chip «بعد 8 أيام» only within 30 days (Baghdad calendar days, `daysUntil`,
 `iraqDay`), the art, the name, the price when set and «الطلب يفتح عند وصوله». Pass the loader's `now`. No countdowns,
-no pre-order buttons. Nothing renders without items.
+no pre-order buttons. Nothing renders without items. Below 768 (a snap rail) an item that takes the KEYBOARD focus is
+brought to the rail's start (`revealInRow`, as `<Rail>` does): Chromium leaves a partly visible item where it is.
 
 ## SectionHead — `~/ui/SectionHead`
 

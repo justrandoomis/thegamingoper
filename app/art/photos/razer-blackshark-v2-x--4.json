@@ -1,48 +1,40 @@
 {
   "key": "razer-blackshark-v2-x--4",
   "view": "hero",
-  "width": 824,
-  "height": 935,
-  "aspect": 0.8813,
+  "width": 323,
+  "height": 452,
+  "aspect": 0.7146,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/razer-blackshark-v2-x/4-240.3df2c150.avif"
+        "src": "/products/razer-blackshark-v2-x/4-240.e7da505d.avif"
       },
       {
-        "w": 480,
-        "src": "/products/razer-blackshark-v2-x/4-480.b0b2b5ca.avif"
-      },
-      {
-        "w": 720,
-        "src": "/products/razer-blackshark-v2-x/4-720.17f2dbb0.avif"
+        "w": 323,
+        "src": "/products/razer-blackshark-v2-x/4-323.dd5f53da.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/razer-blackshark-v2-x/4-240.964c72f2.webp"
+        "src": "/products/razer-blackshark-v2-x/4-240.4c56a11b.webp"
       },
       {
-        "w": 480,
-        "src": "/products/razer-blackshark-v2-x/4-480.21b289b7.webp"
-      },
-      {
-        "w": 720,
-        "src": "/products/razer-blackshark-v2-x/4-720.5c9f0f4d.webp"
+        "w": 323,
+        "src": "/products/razer-blackshark-v2-x/4-323.f0419e0c.webp"
       }
     ]
   },
-  "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAABQBACdASoSABQAPxF2sVIsJySiqA1RgCIJaQAALs0e++FICK+gepRYXzxAAP7r3/QgxUkpZYlr4HAXvjO+Q2KjBpZGLxRhY4D1eP30jmKmrntD7BE5w5elL1q43yBbY0kdndq3PaVvJtXh2IAAAA==",
-  "dominant": "#f8f9fa",
-  "transparent": false,
-  "background": "#111111",
+  "placeholder": "data:image/webp;base64,UklGRvAAAABXRUJQVlA4WAoAAAAQAAAADQAAEwAAQUxQSF0AAAART6CgkaQ2+Bp6f0ACERGgb+XHQwfbWttevHKbU5fVjk6n1DoWsIIlLJDfeWUTRPR/AnB3VA/6rv3BO9SsDhMpAvpOekBIMnjgDzImUurzstsbIDKFVsCxwGl4BgAAVlA4IGwAAACwAwCdASoOABQAPxFysFAsJqSisAgBgCIJaQAAW+nj2t5pU/aZKAD+7UhRrmPF92+OaibX9tD81smjDIdTD+uQocTaMgBDHCDIgCVKUlpxA0bYRmBGbIjYx5WWeBEfT/bKYiRa6bQdS7AAAAA=",
+  "dominant": "#e6e6e8",
+  "transparent": true,
+  "background": null,
   "kind": "hero",
   "credit": "Razer",
   "source": {
-    "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h3f/h08/9368738791454/220218-blackshark-v2-x-white-1500x1000-2.jpg",
+    "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/hc3/h7a/9399589797918/2-blackshark-v2-x-white-500x500.png",
     "page": "https://www.razer.com/gaming-headsets/razer-blackshark-v2-x/RZ04-03240700-R3U1"
   },
-  "input": "a37326e7856ebc17"
+  "input": "887e509829451983"
 }

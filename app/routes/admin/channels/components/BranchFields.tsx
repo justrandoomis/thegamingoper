@@ -31,7 +31,7 @@ export function BranchFields({ values, options, errors }: { values: BranchValues
       <TextField name="code" label={t("branch.field.code")} hint={t("branch.field.codeHint")} required ltr maxLength={16} autoCapitalize="characters" defaultValue={values.code} error={errors.code} />
       <TextField name="phone" type="tel" label={t("branch.field.phone")} hint={t("branch.field.phoneHint")} optional maxLength={40} defaultValue={values.phone} error={errors.phone} />
       <TextField name="nameAr" label={t("branch.field.nameAr")} required maxLength={80} defaultValue={values.nameAr} error={errors.nameAr} />
-      <TextField name="nameEn" label={t("branch.field.nameEn")} optional maxLength={80} dir="ltr" defaultValue={values.nameEn} error={errors.nameEn} />
+      <TextField name="nameEn" label={t("branch.field.nameEn")} optional maxLength={80} ltr lang="en" defaultValue={values.nameEn} error={errors.nameEn} />
       <Select
         name="governorateId"
         label={t("branch.field.governorate")}
@@ -53,7 +53,7 @@ export function BranchFields({ values, options, errors }: { values: BranchValues
       />
       <TextField className="ch-span" name="addressText" label={t("branch.field.address")} optional maxLength={300} defaultValue={values.addressText} error={errors.addressText} />
       <TextField name="hoursAr" label={t("branch.field.hoursAr")} hint={t("branch.field.hoursHint")} optional maxLength={200} defaultValue={values.hoursAr} error={errors.hoursAr} />
-      <TextField name="hoursEn" label={t("branch.field.hoursEn")} optional maxLength={200} dir="ltr" defaultValue={values.hoursEn} error={errors.hoursEn} />
+      <TextField name="hoursEn" label={t("branch.field.hoursEn")} optional maxLength={200} ltr lang="en" defaultValue={values.hoursEn} error={errors.hoursEn} />
     </div>
   );
 }

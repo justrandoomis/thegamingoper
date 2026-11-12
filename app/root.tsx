@@ -13,13 +13,14 @@ import {
 
 import type { Route } from "./+types/root";
 import { listNamespaces, messagesFor } from "~/i18n/i18n.server";
-import { DEFAULT_LOCALE, LOCALES, splitLocale, type Locale } from "~/lib/locales";
+import { DEFAULT_LOCALE, LOCALES, localePath, splitLocale, type Locale } from "~/lib/locales";
 import { useNonce } from "~/lib/nonce";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
 import { loadShell } from "~/server/shell.server";
 import { preloadFonts } from "~/styles/fonts";
+import { showToast } from "~/ui/toast-store";
 import "./app.css";
 
 export const middleware: Route.MiddlewareFunction[] = [requestContextMiddleware];
@@ -139,9 +140,50 @@ export default function App({ loaderData }: Route.ComponentProps) {
   return (
     <PrefsProvider value={loaderData.prefs}>
       <ThemeSync />
+      <OfflineNavigationGuard locale={loaderData.locale} />
       <Outlet />
     </PrefsProvider>
   );
+}
+
+/**
+ * While the device is offline, a storefront link or a GET form would make React Router fetch a route module it cannot
+ * load, and it then reloads the whole page into the browser's own "not connected" screen — the shopper loses the
+ * page, the shell and the offline banner (QA 2026-11-12). Keep them where they are and say why. The admin is left
+ * alone (its POS till has its own offline mode); POST forms answer offline themselves.
+ */
+function OfflineNavigationGuard({ locale }: { locale: Locale }) {
+  useEffect(() => {
+    const refuse = () => showToast({ tone: "warning", title: OFFLINE_TEXT[locale].message, id: "offline-navigation" });
+    const inStore = () => !(location.pathname === "/admin" || location.pathname.startsWith("/admin/"));
+    const onClick = (event: MouseEvent) => {
+      if (navigator.onLine || event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !inStore()) return;
+      const anchor = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (!(anchor instanceof HTMLAnchorElement) || anchor.hasAttribute("download")) return;
+      if (anchor.target && anchor.target !== "_self") return;
+      const url = new URL(anchor.href, location.href);
+      if (url.origin !== location.origin) return;
+      if (url.pathname === location.pathname && url.search === location.search) return; // a link within this page
+      event.preventDefault();
+      refuse();
+    };
+    const onSubmit = (event: SubmitEvent) => {
+      if (navigator.onLine || event.defaultPrevented || !inStore() || !(event.target instanceof HTMLFormElement)) return;
+      const method = (event.submitter?.getAttribute("formmethod") || event.target.getAttribute("method") || "get").toLowerCase();
+      if (method !== "get") return;
+      event.preventDefault();
+      refuse();
+    };
+    // Capture on window: runs before React's own listeners, so React Router's <Link> sees the click already handled.
+    window.addEventListener("click", onClick, true);
+    window.addEventListener("submit", onSubmit, true);
+    return () => {
+      window.removeEventListener("click", onClick, true);
+      window.removeEventListener("submit", onSubmit, true);
+    };
+  }, [locale]);
+  return null;
 }
 
 /** Keeps <html data-theme> in step with the preference store after the shopper switches theme. */
@@ -198,72 +240,103 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     );
   }
 
-  // The admin gate's refusals carry the employee's admin language (gate.server.ts): English admins read English first.
-  const adminEnglish = inAdmin && isRouteErrorResponse(error) && (error.data as { locale?: string } | null)?.locale === "en";
-  let status = 500;
-  let title = "حدث خطأ غير متوقع";
-  let detail = "تعذّر تحميل الصفحة. حاول مرة أخرى بعد قليل.";
-  let english: string | null = inAdmin ? "Something went wrong. Please try again in a moment." : null;
-  let englishTitle = "Something went wrong";
-  let stack: string | undefined;
+  const status = isRouteErrorResponse(error) ? error.status : 500;
+  const kind: ErrorKind = status === 404 ? "notFound" : status === 403 ? "forbidden" : "error";
+  const retryHref = `${pathname}${search}`;
+  // In development an unexpected error shows its message and stack under the page (never in production).
+  const devError = !isRouteErrorResponse(error) && import.meta.env.DEV && error instanceof Error ? error : null;
+  const devDetails = devError ? (
+    <pre dir="ltr">
+      <code>{`${devError.message}\n${devError.stack ?? ""}`}</code>
+    </pre>
+  ) : null;
 
-  if (isRouteErrorResponse(error)) {
-    status = error.status;
-    if (error.status === 404) {
-      title = "الصفحة غير موجودة";
-      detail = "الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت.";
-      englishTitle = "Page not found";
-      if (inAdmin) english = "This page does not exist.";
-    } else if (error.status === 403) {
-      title = "غير مسموح";
-      detail = inAdmin ? "صلاحيات دورك لا تشمل هذا القسم. اطلبها من مالك المتجر إن كنت تحتاجها." : "لا تملك صلاحية الوصول إلى هذه الصفحة.";
-      englishTitle = "Not allowed";
-      if (inAdmin) english = "Your role does not include this section. Ask the store owner if you need it.";
-    }
-  } else if (import.meta.env.DEV && error instanceof Error) {
-    detail = error.message;
-    stack = error.stack;
-  }
-
-  if (adminEnglish && english) {
+  if (!inAdmin) {
+    // The storefront shell's own wording (shell.ts) in the page's language (Design System v2 §6.16).
+    const locale = splitLocale(pathname).locale;
+    const words = STORE_ERROR_TEXT[locale];
     return (
-      <main className="root-error" lang="en" dir="ltr">
-        <p className="root-error__code">{status}</p>
-        <h1>{englishTitle}</h1>
-        <p>{english}</p>
-        <p lang="ar" dir="rtl">
-          {detail}
+      <main className="root-error" lang={LOCALES[locale].bcp47} dir={LOCALES[locale].dir}>
+        <p className="root-error__code" dir="ltr">
+          {status}
         </p>
-        <a href="/admin">Back to the admin</a>
+        <h1>{words[kind].title}</h1>
+        {words[kind].text ? <p>{words[kind].text}</p> : null}
+        {kind === "error" ? <a href={retryHref}>{words.retry}</a> : null}
+        <a href={localePath("/", locale)}>{words.home}</a>
+        {devDetails}
       </main>
     );
   }
 
+  // The admin gate's refusals carry the employee's admin language (gate.server.ts): one language when it is known,
+  // both (on separate lines) when it is not.
+  const adminLocale = isRouteErrorResponse(error) ? (error.data as { locale?: string } | null)?.locale : undefined;
+  const languages: ("ar" | "en")[] = adminLocale === "en" ? ["en"] : adminLocale === "ar" ? ["ar"] : ["ar", "en"];
+  const first = ADMIN_ERROR_TEXT[languages[0]];
   return (
-    <main className="root-error">
-      <p className="root-error__code" dir="ltr">{status}</p>
-      <h1>{title}</h1>
-      <p>{detail}</p>
-      {english ? (
-        <p lang="en" dir="ltr">
-          {english}
+    <main className="root-error" lang={languages[0] === "en" ? "en" : "ar-IQ"} dir={languages[0] === "en" ? "ltr" : "rtl"}>
+      <p className="root-error__code" dir="ltr">
+        {status}
+      </p>
+      <h1>{first[kind].title}</h1>
+      {languages.map((language) => (
+        <p key={language} lang={language === "en" ? "en" : "ar-IQ"} dir={language === "en" ? "ltr" : "rtl"}>
+          {ADMIN_ERROR_TEXT[language][kind].text}
         </p>
-      ) : null}
-      {inAdmin ? (
-        <a href="/admin">
-          العودة إلى لوحة الإدارة{" "}
-          <bdi lang="en" dir="ltr">
-            · Back to the admin
-          </bdi>
+      ))}
+      {kind === "error" ? <a href={retryHref}>{languages.map((language) => ADMIN_ERROR_TEXT[language].retry).join(" · ")}</a> : null}
+      {languages.map((language) => (
+        <a key={language} href="/admin" lang={language === "en" ? "en" : "ar-IQ"} dir={language === "en" ? "ltr" : "rtl"}>
+          {ADMIN_ERROR_TEXT[language].back}
         </a>
-      ) : (
-        <a href="/">العودة إلى الرئيسية</a>
-      )}
-      {stack ? (
-        <pre dir="ltr">
-          <code>{stack}</code>
-        </pre>
-      ) : null}
+      ))}
+      {devDetails}
     </main>
   );
 }
+
+type ErrorKind = "notFound" | "forbidden" | "error";
+type ErrorWords = Record<ErrorKind, { title: string; text: string | null }>;
+
+/** The storefront shell's error words (app/i18n/messages/shell.ts), copied: this boundary stays dependency-free. */
+const STORE_ERROR_TEXT: Record<Locale, ErrorWords & { retry: string; home: string }> = {
+  ar: {
+    notFound: { title: "لم نجد هذه الصفحة", text: null },
+    forbidden: { title: "لا يمكنك فتح هذه الصفحة", text: "هذه الصفحة لحساب آخر. سجّل الدخول بالحساب الصحيح، أو افتح رابط الطلب من جديد." },
+    error: { title: "تعذّر عرض هذه الصفحة", text: "حدث خطأ من جهتنا، وليس منك. أعد المحاولة بعد قليل." },
+    retry: "أعد المحاولة",
+    home: "العودة إلى الرئيسية",
+  },
+  en: {
+    notFound: { title: "We could not find this page", text: null },
+    forbidden: { title: "You cannot open this page", text: "This page belongs to another account. Sign in with the right account, or open the order link again." },
+    error: { title: "This page could not be shown", text: "Something went wrong on our side, not yours. Try again in a moment." },
+    retry: "Try again",
+    home: "Back to the home page",
+  },
+  ckb: {
+    notFound: { title: "ئەم پەڕەیەمان نەدۆزییەوە", text: null },
+    forbidden: { title: "ناتوانیت ئەم پەڕەیە بکەیتەوە", text: "ئەم پەڕەیە هی هەژمارێکی ترە. بە هەژماری دروست بچۆ ژوورەوە، یان بەستەری داواکارییەکە دووبارە بکەرەوە." },
+    error: { title: "نەتوانرا ئەم پەڕەیە پیشان بدرێت", text: "هەڵەیەک لە لایەن ئێمەوە ڕوویدا، نەک لە لایەن تۆوە. دوای کەمێک دووبارە هەوڵ بدەرەوە." },
+    retry: "دووبارە هەوڵ بدەرەوە",
+    home: "گەڕانەوە بۆ پەڕەی سەرەکی",
+  },
+};
+
+const ADMIN_ERROR_TEXT: Record<"ar" | "en", ErrorWords & { retry: string; back: string }> = {
+  ar: {
+    notFound: { title: "الصفحة غير موجودة", text: "الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت." },
+    forbidden: { title: "غير مسموح", text: "صلاحيات دورك لا تشمل هذا القسم. اطلبها من مالك المتجر إن كنت تحتاجها." },
+    error: { title: "تعذّر عرض هذه الصفحة", text: "حدث خطأ من جهتنا. أعد المحاولة بعد قليل." },
+    retry: "أعد المحاولة",
+    back: "العودة إلى لوحة الإدارة",
+  },
+  en: {
+    notFound: { title: "Page not found", text: "This page does not exist." },
+    forbidden: { title: "Not allowed", text: "Your role does not include this section. Ask the store owner if you need it." },
+    error: { title: "This page could not be shown", text: "Something went wrong on our side. Try again in a moment." },
+    retry: "Try again",
+    back: "Back to the admin",
+  },
+};

@@ -5,7 +5,7 @@
 import type { NavTaxonomy } from "~/server/services/catalog/types";
 import type { ContactChannels } from "~/ui/ContactCard";
 
-export type { NavCategory, NavLink, NavPlatform, NavTaxonomy } from "~/server/services/catalog/types";
+export type { NavCategory, NavFeatured, NavLink, NavPlatform, NavTaxonomy } from "~/server/services/catalog/types";
 
 /** Which payment methods the store has switched on (settings `payments.*`): the footer lists exactly these. */
 export type ShellPayments = { cod: boolean; wallet: boolean; card: boolean; zaincash: boolean };

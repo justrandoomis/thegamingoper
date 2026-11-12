@@ -1,70 +1,46 @@
 {
   "key": "xbox-gift-card--1",
   "view": "hero",
-  "width": 1600,
-  "height": 1600,
-  "aspect": 1,
+  "width": 572,
+  "height": 573,
+  "aspect": 0.9983,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/xbox-gift-card/1-240.d3b01224.avif"
+        "src": "/products/xbox-gift-card/1-240.e7b1e09f.avif"
       },
       {
         "w": 480,
-        "src": "/products/xbox-gift-card/1-480.a21e42cd.avif"
-      },
-      {
-        "w": 720,
-        "src": "/products/xbox-gift-card/1-720.4faac101.avif"
-      },
-      {
-        "w": 960,
-        "src": "/products/xbox-gift-card/1-960.45529778.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/xbox-gift-card/1-1440.fc4730ce.avif"
+        "src": "/products/xbox-gift-card/1-480.f9039ee9.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/xbox-gift-card/1-240.453e8d22.webp"
+        "src": "/products/xbox-gift-card/1-240.f8dcea80.webp"
       },
       {
         "w": 480,
-        "src": "/products/xbox-gift-card/1-480.2df444cd.webp"
-      },
-      {
-        "w": 720,
-        "src": "/products/xbox-gift-card/1-720.819b439f.webp"
-      },
-      {
-        "w": 960,
-        "src": "/products/xbox-gift-card/1-960.f6b7e310.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/xbox-gift-card/1-1440.297e805e.webp"
+        "src": "/products/xbox-gift-card/1-480.89df41d2.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/xbox-gift-card/1-1200.c07ce7b7.png",
-    "width": 1200,
-    "height": 1200,
+    "src": "/products/xbox-gift-card/1-572.1fc0a0b1.png",
+    "width": 572,
+    "height": 573,
     "type": "image/png"
   },
-  "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSCoAAAARH0AgQNH/l+GHGxERfEIhG0nQyJzEeXyMk0M9gIj+BwCn5lZVvDo1AQBWUDggbAAAAJADAJ0BKhQAFAA/EYC4VawoJSMoCAGAIglAAAU7QA/P9dhY64AA/nGWFSqIXR87KX5xRd9u7403EoopVBJdGUS+TXKcSwV7jent3+5D/4Nkg3ff+vWluauU+F9D50RdEXE/mBRO/Kp6ukngAA==",
-  "dominant": "#0f7c11",
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSDIAAAARL0AWYDKA+YsFkEZfGhER3HRQ00gKlOAAB78BMIJ/P9tSR/R/AixQbrFHMb9yi2WBAlZQOCB4AAAAUAQAnQEqFAAUAD8RerRTrCelIqgKqYAiCWYAuy+BpAAOFow1ww0wb15QwAD+nKmWSMR7TU6K2i5zari13nAqJdUEyYKuCc49zKrueqD8JnLFXWk0Ja51ujXH9eeZ411aG0oucs/Xn5yAS9NonoMFuC+KtyC58AAA",
+  "dominant": "#107c0f",
   "transparent": true,
   "background": null,
   "kind": "hero",
   "credit": "Microsoft (Xbox)",
   "source": {
-    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Store-Xbox-Gift-Card?scl=1&fmt=png-alpha",
-    "page": "https://www.microsoft.com/en-us/p/xbox-gift-card-digital-code/cfq7ttc0k63h"
+    "url": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?fmt=png-alpha&scl=1&bfc=off",
+    "page": "https://www.microsoft.com/en-us/store/b/gift-cards"
   },
-  "input": "46d144f1c0fcdd54"
+  "input": "c71390c53cd96809"
 }

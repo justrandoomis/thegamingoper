@@ -88,9 +88,9 @@
     {
       "sku": "SEA-XSEC-1TB",
       "title": {
-        "ar": "Seagate Storage Expansion Card ‏1TB لـ Xbox Series X|S",
-        "en": "Seagate Storage Expansion Card 1TB for Xbox Series X|S",
-        "ckb": "Seagate Storage Expansion Card ‏1TB بۆ Xbox Series X|S"
+        "ar": "1TB",
+        "en": "1TB",
+        "ckb": "1TB"
       },
       "options": { "storage": "1TB" },
       "modelNumber": "STJR1000400",
@@ -106,9 +106,9 @@
     {
       "sku": "SEA-XSEC-2TB",
       "title": {
-        "ar": "Seagate Storage Expansion Card ‏2TB لـ Xbox Series X|S",
-        "en": "Seagate Storage Expansion Card 2TB for Xbox Series X|S",
-        "ckb": "Seagate Storage Expansion Card ‏2TB بۆ Xbox Series X|S"
+        "ar": "2TB",
+        "en": "2TB",
+        "ckb": "2TB"
       },
       "options": { "storage": "2TB" },
       "modelNumber": "STJR2000400",
@@ -124,9 +124,9 @@
     {
       "sku": "SEA-XSEC-4TB",
       "title": {
-        "ar": "Seagate Storage Expansion Card ‏4TB لـ Xbox Series X|S",
-        "en": "Seagate Storage Expansion Card 4TB for Xbox Series X|S",
-        "ckb": "Seagate Storage Expansion Card ‏4TB بۆ Xbox Series X|S"
+        "ar": "4TB",
+        "en": "4TB",
+        "ckb": "4TB"
       },
       "options": { "storage": "4TB" },
       "modelNumber": "STJR4000400",

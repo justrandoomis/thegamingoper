@@ -79,11 +79,47 @@ export function ticketView<C>(input: { posted: C | null; kept: C | null; fromLin
 /**
  * For a route's `shouldRevalidate` after a submission: a request that never reached the store (offline, a dropped
  * connection — the failure `keepFormOnFailure` kept) reloads nothing, because the reload would fail the same way and
- * an error panel would replace the form and everything typed in it. Anything else follows React Router's default.
+ * an error panel would replace the form and everything typed in it. Neither does a refusal of fields the shopper can
+ * fix, nor a lookup that found nothing: nothing changed in the store (both are answered 200 — answerStatus — which
+ * React Router would otherwise follow with a reload). Anything else follows React Router's default.
  */
 export function revalidateAfter({ actionResult, defaultShouldRevalidate }: { actionResult?: unknown; defaultShouldRevalidate: boolean }): boolean {
   if (isFailure(actionResult) && (actionResult.code === "network" || actionResult.code === "offline")) return false;
+  if (isFailure(actionResult) && (fixable(actionResult) || actionResult.code === "not_found")) return false;
   return defaultShouldRevalidate;
+}
+
+/** A refusal of fields the shopper can fix: `invalid` with at least one field code. */
+function fixable(failure: { code: string; fields?: Record<string, string> }): boolean {
+  return failure.code === "invalid" && failure.fields !== undefined && Object.keys(failure.fields).length > 0;
+}
+
+/**
+ * The HTTP status an action answers a failure with. Fields the shopper can fix (`invalid` with field codes: an empty
+ * phone, a photo the store refused…) are an answer the page explains beside them — 200, like a lookup that found
+ * nothing, so the browser does not log a failed request for an ordinary mistake (QA 2026-11-12: "Failed to load
+ * resource … 400"). A body that is not a form (400), too large (413), a rate limit (429), a conflict (409) — malformed
+ * or abusive requests — keep their own status. Pure.
+ */
+export function answerStatus(failure: { code: string; status: number; fields?: Record<string, string> }): number {
+  return fixable(failure) ? 200 : failure.status;
+}
+
+/**
+ * The page's record of field errors after the store refused fields: the store's sentence for each refused field
+ * replaces what the page's own checks said about it. A page keeps it in its own state — the action's answer is gone
+ * after the next navigation (the repair form moves to the step of the first refused field), and the sentence must
+ * stay with its field and in the error summary. Pure.
+ */
+export function withServerErrors(
+  local: Record<string, string | undefined>,
+  fields: Record<string, string> | undefined,
+  t: TFunction,
+  errors: TFunction,
+): Record<string, string | undefined> {
+  const next = { ...local };
+  for (const [name, code] of Object.entries(fields ?? {})) next[name] = fieldMessage(name, code, t, errors);
+  return next;
 }
 
 /**

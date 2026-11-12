@@ -43,7 +43,7 @@
   "variants": [
     {
       "sku": "NS2G-MARIO-KART-WORLD",
-      "title": { "ar": "Mario Kart World — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Mario Kart World — Nintendo Switch 2 physical edition", "ckb": "Mario Kart World — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905453"],
       "isDefault": true,

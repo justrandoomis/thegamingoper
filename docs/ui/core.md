@@ -32,7 +32,23 @@
   sat under «PlayStation», 1.48:1); a two-line name makes the tile taller instead of running into the picture.
 - **Stage (pdp):** the image box is inset 4% / 2% / 5% (the cut-outs carry ~5% margin of their own, so the object stands
   at the spec's 8% / 6% / 9%); Switch 2 fills 63% of the 390 stage (was 52%). Opaque photos keep 8% / 6% / 9%.
-- **OfflineBanner:** graphite (`--band`, white words) — never the demo strip's amber.
+- **OfflineBanner:** the spec's warn treatment (§4.23: `--warn-tint`, `--warn` 14/600, the wifi-slash in warn) with a
+  3px `--warn` bar on the reading edge — told apart from the demo strip (centred, 28px, no bar) by shape, not by a
+  black ribbon (QA 2026-11-12).
+- **FactLine** (`~/ui/FactLine`): one line of facts joined by « · » — the card's kind and meta lines, the toast's
+  product line, the buy bar's version. Each fact is whole or drops out with its « · » (it wraps onto a hidden row);
+  only a first fact wider than the line is shortened, in its own isolate, at its LOGICAL end. Inside a fact with Arabic
+  or Kurdish letters every Latin run is an atomic inline: the ellipsis hides it whole («جهاز Switch 2 بسعة …») or
+  shortens it at its own end — a plain one-line ellipsis in an RTL box cut the start of a trailing Latin name («…G Xbox
+  Ally», «…nds: Z-A»). A fact without Arabic letters (a Latin list with Arabic commas) is one left-to-right box.
+  `lines={2}`: up to two rows (a used row's meta, the toast). Check it by paint, not geometry: a run the ellipsis hides
+  keeps its overflowing box in the layout but is not drawn (hide the run and compare two screenshots of its box).
+- **Price:** the figure and «د.ع» are one unbreakable unit (`.price__amount`); the buy bar's price steps down to sm in a
+  column under 140px (a container query) instead of wrapping at 320px.
+- **Field:** a `TextField` or `TextArea` that takes the focus is scrolled WHOLE into view (`revealField`: "nearest",
+  which honours the shell's scroll padding) — the browser brought only the caret up and left the checkout's notes box
+  half under the task bar. `FormErrorSummary` links are at least 44 × 44.
+- **Switch** in forced colours: a CanvasText track edge and knob (off), a Highlight track with a HighlightText knob (on).
 - **Swatches:** `unavailable` `"soldOut"` («نفد حالياً») · `"soon"` («قريباً») · `true` («غير متوفر»: not made in this
   version) · `reason` (your words). Never «غير متوفر» for a colour that is not out yet (§9).
 - **Retired:** see the first item. The 1.0 sections further down are kept for the props that did not change.

@@ -14,7 +14,7 @@ Files: `app/routes/storefront/catalog/**`, `app/routes/api/search-suggest.ts`, `
 | `/c/:category` | title row (breadcrumbs from 768, h1, count · delivery line), one chip row (platforms with dots when the list has ≥ 2; else sub-departments; else devices), the list, then the hubs of the devices its products fit. Empty department → EmptyState «لا منتجات في هذا القسم بعد» + «ابحث في المتجر» + «وصل حديثاً». The `used` kind → 302 `/used` |
 | `/search` | start: the field in the page (focused from 1024 only), «اقتراحات» chips (the platforms' device models — names, never "most searched"), recent searches (this device, consent-aware) and the «إعدادات البحث» row, the four compact platform tiles and the department tiles with the hubs' counts, the devices area's shelves |
 | `/search?q=` | the listing template, h1 «نتائج «q»»; a corrected spelling shows its results under the corrected words with «بحثت عن «q»، ولم نجد شيئاً بهذه الكتابة…»; «اذهب مباشرة إلى» jumps; department chips. Nothing matches → EmptyState «لم نجد نتائج لـ «q»» + «هل تقصد:» (the shorter queries that find something) + platform and department tiles + «وصل حديثاً» (8 arrivals, no «جديد») — no sort, no filters |
-| `/compare?ids=a&ids=b` | ≤ 4 of one kind. Product headers stay under the header while the rows scroll (96px well with the 44×44 «أزل» right beside it, name, price with the neutral `CardAddButton` right after it — never pushed to the column's far end, where they sat next to the neighbouring product); the corner offers «أضف منتجاً (حتى 4)» (→ the same-kind suggestions, whose «قارن» key wraps under them at 320px); «اعرض الفروق فقط» beside its label, from two products; «غير موثّق» where the research says nothing. Phones: two product columns, each spec's name a full-width row above its values (three or four products scroll sideways); from 768 a sticky first column. `/compare` without ids reopens the list this device keeps |
+| `/compare?ids=a&ids=b` | ≤ 4 of one kind. Product headers stay under the header while the rows scroll (96px well with the 44×44 «أزل» right beside it, name, price with the neutral `CardAddButton` right after it — never pushed to the column's far end, where they sat next to the neighbouring product). The key never shrinks and never leaves its own cell: in a narrow column (four products at 768–800, a 360 phone) the well gives way (66px at 768) — it had overhung the column edge and the next header cell covered half of it. Names clamp to two lines with the card title's treatment (`CompareName`: a Latin name on an Arabic page is one left-to-right line at the start edge, so the clamp cuts its logical end; the ellipsis gets 1em of end padding to hang in, offset by a negative margin — Chromium aligns an end-aligned clamped line without its ellipsis and clipped it); the corner offers «أضف منتجاً (حتى 4)» (→ the same-kind suggestions, whose «قارن» key wraps under them at 320px); «اعرض الفروق فقط» beside its label, from two products; «غير موثّق» where the research says nothing. Phones: two product columns, each spec's name a full-width row above its values (three or four products scroll sideways); from 768 a sticky first column. `/compare` without ids reopens the list this device keeps |
 | `GET /api/search/suggest?q=&locale=` | `{ suggestions: { label, href, hint?, image?, priceIqd?, kindLabel? }[], total? }` ≤ 8 rows — the service's rows unchanged, product rows add the art key, the price (left out while sold out) and the kind label; `total` = what `/search?q=` lists for the same words, whenever the query is long enough to search. 120/min per IP → 429; `Cache-Control: public, max-age=60` |
 
 ## The list (`components/ListingView.tsx`)
@@ -26,8 +26,10 @@ Files: `app/routes/storefront/catalog/**`, `app/routes/api/search-suggest.ts`, `
   menu («الترتيب: المقترَح» from 1024, «الترتيب» below, the explanation in its caption); below 1024 «الفلاتر (2)».
   Once the toolbar has scrolled away (below 1024) a pill «الفلاتر | الترتيب» floats above the tab bar — solid paper
   with the float shadow, because the header and the tab bar are the viewport's two live glass panes. While it (or the
-  compare tray) shows, the page's bottom scroll padding grows by the dock's measured height (`--catalog-dock` on the
-  root, set by `CatalogDock`), so focus never lands under it. The tray keeps «قارن (3)» whole: overlapping
+  compare tray) shows, the page's bottom scroll padding is the bars + the dock's inset (`--catalog-dock-inset`: 12px on
+  phones, 24px from 1024, where the tray floats at the bottom end) + its measured height (`--catalog-dock`, set by
+  `CatalogDock`) + 12px of air, so focus never lands under it (92px at 1024–1440; it was 68 and a focused card key
+  ended 12px under the tray — QA 2026-11-12). The tray keeps «قارن (3)» whole: overlapping
   thumbnails, and where the words do not fit one line (English and Sorani on phones) «قارن الآن» and its × take a
   second line together.
 - The filter form shows a group of six or fewer short values (≤ 20 characters) as chips holding native checkboxes or
@@ -74,7 +76,7 @@ Files: `app/routes/storefront/catalog/**`, `app/routes/api/search-suggest.ts`, `
 | State | Hubs / search results | Search start / zero | Compare |
 |---|---|---|---|
 | Loading | results stay usable, `aria-busy`, dimmed; chips and inputs show the new state at once; cards that stayed slide, new ones grow in from the engine's bubble scale (.94, `use-flip.ts`, full motion tier only) | SSR | SSR |
-| Empty | department without products: EmptyState + «وصل حديثاً» | zero: EmptyState, «هل تقصد:», tiles, «وصل حديثاً» | EmptyState «لا شيء للمقارنة بعد» (never beside a saved list) |
+| Empty | department without products: EmptyState + «وصل حديثاً» | zero: EmptyState, «هل تقصد:», tiles, «وصل حديثاً» | EmptyState «لا شيء للمقارنة بعد» (never beside a saved list) — every stack EmptyState here (and «لا منتجات بهذه الفلاتر») shows the mascot in its disc (v2 §4.23), not an icon |
 | Zero with filters | «لا منتجات بهذه الفلاتر» + «امسح الفلاتر» + nearest filter + picks | — | «لا فروق…» with differences only |
 | API failure | the loader → the shell's error panel; the used shelf alone → ErrorState in place, the page stands | suggest endpoint → no list | — |
 | Offline | the shell's banner; the filter controls rest with «لا يوجد اتصال. نحدّث النتائج حين يعود.»; chips, «اعرض المزيد» and filter chips are held and followed on reconnect (the list never gives way to the error page) | banner; suggestion chips held the same way | banner |
@@ -95,7 +97,7 @@ Files: `app/routes/storefront/catalog/**`, `app/routes/api/search-suggest.ts`, `
 
 ## Verify
 
-`npx vitest run tests/catalog-listing.test.ts tests/search.test.ts` (64) · `node scripts/lint-design.mjs --strict
+`npx vitest run tests/catalog-listing.test.ts tests/search.test.ts` (66) · `node scripts/lint-design.mjs --strict
 app/routes/storefront/catalog app/routes/api/search-suggest.ts` (0) · flows: `node <scratch>/work/pages-P2-catalog/flow.mjs`
 (chips, sheet, filter at once, Back, show more + reload + Back, every sort, zero results and the way out, sidebar
 row, no-script form, the floating pill) · census / focus walk: `<scratch>/work/pages-P2-catalog/tools/` · screenshots
@@ -140,3 +142,16 @@ focus walk, rendered contrast, reflow at 320 and 200%) and `<scratch>/ux/after/P
   thumbnails); the sort's explanation as the «المقترَح» row's radio `hint`; `use-flip.ts` takes `bubble` from `~/motion`.
 - Known: in a grid row that mixes a card with the compare slot and one without, the price rows do not line up (the slot sits
   under the pinned foot) — asked of the kit.
+
+## QA fixes (2026-11-12, after the five-auditor matrix)
+
+| Defect | Fix | Measured after |
+|---|---|---|
+| Compare names cut at their start on Arabic pages («…e Legend of Zelda –») | `CompareName` (latinName + BidiText, isolate) and an end padding for the ellipsis (catalog.css) | «Nintendo Switch 2 – / The Legend of Zelda…», «… / Nintendo Switch…» at 390 and 768, ar; en unchanged (start-aligned) |
+| «أزل» half covered by the next header cell at 768 (four products) | the well flexes (`flex: 0 1 96px`), the key `flex: none` | every key inside its own cell, hit share 1.00 at 360/390/768/800/900/1023/1024/1440, ar and en, 2 and 4 products (`compare-probe.mjs`) |
+| Icon (magnifying glass, scales) in the stack empty states | no `icon`: the kit's mascot (search zero, compare empty, filters zero) | the mascot in all three, ar/en, 390/1440 |
+| Focused card under the compare tray at 1024/1440 | `--catalog-dock-inset` (24px from 1024) in the scroll padding, +12px air | padding 92px; 0 of 545 Tab stops under the dock (/platform/xbox, /search, /c/games, /platform/nintendo at 1024–1440; 390, 768) |
+
+Known after the fixes: the other clamped Latin names set with `latinName` (the kit's `ProductCard` and `UsedUnitCard`
+titles, the shell's mega-menu feature) have the same Chromium ellipsis clip the compare names had — asked of their owners. Tools: `…/scratchpad/work/Q-fix-pages-browse/`
+(compare-probe, traycover, empty-shots, clamp); screens: `…/scratchpad/ux/after/Q-fix-pages-browse/`.

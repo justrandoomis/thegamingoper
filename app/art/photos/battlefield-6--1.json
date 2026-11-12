@@ -1,70 +1,62 @@
 {
   "key": "battlefield-6--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1067,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6669,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/battlefield-6/1-240.24e43526.avif"
+        "src": "/products/battlefield-6/1-240.47700187.avif"
       },
       {
         "w": 480,
-        "src": "/products/battlefield-6/1-480.fd611f60.avif"
+        "src": "/products/battlefield-6/1-480.65750f1d.avif"
       },
       {
         "w": 720,
-        "src": "/products/battlefield-6/1-720.7e0d4455.avif"
+        "src": "/products/battlefield-6/1-720.09a9353b.avif"
       },
       {
         "w": 960,
-        "src": "/products/battlefield-6/1-960.6457174b.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/battlefield-6/1-1440.c047ee1a.avif"
+        "src": "/products/battlefield-6/1-960.8554b69c.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/battlefield-6/1-240.d67979f6.webp"
+        "src": "/products/battlefield-6/1-240.784c85ff.webp"
       },
       {
         "w": 480,
-        "src": "/products/battlefield-6/1-480.40910ce0.webp"
+        "src": "/products/battlefield-6/1-480.b4294279.webp"
       },
       {
         "w": 720,
-        "src": "/products/battlefield-6/1-720.c72d7203.webp"
+        "src": "/products/battlefield-6/1-720.363035b0.webp"
       },
       {
         "w": 960,
-        "src": "/products/battlefield-6/1-960.572d975f.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/battlefield-6/1-1440.9967c227.webp"
+        "src": "/products/battlefield-6/1-960.fc7d506b.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/battlefield-6/1-1200.e9ee5902.jpg",
-    "width": 1200,
-    "height": 1200,
+    "src": "/products/battlefield-6/1-1067.1d0bfbde.jpg",
+    "width": 1067,
+    "height": 1600,
     "type": "image/jpeg"
   },
-  "placeholder": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJQBjPgeOrsz+ZQ0AYPYGLPlnP+rVQAP3uixup43VQE/D9TiG/RSYpQ4YKNrTd2YMGWeZPbW72MHvyyQHk3dHfogA5QrYLeG6ds18QoE5wpe9TJfuZ0HA+dAjRAGsVuTIfTg2jYO6H5pXDdwAAAA==",
-  "dominant": "#261b16",
+  "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACwAwCdASoNABQAPxFysFAsJqSisAgBgCIJQBfnA9EiETA8wXDAAAD4ArNUoq3lMCx2Dhkb0g1yAJXZUjqWEL+lyXMU09YV84FSPq2OcYZvtM5D3m9hQoAA",
+  "dominant": "#97a8a8",
   "transparent": false,
   "background": null,
   "kind": "box-art",
   "credit": "Electronic Arts",
   "source": {
-    "url": "https://store-images.s-microsoft.com/image/apps.8290.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.d19697e7-b1c1-4200-9327-5f3640f65b75",
+    "url": "https://store-images.s-microsoft.com/image/apps.65490.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.c65ba007-7378-497e-b934-101230f24e82",
     "page": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3"
   },
-  "input": "a398094db422a360"
+  "input": "81b29d075e51c543"
 }

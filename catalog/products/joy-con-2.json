@@ -85,7 +85,7 @@
   "variants": [
     {
       "sku": "JC2-LBLUE-LRED",
-      "title": { "ar": "Joy-Con 2 — أزرق فاتح / أحمر فاتح", "en": "Joy-Con 2 — Light Blue / Light Red", "ckb": "Joy-Con 2 — شینی کاڵ / سووری کاڵ" },
+      "title": { "ar": "أزرق فاتح / أحمر فاتح", "en": "Light Blue / Light Red", "ckb": "شینی کاڵ / سووری کاڵ" },
       "options": { "color": "Light Blue / Light Red" },
       "barcodes": ["0045496885892"],
       "isDefault": true,
@@ -94,7 +94,7 @@
     },
     {
       "sku": "JC2-LPURPLE-LGREEN",
-      "title": { "ar": "Joy-Con 2 — بنفسجي فاتح / أخضر فاتح", "en": "Joy-Con 2 — Light Purple / Light Green", "ckb": "Joy-Con 2 — مۆری کاڵ / سەوزی کاڵ" },
+      "title": { "ar": "بنفسجي فاتح / أخضر فاتح", "en": "Light Purple / Light Green", "ckb": "مۆری کاڵ / سەوزی کاڵ" },
       "options": { "color": "Light Purple / Light Green" },
       "barcodes": ["0045496886509"],
       "isDefault": false,
@@ -103,7 +103,7 @@
     },
     {
       "sku": "JC2-BLUE-LYELLOW",
-      "title": { "ar": "Joy-Con 2 — أزرق / أصفر فاتح", "en": "Joy-Con 2 — Blue / Light Yellow", "ckb": "Joy-Con 2 — شین / زەردی کاڵ" },
+      "title": { "ar": "أزرق / أصفر فاتح", "en": "Blue / Light Yellow", "ckb": "شین / زەردی کاڵ" },
       "options": { "color": "Blue / Light Yellow" },
       "barcodes": ["0045496886295"],
       "isDefault": false,

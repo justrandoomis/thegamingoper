@@ -170,9 +170,9 @@
     {
       "sku": "NS2-STD",
       "title": {
-        "ar": "Nintendo Switch 2 — النسخة الدولية",
-        "en": "Nintendo Switch 2 — international model",
-        "ckb": "Nintendo Switch 2 — مۆدێلی نێودەوڵەتی"
+        "ar": "النسخة الدولية",
+        "en": "International model",
+        "ckb": "مۆدێلی نێودەوڵەتی"
       },
       "options": { "edition": "Standard", "storage": "256GB", "color": "Black, Light Blue / Light Red Joy-Con 2" },
       "modelNumber": "BEE-001",
@@ -188,9 +188,9 @@
     {
       "sku": "NS2-STD-RB",
       "title": {
-        "ar": "Nintendo Switch 2 — نسخة البطارية القابلة للاستبدال (أوروبا والخليج)",
-        "en": "Nintendo Switch 2 — user-replaceable battery version (Europe & Gulf)",
-        "ckb": "Nintendo Switch 2 — وەشانی پاتریی گۆڕاو (ئەوروپا و کەنداو)"
+        "ar": "نسخة البطارية القابلة للاستبدال (أوروبا والخليج)",
+        "en": "User-replaceable battery version (Europe & Gulf)",
+        "ckb": "وەشانی پاتریی گۆڕاو (ئەوروپا و کەنداو)"
       },
       "options": { "edition": "Standard", "storage": "256GB", "battery": "User-replaceable" },
       "modelNumber": "BEE-001(-01)",

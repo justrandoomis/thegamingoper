@@ -811,8 +811,16 @@ export async function exportVariantsCsv(db: Db, actor: Actor, filters: ProductFi
           .where(sql`${variants.productId} IN (SELECT value FROM json_each(${json}))`)
       : [];
   const variantIds = rows.map((row) => row.variant.id);
-  // [P] cost data: selected only for the holders of the permission.
-  const costs = (withCost || withMargin) && variantIds.length > 0 ? await db.select({ variantId: variantCosts.variantId, landed: variantCosts.landedCostIqd }).from(variantCosts).where(inArray(variantCosts.variantId, variantIds)) : [];
+  // [P] cost data: selected only for the holders of the permission. The ids go in as ONE json_each parameter, like the
+  // product ids above: an inArray() binds one parameter per variant, and D1 refuses more than 100 (the full export of
+  // 245 variants answered 500 — acceptance 2026-11-12).
+  const costs =
+    (withCost || withMargin) && variantIds.length > 0
+      ? await db
+          .select({ variantId: variantCosts.variantId, landed: variantCosts.landedCostIqd })
+          .from(variantCosts)
+          .where(sql`${variantCosts.variantId} IN (SELECT value FROM json_each(${JSON.stringify(variantIds)}))`)
+      : [];
   const costOf = new Map(costs.map((row) => [row.variantId, row.landed]));
   const order = new Map(ids.map((id, index) => [id, index]));
   rows.sort((a, b) => (order.get(a.productId) ?? 0) - (order.get(b.productId) ?? 0) || a.variant.sort - b.variant.sort);

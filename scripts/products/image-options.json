@@ -35,5 +35,7 @@
   "nintendo-switch-2-carrying-case--5": { "crop": [0.125, 0, 0.125, 0], "why": "The photo is pillarboxed: 150 px white bars on both sides of a dark 900 px photo." },
   "seagate-storage-expansion-card--4": { "crop": [0, 0, 0.14, 0], "why": "White background shows in a slanted 131–142 px strip right of the console; cropped just inside it (148 px) so no white sliver remains." },
   "nintendo-switch-2--4": { "crop": [0, 0.22, 0, 0.22], "why": "The tabletop scene fills only the middle 47% of a 2000 px white square; the console and Joy-Con are cropped by the left and right edges, so it stays opaque, without the empty top and bottom." },
-  "playstation-5-slim--5": { "crop": [0.275, 0, 0.275, 0], "why": "An opaque white 900 px photo sits inside a 2000 px transparent canvas, so it was drawn as a hard white rectangle; cropped to the photo it is treated as an opaque photo on white (framed, rounded)." }
+  "playstation-5-slim--5": { "crop": [0.275, 0, 0.275, 0], "why": "An opaque white 900 px photo sits inside a 2000 px transparent canvas, so it was drawn as a hard white rectangle; cropped to the photo it is treated as an opaque photo on white (framed, rounded)." },
+
+  "playstation-store-gift-card--1": { "opaque": true, "why": "The gift card's face (Sony's card faceplate, 1600×1067): a printed card fills its own rectangle by design, like box art — the storefront draws it as a card (84% of the well, --r-xs corners, design v2 §7.3 and §7.6), so there is no background to cut out." }
 }

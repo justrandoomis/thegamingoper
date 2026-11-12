@@ -181,35 +181,35 @@
   "images": [
     {
       "key": "xbox-gift-card--1",
-      "file": ".cache/product-images/xbox-gift-card/1.webp",
-      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Store-Xbox-Gift-Card?scl=1&fmt=png-alpha",
-      "sourcePage": "https://www.microsoft.com/en-us/p/xbox-gift-card-digital-code/cfq7ttc0k63h",
-      "kind": "hero",
-      "alt": {
-        "ar": "بطاقة Xbox Gift Card الرقمية الخضراء مع شعار Xbox",
-        "en": "Green Xbox digital gift card with the Xbox logo",
-        "ckb": "کارتی دیجیتاڵی سەوزی Xbox لەگەڵ هێمای Xbox"
-      },
-      "credit": "Microsoft (Xbox)",
-      "width": 1555,
-      "height": 1555,
-      "transparent": true
-    },
-    {
-      "key": "xbox-gift-card--2",
-      "file": ".cache/product-images/xbox-gift-card/2.png",
+      "file": ".cache/product-images/xbox-gift-card/1.png",
       "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/en-CP-GiftCards-Refresh-Xbox?fmt=png-alpha&scl=1&bfc=off",
       "sourcePage": "https://www.microsoft.com/en-us/store/b/gift-cards",
-      "kind": "detail",
+      "kind": "hero",
       "alt": {
-        "ar": "تصميم بطاقة Xbox مكتوب عليها GIFT CARD",
-        "en": "Xbox card design labelled GIFT CARD",
-        "ckb": "دیزاینی کارتی Xbox کە GIFT CARDی لەسەر نووسراوە"
+        "ar": "وجه بطاقة Xbox الخضراء مع شعار Xbox وعبارة GIFT CARD",
+        "en": "Green Xbox gift card face with the Xbox logo and the words GIFT CARD",
+        "ckb": "ڕووی کارتی سەوزی Xbox لەگەڵ هێمای Xbox و نووسینی GIFT CARD"
       },
       "credit": "Microsoft (Xbox)",
       "width": 1668,
       "height": 940,
       "transparent": false
+    },
+    {
+      "key": "xbox-gift-card--2",
+      "file": ".cache/product-images/xbox-gift-card/2.webp",
+      "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/b00-Store-Xbox-Gift-Card?scl=1&fmt=png-alpha",
+      "sourcePage": "https://www.microsoft.com/en-us/p/xbox-gift-card-digital-code/cfq7ttc0k63h",
+      "kind": "detail",
+      "alt": {
+        "ar": "رسم بطاقة Xbox Gift Card الرقمية الخضراء مع شعار Xbox",
+        "en": "Green Xbox digital gift card artwork with the Xbox logo",
+        "ckb": "وێنەی کارتی دیجیتاڵی سەوزی Xbox لەگەڵ هێمای Xbox"
+      },
+      "credit": "Microsoft (Xbox)",
+      "width": 1555,
+      "height": 1555,
+      "transparent": true
     }
   ],
   "sources": [

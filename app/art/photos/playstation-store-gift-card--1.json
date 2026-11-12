@@ -2,69 +2,69 @@
   "key": "playstation-store-gift-card--1",
   "view": "hero",
   "width": 1600,
-  "height": 1600,
-  "aspect": 1,
+  "height": 1067,
+  "aspect": 1.4995,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-store-gift-card/1-240.ce016b0a.avif"
+        "src": "/products/playstation-store-gift-card/1-240.db243307.avif"
       },
       {
         "w": 480,
-        "src": "/products/playstation-store-gift-card/1-480.1fc54220.avif"
+        "src": "/products/playstation-store-gift-card/1-480.3557ee2f.avif"
       },
       {
         "w": 720,
-        "src": "/products/playstation-store-gift-card/1-720.d9f76bf1.avif"
+        "src": "/products/playstation-store-gift-card/1-720.224c1592.avif"
       },
       {
         "w": 960,
-        "src": "/products/playstation-store-gift-card/1-960.85c32e2d.avif"
+        "src": "/products/playstation-store-gift-card/1-960.bbd180d4.avif"
       },
       {
         "w": 1440,
-        "src": "/products/playstation-store-gift-card/1-1440.ea70a4bf.avif"
+        "src": "/products/playstation-store-gift-card/1-1440.a2508ded.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-store-gift-card/1-240.ddda857d.webp"
+        "src": "/products/playstation-store-gift-card/1-240.aa01e86e.webp"
       },
       {
         "w": 480,
-        "src": "/products/playstation-store-gift-card/1-480.2c444566.webp"
+        "src": "/products/playstation-store-gift-card/1-480.d362e718.webp"
       },
       {
         "w": 720,
-        "src": "/products/playstation-store-gift-card/1-720.3d217904.webp"
+        "src": "/products/playstation-store-gift-card/1-720.c6cdc93f.webp"
       },
       {
         "w": 960,
-        "src": "/products/playstation-store-gift-card/1-960.13d75121.webp"
+        "src": "/products/playstation-store-gift-card/1-960.7f930f4a.webp"
       },
       {
         "w": 1440,
-        "src": "/products/playstation-store-gift-card/1-1440.e95137ac.webp"
+        "src": "/products/playstation-store-gift-card/1-1440.3495325c.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/playstation-store-gift-card/1-1200.84a545d3.jpg",
+    "src": "/products/playstation-store-gift-card/1-1200.0a3aa2f9.jpg",
     "width": 1200,
-    "height": 1200,
+    "height": 800,
     "type": "image/jpeg"
   },
-  "placeholder": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAQBACdASoUABQAPxFytFKsJiUisBgIAYAiCWIAvzgQ67ZjgSKz2vC2DAD+53C+xLxGWsZ3g1yY0++BJn/NFZiEo7HpchmlZbZl08ehO/CtMIxDmlAtNWPSw3DXS9m5mXAAAA==",
-  "dominant": "#064798",
+  "placeholder": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAACQAwCdASoUAA0APxFysFAsJqSisAgBgCIJbAC06CIgT70HlzUwAP7s2SSnsal7Qbn40rZDr/hWutmoap74M7IZ+3OImBQSmQFMhZ+SZ+CGMmBOc9bQZ5bk0vO0rrEdsLOV66jlzb1zOIXf3cmTvQcMEcI+0Aw5Kln1RIJFpWtPibBBNyuVgAAA",
+  "dominant": "#010004",
   "transparent": false,
   "background": null,
   "kind": "hero",
   "credit": "Sony Interactive Entertainment",
   "source": {
-    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps-store-credit-image-block-01-en-21oct21?$1600px$",
-    "page": "https://www.playstation.com/en-ae/playstation-gift-cards/"
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/gift-card-faceplate-gifting-image-block-en-01-07july23?$1600px$",
+    "page": "https://www.playstation.com/en-us/playstation-gift-cards/"
   },
-  "input": "250663634c67b9a0"
+  "input": "a7de1554f5b3bc9c"
 }

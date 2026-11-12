@@ -268,7 +268,7 @@ function WindowForm({ sale }: { sale: FlashDetail }) {
       <input type="hidden" name="intent" value="update" />
       <div className="prm-grid">
         <TextField name="nameAr" label={t("flash.f.nameAr")} defaultValue={sale.name.ar} required maxLength={120} error={errors.nameAr} />
-        <TextField name="nameEn" label={t("flash.f.nameEn")} defaultValue={sale.name.en ?? ""} maxLength={120} dir="ltr" error={errors.nameEn} />
+        <TextField name="nameEn" label={t("flash.f.nameEn")} defaultValue={sale.name.en ?? ""} maxLength={120} ltr lang="en" error={errors.nameEn} />
         <TextField name="startsAt" type="datetime-local" label={t("coupons.f.startsAt")} hint={t("common.baghdadTime")} defaultValue={toBaghdadInput(sale.startsAt)} required error={errors.startsAt} />
         <TextField name="endsAt" type="datetime-local" label={t("coupons.f.endsAt")} hint={t("flash.f.endsHint", { days: FLASH.maxDays })} defaultValue={toBaghdadInput(sale.endsAt)} required error={errors.endsAt} />
       </div>

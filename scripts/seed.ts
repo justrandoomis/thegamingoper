@@ -29,6 +29,7 @@ import { pathToFileURL } from "node:url";
 import { getPlatformProxy } from "wrangler";
 import { createDb, type Db } from "~/server/db/drizzle.server";
 import { loadDemoCatalog, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
+import { seedDemoDigitalCodes } from "~/server/db/seed/demo/codes";
 import { recordWrites, statementToSql, toSqlScript, type RecordedStatement } from "~/server/db/seed/demo/sql";
 import { seedReference } from "~/server/db/seed/reference";
 import { mapDbError } from "~/server/db/tx.server";
@@ -174,8 +175,13 @@ async function seedLocal(args: Args): Promise<number> {
       console.error("The local database has no schema yet. Run `npm run db:migrate` (or `npm run db:reset`) first.");
       return 1;
     }
-    const demo = await runSeeds(createDb(d1), Date.now(), args.overwrite);
+    const now = Date.now();
+    const demo = await runSeeds(createDb(d1), now, args.overwrite);
     if (!demo) return 1;
+    // Demo digital codes need this environment's DATA_KEY (they are stored encrypted), so they are not part of the
+    // replayable seed above and never of the --sql file: insert-if-missing, so a second run writes nothing.
+    const codes = await seedDemoDigitalCodes(createDb(d1), now, { dataKey: proxy.env.DATA_KEY });
+    console.log(`Demo digital codes: ${JSON.stringify(codes)}.`);
     printCounts("Rows in the local database (tables the demo seed writes):", await countRows(d1, Object.keys(demo.rows)), demo.changed);
     return 0;
   } finally {

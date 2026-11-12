@@ -19,8 +19,8 @@ export default defineMessages({
     brandHome: "طمطم، الصفحة الرئيسية",
     demo: {
       footer: "المتجر في وضع العرض التجريبي: الأسعار والمخزون وسعر صرف الدولار بيانات مؤقتة للعرض، والطلبات التي تُرسل الآن تُعلَّم طلباتٍ تجريبية.",
+      // the checkout bar's tag at every width (the glossary's term; no short «تجريبي»)
       order: "طلب تجريبي",
-      orderShort: "تجريبي",
       orderHint: "طلب تجريبي: لن يُشحن الطلب ولن يُحصَّل أي مبلغ.",
     },
     links: {
@@ -69,9 +69,23 @@ export default defineMessages({
       accessoriesColumn: "الإكسسوارات",
       gamesColumn: "الألعاب",
       cards: "البطاقات والخدمات",
+      // one string per platform (v2 §9): «الأجهزة المحمولة» is a noun phrase, a template doubled it; {name} is for a
+      // platform the design system does not name
       allDevices: "كل أجهزة {name}",
+      allDevicesOf: {
+        nintendo: "كل أجهزة Nintendo",
+        playstation: "كل أجهزة PlayStation",
+        xbox: "كل أجهزة Xbox",
+        handheld: "كل الأجهزة المحمولة",
+      },
       allGames: "كل ألعاب {name}",
       usedOf: "أجهزة {name} المستعملة",
+      usedOfPlatform: {
+        nintendo: "أجهزة Nintendo المستعملة",
+        playstation: "أجهزة PlayStation المستعملة",
+        xbox: "أجهزة Xbox المستعملة",
+        handheld: "الأجهزة المحمولة المستعملة",
+      },
       empty: "لم ننشر منتجات لهذه المنصة بعد.",
     },
     search: {
@@ -170,7 +184,6 @@ export default defineMessages({
       aboutUs: "من نحن",
       accessibility: "إمكانية الوصول",
       contact: "تواصل معنا",
-      helpCentre: "مركز الدعم",
       pay: {
         cod: "الدفع عند الاستلام",
         wallet: "محفظة طمطم",
@@ -220,7 +233,6 @@ export default defineMessages({
     demo: {
       footer: "The store is in demo mode: prices, stock and the dollar rate are placeholder data, and orders sent now are marked as demo orders.",
       order: "Demo order",
-      orderShort: "Demo",
       orderHint: "Demo order: it will not be shipped and nothing will be charged.",
     },
     links: {
@@ -265,8 +277,20 @@ export default defineMessages({
       gamesColumn: "Games",
       cards: "Cards and services",
       allDevices: "All {name} consoles",
+      allDevicesOf: {
+        nintendo: "All Nintendo consoles",
+        playstation: "All PlayStation consoles",
+        xbox: "All Xbox consoles",
+        handheld: "All handheld PCs",
+      },
       allGames: "All {name} games",
       usedOf: "Used {name} devices",
+      usedOfPlatform: {
+        nintendo: "Used Nintendo devices",
+        playstation: "Used PlayStation devices",
+        xbox: "Used Xbox devices",
+        handheld: "Used handheld PCs",
+      },
       empty: "No products are published for this platform yet.",
     },
     search: {
@@ -357,7 +381,6 @@ export default defineMessages({
       aboutUs: "About us",
       accessibility: "Accessibility",
       contact: "Contact us",
-      helpCentre: "Support centre",
       pay: {
         cod: "Cash on delivery",
         wallet: "TamTam wallet",
@@ -402,11 +425,11 @@ export default defineMessages({
   },
   ckb: {
     skip: "بازدان بۆ ناوەڕۆک",
-    brandHome: "تەمتەم، پەڕەی سەرەکی",
+    // the brand as in the logo, «طمطم», until the owner decides the Sorani spelling (v2 §9 glossary, §13 item 12)
+    brandHome: "طمطم، پەڕەی سەرەکی",
     demo: {
       footer: "فرۆشگاکە لە دۆخی نمایشی تاقیکاریدایە: نرخ و کۆگا و نرخی دۆلار داتای کاتین بۆ نمایش، و ئەو داواکارییانەی ئێستا دەنێردرێن وەک داواکاریی تاقیکاری نیشان دەکرێن.",
       order: "داواکاریی تاقیکاری",
-      orderShort: "تاقیکاری",
       orderHint: "داواکاریی تاقیکاری: داواکارییەکە نانێردرێت و هیچ پارەیەک وەرناگیرێت.",
     },
     links: {
@@ -451,8 +474,20 @@ export default defineMessages({
       gamesColumn: "یارییەکان",
       cards: "کارت و خزمەتگوزارییەکان",
       allDevices: "هەموو ئامێرەکانی {name}",
+      allDevicesOf: {
+        nintendo: "هەموو ئامێرەکانی Nintendo",
+        playstation: "هەموو ئامێرەکانی PlayStation",
+        xbox: "هەموو ئامێرەکانی Xbox",
+        handheld: "هەموو ئامێرە دەستییەکان",
+      },
       allGames: "هەموو یارییەکانی {name}",
       usedOf: "ئامێری بەکارهاتووی {name}",
+      usedOfPlatform: {
+        nintendo: "ئامێری بەکارهاتووی Nintendo",
+        playstation: "ئامێری بەکارهاتووی PlayStation",
+        xbox: "ئامێری بەکارهاتووی Xbox",
+        handheld: "ئامێرە دەستییە بەکارهاتووەکان",
+      },
       empty: "هێشتا هیچ بەرهەمێکمان بۆ ئەم پلاتفۆرمە بڵاو نەکردۆتەوە.",
     },
     search: {
@@ -499,7 +534,7 @@ export default defineMessages({
     },
     checkout: {
       back: "گەڕانەوە بۆ سەبەتە",
-      home: "تەمتەم، پەڕەی سەرەکی",
+      home: "طمطم، پەڕەی سەرەکی",
       help: "پشتگیری",
       steps: {
         label: "هەنگاوەکانی داواکاری",
@@ -529,7 +564,7 @@ export default defineMessages({
       line: "فرۆشگای یاری لە عێراق: ئامێر و یاری و پاشکۆ، نوێ و بەکارهاتوو. گەیاندن {fee} بۆ هەموو پارێزگاکان.",
       shop: "بازاڕکردن",
       support: "پشتگیری",
-      about: "دەربارەی تەمتەم",
+      about: "دەربارەی طمطم",
       payments: "ڕێگاکانی پارەدان",
       used: "بەکارهاتوو و پشکنراو",
       shipping: "ناردن و گەیاندن",
@@ -543,16 +578,15 @@ export default defineMessages({
       aboutUs: "دەربارەی ئێمە",
       accessibility: "دەستگەیشتن",
       contact: "پەیوەندیمان پێوە بکە",
-      helpCentre: "ناوەندی پشتگیری",
       pay: {
         cod: "پارەدان لە کاتی وەرگرتن",
-        wallet: "جزدانی تەمتەم",
+        wallet: "جزدانی طمطم",
         card: "گواستنەوە بۆ کارتی ماستەرکارد",
         zaincash: "زەین کاش",
       },
       payNote: "هەموو گواستنەوەیەک بە دەست پێداچوونەوەی بۆ دەکرێت پێش پشتڕاستکردنەوەی داواکاری.",
       preferences: "ڕێکخستنەکان",
-      rights: "© {year} تەمتەم گەیمز",
+      rights: "© {year} طمطم گەیمز",
       photos: "وێنەی بەرهەمەکان وێنەی فەرمیی کۆمپانیا دروستکەرەکانن.",
       legal: "زانیاریی فرۆشگا",
     },
@@ -578,9 +612,9 @@ export default defineMessages({
       help: "ناوەندی پشتگیری",
     },
     meta: {
-      titleTemplate: "{title} — تەمتەم",
-      siteName: "تەمتەم گەیمز",
-      defaultTitle: "تەمتەم گەیمز — ئامێر و یاری و پاشکۆ لە عێراق",
+      titleTemplate: "{title} — طمطم",
+      siteName: "طمطم گەیمز",
+      defaultTitle: "طمطم گەیمز — ئامێر و یاری و پاشکۆ لە عێراق",
       description: "Nintendo و PlayStation و Xbox و ئامێری دەستی، یاری و پاشکۆ، ئامێری بەکارهاتوو و گۆڕینەوە. گەیاندن {fee} بۆ هەموو پارێزگاکان.",
       notFound: "پەڕەکە نەدۆزرایەوە",
       error: "هەڵەیەک ڕوویدا",

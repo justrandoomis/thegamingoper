@@ -22,6 +22,17 @@ export function stepOf(search: string | URLSearchParams): Step {
 
 export const stepIndex = (step: Step): number => STEPS.indexOf(step);
 
+/**
+ * Where focus goes when the page shows `step`, having last shown `previous` (null: nothing yet): the new step's heading,
+ * or the field a refused «تابع» sends the shopper to (`requested`) — and nowhere when the step did not change. The first
+ * render leaves focus where the browser put it (the skip link and the checkout bar come first on Tab), and so does a
+ * second run of the same effect (React StrictMode runs a mount effect twice; any re-run is not a step change). Pure.
+ */
+export function stepFocusTarget<F extends string>(previous: Step | null, step: Step, requested: F | "heading" | null): F | "heading" | null {
+  if (previous === null || previous === step) return null;
+  return requested ?? "heading";
+}
+
 /** The checkout methods, in the order the payment step lists them. */
 export const PAYMENT_METHODS = ["cod", "wallet", "bank_transfer", "zaincash"] as const;
 export type CheckoutMethod = (typeof PAYMENT_METHODS)[number];

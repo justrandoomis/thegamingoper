@@ -13,10 +13,15 @@
  *     answers 404 for a product that does not exist; field errors read as staff should read them
  */
 import { crc32 } from "node:zlib";
-import { RouterContextProvider } from "react-router";
+import { createElement, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub, RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import catalogMessages from "~/i18n/messages/admin-catalog";
 import { makeT } from "~/i18n/translate";
+import type { Locale } from "~/lib/locales";
+import { SpecsEditor } from "~/routes/admin/catalog/components/SpecsEditor";
 import { action as categoriesAction, loader as categoriesLoader } from "~/routes/admin/catalog/category-tree";
 import { action as importAction } from "~/routes/admin/catalog/csv-import";
 import { action as detailsAction, loader as detailsLoader } from "~/routes/admin/catalog/editor-details";
@@ -28,7 +33,7 @@ import { loader as relatedLoader } from "~/routes/admin/catalog/editor-related";
 import { action as variantsAction, loader as variantsLoader } from "~/routes/admin/catalog/editor-variants";
 import { action as newProductAction } from "~/routes/admin/catalog/new-product";
 import { action as frameAction } from "~/routes/admin/catalog/product-editor";
-import { fieldErrorText } from "~/routes/admin/catalog/components/ui";
+import { fieldErrorText, inputDir, L10nFields } from "~/routes/admin/catalog/components/ui";
 import { loader as exportLoader } from "~/routes/admin/catalog/csv-export";
 import { loader as importLoader } from "~/routes/admin/catalog/csv-import";
 import { action as listAction, loader as listLoader } from "~/routes/admin/catalog/product-list";
@@ -148,6 +153,45 @@ describe("form helpers", () => {
     expect(baghdadInputToEpoch("2026-11-12T10:30")).toBe(Date.UTC(2026, 10, 12, 7, 30));
     expect(baghdadInputToEpoch("2026-07-01T00:00")).toBe(Date.UTC(2026, 5, 30, 21, 0));
     expect(baghdadInputToEpoch("12/11/2026")).toBeUndefined();
+  });
+});
+
+/** A component as the server renders it inside the admin, with the catalogue's strings, in the admin's language. */
+function render(node: () => ReactNode, locale: Locale): string {
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "admin", Component: () => node() }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: ["/admin"],
+      hydrationData: { loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui") }, page: { i18n: messagesFor(locale, "admin-catalog") } } },
+    }),
+  );
+}
+/** The opening tag of the input named `name`. */
+const inputTag = (html: string, name: string) => new RegExp(`<input[^>]*name="${name.replace(/\./g, "\\.")}"[^>]*>`).exec(html)?.[0] ?? "";
+
+describe("per-language fields keep their own direction (QA 2026-11-12)", () => {
+  // the kit's TextField dropped the `dir` it was given: «007 First Light» read «First Light 007» in the Arabic admin
+  test("a one-line field: English left to right from the server; Arabic and Sorani right to left from the first paint", () => {
+    for (const locale of ["ar", "en"] as const) {
+      const html = render(() => createElement(L10nFields, { name: "name", label: "name", value: { ar: "007 فيرست لايت", en: "007 First Light", ckb: "" } }), locale);
+      expect(inputTag(html, "name.en"), locale).toMatch(/dir="ltr"/);
+      for (const code of ["ar", "ckb"]) {
+        expect(inputTag(html, `name.${code}`), `${locale} ${code}`).toContain("[direction:rtl]");
+        expect(inputTag(html, `name.${code}`), `${locale} ${code}`).not.toMatch(/dir="ltr"/);
+      }
+      // the spec sheet on the same page
+      const specs = render(() => createElement(SpecsEditor, { rows: [{ key: "storage", label: { ar: "السعة", en: "Storage" }, value: { ar: "1 تيرابايت", en: "1 TB" } }], error: () => undefined }), locale);
+      expect(inputTag(specs, "specs.0.label.en"), locale).toMatch(/dir="ltr"/);
+      expect(inputTag(specs, "specs.0.value.ar"), locale).toContain("[direction:rtl]");
+      expect(inputTag(specs, "specs.0.value.ckb"), locale).toContain("[direction:rtl]");
+    }
+  });
+
+  test("inputDir: the attribute too, once the input exists in the browser", () => {
+    expect(inputDir("ltr")).toMatchObject({ dir: "ltr", ltr: true });
+    const attributes = new Map<string, string>();
+    (inputDir("rtl").ref as (node: unknown) => void)({ setAttribute: (name: string, value: string) => attributes.set(name, value) });
+    expect(attributes.get("dir")).toBe("rtl");
   });
 });
 

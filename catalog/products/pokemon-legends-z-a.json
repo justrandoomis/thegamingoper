@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-POKEMON-LEGENDS-ZA",
-      "title": { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (نسخة فيزيائية)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (physical)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (کۆپیی فیزیکی)" },
+      "title": { "ar": "نسخة فيزيائية · Nintendo Switch 2 Edition", "en": "Nintendo Switch 2 Edition (physical)", "ckb": "کۆپیی فیزیکی · Nintendo Switch 2 Edition" },
       "options": { "edition": "Nintendo Switch 2 Edition", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905989"],
       "isDefault": true,
@@ -54,7 +54,7 @@
     },
     {
       "sku": "NSG-POKEMON-LEGENDS-ZA",
-      "title": { "ar": "Pokémon Legends: Z-A — نسخة Nintendo Switch (فيزيائية)", "en": "Pokémon Legends: Z-A — Nintendo Switch version (physical)", "ckb": "Pokémon Legends: Z-A — وەشانی Nintendo Switch (فیزیکی)" },
+      "title": { "ar": "نسخة Nintendo Switch (فيزيائية)", "en": "Nintendo Switch version (physical)", "ckb": "وەشانی Nintendo Switch (فیزیکی)" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496905309"],
       "isDefault": false,
@@ -67,7 +67,7 @@
     },
     {
       "sku": "NS2G-POKEMON-LEGENDS-ZA-MEGA",
-      "title": { "ar": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (نسخة فيزيائية)", "en": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (physical)", "ckb": "Pokémon Legends: Z-A – Nintendo Switch 2 Edition + Mega Dimension (کۆپیی فیزیکی)" },
+      "title": { "ar": "نسخة فيزيائية · Nintendo Switch 2 Edition + Mega Dimension", "en": "Nintendo Switch 2 Edition + Mega Dimension (physical)", "ckb": "کۆپیی فیزیکی · Nintendo Switch 2 Edition + Mega Dimension" },
       "options": { "edition": "Nintendo Switch 2 Edition + Mega Dimension", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496907907"],
       "isDefault": false,

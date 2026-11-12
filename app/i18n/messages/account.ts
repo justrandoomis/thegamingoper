@@ -1,4 +1,12 @@
 import { defineMessages } from "../translate";
+import checkout from "./checkout";
+
+/**
+ * The checkout's own sentences for the delivery fields (checkout:fields.*): the address book says the same about the
+ * same fields (`addresses.fields`, QA 2026-11-12 — one address, one set of words). Only the sentences whose number
+ * follows a different limit are written here: Arabic counts «120 حرفاً» but «200 حرف».
+ */
+const delivery = { ar: checkout.ar.fields, en: checkout.en.fields, ckb: checkout.ckb.fields };
 
 /**
  * "account" — sign-in, sign-up, password reset, the account pages (/account/*) and the favourites page (/wishlist).
@@ -350,6 +358,16 @@ export default defineMessages({
       deleted: "حذفنا العنوان.",
       defaultSet: "صار هذا عنوانك الافتراضي.",
       fee: "التوصيل {fee} لكل المحافظات.",
+      /** What is wrong with a field (components/address-checks.ts), in the checkout's words; {n} is the limit. */
+      fields: {
+        label: { too_long: "اسم العنوان طويل جداً: {n} حرفاً على الأكثر." },
+        recipientName: { too_short: "اكتب اسم المستلم كاملاً.", too_long: delivery.ar.contactName.too_long },
+        phone: delivery.ar.phone,
+        governorateId: delivery.ar.governorateId,
+        areaText: { ...delivery.ar.areaText, too_long: "اسم المنطقة طويل جداً: {n} حرفاً على الأكثر." },
+        addressText: delivery.ar.addressText,
+        notes: delivery.ar.notes,
+      },
     },
     devices: {
       title: "أجهزتي",
@@ -568,7 +586,7 @@ export default defineMessages({
       details: "التفاصيل",
       detailsHint: "اختياري للنسخة والحذف، ومطلوب للتصحيح.",
       submit: "أرسل الطلب",
-      sent: "استلمنا طلبك {ref}. يتواصل معك موظف للتحقق من هويتك قبل أي إجراء.",
+      sent: "استلمنا طلبك {ref}. يتحقق موظف من هويتك قبل أي إجراء، وتجد حالة الطلب هنا.",
       listTitle: "طلباتك",
       listEmpty: "لا طلبات بعد.",
       status: { open: "استلمناه", verifying: "قيد التحقق", in_progress: "قيد التنفيذ", completed: "اكتمل", rejected: "رُفض" },
@@ -936,6 +954,15 @@ export default defineMessages({
       deleted: "We deleted the address.",
       defaultSet: "This is now your default address.",
       fee: "Delivery is {fee} to every governorate.",
+      fields: {
+        label: { too_long: "The address name is too long: {n} characters at most." },
+        recipientName: { too_short: "Write the recipient's full name.", too_long: delivery.en.contactName.too_long },
+        phone: delivery.en.phone,
+        governorateId: delivery.en.governorateId,
+        areaText: delivery.en.areaText,
+        addressText: delivery.en.addressText,
+        notes: delivery.en.notes,
+      },
     },
     devices: {
       title: "My devices",
@@ -1154,7 +1181,7 @@ export default defineMessages({
       details: "Details",
       detailsHint: "Optional for a copy and a deletion, needed for a correction.",
       submit: "Send the request",
-      sent: "We received your request {ref}. A staff member will contact you to confirm who you are before anything is done.",
+      sent: "We received your request {ref}. A staff member confirms who you are before anything is done; its status is shown here.",
       listTitle: "Your requests",
       listEmpty: "No requests yet.",
       status: { open: "Received", verifying: "Confirming who you are", in_progress: "In progress", completed: "Completed", rejected: "Declined" },
@@ -1522,6 +1549,15 @@ export default defineMessages({
       deleted: "ناونیشانەکەمان سڕییەوە.",
       defaultSet: "ئێستا ئەمە ناونیشانی بنەڕەتیتە.",
       fee: "گەیاندن {fee} بۆ هەموو پارێزگاکان.",
+      fields: {
+        label: { too_long: "ناوی ناونیشانەکە زۆر درێژە: لە {n} پیت زیاتر نەبێت." },
+        recipientName: { too_short: "ناوی تەواوی وەرگر بنووسە.", too_long: delivery.ckb.contactName.too_long },
+        phone: delivery.ckb.phone,
+        governorateId: delivery.ckb.governorateId,
+        areaText: delivery.ckb.areaText,
+        addressText: delivery.ckb.addressText,
+        notes: delivery.ckb.notes,
+      },
     },
     devices: {
       title: "ئامێرەکانم",
@@ -1740,7 +1776,7 @@ export default defineMessages({
       details: "وردەکاری",
       detailsHint: "بۆ کۆپی و سڕینەوە دڵخوازە، بۆ ڕاستکردنەوە پێویستە.",
       submit: "داواکارییەکە بنێرە",
-      sent: "داواکارییەکەتمان وەرگرت {ref}. کارمەندێک پەیوەندیت پێوە دەکات بۆ پشتڕاستکردنەوەی ناسنامەکەت پێش هەر کارێک.",
+      sent: "داواکارییەکەتمان وەرگرت {ref}. کارمەندێک پێش هەر کارێک ناسنامەکەت پشتڕاست دەکاتەوە، و دۆخی داواکارییەکە لێرە دەبینیت.",
       listTitle: "داواکارییەکانت",
       listEmpty: "هێشتا هیچ داواکارییەک نییە.",
       status: { open: "وەرگیرا", verifying: "پشتڕاستکردنەوەی ناسنامە", in_progress: "لە جێبەجێکردندایە", completed: "تەواو بوو", rejected: "ڕەتکرایەوە" },

@@ -10,7 +10,7 @@ import type { L10n } from "~/lib/locales";
 import { TextField } from "~/ui/Field";
 import { IconKey } from "~/ui/IconKey";
 import { Key } from "~/ui/Key";
-import { useCatalogT } from "./ui";
+import { inputDir, useCatalogT } from "./ui";
 
 export type SpecRowValue = { key: string; label: L10n; value: L10n };
 
@@ -32,8 +32,8 @@ export function SpecsEditor({ rows, error, resetKey }: { rows: readonly SpecRowV
           <li key={spec.uid} className="grid gap-2 border-b border-line pb-3">
             <div className="grid items-end gap-2 md:grid-cols-[10rem_minmax(0,1fr)_minmax(0,2fr)_auto]">
               <TextField name={`specs.${index}.key`} label={t("editor.specKey")} defaultValue={spec.key} ltr maxLength={48} error={error(`specs.${index}.key`)} />
-              <TextField name={`specs.${index}.label.ar`} label={`${t("editor.specLabel")} · ${t("common.ar")}`} defaultValue={spec.label.ar} dir="rtl" error={error(`specs.${index}.label.ar`)} />
-              <TextField name={`specs.${index}.value.ar`} label={`${t("editor.specValue")} · ${t("common.ar")}`} defaultValue={spec.value.ar} dir="rtl" maxLength={500} error={error(`specs.${index}.value.ar`)} />
+              <TextField name={`specs.${index}.label.ar`} label={`${t("editor.specLabel")} · ${t("common.ar")}`} defaultValue={spec.label.ar} lang="ar" error={error(`specs.${index}.label.ar`)} {...inputDir("rtl")} />
+              <TextField name={`specs.${index}.value.ar`} label={`${t("editor.specValue")} · ${t("common.ar")}`} defaultValue={spec.value.ar} lang="ar" maxLength={500} error={error(`specs.${index}.value.ar`)} {...inputDir("rtl")} />
               <IconKey icon="trash" label={`${t("editor.removeSpec")} ${spec.key}`} variant="quiet" onClick={() => setSpecs((current) => current.filter((row) => row.uid !== spec.uid))} />
             </div>
             <details className="group">
@@ -46,10 +46,10 @@ export function SpecsEditor({ rows, error, resetKey }: { rows: readonly SpecRowV
                 <Icon name="caret-down" size={14} className="group-open:rotate-180" />
               </summary>
               <div className="grid gap-2 pt-1 md:grid-cols-2">
-                <TextField name={`specs.${index}.label.en`} label={`${t("editor.specLabel")} · ${t("common.en")}`} defaultValue={spec.label.en ?? ""} dir="ltr" />
-                <TextField name={`specs.${index}.value.en`} label={`${t("editor.specValue")} · ${t("common.en")}`} defaultValue={spec.value.en ?? ""} dir="ltr" maxLength={500} />
-                <TextField name={`specs.${index}.label.ckb`} label={`${t("editor.specLabel")} · ${t("common.ckb")}`} defaultValue={spec.label.ckb ?? ""} dir="rtl" />
-                <TextField name={`specs.${index}.value.ckb`} label={`${t("editor.specValue")} · ${t("common.ckb")}`} defaultValue={spec.value.ckb ?? ""} dir="rtl" maxLength={500} />
+                <TextField name={`specs.${index}.label.en`} label={`${t("editor.specLabel")} · ${t("common.en")}`} defaultValue={spec.label.en ?? ""} lang="en" {...inputDir("ltr")} />
+                <TextField name={`specs.${index}.value.en`} label={`${t("editor.specValue")} · ${t("common.en")}`} defaultValue={spec.value.en ?? ""} lang="en" maxLength={500} {...inputDir("ltr")} />
+                <TextField name={`specs.${index}.label.ckb`} label={`${t("editor.specLabel")} · ${t("common.ckb")}`} defaultValue={spec.label.ckb ?? ""} lang="ckb" {...inputDir("rtl")} />
+                <TextField name={`specs.${index}.value.ckb`} label={`${t("editor.specValue")} · ${t("common.ckb")}`} defaultValue={spec.value.ckb ?? ""} lang="ckb" maxLength={500} {...inputDir("rtl")} />
               </div>
             </details>
           </li>

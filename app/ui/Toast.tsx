@@ -13,9 +13,9 @@ import { createPortal } from "react-dom";
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useT } from "~/i18n/react";
 import { dematerialize, durations, easings, getMotionTier, materialize, springTiming } from "~/motion";
-import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import { useOverlayRoot } from "./Dialog";
+import { FactLine } from "./FactLine";
 import { IconKey } from "./IconKey";
 import { Key } from "./Key";
 import { Render } from "./Stage";
@@ -30,8 +30,10 @@ import { toastStore, useToasts, type Toast, type ToastKind } from "./toast-store
  *
  * Design System v2 §4.16: an OPAQUE graphite toast (--band; dark #2A2C32), --r-lg, --e-float, at least 64px: a 48px
  * thumbnail on the product ground (or the kind's icon), a 14/600 title with a 16px ok check («أُضيف إلى السلة»), one
- * 13px line (product · variant), and the actions — on a cart toast «عرض السلة» as a 40px outlined button and «تراجع» as a
- * ghost button — and a close button. Placement: on phones and tablets above the tab bar or the buy bar
+ * 13px line (product · variant, each whole or shortened at its own end — <FactLine>), and the actions — on a cart toast
+ * «عرض السلة» as a 40px outlined button and «تراجع» as a ghost button — and a close button. One anatomy at every width:
+ * the thumbnail, the words and the close key in the first row, the actions in their own row under them (the 380px
+ * desktop toast too). Placement: on phones and tablets above the tab bar or the buy bar
  * (`--shell-bottom`, published by the shell), never over the cart bead; from 1024 under the header at the inline end
  * (`offset`, below the cart, where the bead lands), 380px wide. One at a time, paused while hovered, focused, dragged
  * or the tab is hidden. Show the cart toast once the bead has landed (./AddToCartKey does).
@@ -361,7 +363,7 @@ function ToastCard({ toast, leaving, onGone, onFocusLost }: CardProps) {
       data-kind={toast.kind}
       inert={leaving || undefined}
       aria-hidden={leaving || undefined}
-      className="toast pointer-events-auto relative touch-none select-none [grid-area:1/1] max-md:grid-cols-[48px_minmax(0,1fr)]"
+      className="toast pointer-events-auto relative touch-none select-none [grid-area:1/1]"
       onPointerEnter={() => hold("hover")}
       onPointerLeave={() => release("hover")}
       onFocus={() => hold("focus")}
@@ -374,10 +376,14 @@ function ToastCard({ toast, leaving, onGone, onFocusLost }: CardProps) {
       onPointerCancel={onPointerEnd}
     >
       {thumbnail ? (
-        // the product on its ground (v2 §4.16): a 48px well; the title says what happened
-        <span className="toast__thumb render-slot place-items-center p-1" aria-hidden="true">
+        // the product on its ground (v2 §4.16): a 48px well; the title says what happened. The ground is the well's and
+        // the render slot inside it is transparent (as in a card): an opaque photo multiplies into the product ground,
+        // never into the graphite toast (QA 2026-11-12: a near-black square in the light theme).
+        <span className="toast__thumb" aria-hidden="true">
           {toast.art ? (
-            <Render name={toast.art} alt="" sizes="48px" />
+            <span className="render-slot absolute inset-1 place-items-center">
+              <Render name={toast.art} alt="" sizes="48px" />
+            </span>
           ) : toast.image ? (
             <img src={toast.image.src} width={toast.image.width} height={toast.image.height} alt="" className="size-full rounded-xs object-cover" />
           ) : (
@@ -385,33 +391,26 @@ function ToastCard({ toast, leaving, onGone, onFocusLost }: CardProps) {
           )}
         </span>
       ) : kind ? (
-        <span className="toast__thumb grid place-items-center" aria-hidden="true">
+        <span className="toast__thumb" aria-hidden="true">
           <Icon name={kind.icon} size={24} filled className={kind.tone} />
         </span>
       ) : null}
-      <div className="grid min-w-0">
+      <div className="toast__text">
         <p className="toast__title">
           {cart ? <Icon name="check-circle" size={16} filled /> : null}
           <span className="min-w-0">{cart ? (toast.title ?? t("toast.added")) : toast.title}</span>
         </p>
         {cart && toast.name ? (
-          <p className="toast__line">
-            <BidiLabel>{toast.name}</BidiLabel>
-            {toast.variant ? (
-              <>
-                {" · "}
-                <BidiLabel>{toast.variant}</BidiLabel>
-              </>
-            ) : null}
-          </p>
+          // name · version: what was added, in up to two lines — the version takes the second line when it does not fit
+          // beside the name, and a long name or version is shortened at its own end («Nintendo Switch 2 · النسخة
+          // الدولية», never «…endo Switch 2»)
+          <FactLine as="p" facts={[toast.name, toast.variant]} lines={2} className="toast__line" />
         ) : toast.detail ? (
-          <p className="toast__line whitespace-normal">{toast.detail}</p>
+          <p className="toast__line">{toast.detail}</p>
         ) : null}
       </div>
-      <div className="toast__actions max-md:col-span-2 max-md:justify-end">
-        {action}
-        <IconKey icon="x" variant="plain" size="sm" label={t("toast.dismiss")} onClick={dismiss} />
-      </div>
+      <IconKey icon="x" variant="plain" size="sm" label={t("toast.dismiss")} onClick={dismiss} className="toast__close" />
+      {action ? <div className="toast__actions">{action}</div> : null}
     </div>
   );
 }

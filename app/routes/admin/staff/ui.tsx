@@ -5,7 +5,7 @@
  * the reason (never a zero), raised clay only for what a person must decide. Strings come from the module's layout
  * (useStaffT); interpolated names and codes are isolated so they never reorder inside a sentence.
  */
-import { useEffect, useMemo, useRef, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useFetcher, useRouteLoaderData } from "react-router";
 
 import { Icon, type IconName } from "~/art/Icon";
@@ -21,7 +21,7 @@ import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import type { StaffAccess } from "~/server/services/admin/staff/shared.server";
-import { periodRange, STAFF_NS, TONES, type ByView, type Tone } from "~/server/services/admin/staff/types";
+import { periodRange, STAFF_NS, TONES, type ByView, type HandedLink, type Tone } from "~/server/services/admin/staff/types";
 import { STAFF_LAYOUT_ID } from "./meta";
 
 /** The staff layout's data (every page below can read it). */
@@ -402,6 +402,8 @@ export function ResponsiveTable<Row>({
 // ───────────────────────────────────────────────────────────────── actions
 
 export type ActionData = { ok: boolean; message?: string; code?: string; fields?: Record<string, string>; intent?: string | null };
+/** A successful answer with what the action sent back besides its sentence (a one-time link, a new id). */
+export type ActionAnswer = ActionData & { ok: true; [key: string]: unknown };
 
 /** A unique key per form render (idempotency on money actions, double-submit safe). */
 export function newKey(): string {
@@ -429,6 +431,7 @@ export function ActionDialog({
   successMessage,
   children,
   reasonName = "reason",
+  onDone,
 }: {
   open: boolean;
   onClose: () => void;
@@ -444,18 +447,25 @@ export function ActionDialog({
   children?: ReactNode;
   /** The form field the typed reason is sent as (default "reason"). */
   reasonName?: string;
+  /** Called once with a successful answer, before the dialog closes (what the action sent back: a one-time link …). */
+  onDone?: (answer: ActionAnswer) => void;
 }) {
   const fetcher = useFetcher<ActionData>();
   const handled = useRef<ActionData | undefined>(undefined);
+  // one request at a time, even for a double press inside one frame (a second answer would replace the first: a
+  // one-time link in it would be lost)
+  const sending = useRef(false);
   useEffect(() => {
+    if (fetcher.state === "idle") sending.current = false;
     const result = fetcher.data;
     if (!result || fetcher.state !== "idle" || handled.current === result) return;
     handled.current = result;
     if (result.ok) {
       toast.success(result.message ?? successMessage);
+      onDone?.(result as ActionAnswer);
       onClose();
     }
-  }, [fetcher.data, fetcher.state, onClose, successMessage]);
+  }, [fetcher.data, fetcher.state, onClose, onDone, successMessage]);
   const failure = fetcher.data && !fetcher.data.ok && fetcher.state === "idle" ? fetcher.data : null;
   const error = failure ? (failure.message ?? Object.values(failure.fields ?? {})[0] ?? failure.code) : undefined;
   return (
@@ -471,6 +481,8 @@ export function ActionDialog({
       pending={fetcher.state !== "idle"}
       error={error}
       onConfirm={({ reason: note }) => {
+        if (sending.current) return;
+        sending.current = true;
         const form = new FormData();
         for (const [key, value] of Object.entries(fields)) form.set(key, value);
         if (reason) form.set(reasonName, note);
@@ -564,6 +576,74 @@ export function Failure({ message }: { message: string | null | undefined }) {
       <Icon name="warning-circle" size={18} className="mt-0.5 flex-none" />
       <span>{message}</span>
     </p>
+  );
+}
+
+/**
+ * A one-time password-set link, shown ONCE to the person who made it — it is stored nowhere, so leaving the page loses
+ * it (a new one is made from the employee's file, and this one then stops working). Raised: handing it over is this
+ * person's next step. The full address left to right with a copy key (when the clipboard refuses, the address is
+ * selected for a copy by hand), when it stops working, and how it travels: in person — the store sends no messages.
+ */
+export function LinkOnce({ link, name, employeeId, onDismiss }: { link: HandedLink; name: string; employeeId?: string; onDismiss: () => void }) {
+  const t = useStaffT();
+  const f = useFormat();
+  const value = useRef<HTMLElement | null>(null);
+  const [copy, setCopy] = useState<"idle" | "done" | "failed">("idle");
+  const selectAll = () => {
+    const node = value.current;
+    const selection = typeof window === "undefined" ? null : window.getSelection();
+    if (!node || !selection) return;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+  return (
+    <section role="status" aria-labelledby="stf-link-title" className="adm-card adm-card--act gap-3">
+      <div className="flex items-start gap-3">
+        <Icon name="key" size={22} className="mt-0.5 shrink-0 text-ink-2" />
+        <div className="grid min-w-0 gap-1">
+          <h2 id="stf-link-title" className="type-strong text-ink">
+            {t("link.title", { name })}
+          </h2>
+          <p className="type-body text-ink-2">{t(link.purpose === "reset" ? "link.reset" : "link.welcome")}</p>
+        </div>
+      </div>
+      <div className="stf-link">
+        <code ref={value} dir="ltr" className="stf-link__value" aria-label={t("link.address")}>
+          {link.url}
+        </code>
+        <Key
+          size="sm"
+          icon={copy === "done" ? "check" : "copy"}
+          onClick={() => {
+            const done = () => setCopy("done");
+            const refused = () => {
+              setCopy("failed");
+              selectAll();
+            };
+            if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) void navigator.clipboard.writeText(link.url).then(done, refused);
+            else refused();
+          }}
+        >
+          {copy === "done" ? t("link.copied") : t("link.copy")}
+        </Key>
+      </div>
+      {copy === "failed" ? <p className="type-caption text-ink">{t("link.copyFailed")}</p> : null}
+      <p className="type-body text-ink">{t("link.until", { time: f.dateTime(link.expiresAt) })}</p>
+      <p className="type-caption text-ink-2">{t("link.once")}</p>
+      <div className="flex flex-wrap items-center gap-3 stf-noprint">
+        {employeeId ? (
+          <Link to={`/admin/staff/employees/${employeeId}`} className="adm-link type-label">
+            {t("link.openFile", { name })}
+          </Link>
+        ) : null}
+        <Key size="sm" variant="ghost" icon="x" onClick={onDismiss}>
+          {t("link.dismiss")}
+        </Key>
+      </div>
+    </section>
   );
 }
 

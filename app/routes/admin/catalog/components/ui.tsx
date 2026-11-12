@@ -11,7 +11,7 @@ import { useFormat, useT } from "~/i18n/react";
 import type { TFunction } from "~/i18n/translate";
 import type { ImageRef } from "~/lib/dto";
 import type { L10n } from "~/lib/locales";
-import { TextArea, TextField } from "~/ui/Field";
+import { TextArea, TextField, type TextFieldProps } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { ProductImage } from "~/ui/ProductCard";
 import { Status, type StatusTone } from "~/ui/Tag";
@@ -148,6 +148,23 @@ export function useFieldError(result: unknown) {
   return (name: string): string | undefined => fieldErrorText(t, result, name);
 }
 
+/** Sets the attribute once the input exists in the browser (a stable function: React never re-runs it for nothing). */
+const SET_RTL = (node: HTMLInputElement | null) => {
+  node?.setAttribute("dir", "rtl");
+};
+
+/**
+ * The direction of a one-line field written in one language — Arabic and Sorani right to left, English left to right
+ * — whatever the admin's own language. The kit's TextField keeps only its `ltr` flag and drops a `dir` it is given
+ * (app/ui/Field.tsx; asked of its owner), so: `ltr` for English (dir="ltr" from the server), and for Arabic and Sorani
+ * a class (right to left from the first paint) plus the attribute once the page runs. «007 First Light» then never
+ * reads «First Light 007» in the Arabic admin, and an Arabic name never runs left to right in the English one.
+ * Spread it last: `<TextField name="name.ar" … {...inputDir("rtl")} />`.
+ */
+export function inputDir(dir: "rtl" | "ltr"): Pick<TextFieldProps, "dir" | "ltr" | "ref" | "inputClassName"> {
+  return dir === "ltr" ? { dir: "ltr", ltr: true } : { dir: "rtl", ltr: false, ref: SET_RTL, inputClassName: "[direction:rtl]" };
+}
+
 type L10nFieldsProps = {
   /** Field name prefix: "name" → name.ar, name.en, name.ckb. */
   name: string;
@@ -190,7 +207,8 @@ export function L10nFields({ name, label, value, required, multiline, rows = 4, 
             required: required && entry.code === "ar",
             disabled,
           };
-          return multiline ? <TextArea key={entry.code} {...common} rows={rows} /> : <TextField key={entry.code} {...common} />;
+          // a textarea keeps the `dir` it is given; a one-line field needs inputDir (see there)
+          return multiline ? <TextArea key={entry.code} {...common} rows={rows} /> : <TextField key={entry.code} {...common} {...inputDir(entry.dir)} />;
         })}
       </div>
       {hint ? <p className="type-caption text-ink-2">{hint}</p> : null}

@@ -29,6 +29,7 @@ import { CompatList } from "~/ui/CompatBadge";
 import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
 import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
+import { deviceIn } from "~/routes/storefront/devices/components/format";
 import { RecommendationShelves, type RecommendationResult } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { useProductT } from "../i18n";
 
@@ -76,11 +77,15 @@ export function CompatibilitySlot({ rows, className }: { rows: readonly ProductC
   );
 }
 
-/** The hub of the device this product IS (devices area owns /device/:model). */
+/**
+ * The hub of the device this product IS (devices area owns /device/:model). The name goes in as the hub itself puts it
+ * in a sentence (deviceIn): its Latin runs isolated and its short last word kept with the one before, so «كل شيء عن
+ * Nintendo Switch 2» never leaves the «2» alone on a line (v2 §4.18).
+ */
 export function DeviceHubSlot({ device, className }: { device: DeviceLink | null; className?: string }) {
   const t = useProductT();
   if (!device) return null;
-  return <DeviceHubLink device={device} title={t("hub.title", { device: device.name })} text={t("hub.text")} className={className} />;
+  return <DeviceHubLink device={device} title={t("hub.title", { device: deviceIn(device.name) })} text={t("hub.text")} className={className} />;
 }
 
 /** «أكمل تجهيزك» and the other compatibility-checked shelves (devices area), streamed after the page. */

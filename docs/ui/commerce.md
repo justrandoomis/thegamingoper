@@ -1,5 +1,27 @@
 # Commerce components — props and examples
 
+## QA fixes (2026-11-12, after the full matrix)
+
+- **ProductCard / KindLine:** the kind line and the meta line are `<FactLine>`s (docs/ui/core.md): «جهاز محمول · ROG
+  Xbox Ally» drops the family whole when it does not fit, and a meta fact is whole or shortened at its own end — never
+  «…G Xbox Ally», «…RAM · Ryzen AI Z2 Extreme», «…nds: Z-A». The coming-soon day is day-first in English too
+  («Out 13 November»; `releaseDay` uses the British order).
+- **Gallery viewer:** one column as wide as the screen (`minmax(0, 1fr)`): six thumbnails made it 416px wide and pushed
+  the close key off a 360px phone. The strip scrolls sideways inside its own row (centred while it fits, the gutter as
+  scroll padding) and keeps the chosen thumbnail in view (`useKeepInView`); the bar keeps the gutter. Android's back
+  closes the viewer through the modal layer's CloseWatcher; no history entry is pushed.
+- **BuyBar:** the version is a `<FactLine>` (one line, shortened at its logical end: «SteamOS Z1 Extreme 32GB / 1…»);
+  the price steps down to sm when the price column is under 140px (320px reflow) — the figure and «د.ع» never part.
+- **AddToCartKey:** an add pressed inside a sheet or dialog (the quick look) shows no success toast — the layer says
+  «✓ في السلة» and the live region announces it; a failure still toasts (it carries the retry).
+- **PriceLine:** «● متوفر · التوصيل …» — the « · » belongs to the item after it (`.price-line__item`), so it wraps with it.
+- **UsedUnitCard:** the grid card's action is the words «اعرض تقرير الفحص» (a 44px TextLink, the unit's name as its
+  description), like the row; the picture of an illustrated unit stands above the «صورة توضيحية» chip (the slot ends
+  ≥ 40px from the bottom of a card well, 32px in a 96px row well); a row's meta may take two lines (64GB stays).
+- **Cart editor:** «تراجع» puts a removed line back in its old place (`keepLineOrder`, by variant / unit identity — the
+  server re-adds it as a new line at the end).
+- **TrustStrip `line`:** «سياسة الإرجاع» has a 44px hit area (`hit-44`) around its 13px words.
+
 ## Polish round (2026-11-12)
 
 - **ProductCard:** `compare` — a slot under the price row for the catalogue's `<CompareToggle>` (console and handheld

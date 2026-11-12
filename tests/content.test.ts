@@ -19,6 +19,7 @@ import { CONSENT_COOKIE, CONSENT_COOKIE_MAX_AGE_SEC } from "~/server/services/ac
 import { RECOMMENDATION_EVENT_RETENTION_DAYS, REC_SESSION_COOKIE, REC_SESSION_MAX_AGE_SEC } from "~/server/services/recommendations.server";
 import { TRADE_IN_DRAFT_COOKIE, TRADE_IN_DRAFT_MAX_AGE_SEC } from "~/server/services/tradein.server";
 import { WISH_COOKIE, WISH_COOKIE_MAX_AGE_SEC } from "~/server/services/wishlist.server";
+import commonStrings from "~/i18n/messages/common";
 import contentStrings from "~/i18n/messages/content";
 import {
   POLICY_DRAFTS_REVISED_AT,
@@ -137,11 +138,11 @@ describe("policy drafts (no approved CMS page)", () => {
   });
 
   it("state the delivery fee from settings, and follow a change", async () => {
-    expect(joined((await policy("shipping", "en"))!)).toContain("5,000 IQD");
-    expect(joined((await policy("terms", "ar"))!)).toContain("5,000 د.ع");
+    expect(joined((await policy("shipping", "en"))!)).toContain("5,000\u00a0IQD");
+    expect(joined((await policy("terms", "ar"))!)).toContain("5,000\u00a0د.ع");
     await setSettingRow("shipping.flat_fee_iqd", 6_500);
     const shipping = (await policy("shipping", "en"))!;
-    expect(joined(shipping)).toContain("6,500 IQD");
+    expect(joined(shipping)).toContain("6,500\u00a0IQD");
     expect(joined(shipping)).not.toContain("5,000");
     expect(shipping.facts).toContainEqual({ kind: "delivery_fee", amountIqd: 6_500, varies: false });
     expect(joined((await policy("terms", "ckb"))!)).toContain("6,500");
@@ -193,8 +194,8 @@ describe("policy drafts (no approved CMS page)", () => {
       shipping = (await policy("shipping", "en"))!;
       const tableBlock = shipping.blocks.find((block): block is Extract<Block, { type: "table" }> => block.type === "table");
       expect(tableBlock).toBeDefined();
-      expect(tableBlock!.rows).toContainEqual([firstName, expect.stringContaining("8,000 IQD")]);
-      expect(tableBlock!.rows.filter((row) => row[1].includes("5,000 IQD")).length).toBe(tableBlock!.rows.length - 1);
+      expect(tableBlock!.rows).toContainEqual([firstName, expect.stringContaining("8,000\u00a0IQD")]);
+      expect(tableBlock!.rows.filter((row) => row[1].includes("5,000\u00a0IQD")).length).toBe(tableBlock!.rows.length - 1);
       expect(shipping.facts).toContainEqual({ kind: "delivery_fee", amountIqd: 5_000, varies: true });
       // the terms and the about page say the fee depends on the governorate
       expect(joined((await policy("terms", "en"))!)).not.toContain("5,000");
@@ -647,5 +648,15 @@ describe("copy (Design System v2 §9)", () => {
     expect(strings("en").join("\n")).not.toMatch(/phone number|help centre/i);
     expect(ar).toContain("تحدّث مع موظف");
     expect(ar).toContain("نسخة أولى — قد تتغيّر قبل الإطلاق.");
+  });
+
+  // QA 2026-11-12: Sorani pages wrote the brand «تەمتەم» (the footer's «© 2026 تەمتەم گەیمز») under the wordmark
+  // «طمطم». v2 §9: the brand is «طمطم» in Arabic and Sorani, never mixed, until the owner decides (§13 #12).
+  it("names the brand «طمطم» in Sorani too, as the logo does (common and content)", () => {
+    const ckb = [...strings("ckb"), ...Object.values(commonStrings.ckb.brand)].join("\n");
+    expect(ckb).not.toMatch(/تەمتەم/);
+    expect(commonStrings.ckb.brand.name).toBe("طمطم");
+    expect(commonStrings.ckb.brand.title).toBe("طمطم گەیمز — TamTam Games");
+    expect(ckb).toContain("جزدانی طمطم");
   });
 });

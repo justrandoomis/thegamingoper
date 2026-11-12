@@ -133,9 +133,9 @@
     {
       "sku": "PS5-PRO-2TB",
       "title": {
-        "ar": "PlayStation 5 Pro – 2TB",
-        "en": "PlayStation 5 Pro – 2TB",
-        "ckb": "PlayStation 5 Pro – 2TB"
+        "ar": "2TB",
+        "en": "2TB",
+        "ckb": "2TB"
       },
       "options": { "edition": "Pro", "storage": "2TB", "color": "White" },
       "modelNumber": "CFI-7021",

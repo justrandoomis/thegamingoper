@@ -2,7 +2,7 @@ import { Suspense, type CSSProperties, type ReactNode } from "react";
 import { Await, useRouteLoaderData } from "react-router";
 
 import { artAspect, getArt, isPhoto } from "~/art";
-import { Icon, type IconName } from "~/art/Icon";
+import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { SharedElement } from "~/motion";
 import type { DeviceHub } from "~/server/services/devices.server";
@@ -14,22 +14,24 @@ import { PlatformLabel, type Platform } from "~/ui/PlatformLed";
 import { Price } from "~/ui/Price";
 import { fillNodes } from "~/ui/PriceTag";
 import { ProductImage } from "~/ui/ProductCard";
-import { headPrice, isolateName, keepTogether, researchDate, type FromOutcome } from "./format";
+import { headFacts, headPrice, keepTogether, researchDate, type FromOutcome } from "./format";
 
 type RootStore = { storeMode?: string };
 
 /**
  * The head of a device hub — Design System v2 §6.6, §4.18: the kit's `Band kind="device"` (the platform's colour
- * surface with one light behind the hardware; a lit cabinet in the dark theme), 200px on phones and 280 from 1024.
+ * surface with one light behind the hardware; a lit cabinet in the dark theme), compact: about 300px on phones and
+ * 280 from 1024 (the spec asks 200 on phones; docs/areas/devices.md "Head height" says why it is more).
  * The device large at the inline end (its photo is the page's LCP image, preloaded; on phones beside the title, rising
  * above the band's top edge), and at the inline start: the platform pill, the h1 «كل شيء عن / PlayStation 5 Slim»
  * (the name on its own line, sharing the headline's edge — the headline bidi rule; its Latin runs isolated by the
- * kit's BidiText, so «PlayStation 5 (الطراز الأصلي 2020)» reads name first), the facts row (release date, generation,
- * «17 لعبة له في المتجر», «18 إكسسواراً له في المتجر» — verified records only), the price «من 756,500 د.ع» of the
- * cheapest version a shopper can order now (streamed: the line keeps its place) with the demo tag in demo mode — or,
- * when nothing of this device can be ordered now, «نفد حالياً» / «قريباً · الطلب يفتح عند وصوله» — and the page's one
- * action, the on-band key «تسوّق إصدارات الجهاز» (it jumps to the editions; in the dark theme it renders as the red
- * primary). A device the store does not sell new says so instead.
+ * kit's BidiText, so «PlayStation 5 (الطراز الأصلي 2020)» reads name first), ONE line of facts (release date,
+ * generation, «17 لعبة له في المتجر», «18 إكسسواراً له في المتجر» — verified records only; the ones that fit, a phone
+ * reading the release year only: format.ts headFacts), the price «من 756,500 د.ع» of the cheapest version a shopper
+ * can order now (streamed: the line keeps its place) with the demo tag in demo mode — or, when nothing of this device
+ * can be ordered now, «نفد حالياً» / «قريباً · الطلب يفتح عند وصوله» — and the page's one action, the 40px on-band key
+ * «تسوّق إصدارات الجهاز» (it jumps to the editions; in the dark theme it renders as the red primary), on the price's
+ * row from 1024 when both fit. A device the store does not sell new says so instead.
  *
  * The photo is the target of `<SharedElement name="device-image:<slug>">`, so a device link elsewhere (the platform
  * hub's device row, `DeviceHubLink` on product, used and support pages) grows into it. An opaque photo (not cut out
@@ -49,11 +51,8 @@ export function HubHead({ hub, gel, platformName, from }: { hub: DeviceHub; gel:
   const accessories = counts.accessories.verified;
   const image = model.images[0] ?? null;
 
-  const facts: { icon: IconName; text: string }[] = [];
-  if (released) facts.push({ icon: "calendar-blank", text: released.kind === "year" ? t("hero.releasedYear", { year: released.text }) : t("hero.released", { date: released.text }) });
-  if (generation) facts.push({ icon: "stack", text: t("hero.generation", { generation: isolateName(generation) }) });
-  if (games > 0) facts.push({ icon: "game-controller", text: t("hero.games", { count: games, n: f.number(games) }) });
-  if (accessories > 0) facts.push({ icon: "plug", text: t("hero.accessories", { count: accessories, n: f.number(accessories) }) });
+  // ONE line of facts (devices.css): those that fit, the rest for screen readers; a phone reads the release year only
+  const facts = headFacts({ released, generation, games, accessories }, t, (value) => f.number(value));
 
   // «كل شيء عن» / «PlayStation 5 Slim»: the name on its own line when the sentence ends with it (every language today)
   const template = t("hero.title", { device: "{device}" });
@@ -111,8 +110,15 @@ export function HubHead({ hub, gel, platformName, from }: { hub: DeviceHub; gel:
           <ul role="list" className="devhub-head__facts">
             {facts.map((fact) => (
               <li key={fact.icon}>
-                <Icon name={fact.icon} size={16} />
-                <span>{fact.text}</span>
+                <Icon name={fact.icon} size={16} className="shrink-0" />
+                {fact.phone ? (
+                  <>
+                    <span className="md:hidden">{fact.phone}</span>
+                    <span className="max-md:hidden">{fact.text}</span>
+                  </>
+                ) : (
+                  <span>{fact.text}</span>
+                )}
               </li>
             ))}
           </ul>
@@ -127,7 +133,7 @@ export function HubHead({ hub, gel, platformName, from }: { hub: DeviceHub; gel:
                   {(outcome) => <FromLine>{line(outcome)}</FromLine>}
                 </Await>
               </Suspense>
-              <Key variant="onBand" as="a" href="#versions" icon="shopping-bag">
+              <Key variant="onBand" size="sm" as="a" href="#versions" icon="shopping-bag">
                 {t("hero.shop")}
               </Key>
             </>

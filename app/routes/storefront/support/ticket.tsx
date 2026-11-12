@@ -79,11 +79,13 @@ export async function action({ request, context }: Route.ActionArgs) {
         const receipt = values.tk ? await getTicketByAccessToken(db, values.ref, values.tk) : await lookupTicket(db, { ref: values.ref, phone: values.phone }, { ip: ctx.ip }, ctx.now);
         if (!receipt) throw error;
         const shown: Shown = { receipt, proof, rated: null, ratingError: { fields: actionError(error).fields ?? {}, comment: values.comment } };
-        return data({ ok: true as const, ...shown }, { status: 400, headers: LOOKUP_PAGE_HEADERS });
+        // an answer about the rating's fields (client.ts answerStatus): 200, not a failed request
+        return data({ ok: true as const, ...shown }, { headers: LOOKUP_PAGE_HEADERS });
       }
     }
-    // a repair number typed here: it is followed on the repair status page (said under the field)
-    if (normalizeSupportRef(values.ref, REPAIR_REF_PREFIX)) return data({ ok: false as const, code: "invalid", status: 400, fields: { ref: "repair_ref" }, values }, { status: 400, headers: LOOKUP_PAGE_HEADERS });
+    // a repair number typed here: it is followed on the repair status page (said under the field) — an answer about
+    // a field, so 200 (client.ts answerStatus)
+    if (normalizeSupportRef(values.ref, REPAIR_REF_PREFIX)) return data({ ok: false as const, code: "invalid", status: 400, fields: { ref: "repair_ref" }, values }, { status: 200, headers: LOOKUP_PAGE_HEADERS });
     const receipt = await lookupTicket(db, { ref: values.ref, phone: values.phone }, { ip: ctx.ip }, ctx.now);
     if (!receipt) return data({ ok: false as const, code: "not_found", status: 200, values }, { headers: LOOKUP_PAGE_HEADERS });
     const shown: Shown = { receipt, proof: { phone: values.phone }, rated: null, ratingError: null };

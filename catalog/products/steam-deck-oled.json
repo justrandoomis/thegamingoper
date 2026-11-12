@@ -171,14 +171,14 @@
   "variants": [
     {
       "sku": "SD-OLED-512",
-      "title": { "ar": "Steam Deck OLED 512GB", "en": "Steam Deck OLED 512GB", "ckb": "Steam Deck OLED 512GB" },
+      "title": { "ar": "512GB", "en": "512GB", "ckb": "512GB" },
       "options": { "storage": "512GB" },
       "isDefault": true,
       "images": ["steam-deck-oled--1", "steam-deck-oled--2", "steam-deck-oled--3", "steam-deck-oled--4"]
     },
     {
       "sku": "SD-OLED-1TB",
-      "title": { "ar": "Steam Deck OLED 1TB", "en": "Steam Deck OLED 1TB", "ckb": "Steam Deck OLED 1TB" },
+      "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
       "options": { "storage": "1TB" },
       "isDefault": false,
       "images": ["steam-deck-oled--1", "steam-deck-oled--2", "steam-deck-oled--3", "steam-deck-oled--4"],

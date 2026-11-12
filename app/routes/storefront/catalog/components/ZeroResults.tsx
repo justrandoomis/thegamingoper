@@ -37,9 +37,9 @@ export function ZeroResults({ list, nav, zero, picks, picksTitle, elsewhere, wis
   const picksId = useId();
   return (
     <div className="catalog-zero">
+      {/* the mascot in its disc (v2 §4.23), like every empty state that stands as a page's message */}
       <EmptyState
         layout="stack"
-        icon="sliders-horizontal"
         title={zero.title}
         text={zero.text}
         headingLevel={3}

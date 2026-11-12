@@ -52,8 +52,11 @@ export async function loader({ context }: Route.LoaderArgs) {
   const session = await getCustomer(ctx, db);
   const customerId = session?.customer.id ?? null;
   const [cart, facts] = await Promise.all([getCartView(db, { cartToken: cartTokenOf(ctx), customerId, locale: ctx.locale }, ctx.now), loadCartFacts(db)]);
-  // streamed, never awaited: the cart never waits for its suggestions (what completes it, or four picks when empty)
-  const recommendations = cart.lines.length > 0 ? cartShelves(db, ctx, customerId, cart) : emptyCartShelves(db, ctx, customerId);
+  // a cart with lines never waits for its suggestions (streamed under the summary, below the fold). The EMPTY cart's
+  // four picks are awaited (emptyCartShelves never rejects): streamed in after the first paint they pushed the footer,
+  // which is on the first screen of an empty cart, down by a whole shelf — CLS 0.16–0.22 at 390 px (acceptance run
+  // 2026-11-12, docs/ACCEPTANCE.md); rendered on the server they are simply there.
+  const recommendations = cart.lines.length > 0 ? cartShelves(db, ctx, customerId, cart) : await emptyCartShelves(db, ctx, customerId);
   return data({ cart, facts, demo: ctx.storeMode === "demo", recommendations, i18n: messagesFor(ctx.locale, "checkout", "errors") }, { headers: NO_STORE });
 }
 

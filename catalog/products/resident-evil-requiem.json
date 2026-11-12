@@ -100,7 +100,7 @@
   "variants": [
     {
       "sku": "RE9-PS5-STD",
-      "title": { "ar": "Resident Evil Requiem لجهاز PS5", "en": "Resident Evil Requiem for PS5", "ckb": "Resident Evil Requiem بۆ PS5" },
+      "title": { "ar": "لجهاز PS5", "en": "PS5 edition", "ckb": "بۆ PS5" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["resident-evil-requiem--1", "resident-evil-requiem--2", "resident-evil-requiem--3", "resident-evil-requiem--4"],
@@ -112,7 +112,7 @@
     },
     {
       "sku": "RE9-XSX-STD",
-      "title": { "ar": "Resident Evil Requiem لجهاز Xbox Series X", "en": "Resident Evil Requiem for Xbox Series X", "ckb": "Resident Evil Requiem بۆ Xbox Series X" },
+      "title": { "ar": "لجهاز Xbox Series X", "en": "Xbox Series X edition", "ckb": "بۆ Xbox Series X" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["resident-evil-requiem--1", "resident-evil-requiem--2", "resident-evil-requiem--3"],

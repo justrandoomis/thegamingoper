@@ -6,7 +6,9 @@
  * Looks like the kit's proof uploader (Design System v2 §4.24): a paper area with a 1.5px dashed control line, the
  * chosen photos as 96px thumbnails (--r-sm, a hairline) with a 32px remove key on each, and the keys to add more.
  * Without JavaScript the "choose" key is a <label> for a real file input, so the files are submitted by the form
- * itself. With JavaScript the chosen files are checked at once, previewed, and can be removed; the form's submit
+ * itself. With JavaScript the chosen files are checked at once — their type and size, then their first bytes and
+ * whether the browser can draw them (../photo-check: a renamed text file or a broken picture never joins the form as a
+ * broken thumbnail; it stays out with the store's own sentence) — previewed, and can be removed; the form's submit
  * handler sends `files` (the native inputs are emptied after each choice). Nothing is uploaded before the form is
  * sent: the photos travel with it, so a photo is never stored without its request.
  */
@@ -18,24 +20,7 @@ import { MAX_SUPPORT_PHOTOS } from "~/server/services/support/types";
 import { cx } from "~/ui/cx";
 import { IconKey } from "~/ui/IconKey";
 import { Key } from "~/ui/Key";
-
-export const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
-export const PHOTO_MAX_BYTES = 8 * 1024 * 1024;
-
-export type PhotoProblem = "upload_type" | "upload_too_large" | "too_big";
-
-/** The files that may be added, and the first problem with the rest. */
-export function acceptPhotos(current: readonly File[], incoming: readonly File[]): { files: File[]; problem: PhotoProblem | null } {
-  const files = [...current];
-  let problem: PhotoProblem | null = null;
-  for (const file of incoming) {
-    if (!(PHOTO_TYPES as readonly string[]).includes(file.type)) problem ??= "upload_type";
-    else if (file.size > PHOTO_MAX_BYTES) problem ??= "upload_too_large";
-    else if (files.length >= MAX_SUPPORT_PHOTOS) problem ??= "too_big";
-    else files.push(file);
-  }
-  return { files, problem };
-}
+import { acceptPhotos, checkPhotoFile, claimsPhoto, PHOTO_TYPES, type PhotoProblem } from "../photo-check";
 
 type Props = {
   /** Field name of the native inputs (submitted as is without JavaScript). */
@@ -59,11 +44,22 @@ export function PhotoPicker({ name, files, onChange, label, hint, error, disable
   const previews = useMemo(() => files.map((file) => ({ file, url: typeof URL !== "undefined" && "createObjectURL" in URL ? URL.createObjectURL(file) : "" })), [files]);
   useEffect(() => () => previews.forEach((preview) => preview.url && URL.revokeObjectURL(preview.url)), [previews]);
 
+  // The photos on screen when a check ends (the bytes are read asynchronously; a removal may land in between).
+  const latest = useRef(files);
+  latest.current = files;
+
   const full = files.length >= MAX_SUPPORT_PHOTOS;
-  const take = (input: HTMLInputElement | null) => {
+  const take = async (input: HTMLInputElement | null) => {
     if (!input?.files) return;
-    const result = acceptPhotos(files, [...input.files]);
+    const chosen = [...input.files];
     input.value = "";
+    const found = new Map<File, PhotoProblem>();
+    // one at a time: a phone decodes one photo, not three at once
+    for (const file of chosen.filter(claimsPhoto)) {
+      const problem = await checkPhotoFile(file);
+      if (problem) found.set(file, problem);
+    }
+    const result = acceptPhotos(latest.current, chosen, found);
     onChange(result.files, result.problem);
   };
   const remove = (index: number) => onChange(files.filter((_, i) => i !== index), null);
@@ -103,7 +99,7 @@ export function PhotoPicker({ name, files, onChange, label, hint, error, disable
               accept={PHOTO_TYPES.join(",")}
               multiple
               disabled={disabled || full}
-              onChange={(event) => take(event.currentTarget)}
+              onChange={(event) => void take(event.currentTarget)}
               className="peer sr-only"
             />
             <Key as="label" htmlFor={`${id}-choose`} size="sm" icon="image" disabled={disabled || full} className={keyFocus}>
@@ -119,7 +115,7 @@ export function PhotoPicker({ name, files, onChange, label, hint, error, disable
               accept={PHOTO_TYPES.join(",")}
               capture="environment"
               disabled={disabled || full}
-              onChange={(event) => take(event.currentTarget)}
+              onChange={(event) => void take(event.currentTarget)}
               className="peer sr-only"
             />
             <Key as="label" htmlFor={`${id}-camera`} size="sm" icon="camera" disabled={disabled || full} className={keyFocus}>

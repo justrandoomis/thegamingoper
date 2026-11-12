@@ -109,7 +109,7 @@
   "variants": [
     {
       "sku": "NBA2K27-PS5-STD",
-      "title": { "ar": "NBA 2K27 لجهاز PS5 — Standard Edition", "en": "NBA 2K27 for PS5 — Standard Edition", "ckb": "NBA 2K27 بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["nba-2k27--1", "nba-2k27--2", "nba-2k27--3", "nba-2k27--4"],
@@ -121,7 +121,7 @@
     },
     {
       "sku": "NBA2K27-XBS-STD",
-      "title": { "ar": "NBA 2K27 لجهاز Xbox Series X — Standard Edition", "en": "NBA 2K27 for Xbox Series X — Standard Edition", "ckb": "NBA 2K27 بۆ Xbox Series X — Standard Edition" },
+      "title": { "ar": "لجهاز Xbox Series X · Standard Edition", "en": "Xbox Series X · Standard Edition", "ckb": "بۆ Xbox Series X · Standard Edition" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["nba-2k27--1", "nba-2k27--2", "nba-2k27--3"],

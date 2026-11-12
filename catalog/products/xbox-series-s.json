@@ -154,9 +154,9 @@
     {
       "sku": "XSS-512-WHT",
       "title": {
-        "ar": "Xbox Series S ‏512GB، أبيض Robot White",
-        "en": "Xbox Series S 512GB, Robot White",
-        "ckb": "Xbox Series S ‏512GB، سپیی Robot White"
+        "ar": "512GB · أبيض Robot White",
+        "en": "512GB · Robot White",
+        "ckb": "512GB · سپیی Robot White"
       },
       "options": { "storage": "512GB", "color": "Robot White" },
       "modelNumber": "1883",
@@ -166,9 +166,9 @@
     {
       "sku": "XSS-1TB-WHT",
       "title": {
-        "ar": "Xbox Series S ‏1TB، أبيض Robot White",
-        "en": "Xbox Series S 1TB, Robot White",
-        "ckb": "Xbox Series S ‏1TB، سپیی Robot White"
+        "ar": "1TB · أبيض Robot White",
+        "en": "1TB · Robot White",
+        "ckb": "1TB · سپیی Robot White"
       },
       "options": { "storage": "1TB", "color": "Robot White" },
       "modelNumber": "1883",

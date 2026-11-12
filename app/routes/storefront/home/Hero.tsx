@@ -4,10 +4,11 @@
  *
  *   phones   the platform pill · the headline in two lines («العب على» / «Nintendo Switch 2», the name isolated, one
  *            edge) · the product on the brand light (168px, the page's LCP image) · the price (xl, white) and «سعر
- *            تجريبي» · the on-band key «اشترِ Nintendo Switch 2», full width · «التوصيل 5,000 د.ع لكل المحافظات · الدفع
- *            عند الاستلام». At most 440px tall at 390.
+ *            تجريبي» · the on-band key «اشترِ Nintendo Switch 2», full width · ONE line «التوصيل 5,000 د.ع لكل
+ *            المحافظات · الدفع عند الاستلام» ("Delivery 5,000 IQD · Cash on delivery": the page's own short fact,
+ *            `hero.delivery`). 428px tall at 390 (the cap is 440).
  *   ≥ 768    the copy at the inline start (plus the fact line and «تفاصيل الجهاز» → the device hub), the product at
- *            the inline end on its light (≤ 410px wide); 400px tall at 1024, 420 from 1280. English mirrors by itself.
+ *            the inline end on its light (≤ 410px wide); 400px tall at 1024, 404 from 1280. English mirrors by itself.
  *
  * The key: a product with versions opens the product area's quick look on the version choice (the page keeps its URL
  * and scroll; a real link to the product page underneath for a new tab or no script); a product with one version is
@@ -36,7 +37,7 @@ import { PlatformLed, type Platform } from "~/ui/PlatformLed";
 import { fillNodes, iqdText, isIqd, SafePrice } from "~/ui/PriceTag";
 import { ProductImage } from "~/ui/ProductCard";
 import { TextLink } from "~/ui/TextLink";
-import { heroTitleSizes, keepTogether, pictureFailed, splitHeadline } from "./view";
+import { heroTitleSizes, keepTogether, pictureFailed, plainFinalYeh, splitHeadline } from "./view";
 
 /** The product area's quick look — fetched only when a shopper reaches for the key. */
 const loadQuickPreview = () => import("~/routes/storefront/product/QuickPreview");
@@ -112,7 +113,7 @@ export function Hero({ card, platform, mode, deviceHref, deliveryFeeIqd, cod, de
 
       {pin ? (
         <h2 id={headingId} className="home-hero__title text-balance" style={titleStyle} {...pinLang} data-pinned="">
-          <BidiText text={pin.headline} />
+          <BidiText text={plainFinalYeh(pin.headline)} />
         </h2>
       ) : (
         <h2 id={headingId} className="home-hero__title" style={titleStyle}>
@@ -135,12 +136,13 @@ export function Hero({ card, platform, mode, deviceHref, deliveryFeeIqd, cod, de
           </span>
           {deck ? (
             <span className="home-hero__deck" {...pinLang}>
-              <BidiText text={deck} />
+              <BidiText text={plainFinalYeh(deck)} />
             </span>
           ) : null}
         </p>
       ) : card.subtitle ? (
-        <p className="home-hero__facts">{card.subtitle}</p>
+        // «حتى 4K على التلفاز» — never Plex's «حق»-shaped ligature (./view plainFinalYeh)
+        <p className="home-hero__facts">{plainFinalYeh(card.subtitle)}</p>
       ) : null}
 
       {/* a photo that fails to load leaves its box empty (no broken-image frame): the band keeps its size */}
@@ -201,11 +203,11 @@ export function Hero({ card, platform, mode, deviceHref, deliveryFeeIqd, cod, de
           <Icon name="truck" size={16} />
           {/* each fact is one unit: a narrow phone breaks between them (inside one only when it alone is too long) */}
           <span>
-            <span className="inline-block">{fillNodes(shop("price.delivery"), { price: <bdi className="nums">{iqdText(f, deliveryFeeIqd)}</bdi> })}</span>
+            <span className="inline-block">{fillNodes(plainFinalYeh(t("hero.delivery")), { price: <bdi className="nums">{iqdText(f, deliveryFeeIqd)}</bdi> })}</span>
             {cod ? (
               <>
                 {" · "}
-                <span className="inline-block">{shop("trust.cod")}</span>
+                <span className="inline-block">{plainFinalYeh(shop("trust.cod"))}</span>
               </>
             ) : null}
           </span>

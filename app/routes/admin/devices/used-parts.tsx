@@ -269,7 +269,7 @@ export function GradingSection({ unit }: Props) {
                     <Select name={`d.${index}.area`} label={t("unit.defectArea")} defaultValue={defect?.area ?? "other"} options={DEFECT_AREAS.map((area) => ({ value: area, label: t(`defectArea.${area}`) }))} />
                     <Select name={`d.${index}.severity`} label={t("unit.severity")} defaultValue={defect?.severity ?? "minor"} options={DEFECT_SEVERITY_LIST.map((severity) => ({ value: severity, label: t(`severity.${severity}`) }))} />
                     <TextField name={`d.${index}.ar`} label={t("unit.defectAr")} defaultValue={defect?.note.ar ?? ""} error={fields[`defects.${index}.note.ar`]} />
-                    <TextField name={`d.${index}.en`} label={t("unit.defectEn")} defaultValue={defect?.note.en ?? ""} dir="ltr" />
+                    <TextField name={`d.${index}.en`} label={t("unit.defectEn")} defaultValue={defect?.note.en ?? ""} ltr lang="en" />
                   </div>
                 ))}
               </div>
@@ -281,7 +281,7 @@ export function GradingSection({ unit }: Props) {
             </FieldGroup>
             <div className="dev-grid-2">
               <TextField name="extraAr" label={t("unit.extraAr")} optional defaultValue={extra?.label.ar ?? ""} />
-              <TextField name="extraEn" label={t("unit.extraEn")} optional defaultValue={extra?.label.en ?? ""} dir="ltr" />
+              <TextField name="extraEn" label={t("unit.extraEn")} optional defaultValue={extra?.label.en ?? ""} ltr lang="en" />
             </div>
             <Failure message={message} />
             <div>

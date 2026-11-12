@@ -2,19 +2,20 @@
  * Dates for people — the formatting behind `useFormat().date` / `.dateTime` (client-safe, pure; ~/i18n/react).
  * Always Iraq time: Asia/Baghdad is UTC+3 all year (no daylight saving since 2008), so its wall clock is ms + 3 h.
  *
- *   formatDate(ms, "long", "ckb", "latn")      → "5ی کانوونی دووەمی 2025"
- *   formatDate(ms, "medium", "ar", "latn")     → "05/01/2025" (numeric dates are day first in every language)
+ * EVERY DATE IS DAY FIRST (Design System v2 §2.6 and §10), in every language:
+ *   formatDate(ms, "short" | "medium", "ar")   → "05/01/2025" (numeric, no bidi marks — one left-to-right run)
  *   formatDate(ms, "long", "ar", "latn")       → Intl's Arabic ("5 كانون الثاني 2025")
- *   formatDateTime(ms, "ckb", "arab")          → "٢٠٢٥ کانوونی دووەم ٥ ٣:٠٠ د.ن"
+ *   formatDate(ms, "medium" | "long", "en")    → "5 Jan 2025" / "5 January 2025" (Intl's en-IQ is month first)
+ *   formatDate(ms, "medium" | "long", "ckb")   → "5ی کانوونی دووەمی 2025"
+ *   formatDateTime(ms, "ckb", "arab")          → "٥ی کانوونی دووەمی ٢٠٢٥، ٣:٠٠ د.ن"
+ *   formatDateTime(ms, "en", "latn")           → "5 Jan 2025, 3:00 PM"
  *   formatWeekdayDay(ms, "ckb", "latn")        → "یەکشەممە، 5ی کانوونی دووەم"   (a day to choose: weekday + date)
  *
- * WHY SORANI IS DONE BY HAND: Arabic and English go through Intl — every engine carries their calendar data. Kurdish
- * (ckb) is missing from the ICU builds of Chromium and of workerd (the server), so Intl answers a Kurdish page in
- * English ("November 13, 2026"). For ckb the text is assembled here from CLDR's Sorani patterns and names — what a
- * full ICU (Node's) prints for "ckb" —, with the shopper's numerals:
- *   medium "y MMM d" · long "dی MMMMی y" · date and time "y MMM d h:mm a" (ب.ن / د.ن); short is the shared numeric
- *   "dd/MM/y" (CLDR's "y-MM-dd" is year first, which Design System v2 §2.6 rules out)
- *   weekday + day "EEEE، dی MMMM"
+ * WHY SORANI AND ENGLISH ARE DONE BY HAND: Kurdish (ckb) is missing from the ICU builds of Chromium and of workerd
+ * (the server), so Intl answers a Kurdish page in English ("November 13, 2026"); and English through Intl is month
+ * first. Text built here is the same on the server and in every browser, so it hydrates unchanged. Sorani uses
+ * CLDR's names and its long pattern "dی MMMMی y" for medium and long (CLDR's medium "y MMM d" is year first), its
+ * date and time "…، h:mm a" (ب.ن / د.ن), weekday + day "EEEE، dی MMMM"; short is the shared numeric "dd/MM/y".
  * One difference from CLDR on purpose: December is "کانوونی یەکەم", spelled like January ("کانوونی دووەم"); CLDR
  * writes "کانونی یەکەم". The same code runs on the server and in the browser, so Kurdish dates hydrate unchanged.
  * The Sorani names and patterns still need a native reader (docs/STATUS.md).
@@ -91,10 +92,25 @@ function soraniDate(clock: WallClock, style: DateStyle, numbering: NumberingSyst
     case "short":
       return numericDate(clock, numbering);
     case "medium":
-      return `${year} ${month} ${digits(clock.day, numbering)}`;
     case "long":
+      // Day first (Design System v2 §2.6). CLDR's Sorani medium "y MMM d" is year first; the long form reads right.
       return `${digits(clock.day, numbering)}ی ${month}ی ${year}`;
   }
+}
+
+const EN_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] as const;
+const EN_WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
+
+/** English dates day first, as in Iraq and Britain ("13 Nov 2026", "13 November 2026"); Intl's en-IQ is month first. */
+function englishDate(clock: WallClock, style: "medium" | "long", numbering: NumberingSystem): string {
+  const month = EN_MONTHS[clock.month - 1];
+  return `${digits(clock.day, numbering)} ${style === "medium" ? month.slice(0, 3) : month} ${digits(clock.year, numbering)}`;
+}
+
+/** "3:05 PM" — built by hand so the server and every browser print the same text. */
+function englishTime(clock: WallClock, numbering: NumberingSystem): string {
+  const hour = clock.hour % 12 === 0 ? 12 : clock.hour % 12;
+  return `${digits(hour, numbering)}:${digits(clock.minute, numbering, 2)} ${clock.hour < 12 ? "AM" : "PM"}`;
 }
 
 /**
@@ -105,6 +121,7 @@ function soraniDate(clock: WallClock, style: DateStyle, numbering: NumberingSyst
 export function formatDate(ms: number, style: DateStyle, locale: Locale, numbering: NumberingSystem): string {
   if (style === "short" || (style === "medium" && locale === "ar")) return numericDate(wallClock(ms, BAGHDAD_OFFSET_MS), numbering);
   if (locale === "ckb") return soraniDate(wallClock(ms, BAGHDAD_OFFSET_MS), style, numbering);
+  if (locale === "en") return englishDate(wallClock(ms, BAGHDAD_OFFSET_MS), style, numbering);
   return new Intl.DateTimeFormat(intlTag(locale, numbering), { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms);
 }
 
@@ -113,14 +130,15 @@ export function formatDateTime(ms: number, locale: Locale, numbering: NumberingS
   if (locale === "ckb") {
     const clock = wallClock(ms, BAGHDAD_OFFSET_MS);
     const hour = clock.hour % 12 === 0 ? 12 : clock.hour % 12;
-    return `${soraniDate(clock, "medium", numbering)} ${digits(hour, numbering)}:${digits(clock.minute, numbering, 2)} ${clock.hour < 12 ? CKB_AM : CKB_PM}`;
+    return `${soraniDate(clock, "medium", numbering)}، ${digits(hour, numbering)}:${digits(clock.minute, numbering, 2)} ${clock.hour < 12 ? CKB_AM : CKB_PM}`;
   }
   if (locale === "ar") {
     // the numeric date (day first, no bidi marks), then Intl's time with its ص / م
     const time = new Intl.DateTimeFormat(intlTag(locale, numbering), { timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms);
     return `${numericDate(wallClock(ms, BAGHDAD_OFFSET_MS), numbering)}، ${time}`;
   }
-  return new Intl.DateTimeFormat(intlTag(locale, numbering), { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms);
+  const clock = wallClock(ms, BAGHDAD_OFFSET_MS);
+  return `${englishDate(clock, "medium", numbering)}, ${englishTime(clock, numbering)}`;
 }
 
 export type CalendarDayOptions = {
@@ -135,6 +153,7 @@ export type CalendarDayOptions = {
 export function formatWeekday(ms: number, locale: Locale, options: CalendarDayOptions = {}): string {
   const timeZone = options.timeZone ?? "Asia/Baghdad";
   if (locale === "ckb") return CKB_WEEKDAYS[wallClock(ms, timeZone === "UTC" ? 0 : BAGHDAD_OFFSET_MS).weekday];
+  if (locale === "en") return EN_WEEKDAYS[wallClock(ms, timeZone === "UTC" ? 0 : BAGHDAD_OFFSET_MS).weekday];
   return new Intl.DateTimeFormat(intlTag(locale, "latn"), { weekday: "long", timeZone }).format(ms);
 }
 
@@ -144,6 +163,10 @@ export function formatWeekdayDay(ms: number, locale: Locale, numbering: Numberin
   if (locale === "ckb") {
     const clock = wallClock(ms, timeZone === "UTC" ? 0 : BAGHDAD_OFFSET_MS);
     return `${CKB_WEEKDAYS[clock.weekday]}، ${digits(clock.day, numbering)}ی ${CKB_MONTHS[clock.month - 1]}`;
+  }
+  if (locale === "en") {
+    const clock = wallClock(ms, timeZone === "UTC" ? 0 : BAGHDAD_OFFSET_MS);
+    return `${EN_WEEKDAYS[clock.weekday]}, ${digits(clock.day, numbering)} ${EN_MONTHS[clock.month - 1]}`;
   }
   return new Intl.DateTimeFormat(intlTag(locale, numbering), { weekday: "long", day: "numeric", month: "long", timeZone }).format(ms);
 }

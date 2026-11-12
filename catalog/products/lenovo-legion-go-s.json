@@ -165,9 +165,9 @@
     {
       "sku": "LEGOS-Z1E-STEAM",
       "title": {
-        "ar": "Legion Go S بنظام SteamOS Z1 Extreme 32GB / 1TB Nebula Nocturne",
-        "en": "Legion Go S Powered by SteamOS, Z1 Extreme 32GB / 1TB, Nebula Nocturne",
-        "ckb": "Legion Go S بە SteamOS، Z1 Extreme 32GB / 1TB، Nebula Nocturne"
+        "ar": "بنظام SteamOS Z1 Extreme 32GB / 1TB Nebula Nocturne",
+        "en": "Powered by SteamOS · Z1 Extreme 32GB / 1TB · Nebula Nocturne",
+        "ckb": "بە SteamOS · Z1 Extreme 32GB / 1TB · Nebula Nocturne"
       },
       "options": { "os": "SteamOS", "chip": "Ryzen Z1 Extreme", "memory": "32GB", "storage": "1TB", "color": "Nebula Nocturne" },
       "modelNumber": "83N6",
@@ -177,9 +177,9 @@
     {
       "sku": "LEGOS-Z1E-WIN",
       "title": {
-        "ar": "Legion Go S بنظام Windows 11 Z1 Extreme 32GB / 1TB أبيض Glacier White",
-        "en": "Legion Go S with Windows 11, Z1 Extreme 32GB / 1TB, Glacier White",
-        "ckb": "Legion Go S بە Windows 11، Z1 Extreme 32GB / 1TB، سپیی Glacier White"
+        "ar": "بنظام Windows 11 Z1 Extreme 32GB / 1TB أبيض Glacier White",
+        "en": "With Windows 11 · Z1 Extreme 32GB / 1TB · Glacier White",
+        "ckb": "بە Windows 11 · Z1 Extreme 32GB / 1TB · سپیی Glacier White"
       },
       "options": { "os": "Windows 11 Home", "chip": "Ryzen Z1 Extreme", "memory": "32GB", "storage": "1TB", "color": "Glacier White" },
       "modelNumber": "83N6",
@@ -189,9 +189,9 @@
     {
       "sku": "LEGOS-Z2GO-STEAM",
       "title": {
-        "ar": "Legion Go S بنظام SteamOS Z2 Go 16GB / 512GB Nebula Nocturne",
-        "en": "Legion Go S Powered by SteamOS, Z2 Go 16GB / 512GB, Nebula Nocturne",
-        "ckb": "Legion Go S بە SteamOS، Z2 Go 16GB / 512GB، Nebula Nocturne"
+        "ar": "بنظام SteamOS Z2 Go 16GB / 512GB Nebula Nocturne",
+        "en": "Powered by SteamOS · Z2 Go 16GB / 512GB · Nebula Nocturne",
+        "ckb": "بە SteamOS · Z2 Go 16GB / 512GB · Nebula Nocturne"
       },
       "options": { "os": "SteamOS", "chip": "Ryzen Z2 Go", "memory": "16GB", "storage": "512GB", "color": "Nebula Nocturne" },
       "modelNumber": "83L3",

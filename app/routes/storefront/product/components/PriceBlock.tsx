@@ -3,7 +3,8 @@
  *
  *   667,750 د.ع  [سعر ومخزون تجريبيان]            price xl + the demo tag (demo data)
  *   ● متوفر · التوصيل 5,000 د.ع لكل المحافظات      stock words + the fee from settings (14/600); coming soon:
- *                                                  «● يصدر 19 تشرين الثاني 2026» (PriceTag `status`)
+ *                                                  «● يصدر 19 تشرين الثاني 2026» alone (PriceTag `status`; the
+ *                                                  sentence under it: «الطلب يفتح عند وصوله.»), one line on a phone
  *   (one sentence when the chosen version cannot be ordered, or the fee depends on the governorate)
  *
  * Honest by construction: the previous price is struck only when it is real — or a demo value while the whole store is
@@ -94,7 +95,9 @@ export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, dig
       demo={isDemo || demoStore}
       stock={variant.orderable ? variant.stock : soon ? "preorder" : "out_of_stock"}
       status={soonStatus}
-      deliveryIqd={digital || delivery.overridesEnabled ? null : delivery.flatFeeIqd}
+      // coming soon: the line is the release day, and the sentence under it says ordering opens then (spec §6.7 states)
+      // — no fee beside it, so the line stays one line on a phone; the facts card still states the delivery fee
+      deliveryIqd={digital || soon || delivery.overridesEnabled ? null : delivery.flatFeeIqd}
       aside={
         reason || life || offline || (!digital && delivery.overridesEnabled) ? (
           <div className="grid gap-1">

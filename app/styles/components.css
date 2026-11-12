@@ -20,6 +20,51 @@
 .bidi {
   unicode-bidi: isolate;
 }
+/* one line of facts joined by « · » (<FactLine>: card kind and meta lines, the toast's product line, the buy bar's
+   version). Facts are whole: one that does not fit beside the previous wraps onto a hidden row (with its « · »); only
+   a first fact wider than the line is shortened, in its own isolate, at its own logical end. Inside a fact with Arabic
+   words a Latin run is one piece (an atomic inline): the ellipsis hides it whole or shortens it at its end — never its
+   first letters. */
+.factline {
+  display: flex;
+  flex-wrap: wrap;
+  min-inline-size: 0;
+  max-block-size: calc(var(--lines, 1) * 1lh);
+  overflow: hidden;
+}
+.factline--2 {
+  --lines: 2;
+}
+.factline__fact {
+  display: flex;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.factline__sep {
+  flex: none;
+  white-space: pre;
+}
+.factline__text {
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* a fact with Arabic or Kurdish words is its own paragraph: its direction comes from those words (outside its Latin
+   isolates it is only ever Arabic script), the page's own */
+.factline__text.bidi {
+  unicode-bidi: plaintext;
+}
+.factline__text bdi {
+  display: inline-block;
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+.factline__fact:first-child .factline__lead {
+  max-inline-size: calc(100% - 1em);
+}
 /* directional glyphs (arrows, carets, chevrons) mirror in RTL; nothing else mirrors */
 [dir="rtl"] .i--dir {
   scale: -1 1;
@@ -916,6 +961,13 @@ select.field__input {
   font-size: var(--price-sm);
   line-height: 1.3;
 }
+/* the figure and the currency: one unit that wraps as a whole, never apart */
+.price__amount {
+  display: inline-flex;
+  align-items: baseline;
+  column-gap: 0.25em;
+  white-space: nowrap;
+}
 .price__num {
   font: inherit;
 }
@@ -995,6 +1047,13 @@ select.field__input {
   gap: 4px 8px;
   font: var(--type-sm-strong);
   color: var(--ink);
+}
+/* an item after the first starts with its own « · », so the separator wraps together with it */
+.price-line__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-inline-size: 0;
 }
 
 /* ───────────────────────────── product card (§9.5): one family, no container ─────────────────────────────
@@ -1405,6 +1464,22 @@ select.field__input {
     block-size: 76px;
   }
 }
+/* the full-screen viewer (Gallery): the bar and the strip keep the gutter (and the notch) at every width; the strip is a
+   sideways scroller as wide as the screen — centred while it fits (auto margins, so its start stays reachable when it
+   does not), the gutter kept as scroll padding */
+.viewer__bar {
+  padding-inline: max(var(--gutter), var(--safe-inline));
+}
+.thumbs--viewer {
+  padding-inline: max(var(--gutter), var(--safe-inline));
+  scroll-padding-inline: max(var(--gutter), var(--safe-inline));
+}
+.thumbs--viewer > .thumb:first-child {
+  margin-inline-start: auto;
+}
+.thumbs--viewer > .thumb:last-child {
+  margin-inline-end: auto;
+}
 /* the phone buy bar (glass, 72px + safe area, --e-float): price and variant at the start, the primary at the end */
 .buybar {
   display: grid;
@@ -1415,9 +1490,19 @@ select.field__input {
   padding: 12px var(--s-4) calc(12px + var(--safe-bottom));
 }
 .buybar__info {
+  container-type: inline-size;
   display: grid;
   gap: 2px;
   min-inline-size: 0;
+}
+/* a narrow price column (320px reflow, 400% zoom): the price steps down to sm before the bar would grow */
+@container (max-width: 140px) {
+  .buybar__info .price--lg {
+    font-size: var(--price-sm);
+  }
+  .buybar__info .price--lg .price__cur {
+    font-size: var(--cur-sm);
+  }
 }
 .buybar__var {
   overflow: hidden;
@@ -1937,27 +2022,48 @@ select.field__input {
 .scrim--menu {
   background: var(--scrim-menu);
 }
-/* toast: graphite (dark: #2A2C32), a 48px thumbnail, a title with an ok check, one line, «عرض السلة» + «تراجع» */
+/* toast: graphite (dark: #2A2C32), a 48px thumbnail, a title with an ok check, one line, «عرض السلة» + «تراجع».
+   One anatomy at every width (the 380px desktop toast included): the thumbnail, the words and the close key in the
+   first row, the actions in a row of their own under them — beside the words they left ~90px for the product line and
+   broke the title (QA 2026-11-12). */
 .toast {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "thumb text close"
+    "actions actions actions";
   align-items: center;
-  gap: var(--s-3);
+  gap: 4px var(--s-3);
   min-block-size: 64px;
   padding-block: 8px;
-  padding-inline: 12px 8px;
+  padding-inline: 12px 6px;
   border-radius: var(--r-lg);
   background: var(--toast);
   box-shadow: var(--e-float);
   color: var(--on-band);
 }
 .toast__thumb {
+  grid-area: thumb;
   position: relative;
+  display: grid;
+  place-items: center;
   inline-size: 48px;
   block-size: 48px;
+  padding: 4px;
   border-radius: var(--r-sm);
   background: var(--niche);
   overflow: hidden;
+  isolation: isolate; /* an opaque photo's multiply stops at the well */
+}
+.toast__text {
+  grid-area: text;
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.toast__close {
+  grid-area: close;
+  align-self: start;
 }
 .toast__title {
   display: flex;
@@ -1970,15 +2076,15 @@ select.field__input {
   color: var(--on-band-ok);
 }
 .toast__line {
-  overflow: hidden;
   font: var(--type-xs);
   color: var(--on-band-2);
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 .toast__actions {
+  grid-area: actions;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
 }
 /* «عرض السلة»: a 40px outlined button (1px white at 40%, 44 hit) */
@@ -2370,17 +2476,36 @@ select.field__input {
   font: var(--type-xs);
   color: var(--ink-2);
 }
-/* the offline banner: 40px, warn ground, words + an inline wifi-slash icon; never confused with the demo strip */
+/* an empty page with a shelf: the 560px column, then the shelf at the page's own width (a rail on phones, whole cards
+   from 1024 — like any shelf) */
+.empty-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.empty__shelf {
+  min-inline-size: 0;
+  margin-block-end: var(--s-8);
+}
+/* the offline banner (§4.23): 40px, the warn ground, 14/600 warn words + an inline wifi-slash icon in warn, starting at
+   the reading edge with a 3px warn bar there and a hairline under it — never confused with the demo strip (a centred
+   28px line of 13px words on its own amber, no bar) and never the black ribbon §11.7 removed. «عاد الاتصال»: the ok pair. */
 .offline {
   display: flex;
   align-items: center;
   gap: var(--s-2);
   min-block-size: 40px;
-  padding-inline: var(--gutter);
+  padding-block: 6px;
+  padding-inline: calc(var(--gutter) - 3px) var(--gutter);
   border-block-end: 1px solid var(--line);
+  border-inline-start: 3px solid var(--warn);
   background: var(--warn-tint);
   color: var(--warn);
   font: var(--type-sm-strong);
+}
+.offline--back {
+  border-inline-start-color: var(--ok);
+  background: var(--ok-tint);
+  color: var(--ok);
 }
 .offline > svg {
   flex: none;
@@ -2466,6 +2591,34 @@ select.field__input {
   }
   .status::before {
     forced-color-adjust: none;
+  }
+  /* the switch is drawn by backgrounds only, and forced colours paint every background Canvas: a CanvasText track
+     edge and knob when off, a Highlight track with a HighlightText knob when on (WCAG 1.4.11) */
+  .switch__track,
+  .switch__knob {
+    forced-color-adjust: none;
+  }
+  .switch__track {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+  .switch__knob {
+    inset-block-start: 2px;
+    inset-inline-start: 2px;
+    background: CanvasText;
+  }
+  .choice__input:checked + .switch__track {
+    border-color: Highlight;
+    background: Highlight;
+  }
+  .choice__input:checked + .switch__track > .switch__knob {
+    background: HighlightText;
+  }
+  .choice__input:disabled + .switch__track {
+    border-color: GrayText;
+  }
+  .choice__input:disabled + .switch__track > .switch__knob {
+    background: GrayText;
   }
 }
 

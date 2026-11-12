@@ -109,6 +109,20 @@ the admin shell (docs/areas/admin-shell.md). Services: `app/server/services/admi
 - UI: the category confirm key and sheet footers truncated at 390; the current section tab off-screen on phones; the
   import list's "open" link out of view on phones; the phone variant card's switch-off key not marked destructive.
 
+## QA fix 2026-11-12: per-language fields keep their own direction
+
+The kit's `TextField` keeps only its `ltr` flag and drops a `dir` it is given, so the one-line per-language fields (name,
+short line, search words, a custom field's text, a variant's title, a device's name and summary, the spec sheet) took the
+admin's direction: «007 First Light» read «First Light 007» in the Arabic admin, Arabic lines ran left to right in the English
+one. `inputDir(dir)` (components/ui.tsx) gives English `ltr` (dir="ltr" from the server) and Arabic/Sorani a right-to-left
+class from the first paint plus the attribute once the page runs; `L10nFields` and `SpecsEditor` spread it. The product
+name in the editor's h1 and on the list sits in a `<bdi>` (its own order, the page's alignment). Tests: "per-language fields
+keep their own direction" in `tests/admin-catalog-routes.test.ts`. The kit's owner is asked to honour `dir` (then the class
+and the attribute-setting ref become redundant, harmlessly). The same dropped `dir="ltr"` sat on the English one-line fields
+of other modules (channels' branch and sales-channel names, devices' templates and used-unit notes, promotions' flash, rule
+and VIP names, the CMS's per-language fields): they now pass the kit's `ltr` flag (and `lang="en"`). Still waiting on the kit:
+Arabic and Sorani one-line fields of the CMS in the English admin, and automation's `dir="auto"` rule name.
+
 ## Boundaries
 
 - Video and crop/focal hints: the upload service takes JPEG/PNG/WebP only and `media` has no URL, crop or focal

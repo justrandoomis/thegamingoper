@@ -42,7 +42,7 @@
   "variants": [
     {
       "sku": "NS2G-DK-BANANZA",
-      "title": { "ar": "Donkey Kong Bananza — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Donkey Kong Bananza — Nintendo Switch 2 physical edition", "ckb": "Donkey Kong Bananza — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905576"],
       "isDefault": true,

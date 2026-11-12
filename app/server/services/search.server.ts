@@ -41,6 +41,7 @@ import type { Db } from "~/server/db/drizzle.server";
 import { searchQueryStats } from "~/server/db/schema";
 import { normalizeSearchText } from "~/server/db/search.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
+import { qualifierOf } from "./catalog/card-facts";
 import { getNewArrivals } from "./catalog/cards.server";
 import { listProducts, MAX_SCOPE_IDS, type ListingResult } from "./catalog/listing.server";
 
@@ -599,8 +600,12 @@ export async function searchProducts(db: Db, locale: Locale, q: string, options:
 // ───────────────────────────────────────────────────────────────── autocomplete
 
 export type SuggestionKind = "product" | "correction" | SearchJump["kind"];
-/** `id`: the product's id, on "product" items only (for its card: picture, price, kind). */
-export type SearchSuggestionItem = { kind: SuggestionKind; label: string; href: string; hint?: string; id?: string };
+/**
+ * `id`: the product's id, on "product" items only (for its card: picture, price, kind). `qualifier`: "product" items
+ * whose Latin title leaves words out — «نسخة الأقراص» for «PlayStation 5 Slim · 1TB» (design v2 spec §4.11); print it on
+ * the row's second line (with the kind), never glued into the Latin label.
+ */
+export type SearchSuggestionItem = { kind: SuggestionKind; label: string; href: string; hint?: string; id?: string; qualifier?: string };
 
 /** suggestSearchWithTotal(): the suggestions, their products' ids, and how many products /search lists for the words. */
 export type SuggestSearchResult = {
@@ -642,8 +647,8 @@ export async function suggestSearchWithTotal(db: Db, locale: Locale, q: string, 
   const top = room > 0 ? match.ids.slice(0, room + 4) : [];
   const [rows, counted] = await Promise.all([
     top.length > 0
-      ? db.all<{ id: string; slug: string; name: string; category: string | null }>(sql`
-      SELECT p.id, p.slug, p.name, c.name AS category
+      ? db.all<{ id: string; slug: string; name: string; category: string | null; attributes: string | null }>(sql`
+      SELECT p.id, p.slug, p.name, c.name AS category, p.attributes
       FROM products AS p LEFT JOIN categories AS c ON c.id = p.category_id AND c.is_active = 1
       WHERE p.status = 'published' AND p.id IN (SELECT value FROM json_each(${JSON.stringify(top)}))`)
       : Promise.resolve([]),
@@ -660,7 +665,8 @@ export async function suggestSearchWithTotal(db: Db, locale: Locale, q: string, 
     const row = byId.get(id);
     if (!row || out.length >= limit) continue;
     const hint = pick(parseJson<L10n>(row.category), locale);
-    out.push({ kind: "product", label: pick(parseJson<L10n>(row.name), locale) || row.slug, href: `/p/${row.slug}`, ...(hint ? { hint } : {}), id: row.id });
+    const qualifier = qualifierOf(row.attributes, locale);
+    out.push({ kind: "product", label: pick(parseJson<L10n>(row.name), locale) || row.slug, href: `/p/${row.slug}`, ...(hint ? { hint } : {}), id: row.id, ...(qualifier ? { qualifier } : {}) });
   }
   const items = out.slice(0, limit);
   return {

@@ -42,7 +42,7 @@ import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform } from "~/ui/PlatformLed";
 import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
 import { ProgressSteps } from "~/ui/ProgressSteps";
-import { fieldMessage, formMessage, isFailure, keepFormOnFailure, phoneProblem, revalidateAfter, stepBack } from "./client";
+import { fieldMessage, formMessage, isFailure, keepFormOnFailure, phoneProblem, revalidateAfter, stepBack, withServerErrors } from "./client";
 import { SupportNav } from "./components/parts";
 import { PhotoPicker } from "./components/PhotoPicker";
 import { failed, formFiles, formKey, photoStore, readSupportForm, supportWho, textFields } from "./support.server";
@@ -138,6 +138,9 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
   const stepIndex = STEPS.indexOf(step);
   const [device, setDevice] = useState(values.device ?? loaderData.device);
   const [photos, setPhotos] = useState<File[]>([]);
+  // The store refused one of the attached photos: the shopper changes them before moving on (a photo the picker kept
+  // out is only a sentence — it is not attached, so nothing waits on it).
+  const [photosRefused, setPhotosRefused] = useState(false);
   const [local, setLocal] = useState<Record<string, string | undefined>>({});
   const [summaryFor, setSummaryFor] = useState<Step | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -172,14 +175,17 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
     headingRef.current?.focus({ preventScroll: true });
   }, [step]);
 
-  // The server refused a field the browser could not check (a device that left the catalogue…): go to its step and
-  // focus it there.
+  // The server refused a field the browser could not check (a photo it cannot read, a device that left the
+  // catalogue…): go to its step and focus it there. The store's sentences are kept in the page's own state: moving to
+  // the step is a navigation, which clears the action's answer (QA 2026-11-12: the form arrived on the photo step
+  // with no reason and no error summary).
   useEffect(() => {
     const fields = failure?.fields ? Object.keys(failure.fields) : [];
     const first = fields[0];
     if (!first) return;
     // the server's word wins over an earlier client check of the same field
-    setLocal((prev) => Object.fromEntries(Object.entries(prev).filter(([name]) => !fields.includes(name))));
+    setLocal((prev) => withServerErrors(prev, failure?.fields, t, errorsT));
+    if (failure?.fields?.photos) setPhotosRefused(true);
     setSummaryFor(FIELD_STEP[first] ?? "device");
     focusField.current = first;
     const target = FIELD_STEP[first] ?? "device";
@@ -193,6 +199,10 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
     const name = focusField.current;
     if (!name) return;
     focusField.current = null;
+    focusNamed(name);
+  }
+  /** A field by its name — or, for a group (option cards, the two photo inputs), the element with its id. */
+  function focusNamed(name: string) {
     const element = formRef.current?.elements.namedItem(name);
     if (element instanceof HTMLElement) element.focus();
     else document.getElementById(id(name))?.focus();
@@ -222,7 +232,7 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
     const names = steps.flatMap((s) => STEP_FIELDS[s]);
     for (const name of names) next[name] = checks[name](read(name));
     setLocal(next);
-    const firstBad = names.find((name) => next[name]) ?? (steps.includes("photos") && local.photos ? "photos" : undefined);
+    const firstBad = names.find((name) => next[name]) ?? (steps.includes("photos") && photosRefused ? "photos" : undefined);
     if (!firstBad) {
       setSummaryFor(null);
       return true;
@@ -233,7 +243,8 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
       focusField.current = firstBad;
       go(target);
     } else {
-      (formRef.current?.elements.namedItem(firstBad) as HTMLElement | null)?.focus();
+      // the photos are two inputs under one name (choose, camera): their fieldset takes focus
+      focusNamed(firstBad);
     }
     return false;
   };
@@ -242,6 +253,8 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
     if (step === "contact") return; // the submit of the form itself
     event.preventDefault();
     if (!checkSteps([step])) return;
+    // a photo the picker kept out was said; it is not attached, so its sentence does not follow the shopper back here
+    if (step === "photos") setLocal((prev) => ({ ...prev, photos: undefined }));
     go(STEPS[stepIndex + 1]);
   };
   // «رجوع»: when this step was reached from the previous one, it is history Back — the browser's Back and Forward then
@@ -377,6 +390,8 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
               files={photos}
               onChange={(files, problem) => {
                 setPhotos(files);
+                // the photos changed: what the store refused is no longer what would be sent
+                setPhotosRefused(false);
                 setLocal((prev) => ({ ...prev, photos: problem ? fieldMessage("photos", problem, t, errorsT) : undefined }));
               }}
               label={t("photos.label")}

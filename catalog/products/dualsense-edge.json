@@ -86,7 +86,7 @@
   "variants": [
     {
       "sku": "DSEDGE-WHITE",
-      "title": { "ar": "DualSense Edge – أبيض", "en": "DualSense Edge – White", "ckb": "DualSense Edge – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZCP1",
       "isDefault": true,
@@ -94,7 +94,7 @@
     },
     {
       "sku": "DSEDGE-MIDNIGHT-BLACK",
-      "title": { "ar": "DualSense Edge – أسود Midnight Black", "en": "DualSense Edge – Midnight Black", "ckb": "DualSense Edge – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["dualsense-edge--5"],

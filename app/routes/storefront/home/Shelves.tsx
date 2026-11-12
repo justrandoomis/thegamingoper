@@ -44,7 +44,7 @@ import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
-import { MIN_SHELF, RELEASE_LIMIT, tileArt } from "./view";
+import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, tileArt } from "./view";
 
 /** How wide a card's picture is drawn: 2.15 cards on phones, 3.2 from 768, 4-up from 1024, 5-up (240px) from 1280. */
 const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
@@ -149,28 +149,15 @@ export function NewArrivals({ shelves, focus, onFocus, inflate, wished }: NewArr
 
 // ───────────────────────────────────────────────────────────────── release band
 
-/** What a coming-soon product's card says about its platform (looked up by the loader), by product id. */
-export type ReleasePlatform = { platform: Gel | null; label: string | null };
-
-export function Releases({ items, platforms, now }: { items: readonly ComingSoonItem[]; platforms: Readonly<Record<string, ReleasePlatform>>; now: number }) {
+/**
+ * Every item carries its platform line (the facts come with the coming items, home.server.ts): a pre-order's from its
+ * card, a dated later version's from the platform that version is for. A version says «نسخة جديدة» on the line under
+ * its name (./view releaseItemOf).
+ */
+export function Releases({ items, now }: { items: readonly ComingSoonItem[]; now: number }) {
   const t = useT("home");
   if (items.length < 2) return null;
-  const releases: ReleaseItem[] = items.slice(0, RELEASE_LIMIT).map((item) => {
-    // an unreleased version of a released product says so; the catalogue's version titles are not shown (they can
-    // carry words the store does not use, such as «طلب مسبق»)
-    const versions = item.variantCount > 0 ? t("releases.versions", { count: item.variantCount }) : null;
-    const known = item.variantCount === 0 ? platforms[item.productId] : undefined;
-    return {
-      id: item.key,
-      to: `/p/${item.slug}`,
-      name: versions ? `${item.name} · ${versions}` : item.name,
-      releaseAt: item.releaseAt,
-      platform: known?.platform ?? null,
-      platformLabel: known?.label ?? undefined,
-      priceIqd: item.priceIqd,
-      image: item.image,
-    };
-  });
+  const releases: ReleaseItem[] = items.slice(0, RELEASE_LIMIT).map((item) => releaseItemOf(item, (count) => t("releases.versions", { count })));
   return <ReleaseBand items={releases} now={now} />;
 }
 

@@ -71,7 +71,7 @@ import { alternativesPath, CompatibilitySlot, DeviceHubSlot, RecommendationsSlot
 import { VariantPicker } from "./components/VariantPicker";
 import { useProductT } from "./i18n";
 import { jsonForScript, productJsonLd } from "./jsonld";
-import { factLine, factRow, proseWithoutPreorder, withoutPreorder } from "./text";
+import { factLine, factRow, isLongName, keepTokens, proseWithoutPreorder, withoutPreorder } from "./text";
 import { onlyVariantChanged, useVariantInUrl } from "./useVariant";
 
 import "./product.css";
@@ -217,6 +217,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const soon = !variant.orderable && variant.releaseAt !== null;
   const soldOut = !variant.orderable && !soon;
   const digital = isDigital(product);
+  const longName = isLongName(product.name);
   const facts = factRow(product.short);
   // sold out: «شاهد بدائل» opens the product's own category, which lists what is in stock first (the page's shelves
   // are mostly add-ons for it, or none at all)
@@ -240,9 +241,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="pp" data-product={product.id} data-variant={variant.sku}>
-      {/* Phones: tight steps between the head blocks, so the price, the demo tag and the stock-and-delivery line sit above
-          the buy bar on first load (spec §6.7 target, y ≤ 760 at 390×844) for names up to two lines. */}
-      <div className="page grid gap-x-8 gap-y-3 md:gap-y-5 lg:grid-cols-12 lg:items-start lg:gap-y-6 2xl:gap-x-12">
+      {/* Phones: tight steps between the head blocks (8px under the thumbnails, 2px inside the name block, 8px to the
+          price) and a long name one size down, so the price, the demo tag and the stock-and-delivery line sit above
+          the buy bar on first load (spec §6.7 target, y ≤ 760 at 390×844). */}
+      <div className="page grid gap-x-8 gap-y-2 md:gap-y-5 lg:grid-cols-12 lg:items-start lg:gap-y-6 2xl:gap-x-12">
         <Breadcrumbs items={crumbs} jsonLd={origin ? { origin } : undefined} className="lg:col-span-12" />
 
         {/* The gallery: the card's well grows into this stage (shared element product-image:<id>). */}
@@ -264,51 +266,57 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div className="pp-buy grid min-w-0 content-start gap-3 md:gap-5 lg:col-span-5">
-          <div className="grid gap-1 md:gap-2">
-            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs-strong text-ink-2" data-kind-line="">
-              {soon ? <Tag kind="soon" /> : product.isNew && variant.orderable ? <Tag kind="new" /> : null}
-              {platforms.map((platform) =>
-                platform.gel ? (
-                  <PlatformLabel key={platform.slug} platform={platform.gel} />
-                ) : (
-                  <span key={platform.slug} className="plat">
-                    <bdi>{platform.name}</bdi>
-                  </span>
-                ),
-              )}
-              {platforms.length > 0 ? <span aria-hidden="true">·</span> : null}
-              <span>{product.kindLabel ?? kindLabelOf({ kind: product.kind, families: [] }, locale)}</span>
-            </p>
-            <h1 className="type-h1 text-ink">
-              <BidiText text={product.name} />
-            </h1>
-            {/* ONE fact line (§6.7 item 5): the second fact shows only when it fits beside the first (.pp-facts); a first
-                fact longer than a phone line is shown alone and wraps (text.ts factRow) */}
-            {facts.facts.length > 0 ? (
-              <p className={cx("pp-facts type-sm text-ink-2", facts.wrap && "pp-facts--wrap")} data-facts-line="">
-                {facts.facts.map((fact, index) => (
-                  <span key={index}>
-                    {index > 0 ? "· " : null}
-                    <MixedText text={fact} />
-                  </span>
-                ))}
+          {/* the name block and the price block: 8px apart on phones (the buy box's other steps keep 12) */}
+          <div className="grid gap-2 md:gap-5">
+            <div className="grid gap-0.5 md:gap-2">
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs-strong text-ink-2" data-kind-line="">
+                {soon ? <Tag kind="soon" /> : product.isNew && variant.orderable ? <Tag kind="new" /> : null}
+                {platforms.map((platform) =>
+                  platform.gel ? (
+                    <PlatformLabel key={platform.slug} platform={platform.gel} />
+                  ) : (
+                    <span key={platform.slug} className="plat">
+                      <bdi>{platform.name}</bdi>
+                    </span>
+                  ),
+                )}
+                {platforms.length > 0 ? <span aria-hidden="true">·</span> : null}
+                <span>{product.kindLabel ?? kindLabelOf({ kind: product.kind, families: [] }, locale)}</span>
               </p>
-            ) : null}
-          </div>
+              {/* protected tokens never break («Switch 2», «Z-A»: text.ts keepTokens, v2 §4.18); a name of three lines and
+                  more is set one step down on phones (text.ts isLongName) */}
+              <h1 className={cx("type-h1 text-ink", longName && "max-md:type-h2")} data-long-name={longName ? "" : undefined}>
+                <BidiText text={keepTokens(product.name)} />
+              </h1>
+              {/* ONE fact line (§6.7 item 5): the second fact shows only when it fits beside the first (.pp-facts); a
+                  list of contents too long for a phone line shows the parts that fit there, all of them from 768; any
+                  other first fact longer than a phone line is shown alone and wraps (text.ts factRow) */}
+              {facts.facts.length > 0 ? (
+                <p className={cx("pp-facts type-sm text-ink-2", facts.wrap && "pp-facts--wrap", facts.parts && "pp-facts--parts")} data-facts-line="">
+                  {facts.facts.map((fact, index) => (
+                    <span key={index}>
+                      {index > 0 ? (facts.parts ? "+ " : "· ") : null}
+                      <MixedText text={fact} />
+                    </span>
+                  ))}
+                </p>
+              ) : null}
+            </div>
 
-          <div className="grid gap-3">
-            <PriceBlock
-              variant={variant}
-              variants={product.variants}
-              delivery={product.delivery}
-              lifecycle={product.lifecycle}
-              isDemo={product.isDemo}
-              digital={digital}
-              reasonId={reasonId}
-              offline={offline}
-              offlineId={offlineId}
-            />
-            <PaymentLine methods={methods} />
+            <div className="grid gap-3">
+              <PriceBlock
+                variant={variant}
+                variants={product.variants}
+                delivery={product.delivery}
+                lifecycle={product.lifecycle}
+                isDemo={product.isDemo}
+                digital={digital}
+                reasonId={reasonId}
+                offline={offline}
+                offlineId={offlineId}
+              />
+              <PaymentLine methods={methods} />
+            </div>
           </div>
 
           {product.variants.length > 1 ? <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={choose} /> : null}

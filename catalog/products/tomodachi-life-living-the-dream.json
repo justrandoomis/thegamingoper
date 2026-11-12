@@ -40,7 +40,7 @@
   "variants": [
     {
       "sku": "NSG-TOMODACHI-LIFE-DREAM",
-      "title": { "ar": "Tomodachi Life: Living the Dream — نسخة فيزيائية لـ Nintendo Switch", "en": "Tomodachi Life: Living the Dream — Nintendo Switch physical edition", "ckb": "Tomodachi Life: Living the Dream — کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch", "en": "Nintendo Switch physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
       "barcodes": ["045496906078"],
       "isDefault": true,

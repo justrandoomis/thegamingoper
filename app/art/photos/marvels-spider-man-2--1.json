@@ -1,70 +1,62 @@
 {
   "key": "marvels-spider-man-2--1",
   "view": "hero",
-  "width": 1600,
+  "width": 1067,
   "height": 1600,
-  "aspect": 1,
+  "aspect": 0.6669,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/marvels-spider-man-2/1-240.1bf1c90c.avif"
+        "src": "/products/marvels-spider-man-2/1-240.aeb8242a.avif"
       },
       {
         "w": 480,
-        "src": "/products/marvels-spider-man-2/1-480.f5a20354.avif"
+        "src": "/products/marvels-spider-man-2/1-480.7892d796.avif"
       },
       {
         "w": 720,
-        "src": "/products/marvels-spider-man-2/1-720.9cc5fa9a.avif"
+        "src": "/products/marvels-spider-man-2/1-720.be1f1b4d.avif"
       },
       {
         "w": 960,
-        "src": "/products/marvels-spider-man-2/1-960.e52b32fc.avif"
-      },
-      {
-        "w": 1440,
-        "src": "/products/marvels-spider-man-2/1-1440.2abece39.avif"
+        "src": "/products/marvels-spider-man-2/1-960.6a8aa64b.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/marvels-spider-man-2/1-240.757adf93.webp"
+        "src": "/products/marvels-spider-man-2/1-240.440562c0.webp"
       },
       {
         "w": 480,
-        "src": "/products/marvels-spider-man-2/1-480.07546f13.webp"
+        "src": "/products/marvels-spider-man-2/1-480.9a99860c.webp"
       },
       {
         "w": 720,
-        "src": "/products/marvels-spider-man-2/1-720.9d4a992b.webp"
+        "src": "/products/marvels-spider-man-2/1-720.7c26f5f6.webp"
       },
       {
         "w": 960,
-        "src": "/products/marvels-spider-man-2/1-960.7eedcd27.webp"
-      },
-      {
-        "w": 1440,
-        "src": "/products/marvels-spider-man-2/1-1440.15e4a977.webp"
+        "src": "/products/marvels-spider-man-2/1-960.601e8a10.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/marvels-spider-man-2/1-1200.c5c704b7.jpg",
-    "width": 1200,
-    "height": 1200,
+    "src": "/products/marvels-spider-man-2/1-1067.fbd0463c.jpg",
+    "width": 1067,
+    "height": 1600,
     "type": "image/jpeg"
   },
-  "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABQAPxF4sVIsJySiqA1RgCIJbACdL3WA59eVbBJLqIEeGkAA/uvitxOutCGIGZFK1UFK7q1PRjeo3k3S04m3rC9/8g2LnB9Kki33W3ttnZ7lywCmgGgr30CJZJqnyZ4qyjih4QDerG7/IWGhsHVgsAA=",
-  "dominant": "#770001",
+  "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADQAwCdASoNABQAPxFwsFAsJiSisAgBgCIJbACdMoACm2RLQj14/YAA/uv/RmSUpjWd0Q3G4rMxioHhxZa8Rt//yGgNJZvyNVgmmwG0W6/iaKd9vm+iJHI+XqUC46HnXJte581u+sgAAA==",
+  "dominant": "#b80606",
   "transparent": false,
   "background": null,
   "kind": "box-art",
   "credit": "Sony Interactive Entertainment / Marvel",
   "source": {
-    "url": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-packshot-01-en-02jul24?$1600px--t$",
-    "page": "https://www.playstation.com/en-us/games/marvels-wolverine/"
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/60eca3ac155247e21850c7d075d01ebf0f3f5dbf19ccd2a1.jpg",
+    "page": "https://store.playstation.com/en-us/product/UP9000-PPSA03016_00-MARVELSPIDERMAN2"
   },
-  "input": "d1164e1efb6d6d7d"
+  "input": "2cd4720249c1e4b8"
 }

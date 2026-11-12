@@ -60,6 +60,13 @@ order rail and the sign-in card. Everything else is the kit (`.panel`, `.callout
   the chosen governorate, area, address, notes, default; an error summary linking to the fields on a refused save.
   Saved → toast (the form submits with `replace`, so Back does not reopen it). Without script the picker is hidden and a
   native governorate select inside `<noscript>` is the field, with every district listed under its governorate.
+  **Checked as the checkout checks** (QA 2026-11-12): `components/address-checks.ts` holds the service's rules (the
+  limits come from `ADDRESS_LIMITS` in `services/account/types.ts`, which the service's `AddressInput` uses too) and the
+  checkout's phone rule; a field is checked when it is left and again on every keystroke while it shows a problem;
+  «احفظ العنوان» checks every field first — nothing is sent while a problem shows: the error summary lists the fields
+  and focus goes to the first. The words are the checkout's (`addresses.fields.*` in `account.ts` takes
+  `checkout:fields.*`; only «{n} حرفاً» for 120 differs from the checkout's 200). A plain post (no script) is answered by
+  the service, and each field it names says the same sentence where the page's checks agree, not «هذا الحقل مطلوب.».
 - **Devices**: «أجهزتك» (rows linking to each hub) and «اختر أجهزتك» by platform (dot label), each device with the
   «أملكه» chip (`aria-pressed`, saved at once, optimistic); without script, a plain form with a held toggle key per
   device. **Returns / warranties / notifications**: rows and cards in the same panels; returns ask a person (no return
@@ -97,12 +104,12 @@ order rail and the sign-in card. Everything else is the kit (`.panel`, `.callout
 | `/account/orders`, `/orders/:ref` | `listOrdersForCustomer` (10 at a time) · `getOrderForCustomer` (another customer's ref = 404 in the account frame) |
 | `/account/wallet`, `?topup=1` | `WalletBalance` = ledger sum + ledger + pending top-ups; top-up REQUEST step (methods switched on, store details from settings, fraud note, amount, reference, `ProofUploader` → private file → `pending_verification`); requests with status, reject reason, private proof link, cancel |
 | `POST /account/wallet/proof`, `GET …/proof/:fileId` | Resource route: upload pipeline → private file `wallet_topup_proof` → `{ ok, fileId, previewUrl }`; served to its uploader only |
-| `/account/addresses`, `?new=1`, `?edit=<id>` | Cards + the form step; every field error at once; delete asks first |
+| `/account/addresses`, `?new=1`, `?edit=<id>` | Cards + the form step; the checkout's checks and words (on blur, every field before sending, the error summary); delete asks first |
 | `/account/devices` | Published device models by platform; «أملكه» chips; each name links to its hub |
 | `/account/returns`, `/account/warranties`, `/account/notifications` | Read-only lists (returns window, RMAs; warranties from delivery; notifications read one / all) |
 | `/account/profile`, `/account/settings` | Profile (audited); consents, channels (providers only), phone confirmation (provider only), password, sessions |
 | `/account/rewards` (2026-11-12) | «النقاط والعضوية»: the points balance and its worth, what expires within 30 days and the next date points really expire (module 08's FIFO rule), the earn and expiry rules in words from the programme in force, the history (an order's reference only for the customer's own orders; a cancelled order's points «أُعيدت إليك»); the active membership as the checkout applies it (the tier's rate within the store's discount limits, «حتى 50,000 د.ع في الطلب الواحد», free delivery, the points multiplier) or «ليست لديك عضوية الآن» (memberships are granted by the store); the referral code to copy with its uses, or «احصل على رمز إحالة» (module 08's `issueReferralCode` for the customer, once). `account/rewards.server` |
-| `/account/privacy` (2026-11-12) | «الخصوصية وبياناتك»: a copy of my data · correct my data (details required) · delete my account (what is kept, the wallet paid out first) → module 07's `createPrivacyRequest` for the own account (`account/privacy.server`: 5 filings a day per customer and per address, one open request per kind, the same form twice is one request); «نرد قبل …»; nothing happens until a staff member confirms who is asking. Stopping messages points to the settings switches. Works without script (the page answers the document post) |
+| `/account/privacy` (2026-11-12) | «الخصوصية وبياناتك»: a copy of my data · correct my data (details required) · delete my account (what is kept, the wallet paid out first) → module 07's `createPrivacyRequest` for the own account (`account/privacy.server`: 5 filings a day per customer and per address, one open request per kind, the same form twice is one request); «نرد قبل …»; nothing happens until a staff member confirms who is asking. The confirmation promises no contact (§9.2, QA 2026-11-12): «استلمنا طلبك {ref}. يتحقق موظف من هويتك قبل أي إجراء، وتجد حالة الطلب هنا.». Stopping messages points to the settings switches. Works without script (the page answers the document post) |
 | `/account/wallet` gift card (2026-11-12) | «بطاقة هدية»: the code → «تحقق من البطاقة» (the amount; nothing changes) → a confirm dialog «أضف 60,000 د.ع إلى محفظتك؟» → module 08's guarded redemption into the customer's own wallet (`account/giftcards.server`: 10 checks per 10 minutes per customer and per address); the band's balance reads again. Refusals in the customer's words (`gift_card_*`). Without script the check answers with a plain confirm form |
 | `/wishlist` | Favourites for guests and customers; `private, no-store` |
 | `/api/wishlist` | GET `{ ok, ids }` · POST `intent=toggle\|add\|remove, productId` → `{ ok, wished, count }`; what `~/ui/WishlistKey` calls |

@@ -40,7 +40,7 @@
   "variants": [
     {
       "sku": "NS2G-FIRE-EMBLEM-FW",
-      "title": { "ar": "Fire Emblem: Fortune's Weave — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Fire Emblem: Fortune's Weave — Nintendo Switch 2 physical edition", "ckb": "Fire Emblem: Fortune's Weave — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906696"],
       "isDefault": true,

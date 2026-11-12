@@ -11,6 +11,7 @@ import { fadeElement, useModalLayer, useOverlayRoot, usePresence, usePrimeLayers
 import { IconKey } from "./IconKey";
 import type { Gel } from "./PlatformLed";
 import { ProductImage } from "./ProductCard";
+import { useKeepInView } from "./reveal";
 import { useControllable, useRovingRadio } from "./roving";
 import { Stage } from "./Stage";
 
@@ -203,14 +204,19 @@ export function Gallery({ name, items, sharedName, evidence = "product", priorit
   );
 }
 
-/** The thumbnails: a radiogroup of 56px (76 from 1024) wells; roving tabindex; arrows follow the reading direction. */
+/**
+ * The thumbnails: a radiogroup of 56px (76 from 1024) wells; roving tabindex; arrows follow the reading direction. A
+ * row wider than its box scrolls sideways (never the page), and the chosen thumbnail is kept in view.
+ */
 function Thumbs({ name, items, index, onIndex, captionOf, className }: { name: string; items: readonly GalleryItem[]; index: number; onIndex: (index: number) => void; captionOf: (item: GalleryItem | undefined) => string; className?: string }) {
   const t = useT("ui-shop");
   const f = useFormat();
+  const row = useRef<HTMLDivElement>(null);
   const values = items.map((_, i) => String(i));
   const { itemProps } = useRovingRadio({ values, value: String(index), onChange: (value) => onIndex(Number(value)) });
+  useKeepInView(row, '[aria-checked="true"]', index);
   return (
-    <div role="radiogroup" aria-label={t("gallery.label", { name })} className={cx("thumbs", className)}>
+    <div ref={row} role="radiogroup" aria-label={t("gallery.label", { name })} className={cx("thumbs", className)}>
       {items.map((entry, i) => (
         <button key={i} type="button" className="thumb" data-press="soft" aria-label={t("gallery.thumb", { n: f.number(i + 1), caption: captionOf(entry) })} {...itemProps(i)}>
           <span className="render-slot place-items-center">
@@ -299,6 +305,9 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, leaving,
     onIndex(stepIndex(index, step, items.length));
   };
 
+  // One column as wide as the screen (minmax(0, 1fr), never the thumbnails' width): the bar, the picture and the strip
+  // all fit a 360px phone; the strip scrolls sideways inside its own row (QA 2026-11-12: six thumbnails made the column
+  // 416px wide and pushed the close key off a 360px screen).
   return createPortal(
     <div
       ref={setHost}
@@ -307,9 +316,9 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, leaving,
       aria-label={t("gallery.viewer", { name })}
       onKeyDown={onKeyDown}
       inert={leaving || undefined}
-      className="fixed inset-0 z-(--z-dialog) grid grid-rows-[auto_minmax(0,1fr)_auto] bg-floor text-ink opacity-0"
+      className="viewer fixed inset-0 z-(--z-dialog) grid grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] bg-floor text-ink opacity-0"
     >
-      <div className="flex items-center justify-between gap-3 px-4 pt-[max(8px,var(--safe-top))] pb-2">
+      <div className="viewer__bar flex min-w-0 items-center justify-between gap-3 pt-[max(8px,var(--safe-top))] pb-2">
         <p className="min-w-0 truncate type-sm-strong text-ink-2">
           <bdi className="nums">{t("gallery.count", { n: f.number(index + 1), total: f.number(items.length) })}</bdi>
         </p>
@@ -318,15 +327,15 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, leaving,
           <IconKey ref={closeKey} icon="x" label={t("gallery.close")} onClick={onClose} />
         </div>
       </div>
-      <div ref={scroller} className="relative overflow-auto overscroll-contain" onDoubleClick={(event) => toggleZoom({ x: event.clientX, y: event.clientY })}>
+      <div ref={scroller} className="relative min-w-0 overflow-auto overscroll-contain" onDoubleClick={(event) => toggleZoom({ x: event.clientX, y: event.clientY })}>
         <div className={cx("grid place-items-center p-4", zoomed ? "h-[200%] w-[200%] cursor-zoom-out" : "size-full cursor-zoom-in")}>
           <span className="render-slot size-full place-items-center">
             <ProductImage image={item.image} alt={item.image.alt || name} sizes={zoomed ? "200vw" : "100vw"} />
           </span>
         </div>
       </div>
-      <div className="flex justify-center border-t border-line bg-paper px-4 pt-2 pb-[max(8px,var(--safe-bottom))]">
-        <Thumbs name={name} items={items} index={index} onIndex={onIndex} captionOf={captionOf} className="max-w-full" />
+      <div className="min-w-0 border-t border-line bg-paper pt-2 pb-[max(8px,var(--safe-bottom))]">
+        <Thumbs name={name} items={items} index={index} onIndex={onIndex} captionOf={captionOf} className="thumbs--viewer" />
       </div>
     </div>,
     root,

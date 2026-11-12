@@ -96,7 +96,7 @@
   "variants": [
     {
       "sku": "MSM2-PS5-STD",
-      "title": { "ar": "Marvel's Spider-Man 2 لجهاز PS5 — Standard Edition", "en": "Marvel's Spider-Man 2 for PS5 — Standard Edition", "ckb": "Marvel's Spider-Man 2 بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["marvels-spider-man-2--1", "marvels-spider-man-2--2", "marvels-spider-man-2--3", "marvels-spider-man-2--4"],
@@ -166,13 +166,13 @@
   "images": [
     {
       "key": "marvels-spider-man-2--1",
-      "file": ".cache/product-images/marvels-spider-man-2/1.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/spider-man-2-packshot-01-en-02jul24?$1600px--t$",
-      "sourcePage": "https://www.playstation.com/en-us/games/marvels-wolverine/",
+      "file": ".cache/product-images/marvels-spider-man-2/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/60eca3ac155247e21850c7d075d01ebf0f3f5dbf19ccd2a1.jpg",
+      "sourcePage": "https://store.playstation.com/en-us/product/UP9000-PPSA03016_00-MARVELSPIDERMAN2",
       "kind": "box-art",
       "alt": { "ar": "غلاف Marvel's Spider-Man 2", "en": "Marvel's Spider-Man 2 cover art", "ckb": "وێنەی بەرگی Marvel's Spider-Man 2" },
       "credit": "Sony Interactive Entertainment / Marvel",
-      "width": 1600, "height": 1600, "transparent": false
+      "width": 1440, "height": 2160, "transparent": false
     },
     {
       "key": "marvels-spider-man-2--2",

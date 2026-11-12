@@ -96,7 +96,7 @@
   "variants": [
     {
       "sku": "DSENSE-WHITE",
-      "title": { "ar": "DualSense – أبيض", "en": "DualSense – White", "ckb": "DualSense – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZCT2W",
       "isDefault": true,
@@ -104,100 +104,100 @@
     },
     {
       "sku": "DSENSE-MIDNIGHT-BLACK",
-      "title": { "ar": "DualSense – أسود Midnight Black", "en": "DualSense – Midnight Black", "ckb": "DualSense – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["dualsense--4"]
     },
     {
       "sku": "DSENSE-COSMIC-RED",
-      "title": { "ar": "DualSense – أحمر Cosmic Red", "en": "DualSense – Cosmic Red", "ckb": "DualSense – سووری Cosmic Red" },
+      "title": { "ar": "أحمر Cosmic Red", "en": "Cosmic Red", "ckb": "سووری Cosmic Red" },
       "options": { "color": "Cosmic Red" },
       "isDefault": false,
       "images": ["dualsense--5"]
     },
     {
       "sku": "DSENSE-NOVA-PINK",
-      "title": { "ar": "DualSense – وردي Nova Pink", "en": "DualSense – Nova Pink", "ckb": "DualSense – پەمەیی Nova Pink" },
+      "title": { "ar": "وردي Nova Pink", "en": "Nova Pink", "ckb": "پەمەیی Nova Pink" },
       "options": { "color": "Nova Pink" },
       "isDefault": false,
       "notes": { "ar": "مدرج في متجر PlayStation البريطاني فقط عند المراجعة.", "en": "Listed by the PlayStation UK store only at the time of checking.", "ckb": "لە کاتی پشکنیندا تەنها لە فرۆشگای PlayStationی بەریتانی هەبوو." }
     },
     {
       "sku": "DSENSE-GALACTIC-PURPLE",
-      "title": { "ar": "DualSense – بنفسجي Galactic Purple", "en": "DualSense – Galactic Purple", "ckb": "DualSense – مۆری Galactic Purple" },
+      "title": { "ar": "بنفسجي Galactic Purple", "en": "Galactic Purple", "ckb": "مۆری Galactic Purple" },
       "options": { "color": "Galactic Purple" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-STARLIGHT-BLUE",
-      "title": { "ar": "DualSense – أزرق Starlight Blue", "en": "DualSense – Starlight Blue", "ckb": "DualSense – شینی Starlight Blue" },
+      "title": { "ar": "أزرق Starlight Blue", "en": "Starlight Blue", "ckb": "شینی Starlight Blue" },
       "options": { "color": "Starlight Blue" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-GREY-CAMO",
-      "title": { "ar": "DualSense – مموّه رمادي Grey Camouflage", "en": "DualSense – Grey Camouflage", "ckb": "DualSense – کامۆفلاژی خۆڵەمێشی" },
+      "title": { "ar": "مموّه رمادي Grey Camouflage", "en": "Grey Camouflage", "ckb": "کامۆفلاژی خۆڵەمێشی" },
       "options": { "color": "Grey Camouflage" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-VOLCANIC-RED",
-      "title": { "ar": "DualSense – أحمر Volcanic Red", "en": "DualSense – Volcanic Red", "ckb": "DualSense – سووری Volcanic Red" },
+      "title": { "ar": "أحمر Volcanic Red", "en": "Volcanic Red", "ckb": "سووری Volcanic Red" },
       "options": { "color": "Volcanic Red" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-COBALT-BLUE",
-      "title": { "ar": "DualSense – أزرق Cobalt Blue", "en": "DualSense – Cobalt Blue", "ckb": "DualSense – شینی Cobalt Blue" },
+      "title": { "ar": "أزرق Cobalt Blue", "en": "Cobalt Blue", "ckb": "شینی Cobalt Blue" },
       "options": { "color": "Cobalt Blue" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-STERLING-SILVER",
-      "title": { "ar": "DualSense – فضي Sterling Silver", "en": "DualSense – Sterling Silver", "ckb": "DualSense – زیوی Sterling Silver" },
+      "title": { "ar": "فضي Sterling Silver", "en": "Sterling Silver", "ckb": "زیوی Sterling Silver" },
       "options": { "color": "Sterling Silver" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-CHROMA-PEARL",
-      "title": { "ar": "DualSense – لؤلؤي Chroma Pearl", "en": "DualSense – Chroma Pearl", "ckb": "DualSense – مروارییی Chroma Pearl" },
+      "title": { "ar": "لؤلؤي Chroma Pearl", "en": "Chroma Pearl", "ckb": "مروارییی Chroma Pearl" },
       "options": { "color": "Chroma Pearl" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-CHROMA-INDIGO",
-      "title": { "ar": "DualSense – نيلي Chroma Indigo", "en": "DualSense – Chroma Indigo", "ckb": "DualSense – نیلیی Chroma Indigo" },
+      "title": { "ar": "نيلي Chroma Indigo", "en": "Chroma Indigo", "ckb": "نیلیی Chroma Indigo" },
       "options": { "color": "Chroma Indigo" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-CHROMA-TEAL",
-      "title": { "ar": "DualSense – أزرق مخضر Chroma Teal", "en": "DualSense – Chroma Teal", "ckb": "DualSense – شینی سەوزباوی Chroma Teal" },
+      "title": { "ar": "أزرق مخضر Chroma Teal", "en": "Chroma Teal", "ckb": "شینی سەوزباوی Chroma Teal" },
       "options": { "color": "Chroma Teal" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-TECHNO-RED",
-      "title": { "ar": "DualSense – أحمر Techno Red", "en": "DualSense – Techno Red", "ckb": "DualSense – سووری Techno Red" },
+      "title": { "ar": "أحمر Techno Red", "en": "Techno Red", "ckb": "سووری Techno Red" },
       "options": { "color": "Techno Red" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-REMIX-GREEN",
-      "title": { "ar": "DualSense – أخضر Remix Green", "en": "DualSense – Remix Green", "ckb": "DualSense – سەوزی Remix Green" },
+      "title": { "ar": "أخضر Remix Green", "en": "Remix Green", "ckb": "سەوزی Remix Green" },
       "options": { "color": "Remix Green" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-RHYTHM-BLUE",
-      "title": { "ar": "DualSense – أزرق Rhythm Blue", "en": "DualSense – Rhythm Blue", "ckb": "DualSense – شینی Rhythm Blue" },
+      "title": { "ar": "أزرق Rhythm Blue", "en": "Rhythm Blue", "ckb": "شینی Rhythm Blue" },
       "options": { "color": "Rhythm Blue" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-PRISM-FLARE-ORANGE",
-      "title": { "ar": "DualSense – Prism برتقالي شفاف Flare Orange", "en": "DualSense – Prism Flare Orange", "ckb": "DualSense – Prism پرتەقاڵیی ڕوون Flare Orange" },
+      "title": { "ar": "Prism برتقالي شفاف Flare Orange", "en": "Prism Flare Orange", "ckb": "Prism پرتەقاڵیی ڕوون Flare Orange" },
       "options": { "color": "Flare Orange", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
@@ -206,7 +206,7 @@
     },
     {
       "sku": "DSENSE-PRISM-EMERALD-GREEN",
-      "title": { "ar": "DualSense – Prism أخضر زمردي Emerald Green", "en": "DualSense – Prism Emerald Green", "ckb": "DualSense – Prism سەوزی زمرودی Emerald Green" },
+      "title": { "ar": "Prism أخضر زمردي Emerald Green", "en": "Prism Emerald Green", "ckb": "Prism سەوزی زمرودی Emerald Green" },
       "options": { "color": "Emerald Green", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
@@ -214,7 +214,7 @@
     },
     {
       "sku": "DSENSE-PRISM-GRAPHITE-GRAY",
-      "title": { "ar": "DualSense – Prism رمادي غرافيتي Graphite Gray", "en": "DualSense – Prism Graphite Gray", "ckb": "DualSense – Prism خۆڵەمێشیی گرافیتی Graphite Gray" },
+      "title": { "ar": "Prism رمادي غرافيتي Graphite Gray", "en": "Prism Graphite Gray", "ckb": "Prism خۆڵەمێشیی گرافیتی Graphite Gray" },
       "options": { "color": "Graphite Gray", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,

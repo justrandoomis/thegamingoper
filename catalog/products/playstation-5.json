@@ -9,10 +9,11 @@
   "status": "discontinued",
   "releaseDate": "2020-11-12",
   "name": {
-    "ar": "PlayStation 5 (الطراز الأصلي 2020)",
-    "en": "PlayStation 5 (original 2020 model)",
-    "ckb": "PlayStation 5 (مۆدێلی ڕەسەنی 2020)"
+    "ar": "PlayStation 5 (2020)",
+    "en": "PlayStation 5 (2020)",
+    "ckb": "PlayStation 5 (2020)"
   },
+  "qualifier": { "ar": "الطراز الأصلي", "en": "Original model", "ckb": "مۆدێلی ڕەسەن" },
   "short": {
     "ar": "825GB · نسخة أقراص أو Digital Edition · طرازات CFI-1000/1100/1200",
     "en": "825GB · Disc or Digital Edition · CFI-1000/1100/1200 models",
@@ -134,9 +135,9 @@
     {
       "sku": "PS5-ORIG-DISC",
       "title": {
-        "ar": "PS5 الأصلي – نسخة الأقراص 825GB",
-        "en": "Original PS5 – Disc, 825GB",
-        "ckb": "PS5ی ڕەسەن – وەشانی دیسک، 825GB"
+        "ar": "نسخة الأقراص · 825GB",
+        "en": "Disc edition · 825GB",
+        "ckb": "وەشانی دیسک · 825GB"
       },
       "options": { "edition": "Disc", "storage": "825GB", "color": "White" },
       "modelNumber": "CFI-1216A",
@@ -151,9 +152,9 @@
     {
       "sku": "PS5-ORIG-DIGITAL",
       "title": {
-        "ar": "PS5 الأصلي – Digital Edition 825GB",
-        "en": "Original PS5 – Digital Edition, 825GB",
-        "ckb": "PS5ی ڕەسەن – Digital Edition، 825GB"
+        "ar": "Digital Edition · 825GB",
+        "en": "Digital Edition · 825GB",
+        "ckb": "Digital Edition · 825GB"
       },
       "options": { "edition": "Digital", "storage": "825GB", "color": "White" },
       "isDefault": false,

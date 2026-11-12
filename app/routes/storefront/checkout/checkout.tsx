@@ -38,6 +38,7 @@ import {
   newAttemptKey,
   parsePoints,
   readStoredCheckout,
+  stepFocusTarget,
   stepIndex,
   stepOf,
   stepOfField,
@@ -378,19 +379,24 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   const focusNext = useRef<FieldName | "heading" | null>(null);
   /** The step a failed «تابع» sends the shopper back to: its error summary shows there. */
   const attemptNext = useRef<Step | null>(null);
-  const firstStep = useRef(true);
+  /**
+   * The step this effect last acted on. Focus moves only when the step CHANGES — never on the first render, and never
+   * when the effect runs again for the same step (React StrictMode runs a mount effect twice in development: a
+   * once-only "first render" flag let the second run focus the h1, so the first Tab skipped the skip link and the
+   * checkout bar; QA 2026-11-12).
+   */
+  const shownStep = useRef<Step | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   useLayoutEffect(() => {
+    const previous = shownStep.current;
+    if (previous === step) return;
+    shownStep.current = step;
     setAttempted(attemptNext.current);
     attemptNext.current = null;
-    if (firstStep.current) {
-      firstStep.current = false;
-      return;
-    }
-    const target = focusNext.current ?? "heading";
+    const target = stepFocusTarget(previous, step, focusNext.current);
     focusNext.current = null;
     if (target === "heading") headingRef.current?.focus();
-    else document.getElementById(fieldId(target))?.focus();
+    else if (target) document.getElementById(fieldId(target))?.focus();
   }, [step]);
   useEffect(() => {
     if (!restored || step === "address") return;
@@ -561,7 +567,23 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   const commitDisabled = step === "review" && reviewReason !== null;
   const reasonText = step === "review" ? reviewReason : null;
   const totalText = isIqd(cart.totalIqd) ? "⁨" + iqdText(f, cart.totalIqd) + "⁩" : "";
-  const commit = (id: string, label: string = t(COMMIT_LABEL[step])) => (
+  /**
+   * «أكّد الطلب · 1,594,000 د.ع» in the summary card: the action and the total each stay whole, so where the two do not
+   * fit on one line (Sorani at 1024) the total takes the second line — never «…پشتڕاست / بکەرەوە · …» (QA 2026-11-12).
+   */
+  const placeTotal = (total: string): ReactNode => {
+    const text = t("checkout.placeTotal", { total });
+    const at = text.lastIndexOf(" · ");
+    if (at <= 0) return text;
+    return (
+      <>
+        {/* the dot stays with the action: the one break is before the total */}
+        <span className="co-commit__part">{text.slice(0, at) + " ·"}</span>{" "}
+        <span className="co-commit__part">{text.slice(at + 3)}</span>
+      </>
+    );
+  };
+  const commit = (id: string, label: ReactNode = t(COMMIT_LABEL[step])) => (
     <CommitKey type="submit" form={formId} loading={busy} disabled={commitDisabled && !busy} aria-describedby={reasonText ? id : undefined}>
       {label}
     </CommitKey>
@@ -734,7 +756,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
             action={
               <div className="co-js grid gap-2">
                 {step === "review" ? terms : null}
-                {commit("co-reason", step === "review" && totalText ? t("checkout.placeTotal", { total: totalText }) : undefined)}
+                {commit("co-reason", step === "review" && totalText ? placeTotal(totalText) : undefined)}
                 {reason("co-reason")}
               </div>
             }

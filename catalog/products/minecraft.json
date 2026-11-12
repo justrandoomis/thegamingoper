@@ -106,7 +106,7 @@
   "variants": [
     {
       "sku": "MC-PS5-STD",
-      "title": { "ar": "Minecraft لجهاز PS5", "en": "Minecraft for PS5", "ckb": "Minecraft بۆ PS5" },
+      "title": { "ar": "لجهاز PS5", "en": "PS5 edition", "ckb": "بۆ PS5" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["minecraft--1", "minecraft--2", "minecraft--3", "minecraft--4"],
@@ -177,12 +177,12 @@
     {
       "key": "minecraft--1",
       "file": ".cache/product-images/minecraft/1.jpg",
-      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202407/0401/670c294ded3baf4fa11068db2ec6758c63f7daeb266a35a1.png",
-      "sourcePage": "https://store.playstation.com/en-ae/concept/212779",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.53095.13850085746326678.06e2dc5c-7997-46e9-a8e6-0e48b57cb13b.419e3c9d-9dd3-4a28-a9f3-a12350215871",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/minecraft/9MVXMVT8ZKWC",
       "kind": "box-art",
       "alt": { "ar": "غلاف Minecraft", "en": "Minecraft cover art", "ckb": "وێنەی بەرگی Minecraft" },
       "credit": "Mojang Studios / Microsoft",
-      "width": 1024, "height": 1024, "transparent": false
+      "width": 720, "height": 1080, "transparent": false
     },
     {
       "key": "minecraft--2",

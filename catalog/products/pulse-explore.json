@@ -93,7 +93,7 @@
   "variants": [
     {
       "sku": "PULSE-EXPLORE-WHITE",
-      "title": { "ar": "PULSE Explore – أبيض", "en": "PULSE Explore – White", "ckb": "PULSE Explore – سپی" },
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZWE1EC",
       "isDefault": true,
@@ -101,7 +101,7 @@
     },
     {
       "sku": "PULSE-EXPLORE-MIDNIGHT-BLACK",
-      "title": { "ar": "PULSE Explore – أسود Midnight Black", "en": "PULSE Explore – Midnight Black", "ckb": "PULSE Explore – ڕەشی Midnight Black" },
+      "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
       "images": ["pulse-explore--5"],

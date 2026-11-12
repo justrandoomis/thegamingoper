@@ -14,11 +14,12 @@ import { getNamespace, messagesFor } from "~/i18n/i18n.server";
 import { translate, type MessageTree, type Vars } from "~/i18n/translate";
 import type { Locale } from "~/lib/locales";
 import { requireEmployee, type EmployeeSession } from "~/server/auth/admin.server";
+import type { PasswordLink } from "~/server/auth/employees.server";
 import { getCtx, type RequestCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { actionError, throwAsResponse, toAppError } from "~/server/errors";
 import type { Permission } from "~/server/permissions";
-import { parseWhole, STAFF_NS } from "~/server/services/admin/staff/types";
+import { parseWhole, STAFF_NS, type HandedLink } from "~/server/services/admin/staff/types";
 
 export type StaffRequest = { ctx: RequestCtx; db: ReturnType<typeof getDb>; session: EmployeeSession; actor: EmployeeSession["actor"]; locale: Locale; now: number };
 
@@ -52,6 +53,15 @@ export function failed(error: unknown, locale: Locale, intent: string | null) {
   const t = staffT(locale);
   const failure = actionError(error, (key, vars) => t(key, vars));
   return data({ ok: false as const, intent, code: failure.code, message: failure.message, fields: failure.fields, status: failure.status }, { status: failure.status });
+}
+
+/**
+ * A one-time password-set link as the person who made it sees it — once, in the action's answer (POST, never cached,
+ * never a redirect: the token stays out of every URL this admin requests, out of logs and out of the audit trail): the
+ * full address on this store, the token in its fragment.
+ */
+export function handedLink(origin: string, link: PasswordLink): HandedLink {
+  return { url: `${origin}${link.path}`, purpose: link.purpose, expiresAt: link.expiresAt };
 }
 
 /** For loaders: an expected failure (a missing permission, an unknown id) becomes its HTTP status. */

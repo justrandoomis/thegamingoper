@@ -109,7 +109,7 @@
   "variants": [
     {
       "sku": "RDR2-PS4-STD",
-      "title": { "ar": "Red Dead Redemption 2 لجهاز PS4 (يعمل على PS5)", "en": "Red Dead Redemption 2 for PS4 (plays on PS5)", "ckb": "Red Dead Redemption 2 بۆ PS4 (لەسەر PS5 کار دەکات)" },
+      "title": { "ar": "لجهاز PS4 (يعمل على PS5)", "en": "PS4 edition (plays on PS5)", "ckb": "بۆ PS4 (لەسەر PS5 کار دەکات)" },
       "options": { "platform": "PS4", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["red-dead-redemption-2--1", "red-dead-redemption-2--2", "red-dead-redemption-2--3", "red-dead-redemption-2--4"],
@@ -121,7 +121,7 @@
     },
     {
       "sku": "RDR2-XB1-STD",
-      "title": { "ar": "Red Dead Redemption 2 لجهاز Xbox One (يعمل على Xbox Series X)", "en": "Red Dead Redemption 2 for Xbox One (plays on Xbox Series X)", "ckb": "Red Dead Redemption 2 بۆ Xbox One (لەسەر Xbox Series X کار دەکات)" },
+      "title": { "ar": "لجهاز Xbox One (يعمل على Xbox Series X)", "en": "Xbox One edition (plays on Xbox Series X)", "ckb": "بۆ Xbox One (لەسەر Xbox Series X کار دەکات)" },
       "options": { "platform": "Xbox One", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["red-dead-redemption-2--1", "red-dead-redemption-2--2", "red-dead-redemption-2--3"],

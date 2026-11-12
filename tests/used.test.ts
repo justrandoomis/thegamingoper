@@ -16,7 +16,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
+import usedMessages from "~/i18n/messages/used";
+import { makeT } from "~/i18n/translate";
 import type { Locale } from "~/lib/locales";
+import { bindDashes } from "~/routes/storefront/used/names";
+import UsedList from "~/routes/storefront/used/used-list";
 import UsedUnitPage from "~/routes/storefront/used/used-unit";
 import { seedDemo } from "~/server/db/seed/demo";
 import { getSetting } from "~/server/settings.server";
@@ -28,6 +32,7 @@ import {
   getUsedUnitDetail,
   listUsedUnits,
   parseUsedFilters,
+  variantLine,
   type UsedFilters,
   type UsedUnitListItem,
 } from "~/server/services/used.server";
@@ -305,5 +310,77 @@ describe("the unit page's states (rendered)", () => {
     const html = renderUnitPage({ unit: detail, others: null, device: null, accessories: null, meta: { title: detail.name, description: "", image: null }, i18n: messagesFor("en", "used", "errors") }, "en");
     expect(html).toContain(`href="/en/used/${detail.slug}"`);
     expect(html).not.toContain("/en/en/");
+  });
+
+  // QA 2026-11-12: under the h1 «Nintendo Switch – OLED Model» the fact line said «Nintendo Switch – OLED Model —
+  // أبيض» (the name again), and the balanced h1 broke before the dash («– OLED Model» starting the second line).
+  test("the line under the name says what the variant adds, never the name again; a dash stays with the word before it", async () => {
+    expect(variantLine("Nintendo Switch – OLED Model — أبيض", "Nintendo Switch – OLED Model")).toBe("أبيض");
+    expect(variantLine("Nintendo Switch Lite — Turquoise", "Nintendo Switch Lite")).toBe("Turquoise");
+    expect(variantLine("Steam Deck OLED 512GB", "Steam Deck OLED")).toBe("512GB");
+    expect(variantLine("Legion Go Z1 Extreme 16GB / 512GB", "Lenovo Legion Go (2023)")).toBe("Z1 Extreme 16GB / 512GB");
+    expect(variantLine("Xbox Series S ‏512GB، أبيض Robot White", "Xbox Series S")).toBe("512GB، أبيض Robot White");
+    expect(variantLine("PlayStation 5 Slim – نسخة الأقراص 1TB", "PlayStation 5 Slim (نسخة الأقراص) – 1TB")).toBeNull();
+    expect(variantLine("", "Xbox Series X")).toBeNull();
+    expect(variantLine(null, "Xbox Series X")).toBeNull();
+
+    expect(bindDashes("Nintendo Switch – OLED Model")).toBe("Nintendo Switch – OLED Model");
+    expect(bindDashes("Pokémon Legends: Z-A – Nintendo Switch 2 Edition")).toBe("Pokémon Legends: Z-A – Nintendo Switch 2 Edition");
+    expect(bindDashes("Nintendo Switch – OLED Model — أبيض")).toBe("Nintendo Switch – OLED Model — أبيض");
+    expect(bindDashes("Xbox Series X")).toBe("Xbox Series X");
+
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      for (const unit of listed()) {
+        const detail = (await getUsedUnitDetail(t.db, locale, unit.slug))!;
+        if (detail.subtitle) expect(detail.subtitle.includes(detail.name), `${locale} ${unit.slug}: ${detail.subtitle}`).toBe(false);
+      }
+    }
+    const dashed = (await Promise.all(listed().map((unit) => getUsedUnitDetail(t.db, "ar", unit.slug)))).find((detail) => detail?.name.includes(" – "));
+    if (dashed) {
+      const html = renderUnitPage({ unit: dashed, others: [], device: null, accessories: null, meta: { title: dashed.name, description: "", image: null }, i18n: messagesFor("ar", "used", "errors") });
+      // the h1's words (BidiText isolates the Latin runs of a mixed name in <bdi> elements)
+      const h1 = html.slice(html.indexOf("<h1"), html.indexOf("</h1>")).replace(/<[^>]*>/g, "");
+      expect(h1).toBe(bindDashes(dashed.name));
+      expect(html).not.toContain(`${dashed.name} — `);
+    }
+  });
+});
+
+function renderListPage(loaderData: unknown, search = "", locale: Locale = "ar"): string {
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: ":locale?/used", Component: UsedList as never }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: [`${locale === "ar" ? "" : `/${locale}`}/used${search}`],
+      hydrationData: {
+        loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: loaderData as never },
+      },
+    }),
+  );
+}
+
+describe("the list's states (rendered)", () => {
+  // QA 2026-11-12: with filters that match nothing, the title row said «6 أجهزة» while the toolbar said «لا أجهزة», and
+  // the one way out («امسح الفلاتر») was a secondary key (v2 §4.23: one primary and one recovery link).
+  test("filters that match nothing: no store-wide count in the title row, «امسح الفلاتر» is the primary, with a recovery link", async () => {
+    const tUsed = makeT(usedMessages.ar, "ar", "used");
+    const facets = (await getUsedFacets(t.db, "ar"))!;
+    const page = async (query: string) => {
+      const filters = parseUsedFilters(new URLSearchParams(query));
+      const list = await listUsedUnits(t.db, "ar", { ...filters, page: 1, limit: 24 });
+      return { list, facets, filters, pages: 1, maxPages: 10, pageSize: 24, activeCount: activeFilterCount(filters), meta: { title: "", description: "" }, i18n: messagesFor("ar", "used", "errors") };
+    };
+    const header = (html: string) => html.slice(html.indexOf("<h1"), html.indexOf("</header>"));
+    const storeWide = tUsed("list.count", { count: facets.total, n: String(facets.total) });
+
+    const all = renderListPage(await page(""));
+    expect(header(all)).toContain(storeWide);
+
+    const none = await page("max=1");
+    expect(none.list.total).toBe(0);
+    const html = renderListPage(none, "?max=1");
+    expect(header(html)).not.toContain(storeWide);
+    expect(html.match(/key--primary/g)?.length).toBe(1);
+    expect(html).toMatch(new RegExp(`<a[^>]*class="key key--primary[^"]*"[^>]*>(?:(?!</a>)[\\s\\S])*${tUsed("list.clearFilters")}`));
+    expect(html).toContain(tUsed("list.shopNew"));
   });
 });

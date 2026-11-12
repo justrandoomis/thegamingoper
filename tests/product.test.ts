@@ -17,6 +17,8 @@
  * credits; game facts; multi-platform products; localization; privacy (no quantity, cost, serial anywhere); reviews
  * (approved verified purchases only, never the author); the JSON-LD rules (no offers in demo mode, no invented rating).
  */
+import { readdirSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub } from "react-router";
@@ -43,14 +45,15 @@ import {
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
 import productMessages from "~/i18n/messages/product";
-import { sourceLine } from "~/routes/storefront/product/components/Details";
+import { InTheBox, sourceLine } from "~/routes/storefront/product/components/Details";
 import { offersTransfer, paymentMethods } from "~/routes/storefront/product/components/Facts";
-import { splitMixed } from "~/routes/storefront/product/components/MixedText";
-import { priceLook, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
-import { alternativesPath, compatRows } from "~/routes/storefront/product/components/Slots";
+import { MixedText, splitMixed } from "~/routes/storefront/product/components/MixedText";
+import { PriceBlock, priceLook, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
+import { alternativesPath, compatRows, DeviceHubSlot } from "~/routes/storefront/product/components/Slots";
 import { pickerLook, VariantPicker } from "~/routes/storefront/product/components/VariantPicker";
 import { jsonForScript, productJsonLd } from "~/routes/storefront/product/jsonld";
-import { claimsPreorder, FACT_LINE_CHARS, factLine, factParts, factRow, proseWithoutPreorder, withoutPreorder } from "~/routes/storefront/product/text";
+import { claimsPreorder, FACT_LINE_CHARS, factLine, factParts, factRow, isLongName, keepTokens, LONG_NAME_CHARS, proseWithoutPreorder, withoutPreorder } from "~/routes/storefront/product/text";
+import { splitBidi } from "~/ui/BidiText";
 import { onlyVariantChanged, searchFor, shownDefault, variantFor } from "~/routes/storefront/product/useVariant";
 import { createTestDb, type TestDb } from "./helpers/db";
 
@@ -417,10 +420,13 @@ describe("product page review fixes (design v2)", () => {
     expect(factParts(null)).toEqual([]);
     expect(factParts("طلب مسبق")).toEqual([]);
     expect(factLine("a · b · c")).toBe(factParts("a · b · c").join(" · "));
-    // one line; a first fact longer than a phone line is shown alone and wraps — never cut with an ellipsis
+    // one line; a first fact longer than a phone line is never cut with an ellipsis: a list of contents is cut into its
+    // parts at " + " (the row shows the parts that fit; QA fixes below), anything else is shown alone and wraps
     expect(factRow("256GB · شاشة 7.9 بوصة بدقة 1080p")).toEqual({ facts: ["256GB", "شاشة 7.9 بوصة بدقة 1080p"], wrap: false });
     const set = "جهاز Switch 2 بسعة 256GB + لعبة Mario Kart World كاملة (تنزيل رقمي) · حزمة رسمية";
-    expect(factRow(set)).toEqual({ facts: ["جهاز Switch 2 بسعة 256GB + لعبة Mario Kart World كاملة (تنزيل رقمي)"], wrap: true });
+    expect(factRow(set)).toEqual({ facts: ["جهاز Switch 2 بسعة 256GB", "لعبة Mario Kart World كاملة (تنزيل رقمي)"], wrap: false, parts: true });
+    const long = "قاعدة ثانية للتلفاز مع محول الطاقة وكابل HDMI وكابل شحن USB-C";
+    expect(factRow(long)).toEqual({ facts: [long], wrap: true });
     expect(factRow(`${"x".repeat(FACT_LINE_CHARS)} · y`).wrap).toBe(false);
     expect(factRow(null)).toEqual({ facts: [], wrap: false });
   });
@@ -478,6 +484,127 @@ describe("product page review fixes (design v2)", () => {
       expect(message("bar.label")).toContain("{name}");
       expect(message("status.offlineShort").length).toBeLessThan(message("status.offline").length);
     }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── QA fixes (design v2, Q-product)
+
+describe("product page QA fixes (design v2)", () => {
+  const ltr = (text: string) => splitMixed(text).filter((part) => part.ltr).map((part) => part.text);
+  /** Markup with the no-break characters spelled as plain ones, for reading assertions. */
+  const plain = (text: string) => text.replace(/\u00a0/g, " ").replace(/\u2011/g, "-");
+  const version = (id: string, sku: string, label: string, extra: Partial<VariantDetail> = {}) =>
+    ({ id, sku, label, title: label, priceIqd: 1_132_500, compareAtIqd: null, orderable: true, stock: "in_stock", releaseAt: null, images: [], options: {}, modelNumber: null, bundle: null, ...extra }) as unknown as VariantDetail;
+
+  it("splitMixed keeps a Latin name whole across a spaced joiner, so memory and storage never swap («32GB / 1TB»)", () => {
+    expect(ltr("Windows 11 Z1 Extreme 32GB / 1TB أبيض Glacier White")).toEqual(["Windows 11 Z1 Extreme 32GB / 1TB", "Glacier White"]);
+    expect(ltr("ROG Ally X 24GB / 1TB أسود")).toEqual(["ROG Ally X 24GB / 1TB"]);
+    expect(ltr("24GB / 1TB أسود")).toEqual(["24GB / 1TB"]);
+    expect(ltr("ROG Xbox Ally 16GB / 512GB أبيض")).toEqual(["ROG Xbox Ally 16GB / 512GB"]);
+    expect(ltr("ROG Xbox Ally X 24GB / 1TB، ڕەش")).toEqual(["ROG Xbox Ally X 24GB / 1TB"]);
+    expect(ltr("Legion Go S بە Windows 11، Z1 Extreme 32GB / 1TB، سپیی Glacier White")).toEqual(["Legion Go S", "Windows 11", "Z1 Extreme 32GB / 1TB", "Glacier White"]);
+    expect(ltr("جهاز Switch 2 بسعة 256GB + Pokémon Legends: Z-A (تنزيل رقمي)")).toEqual(["Switch 2", "256GB + Pokémon Legends: Z-A"]);
+    expect(ltr("لا تعمل على Nintendo Switch – OLED Model.")).toEqual(["Nintendo Switch – OLED Model"]);
+    expect(ltr("إضافة DK Island & Emerald Rush متوفرة بشكل منفصل")).toEqual(["DK Island & Emerald Rush"]);
+    // a number that counts the Arabic after it stays with it ("+ 3 مانگ": three months); Arabic after a joiner ends the name
+    expect(ltr("Switch 2 + Mario Kart World + 3 مانگ Nintendo Switch Online")).toEqual(["Switch 2 + Mario Kart World", "3", "Nintendo Switch Online"]);
+    expect(ltr("Switch 2 + Mario Kart World + اشتراك Nintendo Switch Online")).toEqual(["Switch 2 + Mario Kart World", "Nintendo Switch Online"]);
+    // numbers that follow Arabic keep the sentence's own order (dimensions), as the browser lays them out unisolated
+    expect(ltr("تقريباً 39 × 191 × 141 ملم")).toEqual(["39", "191", "141"]);
+    const label = "Windows 11 Z1 Extreme 32GB / 1TB أبيض Glacier White";
+    expect(splitMixed(label).map((part) => part.text).join("")).toBe(label); // nothing lost
+  });
+
+  it("the version cards and the «النسخة:» legend draw the Legion Go S label as ONE left-to-right name", () => {
+    const variants = [version("a", "LEGOS-Z1E-STEAM", "SteamOS Z1 Extreme 32GB / 1TB Nebula Nocturne", { priceIqd: 1_135_500 }), version("b", "LEGOS-Z1E-WIN", "Windows 11 Z1 Extreme 32GB / 1TB أبيض Glacier White")];
+    const page = plain(renderOnPage(createElement(VariantPicker, { variants, selector: "version", value: "b", onChange: () => {} })));
+    // once in the legend («النسخة: …») and once on its card
+    expect(page.split('<bdi dir="ltr">Windows 11 Z1 Extreme 32GB / 1TB</bdi>')).toHaveLength(3);
+    expect(page).not.toContain('<bdi dir="ltr">1TB</bdi>');
+  });
+
+  it("keepTokens: protected tokens never break («Switch 2», «PS5 Pro», «Go 2», «Z-A»); longer words still wrap", () => {
+    expect(keepTokens("Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle")).toBe("Nintendo Switch\u00a02 + Pokémon Legends:\u00a0Z\u2011A – Nintendo Switch\u00a02 Edition Bundle");
+    expect(keepTokens("Nintendo Switch 2 Carrying Case & Screen Protector")).toBe("Nintendo Switch\u00a02 Carrying Case & Screen Protector");
+    expect(keepTokens("قاعدة Nintendo Switch 2 Dock")).toBe("قاعدة Nintendo Switch\u00a02 Dock");
+    expect(keepTokens("PS5 Pro")).toBe("PS5\u00a0Pro");
+    expect(keepTokens("Lenovo Legion Go 2")).toBe("Lenovo Legion\u00a0Go\u00a02");
+    expect(keepTokens("حزاما معصم Joy-Con 2 (عدد 2)")).toBe("حزاما معصم Joy\u2011Con\u00a02 (عدد\u00a02)");
+    expect(keepTokens("يد Joy-Con 2 (L) زرقاء")).toBe("يد Joy\u2011Con\u00a02\u00a0(L) زرقاء");
+    expect(keepTokens("MSI Claw 8 EX AI+")).toBe("MSI Claw\u00a08\u00a0EX\u00a0AI+");
+    // untouched: no short token, a decimal number, a hyphen that is not inside a Latin token
+    expect(keepTokens("Mario Kart World")).toBe("Mario Kart World");
+    expect(keepTokens("شاشة 7.9 بوصة")).toBe("شاشة 7.9 بوصة");
+    expect(keepTokens("من 2–4 لاعبين")).toBe("من\u00a02–4 لاعبين");
+    expect(keepTokens("BEE-001(-01)")).toBe("BEE\u2011001(-01)");
+    expect(keepTokens(keepTokens("PS5 Pro"))).toBe("PS5\u00a0Pro"); // idempotent
+  });
+
+  it("keepTokens never cuts a name differently: the kit's splitBidi and MixedText isolate every catalogue text the same with it", () => {
+    const dir = fileURLToPath(new URL("../catalog/products/", import.meta.url));
+    const texts = new Set<string>();
+    const walk = (value: unknown): void => {
+      if (typeof value === "string") texts.add(value);
+      else if (Array.isArray(value)) value.forEach(walk);
+      else if (value && typeof value === "object") Object.values(value).forEach(walk);
+    };
+    for (const file of readdirSync(dir).filter((name) => name.endsWith(".json"))) {
+      const product = JSON.parse(readFileSync(dir + file, "utf8")) as { name?: unknown; variants?: unknown; inTheBox?: unknown; highlights?: unknown; short?: unknown };
+      walk([product.name, product.variants, product.inTheBox, product.highlights, product.short]);
+    }
+    expect(texts.size).toBeGreaterThan(1000);
+    const unkept = (parts: { text: string; ltr: boolean }[]) => parts.map((part) => ({ ...part, text: plain(part.text) }));
+    for (const text of texts) {
+      if (/[\u00a0\u2011]/.test(text)) continue;
+      expect(unkept(splitBidi(keepTokens(text))), text).toEqual(splitBidi(text));
+      expect(unkept(splitMixed(keepTokens(text))), text).toEqual(splitMixed(text));
+    }
+  });
+
+  it("«في العلبة» and the device-hub row keep «Switch 2» together; the row names the device as an isolate", () => {
+    const box = renderOnPage(createElement(InTheBox, { items: ["قاعدة Nintendo Switch 2 Dock", "Pokémon Legends: Z-A – Nintendo Switch 2 Edition (تنزيل رقمي كامل)"] }));
+    expect(box).toContain('<bdi dir="ltr">Nintendo Switch\u00a02 Dock</bdi>');
+    expect(box).toContain('<bdi dir="ltr">Pokémon Legends:\u00a0Z\u2011A – Nintendo Switch\u00a02 Edition</bdi>');
+    const mixed = renderToStaticMarkup(createElement(MixedText, { text: "PS5 Pro" }));
+    expect(mixed).toBe("PS5\u00a0Pro"); // an English page: no isolate, still kept together
+    const hub = renderOnPage(createElement(DeviceHubSlot, { device: { id: "dm_switch_2", slug: "switch-2", name: "Nintendo Switch 2", artKey: null, platformSlug: "nintendo" } }));
+    expect(hub).toContain("\u2066Nintendo Switch\u00a02\u2069");
+  });
+
+  it("a contents fact too long for a phone line becomes its parts (each whole) — the row keeps to ONE line on a phone", () => {
+    const bundle = "جهاز Switch 2 بسعة 256GB + لعبة Nintendo Switch Sports Resort كاملة (تنزيل رقمي) + اشتراك Nintendo Switch Online لـ3 أشهر";
+    expect(factRow(bundle)).toEqual({ facts: ["جهاز Switch 2 بسعة 256GB", "لعبة Nintendo Switch Sports Resort كاملة (تنزيل رقمي)", "اشتراك Nintendo Switch Online لـ3 أشهر"], wrap: false, parts: true });
+    expect(factRow("طقم من المتجر: الجهاز (النسخة الدولية) + بطاقة لعبة Mario Kart World")).toEqual({ facts: ["طقم من المتجر: الجهاز (النسخة الدولية)", "بطاقة لعبة Mario Kart World"], wrap: false, parts: true });
+    expect(factRow("Switch 2 256GB + full Mario Kart World digital download").parts).toBe(true);
+    // a first part longer than a phone line would be cut: the whole fact wraps instead
+    const wide = `${"x".repeat(FACT_LINE_CHARS + 1)} + y`;
+    expect(factRow(wide)).toEqual({ facts: [wide], wrap: true });
+    // a short fact with a "+" is one fact, as before
+    expect(factRow("حقيبة حمل صلبة + واقي شاشة + قطعة تنظيف · تتسع لـ 6 بطاقات ألعاب")).toEqual({ facts: ["حقيبة حمل صلبة + واقي شاشة + قطعة تنظيف", "تتسع لـ 6 بطاقات ألعاب"], wrap: false });
+  });
+
+  it("a name that would take three lines at the h1 size on a phone is a long name (it steps down one size there)", () => {
+    expect(isLongName("Nintendo Switch 2")).toBe(false);
+    expect(isLongName("يد التحكم اللاسلكية DualSense")).toBe(false);
+    expect(isLongName("Nintendo Switch 2 + Mario Kart World Bundle")).toBe(false); // two lines at 390
+    expect(isLongName("قارئ الأقراص Disc Drive for PS5 Digital Edition")).toBe(true); // three lines at 390
+    expect(isLongName("Nintendo Switch 2 Carrying Case & Screen Protector")).toBe(true);
+    expect(isLongName("Nintendo Switch 2 + Pokémon Legends: Z-A – Nintendo Switch 2 Edition Bundle")).toBe(true);
+    expect(isLongName(keepTokens("Nintendo Switch 2 Carrying Case & Screen Protector"))).toBe(true); // counts characters, not code units
+    expect(LONG_NAME_CHARS).toBeGreaterThan(40);
+  });
+
+  it("a coming version's line says only when it is released (ordering opens then): no delivery fee beside it", () => {
+    const delivery = { flatFeeIqd: 5_000, overridesEnabled: false };
+    const soon = version("a", "X25", "1TB", { orderable: false, stock: "out_of_stock", releaseAt: Date.UTC(2026, 10, 12, 21) });
+    const coming = renderOnPage(createElement(PriceBlock, { variant: soon, variants: [soon], delivery, lifecycle: null, isDemo: true, reasonId: "why" }));
+    expect(coming).toContain("يصدر");
+    expect(coming).toContain("الطلب يفتح عند وصوله");
+    expect(coming).not.toContain("التوصيل");
+    const now = version("b", "X", "1TB");
+    expect(renderOnPage(createElement(PriceBlock, { variant: now, variants: [now], delivery, lifecycle: null, isDemo: true, reasonId: "why" }))).toContain("التوصيل");
+    const out = version("c", "Y", "1TB", { orderable: false, stock: "out_of_stock" });
+    expect(renderOnPage(createElement(PriceBlock, { variant: out, variants: [out], delivery, lifecycle: null, isDemo: true, reasonId: "why" }))).toContain("التوصيل");
   });
 });
 

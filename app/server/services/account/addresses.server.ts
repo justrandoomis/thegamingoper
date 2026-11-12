@@ -27,7 +27,7 @@ import { runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, unauthorized } from "~/server/errors";
 import { getShippingFee, listDistricts, listGovernorates } from "~/server/services/shipping/fees.server";
 import { cleanBlock, cleanLine } from "~/server/text.server";
-import type { AddressView, GeographyOption } from "./types";
+import { ADDRESS_LIMITS, type AddressView, type GeographyOption } from "./types";
 
 export const MAX_ADDRESSES = 10;
 
@@ -36,25 +36,28 @@ const blank = (value: unknown) => (typeof value === "string" && value.trim() ===
 /** Free text: control, bidi-override and invisible characters are removed first (~/server/text.server). */
 const optionalText = (max: number, multiline = false) => z.preprocess(blank, z.string().overwrite(multiline ? cleanBlock : cleanLine).trim().max(max, "too_long").optional());
 
+/** The limits are shared with the page's own checks (ADDRESS_LIMITS in ./types), so both refuse the same text. */
+const L = ADDRESS_LIMITS;
+
 export const AddressInput = z.object({
   id: z.preprocess(blank, z.string().regex(ID, "invalid").optional()),
-  label: optionalText(40),
-  recipientName: z.preprocess(blank, z.string().overwrite(cleanLine).trim().min(2, "too_short").max(80, "too_long").optional()),
+  label: optionalText(L.label),
+  recipientName: z.preprocess(blank, z.string().overwrite(cleanLine).trim().min(L.recipientMin, "too_short").max(L.recipient, "too_long").optional()),
   // Checked with the other fields, so a form gets every problem at once.
   phone: z.preprocess(
     blank,
     z
       .string()
       .trim()
-      .max(40, "phone_invalid")
+      .max(L.phone, "phone_invalid")
       .refine((value) => normalizeIraqPhone(value) !== null, "phone_invalid")
       .optional(),
   ),
   governorateId: z.preprocess(blank, z.string({ error: "required" }).regex(ID, "invalid")),
   districtId: z.preprocess(blank, z.string().regex(ID, "invalid").optional()),
-  areaText: z.preprocess(blank, z.string({ error: "required" }).overwrite(cleanLine).trim().min(2, "too_short").max(120, "too_long")),
-  addressText: z.preprocess(blank, z.string({ error: "required" }).overwrite(cleanBlock).trim().min(5, "too_short").max(300, "too_long")),
-  notes: optionalText(300, true),
+  areaText: z.preprocess(blank, z.string({ error: "required" }).overwrite(cleanLine).trim().min(L.areaMin, "too_short").max(L.area, "too_long")),
+  addressText: z.preprocess(blank, z.string({ error: "required" }).overwrite(cleanBlock).trim().min(L.addressMin, "too_short").max(L.address, "too_long")),
+  notes: optionalText(L.notes, true),
   makeDefault: z.preprocess((value) => value === true || value === "1" || value === "on" || value === "true", z.boolean()).optional(),
 });
 export type AddressInput = z.input<typeof AddressInput>;

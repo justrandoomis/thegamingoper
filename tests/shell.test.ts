@@ -10,33 +10,43 @@
  *     (offline is never a 500 — and the panel's offline words are the root boundary's `errors.offline`);
  *   · what the offline banner says (form wording on checkout, task flows and /account; the cart elsewhere);
  *   · the product 404: the slug's words, and the platform they name;
- *   · the footer links every policy page the content area publishes.
+ *   · the footer links every policy page the content area publishes;
+ *   · the mega menu's words (short model names, counts, the featured product's price, one string per platform);
+ *   · a focused field is moved out from under a bar; the task header's title is cut between words; the exchange
+ *     rate keeps «figure, then currency» in every language; the Sorani strings spell the brand «طمطم».
  */
 import { describe, expect, it } from "vitest";
 import errorMessages from "~/i18n/messages/errors";
 import shellMessages from "~/i18n/messages/shell";
+import uiMessages from "~/i18n/messages/ui";
+import { makeT } from "~/i18n/translate";
 import { LOCALE_CODES, switchLocalePath } from "~/lib/locales";
 import { POLICY_SLUGS } from "~/routes/storefront/content/content-model";
 import {
   backFallback,
   canonicalSearch,
   checkoutRail,
+  clampWords,
   errorKind,
+  focusNudge,
   FOOTER_POLICIES,
   isNetworkFailure,
   MEGA_LINKS,
   megaFeature,
   megaPlan,
+  megaWords,
   missingProduct,
   platformForQuery,
+  rateText,
   sheetCategories,
   shellChrome,
   suggestionKind,
   tabOf,
+  TASK_FOOTER_LABELS,
   TASK_FOOTER_LINKS,
 } from "~/routes/storefront/shell/chrome";
 import { LAYOUT_ROUTE_ID } from "~/routes/storefront/shell/meta";
-import type { NavCategory, NavPlatform } from "~/routes/storefront/shell/types";
+import type { NavCategory, NavFeatured, NavPlatform } from "~/routes/storefront/shell/types";
 
 /**
  * What React Router's server renders as `location.search` for a document request (react-router
@@ -256,6 +266,28 @@ describe("megaPlan / megaFeature — what a platform's mega menu lists", () => {
     expect(plan.allDevices).toBe("/c/playstation-consoles");
   });
 
+  it("names device models by their short model names, never SKU titles, and gives every link the read layer's count (§5.4)", () => {
+    const plan = megaPlan({
+      ...PLATFORM,
+      devices: [
+        { label: "PlayStation 5 (الطراز الأصلي 2020)", href: "/device/ps5", short: "PS5 (2020)", count: 37 },
+        { label: "PlayStation 5 Digital Edition (الطراز الأصلي 2020)", href: "/device/ps5-digital", short: "PS5 Digital (2020)", count: 17 },
+        { label: "PlayStation 5 Slim Digital Edition", href: "/device/ps5-slim-digital", short: "PS5 Slim Digital", count: 35 },
+        { label: "PlayStation Portal", href: "/device/ps-portal", short: "PlayStation Portal", count: 8 },
+      ],
+      accessories: [{ label: "أيدي التحكم", href: "/c/controllers?platform=playstation", count: 3 }],
+      used: { label: "PlayStation", href: "/used?platform=playstation", count: 1 },
+    });
+    expect(plan.devices.map((link) => link.label)).toEqual(["PS5 (2020)", "PS5 Digital (2020)", "PS5 Slim Digital", "PlayStation Portal"]);
+    // the full name stays for the pointer's tooltip; a short name that IS the name needs none
+    expect(plan.devices[1]).toEqual({ label: "PS5 Digital (2020)", full: "PlayStation 5 Digital Edition (الطراز الأصلي 2020)", href: "/device/ps5-digital", count: 17 });
+    expect(plan.devices[3]).toEqual({ label: "PlayStation Portal", href: "/device/ps-portal", count: 8 });
+    expect(plan.accessories[0]).toEqual({ label: "أيدي التحكم", href: "/c/controllers?platform=playstation", count: 3 });
+    expect(plan.used).toEqual({ href: "/used?platform=playstation", count: 1 });
+    // no count in the data: none shown (never invented)
+    expect(megaPlan(PLATFORM).devices[0]).toEqual({ label: "ps5-pro", href: "/device/ps5-pro", count: null });
+  });
+
   it("drops the cross-platform games category; «all games» is every game for the platform", () => {
     const plan = megaPlan(PLATFORM);
     expect(plan.games.map((link) => link.href)).toEqual(["/c/playstation-games"]);
@@ -273,14 +305,85 @@ describe("megaPlan / megaFeature — what a platform's mega menu lists", () => {
       "/c/accessories?platform=playstation",
       "/c/vr",
     ]);
-    expect(plan.used).toBe("/used?platform=playstation");
+    expect(plan.used).toEqual({ href: "/used?platform=playstation", count: null });
     expect(megaPlan({ ...PLATFORM, used: null, allConsoles: null })).toMatchObject({ used: null, allDevices: null });
   });
 
-  it("features the product whose photo leads the platform, else the newest console", () => {
-    expect(megaFeature(PLATFORM)).toEqual({ href: "/p/playstation-5-slim", label: "PlayStation 5 Slim (نسخة الأقراص) – 1TB", artKey: "playstation-5-slim--1" });
-    expect(megaFeature({ ...PLATFORM, artKey: "unknown--1" })).toEqual({ href: "/p/playstation-5-pro", label: "PlayStation 5 Pro", artKey: null });
-    expect(megaFeature({ ...PLATFORM, consoles: [] })).toBeNull();
+  const FEATURED: NavFeatured = {
+    productId: "prd_steam-deck-oled",
+    href: "/p/steam-deck-oled",
+    label: "Steam Deck OLED",
+    image: { artKey: "steam-deck-oled--1", mediaKey: null, alt: "", isIllustration: false },
+    priceIqd: 781500,
+    stock: "in_stock",
+    hasVariants: true,
+    isDemo: true,
+  };
+  const none = () => null;
+
+  it("features the read layer's product: its photo, name, price, state and demo flag (§5.4 «its name and price»)", () => {
+    expect(megaFeature({ ...PLATFORM, featured: FEATURED }, none)).toEqual({
+      href: "/p/steam-deck-oled",
+      label: "Steam Deck OLED",
+      artKey: "steam-deck-oled--1",
+      mediaKey: null,
+      priceIqd: 781500,
+      stock: "in_stock",
+      isDemo: true,
+    });
+    expect(megaFeature({ ...PLATFORM, featured: { ...FEATURED, stock: "out_of_stock", isDemo: false } }, none)).toMatchObject({ stock: "out_of_stock", isDemo: false });
+    // an uploaded picture, or none: the catalogue photo of the product, never the glyph while one exists
+    expect(megaFeature({ ...PLATFORM, featured: { ...FEATURED, image: { ...FEATURED.image, artKey: null, mediaKey: "m/1.webp" } } }, none)).toMatchObject({ artKey: null, mediaKey: "m/1.webp" });
+    expect(megaFeature({ ...PLATFORM, featured: { ...FEATURED, image: { ...FEATURED.image, artKey: null } } }, (slug) => `${slug}--2`)).toMatchObject({ artKey: "steam-deck-oled--2" });
+    // the read layer says there is nothing to feature
+    expect(megaFeature({ ...PLATFORM, featured: null }, none)).toBeNull();
+  });
+
+  it("without the read layer's pick: the product whose photo leads the platform, else the first console that HAS a photo", () => {
+    expect(megaFeature(PLATFORM, none)).toMatchObject({ href: "/p/playstation-5-slim", label: "PlayStation 5 Slim (نسخة الأقراص) – 1TB", artKey: "playstation-5-slim--1", priceIqd: null });
+    // the handheld menu showed a controller glyph for «ROG Xbox Ally X20», which has photos
+    const handheld: NavPlatform = {
+      ...PLATFORM,
+      artKey: "steam-deck-oled--1",
+      consoles: [
+        { label: "ROG Xbox Ally X20", href: "/p/rog-xbox-ally-x20" },
+        { label: "MSI Claw 8 EX AI+", href: "/p/msi-claw-8-ex-ai-plus" },
+      ],
+    };
+    const photos: Record<string, string> = { "rog-xbox-ally-x20": "rog-xbox-ally-x20--1", "msi-claw-8-ex-ai-plus": "msi-claw-8-ex-ai-plus--1" };
+    expect(megaFeature(handheld, (slug) => photos[slug] ?? null)).toMatchObject({ href: "/p/rog-xbox-ally-x20", artKey: "rog-xbox-ally-x20--1" });
+    expect(megaFeature(handheld, (slug) => (slug === "msi-claw-8-ex-ai-plus" ? photos[slug] : null))).toMatchObject({ href: "/p/msi-claw-8-ex-ai-plus", artKey: "msi-claw-8-ex-ai-plus--1" });
+    // no console has a photo: the newest console, with the glyph
+    expect(megaFeature(handheld, none)).toMatchObject({ href: "/p/rog-xbox-ally-x20", artKey: null });
+    expect(megaFeature({ ...PLATFORM, consoles: [] }, none)).toBeNull();
+  });
+});
+
+describe("megaWords — one string per platform (v2 §9: the hub rail's «أجهزة أجهزة محمولة» defect)", () => {
+  const nameOf = (locale: (typeof LOCALE_CODES)[number], slug: string) => ((uiMessages[locale] as { platform: Record<string, string> }).platform[slug] ?? slug);
+
+  it("never doubles the handheld platform's noun, in any language", () => {
+    const expected = {
+      ar: { allDevices: "كل الأجهزة المحمولة", usedOf: "الأجهزة المحمولة المستعملة" },
+      en: { allDevices: "All handheld PCs", usedOf: "Used handheld PCs" },
+    } as const;
+    for (const locale of LOCALE_CODES) {
+      const t = makeT(shellMessages[locale], locale, "shell");
+      const words = megaWords(t, "handheld", nameOf(locale, "handheld"));
+      if (locale in expected) expect(words, locale).toEqual(expected[locale as keyof typeof expected]);
+      for (const text of Object.values(words)) {
+        expect(text, locale).not.toMatch(/أجهزة الأجهزة|Handheld PCs (consoles|devices)|ئامێرەکانی ئامێرە|ئامێری بەکارهاتووی ئامێرە/);
+        expect(text, locale).not.toContain("{");
+      }
+    }
+  });
+
+  it("names the brand platforms by their Latin names; an unknown platform takes the generic template", () => {
+    const ar = makeT(shellMessages.ar, "ar", "shell");
+    expect(megaWords(ar, "playstation", "PlayStation")).toEqual({ allDevices: "كل أجهزة PlayStation", usedOf: "أجهزة PlayStation المستعملة" });
+    const en = makeT(shellMessages.en, "en", "shell");
+    expect(megaWords(en, "xbox", "Xbox")).toEqual({ allDevices: "All Xbox consoles", usedOf: "Used Xbox devices" });
+    expect(megaWords(en, "sega", "Sega")).toEqual({ allDevices: "All Sega consoles", usedOf: "Used Sega devices" });
   });
 });
 
@@ -426,5 +529,96 @@ describe("footer", () => {
 
   it("the one-line footer of checkout and task flows: returns, privacy, terms, support", () => {
     expect([...TASK_FOOTER_LINKS]).toEqual(["/policies/returns", "/policies/privacy", "/policies/terms", "/support"]);
+  });
+
+  it("names the support link with the navigation term «الدعم» / Support — «مركز الدعم» is the page's title (§5.8, §9)", () => {
+    const words = Object.fromEntries(LOCALE_CODES.map((locale) => [locale, makeT(shellMessages[locale], locale, "shell")(TASK_FOOTER_LABELS["/support"])]));
+    expect(words).toEqual({ ar: "الدعم", en: "Support", ckb: "پشتگیری" });
+    for (const to of TASK_FOOTER_LINKS) expect(makeT(shellMessages.ar, "ar", "shell")(TASK_FOOTER_LABELS[to]), to).not.toBe(TASK_FOOTER_LABELS[to]);
+  });
+});
+
+describe("brand and demo words (v2 §9 glossary, §13)", () => {
+  it("spells the brand «طمطم» in Sorani as in the logo — never «تەمتەم» — until the owner decides (§13 item 12)", () => {
+    expect(JSON.stringify(shellMessages.ckb)).not.toContain("تەمتەم");
+    expect(JSON.stringify(errorMessages.ckb)).not.toContain("تەمتەم");
+    const meta = shellMessages.ckb.meta as Record<string, string>;
+    expect(meta.titleTemplate).toBe("{title} — طمطم");
+    expect(meta.siteName).toContain("طمطم");
+  });
+
+  it("the checkout bar's tag is the glossary's «طلب تجريبي» / Demo order at every width — no short «تجريبي»", () => {
+    expect((shellMessages.ar.demo as Record<string, string>).order).toBe("طلب تجريبي");
+    expect((shellMessages.en.demo as Record<string, string>).order).toBe("Demo order");
+    for (const locale of LOCALE_CODES) expect(shellMessages[locale].demo, locale).not.toHaveProperty("orderShort");
+  });
+});
+
+describe("focusNudge — a focused field is never left under a bar (WCAG 2.4.11)", () => {
+  // the transaction audit: «ملاحظات للمندوب» at 689–801, the checkout task bar from 772 — the browser did not scroll
+  // a field that was already partly in view
+  const edges = { top: 56, bottom: 772 };
+
+  it("scrolls down by the overlap with the bottom bar plus 12px", () => {
+    expect(focusNudge({ top: 689, bottom: 801 }, edges)).toBe(801 - 772 + 12);
+  });
+
+  it("scrolls up by the overlap with the header plus 12px", () => {
+    expect(focusNudge({ top: 40, bottom: 92 }, edges)).toBe(40 - 56 - 12);
+  });
+
+  it("leaves a field between the bars where it is", () => {
+    expect(focusNudge({ top: 56, bottom: 772 }, edges)).toBe(0);
+    expect(focusNudge({ top: 300, bottom: 352 }, edges)).toBe(0);
+  });
+
+  it("a field taller than the room between the bars keeps its top in view (never pushed under the header)", () => {
+    expect(focusNudge({ top: 100, bottom: 900 }, edges)).toBe(100 - 56 - 12);
+    expect(focusNudge({ top: 60, bottom: 900 }, edges)).toBe(0);
+  });
+});
+
+describe("clampWords — the task header's title, cut between words at its logical end", () => {
+  // a fake measure: a candidate fits when it has at most `n` characters
+  const upTo = (n: number) => (candidate: string) => candidate.length <= n;
+  const title = "قاعدة الشحن DualSense Charging Station";
+
+  it("keeps a title that fits", () => {
+    expect(clampWords(title, upTo(80))).toBe(title);
+  });
+
+  it("drops whole words from the end and adds «…» — never a cut inside the Latin name («…lSense»)", () => {
+    expect(clampWords(title, upTo(24))).toBe("قاعدة الشحن DualSense…");
+    expect(clampWords(title, upTo(21))).toBe("قاعدة الشحن…");
+    expect(clampWords("PlayStation 5 Pro Digital Edition", upTo(20))).toBe("PlayStation 5 Pro…");
+  });
+
+  it("a first word that does not fit is left to the CSS ellipsis", () => {
+    expect(clampWords("Supercalifragilistic expialidocious", upTo(5))).toBe("Supercalifragilistic expialidocious");
+  });
+
+  it("never stops inside brackets: the bracket goes with the words it opens", () => {
+    // Sorani: «DualSense Charging Station (وێستگەی…» read as a broken bracket
+    expect(clampWords("DualSense Charging Station (وێستگەی شەحن)", upTo(37))).toBe("DualSense Charging Station…");
+    expect(clampWords("PlayStation 5 Slim (نسخة الأقراص) – 1TB", upTo(36))).toBe("PlayStation 5 Slim (نسخة الأقراص)…");
+  });
+
+  it("never ends on a joiner or a colon before the «…»", () => {
+    expect(clampWords("Pokémon Legends: Z-A – Nintendo Switch 2 Edition", upTo(17))).toBe("Pokémon Legends…");
+    expect(clampWords("Nintendo Switch 2 + Mario Kart World", upTo(20))).toBe("Nintendo Switch 2…");
+  });
+});
+
+describe("rateText — the exchange rate keeps «figure, then currency» (§2.6)", () => {
+  it("isolates only the foreign side; the dinar amount takes its own direction, the figure first, joined by a no-break space", () => {
+    expect(rateText("1,310", "د.ع")).toBe("⁦1 USD⁩ = ⁨1,310 د.ع⁩");
+    expect(rateText("1,310", "IQD")).toBe("⁦1 USD⁩ = ⁨1,310 IQD⁩");
+  });
+
+  it("the dinar side never sits inside the left-to-right isolate (it put «د.ع» before the figure in Arabic)", () => {
+    const text = rateText("1,310", "د.ع");
+    const ltr = text.slice(text.indexOf("⁦"), text.indexOf("⁩") + 1);
+    expect(ltr).not.toContain("د.ع");
+    expect(text.indexOf("1,310")).toBeLessThan(text.indexOf("د.ع"));
   });
 });

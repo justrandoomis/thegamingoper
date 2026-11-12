@@ -3,6 +3,7 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/employee";
 import { useFormat } from "~/i18n/react";
+import { can } from "~/server/actor";
 import { getAdminSession } from "../shell/gate.server";
 import { endAllStaffSessions, endStaffSession, getStaffSecurity, resetStaffTwoStep } from "~/server/services/admin/security/staff.server";
 import { setEmployeeBranch, setEmployeeRoles } from "~/server/services/admin/security/roles.server";
@@ -25,7 +26,8 @@ import { sec } from "./security.server";
 export async function loader({ context, params }: Route.LoaderArgs) {
   const { db, actor, locale, now } = await sec.open(context, "security.session.read");
   const session = getAdminSession(context);
-  return { detail: await sec.orRespond(() => getStaffSecurity(db, actor, params.employeeId, locale, now, session.session.id)), now };
+  // the password link and re-enabling live on the employee's file in module 15 (staff.manage)
+  return { detail: await sec.orRespond(() => getStaffSecurity(db, actor, params.employeeId, locale, now, session.session.id)), now, staffFile: can(actor, "staff.manage") };
 }
 
 export async function action({ request, context, params }: Route.ActionArgs) {
@@ -59,7 +61,7 @@ type Detail = Route.ComponentProps["loaderData"]["detail"];
 
 export default function EmployeePage({ loaderData }: Route.ComponentProps) {
   const t = useModuleT();
-  const { detail, now } = loaderData;
+  const { detail, now, staffFile } = loaderData;
   const { employee } = detail;
   return (
     <>
@@ -102,7 +104,7 @@ export default function EmployeePage({ loaderData }: Route.ComponentProps) {
           {detail.events.length ? <Events detail={detail} /> : null}
         </div>
         <aside className="grid min-w-0 gap-5">
-          <Account detail={detail} />
+          <Account detail={detail} staffFile={staffFile && !detail.isSelf} />
           <Branch detail={detail} />
         </aside>
       </div>
@@ -110,7 +112,7 @@ export default function EmployeePage({ loaderData }: Route.ComponentProps) {
   );
 }
 
-function Account({ detail }: { detail: Detail }) {
+function Account({ detail, staffFile }: { detail: Detail; staffFile: boolean }) {
   const t = useModuleT();
   const f = useFormat();
   const [open, setOpen] = useState(false);
@@ -154,6 +156,11 @@ function Account({ detail }: { detail: Detail }) {
         ) : null}
         {!employee.twoStep && !detail.isSelf ? <p className="type-caption text-ink-2">{t("employee.noTwoStepHint")}</p> : null}
         {detail.outranked ? <p className="type-caption text-ink-2">{t("employee.outranked")}</p> : null}
+        {staffFile ? (
+          <Link to={`/admin/staff/employees/${employee.id}#access`} className="adm-link type-label">
+            {t("employee.staffFile")}
+          </Link>
+        ) : null}
       </div>
       <ActionDialog
         open={open}

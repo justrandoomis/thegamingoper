@@ -104,7 +104,7 @@
   "variants": [
     {
       "sku": "BF6-PS5-STD",
-      "title": { "ar": "Battlefield 6 لجهاز PS5 — Standard Edition", "en": "Battlefield 6 for PS5 — Standard Edition", "ckb": "Battlefield 6 بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["battlefield-6--1", "battlefield-6--2", "battlefield-6--3", "battlefield-6--4"],
@@ -116,7 +116,7 @@
     },
     {
       "sku": "BF6-XSX-STD",
-      "title": { "ar": "Battlefield 6 لجهاز Xbox Series X — Standard Edition", "en": "Battlefield 6 for Xbox Series X — Standard Edition", "ckb": "Battlefield 6 بۆ Xbox Series X — Standard Edition" },
+      "title": { "ar": "لجهاز Xbox Series X · Standard Edition", "en": "Xbox Series X · Standard Edition", "ckb": "بۆ Xbox Series X · Standard Edition" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["battlefield-6--1", "battlefield-6--2", "battlefield-6--3"],
@@ -206,12 +206,12 @@
     {
       "key": "battlefield-6--1",
       "file": ".cache/product-images/battlefield-6/1.jpg",
-      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.8290.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.d19697e7-b1c1-4200-9327-5f3640f65b75",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.65490.14559138935406168.e7f01a08-ebf9-41d8-88ba-39fb1a148711.c65ba007-7378-497e-b934-101230f24e82",
       "sourcePage": "https://www.xbox.com/en-US/games/store/battlefield-6/9p2ff14jzll3",
       "kind": "box-art",
       "alt": { "ar": "غلاف Battlefield 6", "en": "Battlefield 6 cover art", "ckb": "وێنەی بەرگی Battlefield 6" },
       "credit": "Electronic Arts",
-      "width": 2160, "height": 2160, "transparent": false
+      "width": 1440, "height": 2160, "transparent": false
     },
     {
       "key": "battlefield-6--2",

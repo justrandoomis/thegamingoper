@@ -6,6 +6,7 @@ import type { CartView, ImageRef, StockState } from "~/lib/dto";
 import { flyToCart, MotionLink, type FlyHandle } from "~/motion";
 import { addToCart, announce, cartErrorKey, itemKey, MAX_ADD_QTY, showShopToast, undoAdd, useCartCount, type AddItem, type AddOutcome } from "./cart-client";
 import { cx } from "./cx";
+import { FactLine } from "./FactLine";
 import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
 import { Key, type KeySize } from "./Key";
@@ -152,6 +153,9 @@ export function AddToCartKey(props: AddToCartKeyProps) {
     live.current.onMessage?.(next?.text ?? null, next?.tone);
   };
 
+  /** The last press came from inside a modal layer (the quick look): that layer confirms the add itself. */
+  const inLayer = useRef(false);
+
   /** Once per request outcome (the taps of one batch share it); the flight is undone per tap. */
   const settle = (outcome: AddOutcome, flight: FlyHandle, landed: Promise<void>) => {
     if (!outcome.ok) flight.revert();
@@ -166,6 +170,9 @@ export function AddToCartKey(props: AddToCartKeyProps) {
       announce(sentence);
       show(partial ? { tone: "warn", text: sentence, retryQty: null } : null);
       confirmed?.(outcome.cart, outcome.added);
+      // An add inside a sheet or dialog (the quick look) is confirmed there («✓ في السلة») and said aloud above: a toast
+      // would land on the sheet and cover its picture (QA 2026-11-12). Failures still toast (they carry the retry).
+      if (inLayer.current) return;
       // the toast follows the landing (v2 §2.11): it never shows mid-flight
       void landed.then(() =>
         showShopToast({
@@ -212,6 +219,7 @@ export function AddToCartKey(props: AddToCartKeyProps) {
       return;
     }
     const units = Math.max(1, Math.trunc(qty));
+    inLayer.current = event.currentTarget.closest('[aria-modal="true"]') !== null;
     run(units, resolveSource(source) ?? event.currentTarget);
   };
 
@@ -461,7 +469,8 @@ export function BuyBar({
             {line.text}
           </span>
         ) : controls.optionsLabel && !soon ? (
-          <span className="buybar__var">{controls.optionsLabel}</span>
+          // one line, shortened at its logical end (§4.15): a Latin version keeps «SteamOS Z1 Extreme…», never «…2GB / 1TB»
+          <FactLine facts={controls.optionsLabel.split(" · ")} className="buybar__var" />
         ) : null}
       </div>
       {end ? <div className="flex flex-wrap justify-end [&_.key]:min-w-[168px]">{end}</div> : null}

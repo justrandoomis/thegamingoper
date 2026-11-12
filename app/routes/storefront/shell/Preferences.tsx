@@ -26,7 +26,7 @@ import { cx } from "~/ui/cx";
 import { IconKey } from "~/ui/IconKey";
 import { Menu } from "~/ui/Menu";
 import { Segmented } from "~/ui/Segmented";
-import { canonicalSearch } from "./chrome";
+import { canonicalSearch, rateText } from "./chrome";
 import { useShellT } from "./i18n";
 
 /** Locales in the order every language switch shows them (v2 §5.3): العربية · English · کوردی. */
@@ -136,7 +136,9 @@ export function CurrencyPanel({ className }: { className?: string }) {
         <p>{t("currency.payIqd")}</p>
         {fx && usdRate ? (
           <>
-            <p>{t("currency.rate", { rate: "⁦" + `1 USD = ${f.number(usdRate)} ${CURRENCIES.IQD.symbol[f.locale]}` + "⁩" })}</p>
+            {/* the sentence in the page's direction; only «1 USD» is a left-to-right isolate — the dinar side keeps its
+                figure first («1,310 د.ع»), as every other price on the page (./chrome rateText) */}
+            <p>{t("currency.rate", { rate: rateText(f.number(usdRate), CURRENCIES.IQD.symbol[f.locale]) })}</p>
             <p>{t("currency.source", { source: "⁨" + (root?.fxIsDemo ? t("currency.demoSource") : fx.source) + "⁩", date: f.date(fx.updatedAt, "long") })}</p>
             {root?.fxIsDemo ? <p className="text-ink">{t("currency.demoRate")}</p> : null}
           </>

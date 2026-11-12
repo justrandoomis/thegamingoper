@@ -169,7 +169,8 @@ export default defineMessages({
         noMatch: "لا جهاز باسم «{query}»",
         noMatchText: "جرّب اسماً أقصر، أو امسح البحث وتصفّح القائمة.",
         clearSearch: "امسح البحث",
-        upTo: "حتى {price} · تقديري",
+        // no-break spaces around «·»: «· تقديري» never starts a line of its own (the page also binds the amount)
+        upTo: "حتى {price} · تقديري",
         afterInspection: "السعر بعد الفحص",
       },
       question: {
@@ -339,6 +340,7 @@ export default defineMessages({
       title: "طلب الاستبدال",
       refLabel: "رقم الطلب",
       metaTitle: "طلب الاستبدال {ref}",
+      demo: "طلب تجريبي",
       status: {
         submitted: "استلمنا الطلب",
         estimated: "بانتظار الفحص",
@@ -609,7 +611,7 @@ export default defineMessages({
         noMatch: "No device called “{query}”",
         noMatchText: "Try a shorter name, or clear the search and browse the list.",
         clearSearch: "Clear the search",
-        upTo: "Up to {price} · estimate",
+        upTo: "Up to {price} · estimate",
         afterInspection: "Price after inspection",
       },
       question: {
@@ -779,6 +781,7 @@ export default defineMessages({
       title: "Trade-in request",
       refLabel: "Request number",
       metaTitle: "Trade-in request {ref}",
+      demo: "Demo request",
       status: {
         submitted: "Request received",
         estimated: "Awaiting inspection",
@@ -1049,7 +1052,7 @@ export default defineMessages({
         noMatch: "هیچ ئامێرێک بە ناوی «{query}» نییە",
         noMatchText: "ناوێکی کورتتر تاقی بکەرەوە، یان گەڕانەکە بسڕەوە و سەیری لیستەکە بکە.",
         clearSearch: "گەڕانەکە بسڕەوە",
-        upTo: "تا {price} · خەمڵێنراو",
+        upTo: "تا {price} · خەمڵێنراو",
         afterInspection: "نرخ دوای پشکنین",
       },
       question: {
@@ -1219,6 +1222,7 @@ export default defineMessages({
       title: "داواکاریی گۆڕینەوە",
       refLabel: "ژمارەی داواکاری",
       metaTitle: "داواکاریی گۆڕینەوەی {ref}",
+      demo: "داواکاری تاقیکاری",
       status: {
         submitted: "داواکارییەکە گەیشت",
         estimated: "چاوەڕێی پشکنین",

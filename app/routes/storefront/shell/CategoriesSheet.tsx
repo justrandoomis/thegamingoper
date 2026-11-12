@@ -2,9 +2,10 @@
  * «التصنيفات» on phones and tablets (Design System v2 §5.10): a full-height sheet —
  *   1. the four platforms as compact platform tiles (2 × 2: colour, name, count, the hardware photo);
  *   2. two wide entry cards, «المستعمل والمفحوص» and «الدعم» (used and support stay prominent);
- *   3. the departments as category tiles in three columns, with their counts (controllers, headsets, storage, VR,
- *      gift cards, accessories, games — consoles and handheld PCs live inside their platforms: the handheld platform
- *      is «الأجهزة المحمولة», its category «حواسيب الألعاب المحمولة» is shown inside it);
+ *   3. the departments as category tiles in three columns, with their photos (`artKey`; a glyph only for a category
+ *      without one) and counts (controllers, headsets, storage, VR, gift cards, accessories, games — consoles and
+ *      handheld PCs live inside their platforms: the handheld platform is «الأجهزة المحمولة», its category «حواسيب
+ *      الألعاب المحمولة» is shown inside it);
  *   4. rows: استبدل جهازك · تتبّع طلبك;
  *   5. language, theme and the display currency.
  * Every link closes the sheet as it navigates. Client only (a <Sheet> renders nothing on the server); without script
@@ -32,7 +33,7 @@ export type CategoriesSheetProps = {
   shell: ShellData | null;
 };
 
-/** The glyph that stands in for a department's photo until the navigation data carries one. */
+/** The glyph that stands in for a department's photo only while the category has none (`artKey` null). */
 const CATEGORY_GLYPH: Record<(typeof SHEET_CATEGORY_KINDS)[number], IconName> = {
   controllers: "game-controller",
   headsets: "headphones",
@@ -83,10 +84,13 @@ export function CategoriesSheet({ open, onClose, shell }: CategoriesSheetProps) 
                     to={category.href}
                     label={category.label}
                     count={category.count}
+                    // the category's photo (staff set it in the catalogue module) as on home's «تسوّق حسب القسم»
                     art={
-                      <span className="absolute inset-0 grid place-items-center text-ink-2">
-                        <Icon name={glyphOf(category.kind)} size={32} />
-                      </span>
+                      category.artKey ?? (
+                        <span className="absolute inset-0 grid place-items-center text-ink-2">
+                          <Icon name={glyphOf(category.kind)} size={32} />
+                        </span>
+                      )
                     }
                     onClick={onClose}
                   />

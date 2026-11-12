@@ -256,8 +256,9 @@ function toItem(row: ListRow, locale: Locale): UsedUnitListItem {
     id: row.id,
     slug: row.slug,
     name,
-    // The card's fact line: the storage (the variant title mostly repeats the name); the unit page shows the full title.
-    subtitle: storage ?? (l10n(row.variant_title, locale) || null),
+    // The card's fact line: the storage, else what the variant's title adds to the name (variantLine — the title
+    // mostly repeats the name).
+    subtitle: storage ?? variantLine(l10n(row.variant_title, locale), name),
     platformSlug: row.platform_slug ?? null,
     platformName: row.platform_name ? l10n(row.platform_name, locale) || null : null,
     grade: row.grade,
@@ -398,7 +399,10 @@ export type UsedUnitDetail = {
   /** listed = can be bought; reserved = another order holds it; sold = gone (the page says so). */
   status: "listed" | "reserved" | "sold";
   name: string;
-  /** The variant: edition, storage, colour. */
+  /**
+   * What the variant adds to the name — edition, storage, colour («أبيض», "512GB"), never the name again (variantLine);
+   * null when its title adds nothing.
+   */
   subtitle: string | null;
   platform: { slug: string; name: string } | null;
   model: { slug: string; name: string } | null;
@@ -468,6 +472,38 @@ type TemplateItem = { key: string; label: L10n; input?: string };
 
 const PUBLIC_STATUSES = new Set(["listed", "reserved", "sold"]);
 const SEVERITIES = new Set(["minor", "moderate", "major"]);
+
+/** Lower-case words of a name or a title, without brackets, dashes, dots between facts, commas and slashes. */
+const nameWords = (text: string) =>
+  text
+    .replace(/[‎‏⁦-⁩]/g, "")
+    .toLocaleLowerCase("en")
+    .split(/[\s()[\]\-–—·,،/|:]+/)
+    .filter(Boolean);
+/** Separators, direction marks and spaces that may lead what is left of a title. */
+const LEADING_JUNK = /^[\s‎‏⁦-⁩\-–—·,،/|:]+/;
+
+/**
+ * What a variant's title adds to its product's name — the one fact line under a unit's h1 (Design System v2 §6.7).
+ * The catalogue's titles repeat the name («Nintendo Switch – OLED Model — أبيض» under «Nintendo Switch – OLED Model»,
+ * QA 2026-11-12): the title's leading words that are already in the name go, with the separators and direction marks
+ * after them → «أبيض»; "Legion Go Z1 Extreme 16GB / 512GB" under "Lenovo Legion Go (2023)" → "Z1 Extreme 16GB / 512GB".
+ * Null when nothing new is left. Pure.
+ */
+export function variantLine(title: string | null | undefined, name: string): string | null {
+  if (!title) return null;
+  const inName = new Set(nameWords(name));
+  const tokens = title.split(/(\s+)/);
+  let start = 0;
+  for (; start < tokens.length; start++) {
+    const token = tokens[start];
+    if (/^\s*$/.test(token)) continue;
+    if (!nameWords(token).every((word) => inName.has(word))) break;
+  }
+  const rest = tokens.slice(start).join("").replace(LEADING_JUNK, "").trimEnd();
+  if (!rest || nameWords(rest).every((word) => inName.has(word))) return null;
+  return rest;
+}
 
 /**
  * The page of one used unit, or null when there is no such public unit (unknown slug, or a status that is not
@@ -541,7 +577,7 @@ ORDER BY CASE WHEN m.is_illustration = 0 AND f.visibility = 'public' THEN 0 ELSE
     slug: row.slug,
     status: row.status as UsedUnitDetail["status"],
     name,
-    subtitle: l10n(row.variant_title, locale) || null,
+    subtitle: variantLine(l10n(row.variant_title, locale), name),
     platform: row.platform_slug ? { slug: row.platform_slug, name: l10n(row.platform_name, locale) || row.platform_slug } : null,
     model: row.model_slug ? { slug: row.model_slug, name: l10n(row.model_name, locale) || row.model_slug } : null,
     product: { slug: row.product_slug, name, published: productPublished },

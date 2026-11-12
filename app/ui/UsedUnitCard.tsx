@@ -7,8 +7,8 @@ import { MotionLink, SharedElement } from "~/motion";
 import { BidiText, latinName } from "./BidiText";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
+import { FactLine } from "./FactLine";
 import { GradeBadge } from "./GradeBadge";
-import { IconKey } from "./IconKey";
 import { Niche } from "./Niche";
 import { SafePrice } from "./PriceTag";
 import { ProductImage } from "./ProductCard";
@@ -20,8 +20,8 @@ import { TextLink } from "./TextLink";
  * list: the unit's page shows the inspection first. Its action is «اعرض تقرير الفحص».
  *
  *   <UsedUnitCard unit={unit} />                  grid card: the grade badge, «صورة توضيحية» on an illustration (the
- *                                                 photo raised 10% so the tag never covers it), «البطارية 91% · ضمان
- *                                                 30 يوماً», the price and the report button
+ *                                                 photo raised above the tag so the tag never covers it), «البطارية
+ *                                                 91% · ضمان 30 يوماً», the price and «اعرض تقرير الفحص» in words
  *   <UsedUnitCard unit={unit} layout="row" />     the /used list row (two columns of rows from 1024): a 96px well, the
  *                                                 title, the grade, «البطارية 91% · ضمان 30 يوماً · 512GB», the price and
  *                                                 «اعرض تقرير الفحص» (44px)
@@ -108,19 +108,23 @@ export function UsedUnitCard({
             <BidiText text={unit.name} />
           </Name>
           {row ? <GradeBadge grade={unit.grade} className="self-start" /> : null}
-          {facts.length ? <span className="pcard__meta">{facts.join(" · ")}</span> : null}
+          {/* whole facts; a row has room for two lines («البطارية 91% · ضمان 30 يوماً · 64GB» keeps its storage) */}
+          <FactLine facts={facts} lines={row ? 2 : 1} className="pcard__meta" />
           {row ? <span className="mt-1 flex flex-wrap items-center gap-x-3">{price}</span> : null}
         </span>
       </MotionLink>
       <div className={cx("pcard__foot", row && cx("mt-0 pt-0", stack, "@max-[36rem]:ps-[calc(96px+var(--s-4))]"))}>
+        {/* «اعرض تقرير الفحص» in words (§4.11, §4.12), 44px tall; the unit's name is its description */}
         {row ? (
-          <TextLink as={MotionLink} nav="zoom" to={href} className="relative z-2">
+          <TextLink as={MotionLink} nav="zoom" to={href} className="relative z-2" aria-describedby={titleId}>
             {t("card.inspect")}
           </TextLink>
         ) : (
           <>
             {price}
-            <IconKey as={MotionLink} nav="zoom" to={href} icon="clipboard-text" label={t("card.inspectNamed", { name: unit.name })} />
+            <TextLink as={MotionLink} nav="zoom" to={href} className="relative z-2" aria-describedby={titleId}>
+              {t("card.inspect")}
+            </TextLink>
           </>
         )}
       </div>

@@ -94,7 +94,9 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
     slug: "ps5",
     platform: "playstation",
     generation: "ps5",
-    name: t3("PlayStation 5 (الطراز الأصلي 2020)", "PlayStation 5 (original 2020 model)", "PlayStation 5 (مۆدێلی ڕەسەنی 2020)"),
+    // a Latin title stays Latin (design v2 spec §4.11: «PlayStation 5 (الطراز» / «الأصلي 2020)» reordered in RTL rows);
+    // the year says which model, as the short name «PS5 (2020)» does
+    name: same("PlayStation 5 (2020)"),
     deviceKind: "console",
     product: "playstation-5",
     variant: "PS5-ORIG-DISC",
@@ -103,7 +105,7 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
     slug: "ps5-digital",
     platform: "playstation",
     generation: "ps5",
-    name: t3("PlayStation 5 Digital Edition (الطراز الأصلي 2020)", "PlayStation 5 Digital Edition (original 2020 model)", "PlayStation 5 Digital Edition (مۆدێلی ڕەسەنی 2020)"),
+    name: same("PlayStation 5 Digital Edition (2020)"),
     deviceKind: "console",
     product: "playstation-5",
     variant: "PS5-ORIG-DIGITAL",

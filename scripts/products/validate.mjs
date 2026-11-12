@@ -36,6 +36,64 @@ let warnCount = 0;
 const skus = new Map();
 const imageKeys = new Map();
 
+const ARABIC_SCRIPT = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+const LATIN = /[A-Za-zÀ-ɏ]/;
+/** The first letter that sets a line's direction: "latin", "arabic" or null (digits and signs only). */
+function firstStrong(text) {
+  for (const char of String(text)) {
+    if (ARABIC_SCRIPT.test(char)) return "arabic";
+    if (LATIN.test(char)) return "latin";
+  }
+  return null;
+}
+
+/**
+ * Design v2 spec §4.11: a name that opens with Latin is a Latin title — an Arabic or Sorani qualifier inside it makes
+ * the runs reorder in RTL rows («PlayStation 5 (الطراز» / «الأصلي 2020)»). Such words go to `qualifier` (printed on
+ * the cards' meta line), or the name opens with them («قرص Samsung 990 PRO …»).
+ */
+function checkName(name, errs) {
+  for (const lang of ["ar", "en", "ckb"]) {
+    const text = name?.[lang];
+    if (typeof text === "string" && firstStrong(text) === "latin" && ARABIC_SCRIPT.test(text)) {
+      errs.push(`name.${lang} "${text}" opens with Latin and has Arabic-script words inside: keep the Latin title and move those words to "qualifier" (or open the name with them)`);
+    }
+  }
+}
+
+/** `qualifier`: optional; the words a Latin title leaves out, per language ("" where the name already says it). */
+function checkQualifier(qualifier, errs) {
+  if (qualifier === undefined) return;
+  if (!qualifier || typeof qualifier !== "object") return errs.push("qualifier: must be an object with ar, en and ckb");
+  for (const lang of ["ar", "en", "ckb"]) if (typeof qualifier[lang] !== "string") errs.push(`qualifier.${lang}: missing (use "" when the name says it in that language)`);
+  if (["ar", "en", "ckb"].every((lang) => !String(qualifier[lang] ?? "").trim())) errs.push("qualifier: empty in every language — leave it out");
+}
+
+/**
+ * Design v2 spec §4.13: a variant's title is the option value only («لجهاز PS5», "International model") — carts and
+ * order lines print it under the product's name, so it never opens with that name; an English value starts with a
+ * capital. A product with one version may carry its own name as the title (no option line is printed then).
+ */
+function checkVariantTitle(product, variant, i, errs) {
+  const title = variant.title ?? {};
+  // the name, and its head before a separator ("EA SPORTS FC 27" of "EA SPORTS FC 27 · Nintendo Switch 2")
+  const heads = (name) => {
+    const text = String(name ?? "").trim();
+    const head = text.split(/\s+[·–—-]\s+|\s+\(/)[0].trim();
+    return [...new Set([text, head].filter((part) => part.length >= 4))].map((part) => part.toLowerCase());
+  };
+  for (const lang of ["ar", "en", "ckb"]) {
+    const text = String(title[lang] ?? "").trim();
+    const name = String(product.name?.[lang] ?? "").trim();
+    if (!text || !name || text === name) continue;
+    const lower = text.toLowerCase();
+    const repeats = [...heads(name), ...heads(product.name?.en)].some((head) => lower === head || lower.startsWith(`${head} `) || lower.startsWith(`${head}:`) || lower.startsWith(`${head},`) || lower.startsWith(`${head}‏`));
+    if (repeats) errs.push(`variants[${i}].title.${lang} "${text}" repeats the product name: write the option value only`);
+  }
+  const en = String(title.en ?? "").trim();
+  if (en && /^[a-z]/.test(en) && en !== product.name?.en) errs.push(`variants[${i}].title.en "${en}" starts with a small letter`);
+}
+
 function l10n(v, where, errs) {
   if (!v || typeof v !== "object") return errs.push(`${where}: missing L10n object`);
   for (const lang of ["ar", "en", "ckb"]) {
@@ -62,6 +120,8 @@ for (const [slug, p] of all) {
     if (p.releaseDate && !/^\d{4}-\d{2}-\d{2}$/.test(p.releaseDate)) errs.push("releaseDate must be YYYY-MM-DD");
     if (!p.brand) errs.push("brand missing");
     l10n(p.name, "name", errs);
+    checkName(p.name, errs);
+    checkQualifier(p.qualifier, errs);
     l10n(p.short, "short", errs);
     l10n(p.description, "description", errs);
     if (!Array.isArray(p.highlights) || p.highlights.length < 2) warns.push("fewer than 2 highlights");
@@ -79,6 +139,7 @@ for (const [slug, p] of all) {
       if (skus.has(v.sku)) errs.push(`variants[${i}].sku ${v.sku} duplicates ${skus.get(v.sku)}`);
       else skus.set(v.sku, slug);
       l10n(v.title, `variants[${i}].title`, errs);
+      checkVariantTitle(p, v, i, errs);
       if (v.isDefault) defaults++;
       for (const k of v.images || []) if (!(p.images || []).some((im) => im.key === k)) errs.push(`variants[${i}].images references unknown image "${k}"`);
       if (v.priceIqd !== undefined && v.priceIqd !== null) warns.push(`variants[${i}].priceIqd is set — prices are not researched`);

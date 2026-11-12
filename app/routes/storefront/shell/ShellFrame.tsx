@@ -29,7 +29,7 @@ import { useOnline } from "~/ui/OfflineBanner";
 import { Toaster } from "~/ui/Toast";
 import { DemoStrip, ShellOffline } from "./Banners";
 import { CategoriesSheet } from "./CategoriesSheet";
-import { backFallback, shellChrome } from "./chrome";
+import { backFallback, focusNudge, shellChrome, type FocusEdges } from "./chrome";
 import { Footer, TaskFooter } from "./Footer";
 import { CheckoutBar, Header } from "./Header";
 import { ShellMessages, useShellT } from "./i18n";
@@ -82,6 +82,8 @@ function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | n
     setSearchOpen(false);
   }, [location.pathname]);
 
+  useFocusClearOfBars();
+
   return (
     <div className="shell" data-chrome={chrome} data-offline={online ? undefined : ""}>
       <MotionRoot />
@@ -110,4 +112,58 @@ function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | n
       <Toaster offset="var(--shell-toast-top)" />
     </div>
   );
+}
+
+/** What sticks at the top (the header or the checkout bar, the offline banner under it) and what is fixed at the bottom. */
+const TOP_BARS = ".shell-header, .shell-cobar, .shell-offline";
+const BOTTOM_BARS = ".shell-tabbar, .shell-taskbar";
+/** Focus inside these is not the page's: they do not scroll with it (the bars themselves, sheets, dialogs, menus). */
+const NOT_THE_PAGE = `${TOP_BARS}, ${BOTTOM_BARS}, dialog, [role="dialog"], [popover], .shell-mega`;
+
+/** The room between the bars right now, in viewport pixels (a bar that is not drawn does not count). */
+function focusEdges(): FocusEdges {
+  let top = 0;
+  for (const bar of document.querySelectorAll(TOP_BARS)) {
+    const box = bar.getBoundingClientRect();
+    if (box.height > 0 && box.bottom > 0 && box.top < window.innerHeight / 2) top = Math.max(top, box.bottom);
+  }
+  let bottom = window.innerHeight;
+  for (const bar of document.querySelectorAll(BOTTOM_BARS)) {
+    const box = bar.getBoundingClientRect();
+    if (box.height > 0 && box.top < window.innerHeight && box.top > window.innerHeight / 2) bottom = Math.min(bottom, box.top);
+  }
+  return { top, bottom };
+}
+
+/**
+ * Focus is never left under a bar (WCAG 2.4.11, v2 §10). The global `scroll-padding-block` (from --shell-top and
+ * --shell-bottom) covers a control the browser scrolls to, but a browser does not scroll a control that is already
+ * PARTLY in view: Tab from «العنوان بالتفصيل» left «ملاحظات للمندوب» with its lower 29px — the focus ring included —
+ * under the checkout task bar. After the browser's own scrolling (next frame), a control of the page that still
+ * reaches under a bar is moved clear of it by the overlap + 12px (./chrome focusNudge). Keyboard focus only
+ * (`:focus-visible` — a text field counts however it was focused): a button pressed with the mouse never makes the
+ * page jump.
+ */
+function useFocusClearOfBars() {
+  useEffect(() => {
+    let frame = 0;
+    const onFocus = (event: FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement) || !target.closest("#main, footer") || target.closest(NOT_THE_PAGE)) return;
+      // controls only: a programmatic focus target (`tabindex="-1"`: <main> after a navigation, a heading) never moves
+      // the page — scroll restoration and the reading position stay where they are
+      if (target.tabIndex < 0) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (document.activeElement !== target || !target.matches(":focus-visible")) return;
+        const nudge = focusNudge(target.getBoundingClientRect(), focusEdges());
+        if (nudge !== 0) window.scrollBy({ top: nudge, behavior: "instant" });
+      });
+    };
+    document.addEventListener("focusin", onFocus);
+    return () => {
+      document.removeEventListener("focusin", onFocus);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 }

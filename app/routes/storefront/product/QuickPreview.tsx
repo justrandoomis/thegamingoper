@@ -42,6 +42,7 @@ import { TextLink } from "~/ui/TextLink";
 import { PriceBlock, struckPrice, useDemoStore } from "./components/PriceBlock";
 import { VariantPicker } from "./components/VariantPicker";
 import { ProductMessages, useProductT } from "./i18n";
+import { keepTokens } from "./text";
 import { searchFor, shownDefault } from "./useVariant";
 
 export type QuickPreviewProps = {
@@ -150,7 +151,7 @@ export function QuickPreview({ slug, name, open, onClose, card, image }: QuickPr
       <Sheet
         open={open}
         onClose={onClose}
-        title={<BidiText text={product?.name ?? name} />}
+        title={<BidiText text={keepTokens(product?.name ?? name)} />}
         description={ready ? <DetailsLink product={product} variant={variant} /> : null}
         presentation="side"
         sideFrom={768}

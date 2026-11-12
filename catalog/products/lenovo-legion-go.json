@@ -163,9 +163,9 @@
     {
       "sku": "LEGO1-Z1E-512",
       "title": {
-        "ar": "Legion Go Z1 Extreme 16GB / 512GB",
-        "en": "Legion Go Z1 Extreme 16GB / 512GB",
-        "ckb": "Legion Go Z1 Extreme 16GB / 512GB"
+        "ar": "Z1 Extreme 16GB / 512GB",
+        "en": "Z1 Extreme 16GB / 512GB",
+        "ckb": "Z1 Extreme 16GB / 512GB"
       },
       "options": { "chip": "Ryzen Z1 Extreme", "memory": "16GB", "storage": "512GB", "color": "Shadow Black" },
       "modelNumber": "83E1",
@@ -175,9 +175,9 @@
     {
       "sku": "LEGO1-Z1E-1TB",
       "title": {
-        "ar": "Legion Go Z1 Extreme 16GB / 1TB",
-        "en": "Legion Go Z1 Extreme 16GB / 1TB",
-        "ckb": "Legion Go Z1 Extreme 16GB / 1TB"
+        "ar": "Z1 Extreme 16GB / 1TB",
+        "en": "Z1 Extreme 16GB / 1TB",
+        "ckb": "Z1 Extreme 16GB / 1TB"
       },
       "options": { "chip": "Ryzen Z1 Extreme", "memory": "16GB", "storage": "1TB", "color": "Shadow Black" },
       "modelNumber": "83E1",
@@ -187,9 +187,9 @@
     {
       "sku": "LEGO1-Z1-256",
       "title": {
-        "ar": "Legion Go Z1 16GB / 256GB",
-        "en": "Legion Go Z1 16GB / 256GB",
-        "ckb": "Legion Go Z1 16GB / 256GB"
+        "ar": "Z1 16GB / 256GB",
+        "en": "Z1 16GB / 256GB",
+        "ckb": "Z1 16GB / 256GB"
       },
       "options": { "chip": "Ryzen Z1", "memory": "16GB", "storage": "256GB", "color": "Shadow Black" },
       "modelNumber": "83E1",

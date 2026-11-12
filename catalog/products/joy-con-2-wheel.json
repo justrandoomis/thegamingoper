@@ -54,7 +54,7 @@
   "variants": [
     {
       "sku": "JC2-WHEEL-2PK",
-      "title": { "ar": "Joy-Con 2 Wheel — طقم من مقودين", "en": "Joy-Con 2 Wheel — set of 2", "ckb": "Joy-Con 2 Wheel — کۆمەڵەی دوو دانە" },
+      "title": { "ar": "Joy-Con 2 Wheel (set of 2)", "en": "Joy-Con 2 Wheel (set of 2)", "ckb": "Joy-Con 2 Wheel (set of 2)" },
       "options": { "color": "Light Blue / Light Red", "quantity": "2" },
       "barcodes": ["0045496884802"],
       "isDefault": true,

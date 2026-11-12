@@ -11,7 +11,8 @@ import { IconKey } from "./IconKey";
 /**
  * Sheets — Design System v2 §4.17: a bottom sheet below 768 (top corners --r-xl, at most 90% of the viewport) and a
  * 420px side sheet from the inline-end edge from 768. A 56px GLASS header strip (the 36×5 grabber, the title in
- * type-h3, a 44px close); an OPAQUE paper body that scrolls inside; a sticky paper foot with a hairline on top holding
+ * type-h3, a 44px close; the side sheet's strip is the same bar without frost — it stands over the page's own header);
+ * an OPAQUE paper body that scrolls inside; a sticky paper foot with a hairline on top holding
  * the actions («امسح الكل» ghost + the primary with the live count «اعرض 24 منتجاً», which grows). Filters, the
  * governorate picker, quick look, variant choice and reason codes.
  *
@@ -221,7 +222,10 @@ function SheetPortal({
           )}
           data-sheet={bottom ? "bottom" : "side"}
         >
-          <Glass className={cx("relative z-[1] shrink-0", bottom ? "rounded-t-xl" : "rounded-ss-xl")}>
+          {/* The side sheet's strip is opaque: it stands over the page's sticky header, whose icons and links showed
+              through it sharp behind the title (text over text, QA 2026-11-12), and nothing of the sheet scrolls under
+              it. The bottom sheet keeps its live strip. */}
+          <Glass variant={bottom ? "live" : "solid"} className={cx("relative z-[1] shrink-0", bottom ? "rounded-t-xl" : "rounded-ss-xl")}>
             <div {...sheet.handleProps} className={cx("flex min-h-14 items-center pe-16 ps-4", bottom ? "pb-2 pt-4" : "py-2")}>
               {canResize ? (
                 <button

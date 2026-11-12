@@ -19,7 +19,7 @@
  * The cart button is the fly-to-cart target (`data-cart-target`, drawn at every count) and its bead `data-cart-badge`.
  * Scrolling is observed with an IntersectionObserver on a 24px sentinel at the top of the document — no scroll listener.
  */
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import { Icon } from "~/art/Icon";
@@ -35,7 +35,7 @@ import { Menu } from "~/ui/Menu";
 import { ProgressSteps } from "~/ui/ProgressSteps";
 import { TextLink } from "~/ui/TextLink";
 import { PageProgress } from "./Banners";
-import { checkoutRail } from "./chrome";
+import { checkoutRail, clampWords } from "./chrome";
 import { useShellT } from "./i18n";
 import { PlatformNav } from "./MegaMenu";
 import { LanguageMenu } from "./Preferences";
@@ -173,12 +173,7 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery }: Head
         <div className="page shell-bar">
           {task ? <TaskBack to={task.back} /> : null}
           <Lockup />
-          {task && title ? (
-            // the page's own <h1> names the page for assistive technology; this is its visual echo on the bar
-            <p className="shell-task shell-task--title" aria-hidden="true">
-              {title}
-            </p>
-          ) : null}
+          {task && title ? <TaskTitle title={title} /> : null}
           <SearchPill onOpen={onSearch} />
           <SearchForm variant="header" query={searchQuery} />
           <div className="shell-end">
@@ -211,7 +206,7 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery }: Head
           </div>
         </div>
         <div className="page shell-navrow">
-          <PlatformNav platforms={shell?.nav.platforms ?? []} current={currentPlatform}>
+          <PlatformNav platforms={shell?.nav.platforms ?? []} current={currentPlatform} demo={demo}>
             <span className="shell-navsep" aria-hidden="true" />
             {games ? (
               <LocaleLink to={games.href} className="shell-navitem" aria-current={here(games.href)}>
@@ -242,6 +237,45 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery }: Head
   );
 }
 
+/**
+ * The task header's title: the page's <h1> on one line, cut BETWEEN words with «…» at its logical end (./chrome
+ * clampWords) — CSS alone cut «قاعدة الشحن DualSense Charging Station» inside the Latin name («…lSense Charging
+ * Station»). A hidden probe in the same font measures each candidate; it runs again when the bar's width changes. The
+ * page's own <h1> names the page for assistive technology; this is its visual echo on the bar.
+ */
+function TaskTitle({ title }: { title: string }) {
+  const box = useRef<HTMLParagraphElement>(null);
+  const probe = useRef<HTMLSpanElement>(null);
+  const [shown, setShown] = useState(title);
+  useLayoutEffect(() => {
+    const element = box.current;
+    const measure = probe.current;
+    if (!element || !measure) return;
+    const fit = () => {
+      const room = element.clientWidth;
+      // not laid out (from 1024 the task header is not used): the whole title
+      if (room === 0) return setShown(title);
+      const fitted = clampWords(title, (candidate) => {
+        measure.textContent = candidate;
+        return measure.getBoundingClientRect().width <= room;
+      });
+      // emptied again: a long candidate left in the probe would widen the title's scrollable area
+      measure.textContent = "";
+      setShown(fitted);
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [title]);
+  return (
+    <p ref={box} className="shell-task shell-task--title" aria-hidden="true">
+      {shown}
+      <span ref={probe} className="shell-task__probe" />
+    </p>
+  );
+}
+
 /** The task header's back key: real history Back when an earlier page of this site is in the tab, else a link. */
 function TaskBack({ to }: { to: string }) {
   const t = useShellT();
@@ -263,8 +297,9 @@ function TaskBack({ to }: { to: string }) {
 }
 
 /**
- * The checkout shell's one bar (v2 §5.8): back to the cart · the mascot (home) · the step rail from `?step=` (numbers
- * and labels; below 430px the numbers and the current label) · «طلب تجريبي» in demo mode · help. 56px, 64 from 1024.
+ * The checkout shell's one bar (v2 §5.8): back to the cart · the mascot (home; on a narrow phone it gives way first) ·
+ * the step rail from `?step=` (numbers and labels; below 600px the numbers and the current label, from 360 up) ·
+ * «طلب تجريبي» in demo mode, whole at every width · help. 56px, 64 from 1024. Sizes: shell.css "checkout bar".
  */
 export function CheckoutBar({ demo }: { demo: boolean }) {
   const t = useShellT();
@@ -286,11 +321,9 @@ export function CheckoutBar({ demo }: { demo: boolean }) {
           steps={rail.steps.map((step) => ({ label: t(`checkout.steps.${step.id}`), href: step.href ?? undefined }))}
         />
         {demo ? (
+          // the glossary's «طلب تجريبي» at every width (never a short «تجريبي»): the mascot gives way first
           <span className="shell-cobar__tag" title={t("demo.orderHint")}>
-            <DemoNote variant="tag">
-              <span className="shell-cobar__long">{t("demo.order")}</span>
-              <span className="shell-cobar__short">{t("demo.orderShort")}</span>
-            </DemoNote>
+            <DemoNote variant="tag">{t("demo.order")}</DemoNote>
           </span>
         ) : null}
         <IconKey as={LocaleLink} to="/support" variant="plain" icon={<Icon name="question" size={24} />} label={t("checkout.help")} className="shell-cobar__help" />

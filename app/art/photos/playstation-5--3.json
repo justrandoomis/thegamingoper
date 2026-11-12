@@ -9,12 +9,20 @@
       {
         "w": 240,
         "src": "/products/playstation-5/3-240.804f4c94.avif"
+      },
+      {
+        "w": 468,
+        "src": "/products/playstation-5/3-468.b7b82641.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
         "src": "/products/playstation-5/3-240.cfea5515.webp"
+      },
+      {
+        "w": 468,
+        "src": "/products/playstation-5/3-468.04c9e685.webp"
       }
     ]
   },

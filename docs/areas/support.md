@@ -11,7 +11,7 @@ with the form that needs them.
 |---|---|---|---|
 | `/support` | store | the four-segment support navigation (الأدلة current: the assistant and repair tracking one tap away); h1 «كيف نساعدك؟» (title «مركز الدعم»); a search box for a problem or an error code (`?q=`: a danger sign first, an error code with the guides that mention it, or guides ranked by the words); four task tiles (تتبّع طلبك → `/track` · صيانة جهاز → `/support/repair` · الإرجاع والضمان → `/policies/returns` · تحدّث مع موظف → the hand-off); the device picker (platform segmented control, then that platform's device tiles — a rail with 2.5 tiles below 768, a wrapping `auto-fill minmax(150px)` grid from 768; whole model names, never clamped; every platform's list is in the page: with script the control shows one, without script the control is hidden and the lists follow one another under their platform's name); `?device=<slug>` opens the device's panel (photo, assistant / repair keys, the devices area's hub link, its guides); six suggested guides in staff order (`?guides=all` lists every one); «تحدّث مع موظف»: the store's `ContactCard` when channels are configured, «اكتب لموظف» (the hand-off, with its sentence) when not | search: danger · code found / not found · results · zero results; device chosen · device without guides; no guides at all; demo line |
 | `/support/article/:slug` | store | the four-segment support navigation (الأدلة current; on phones it is the way back — breadcrumbs start at 768), then one approved public guide in a 720px reading column via `<Blocks>` + "still not solved?" (primary «ابدأ المساعد», secondary «احجز صيانة») + related guides | Arabic fallback note · "not yet reviewed by a store technician" · demo line · 404 |
-| `/support/assistant` | task | compact head (title, «ليس تشخيصاً» chip that opens how the assistant works, demo tag), the safety note collapsed to «للسلامة: لا تفتح الجهاز» (opens by itself on a danger stop, battery, the power tree or any warning), the conversation (shopper bubbles on `--niche` at the inline end, assistant bubbles on paper at the start, 8px corner on the speaker's side), replies as chips (platform chips with dots, 88×88 device image chips), «تحدّث مع موظف» (secondary) + «ابدأ من جديد» (quiet link); the composer in the glass task bar below 1024 (enabled from the first question, «اكتب اسم جهازك أو المشكلة», the red send key), at the end of a 720px chat column from 1024 with the device card and its guides in a sticky aside; `?handoff=1#handoff` = the hand-off form; `?ticket=SP-…&tk=…` = its receipt, with «انسخ رابط الصفحة» (the link is the only way back to the reply) | device · model · problem · steps · done (resolved / guide / part / repair / staff) · danger stop (typed before or after the device) · error code with / without a guide · unmatched words · a problem typed before the device (`need_device`) · a name that only points at a platform («PS5 Slim» is also the Slim Digital Edition, «Xbox»): the model is asked and the name never comes back as the problem · hand-off form (validation summary, offline, network failure kept in place) · receipt (status, staff replies or «لا ردّ بعد.», copy link) |
+| `/support/assistant` | task | compact head (title, «ليس تشخيصاً» chip that opens how the assistant works, demo tag), the safety note collapsed to «للسلامة: لا تفتح الجهاز» (opens by itself on a danger stop, battery, the power tree or any warning), the conversation (shopper bubbles on `--niche` at the inline end, assistant bubbles on paper at the start, 8px corner on the speaker's side), replies as chips (platform chips with dots, 88×88 device image chips), «تحدّث مع موظف» (secondary) + «ابدأ من جديد» (quiet link); the composer in the glass task bar below 1024 (enabled from the first question, «اكتب اسم جهازك أو المشكلة» / "Your device or the problem", the red send key), at the end of a 720px chat column from 1024 with the device card and its guides in a sticky aside; `?handoff=1#handoff` = the hand-off form; `?ticket=SP-…&tk=…` = its receipt, with «انسخ رابط الصفحة» (the link is the only way back to the reply) | device · model · problem · steps · done (resolved / guide / part / repair / staff) · danger stop (typed before or after the device) · error code with / without a guide · unmatched words · a problem typed before the device (`need_device`) · a name that only points at a platform («PS5 Slim» is also the Slim Digital Edition, «Xbox»): the model is asked and the name never comes back as the problem · hand-off form (validation summary, offline, network failure kept in place) · receipt (status, staff replies or «لا ردّ بعد.», copy link) |
 | `/support/repair` | task | three steps `?step=device|photos|contact` (الجهاز والمشكلة → الصور → التواصل والتسليم), one form (fields stay mounted between steps; `shouldRevalidate` skips the loader for step changes); step rail (compact below 768); "what happens next" (4 steps) and the fact strip (الدفع: بعد موافقتك على عرض السعر · صورك والرقم التسلسلي: يراها موظفونا فقط) above the form on step 1 below 1024, in a sticky aside from 1024; the task bar «رجوع \| تابع» (the last step «أرسل طلب الصيانة») below 1024, the same keys at the end of the form from 1024 — «رجوع» is the browser's Back when the step was reached by «تابع» (`client.ts` `stepBack`; history stays one line, so the browser's Back / Forward walk the steps in order); hand-over as OptionCards; the preferred time as `PreferencePicker` (the period alone: no day until the owner configures dispatch days) | per-step validation with the error summary; server field errors take the shopper to the step of the first one; uploading photos; offline (key flat + reason); network failure (form kept; nothing of the route reloaded — `revalidateAfter`); rate limited; without JavaScript every step shows and the key sends the form |
 | `/support/repair/status` | store | a 560px lookup card (رقم الطلب «مثل ⁦RP-7K4M2Q9X⁩», رقم الموبايل, primary «اعرض حالة الطلب»), then the request card: reference (type-code, LTR, copy key), status in words with its sentence, quote (+ «تحدّث مع موظف» to approve or ask), device, sent, photos, hand-over, preferred time, the shopper's description, the status timeline with dates; just created: «انسخ رابط الصفحة» (without `new=1`). Headers (`support.server.ts` `repairStatusHeaders`): the card behind its private link `no-referrer`; a page that shows the lookup form `same-origin` — under `no-referrer` a script-less lookup posted `Origin: null`, which React Router and the store refuse (400) | lookup · not found (same answer for a wrong reference or phone) · rate limited · created · replayed · every repair status, quote pending / approved · the lookup without script |
 
@@ -32,10 +32,17 @@ The two result views — the hand-off receipt and a repair's status card — hav
 | `parts.tsx` | `SupportNav`, `Name` (the kit's `BidiLabel`), `PlatformName`, `GuideRow`/`GuideList` (rows between hairlines in a paper card; `plain`; `.sup-guides--cols` = two columns from 1024), `DeviceArt` (a `Niche` well; handheld PCs use the wide fit), `DeviceTile`, `deviceFit`, `SafetyNote` (callout: paper, 3px tone bar, icon + the tone's word), `CopyKey`, `CopyLinkKey` (copies this page's private link; Clipboard API, then a selection, else «لم يُنسخ»), `UpdatedOn` |
 | `Conversation.tsx` | `Conversation({ view, replies })` — `replies={false}` hides the reply chips while the hand-off form or its receipt shows |
 | `HandoffPanel.tsx` | `HandoffForm`, `HandoffReceiptCard` (status + staff replies), `HandoffReceipt` |
-| `PhotoPicker.tsx` | `PhotoPicker` (the proof-uploader look: dashed paper area, 96px thumbnails, 32px remove keys), `acceptPhotos`, `PHOTO_TYPES`, `PHOTO_MAX_BYTES` |
+| `PhotoPicker.tsx` | `PhotoPicker` (the proof-uploader look: dashed paper area, 96px thumbnails, 32px remove keys); chosen files are read one at a time before they join the form (`../photo-check`) |
+
+Photo check (`photo-check.ts`, client-safe; the trade-in uploader uses it too): `acceptPhotos(current, incoming,
+found?)`, `checkPhotoFile(file)` → `upload_type` (the first bytes are no JPEG/PNG/WebP — the store's own signature rule),
+`upload_corrupt` (the browser cannot draw it), `upload_dimensions` (past 16,384 px a side or 50 MP) or null,
+`photoFormat(bytes)`, `claimsPhoto`, `PHOTO_TYPES`, `PHOTO_MAX_BYTES`.
 
 Client helpers (`client.ts`): `keepFormOnFailure` (clientAction), `revalidateAfter` (shouldRevalidate: a request that
-never reached the store reloads nothing — assistant, repair and status routes), `stepBack`, `isFailure`,
+never reached the store reloads nothing — assistant, repair and status routes; neither does a refusal of fields or a
+lookup that found nothing), `answerStatus` (fields the shopper can fix answer 200, everything else keeps its 4xx),
+`withServerErrors` (the store's field sentences kept in the page's own state), `stepBack`, `isFailure`,
 `fieldMessage`, `formMessage`, `phoneProblem`. GET and lookup forms carry `action="."` (React Router otherwise writes the
 address bar's query into `action`, spelled differently from the server's, and hydration fails on `?q=` with spaces).
 
@@ -143,7 +150,11 @@ Chromium only; no phone; Sorani strings need a native reader.
 - The receipt page is how a shopper follows a hand-off; there is no lookup of an `SP-` reference by number + phone (the
   status page looks up `RP-` repairs only).
 - A shopper cannot approve a repair quote online: the status card says to write to a person.
-- Error codes: no approved guide mentions one yet, so the search and the assistant say so and offer a person.
+- Error codes: no guide mentions one yet, so the search and the assistant say so and offer a person.
+- The guides are demo content no store technician has reviewed: every surface calls them «أدلة طمطم» / "TamTam's
+  guides" (never «المعتمدة» / "approved" / "verified"), and each page says once what they are (`help.demo`,
+  `assistant.demo`, `article.notReviewed`). Once a technician reviews them, a reviewed flag in `kb.server` can bring the
+  word back where it is true.
 - The matcher and the device-name aliases are keyword-based; Sorani vocabulary needs a native reader.
 - No SLA policies are seeded, so new tickets carry no due times until the admin sets policies.
 - A dropped connection during a send: the support routes keep the form, but `app/root.tsx` `shouldRevalidate` always
@@ -176,3 +187,22 @@ Chromium only; no phone; Sorani strings need a native reader.
 - **Kit requests applied:** `SupportNav section` → `aria-current="true"` (a guide, the ticket page); the support.css scroll
   workaround is gone (the kit's link Segmented scrolls); the repair form's hand-over group carries the summary's `id`
   (`FieldGroup id`), the time preference uses `PreferencePicker label/id`.
+
+## QA fixes (2026-11-12, fix-pages-service; pictures and logs `…/scratchpad/ux/after/Q-fix-pages-service/`)
+
+- **A photo the store refuses** (major): the picker reads each chosen file before it joins the form (`photo-check.ts`:
+  the first bytes, a decode, the pixel size — the store's rules), so a renamed text file stays out at once with the
+  store's sentence («نقبل صور JPG أو PNG أو WebP فقط.») instead of a broken thumbnail. When the store still refuses a
+  photo, the repair form keeps the store's sentences in its own state (`withServerErrors`: the move to the photo step is a
+  navigation, which clears the action's answer — the step used to show no reason and no summary), shows the error
+  summary «تحقّق من حقل واحد: صور المشكلة», focuses the photo field, and waits until the photos change before moving on
+  (the photos' two inputs share one name: focus goes to their fieldset — `focusNamed`; the old `.focus()` on the
+  RadioNodeList threw).
+- **"Approved guides"** (major): dropped from every support string in ar/en/ckb («أدلة طمطم» / "TamTam's guides") — the
+  help centre and every guide say they are demo and unreviewed; one demo line per page stays.
+- **Answers, not failed requests:** a refused field (`invalid` with field codes) answers 200 (`answerStatus`, also the
+  ticket rating, the wrong-kind references and the trade-in pages); a body that is not a form (400), too large (413) or
+  rate-limited (429) keeps its status. `revalidateAfter` reloads nothing after such an answer.
+- **Focus after sending a repair:** the status page's «استلمنا طلب الصيانة» is an h2 that takes focus (it was a newly
+  mounted `role=status`, focus fell to `<body>`).
+- **English composer hint** «Your device or the problem» (193px in the 236px field at 360; was 286px, clipped).

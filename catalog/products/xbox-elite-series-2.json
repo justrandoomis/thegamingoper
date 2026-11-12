@@ -128,9 +128,9 @@
     {
       "sku": "ELITE2-BLK",
       "title": {
-        "ar": "Xbox Elite Wireless Controller Series 2 (النسخة الكاملة، أسود)",
-        "en": "Xbox Elite Wireless Controller Series 2 (full kit, black)",
-        "ckb": "Xbox Elite Wireless Controller Series 2 (وەشانی تەواو، ڕەش)"
+        "ar": "النسخة الكاملة · أسود",
+        "en": "Full kit · Black",
+        "ckb": "وەشانی تەواو · ڕەش"
       },
       "options": { "edition": "Elite Series 2", "color": "Black" },
       "modelNumber": "1797",
@@ -140,9 +140,9 @@
     {
       "sku": "ELITE2-CORE-WHT",
       "title": {
-        "ar": "Xbox Elite Wireless Controller Series 2 – Core أبيض",
-        "en": "Xbox Elite Wireless Controller Series 2 – Core (White)",
-        "ckb": "Xbox Elite Wireless Controller Series 2 – Core سپی"
+        "ar": "Core · أبيض",
+        "en": "Core · White",
+        "ckb": "Core · سپی"
       },
       "options": { "edition": "Core", "color": "White" },
       "isDefault": false,
@@ -156,9 +156,9 @@
     {
       "sku": "ELITE2-CORE-RED",
       "title": {
-        "ar": "Xbox Elite Wireless Controller Series 2 – Core أحمر",
-        "en": "Xbox Elite Wireless Controller Series 2 – Core (Red)",
-        "ckb": "Xbox Elite Wireless Controller Series 2 – Core سوور"
+        "ar": "Core · أحمر",
+        "en": "Core · Red",
+        "ckb": "Core · سوور"
       },
       "options": { "edition": "Core", "color": "Red" },
       "isDefault": false,
@@ -171,9 +171,9 @@
     {
       "sku": "ELITE2-CORE-BLU",
       "title": {
-        "ar": "Xbox Elite Wireless Controller Series 2 – Core أزرق",
-        "en": "Xbox Elite Wireless Controller Series 2 – Core (Blue)",
-        "ckb": "Xbox Elite Wireless Controller Series 2 – Core شین"
+        "ar": "Core · أزرق",
+        "en": "Core · Blue",
+        "ckb": "Core · شین"
       },
       "options": { "edition": "Core", "color": "Blue" },
       "isDefault": false,

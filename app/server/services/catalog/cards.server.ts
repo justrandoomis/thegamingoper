@@ -54,7 +54,7 @@ import { ftsMatchQuery, searchTerms } from "~/server/db/search.server";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { invalid, zodFieldErrors } from "~/server/errors";
 import { DEFAULT_LOW_STOCK } from "~/server/services/inventory/stock.server";
-import { isNewProduct, kindLabelOf, shownStockRank, withOpaque, type DeviceFamily } from "./card-facts";
+import { isNewProduct, kindLabelOf, qualifiedLine, qualifierOf, shownStockRank, withOpaque, type DeviceFamily } from "./card-facts";
 import { CARD_SORTS, MAX_CARD_PAGE, type CardFilters, type CardSort, type ListCardsOptions, type ShelfOptions } from "./types";
 
 export { CARD_SORTS, MAX_CARD_PAGE } from "./types";
@@ -183,7 +183,8 @@ c AS (
     ${previousPriceEvidence(sql`d.id`, sql`d.price_iqd`, sql`d.compare_at_iqd`, sql`p.is_demo`)} AS was,
     p.preorder_release_at AS release_at,
     CASE WHEN json_valid(p.attributes) THEN json_extract(p.attributes, '$.catalogue.releaseDate') END AS released_on,
-    CASE WHEN json_valid(p.attributes) THEN json_extract(p.attributes, '$.catalogue.kind') END AS research_kind
+    CASE WHEN json_valid(p.attributes) THEN json_extract(p.attributes, '$.catalogue.kind') END AS research_kind,
+    CASE WHEN json_valid(p.attributes) AND json_type(p.attributes, '$.qualifier') = 'object' THEN json_extract(p.attributes, '$.qualifier') END AS qualifier
   FROM vs AS d
   JOIN products AS p ON p.id = d.product_id
   WHERE d.rn = 1
@@ -451,6 +452,8 @@ type CardRow = {
   release_at: number | null;
   released_on: string | null;
   research_kind: string | null;
+  /** attributes.qualifier as JSON text (an L10n), or null — card-facts.ts qualifierOf. */
+  qualifier: string | null;
   platform_slug: string | null;
   platform_name: string | null;
   image: string | null;
@@ -526,7 +529,8 @@ function toCard(row: CardRow, locale: Locale, now: number): ProductCardData {
     id: row.id,
     slug: row.slug,
     name,
-    subtitle: pick(l10nOf(row.short), locale) || null,
+    // the qualifier a Latin title leaves out («نسخة الأقراص») opens the meta line, never the name (spec §4.11)
+    subtitle: qualifiedLine(qualifierOf({ qualifier: l10nOf(row.qualifier) }, locale), pick(l10nOf(row.short), locale)),
     kind: row.kind,
     platformSlug: row.platform_slug ?? null,
     platformName: row.platform_name ? pick(l10nOf(row.platform_name), locale) || null : null,

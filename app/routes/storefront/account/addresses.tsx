@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FocusEvent, type FormEvent } from "react";
 import { data, Form, useFetcher, useNavigation, useRevalidator, useRouteLoaderData, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/addresses";
@@ -7,10 +7,10 @@ import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { deleteAddress, listAddresses, listGeography, MAX_ADDRESSES, saveAddress, setDefaultAddress, type AddressInput } from "~/server/services/account/addresses.server";
-import type { AddressView, GeographyOption } from "~/server/services/account/types";
+import { ADDRESS_LIMITS, type AddressView, type GeographyOption } from "~/server/services/account/types";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { EmptyState } from "~/ui/EmptyState";
-import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
+import { Checkbox, FormErrorSummary, Select, TextArea, TextField } from "~/ui/Field";
 import { GovernoratePicker } from "~/ui/GovernoratePicker";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
@@ -21,6 +21,7 @@ import { LAYOUT_ROUTE_ID } from "../shell/meta";
 import type { ShellData } from "../shell/types";
 import { accountFailure, formFields, localeRedirect, requireSignedIn } from "./account.server";
 import { sectionOrder } from "./components/AccountNav";
+import { ADDRESS_FIELD_IDS, ADDRESS_FIELDS, addressFieldIssue, addressIssues, firstAddressIssue, type AddressField, type AddressIssues, type FieldIssue } from "./components/address-checks";
 import { fieldError, FormFailure, Notice, rescueFocus, SubmitKey, type ActionAnswer } from "./components/FormBits";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
@@ -29,8 +30,10 @@ import { useHydrated } from "./components/useHydrated";
 
 /**
  * Delivery addresses (Design System v2 §6.12: cards + «أضف عنواناً»): the governorate through the kit's picker (the
- * flat fee on top, as in checkout) and its districts from the shipping geography — the same fields as the checkout.
- * The add / edit form is its own step in the URL (`?new=1`, `?edit=<id>`), so Back closes it; deleting asks first.
+ * flat fee on top, as in checkout) and its districts from the shipping geography — the same fields as the checkout,
+ * checked as the checkout checks them (components/address-checks: on blur, in the checkout's words, every field before
+ * the form is sent, with the error summary). The add / edit form is its own step in the URL (`?new=1`, `?edit=<id>`),
+ * so Back closes it; deleting asks first.
  */
 export const handle = { nav: "push", order: sectionOrder("addresses") } satisfies MotionHandle;
 
@@ -255,6 +258,18 @@ function AddressCard({ address, onDelete }: { address: AddressView; onDelete: ()
 
 type LayoutData = { shell?: Pick<ShellData, "deliveryFeeIqd"> };
 
+/** Each checked field's label (the error summary names the fields by them). */
+const FIELD_LABEL: Record<AddressField, string> = {
+  label: "addresses.label",
+  recipientName: "addresses.recipient",
+  phone: "addresses.phone",
+  governorateId: "addresses.governorate",
+  districtId: "addresses.district",
+  areaText: "addresses.area",
+  addressText: "addresses.address",
+  notes: "addresses.notes",
+};
+
 function AddressForm({ address, geography, answer }: { address: AddressView | null; geography: GeographyOption[]; answer: Answer | null }) {
   const t = useT("account");
   const f = useFormat();
@@ -269,28 +284,83 @@ function AddressForm({ address, geography, answer }: { address: AddressView | nu
   const gov = geography.find((item) => item.id === governorateId) ?? null;
   const hydrated = useHydrated();
   const feeHint = isIqd(fee) ? t("addresses.fee", { fee: amount(iqdText(f, fee)) }) : undefined;
+  const fields = ADDRESS_FIELDS.map((name) => ({ name, id: ADDRESS_FIELD_IDS[name], label: t(FIELD_LABEL[name]) }));
+
+  // ── the page's own checks (components/address-checks — the checkout's rules and words, §4.9): a field is checked
+  //    when it is left, again on every keystroke once a problem shows, and every field before the form is sent, so an
+  //    empty required field never costs a request. The service checks everything again. ──
+  const [issues, setIssues] = useState<AddressIssues>({});
+  /** Fields the page has checked since the service last answered: their own check speaks for them, not that answer. */
+  const [seen, setSeen] = useState<ReadonlySet<AddressField>>(() => new Set());
+  // A new answer from the service speaks for every field again.
+  const [answered, setAnswered] = useState(answer);
+  if (answered !== answer) {
+    setAnswered(answer);
+    setIssues({});
+    setSeen(new Set());
+  }
+  /**
+   * «احفظ العنوان» was refused on the page: the answer the page's error summary stands in for (undefined: none). The
+   * service's own summary (FormFailure) comes back only with its next answer — never the stale one, which would move
+   * the focus again.
+   */
+  const [refusedOver, setRefusedOver] = useState<Answer | null | undefined>(undefined);
+  const refused = refusedOver !== undefined && refusedOver === answer;
+  const issueText = (name: AddressField, issue: FieldIssue | undefined) => (issue ? t(`addresses.fields.${name}.${issue.code}`, issue.count === undefined ? undefined : { count: issue.count, n: f.number(issue.count) }) : undefined);
+  // The service's answer (a save posted without script, or a rule only the service knows): each field it named, in the
+  // page's own words where the page's checks agree («اكتب المنطقة أو الحي.», not «هذا الحقل مطلوب.»), else in its own.
+  const posted = values ? addressIssues(values) : {};
+  const errorOf = (name: AddressField): string | undefined => {
+    if (seen.has(name)) return issueText(name, issues[name]);
+    const server = fieldError(answer, name);
+    return server === undefined ? undefined : (issueText(name, posted[name]) ?? server);
+  };
+  const check = (name: AddressField, value: string) => {
+    const issue = addressFieldIssue(name, value);
+    setIssues((current) => {
+      if (!issue && !current[name]) return current;
+      const next = { ...current };
+      if (issue) next[name] = issue;
+      else delete next[name];
+      return next;
+    });
+    setSeen((current) => (current.has(name) ? current : new Set(current).add(name)));
+  };
+  /** Typing checks the field again only while it shows a problem (the message goes as soon as the text is right). */
+  const recheck = (name: AddressField, value: string) => {
+    if (errorOf(name) !== undefined) check(name, value);
+  };
+  const text = (name: AddressField) => ({
+    onBlur: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => check(name, event.currentTarget.value),
+    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => recheck(name, event.currentTarget.value),
+    error: errorOf(name),
+  });
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const sent = Object.fromEntries(new FormData(event.currentTarget)) as Record<string, string>;
+    // the picker's value is the page's (its hidden field carries the same value once script runs)
+    const found = addressIssues({ ...sent, governorateId });
+    const first = firstAddressIssue(found);
+    // nothing the page can see: the form goes to the service, which checks everything again
+    if (!first) return;
+    event.preventDefault();
+    setIssues(found);
+    setSeen(new Set(ADDRESS_FIELDS));
+    setRefusedOver(answer);
+    document.getElementById(ADDRESS_FIELD_IDS[first])?.focus();
+  };
+  // the page's summary lists what is still wrong (it shrinks as each field is put right); else the service's
+  const stillWrong = fields.filter((field) => issues[field.name] !== undefined).map(({ id, label }) => ({ id, label }));
+  const summary = refused ? <FormErrorSummary errors={stillWrong} /> : <FormFailure answer={answer} fields={fields} />;
 
   return (
     // `replace`: once saved, Back goes to the page before the form, not to the form again (the saved list replaces it).
-    <Form method="post" replace className="acct-card acct-narrow" noValidate>
+    <Form method="post" replace className="acct-card acct-narrow" noValidate onSubmit={onSubmit}>
       <input type="hidden" name="intent" value="save" />
       {address ? <input type="hidden" name="id" value={address.id} /> : null}
-      <FormFailure
-        answer={answer}
-        fields={[
-          { name: "label", id: "address-label", label: t("addresses.label") },
-          { name: "recipientName", id: "address-recipient", label: t("addresses.recipient") },
-          { name: "phone", id: "address-phone", label: t("addresses.phone") },
-          { name: "governorateId", id: "address-governorate", label: t("addresses.governorate") },
-          { name: "districtId", id: "address-district", label: t("addresses.district") },
-          { name: "areaText", id: "address-area", label: t("addresses.area") },
-          { name: "addressText", id: "address-text", label: t("addresses.address") },
-          { name: "notes", id: "address-notes", label: t("addresses.notes") },
-        ]}
-      />
+      {summary}
       <div className="grid gap-4 md:grid-cols-2">
-        <TextField id="address-label" name="label" label={t("addresses.label")} hint={t("addresses.labelHint")} optional defaultValue={pick("label", address?.label)} error={fieldError(answer, "label")} />
-        <TextField id="address-recipient" name="recipientName" autoComplete="name" label={t("addresses.recipient")} optional defaultValue={pick("recipientName", address?.recipientName)} error={fieldError(answer, "recipientName")} />
+        <TextField id="address-label" name="label" label={t("addresses.label")} hint={t("addresses.labelHint")} optional maxLength={ADDRESS_LIMITS.label} defaultValue={pick("label", address?.label)} {...text("label")} />
+        <TextField id="address-recipient" name="recipientName" autoComplete="name" label={t("addresses.recipient")} optional maxLength={ADDRESS_LIMITS.recipient} defaultValue={pick("recipientName", address?.recipientName)} {...text("recipientName")} />
         <TextField
           id="address-phone"
           className="md:col-span-2"
@@ -301,8 +371,9 @@ function AddressForm({ address, geography, answer }: { address: AddressView | nu
           label={t("addresses.phone")}
           hint={t("addresses.phoneHint", { example: PHONE_EXAMPLE })}
           optional
+          maxLength={ADDRESS_LIMITS.phone}
           defaultValue={pick("phone", address?.phoneE164 ? address.phoneE164.replace(/^\+964/, "0") : "")}
-          error={fieldError(answer, "phone")}
+          {...text("phone")}
         />
         {/*
           The kit's picker needs script. It takes the field's name (and the id the error summary links to) once script
@@ -323,11 +394,13 @@ function AddressForm({ address, geography, answer }: { address: AddressView | nu
           onChange={(id) => {
             setGovernorateId(id);
             setDistrictId("");
+            // a choice answers «اختر المحافظة التي نوصل إليها.» at once
+            check("governorateId", id);
           }}
-          error={fieldError(answer, "governorateId")}
+          error={errorOf("governorateId")}
         />
         <noscript>
-          <Select id="address-governorate" name="governorateId" autoComplete="address-level1" label={t("addresses.governorate")} required defaultValue={governorateId} hint={feeHint} error={fieldError(answer, "governorateId")}>
+          <Select id="address-governorate" name="governorateId" autoComplete="address-level1" label={t("addresses.governorate")} required defaultValue={governorateId} hint={feeHint} error={errorOf("governorateId")}>
             <option value="">{t("addresses.chooseGovernorate")}</option>
             {geography.map((item) => (
               <option key={item.id} value={item.id}>
@@ -343,8 +416,11 @@ function AddressForm({ address, geography, answer }: { address: AddressView | nu
           label={t("addresses.district")}
           optional
           value={districtId}
-          onChange={(event) => setDistrictId(event.target.value)}
-          error={fieldError(answer, "districtId")}
+          onChange={(event) => {
+            setDistrictId(event.target.value);
+            check("districtId", event.target.value);
+          }}
+          error={errorOf("districtId")}
         >
           <option value="">{t("addresses.chooseDistrict")}</option>
           {gov && hydrated
@@ -365,10 +441,10 @@ function AddressForm({ address, geography, answer }: { address: AddressView | nu
                 </optgroup>
               ))}
         </Select>
-        <TextField id="address-area" className="md:col-span-2" name="areaText" autoComplete="address-level3" label={t("addresses.area")} required defaultValue={pick("areaText", address?.areaText)} error={fieldError(answer, "areaText")} />
+        <TextField id="address-area" className="md:col-span-2" name="areaText" autoComplete="address-level3" label={t("addresses.area")} required defaultValue={pick("areaText", address?.areaText)} {...text("areaText")} />
       </div>
-      <TextArea id="address-text" name="addressText" autoComplete="street-address" label={t("addresses.address")} hint={t("addresses.addressHint")} required defaultValue={pick("addressText", address?.addressText)} error={fieldError(answer, "addressText")} />
-      <TextArea id="address-notes" name="notes" rows={2} label={t("addresses.notes")} optional defaultValue={pick("notes", address?.notes)} error={fieldError(answer, "notes")} />
+      <TextArea id="address-text" name="addressText" autoComplete="street-address" label={t("addresses.address")} hint={t("addresses.addressHint")} required defaultValue={pick("addressText", address?.addressText)} {...text("addressText")} />
+      <TextArea id="address-notes" name="notes" rows={2} label={t("addresses.notes")} optional defaultValue={pick("notes", address?.notes)} {...text("notes")} />
       {!address?.isDefault ? <Checkbox name="makeDefault" value="1" label={t("addresses.setDefault")} defaultChecked={values?.makeDefault === "1"} /> : null}
       <div className="flex flex-wrap items-center gap-3 pt-1">
         <SubmitKey variant="primary" pending={pending} icon="floppy-disk">

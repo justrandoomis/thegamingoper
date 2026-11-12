@@ -8,10 +8,11 @@ import { CKB_MONTHS } from "~/lib/dates";
 import { LOCALES, type Locale } from "~/lib/locales";
 import { MotionLink, SharedElement } from "~/motion";
 import { CardAddButton } from "./AddToCartKey";
-import { BidiLabel, BidiText, latinName } from "./BidiText";
+import { BidiText, latinName } from "./BidiText";
 import { mediaUrl, showShopToast } from "./cart-client";
 import { cx } from "./cx";
 import { DemoNote } from "./DemoNote";
+import { FactLine } from "./FactLine";
 import { IconKey } from "./IconKey";
 import { Niche, type NicheKind } from "./Niche";
 import { isPlatform, PlatformLed } from "./PlatformLed";
@@ -110,13 +111,17 @@ export function wellKind(card: Pick<ProductCardData, "kind" | "image">): NicheKi
   return "hardware";
 }
 
-/** «19 تشرين الثاني» · "19 November" · "19ی تشرینی دووەم" — a release day in Iraq time, Western digits. Pure. */
+/**
+ * «19 تشرين الثاني» · "19 November" · "19ی تشرینی دووەم" — a release day in Iraq time, Western digits, the day first in
+ * every language (v2 §2.6; English in the British order — en-IQ formats "November 19"). Pure.
+ */
 export function releaseDay(ms: number, locale: Locale): string {
   if (locale === "ckb") {
     const date = new Date(ms + 3 * 3_600_000);
     return `${date.getUTCDate()}ی ${CKB_MONTHS[date.getUTCMonth()]}`;
   }
-  return new Intl.DateTimeFormat(`${LOCALES[locale].bcp47}-u-nu-latn`, { day: "numeric", month: "long", timeZone: "Asia/Baghdad" }).format(ms);
+  const tag = locale === "en" ? "en-GB" : LOCALES[locale].bcp47;
+  return new Intl.DateTimeFormat(`${tag}-u-nu-latn`, { day: "numeric", month: "long", timeZone: "Asia/Baghdad" }).format(ms);
 }
 
 export function ProductCard({
@@ -194,7 +199,8 @@ export function ProductCard({
               {dots.map((p) => (
                 <PlatformLed key={p} platform={p} />
               ))}
-              {kindLabel ? <span className="min-w-0 truncate">{kindLabel}</span> : null}
+              {/* «جهاز محمول · ROG Xbox Ally»: the family drops out whole when it does not fit, never cut at its start */}
+              {kindLabel ? <FactLine facts={kindLabel.split(" · ")} /> : null}
             </span>
           ) : null}
           {/* the page's start edge, the ellipsis at the name's own end: a Latin name on an Arabic page is a
@@ -204,18 +210,9 @@ export function ProductCard({
           <Name id={titleId} dir={title.dir} className={cx("pcard__title [unicode-bidi:isolate]", title.className)}>
             <BidiText text={card.name} />
           </Name>
-          {facts.length ? (
-            <span className="pcard__meta">
-              {facts.map((fact, index) => (
-                <span key={index}>
-                  {index > 0 ? " · " : null}
-                  {/* a fact keeps the page's direction with its Latin parts isolated: «512GB أو 1TB» (a bare <bdi>
-                      took the direction of "512GB" and read the Arabic word backwards) */}
-                  <BidiLabel>{fact}</BidiLabel>
-                </span>
-              ))}
-            </span>
-          ) : null}
+          {/* at most two facts, each whole or shortened at its own end (a fact with Arabic keeps the page's direction,
+              its Latin parts isolated: «512GB أو 1TB») */}
+          <FactLine facts={facts} className="pcard__meta" />
           {card.rating ? <RatingStars rating={card.rating} /> : null}
           {row ? <span className="mt-1">{price}</span> : null}
         </span>
@@ -432,7 +429,7 @@ export function KindLine({ card, className }: { card: Pick<ProductCardData, "kin
       {dots.map((p) => (
         <PlatformLed key={p} platform={p} />
       ))}
-      {label ? <span className="min-w-0 truncate">{label}</span> : null}
+      {label ? <FactLine facts={label.split(" · ")} /> : null}
     </span>
   );
 }

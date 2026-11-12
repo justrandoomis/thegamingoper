@@ -157,7 +157,7 @@
   "variants": [
     {
       "sku": "SD-LCD-256",
-      "title": { "ar": "Steam Deck LCD 256GB", "en": "Steam Deck LCD 256GB", "ckb": "Steam Deck LCD 256GB" },
+      "title": { "ar": "256GB", "en": "256GB", "ckb": "256GB" },
       "options": { "storage": "256GB" },
       "isDefault": true,
       "images": ["steam-deck-lcd--1", "steam-deck-lcd--2", "steam-deck-lcd--3", "steam-deck-lcd--4"],
@@ -169,7 +169,7 @@
     },
     {
       "sku": "SD-LCD-64",
-      "title": { "ar": "Steam Deck LCD 64GB", "en": "Steam Deck LCD 64GB", "ckb": "Steam Deck LCD 64GB" },
+      "title": { "ar": "64GB", "en": "64GB", "ckb": "64GB" },
       "options": { "storage": "64GB eMMC" },
       "isDefault": false,
       "images": ["steam-deck-lcd--1", "steam-deck-lcd--2", "steam-deck-lcd--3", "steam-deck-lcd--4"],
@@ -181,7 +181,7 @@
     },
     {
       "sku": "SD-LCD-512",
-      "title": { "ar": "Steam Deck LCD 512GB", "en": "Steam Deck LCD 512GB", "ckb": "Steam Deck LCD 512GB" },
+      "title": { "ar": "512GB", "en": "512GB", "ckb": "512GB" },
       "options": { "storage": "512GB" },
       "isDefault": false,
       "images": ["steam-deck-lcd--1", "steam-deck-lcd--2", "steam-deck-lcd--3", "steam-deck-lcd--4"]

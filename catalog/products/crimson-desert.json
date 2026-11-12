@@ -108,7 +108,7 @@
   "variants": [
     {
       "sku": "CRD-PS5-STD",
-      "title": { "ar": "Crimson Desert لجهاز PS5 — Standard Edition", "en": "Crimson Desert for PS5 — Standard Edition", "ckb": "Crimson Desert بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["crimson-desert--1", "crimson-desert--2", "crimson-desert--3", "crimson-desert--4"],
@@ -120,7 +120,7 @@
     },
     {
       "sku": "CRD-XSX-STD",
-      "title": { "ar": "Crimson Desert لجهاز Xbox Series X — Standard Edition", "en": "Crimson Desert for Xbox Series X — Standard Edition", "ckb": "Crimson Desert بۆ Xbox Series X — Standard Edition" },
+      "title": { "ar": "لجهاز Xbox Series X · Standard Edition", "en": "Xbox Series X · Standard Edition", "ckb": "بۆ Xbox Series X · Standard Edition" },
       "options": { "platform": "Xbox Series X", "edition": "Standard", "format": "Disc" },
       "isDefault": false,
       "images": ["crimson-desert--1", "crimson-desert--2", "crimson-desert--3"],

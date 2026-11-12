@@ -167,6 +167,12 @@ at 360–1440 × ar/en/ckb; census and focus walk (no stop hidden or without a r
 Back/Forward/reload; the filled contact state rendered by rewriting the single-fetch payload in the browser
 (`filled-contact.mjs`, the database untouched).
 
+**QA fix (2026-11-12, fix-pages-service):** the Sorani brand is «طمطم» in every string this area owns (`content.ts`:
+the wallet, the policies' and pages' descriptions, the about and accessibility leads; `common.ts` `brand.name` /
+`brand.title` «طمطم گەیمز — TamTam Games»), as the logo writes it (v2 §9) — QA found «تەمتەم» under the wordmark
+«طمطم». The owner still decides between the two spellings (v2 §13 #12, STATUS open item 16); the other namespaces that
+still write «تەمتەم» are listed there. `tests/content.test.ts` checks the Sorani column.
+
 ## The content module on the store (wave G wiring, 2026-11-12; `tests/storefront-wiring.test.ts`)
 
 - **Redirects** (admin 17.04): `findStoreRedirect` before a 404 — the `*` route, an unknown one-segment path (the home route under

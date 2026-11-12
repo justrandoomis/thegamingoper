@@ -9,14 +9,15 @@
   "status": "available",
   "releaseDate": "2023-11-10",
   "name": {
-    "ar": "PlayStation 5 Slim (نسخة الأقراص) – 1TB",
-    "en": "PlayStation 5 Slim (Disc) – 1TB",
-    "ckb": "PlayStation 5 Slim (وەشانی دیسک) – 1TB"
+    "ar": "PlayStation 5 Slim · 1TB",
+    "en": "PlayStation 5 Slim · 1TB",
+    "ckb": "PlayStation 5 Slim · 1TB"
   },
+  "qualifier": { "ar": "نسخة الأقراص", "en": "Disc edition", "ckb": "وەشانی دیسک" },
   "short": {
-    "ar": "1TB · قارئ أقراص Ultra HD Blu-ray قابل للفصل · DualSense في العلبة",
-    "en": "1TB · Detachable Ultra HD Blu-ray drive · DualSense included",
-    "ckb": "1TB · دڕایڤی دیسکی Ultra HD Blu-ray کە جیا دەکرێتەوە · DualSense لەگەڵیدایە"
+    "ar": "قارئ أقراص Ultra HD Blu-ray قابل للفصل · DualSense في العلبة",
+    "en": "Detachable Ultra HD Blu-ray drive · DualSense included",
+    "ckb": "دڕایڤی دیسکی Ultra HD Blu-ray کە جیا دەکرێتەوە · DualSense لەگەڵیدایە"
   },
   "description": {
     "ar": "هذا هو جهاز PS5 الحالي بالحجم الأصغر (فئة slim) مع قارئ أقراص، ويأتي بذاكرة SSD سعة 1TB. يشغّل ألعاب PS5 على الأقراص أو بالتحميل، ومعظم ألعاب PS4، ويعرض أفلام 4K Blu-ray. حجمه أصغر بأكثر من 30% من الطراز الأول، والقاعدة العمودية تُباع منفصلة.",
@@ -152,9 +153,9 @@
     {
       "sku": "PS5-SLIM-DISC-1TB",
       "title": {
-        "ar": "PlayStation 5 Slim – نسخة الأقراص 1TB",
-        "en": "PlayStation 5 Slim – Disc, 1TB",
-        "ckb": "PlayStation 5 Slim – وەشانی دیسک، 1TB"
+        "ar": "نسخة الأقراص",
+        "en": "Disc edition",
+        "ckb": "وەشانی دیسک"
       },
       "options": { "edition": "Disc", "storage": "1TB", "color": "White" },
       "isDefault": true,

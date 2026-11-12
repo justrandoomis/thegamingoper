@@ -122,9 +122,9 @@
     {
       "sku": "NS2-NSSR-EU",
       "title": {
-        "ar": "النسخة الأوروبية: Switch 2 + Nintendo Switch Sports Resort + اشتراك 3 أشهر",
-        "en": "European version: Switch 2 + Nintendo Switch Sports Resort + 3-month membership",
-        "ckb": "وەشانی ئەوروپی: Switch 2 + Nintendo Switch Sports Resort + بەشداریی 3 مانگ"
+        "ar": "النسخة الأوروبية",
+        "en": "European version",
+        "ckb": "وەشانی ئەوروپی"
       },
       "options": { "edition": "Nintendo Switch Sports Resort Bundle", "storage": "256GB", "region": "Europe", "extras": "3-month Nintendo Switch Online" },
       "isDefault": true,
@@ -138,9 +138,9 @@
     {
       "sku": "NS2-NSSR-US",
       "title": {
-        "ar": "النسخة الأمريكية: Switch 2 + Nintendo Switch Sports Resort + اشتراك 3 أشهر",
-        "en": "US version: Switch 2 + Nintendo Switch Sports Resort + 3-month membership",
-        "ckb": "وەشانی ئەمریکی: Switch 2 + Nintendo Switch Sports Resort + بەشداریی 3 مانگ"
+        "ar": "النسخة الأمريكية",
+        "en": "US version",
+        "ckb": "وەشانی ئەمریکی"
       },
       "options": { "edition": "Nintendo Switch Sports Resort Bundle", "storage": "256GB", "region": "US", "extras": "3-month Nintendo Switch Online" },
       "barcodes": ["0045496886820"],

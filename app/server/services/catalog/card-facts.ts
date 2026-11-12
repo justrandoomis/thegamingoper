@@ -230,6 +230,40 @@ export function kindLabelOf(input: KindLabelInput, locale: Locale): string {
   return `${locale === "ckb" ? (noun.of ?? noun.ckb) : noun.ar} ${target.text}`;
 }
 
+// ───────────────────────────────────────────────────────────────── the qualifier (spec §4.11)
+
+/**
+ * The words a Latin title leaves out (products.attributes.qualifier, from the catalogue's `qualifier`): «نسخة الأقراص»
+ * for «PlayStation 5 Slim · 1TB», «الطراز الأصلي» for «PlayStation 5 (2020)». An Arabic or Sorani qualifier inside the
+ * Latin name made the runs reorder in RTL rows, so surfaces print it on the meta or kind line instead (spec §4.11:
+ * "never into the Latin title"). `attributes` is the column as stored (JSON text) or parsed; "" when there is none
+ * for this language.
+ */
+export function qualifierOf(attributes: unknown, locale: Locale): string {
+  let value: unknown = attributes;
+  if (typeof value === "string") {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      return "";
+    }
+  }
+  const qualifier = value && typeof value === "object" ? (value as { qualifier?: unknown }).qualifier : undefined;
+  if (!qualifier || typeof qualifier !== "object") return "";
+  const text = (qualifier as Partial<Record<Locale, unknown>>)[locale];
+  return typeof text === "string" ? text.trim() : "";
+}
+
+/**
+ * A meta line that opens with the qualifier: qualifiedLine("نسخة الأقراص", "قارئ أقراص … · DualSense في العلبة")
+ * → «نسخة الأقراص · قارئ أقراص … · DualSense في العلبة» (facts joined by " · ", as the cards split them). Either
+ * part may be empty; null when both are.
+ */
+export function qualifiedLine(qualifier: string | null | undefined, line: string | null | undefined): string | null {
+  const parts = [qualifier?.trim(), line?.trim()].filter((part): part is string => Boolean(part));
+  return parts.length > 0 ? parts.join(" · ") : null;
+}
+
 // ───────────────────────────────────────────────────────────────── opaque photos (spec §7.5)
 
 /** CIE L* (0–100) of an sRGB "#rrggbb". */

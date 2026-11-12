@@ -2,7 +2,8 @@
 
 Owner: admin module 15. Services `app/server/services/admin/staff/*`, the core file `app/server/services/accounting/payroll.server.ts`
 (payroll postings), routes `app/routes/admin/staff/*`, strings `app/i18n/messages/admin-staff.ts` (ar source, en, ckb),
-tests `tests/admin-staff.test.ts` (14), `tests/admin-staff-payroll.test.ts` (10) and the review's `tests/admin-staff-review.test.ts` (8).
+tests `tests/admin-staff.test.ts` (14), `tests/admin-staff-payroll.test.ts` (10), the review's `tests/admin-staff-review.test.ts` (8),
+the follow-up's `tests/admin-staff-followup.test.ts` and the QA fix's `tests/admin-staff-accounts.test.ts` (4: staff accounts from the admin).
 Arabic first (RTL), English second.
 
 ## Routes (`routes.ts`; `layout.tsx` loads the strings once, the section tabs this role may open, an in-shell error boundary)
@@ -12,8 +13,8 @@ Arabic first (RTL), English second.
 | `/admin/staff` | what waits for this employee's decision (raised cards), the team today, sections, honest limits, `<ModuleFunctions moduleId="15">` | any staff.* |
 | `/admin/staff/me` | my day: clock in / out, this week's shifts, my leave (ask, withdraw), my tasks, my commissions, my payslips | any staff.* (gate rule requested for everyone) |
 | `/admin/staff/approvals` | 15.06: the bell's own queues + this module's decisions, my requests awaiting others, the store's pending requests | any; store view staff.approval.read |
-| `/admin/staff/employees` | 15.01 directory: search, status, role, demo, sort, page in the URL | staff.employee.read or staff.manage |
-| `/admin/staff/employees/:id` | effective permissions (read-only), HR facts, pay, this month, live sessions, sign-in log, ending access | same; parts by permission (below) |
+| `/admin/staff/employees` | 15.01 directory: search, status, role, demo, sort, page in the URL; «add an employee» (a dialog; `?add=1` opens it — module 20's staff list links here): the one-time password link shown once on the page | staff.employee.read or staff.manage; adding: staff.manage |
+| `/admin/staff/employees/:id` | effective permissions (read-only), HR facts, signing in (password set or not, a new link, re-enabling), pay, this month, live sessions, sign-in log, ending access | same; parts by permission (below) |
 | `/admin/staff/schedule` | 15.02 week roster (Saturday–Friday), add, cancel, mark worked/missed, copy a week | read: employee.read / schedule / attendance; write: staff.schedule.manage |
 | `/admin/staff/attendance` | records by day range / employee / state, manual entry, correction, bulk approval | staff.attendance.manage or staff.schedule.manage |
 | `/admin/staff/leave` | requests (pending first), approve / reject, record for someone, cancel | staff.leave.approve or staff.employee.read |
@@ -26,9 +27,9 @@ Arabic first (RTL), English second.
 
 ## Functions → status (`app/routes/admin/blueprint-status.ts`)
 
-- **15.01 partial** — directory + each employee's effective permissions read-only (by module, field permissions marked, the
-  granting role); roles edited only in `/admin/security/roles` (module 20; the gate opens it to staff.manage). Missing: creating
-  an employee and their first password (the sign-in service has no function for it).
+- **15.01 implemented** — directory + each employee's effective permissions read-only (by module, field permissions marked, the
+  granting role); roles edited only in `/admin/security/roles` (module 20; the gate opens it to staff.manage). Adding an employee
+  and their first password through the auth core (QA fix 2026-11-12; "Staff accounts" below).
 - **15.02 partial** — roster, attendance, leave, tasks. Missing: a role with no staff.* permission (a cashier) cannot reach
   `/admin/staff/me` until the gate opens it to every employee (requested). POS cash-drawer shifts stay module 06's (linked).
 - **15.03 implemented** — versioned plans, sales or realised profit (profit.read), returns as clawbacks at the next computation.
@@ -80,6 +81,18 @@ Arabic first (RTL), English second.
 - **Approvals view** decides nothing: each `approvals` kind links to its module's decision screen (`approvalHref`; the
   promotions kinds come from that module's `APPROVAL_KINDS`); a kind no module claims is listed without a link. A payroll
   run appears for an approver only when `approveRun` would accept them.
+- **Staff accounts** (QA fix 2026-11-12; the auth core's `app/server/auth/employees.server.ts`). «Add an employee»
+  (`hireOptions` → the form; `hireEmployee` → `createEmployee`): staff.manage; name, email, phone (the HR facts' rule:
+  `phone_invalid`), job title, roles, branch, reason — the form is checked whole, so every field error comes back at once; each
+  role says whether this person may give it (they hold all it grants — `grant_exceeds_own` on `fields.roleIds` otherwise; the
+  others are shown disabled), a branch-limited person hires for their own branch only; the same email twice → `email_taken`
+  (`fields.email`); demo in a demo store (`storeMode`). The account has no password: the answer carries the one-time link
+  (`handedLink`: `<origin>/admin/welcome#<token>`, 72 h, once), shown ONCE on the page (`LinkOnce`: the address, a copy key —
+  the address is selected for a copy by hand when the clipboard refuses —, until when it works, how to hand it over) — never
+  stored, never in a URL this admin requests, never in the audit trail (`staff.employee.create` has no token). The employee's
+  file: «signing in» shows whether a password is set; a new link (`issuePasswordLink`: older links stop working) for an active
+  account, re-enabling (`enableEmployee`, a new link asked by default; links made before the closing stay dead) for a closed one —
+  staff.manage, never one's own account, never one holding more (`target_more_privileged`), each with a reason, audited by the core.
 - **Termination**: staff.manage, a reason, never oneself (`own_account_here`) nor an account holding more
   (`target_more_privileged`, also enforced by the auth service); `disableEmployee` locks the account and revokes every session
   in its batch; then future shifts and pending leave are cancelled and an open attendance closed (`staff.employee.offboard`).
@@ -96,7 +109,8 @@ Arabic first (RTL), English second.
 
 ## Boundaries (honest)
 
-- No employee-creation or password-set function in the sign-in service: new staff cannot be added from the admin.
+- No message provider: a password link (new employee, forgotten password, re-enabled account) is shown once to whoever made it
+  and handed over in person; there is no self-service password reset. A link lost before it is used is replaced from the file.
 - No "salaries payable" / "advances to employees" account: pay and advances reach the books when paid out.
 - Commissions are computed when staff press "compute" or a run is prepared; no scheduled job yet (`syncCommissionsJob` ready).
 - Printing: payslips are print CSS (one per page, the document switched to the light theme while printing), signed by
@@ -106,6 +120,7 @@ Arabic first (RTL), English second.
 
 ```
 npx vitest run tests/admin-staff.test.ts tests/admin-staff-payroll.test.ts tests/admin-staff-review.test.ts   # 14 + 10 + 8
+npx vitest run tests/admin-staff-followup.test.ts tests/admin-staff-accounts.test.ts
 npx vitest run tests/i18n.test.ts -t admin-staff
 node scripts/lint-design.mjs app/routes/admin/staff                          # 0 findings
 npx tsx --tsconfig tsconfig.cloudflare.json .shots/admin-staff/seed.ts        # demo HR data (local, idempotent)
@@ -119,8 +134,8 @@ approved, leave recorded and approved, a demo employee's access ended. Demo data
 
 ## Requests to other owners
 
-- **Auth (app/server/auth/**)**: `createEmployee(db, actor, { email, name, jobTitle?, roleIds, branchId? }, now)` with a one-time
-  password-set link (`setEmployeePasswordWithToken`), and `enableEmployee`; staff.manage, the hierarchy rule, audited.
+- ~~**Auth**: `createEmployee` with a one-time password-set link, and `enableEmployee`~~ — delivered by the auth core (2026-11-12),
+  wired to the screens by the QA fix of the same day.
 - **Shell gate**: `ALSO_OPENED_BY["admin/staff/me"] = ["dashboard.overview.read"]` so every employee reaches My day.
 - **Jobs**: a daily `staff.commissions.sync` calling `syncCommissionsJob(db, systemActor(...), now)`.
 - **Schema/finance**: system accounts `salaries_payable` and `employee_advances` (then accrual at approval); `REF_TYPES`

@@ -143,8 +143,13 @@ export function PriceLine({ stock, status, deliveryIqd, className }: { stock?: S
           {status ?? words(stock)}
         </Status>
       ) : null}
-      {stock && hasFee ? <span aria-hidden="true">·</span> : null}
-      {hasFee ? <DeliveryNote feeIqd={deliveryIqd} strong /> : null}
+      {/* the « · » wraps with what follows it, never left at the end of the first line (QA 2026-11-12) */}
+      {hasFee ? (
+        <span className="price-line__item">
+          {stock ? <span aria-hidden="true">·</span> : null}
+          <DeliveryNote feeIqd={deliveryIqd} strong />
+        </span>
+      ) : null}
     </p>
   );
 }

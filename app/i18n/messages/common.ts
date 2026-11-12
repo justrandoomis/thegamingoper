@@ -21,9 +21,11 @@ export default defineMessages({
     },
   },
   ckb: {
+    // The brand is «طمطم» in Sorani too, as the logo writes it (Design System v2 §9; the owner decides between «طمطم»
+    // and «تەمتەم», §13 #12 — swap the wordmark with these strings if the answer is «تەمتەم»).
     brand: {
-      name: "تەمتەم",
-      title: "تەمتەم گەیمز — TamTam Games",
+      name: "طمطم",
+      title: "طمطم گەیمز — TamTam Games",
       tagline: "فرۆشگای تەواوی تۆ بۆ جیهانی یاری",
     },
   },

@@ -135,6 +135,28 @@
     box-shadow: inset 0 0 0 1px var(--line);
   }
 
+  /* ── a one-time password link: the whole address, left to right, wrapping anywhere; the copy key beside it ── */
+  .stf-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .stf-link__value {
+    flex: 1 1 18rem;
+    min-inline-size: 0;
+    padding: var(--s-2) var(--s-3);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    color: var(--ink);
+    font: var(--type-data);
+    overflow-wrap: anywhere;
+    word-break: break-all;
+    text-align: start;
+    user-select: all;
+  }
+
   /* ── the clock on "my day": the one decision of the page ── */
   .stf-clock {
     display: grid;

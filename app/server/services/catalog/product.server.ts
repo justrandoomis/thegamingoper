@@ -39,7 +39,7 @@ import { deviceModels, files, media, platforms, productRelations, products, vari
 import { batchSql, runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getSettings } from "~/server/settings.server";
-import { isNewProduct, kindLabelOf, withOpaque } from "./card-facts";
+import { isNewProduct, kindLabelOf, qualifiedLine, qualifierOf, withOpaque } from "./card-facts";
 import { getCardsByIds } from "./cards.server";
 import {
   baghdadMidnight,
@@ -609,7 +609,9 @@ export async function getProductDetail(db: Db, locale: Locale, slug: string, opt
     // the noun alone (no device: the page names the platform beside it), the research's kind first (handheld PC, VR)
     kindLabel: kindLabelOf({ kind: row.kind, researchKind: asString(catalogue.kind), families: [] }, locale),
     name,
-    short: text(row.short, locale),
+    // the qualifier a Latin title leaves out («نسخة الأقراص») leads the line under the name (spec §4.11)
+    qualifier: qualifierOf(attrs, locale) || null,
+    short: qualifiedLine(qualifierOf(attrs, locale), text(row.short, locale)),
     description: text(row.description, locale),
     brand: row.brand,
     platform,

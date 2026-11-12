@@ -34,10 +34,13 @@
     block-size: 176px;
     inline-size: min(44%, var(--hw-cap, 44%)); /* --hw-cap: what the picture needs at this height (HubHead) */
   }
+  /* compact steps (v2 §6.6 asks 200px on phones and 280 from 1024 — with the device large, a two- to four-line headline,
+     the facts, the price and the key it comes to about 300 on phones and 280 from 1024; docs/areas/devices.md "Head
+     height") */
   .devhub-head__copy {
     display: grid;
     align-content: start;
-    gap: var(--s-4);
+    gap: var(--s-3);
     padding: var(--s-5);
   }
   /* the platform pill and the h1 keep clear of the hardware on phones */
@@ -45,28 +48,39 @@
     display: grid;
     align-content: start;
     justify-items: start;
-    gap: var(--s-3);
+    gap: var(--s-2);
     min-block-size: 136px;
     padding-inline-end: min(42%, calc(var(--hw-cap, 44%) - 8px));
   }
   .devhub-head__title {
     text-wrap: balance;
   }
+  /* the facts: ONE line — the facts that fit (two on a phone, where the release says its year only), the rest clipped
+     and still read by screen readers, as on the product page's fact line */
   .devhub-head__facts {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-2) var(--s-4);
+    column-gap: var(--s-4);
+    max-block-size: 1lh;
+    overflow: hidden;
     font: var(--type-xs-strong);
   }
   .devhub-head__facts > li {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    white-space: nowrap;
+  }
+  .devhub-head__facts > li > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .devhub-head__buy {
     display: grid;
     justify-items: start;
-    gap: var(--s-3);
+    gap: var(--s-2);
   }
   .devhub-head__from {
     display: flex;
@@ -96,9 +110,11 @@
     }
     .devhub-head__copy {
       max-inline-size: 54%;
+      gap: var(--s-4);
       padding: var(--s-8);
     }
     .devhub-head__top {
+      gap: var(--s-3);
       min-block-size: 0;
       padding-inline-end: 0;
     }
@@ -109,12 +125,19 @@
       inset: 40px 24px 24px;
     }
   }
+  /* from 1024: the price and the key share one row when they fit (they wrap, price first, when they do not) */
   @media (min-width: 64rem) {
     .devhub-head {
       min-block-size: 280px;
     }
     .devhub-head__copy {
-      padding: var(--s-10);
+      gap: var(--s-3);
+    }
+    .devhub-head__buy {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--s-3) var(--s-6);
     }
   }
 

@@ -18,7 +18,9 @@
  * Any tap during the sequence jumps to the end state. Reduced motion: the still composition, then a 120 ms fade
  * out. Lite tier: no staggered inflate (content appears in place); the exit is unchanged (transforms only).
  * Modal layer from the kit (~/ui/Dialog): focus moves in and is trapped, Escape and Android's back skip, the page
- * behind is inert until the overlay starts to leave.
+ * behind is inert until the overlay starts to leave. Once it has left, the focus goes back to the key that replayed
+ * it, else (a first landing) to the page's main landmark — never to <body> (landFocus; the intro remembers its opener
+ * itself: on a replay React's commit put the focus back on the leaving overlay after the layer had returned it).
  */
 import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
@@ -31,6 +33,7 @@ import { useModalLayer, useOverlayRoot } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
 import type { Platform } from "~/ui/PlatformLed";
 import { PlatformTile } from "~/ui/PlatformTile";
+import { focusAfterIntro } from "./view";
 
 export type IntroCorner = { platform: Platform; artKey: string };
 export type IntroTile = { platform: Platform; name: string; count: number | null; artKey: string | null };
@@ -62,8 +65,14 @@ export function Intro({ corners, tiles, onLeave, onDone }: IntroProps) {
   const leavingRef = useRef(false);
   const chosenRef = useRef(chosen);
   chosenRef.current = chosen;
+  // what held the focus when the intro came (the replay key; nothing on a first landing): where it goes back to
+  const opener = useRef<Element | null>(null);
 
-  useLayoutEffect(() => setTier(getMotionTier()), []);
+  useLayoutEffect(() => {
+    setTier(getMotionTier());
+    const active = document.activeElement;
+    opener.current = active && active !== document.body ? active : null;
+  }, []);
   useEffect(() => {
     const timer = setTimeout(() => setSettled(true), SEQUENCE_MS);
     return () => clearTimeout(timer);
@@ -76,11 +85,16 @@ export function Intro({ corners, tiles, onLeave, onDone }: IntroProps) {
     onLeave(result); // state first: cookies, the page below arranges itself
     const element = host;
     setLeaving(true);
-    if (!element) {
+    // the focus lands on the page, never on <body>: back on the replay key, else (a first landing) on the main landmark
+    const done = () => {
+      landFocus(element, opener.current);
       onDone();
+    };
+    if (!element) {
+      done();
       return;
     }
-    void playExit(element, getMotionTier()).then(onDone);
+    void playExit(element, getMotionTier()).then(done);
   };
 
   useModalLayer({
@@ -214,6 +228,19 @@ async function playExit(host: HTMLElement, tier: MotionTier): Promise<void> {
     if (floor) animations.push(floor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, delay: 80, easing: easings.water, fill }));
   }
   await Promise.allSettled(animations.map((animation) => animation.finished));
+}
+
+/**
+ * Once the overlay has left, when the focus has nowhere to be — on <body>, or still on the leaving overlay: a first
+ * landing has no opener for the modal layer to give it back to, and on a replay React's commit put it back on the
+ * overlay after the layer had returned it — it goes to the key that opened the intro, else to the shell's main
+ * landmark (<main id="main" tabindex="-1">, no ring): a keyboard or screen-reader user goes on from the page's content,
+ * never from the top of the document (./view focusAfterIntro).
+ */
+function landFocus(overlay: HTMLElement | null, opener: Element | null) {
+  const back = opener instanceof HTMLElement && opener.isConnected && !overlay?.contains(opener) ? opener : null;
+  const target = focusAfterIntro<Element>(document.activeElement, document.body, (element) => overlay?.contains(element) ?? false, back, document.getElementById("main"));
+  if (target instanceof HTMLElement) target.focus({ preventScroll: true });
 }
 
 function visibleElement(selector: string): Element | null {

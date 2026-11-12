@@ -81,6 +81,17 @@ const CACHE = path.join(ROOT, '.cache', 'product-images');
 const OPTIONS_FILE = path.join(ROOT, 'scripts', 'products', 'image-options.json');
 
 const WIDTHS = [240, 480, 720, 960, 1440];
+/**
+ * The widths a picture is published at: the standard widths it covers, never upscaled. A picture narrower than the
+ * second standard width (a maker's small cut-out, e.g. Razer's 500 px renders) also ships at its own width, so a
+ * 2× screen gets every pixel there is instead of the 240 px file stretched; one narrower than 240 ships at its own
+ * width only. (tests/products-images.test.ts checks the same rule.)
+ */
+function publishedWidths(width) {
+  const widths = WIDTHS.filter((w) => w <= width);
+  if (width < WIDTHS[1] && !widths.includes(width)) widths.push(width);
+  return widths;
+}
 /** The share image (og:image) of a product: its first picture, at most this wide. */
 const SHARE_WIDTH = 1200;
 const PLACEHOLDER_SIDE = 20;
@@ -339,8 +350,7 @@ async function publish(job, picture, input) {
     return transparent ? s : s.removeAlpha();
   };
   const resized = (w) => (w === width ? image() : image().resize({ width: w, kernel: 'lanczos3' }));
-  const widths = WIDTHS.filter((w) => w <= width);
-  if (!widths.length) widths.push(width);
+  const widths = publishedWidths(width);
   const dir = path.join(PUBLIC, job.slug);
   const files = new Map();
   const add = (w, ext, buffer) => {

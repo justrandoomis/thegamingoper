@@ -12,7 +12,7 @@ import { parseBlocks, toBlock, type Block } from "~/ui/Blocks";
 import { breadcrumbJsonLd } from "~/ui/Breadcrumbs";
 import { pageSelection, toggleAllOnPage, toggleOne, toggleRange } from "~/ui/DataTable";
 import { placeMenu, typeaheadIndex } from "~/ui/Menu";
-import { pageWindow } from "~/ui/Pagination";
+import { pageWindow, showMoreVisible } from "~/ui/Pagination";
 import { createToastStore, toastFromPayload, toastRank, type ToastTimers } from "~/ui/toast-store";
 
 /** A clock the test moves by hand. */
@@ -277,6 +277,23 @@ describe("pagination window", () => {
 
   it("widens with more siblings", () => {
     expect(pageWindow(10, 20, 2)).toEqual([1, "gap", 8, 9, 10, 11, 12, "gap", 20]);
+  });
+});
+
+describe("show more (§4.22)", () => {
+  it("says nothing under a list that fits on its first page — no «عرضنا 1 من منتج واحد» under one card", () => {
+    expect(showMoreVisible({ shown: 1, total: 1, step: 24, canLoad: false })).toBe(false);
+    expect(showMoreVisible({ shown: 24, total: 24, step: 24, canLoad: false })).toBe(false);
+    expect(showMoreVisible({ shown: 0, total: 0, step: 24, canLoad: false })).toBe(false);
+    expect(showMoreVisible({ shown: 0, total: 0, canLoad: false })).toBe(false);
+  });
+
+  it("counts and offers the next page while there is one, and says «لا يوجد المزيد» after paging to the end", () => {
+    expect(showMoreVisible({ shown: 24, total: 42, step: 24, canLoad: true })).toBe(true);
+    expect(showMoreVisible({ shown: 42, total: 42, step: 24, canLoad: false })).toBe(true);
+    // a cursor list that does not know its total, and a list without a page size, keep their row
+    expect(showMoreVisible({ shown: 12, total: null, canLoad: true })).toBe(true);
+    expect(showMoreVisible({ shown: 3, total: 3, canLoad: false })).toBe(true);
   });
 });
 

@@ -14,8 +14,11 @@
   a second line that explains it (`aria-describedby`). Action and link rows keep their end hint (count, shortcut).
 - **ConfirmDialog** — a string impact value goes through `<BidiValue>`: "12 ← 13" reads from the right on an Arabic
   page, a sign stays on its digits.
-- **Toast** — never printed (`print:hidden` on the region). **OfflineBanner** — graphite with white words, unlike the
-  amber demo strip.
+- **Toast** — never printed (`print:hidden` on the region). **OfflineBanner** — the spec's warn treatment (§4.23):
+  `--warn-tint`, `--warn` 14/600 words, the inline wifi-slash in `--warn`, a 3px `--warn` bar on the reading edge and a
+  hairline under it; 40px and starting at the reading edge. The demo strip is a centred 28px line of 13px words with no
+  bar, so the two never read as one message. (The graphite version it had for a day brought back the black ribbon
+  §11.7 removed and hardly stood off the dark page — QA 2026-11-12.)
 - **Segmented** (links) — scrolls when its words do not fit, the current segment in view; `current="true"`.
 
 ## Design System v2 (2026-11-11) — read this first
@@ -23,21 +26,34 @@
 Where a section further down disagrees with this one, **this one wins**. Live: `/design-system#overlays`.
 
 - **Sheet** — default `presentation="side"` (a side panel from 768; a bottom sheet on phones); a glass head (grab
-  handle, h3, a plain close key), a paper body, `.sheet__foot` for the actions. `presentation="picker"` is the
-  governorate / option picker (a dialog from 768).
+  handle, h3, a plain close key), a paper body, `.sheet__foot` for the actions. The SIDE sheet's head is the same bar
+  without frost (`Glass variant="solid"`): it stands over the page's sticky header, whose icons and links showed sharp
+  behind the title, and nothing of the sheet scrolls under it. `presentation="picker"` is the governorate / option
+  picker (a dialog from 768).
 - **Dialog / ConfirmDialog** — opaque paper, max 440px; ConfirmDialog `variant`: primary · danger · secondary. **Menu**
   is opaque (no glass).
-- **Toast** — opaque paper card: a 48px thumb (cart) or a filled kind icon, the title, one line, actions (cart:
-  «عرض السلة» + «تراجع»), always a close key. Phones: above the bottom bar (`--shell-bottom`); from 1024: top-end,
-  380px wide, under the header (`--toaster-top`). Swipe away in either vertical direction.
+- **Toast** — the graphite card (§4.16): a 48px thumb on the product ground (cart; the render slot inside the well is
+  transparent and the well isolates, so an opaque photo multiplies into the ground, never into the graphite) or a
+  filled kind icon, the title, the product line (`<FactLine>`: name · version in up to two lines, each shortened at its
+  own end), the close key in the first row's end corner, and the actions in a row of their own under the words (cart:
+  «عرض السلة» + «تراجع») — ONE anatomy at every width, the 380px desktop toast included (beside the words the actions
+  left ~90px for them). Phones: above the bottom bar (`--shell-bottom`); from 1024: top-end, 380px wide, under the
+  header (`--toaster-top`). Swipe away in either vertical direction. An add made inside a sheet or dialog (the quick
+  look) shows no success toast: the layer confirms it («✓ في السلة») and the live region says it; failures still toast.
 - **Tabs** — a 2px ink underline, 13px labels. **Disclosure** — the panel variant is a hairline `panel`.
 - **Breadcrumbs** — from 768 only; more than four items collapse the middle into «…» (a button); JSON-LD stays.
 - **ProgressSteps** — numbered discs (done = ink + check, current = red); more than three steps show only the current
   label on phones; `variant="compact"` for the checkout bar.
 - **EmptyState** — `layout="stack"` (the mascot in a red-tint disc, or `art` in a 132px well, or an icon; h2; text;
-  `actions` + a quiet `recovery` link; optional `shelf`) or `"row"` (inline in a page). Never «دورك.»-style jokes.
+  `actions` + a quiet `recovery` link; optional `shelf`) or `"row"` (inline in a page). Never «دورك.»-style jokes. The
+  stack's `shelf` renders AFTER the 560px column, at the page's width (`.empty-page` › `.empty` + `.empty__shelf`): a
+  rail on phones, whole cards from 1024 — inside the column it was squeezed to the sentence's width. The row's actions
+  take a full row on a narrow card and never grow wider than it: a long link wraps inside it.
 - **ErrorState** — `layout` row | stack, `code`, `offline` (or the browser is offline) → «لا يوجد اتصال بالإنترنت» +
-  wifi-slash; never "500". **OfflineBanner** — a warn-tint strip, `message="form"` for forms, a green "back" state.
+  wifi-slash; never "500". **OfflineBanner** — a warn-tint strip with a 3px warn bar, `message="form"` for forms, an
+  ok-tint "back" state.
+- **ShowMore** — nothing renders under a list that fits on its first page (`step` = the page size) or is empty:
+  no «عرضنا 1 من منتج واحد» with a full bar under one card (`showMoreVisible`, pure).
 - **Callout** (Blocks) — paper panel with a 3px inline-start bar in the tone colour.
 
 Owner: design system (overlays). Files: `app/ui/{Sheet,Dialog,Menu,Toast,toast-store,Tabs,Disclosure,Accordion,Rail,
@@ -251,8 +267,8 @@ line-strong ring + ink-2 label. Equal columns; five steps fit 360px; labels neve
   says what failed (defaults "تعذّر تحميل هذا الجزء." / "تحقّق من الاتصال، ثم أعد المحاولة."), a retry key, an
   error reference left-to-right. Never animates, never pretends to load. A failed *action* is not this: roll back and
   put a sentence beside the control.
-- `<OfflineBanner message="store"|"generic"|node offset? pinned? state? />` — a flat ink banner under the header
-  ("لا يوجد اتصال. سلتك محفوظة على هذا الجهاز."), "عاد الاتصال." for 3 s when it returns; a polite live region that
+- `<OfflineBanner message="store"|"generic"|node offset? pinned? state? />` — a warn-tint banner with a 3px warn bar
+  under the header ("لا يوجد اتصال. سلتك محفوظة على هذا الجهاز."), "عاد الاتصال." (ok tint) for 3 s when it returns; a polite live region that
   exists from the start. `useOnline()` for keys that need the network (flat + the reason beside them). Server and
   hydration assume online. `navigator.onLine` only knows the device's link — failed requests still say so in place.
 

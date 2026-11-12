@@ -88,6 +88,12 @@ export type NavLink = {
   count?: number;
   /** Device links only: the model's short name for tight places ("PS5 Pro" for "PlayStation 5 Pro"; card-facts.ts shortModelName). `label` keeps the full name. */
   short?: string;
+  /**
+   * Product links only, when the product has one: the words its Latin title leaves out, in the shopper's language
+   * («نسخة الأقراص» for «PlayStation 5 Slim · 1TB», design v2 spec §4.11). Print it after the label on its own meta
+   * line or in a lighter run — never glued into the Latin label.
+   */
+  qualifier?: string;
 };
 
 export type NavCategory = NavLink & {
@@ -115,7 +121,14 @@ export type NavFeatured = {
   productId: string;
   /** "/p/<slug>". */
   href: string;
+  /** The product's name (a Latin title stays Latin: «PlayStation 5 Slim · 1TB»). */
   label: string;
+  /**
+   * The words the Latin title leaves out («نسخة الأقراص», design v2 spec §4.11) — print it on the tile's meta line
+   * under the label; null when the name says everything. Always set by the read layer (optional only so hand-written
+   * fixtures keep compiling).
+   */
+  qualifier?: string | null;
   image: ImageRef;
   /** The card's price (cards.server.ts: the version on sale), integer IQD. */
   priceIqd: number;

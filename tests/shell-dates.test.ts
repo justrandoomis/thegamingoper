@@ -20,17 +20,17 @@ describe("Sorani dates", () => {
       const ms = baghdad(2026, month, 15);
       for (const style of ["short", "medium", "long"] as DateStyle[]) expect(formatDate(ms, style, "ckb", "latn"), `${month} ${style}`).not.toMatch(LATIN);
       expect(formatDate(ms, "long", "ckb", "latn")).toBe(`15ی ${CKB_MONTHS[month - 1]}ی 2026`);
-      expect(formatDate(ms, "medium", "ckb", "latn")).toBe(`2026 ${CKB_MONTHS[month - 1]} 15`);
+      expect(formatDate(ms, "medium", "ckb", "latn")).toBe(`15ی ${CKB_MONTHS[month - 1]}ی 2026`);
     }
     expect(CKB_MONTHS).toEqual(["کانوونی دووەم", "شوبات", "ئازار", "نیسان", "ئایار", "حوزەیران", "تەمووز", "ئاب", "ئەیلوول", "تشرینی یەکەم", "تشرینی دووەم", "کانوونی یەکەم"]);
   });
 
-  it("follows CLDR's Sorani patterns: short, medium, long, and date with time", () => {
+  it("is day first in every style (CLDR's long pattern for medium and long), and a comma before the time", () => {
     const ms = baghdad(2026, 11, 13, 15, 5);
     expect(formatDate(ms, "short", "ckb", "latn")).toBe("13/11/2026");
-    expect(formatDate(ms, "medium", "ckb", "latn")).toBe("2026 تشرینی دووەم 13");
+    expect(formatDate(ms, "medium", "ckb", "latn")).toBe("13ی تشرینی دووەمی 2026");
     expect(formatDate(ms, "long", "ckb", "latn")).toBe("13ی تشرینی دووەمی 2026");
-    expect(formatDateTime(ms, "ckb", "latn")).toBe("2026 تشرینی دووەم 13 3:05 د.ن");
+    expect(formatDateTime(ms, "ckb", "latn")).toBe("13ی تشرینی دووەمی 2026، 3:05 د.ن");
     expect(formatDate(baghdad(2027, 1, 5), "short", "ckb", "latn")).toBe("05/01/2027");
   });
 
@@ -38,7 +38,7 @@ describe("Sorani dates", () => {
     const ms = baghdad(2026, 1, 5, 9, 7);
     expect(formatDate(ms, "long", "ckb", "arab")).toBe("٥ی کانوونی دووەمی ٢٠٢٦");
     expect(formatDate(ms, "short", "ckb", "arab")).toBe("٠٥/٠١/٢٠٢٦");
-    expect(formatDateTime(ms, "ckb", "arab")).toBe("٢٠٢٦ کانوونی دووەم ٥ ٩:٠٧ ب.ن");
+    expect(formatDateTime(ms, "ckb", "arab")).toBe("٥ی کانوونی دووەمی ٢٠٢٦، ٩:٠٧ ب.ن");
     expect(formatDate(ms, "medium", "ckb", "arab")).not.toMatch(/[0-9]/);
   });
 
@@ -46,9 +46,9 @@ describe("Sorani dates", () => {
     // 21:30 UTC on 4 January is 00:30 on 5 January in Baghdad
     const lateUtc = Date.UTC(2026, 0, 4, 21, 30);
     expect(formatDate(lateUtc, "long", "ckb", "latn")).toBe("5ی کانوونی دووەمی 2026");
-    expect(formatDateTime(lateUtc, "ckb", "latn")).toBe("2026 کانوونی دووەم 5 12:30 ب.ن");
-    expect(formatDateTime(baghdad(2026, 1, 5, 12, 0), "ckb", "latn")).toBe("2026 کانوونی دووەم 5 12:00 د.ن");
-    expect(formatDateTime(baghdad(2026, 1, 5, 23, 59), "ckb", "latn")).toBe("2026 کانوونی دووەم 5 11:59 د.ن");
+    expect(formatDateTime(lateUtc, "ckb", "latn")).toBe("5ی کانوونی دووەمی 2026، 12:30 ب.ن");
+    expect(formatDateTime(baghdad(2026, 1, 5, 12, 0), "ckb", "latn")).toBe("5ی کانوونی دووەمی 2026، 12:00 د.ن");
+    expect(formatDateTime(baghdad(2026, 1, 5, 23, 59), "ckb", "latn")).toBe("5ی کانوونی دووەمی 2026، 11:59 د.ن");
     // the last day of the year, at its last minute in Baghdad
     expect(formatDate(baghdad(2026, 12, 31, 23, 59), "long", "ckb", "latn")).toBe("31ی کانوونی یەکەمی 2026");
   });
@@ -84,17 +84,23 @@ describe("numeric dates are day first in every language (Design System v2 §2.6)
   });
 });
 
-describe("dates with a month name go through Intl in Arabic and English", () => {
+describe("Arabic dates with a month name go through Intl; English is built day first", () => {
   const ms = baghdad(2026, 11, 13, 15, 5);
-  it("prints what Intl prints, in Iraq time", () => {
+  it("Arabic long prints what Intl prints, in Iraq time", () => {
     for (const numbering of ["latn", "arab"] as NumberingSystem[]) {
       expect(formatDate(ms, "long", "ar", numbering)).toBe(new Intl.DateTimeFormat(`ar-IQ-u-nu-${numbering}`, { dateStyle: "long", timeZone: "Asia/Baghdad" }).format(ms));
-      for (const style of ["medium", "long"] as DateStyle[]) {
-        expect(formatDate(ms, style, "en", numbering)).toBe(new Intl.DateTimeFormat(`en-IQ-u-nu-${numbering}`, { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms));
-      }
-      expect(formatDateTime(ms, "en", numbering)).toBe(new Intl.DateTimeFormat(`en-IQ-u-nu-${numbering}`, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms));
     }
-    expect(formatDate(ms, "long", "en", "latn")).toBe("November 13, 2026");
+  });
+  it("English is day first in every style (Intl's en-IQ is month first)", () => {
+    expect(formatDate(ms, "medium", "en", "latn")).toBe("13 Nov 2026");
+    expect(formatDate(ms, "long", "en", "latn")).toBe("13 November 2026");
+    expect(formatDateTime(ms, "en", "latn")).toBe("13 Nov 2026, 3:05 PM");
+    expect(formatDateTime(baghdad(2026, 1, 5, 0, 7), "en", "latn")).toBe("5 Jan 2026, 12:07 AM");
+    expect(formatDateTime(baghdad(2026, 1, 5, 12, 0), "en", "latn")).toBe("5 Jan 2026, 12:00 PM");
+    // 2026-11-15 is a Sunday
+    expect(formatWeekday(baghdad(2026, 11, 15), "en")).toBe("Sunday");
+    expect(formatWeekdayDay(baghdad(2026, 11, 15), "en", "latn")).toBe("Sunday, 15 November");
+    expect(formatWeekdayDay(Date.UTC(2026, 10, 20), "en", "latn", { timeZone: "UTC" })).toBe("Friday, 20 November");
   });
 });
 
@@ -116,13 +122,11 @@ describe.skipIf(!icuHasSorani)("Sorani matches CLDR as a full ICU prints it", ()
         const ms = baghdad(2025, month, day, hour, minute);
         for (const numbering of ["latn", "arab"] as NumberingSystem[]) {
           const tag = `ckb-IQ-u-nu-${numbering}`;
-          // "short" is left out: numeric dates are day first by design (CLDR's Sorani "y-MM-dd" is year first)
-          for (const style of ["medium", "long"] as DateStyle[]) {
-            const icu = cldr(new Intl.DateTimeFormat(tag, { dateStyle: style, timeZone: "Asia/Baghdad" }).format(ms));
-            expect(formatDate(ms, style, "ckb", numbering), `${month}/${day} ${style} ${numbering}`).toBe(icu);
-          }
-          const icu = cldr(new Intl.DateTimeFormat(tag, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Baghdad" }).format(ms));
-          expect(formatDateTime(ms, "ckb", numbering), `${month}/${day} ${hour}:${minute} ${numbering}`).toBe(icu);
+          // Only "long" is compared: numeric dates and the medium form are day first by design (CLDR's Sorani
+          // "y-MM-dd" and "y MMM d" are year first), and the date with time puts a comma before the time.
+          const icu = cldr(new Intl.DateTimeFormat(tag, { dateStyle: "long", timeZone: "Asia/Baghdad" }).format(ms));
+          expect(formatDate(ms, "long", "ckb", numbering), `${month}/${day} long ${numbering}`).toBe(icu);
+          expect(formatDate(ms, "medium", "ckb", numbering)).toBe(icu);
           const weekdayDay = cldr(new Intl.DateTimeFormat(tag, { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Baghdad" }).format(ms));
           expect(formatWeekdayDay(ms, "ckb", numbering)).toBe(weekdayDay);
         }

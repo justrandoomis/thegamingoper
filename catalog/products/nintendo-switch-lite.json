@@ -114,7 +114,7 @@
   "variants": [
     {
       "sku": "NSW-LITE-TRQ",
-      "title": { "ar": "Nintendo Switch Lite — فيروزي", "en": "Nintendo Switch Lite — Turquoise", "ckb": "Nintendo Switch Lite — فیرۆزەیی" },
+      "title": { "ar": "فيروزي", "en": "Turquoise", "ckb": "فیرۆزەیی" },
       "options": { "storage": "32GB", "color": "Turquoise" },
       "modelNumber": "HDH-001",
       "barcodes": ["0045496882266"],
@@ -124,7 +124,7 @@
     },
     {
       "sku": "NSW-LITE-YEL",
-      "title": { "ar": "Nintendo Switch Lite — أصفر", "en": "Nintendo Switch Lite — Yellow", "ckb": "Nintendo Switch Lite — زەرد" },
+      "title": { "ar": "أصفر", "en": "Yellow", "ckb": "زەرد" },
       "options": { "storage": "32GB", "color": "Yellow" },
       "modelNumber": "HDH-001",
       "barcodes": ["0045496882303"],
@@ -134,7 +134,7 @@
     },
     {
       "sku": "NSW-LITE-CRL",
-      "title": { "ar": "Nintendo Switch Lite — مرجاني", "en": "Nintendo Switch Lite — Coral", "ckb": "Nintendo Switch Lite — مەرجانی" },
+      "title": { "ar": "مرجاني", "en": "Coral", "ckb": "مەرجانی" },
       "options": { "storage": "32GB", "color": "Coral" },
       "modelNumber": "HDH-001",
       "barcodes": ["0045496882662"],
@@ -148,7 +148,7 @@
     },
     {
       "sku": "NSW-LITE-BLU",
-      "title": { "ar": "Nintendo Switch Lite — أزرق", "en": "Nintendo Switch Lite — Blue", "ckb": "Nintendo Switch Lite — شین" },
+      "title": { "ar": "أزرق", "en": "Blue", "ckb": "شین" },
       "options": { "storage": "32GB", "color": "Blue" },
       "modelNumber": "HDH-001",
       "barcodes": ["0045496882716"],
@@ -158,7 +158,7 @@
     },
     {
       "sku": "NSW-LITE-GRY",
-      "title": { "ar": "Nintendo Switch Lite — رمادي", "en": "Nintendo Switch Lite — Gray", "ckb": "Nintendo Switch Lite — خۆڵەمێشی" },
+      "title": { "ar": "رمادي", "en": "Gray", "ckb": "خۆڵەمێشی" },
       "options": { "storage": "32GB", "color": "Gray" },
       "modelNumber": "HDH-001",
       "barcodes": ["0045496882280"],

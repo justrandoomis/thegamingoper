@@ -49,6 +49,18 @@ type FieldCommon = {
   className?: string;
 };
 
+/**
+ * A field that takes the focus is brought WHOLE into view, clear of the sticky header and of the tab or task bar (the
+ * global scroll-padding from --shell-top / --shell-bottom honours them): the browser itself scrolls only the caret
+ * into view, which left a notes box half under the checkout's task bar (QA 2026-11-12, WCAG 2.4.11). "nearest" moves
+ * nothing when the field is already in view — so a phone's own scroll for its keyboard is left alone.
+ */
+export function revealField(field: HTMLElement): void {
+  requestAnimationFrame(() => {
+    if (document.activeElement === field) field.scrollIntoView({ block: "nearest", inline: "nearest" });
+  });
+}
+
 function useFieldIds(id: string | undefined, hint: ReactNode, error: ReactNode) {
   const auto = useId();
   const base = id ?? auto;
@@ -142,6 +154,10 @@ export function TextField({ label, hint, error, required, optional, hideLabel, c
           aria-required={required || undefined}
           aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
           data-end={end ? "" : undefined}
+          onFocus={(event) => {
+            input.onFocus?.(event);
+            revealField(event.currentTarget);
+          }}
         />
         {end ? <span className="field__end">{end}</span> : null}
       </div>
@@ -166,6 +182,10 @@ export function TextArea({ label, hint, error, required, optional, hideLabel, cl
         aria-invalid={error ? true : undefined}
         aria-required={required || undefined}
         aria-describedby={cx(ids.describedBy, area["aria-describedby"]) || undefined}
+        onFocus={(event) => {
+          area.onFocus?.(event);
+          revealField(event.currentTarget);
+        }}
       />
       <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />
     </div>
@@ -384,8 +404,9 @@ export function FormErrorSummary({ errors, className }: { errors: readonly FormE
       <ul className="grid ps-7">
         {errors.map((error) => (
           <li key={error.id}>
-            {/* 44px rows: each link is a target of its own, not a word inside a sentence */}
-            <a href={`#${error.id}`} className="inline-flex min-h-11 items-center">
+            {/* 44px rows, at least 44px wide: each link is a target of its own, not a word inside a sentence (a short
+                Sorani label «پارێزگا» was 30px wide) */}
+            <a href={`#${error.id}`} className="inline-flex min-h-11 min-w-11 items-center">
               {error.label}
             </a>
           </li>

@@ -149,9 +149,9 @@
     {
       "sku": "CLAWA8-24-1TB",
       "title": {
-        "ar": "MSI Claw A8 24GB / 1TB",
-        "en": "MSI Claw A8 24GB / 1TB",
-        "ckb": "MSI Claw A8 24GB / 1TB"
+        "ar": "24GB / 1TB",
+        "en": "24GB / 1TB",
+        "ckb": "24GB / 1TB"
       },
       "options": { "chip": "Ryzen Z2 Extreme", "memory": "24GB", "storage": "1TB" },
       "modelNumber": "BZ2EM",

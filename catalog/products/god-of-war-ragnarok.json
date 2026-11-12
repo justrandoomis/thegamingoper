@@ -100,7 +100,7 @@
   "variants": [
     {
       "sku": "GOWR-PS5-STD",
-      "title": { "ar": "God of War Ragnarök لجهاز PS5 — Standard Edition", "en": "God of War Ragnarök for PS5 — Standard Edition", "ckb": "God of War Ragnarök بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["god-of-war-ragnarok--1", "god-of-war-ragnarok--2", "god-of-war-ragnarok--3", "god-of-war-ragnarok--4"],
@@ -169,13 +169,13 @@
   "images": [
     {
       "key": "god-of-war-ragnarok--1",
-      "file": ".cache/product-images/god-of-war-ragnarok/1.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/god-of-war-raganok-clean-keyart-01-en-10mar22?$1600px$",
-      "sourcePage": "https://www.playstation.com/en-gb/games/god-of-war-ragnarok/",
-      "kind": "hero",
-      "alt": { "ar": "Kratos وAtreus على الجليد — الصورة الرسمية للعبة", "en": "Kratos and Atreus on the ice — official key art", "ckb": "Kratos و Atreus لەسەر سەهۆڵ — وێنەی فەرمی یارییەکە" },
+      "file": ".cache/product-images/god-of-war-ragnarok/1.jpg",
+      "sourceUrl": "https://shared.steamstatic.com/store_item_assets/steam/apps/2322010/library_600x900_2x.jpg",
+      "sourcePage": "https://store.steampowered.com/app/2322010/God_of_War_Ragnark/",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف God of War Ragnarök: Kratos وAtreus على الجليد", "en": "God of War Ragnarök cover art: Kratos and Atreus on the ice", "ckb": "وێنەی بەرگی God of War Ragnarök: Kratos و Atreus لەسەر سەهۆڵ" },
       "credit": "Sony Interactive Entertainment",
-      "width": 1600, "height": 900, "transparent": false
+      "width": 600, "height": 900, "transparent": false
     },
     {
       "key": "god-of-war-ragnarok--2",

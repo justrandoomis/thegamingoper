@@ -41,7 +41,7 @@
   "variants": [
     {
       "sku": "NS2G-POKEMON-POKOPIA",
-      "title": { "ar": "Pokémon Pokopia — نسخة Game-Key Card لـ Nintendo Switch 2", "en": "Pokémon Pokopia — Nintendo Switch 2 Game-Key Card edition", "ckb": "Pokémon Pokopia — وەشانی Game-Key Card بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة Game-Key Card لـ Nintendo Switch 2", "en": "Nintendo Switch 2 Game-Key Card edition", "ckb": "وەشانی Game-Key Card بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game-Key Card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496906047"],
       "isDefault": true,

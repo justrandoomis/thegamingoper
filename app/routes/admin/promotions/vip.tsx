@@ -240,7 +240,7 @@ function TierForm({ tier }: { tier: TierRow | null }) {
       <div className="prm-grid">
         <TextField name="key" label={t("vip.f.key")} hint={t("vip.f.keyHint")} defaultValue={tier?.key ?? ""} required ltr error={errors.key} />
         <TextField name="nameAr" label={t("vip.f.nameAr")} defaultValue={tier?.name.ar ?? ""} required maxLength={60} error={errors.nameAr} />
-        <TextField name="nameEn" label={t("vip.f.nameEn")} defaultValue={tier?.name.en ?? ""} maxLength={60} dir="ltr" error={errors.nameEn} />
+        <TextField name="nameEn" label={t("vip.f.nameEn")} defaultValue={tier?.name.en ?? ""} maxLength={60} ltr lang="en" error={errors.nameEn} />
         <TextField name="discount" label={t("vip.f.discount")} hint={t("vip.f.discountHint")} defaultValue={b?.discountBps ? bpsToPercent(b.discountBps) : ""} inputMode="decimal" error={errors.discount} />
         <TextField name="multiplier" label={t("vip.f.multiplier")} hint={t("vip.f.multiplierHint")} defaultValue={b?.pointsMultiplierBps ? (b.pointsMultiplierBps / 10_000).toFixed(2) : ""} inputMode="decimal" error={errors.multiplier} />
         <TextField name="durationDays" label={t("vip.f.duration")} hint={t("vip.f.durationHint")} defaultValue={tier?.durationDays ?? ""} inputMode="numeric" error={errors.durationDays} />

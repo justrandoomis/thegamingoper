@@ -9,12 +9,20 @@
       {
         "w": 240,
         "src": "/products/steam-wallet-card/2-240.c5368b6a.avif"
+      },
+      {
+        "w": 272,
+        "src": "/products/steam-wallet-card/2-272.b488b543.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
         "src": "/products/steam-wallet-card/2-240.a9927b72.webp"
+      },
+      {
+        "w": 272,
+        "src": "/products/steam-wallet-card/2-272.af2ba0b3.webp"
       }
     ]
   },

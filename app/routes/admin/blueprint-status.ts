@@ -978,11 +978,11 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
 
   // ── 15 Staff and HR
   "15.01": {
-    status: "partial",
+    status: "implemented",
     route: "/admin/staff/employees",
     note: n(
-      "The directory, and each employee's effective permissions read-only (by module, protected-data ones marked, with the role that grants each); roles are edited in one place, /admin/security/roles (module 20). Missing: adding a new employee and their first password — the sign-in service has no function for it (requested from its owner).",
-      "دليل الموظفين، وصلاحيات كل موظف الفعلية للعرض فقط (حسب القسم، مع تمييز البيانات المحمية والدور الذي يمنح كلاً منها)؛ والأدوار تُعدَّل في مكان واحد: /admin/security/roles (القسم 20). ناقص: إضافة موظف جديد وكلمة مروره الأولى — خدمة الدخول لا تتيح ذلك (طُلب من مالكها).",
+      "The directory, and each employee's effective permissions read-only (by module, protected-data ones marked, with the role that grants each); roles are edited in one place, /admin/security/roles (module 20). Adding an employee (staff.manage): the roles this person holds all of, the branch, a reason; the account has no password until the employee sets one with a one-time link shown once to whoever made it (no message provider: handed over in person). From the employee's file: a new link, and re-enabling a closed account.",
+      "دليل الموظفين، وصلاحيات كل موظف الفعلية للعرض فقط (حسب القسم، مع تمييز البيانات المحمية والدور الذي يمنح كلاً منها)؛ والأدوار تُعدَّل في مكان واحد: /admin/security/roles (القسم 20). إضافة موظف (صلاحية إدارة الموظفين): الأدوار التي يملك المضيف كل صلاحياتها، والفرع، وسبب؛ ولا كلمة مرور للحساب حتى يضعها الموظف برابط يظهر مرة واحدة لمن صنعه (لا مزوّد رسائل: يُسلَّم باليد). ومن ملف الموظف: رابط جديد، وإعادة تفعيل حساب موقوف.",
     ),
   },
   "15.02": {

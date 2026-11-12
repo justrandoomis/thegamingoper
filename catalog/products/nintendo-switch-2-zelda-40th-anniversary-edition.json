@@ -111,9 +111,9 @@
     {
       "sku": "NS2-ZELDA40",
       "title": {
-        "ar": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition (النسخة الدولية)",
-        "en": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition (international)",
-        "ckb": "Nintendo Switch 2 – The Legend of Zelda – 40th Anniversary Edition (نێودەوڵەتی)"
+        "ar": "النسخة الدولية",
+        "en": "International model",
+        "ckb": "مۆدێلی نێودەوڵەتی"
       },
       "options": { "edition": "The Legend of Zelda 40th Anniversary", "storage": "256GB", "color": "Black and gold dock, green and gold Joy-Con 2" },
       "barcodes": ["0045496885434"],

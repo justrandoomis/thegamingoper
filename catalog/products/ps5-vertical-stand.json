@@ -9,7 +9,7 @@
   "name": {
     "ar": "القاعدة العمودية Vertical Stand for PS5",
     "en": "Vertical Stand for PS5 Consoles",
-    "ckb": "Vertical Stand for PS5 (ستاندی ستوونی)"
+    "ckb": "ستاندی ستوونیی Vertical Stand for PS5"
   },
   "short": {
     "ar": "قاعدة رسمية لوقوف PS5 عمودياً · لكل طرازات PS5 وPS5 Pro",
@@ -69,7 +69,7 @@
   "variants": [
     {
       "sku": "PS5-VERTICAL-STAND",
-      "title": { "ar": "القاعدة العمودية لـ PS5", "en": "Vertical Stand for PS5", "ckb": "ستاندی ستوونی بۆ PS5" },
+      "title": { "ar": "القاعدة العمودية Vertical Stand for PS5", "en": "Vertical Stand for PS5 Consoles", "ckb": "ستاندی ستوونیی Vertical Stand for PS5" },
       "options": { "color": "Black" },
       "modelNumber": "CFI-ZVS1",
       "isDefault": true,

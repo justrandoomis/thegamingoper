@@ -130,12 +130,13 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
 
   const help = result.zeroResultHelp;
   if (result.total === 0 && help?.reason !== "filters") {
-    // nothing matches the words: what to try, the shorter queries, the platforms, what arrived lately — no sort, no filters
+    // nothing matches the words: what to try, the shorter queries, the platforms, what arrived lately — no sort, no
+    // filters. The picture is the mascot in its disc (v2 §4.23), as on the 404 — not an icon
     return (
       <div className="page catalog-page" onClickCapture={hold}>
         <VisuallyHidden as="h1">{t("search.resultsTitle", { q })}</VisuallyHidden>
         <div className="grid justify-items-center gap-4">
-          <EmptyState layout="stack" icon="magnifying-glass" title={<bdi>{t("search.zeroTitle", { q })}</bdi>} text={t("search.zeroText")} />
+          <EmptyState layout="stack" title={<bdi>{t("search.zeroTitle", { q })}</bdi>} text={t("search.zeroText")} />
           <DidYouMean partial={help?.partial ?? []} />
         </div>
         <BrowseStore browse={browse} className="catalog-after" />

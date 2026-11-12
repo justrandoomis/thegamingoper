@@ -114,7 +114,7 @@
   "variants": [
     {
       "sku": "GT7-PS5-STD",
-      "title": { "ar": "Gran Turismo 7 لجهاز PS5 — Standard Edition", "en": "Gran Turismo 7 for PS5 — Standard Edition", "ckb": "Gran Turismo 7 بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["gran-turismo-7--1", "gran-turismo-7--2", "gran-turismo-7--3", "gran-turismo-7--4"],

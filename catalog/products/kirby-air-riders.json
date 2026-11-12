@@ -42,7 +42,7 @@
   "variants": [
     {
       "sku": "NS2G-KIRBY-AIR-RIDERS",
-      "title": { "ar": "Kirby Air Riders — نسخة فيزيائية لـ Nintendo Switch 2", "en": "Kirby Air Riders — Nintendo Switch 2 physical edition", "ckb": "Kirby Air Riders — کۆپیی فیزیکی بۆ Nintendo Switch 2" },
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch 2", "en": "Nintendo Switch 2 physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch 2" },
       "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch 2" },
       "barcodes": ["045496905699"],
       "isDefault": true,

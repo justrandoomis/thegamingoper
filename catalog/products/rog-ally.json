@@ -144,7 +144,7 @@
   "variants": [
     {
       "sku": "ROG-ALLY-Z1E-512",
-      "title": { "ar": "ROG Ally Z1 Extreme 512GB أبيض", "en": "ROG Ally Z1 Extreme 512GB, White", "ckb": "ROG Ally Z1 Extreme 512GB، سپی" },
+      "title": { "ar": "Z1 Extreme 512GB أبيض", "en": "Z1 Extreme 512GB · White", "ckb": "Z1 Extreme 512GB · سپی" },
       "options": { "chip": "Ryzen Z1 Extreme", "memory": "16GB", "storage": "512GB", "color": "White" },
       "modelNumber": "RC71L",
       "isDefault": true,
@@ -152,7 +152,7 @@
     },
     {
       "sku": "ROG-ALLY-Z1-512",
-      "title": { "ar": "ROG Ally Z1 512GB أبيض", "en": "ROG Ally Z1 512GB, White", "ckb": "ROG Ally Z1 512GB، سپی" },
+      "title": { "ar": "Z1 512GB أبيض", "en": "Z1 512GB · White", "ckb": "Z1 512GB · سپی" },
       "options": { "chip": "Ryzen Z1", "memory": "16GB", "storage": "512GB", "color": "White" },
       "modelNumber": "RC71L",
       "isDefault": false,

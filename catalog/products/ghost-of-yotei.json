@@ -108,7 +108,7 @@
   "variants": [
     {
       "sku": "GOY-PS5-STD",
-      "title": { "ar": "Ghost of Yōtei لجهاز PS5 — Standard Edition", "en": "Ghost of Yōtei for PS5 — Standard Edition", "ckb": "Ghost of Yōtei بۆ PS5 — Standard Edition" },
+      "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,
       "images": ["ghost-of-yotei--1", "ghost-of-yotei--3", "ghost-of-yotei--4", "ghost-of-yotei--5"],
@@ -120,7 +120,7 @@
     },
     {
       "sku": "GOY-PS5-CE",
-      "title": { "ar": "Ghost of Yōtei لجهاز PS5 — Complete Edition", "en": "Ghost of Yōtei for PS5 — Complete Edition", "ckb": "Ghost of Yōtei بۆ PS5 — Complete Edition" },
+      "title": { "ar": "لجهاز PS5 · Complete Edition", "en": "PS5 · Complete Edition", "ckb": "بۆ PS5 · Complete Edition" },
       "options": { "platform": "PS5", "edition": "Complete", "format": "Disc" },
       "isDefault": false,
       "images": ["ghost-of-yotei--2", "ghost-of-yotei--3", "ghost-of-yotei--4"],

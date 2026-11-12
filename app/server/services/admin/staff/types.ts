@@ -367,6 +367,23 @@ export type EmployeeRow = {
 export type PermissionView = { key: string; label: string; field: boolean; roles: string[] };
 export type PermissionGroupView = { key: string; module: string | null; label: string; permissions: PermissionView[] };
 
+/**
+ * What the «add an employee» form offers (staff.manage only): every role, `assignable` when this person holds all it
+ * grants (giving one they do not is refused: grant_exceeds_own), `twoStep` when its members must use two-step
+ * verification; the active branches; `branch` — the one branch a branch-limited person hires for (no choice then).
+ */
+export type HireOptions = {
+  roles: (RoleRef & { description: string | null; assignable: boolean; twoStep: boolean })[];
+  branches: { id: string; name: string }[];
+  branch: { id: string; name: string } | null;
+};
+
+/**
+ * A one-time password-set link, as the person who made it sees it ONCE (the action's answer; never stored, never in a
+ * URL of this admin, never in the audit trail): the full address on this store — the token sits in its fragment.
+ */
+export type HandedLink = { url: string; purpose: "welcome" | "reset"; expiresAt: number };
+
 /** An employee's live session and a sign-in event, as module 20 shows them (its client-safe view types). */
 export type { AuthEventView as SignInRow, SessionView as SessionRow } from "../security/types";
 

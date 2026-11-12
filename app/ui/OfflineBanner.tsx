@@ -4,11 +4,12 @@ import { useT } from "~/i18n/react";
 import { cx } from "./cx";
 
 /**
- * OfflineBanner — the connection dropped. Design System v2 §4.23: a 40px banner pinned under the header with 14/600
- * words and an INLINE wifi-slash icon (the sprite may not be cached offline) — never confused with the demo strip and
- * never red. Its ground is the graphite of the toast and the release band (--band, white words, 17.7:1): the spec's
- * --warn-tint was the demo strip's amber all over again (#FFF3DF against #FFF4E2), so the two read as one message.
- * Contextual words: store pages «لا يوجد اتصال. سلتك محفوظة على هذا
+ * OfflineBanner — the connection dropped. Design System v2 §4.23: a 40px banner pinned under the header on the
+ * --warn-tint ground with --warn 14/600 words and an INLINE wifi-slash icon in --warn (the sprite may not be cached
+ * offline) — never red. It can never be confused with the demo strip: the demo strip is a centred 28px line of 13px
+ * words on its own amber; this banner is 40px, starts at the reading edge and carries a 3px --warn bar on that edge
+ * (and a hairline under it). The graphite version it had for a while brought back the black full-width ribbon §11.7
+ * removed, and in the dark theme it hardly stood off the page (QA 2026-11-12). Contextual words: store pages «لا يوجد اتصال. سلتك محفوظة على هذا
  * الجهاز.», forms «لا يوجد اتصال. ما كتبته باقٍ في الصفحة؛ أرسله عند عودة الاتصال.». When the connection returns it says
  * «عاد الاتصال.» for three seconds and goes. Announced politely (the live region is on the page from the start).
  *
@@ -85,7 +86,7 @@ export function OfflineBanner({ message = "store", offset = "0px", pinned = true
   return (
     <div role="status" aria-live="polite" className={cx(pinned && "sticky z-(--z-sticky)", className)} style={pinned ? { insetBlockStart: offset } : undefined}>
       {shown ? (
-        <p className={cx("offline", shown === "back" ? "bg-ok-tint text-ok" : "border-transparent bg-band text-on-band")} data-offline={shown}>
+        <p className={cx("offline", shown === "back" && "offline--back")} data-offline={shown}>
           {shown === "back" ? <CheckGlyph /> : <WifiSlashGlyph />}
           <span className="min-w-0 flex-1">{words}</span>
         </p>

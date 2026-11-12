@@ -17,9 +17,18 @@
  *                           every request asking about one, GET or POST, counts against ONE per-IP budget
  *                           (REFERRAL_CHECKS, 20 a minute: codes are not to be guessed — security review 2026-11-12);
  *                           send it in a POST (intent=price) — a GET puts it in the URL, which logs keep
+ *   POST only (QA 2026-11-12), any intent:
+ *        phone=0770 111 2233  the number typed at checkout (step 1): the answer is priced for it — a once-per-customer
+ *                           code that number used comes back with `couponIssue` "customer_limit" and no discount, a
+ *                           first-order code and flash limits count it — so the review shows the total the order will
+ *                           charge. A referral code is still said without it (the order checks it). Never read from a
+ *                           URL. Not an Iraqi mobile number → priced as without one. Such an answer says what a number
+ *                           has used, so numbers are counted per address (PHONE_PRICING_PER_IP, 20 per 10 minutes);
+ *                           past that the answer is priced as without a number (the order still checks it)
  *
  * `cart` is CartViewData from ~/server/services/cart.server: the CartView of ~/lib/dto plus
- * `couponIssue` (why a stored coupon does not apply right now).
+ * `couponIssue` (why a stored coupon does not apply right now) and `payableCount` (the units the totals are for: a
+ * sold-out line stays in `count` and out of the money).
  *
  * Failures are `{ ok: false, code, fields? }` (ActionFail): 400 `invalid` with field error keys,
  * 404 `not_found` (a line or item that does not exist), 409 with a business code (`out_of_stock`,
@@ -36,13 +45,14 @@ import { data } from "react-router";
 import { z } from "zod";
 import type { Route } from "./+types/cart";
 import { LOCALE_CODES, isLocale, type Locale } from "~/lib/locales";
+import { normalizeIraqPhone } from "~/lib/phone";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx, serializeCookie, type RequestCtx } from "~/server/context.server";
-import { getDb } from "~/server/db.server";
+import { getDb, type Db } from "~/server/db.server";
 import { actionError } from "~/server/errors";
-import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
+import { enforceRateLimit, limitKey, rateLimit, type RateLimitRule } from "~/server/ratelimit.server";
 import { CART_COOKIE } from "~/server/shell.server";
-import { CART_COOKIE_MAX_AGE_SEC, MAX_LINE_QTY, addToCart, changeCoupon, changeLineQty, deleteLine, getCartView, isCartToken, type CartChangeResult, type CartRequest } from "~/server/services/cart.server";
+import { CART_COOKIE_MAX_AGE_SEC, MAX_LINE_QTY, PHONE_PRICING_PER_IP, addToCart, changeCoupon, changeLineQty, deleteLine, getCartView, isCartToken, type CartChangeResult, type CartRequest } from "~/server/services/cart.server";
 
 /** Cart changes allowed per IP, and per cart, per minute. Generous for people, tight for scripts. */
 const CART_CHANGES: RateLimitRule = { limit: 60, windowSec: 60 };
@@ -63,6 +73,8 @@ const common = {
   governorateId: optionalId,
   points: z.preprocess(blank, integer(0, 10_000_000).optional()),
   referral: z.preprocess(blank, z.string().trim().max(40, "too_long").optional()),
+  /** The number typed at checkout (a body field only — the GET never reads one). */
+  phone: z.preprocess(blank, z.string().trim().max(40, "too_long").optional()),
 };
 
 /** Referral codes asked about per IP per minute (GET): enough for a person typing one, too few to guess codes. */
@@ -82,6 +94,18 @@ const CartIntent = z.discriminatedUnion("intent", [
 function cartToken(ctx: RequestCtx): string | null {
   const value = ctx.cookie(CART_COOKIE);
   return isCartToken(value) ? value : null;
+}
+
+/**
+ * The number typed at checkout, normalised, when it is an Iraqi mobile number and this address may ask about one more
+ * (PHONE_PRICING_PER_IP); null otherwise — the answer is then priced as without a number, and the order still checks it.
+ * Only a usable number is counted.
+ */
+async function pricedPhone(db: Db, ctx: RequestCtx, typed: string | undefined): Promise<string | null> {
+  const phone = normalizeIraqPhone(typed);
+  if (!phone) return null;
+  const verdict = await rateLimit(db, await limitKey("cart-phone", "ip", ctx.ip), PHONE_PRICING_PER_IP, ctx.now);
+  return verdict.ok ? phone : null;
 }
 
 async function readBody(request: Request): Promise<Record<string, unknown>> {
@@ -148,7 +172,10 @@ export async function action({ request, context }: Route.ActionArgs) {
     const token = cartToken(ctx);
     if (token) await enforceRateLimit(db, await limitKey("cart", "cart", token), CART_CHANGES, ctx.now);
     const customer = await getCustomer(ctx, db);
-    const cartRequest: CartRequest = { cartToken: token, customerId: customer?.customer.id ?? null, locale: body.locale ?? ctx.locale, governorateId: body.governorateId ?? null, redeemPoints: body.points ?? null, referralCode: body.referral ?? null };
+    // The number typed at checkout (QA 2026-11-12): the review is priced as the order will be — a once-per-customer code
+    // that number used no longer shows a discount «أكّد الطلب» then refuses. Budgeted per address (pricedPhone).
+    const phoneE164 = await pricedPhone(db, ctx, body.phone);
+    const cartRequest: CartRequest = { cartToken: token, customerId: customer?.customer.id ?? null, locale: body.locale ?? ctx.locale, governorateId: body.governorateId ?? null, redeemPoints: body.points ?? null, referralCode: body.referral ?? null, phoneE164 };
 
     // the checkout's pricing with the choices in a body (a referral code never goes into a URL): reads, changes nothing
     if (body.intent === "price") return data({ ok: true as const, cart: await getCartView(db, cartRequest, ctx.now) }, { headers: NO_STORE });

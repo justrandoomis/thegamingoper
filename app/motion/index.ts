@@ -35,8 +35,8 @@ export { SharedElement } from "./shared";
 export type { SharedElementProps } from "./shared";
 export { Bubble, BubbleGroup, useHydrating } from "./bubble";
 export type { BubbleGroupProps, BubbleProps } from "./bubble";
-export { NumberMorph } from "./number";
-export type { NumberMorphProps } from "./number";
+export { CountUp, countAt, countUpPlan, NumberMorph } from "./number";
+export type { CountUpProps, NumberMorphProps } from "./number";
 
 // Imperative pieces (implementation loads on demand; each call is instant either way).
 export { dematerialize, directionMorph, flyToCart, materialize, themeMorph } from "./lazy";
@@ -51,3 +51,6 @@ export type { SheetEdge } from "./sheet";
 export { useRail } from "./rail-hook";
 export type { RailHandle, RailOptions } from "./rail-hook";
 export { useAmbient } from "./ambient";
+
+// v2.1: section reveal (started by <MotionRoot>; mark elements with data-reveal or use <Reveal> from ~/ui/reveal).
+export { initialRevealState, revealDelay, revealEnabled } from "./reveal";

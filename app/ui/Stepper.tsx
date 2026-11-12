@@ -9,8 +9,9 @@ import { useDemoMode } from "./StockNote";
 import { Status } from "./Tag";
 
 /**
- * The quantity stepper — Design System v2 §4.10: a hairline pill, 48px (40 compact), with two round ghost icon buttons
- * (40px, 36 compact; 44 hit) and a 16/600 tabular count that is a polite live region. The minus is at the START and the
+ * The quantity stepper — Design System v2 §4.10; v2.1 (DESIGN.md §15.2): the before's CLAY TRAY — a pill pressed into the
+ * surface, 48px (40 compact), holding a flat «−», the count in Kufam 700 (a polite live region) and a RAISED round clay
+ * «+» (38px, 34 compact; 44 hit). The minus is at the START and the
  * plus at the END in every language. At the minimum the minus goes flat (and stays focusable, so focus is never lost);
  * at a stock limit the plus goes flat and «بقي 2 فقط» appears beside it — from real stock only, never in demo mode.
  * Press and hold repeats (after 420ms, accelerating). The phone product page has no stepper (quantity lives in the cart).

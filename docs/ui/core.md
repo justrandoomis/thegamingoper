@@ -1,5 +1,23 @@
 # Core components — props and examples
 
+## Design v2.1 «Clay & Glass» (2026-11-12) — DESIGN.md §15, docs/UI.md §0
+
+- **Key** — every look stands on a 2px wall (only the cap moves): `primary` glossy red (one per view), `secondary` white-to-
+  cream clay (the default), `onBand` white clay, `danger` clay with a danger label, `ghost` flat. Labels Kufam 600 16px
+  (`size="sm"` keeps Plex 600 14px). Props unchanged.
+- **IconKey** — a 44px clay circle by default (`sm` 36, `xs` 32); `onImage` is a frosted disc. Props unchanged; the md
+  size grew from 40 to 44 (the hit area was already 44).
+- **Chip** — a clay pill; chosen = ink, held down on its wall, with the check. **Stepper** — the before's tray (pressed in, a
+  flat «−», the count in Kufam, a raised «+»). **Segmented** — a tray with a clay thumb that slides. **Tabs** — one
+  underline that slides. **Disclosure / Accordion** — the height animates (Chromium 131+).
+- **Icon** — sprite icons draw at the before's weight (base.css); new names through the same API: `device-nintendo |
+  device-playstation | device-xbox | device-handheld`, `kind-console | kind-game | kind-controller | kind-headset |
+  kind-storage | kind-charging | kind-topup | kind-accessory | kind-used | kind-repair`, `media-play | media-pause`.
+  `IconName` is now the union of the sprite names and these (`SpriteIconName`, `GlyphName` exported too).
+- **PlatformLed / PlatformLabel** `bar` — the before's 16 × 5 colour line. **Breadcrumbs** `phone` — drawn on phones too.
+- **New:** `Note` (side information), `Reveal` / `revealProps` (`~/ui/reveal`), `Carousel` / `useCarousel`,
+  `SuccessMark`, `CountUp` (`~/motion`) — docs/UI.md §0 has the table.
+
 ## Polish round and stage 4 (2026-11-12)
 
 - **Stage 4 (spec §4.2, §12):** `Socket`, `PlatformBank`, `StageTag` and `PlatformGlyph` are **deleted** — nothing

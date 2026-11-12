@@ -14,9 +14,10 @@ import { cx } from "./cx";
  *   <Disclosure summary={…} open={open} onOpenChange={setOpen}>…</Disclosure>      mirror its state
  *   <Disclosure summary={…} name="faq">…</Disclosure> × n                         one open at a time (native group)
  *
- * The caret turns over (transform only); the content fades in 4px (opacity and transform, 160ms) when it opens —
- * the height itself never animates (DESIGN.md §6.6.5). Reduced motion: no movement. Flat: a row with a hairline
- * (`variant="row"`, 56px, inside an <Accordion>) or a paper panel with a hairline (`variant="panel"`) — v2 §4.1.
+ * The caret turns over (transform only); the content fades in 4px (opacity and transform, 160ms) when it opens, and
+ * (v2.1 G6) the height animates open and shut where the browser can (::details-content + interpolate-size, Chromium
+ * 131+; elsewhere it opens at once). Reduced motion: no movement. A row with a hairline (`variant="row"`, 56px, inside
+ * an <Accordion>) or the soft raised card (`variant="panel"`).
  */
 export type DisclosureProps = {
   /** The always-visible row: say what is inside ("ما الذي يشمله الضمان؟"). */
@@ -50,7 +51,7 @@ export function Disclosure({ summary, children, defaultOpen, open, onOpenChange,
       name={name}
       open={open ?? defaultOpen}
       onToggle={onToggle}
-      className={cx("group min-w-0", panel ? "panel" : "border-b border-line", className)}
+      className={cx("disclosure group min-w-0", panel ? "panel" : "border-b border-line", className)}
     >
       <summary
         className={cx(

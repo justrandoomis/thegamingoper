@@ -145,9 +145,9 @@ const pairs = [
   ["light", "--on-band", "--band", TEXT, "release band, toast title"],
   ["light", "--on-band-2", "--band", TEXT, "release band, toast line"],
   ["light", "--on-band-2", "--toast", TEXT, "toast line"],
-  ["light", "--ink", glassOverBlack, TEXT, "ink on 90% header glass over black (worst case)"],
-  ["light", "--ink-2", glassOverBlack, TEXT, "ink-2 on 90% header glass over black (worst case)"],
-  ["light", "--ink-2", { over: "--glass", on: "--red" }, TEXT, "ink-2 on 90% glass over the red primary"],
+  ["light", "--ink", glassOverBlack, TEXT, "ink on 82% header glass over black (worst case)"],
+  ["light", "--ink-2", glassOverBlack, TEXT, "ink-2 on 82% header glass over black (worst case)"],
+  ["light", "--ink-2", { over: "--glass", on: "--red" }, TEXT, "ink-2 on 82% glass over the red primary"],
   ["light", "--ink-2", { over: "--on-image", on: "--niche" }, TEXT, "«صورة توضيحية» on a photo"],
   ["light", "--ink", { over: "--on-image", on: "--niche" }, TEXT, "the gallery counter on the stage"],
   // ── light: boundaries, states, focus ──
@@ -184,8 +184,8 @@ const pairs = [
   ["dark", "--on-band", "--toast", TEXT, "toast title"],
   ["dark", "--on-band-2", "--toast", TEXT, "toast line"],
   ["dark", "--on-band-2", "--band", TEXT, "release band line"],
-  ["dark", "--ink", glassOverWhite, TEXT, "ink on 88% dark glass over white (worst case)"],
-  ["dark", "--ink-2", glassOverWhite, TEXT, "ink-2 on 88% dark glass over white (worst case)"],
+  ["dark", "--ink", glassOverWhite, TEXT, "ink on 82% dark glass over white (worst case)"],
+  ["dark", "--ink-2", glassOverWhite, TEXT, "ink-2 on 82% dark glass over white (worst case)"],
   ["dark", "--ink", { over: "--on-image", on: "#4c4f56" }, TEXT, "the gallery counter over the lit spot"],
   // ── dark: boundaries, states, focus ──
   ...["--paper", "--ground"].map((bg) => ["dark", "--line-strong", bg, UI]),
@@ -199,6 +199,50 @@ const pairs = [
   ["dark", "--cab", "--ground", INFO, "cabinet vs floor (separation)"],
   // ── dark: demonstrations (must fail) ──
   ["dark", "#5b3fd9", "--ground", UI, "the light handheld dot on the dark floor: why dots switch to dark values", "demo"],
+
+  // ── v2.1 "Clay & Glass" (DESIGN.md §15): every face a label sits on ──
+  // the glossy red primary: the label sits from the 24% stop down; the lighter top fifth carries no text
+  ...["light", "dark"].flatMap((theme) => [
+    [theme, "--on-red", "--red-gloss-mid", TEXT, "glossy primary: the label on the brand-red stop"],
+    [theme, "--on-red", "--red-gloss-low", TEXT, "glossy primary: the label on the bottom stop"],
+    [theme, "--on-red", "--red-gloss-mid-hover", TEXT, "glossy primary under the pointer"],
+    [theme, "--on-red", "--red-gloss-low-hover", TEXT, "glossy primary under the pointer, bottom"],
+    [theme, "--on-red", "--red-gloss-top", INFO, "the top fifth (no text there)"],
+    // clay keys and chips: ink on every stop of the face, counts in ink-2
+    ...["--clay-hi", "--clay-mid", "--clay-lo"].map((bg) => [theme, "--ink", bg, TEXT, "a clay key's label"]),
+    [theme, "--ink-2", "--clay-lo", TEXT, "a chip's count on the clay face"],
+    [theme, "--danger", "--clay-lo", TEXT, "the danger key's label"],
+    [theme, "--red-ink", "--clay-lo", UI, "the red line icon on a clay tile"],
+    // the quantity tray and the warm well
+    [theme, "--ink", "--tray", TEXT, "the stepper's count in the tray"],
+    [theme, "--ink-2", "--well-bottom", TEXT, "ink-2 on the well's darker end"],
+    // platform tiles are vivid in BOTH themes: white words on the flat colour and the deep corner
+    ...PLATFORMS.flatMap((p) => [
+      [theme, "--on-color", `--plat-${p}-deep`, TEXT, `tile words on ${p}'s deep corner`],
+      [theme, "--on-color", `--plat-${p}-hi`, INFO, `${p}'s light corner (the hardware sits there, never the words)`],
+    ]),
+  ]),
+  ...PLATFORMS.map((p) => ["dark", "--on-color", `--plat-${p}`, TEXT, `tile words on ${p} (flat) — dark, v2.1: tiles stay vivid`]),
+  // frosted panels (menus, sheets): the worst backdrop
+  ["light", "--ink", { over: "--glass-panel", on: black }, TEXT, "ink on a light glass panel over black (worst case)"],
+  ["light", "--ink-2", { over: "--glass-panel", on: black }, TEXT, "ink-2 on a light glass panel over black (worst case)"],
+  ["dark", "--ink", { over: "--glass-panel", on: white }, TEXT, "ink on a dark glass panel over white (worst case)"],
+  ["dark", "--ink-2", { over: "--glass-panel", on: white }, TEXT, "ink-2 on a dark glass panel over white (worst case)"],
+  // dark cards are faux glass: the white veil (--card-veil top, --card-veil-low bottom) on a SEE-THROUGH tint
+  // (--card-tint) over the floor — and over the floor's ambient light at its strongest (--floor-glow-1 / -2)
+  ["dark", "--ink", { over: "--card-veil", on: { over: "--card-tint", on: "--ground" } }, TEXT, "ink on the faux-glass card (top) over the floor"],
+  ["dark", "--ink-2", { over: "--card-veil", on: { over: "--card-tint", on: "--ground" } }, TEXT, "ink-2 on the faux-glass card (top) over the floor"],
+  ["dark", "--ink-2", { over: "--card-veil", on: { over: "--card-tint", on: { over: "--floor-glow-1", on: "--ground" } } }, TEXT, "ink-2 on the card over the floor's crimson light"],
+  ["dark", "--ink-2", { over: "--card-veil-low", on: { over: "--card-tint", on: { over: "--floor-glow-2", on: "--ground" } } }, TEXT, "ink-2 on the card's foot over the floor's violet light"],
+  ["dark", "--red-ink", { over: "--card-veil", on: { over: "--card-tint", on: { over: "--floor-glow-1", on: "--ground" } } }, TEXT, "a sale price on the card over the crimson light"],
+  ["dark", "--ink-2", { over: "--floor-glow-1", on: "--ground" }, TEXT, "ink-2 straight on the floor's crimson light"],
+  ["dark", "--ink-2", { over: "--floor-glow-2", on: "--ground" }, TEXT, "ink-2 straight on the floor's violet light"],
+  ["dark", "--ink", { over: "--glass", on: { over: "--floor-glow-1", on: "--ground" } }, TEXT, "the header glass over the crimson light"],
+  ["dark", "--ink", { over: "rgb(255 255 255 / 0.1)", on: "--ground" }, TEXT, "ink on a real glass card over the floor"],
+  ["dark", "--ink-2", { over: "rgb(255 255 255 / 0.1)", on: "--ground" }, TEXT, "ink-2 on a real glass card over the floor"],
+  // the hero and the wallet are deep crimson glass in dark; the on-band key stays white clay
+  ["dark", "--on-showcase-2", "--hero-face", TEXT, "secondary text on the deep crimson hero"],
+  ["dark", "--on-band-label", "--on-band-face", TEXT, "the white key on deep crimson"],
 ];
 
 const rows = pairs.map(([theme, fg, bg, need, note = "", kind = "pair"]) => {

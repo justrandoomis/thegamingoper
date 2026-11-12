@@ -34,7 +34,7 @@ const COPY = defineCopy({
   ar: {
     sample: "عيّنة للعرض: الأسماء حقيقية، والأسعار والمخزون من بيانات المتجر التجريبية. الإضافة إلى السلة تعمل فعلاً على سلة هذا المتصفح في المتجر التجريبي.",
     cards: "بطاقة المنتج",
-    cardsNote: "بطاقة واحدة بلا إطار: بئر مربع على أرضية المنتج، والشارة في البداية والقلب في النهاية؛ تحتها سطر المنصة والاسم بسطرين وحقيقتان، ثم السعر وزر الإضافة المحايد. البطاقة كلها رابط واحد.",
+    cardsNote: "بطاقة واحدة ناعمة بارزة (في الداكن زجاج): بئر مربع دافئ، والشارة في البداية والقلب في دائرة زجاجية في النهاية؛ تحتها خط لون المنصة والصنف والاسم بسطرين وحقيقتان، ثم السعر وزر الإضافة الطيني. البطاقة كلها رابط واحد وترتفع تحت المؤشر.",
     inStock: "متوفر",
     isNew: "جديد",
     sale: "تخفيض حقيقي",
@@ -137,7 +137,7 @@ const COPY = defineCopy({
   en: {
     sample: "Sample data: the names are real; prices and stock come from the demo store. Adding to the cart really works on this browser's demo cart.",
     cards: "Product card",
-    cardsNote: "One card with no container: a square well on the product ground, the badge at the start and the heart at the end; under it the platform line, the name on two lines and two facts, then the price and the neutral add button. The whole card is one link.",
+    cardsNote: "One soft raised card (glass in dark): a warm square well, the badge at the start and the heart in a frosted disc at the end; under it the platform's colour line and kind, the name on two lines and two facts, then the price and the clay add button. The whole card is one link and lifts under the pointer.",
     inStock: "In stock",
     isNew: "New",
     sale: "A real reduction",
@@ -240,7 +240,7 @@ const COPY = defineCopy({
   ckb: {
     sample: "داتای نموونە: ناوەکان ڕاستەقینەن؛ نرخ و کۆگا لە فرۆشگای تاقیکارییەوەن. زیادکردن بۆ سەبەتە لەسەر سەبەتەی تاقیکاریی ئەم وێبگەڕە کار دەکات.",
     cards: "کارتی بەرهەم",
-    cardsNote: "یەک کارت بێ چوارچێوە: بیرێکی چوارگۆشە لەسەر زەوی بەرهەم، نیشانە لە سەرەتا و دڵ لە کۆتایی؛ لە خوارەوە هێڵی پلاتفۆرم و ناو بە دوو دێڕ و دوو ڕاستی، پاشان نرخ و دوگمەی زیادکردنی بێلایەن.",
+    cardsNote: "یەک کارتی نەرمی بەرز (لە تاریکدا شووشە): بیرێکی چوارگۆشەی گەرم، نیشانە لە سەرەتا و دڵ لە بازنەیەکی شووشەیی لە کۆتایی؛ لە خوارەوە هێڵی ڕەنگی پلاتفۆرم و جۆر، ناو بە دوو دێڕ و دوو ڕاستی، پاشان نرخ و دوگمەی قوڕی زیادکردن.",
     inStock: "بەردەستە",
     isNew: "نوێ",
     sale: "داشکاندنی ڕاستەقینە",

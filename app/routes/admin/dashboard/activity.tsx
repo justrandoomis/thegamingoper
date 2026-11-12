@@ -70,7 +70,7 @@ export default function ActivityPage({ loaderData }: Route.ComponentProps) {
           <ActivityList lines={page.lines} />
         </div>
       ) : (
-        <EmptyState icon="clock" title={page.kinds.length > 0 ? t("activity.empty") : t("activity.none")} />
+        <EmptyState icon="clock" title={page.kinds.length === 0 ? t("activity.none") : page.kind ? t("activity.empty") : t("activity.emptyAll")} />
       )}
 
       {page.next || filters.before ? (

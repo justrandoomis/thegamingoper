@@ -206,6 +206,40 @@ Digits roll per column (160 ms, water curve) in fixed cells; equal digit counts 
 Text around the digits (the currency label) is never animated — visible in every frame, it swaps. Assistive technology
 gets the final text immediately. Reduced motion: the number replaces the number.
 
+### Design v2.1 «Clay & Glass» additions (DESIGN.md §15.6)
+
+- **`<CountUp value format from? duration? />`** (`~/motion`) — a number that matters counts up ONCE when it first comes
+  into view (points, a trade-in offer, a KPI): 640 ms ease-out (`countAt()` is the pure curve), never longer than 900.
+  The final text reserves the width (an invisible copy in the same grid cell) and is what assistive technology reads. A
+  server-rendered number already on screen at hydration keeps its value (no drop to zero); a client mount, or a number
+  scrolled into view later, counts — one below the fold waits at its start out of sight, so the final value is never seen
+  dropping to zero when it arrives (`countUpPlan()` is the pure decision; the count always starts from the
+  IntersectionObserver, never inside the mount effect). Reduced motion and lite: the final value. A value that CHANGES
+  is `<NumberMorph>`.
+- **Section reveal** — `<MotionRoot>` starts `app/motion/reveal.ts`: every `[data-reveal]` element (`<Reveal>` /
+  `revealProps()` in `~/ui/reveal`) that is below the fold when the engine goes live is held hidden and fades up 16px
+  (460 ms, settle) the first time it enters; `data-reveal="stagger"` does it to the children, 60 ms apart, six steps
+  (`revealDelay()`). It writes no attribute, class or style — the hold and the arrival are Web Animations — so a streamed
+  boundary hydrates without a mismatch, and nothing above the fold or before JavaScript ever hides. Skipped under reduced
+  motion, the lite tier, a hidden tab and automation (`navigator.webdriver`: screenshots and checks see the final
+  page); turning motion down while reading, and printing, release every hold.
+- **Sliding indicators** (`app/ui/indicator.ts`, used by `Segmented` and `Tabs`): one element slides under the current
+  item with `translate` on the settle spring; its width is set at once; the first placement never animates
+  (`data-thumb` / `data-ind` = "still" → "live"); before it is measured the current item paints itself.
+- **Accordion height**: `Disclosure` / `Accordion` animate `::details-content` with `interpolate-size` (Chromium 131+;
+  elsewhere they open at once). One of two documented exceptions to "transform and opacity only".
+- **Success mark** (`~/ui/SuccessMark`): the disc inflates from .86 on the inflate spring, the check strokes in (420 ms)
+  once — the other documented exception (`stroke-dashoffset`).
+- **Carousel** (`~/ui/Carousel`): a CSS scroll-snap track; `useCarousel` tracks the slide in view (IntersectionObserver
+  with the track as the root), moves by `scrollBy` (smooth; instant under reduced motion and lite), and autoplays. It
+  pauses while the pointer, focus or a finger is on it, the tab is hidden or it is off screen; it stops when the shopper
+  takes over — a swipe that moves the track (a scroll of the track while a finger is down), a sideways trackpad swipe,
+  an arrow, a dot. A vertical page scroll that starts on it is not a take-over (a finger holds it only until touchend;
+  the browser's pointercancel at the start of a pan is ignored). Play starts it even with focus inside (the APG rotation
+  control). The rules are the pure `carouselHold()` / `autoplayWaits()`, checked in `tests/design-v21.test.ts` and in
+  Chromium (…/scratchpad/fb1/work/foundation-review/carousel-probe.mjs). `.carousel__parallax` is a scroll-driven
+  drift (`animation-timeline: view(inline)`). No `requestAnimationFrame` loop anywhere but CountUp's one short count.
+
 ### `flyToCart(source, options?) → FlyHandle` (DESIGN.md "Fly to cart")
 
 ```tsx
@@ -476,8 +510,9 @@ run to the dev database (a fresh browser context each time; nothing is reserved)
 1. State first, motion second: update the cart, submit the form, navigate — then call the motion helper. Never `await`
    an animation before doing the real thing.
 2. Use the pieces: `data-press` for anything tappable, `<MotionLink>`/handles for navigation, `<SharedElement>` for the
-   one thing that travels, `<Bubble>` for content that arrives, `<NumberMorph>` for numbers that change, `useSheet` for
-   sheets, `materialize` for menus. Custom motion uses the tokens and animates only `transform`/`opacity`.
+   one thing that travels, `<Bubble>` for content that arrives, `<NumberMorph>` for numbers that change, `<CountUp>`
+   for a number that arrives, `data-reveal` for sections below the fold, `<Carousel>` for banners that switch,
+   `useSheet` for sheets, `materialize` for menus. Custom motion uses the tokens and animates only `transform`/`opacity`.
 3. Loaders await what the page needs to be meaningful; stream only what may arrive later, into reserved space.
 4. Do not add `<ViewTransition>` boundaries with the default `update` behaviour (§4.1), and do not pass React Router's
    `viewTransition` props.

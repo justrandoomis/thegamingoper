@@ -1,15 +1,81 @@
 /*
- * Admin module 01 (command centre) — what the UI kit and the shell do not cover: the tool row (search + period), the
- * urgent tiles' grid and their preview rows, the KPI grid with its comparison line, the funnel's bars (one ink series
- * on a hairline track, DESIGN.md §10 "Charts"), the activity timeline (a 1px line with 7px dots: solid ink for a
- * person, hollow for the system — §10 "Audit timeline"), the search results' groups, and the printed page.
- * Tokens and logical properties only; nothing animates.
+ * Admin module 01 (command centre) — what the UI kit and the shell do not cover. Design v2.1 "Clay & Glass" for the
+ * admin (client note 12): the admin keeps Lens & Clay 1.0 (app/styles/admin.css) — raised clay means "act on this",
+ * data itself has no material.
+ *
+ *   header        greeting, today's date and the quick actions on one row
+ *   tool row      the compact search, the role views (an ink marker that slides) and the period's clay key bank
+ *   KPI row       flat paper tiles: an icon disc, the figure in the display face (its currency smaller), a comparison
+ *                 chip (green when good for the store, red-ink when bad, neutral otherwise — always with words), the
+ *                 definition; new orders carry a 14-day sparkline (one ink series on a hairline, DESIGN.md §10 "Charts")
+ *   to-do list    the urgent tiles: raised clay only when something waits, a severity stripe on the start edge, a disc
+ *                 and a word; then the bell's queues
+ *   timeline      the activity (a 1px line, 7px dots: solid ink for a person, hollow for the system) beside the funnel
+ *   motion        a figure counts up once; cards fade up 10px with a 50ms stagger; bars grow from their baseline;
+ *                 figures wait behind a shimmer — only on html[data-motion="full"] (never under reduced motion, the
+ *                 store's reduce-motion setting or the lite tier), transform and opacity only, nothing moves layout
+ *   print         figures and lists only — the shell's chrome, every control and every animation left out
+ *
+ * Tokens and logical properties only.
  */
 @layer components {
+  /* ───────────── header ───────────── */
+  .adm-page-head.dash-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-4) var(--s-6);
+    margin-block-end: var(--s-4);
+  }
+  .dash-head__text {
+    display: grid;
+    flex: 1 1 22rem;
+    gap: var(--s-1);
+    min-inline-size: 0;
+  }
+  .dash-head__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-3);
+  }
+  .dash-head__date {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-1);
+    padding-block: 2px;
+    padding-inline: var(--s-2);
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-head__date > svg {
+    flex: none;
+  }
+  .dash-head__lead {
+    max-inline-size: 72ch;
+  }
+  .dash-quick {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+  }
+
+  /* ───────────── tool row: search, role views, period ───────────── */
   .dash-tools {
     display: grid;
     gap: var(--s-3);
-    margin-block-end: var(--s-6);
+    margin-block-end: var(--s-5);
+  }
+  .dash-tools__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-4);
   }
   .dash-search {
     display: flex;
@@ -21,11 +87,108 @@
     flex: 1 1 18rem;
     min-inline-size: 0;
   }
-  .dash-period {
+  .dash-search--compact {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  .dash-search--compact > .key {
+    flex: none;
+  }
+  .dash-search--compact .field__input {
+    background: var(--paper);
+  }
+
+  /* the role views: flat link tabs on a hairline; the chosen one's ink marker slides from the old one (tools.tsx) */
+  .dash-views {
+    min-inline-size: 0;
+    flex: 1 1 auto;
+  }
+  .dash-views__list {
+    display: flex;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    border-block-end: 1px solid var(--line);
+    scrollbar-width: none;
+  }
+  .dash-views__list::-webkit-scrollbar {
+    display: none;
+  }
+  .dash-views__tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 40px;
+    padding-inline: var(--s-3);
+    border-start-start-radius: var(--r-xs);
+    border-start-end-radius: var(--r-xs);
+    color: var(--ink-2);
+    font: var(--type-tab);
+    font-size: 13px;
+    text-decoration: none;
+    white-space: nowrap;
+    outline-offset: -3px;
+  }
+  .dash-views__tab:hover {
+    color: var(--ink);
+    background: var(--niche);
+  }
+  .dash-views__tab[data-selected] {
+    color: var(--ink);
+  }
+  .dash-views__label {
+    display: grid;
+  }
+  .dash-views__label > span {
+    grid-area: 1 / 1;
+  }
+  .dash-views__label > span:first-child {
+    visibility: hidden;
+    font-weight: 600;
+  }
+  .dash-views__tab[data-selected] .dash-views__label > span:last-child {
+    font-weight: 600;
+  }
+  .dash-views__marker {
+    position: absolute;
+    inset-inline: var(--s-3);
+    inset-block-end: -1px;
+    block-size: 3px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+    opacity: 0;
+  }
+  .dash-views__tab[data-selected] .dash-views__marker {
+    opacity: 1;
+  }
+  @media (pointer: coarse) {
+    .dash-views__tab {
+      min-block-size: var(--target);
+    }
+  }
+
+  /* the period: the 1.0 key bank — three clay keys in a well, the chosen one held down (ink) */
+  .dash-period-bar {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .dash-period-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s-2);
+  }
+  .dash-period {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1);
+  }
+  .dash-period.well {
+    padding: var(--s-1);
+    border-radius: var(--r-sm);
   }
   .dash-period__note {
     color: var(--ink-2);
@@ -36,6 +199,373 @@
     flex-wrap: wrap;
     align-items: flex-end;
     gap: var(--s-2);
+  }
+
+  /* ───────────── KPI row ───────────── */
+  /* the demo choice beside the row's title: once for every tile */
+  .dash-title-tag {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-inline-start: var(--s-2);
+  }
+  .dash-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (max-width: 47.99rem) {
+    .dash-kpis {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .dash-kpis > :first-child:nth-last-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+  .dash-kpis > * {
+    min-inline-size: 0;
+  }
+  .dash-kpi {
+    align-content: start;
+    container-type: inline-size;
+  }
+  .dash-kpi__body {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  .dash-kpi__head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  .dash-kpi__icon {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink);
+  }
+  .dash-kpi__label {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    color: var(--ink-2);
+    font: var(--type-label);
+  }
+  .dash-kpi__value {
+    margin: 0;
+    color: var(--ink);
+    font: var(--type-kpi);
+    font-size: clamp(22px, 14cqi, 32px);
+  }
+  /* the figure on ONE line: a long amount takes a smaller size (cards.tsx figureFit estimates its width; 4% to spare)
+     while the line keeps its height, so the figures of a row stay level. Never below 18px; if even that is too wide (a
+     phone), the currency moves under the figure as a whole — never a break inside the figure or the currency */
+  .dash-kpi__value > :is(.dash-kpi__link, .dash-count) {
+    font-size: max(18px, min(1em, calc((96cqi - var(--fig-px, 0px)) / var(--fig-em, 1))));
+  }
+  .dash-kpi__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-1);
+    max-inline-size: 100%;
+    border-radius: var(--r-xs);
+    color: inherit;
+    text-decoration: none;
+  }
+  .dash-kpi__link:hover .dash-count__face {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  .dash-kpi__go {
+    flex: none;
+    color: var(--ink-2);
+  }
+  .dash-kpi__none {
+    color: var(--ink-2);
+    font: var(--type-strong);
+  }
+  .dash-kpi__hint {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  /* the currency after the figure, smaller and in the text face (as the admin's prices: admin.css .price__cur) */
+  .dash-money__cur {
+    color: var(--ink-2);
+    font: 600 max(12px, 0.46em) / 1 var(--font-text);
+  }
+
+  /* the comparison: a chip (arrow + percentage, or words) and the earlier figure */
+  .dash-delta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-2);
+    margin: 0;
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-delta__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding-block: 1px;
+    padding-inline: var(--s-2);
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink-2);
+    font: var(--type-label);
+  }
+  .dash-delta__chip > svg {
+    flex: none;
+  }
+  .dash-delta__chip[data-tone="good"] {
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+  .dash-delta__chip[data-tone="bad"] {
+    background: var(--red-tint);
+    color: var(--red-ink);
+  }
+  /* kept: the 1.0 comparison line (DeltaLine) */
+  .dash-kpi__delta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-kpi__delta > svg {
+    flex: none;
+  }
+  .dash-kpi[aria-busy="true"] .type-kpi {
+    color: var(--ink-3);
+  }
+
+  /* the sparkline of orders per day: thin columns on a hairline, today in ink, the days before in grey */
+  .dash-trend {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    margin-block-start: var(--s-1);
+    padding-block-start: var(--s-3);
+    border-block-start: 1px solid var(--line);
+  }
+  .dash-trend__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-2);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-trend__plot {
+    position: relative;
+    border-radius: var(--r-xs);
+    outline-offset: 4px;
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+  .dash-trend__empty {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: var(--s-3);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    text-align: center;
+  }
+  .dash-trend__cols {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    block-size: 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-end: 1px solid var(--line-strong);
+  }
+  .dash-trend__col {
+    display: flex;
+    flex: 1 1 0;
+    align-items: flex-end;
+    justify-content: center;
+    block-size: 100%;
+    min-inline-size: 0;
+  }
+  .dash-trend__bar {
+    display: block;
+    inline-size: min(100%, 10px);
+    block-size: calc(var(--v, 0) * 100%);
+    border-start-start-radius: var(--r-xs);
+    border-start-end-radius: var(--r-xs);
+    background: var(--line-strong);
+  }
+  .dash-trend__bar[data-zero] {
+    block-size: 0;
+  }
+  .dash-trend__col[data-today] .dash-trend__bar,
+  .dash-trend__col[data-active] .dash-trend__bar {
+    background: var(--ink);
+  }
+  .dash-trend__col[data-active] {
+    background: var(--niche);
+    border-start-start-radius: var(--r-xs);
+    border-start-end-radius: var(--r-xs);
+  }
+  .dash-trend__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-2);
+    min-block-size: 1.5em;
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .dash-trend__read {
+    min-inline-size: 0;
+  }
+  .dash-trend__now {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .dash-trend__failed {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+
+  /* ───────────── to-do list: urgent tiles ───────────── */
+  .dash-tiles {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.5rem), 1fr));
+  }
+  /* a role view's one to three tiles get room for their rows; the overview's four share one row from a laptop up */
+  .dash-tiles:is([data-count="1"], [data-count="2"], [data-count="3"]) {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+  @media (min-width: 64rem) {
+    .dash-tiles[data-count="4"] {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .adm-card.dash-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    padding-inline-start: calc(var(--s-4) + 4px);
+  }
+  .dash-tile[data-severity="high"] {
+    --sev: var(--red-ink);
+    --sev-tint: var(--red-tint);
+  }
+  .dash-tile[data-severity="medium"] {
+    --sev: var(--warn);
+    --sev-tint: var(--warn-tint);
+  }
+  /* the severity stripe on the start edge (words and the disc say it too: never colour alone) */
+  .dash-tile:is([data-severity="high"], [data-severity="medium"])::before {
+    content: "";
+    position: absolute;
+    inset-block: var(--s-3);
+    inset-inline-start: 0;
+    inline-size: 4px;
+    border-start-end-radius: var(--r-full);
+    border-end-end-radius: var(--r-full);
+    background: var(--sev);
+  }
+  .dash-tile__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-2);
+    min-inline-size: 0;
+  }
+  .dash-tile__head > svg {
+    flex: none;
+    color: var(--ink-2);
+  }
+  /* the title keeps its line; on a narrow tile the severity word moves under it instead of squeezing it */
+  .dash-tile__title {
+    flex: 1 1 7rem;
+    min-inline-size: 0;
+  }
+  .dash-tile__count {
+    margin: 0;
+    color: var(--ink);
+  }
+  .dash-tile__foot {
+    margin-block-start: auto;
+    padding-block-start: var(--s-1);
+  }
+  .dash-disc {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink-2);
+  }
+  .dash-disc[data-severity="high"] {
+    background: var(--red-tint);
+    color: var(--red-ink);
+  }
+  .dash-disc[data-severity="medium"] {
+    background: var(--warn-tint);
+    color: var(--warn);
+  }
+  .dash-disc[data-severity="clear"] {
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+  .dash-sev {
+    flex: none;
+    padding-block: 1px;
+    padding-inline: var(--s-2);
+    border-radius: var(--r-full);
+    background: var(--sev-tint, var(--niche));
+    color: var(--sev, var(--ink-2));
+    font: var(--type-label);
+    white-space: nowrap;
+  }
+  .dash-rows {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dash-rows > li {
+    display: grid;
+    gap: 2px;
+    padding-block: var(--s-2);
+    border-block-start: 1px solid var(--line);
+    min-inline-size: 0;
+  }
+  .dash-rows__line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+  }
+  .dash-clip {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-inline-size: 0;
   }
 
   /* what waits for the employee's own decision (the bell's queues): one raised card each, the whole card a link */
@@ -67,82 +597,13 @@
     margin-inline-start: auto;
     color: var(--ink-2);
   }
-
-  .dash-tiles {
-    display: grid;
-    gap: var(--s-3);
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
-  }
-  .dash-tile {
-    align-content: start;
-  }
-  .dash-tile__head {
+  .adm-card.dash-clear {
     display: flex;
     align-items: center;
-    gap: var(--s-2);
-  }
-  .dash-tile__head > svg {
-    flex: none;
-    color: var(--ink-2);
-  }
-  .dash-rows {
-    display: grid;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .dash-rows > li {
-    display: grid;
-    gap: 2px;
-    padding-block: var(--s-2);
-    border-block-start: 1px solid var(--line);
-    min-inline-size: 0;
-  }
-  .dash-rows__line {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--s-1) var(--s-3);
-  }
-  .dash-clip {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-inline-size: 0;
-  }
-
-  .dash-kpis {
-    display: grid;
     gap: var(--s-3);
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .dash-kpis > * {
-    min-inline-size: 0;
-  }
-  @media (min-width: 48rem) {
-    .dash-kpis {
-      grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
-    }
-  }
-  .dash-kpi {
-    align-content: start;
-  }
-  .dash-kpi__delta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--s-1);
-    color: var(--ink-2);
-    font: var(--type-caption);
-  }
-  .dash-kpi__delta > svg {
-    flex: none;
-  }
-  .dash-kpi[aria-busy="true"] .type-kpi {
-    color: var(--ink-3);
   }
 
+  /* ───────────── role cards ───────────── */
   .dash-figures {
     display: grid;
     margin: 0;
@@ -170,12 +631,38 @@
     font: var(--type-label);
   }
 
-  /* the funnel: label | bar | value, one ink series; the track is a hairline, the bar ends rounded at the value end */
+  /* ───────────── activity beside the funnel ───────────── */
+  .dash-pair {
+    display: grid;
+    gap: 0 var(--s-6);
+  }
+  @media (min-width: 75rem) {
+    .dash-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+  .dash-empty {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin: 0;
+    color: var(--ink-2);
+    font: var(--type-body);
+  }
+  .dash-empty > svg {
+    flex: none;
+  }
+
+  /* the funnel: label | bar | value, the share and the span before under it; one ink series on a hairline track */
+  .adm-card:has(> .dash-funnel) {
+    container-type: inline-size;
+  }
   .dash-funnel {
     display: grid;
     gap: var(--s-6);
   }
-  @media (min-width: 64rem) {
+  @container (min-width: 44rem) {
     .dash-funnel {
       grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
       align-items: start;
@@ -190,8 +677,26 @@
   }
   .dash-step {
     display: grid;
-    gap: var(--s-1);
+    grid-template-columns: minmax(5.5rem, 8.5rem) minmax(0, 1fr) auto;
+    grid-template-areas: "label bar value" ". note note";
+    align-items: center;
+    gap: 2px var(--s-3);
   }
+  .dash-step__label {
+    grid-area: label;
+  }
+  .dash-step__value {
+    grid-area: value;
+    min-inline-size: 3ch;
+    text-align: end;
+  }
+  .dash-step__note {
+    display: flex;
+    flex-wrap: wrap;
+    grid-area: note;
+    gap: 0 var(--s-3);
+  }
+  /* kept: the 1.0 step head */
   .dash-step__head {
     display: flex;
     flex-wrap: wrap;
@@ -200,6 +705,8 @@
     gap: var(--s-1) var(--s-3);
   }
   .dash-bar {
+    grid-area: bar;
+    display: block;
     block-size: 12px;
     border-block-end: 1px solid var(--line-strong);
   }
@@ -210,6 +717,10 @@
     border-start-end-radius: var(--r-xs);
     border-end-end-radius: var(--r-xs);
     background: var(--ink);
+    transform-origin: left center;
+  }
+  [dir="rtl"] .dash-bar__fill {
+    transform-origin: right center;
   }
   .dash-notes {
     display: grid;
@@ -253,6 +764,16 @@
     inline-size: 1px;
     background: var(--line-strong);
   }
+  .dash-feed > li:first-child::before {
+    inset-block-start: calc(var(--s-2) + 8px);
+  }
+  .dash-feed > li:last-child::before {
+    inset-block-end: auto;
+    block-size: calc(var(--s-2) + 8px);
+  }
+  .dash-feed > li:only-child::before {
+    content: none;
+  }
   .dash-feed > li::after {
     content: "";
     position: absolute;
@@ -268,11 +789,19 @@
     border-color: var(--ink-2);
     background: var(--paper);
   }
+  .dash-feed > li + li {
+    border-block-start: 1px solid var(--line);
+  }
   .dash-feed__line {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     gap: var(--s-1) var(--s-2);
+  }
+  .dash-feed__kind {
+    flex: none;
+    align-self: center;
+    color: var(--ink-2);
   }
 
   /* search results: one group per section, the quick actions as a row of small keys */
@@ -286,7 +815,168 @@
     gap: var(--s-6);
   }
 
-  /* the printed command centre: figures and lists only — the shell's chrome and every control left out */
+  /* ───────────── loading: skeletons and the figure that waits ───────────── */
+  .dash-skel {
+    display: block;
+    inline-size: var(--w, 100%);
+    max-inline-size: 100%;
+    block-size: 12px;
+    border-radius: var(--r-xs);
+    background: var(--niche);
+  }
+  /* a skeleton holds the height of what replaces it (CLS 0): inside a line of text the shimmer sits in that line */
+  p > .dash-skel:not(.dash-skel--figure, .dash-skel--chip) {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .dash-skel--figure {
+    block-size: 30px;
+  }
+  /* in the figure's own line: exactly that line */
+  :is(.dash-kpi__value, .dash-tile__count) > .dash-skel--figure {
+    block-size: 1lh;
+  }
+  /* a comparison chip: its label's line and its 1px padding */
+  .dash-skel--chip {
+    font: var(--type-label);
+    block-size: calc(1lh + 2px);
+    border-radius: var(--r-full);
+  }
+  /* a small admin key: its 36px cap on a 2px wall (admin.css, density) */
+  .dash-skel--key {
+    block-size: 38px;
+    border-radius: var(--r-xs);
+  }
+  /* the trend's columns (.dash-trend__cols) */
+  .dash-skel--chart {
+    block-size: 40px;
+  }
+  .adm-card--act .dash-skel {
+    background: var(--well);
+  }
+  .dash-loading {
+    align-content: start;
+  }
+  /* the trend skeleton's foot keeps the report link's box, unseen */
+  .dash-trend__ghost {
+    visibility: hidden;
+  }
+
+  /* a figure that counts up: the final text reserves the cell, the face counts on top of it */
+  .dash-count {
+    display: inline-grid;
+    justify-items: start;
+    max-inline-size: 100%;
+  }
+  .dash-count > * {
+    grid-area: 1 / 1;
+  }
+  .dash-count__reserve {
+    visibility: hidden;
+    user-select: none;
+  }
+
+  /* a view or a period was chosen and its figures are on the way: they wait behind a shimmer, the details dim */
+  .dash[data-pending] :is(.dash-kpi__value, .dash-tile__count) {
+    position: relative;
+  }
+  .dash[data-pending] :is(.dash-kpi__value, .dash-tile__count) > * {
+    opacity: 0;
+  }
+  .dash[data-pending] :is(.dash-kpi__value, .dash-tile__count)::after {
+    content: "";
+    position: absolute;
+    inset-block: 18%;
+    inset-inline: 0 30%;
+    border-radius: var(--r-xs);
+    background: var(--niche);
+  }
+  .dash[data-pending] :is(.dash-delta, .dash-rows, .dash-trend, .dash-figures, .dash-steps) {
+    opacity: 0.4;
+    transition: opacity var(--t-micro) var(--ease-water);
+  }
+
+  /* ───────────── motion (full tier only) ───────────── */
+  @keyframes dash-rise {
+    from {
+      opacity: 0;
+      translate: 0 10px;
+    }
+  }
+  @keyframes dash-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes dash-pulse {
+    from {
+      opacity: 0.45;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes dash-show {
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes dash-hide {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes dash-grow-inline {
+    from {
+      scale: 0 1;
+    }
+  }
+  @keyframes dash-grow-block {
+    from {
+      scale: 1 0;
+    }
+  }
+  html[data-motion="full"] .dash-rise {
+    animation: dash-rise var(--t-page) var(--ease-settle) both;
+    animation-delay: calc(var(--i, 0) * 50ms);
+  }
+  html[data-motion="full"] .dash-arrive {
+    animation: dash-fade var(--t-reveal) var(--ease-water) both;
+  }
+  html[data-motion="full"] .dash-skel,
+  html[data-motion="full"] .dash[data-pending] .dash-kpi__value::after,
+  html[data-motion="full"] .dash[data-pending] .dash-tile__count::after {
+    animation: dash-pulse 1.1s var(--ease-water) infinite alternate;
+  }
+  html[data-motion="full"] .dash-bar__fill {
+    animation: dash-grow-inline 560ms var(--ease-settle) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+  }
+  html[data-motion="full"] .dash-trend__bar {
+    transform-origin: center bottom;
+    animation: dash-grow-block 480ms var(--ease-settle) both;
+    animation-delay: calc(var(--i, 0) * 22ms + 160ms);
+  }
+  /* server HTML: the face waits behind a shimmer until the page is live and counts (kit.tsx CountUp); if scripts
+     never run, the plain figure shows after 2.4s */
+  html[data-motion="full"] .dash-count:not([data-counted]) > .dash-count__face {
+    opacity: 0;
+    animation: dash-show 1ms 2.4s forwards;
+  }
+  html[data-motion="full"] .dash-count:not([data-counted])::before {
+    content: "";
+    grid-area: 1 / 1;
+    align-self: center;
+    inline-size: 100%;
+    block-size: 0.7em;
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    animation:
+      dash-pulse 1.1s var(--ease-water) infinite alternate,
+      dash-hide 1ms 2.4s forwards;
+  }
+
+  /* ───────────── print: figures and lists only ───────────── */
   @media print {
     @page {
       margin: 14mm;
@@ -314,6 +1004,16 @@
     }
     .dash-print .dash-feed > li {
       break-inside: avoid;
+    }
+    .dash-print :is(.dash-rise, .dash-arrive, .dash-bar__fill, .dash-trend__bar, .dash-skel) {
+      animation: none !important;
+    }
+    .dash-print .dash-count > .dash-count__face {
+      opacity: 1 !important;
+      animation: none !important;
+    }
+    .dash-print .dash-count::before {
+      content: none !important;
     }
   }
 }

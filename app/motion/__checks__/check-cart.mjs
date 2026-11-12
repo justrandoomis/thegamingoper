@@ -1,4 +1,4 @@
-// @ts-nocheck — node app/motion/__checks__/check-cart.mjs [product path, default /p/splatoon-raiders]
+// @ts-nocheck — node app/motion/__checks__/check-cart.mjs [product path, default /p/splatoon-raiders] [second product, default /p/mario-kart-world]
 // Fly to cart on the real storefront (Design System v2 §2.11, §5.2), each run in a fresh browser context (a new guest
 // cart: an add writes one guest cart line to the dev database and reserves nothing):
 //   · the bead lands on the cart bead — `[data-cart-badge]` inside the first on-screen `[data-cart-target]`, the
@@ -11,6 +11,8 @@ import path from "node:path";
 import { goto, launch, openPage, report, SHOTS, sleep } from "./lib.mjs";
 
 const PRODUCT = process.argv[2] ?? "/p/splatoon-raiders";
+/** The phone's second add: a product already in the cart offers «عرض السلة» in its buy bar, not «أضف إلى السلة». */
+const SECOND = process.argv[3] ?? "/p/mario-kart-world";
 const checks = [];
 const add = (label, ok, detail) => checks.push([label, Boolean(ok), detail]);
 
@@ -75,6 +77,15 @@ const cartState = (page) =>
     };
   });
 
+/** A ready add key fully on screen (the product page's buy bar on phones, its buy controls from 1024). */
+const readyKeyOnScreen = (page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll('button[data-state="ready"][data-press]')].some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight;
+    }),
+  );
+
 /** The product page's add key (the first one on screen). */
 async function pressAdd(page, touch) {
   const point = await page.evaluate(() => {
@@ -132,7 +143,15 @@ try {
       bead && { background: bead.background, radius: bead.radius, shadow: bead.shadow, ring: bead.ring },
     );
     await page.screenshot({ path: path.join(SHOTS, `cart-${width}-after-first-add.png`), captureBeyondViewport: false });
-    // a second add: the bead is already drawn and lands on it
+    // a second add: the bead is already drawn and lands on it. After a first add the phone's buy bar turns its key into
+    // «عرض السلة (1)» — also after a reload, while the product is in the cart (v2 §4.13; the ready key the check used to
+    // wait for is gone): the second add is another product's buy bar — same context, same guest cart, the cart bead
+    // already drawn at 1.
+    if (!(await readyKeyOnScreen(page))) {
+      await goto(page, SECOND);
+      await sleep(1500);
+      await instrument(page);
+    }
     await page.evaluate(() => {
       window.__flights.length = 0;
       window.__landings.length = 0;

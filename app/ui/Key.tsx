@@ -7,10 +7,12 @@ import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
- * The button — Design System v2 §4.3 (docs/UI.md §2). One family, five looks, two heights:
+ * The button — Design System v2 §4.3; v2.1 "Clay & Glass" (DESIGN.md §15.2, docs/UI.md §2): the before's tactile keys —
+ * a raised face on a static 2px wall that rises 1px under the pointer and sinks onto the wall when pressed (the cast
+ * shortens). Labels in Kufam 600 (16px; the 40px key keeps Plex 600 14px, under Kufam's floor). Five looks, two heights:
  *
- *   <Key variant="primary" icon="bag-plus" onClick={add}>{t("add")}</Key>   the ONE red action of a view (clay v2)
- *   <Key onClick={…}>{t("filters")}</Key>                                   secondary (default): paper + a control line
+ *   <Key variant="primary" icon="bag-plus" onClick={add}>{t("add")}</Key>   the ONE glossy red action of a view
+ *   <Key onClick={…}>{t("filters")}</Key>                                   secondary (default): white-to-cream clay
  *   <Key variant="ghost" onClick={undo}>{t("undo")}</Key>                   quiet actions in bars and lists
  *   <Key variant="onBand" as={MotionLink} to=…>{t("buy")}</Key>             the white key on the crimson hero / wallet band
  *   <Key variant="danger" onClick={remove}>{t("remove")}</Key>              destructive confirmations (never brand red)
@@ -25,9 +27,9 @@ import { VisuallyHidden } from "./VisuallyHidden";
  * 1.0 names keep working until stage 4 (§4.2): `commit` renders primary, `clay` and `ink` render secondary (the admin
  * keeps its 1.0 ink key through `.key--ink`), `quiet` renders ghost, `lg` is 48.
  *
- * Press feedback comes from the Motion Engine (`data-press`; <MotionRoot> mounted by the layout): the primary and
- * on-band keys move only their cap onto the 2px wall (`clay`), every other key compresses softly (`soft`). The primary
- * adds a light haptic where supported.
+ * Press feedback comes from the Motion Engine (`data-press`; <MotionRoot> mounted by the layout): every walled key (v2.1:
+ * primary, secondary, on-band, danger) moves only its cap onto the 2px wall; ghost keys compress softly. The primary adds
+ * a light haptic where supported.
  */
 export type KeyVariant =
   | "primary"

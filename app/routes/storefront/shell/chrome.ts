@@ -7,9 +7,11 @@
  *   canonicalSearch(search)                   a query string exactly as the server renders it (hydration-safe hrefs)
  *   tabOf(path)                               which tab of the tab bar a page belongs to
  *   checkoutRail(search)                      the checkout bar's step rail from `?step=`
+ *   searchMode(path, { errored })             the header's search FIELD, or only the round search KEY (v2.1 §2.7)
  *   megaPlan(platform) / megaFeature(platform)  what a platform's mega menu lists, and the product it features
  *   megaWords(t, slug, name)                  the menu's «كل أجهزة …» / «… المستعملة» words, one string per platform
  *   suggestionKind(href)                      what a search suggestion points at (its row's icon and words)
+ *   suggestionMeta(item)                      a product suggestion's meta line: its qualifier, then its kind
  *   sheetCategories(categories)               the departments of the categories sheet, in order
  *   errorKind(error, online)                  which error panel a failure gets (offline is never a 500)
  *   missingProduct(error)                     the words of a product address that led nowhere (the product 404)
@@ -133,6 +135,27 @@ export function canonicalSearch(search: string): string {
   return text ? `?${text}` : "";
 }
 
+/** The header's search: the field itself, or a round key that opens the same search (the search sheet). */
+export type SearchMode = "field" | "key";
+
+/**
+ * Pages whose job is not finding products (Design v2.1 §2.7, client note 9): the cart and checkout, an order and its
+ * tracking, support (all of /support), trade-in and its status, the account and its favourites, the store's own
+ * pages (about, contact, policies, accessibility) and the internal ones (design system, motion lab).
+ */
+const SEARCH_KEY_PATH = /^\/(cart|checkout|order|track|support|trade-in|account|wishlist|about|contact|policies|accessibility|design-system|motion)(\/|$)/;
+
+/**
+ * Which search the header shows on a page (locale-less path), decided here for every width: the FIELD on pages for
+ * finding products — home, platform / category / search listings, compare, products, device hubs, the used list and its
+ * units, landing pages — and on every error page (`errored`: the 404's one search field is the header's); only the
+ * round search KEY on the pages above (SEARCH_KEY_PATH), which opens the same search, so it stays one tap away.
+ */
+export function searchMode(path: string, options: { errored?: boolean } = {}): SearchMode {
+  if (options.errored) return "field";
+  return SEARCH_KEY_PATH.test(path) ? "key" : "field";
+}
+
 export type TabId = "home" | "categories" | "cart" | "wishlist" | "account";
 
 const CATALOGUE = /^\/(c|platform|device|used|support|search|compare|trade-in|p)(\/|$)/;
@@ -171,7 +194,19 @@ const CROSS_PLATFORM_GAMES = /^\/c\/multiplatform-games(\?|$)/;
  * never the SKU title), the read layer's count (null when the data has none — never invented) and, when the short
  * name differs, the `full` name for the pointer's tooltip.
  */
-export type MegaLink = { label: string; href: string; count: number | null; full?: string };
+export type MegaLink = {
+  label: string;
+  href: string;
+  count: number | null;
+  full?: string;
+  /**
+   * The words a product link's Latin title leaves out («نسخة الأقراص», the read layer's `qualifier`): the menu prints
+   * them on the link's own meta line, never inside the Latin name.
+   */
+  qualifier?: string;
+  /** A device model's photo ("<product-slug>--<n>") when the read layer sends one with the link (`artKey`). */
+  art?: string;
+};
 
 export type MegaPlan = {
   /** The platform's device models (their device hubs), and the platform's consoles category. */
@@ -190,10 +225,26 @@ export type MegaPlan = {
 const countOf = (link: Pick<NavLink, "count">): number | null =>
   typeof link.count === "number" && Number.isSafeInteger(link.count) && link.count >= 0 ? link.count : null;
 
+/** A catalogue photo key ("<slug>--<n>"), as `media.art_key` stores it. */
+const ART_KEY = /^[a-z0-9][a-z0-9-]*--\d+$/;
+
+/**
+ * A device link's photo, when the read layer sends one: `artKey` (device_models.art_key) is not part of NavLink yet —
+ * the catalog area adds it (shell README "Contracts") — so it is read defensively and only a well-formed key is used.
+ */
+function artOf(link: NavLink): string | undefined {
+  const value = (link as NavLink & { artKey?: unknown }).artKey;
+  return typeof value === "string" && ART_KEY.test(value) ? value : undefined;
+}
+
 function megaLink(link: NavLink): MegaLink {
   const short = link.short?.trim();
   const shown: MegaLink = { label: short || link.label, href: link.href, count: countOf(link) };
   if (short && short !== link.label) shown.full = link.label;
+  const qualifier = link.qualifier?.trim();
+  if (qualifier) shown.qualifier = qualifier;
+  const art = artOf(link);
+  if (art) shown.art = art;
   return shown;
 }
 
@@ -215,6 +266,8 @@ export function megaPlan(platform: NavPlatform): MegaPlan {
 export type MegaFeature = {
   href: string;
   label: string;
+  /** The words the Latin title leaves out («نسخة الأقراص»): the tile's meta line under the name; null when none. */
+  qualifier: string | null;
   /** A catalogue photo ("<slug>--<n>"); null with no `mediaKey` either draws the glyph. */
   artKey: string | null;
   /** An uploaded photo (/media/<key>) when the product has no catalogue photo. */
@@ -242,9 +295,27 @@ export function megaFeature(platform: NavPlatform, photoOf: (slug: string) => st
   if (featured) {
     const slug = slugOfProduct(featured.href);
     const artKey = featured.image.artKey ?? (featured.image.mediaKey || !slug ? null : photoOf(slug));
-    return { href: featured.href, label: featured.label, artKey, mediaKey: featured.image.artKey ? null : featured.image.mediaKey, priceIqd: featured.priceIqd, stock: featured.stock, isDemo: featured.isDemo };
+    return {
+      href: featured.href,
+      label: featured.label,
+      qualifier: featured.qualifier?.trim() || null,
+      artKey,
+      mediaKey: featured.image.artKey ? null : featured.image.mediaKey,
+      priceIqd: featured.priceIqd,
+      stock: featured.stock,
+      isDemo: featured.isDemo,
+    };
   }
-  const bare = (link: NavLink, artKey: string | null): MegaFeature => ({ href: link.href, label: link.label, artKey, mediaKey: null, priceIqd: null, stock: null, isDemo: false });
+  const bare = (link: NavLink, artKey: string | null): MegaFeature => ({
+    href: link.href,
+    label: link.label,
+    qualifier: link.qualifier?.trim() || null,
+    artKey,
+    mediaKey: null,
+    priceIqd: null,
+    stock: null,
+    isDemo: false,
+  });
   const leadSlug = platform.artKey ? platform.artKey.replace(/--\d+$/, "") : null;
   const lead = leadSlug ? platform.consoles.find((link) => link.href === `/p/${leadSlug}`) : undefined;
   if (lead) return bare(lead, platform.artKey);
@@ -348,6 +419,16 @@ export function suggestionKind(href: string): SuggestionKind {
   if (/^\/used(\/|\?|$)/.test(href)) return "used";
   if (/^\/search\?/.test(href)) return "correction";
   return "other";
+}
+
+/**
+ * A product suggestion's meta line (v2 §5.5 and the catalogue's qualifier): the words its Latin title leaves out
+ * («نسخة الأقراص»), then its kind («جهاز PS5») — else its department. Its own line under the name, never glued into
+ * the Latin title; "" when there is nothing to say.
+ */
+export function suggestionMeta(item: { qualifier?: string; kindLabel?: string; hint?: string }): string {
+  const kind = item.kindLabel?.trim() || item.hint?.trim() || "";
+  return [item.qualifier?.trim() ?? "", kind].filter((part) => part !== "").join(" · ");
 }
 
 /** The room a focused control must stay in, in viewport pixels: under the sticky top, above the fixed bottom bar. */

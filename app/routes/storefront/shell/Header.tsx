@@ -1,23 +1,34 @@
 /**
- * The top of every storefront page (Design System v2 §5.1–§5.3, §5.8). One sticky glass <header> for every width:
+ * The top of every storefront page (Design v2.1 "Clay & Glass", client notes 1 and 9; Design System v2 §5.1–§5.3, §5.8).
+ * One sticky <header> for every width. It sits on the page floor at the top of the page; once the page has scrolled,
+ * its frosted glass layer and the bar's edge fade in (opacity only).
  *
- *   BELOW 1024   56px: the lockup (the mascot + the wordmark; the wordmark alone below 375px) · the search pill (it opens
- *                the full-screen search sheet; «ابحث» below 430px, «ابحث عن جهاز أو لعبة» from 430) · the cart with its
- *                bead. Account and favourites live in the tab bar. The demo strip (./Banners) sits above it and scrolls
- *                away.
- *   FROM 1024    two rows, 64 + 44 = 108px. Row 1: the lockup · the search field (320 wide, 560 from 1280 with its "/"
- *                shortcut) · from 1280 «استبدل جهازك» and «تتبّع طلبك» · language (globe → menu), account (a menu
- *                that also holds those two links at 1024–1279), favourites, the cart. Row 2: the four platform menu
- *                buttons (./MegaMenu) · الألعاب · الإكسسوارات (from 1280; it is in every mega menu) · المستعمل · الدعم ·
- *                the demo chip at the end.
+ *   BELOW 1024   56px: the lockup (the mascot + the wordmark; the wordmark alone below 375px) · the search pill that
+ *                opens the full-screen search sheet («ابحث» below 430px, «ابحث عن جهاز أو لعبة» from 430) — or, on a page
+ *                that is not for finding products (./chrome searchMode), only the round search key that opens the same
+ *                sheet · the cart with its bead. Account and favourites live in the tab bar. The demo strip
+ *                (./Banners) sits above it and scrolls away.
+ *   FROM 1024    three rows:
+ *                  the utility strip (36px): the delivery fee fact (and cash on delivery when the store takes it) ·
+ *                    تتبّع طلبك · استبدل جهازك · الدعم · the three languages · the light / dark switch;
+ *                  the main row (64px, after a 12px lead): the lockup, larger · the wide search well with its «/» hint
+ *                    (search pages) or the round search key with the other keys (the rest) · round clay keys:
+ *                    favourites, account, the cart with its count;
+ *                  the nav row (44px): the four platforms (./MegaMenu: each with its device glyph in its colour light
+ *                    and the mega-menu chevron) · الألعاب · الإكسسوارات (from 1280) · المستعمل · الصيانة · the demo chip;
+ *                    an indicator in the platform's colour slides under the item the pointer or the focus is on.
+ *                COMPACTING: the header sticks at minus (strip + lead), so the strip and the lead scroll away with the
+ *                page, 1:1 — the sticky header is then 64 + 44 = 108px (`--shell-header-h`); the glass fades in and the
+ *                lockup tightens. Transforms and opacity only: nothing below the header moves (CLS 0).
  *   TASK SCREENS pages with their own bottom task bar (handle `tabBar: false`, task flows) have no tab bar, so below 1024
  *                the header becomes the task header once the page has scrolled 24px: back · the page's <h1> · the cart.
  *                Back is real history Back when an earlier page of this site is in the tab, else a link to `task.back`.
  *   CHECKOUT     <CheckoutBar>: one 56px bar (64 from 1024) — back to the cart · the mascot (home) · the step rail · the
  *                «طلب تجريبي» tag · help. No strip, no search, no menus.
  *
- * The cart button is the fly-to-cart target (`data-cart-target`, drawn at every count) and its bead `data-cart-badge`.
- * Scrolling is observed with an IntersectionObserver on a 24px sentinel at the top of the document — no scroll listener.
+ * The cart key is the fly-to-cart target (`data-cart-target`, drawn at every count) and its bead `data-cart-badge`.
+ * Scrolling is observed with an IntersectionObserver on a sentinel at the top of the document (24px; from 1024 the
+ * strip + the lead, so "scrolled" is the compact header) — no scroll listener.
  */
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -26,19 +37,18 @@ import { Icon } from "~/art/Icon";
 import { Logo } from "~/art/Logo";
 import { LocaleLink, useFormat } from "~/i18n/react";
 import { splitLocale } from "~/lib/locales";
+import { formatMoney } from "~/lib/money";
 import { cx } from "~/ui/cx";
 import { useCartCount } from "~/ui/cart-client";
 import { DemoNote } from "~/ui/DemoNote";
 import { Glass } from "~/ui/Glass";
 import { IconKey } from "~/ui/IconKey";
-import { Menu } from "~/ui/Menu";
 import { ProgressSteps } from "~/ui/ProgressSteps";
-import { TextLink } from "~/ui/TextLink";
 import { PageProgress } from "./Banners";
-import { checkoutRail, clampWords } from "./chrome";
+import { checkoutRail, clampWords, type SearchMode } from "./chrome";
 import { useShellT } from "./i18n";
 import { PlatformNav } from "./MegaMenu";
-import { LanguageMenu } from "./Preferences";
+import { LanguageLinks, ThemeSwitch } from "./Preferences";
 import { SearchForm } from "./SearchForm";
 import type { ShellData } from "./types";
 
@@ -53,13 +63,15 @@ export type HeaderProps = {
   task?: HeaderTask | null;
   /** STORE_MODE is "demo": the nav row ends with the demo chip. */
   demo: boolean;
-  /** The phone search pill was pressed: open the search sheet. */
+  /** The phone search pill or the round search key was pressed: open the search sheet. */
   onSearch: () => void;
   /** Words the desktop search field starts with (a missing product's slug words on its 404). */
   searchQuery?: string;
+  /** The search field, or only the round search key (./chrome searchMode — the shell decides it by path). */
+  search?: SearchMode;
 };
 
-/** True once the page has scrolled past the 24px sentinel at the top of the document. */
+/** True once the page has scrolled past the sentinel at the top of the document (its height is set in shell.css). */
 function useScrolled(sentinel: React.RefObject<HTMLElement | null>): boolean {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -99,7 +111,7 @@ export function Lockup({ className, label }: { className?: string; label?: strin
   );
 }
 
-/** The cart button with its bead: the fly-to-cart target at every count (the bead appears from 1). */
+/** The cart key with its bead: a round clay key, the fly-to-cart target at every count (the bead appears from 1). */
 export function CartButton({ className }: { className?: string }) {
   const t = useShellT();
   const f = useFormat();
@@ -107,13 +119,14 @@ export function CartButton({ className }: { className?: string }) {
   return (
     <LocaleLink
       to="/cart"
-      className={cx("key key--round key--plain shell-cart", className)}
+      className={cx("key key--round key--outline shell-cart", className)}
       aria-label={t("tools.cartCount", { count })}
+      title={t("tools.cart")}
       data-cart-target=""
       data-press="icon"
     >
       <span className="key__cap">
-        <Icon name="shopping-bag" size={24} />
+        <Icon name="shopping-bag" size={22} />
       </span>
       {count > 0 ? (
         <b className="bead" data-cart-badge="" aria-hidden="true">
@@ -153,7 +166,84 @@ function SearchPill({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-export function Header({ shell, task = null, demo, onSearch, searchQuery }: HeaderProps) {
+/**
+ * The round search key of the pages that are not for finding products (every width; ./chrome searchMode): a link to
+ * /search (without script) that opens the same search sheet, its field focused — search stays one tap away.
+ */
+function SearchKey({ onOpen }: { onOpen: () => void }) {
+  const t = useShellT();
+  return (
+    <IconKey
+      as={LocaleLink}
+      to="/search"
+      prefetch="none"
+      icon={<Icon name="magnifying-glass" size={22} />}
+      label={t("search.label")}
+      aria-haspopup="dialog"
+      className="shell-searchkey"
+      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+        if (!isPlainClick(event)) return;
+        event.preventDefault();
+        onOpen();
+      }}
+    />
+  );
+}
+
+/**
+ * The desktop utility strip (from 1024 — the before's strip, client note 1): 36px over the main row, scrolling away
+ * with the page. The delivery fee fact from the settings (and «الدفع عند الاستلام» while the store takes cash) · the
+ * service links · the languages · the light / dark switch. Its links keep a 44px hit area over the strip's edges.
+ */
+function UtilityStrip({ shell }: { shell: ShellData | null }) {
+  const t = useShellT();
+  const f = useFormat();
+  const location = useLocation();
+  const path = splitLocale(location.pathname).path;
+  const fee = shell ? "⁨" + formatMoney(shell.deliveryFeeIqd, "IQD", f.locale, f.numbering) + "⁩" : null;
+  const here = (href: string) => (path === href || path.startsWith(`${href}/`) ? ("page" as const) : undefined);
+  return (
+    <div className="shell-utility">
+      <div className="page shell-utility__row">
+        {fee ? (
+          <p className="shell-utility__fact">
+            <Icon name="truck" size={18} />
+            <span>{t("utility.delivery", { fee })}</span>
+            {shell?.payments.cod ? (
+              // from 1280 (the strip's room below that goes to the links)
+              <span className="shell-utility__cod">
+                <span className="shell-utility__dot" aria-hidden="true" />
+                <span>{t("footer.pay.cod")}</span>
+              </span>
+            ) : null}
+          </p>
+        ) : (
+          <span />
+        )}
+        <div className="shell-utility__end">
+          <nav className="shell-utility__links" aria-label={t("utility.label")}>
+            <LocaleLink to="/track" className="shell-utility__link" aria-current={here("/track")}>
+              <Icon name="package" size={18} />
+              {t("links.track")}
+            </LocaleLink>
+            <LocaleLink to="/trade-in" className="shell-utility__link" aria-current={here("/trade-in")}>
+              <Icon name="recycle" size={18} />
+              {t("links.tradeIn")}
+            </LocaleLink>
+            <LocaleLink to="/support" className="shell-utility__link" aria-current={path === "/support" ? "page" : undefined}>
+              <Icon name="lifebuoy" size={18} />
+              {t("nav.support")}
+            </LocaleLink>
+          </nav>
+          <LanguageLinks />
+          <ThemeSwitch />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function Header({ shell, task = null, demo, onSearch, searchQuery, search = "field" }: HeaderProps) {
   const t = useShellT();
   const location = useLocation();
   const path = splitLocale(location.pathname).path;
@@ -169,38 +259,31 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery }: Head
   return (
     <>
       <div ref={sentinel} className="shell-sentinel" aria-hidden="true" />
-      <Glass as="header" className="shell-header" data-scrolled={scrolled ? "" : undefined} data-task={task ? "" : undefined} data-motion-persist="header">
+      <header
+        className="shell-header"
+        data-scrolled={scrolled ? "" : undefined}
+        data-task={task ? "" : undefined}
+        data-search={search}
+        data-motion-persist="header"
+      >
+        {/* the frost: a layer behind the rows that fades in once the page has scrolled (opacity only) */}
+        <Glass className="shell-header__glass" aria-hidden="true" />
+        <UtilityStrip shell={shell} />
         <div className="page shell-bar">
           {task ? <TaskBack to={task.back} /> : null}
           <Lockup />
           {task && title ? <TaskTitle title={title} /> : null}
-          <SearchPill onOpen={onSearch} />
-          <SearchForm variant="header" query={searchQuery} />
+          {search === "field" ? (
+            <>
+              <SearchPill onOpen={onSearch} />
+              <SearchForm variant="header" query={searchQuery} />
+            </>
+          ) : null}
           <div className="shell-end">
-            <div className="shell-links">
-              <TextLink as={LocaleLink} to="/trade-in" icon="recycle" arrow={false}>
-                {t("links.tradeIn")}
-              </TextLink>
-              <TextLink as={LocaleLink} to="/track" icon="package" arrow={false}>
-                {t("links.track")}
-              </TextLink>
-            </div>
             <div className="shell-tools">
-              <span className="shell-desk">
-                <LanguageMenu />
-              </span>
-              <Menu
-                label={t("tools.account")}
-                align="end"
-                items={[
-                  { id: "account", kind: "link", icon: "user", label: t("tools.account"), href: "/account" },
-                  { id: "track", kind: "link", icon: "package", label: t("links.track"), href: "/track" },
-                  { id: "trade-in", kind: "link", icon: "recycle", label: t("links.tradeIn"), href: "/trade-in" },
-                ]}
-                trigger={(props) => <IconKey {...props} variant="plain" icon={<Icon name="user" size={24} />} label={t("tools.account")} className="shell-desk shell-narrow" />}
-              />
-              <IconKey as={LocaleLink} to="/account" variant="plain" icon={<Icon name="user" size={24} />} label={t("tools.account")} className="shell-wide" />
-              <IconKey as={LocaleLink} to="/wishlist" variant="plain" icon={<Icon name="heart" size={24} />} label={t("tools.wishlist")} className="shell-desk" />
+              {search === "key" ? <SearchKey onOpen={onSearch} /> : null}
+              <IconKey as={LocaleLink} to="/wishlist" icon={<Icon name="heart" size={22} />} label={t("tools.wishlist")} className="shell-desk" aria-current={here("/wishlist")} />
+              <IconKey as={LocaleLink} to="/account" icon={<Icon name="user" size={22} />} label={t("tools.account")} className="shell-desk" aria-current={here("/account")} />
               <CartButton />
             </div>
           </div>
@@ -221,8 +304,8 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery }: Head
             <LocaleLink to="/used" className="shell-navitem" aria-current={here("/used")}>
               {t("nav.used")}
             </LocaleLink>
-            <LocaleLink to="/support" className="shell-navitem" aria-current={here("/support")}>
-              {t("nav.support")}
+            <LocaleLink to="/support/repair" className="shell-navitem" aria-current={here("/support/repair")}>
+              {t("nav.repair")}
             </LocaleLink>
           </PlatformNav>
           {demo ? (
@@ -232,7 +315,7 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery }: Head
           ) : null}
         </div>
         <PageProgress />
-      </Glass>
+      </header>
     </>
   );
 }
@@ -276,7 +359,10 @@ function TaskTitle({ title }: { title: string }) {
   );
 }
 
-/** The task header's back key: real history Back when an earlier page of this site is in the tab, else a link. */
+/**
+ * The task header's back key: real history Back when an earlier page of this site is in the tab, else a link. A round
+ * clay key like the cart key at the bar's other end (v2.1 G2: back is one of the clay circles).
+ */
 function TaskBack({ to }: { to: string }) {
   const t = useShellT();
   const navigate = useNavigate();
@@ -291,7 +377,7 @@ function TaskBack({ to }: { to: string }) {
   };
   return (
     <span className="shell-task shell-task--back">
-      <IconKey as={LocaleLink} to={to} variant="plain" icon={<Icon name="arrow-left" size={24} />} label={t("tools.back")} onClick={back} />
+      <IconKey as={LocaleLink} to={to} icon={<Icon name="arrow-left" size={22} />} label={t("tools.back")} onClick={back} />
     </span>
   );
 }

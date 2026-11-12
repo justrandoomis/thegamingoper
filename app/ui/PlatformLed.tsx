@@ -16,6 +16,11 @@ import { cx } from "./cx";
  *
  * `data-gel` sets `--dot` (and `--plat`, `--plat-deep`, `--gel`) for a whole subtree: put it on a tile, a band or a nav
  * link and every dot inside takes that platform's colour. Dark mode uses the lighter dark-theme dots by itself.
+ *
+ * v2.1: the before's colour line is back where the client liked it (above a product's name, a card's kind line):
+ *   <PlatformLed platform="nintendo" bar />                          a 16 × 5 line instead of the dot
+ *   <PlatformLabel platform="nintendo" bar />                        line + "Nintendo" (the product page's brand line)
+ *   <Icon name="device-playstation" />                               the device silhouette (~/art/Icon), never a logo
  * 1.0: `solid` and `on` are accepted and ignored (a dot has one brightness). The 1.0 pictograms (`PlatformGlyph`) are
  * gone (§4.2, stage 4): platforms are recognised by name, colour and real photos.
  */
@@ -35,29 +40,33 @@ export type PlatformLedProps = {
   solid?: boolean;
   /** 1.0 — ignored. */
   on?: boolean;
+  /** v2.1: the 16 × 5 colour line (the before's LED) instead of the 8px dot. */
+  bar?: boolean;
   className?: string;
   style?: CSSProperties;
 };
 
-export function PlatformLed({ platform, className, style }: PlatformLedProps) {
-  return <i className={cx("led", className)} data-gel={platform} style={style} aria-hidden="true" />;
+export function PlatformLed({ platform, bar = false, className, style }: PlatformLedProps) {
+  return <i className={cx("led", bar && "led--bar", className)} data-gel={platform} style={style} aria-hidden="true" />;
 }
 
 export type PlatformLabelProps = {
   platform: Gel;
   /** Visible name. Default: the platform's own name (Latin brand names stay Latin; "handheld" is translated). */
   label?: string;
-  /** 1.0 — ignored (pictograms are retired). */
+  /** 1.0 — ignored (pictograms are retired; v2.1 draws devices with <Icon name="device-…">). */
   glyph?: boolean;
+  /** v2.1: the colour line instead of the dot. */
+  bar?: boolean;
   className?: string;
 };
 
-export function PlatformLabel({ platform, label, className }: PlatformLabelProps) {
+export function PlatformLabel({ platform, label, bar = false, className }: PlatformLabelProps) {
   const t = useT("ui");
   const text = label ?? (platform === "brand" ? "" : t(`platform.${platform}`));
   return (
     <span className={cx("plat", className)} data-gel={platform}>
-      <PlatformLed />
+      <PlatformLed bar={bar} />
       <BidiLabel>{text}</BidiLabel>
     </span>
   );

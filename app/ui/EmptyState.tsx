@@ -8,10 +8,12 @@ import { Render } from "./Stage";
 /**
  * EmptyState — nothing here yet. Design System v2 §4.23:
  *
- *   layout="stack"  (a page or a sheet that is empty) centred, max 560, NO SLAB: a picture — a 112px --red-tint disc
+ *   layout="stack"  (a page or a sheet that is empty) centred, max 560: a picture — a 112px --red-tint disc
  *                   holding the mascot (the supplied logo artwork), or a real product cut-out in a 132px well (`art`)
- *                   — a type-h2 title that says what is empty, one 16px sentence that says what to do, ONE primary
- *                   and one recovery link, then an optional shelf of in-stock products.
+ *                   — a type-h2 title (Kufam) that says what is empty, one 16px sentence that says what to do, ONE key
+ *                   and, on its own line under it, one recovery link (v2.1: the before's arrangement, client note 7),
+ *                   then an optional shelf of in-stock products. `panel` sets the words and the key on the soft
+ *                   raised card (the before's empty cart).
  *   layout="row"    (default — a part of a page, the admin) a compact line: a hairline disc with the icon, the title,
  *                   one sentence and the action at the end.
  *
@@ -39,17 +41,19 @@ export type EmptyStateProps = {
   /** stack: under the actions — a shelf of 4 in-stock products. */
   shelf?: ReactNode;
   layout?: "row" | "stack";
+  /** stack: set the picture, the words and the key on the soft raised card (the shelf stays outside it). */
+  panel?: boolean;
   /** Render the title as a heading of this level (default: a paragraph in a row, an h2 in a stack). */
   headingLevel?: 2 | 3 | 4;
   className?: string;
 };
 
-export function EmptyState({ title, text, action, recovery, icon, art, shelf, layout = "row", headingLevel, className }: EmptyStateProps) {
+export function EmptyState({ title, text, action, recovery, icon, art, shelf, layout = "row", panel = false, headingLevel, className }: EmptyStateProps) {
   if (layout === "stack") {
     const Title = `h${headingLevel ?? 2}` as const;
     const well = typeof art === "string";
     const column = (
-      <div className={cx("empty", !shelf && className)}>
+      <div className={cx("empty", panel && "empty--panel", !shelf && className)}>
         <span className={cx("empty__art", well && "empty__art--well")} aria-hidden="true">
           {well ? (
             <span className="render-slot relative size-full p-[12%]">

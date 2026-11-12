@@ -9,7 +9,7 @@ import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
- * A price — Design System v2 §4.8: Noto Kufi 700 figures (tabular), the currency after the figure in Plex 600 at the
+ * A price — Design System v2 §4.8: Kufam 700 figures (tabular; v2.1), the currency after the figure in Plex 600 at the
  * fixed size of its step (never under 12px), joined to it; never animated.
  *
  *   <Price amountIqd={667750} />                                  card (md 18)

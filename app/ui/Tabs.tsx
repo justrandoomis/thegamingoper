@@ -3,6 +3,7 @@ import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKe
 import { useFormat } from "~/i18n/react";
 import { getMotionTier, springTiming, travel } from "~/motion";
 import { cx } from "./cx";
+import { useSlidingIndicator } from "./indicator";
 import { HrefLink } from "./Pagination";
 import { revealFocusedItem, useKeepInView } from "./reveal";
 import { useControllable } from "./roving";
@@ -10,7 +11,8 @@ import { useControllable } from "./roving";
 /**
  * Tabs — sibling views of one thing (a device hub's guides / accessories / repairs; an order's lines / payments /
  * history). Flat, like the tab bar: the label turns ink and heavier and an ink marker sits on the bottom edge; never
- * red, never clay (tabs navigate, they do not commit). Two kinds:
+ * red, never clay (tabs navigate, they do not commit). v2.1: ONE underline slides from the old tab to the new one
+ * (translate only, ./indicator); before it is measured each tab draws its own. Two kinds:
  *
  *   Link tabs — each tab is a page or a query (the URL holds the state; Back works):
  *   <Tabs aria-label={t("hub")} value={tab} items={[
@@ -61,12 +63,16 @@ export type TabsProps = {
   panelClassName?: string;
 };
 
-const LIST = "flex min-w-0 gap-1 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+const LIST = "group/tabs relative flex min-w-0 gap-1 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 const TAB =
   "group relative inline-flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap px-3 type-tab text-ink-2 outline-offset-[-3px] hover:text-ink " +
   "data-[selected]:text-ink aria-disabled:cursor-default aria-disabled:text-ink-3 " +
   // the marker (v2 §4.6): a 2px ink underline on the bottom edge, faded in (opacity only)
-  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100";
+  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100 " +
+  // v2.1: once the list's sliding underline is measured, the tab's own marker steps aside
+  "group-data-[ind]/tabs:after:hidden";
+/** The sliding underline sits inside the tab's 12px padding, like the tab's own marker. */
+const IND = { selector: "[data-selected]", attribute: "data-ind", x: "--ind-x", w: "--ind-w", inset: 12 } as const;
 
 export function Tabs({
   items,
@@ -85,11 +91,13 @@ export function Tabs({
   const linkTabs = items.length > 0 && items.every((item) => typeof item.href === "string");
   const linkList = useRef<HTMLUListElement | null>(null);
   useCurrentInView(linkList, linkTabs ? current : null);
+  useSlidingIndicator(linkList, linkTabs ? current : null, IND);
 
   if (linkTabs) {
     return (
       <nav aria-label={aria["aria-label"]} aria-labelledby={aria["aria-labelledby"]} className={cx("min-w-0", className)}>
         <ul ref={linkList} role="list" className={cx(LIST, listClassName)} onFocus={revealFocused}>
+          <li className="tabs__ind" aria-hidden="true" />
           {items.map((item) => {
             const selected = item.value === current;
             return (
@@ -155,6 +163,7 @@ function PanelTabs({
   const panel = useRef<HTMLDivElement | null>(null);
   const selected = items.findIndex((item) => item.value === current);
   useCurrentInView(list, current);
+  useSlidingIndicator(list, current, IND);
   const firstEnabled = items.findIndex((item) => !item.disabled);
   // Roving tab stop: the focused tab while focus is in the list, else the selected one.
   const [focused, setFocused] = useState<number | null>(null);
@@ -213,6 +222,7 @@ function PanelTabs({
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(null);
         }}
       >
+        <span className="tabs__ind" aria-hidden="true" />
         {items.map((item, index) => {
           const isSelected = index === selected;
           return (

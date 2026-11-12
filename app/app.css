@@ -7,9 +7,11 @@
  *   theme        Tailwind theme variables, then the design tokens (styles/tokens.css) — tokens win over the theme
  *   base         Tailwind preflight, then styles/base.css (floor, type defaults, focus ring, selection, scroll padding,
  *                root error)
- *   components   styles/materials.css (clay v2, glass v2, showcase light, the product ground, tiers),
- *                styles/components.css (app/ui pieces), styles/admin.css (the admin's 1.0 materials under
- *                data-density="admin", its density, .table); the Motion Engine's helper classes live here too
+ *   components   styles/materials.css (v2.1 clay keys, surfaces, glass, showcase light, the product ground, tiers),
+ *                styles/components.css (app/ui pieces), styles/pieces.css (the v2.1 pieces: note, reveal, carousel,
+ *                success mark, count-up, sliding indicators, the animated disclosure), styles/admin.css (the admin's
+ *                1.0 materials under data-density="admin", its density, .table); the Motion Engine's helper classes
+ *                live here too
  *   utilities    Tailwind utilities — the last word on spacing and placement in feature code
  *
  * Unlayered: @font-face (styles/fonts.css) and the Tailwind configuration (styles/theme.css: @theme, @utility,
@@ -25,5 +27,6 @@
 @import "./styles/base.css" layer(base);
 @import "./styles/materials.css" layer(components);
 @import "./styles/components.css" layer(components);
+@import "./styles/pieces.css" layer(components);
 @import "./styles/admin.css" layer(components);
 @import "./styles/theme.css";

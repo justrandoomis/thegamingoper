@@ -63,6 +63,32 @@
     margin-block-start: var(--s-10);
     min-inline-size: 0;
   }
+  /* Clay & Glass 2.1: the same specimen in a light and a dark island, side by side from 1024 */
+  .cg-themes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+  @media (min-width: 64rem) {
+    .cg-themes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .cg-island {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    min-inline-size: 0;
+    padding: var(--s-5);
+    border-radius: var(--r-xl);
+    background: var(--ground);
+    box-shadow: var(--e-surface-quiet);
+    color: var(--ink);
+  }
+  .cg-island__label {
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
   .ds-h3 {
     font: var(--type-h3);
   }

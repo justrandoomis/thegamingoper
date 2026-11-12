@@ -402,6 +402,8 @@ function MenuPanel({ target, solid, id, triggerId, items, align, title, classNam
       className={cx(
         // above fixed chrome (header, tab bar); inside a sheet or dialog it sits in that layer's stacking context
         "menu fixed z-[calc(var(--z-nav)+1)] flex min-w-[min(13.5rem,calc(100vw-16px))] max-w-[min(20rem,calc(100vw-16px))] flex-col overflow-y-auto overscroll-contain text-ink outline-none",
+        // v2.1: a frosted panel over the page; inside a sheet or dialog it stays opaque (never glass on glass)
+        !solid && "glass glass--panel",
         className,
       )}
       style={

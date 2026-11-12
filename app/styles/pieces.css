@@ -1,0 +1,490 @@
+/*
+ * Design v2.1 "Clay & Glass" — the new kit pieces (docs/DESIGN.md §15, docs/UI.md "v2.1"). Imported into the
+ * `components` layer by app/app.css, after components.css. One block per piece; the React components in app/ui are
+ * the API (Note, Reveal, Carousel, SuccessMark, CountUp, the sliding indicators of Segmented and Tabs, the animated
+ * Disclosure). Tokens only; motion is transform / opacity (two documented exceptions: the accordion's height and the
+ * success mark's stroke), and everything is instant under reduced motion and the store's reduce-motion setting.
+ *
+ *   .note            side information: a neutral soft card, an icon in a circle, a short bold title, muted text, an
+ *                    optional action on its own line with an arrow (tones: info, success, warning, demo)
+ *   [data-reveal]    sections that fade up as they enter, once (app/motion/reveal.ts: Web Animations, no CSS here)
+ *   .carousel        a CSS scroll-snap track, dots, arrows, the pause / play key (app/ui/Carousel.tsx)
+ *   .success-mark    a check that draws itself once
+ *   .count           a number that counts up once (app/motion CountUp): the final width is reserved
+ *   .seg__thumb      the sliding thumb of a segmented control
+ *   .tabs__ind       the sliding underline of tabs
+ *   .disclosure      height animation of <details> (::details-content)
+ *   .crumbs--phone   breadcrumbs on phones (one scrolling line)
+ *   .empty           the before's arrangement: the words, then the key, then the recovery link under it
+ */
+
+/* ───────────────────────────── note (G5) ───────────────────────────── */
+.note {
+  --note-tint: var(--key-face);
+  --note-ink: var(--ink);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 2px var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
+  color: var(--ink);
+}
+.note__icon {
+  --disc: 40px;
+  grid-row: span 3;
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--disc);
+  block-size: var(--disc);
+  border-radius: var(--r-full);
+  background: var(--note-tint);
+  box-shadow: var(--e-disc);
+  color: var(--note-ink);
+}
+.note__title {
+  align-self: center;
+  min-block-size: 24px;
+  font: 600 var(--fs-read) / 1.5 var(--font-text);
+  color: var(--ink);
+}
+.note__text {
+  grid-column: 2;
+  font: var(--type-read);
+  color: var(--ink-2);
+}
+.note__text :is(b, strong) {
+  color: var(--ink);
+}
+.note__action {
+  grid-column: 2;
+  justify-self: start;
+  margin-block-start: 2px;
+}
+/* no title: the text sits beside the icon */
+.note:not(:has(.note__title)) .note__text {
+  align-self: center;
+}
+/* tones: only the disc is tinted — the card stays neutral, the words stay ink */
+.note--info {
+  --note-tint: var(--info-tint);
+  --note-ink: var(--info);
+}
+.note--success {
+  --note-tint: var(--ok-tint);
+  --note-ink: var(--ok);
+}
+.note--warning {
+  --note-tint: var(--warn-tint);
+  --note-ink: var(--warn);
+}
+.note--demo {
+  --note-tint: var(--demo-bg);
+  --note-ink: var(--demo-ink);
+}
+.note:is(.note--info, .note--success, .note--warning, .note--demo) .note__icon {
+  box-shadow: none;
+}
+/* flat: inside another card or a sheet — no raise of its own */
+.note--flat {
+  box-shadow: var(--e-surface-quiet);
+}
+/* line: a quiet line with an icon (under a price, under a key) — no card at all */
+.note--line {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px var(--s-2);
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+.note--line .note__icon {
+  --disc: 24px;
+  grid-row: span 2;
+  background: none;
+  box-shadow: none;
+  color: var(--note-ink);
+}
+.note--line:not(:is(.note--info, .note--success, .note--warning, .note--demo)) .note__icon {
+  color: var(--ink-2);
+}
+.note--line .note__title {
+  min-block-size: 0;
+  font: var(--type-sm-strong);
+}
+.note--line .note__text {
+  font: var(--type-sm);
+  line-height: 1.6;
+}
+@media (min-width: 64rem) {
+  .note:not(.note--line) {
+    padding: var(--s-5);
+  }
+}
+
+/* ───────────────────────────── section reveal (G6) ─────────────────────────────
+ * <section data-reveal> — or <Reveal> (~/ui/reveal) — fades up 16px as it first enters the viewport; data-reveal="stagger"
+ * does it to the element's children, 60ms apart. No CSS: app/motion/reveal.ts (started by <MotionRoot>) holds and plays
+ * Web Animations on what is below the fold, so no attribute or class is ever written (no hydration mismatch, no CLS). */
+
+/* ───────────────────────────── carousel (G6; the home hero, a gallery) ─────────────────────────────
+ * <section class="carousel" aria-roledescription="carousel">
+ *   <div class="carousel__track"> <div class="carousel__slide">…</div> × n </div>
+ *   <div class="carousel__bar"> dots · pause / play · arrows </div>
+ * </section>
+ * The track is a native scroll-snap row (touch and trackpad swipe for free); app/ui/Carousel.tsx tracks the index,
+ * plays, pauses, and moves with the arrows, the dots and the keyboard. --carousel-aspect is the slide's aspect ratio
+ * (one custom property: the home sets the banner's shape there). */
+.carousel {
+  position: relative;
+  min-inline-size: 0;
+}
+.carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  gap: var(--carousel-gap, 0px);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  border-radius: var(--carousel-radius, var(--r-xl));
+}
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+.carousel__track:focus-visible {
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+/* peek: the next slide shows at the edge (phones), the gutter kept */
+.carousel--peek .carousel__track {
+  --carousel-gap: var(--gap-card);
+  grid-auto-columns: 88%;
+  border-radius: 0;
+  margin-inline: calc(-1 * var(--gutter));
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+}
+.carousel__slide {
+  position: relative;
+  min-inline-size: 0;
+  aspect-ratio: var(--carousel-aspect, auto);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+/* a little parallax: what sits in a slide drifts against the swipe (scroll-driven, no JS; off under reduced motion) */
+@supports (animation-timeline: view()) {
+  .carousel__parallax {
+    animation: carousel-parallax linear both;
+    animation-timeline: view(inline);
+  }
+}
+@keyframes carousel-parallax {
+  from {
+    translate: calc(9% * var(--dir)) 0;
+  }
+  to {
+    translate: calc(-9% * var(--dir)) 0;
+  }
+}
+/* the bar under the track: dots at the centre, the pause key and the arrows at the end */
+.carousel__bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-block-size: var(--target);
+  margin-block-start: var(--s-2);
+}
+.carousel__dots {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.carousel__dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 24px;
+  block-size: var(--target);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+/* two layers in one cell: the 8px dot (::before) and the 22px pill (::after). Stretching the dot would draw an
+   ellipse, and width never animates: the pill fades in and grows from the dot's width (opacity and scale only). */
+.carousel__dot::before,
+.carousel__dot::after {
+  content: "";
+  grid-area: 1 / 1;
+  block-size: 8px;
+  border-radius: var(--r-full);
+  transition:
+    opacity var(--t-micro) var(--ease-settle),
+    scale var(--t-micro) var(--ease-settle);
+}
+.carousel__dot::before {
+  inline-size: 8px;
+  background: var(--line-strong);
+}
+.carousel__dot::after {
+  inline-size: 22px;
+  background: var(--red);
+  opacity: 0;
+  scale: 0.36 1;
+}
+/* the current dot: a 22px pill in brand red (the reference's carousel dots) — a wider shape, not colour alone */
+.carousel__dot[aria-current="true"]::before {
+  opacity: 0;
+}
+.carousel__dot[aria-current="true"]::after {
+  opacity: 1;
+  scale: 1;
+}
+.carousel__dot:focus-visible {
+  outline-offset: -8px;
+}
+.carousel__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+/* arrows and the pause key are frosted glass discs when they float over a slide */
+.carousel__over {
+  position: absolute;
+  inset-block-end: var(--s-3);
+  inset-inline-end: var(--s-3);
+  z-index: 2;
+  display: flex;
+  gap: var(--s-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel__track {
+    scroll-behavior: auto;
+  }
+  .carousel__parallax {
+    animation: none;
+  }
+  .carousel__dot::before,
+  .carousel__dot::after {
+    transition: none;
+  }
+}
+[data-motion="reduced"] .carousel__track {
+  scroll-behavior: auto;
+}
+[data-motion="reduced"] .carousel__parallax {
+  animation: none;
+}
+[data-motion="reduced"] .carousel__dot::before,
+[data-motion="reduced"] .carousel__dot::after {
+  transition: none;
+}
+@media (forced-colors: active) {
+  .carousel__dot::before {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+  .carousel__dot::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}
+
+/* ───────────────────────────── success mark (G6) ─────────────────────────────
+ * <SuccessMark /> — an --ok-tint disc that inflates from .86 and a check that draws itself, once (order success, a
+ * trade-in offer accepted). Reduced motion: the finished mark. */
+.success-mark {
+  display: inline-block;
+  flex: none;
+  color: var(--ok);
+}
+.success-mark__disc {
+  fill: var(--ok-tint);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: success-disc var(--spring-inflate-t) var(--spring-inflate) both;
+}
+.success-mark__check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: success-check 420ms var(--ease-settle) 160ms both;
+}
+@keyframes success-disc {
+  from {
+    opacity: 0;
+    scale: 0.86;
+  }
+}
+@keyframes success-check {
+  from {
+    /* lint-design: allow animated-property — the check draws itself (stroke only, no layout), G6 */
+    stroke-dashoffset: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .success-mark__disc,
+  .success-mark__check {
+    animation: none;
+  }
+}
+[data-motion="reduced"] :is(.success-mark__disc, .success-mark__check) {
+  animation: none;
+}
+
+/* ───────────────────────────── count-up (G6) ─────────────────────────────
+ * <CountUp value={2000} format={f.number} /> — the final text reserves the width (an invisible copy in the same grid
+ * cell), the counting digits sit on top of it, assistive technology reads the final text. */
+.count {
+  position: relative;
+  display: inline-grid;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.count > * {
+  grid-area: 1 / 1;
+}
+.count__final {
+  visibility: hidden;
+}
+.count__live {
+  white-space: nowrap;
+}
+
+/* ───────────────────────────── sliding indicators (G6) ─────────────────────────────
+ * Segmented: the chosen segment's face is a clay thumb that slides from one segment to the next (translate only; its
+ * width is set at once). Before JavaScript has measured (and without it), the chosen segment paints itself. */
+.seg {
+  position: relative;
+  isolation: isolate;
+  background: var(--tray);
+  box-shadow: var(--tray-shadow);
+}
+.seg__opt:is([aria-checked="true"], [aria-pressed="true"], [aria-current="true"], [aria-current="page"]) {
+  border-color: transparent;
+  background: var(--key-face);
+  box-shadow: var(--e-disc);
+}
+.seg[data-thumb] > .seg__opt:is([aria-checked="true"], [aria-pressed="true"], [aria-current="true"], [aria-current="page"]) {
+  background: none;
+  box-shadow: none;
+}
+.seg__thumb {
+  position: absolute;
+  z-index: -1;
+  inset-block: 2px;
+  inset-inline-start: 0;
+  inline-size: var(--thumb-w, 0px);
+  border-radius: var(--r-full);
+  background: var(--key-face);
+  box-shadow: var(--e-disc);
+  translate: var(--thumb-x, 0px) 0;
+  pointer-events: none;
+}
+.seg[data-thumb="live"] > .seg__thumb {
+  transition: translate var(--spring-settle-t) var(--spring-settle);
+}
+.seg:not([data-thumb]) > .seg__thumb {
+  display: none;
+}
+/* Tabs: one ink underline that slides under the current tab */
+.tabs__ind {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: var(--ind-w, 0px);
+  block-size: 2px;
+  border-radius: var(--r-full);
+  background: var(--ink);
+  translate: var(--ind-x, 0px) 0;
+  pointer-events: none;
+}
+[data-ind="live"] > .tabs__ind {
+  transition: translate var(--spring-settle-t) var(--spring-settle);
+}
+:not([data-ind]) > .tabs__ind {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .seg__thumb,
+  .tabs__ind {
+    transition: none !important;
+  }
+}
+[data-motion="reduced"] :is(.seg__thumb, .tabs__ind) {
+  transition: none !important;
+}
+
+/* ───────────────────────────── disclosure: the height animates (G6) ─────────────────────────────
+ * Native <details> keeps working everywhere; where ::details-content and interpolate-size exist (Chromium 131+) the
+ * content's height animates open and shut. Reduced motion: instant. */
+@supports (interpolate-size: allow-keywords) and selector(::details-content) {
+  details.disclosure {
+    interpolate-size: allow-keywords;
+  }
+  details.disclosure::details-content {
+    block-size: 0;
+    overflow: clip;
+    /* lint-design: allow animated-property — the accordion's height (G6); content-visibility makes it discrete */
+    transition:
+      block-size var(--t-sheet) var(--ease-settle),
+      content-visibility var(--t-sheet) allow-discrete;
+  }
+  details.disclosure[open]::details-content {
+    block-size: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details.disclosure::details-content {
+      transition: none;
+    }
+  }
+  [data-motion="reduced"] details.disclosure::details-content {
+    transition: none;
+  }
+}
+
+/* ───────────────────────────── breadcrumbs on phones (v2.1, client note 5) ───────────────────────────── */
+.crumbs--phone {
+  display: block;
+  min-inline-size: 0;
+}
+.crumbs--phone .crumbs__list {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+.crumbs--phone .crumbs__list::-webkit-scrollbar {
+  display: none;
+}
+
+/* ───────────────────────────── empty state: the before's arrangement (client note 7) ─────────────────────────────
+ * The words, then the one key, then the recovery link on its own line under it — not side by side. */
+.empty__actions {
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.empty__title {
+  font: var(--type-h2);
+}
+/* on the soft raised card: the before's empty cart (a calm panel, the key inside it) */
+.empty--panel {
+  margin-block: var(--s-4) var(--s-6);
+  padding: var(--s-8) var(--s-5);
+  border-radius: var(--r-xl);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
+}
+@media (min-width: 48rem) {
+  .empty--panel {
+    padding: var(--s-10) var(--s-8);
+  }
+}

@@ -1,5 +1,15 @@
 # Commerce components — props and examples
 
+## Design v2.1 «Clay & Glass» (2026-11-12) — DESIGN.md §15
+
+- **ProductCard / UsedUnitCard** — a soft raised card (light: paper + warm shadow; dark: faux glass) holding the warm well
+  6px in (8 from 768); fine-pointer hover lifts it 3px (the deeper shadow fades in on `.pcard::before`) and grows the
+  photo 1.03. The kind line starts with the platform's colour line; the heart is a 36px frosted disc in the well's corner
+  (`size="sm"`); the add button is a 40px clay circle that turns glossy red under the pointer. Props unchanged.
+- **Stepper** is the clay tray; **OrderSummary**, **InspectionCard**, **TrustStrip** (clay icon tiles with red line icons) and
+  **FactList** (16px reading text) are soft raised cards.
+- **EmptyState** stacks the key and the recovery link (the before's arrangement); `panel` sets it on the soft card.
+
 ## QA fixes (2026-11-12, after the full matrix)
 
 - **ProductCard / KindLine:** the kind line and the meta line are `<FactLine>`s (docs/ui/core.md): «جهاز محمول · ROG

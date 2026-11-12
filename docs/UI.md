@@ -1,4 +1,4 @@
-# TamTam UI — the cheat-sheet (Design System v2)
+# TamTam UI — the cheat-sheet (Design System v2 + v2.1 «Clay & Glass»)
 
 Read this instead of `docs/DESIGN.md` when you build screens. Live reference with every piece in every state:
 **`/design-system`** (also `/en/…`, `/ckb/…`; theme, language, currency, density and motion switches at the top).
@@ -10,13 +10,49 @@ DESIGN.md disagree, DESIGN.md wins — tell the design-system owner.
 1. **Red and white is the brand; the four platform colours are the doors.** Everything else is warm white, graphite, hairlines.
 2. **The product is the most real thing on screen:** official photos on one neutral ground, one floor line, no tilt, no coloured light behind it.
 3. **One red primary per view.** Ink fill means *selected*, never *action*.
-4. **Clay in exactly two places:** the primary key and the platform tiles. Every other control is flat.
-5. **Glass only on thin fixed bars.** Panels, menus, sheet bodies, dialogs and toasts are opaque.
-6. **Colour light belongs to showcases** (hero, tiles, platform bands); in dark they become lit cabinets.
+4. **v2.1: every key is clay** — a raised face on a 2px wall (glossy red primary, white-to-cream secondary, clay chips,
+   44px clay icon circles, the quantity tray). Ghost keys and data stay flat.
+5. **v2.1: glass on bars AND panels** (sheets, menus, the mega menu, floating tags, carousel controls); dialogs and toasts
+   stay opaque; repeated cards are faux glass in dark (no blur).
+6. **Colour light belongs to showcases** (hero, tiles, platform bands) and, v2.1, to the ambient `.glow` behind them;
+   platform tiles stay vivid glossy colour in BOTH themes (never a grey cabinet).
 7. **Facts sit beside the price** (stock, 5,000 IQD delivery, payment, returns, guest checkout). Nothing invented.
 8. **Arabic first:** a 13px floor, integer sizes, Latin names isolated, layouts that mirror by logic.
 9. **Motion is the existing engine;** nothing waits for an animation, nothing moves at rest.
 10. **One system:** every value is a token; every component exists once.
+
+## 0. Design v2.1 «Clay & Glass» — what to use (2026-11-12, DESIGN.md §15)
+
+The client compared the redesign with the store before it and asked for the before's font, its tactile keys, softer
+cards, bolder icons, calmer notes, glass that looks like glass, and some motion. The kit does most of it by itself
+(every page got it without page work); the pieces below are what page owners add.
+
+| Need | Use | Notes |
+|---|---|---|
+| Side information (a payment rule, «أكمل الطلب بدون حساب», a demo order line, «قبل أن تطلب») | `<Note title icon tone action>` from `~/ui/Note` | neutral soft card, icon in a circle, short bold title, muted 16px text, action on its own line; `tone` info · success · warning · demo tints only the circle; `variant="line"` (no card) · `"flat"` (inside a card). Replaces bold side paragraphs and tinted callouts with inline links. Renders a `<div>` (an unnamed `<aside>` would be one complementary landmark per note); `as="aside"` + `aria-label` only for a page's one real side panel |
+| Several banners that switch (the home hero) | `<Carousel label slides autoplay={6000} aspect="390 / 220">` or `useCarousel()` + `CarouselDots` / `CarouselArrows` / `CarouselPlay` from `~/ui/Carousel` | native scroll-snap; autoplay PAUSES on hover, focus, a finger on the track, a hidden tab, off screen, and STOPS when the shopper takes over (a swipe that moves the track, a sideways trackpad swipe, an arrow, a dot) — a vertical page scroll that starts on the banner is not a take-over; the pause key is there while it can play (WCAG 2.2.2) and play starts it even with focus inside; spread all of `trackProps` on your track (it carries the touch, scroll and wheel handlers); ← → follow the reading direction; reduced motion: no autoplay, instant moves. `aspect` sets `--carousel-aspect` (one property for the banner's shape); `peek` shows the next slide's edge; `controls="over"` puts frosted keys on the slide; `.carousel__parallax` on an element in a slide drifts it a little |
+| A section that fades up as it arrives | `<Reveal as="section">` / `<Reveal stagger>` / `{...revealProps()}` from `~/ui/reveal` (or `data-reveal` / `data-reveal="stagger"`) | below the fold only, once, 16px + fade, 60ms stagger (six steps); Web Animations — no attribute is written, so no hydration mismatch; skipped under reduced motion, the lite tier and automation. Never on the hero or a form |
+| A number that matters, counted once (points, an offer, a KPI) | `<CountUp value format={f.number} />` from `~/motion` | reserves the final width; SR reads the final text; a server-rendered number already on screen is not reset (no flash); one below the fold waits at its start out of sight and counts when 40% of it is in view. A value that CHANGES is `<NumberMorph>` |
+| A success that draws itself (order placed, offer accepted) | `<SuccessMark size={72} label? />` from `~/ui/SuccessMark` | ok-tint disc inflates, the check strokes in once; reduced motion: finished |
+| Ambient colour light behind a hero / stage / tiles | `className="glow"` (brand red) · inside `data-gel="playstation"` the platform's light · any colour with `--glow-rgb` (an "r g b" triplet, e.g. `var(--gel-xbox)`) · `glow--strong` · `glow--wide` · `style={{"--glow-x":"30%","--glow-y":"40%"}}` · or an element `<span className="glow-layer" aria-hidden />` | a `::before` radial, painted once, hidden under `prefers-contrast: more`; keep the element's own background transparent where the light should show |
+| Soft raised card / real glass | `className="surface"` (light: paper + warm shadow; dark: see-through faux glass over the floor's light) · `"surface--quiet"` (no shadow) · `"surface--glass"` (frosted, rim-lit; heroes and ≤8 tiles per screen) · `"lift"` (hover lift with the shadow layer; isolates itself) | `.panel` and `.niche--panel` ARE the soft card now. Keep a dark section's own background transparent where the floor's light should show through its cards |
+| A frosted panel | `<Glass panel>` or `className="glass glass--panel"` | menus and sheets use it by themselves (`Menu`, `Sheet`) |
+| A clay disc for an icon that is not a button | `<span className="clay-disc"><Icon … /></span>` (`--disc` sets the size, 44 default) | the before's raised circles |
+| Device pictures for the four platforms | `<Icon name="device-nintendo|device-playstation|device-xbox|device-handheld" />` | neutral silhouettes, never logos |
+| Catalogue kinds | `<Icon name="kind-console|kind-game|kind-controller|kind-headset|kind-storage|kind-charging|kind-topup|kind-accessory|kind-used|kind-repair" />`; `<CategoryTile icon="kind-controller" …>` for the reference's icon tiles | 2px strokes on a 24 grid |
+| The before's support rows (icon disc · words · arrow) | `<EntryCard icon="lifebuoy" title text to>` | without `art` |
+| The platform colour line (above a product's name, a card's kind line) | `<PlatformLed bar />`, `<PlatformLabel platform bar />` | the card's kind line draws it already |
+| Breadcrumbs on phones too (the product page's bar) | `<Breadcrumbs items phone />` | one scrolling line |
+| The before's empty cart arrangement | `<EmptyState layout="stack" panel …>` | words, then the key, then the recovery link under it (the stack does that by itself now) |
+| Reading text (facts, notes, descriptions) | `type-read` (16px / 1.75 Arabic, 1.6 English) | `.fact__text`, `.entry__text`, `.note__text` use it |
+
+**Automatic (no page work):** Kufam headings, prices and key labels; clay keys, chips, icon circles and the tray;
+soft cards (ProductCard, UsedUnitCard, EntryCard, CategoryTile, TrustStrip, FactList, OrderSummary, InspectionCard,
+ContactCard, CompatList) with the hover lift and photo zoom on fine pointers; vivid platform tiles and hub bands in dark;
+frosted menus and sheets; bolder icons; the sliding thumb of `Segmented` and the sliding underline of `Tabs`; the
+`Disclosure` / `Accordion` height animation; the deep crimson glass hero band in dark; the dark floor's ambient light
+(`body::before`, `--floor-light`) behind see-through dark cards; product-card feet that keep price and add key on one
+row on 360–414 phones.
 
 ## 2. Components and their classes
 
@@ -29,10 +65,10 @@ uses the components, kit code uses the classes.
 | The ONE action per view that moves the shopper forward | `<Key variant="primary">` (1.0 alias `commit`) | `.key.key--primary` (alias `.key--red`) > `.key__cap` > `.key__label` | a second red key, a red link |
 | Any other action, toolbar buttons | `<Key>` (secondary, the default; 1.0 `ink` renders secondary) | `.key` / `.key--secondary` | `<button className>` with your own look |
 | Quiet actions in bars and lists | `<Key variant="ghost">` (1.0 `quiet`) | `.key--ghost` | |
-| The action on the crimson hero / wallet band | `<Key variant="onBand">` (kit adds it) | `.key--on-band` (dark: renders the red primary) | a red key on crimson |
+| The action on the crimson hero / wallet band | `<Key variant="onBand">` (kit adds it) | `.key--on-band` (v2.1: white clay in both themes, on the band's own deep-coloured wall) | a red key on crimson |
 | Destructive confirmations | `<Key variant="danger">` (kit adds it) | `.key--danger` | brand red |
 | Sizes | `size="md"` 48 · `"sm"` 40 (`"lg"` = 48) | `.key--sm`, `.key--block` | a third height |
-| Icon-only action | `<IconKey icon label>` | `.key.key--round` (40; `--sm` 36, `--xs` 32 on photos) + `.key--outline` (default) / `--plain` / `--on-image` / `--on-color`; heart `.key--wish` | an unnamed icon |
+| Icon-only action | `<IconKey icon label>` | `.key.key--round` (v2.1: a 44px clay circle; `--sm` 36, `--xs` 32 on photos) + `.key--outline` (default, clay) / `--plain` / `--on-image` (frosted disc) / `--on-color`; heart `.key--wish` | an unnamed icon |
 | The card add button | `<Socket>` today (kit: `CardAddButton`) | `.key.key--round.cadd` (neutral; red under the pointer; `data-state="added"` = ok check) | a red key on every card |
 | A toggle that is on | `held` (aria-pressed) | ink fill on keys/chips; icon buttons keep their face and fill the glyph | colour alone |
 | One choice from a few | `<ChipGroup>`, `Segmented` (kit), `<KeyBank>` (renders segmented) | `.seg` > `.seg__opt[aria-checked]`; `.bank` (1.0) | radio buttons styled as tabs |
@@ -95,40 +131,43 @@ Breakpoints (Tailwind): `sm` 600 · `md` 768 · `lg` 1024 · `xl` 1200 (admin on
 
 | Class | 360 → 768 → 1024 → 1280 | Use |
 |---|---|---|
-| `type-display` | Kufi 700 28 → 40 → 48 → 56 | the hero headline (an h2) |
-| `type-h1` | Kufi 700 26 → 30 → 32 → 36 | page titles (PDP included) |
-| `type-h2` | Kufi 700 22 → 24 → 26 → 28 | section heads |
-| `type-tile` | Kufi 700 18 → 20 → 22 | tile names |
-| `type-day` | Kufi 700 44 → 56 (1024) | release-day numerals |
-| `type-h3` | Plex 600 18 | h3, group, sheet and dialog titles |
+| `type-display` | Kufam 600 28 → 40 → 48 → 56 | the hero headline (an h2) |
+| `type-h1` | Kufam 600 26 → 30 → 32 → 36 | page titles (PDP included) |
+| `type-h2` | Kufam 600 22 → 24 → 26 → 28 | section heads |
+| `type-tile` | Kufam 600 18 → 20 → 22 | tile names |
+| `type-day` | Kufam 700 44 → 56 (1024) | release-day numerals |
+| `type-h3` | Kufam 600 18 | h3, group, sheet and dialog titles |
 | `type-code` | Plex 600 20, tabular | order numbers, account numbers |
 | `type-lead` | Plex 400 16 → 18 | lead paragraphs |
 | `type-body` | Plex 400 16 | reading text (the body default) |
+| `type-read` | Plex 400 16 / 1.75 (en 1.6) | v2.1: facts, notes, descriptions |
 | `type-card` | Plex 600 15 → 16 (1024) | card titles (two lines, never one) |
 | `type-sm` / `type-sm-strong` | Plex 400 / 600 14 | labels, chips, fact rows |
-| `type-button` / `type-button-sm` | Plex 600 16 / 14 | button labels (keys set them) |
+| `type-button` / `type-button-sm` | Kufam 600 16 / Plex 600 14 | button labels (keys set them) |
 | `type-xs` / `type-xs-strong` | Plex 400 / 600 13 | captions, meta, hints, tab labels |
 | `type-tag` | Plex 600 12 | badges and the bead only |
 | `nums` | tabular lining figures | every price, counter, quantity, table cell |
 
 1.0 names still work on the v2 scale: `type-hero` = display, `type-title` = h1, `type-section` = h2, `type-sub` = h3,
 `type-strong` = card, `type-label` = sm-strong, `type-caption` = xs, `type-tab` = 13/400; `type-data`, `type-data-sm`,
-`type-kpi` are the admin's. Prices: `.price--xl/lg/md/sm` (Kufi 700 30–36 / 22–24 / 18 / 16). **Kufi only at 18px and
-up (and prices).** Arabic and Sorani text ≥13px; 12px only for 600-weight tags and the bead. **No letter-spacing,
-ever.** Sorani headings use Plex 600 until a native reader approves Noto Kufi's ە and ڵا.
+`type-kpi` are the admin's (Kufam 700). Prices: `.price--xl/lg/md/sm` (Kufam 700 30–36 / 22–24 / 18 / 16), the
+currency smaller after the figure. **Kufam never under 15px** (lint). Arabic and Sorani text ≥13px; 12px only for
+600-weight tags and the bead. **No letter-spacing, ever.** Sorani headings are Kufam too (it has every Sorani letter;
+a native reader still reviews the ckb strings).
 
 ## 4. Rules a reviewer checks (`node scripts/lint-design.mjs`, `node scripts/contrast.mjs`)
 
 - Logical properties only: `ms-/me-/ps-/pe-/start-/end-/text-start/rounded-s-`, `inset-inline-*`, `margin-inline-*`.
   Never `left/right`, `ml-/pr-/left-/text-left`. Directional icons mirror by themselves.
 - No hex / `rgb()` / `hsl()` literals outside `tokens.css`. No `letter-spacing`. No CSS `filter` (images included), no SVG filters.
-- `backdrop-filter` exists only in `.glass` — use `<Glass>`. At most **two live glass panes per viewport**; live glass
-  only on fixed/sticky bars, never in a list. Under an open sheet or dialog the page's glass turns solid by itself.
+- `backdrop-filter` exists only in materials.css (`.glass`, `.glass--panel`, `.surface--glass`) — use `<Glass>` or
+  those classes. At most **four live glass panes per viewport** (two bars, one panel, one hero); never in a list (grid
+  cards are faux glass). Under an open sheet or dialog the page's glass turns solid by itself.
 - Motion: only transform, translate, scale, rotate and opacity. Shadows, blur and colours never animate (a hover colour is instant).
 - One primary key per route view (card add buttons are neutral). `--red`/`--hero` only in the primary key, bead, logo,
   hero/wallet bands and the current step; `--plat-*` surfaces only on tiles and bands; `--gel-*` only in dark cabinets.
 - v2 rules (since stage 4 they fail the run in every file outside the admin): no 1.0 material tokens or utilities
-  outside the admin; no `font-weight: 500` / `font-medium`; integer font sizes; radius only through `--r-*`; box
+  outside the admin; integer font sizes, Kufam never under 15px (v2.1: weight 500 is allowed again); radius only through `--r-*`; box
   shadows only from the elevation tokens; `mix-blend-mode` only in the opaque-photo rule (`[data-opaque]`,
   materials.css); the retired kit names (`Socket`, `PlatformBank`, `StageTag`, `PlatformGlyph`, `KeyBank`, `variant=
   "commit" | "ink" | "quiet"`, `<Glass variant="static">`).
@@ -143,7 +182,8 @@ ever.** Sorani headings use Plex 600 until a native reader approves Noto Kufi's 
   amounts stay left-to-right. Card and line titles are isolated (`unicode-bidi: isolate`) and aligned to the page
   start in the page's direction — never `plaintext` (a Latin name would sit flush left in an Arabic card).
 - Every user-facing string exists in `ar`, `en` and `ckb`.
-- Token contrast: `node scripts/contrast.mjs` must pass (100 pairs; 2 documented demonstrations).
+- Token contrast: `node scripts/contrast.mjs` must pass (146 pairs since v2.1 — the glossy red's stops, clay faces,
+  the tray, tile corners, glass panels over the worst backdrop, faux and real dark glass; 2 documented demonstrations).
 
 ## 5. Themes, density, language
 
@@ -153,7 +193,7 @@ ever.** Sorani headings use Plex 600 until a native reader approves Noto Kufi's 
 - `data-density="admin"` on a container: the admin's compact type, 36px keys and fields, 24px gutter **and the Lens &
   Clay 1.0 materials** (walled keys, wells, `.clay--walled`, 1.0 glass) — `app/styles/admin.css`. `admin:` variant.
   Data grids: `<table className="table">` (`.is-num`, `.is-negative`, `aria-selected` rows).
-- `lang` drives type: `:lang(en)` sets Latin line heights; `:lang(ckb)` swaps the headline face to Plex 600.
+- `lang` drives type: `:lang(en)` sets Latin line heights; Sorani uses the same faces as Arabic (v2.1).
 - Direction comes from `<html dir>` only; sideways movement multiplies by `--dir`.
 
 ## 6. Layers — how to override
@@ -167,24 +207,24 @@ material. Nothing in feature code may be unlayered.
 
 | Signal | Result |
 |---|---|
-| no `backdrop-filter`, `prefers-reduced-transparency`, `.fx-low`, `html[data-motion="lite"]` | glass becomes `--glass-solid`; nothing inflates |
-| `prefers-reduced-motion` / `data-motion="reduced"` | pressed states without transition, instant swaps, no light fades, no spinner rotation |
+| no `backdrop-filter`, `prefers-reduced-transparency`, `.fx-low`, `html[data-motion="lite"]` | glass becomes `--glass-solid` (glass cards the card face); nothing inflates; no section reveal |
+| `prefers-reduced-motion` / `data-motion="reduced"` | pressed states without transition, instant swaps, no light fades, no spinner rotation; no card lift, no reveal, no count-up, no carousel autoplay (moves instant), indicators jump, accordions open at once, the success mark is drawn |
 | `prefers-contrast: more` | hairlines become `--line-strong`, glass solid, showcase lights hidden, wells and clay faces outlined |
 | `forced-colors` | borders on keys, chips, tags, cells, wells and bands; selected = a Highlight outline; dots keep their colour |
 
 ## 8. Fonts
 
-Self-hosted in `public/fonts` (content-hashed, cached immutable): **Noto Kufi Arabic 700** (display and prices) and
-**IBM Plex Sans Arabic 400/600** (text), each split arabic / latin / latin-ext by `unicode-range` — a file is fetched
-only when the page draws one of its characters (latin-ext only for names like "Yōtei"). Kufam and Plex 500 are retired;
-`font-synthesis-weight: none`. Measured: an Arabic page requests at most six files (182.5 KB); English four.
-`font-display: swap` with metric-adjusted local fallbacks: "Kufi Fallback" / "Plex Fallback" (Segoe UI, Windows) and
-"… Fallback Noto" (Noto Sans Arabic, Android, measured from Google's cut as a stand-in); iOS is unmeasured. The two
-critical files are preloaded with `preloadFonts(LOCALES[locale].script)` from `~/styles/fonts` — React's `preload()`
-while the document renders. Not as `<link>` elements: in development `<StrictMode>` remounts those right after
-hydration, each file is fetched again and Chrome logs "preloaded but not used" (`root.tsx` still maps
-`fontPreloadLinks()` to `<link>` elements until the lead moves it).
-Licences: `public/fonts/OFL-Noto-Kufi-Arabic.txt`, `public/fonts/OFL-IBM-Plex-Sans-Arabic.txt`.
+Self-hosted in `public/fonts` (content-hashed, cached immutable) — v2.1 brought the before's pair back: **Kufam
+Variable** (wght 400–900; 600 for headings and key labels, 700 for prices and numerals, never under 15px) and **IBM
+Plex Sans Arabic 400/500/600** (text), split arabic / latin (and latin-ext for Plex 400/600) by `unicode-range` — a
+file is fetched only when the page draws one of its characters. `font-synthesis-weight: none`. Kufam has every Sorani
+letter (cmap + shaping checked with fontkit; `tests/design-v21.test.ts`). `font-display: swap` with metric-adjusted
+local fallbacks: "Kufam Fallback" / "Plex Fallback" (Segoe UI, Windows) and "… Fallback Noto" (Noto Sans Arabic,
+Android, measured from Google's cut as a stand-in); iOS is unmeasured. The two critical files (Plex 400 + Kufam of the
+page's script: 98.6 KB Arabic, 55.5 KB Latin) are preloaded with `preloadFonts(LOCALES[locale].script)` from
+`~/styles/fonts` — React's `preload()` while the document renders, never as `<link>` elements.
+Licences: `public/fonts/OFL-Kufam.txt`, `public/fonts/OFL-IBM-Plex-Sans-Arabic.txt` (Noto Kufi Arabic, v2's display
+face, is retired: its files and licence are deleted — nothing referenced them).
 
 ## 9. The /design-system page
 

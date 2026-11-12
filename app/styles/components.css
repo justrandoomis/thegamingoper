@@ -245,7 +245,9 @@
 .chips--rail {
   flex-wrap: nowrap;
   overflow-x: auto;
-  padding-block: 2px;
+  /* v2.1: room for the clay chips' wall and cast inside the scroller (it clips), given back underneath */
+  padding-block: 2px 8px;
+  margin-block-end: -6px;
   scrollbar-width: none;
 }
 /* a chip in a rail keeps its width: the row scrolls, the chips never squeeze */
@@ -264,6 +266,8 @@
   .chips--rail {
     flex-wrap: wrap;
     overflow-x: visible;
+    padding-block: 2px;
+    margin-block-end: 0;
   }
   .chips--bleed {
     margin-inline: 0;
@@ -522,6 +526,14 @@ select.field__input {
   justify-content: center;
   min-inline-size: 44px;
   color: var(--ink-2);
+}
+/* a key inside a field (the support search's «ابحث»): the short pressed cast, so its shadow — the glossy primary's
+   red glow above all — stays inside the field instead of spilling under its edge */
+.field__end > .key {
+  --cast: var(--key-cast-press);
+}
+.field__end > :is(.key--primary, .key--red) {
+  --cast: var(--key-red-cast-press);
 }
 /* room for the end slot, on the side where the slot is: an LTR number inside an RTL form reserves its start side */
 .field__input[data-end] {
@@ -896,7 +908,9 @@ select.field__input {
   font: var(--type-sm-strong);
 }
 
-/* ───────────────────────────── stepper (§9.10): a hairline pill ───────────────────────────── */
+/* ───────────────────────────── stepper (§9.10; v2.1: the before's clay tray) ─────────────────────────────
+ * A pill pressed into the surface (.tray: an inner shadow) holding a flat «−», the count in Kufam and a raised round
+ * clay «+» — the key you reach for is the one that stands up. Minus at the start, plus at the end in every language. */
 .stepper-wrap {
   display: inline-flex;
   align-items: center;
@@ -906,35 +920,60 @@ select.field__input {
 .stepper {
   display: inline-flex;
   align-items: center;
+  gap: 2px;
   block-size: var(--h-btn);
-  padding-inline: 3px;
-  border: 1px solid var(--line-2);
+  padding-inline: 4px;
+  border: 0;
   border-radius: var(--r-full);
-  background: var(--paper);
+  background: var(--tray);
+  box-shadow: var(--tray-shadow);
 }
-/* − and +: two 40px round ghost icon buttons (44 hit); minus at the start, plus at the end in every language */
-.stepper > .key {
+/* − : a flat round key in the tray; + : a raised 40px clay circle (both keep a 44px hit area) */
+.stepper:not(:where([data-density="admin"] *)) > .key {
+  --h: 40px;
   --face: transparent;
   --edge: transparent;
-  --hover-face: var(--niche);
+  --hover-face: var(--niche-2);
+  --wall: 0px;
+  --cap-shadow: none;
+  --cast: none;
+  --lift: 0px;
+}
+.stepper:not(:where([data-density="admin"] *)) > .key:last-of-type:not(:disabled, [aria-disabled="true"]) {
+  --wall: 2px;
+  --h: 38px;
+  --face: var(--key-face);
+  --hover-face: var(--key-face-hover);
+  --edge: var(--key-edge);
+  --wall-c: var(--key-wall);
+  --cap-shadow: var(--key-lip), var(--key-belly);
+  --cast: var(--key-cast-sm);
+  --lift: 1px;
+  margin-block-start: -2px; /* the wall hangs below: the raised key sits centred in the tray */
 }
 .stepper__value {
-  min-inline-size: 32px;
+  min-inline-size: 34px;
   text-align: center;
-  font: 600 var(--fs-body) / 1 var(--font-text);
+  font: var(--w-figure) 17px / 1 var(--font-display);
   font-variant-numeric: tabular-nums lining-nums;
 }
 .stepper--sm {
   block-size: var(--h-btn-sm);
-  padding-inline: 1px;
+  padding-inline: 2px;
+}
+.stepper--sm:not(:where([data-density="admin"] *)) > .key {
+  --h: 36px;
+}
+.stepper--sm:not(:where([data-density="admin"] *)) > .key:last-of-type:not(:disabled, [aria-disabled="true"]) {
+  --h: 34px;
 }
 .stepper--sm .stepper__value {
   min-inline-size: 28px;
-  font-size: var(--fs-sm);
+  font-size: 15px;
 }
 
 /* ───────────────────────────── price (§9.11) ─────────────────────────────
- * Kufi 700 figures (tabular), the currency after the figure in Plex 600 at the fixed size of its step. Tones: ink
+ * Kufam 700 figures (tabular), the currency after the figure in Plex 600 at the fixed size of its step. Tones: ink
  * (every selling price), sale (red-ink, with a real previous price struck beside it), total (the one red figure of a
  * summary), on-color (white on a band), muted (sold out). Money never animates. */
 .price {
@@ -1071,7 +1110,7 @@ select.field__input {
 .cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--gap-row) var(--gap-card);
+  gap: calc(var(--gap-card) + 4px) var(--gap-card); /* v2.1: cards have a face now — near-equal gaps read tidier */
 }
 @media (min-width: 48rem) {
   .cards {
@@ -1089,19 +1128,66 @@ select.field__input {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
+/* v2.1: the card is a soft raised face (light: paper with a top light and a warm shadow; dark: faux glass with a rim
+   light) holding the well 6px in (8 from 768); under the pointer it lifts 3px, its deeper shadow fading in on a
+   second layer, and the photo grows 1.03 */
 .pcard {
   container: pcard / inline-size;
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
+  padding: 6px;
+  border-radius: var(--r-lg);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
+  transition: translate var(--t-reveal) var(--ease-settle);
+}
+.pcard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--e-card-hover);
+  opacity: 0;
+  transition: opacity var(--t-reveal) var(--ease-settle);
+  pointer-events: none;
+}
+.pcard .niche {
+  border-radius: var(--r-md);
+}
+@media (min-width: 48rem) {
+  .pcard {
+    padding: 8px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .pcard:hover {
+    translate: 0 -3px;
+  }
+  .pcard:hover::before {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcard,
+  .pcard::before {
+    transition: none;
+  }
+}
+/* a pseudo-element cannot sit inside :is() (it is dropped): the hover-shadow layer is named on its own */
+[data-motion="reduced"] .pcard,
+[data-motion="reduced"] .pcard::before {
+  transition: none;
 }
 .pcard__body {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 4px;
-  padding-block-start: var(--s-3);
+  padding: var(--s-3) 6px 0;
 }
 .pcard__kind {
   display: flex;
@@ -1109,6 +1195,11 @@ select.field__input {
   gap: 6px;
   font: var(--type-xs-strong);
   color: var(--ink-2);
+}
+/* the platform colour line (the before's 16 × 5 LED) instead of the dot, before the kind */
+.pcard__kind > .led {
+  inline-size: 14px;
+  block-size: 4px;
 }
 .pcard__title {
   display: -webkit-box;
@@ -1156,7 +1247,7 @@ select.field__input {
   gap: 2px var(--s-2);
   min-block-size: var(--target);
   margin-block-start: auto;
-  padding-block-start: 6px;
+  padding: 6px 6px 2px;
 }
 .pcard :is(.niche__tag, .niche__fav) {
   z-index: 2;
@@ -1185,7 +1276,50 @@ select.field__input {
     font-size: var(--price-sm);
   }
 }
-@media (hover: hover) {
+/* v2.1 review: the card's face took 24px of the foot's width, and on 360–414 phones the add button fell under the
+   price (12 of 24 Arabic and all 24 English feet at 360, measured). Two cards a row on a phone: the inset is 4px; a
+   card narrower than 180px sets its words on the well's edges (no inner padding); under 152px (a 147px rail card at
+   360) every price steps to price-sm and a seven-digit one to 15px (Kufam's floor). Price and button keep one row at
+   360–414 in all three languages, in grids and rails. */
+@media (max-width: 29.99rem) {
+  .pcard:not(.pcard--row, [data-layout="row"]) {
+    padding: 4px;
+  }
+}
+@container pcard (max-width: 180px) {
+  .pcard__body,
+  .pcard__foot {
+    padding-inline: 0;
+  }
+  .pcard__foot {
+    column-gap: 6px;
+  }
+}
+@container pcard (max-width: 152px) {
+  .pcard .price {
+    font-size: var(--price-sm);
+  }
+  .pcard .price--long {
+    font-size: 15px;
+  }
+}
+/* the narrowest (a 147px rail card at 360, 153px demo cards): a 36px add key — its hit area stays 44 — and a 4px gap */
+@container pcard (max-width: 148px) {
+  .pcard__foot {
+    column-gap: 4px;
+  }
+  .pcard__foot :is(.socket .key, .key.cadd) {
+    --h: 36px;
+  }
+  .pcard__foot :is(.socket .key, .key.cadd)::after {
+    inset: -4px;
+  }
+}
+/* if a price still has to wrap (400% zoom), the key ends its own line at the reading end, in every card alike */
+.pcard:not(.pcard--row, [data-layout="row"]) .pcard__foot > :last-child:not(.pcard__status) {
+  margin-inline-start: auto;
+}
+@media (hover: hover) and (pointer: fine) {
   .pcard:hover .pcard__title {
     text-decoration: underline;
     text-decoration-thickness: 1px;
@@ -1200,17 +1334,28 @@ select.field__input {
 }
 /* row layout: a 96px well at the start, the text beside it, the action at the end (device hubs, wide suggestions,
    the /used list) */
+.pcard--row,
+.pcard[data-layout="row"] {
+  padding: 8px;
+}
 .pcard--row {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
   align-items: center;
   column-gap: var(--s-4);
 }
-.pcard--row > .niche {
+.pcard--row > .niche,
+.pcard[data-layout="row"] .niche {
   border-radius: var(--r-sm);
 }
-.pcard--row .pcard__body {
+.pcard--row .pcard__body,
+.pcard[data-layout="row"] .pcard__body {
   padding-block: 0;
+}
+/* inside a rail the cards' shadows need room: the rail pads its block axis and gives it back */
+.rail:has(> .pcard, > * > .pcard) {
+  padding-block: 4px 20px;
+  margin-block: -4px -20px;
 }
 .niche--sm {
   border-radius: var(--r-sm);
@@ -1221,9 +1366,9 @@ select.field__input {
   display: grid;
   gap: var(--s-4);
   padding: var(--s-5);
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
 }
 .inspect__rows {
   display: grid;
@@ -1321,9 +1466,9 @@ select.field__input {
   display: grid;
   gap: var(--s-4);
   padding: var(--s-5);
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
 }
 .summary__title {
   font: var(--type-h3);
@@ -1524,9 +1669,9 @@ select.field__input {
 .trust {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
 }
 .trust__cell {
   display: grid;
@@ -1541,14 +1686,16 @@ select.field__input {
 .trust__cell:nth-child(n + 3) {
   border-block-start: 1px solid var(--line);
 }
+/* v2.1: a raised clay tile with the red line icon (the reference's icon tiles) */
 .trust__icon {
   grid-row: span 2;
   display: grid;
   place-items: center;
-  inline-size: 40px;
-  block-size: 40px;
+  inline-size: 44px;
+  block-size: 44px;
   border-radius: var(--r-sm);
-  background: var(--red-tint);
+  background: var(--key-face);
+  box-shadow: var(--e-disc);
   color: var(--red-ink);
 }
 .trust__title {
@@ -1593,6 +1740,7 @@ select.field__input {
   gap: var(--s-2) var(--s-4);
   border: 0;
   background: none;
+  box-shadow: none;
 }
 .trust--line .trust__cell {
   display: inline-flex;
@@ -1607,19 +1755,21 @@ select.field__input {
   inline-size: 16px;
   block-size: 16px;
   background: none;
+  box-shadow: none;
   color: var(--ink-2);
 }
 /* fact rows: a 20px icon, a title, a line and an optional 44px link, between hairlines */
 .facts {
   display: grid;
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
 }
 .facts--plain {
   border: 0;
   border-radius: 0;
   background: none;
+  box-shadow: none;
 }
 .fact {
   display: grid;
@@ -1645,7 +1795,7 @@ select.field__input {
 }
 .fact__text {
   grid-column: 2;
-  font: var(--type-sm);
+  font: var(--type-read); /* v2.1 G7: reading text, 16px / 1.75 */
   color: var(--ink-2);
 }
 .fact__link {
@@ -1852,18 +2002,58 @@ select.field__input {
 }
 
 /* ───────────────────────────── entry card, category tile, contact card (§9.25) ───────────────────────────── */
+/* v2.1: a soft raised card that lifts under the pointer; the row form (icon) is the before's: a clay disc with the
+   icon at the start, the words, an arrow at the end */
 .entry {
   position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 96px;
   align-items: center;
   gap: var(--s-4);
   padding: var(--s-5);
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
   color: inherit;
   text-decoration: none;
+  transition: translate var(--t-reveal) var(--ease-settle);
+}
+.entry::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--e-card-hover);
+  opacity: 0;
+  transition: opacity var(--t-reveal) var(--ease-settle);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .entry:hover {
+    translate: 0 -2px;
+  }
+  .entry:hover::before {
+    opacity: 1;
+  }
+  .entry:hover .entry__go {
+    translate: calc(3px * var(--dir)) 0;
+  }
+}
+/* the row form keeps its three columns at every width (two classes: it outranks the 1024 art grid below) */
+.entry.entry--row {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+}
+.entry__disc {
+  --disc: 48px;
+  color: var(--ink);
+}
+.entry__go {
+  color: var(--ink-2);
+  transition: translate var(--t-micro) var(--ease-settle);
 }
 .entry__art {
   position: relative;
@@ -1888,8 +2078,19 @@ select.field__input {
   font: var(--type-h3);
 }
 .entry__text {
-  font: var(--type-sm);
+  font: var(--type-read);
   color: var(--ink-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry,
+  .entry::before,
+  .entry__go {
+    transition: none;
+  }
+}
+[data-motion="reduced"] :is(.entry, .entry__go),
+[data-motion="reduced"] .entry::before {
+  transition: none;
 }
 @media (min-width: 64rem) {
   .entry {
@@ -1918,13 +2119,27 @@ select.field__input {
   text-align: center;
   text-decoration: none;
 }
+/* v2.1: the tile is a raised soft card holding the warm well; the icon form is the reference's icon tile (a clay
+   square with a red line icon) */
 .cat__art {
   position: relative;
   inline-size: 100%;
   aspect-ratio: 1;
   border-radius: var(--r-lg);
   background: var(--product-ground);
+  box-shadow: var(--e-surface);
   overflow: hidden;
+  transition: translate var(--t-reveal) var(--ease-settle);
+}
+.cat__art--icon {
+  display: grid;
+  place-items: center;
+  background: var(--key-face);
+  color: var(--red-ink);
+}
+.cat__art--icon > svg {
+  inline-size: 40%;
+  block-size: 40%;
 }
 .cat__art img:not(.render img) {
   position: absolute;
@@ -1941,16 +2156,27 @@ select.field__input {
   font: var(--type-xs);
   color: var(--ink-2);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   :is(.entry, .cat):hover :is(.entry__art, .cat__art) img:not(.render img) {
     scale: 1.03;
   }
+  .cat:hover .cat__art {
+    translate: 0 -3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cat__art {
+    transition: none;
+  }
+}
+[data-motion="reduced"] .cat__art {
+  transition: none;
 }
 .contact {
   display: grid;
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
 }
 .contact__row {
   display: flex;
@@ -1968,9 +2194,9 @@ select.field__input {
 /* ───────────────────────────── compatibility rows: an icon AND a state word ───────────────────────────── */
 .compat {
   display: grid;
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: var(--paper);
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
 }
 .compat__row {
   display: grid;
@@ -2172,6 +2398,10 @@ select.field__input {
   border-block-start: 1px solid var(--line);
   background: var(--paper);
 }
+/* inside the v2.1 glass sheet the foot is part of the pane */
+.glass--panel .sheet__foot {
+  background: transparent;
+}
 .sheet__foot > :is(.key--primary, .key--red) {
   flex: 1;
 }
@@ -2198,13 +2428,18 @@ select.field__input {
   gap: var(--s-3);
   margin-block-start: var(--s-6);
 }
-/* menu / popover: opaque paper, --r-lg, 44px rows */
+/* menu / popover: --r-lg, 44px rows; v2.1: a frosted glass panel over the page (.menu.glass--panel), opaque paper
+   inside a sheet or a dialog */
 .menu {
   min-inline-size: 220px;
   padding: 6px;
   border-radius: var(--r-lg);
   background: var(--paper);
   box-shadow: var(--e-overlay);
+}
+.menu.glass--panel {
+  background: var(--glass-panel);
+  box-shadow: var(--glass-edge), var(--e-overlay);
 }
 .menu__row {
   display: flex;
@@ -2220,6 +2455,9 @@ select.field__input {
 }
 .menu__row:is(:hover, [data-active], :focus-visible) {
   background: var(--niche);
+}
+.glass--panel .menu__row:is(:hover, [data-active], :focus-visible) {
+  background: var(--line-glass);
 }
 .menu__row:is([aria-checked="true"], [aria-current="true"], [aria-current="page"]) {
   font-weight: 600;

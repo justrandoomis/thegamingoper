@@ -13,7 +13,8 @@
  * the field follows `?q=`.
  *
  * Suggestions — rows by what they point at (the href says it): products with a 44px thumbnail on the product ground,
- * the name (two lines at most, isolated), the kind label («جهاز PS5») — else the department — and the price; typed rows
+ * the name (two lines at most, isolated), ONE meta line under it — the qualifier the Latin title leaves out («نسخة
+ * الأقراص»), then the kind label («جهاز PS5»), else the department (./chrome suggestionMeta) — and the price; typed rows
  * with icons for a platform (its dot), a department, «كل شيء عن الجهاز» and the used list; «هل تقصد …؟» for a typo;
  * the last row «اعرض كل النتائج». With an empty field: the shopper's recent searches (kept on this device, only with
  * consent — catalog area's recent-searches) with «امسح». Keyboard: ↑ ↓ move (the active row has a --niche fill and an
@@ -21,13 +22,15 @@
  *
  * SUGGESTIONS CONTRACT (catalog area, CONTRACTS.md §2 `GET /api/search/suggest`):
  *   GET /api/search/suggest?q=<text>&locale=<ar|en|ckb>
- *   200 { suggestions: { label, href, hint?, image?, priceIqd?, kindLabel? }[], total? }      href is locale-less
+ *   200 { suggestions: { label, href, hint?, image?, priceIqd?, kindLabel?, qualifier? }[], total? }   href locale-less
  *   `image` (an art key "<slug>--<n>"), `priceIqd` (integer IQD; left out while the product is sold out), `kindLabel`
- *   («جهاز PS5») and `total` (the result count for «اعرض كل النتائج (42)») are optional: rows show them when they come.
+ *   («جهاز PS5»), `qualifier` («نسخة الأقراص» — the catalogue's words the Latin title leaves out; printed on the meta
+ *   line, never inside the name) and `total` (the result count for «اعرض كل النتائج (42)») are optional: rows show them
+ *   when they come.
  *   The first 404 switches suggestions off for the rest of the visit (nothing is invented, nothing retried). Typing is
  *   debounced (160 ms) and a newer request aborts the older one.
  */
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type Ref } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode, type Ref } from "react";
 import { Form, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Art } from "~/art/Art";
@@ -36,12 +39,13 @@ import { LocaleLink, useLocale, useLocalePath } from "~/i18n/react";
 import { splitLocale } from "~/lib/locales";
 import { useRecentSearches } from "~/routes/storefront/catalog/components/recent-searches";
 import { cx } from "~/ui/cx";
+import { Glass } from "~/ui/Glass";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
 import { Price } from "~/ui/Price";
 import { Sheet } from "~/ui/Sheet";
-import { suggestionKind, type SuggestionKind } from "./chrome";
+import { suggestionKind, suggestionMeta, type SuggestionKind } from "./chrome";
 import { useShellT } from "./i18n";
-import { usePlatformName } from "./MegaMenu";
+import { DeviceGlyph, usePlatformName } from "./MegaMenu";
 import type { NavPlatform } from "./types";
 
 export type SearchSuggestion = {
@@ -54,6 +58,8 @@ export type SearchSuggestion = {
   priceIqd?: number;
   /** Optional: the product's kind («جهاز PS5»), shown in place of the department hint. */
   kindLabel?: string;
+  /** Optional: the words the product's Latin title leaves out («نسخة الأقراص»), first on the meta line. */
+  qualifier?: string;
 };
 
 const SUGGEST_URL = "/api/search/suggest";
@@ -74,6 +80,7 @@ function isSuggestion(value: unknown): value is SearchSuggestion {
     (item.hint === undefined || typeof item.hint === "string") &&
     (item.image === undefined || typeof item.image === "string") &&
     (item.kindLabel === undefined || typeof item.kindLabel === "string") &&
+    (item.qualifier === undefined || typeof item.qualifier === "string") &&
     (item.priceIqd === undefined || (Number.isSafeInteger(item.priceIqd) && item.priceIqd >= 0))
   );
 }
@@ -294,7 +301,7 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
           </kbd>
         ) : null}
       </div>
-      <div className="shell-suggest" hidden={!showList}>
+      <SuggestPanel glass={variant === "header"} hidden={!showList}>
         {showList ? (
           <p className="shell-suggest__head">
             <span>{typing ? t("search.head") : t("search.recent")}</span>
@@ -332,8 +339,25 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
               ))
             : null}
         </ul>
-      </div>
+      </SuggestPanel>
     </Form>
+  );
+}
+
+/**
+ * The suggestions' panel: frosted glass under the header's field (v2.1 G3 — the header's frost and this one are the two
+ * live panes of a desktop viewport); opaque paper under a page's own field (a phone's tab bar and header are already
+ * glass); a plain list inside the search sheet.
+ */
+function SuggestPanel({ glass, hidden, children }: { glass: boolean; hidden: boolean; children: ReactNode }) {
+  return glass ? (
+    <Glass className="shell-suggest glass--panel" hidden={hidden}>
+      {children}
+    </Glass>
+  ) : (
+    <div className="shell-suggest" hidden={hidden}>
+      {children}
+    </div>
   );
 }
 
@@ -367,8 +391,9 @@ function OptionBody({ option, total }: { option: Option; total: number | null })
   const { item } = option;
   const kind = suggestionKind(item.href);
   if (kind === "product") {
-    // one second line (v2 §5.5): the kind («جهاز PS5») says more than the department; the department when it is missing
-    const hint = item.kindLabel || item.hint;
+    // one meta line (v2 §5.5): the qualifier, then the kind («جهاز PS5», which says more than the department; the
+    // department when it is missing) — never inside the Latin name
+    const hint = suggestionMeta(item);
     return (
       <>
         <span className="shell-suggest__thumb" aria-hidden="true">
@@ -430,7 +455,12 @@ export function SearchSheet({ open, onClose, platforms, query }: SearchSheetProp
             {platforms.map((platform) => (
               <li key={platform.slug} data-gel={isPlatform(platform.accent) ? platform.accent : undefined}>
                 <LocaleLink to={platform.href} className="shell-row" onClick={onClose}>
-                  {isPlatform(platform.accent) ? <PlatformLed /> : null}
+                  {isPlatform(platform.accent) ? (
+                    // the platform's device glyph in its colour light, as in the desktop nav row
+                    <span className="shell-navitem__glyph" aria-hidden="true">
+                      <DeviceGlyph platform={platform.accent} size={18} />
+                    </span>
+                  ) : null}
                   <span className="shell-row__text">{nameOf(platform)}</span>
                   <Icon name="caret-right" size={16} className="shell-row__end" />
                 </LocaleLink>

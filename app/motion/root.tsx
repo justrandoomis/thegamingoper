@@ -11,6 +11,8 @@
  *   tier                <html data-motion="full|lite|reduced"> and, for the low-end tier, class fx-low (DESIGN.md
  *                       §6.5), kept in sync with the OS setting, device signals, measured jank and the override.
  *   ambient             <html data-motion-hidden> while the tab is hidden, data-motion-lowpower on low battery.
+ *   reveal              v2.1: elements marked data-reveal (or data-reveal="stagger") below the fold fade up once as
+ *                       they enter (./reveal).
  *
  * Mounting it twice is harmless (reference counted).
  */
@@ -19,6 +21,7 @@ import { getMotionTier, haptic, subscribeMotionTier } from "./env";
 import { preloadExtras } from "./lazy";
 import { clearNavIntent } from "./nav-state";
 import { notePointer, setMotionLive } from "./pointer";
+import { installReveal } from "./reveal";
 import { claimWithin, rememberArmed } from "./share-registry";
 import { haptics, type HapticKind } from "./tokens";
 import { endActiveTransition, isTransitionActive } from "./vt";
@@ -196,6 +199,9 @@ function install(): () => void {
   setMotionLive(true);
   root.setAttribute("data-motion-ready", "");
 
+  // v2.1: sections marked data-reveal fade up as they first enter (./reveal — below the fold only, once)
+  const uninstallReveal = installReveal();
+
   // The on-demand half of the engine (fly-to-cart, sheets, morphs, rails) is fetched when the browser is idle,
   // so the first use is instant without it ever being part of the critical bundle.
   const idle = (window as Window & { requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
@@ -207,6 +213,7 @@ function install(): () => void {
 
   return () => {
     controller.abort();
+    uninstallReveal();
     document.removeEventListener("pointermove", onPointerMove, true);
     unsubscribe();
     setMotionLive(false);

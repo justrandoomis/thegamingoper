@@ -4,7 +4,10 @@
  *   <LanguageBank />     العربية · English · کوردی as a segmented row of REAL links (each name in its own script; they
  *                        work without script; with script the switch keeps the page, its scroll and its form state
  *                        and plays the direction morph). Footer, categories sheet, the accessibility page.
- *   <LanguageMenu />     the desktop header's globe button → a menu of the three languages
+ *   <LanguageLinks />    the same three links as plain words, the current one in ink (the desktop utility strip)
+ *   <LanguageMenu />     a globe button → a menu of the three languages
+ *   <ThemeSwitch />      the visible light / dark switch of the desktop utility strip (the before's moon key): a
+ *                        toggle «الوضع الداكن» with aria-pressed and a knob that slides
  *   <ThemeBank />        النظام · فاتح · داكن (segmented; themeMorph: the prefs cookie + a 200 ms cross-fade)
  *   <CurrencyPanel />    الدينار · الدولار (segmented) with the rate, its source and date, "you pay in dinars", and — when
  *                        the rate is the demo seed's placeholder — that it is a demo rate (its source then in the
@@ -53,11 +56,30 @@ const canSwitch = () => typeof navigator === "undefined" || navigator.onLine !==
  */
 export function LanguageBank({ onSwitch, className }: { onSwitch?: () => void; className?: string }) {
   const t = useShellT();
+  return (
+    <nav aria-label={t("language.label")} className={cx("seg seg--inline", className)}>
+      <LanguageAnchors onSwitch={onSwitch} linkClassName="seg__opt" />
+    </nav>
+  );
+}
+
+/** The three languages as plain words (the desktop utility strip): real links, the current one in ink. */
+export function LanguageLinks({ onSwitch, className }: { onSwitch?: () => void; className?: string }) {
+  const t = useShellT();
+  return (
+    <span role="group" aria-label={t("language.label")} className={cx("shell-langs", className)}>
+      <LanguageAnchors onSwitch={onSwitch} linkClassName="shell-langs__link" />
+    </span>
+  );
+}
+
+/** The language links themselves (shared by the bank and the plain links). */
+function LanguageAnchors({ onSwitch, linkClassName }: { onSwitch?: () => void; linkClassName: string }) {
   const locale = useLocale();
   const location = useLocation();
   const switchLanguage = useDirectionMorph();
   return (
-    <nav aria-label={t("language.label")} className={cx("seg seg--inline", className)}>
+    <>
       {languages().map((code) => (
         <a
           key={code}
@@ -65,7 +87,7 @@ export function LanguageBank({ onSwitch, className }: { onSwitch?: () => void; c
           lang={LOCALES[code].bcp47}
           hrefLang={LOCALES[code].bcp47}
           aria-current={code === locale ? "true" : undefined}
-          className="seg__opt"
+          className={linkClassName}
           data-press="soft"
           onClick={(event) => {
             if (!isPlainClick(event)) return;
@@ -78,7 +100,7 @@ export function LanguageBank({ onSwitch, className }: { onSwitch?: () => void; c
           {LOCALES[code].label}
         </a>
       ))}
-    </nav>
+    </>
   );
 }
 
@@ -166,6 +188,34 @@ const readTheme = (): "light" | "dark" => (document.documentElement.dataset.them
 export function useShownTheme(): "light" | "dark" {
   const { theme } = usePrefs();
   return useSyncExternalStore(subscribeTheme, readTheme, () => (theme === "dark" ? "dark" : "light"));
+}
+
+/**
+ * The visible light / dark switch (the desktop utility strip — the before's moon key, client note 1): a toggle button
+ * «الوضع الداكن» whose state is `aria-pressed` and a small track whose knob (sun / moon) slides. It follows what the
+ * page shows (a "system" preference included) and sets light or dark; the three-way choice stays in the footer and
+ * the categories sheet (<ThemeBank>).
+ */
+export function ThemeSwitch({ className }: { className?: string }) {
+  const t = useShellT();
+  const dark = useShownTheme() === "dark";
+  return (
+    <button
+      type="button"
+      className={cx("shell-theme", className)}
+      aria-pressed={dark}
+      title={t("theme.darkMode")}
+      data-press="soft"
+      onClick={() => void themeMorph(dark ? "light" : "dark")}
+    >
+      <span className="shell-theme__track" aria-hidden="true">
+        <span className="shell-theme__knob">
+          <Icon name={dark ? "moon" : "sun"} size={12} />
+        </span>
+      </span>
+      <span className="shell-theme__label">{t("theme.darkMode")}</span>
+    </button>
+  );
 }
 
 /** النظام · فاتح · داكن. */

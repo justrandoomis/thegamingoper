@@ -618,7 +618,8 @@ describe("routes", () => {
     expect(Object.keys(cashier.cards)).toEqual([]);
 
     const finance = (await run(people.finance.cookie, "/admin", homeLoader as never)) as Home;
-    expect(Object.keys(finance.cards).sort()).toEqual(["activity", "late", "lowStock", "result", "sales", "unmatched"]);
+    // + "trend" (client note 12): the 14-day orders sparkline, the sales report's own figures (reports.sales.read)
+    expect(Object.keys(finance.cards).sort()).toEqual(["activity", "late", "lowStock", "result", "sales", "trend", "unmatched"]);
     const financeCards = await resolved(finance);
     for (const [key, value] of Object.entries(financeCards)) expect(value.ok, key).toBe(true);
 
@@ -634,10 +635,17 @@ describe("routes", () => {
       expect(keysOf(cards).filter((key) => COST_KEY.test(key)), "inventory").toEqual([]);
     }
 
-    const owner = (await run(people.owner.cookie, "/admin?view=finance&period=month", homeLoader as never)) as Home;
-    expect(Object.keys(owner.cards).sort()).toEqual(["activity", "money", "result", "sales", "unmatched"]);
+    const owner = (await run(people.owner.cookie, "/admin?view=finance&period=month", homeLoader as never)) as Home & { quick: unknown; links: Record<string, string | null> };
+    expect(Object.keys(owner.cards).sort()).toEqual(["activity", "money", "result", "sales", "trend", "unmatched"]);
     const ownerCards = await resolved(owner);
     expect((ownerCards.result as { ok: true; data: { current: unknown } }).data.current).not.toBeNull();
+    expect(ownerCards.trend?.ok).toBe(true);
+    // the header's quick actions and the figures' lists travel with the page (home.server.ts)
+    expect(owner.quick).toEqual({ sale: true, product: true });
+    expect(owner.links.sales).toMatch(/^\/admin\/reports\/sales\?from=/);
+    expect(owner.links.net).toMatch(/^\/admin\/finance\/reports\?from=/);
+    const cashierHome = cashier as Home & { quick: unknown };
+    expect(cashierHome.quick).toEqual({ sale: true, product: false });
   });
 
   test("search and activity: 403 without their permission, the page with it", async () => {

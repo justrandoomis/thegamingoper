@@ -62,7 +62,7 @@ export default function RevealSection() {
       <Suspense fallback={<Placeholder label={c.loading} />}>
         <Await resolve={reveal}>
           {() => (
-            <BubbleGroup stagger className={GRID} data-reveal="">
+            <BubbleGroup stagger className={GRID} data-stream-demo="">
               {ITEMS.map((item) => (
                 <Bubble key={item.art} className="grid min-w-0 gap-2">
                   <Niche as="span" ratio="1/1" tagZone={false}>

@@ -5,14 +5,14 @@ import { useT } from "~/i18n/react";
 import { useSheet, type SheetEdge } from "~/motion";
 import { cx } from "./cx";
 import { Dialog, OverlayHostContext, useModalLayer, useOverlayRoot, usePresence, usePrimeLayers } from "./Dialog";
-import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
 
 /**
  * Sheets — Design System v2 §4.17: a bottom sheet below 768 (top corners --r-xl, at most 90% of the viewport) and a
- * 420px side sheet from the inline-end edge from 768. A 56px GLASS header strip (the 36×5 grabber, the title in
- * type-h3, a 44px close; the side sheet's strip is the same bar without frost — it stands over the page's own header);
- * an OPAQUE paper body that scrolls inside; a sticky paper foot with a hairline on top holding
+ * 420px side sheet from the inline-end edge from 768. v2.1: the whole sheet is ONE frosted, rim-lit glass panel
+ * (.glass.glass--panel; solid on the lite tier and under reduced transparency; the page under it goes solid). A 56px
+ * header strip (the 36×5 grabber, the title in type-h3 — Kufam, a 44px close); a body that scrolls inside; a foot with
+ * a hairline on top holding
  * the actions («امسح الكل» ghost + the primary with the live count «اعرض 24 منتجاً», which grows). Filters, the
  * governorate picker, quick look, variant choice and reason codes.
  *
@@ -216,16 +216,15 @@ function SheetPortal({
           tabIndex={-1}
           data-layer-panel=""
           className={cx(
-            "tt-sheet fixed flex flex-col text-ink outline-none",
-            bottom ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-xl shadow-overlay" : "inset-y-0 end-0 h-dvh w-[min(420px,100vw)] rounded-s-xl shadow-overlay",
+            // v2.1: the whole sheet is one frosted, rim-lit glass panel (the page under it goes solid: [data-layer-behind])
+            "tt-sheet glass glass--panel fixed flex flex-col text-ink outline-none",
+            bottom ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-xl" : "inset-y-0 end-0 h-dvh w-[min(420px,100vw)] rounded-s-xl",
             className,
           )}
           data-sheet={bottom ? "bottom" : "side"}
         >
-          {/* The side sheet's strip is opaque: it stands over the page's sticky header, whose icons and links showed
-              through it sharp behind the title (text over text, QA 2026-11-12), and nothing of the sheet scrolls under
-              it. The bottom sheet keeps its live strip. */}
-          <Glass variant={bottom ? "live" : "solid"} className={cx("relative z-[1] shrink-0", bottom ? "rounded-t-xl" : "rounded-ss-xl")}>
+          {/* The strip is part of the sheet's one pane (no glass on glass); nothing of the sheet scrolls under it. */}
+          <div className={cx("relative z-[1] shrink-0", bottom ? "rounded-t-xl" : "rounded-ss-xl")}>
             <div {...sheet.handleProps} className={cx("flex min-h-14 items-center pe-16 ps-4", bottom ? "pb-2 pt-4" : "py-2")}>
               {canResize ? (
                 <button
@@ -252,8 +251,8 @@ function SheetPortal({
               </div>
             </div>
             <IconKey icon="x" variant="plain" label={t("close")} onClick={requestClose} className={cx("absolute end-2", bottom ? "top-3" : "top-2")} />
-          </Glass>
-          <div className={cx("flex min-h-0 flex-1 flex-col bg-paper", !bottom && "rounded-es-xl")}>
+          </div>
+          <div className={cx("flex min-h-0 flex-1 flex-col", !bottom && "rounded-es-xl")}>
             <div
               className={cx(
                 "min-h-0 flex-1 overflow-y-auto overscroll-contain",

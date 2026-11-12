@@ -15,7 +15,7 @@ import { revealInRow } from "./reveal";
 /**
  * The release band — Design System v2 §4.21: the page's one dark band (graphite --band, --r-xl; in the dark theme a
  * raised panel with a rim). «قريباً» and the honest line «مواعيد الإصدار كما أعلنتها الشركات. الطلب المسبق غير متاح في
- * المتجر بعد.», then the releases: the day in large Kufi numerals beside the month and year, a relative chip «بعد 8
+ * المتجر بعد.», then the releases: the day in large Kufam numerals beside the month and year, a relative chip «بعد 8
  * أيام» only within 30 days (computed), the art on a 4:3 well, the name, the platform, the price when set and «الطلب
  * يفتح عند وصوله». Each item links to its product page. No countdowns, no pre-order buttons.
  *

@@ -3,9 +3,11 @@
  * <PageTransition><Outlet/></PageTransition>, and by its ErrorBoundary around the error panel — so a missing page still
  * has its header, tab bar and footer.
  *
- *   STORE      skip link → demo strip (demo mode, below 1024; it scrolls away) → sticky header (56; 64 + 44 from
- *              1024) → [mega-menu host] → offline banner → <main id="main"> → footer → floating tab bar (below 1024;
- *              it gives way to a page's own <TaskBar>) → categories sheet → search sheet → toasts
+ *   STORE      skip link → demo strip (demo mode, below 1024; it scrolls away) → sticky header (56; from 1024 the
+ *              utility strip + 64 + 44, the strip scrolling away) → [mega-menu host] → offline banner → <main id="main">
+ *              → footer → floating tab bar (below 1024; it gives way to a page's own <TaskBar>) → categories sheet →
+ *              search sheet → toasts. The header shows the search field or only the round search key by path
+ *              (./chrome searchMode, v2.1 §2.7); both open the same search.
  *   TASK       the same header, no tab bar (the page's <TaskBar>), the one-line footer — handle `chrome: "task"`
  *   CHECKOUT   ONE bar (56 / 64: back · mascot · step rail · demo tag · help), no strip, no search, no menus, no tab
  *              bar, the one-line footer — handle `chrome: "checkout"` (and `/checkout` by default)
@@ -29,7 +31,7 @@ import { useOnline } from "~/ui/OfflineBanner";
 import { Toaster } from "~/ui/Toast";
 import { DemoStrip, ShellOffline } from "./Banners";
 import { CategoriesSheet } from "./CategoriesSheet";
-import { backFallback, focusNudge, shellChrome, type FocusEdges } from "./chrome";
+import { backFallback, focusNudge, searchMode, shellChrome, type FocusEdges } from "./chrome";
 import { Footer, TaskFooter } from "./Footer";
 import { CheckoutBar, Header } from "./Header";
 import { ShellMessages, useShellT } from "./i18n";
@@ -96,7 +98,15 @@ function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | n
         <>
           {demo ? <DemoStrip /> : null}
           <MegaHostContext value={megaHost}>
-            <Header shell={shell} demo={demo} task={task ? { back: back ?? backFallback(path) } : null} onSearch={() => setSearchOpen(true)} searchQuery={searchQuery} />
+            <Header
+              shell={shell}
+              demo={demo}
+              task={task ? { back: back ?? backFallback(path) } : null}
+              onSearch={() => setSearchOpen(true)}
+              searchQuery={searchQuery}
+              // the field on pages for finding products, the round key elsewhere (v2.1 §2.7) — decided here, by path
+              search={searchMode(path, { errored })}
+            />
           </MegaHostContext>
           <div ref={setMegaHost} className="contents" />
         </>

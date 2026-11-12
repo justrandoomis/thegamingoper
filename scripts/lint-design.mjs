@@ -39,7 +39,8 @@
  *   v2 legacy-token     a Lens & Clay 1.0 material token (--clay-*, --red-face …, --sel-*, --well, --well-shadow,
  *                       --glass-bg/-static/-rim, --on-glass-2, --e-1…--e-5, --shade …) or its utility (bg-well,
  *                       shadow-e1…e5, bg-sel, text-on-sel, text-on-glass-2) outside the admin
- *   v2 type             font-weight 500 (Plex 500 is retired; also `font-medium`), a non-integer font size
+ *   v2 type             a non-integer font size; Kufam (--font-display / --font-head) under 15px. (v2.1 brought Plex
+ *                       500 back: weight 500 and `font-medium` are allowed again.)
  *   v2 radius           a border-radius that is not a --r-* token (the checkbox's 6px is --r-check)
  *   v2 shadow           a box-shadow written with lengths instead of an elevation token (the vocabulary is
  *                       --clay-cap/--clay-cast, --e-bar, --e-float, --e-overlay, --e-art, --rim)
@@ -123,12 +124,13 @@ function makeReporter(file, raw) {
 
 /* ───────────────────────────── shared vocabularies ───────────────────────────── */
 const LEGACY_TOKEN = /var\(--(clay-face|clay-wall|clay-lip|clay-belly|red-face|red-wall|red-lip|red-belly|sel-face|sel-wall|on-sel|sel-in|ink-lip|ink-belly|well|well-shadow|glass-bg|glass-static|glass-rim|on-glass-2|e-[1-5]|e-4-up|shade|lumen|halo|pool|spot)\)/;
-const LEGACY_UTILITY = /^(bg-well|shadow-e[1-5]|shadow-e4-up|shadow-well|shadow-wall|bg-sel|text-on-sel|text-on-glass-2|font-kufam)$/;
+const LEGACY_UTILITY = /^(bg-well|shadow-e[1-5]|shadow-e4-up|shadow-well|shadow-wall|bg-sel|text-on-sel|text-on-glass-2)$/;
 const RED_TOKEN = /var\(--(red|red-hover|hero|red-face)\)/;
 /** Where brand red may paint (DESIGN.md §6.6): primary key, card add button, bead, fly bead, logo, hero and wallet
  *  bands, the current step's disc; the admin's 1.0 commit key and bead. */
-const RED_PLACES = /(\.key--primary|\.key--red|\.cadd|\.socket|\.bead|\.fly|\.logo|\[data-logo|\.text-logo|\.band--hero|\.band--wallet|\.step\b|\.clay--red|\[data-density="admin"\])/;
-const GEL_PLACES = /(\.band__light|\.ptile__light|\[data-gel|\[data-density="admin"\])/;
+const RED_PLACES = /(\.key--primary|\.key--red|\.cadd|\.socket|\.bead|\.fly|\.logo|\[data-logo|\.text-logo|\.band--hero|\.band--wallet|\.step\b|\.carousel__dot|\.clay--red|\[data-density="admin"\])/;
+/** v2.1: the platform light is also read by a tile's floor glow (.ptile) and the ambient light (.glow, .glow-layer). */
+const GEL_PLACES = /(\.band__light|\.ptile|\.glow|\[data-gel|\[data-density="admin"\])/;
 const PLAT_PLACES = /(\.ptile|\.band\b|\.band--|\[data-gel)/;
 
 /* ───────────────────────────── CSS ───────────────────────────── */
@@ -250,9 +252,13 @@ function lintCss(file, raw) {
         report("legacy-token", line, `${prop} reads a Lens & Clay 1.0 token (${LEGACY_TOKEN.exec(value)[0]}) — admin only; use the v2 tokens (DESIGN.md §5)`);
       }
       if (!adminRule && !isTokens) {
-        // type: Plex 500 is retired; sizes are integers
-        if ((prop === "font-weight" && /^500$/.test(value)) || (prop === "font" && /^500\s/.test(value))) report("type", line, `${prop}: ${value.slice(0, 40)} — Plex 500 is retired (400 or 600)`);
+        // type: sizes are integers (v2.1 brought Plex 500 back, so weight 500 is allowed again); Kufam (the display
+        // face) never under its 15px floor
         if ((prop === "font" || prop === "font-size") && /(^|[\s/(])\d+\.\d+px/.test(withoutVars(value))) report("type", line, `${prop}: ${value.slice(0, 40)} — integer font sizes only (DESIGN.md §5.5)`);
+        if (prop === "font" && /var\(--font-(display|head)\)/.test(value)) {
+          const size = /(?:^|\s)(\d+)px\s*\//.exec(withoutVars(value));
+          if (size && Number(size[1]) < 15) report("type", line, `${prop}: ${value.slice(0, 40)} — Kufam is never under 15px (DESIGN.md §5.5)`);
+        }
         // radius: tokens only
         if (/^border(-[a-z]+)*-radius$/.test(prop) && /\d*\.?\d+(px|%|em|rem)\b/.test(withoutVars(value).replace(/\b0(px|%|em|rem)?\b/g, ""))) report("radius", line, `${prop}: ${value} — radius only through the --r-* tokens`);
         // shadow: the elevation vocabulary
@@ -399,7 +405,6 @@ function lintTs(file, raw) {
       if (/-\[(#[0-9a-f]{3,8}|(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\()/i.test(token)) report("raw-colour", line, `arbitrary colour "${token}" — use a token`);
       if (!adminFile) {
         if (LEGACY_UTILITY.test(token)) report("legacy-token", line, `utility "${token}" is a Lens & Clay 1.0 material — admin only (v2: bg-niche-2, border border-line, bg-ink text-paper, shadow-overlay …)`);
-        if (token === "font-medium") report("type", line, `utility "font-medium" — Plex 500 is retired (font-normal or font-semibold)`);
         if (/^text-\[\d+\.\d+px\]$/.test(token)) report("type", line, `utility "${token}" — integer font sizes only, from the type roles`);
         if (/^rounded(-[a-z]+)?-\[/.test(token)) report("radius", line, `utility "${token}" — radius only through the --r-* tokens (rounded-sm, -lg, -xl, -full …)`);
         if (/^shadow-\[/.test(token)) report("shadow", line, `utility "${token}" — use an elevation token (shadow-bar, -float, -overlay, -art)`);

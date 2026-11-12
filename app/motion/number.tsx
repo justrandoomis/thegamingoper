@@ -15,7 +15,10 @@
  *   animated: it is visible in every frame and simply swaps when it changes.
  * - Reduced motion: the number replaces the number. Server-rendered output is the plain final value.
  */
-import { useState, type CSSProperties, type HTMLAttributes } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type HTMLAttributes } from "react";
+
+import { useHydrating } from "./bubble";
+import { getMotionTier } from "./env";
 
 export type NumberMorphProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   value: number;
@@ -92,6 +95,124 @@ export function NumberMorph({ value, format, className, style, ...rest }: Number
             </span>
           );
         })}
+      </span>
+    </span>
+  );
+}
+
+/* ───────────────────────────── CountUp (Design v2.1 G6) ───────────────────────────── */
+
+export type CountUpProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
+  /** The number to land on (an integer: points, an offer, a KPI). */
+  value: number;
+  /** Where the count starts. Default 0. */
+  from?: number;
+  /** Turns a number into display text (e.g. `useFormat().number`). Default: `String(value)`. */
+  format?: (value: number) => string;
+  /** Length of the count in ms. Default 640 (eased out; never longer than 900). */
+  duration?: number;
+};
+
+/** The eased value at time `t` (0…1) of a count from `from` to `to`, rounded to an integer (pure, for tests). */
+export function countAt(from: number, to: number, t: number): number {
+  const clamped = Math.min(1, Math.max(0, t));
+  const eased = 1 - Math.pow(1 - clamped, 3); // ease-out cubic: fast, then settles
+  return Math.round(from + (to - from) * eased);
+}
+
+/**
+ * What a CountUp does once it has mounted (pure; exported for tests). Off screen it waits at its start (`from`, out of
+ * sight, so the shopper never sees the final value drop to zero when it arrives) and counts when it comes into view; a
+ * server-rendered number already on screen keeps its final value; a client mount on screen counts at once; without
+ * full motion it is simply the final value.
+ */
+export function countUpPlan(env: { serverRendered: boolean; visible: boolean; full: boolean }): { show: "final" | "from"; count: "never" | "now" | "on-view" } {
+  if (!env.full) return { show: "final", count: "never" };
+  if (!env.visible) return { show: "from", count: "on-view" };
+  return env.serverRendered ? { show: "final", count: "never" } : { show: "from", count: "now" };
+}
+
+/**
+ * <CountUp value={2000} format={f.number} /> — a number that matters counts up ONCE, when it first comes into view
+ * (points on the rewards page, a trade-in offer, a dashboard KPI). For a value that CHANGES (a total, a price after a
+ * currency switch) use <NumberMorph>, which rolls its digits.
+ *
+ * - No layout shift: the final text reserves the width (an invisible copy in the same grid cell), the counting text
+ *   sits on top of it. Assistive technology reads the final text only.
+ * - Server-rendered output and the first paint of a hydrated page show the final value: a number that was already on
+ *   the first screen of a server-rendered page does not drop to zero and count again (no flash). A number that mounts
+ *   on a client navigation, or one that is scrolled into view later, counts up.
+ * - Reduced motion (OS or the store's switch) and the lite tier: the final value, no count.
+ */
+export function CountUp({ value, from = 0, format, duration = 640, className, style, ...rest }: CountUpProps) {
+  const text = (n: number) => (format ? format(n) : String(n));
+  const hydrating = useHydrating();
+  const element = useRef<HTMLSpanElement>(null);
+  // Decided once, when the element mounts: a client mount may start from `from` at once (nothing was painted yet).
+  const [startsCounted] = useState(() => hydrating || typeof window === "undefined");
+  const [shown, setShown] = useState<number>(() => (startsCounted ? value : getMotionTier() === "full" ? from : value));
+  const played = useRef(false);
+
+  useEffect(() => {
+    const el = element.current;
+    if (!el || played.current) return;
+    const box = el.getBoundingClientRect();
+    const plan = countUpPlan({
+      serverRendered: startsCounted,
+      visible: box.top < window.innerHeight && box.bottom > 0,
+      full: getMotionTier() === "full" && typeof IntersectionObserver === "function",
+    });
+    if (plan.count === "never") {
+      played.current = true;
+      setShown(value);
+      return;
+    }
+    let frame = 0;
+    const run = () => {
+      played.current = true;
+      const start = performance.now();
+      const length = Math.min(900, Math.max(200, duration));
+      const step = (now: number) => {
+        const t = (now - start) / length;
+        setShown(countAt(from, value, t));
+        if (t < 1) frame = requestAnimationFrame(step);
+      };
+      frame = requestAnimationFrame(step);
+    };
+    // wait at the start — out of sight below the fold (never the final value that then drops to zero on arrival) — and
+    // count once 40% of it is in view; a client mount on screen ("now") is in view at the observer's first report. The
+    // count always starts from the observer (never inside this effect), so the value effect below cannot cut it short
+    // and a development double mount starts it again.
+    setShown(from);
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        io.disconnect();
+        run();
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [value, from, duration, startsCounted]);
+
+  // a new value after the count has played lands at once (a changing number belongs to <NumberMorph>)
+  useEffect(() => {
+    if (played.current) setShown(value);
+  }, [value]);
+
+  const finalText = text(value);
+  return (
+    <span ref={element} className={className ? `count ${className}` : "count"} style={style} {...rest}>
+      <span className="tt-num-sr">{finalText}</span>
+      <span className="count__final" aria-hidden="true">
+        {finalText}
+      </span>
+      <span className="count__live" aria-hidden="true">
+        {text(shown)}
       </span>
     </span>
   );

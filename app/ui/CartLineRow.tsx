@@ -18,7 +18,7 @@ import { TextLink } from "./TextLink";
 /**
  * One line of the cart — Design System v2 §4.13: a 96px well (120 from 1024, --r-sm) on the product ground; the name
  * (a link, two lines), the OPTION VALUE ONLY («النسخة الدولية · قطعة واحدة»), the availability («متوفر» or the problem
- * sentence), the 40px stepper, the line total (Kufi 16, tabular; a fixed 140px end column from 1024) and, under the
+ * sentence), the 40px stepper, the line total (Kufam 16, tabular; a fixed 140px end column from 1024) and, under the
  * name, «إزالة» (a trash icon, 44px) plus your own actions («نقل إلى المفضلة»). Rows are separated by hairlines. Feed it
  * the rows of `useCartEditor` (~/ui/cart-client), which owns the requests:
  *

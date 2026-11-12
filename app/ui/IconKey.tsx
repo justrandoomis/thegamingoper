@@ -5,13 +5,14 @@ import { cx } from "./cx";
 import { Key, type KeyProps } from "./Key";
 
 /**
- * The icon button — Design System v2 §4.4: a flat 40px circle (36 inside a compact stepper, 32 only on product
- * photos) that always keeps a 44px hit area. `label` is required: it is the accessible name (and the pointer
- * tooltip) and names the object ("أضف PlayStation 5 Slim إلى المفضلة").
+ * The icon button — Design System v2 §4.4; v2.1 (DESIGN.md §15.2, client note 4): a raised 44px CLAY CIRCLE (36 small,
+ * 32 on product photos) with the icon at the before's weight, rising 1px under the pointer and sinking onto its wall
+ * when pressed; always a 44px hit area. `label` is required: it is the accessible name (and the pointer tooltip) and
+ * names the object ("أضف PlayStation 5 Slim إلى المفضلة").
  *
- *   <IconKey icon="x" label={t("close")} onClick={close} />                              outline (default): paper + hairline
+ *   <IconKey icon="x" label={t("close")} onClick={close} />                              outline (default): a clay circle
  *   <IconKey icon="x" label={t("close")} variant="plain" />                              transparent (bars, sheet heads)
- *   <IconKey icon="heart" label={…} variant="onImage" size="xs" />                       on a product photo
+ *   <IconKey icon="heart" label={…} variant="onImage" size="sm" />                       a frosted disc on a photo
  *   <IconKey as={LocaleLink} to=… icon="arrow-right" label={…} variant="onColor" />      the white disc on tiles and bands
  *   <IconKey icon="heart" label={…} held={on} onClick={toggle} />                        held → filled glyph + aria-pressed
  *
@@ -26,7 +27,7 @@ export type IconKeyProps<C extends ElementType = "button"> = Omit<KeyProps<C>, "
   /** Accessible name. Say what happens and to what: "أغلق", "أضف … إلى المفضلة". */
   label: string;
   variant?: IconKeyVariant;
-  /** md 40 (default) · sm 36 (inside a 40px stepper) · xs 32 (on product photos only). All keep a 44px hit area. */
+  /** md 44 (default, v2.1) · sm 36 · xs 32 (on small product photos only). All keep a 44px hit area. */
   size?: "md" | "sm" | "xs";
 };
 
@@ -44,26 +45,28 @@ const VARIANT_CLASS: Record<IconKeyVariant, string> = {
 const SIZE_CLASS = { md: undefined, sm: "key--sm", xs: "key--xs" } as const;
 
 /*
- * A held icon button keeps its own face (v2 §4.4: the filled glyph and aria-pressed say "on", never an ink disc). The
- * stylesheet's "selected = ink" rule outranks its round-key exception (an :is() with :has() weighs more), so the face
- * is restated here as utilities — storefront only: the admin keeps its 1.0 held-down ink key.
+ * A held icon button keeps its own face (v2 §4.4: the filled glyph and aria-pressed say "on", never an ink disc; v2.1:
+ * the clay circle stays clay). The stylesheet's "selected = ink" rule leaves round keys out; the face is restated here
+ * as utilities all the same, so no later rule can paint a held icon key ink — storefront only: the admin keeps its 1.0
+ * held-down ink key.
  */
+const CLAY_HELD = "not-admin:[--face:var(--key-face)] not-admin:[--edge:var(--key-edge)] not-admin:[--hover-face:var(--key-face-hover)]";
 const HELD_FACE: Record<IconKeyVariant, string> = {
-  outline: "not-admin:[--face:var(--paper)] not-admin:[--edge:var(--line-2)]",
-  clay: "not-admin:[--face:var(--paper)] not-admin:[--edge:var(--line-2)]",
-  ink: "not-admin:[--face:var(--paper)] not-admin:[--edge:var(--line-2)]",
-  commit: "not-admin:[--face:var(--paper)] not-admin:[--edge:var(--line-2)]",
-  plain: "not-admin:[--face:transparent] not-admin:[--edge:transparent]",
-  quiet: "not-admin:[--face:transparent] not-admin:[--edge:transparent]",
-  onImage: "not-admin:[--face:var(--on-image)] not-admin:[--edge:var(--line-glass)]",
-  onColor: "not-admin:[--face:var(--on-color)] not-admin:[--edge:transparent]",
+  outline: CLAY_HELD,
+  clay: CLAY_HELD,
+  ink: CLAY_HELD,
+  commit: CLAY_HELD,
+  plain: "not-admin:[--face:transparent] not-admin:[--edge:transparent] not-admin:[--hover-face:var(--niche)]",
+  quiet: "not-admin:[--face:transparent] not-admin:[--edge:transparent] not-admin:[--hover-face:var(--niche)]",
+  onImage: "not-admin:[--face:var(--on-image)] not-admin:[--edge:var(--line-glass)] not-admin:[--hover-face:var(--paper)]",
+  onColor: "not-admin:[--face:var(--on-color)] not-admin:[--edge:transparent] not-admin:[--hover-face:var(--on-color)]",
 };
 
 export function IconKey<C extends ElementType = "button">({ icon, label, size = "md", held, className, variant = "outline", ...rest }: IconKeyProps<C>) {
   const glyph = typeof icon === "string" ? <Icon name={icon as IconName} size={20} filled={Boolean(held) && ICONS_WITH_FILL.has(icon as IconName)} /> : icon;
   const wish = typeof className === "string" && className.includes("key--wish");
   const heldFace = held
-    ? cx(HELD_FACE[variant] ?? HELD_FACE.outline, "not-admin:[--hover-face:var(--niche)]", wish ? "not-admin:[--on:var(--red-ink)]" : "not-admin:[--on:var(--ink)]")
+    ? cx(HELD_FACE[variant] ?? HELD_FACE.outline, wish ? "not-admin:[--on:var(--red-ink)]" : "not-admin:[--on:var(--ink)]")
     : undefined;
   const keyProps = {
     ...rest,

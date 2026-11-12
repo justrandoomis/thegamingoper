@@ -4,13 +4,15 @@ import type { IconName } from "~/art/Icon";
 import { LocaleLink } from "~/i18n/react";
 import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
+import { useSlidingIndicator } from "./indicator";
 import { keyIcon } from "./Key";
 import { revealFocusedItem, useKeepInView } from "./reveal";
 import { useControllable, useRovingRadio } from "./roving";
 
 /**
- * The segmented control — Design System v2 §4.6: a 44px --niche track with pill segments; the chosen segment is paper
- * with a hairline and a 600 label. One choice from a few: language (each name in its own script), theme, motion, and
+ * The segmented control — Design System v2 §4.6; v2.1: a 44px clay tray (pressed in) with pill segments; the chosen
+ * segment is a raised clay thumb that SLIDES from one segment to the next (translate only, ./indicator) and a 600
+ * label. One choice from a few: language (each name in its own script), theme, motion, and
  * the support sub-navigation (four equal link segments).
  *
  *   <Segmented aria-label={t("theme")} value={theme} onChange={setTheme}
@@ -73,6 +75,7 @@ export function Segmented({
 }: SegmentedProps) {
   const id = useId();
   const nav = useRef<HTMLElement | null>(null);
+  const group = useRef<HTMLDivElement | null>(null);
   const [current, setCurrent] = useControllable(value, defaultValue, onChange);
   const { itemProps } = useRovingRadio({
     values: options.map((option) => option.value),
@@ -83,6 +86,8 @@ export function Segmented({
   const links = options.length > 0 && options.every((option) => option.href);
   // link mode scrolls when its words do not fit: the current segment in view on the first paint and on each change
   useKeepInView(nav, "[aria-current]", links ? current : null);
+  // v2.1: the clay thumb slides under the chosen segment (before it is measured, the segment paints itself)
+  useSlidingIndicator(links ? nav : group, current, { selector: links ? "[aria-current]" : '[aria-checked="true"]', attribute: "data-thumb", x: "--thumb-x", w: "--thumb-w" });
   const body = (option: SegmentedOption) => (
     <>
       {keyIcon(option.icon, 20)}
@@ -111,6 +116,7 @@ export function Segmented({
         style={style}
         onFocus={revealFocusedItem}
       >
+        <span className="seg__thumb" aria-hidden="true" />
         {options.map((option) => (
           <LocaleLink
             key={option.value}
@@ -129,7 +135,8 @@ export function Segmented({
 
   return (
     <>
-      <div role="radiogroup" id={id} aria-label={ariaLabel} aria-labelledby={labelledBy} className={cx("seg", inline && "seg--inline justify-self-start", className)} style={style}>
+      <div ref={group} role="radiogroup" id={id} aria-label={ariaLabel} aria-labelledby={labelledBy} className={cx("seg", inline && "seg--inline justify-self-start", className)} style={style}>
+        <span className="seg__thumb" aria-hidden="true" />
         {options.map((option, index) => (
           <button
             key={option.value}

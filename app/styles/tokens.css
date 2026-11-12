@@ -1,6 +1,11 @@
 /*
- * TamTam design tokens — Design System v2 "Vivid Premium" (docs/DESIGN.md §5). Imported into the `theme` cascade
- * layer by app/app.css.
+ * TamTam design tokens — Design v2.1 "Clay & Glass" on the Design System v2 base (docs/DESIGN.md §5, §15). Imported
+ * into the `theme` cascade layer by app/app.css.
+ *
+ * v2.1 (2026-11-12, the client's first feedback round) adds, without renaming anything: the before's fonts (Kufam +
+ * Plex), clay keys (--key-*, --red-gloss-*), soft raised cards (--card-*, --e-card*), frosted glass (--glass-panel,
+ * --glass-edge, --glass-card*), ambient colour light (--glow-*), vivid glossy platform tiles in both themes
+ * (--plat-*-hi, --tile-*), the quantity tray (--tray*) and the reading role (--type-read).
  *
  * This file is the ONLY place a colour literal may be written (scripts/lint-design.mjs). Component CSS and feature
  * code reference tokens — through var(), the Tailwind utilities mapped in styles/theme.css, or the classes in
@@ -23,10 +28,11 @@
 :root {
   /* families. The "… Fallback" faces are metric-adjusted local faces (styles/fonts.css: Segoe UI on Windows, Noto Sans
      Arabic on Android): they stand in while the web fonts load, so the swap does not move layout. */
-  --font-display: "Noto Kufi Arabic", "Kufi Fallback", "Kufi Fallback Noto", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display: "Kufam Variable", "Kufam Fallback", "Kufam Fallback Noto", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-text: "IBM Plex Sans Arabic", "Plex Fallback", "Plex Fallback Noto", "Noto Sans Arabic", system-ui, sans-serif;
-  --font-head: var(--font-display); /* the headline face; Sorani uses the text face (below) */
-  --w-head: 700; /* the headline weight: Kufi 700; Plex 600 for Sorani */
+  --font-head: var(--font-display); /* the headline face: Kufam in every language (it has every Sorani letter) */
+  --w-head: 600; /* the headline weight: Kufam 600, the before's */
+  --w-figure: 700; /* prices, release days, KPI numerals: Kufam 700 */
   --ds: 1; /* deprecated: the 1.0 display scale. Constant 1 — v2 never scales sizes per language */
 
   /* type sizes: integer pixels only; they step at 768 / 1024 / 1280, never with clamp() (§5.5) */
@@ -43,9 +49,10 @@
   --fs-sm: 14px;
   --fs-xs: 13px;
   --fs-tag: 12px;
-  --fs-button: 16px;
-  --fs-button-sm: 14px;
-  /* prices (Kufi 700 figures) and their currency label (Plex 600) */
+  --fs-button: 16px; /* Kufam 600 (15px is Kufam's floor) */
+  --fs-button-sm: 14px; /* Plex 600: under Kufam's floor */
+  --fs-read: 16px; /* v2.1 G7: reading text on every width — facts, notes, descriptions (Arabic ≥ 16px on phones) */
+  /* prices (Kufam 700 figures) and their currency label (Plex 600) */
   --price-xl: 30px;
   --price-lg: 22px;
   --price-md: 18px;
@@ -216,32 +223,35 @@
  * so a lang="en" island inside an Arabic page resolves its own line heights and headline face. Line heights are the
  * Arabic / Sorani values; :lang(en) below sets the Latin ones. */
 :root {
-  --lh-display: 1.22;
-  --lh-h1: 1.3;
-  --lh-h2: 1.3;
-  --lh-lead: 1.6;
+  /* Kufam's ascent and descent (0.90 / 0.40 em) are tighter than Noto Kufi's: the before's line heights again */
+  --lh-display: 1.25;
+  --lh-h1: 1.35;
+  --lh-h2: 1.4;
+  --lh-lead: 1.65;
   --lh-body: 1.7;
+  --lh-read: 1.75; /* v2.1 G7: notes, facts, descriptions */
 }
 :root,
 [lang] {
   --type-display: var(--w-head) var(--fs-display) / var(--lh-display) var(--font-head);
   --type-h1: var(--w-head) var(--fs-h1) / var(--lh-h1) var(--font-head);
   --type-h2: var(--w-head) var(--fs-h2) / var(--lh-h2) var(--font-head);
-  --type-tile: var(--w-head) var(--fs-tile) / 1.25 var(--font-head);
-  --type-day: 700 var(--fs-day) / 1 var(--font-display);
+  --type-tile: var(--w-head) var(--fs-tile) / 1.3 var(--font-head);
+  --type-day: var(--w-figure) var(--fs-day) / 1 var(--font-display);
   --type-code: 600 var(--fs-code) / 1.3 var(--font-text);
-  --type-h3: 600 var(--fs-h3) / 1.45 var(--font-text);
+  --type-h3: var(--w-head) var(--fs-h3) / 1.45 var(--font-head); /* v2.1: Kufam, as the before's sub heads */
   --type-lead: 400 var(--fs-lead) / var(--lh-lead) var(--font-text);
   --type-body: 400 var(--fs-body) / var(--lh-body) var(--font-text);
+  --type-read: 400 var(--fs-read) / var(--lh-read) var(--font-text); /* v2.1 G7: facts, notes, descriptions */
   --type-card: 600 var(--fs-card) / 1.45 var(--font-text);
   --type-sm: 400 var(--fs-sm) / 1.5 var(--font-text);
   --type-sm-strong: 600 var(--fs-sm) / 1.5 var(--font-text);
   --type-xs: 400 var(--fs-xs) / 1.5 var(--font-text);
   --type-xs-strong: 600 var(--fs-xs) / 1.5 var(--font-text);
   --type-tag: 600 var(--fs-tag) / 1.25 var(--font-text);
-  --type-button: 600 var(--fs-button) / 1.25 var(--font-text);
-  --type-button-sm: 600 var(--fs-button-sm) / 1.25 var(--font-text);
-  --type-price: 700 var(--price-md) / 1.2 var(--font-display); /* figures only: Kufi in every language */
+  --type-button: 600 var(--fs-button) / 1.25 var(--font-display); /* v2.1: key labels in Kufam (16px ≥ its 15px floor) */
+  --type-button-sm: 600 var(--fs-button-sm) / 1.25 var(--font-text); /* 14px: Plex, under Kufam's floor */
+  --type-price: var(--w-figure) var(--price-md) / 1.2 var(--font-display); /* figures only: Kufam in every language */
 
   /* 1.0 role names, kept so today's call sites render on the v2 scale (DESIGN.md §5.5 "aliases") */
   --type-hero: var(--type-display);
@@ -266,17 +276,18 @@
 
 /* Latin, left-to-right: the same faces and sizes, Latin line heights */
 :lang(en) {
-  --lh-display: 1.12;
-  --lh-h1: 1.2;
-  --lh-h2: 1.25;
+  --lh-display: 1.15;
+  --lh-h1: 1.22;
+  --lh-h2: 1.28;
   --lh-lead: 1.5;
   --lh-body: 1.55;
+  --lh-read: 1.6;
 }
-/* Kurdish Sorani: headings in Plex 600 until a native reader approves Noto Kufi's ە and ڵا (DESIGN.md §5.5).
-   Prices stay in Kufi (digits only). */
+/* Kurdish Sorani: the same faces as Arabic. Kufam draws every Sorani letter (ڕ ڵ ۆ ێ ە ھ ڤ پ چ ژ گ — its cmap and a
+   shaping run, checked 2026-11-12), so v2's Plex headings for Sorani are not needed; a native reader still reviews the
+   ckb strings before launch (DESIGN.md §14). */
 :lang(ckb) {
-  --font-head: var(--font-text);
-  --w-head: 600;
+  --font-head: var(--font-display);
 }
 
 /* ───────────────────────────── light theme ───────────────────────────── */
@@ -290,7 +301,7 @@
   --niche: #f3f1ee; /* THE product ground: wells, stage, thumbnails, cart lines, category tiles */
   --stage: var(--niche); /* the PDP stage */
   --niche-2: #eae7e3; /* well hover and pressed, image placeholders, the ShowMore track */
-  --product-ground: var(--niche); /* what a well paints: flat in light, the lit spot in dark */
+  --product-ground: linear-gradient(180deg, var(--well-top) 0%, var(--well-bottom) 100%); /* what a well paints: the warm light well in light (v2.1), the lit spot in dark */
   --product-ground-hover: var(--niche-2); /* the hover overlay of a well (its opacity animates, never its colour) */
   --contact: rgb(0 0 0 / 0.2); /* the CSS contact ellipse under a product */
   --band: #17181c; /* the one dark band of a page (release dates) */
@@ -334,9 +345,10 @@
   --focus: #141518;
   --focus-on-color: #ffffff; /* the ring on crimson and platform surfaces */
 
-  /* glass: thin fixed bars only */
-  --glass: rgb(255 255 255 / 0.9);
-  --glass-filter: saturate(1.8) blur(20px);
+  /* glass: bars (header, tab bar, task and buy bars). v2.1: a little more frost — 82% keeps ink-2 at 4.5:1 even over
+     a black photo, and the blur and saturation do the rest */
+  --glass: rgb(255 255 255 / 0.82);
+  --glass-filter: blur(22px) saturate(1.8);
   --glass-solid: #ffffff; /* the same bar without frost */
   --scrim: rgb(14 15 18 / 0.44); /* under sheets and dialogs */
   --scrim-menu: rgb(14 15 18 / 0.08); /* under the mega menu */
@@ -396,6 +408,89 @@
   --e-overlay: 0 24px 64px -16px rgb(20 21 24 / 0.24), 0 0 0 1px var(--line-glass); /* menus, sheets, dialogs */
   --e-art: 0 8px 18px -8px rgb(0 0 0 / 0.28); /* box art and digital-card faces only */
   --rim: none; /* dark only: the edge of a cabinet and of the dark release band */
+
+  /* ── v2.1 "Clay & Glass" (DESIGN.md §15) ───────────────────────────────────────────────────────────────────────
+     Clay keys: a raised white-to-cream face on a static 2px wall, a white lip on top, a soft belly shade at the bottom
+     and a warm cast; the before's keys (1.0 materials) cleaned of their muddy grey. */
+  --clay-hi: #ffffff;
+  --clay-mid: #fcfaf7;
+  --clay-lo: #efe9e2;
+  --key-face: linear-gradient(180deg, var(--clay-hi) 0%, var(--clay-mid) 46%, var(--clay-lo) 100%);
+  --key-face-hover: linear-gradient(180deg, #ffffff 0%, #ffffff 46%, #f4efe9 100%);
+  --key-wall: #d5cbc1; /* the static wall under the face */
+  --key-lip: inset 0 1.5px 0 rgb(255 255 255 / 1);
+  --key-belly: inset 0 -7px 9px -7px rgb(84 56 44 / 0.16);
+  --key-edge: rgb(84 56 44 / 0.12); /* a 1px line around the face, so white clay reads on a white floor */
+  --key-cast: 0 9px 16px -9px rgb(84 56 44 / 0.34), 0 2px 3px -1px rgb(84 56 44 / 0.1);
+  --key-cast-sm: 0 6px 10px -6px rgb(84 56 44 / 0.32), 0 1px 2px rgb(84 56 44 / 0.08); /* chips, icon keys, discs */
+  --key-cast-press: 0 3px 6px -3px rgb(84 56 44 / 0.3);
+  --on-color-wall: rgb(0 0 0 / 0.18); /* the wall under the white disc on a tile or a band */
+  --band-rim: none; /* dark: the rim light of deep colour glass (hero, wallet, hub bands) */
+  /* the glossy red primary: the lighter red stays in the top fifth, above the label (white on the 24% stop and below
+     is ≥ 4.71:1 — scripts/contrast.mjs) */
+  --red-gloss-top: #f43a4e;
+  --red-gloss-mid: #e5132b; /* = --red */
+  --red-gloss-low: #c20e25;
+  --red-gloss-top-hover: #e42a3e;
+  --red-gloss-mid-hover: #d41027;
+  --red-gloss-low-hover: #b00c21;
+  --key-red-face: linear-gradient(180deg, var(--red-gloss-top) 0%, var(--red-gloss-mid) 24%, var(--red-gloss-low) 100%);
+  --key-red-face-hover: linear-gradient(180deg, var(--red-gloss-top-hover) 0%, var(--red-gloss-mid-hover) 24%, var(--red-gloss-low-hover) 100%);
+  --key-red-lip: inset 0 1.5px 0 rgb(255 210 215 / 0.6);
+  --key-red-belly: inset 0 -8px 10px -8px rgb(90 0 14 / 0.45);
+  --key-red-cast: 0 12px 22px -10px rgb(229 19 43 / 0.55), 0 3px 6px -2px rgb(158 11 30 / 0.3);
+  --key-red-cast-press: 0 5px 10px -5px rgb(229 19 43 / 0.5);
+  /* the selected chip / held key: ink, held down on its wall */
+  --key-held-wall: #000000;
+  --key-held-lip: inset 0 2px 3px rgb(0 0 0 / 0.5);
+  /* the quantity tray: clay pressed in, with a raised round «+» */
+  --tray: #eee8e1;
+  --tray-shadow: inset 0 2px 4px rgb(84 56 44 / 0.2), inset 0 -1px 0 rgb(255 255 255 / 0.9);
+
+  /* soft raised cards: paper with a top light, a hairline and a warm two-step shadow (the before's softness, no grey) */
+  --card: #ffffff;
+  --card-face: linear-gradient(180deg, #ffffff 0%, #fefdfb 100%);
+  --card-line: rgb(84 56 44 / 0.08);
+  --card-rim: inset 0 1px 0 rgb(255 255 255 / 1);
+  --e-card: 0 1px 2px rgb(84 56 44 / 0.06), 0 10px 24px -14px rgb(84 56 44 / 0.24);
+  --e-card-hover: 0 2px 6px rgb(84 56 44 / 0.08), 0 22px 40px -18px rgb(84 56 44 / 0.34);
+  /* composites (declared in both theme blocks, so a theme island resolves them with its own colours) */
+  --e-surface: var(--card-rim), 0 0 0 1px var(--card-line), var(--e-card);
+  --e-surface-quiet: var(--card-rim), 0 0 0 1px var(--card-line);
+  --e-disc: var(--key-lip), var(--key-belly), 0 0 0 1px var(--key-edge), var(--key-cast-sm);
+  /* the warm light well under every product picture (a gradient: lighter at the top) */
+  --well-top: #f8f6f3;
+  --well-bottom: #efebe5;
+
+  /* frosted glass on panels (menus, sheets, the mega menu, floating tags, carousel controls) and real glass cards */
+  --glass-panel: rgb(255 255 255 / 0.84);
+  --glass-panel-filter: blur(24px) saturate(1.8);
+  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(255 255 255 / 0.5), 0 0 0 1px rgb(20 21 24 / 0.07);
+  --glass-sheen: linear-gradient(180deg, rgb(255 255 255 / 0.5) 0%, rgb(255 255 255 / 0) 55%);
+  --glass-card: linear-gradient(180deg, rgb(255 255 255 / 0.78) 0%, rgb(255 255 255 / 0.6) 100%);
+  --glass-card-filter: blur(20px) saturate(1.7);
+  --e-glass: 0 18px 40px -18px rgb(84 56 44 / 0.26), 0 2px 6px rgb(84 56 44 / 0.06);
+
+  /* ambient colour light: a wide, low radial in brand red (or the platform colour) behind heroes, stages and tiles */
+  --glow-a: 0.16;
+  --glow-a-strong: 0.26;
+  /* the floor's own light (base.css body::before): none on the warm white floor */
+  --floor-light: none;
+
+  /* platform tiles: vivid glossy colour in BOTH themes — a radial from a lighter tint at the hardware corner to the
+     deep colour at the far corner, a white top rim and specular band above the words, a coloured glow on the floor.
+     White words sit where the face is the flat colour or deeper (≥ 4.80:1). */
+  --plat-nintendo-hi: #ff3b46;
+  --plat-playstation-hi: #1f8bea;
+  --plat-xbox-hi: #2a9a2a;
+  --plat-handheld-hi: #7a62ee;
+  --tile-mix: 100%; /* how much of the platform colour the face keeps (dark: the same — never a grey cabinet) */
+  --tile-rim: inset 0 1px 0 rgb(255 255 255 / 0.42), inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 -14px 24px -16px rgb(0 0 0 / 0.3);
+  --tile-specular: linear-gradient(180deg, rgb(255 255 255 / 0.3) 0%, rgb(255 255 255 / 0.07) 7%, rgb(255 255 255 / 0) 11%);
+  --tile-glow-a: 0.42;
+  --e-tile: 0 14px 28px -14px rgb(20 21 24 / 0.32);
+  /* showcase bands (hub band, device head): how much platform colour they keep (dark: deep platform glass) */
+  --band-plat-mix: 100%;
 
   /* ── legacy: admin only ─────────────────────────────────────────────────────────────────────────────────────
      Lens & Clay 1.0 materials. Only [data-density="admin"] rules and app/styles/admin.css may read them (lint rule
@@ -484,8 +579,8 @@
   --focus: #f4f3f1;
   --focus-on-color: #ffffff;
 
-  --glass: rgb(27 28 32 / 0.88);
-  --glass-filter: saturate(1.6) blur(20px) brightness(0.9);
+  --glass: rgb(26 27 32 / 0.82);
+  --glass-filter: blur(22px) saturate(1.6) brightness(0.92);
   --glass-solid: #1b1c20;
   --scrim: rgb(0 0 0 / 0.6);
   --scrim-menu: rgb(0 0 0 / 0.3);
@@ -513,12 +608,13 @@
   --lit: 1;
   --unlit: 0;
   --cab: #1e1f25;
-  --hero-face: var(--cab);
-  --hero-light: rgb(var(--gel-brand) / 0.55);
+  /* v2.1: the hero and wallet bands are deep crimson glass in dark (never a grey cabinet); the light inside stays */
+  --hero-face: #4c0913;
+  --hero-light: rgb(var(--gel-brand) / 0.5);
   --hero-contact: rgb(0 0 0 / 0.45);
-  --hero-pool: rgb(var(--gel-brand) / 0.4);
-  --tile-sheen: transparent;
-  --tile-gel-a: 0.5;
+  --hero-pool: rgb(var(--gel-brand) / 0.36);
+  --tile-sheen: rgb(255 255 255 / 0.1);
+  --tile-gel-a: 0;
   --tile-cap: var(--rim);
   --tile-cast: none;
   --cab-key-light: rgb(255 255 255 / 0.09);
@@ -529,9 +625,10 @@
   --on-image: rgb(27 28 32 / 0.88);
   --on-white: #141518;
   --opaque-blend: normal;
-  --on-band-face: var(--red);
-  --on-band-face-hover: var(--red-hover);
-  --on-band-label: #ffffff;
+  /* v2.1: the on-band key stays a white clay key on the deep crimson glass */
+  --on-band-face: #f6f3f0;
+  --on-band-face-hover: #ffffff;
+  --on-band-label: var(--on-band-key);
   --wallet-light: rgb(var(--gel-brand) / 0.4);
 
   --clay-cap: inset 0 1px 0 rgb(255 255 255 / 0.22);
@@ -541,6 +638,87 @@
   --e-overlay: 0 24px 64px -16px rgb(0 0 0 / 0.7), 0 0 0 1px var(--line-glass);
   --e-art: 0 8px 18px -8px rgb(0 0 0 / 0.5);
   --rim: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 0 0 1px var(--line);
+
+  /* ── v2.1 "Clay & Glass" (see the light block): dark clay has a rim light; cards and panels are REAL glass ── */
+  --clay-hi: #3b3e47;
+  --clay-mid: #2d2f36;
+  --clay-lo: #24262c;
+  --key-face: linear-gradient(180deg, var(--clay-hi) 0%, var(--clay-mid) 46%, var(--clay-lo) 100%);
+  --key-face-hover: linear-gradient(180deg, #434650 0%, #32343c 46%, #282a31 100%);
+  --key-wall: #0b0c0f;
+  --key-lip: inset 0 1px 0 rgb(255 255 255 / 0.17);
+  --key-belly: inset 0 -7px 9px -7px rgb(0 0 0 / 0.4);
+  --key-edge: rgb(255 255 255 / 0.07);
+  --key-cast: 0 10px 18px -9px rgb(0 0 0 / 0.7), 0 2px 4px -1px rgb(0 0 0 / 0.4);
+  --key-cast-sm: 0 6px 12px -6px rgb(0 0 0 / 0.65), 0 1px 2px rgb(0 0 0 / 0.35);
+  --key-cast-press: 0 4px 8px -4px rgb(0 0 0 / 0.7);
+  --on-color-wall: rgb(0 0 0 / 0.3);
+  --band-rim: inset 0 1px 0 rgb(255 255 255 / 0.16), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 24px 48px -24px rgb(0 0 0 / 0.7);
+  --red-gloss-top: #f43a4e;
+  --red-gloss-mid: #e5132b;
+  --red-gloss-low: #c20e25;
+  --red-gloss-top-hover: #e42a3e;
+  --red-gloss-mid-hover: #d41027;
+  --red-gloss-low-hover: #b00c21;
+  --key-red-face: linear-gradient(180deg, var(--red-gloss-top) 0%, var(--red-gloss-mid) 24%, var(--red-gloss-low) 100%);
+  --key-red-face-hover: linear-gradient(180deg, var(--red-gloss-top-hover) 0%, var(--red-gloss-mid-hover) 24%, var(--red-gloss-low-hover) 100%);
+  --key-red-lip: inset 0 1.5px 0 rgb(255 190 196 / 0.5);
+  --key-red-belly: inset 0 -8px 10px -8px rgb(60 0 10 / 0.55);
+  --key-red-cast: 0 12px 24px -10px rgb(229 19 43 / 0.5), 0 3px 6px -2px rgb(0 0 0 / 0.5);
+  --key-red-cast-press: 0 5px 10px -5px rgb(229 19 43 / 0.45);
+  --key-held-wall: #8f8a85;
+  --key-held-lip: inset 0 2px 3px rgb(84 56 44 / 0.35);
+  --tray: #111215;
+  --tray-shadow: inset 0 2px 5px rgb(0 0 0 / 0.65), inset 0 -1px 0 rgb(255 255 255 / 0.07);
+
+  /* cards: faux glass (a white 7% → 3% gradient on paper, a rim light brighter on top, a deep soft shadow) — real blur
+     only on bars, sheets, the hero and a few tiles (.surface--glass) */
+  --card: #1d1e23;
+  /* review 2026-11-12 (client note 3, "on gray doesn't look glass"): the veil sits on a SEE-THROUGH tint, so the
+     floor's ambient light (--floor-light) shows through every card and panel as the page moves — glass with
+     something behind it, at the cost of no blur. Opaque under reduced transparency (end of this file). */
+  --card-veil: rgb(255 255 255 / 0.085);
+  --card-veil-low: rgb(255 255 255 / 0.03);
+  --card-tint: rgb(24 25 30 / 0.55);
+  --card-face: linear-gradient(180deg, var(--card-veil) 0%, var(--card-veil-low) 100%), var(--card-tint);
+  --card-line: rgb(255 255 255 / 0.08);
+  --card-rim: inset 0 1px 0 rgb(255 255 255 / 0.13), inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  --e-card: 0 1px 2px rgb(0 0 0 / 0.45), 0 16px 32px -18px rgb(0 0 0 / 0.85);
+  --e-card-hover: 0 2px 6px rgb(0 0 0 / 0.5), 0 26px 48px -20px rgb(0 0 0 / 0.9);
+  --e-surface: var(--card-rim), 0 0 0 1px var(--card-line), var(--e-card);
+  --e-surface-quiet: var(--card-rim), 0 0 0 1px var(--card-line);
+  --e-disc: var(--key-lip), var(--key-belly), 0 0 0 1px var(--key-edge), var(--key-cast-sm);
+  --well-top: #2a2c32;
+  --well-bottom: #222328;
+
+  --glass-panel: rgb(30 31 37 / 0.84);
+  --glass-panel-filter: blur(24px) saturate(1.5) brightness(0.92);
+  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 0.16), inset 0 0 0 1px rgb(255 255 255 / 0.07), 0 0 0 1px rgb(0 0 0 / 0.45);
+  --glass-sheen: linear-gradient(180deg, rgb(255 255 255 / 0.08) 0%, rgb(255 255 255 / 0) 50%);
+  --glass-card: linear-gradient(180deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0.05) 100%);
+  --glass-card-filter: blur(20px) saturate(1.5);
+  --e-glass: 0 26px 52px -22px rgb(0 0 0 / 0.8), 0 2px 6px rgb(0 0 0 / 0.4);
+
+  --glow-a: 0.3;
+  --glow-a-strong: 0.42;
+  /* the dark floor's ambient light (G3 "ambient colour glows on the floor"; base.css body::before, a fixed layer painted
+     once): a wide crimson light at the top by the logo, a low violet one at the bottom on the other side */
+  --floor-glow-1: rgb(var(--gel-brand) / 0.13);
+  --floor-glow-2: rgb(var(--gel-handheld) / 0.09);
+  --floor-light:
+    radial-gradient(85% 55% at calc(50% - 32% * var(--dir)) 0%, var(--floor-glow-1), transparent 72%),
+    radial-gradient(75% 55% at calc(50% + 40% * var(--dir)) 100%, var(--floor-glow-2), transparent 72%);
+
+  --plat-nintendo-hi: #ff3b46;
+  --plat-playstation-hi: #1f8bea;
+  --plat-xbox-hi: #2a9a2a;
+  --plat-handheld-hi: #7a62ee;
+  --tile-mix: 100%;
+  --tile-rim: inset 0 1px 0 rgb(255 255 255 / 0.36), inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 -14px 24px -16px rgb(0 0 0 / 0.4);
+  --tile-specular: linear-gradient(180deg, rgb(255 255 255 / 0.26) 0%, rgb(255 255 255 / 0.06) 7%, rgb(255 255 255 / 0) 11%);
+  --tile-glow-a: 0.5;
+  --e-tile: 0 16px 32px -14px rgb(0 0 0 / 0.75);
+  --band-plat-mix: 58%;
 
   /* ── legacy: admin only (see the light block) ── */
   --well: #0e0f12;
@@ -577,8 +755,9 @@
 }
 
 /* ───────────────────────────── admin density (DESIGN.md §10) ─────────────────────────────
- * The admin keeps its compact type and the 1.0 type roles (same sizes, the v2 faces: Kufam is retired) and the 1.0
- * scrim and focus ring. Also on language islands inside the admin, which would otherwise re-declare the roles. */
+ * The admin keeps its compact type and the 1.0 type roles (same sizes; titles and KPI numerals in Kufam again, as
+ * before the redesign) and the 1.0 scrim and focus ring. Also on language islands inside the admin, which would
+ * otherwise re-declare the roles. */
 [data-density="admin"],
 [data-density="admin"] [lang] {
   --gutter: 24px;
@@ -618,5 +797,12 @@
     --line: var(--line-strong);
     --line-2: var(--line-strong);
     --line-glass: var(--line-strong);
+  }
+}
+/* less transparency (and more contrast): the dark faux glass is opaque again — the floor's light no longer shows
+   through it (base.css hides the light itself under more contrast) */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  [data-theme="dark"] {
+    --card-tint: #1a1b20;
   }
 }

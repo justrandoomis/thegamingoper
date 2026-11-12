@@ -65,6 +65,20 @@ export default defineMessages({
     link: {
       external: "يفتح في نافذة جديدة",
     },
+    carousel: {
+      role: "عرض شرائح",
+      slide: "شريحة",
+      of: "{index} من {count}",
+      goTo: "اعرض الشريحة {index} من {count}",
+      next: "الشريحة التالية",
+      previous: "الشريحة السابقة",
+      pause: "أوقف التبديل التلقائي",
+      play: "شغّل التبديل التلقائي",
+    },
+    note: {
+      more: "اعرف المزيد",
+    },
+    success: "تمّ",
     platform: {
       nintendo: "Nintendo",
       playstation: "PlayStation",
@@ -128,6 +142,20 @@ export default defineMessages({
     link: {
       external: "opens in a new tab",
     },
+    carousel: {
+      role: "carousel",
+      slide: "slide",
+      of: "{index} of {count}",
+      goTo: "Show slide {index} of {count}",
+      next: "Next slide",
+      previous: "Previous slide",
+      pause: "Pause automatic switching",
+      play: "Play automatic switching",
+    },
+    note: {
+      more: "Learn more",
+    },
+    success: "Done",
     platform: {
       nintendo: "Nintendo",
       playstation: "PlayStation",
@@ -191,6 +219,20 @@ export default defineMessages({
     link: {
       external: "لە پەنجەرەیەکی نوێدا دەکرێتەوە",
     },
+    carousel: {
+      role: "پیشاندانی سلاید",
+      slide: "سلاید",
+      of: "{index} لە {count}",
+      goTo: "سلایدی {index} لە {count} پیشان بدە",
+      next: "سلایدی دواتر",
+      previous: "سلایدی پێشوو",
+      pause: "گۆڕینی خۆکار ڕابگرە",
+      play: "گۆڕینی خۆکار دەستپێبکەرەوە",
+    },
+    note: {
+      more: "زیاتر بزانە",
+    },
+    success: "تەواو بوو",
     platform: {
       nintendo: "Nintendo",
       playstation: "PlayStation",

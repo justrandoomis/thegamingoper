@@ -1,5 +1,15 @@
 # Showcase components — props and examples
 
+## Design v2.1 «Clay & Glass» (2026-11-12) — DESIGN.md §15
+
+- **PlatformTile** — vivid glossy glass in BOTH themes (a radial from `--plat-*-hi` at the hardware's corner to the deep
+  colour, a specular band above the words, a coloured floor glow); white words; never the grey cabinet in dark.
+- **Band** — hub and device bands keep the platform's deep colour in dark (glass with a rim light); the hero and wallet
+  bands are deep crimson glass in dark; the on-band key stays white clay.
+- **EntryCard** `icon` — the before's support row (a clay disc, the words, an arrow); with `art` as before. Both lift.
+- **CategoryTile** `icon` — the reference's icon tile (a clay square with a red line icon, e.g. `kind-controller`).
+- **Ambient light** — `className="glow"` (brand red, or the platform's colour inside `data-gel`) behind heroes and tiles.
+
 Owner: the kit (`app/ui/*` below), strings in `app/i18n/messages/ui-shop.ts` (`tile`, `trust`, `release`, `contact`
 groups) and `ui.ts`. Spec: Design System v2 §4.18–§4.27; CSS classes: `docs/UI.md` §2 (`.band`, `.ptile`, `.trust`,
 `.facts`, `.release`, `.sechead`, `.entry`, `.cats`, `.contact`, `.compat`). Live, every state, ar/en/ckb × light/dark:

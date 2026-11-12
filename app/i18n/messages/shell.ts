@@ -47,6 +47,12 @@ export default defineMessages({
       light: "فاتح",
       dark: "داكن",
       system: "النظام",
+      // the desktop utility strip's switch (a toggle: its state is said by aria-pressed)
+      darkMode: "الوضع الداكن",
+    },
+    utility: {
+      label: "روابط المتجر",
+      delivery: "التوصيل {fee} لكل محافظات العراق",
     },
     nav: {
       main: "التنقل الرئيسي",
@@ -55,6 +61,9 @@ export default defineMessages({
       accessories: "الإكسسوارات",
       used: "المستعمل",
       support: "الدعم",
+      repair: "الصيانة",
+      // the mega menu's featured product: the clay key inside its card
+      view: "عرض المنتج",
       menuFor: "قائمة {name}",
       all: "كل منتجات {name}",
       count: {
@@ -258,6 +267,11 @@ export default defineMessages({
       light: "Light",
       dark: "Dark",
       system: "System",
+      darkMode: "Dark mode",
+    },
+    utility: {
+      label: "Store links",
+      delivery: "Delivery {fee} to every governorate in Iraq",
     },
     nav: {
       main: "Main navigation",
@@ -266,6 +280,8 @@ export default defineMessages({
       accessories: "Accessories",
       used: "Used",
       support: "Support",
+      repair: "Repair",
+      view: "View product",
       menuFor: "{name} menu",
       all: "Everything for {name}",
       count: {
@@ -455,6 +471,11 @@ export default defineMessages({
       light: "ڕوون",
       dark: "تاریک",
       system: "سیستەم",
+      darkMode: "دۆخی تاریک",
+    },
+    utility: {
+      label: "بەستەرەکانی فرۆشگا",
+      delivery: "گەیاندن {fee} بۆ هەموو پارێزگاکانی عێراق",
     },
     nav: {
       main: "ڕێنیشاندەری سەرەکی",
@@ -463,6 +484,8 @@ export default defineMessages({
       accessories: "پاشکۆکان",
       used: "بەکارهاتوو",
       support: "پشتگیری",
+      repair: "چاککردنەوە",
+      view: "بینینی بەرهەم",
       menuFor: "لیستی {name}",
       all: "هەموو بەرهەمەکانی {name}",
       count: {

@@ -1,10 +1,42 @@
-import { useLayoutEffect, type RefObject } from "react";
+import { createElement, useLayoutEffect, type ComponentPropsWithRef, type ElementType, type RefObject } from "react";
 
 /*
- * Rows that scroll sideways (rails, tabs, link segments, chip rows): bring one item fully into view by scrolling the
- * ROW only — never the page — and only when part of it is hidden. Used by ./Rail (keyboard focus), ./Tabs and
- * ./Segmented (the current one on mount and on change).
+ * Two kinds of "reveal":
+ *
+ * 1. Section reveal (Design v2.1 G6): `<Reveal>` / `revealProps()` mark an element so it fades up 16px as it first
+ *    enters the viewport (or, with `stagger`, its children one after another, 60ms apart, six steps at most). The
+ *    engine does the rest (app/motion/reveal.ts, started by <MotionRoot>): nothing above the fold ever moves, nothing
+ *    hides before JavaScript, and reduced motion, the lite tier and automation skip it.
+ *
+ *      import { Reveal, revealProps } from "~/ui/reveal";
+ *      <Reveal as="section" aria-labelledby={id}>…</Reveal>
+ *      <Reveal stagger className="cards cards--5">{cards}</Reveal>
+ *      <section {...revealProps()}>…</section>              on an element you already render
+ *      <ul {...revealProps({ stagger: true })}>…</ul>
+ *
+ *    Use it on page sections below the first screen (shelves, the release band, the trust strip, entry cards); never
+ *    on the hero, the LCP image, a form, or anything the shopper is reading when it arrives.
+ *
+ * 2. Rows that scroll sideways (rails, tabs, link segments, chip rows): bring one item fully into view by scrolling the
+ *    ROW only — never the page — and only when part of it is hidden. Used by ./Rail (keyboard focus), ./Tabs and
+ *    ./Segmented (the current one on mount and on change).
  */
+
+/** The attributes of a revealed element: `<section {...revealProps()}>`, `<ul {...revealProps({ stagger: true })}>`. */
+export function revealProps({ stagger = false }: { stagger?: boolean } = {}): { "data-reveal": "" | "stagger" } {
+  return { "data-reveal": stagger ? "stagger" : "" };
+}
+
+export type RevealProps<C extends ElementType = "div"> = {
+  as?: C;
+  /** Reveal the children one after another instead of the element itself. */
+  stagger?: boolean;
+} & Omit<ComponentPropsWithRef<C>, "as">;
+
+/** A section that fades up as it first enters the viewport (see the note at the top). */
+export function Reveal<C extends ElementType = "div">({ as, stagger = false, ...rest }: RevealProps<C>) {
+  return createElement(as ?? "div", { ...rest, ...revealProps({ stagger }) });
+}
 
 /**
  * Keep the row's current item (`selector`, e.g. "[aria-current]") in view: on the first paint, when `key` (the current

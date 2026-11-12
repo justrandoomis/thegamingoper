@@ -277,8 +277,8 @@ export default defineMessages({
         coupons: "يُطبّق: الدفع يتحقق من الكوبون ويحسب خصمه ويسجّل استخدامه.",
         rules: "لا يُطبّق بعد: تحتاج النواة إلى قراءة القواعد عند حساب السلة.",
         flash: "لا يُطبّق بعد: تحتاج النواة إلى سعر العرض وحجز الكمية المخصصة عند الطلب.",
-        points: "النقاط تُكسب وتُرحّل هنا، ولا تُستبدل عند الدفع بعد.",
-        vip: "مضاعف النقاط يعمل. خصم العضوية والتوصيل المجاني لا يطبّقهما الدفع بعد.",
+        points: "يُطبّق: يستبدل العميل المسجّل نقاطه عند الدفع في الموقع، في حدود رصيده وما بقي من ثمن البضاعة، وتعود إليه إن أُلغي الطلب أو رُدّ ثمنه.",
+        vip: "يُطبّق: خصم العضوية ضمن حدود الخصم في الإعدادات، والتوصيل المجاني حين تمنحه الفئة، ومضاعف النقاط عند ترحيلها. الوصول المبكر لا يُطبّق بعد.",
         giftCards: "يعمل: قيمة البطاقة تُضاف إلى محفظة العميل، والمحفظة تدفع عند الطلب.",
         referrals: "تُسجّل هنا يدوياً: لا يكتب المتسوق رمز الإحالة في المتجر بعد.",
         experiments: "تُقاس من الطلبات بالكوبون، ولا يُحسب الزوار بعد.",
@@ -636,7 +636,7 @@ export default defineMessages({
     points: {
       title: "نقاط المكافآت",
       lead: "العميل يكسب نقاطاً عن الطلبات المسلّمة بعد انتهاء مدة الإرجاع، وتنتهي النقاط بعد مدة، وكل حركة سطر في دفتر لا يُعدّل.",
-      boundary: "النقاط لا تُستبدل عند الدفع بعد: تحتاج النواة إلى خصم بقيمة النقاط ({value} للنقطة) وسطر استبدال في دفعة الطلب نفسها.",
+      boundary: "نقطة البيع في المتجر لا تستبدل النقاط بعد. الدفع في الموقع يستبدلها للعميل المسجّل ({value} للنقطة).",
       k: {
         outstanding: "نقاط في الأرصدة",
         worth: "قيمتها {amount}",
@@ -816,7 +816,7 @@ export default defineMessages({
     vip: {
       title: "العضويات المميزة",
       lead: "فئات VIP بمزايا مكتوبة وشروط توصيل. من يستحقها يحددها قسم العملاء بقاعدته، ومنحها قرار موظف مع السبب.",
-      boundary: "مضاعف النقاط يعمل عند ترحيل النقاط. خصم العضوية والتوصيل المجاني والوصول المبكر لا يطبّقها الدفع بعد: تحتاج النواة إلى قراءة العضوية الفعّالة عند حساب السلة ورسم التوصيل (الرسم المخزّن لا يتغير).",
+      boundary: "الوصول المبكر لا يطبّقه الدفع بعد، ونقطة البيع لا تطبّق مزايا العضوية بعد. الدفع في الموقع يطبّق خصم العضوية (ضمن حدود الخصم في الإعدادات، فلا يحتاج شخصاً ثانياً) والتوصيل المجاني ومضاعف النقاط.",
       tiers: "الفئات",
       noTiers: "لا فئات بعد. أنشئ أول فئة بمزاياها.",
       noTiersRead: "لم تُنشأ فئات بعد.",
@@ -1410,8 +1410,8 @@ export default defineMessages({
         coupons: "Applied: the checkout validates the coupon, computes its discount and records its use.",
         rules: "Not applied yet: the core must read the rules when it prices the cart.",
         flash: "Not applied yet: the core must use the sale price and claim the allowance when an order is placed.",
-        points: "Points are earned and posted here; they are not redeemed at checkout yet.",
-        vip: "The points multiplier works. The member discount and free delivery are not applied at checkout yet.",
+        points: "Applied: a signed-in customer redeems points at the online checkout, up to their balance and what is left of the goods; they come back if the order is cancelled or refunded.",
+        vip: "Applied: the member discount within the discount limits in the settings, free delivery when the tier gives it, and the points multiplier when points are posted. Early access is not applied yet.",
         giftCards: "Works: a card's value goes into the customer's wallet, and the wallet pays at checkout.",
         referrals: "Recorded here by hand: shoppers cannot type a referral code in the store yet.",
         experiments: "Measured from orders per coupon; visitors are not counted yet.",
@@ -1779,7 +1779,7 @@ export default defineMessages({
     points: {
       title: "Reward points",
       lead: "Customers earn points on delivered orders once the return window has passed; points expire after a while; every movement is a line in a ledger that never changes.",
-      boundary: "Points are not redeemed at checkout yet: the core needs a discount worth the points ({value} a point) and a redemption line in the order's own batch.",
+      boundary: "The point of sale in the store does not redeem points yet. The online checkout redeems them for a signed-in customer ({value} a point).",
       k: {
         outstanding: "Points held",
         worth: "Worth {amount}",
@@ -1949,7 +1949,7 @@ export default defineMessages({
     vip: {
       title: "VIP memberships",
       lead: "VIP tiers with written benefits and delivery terms. Who qualifies is decided by the customers module's rule; granting one is an employee's decision with a reason.",
-      boundary: "The points multiplier works when points are posted. The member discount, free delivery and early access are not applied at checkout yet: the core must read the active membership when it prices the cart and the delivery fee (the stored fee itself never changes).",
+      boundary: "Early access is not applied at checkout yet, and the point of sale does not apply membership benefits yet. The online checkout applies the member discount (within the discount limits in the settings, so no second person is needed), free delivery and the points multiplier.",
       tiers: "Tiers",
       noTiers: "No tiers yet. Create the first tier with its benefits.",
       noTiersRead: "No tiers created yet.",
@@ -2535,8 +2535,8 @@ export default defineMessages({
         coupons: "جێبەجێ دەکرێت: پارەدان کۆپۆن دەپشکنێت، داشکاندنەکەی دەژمێرێت و بەکارهێنانەکەی تۆمار دەکات.",
         rules: "هێشتا جێبەجێ ناکرێت: ناوەکی دەبێت لە کاتی نرخدانانی سەبەتە یاساکان بخوێنێتەوە.",
         flash: "هێشتا جێبەجێ ناکرێت: ناوەکی دەبێت نرخی ئۆفەر بەکاربهێنێت و لە کاتی داواکاریدا لە بڕی تەرخانکراو بگرێت.",
-        points: "خاڵەکان لێرە بەدەست دێن و تۆمار دەکرێن؛ هێشتا لە پارەداندا ناگۆڕدرێنەوە.",
-        vip: "لێکدەری خاڵەکان کار دەکات. داشکاندنی ئەندامێتی و گەیاندنی بێبەرامبەر هێشتا لە پارەداندا جێبەجێ ناکرێن.",
+        points: "جێبەجێ دەکرێت: کڕیاری چوونەژوورەوە لە پارەدانی ماڵپەڕدا خاڵەکانی دەگۆڕێتەوە، لە سنووری باڵانسەکەی و ئەوەی لە نرخی کاڵاکان ماوەتەوە؛ ئەگەر داواکارییەکە هەڵوەشێنرایەوە یان پارەکەی گەڕێندرایەوە خاڵەکان دەگەڕێنەوە.",
+        vip: "جێبەجێ دەکرێت: داشکاندنی ئەندامێتی لە سنووری داشکاندنی ڕێکخستنەکاندا، گەیاندنی بێبەرامبەر کاتێک پلەکە دەیبەخشێت، و لێکدەری خاڵەکان لە کاتی تۆمارکردنی خاڵدا. دەستگەیشتنی زوو هێشتا جێبەجێ ناکرێت.",
         giftCards: "کار دەکات: بەهای کارت دەچێتە جزدانی کڕیار، و جزدان لە پارەداندا دەدات.",
         referrals: "لێرە بە دەست تۆمار دەکرێن: کڕیار هێشتا ناتوانێت کۆدی ناساندن لە فرۆشگا بنووسێت.",
         experiments: "لە داواکارییەکانەوە بەپێی کۆپۆن دەپێورێت؛ سەردانکەران هێشتا ناژمێردرێن.",
@@ -2907,7 +2907,7 @@ export default defineMessages({
     points: {
       title: "خاڵەکانی خەڵات",
       lead: "کڕیاران لەسەر داواکارییە گەیەندراوەکان دوای تێپەڕبوونی ماوەی گەڕاندنەوە خاڵ بەدەست دەهێنن؛ خاڵەکان دوای ماوەیەک بەسەردەچن؛ هەموو جووڵەیەک دێڕێکە لە دەفتەرێک کە هەرگیز ناگۆڕێت.",
-      boundary: "خاڵەکان هێشتا لە پارەداندا ناگۆڕدرێنەوە: ناوەکی داشکاندنێکی بە بەهای خاڵەکان ({value} بۆ هەر خاڵێک) و دێڕێکی گۆڕینەوەی لە هەمان کۆمەڵەی داواکاریدا پێویستە.",
+      boundary: "خاڵی فرۆشی ناو فرۆشگا هێشتا خاڵەکان ناگۆڕێتەوە. پارەدانی ماڵپەڕ بۆ کڕیاری چوونەژوورەوە دەیانگۆڕێتەوە ({value} بۆ هەر خاڵێک).",
       k: {
         outstanding: "خاڵی هەڵگیراو",
         worth: "بەهاکەی {amount}",
@@ -3077,7 +3077,7 @@ export default defineMessages({
     vip: {
       title: "ئەندامێتیی تایبەت",
       lead: "پلەکانی VIP بە سوودی نووسراو و مەرجی گەیاندن. کێ شیاوە یاسای بەشی کڕیاران دیاری دەکات؛ بەخشینی بڕیاری کارمەندێکە بە هۆکارەوە.",
-      boundary: "لێکدەری خاڵەکان لە کاتی تۆمارکردنی خاڵ کار دەکات. داشکاندنی ئەندامێتی و گەیاندنی بێبەرامبەر و دەستگەیشتنی زوو هێشتا لە پارەداندا جێبەجێ ناکرێن: ناوەکی دەبێت لە کاتی نرخدانانی سەبەتە و کرێی گەیاندن ئەندامێتیی چالاک بخوێنێتەوە (کرێی پاشەکەوتکراو خۆی ناگۆڕێت).",
+      boundary: "دەستگەیشتنی زوو هێشتا لە پارەداندا جێبەجێ ناکرێت، و خاڵی فرۆش هێشتا سوودەکانی ئەندامێتی جێبەجێ ناکات. پارەدانی ماڵپەڕ داشکاندنی ئەندامێتی (لە سنووری داشکاندنی ڕێکخستنەکاندا، بۆیە پێویستی بە کەسی دووەم نییە) و گەیاندنی بێبەرامبەر و لێکدەری خاڵەکان جێبەجێ دەکات.",
       tiers: "پلەکان",
       noTiers: "هێشتا هیچ پلەیەک نییە. یەکەم پلە بە سوودەکانییەوە دروست بکە.",
       noTiersRead: "هێشتا هیچ پلەیەک دروست نەکراوە.",

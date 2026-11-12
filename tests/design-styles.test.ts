@@ -126,7 +126,10 @@ describe("lint stage 4 (DESIGN.md §6.7)", () => {
   };
 
   it("a v2 rule fails the run in a file outside the design system and the admin (it was report-only before stage 4)", () => {
-    expect(lint("page.css", ".x { font-weight: 500; }\n")).toBe(1);
+    // v2.1 brought Plex 500 back (weight 500 passes now); a fractional size and Kufam under its 15px floor still fail
+    expect(lint("weight.css", ".x { font-weight: 500; }\n")).toBe(0);
+    expect(lint("page.css", ".x { font-size: 13.5px; }\n")).toBe(1);
+    expect(lint("floor.css", ".x { font: 600 14px / 1.2 var(--font-display); }\n")).toBe(1);
     expect(lint("blend.css", ".render-slot:has(img[data-opaque]) { mix-blend-mode: multiply; }\n")).toBe(1); // only materials.css may blend
   });
 

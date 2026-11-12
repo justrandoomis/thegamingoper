@@ -108,6 +108,9 @@
   --shadow-overlay: var(--e-overlay);
   --shadow-art: var(--e-art);
   --shadow-rim: var(--rim);
+  /* v2.1: the soft raised card and its hover (`shadow-surface`, `shadow-surface-hover`) */
+  --shadow-surface: var(--e-surface);
+  --shadow-surface-hover: var(--e-card-hover);
   /* 1.0 aliases: e1 (a resting card) becomes a hairline ring until its area migrates to `border border-line`;
      e4 / e5 (popovers, sheets, dialogs) become the overlay; e4-up the float. wall / well: admin only. */
   --shadow-e1: 0 0 0 1px var(--line);
@@ -123,7 +126,7 @@
   --font-headline: var(--font-head);
   --font-kufi: var(--font-display);
   --font-plex: var(--font-text);
-  --font-kufam: var(--font-display); /* 1.0: Kufam is retired → Noto Kufi Arabic */
+  --font-kufam: var(--font-display); /* v2.1: Kufam is the display face again (font-kufi is the v2 alias of the same) */
 }
 
 /* Dark is an attribute on <html> (or any subtree), never the media query: `dark:` follows the shopper's choice. */
@@ -132,7 +135,7 @@
 @custom-variant admin (&:where([data-density="admin"], [data-density="admin"] *));
 
 /* ── type roles (§5.5): size, weight, line-height and face in one class; integer sizes that step at 768 / 1024 /
-   1280; Kufi only at 18px and up (and prices) ── */
+   1280; Kufam (the display face) never under 15px ── */
 @utility type-display {
   font: var(--type-display);
   text-wrap: balance;

@@ -6,7 +6,10 @@
  * and draws the shell's own pieces.
  *
  * The chrome budget, published on :root so portals, pages and base.css read it (v2 §5.1, §2.7):
- *   --shell-header-h   the sticky top bar: 56 below 1024; 108 (64 + 44) from 1024; checkout 56 / 64
+ *   --shell-header-h   the sticky top bar: 56 below 1024; 108 (64 + 44) from 1024 once the utility strip and the lead
+ *                      have scrolled away (the header sticks at minus their height); checkout 56 / 64
+ *   --shell-strip-h    the desktop utility strip (36 from 1024 on store and task pages; 0 elsewhere)
+ *   --shell-lead       the 12px of air above the desktop main row that scrolls away with the strip (0 elsewhere)
  *   --shell-top        what sticks at the top: the header + the safe area + the offline banner pinned under it while it
  *                      shows (--shell-offline-h, its measured height, published by ./Banners ShellOffline)
  *   --shell-bottom     what is fixed at the bottom: the floating tab bar (64 + 10 + safe area), a page's <TaskBar>
@@ -20,6 +23,8 @@
   /* ───────────────────────────── the chrome budget ───────────────────────────── */
   :root:has(.shell) {
     --shell-header-h: var(--h-header);
+    --shell-strip-h: 0px;
+    --shell-lead: 0px;
     --shell-tabbar-h: calc(var(--h-tabbar) + 10px + var(--safe-bottom));
     --shell-top: calc(var(--shell-header-h) + var(--safe-top) + var(--shell-offline-h, 0px));
     --shell-bottom: 0px;
@@ -38,6 +43,13 @@
     :root:has(.shell[data-chrome="store"]),
     :root:has(.shell[data-chrome="task"]) {
       --shell-header-h: calc(var(--h-header) + var(--h-nav));
+      --shell-strip-h: 36px;
+      --shell-lead: 12px;
+    }
+    /* at the very top the whole header (strip and lead included) is on screen: toasts start under all of it */
+    :root:has(.shell[data-chrome="store"] .shell-header:not([data-scrolled])),
+    :root:has(.shell[data-chrome="task"] .shell-header:not([data-scrolled])) {
+      --shell-toast-top: calc(var(--shell-top) + var(--shell-strip-h) + var(--shell-lead) + var(--s-2));
     }
     :root:has(.shell[data-chrome="checkout"]) {
       --shell-header-h: var(--h-checkout);
@@ -59,12 +71,13 @@
   .shell-main:focus {
     outline: none;
   }
-  /* 24px at the very top of the document: the header knows the page has scrolled once it has left the viewport */
+  /* at the very top of the document: the header knows the page has scrolled once this has left the viewport — 24px,
+     or from 1024 the strip and the lead (then "scrolled" is exactly the compact header) */
   .shell-sentinel {
     position: absolute;
     inset-block-start: 0;
     inset-inline: 0;
-    block-size: 24px;
+    block-size: max(24px, calc(var(--shell-strip-h) + var(--shell-lead)));
     pointer-events: none;
   }
 
@@ -98,12 +111,38 @@
     outline-offset: -3px;
   }
 
-  /* ───────────────────────────── header: one glass bar below 1024, two rows (64 + 44) from 1024 ───────────────────────────── */
+  /* ───────────────────────────── header (v2.1, client note 1) ─────────────────────────────
+   * One sticky <header>: below 1024 one 56px bar; from 1024 the utility strip (36) + the 12px lead + the main row (64)
+   * + the nav row (44). It sticks at minus (strip + lead), so those scroll away 1:1 and the sticky header is 108px —
+   * nothing below it moves. On the floor at the top of the page (a hairline under it); its glass layer and the bar's
+   * edge fade in once the page has scrolled (opacity only — the frost itself never animates). */
   .shell-header {
     position: sticky;
-    inset-block-start: 0;
+    inset-block-start: calc(-1 * (var(--shell-strip-h) + var(--shell-lead)));
     z-index: var(--z-nav);
+    isolation: isolate;
     padding-block-start: var(--safe-top);
+  }
+  .shell-header__glass {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t-reveal) var(--ease-settle);
+  }
+  .shell-header[data-scrolled] .shell-header__glass {
+    opacity: 1;
+  }
+  /* the hairline under the header while it sits on the floor (the glass layer brings its own edge) */
+  .shell-header::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: -2;
+    block-size: 1px;
+    background: var(--line);
   }
   .shell-bar {
     position: relative;
@@ -115,10 +154,181 @@
   @media (min-width: 64rem) {
     .shell-bar {
       gap: var(--s-6);
+      margin-block-start: var(--shell-lead);
     }
   }
 
-  /* the lockup: the mascot + the wordmark (the store's name is always visible: the wordmark alone below 375px) */
+  /* ── the utility strip (from 1024): the before's quiet row of facts and service links, back (client note 1) ── */
+  .shell-utility {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .shell-utility {
+      display: block;
+      border-block-end: 1px solid var(--line);
+      color: var(--ink-2);
+      font: var(--type-xs);
+    }
+  }
+  .shell-utility__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-6);
+    block-size: calc(var(--shell-strip-h) - 1px);
+  }
+  .shell-utility__fact {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-inline-size: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .shell-utility__fact > svg {
+    flex: none;
+    color: var(--ink);
+  }
+  .shell-utility__cod {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .shell-utility__dot {
+    flex: none;
+    inline-size: 3px;
+    block-size: 3px;
+    border-radius: var(--r-full);
+    background: var(--ink-2);
+  }
+  /* 1024–1279: the strip keeps its facts whole by dropping its extras — the cash-on-delivery note, the links' icons and
+     the switch's visible words (it is still named «الوضع الداكن» for assistive technology, and its tooltip) */
+  @media (max-width: 79.99rem) {
+    .shell-utility__cod,
+    .shell-utility__link > svg {
+      display: none;
+    }
+    .shell-utility__end,
+    .shell-utility__links {
+      gap: var(--s-4);
+    }
+    .shell-theme__label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .shell-langs,
+    .shell-theme {
+      padding-inline-start: var(--s-4);
+    }
+  }
+  .shell-utility__end {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--s-5);
+  }
+  .shell-utility__links {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+  }
+  /* 32px links in the 35px row, each with a 44px hit area over the row's edges (the main row's lead keeps them clear) */
+  .shell-utility__link,
+  .shell-langs__link,
+  .shell-theme {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-block-size: 32px;
+    color: var(--ink-2);
+    font: var(--type-xs);
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  :is(.shell-utility__link, .shell-langs__link, .shell-theme)::after {
+    content: "";
+    position: absolute;
+    inset: -6px -4px;
+  }
+  .shell-utility__link > svg {
+    flex: none;
+  }
+  .shell-utility__link[aria-current] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  @media (hover: hover) {
+    :is(.shell-utility__link, .shell-langs__link, .shell-theme):hover {
+      color: var(--ink);
+    }
+  }
+  /* the languages: each in its own script, the current one in ink; at least 36px wide, so even «کوردی» (29px of
+     words) keeps a 44 × 44 hit area, and the hit areas meet without overlapping */
+  .shell-langs {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding-inline-start: var(--s-5);
+    border-inline-start: 1px solid var(--line-2);
+  }
+  .shell-langs__link {
+    justify-content: center;
+    min-inline-size: 36px;
+  }
+  .shell-langs__link[aria-current] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  /* the light / dark switch: a 32 × 18 track whose knob slides toward the inline end when dark is on */
+  .shell-theme {
+    padding: 0;
+    padding-inline-start: var(--s-5);
+    border: 0;
+    border-inline-start: 1px solid var(--line-2);
+    background: none;
+    cursor: pointer;
+  }
+  .shell-theme__track {
+    position: relative;
+    flex: none;
+    inline-size: 32px;
+    block-size: 18px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-full);
+    background: var(--niche);
+  }
+  .shell-theme__knob {
+    position: absolute;
+    inset-block-start: 1px;
+    inset-inline-start: 1px;
+    display: grid;
+    place-items: center;
+    inline-size: 14px;
+    block-size: 14px;
+    border-radius: var(--r-full);
+    background: var(--paper);
+    box-shadow: var(--clay-cast);
+    color: var(--ink);
+    transition: translate var(--t-reveal) var(--ease-settle);
+  }
+  .shell-theme[aria-pressed="true"] .shell-theme__track {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+  .shell-theme[aria-pressed="true"] .shell-theme__knob {
+    translate: calc(14px * var(--dir)) 0;
+  }
+  .shell-theme:focus-visible {
+    outline-offset: 4px;
+  }
+
+  /* the lockup: the mascot + the wordmark (the store's name is always visible: the wordmark alone below 375px); from
+     1024 larger, and a step smaller once the header is compact (scale, from its inline-start edge) */
   .shell-lockup {
     position: relative;
     display: inline-flex;
@@ -127,6 +337,11 @@
     gap: 6px;
     min-block-size: var(--target);
     text-decoration: none;
+    transform-origin: 100% 50%; /* the inline start in RTL; LTR below */
+    transition: scale var(--t-reveal) var(--ease-settle);
+  }
+  [dir="ltr"] .shell-lockup {
+    transform-origin: 0% 50%;
   }
   .shell-lockup__mark {
     block-size: 28px;
@@ -146,10 +361,21 @@
       gap: var(--s-2);
     }
     .shell-lockup__mark {
-      block-size: 36px;
+      block-size: 40px;
     }
     .shell-lockup__word {
-      block-size: 24px;
+      block-size: 27px;
+    }
+    .shell-header[data-scrolled] .shell-bar > .shell-lockup {
+      scale: 0.9;
+    }
+  }
+  @media (min-width: 80rem) {
+    .shell-lockup__mark {
+      block-size: 44px;
+    }
+    .shell-lockup__word {
+      block-size: 30px;
     }
   }
 
@@ -164,7 +390,7 @@
     min-inline-size: 140px;
     block-size: 40px;
     padding-inline: 12px 16px;
-    border: 1px solid transparent;
+    border: 1px solid var(--line);
     border-radius: var(--r-full);
     background: var(--niche);
     color: var(--ink-2);
@@ -216,7 +442,8 @@
     }
   }
 
-  /* the header's tools: the cart everywhere; language, account, favourites from 1024; two text links from 1280 */
+  /* the header's keys — round clay keys (the kit's icon key): the search key on pages that are not for finding
+     products (every width), favourites and account from 1024, the cart everywhere with its count */
   .shell-end {
     display: flex;
     flex: none;
@@ -227,7 +454,12 @@
   .shell-tools {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--s-2);
+  }
+  @media (min-width: 64rem) {
+    .shell-tools {
+      gap: var(--s-3);
+    }
   }
   .shell-desk {
     display: none;
@@ -237,45 +469,19 @@
       display: inline-flex;
     }
   }
-  /* 1024–1279: the account is a menu that also holds «تتبّع طلبك» and «استبدل جهازك»; from 1280 a link */
-  .shell-wide {
-    display: none;
-  }
-  @media (min-width: 80rem) {
-    .shell-wide {
-      display: inline-flex;
-    }
-    .shell-narrow {
-      display: none;
-    }
-  }
-  .shell-links {
-    display: none;
-  }
-  @media (min-width: 80rem) {
-    .shell-links {
-      display: flex;
-      align-items: center;
-      gap: var(--s-4);
-    }
-  }
-  .shell-links .link > svg {
-    color: var(--ink-2);
-  }
-  /* the glyph of the last icon button lines up with the gutter (its circle overhangs into the margin) */
-  @media (max-width: 63.99rem) {
-    .shell-tools > :last-child {
-      margin-inline-end: -8px;
-    }
+  /* the key of the page the shopper is on (favourites, account): its face takes the ink edge */
+  .shell-tools > .key[aria-current] {
+    --edge: var(--ink);
   }
   .shell-cart .bead {
     position: absolute;
-    inset-block-start: -3px;
-    inset-inline-end: -5px;
+    inset-block-start: -4px;
+    inset-inline-end: -4px;
   }
 
-  /* desktop search: a 44px pill on --niche; paper with the ring while it has focus. 320 wide at 1024–1279, 560 from
-     1280 with the "/" shortcut chip. The phone sheet and the 404 panel use the same form. */
+  /* desktop search (search pages, from 1024): the WIDE well of the main row — 48px, recessed on --niche with a hairline,
+     the "/" shortcut chip at its end; paper with the ring while it has focus. It takes the room between the lockup and
+     the keys (at most 680). The phone sheet and the 404 panel use the same form. */
   .shell-search {
     position: relative;
     min-inline-size: 0;
@@ -286,13 +492,13 @@
   @media (min-width: 64rem) {
     .shell-search[data-variant="header"] {
       display: block;
-      flex: 0 1 320px;
+      flex: 1 1 auto;
       min-inline-size: 240px;
+      max-inline-size: 680px;
     }
-  }
-  @media (min-width: 80rem) {
-    .shell-search[data-variant="header"] {
-      flex-basis: 560px;
+    .shell-search[data-variant="header"] .shell-search__field {
+      block-size: 48px;
+      border-color: var(--line);
     }
   }
   .shell-search__field {
@@ -361,7 +567,7 @@
   .shell-search__kbd {
     display: none;
   }
-  @media (min-width: 80rem) {
+  @media (min-width: 64rem) {
     .shell-search[data-variant="header"] .shell-search__kbd {
       display: inline-grid;
       flex: none;
@@ -372,7 +578,8 @@
     }
   }
 
-  /* suggestions: opaque, under the field (420 wide on desktop); in the phone sheet a full-width list */
+  /* suggestions: under the field — as wide as the header's search well on desktop (a 420px panel hung off one end
+     of the 680px well), the field's width under a page's own field; in the phone sheet a full-width list */
   .shell-suggest {
     position: absolute;
     inset-block-start: calc(100% + var(--s-2));
@@ -384,11 +591,26 @@
     overscroll-behavior: contain;
     padding: 6px;
     border-radius: var(--r-lg);
+  }
+  /* under a page's own field the panel is opaque paper; under the header's field it is the kit's glass panel */
+  .shell-suggest:not(.glass) {
     background: var(--paper);
     box-shadow: var(--e-overlay);
   }
-  .shell-search[data-variant="panel"] .shell-suggest {
+  .shell-search:is([data-variant="panel"], [data-variant="header"]) .shell-suggest {
     inline-size: 100%;
+  }
+  /* the header's suggestions and the mega menu: a denser frost than the kit's panel (v2.1 G3, «easy to read»). Both
+     open right over the crimson hero, and the kit's 84% face with saturate(1.8) turned them pink in blotches; this
+     stays frosted glass (the page shows through softly) with the words on near-paper. Dark: a deeper glass. */
+  .shell-search[data-variant="header"] .shell-suggest,
+  .shell-mega {
+    --glass-panel: color-mix(in srgb, var(--paper) 94%, transparent);
+    --glass-panel-filter: blur(28px) saturate(1.2);
+  }
+  [data-theme="dark"] :is(.shell-search[data-variant="header"] .shell-suggest, .shell-mega) {
+    --glass-panel: color-mix(in srgb, var(--paper) 88%, transparent);
+    --glass-panel-filter: blur(28px) saturate(1.3) brightness(0.92);
   }
   .shell-search[data-variant="sheet"] .shell-suggest {
     position: static;
@@ -397,6 +619,7 @@
     overflow: visible;
     margin-block-start: var(--s-3);
     margin-inline: -6px;
+    background: none;
     box-shadow: none;
   }
   .shell-suggest__head {
@@ -530,7 +753,10 @@
     margin-block-start: var(--s-6);
   }
 
-  /* ───────────────────────────── desktop nav row (44px): platform menu buttons · links · demo chip ───────────────────────────── */
+  /* ───────────────────────────── desktop nav row (44px): platform menu buttons · links · demo chip ─────────────────────────────
+   * Each platform: its device glyph in a 28px circle of its colour light (--dot at 14%) · the name · the chevron. One
+   * 3px indicator (.shell-nav__ink, ./MegaMenu) slides under the item the pointer or the focus is on and rests under
+   * the open menu's platform or the current page's item; without script each item draws its own underline. */
   .shell-navrow {
     display: none;
   }
@@ -543,6 +769,7 @@
     }
   }
   .shell-nav {
+    position: relative;
     display: flex;
     flex: 1 1 auto;
     align-items: center;
@@ -566,7 +793,71 @@
     text-decoration: none;
     cursor: pointer;
   }
-  /* the 3px underline in the platform's dot colour (ink for the plain links) on hover, open and current */
+  .shell-navitem--plat {
+    gap: 6px;
+    padding-inline-start: 6px;
+  }
+  /* 1024–1439: a little tighter, so the longest language (Sorani) and the full demo sentence (from 1280) keep one row */
+  @media (max-width: 89.99rem) {
+    .shell-navitem {
+      padding-inline: 8px;
+    }
+    .shell-navitem--plat {
+      padding-inline-start: 4px;
+    }
+  }
+  .shell-navitem__glyph {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: var(--r-full);
+    background: color-mix(in srgb, var(--dot, var(--ink-2)) 14%, transparent);
+    color: var(--dot, var(--ink-2));
+    transition: scale var(--t-micro) var(--ease-settle);
+  }
+  @media (hover: hover) {
+    .shell-navitem--plat:hover .shell-navitem__glyph {
+      scale: 1.08;
+    }
+  }
+  .shell-navitem--plat[aria-expanded="true"] .shell-navitem__glyph {
+    scale: 1.08;
+  }
+  /* the sliding indicator: a 1px bar moved (translate) and stretched (scale) by script, in the item's platform colour */
+  .shell-nav__ink {
+    position: absolute;
+    inset-block-end: 3px;
+    inset-inline-start: 0;
+    inline-size: 1px;
+    block-size: 3px;
+    background: var(--dot, var(--ink));
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 0 0;
+    transition: opacity var(--t-micro) var(--ease-settle);
+  }
+  .shell-nav__ink[data-on] {
+    opacity: 1;
+    transition:
+      opacity var(--t-micro) var(--ease-settle),
+      translate var(--t-reveal) var(--ease-settle),
+      scale var(--t-reveal) var(--ease-settle);
+  }
+  @supports (transition-timing-function: linear(0, 1)) {
+    .shell-nav__ink[data-on] {
+      transition:
+        opacity var(--t-micro) var(--ease-settle),
+        translate var(--spring-settle-t) var(--spring-settle),
+        scale var(--spring-settle-t) var(--spring-settle);
+    }
+  }
+  /* once the indicator is live, the items' own underlines give way to it */
+  .shell-nav[data-ink] .shell-navitem::after {
+    display: none;
+  }
+  /* the 3px underline in the platform's dot colour (ink for the plain links) on hover, open and current (no script) */
   .shell-navitem::after {
     content: "";
     position: absolute;
@@ -618,45 +909,82 @@
     margin-inline-start: auto;
   }
 
-  /* ───────────────────────────── mega menu: opaque, under the header, a sibling of it (portal) ───────────────────────────── */
+  /* ───────────────────────────── mega menu (v2.1 note 6): frosted glass under the header, a sibling of it (portal) ─────────────────────────────
+   * It starts at the header's bottom edge wherever that is (--shell-mega-top, measured by ./MegaMenu while it is open;
+   * the sticky height until then). A 3px line of the platform's colour on its top edge; its columns arrive 40ms apart. */
   .shell-scrim {
     position: fixed;
-    inset: calc(var(--safe-top) + var(--shell-header-h)) 0 0;
+    inset: var(--shell-mega-top, calc(var(--safe-top) + var(--shell-header-h))) 0 0;
     z-index: calc(var(--z-nav) - 1);
     background: var(--scrim-menu);
   }
   .shell-mega {
     position: fixed;
     inset-inline: 0;
-    inset-block-start: calc(var(--safe-top) + var(--shell-header-h));
+    inset-block-start: var(--shell-mega-top, calc(var(--safe-top) + var(--shell-header-h)));
     z-index: var(--z-nav);
-    max-block-size: calc(100dvh - var(--safe-top) - var(--shell-header-h) - var(--s-4));
+    max-block-size: calc(100dvh - var(--shell-mega-top, calc(var(--safe-top) + var(--shell-header-h))) - var(--s-4));
     overflow-y: auto;
     overscroll-behavior: contain;
-    border-block-start: 1px solid var(--line);
-    border-end-start-radius: var(--r-lg);
-    border-end-end-radius: var(--r-lg);
-    background: var(--paper);
-    box-shadow: var(--e-overlay);
+    border-end-start-radius: var(--r-xl);
+    border-end-end-radius: var(--r-xl);
     color: var(--ink);
+  }
+  .shell-mega::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: 3px;
+    background: var(--dot, var(--ink));
   }
   .shell-mega__inner {
     display: grid;
-    gap: var(--s-4);
+    gap: var(--s-5);
     padding-block: var(--s-5) var(--s-8);
   }
+  /* the head row: the platform (its glyph in its colour light, its name, how many products) · «كل منتجات …» */
   .shell-mega__top {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding-block-end: var(--s-4);
+    border-block-end: 1px solid var(--line);
   }
-  /* four link columns and the featured product; 24px apart at 1024–1279 so a short model name and its count keep one line */
+  .shell-mega__head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  /* the platform's device glyph on a raised clay disc (the kit's .clay-disc), in the platform's colour */
+  .shell-mega__badge {
+    --disc: 44px;
+    color: var(--dot, var(--ink-2));
+  }
+  .shell-mega__platform {
+    font: var(--type-h3);
+    font-family: var(--font-head);
+    font-weight: var(--w-head);
+  }
+  .shell-mega__total {
+    color: var(--ink-2);
+    font: var(--type-sm);
+  }
+  .shell-mega__all {
+    flex: none;
+  }
+  /* four link columns and the featured card (1024–1279: closer, and the card no wider than a column, so a model's
+     short name and its count keep one line) */
   .shell-mega__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.25fr);
-    gap: var(--s-6);
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1fr);
+    gap: var(--s-5);
   }
   @media (min-width: 80rem) {
     .shell-mega__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.3fr);
       gap: var(--s-8);
     }
   }
@@ -667,36 +995,101 @@
     display: flex;
     align-items: center;
     gap: var(--s-2);
-    min-block-size: 28px;
-    margin-block-end: var(--s-1);
-    color: var(--ink-2);
+    min-block-size: 32px;
+    margin-block-end: var(--s-2);
+    color: var(--ink);
     font: var(--type-sm-strong);
   }
-  /* rows 4px apart, each with 4px of its own above and below: a name that wraps stays ONE item, never a block of lines */
+  /* the column's kind icon on a small clay disc, in the platform's colour */
+  .shell-mega__kind {
+    --disc: 32px;
+    color: var(--dot, var(--ink-2));
+  }
   .shell-mega__list {
     display: grid;
-    gap: var(--s-1);
+    gap: 2px;
   }
+  /* a row: 44px at least, highlighted under the pointer (the hover face is instant; only the arrow moves) */
   .shell-mega__link {
     display: flex;
     align-items: center;
+    gap: var(--s-3);
     min-block-size: var(--target);
-    padding-block: var(--s-1);
+    margin-inline: calc(-1 * var(--s-2));
+    padding: var(--s-1) var(--s-2);
+    border-radius: var(--r-sm);
     color: var(--ink);
     font: var(--type-body);
     line-height: 1.35;
     text-decoration: none;
   }
+  @media (hover: hover) {
+    .shell-mega__link:hover {
+      background: var(--niche);
+    }
+  }
   .shell-mega__link--all {
     font-weight: 600;
   }
-  /* the read layer's count after the name (the name is its own isolate, so the figure follows it in either direction) */
-  .shell-mega__count {
-    margin-inline-start: var(--s-2);
+  /* a device model's photo on the product ground — only when the read layer sends one (`artKey`); 32px, so a short
+     name and its count keep one line beside it */
+  .shell-mega__link--thumb {
+    gap: var(--s-2);
+  }
+  .shell-mega__thumb {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-xs);
+    background: var(--product-ground);
+    overflow: hidden;
+  }
+  .shell-mega__thumb img {
+    inline-size: 100%;
+    block-size: 100%;
+    padding: 3px;
+    object-fit: contain;
+  }
+  .shell-mega__line {
+    display: grid;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  /* a qualifier («نسخة الأقراص») on its own meta line, never inside the Latin name */
+  .shell-mega__meta {
     color: var(--ink-2);
-    font: var(--type-sm);
+    font: var(--type-xs);
+  }
+  /* the read layer's count at the row's end */
+  .shell-mega__count {
+    flex: none;
+    min-inline-size: 24px;
+    padding-inline: 6px;
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink-2);
+    font: var(--type-xs-strong);
     font-variant-numeric: tabular-nums lining-nums;
+    text-align: center;
     white-space: nowrap;
+  }
+  @media (hover: hover) {
+    .shell-mega__link:hover .shell-mega__count {
+      background: var(--paper);
+    }
+  }
+  .shell-mega__arrow {
+    flex: none;
+    color: var(--ink-2);
+    transition: translate var(--t-micro) var(--ease-settle);
+  }
+  @media (hover: hover) {
+    .shell-mega__link--all:hover .shell-mega__arrow {
+      translate: calc(3px * var(--dir)) 0;
+    }
   }
   .shell-mega__text {
     text-decoration: underline;
@@ -704,12 +1097,12 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 5px;
   }
-  @media (hover: hover) {
-    .shell-mega__link:hover .shell-mega__text {
-      text-decoration-color: currentColor;
-    }
+  .shell-mega__link:focus-visible .shell-mega__text {
+    text-decoration-color: currentColor;
   }
-  /* the featured product as a card reads: the well, then its name (two lines at most), then its price */
+  /* the featured product: the kit's raised card (.surface — faux glass in dark; no blur inside the glass panel) that
+     lifts under the pointer (.lift) — the well, the name (two lines), the qualifier, the price and its demo mark, the
+     clay key */
   .shell-mega__feature {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -717,6 +1110,7 @@
     gap: var(--s-3);
     align-self: start;
     min-inline-size: 0;
+    padding: var(--s-3);
     color: var(--ink);
     text-decoration: none;
   }
@@ -724,16 +1118,17 @@
     position: relative;
     display: grid;
     place-items: center;
-    inline-size: min(100%, 152px);
-    aspect-ratio: 1;
-    border-radius: var(--r-lg);
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--r-sm);
     background: var(--product-ground);
+    isolation: isolate;
     overflow: hidden;
   }
-  @media (min-width: 80rem) {
-    .shell-mega__well {
-      inline-size: min(100%, 176px);
-    }
+  /* the platform's colour light behind the product (the kit's .glow-layer, reading the panel's data-gel) */
+  .shell-mega__well > .glow-layer {
+    --glow-inset: 0;
+    --glow-alpha: var(--glow-a-strong);
   }
   /* pinned in the well (a percentage height does not resolve against an aspect-ratio box): a tall photo — the PS5
      Slim stands 1:1.9 — is contained whole, never cut by the well's edge */
@@ -746,7 +1141,7 @@
     object-fit: contain;
     transition: scale var(--t-reveal) var(--ease-settle);
   }
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     .shell-mega__feature:hover .shell-mega__well img {
       scale: 1.03;
     }
@@ -754,11 +1149,11 @@
       text-decoration-color: currentColor;
     }
   }
-  /* name · price (· «نفد حالياً») (· «سعر تجريبي» in a live store) */
+  /* name · qualifier · price and «سعر تجريبي» (· «نفد حالياً») */
   .shell-mega__name {
     display: grid;
     justify-items: start;
-    gap: var(--s-1);
+    gap: 2px;
     min-inline-size: 0;
   }
   .shell-mega__fname {
@@ -775,16 +1170,41 @@
     text-underline-offset: 5px;
   }
   .shell-mega__price {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-2);
+    margin-block-start: var(--s-1);
   }
   .shell-mega__status {
     color: var(--ink-2);
     font: var(--type-xs);
   }
+  .shell-mega__go {
+    justify-self: stretch;
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .shell-mega__feature:hover .shell-mega__go > .key__cap {
+      background: var(--hover-face);
+    }
+  }
   .shell-mega__empty {
     grid-column: 1 / -1;
     color: var(--ink-2);
     font: var(--type-body);
+  }
+  /* the columns and the card arrive one after another (opacity + 8px), after the panel has started to drop */
+  .shell-mega__col,
+  .shell-mega__feature {
+    animation: shell-mega-in var(--t-reveal) var(--ease-settle) backwards;
+    animation-delay: calc(60ms + var(--i, 0) * 40ms);
+  }
+  @keyframes shell-mega-in {
+    from {
+      opacity: 0;
+      translate: 0 8px;
+    }
   }
 
   /* ───────────────────────────── task header (below 1024, a page with its own task bar, after 24px of scroll) ─────────────────────────────
@@ -799,10 +1219,7 @@
       flex: none;
       align-items: center;
     }
-    .shell-header[data-task][data-scrolled] .shell-task--back {
-      margin-inline-start: -8px;
-    }
-    .shell-header[data-task][data-scrolled]:has(.shell-task--title) :is(.shell-lockup, .shell-pill) {
+    .shell-header[data-task][data-scrolled]:has(.shell-task--title) :is(.shell-lockup, .shell-pill, .shell-searchkey) {
       display: none;
     }
     .shell-header[data-task][data-scrolled] .shell-task--title {
@@ -1022,9 +1439,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 2px;
     min-inline-size: 0;
+    padding-block-start: 7px;
     border: 0;
     background: none;
     color: var(--ink-2);
@@ -1040,14 +1458,52 @@
     inline-size: 56px;
     block-size: 32px;
     border-radius: var(--r-full);
+    transition: scale var(--spring-press-t) var(--spring-press);
+  }
+  /* a pressed tab's icon dips (the engine marks the press with data-pressed) */
+  .shell-tab[data-pressed] .shell-tab__ico {
+    scale: 0.86;
+    transition-duration: var(--t-press);
   }
   .shell-tab[aria-current] {
     color: var(--ink);
     font-weight: 600;
   }
   .shell-tab[aria-current] .shell-tab__ico {
-    background: var(--red-tint);
     color: var(--red-ink);
+  }
+  /* the active pill: ONE 56 × 32 --red-tint pill behind the current tab's icon that slides from tab to tab (its column
+     comes from the server as --tab-i, so it is right without script) */
+  .shell-tabbar__pill {
+    position: absolute;
+    inset-block-start: 7px;
+    inset-inline-start: 4px;
+    inline-size: calc((100% - 8px) / 5);
+    block-size: 32px;
+    opacity: 0;
+    pointer-events: none;
+    translate: calc(var(--tab-i, 0) * 100% * var(--dir)) 0;
+    transition:
+      translate var(--t-reveal) var(--ease-settle),
+      opacity var(--t-micro) var(--ease-settle);
+  }
+  @supports (transition-timing-function: linear(0, 1)) {
+    .shell-tabbar__pill {
+      transition:
+        translate var(--spring-settle-t) var(--spring-settle),
+        opacity var(--t-micro) var(--ease-settle);
+    }
+  }
+  .shell-tabbar__pill[data-on] {
+    opacity: 1;
+  }
+  .shell-tabbar__pill::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline: calc(50% - 28px);
+    border-radius: var(--r-full);
+    background: var(--red-tint);
   }
   .shell-tab__label {
     max-inline-size: 100%;
@@ -1306,6 +1762,7 @@
     flex: 1 1 32ch;
   }
   .shell-mega__well > picture,
+  .shell-mega__thumb > picture,
   .shell-suggest__thumb > picture {
     display: contents;
   }
@@ -1360,6 +1817,77 @@
     margin-block-end: var(--s-3);
     color: var(--ink-2);
     font: var(--type-sm-strong);
+  }
+  /* glass icon tiles (the client's reference): three to a row in a phone-wide sheet and in the side sheet, four from
+     520px of room (four in 358px left «الإكسسوارات», «هێدسێتەکان» and "subscriptions" wider than their 82px tile,
+     and ran out of it at 360); a short last row is centred. The kit's raised card (.surface: faux glass, so a grid of
+     them costs no blur), a red line icon, the name, the count. They arrive 30ms apart as the sheet rises. */
+  .shell-csheet {
+    container-type: inline-size;
+  }
+  .shell-itiles {
+    --cols: 3;
+    --gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap);
+  }
+  .shell-itiles > li {
+    flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    min-inline-size: 0;
+  }
+  @container (min-width: 520px) {
+    .shell-itiles {
+      --cols: 4;
+      --gap: var(--s-3);
+    }
+  }
+  .shell-itile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-inline-size: 0;
+    min-block-size: 104px;
+    padding: 14px var(--s-2) var(--s-2);
+    color: var(--ink);
+    text-align: center;
+    text-decoration: none;
+    animation: shell-itile-in var(--t-reveal) var(--ease-settle) backwards;
+    animation-delay: calc(80ms + var(--i, 0) * 30ms);
+  }
+  @keyframes shell-itile-in {
+    from {
+      opacity: 0;
+      translate: 0 8px;
+    }
+  }
+  .shell-itile__ico {
+    display: grid;
+    flex: none;
+    place-items: center;
+    block-size: 32px;
+    color: var(--red-ink);
+  }
+  /* the name inside its tile, whatever the language: a word longer than the tile breaks (hyphenated where the browser
+     can) rather than run out of it */
+  .shell-itile__name {
+    display: -webkit-box;
+    max-inline-size: 100%;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    font: var(--type-sm-strong);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+  .shell-itile__count {
+    color: var(--ink-2);
+    font: var(--type-xs);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums lining-nums;
   }
   .shell-csheet__entries {
     display: grid;
@@ -1457,8 +1985,17 @@
   @media (prefers-reduced-motion: reduce) {
     .shell-navitem::after,
     .shell-navitem__caret,
+    .shell-navitem__glyph,
+    .shell-nav__ink,
+    .shell-nav__ink[data-on],
+    .shell-header__glass,
+    .shell-lockup,
+    .shell-theme__knob,
     .shell-fcol__toggle > svg,
     .shell-mega__well img,
+    .shell-mega__arrow,
+    .shell-tab__ico,
+    .shell-tabbar__pill,
     .shell-progress {
       transition: none;
     }
@@ -1466,15 +2003,38 @@
       animation: none;
       scale: 0.6 1;
     }
+    .shell-mega__col,
+    .shell-mega__feature,
+    .shell-itile {
+      animation: none;
+    }
+    .shell-tab[data-pressed] .shell-tab__ico {
+      scale: none;
+    }
   }
   [data-motion="reduced"] .shell-navitem::after,
   [data-motion="reduced"] .shell-navitem__caret,
-  [data-motion="reduced"] .shell-fcol__toggle > svg {
+  [data-motion="reduced"] .shell-navitem__glyph,
+  [data-motion="reduced"] .shell-nav__ink,
+  [data-motion="reduced"] .shell-nav__ink[data-on],
+  [data-motion="reduced"] .shell-header__glass,
+  [data-motion="reduced"] .shell-lockup,
+  [data-motion="reduced"] .shell-theme__knob,
+  [data-motion="reduced"] .shell-fcol__toggle > svg,
+  [data-motion="reduced"] .shell-mega__arrow,
+  [data-motion="reduced"] .shell-tab__ico,
+  [data-motion="reduced"] .shell-tabbar__pill {
     transition: none;
   }
   [data-motion="reduced"] .shell-progress[data-state] > span {
     animation: none;
     scale: 0.6 1;
+  }
+  [data-motion="reduced"] :is(.shell-mega__col, .shell-mega__feature, .shell-itile) {
+    animation: none;
+  }
+  [data-motion="reduced"] .shell-tab[data-pressed] .shell-tab__ico {
+    scale: none;
   }
   @media (forced-colors: active) {
     .shell-pill,
@@ -1483,7 +2043,16 @@
       border: 1px solid CanvasText;
     }
     .shell-navitem::after,
+    .shell-nav__ink,
     .shell-progress > span {
+      background: Highlight;
+    }
+    .shell-itile,
+    .shell-mega__feature,
+    .shell-theme__track {
+      border: 1px solid CanvasText;
+    }
+    .shell-theme[aria-pressed="true"] .shell-theme__knob {
       background: Highlight;
     }
     /* the glass bars lose their fill and their shadow: draw their edge, or the page seems to run into them (v2 §10) */

@@ -22,7 +22,7 @@ const SECTIONS = Object.values(modules)
 const COPY = defineCopy({
   ar: {
     title: "نظام التصميم",
-    lede: "نظام التصميم 2: الأحمر والأبيض هوية المتجر وألوان المنصات أبوابه، والمنتج على أرضية محايدة، وزر أحمر واحد في كل شاشة. كل ما هنا مكوّنات حقيقية من app/ui بكل حالاتها.",
+    lede: "نظام التصميم 2.1 «الطين والزجاج»: الأحمر والأبيض هوية المتجر وألوان المنصات أبوابه الحيّة، وخط المتجر الأول، وأزرار طينية بارزة، وبطاقات ناعمة وزجاج حقيقي، وزر أحمر لامع واحد في كل شاشة. كل ما هنا مكوّنات حقيقية من app/ui بكل حالاتها.",
     demo: "أسماء المنتجات والأسعار في هذه الصفحة أمثلة للعرض، وليست أسعار المتجر.",
     theme: "المظهر",
     light: "فاتح",
@@ -42,7 +42,7 @@ const COPY = defineCopy({
   },
   en: {
     title: "Design system",
-    lede: "Design System v2: red and white is the brand and the platform colours are the doors; the product stands on a neutral ground; one red primary per view. Everything here is a real component from app/ui, in every state.",
+    lede: "Design System 2.1 \"Clay & Glass\": red and white is the brand and the vivid platform colours are the doors; the store's original type, raised clay keys, soft cards and real glass; one glossy red primary per view. Everything here is a real component from app/ui, in every state.",
     demo: "Product names and prices on this page are display examples, not the shop's prices.",
     theme: "Theme",
     light: "Light",
@@ -62,7 +62,7 @@ const COPY = defineCopy({
   },
   ckb: {
     title: "سیستەمی دیزاین",
-    lede: "سیستەمی دیزاین 2: سوور و سپی ناسنامەی فرۆشگایە و ڕەنگی پلاتفۆرمەکان دەرگاکانین؛ بەرهەم لەسەر زەوییەکی بێلایەنە؛ یەک دوگمەی سووری سەرەکی لە هەر شاشەیەکدا. هەموو ئەوەی لێرەیە پێکهاتەی ڕاستەقینەی app/ui یە.",
+    lede: "سیستەمی دیزاین 2.1 «قوڕ و شووشە»: سوور و سپی ناسنامەی فرۆشگایە و ڕەنگە زیندووەکانی پلاتفۆرمەکان دەرگاکانین؛ فۆنتی سەرەتای فرۆشگا، دوگمەی قوڕی بەرز، کارتی نەرم و شووشەی ڕاستەقینە؛ یەک دوگمەی سووری بریقەدار لە هەر شاشەیەکدا. هەموو ئەوەی لێرەیە پێکهاتەی ڕاستەقینەی app/ui یە.",
     demo: "ناوی بەرهەم و نرخەکانی ئەم پەڕەیە نموونەن، نرخی فرۆشگا نین.",
     theme: "ڕووکار",
     light: "ڕوون",

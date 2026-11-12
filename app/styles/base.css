@@ -16,7 +16,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  /* Plex ships 400/600 and Kufi 700 only: a request for 500 draws 400, 700 in Plex draws 600 — never a fake bold */
+  /* Plex ships 400/500/600 and Kufam is variable (400–900): 700 in Plex draws 600 — never a smeared fake bold */
   font-synthesis-weight: none;
   -webkit-tap-highlight-color: transparent;
   scrollbar-color: var(--line-strong) var(--ground);
@@ -26,9 +26,33 @@ html {
 }
 body {
   min-block-size: 100dvh;
-  background-color: var(--ground);
+  /* no background of its own: html paints the floor (the canvas), so the floor's light below sits between the two */
   color: var(--ink);
   font: var(--type-body);
+}
+/* ── the floor's ambient light (v2.1 G3, DESIGN.md §15.3; client note 3) ──
+   Dark theme: a fixed layer behind the whole page — a wide crimson light at the top by the logo, a low violet one at
+   the bottom (tokens.css --floor-light) — painted once, so it never repaints on scroll. Dark cards and panels are
+   faux glass on a see-through tint (--card-tint), so the light shows through them as they move: glass with something
+   behind it, with no blur per card. The light theme has none. The admin paints its own floor over it; more contrast
+   and forced colours hide it. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--floor-light);
+  pointer-events: none;
+}
+@media (prefers-contrast: more) {
+  body::before {
+    display: none;
+  }
+}
+@media (forced-colors: active) {
+  body::before {
+    display: none;
+  }
 }
 /* a re-themed subtree re-reads its colours (inherited colour is a computed value, not a token reference) */
 [data-theme] {
@@ -79,6 +103,20 @@ pre {
 ::placeholder {
   color: var(--ink-2);
   opacity: 1;
+}
+
+/* ── icons at the before's weight (Design v2.1 G4): the sprite's Phosphor outlines (16 units on a 256 grid) get a
+   6-unit round-joined stroke in their own colour on top — ~22 units, about 2px at 24px (1.7px at 20px). The glyphs
+   (app/art/icons/glyphs.tsx) are drawn at 2px already. data-weight="regular" keeps the thin drawing. ── */
+svg[data-icon] {
+  stroke: currentColor;
+  stroke-width: 6px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+:where([data-weight="regular"]) svg[data-icon],
+svg[data-icon][data-weight="regular"] {
+  stroke-width: 0;
 }
 
 /* ── focus: always visible, a 2px outline with a 2px offset (white on crimson and platform surfaces: the showcase

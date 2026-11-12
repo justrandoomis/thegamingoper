@@ -12,6 +12,9 @@
  *   · the product 404: the slug's words, and the platform they name;
  *   · the footer links every policy page the content area publishes;
  *   · the mega menu's words (short model names, counts, the featured product's price, one string per platform);
+ *   · v2.1: which pages show the header's search field and which only the round search key (by path, every width);
+ *     the catalogue's qualifier on its own meta line (search suggestions, the mega menu's links and featured card);
+ *     a device model's photo on its mega-menu link when the read layer sends one;
  *   · a focused field is moved out from under a bar; the task header's title is cut between words; the exchange
  *     rate keeps «figure, then currency» in every language; the Sorani strings spell the brand «طمطم».
  */
@@ -38,9 +41,11 @@ import {
   missingProduct,
   platformForQuery,
   rateText,
+  searchMode,
   sheetCategories,
   shellChrome,
   suggestionKind,
+  suggestionMeta,
   tabOf,
   TASK_FOOTER_LABELS,
   TASK_FOOTER_LINKS,
@@ -322,9 +327,11 @@ describe("megaPlan / megaFeature — what a platform's mega menu lists", () => {
   const none = () => null;
 
   it("features the read layer's product: its photo, name, price, state and demo flag (§5.4 «its name and price»)", () => {
+    // `qualifier` (2026-11-12, v2.1): the words the Latin title leaves out, null when the read layer has none
     expect(megaFeature({ ...PLATFORM, featured: FEATURED }, none)).toEqual({
       href: "/p/steam-deck-oled",
       label: "Steam Deck OLED",
+      qualifier: null,
       artKey: "steam-deck-oled--1",
       mediaKey: null,
       priceIqd: 781500,
@@ -337,6 +344,30 @@ describe("megaPlan / megaFeature — what a platform's mega menu lists", () => {
     expect(megaFeature({ ...PLATFORM, featured: { ...FEATURED, image: { ...FEATURED.image, artKey: null } } }, (slug) => `${slug}--2`)).toMatchObject({ artKey: "steam-deck-oled--2" });
     // the read layer says there is nothing to feature
     expect(megaFeature({ ...PLATFORM, featured: null }, none)).toBeNull();
+  });
+
+  it("prints the featured product's qualifier on its own meta line, never inside the Latin name (v2.1 follow-up)", () => {
+    const disc = megaFeature({ ...PLATFORM, featured: { ...FEATURED, label: "PlayStation 5 Slim · 1TB", qualifier: "نسخة الأقراص" } }, none);
+    expect(disc).toMatchObject({ label: "PlayStation 5 Slim · 1TB", qualifier: "نسخة الأقراص" });
+    expect(megaFeature({ ...PLATFORM, featured: { ...FEATURED, qualifier: "  " } }, none)?.qualifier).toBeNull();
+    // hand-written data: the console link's qualifier comes along
+    const withConsole: NavPlatform = { ...PLATFORM, consoles: [{ label: "PlayStation 5 Slim · 1TB", href: "/p/playstation-5-slim", qualifier: "نسخة الأقراص" }] };
+    expect(megaFeature(withConsole, none)).toMatchObject({ label: "PlayStation 5 Slim · 1TB", qualifier: "نسخة الأقراص" });
+  });
+
+  it("carries a product link's qualifier and a device model's photo when the read layer sends them (well-formed keys only)", () => {
+    const plan = megaPlan({
+      ...PLATFORM,
+      devices: [
+        { label: "PlayStation 5 Pro", href: "/device/ps5-pro", short: "PS5 Pro", artKey: "playstation-5-pro--1" } as NavPlatform["devices"][number],
+        { label: "PlayStation Portal", href: "/device/ps-portal", artKey: "../evil.png" } as NavPlatform["devices"][number],
+      ],
+      games: [{ label: "ألعاب PlayStation", href: "/c/playstation-games", qualifier: " نسخة الأقراص " }],
+    });
+    expect(plan.devices[0]).toMatchObject({ label: "PS5 Pro", art: "playstation-5-pro--1" });
+    expect(plan.devices[1].art).toBeUndefined();
+    expect(plan.games[0].qualifier).toBe("نسخة الأقراص");
+    expect(megaPlan(PLATFORM).devices[0]).not.toHaveProperty("art");
   });
 
   it("without the read layer's pick: the product whose photo leads the platform, else the first console that HAS a photo", () => {
@@ -396,6 +427,58 @@ describe("suggestionKind — what a suggestion points at", () => {
     expect(suggestionKind("/used?platform=nintendo")).toBe("used");
     expect(suggestionKind("/search?q=playstation")).toBe("correction");
     expect(suggestionKind("/about")).toBe("other");
+  });
+});
+
+describe("suggestionMeta — a product suggestion's meta line", () => {
+  it("puts the qualifier first, then the kind, else the department — never inside the name", () => {
+    expect(suggestionMeta({ qualifier: "نسخة الأقراص", kindLabel: "جهاز PS5", hint: "الأجهزة" })).toBe("نسخة الأقراص · جهاز PS5");
+    expect(suggestionMeta({ kindLabel: "جهاز PS5", hint: "الأجهزة" })).toBe("جهاز PS5");
+    expect(suggestionMeta({ hint: "الأجهزة" })).toBe("الأجهزة");
+    expect(suggestionMeta({ qualifier: "الطراز الأصلي" })).toBe("الطراز الأصلي");
+    expect(suggestionMeta({ qualifier: " ", kindLabel: "", hint: "" })).toBe("");
+    expect(suggestionMeta({})).toBe("");
+  });
+});
+
+describe("searchMode — the header's search field, or only the round search key (v2.1 §2.7, client note 9)", () => {
+  it("keeps the field on the pages for finding products", () => {
+    for (const path of ["/", "/platform/playstation", "/c/controllers", "/search", "/compare", "/p/nintendo-switch-2", "/device/ps5-pro", "/used", "/used/ps5-slim-a12", "/pages/eid"]) {
+      expect(searchMode(path), path).toBe("field");
+    }
+  });
+
+  it("shows only the key where finding products is not the page's job: cart, checkout, orders, support, trade-in, account, the store's pages", () => {
+    for (const path of [
+      "/cart",
+      "/checkout",
+      "/order/TT-1042",
+      "/track",
+      "/support",
+      "/support/repair",
+      "/support/article/hdmi",
+      "/trade-in",
+      "/trade-in/TI-77",
+      "/account",
+      "/account/orders",
+      "/wishlist",
+      "/about",
+      "/contact",
+      "/policies",
+      "/policies/returns",
+      "/accessibility",
+      "/design-system",
+      "/motion",
+    ]) {
+      expect(searchMode(path), path).toBe("key");
+    }
+  });
+
+  it("matches whole path segments only, and every error page keeps the field (the 404's one search field is the header's)", () => {
+    expect(searchMode("/cartography")).toBe("field");
+    expect(searchMode("/supporters")).toBe("field");
+    expect(searchMode("/cart", { errored: true })).toBe("field");
+    expect(searchMode("/support/nothing-here", { errored: true })).toBe("field");
   });
 });
 

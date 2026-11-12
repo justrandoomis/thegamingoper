@@ -3,11 +3,13 @@
  *
  * TAB BAR: a floating glass pill — 64px tall, 12px from the sides, 10px + the safe area from the bottom, --r-xl,
  * --e-float, at most 520px wide and centred from 600. Five tabs in reading order: الرئيسية · التصنيفات · السلة ·
- * المفضلة · حسابي; a 24px icon over a 13px label. The current tab: its icon filled in --red-ink inside a 56 × 32
- * --red-tint pill, its label 600 ink, `aria-current` ("page" on that very page, "true" inside its section); the others
- * an outline icon and a 400 --ink-2 label. The cart carries the bead (`data-cart-target` on the tab, `data-cart-badge`
- * on the bead). "التصنيفات" opens the categories sheet; it is a link to the footer's shop column (#shell-categories),
- * so it still leads somewhere without script.
+ * المفضلة · حسابي; a 24px icon over a 13px label. The current tab: its icon filled in --red-ink on the active pill
+ * (56 × 32, --red-tint), its label 600 ink, `aria-current` ("page" on that very page, "true" inside its section); the
+ * others an outline icon and a 400 --ink-2 label. ONE pill slides from tab to tab when the section changes (v2.1 G6;
+ * its place is rendered on the server, so it is right without script; instant under reduced motion), and a pressed
+ * tab's icon dips (the engine's press, `data-pressed`). The cart carries the bead (`data-cart-target` on the tab,
+ * `data-cart-badge` on the bead). "التصنيفات" opens the categories sheet; it is a link to the footer's shop column
+ * (#shell-categories), so it still leads somewhere without script.
  *
  * It is drawn on store pages only (not in checkout or task flows) and gives way BY ITSELF to a page's own bottom bar:
  * while a <TaskBar> is in the page (product buy bar, a cart with items) the tab bar is hidden (CSS), so an empty cart —
@@ -27,7 +29,7 @@
  * sit at `inset-block-end: var(--shell-bottom)`. Below 1024 the header becomes the task header once the page scrolls
  * (back · the page's <h1> · the cart with its bead — ./Header), so the cart stays one tap away.
  */
-import { useLayoutEffect, useRef, type MouseEvent, type ReactNode } from "react";
+import { useLayoutEffect, useRef, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { useLocation } from "react-router";
 
 import { Icon, type IconName } from "~/art/Icon";
@@ -41,6 +43,9 @@ import { useShellT } from "./i18n";
 
 /** Which tab the current page belongs to (locale-less path). Kept for callers of the 1.0 name. */
 export const sectionOf = tabOf;
+
+/** The tabs in reading order: the active pill's column is the section's place here. */
+const TAB_ORDER: readonly TabId[] = ["home", "categories", "cart", "wishlist", "account"];
 
 export type TabBarProps = {
   sheetOpen: boolean;
@@ -62,9 +67,19 @@ export function TabBar({ sheetOpen, onCategories }: TabBarProps) {
     event.preventDefault();
     onCategories();
   };
+  // the active pill's column (reading order); no section (a content page): no pill
+  const pill = section ? TAB_ORDER.indexOf(section) : -1;
 
   return (
-    <Glass as="nav" edge="bottom" aria-label={t("tabs.label")} className="shell-tabbar" data-motion-persist="nav">
+    <Glass
+      as="nav"
+      edge="bottom"
+      aria-label={t("tabs.label")}
+      className="shell-tabbar"
+      data-motion-persist="nav"
+      style={pill >= 0 ? ({ "--tab-i": pill } as CSSProperties) : undefined}
+    >
+      <span className="shell-tabbar__pill" data-on={pill >= 0 ? "" : undefined} aria-hidden="true" />
       <Tab to="/" icon="house" label={t("tabs.home")} current={current("home", "/")} />
       <a
         href="#shell-categories"

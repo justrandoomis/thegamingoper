@@ -1,23 +1,23 @@
 /**
- * «التصنيفات» on phones and tablets (Design System v2 §5.10): a full-height sheet —
- *   1. the four platforms as compact platform tiles (2 × 2: colour, name, count, the hardware photo);
- *   2. two wide entry cards, «المستعمل والمفحوص» and «الدعم» (used and support stay prominent);
- *   3. the departments as category tiles in three columns, with their photos (`artKey`; a glyph only for a category
- *      without one) and counts (controllers, headsets, storage, VR, gift cards, accessories, games — consoles and
- *      handheld PCs live inside their platforms: the handheld platform is «الأجهزة المحمولة», its category «حواسيب
- *      الألعاب المحمولة» is shown inside it);
- *   4. rows: استبدل جهازك · تتبّع طلبك;
- *   5. language, theme and the display currency.
- * Every link closes the sheet as it navigates. Client only (a <Sheet> renders nothing on the server); without script
- * the tab leads to the footer's shop column instead.
+ * «التصنيفات» on phones and tablets (Design v2.1 — the client's reference «التصنيفات» screens; v2 §5.10): a
+ * full-height sheet —
+ *   1. the four platforms as the kit's vivid compact platform tiles (2 × 2: colour, name, count, the hardware photo);
+ *   2. «الأقسام»: the departments as glass icon tiles, three to a row (four in a sheet 520px wide or more; a short
+ *      last row centred) — a red kind icon, the name and the
+ *      count (controllers, headsets, storage, VR, gift cards, accessories, games — consoles and handheld PCs live inside
+ *      their platforms: the handheld platform is «الأجهزة المحمولة», its category «حواسيب الألعاب المحمولة» is shown
+ *      inside it);
+ *   3. «خدمات»: the same tiles for المستعمل (with how many units are listed), استبدل جهازك, تتبّع طلبك, الدعم, الصيانة;
+ *   4. language, theme and the display currency.
+ * The tiles arrive 30ms apart as the sheet rises (CSS; none under reduced motion). Every link closes the sheet as it
+ * navigates. Client only (a <Sheet> renders nothing on the server); without script the tab leads to the footer's shop
+ * column instead.
  */
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
-import { LocaleLink } from "~/i18n/react";
-import { CategoryTile } from "~/ui/CategoryTile";
+import { LocaleLink, useFormat } from "~/i18n/react";
 import { cx } from "~/ui/cx";
-import { EntryCard } from "~/ui/EntryCard";
 import { isPlatform } from "~/ui/PlatformLed";
 import { PlatformTile } from "~/ui/PlatformTile";
 import { Sheet } from "~/ui/Sheet";
@@ -33,15 +33,15 @@ export type CategoriesSheetProps = {
   shell: ShellData | null;
 };
 
-/** The glyph that stands in for a department's photo only while the category has none (`artKey` null). */
+/** Each department's kind icon (the kit's `kind-*` glyphs, v2.1 G4; VR has no kind glyph: the sprite's eye). */
 const CATEGORY_GLYPH: Record<(typeof SHEET_CATEGORY_KINDS)[number], IconName> = {
-  controllers: "game-controller",
-  headsets: "headphones",
-  storage: "hard-drives",
+  controllers: "kind-controller",
+  headsets: "kind-headset",
+  storage: "kind-storage",
   vr: "eye",
-  digital: "gift",
-  accessories: "plug",
-  games: "disc",
+  digital: "kind-topup",
+  accessories: "kind-accessory",
+  games: "kind-game",
 };
 const glyphOf = (kind: string): IconName => (kind in CATEGORY_GLYPH ? CATEGORY_GLYPH[kind as keyof typeof CATEGORY_GLYPH] : "squares-four");
 
@@ -50,7 +50,8 @@ export function CategoriesSheet({ open, onClose, shell }: CategoriesSheetProps) 
   const nav = shell?.nav;
   const platforms = nav?.platforms ?? [];
   const categories = sheetCategories(nav?.categories ?? []);
-  const usedArt = platforms.find((platform) => platform.artKey)?.artKey ?? null;
+  let order = 0;
+  const next = () => order++;
 
   return (
     <Sheet open={open} onClose={onClose} title={t("sheet.title")} description={t("sheet.description")} snapPoints={[0.62, 1]} initialSnap={1}>
@@ -61,49 +62,29 @@ export function CategoriesSheet({ open, onClose, shell }: CategoriesSheetProps) 
           </nav>
         ) : null}
 
-        <div className="shell-csheet__entries">
-          <EntryCard
-            to="/used"
-            title={t("sheet.usedTitle")}
-            text={nav && nav.usedCount > 0 ? `${t("sheet.usedText")} · ${t("sheet.usedCount", { count: nav.usedCount })}` : t("sheet.usedText")}
-            art={usedArt ?? undefined}
-            onClick={onClose}
-          />
-          <EntryCard to="/support" title={t("sheet.supportTitle")} text={t("sheet.supportText")} art="mascot" onClick={onClose} />
-        </div>
-
         {categories.length > 0 ? (
           <nav aria-labelledby="shell-csheet-departments">
             <h3 id="shell-csheet-departments" className="shell-csheet__head">
               {t("sheet.departments")}
             </h3>
-            <ul className="cats">
+            <ul className="shell-itiles">
               {categories.map((category) => (
-                <li key={category.slug} className="grid">
-                  <CategoryTile
-                    to={category.href}
-                    label={category.label}
-                    count={category.count}
-                    // the category's photo (staff set it in the catalogue module) as on home's «تسوّق حسب القسم»
-                    art={
-                      category.artKey ?? (
-                        <span className="absolute inset-0 grid place-items-center text-ink-2">
-                          <Icon name={glyphOf(category.kind)} size={32} />
-                        </span>
-                      )
-                    }
-                    onClick={onClose}
-                  />
-                </li>
+                <IconTile key={category.slug} to={category.href} icon={glyphOf(category.kind)} label={category.label} count={category.count} order={next()} onPick={onClose} />
               ))}
             </ul>
           </nav>
         ) : null}
 
-        <nav aria-label={t("sheet.services")}>
-          <ul className="shell-csheet__rows">
-            <ShellRow to="/trade-in" icon="recycle" title={t("links.tradeIn")} onPick={onClose} />
-            <ShellRow to="/track" icon="package" title={t("links.track")} onPick={onClose} />
+        <nav aria-labelledby="shell-csheet-services">
+          <h3 id="shell-csheet-services" className="shell-csheet__head">
+            {t("sheet.services")}
+          </h3>
+          <ul className="shell-itiles">
+            <IconTile to="/used" icon="kind-used" label={t("nav.used")} count={nav && nav.usedCount > 0 ? nav.usedCount : null} countLabel={nav ? t("sheet.usedCount", { count: nav.usedCount }) : undefined} order={next()} onPick={onClose} />
+            <IconTile to="/trade-in" icon="recycle" label={t("links.tradeIn")} order={next()} onPick={onClose} />
+            <IconTile to="/track" icon="package" label={t("links.track")} order={next()} onPick={onClose} />
+            <IconTile to="/support" icon="lifebuoy" label={t("nav.support")} order={next()} onPick={onClose} />
+            <IconTile to="/support/repair" icon="kind-repair" label={t("nav.repair")} order={next()} onPick={onClose} />
           </ul>
         </nav>
 
@@ -121,6 +102,51 @@ export function CategoriesSheet({ open, onClose, shell }: CategoriesSheetProps) 
         </div>
       </div>
     </Sheet>
+  );
+}
+
+/**
+ * A glass icon tile (the client's reference): the kit's raised card (.surface — faux glass in dark) with a red line
+ * kind icon, the name (three lines at most) and, when the data has one, the count in --ink-2 («18»; «18 منتجاً» for
+ * assistive technology). One link.
+ */
+export function IconTile({
+  to,
+  icon,
+  label,
+  count = null,
+  countLabel,
+  order = 0,
+  onPick,
+}: {
+  to: string;
+  icon: IconName;
+  label: ReactNode;
+  count?: number | null;
+  /** What the count means, read aloud («3 أجهزة»); default the product count. */
+  countLabel?: string;
+  /** Its place in the sheet: tiles arrive one after another. */
+  order?: number;
+  onPick?: () => void;
+}) {
+  const t = useShellT();
+  const f = useFormat();
+  const counted = typeof count === "number" && Number.isSafeInteger(count) && count >= 0;
+  return (
+    <li className="grid" style={{ "--i": order } as CSSProperties}>
+      <LocaleLink to={to} className="surface shell-itile" data-press="soft" onClick={onPick}>
+        <span className="shell-itile__ico" aria-hidden="true">
+          <Icon name={icon} size={28} />
+        </span>
+        <span className="shell-itile__name">{label}</span>
+        {counted ? (
+          <span className="shell-itile__count">
+            <span aria-hidden="true">{f.number(count)}</span>
+            <span className="sr-only">{` · ${countLabel ?? t("nav.count", { count })}`}</span>
+          </span>
+        ) : null}
+      </LocaleLink>
+    </li>
   );
 }
 

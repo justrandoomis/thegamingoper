@@ -9,9 +9,9 @@ import { revealFocusedItem } from "./reveal";
 import { useControllable, useRovingRadio } from "./roving";
 
 /**
- * Chips — Design System v2 §4.6: a flat 40px pill (44 hit), paper with a --line-2 hairline, 14/600 ink words, an optional
- * count in ink-2 («الألعاب 18») and an optional 8px platform dot. Chosen = ink fill, paper words and a 16px check at the
- * start (the count at 72%). Chips are STATE, never action — an action is a <Key> (12px corners, not a pill).
+ * Chips — Design System v2 §4.6; v2.1 (DESIGN.md §15.2): a 40px CLAY PILL (44 hit) — raised on its 2px wall like the
+ * before's chips — 14/600 ink words, an optional count in ink-2 («الألعاب 18») and an optional 8px platform dot. Chosen =
+ * ink, HELD DOWN on its wall, paper words and a 16px check at the start (the count at 72%). Chips are STATE, never action — an action is a <Key> (12px corners, not a pill).
  *
  *   Toggle (multi-choice, aria-pressed)   <Chip selected={on} onClick={toggle} count={18}>الألعاب</Chip>
  *   With a platform dot                   <Chip platform="playstation">PlayStation</Chip>

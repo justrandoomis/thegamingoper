@@ -1,5 +1,13 @@
 # Overlays, navigation and states — props and examples
 
+## Design v2.1 «Clay & Glass» (2026-11-12) — DESIGN.md §15
+
+- **Sheet** — the whole sheet is one frosted, rim-lit glass panel (`.glass.glass--panel`; the strip is part of it, no glass
+  on glass); solid on the lite tier and under reduced transparency. **Menu** — a frosted panel over the page, opaque
+  inside a sheet or a dialog. **Dialog** and **Toast** stay opaque.
+- **Glass** — `panel` prop for frosted panels; the live-pane budget is four per viewport (`LIVE_GLASS_BUDGET`).
+- **Note** (`~/ui/Note`) replaces tinted callouts with inline links: `<Note title icon tone action variant>`.
+
 ## Polish round (2026-11-12)
 
 - **Rail** — keyboard focus on a card that is partly hidden brings it to the rail's start (a snap point; pointer focus

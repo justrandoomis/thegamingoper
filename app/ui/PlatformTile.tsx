@@ -8,10 +8,11 @@ import { cx } from "./cx";
 import type { Platform } from "./PlatformLed";
 
 /**
- * The platform tile — Design System v2 §4.19: the second clay object (a flat --plat-* face on a 2px --plat-*-deep wall)
- * and one of the four doors of the store. White words on the solid colour (4.80–6.65:1), the hardware at the inline end
- * with one white radial behind it only (never behind the text); in the dark theme a lit cabinet with the platform's
- * light behind the hardware and ink words.
+ * The platform tile — Design System v2 §4.19; v2.1 (DESIGN.md §15.3, client note 3): one of the four doors of the
+ * store as VIVID GLOSSY GLASS in both themes (never a grey cabinet): a radial from a lighter tint at the hardware's
+ * corner through the platform colour to its deep colour, a white rim and a specular band above the words, a coloured
+ * glow on the floor, on a 2px --plat-*-deep wall. White words where the face is the flat colour or deeper (≥ 4.8:1),
+ * the hardware at the inline end with one white radial behind it only (never behind the text).
  *
  *   <PlatformTiles>
  *     {platforms.map((p) => <PlatformTile key={p.slug} platform={p.slug} to={`/platform/${p.slug}`} count={p.count} art={p.tileArt} />)}

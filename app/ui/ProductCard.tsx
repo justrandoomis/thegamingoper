@@ -23,9 +23,11 @@ import { Tag } from "./Tag";
 import { WishlistKey } from "./WishlistKey";
 
 /**
- * The product card — Design System v2 §4.11: the one card, NO CONTAINER (no border, no shadow, no fill around the
- * text). A 1:1 well on the product ground holds the picture (contained, bottom-aligned, the CSS contact ellipse), the one
- * badge top-start and the wishlist top-end; under it the platform line (8px dots + the kind label «جهاز PS5»), the name
+ * The product card — Design System v2 §4.11; v2.1 "Clay & Glass": a SOFT RAISED CARD (light: paper with a top light and
+ * a warm two-step shadow; dark: faux glass with a rim light) that lifts 3px under a fine pointer while the photo grows
+ * 1.03. A 1:1 warm well 6px inside it (8 from 768) holds the picture (contained, bottom-aligned, the CSS contact
+ * ellipse), the one badge top-start and the wishlist (a 36px frosted disc) top-end; under it the platform line (the
+ * before's colour line + the kind label «جهاز PS5»), the name
  * (type-card, two lines, never truncated to one), at most two facts, and the foot pinned to the bottom: the price at the
  * start and the neutral add button at the end. Cards in a row are equal height (grid stretch), so prices align.
  *
@@ -218,8 +220,8 @@ export function ProductCard({
         </span>
       </MotionLink>
       {wishlist && !row ? (
-        <span className="absolute end-1.5 top-1.5 z-2">
-          <WishlistKey productId={card.id} name={card.name} initial={wished} onChange={onWishedChange} onImage size="xs" message="none" />
+        <span className="absolute end-3 top-3 z-2 md:end-3.5 md:top-3.5">
+          <WishlistKey productId={card.id} name={card.name} initial={wished} onChange={onWishedChange} onImage size="sm" message="none" />
         </span>
       ) : null}
       <div className={cx("pcard__foot", row && "mt-0 pt-0")}>

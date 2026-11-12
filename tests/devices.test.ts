@@ -9,7 +9,7 @@
  *     disagree, explicit "unverified" fillers, the inactive platform, drafts, articles, used units.
  */
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import type { CompatibilityStatus } from "~/lib/dto";
+import type { CompatibilityStatus, ProductCardData, StockState } from "~/lib/dto";
 import { pick, type L10n } from "~/lib/locales";
 import { compatibilityRules, deviceGenerations, deviceModels, knowledgeArticles, media, platforms, products, stockLevels, variants } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
@@ -17,7 +17,21 @@ import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { isAppError } from "~/server/errors";
 import { decidingRule, getCompatibilityForProduct, resolveForModel, type RuleLite, type VariantLite } from "~/server/services/compatibility.server";
+import { getProductDetail } from "~/server/services/catalog/product.server";
 import { artSlug, buildComparison, getDeviceHub, groupSpecs, listDeviceHubs, type DeviceHub } from "~/server/services/devices.server";
+import {
+  cheapestOrderable,
+  currentSection,
+  deviceIn,
+  drawableShelves,
+  expandedGrids,
+  headPrice,
+  hubSections,
+  keepTogether,
+  onlyGridsChanged,
+  toggleGrid,
+} from "~/routes/storefront/devices/components/format";
+import { fromPriceOf } from "~/routes/storefront/devices/hub.server";
 import { createTestDb, type TestDb } from "./helpers/db";
 
 let t: TestDb;
@@ -421,6 +435,36 @@ describe("getDeviceHub — the demo catalogue", { timeout: 180_000 }, () => {
     const hub = await getDeviceHub(t.db, "ar", (await listDeviceHubs(t.db, "ar"))[0].slug);
     expect(hub?.warrantyMonths).toEqual([]);
   });
+
+  it("prices the head «من …» at the cheapest version OF THIS DEVICE that can be ordered now, as the product read layer says", async () => {
+    // expected, independently: every edition read in full (getProductDetail), only the hub's own versions, only
+    // versions the cart accepts now — the hub's shortcut (a one-version edition is its card) must agree with it
+    let shared = 0;
+    for (const { slug } of await listDeviceHubs(t.db, "ar")) {
+      const hub = await getDeviceHub(t.db, "ar", slug, { now: t.now });
+      if (!hub) throw new Error(`no hub for ${slug}`);
+      const own = new Set(hub.versions.map((version) => version.variantId));
+      const details = await Promise.all(hub.editions.map((card) => getProductDetail(t.db, "ar", card.slug, { now: t.now, related: false })));
+      const variants = details.flatMap((detail) => detail?.variants ?? []);
+      const prices = variants.filter((variant) => own.has(variant.id) && variant.orderable).map((variant) => variant.priceIqd);
+      const from = await fromPriceOf(t.db, "ar", hub, t.now);
+      expect(from, slug).toBe(prices.length > 0 ? Math.min(...prices) : null);
+      if (from !== null) expect(Number.isSafeInteger(from), slug).toBe(true);
+      // a product that covers two models (the 2020 PS5 and its Digital Edition): the other model's version never counts
+      if (variants.some((variant) => !own.has(variant.id))) shared++;
+    }
+    expect(shared).toBeGreaterThan(0);
+  });
+});
+
+describe("the hub's head price — the test world", () => {
+  it("counts only the versions that can be ordered now (a later release without stock does not)", async () => {
+    const hub = await getDeviceHub(t.db, "en", "zz-alpha", { now: t.now });
+    if (!hub) throw new Error("no hub for zz-alpha");
+    // var_zz_device_a: 100,000 IQD, 5 in stock · var_zz_device_b: comes out later, no stock
+    expect(await fromPriceOf(t.db, "en", hub, t.now)).toBe(100_000);
+    expect(hubSections(hub)).toEqual(["versions", "specs", "accessories", "games", "help", "faq"]);
+  });
 });
 
 describe("pure helpers", () => {
@@ -446,5 +490,88 @@ describe("pure helpers", () => {
       { id: "discs", cells: [["Ultra HD Blu-ray"], null] },
     ]);
     expect(buildComparison({ slug: "a", name: "A", specs: {}, releasedOn: null, artKey: null, sort: 1 }, [], "en")).toBeNull();
+  });
+
+  it("finds the «من …» price among buyable versions of this device only, never a guess", () => {
+    const card = (slug: string, variantId: string, priceIqd: number, stock: StockState, hasVariants = false) => ({ slug, variantId, priceIqd, stock, hasVariants });
+    const offers = new Map([["pair", [{ variantId: "disc", priceIqd: 620_000, orderable: true }, { variantId: "digital", priceIqd: 549_000, orderable: true }]]]);
+    // the shared product: on the disc model's hub the Digital Edition's lower price does not count
+    expect(cheapestOrderable([card("pair", "disc", 620_000, "in_stock", true)], offers, new Set(["disc"]))).toBe(620_000);
+    expect(cheapestOrderable([card("pair", "disc", 620_000, "in_stock", true)], offers, new Set(["digital"]))).toBe(549_000);
+    // a one-version edition is its card: sold out and coming soon are not "from" prices
+    expect(cheapestOrderable([card("a", "a1", 300_000, "out_of_stock"), card("b", "b1", 400_000, "low_stock")], new Map(), new Set(["a1", "b1"]))).toBe(400_000);
+    expect(cheapestOrderable([card("a", "a1", 300_000, "preorder")], new Map(), new Set(["a1"]))).toBeNull();
+    // an edition with several versions whose versions were not read does not count; a broken amount never shows
+    expect(cheapestOrderable([card("c", "c1", 100_000, "in_stock", true)], new Map(), new Set(["c1"]))).toBeNull();
+    expect(cheapestOrderable([card("d", "d1", 0, "in_stock"), card("e", "e1", 12.5, "in_stock")], new Map(), new Set(["d1", "e1"]))).toBeNull();
+  });
+
+  it("keeps a short last word with the name and offers only the sections a hub draws", () => {
+    expect(keepTogether("Nintendo Switch 2")).toBe("Nintendo Switch\u00a02");
+    expect(keepTogether("ROG Xbox Ally X")).toBe("ROG Xbox Ally\u00a0X");
+    expect(keepTogether("PlayStation 5 Slim")).toBe("PlayStation 5 Slim");
+    expect(keepTogether("Steam Deck OLED")).toBe("Steam Deck OLED");
+    const bare = { editions: [], versions: [], notes: [], comparison: null, specs: [], accessories: [{ status: "verified" as const, items: [] }], games: [], faq: [], used: [] };
+    expect(hubSections(bare)).toEqual(["help"]); // an empty group is no section
+  });
+
+  it("lists as accessories only what is compatible — verified, or with a condition (v2 §6.6: «verified only»)", () => {
+    const item = (status: CompatibilityStatus) => ({ card: {} as ProductCardData, status, note: null });
+    const base = { editions: [], versions: [], notes: [], comparison: null, specs: [], games: [], faq: [], used: [] };
+    // the PlayStation VR2 hub records one accessory that does NOT work with it: that is no accessories section
+    expect(hubSections({ ...base, accessories: [{ status: "incompatible", items: [item("incompatible")] }, { status: "unverified", items: [item("unverified")] }] })).toEqual(["help"]);
+    expect(hubSections({ ...base, accessories: [{ status: "partial", items: [item("partial")] }] })).toEqual(["accessories", "help"]);
+    // games keep every recorded state: a disc that does not fit a digital console is worth knowing before buying
+    expect(hubSections({ ...base, accessories: [], games: [{ status: "incompatible", items: [item("incompatible")] }] })).toEqual(["games", "help"]);
+  });
+
+  it("isolates only the Latin runs of a device name inside Arabic text, so a qualifier keeps the sentence's order", () => {
+    // one isolate around the whole name made «PlayStation 5 (الطراز الأصلي 2020)» read qualifier-first in Arabic
+    expect(deviceIn("PlayStation 5 (الطراز الأصلي 2020)")).toBe("⁦PlayStation 5⁩ (الطراز الأصلي ⁦2020⁩)");
+    expect(deviceIn("Nintendo Switch 2")).toBe("⁦Nintendo Switch 2⁩");
+    expect(deviceIn("PlayStation 5 (original 2020 model)")).toBe("⁦PlayStation 5 (original 2020 model)⁩");
+  });
+
+  it("says in the head when nothing of THIS device can be ordered — even when its shared product's card is in stock", () => {
+    // the 2020 PS5 Digital Edition is a version of the "playstation-5" product: the disc version in stock keeps the card
+    // «متوفر», but no version of the digital model can be ordered → «نفد حالياً», never an empty line
+    expect(headPrice({ amount: null }, [{ stock: "in_stock" }])).toEqual({ kind: "out" });
+    expect(headPrice({ amount: null }, [{ stock: "out_of_stock" }, { stock: "preorder" }])).toEqual({ kind: "soon" });
+    expect(headPrice({ amount: 549_000 }, [{ stock: "in_stock" }])).toEqual({ kind: "from", amount: 549_000 });
+    // a failed read says nothing at all — never a guess, never a false «نفد»
+    expect(headPrice({ failed: true }, [{ stock: "out_of_stock" }])).toEqual({ kind: "unknown" });
+  });
+
+  it("chooses no section chip while the head is on screen, and the last one at the very end of the page", () => {
+    const tops = [
+      { id: "versions", top: 520 },
+      { id: "compare", top: 1400 },
+      { id: "faq", top: 2600 },
+    ];
+    // back at the top of the page: the reader is on the head, no chip stays chosen
+    expect(currentSection(tops, 300, false)).toBeNull();
+    expect(currentSection(tops.map((s) => ({ ...s, top: s.top - 400 })), 300, false)).toBe("versions");
+    expect(currentSection(tops.map((s) => ({ ...s, top: s.top - 1200 })), 300, false)).toBe("compare");
+    // a short last section never reaches the reading line: at the end of the page it is the one being read
+    expect(currentSection(tops.map((s) => ({ ...s, top: s.top - 2000 })), 300, true)).toBe("faq");
+    expect(currentSection([], 300, true)).toBeNull();
+  });
+
+  it("keeps a grid shown in full in the URL, so it works without JavaScript and survives Back and a reload", () => {
+    expect(toggleGrid("", "accessories:verified")).toBe("?all=accessories%3Averified");
+    expect(toggleGrid("?all=accessories%3Averified&all=versions", "accessories:verified")).toBe("?all=versions");
+    expect(toggleGrid("?all=versions", "versions")).toBe("");
+    expect(toggleGrid("?utm=x", "games:verified")).toBe("?utm=x&all=games%3Averified");
+    expect([...expandedGrids("?all=versions&all=games%3Apartial")]).toEqual(["versions", "games:partial"]);
+    // the route reloads nothing for a change of `all` alone
+    expect(onlyGridsChanged(new URLSearchParams(""), new URLSearchParams("all=versions"))).toBe(true);
+    expect(onlyGridsChanged(new URLSearchParams("all=versions"), new URLSearchParams("all=versions&q=1"))).toBe(false);
+    expect(onlyGridsChanged(new URLSearchParams("q=1"), new URLSearchParams("q=1"))).toBe(false);
+  });
+
+  it("draws only shelves of three cards or more, so a shelf that would not show leaves no empty box", () => {
+    const shelf = (key: string, n: number) => ({ key, title: key, reason: null, items: Array.from({ length: n }, (_, i) => ({ id: `${key}${i}` })) });
+    expect(drawableShelves([shelf("a", 2), shelf("b", 3), shelf("c", 0)]).map((s) => s.key)).toEqual(["b"]);
+    expect(drawableShelves([shelf("a", 1)])).toEqual([]);
   });
 });

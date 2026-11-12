@@ -1,19 +1,23 @@
 /**
- * "/" — the home page (brief §3.1–3.2; DESIGN.md §2, §8.1 mobile, §8.9 desktop, §8.11 tablet), the branded intro and
- * the optional onboarding. Area notes: docs/areas/home.md.
+ * "/" — the home page (Design System v2 §6.1; brief §3.1–3.2), the branded intro and the optional onboarding. Area
+ * notes: docs/areas/home.md.
  *
- * Server-rendered for everyone (crawlers and returning shoppers get the page, never the intro). Everything on it is
- * read from the catalogue (~/server/services/home.server): the hero is a real product on the lit stage with its
- * official photo; shelves say the rule they follow ("the newest in stock"), never "trending" — the store has no sales
- * or view data to rank by. Prices and stock are demo placeholders (the shell shows the ribbon).
+ * Server-rendered for everyone (crawlers and returning shoppers get the page, never the intro). Top to bottom: the
+ * visually hidden <h1> (the store statement — the hero's headline is an h2 because it changes per campaign), the
+ * crimson hero band with the featured console, the four platform tiles, the trust strip, «وصل حديثاً» with platform
+ * chips, the release band, used and inspected, the trade-in and support doors, the departments, the personal shelves
+ * (consent only) and the personalisation panel. Everything is read from the catalogue and the settings; shelves say
+ * the rule they follow, never "trending". Prices and stock are demo placeholders (the shell's demo strip, and
+ * «سعر تجريبي» beside the hero's price).
  *
- * The key bank lights the stage for one platform. The choice lives in the URL (`?platform=xbox`: shareable, kept by
- * Back) and needs no request — every platform's hero and shelves are in the loader data, and shouldRevalidate below
- * skips the loader when only `platform` changed.
+ * The new-arrivals chip lives in the URL (`?platform=xbox`: shareable, kept by Back) and needs no request — every
+ * platform's new arrivals are in the loader data, and shouldRevalidate below skips the loader when only `platform`
+ * changed.
  *
  * First visit on this device (no `tt_intro` cookie, landed here, not a bot): the intro overlay plays above the page.
- * Platforms picked there light the page for this visit; they are remembered only if the shopper says yes when asked
- * (`tt_consent`, ./personal.ts). The panel at the bottom shows what is remembered and lets them change or delete it.
+ * Platforms picked there arrange this visit; they are remembered only if the shopper says yes in the row that asks
+ * afterwards (`tt_consent`, ./personal.ts). The panel at the bottom shows what is remembered and lets them change or
+ * delete it, or watch the intro again.
  */
 import { useEffect, useRef, useState } from "react";
 import { isRouteErrorResponse, useRevalidator, useRouteLoaderData, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
@@ -21,33 +25,49 @@ import { isRouteErrorResponse, useRevalidator, useRouteLoaderData, useSearchPara
 import type { Route } from "./+types/home";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
-import type { ProductCardData, Shelf } from "~/lib/dto";
+import type { ProductCardData } from "~/lib/dto";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { getHomeData } from "~/server/services/home.server";
+import { getCardsByIds } from "~/server/services/catalog/cards.server";
+import { getHomeData, type HomeData } from "~/server/services/home.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
+import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
+import { usePlatformName } from "~/routes/storefront/shell/MegaMenu";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import type { ShellData } from "~/routes/storefront/shell/types";
 import { EmptyState } from "~/ui/EmptyState";
 import { ErrorState } from "~/ui/ErrorState";
 import { Key } from "~/ui/Key";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
-import { ProductCard } from "~/ui/ProductCard";
-import { ShelfRail } from "~/ui/ShelfRail";
-import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { Hero } from "./Hero";
-import { Intro, type IntroCorner, type IntroResult } from "./Intro";
-import { ConsentSheet, PersonalPanel, PlatformsSheet, useNames } from "./Onboarding";
+import { Intro, type IntroCorner, type IntroResult, type IntroTile } from "./Intro";
+import { ConsentRow, PersonalPanel, PlatformsSheet } from "./Onboarding";
 import { CONSENT_COOKIE, INTRO_COOKIE, PLATFORMS_COOKIE, parseConsent, parsePlatformList, readIntroSeen, saveConsent, saveIntroSeen, sendOnboarding } from "./personal";
-import { ComingSoon, NewArrivals, PlatformTiles, RecentlyViewed, RecommendationShelves, Sections, ServicesPanel } from "./Shelves";
-import { gearFor, isolate, resolveFocus } from "./view";
+import { Departments, NewArrivals, PlatformDoors, Releases, RecentlyViewed, RecommendationShelves, Sections, ServiceEntries, TrustFacts, UsedShelf } from "./Shelves";
+import { deviceHubFor, featuredHero, hasShelf, MIN_SHELF, RELEASE_LIMIT, releasePlatformOf, resolveFocus, tileArt } from "./view";
 import "./home.css";
 
-const SHELF_SIZES = "(min-width: 1200px) 210px, (min-width: 768px) 30vw, 46vw";
-const GEAR_LIMIT = 8;
+/** The one "talk to a person" destination (v2 §6.13). */
+const HANDOFF = "/support/assistant?handoff=1#handoff";
+
+/**
+ * What the page draws, and nothing else: each platform's hero and new arrivals (with their cards), the used units and
+ * the soonest releases. (getHomeData also reads games, accessories and deals, which this page no longer shows.)
+ */
+function forPage(data: HomeData) {
+  const platforms = data.platforms.map(({ slug, name, hero, newArrivals }) => ({ slug, name, hero, newArrivals }));
+  const cards: Record<string, ProductCardData> = {};
+  for (const platform of platforms) {
+    for (const id of [...(platform.hero ? [platform.hero.productId] : []), ...platform.newArrivals]) {
+      const card = data.cards[id];
+      if (card) cards[id] = card;
+    }
+  }
+  return { platforms, cards, used: data.used, comingSoon: data.comingSoon.slice(0, RELEASE_LIMIT) };
+}
 
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -58,11 +78,29 @@ export async function loader({ context }: Route.LoaderArgs) {
     consent,
     platforms: consent === true ? parsePlatformList(ctx.cookie(PLATFORMS_COOKIE)) : [],
   };
-  const [home, session] = await Promise.all([getHomeData(db, { locale: ctx.locale, now: ctx.now }), getCustomer(ctx, db)]);
+  const [data, session] = await Promise.all([getHomeData(db, { locale: ctx.locale, now: ctx.now }), getCustomer(ctx, db)]);
+  const home = forPage(data);
+  const releaseIds = home.comingSoon.filter((item) => item.variantCount === 0).map((item) => item.productId);
+  const arrivalIds = [...new Set(home.platforms.flatMap((platform) => platform.newArrivals))];
+  const [releaseCards, wished] = await Promise.all([
+    // the release band's platform line comes from the products' own cards; a failure costs that line only
+    releaseIds.length > 0 ? getCardsByIds(db, ctx.locale, releaseIds, { now: ctx.now }).catch(() => []) : [],
+    // which new arrivals the shopper keeps in the wishlist (filled hearts); unreadable → no hearts rather than wrong ones
+    arrivalIds.length > 0
+      ? wishedAmong(db, wishlistWho(ctx.cookie, session?.customer.id ?? null), arrivalIds).then(
+          (ids) => [...ids],
+          () => null,
+        )
+      : Promise.resolve([] as string[]),
+  ]);
   return {
     home,
+    wished,
+    releasePlatforms: Object.fromEntries(releaseCards.map((card) => [card.id, releasePlatformOf(card)])),
     prefs,
-    /** Lit when the URL names no platform: the shopper's first saved platform that has a hero, else the store's first. */
+    /** The request's clock: the release band counts days from it on the server and in the browser alike. */
+    now: ctx.now,
+    /** The chip the new arrivals start on when the URL names none: the shopper's saved platform, else the featured one. */
     defaultFocus: resolveFocus(null, home.platforms, prefs.platforms),
     /**
      * The devices area's shelf built from the shopper's own signals (getRecommendations, context "home") — only with
@@ -75,7 +113,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 
 export const meta: Route.MetaFunction = (args) => shellMeta(args, { type: "website" });
 
-/** Lighting another platform changes only `?platform=`: the page has its data already, so no loader runs. */
+/** Choosing another new-arrivals chip changes only `?platform=`: the page has its data already, so no loader runs. */
 export function shouldRevalidate({ currentUrl, nextUrl, formMethod, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
   if (!formMethod && currentUrl.pathname === nextUrl.pathname) {
     const before = new URLSearchParams(currentUrl.search);
@@ -90,19 +128,21 @@ export function shouldRevalidate({ currentUrl, nextUrl, formMethod, defaultShoul
 }
 
 type Prefs = Route.ComponentProps["loaderData"]["prefs"];
+type RootData = { customer?: unknown; storeMode?: string } | undefined;
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { home, defaultFocus, recommendations } = loaderData;
+  const { home, defaultFocus, recommendations, releasePlatforms, now, wished } = loaderData;
   const t = useT("home");
-  const names = useNames();
-  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined;
-  const shell = layout?.shell ?? null;
-  const signedIn = Boolean((useRouteLoaderData("root") as { customer?: unknown } | undefined)?.customer);
+  const nameOf = usePlatformName();
+  const shell = (useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined)?.shell ?? null;
+  const root = useRouteLoaderData("root") as RootData;
+  const signedIn = Boolean(root?.customer);
+  const demoMode = root?.storeMode === "demo";
 
-  // ── the platform in focus: the URL, else the server's choice (same on both sides, so hydration matches)
+  // ── the new-arrivals chip: the URL, else the server's choice (same on both sides, so hydration matches)
   const [searchParams, setSearchParams] = useSearchParams();
   const requested = searchParams.get("platform");
-  const focus: Platform | null = isPlatform(requested) && home.platforms.some((platform) => platform.slug === requested) ? requested : defaultFocus;
+  const focus: Platform | null = isPlatform(requested) && home.platforms.some((platform) => platform.slug === requested && hasShelf(platform)) ? requested : defaultFocus;
   const [firstFocus] = useState(focus);
   const setFocus = (platform: Platform) =>
     setSearchParams(
@@ -117,9 +157,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   // ── what the shopper has told us: the server's reading of the cookies, then their answers on this page
   const [prefs, setPrefs] = useState<Prefs>(loaderData.prefs);
   useEffect(() => setPrefs(loaderData.prefs), [loaderData.prefs]);
-  /** Platforms picked in the intro without consent: they arrange this visit only. */
-  const [visitPlatforms, setVisitPlatforms] = useState<Platform[]>([]);
-  const chosen: Platform[] = prefs.consent === true && prefs.platforms.length > 0 ? prefs.platforms : visitPlatforms;
 
   // ── the intro: first visit on this device, landed on this page, not scrolled yet, not a crawler
   const [intro, setIntro] = useState(false);
@@ -148,15 +185,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       void sendOnboarding({ intro: true });
       return;
     }
-    if (picked[0] !== focus) setFocus(picked[0]);
+    const shown = picked.find((platform) => home.platforms.some((entry) => entry.slug === platform && hasShelf(entry)));
+    if (shown && shown !== focus) setFocus(shown);
     if (prefs.consent === true) {
       saveConsent(true, picked);
       setPrefs((current) => ({ ...current, platforms: picked }));
       void sendOnboarding({ intro: true, platforms: picked });
       return;
     }
-    setVisitPlatforms(picked);
     void sendOnboarding({ intro: true });
+    // nothing is kept yet: the row under the hero asks (only when it was never asked before)
     if (prefs.consent === null) setAskConsent(picked);
   };
 
@@ -174,38 +212,54 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     setPrefs((current) => ({ ...current, consent: true, platforms: picked }));
     void sendOnboarding({ consent: true, platforms: picked });
     setPlatformsSheet(false);
-    if (focus === null || !picked.includes(focus)) setFocus(picked[0]);
+    const shown = picked.find((platform) => home.platforms.some((entry) => entry.slug === platform && hasShelf(entry)));
+    if (shown && (focus === null || !picked.includes(focus))) setFocus(shown);
     toast.info(t("consent.saved"));
   };
 
   const stopRemembering = () => {
     saveConsent(false);
     setPrefs((current) => ({ ...current, consent: false, platforms: [] }));
-    setVisitPlatforms([]);
+    setAskConsent(null);
     void sendOnboarding({ consent: false });
     // the server forgets too (POST /api/onboarding consent=0): signals, and a signed-in customer's list
     toast.info(t(signedIn ? "personal.stoppedAccount" : "personal.stopped"));
   };
 
   // ── what the page shows
-  const cardsOf = (ids: readonly string[]) => ids.map((id) => home.cards[id]).filter((card): card is ProductCardData => card !== undefined);
-  const platform = home.platforms.find((entry) => entry.slug === focus) ?? null;
-  const navPlatform = shell?.nav.platforms.find((entry) => entry.slug === focus) ?? null;
-  const phrase = focus ? isolate(t(`phrase.${focus}`)) : "";
-  const gearChosen = chosen.length > 0 && !(chosen.length === 1 && chosen[0] === focus);
+  const navPlatforms = shell?.nav.platforms ?? [];
+  const featured = featuredHero(home.platforms);
+  const heroCard = featured?.hero ? home.cards[featured.hero.productId] : undefined;
+  const heroPlatform = featured && isPlatform(featured.slug) ? featured.slug : null;
+  const heroArt = heroCard?.image.artKey ?? null;
+  const shelves = home.platforms.flatMap((platform) => {
+    if (!isPlatform(platform.slug)) return [];
+    const cards = platform.newArrivals.map((id) => home.cards[id]).filter((card): card is ProductCardData => card !== undefined);
+    // a chip only for a shelf the page draws (v2 §4.22: three cards at least)
+    return cards.length >= MIN_SHELF ? [{ platform: platform.slug, cards }] : [];
+  });
+  // the trade-in door shows an upright console that no tile shows: the PlayStation platform's lead device
+  const playstation = home.platforms.find((platform) => platform.slug === "playstation");
+  const playstationLead = playstation?.hero ? (home.cards[playstation.hero.productId]?.image.artKey ?? null) : null;
+  const playstationTile = navPlatforms.find((platform) => platform.slug === "playstation")?.artKey ?? null;
+  const tradeInArt = playstationLead ?? playstationTile;
   const corners: IntroCorner[] = home.platforms.flatMap((entry) => {
     const art = entry.hero ? home.cards[entry.hero.productId]?.image.artKey : null;
-    return art ? [{ platform: entry.slug, artKey: art }] : [];
+    return art && isPlatform(entry.slug) ? [{ platform: entry.slug, artKey: art }] : [];
   });
-  const usedShelf: Shelf<(typeof home.used)[number]> = { key: "used", title: t("shelf.used"), reason: t("shelf.usedReason"), items: home.used };
+  // the intro's tiles are the page's tiles: the same pictures (stepping away from a corner object's picture would show
+  // the next "angle" — for the Xbox Series X, the back of the console with its ports)
+  const tiles: IntroTile[] = navPlatforms.flatMap((platform) =>
+    isPlatform(platform.accent) ? [{ platform: platform.accent, name: nameOf(platform), count: platform.productCount, artKey: tileArt(platform.artKey, heroArt) }] : [],
+  );
 
   const overlays = (
     <>
-      {intro ? <Intro corners={corners} platforms={home.platforms.map((entry) => entry.slug)} onLeave={leaveIntro} onDone={() => setIntro(false)} /> : null}
-      <ConsentSheet open={askConsent !== null && !intro} platforms={askConsent ?? []} onAnswer={answerConsent} onDismiss={() => setAskConsent(null)} />
-      <PlatformsSheet open={platformsSheet} initial={chosen} onSave={savePlatforms} onClose={() => setPlatformsSheet(false)} />
+      {intro ? <Intro corners={corners} tiles={tiles} onLeave={leaveIntro} onDone={() => setIntro(false)} /> : null}
+      <PlatformsSheet open={platformsSheet} initial={prefs.consent === true ? prefs.platforms : []} onSave={savePlatforms} onClose={() => setPlatformsSheet(false)} />
     </>
   );
+  const consentRow = askConsent !== null && !intro ? <ConsentRow platforms={askConsent} onAnswer={answerConsent} /> : null;
   const personal = (
     <PersonalPanel consent={prefs.consent} platforms={prefs.consent === true ? prefs.platforms : []} signedIn={signedIn} onChoose={() => setPlatformsSheet(true)} onStop={stopRemembering} onReplay={() => setIntro(true)} />
   );
@@ -214,19 +268,19 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     // a store with no catalogue yet: say so plainly, keep the ways to help
     return (
       <div className="home">
-        <Sections className="pt-6">
-          <VisuallyHidden as="h1">{t("empty.title")}</VisuallyHidden>
+        <VisuallyHidden as="h1">{t("title")}</VisuallyHidden>
+        <Sections>
           <EmptyState
             layout="stack"
             title={t("empty.title")}
             text={t("empty.text")}
             action={
-              <Key as={LocaleLink} to="/contact">
+              <Key as={LocaleLink} to={HANDOFF} variant="primary">
                 {t("empty.action")}
               </Key>
             }
           />
-          <ServicesPanel usedCount={shell?.nav.usedCount ?? null} />
+          <ServiceEntries tradeInArt={tradeInArt} />
           {personal}
         </Sections>
         {overlays}
@@ -236,39 +290,27 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="home">
-      <Hero platforms={home.platforms} cards={home.cards} focus={focus} onFocus={setFocus} firstFocus={firstFocus} deliveryFeeIqd={shell?.deliveryFeeIqd ?? null} />
+      <VisuallyHidden as="h1">{t("title")}</VisuallyHidden>
       <Sections>
-        <NewArrivals
-          cards={cardsOf(platform?.newArrivals ?? [])}
-          title={t("shelf.newArrivals")}
-          reason={t("shelf.newArrivalsReason", { platform: phrase })}
-          href={focus ? `/platform/${focus}` : null}
-          linkLabel={t("hero.allOf", { platform: phrase })}
-          busyKey={focus ?? "none"}
-          inflate={focus !== firstFocus}
-        />
-        <ServicesPanel usedCount={shell?.nav.usedCount ?? null} />
-        <ShelfRail
-          shelf={{ key: `games-${focus}`, title: t("shelf.games", { platform: phrase }), reason: t("shelf.gamesReason"), items: cardsOf(platform?.games ?? []) }}
-          href={navPlatform?.games[0]?.href ?? null}
-          renderItem={(card) => <ProductCard card={card} slot="games" sizes={SHELF_SIZES} />}
-        />
-        <ShelfRail
-          shelf={{ key: "deals", title: t("shelf.deals"), reason: t("shelf.dealsReason"), items: cardsOf(home.deals) }}
-          renderItem={(card) => <ProductCard card={card} slot="deals" sizes={SHELF_SIZES} />}
-        />
-        <ShelfRail shelf={usedShelf} href="/used" renderItem={(unit) => <UsedUnitCard unit={unit} slot="used" sizes={SHELF_SIZES} />} />
-        <ShelfRail
-          shelf={{
-            key: `gear-${gearChosen ? chosen.join(".") : focus}`,
-            title: gearChosen ? t("shelf.gearChosen") : t("shelf.gear", { platform: phrase }),
-            reason: gearChosen ? t("shelf.gearChosenReason", { platforms: names(chosen) }) : t("shelf.gearReason"),
-            items: cardsOf(gearFor(home.platforms, gearChosen ? chosen : [], focus, GEAR_LIMIT)),
-          }}
-          renderItem={(card) => <ProductCard card={card} slot="gear" sizes={SHELF_SIZES} />}
-        />
-        <ComingSoon items={home.comingSoon} />
-        <PlatformTiles platforms={shell?.nav.platforms ?? []} />
+        {heroCard && heroPlatform && featured?.hero ? (
+          <Hero
+            card={heroCard}
+            platform={heroPlatform}
+            mode={featured.hero.mode}
+            deviceHref={deviceHubFor(heroCard.name, navPlatforms.find((platform) => platform.slug === heroPlatform)?.devices ?? [])}
+            deliveryFeeIqd={shell?.deliveryFeeIqd ?? null}
+            cod={shell?.payments.cod ?? false}
+            demoPrice={heroCard.isDemo || demoMode}
+          />
+        ) : null}
+        {consentRow}
+        <PlatformDoors platforms={navPlatforms} heroArt={heroArt} />
+        <TrustFacts deliveryFeeIqd={shell?.deliveryFeeIqd ?? null} payments={shell?.payments ?? null} />
+        <NewArrivals shelves={shelves} focus={focus} onFocus={setFocus} inflate={focus !== firstFocus} wished={wished} />
+        <Releases items={home.comingSoon} platforms={releasePlatforms} now={now} />
+        <UsedShelf units={home.used} />
+        <ServiceEntries tradeInArt={tradeInArt} />
+        <Departments categories={shell?.nav.categories ?? []} />
         <RecentlyViewed consent={prefs.consent} signedIn={signedIn} />
         <RecommendationShelves result={recommendations} consent={prefs.consent} />
         {personal}
@@ -287,9 +329,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const revalidator = useRevalidator();
   return (
     <div className="home">
-      <Sections className="pt-6">
-        <h1 className="type-title text-ink">{common("brand.title")}</h1>
-        <ErrorState onRetry={() => void revalidator.revalidate()} retrying={revalidator.state === "loading"} code={isRouteErrorResponse(error) ? String(error.status) : undefined} />
+      <Sections>
+        <h1 className="type-h1 text-ink">{common("brand.title")}</h1>
+        <ErrorState layout="stack" onRetry={() => void revalidator.revalidate()} retrying={revalidator.state === "loading"} code={isRouteErrorResponse(error) ? String(error.status) : undefined} />
       </Sections>
     </div>
   );

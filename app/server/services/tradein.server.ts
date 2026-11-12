@@ -123,7 +123,10 @@ export const PREFERRED_WINDOWS: readonly PreferredWindow[] = ["any", "morning", 
 
 // ───────────────────────────────────────────────────────────────── devices
 
-/** A device model the store buys (it has an active, model-wide price guide). No prices: the guide stays on the server. */
+/**
+ * A device model the store buys (it has an active, model-wide price guide). The guide itself (base price, grade
+ * multipliers, deductions) stays on the server; the one figure that leaves is `upToIqd`.
+ */
 export type TradeInDevice = {
   id: string;
   slug: string;
@@ -136,6 +139,13 @@ export type TradeInDevice = {
   hasScreen: boolean;
   /** What a complete unit comes with — the questionnaire asks which of these the shopper sends ("controller", "dock"…). */
   accessories: string[];
+  /**
+   * The most the estimate can reach for this model — the top of the range for a unit like new, working, with
+   * everything it came with (the same figure the wizard shows for those answers), rounded down to 5,000 IQD — or null
+   * when the guide cannot price that case. The device tiles say «حتى 350,000 د.ع · تقديري» (v2 §6.14): an estimate,
+   * never an offer.
+   */
+  upToIqd: number | null;
 };
 
 type Guide = { id: string; baseIqd: number; multipliers: Partial<Record<UsedGrade, number>>; deductions: Record<string, number>; updatedAt: number };
@@ -187,6 +197,15 @@ function imageOf(raw: unknown, fallbackAlt: string, locale: Locale): ImageRef | 
 function toDevice(row: DeviceSqlRow, locale: Locale): DeviceRow {
   const name = pick(parseJson<L10n>(row.name), locale) || row.slug;
   const deductions = parseJson<Record<string, number>>(row.deductions) ?? {};
+  const guide: Guide = {
+    id: row.guide_id,
+    baseIqd: row.base_iqd,
+    multipliers: parseJson<Partial<Record<UsedGrade, number>>>(row.grade_multipliers) ?? {},
+    deductions,
+    updatedAt: row.updated_at,
+  };
+  const hasScreen = hasScreenOf(row.device_kind, row.display);
+  const accessories = accessoriesOf(deductions);
   return {
     id: row.id,
     slug: row.slug,
@@ -195,16 +214,21 @@ function toDevice(row: DeviceSqlRow, locale: Locale): DeviceRow {
     platformName: pick(parseJson<L10n>(row.platform_name), locale) || row.platform_slug,
     kind: row.device_kind,
     image: imageOf(row.image, name, locale),
-    hasScreen: hasScreenOf(row.device_kind, row.display),
-    accessories: accessoriesOf(deductions),
-    guide: {
-      id: row.guide_id,
-      baseIqd: row.base_iqd,
-      multipliers: parseJson<Partial<Record<UsedGrade, number>>>(row.grade_multipliers) ?? {},
-      deductions,
-      updatedAt: row.updated_at,
-    },
+    hasScreen,
+    accessories,
+    upToIqd: bestCaseIqd(guide, { hasScreen, accessories }),
+    guide,
   };
+}
+
+/** The top of the estimate for the best description of a device (see TradeInDevice.upToIqd). Pure. */
+export function bestCaseIqd(guide: Guide, device: Pick<TradeInDevice, "hasScreen" | "accessories">): number | null {
+  const best: TradeInAnswers = { power: "works", body: "like_new", account: "yes" };
+  if (device.hasScreen) best.screen = "perfect";
+  if (device.accessories.length > 0) best.included = [...device.accessories];
+  // The validity and the time do not change the figure.
+  const estimate = computeEstimate(guide, device, best, 1, 0);
+  return estimate.kind === "range" ? estimate.maxIqd : null;
 }
 
 /** The first picture of a device model (its catalogue photo), as json_object('a', art key, 'alt', L10n). */
@@ -542,7 +566,14 @@ async function replay(db: Db, existing: ExistingRequest, phone: string, idempote
  */
 export async function createTradeIn(db: Db, who: TradeInWho, raw: unknown, now: number): Promise<CreateTradeInResult> {
   const parsed = CreateTradeInInput.safeParse(raw);
-  if (!parsed.success) throw invalid(zodFieldErrors(parsed.error), "tradein.create");
+  if (!parsed.success) {
+    // Every field at once (the form's error summary lists them all): a phone that is there but unreadable is said
+    // together with the rest, not one round trip later.
+    const fields = zodFieldErrors(parsed.error);
+    const typed = (raw as { phone?: unknown } | null)?.phone;
+    if (!fields.phone && typeof typed === "string" && typed.trim() !== "" && !normalizeIraqPhone(typed)) fields.phone = "phone_invalid";
+    throw invalid(fields, "tradein.create");
+  }
   const input = parsed.data;
   const phone = normalizeIraqPhone(input.phone);
   const fields: Record<string, string> = {};
@@ -693,6 +724,7 @@ export type TradeInHistoryEntry = {
 
 export type TradeInView = {
   ref: string;
+  /** The request's status as the shopper sees it: an "offered" request whose offer is past its date reads "expired". */
   status: TradeInStatus;
   createdAt: number;
   isDemo: boolean;
@@ -704,6 +736,13 @@ export type TradeInView = {
   inspectionReason: "not_working" | "damaged" | "unpriced" | null;
   /** The final, human-approved offer when there is one. */
   offer: { amountIqd: number; expiresAt: number | null; expired: boolean } | null;
+  /**
+   * What the inspection found, as the offer was made on it (the latest `offered` history event, written by the staff
+   * side): the grade, how many checks passed and failed, and the accessories handed over — plus the checklist lines in
+   * the template's words when they are the ones that snapshot counted. Null without an offer. Never the inspector's
+   * notes, the serial or who inspected.
+   */
+  inspection: TradeInInspectionView | null;
   payoutMethod: "store_credit" | "cash" | null;
   /** The inspection time staff confirmed. */
   inspectionAt: number | null;
@@ -717,6 +756,18 @@ export type TradeInView = {
   canRespond: boolean;
   /** Store credit needs an account (a wallet): only requests made while signed in can choose it. */
   canChooseCredit: boolean;
+};
+
+/** The inspection result a shopper sees beside the final offer (TradeInView.inspection). */
+export type TradeInInspectionView = {
+  grade: UsedGrade | null;
+  /** Checks that passed / found a problem, as counted when the offer was made (null when not recorded). */
+  passed: number | null;
+  failed: number | null;
+  /** Accessory keys handed over with the device ("controller", "dock"…). */
+  included: string[];
+  /** The checklist lines (pass / fail only), in the shopper's language; empty when they no longer match the snapshot. */
+  checks: { key: string; label: string; ok: boolean }[];
 };
 
 const REF = /^TI-[2-9A-HJ-NP-Z]{8}$/;
@@ -755,6 +806,8 @@ type RequestRow = {
   platformSlug: string | null;
   image: unknown;
   guideDeductions: unknown;
+  /** trade_ins.inspection (staff): read only for the checklist lines of the offer — never sent as it is. */
+  inspection: unknown;
 };
 
 type RequestSqlRow = {
@@ -783,13 +836,14 @@ type RequestSqlRow = {
   platform_slug: string | null;
   image: string | null;
   guide_deductions: string | null;
+  inspection: string | null;
 };
 
 async function loadRequest(db: Db, ref: string): Promise<RequestRow | null> {
   const [row] = await db.all<RequestSqlRow>(sql`
 SELECT t.id, t.ref, t.customer_id, t.phone_e164, t.answers, t.estimate_min_iqd, t.estimate_max_iqd, t.estimate_expires_at,
   t.status, t.final_offer_iqd, t.offer_expires_at, t.payout_method, t.access_token_hash, t.created_at, t.contact_name,
-  t.device_text, t.inspection_scheduled_at, t.is_demo,
+  t.device_text, t.inspection_scheduled_at, t.is_demo, t.inspection,
   dm.slug AS model_slug, dm.name AS model_name, dm.device_kind AS model_kind, json_type(dm.specs, '$.display') AS display,
   pl.slug AS platform_slug,
   ${MODEL_IMAGE} AS image,
@@ -831,7 +885,45 @@ LIMIT 1`);
     platformSlug: row.platform_slug,
     image: row.image,
     guideDeductions: row.guide_deductions,
+    inspection: row.inspection,
   };
+}
+
+const GRADE_VALUES: readonly UsedGrade[] = ["A+", "A", "B", "C"];
+const ACCESSORY_KEY = /^[a-z0-9_]{1,40}$/;
+const countOf = (value: unknown): number | null => (typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null);
+
+type StoredInspection = { checklist?: { templateId?: unknown; items?: { key?: unknown; result?: unknown }[] } | null };
+
+/**
+ * The inspection result beside a final offer: the latest `offered` event's snapshot (grade, passed, failed, included —
+ * admin module 13 writes it), and the checklist lines of the recorded inspection in the template's words, kept only
+ * when their pass / fail counts are the snapshot's (an offer is never made on another inspection than the one shown).
+ */
+async function inspectionView(db: Db, row: RequestRow, offered: Record<string, unknown> | null, locale: Locale): Promise<TradeInInspectionView | null> {
+  if (!offered) return null;
+  const grade = GRADE_VALUES.find((value) => value === offered.grade) ?? null;
+  const passed = countOf(offered.passed);
+  const failed = countOf(offered.failed);
+  const included = Array.isArray(offered.included) ? [...new Set(offered.included.filter((key): key is string => typeof key === "string" && ACCESSORY_KEY.test(key)))] : [];
+
+  const stored = parseJson<StoredInspection>(row.inspection);
+  const items = Array.isArray(stored?.checklist?.items) ? stored.checklist.items : [];
+  const templateId = typeof stored?.checklist?.templateId === "string" ? stored.checklist.templateId : null;
+  let checks: TradeInInspectionView["checks"] = [];
+  if (templateId && items.length > 0) {
+    const [template] = await db.all<{ items: string | null }>(sql`SELECT items FROM inspection_templates WHERE id = ${templateId} LIMIT 1`);
+    const labels = new Map<string, L10n>();
+    for (const item of parseJson<{ key?: unknown; label?: L10n }[]>(template?.items) ?? []) if (item && typeof item.key === "string" && item.label) labels.set(item.key, item.label);
+    for (const item of items) {
+      if (!item || typeof item.key !== "string" || (item.result !== "pass" && item.result !== "fail")) continue;
+      const label = pick(labels.get(item.key) ?? null, locale);
+      if (label) checks.push({ key: item.key, label, ok: item.result === "pass" });
+    }
+    const agree = passed === checks.filter((check) => check.ok).length && failed === checks.filter((check) => !check.ok).length;
+    if (!agree) checks = [];
+  }
+  return { grade, passed, failed, included, checks };
 }
 
 async function authorized(row: RequestRow, access: { accessToken?: string | null; customerId?: string | null }): Promise<boolean> {
@@ -893,11 +985,18 @@ async function buildView(db: Db, row: RequestRow, locale: Locale, now: number): 
     row.finalOfferIqd !== null && ["offered", "accepted", "declined", "paid", "expired"].includes(row.status)
       ? { amountIqd: row.finalOfferIqd, expiresAt: row.offerExpiresAt, expired: row.offerExpiresAt !== null && row.offerExpiresAt <= now }
       : null;
+  // The newest offer's snapshot (events are in time order; a replaced offer leaves an older "offered" behind).
+  const offeredEvent = offer ? ([...events].reverse().find((event) => event.kind === "offered")?.data ?? null) : null;
+  const inspection = await inspectionView(db, row, offeredEvent, locale);
   const name = pick(parseJson<L10n>(row.modelName), locale) || row.deviceText || "";
+
+  // An open offer past its date is over for the shopper even before the daily job closes the row (as the admin shows
+  // it): the page never says "awaiting your answer" about an offer that can no longer be answered.
+  const status: TradeInStatus = row.status === "offered" && offer?.expired ? "expired" : row.status;
 
   return {
     ref: row.ref,
-    status: row.status,
+    status,
     createdAt: row.createdAt,
     isDemo: row.isDemo,
     device: {
@@ -912,6 +1011,7 @@ async function buildView(db: Db, row: RequestRow, locale: Locale, now: number): 
     estimate,
     inspectionReason: estimate === null && isOneOf(["not_working", "damaged", "unpriced"] as const, submitted?.estimate) ? submitted.estimate : null,
     offer,
+    inspection,
     payoutMethod: row.payoutMethod,
     inspectionAt: row.inspectionScheduledAt,
     preferred: day || window ? { day, window } : null,

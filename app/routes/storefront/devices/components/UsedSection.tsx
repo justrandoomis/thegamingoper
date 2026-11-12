@@ -1,57 +1,49 @@
 import { useId } from "react";
 
+import { Icon } from "~/art/Icon";
 import { LocaleLink, useT } from "~/i18n/react";
 import type { DeviceHub } from "~/server/services/devices.server";
-import { cx } from "~/ui/cx";
-import { EmptyState } from "~/ui/EmptyState";
-import { Key } from "~/ui/Key";
-import { ShelfRail } from "~/ui/ShelfRail";
+import { SectionHead } from "~/ui/SectionHead";
 import { TextLink } from "~/ui/TextLink";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
-import { isolate, SECTION_SCROLL_MARGIN } from "./format";
+import { deviceIn } from "./format";
 
 /**
- * Used units of this model (DESIGN.md §8.7, last shelf): the used cards of the catalogue read layer, which say
- * whether the picture is the unit itself or an illustration. None listed → one sentence, the way to all used
- * devices, and trade-in.
+ * Used units of this model — v2 §6.6 (the last section), drawn as the kit's used rows (§4.12, G14: a 96px well, the
+ * grade, «البطارية 91% · ضمان 30 يوماً», the price and «اعرض تقرير الفحص»; the picture says when it is an illustration),
+ * one column on phones and two from 1024, «عرض الكل» to the used list filtered to this model. None listed → no
+ * section, only a closing line that keeps the two ways on: every used device of the platform, and trade-in.
  */
 export function UsedSection({ hub }: { hub: DeviceHub }) {
   const t = useT("devices");
   const titleId = useId();
-  const device = isolate(hub.model.name);
-  const all = `/used?platform=${hub.model.platform.slug}`;
+  const device = deviceIn(hub.model.name);
+  if (hub.used.length === 0) {
+    return (
+      <div className="panel flex flex-wrap items-center gap-x-6 gap-y-1 px-5 py-3">
+        <p className="flex min-w-[min(100%,16rem)] flex-1 items-center gap-2 type-sm text-ink-2">
+          <Icon name="recycle" size={20} />
+          <span>{t("used.none", { device })}</span>
+        </p>
+        <TextLink as={LocaleLink} to={`/used?platform=${hub.model.platform.slug}`}>
+          {t("used.browse")}
+        </TextLink>
+        <TextLink as={LocaleLink} to="/trade-in">
+          {t("used.tradeIn")}
+        </TextLink>
+      </div>
+    );
+  }
   return (
-    <div id="used" className={cx("grid gap-3", SECTION_SCROLL_MARGIN)}>
-      {hub.used.length > 0 ? (
-        <ShelfRail
-          shelf={{ key: "used", title: t("used.title", { device }), reason: t("used.reason"), items: hub.used }}
-          href={all}
-          viewAllLabel={t("used.browse")}
-          renderItem={(unit) => <UsedUnitCard unit={unit} slot="used" />}
-        />
-      ) : (
-        <section aria-labelledby={titleId} className="grid gap-3">
-          <h2 id={titleId} className="type-section text-ink">
-            {t("used.title", { device })}
-          </h2>
-          <EmptyState
-            title={t("used.none", { device })}
-            text={
-              <>
-                {t("used.noneHint")}{" "}
-                <TextLink as={LocaleLink} to="/trade-in" inline>
-                  {t("used.tradeIn")}
-                </TextLink>
-              </>
-            }
-            action={
-              <Key as={LocaleLink} to={all} size="sm">
-                {t("used.browse")}
-              </Key>
-            }
-          />
-        </section>
-      )}
-    </div>
+    <section id="used" aria-labelledby={titleId} className="min-w-0">
+      <SectionHead id={titleId} title={t("used.title", { device })} reason={t("used.reason")} href={`/used?model=${hub.model.slug}`} />
+      <ul role="list" className="grid gap-(--gap-card) lg:grid-cols-2">
+        {hub.used.map((unit) => (
+          <li key={unit.id} className="min-w-0">
+            <UsedUnitCard unit={unit} layout="row" slot="used" />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

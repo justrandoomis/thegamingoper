@@ -12,6 +12,8 @@ import { TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { Status } from "~/ui/Tag";
+import { CustomerName } from "../shell/CustomerName";
+import { customerProfileId } from "../shell/access.server";
 import { amount, failed, financeT, ok, openFinance, orRespond, text } from "./finance.server";
 import { financeMeta } from "./meta";
 import { Code, DemoTag, FormDialog, Kpi, Money, Note, PageHead, Pair, ResponsiveTable, Section, StateTag, useFinT, When } from "./ui";
@@ -24,7 +26,8 @@ import { Code, DemoTag, FormDialog, Kpi, Money, Note, PageHead, Pair, Responsive
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   const { db, actor } = await openFinance(context, "finance.wallet.read");
   const wallet = await orRespond(() => customerWallet(db, actor, params.customerId, pageOf(new URL(request.url).searchParams)));
-  return { wallet, key: randomToken(18) };
+  // the name opens the customer's profile for staff who may open it (customers.customer.read), text otherwise
+  return { wallet, key: randomToken(18), customerProfileId: customerProfileId(actor, wallet.customer.id) };
 }
 
 export async function action({ request, context, params }: Route.ActionArgs) {
@@ -66,7 +69,7 @@ export default function CustomerWalletPage({ loaderData }: Route.ComponentProps)
         }
         title={
           <span className="flex flex-wrap items-center gap-2">
-            {wallet.customer.name ?? t("common.noName")}
+            <CustomerName profileId={loaderData.customerProfileId}>{wallet.customer.name ?? t("common.noName")}</CustomerName>
             <DemoTag show={wallet.customer.isDemo} />
             {wallet.customer.status !== "active" ? <Status tone="warn">{t(`customerStatus.${wallet.customer.status}`)}</Status> : null}
           </span>

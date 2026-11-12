@@ -16,10 +16,12 @@
  * Services take `db` first and never import "cloudflare:workers".
  */
 import { and, asc, eq, sql } from "drizzle-orm";
-import { pick, type L10n, type Locale } from "~/lib/locales";
+import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { deviceModels, knowledgeArticles, platforms, type LocalizedBlocks } from "~/server/db/schema";
-import type { ArticleDetail, ArticleKind, ArticleSummary, SupportDevice, SupportPlatform, SupportPlatformGroup } from "./types";
+import { findErrorCode, hasDangerSign, interpretText, KNOWN_SYMPTOMS, normalizeForMatch, tokenMatches } from "./matcher";
+import { cleanQuestion } from "./state";
+import type { ArticleDetail, ArticleKind, ArticleSummary, HelpSearch, SupportDevice, SupportPlatform, SupportPlatformGroup } from "./types";
 
 // ───────────────────────────────────────────────────────────────── device directory
 
@@ -245,6 +247,93 @@ export async function getArticle(db: Db, locale: Locale, slug: string): Promise<
     artKey: art?.name ?? null,
     fallback: locale !== "ar" && !(Array.isArray(own) && own.length > 0),
   };
+}
+
+// ───────────────────────────────────────────────────────────────── help-centre search
+
+/** Symptom keys of the assistant's trees → the article tag that covers them. */
+const SYMPTOM_TAGS: Record<string, string> = { stick_drift: "stick-drift", no_power: "power" };
+
+/** Words too common to rank a guide by — every guide is about "the device" (Arabic, English, Sorani; normalised). */
+const NOISE = new Set(
+  ["في", "من", "على", "عن", "مع", "او", "لا", "ما", "هو", "هي", "the", "a", "an", "my", "is", "it", "to", "of", "and", "or", "not", "لە", "و", "بە", "بۆ", "کە", "كه", "جهاز", "جهازي", "الجهاز", "device", "console", "ئامێر", "ئامێرەکە", "ئامێرەکەم"].map(normalizeForMatch),
+);
+
+/** Every string a block holds, as one text (headings, paragraphs, list items, steps, callouts, table cells). */
+function blockText(blocks: unknown): string {
+  if (!Array.isArray(blocks)) return "";
+  const parts: string[] = [];
+  const add = (value: unknown) => {
+    if (typeof value === "string") parts.push(value);
+  };
+  for (const block of blocks) {
+    if (typeof block !== "object" || block === null) continue;
+    const b = block as Record<string, unknown>;
+    add(b.text);
+    add(b.title);
+    if (Array.isArray(b.items)) {
+      for (const item of b.items) {
+        if (typeof item === "string") add(item);
+        else if (item && typeof item === "object") {
+          add((item as Record<string, unknown>).title);
+          add((item as Record<string, unknown>).text);
+        }
+      }
+    }
+    if (Array.isArray(b.head)) b.head.forEach(add);
+    if (Array.isArray(b.rows)) for (const row of b.rows) if (Array.isArray(row)) row.forEach(add);
+  }
+  return parts.join(" ");
+}
+
+const l10nText = (value: L10n | null | undefined) => (value ? LOCALE_CODES.map((code) => value[code] ?? "").join(" ") : "");
+
+/**
+ * The help centre's search box: a problem in the shopper's words or an error code (the same routing as the assistant,
+ * ./matcher), over the approved public guides only. Returns null for an empty query.
+ *   danger   the words carry a danger sign: the page says stop, unplug, book a repair — before any guide
+ *   code     an error code: the guides that mention it (possibly none — the page says so honestly)
+ *   guides   guides ranked by the words (title 3 · summary and tags 2 · body 1) and by the symptom or topic the words
+ *            point to; the staff order breaks ties. At most 8.
+ */
+export async function searchHelp(db: Db, locale: Locale, raw: unknown): Promise<HelpSearch | null> {
+  const query = typeof raw === "string" ? cleanQuestion(raw) : null;
+  if (!query) return null;
+  if (hasDangerSign(query)) return { query, kind: "danger", code: null, articles: [] };
+  const code = findErrorCode(query);
+  if (code) return { query, kind: "code", code, articles: await findArticlesMentioning(db, locale, code) };
+
+  const meaning = interpretText(query, { symptoms: KNOWN_SYMPTOMS });
+  const meant = meaning.kind === "symptom" ? SYMPTOM_TAGS[meaning.symptomKey] : meaning.kind === "topic" ? meaning.topic : null;
+  const words = [...new Set(normalizeForMatch(query).split(" "))].filter((word) => word.length >= 2 && !NOISE.has(word));
+  const rows = await db
+    .select({ ...articleColumns, body: knowledgeArticles.body })
+    .from(knowledgeArticles)
+    .leftJoin(deviceModels, eq(knowledgeArticles.deviceModelId, deviceModels.id))
+    .leftJoin(platforms, eq(knowledgeArticles.platformId, platforms.id))
+    .where(isPublic)
+    .orderBy(asc(knowledgeArticles.sort), asc(knowledgeArticles.slug));
+  const has = (text: string, word: string) => normalizeForMatch(text).split(" ").some((token) => tokenMatches(token, word));
+  const scored: Array<{ score: number; order: number; summary: ArticleSummary }> = [];
+  rows.forEach((row, order) => {
+    const body = (row.body ?? {}) as LocalizedBlocks;
+    const title = l10nText(row.title as L10n);
+    const summary = l10nText(row.summary as L10n | null);
+    const tags = (Array.isArray(row.tags) ? row.tags : []).join(" ").replace(/-/g, " ");
+    const text = `${blockText(body[locale])} ${locale === "ar" ? "" : blockText(body.ar)}`;
+    const names = `${row.deviceName ? l10nText(row.deviceName as L10n) : ""} ${row.platformName ? l10nText(row.platformName as L10n) : ""}`;
+    let score = meant && (row.tags ?? []).includes(meant) ? 3 : 0;
+    for (const word of words) {
+      if (has(title, word) || has(names, word)) score += 3;
+      else if (has(summary, word) || has(tags, word)) score += 2;
+      else if (has(text, word)) score += 1;
+    }
+    if (score > 0) scored.push({ score, order, summary: toSummary(row as ArticleRow, locale, row.deviceId ? "device" : "platform") });
+  });
+  scored.sort((a, b) => b.score - a.score || a.order - b.order);
+  // when some guides match by their title, summary, tags or meaning, a word that only appears in another's body is noise
+  const floor = (scored[0]?.score ?? 0) >= 3 ? 2 : 1;
+  return { query, kind: "guides", code: null, articles: scored.filter((entry) => entry.score >= floor).slice(0, 8).map((entry) => entry.summary) };
 }
 
 /** Other approved articles about the same device or platform (for "related guides" under an article). */

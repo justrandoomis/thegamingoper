@@ -53,6 +53,7 @@ export default defineMessages({
       finance_topup_second_approval_iqd: "شحن المحفظة فوق هذا المبلغ يقرره شخصان في قسم المالية.",
       finance_expense_second_approval_iqd: "المصروف فوق هذا المبلغ لا يعتمده من سجّله.",
       returns_sla: "المهل التي تقيس بها شاشات المرتجعات والصيانة التأخير.",
+      pos_discount_limit_bps: "أقصى ما يخصمه الكاشير من سعر كل بند ومن البيع كله في نقطة البيع بصلاحية الخصم؛ ما فوقه يطبّقه من له صلاحية تجاوز الخصم.",
     },
     value: { empty: "فارغ", on: "مفعّل", off: "متوقف", range: "من {min} إلى {max} {unit}", percentRange: "نسبة من 0 إلى {max}٪، تقبل كسرين عشريين", new: "القيمة الجديدة", value: "القيمة" },
     unit: {
@@ -499,6 +500,7 @@ export default defineMessages({
       finance_topup_second_approval_iqd: "A wallet top-up above this amount is decided by two people in Finance.",
       finance_expense_second_approval_iqd: "An expense above this amount is not approved by the person who recorded it.",
       returns_sla: "The times the returns and repair screens measure lateness against.",
+      pos_discount_limit_bps: "The most a cashier with the discount permission takes off each line's price and the whole sale at the point of sale; beyond it, only someone allowed to override discounts.",
     },
     value: { empty: "Empty", on: "On", off: "Off", range: "{min} to {max} {unit}", percentRange: "A percentage from 0 to {max}%, two decimals at most", new: "New value", value: "Value" },
     unit: {
@@ -945,6 +947,7 @@ export default defineMessages({
       finance_topup_second_approval_iqd: "پڕکردنەوەی جزدان لەسەرووی ئەم بڕەوە لەلایەن دوو کەسەوە بڕیاری لەسەر دەدرێت لە بەشی دارایی.",
       finance_expense_second_approval_iqd: "خەرجییەک لەسەرووی ئەم بڕەوە لەلایەن ئەو کەسەوە پەسەند ناکرێت کە تۆماری کردووە.",
       returns_sla: "ئەو کاتانەی شاشەکانی گەڕاندنەوە و چاککردنەوە دواکەوتن پێیان دەپێون.",
+      pos_discount_limit_bps: "زۆرترین داشکاندن کە کاشێرێک بە مۆڵەتی داشکاندن لە نرخی هەر ڕیزێک و لە هەموو فرۆشتنەکە دەیکات لە خاڵی فرۆشتن؛ زیاتر لەوە تەنها ئەو کەسەی مۆڵەتی تێپەڕاندنی داشکاندنی هەیە.",
     },
     value: { empty: "بەتاڵ", on: "چالاک", off: "ناچالاک", range: "لە {min} تا {max} {unit}", percentRange: "ڕێژەیەک لە 0 تا {max}%، لانی زۆر دوو ژمارەی دەیی", new: "بەهای نوێ", value: "بەها" },
     unit: {

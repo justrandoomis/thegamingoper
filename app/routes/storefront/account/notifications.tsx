@@ -10,19 +10,21 @@ import { listNotifications, markNotificationsRead } from "~/server/services/acco
 import type { NotificationView } from "~/server/services/account/types";
 import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
+import { useOnline } from "~/ui/OfflineBanner";
 import { ShowMore } from "~/ui/Pagination";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { toast } from "~/ui/toast-store";
 import { accountFailure, formFields, requireSignedIn } from "./account.server";
 import { sectionOrder } from "./components/AccountNav";
+import { rescueFocus } from "./components/FormBits";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
 import { usePagedList } from "./components/usePagedList";
 
 /**
- * In-account notifications — the one channel that reaches the customer today (no SMS, WhatsApp or e-mail provider).
- * Nothing in the store writes them yet (`notificationStatement` is the batch item for the services that will).
+ * In-account notifications — the one channel that reaches the customer today. Nothing in the store writes them yet
+ * (`notificationStatement` is the batch item for the services that will), so most accounts see the empty state.
  */
 export const handle = { nav: "push", order: sectionOrder("notifications") } satisfies MotionHandle;
 
@@ -56,25 +58,31 @@ export default function Notifications({ loaderData }: Route.ComponentProps) {
   const t = useT("account");
   const list = usePagedList(loaderData.notifications, (next: Awaited<ReturnType<typeof loader>>) => next.notifications);
   const all = useFetcher<typeof action>();
+  const online = useOnline();
   const handled = useRef<unknown>(null);
   const unread = list.items.some((item) => item.readAt === null);
 
   useEffect(() => {
     if (all.state !== "idle" || !all.data || handled.current === all.data) return;
     handled.current = all.data;
-    if (all.data.ok) toast.success(t("notifications.allRead"));
+    if (all.data.ok) {
+      toast.success(t("notifications.allRead"));
+      // «علّم الكل كمقروء» is gone now that nothing is unread: focus lands on the title beside it, not on <body>.
+      rescueFocus("notifications-title");
+    }
   }, [all.state, all.data, t]);
 
   return (
     <>
       <PageHead
+        titleId="notifications-title"
         title={t("notifications.title")}
         lead={t("notifications.lead")}
         aside={
           unread ? (
             <all.Form method="post">
               <input type="hidden" name="intent" value="readAll" />
-              <Key type="submit" size="sm" icon="check" loading={all.state !== "idle"}>
+              <Key type="submit" size="sm" icon="check" loading={all.state !== "idle"} disabled={!online}>
                 {t("notifications.markAll")}
               </Key>
             </all.Form>
@@ -82,17 +90,17 @@ export default function Notifications({ loaderData }: Route.ComponentProps) {
         }
       />
       {list.items.length === 0 ? (
-        <EmptyState layout="stack" icon="bell" title={t("notifications.emptyTitle")} text={t("notifications.emptyText")} />
+        <EmptyState layout="stack" title={t("notifications.emptyTitle")} text={t("notifications.emptyText")} />
       ) : (
-        <div className="grid gap-3">
-          <ol className="grid gap-2">
+        <div className="grid gap-4">
+          <ol className="acct-rows">
             {list.items.map((item) => (
               <li key={item.id}>
                 <NotificationRow item={item} />
               </li>
             ))}
           </ol>
-          <ShowMore shown={list.items.length} total={list.total} onMore={list.more} loading={list.loading} label={t("notifications.older")} />
+          {list.more || list.items.length > loaderData.notifications.items.length ? <ShowMore shown={list.items.length} total={list.total} onMore={list.more} loading={list.loading} label={t("notifications.older")} /> : null}
         </div>
       )}
     </>
@@ -101,34 +109,38 @@ export default function Notifications({ loaderData }: Route.ComponentProps) {
 
 function NotificationRow({ item }: { item: NotificationView }) {
   const t = useT("account");
+  const online = useOnline();
   const f = useFormat();
   const fetcher = useFetcher<typeof action>();
   const read = item.readAt !== null || fetcher.formData !== undefined || (fetcher.data?.ok === true && fetcher.data.done === "one");
   return (
-    <article className="grid gap-1 rounded-lg bg-paper p-4" data-unread={read ? undefined : ""}>
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <h2 className="type-strong text-ink">{item.title}</h2>
-        {!read ? <Status tone="info">{t("notifications.unread")}</Status> : null}
-      </div>
-      {item.body ? <p className="type-body text-ink-2">{item.body}</p> : null}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <time className="type-caption text-ink-2" dateTime={new Date(item.createdAt).toISOString()}>
-          {f.dateTime(item.createdAt)}
-        </time>
-        {item.link ? (
-          <TextLink as={LocaleLink} to={item.link}>
-            {t("notifications.open")}
-          </TextLink>
-        ) : null}
-        {!read ? (
-          <fetcher.Form method="post">
-            <input type="hidden" name="intent" value="readOne" />
-            <input type="hidden" name="id" value={item.id} />
-            <Key type="submit" size="sm" variant="quiet">
-              {t("notifications.markRead")}
-            </Key>
-          </fetcher.Form>
-        ) : null}
+    <article id={`notification-${item.id}`} tabIndex={-1} className="acct-row items-start" data-unread={read ? undefined : ""}>
+      <div className="acct-row__body">
+        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+          <h2 className="acct-row__title">{item.title}</h2>
+          {!read ? <Status tone="info">{t("notifications.unread")}</Status> : null}
+        </div>
+        {item.body ? <p className="type-sm text-ink-2">{item.body}</p> : null}
+        <div className="flex flex-wrap items-center gap-x-5">
+          <time className="acct-row__meta" dateTime={new Date(item.createdAt).toISOString()}>
+            {f.dateTime(item.createdAt)}
+          </time>
+          {item.link ? (
+            <TextLink as={LocaleLink} to={item.link}>
+              {t("notifications.open")}
+            </TextLink>
+          ) : null}
+          {!read ? (
+            // The key goes as soon as it is pressed (the row reads as read at once): focus stays on this notification.
+            <fetcher.Form method="post" onSubmit={() => rescueFocus(`notification-${item.id}`)}>
+              <input type="hidden" name="intent" value="readOne" />
+              <input type="hidden" name="id" value={item.id} />
+              <Key type="submit" size="sm" variant="ghost" disabled={!online}>
+                {t("notifications.markRead")}
+              </Key>
+            </fetcher.Form>
+          ) : null}
+        </div>
       </div>
     </article>
   );

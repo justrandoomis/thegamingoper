@@ -1,71 +1,79 @@
 /**
- * /trade-in — the trade-in wizard (brief §5, DESIGN.md §9.21): الجهاز → الحالة → الصور → التقدير → الفحص.
+ * /trade-in — «استبدل جهازك», the trade-in wizard (Design System v2 §6.14): الجهاز → الحالة → الصور → التقدير → الفحص.
  *
- * Every step is a URL (./trade-in.server.ts): Back, reload and a shared link work, the question forms are GET forms
- * that submit without script, and steps push sideways in reading order (handle below). One question per screen,
- * answers as option rows with a line of explanation. Photos are private uploads (POST /api/upload/tradein). The
- * estimate is a RANGE from the model's price guide, labelled as an estimate with its expiry — or, honestly, "priced
- * after the inspection"; a locked device is refused. The last step POSTs the contact details and a preferred time
- * (a preference, never an appointment) and creates the request (~/server/services/tradein.server createTradeIn:
- * rate-limited, idempotent), then goes to /trade-in/<ref>?t=<token>.
+ * The task-flow shell (`chrome: "task"`): the store header, no tab bar — the step's keys in a <TaskBar> below 1024
+ * (secondary «رجوع» | primary «تابع», which grows) and at the end of the column from 1024 — and the one-line footer.
+ * One centred 720px column; from 1280 a 340px sticky aside beside it (the device, the answers so far, the estimate, what
+ * happens next, how to reach a person).
  *
- * There is no commit (red) key here: nothing is bought or sold until an employee issues a final offer (§9.21).
- * States: each step · an unknown device · a question sent without an answer · a refused device · photo failures
- * (per photo) · field errors (client and server) · rate limits and other failures (a sentence above the key) ·
- * sending (the key spins) · demo mode (the request is recorded as a demo).
+ * Every step is a URL (./trade-in.server.ts): Back, reload and a shared link work, the question forms are GET forms that
+ * submit without script, and steps push sideways in reading order (handle below). Step 1: what trading in is, a device
+ * search and the device tiles with «حتى 350,000 د.ع · تقديري». Then one question per screen as option cards with a line
+ * of explanation («السؤال 1 من 5»). Photos are private uploads (POST /api/upload/tradein). The estimate is a RANGE from
+ * the model's price guide with «بانتظار الفحص» and its expiry — or, honestly, "priced after the inspection"; a locked
+ * device is refused. The last step POSTs the contact details and a preferred time (a preference, never an appointment,
+ * and no call promise) and creates the request (~/server/services/tradein.server createTradeIn: rate-limited,
+ * idempotent), then goes to /trade-in/<ref>?t=<token>.
+ *
+ * States: each step · an unknown device · a search without a match · a question sent without an answer (with script:
+ * the message and focus on the first option, nothing sent) · a refused device · photo failures (per photo) · field
+ * errors (client and server, with the error summary) · rate limits and other failures (a sentence above the keys) ·
+ * pending steps (the key spins, the shell's progress bar runs) · sending · offline (the keys go flat with the reason;
+ * what was chosen and typed stays) · demo mode (the request is recorded as a demo). The browser's Back from a question
+ * shows the previous question with its answer chosen (the history entry is rewritten before moving on).
  */
-import { useState, type FormEvent, type ReactNode } from "react";
-import { data, Form, redirect, useActionData, useNavigation, useRouteLoaderData } from "react-router";
+import { useEffect, useId, useState, type FormEvent, type ReactNode } from "react";
+import { data, Form, redirect, useActionData, useLocation, useNavigation, useRouteLoaderData } from "react-router";
 
 import type { Route } from "./+types/trade-in";
+import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useLocalePath, useT } from "~/i18n/react";
-import { LOCALES, localePath } from "~/lib/locales";
+import { localePath } from "~/lib/locales";
 import { normalizeIraqPhone } from "~/lib/phone";
 import type { MotionHandle } from "~/motion";
-import { shellMeta } from "~/routes/storefront/shell/meta";
+import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
+import { TaskBar } from "~/routes/storefront/shell/TabBar";
+import type { ShellContact, ShellHandle } from "~/routes/storefront/shell/types";
 import { getCustomer } from "~/server/auth/customer.server";
 import { clearCookie, getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { actionError } from "~/server/errors";
-import { createTradeIn, getTradeInDevice, readTradeInAnswers, TRADE_IN_DRAFT_COOKIE, type TradeInQuestion } from "~/server/services/tradein.server";
-import { Icon } from "~/art/Icon";
-import { Chip } from "~/ui/Chip";
+import { createTradeIn, getTradeInDevice, readTradeInAnswers, TRADE_IN_DRAFT_COOKIE, type TradeInDevice, type TradeInEstimate } from "~/server/services/tradein.server";
+import { ContactCard } from "~/ui/ContactCard";
 import { cx } from "~/ui/cx";
 import { DemoNote } from "~/ui/DemoNote";
 import { EmptyState } from "~/ui/EmptyState";
-import { Checkbox, FieldGroup, Radio, TextArea, TextField } from "~/ui/Field";
+import { Checkbox, FieldGroup, FormErrorSummary, OptionCard, TextArea, TextField, type FormError } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
+import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
+import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
 import { iqdText } from "~/ui/PriceTag";
 import { BidiText, ProductImage } from "~/ui/ProductCard";
 import { ProgressSteps } from "~/ui/ProgressSteps";
+import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
-import { AnswerList, DeviceSummary, EstimatePanel, RADIO_GROUP_FIX, useAccessoryLabel } from "./components/TradeInParts";
+import { AnswerList, DeviceSummary, EstimatePanel, Journey, useAccessoryLabel, WhatNext } from "./components/TradeInParts";
 import { TradeInPhotos } from "./components/TradeInPhotos";
 import { combinedErrorT, useErrorText, useUsedT } from "./i18n";
 import { loadWizard, type WizardView } from "./trade-in.server";
+import { answeredQuestionSearch, filterGroups, TRADE_IN_PATH, WIZARD_STEPS, wizardOrder } from "./wizard";
+import "./used.css";
 
-/** The wizard's path (locale-less) — kept here: component code must not import from ./trade-in.server. */
-const TRADE_IN_PATH = "/trade-in";
-const STEPS = ["device", "condition", "photos", "estimate", "inspection"] as const;
-const QUESTIONS = ["power", "body", "screen", "included", "account"] as const;
+// The task-flow shell; steps push sideways in their own sibling group (other areas' ordered routes never push against them).
+export const handle = { shell: { chrome: "task" }, nav: "push", group: "trade-in", order: ({ search }) => wizardOrder(search) } satisfies ShellHandle & MotionHandle;
 
-/** Steps (and the questions inside "condition") push sideways in order (docs/MOTION.md, sibling order from the URL). */
-function wizardOrder(search: string): number {
-  const params = new URLSearchParams(search);
-  const step = params.get("step");
-  const index = Math.max(0, STEPS.indexOf((step ?? "device") as (typeof STEPS)[number]));
-  if (step !== "condition") return index * 10;
-  const q = params.get("q");
-  const at = params.get("at");
-  const position = q ? QUESTIONS.indexOf(q as (typeof QUESTIONS)[number]) : at ? QUESTIONS.indexOf(at as (typeof QUESTIONS)[number]) + 1 : 0;
-  return index * 10 + Math.max(0, position);
-}
-
-// Its own sibling group: other areas' ordered routes (hub tabs, checkout steps) never push against the wizard's steps.
-export const handle = { nav: "push", group: "trade-in", order: ({ search }) => wizardOrder(search) } satisfies MotionHandle;
+/** The one "talk to a person" destination of the store (v2 §6.13). */
+const HANDOFF = "/support/assistant?handoff=1#handoff";
+const FORM_ID = "ti-form";
+/**
+ * First-strong isolate (U+2068) and its end (U+2069) around an amount inside a sentence: «350,000 د.ع» keeps the
+ * figure first in Arabic and Sorani (a left-to-right isolate would put the currency first there).
+ */
+const FSI = String.fromCharCode(0x2068);
+const PDI = String.fromCharCode(0x2069);
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -89,7 +97,8 @@ export async function action({ request, context }: Route.ActionArgs) {
   const deviceSlug = text("device");
   const device = await getTradeInDevice(db, ctx.locale, deviceSlug);
   const answers = device ? readTradeInAnswers(form, device) : {};
-  const values = { contactName: text("contactName"), phone: text("phone"), preferredDay: text("preferredDay"), preferredWindow: text("preferredWindow"), notes: text("notes"), ownership: text("ownership") === "1" };
+  const window = text("preferredWindow");
+  const values = { contactName: text("contactName"), phone: text("phone"), preferredWindow: window, notes: text("notes"), ownership: text("ownership") === "1" };
   try {
     const customer = await getCustomer(ctx, db);
     const made = await createTradeIn(
@@ -101,8 +110,8 @@ export async function action({ request, context }: Route.ActionArgs) {
         answers,
         contactName: values.contactName,
         phone: values.phone,
-        preferredDay: values.preferredDay,
-        preferredWindow: values.preferredWindow,
+        // The preference is the period alone (v2 §4.9 PreferencePicker: no day cells until the owner sets days).
+        preferredWindow: window === "any" ? "" : window,
         notes: values.notes,
         ownershipConfirmed: values.ownership,
       },
@@ -117,20 +126,28 @@ export async function action({ request, context }: Route.ActionArgs) {
   }
 }
 
+type LayoutData = { shell?: { contact?: ShellContact } };
+
 export default function TradeIn({ loaderData }: Route.ComponentProps) {
   const t = useUsedT();
   const { view, stepIndex, rail } = loaderData;
-  const steps = STEPS.map((step, index) => ({ label: t(`tradein.steps.${step}`), href: rail[index] ?? undefined }));
+  const steps = WIZARD_STEPS.map((step, index) => ({ label: t(`tradein.steps.${step}`), href: rail[index] ?? undefined }));
+  const keys = stepKeys(view);
   return (
-    <div className="page grid grid-cols-[minmax(0,1fr)] gap-6 pt-4 pb-12 lg:pt-8">
-      <header className="grid gap-2">
-        <h1 className="type-title text-ink">{t("tradein.title")}</h1>
-        <p className="max-w-[62ch] type-body text-ink-2">{t("tradein.intro")}</p>
-      </header>
-      <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} className="max-w-[40rem]" />
-      <div className="min-w-0 max-w-[44rem]">
-        <Step view={view} />
+    <div className="page pt-4 pb-6 lg:pt-8">
+      <div className={cx("used-wizard", view.step !== "device" && "used-wizard--aside")}>
+        <div className="used-wizard__main">
+          <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} />
+          <Step view={view} />
+          {keys ? <StepKeys keys={keys} className="max-lg:hidden" /> : null}
+        </div>
+        {view.step !== "device" ? <WizardAside view={view} /> : null}
       </div>
+      {keys ? (
+        <TaskBar aria-label={t("tradein.steps.label")} className="lg:hidden">
+          <StepKeys keys={keys} compact />
+        </TaskBar>
+      ) : null}
     </div>
   );
 }
@@ -152,20 +169,92 @@ function Step({ view }: { view: WizardView }) {
 
 type ViewOf<S extends WizardView["step"]> = Extract<WizardView, { step: S }>;
 
-function Keys({ back, children }: { back: string | null; children: ReactNode }) {
+// ───────────────────────────────────────────────────────────────── the step's keys
+
+type Keys = { back: string | null; next: { href: string } | { form: string } | null; label: "continue" | "toEstimate" | "toInspection" | "submit" };
+
+/** Back and the step's one primary: a link to the next step, or the submit of this step's form. */
+function stepKeys(view: WizardView): Keys | null {
+  switch (view.step) {
+    case "device":
+      return null;
+    case "condition":
+      return { back: view.back, next: { form: FORM_ID }, label: "continue" };
+    case "photos":
+      return { back: view.back, next: { href: view.next }, label: "toEstimate" };
+    case "estimate":
+      return { back: view.back, next: view.next ? { href: view.next } : null, label: "toInspection" };
+    case "inspection":
+      return { back: view.back, next: { form: FORM_ID }, label: "submit" };
+  }
+}
+
+const LABEL = { continue: "tradein.continue", toEstimate: "tradein.photos.continue", toInspection: "tradein.estimate.continue", submit: "tradein.contact.submit" } as const;
+/**
+ * The task bar's words (v2 §5.7: «رجوع» | «تابع»): the longer step names did not fit a phone — "Continue to book the
+ * inspection" ran 28px off a 390 screen in English, and the Sorani ones off 320–390 — so the bar says «تابع» and, on the
+ * last step, «أرسل الطلب»; the keys under the column (from 1024) keep the full names.
+ */
+const SHORT = { continue: "tradein.continue", toEstimate: "tradein.continue", toInspection: "tradein.continue", submit: "tradein.contact.submitShort" } as const;
+
+/**
+ * «رجوع» | «تابع» — the same pair in the task bar (<1024) and under the column (≥1024). While the next step loads (a GET
+ * step or the request being sent) the primary keeps its width and spins, so a slow network never gets a double tap.
+ * Offline (v2 §6.17 "form kept"): both keys go flat with the reason above them — a step or a request that cannot
+ * leave the device would end on the error page and lose what was chosen and typed.
+ */
+function StepKeys({ keys, compact = false, className }: { keys: Keys; compact?: boolean; className?: string }) {
   const t = useUsedT();
+  const navigation = useNavigation();
+  const location = useLocation();
+  const online = useOnline();
+  const reasonId = useId();
+  const pending = navigation.state !== "idle" && navigation.location?.pathname === location.pathname;
+  const next = keys.next;
+  const target: Record<string, unknown> = next === null ? {} : "href" in next ? { as: LocaleLink, to: next.href } : { type: "submit", form: next.form };
+  const offline = { disabled: !online, "aria-describedby": online ? undefined : reasonId };
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
-      {back ? (
-        <Key as={LocaleLink} to={back} variant="quiet" icon="arrow-left">
-          {t("tradein.back")}
-        </Key>
-      ) : (
-        <span />
+    <div className={cx("grid gap-2", className)}>
+      {online ? null : (
+        <p id={reasonId} className="flex items-start gap-1.5 type-xs text-ink-2" role="status">
+          <Icon name="wifi-slash" size={16} className="mt-0.5 shrink-0" />
+          {t("tradein.offline")}
+        </p>
       )}
-      {children}
+      <div className="flex items-center gap-3">
+        {keys.back ? (
+          <Key as={LocaleLink} to={keys.back} className="shrink-0" {...offline}>
+            {t("tradein.back")}
+          </Key>
+        ) : null}
+        {next ? (
+          <Key variant="primary" iconEnd={keys.label === "submit" ? "paper-plane-tilt" : "arrow-right"} loading={pending} className="flex-1" {...target} {...offline}>
+            {t((compact ? SHORT : LABEL)[keys.label])}
+          </Key>
+        ) : null}
+      </div>
     </div>
   );
+}
+
+/** A form that would leave the device while it is offline stays where it is (the keys say why). */
+const stayOffline = (event: FormEvent<HTMLFormElement>): boolean => {
+  if (typeof navigator === "undefined" || navigator.onLine) return false;
+  event.preventDefault();
+  return true;
+};
+
+/**
+ * Rewrites the current history entry (same page, no navigation, the router's own state kept) to the question with the
+ * answer being sent (./wizard answeredQuestionSearch). The question's form then moves on as usual.
+ */
+function rememberAnswerHere(data: FormData, question: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.history.replaceState(window.history.state, "", `${window.location.pathname}${answeredQuestionSearch(data, question)}`);
+  } catch {
+    // a browser that refuses (sandboxed frames): Back shows the question without the answer, as before
+  }
 }
 
 // ───────────────────────────────────────────────────────────────── 1. device
@@ -173,60 +262,128 @@ function Keys({ back, children }: { back: string | null; children: ReactNode }) 
 function DeviceStep({ view }: { view: ViewOf<"device"> }) {
   const t = useUsedT();
   const ui = useT("ui");
+  const localePath = useLocalePath();
+  const f = useFormat();
+  const [query, setQuery] = useState(view.query);
+  const groups = filterGroups(view.groups, query);
+  const found = groups.reduce((sum, group) => sum + group.devices.length, 0);
+
   if (view.groups.length === 0) {
-    return <EmptyState layout="stack" headingLevel={2} title={t("tradein.device.none")} action={<Key as={LocaleLink} to="/support">{t("tradein.device.support")}</Key>} />;
+    return (
+      <section aria-labelledby="ti-title" className="grid gap-2">
+        <h1 id="ti-title" className="type-h1 text-ink">
+          {t("tradein.title")}
+        </h1>
+        <EmptyState
+          layout="stack"
+          headingLevel={2}
+          title={t("tradein.device.none")}
+          text={t("tradein.device.noneText")}
+          action={
+            <Key as={LocaleLink} to={HANDOFF}>
+              {t("tradein.device.support")}
+            </Key>
+          }
+        />
+      </section>
+    );
   }
   return (
-    <section aria-labelledby="ti-device" className="grid gap-6">
-      <div className="grid gap-1">
-        <h2 id="ti-device" className="type-section text-ink">
-          {t("tradein.device.title")}
-        </h2>
-        <p className="type-body text-ink-2">{t("tradein.device.text")}</p>
-      </div>
+    <section aria-labelledby="ti-title" className="grid gap-8">
+      <header className="grid gap-2">
+        <h1 id="ti-title" className="type-h1 text-ink">
+          {t("tradein.title")}
+        </h1>
+        <p className="type-lead text-ink-2">{t("tradein.intro")}</p>
+      </header>
+      <Journey />
       {view.unknown ? (
-        <p className="flex items-start gap-2 rounded-md bg-niche p-3 type-label font-medium text-warn" role="alert">
-          <Icon name="warning" size={18} className="mt-0.5 shrink-0" />
-          {t("tradein.device.unknown")}
-        </p>
+        <div className="callout callout--warn" role="alert">
+          <Icon name="warning" size={20} />
+          <span className="callout__text text-ink">{t("tradein.device.unknown")}</span>
+        </div>
       ) : null}
-      {view.groups.map((group) => (
-        <section key={group.platformSlug} aria-labelledby={`ti-platform-${group.platformSlug}`} className="grid gap-3">
-          <h3 id={`ti-platform-${group.platformSlug}`} className="type-label font-semibold text-ink">
-            {isPlatform(group.platformSlug) ? <PlatformLabel platform={group.platformSlug} label={ui(`platform.${group.platformSlug}`)} /> : group.platformName}
-          </h3>
-          <ul className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-4">
-            {group.devices.map((device) => {
-              const current = view.current === device.slug;
-              return (
-                <li key={device.slug} className="min-w-0">
-                  <LocaleLink
-                    to={`${TRADE_IN_PATH}?step=condition&device=${encodeURIComponent(device.slug)}`}
-                    aria-current={current ? "true" : undefined}
-                    aria-label={t("tradein.device.choose", { name: device.name })}
-                    className="group grid gap-2 rounded-lg"
-                    data-press="soft"
-                  >
-                    <Niche as="span" ratio="1/1" tagZone={false} className={cx(current && "outline-[2.5px] outline-offset-2 outline-ink outline-solid")}>
-                      {device.image ? <ProductImage image={device.image} alt="" sizes="(min-width: 768px) 160px, 30vw" pose={0} /> : null}
-                    </Niche>
-                    <span className="line-clamp-2 min-h-[2lh] type-strong text-ink group-hover:underline">
-                      <BidiText text={device.name} />
-                    </span>
-                  </LocaleLink>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
-      <p className="type-caption text-ink-2">
+      <section aria-labelledby="ti-device" className="grid gap-4">
+        <div className="grid gap-1">
+          <h2 id="ti-device" className="type-h2 text-ink">
+            {t("tradein.device.title")}
+          </h2>
+          <p className="type-sm text-ink-2">{t("tradein.device.text")}</p>
+        </div>
+        <Form method="get" action={localePath(TRADE_IN_PATH)} role="search" onSubmit={(event) => event.preventDefault()}>
+          <TextField
+            label={t("tradein.device.search")}
+            hideLabel
+            type="search"
+            name="q"
+            value={query}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            placeholder={t("tradein.device.searchHint")}
+            autoComplete="off"
+            enterKeyHint="search"
+            end={<Icon name="magnifying-glass" size={20} />}
+          />
+        </Form>
+        <p className="sr-only" role="status">
+          {query.trim() ? t("tradein.device.found", { count: found, n: f.number(found) }) : ""}
+        </p>
+        {groups.length === 0 ? (
+          <EmptyState
+            icon="magnifying-glass"
+            title={t("tradein.device.noMatch", { query })}
+            text={t("tradein.device.noMatchText")}
+            action={
+              <Key size="sm" onClick={() => setQuery("")}>
+                {t("tradein.device.clearSearch")}
+              </Key>
+            }
+          />
+        ) : (
+          groups.map((group) => (
+            <section key={group.platformSlug} aria-labelledby={`ti-platform-${group.platformSlug}`} className="grid gap-3">
+              <h3 id={`ti-platform-${group.platformSlug}`} className="type-sm-strong text-ink">
+                {isPlatform(group.platformSlug) ? <PlatformLabel platform={group.platformSlug} label={ui(`platform.${group.platformSlug}`)} /> : group.platformName}
+              </h3>
+              <ul className="used-devices">
+                {group.devices.map((device) => (
+                  <li key={device.slug} className="min-w-0">
+                    <DeviceTile device={device} current={view.current === device.slug} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        )}
+      </section>
+      <p className="type-sm text-ink-2">
         <b className="font-semibold text-ink">{t("tradein.device.missing")}</b> {t("tradein.device.missingText")}{" "}
-        <TextLink as={LocaleLink} to="/support" inline>
+        <TextLink as={LocaleLink} to={HANDOFF} inline>
           {t("tradein.device.support")}
         </TextLink>
       </p>
     </section>
+  );
+}
+
+/** A device the store buys: its photo on the product ground, the name, and «حتى 350,000 د.ع · تقديري». */
+function DeviceTile({ device, current }: { device: TradeInDevice; current: boolean }) {
+  const t = useUsedT();
+  const f = useFormat();
+  return (
+    <LocaleLink
+      to={`${TRADE_IN_PATH}?step=condition&device=${encodeURIComponent(device.slug)}`}
+      aria-current={current ? "true" : undefined}
+      className="used-device group"
+      data-press="soft"
+    >
+      <Niche as="span">{device.image ? <ProductImage image={device.image} alt="" sizes="(min-width: 768px) 160px, 44vw" /> : null}</Niche>
+      <span className="used-device__name">
+        <BidiText text={device.name} />
+      </span>
+      <span className="used-device__up">
+        {device.upToIqd !== null ? t("tradein.device.upTo", { price: `${FSI}${iqdText(f, device.upToIqd)}${PDI}` }) : t("tradein.device.afterInspection")}
+      </span>
+    </LocaleLink>
   );
 }
 
@@ -238,17 +395,35 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
   const localePath = useLocalePath();
   const accessory = useAccessoryLabel();
   const question = view.question;
+  // Sent without an answer (v2 §4.9): with script the form stays, says why and puts focus on the first option; without
+  // script the server answers the same (`view.missing`). Choosing an option clears the message.
+  const [checked, setChecked] = useState<{ question: string; missing: boolean } | null>(null);
+  const missing = checked?.question === question ? checked.missing : view.missing;
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (stayOffline(event)) return;
+    const data = new FormData(event.currentTarget);
+    if (question !== "included" && !data.get(question)) {
+      event.preventDefault();
+      setChecked({ question, missing: true });
+      event.currentTarget.querySelector<HTMLInputElement>(`input[name="${question}"]`)?.focus();
+      return;
+    }
+    // The answer travels in the NEXT step's URL only: before leaving, this history entry becomes "this question, with
+    // this answer", so the browser's Back shows the choice made instead of an empty question.
+    rememberAnswerHere(data, question);
+  };
+  // The legend is the screen's heading: «السؤال 1 من 5», the question (h1) and its one-line explanation.
   const legend = (
-    <span className="grid gap-1">
-      <span className="type-caption font-normal text-ink-2">{t("tradein.question.counter", { n: f.number(view.index), total: f.number(view.total) })}</span>
-      <span className="type-sub text-ink">{t(`tradein.q.${question}.title`)}</span>
-      <span className="type-caption font-normal text-ink-2">{t(`tradein.q.${question}.hint`)}</span>
-    </span>
+    <>
+      <span className="block pb-1 type-xs text-ink-2">{t("tradein.question.counter", { n: f.number(view.index), total: f.number(view.total) })}</span>
+      <h1 className="type-h1 text-ink">{t(`tradein.q.${question}.title`)}</h1>
+      <span className="block pt-2 pb-2 type-sm font-normal text-ink-2">{t(`tradein.q.${question}.hint`)}</span>
+    </>
   );
   return (
-    <section aria-label={t("tradein.steps.condition")} className="grid gap-5">
-      <DeviceSummary name={view.device.name} image={view.device.image} action={{ href: `${TRADE_IN_PATH}?device=${encodeURIComponent(view.device.slug)}`, label: t("tradein.changeDevice") }} />
-      <Form method="get" action={localePath(TRADE_IN_PATH)} className="grid gap-5" key={question}>
+    <section className="grid gap-6">
+      <DeviceSummary name={view.device.name} image={view.device.image} action={{ href: `${TRADE_IN_PATH}?device=${encodeURIComponent(view.device.slug)}`, label: t("tradein.changeDevice") }} className="2xl:hidden" />
+      <Form method="get" action={localePath(TRADE_IN_PATH)} id={FORM_ID} className="grid gap-5" key={question} onSubmit={onSubmit} onChange={() => setChecked({ question, missing: false })}>
         {view.hidden.map(([name, value], index) => (
           <input key={`${name}:${value}:${index}`} type="hidden" name={name} value={value} />
         ))}
@@ -260,11 +435,10 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
             ))}
           </FieldGroup>
         ) : (
-          <FieldGroup legend={legend} error={view.missing ? t("tradein.question.required") : undefined} className={RADIO_GROUP_FIX}>
+          <FieldGroup legend={legend} error={missing ? t("tradein.question.required") : undefined}>
             {view.options.map((option) => (
-              <Radio
+              <OptionCard
                 key={option}
-                row
                 name={question}
                 value={option}
                 label={t(`tradein.q.${question}.options.${option}.label`)}
@@ -274,11 +448,10 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
             ))}
           </FieldGroup>
         )}
-        <Keys back={view.back}>
-          <Key type="submit" variant="ink" iconEnd="arrow-right">
-            {t("tradein.continue")}
-          </Key>
-        </Keys>
+        {/* Without script the form still needs its own key (the task bar's key points here with form="ti-form"). */}
+        <Key type="submit" className="used-nojs justify-self-start">
+          {t("tradein.continue")}
+        </Key>
       </Form>
     </section>
   );
@@ -289,24 +462,19 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
 function PhotosStep({ view }: { view: ViewOf<"photos"> }) {
   const t = useUsedT();
   return (
-    <section aria-labelledby="ti-photos" className="grid gap-5">
-      <DeviceSummary name={view.device.name} image={view.device.image} />
-      <div className="grid gap-1">
-        <h2 id="ti-photos" className="type-section text-ink">
-          {t("tradein.photos.title")} <span className="type-body font-normal text-ink-2">{t("tradein.photos.optional")}</span>
-        </h2>
+    <section aria-labelledby="ti-photos" className="grid gap-6">
+      <DeviceSummary name={view.device.name} image={view.device.image} className="2xl:hidden" />
+      <header className="grid gap-2">
+        <h1 id="ti-photos" className="type-h1 text-ink">
+          {t("tradein.photos.title")} <span className="type-body text-ink-2">{t("tradein.photos.optional")}</span>
+        </h1>
         <p className="type-body text-ink-2">{t("tradein.photos.text")}</p>
-        <p className="flex items-center gap-1.5 type-caption text-ink-2">
+        <p className="flex items-center gap-1.5 type-sm text-ink-2">
           <Icon name="lock" size={16} className="shrink-0" />
           {t("tradein.photos.private")}
         </p>
-      </div>
+      </header>
       <TradeInPhotos initial={view.photos} limit={view.limit} maxBytes={view.maxBytes} />
-      <Keys back={view.back}>
-        <Key as={LocaleLink} to={view.next} variant="ink" iconEnd="arrow-right">
-          {t("tradein.photos.continue")}
-        </Key>
-      </Keys>
     </section>
   );
 }
@@ -317,23 +485,23 @@ function EstimateStep({ view }: { view: ViewOf<"estimate"> }) {
   const t = useUsedT();
   const estimate = view.estimate;
   return (
-    <section aria-labelledby="ti-estimate" className="grid gap-5">
-      <DeviceSummary name={view.device.name} image={view.device.image} />
-      <h2 id="ti-estimate" className="type-section text-ink">
+    <section aria-labelledby="ti-estimate" className="grid gap-6">
+      <DeviceSummary name={view.device.name} image={view.device.image} className="2xl:hidden" />
+      <h1 id="ti-estimate" className="type-h1 text-ink">
         {t("tradein.estimate.title")}
-      </h2>
+      </h1>
       {estimate.kind === "refused" ? (
-        <div className="grid gap-2 rounded-lg bg-paper p-5" role="alert">
-          <p className="flex items-start gap-2 type-sub text-ink">
-            <Icon name="warning" size={20} className="mt-0.5 shrink-0 text-warn" />
-            {t("tradein.estimate.refused.title")}
-          </p>
-          <p className="type-body text-ink-2">{t("tradein.estimate.refused.text")}</p>
-          {view.edit.account ? (
-            <TextLink as={LocaleLink} to={view.edit.account} className="justify-self-start">
-              {t("tradein.estimate.refused.change")}
-            </TextLink>
-          ) : null}
+        <div className="callout callout--warn" role="alert">
+          <Icon name="warning" size={20} />
+          <span className="grid gap-1">
+            <span className="callout__title">{t("tradein.estimate.refused.title")}</span>
+            <span className="callout__text">{t("tradein.estimate.refused.text")}</span>
+            {view.edit.account ? (
+              <TextLink as={LocaleLink} to={view.edit.account} className="justify-self-start">
+                {t("tradein.estimate.refused.change")}
+              </TextLink>
+            ) : null}
+          </span>
         </div>
       ) : estimate.kind === "range" ? (
         <EstimatePanel
@@ -342,24 +510,19 @@ function EstimateStep({ view }: { view: ViewOf<"estimate"> }) {
           high={estimate.high}
           missing={estimate.missing}
           deductionsIqd={estimate.deductionsIqd}
-          headingLevel={3}
+          payout
+          headingLevel={2}
         />
       ) : (
-        <EstimatePanel range={null} reason={estimate.reason} headingLevel={3} />
+        <EstimatePanel range={null} reason={estimate.reason} payout headingLevel={2} />
       )}
-      <section aria-labelledby="ti-summary" className="grid gap-1 rounded-lg bg-paper px-5 py-3">
-        <h3 id="ti-summary" className="pt-1 type-label font-semibold text-ink">
+      <section aria-labelledby="ti-summary" className="panel grid gap-2 p-5 2xl:hidden">
+        <h2 id="ti-summary" className="type-sm-strong text-ink">
           {t("tradein.estimate.summary")}
-        </h3>
-        <AnswerList questions={view.questions as TradeInQuestion[]} answers={view.answers} edit={view.edit} />
+        </h2>
+        <AnswerList questions={view.questions} answers={view.answers} edit={view.edit} />
       </section>
-      <Keys back={view.back}>
-        {view.next ? (
-          <Key as={LocaleLink} to={view.next} variant="ink" iconEnd="arrow-right">
-            {t("tradein.estimate.continue")}
-          </Key>
-        ) : null}
-      </Keys>
+      {estimate.kind === "refused" ? null : <WhatNext className="panel p-5 2xl:hidden" />}
     </section>
   );
 }
@@ -368,21 +531,21 @@ function EstimateStep({ view }: { view: ViewOf<"estimate"> }) {
 
 type ActionFailure = { ok: false; code: string; message?: string; fields?: Record<string, string>; values?: Record<string, string | boolean> };
 
+const FIELD_IDS: Record<string, string> = { phone: "ti-phone", ownershipConfirmed: "ti-ownership", contactName: "ti-name", notes: "ti-notes", preferredWindow: "ti-window" };
+
 function InspectionStep({ view }: { view: ViewOf<"inspection"> }) {
   const t = useUsedT();
   const f = useFormat();
   const errorText = useErrorText();
-  const navigation = useNavigation();
   const root = useRouteLoaderData("root") as { storeMode?: string } | undefined;
+  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as LayoutData | undefined;
+  const address = layout?.shell?.contact?.address ?? null;
   const actionData = useActionFailure();
-  const sending = navigation.state !== "idle" && navigation.formMethod?.toUpperCase() === "POST";
   const values = actionData?.values ?? {};
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [summary, setSummary] = useState<string[] | null>(null);
   const shown = { ...(actionData?.fields ?? {}), ...errors };
   const estimate = view.estimate;
-
-  const dayFormat = new Intl.DateTimeFormat(`${LOCALES[f.locale].bcp47}-u-nu-${f.numbering}`, { weekday: "long", day: "numeric", month: "short", timeZone: "UTC" });
-  const dayLabel = (day: string, index: number) => (index === 0 ? t("tradein.contact.today") : index === 1 ? t("tradein.contact.tomorrow") : dayFormat.format(Date.parse(`${day}T12:00:00Z`)));
 
   const checkPhone = (value: string): string | null => (value.trim() === "" ? errorText("required") : normalizeIraqPhone(value) ? null : errorText("phone_invalid"));
   const setField = (name: string, message: string | null) =>
@@ -394,53 +557,72 @@ function InspectionStep({ view }: { view: ViewOf<"inspection"> }) {
     });
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
-    const phone = checkPhone(String(new FormData(form).get("phone") ?? ""));
-    const ownership = new FormData(form).get("ownership") === "1" ? null : errorText("ownership_required");
+    // Offline the request cannot leave: the form stays as it is (Enter in a field included), the keys say why.
+    if (stayOffline(event)) return;
+    const form = new FormData(event.currentTarget);
+    const phone = checkPhone(String(form.get("phone") ?? ""));
+    const ownership = form.get("ownership") === "1" ? null : errorText("ownership_required");
     setField("phone", phone);
     setField("ownershipConfirmed", ownership);
-    if (phone || ownership) {
+    const invalid = [phone ? "phone" : null, ownership ? "ownershipConfirmed" : null].filter((name): name is string => name !== null);
+    setSummary(invalid.length > 0 ? invalid : null);
+    if (invalid.length > 0) {
       event.preventDefault();
-      (form.querySelector<HTMLElement>(phone ? "[name=phone]" : "[name=ownership]"))?.focus();
+      document.getElementById(FIELD_IDS[invalid[0]])?.focus();
     }
   };
 
-  // Field errors show under their fields; anything else (a rate limit, a device no longer bought…) above the key.
-  const inline = new Set(["phone", "ownershipConfirmed", "preferredDay", "notes", "contactName"]);
+  // Field errors show under their fields (and in the summary); anything else (a rate limit, a device no longer bought…)
+  // is one sentence above the keys.
+  const inline = new Set(Object.keys(FIELD_IDS));
+  const serverFields = actionData?.fields ? Object.keys(actionData.fields).filter((name) => inline.has(name)) : [];
   const formError = actionData && (!actionData.fields || Object.keys(actionData.fields).some((key) => !inline.has(key))) ? (actionData.message ?? errorText(actionData.code)) : null;
+  const invalidNames = summary ?? serverFields;
+  const fieldLabel: Record<string, string> = { phone: t("tradein.contact.phone"), ownershipConfirmed: t("tradein.contact.ownershipShort"), contactName: t("tradein.contact.name"), notes: t("tradein.contact.notes"), preferredWindow: t("tradein.contact.window") };
+  const summaryErrors: FormError[] = invalidNames.filter((name) => shown[name]).map((name) => ({ id: FIELD_IDS[name], label: fieldLabel[name] }));
+  // The server found a field to fix (v2 §4.9): focus moves to the first one, as it does for the browser's own checks.
+  const firstServerField = serverFields[0] ?? null;
+  useEffect(() => {
+    if (firstServerField) document.getElementById(FIELD_IDS[firstServerField])?.focus();
+  }, [actionData, firstServerField]);
 
   return (
-    <section aria-labelledby="ti-contact" className="grid gap-5">
-      <div className="grid gap-3 rounded-lg bg-paper p-4">
-        <p className="type-label font-semibold text-ink-2">{t("tradein.contact.summary")}</p>
+    <section aria-labelledby="ti-contact" className="grid gap-6">
+      <div className="panel p-4 2xl:hidden">
         <DeviceSummary name={view.device.name} image={view.device.image}>
-          <p className="type-caption text-ink-2">
-            {estimate.kind === "range" ? (
-              <bdi className="nums">{t("tradein.estimate.range", { min: iqdText(f, estimate.minIqd), max: iqdText(f, estimate.maxIqd) })}</bdi>
-            ) : (
-              t("tradein.contact.noEstimate")
-            )}
+          <p className="type-sm text-ink-2">
+            {estimate.kind === "range" ? <bdi className="nums">{t("tradein.estimate.range", { min: iqdText(f, estimate.minIqd), max: iqdText(f, estimate.maxIqd) })}</bdi> : t("tradein.contact.noEstimate")}
             {" · "}
             {t("tradein.contact.photosAttached", { count: view.photoCount, n: f.number(view.photoCount) })}
           </p>
         </DeviceSummary>
       </div>
 
-      <div className="grid gap-1">
-        <h2 id="ti-contact" className="type-section text-ink">
+      <header className="grid gap-2">
+        <h1 id="ti-contact" className="type-h1 text-ink">
           {t("tradein.contact.title")}
-        </h2>
+        </h1>
         <p className="type-body text-ink-2">{t("tradein.contact.text")}</p>
-      </div>
+        {address ? (
+          <p className="flex items-start gap-1.5 type-sm text-ink">
+            <Icon name="map-pin" size={16} className="mt-0.5 shrink-0" />
+            <span>
+              <b className="font-semibold">{t("tradein.contact.where")}</b> {address}
+            </span>
+          </p>
+        ) : null}
+      </header>
 
-      <Form method="post" noValidate onSubmit={onSubmit} className="grid gap-5">
+      <FormErrorSummary errors={summaryErrors} />
+
+      <Form method="post" noValidate onSubmit={onSubmit} id={FORM_ID} className="grid gap-5">
         {view.hidden.map(([name, value], index) => (
           <input key={`${name}:${value}:${index}`} type="hidden" name={name} value={value} />
         ))}
         <input type="hidden" name="idempotencyKey" value={view.idempotencyKey} />
 
-        <TextField name="contactName" label={t("tradein.contact.name")} optional autoComplete="name" maxLength={100} defaultValue={String(values.contactName ?? "")} error={shown.contactName} />
         <TextField
+          id={FIELD_IDS.phone}
           name="phone"
           type="tel"
           inputMode="tel"
@@ -453,29 +635,22 @@ function InspectionStep({ view }: { view: ViewOf<"inspection"> }) {
           onBlur={(event) => setField("phone", checkPhone(event.currentTarget.value))}
           onInput={(event) => (errors.phone ? setField("phone", checkPhone(event.currentTarget.value)) : undefined)}
         />
+        <TextField id={FIELD_IDS.contactName} name="contactName" label={t("tradein.contact.name")} optional autoComplete="name" maxLength={100} defaultValue={String(values.contactName ?? "")} error={shown.contactName} />
 
-        <FieldGroup legend={t("tradein.contact.day")} optional layout="row" error={shown.preferredDay}>
-          <Chip input="radio" name="preferredDay" value="" defaultChecked={!values.preferredDay}>
-            {t("tradein.contact.anyDay")}
-          </Chip>
-          {view.days.map((day, index) => (
-            <Chip key={day} input="radio" name="preferredDay" value={day} defaultChecked={values.preferredDay === day}>
-              {dayLabel(day, index)}
-            </Chip>
-          ))}
-        </FieldGroup>
+        <PreferencePicker
+          name="preferredWindow"
+          legend={
+            <>
+              {t("tradein.contact.window")} <span className="field__mark">{t("tradein.photos.optional")}</span>
+            </>
+          }
+          defaultValue={isPeriod(values.preferredWindow) ? values.preferredWindow : "any"}
+        />
 
-        <FieldGroup legend={t("tradein.contact.window")} optional layout="row" hint={t("tradein.contact.preference")}>
-          {(["any", "morning", "afternoon", "evening"] as const).map((window) => (
-            <Chip key={window} input="radio" name="preferredWindow" value={window === "any" ? "" : window} defaultChecked={window === "any" ? !values.preferredWindow : values.preferredWindow === window}>
-              {t(`tradein.contact.windows.${window}`)}
-            </Chip>
-          ))}
-        </FieldGroup>
-
-        <TextArea name="notes" label={t("tradein.contact.notes")} optional hint={t("tradein.contact.notesHint")} maxLength={500} defaultValue={String(values.notes ?? "")} error={shown.notes} />
+        <TextArea id={FIELD_IDS.notes} name="notes" label={t("tradein.contact.notes")} optional hint={t("tradein.contact.notesHint")} maxLength={500} defaultValue={String(values.notes ?? "")} error={shown.notes} />
 
         <Checkbox
+          id={FIELD_IDS.ownershipConfirmed}
           name="ownership"
           value="1"
           label={t("tradein.contact.ownership")}
@@ -485,33 +660,78 @@ function InspectionStep({ view }: { view: ViewOf<"inspection"> }) {
           onChange={(event) => (event.currentTarget.checked ? setField("ownershipConfirmed", null) : undefined)}
         />
 
-        <p className="flex items-start gap-2 type-caption text-ink-2">
-          <Icon name="lock" size={16} className="mt-0.5 shrink-0" />
-          {t("tradein.contact.privacy")}
-        </p>
-        {root?.storeMode !== "live" ? <DemoNote>{t("tradein.contact.demo")}</DemoNote> : null}
+        {root?.storeMode !== "live" ? <DemoNote variant="line">{t("tradein.contact.demo")}</DemoNote> : null}
 
         {formError ? (
-          <p className="flex items-start gap-2 rounded-md bg-niche p-3 type-label font-medium text-red-ink" role="alert">
-            <Icon name="warning-circle" size={18} className="mt-0.5 shrink-0" />
-            <span>
+          <div className="callout callout--danger" role="alert">
+            <Icon name="warning-circle" size={20} />
+            <span className="callout__text text-ink">
               {t("tradein.contact.failed")} {formError}
             </span>
-          </p>
+          </div>
         ) : null}
-
-        <Keys back={view.back}>
-          <Key type="submit" variant="ink" loading={sending} iconEnd="paper-plane-tilt">
-            {t("tradein.contact.submit")}
-          </Key>
-        </Keys>
+        <Key type="submit" className="used-nojs justify-self-start">
+          {t("tradein.contact.submit")}
+        </Key>
       </Form>
     </section>
   );
 }
 
+const isPeriod = (value: unknown): value is Period => value === "any" || value === "morning" || value === "afternoon" || value === "evening";
+
 /** The action's failure (field errors already translated on the server), when the last submission failed. */
 function useActionFailure(): ActionFailure | null {
   const data = useActionData() as { ok?: boolean } | undefined;
   return data && data.ok === false ? (data as ActionFailure) : null;
+}
+
+// ───────────────────────────────────────────────────────────────── the aside (from 1280)
+
+/** Beside the column from 1280: the device, the answers so far, the estimate, what happens next, a person to ask. */
+function WizardAside({ view }: { view: Exclude<WizardView, { step: "device" }> }) {
+  const t = useUsedT();
+  const f = useFormat();
+  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as LayoutData | undefined;
+  const channels = layout?.shell?.contact?.channels ?? null;
+  const estimate: TradeInEstimate | null = view.step === "estimate" || view.step === "inspection" ? view.estimate : null;
+  let figure: ReactNode = null;
+  if (estimate?.kind === "range") {
+    figure = (
+      <p className="flex flex-wrap items-center justify-between gap-2">
+        <bdi className="nums type-sm-strong text-ink">{t("tradein.estimate.range", { min: iqdText(f, estimate.minIqd), max: iqdText(f, estimate.maxIqd) })}</bdi>
+        <Status tone="warn">{t("tradein.estimate.pending")}</Status>
+      </p>
+    );
+  } else if (estimate?.kind === "inspection") {
+    figure = <p className="type-sm text-ink">{t("tradein.contact.noEstimate")}</p>;
+  }
+  return (
+    <aside className="used-wizard__aside" aria-label={t("tradein.aside.label")}>
+      <div className="panel grid gap-4 p-5">
+        <DeviceSummary size="lg" name={view.device.name} image={view.device.image} action={{ href: `${TRADE_IN_PATH}?device=${encodeURIComponent(view.device.slug)}`, label: t("tradein.changeDevice") }} />
+        <div className="grid gap-1 border-t border-line pt-3">
+          <h2 className="type-sm-strong text-ink">{t("tradein.estimate.summary")}</h2>
+          <AnswerList questions={view.questions} answers={view.answers} edit={view.edit} />
+        </div>
+        {figure ? (
+          <div className="grid gap-1 border-t border-line pt-3">
+            <h2 className="type-sm-strong text-ink">{t("tradein.estimate.label")}</h2>
+            {figure}
+          </div>
+        ) : null}
+      </div>
+      <WhatNext className="panel p-5" />
+      {channels ? (
+        <ContactCard channels={channels} />
+      ) : (
+        <p className="type-sm text-ink-2">
+          {t("tradein.aside.question")}{" "}
+          <TextLink as={LocaleLink} to={HANDOFF} inline>
+            {t("tradein.device.support")}
+          </TextLink>
+        </p>
+      )}
+    </aside>
+  );
 }

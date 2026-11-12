@@ -4,12 +4,12 @@ import { useT } from "~/i18n/react";
 import { Key } from "~/ui/Key";
 
 /**
- * One-tap copy (brief §4 "one-tap copy", DESIGN.md §9.18): a small clay key that copies `value` and shows a check and
- * "نُسخ" for two seconds, said through a polite live region. Where the Clipboard API is missing or refused, the text is
- * copied through a temporary selection; if even that fails the key says so ("انسخه يدوياً") — it never claims a copy
- * that did not happen.
+ * One-tap copy (brief §4 "one-tap copy", Design System v2 §4.24): a 40px secondary key that copies `value` and shows a
+ * check and «نُسخ» for two seconds, said through a polite live region. Where the Clipboard API is missing or refused,
+ * the text is copied through a temporary selection; if even that fails the key says so («انسخه يدوياً») — it never
+ * claims a copy that did not happen. `text` replaces the idle word «انسخ» («انسخ رابط الطلب»).
  */
-export function CopyKey({ value, label }: { value: string; /** What is copied, for the accessible name ("رقم البطاقة"). */ label: string }) {
+export function CopyKey({ value, label, text }: { value: string; /** What is copied, for the accessible name ("رقم البطاقة"). */ label: string; text?: string }) {
   const t = useT("checkout");
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -33,8 +33,8 @@ export function CopyKey({ value, label }: { value: string; /** What is copied, f
 
   return (
     <span className="inline-flex shrink-0 items-center">
-      <Key size="sm" icon={state === "copied" ? "check" : "copy"} onClick={() => void copy()} aria-label={t("copy.named", { what: label })}>
-        {state === "copied" ? t("copy.done") : state === "failed" ? t("copy.failed") : t("copy.key")}
+      <Key size="sm" icon={state === "copied" ? "check" : text ? "link" : "copy"} onClick={() => void copy()} aria-label={text ? undefined : t("copy.named", { what: label })}>
+        {state === "copied" ? t("copy.done") : state === "failed" ? t("copy.failed") : (text ?? t("copy.key"))}
       </Key>
       <span className="sr-only" role="status" aria-live="polite">
         {state === "copied" ? t("copy.announce", { what: label }) : state === "failed" ? t("copy.failed") : ""}

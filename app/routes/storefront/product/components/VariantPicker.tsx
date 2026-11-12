@@ -1,81 +1,158 @@
 /**
- * The variant selector (DESIGN.md §8.4 "option chips: held-down ink key = chosen", §9.8 chips and option rows).
+ * The version choice — design v2 spec §6.7 item 9, §4.9 (OptionCard, Swatch), §4.6 (chips).
  *
  * One group named after what changes between the variants ("اللون", "السعة", "الإصدار", "المنصة"… or "النسخة" when
- * several things change), built on native radios so it is one tab stop with arrow keys and works without script:
- *   · short labels → chips (`<Chip input="radio">`), wrapping;
- *   · long labels (handheld PCs: "SteamOS Z1 Extreme 32GB / 1TB …") → option rows with the price and a stock word.
- * Labels are the variants' localized titles without the words they all share ("DualSense – أبيض" → "أبيض").
+ * several things change), whose label repeats the choice («النسخة: النسخة الدولية»):
+ *   · versions → OPTION CARDS, each with its own price at the end and, when it cannot be ordered now, the reason as its
+ *     hint («نفد حالياً», «يصدر 4 شباط 2027»);
+ *   · colours whose every version has its own photo → SWATCHES: 56px thumbnails on the product ground (a sold-out
+ *     colour is struck through and says so in its name);
+ *   · colours without a photo each → CHIPS (a swatch needs a real colour or a real picture — none is invented).
+ * Option cards and chips are native radios: one tab stop, arrow keys, and without script they sit in a GET form with
+ * a submit key, so `?v=` still works. Swatches are the kit's radiogroup (script); without script the page's form shows
+ * the same colours as native radio chips instead (a <noscript> group; the swatches hide under `noscript:`).
  *
- * The choice itself lives with the caller: the page keeps it in the URL (`?v=<sku>`), the quick preview in state.
- * Without script the radios sit in a GET form with a submit key, so `?v=` still works.
+ * Labels are the variants' localized titles without the words they all share ("DualSense – أبيض" → "أبيض"); mixed
+ * scripts are isolated run by run (MixedText). No research note is shown per version (no UPC notes, §6.7); a
+ * buyer-relevant line per version arrives only from the owner (§13 row 8).
+ *
+ * The choice itself lives with the caller: the page keeps it in the URL (`?v=<sku>`), the quick look in state.
  */
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 
-import { useDir, useFormat } from "~/i18n/react";
+import { useFormat } from "~/i18n/react";
 import type { SelectorDimension, VariantDetail } from "~/server/services/catalog/product-types";
 import { Chip } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
-import { FieldGroup, Radio } from "~/ui/Field";
+import { FieldGroup, OptionCard } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Price } from "~/ui/Price";
+import { fillNodes } from "~/ui/PriceTag";
+import { ProductImage } from "~/ui/ProductCard";
+import { Swatches } from "~/ui/Swatch";
 import { useProductT } from "../i18n";
-
-/** Chips only hold short labels (DESIGN.md §9.8); anything longer becomes an option row. */
-const CHIP_MAX = 36;
+import { MixedText } from "./MixedText";
 
 export type VariantPickerProps = {
   variants: readonly VariantDetail[];
   selector: SelectorDimension | null;
   value: string;
   onChange: (variantId: string) => void;
-  /** Render the no-script GET form (the page). The preview sheet is script-only and passes false. */
+  /** Render the no-script GET form (the page). The quick look is script-only and passes false. */
   form?: boolean;
   className?: string;
 };
 
+/** How the choice is drawn (pure; exported for tests). */
+export function pickerLook(variants: readonly Pick<VariantDetail, "images">[], selector: SelectorDimension | null): "cards" | "swatches" | "chips" {
+  if (selector !== "color") return "cards";
+  return variants.every((variant) => variant.images.length > 0) ? "swatches" : "chips";
+}
+
 export function VariantPicker({ variants, selector, value, onChange, form = true, className }: VariantPickerProps) {
   const t = useProductT();
   const f = useFormat();
-  const dir = useDir();
   const id = useId();
   if (!selector || variants.length < 2) return null;
-  const rows = variants.some((variant) => variant.label.length > CHIP_MAX);
-  const legend = t(`picker.dimensions.${selector}`);
-  const name = `${id}-v`;
+  const look = pickerLook(variants, selector);
+  const dimension = t(`picker.dimensions.${selector}`);
+  const current = variants.find((variant) => variant.id === value) ?? variants[0];
+  const name = form ? "v" : `${id}-v`;
 
-  const hint = (variant: VariantDetail) => {
+  /** Why a version cannot be ordered now, in words (never colour alone). */
+  const hint = (variant: VariantDetail): string | undefined => {
     if (variant.orderable) return undefined;
     if (variant.releaseAt !== null) return t("picker.soon", { date: f.date(variant.releaseAt, "long") });
     return t("picker.out");
   };
 
+  const legend: ReactNode = fillNodes(t("picker.chosen"), {
+    dimension,
+    value: (
+      <b className="font-semibold">
+        <MixedText text={current.label} />
+      </b>
+    ),
+  });
+
+  /** A colour as a native radio chip (`checked`: script keeps it in step; `defaultChecked`: the no-script form). */
+  const chip = (variant: VariantDetail, mode: "controlled" | "native") => (
+    <Chip
+      key={variant.id}
+      input="radio"
+      name={name}
+      value={variant.sku}
+      {...(mode === "controlled" ? { checked: variant.id === current.id, onChange: () => onChange(variant.id) } : { defaultChecked: variant.id === current.id })}
+    >
+      <MixedText text={variant.label} />
+      {/* a colour that cannot be ordered now says so on the chip itself */}
+      {variant.orderable ? null : <> · {variant.releaseAt !== null ? t("picker.soonShort") : t("picker.out")}</>}
+    </Chip>
+  );
+
+  /* Script turns every choice into an instant change of `?v=`; without it, this key sends the form. */
+  const submit = (
+    <Key type="submit" size="sm" className="justify-self-start">
+      {t("picker.show")}
+    </Key>
+  );
+
+  if (look === "swatches") {
+    const swatches = (
+      <Swatches
+        // without script the swatches cannot be pressed: hidden there (`noscript:` is `@media (scripting: none)`)
+        className={form ? "noscript:hidden" : className}
+        label={dimension}
+        value={current.sku}
+        onChange={(sku) => {
+          const next = variants.find((variant) => variant.sku === sku);
+          if (next) onChange(next.id);
+        }}
+        options={variants.map((variant) => {
+          const why = hint(variant);
+          return {
+            value: variant.sku,
+            // a sold-out colour is struck through («— غير متوفر» is added by the kit); a coming one names its date
+            name: why && variant.releaseAt !== null ? `${variant.label} · ${why}` : variant.label,
+            unavailable: !variant.orderable && variant.releaseAt === null,
+            thumb: variant.images[0] ? <ProductImage image={variant.images[0]} alt="" sizes="56px" /> : undefined,
+          };
+        })}
+      />
+    );
+    if (!form) return swatches;
+    // Swatches are the kit's script radiogroup: without script (hidden then) the same colours are native radio chips
+    // in the GET form, as before the swatches — a colour can always be chosen.
+    return (
+      <form method="get" className={cx("grid gap-2", className)}>
+        {swatches}
+        <noscript>
+          <FieldGroup legend={legend} layout="row">
+            {variants.map((variant) => chip(variant, "native"))}
+          </FieldGroup>
+          {submit}
+        </noscript>
+      </form>
+    );
+  }
+
   const group = (
-    <FieldGroup legend={legend} layout={rows ? "column" : "row"}>
+    <FieldGroup legend={legend} layout={look === "chips" ? "row" : "column"}>
       {variants.map((variant) =>
-        rows ? (
-          <Radio
+        look === "cards" ? (
+          <OptionCard
             key={variant.id}
-            row
-            name={form ? "v" : name}
+            name={name}
             value={variant.sku}
-            checked={variant.id === value}
+            checked={variant.id === current.id}
             onChange={() => onChange(variant.id)}
-            label={<Label text={variant.label} dir={dir} />}
+            label={<MixedText text={variant.label} />}
             hint={hint(variant)}
-            end={<Price amountIqd={variant.priceIqd} size="sm" as="span" approx="off" />}
+            // the price never breaks between the figure and «د.ع»: the version's name wraps instead
+            end={<Price amountIqd={variant.priceIqd} size="sm" as="span" approx="off" tone={variant.orderable ? undefined : "muted"} className="flex-nowrap" />}
           />
         ) : (
-          <Chip
-            key={variant.id}
-            input="radio"
-            name={form ? "v" : name}
-            value={variant.sku}
-            checked={variant.id === value}
-            onChange={() => onChange(variant.id)}
-          >
-            <Label text={variant.label} dir={dir} />
-          </Chip>
+          chip(variant, "controlled")
         ),
       )}
     </FieldGroup>
@@ -85,20 +162,7 @@ export function VariantPicker({ variants, selector, value, onChange, form = true
   return (
     <form method="get" className={cx("grid gap-2", className)}>
       {group}
-      {/* Script turns every choice into an instant change of `?v=`; without it, this key sends the form. */}
-      <noscript>
-        <Key type="submit" size="sm" className="justify-self-start">
-          {t("picker.show")}
-        </Key>
-      </noscript>
+      <noscript>{submit}</noscript>
     </form>
   );
-}
-
-/**
- * A label in the page's direction. Labels mix scripts ("Prism برتقالي شفاف Flare Orange", "Core أبيض"); an isolate
- * that guesses its direction from the first letter would read them backwards in Arabic, so the direction is given.
- */
-function Label({ text, dir }: { text: string; dir: "rtl" | "ltr" }) {
-  return <span dir={dir}>{text}</span>;
 }

@@ -1,13 +1,16 @@
 /**
- * The row link to a device's hub, for other pages (DESIGN.md §8.2: "row link to the device hub: a flat niche, render
- * at the start, arrow at the end") — the product page of a device, a used unit, the help centre's device panel.
+ * The row link to a device's hub, for other pages (Design System v2 §6.7 "the device-hub link row"): a paper card with a
+ * hairline (no shadow, nothing lifts), a 72px product well at the start, the title and one line, the arrow toward the
+ * reading end — on the product page of a device, a used unit, the help centre's device panel.
  *
  *   const device = await getDeviceLink(db, ctx.locale, slug);       // services/devices.server — null: no hub, no link
  *   <DeviceHubLink device={device} title={t("hub.title", { device: device.name })} text={t("hub.text")} />
  *
- * The picture is the shared element `device-image:<slug>`: pressed, it grows into the hub's lit stage (HubHero is the
+ * The well is the shared element `device-image:<slug>`: pressed, it grows into the hub head's photo (HubHead is the
  * target); reduced motion and browsers without View Transitions get the engine's fallbacks. The words come from the
- * host page's own namespace, so the link speaks on any page without loading the devices strings.
+ * host page's own namespace, so the link speaks on any page without loading the devices strings. Styled with the kit
+ * and utilities only (no stylesheet of this area), so it looks the same wherever it is imported; `className` wins
+ * (e.g. `bg-ground` on a paper panel).
  */
 import { Icon } from "~/art/Icon";
 import { MotionLink, SharedElement } from "~/motion";
@@ -28,17 +31,22 @@ export type DeviceHubLinkProps = {
 
 export function DeviceHubLink({ device, title, text, slot, className }: DeviceHubLinkProps) {
   return (
-    <MotionLink nav="zoom" to={`/device/${device.slug}`} data-press="soft" className={cx("group flex min-h-[68px] items-center gap-3 rounded-lg bg-paper p-3 text-ink no-underline md:gap-4", className)}>
-      <SharedElement name={`device-image:${device.slug}`} slot={slot} as="span" className="block w-16 shrink-0 md:w-20">
-        <Niche as="span" ratio="1/1" tagZone={false}>
-          {device.artKey ? <Render name={device.artKey} alt="" sizes="80px" /> : null}
+    <MotionLink
+      nav="zoom"
+      to={`/device/${device.slug}`}
+      data-press="soft"
+      className={cx("group grid min-h-[96px] grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-4 rounded-lg border border-line bg-paper px-4 py-3 text-ink no-underline", className)}
+    >
+      <SharedElement name={`device-image:${device.slug}`} slot={slot} as="span" className="block">
+        <Niche as="span" size="sm">
+          {device.artKey ? <Render name={device.artKey} alt="" sizes="72px" /> : null}
         </Niche>
       </SharedElement>
-      <span className="grid min-w-0 flex-1 gap-0.5">
-        <span className="type-strong text-ink group-hover:underline group-hover:underline-offset-4">{title}</span>
-        {text ? <span className="type-caption text-ink-2">{text}</span> : null}
+      <span className="grid min-w-0 gap-0.5">
+        <span className="type-card text-ink group-hover:underline group-hover:underline-offset-4">{title}</span>
+        {text ? <span className="type-xs text-ink-2">{text}</span> : null}
       </span>
-      <Icon name="arrow-right" size={20} className="shrink-0 text-ink-2" />
+      <Icon name="arrow-right" size={20} className="text-ink-2" />
     </MotionLink>
   );
 }

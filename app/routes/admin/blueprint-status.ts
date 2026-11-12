@@ -488,14 +488,70 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 08 Promotions and loyalty
-  "08.01": planned(n("Coupon rules (fixed or percent, limits, dates) are applied at checkout by the commerce core.", "قواعد الكوبونات (مبلغ أو نسبة، حدود، تواريخ) تُطبق عند إتمام الطلب.")),
-  "08.02": planned(),
-  "08.03": planned(),
-  "08.04": planned(n("The points ledger is append-only and cannot be overdrawn (database rule).", "دفتر النقاط لا يقبل التعديل ولا يُسحب منه أكثر من الرصيد.")),
-  "08.05": planned(),
-  "08.06": planned(),
-  "08.07": planned(),
-  "08.08": planned(),
+  "08.01": {
+    status: "implemented",
+    route: "/admin/promotions/coupons",
+    note: n(
+      "Fixed or percentage coupons with a total and a per-customer usage limit, a validity period and conditions (platform, category, product kind, segment, channel, first order, quantity); the commerce core validates and redeems them at checkout. promotions.coupon.manage creates; terms above 20 %, above 50,000 IQD off one order (or uncapped) or without any usage limit are switched on only after another employee holding pricing.discount.override approves — never the requester. Saved views, bulk switch-off, uses and discount given, \"try this coupon\" through the core's own evaluation, history.",
+      "كوبونات بمبلغ أو نسبة مع حد كلي وحد لكل عميل وفترة صلاحية وشروط (منصة، تصنيف، نوع منتج، شريحة، قناة، أول طلب، كمية)، ونواة التجارة تتحقق منها وتسجّل استخدامها عند الدفع. يُنشئها من يملك إدارة الكوبونات؛ الشروط فوق 20% أو فوق 50,000 د.ع للطلب الواحد (أو بلا سقف) أو بلا حد للاستخدام لا تُشغّل إلا بموافقة موظف آخر يملك تجاوز حدود الخصم، ولا يعتمد أحد طلبه. عروض محفوظة وإيقاف جماعي والاستخدام والخصم المعطى وتجربة الكوبون بقاعدة النواة نفسها والسجل.",
+    ),
+  },
+  "08.02": {
+    status: "partial",
+    route: "/admin/promotions/rules",
+    note: n(
+      "Rules by category, segment, cart value, quantity, platform and channel (percent, fixed, tiers, buy X get Y, free delivery), the second person beyond the limits, and a dry run over the recent orders. Missing: the commerce core does not apply them — priceCart (cart.server.ts, after the subtotal, before the coupon) must call the rule evaluator and placeOrder record the rule applied.",
+      "قواعد بحسب التصنيف والشريحة وقيمة السلة والكمية والمنصة والقناة (نسبة، مبلغ، شرائح، اشترِ واحصل، توصيل مجاني)، مع شخص ثانٍ فوق الحدود وتجربة على الطلبات الأخيرة. الناقص: نواة التجارة لا تطبّقها — يجب أن تستدعي priceCart (بعد المجموع وقبل الكوبون) مقيّم القواعد وأن يسجّل placeOrder القاعدة المطبقة.",
+    ),
+  },
+  "08.03": {
+    status: "partial",
+    route: "/admin/promotions/flash",
+    note: n(
+      "Sales with a start and an end (Baghdad time), a price and an allowance per SKU, prices checked by the pricing module's own rules (the cut measured from the 30-day high, a second person, an override under the margin floor — evaluated again at the decision; cost signals only with profit.read), allowances never above the stock available, overlaps refused. Missing: the cart does not use the sale price — priceCart must read the running sale's price and placeOrder claim qty_sold in its batch (guarded by qty_limit and the per-customer limit).",
+      "عروض ببداية ونهاية (بتوقيت بغداد) وسعر وكمية مخصصة لكل صنف، والأسعار تُفحص بقواعد التسعير نفسها (الخصم من أعلى سعر في 30 يوماً، وشخص ثانٍ، وتجاوز تحت حد الهامش — وتُفحص مجدداً عند القرار؛ وإشارات التكلفة لمن يملك صلاحية الربح فقط)، والكمية لا تتجاوز المتوفر، والتداخل مرفوض. الناقص: السلة لا تستخدم سعر العرض — يجب أن تقرأ priceCart سعر العرض الجاري وأن يحجز placeOrder الكمية في دفعته.",
+    ),
+  },
+  "08.04": {
+    status: "partial",
+    route: "/admin/promotions/points",
+    note: n(
+      "Earning after delivery and the return window (idempotent), reversal of later refunds, FIFO expiry, manual adjustments (a confirm dialog; a second person above 5,000 points or beyond 10,000 points one employee gives alone in 24 hours), the append-only ledger and each customer's balance. Missing: points are not redeemed at checkout (priceCart discount + a 'redeem' row in placeOrder's batch); posting is a staff action until the jobs owner schedules it.",
+      "الكسب بعد التسليم ومدة الإرجاع (دون تكرار)، واسترجاع النقاط عند استرداد لاحق، والانتهاء بالأقدم أولاً، والتسويات اليدوية (بتأكيد؛ وشخص ثانٍ فوق 5,000 نقطة أو فوق 10,000 نقطة يمنحها موظف وحده خلال 24 ساعة)، ودفتر لا يُعدّل ورصيد كل عميل. الناقص: لا تُستبدل النقاط عند الدفع (خصم في priceCart وسطر استبدال في دفعة placeOrder)؛ والترحيل إجراء موظف حتى تُجدول مهمة.",
+    ),
+  },
+  "08.05": {
+    status: "partial",
+    route: "/admin/promotions/referrals",
+    note: n(
+      "One code per customer with a cap; refused: self-referral, a number referred twice, a code off or full, an order of someone else; signals for the reviewer: same address, same device, an existing customer, the order's state; the reward (points) after delivery and the return window, never by whoever recorded it. Missing: shoppers cannot enter a referral code at sign-up or checkout (storefront / commerce core), so staff record referrals by hand.",
+      "رمز لكل عميل بحد أقصى؛ يُرفض: إحالة النفس، والرقم المحال مرتين، والرمز الموقوف أو الممتلئ، وطلب شخص آخر؛ وإشارات للمراجع: العنوان نفسه، والجهاز نفسه، وعميل سابق، وحالة الطلب؛ والمكافأة نقاط بعد التسليم ومدة الإرجاع ولا يمنحها من سجّلها. الناقص: لا يكتب المتسوق رمز الإحالة عند التسجيل أو الدفع، فيسجّلها الموظفون يدوياً.",
+    ),
+  },
+  "08.06": {
+    status: "partial",
+    route: "/admin/promotions/vip",
+    note: n(
+      "Tiers with written benefits and delivery terms, members, and the customers eligible by module 07's own VIP rule; granting and ending with a reason. The points multiplier works. Missing: the member discount and free delivery are not applied at checkout (priceCart and the delivery fee must read the active membership); memberships are not sold.",
+      "فئات بمزايا مكتوبة وشروط توصيل، والأعضاء، والعملاء المؤهلون بقاعدة VIP نفسها من القسم 07؛ المنح والإنهاء مع السبب. مضاعف النقاط يعمل. الناقص: خصم العضوية والتوصيل المجاني لا يُطبقان عند الدفع (يجب أن تقرأ priceCart ورسم التوصيل العضوية الفعّالة)، والعضويات لا تُباع.",
+    ),
+  },
+  "08.07": {
+    status: "partial",
+    route: "/admin/promotions/gift-cards",
+    note: n(
+      "Store-funded cards: issued (code shown once, encrypted like digital codes), a second person above 100,000 IQD or 250,000 IQD a day per employee, revealed only with digital_code.reveal and a reason (audited), voided, expired, redeemed once into a customer's wallet after a confirm dialog with the amount (guarded update + one wallet entry per card, one idempotency key per redemption, a demo card only into a demo account, Dr marketing / Cr wallet liability), and a settlement matched with the wallet ledger. Missing: selling cards for money — a gift-card liability account in the chart and a sale line at the POS / checkout.",
+      "بطاقات يموّلها المتجر: إصدار (الرمز يظهر مرة ومشفّر كالرموز الرقمية)، وشخص ثانٍ فوق 100,000 د.ع أو 250,000 د.ع يومياً للموظف، وكشف الرمز بصلاحية الكشف وسبب (مسجّل)، وإلغاء وانتهاء، واستخدام مرة واحدة في محفظة العميل بعد تأكيد يعرض المبلغ (تحديث محمي وسطر محفظة واحد لكل بطاقة، ومفتاح عدم تكرار لكل استخدام، والبطاقة التجريبية لحساب تجريبي فقط، مدين تسويق ودائن التزام المحافظ)، وتسوية تُطابق دفتر المحافظ. الناقص: بيع البطاقات بمال — حساب التزام بطاقات في الدليل وسطر بيع في نقطة البيع أو الدفع.",
+    ),
+  },
+  "08.08": {
+    status: "partial",
+    route: "/admin/promotions/experiments",
+    note: n(
+      "A/B tests of coupons that start only once the measurement rule is written (metric, minimum orders per variant, planned end); results from real orders per coupon (orders, net revenue, average order, discount per order, refund rate); a winner only when the rule can be read. Missing: the storefront does not assign or count visitors (experiment_assignments / experiment_events), so conversion is not measurable.",
+      "تجارب A/B على الكوبونات لا تبدأ إلا بقاعدة قياس مكتوبة (المقياس والحد الأدنى للطلبات لكل نسخة والنهاية)؛ والنتائج من الطلبات الحقيقية لكل كوبون (الطلبات وصافي الإيراد ومتوسط الطلب والخصم لكل طلب ونسبة الاسترداد)؛ ولا فائز قبل بلوغ القاعدة. الناقص: المتجر لا يوزّع الزوار ولا يعدّهم، فالتحويل غير قابل للقياس.",
+    ),
+  },
 
   // ── 09 Suppliers and purchasing (owner: admin purchasing — docs/areas/admin-purchasing.md)
   "09.01": {
@@ -828,27 +884,118 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   },
 
   // ── 14 Customer service
-  "14.01": planned(n("No email or messaging provider is connected.", "لا يوجد مزود بريد أو رسائل متصل.")),
-  "14.02": planned(),
-  "14.03": planned(),
-  "14.04": planned(),
-  "14.05": planned(),
-  "14.06": planned(n("Knowledge articles are stored as safe blocks; 8 demo articles are seeded.", "مقالات المعرفة تُخزن كأجزاء آمنة، و8 مقالات تجريبية محمّلة.")),
-  "14.07": planned(),
+  "14.01": {
+    status: "boundary",
+    route: "/admin/support",
+    note: n(
+      "One inbox for the site's tickets, the maintenance assistant's hand-offs and repair requests: saved views (needs a reply, mine, nobody holds, late, escalated to me…), filters, sort and page in the URL, bulk assign and route. No e-mail, WhatsApp or chat provider is connected: staff open a ticket for a call, a message or a visit and type in what the customer said; a written reply is held in the outbox (never sent) and the customer reads it on their ticket page.",
+      "صندوق وارد واحد لتذاكر الموقع وتحويلات مساعد الصيانة وطلبات الصيانة: عروض محفوظة (تحتاج رداً، تذاكري، بلا موظف، متأخرة، مصعّدة إليّ…) ومرشحات وترتيب وصفحات في الرابط، وتوزيع وتوجيه جماعي. لا يوجد مزود بريد أو واتساب أو محادثة متصل: يفتح الموظف تذكرة للمكالمة أو الرسالة أو الزيارة ويسجل ما قاله الزبون، والرد المكتوب يُحفظ في الرسائل المعلقة ولا يُرسل، ويراه الزبون في صفحة تذكرته.",
+    ),
+  },
+  "14.02": {
+    status: "implemented",
+    route: "/admin/support",
+    note: n(
+      "Each ticket links the customer (module 07's profile), the order, the product, the warranty, the repair and the return by their ids, refuses a link of another customer or order, suggests the account with the ticket's phone, and shows each record only to staff who may open it. Replies, internal notes, status with reasons, priority and topic with their due times, who holds it and why; the ticket prints as its record.",
+      "كل تذكرة تربط الزبون (ملفه في القسم 07) والطلب والمنتج والضمان والصيانة والإرجاع بأرقامها، وترفض ربط سجل لزبون أو طلب آخر، وتقترح الحساب برقم موبايل التذكرة، ولا تعرض السجل إلا لمن يحق له فتحه. ردود وملاحظات داخلية وحالة مع السبب وأولوية وموضوع مع مواعيدهما ومن يمسكها ولماذا، وتُطبع كسجل.",
+    ),
+  },
+  "14.03": {
+    status: "partial",
+    route: "/admin/support/routing",
+    note: n(
+      "Rules by topic, channel, keywords and priority, in order, with an agent pool and a capacity per agent (checked again inside the write), a team queue and a priority; the reason each ticket went where it went is recorded and shown; a dry run on the open tickets; every agent's load. Missing: tickets the site opens are routed when an assigner routes the waiting ones (one key) — automatic routing on arrival waits for the scheduled job (requested).",
+      "قواعد حسب الموضوع والقناة والكلمات والأولوية بالترتيب، مع مجموعة موظفين وحد لكل موظف (يُتحقق منه داخل الكتابة نفسها) وقائمة فريق وأولوية؛ يُسجّل سبب ذهاب كل تذكرة ويُعرض؛ تجربة على التذاكر المفتوحة؛ وعدد تذاكر كل موظف. الناقص: تذاكر الموقع تُوزّع عندما يوزّع موظف التذاكر المنتظرة بزر واحد، والتوزيع التلقائي عند وصولها ينتظر المهمة المجدولة (طُلبت).",
+    ),
+  },
+  "14.04": {
+    status: "implemented",
+    route: "/admin/support/replies",
+    note: n(
+      "Canned replies in Arabic, English and Sorani with ten safe variables filled from the ticket on the server ({customer_name}, {order_ref}, {order_status}…); any other brace, condition or markup is refused. On a ticket a canned reply only fills the composer in the customer's language; the agent edits it, and a text that still holds a variable is not recorded. Sending is 14.01's boundary.",
+      "ردود جاهزة بالعربية والإنجليزية والسورانية مع عشرة متغيرات آمنة تُملأ من التذكرة على الخادم ({customer_name} و{order_ref} و{order_status}…)، ويُرفض أي قوس آخر أو شرط أو وسم. في التذكرة يملأ الرد الجاهز خانة الكتابة بلغة الزبون فقط، ويعدّله الموظف، ولا يُسجّل نص بقي فيه متغير. الإرسال حدّه في 14.01.",
+    ),
+  },
+  "14.05": {
+    status: "partial",
+    route: "/admin/support/metrics",
+    note: n(
+      "First-response and resolution times (median, 90%, share on time) from the tickets' own events, by agent, topic, priority and channel, the backlog and repairs; SLA policies per priority and topic give tickets their due times (the site's too) and fill open tickets that have none. Missing: customer satisfaction is shown as not collected — the store sends no survey (no messaging provider) and the site has no rating page.",
+      "زمن أول رد وزمن الحل (الوسيط و90٪ ونسبة الالتزام بالموعد) من أحداث التذاكر نفسها، حسب الموظف والموضوع والأولوية والقناة، والتذاكر المفتوحة والصيانة؛ وأهداف خدمة لكل أولوية وموضوع تعطي التذاكر مواعيدها (تذاكر الموقع أيضاً) وتملأ المفتوحة بلا مواعيد. الناقص: رضا العملاء يظهر «غير مُجمّع» لأن المتجر لا يرسل استبياناً (لا مزود رسائل) ولا توجد صفحة تقييم في الموقع.",
+    ),
+  },
+  "14.06": {
+    status: "implemented",
+    route: "/admin/support/knowledge",
+    note: n(
+      "Internal articles for staff and the help centre's public guides, written as lines that become safe blocks (catalogue photos checked), previewed as the site renders them, published through review: someone who did not write a version approves it; an approved article's edit waits as a revision while the site keeps the approved text; archive and restore. The site shows approved public articles only.",
+      "مقالات داخلية للموظفين وأدلة مركز المساعدة للعملاء، تُكتب سطوراً تصبح أجزاء آمنة (صور الكتالوج يُتحقق منها)، وتُعاين كما يعرضها الموقع، وتُنشر بالمراجعة: يعتمد النسخة شخص لم يكتبها، وتعديل المقال المعتمد ينتظر مراجعة والموقع يعرض النص المعتمد حتى ذلك؛ أرشفة واسترجاع. الموقع يعرض المقالات المعتمدة العامة فقط.",
+    ),
+  },
+  "14.07": {
+    status: "implemented",
+    route: "/admin/support?view=escalated_me",
+    note: n(
+      "A financial complaint goes to someone who approves refunds, a warranty complaint to someone who manages warranties — never the person escalating — with the reason; priority rises to high and only that person resolves or closes it until they hand it back with the decision. Nothing is paid here: refunds and returns happen in Orders (05) and Returns (12), linked from the ticket. Only holders who can also open tickets are offered (the finance role cannot until it is granted ticket reading).",
+      "الشكوى المالية تذهب لمن يعتمد الاستردادات وشكوى الضمان لمن يدير الضمانات، وليس لمن يصعّدها، مع السبب؛ ترتفع الأولوية إلى عالية ولا يحلّها أو يغلقها غيره حتى يعيدها مع القرار. لا يُدفع شيء هنا: الاسترداد والإرجاع في الطلبات (05) والمرتجعات (12) بروابط من التذكرة. لا يُعرض إلا من يستطيع فتح التذاكر أيضاً (دور المالية لا يستطيع حتى تُمنح له قراءة التذاكر).",
+    ),
+  },
 
   // ── 15 Staff and HR
-  "15.01": planned(n("246 permissions in 24 groups and 8 built-in roles are installed; there is no role editor.", "246 صلاحية في 24 مجموعة و8 أدوار جاهزة مثبتة، ولا يوجد محرر أدوار.")),
-  "15.02": planned(),
-  "15.03": planned(),
-  "15.04": planned(),
-  "15.05": planned(),
-  "15.06": planned(n("Refunds already need a second person's approval.", "الاسترداد يحتاج أصلاً موافقة شخص ثانٍ.")),
-  "15.07": {
+  "15.01": {
     status: "partial",
-    route: "/admin/me",
+    route: "/admin/staff/employees",
     note: n(
-      "Each employee sees and ends their own sessions on the My security page, and a disabled account is locked out on its next request. Staff cannot be disabled from the admin yet (the service exists), and nobody sees other employees' sessions.",
-      "يرى كل موظف جلساته وينهيها من صفحة أماني، والحساب الموقوف يُمنع من أول طلب تالٍ. لا يمكن إيقاف موظف من لوحة الإدارة بعد (الخدمة موجودة)، ولا يرى أحد جلسات غيره.",
+      "The directory, and each employee's effective permissions read-only (by module, protected-data ones marked, with the role that grants each); roles are edited in one place, /admin/security/roles (module 20). Missing: adding a new employee and their first password — the sign-in service has no function for it (requested from its owner).",
+      "دليل الموظفين، وصلاحيات كل موظف الفعلية للعرض فقط (حسب القسم، مع تمييز البيانات المحمية والدور الذي يمنح كلاً منها)؛ والأدوار تُعدَّل في مكان واحد: /admin/security/roles (القسم 20). ناقص: إضافة موظف جديد وكلمة مروره الأولى — خدمة الدخول لا تتيح ذلك (طُلب من مالكها).",
+    ),
+  },
+  "15.02": {
+    status: "partial",
+    route: "/admin/staff/schedule",
+    note: n(
+      "Week roster of work shifts (no overlaps, none on approved leave, a week copied), clock-in and out on My day with lateness, manual entries and corrections with a reason, bulk approval (never one's own), leave requests decided by someone else (approval cancels that day's shifts), tasks. POS cash-drawer shifts stay module 06's. Missing: an employee with no staff permission (a cashier) cannot open My day until the admin gate opens /admin/staff/me to every employee (requested).",
+      "جدول أسبوعي لورديات الدوام (بلا تداخل، ولا في إجازة معتمدة، ونسخ أسبوع)، وتسجيل الحضور والانصراف في «يومي» مع التأخير، وتسجيل يدوي وتصحيح بسبب، واعتماد جماعي (لا لسجل الشخص نفسه)، وإجازات يقررها غير صاحبها (والاعتماد يلغي ورديات تلك الأيام)، ومهام. ورديات أدراج نقطة البيع تبقى للقسم 06. ناقص: موظف بلا صلاحية في هذا القسم (الكاشير) لا يفتح «يومي» حتى تفتح بوابة الإدارة /admin/staff/me لكل موظف (طُلب).",
+    ),
+  },
+  "15.03": {
+    status: "implemented",
+    route: "/admin/staff/commissions",
+    note: n(
+      "Versioned plans (a change is a new version; past sales keep the version in force when delivered) on sales or realised profit — a profit plan and its bases only with profit.read — for an employee, a role or everyone; paid on delivered counter sales net of discounts and returns, a return landing later becomes a clawback at the next computation (staff or the payroll run start it; a daily job is requested).",
+      "خطط بنسخ (التغيير نسخة جديدة، وما بيع سابقاً يبقى بنسخته السارية عند التسليم) على المبيعات أو الربح المحقق — وخطة الربح وأسسها بصلاحية رؤية الربح فقط — لموظف أو دور أو للجميع؛ تُحسب على مبيعات الصندوق المسلّمة بعد الخصومات والمرتجعات، والمرتجع اللاحق يصبح خصماً في الحساب التالي (يبدؤه الموظف أو مسير الرواتب؛ والمهمة اليومية مطلوبة).",
+    ),
+  },
+  "15.04": {
+    status: "partial",
+    route: "/admin/staff/payroll",
+    note: n(
+      "Monthly runs: base pro-rated by days employed and unpaid leave, commissions, bonuses and deductions with a note, salary advances; prepared by one person, approved and paid by another (never who prepared, edited, changed a salary in it or is paid by it), booked through the accounting core when paid; advances asked for and decided by two people. Missing: an off-cycle settlement for one leaver (they are settled in their month's run, pro-rated) and advances in instalments; there is no salaries-payable account, so pay is booked when paid (requested).",
+      "مسيرات شهرية: الأساسي بحسب أيام العمل والإجازة بلا راتب، والعمولات، والمكافآت والخصومات بملاحظة، والسلف؛ يُعدّها شخص ويعتمدها ويصرفها آخر (لا من أعدّها أو عدّلها أو غيّر راتباً فيها أو يُدفع له منها)، وتُقيَّد عبر نواة المحاسبة عند الصرف؛ والسلف يطلبها شخص ويقررها آخر. ناقص: تسوية منفصلة لموظف مغادر (يُسوّى في مسير شهره بالأيام) والسلف بالأقساط؛ ولا يوجد حساب رواتب مستحقة فتُقيَّد عند الصرف (طُلب).",
+    ),
+  },
+  "15.05": {
+    status: "implemented",
+    route: "/admin/staff/performance",
+    note: n(
+      "Each employee's month: counter sales net of refunds, units, average basket, refunds, attendance (planned, attended, late, missed, hours), tasks and orders packed — no cost, margin or profit is read; commission only for who sees pay.",
+      "شهر كل موظف: مبيعات الصندوق بعد المسترد، والقطع، ومتوسط السلة، والمسترد، والحضور (المخطط والحاضر والمتأخر والغائب والساعات)، والمهام والطلبات المجهّزة — دون قراءة أي تكلفة أو هامش أو ربح؛ والعمولة لمن يرى الرواتب فقط.",
+    ),
+  },
+  "15.06": {
+    status: "partial",
+    route: "/admin/staff/approvals",
+    note: n(
+      "One view of what waits for this employee across modules (the bell's own queues, plus leave and payroll runs), their own requests awaiting others, and — with staff.approval.read — the store's pending requests without their amounts, each linking to the module's own decision screen. Missing: a till discount above the cashier's limit and a direct stock adjustment have no request-and-approve step — the permission alone decides (modules 06 and 04).",
+      "عرض واحد لما ينتظر قرار الموظف في الأقسام (قوائم الجرس نفسها، والإجازات ومسيرات الرواتب)، وطلباته التي تنتظر غيره، و— بصلاحية عرض الطلبات المعلّقة — طلبات المتجر المعلّقة دون مبالغها، وكلٌّ يفتح شاشة القرار في قسمه. ناقص: خصم الصندوق فوق حد الكاشير وتسوية المخزون المباشرة بلا خطوة طلب واعتماد — الصلاحية وحدها تقرر (القسمان 06 و04).",
+    ),
+  },
+  "15.07": {
+    status: "implemented",
+    route: "/admin/staff/employees",
+    note: n(
+      "Ending access on termination from the employee's file (staff.manage, a reason, the impact shown): the sign-in service disables the account and ends every session at once (refused on the next request), then future shifts and pending leave are cancelled; never one's own account nor a stronger one. The employee's live sessions (end one or all) and their sign-in log.",
+      "إنهاء الوصول عند انتهاء الخدمة من ملف الموظف (صلاحية إدارة الموظفين، وسبب، ويُعرض الأثر): توقف خدمة الدخول الحساب وتنهي كل جلساته فوراً (يُرفض طلبه التالي)، ثم تُلغى ورديته القادمة وإجازاته المعلّقة؛ ولا لحساب الشخص نفسه ولا لحساب أقوى منه. وجلسات الموظف المفتوحة (إنهاء واحدة أو الكل) وسجل دخوله.",
     ),
   },
 
@@ -861,13 +1008,55 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
   "16.06": planned(n("No reviews are collected yet, and none are invented.", "لا تُجمع تقييمات بعد، ولا تُختلق.")),
   "16.07": planned(),
 
-  // ── 17 Content and storefront
-  "17.01": planned(),
-  "17.02": planned(),
-  "17.03": planned(),
-  "17.04": planned(n("A redirects table exists.", "جدول التحويلات موجود.")),
-  "17.05": planned(),
-  "17.06": planned(),
+  // ── 17 Content and storefront (owner: admin content module, docs/areas/admin-cms.md)
+  "17.01": {
+    status: "partial",
+    route: "/admin/cms",
+    note: n(
+      "Policies (delivery, payment, privacy, terms — returns and warranty in Settings), the about and contact texts are drafted, previewed and approved here and the store serves them now. Banners, landing pages, the home sections' order and the pinned hero (a product and a headline per platform and period, checked against the catalogue) are kept and ready, but the storefront does not read them yet: its team wires getActiveBanners, getLandingPage, getHomeLayout and getHomeHero after the redesign.",
+      "السياسات (التوصيل والدفع والخصوصية والشروط — الإرجاع والضمان من الإعدادات) ونصّا «من نحن» و«تواصل معنا» تُكتب وتُعاين وتُعتمد هنا ويعرضها المتجر الآن. البانرات وصفحات الهبوط وترتيب أقسام الصفحة الرئيسية والمنتج المثبّت (منتج وعنوان لكل منصة ومدة، يُفحص مع الكتالوج) محفوظة وجاهزة، لكن المتجر لا يقرؤها بعد: يربط فريقه getActiveBanners و getLandingPage و getHomeLayout و getHomeHero بعد إعادة التصميم.",
+    ),
+  },
+  "17.02": {
+    status: "partial",
+    route: "/admin/cms/schedule",
+    note: n(
+      "Banners, landing pages and pinned heroes are scheduled in Iraq time and shown on one calendar with the catalogue's release dates (scheduled products, pre-orders, variants to come); a schedule never puts forward a product the catalogue would not show, and never changes a product's status. What is scheduled reaches the store once the storefront reads banners, pins and landing pages (17.01).",
+      "تُجدول البانرات وصفحات الهبوط والمنتجات المثبّتة بتوقيت العراق وتظهر في تقويم واحد مع مواعيد الكتالوج (منتجات مجدولة وطلب مسبق ونسخ قادمة)؛ لا تُقدّم الجدولة منتجاً لا يعرضه الكتالوج ولا تغيّر حالة منتج. يصل المجدول إلى المتجر حين يقرأ المتجر البانرات والتثبيت وصفحات الهبوط (17.01).",
+    ),
+  },
+  "17.03": {
+    status: "partial",
+    route: "/admin/cms/navigation",
+    note: n(
+      "Search synonyms (ar/en/ckb, normalised as the index) work in the store's search now (/admin/cms/search). The menu stays generated from the catalogue; staff order, hide and feature its entries, and order or hide each category page's filter groups — kept, but the storefront does not read them yet (getNavArrangement, getListingFilterOrder).",
+      "مرادفات البحث (عربي/إنجليزي/كوردي، مطبّعة كما في الفهرس) تعمل في بحث المتجر الآن (/admin/cms/search). القائمة تبقى مولّدة من الكتالوج؛ يرتّب الموظفون عناصرها ويخفونها ويبرزونها، ويرتّبون فلاتر صفحات الأقسام أو يخفونها — محفوظة، لكن المتجر لا يقرؤها بعد (getNavArrangement و getListingFilterOrder).",
+    ),
+  },
+  "17.04": {
+    status: "partial",
+    route: "/admin/cms/seo",
+    note: n(
+      "Product SEO titles and descriptions (saved through the catalogue's own write path) and page SEO work on the store now, with issues listed (missing, too long, repeated, hidden). Category SEO is kept but the category page does not read it yet. 301/302 redirects refuse the admin and the API, loops and chains — but the storefront does not call resolveRedirect yet.",
+      "عناوين محركات البحث وأوصاف المنتجات (تُحفظ عبر مسار الكتالوج نفسه) وأوصاف الصفحات تعمل في المتجر الآن، مع قائمة المشاكل (ناقص، طويل، مكرر، مخفي). عنوان القسم ووصفه محفوظان لكن صفحة القسم لا تقرؤهما بعد. تحويلات 301/302 ترفض لوحة الإدارة والواجهة البرمجية والحلقات والسلاسل — لكن المتجر لا يستدعي resolveRedirect بعد.",
+    ),
+  },
+  "17.05": {
+    status: "implemented",
+    route: "/admin/cms/search/zero",
+    note: n(
+      "Searches that found nothing (anonymous daily counts), whether each finds something now, and suggested spellings from the store's own vocabulary with the concept's words in Arabic, English and Sorani; one click adds the query as a synonym. Suggestions are arithmetic on letters: no AI model is configured, so meanings stay a person's call.",
+      "عمليات البحث بلا نتائج (عدّ يومي مجهول المصدر)، وهل تجد شيئاً الآن، وكتابات مقترحة من مفردات المتجر مع كلمات الفكرة بالعربية والإنجليزية والكوردية؛ نقرة تضيف العبارة مرادفاً. الاقتراحات حساب على الحروف: لا نموذج ذكاء اصطناعي مضبوط، فالمعاني قرار الموظف.",
+    ),
+  },
+  "17.06": {
+    status: "partial",
+    route: "/admin/cms/pages",
+    note: n(
+      "Every banner, page and pinned hero is previewed at phone (390) and desktop (1280) width in ar/en/ckb before publishing, and a signed preview link (7 days, staff only, no-store and noindex) shows the unpublished version. Pages are drawn with the store's own text renderer; banners and pins with the kit's bands until the storefront adds their slots.",
+      "يُعاين كل بانر وصفحة ومنتج مثبّت بعرض الهاتف (390) وسطح المكتب (1280) بالعربية والإنجليزية والكوردية قبل النشر، ورابط معاينة موقّع (7 أيام، للموظفين فقط، بلا تخزين ولا فهرسة) يعرض النسخة غير المنشورة. الصفحات تُرسم بمكوّن نصوص المتجر نفسه؛ البانرات والتثبيت بشرائط مكتبة المكونات حتى يضيف المتجر أماكنها.",
+    ),
+  },
 
   // ── 18 Reports and BI
   "18.01": planned(),
@@ -1012,13 +1201,55 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
     ),
   },
 
-  // ── 23 Technical operations
-  "23.01": planned(),
-  "23.02": planned(),
-  "23.03": planned(n("Scheduled jobs run every 5 minutes and daily, and every run is recorded; there is no screen.", "المهام المجدولة تعمل كل 5 دقائق ويومياً وكل تشغيل مسجل، ولا توجد شاشة.")),
-  "23.04": planned(),
-  "23.05": planned(),
-  "23.06": planned(n("Consistency checks run daily and store their findings; there is no screen.", "فحوصات الاتساق تعمل يومياً وتخزن نتائجها، ولا توجد شاشة.")),
+  // ── 23 Technical operations (owner: admin ops module, docs/areas/admin-ops.md)
+  "23.01": {
+    status: "partial",
+    route: "/admin/ops/errors",
+    note: n(
+      "Errors the app records itself — one scrubbed row per kind of error (phones masked, e-mails, tokens and URL queries removed), its count and first and last time, kept 90 days — with resolve, ignore and reopen with a reason and a link to an incident. Recorded today: the server and browser errors of the operations pages. Missing: the same recorder on every admin and store page (the shell's layout and the app's error handler, requested from their owners). There is no APM provider: every error is in Cloudflare's Workers Logs, and the page says where.",
+      "أخطاء يسجلها التطبيق بنفسه — صف منظَّف لكل نوع خطأ (أرقام الهواتف مخفية، والبريد والرموز واستعلامات الروابط محذوفة) بعدد مراته وأول وآخر ظهور، يُحفظ 90 يوماً — مع المعالجة والتجاهل وإعادة الفتح بسبب وربطه بحادث. يُسجَّل اليوم: أخطاء صفحات التشغيل في الخادم والمتصفح. ناقص: المسجِّل نفسه على كل صفحات الإدارة والمتجر (تخطيط الواجهة ومعالج أخطاء التطبيق، مطلوب من مالكيها). لا يوجد مزود مراقبة: كل خطأ في سجلات Workers في Cloudflare، والصفحة تقول أين.",
+    ),
+  },
+  "23.02": {
+    status: "partial",
+    route: "/admin/ops/performance",
+    note: n(
+      "Slow requests (server time ≥ 1 s), failed requests (status ≥ 500), slow page loads (≥ 3 s) and slow navigations (≥ 2 s) per page, day and device — one upsert per slow or failed request, never per request, kept 90 days. Measured today: the operations pages. Missing: the same middleware and browser reporter on every admin page (requested from the shell owner). Rates and percentiles need the request totals that only Cloudflare's metrics hold (no analytics provider); the page gives the steps.",
+      "الطلبات البطيئة (زمن خادم ثانية فأكثر) والفاشلة (500 فأكثر)، والتحميل البطيء (3 ثوانٍ فأكثر) والتنقل البطيء (ثانيتان فأكثر) لكل صفحة ويوم وجهاز — كتابة واحدة لكل طلب بطيء أو فاشل، لا لكل طلب، تُحفظ 90 يوماً. يُقاس اليوم: صفحات التشغيل. ناقص: الطبقة الوسطى والمبلّغ نفسهما على كل صفحات الإدارة (مطلوب من مالك الواجهة). النسب والمئينات تحتاج إجمالي الطلبات الذي تملكه مقاييس Cloudflare وحدها (لا مزود تحليلات)، والصفحة تعطي الخطوات.",
+    ),
+  },
+  "23.03": {
+    status: "implemented",
+    route: "/admin/ops/jobs",
+    note: n(
+      "Every scheduled job with its cron (the same expressions as wrangler.jsonc), next run, health (late when its schedule stops starting it — a run by hand does not count —, stuck when a run never ends, failing with the failures in a row), last run and last success, and the jobs that need attention as a list of their own; the run history with filters; what a run now would touch, and run now with a reason (ops.job.run, once per form, audited). The message queue: held, queued, sent and failed messages by channel, recipients and provider errors scrubbed, content never shown. Jobs added to the scheduler appear without a change here.",
+      "كل مهمة مجدولة بجدولها (تعبيرات wrangler.jsonc نفسها) وتشغيلها القادم وحالتها (متأخرة إن توقف الجدول عن تشغيلها — التشغيل اليدوي لا يُحسب —، عالقة إن لم ينتهِ تشغيل، تفشل مع عدد مرات الفشل المتتالية) وآخر تشغيل وآخر نجاح، والمهام التي تحتاج انتباهاً قائمة وحدها؛ سجل التشغيلات بمرشحات؛ ما سيلمسه التشغيل الآن، والتشغيل اليدوي بسبب (ops.job.run، مرة لكل نموذج، مدقق). طابور الرسائل: المعلّقة والمصطفة والمرسلة والفاشلة حسب القناة، المستلم وأخطاء المزود منظّفة والمحتوى لا يُعرض. أي مهمة تُضاف إلى المجدول تظهر دون تغيير هنا.",
+    ),
+  },
+  "23.04": {
+    status: "partial",
+    route: "/admin/ops/backups",
+    note: n(
+      "Monitoring: the age of the last passed restore test (recorded in Security → Backups, never twice), due every 90 days, the daily seal of the audit trail, what D1 Time Travel keeps and how to check it. Missing: backups and restores run in Cloudflare with wrangler — the app cannot read their state without a Cloudflare API token (the owner's decision); uploaded files (KV) have no history.",
+      "مراقبة: عمر آخر اختبار استعادة ناجح (يُسجَّل في الأمان ← النسخ الاحتياطي، لا مرتين)، ويُستحق كل 90 يوماً، والختم اليومي لسجل التدقيق، وما يحفظه D1 Time Travel وكيف تتحقق منه. ناقص: النسخ والاستعادة تجري في Cloudflare بأداة wrangler — التطبيق لا يقرأ حالتها دون مفتاح API من Cloudflare (قرار المالك)؛ والملفات المرفوعة (KV) بلا سجل زمني.",
+    ),
+  },
+  "23.05": {
+    status: "implemented",
+    route: "/admin/ops/incidents",
+    note: n(
+      "Incidents with a severity, a responsible owner (someone who may read incidents) and a target resolution date — the owner's task — status moves against what the form saw, a timeline of updates and audited changes, the resolution time and a required post-mortem, reopen, links by id to findings, job runs and errors, printed as a report.",
+      "حوادث بخطورة ومالك مسؤول (ممن يملك عرض الحوادث) وتاريخ حل مستهدف — مهمة المالك — وتغيير حالة مقابل ما رآه النموذج، وخط زمني للتحديثات والتغييرات المدققة، ووقت الحل وملاحظة ما بعد الحادث الإلزامية، وإعادة الفتح، وروابط بالمعرّف إلى نتائج الفحوص وتشغيلات المهام والأخطاء، وطباعتها تقريراً.",
+    ),
+  },
+  "23.06": {
+    status: "partial",
+    route: "/admin/ops/consistency",
+    note: n(
+      "The daily checks' findings (stock against movements and reservations, the wallet against its account and below zero, unbalanced or headless journal entries, orders against their lines, payments and refunds, paid money and delivered orders without their postings): explained, linked to the record in its module, given to a person with a due day, closed as resolved or false positive with a reason (up to 25 at once), reopened — never editing the data checked; numbers of cost checks withheld without cost.read, wallet amounts without a wallet permission; a branch-limited employee sees, takes and closes only findings about their branch's records; run the checks now. Missing on the profit side: a check that each delivered order with known costs has its cost-of-goods posting (requested from the scheduled-jobs owner).",
+      "نتائج الفحوص اليومية (المخزون مقابل حركاته وحجوزاته، المحفظة مقابل حسابها وتحت الصفر، القيود غير المتوازنة أو بلا رأس، الطلبات مقابل أسطرها ومدفوعاتها واستردادتها، المال المدفوع والطلبات المسلَّمة بلا قيودها): مشروحة، ومربوطة بالسجل في قسمه، وتُسند لشخص بيوم مستحق، وتُغلق كمحلولة أو إنذار خاطئ بسبب (حتى 25 دفعة واحدة)، وتُعاد فتحها — دون تعديل البيانات المفحوصة أبداً؛ وأرقام فحوص التكلفة مخفية دون cost.read، ومبالغ المحافظ دون صلاحية المحافظ؛ والموظف المقيّد بفرع يرى ويتسلّم ويغلق نتائج سجلات فرعه فقط؛ وتشغيل الفحوص الآن. ناقص في جانب الربح: فحص أن لكل طلب مسلَّم معروف التكلفة قيد تكلفة بضاعته (مطلوب من مالك المهام المجدولة).",
+    ),
+  },
 };
 
 // ───────────────────────────────────────────────────────────────── helpers

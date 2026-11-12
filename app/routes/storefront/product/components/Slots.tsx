@@ -1,30 +1,32 @@
 /**
- * The cross-area pieces of the product page, wired by the integration pass (docs/CONTRACTS.md §3, docs/areas/product.md
- * "Integration slots"). The loader reads them; these components only draw:
+ * The cross-area pieces of the product page (docs/CONTRACTS.md §3, docs/areas/product.md "Integration slots"). The
+ * loader reads them; these components only draw:
  *
  *   <CompatibilitySlot rows />          devices area: getCompatibilityForProduct(db, locale, productId) — every device a
  *                                       rule speaks about, plus an explicit "not checked" for the other consoles of the
- *                                       product's platforms. Each row is ~/ui/CompatBadge (icon AND words; "unverified"
- *                                       is a real answer) and a link to the device's hub when it has one.
+ *                                       product's platforms. Drawn as the kit's CompatList (design v2 G17: a mark, the
+ *                                       device, and its STATE WORD — يعمل · يعمل جزئياً · لا يعمل · لم نتحقق — with the
+ *                                       rule's note), under today's honest line «من سجلّ التوافق الذي تحقّقنا منه…».
  *   <DeviceHubSlot device />            devices area: the "everything about this device" row link for a product that IS
  *                                       a device (getDeviceLink — null when the model has no hub). Its picture grows
  *                                       into the hub's stage (shared element device-image:<slug>).
- *   <RecommendationsSlot result />      devices area: getRecommendations(context "product") through recommendationsFor,
- *                                       streamed by the loader — compatibility-checked, stock-aware shelves with their
- *                                       honest reason lines ("complete your setup", the store's links that fit, real
- *                                       "bought together" only past its threshold, alternatives). They replace the
- *                                       page's own unchecked editorial shelves.
- *   wished (product.tsx)                account area: wishedAmong(db, wishlistWho(cookie, customerId), [id]) →
- *                                       <WishlistKey initial={wished} />.
+ *   <RecommendationsSlot result />      devices area: the compatibility-checked shelves (recommendationsFor, context
+ *                                       "product"), streamed by the loader — «أكمل تجهيزك», the store's links that fit,
+ *                                       real "bought together" past its threshold, alternatives. They render only with
+ *                                       enough items (the kit's ShelfRail hides a shelf under 3).
+ *   alternativesPath(product)           where «شاهد بدائل» leads on a sold-out page: the product's own category, which
+ *                                       lists what is in stock first. Not the shelves above: on a sold-out page they are
+ *                                       mostly add-ons FOR the product («يكمّل PlayStation 5 Slim»), or there are none.
  */
 import { useId } from "react";
 
-import { Icon } from "~/art/Icon";
-import { LocaleLink, useFormat } from "~/i18n/react";
+import { useFormat } from "~/i18n/react";
 import type { CompatibilityStatus } from "~/lib/dto";
+import type { ProductDetail } from "~/server/services/catalog/product-types";
 import type { ProductCompatibility } from "~/server/services/compatibility.server";
 import type { DeviceLink } from "~/server/services/devices.server";
-import { CompatBadge } from "~/ui/CompatBadge";
+import { CompatList } from "~/ui/CompatBadge";
+import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
 import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
 import { RecommendationShelves, type RecommendationResult } from "~/routes/storefront/devices/components/RecommendationShelves";
@@ -35,53 +37,38 @@ const VISIBLE_ROWS = 6;
 /** Stated answers first: what works, what works in part, what does not; "not checked" last. */
 const STATUS_ORDER: Record<CompatibilityStatus, number> = { verified: 0, partial: 1, incompatible: 2, unverified: 3 };
 
-function CompatRow({ row }: { row: ProductCompatibility }) {
-  const badge = <CompatBadge status={row.status} device={row.deviceName} note={row.note} className="min-w-0" />;
-  if (!row.hasHub) return <li className="py-1.5">{badge}</li>;
-  return (
-    <li>
-      <LocaleLink to={`/device/${row.deviceSlug}`} className="group flex min-h-11 items-center justify-between gap-3 rounded-md py-1.5 no-underline">
-        <span className="min-w-0 group-hover:underline group-hover:underline-offset-4">{badge}</span>
-        <Icon name="arrow-right" size={16} className="shrink-0 text-ink-2" />
-      </LocaleLink>
-    </li>
-  );
-}
-
-/** "يعمل مع" — the product's compatibility as stated facts (nothing renders when no rule and no platform speaks). */
-export function CompatibilitySlot({ rows }: { rows: readonly ProductCompatibility[] }) {
-  const t = useProductT();
-  const f = useFormat();
-  const id = useId();
-  if (rows.length === 0) return null;
+/** The rows in the order they are read, and how many show before the fold (pure; exported for tests). */
+export function compatRows(rows: readonly ProductCompatibility[]): { shown: ProductCompatibility[]; rest: ProductCompatibility[] } {
   const ordered = rows
     .map((row, index) => ({ row, index }))
     .sort((a, b) => STATUS_ORDER[a.row.status] - STATUS_ORDER[b.row.status] || a.index - b.index)
     .map((entry) => entry.row);
   // Show everything when only one or two would be folded away: a fold must save more than it costs.
   const cut = ordered.length > VISIBLE_ROWS + 2 ? VISIBLE_ROWS : ordered.length;
-  const shown = ordered.slice(0, cut);
-  const rest = ordered.slice(cut);
+  return { shown: ordered.slice(0, cut), rest: ordered.slice(cut) };
+}
+
+const listRows = (rows: readonly ProductCompatibility[]) => rows.map((row) => ({ status: row.status, device: row.deviceName, note: row.note }));
+
+/** «يعمل مع» — the product's compatibility as stated facts (nothing renders when no rule and no platform speaks). */
+export function CompatibilitySlot({ rows, className }: { rows: readonly ProductCompatibility[]; className?: string }) {
+  const t = useProductT();
+  const f = useFormat();
+  const id = useId();
+  if (rows.length === 0) return null;
+  const { shown, rest } = compatRows(rows);
   return (
-    <section aria-labelledby={id} className="grid gap-2" data-compat-section="">
-      <div className="grid gap-0.5">
-        <h2 id={id} className="type-sub text-ink">
+    <section aria-labelledby={id} className={cx("grid min-w-0 content-start gap-4", className)} data-compat-section="">
+      <div className="grid gap-1">
+        <h2 id={id} className="type-h2 text-ink">
           {t("compat.title")}
         </h2>
-        <p className="type-caption text-ink-2">{t("compat.reason")}</p>
+        <p className="type-sm text-ink-2">{t("compat.reason")}</p>
       </div>
-      <ul className="grid">
-        {shown.map((row) => (
-          <CompatRow key={row.deviceSlug} row={row} />
-        ))}
-      </ul>
+      <CompatList rows={listRows(shown)} />
       {rest.length > 0 ? (
         <Disclosure summary={t("compat.more", { n: f.number(rest.length) })}>
-          <ul className="grid">
-            {rest.map((row) => (
-              <CompatRow key={row.deviceSlug} row={row} />
-            ))}
-          </ul>
+          <CompatList rows={listRows(rest)} />
         </Disclosure>
       ) : null}
     </section>
@@ -89,13 +76,24 @@ export function CompatibilitySlot({ rows }: { rows: readonly ProductCompatibilit
 }
 
 /** The hub of the device this product IS (devices area owns /device/:model). */
-export function DeviceHubSlot({ device }: { device: DeviceLink | null }) {
+export function DeviceHubSlot({ device, className }: { device: DeviceLink | null; className?: string }) {
   const t = useProductT();
   if (!device) return null;
-  return <DeviceHubLink device={device} title={t("hub.title", { device: device.name })} text={t("hub.text")} className="max-w-[40rem]" />;
+  return <DeviceHubLink device={device} title={t("hub.title", { device: device.name })} text={t("hub.text")} className={className} />;
 }
 
-/** "يكمّل جهازك" and the other compatibility-checked shelves (devices area), streamed after the page. */
+/** «أكمل تجهيزك» and the other compatibility-checked shelves (devices area), streamed after the page. */
 export function RecommendationsSlot({ result }: { result: Promise<RecommendationResult> | RecommendationResult | null }) {
   return <RecommendationShelves result={result} source="product" />;
+}
+
+/**
+ * «شاهد بدائل» (sold out, spec §6.7): the product's most specific category — its listing puts what is in stock first —
+ * else its platform's hub, else the search page. A locale-less path. Pure.
+ */
+export function alternativesPath(product: Pick<ProductDetail, "categories" | "platform" | "forPlatforms">): string {
+  const category = product.categories.at(-1);
+  if (category) return `/c/${category.slug}`;
+  const platform = product.platform ?? product.forPlatforms[0] ?? null;
+  return platform ? `/platform/${platform.slug}` : "/search";
 }

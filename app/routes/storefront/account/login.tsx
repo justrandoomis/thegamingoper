@@ -10,12 +10,15 @@ import { getDb } from "~/server/db.server";
 import { TextField } from "~/ui/Field";
 import { TextLink } from "~/ui/TextLink";
 import { accountFailure, completeSignIn, formFields, localeRedirect, nextFrom } from "./account.server";
-import { AuthShell } from "./components/AuthShell";
+import { AuthCard } from "./components/AuthCard";
+import { fieldError, FormFailure, Notice, PasswordField, SubmitKey, type ActionAnswer } from "./components/FormBits";
 import { accountMeta } from "./components/meta";
 import { PHONE_EXAMPLE } from "./components/text";
-import { AnswerNotice, fieldError, FormNotice, PasswordField, SubmitKey, type ActionAnswer } from "./components/FormBits";
 
-/** Sign in with phone + password. A signed-in visitor goes straight to `next`. Guests are never forced here to order. */
+/**
+ * Sign in with phone + password (Design System v2 §6.12: one centred card, the guest note under it). A signed-in
+ * visitor goes straight to `next`. Guests are never forced here to order.
+ */
 export const handle = { nav: "push", order: 0, group: "account-entry" } satisfies MotionHandle;
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -49,19 +52,34 @@ export default function Login({ loaderData, actionData }: Route.ComponentProps) 
   const answer = (actionData ?? null) as (ActionAnswer & { phone?: string }) | null;
   const pending = navigation.state === "submitting";
   const failed = answer && answer.ok === false ? answer : null;
-  // A wrong password and an unknown number get one sentence at the top; the field itself is only marked.
+  // A wrong password and an unknown number get one sentence above the form; the field itself is only marked.
   const credentials = failed?.code === "invalid_credentials";
+  const signUpHref = loaderData.asked ? `/account/signup?next=${encodeURIComponent(loaderData.next)}` : "/account/signup";
   return (
-    <AuthShell>
-      <header className="grid gap-2">
-        <h1 className="type-title text-ink">{t("login.title")}</h1>
-        <p className="type-body text-ink-2">{loaderData.asked ? t("login.continueHint") : t("login.lead")}</p>
-      </header>
-      {loaderData.notice && !failed ? <FormNotice tone="ok">{t(`login.${loaderData.notice}`)}</FormNotice> : null}
-      {failed && failed.code !== "invalid" ? <AnswerNotice answer={failed} /> : null}
+    <AuthCard
+      title={t("login.title")}
+      lead={loaderData.asked ? t("login.continueHint") : t("login.lead")}
+      footer={
+        <>
+          <span>{t("login.noAccount")}</span>
+          <TextLink as={LocaleLink} to={signUpHref}>
+            {t("login.createAccount")}
+          </TextLink>
+        </>
+      }
+    >
+      {loaderData.notice && !failed ? <Notice tone="ok">{t(`login.${loaderData.notice}`)}</Notice> : null}
+      <FormFailure
+        answer={failed}
+        fields={[
+          { name: "phone", id: "login-phone", label: t("login.phone") },
+          { name: "password", id: "login-password", label: t("login.password") },
+        ]}
+      />
       <Form method="post" className="grid gap-4" noValidate>
         <input type="hidden" name="next" value={loaderData.next} />
         <TextField
+          id="login-phone"
           name="phone"
           type="tel"
           inputMode="tel"
@@ -73,6 +91,7 @@ export default function Login({ loaderData, actionData }: Route.ComponentProps) 
           error={fieldError(failed, "phone")}
         />
         <PasswordField
+          id="login-password"
           name="password"
           autoComplete="current-password"
           label={t("login.password")}
@@ -80,8 +99,8 @@ export default function Login({ loaderData, actionData }: Route.ComponentProps) 
           error={credentials ? undefined : fieldError(failed, "password")}
           aria-invalid={credentials ? true : undefined}
         />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <SubmitKey pending={pending} icon="sign-in">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-1">
+          <SubmitKey variant="primary" pending={pending} icon="sign-in">
             {t("login.submit")}
           </SubmitKey>
           <TextLink as={LocaleLink} to="/account/forgot" arrow={false}>
@@ -89,12 +108,6 @@ export default function Login({ loaderData, actionData }: Route.ComponentProps) 
           </TextLink>
         </div>
       </Form>
-      <p className="flex flex-wrap items-center gap-x-2 border-t border-line pt-4 type-body text-ink-2">
-        {t("login.noAccount")}
-        <TextLink as={LocaleLink} to={loaderData.asked ? `/account/signup?next=${encodeURIComponent(loaderData.next)}` : "/account/signup"}>
-          {t("login.createAccount")}
-        </TextLink>
-      </p>
-    </AuthShell>
+    </AuthCard>
   );
 }

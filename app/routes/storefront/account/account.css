@@ -1,0 +1,553 @@
+/*
+ * Account area — Design System v2 §6.12 (and §6.11 for the order page). Components layer (utilities still win); tokens
+ * only; logical properties only; nothing animates but transform and opacity (hover colours are instant). The kit draws
+ * everything it owns (.panel, .key, .link, .status, .tag, .field, .choice, .summary, .band--wallet, .ledger, .empty,
+ * .callout, .form-alert, .sechead, .cards): this file only lays out the pieces that exist in this area alone.
+ *
+ *   .acct-frame          the signed-in frame: one column; from 1024 the grouped section list in a 264px side column
+ *   .acct-nav            the grouped section list (side column from 1024, the overview's list on phones)
+ *   .acct-rows           a paper panel of rows divided by hairlines (orders, devices, notifications, sessions …)
+ *   .acct-tiles          the overview's four quick tiles (2 × 2 on phones, 4-up from 768)
+ *   .acct-steps          the first-steps checklist (a ring, or a filled check once done)
+ *   .orail               the order's five real states (استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم)
+ *   .acct-auth           sign in / sign up / reset: one centred 480px card and the guest note under it
+ */
+@layer components {
+  /* ───────────────────────────── the frame ───────────────────────────── */
+  .acct-frame {
+    display: grid;
+    gap: var(--s-8);
+    padding-block: var(--s-4) var(--s-12);
+  }
+  .acct-main {
+    display: grid;
+    align-content: start;
+    gap: var(--s-8);
+    min-inline-size: 0;
+  }
+  .acct-side {
+    display: none;
+  }
+  @media (min-width: 48rem) {
+    .acct-frame {
+      padding-block-start: var(--s-6);
+    }
+  }
+  @media (min-width: 64rem) {
+    .acct-frame {
+      grid-template-columns: 16.5rem minmax(0, 1fr);
+      gap: var(--s-10);
+      padding-block-start: var(--s-8);
+    }
+    .acct-side {
+      display: grid;
+      align-content: start;
+      gap: var(--s-4);
+      position: sticky;
+      inset-block-start: calc(var(--shell-top) + var(--s-6));
+    }
+  }
+
+  /* a page head: the back link below 1024, the h1, one line of what the page is for */
+  .acct-head {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .acct-head__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-4);
+  }
+  .acct-head__lead {
+    max-inline-size: 62ch;
+    font: var(--type-body);
+    color: var(--ink-2);
+  }
+  @media (min-width: 64rem) {
+    .acct-head__back[data-section] {
+      display: none;
+    }
+  }
+
+  /* one card width for forms and settings (§6.12) */
+  .acct-narrow {
+    inline-size: 100%;
+    max-inline-size: 40rem;
+  }
+
+  /* ───────────────────────────── the grouped section list ───────────────────────────── */
+  .acct-nav {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .acct-nav__group {
+    display: grid;
+    gap: 2px;
+  }
+  .acct-nav__label {
+    padding-inline: var(--s-3);
+    padding-block-end: var(--s-1);
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
+  .acct-nav__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: var(--h-btn);
+    padding-inline: var(--s-3);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+  }
+  .acct-nav__row > svg {
+    flex: none;
+    color: var(--ink-2);
+  }
+  .acct-nav__text {
+    display: grid;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .acct-nav__name {
+    font: var(--type-sm-strong);
+  }
+  .acct-nav__hint {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  @media (hover: hover) {
+    .acct-nav__row:hover {
+      background: var(--niche);
+    }
+  }
+  .acct-nav__row[aria-current] {
+    background: var(--niche);
+  }
+  .acct-nav__row[aria-current] > svg:first-child {
+    color: var(--ink);
+  }
+  /* the current section: an ink bar at the start, never colour alone (aria-current + the bar + 600 words) */
+  .acct-nav__row[aria-current]::before {
+    content: "";
+    position: absolute;
+    inset-block: var(--s-2);
+    inset-inline-start: 0;
+    inline-size: 3px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  /* the list form on phones: paper panels with 56px rows between hairlines */
+  .acct-nav--list .acct-nav__group > ul {
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .acct-nav--list .acct-nav__row {
+    min-block-size: var(--h-row);
+    padding-inline: var(--s-4);
+    border-radius: 0;
+  }
+  .acct-nav--list li + li > .acct-nav__row {
+    border-block-start: 1px solid var(--line);
+  }
+  /* the panel clips its corners: the ring is drawn inside the row */
+  .acct-nav--list .acct-nav__row:focus-visible {
+    outline-offset: -2px;
+  }
+  .acct-nav--list .acct-nav__label {
+    padding-inline: var(--s-1);
+    padding-block-end: var(--s-2);
+  }
+  /* «تسجيل الخروج»: a quiet link at the end, never the biggest key */
+  .acct-signout {
+    justify-self: start;
+    padding-inline: var(--s-3);
+  }
+  .acct-nav--list + .acct-signout,
+  .acct-signout--list {
+    padding-inline: var(--s-1);
+  }
+
+  /* ───────────────────────────── rows in a paper panel ───────────────────────────── */
+  .acct-rows {
+    display: grid;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .acct-rows > li + li,
+  .acct-rows > * + * {
+    border-block-start: 1px solid var(--line);
+  }
+  .acct-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: var(--h-row);
+    padding: var(--s-3) var(--s-4);
+  }
+  /* a row that is one link: the whole row is the target and carries the focus ring */
+  a.acct-row {
+    color: var(--ink);
+  }
+  @media (hover: hover) {
+    a.acct-row:hover {
+      background: var(--niche);
+    }
+    a.acct-row:hover .acct-row__title {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+  }
+  a.acct-row:focus-visible,
+  .acct-rows [tabindex="-1"]:focus-visible {
+    outline-offset: -2px;
+  }
+  .acct-row__body {
+    display: grid;
+    flex: 1;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .acct-row__title {
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  .acct-row__meta {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .acct-row__end {
+    display: grid;
+    flex: none;
+    justify-items: end;
+    gap: 2px;
+    text-align: end;
+  }
+  .acct-row > .niche {
+    flex: none;
+    inline-size: 56px;
+  }
+  .acct-row__chev {
+    flex: none;
+    color: var(--ink-2);
+  }
+
+  /* a card of this area: paper, a hairline, 16 → 24 padding */
+  .acct-card {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  @media (min-width: 48rem) {
+    .acct-card {
+      padding: var(--s-6);
+    }
+  }
+  .acct-card__title {
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  /* label / value pairs inside a card (payment, delivery) */
+  .acct-dl {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .acct-dl > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2px var(--s-3);
+  }
+  .acct-dl dt {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .acct-dl dd {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+    text-align: end;
+  }
+
+  /* ───────────────────────────── overview: the header card and the quick tiles ───────────────────────────── */
+  .acct-hello {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .acct-hello__mark {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink);
+    font: var(--type-h2);
+  }
+  .acct-hello__text {
+    display: grid;
+    gap: var(--s-1);
+    min-inline-size: 0;
+  }
+  .acct-hello__line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-3);
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+
+  .acct-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-card);
+  }
+  @media (min-width: 48rem) {
+    .acct-tiles {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .acct-tile {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    align-content: start;
+    gap: var(--s-1);
+    min-block-size: 128px;
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .acct-tile__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 40px;
+    block-size: 40px;
+    margin-block-end: var(--s-2);
+    border-radius: var(--r-sm);
+    background: var(--red-tint);
+    color: var(--red-ink);
+  }
+  .acct-tile__name {
+    align-self: end;
+    font: var(--type-card);
+  }
+  .acct-tile__value {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .acct-tile .price {
+    justify-self: start;
+  }
+  @media (hover: hover) {
+    .acct-tile:hover {
+      border-color: var(--line-strong);
+    }
+    .acct-tile:hover .acct-tile__name {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+  }
+
+  /* ───────────────────────────── first steps ───────────────────────────── */
+  .acct-steps {
+    display: grid;
+  }
+  .acct-step {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    align-items: start;
+    gap: 2px var(--s-3);
+    padding-block: var(--s-3);
+  }
+  .acct-step + .acct-step {
+    border-block-start: 1px solid var(--line);
+  }
+  .acct-step__mark {
+    display: grid;
+    grid-row: span 3;
+    place-items: center;
+    inline-size: 24px;
+    block-size: 24px;
+    margin-block-start: 2px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--r-full);
+    background: var(--paper);
+  }
+  .acct-step[data-done] .acct-step__mark {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .acct-step__title {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .acct-step[data-done] .acct-step__title {
+    color: var(--ink-2);
+  }
+  .acct-step__text {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .acct-step > .link {
+    justify-self: start;
+  }
+
+  /* ───────────────────────────── the order's states (§6.11) ───────────────────────────── */
+  .orail {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .orail__step {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: var(--s-2);
+    min-inline-size: 0;
+    text-align: center;
+  }
+  /* the line between two discs: from the previous disc's centre to this one's */
+  .orail__step + .orail__step::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 11px;
+    inset-inline-end: calc(50% + 14px);
+    inline-size: calc(100% - 28px);
+    block-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--line-strong);
+  }
+  .orail__step:is([data-state="done"], [data-state="current"]) + .orail__step:is([data-state="done"], [data-state="current"])::before {
+    background: var(--ink);
+  }
+  .orail__dot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: 24px;
+    block-size: 24px;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-full);
+    background: var(--paper);
+    color: var(--paper);
+  }
+  .orail__step[data-state="done"] .orail__dot,
+  .orail__step[data-state="current"] .orail__dot {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+  /* the current state: an ink disc with a paper ring inside, so it differs from "done" without colour */
+  .orail__step[data-state="current"] .orail__dot::after {
+    content: "";
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: var(--r-full);
+    background: var(--paper);
+  }
+  .orail__label {
+    font: var(--type-xs);
+    color: var(--ink-2);
+    overflow-wrap: anywhere;
+  }
+  .orail__step[data-state="done"] .orail__label {
+    color: var(--ink);
+  }
+  .orail__step[data-state="current"] .orail__label {
+    font: var(--type-xs-strong);
+    color: var(--ink);
+  }
+
+  /* ───────────────────────────── sign in, sign up, reset ───────────────────────────── */
+  .acct-auth {
+    display: grid;
+    justify-items: stretch;
+    gap: var(--s-5);
+    inline-size: 100%;
+    max-inline-size: 30rem;
+    margin-inline: auto;
+    padding-block: var(--s-6) var(--s-12);
+  }
+  @media (min-width: 48rem) {
+    .acct-auth {
+      padding-block-start: var(--s-10);
+    }
+  }
+  .acct-auth__card {
+    display: grid;
+    gap: var(--s-5);
+    padding: var(--s-5) var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  @media (min-width: 48rem) {
+    .acct-auth__card {
+      padding: var(--s-8);
+    }
+  }
+  .acct-auth__switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--s-2);
+    padding-block-start: var(--s-4);
+    border-block-start: 1px solid var(--line);
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  /* the guest note under the card (§6.12): anyone can order without an account */
+  .acct-auth__guest {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-1);
+    text-align: center;
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .acct-auth__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 var(--s-6);
+  }
+
+  /* a small transfer value with its copy key (type-code numbers, §4.24) */
+  .acct-copy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+    padding-block: var(--s-3);
+  }
+  .acct-copy + .acct-copy {
+    border-block-start: 1px solid var(--line);
+  }
+  .acct-copy__label {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+}

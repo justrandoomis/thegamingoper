@@ -24,6 +24,8 @@
  *   · `readSettingState(db, key)`: the value as the admin shows it, never throwing — a stored value that no longer
  *     fits is reported as broken (with the schema's complaint) so the settings screen can show it and replace it
  *     (`expected: null`); every other reader still refuses it (getSetting throws).
+ * Integration pass 2026-11-11 (additive): `pos.discount_limit_bps`, the cashier's discount limit (admin 06's former
+ * constant), read by the POS sale check and the till.
  */
 import { eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -281,6 +283,20 @@ export const SETTINGS = {
     public: false,
     group: "service",
     label: { ar: "أهداف خدمة المرتجعات والصيانة", en: "Returns and repair service targets" },
+  }),
+  /**
+   * Admin 06 POS (06.06, integration 2026-11-11): the share of a line's price — and of the whole sale — a cashier may
+   * take off with pos.discount.apply; beyond it only pricing.discount.override. Default: the former constant
+   * CASHIER_DISCOUNT_LIMIT_BPS (10 %).
+   */
+  "pos.discount_limit_bps": define({
+    schema: z.number().int().min(0, "too_small").max(5_000, "too_big"),
+    default: 1_000,
+    permission: "settings.manage",
+    approver: "settings.change.approve",
+    public: false,
+    group: "controls",
+    label: { ar: "الخصم الذي يتجاوز هذه النسبة عند الكاشير يحتاج صلاحية التجاوز", en: "Cashier discounts deeper than this need the override permission" },
   }),
 } satisfies Record<SeededSettingKey, SettingDef> & Record<string, SettingDef>;
 

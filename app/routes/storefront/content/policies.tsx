@@ -1,7 +1,9 @@
 /**
- * /policies — the store's policies in one list (the breadcrumbs of every policy lead here): each row has its title,
- * one line about it and, while the owner has not approved it, the word "مسودة". Rows open the policy (fade); between
- * policies the sideways push takes over.
+ * /policies — the store's policies in one list (the breadcrumbs of every policy lead here), Design System v2 §6.15:
+ * the head with ONE status line while any policy is still the first version («نسخة أولى — قد تتغيّر قبل الإطلاق.»,
+ * instead of a "draft" tag on every row), then one row per policy (icon, title, one line about it) in a paper card.
+ * Only when some are approved and some are not does a first-version row say so at its end. Rows open the policy
+ * (fade); between policies the sideways push takes over. Under the list: «لم تجد جوابك؟» → «اكتب لموظف».
  */
 import type { Route } from "./+types/policies";
 import { serverT } from "~/i18n/i18n.server";
@@ -11,7 +13,10 @@ import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { contentMessages, listPolicies } from "~/server/services/content.server";
 import { ContentHeader } from "./components/ContentHeader";
+import { HandoffCard } from "./components/HandoffCard";
 import { LinkRows } from "./components/LinkRows";
+import { PolicyStatus } from "./components/PolicyStatus";
+import "./content.css";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -24,19 +29,27 @@ export const meta: Route.MetaFunction = (args) => shellMeta(args, args.loaderDat
 
 export default function PoliciesPage({ loaderData }: Route.ComponentProps) {
   const t = useT("content");
+  const { policies } = loaderData;
+  const drafts = policies.filter((policy) => !policy.approved).length;
+  const mixed = drafts > 0 && drafts < policies.length;
   return (
-    <div className="page pb-12 pt-4 md:pt-6">
-      <ContentHeader crumbs={[{ label: t("common.home"), href: "/" }, { label: t("index.title") }]} title={t("index.title")} lead={t("index.lead")} />
-      <LinkRows
-        className="mt-6 max-w-[44rem]"
-        rows={loaderData.policies.map((policy) => ({
-          to: `/policies/${policy.slug}`,
-          icon: policy.icon,
-          title: policy.title,
-          hint: policy.summary || undefined,
-          aside: policy.approved ? t("common.approvedShort") : t("common.draftShort"),
-        }))}
-      />
+    <div className="page cpage">
+      <ContentHeader crumbs={[{ label: t("common.home"), href: "/" }, { label: t("index.title") }]} title={t("index.title")} lead={t("index.lead")}>
+        {drafts > 0 ? <PolicyStatus approved={false} updatedAt={null} /> : null}
+      </ContentHeader>
+      <div className="ccol grid gap-8">
+        <LinkRows
+          card
+          rows={policies.map((policy) => ({
+            to: `/policies/${policy.slug}`,
+            icon: policy.icon,
+            title: policy.title,
+            hint: policy.summary || undefined,
+            aside: mixed && !policy.approved ? t("common.statusDraftShort") : undefined,
+          }))}
+        />
+        <HandoffCard id="policies-ask" title={t("index.askTitle")} />
+      </div>
     </div>
   );
 }

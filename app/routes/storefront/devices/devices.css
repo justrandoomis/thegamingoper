@@ -1,0 +1,299 @@
+/*
+ * Device hub (/device/:model) — Design System v2 §6.6. Components layer (utilities still win); tokens and the kit's
+ * classes only; logical properties only; motion only on transform and opacity. The kit draws every component (Band,
+ * ProductCard, Chip, SectionHead, EntryCard, …); this file only places them and draws the hub's own pieces: the head's
+ * layout inside its band, the sticky section chips, the card grid with its compatibility notes, the tables.
+ */
+@layer components {
+  /* ───────────────────────────── scroll padding: the section chips stick under the header ─────────────────────────────
+     base.css pads the page's scroll by the shell's chrome (--shell-top); the hub adds its own sticky row, so an in-page
+     jump and a focused control land below both (WCAG 2.4.11). 57 = 8 + 40 + 8 + the 1px hairline. */
+  :root:has(.devhub-nav) {
+    --devhub-nav-h: 57px;
+    scroll-padding-block-start: calc(var(--shell-top) + var(--devhub-nav-h) + 12px);
+  }
+
+  /* ───────────────────────────── the head: Band kind="device" (200 phones · 280 from 1024) ───────────────────────────── */
+  .devhub-head {
+    min-block-size: 200px;
+  }
+  /* phones: the facts, the price and the key run under the hardware across the whole band, where the kit paints the
+     band's sheen (at 60% of its height) — white text there fell to 3.9:1. Nothing may sit behind the text (v2 §2.10c),
+     so the light-theme band is flat on phones (4.80–6.65:1); the dark cabinet keeps its light. */
+  @media (max-width: 47.99rem) {
+    .devhub-head {
+      --tile-sheen: transparent;
+    }
+  }
+  /* the hardware: on phones a box at the top inline end beside the title (it may rise 16px above the band); from 768
+     the inline-end half, standing near the band's floor */
+  .devhub-head__media {
+    position: absolute;
+    inset-block-start: -16px;
+    inset-inline-end: 0;
+    block-size: 176px;
+    inline-size: min(44%, var(--hw-cap, 44%)); /* --hw-cap: what the picture needs at this height (HubHead) */
+  }
+  .devhub-head__copy {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    padding: var(--s-5);
+  }
+  /* the platform pill and the h1 keep clear of the hardware on phones */
+  .devhub-head__top {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--s-3);
+    min-block-size: 136px;
+    padding-inline-end: min(42%, calc(var(--hw-cap, 44%) - 8px));
+  }
+  .devhub-head__title {
+    text-wrap: balance;
+  }
+  .devhub-head__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    font: var(--type-xs-strong);
+  }
+  .devhub-head__facts > li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .devhub-head__buy {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-3);
+  }
+  .devhub-head__from {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+    min-block-size: 32px; /* the line keeps its place while the price streams in */
+    font: var(--type-sm-strong);
+  }
+  .devhub-head__buy .key {
+    inline-size: 100%;
+  }
+  /* an opaque photo (not cut out yet, v2 §7.5) never floats on the colour: it stands on a plate of the colour the photo
+     kept (--plate, from the art manifest — white for every opaque photo today), so the photo's own frame melts into
+     it in both themes, whatever the blend does (v2 §7.5 asks for a white plate in dark) */
+  .devhub-head__plate {
+    position: absolute;
+    inset: 16px 12px 12px;
+    border-radius: var(--r-lg);
+    background: var(--plate, var(--product-ground));
+  }
+  @media (min-width: 48rem) {
+    .devhub-head__media {
+      inset-block: -24px 0;
+      block-size: auto;
+      inline-size: 48%;
+    }
+    .devhub-head__copy {
+      max-inline-size: 54%;
+      padding: var(--s-8);
+    }
+    .devhub-head__top {
+      min-block-size: 0;
+      padding-inline-end: 0;
+    }
+    .devhub-head__buy .key {
+      inline-size: auto;
+    }
+    .devhub-head__plate {
+      inset: 40px 24px 24px;
+    }
+  }
+  @media (min-width: 64rem) {
+    .devhub-head {
+      min-block-size: 280px;
+    }
+    .devhub-head__copy {
+      padding: var(--s-10);
+    }
+  }
+
+  /* ───────────────────────────── sticky section chips (opaque floor, never glass) ─────────────────────────────
+     The row belongs to the head: it sits 16px under it (the page's track would put a whole section gap above it),
+     and the section gap follows it. It must stay a direct child of the track to stay stuck through every section. */
+  .devhub-nav {
+    position: sticky;
+    inset-block-start: var(--shell-top);
+    z-index: var(--z-sticky);
+    margin-block-start: calc(var(--s-4) - var(--gap-section));
+    margin-inline: calc(-1 * var(--gutter));
+    padding-block: 4px;
+    border-block-end: 1px solid var(--line);
+    background: var(--ground);
+  }
+  /* one row that scrolls sideways when it does not fit; 4px of room keeps the focus ring inside the scroller */
+  .devhub-nav__list {
+    display: flex;
+    gap: var(--s-2);
+    padding: 4px var(--gutter);
+    overflow-x: auto;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .devhub-nav__list::-webkit-scrollbar {
+    display: none;
+  }
+  .devhub-nav__list > li {
+    display: flex;
+    flex: none;
+  }
+
+  /* ───────────────────────────── cards: whole rows, notes under the cards on one line ─────────────────────────────
+     2 → 3 (768) → 4 (1024) → 5 (1280) columns. Each item spans two rows of a subgrid — the card, then its
+     compatibility note — so every card of a row has the same height (prices align on the pinned foot) and every note
+     starts on the same line. Collapsed, the grid shows two rows; the "show all" key appears only when more exist at
+     the current width. */
+  .devhub-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-row) var(--gap-card);
+  }
+  .devhub-cards > li {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  .devhub-cards > li > .pcard {
+    min-inline-size: 0;
+  }
+  .devhub-more {
+    display: none;
+    justify-content: center;
+    padding-block-start: var(--s-6);
+  }
+  @media (max-width: 47.99rem) {
+    .devhub-cards[data-collapsed] > li:nth-child(n + 5) {
+      display: none;
+    }
+    .devhub-cards:has(> li:nth-child(5)) + .devhub-more {
+      display: flex;
+    }
+  }
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .devhub-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .devhub-cards[data-collapsed] > li:nth-child(n + 7) {
+      display: none;
+    }
+    .devhub-cards:has(> li:nth-child(7)) + .devhub-more {
+      display: flex;
+    }
+  }
+  @media (min-width: 64rem) and (max-width: 79.99rem) {
+    .devhub-cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .devhub-cards[data-collapsed] > li:nth-child(n + 9) {
+      display: none;
+    }
+    .devhub-cards:has(> li:nth-child(9)) + .devhub-more {
+      display: flex;
+    }
+  }
+  @media (min-width: 80rem) {
+    .devhub-cards {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .devhub-cards[data-collapsed] > li:nth-child(n + 11) {
+      display: none;
+    }
+    .devhub-cards:has(> li:nth-child(11)) + .devhub-more {
+      display: flex;
+    }
+  }
+
+  /* ───────────────────────────── tables: paper, hairlines, a sticky first column ───────────────────────────── */
+  .devhub-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font: var(--type-sm);
+  }
+  .devhub-table :is(th, td) {
+    padding: var(--s-3) var(--s-4);
+    text-align: start;
+    vertical-align: top;
+  }
+  .devhub-table thead th {
+    vertical-align: bottom;
+    border-block: 2px solid transparent;
+    border-block-end: 1px solid var(--line-2);
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  .devhub-table tbody tr + tr > * {
+    border-block-start: 1px solid var(--line);
+  }
+  .devhub-table tbody th {
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  /* rows whose first cell is a 44px link: the link is the row's height */
+  .devhub-table--rows tbody td {
+    padding-block: var(--s-1);
+  }
+  .devhub-table__link {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--target);
+    font: var(--type-sm-strong);
+    color: var(--ink);
+    text-decoration-line: underline;
+    text-decoration-color: var(--line-2);
+    text-underline-offset: 4px;
+  }
+  .devhub-table__link:hover {
+    text-decoration-color: var(--ink);
+  }
+  .devhub-table--sticky :is(thead, tbody) th:first-child {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 1;
+    background: var(--paper);
+  }
+  /* the current device's column: a 2px ink line over its head, and "هذا الجهاز" under its name */
+  .devhub-table thead th[data-current] {
+    border-block-start-color: var(--ink);
+  }
+
+  /* ───────────────────────────── spec groups: label 14/600 ink-2 + value 14, hairlines ───────────────────────────── */
+  .devhub-specs > div {
+    display: grid;
+    gap: 2px;
+    padding-block: var(--s-3);
+  }
+  .devhub-specs > div + div {
+    border-block-start: 1px solid var(--line);
+  }
+  .devhub-specs dt {
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  .devhub-specs dd {
+    font: var(--type-sm);
+    color: var(--ink);
+  }
+  @media (min-width: 37.5rem) {
+    .devhub-specs > div {
+      grid-template-columns: minmax(7rem, 2fr) 5fr;
+      gap: var(--s-4);
+    }
+  }
+
+  /* ───────────────────────────── rows: a small well or an icon, the words, the state or the arrow ───────────────────────────── */
+  .devhub-rows > li + li {
+    border-block-start: 1px solid var(--line);
+  }
+}

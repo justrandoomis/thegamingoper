@@ -4,66 +4,109 @@ import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { MotionLink } from "~/motion";
 import { cx } from "~/ui/cx";
+import { SectionHead } from "~/ui/SectionHead";
 
 /**
- * The head of an account page: on phones a back link to the account (or to `back`), then the page's h1 and one line
- * that says what the page is for. The shell owns <main>; this is the first thing in it.
+ * The head of an account page (Design System v2 §6.12): a back link, the page's h1 (type-h1) and one line that says what
+ * the page is for. The shell owns <main>; this is the first thing in it.
+ *
+ * Back: by default «حسابي» → the overview, shown below 1024 only (from 1024 the grouped section list stands beside the
+ * page). A child page (an order, the top-up step, the address form) passes its own `back`, shown at every width.
  */
 export function PageHead({
   title,
   lead,
   back,
   aside,
+  children,
   className,
+  titleId,
 }: {
   title: ReactNode;
   lead?: ReactNode;
+  /** An id for the h1, which then takes focus from script (tabIndex -1) — where focus lands after a row went away. */
+  titleId?: string;
   /**
-   * Where "back" goes (default: the account overview, phones only). `false` hides it (the overview itself).
-   * `nav: "rise"` for a child page that rose over its list (the link plays the drop-away).
+   * Where "back" goes. `false` hides it (the overview itself). `nav: "rise"` for a child page that rose over its list
+   * (the link plays the drop-away); `order` keeps the sideways push between sections in the right direction.
    */
   back?: { to: string; label: string; order?: number; nav?: "push" | "rise" } | false;
-  /** Something at the inline end of the title row (a key). */
+  /** At the inline end of the title row (a key). */
   aside?: ReactNode;
+  /** Under the lead (a code row, a tag). */
+  children?: ReactNode;
   className?: string;
 }) {
   const t = useT("account");
+  const section = back === undefined;
   const target = back === false ? null : (back ?? { to: "/account", label: t("nav.back"), order: 0 });
   return (
-    <header className={cx("grid gap-2", className)}>
+    <header className={cx("acct-head", className)}>
       {target ? (
-        // The design system's link look (.link) with the back caret BEFORE the words: drawn as in a left-to-right layout,
-        // it mirrors in Arabic and Kurdish by the icon rules.
+        // The design system's link (.link) with the back arrow before the words: drawn left-to-right it mirrors in
+        // Arabic and Kurdish by the icon rule (.i--dir), like every directional glyph.
         <MotionLink
           nav={target.nav ?? "push"}
           back={target.nav === "rise" ? true : undefined}
           order={target.order ?? 0}
           to={target.to}
-          className={cx("link -ms-1 justify-self-start", target.to === "/account" && "lg:hidden")}
+          className="acct-head__back link justify-self-start"
+          data-section={section ? "" : undefined}
         >
-          <Icon name="caret-left" size={18} />
+          <Icon name="arrow-left" size={16} />
           <span className="link__text">{target.label}</span>
         </MotionLink>
       ) : null}
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <h1 className="type-title text-ink">{title}</h1>
+      <div className="acct-head__row">
+        <h1 id={titleId} tabIndex={titleId ? -1 : undefined} className="type-h1 text-ink">
+          {title}
+        </h1>
         {aside}
       </div>
-      {lead ? <p className="max-w-[62ch] type-body text-ink-2">{lead}</p> : null}
+      {lead ? <p className="acct-head__lead">{lead}</p> : null}
+      {children}
     </header>
   );
 }
 
-/** A section of an account page: an h2 and its content, flat on the floor. */
-export function Section({ id, title, aside, children, className }: { id?: string; title: ReactNode; aside?: ReactNode; children: ReactNode; className?: string }) {
+/**
+ * A section of an account page: the kit's section head (h2, an honest reason line, a link at the end) and its content.
+ * `action` sits at the end of the head (a small key) when there is no «عرض الكل» link.
+ */
+export function Section({
+  id,
+  title,
+  reason,
+  href,
+  linkLabel,
+  action,
+  children,
+  className,
+}: {
+  id: string;
+  title: ReactNode;
+  reason?: ReactNode;
+  href?: string;
+  linkLabel?: ReactNode;
+  action?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <section id={id} aria-labelledby={id ? `${id}-title` : undefined} className={cx("grid gap-3", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-        <h2 id={id ? `${id}-title` : undefined} className="type-section text-ink">
-          {title}
-        </h2>
-        {aside}
-      </div>
+    <section aria-labelledby={`${id}-title`} className={cx("grid min-w-0", className)}>
+      {action ? (
+        <div className="sechead">
+          <div className="sechead__text">
+            <h2 id={`${id}-title`} className="sechead__title">
+              {title}
+            </h2>
+            {reason ? <p className="sechead__reason">{reason}</p> : null}
+          </div>
+          {action}
+        </div>
+      ) : (
+        <SectionHead id={`${id}-title`} title={title} reason={reason} href={href} viewAllLabel={linkLabel} />
+      )}
       {children}
     </section>
   );

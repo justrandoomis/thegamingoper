@@ -5,8 +5,9 @@
  *   // → { ticketId, ref: "SP-7K4M2Q9X", accessToken, replayed }
  *
  * Rules
- *   · A phone number is required (an Iraqi mobile, normalised to E.164): staff answer by phone or WhatsApp. No SMS is
- *     sent — no provider is configured — so the page says "we contact you", never "we sent you a message".
+ *   · A phone number is required (an Iraqi mobile, normalised to E.164) so staff can reach the shopper about the
+ *     ticket. No SMS is sent — no provider is configured — and the pages promise neither a message nor a call (Design
+ *     System v2 §9): the shopper follows the ticket, and the replies staff write, on its private page.
  *   · Idempotent: the form carries a random key; the ticket's access-token hash is derived from it, a guard in the
  *     creating batch refuses a second row, and a retry with the same key returns the first ticket (`replayed: true`).
  *     The same key with another phone number is refused (`idempotency_conflict`).
@@ -18,7 +19,7 @@
  * Errors (AppError): invalid (fields: phone, contactName, subject, message, photos, idempotencyKey), rate_limited,
  * idempotency_conflict.
  */
-import { and, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { newId, publicRef, timingSafeEqual } from "~/lib/ids";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "~/lib/locales";
@@ -218,22 +219,39 @@ export function newTicketIdentity(): { id: string; ref: string } {
   return { id: newId("stk"), ref: publicRef(TICKET_REF_PREFIX) };
 }
 
-export type TicketReceipt = { ref: string; createdAt: number; phoneMasked: string; status: string; isDemo: boolean };
+/** A reply staff wrote to the shopper (never an internal note). */
+export type TicketReply = { at: number; body: string };
+
+export type TicketReceipt = {
+  ref: string;
+  createdAt: number;
+  phoneMasked: string;
+  status: string;
+  isDemo: boolean;
+  /** Staff replies meant for the shopper, oldest first (internal notes are never included). */
+  replies: TicketReply[];
+};
 
 /**
- * What the page that receives the shopper after a ticket was opened may show: the reference, when, and the masked
- * phone — only with the access token handed out when it was created. Anything else (a wrong token, an unknown ref) → null.
+ * What the page that receives the shopper after a ticket was opened may show: the reference, when, the masked phone,
+ * the ticket's status and the replies staff wrote to the shopper — only with the access token handed out when it was
+ * created (the shopper keeps that page's link to follow the reply). Anything else (a wrong token, an unknown ref) → null.
  */
 export async function getTicketByAccessToken(db: Db, ref: unknown, token: unknown): Promise<TicketReceipt | null> {
   const normalized = normalizeSupportRef(ref, TICKET_REF_PREFIX);
   if (!normalized || !isAccessToken(token)) return null;
   const row = await db
-    .select({ ref: supportTickets.ref, createdAt: supportTickets.createdAt, phone: supportTickets.phoneE164, status: supportTickets.status, hash: supportTickets.accessTokenHash, isDemo: supportTickets.isDemo })
+    .select({ id: supportTickets.id, ref: supportTickets.ref, createdAt: supportTickets.createdAt, phone: supportTickets.phoneE164, status: supportTickets.status, hash: supportTickets.accessTokenHash, isDemo: supportTickets.isDemo })
     .from(supportTickets)
     .where(eq(supportTickets.ref, normalized))
     .get();
   if (!row?.hash || !timingSafeEqual(row.hash, await accessTokenHash(token))) return null;
-  return { ref: row.ref, createdAt: row.createdAt, phoneMasked: row.phone ? maskPhone(row.phone) : "", status: row.status, isDemo: row.isDemo };
+  const replies = await db
+    .select({ at: ticketMessages.createdAt, body: ticketMessages.body })
+    .from(ticketMessages)
+    .where(and(eq(ticketMessages.ticketId, row.id), eq(ticketMessages.authorKind, "employee"), eq(ticketMessages.isInternal, false)))
+    .orderBy(asc(ticketMessages.createdAt), asc(ticketMessages.id));
+  return { ref: row.ref, createdAt: row.createdAt, phoneMasked: row.phone ? maskPhone(row.phone) : "", status: row.status, isDemo: row.isDemo, replies };
 }
 
 /** Creates a support ticket for a shopper (see the file header). */

@@ -25,6 +25,8 @@ import type { ShellQueueId, ShellWaiting } from "./queues.server";
 const QUEUE_ICON: Record<ShellQueueId, IconName> = {
   proofs: "receipt",
   refunds: "hand-coins",
+  pos_shifts: "clock",
+  privacy_requests: "lock",
   failed_deliveries: "warning",
   cod_settlements: "scales",
   rmas: "arrow-u-up-left",
@@ -32,12 +34,21 @@ const QUEUE_ICON: Record<ShellQueueId, IconName> = {
   prices: "tag",
   counts: "clipboard-text",
   transfers: "truck",
+  tradein_inspections: "recycle",
+  // (never a dollar sign: offers are in dinars — "currency-dollar" is the pricing module's USD rate)
+  tradein_offers: "swap",
+  tradein_payouts: "hand-coins",
+  used_inspections: "wrench",
+  used_listings: "storefront",
   po_approvals: "factory",
   stuck_receipts: "hourglass",
   invoice_mismatches: "file-text",
   topups: "wallet",
   adjustments: "coins",
   expenses: "money",
+  signin_alerts: "warning-circle",
+  access_reviews: "users",
+  settings_changes: "sliders-horizontal",
 };
 import type { AdminShellData } from "./shell.server";
 

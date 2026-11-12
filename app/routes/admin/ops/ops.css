@@ -1,0 +1,200 @@
+/*
+ * Admin module 23 (technical operations) — what the UI kit and the shell do not cover: the figures row, the decision
+ * cards' grid, a two-column page from 1024px, the incident timeline, the daily bars of the speed page, key/value
+ * blocks and stack traces, and the printed post-mortem. Tokens and logical properties only; nothing animates.
+ */
+@layer components {
+  .ops-nav {
+    margin-block-end: var(--s-2);
+  }
+
+  .ops-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ops-kpis > * {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .ops-kpis {
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    }
+  }
+
+  .ops-decisions {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+
+  .ops-split {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .ops-split {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+      align-items: start;
+    }
+  }
+
+  .ops-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .ops-filters {
+    display: grid;
+    gap: var(--s-3);
+    align-items: end;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  }
+  /* the row's keys (apply, clear): always their whole words — in a narrow cell "clear" goes above, so "apply" stays on
+     the fields' line */
+  .ops-filters > div:last-child {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    gap: var(--s-2);
+  }
+  .ops-filters > div:last-child > * {
+    flex: none;
+  }
+
+  /* key / value facts (counters of a run, details of a finding) */
+  .ops-facts {
+    display: grid;
+    gap: var(--s-1) var(--s-4);
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+    margin: 0;
+  }
+  .ops-facts > dt {
+    color: var(--ink-2);
+  }
+  .ops-facts > dd {
+    margin: 0;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ops-pre {
+    max-block-size: 24rem;
+    overflow: auto;
+    padding: var(--s-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* the incident timeline: a 1px line with dots — solid for a person, hollow for the system (DESIGN.md §10) */
+  .ops-timeline {
+    display: grid;
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-inline-start: 1px solid var(--line-strong);
+    padding-inline-start: var(--s-4);
+  }
+  .ops-timeline > li {
+    position: relative;
+    display: grid;
+    gap: var(--s-1);
+    min-inline-size: 0;
+  }
+  .ops-timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0.45rem;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .ops-timeline > li[data-system]::before {
+    background: var(--paper);
+    border: 1px solid var(--ink-2);
+  }
+  .ops-note {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* daily bars of the speed page: a flat bar per day, the count beside it */
+  .ops-bars {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ops-bars > li {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr) 3rem;
+    gap: var(--s-2);
+    align-items: center;
+  }
+  .ops-bar {
+    block-size: 0.5rem;
+    border-radius: var(--r-xs);
+    background: var(--niche);
+    overflow: hidden;
+  }
+  .ops-bar > span {
+    display: block;
+    block-size: 100%;
+    background: var(--ink-2);
+  }
+  .ops-bar > span[data-tone="bad"] {
+    background: var(--red-ink);
+  }
+
+  /* a sticky bar for long forms, above the phone tab bar */
+  .ops-taskbar {
+    position: sticky;
+    inset-block-end: var(--adm-bottom, 0px);
+    z-index: var(--z-sticky);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: 0 -1px 0 var(--line);
+  }
+
+  /* steps to follow outside the app (Cloudflare) */
+  .ops-steps {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding-inline-start: var(--s-5);
+  }
+  .ops-steps > li {
+    padding-inline-start: var(--s-1);
+  }
+
+  /* the incident page prints as its post-mortem report: the shell's chrome and every control left out */
+  @media print {
+    @page {
+      margin: 14mm;
+    }
+    body:has(.ops-print) .adm-rail,
+    body:has(.ops-print) .adm-top,
+    body:has(.ops-print) .adm-tabbar,
+    body:has(.ops-print) .adm-skip,
+    body:has(.ops-print) .ops-noprint {
+      display: none !important;
+    }
+    body:has(.ops-print) .adm-main {
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+    }
+    .ops-timeline > li,
+    .ops-print-block {
+      break-inside: avoid;
+    }
+  }
+}

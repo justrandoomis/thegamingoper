@@ -1,8 +1,11 @@
 /**
- * Small client-safe helpers of the device hub.
+ * Small client-safe helpers of the device hub (no server imports: the hub's components and the tests use them).
  */
 import type { Formatters } from "~/i18n/react";
+import type { CompatibilityStatus, ProductCardData, Shelf, StockState } from "~/lib/dto";
 import { LOCALES } from "~/lib/locales";
+import type { CompatGroup, DeviceHub } from "~/server/services/devices.server";
+import { splitBidi } from "~/ui/BidiText";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
 
 /** Research dates are calendar days ("2025-06-05"), months ("2025-06") or years ("2017"). */
@@ -45,20 +48,167 @@ export function researchDate(value: string | null | undefined, f: Formatters): R
   return null;
 }
 
-/** The platform light for a platform's accent token ("nintendo", …); null for anything else (no light). */
+/** The platform of a platform accent token ("nintendo", …) — its band surface and dot; null for anything else. */
 export function gelOf(accent: string | null | undefined): Platform | null {
   return isPlatform(accent) ? accent : null;
 }
 
-/** First-strong isolate around a Latin name inside Arabic or Sorani text (U+2068 … U+2069). */
-export const isolate = (text: string) => `⁨${text}⁩`;
-
-/** Section ids of the hub, in page order (anchors of the sticky section keys). */
-export const HUB_SECTIONS = ["versions", "setup", "compare", "specs", "accessories", "games", "help", "faq", "used"] as const;
-export type HubSectionId = (typeof HUB_SECTIONS)[number];
+/**
+ * A name inside Arabic or Sorani text, as the kit's <BidiText> draws it but as a string (for message parameters and
+ * labels): every Latin run is a left-to-right isolate (U+2066 … U+2069) and the rest keeps the sentence's direction,
+ * so «PlayStation 5 (الطراز الأصلي 2020)» reads name first, qualifier second (one isolate around the whole name made
+ * the qualifier lead in Arabic). A Latin-only name is one isolate.
+ */
+export function isolateName(text: string): string {
+  return splitBidi(text)
+    .map((part) => (part.ltr ? `\u2066${part.text}\u2069` : part.text))
+    .join("");
+}
 
 /**
- * A jumped-to section stops below the sticky section keys: the shell's scroll-padding already clears the header
- * (`:root:has(.shell)`), this margin adds the 52px row of keys and a little air.
+ * A device name whose short last word never wraps alone (v2 §4.18: "Switch 2", "PS5 Pro", "Go 2" never break): the
+ * space before a final token of 1–3 characters becomes a no-break space. "PlayStation 5 Slim" keeps its spaces.
  */
-export const SECTION_SCROLL_MARGIN = "scroll-mt-16";
+export function keepTogether(name: string): string {
+  return name.replace(/ (?=\S{1,3}$)/, "\u00a0");
+}
+
+/** A device name to put inside a sentence: its Latin runs isolated, its short last word kept with the one before («Switch 2»). */
+export const deviceIn = (name: string) => isolateName(keepTogether(name));
+
+/** Section ids of the hub, in page order (the anchors of the sticky section chips). */
+export const HUB_SECTIONS = ["versions", "compare", "specs", "accessories", "games", "help", "faq", "used"] as const;
+export type HubSectionId = (typeof HUB_SECTIONS)[number];
+
+type SectionFacts = Pick<DeviceHub, "editions" | "versions" | "notes" | "comparison" | "specs" | "accessories" | "games" | "faq" | "used">;
+
+/** What the hub lists as the device's accessories: compatible ones only (v2 §6.6 "compatible accessories (verified only)"). */
+const COMPATIBLE: ReadonlySet<CompatibilityStatus> = new Set<CompatibilityStatus>(["verified", "partial"]);
+
+/**
+ * The accessory groups the hub shows: verified, and works-with-a-condition (a verified record, its condition under each
+ * card). Accessories nobody has checked, and those recorded as not working, stay on their own product pages, where
+ * the compatibility list names every device — the hub's accessories are what a shopper can buy for this device. Games
+ * keep every recorded state (a disc that does not fit a digital console is worth knowing here). Pure.
+ */
+export function accessoryGroups(groups: readonly CompatGroup[]): CompatGroup[] {
+  return groups.filter((group) => COMPATIBLE.has(group.status));
+}
+
+/**
+ * The sections this hub draws, in page order — the chips offer only these (v2 §6.6: "a section with none is hidden").
+ * The same rules as the section components, which hide themselves. Help is always there (assistant, repair). Pure.
+ */
+export function hubSections(hub: SectionFacts): HubSectionId[] {
+  const has = (groups: readonly CompatGroup[]) => groups.some((group) => group.items.length > 0);
+  const out: HubSectionId[] = [];
+  if (hub.editions.length > 0 || hub.versions.length > 0 || hub.notes.length > 0) out.push("versions");
+  if (hub.comparison) out.push("compare");
+  if (hub.specs.length > 0) out.push("specs");
+  if (has(accessoryGroups(hub.accessories))) out.push("accessories");
+  if (has(hub.games)) out.push("games");
+  out.push("help");
+  if (hub.faq.length > 0) out.push("faq");
+  if (hub.used.length > 0) out.push("used");
+  return out;
+}
+
+/** One version of an edition as the product read layer answers it (only what the "from" price needs). */
+export type VersionOffer = { variantId: string; priceIqd: number; orderable: boolean };
+
+const BUYABLE: ReadonlySet<StockState> = new Set<StockState>(["in_stock", "low_stock"]);
+
+/**
+ * «من 756,500 د.ع» — the cheapest version OF THIS DEVICE a shopper can order now (v2 §6.6). `versionIds` are the hub's
+ * versions (DeviceHub.versions): the variants that ARE this model — one product can cover two models (the 2020 PS5
+ * and its Digital Edition), and the other model's version must not set this one's price. An edition with one version
+ * is its card (its price IS that version's); an edition with several needs every version's price and state (`offers`,
+ * by product slug — an edition whose versions are missing there does not count, so the figure is never a guess).
+ * Null when nothing of this device can be ordered now. Integer dinars in, integer dinars out. Pure.
+ */
+export function cheapestOrderable(
+  editions: readonly Pick<ProductCardData, "slug" | "variantId" | "hasVariants" | "priceIqd" | "stock">[],
+  offers: ReadonlyMap<string, readonly VersionOffer[]>,
+  versionIds: ReadonlySet<string>,
+): number | null {
+  let best: number | null = null;
+  const consider = (variantId: string, amount: number) => {
+    if (!versionIds.has(variantId)) return;
+    if (Number.isSafeInteger(amount) && amount > 0 && (best === null || amount < best)) best = amount;
+  };
+  for (const edition of editions) {
+    if (!edition.hasVariants) {
+      if (BUYABLE.has(edition.stock)) consider(edition.variantId, edition.priceIqd);
+      continue;
+    }
+    for (const offer of offers.get(edition.slug) ?? []) if (offer.orderable) consider(offer.variantId, offer.priceIqd);
+  }
+  return best;
+}
+
+/** What the loader streams for the head's price: the cheapest orderable version (null: none), or that the read failed. */
+export type FromOutcome = { amount: number | null } | { failed: true };
+
+/** The head's price line: «من …», the state in words when nothing of this device can be ordered now, or nothing. */
+export type HeadPrice = { kind: "from"; amount: number } | { kind: "soon" } | { kind: "out" } | { kind: "unknown" };
+
+/**
+ * The price line of the hub's head from the streamed outcome. A failed read says nothing (never a guess). No orderable
+ * version means nothing of THIS device can be ordered now — even when a card shows its product as in stock (the 2020
+ * PS5 and its Digital Edition share one product; the disc version in stock does not make the digital one orderable):
+ * «قريباً · الطلب يفتح عند وصوله» when an edition is coming, else «نفد حالياً». Pure.
+ */
+export function headPrice(outcome: FromOutcome, editions: readonly Pick<ProductCardData, "stock">[]): HeadPrice {
+  if ("failed" in outcome) return { kind: "unknown" };
+  if (outcome.amount !== null) return { kind: "from", amount: outcome.amount };
+  return editions.some((edition) => edition.stock === "preorder") ? { kind: "soon" } : { kind: "out" };
+}
+
+/**
+ * The section being read, for the sticky chips: the last section whose top has passed the reading line (`line`, px
+ * from the top of the viewport); none above the first section (the head is not a section); the last one once the
+ * page cannot scroll further (a short last section never reaches the line). `tops` in page order. Pure.
+ */
+export function currentSection(tops: readonly { id: string; top: number }[], line: number, atEnd: boolean): string | null {
+  if (tops.length === 0) return null;
+  if (atEnd && (tops[0]?.top ?? Infinity) <= line) return tops[tops.length - 1]?.id ?? null;
+  let current: string | null = null;
+  for (const section of tops) if (section.top <= line) current = section.id;
+  return current;
+}
+
+/**
+ * The card grids shown in full («اعرض كل الإكسسوارات»), kept in the URL (`?all=<grid>`, repeatable) so the choice works
+ * before JavaScript (a link), and survives Back and a reload. Pure.
+ */
+export const ALL_PARAM = "all";
+
+export function expandedGrids(search: string): Set<string> {
+  return new Set(new URLSearchParams(search).getAll(ALL_PARAM));
+}
+
+/** The search string with `grid` shown in full, or folded back; every other parameter kept ("" when none is left). Pure. */
+export function toggleGrid(search: string, grid: string): string {
+  const params = new URLSearchParams(search);
+  const open = params.getAll(ALL_PARAM);
+  params.delete(ALL_PARAM);
+  for (const value of open.includes(grid) ? open.filter((entry) => entry !== grid) : [...open, grid]) params.append(ALL_PARAM, value);
+  const next = params.toString();
+  return next ? `?${next}` : "";
+}
+
+/** True when two search strings differ only in the shown-in-full grids (the page has every card already). Pure. */
+export function onlyGridsChanged(current: URLSearchParams, next: URLSearchParams): boolean {
+  const rest = (params: URLSearchParams) => {
+    const copy = new URLSearchParams(params);
+    copy.delete(ALL_PARAM);
+    copy.sort();
+    return copy.toString();
+  };
+  return rest(current) === rest(next) && current.getAll(ALL_PARAM).join("|") !== next.getAll(ALL_PARAM).join("|");
+}
+
+/** The shelves a page can draw: the kit's shelf needs three cards (ShelfRail `minItems`). Pure. */
+export function drawableShelves<T>(shelves: readonly Shelf<T>[]): Shelf<T>[] {
+  return shelves.filter((shelf) => shelf.items.length >= 3);
+}

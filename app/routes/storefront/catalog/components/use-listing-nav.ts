@@ -9,11 +9,43 @@
  *   nav.href({ inStock: true })        "?stock=1" — cursor dropped (a new filter starts the list again)
  *   nav.go({ sort: "newest" })         navigate, keeping the scroll position
  *   nav.pending                        a navigation to this list is loading
+ *
+ *   const hold = useOfflineHold();      <div className="page catalog-page" onClickCapture={hold}>
  */
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, type MouseEvent } from "react";
 import { useLocation, useNavigate, useNavigation } from "react-router";
 
-import { LISTING_SORTS, listingSearch, readListingQuery, type ListingQuery, type ListingSort } from "../listing-model";
+import { LISTING_SORTS, listChangeHref, listingSearch, readListingQuery, type ListingQuery, type ListingSort } from "../listing-model";
+
+/**
+ * Offline, a tap on a link that changes this page's list — a chip, «اعرض المزيد», a removable filter, the zero-result
+ * recovery — is held: the page keeps what it shows (the toolbar says «لا يوجد اتصال. نحدّث النتائج حين يعود.» and the
+ * shell's banner says it too) and the list follows the last held tap once the connection is back. Without it the
+ * navigation fails and the results give way to the offline error page (v2 §6.2 states: "offline while filtering").
+ * Links to other pages navigate as usual. Attach it to the page as a click CAPTURE handler, so it runs before the link.
+ */
+export function useOfflineHold(): (event: MouseEvent<HTMLElement>) => void {
+  const navigate = useNavigate();
+  const held = useRef<string | null>(null);
+  useEffect(() => {
+    const resume = () => {
+      const href = held.current;
+      held.current = null;
+      if (href) void navigate(href, { preventScrollReset: true });
+    };
+    window.addEventListener("online", resume);
+    return () => window.removeEventListener("online", resume);
+  }, [navigate]);
+  return useCallback((event: MouseEvent<HTMLElement>) => {
+    if (navigator.onLine || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+    if (!(link instanceof HTMLAnchorElement) || (link.target !== "" && link.target !== "_self")) return;
+    const href = listChangeHref(link.href, window.location.href);
+    if (!href) return;
+    event.preventDefault();
+    held.current = href;
+  }, []);
+}
 
 export type ListingNavOptions = {
   /** Sorts this list offers (search adds "relevance"). */

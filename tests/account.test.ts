@@ -10,7 +10,7 @@
  * Fixtures are chosen by their properties, never by a demo slug.
  */
 import { and, eq, sql } from "drizzle-orm";
-import { RouterContextProvider } from "react-router";
+import { createRoutesStub, RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { newId, randomToken, sha256Hex } from "~/lib/ids";
 import { systemActor, type CustomerActor } from "~/server/actor";
@@ -42,6 +42,15 @@ import accountMessages from "~/i18n/messages/account";
 import { action as loginAction, loader as loginLoader } from "~/routes/storefront/account/login";
 import { action as logoutAction } from "~/routes/storefront/account/logout";
 import { loader as ordersLoader } from "~/routes/storefront/account/orders";
+import AddressesPage from "~/routes/storefront/account/addresses";
+import DevicesPage from "~/routes/storefront/account/devices";
+import ProfilePage from "~/routes/storefront/account/profile";
+import { action as signupAction } from "~/routes/storefront/account/signup";
+import { railIndex, splitOption } from "~/routes/storefront/account/components/OrderBits";
+import { messagesFor } from "~/i18n/i18n.server";
+import type { Locale } from "~/lib/locales";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import errorMessages from "~/i18n/messages/errors";
 import { createTestDb, TEST_NOW, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -654,5 +663,156 @@ describe("routes", () => {
     ).catch((error: unknown) => error);
     expect(ran).toBe(false);
     expect((outcome as { init?: { status?: number } }).init?.status).toBe(403);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── Design System v2 screens: pure helpers and copy rules
+
+describe("v2 account screens", () => {
+  test("an order line's name as sold splits into the product's name and the option value (§4.13)", () => {
+    expect(splitOption("PlayStation 5 Slim (نسخة الأقراص) – 1TB — نسخة الأقراص 1TB")).toEqual({ name: "PlayStation 5 Slim (نسخة الأقراص) – 1TB", option: "نسخة الأقراص 1TB" });
+    expect(splitOption("Nintendo Switch")).toEqual({ name: "Nintendo Switch", option: null });
+    expect(splitOption("DualSense — ")).toEqual({ name: "DualSense", option: null });
+  });
+
+  test("the order rail places every status on the five real states; a closed order leaves it (§6.11)", () => {
+    const statuses = ["new", "awaiting_payment", "payment_review", "confirmed", "preparing", "shipped", "delivered", "cancelled", "returned"] as const;
+    expect(statuses.map(railIndex)).toEqual([0, 0, 0, 1, 2, 3, 4, null, null]);
+  });
+
+  test("the copy follows the v2 voice in ar, en and ckb (§9): no game-turn line, no call promise, no builder's voice", () => {
+    const strings = (tree: unknown, out: string[] = []): string[] => {
+      if (typeof tree === "string") out.push(tree);
+      else if (tree && typeof tree === "object") for (const value of Object.values(tree)) strings(value, out);
+      return out;
+    };
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const text = strings(accountMessages[locale]).join("\n");
+      expect(text, locale).not.toMatch(/دورك\.|نۆرەی تۆیە|Your turn/);
+      expect(text, locale).not.toMatch(/نتصل|call you|we call|پەیوەندیت پێوە دەکەین/i);
+      expect(text, locale).not.toMatch(/وضع التطوير|Development only|دۆخی گەشەپێدان/);
+      expect(text, locale).not.toMatch(/تحويل بطاقة مصرفية|ماستر كارد|Bank card transfer/);
+      // Zero is one pattern in every language: «لا طلبات بعد», "No orders yet" — never "0 orders".
+      const overview = (accountMessages[locale] as unknown as { overview: Record<string, { zero?: string }> }).overview;
+      for (const key of ["hintOrders", "hintAddresses", "hintDevices", "hintWishlist"]) expect(overview[key].zero, `${locale} overview.${key}.zero`).toEqual(expect.any(String));
+    }
+    expect(accountMessages.ar.methods.bank_transfer).toBe("تحويل إلى بطاقة ماستركارد");
+    expect(accountMessages.en.payment.cod_due).toBe("Due on delivery");
+    expect(accountMessages.ar.order.preferredNote).toBe("وقت مفضّل وليس موعداً مؤكداً.");
+    expect(accountMessages.ar.orders.total).toBe("الإجمالي");
+    // The offers consent is the checkout's sentence.
+    expect(accountMessages.ar.signup.marketing).toBe("أرسل لي العروض على هذا الرقم");
+    expect(accountMessages.ar.settings.marketing).toBe(accountMessages.ar.signup.marketing);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── review fixes (design v2, P7 review)
+
+/**
+ * An account page as the server renders it — what a shopper without script gets, and what the browser shows before
+ * hydration — with its loader's data and the strings the account layout would carry.
+ */
+function renderAccountPage(Component: unknown, url: string, loaderData: Record<string, unknown>, locale: Locale = "ar"): string {
+  const path = url.split("?")[0].replace(/^\//, "");
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path, Component: Component as never }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: [url],
+      hydrationData: {
+        loaderData: {
+          root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") },
+          page: { ...loaderData, i18n: messagesFor(locale, "account") },
+        },
+      },
+    }),
+  );
+}
+
+/** The <noscript> parts of server HTML, and the rest. */
+function splitNoscript(html: string): { noscript: string; rest: string } {
+  const noscript = [...html.matchAll(/<noscript>([\s\S]*?)<\/noscript>/g)].map((match) => match[1]).join("\n");
+  return { noscript, rest: html.replace(/<noscript>[\s\S]*?<\/noscript>/g, "") };
+}
+
+describe("forms that worked without script still do (P7 review)", () => {
+  test("an address can be saved without script: the governorate is a native select, and the picker sends nothing before script", async () => {
+    const geography = await listGeography(t.db, "ar");
+    const html = renderAccountPage(AddressesPage, "/account/addresses?new=1", { addresses: [], geography, max: MAX_ADDRESSES });
+    const { noscript, rest } = splitNoscript(html);
+    // Exactly one governorateId in the form: the native select inside <noscript>, with every governorate.
+    expect(html.match(/name="governorateId"/g)).toHaveLength(1);
+    expect(noscript).toMatch(/<select[^>]*name="governorateId"/);
+    for (const governorate of geography) expect(noscript).toContain(`value="${governorate.id}"`);
+    // The script picker is there for script (hidden without it), without a hidden field of its own yet.
+    expect(rest).not.toMatch(/type="hidden" name="governorateId"/);
+    expect(rest).toMatch(/class="field noscript:hidden/);
+    // Without script the district list cannot follow a governorate: every district is offered, under its governorate.
+    expect(rest).toContain(`<optgroup label="${geography[0].name}"`);
+  });
+
+  test("a device can be owned without script: each one has a plain form with a toggle key", async () => {
+    const options = (await listDeviceOptions(t.db, "ar")).slice(0, 3);
+    const html = renderAccountPage(DevicesPage, "/account/devices", { options, savedIds: [options[0].id] });
+    const { noscript } = splitNoscript(html);
+    expect(noscript.match(/<form method="post">/g)).toHaveLength(options.length);
+    for (const option of options) expect(noscript).toContain(`name="deviceModelId" value="${option.id}"`);
+    // The owned device's key is held and sends "0" (remove); the others send "1" (own).
+    expect(noscript.match(/aria-pressed="true"/g)).toHaveLength(1);
+    expect(noscript.match(/name="saved" value="0"/g)).toHaveLength(1);
+    expect(noscript.match(/name="saved" value="1"/g)).toHaveLength(options.length - 1);
+  });
+
+  test("the messages language can be changed without script: native radios, and no hidden value from the segmented control", async () => {
+    const { id } = await customer();
+    const profile = await getProfile(t.db, id);
+    const html = renderAccountPage(ProfilePage, "/account/profile", { profile: { ...profile, locale: "en" } });
+    const { noscript, rest } = splitNoscript(html);
+    expect(noscript.match(/type="radio"[^>]*name="locale"/g)).toHaveLength(3);
+    expect(noscript).toMatch(/<input(?=[^>]*value="en")(?=[^>]*checked)[^>]*>/);
+    expect(noscript).not.toMatch(/<input(?=[^>]*value="ar")(?=[^>]*checked)[^>]*>/);
+    expect(rest).not.toMatch(/name="locale"/);
+  });
+});
+
+describe("sign-up says everything that is wrong at once (P7 review)", () => {
+  test("a short password and a mistyped number are both field errors in one answer", async () => {
+    // The server core checks the number only after the other fields: alone, it names the password first.
+    const core = await failure(() => signUpCustomer(request().ctx, t.db, { phone: "0770", password: "abc" }));
+    expect(Object.keys(core.fields ?? {})).toEqual(["password"]);
+    const answer = await viaRoot("/account/signup", signupAction as never, { method: "POST", form: { phone: "0770", password: "abc" } });
+    expect(answer.status).toBe(400);
+    const fields = (answer.data as { fields?: Record<string, string> }).fields ?? {};
+    expect(Object.keys(fields).sort()).toEqual(["password", "phone"]);
+    expect(fields.phone).toEqual(expect.any(String));
+    expect(fields.phone).not.toBe("phone_invalid");
+    // A number that is fine adds nothing.
+    const fine = await viaRoot("/account/signup", signupAction as never, { method: "POST", form: { phone: "07705550399", password: "abc" } });
+    expect(Object.keys((fine.data as { fields?: Record<string, string> }).fields ?? {})).toEqual(["password"]);
+  });
+});
+
+describe("honest copy (P7 review)", () => {
+  test("the reset page never promises that a person resets the password (no staff tool does), in any language", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const forgot = accountMessages[locale].forgot;
+      const text = `${forgot.unavailableTitle} ${forgot.unavailableText}`;
+      expect(text, locale).not.toMatch(/يساعدك في الدخول|نستعيد كلمة المرور مع|resets your password|help you sign in|یارمەتیت دەدات بچیتە ژوورەوە|دەگەڕێنێتەوە/);
+    }
+  });
+
+  test("the viewing-history switch says it also shapes suggestions; the language hint does not point at a place that phones lack", () => {
+    expect(accountMessages.ar.settings.personalizationHint).toContain("نقترح");
+    expect(accountMessages.en.settings.personalizationHint).toMatch(/suggestions/);
+    for (const locale of ["ar", "en", "ckb"] as const) expect(accountMessages[locale].profile.localeHint, locale).not.toMatch(/أعلى الصفحة|top of the page|سەرەوەی پەڕەکە/);
+  });
+
+  test("the returns policy is named once, as the link inside the sentence", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const lead = accountMessages[locale].returns.lead as Record<string, string>;
+      for (const form of Object.values(lead)) {
+        expect(form, locale).toContain("{policy}");
+        expect(form, locale).not.toContain(accountMessages[locale].returns.policy);
+      }
+    }
   });
 });

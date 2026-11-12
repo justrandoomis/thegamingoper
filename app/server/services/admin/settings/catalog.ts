@@ -84,6 +84,7 @@ export const SETTING_EDITORS: Record<string, SettingEditor> = {
   "purchasing.po_approval_limit_iqd": { kind: "value", field: iqd(1_000_000_000) },
   "finance.topup_second_approval_iqd": { kind: "value", field: iqd(10_000_000) },
   "finance.expense_second_approval_iqd": { kind: "value", field: iqd(1_000_000_000) },
+  "pos.discount_limit_bps": { kind: "value", field: { kind: "bps", min: 0, max: 5_000 } },
   "returns.sla": {
     kind: "object",
     fields: [

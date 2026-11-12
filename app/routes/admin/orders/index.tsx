@@ -29,6 +29,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { ModuleFunctions } from "../blueprint-status";
 import { blueprintModule } from "../shell/blueprint-catalog";
+import { CustomerName } from "../shell/CustomerName";
 import { adminMeta } from "../shell/meta";
 import { DemoNote, FlagTags, Money, Num, OrderStatusBadge, PaymentBadge, PhoneText, Ref, ReviewBadge, useOrdersT, When } from "./ui";
 
@@ -101,7 +102,9 @@ export default function OrdersIndex({ loaderData }: Route.ComponentProps) {
       header: t("list.col.customer"),
       cell: (row) => (
         <span className="grid whitespace-nowrap py-1">
-          <span>{row.contactName ?? t("list.noName")}</span>
+          <span>
+            <CustomerName profileId={row.customerProfileId}>{row.contactName ?? t("list.noName")}</CustomerName>
+          </span>
           <span className="type-caption text-ink-2">
             <PhoneText phone={row.phone} />
           </span>

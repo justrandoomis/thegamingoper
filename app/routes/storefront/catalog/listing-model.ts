@@ -175,6 +175,12 @@ export type ListingFacets = {
 /** A device model shortcut (→ /device/<slug>, the devices area's hub). */
 export type DeviceShortcut = { slug: string; name: string; platform: string; artKey: string | null; count: number };
 
+/** What the search start and the zero-result page offer to browse: every platform and department, with the hubs' counts. */
+export type StoreBrowse = {
+  platforms: { slug: string; count: number }[];
+  categories: { slug: string; label: string; count: number; artKey: string | null }[];
+};
+
 // ───────────────────────────────────────────────────────────────── URL ⇄ query
 
 export type ListingQuery = ListingFilters & { sort: ListingSort | null; cursor: string | null };
@@ -184,10 +190,15 @@ const CURSOR = /^[A-Za-z0-9_-]{1,512}$/;
 
 const isSlug = (value: string | null): value is string => typeof value === "string" && value.length <= 80 && SLUG.test(value);
 
+/**
+ * A price bound from the URL. Read the way a shopper types it (parsePriceInput: Arabic-Indic or Persian digits,
+ * separators, the currency), because the no-script form sends the field exactly as typed — «١٠٠٬٠٠٠» must filter, not
+ * vanish. Written back in Western digits (listingSearch), so the list keeps one URL.
+ */
 function amount(value: string | null): number | null {
-  if (value === null || !/^\d{1,10}$/.test(value.trim())) return null;
-  const n = Number(value.trim());
-  return Number.isSafeInteger(n) && n <= MAX_PRICE_IQD ? n : null;
+  if (value === null) return null;
+  const parsed = parsePriceInput(value.slice(0, 40));
+  return typeof parsed === "number" ? parsed : null;
 }
 
 /** All values of a repeatable key, also accepting "a,b" in one value. */
@@ -255,6 +266,25 @@ export function parsePriceInput(text: string): number | null | "invalid" {
   if (!/^\d{1,10}$/.test(cleaned)) return "invalid";
   const value = Number(cleaned);
   return Number.isSafeInteger(value) && value <= MAX_PRICE_IQD ? value : "invalid";
+}
+
+/**
+ * Does this link change the list on the page `here` (a chip, «اعرض المزيد», a removable filter, the zero-result
+ * recovery: same origin, same path, another query)? Then "path?query", else null (another page, another site, a hash on
+ * this page). Offline, the catalog pages hold such a tap and follow it when the connection is back
+ * (components/use-listing-nav.ts) instead of failing it.
+ */
+export function listChangeHref(href: string, here: string): string | null {
+  let current: URL;
+  let target: URL;
+  try {
+    current = new URL(here);
+    target = new URL(href, current);
+  } catch {
+    return null;
+  }
+  if (target.origin !== current.origin || target.pathname !== current.pathname || target.search === current.search) return null;
+  return `${target.pathname}${target.search}`;
 }
 
 /** The filters part of a query. */

@@ -24,6 +24,24 @@ export async function supportWho(ctx: RequestCtx, db: Db): Promise<{ who: Suppor
   };
 }
 
+/**
+ * Headers of a page whose address carries a private token and that holds no form (a hand-off receipt, a repair's status
+ * card): never cached, and the address is sent nowhere — not even as the referrer of the page's own files.
+ */
+export const PRIVATE_PAGE_HEADERS = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" } as const;
+
+/**
+ * Headers of a page that shows the repair lookup FORM: never cached, the address kept from other sites. Not
+ * `no-referrer`: under it a browser posts the form with `Origin: null`, which the store (and React Router's own guard)
+ * refuses as cross-site — the lookup failed without script (400).
+ */
+export const LOOKUP_PAGE_HEADERS = { "Cache-Control": "private, no-store", "Referrer-Policy": "same-origin" } as const;
+
+/** The repair status page: the found request's card (a private link, no form) or the lookup form. */
+export function repairStatusHeaders(showsRequest: boolean) {
+  return showsRequest ? PRIVATE_PAGE_HEADERS : LOOKUP_PAGE_HEADERS;
+}
+
 /** Private uploads (repair and support photos) live in the KV-backed blob store. */
 export function photoStore(): BlobStore {
   return kvBlobStore(env.KV);

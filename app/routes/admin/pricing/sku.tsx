@@ -19,7 +19,7 @@ import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { toast } from "~/ui/toast-store";
 import { failure, formKey, formObject, requirePricing } from "./route.server";
-import { ByLine, failureOf, Iqd, iqdText, MarginStatus, PageHead, Pct, pctText, pricingMeta, RowLink, useArrow, usePricingT } from "./shared";
+import { ByLine, failureOf, Iqd, iqdText, MarginStatus, PageHead, Pct, pctText, pricingMeta, RowLink, useArrow, useDropLimit, usePricingT } from "./shared";
 
 /**
  * /admin/pricing/skus/:variantId — one SKU's pricing: today's price and "was" price, the price change form with its
@@ -193,6 +193,7 @@ function PriceSummary({ data }: { data: LoaderData }) {
 function PendingRequest({ data }: { data: LoaderData }) {
   const t = usePricingT();
   const f = useFormat();
+  const dropLimit = useDropLimit();
   const pending = data.pricing.pending!;
   const fetcher = useFetcher<typeof action>();
   const [open, setOpen] = useState(false);
@@ -214,7 +215,7 @@ function PendingRequest({ data }: { data: LoaderData }) {
       <p className="type-body text-ink">
         {t("sku.pendingText", { from: iqdText(f, pending.oldPriceIqd), to: iqdText(f, pending.newPriceIqd) })}
       </p>
-      {pending.reasons.length > 0 ? <p className="type-caption text-ink-2">{pending.reasons.map((reason) => t(`reason.${reason}`)).join(" · ")}</p> : null}
+      {pending.reasons.length > 0 ? <p className="type-caption text-ink-2">{pending.reasons.map((reason) => t(`reason.${reason}`, dropLimit)).join(" · ")}</p> : null}
       <ByLine name={pending.requestedBy?.name} at={pending.createdAt} />
       <div className="flex flex-wrap gap-2">
         <Key as={Link} to="/admin/pricing/changes" size="sm" variant="ink">
@@ -271,6 +272,7 @@ function ChangeForm({ data, prefill }: { data: LoaderData; prefill: { price: str
   const t = usePricingT();
   const f = useFormat();
   const arrow = useArrow();
+  const dropLimit = useDropLimit();
   const { pricing } = data;
   const previewer = useFetcher<typeof action>();
   const sender = useFetcher<typeof action>();
@@ -386,7 +388,7 @@ function ChangeForm({ data, prefill }: { data: LoaderData; prefill: { price: str
           {preview.reasons.length > 0 ? (
             <ul className="grid gap-1 type-caption text-ink">
               {preview.reasons.map((reason) => (
-                <li key={reason}>· {t(`reason.${reason}`)}</li>
+                <li key={reason}>· {t(`reason.${reason}`, dropLimit)}</li>
               ))}
             </ul>
           ) : null}

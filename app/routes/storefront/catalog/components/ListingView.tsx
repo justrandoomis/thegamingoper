@@ -1,101 +1,71 @@
 /**
- * A product list as every catalog page shows it (DESIGN.md §8.3): a sticky row with the count, the sort and the
- * filter key; the active filters as removable chips; the grid of product cards (2 → 3 → 4 → 5 columns); "show more";
- * and, when nothing matches, the recovery: the filter to remove (with what it would show), then three picks.
+ * A product list as every catalog page shows it (Design System v2 §6.2, §6.3): from 1024 a sticky filter sidebar
+ * (264px) at the inline start beside the results; below 1024 the filters live in a sheet (a bottom sheet on phones, a
+ * side sheet from 768). The results column: the toolbar (the count, the sort's explanation, the sort control — and
+ * below 1024 «الفلاتر (2)» and «الترتيب»), the active filters as removable chips, the grid of product cards (2 → 3 →
+ * 3 beside the sidebar → 4 from 1280), «اعرض المزيد» with its progress, and — when nothing matches — the recovery:
+ * «امسح الفلاتر», the filter to remove (with what it would show), then a few products to go on with.
  *
- * Everything is a URL (listing-model.ts): chips and "show more" are links, so the list works without script; the
- * filter sheet and the sort menu are the script-only conveniences, and a native GET form (filters and sort) replaces
- * them without script. While new results load, the old ones stay usable (marked busy) and the chips already show
- * their new state; when the results land, cards that stayed slide to their new place and new ones inflate.
+ * Everything is a URL (listing-model.ts): chips and «اعرض المزيد» are links and the filters are a GET form, so the list
+ * works without script; the sheet, the sort menu and the floating «الفلاتر | الترتيب» pill (it appears above the tab
+ * bar once the toolbar has scrolled away) are the script's conveniences. While new results load, the old ones stay
+ * usable (marked busy) and every control already shows its new state; when the results land, cards that stayed
+ * slide to their new place and new ones grow in (use-flip.ts). Filtering never blocks.
  */
-import { useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useLocation } from "react-router";
 
 import type { ProductCardData } from "~/lib/dto";
 import { useFormat, useT } from "~/i18n/react";
 import { Chip } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
-import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
-import { Menu } from "~/ui/Menu";
+import { Menu, type MenuTriggerProps } from "~/ui/Menu";
 import { useOnline } from "~/ui/OfflineBanner";
 import { HrefLink, ShowMore } from "~/ui/Pagination";
-import { isPlatform } from "~/ui/PlatformLed";
-import { iqdText } from "~/ui/PriceTag";
 import { ProductCard } from "~/ui/ProductCard";
 import { Sheet } from "~/ui/Sheet";
 import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
-import { NO_FILTERS, activeGroups, withoutGroup, type FilterGroup, type ListingFacets, type ListingFilters, type ListingQuery, type ListingSort } from "../listing-model";
+import { LISTING_PAGE_SIZE, NO_FILTERS, activeGroups, withoutGroup, type FilterGroup, type ListingFacets, type ListingFilters, type ListingQuery, type ListingSort } from "../listing-model";
+import { CatalogDock } from "./CompareTray";
 import { FilterPanel } from "./FilterPanel";
-import { InPageDir } from "./InPageDir";
+import { keepElsewhere, useFilterLabel, type ListingData } from "./listing-parts";
 import { useFlip } from "./use-flip";
 import type { ListingNav } from "./use-listing-nav";
+import { ZeroResults } from "./ZeroResults";
 
-/** What a page's loader hands the list (a ListingResult without the hub). */
-export type ListingData = {
-  items: ProductCardData[];
-  total: number;
-  nextCursor: string | null;
-  offset: number;
-  sort: ListingSort;
-  filters: ListingFilters;
-  scopeTotal: number;
-  facets: ListingFacets;
-  relax: { group: FilterGroup; count: number }[];
-};
+export type { ListingData };
 
 export type ListingViewProps = {
   list: ListingData;
   nav: ListingNav;
   scope: "category" | "platform" | "search";
   sorts: readonly ListingSort[];
-  /** Zero results: what to say, and what to offer after the filters (search: the shorter queries). */
+  /** Zero results: what to say, and what to offer after the filters. */
   zero: { title: ReactNode; text: ReactNode; extra?: ReactNode };
   /** Zero results: a few products to go on with, and their honest heading. */
   picks: ProductCardData[];
   picksTitle: string;
   /** Section heading (visually hidden) — names the list for screen readers. */
   heading: string;
+  /** Filter groups the page's chip row offers: not repeated in the filters. */
+  elsewhere?: readonly FilterGroup[];
+  /** Phones: a block inside the grid after its first two rows (the platform hub's device tiles). */
+  inline?: ReactNode;
+  /** Ids of the shopper's wishlist among these cards: the cards show the heart. Null: no hearts. */
+  wished?: readonly string[] | null;
 };
 
-/** Words for one active filter value. */
-export function useFilterLabel(facets: ListingFacets) {
-  const t = useT("catalog");
-  const ui = useT("ui");
-  const f = useFormat();
-  return (group: FilterGroup, filters: ListingFilters, value?: string): string => {
-    switch (group) {
-      case "platforms": {
-        const slug = value ?? "";
-        return isPlatform(slug) ? ui(`platform.${slug}`) : (facets.platforms.find((option) => option.value === slug)?.label ?? slug);
-      }
-      case "category":
-        return facets.categories.find((option) => option.value === filters.category)?.label ?? t("filter.categoryOther");
-      case "device":
-        return facets.devices.find((option) => option.value === filters.device)?.label ?? t("filter.deviceOther");
-      case "price":
-        return filters.priceMin === null
-          ? t("filter.priceUpTo", { max: iqdText(f, filters.priceMax ?? 0) })
-          : filters.priceMax === null
-            ? t("filter.priceFrom", { min: iqdText(f, filters.priceMin) })
-            : t("filter.priceBetween", { min: iqdText(f, filters.priceMin), max: iqdText(f, filters.priceMax) });
-      case "inStock":
-        return t("filter.inStock");
-      case "deals":
-        return t("filter.deals");
-      case "arabic":
-        return filters.arabic ? t(`filter.arabicLevel.${filters.arabic}`) : "";
-      case "formats":
-        return value ? t(`filter.formatValue.${value}`) : "";
-    }
-  };
-}
+/** Cards before the phone's inline block: two rows of two. */
+const INLINE_AFTER = 4;
 
 /** One removable chip per active filter value, in the order of the filter groups. */
-function activeChips(filters: ListingFilters, label: ReturnType<typeof useFilterLabel>, nav: ListingNav): { key: string; label: string; href: string }[] {
+function activeChips(filters: ListingFilters, label: ReturnType<typeof useFilterLabel>, nav: ListingNav, elsewhere: readonly FilterGroup[]): { key: string; label: string; href: string }[] {
   const chips: { key: string; label: string; href: string }[] = [];
   for (const group of activeGroups(filters)) {
+    // a choice made in the chip row shows there (the chosen chip), not twice
+    if (elsewhere.includes(group)) continue;
     if (group === "platforms") {
       for (const platform of filters.platforms) chips.push({ key: `platform:${platform}`, label: label(group, filters, platform), href: nav.href({ platforms: filters.platforms.filter((p) => p !== platform) }) });
     } else if (group === "formats") {
@@ -109,25 +79,25 @@ function activeChips(filters: ListingFilters, label: ReturnType<typeof useFilter
 
 const noop = () => {};
 
-function ActiveFilters({ filters, facets, nav }: { filters: ListingFilters; facets: ListingFacets; nav: ListingNav }) {
+function ActiveFilters({ filters, facets, nav, elsewhere }: { filters: ListingFilters; facets: ListingFacets; nav: ListingNav; elsewhere: readonly FilterGroup[] }) {
   const t = useT("catalog");
   const label = useFilterLabel(facets);
-  const chips = activeChips(filters, label, nav);
+  const chips = activeChips(filters, label, nav, elsewhere);
   const ref = useRef<HTMLDivElement>(null);
   useFlip(ref, chips.map((chip) => chip.key).join("|"));
   if (chips.length === 0) return null;
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+    <div className="catalog-active">
       <div ref={ref} className="chips" role="group" aria-label={t("list.active")}>
         {chips.map((chip) => (
           // a real link with the remove semantics: works without script
           <Chip key={chip.key} data-flip={chip.key} as={HrefLink} to={chip.href} onRemove={noop}>
-            <InPageDir>{chip.label}</InPageDir>
+            {chip.label}
           </Chip>
         ))}
       </div>
       {chips.length > 1 ? (
-        <TextLink as={HrefLink} to={nav.href({ ...NO_FILTERS })} arrow={false} className="type-label">
+        <TextLink as={HrefLink} to={nav.href({ ...NO_FILTERS, ...keepElsewhere(nav.query, elsewhere) })} arrow={false}>
           {t("list.clearAll")}
         </TextLink>
       ) : null}
@@ -135,39 +105,84 @@ function ActiveFilters({ filters, facets, nav }: { filters: ListingFilters; face
   );
 }
 
-function SortControl({ nav, sorts, sort, disabled }: { nav: ListingNav; sorts: readonly ListingSort[]; sort: ListingSort; disabled: boolean }) {
+/** The sort as a menu of radio rows. `compact`: the phone's «الترتيب»; otherwise «الترتيب: المقترَح». */
+function SortMenu({ nav, sorts, sort, disabled, compact = false, trigger }: { nav: ListingNav; sorts: readonly ListingSort[]; sort: ListingSort; disabled: boolean; compact?: boolean; trigger?: (props: MenuTriggerProps) => ReactNode }) {
   const t = useT("catalog");
+  const explain = sorts.includes("featured") ? (
+    <span className="grid gap-0.5">
+      <span>{t("sort.label")}</span>
+      <span className="type-xs text-ink-2">
+        {t("sort.featured")}: {t("sort.featuredNote")}
+      </span>
+    </span>
+  ) : (
+    t("sort.label")
+  );
   return (
     <Menu
       label={t("sort.label")}
-      title={t("sort.label")}
+      title={explain}
       align="end"
-      trigger={(props) => (
-        <Key {...props} size="sm" icon="sort-ascending" iconEnd="caret-down" disabled={disabled} className="catalog-js-only">
-          <VisuallyHidden>{t("sort.label")}: </VisuallyHidden>
-          {t(`sort.${sort}`)}
-        </Key>
-      )}
+      trigger={
+        trigger ??
+        ((props) => (
+          <Key {...props} size="sm" icon="sort-ascending" iconEnd="caret-down" disabled={disabled} className="catalog-js-only">
+            {compact ? (
+              t("sort.label")
+            ) : (
+              <>
+                <span className="lg:hidden">{t("sort.label")}</span>
+                <span className="max-lg:hidden">
+                  <span className="font-normal text-ink-2">{t("sort.trigger")}</span> {t(`sort.${sort}`)}
+                </span>
+              </>
+            )}
+          </Key>
+        ))
+      }
       items={sorts.map((value) => ({ id: value, kind: "radio" as const, label: t(`sort.${value}`), checked: value === sort, onSelect: () => nav.go({ sort: value === sorts[0] ? null : value }) }))}
     />
   );
 }
 
-export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, heading }: ListingViewProps) {
+/** Once the toolbar has scrolled away (below 1024): true. It comes back near the top. */
+function useScrolledPast(target: RefObject<HTMLElement | null>, enabled: boolean): boolean {
+  const [past, setPast] = useState(false);
+  useEffect(() => {
+    const element = target.current;
+    if (!enabled || !element || typeof IntersectionObserver === "undefined") {
+      setPast(false);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => setPast(!entry.isIntersecting && entry.boundingClientRect.top < 0), { threshold: 0 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [target, enabled]);
+  return past;
+}
+
+export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, heading, elsewhere = [], inline, wished = null }: ListingViewProps) {
   const t = useT("catalog");
   const f = useFormat();
   const location = useLocation();
   const online = useOnline();
+  const headingId = useId();
   const [sheetOpen, setSheetOpen] = useState(false);
   const changedInSheet = useRef(false);
   const grid = useRef<HTMLUListElement>(null);
+  const toolbar = useRef<HTMLDivElement>(null);
   useFlip(grid, list.items.map((card) => card.id).join("|"));
 
   const query: ListingQuery = nav.query;
   const sort = query.sort ?? list.sort;
-  const activeCount = activeGroups(query).length;
+  const activeCount = activeGroups(query).filter((group) => !elsewhere.includes(group)).length;
   const filtersLabel = activeCount > 0 ? t("list.filtersCount", { count: activeCount, n: f.number(activeCount) }) : t("list.filters");
   const resultsText = t("list.results", { count: list.total, n: f.number(list.total) });
+  const wishedIds = new Set(wished ?? []);
+  const hearts = wished !== null;
+
+  const empty = list.total === 0;
+  const pastToolbar = useScrolledPast(toolbar, !empty && !sheetOpen);
 
   const openSheet = () => {
     changedInSheet.current = false;
@@ -184,58 +199,75 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
   const pagingAlone = list.offset > 0;
   const moreHref = list.nextCursor ? nav.href({ cursor: list.nextCursor }) : null;
   const loadingMore = nav.pending && nav.query.cursor !== null && nav.query.cursor === list.nextCursor;
+  const action = location.pathname;
+  // the first card's picture is the list's largest paint (measured on the hubs too): eager and preloaded, one per page
+  const firstPriority = list.offset === 0;
+
+  // `chips`: short groups as chips in the sheet and the no-script panel; the 264px sidebar keeps rows
+  const panel = (onChange: ((change: Partial<ListingQuery>) => void) | undefined, options: { className?: string; chips?: boolean } = {}) => (
+    <FilterPanel query={query} facets={list.facets} scope={scope} elsewhere={elsewhere} onChange={onChange} sorts={sorts} sort={sort} hidden={nav.extra} action={action} disabled={!online} chips={options.chips} className={options.className} />
+  );
 
   return (
-    <section aria-labelledby="catalog-results" className="grid grid-cols-[minmax(0,1fr)] gap-4">
-      <VisuallyHidden as="h2" id="catalog-results">
+    <section aria-labelledby={headingId} className="catalog-list">
+      <VisuallyHidden as="h2" id={headingId}>
         {heading}
       </VisuallyHidden>
+      <div className="catalog-list__layout">
+        <aside className="catalog-side" aria-label={t("filter.title")}>
+          {panel((change) => nav.go(change))}
+        </aside>
 
-      <div className="catalog-toolbar">
-        <p className="type-label text-ink" aria-live="polite">
-          {nav.pending ? t("list.updating") : <bdi className="nums">{resultsText}</bdi>}
-        </p>
-        <div className="flex items-center gap-2">
-          {sorts.length > 1 ? <SortControl nav={nav} sorts={sorts} sort={sort} disabled={!online} /> : null}
-          <Key size="sm" icon="sliders-horizontal" aria-haspopup="dialog" onClick={openSheet} disabled={!online} className="catalog-js-only">
-            {filtersLabel}
-          </Key>
-        </div>
-        {!online ? <p className="catalog-toolbar__note type-caption text-ink-2">{t("list.offline")}</p> : null}
-      </div>
-
-      {/* No script: the same filters and the sort in a plain GET form. Hidden from the first paint when script runs. */}
-      <details className="catalog-nojs panel p-4">
-        <summary className="type-label text-ink">{t("filter.nojsSummary")}</summary>
-        <div className="pt-4">
-          <FilterPanel mode="form" query={query} facets={list.facets} scope={scope} sorts={sorts} sort={sort} hidden={nav.extra} action={location.pathname} />
-        </div>
-      </details>
-
-      <ActiveFilters filters={query} facets={list.facets} nav={nav} />
-
-      {list.total === 0 ? (
-        <ZeroResults list={list} nav={nav} zero={zero} picks={picks} picksTitle={picksTitle} />
-      ) : (
-        <>
-          {pagingAlone ? (
-            <p className="type-caption text-ink-2">
-              <bdi className="nums">{t("list.window", { from: f.number(list.offset + 1), to: f.number(shownTo), total: f.number(list.total) })}</bdi>{" "}
-              <TextLink as={HrefLink} to={nav.href({})} inline>
-                {t("list.backToStart")}
-              </TextLink>
+        <div className="catalog-results">
+          <div ref={toolbar} className="catalog-toolbar">
+            <p className="catalog-toolbar__count" aria-live="polite">
+              {nav.pending ? t("list.updating") : <span className="nums">{resultsText}</span>}
+              {sort === "featured" && !empty ? <span className="catalog-toolbar__why"> · {t("sort.featuredNote")}</span> : null}
             </p>
-          ) : null}
-          <ul ref={grid} role="list" aria-busy={nav.pending || undefined} className={cx("catalog-grid", nav.pending && "catalog-grid--busy")}>
-            {list.items.map((card, index) => (
-              <li key={card.id} data-flip={card.id} className="flex">
-                <ProductCard card={card} headingLevel={3} priority={index === 0 && list.offset === 0 && scope === "search"} />
-              </li>
-            ))}
-          </ul>
-          <ShowMore shown={shownTo} total={list.total} href={moreHref} loading={loadingMore} />
-        </>
-      )}
+            <div className="catalog-toolbar__keys">
+              <Key size="sm" icon="sliders-horizontal" aria-haspopup="dialog" onClick={openSheet} disabled={!online} className="catalog-js-only lg:hidden">
+                {filtersLabel}
+              </Key>
+              {sorts.length > 1 && !empty ? <SortMenu nav={nav} sorts={sorts} sort={sort} disabled={!online} /> : null}
+            </div>
+            {!online ? <p className="catalog-toolbar__note">{t("list.offline")}</p> : null}
+          </div>
+
+          {/* No script on a phone: the same filters and the sort in a plain GET form (from 1024 the sidebar is that form). */}
+          <details className="catalog-nojs catalog-nojs-panel lg:hidden">
+            <summary>{t("filter.nojsSummary")}</summary>
+            {panel(undefined, { className: "pt-4", chips: true })}
+          </details>
+
+          <ActiveFilters filters={query} facets={list.facets} nav={nav} elsewhere={elsewhere} />
+
+          {empty ? (
+            <ZeroResults list={list} nav={nav} zero={zero} picks={picks} picksTitle={picksTitle} elsewhere={elsewhere} wished={wishedIds} hearts={hearts} />
+          ) : (
+            <>
+              {pagingAlone ? (
+                <p className="type-xs text-ink-2">
+                  <span className="nums">{t("list.window", { from: f.number(list.offset + 1), to: f.number(shownTo), total: f.number(list.total) })}</span>{" "}
+                  <TextLink as={HrefLink} to={nav.href({})} inline>
+                    {t("list.backToStart")}
+                  </TextLink>
+                </p>
+              ) : null}
+              <ul ref={grid} role="list" aria-busy={nav.pending || undefined} className={cx("catalog-grid", nav.pending && "catalog-grid--busy")}>
+                {list.items.map((card, index) => (
+                  <Fragment key={card.id}>
+                    <li data-flip={card.id} className="catalog-grid__item">
+                      <ProductCard card={card} headingLevel={3} priority={firstPriority && index === 0} wishlist={hearts} wished={wishedIds.has(card.id)} />
+                    </li>
+                    {inline && !pagingAlone && index === INLINE_AFTER - 1 && list.items.length > INLINE_AFTER ? <li className="catalog-grid__break">{inline}</li> : null}
+                  </Fragment>
+                ))}
+              </ul>
+              <ShowMore shown={shownTo} total={list.total} href={moreHref} loading={loadingMore} products step={LISTING_PAGE_SIZE} />
+            </>
+          )}
+        </div>
+      </div>
 
       <Sheet
         open={sheetOpen}
@@ -245,81 +277,46 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
         presentation="side"
         footer={
           <>
-            {/* content-sized, so "show N products" keeps its words in every language (the footer shares by default) */}
-            <Key onClick={() => changeFromSheet({ ...NO_FILTERS })} disabled={activeCount === 0} className="flex-none!">
-              {t("list.clearAll")}
-            </Key>
-            <Key variant="ink" onClick={() => setSheetOpen(false)}>
+            {activeCount > 0 ? (
+              <Key variant="ghost" onClick={() => changeFromSheet({ ...NO_FILTERS, ...keepElsewhere(query, elsewhere) })} className="flex-none!">
+                {t("list.clearAll")}
+              </Key>
+            ) : null}
+            <Key variant="primary" onClick={() => setSheetOpen(false)} disabled={list.total === 0 && !nav.pending}>
               {nav.pending ? t("filter.showPending") : t("filter.show", { count: list.total, n: f.number(list.total) })}
             </Key>
           </>
         }
       >
-        <FilterPanel mode="live" query={query} facets={list.facets} scope={scope} onChange={changeFromSheet} />
+        {panel(changeFromSheet, { chips: true })}
       </Sheet>
+
+      <CatalogDock
+        pill={
+          pastToolbar ? (
+            <div className="catalog-pill" role="group" aria-label={t("list.controls")}>
+              <button type="button" className="catalog-pill__key" aria-haspopup="dialog" onClick={openSheet} disabled={!online} data-press="soft">
+                {filtersLabel}
+              </button>
+              {sorts.length > 1 ? (
+                <SortMenu
+                  nav={nav}
+                  sorts={sorts}
+                  sort={sort}
+                  disabled={!online}
+                  compact
+                  trigger={(props) => (
+                    <button {...props} type="button" className="catalog-pill__key" disabled={!online} data-press="soft">
+                      {t("sort.label")}
+                    </button>
+                  )}
+                />
+              ) : null}
+            </div>
+          ) : null
+        }
+      />
     </section>
   );
 }
 
-function ZeroResults({ list, nav, zero, picks, picksTitle }: { list: ListingData; nav: ListingNav; zero: ListingViewProps["zero"]; picks: ProductCardData[]; picksTitle: string }) {
-  const t = useT("catalog");
-  const f = useFormat();
-  const label = useFilterLabel(list.facets);
-  const filters = list.filters;
-  const groups = activeGroups(filters);
-  return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-6">
-      <EmptyState
-        layout="stack"
-        icon="magnifying-glass"
-        title={zero.title}
-        text={zero.text}
-        headingLevel={3}
-        action={
-          groups.length > 1 ? (
-            <Key as={HrefLink} to={nav.href({ ...NO_FILTERS })}>
-              {t("zero.clearAll")}
-            </Key>
-          ) : undefined
-        }
-      />
-      {list.relax.length > 0 ? (
-        <div className="grid grid-cols-[minmax(0,1fr)] gap-2">
-          <p className="type-label text-ink">{t("zero.nearest")}</p>
-          <ul role="list" className="grid grid-cols-[minmax(0,1fr)] gap-1">
-            {list.relax.slice(0, 3).map((entry) => {
-              const words =
-                entry.group === "platforms"
-                  ? filters.platforms.map((platform) => label("platforms", filters, platform)).join("، ")
-                  : entry.group === "formats"
-                    ? filters.formats.map((format) => label("formats", filters, format)).join("، ")
-                    : label(entry.group, filters);
-              return (
-                <li key={entry.group}>
-                  <TextLink as={HrefLink} to={nav.href(withoutGroup(filters, entry.group))}>
-                    {t("zero.remove", { label: words, count: entry.count, n: f.number(entry.count) })}
-                  </TextLink>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : null}
-      {zero.extra}
-      {picks.length > 0 ? (
-        <section aria-labelledby="catalog-picks" className="grid grid-cols-[minmax(0,1fr)] gap-3">
-          <h3 id="catalog-picks" className="type-section text-ink">
-            {picksTitle}
-          </h3>
-          <ul role="list" className="catalog-grid">
-            {picks.map((card) => (
-              <li key={card.id} className="flex">
-                <ProductCard card={card} slot="picks" headingLevel={4} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-    </div>
-  );
-}

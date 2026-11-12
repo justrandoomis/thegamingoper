@@ -1,9 +1,9 @@
 /**
- * The maintenance assistant's conversation (DESIGN.md §9.22): the shopper's messages are flat niche bubbles at the
- * inline end, the assistant's are paper bubbles with a hairline at the inline start; the corner nearest the speaker
- * is small. No glass, no clay on bubbles. Uncertainty is stated in words at the top of an answer with an info dot;
- * safety warnings come first, as a flat warn panel that cannot be dismissed. Suggested replies are chips (links: the
- * conversation is the URL). New turns inflate in (Bubble), never under reduced motion.
+ * The maintenance assistant's conversation (Design System v2 §6.13): the shopper's messages are --niche bubbles at the
+ * inline end, the assistant's are --paper bubbles with a hairline at the inline start; --r-lg corners with an 8px
+ * corner on the speaker's side. No glass, no clay on bubbles. Uncertainty is stated in words at the top of an answer;
+ * safety warnings come first, as a callout that cannot be dismissed. Replies are chips (links: the conversation is the
+ * URL); a device is chosen from 88×88 image chips. New turns inflate in (Bubble), never under reduced motion.
  */
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import { useLocation, useNavigation } from "react-router";
@@ -13,17 +13,19 @@ import { Bubble } from "~/motion";
 import type { AssistantBotTurn, AssistantPrompt, AssistantTurn, AssistantView } from "~/server/services/support/types";
 import { Chip } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
-import { Key } from "~/ui/Key";
+import { Niche } from "~/ui/Niche";
 import { HrefLink } from "~/ui/Pagination";
-import { isPlatform, PlatformGlyph, PlatformLabel } from "~/ui/PlatformLed";
+import { isPlatform } from "~/ui/PlatformLed";
+import { Render } from "~/ui/Stage";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
-import { DeviceTile, GuideList, SafetyNote } from "./parts";
+import { deviceFit, GuideList, Name, SafetyNote } from "./parts";
 
 const turnKey = (turn: AssistantTurn) => `${turn.id}:${turn.role}:${turn.role === "user" ? turn.text || turn.i18n : turn.text || turn.kind}`;
 
-export function Conversation({ view }: { view: AssistantView }) {
+/** `replies`: false while the shopper writes to a person or has just done so — a reply would leave that form or receipt. */
+export function Conversation({ view, replies = true }: { view: AssistantView; replies?: boolean }) {
   const t = useT("support");
   const ui = useT("ui");
   const location = useLocation();
@@ -43,31 +45,31 @@ export function Conversation({ view }: { view: AssistantView }) {
     if (location.hash) return; // a link to a part of the page (#handoff) owns focus and scroll
     lastBot.current?.focus({ preventScroll: true });
     (promptRef.current ?? lastBot.current)?.scrollIntoView({ block: "nearest" });
-  }, [location.search]);
+  }, [location.search, location.hash]);
 
   const botTurns = view.turns.filter((turn): turn is AssistantBotTurn => turn.role === "assistant");
   const newest = botTurns[botTurns.length - 1];
   return (
     <div className="grid gap-4">
       {/* Not a live region: the newest answer takes focus instead, so it is read once. */}
-      <ol aria-label={t("assistant.log")} className="grid gap-3">
+      <ol aria-label={t("assistant.log")} className="sup-chat">
         {view.turns.map((turn) =>
           turn.role === "user" ? (
-            <Bubble as="li" key={turnKey(turn)} always className="flex justify-end">
-              <p className="max-w-[85%] rounded-lg rounded-ee-xs bg-niche px-4 py-2.5 type-body text-ink">
+            <Bubble as="li" key={turnKey(turn)} always className="sup-chat__turn sup-chat__turn--me">
+              <p className="sup-bubble sup-bubble--me">
                 <VisuallyHidden>{t("assistant.you")}: </VisuallyHidden>
-                {turn.typed ? <span dir="auto">{turn.text}</span> : turn.i18n ? t(turn.i18n) : turn.platform && isPlatform(turn.platform) ? ui(`platform.${turn.platform}`) : turn.text}
+                {turn.typed ? <span dir="auto">{turn.text}</span> : turn.i18n ? t(turn.i18n) : turn.platform && isPlatform(turn.platform) ? ui(`platform.${turn.platform}`) : <Name>{turn.text}</Name>}
               </p>
             </Bubble>
           ) : (
-            <Bubble as="li" key={turnKey(turn)} always className="flex justify-start">
+            <Bubble as="li" key={turnKey(turn)} always className="sup-chat__turn">
               <BotBubble turn={turn} focusRef={turn === newest ? lastBot : undefined} />
             </Bubble>
           ),
         )}
       </ol>
-      {view.prompt ? (
-        <div ref={promptRef} aria-busy={pending || undefined} className={cx("scroll-mb-[calc(var(--shell-bottom)+var(--s-6))] transition-opacity duration-(--t-micro)", pending && "opacity-60")}>
+      {view.prompt && replies ? (
+        <div ref={promptRef} aria-busy={pending || undefined} className={cx("sup-prompt", pending && "opacity-60")}>
           <Prompt prompt={view.prompt} />
         </div>
       ) : null}
@@ -84,23 +86,30 @@ function BotBubble({ turn, focusRef }: { turn: AssistantBotTurn; focusRef?: RefO
   const text = turn.text || t(`assistant.turn.${turn.kind}`, params);
   const warning = turn.warning ?? (turn.warningKey ? t(turn.warningKey) : null);
   return (
-    <div
-      ref={focusRef}
-      tabIndex={focusRef ? -1 : undefined}
-      className="grid max-w-[92%] scroll-mb-[calc(var(--shell-bottom)+var(--s-6))] gap-3 rounded-lg rounded-es-xs border border-line bg-paper px-4 py-3 outline-offset-4 md:max-w-[85%]"
-    >
+    <div ref={focusRef} tabIndex={focusRef ? -1 : undefined} className="sup-bubble sup-bubble--bot">
       <VisuallyHidden>{t("assistant.bot")}: </VisuallyHidden>
       {turn.confidence || turn.stepNumber ? (
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          {turn.stepNumber ? <span className="type-label text-ink">{t("assistant.stepNumber", { n: turn.stepNumber })}</span> : null}
+          {turn.stepNumber ? <span className="type-sm-strong text-ink">{t("assistant.stepNumber", { n: turn.stepNumber })}</span> : null}
           {turn.confidence ? <Status tone="info">{t(`assistant.confidence.${turn.confidence}`)}</Status> : null}
         </p>
       ) : null}
-      {warning ? <SafetyNote title={t("assistant.safety.title")} tone={turn.kind === "danger" ? "danger" : "warn"}>{warning}</SafetyNote> : null}
-      <p className={cx("type-body text-ink", turn.kind === "danger" && "font-semibold")}>{text}</p>
-      {turn.articles.length > 0 ? <GuideList articles={turn.articles} showScope className="-mb-2" /> : null}
+      {warning ? (
+        <SafetyNote title={t("assistant.safety.title")} tone={turn.kind === "danger" ? "danger" : "warn"}>
+          {warning}
+        </SafetyNote>
+      ) : null}
+      <p className={cx("type-body text-ink", turn.kind === "danger" && "font-semibold")}>
+        <BidiParagraph text={text} />
+      </p>
+      {turn.articles.length > 0 ? <GuideList articles={turn.articles} showScope plain /> : null}
     </div>
   );
+}
+
+/** Approved text may quote a Latin product or a code inside Arabic: isolated runs, the page's direction around them. */
+function BidiParagraph({ text }: { text: string }) {
+  return <Name>{text}</Name>;
 }
 
 function Prompt({ prompt }: { prompt: AssistantPrompt }) {
@@ -108,20 +117,17 @@ function Prompt({ prompt }: { prompt: AssistantPrompt }) {
   if (prompt.kind === "platforms") {
     return (
       <div className="grid gap-3">
-        <p className="type-label text-ink-2">{t("assistant.platforms")}</p>
-        <ul role="list" className="grid grid-cols-2 gap-2 md:grid-cols-4">
+        <p className="type-sm-strong text-ink-2">{t("assistant.platforms")}</p>
+        <ul role="list" className="chips">
           {prompt.platforms.map((platform) => (
-            <li key={platform.id} className="flex">
-              <Key as={HrefLink} to={platform.href} block className="justify-start">
-                <span className="flex items-center gap-2">
-                  {isPlatform(platform.slug) ? <PlatformGlyph platform={platform.slug} size={20} /> : null}
-                  {isPlatform(platform.slug) ? <PlatformLabel platform={platform.slug} /> : <bdi>{platform.name}</bdi>}
-                </span>
-              </Key>
+            <li key={platform.id}>
+              <Chip as={HrefLink} to={platform.href} platform={isPlatform(platform.slug) ? platform.slug : undefined}>
+                {isPlatform(platform.slug) ? <PlatformWord slug={platform.slug} /> : platform.name}
+              </Chip>
             </li>
           ))}
         </ul>
-        <TextLink as={HrefLink} to={prompt.otherHref}>
+        <TextLink as={HrefLink} to={prompt.otherHref} className="justify-self-start">
           {t("assistant.deviceOther")}
         </TextLink>
       </div>
@@ -130,11 +136,18 @@ function Prompt({ prompt }: { prompt: AssistantPrompt }) {
   if (prompt.kind === "models") {
     return (
       <div className="grid gap-3">
-        <p className="type-label text-ink-2">{t("assistant.models")}</p>
-        <ul role="list" className="grid grid-cols-3 gap-card sm:grid-cols-4 lg:grid-cols-5">
+        <p className="type-sm-strong text-ink-2">{t("assistant.models")}</p>
+        <ul role="list" className="sup-devchips">
           {prompt.devices.map((device) => (
-            <li key={device.id} className="flex">
-              <DeviceTile name={device.name} artKey={device.artKey} platform={device.platform.slug} href={device.href} sizes="(min-width: 1024px) 140px, 28vw" />
+            <li key={device.id}>
+              <HrefLink to={device.href} className="sup-devchip group" data-press="soft">
+                <Niche as="span" size="sm" kind={deviceFit(device.kind)} className="sup-devchip__art" aria-hidden="true">
+                  {device.artKey ? <Render name={device.artKey} alt="" sizes="88px" className="group-hover:scale-103" /> : null}
+                </Niche>
+                <span className="sup-devchip__name">
+                  <Name>{device.name}</Name>
+                </span>
+              </HrefLink>
             </li>
           ))}
         </ul>
@@ -151,11 +164,11 @@ function Prompt({ prompt }: { prompt: AssistantPrompt }) {
   }
   if (prompt.kind === "problems") {
     return (
-      <div className="grid gap-3">
+      <div className="grid gap-4">
         {prompt.symptoms.length > 0 ? (
-          <>
-            <p className="type-label text-ink-2">{t("assistant.problems")}</p>
-            <ul role="list" className="flex flex-wrap gap-2">
+          <div className="grid gap-3">
+            <p className="type-sm-strong text-ink-2">{t("assistant.problems")}</p>
+            <ul role="list" className="chips">
               {prompt.symptoms.map((choice) => (
                 <li key={choice.href}>
                   <Chip as={HrefLink} to={choice.href}>
@@ -164,11 +177,11 @@ function Prompt({ prompt }: { prompt: AssistantPrompt }) {
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         ) : null}
         {prompt.guides.length > 0 ? (
-          <div className="grid gap-1">
-            <p className="type-label text-ink-2">{t("assistant.readGuide")}</p>
+          <div className="grid gap-2">
+            <p className="type-sm-strong text-ink-2">{t("assistant.readGuide")}</p>
             <GuideList articles={prompt.guides} showScope />
           </div>
         ) : null}
@@ -176,7 +189,7 @@ function Prompt({ prompt }: { prompt: AssistantPrompt }) {
     );
   }
   return (
-    <ul role="list" className="flex flex-wrap gap-2">
+    <ul role="list" className="chips">
       {prompt.choices.map((choice) => (
         <li key={choice.href}>
           <Chip as={HrefLink} to={choice.href}>
@@ -186,4 +199,9 @@ function Prompt({ prompt }: { prompt: AssistantPrompt }) {
       ))}
     </ul>
   );
+}
+
+function PlatformWord({ slug }: { slug: string }) {
+  const ui = useT("ui");
+  return <>{ui(`platform.${slug}`)}</>;
 }

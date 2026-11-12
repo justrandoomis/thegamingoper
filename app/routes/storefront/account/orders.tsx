@@ -15,7 +15,10 @@ import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
 import { usePagedList } from "./components/usePagedList";
 
-/** "My orders" — the commerce core's listOrdersForCustomer, newest first, 10 at a time. */
+/**
+ * «طلباتي» (Design System v2 §6.12): rows with a 56px well, the order number, the date, the status in words and the
+ * total — the commerce core's listOrdersForCustomer, newest first, 10 at a time («اعرض طلبات أقدم» appends).
+ */
 export const handle = { nav: "push", order: sectionOrder("orders") } satisfies MotionHandle;
 
 const CURSOR = /^\d{1,16}:[A-Za-z0-9_.:-]{1,128}$/;
@@ -41,30 +44,28 @@ export default function Orders({ loaderData }: Route.ComponentProps) {
         <EmptyState
           layout="stack"
           title={t("orders.emptyTitle")}
-          text={
-            <>
-              {t("orders.emptyText")}{" "}
-              <TextLink as={LocaleLink} to="/track" inline>
-                {t("orders.track")}
-              </TextLink>
-            </>
-          }
+          text={t("orders.emptyText")}
           action={
-            <Key as={LocaleLink} to="/" icon="storefront">
+            <Key as={LocaleLink} to="/" variant="primary" icon="storefront">
               {t("orders.browse")}
             </Key>
           }
+          recovery={
+            <TextLink as={LocaleLink} to="/track">
+              {t("orders.track")}
+            </TextLink>
+          }
         />
       ) : (
-        <div className="grid gap-3">
-          <ol className="grid gap-3">
+        <div className="grid gap-4">
+          <ol className="acct-rows">
             {list.items.map((order) => (
               <li key={order.ref}>
-                <OrderRow order={order} headingLevel={2} />
+                <OrderRow order={order} />
               </li>
             ))}
           </ol>
-          <ShowMore shown={list.items.length} total={list.total} onMore={list.more} loading={list.loading} label={t("orders.showMore")} />
+          {list.more || list.items.length > loaderData.orders.items.length ? <ShowMore shown={list.items.length} total={list.total} onMore={list.more} loading={list.loading} label={t("orders.showMore")} /> : null}
         </div>
       )}
     </>

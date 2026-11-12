@@ -3,8 +3,9 @@
  *
  * FLIP on the children of one container that carry `data-flip="<stable key>"`: after React has committed new
  * content (the new results are ALREADY on screen and usable), every child that stayed slides from where it was to
- * where it is now (`settle` spring, transform only), and every new child inflates from .86 (`inflate` spring,
- * opacity + transform, 45 ms apart, at most six staggered). Children that left are simply gone. Nothing waits for
+ * where it is now (`settle` spring, transform only), and every new child grows in from the engine's bubble scale
+ * (.94, `inflate` spring, opacity + transform, 45 ms apart, at most six staggered — `bubble` in ~/motion/tokens).
+ * Children that left are simply gone. Nothing waits for
  * the animation and nothing is animated off screen.
  *
  *   const ref = useRef<HTMLUListElement>(null);
@@ -16,11 +17,12 @@
 import { useLayoutEffect, useRef, type RefObject } from "react";
 
 import { getMotionTier, springTiming } from "~/motion";
+import { bubble } from "~/motion/tokens";
 
 type Box = { x: number; y: number };
 
-const STAGGER_MS = 45;
-const MAX_STAGGERED = 6;
+const STAGGER_MS = bubble.staggerStep;
+const MAX_STAGGERED = bubble.staggerSlots;
 
 function onScreen(element: Element): boolean {
   const rect = element.getBoundingClientRect();
@@ -62,7 +64,7 @@ export function useFlip(container: RefObject<HTMLElement | null>, signature: str
       } else {
         const delay = Math.min(entering, MAX_STAGGERED - 1) * STAGGER_MS;
         entering++;
-        child.animate([{ transform: "scale(0.86)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { ...springTiming("inflate"), delay, fill: "backwards" });
+        child.animate([{ transform: `scale(${bubble.fromScale})`, opacity: 0 }, { transform: "scale(1)", opacity: 1 }], { ...springTiming("inflate"), delay, fill: "backwards" });
       }
     }
   }, [container, signature]);

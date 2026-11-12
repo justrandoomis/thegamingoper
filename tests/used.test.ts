@@ -11,8 +11,13 @@
  * private file never shows) · privacy (no serial, no acquisition cost, no internal location name, no private key) ·
  * buying goes through the cart (addToCart with usedUnitId).
  */
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import type { Locale } from "~/lib/locales";
+import UsedUnitPage from "~/routes/storefront/used/used-unit";
 import { seedDemo } from "~/server/db/seed/demo";
 import { getSetting } from "~/server/settings.server";
 import { addToCart } from "~/server/services/cart.server";
@@ -258,5 +263,47 @@ describe("one unit", () => {
     const added = await addToCart(t.db, { cartToken: null, customerId: null, locale: "ar" }, { usedUnitId: unit.id, qty: 1 }, t.now);
     expect(added.added).toBe(1);
     expect(added.view.lines.find((line) => line.usedUnitId === unit.id)).toMatchObject({ kind: "used_unit", qty: 1, maxQty: 1, unitPriceIqd: unit.price_iqd, href: `/used/${unit.slug}` });
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── review fixes (design v2, P4 review)
+
+/** The unit page as the server renders it (what a shopper without script gets first), with its loader's data. */
+function renderUnitPage(loaderData: unknown, locale: Locale = "ar"): string {
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: ":locale?/used/:slug", Component: UsedUnitPage as never }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: [`${locale === "ar" ? "" : `/${locale}`}/used/x`],
+      hydrationData: {
+        loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: loaderData as never },
+      },
+    }),
+  );
+}
+
+describe("the unit page's states (rendered)", () => {
+  test("listed: one add key in the buy box and one in the bar; reserved and sold: the state in words, no add key, the other units", async () => {
+    const detail = (await getUsedUnitDetail(t.db, "ar", listed()[0].slug))!;
+    const page = (unit: typeof detail) => ({ unit, others: [], device: null, accessories: null, meta: { title: unit.name, description: "", image: null }, i18n: messagesFor("ar", "used", "errors") });
+
+    const listedHtml = renderUnitPage(page(detail));
+    expect(listedHtml.match(/أضف إلى السلة/g)?.length).toBe(2);
+    expect(listedHtml).not.toContain("شاهد أجهزة أخرى");
+
+    for (const [status, words] of [["reserved", "محجوز لطلب آخر الآن"], ["sold", "بيع هذا الجهاز"]] as const) {
+      const html = renderUnitPage(page({ ...detail, status }));
+      expect(html, status).toContain(words);
+      expect(html, status).not.toContain("أضف إلى السلة");
+      expect(html.match(/href="#used-others"/g)?.length, status).toBe(2);
+    }
+  });
+
+  // Review 2026-11-12: the other-units shelf's retry link was built from location.pathname, which already carries the
+  // language prefix — LocaleLink added it again (/en/en/used/…, a 404).
+  test("the other units failing: the retry link keeps one language prefix", async () => {
+    const detail = (await getUsedUnitDetail(t.db, "en", listed()[0].slug))!;
+    const html = renderUnitPage({ unit: detail, others: null, device: null, accessories: null, meta: { title: detail.name, description: "", image: null }, i18n: messagesFor("en", "used", "errors") }, "en");
+    expect(html).toContain(`href="/en/used/${detail.slug}"`);
+    expect(html).not.toContain("/en/en/");
   });
 });

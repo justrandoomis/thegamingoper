@@ -50,6 +50,8 @@ export type CheckoutDraft = {
   paymentMethod: string;
   /** Never pre-checked. */
   marketingConsent: boolean;
+  /** Signed-in customers: add this address to the address book once the order exists. Never pre-checked. */
+  saveAddress: boolean;
 };
 
 export type FieldName = keyof CheckoutDraft;
@@ -66,12 +68,19 @@ export const EMPTY_DRAFT: CheckoutDraft = {
   preferredWindow: "",
   paymentMethod: "",
   marketingConsent: false,
+  saveAddress: false,
 };
 
-/** Fields in the order they appear (the first one with a problem takes the focus). */
-export const ADDRESS_FIELDS = ["phone", "contactName", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow"] as const satisfies readonly FieldName[];
+/** The draft's yes/no fields (a checkbox each). */
+const FLAGS = new Set<FieldName>(["marketingConsent", "saveAddress"]);
+
+/**
+ * Fields in the order they appear (the first one with a problem takes the focus). The delivery step ends with the
+ * marketing consent and, for signed-in customers, "save this address" (Design System v2 §6.10).
+ */
+export const ADDRESS_FIELDS = ["phone", "contactName", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow", "marketingConsent", "saveAddress"] as const satisfies readonly FieldName[];
 export const PAYMENT_FIELDS = ["paymentMethod"] as const satisfies readonly FieldName[];
-export const REVIEW_FIELDS = ["marketingConsent"] as const satisfies readonly FieldName[];
+export const REVIEW_FIELDS = [] as const satisfies readonly FieldName[];
 
 export function stepOfField(field: string): Step {
   if ((ADDRESS_FIELDS as readonly string[]).includes(field)) return "address";
@@ -154,6 +163,7 @@ export function validateField(name: FieldName, draft: CheckoutDraft, context: Va
       if (!context.methods.includes(draft.paymentMethod)) return { code: "unavailable" };
       return draft.paymentMethod === "wallet" && !context.walletEnough ? { code: "wallet_insufficient" } : null;
     case "marketingConsent":
+    case "saveAddress":
       return null;
   }
 }
@@ -214,7 +224,77 @@ export function draftToForm(draft: CheckoutDraft, extra: { idempotencyKey: strin
     preferredWindow: draft.preferredWindow,
     paymentMethod: draft.paymentMethod,
     marketingConsent: draft.marketingConsent ? "on" : "",
+    saveAddress: draft.saveAddress ? "on" : "",
   };
+}
+
+/**
+ * The option value of a cart or order line, without the product's name it repeats — Design System v2 §4.13 ("the
+ * option value only"): the catalogue's variant titles read "<name> — <option>" («Nintendo Switch 2 — النسخة الدولية»,
+ * «DualSense – أحمر Cosmic Red»). When the part before the first spaced dash is (part of) the product's name, only the
+ * part after it is the option; anything else is shown whole. Pure.
+ */
+export function optionValue(name: string, label: string | null | undefined): string | null {
+  const text = label?.trim();
+  if (!text) return null;
+  const match = /\s[—–-]\s/.exec(text);
+  if (!match) return text === name.trim() ? null : text;
+  const head = text.slice(0, match.index).trim().toLocaleLowerCase();
+  const rest = text.slice(match.index + match[0].length).trim();
+  const own = name.trim().toLocaleLowerCase();
+  return head.length > 0 && rest.length > 0 && (own.includes(head) || head.includes(own)) ? rest : text;
+}
+
+/**
+ * An order line's name as sold, split into the product's name and its option value (§4.13: summaries show the option
+ * value only). The commerce core snapshots a variant's line as "<product name> — <option>" (orders/place.server
+ * `lineName`; product names never contain " — "), so the text before the first spaced em dash is the name and the rest
+ * is the option («Nintendo Switch 2 — النسخة الدولية» → «Nintendo Switch 2» + «النسخة الدولية»). A name without that
+ * joint is the name alone. Pure.
+ */
+export function splitLineName(name: string): { name: string; option: string | null } {
+  const at = name.indexOf(" — ");
+  const head = at > 0 ? name.slice(0, at).trim() : "";
+  const rest = at > 0 ? name.slice(at + 3).trim() : "";
+  return head && rest ? { name: head, option: optionValue(head, rest) } : { name, option: null };
+}
+
+/**
+ * The five real stages an order goes through (Design System v2 §6.11, "what happens next"): received · confirmed ·
+ * preparing · on the way · delivered. The 0-based stage an order is at, or null when it left the path (cancelled,
+ * returned). Waiting for a transfer or for its check is still "received": nothing is confirmed before a person has
+ * checked the money. Pure.
+ */
+export const ORDER_STAGES = ["received", "confirmed", "preparing", "shipped", "delivered"] as const;
+export function orderStage(status: string): number | null {
+  switch (status) {
+    case "new":
+    case "awaiting_payment":
+    case "payment_review":
+      return 0;
+    case "confirmed":
+      return 1;
+    case "preparing":
+      return 2;
+    case "shipped":
+      return 3;
+    case "delivered":
+      return 4;
+    default:
+      return null;
+  }
+}
+
+/**
+ * A number to transfer to, grouped for reading aloud and copying by eye (§4.24: «9269 3174 27»): a card number in
+ * fours; an Iraqi mobile number as it is written (0771 906 1852). Digits only in, digits and spaces out; anything that
+ * is not all digits is returned as it is. The copy key always copies the plain digits. Pure.
+ */
+export function groupDigits(value: string, kind: "card" | "phone"): string {
+  const digits = value.replace(/\s+/g, "");
+  if (!/^\d+$/.test(digits)) return value;
+  if (kind === "phone" && digits.length === 11) return `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
 }
 
 /**
@@ -284,15 +364,25 @@ export function cleanDraft(value: unknown): CheckoutDraft {
   const out: CheckoutDraft = { ...EMPTY_DRAFT };
   for (const name of Object.keys(EMPTY_DRAFT) as FieldName[]) {
     const item = source[name];
-    if (name === "marketingConsent") out.marketingConsent = item === true;
+    if (FLAGS.has(name)) (out as Record<string, unknown>)[name] = item === true;
     else if (typeof item === "string") (out as Record<string, unknown>)[name] = item.slice(0, 600);
   }
   return out;
 }
 
+const posted = (value: string | undefined) => value === "on" || value === "true";
+
 /** The fields of a plain form post (a page rendered without script), as a draft. */
 export function draftFromPosted(values: Record<string, string>): CheckoutDraft {
-  return cleanDraft({ ...values, marketingConsent: values.marketingConsent === "on" || values.marketingConsent === "true" });
+  return cleanDraft({ ...values, marketingConsent: posted(values.marketingConsent), saveAddress: posted(values.saveAddress), preferredWindow: values.preferredWindow === "any" ? "" : values.preferredWindow });
+}
+
+/**
+ * A draft whose preferred day is one of the days on offer now — else no day (a draft kept from a visit that offered
+ * days, or days the owner switched off since). The preference is never a requirement, so nothing is asked again. Pure.
+ */
+export function withOfferedDay(draft: CheckoutDraft, days: readonly string[]): CheckoutDraft {
+  return draft.preferredDay === "" || days.includes(draft.preferredDay) ? draft : { ...draft, preferredDay: "" };
 }
 
 export function readStoredCheckout(): StoredCheckout | null {

@@ -17,7 +17,7 @@ import { expenseAccounts, expenseApprovalLimit, needsOtherApprover, paidFromAcco
 import { postedBy } from "~/server/services/accounting/post.server";
 import { chartOfAccounts } from "~/server/services/accounting/reports.server";
 import { employeeNames } from "./shared.server";
-import { latinDigits, PAGE_SIZE, type RangeFilter } from "./types";
+import { latinDigits, PAGE_SIZE, periodOf, type RangeFilter } from "./types";
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
 const num = (value: unknown) => Number(value ?? 0);
@@ -317,14 +317,19 @@ export async function saveCostCenter(db: Db, actor: Actor, raw: z.input<typeof S
 
 /**
  * Drafts this employee may approve — not their own when, with what they approved alone in the last 24 hours, they
- * would pass the limit — the module's queue.
+ * would pass the limit — the module's queue (and the admin bell's). Never a draft whose posting month is closed:
+ * approving posts it dated noon of the day it was incurred (now, for a later day — accounting/expenses.server), and a
+ * month on or before the last closed one refuses it (`period_closed`), so it is no decision anyone can make.
  */
 export async function countDecidableExpenses(db: Db, actor: Actor, now: number = Date.now()): Promise<number | null> {
   if (!can(actor, "finance.expense.manage")) return null;
   const myId = postedBy(actor);
-  const room = (await expenseApprovalLimit(db)) - (await selfApprovedRecentIqd(db, myId, now));
+  const [limit, selfApproved] = await Promise.all([expenseApprovalLimit(db), selfApprovedRecentIqd(db, myId, now)]);
+  const room = limit - selfApproved;
+  // the posting month: min(the day's month, this month) — periodOf(min(dayNoon(incurred_on), now)) without the clock
   const rows = await db.all<{ n: number }>(sql`
-    SELECT count(*) AS n FROM expenses WHERE status = 'draft' AND NOT (created_by = ${myId ?? ""} AND amount_iqd > ${room})`);
+    SELECT count(*) AS n FROM expenses AS x WHERE x.status = 'draft' AND NOT (x.created_by = ${myId ?? ""} AND x.amount_iqd > ${room})
+      AND NOT EXISTS (SELECT 1 FROM fiscal_periods AS p WHERE p.status = 'closed' AND p.period >= min(substr(x.incurred_on, 1, 7), ${periodOf(now)}))`);
   return num(rows[0]?.n);
 }
 

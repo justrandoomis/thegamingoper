@@ -1,9 +1,18 @@
 /**
- * The price on the floor (DESIGN.md §8.4, §9.11): ink price of the chosen variant with a genuine old price struck
- * beside it, the delivery fee right next to it (from settings — never assumed), and the stock state in words.
- * When the chosen variant cannot be ordered, one sentence under it says why (`reasonId` — the buy keys point at it
- * with aria-describedby): not out yet (with its date), this version sold out, or the whole product sold out.
- * Stock is a state, never a number; a release date is a date, never a promise.
+ * The price block of the product page and the quick look — design v2 spec §6.7 items 6–7, §4.8 `PriceTag size="page"`:
+ *
+ *   667,750 د.ع  [سعر ومخزون تجريبيان]            price xl + the demo tag (demo data)
+ *   ● متوفر · التوصيل 5,000 د.ع لكل المحافظات      stock words + the fee from settings (14/600)
+ *   (one sentence when the chosen version cannot be ordered, or the fee depends on the governorate)
+ *
+ * Honest by construction: the previous price is struck only when it is real — or a demo value while the whole store is
+ * marked demo — and a demo previous price is never worded as a saving (no «توفّر …» from demo data, §11.8); a sold-out
+ * version's price is muted (§4.8), never the red sale figure, and offers no saving; stock is a
+ * state, never a number (demo stock is never «الكمية محدودة»); a release date is a date («يصدر … · الطلب يفتح عند
+ * وصوله»), never a pre-order; digital codes show no delivery fee until the owner decides one (§13 row 11).
+ *
+ * `reasonId` names the sentence that says why the chosen version cannot be added — the add keys point at it with
+ * aria-describedby. `offlineId` names the offline sentence (the add keys go flat while there is no connection).
  */
 import { useRouteLoaderData } from "react-router";
 
@@ -11,10 +20,7 @@ import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
 import type { ProductLifecycle, VariantDetail } from "~/server/services/catalog/product-types";
 import { cx } from "~/ui/cx";
-import { DemoNote } from "~/ui/DemoNote";
 import { PriceTag } from "~/ui/PriceTag";
-import { StockNote } from "~/ui/StockNote";
-import { Status } from "~/ui/Tag";
 import { useProductT } from "../i18n";
 
 export type PriceBlockProps = {
@@ -24,57 +30,91 @@ export type PriceBlockProps = {
   delivery: { flatFeeIqd: number; overridesEnabled: boolean };
   lifecycle: ProductLifecycle | null;
   isDemo: boolean;
+  /** A digital code: no delivery fee is stated (the owner has not decided one for codes). */
+  digital?: boolean;
+  /** The id of the "why it cannot be added" sentence. */
   reasonId: string;
+  /** The browser is offline: say why the add key is flat (`offlineId` names that sentence). */
+  offline?: boolean;
+  offlineId?: string;
   className?: string;
 };
 
-export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, reasonId, className }: PriceBlockProps) {
+type RootStore = { storeMode?: string };
+
+/** Whether the store is in demo mode (root loader). */
+export function useDemoStore(): boolean {
+  const root = useRouteLoaderData("root") as RootStore | undefined;
+  return root?.storeMode === "demo";
+}
+
+/**
+ * The previous price to strike, or null: a real one (an applied price change set it), or a demo value while the store
+ * is marked demo — the same rule as the cards (~/ui/ProductCard). Pure.
+ */
+export function struckPrice(variant: Pick<VariantDetail, "priceIqd" | "compareAtIqd" | "compareAtDemo">, demoStore: boolean): number | null {
+  const was = variant.compareAtIqd;
+  if (was === null || was <= variant.priceIqd) return null;
+  return !variant.compareAtDemo || demoStore ? was : null;
+}
+
+/**
+ * How the page price reads for a version. Sold out: muted like the card's (§4.8 tones) — never the red sale figure on
+ * something that cannot be bought — and no saving offered; a coming version keeps the ink price it will sell at. A demo
+ * previous price is struck under the demo marking but never worded as a saving. Pure.
+ */
+export function priceLook(variant: Pick<VariantDetail, "orderable" | "releaseAt" | "compareAtDemo">): { tone: "muted" | undefined; showSaving: boolean } {
+  const soldOut = !variant.orderable && variant.releaseAt === null;
+  return { tone: soldOut ? "muted" : undefined, showSaving: variant.orderable && !variant.compareAtDemo };
+}
+
+export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, digital = false, reasonId, offline = false, offlineId, className }: PriceBlockProps) {
   const t = useProductT();
   const f = useFormat();
-  const store = useRouteLoaderData("root") as { storeMode?: string } | undefined;
-  const release = variant.releaseAt !== null ? f.date(variant.releaseAt, "long") : null;
-
-  const aside = variant.orderable ? (
-    <StockNote stock={variant.stock} />
-  ) : release ? (
-    <Status tone="info">{t("status.releaseOn", { date: release })}</Status>
-  ) : (
-    <StockNote stock="out_of_stock" />
-  );
+  const demoStore = useDemoStore();
+  const soon = !variant.orderable && variant.releaseAt !== null;
+  const struck = struckPrice(variant, demoStore);
+  const look = priceLook(variant);
 
   const reason = variant.orderable
     ? null
-    : release
-      ? t("status.notYet", { date: release })
+    : soon
+      ? t("status.soon", { date: f.date(variant.releaseAt as number, "long") })
       : variants.some((entry) => entry.orderable)
         ? t("status.outVariant")
         : t("status.outAll");
   const life = lifecycle === "discontinued" || lifecycle === "limited" || lifecycle === "upcoming" ? t(`status.${lifecycle}`) : null;
 
   return (
-    <div className={cx("grid gap-2", className)}>
-      <PriceTag
-        size="page"
-        priceIqd={variant.priceIqd}
-        compareAtIqd={variant.compareAtIqd}
-        deliveryIqd={delivery.overridesEnabled ? null : delivery.flatFeeIqd}
-        aside={aside}
-      />
-      {delivery.overridesEnabled ? <p className="type-caption text-ink-2">{t("facts.deliveryVaries")}</p> : null}
-      {reason ? (
-        <p id={reasonId} className="flex items-start gap-2 type-caption font-medium text-ink">
-          <Icon name="info" size={16} className="mt-0.5 shrink-0 text-info" />
-          <span>{reason}</span>
-        </p>
-      ) : null}
-      {life ? (
-        <p className="flex items-start gap-2 type-caption text-ink-2">
-          <Icon name="info" size={16} className="mt-0.5 shrink-0" />
-          <span>{life}</span>
-        </p>
-      ) : null}
-      {/* In demo mode the store-wide ribbon already says it; a live store marks leftover demo rows here. */}
-      {isDemo && store?.storeMode === "live" ? <DemoNote compact className="justify-self-start" /> : null}
-    </div>
+    <PriceTag
+      size="page"
+      className={className}
+      priceIqd={variant.priceIqd}
+      compareAtIqd={struck}
+      tone={look.tone}
+      showSaving={look.showSaving}
+      demo={isDemo || demoStore}
+      stock={variant.orderable ? variant.stock : soon ? "preorder" : "out_of_stock"}
+      deliveryIqd={digital || delivery.overridesEnabled ? null : delivery.flatFeeIqd}
+      aside={
+        reason || life || offline || (!digital && delivery.overridesEnabled) ? (
+          <div className="grid gap-1">
+            {!digital && delivery.overridesEnabled ? <p className="type-sm text-ink-2">{t("facts.deliveryVaries")}</p> : null}
+            {reason ? (
+              <p id={reasonId} className={cx("type-sm", soon ? "text-ink" : "text-ink-2")}>
+                {reason}
+              </p>
+            ) : null}
+            {offline ? (
+              <p id={offlineId} className="flex items-start gap-1.5 type-sm-strong text-warn">
+                <Icon name="wifi-slash" size={16} className="mt-0.5 shrink-0" />
+                <span>{t("status.offline")}</span>
+              </p>
+            ) : null}
+            {life ? <p className="type-sm text-ink-2">{life}</p> : null}
+          </div>
+        ) : null
+      }
+    />
   );
 }

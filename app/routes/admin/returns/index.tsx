@@ -6,7 +6,8 @@ import { useFormat, useLocale } from "~/i18n/react";
 import { canAny } from "~/server/actor";
 import { throwAsResponse } from "~/server/errors";
 import { listReturns } from "~/server/services/admin/returns/rma.server";
-import { parseRmaFilters, REASON_LIST, RMA_STATUS_LIST, RMA_VIEWS, rmaSearch, SLA, type QueueCounts, type RmaListRow } from "~/server/services/admin/returns/types";
+import { slaTargets, type SlaTargets } from "~/server/services/admin/returns/shared.server";
+import { parseRmaFilters, REASON_LIST, RMA_STATUS_LIST, RMA_VIEWS, rmaSearch, type QueueCounts, type RmaListRow } from "~/server/services/admin/returns/types";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { Disclosure } from "~/ui/Disclosure";
 import { EmptyState } from "~/ui/EmptyState";
@@ -15,6 +16,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { ModuleFunctions } from "../blueprint-status";
 import { blueprintModule } from "../shell/blueprint-catalog";
+import { CustomerName } from "../shell/CustomerName";
 import { adminMeta } from "../shell/meta";
 import { RETURNS_LAYOUT_ID } from "./meta";
 import { openReturns } from "./returns.server";
@@ -31,7 +33,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const filters = parseRmaFilters(url.searchParams);
   const canList = canAny(actor, ["returns.rma.read", "returns.rma.create"]);
   try {
-    return { page: canList ? await listReturns(db, actor, filters, locale, now) : null, filters, now };
+    // the service targets in force (setting "returns.sla", admin 22), which the queue cards name
+    const [page, sla] = await Promise.all([canList ? listReturns(db, actor, filters, locale, now) : Promise.resolve(null), slaTargets(db)]);
+    return { page, filters, now, sla };
   } catch (error) {
     throwAsResponse(error);
   }
@@ -72,7 +76,9 @@ export default function ReturnsIndex({ loaderData }: Route.ComponentProps) {
       header: t("list.col.customer"),
       cell: (row) => (
         <span className="grid whitespace-nowrap py-1">
-          <span>{row.customerName ?? t("list.noName")}</span>
+          <span>
+            <CustomerName profileId={row.customerProfileId}>{row.customerName ?? t("list.noName")}</CustomerName>
+          </span>
           <span className="type-caption text-ink-2">
             <PhoneText phone={row.phone} />
           </span>
@@ -118,7 +124,7 @@ export default function ReturnsIndex({ loaderData }: Route.ComponentProps) {
         <p className="max-w-[70ch] type-body text-ink-2">{t("lead")}</p>
       </header>
 
-      <QueueCards counts={layout?.counts ?? null} />
+      <QueueCards counts={layout?.counts ?? null} sla={loaderData.sla} />
 
       {page ? (
         <section className="adm-section" aria-labelledby="returns-list">
@@ -245,7 +251,7 @@ const QUEUES: { id: keyof QueueCounts; to: string; icon: IconName; decide: boole
 ];
 
 /** What waits for this employee — raised clay only where a person must decide (DESIGN.md §10). */
-function QueueCards({ counts }: { counts: QueueCounts | null }) {
+function QueueCards({ counts, sla }: { counts: QueueCounts | null; sla: SlaTargets }) {
   const t = useReturnsT();
   const f = useFormat();
   if (!counts) return null;
@@ -259,7 +265,7 @@ function QueueCards({ counts }: { counts: QueueCounts | null }) {
       <div className="adm-grid">
         {cards.map((card) => {
           const count = counts[card.id] ?? 0;
-          const vars = { count, days: SLA.warrantyEndingDays };
+          const vars = { count, days: sla.warrantyEndingDays };
           return (
             <article key={card.id} className={card.decide && count > 0 ? "adm-card adm-card--act" : "adm-card"}>
               <p className="flex items-center gap-2 type-caption text-ink-2">

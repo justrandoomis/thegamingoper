@@ -11,8 +11,9 @@
  * costs its own price. The till sends the unit price it showed; a different price now → price_changed (the till
  * shows the new prices) — or, for a sale queued OFFLINE only, a person with pricing.discount.override records it at
  * the prices the customer paid, with a reason (audited; online, a lower price is a discount — never an accepted price).
- * DISCOUNTS: only with pos.discount.apply, always with a reason; each line and the whole sale at most
- * CASHIER_DISCOUNT_LIMIT_BPS (10 %) of the price; beyond it, or when a line's net unit price would fall under the
+ * DISCOUNTS: only with pos.discount.apply, always with a reason; each line and the whole sale at most the setting
+ * "pos.discount_limit_bps" of the price (admin 22; default CASHIER_DISCOUNT_LIMIT_BPS, 10 %; the till checks the same
+ * value, which its page loads); beyond it, or when a line's net unit price would fall under the
  * SKU's floor (its landed cost, or the price its minimum margin needs; a bundle without a cost of its own: its
  * components' cost — the cost itself never leaves the server), only pricing.discount.override.
  * PAYMENTS (06.03): cash (tendered and change), card (charged on the bank's own terminal, recorded by its slip number;
@@ -66,7 +67,6 @@ import { getWalletBalance } from "../../wallet.server";
 import { assertAny, employeeNames, ID_PATTERN, KEY_PATTERN } from "./shared.server";
 import {
   baghdadDayRange,
-  CASHIER_DISCOUNT_LIMIT_BPS,
   discountBeyondLimit,
   latinDigits,
   TILL_METHODS,
@@ -512,11 +512,13 @@ export async function createSale(db: Db, actor: Actor, raw: SaleRequestInput, co
     if (hasDiscount) {
       if (!canAny(actor, ["pos.discount.apply", "pricing.discount.override"])) throw new AppError("discount_not_allowed", 403, { fields: { discount: "discount_not_allowed" } });
       if (!input.discountReason || input.discountReason.length < 3) throw invalid({ discountReason: "discount_reason_required" });
-      const beyond = discountBeyondLimit(input.lines, input.orderDiscountIqd, CASHIER_DISCOUNT_LIMIT_BPS);
+      // the limit in force (setting "pos.discount_limit_bps", admin 22) — its default is CASHIER_DISCOUNT_LIMIT_BPS
+      const limitBps = await getSetting(db, "pos.discount_limit_bps");
+      const beyond = discountBeyondLimit(input.lines, input.orderDiscountIqd, limitBps);
       if (beyond !== null && !override) throw new AppError("discount_over_limit", 403, { fields: { [beyond === "order" ? "orderDiscountIqd" : `lines.${beyond}.discountIqd`]: "discount_over_limit" } });
       const floorLine = await lineUnderFloor(db, input.lines, input.orderDiscountIqd);
       if (floorLine !== null && !override) throw new AppError("discount_below_floor", 403, { fields: { [`lines.${floorLine}.discountIqd`]: "discount_below_floor" } });
-      auditFacts.discountLimitBps = CASHIER_DISCOUNT_LIMIT_BPS;
+      auditFacts.discountLimitBps = limitBps;
       auditFacts.discountByOverride = beyond !== null || floorLine !== null;
     }
 

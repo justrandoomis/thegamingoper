@@ -38,7 +38,8 @@ export async function loadAdminShell(ctx: RequestCtx, db: Db, session: EmployeeS
   const locale: AdminLocale = ctx.locale === "en" ? "en" : "ar";
   const [roleRows, waiting] = await Promise.all([
     session.roles.length > 0 ? db.select({ key: roles.key, name: roles.name }).from(roles).where(inArray(roles.key, session.roles)) : Promise.resolve([]),
-    loadWaiting(db, session),
+    // the request's clock, like every loader (a test's fixed now, a request that started just before midnight)
+    loadWaiting(db, session, ctx.now),
   ]);
   const names = new Map(roleRows.map((row) => [row.key, pick(row.name, locale) || row.key]));
   return {

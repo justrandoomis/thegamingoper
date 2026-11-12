@@ -58,8 +58,9 @@ import { getSetting } from "~/server/settings.server";
 import { changeOrderStatus } from "~/server/services/admin/orders/actions.server";
 import { notifyOrderContact, ORDER_TEMPLATES } from "~/server/services/admin/orders/notify.server";
 import { safeData } from "~/server/services/admin/orders/shared.server";
-import { deliverParcel, parcelsOutOfStep, returnParcels, settlementNeedsSecondPerson, settlementPreparers, syncParcels } from "~/server/services/orders/shipments.server";
+import { deliverParcel, parcelsOutOfStep, returnParcels, syncParcels } from "~/server/services/orders/shipments.server";
 import { activeCarrier, carrierOptions, carrierRate } from "./carriers.server";
+import { countSettlementsToReconcile } from "./cod.server";
 import {
   AT_STORE,
   DELIVERABLE,
@@ -1031,7 +1032,7 @@ export type ShippingOverview = {
 export async function shippingOverview(db: Db, actor: Actor, now: number): Promise<ShippingOverview> {
   assertCan(actor, "shipping.shipment.read");
   const endOfToday = (baghdadDay(dayOf(now)) ?? now) + 18 * 60 * 60 * 1000;
-  const [counts, codRow, settlementRows, carrierCount] = await Promise.all([
+  const [counts, codRow, toReconcile, carrierCount] = await Promise.all([
     db
       .select({
         toPrepare: sql<number>`coalesce(sum(CASE WHEN ${shipments.status} IN ('pending','packed') AND ${shipments.carrierId} IS NULL THEN 1 ELSE 0 END), 0)`,
@@ -1058,20 +1059,12 @@ export async function shippingOverview(db: Db, actor: Actor, now: number): Promi
         ),
       )
       .get(),
-    can(actor, "shipping.cod.settle")
-      ? db.select({ id: codSettlements.id, varianceIqd: codSettlements.varianceIqd, createdBy: codSettlements.createdBy }).from(codSettlements).where(eq(codSettlements.status, "submitted"))
-      : Promise.resolve([] as { id: string; varianceIqd: number; createdBy: string | null }[]),
+    // Only what this employee may decide, exactly as the bell counts it (cod.server's countSettlementsToReconcile: ONE
+    // query however many settlements wait): never a settlement with a difference they prepared, corrected or submitted
+    // (the two-person rule of reconcileCodSettlement), nor one carrying cash to record without orders.payment.record.
+    countSettlementsToReconcile(db, actor).then((n) => n ?? 0),
     db.select({ n: sql<number>`count(*)` }).from(carriers).where(eq(carriers.isActive, true)).get(),
   ]);
-  // Only what this employee may decide: a settlement with a difference (a variance or a hand correction) is never theirs
-  // to reconcile when they prepared, corrected or submitted it (the two-person rule of reconcileCodSettlement).
-  const { actorId } = actorRef(actor);
-  let toReconcile = 0;
-  for (const row of settlementRows) {
-    const rule = settlementNeedsSecondPerson(row, await settlementPreparers(db, row.id), actorId);
-    if (rule.needsSecond && rule.involved) continue;
-    toReconcile++;
-  }
   return {
     toPrepare: Number(counts?.toPrepare ?? 0),
     readyForPickup: Number(counts?.ready ?? 0),

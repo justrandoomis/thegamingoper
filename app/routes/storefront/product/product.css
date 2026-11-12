@@ -1,25 +1,64 @@
 /*
- * Product page layout bits that utilities cannot say on their own (DESIGN.md §8.4, §8.10, §8.11). Tokens and logical
- * properties only; everything in the components layer, so utilities still win.
+ * Product page layout that utilities cannot say on their own (design v2 spec §6.7, §3, §4.14). Tokens, the kit's
+ * classes and logical properties only; everything in the components layer, so utilities still win.
  */
 @layer components {
-  /* phones: the Lit Stage runs edge to edge right under the header, top corners square (reference b.png) */
+  /* phones: the stage runs edge to edge, square (the kit's .stage--pdp has no radius below 768). Only the stage — its
+     wrapper is the shared element the card's well grows into — so the thumbnails below it keep the gutter. */
   @media (max-width: 47.99rem) {
-    .pp-stage {
+    .pp-gallery .gallery > [data-share] {
       margin-inline: calc(-1 * max(var(--gutter), var(--safe-inline)));
     }
   }
-  /* from 768 the stage sits in the page column and is a rounded object again */
-  @media (min-width: 48rem) {
-    .pp-stage .stage--flush {
-      border-start-start-radius: var(--r-xl);
-      border-start-end-radius: var(--r-xl);
+
+  /* ONE fact line under the name (§6.7 item 5): each fact is an item of a one-line flex row; a second fact that does
+     not fit beside the first wraps onto a clipped second line (readers of the page still hear it). A first fact that is
+     too long for a phone line is drawn in the wrap mode below (text.ts factRow); the ellipsis is only a safety net. */
+  .pp-facts {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--s-1);
+    max-block-size: 1lh;
+    overflow: hidden;
+  }
+  .pp-facts > span {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  /* a first fact longer than a phone line (text.ts factRow) is shown alone and wraps — never cut */
+  .pp-facts--wrap {
+    max-block-size: none;
+  }
+  .pp-facts--wrap > span {
+    overflow: visible;
+    white-space: normal;
+  }
+
+  /* from 1024 the gallery stays in view beside the buy box, just under the sticky header */
+  @media (min-width: 64rem) {
+    .pp-gallery {
+      position: sticky;
+      inset-block-start: calc(var(--shell-top) + var(--s-4));
     }
   }
-  /* from 1024 the stage stays in view beside the info column, just under the sticky header */
+
+  /* the reading part: two columns from 1024; a pair with one member keeps a reading width */
+  .pp-duo {
+    display: grid;
+    align-items: start;
+    gap: var(--gap-section);
+  }
   @media (min-width: 64rem) {
-    .pp-stage {
-      inset-block-start: calc(var(--shell-header-h) + var(--s-4));
+    .pp-duo {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-16);
+    }
+    .pp-duo > :only-child {
+      grid-column: 1 / -1;
+      max-inline-size: 48rem;
     }
   }
 }

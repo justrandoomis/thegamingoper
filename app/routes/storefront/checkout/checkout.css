@@ -1,0 +1,437 @@
+/*
+ * Cart, checkout, order and tracking pages (app/routes/storefront/checkout) — Design System v2 §6.10, §6.11, §5.8.
+ * Components layer (utilities still win), tokens only, logical properties only, motion only on transform/opacity.
+ * The kit draws the pieces (.summary, .cline, .field, .choice, .pref, .callout, .empty, .proof, .trust …); this file
+ * places them and draws the area's own bits: the 7/5 split, the summary bar, the guest strip, the transfer steps, the
+ * order's thank-you header and its stage rail, the tracking card.
+ */
+@layer components {
+  /* ───────────────────────────── script on / off ─────────────────────────────
+     The Motion Engine's head script sets <html data-motion> before the first paint (app/motion/tier-script.ts): with
+     script the no-script parts are hidden from the first frame (nothing shifts) and without it the script-only keys
+     never show. One step at a time with script; without it all three steps show and one plain post places the order. */
+  :root:not([data-motion]) .co-js {
+    display: none !important;
+  }
+  :root[data-motion] .co-nojs {
+    display: none !important;
+  }
+  :root[data-motion] .co-step:not([data-current]) {
+    display: none;
+  }
+  /* the cart editor's steppers and removal need script: without it the review lists the lines as they are */
+  :root:not([data-motion]) .co-step .cline :is(.stepper, .cline__actions) {
+    display: none;
+  }
+
+  /* ───────────────────────────── page frame ───────────────────────────── */
+  .co-page {
+    display: grid;
+    align-content: start;
+    gap: var(--s-6);
+    padding-block: var(--s-6) var(--s-10);
+  }
+  .co-main,
+  .co-form {
+    display: grid;
+    align-content: start;
+    gap: var(--s-5);
+    min-inline-size: 0;
+  }
+  .co-aside {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  .co-rail {
+    min-inline-size: 0;
+    padding-block-start: var(--s-4);
+  }
+  /* 768–1023: the checkout is one centred column of 640 (§3) */
+  @media (min-width: 48rem) {
+    .co-form,
+    .co-narrow {
+      inline-size: 100%;
+      max-inline-size: 640px;
+      margin-inline: auto;
+    }
+  }
+  /* from 1024: 7/5 — the form or the lines at the inline start, the sticky summary at the end (§3, §6.10) */
+  @media (min-width: 64rem) {
+    .co-split {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      column-gap: var(--s-12);
+      align-items: start;
+    }
+    .co-split > .co-form {
+      max-inline-size: none;
+      margin-inline: 0;
+    }
+    .co-split > :is(.co-main, .co-form) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .co-split > .co-aside {
+      position: sticky;
+      inset-block-start: calc(var(--shell-top) + var(--s-6));
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+    .co-split > .co-rail {
+      grid-column: 1;
+      grid-row: 2;
+    }
+  }
+
+  /* a paper card with a hairline (review blocks, the transfer panel, the proof, the tracking form) */
+  .co-card {
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  @media (min-width: 48rem) {
+    .co-card {
+      padding: var(--s-5);
+    }
+  }
+
+  /* cart lines (the kit's .cline rows, hairline-separated) */
+  .co-lines {
+    display: grid;
+    border-block-start: 1px solid var(--line);
+  }
+  .co-card .co-lines {
+    border-block-start: 0;
+  }
+  .co-card .co-lines > .cline:last-child {
+    border-block-end: 0;
+    padding-block-end: 0;
+  }
+
+  /* ───────────────────────────── checkout steps ───────────────────────────── */
+  .co-step {
+    display: grid;
+    align-content: start;
+    gap: var(--s-6);
+    min-inline-size: 0;
+    scroll-margin-block-start: calc(var(--shell-top) + var(--s-4));
+  }
+  .co-group {
+    display: grid;
+    gap: var(--s-4);
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .co-group__title {
+    margin-block-end: var(--s-3);
+    padding: 0;
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  /* the guest strip of the delivery step: --ok-tint, 14px (§6.10) */
+  .co-guest {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--ok-tint);
+    color: var(--ink);
+    font: var(--type-sm);
+  }
+  .co-guest > svg {
+    margin-block-start: 1px;
+    color: var(--ok);
+  }
+  /* the saved-address note at the top of the delivery fields */
+  .co-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-3);
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+    color: var(--ink);
+    font: var(--type-xs);
+  }
+  /* «1 أكّد الطلب · 2 حوّل المبلغ · 3 ارفع صورة الحوالة» */
+  .co-tsteps {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font: var(--type-sm);
+    color: var(--ink);
+  }
+  .co-tsteps > li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .co-tsteps__n {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 28px;
+    block-size: 28px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--r-full);
+    font: var(--type-xs-strong);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  /* transfer values: label, the value in Plex 600 20px tabular, its own copy key */
+  .co-values {
+    display: grid;
+    margin: 0;
+  }
+  .co-values__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2px var(--s-3);
+    padding-block: var(--s-3);
+    border-block-end: 1px solid var(--line);
+  }
+  .co-values__row:first-child {
+    padding-block-start: 0;
+  }
+  .co-values__row > dt {
+    grid-column: 1;
+  }
+  .co-values__value {
+    display: grid;
+    gap: 2px;
+    grid-column: 1;
+    margin: 0;
+    min-inline-size: 0;
+  }
+  .co-values__copy {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+  /* review facts: label over value, hairlines */
+  .co-facts {
+    display: grid;
+    margin: 0;
+  }
+  .co-facts__row {
+    display: grid;
+    gap: 2px;
+    padding-block: var(--s-2);
+    border-block-end: 1px solid var(--line);
+  }
+  .co-facts__row:last-child {
+    border-block-end: 0;
+    padding-block-end: 0;
+  }
+  .co-facts__row > dd {
+    margin: 0;
+  }
+
+  /* ───────────────────────────── the summary bar (below 1024, §5.8) ─────────────────────────────
+     48px on --niche right under the checkout bar, scrolling with the page; it opens the items in place. */
+  .co-sumbar {
+    background: var(--niche);
+    border-block-end: 1px solid var(--line);
+  }
+  .co-sumbar__head {
+    display: block;
+    list-style: none;
+    cursor: pointer;
+  }
+  .co-sumbar__head::-webkit-details-marker {
+    display: none;
+  }
+  .co-sumbar__row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--s-12);
+    color: var(--ink);
+  }
+  .co-sumbar__label {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    font: var(--type-sm-strong);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .co-sumbar__chev {
+    flex: none;
+    color: var(--ink-2);
+    transition: rotate var(--t-micro) var(--ease-settle);
+  }
+  .co-sumbar[open] .co-sumbar__chev {
+    rotate: 180deg;
+  }
+  .co-sumbar__head:focus-visible {
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: calc(-1 * var(--focus-w));
+  }
+  .co-sumbar__body {
+    padding-block: var(--s-2) var(--s-4);
+  }
+
+  /* ───────────────────────────── the task bar's row (§5.7): «الإجمالي» + total | the step's primary ───────────────────────────── */
+  .co-taskbar {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .co-taskbar__total {
+    display: grid;
+    flex: none;
+    gap: 2px;
+  }
+
+  /* ───────────────────────────── order: the thank-you header (§6.11) ───────────────────────────── */
+  .co-thanks {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-3);
+  }
+  .co-thanks__disc {
+    display: grid;
+    place-items: center;
+    inline-size: 72px;
+    block-size: 72px;
+    border-radius: var(--r-full);
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+  /* the one-shot scale-in on `inflate` (430 ms), once; none under reduced motion (the engine's tiers) */
+  :root[data-motion="full"] .co-thanks__disc {
+    animation: co-thanks-in var(--spring-inflate-t) var(--spring-inflate) both;
+  }
+  @keyframes co-thanks-in {
+    from {
+      opacity: 0;
+      scale: 0.86;
+    }
+    to {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+  .co-thanks__code {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+  }
+
+  /* "what happens next": the five real stages, current = an ink disc, upcoming = control-line rings */
+  .co-stages {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .co-stage {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-2);
+    min-inline-size: 0;
+    text-align: center;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  /* the joining line, from the middle of the previous disc to this one (it follows the reading direction) */
+  .co-stage + .co-stage::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 13px;
+    inset-inline-end: calc(50% + 18px);
+    inline-size: calc(100% - 36px);
+    block-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--line-2);
+  }
+  .co-stage[data-state="done"] + .co-stage::before,
+  .co-stage[data-state="current"]::before {
+    background: var(--ink);
+  }
+  .co-stage__n {
+    display: grid;
+    place-items: center;
+    inline-size: 28px;
+    block-size: 28px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--r-full);
+    background: var(--paper);
+    font: var(--type-xs-strong);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .co-stage:is([data-state="done"], [data-state="current"]) .co-stage__n {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .co-stage[data-state="current"] {
+    color: var(--ink);
+    font: var(--type-xs-strong);
+  }
+  .co-stage__label {
+    max-inline-size: 100%;
+    text-wrap: balance;
+  }
+
+  /* payment and delivery side by side from 1024, inside the one summary card (§6.11) */
+  .co-pair {
+    display: grid;
+    gap: var(--s-5);
+    padding-block-start: var(--s-4);
+    border-block-start: 1px solid var(--line);
+  }
+  @media (min-width: 64rem) {
+    .co-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-8);
+    }
+  }
+
+  /* ───────────────────────────── tracking: a centred card (§6.11) ───────────────────────────── */
+  .co-track {
+    display: grid;
+    gap: var(--s-6);
+    inline-size: 100%;
+    max-inline-size: 560px;
+    margin-inline: auto;
+  }
+  .co-track-result {
+    display: grid;
+    gap: var(--s-5);
+    inline-size: 100%;
+    max-inline-size: 760px;
+    margin-inline: auto;
+  }
+  .co-see {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .co-see > li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+  }
+  .co-see > li > svg {
+    flex: none;
+    margin-block-start: 2px;
+    color: var(--ink);
+  }
+}

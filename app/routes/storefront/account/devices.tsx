@@ -2,27 +2,34 @@ import { useEffect, useRef } from "react";
 import { data, useFetcher } from "react-router";
 
 import type { Route } from "./+types/devices";
+import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { MotionLink, type MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { listDeviceOptions, listSavedDevices, setSavedDevice } from "~/server/services/account/saved-devices.server";
 import type { DeviceOption } from "~/server/services/account/types";
+import { BidiText } from "~/ui/BidiText";
 import { announce } from "~/ui/cart-client";
+import { Chip } from "~/ui/Chip";
+import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
-import { BidiText, ProductImage } from "~/ui/ProductCard";
+import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
+import { ProductImage } from "~/ui/ProductCard";
 import { toast } from "~/ui/toast-store";
 import { accountFailure, formFields, requireSignedIn } from "./account.server";
 import { sectionOrder } from "./components/AccountNav";
 import { PageHead, Section } from "./components/PageHead";
+import { OfflineNote } from "./components/FormBits";
 import { accountMeta } from "./components/meta";
 
 /**
  * Saved devices (brief §3.10, §6): the models the customer owns, picked from the store's device list, each linking to
  * its hub. With personalization consent the devices area's engine reads them (saved_devices) as anchors of the
  * customer's personal shelf on home and search ("verified to work with" — never inferred); the page says exactly that.
+ * «أملكه» is a chip (a state, never an action): aria-pressed, the check, saved at once.
  */
 export const handle = { nav: "push", order: sectionOrder("devices") } satisfies MotionHandle;
 
@@ -61,30 +68,38 @@ export default function Devices({ loaderData }: Route.ComponentProps) {
       <PageHead title={t("devices.title")} lead={t("devices.lead")} />
       <Section id="mine" title={t("devices.savedTitle")}>
         {mine.length === 0 ? (
-          <p className="rounded-lg bg-niche p-4 type-body text-ink-2">
-            <span className="type-sub text-ink">{t("devices.savedEmpty")}</span> {t("devices.savedEmptyText")}
-          </p>
+          <EmptyState icon="game-controller" title={t("devices.savedEmpty")} text={t("devices.savedEmptyText")} />
         ) : (
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+          <ul className="acct-rows acct-narrow">
             {mine.map((device) => (
               <li key={device.id}>
-                <DeviceTile device={device} saved />
+                <MotionLink nav="push" to={`/device/${device.slug}`} className="acct-row" data-press="soft" aria-label={t("devices.hub", { name: device.name })}>
+                  <DeviceWell device={device} />
+                  <span className="acct-row__body">
+                    <span className="acct-row__title">
+                      <BidiText text={device.name} />
+                    </span>
+                    <DevicePlatform device={device} />
+                  </span>
+                  <Icon name="caret-right" size={20} className="acct-row__chev" />
+                </MotionLink>
               </li>
             ))}
           </ul>
         )}
       </Section>
-      <Section id="pick" title={t("devices.pickTitle")}>
+      <Section id="pick" title={t("devices.pickTitle")} reason={t("devices.pickReason")}>
         <div className="grid gap-6">
+          <OfflineNote />
           {platforms.map((group) => (
-            <section key={group.slug} aria-labelledby={`platform-${group.slug}`} className="grid gap-3">
-              <h3 id={`platform-${group.slug}`} className="type-label font-semibold text-ink">
+            <section key={group.slug} aria-labelledby={`platform-${group.slug}`} className="grid gap-2">
+              <h3 id={`platform-${group.slug}`} className="type-sm-strong text-ink">
                 {isPlatform(group.slug) ? <PlatformLabel platform={group.slug} /> : <BidiText text={group.name} />}
               </h3>
-              <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+              <ul className="acct-rows acct-narrow">
                 {group.devices.map((device) => (
                   <li key={device.id}>
-                    <DeviceTile device={device} saved={saved.has(device.id)} />
+                    <DeviceRow device={device} saved={saved.has(device.id)} />
                   </li>
                 ))}
               </ul>
@@ -106,54 +121,71 @@ function groupByPlatform(options: DeviceOption[]): { slug: string; name: string;
   return [...groups.values()];
 }
 
-/** One device: its photo, its name, a link to its hub, and a key that stays down while it is saved. */
-function DeviceTile({ device, saved }: { device: DeviceOption; saved: boolean }) {
+function DeviceWell({ device }: { device: DeviceOption }) {
+  return (
+    <Niche as="span" size="sm" aria-hidden="true">
+      {device.artKey ? <ProductImage image={{ artKey: device.artKey, mediaKey: null, alt: "", isIllustration: true }} alt="" sizes="56px" /> : null}
+    </Niche>
+  );
+}
+
+function DevicePlatform({ device }: { device: DeviceOption }) {
+  return isPlatform(device.platformSlug) ? (
+    <PlatformLabel platform={device.platformSlug} className="acct-row__meta" />
+  ) : (
+    <span className="acct-row__meta">
+      <BidiText text={device.platformName} />
+    </span>
+  );
+}
+
+/** One device to pick: its photo, its name (a link to everything about it) and the «أملكه» chip, saved at once. */
+function DeviceRow({ device, saved }: { device: DeviceOption; saved: boolean }) {
   const t = useT("account");
+  const online = useOnline();
   const fetcher = useFetcher<typeof action>();
   const handled = useRef<unknown>(null);
-  // Optimistic: the key shows the requested state while the request is out; a failure puts it back and says why.
+  // Optimistic: the chip shows the requested state while the request is out; a refusal puts it back and says why.
   const wanted = fetcher.formData ? fetcher.formData.get("saved") === "1" : null;
   const answer = fetcher.data as ({ ok: true; saved: boolean } | { ok: false; message?: string }) | undefined;
   const current = wanted ?? (answer?.ok ? answer.saved : saved);
 
-  // Success is the key staying down (or coming up) — said aloud when pressed. A refusal does not reload the page, so
-  // this tile is still here to say why.
   useEffect(() => {
     if (fetcher.state !== "idle" || !answer || handled.current === answer) return;
     handled.current = answer;
     if (!answer.ok) toast.error(answer.message ?? t("common.formError"));
   }, [fetcher.state, answer, t]);
 
+  const toggle = () => {
+    const next = !current;
+    announce(t(next ? "devices.added" : "devices.removed", { name: device.name }));
+    fetcher.submit({ deviceModelId: device.id, saved: next ? "1" : "0" }, { method: "post" });
+  };
+
   return (
-    <article className="grid h-full content-start gap-2 rounded-lg bg-paper p-3">
-      <div className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-3">
-        <Niche as="span" ratio="1/1" tagZone={false} className="rounded-md" aria-hidden="true">
-          {device.artKey ? <ProductImage image={{ artKey: device.artKey, mediaKey: null, alt: "", isIllustration: true }} alt="" sizes="72px" pose={0} shadow={false} /> : null}
-        </Niche>
-        <div className="grid min-w-0 gap-1">
-          {/* The name leads to everything about the device (its hub). */}
-          <h4 className="type-strong text-ink">
-            <MotionLink nav="push" to={`/device/${device.slug}`} className="underline-offset-4 hover:underline" aria-label={t("devices.hub", { name: device.name })}>
-              <BidiText text={device.name} />
-            </MotionLink>
-          </h4>
-          {isPlatform(device.platformSlug) ? (
-            <PlatformLabel platform={device.platformSlug} className="type-caption text-ink-2" />
-          ) : (
-            <span className="type-caption text-ink-2">
-              <BidiText text={device.platformName} />
-            </span>
-          )}
-        </div>
-      </div>
-      <fetcher.Form method="post" onSubmit={() => announce(t(current ? "devices.removed" : "devices.added", { name: device.name }))}>
-        <input type="hidden" name="deviceModelId" value={device.id} />
-        <input type="hidden" name="saved" value={current ? "0" : "1"} />
-        {/* a toggle: one name, its state in aria-pressed (held) */}
-        <Key type="submit" size="sm" block held={current} icon={current ? "check" : "plus"} aria-label={t("devices.ownNamed", { name: device.name })}>
-          {t("devices.own")}
-        </Key>
-      </fetcher.Form>
-    </article>
+    <div className="acct-row">
+      <DeviceWell device={device} />
+      <span className="acct-row__body">
+        <MotionLink nav="push" to={`/device/${device.slug}`} className="acct-row__title inline-flex min-h-11 items-center justify-self-start underline-offset-4 hover:underline" aria-label={t("devices.hub", { name: device.name })}>
+          <span>
+            <BidiText text={device.name} />
+          </span>
+        </MotionLink>
+      </span>
+      <Chip selected={current} onClick={toggle} disabled={!online} aria-label={t("devices.ownNamed", { name: device.name })} className="noscript:hidden">
+        {t("devices.own")}
+      </Chip>
+      {/* The chip needs script. Without it (hidden then, `noscript:` is `@media (scripting: none)`) the same choice is a
+          plain form with a toggle key, as before the v2 rebuild: the page reloads with the device saved or removed. */}
+      <noscript>
+        <form method="post">
+          <input type="hidden" name="deviceModelId" value={device.id} />
+          <input type="hidden" name="saved" value={saved ? "0" : "1"} />
+          <Key type="submit" size="sm" held={saved} icon={saved ? "check" : "plus"} aria-label={t("devices.ownNamed", { name: device.name })}>
+            {t("devices.own")}
+          </Key>
+        </form>
+      </noscript>
+    </div>
   );
 }

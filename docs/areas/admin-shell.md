@@ -35,6 +35,9 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
    module whose permission group the employee holds nothing of — by the matched route pattern, before your loaders
    run. Your loaders and actions still start with `requireEmployee(ctx, getDb(), "<permission>")`, and your services
    with `assertCan`. A route registered outside `/admin/<slug>/` is refused (403) for everyone unless the gate has a rule for it — ask the shell owner.
+   The one cross-group rule (`ALSO_OPENED_BY`, by exact pattern): `staff.manage` (group "staff") also opens module 20's
+   role editor — `admin/security/roles`, `admin/security/roles/:roleId` — and the frame's front page `admin/security`
+   (its tab bar links there; every figure on it is null for that permission alone); nothing else of module 20.
 3. **Page skeleton:** no `<main>` of your own (the shell's is the landmark); start with
    `<h1 className="adm-title">`; section heads `adm-h2` / `adm-h3` (Kufam only for page titles and KPI figures, §10);
    `export const meta = (args) => adminMeta(args, (t) => t("modules.orders"))` from `shell/meta` (keeps noindex and the
@@ -42,6 +45,11 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
 4. **Links:** react-router `<Link to="/admin/…">` — never `LocaleLink` (the admin's language is a cookie, not a URL
    prefix). Since 2026-11-11 `localePath` never prefixes `/admin` or `/api`, so `LocaleLink` and `Menu` items of
    `kind: "link"` keep admin paths as they are too — plain `<Link>` is still the clearer choice in admin code.
+   **A customer's name** in another module opens the customer's profile only for staff who may open it: send
+   `customerProfileId(actor, customerId)` (`shell/access.server.ts` — the id with customers.customer.read, else null;
+   null for guests) next to the name and render `<CustomerName profileId={…}>{name}</CustomerName>`
+   (`shell/CustomerName.tsx`): a link, or the plain name. Never inside a row or card that is itself a link. Used by
+   orders (list, order, transfer proof), returns (list, RMA, repairs, warranties) and finance (wallet, top-up).
 5. **Status:** update your own entries in `app/routes/admin/blueprint-status.ts` in the same change as the code —
    `implemented` only when staff can do it in the admin completely (with `route`), `partial` with the missing part in
    `note` (ar + en), `boundary` when only a provider/credential/owner decision is missing. Render
@@ -56,6 +64,10 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
    compares the number with what the page says they may act on:
    - orders: transfer proofs awaiting verification → `/admin/orders/proofs`; refunds awaiting a second approval, not
      the employee's own (RMA refunds included, so returns has no refund queue of its own) → `/admin/orders/refunds`
+   - pos: counted shifts with a difference nobody approved, never one the employee opened or closed, within their
+     branch (`countReviewable`, pos.shift.review) → `/admin/pos/shifts?state=review`
+   - customers: privacy requests still open (`privacyCounts.open`, customers.privacy.manage; staff open them for the
+     customer, so there is no "own request") → `/admin/customers/privacy` (its default view, "open")
    - shipping: failed deliveries waiting for "try again" or "send back" (`countFailedDeliveries`,
      shipping.attempt.manage + shipping.shipment.read) → `/admin/shipping/attempts`; carrier settlements to reconcile
      (`countSettlementsToReconcile`, shipping.cod.settle; one query, one row per submitted settlement): one with a
@@ -69,6 +81,17 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
      `/admin/pricing/changes`
    - inventory: stock counts submitted for approval that the employee neither started nor counted →
      `/admin/inventory/counts?status=review`; transfers in transit → `/admin/inventory/transfers?status=in_transit`
+   - devices (`deviceQueueCounts`, the module's own cards; each count shares its list's filter): trade-ins to inspect
+     (devices.tradein.inspect) → `/admin/devices/trade-ins?view=new`; inspected without an open offer
+     (devices.tradein.offer) → `?view=inspected`; used units to inspect (devices.used.inspect) →
+     `/admin/devices/used?view=todo`; ready, not listed (devices.used.list) → `/admin/devices/used?view=ready`. Accepted
+     trade-ins (+ a permission that opens the trade-in list — ownership.verify alone does not) → `?view=accepted`,
+     counted by the shell itself (`payoutsWhere`, the trade-in page's rules) as what THIS employee can do there: the
+     data wipe with devices.ownership.verify while it is not confirmed, the payout with devices.tradein.payout once it
+     is — never their own offer that only a second person may pay (`payoutNeedsSecond`, from the latest `offered`
+     event). The module's own card (`toPay`) counts every accepted trade-in for either permission (review 2026-11-12:
+     the bell asked a manager to pay their own offer above the guide, and a payer to pay before the wipe — the
+     "trade-in payouts" test). Offers waiting for the customer's answer are not a queue (nobody here decides them)
    - purchasing (`purchasingQueueCounts`, which the module's home reads too): orders above the spending limit, never
      one the employee asked for, created, edited or submitted, within their branch (purchasing.po.approve + cost.read
      + purchasing.po.read, which the list and the order's page need) → `/admin/purchasing/orders?view=pending_approval`;
@@ -80,17 +103,29 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
      `/admin/finance/wallets?tab=adjustments`; draft expenses the employee may approve, not their own above the limit
      (`countDecidableExpenses`; finance.expense.manage) → `queueHref("expenses", now)` =
      `/admin/finance/expenses?from=<today − 399 days>&to=<today>&demo=1&status=draft`: the count takes drafts of any
-     month, demo ones included, while the list alone opens on this month's real expenses — so the link asks for the
-     list's longest range (400 Baghdad days) and demo rows (a draft older than that would be counted, not listed)
+     open month, demo ones included (never one whose posting month is closed: approving it would be `period_closed`),
+     while the list alone opens on this month's real expenses — so the link asks for the list's longest range (400
+     Baghdad days) and demo rows (a draft older than that would be counted, not listed). Finance's home card uses
+     the same link (its loader: `queueHref("expenses", now)`)
+   - security: abnormal sign-in alerts of the last 24 hours (`alertCount`, security.auth_event.read) →
+     `/admin/security/sign-ins?window=24h`; roles whose access review is due — never reviewed, or not within
+     `ACCESS_REVIEW_INTERVAL_DAYS` (`reviewsDue`, security.access_review.perform) → `/admin/security/retention#reviews`.
+     The flagged refunds to review are NOT a queue: `unreviewedCount` counts refunds the reviewer asked for or
+     approved (reviewRefund refuses those) and lists every refund of 90 days to count — asked of the security owner
+   - settings: change requests this employee may decide — never their own, not expired, only keys they may change
+     (`countDecidableSettingChanges`; settings.change.approve + settings.read, which the list needs) →
+     `/admin/settings/changes`
 
    The module counts run at the same time as the shell's own batch (the "speed" test records every statement: the
-   batch and every module's first query are sent before any comes back, and 60 more audit rows, 30 more failed
-   parcels and 30 more top-ups change no statement and no row read), each asked only of the employees it concerns; a
-   module whose count throws is logged (`[admin] the <module> queues failed`) and shows no queue, and the page still
-   loads. `QUEUE_HREF` / `queueHref`, icons in `TopBar.tsx`, words `notices.<id>` in `messages/admin.ts` (Arabic with
-   all six plural forms, English and Sorani one/other — the "words" test). Proof: `npx vitest run
-   tests/admin-shell.test.ts` ("shell data"; run the whole file — those tests need the first owner the setup tests
-   create, so `-t` alone fails). Ask the shell owner to add yours.
+   batch and every module's first query — the later modules' too — are sent before any comes back, and 60 more audit
+   rows, 30 more failed parcels and 30 more top-ups change no statement and no row read), each asked only of the
+   employees it concerns, on the request's clock (`shell.server.ts` passes `ctx.now`); a module whose count throws is
+   logged (`[admin] the <module> queues failed`) and shows none of ITS queues, and the page still loads.
+   `QUEUE_HREF` / `queueHref`, icons in `TopBar.tsx`, words `notices.<id>` in `messages/admin.ts` (Arabic with all six
+   plural forms, English and Sorani one/other — the "words" test). Proof: `npx vitest run tests/admin-shell.test.ts`
+   ("shell data"; run the whole file — those tests need the first owner the setup tests create, so `-t` alone fails;
+   the "pos, customers, devices, security and settings queues" test opens each new link for twelve roles). Ask the
+   shell owner to add yours.
 
 ## Security notes
 
@@ -115,10 +150,16 @@ through `/admin/setup`). Refuses any other argument (`--remote`, …) and `APP_E
 ## Verify
 
 ```
-npx vitest run tests/admin-shell.test.ts      # 25 tests: registry vs blueprint JSON, next validation, visibility per role,
-                                              # navigation, gate (redirect with next, 403 before loaders, POST too), setup once,
-                                              # sign-in (same failure for unknown/wrong, lockout wording, TOTP, replay, recovery
-                                              # code once, hop), queues, My security, sign-out, language
+npx vitest run tests/admin-shell.test.ts      # 36 tests: registry vs blueprint JSON, next validation, visibility per role,
+                                              # navigation, gate (redirect with next, 403 before loaders, POST too, staff.manage →
+                                              # the role editor only), setup once, sign-in (same failure for unknown/wrong,
+                                              # lockout wording, TOTP, replay, recovery code once, hop), queues (rules, truth
+                                              # against the linked pages — each accepted trade-in's own page for the payouts —,
+                                              # failures, speed, ctx.now, trade-in payouts per person, words), My security,
+                                              # sign-out, language
+npx vitest run tests/admin-integration.test.ts # what the modules take from each other (2026-11-11): shipping's guarded fee,
+                                              # returns' targets and queues, pricing's limit words, every setting's help text,
+                                              # finance's expenses and home link, customer names → profile
 npx vitest run tests/i18n.test.ts             # admin and admin-auth namespaces complete in ar, en, ckb
 node scripts/lint-design.mjs app/routes/admin # 0 findings
 ```
@@ -130,7 +171,13 @@ and 1440, light and dark, ar and en (`.shots/admin/`), no horizontal overflow, n
 
 ## Not done / limits
 
-- The queue cards and beads were checked with tests, not seen in the browser (the dev database has no pending proofs).
+- The bell and the home's list were seen in the browser at 1440 (bell) and 390 (the "waiting" tab's list), ar and en,
+  light and dark, with the demo owner (integration review 2026-11-12).
+- Not in the bell yet: the security module's flagged refunds to review (its count includes the reviewer's own
+  refunds and reads 90 days of refunds — asked of the security owner).
+- The trade-in payouts queue applies the trade-in page's rules in the shell's own query (`payoutsWhere`), while the
+  devices module's card still counts every accepted trade-in: the two differ for an employee who cannot act on some
+  of them — asked of the devices owner to count `toPay` the same way (then the shell can take it back).
 - Records (orders, customers, SKUs, serials, tickets) are not searchable from the palette (blueprint 01.06, module 01).
 - Trusted devices, requiring two-step verification for a role, other employees' sessions, disabling staff: modules 15/20.
 - Recovery codes cannot be regenerated without turning two-step verification off and on (no service for it).

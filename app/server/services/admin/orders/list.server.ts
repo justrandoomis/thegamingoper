@@ -13,6 +13,7 @@
 import { and, asc, desc, eq, gte, inArray, isNull, lte, or, sql, type SQL } from "drizzle-orm";
 import { pick, type Locale } from "~/lib/locales";
 import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
+import { customerProfileId } from "~/routes/admin/shell/access.server";
 import { assertCan, can, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
 import { governorates, orders, payments, refunds } from "~/server/db/schema";
@@ -94,6 +95,7 @@ export async function listOrders(db: Db, actor: Actor, filters: OrderListFilters
       totalIqd: orders.totalIqd,
       paidIqd: orders.paidIqd,
       contactName: orders.contactName,
+      customerId: orders.customerId,
       phone: orders.contactPhoneE164,
       governorate: governorates.name,
       assignedTo: orders.assignedTo,
@@ -131,6 +133,7 @@ export async function listOrders(db: Db, actor: Actor, filters: OrderListFilters
     paidIqd: row.paidIqd,
     units: Number(row.units),
     contactName: row.contactName,
+    customerProfileId: customerProfileId(actor, row.customerId),
     phone: phoneFor(actor, row.phone),
     governorate: row.governorate ? pick(row.governorate, locale) : null,
     assignedTo: row.assignedTo ? { id: row.assignedTo, name: names.get(row.assignedTo) ?? row.assignedTo } : null,

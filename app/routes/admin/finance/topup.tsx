@@ -11,6 +11,8 @@ import { TextField } from "~/ui/Field";
 import { Glass } from "~/ui/Glass";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
+import { CustomerName } from "../shell/CustomerName";
+import { customerProfileId } from "../shell/access.server";
 import { amount, failed, financeT, ok, openFinance, orRespond, text } from "./finance.server";
 import { financeMeta } from "./meta";
 import { Code, DemoTag, Ledger, Money, Note, PageHead, Section, StateTag, useFinT, When } from "./ui";
@@ -25,7 +27,8 @@ import { Code, DemoTag, Ledger, Money, Note, PageHead, Section, StateTag, useFin
 export async function loader({ context, params }: Route.LoaderArgs) {
   const { db, actor, now } = await openFinance(context, "finance.wallet.read");
   const review = await orRespond(() => getTopupReview(db, actor, params.topupId, (id) => `/admin/finance/wallets/topups/${id}/proof`, now));
-  return { review };
+  // the name opens the customer's profile for staff who may open it (customers.customer.read), text otherwise
+  return { review, customerProfileId: customerProfileId(actor, review.customerId) };
 }
 
 export async function action({ request, context, params }: Route.ActionArgs) {
@@ -77,7 +80,7 @@ export default function TopupReviewPage({ loaderData }: Route.ComponentProps) {
         lead={
           <span className="inline-flex flex-wrap items-center gap-2">
             <StateTag group="topup" value={review.status} label={t(`topupStatus.${review.status}`)} />
-            {t(`method.${review.method}`)} · {review.customer?.name ?? t("common.noName")}
+            {t(`method.${review.method}`)} · <CustomerName profileId={loaderData.customerProfileId}>{review.customer?.name ?? t("common.noName")}</CustomerName>
             {review.customer?.phone ? <bdi dir="ltr">{review.customer.phone.display}</bdi> : null}
           </span>
         }

@@ -1,14 +1,15 @@
 /**
- * The trade-in wizard's photos (DESIGN.md §9.21 "photos use the proof uploader pattern", §9.18): a dashed paper drop
- * area with "اختر صوراً" and, on touch screens, "التقط صورة"; several photos, up to the limit; each one is checked
- * here first (JPEG, PNG or WebP within the size limit — the server decides again from the bytes), shown at once from
- * the device, and sent one at a time to POST /api/upload/tradein with an ink progress bar. A failure says why, beside
- * that photo, with a retry when retrying can help; a removed photo is deleted on the server. The photos are private:
- * only this browser's draft (httpOnly cookie) and, after submission, store staff can see them.
+ * The trade-in wizard's photos (Design System v2 §6.14 "photos: the ProofUploader pattern", §4.24): the kit's paper drop
+ * area with a dashed control line (.proof__drop), «اختر صوراً» and, on touch screens, «التقط صورة»; several photos, up
+ * to the limit; each one is checked here first (JPEG, PNG or WebP within the size limit — the server decides again from
+ * the bytes), shown at once from the device, and sent one at a time to POST /api/upload/tradein with an ink progress
+ * bar and its %. A failure says why, beside that photo (danger callout), with a retry when retrying can help; a removed
+ * photo is deleted on the server. The photos are private: only this browser's draft (httpOnly cookie) and, after
+ * submission, store staff can see them.
  *
  * Uses `checkProofFile` / `proofFailure` from ~/ui/ProofUploader (the same rules as the transfer proof).
  */
-import { useEffect, useId, useRef, useState, type DragEvent } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type DragEvent } from "react";
 
 import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
@@ -94,6 +95,11 @@ async function deletePhoto(id: string): Promise<boolean> {
 let serial = 0;
 const nextKey = () => `p${++serial}`;
 
+/** A file name inside a sentence, first-strong isolated: «1-1200.jpg» keeps its order inside Arabic and Sorani. */
+const FSI = String.fromCharCode(0x2068);
+const PDI = String.fromCharCode(0x2069);
+const named = (name: string) => `${FSI}${name}${PDI}`;
+
 export type TradeInPhotosProps = { initial: DraftPhoto[]; limit: number; maxBytes: number; className?: string };
 
 export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPhotosProps) {
@@ -133,11 +139,11 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
   const update = (key: string, change: Partial<Entry>) => setEntries((list) => list.map((entry) => (entry.key === key ? { ...entry, ...change } : entry)));
 
   const problemOf = (code: string, name: string, progress: number) => {
-    if (code === "trade_in_photo_limit") return { text: t("tradein.photos.errors.limit", { name }), retry: false };
+    if (code === "trade_in_photo_limit") return { text: t("tradein.photos.errors.limit", { name: named(name) }), retry: false };
     const failure = proofFailure(code, progress);
     const problem = failure.phase === "interrupted" ? "network" : failure.problem;
     const key = problem === "rate_limited" ? "rate_limited" : problem;
-    return { text: t(`tradein.photos.errors.${key}`, { name, size: "", max: mb(maxBytes) }), retry: failure.phase === "interrupted" || failure.retry };
+    return { text: t(`tradein.photos.errors.${key}`, { name: named(name), size: "", max: mb(maxBytes) }), retry: failure.phase === "interrupted" || failure.retry };
   };
 
   const pump = async () => {
@@ -150,7 +156,7 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
         if (!entry) continue;
         const controller = new AbortController();
         aborts.current.set(key, controller);
-        setSaid(t("tradein.photos.uploading", { name: entry.name }));
+        setSaid(t("tradein.photos.uploading", { name: named(entry.name) }));
         let lastProgress = 0;
         const answer = await sendPhoto(
           entry.file,
@@ -184,12 +190,12 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
       const name = file.name || t("tradein.photos.photo", { n: f.number(kept.length + added.length + 1) });
       const problem = checkProofFile({ name: file.name, size: file.size, type: file.type }, { maxBytes });
       if (problem) {
-        const text = t(`tradein.photos.errors.${problem}`, { name, size: mb(file.size), max: mb(maxBytes) });
+        const text = t(`tradein.photos.errors.${problem}`, { name: named(name), size: mb(file.size), max: mb(maxBytes) });
         added.push({ key: nextKey(), id: null, name, src: null, local: false, state: "failed", progress: 0, problem: text, retry: false });
         continue;
       }
       if (space <= 0) {
-        added.push({ key: nextKey(), id: null, name, src: null, local: false, state: "failed", progress: 0, problem: t("tradein.photos.errors.limit", { name }), retry: false });
+        added.push({ key: nextKey(), id: null, name, src: null, local: false, state: "failed", progress: 0, problem: t("tradein.photos.errors.limit", { name: named(name) }), retry: false });
         continue;
       }
       space--;
@@ -272,16 +278,16 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
           setDragging(false);
           take(event.dataTransfer.files);
         }}
-        className={cx("grid justify-items-center gap-2 rounded-lg border-[1.5px] border-dashed bg-paper p-5 text-center", dragging ? "border-ink bg-niche" : "border-line-strong")}
+        className="proof__drop used-photos__drop"
       >
         <span className="grid size-11 place-items-center rounded-full bg-niche text-ink-2" aria-hidden="true">
-          <Icon name="camera" size={22} />
+          <Icon name="camera" size={20} />
         </span>
-        <p id={titleId} className="type-strong text-ink">
+        <p id={titleId} className="type-card text-ink">
           {dragging ? t("tradein.photos.dropHere") : t("tradein.photos.drop")}
         </p>
-        <p className="type-caption text-ink-2">{t("tradein.photos.limits", { count: f.number(limit), size: mb(maxBytes) })}</p>
-        <p className="type-caption font-medium text-ink-2">
+        <p className="type-xs text-ink-2">{t("tradein.photos.limits", { count: f.number(limit), size: mb(maxBytes) })}</p>
+        <p className="type-xs-strong text-ink-2">
           <bdi className="nums">{t("tradein.photos.count", { n: f.number(kept.length), total: f.number(limit) })}</bdi>
         </p>
         {room > 0 ? (
@@ -294,7 +300,7 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
             </Key>
           </div>
         ) : (
-          <p className="type-caption text-ink-2">{t("tradein.photos.full")}</p>
+          <p className="type-xs text-ink-2">{t("tradein.photos.full")}</p>
         )}
         <input
           ref={chooser}
@@ -326,13 +332,14 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
             const n = entry.state === "failed" ? null : ++position;
             const label = n ? t("tradein.photos.photo", { n: f.number(n) }) : entry.name;
             const at = (n ?? 1) - 1;
+            const percent = Math.floor(entry.progress * 100);
             return (
               <li key={entry.key} className={cx("grid content-start gap-1.5", entry.state === "failed" && "col-span-full")}>
                 {entry.state === "failed" ? (
-                  <div className="flex flex-wrap items-start gap-2 rounded-md bg-niche p-3" role="alert">
-                    <Icon name="warning-circle" size={18} className="mt-0.5 shrink-0 text-red-ink" />
-                    <p className="min-w-0 flex-1 type-caption font-medium text-red-ink">{entry.problem}</p>
-                    <div className="flex items-center gap-3">
+                  <div className="callout callout--danger flex-wrap items-start" role="alert">
+                    <Icon name="warning-circle" size={20} />
+                    <p className="min-w-0 flex-1 type-sm-strong text-danger">{entry.problem}</p>
+                    <div className="flex items-center gap-4">
                       {entry.retry && files.current.has(entry.key) ? (
                         <TextLink as="button" type="button" arrow={false} onClick={() => retry(entry)}>
                           {t("tradein.photos.retry")}
@@ -345,29 +352,24 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
                   </div>
                 ) : (
                   <>
-                    <div className="relative aspect-square overflow-hidden rounded-md border border-line bg-niche">
+                    <div className="relative aspect-square overflow-hidden rounded-sm border border-line bg-niche">
                       {entry.src ? <img src={entry.src} width={160} height={160} alt={label} className="size-full object-cover" /> : null}
                       {entry.state === "uploading" ? (
-                        <div className="absolute inset-x-2 bottom-2">
-                          <div
-                            role="progressbar"
-                            aria-label={t("tradein.photos.progress")}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-valuenow={Math.floor(entry.progress * 100)}
-                            className="h-1.5 overflow-hidden rounded-full bg-paper"
-                          >
-                            <div className="h-full rounded-full bg-ink" style={{ inlineSize: `${Math.floor(entry.progress * 100)}%` }} />
-                          </div>
-                        </div>
+                        <span className="absolute inset-x-2 bottom-2 grid gap-1 rounded-xs bg-paper px-2 py-1">
+                          <span className="type-tag nums text-ink">{f.percent(entry.progress)}</span>
+                          <span role="progressbar" aria-label={t("tradein.photos.progress")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} className="proof__bar block">
+                            <span className="proof__fill" style={{ "--progress": `${percent}%` } as CSSProperties} />
+                          </span>
+                        </span>
                       ) : (
                         <span className="absolute bottom-1.5 start-1.5 grid size-6 place-items-center rounded-full bg-paper text-ok" aria-hidden="true">
-                          <Icon name="check" size={14} />
+                          <Icon name="check" size={16} />
                         </span>
                       )}
                       <IconKey
                         icon="x"
-                        size="sm"
+                        size="xs"
+                        variant="onImage"
                         label={t("tradein.photos.remove", { n: f.number(n ?? 1) })}
                         className="absolute end-1 top-1"
                         onClick={() => void remove(entry, at)}
@@ -375,7 +377,7 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
                         data-photo-remove=""
                       />
                     </div>
-                    <p className="truncate type-caption text-ink-2">
+                    <p className="truncate type-xs text-ink-2">
                       <bdi>{entry.name || label}</bdi>
                     </p>
                   </>

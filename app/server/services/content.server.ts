@@ -17,12 +17,13 @@
  * proof window, the payment methods that are switched on with their card / Zain Cash numbers, the trade-in estimate
  * validity, the cookies the code really sets and the retention windows the daily job really applies. Whatever the
  * owner has not decided (return conditions, the store's own warranty, legal clauses, order-record retention) is
- * said to be pending, never guessed. The `approved` flag on the result is what the page's
- * "draft — awaiting the store owner's review" notice reads; drafts are also noindex and left out of the sitemap.
+ * said to be not decided yet, never guessed. The `approved` flag on the result is what the page's status line reads
+ * («نسخة أولى — قد تتغيّر قبل الإطلاق.» for a draft, Design System v2 §6.15); drafts are also noindex and left out of
+ * the sitemap. A draft's «آخر تحديث» is the later of POLICY_DRAFTS_REVISED_AT and the last change to a setting it quotes.
  *
  * Reads only. Services take `db` first and never import "cloudflare:workers" (the routes pass origin and mode).
  */
-import { sql } from "drizzle-orm";
+import { inArray, sql } from "drizzle-orm";
 import { messagesFor, serverT, type I18nPayload } from "~/i18n/i18n.server";
 import type { MessageTree, TFunction } from "~/i18n/translate";
 import { DEFAULT_LOCALE, LOCALE_CODES, LOCALES, localePath, pick, type L10n, type Locale } from "~/lib/locales";
@@ -32,10 +33,10 @@ import { PREFS_COOKIE } from "~/lib/prefs";
 import { POLICY_ICONS, POLICY_SLUGS, isPolicySlug, type ContactChannel, type ContactView, type CmsText, type PaymentMethodKey, type PolicyFact, type PolicySlug, type PolicySummary, type PolicyView, type StoreFactsView } from "~/routes/storefront/content/content-model";
 import { CUSTOMER_COOKIE, CUSTOMER_SESSION_DAYS } from "~/server/auth/customer.server";
 import type { Db } from "~/server/db/drizzle.server";
-import type { PageKind } from "~/server/db/schema";
+import { settings as settingsTable, type PageKind } from "~/server/db/schema";
 import { batchSql, runBatch } from "~/server/db/tx.server";
 import { RETENTION_DAYS } from "~/server/jobs.server";
-import { getSetting, getSettings, type SettingValue } from "~/server/settings.server";
+import { getSetting, getSettings, type SettingKey, type SettingValue } from "~/server/settings.server";
 import { CART_COOKIE_MAX_AGE_SEC } from "~/server/services/cart.server";
 import { getShippingFee, listGovernorates } from "~/server/services/shipping/fees.server";
 import { CART_COOKIE } from "~/server/shell.server";
@@ -48,6 +49,22 @@ type StoreMode = "demo" | "live";
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 /** Lifetime of the `tt_prefs` cookie: ONE_YEAR in app/lib/prefs.tsx (not exported there). */
 const PREFS_COOKIE_DAYS = 365;
+
+/**
+ * When the drafts' wording (`drafts.*` in app/i18n/messages/content.ts) or a constant they quote (cookies, retention
+ * windows) last changed: a draft's «آخر تحديث» is never earlier. Move it forward whenever a draft's text changes.
+ */
+export const POLICY_DRAFTS_REVISED_AT = Date.UTC(2026, 10, 12);
+
+/** The settings each draft quotes: a change to one of them is a change to that policy's text. */
+const DRAFT_SETTINGS: Record<PolicySlug, readonly SettingKey[]> = {
+  shipping: ["shipping.flat_fee_iqd", "shipping.overrides_enabled", "payments.cod", "payments.wallet", "payments.bank_transfer", "payments.zaincash"],
+  returns: ["returns.window_days", "payments.bank_transfer", "payments.zaincash", "checkout.transfer_proof_hours"],
+  warranty: [],
+  payment: ["payments.cod", "payments.wallet", "payments.bank_transfer", "payments.zaincash", "checkout.transfer_proof_hours"],
+  privacy: [],
+  terms: ["shipping.flat_fee_iqd", "shipping.overrides_enabled", "payments.wallet", "payments.bank_transfer", "payments.zaincash", "checkout.transfer_proof_hours", "tradein.estimate_valid_days"],
+};
 
 // ───────────────────────────────────────────────────────────────── strings
 
@@ -117,7 +134,8 @@ async function readStoreFacts(db: Db): Promise<StoreFacts> {
 
 const hasTransfers = (facts: Pick<StoreFacts, "methods">) => facts.methods.includes("card") || facts.methods.includes("zaincash");
 
-type Coverage = { rows: { name: string; feeIqd: number }[]; varies: boolean };
+/** `total`: every governorate the store knows (active or paused), so a pause can be said without a count. */
+type Coverage = { rows: { name: string; feeIqd: number }[]; varies: boolean; total: number };
 
 /**
  * The governorates delivered to and what each pays — from the commerce core (listGovernorates / getShippingFee), so
@@ -125,11 +143,28 @@ type Coverage = { rows: { name: string; feeIqd: number }[]; varies: boolean };
  * overrides on; otherwise every active governorate pays the flat fee.
  */
 async function readCoverage(db: Db, locale: Locale, facts: StoreFacts): Promise<Coverage> {
-  const governorates = await listGovernorates(db, locale);
-  if (!facts.overridesEnabled) return { rows: governorates.map((g) => ({ name: g.name, feeIqd: facts.feeIqd })), varies: false };
+  const [governorates, counted] = await Promise.all([listGovernorates(db, locale), db.all<{ n: number }>(sql`SELECT COUNT(*) AS n FROM governorates`)]);
+  const total = Math.max(Number(counted[0]?.n ?? 0), governorates.length);
+  if (!facts.overridesEnabled) return { rows: governorates.map((g) => ({ name: g.name, feeIqd: facts.feeIqd })), varies: false, total };
   const fees = await Promise.all(governorates.map((g) => getShippingFee(db, g.id)));
   const rows = governorates.map((g, i) => ({ name: g.name, feeIqd: fees[i] }));
-  return { rows, varies: rows.some((row) => row.feeIqd !== facts.feeIqd) };
+  return { rows, varies: rows.some((row) => row.feeIqd !== facts.feeIqd), total };
+}
+
+/**
+ * «آخر تحديث» of a draft: the drafts' last revision in code, or the last change to a setting that draft quotes (and,
+ * for the delivery policy and the terms while per-governorate fees are on, to an override fee) — whichever is later.
+ * Governorates carry no change time, so pausing one does not move the date (the text still changes at once).
+ */
+async function draftUpdatedAt(db: Db, slug: PolicySlug, facts: StoreFacts): Promise<number> {
+  const keys = DRAFT_SETTINGS[slug];
+  const overrides = facts.overridesEnabled && (slug === "shipping" || slug === "terms");
+  const [settingRows, rateRows] = await Promise.all([
+    keys.length > 0 ? db.select({ at: sql<number | null>`MAX(${settingsTable.updatedAt})` }).from(settingsTable).where(inArray(settingsTable.key, [...keys])) : Promise.resolve([]),
+    overrides ? db.all<{ at: number | null }>(sql`SELECT MAX(updated_at) AS at FROM shipping_rates WHERE is_override = 1`) : Promise.resolve([]),
+  ]);
+  const times = [POLICY_DRAFTS_REVISED_AT, Number(settingRows[0]?.at ?? 0), Number(rateRows[0]?.at ?? 0)].filter((at) => Number.isFinite(at));
+  return Math.max(...times);
 }
 
 /** What the about page states about how the store works, from its settings. */
@@ -259,7 +294,7 @@ export async function getPolicy(db: Db, locale: Locale, slug: string, options: P
     source: "draft",
     approved: false,
     textLocale: locale,
-    updatedAt: null,
+    updatedAt: await draftUpdatedAt(db, draftSlug, facts!),
     facts: factsList,
     noindex: true,
   };
@@ -298,15 +333,21 @@ export async function listPolicies(db: Db, locale: Locale, options: { now?: numb
 function policyFacts(slug: PolicySlug, facts: StoreFacts, coverage: Coverage | null): PolicyFact[] {
   const transfers = hasTransfers(facts);
   switch (slug) {
-    case "shipping":
+    case "shipping": {
+      const served = coverage?.rows.length ?? 0;
+      const total = coverage?.total ?? 0;
       return [
         { kind: "delivery_fee", amountIqd: facts.feeIqd, varies: coverage?.varies ?? false },
-        { kind: "governorates", count: coverage?.rows.length ?? 0 },
+        ...(served < total || served === 0 ? [{ kind: "coverage_paused", all: served === 0 } as const] : []),
+        { kind: "track" },
       ];
+    }
     case "returns":
       return [{ kind: "return_window", days: facts.returnDays }];
     case "warranty":
-      return [{ kind: "store_warranty_pending" }, { kind: "maker_warranty" }, { kind: "used_warranty" }];
+      // facts or a question, never an invented term (v2 §9.6, §13 #4): where the maker's warranty is written when it is
+      // known, where a used unit's is, then «اسألنا» for the store's own (its terms are the owner's to set)
+      return [{ kind: "maker_warranty" }, { kind: "used_warranty" }, { kind: "store_warranty_pending" }];
     case "payment":
       return [
         { kind: "payment_methods", methods: facts.methods },
@@ -352,7 +393,8 @@ export function buildPolicyDraft(slug: PolicySlug, env: DraftEnv): Block[] {
       if (rows.length === 0) {
         out.push(p(k("areaNone")));
       } else {
-        out.push(p(k("areaText", { count: rows.length })));
+        // the governorates by name, without a count: how many there are is the owner's to say (v2 §13 #6)
+        out.push(p(k("areaText")));
         // One fee everywhere: the names as one line of text (19 short names read better than a 19-row list on a
         // phone). Different fees: a table, so every governorate's fee is next to its name.
         out.push(varies ? table([k("tableGovernorate"), k("tableFee")], rows.map((row) => [row.name, money(row.feeIqd)])) : p(rows.map((row) => row.name).join(t("common.listSeparator"))));
@@ -565,7 +607,13 @@ export function contactView(contact: SettingValue<"store.contact">, locale: Loca
   if (contact.map_url) channels.push({ kind: "map", value: hostLabel(contact.map_url), href: contact.map_url, external: true });
   const address = contact.address ? pick(contact.address, locale).trim() || null : null;
   const hours = contact.hours ? pick(contact.hours, locale).trim() || null : null;
-  return { channels, address, hours, isEmpty: channels.length === 0 && !address && !hours };
+  // the kit's <ContactCard>: WhatsApp as international digits, the phone in E.164, the hours in the owner's words (the
+  // setting stores no schedule, so the card computes no open / closed state) — the same mapping as the shell's footer
+  const card =
+    phone || whatsapp || address
+      ? { whatsapp: whatsapp ? whatsapp.slice(1) : null, phone, address, mapsUrl: contact.map_url ?? null, hours: null, hoursText: hours, replyTime: null }
+      : null;
+  return { channels, address, hours, card, isEmpty: channels.length === 0 && !address && !hours };
 }
 
 /** "https://www.instagram.com/tamtam.games/" → "instagram.com/tamtam.games" */

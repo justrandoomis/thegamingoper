@@ -12,6 +12,7 @@ import { ConfirmDialog, type ImpactRow } from "~/ui/Dialog";
 import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
+import { CustomerName } from "../shell/CustomerName";
 import { Facts, Failure, FlagExplanations, Money, PhoneText, Ref, RepairStatusBadge, Section, useIntent, useReturnsT, When, WarrantyBadge, newKey } from "./ui";
 
 type Props = { rma: RmaDetail };
@@ -694,7 +695,7 @@ export function FactsSection({ rma }: Props) {
       <Facts
         className="ret-facts--single"
         rows={[
-          { label: t("detail.customer"), value: rma.customer.name ?? (rma.customer.kind === "guest" ? t("detail.guest") : "—") },
+          { label: t("detail.customer"), value: <CustomerName profileId={rma.customer.profileId}>{rma.customer.name ?? (rma.customer.kind === "guest" ? t("detail.guest") : "—")}</CustomerName> },
           { label: t("detail.phone"), value: <PhoneText phone={rma.customer.phone} /> },
           { label: t("detail.reasonCode"), value: rma.reasonCode ? t(`reason.${rma.reasonCode}`) : "—" },
           { label: t("detail.reasonText"), value: rma.reason ?? "—" },

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { data, Form, useFetcher, useNavigation, useSearchParams } from "react-router";
+import { data, Form, useFetcher, useNavigation, useRevalidator, useRouteLoaderData, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/addresses";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
@@ -11,20 +11,26 @@ import type { AddressView, GeographyOption } from "~/server/services/account/typ
 import { ConfirmDialog } from "~/ui/Dialog";
 import { EmptyState } from "~/ui/EmptyState";
 import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
+import { GovernoratePicker } from "~/ui/GovernoratePicker";
 import { Key } from "~/ui/Key";
-import { Status } from "~/ui/Tag";
+import { useOnline } from "~/ui/OfflineBanner";
+import { iqdText, isIqd } from "~/ui/PriceTag";
+import { Tag } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
+import { LAYOUT_ROUTE_ID } from "../shell/meta";
+import type { ShellData } from "../shell/types";
 import { accountFailure, formFields, localeRedirect, requireSignedIn } from "./account.server";
 import { sectionOrder } from "./components/AccountNav";
-import { AnswerNotice, fieldError, FormNotice, SubmitKey, type ActionAnswer } from "./components/FormBits";
+import { fieldError, FormFailure, Notice, rescueFocus, SubmitKey, type ActionAnswer } from "./components/FormBits";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
-import { PHONE_EXAMPLE } from "./components/text";
+import { amount, PHONE_EXAMPLE } from "./components/text";
+import { useHydrated } from "./components/useHydrated";
 
 /**
- * Delivery addresses (brief §3.10): governorates and districts from the shipping geography, the same fields as the
- * checkout. The add / edit form is part of the URL (`?new=1`, `?edit=<id>`), so it works before JavaScript and Back
- * closes it; deleting asks first.
+ * Delivery addresses (Design System v2 §6.12: cards + «أضف عنواناً»): the governorate through the kit's picker (the
+ * flat fee on top, as in checkout) and its districts from the shipping geography — the same fields as the checkout.
+ * The add / edit form is its own step in the URL (`?new=1`, `?edit=<id>`), so Back closes it; deleting asks first.
  */
 export const handle = { nav: "push", order: sectionOrder("addresses") } satisfies MotionHandle;
 
@@ -63,26 +69,55 @@ export async function action({ request, context }: Route.ActionArgs) {
   }
 }
 
-export const meta: Route.MetaFunction = (args) => accountMeta(args, "addresses");
+export const meta: Route.MetaFunction = (args) => {
+  const params = new URLSearchParams(args.location.search);
+  return accountMeta(args, params.get("new") === "1" ? "addressNew" : params.get("edit") ? "addressEdit" : "addresses");
+};
 
 type Answer = ActionAnswer & { intent?: string | null; done?: string; values?: Record<string, string> };
 
+/** «أضف عنواناً» — the list view's one primary (in the head, or in the empty state). */
+function AddKey() {
+  const t = useT("account");
+  return (
+    <Key as={LocaleLink} to="/account/addresses?new=1" variant="primary" icon="plus">
+      {t("addresses.add")}
+    </Key>
+  );
+}
+
 export default function Addresses({ loaderData, actionData }: Route.ComponentProps) {
   const t = useT("account");
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const editing = params.get("edit");
   const adding = params.get("new") === "1";
-  const saved = params.get("saved") === "1";
   const answer = (actionData ?? null) as Answer | null;
   const failedSave = answer && answer.ok === false && answer.intent === "save" ? answer : null;
   const target = editing ? (loaderData.addresses.find((address) => address.id === editing) ?? null) : null;
   const formOpen = adding || target !== null || failedSave !== null;
   const atLimit = loaderData.addresses.length >= loaderData.max;
 
+  // Saved: say so once, then drop the flag from the address (a reload must not say it again).
+  const saved = params.get("saved") === "1";
+  useEffect(() => {
+    if (!saved) return;
+    toast.success(t("addresses.saved"));
+    setParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        next.delete("saved");
+        return next;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  }, [saved, setParams, t]);
+
   // Deleting lives here, not in the card: the card is gone once the list reloads, the page is not.
   const remover = useFetcher<typeof action>();
   const [deleting, setDeleting] = useState<AddressView | null>(null);
   const handled = useRef<unknown>(null);
+  const landing = useRef("addresses-title");
+  const revalidator = useRevalidator();
   const removal = (remover.data ?? null) as Answer | null;
   useEffect(() => {
     if (remover.state !== "idle" || !removal || handled.current === removal) return;
@@ -90,54 +125,49 @@ export default function Addresses({ loaderData, actionData }: Route.ComponentPro
     if (removal.ok && removal.done === "deleted") {
       setDeleting(null);
       toast.success(t("addresses.deleted"));
+      // The card and its «احذف» key are gone: focus lands on the card that takes its place (or the page's title when
+      // it was the last one), not on <body>.
+      rescueFocus(landing.current);
+    } else if (!removal.ok) {
+      // Refused (already deleted in another tab): the dialog says why, and the cards behind it are read again — a
+      // refused answer does not revalidate by itself.
+      void revalidator.revalidate();
     }
-  }, [remover.state, removal, t]);
+  }, [remover.state, removal, t, revalidator]);
   const deletingLabel = deleting ? deleting.label || t("addresses.untitled") : "";
+
+  if (formOpen) {
+    return (
+      <>
+        <PageHead back={{ to: "/account/addresses", label: t("addresses.back"), order: sectionOrder("addresses") }} title={target ? t("addresses.editTitle") : t("addresses.newTitle")} />
+        <AddressForm key={target?.id ?? "new"} address={target} geography={loaderData.geography} answer={failedSave} />
+      </>
+    );
+  }
 
   return (
     <>
-      <PageHead
-        title={t("addresses.title")}
-        lead={t("addresses.lead")}
-        aside={
-          !formOpen && !atLimit && loaderData.addresses.length > 0 ? (
-            <Key as={LocaleLink} to="/account/addresses?new=1" preventScrollReset icon="plus" size="sm">
-              {t("addresses.add")}
-            </Key>
-          ) : null
-        }
-      />
-      {saved && !formOpen ? <FormNotice tone="ok">{t("addresses.saved")}</FormNotice> : null}
-      {atLimit && !target ? <FormNotice tone="info">{t("errors.address_limit")}</FormNotice> : null}
+      <PageHead titleId="addresses-title" title={t("addresses.title")} lead={t("addresses.lead")} aside={!atLimit && loaderData.addresses.length > 0 ? <AddKey /> : null} />
+      {atLimit ? <Notice>{t("errors.address_limit")}</Notice> : null}
 
-      {formOpen ? (
-        <AddressForm key={target?.id ?? "new"} address={target} geography={loaderData.geography} answer={failedSave} />
-      ) : loaderData.addresses.length === 0 ? (
-        <EmptyState
-          layout="stack"
-          icon="map-pin"
-          title={t("addresses.emptyTitle")}
-          text={t("addresses.emptyText")}
-          action={
-            <Key as={LocaleLink} to="/account/addresses?new=1" preventScrollReset icon="plus">
-              {t("addresses.add")}
-            </Key>
-          }
-        />
-      ) : null}
-
-      {loaderData.addresses.length > 0 ? (
-        <ul className="grid gap-3 md:grid-cols-2">
+      {loaderData.addresses.length === 0 ? (
+        <EmptyState layout="stack" title={t("addresses.emptyTitle")} text={t("addresses.emptyText")} action={<AddKey />} />
+      ) : (
+        <ul className="grid gap-card md:grid-cols-2">
           {loaderData.addresses.map((address) => (
-            <li key={address.id}>
+            <li key={address.id} className="grid">
               <AddressCard address={address} onDelete={() => setDeleting(address)} />
             </li>
           ))}
         </ul>
-      ) : null}
+      )}
       <ConfirmDialog
         open={deleting !== null}
-        onClose={() => setDeleting(null)}
+        onClose={() => {
+          // After a refusal the card that opened the dialog may be gone: focus then lands on the title.
+          rescueFocus("addresses-title");
+          setDeleting(null);
+        }}
         tone="destructive"
         title={t("addresses.deleteQ")}
         consequence={t("addresses.deleteWhat", { label: deletingLabel })}
@@ -146,7 +176,12 @@ export default function Addresses({ loaderData, actionData }: Route.ComponentPro
         pending={remover.state !== "idle"}
         error={removal && removal.ok === false && removal.intent === "delete" ? removal.message : undefined}
         onConfirm={() => {
-          if (deleting) remover.submit({ intent: "delete", id: deleting.id }, { method: "post" });
+          if (!deleting) return;
+          const list = loaderData.addresses;
+          const at = list.findIndex((address) => address.id === deleting.id);
+          const neighbour = list[at + 1] ?? list[at - 1];
+          landing.current = neighbour ? `address-${neighbour.id}-title` : "addresses-title";
+          remover.submit({ intent: "delete", id: deleting.id }, { method: "post" });
         }}
       />
     </>
@@ -155,6 +190,7 @@ export default function Addresses({ loaderData, actionData }: Route.ComponentPro
 
 function AddressCard({ address, onDelete }: { address: AddressView; onDelete: () => void }) {
   const t = useT("account");
+  const online = useOnline();
   const f = useFormat();
   const fetcher = useFetcher<typeof action>();
   const handled = useRef<unknown>(null);
@@ -164,48 +200,52 @@ function AddressCard({ address, onDelete }: { address: AddressView; onDelete: ()
   useEffect(() => {
     if (fetcher.state !== "idle" || !answer || handled.current === answer) return;
     handled.current = answer;
-    if (answer.ok && answer.done === "default") toast.success(t("addresses.defaultSet"));
-    else if (answer.ok === false) toast.error(answer.message ?? t("common.formError"));
-  }, [fetcher.state, answer, t]);
+    if (answer.ok && answer.done === "default") {
+      toast.success(t("addresses.defaultSet"));
+      // «اجعله الافتراضي» is gone from this card now that it is the default: focus lands on the card's name.
+      rescueFocus(`address-${address.id}-title`);
+    } else if (answer.ok === false) toast.error(answer.message ?? t("common.formError"));
+  }, [fetcher.state, answer, t, address.id]);
 
   const busy = fetcher.state !== "idle";
   return (
-    <article className="grid h-full content-start gap-2 rounded-lg bg-paper p-4" aria-busy={busy || undefined}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="type-sub text-ink">{label}</h2>
-        {address.isDefault ? <Status tone="ok">{t("addresses.isDefault")}</Status> : null}
+    <article className="acct-card flex flex-col" aria-busy={busy || undefined}>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <h2 id={`address-${address.id}-title`} tabIndex={-1} className="acct-card__title">
+          {label}
+        </h2>
+        {address.isDefault ? <Tag kind="ok">{t("addresses.isDefault")}</Tag> : null}
       </div>
-      {address.recipientName || address.phoneE164 ? (
-        <p className="type-body text-ink">
-          {address.recipientName}
-          {address.recipientName && address.phoneE164 ? " · " : null}
-          {address.phoneE164 ? (
-            <bdi dir="ltr" className="nums">
-              {f.phone(address.phoneE164)}
-            </bdi>
-          ) : null}
-        </p>
-      ) : null}
-      <p className="type-body text-ink-2">
-        {[address.governorateName, address.districtName, address.areaText].filter(Boolean).join("، ")}
-        <br />
-        {address.addressText}
-      </p>
-      {address.notes ? <p className="type-caption text-ink-2">{address.notes}</p> : null}
+      <div className="grid gap-1">
+        {address.recipientName || address.phoneE164 ? (
+          <p className="type-sm-strong text-ink">
+            {address.recipientName}
+            {address.recipientName && address.phoneE164 ? " · " : null}
+            {address.phoneE164 ? (
+              <bdi dir="ltr" className="nums">
+                {f.phone(address.phoneE164)}
+              </bdi>
+            ) : null}
+          </p>
+        ) : null}
+        <p className="type-sm text-ink-2">{[address.governorateName, address.districtName, address.areaText].filter(Boolean).join("، ")}</p>
+        <p className="type-sm text-ink-2">{address.addressText}</p>
+        {address.notes ? <p className="type-xs text-ink-2">{address.notes}</p> : null}
+      </div>
       <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-line pt-3">
-        <Key as={LocaleLink} to={`/account/addresses?edit=${address.id}`} preventScrollReset size="sm" icon="pencil-simple" aria-label={t("addresses.editNamed", { label })}>
+        <Key as={LocaleLink} to={`/account/addresses?edit=${address.id}`} size="sm" icon="pencil-simple" aria-label={t("addresses.editNamed", { label })}>
           {t("common.edit")}
         </Key>
         {!address.isDefault ? (
           <fetcher.Form method="post">
             <input type="hidden" name="intent" value="default" />
             <input type="hidden" name="id" value={address.id} />
-            <Key type="submit" size="sm" variant="quiet" loading={busy && fetcher.formData?.get("intent") === "default"}>
+            <Key type="submit" size="sm" variant="ghost" aria-label={t("addresses.makeDefaultNamed", { label })} loading={busy && fetcher.formData?.get("intent") === "default"} disabled={!online}>
               {t("addresses.makeDefault")}
             </Key>
           </fetcher.Form>
         ) : null}
-        <Key size="sm" variant="quiet" icon="trash" aria-haspopup="dialog" onClick={onDelete} aria-label={t("addresses.deleteNamed", { label })}>
+        <Key size="sm" variant="ghost" icon="trash" aria-haspopup="dialog" onClick={onDelete} disabled={!online} aria-label={t("addresses.deleteNamed", { label })}>
           {t("common.delete")}
         </Key>
       </div>
@@ -213,93 +253,131 @@ function AddressCard({ address, onDelete }: { address: AddressView; onDelete: ()
   );
 }
 
+type LayoutData = { shell?: Pick<ShellData, "deliveryFeeIqd"> };
+
 function AddressForm({ address, geography, answer }: { address: AddressView | null; geography: GeographyOption[]; answer: Answer | null }) {
   const t = useT("account");
+  const f = useFormat();
   const navigation = useNavigation();
+  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as LayoutData | undefined;
+  const fee = layout?.shell?.deliveryFeeIqd ?? null;
   const values = answer?.values;
   const pick = (name: string, fallback: string | null | undefined) => values?.[name] ?? fallback ?? "";
   const [governorateId, setGovernorateId] = useState(pick("governorateId", address?.governorateId));
   const [districtId, setDistrictId] = useState(pick("districtId", address?.districtId));
   const pending = navigation.state === "submitting" && navigation.formData?.get("intent") === "save";
   const gov = geography.find((item) => item.id === governorateId) ?? null;
-  const heading = address ? t("addresses.editTitle") : t("addresses.newTitle");
+  const hydrated = useHydrated();
+  const feeHint = isIqd(fee) ? t("addresses.fee", { fee: amount(iqdText(f, fee)) }) : undefined;
 
   return (
-    <section aria-labelledby="address-form-title" className="grid gap-4 rounded-lg bg-paper p-4 sm:p-6">
-      <h2 id="address-form-title" className="type-sub text-ink">
-        {heading}
-      </h2>
-      <AnswerNotice answer={answer && answer.code !== "invalid" ? answer : null} />
-      <Form method="post" className="grid gap-4" noValidate preventScrollReset>
-        <input type="hidden" name="intent" value="save" />
-        {address ? <input type="hidden" name="id" value={address.id} /> : null}
-        <div className="grid gap-4 md:grid-cols-2">
-          <TextField name="label" label={t("addresses.label")} hint={t("addresses.labelHint")} optional defaultValue={pick("label", address?.label)} error={fieldError(answer, "label")} />
-          <TextField name="recipientName" autoComplete="name" label={t("addresses.recipient")} optional defaultValue={pick("recipientName", address?.recipientName)} error={fieldError(answer, "recipientName")} />
-          <TextField
-            name="phone"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel-national"
-            label={t("addresses.phone")}
-            hint={t("addresses.phoneHint", { example: PHONE_EXAMPLE })}
-            optional
-            defaultValue={pick("phone", address?.phoneE164 ? address.phoneE164.replace(/^\+964/, "0") : "")}
-            error={fieldError(answer, "phone")}
-          />
-          <Select
-            name="governorateId"
-            label={t("addresses.governorate")}
-            required
-            placeholder={t("addresses.chooseGovernorate")}
-            value={governorateId}
-            onChange={(event) => {
-              setGovernorateId(event.target.value);
-              setDistrictId("");
-            }}
-            options={geography.map((item) => ({ value: item.id, label: item.name }))}
-            error={fieldError(answer, "governorateId")}
-          />
-          <Select
-            name="districtId"
-            label={t("addresses.district")}
-            optional
-            value={districtId}
-            onChange={(event) => setDistrictId(event.target.value)}
-            error={fieldError(answer, "districtId")}
-          >
-            <option value="">{t("addresses.chooseDistrict")}</option>
-            {gov
-              ? gov.districts.map((district) => (
-                  <option key={district.id} value={district.id}>
-                    {district.name}
-                  </option>
-                ))
-              : geography.map((item) => (
-                  // Before a governorate is chosen (or without script) every district is listed under its governorate.
-                  <optgroup key={item.id} label={item.name}>
-                    {item.districts.map((district) => (
-                      <option key={district.id} value={district.id}>
-                        {district.name}
-                      </option>
-                    ))}
-                  </optgroup>
-                ))}
+    // `replace`: once saved, Back goes to the page before the form, not to the form again (the saved list replaces it).
+    <Form method="post" replace className="acct-card acct-narrow" noValidate>
+      <input type="hidden" name="intent" value="save" />
+      {address ? <input type="hidden" name="id" value={address.id} /> : null}
+      <FormFailure
+        answer={answer}
+        fields={[
+          { name: "label", id: "address-label", label: t("addresses.label") },
+          { name: "recipientName", id: "address-recipient", label: t("addresses.recipient") },
+          { name: "phone", id: "address-phone", label: t("addresses.phone") },
+          { name: "governorateId", id: "address-governorate", label: t("addresses.governorate") },
+          { name: "districtId", id: "address-district", label: t("addresses.district") },
+          { name: "areaText", id: "address-area", label: t("addresses.area") },
+          { name: "addressText", id: "address-text", label: t("addresses.address") },
+          { name: "notes", id: "address-notes", label: t("addresses.notes") },
+        ]}
+      />
+      <div className="grid gap-4 md:grid-cols-2">
+        <TextField id="address-label" name="label" label={t("addresses.label")} hint={t("addresses.labelHint")} optional defaultValue={pick("label", address?.label)} error={fieldError(answer, "label")} />
+        <TextField id="address-recipient" name="recipientName" autoComplete="name" label={t("addresses.recipient")} optional defaultValue={pick("recipientName", address?.recipientName)} error={fieldError(answer, "recipientName")} />
+        <TextField
+          id="address-phone"
+          className="md:col-span-2"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel-national"
+          label={t("addresses.phone")}
+          hint={t("addresses.phoneHint", { example: PHONE_EXAMPLE })}
+          optional
+          defaultValue={pick("phone", address?.phoneE164 ? address.phoneE164.replace(/^\+964/, "0") : "")}
+          error={fieldError(answer, "phone")}
+        />
+        {/*
+          The kit's picker needs script. It takes the field's name (and the id the error summary links to) once script
+          runs; until then — and for good without script — a native select inside <noscript> is the governorate field,
+          as before the v2 rebuild. Never both: the form sends one governorateId.
+        */}
+        <GovernoratePicker
+          id={hydrated ? "address-governorate" : "address-governorate-picker"}
+          name={hydrated ? "governorateId" : undefined}
+          className="noscript:hidden"
+          label={t("addresses.governorate")}
+          required
+          placeholder={t("addresses.chooseGovernorate")}
+          governorates={geography}
+          feeIqd={fee}
+          hint={feeHint}
+          value={governorateId}
+          onChange={(id) => {
+            setGovernorateId(id);
+            setDistrictId("");
+          }}
+          error={fieldError(answer, "governorateId")}
+        />
+        <noscript>
+          <Select id="address-governorate" name="governorateId" autoComplete="address-level1" label={t("addresses.governorate")} required defaultValue={governorateId} hint={feeHint} error={fieldError(answer, "governorateId")}>
+            <option value="">{t("addresses.chooseGovernorate")}</option>
+            {geography.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
           </Select>
-          <TextField name="areaText" label={t("addresses.area")} required defaultValue={pick("areaText", address?.areaText)} error={fieldError(answer, "areaText")} />
-        </div>
-        <TextArea name="addressText" autoComplete="street-address" label={t("addresses.address")} hint={t("addresses.addressHint")} required defaultValue={pick("addressText", address?.addressText)} error={fieldError(answer, "addressText")} />
-        <TextArea name="notes" rows={2} label={t("addresses.notes")} optional defaultValue={pick("notes", address?.notes)} error={fieldError(answer, "notes")} />
-        {!address?.isDefault ? <Checkbox name="makeDefault" value="1" label={t("addresses.setDefault")} defaultChecked={values?.makeDefault === "1"} /> : null}
-        <div className="flex flex-wrap items-center gap-3">
-          <SubmitKey pending={pending} icon="floppy-disk">
-            {t("addresses.save")}
-          </SubmitKey>
-          <Key as={LocaleLink} to="/account/addresses" preventScrollReset variant="quiet">
-            {t("common.cancel")}
-          </Key>
-        </div>
-      </Form>
-    </section>
+        </noscript>
+        <Select
+          id="address-district"
+          name="districtId"
+          autoComplete="address-level2"
+          label={t("addresses.district")}
+          optional
+          value={districtId}
+          onChange={(event) => setDistrictId(event.target.value)}
+          error={fieldError(answer, "districtId")}
+        >
+          <option value="">{t("addresses.chooseDistrict")}</option>
+          {gov && hydrated
+            ? gov.districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))
+            : geography.map((item) => (
+                // Before a governorate is chosen (or without script, where the governorate can change without this
+                // list following), every district is listed under its governorate.
+                <optgroup key={item.id} label={item.name}>
+                  {item.districts.map((district) => (
+                    <option key={district.id} value={district.id}>
+                      {district.name}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+        </Select>
+        <TextField id="address-area" className="md:col-span-2" name="areaText" autoComplete="address-level3" label={t("addresses.area")} required defaultValue={pick("areaText", address?.areaText)} error={fieldError(answer, "areaText")} />
+      </div>
+      <TextArea id="address-text" name="addressText" autoComplete="street-address" label={t("addresses.address")} hint={t("addresses.addressHint")} required defaultValue={pick("addressText", address?.addressText)} error={fieldError(answer, "addressText")} />
+      <TextArea id="address-notes" name="notes" rows={2} label={t("addresses.notes")} optional defaultValue={pick("notes", address?.notes)} error={fieldError(answer, "notes")} />
+      {!address?.isDefault ? <Checkbox name="makeDefault" value="1" label={t("addresses.setDefault")} defaultChecked={values?.makeDefault === "1"} /> : null}
+      <div className="flex flex-wrap items-center gap-3 pt-1">
+        <SubmitKey variant="primary" pending={pending} icon="floppy-disk">
+          {t("addresses.save")}
+        </SubmitKey>
+        <Key as={LocaleLink} to="/account/addresses" variant="ghost">
+          {t("common.cancel")}
+        </Key>
+      </div>
+    </Form>
   );
 }

@@ -1,217 +1,251 @@
 /**
- * The home page below the hero (DESIGN.md §8 "floor, stage, keys, shelf", §8.1 below the fold, §9.4, §9.5): every
- * section is a head (title, the honest reason it is shown, one link) and one grid or rail of the one card.
+ * The home page below the hero — Design System v2 §6.1, in its order:
  *
- *   NewArrivals        the platform in focus, a grid (2 → 3 → 6 across), "كل PlayStation" → its hub
- *   ServicesPanel      two flat rows: used and inspected (with the real count) · repairs and help
- *   PlatformTiles      shop by platform → /platform/<slug>, with the real product count
- *   ComingSoon         pre-orders and unreleased variants with their release date — no add key (no pre-order flow)
- *   RecentlyViewed     the shopper's ONE list (./personal.ts): this device's for a guest, the account's when signed
- *                      in — only with consent, loaded after the page is on screen
+ *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts
+ *   TrustFacts         the trust strip: only facts that are true in the settings (delivery fee, COD, transfers, guest)
+ *   NewArrivals        «وصل حديثاً»: platform dot chips that filter the shelf in place (`?platform=`, no request) and
+ *                      a rail of cards (5-up whole cards from 1280); never a «جديد» badge inside this shelf
+ *   Releases           the release band «قريباً» (only with ≥ 2 dated items): no countdown, no pre-order key
+ *   UsedShelf          «مستعمل ومفحوص»: used units (a rail on phones), «كل المستعمل»
+ *   ServiceEntries     two entry cards: trade-in and support
+ *   Departments        «تسوّق حسب القسم»: category tiles with their counts (3 → 6 columns)
+ *   RecentlyViewed     the shopper's ONE list (./personal.ts), only with consent and ≥ 3 items
  *   RecommendationShelves   the devices area's personal shelf (streamed by the loader, consent only)
  *
- * Product shelves (games, accessories, deals, used) use <ShelfRail> from the kit directly (./home.tsx).
+ * Every shelf says the rule it follows, never "trending" or "customers also bought": the store has no such data.
+ * An empty shelf is not drawn.
  */
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
-import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
-import type { ProductCardData } from "~/lib/dto";
-import { Bubble, BubbleGroup, MotionLink, SharedElement } from "~/motion";
-import type { ComingSoonItem } from "~/server/services/home.server";
+import { Icon, type IconName } from "~/art/Icon";
+import { useLocale, useT } from "~/i18n/react";
+import type { ProductCardData, UsedUnitCardData } from "~/lib/dto";
+import { Bubble, BubbleGroup } from "~/motion";
 import { RecommendationShelves as SharedRecommendationShelves, type RecommendationResult } from "~/routes/storefront/devices/components/RecommendationShelves";
-import type { NavPlatform } from "~/routes/storefront/shell/types";
+import { sheetCategories } from "~/routes/storefront/shell/chrome";
+import { usePlatformName } from "~/routes/storefront/shell/MegaMenu";
+import type { NavCategory, NavPlatform, ShellPayments } from "~/routes/storefront/shell/types";
+import type { ComingSoonItem } from "~/server/services/home.server";
+import { CategoryTile, CategoryTiles } from "~/ui/CategoryTile";
+import { ChipGroup } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
+import { EntryCard } from "~/ui/EntryCard";
 import { ErrorState } from "~/ui/ErrorState";
-import { Niche } from "~/ui/Niche";
-import { PlatformLabel, isPlatform, type Platform } from "~/ui/PlatformLed";
-import { PriceTag } from "~/ui/PriceTag";
-import { BidiText, ProductCard, ProductImage } from "~/ui/ProductCard";
+import { isPlatform, type Gel, type Platform } from "~/ui/PlatformLed";
+import { PlatformTile, PlatformTiles } from "~/ui/PlatformTile";
+import { ProductCard } from "~/ui/ProductCard";
 import { Rail } from "~/ui/Rail";
-import { Render } from "~/ui/Stage";
-import { Tag } from "~/ui/Tag";
+import { ReleaseBand, type ReleaseItem } from "~/ui/ReleaseBand";
+import { SectionHead } from "~/ui/SectionHead";
+import { ShelfRail } from "~/ui/ShelfRail";
 import { TextLink } from "~/ui/TextLink";
+import { TrustStrip } from "~/ui/TrustStrip";
+import { UsedUnitCard } from "~/ui/UsedUnitCard";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
+import { MIN_SHELF, RELEASE_LIMIT, tileArt } from "./view";
 
-const CARD_SIZES = "(min-width: 1200px) 210px, (min-width: 768px) 30vw, 46vw";
+/** How wide a card's picture is drawn: 2.15 cards on phones, 3.2 from 768, 4-up from 1024, 5-up (240px) from 1280. */
+const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
 
-// ───────────────────────────────────────────────────────────────── a section head (the same head as <ShelfRail>)
+// ───────────────────────────────────────────────────────────────── platform tiles
 
-export function SectionHead({ id, title, reason, action, level = 2 }: { id: string; title: ReactNode; reason?: ReactNode; action?: ReactNode; level?: 2 | 3 }) {
-  const Heading = `h${level}` as const;
+export function PlatformDoors({ platforms, heroArt }: { platforms: readonly NavPlatform[]; heroArt: string | null }) {
+  const t = useT("home");
+  const nameOf = usePlatformName();
+  const id = useId();
+  const tiles = platforms.filter((platform): platform is NavPlatform & { accent: Platform } => isPlatform(platform.accent));
+  if (tiles.length === 0) return null;
   return (
-    <div className="flex items-end justify-between gap-3">
-      <div className="grid min-w-0 gap-0.5">
-        <Heading id={id} className="type-section text-ink">
-          {title}
-        </Heading>
-        {reason ? <p className="type-caption text-ink-2">{reason}</p> : null}
-      </div>
-      {action ? <div className="shrink-0">{action}</div> : null}
-    </div>
+    <section aria-labelledby={id} className="min-w-0">
+      <SectionHead id={id} title={t("platforms.title")} />
+      <PlatformTiles label={t("platforms.title")}>
+        {tiles.map((platform) => (
+          <PlatformTile
+            key={platform.slug}
+            platform={platform.accent}
+            to={platform.href}
+            name={nameOf(platform)}
+            count={platform.productCount}
+            art={tileArt(platform.artKey, heroArt) ?? undefined}
+          />
+        ))}
+      </PlatformTiles>
+    </section>
   );
 }
 
-// ───────────────────────────────────────────────────────────────── new arrivals (the platform in focus)
+// ───────────────────────────────────────────────────────────────── trust strip
 
-export function NewArrivals({
-  cards,
-  title,
-  reason,
-  href,
-  linkLabel,
-  busyKey,
-  inflate,
-}: {
-  cards: ProductCardData[];
-  title: string;
-  reason: string;
-  href: string | null;
-  linkLabel: string;
-  /** Changes with the platform in focus: the grid is rebuilt and its cards inflate in. */
-  busyKey: string;
-  /** The cards arrive after the page is on screen (another platform was lit): let them inflate. */
-  inflate: boolean;
-}) {
+export function TrustFacts({ deliveryFeeIqd, payments }: { deliveryFeeIqd: number | null; payments: ShellPayments | null }) {
+  const t = useT("home");
   const id = useId();
-  if (cards.length === 0) return null;
   return (
-    <section aria-labelledby={id} className="grid min-w-0 gap-3" data-shelf="new-arrivals">
-      <SectionHead
-        id={id}
-        title={title}
-        reason={reason}
-        action={
-          href ? (
-            <TextLink as={LocaleLink} to={href}>
-              {linkLabel}
-            </TextLink>
-          ) : null
-        }
+    <section aria-labelledby={id} className="min-w-0">
+      <VisuallyHidden as="h2" id={id}>
+        {t("trust.title")}
+      </VisuallyHidden>
+      {/* guest checkout is how the store works (no setting turns it off); a transfer fact names both methods, so it
+          stands only while both are switched on */}
+      <TrustStrip deliveryIqd={deliveryFeeIqd} cod={payments?.cod ?? false} transfer={Boolean(payments?.card && payments?.zaincash)} guest />
+    </section>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────── new arrivals
+
+export type NewArrivalsProps = {
+  /** The platforms whose new arrivals the chips offer, in the store's order, with their cards. */
+  shelves: readonly { platform: Platform; cards: ProductCardData[] }[];
+  focus: Platform | null;
+  onFocus: (platform: Platform) => void;
+  /** The cards arrive after the page is on screen (another chip was chosen): let them bubble in. */
+  inflate: boolean;
+  /** Product ids the shopper keeps in the wishlist (filled hearts); null when it could not be read — no hearts then. */
+  wished: readonly string[] | null;
+};
+
+/** A card inside «وصل حديثاً» never says «جديد» — the whole shelf is new (v2 §4.7). */
+function withoutNewBadge(card: ProductCardData): ProductCardData {
+  return card.badge === "new" || card.isNew ? { ...card, badge: card.badge === "new" ? null : card.badge, isNew: false } : card;
+}
+
+export function NewArrivals({ shelves, focus, onFocus, inflate, wished }: NewArrivalsProps) {
+  const t = useT("home");
+  const ui = useT("ui");
+  const id = useId();
+  const kept = new Set(wished ?? []);
+  const current = shelves.find((shelf) => shelf.platform === focus) ?? shelves[0];
+  if (!current || current.cards.length < MIN_SHELF) return null;
+  const chips =
+    shelves.length > 1 ? (
+      <ChipGroup
+        rail
+        bleed
+        aria-label={t("shelf.platformChips")}
+        options={shelves.map((shelf) => ({ value: shelf.platform, label: ui(`platform.${shelf.platform}`), platform: shelf.platform as Gel }))}
+        value={current.platform}
+        onChange={(value) => {
+          if (isPlatform(value)) onFocus(value);
+        }}
       />
-      <BubbleGroup as="ul" key={busyKey} className="grid grid-cols-2 gap-x-[var(--gap-card)] gap-y-6 md:grid-cols-3 xl:grid-cols-6">
-        {cards.map((card, index) => (
-          <Bubble as="li" key={card.id} index={index} always={inflate} className="flex min-w-0">
-            <ProductCard card={card} slot="new" headingLevel={3} sizes={CARD_SIZES} />
-          </Bubble>
-        ))}
+    ) : undefined;
+  return (
+    <section aria-labelledby={id} className="min-w-0" data-shelf="new-arrivals">
+      <SectionHead id={id} title={t("shelf.newArrivals")} reason={t("shelf.newArrivalsReason")} href={`/platform/${current.platform}?sort=newest`} chips={chips} />
+      <BubbleGroup key={current.platform}>
+        <Rail aria-labelledby={id}>
+          {current.cards.map((card, index) => (
+            <Bubble key={card.id} index={index} always={inflate} className="grid h-full min-w-0">
+              <ProductCard card={withoutNewBadge(card)} slot="new" sizes={CARD_SIZES} wishlist={wished !== null} wished={kept.has(card.id)} />
+            </Bubble>
+          ))}
+        </Rail>
       </BubbleGroup>
     </section>
   );
 }
 
-// ───────────────────────────────────────────────────────────────── used + support (§8.1 "a two-row flat panel")
+// ───────────────────────────────────────────────────────────────── release band
 
-export function ServicesPanel({ usedCount }: { usedCount: number | null }) {
+/** What a coming-soon product's card says about its platform (looked up by the loader), by product id. */
+export type ReleasePlatform = { platform: Gel | null; label: string | null };
+
+export function Releases({ items, platforms, now }: { items: readonly ComingSoonItem[]; platforms: Readonly<Record<string, ReleasePlatform>>; now: number }) {
   const t = useT("home");
-  const id = useId();
+  if (items.length < 2) return null;
+  const releases: ReleaseItem[] = items.slice(0, RELEASE_LIMIT).map((item) => {
+    // an unreleased version of a released product says so; the catalogue's version titles are not shown (they can
+    // carry words the store does not use, such as «طلب مسبق»)
+    const versions = item.variantCount > 0 ? t("releases.versions", { count: item.variantCount }) : null;
+    const known = item.variantCount === 0 ? platforms[item.productId] : undefined;
+    return {
+      id: item.key,
+      to: `/p/${item.slug}`,
+      name: versions ? `${item.name} · ${versions}` : item.name,
+      releaseAt: item.releaseAt,
+      platform: known?.platform ?? null,
+      platformLabel: known?.label ?? undefined,
+      priceIqd: item.priceIqd,
+      image: item.image,
+    };
+  });
+  return <ReleaseBand items={releases} now={now} />;
+}
+
+// ───────────────────────────────────────────────────────────────── used and inspected
+
+export function UsedShelf({ units }: { units: readonly UsedUnitCardData[] }) {
+  const t = useT("home");
   return (
-    <section aria-labelledby={id} className="home-services">
-      <h2 id={id} className="sr-only">
-        {t("services.title")}
-      </h2>
-      <ul className="panel home-services__list">
-        <li>
-          <LocaleLink to="/used" className="home-row">
-            <span className="home-row__icon" aria-hidden="true">
-              <Icon name="recycle" size={22} />
-            </span>
-            <span className="home-row__text">
-              <span className="type-strong text-ink">{t("services.usedTitle")}</span>
-              {usedCount !== null ? <span className="type-caption text-ink-2">{t("services.usedCount", { count: usedCount })}</span> : null}
-            </span>
-            <Icon name="arrow-right" size={18} className="home-row__arrow" />
-          </LocaleLink>
-        </li>
-        <li>
-          <LocaleLink to="/support" className="home-row">
-            <span className="home-row__icon" aria-hidden="true">
-              <Icon name="wrench" size={22} />
-            </span>
-            <span className="home-row__text">
-              <span className="type-strong text-ink">{t("services.supportTitle")}</span>
-              <span className="type-caption text-ink-2">{t("services.supportText")}</span>
-            </span>
-            <Icon name="arrow-right" size={18} className="home-row__arrow" />
-          </LocaleLink>
-        </li>
-      </ul>
-    </section>
+    <ShelfRail
+      shelf={{ key: "used", title: t("shelf.used"), reason: t("shelf.usedReason"), items: [...units] }}
+      href="/used"
+      viewAllLabel={t("shelf.usedAll")}
+      minItems={MIN_SHELF}
+      renderItem={(unit) => <UsedUnitCard unit={unit} slot="used" sizes={CARD_SIZES} />}
+    />
   );
 }
 
-// ───────────────────────────────────────────────────────────────── shop by platform (§9.4 category cards)
+// ───────────────────────────────────────────────────────────────── trade-in and support
 
-export function PlatformTiles({ platforms }: { platforms: readonly NavPlatform[] }) {
+export function ServiceEntries({ tradeInArt }: { tradeInArt: string | null }) {
   const t = useT("home");
-  const id = useId();
-  const tiles = platforms.filter((platform): platform is NavPlatform & { slug: Platform } => isPlatform(platform.slug));
-  if (tiles.length === 0) return null;
   return (
-    <section aria-labelledby={id} className="grid min-w-0 gap-3">
-      <SectionHead id={id} title={t("platforms.title")} />
-      <Rail aria-labelledby={id} itemClassName="flex w-[31%] md:w-[23.5%]" railClassName="-mx-1 scroll-px-1 px-1 pt-1 pb-3">
-        {tiles.map((platform) => (
-          <MotionLink key={platform.slug} nav="zoom" to={platform.href} className="home-tile" data-gel={platform.slug}>
-            <Niche as="span" ratio="1/1" tagZone={false}>
-              {platform.artKey ? <Render name={platform.artKey} alt="" sizes="(min-width: 768px) 22vw, 30vw" pose={0} /> : null}
-            </Niche>
-            <span className="home-tile__label">
-              <PlatformLabel platform={platform.slug} className="type-strong text-ink" />
-            </span>
-            <span className="type-caption text-ink-2">{t("platforms.count", { count: platform.productCount })}</span>
-          </MotionLink>
-        ))}
-      </Rail>
-    </section>
+    <div className="home-entries">
+      <EntryCard to="/trade-in" headingLevel={2} title={t("entry.tradeIn")} text={t("entry.tradeInText")} cta={t("entry.tradeInCta")} art={tradeInArt ?? "mascot"} />
+      <EntryCard to="/support" headingLevel={2} title={t("entry.support")} text={t("entry.supportText")} cta={t("entry.supportCta")} art="mascot" />
+    </div>
   );
 }
 
-// ───────────────────────────────────────────────────────────────── coming soon
+// ───────────────────────────────────────────────────────────────── departments
 
-function ComingSoonCard({ item }: { item: ComingSoonItem }) {
-  const t = useT("home");
-  const f = useFormat();
-  const href = `/p/${item.slug}`;
-  const detail = item.variantCount > 1 ? t("coming.variants", { count: item.variantCount }) : item.detail;
-  return (
-    <article className="relative flex w-full min-w-0 flex-col" data-product={item.productId}>
-      <MotionLink nav="zoom" to={href} className="flex flex-col gap-2 rounded-lg after:absolute after:inset-0 after:content-['']">
-        <SharedElement name={`product-image:${item.productId}`} slot={`coming-${item.key}`} as="span" className="block">
-          <Niche as="span" tag={<Tag kind="preorder">{t("coming.tag")}</Tag>}>
-            <ProductImage image={item.image} alt="" sizes={CARD_SIZES} />
-          </Niche>
-        </SharedElement>
-        <span className="line-clamp-2 min-h-[2lh] type-strong text-ink">
-          <BidiText text={item.name} />
-        </span>
-      </MotionLink>
-      {/* plain text, like the product card's fact line: the bidi algorithm keeps "25,000" whole */}
-      {detail ? <p className="line-clamp-2 type-caption text-ink-2">{detail}</p> : null}
-      <p className="mt-1 flex items-center gap-1.5 type-caption font-medium text-ink">
-        <Icon name="calendar-blank" size={16} />
-        <span>{t("coming.date", { date: f.date(item.releaseAt, "long") })}</span>
-      </p>
-      <div className="mt-auto pt-1.5">
-        <PriceTag priceIqd={item.priceIqd} />
-      </div>
-    </article>
-  );
+/** The glyph that stands in for a department's photo until the navigation data carries one (as in the shell's sheet). */
+const DEPARTMENT_GLYPH: Record<string, IconName> = {
+  controllers: "game-controller",
+  headsets: "headphones",
+  storage: "hard-drives",
+  vr: "eye",
+  digital: "gift",
+  accessories: "plug",
+};
+
+/** Games live under their platforms on this page (the tiles and the new arrivals): six departments, one row from 1024. */
+export function homeDepartments(categories: readonly NavCategory[]): NavCategory[] {
+  return sheetCategories(categories).filter((category) => category.kind !== "games");
 }
 
-export function ComingSoon({ items }: { items: readonly ComingSoonItem[] }) {
+export function Departments({ categories }: { categories: readonly NavCategory[] }) {
   const t = useT("home");
   const id = useId();
-  if (items.length === 0) return null;
+  const list = homeDepartments(categories);
+  if (list.length === 0) return null;
   return (
-    <section aria-labelledby={id} className="grid min-w-0 gap-3" data-shelf="coming-soon">
-      <SectionHead id={id} title={t("shelf.comingSoon")} reason={t("shelf.comingSoonReason")} />
-      <Rail aria-labelledby={id} railClassName="-mx-1 scroll-px-1 px-1 pt-1 pb-3">
-        {items.map((item) => (
-          <ComingSoonCard key={item.key} item={item} />
-        ))}
-      </Rail>
+    <section aria-labelledby={id} className="min-w-0">
+      <SectionHead id={id} title={t("categories.title")} />
+      <CategoryTiles label={t("categories.title")}>
+        {list.map((category) => {
+          const art = (category as NavCategory & { artKey?: string | null }).artKey;
+          return (
+            <CategoryTile
+              key={category.slug}
+              to={category.href}
+              label={category.label}
+              count={category.count}
+              art={
+                art ?? (
+                  <span className="absolute inset-0 grid place-items-center text-ink-2">
+                    <Icon name={DEPARTMENT_GLYPH[category.kind] ?? "squares-four"} size={32} />
+                  </span>
+                )
+              }
+            />
+          );
+        })}
+      </CategoryTiles>
     </section>
   );
 }
@@ -223,7 +257,7 @@ type RecentState = { status: "idle" | "loading" | "ready" | "error"; cards: Prod
 /**
  * The shopper's ONE recently-viewed list (./personal.ts): a guest's lives on this device; a signed-in customer's in
  * the account (this device's guest list is handed over first, once, then leaves the device). Loaded after the page is
- * on screen; nothing without consent.
+ * on screen; nothing without consent; drawn from three items on.
  */
 export function RecentlyViewed({ consent, signedIn }: { consent: boolean | null; signedIn: boolean }) {
   const t = useT("home");
@@ -280,31 +314,34 @@ export function RecentlyViewed({ consent, signedIn }: { consent: boolean | null;
   };
 
   if (consent !== true || state.status === "idle" || state.status === "loading") return null;
-  if (state.status === "ready" && state.cards.length === 0) return null;
+  if (state.status === "ready" && state.cards.length < MIN_SHELF) return null;
   return (
-    <section aria-labelledby={id} className="grid min-w-0 gap-3" data-shelf="recently-viewed">
-      <SectionHead
-        id={id}
-        title={t("shelf.recent")}
-        reason={t(signedIn ? "shelf.recentReasonAccount" : "shelf.recentReason")}
-        action={
-          state.status === "ready" ? (
-            <TextLink as="button" type="button" arrow={false} onClick={clear}>
-              {t("shelf.recentClear")}
-            </TextLink>
-          ) : null
-        }
-      />
+    <section aria-labelledby={id} className="min-w-0" data-shelf="recently-viewed">
+      <div className="sechead">
+        <div className="sechead__text">
+          <h2 id={id} className="sechead__title">
+            {t("shelf.recent")}
+          </h2>
+          <p className="sechead__reason">{t(signedIn ? "shelf.recentReasonAccount" : "shelf.recentReason")}</p>
+        </div>
+        {state.status === "ready" ? (
+          <TextLink as="button" type="button" arrow={false} onClick={clear}>
+            {t("shelf.recentClear")}
+          </TextLink>
+        ) : null}
+      </div>
       {state.status === "error" ? (
         <ErrorState title={t("shelf.recentFailed")} onRetry={() => void load()} />
       ) : (
-        <Rail aria-labelledby={id} railClassName="-mx-1 scroll-px-1 px-1 pt-1 pb-3">
-          {state.cards.map((card, index) => (
-            <Bubble key={card.id} index={index} className="flex w-full min-w-0">
-              <ProductCard card={card} slot="recent" sizes={CARD_SIZES} />
-            </Bubble>
-          ))}
-        </Rail>
+        <BubbleGroup>
+          <Rail aria-labelledby={id}>
+            {state.cards.map((card, index) => (
+              <Bubble key={card.id} index={index} className="grid h-full min-w-0">
+                <ProductCard card={card} slot="recent" sizes={CARD_SIZES} />
+              </Bubble>
+            ))}
+          </Rail>
+        </BubbleGroup>
       )}
     </section>
   );
@@ -313,16 +350,16 @@ export function RecentlyViewed({ consent, signedIn }: { consent: boolean | null;
 // ───────────────────────────────────────────────────────────────── recommendations (devices area)
 
 /**
- * The devices area's shelf built from the shopper's own signals (getRecommendations, context "home": what they looked
- * at and, signed in, their saved devices — hard compatibility filter, an honest reason line). The loader streams it
- * only with consent; it disappears the moment the shopper stops personalisation on this page.
+ * The devices area's shelf built from the shopper's own signals («يكمّل جهازك» and the like — getRecommendations,
+ * context "home": what they looked at and, signed in, their saved devices; hard compatibility filter, an honest reason
+ * line). The loader streams it only with consent; it disappears the moment the shopper stops personalisation here.
  */
 export function RecommendationShelves({ result, consent }: { result: Promise<RecommendationResult> | RecommendationResult | null; consent: boolean | null }) {
   if (consent !== true) return null;
   return <SharedRecommendationShelves result={result} source="home" sizes={CARD_SIZES} />;
 }
 
-/** Joins section elements with the section gap — a column on the floor. */
+/** The page's column of sections, joined by the section gap (40 → 56 → 72). */
 export function Sections({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cx("page grid min-w-0 gap-section", className)}>{children}</div>;
 }

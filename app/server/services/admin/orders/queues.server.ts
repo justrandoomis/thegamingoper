@@ -10,6 +10,7 @@
  * Reads only; the decisions go through ./actions.server (verifyProof, decideRefund → the commerce core).
  */
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { customerProfileId } from "~/routes/admin/shell/access.server";
 import { assertCan, can, canAny, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
 import { orders, paymentProofs, payments, refunds } from "~/server/db/schema";
@@ -84,7 +85,8 @@ export type ProofReview = {
   status: string;
   method: AnyPaymentMethod;
   dueIqd: number;
-  order: { id: string; ref: string; status: string; totalIqd: number; placedAt: number; contactName: string | null; phone: PhoneView | null; isDemo: boolean; onHold: boolean };
+  /** customerProfileId: the buyer's account for a link to their profile — only for staff who may open it. */
+  order: { id: string; ref: string; status: string; totalIqd: number; placedAt: number; contactName: string | null; customerProfileId: string | null; phone: PhoneView | null; isDemo: boolean; onHold: boolean };
   /** The proof waiting for a decision (null when there is none any more). */
   current: ProofView | null;
   /** Earlier proofs of this payment (rejected), newest first. */
@@ -141,6 +143,7 @@ export async function getProofReview(db: Db, actor: Actor, paymentId: string, im
       totalIqd: order.totalIqd,
       placedAt: order.placedAt,
       contactName: order.contactName,
+      customerProfileId: customerProfileId(actor, order.customerId),
       phone: phoneFor(actor, order.contactPhoneE164),
       isDemo: order.isDemo,
       onHold: order.reviewStatus === "blocked",

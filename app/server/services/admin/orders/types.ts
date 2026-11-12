@@ -236,6 +236,8 @@ export type OrderListRow = {
   paidIqd: number;
   units: number;
   contactName: string | null;
+  /** The buyer's account, for a link to their profile — only for staff who may open it (customers.customer.read). */
+  customerProfileId: string | null;
   phone: PhoneView | null;
   governorate: string | null;
   assignedTo: { id: string; name: string } | null;
@@ -397,6 +399,8 @@ export type OrderDetail = {
   customer: {
     kind: "customer" | "guest";
     name: string | null;
+    /** The account, for a link to the customer's profile — only for staff who may open it (customers.customer.read). */
+    profileId: string | null;
     phone: PhoneView | null;
     accountStatus: string | null;
     fraudFlag: boolean;

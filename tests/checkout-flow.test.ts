@@ -14,32 +14,49 @@
  * call them the right way and show their refusals as the contract says.
  */
 import { and, eq, gt, sql } from "drizzle-orm";
+import { readFileSync } from "node:fs";
 import { crc32 } from "node:zlib";
+import { createElement, type ComponentType } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
+import type { Locale } from "~/lib/locales";
 import type { Actor } from "~/server/actor";
-import { files, orders, paymentProofs, payments, products, stockLevels, variants } from "~/server/db/schema";
+import { addresses, files, orders, paymentProofs, payments, products, stockLevels, variants } from "~/server/db/schema";
 import { districtId, governorateId } from "~/server/db/seed/reference";
 import { seedDemo } from "~/server/db/seed/demo";
 import type { Permission } from "~/server/permissions";
 import { kvBlobStore } from "~/server/storage.server";
 import { addToCart, getCartView } from "~/server/services/cart.server";
-import type { CheckoutWho } from "~/server/services/orders/place.server";
+import { lineName, type CheckoutWho } from "~/server/services/orders/place.server";
 import { verifyPayment } from "~/server/services/payments/payments.server";
 import {
   attemptFor,
   cleanOrderRef,
+  draftFromPosted,
   draftToForm,
   EMPTY_DRAFT,
+  groupDigits,
   issuesFromServer,
   newAttemptKey,
+  optionValue,
+  orderStage,
   OTHER_DISTRICT,
   parseAmountInput,
   phoneIssue,
+  splitLineName,
   stepOf,
+  stepOfField,
   validateStep,
+  withOfferedDay,
   type ValidationContext,
 } from "~/routes/storefront/checkout/checkout-form";
-import { confirmationPath, findOrderForShopper, loadCheckoutData, placeCheckout, trackOrder } from "~/routes/storefront/checkout/checkout.server";
+import CartPage from "~/routes/storefront/checkout/cart";
+import CheckoutPage from "~/routes/storefront/checkout/checkout";
+import OrderPage from "~/routes/storefront/checkout/order";
+import TrackPage from "~/routes/storefront/checkout/track";
+import { cartShelves, checkoutInputFromForm, confirmationPath, findOrderForShopper, loadCartFacts, loadCheckoutData, oneRail, placeCheckout, saveCheckoutAddress, trackOrder, wantsAddressSaved } from "~/routes/storefront/checkout/checkout.server";
 import { handleProofUpload, MAX_PROOF_BODY_BYTES } from "~/routes/storefront/checkout/proof.server";
 import { createTestDb, TEST_NOW, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -187,6 +204,50 @@ describe("checkout form rules", () => {
     expect(form).toMatchObject({ districtId: "", marketingConsent: "", expectedTotalIqd: "5000", intent: "place" });
     expect(issuesFromServer({ phone: "phone_invalid", nonsense: "x" })).toEqual({ phone: { code: "server.phone_invalid" } });
     expect(newAttemptKey()).toMatch(/^[A-Za-z0-9_-]{22,128}$/);
+  });
+
+  test("v2 form rules: the consent and «save this address» belong to the delivery step; «any time» is no preference", () => {
+    // the delivery step ends with the marketing consent and (signed in) the address-book box (§6.10)
+    expect(stepOfField("marketingConsent")).toBe("address");
+    expect(stepOfField("saveAddress")).toBe("address");
+    expect(draftToForm({ ...EMPTY_DRAFT, saveAddress: true }, { idempotencyKey: "k".repeat(22), expectedTotalIqd: 1 })).toMatchObject({ saveAddress: "on", marketingConsent: "" });
+    // a page posted without script: the time cells post "any", the boxes "on"
+    expect(draftFromPosted({ preferredWindow: "any", saveAddress: "on", marketingConsent: "on" })).toMatchObject({ preferredWindow: "", saveAddress: true, marketingConsent: true });
+    const form = new FormData();
+    form.set("preferredWindow", "any");
+    expect(checkoutInputFromForm(form).preferredWindow).toBe("");
+    form.set("preferredWindow", "evening");
+    expect(checkoutInputFromForm(form).preferredWindow).toBe("evening");
+    form.set("saveAddress", "on");
+    expect(wantsAddressSaved(form)).toBe(true);
+    expect(wantsAddressSaved(new FormData())).toBe(false);
+    // no dispatch days are configured: a day kept from an older visit is dropped, never sent
+    expect(withOfferedDay({ ...EMPTY_DRAFT, preferredDay: "2026-11-12" }, []).preferredDay).toBe("");
+    expect(withOfferedDay({ ...EMPTY_DRAFT, preferredDay: "2026-11-12" }, ["2026-11-12"]).preferredDay).toBe("2026-11-12");
+  });
+
+  test("lines show the option value only; the order's five stages; numbers grouped for transfers", () => {
+    expect(optionValue("Nintendo Switch 2", "Nintendo Switch 2 — النسخة الدولية")).toBe("النسخة الدولية");
+    expect(optionValue("يد التحكم اللاسلكية DualSense", "DualSense – أحمر Cosmic Red")).toBe("أحمر Cosmic Red");
+    expect(optionValue("PlayStation 5 Slim (نسخة الأقراص) – 1TB", "PlayStation 5 Slim – نسخة الأقراص 1TB")).toBe("نسخة الأقراص 1TB");
+    expect(optionValue("Mario Kart World", "Nintendo Switch 2 Edition")).toBe("Nintendo Switch 2 Edition");
+    expect(optionValue("Mario Kart World", "Mario Kart World")).toBeNull();
+    expect(optionValue("Mario Kart World", null)).toBeNull();
+    // a dash that does not follow the product's name is kept whole
+    expect(optionValue("Mario Kart World", "Bundle — Joy-Con")).toBe("Bundle — Joy-Con");
+    expect(["new", "awaiting_payment", "payment_review", "confirmed", "preparing", "shipped", "delivered"].map(orderStage)).toEqual([0, 0, 0, 1, 2, 3, 4]);
+    expect(orderStage("cancelled")).toBeNull();
+    expect(orderStage("returned")).toBeNull();
+    expect(groupDigits("9269317427", "card")).toBe("9269 3174 27");
+    expect(groupDigits("07719061852", "phone")).toBe("0771 906 1852");
+    expect(groupDigits("TT-7K4M", "card")).toBe("TT-7K4M");
+  });
+
+  test("one recommendation rail at most, and only with three items or more", () => {
+    const shelf = (key: string, n: number) => ({ key, title: key, reason: "r", items: Array.from({ length: n }, (_, i) => ({ id: `${key}${i}` })) });
+    expect(oneRail({ ok: true, shelves: [shelf("a", 2), shelf("b", 4), shelf("c", 5)] } as never)).toEqual({ ok: true, shelves: [shelf("b", 4)] });
+    expect(oneRail({ ok: true, shelves: [shelf("a", 2)] } as never)).toEqual({ ok: true, shelves: [] });
+    expect(oneRail({ ok: false, shelves: [] })).toEqual({ ok: false, shelves: [] });
   });
 
   test("an attempt key stays with its cart", () => {
@@ -395,10 +456,31 @@ describe("the checkout page's data", () => {
     expect(page.transfer).toEqual({ accountNumber: "9269317427", recipientName: "علي خليفة", zaincashNumber: "07719061852" });
     expect(page.proofHours).toBe(24);
     expect(page.walletBalanceIqd).toBeNull();
-    expect(page.days.map((d) => d.rel)).toEqual(["today", "tomorrow", "after"]);
-    expect(page.days[0]?.value).toBe(new Date(NOW + 3 * HOUR).toISOString().slice(0, 10));
+    // Design System v2 §4.9 / §13 #5: no day is offered until the owner configures dispatch days (the preference is the
+    // time of day alone) — the 1.0 page offered today, tomorrow and the day after.
+    expect(page.days).toEqual([]);
     const customerId = await make.customer();
     expect((await loadCheckoutData(t.db, { locale: "en", now: NOW, customerId })).walletBalanceIqd).toBe(0);
+  });
+
+  test("the cart's facts: the flat fee, whether it varies, and cash on delivery — from settings", async () => {
+    expect(await loadCartFacts(t.db)).toEqual({ deliveryFeeIqd: 5_000, overridesEnabled: false, cod: true });
+  });
+});
+
+describe("«احفظ هذا العنوان لطلباتك القادمة»", () => {
+  test("a signed-in customer's ticked address goes to the address book after the order; a refusal is false, never thrown", async () => {
+    const customerId = await make.customer();
+    const order = await placed("cod", { customerId });
+    const form = checkoutForm(order.cart.totalIqd, { contactName: "سارة", saveAddress: "on" });
+    expect(await saveCheckoutAddress(t.db, { id: customerId, ip: null }, form, NOW)).toBe(true);
+    const book = await t.db.select().from(addresses).where(eq(addresses.customerId, customerId));
+    expect(book).toHaveLength(1);
+    expect(book[0]).toMatchObject({ governorateId: governorateId("baghdad"), areaText: "الكرادة داخل", recipientName: "سارة", isDefault: true });
+    // the book's own limits (an address over 300 characters) refuse it: false, and nothing is stored
+    const long = checkoutForm(order.cart.totalIqd, { addressText: "ش".repeat(400) });
+    expect(await saveCheckoutAddress(t.db, { id: customerId, ip: null }, long, NOW)).toBe(false);
+    expect(await t.db.select().from(addresses).where(eq(addresses.customerId, customerId))).toHaveLength(1);
   });
 });
 
@@ -431,5 +513,113 @@ describe("with the demo catalogue", () => {
     expect(answer).toEqual({ status: 200, body: { ok: true } });
     const after = await findOrderForShopper(t.db, { ref: result.ref, token: result.accessToken, customerId: null, locale: "ckb", now: NOW });
     expect(after?.order).toMatchObject({ status: "payment_review", payment: { status: "pending_verification" } });
+  });
+
+  test("the cart's recommendations are one rail at most, of three items or more (§6.10)", async () => {
+    // a console in stock, chosen by its properties: what completes it is verified add-ons and games
+    const console_ = await t.db
+      .select({ variantId: variants.id })
+      .from(variants)
+      .innerJoin(products, eq(products.id, variants.productId))
+      .innerJoin(stockLevels, eq(stockLevels.variantId, variants.id))
+      .where(and(eq(products.status, "published"), eq(products.kind, "console"), eq(variants.isActive, true), gt(sql`${stockLevels.onHand} - ${stockLevels.reserved}`, 0)))
+      .limit(1)
+      .get();
+    expect(console_).toBeDefined();
+    const result = await cartShelves(t.db, { cookie: () => null, locale: "ar", now: NOW }, null, { lines: [{ variantId: console_!.variantId, usedUnitId: null }] as never });
+    expect(result.ok).toBe(true);
+    expect(result.shelves.length).toBeLessThanOrEqual(1);
+    for (const shelf of result.shelves) expect(shelf.items.length).toBeGreaterThanOrEqual(3);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── review fixes (design v2, P6 review)
+
+/**
+ * A page of this area as the server renders it — what a shopper without script gets — inside a router whose root carries
+ * the kit's strings and whose page carries the loader's (and, after a post, the action's) data.
+ */
+function renderPage(Component: ComponentType<never>, options: { path: string; url: string; loaderData: unknown; actionData?: unknown; locale?: Locale }): string {
+  const locale = options.locale ?? "ar";
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: options.path, Component: Component as never }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: [options.url],
+      hydrationData: {
+        loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, origin: "https://tamtamgames.com", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: options.loaderData as never },
+        ...(options.actionData ? { actionData: { page: options.actionData as never } } : {}),
+      },
+    }),
+  );
+}
+const pageStrings = (locale: Locale = "ar") => messagesFor(locale, "checkout", "errors");
+
+describe("review fixes (design v2, P6 review)", () => {
+  test("an order line as sold is shown as its name and its option value (§4.13)", () => {
+    expect(splitLineName("Nintendo Switch 2 — النسخة الدولية")).toEqual({ name: "Nintendo Switch 2", option: "النسخة الدولية" });
+    expect(splitLineName("PlayStation 5 Slim (نسخة الأقراص) – 1TB — نسخة الأقراص 1TB")).toEqual({ name: "PlayStation 5 Slim (نسخة الأقراص) – 1TB", option: "نسخة الأقراص 1TB" });
+    expect(splitLineName("Battlefield 6 لجهاز PS5 — Standard Edition")).toEqual({ name: "Battlefield 6 لجهاز PS5", option: "Standard Edition" });
+    // an en dash inside a name is not the joint; a name without the joint is the name alone
+    expect(splitLineName("Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (نسخة فيزيائية)")).toEqual({ name: "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition (نسخة فيزيائية)", option: null });
+    expect(splitLineName("Xbox Rechargeable Battery + USB-C Cable")).toEqual({ name: "Xbox Rechargeable Battery + USB-C Cable", option: null });
+    // what the commerce core joins (lineName) splits back into what it joined
+    expect(splitLineName(lineName({ ar: "Nintendo Switch" }, { ar: "يدا Joy-Con أزرق نيون / أحمر نيون" }).ar)).toEqual({ name: "Nintendo Switch", option: "يدا Joy-Con أزرق نيون / أحمر نيون" });
+  });
+
+  test("a checkout posted without script says each problem in the page's own words, and hides the summaries it cannot fill", async () => {
+    const cart = await cartWith();
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "ar" }, NOW);
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const failure = await placeCheckout(t.db, who(cart.cartToken), checkoutForm(cart.totalIqd, { phone: "", governorateId: "", districtId: "", areaText: "", addressText: "" }), NOW);
+    expect(failure).toMatchObject({ ok: false, fields: { phone: expect.any(String), governorateId: expect.any(String), areaText: expect.any(String), addressText: expect.any(String) } });
+    const html = renderPage(CheckoutPage, { path: "checkout", url: "/checkout", loaderData: { cart: view, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, i18n: pageStrings() }, actionData: failure });
+    for (const sentence of ["اكتب رقم موبايلك.", "اختر المحافظة التي نوصل إليها.", "اكتب المنطقة أو الحي.", "اكتب العنوان بالتفصيل: الشارع والمحلة وأقرب نقطة دالة."]) expect(html).toContain(sentence);
+    expect(html).not.toContain("هذا الحقل مطلوب.");
+    // the review's delivery and payment summaries need the page running: without script every field is on screen above
+    for (const id of ["co-review-delivery", "co-review-payment"]) expect(html).toMatch(new RegExp(`<section[^>]*aria-labelledby="${id}"[^>]*class="[^"]*\\bco-js\\b`));
+  });
+
+  test("a demo order found on /track is marked as a demo order, as on its own page (§9.7)", async () => {
+    const order = await placed("cod");
+    const lookup = new FormData();
+    lookup.set("ref", order.ref);
+    lookup.set("phone", order.phone);
+    const found = await trackOrder(t.db, lookup, { ip: "198.51.100.9", locale: "ar" }, NOW);
+    expect(found).toMatchObject({ ok: true, order: { isDemo: true } });
+    const html = renderPage(TrackPage, { path: "track", url: "/track", loaderData: { ref: "", i18n: pageStrings() }, actionData: found });
+    expect(html).toContain("طلب تجريبي");
+  });
+
+  test("the order page: the link speaks of a transfer photo only when one is due; the account aside is quiet, honest and goes to signup", async () => {
+    const view = async (method: "cod" | "zaincash") => {
+      const order = await placed(method);
+      const found = await findOrderForShopper(t.db, { ref: order.ref, token: order.accessToken, customerId: null, locale: "ar", now: NOW });
+      return renderPage(OrderPage, { path: "order/:ref", url: `/order/${order.ref}?t=${order.accessToken}`, loaderData: { found, ref: order.ref, signedIn: false, recommendations: null, i18n: pageStrings() } });
+    };
+    const cod = await view("cod");
+    expect(cod).toContain("رابط هذه الصفحة يفتح طلبك دون حساب.");
+    expect(cod).not.toContain("صورة الحوالة دون حساب");
+    // no builder's voice (§9.5): nothing about a messaging service that is "not set up yet"
+    expect(cod).not.toMatch(/غير مفعّلة|رمز تحقق/);
+    expect(cod).toMatch(/href="\/account\/signup"[^>]*>[\s\S]*?أنشئ حساباً/);
+    const zain = await view("zaincash");
+    expect(zain).toContain("رابط هذه الصفحة يفتح طلبك ويتيح رفع صورة الحوالة دون حساب.");
+  });
+
+  test("an empty cart's «تسوّق الأجهزة» opens the consoles, not the home page", async () => {
+    const empty = await getCartView(t.db, { cartToken: null, customerId: null, locale: "ar" }, NOW);
+    const html = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: empty, facts: await loadCartFacts(t.db), demo: true, recommendations: null, i18n: pageStrings() } });
+    expect(html).toMatch(/href="\/c\/consoles"[^>]*>[\s\S]*?تسوّق الأجهزة/);
+  });
+
+  test("a cart line keeps one React key through its removal, so the kit can move the focus from «إزالة» to «تراجع»", () => {
+    // A key that changes with `removed` remounts the row as its undo row: the focused «إزالة» disappears and the focus
+    // falls to the page (found in the browser: Enter on «إزالة» left document.activeElement = <body>).
+    for (const file of ["app/routes/storefront/checkout/cart.tsx", "app/routes/storefront/checkout/components/CheckoutSteps.tsx"]) {
+      const source = readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
+      const keys = [...source.matchAll(/<CartLineRow\b[\s\S]*?\bkey=\{([^}]*)\}/g)].map((match) => match[1]);
+      expect(keys.length, file).toBeGreaterThan(0);
+      for (const key of keys) expect(key, file).not.toMatch(/removed/);
+    }
   });
 });

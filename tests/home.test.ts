@@ -25,7 +25,26 @@ import {
   type HomeData,
 } from "~/server/services/home.server";
 import { RECENT_DAYS, RECENT_MAX, cleanRecent, parseConsent, parsePlatformList, pushRecent, serializePlatformList } from "~/routes/storefront/home/personal";
-import { baghdadDay, gearFor, headlineEm, resolveFocus } from "~/routes/storefront/home/view";
+import {
+  FEATURED_PLATFORM,
+  HERO_COPY_MIN,
+  MIN_SHELF,
+  baghdadDay,
+  deviceHubFor,
+  featuredHero,
+  hasShelf,
+  headlineEm,
+  heroTitleSizes,
+  keepTogether,
+  otherView,
+  pictureFailed,
+  releasePlatformOf,
+  resolveFocus,
+  splitHeadline,
+  tileArt,
+  type HeroBreakpoint,
+} from "~/routes/storefront/home/view";
+import { productPhotos } from "~/art";
 import { PLATFORMS } from "~/ui/PlatformLed";
 import { createTestDb, type TestDb } from "./helpers/db";
 import { fixtures } from "./helpers/factories";
@@ -39,6 +58,13 @@ let homeEn: HomeData;
 
 const rows = async <T = Record<string, unknown>>(query: string, ...params: unknown[]): Promise<T[]> => (await t.d1.prepare(query).bind(...params).all<T>()).results;
 const l10n = (value: unknown) => JSON.parse(String(value)) as { ar: string; en?: string; ckb?: string };
+/** A model's base product is named like the model in some language — ignoring case and spacing, as home.server does
+ *  (the catalogue writes «Xbox Series X» where the seed's device model may still say «XBOX Series X»). */
+const sameName = (a: { ar: string; en?: string; ckb?: string }, b: { ar: string; en?: string; ckb?: string }) =>
+  (["ar", "en", "ckb"] as const).some((code) => {
+    const left = (a[code] ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+    return left !== "" && left === (b[code] ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+  });
 
 /** Products on a platform, written independently of the service: made for it, or a verified/partial rule for it. */
 async function membersOf(platform: string): Promise<Set<string>> {
@@ -114,7 +140,7 @@ describe("getHomeData — platforms and their heroes", () => {
     const cards = new Map((await getCardsByIds(t.db, "ar", consoles.map((row) => row.id), { now: t.now })).map((card) => [card.id, card]));
     for (const platform of home.platforms) {
       const base = consoles.filter(
-        (row) => row.platform === platform.slug && row.status !== "discontinued" && l10n(row.name).en === l10n(row.model).en && isBuyable(cards.get(row.id)),
+        (row) => row.platform === platform.slug && row.status !== "discontinued" && sameName(l10n(row.name), l10n(row.model)) && isBuyable(cards.get(row.id)),
       );
       const fresh = base.filter((row) => {
         const days = daysSinceRelease(row.released, t.now);
@@ -129,7 +155,7 @@ describe("getHomeData — platforms and their heroes", () => {
     const released = await rows<{ id: string; platform: string; released: string }>(
       `SELECT p.id, pl.slug AS platform, json_extract(p.attributes, '$.catalogue.releaseDate') AS released
        FROM products p JOIN platforms pl ON pl.id = p.platform_id JOIN device_models dm ON dm.id = p.device_model_id
-       WHERE p.status = 'published' AND p.kind = 'console' AND json_extract(p.name, '$.en') = json_extract(dm.name, '$.en')
+       WHERE p.status = 'published' AND p.kind = 'console' AND lower(json_extract(p.name, '$.en')) = lower(json_extract(dm.name, '$.en'))
          AND json_extract(p.attributes, '$.catalogue.status') IS NOT 'discontinued' AND released IS NOT NULL
        ORDER BY released DESC`,
     );
@@ -479,45 +505,159 @@ describe("client rules", () => {
     expect(pushRecent(list, "prd_b", now + 1).map((entry) => entry.id)).toEqual(["prd_b", "prd_a"]);
   });
 
-  it("lights the platform the URL asks for, else the shopper's saved one, else the first with a hero", () => {
+  it("features the Nintendo platform's lead device until staff pin one, else the next platform that has a hero (v2 §13 #13)", () => {
     const platforms = [
-      { slug: "nintendo", hero: null, newArrivals: [], gear: [] },
-      { slug: "playstation", hero: {}, newArrivals: [], gear: [] },
-      { slug: "xbox", hero: {}, newArrivals: [], gear: [] },
+      { slug: "nintendo", hero: { productId: "switch-2" }, newArrivals: ["n1"] },
+      { slug: "playstation", hero: { productId: "ps5-pro" }, newArrivals: [] },
     ];
-    expect(resolveFocus("xbox", platforms, [])).toBe("xbox");
-    expect(resolveFocus("nintendo", platforms, [])).toBe("nintendo");
-    expect(resolveFocus("sega", platforms, ["nintendo", "xbox"])).toBe("xbox");
-    expect(resolveFocus(null, platforms, [])).toBe("playstation");
-    expect(resolveFocus(null, [{ slug: "handheld", hero: null, newArrivals: [], gear: [] }], [])).toBe("handheld");
+    expect(featuredHero(platforms)?.hero?.productId).toBe("switch-2");
+    expect(featuredHero([{ ...platforms[0], hero: null }, platforms[1]])?.slug).toBe("playstation");
+    expect(featuredHero(platforms, "playstation")?.slug).toBe("playstation");
+    expect(featuredHero([{ slug: "xbox", hero: null, newArrivals: [] }])).toBeNull();
+    // the demo catalogue: the featured product is a buyable Nintendo console with a photo
+    const featured = featuredHero(home.platforms);
+    expect(featured?.slug).toBe("nintendo");
+    const card = home.cards[featured!.hero!.productId];
+    expect(card.kind).toBe("console");
+    expect(isBuyable(card) && Boolean(card.image.artKey)).toBe(true);
+  });
+
+  it("starts the new-arrivals chips on the URL's platform, else the shopper's, else the featured one — never on a shelf the page does not draw", () => {
+    const shelf = (prefix: string, n: number) => Array.from({ length: n }, (_, i) => `${prefix}${i + 1}`);
+    const platforms = [
+      { slug: "nintendo", hero: null, newArrivals: shelf("n", 6) },
+      { slug: "playstation", hero: null, newArrivals: shelf("p", MIN_SHELF) },
+      { slug: "xbox", hero: null, newArrivals: [] },
+      { slug: "handheld", hero: null, newArrivals: shelf("h", 4) },
+    ];
+    expect(resolveFocus("playstation", platforms, [])).toBe("playstation");
+    expect(resolveFocus("xbox", platforms, [])).toBe("nintendo");
+    expect(resolveFocus("sega", platforms, ["xbox", "handheld"])).toBe("handheld");
+    expect(resolveFocus(null, platforms, [])).toBe("nintendo");
+    expect(resolveFocus(null, platforms.slice(1), [])).toBe("playstation");
+    expect(resolveFocus(null, [{ slug: "xbox", hero: null, newArrivals: [] }], [])).toBeNull();
     expect(resolveFocus(null, [], [])).toBeNull();
+    // a platform with fewer new arrivals than a shelf needs (v2 §4.22: under 3 a shelf is not drawn) is never the chip
+    // the shelf starts on — the URL's, the shopper's saved one or the featured one: the whole section, its chips
+    // included, would vanish while the other platforms have full shelves
+    const short = [{ slug: "nintendo", hero: null, newArrivals: shelf("n", MIN_SHELF - 1) }, ...platforms.slice(1)];
+    expect(resolveFocus("nintendo", short, [])).toBe("playstation");
+    expect(resolveFocus(null, short, ["nintendo", "handheld"])).toBe("handheld");
+    expect(resolveFocus(null, short, [])).toBe("playstation");
+    expect(resolveFocus(null, [short[0]], [])).toBeNull();
+    expect([hasShelf(short[0]), hasShelf(platforms[1]), hasShelf(platforms[2])]).toEqual([false, true, false]);
   });
 
-  it("composes the accessories shelf from the chosen platforms in turns, without new arrivals", () => {
-    const platforms = [
-      { slug: "playstation", hero: {}, newArrivals: ["n1"], gear: ["p1", "n1", "p2", "p3"] },
-      { slug: "xbox", hero: {}, newArrivals: [], gear: ["x1", "p2", "x2"] },
-    ];
-    expect(gearFor(platforms, ["playstation", "xbox"], "playstation", 8)).toEqual(["p1", "x1", "p2", "x2", "p3"]);
-    expect(gearFor(platforms, [], "xbox", 2)).toEqual(["x1", "p2"]);
-    expect(gearFor(platforms, [], null, 8)).toEqual([]);
+  it("gives the hero's photo up when the browser already failed it before the page came to life (no broken-image frame)", () => {
+    // an <img> that failed before hydration never fires React's onError: the page checks it once it is on screen
+    expect(pictureFailed({ complete: true, naturalWidth: 0 })).toBe(true);
+    expect(pictureFailed({ complete: false, naturalWidth: 0 })).toBe(false); // still loading: onError will tell
+    expect(pictureFailed({ complete: true, naturalWidth: 1349 })).toBe(false);
+    expect(pictureFailed(null)).toBe(false);
   });
 
-  it("estimates headline widths a little above what Kufam measures, never below", () => {
-    // measured in Chromium with Kufam 600 (em): the estimate may be up to ~10% wider, never narrower
-    const measured: Record<string, number> = {
-      "العب على Nintendo Switch 2": 13.96,
-      "العب على PlayStation 5 Pro": 13.37,
-      "العب على XBOX Series X": 11.81,
-      "Play on Steam Deck OLED": 12.82,
-      "Nintendo Switch 2": 9.19,
-      "Steam Deck OLED": 8.92,
-    };
-    for (const [text, em] of Object.entries(measured)) {
-      expect(headlineEm(text), text).toBeGreaterThanOrEqual(em);
-      expect(headlineEm(text), text).toBeLessThanOrEqual(em * 1.12);
+  it("shows the same picture on a platform tile in the intro as on the page — never the back of a console", async () => {
+    // v2 §7.6: the device as sold, front or front three-quarter. The next "angle" photo of a lead device can be its back
+    // (Xbox Series X --2: «الجهة الخلفية من Xbox Series X مع المنافذ»; Switch 2 --3), so a tile only steps away from
+    // its own picture when the hero already shows it — the intro's corner objects (the lead devices) do not count.
+    const backs = ["xbox-series-x--2", "nintendo-switch-2--3"];
+    const heroArt = home.cards[featuredHero(home.platforms)!.hero!.productId].image.artKey;
+    const tiles = await rows<{ slug: string; art_key: string | null }>("SELECT slug, art_key FROM platforms WHERE is_active = 1");
+    for (const platform of home.platforms) {
+      const own = tiles.find((row) => row.slug === platform.slug)?.art_key ?? null;
+      const picture = tileArt(own, heroArt);
+      expect(backs, platform.slug).not.toContain(picture);
+      expect(picture, platform.slug).toBe(own === heroArt ? otherView(own, heroArt) : own);
+      // the corner object of the intro is the platform's lead device; the tile does not step away from it
+      const lead = home.cards[platform.hero!.productId].image.artKey;
+      if (own === lead && own !== heroArt) expect(picture, platform.slug).toBe(lead);
     }
-    expect(headlineEm("")).toBe(4);
+    expect(FEATURED_PLATFORM).toBe("nintendo");
+    expect(tileArt("xbox-series-x--1", "nintendo-switch-2--1")).toBe("xbox-series-x--1");
+    expect(tileArt("nintendo-switch-2--1", "nintendo-switch-2--1")).toBe("nintendo-switch-2--2");
+    expect(tileArt(null, "nintendo-switch-2--1")).toBeNull();
+  });
+
+  it("splits the hero headline around the product's name: the words before it on the first line", () => {
+    expect(splitHeadline((name) => `العب على ${name}`, "Nintendo Switch 2")).toEqual({ lead: "العب على", after: "", name: "Nintendo Switch 2" });
+    expect(splitHeadline((name) => `یاری بکە لەسەر ${name}`, "Xbox Series X")).toEqual({ lead: "یاری بکە لەسەر", after: "", name: "Xbox Series X" });
+    expect(splitHeadline((name) => `${name} گەیشت`, "Steam Deck OLED")).toEqual({ lead: "", after: "گەیشت", name: "Steam Deck OLED" });
+    expect(splitHeadline(() => "Play on", "X")).toEqual({ lead: "Play on", after: "", name: "X" });
+  });
+
+  it("keeps a short last word with the name it belongs to («Switch 2», «5 Pro», «Go 2» never break)", () => {
+    expect(keepTogether("Nintendo Switch 2")).toBe("Nintendo Switch 2");
+    expect(keepTogether("PlayStation 5 Pro")).toBe("PlayStation 5 Pro");
+    expect(keepTogether("Lenovo Legion Go 2")).toBe("Lenovo Legion Go 2");
+    expect(keepTogether("Steam Deck OLED")).toBe("Steam Deck OLED");
+    expect(keepTogether("DualSense")).toBe("DualSense");
+  });
+
+  it("estimates headline widths a little above what the faces measure, never below", () => {
+    // measured in Edge on the dev server (em): Noto Kufi Arabic 700 (Arabic, English) and IBM Plex Sans Arabic 600
+    // (Sorani headings). A Latin line may be up to 6% wider, a line with Arabic script up to 15% (one width stands in
+    // for every joined letter) — never narrower.
+    const kufi: Record<string, number> = {
+      "Nintendo Switch 2": 9.278,
+      "PlayStation 5 Pro": 8.643,
+      "Xbox Series X": 6.813,
+      "Steam Deck OLED": 8.968,
+      "Lenovo Legion Go 2": 9.905,
+      "العب على": 4.535,
+      "العب على Nintendo Switch 2": 14.153,
+      "العب على PlayStation 5 Pro": 13.518,
+      "العب على Xbox Series X": 11.688,
+      "Play on Steam Deck OLED": 13.03,
+    };
+    const plex: Record<string, number> = { "Nintendo Switch 2": 8.511, "Steam Deck OLED": 8.298, "Nintendo Switch 2 یاری بکە": 11.878, "یاری بکە": 3.131 };
+    for (const [face, measured] of [["kufi", kufi], ["plex", plex]] as const) {
+      for (const [text, em] of Object.entries(measured)) {
+        const arabic = /\p{Script=Arabic}/u.test(text);
+        expect(headlineEm(text, face), `${face}: ${text}`).toBeGreaterThanOrEqual(em);
+        if (!arabic) expect(headlineEm(text, face), `${face}: ${text}`).toBeLessThanOrEqual(em * 1.06);
+        else if (/[A-Za-z]{4}/.test(text)) expect(headlineEm(text, face), `${face}: ${text}`).toBeLessThanOrEqual(em * 1.25);
+      }
+    }
+    expect(headlineEm("")).toBe(1);
+  });
+
+  it("sizes the hero headline on the type scale, one step down until its longest line fits the copy column", () => {
+    const steps = [56, 48, 40, 36, 32, 28, 26, 24, 22];
+    const switch2 = heroTitleSizes(["العب على", keepTogether("Nintendo Switch 2")]);
+    expect(switch2).toEqual({ sm: 28, md: 36, lg: 48, xl: 56 });
+    for (const [range, px] of Object.entries(switch2) as [HeroBreakpoint, number][]) expect(headlineEm("Nintendo Switch 2") * px).toBeLessThanOrEqual(HERO_COPY_MIN[range]);
+    // a long name steps down the scale and, below the smallest step, wraps there (balanced) instead of shrinking further
+    const long = heroTitleSizes(["Play on", "Nintendo Switch – OLED Model"]);
+    expect(long.sm).toBe(22);
+    for (const px of [...Object.values(long), ...Object.values(switch2)]) expect(steps).toContain(px);
+    // Sorani is set in Plex: the narrower face keeps a larger size for the same name
+    expect(heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"], "plex").xl).toBeGreaterThanOrEqual(heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"]).xl);
+  });
+
+  it("gives a platform tile another view of the product the hero already shows (v2 §7.6)", () => {
+    const other = otherView("nintendo-switch-2--1", "nintendo-switch-2--1");
+    expect(other).not.toBe("nintendo-switch-2--1");
+    const photo = productPhotos("nintendo-switch-2").find((entry) => entry.key === other);
+    expect(photo?.transparent).toBe(true);
+    expect(["angle", "in-box"]).toContain(photo?.kind);
+    expect(otherView("xbox-series-x--1", "nintendo-switch-2--1")).toBe("xbox-series-x--1");
+    expect(otherView(null, "nintendo-switch-2--1")).toBeNull();
+  });
+
+  it("links the hero to the device hub named like its product, else nowhere", () => {
+    const devices = [
+      { label: "Nintendo Switch 2", href: "/device/switch-2" },
+      { label: "Nintendo Switch – OLED Model", href: "/device/switch-oled" },
+    ];
+    expect(deviceHubFor("Nintendo  switch 2", devices)).toBe("/device/switch-2");
+    expect(deviceHubFor("Nintendo Switch 2 + Mario Kart World Bundle", devices)).toBeNull();
+  });
+
+  it("labels a release with its one platform, never one platform's dot for several", () => {
+    expect(releasePlatformOf({ platformSlug: "xbox", kindLabel: "جهاز Xbox Series X|S" })).toEqual({ platform: "xbox", label: "جهاز Xbox Series X|S" });
+    expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation"], kindLabel: "سماعة · PS5" })).toEqual({ platform: "playstation", label: "سماعة · PS5" });
+    expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation", "xbox"], kindLabel: "لعبة متعددة المنصات" })).toEqual({ platform: null, label: null });
+    expect(releasePlatformOf({ platformSlug: "pc" })).toEqual({ platform: null, label: null });
   });
 
   it("reads release days as midnight in Baghdad, on the server and in the browser alike", () => {

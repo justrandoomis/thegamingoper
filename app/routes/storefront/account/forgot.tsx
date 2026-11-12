@@ -1,7 +1,6 @@
 import { data, Form, useNavigation } from "react-router";
 
 import type { Route } from "./+types/forgot";
-import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
@@ -13,15 +12,18 @@ import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { TextLink } from "~/ui/TextLink";
 import { accountFailure, formFields, localeRedirect, otpOptions } from "./account.server";
-import { AuthShell } from "./components/AuthShell";
-import { AnswerNotice, fieldError, FormNotice, PasswordField, SubmitKey, type ActionAnswer } from "./components/FormBits";
+import { AuthCard } from "./components/AuthCard";
+import { fieldError, FormFailure, Notice, PasswordField, SubmitKey, type ActionAnswer } from "./components/FormBits";
 import { accountMeta } from "./components/meta";
-import { ltr, PHONE_EXAMPLE } from "./components/text";
+import { HANDOFF, ltr, PHONE_EXAMPLE } from "./components/text";
 
 /**
- * Password reset by a code to the phone — THE SMS BOUNDARY. No SMS provider is configured, so in production this page
- * says that codes cannot be sent and points to the store's contact page; nothing is requested. In development the
- * code is created and shown on the page, labelled as development-only, so the flow can be exercised end to end.
+ * Password reset by a code to the phone — THE SMS BOUNDARY. The code flow is shown only when a text-message provider is
+ * configured (`codeDelivery` = "provider"). Today none is, so the page says plainly that a staff member resets the
+ * password and hands over to the one "talk to a person" destination (Design System v2 §6.13) — in production and in
+ * development alike: the customer pages carry no "development mode" text (§9.5). The answers keep their shape for the
+ * security suite (tests/storefront-adversarial: `delivery` from the loader; a `devCode` from the action in
+ * development only) — the page itself never shows a development code.
  */
 export const handle = { nav: "push", order: 2, group: "account-entry" } satisfies MotionHandle;
 
@@ -31,7 +33,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { delivery: codeDelivery(ctx.isDev), i18n: messagesFor(ctx.locale, "account") };
 }
 
-type ResetAnswer = ActionAnswer & { step?: "code"; phone?: string; id?: string; phoneMasked?: string; devCode?: string | null };
+type ResetAnswer = ActionAnswer & { step?: "code"; phone?: string; id?: string; phoneMasked?: string };
 
 export async function action({ request, context }: Route.ActionArgs) {
   const ctx = getCtx(context);
@@ -61,46 +63,41 @@ export default function Forgot({ loaderData, actionData }: Route.ComponentProps)
   const failed = answer && answer.ok === false ? answer : null;
   const pending = navigation.state === "submitting";
   const codeStep = answer?.step === "code";
+  // «العودة إلى تسجيل الدخول» goes back: its arrow points toward the reading start (a leading arrow-left, mirrored in
+  // Arabic and Kurdish), not the forward arrow every other text link carries.
+  const back = (
+    <TextLink as={LocaleLink} to="/account/login" icon="arrow-left" arrow={false}>
+      {t("forgot.back")}
+    </TextLink>
+  );
 
-  if (loaderData.delivery === "unavailable") {
+  // Without a text-message provider (today, everywhere) a person resets the password.
+  if (loaderData.delivery !== "provider") {
     return (
-      <AuthShell>
-        <header className="grid gap-2">
-          <h1 className="type-title text-ink">{t("forgot.title")}</h1>
-        </header>
-        <section className="grid gap-3 rounded-md bg-niche p-4" aria-labelledby="forgot-unavailable">
-          <h2 id="forgot-unavailable" className="flex items-start gap-2 type-sub text-ink">
-            <Icon name="info" size={22} className="mt-0.5 shrink-0 text-info" />
-            {t("forgot.unavailableTitle")}
-          </h2>
-          <p className="type-body text-ink-2">{t("forgot.unavailableText")}</p>
-          <Key as={LocaleLink} to="/contact" icon="chat-circle" className="justify-self-start">
-            {t("forgot.contact")}
-          </Key>
-        </section>
-        <TextLink as={LocaleLink} to="/account/login">
-          {t("forgot.back")}
-        </TextLink>
-      </AuthShell>
+      <AuthCard title={t("forgot.title")} footer={back}>
+        <Notice title={t("forgot.unavailableTitle")}>{t("forgot.unavailableText")}</Notice>
+        <Key as={LocaleLink} to={HANDOFF} variant="primary" icon="chat-circle" className="justify-self-start">
+          {t("common.talk")}
+        </Key>
+      </AuthCard>
     );
   }
 
   return (
-    <AuthShell>
-      <header className="grid gap-2">
-        <h1 className="type-title text-ink">{t("forgot.title")}</h1>
-        <p className="type-body text-ink-2">{t("forgot.lead")}</p>
-      </header>
-      {loaderData.delivery === "dev" ? (
-        <FormNotice tone="warn">
-          <strong className="font-semibold">{t("common.devOnly")}</strong> · {t("forgot.devNote")}
-        </FormNotice>
-      ) : null}
-      {failed && failed.code !== "invalid" ? <AnswerNotice answer={failed} /> : null}
+    <AuthCard title={t("forgot.title")} lead={codeStep ? undefined : t("forgot.lead")} footer={back}>
+      <FormFailure
+        answer={failed}
+        fields={[
+          { name: "phone", id: "forgot-phone", label: t("forgot.phone") },
+          { name: "code", id: "forgot-code", label: t("forgot.code") },
+          { name: "password", id: "forgot-password", label: t("forgot.newPassword") },
+        ]}
+      />
       {!codeStep ? (
         <Form method="post" className="grid gap-4" noValidate>
           <input type="hidden" name="intent" value="request" />
           <TextField
+            id="forgot-phone"
             name="phone"
             type="tel"
             inputMode="tel"
@@ -111,7 +108,7 @@ export default function Forgot({ loaderData, actionData }: Route.ComponentProps)
             defaultValue={answer?.phone ?? ""}
             error={fieldError(failed, "phone")}
           />
-          <SubmitKey pending={pending} icon="paper-plane-tilt">
+          <SubmitKey variant="primary" pending={pending} icon="paper-plane-tilt">
             {t("forgot.requestCode")}
           </SubmitKey>
         </Form>
@@ -120,20 +117,11 @@ export default function Forgot({ loaderData, actionData }: Route.ComponentProps)
           <input type="hidden" name="intent" value="reset" />
           <input type="hidden" name="phone" value={answer?.phone ?? ""} />
           <input type="hidden" name="id" value={answer?.id ?? ""} />
-          {answer?.ok && answer.phoneMasked ? (
-            <FormNotice tone="info">
-              <p>{t("forgot.codeCreated", { phone: ltr(answer.phoneMasked) })}</p>
-              {answer.devCode ? (
-                <p className="pt-1 type-sub nums" dir="ltr">
-                  {t("forgot.devCode", { code: answer.devCode })}
-                </p>
-              ) : null}
-            </FormNotice>
-          ) : null}
-          <TextField name="code" inputMode="numeric" autoComplete="one-time-code" label={t("forgot.code")} required ltr error={fieldError(failed, "code")} />
-          <PasswordField name="password" autoComplete="new-password" label={t("forgot.newPassword")} hint={t("signup.passwordHint")} required error={fieldError(failed, "password")} />
-          <div className="flex flex-wrap items-center gap-3">
-            <SubmitKey pending={pending} icon="key">
+          {answer?.ok && answer.phoneMasked ? <Notice tone="ok">{t("forgot.codeSent", { phone: ltr(answer.phoneMasked) })}</Notice> : null}
+          <TextField id="forgot-code" name="code" inputMode="numeric" autoComplete="one-time-code" label={t("forgot.code")} required ltr error={fieldError(failed, "code")} />
+          <PasswordField id="forgot-password" name="password" autoComplete="new-password" label={t("forgot.newPassword")} hint={t("signup.passwordHint")} required error={fieldError(failed, "password")} />
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <SubmitKey variant="primary" pending={pending} icon="key">
               {t("forgot.submit")}
             </SubmitKey>
             <TextLink as={LocaleLink} to="/account/forgot" arrow={false}>
@@ -142,9 +130,6 @@ export default function Forgot({ loaderData, actionData }: Route.ComponentProps)
           </div>
         </Form>
       )}
-      <TextLink as={LocaleLink} to="/account/login">
-        {t("forgot.back")}
-      </TextLink>
-    </AuthShell>
+    </AuthCard>
   );
 }

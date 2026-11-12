@@ -1,0 +1,350 @@
+/*
+ * Admin module 14 (support) — the few pieces the design system does not have yet. Tokens only, logical properties
+ * only, components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; status = words with a dot; references and numbers tabular and isolated.
+ */
+@layer components {
+  /* ── a page: the blocks between its head and its sections keep the sections' rhythm ── */
+  .sup-page > :not(.adm-page-head, .adm-section, :last-child) {
+    margin-block-end: var(--s-5);
+  }
+
+  /* ── outlined fact tags (priority, demo, team, "held") ── */
+  .sup-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+
+  /* ── an honest boundary sentence: a flat hairline note, never a warning colour ── */
+  .sup-boundary {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    padding: var(--s-2) var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+    color: var(--ink-2);
+    max-inline-size: 72ch;
+  }
+
+  /* ── facts (definition lists) ── */
+  .sup-facts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 37.5rem) {
+    .sup-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sup-facts.sup-facts--single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .sup-facts dt {
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .sup-facts dd {
+    font: var(--type-body);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── a page with a side column from 1024px ── */
+  .sup-layout {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 64rem) {
+    .sup-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+      align-items: start;
+    }
+  }
+  .sup-side {
+    display: grid;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  .sup-panel {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .sup-panel > h2,
+  .sup-panel > h3 {
+    margin: 0;
+  }
+
+  /* ── a row of action keys that wraps ── */
+  .sup-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+  }
+
+  /* ── phone cards in place of a dense table (< 768px) ── */
+  .sup-cards {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .sup-card {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    min-inline-size: 0;
+  }
+  a.sup-card:hover {
+    background: var(--niche);
+  }
+  .sup-card__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+  .sup-card__title {
+    overflow-wrap: anywhere;
+    unicode-bidi: plaintext;
+    text-align: start;
+  }
+
+  /* ── the conversation: messages are flat paper; internal notes on the niche with a hairline start edge ── */
+  .sup-thread {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sup-msg {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .sup-msg[data-author="employee"] {
+    margin-inline-start: var(--s-6);
+  }
+  .sup-msg[data-author="customer"] {
+    margin-inline-end: var(--s-6);
+  }
+  .sup-msg[data-internal="true"] {
+    background: var(--niche);
+    box-shadow: inset 3px 0 0 0 var(--line-strong);
+    margin-inline: 0;
+  }
+  [dir="rtl"] .sup-msg[data-internal="true"] {
+    box-shadow: inset -3px 0 0 0 var(--line-strong);
+  }
+  .sup-msg__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+  }
+  .sup-msg__body {
+    font: var(--type-body);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    unicode-bidi: plaintext;
+    text-align: start;
+  }
+  /* an event between messages: one sentence on a hairline */
+  .sup-event {
+    display: grid;
+    grid-template-columns: 7px minmax(0, 1fr);
+    gap: var(--s-2);
+    padding-inline: var(--s-3);
+    color: var(--ink-2);
+    font: var(--type-caption);
+  }
+  .sup-event::before {
+    content: "";
+    inline-size: 7px;
+    block-size: 7px;
+    margin-block-start: 6px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+  .sup-event__text {
+    overflow-wrap: anywhere;
+  }
+  .sup-event[data-actor="system"]::before,
+  .sup-event[data-actor="guest"]::before,
+  .sup-event[data-actor="customer"]::before {
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--ink-2);
+  }
+  .sup-reason {
+    justify-self: start;
+    display: inline-flex;
+    padding-inline: 6px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink);
+    font: var(--type-caption);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── history (audit timeline, §10): a hairline with dots ── */
+  .sup-timeline {
+    display: grid;
+    gap: var(--s-3);
+    padding-inline-start: var(--s-4);
+    border-inline-start: 1px solid var(--line-strong);
+  }
+  .sup-timeline > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+  }
+  .sup-timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 7px;
+    inset-inline-start: calc(-1 * var(--s-4) - 4px);
+    inline-size: 7px;
+    block-size: 7px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+
+  /* ── private photos: thumbnails in a grid ── */
+  .sup-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: var(--s-2);
+  }
+  .sup-photos a {
+    display: block;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    background: var(--niche);
+  }
+  .sup-photos img {
+    display: block;
+    inline-size: 100%;
+    block-size: 6.5rem;
+    object-fit: cover;
+  }
+
+  /* ── a rule card of the routing page ── */
+  .sup-rule {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .sup-rule[data-active="false"] {
+    background: var(--niche);
+  }
+  .sup-rule__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2);
+  }
+  .sup-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+
+  /* ── a KPI figure (flat card, §10) ── */
+  .sup-kpi {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-4);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+    min-inline-size: 0;
+  }
+  .sup-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  }
+
+  /* ── the article preview: reading width ── */
+  .sup-article {
+    display: grid;
+    gap: var(--s-3);
+    max-inline-size: 72ch;
+    min-inline-size: 0;
+  }
+
+  /* ── printing a ticket: the conversation and its facts, not the shell or the forms ── */
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.sup-print) .adm-rail,
+    body:has(.sup-print) .adm-top,
+    body:has(.sup-print) .adm-tabbar,
+    body:has(.sup-print) .adm-skip,
+    body:has(.sup-print) .sup-noprint,
+    body:has(.sup-print) [data-adm-tabs] {
+      display: none !important;
+    }
+    body:has(.sup-print) .adm,
+    body:has(.sup-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .sup-print .sup-layout {
+      display: block;
+    }
+    /* ink on white paper whatever the theme on screen (a dark theme's light text would vanish on paper, and its
+       ground would be printed when the browser prints backgrounds) */
+    html:has(.sup-print),
+    html:has(.sup-print) body {
+      color-scheme: light;
+      background: Canvas !important;
+    }
+    .sup-print {
+      color-scheme: light;
+    }
+    .sup-print,
+    .sup-print * {
+      color: CanvasText !important;
+    }
+    .sup-print .sup-msg,
+    .sup-print .sup-msg[data-internal="true"],
+    .sup-print .sup-panel {
+      background: Canvas !important;
+    }
+    .sup-print .sup-msg,
+    .sup-print .sup-panel {
+      break-inside: avoid;
+      box-shadow: inset 0 0 0 1px var(--line-strong);
+    }
+  }
+}

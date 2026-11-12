@@ -7,16 +7,17 @@ import { Breadcrumbs, type Crumb } from "~/ui/Breadcrumbs";
 import { cx } from "~/ui/cx";
 
 /**
- * The top of every content page: breadcrumbs (with schema.org JSON-LD on the store's public origin), the page's one
- * <h1> (the shell owns <main>), a lead sentence and whatever status line the page needs under it.
+ * The top of every content page (Design System v2 §6.15): breadcrumbs from 768 (with schema.org JSON-LD on the store's
+ * public origin, phones included), the page's one <h1> (the shell owns <main>), a lead sentence and whatever status
+ * line the page needs under it — all in the 720px reading column.
  */
 export function ContentHeader({ crumbs, title, lead, children, className }: { crumbs: Crumb[]; title: ReactNode; lead?: ReactNode; children?: ReactNode; className?: string }) {
   const origin = usePublicOrigin();
   return (
-    <header className={cx("grid max-w-[44rem] gap-3", className)}>
+    <header className={cx("chead ccol", className)}>
       <Breadcrumbs items={crumbs} jsonLd={origin ? { origin } : undefined} />
-      <h1 className="type-title text-ink">{title}</h1>
-      {lead ? <p className="type-body text-ink-2">{lead}</p> : null}
+      <h1 className="chead__title">{title}</h1>
+      {lead ? <p className="chead__lead">{lead}</p> : null}
       {children}
     </header>
   );
@@ -34,13 +35,29 @@ export function useShellNav(): ShellData["nav"] | null {
   return layout?.shell?.nav ?? null;
 }
 
-/** A section with a visible heading that names it for assistive technology. `heading` replaces the type role. */
-export function Section({ id, title, children, className, heading = "type-section" }: { id: string; title: ReactNode; children: ReactNode; className?: string; heading?: "type-section" | "type-sub" }) {
+/**
+ * Whether the store has published a way to reach it (`store.contact`, as the layout read it for the footer). While it
+ * has not, /contact stays out of the content pages' links and they point to «تحدّث مع موظف» instead (v2 §6.15).
+ */
+export function useHasContact(): boolean {
+  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: Pick<ShellData, "contact"> } | undefined;
+  const contact = layout?.shell?.contact;
+  return Boolean(contact && (contact.links.length > 0 || contact.address));
+}
+
+/**
+ * A section with a visible heading that names it for assistive technology: the h2 role (`size="sm"`: the h3 look for
+ * a short aside group, still an h2 in the outline), an optional one-line explanation under it.
+ */
+export function Section({ id, title, text, children, className, size = "md" }: { id: string; title: ReactNode; text?: ReactNode; children: ReactNode; className?: string; size?: "md" | "sm" }) {
   return (
-    <section aria-labelledby={id} className={cx("grid content-start gap-4", className)}>
-      <h2 id={id} className={cx(heading, "text-ink")}>
-        {title}
-      </h2>
+    <section aria-labelledby={id} className={cx("csec", className)}>
+      <div className="csec__head">
+        <h2 id={id} className={cx("csec__title", size === "sm" && "csec__title--sm")}>
+          {title}
+        </h2>
+        {text ? <p className="csec__text">{text}</p> : null}
+      </div>
       {children}
     </section>
   );

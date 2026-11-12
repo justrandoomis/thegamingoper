@@ -6,9 +6,9 @@ import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
 import { posAccess } from "~/server/services/admin/pos/shared.server";
 import { myShift } from "~/server/services/admin/pos/shifts.server";
+import { getSetting } from "~/server/settings.server";
 import {
   bpsShare,
-  CASHIER_DISCOUNT_LIMIT_BPS,
   CATALOG_MAX_AGE_MS,
   cartTotals,
   discountBeyondLimit,
@@ -56,8 +56,10 @@ import { Failure, Money, newKey, Notice, Ref, usePosT, When } from "./ui";
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const { db, actor, locale } = await openPos(context, "pos.sale.create");
-  const shift = await myShift(db, actor, locale);
-  return { shift, access: posAccess(actor), limitBps: CASHIER_DISCOUNT_LIMIT_BPS };
+  // the cashier's discount limit in force (setting "pos.discount_limit_bps", admin 22): the same number the sale's
+  // server check uses, so the till warns where the server would refuse
+  const [shift, limitBps] = await Promise.all([myShift(db, actor, locale), getSetting(db, "pos.discount_limit_bps")]);
+  return { shift, access: posAccess(actor), limitBps };
 }
 
 export const meta: Route.MetaFunction = (args) => posMeta(args, "sell.title");

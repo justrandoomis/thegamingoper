@@ -5,6 +5,7 @@
  * stops (as ~/ui/ProductCard's BidiText does for names) breaks bracket pairs and moves the full stop. So:
  *
  *   · every Latin/digit run is isolated left to right (DESIGN.md §13: Latin names inside Arabic go in <bdi>);
+ *   · a number with comma thousands is ONE run ("25,000 د.ع" reads 25,000 — never "000,25"; design v2 spec §6.7);
  *   · brackets, separators and a run's trailing punctuation stay outside, in the sentence's own direction, where the
  *     browser mirrors and places them correctly;
  *   · text without Arabic script is left as it is (an English page needs no isolation).
@@ -14,10 +15,11 @@ import type { ReactNode } from "react";
 const ARABIC_SCRIPT = /[֐-ࣿיִ-﷿ﹰ-﻿]/u;
 /**
  * A Latin/digit run: letters, digits and joiners inside a name, number, size or range ("USB-C", "3.5", "Z-A", "8TB",
- * "2–4", "1920×1080"), a bracket glued to it ("BEE-001(-01)"), and spaces only before more Latin. A dash or bracket with
- * a space before it ("Nova 7 – Black", "متغير (VRR)") belongs to the sentence.
+ * "2–4", "1920×1080"), the thousands comma of a number ("25,000", "1,234,567": a comma between a digit and exactly
+ * three digits), a bracket glued to it ("BEE-001(-01)"), and spaces only before more Latin. A dash or bracket with a
+ * space before it ("Nova 7 – Black", "متغير (VRR)") and a list comma ("PS4, PS5") belong to the sentence.
  */
-const LATIN_RUN = /[\p{Script=Latin}\d](?:[\p{Script=Latin}\d'’&.:+\-–/|×]|\([\p{Script=Latin}\d'’&.:+\-–/|×]*\)|\s(?=[\p{Script=Latin}\d]))*/gu;
+const LATIN_RUN = /[\p{Script=Latin}\d](?:[\p{Script=Latin}\d'’&.:+\-–/|×]|(?<=\d),(?=\d{3}(?!\d))|\([\p{Script=Latin}\d'’&.:+\-–/|×]*\)|\s(?=[\p{Script=Latin}\d]))*/gu;
 /** What a run may not end on: it belongs to the sentence ("PS5." → "PS5" + "."). */
 const TRAILING = /[.'’:&+\-–/|]+$/u;
 

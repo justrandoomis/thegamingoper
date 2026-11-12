@@ -7,7 +7,7 @@
 import { eq, inArray } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
-import { POLICY_SLUGS, type PolicyView } from "~/routes/storefront/content/content-model";
+import { POLICY_SLUGS, aboutLinks, type PolicyView } from "~/routes/storefront/content/content-model";
 import { categories, governorates, knowledgeArticles, pages, products, settings, shippingRates, usedUnits, variants, type LocalizedBlocks } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
 import { RETENTION_DAYS } from "~/server/jobs.server";
@@ -19,7 +19,9 @@ import { CONSENT_COOKIE, CONSENT_COOKIE_MAX_AGE_SEC } from "~/server/services/ac
 import { RECOMMENDATION_EVENT_RETENTION_DAYS, REC_SESSION_COOKIE, REC_SESSION_MAX_AGE_SEC } from "~/server/services/recommendations.server";
 import { TRADE_IN_DRAFT_COOKIE, TRADE_IN_DRAFT_MAX_AGE_SEC } from "~/server/services/tradein.server";
 import { WISH_COOKIE, WISH_COOKIE_MAX_AGE_SEC } from "~/server/services/wishlist.server";
+import contentStrings from "~/i18n/messages/content";
 import {
+  POLICY_DRAFTS_REVISED_AT,
   PRIVACY_COOKIES,
   PRIVACY_STORAGE_DAYS,
   buildRobotsTxt,
@@ -108,7 +110,9 @@ describe("policy drafts (no approved CMS page)", () => {
       for (const locale of LOCALE_CODES) {
         const view = await policy(slug, locale);
         expect(view, `${slug} ${locale}`).not.toBeNull();
-        expect(view).toMatchObject({ slug, source: "draft", approved: false, noindex: true, textLocale: locale, updatedAt: null });
+        // v2 §6.15: a draft says «آخر تحديث» too — never earlier than the drafts' last revision in code
+        expect(view).toMatchObject({ slug, source: "draft", approved: false, noindex: true, textLocale: locale, updatedAt: expect.any(Number) });
+        expect(view!.updatedAt).toBeGreaterThanOrEqual(POLICY_DRAFTS_REVISED_AT);
         expect(view!.title.trim()).not.toBe("");
         expect(view!.summary.trim()).not.toBe("");
         expect(view!.blocks.length).toBeGreaterThan(3);
@@ -143,23 +147,37 @@ describe("policy drafts (no approved CMS page)", () => {
     expect(joined((await policy("terms", "ckb"))!)).toContain("6,500");
   });
 
-  it("list every active governorate, and drop one whose delivery is paused", async () => {
+  it("list every active governorate by name without a count, and say when delivery is paused somewhere", async () => {
     const active = await rows<{ id: string; name: string }>("SELECT id, name FROM governorates WHERE is_active = 1 ORDER BY sort, slug");
     expect(active.length).toBeGreaterThan(10);
     const names = active.map((row) => pick(JSON.parse(row.name) as L10n, "en"));
     const shipping = (await policy("shipping", "en"))!;
     const list = shipping.blocks.find((block): block is Extract<Block, { type: "p" }> => block.type === "p" && block.text.includes(names[0]));
     expect(list?.text).toBe(names.join(", "));
-    expect(shipping.facts).toContainEqual({ kind: "governorates", count: active.length });
+    // v2 §13 #6: how many governorates there are is the owner's to say — the policy names them, it does not count them
+    expect(joined(shipping)).not.toContain(`${active.length} governorates`);
+    expect(joined((await policy("shipping", "ar"))!)).not.toMatch(new RegExp(`${active.length}\\s*محافظ`));
+    // every governorate served: the fee line («لكل المحافظات») says it, so no coverage fact
+    expect(shipping.facts.map((fact) => fact.kind)).toEqual(["delivery_fee", "track"]);
 
     await t.db.update(governorates).set({ isActive: false }).where(eq(governorates.id, active[0].id));
     try {
       const paused = (await policy("shipping", "en"))!;
       expect(joined(paused)).not.toContain(names[0]);
-      expect(paused.facts).toContainEqual({ kind: "governorates", count: active.length - 1 });
+      expect(paused.facts).toContainEqual({ kind: "coverage_paused", all: false });
     } finally {
       await t.db.update(governorates).set({ isActive: true }).where(eq(governorates.id, active[0].id));
     }
+  });
+
+  it("date a draft by its last revision, or by the last change to a setting it quotes", async () => {
+    // the warranty draft quotes no setting: its date is the drafts' revision
+    expect((await policy("warranty", "en"))!.updatedAt).toBe(POLICY_DRAFTS_REVISED_AT);
+    const later = NOW + 5 * 86_400_000;
+    await t.db.insert(settings).values({ key: "returns.window_days", value: 10, updatedAt: later }).onConflictDoUpdate({ target: settings.key, set: { value: 10, updatedAt: later } });
+    expect((await policy("returns", "en"))!.updatedAt).toBe(later);
+    // a setting the privacy draft does not quote leaves it alone
+    expect((await policy("privacy", "en"))!.updatedAt).toBe(POLICY_DRAFTS_REVISED_AT);
   });
 
   it("show per-governorate fees only while overrides are on and an override changes a fee", async () => {
@@ -228,15 +246,23 @@ describe("policy drafts (no approved CMS page)", () => {
     expect(payment.facts).toEqual([{ kind: "payment_methods", methods: [] }]);
   });
 
-  it("say the store's own warranty is pending and keep the maker's warranty apart", async () => {
+  it("state the warranty as a fact or a question — never invent the store's terms or a maker's warranty for every product", async () => {
     for (const locale of LOCALE_CODES) {
       const warranty = (await policy("warranty", locale))!;
       expect(warranty.blocks[0]).toMatchObject({ type: "callout", tone: "info" });
-      expect(warranty.facts.map((fact) => fact.kind)).toEqual(["store_warranty_pending", "maker_warranty", "used_warranty"]);
+      // v2 §9.6, §13 #4: where the maker's warranty is written (when known), where a used unit's is, then ask us
+      expect(warranty.facts.map((fact) => fact.kind)).toEqual(["maker_warranty", "used_warranty", "store_warranty_pending"]);
     }
     const en = joined((await policy("warranty", "en"))!);
-    expect(en).toContain("hasn't set the terms or lengths of its own warranty");
+    // the store's own terms are the owner's to set (STATUS open item 15): the page asks, it does not decide them
+    expect(en).toContain("Ask us about the store's warranty terms");
+    expect(en).not.toMatch(/gives no warranty|the maker's warranty applies/i);
+    // the maker's warranty only where it is known (a grey import may carry none in Iraq)
+    expect(en).toContain("when we know it");
     expect(en).toContain("That warranty is not the store's warranty");
+    const ar = joined((await policy("warranty", "ar"))!);
+    expect(ar).toContain("اسألنا عن شروط ضمان المتجر");
+    expect(ar).not.toMatch(/لا يقدّم المتجر|يسري عليها ضمان/);
     // and nothing in the catalogue claims a store warranty while the owner has not decided one
     expect(await rows("SELECT id FROM products WHERE warranty_months IS NOT NULL")).toEqual([]);
   });
@@ -272,8 +298,9 @@ describe("policy drafts (no approved CMS page)", () => {
   it("carry the demo notice in the terms only while the store is in demo mode", async () => {
     const demo = (await policy("terms", "en", { storeMode: "demo" }))!;
     const live = (await policy("terms", "en", { storeMode: "live" }))!;
-    expect(demo.blocks[0]).toMatchObject({ type: "callout", title: "Demo mode" });
-    expect(live.blocks.some((block) => block.type === "callout" && block.title === "Demo mode")).toBe(false);
+    // the glossary term (v2 §9): «متجر تجريبي» / "Demo store"
+    expect(demo.blocks[0]).toMatchObject({ type: "callout", title: "Demo store" });
+    expect(live.blocks.some((block) => block.type === "callout" && block.title === "Demo store")).toBe(false);
     expect(live.facts).toContainEqual({ kind: "estimate_valid", days: settingDefault("tradein.estimate_valid_days") });
   });
 
@@ -358,8 +385,8 @@ describe("policies from the CMS", () => {
 describe("contact details", () => {
   beforeEach(resetSettings);
 
-  it("are empty — and say so — until the owner fills them in", async () => {
-    expect(await getContactDetails(t.db, "ar")).toEqual({ channels: [], address: null, hours: null, isEmpty: true });
+  it("are empty — and the card is null, so the page leads with «اكتب لموظف» — until the owner fills them in", async () => {
+    expect(await getContactDetails(t.db, "ar")).toEqual({ channels: [], address: null, hours: null, card: null, isEmpty: true });
   });
 
   it("show only what the owner filled in, ready to call, message or open", async () => {
@@ -383,7 +410,26 @@ describe("contact details", () => {
     ]);
     expect(en.address).toBe("Karrada, Baghdad");
     expect(en.hours).toBe("كل يوم 10–22"); // no English hours: the Arabic source
-    expect(contactView({ address: { ar: "الموصل" } }, "ckb")).toEqual({ channels: [], address: "الموصل", hours: null, isEmpty: false });
+    // the kit's <ContactCard> shape: WhatsApp as international digits, the phone in E.164, the owner's words for the
+    // hours and no schedule (so no invented open / closed state)
+    expect(en.card).toEqual({
+      whatsapp: "9647801234567",
+      phone: "+9647701234567",
+      address: "Karrada, Baghdad",
+      mapsUrl: "https://maps.example.com/place/1",
+      hours: null,
+      hoursText: "كل يوم 10–22",
+      replyTime: null,
+    });
+    expect(contactView({ address: { ar: "الموصل" } }, "ckb")).toEqual({
+      channels: [],
+      address: "الموصل",
+      hours: null,
+      card: { whatsapp: null, phone: null, address: "الموصل", mapsUrl: null, hours: null, hoursText: null, replyTime: null },
+      isEmpty: false,
+    });
+    // only social pages: no card (nothing for it to draw), the page lists the pages as rows
+    expect(contactView({ instagram: "https://instagram.com/x" }, "en")).toMatchObject({ card: null, isEmpty: false });
   });
 });
 
@@ -540,12 +586,63 @@ describe("robots.txt", () => {
 
 // ───────────────────────────────────────────────────────────────── strings
 
+describe("the pages' ways to reach a person (v2 §6.15)", () => {
+  it("/about lists /contact only once a channel exists, and never repeats the «اكتب لموظف» card above the list", () => {
+    // no channel: the aside's hand-off card is the way to a person, so «اعرف أكثر» does not offer it a second time
+    expect(aboutLinks(false)).toEqual(["policies", "accessibility"]);
+    expect(aboutLinks(true)).toEqual(["policies", "contact", "accessibility"]);
+  });
+
+  it("/contact without a channel does not ask the shopper to choose a way — there is one, the hand-off", () => {
+    const lead = (locale: Locale) => (contentStrings as Record<Locale, { contact: { lead: string; leadHandoff: string } }>)[locale].contact;
+    for (const locale of LOCALE_CODES) {
+      expect(lead(locale).leadHandoff, locale).toBeTruthy();
+      expect(lead(locale).leadHandoff, locale).not.toBe(lead(locale).lead);
+    }
+    expect(lead("ar").leadHandoff).not.toMatch(/اختر|الطريقة الأسهل/);
+    expect(lead("en").leadHandoff).not.toMatch(/pick|choose|whichever/i);
+  });
+});
+
 describe("strings sent to the browser", () => {
   it("are the content namespace without the policy drafts", () => {
     for (const locale of LOCALE_CODES) {
       const tree = contentMessages(locale).content as Record<string, unknown>;
       expect(tree.drafts).toBeUndefined();
-      expect(Object.keys(tree).sort()).toEqual(["a11y", "about", "common", "contact", "facts", "index", "links", "pay", "units"]);
+      expect(Object.keys(tree).sort()).toEqual(["a11y", "about", "common", "contact", "facts", "handoff", "index", "links", "pay", "units"]);
     }
+  });
+});
+
+describe("copy (Design System v2 §9)", () => {
+  /** Every string of a language, page copy and drafts, with the bidi isolation marks removed. */
+  const strings = (locale: Locale): string[] => {
+    const out: string[] = [];
+    const walk = (node: unknown) => {
+      if (typeof node === "string") out.push(visible(node));
+      else if (node && typeof node === "object") for (const value of Object.values(node)) walk(value);
+    };
+    walk((contentStrings as Record<Locale, unknown>)[locale]);
+    return out;
+  };
+
+  it("promises no call, makes no «دورك.» joke and says no «قريباً» about contact details, in any language", () => {
+    const ar = strings("ar").join("\n");
+    expect(ar).not.toMatch(/نتصل|سنتصل|نتواصل معك|دورك/);
+    expect(ar).not.toMatch(/بيانات التواصل قريباً/);
+    expect(strings("en").join("\n")).not.toMatch(/\bcall you\b|we call|get in touch|coming soon/i);
+    expect(strings("ckb").join("\n")).not.toMatch(/پەیوەندیت پێوە دەکەین|بەم زووانە/);
+  });
+
+  it("has no builder's voice: no draft tags, no «awaiting the owner», one term per concept", () => {
+    const ar = strings("ar").join("\n");
+    // «مسودة» tags and the owner's approval are gone from shopper copy (the status line is «نسخة أولى»)
+    expect(ar).not.toMatch(/مسودة|صاحب المتجر|بانتظار قرار/);
+    expect(strings("en").join("\n")).not.toMatch(/\bdraft\b|store owner|awaiting the/i);
+    // glossary: the phone field is «رقم الموبايل», the support area «مركز الدعم», human help «تحدّث مع موظف»
+    expect(ar).not.toMatch(/رقم الهاتف|رقم هاتف|مركز المساعدة|المساعدة والصيانة|تحدّث مع شخص/);
+    expect(strings("en").join("\n")).not.toMatch(/phone number|help centre/i);
+    expect(ar).toContain("تحدّث مع موظف");
+    expect(ar).toContain("نسخة أولى — قد تتغيّر قبل الإطلاق.");
   });
 });

@@ -1,270 +1,320 @@
 /**
- * The filter groups of a product list (DESIGN.md §9.7 filter drawer, §9.8 chips). Two renderings of the same groups:
+ * The filter groups of a product list (Design System v2 §6.3): ONE native GET form, used three ways —
  *
- *   mode="live"  inside the filter sheet (script running): chips are toggles; every change navigates AT ONCE (the
- *                results update behind the sheet; nothing waits for it to close). Price fields apply on Enter / blur
- *                after validation. Chip groups regroup with motion when their options change (useFlip).
- *   mode="form"  no script: the same groups as native inputs (checkbox / radio chips, number fields, the sort) in a
- *                plain GET form with a submit key — the list still filters, sorts and pages without JavaScript.
+ *   the sticky sidebar from 1024 · the filter sheet below 1024 · the no-script panel (a <details> on phones)
  *
- * Every option shows how many products choosing it gives (counted with the other filters applied); options that
- * give nothing are not offered.
+ * Every control is a real input (switch, checkbox and radio rows, chips holding a native checkbox or radio, two price
+ * fields), so without script the form submits and the list filters, sorts and pages all the same (the submit key and
+ * the sort group show only then). A group of six or fewer short values is a row of chips; a longer list is 44px rows
+ * (v2 §6.3).
+ * With script every change navigates AT ONCE through `onChange` (the results update behind the sheet; nothing waits
+ * for it to close); the price fields apply on Enter / blur after validation, the ready ranges at once.
+ *
+ * Every value says how many products choosing it gives (counted with the other filters applied); a group that offers
+ * nothing (one option and nothing chosen) is not shown, and groups the page shows elsewhere (the chip row) are left
+ * out — their values ride along as hidden fields, so a submitted form keeps them.
  */
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 
 import { useFormat, useT } from "~/i18n/react";
 import { Chip } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
-import { FieldGroup, TextField } from "~/ui/Field";
+import { Checkbox, FieldGroup, Radio, Switch, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
-import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
 import { iqdText } from "~/ui/PriceTag";
-import { parsePriceInput, type ListingFacets, type ListingQuery, type ListingSort } from "../listing-model";
-import { ChipCount } from "./ChipCount";
-import { ChipText, InPageDir } from "./InPageDir";
-import { useFlip } from "./use-flip";
+import { parsePriceInput, type FilterGroup, type ListingFacets, type ListingQuery, type ListingSort } from "../listing-model";
+import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
 
 export type FilterPanelProps = {
-  mode: "live" | "form";
   query: ListingQuery;
   facets: ListingFacets;
   /** On a platform hub the platform is the page: no platform group. */
   scope: "category" | "platform" | "search";
-  /** live: apply a change. */
+  /** Groups the page offers elsewhere (its chip row): not repeated here; their values become hidden fields. */
+  elsewhere?: readonly FilterGroup[];
+  /** Script: apply a change at once. */
   onChange?: (change: Partial<ListingQuery>) => void;
-  /** form: the sorts to offer, and the current one. */
-  sorts?: readonly ListingSort[];
-  sort?: ListingSort;
-  /** form: hidden fields to keep (the search query). */
+  /** The sorts the list offers and the current one (the no-script sort group). */
+  sorts: readonly ListingSort[];
+  sort: ListingSort;
+  /** Keys outside the list's query to keep (the search page's `q`). */
   hidden?: Record<string, string>;
-  /** form: where the GET form goes (this page's path). */
-  action?: string;
+  /** Where the GET form goes (this page's path, with the locale). */
+  action: string;
+  /** No connection: the controls rest, with the reason beside the list's count. */
+  disabled?: boolean;
+  /**
+   * Short groups as chips (the sheet and the no-script panel, as in prototype A's sheet). The 264px sidebar keeps rows:
+   * two chips with a dot and a count do not fit its width, and stacked chips read worse than aligned rows.
+   */
+  chips?: boolean;
+  className?: string;
 };
 
-const Count = ChipCount;
+/** Six or fewer short values read best as chips (v2 §6.3: "chips for ≤6 short values"); longer lists as rows. */
+const SHORT_LIST = 6;
+const SHORT_LABEL = 20;
+const shortList = (labels: readonly string[]) => labels.length <= SHORT_LIST && labels.every((label) => [...label].length <= SHORT_LABEL);
 
-/** A group of chips that regroup with motion when their options change. */
-function ChipList({ children, signature, label }: { children: ReactNode; signature: string; label?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useFlip(ref, signature);
+/** A value and how many products it gives, the count at the row's end. */
+function Opt({ label, count }: { label: ReactNode; count: number }) {
+  const f = useFormat();
   return (
-    <div ref={ref} className="chips" role={label ? "group" : undefined} aria-label={label}>
-      {children}
-    </div>
+    <span className="catalog-opt">
+      <span className="catalog-opt__label">{label}</span>
+      <span className="catalog-opt__count nums">{f.number(count)}</span>
+    </span>
   );
 }
 
-export function FilterPanel({ mode, query, facets, scope, onChange, sorts = [], sort, hidden = {}, action }: FilterPanelProps) {
+export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, sorts, sort, hidden = {}, action, disabled = false, chips = false, className }: FilterPanelProps) {
   const t = useT("catalog");
-  const ui = useT("ui");
   const f = useFormat();
-  const live = mode === "live";
   const change = (next: Partial<ListingQuery>) => onChange?.(next);
-  const platformName = (slug: string, fallback: string) => (isPlatform(slug) ? ui(`platform.${slug}`) : fallback);
+  const chipsFit = (labels: readonly string[]) => chips && shortList(labels);
+  const away = (group: FilterGroup) => elsewhere.includes(group);
+  const ui = useT("ui");
+  // the dot and the name in the row's own weight (the bold label belongs to running text)
+  const platformLabel = (slug: string, fallback: string) =>
+    isPlatform(slug) ? (
+      <span className="inline-flex items-center gap-2">
+        <PlatformLed platform={slug} />
+        {ui(`platform.${slug}`)}
+      </span>
+    ) : (
+      fallback
+    );
+
+  // values of the groups shown elsewhere travel with a submitted form
+  const kept: [string, string][] = [];
+  if (away("platforms")) for (const platform of query.platforms) kept.push(["platform", platform]);
+  if (away("category") && query.category) kept.push(["cat", query.category]);
+  if (away("device") && query.device) kept.push(["device", query.device]);
 
   const groups: ReactNode[] = [];
 
-  if (!live && sorts.length > 1) {
+  // availability: the in-stock switch and genuine reductions
+  if (facets.inStock > 0 || query.inStock || facets.deals > 0 || query.deals) {
     groups.push(
-      <FieldGroup key="sort" legend={t("sort.label")} layout="row">
-        <div className="chips">
-          {sorts.map((value) => (
-            <Chip key={value} input="radio" name="sort" value={value} defaultChecked={(sort ?? sorts[0]) === value}>
-              {t(`sort.${value}`)}
-            </Chip>
-          ))}
-        </div>
+      <FieldGroup key="availability" legend={t("filter.availability")} className="catalog-facet">
+        {facets.inStock > 0 || query.inStock ? (
+          <Switch name="stock" value="1" checked={query.inStock} disabled={disabled} onChange={(event) => change({ inStock: event.target.checked })} label={<Opt label={t("filter.inStock")} count={facets.inStock} />} />
+        ) : null}
+        {facets.deals > 0 || query.deals ? (
+          <Checkbox name="deals" value="1" checked={query.deals} disabled={disabled} onChange={(event) => change({ deals: event.target.checked })} label={<Opt label={t("filter.deals")} count={facets.deals} />} />
+        ) : null}
       </FieldGroup>,
     );
   }
 
-  if (scope !== "platform" && facets.platforms.length > 0) {
+  if (scope !== "platform" && !away("platforms") && (facets.platforms.length >= 2 || query.platforms.length > 0)) {
+    const nameOf = (option: { value: string; label: string }) => (isPlatform(option.value) ? ui(`platform.${option.value}`) : option.label);
+    const toggle = (value: string, on: boolean) => change({ platforms: on ? query.platforms.filter((p) => p !== value) : [...query.platforms, value] });
     groups.push(
-      <FieldGroup key="platforms" legend={t("filter.platform")} layout="row">
-        <ChipList signature={facets.platforms.map((o) => o.value).join("|")}>
-          {facets.platforms.map((option) => {
-            const label = (
-              <InPageDir>
-                <span className="inline-flex items-center gap-1.5" data-gel={isPlatform(option.value) ? option.value : undefined}>
-                  {isPlatform(option.value) ? <PlatformLed solid /> : null}
-                  <ChipText label={platformName(option.value, option.label)} count={option.count} />
-                </span>
-              </InPageDir>
-            );
+      <FieldGroup key="platforms" legend={t("filter.platform")} className="catalog-facet">
+        {chipsFit(facets.platforms.map(nameOf)) ? (
+          <div className="chips">
+            {facets.platforms.map((option) => {
+              const on = query.platforms.includes(option.value);
+              return (
+                <Chip key={option.value} input="checkbox" name="platform" value={option.value} checked={on} disabled={disabled} onChange={() => toggle(option.value, on)} count={option.count} platform={isPlatform(option.value) ? option.value : undefined}>
+                  {nameOf(option)}
+                </Chip>
+              );
+            })}
+          </div>
+        ) : (
+          facets.platforms.map((option) => {
             const on = query.platforms.includes(option.value);
-            return live ? (
-              <Chip key={option.value} data-flip={option.value} selected={on} onClick={() => change({ platforms: on ? query.platforms.filter((p) => p !== option.value) : [...query.platforms, option.value] })}>
-                {label}
-              </Chip>
-            ) : (
-              <Chip key={option.value} input="checkbox" name="platform" value={option.value} defaultChecked={on}>
-                {label}
-              </Chip>
+            return (
+              <Checkbox
+                key={option.value}
+                name="platform"
+                value={option.value}
+                checked={on}
+                disabled={disabled}
+                onChange={() => toggle(option.value, on)}
+                label={<Opt label={platformLabel(option.value, option.label)} count={option.count} />}
+              />
             );
-          })}
-        </ChipList>
+          })
+        )}
       </FieldGroup>,
     );
   }
 
-  if (facets.categories.length > 0) {
+  if (!away("category") && (facets.categories.length >= 2 || query.category !== null)) {
     groups.push(
-      <FieldGroup key="category" legend={t("filter.category")} layout="row">
-        <ChipList signature={facets.categories.map((o) => o.value).join("|")}>
-          {!live ? (
-            <Chip input="radio" name="cat" value="" defaultChecked={query.category === null}>
+      <FieldGroup key="category" legend={t("filter.category")} className="catalog-facet">
+        {chipsFit(facets.categories.map((option) => option.label)) ? (
+          <div className="chips">
+            <Chip input="radio" name="cat" value="" checked={query.category === null} disabled={disabled} onChange={() => change({ category: null })} count={facets.without.category}>
               {t("filter.any")}
             </Chip>
-          ) : null}
-          {facets.categories.map((option) => {
-            const on = query.category === option.value;
-            return live ? (
-              <Chip key={option.value} data-flip={option.value} selected={on} onClick={() => change({ category: on ? null : option.value })}>
-                <ChipText label={option.label} count={option.count} />
+            {facets.categories.map((option) => (
+              <Chip key={option.value} input="radio" name="cat" value={option.value} checked={query.category === option.value} disabled={disabled} onChange={() => change({ category: option.value })} count={option.count}>
+                {option.label}
               </Chip>
-            ) : (
-              <Chip key={option.value} input="radio" name="cat" value={option.value} defaultChecked={on}>
-                <ChipText label={option.label} count={option.count} />
-              </Chip>
-            );
-          })}
-        </ChipList>
+            ))}
+          </div>
+        ) : (
+          <>
+            <Radio name="cat" value="" checked={query.category === null} disabled={disabled} onChange={() => change({ category: null })} label={t("filter.any")} />
+            {facets.categories.map((option) => (
+              <Radio
+                key={option.value}
+                name="cat"
+                value={option.value}
+                checked={query.category === option.value}
+                disabled={disabled}
+                onChange={() => change({ category: option.value })}
+                label={<Opt label={option.label} count={option.count} />}
+              />
+            ))}
+          </>
+        )}
       </FieldGroup>,
     );
   }
 
-  if (facets.devices.length > 0) {
+  if (!away("device") && (facets.devices.length >= 2 || query.device !== null)) {
     groups.push(
-      <FieldGroup key="device" legend={t("filter.device")} hint={t("filter.deviceHint")} layout="row">
-        <ChipList signature={facets.devices.map((o) => o.value).join("|")}>
-          {!live ? (
-            <Chip input="radio" name="device" value="" defaultChecked={query.device === null}>
+      <FieldGroup key="device" legend={t("filter.device")} hint={t("filter.deviceHint")} className="catalog-facet">
+        <Radio name="device" value="" checked={query.device === null} disabled={disabled} onChange={() => change({ device: null })} label={t("filter.any")} />
+        {facets.devices.map((option) => (
+          <Radio
+            key={option.value}
+            name="device"
+            value={option.value}
+            checked={query.device === option.value}
+            disabled={disabled}
+            onChange={() => change({ device: option.value })}
+            // in the page's direction: "PlayStation 5 (الطراز الأصلي 2020)" keeps its brackets right
+            label={<Opt label={option.label} count={option.count} />}
+          />
+        ))}
+      </FieldGroup>,
+    );
+  }
+
+  const price = <PriceGroup key="price" query={query} facets={facets} onChange={change} live={Boolean(onChange)} disabled={disabled} />;
+  if ((facets.price && facets.price.min < facets.price.max) || query.priceMin !== null || query.priceMax !== null) groups.push(price);
+
+  if (facets.arabic.length > 0 || query.arabic !== null) {
+    const levelName = (value: string) => t(`filter.arabicLevel.${value}`);
+    groups.push(
+      <FieldGroup key="arabic" legend={t("filter.arabic")} hint={t("filter.arabicHint")} className="catalog-facet">
+        {chipsFit(facets.arabic.map((option) => levelName(option.value))) ? (
+          <div className="chips">
+            <Chip input="radio" name="arabic" value="" checked={query.arabic === null} disabled={disabled} onChange={() => change({ arabic: null })} count={facets.without.arabic}>
               {t("filter.any")}
             </Chip>
-          ) : null}
-          {facets.devices.map((option) => {
-            const on = query.device === option.value;
-            return live ? (
-              <Chip key={option.value} data-flip={option.value} selected={on} onClick={() => change({ device: on ? null : option.value })}>
-                <ChipText label={option.label} count={option.count} />
+            {facets.arabic.map((option) => (
+              <Chip key={option.value} input="radio" name="arabic" value={option.value} checked={query.arabic === option.value} disabled={disabled} onChange={() => change({ arabic: option.value })} count={option.count}>
+                {levelName(option.value)}
               </Chip>
-            ) : (
-              <Chip key={option.value} input="radio" name="device" value={option.value} defaultChecked={on}>
-                <ChipText label={option.label} count={option.count} />
-              </Chip>
-            );
-          })}
-        </ChipList>
+            ))}
+          </div>
+        ) : (
+          <>
+            <Radio name="arabic" value="" checked={query.arabic === null} disabled={disabled} onChange={() => change({ arabic: null })} label={t("filter.any")} />
+            {facets.arabic.map((option) => (
+              <Radio
+                key={option.value}
+                name="arabic"
+                value={option.value}
+                checked={query.arabic === option.value}
+                disabled={disabled}
+                onChange={() => change({ arabic: option.value })}
+                label={<Opt label={levelName(option.value)} count={option.count} />}
+              />
+            ))}
+          </>
+        )}
       </FieldGroup>,
     );
   }
 
-  groups.push(<PriceGroup key="price" live={live} query={query} facets={facets} onChange={change} />);
-
-  if (facets.inStock > 0 || facets.deals > 0 || query.inStock || query.deals) {
+  if (facets.formats.length >= 2 || query.formats.length > 0) {
+    const formatName = (value: string) => t(`filter.formatValue.${value}`);
+    const toggle = (value: (typeof query.formats)[number], on: boolean) => change({ formats: on ? query.formats.filter((v) => v !== value) : [...query.formats, value] });
     groups.push(
-      <FieldGroup key="availability" legend={t("filter.availability")} layout="row">
-        <div className="chips">
-          {facets.inStock > 0 || query.inStock ? (
-            live ? (
-              <Chip selected={query.inStock} onClick={() => change({ inStock: !query.inStock })}>
-                {t("filter.inStock")} <Count n={facets.inStock} />
-              </Chip>
-            ) : (
-              <Chip input="checkbox" name="stock" value="1" defaultChecked={query.inStock}>
-                {t("filter.inStock")} <Count n={facets.inStock} />
-              </Chip>
-            )
-          ) : null}
-          {facets.deals > 0 || query.deals ? (
-            live ? (
-              <Chip selected={query.deals} onClick={() => change({ deals: !query.deals })}>
-                {t("filter.deals")} <Count n={facets.deals} />
-              </Chip>
-            ) : (
-              <Chip input="checkbox" name="deals" value="1" defaultChecked={query.deals}>
-                {t("filter.deals")} <Count n={facets.deals} />
-              </Chip>
-            )
-          ) : null}
-        </div>
-      </FieldGroup>,
-    );
-  }
-
-  if (facets.arabic.length > 0) {
-    groups.push(
-      <FieldGroup key="arabic" legend={t("filter.arabic")} hint={t("filter.arabicHint")} layout="row">
-        <div className="chips">
-          {!live ? (
-            <Chip input="radio" name="arabic" value="" defaultChecked={query.arabic === null}>
-              {t("filter.any")}
-            </Chip>
-          ) : null}
-          {facets.arabic.map((option) => {
-            const on = query.arabic === option.value;
-            return live ? (
-              <Chip key={option.value} selected={on} onClick={() => change({ arabic: on ? null : option.value })}>
-                {t(`filter.arabicLevel.${option.value}`)} <Count n={option.count} />
-              </Chip>
-            ) : (
-              <Chip key={option.value} input="radio" name="arabic" value={option.value} defaultChecked={on}>
-                {t(`filter.arabicLevel.${option.value}`)} <Count n={option.count} />
-              </Chip>
-            );
-          })}
-        </div>
-      </FieldGroup>,
-    );
-  }
-
-  if (facets.formats.length > 0) {
-    groups.push(
-      <FieldGroup key="formats" legend={t("filter.format")} hint={t("filter.formatHint")} layout="row">
-        <div className="chips">
-          {facets.formats.map((option) => {
+      <FieldGroup key="formats" legend={t("filter.format")} hint={t("filter.formatHint")} className="catalog-facet">
+        {chipsFit(facets.formats.map((option) => formatName(option.value))) ? (
+          <div className="chips">
+            {facets.formats.map((option) => {
+              const on = query.formats.includes(option.value);
+              return (
+                <Chip key={option.value} input="checkbox" name="format" value={option.value} checked={on} disabled={disabled} onChange={() => toggle(option.value, on)} count={option.count}>
+                  {formatName(option.value)}
+                </Chip>
+              );
+            })}
+          </div>
+        ) : (
+          facets.formats.map((option) => {
             const on = query.formats.includes(option.value);
-            return live ? (
-              <Chip key={option.value} selected={on} onClick={() => change({ formats: on ? query.formats.filter((v) => v !== option.value) : [...query.formats, option.value] })}>
-                {t(`filter.formatValue.${option.value}`)} <Count n={option.count} />
-              </Chip>
-            ) : (
-              <Chip key={option.value} input="checkbox" name="format" value={option.value} defaultChecked={on}>
-                {t(`filter.formatValue.${option.value}`)} <Count n={option.count} />
-              </Chip>
+            return (
+              <Checkbox
+                key={option.value}
+                name="format"
+                value={option.value}
+                checked={on}
+                disabled={disabled}
+                onChange={() => toggle(option.value, on)}
+                label={<Opt label={formatName(option.value)} count={option.count} />}
+              />
             );
-          })}
-        </div>
+          })
+        )}
       </FieldGroup>,
     );
   }
 
-  if (live) return <div className="grid grid-cols-[minmax(0,1fr)] gap-6">{groups}</div>;
+  // no script: the sort as radio rows, then the submit key (the script path sorts from the toolbar)
+  if (sorts.length > 1) {
+    groups.push(
+      <FieldGroup key="sort" legend={t("sort.label")} className="catalog-facet catalog-nojs">
+        {sorts.map((value) => (
+          <Radio key={value} name="sort" value={value} defaultChecked={sort === value} label={t(`sort.${value}`)} />
+        ))}
+      </FieldGroup>,
+    );
+  }
+
+  const onSubmit = (event: FormEvent) => {
+    // with script every control applies itself; Enter in a price field is handled by its group
+    if (onChange) event.preventDefault();
+  };
+
   return (
-    <form method="get" action={action} className="grid grid-cols-[minmax(0,1fr)] gap-6">
+    <form method="get" action={action} onSubmit={onSubmit} className={cx("catalog-filters", className)} aria-label={t("filter.title")} noValidate>
       {Object.entries(hidden).map(([name, value]) => (
-        <input key={name} type="hidden" name={name} value={value} />
+        <input key={`h:${name}`} type="hidden" name={name} value={value} />
+      ))}
+      {kept.map(([name, value], index) => (
+        <input key={`k:${name}:${index}`} type="hidden" name={name} value={value} />
       ))}
       {groups}
-      <div>
-        <Key type="submit" variant="ink">
+      <div className="catalog-nojs grid gap-3">
+        <Key type="submit" variant="secondary" block>
           {t("filter.submit")}
         </Key>
+        <p className="type-xs text-ink-2">{t("filter.priceNote", { example: iqdText(f, 250_000) })}</p>
       </div>
-      <p className="type-caption text-ink-2">{t("filter.priceNote", { example: iqdText(f, 250_000) })}</p>
     </form>
   );
 }
 
-function PriceGroup({ live, query, facets, onChange }: { live: boolean; query: ListingQuery; facets: ListingFacets; onChange: (change: Partial<ListingQuery>) => void }) {
+function PriceGroup({ query, facets, onChange, live, disabled }: { query: ListingQuery; facets: ListingFacets; onChange: (change: Partial<ListingQuery>) => void; live: boolean; disabled: boolean }) {
   const t = useT("catalog");
   const f = useFormat();
   const [min, setMin] = useState(query.priceMin === null ? "" : String(query.priceMin));
   const [max, setMax] = useState(query.priceMax === null ? "" : String(query.priceMax));
   const [errors, setErrors] = useState<{ min?: string; max?: string }>({});
-  // follow the URL (a band chip, "clear all", Back) unless the shopper is typing
-  const [seen, setSeen] = useState(`${query.priceMin}|${query.priceMax}`);
+  // follow the URL (a ready range, "clear all", Back) unless the shopper is typing
   const urlKey = `${query.priceMin}|${query.priceMax}`;
+  const [seen, setSeen] = useState(urlKey);
   if (urlKey !== seen) {
     setSeen(urlKey);
     setMin(query.priceMin === null ? "" : String(query.priceMin));
@@ -281,67 +331,66 @@ function PriceGroup({ live, query, facets, onChange }: { live: boolean; query: L
     setErrors({});
     if (low !== query.priceMin || high !== query.priceMax) onChange({ priceMin: low, priceMax: high });
   };
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    apply();
-  };
 
   const bandLabel = (band: { min: number | null; max: number | null }) =>
     band.min === null ? t("filter.priceUpTo", { max: iqdText(f, band.max ?? 0) }) : band.max === null ? t("filter.priceFrom", { min: iqdText(f, band.min) }) : t("filter.priceBetween", { min: iqdText(f, band.min), max: iqdText(f, band.max) });
-
-  if (!facets.price && query.priceMin === null && query.priceMax === null) return null;
   const hint = facets.price ? t("filter.priceSpan", { min: iqdText(f, facets.price.min), max: iqdText(f, facets.price.max) }) : undefined;
-  const fields = (
-    <div className="grid grid-cols-2 gap-3">
-      <TextField
-        label={t("filter.priceMin")}
-        name="min"
-        inputMode="numeric"
-        autoComplete="off"
-        value={live ? min : undefined}
-        defaultValue={live ? undefined : min}
-        onChange={live ? (event) => setMin(event.target.value) : undefined}
-        onBlur={live ? apply : undefined}
-        end={<span className="type-caption text-ink-2">{t("filter.currency")}</span>}
-        error={errors.min}
-      />
-      <TextField
-        label={t("filter.priceMax")}
-        name="max"
-        inputMode="numeric"
-        autoComplete="off"
-        value={live ? max : undefined}
-        defaultValue={live ? undefined : max}
-        onChange={live ? (event) => setMax(event.target.value) : undefined}
-        onBlur={live ? apply : undefined}
-        end={<span className="type-caption text-ink-2">{t("filter.currency")}</span>}
-        error={errors.max}
-      />
-    </div>
-  );
+  const onBand = facets.priceBands.some((band) => band.min === query.priceMin && band.max === query.priceMax);
 
   return (
-    <FieldGroup legend={t("filter.price")} hint={hint}>
-      {live ? (
-        <form onSubmit={onSubmit} noValidate className="grid grid-cols-[minmax(0,1fr)] gap-2">
-          {fields}
-          <button type="submit" className="sr-only">
-            {t("filter.priceApply")}
-          </button>
-        </form>
-      ) : (
-        fields
-      )}
+    <FieldGroup legend={t("filter.price")} hint={hint} className="catalog-facet">
+      <div className="grid grid-cols-2 gap-3">
+        <TextField
+          label={t("filter.priceMin")}
+          name="min"
+          inputMode="numeric"
+          autoComplete="off"
+          value={min}
+          disabled={disabled}
+          onChange={(event) => setMin(event.target.value)}
+          onBlur={live ? apply : undefined}
+          onKeyDown={(event) => {
+            if (live && event.key === "Enter") {
+              event.preventDefault();
+              apply();
+            }
+          }}
+          end={<span className="type-xs text-ink-2">{t("filter.currency")}</span>}
+          error={errors.min}
+        />
+        <TextField
+          label={t("filter.priceMax")}
+          name="max"
+          inputMode="numeric"
+          autoComplete="off"
+          value={max}
+          disabled={disabled}
+          onChange={(event) => setMax(event.target.value)}
+          onBlur={live ? apply : undefined}
+          onKeyDown={(event) => {
+            if (live && event.key === "Enter") {
+              event.preventDefault();
+              apply();
+            }
+          }}
+          end={<span className="type-xs text-ink-2">{t("filter.currency")}</span>}
+          error={errors.max}
+        />
+      </div>
       {live && facets.priceBands.length > 1 ? (
-        <div className={cx("chips", "pt-1")} role="group" aria-label={t("filter.priceBands")}>
-          {facets.priceBands.map((band) => {
-            const on = query.priceMin === band.min && query.priceMax === band.max;
-            return (
-              <Chip key={`${band.min}-${band.max}`} selected={on} onClick={() => onChange(on ? { priceMin: null, priceMax: null } : { priceMin: band.min, priceMax: band.max })}>
-                <bdi>{bandLabel(band)}</bdi> <Count n={band.count} />
-              </Chip>
-            );
-          })}
+        <div className="catalog-js-only grid" role="radiogroup" aria-label={t("filter.priceBands")}>
+          <Radio name="band" value="" checked={!onBand && query.priceMin === null && query.priceMax === null} disabled={disabled} onChange={() => onChange({ priceMin: null, priceMax: null })} label={t("filter.any")} />
+          {facets.priceBands.map((band) => (
+            <Radio
+              key={`${band.min}-${band.max}`}
+              name="band"
+              value={`${band.min ?? ""}-${band.max ?? ""}`}
+              checked={query.priceMin === band.min && query.priceMax === band.max}
+              disabled={disabled}
+              onChange={() => onChange({ priceMin: band.min, priceMax: band.max })}
+              label={<Opt label={<bdi>{bandLabel(band)}</bdi>} count={band.count} />}
+            />
+          ))}
         </div>
       ) : null}
     </FieldGroup>

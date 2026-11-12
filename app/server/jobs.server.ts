@@ -25,10 +25,18 @@
  *                                      sign-in events older than 180 days, outbox rows (sent, failed or
  *                                      held) older than 90 days, and job_runs older than 90 days except
  *                                      the latest run of each job; then the areas' own purges
- *                                      (purgeAreaData: recommendation signals, abandoned trade-in photos,
- *                                      wallet top-up proofs no request uses, stored assistant
- *                                      conversations past their expiry). `consents`,
+ *                                      (purgeAreaData: wallet top-up proofs no request uses, stored
+ *                                      assistant conversations past their expiry). `consents`,
  *                                      audit events, ledgers and order history are never deleted here.
+ *       recommendations.events.purge   consented recommendation signals older than
+ *                                      RECOMMENDATION_EVENT_RETENTION_DAYS (90; purgeRecommendationEvents)
+ *       tradein.drafts.purge           private photos of trade-in wizards abandoned for 2 days
+ *                                      (purgeStaleTradeInDrafts) — needs the file store (`env.KV`): skipped
+ *                                      without it
+ *       devices.tradein_offers.expire  trade-in offers past their date: offered → expired with an event
+ *                                      (admin 13, expireTradeInOffers — 200 per run)
+ *       customers.segments.recompute   every customer's RFM segment from the orders, stored in one audited
+ *                                      batch (admin 07.02, recomputeSegments as the system)
  *       consistency.daily              stock vs movements, stock vs reservations, wallet ledger vs journal,
  *                                      journal balance, order totals vs lines / payments / refunds, money
  *                                      vs postings → `consistency_findings` (one row per problem, updated
@@ -44,8 +52,11 @@
  *
  * Every job run is a `job_runs` row (running → succeeded / failed / skipped, with its counters or
  * error), so the operations module (23.03) can show and re-run them (runJob, with ops.job.run checked
- * by the caller). A failing job never stops the others. Jobs are safe to run twice at the same time:
- * each change they make is guarded.
+ * by the caller). A failing job never stops the others: each area's daily work is a job of its own
+ * (since 2026-11-11 the recommendation and trade-in-draft purges too — they were inside `retention`,
+ * where a failure was only a counter of a run that "succeeded"), so a failure shows as that job's
+ * failed run and `ok: false`. Jobs are safe to run twice at the same time: each change they make is
+ * guarded.
  *
  * Must not import "cloudflare:workers".
  */
@@ -79,6 +90,8 @@ import { deliverOutbox, type MessageProviders } from "./outbox.server";
 import { cleanupRateLimits } from "./ratelimit.server";
 import { purgeUnusedTopupProofs } from "./services/account/topups.server";
 import { publishDueProducts } from "./services/admin/catalog/workflow.server";
+import { recomputeSegments } from "./services/admin/customers/rfm.server";
+import { expireTradeInOffers } from "./services/admin/devices/tradeins.server";
 import { expireReservations } from "./services/inventory/stock.server";
 import { transitionOrder } from "./services/orders/manage.server";
 import { purgeRecommendationEvents } from "./services/recommendations.server";
@@ -99,14 +112,18 @@ export const JOB_NAMES = [
   "audit.seal",
   "ratelimits.cleanup",
   "retention",
+  "recommendations.events.purge",
+  "tradein.drafts.purge",
+  "devices.tradein_offers.expire",
+  "customers.segments.recompute",
   "consistency.daily",
 ] as const;
 export type JobName = (typeof JOB_NAMES)[number];
 
-/** Which jobs each cron expression runs, in order. */
+/** Which jobs each cron expression runs, in order (the consistency checks last: they look at what the others left). */
 export const SCHEDULES: Record<string, readonly JobName[]> = {
   [CRON_FREQUENT]: ["orders.expire_unpaid", "inventory.reservations.expire", "catalog.publish_due", "outbox.deliver"],
-  [CRON_DAILY]: ["audit.seal", "ratelimits.cleanup", "retention", "consistency.daily"],
+  [CRON_DAILY]: ["audit.seal", "ratelimits.cleanup", "retention", "recommendations.events.purge", "tradein.drafts.purge", "devices.tradein_offers.expire", "customers.segments.recompute", "consistency.daily"],
 };
 
 /** Retention windows (days). Owner-editable settings can replace these later (security.retention.manage). */
@@ -119,7 +136,7 @@ export const RETENTION_DAYS = {
   authEvents: 180,
   /** Outgoing messages that were sent, failed for good, or held for lack of a provider. */
   outbox: 90,
-  /** Scheduled-job history (`job_runs`, about 900 rows a day). The latest run of each job is kept, however old. */
+  /** Scheduled-job history (`job_runs`, about 1,160 rows a day: 4 every 5 minutes, 8 at night). The latest run of each job is kept, however old. */
   jobRuns: 90,
 } as const;
 
@@ -384,15 +401,15 @@ export async function purgeExpiredAssistantSessions(db: Db, now: number): Promis
 }
 
 /**
- * Purges owned by storefront services, run after the core retention above. Each is isolated: a failure is reported
- * in the stats (and the run still succeeds), so one area's cleanup can never stop the others.
- *   recommendationEvents  consented view/add signals older than RECOMMENDATION_EVENT_RETENTION_DAYS (90)
- *   tradeInDrafts         private photos of trade-in wizards abandoned for 2 days (needs the KV file store; null
- *                         when the Worker did not pass its bindings, e.g. in tests that do not provide one)
- *   topupProofs           private wallet top-up proofs that no request uses, a day after their upload (same store;
- *                         security review, second pass — before it nothing ever deleted them)
+ * Purges owned by other services, run after the core retention above. Each is isolated: a failure is reported in the
+ * stats (and the run still succeeds), so one area's cleanup can never stop the others.
+ *   topupProofs           private wallet top-up proofs that no request uses, a day after their upload (needs the KV
+ *                         file store; null when the Worker did not pass its bindings, e.g. in tests that do not
+ *                         provide one — security review, second pass: before it nothing ever deleted them)
  *   assistantSessions     stored assistant conversations past their `expires_at`, with their messages
  *                         (purgeExpiredAssistantSessions; consent rows are append-only and stay)
+ * The recommendation signals and the abandoned trade-in photos have their own daily jobs since 2026-11-11
+ * (recommendations.events.purge, tradein.drafts.purge — one job_runs row each, a failure their own).
  */
 async function purgeAreaData(db: Db, now: number, env: ScheduledJobsEnv | undefined): Promise<Record<string, number | null | { error: string }>> {
   const attempt = async (run: () => Promise<number>) => {
@@ -404,11 +421,45 @@ async function purgeAreaData(db: Db, now: number, env: ScheduledJobsEnv | undefi
   };
   const kv = env?.KV;
   return {
-    recommendationEvents: await attempt(() => purgeRecommendationEvents(db, now)),
-    tradeInDrafts: kv ? await attempt(() => purgeStaleTradeInDrafts(db, kvBlobStore(kv), now)) : null,
     topupProofs: kv ? await attempt(() => purgeUnusedTopupProofs(db, kvBlobStore(kv), now)) : null,
     assistantSessions: await attempt(() => purgeExpiredAssistantSessions(db, now)),
   };
+}
+
+// ───────────────────────────────────────────────────────────────── the areas' daily jobs (2026-11-11)
+
+/** Consented view/add signals older than RECOMMENDATION_EVENT_RETENTION_DAYS (recommendations.server). */
+async function purgeRecommendationSignals(db: Db, { now }: JobContext): Promise<JobResult> {
+  return { stats: { deleted: await purgeRecommendationEvents(db, now) } };
+}
+
+/**
+ * Private photos of trade-in wizards abandoned for TRADE_IN_DRAFT_MAX_AGE_SEC (tradein.server; 200 a run, newest
+ * first). The bytes live in the KV file store the Worker passes as `env.KV`: without it the job is skipped, never
+ * pretended done.
+ */
+async function purgeTradeInDraftPhotos(db: Db, { now, env }: JobContext): Promise<JobResult> {
+  const kv = env?.KV;
+  if (!kv) return { status: "skipped", stats: { reason: "no_file_store_binding" } };
+  return { stats: { deleted: await purgeStaleTradeInDrafts(db, kvBlobStore(kv), now) } };
+}
+
+/** At most this many offers closed per run (the next run takes the rest; `more` says so). */
+const OFFER_EXPIRE_BATCH = 200;
+
+/** Trade-in offers past their date: offered → expired with an `expired` event (admin 13, expireTradeInOffers). */
+async function expireOldTradeInOffers(db: Db, { now }: JobContext): Promise<JobResult> {
+  const { expired } = await expireTradeInOffers(db, now, OFFER_EXPIRE_BATCH);
+  return { stats: { expired, more: expired >= OFFER_EXPIRE_BATCH } };
+}
+
+/**
+ * Every customer's RFM segment, recomputed from the orders and stored as a whole in ONE audited batch (admin 07.02,
+ * recomputeSegments as the system — the same work as the module's "recompute" key). Counts per segment in the stats.
+ */
+async function recomputeCustomerSegments(db: Db, { now }: JobContext): Promise<JobResult> {
+  const { counts, total } = await recomputeSegments(db, systemActor("customers.segments.recompute"), now);
+  return { stats: { total, segments: counts } };
 }
 
 // ───────────────────────────────────────────────────────────────── consistency checks (23.06)
@@ -716,6 +767,10 @@ const JOBS: Record<JobName, (db: Db, ctx: JobContext) => Promise<JobResult>> = {
   "audit.seal": sealAuditChain,
   "ratelimits.cleanup": cleanupLimits,
   retention: applyRetention,
+  "recommendations.events.purge": purgeRecommendationSignals,
+  "tradein.drafts.purge": purgeTradeInDraftPhotos,
+  "devices.tradein_offers.expire": expireOldTradeInOffers,
+  "customers.segments.recompute": recomputeCustomerSegments,
   "consistency.daily": runConsistencyChecks,
 };
 

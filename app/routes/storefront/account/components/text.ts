@@ -15,3 +15,11 @@ export const amount = (text: string): string => `${FSI}${text}${PDI}`;
 
 /** The phone example of the hints, isolated so its digit groups keep their order in Arabic and Kurdish. */
 export const PHONE_EXAMPLE = ltr("0770 123 4567");
+
+/** The one "talk to a person" destination (Design System v2 §6.13): the assistant's hand-off form. */
+export const HANDOFF = "/support/assistant?handoff=1#handoff";
+
+/** "926931742" → "9269 3174 2": a long number read in groups of four (copying keeps the digits). */
+export function grouped(value: string): string {
+  return /^\d{8,}$/.test(value) ? (value.match(/.{1,4}/g) ?? [value]).join(" ") : value;
+}

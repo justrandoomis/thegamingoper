@@ -22,6 +22,7 @@ import {
   authEvents,
   consents,
   consistencyFindings,
+  customerSegmentMembers,
   customerSessions,
   files,
   fiscalPeriods,
@@ -43,6 +44,8 @@ import {
   stockMovements,
   stockReservations,
   supportTickets,
+  tradeInEvents,
+  tradeIns,
   walletLedger,
 } from "~/server/db/schema";
 import { JournalEntryError } from "~/server/db/journal.server";
@@ -62,7 +65,8 @@ import { PAYMENT_ERROR_KEYS, getPaymentInstructions, recordCodCollection, submit
 import { REFUND_ERROR_KEYS, approveRefund, createRefund, getRefundableAmount } from "~/server/services/refunds.server";
 import { SHIPPING_ERROR_KEYS } from "~/server/services/shipping/fees.server";
 import { ACCOUNT_ERROR_KEYS } from "~/server/services/account/types";
-import { TRADE_IN_ERROR_KEYS } from "~/server/services/tradein.server";
+import { TRADE_IN_ERROR_KEYS, addTradeInDraftPhoto } from "~/server/services/tradein.server";
+import { kvBlobStore } from "~/server/storage.server";
 import { WALLET_ERROR_KEYS, creditWallet, getWalletBalance, listWalletEntries, walletDebitStatement } from "~/server/services/wallet.server";
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -70,6 +74,8 @@ import { fixtures, type Fixtures } from "./helpers/factories";
 const NOW = TEST_NOW;
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
+/** A 1×1 PNG: what a trade-in wizard's photo upload stores. */
+const PNG = Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="), (c) => c.charCodeAt(0));
 
 let t: TestDb;
 let make: Fixtures;
@@ -697,8 +703,14 @@ describe("scheduled jobs", () => {
       ["audit.seal", "succeeded"],
       ["ratelimits.cleanup", "succeeded"],
       ["retention", "succeeded"],
+      ["recommendations.events.purge", "succeeded"],
+      // no bindings passed (no KV file store): the photo purge is recorded as not run, never as done
+      ["tradein.drafts.purge", "skipped"],
+      ["devices.tradein_offers.expire", "succeeded"],
+      ["customers.segments.recompute", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);
+    expect(run.ok).toBe(true);
     expect(run.audit?.headHash).toMatch(/^[0-9a-f]{64}$/);
     expect(run.audit?.lastSealedSeq).toBeGreaterThan(0);
     expect(run.jobs[2].stats).toMatchObject({ customerSessions: 1, otpCodes: 1, authEvents: 1, outbox: 1 });
@@ -773,7 +785,7 @@ describe("scheduled jobs", () => {
     expect(await t.db.select({ status: jobRuns.status }).from(jobRuns).where(eq(jobRuns.id, run.runId)).get()).toEqual({ status: "succeeded" });
   });
 
-  test("retention also purges consented recommendation signals after 90 days; trade-in drafts need the Worker's file store", async () => {
+  test("consented recommendation signals go after 90 days in a job of their own; the trade-in photo purge needs the Worker's file store", async () => {
     const { productId } = await make.product();
     const tag = randomToken().slice(0, 8);
     await t.db.insert(recommendationEvents).values([
@@ -781,13 +793,82 @@ describe("scheduled jobs", () => {
       { id: `rev_${tag}_new`, sessionHash: `s${tag}`, kind: "view", productId, at: NOW - DAY },
     ]);
 
-    const run = await runJob(t.db, "retention", NOW);
+    const run = await runJob(t.db, "recommendations.events.purge", NOW);
     expect(run.status).toBe("succeeded");
-    expect(Number(run.stats.recommendationEvents)).toBeGreaterThanOrEqual(1);
-    // no bindings passed (no KV file store): the draft purge is reported as not run rather than failing the job
-    expect(run.stats.tradeInDrafts).toBeNull();
+    expect(Number(run.stats.deleted)).toBeGreaterThanOrEqual(1);
     const left = await t.db.select({ id: recommendationEvents.id }).from(recommendationEvents).where(eq(recommendationEvents.sessionHash, `s${tag}`));
     expect(left.map((row) => row.id)).toEqual([`rev_${tag}_new`]);
+    // no bindings passed (no KV file store): the photo purge is recorded as not run, never as done
+    expect(await runJob(t.db, "tradein.drafts.purge", NOW)).toMatchObject({ status: "skipped", stats: { reason: "no_file_store_binding" } });
+    // the retention run no longer carries them (each is its own job_runs row)
+    const retention = await runJob(t.db, "retention", NOW);
+    expect(retention.status).toBe("succeeded");
+    expect(Object.keys(retention.stats)).not.toContain("recommendationEvents");
+    expect(Object.keys(retention.stats)).not.toContain("tradeInDrafts");
+  });
+
+  test("daily, one job_runs row each: customer segments recomputed, trade-in offers past their date closed, abandoned trade-in photos and old signals purged — a failing one fails alone", async () => {
+    const tag = randomToken().slice(0, 8).toLowerCase();
+    const store = kvBlobStore(t.kv);
+    // a customer who bought (paid, nothing refunded), a trade-in offer that ran out an hour ago, an open one, a wizard's
+    // photo left three days ago, a consented signal from 91 days ago
+    const buyer = await make.customer();
+    const { variantId, sku } = await make.product({ priceIqd: 100_000 });
+    await make.order([{ variantId, sku, qty: 1, unitPriceIqd: 100_000 }], { customerId: buyer, status: "delivered", paymentStatus: "paid", paidIqd: 105_000 });
+    const offerer = await make.employee();
+    const inspection = { checklist: { templateId: null, completedAt: NOW - 2 * DAY, completedBy: offerer, items: [{ key: "power", result: "pass" as const }] }, grade: "A" as const, inspectedBy: offerer, inspectedAt: NOW - 2 * DAY };
+    const offer = (suffix: string, offerExpiresAt: number) => ({ id: `ti_${tag}_${suffix}`, ref: `TI-${tag.toUpperCase()}${suffix.toUpperCase()}`, phoneE164: "+9647701112233", status: "offered" as const, finalOfferIqd: 120_000, offeredBy: offerer, offeredAt: NOW - 2 * DAY, offerExpiresAt, inspection, createdAt: NOW - 3 * DAY, updatedAt: NOW - 2 * DAY });
+    await t.db.insert(tradeIns).values([offer("late", NOW - HOUR), offer("open", NOW + DAY)]);
+    const draft = await addTradeInDraftPhoto(t.db, store, randomToken(24), PNG, { kind: "guest" }, NOW - 3 * DAY);
+    const { productId } = await make.product();
+    await t.db.insert(recommendationEvents).values({ id: `rev_${tag}_daily`, sessionHash: `d${tag}`, kind: "view", productId, at: NOW - 91 * DAY });
+
+    const run = await runScheduledJobs(t.db, CRON_DAILY, NOW, { KV: t.kv });
+    expect(run.ok).toBe(true);
+    expect(run.jobs.map((job) => [job.job, job.status])).toEqual([
+      ["audit.seal", "succeeded"],
+      ["ratelimits.cleanup", "succeeded"],
+      ["retention", "succeeded"],
+      ["recommendations.events.purge", "succeeded"],
+      ["tradein.drafts.purge", "succeeded"],
+      ["devices.tradein_offers.expire", "succeeded"],
+      ["customers.segments.recompute", "succeeded"],
+      ["consistency.daily", "succeeded"],
+    ]);
+    // one row each, with its counters
+    const recorded = await t.db.select({ id: jobRuns.id, job: jobRuns.job, status: jobRuns.status }).from(jobRuns).where(inArray(jobRuns.id, run.jobs.map((job) => job.runId)));
+    expect(recorded.map((row) => row.job).sort()).toEqual(run.jobs.map((job) => job.job).sort());
+    const statsOf = (job: string) => run.jobs.find((outcome) => outcome.job === job)?.stats ?? {};
+    expect(Number(statsOf("recommendations.events.purge").deleted)).toBeGreaterThanOrEqual(1);
+    expect(Number(statsOf("tradein.drafts.purge").deleted)).toBeGreaterThanOrEqual(1);
+    expect(statsOf("devices.tradein_offers.expire")).toMatchObject({ expired: 1, more: false });
+    expect(Number(statsOf("customers.segments.recompute").total)).toBeGreaterThanOrEqual(1);
+    // what they did
+    expect(await t.db.select({ id: recommendationEvents.id }).from(recommendationEvents).where(eq(recommendationEvents.id, `rev_${tag}_daily`))).toEqual([]);
+    expect((await t.db.select({ deletedAt: files.deletedAt }).from(files).where(eq(files.id, draft.id)).get())?.deletedAt).toBe(NOW);
+    const offers = await t.db.select({ id: tradeIns.id, status: tradeIns.status }).from(tradeIns).where(inArray(tradeIns.id, [`ti_${tag}_late`, `ti_${tag}_open`])).orderBy(tradeIns.id);
+    expect(offers).toEqual([
+      { id: `ti_${tag}_late`, status: "expired" },
+      { id: `ti_${tag}_open`, status: "offered" },
+    ]);
+    expect(await t.db.select({ kind: tradeInEvents.kind }).from(tradeInEvents).where(eq(tradeInEvents.tradeInId, `ti_${tag}_late`))).toEqual([{ kind: "expired" }]);
+    expect(await t.db.select({ customerId: customerSegmentMembers.customerId }).from(customerSegmentMembers).where(eq(customerSegmentMembers.customerId, buyer))).toHaveLength(1);
+    expect(await t.db.select({ actorKind: auditEvents.actorKind }).from(auditEvents).where(and(eq(auditEvents.action, "customers.segment.recompute"), eq(auditEvents.at, NOW)))).toContainEqual({ actorKind: "system" });
+
+    // The file store failing takes only its own job down: that run is "failed", every other job of the night succeeds.
+    await addTradeInDraftPhoto(t.db, store, randomToken(24), PNG, { kind: "guest" }, NOW - 2 * DAY);
+    const broken = new Proxy(t.kv, {
+      get(target, property) {
+        if (property === "delete") return async () => Promise.reject(new Error("the file store is down (test)"));
+        const value = Reflect.get(target, property, target) as unknown;
+        return typeof value === "function" ? (value as (...args: unknown[]) => unknown).bind(target) : value;
+      },
+    });
+    const night = await runScheduledJobs(t.db, CRON_DAILY, NOW + DAY, { KV: broken });
+    expect(night.ok).toBe(false);
+    expect(night.jobs.filter((job) => job.status !== "succeeded").map((job) => [job.job, job.status])).toEqual([["tradein.drafts.purge", "failed"]]);
+    expect(night.jobs.find((job) => job.job === "tradein.drafts.purge")?.error).toContain("the file store is down");
+    expect((await t.db.select({ status: jobRuns.status }).from(jobRuns).where(eq(jobRuns.id, night.jobs.find((job) => job.job === "tradein.drafts.purge")!.runId)).get())?.status).toBe("failed");
   });
 
   test("retention deletes stored assistant conversations past their expiry with their messages; the ticket keeps its note, the consent row stays", async () => {

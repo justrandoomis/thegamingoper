@@ -28,7 +28,7 @@ import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import { failure, formObject, requirePricing } from "./route.server";
-import { ByLine, failureOf, Iqd, iqdText, MarginStatus, PageHead, pctText, pricingMeta, RowLink, typedIqd, useArrow, usePricingT } from "./shared";
+import { ByLine, failureOf, Iqd, iqdText, MarginStatus, PageHead, pctText, pricingMeta, RowLink, typedIqd, useArrow, useDropLimit, usePricingT } from "./shared";
 
 type Tab = "bundles" | "clearance" | "used";
 const TABS: Tab[] = ["bundles", "clearance", "used"];
@@ -229,6 +229,7 @@ function Used({ data: loaderData }: { data: LoaderData }) {
   const f = useFormat();
   const result = loaderData.used!;
   const arrow = useArrow();
+  const dropLimit = useDropLimit();
   const fetcher = useFetcher<typeof action>();
   const [editing, setEditing] = useState<UsedView | null>(null);
   const [price, setPrice] = useState("");
@@ -260,7 +261,7 @@ function Used({ data: loaderData }: { data: LoaderData }) {
       <h2 id="special-used" className="adm-h2">
         {t("special.usedTitle")}
       </h2>
-      <p className="max-w-[70ch] type-caption text-ink-2">{t("special.usedLead")}</p>
+      <p className="max-w-[70ch] type-caption text-ink-2">{t("special.usedLead", dropLimit)}</p>
       {result.units.length === 0 ? (
         <EmptyState title={t("special.usedEmpty")} text={t("special.usedEmptyText")} />
       ) : (
@@ -360,6 +361,7 @@ function Used({ data: loaderData }: { data: LoaderData }) {
 function UsedRequest({ unit, canApprove, canOverride, onDecide }: { unit: UsedView; canApprove: boolean; canOverride: boolean; onDecide: (intent: "used-approve" | "used-reject" | "used-cancel") => void }) {
   const t = usePricingT();
   const f = useFormat();
+  const dropLimit = useDropLimit();
   const request = unit.pending!;
   const mayDecide = canApprove && !request.mine && (!request.needsOverride || canOverride);
   return (
@@ -369,7 +371,7 @@ function UsedRequest({ unit, canApprove, canOverride, onDecide }: { unit: UsedVi
         {request.reasons.map((reason) => (
           <Status key={reason} tone={reason === "below_cost" ? "bad" : "warn"}>
             {/* A used device's cost is what the store paid for it, not a landed cost. */}
-            {reason === "below_cost" ? t("special.belowAcquisition") : t(`reason.${reason}`)}
+            {reason === "below_cost" ? t("special.belowAcquisition") : t(`reason.${reason}`, dropLimit)}
           </Status>
         ))}
       </span>

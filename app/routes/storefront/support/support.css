@@ -1,0 +1,876 @@
+/*
+ * Support pages (app/routes/storefront/support) — Design System v2 §6.13. Components layer (utilities still win),
+ * tokens only, logical properties only, motion only on transform and opacity, radii from the --r-* scale.
+ *
+ *   .sup-help     the support centre: head + search, results, task tiles, device picker, guides, contact
+ *   .sup-assist   the assistant: chat column (≤720) + sticky aside from 1024; the composer in the task bar below 1024
+ *   .sup-flow     the repair request and its status: a form column (≤720) + a sticky aside (340) from 1024
+ *   .sup-article  one guide: a reading column + aside from 1024
+ */
+@layer components {
+  /* ───────────────────────────── script on / off (the Motion Engine's head script sets <html data-motion>) */
+  :root:not([data-motion]) .sup-js {
+    display: none !important;
+  }
+  :root[data-motion] .sup-nojs {
+    display: none !important;
+  }
+
+  /* focus moved by the page (the newest answer, a result's heading, the hand-off form, a new step): a non-interactive
+     target, so no ring (v2 §10) — screen readers announce it and the keyboard continues from there */
+  .sup [tabindex="-1"]:focus {
+    outline: none;
+  }
+
+  /* ───────────────────────────── page frames */
+  .sup {
+    display: grid;
+    align-content: start;
+    padding-block: var(--s-4) var(--s-10);
+  }
+  .sup-help {
+    gap: var(--gap-section);
+  }
+  .sup-help__head {
+    display: grid;
+    gap: var(--s-3);
+    max-inline-size: 720px;
+  }
+  .sup-section {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  .sup-help__foot {
+    display: grid;
+    gap: var(--gap-section);
+  }
+  @media (min-width: 64rem) {
+    .sup {
+      padding-block-start: var(--s-6);
+    }
+    .sup-help__foot {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      column-gap: var(--s-12);
+      align-items: start;
+    }
+  }
+
+  /* two columns from 1024: a centred main column (≤720) and a sticky aside */
+  .sup-assist,
+  .sup-flow,
+  .sup-article {
+    gap: var(--s-6);
+  }
+  .sup-assist__main,
+  .sup-flow__main,
+  .sup-article__main {
+    display: grid;
+    align-content: start;
+    gap: var(--s-5);
+    min-inline-size: 0;
+  }
+  .sup-flow__aside,
+  .sup-assist__aside,
+  .sup-article__aside {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  .sup-flow__aside:not(.sup-flow__aside--all) {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .sup-assist,
+    .sup-flow,
+    .sup-article {
+      grid-template-columns: minmax(0, 720px) minmax(0, 340px);
+      justify-content: center;
+      column-gap: var(--s-12);
+      align-items: start;
+    }
+    .sup-flow__aside:not(.sup-flow__aside--all) {
+      display: grid;
+    }
+    .sup-flow__aside,
+    .sup-assist__aside,
+    .sup-article__aside {
+      position: sticky;
+      inset-block-start: calc(var(--shell-top) + var(--s-4));
+    }
+  }
+
+  /* ───────────────────────────── surfaces */
+  .sup-card {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    min-inline-size: 0;
+  }
+  @media (min-width: 64rem) {
+    .sup-card {
+      padding: var(--s-6);
+    }
+  }
+
+  /* a callout: a paper panel with a 3px inline-start bar in the tone colour (safety, info, success) */
+  .sup-callout,
+  .sup-note {
+    --tone: var(--info);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--line);
+    border-inline-start: 3px solid var(--tone);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    color: var(--ink);
+    font: var(--type-sm);
+  }
+  .sup-note > svg,
+  .sup-callout__icon {
+    flex: none;
+    margin-block-start: 1px;
+    color: var(--tone);
+  }
+  .sup-callout--warn {
+    --tone: var(--warn);
+  }
+  .sup-callout--danger {
+    --tone: var(--danger);
+  }
+  .sup-callout--ok {
+    --tone: var(--ok);
+  }
+  .sup-callout__title {
+    font: var(--type-sm-strong);
+    color: var(--tone);
+  }
+  .sup-callout--ok .sup-callout__title {
+    color: var(--ink);
+  }
+
+  /* a whole-form failure (network, rate limit): words and an icon, never colour alone, never brand red */
+  .sup-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--danger);
+    border-radius: var(--r-sm);
+    background: var(--danger-tint);
+    color: var(--danger);
+    font: var(--type-sm-strong);
+  }
+  .sup-alert > svg {
+    flex: none;
+  }
+
+  /* a native disclosure row (the hand-off's summary preview) */
+  .sup-details__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: var(--target);
+    cursor: pointer;
+    list-style: none;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sup-details__summary::-webkit-details-marker {
+    display: none;
+  }
+  .sup-details__caret {
+    flex: none;
+    color: var(--ink-2);
+    transition: rotate var(--t-micro) var(--ease-settle);
+  }
+  details[open] > summary .sup-details__caret {
+    rotate: 180deg;
+  }
+  .sup-summary {
+    margin: 0;
+    white-space: pre-wrap;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+
+  /* ───────────────────────────── the sub-navigation (a segmented control of links) */
+  .sup-nav {
+    grid-auto-columns: minmax(max-content, 1fr);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sup-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .sup-nav > .seg__opt {
+    padding-inline: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .sup-nav {
+      display: inline-grid;
+      justify-self: start;
+    }
+  }
+
+  /* ───────────────────────────── support centre: search */
+  .sup-search {
+    max-inline-size: 640px;
+  }
+  .sup-search__input {
+    padding-inline-end: 112px;
+  }
+  .sup-results {
+    display: grid;
+    gap: var(--s-4);
+    padding-block: var(--s-5);
+    border-block: 1px solid var(--line);
+  }
+
+  /* task tiles: 2 × 2 on phones, four from 768 */
+  .sup-tasks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-card);
+  }
+  @media (min-width: 48rem) {
+    .sup-tasks {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .sup-task {
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    color: inherit;
+    text-decoration: none;
+  }
+  .sup-task__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-sm);
+    background: var(--red-tint);
+    color: var(--red-ink);
+  }
+  .sup-task__title {
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  .sup-task__text {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  @media (hover: hover) {
+    .sup-task:hover .sup-task__title {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  /* the device picker: the platforms as a segmented control (2 × 2 below 600), then that platform's devices — a rail
+     with 2.5 tiles visible below 768, one wrapping grid from 768 (never arrows) */
+  .sup-platforms {
+    max-inline-size: 640px;
+  }
+  /* one platform's devices; with script only the chosen platform's list shows, without it every list (under its name) */
+  .sup-platform {
+    display: grid;
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  :root[data-motion] .sup-platform:not([data-current]) {
+    display: none;
+  }
+  @media (max-width: 37.4375rem) {
+    .sup-platforms {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-radius: var(--r-lg);
+    }
+  }
+  .sup-devices {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 2 * var(--gap-card)) / 2.5);
+    gap: var(--gap-card);
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    padding-block-end: var(--s-1);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .sup-devices::-webkit-scrollbar {
+    display: none;
+  }
+  .sup-devices > li {
+    scroll-snap-align: start;
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .sup-devices {
+      grid-auto-flow: row;
+      grid-auto-columns: auto;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: var(--gap-row) var(--gap-card);
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+  }
+  .sup-dtile {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+  }
+  /* a model's whole name, never cut: the words that tell two models apart come last («PlayStation 5 Digital Edition
+     (الطراز الأصلي 2020)»), and a picker that hides them makes the shopper guess */
+  .sup-dtile__name {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sup-dtile__check {
+    display: inline;
+    vertical-align: -3px;
+    margin-inline-end: var(--s-1);
+  }
+  .sup-dtile[aria-current] .sup-dtile__art {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) {
+    .sup-dtile:hover .niche::after,
+    .sup-devchip:hover .niche::after {
+      opacity: 1;
+    }
+  }
+
+  /* a chosen device: its picture beside the name and the two ways forward */
+  .sup-device__head {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: var(--s-4);
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .sup-device__head {
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: var(--s-6);
+    }
+  }
+
+  /* guide rows between hairlines in a paper card; two columns of rows from 1024 where asked */
+  .sup-guides {
+    display: grid;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .sup-guides--plain {
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .sup-guide + .sup-guide {
+    border-block-start: 1px solid var(--line);
+  }
+  @media (min-width: 64rem) {
+    .sup-guides--cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sup-guides--cols > .sup-guide:nth-child(2) {
+      border-block-start: 0;
+    }
+    .sup-guides--cols > .sup-guide:nth-child(odd) {
+      border-inline-end: 1px solid var(--line);
+    }
+  }
+  .sup-guide__link {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-3);
+    min-block-size: var(--h-row);
+    padding: var(--s-4);
+    color: inherit;
+    text-decoration: none;
+  }
+  .sup-guides--plain .sup-guide__link {
+    padding-inline: 0;
+  }
+  .sup-guide__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-full);
+    color: var(--ink);
+  }
+  .sup-guide__body {
+    display: grid;
+    flex: 1;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .sup-guide__meta {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sup-guide__title {
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  .sup-guide__summary {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sup-guide__go {
+    flex: none;
+    margin-block-start: 10px;
+    color: var(--ink-2);
+    transition: translate var(--t-micro) var(--ease-settle);
+  }
+  @media (hover: hover) {
+    .sup-guide__link:hover .sup-guide__title {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    .sup-guide__link:hover .sup-guide__go {
+      translate: calc(3px * var(--dir)) 0;
+    }
+  }
+
+  /* how to reach a person without configured channels */
+  .sup-write {
+    justify-items: start;
+  }
+
+  /* ───────────────────────────── assistant */
+  .sup-assist__head {
+    display: grid;
+    gap: var(--s-3);
+  }
+  /* «ليس تشخيصاً»: a chip that opens how the assistant works */
+  .sup-about__chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--h-chip);
+    padding-inline: var(--s-4);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-full);
+    background: var(--paper);
+    color: var(--ink);
+    font: var(--type-sm-strong);
+    cursor: pointer;
+    list-style: none;
+  }
+  .sup-about__chip::-webkit-details-marker {
+    display: none;
+  }
+  .sup-about__chip::after {
+    content: "";
+    position: absolute;
+    inset: -2px 0;
+  }
+  .sup-about__panel {
+    display: grid;
+    gap: var(--s-2);
+    margin-block-start: var(--s-2);
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+
+  /* the safety note, collapsed to one line; it opens by itself on battery, power or liquid */
+  .sup-safety {
+    border: 1px solid var(--line);
+    border-inline-start: 3px solid var(--warn);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  .sup-safety__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: var(--h-row);
+    padding-inline: var(--s-4);
+    cursor: pointer;
+    list-style: none;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sup-safety__summary::-webkit-details-marker {
+    display: none;
+  }
+  .sup-safety__icon {
+    flex: none;
+    color: var(--warn);
+  }
+  .sup-safety__text {
+    padding: 0 var(--s-4) var(--s-4);
+    font: var(--type-sm);
+    color: var(--ink);
+  }
+
+  /* the conversation: the shopper's bubbles on --niche at the inline end, the assistant's on paper at the start;
+     --r-lg corners with an 8px corner on the speaker's side */
+  .sup-chat {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sup-chat__turn {
+    display: flex;
+    justify-content: flex-start;
+    min-inline-size: 0;
+  }
+  .sup-chat__turn--me {
+    justify-content: flex-end;
+  }
+  .sup-bubble {
+    max-inline-size: 85%;
+    min-inline-size: 0;
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-lg);
+    font: var(--type-body);
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .sup-bubble--me {
+    border-end-end-radius: var(--r-xs);
+    background: var(--niche);
+  }
+  .sup-bubble--bot {
+    display: grid;
+    gap: var(--s-3);
+    max-inline-size: 92%;
+    border: 1px solid var(--line);
+    border-end-start-radius: var(--r-xs);
+    background: var(--paper);
+    outline-offset: 4px;
+  }
+  @media (min-width: 48rem) {
+    .sup-bubble--bot {
+      max-inline-size: 85%;
+    }
+  }
+  .sup-prompt {
+    display: grid;
+    gap: var(--s-3);
+    transition: opacity var(--t-micro) var(--ease-water);
+  }
+
+  /* device choice: 88 × 88 image chips */
+  .sup-devchips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4) var(--s-2);
+  }
+  .sup-devchip {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: var(--s-1);
+    inline-size: 104px;
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+  }
+  .sup-devchip__art {
+    inline-size: 88px;
+  }
+  /* a model's whole name, never cut («PlayStation 5 Digital Edition (الطراز الأصلي 2020)» takes four lines here) */
+  .sup-devchip__name {
+    font: var(--type-xs-strong);
+    color: var(--ink);
+  }
+
+  /* the composer: in the glass task bar below 1024; at the end of the chat column from 1024 */
+  .sup-assist__dock {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .sup-assist__dock {
+      display: block;
+      padding: var(--s-3);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      background: var(--paper);
+    }
+  }
+  .sup-composer {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .sup-composer__row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .sup-composer .field {
+    gap: 0;
+  }
+  .sup-composer__input {
+    block-size: var(--h-btn);
+  }
+  .sup-composer__send {
+    --px: 14px;
+    flex: none;
+  }
+  .sup-composer__reason {
+    font: var(--type-xs-strong);
+    color: var(--warn);
+  }
+
+  /* the hand-off receipt */
+  .sup-done-disc {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 48px;
+    block-size: 48px;
+    border-radius: var(--r-full);
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+  .sup-receipt__facts {
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (min-width: 48rem) {
+    .sup-receipt__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ───────────────────────────── repair request (task flow) */
+  .sup-form {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .sup-step {
+    display: grid;
+    gap: var(--s-5);
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  :root[data-motion] .sup-step:not([data-current]) {
+    display: none;
+  }
+  /* with script the step's heading is shown above the form; the legend still names the group */
+  :root[data-motion] .sup-step > legend {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sup-actions {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .sup-actions {
+      display: block;
+    }
+  }
+  .sup-actions__row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  /* the task bar: «رجوع» keeps its words, the step's primary takes the rest */
+  .sup-actions__row > .key:not(.sup-actions__go) {
+    flex: none;
+  }
+  .sup-bar .sup-actions__go {
+    flex: 1 1 auto;
+  }
+
+  /* what happens after sending: four numbered steps (a strip that scrolls below 768, a list in the aside) */
+  .sup-how {
+    gap: var(--s-3);
+  }
+  .sup-how__list {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .sup-how__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-3);
+    font: var(--type-sm);
+    color: var(--ink);
+  }
+  .sup-how__n {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 24px;
+    block-size: 24px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--r-full);
+    font: var(--type-xs-strong);
+  }
+  /* the fact strip: one line per owner-confirmed fact («الدفع: بعد موافقتك على عرض السعر») */
+  .sup-facts {
+    display: grid;
+    gap: var(--s-2);
+    padding-block-start: var(--s-4);
+    border-block-start: 1px solid var(--line);
+  }
+  .sup-facts__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-3);
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .sup-facts__item > svg {
+    flex: none;
+    color: var(--ink);
+  }
+
+  /* ───────────────────────────── repair status */
+  .sup-lookup {
+    max-inline-size: 560px;
+  }
+  .sup-request__status {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+  }
+  .sup-request__quote {
+    display: grid;
+    gap: var(--s-1);
+    margin-block-start: var(--s-2);
+    padding-block-start: var(--s-3);
+    border-block-start: 1px solid var(--line);
+  }
+  .sup-request__facts {
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (min-width: 48rem) {
+    .sup-request__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-6);
+    }
+  }
+  .sup-timeline {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .sup-timeline__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: var(--s-3);
+    row-gap: 2px;
+  }
+  .sup-timeline__item > :not(.sup-timeline__dot) {
+    grid-column: 2;
+  }
+  .sup-timeline__item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 11px;
+    inset-block: 28px calc(-1 * var(--s-4) + 4px);
+    inline-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--line-2);
+  }
+  .sup-timeline__dot {
+    display: grid;
+    grid-row: 1 / span 2;
+    place-items: center;
+    inline-size: 24px;
+    block-size: 24px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .sup-timeline__item[data-current] .sup-timeline__dot {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+  }
+  .sup-timeline__item[data-current] .sup-timeline__dot::after {
+    content: "";
+    inline-size: 10px;
+    block-size: 10px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+  }
+
+  /* ───────────────────────────── photos (the proof-uploader look) */
+  .sup-drop {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border: 1.5px dashed var(--line-strong);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  .sup-drop--invalid {
+    border-color: var(--danger);
+  }
+  .sup-thumb {
+    position: relative;
+    inline-size: 96px;
+    block-size: 96px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: var(--niche);
+  }
+  .sup-thumb > img {
+    border-radius: var(--r-sm);
+  }
+  .sup-thumb__remove {
+    position: absolute;
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+  }
+
+  /* ───────────────────────────── article */
+  .sup-article__text {
+    display: grid;
+    align-content: start;
+    gap: var(--s-5);
+    min-inline-size: 0;
+  }
+  .sup-article__body {
+    max-inline-size: 70ch;
+  }
+}

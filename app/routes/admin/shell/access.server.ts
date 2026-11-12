@@ -33,3 +33,17 @@ export function visibleModules(actor: Actor): AdminModuleSlug[] {
   const held = new Set<string>(permissionsOf(actor));
   return ADMIN_MODULE_SLUGS.filter((slug) => modulePermissions(slug).some((permission) => held.has(permission)));
 }
+
+/** What opens a customer's profile, /admin/customers/:id (its loader, customer-layout.tsx). */
+export const CUSTOMER_PROFILE_PERMISSION: Permission = "customers.customer.read";
+
+/**
+ * A customer's id as a link target: the id when this employee may open the customer's profile (customers.customer.read
+ * — which also opens the module at the gate), null otherwise and for guests. Modules send it next to a customer's name
+ * (orders 05, returns 12, finance 10), so the name links only for staff who may follow the link and stays plain text
+ * for everyone else — the id itself never reaches them (shell/CustomerName.tsx renders it).
+ */
+export function customerProfileId(actor: Actor, customerId: string | null | undefined): string | null {
+  if (typeof customerId !== "string" || customerId === "") return null;
+  return can(actor, CUSTOMER_PROFILE_PERMISSION) && canSeeModule(actor, "customers") ? customerId : null;
+}

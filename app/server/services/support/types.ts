@@ -66,6 +66,18 @@ export type ArticleDetail = ArticleSummary & {
   fallback: boolean;
 };
 
+/**
+ * The help centre's search (kb.server searchHelp): a danger sign first (no guides — stop and book a repair), an error
+ * code with the guides that mention it (possibly none), or guides ranked by the shopper's words.
+ */
+export type HelpSearch = {
+  /** The query as searched (cleaned, ≤ 300 characters). */
+  query: string;
+  kind: "danger" | "code" | "guides";
+  code: string | null;
+  articles: ArticleSummary[];
+};
+
 // ───────────────────────────────────────────────────────────────── assistant
 
 /** Words, never a number: how sure an answer is (DESIGN.md §9.22). */
@@ -80,6 +92,8 @@ export type AssistantSource = { type: "tree"; id: string; nodeId: string } | { t
  */
 export type AssistantTurnKind =
   | "ask_device"
+  /** The shopper described a problem before naming a device: the device is needed to choose safe steps. */
+  | "need_device"
   | "ask_model"
   | "ask_problem"
   | "matched"

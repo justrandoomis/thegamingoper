@@ -31,6 +31,26 @@ export function isFailure(value: unknown): value is FormFailure {
   return typeof value === "object" && value !== null && (value as { ok?: unknown }).ok === false && typeof (value as { code?: unknown }).code === "string";
 }
 
+/**
+ * For a route's `shouldRevalidate` after a submission: a request that never reached the store (offline, a dropped
+ * connection — the failure `keepFormOnFailure` kept) reloads nothing, because the reload would fail the same way and
+ * an error panel would replace the form and everything typed in it. Anything else follows React Router's default.
+ */
+export function revalidateAfter({ actionResult, defaultShouldRevalidate }: { actionResult?: unknown; defaultShouldRevalidate: boolean }): boolean {
+  if (isFailure(actionResult) && (actionResult.code === "network" || actionResult.code === "offline")) return false;
+  return defaultShouldRevalidate;
+}
+
+/**
+ * A step flow's «رجوع» (the repair request): "history" when the step on screen was reached from the previous one —
+ * the history state its push left, `{ from: <step> }` — so the key is the browser's own Back and Back / Forward keep
+ * walking the steps in order; "push" otherwise (a step opened from a link or after a server error).
+ */
+export function stepBack(previous: string, historyState: unknown): "history" | "push" {
+  const from = typeof historyState === "object" && historyState !== null ? (historyState as { from?: unknown }).from : undefined;
+  return from === previous ? "history" : "push";
+}
+
 /** This area's sentence for a field's code, else the "errors" namespace's, else nothing. */
 export function fieldMessage(field: string, code: string | undefined, t: TFunction, errors: TFunction): string | undefined {
   if (!code) return undefined;

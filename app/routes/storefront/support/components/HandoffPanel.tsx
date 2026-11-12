@@ -1,54 +1,107 @@
 /**
- * "Talk to staff" (DESIGN.md §9.22 handoff): a paper card with what staff will receive (the conversation summary),
- * the contact fields, optional private photos and the consent the conversation needs before anything is stored.
- * After sending, the page is reloaded with the ticket's reference and access token, and this card shows the ticket
- * number in tabular type with a copy key.
+ * "Talk to a person" (Design System v2 §6.13): one destination everywhere (/support/assistant?handoff=1#handoff). A
+ * paper card with what staff will receive (the conversation summary), the contact fields, optional private photos and
+ * the consent the conversation needs before anything is stored — «نرسل محادثتك إلى موظف مع رقم طلب تتابع به ردّه.»
+ * No call promise: the phone is "used only about your request". After sending, the page is reloaded with the ticket's
+ * reference and access token, and the receipt shows the reference (Plex 600 20px, tabular, left-to-right, with a copy
+ * key), the ticket's status and the replies staff write to the shopper — that page's link is how they follow it.
  *
- * The form works without JavaScript (a native multipart POST); with it, fields are checked as the shopper leaves them
- * and photos are previewed (PhotoPicker).
+ * The form works without JavaScript (a native multipart POST); with it, fields are checked as the shopper leaves them,
+ * a summary of what is wrong sits above the form on submit, and photos are previewed (PhotoPicker).
  */
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useNavigation, useSubmit } from "react-router";
 
 import { Icon } from "~/art/Icon";
-import { LocaleLink, useT } from "~/i18n/react";
+import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { AssistantView } from "~/server/services/support/types";
-import { Checkbox, TextArea, TextField } from "~/ui/Field";
+import { DemoNote } from "~/ui/DemoNote";
+import { Checkbox, FormErrorSummary, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
-import { DemoNote } from "~/ui/DemoNote";
+import { Status, type StatusTone } from "~/ui/Tag";
 import { fieldMessage, formMessage, phoneProblem, type FormFailure } from "../client";
-import { CopyKey } from "./parts";
+import { CopyKey, CopyLinkKey } from "./parts";
 import { PhotoPicker } from "./PhotoPicker";
 
-export type HandoffReceipt = { ref: string; createdAt: number; phoneMasked: string; status: string; isDemo: boolean };
+export type HandoffReceipt = { ref: string; createdAt: number; phoneMasked: string; status: string; isDemo: boolean; replies?: Array<{ at: number; body: string }> };
+
+const STATUS_TONE: Record<string, StatusTone> = { open: "warn", pending_staff: "warn", pending_customer: "info", on_hold: "neutral", resolved: "ok", closed: "neutral" };
 
 export function HandoffReceiptCard({ receipt, summary }: { receipt: HandoffReceipt; summary: string }) {
   const t = useT("support");
+  const f = useFormat();
   const headingId = useId();
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  // Arriving here after sending: the receipt's heading takes focus, so screen readers start with the outcome.
+  useEffect(() => {
+    headingRef.current?.focus({ preventScroll: true });
+    headingRef.current?.closest("section")?.scrollIntoView({ block: "start" });
+  }, []);
+  const replies = receipt.replies ?? [];
+  const statusKey = `handoff.statuses.${receipt.status}`;
+  const statusWords = t(statusKey) === statusKey ? receipt.status : t(statusKey);
   return (
-    <section aria-labelledby={headingId} className="grid gap-3 rounded-panel border border-line bg-paper p-4 md:p-5" role="status">
-      <p className="flex items-center gap-2 text-ok">
-        <Icon name="check-circle" size={22} />
-        <span id={headingId} className="type-sub text-ink">
-          {t("handoff.success.title")}
+    <section aria-labelledby={headingId} className="sup-card sup-receipt">
+      <div className="flex items-start gap-3">
+        <span className="sup-done-disc" aria-hidden="true">
+          <Icon name="check" size={24} />
         </span>
-      </p>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <span className="type-label text-ink-2">{t("handoff.success.ticket")}</span>
-        <bdi dir="ltr" className="type-kpi nums text-ink">
-          {receipt.ref}
-        </bdi>
-        <CopyKey text={receipt.ref} what={t("handoff.success.ticket")} />
+        <div className="grid min-w-0 gap-1">
+          <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-h3 text-ink">
+            {t("handoff.success.title")}
+          </h2>
+          <p className="type-sm text-ink-2">{t("handoff.success.text")}</p>
+          {/* this page's link is the only way back to the reply: a key copies it */}
+          <div className="mt-2">
+            <CopyLinkKey />
+          </div>
+        </div>
       </div>
-      <p className="type-body text-ink-2">
-        {t("handoff.success.text", { phone: `${String.fromCharCode(0x2066)}${receipt.phoneMasked}${String.fromCharCode(0x2069)}` })}
-      </p>
-      {receipt.isDemo ? <DemoNote compact>{t("handoff.success.demo")}</DemoNote> : null}
+      <dl className="sup-receipt__facts">
+        <div className="grid gap-1">
+          <dt className="type-sm-strong text-ink-2">{t("handoff.success.ticket")}</dt>
+          <dd className="flex flex-wrap items-center gap-x-2">
+            <bdi dir="ltr" className="type-code text-ink">
+              {receipt.ref}
+            </bdi>
+            <CopyKey text={receipt.ref} what={t("handoff.success.ticket")} />
+            {receipt.isDemo ? <DemoNote variant="tag">{t("handoff.success.demo")}</DemoNote> : null}
+          </dd>
+        </div>
+        <div className="grid gap-1">
+          <dt className="type-sm-strong text-ink-2">{t("handoff.success.status")}</dt>
+          <dd>
+            <Status tone={STATUS_TONE[receipt.status] ?? "neutral"} size="lg">
+              {statusWords}
+            </Status>
+          </dd>
+        </div>
+      </dl>
+      <div className="grid gap-2">
+        <h3 className="type-sm-strong text-ink">{t("handoff.success.replies")}</h3>
+        {replies.length > 0 ? (
+          <ol className="grid gap-2">
+            {replies.map((reply, index) => (
+              <li key={`${reply.at}:${index}`} className="sup-bubble sup-bubble--bot">
+                <p className="whitespace-pre-wrap type-body text-ink" dir="auto">
+                  {reply.body}
+                </p>
+                <p className="type-xs text-ink-2">{f.dateTime(reply.at)}</p>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="type-sm text-ink-2">{t("handoff.success.noReply")}</p>
+        )}
+      </div>
       {summary ? (
-        <details className="rounded-md bg-niche px-3 py-2">
-          <summary className="flex min-h-11 cursor-pointer items-center type-label text-ink">{t("handoff.preview")}</summary>
-          <pre className="whitespace-pre-wrap pb-2 font-plex type-caption text-ink-2">{summary}</pre>
+        <details className="sup-details">
+          <summary className="sup-details__summary">
+            <span className="min-w-0 flex-1">{t("handoff.preview")}</span>
+            <Icon name="caret-down" size={20} className="sup-details__caret" />
+          </summary>
+          <pre className="sup-summary">{summary}</pre>
         </details>
       ) : null}
     </section>
@@ -66,27 +119,38 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
   const t = useT("support");
   const errorsT = useT("errors");
   const headingId = useId();
+  const offlineId = useId();
   const submit = useSubmit();
   const navigation = useNavigation();
   const online = useOnline();
   const busy = navigation.state !== "idle" && navigation.formMethod?.toUpperCase() === "POST";
   const formRef = useRef<HTMLFormElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const alertRef = useRef<HTMLParagraphElement>(null);
   const [photos, setPhotos] = useState<File[]>([]);
-  // Opened from a "talk to staff" link (#handoff): the form's heading takes focus, so screen readers start there.
+  const [summaryShown, setSummaryShown] = useState(false);
+  // A whole-form failure (the store unreachable, a limit): its sentence comes into view.
+  useEffect(() => {
+    if (failure && !failure.fields) alertRef.current?.scrollIntoView({ block: "nearest" });
+  }, [failure]);
+  // Opened from a "talk to a person" link (#handoff): the form's heading takes focus, so screen readers start there.
   useEffect(() => {
     if (window.location.hash === "#handoff") headingRef.current?.focus({ preventScroll: true });
   }, []);
-  // The server refused a field: go to it.
+  const [local, setLocal] = useState<Record<string, string | undefined>>({});
+  // The server refused a field: its word wins over an earlier client check of that field, and focus goes to it.
   useEffect(() => {
-    const first = failure?.fields ? Object.keys(failure.fields)[0] : null;
-    const element = first ? formRef.current?.elements.namedItem(first) : null;
+    const fields = failure?.fields ? Object.keys(failure.fields) : [];
+    if (fields.length === 0) return;
+    setLocal((prev) => Object.fromEntries(Object.entries(prev).filter(([name]) => !fields.includes(name))));
+    setSummaryShown(true);
+    const element = formRef.current?.elements.namedItem(fields[0]);
     if (element instanceof HTMLElement) element.focus();
   }, [failure]);
-  const [local, setLocal] = useState<Record<string, string | undefined>>({});
   const values = failure?.values ?? {};
   const serverField = (name: string) => fieldMessage(name, failure?.fields?.[name], t, errorsT);
   const error = (name: string) => (name in local ? local[name] : serverField(name));
+  const ids = { phone: `${headingId}-phone`, contactName: `${headingId}-name`, note: `${headingId}-note`, photos: `${headingId}-photos`, consent: `${headingId}-consent` };
 
   const check = (name: string, value: string) => {
     if (name === "phone") return phoneProblem(value, t, errorsT);
@@ -112,6 +176,7 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
     const next = { ...local, phone: check("phone", phone), consent: check("consent", consent) };
     setLocal(next);
     const firstBad = (["phone", "consent"] as const).find((name) => next[name]);
+    setSummaryShown(Boolean(firstBad));
     if (firstBad) {
       (form.elements.namedItem(firstBad) as HTMLElement | null)?.focus();
       return;
@@ -123,26 +188,30 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
   };
 
   const fields = new URLSearchParams(view.search.slice(1));
+  const LABELS = { phone: t("handoff.phone"), contactName: t("handoff.name"), note: t("handoff.note"), photos: t("photos.label"), consent: t("handoff.consent") } as const;
+  const summaryErrors = summaryShown ? (Object.keys(LABELS) as Array<keyof typeof LABELS>).filter((name) => error(name)).map((name) => ({ id: ids[name], label: LABELS[name] })) : [];
   return (
-    <section id="handoff" aria-labelledby={headingId} className="grid scroll-mt-24 gap-4 rounded-panel border border-line bg-paper p-4 md:p-5">
+    <section id="handoff" aria-labelledby={headingId} className="sup-card sup-handoff">
       <div className="grid gap-1">
-        <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-section text-ink outline-offset-4">
+        <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-h3 text-ink">
           {t("handoff.title")}
         </h2>
-        <p className="type-body text-ink-2">{t("handoff.text")}</p>
+        <p className="type-sm text-ink-2">{t("handoff.text")}</p>
       </div>
-      <div className="grid gap-1 rounded-md bg-niche px-3 py-2">
-        <p className="type-label text-ink">{t("handoff.preview")}</p>
-        <pre className="whitespace-pre-wrap font-plex type-caption text-ink-2">{view.summary}</pre>
+      <div className="grid gap-1 rounded-sm bg-niche px-4 py-3">
+        <p className="type-sm-strong text-ink">{t("handoff.preview")}</p>
+        <pre className="sup-summary">{view.summary}</pre>
       </div>
-      <form ref={formRef} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="grid gap-4">
+      <form ref={formRef} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="grid gap-5">
         <input type="hidden" name="intent" value="handoff" />
         <input type="hidden" name="idempotencyKey" value={formKey} />
         {[...fields.entries()].map(([name, value], index) => (
           <input key={`${name}:${index}`} type="hidden" name={name} value={value} />
         ))}
-        <div className="grid gap-4 md:grid-cols-2">
+        <FormErrorSummary errors={summaryErrors} />
+        <div className="grid gap-5 md:grid-cols-2">
           <TextField
+            id={ids.phone}
             label={t("handoff.phone")}
             name="phone"
             type="tel"
@@ -155,10 +224,11 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
             onBlur={onBlur("phone")}
             onInput={onInput("phone")}
           />
-          <TextField label={t("handoff.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
+          <TextField id={ids.contactName} label={t("handoff.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
         </div>
-        <TextArea label={t("handoff.note")} name="note" optional hint={t("handoff.noteHint")} maxLength={2000} rows={3} defaultValue={values.note ?? ""} error={serverField("note")} />
+        <TextArea id={ids.note} label={t("handoff.note")} name="note" optional hint={t("handoff.noteHint")} maxLength={2000} rows={3} defaultValue={values.note ?? ""} error={serverField("note")} />
         <PhotoPicker
+          id={ids.photos}
           name="photos"
           files={photos}
           onChange={(files, problem) => {
@@ -171,6 +241,7 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
           disabled={busy}
         />
         <Checkbox
+          id={ids.consent}
           label={t("handoff.consent")}
           hint={t("handoff.consentHint")}
           name="consent"
@@ -183,23 +254,23 @@ export function HandoffForm({ view, formKey, contact, failure }: Props) {
           }}
         />
         {failure && !failure.fields ? (
-          <p role="alert" className="flex items-start gap-2 type-body text-red-ink">
-            <Icon name="warning-circle" size={20} className="mt-0.5 shrink-0" />
+          <p ref={alertRef} role="alert" className="sup-alert">
+            <Icon name="warning-circle" size={20} />
             <span>{formMessage(failure, t, errorsT)}</span>
           </p>
         ) : null}
         <div className="flex flex-wrap items-center gap-3">
-          <Key type="submit" variant="ink" icon="paper-plane-tilt" loading={busy} disabled={!online} aria-describedby={!online ? `${headingId}-offline` : undefined}>
+          <Key type="submit" variant="primary" icon="paper-plane-tilt" loading={busy} disabled={!online} aria-describedby={!online ? offlineId : undefined}>
             {t("handoff.submit")}
           </Key>
+          <Key as={LocaleLink} to={`/support/assistant${view.search}`} preventScrollReset variant="ghost">
+            {t("handoff.close")}
+          </Key>
           {!online ? (
-            <span id={`${headingId}-offline`} className="type-caption text-ink-2">
+            <span id={offlineId} className="type-xs text-ink-2">
               {t("form.offline")}
             </span>
           ) : null}
-          <LocaleLink to={`/support/assistant${view.search}`} preventScrollReset className="inline-flex min-h-11 items-center type-label text-ink-2 hover:underline">
-            {t("handoff.close")}
-          </LocaleLink>
         </div>
       </form>
     </section>

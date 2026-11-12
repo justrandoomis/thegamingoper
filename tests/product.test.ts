@@ -17,8 +17,12 @@
  * credits; game facts; multi-platform products; localization; privacy (no quantity, cost, serial anywhere); reviews
  * (approved verified purchases only, never the author); the JSON-LD rules (no offers in demo mode, no invented rating).
  */
+import { createElement, type ReactElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { getArt, isPhoto } from "~/art";
+import { messagesFor } from "~/i18n/i18n.server";
 import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
 import { runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { customers, files, media, products, reviews, stockLevels, variants } from "~/server/db/schema";
@@ -38,9 +42,16 @@ import {
 } from "~/server/services/catalog/product-types";
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
+import productMessages from "~/i18n/messages/product";
+import { sourceLine } from "~/routes/storefront/product/components/Details";
+import { offersTransfer, paymentMethods } from "~/routes/storefront/product/components/Facts";
 import { splitMixed } from "~/routes/storefront/product/components/MixedText";
+import { priceLook, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
+import { alternativesPath, compatRows } from "~/routes/storefront/product/components/Slots";
+import { pickerLook, VariantPicker } from "~/routes/storefront/product/components/VariantPicker";
 import { jsonForScript, productJsonLd } from "~/routes/storefront/product/jsonld";
-import { onlyVariantChanged, searchFor } from "~/routes/storefront/product/useVariant";
+import { claimsPreorder, FACT_LINE_CHARS, factLine, factParts, factRow, proseWithoutPreorder, withoutPreorder } from "~/routes/storefront/product/text";
+import { onlyVariantChanged, searchFor, shownDefault, variantFor } from "~/routes/storefront/product/useVariant";
 import { createTestDb, type TestDb } from "./helpers/db";
 
 let t: TestDb;
@@ -221,6 +232,14 @@ describe("pure helpers", () => {
     expect(splitMixed("لجهاز PS5.").map((part) => part.text).join("")).toBe("لجهاز PS5."); // nothing lost
   });
 
+  it("splitMixed keeps a number with comma thousands as ONE run (25,000 never reads 000,25), list commas stay outside", () => {
+    const ltr = (text: string) => splitMixed(text).filter((part) => part.ltr).map((part) => part.text);
+    expect(ltr("التوصيل 25,000 د.ع لكل المحافظات")).toEqual(["25,000"]);
+    expect(ltr("بسعر 1,234,567 دينار، أو PS4, PS5")).toEqual(["1,234,567", "PS4", "PS5"]);
+    expect(ltr("من 2,5 إلى 100,0000")).toEqual(["2", "5", "100", "0000"]); // not thousands
+    expect(splitMixed("التوصيل 25,000 د.ع").map((part) => part.text).join("")).toBe("التوصيل 25,000 د.ع");
+  });
+
   it("gelOfPlatformName maps platform options to stage light", () => {
     expect(gelOfPlatformName("PS5")).toBe("playstation");
     expect(gelOfPlatformName("PS4")).toBe("playstation");
@@ -274,6 +293,191 @@ describe("pure helpers", () => {
     expect(demo).toMatchObject({ "@type": "Product", url: "https://tamtamgames.com/en/p/x", sku: "ZZ-1", mpn: "M1", image: ["https://tamtamgames.com/products/x/1.jpg"] });
     const live = productJsonLd({ ...base, reviews: { count: 2, average: 4.5, distribution: [0, 0, 0, 1, 1] }, storeMode: "live" });
     expect(live).toMatchObject({ offers: { price: 99_000, priceCurrency: "IQD", availability: "https://schema.org/InStock" }, aggregateRating: { ratingValue: 4.5, reviewCount: 2 } });
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── design v2 page rules (spec §6.7, §6.9, §9)
+
+describe("product page rules (design v2)", () => {
+  const variant = (id: string, sku: string, orderable: boolean, extra: Partial<VariantDetail> = {}) => ({ id, sku, orderable, images: [], ...extra }) as unknown as VariantDetail;
+
+  it("opens on the default version, or on the first orderable one when the default is sold out; ?v= names any other", () => {
+    const soldOutDefault = { variants: [variant("a", "ZZ-A", false), variant("b", "ZZ-B", true), variant("c", "ZZ-C", true)], defaultVariantId: "a" };
+    expect(shownDefault(soldOutDefault).id).toBe("b");
+    expect(variantFor(soldOutDefault, null).id).toBe("b");
+    expect(variantFor(soldOutDefault, "zz-a").id).toBe("a"); // the sold-out default is still one choice away
+    expect(variantFor(soldOutDefault, "nope").id).toBe("b");
+    expect(variantFor(soldOutDefault, "<script>").id).toBe("b");
+    // the version the page opens on needs no ?v=; the sold-out default does
+    expect(searchFor("", soldOutDefault, soldOutDefault.variants[1])).toBe("");
+    expect(searchFor("", soldOutDefault, soldOutDefault.variants[0])).toBe("?v=ZZ-A");
+    const nothing = { variants: [variant("a", "ZZ-A", false), variant("b", "ZZ-B", false)], defaultVariantId: "a" };
+    expect(shownDefault(nothing).id).toBe("a"); // nothing can be ordered: the default, said plainly
+    const plain = { variants: [variant("a", "ZZ-A", true), variant("b", "ZZ-B", true)], defaultVariantId: "a" };
+    expect(shownDefault(plain).id).toBe("a");
+  });
+
+  it("the fact line holds at most two facts and never a pre-order", () => {
+    expect(factLine("256GB · شاشة 7.9 بوصة بدقة 1080p · حتى 4K على التلفاز")).toBe("256GB · شاشة 7.9 بوصة بدقة 1080p");
+    expect(factLine("حصرية PS5 · طلب مسبق · تصدر 20 أيار 2027")).toBe("حصرية PS5 · تصدر 20 أيار 2027");
+    expect(factLine("PS5 exclusive · pre-order · out 20 May 2027")).toBe("PS5 exclusive · out 20 May 2027");
+    expect(factLine("جملة واحدة بلا فواصل")).toBe("جملة واحدة بلا فواصل");
+    expect(factLine(null)).toBeNull();
+    expect(factLine("طلب مسبق")).toBeNull();
+  });
+
+  it("text that speaks of pre-orders is left out (the store takes none): list items and sentences", () => {
+    expect(claimsPreorder("مكافأة الطلب المسبق: درع Last Wish")).toBe(true);
+    expect(claimsPreorder("طلبات مسبقة محدودة")).toBe(true);
+    expect(claimsPreorder("Pre-orders were limited to one per customer")).toBe(true);
+    expect(claimsPreorder("پێشوەختە داواکردن؛ لە 19ی تشرینی دووەم دەردەچێت")).toBe(true);
+    expect(claimsPreorder("يعمل مع PS5 Pro")).toBe(false);
+    expect(withoutPreorder(["حصرية لـ PS5، والطلب المسبق مفتوح.", "عالم مفتوح."])).toEqual(["عالم مفتوح."]);
+    expect(proseWithoutPreorder("لعبة جديدة. الطلب المسبق مفتوح الآن. تصدر في أيار.")).toBe("لعبة جديدة. تصدر في أيار.");
+    expect(proseWithoutPreorder("Open for pre-order.")).toBeNull();
+    expect(proseWithoutPreorder("نص عادي.")).toBe("نص عادي.");
+  });
+
+  it("names the payment methods the owner switched on, in the sentence's order; the wallet only to a signed-in shopper", () => {
+    const all = { cod: true, wallet: true, card: true, zaincash: true };
+    expect(paymentMethods(all, false)).toEqual(["cod", "zaincash", "card"]);
+    expect(paymentMethods(all, true)).toEqual(["cod", "zaincash", "card", "wallet"]);
+    expect(paymentMethods({ ...all, cod: false, card: false }, false)).toEqual(["zaincash"]);
+    expect(paymentMethods(null, true)).toEqual([]);
+    expect(offersTransfer(["cod"])).toBe(false);
+    expect(offersTransfer(["cod", "zaincash"])).toBe(true);
+  });
+
+  it("strikes a previous price only when it is real, or a demo value while the whole store is marked demo", () => {
+    expect(struckPrice({ priceIqd: 99_000, compareAtIqd: 115_000, compareAtDemo: false }, false)).toBe(115_000);
+    expect(struckPrice({ priceIqd: 99_000, compareAtIqd: 115_000, compareAtDemo: true }, false)).toBeNull();
+    expect(struckPrice({ priceIqd: 99_000, compareAtIqd: 115_000, compareAtDemo: true }, true)).toBe(115_000);
+    expect(struckPrice({ priceIqd: 99_000, compareAtIqd: 99_000 }, true)).toBeNull();
+    expect(struckPrice({ priceIqd: 99_000, compareAtIqd: null }, true)).toBeNull();
+  });
+
+  it("draws versions as option cards, photographed colours as swatches and other colours as chips", () => {
+    const withPhoto = { images: [{ artKey: "x--1", mediaKey: null, alt: "", isIllustration: false }] };
+    const without = { images: [] };
+    expect(pickerLook([withPhoto, without], "storage")).toBe("cards");
+    expect(pickerLook([withPhoto, withPhoto], "color")).toBe("swatches");
+    expect(pickerLook([withPhoto, without], "color")).toBe("chips");
+  });
+
+  it("says exactly where the specifications come from", () => {
+    expect(sourceLine([{ publisher: "Nintendo of America" }, { publisher: "Nintendo of Europe" }], "Nintendo")).toBe("official");
+    expect(sourceLine([{ publisher: "Nintendo of America" }, { publisher: "Wikipedia" }], "Nintendo")).toBe("officialAndOthers");
+    expect(sourceLine([{ publisher: "Wikipedia" }, { publisher: null }], "Nintendo")).toBe("listed");
+    expect(sourceLine([{ publisher: "Nintendo" }], null)).toBe("listed");
+  });
+
+  it("orders compatibility rows by their stated answer and folds only when it saves more than it costs", () => {
+    const row = (deviceSlug: string, status: "verified" | "partial" | "incompatible" | "unverified") => ({ deviceSlug, deviceName: deviceSlug, status, note: null, platformSlug: "playstation", hasHub: false, level: null });
+    const { shown, rest } = compatRows([row("a", "unverified"), row("b", "verified"), row("c", "partial"), row("d", "incompatible")]);
+    expect(shown.map((entry) => entry.deviceSlug)).toEqual(["b", "c", "d", "a"]);
+    expect(rest).toEqual([]);
+    const many = compatRows(Array.from({ length: 9 }, (_, i) => row(`d${i}`, "verified")));
+    expect([many.shown.length, many.rest.length]).toEqual([6, 3]);
+    expect(compatRows(Array.from({ length: 8 }, (_, i) => row(`d${i}`, "verified"))).rest).toEqual([]);
+  });
+
+  it("the product strings make no call promise, no admission, no pre-order and no «دورك.» — in every language", () => {
+    const values: string[] = [];
+    const walk = (value: unknown) => {
+      if (typeof value === "string") values.push(value);
+      else if (value && typeof value === "object") Object.values(value).forEach(walk);
+    };
+    walk(productMessages);
+    const banned = [/نتصل/, /دورك/, /\bwe call\b/i, /call you/i, /پەیوەندیت پێوە دەکەین/, /لم ننشر/, /not published/i, /طلب مسبق/, /pre-?order/i, /پێشوەختە/, /غير متوفر/];
+    for (const text of values) for (const pattern of banned) expect(text, `${pattern} in «${text}»`).not.toMatch(pattern);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── review fixes (design v2, P3 review)
+
+/** A component as the product page renders it on the server: inside a router whose root and page carry the strings. */
+function renderOnPage(element: ReactElement, locale: Locale = "ar"): string {
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", index: true, Component: () => element }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: ["/"],
+      hydrationData: { loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, i18n: {} }, page: { i18n: messagesFor(locale, "product", "ui", "ui-shop") } } },
+    }),
+  );
+}
+
+describe("product page review fixes (design v2)", () => {
+  const image = (artKey: string) => ({ artKey, mediaKey: null, alt: "", isIllustration: false });
+  const version = (id: string, sku: string, label: string, extra: Partial<VariantDetail> = {}) =>
+    ({ id, sku, label, title: label, priceIqd: 276_750, compareAtIqd: null, orderable: true, stock: "in_stock", releaseAt: null, images: [], options: {}, modelNumber: null, bundle: null, ...extra }) as unknown as VariantDetail;
+
+  it("the fact line is made of at most two facts, never a pre-order, so the page can keep it to ONE line", () => {
+    expect(factParts("256GB · شاشة 7.9 بوصة بدقة 1080p · حتى 4K على التلفاز")).toEqual(["256GB", "شاشة 7.9 بوصة بدقة 1080p"]);
+    expect(factParts("حصرية PS5 · طلب مسبق · تصدر 20 أيار 2027")).toEqual(["حصرية PS5", "تصدر 20 أيار 2027"]);
+    expect(factParts(null)).toEqual([]);
+    expect(factParts("طلب مسبق")).toEqual([]);
+    expect(factLine("a · b · c")).toBe(factParts("a · b · c").join(" · "));
+    // one line; a first fact longer than a phone line is shown alone and wraps — never cut with an ellipsis
+    expect(factRow("256GB · شاشة 7.9 بوصة بدقة 1080p")).toEqual({ facts: ["256GB", "شاشة 7.9 بوصة بدقة 1080p"], wrap: false });
+    const set = "جهاز Switch 2 بسعة 256GB + لعبة Mario Kart World كاملة (تنزيل رقمي) · حزمة رسمية";
+    expect(factRow(set)).toEqual({ facts: ["جهاز Switch 2 بسعة 256GB + لعبة Mario Kart World كاملة (تنزيل رقمي)"], wrap: true });
+    expect(factRow(`${"x".repeat(FACT_LINE_CHARS)} · y`).wrap).toBe(false);
+    expect(factRow(null)).toEqual({ facts: [], wrap: false });
+  });
+
+  it("a sold-out version's price is muted and offers no saving; a coming one keeps the ink price; a demo reduction is never a saving", () => {
+    expect(priceLook({ orderable: false, releaseAt: null, compareAtDemo: false })).toEqual({ tone: "muted", showSaving: false });
+    expect(priceLook({ orderable: false, releaseAt: Date.UTC(2027, 4, 19), compareAtDemo: false })).toEqual({ tone: undefined, showSaving: false });
+    expect(priceLook({ orderable: true, releaseAt: null, compareAtDemo: false })).toEqual({ tone: undefined, showSaving: true });
+    expect(priceLook({ orderable: true, releaseAt: null, compareAtDemo: true })).toEqual({ tone: undefined, showSaving: false });
+  });
+
+  it("«شاهد بدائل» opens the product's own category (in stock first), not the page's add-on shelves", async () => {
+    const category = (slug: string) => ({ slug, name: slug });
+    const platform = (slug: string) => ({ slug, name: slug, gel: null });
+    expect(alternativesPath({ categories: [category("consoles"), category("playstation-consoles")], platform: platform("playstation"), forPlatforms: [] })).toBe("/c/playstation-consoles");
+    expect(alternativesPath({ categories: [], platform: platform("playstation"), forPlatforms: [] })).toBe("/platform/playstation");
+    expect(alternativesPath({ categories: [], platform: null, forPlatforms: [platform("xbox"), platform("playstation")] })).toBe("/platform/xbox");
+    expect(alternativesPath({ categories: [], platform: null, forPlatforms: [] })).toBe("/search");
+    // every live product of the catalogue has a category listing to send the shopper to
+    for (const slug of await liveSlugs()) {
+      const detail = await getProductDetail(t.db, "ar", slug, { now: t.now, related: false });
+      expect(alternativesPath(detail!), slug).toMatch(/^\/c\/[a-z0-9-]+$/);
+    }
+  });
+
+  it("photographed colours are swatches with script AND native radio chips in the no-script form, so ?v= works without script", () => {
+    const variants = [version("a", "DSEDGE-WHITE", "أبيض", { images: [image("dualsense-edge--1")] }), version("b", "DSEDGE-MIDNIGHT-BLACK", "أسود Midnight Black", { images: [image("dualsense-edge--5")] })];
+    const page = renderOnPage(createElement(VariantPicker, { variants, selector: "color", value: "a", onChange: () => {} }));
+    expect(page).toContain('class="grid gap-2 noscript:hidden"'); // the swatches hide where script is off
+    expect(page).toMatch(/role="radiogroup"/);
+    const fallback = page.slice(page.indexOf("<noscript>"), page.indexOf("</noscript>"));
+    expect(fallback.length).toBeGreaterThan(0);
+    const radios = [...fallback.matchAll(/<input[^>]*type="radio"[^>]*>/g)].map((match) => match[0]);
+    expect(radios.map((radio) => /name="v"/.test(radio) && (radio.match(/value="([^"]+)"/)?.[1] ?? ""))).toEqual(["DSEDGE-WHITE", "DSEDGE-MIDNIGHT-BLACK"]);
+    expect(radios.filter((radio) => /checked=""/.test(radio))).toHaveLength(1);
+    expect(fallback).toContain('type="submit"');
+    expect(fallback).toContain("اعرض النسخة المختارة");
+    // the quick look (script only) keeps its swatches and has no form
+    const sheet = renderOnPage(createElement(VariantPicker, { variants, selector: "color", value: "a", onChange: () => {}, form: false }));
+    expect(sheet).not.toContain("<noscript>");
+    expect(sheet).not.toContain("noscript:hidden");
+  });
+
+  it("a version card's price never breaks between the figure and «د.ع»", () => {
+    const variants = [version("a", "NS2-STD", "النسخة الدولية"), version("b", "NS2-STD-RB", "نسخة البطارية القابلة للاستبدال (أوروبا والخليج)", { priceIqd: 667_500 })];
+    const page = renderOnPage(createElement(VariantPicker, { variants, selector: "version", value: "a", onChange: () => {} }));
+    const prices = [...page.matchAll(/<span class="(price [^"]*)"/g)].map((match) => match[1]);
+    expect(prices).toHaveLength(2);
+    for (const price of prices) expect(price.split(" ")).toContain("flex-nowrap");
+  });
+
+  it("names the buy bar's region and says «no connection» short enough for its one line, in every language", () => {
+    for (const locale of LOCALE_CODES) {
+      const message = (key: string) => key.split(".").reduce<unknown>((node, part) => (node as Record<string, unknown>)?.[part], productMessages[locale]) as string;
+      expect(message("bar.label")).toContain("{name}");
+      expect(message("status.offlineShort").length).toBeLessThan(message("status.offline").length);
+    }
   });
 });
 
@@ -384,6 +588,16 @@ describe("getProductDetail — prices, stock and release dates", () => {
     }
     const released = all.filter((product) => !preorders.some((row) => row.slug === product.slug));
     expect(released.every((product) => product.releaseAt === null)).toBe(true);
+  });
+
+  it("no live product's page claims a pre-order: its fact line, highlights and in-the-box list say none (every language)", async () => {
+    for (const locale of LOCALE_CODES) {
+      for (const slug of await liveSlugs()) {
+        const detail = await getProductDetail(t.db, locale, slug, { now: t.now, related: false });
+        const shown = [factLine(detail!.short) ?? "", ...withoutPreorder(detail!.highlights), ...withoutPreorder(detail!.inTheBox), proseWithoutPreorder(detail!.description) ?? "", proseWithoutPreorder(detail!.notes) ?? ""];
+        for (const text of shown) expect(claimsPreorder(text), `${slug} ${locale}: «${text.slice(0, 80)}»`).toBe(false);
+      }
+    }
   });
 
   it("delivery and returns come from settings", async () => {

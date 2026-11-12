@@ -37,10 +37,9 @@ import {
   type TradeInQuestion,
 } from "~/server/services/tradein.server";
 import { MAX_IMAGE_BYTES } from "~/server/uploads.server";
+import { TRADE_IN_PATH, WIZARD_STEPS, type DeviceGroup, type WizardStep } from "./wizard";
 
-export const TRADE_IN_PATH = "/trade-in";
-export const WIZARD_STEPS = ["device", "condition", "photos", "estimate", "inspection"] as const;
-export type WizardStep = (typeof WIZARD_STEPS)[number];
+export { TRADE_IN_PATH, WIZARD_STEPS, type WizardStep };
 
 /** A wizard link (locale-less) — the step, the device and the answers, plus anything extra. */
 export function wizardHref(step: WizardStep, device?: string | null, answers?: TradeInAnswers, extra: [string, string][] = []): string {
@@ -53,43 +52,52 @@ export function wizardHref(step: WizardStep, device?: string | null, answers?: T
   return search ? `${TRADE_IN_PATH}?${search}` : TRADE_IN_PATH;
 }
 
-export type DeviceGroup = { platformSlug: string; platformName: string; devices: TradeInDevice[] };
+export type { DeviceGroup };
 export type DraftPhotoView = { id: string; name: string | null; previewUrl: string };
 
+/** What every step after the device carries for the summary (the aside from 1280, the estimate's description list). */
+type Answered = {
+  device: TradeInDevice;
+  answers: TradeInAnswers;
+  /** The questions this device gets, in order. */
+  questions: TradeInQuestion[];
+  /** Per answered question: the link that edits it (and, on the estimate step, comes back there). */
+  edit: Partial<Record<TradeInQuestion, string>>;
+};
+
 export type WizardView =
-  | { step: "device"; groups: DeviceGroup[]; current: string | null; unknown: boolean }
   | {
+      step: "device";
+      /** Every device the store buys, by platform — the search field narrows them (on the server without script). */
+      groups: DeviceGroup[];
+      current: string | null;
+      unknown: boolean;
+      /** The search text (`?q=`), trimmed. */
+      query: string;
+    }
+  | (Answered & {
       step: "condition";
-      device: TradeInDevice;
       question: TradeInQuestion;
       /** 1-based position of this question among the device's questions. */
       index: number;
       total: number;
       /** The options of a single-choice question; the accessories for "included". */
       options: string[];
-      answers: TradeInAnswers;
       /** Everything the form must carry besides the question itself. */
       hidden: [string, string][];
       back: string;
       /** The form was sent without an answer. */
       missing: boolean;
-    }
-  | { step: "photos"; device: TradeInDevice; answers: TradeInAnswers; photos: DraftPhotoView[]; limit: number; maxBytes: number; next: string; back: string }
-  | {
+    })
+  | (Answered & { step: "photos"; photos: DraftPhotoView[]; limit: number; maxBytes: number; next: string; back: string })
+  | (Answered & {
       step: "estimate";
-      device: TradeInDevice;
-      answers: TradeInAnswers;
-      questions: TradeInQuestion[];
       estimate: TradeInEstimate;
-      /** Per question: the link that edits it and comes back here. */
-      edit: Partial<Record<TradeInQuestion, string>>;
       next: string | null;
       back: string;
-    }
-  | {
+    })
+  | (Answered & {
       step: "inspection";
-      device: TradeInDevice;
-      answers: TradeInAnswers;
       estimate: TradeInEstimate;
       /** One per attempt: a double submission of this form makes one request. */
       idempotencyKey: string;
@@ -98,7 +106,8 @@ export type WizardView =
       hidden: [string, string][];
       photoCount: number;
       back: string;
-    };
+    });
+
 
 export type Wizard = { view: WizardView; stepIndex: number; rail: (string | null)[] };
 
@@ -143,16 +152,30 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
       if (group) group.devices.push(entry);
       else groups.push({ platformSlug: entry.platformSlug, platformName: entry.platformName, devices: [entry] });
     }
-    return { view: { step: "device", groups, current: device?.slug ?? null, unknown: slug !== null && device === null }, stepIndex: 0, rail: railFor(0, null, {}) };
+    const query = (params.get("q") ?? "").trim().slice(0, 60);
+    return {
+      view: { step: "device", groups, current: device?.slug ?? null, unknown: slug !== null && device === null, query },
+      stepIndex: 0,
+      rail: railFor(0, null, {}),
+    };
   }
 
   const answers = readTradeInAnswers(params, device);
   const questions = questionsFor(device);
   const missing = firstUnanswered(device, answers);
+  /** Edit links for the answered questions; from a later step they come back to it (`ret`). */
+  const editLinks = (back: ReturnStep | null): Partial<Record<TradeInQuestion, string>> => {
+    const edit: Partial<Record<TradeInQuestion, string>> = {};
+    for (const question of questions) if (isAnswered(answers, question)) edit[question] = wizardHref("condition", device.slug, answers, [["q", question], ...(back ? ([["ret", back]] as [string, string][]) : [])]);
+    return edit;
+  };
+  const answered = (back: ReturnStep | null) => ({ device, answers, questions, edit: editLinks(back) });
 
   if (step === "condition") {
     const q = params.get("q");
     const at = params.get("at");
+    const asked = params.get("ret");
+    const back: ReturnStep | null = isReturnStep(asked) ? asked : null;
     let question: TradeInQuestion;
     let unanswered = false;
     if (isQuestion(q) && questions.includes(q)) {
@@ -163,7 +186,8 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
         unanswered = true;
       } else {
         const next = questions[questions.indexOf(at) + 1];
-        if (params.get("ret") === "estimate" && missing === null) return go(wizardHref("estimate", device.slug, answers));
+        // An edit from a later step goes back there once nothing is missing.
+        if (back && missing === null) return go(wizardHref(back, device.slug, answers));
         if (next) question = next;
         else if (missing !== null) question = missing;
         else return go(wizardHref("photos", device.slug, answers));
@@ -172,20 +196,20 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
       question = missing ?? questions[0];
     }
     const index = questions.indexOf(question);
-    const ret: [string, string][] = params.get("ret") === "estimate" ? [["ret", "estimate"]] : [];
+    const ret: [string, string][] = back ? [["ret", back]] : [];
     const hidden: [string, string][] = [["step", "condition"], ["device", device.slug], ...pairsWithout(answers, question), ["at", question], ...ret];
     const previous = questions[index - 1];
     return {
       view: {
         step: "condition",
-        device,
+        ...answered(null),
         question,
         index: index + 1,
         total: questions.length,
         options: question === "included" ? device.accessories : [...SINGLE_CHOICE[question]],
-        answers,
         hidden,
-        back: previous ? wizardHref("condition", device.slug, answers, [["q", previous], ...ret]) : wizardHref("device", device.slug),
+        // Back from an edit returns to the step it came from; otherwise to the previous question, then the device.
+        back: back && missing === null ? wizardHref(back, device.slug, answers) : previous ? wizardHref("condition", device.slug, answers, [["q", previous], ...ret]) : wizardHref("device", device.slug),
         missing: unanswered,
       },
       stepIndex: 1,
@@ -202,8 +226,7 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
     return {
       view: {
         step: "photos",
-        device,
-        answers,
+        ...answered("photos"),
         photos: photos.map((photo) => ({ id: photo.id, name: photo.name, previewUrl: `/api/upload/tradein?file=${encodeURIComponent(photo.id)}` })),
         limit: TRADE_IN_PHOTO_LIMIT,
         maxBytes: MAX_IMAGE_BYTES,
@@ -220,16 +243,11 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
   const { estimate } = result;
 
   if (step === "estimate") {
-    const edit: Partial<Record<TradeInQuestion, string>> = {};
-    for (const question of questions) edit[question] = wizardHref("condition", device.slug, answers, [["q", question], ["ret", "estimate"]]);
     return {
       view: {
         step: "estimate",
-        device,
-        answers,
-        questions,
+        ...answered("estimate"),
         estimate,
-        edit,
         next: estimate.kind === "refused" ? null : wizardHref("inspection", device.slug, answers),
         back: wizardHref("photos", device.slug, answers),
       },
@@ -244,8 +262,7 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
   return {
     view: {
       step: "inspection",
-      device,
-      answers,
+      ...answered("inspection"),
       estimate,
       idempotencyKey: randomToken(24),
       days: inspectionDays(now, 6),
@@ -257,4 +274,8 @@ export async function loadWizard(db: Db, locale: Locale, url: URL, draftToken: s
     rail: railFor(4, device, answers),
   };
 }
+
+/** The steps an answer edit can return to (`ret`). */
+type ReturnStep = "photos" | "estimate" | "inspection";
+const isReturnStep = (value: unknown): value is ReturnStep => value === "photos" || value === "estimate" || value === "inspection";
 

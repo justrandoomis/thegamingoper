@@ -1,108 +1,64 @@
-import { Suspense, useState, useSyncExternalStore } from "react";
-import { Await, useRevalidator } from "react-router";
+import { Suspense, useId } from "react";
+import { Await } from "react-router";
 
 import { useT } from "~/i18n/react";
 import type { ProductCardData, Shelf } from "~/lib/dto";
-import { Bubble, BubbleGroup } from "~/motion";
-import { cx } from "~/ui/cx";
 import { ErrorState } from "~/ui/ErrorState";
-import { ProductCard, ProductCardPlaceholder } from "~/ui/ProductCard";
-import { ShelfRail } from "~/ui/ShelfRail";
-import { VisuallyHidden } from "~/ui/VisuallyHidden";
-import { SECTION_SCROLL_MARGIN } from "./format";
+import { SectionHead } from "~/ui/SectionHead";
+import { drawableShelves } from "./format";
+import { ShelfPlaceholder, ShelfStack } from "./RecommendationShelves";
+import { useSafeRetry } from "./retry";
 
 /** What the hub's loader streams for the "complete your setup" shelf: never rejects — a failure is `ok: false`. */
 export type SetupResult = { ok: true; shelves: Shelf<ProductCardData>[] } | { ok: false; shelves: Shelf<ProductCardData>[] };
 
-/** Rail item widths of ~/ui/Rail, so the placeholder has the geometry of the shelf that replaces it. */
-const ITEM = "flex shrink-0 w-[43%] sm:w-[30%] md:w-[23%] lg:w-[18.6%] xl:w-[15.4%]";
-
 /**
- * "Complete your setup" (getRecommendations, context device_hub): STREAMED — the page is on screen before it is
- * ready. While it loads, the same geometry with empty niches (no grey skeleton, DESIGN.md §7.2); when it arrives
- * the cards inflate into that space (<Bubble>); if it fails, the space says so with a retry (the rest of the page
- * works). An empty answer (nothing verified and no new console of the platform) leaves nothing behind.
+ * "Complete your setup" (getRecommendations, context device_hub): STREAMED — the hub is on screen before it is ready
+ * (Suspense + Await, so the server sends its HTML in the same response when it is quick). The four states of v2 §6.17:
+ *   loading   the shelf's head and the rail's exact geometry with empty wells (no grey skeleton), aria-busy, a status
+ *             line for screen readers
+ *   arrived   the kit's shelf; cards that arrive after the page inflate into that space (<Bubble>), hydrated HTML is
+ *             simply there
+ *   failure   the head stays, the rail's place says so with a retry (revalidates the page); the rest of the page works
+ *   empty     nothing at all — no element either, so the page's track keeps one section gap (nothing verified and no
+ *             new console of the platform, or a shelf of fewer than three cards, which the kit does not draw)
+ * The shelf is the engine's: VERIFIED add-ons that can be bought, the store's links first, kinds taking turns — or, on
+ * a cold start, the platform's newest consoles, titled as alternatives. Each state is ONE element of the page's track
+ * (or none): Suspense and Await draw nothing of their own.
  */
 export function SetupShelf({ result, title, reason, loading }: { result: Promise<SetupResult>; title: string; reason: string; loading: string }) {
   return (
-    <div id="setup" className={SECTION_SCROLL_MARGIN}>
-      <Suspense fallback={<SetupPlaceholder title={title} reason={reason} loading={loading} />}>
-        <Await resolve={result}>{(value) => <SetupShelves value={value} />}</Await>
-      </Suspense>
-    </div>
+    <Suspense fallback={<ShelfPlaceholder title={title} reason={reason} loading={loading} />}>
+      <Await resolve={result} errorElement={<SetupFailed title={title} reason={reason} />}>
+        {(value) => <SetupAnswer value={value} title={title} reason={reason} />}
+      </Await>
+    </Suspense>
   );
 }
 
-const subscribeNothing = () => () => undefined;
+function SetupAnswer({ value, title, reason }: { value: SetupResult; title: string; reason: string }) {
+  if (!value.ok) return <SetupFailed title={title} reason={reason} />;
+  const shelves = drawableShelves(value.shelves);
+  if (shelves.length === 0) return null;
+  return (
+    <div id="setup" className="grid min-w-0 gap-section">
+      <ShelfStack shelves={shelves} />
+    </div>
+  );
+}
 
 /**
- * True when this component first mounted on the client after the page was already there (the shelf arrived after a
- * client navigation); false when it is hydrating server HTML (the stream had already delivered the shelf). Decided
- * once, at mount, so the markup never switches under the shopper.
- *
- * Why: <Bubble> decides to inflate with `isMotionLive()`, which is already true while a streamed Suspense boundary
- * hydrates after <MotionRoot> mounted — it then renders animation classes the server did not, a hydration mismatch
- * (reported to the motion owner). Hydrated content is simply there; content that arrives later inflates.
+ * The failure in the shelf's place: the head stays (nothing jumps), the rail's place is an error panel with a retry —
+ * offline, the offline sentence, and the retry waits for the connection (./retry.ts) instead of failing the page.
  */
-function useArrivedOnClient(): boolean {
-  const live = useSyncExternalStore(subscribeNothing, () => true, () => false);
-  const [first] = useState(live);
-  return first;
-}
-
-function SetupShelves({ value }: { value: SetupResult }) {
+function SetupFailed({ title, reason }: { title: string; reason: string }) {
   const t = useT("devices");
-  const revalidator = useRevalidator();
-  const arrived = useArrivedOnClient();
-  if (!value.ok) {
-    return <ErrorState alert title={t("setup.failed")} text={t("setup.failedText")} onRetry={() => void revalidator.revalidate()} retrying={revalidator.state === "loading"} />;
-  }
-  if (value.shelves.length === 0) return null;
+  const id = useId();
+  const { retry, retrying } = useSafeRetry();
   return (
-    <div className="grid gap-section">
-      {value.shelves.map((shelf) =>
-        arrived ? (
-          <BubbleGroup key={shelf.key} stagger>
-            <ShelfRail
-              shelf={shelf}
-              renderItem={(card, index) => (
-                <Bubble index={index} className="flex w-full">
-                  <ProductCard card={card} slot={shelf.key} />
-                </Bubble>
-              )}
-            />
-          </BubbleGroup>
-        ) : (
-          <ShelfRail
-            key={shelf.key}
-            shelf={shelf}
-            renderItem={(card) => (
-              <div className="flex w-full">
-                <ProductCard card={card} slot={shelf.key} />
-              </div>
-            )}
-          />
-        ),
-      )}
-    </div>
-  );
-}
-
-function SetupPlaceholder({ title, reason, loading }: { title: string; reason: string; loading: string }) {
-  return (
-    <section aria-busy="true" className="grid min-w-0 gap-3">
-      <div className="grid gap-0.5">
-        <h2 className="type-section text-ink">{title}</h2>
-        <p className="type-caption text-ink-2">{reason}</p>
-      </div>
-      <VisuallyHidden role="status">{loading}</VisuallyHidden>
-      <div aria-hidden="true" className={cx("-mx-1 flex gap-card overflow-hidden px-1 pt-1 pb-3")}>
-        {Array.from({ length: 6 }, (_, index) => (
-          <div key={index} className={ITEM}>
-            <ProductCardPlaceholder />
-          </div>
-        ))}
-      </div>
+    <section aria-labelledby={id} className="min-w-0">
+      <SectionHead id={id} title={title} reason={reason} />
+      <ErrorState alert title={t("setup.failed")} text={t("setup.failedText")} onRetry={retry} retrying={retrying} minHeight="220px" />
     </section>
   );
 }

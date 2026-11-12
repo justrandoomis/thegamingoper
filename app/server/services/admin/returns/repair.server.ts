@@ -29,6 +29,7 @@ import { z } from "zod";
 import { newId, publicRef, sha256Hex } from "~/lib/ids";
 import { pick, type Locale } from "~/lib/locales";
 import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
+import { customerProfileId } from "~/routes/admin/shell/access.server";
 import { actorRef, assertCan, can, canAny, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
@@ -154,6 +155,7 @@ export async function listRepairs(db: Db, actor: Actor, filters: RepairFilters, 
       source: row.source,
       device: row.deviceModelId ? (pick(models.find((model) => model.id === row.deviceModelId)?.name ?? null, locale) || null) : row.deviceText,
       customerName: row.contactName,
+      customerProfileId: customerProfileId(actor, row.customerId),
       phone: phoneView(actor, row.phoneE164),
       isWarranty: row.isWarranty,
       assignedTo: row.assignedTo ? { id: row.assignedTo, name: names.get(row.assignedTo) ?? row.assignedTo } : null,
@@ -213,7 +215,7 @@ export async function getRepair(db: Db, actor: Actor, ref: string, locale: Local
     deviceText: row.deviceText,
     serial: row.serialId || row.serialText ? { id: row.serialId, text: row.serialText } : null,
     // the ticket's own contact name; else the return's order contact or the customer's account name
-    customer: { name: row.contactName ?? rma?.contactName ?? customer?.name ?? null, phone: phoneView(actor, row.phoneE164) },
+    customer: { name: row.contactName ?? rma?.contactName ?? customer?.name ?? null, profileId: customerProfileId(actor, row.customerId), phone: phoneView(actor, row.phoneE164) },
     issue: row.issue,
     diagnosis: row.diagnosis,
     resolution: row.resolution,

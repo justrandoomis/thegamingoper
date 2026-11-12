@@ -17,7 +17,7 @@ import { Pagination } from "~/ui/Pagination";
 import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import { failure, formObject, requirePricing } from "./route.server";
-import { ByLine, failureOf, Iqd, iqdText, PageHead, pctText, pricingMeta, RowLink, useArrow, usePricingT, withSearch } from "./shared";
+import { ByLine, failureOf, Iqd, iqdText, PageHead, pctText, pricingMeta, RowLink, useArrow, useDropLimit, usePricingT, withSearch } from "./shared";
 
 const STATUSES: ChangeStatus[] = ["applied", "pending", "rejected", "cancelled"];
 
@@ -129,6 +129,7 @@ function Queue({ data: loaderData }: { data: LoaderData }) {
   const t = usePricingT();
   const f = useFormat();
   const arrow = useArrow();
+  const dropLimit = useDropLimit();
   const items = loaderData.result.items;
   const fetcher = useFetcher<typeof action>();
   const [dialog, setDialog] = useState<{ change: ChangeView; intent: "approve" | "reject" | "cancel" } | null>(null);
@@ -169,7 +170,7 @@ function Queue({ data: loaderData }: { data: LoaderData }) {
                 {change.mode === "clearance" ? <Status tone="info">{t("sku.modeClearance")}</Status> : null}
                 {change.reasons.map((reason) => (
                   <Status key={reason} tone={reason === "below_cost" || reason === "below_min_margin" ? "bad" : "warn"}>
-                    {t(`reason.${reason}`)}
+                    {t(`reason.${reason}`, dropLimit)}
                   </Status>
                 ))}
                 {needsOverride && loaderData.seesMargins ? <Status tone="bad">{t("changes.needsOverride")}</Status> : null}

@@ -10,6 +10,7 @@ import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { returnsMeta } from "./meta";
 import { failure, openReturns, text } from "./returns.server";
+import { CustomerName } from "../shell/CustomerName";
 import { Facts, PhoneText, Ref, RepairStatusBadge, RmaStatusBadge, Section, useIntent, useReturnsT, When, WarrantyBadge } from "./ui";
 
 /**
@@ -85,7 +86,7 @@ export default function WarrantyPage({ loaderData }: Route.ComponentProps) {
                 { label: t("warranty.ends"), value: <When at={warranty.endsAt} style="date" /> },
                 { label: t("warranty.order"), value: <Ref value={warranty.orderRef} /> },
                 { label: t("warranty.serial"), value: warranty.serial ? <Ref value={warranty.serial} /> : "—" },
-                { label: t("warranty.customer"), value: <span><bdi>{warranty.customerName ?? "—"}</bdi> · <PhoneText phone={warranty.phone} /></span> },
+                { label: t("warranty.customer"), value: <span><bdi><CustomerName profileId={warranty.customerProfileId}>{warranty.customerName ?? "—"}</CustomerName></bdi> · <PhoneText phone={warranty.phone} /></span> },
                 { label: t("warranty.terms"), value: warranty.terms ?? t("warranty.termsNone") },
                 { label: t("warranty.voidReason"), value: warranty.voidReason, hidden: !warranty.voidReason },
               ]}

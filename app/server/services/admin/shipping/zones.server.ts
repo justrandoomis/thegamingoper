@@ -13,7 +13,8 @@
  * active governorate. Override rows (`shipping_rates.is_override = 1`) change that only while
  * `shipping.overrides_enabled` is on — the rule lives in shipping/fees.server.ts (getShippingFee) and `effectiveFee`
  * (./rules) mirrors it for the impact previews (tests compare the two). Both settings change through setSetting
- * (settings.server: its permission, a reason, an audit event with before and after in the same batch). Orders already
+ * (settings.server: its permission, a reason, an audit event with before and after in the same batch), guarded on the
+ * value the employee saw (`{ expected }`, also inside the batch — a change made meanwhile is `fee_changed`). Orders already
  * placed keep the fee they were charged; carts show the new fee at their next look. Override rows are never deleted: a
  * new fee deactivates the previous row and adds a new one, so the history stays.
  *
@@ -30,7 +31,7 @@ import { auditStatement } from "~/server/audit.server";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { carrierZones, carriers, districts, employees, governorates, orders, settings, shippingRates } from "~/server/db/schema";
 import { expectChanged, expectThat, isDbError, runBatch } from "~/server/db/tx.server";
-import { AppError, forbidden, invalid, notFound } from "~/server/errors";
+import { AppError, forbidden, invalid, notFound, toAppError } from "~/server/errors";
 import { setSetting } from "~/server/settings.server";
 import { cleanLine } from "~/server/text.server";
 import { getShippingPolicy } from "~/server/services/shipping/fees.server";
@@ -212,6 +213,20 @@ export const FlatFeeInput = z.object({
 });
 export type FlatFeeInput = z.input<typeof FlatFeeInput>;
 
+/**
+ * setSetting guarded on the value the employee saw (`{ expected }`: compared on the one read before the batch AND inside
+ * it), so a change another person made after this page was read is never overwritten silently: `fee_changed` (409),
+ * like the check above it — the impact the person confirmed was computed from the value they saw.
+ */
+async function setShippingSetting(db: Db, actor: Actor, key: "shipping.flat_fee_iqd" | "shipping.overrides_enabled", value: number | boolean, expected: number | boolean, reason: string, now: number): Promise<void> {
+  try {
+    await setSetting(db, actor, key, value, reason, now, { expected });
+  } catch (error) {
+    if (toAppError(error)?.code === "setting_changed") throw new AppError("fee_changed", 409, { detail: `${key} changed meanwhile` });
+    throw error;
+  }
+}
+
 /** The flat fee checkout charges (through setSetting: permission, reason, audit). Returns the governorates whose fee changed. */
 export async function setFlatFee(db: Db, actor: Actor, raw: FlatFeeInput, now: number): Promise<{ changes: FeeChange[]; replayed: boolean }> {
   assertCan(actor, "settings.shipping.manage");
@@ -220,7 +235,7 @@ export async function setFlatFee(db: Db, actor: Actor, raw: FlatFeeInput, now: n
   if (before.flatFeeIqd === input.feeIqd) return { changes: [], replayed: true };
   if (before.flatFeeIqd !== input.expectedFeeIqd) throw new AppError("fee_changed", 409, { detail: `${before.flatFeeIqd}, expected ${input.expectedFeeIqd}` });
   const changes = feeChanges(withOverrides(zones, before.overrides), before, { ...before, flatFeeIqd: input.feeIqd });
-  await setSetting(db, actor, "shipping.flat_fee_iqd", input.feeIqd, input.reason, now);
+  await setShippingSetting(db, actor, "shipping.flat_fee_iqd", input.feeIqd, input.expectedFeeIqd, input.reason, now);
   return { changes, replayed: false };
 }
 
@@ -235,7 +250,7 @@ export async function setOverridesEnabled(db: Db, actor: Actor, raw: OverridesSw
   if (before.overridesEnabled === input.enabled) return { changes: [], replayed: true };
   if (before.overridesEnabled !== input.expected) throw new AppError("fee_changed", 409, { detail: "overrides switch" });
   const changes = feeChanges(withOverrides(zones, before.overrides), before, { ...before, overridesEnabled: input.enabled });
-  await setSetting(db, actor, "shipping.overrides_enabled", input.enabled, input.reason, now);
+  await setShippingSetting(db, actor, "shipping.overrides_enabled", input.enabled, input.expected, input.reason, now);
   return { changes, replayed: false };
 }
 

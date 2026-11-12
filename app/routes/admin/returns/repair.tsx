@@ -12,6 +12,7 @@ import { Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { returnsMeta } from "./meta";
 import { failure, openReturns, text, urls } from "./returns.server";
+import { CustomerName } from "../shell/CustomerName";
 import { DemoNote, Due, Facts, Failure, Money, PhoneText, Ref, RepairStatusBadge, Section, useIntent, useReturnsT, When, WarrantyBadge } from "./ui";
 
 /**
@@ -337,7 +338,7 @@ function FactsCard({ repair }: { repair: RepairDetail }) {
         rows={[
           { label: t("repair.device"), value: repair.device ?? repair.deviceText ?? "—" },
           { label: t("repair.serial"), value: repair.serial?.text ? <Ref value={repair.serial.text} /> : repair.serial?.id ? t("repair.serialOurs") : "—" },
-          { label: t("repair.customer"), value: <span><bdi>{repair.customer.name ?? "—"}</bdi> · <PhoneText phone={repair.customer.phone} /></span> },
+          { label: t("repair.customer"), value: <span><bdi><CustomerName profileId={repair.customer.profileId}>{repair.customer.name ?? "—"}</CustomerName></bdi> · <PhoneText phone={repair.customer.phone} /></span> },
           { label: t("repair.source"), value: t(`repairSource.${repair.source}`) },
           {
             label: t("repair.warranty"),

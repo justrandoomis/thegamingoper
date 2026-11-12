@@ -42,7 +42,7 @@ import { employeeRoles, employeeSessions, employees, rolePermissions, roles } fr
 import { seedReference } from "../db/seed/reference";
 import { expectChanged, expectThat, isDbError, runBatch } from "../db/tx.server";
 import { AppError, conflict, invalid, notFound, rateLimited, unauthorized } from "../errors";
-import { roleId, type Permission } from "../permissions";
+import { PERMISSIONS, WILDCARD_PERMISSION, roleId, type Permission } from "../permissions";
 import { RATE_LIMITS, claimOnce, enforceRateLimit, limitKey, rateLimit, resetRateLimit } from "../ratelimit.server";
 import { EMPLOYEE_PASSWORD_MIN, authEventStatement, originOf, passwordField, readSessionToken, safeNextPath, sessionCookie, sessionIdHash, type AuthCtx, type AuthSecrets, type SessionSummary } from "./common.server";
 import { existingDefaultRoles, seedRolesStatements } from "./seed-roles";
@@ -628,21 +628,49 @@ export async function disableOwnTotp(ctx: AuthCtx, db: Db, raw: unknown, secrets
 const ReasonedTarget = z.object({ employeeId: z.string().min(1), reason: z.string({ error: "required" }).trim().min(3, "required").max(500, "too_long") });
 
 /**
- * An administrator removes an employee's two-step verification (lost phone). Needs
- * `security.mfa.manage`. The employee is signed out everywhere and signs in with the password
- * alone until they enrol again.
+ * Batch guard of the hierarchy rule (SECURITY.md §6–7): the target employee holds nothing the actor does not — no role
+ * of theirs grants a permission the actor lacks, nor the owner's wildcard (which only an owner holds). Removing the
+ * second factor of a stronger account is taking it over (its password may be known), and disabling one locks out
+ * someone the actor could never have made; so both need everything the target holds, whoever calls (module 20's
+ * screens check it first for their wording, module 15 calls these directly). Read INSIDE the change's batch: a role or
+ * a permission given to the target a moment before is counted. A stored string that is no permission (any more) grants
+ * nothing and is ignored. Null when there is nothing to check: the system and an owner hold everything.
+ */
+function holdsEverythingOf(db: Db, actor: Actor, employeeId: string): BatchStatement | null {
+  if (actor.kind === "system") return null;
+  const held = new Set<string>(actor.kind === "employee" ? actor.permissions : []);
+  if (held.has(WILDCARD_PERMISSION)) return null;
+  const notHeld = [WILDCARD_PERMISSION, ...PERMISSIONS.filter((permission) => !held.has(permission))];
+  return expectThat(
+    db,
+    sql`NOT EXISTS (SELECT 1 FROM employee_roles AS er JOIN role_permissions AS rp ON rp.role_id = er.role_id
+          WHERE er.employee_id = ${employeeId} AND rp.permission IN (SELECT value FROM json_each(${JSON.stringify(notHeld)})))`,
+    { code: "TARGET_MORE_PRIVILEGED", detail: employeeId },
+  );
+}
+
+/** The refusal of holdsEverythingOf (403; texts: admin-security `errors.target_more_privileged`). */
+const targetMorePrivileged = (employeeId: string) => new AppError("target_more_privileged", 403, { detail: employeeId });
+
+/**
+ * An administrator removes an employee's two-step verification (lost phone). Needs `security.mfa.manage` and every
+ * permission the employee holds (`target_more_privileged`, 403 — holdsEverythingOf). The employee is signed out
+ * everywhere and signs in with the password alone until they enrol again.
  */
 export async function resetEmployeeMfa(db: Db, actor: Actor, raw: unknown, now: number): Promise<void> {
   assertCan(actor, "security.mfa.manage");
   const input = ReasonedTarget.parse(raw);
+  const hierarchy = holdsEverythingOf(db, actor, input.employeeId);
   try {
     await runBatch(db, [
+      ...(hierarchy ? [hierarchy] : []),
       db.update(employees).set({ totpEnabled: false, totpSecretEnc: null, recoveryCodes: null, updatedAt: now }).where(eq(employees.id, input.employeeId)),
       expectChanged(db, 1, { code: "EMPLOYEE_NOT_FOUND", detail: input.employeeId }),
       revokeEmployeeSessionsStatement(db, input.employeeId, now),
       auditStatement(db, { actor, action: "security.mfa.reset", entityType: "employee", entityId: input.employeeId, reason: input.reason, at: now }),
     ]);
   } catch (error) {
+    if (isDbError(error, "TARGET_MORE_PRIVILEGED")) throw targetMorePrivileged(input.employeeId);
     if (isDbError(error, "EMPLOYEE_NOT_FOUND")) throw notFound("employee");
     throw error;
   }
@@ -706,16 +734,19 @@ export async function revokeAllEmployeeSessions(db: Db, actor: Actor, input: { e
 
 /**
  * Disables an employee: they are locked out on their next request and every session is ended.
- * Needs `staff.manage`. Refuses to disable yourself (`cannot_disable_self`) or the last active
- * owner (`last_owner`) — both 409.
+ * Needs `staff.manage` and every permission the employee holds (`target_more_privileged`, 403 —
+ * holdsEverythingOf: only an owner disables an owner). Refuses to disable yourself
+ * (`cannot_disable_self`) or the last active owner (`last_owner`) — both 409.
  */
 export async function disableEmployee(db: Db, actor: Actor, raw: unknown, now: number): Promise<void> {
   assertCan(actor, "staff.manage");
   const input = ReasonedTarget.parse(raw);
   if (actor.kind === "employee" && actor.id === input.employeeId) throw conflict("cannot_disable_self");
   const id = input.employeeId;
+  const hierarchy = holdsEverythingOf(db, actor, id);
   try {
     await runBatch(db, [
+      ...(hierarchy ? [hierarchy] : []),
       // Either the target is not an owner, or another active owner remains.
       expectThat(
         db,
@@ -732,6 +763,7 @@ export async function disableEmployee(db: Db, actor: Actor, raw: unknown, now: n
       auditStatement(db, { actor, action: "staff.employee.disable", entityType: "employee", entityId: id, before: { status: "active" }, after: { status: "disabled" }, reason: input.reason, at: now }),
     ]);
   } catch (error) {
+    if (isDbError(error, "TARGET_MORE_PRIVILEGED")) throw targetMorePrivileged(id);
     if (isDbError(error, "LAST_OWNER")) throw conflict("last_owner", id);
     if (isDbError(error, "EMPLOYEE_NOT_ACTIVE")) throw conflict("employee_not_active", id);
     throw error;

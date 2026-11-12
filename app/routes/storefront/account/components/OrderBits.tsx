@@ -1,14 +1,17 @@
+import { useRouteLoaderData } from "react-router";
+
+import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import type { OrderStatus, PaymentStatus } from "~/lib/dto";
 import { MotionLink } from "~/motion";
 import type { OrderSummary as OrderSummaryRow } from "~/server/services/orders/types";
-import { cx } from "~/ui/cx";
+import { BidiText } from "~/ui/BidiText";
 import { DemoNote } from "~/ui/DemoNote";
 import { Niche } from "~/ui/Niche";
 import { Price } from "~/ui/Price";
-import { fillNodes } from "~/ui/PriceTag";
-import { BidiText, ProductImage } from "~/ui/ProductCard";
+import { ProductImage } from "~/ui/ProductCard";
 import { Status, type StatusTone } from "~/ui/Tag";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
 
 /** Words and tone of an order's status (dot + words, never colour alone). */
 export const ORDER_TONE: Record<OrderStatus, StatusTone> = {
@@ -33,10 +36,10 @@ export const PAYMENT_TONE: Record<PaymentStatus, StatusTone> = {
   refunded: "neutral",
 };
 
-export function OrderStatusLine({ status, className }: { status: OrderStatus; className?: string }) {
+export function OrderStatusLine({ status, size, className }: { status: OrderStatus; size?: "md" | "lg"; className?: string }) {
   const t = useT("account");
   return (
-    <Status tone={ORDER_TONE[status]} className={className}>
+    <Status tone={ORDER_TONE[status]} size={size} className={className}>
       {t(`status.${status}`)}
     </Status>
   );
@@ -51,37 +54,108 @@ export function PaymentStatusLine({ status, className }: { status: PaymentStatus
   );
 }
 
-/** One order in a list: picture, what was bought, reference and date, status, total. The whole row is one link. */
-export function OrderRow({ order, headingLevel = 3 }: { order: OrderSummaryRow; headingLevel?: 2 | 3 }) {
+type RootStore = { storeMode?: string };
+
+/**
+ * An order line's name as sold is "<product> — <option>" (orders/place.server lineName): the summary shows the product's
+ * name and, under it, the option value only (Design System v2 §4.13). Pure.
+ */
+export function splitOption(snapshot: string): { name: string; option: string | null } {
+  const at = snapshot.indexOf(" — ");
+  if (at <= 0) return { name: snapshot, option: null };
+  const option = snapshot.slice(at + 3).trim();
+  return { name: snapshot.slice(0, at).trim(), option: option || null };
+}
+
+/**
+ * One order in a list (Design System v2 §6.12): a 56px well, the order number, what was bought, the status (dot +
+ * words), the date and the total. The whole row is one link that rises into the order. A demo order is marked only
+ * once the store is live (in demo mode the strip already says every order is a demo).
+ */
+export function OrderRow({ order }: { order: OrderSummaryRow }) {
   const t = useT("account");
   const f = useFormat();
-  const Heading = `h${headingLevel}` as const;
-  const more = order.itemCount - 1;
+  const root = useRouteLoaderData("root") as RootStore | undefined;
+  const demoMark = order.isDemo && root?.storeMode !== "demo";
   return (
-    <article className="relative grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 gap-y-2 rounded-lg bg-paper p-3 sm:grid-cols-[5rem_minmax(0,1fr)_auto] sm:items-center sm:p-4">
-      <Niche as="span" ratio="1/1" tagZone={false} className="row-span-2 self-start rounded-md sm:row-span-1" aria-hidden="true">
-        {order.image ? <ProductImage image={order.image} alt="" sizes="80px" pose={0} shadow={false} /> : null}
+    <MotionLink to={`/account/orders/${order.ref}`} nav="rise" className="acct-row" data-press="soft">
+      <Niche as="span" size="sm" aria-hidden="true">
+        {order.image ? <ProductImage image={order.image} alt="" sizes="56px" /> : null}
       </Niche>
-      <div className="grid min-w-0 gap-1">
-        <Heading className="type-strong text-ink">
-          <MotionLink to={`/account/orders/${order.ref}`} nav="rise" className="after:absolute after:inset-0 after:rounded-lg after:content-['']">
-            {more > 0 ? fillNodes(t("orders.andMore", { count: more }), { name: <BidiText key="name" text={order.firstItemName} /> }) : <BidiText text={order.firstItemName} />}
-          </MotionLink>
-        </Heading>
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 type-caption text-ink-2">
-          <bdi dir="ltr" className="nums">
+      <span className="acct-row__body">
+        <span className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <span className="acct-row__title nums" dir="ltr">
             {order.ref}
-          </bdi>
-          <span aria-hidden="true">·</span>
-          <span>{t("orders.placed", { date: f.date(order.placedAt) })}</span>
-          {order.isDemo ? <DemoNote compact /> : null}
-        </p>
-        <OrderStatusLine status={order.status} />
-      </div>
-      <div className={cx("col-start-2 flex items-baseline justify-between gap-2 sm:col-start-3 sm:grid sm:justify-items-end")}>
-        <span className="type-caption text-ink-2">{t("orders.total")}</span>
-        <Price amountIqd={order.totalIqd} size="sm" approx="off" as="span" />
-      </div>
-    </article>
+          </span>
+          <Price amountIqd={order.totalIqd} size="sm" approx="off" as="span" />
+        </span>
+        <span className="acct-row__meta line-clamp-1">
+          <BidiText text={splitOption(order.firstItemName).name} />
+          {order.itemCount > 1 ? <> · {t("orders.pieces", { count: order.itemCount })}</> : null}
+        </span>
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <OrderStatusLine status={order.status} />
+          <span className="acct-row__meta" aria-hidden="true">
+            ·
+          </span>
+          <time className="acct-row__meta" dateTime={new Date(order.placedAt).toISOString()}>
+            {f.date(order.placedAt)}
+          </time>
+          {demoMark ? <DemoNote variant="tag" what="order" /> : null}
+        </span>
+      </span>
+    </MotionLink>
+  );
+}
+
+/** The five real states of an order, in the order a shopper lives them (Design System v2 §6.11). */
+const RAIL = ["received", "confirmed", "preparing", "shipped", "delivered"] as const;
+
+/** Where an order stands on the rail; null for an order that left it (cancelled, returned). Pure. */
+export function railIndex(status: OrderStatus): number | null {
+  switch (status) {
+    case "new":
+    case "awaiting_payment":
+    case "payment_review":
+      return 0;
+    case "confirmed":
+      return 1;
+    case "preparing":
+      return 2;
+    case "shipped":
+      return 3;
+    case "delivered":
+      return 4;
+    default:
+      return null;
+  }
+}
+
+/**
+ * The order's rail: استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم. Done = an ink disc with a check, current = an ink
+ * disc with a paper core (`aria-current="step"`), upcoming = a control-line ring. A delivered order is done throughout.
+ */
+export function OrderRail({ status, className }: { status: OrderStatus; className?: string }) {
+  const t = useT("account");
+  const at = railIndex(status);
+  if (at === null) return null;
+  const finished = status === "delivered";
+  return (
+    <ol className={className ? `orail ${className}` : "orail"} aria-label={t("order.statusTitle")}>
+      {RAIL.map((step, index) => {
+        const state = finished || index < at ? "done" : index === at ? "current" : "upcoming";
+        return (
+          <li key={step} className="orail__step" data-state={state} aria-current={state === "current" ? "step" : undefined}>
+            <span className="orail__dot" aria-hidden="true">
+              {state === "done" ? <Icon name="check" size={14} /> : null}
+            </span>
+            <span className="orail__label">
+              {t(`order.rail.${step}`)}
+              {state === "done" ? <VisuallyHidden>{` (${t("overview.stepDone")})`}</VisuallyHidden> : null}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

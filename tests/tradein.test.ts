@@ -4,17 +4,21 @@
  * Expectations are derived from the database (the seeded price guides and settings), not from hard-coded prices or
  * slugs: a device is chosen by its properties (a built-in screen or not, accessories in its guide or not).
  *
- * Covered: the device list (active model guides of published models, no prices leaked) · the questionnaire (which
+ * Covered: the device list (active model guides of published models, the guide never leaked; the best-case «حتى …»
+ * figure equals the estimate's top) · the wizard's device search and push order · the questionnaire (which
  * questions a device gets, reading answers from a query string and back) · the estimate (grade span, guide prices,
  * deductions, rounding down to 5,000, expiry from settings; "inspection" for faults and damage; refusal for a locked
  * device) · creating a request (validation, stored estimate and history, demo flag, photos moved from the draft) ·
  * idempotency (retry, race, another phone) · rate limits · who may read a request (token, owner, reference + phone)
  * · the draft photos (private, limit, owner-only reads, removal, purge) · the shopper's answer to a final offer
- * (accept / decline, payout rules, closed and expired offers) · the database rule that an estimate is not an offer.
+ * (accept / decline, payout rules, closed and expired offers) and what the inspection found beside it (the offered
+ * event's snapshot, the checklist in words, no staff-only data) · the database rule that an estimate is not an offer.
  */
 import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
-import { randomToken } from "~/lib/ids";
+import { newId, randomToken } from "~/lib/ids";
+import { loadWizard } from "~/routes/storefront/used/trade-in.server";
+import { answeredQuestionSearch, filterGroups, searchText, wizardOrder } from "~/routes/storefront/used/wizard";
 import { files, tradeInEvents, tradeIns } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
 import { isDbError } from "~/server/db/tx.server";
@@ -28,6 +32,7 @@ import {
   addTradeInDraftPhoto,
   answerPairs,
   baghdadDay,
+  bestCaseIqd,
   computeEstimate,
   createTradeIn,
   estimateTradeIn,
@@ -127,12 +132,13 @@ afterAll(async () => {
 // ───────────────────────────────────────────────────────────────── devices and questions
 
 describe("devices the store buys", () => {
-  test("exactly the published models with an active model-wide guide, without any price", async () => {
+  test("exactly the published models with an active model-wide guide, without the guide itself", async () => {
     const devices = await listTradeInDevices(t.db, "ar");
     expect(devices.map((device) => device.slug).sort()).toEqual(guides.map((guide) => guide.slug).sort());
     const text = JSON.stringify(devices);
-    for (const guide of guides) expect(text).not.toContain(String(guide.base_iqd));
-    expect(text).not.toMatch(/baseIqd|multiplier|deduction/i);
+    // The guide (base price, grade multipliers, deductions) never leaves the server. The one figure that does is the
+    // device tile's «حتى … · تقديري» (upToIqd, below) — the same top of the range the wizard shows for the best answers.
+    expect(text).not.toMatch(/baseIqd|multiplier|deduction|guide/i);
     for (const device of devices) {
       const guide = guides.find((entry) => entry.slug === device.slug)!;
       expect(device.hasScreen).toBe(guide.device_kind === "handheld_pc" || guide.display === "object");
@@ -141,6 +147,18 @@ describe("devices the store buys", () => {
       expect(device.image?.artKey ?? "").toMatch(/--\d+$/);
       expect(device.image?.isIllustration).toBe(true);
     }
+  });
+
+  test("each device's «حتى …» is exactly the top of the estimate for the best description (or null when unpriced)", async () => {
+    const devices = await listTradeInDevices(t.db, "ar");
+    for (const device of devices) {
+      const best = await estimateTradeIn(t.db, "ar", device.slug, bestAnswers(device), NOW);
+      expect(best?.estimate.kind === "range" ? best.estimate.maxIqd : null, device.slug).toBe(device.upToIqd);
+      if (device.upToIqd !== null) expect(device.upToIqd % ESTIMATE_STEP_IQD).toBe(0);
+    }
+    // A guide that cannot price "like new" gives no figure.
+    expect(bestCaseIqd({ id: "g", baseIqd: 300_000, multipliers: { B: 7500 }, deductions: {}, updatedAt: 0 }, { hasScreen: false, accessories: [] })).toBeNull();
+    expect(bestCaseIqd({ id: "g", baseIqd: 301_234, multipliers: { "A+": 10_000, A: 9_000 }, deductions: { missing_dock: 20_000 }, updatedAt: 0 }, { hasScreen: true, accessories: ["dock"] })).toBe(300_000);
   });
 
   test("names follow the language; an unknown, malformed or inactive model is not a trade-in device", async () => {
@@ -160,6 +178,25 @@ describe("devices the store buys", () => {
     expect(questionsFor({ hasScreen: true, accessories: [] })).toEqual(["power", "body", "screen", "account"]);
   });
 
+  test("the wizard's device search: every word in the name, slug or platform; the steps' push order", async () => {
+    const devices = await listTradeInDevices(t.db, "en");
+    const groups = [...new Set(devices.map((device) => device.platformSlug))].map((slug) => ({ platformSlug: slug, platformName: devices.find((device) => device.platformSlug === slug)!.platformName, devices: devices.filter((device) => device.platformSlug === slug) }));
+    expect(searchText("  Nintendo Switch – OLED Model ")).toBe("nintendo switch oled model");
+    expect(filterGroups(groups, "")).toEqual(groups);
+    const oled = filterGroups(groups, "OLED").flatMap((group) => group.devices.map((device) => device.slug));
+    expect(oled.length).toBeGreaterThan(0);
+    for (const slug of oled) expect(devices.find((device) => device.slug === slug)!.name.toLowerCase()).toContain("oled");
+    // Two words narrow; a platform's name finds its devices; nothing found is an empty list.
+    expect(filterGroups(groups, "switch oled").flatMap((group) => group.devices).every((device) => /switch/i.test(device.name) && /oled/i.test(device.name))).toBe(true);
+    expect(filterGroups(groups, "xbox").every((group) => group.platformSlug === "xbox" || group.devices.every((device) => /xbox/i.test(device.name)))).toBe(true);
+    expect(filterGroups(groups, "zzzz")).toEqual([]);
+    // Sideways push order: steps by tens, questions inside "condition".
+    expect(wizardOrder("")).toBe(0);
+    expect(wizardOrder("?step=condition&q=body")).toBe(11);
+    expect(wizardOrder("?step=condition&at=power")).toBe(11);
+    expect(wizardOrder("?step=estimate")).toBe(30);
+  });
+
   test("answers travel in the query string and back; unknown values and inapplicable questions are dropped", () => {
     const answers = bestAnswers(withScreen);
     const params = new URLSearchParams(answerPairs(answers));
@@ -172,6 +209,21 @@ describe("devices the store buys", () => {
     expect(readTradeInAnswers(new URLSearchParams(""), homeConsole).included).toBeUndefined();
     expect(firstUnanswered(homeConsole, { power: "works", body: "light" })).toBe("included");
     expect(firstUnanswered(homeConsole, bestAnswers(homeConsole))).toBeNull();
+  });
+
+  // Review 2026-11-12: a question's answer lived only in the NEXT step's URL, so the browser's Back showed the question
+  // with nothing chosen. Before moving on, the page rewrites its history entry to answeredQuestionSearch(…).
+  test("the browser's Back from a question comes back to it with its answer chosen", async () => {
+    // What the «body» question's form sends: its hidden fields (earlier answers, `at`) and the choice.
+    const sent: [string, string][] = [["step", "condition"], ["device", withScreen.slug], ["power", "works"], ["at", "body"], ["body", "light"]];
+    const search = answeredQuestionSearch(sent, "body");
+    expect(new URLSearchParams(search).getAll("at")).toEqual([]);
+    expect(new URLSearchParams(search).get("q")).toBe("body");
+    const back = await loadWizard(t.db, "ar", new URL(`http://tamtam.test/trade-in${search}`), null, NOW);
+    expect(back.view).toMatchObject({ step: "condition", question: "body", answers: { power: "works", body: "light" }, missing: false });
+    // The accessories question (check boxes) the same way, the "device alone" answer included.
+    const alone = await loadWizard(t.db, "ar", new URL(`http://tamtam.test/trade-in${answeredQuestionSearch([["step", "condition"], ["device", homeConsole.slug], ["power", "works"], ["body", "light"], ["at", "included"], ["inc", "1"]], "included")}`), null, NOW);
+    expect(alone.view).toMatchObject({ step: "condition", question: "included", answers: { included: [] } });
   });
 });
 
@@ -309,6 +361,10 @@ describe("creating a request", () => {
     await expectCode(createTradeIn(t.db, who(), input(withScreen, { device: "no-such-device" }), NOW), "trade_in_device_unavailable");
     await expectCode(createTradeIn(t.db, who(), input(withScreen, { answers: { power: "works" } }), NOW), "trade_in_answers_incomplete");
     await expectCode(createTradeIn(t.db, who(), input(withScreen, { answers: { ...bestAnswers(withScreen), account: "no" } }), NOW), "trade_in_refused");
+    // Review 2026-11-12: every field at once (the form's error summary lists them all, also without script) — an
+    // unreadable phone used to be reported only after the ownership box was ticked, one round trip later.
+    const both = await expectCode(createTradeIn(t.db, who(), input(withScreen, { phone: "0123", ownershipConfirmed: false }), NOW), "invalid");
+    expect(both.fields).toMatchObject({ phone: "phone_invalid", ownershipConfirmed: "ownership_required" });
     expect((await rows<{ n: number }>("SELECT COUNT(*) AS n FROM trade_ins"))[0].n).toBe(before);
     // The preferred days offered by the page are all accepted.
     for (const day of inspectionDays(NOW)) expect((await createTradeIn(t.db, who(), input(homeConsole, { preferredDay: day }), NOW)).replayed).toBe(false);
@@ -477,6 +533,37 @@ describe("the shopper's answer to a final offer", () => {
     expect(accepted.length).toBe(1);
   });
 
+  test("before answering, the shopper sees what the inspection found: the offered event's snapshot and the checklist in words", async () => {
+    const made = await createTradeIn(t.db, who(), input(withScreen), NOW);
+    // Without an offer there is nothing to show.
+    expect((await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, "en", NOW))?.inspection).toBeNull();
+
+    // What admin module 13 writes: the recorded inspection (with staff-only notes and a serial) and the "offered" event.
+    const [template] = await rows<{ id: string; items: string }>("SELECT id, items FROM inspection_templates WHERE is_active = 1 AND device_kind = ? ORDER BY version DESC LIMIT 1", withScreen.kind);
+    const lines = (JSON.parse(template.items) as { key: string; input: string; label: Record<string, string> }[]).filter((item) => item.input === "pass_fail");
+    expect(lines.length).toBeGreaterThan(1);
+    const checklist = { templateId: template.id, completedAt: NOW, completedBy: "emp_TEST", items: lines.map((line, index) => ({ key: line.key, result: index === 0 ? "fail" : "pass", note: "ملاحظة الفاحص الداخلية" })) };
+    await t.db
+      .update(tradeIns)
+      .set({ status: "offered", finalOfferIqd: 180_000, offeredBy: "emp_TEST", offeredAt: NOW, offerExpiresAt: NOW + 86_400_000, inspection: { checklist, grade: "B", inspectedAt: NOW, notes: "ملاحظات داخلية", serial: "SN-PRIVATE-77" } as never })
+      .where(eq(tradeIns.id, made.tradeInId));
+    const snapshot = { amountIqd: 180_000, grade: "B", passed: lines.length - 1, failed: 1, included: ["dock", "../etc"], suggestedIqd: 191_000, guideBaseIqd: 987_000, guideBy: "emp_TEST", note: "سبب العرض الداخلي" };
+    await t.db.insert(tradeInEvents).values({ id: newId("tie"), tradeInId: made.tradeInId, kind: "offered", data: snapshot, actorKind: "employee", actorId: "emp_TEST", at: NOW + 1 });
+
+    const view = await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, "en", NOW + 1000);
+    expect(view?.inspection).toMatchObject({ grade: "B", passed: lines.length - 1, failed: 1, included: ["dock"] });
+    expect(view?.inspection?.checks).toEqual(lines.map((line, index) => ({ key: line.key, label: line.label.en, ok: index !== 0 })));
+    // Never the inspector's notes, the serial, the guide or the offer's internal reason.
+    const text = JSON.stringify(view);
+    for (const secret of ["ملاحظة الفاحص الداخلية", "ملاحظات داخلية", "SN-PRIVATE-77", "سبب العرض الداخلي", "987000", "191000"]) expect(text).not.toContain(secret);
+
+    // The newest "offered" event counts (history is append-only); a snapshot that does not match the recorded lines
+    // keeps its counts and shows no lines.
+    await t.db.insert(tradeInEvents).values({ id: newId("tie"), tradeInId: made.tradeInId, kind: "offered", data: { ...snapshot, passed: lines.length, failed: 0 }, actorKind: "employee", actorId: "emp_TEST", at: NOW + 2 });
+    const stale = await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, "ar", NOW + 2000);
+    expect(stale?.inspection).toMatchObject({ grade: "B", passed: lines.length, failed: 0, checks: [] });
+  });
+
   test("decline; an expired offer cannot be answered", async () => {
     const declined = await createTradeIn(t.db, who(), input(withScreen), NOW);
     await offer(declined.tradeInId, 300_000, null);
@@ -488,5 +575,22 @@ describe("the shopper's answer to a final offer", () => {
     await offer(expired.tradeInId, 300_000, NOW + 60_000);
     expect((await getTradeInByRef(t.db, expired.ref, { accessToken: expired.accessToken }, "ar", NOW + 120_000))?.canRespond).toBe(false);
     await expectCode(respondToOffer(t.db, { ref: expired.ref, accessToken: expired.accessToken }, { decision: "accept", payout: "cash" }, NOW + 120_000), "trade_in_offer_closed");
+  });
+
+  // Review 2026-11-12: the tracking page said «عرض نهائي بانتظار ردك» (and "decide now") for an offer whose date had
+  // passed, because the row stays "offered" until the daily expiry job runs. The shopper's view reads it as expired.
+  test("an offer past its date reads as expired before the daily job closes it (link and lookup alike)", async () => {
+    const shopperPhone = phone();
+    const made = await createTradeIn(t.db, who(), input(withScreen, { phone: shopperPhone }), NOW);
+    await offer(made.tradeInId, 300_000, NOW + 60_000);
+    expect(await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, "ar", NOW)).toMatchObject({ status: "offered", canRespond: true, offer: { expired: false } });
+
+    const late = await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, "ar", NOW + 120_000);
+    expect(late).toMatchObject({ status: "expired", canRespond: false, offer: { amountIqd: 300_000, expired: true } });
+    const looked = await lookupTradeIn(t.db, { ref: made.ref, phone: shopperPhone }, { ip: `10.9.${++phoneCounter % 250}.7` }, "ar", NOW + 120_000);
+    expect(looked).toMatchObject({ status: "expired", canRespond: false });
+    // The row itself is the daily job's to close.
+    const [row] = await rows<{ status: string }>("SELECT status FROM trade_ins WHERE id = ?", made.tradeInId);
+    expect(row.status).toBe("offered");
   });
 });

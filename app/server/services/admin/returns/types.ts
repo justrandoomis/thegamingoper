@@ -307,6 +307,8 @@ export type RmaListRow = {
   requestedResolution: Resolution | null;
   resolution: Resolution | null;
   customerName: string | null;
+  /** The customer's account, for a link to their profile — only for staff who may open it (customers.customer.read). */
+  customerProfileId: string | null;
   phone: PhoneView | null;
   units: number;
   valueIqd: number;
@@ -396,7 +398,8 @@ export type RmaDetail = {
   rma: string;
   status: RmaStatus;
   order: { id: string; ref: string; status: string; deliveredAt: number | null; paymentMethod: string | null; totalIqd: number; paidIqd: number; refundedIqd: number };
-  customer: { kind: "customer" | "guest"; id: string | null; name: string | null; phone: PhoneView | null; hasWallet: boolean };
+  /** profileId: the account for a link to the customer's profile — only for staff who may open it (customers.customer.read). */
+  customer: { kind: "customer" | "guest"; id: string | null; name: string | null; profileId: string | null; phone: PhoneView | null; hasWallet: boolean };
   reasonCode: ReasonCode | null;
   reason: string | null;
   requestedResolution: Resolution | null;
@@ -469,6 +472,8 @@ export type RepairListRow = {
   source: string;
   device: string | null;
   customerName: string | null;
+  /** The customer's account, for a link to their profile — only for staff who may open it (customers.customer.read). */
+  customerProfileId: string | null;
   phone: PhoneView | null;
   isWarranty: boolean;
   assignedTo: EmployeeRef | null;
@@ -489,7 +494,8 @@ export type RepairDetail = {
   device: string | null;
   deviceText: string | null;
   serial: { id: string | null; text: string | null } | null;
-  customer: { name: string | null; phone: PhoneView | null };
+  /** profileId: the account for a link to the customer's profile — only for staff who may open it. */
+  customer: { name: string | null; profileId: string | null; phone: PhoneView | null };
   issue: string;
   diagnosis: string | null;
   resolution: string | null;
@@ -522,6 +528,8 @@ export type WarrantyRow = {
   orderRef: string;
   serial: string | null;
   customerName: string | null;
+  /** The customer's account, for a link to their profile — only for staff who may open it (customers.customer.read). */
+  customerProfileId: string | null;
   phone: PhoneView | null;
   startsAt: number;
   endsAt: number;

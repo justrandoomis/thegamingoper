@@ -44,6 +44,16 @@ import { loader as rmaPageLoader } from "~/routes/admin/returns/rma";
 import { loader as attemptsPageLoader } from "~/routes/admin/shipping/attempts";
 import { loader as codPageLoader } from "~/routes/admin/shipping/cod";
 import { loader as settlementPageLoader } from "~/routes/admin/shipping/settlement";
+import { loader as privacyPageLoader } from "~/routes/admin/customers/privacy";
+import { loader as tradeInPageLoader } from "~/routes/admin/devices/trade-in";
+import { loader as tradeInsPageLoader } from "~/routes/admin/devices/trade-ins";
+import { loader as usedPageLoader } from "~/routes/admin/devices/used";
+import { loader as shiftReportPageLoader } from "~/routes/admin/pos/shift-report";
+import { loader as shiftsPageLoader } from "~/routes/admin/pos/shifts";
+import { loader as retentionPageLoader } from "~/routes/admin/security/retention";
+import { loader as securityRolesPageLoader } from "~/routes/admin/security/roles";
+import { loader as signInsPageLoader } from "~/routes/admin/security/sign-ins";
+import { loader as settingChangesPageLoader } from "~/routes/admin/settings/changes";
 import type { EmployeeActor } from "~/server/actor";
 import { audit } from "~/server/audit.server";
 import { getEmployee, signInEmployee, type EmployeeSession } from "~/server/auth/admin.server";
@@ -54,6 +64,7 @@ import {
   accounts,
   approvals,
   auditEvents,
+  authEvents,
   carriers,
   codSettlementItems,
   codSettlements,
@@ -63,7 +74,10 @@ import {
   employeeSessions,
   expenses,
   inventoryLocations,
+  posRegisters,
+  posShifts,
   priceChanges,
+  privacyRequests,
   purchaseOrders,
   receipts,
   refunds,
@@ -74,6 +88,9 @@ import {
   stockTransfers,
   supplierInvoices,
   suppliers,
+  tradeInEvents,
+  tradeIns,
+  usedUnits,
   variants,
   walletTopups,
 } from "~/server/db/schema";
@@ -87,8 +104,8 @@ import { shippingOverview } from "~/server/services/admin/shipping/shipments.ser
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
 
-/** While on, the returns module's own queue count throws (the shell must then show no returns queue, and nothing else breaks). */
-const failing = vi.hoisted(() => ({ returns: false }));
+/** While on, a module's own queue count throws (the shell must then show none of that module's queues, and nothing else breaks). */
+const failing = vi.hoisted(() => ({ returns: false, devices: false }));
 vi.mock("~/server/services/admin/returns/rma.server", async (importOriginal) => {
   const real = await importOriginal<typeof import("~/server/services/admin/returns/rma.server")>();
   return {
@@ -96,6 +113,16 @@ vi.mock("~/server/services/admin/returns/rma.server", async (importOriginal) => 
     queueCounts: async (...args: Parameters<typeof real.queueCounts>) => {
       if (failing.returns) throw new Error("the returns counts are down (test)");
       return real.queueCounts(...args);
+    },
+  };
+});
+vi.mock("~/server/services/admin/devices/tradeins.server", async (importOriginal) => {
+  const real = await importOriginal<typeof import("~/server/services/admin/devices/tradeins.server")>();
+  return {
+    ...real,
+    deviceQueueCounts: async (...args: Parameters<typeof real.deviceQueueCounts>) => {
+      if (failing.devices) throw new Error("the devices counts are down (test)");
+      return real.deviceQueueCounts(...args);
     },
   };
 });
@@ -249,6 +276,24 @@ async function staff(role: DefaultRoleKey, password = "staff-password-1234") {
   const id = await make.employee({ email, passwordHash: hashed.hash, passwordIters: hashed.iterations });
   await t.db.insert(employeeRoles).values({ employeeId: id, roleId: roleId(role) });
   return { id, email, password };
+}
+
+/** An employee holding exactly these permissions, through a role of their own (what the role editor makes). */
+async function employeeWith(permissions: readonly Permission[], password = "role-password-12345") {
+  const hashed = await hashPassword(password, 1000);
+  const email = `${make.next("with")}@shell.test`;
+  const id = await make.employee({ email, passwordHash: hashed.hash, passwordIters: hashed.iterations });
+  const role = `rol_${make.next("with").replace(/-/g, "_")}`;
+  await t.db.insert(roles).values({ id: role, key: role, name: { ar: "دور للاختبار", en: "Test role" }, createdAt: NOW });
+  await t.db.insert(rolePermissions).values(permissions.map((permission) => ({ roleId: role, permission })));
+  await t.db.insert(employeeRoles).values({ employeeId: id, roleId: role });
+  return { id, email, password, role };
+}
+
+/** A fresh trade-in reference the trade-in's page opens (normalizeTradeInRef: "TI-" + 8 of 2–9 / A–Z without I, O). */
+function tradeInRef(): string {
+  const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+  return `TI-${Array.from(crypto.getRandomValues(new Uint8Array(8)), (byte) => alphabet[byte % alphabet.length]).join("")}`;
 }
 
 async function signedIn(email: string, password: string, now = NOW): Promise<{ session: EmployeeSession; cookies: Record<string, string> }> {
@@ -704,6 +749,50 @@ describe("admin gate", () => {
     const pos = (await land("pos")) as Response;
     expect(await pos.json()).toEqual({ slug: "pos", moduleId: "06" });
   });
+
+  test("staff.manage alone opens module 20's role editor (and the frame's front page) through the gate — nothing else of the module", async () => {
+    // A role an owner made: it manages staff and roles, and holds no security.* permission.
+    const hr = await employeeWith(["staff.manage"]);
+    const { cookies } = await signedIn(hr.email, hr.password, Date.now());
+    for (const [path, pattern] of [
+      ["/admin/security/roles", "admin/security/roles"],
+      [`/admin/security/roles/${hr.role}`, "admin/security/roles/:roleId"],
+      ["/admin/security", "/admin/security/"],
+    ] as const) {
+      const { outcome, ran } = await gate(admin(path, cookies), pattern);
+      expect(ran, path).toBe(true);
+      expect((outcome as Response).headers.get("Cache-Control"), path).toBe("no-store");
+    }
+    // The page itself, behind the gate: the roles with "new role" (staff.manage creates roles).
+    const req = admin("/admin/security/roles", cookies);
+    let page: unknown = null;
+    await throughRoot(req, async (context, url) =>
+      (await adminGate({ request: req, context, url, pattern: "admin/security/roles", params: {} }, async () => {
+        page = await securityRolesPageLoader({ request: req, context, url, pattern: "admin/security/roles", params: {} } as never);
+        return new Response(null);
+      })) as Response,
+    );
+    expect(page).toMatchObject({ canCreate: true, roles: expect.arrayContaining([expect.objectContaining({ key: hr.role })]) });
+    // Every other page of the module still needs a security permission — the staff pages, the trail, a deeper path.
+    for (const [path, pattern] of [
+      ["/admin/security/staff", "admin/security/staff"],
+      ["/admin/security/staff/emp_x", "admin/security/staff/:employeeId"],
+      ["/admin/security/audit", "admin/security/audit"],
+      ["/admin/security/roles/x/members", "admin/security/roles/:roleId/members"],
+    ] as const) {
+      const { outcome, ran } = await gate(admin(path, cookies), pattern);
+      expect(ran, path).toBe(false);
+      expect(described(outcome), path).toMatchObject({ status: 403, data: { error: "forbidden", module: "security" } });
+    }
+    // Without staff.manage (and without security.*) the role editor stays closed.
+    const cashier = await staff("cashier");
+    const cashierCookies = (await signedIn(cashier.email, cashier.password, Date.now())).cookies;
+    for (const pattern of ["admin/security/roles", "admin/security/roles/:roleId", "admin/security"]) {
+      const { outcome, ran } = await gate(admin("/admin/security/roles", cashierCookies), pattern);
+      expect(ran, pattern).toBe(false);
+      expect(described(outcome), pattern).toMatchObject({ status: 403 });
+    }
+  });
 });
 
 // ───────────────────────────────────────────────────────────────── shell data
@@ -727,10 +816,13 @@ describe("shell data", () => {
 
     const ownerSession = (await signedIn(OWNER.email, OWNER.password, at)).session;
     const ownerShell = await loadAdminShell(request({ now: at, locale: "en" }).ctx, t.db, ownerSession);
-    expect(ownerShell.waiting.queues.map((queue) => [queue.id, queue.count])).toEqual([["proofs", 1], ["refunds", 1]]);
+    // (the owner is also asked for the access reviews every role is due for, and the sign-in alerts of the tests above)
+    const ordersQueues = ownerShell.waiting.queues.filter((queue) => queue.module === "orders");
+    expect(ordersQueues.map((queue) => [queue.id, queue.count])).toEqual([["proofs", 1], ["refunds", 1]]);
     // each queue opens its module's own queue screen
-    expect(ownerShell.waiting.queues.map((queue) => queue.href)).toEqual(["/admin/orders/proofs", "/admin/orders/refunds"]);
-    expect(ownerShell.waiting.total).toBe(2);
+    expect(ordersQueues.map((queue) => queue.href)).toEqual(["/admin/orders/proofs", "/admin/orders/refunds"]);
+    expect(ownerShell.waiting.queues.filter((queue) => queue.module !== "orders").map((queue) => queue.id)).toEqual(expect.arrayContaining(["access_reviews"]));
+    expect(ownerShell.waiting.total).toBe(ownerShell.waiting.queues.reduce((sum, queue) => sum + queue.count, 0));
     expect(ownerShell.modules).toHaveLength(23);
     expect(ownerShell.employee).toMatchObject({ name: OWNER.name, email: OWNER.email, roles: ["Owner"], totpEnabled: false });
     expect(ownerShell.locale).toBe("en");
@@ -1149,6 +1241,298 @@ describe("shell data", () => {
     expect(shown.costBlind).toEqual({ stuck_receipts: shown.manager.stuck_receipts });
   });
 
+  // ── the queues of modules 06 pos, 07 customers, 13 devices, 20 security and 22 settings (integration 2026-11-11)
+
+  const LATER_QUEUES = ["pos_shifts", "privacy_requests", "tradein_inspections", "tradein_offers", "tradein_payouts", "used_inspections", "used_listings", "signin_alerts", "access_reviews", "settings_changes"] as const;
+  const LATER_PAGES: Record<string, PageLoader> = {
+    "/admin/pos/shifts": shiftsPageLoader,
+    "/admin/customers/privacy": privacyPageLoader,
+    "/admin/devices/trade-ins": tradeInsPageLoader,
+    "/admin/devices/used": usedPageLoader,
+    "/admin/security/sign-ins": signInsPageLoader,
+    "/admin/security/retention": retentionPageLoader,
+    "/admin/settings/changes": settingChangesPageLoader,
+  };
+
+  /** How many of the rows one of these queues' links lists this employee may act on, as the module's own pages say. */
+  async function actionableOnLaterPage(queue: ShellQueue, cookies: Record<string, string>): Promise<number> {
+    const href = queue.href.split("#")[0];
+    const list = await openPage(href, cookies, LATER_PAGES[href.split("?")[0]]);
+    expect.soft(list.status, `${queue.id}: ${queue.href} opens`).toBe(200);
+    const data = list.data;
+    switch (queue.id) {
+      case "pos_shifts": {
+        // a shift is the employee's to review when its report says so (never one they opened or closed)
+        let n = 0;
+        for (const row of rowsAt(data, "page", "rows")) if (dig((await openPage(`/admin/pos/shifts/${String(row.id)}`, cookies, shiftReportPageLoader, { shiftId: String(row.id) })).data, "report", "canReview") === true) n++;
+        return n;
+      }
+      case "tradein_payouts": {
+        // an accepted trade-in is the employee's when its own page lets them act on it: the data wipe, or the payout with
+        // nothing in its way but where the unit goes — never "the wipe comes first", never their own offer that only a
+        // second person may pay (the page's payoutBlockers)
+        let n = 0;
+        for (const row of rowsAt(data, "page", "rows")) {
+          const page = await openPage(`/admin/devices/trade-ins/${String(row.ref)}`, cookies, tradeInPageLoader, { ref: String(row.ref) });
+          expect.soft(page.status, `${queue.id}: the page of ${String(row.ref)} opens`).toBe(200);
+          const can = (dig(page.data, "ti", "can") ?? {}) as Row;
+          const blockers = (dig(page.data, "ti", "payoutBlockers") ?? []) as string[];
+          if (can.wipe === true || (can.payout === true && !blockers.some((blocker) => blocker === "payout_wipe_required" || blocker === "payout_second_person"))) n++;
+        }
+        return n;
+      }
+      case "privacy_requests":
+      case "tradein_inspections":
+      case "tradein_offers":
+      case "used_inspections":
+      case "used_listings":
+        return Number(dig(data, "page", "total") ?? 0);
+      case "signin_alerts":
+        return rowsAt(data, "overview", "alerts").length;
+      case "access_reviews":
+        return rowsAt(data, "roles").filter((row) => row.reviewDue === true).length;
+      case "settings_changes":
+        return rowsAt(data, "pending").filter((row) => row.canDecide === true).length;
+      default:
+        throw new Error(`no page check for ${queue.id}`);
+    }
+  }
+
+  test("pos, customers, devices, security and settings queues: the module's own count, only for whoever acts and may open the list, never their own — exactly what the link lists", async () => {
+    const now = Date.now();
+    const manager = await staff("manager");
+    const bookkeeper = await staff("finance");
+    const clerk = await staff("inventory");
+    const cashier = await staff("cashier");
+    // Roles an owner could make: a till supervisor who also works a till; who confirms ownership but cannot open the
+    // trade-ins (and one who can); settings approvers with and without settings.read; an access reviewer; a log reader.
+    const supervisor = await employeeWith(["pos.shift.review", "pos.shift.open", "pos.shift.close"]);
+    const verifier = await employeeWith(["devices.ownership.verify"]);
+    const payer = await employeeWith(["devices.ownership.verify", "devices.tradein.read"]);
+    const approver = await employeeWith(["settings.change.approve", "settings.read", "settings.manage"]);
+    const blindApprover = await employeeWith(["settings.change.approve", "settings.manage"]);
+    const reviewer = await employeeWith(["security.access_review.perform"]);
+    const watcher = await employeeWith(["security.auth_event.read"]);
+    const people = { manager, bookkeeper, clerk, cashier, supervisor, verifier, payer, approver, blindApprover, reviewer, watcher };
+    const signed: Record<string, { session: EmployeeSession; cookies: Record<string, string> }> = { owner: await signedIn(OWNER.email, OWNER.password, now) };
+    for (const [who, person] of Object.entries(people)) signed[who] = await signedIn(person.email, person.password, now);
+    const tag = make.next("later").replace(/[^a-z0-9]/gi, "_");
+    const TAG = tag.replace(/_/g, "").toUpperCase();
+
+    // pos — counted drawers: short (a cashier's), the supervisor's own, one the supervisor closed, one with no difference,
+    // one already approved; and an open drawer
+    const till = await make.employee();
+    const register = `reg_${tag}`;
+    await t.db.insert(posRegisters).values({ id: register, code: `R-${TAG}`, name: "صندوق للاختبار", createdAt: now });
+    const counted = (suffix: string, openedBy: string, closedBy: string, varianceIqd: number, approvedBy: string | null = null) => ({
+      id: `sh_${tag}_${suffix}`,
+      registerId: register,
+      openedBy,
+      openedAt: now - 9 * HOUR,
+      openingFloatIqd: 50_000,
+      closedBy,
+      closedAt: now - HOUR,
+      countedCashIqd: 150_000 + varianceIqd,
+      expectedCashIqd: 150_000,
+      varianceIqd,
+      status: "closed" as const,
+      varianceReason: varianceIqd ? "فرق في العد" : null,
+      approvedBy,
+    });
+    await t.db.insert(posShifts).values([
+      counted("short", till, till, -5000),
+      counted("mine", supervisor.id, supervisor.id, 2000),
+      counted("closed", till, supervisor.id, 1000),
+      counted("even", till, till, 0),
+      counted("done", till, till, 3000, manager.id),
+      { id: `sh_${tag}_open`, registerId: register, openedBy: till, openedAt: now - HOUR, openingFloatIqd: 50_000, status: "open" },
+    ]);
+
+    // customers — two open privacy requests (one past its due date) and a finished one
+    const phone = "+9647701234567";
+    await t.db.insert(privacyRequests).values([
+      { id: `pr_${tag}_a`, ref: `PR-${TAG}A`, phoneE164: phone, kind: "export", status: "open", dueAt: now + 10 * DAY_MS, createdAt: now },
+      { id: `pr_${tag}_b`, ref: `PR-${TAG}B`, phoneE164: phone, kind: "delete", status: "verifying", dueAt: now - DAY_MS, createdAt: now - 31 * DAY_MS },
+      { id: `pr_${tag}_c`, ref: `PR-${TAG}C`, phoneE164: phone, kind: "unsubscribe", status: "completed", completedAt: now, createdAt: now - DAY_MS },
+    ]);
+
+    // devices — two trade-ins to inspect (one booked), one inspected, an open offer (the customer decides), one accepted,
+    // one paid; used units: two to inspect, one ready
+    // (a reference the trade-in's page accepts: TI- and 8 of 2–9 / A–Z without I and O)
+    const tradeIn = (suffix: string, status: (typeof tradeIns.$inferInsert)["status"], extra: Partial<typeof tradeIns.$inferInsert> = {}) => ({ id: `ti_${tag}_${suffix}`, ref: tradeInRef(), phoneE164: phone, status, createdAt: now, updatedAt: now, ...extra });
+    // an offer exists only after an inspection, made by a person (the database's offer guard)
+    const inspected = { checklist: { templateId: null, completedAt: now - DAY_MS, completedBy: manager.id, items: [{ key: "power", result: "pass" as const }] }, grade: "B" as const, inspectedBy: manager.id, inspectedAt: now - DAY_MS };
+    const offered = (amountIqd: number, offeredAt: number, offerExpiresAt: number) => ({ finalOfferIqd: amountIqd, offeredBy: manager.id, offeredAt, offerExpiresAt, inspection: inspected });
+    await t.db.insert(tradeIns).values([
+      tradeIn("new", "submitted"),
+      tradeIn("booked", "inspection_scheduled", { inspectionScheduledAt: now + DAY_MS }),
+      tradeIn("insp", "inspected", { inspection: inspected }),
+      tradeIn("offer", "offered", offered(200_000, now, now + 3 * DAY_MS)),
+      tradeIn("acc", "accepted", { ...offered(180_000, now - DAY_MS, now + DAY_MS), acceptedAt: now, payoutMethod: "cash" }),
+      tradeIn("paid", "paid", { ...offered(150_000, now - 2 * DAY_MS, now + DAY_MS), paidAt: now }),
+    ]);
+    const product = await make.product({ priceIqd: 300_000, stock: 0 });
+    const unit = (suffix: string, status: "intake" | "testing" | "ready") => ({ id: `uu_${tag}_${suffix}`, slug: `used-${tag}-${suffix}`.replace(/_/g, "-"), variantId: product.variantId, grade: "B" as const, priceIqd: 250_000, status, createdAt: now, updatedAt: now });
+    await t.db.insert(usedUnits).values([unit("in", "intake"), unit("test", "testing"), unit("ready", "ready")]);
+
+    // security — a lockout an hour ago (and one from two days ago, outside the alerts' 24 hours)
+    await t.db.insert(authEvents).values([
+      { id: `aev_${tag}_now`, subjectKind: "employee", kind: "lockout", success: false, identifier: `locked-${tag}@shell.test`, ip: "198.51.100.7", at: now - HOUR },
+      { id: `aev_${tag}_old`, subjectKind: "employee", kind: "lockout", success: false, identifier: `old-${tag}@shell.test`, ip: "198.51.100.8", at: now - 2 * DAY_MS },
+    ]);
+
+    // settings — a request by the manager, one by the approver, one that expired
+    const settingRequest = (suffix: string, key: string, requestedBy: string, expiresAt: number) => ({ id: `apv_${tag}_${suffix}`, kind: "settings", entityType: "setting", entityId: key, requestedBy, payload: { value: 1500, before: 1000 }, reason: "تجربة", status: "pending" as const, createdAt: now - HOUR, expiresAt });
+    await t.db.insert(approvals).values([
+      settingRequest("theirs", "pricing.drop_approval_bps", manager.id, now + 13 * DAY_MS),
+      settingRequest("mine", "purchasing.po_approval_limit_iqd", approver.id, now + 13 * DAY_MS),
+      settingRequest("late", "finance.topup_second_approval_iqd", manager.id, now - MINUTE),
+    ]);
+
+    const shown: Record<string, Record<string, number>> = {};
+    let ownerQueues: ShellQueue[] = [];
+    for (const [who, { session, cookies }] of Object.entries(signed)) {
+      const shell = await loadAdminShell(request({ now: Date.now() }).ctx, t.db, session);
+      const queues = shell.waiting.queues.filter((queue) => (LATER_QUEUES as readonly string[]).includes(queue.id));
+      for (const queue of queues) expect.soft(await actionableOnLaterPage(queue, cookies), `${who} · ${queue.id} · ${queue.href}`).toBe(queue.count);
+      // every queue's module is in the employee's navigation, so the rail's beads add up to the bell
+      expect(shell.waiting.queues.every((queue) => shell.modules.includes(queue.module)), who).toBe(true);
+      expect(shell.waiting.total, who).toBe(shell.waiting.queues.reduce((sum, queue) => sum + queue.count, 0));
+      shown[who] = Object.fromEntries(queues.map((queue) => [queue.id, queue.count]));
+      if (who === "owner") ownerQueues = queues;
+    }
+
+    // The owner acts on all ten, each opening its module's own queue screen and carrying its module's bead.
+    expect(ownerQueues.map((queue) => [queue.id, queue.module, queue.href])).toEqual([
+      ["pos_shifts", "pos", "/admin/pos/shifts?state=review"],
+      ["privacy_requests", "customers", "/admin/customers/privacy"],
+      ["tradein_inspections", "devices", "/admin/devices/trade-ins?view=new"],
+      ["tradein_offers", "devices", "/admin/devices/trade-ins?view=inspected"],
+      ["tradein_payouts", "devices", "/admin/devices/trade-ins?view=accepted"],
+      ["used_inspections", "devices", "/admin/devices/used?view=todo"],
+      ["used_listings", "devices", "/admin/devices/used?view=ready"],
+      ["signin_alerts", "security", "/admin/security/sign-ins?window=24h"],
+      ["access_reviews", "security", "/admin/security/retention#reviews"],
+      ["settings_changes", "settings", "/admin/settings/changes"],
+    ]);
+    expect(shown.owner).toMatchObject({ pos_shifts: 3, privacy_requests: 2, tradein_inspections: 2, tradein_offers: 1, tradein_payouts: 1, used_inspections: 2, used_listings: 1, settings_changes: 2 });
+    expect(shown.owner.signin_alerts).toBeGreaterThanOrEqual(1);
+    expect(shown.owner.access_reviews).toBeGreaterThanOrEqual(DEFAULT_ROLES.length);
+    // The manager runs the shop floor (no access reviews, no settings approvals: the owner's); finance reviews drawers;
+    // the stock clerk inspects used units; a cashier none of these.
+    expect(shown.manager).toEqual({ pos_shifts: 3, privacy_requests: 2, tradein_inspections: 2, tradein_offers: 1, tradein_payouts: 1, used_inspections: 2, used_listings: 1, signin_alerts: shown.owner.signin_alerts });
+    expect(shown.bookkeeper).toEqual({ pos_shifts: 3 });
+    expect(shown.clerk).toEqual({ used_inspections: 2 });
+    expect(shown.cashier).toEqual({});
+    // Never their own: the supervisor neither reviews the drawer they opened nor the one they closed.
+    expect(shown.supervisor).toEqual({ pos_shifts: 1 });
+    // The wipe and payout are listed on the trade-ins, which ownership.verify alone cannot open.
+    expect(shown.verifier).toEqual({});
+    expect(shown.payer).toEqual({ tradein_payouts: 1 });
+    // Not their own request, not an expired one; without settings.read no queue (the list is behind it).
+    expect(shown.approver).toEqual({ settings_changes: 1 });
+    expect(shown.blindApprover).toEqual({});
+    expect(shown.reviewer).toEqual({ access_reviews: shown.owner.access_reviews });
+    expect(shown.watcher).toEqual({ signin_alerts: shown.owner.signin_alerts });
+  });
+
+  test("a new module whose count fails hides only its own queues: the devices queues go, the others stay, it is logged", async () => {
+    const owner = (await signedIn(OWNER.email, OWNER.password, Date.now())).session;
+    const healthy = (await loadAdminShell(request({ now: Date.now() }).ctx, t.db, owner)).waiting;
+    expect(healthy.queues.filter((queue) => queue.module === "devices").length).toBeGreaterThan(0);
+    const logged = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    failing.devices = true;
+    try {
+      const waiting = (await loadAdminShell(request({ now: Date.now() }).ctx, t.db, owner)).waiting;
+      const others = healthy.queues.filter((queue) => queue.module !== "devices");
+      expect(waiting.queues).toEqual(others);
+      expect(others.map((queue) => queue.id)).toEqual(expect.arrayContaining(["pos_shifts", "privacy_requests", "settings_changes"]));
+      expect(waiting.total).toBe(others.reduce((sum, queue) => sum + queue.count, 0));
+      expect(logged).toHaveBeenCalledWith(expect.stringContaining("devices"), expect.any(Error));
+    } finally {
+      failing.devices = false;
+      logged.mockRestore();
+    }
+  });
+
+  test("the layout counts on the request's clock (ctx.now): the link's days and what has expired are the request's, not the server's", async () => {
+    const owner = (await signedIn(OWNER.email, OWNER.password, Date.now())).session;
+    // A request whose clock is far from the server's: a draft expense of that day, and a settings request that expires
+    // an hour before it.
+    const later = Date.UTC(2027, 5, 15, 9, 0, 0);
+    const [expenseAccount] = await t.db.select({ id: accounts.id }).from(accounts).where(eq(accounts.type, "expense")).limit(1);
+    await t.db.insert(expenses).values({ id: "exp_shell_clock", accountId: expenseAccount.id, amountIqd: 12_000, description: "مصروف بتاريخ الطلب", incurredOn: baghdadDay(later), period: baghdadDay(later).slice(0, 7), createdBy: null, createdAt: later });
+    await t.db.insert(approvals).values({ id: "apv_shell_clock", kind: "settings", entityType: "setting", entityId: "returns.window_days", requestedBy: await make.employee(), payload: { value: 10, before: 14 }, reason: "تجربة الساعة", status: "pending", createdAt: later - DAY_MS, expiresAt: later - HOUR });
+    const waitingAt = async (now: number) => Object.fromEntries((await loadAdminShell(request({ now }).ctx, t.db, owner)).waiting.queues.map((queue) => [queue.id, queue]));
+    const at = await waitingAt(later);
+    expect(at.expenses?.href).toContain(`&to=${baghdadDay(later)}&`);
+    const before = await waitingAt(later - 2 * HOUR);
+    // two hours earlier the request was still open: the owner was asked to decide it then, not any more
+    expect((before.settings_changes?.count ?? 0) - (at.settings_changes?.count ?? 0)).toBe(1);
+  });
+
+  test("trade-in payouts: only what the employee can do there — the wipe for whoever confirms it, the payout once wiped, never their own offer that needs a second payer", async () => {
+    const now = Date.now();
+    // the manager who made the offers below (every devices permission), another manager, a payer who cannot confirm a
+    // wipe, a checker who cannot pay
+    const offerer = await staff("manager");
+    const colleague = await staff("manager");
+    const payer = await employeeWith(["devices.tradein.payout", "devices.tradein.read"]);
+    const checker = await employeeWith(["devices.ownership.verify", "devices.tradein.read"]);
+    const signed: Record<string, { session: EmployeeSession; cookies: Record<string, string> }> = { owner: await signedIn(OWNER.email, OWNER.password, now) };
+    for (const [who, person] of Object.entries({ offerer, colleague, payer, checker })) signed[who] = await signedIn(person.email, person.password, now);
+    const payouts = async (who: string) => (await loadAdminShell(request({ now: Date.now() }).ctx, t.db, signed[who].session)).waiting.queues.find((queue) => queue.id === "tradein_payouts");
+    const before: Record<string, number> = {};
+    for (const who of Object.keys(signed)) before[who] = (await payouts(who))?.count ?? 0;
+
+    // Four accepted trade-ins, each offered on the guide's suggestion of 200,000 (the latest `offered` event, as payOut
+    // reads it): A within the guide, not wiped yet; B above the guide, wiped (only a second person may pay it); C within
+    // the guide, wiped (its offerer may pay it); D above the guide but the colleague's offer, wiped.
+    const tag = make.next("payout").replace(/[^a-z0-9]/gi, "_");
+    const inspection = { checklist: { templateId: null, completedAt: now - DAY_MS, completedBy: offerer.id, items: [{ key: "power", result: "pass" as const }] }, grade: "B" as const, inspectedBy: offerer.id, inspectedAt: now - DAY_MS };
+    const accepted = (suffix: string, by: string, amountIqd: number, wiped: boolean) => ({
+      id: `ti_${tag}_${suffix}`,
+      ref: tradeInRef(),
+      phoneE164: "+9647701239876",
+      status: "accepted" as const,
+      inspection,
+      ownershipOk: true,
+      accountLockOk: true,
+      dataWiped: wiped,
+      finalOfferIqd: amountIqd,
+      offeredBy: by,
+      offeredAt: now - DAY_MS,
+      offerExpiresAt: now + 2 * DAY_MS,
+      acceptedAt: now - HOUR,
+      payoutMethod: "cash" as const,
+      createdAt: now - 2 * DAY_MS,
+      updatedAt: now - HOUR,
+    });
+    const rows = [accepted("a", offerer.id, 180_000, false), accepted("b", offerer.id, 250_000, true), accepted("c", offerer.id, 190_000, true), accepted("d", colleague.id, 260_000, true)];
+    await t.db.insert(tradeIns).values(rows);
+    await t.db.insert(tradeInEvents).values(rows.map((row) => ({ id: `tie_${row.id}`, tradeInId: row.id, kind: "offered", data: { amountIqd: row.finalOfferIqd, suggestedIqd: 200_000, grade: "B" }, actorKind: "employee" as const, actorId: row.offeredBy, at: row.offeredAt })));
+
+    const added: Record<string, number> = {};
+    for (const who of Object.keys(signed)) {
+      const queue = await payouts(who);
+      added[who] = (queue?.count ?? 0) - before[who];
+      // exactly what the trade-ins' own pages let this employee do
+      if (queue) expect(await actionableOnLaterPage(queue, signed[who].cookies), who).toBe(queue.count);
+    }
+    expect(added).toEqual({
+      // the owner holds every permission and made none of these offers
+      owner: 4,
+      // A (wipe), C (their own offer, within the guide), D (the colleague's) — never B, their own above the guide
+      offerer: 3,
+      // the colleague may wipe A and pay B and C; D is their own offer above the guide
+      colleague: 3,
+      // wiped ones only: B, C, D
+      payer: 3,
+      // the wipe only: A
+      checker: 1,
+    });
+  });
+
   test("speed: every module is asked at once, and the shell reads the same however much waits (no list to count, no query per row)", async () => {
     const owner = (await signedIn(OWNER.email, OWNER.password, Date.now())).session;
     const recording = recordingD1(t.d1);
@@ -1178,6 +1562,10 @@ describe("shell data", () => {
     for (const pattern of [/"price_changes"/, /"shipments"/, /cod_settlements/, /purchase_orders/, /FROM receipts/, /supplier_invoices/, /wallet_topups/, /wallet_adjustment/]) expect(sent(pattern), String(pattern)).toBe(true);
     expect(sent(/"settings"/, "returns.sla")).toBe(true);
     expect(sent(/"settings"/, "finance.expense_second_approval_iqd")).toBe(true);
+    // …and the later modules' (pos, customers, devices — trade-ins and used units —, security's alerts and reviews,
+    // settings' requests), never one after the other
+    for (const pattern of [/"pos_shifts"/, /"privacy_requests"/, /"trade_ins"/, /"used_units"/, /FROM auth_events/, /security\.access_review\.complete/]) expect(sent(pattern), String(pattern)).toBe(true);
+    expect(sent(/"approvals"/, "settings")).toBe(true);
 
     // Much more waits: 60 hand corrections on a settlement, 30 failed deliveries, 30 top-up requests.
     for (let i = 0; i < 60; i++) await audit(t.db, { actor: { kind: "employee", id: `emp_rows_${i % 3}`, permissions: [] }, action: "shipping.cod.item", entityType: "cod_settlement", entityId: "cod_rows", at: now });

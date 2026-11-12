@@ -1,134 +1,161 @@
 # Home — `/`, the intro and the onboarding
 
-Owner: home area. Brief §2 "Intro" / "Onboarding", §3.1–3.2, §6 (privacy), §12; DESIGN.md §2, §7.2 intro, §7.3, §8.1,
-§8.9, §8.11. Files: `app/routes/storefront/home/**`, `app/server/services/home.server.ts`, `app/i18n/messages/home.ts`,
-`tests/home.test.ts`.
+Owner: home area. Design System v2 §6.1 (home, intro, onboarding), §4.18–§4.25 (the showcase kit it is built from),
+§6.17 (states), §7 (imagery), §9 (copy); brief §2 "Intro" / "Onboarding", §3.1–3.2, §6 (privacy). Files:
+`app/routes/storefront/home/**`, `app/i18n/messages/home.ts`, `tests/home.test.ts`. The data service
+`app/server/services/home.server.ts` is read, not owned, in the v2 stage.
 
 ## Routes
 
 | Path | File | What |
 |---|---|---|
-| `/` (`/en`, `/ckb`) | `home.tsx` | the page; `?platform=nintendo\|playstation\|xbox\|handheld` lights the stage for one platform — shareable, kept by Back, no request (`shouldRevalidate` skips the loader when only `platform` changes; every platform's hero and shelves are in the loader data, ~45 KB for 61 cards) |
-| `POST /api/onboarding` | `api.onboarding.ts` | `intro=seen`, `consent=1\|0`, `platforms=a.b` → `tt_intro` / `tt_consent` / `tt_platforms` cookies; a signed-in customer's answer is appended to `consents` (kind personalization, source `home_onboarding`); `consent=0` also forgets on the server (`personal.server.ts → forgetPersonalData`: this device's and the account's recommendation signals, the `tt_rs` cookie, the account's recently-viewed list); 400 `invalid` + fields, 405, 429 |
-| `GET /api/recently-viewed?ids=&locale=` | `api.recently-viewed.ts` | a guest's device list: cards for the ids this browser remembers (≤ 12, order kept, unknown/unpublished left out), `no-store`; 400 for more ids or malformed ones. `?scope=account` → a signed-in, consenting customer's account list (`scope: "account"`), else no cards (`scope: "none"`) |
-| `POST /api/recently-viewed` | same file | signed in + consent only: `productId` (a product page on screen) and/or `device=[{id,at}]` (this device's guest list handed to the account) → `{ ok, kept, merged }`; `intent=clear` → the account's list cleared. A guest's view is never stored on the server (`kept: false`). CSRF-checked, 60/min per IP |
+| `/` (`/en`, `/ckb`) | `home.tsx` | the page; `?platform=nintendo\|playstation\|xbox\|handheld` = the «وصل حديثاً» chip — shareable, kept by Back, no request (`shouldRevalidate` skips the loader when only `platform` changes; every platform's new arrivals are in the loader data) |
+| `POST /api/onboarding` | `api.onboarding.ts` | `intro=seen`, `consent=1\|0`, `platforms=a.b` → `tt_intro` / `tt_consent` / `tt_platforms` cookies; a signed-in customer's answer is appended to `consents` (kind personalization, source `home_onboarding`); `consent=0` also forgets on the server (`personal.server.ts → forgetPersonalData`); 400 `invalid` + fields, 405, 429 |
+| `GET /api/recently-viewed?ids=&locale=` | `api.recently-viewed.ts` | a guest's device list: cards for the ids this browser remembers (≤ 12, order kept), `no-store`; `?scope=account` → a signed-in, consenting customer's account list |
+| `POST /api/recently-viewed` | same file | signed in + consent only: `productId` and/or `device=[{id,at}]` → `{ ok, kept, merged }`; `intent=clear` |
 
-## The page, top to bottom
+Unchanged in v2: `personal.ts`, `personal.server.ts` and both API files (other areas import `personal.ts`:
+`readConsent`, `recordProductView`, the cookie names — keep their signatures).
 
-1. **Hero** (`Hero.tsx`): an Arabic verb + the product's own name ("العب على Nintendo Switch 2"), sized to stay on one
-   line in its column (`--em` = measured Kufam widths, `view.ts`; floors 22/26/34 px, then a balanced wrap); the lit
-   stage with the official photo — a link into `/p/<slug>` (shared element `product-image:<id>`, slot `hero`; the LCP
-   image, preloaded); the glass tag and the commit key on the rim (the key drops under the tag when a seven-digit price
-   leaves no room; ≥ 768 the copy column holds deck, "تفاصيل الجهاز", the commit key and the delivery fact); the four
-   platform keys (the other platform's photo is preloaded on pointer-down). Products with options get the kit's
-   "اختر الخيارات" link instead of an add.
-2. **New arrivals** of the platform in focus (grid 2 → 3 → 6, "كل PlayStation" → `/platform/<slug>`), inflating in
-   when another platform is lit.
-3. **Used + repairs**: the two-row flat panel of §8.1 with the real count of listed used units.
-4. **Games for the platform**, **Price drops**, **Used and inspected**, **Accessories** (the shopper's platforms in
-   turns when they chose several, else the platform in focus) — `ShelfRail`, each with its written rule.
-5. **Coming soon**: 4 pre-orders and the unreleased variants (grouped per product and day: "3 نسخ جديدة") with the
-   release date from the research; no add key.
-6. **Shop by platform**: category cards (1:1 niche, lead photo, LED + name, real product count) → `/platform/<slug>`.
-7. **Recently viewed**: only with consent, the shopper's ONE list (below: this device's for a guest, the account's when
-   signed in), loaded after the page is on screen, "امسح القائمة".
-8. **Based on your browsing** (devices area, `home:personal`): only with consent, streamed (`recommendationsFor`,
-   `personalOnly` — the store's picks would repeat the shelves above); hidden at once when the shopper stops.
-9. **Make TamTam yours** (`#personal`): what is remembered here, change platforms, stop and delete, watch the intro again.
+## The page, top to bottom (v2 §6.1)
 
-## Rules the data follows (`home.server.ts`; `tests/home.test.ts`, 30 tests)
+0. A visually hidden `<h1>` «طمطم للألعاب: أجهزة وألعاب وإكسسوارات في العراق» — the hero's headline is an h2 (it
+   changes per campaign). The demo strip and the header are the shell's.
+1. **Hero** (`Hero.tsx`, the kit's `Band kind="hero"`), 16px under the header. The featured console: the lead device of
+   `FEATURED_PLATFORM` = Nintendo (`view.ts featuredHero`) — Nintendo Switch 2 today — until the CMS pin is wired
+   (§13 #13). The admin's content module already keeps pins and offers the reads (`getHomeHero`, `getHomeLayout`,
+   `getActiveBanners` in `services/admin/cms/*`, docs/areas/admin-cms.md); the storefront wires them after the redesign,
+   as the admin screens say — the home does not read them yet. Phones: the platform pill · the
+   headline in two lines («العب على» / «Nintendo Switch 2», the name isolated, one edge, `splitHeadline`) · the
+   product in a 168px box (the page's only preload, `fetchpriority="high"`, the shared element `product-image:<id>`
+   slot `hero`, a link into `/p/<slug>` with the zoom) · the price (xl, white) + «سعر تجريبي» · the on-band key
+   «اشترِ Nintendo Switch 2», full width · «التوصيل 5,000 د.ع لكل المحافظات · الدفع عند الاستلام» (fee and COD from the
+   settings). ≥ 768: copy 7/12 at the inline start (6/12 from 1280) + the fact line (`card.subtitle`) and «تفاصيل
+   الجهاز» → the device hub named like the product (`deviceHubFor`, else the product page); the product at the inline
+   end on the band's light. Measured: 436px at 390 (≤ 440), 400 at 1024, 420 at 1440.
+   - **The key** opens the product area's quick look (`QuickPreview`, lazy) on the version choice; the page keeps its
+     URL and scroll; a real link to the product page underneath (new tab, no script). Dark theme: the band is a lit
+     cabinet and the key renders as the red primary (kit CSS).
+   - **Headline size** steps down the type scale until its longest line fits the copy column (`heroTitleSizes`:
+     Noto Kufi 700 widths measured in Edge, Plex 600 for Sorani; the column minimums `HERO_COPY_MIN` mirror
+     `home.css` — change both together). Integer sizes from the scale only, never fluid. Short last words never break
+     (`keepTogether`: «Switch 2», «5 Pro», «Go 2»).
+2. **«تسوّق حسب المنصّة»** (`PlatformDoors`): the four `PlatformTile`s (2×2 → 4-up) with the real product counts and
+   hubs. A tile never repeats the hero's picture (`tileArt` → `otherView`: the Nintendo tile shows Switch 2 in its
+   dock); nothing else makes it step away from its own picture — the next "angle" of a device can be its back (Xbox
+   Series X `--2`, Switch 2 `--3`). The intro's tiles use exactly these pictures.
+3. **Trust strip** (`TrustFacts` → the kit's `TrustStrip`, under a visually hidden h2 «التوصيل والدفع»): only true
+   facts — the fee from settings, COD while enabled, «زين كاش أو تحويل…» only while BOTH are enabled (the line names
+   both), guest ordering (how the store works).
+4. **«وصل حديثاً»** (`NewArrivals`): the kit's `SectionHead` with platform dot chips (`ChipGroup`, radiogroup, arrow
+   keys) that filter the shelf in place, the reason line «أحدث ما أضفناه، والمتوفر الآن», «عرض الكل» →
+   `/platform/<chip>?sort=newest`; the kit's `Rail` (2.15 cards on phones, 4/5-up whole cards from 1024) of
+   `ProductCard`s. **No «جديد» inside this shelf** (v2 §4.7): the page drops the badge from these cards. A chip exists
+   only for a platform with a drawn shelf (`hasShelf`: `MIN_SHELF` = 3 new arrivals); the chip starts on the URL's
+   platform, else the shopper's saved one, else the featured one (`resolveFocus`) — never on a short shelf, which would
+   take the whole section and the other platforms' chips with it. New cards bubble in after a chip change.
+5. **«قريباً»** (`Releases` → the kit's `ReleaseBand`): the soonest four (`RELEASE_LIMIT`), only with ≥ 2 dated items;
+   an unreleased version of a released product reads «Forza Horizon 6 · نسخة جديدة» (the catalogue's version titles are
+   not shown — they can say «طلب مسبق»). The platform line comes from each pre-order product's own card (the loader
+   reads them with `getCardsByIds`; one platform only — one colour dot beside «متعددة المنصات» would mislead).
+6. **«مستعمل ومفحوص»** (`UsedShelf` → `ShelfRail` + `UsedUnitCard`), «كل المستعمل» → `/used`; hidden under 3 units.
+7. **Trade-in and support doors** (`ServiceEntries`, two `EntryCard`s, h2 titles): «استبدل جهازك» (the PlayStation
+   lead device's photo) and «الدعم» (the mascot).
+8. **«تسوّق حسب القسم»** (`Departments`): six `CategoryTile`s with counts (the shell's `sheetCategories` minus games,
+   which live under the platforms here). Pictures: the department glyph, as in the categories sheet, until the
+   navigation data carries a photo (`NavCategory.artKey` is read when it exists — the column `categories.art_key` is
+   filled but not exposed).
+9. **Personal shelves**, consent only, from 3 items: «شاهدتها مؤخراً» (`RecentlyViewed`, the shopper's ONE list) and
+   the devices area's `RecommendationShelves` (streamed).
+10. **«خصّص طمطم»** (`PersonalPanel`, `#personal`): what is remembered here, change platforms (the sheet), stop and
+    delete, watch the intro again.
 
-- A product is on a platform when it is made for it (`platform_id`) or — multi-platform products have no
-  `platform_id` — when a **verified or partial** compatibility rule ties it to one of the platform's device models,
-  generations or the platform. Unverified and incompatible rules never do (tested by moving one product on and off the
-  Xbox shelves as its rule changes). This is why the page does not use `getNewArrivals` (platform_id only).
-- Shelves hold only what can be bought now (`in_stock` / `low_stock` from the card read layer), newest in the store
-  first (`published_at`); games and accessories never repeat the new arrivals.
-- Hero = the platform's **lead device**: the first device model in the store's order (`device_models.sort`) whose base
-  product (named like the model, not a bundle) can be bought and is not marked discontinued → "العب على {name}"; a base
-  model released in the last 120 days → "وصل {name}" with its release date. No buyable console → an unlit stage that
-  says so and links to the hub.
-- Deals = `getDeals` (genuine previous prices only, 7 in the demo). Used = `getUsedSpotlight`. Nothing is called
-  "trending" or "customers also bought": there are no order, view or review aggregates.
-- One `db.batch` (membership + ranking, console candidates, coming soon), then cards (≤ 100 ids per statement), deals
-  and used in parallel: ~37 ms on the local D1.
+Not on the page any more (v2 §6.1): the platform key bank and the relit stage, the games / accessories / price-drop
+shelves, the coming-soon card rail, the used + repairs row panel. `getHomeData` still reads games, gear and deals; the
+loader passes only what is drawn (`forPage`).
 
-## Personalisation and consent (`personal.ts`)
+## Intro and onboarding (`Intro.tsx`, `Onboarding.tsx`)
+
+The intro is a client-only modal overlay over the server-rendered page, only when: no `tt_intro`, the shopper landed
+here (`history.state.idx === 0`), has not scrolled, and the lazily loaded `isbot` does not match. The motion grammar is
+kept: the logo's layers inflate 60 ms apart and lift; the four lead devices come in at the corners (straight — no
+tilt); on «ابدأ» they lean in 8 px and leave along their diagonals, the logo travels to the header's lockup
+(`.shell-lockup__word`), the floor fades. v2 changes: «دورك. اختر منصّتك.» (the one game-turn line of the store); the
+choices are four `PlatformTile`s as toggle buttons (`aria-pressed`; 2×2 on phones, 4 × 240px from 1024) — a chosen tile
+stays down on its wall, ringed inside and checked; «تخطَّ» is a visible secondary key from the first frame; «ابدأ» is
+the view's one primary. Escape / Android back = skip; focus trapped; the page inert until it leaves. Reduced motion:
+the still composition and a 120 ms fade.
+
+**Consent asked honestly:** the 1.0 consent sheet is gone. After an intro with platforms chosen (and consent never
+asked), a NON-BLOCKING row under the hero asks «نحفظ اختيارك على هذا الجهاز؟» with what would be kept, and two equal
+keys «احفظ» / «لا، شكراً»; it takes the focus (no ring for a pointer user) and the browser brings it into view. Nothing
+is written before yes: the chosen platform only arranges this visit (the new-arrivals chip). The platforms sheet
+(«منصّاتك») uses platform chips (several may be chosen) and two equal keys.
+
+## Rules the data follows (`home.server.ts`, read-only here; `tests/home.test.ts`)
+
+- A product is on a platform when it is made for it (`platform_id`) or a **verified or partial** compatibility rule
+  ties it to one of the platform's models, generations or the platform. Shelves hold only what can be bought now.
+- Hero = a platform's lead device (`device_models.sort`, base model named like the model, buyable, not discontinued,
+  with a photo); a base model released in the last 120 days → «وصل …».
+- Coming soon: pre-orders and unreleased variants with the researched release dates; nothing can be pre-ordered.
+
+## Personalisation and consent (`personal.ts`) — unchanged
 
 | Where | What | Written when |
 |---|---|---|
 | cookie `tt_intro` | `1` | the intro was finished or skipped |
 | cookie `tt_consent` | `1` / `0` | the shopper answered (never pre-set) |
 | cookie `tt_platforms` | `playstation.xbox` | only while `tt_consent=1`; deleted on `0` |
-| localStorage `tt:recent` | `[{ id, at }]`, ≤ 12, 90 days | a GUEST's views, only while `tt_consent=1`; wiped on `0`; handed to the account (then removed) after signing in |
+| localStorage `tt:recent` | `[{ id, at }]`, ≤ 12, 90 days | a GUEST's views, only while `tt_consent=1`; wiped on `0`; handed to the account after signing in |
 
-The intro asks nothing: platforms picked there light **this visit**. If nothing was ever asked, a sheet then asks
-"نتذكّر منصّاتك؟" with two equal keys; declining or dismissing keeps nothing. Guests' answers stay on the device. On the
-client read consent with `readConsent()` (root `personalizationConsent` refreshes only on a document load or a POST).
+Recently viewed is ONE store per shopper (guest = this device, signed in = the account; details in the 2026-11-11
+integration notes of `personal.ts`).
 
-### Recently viewed — one store per shopper (decided by the integration pass, 2026-11-11)
+## States (v2 §6.17)
 
-| Shopper | Where a view is kept | Shown on |
-|---|---|---|
-| guest (consent) | this device only (`tt:recent`); the server never sees the list | home (cards by `GET ?ids=`) |
-| signed-in customer (consent) | the account only (`recently_viewed`, ≤ 30, account area's service); nothing on the device | home (`GET ?scope=account`), account overview |
-| no consent | nowhere | — |
+Default · partial (no buyable console anywhere → no hero band, the rest stands; a shelf under its minimum is not drawn)
+· empty catalogue (EmptyState «لا توجد منتجات معروضة الآن» + «تحدّث مع موظف» → the hand-off, the two doors, the panel) ·
+loading (SSR; pictures on their LQIP; streamed shelves bubble in) · API failure (loader → the route's ErrorBoundary,
+`ErrorState` stack with a retry; recently viewed → an inline `ErrorState` with a retry) · hero photo failure (the band
+keeps its size, copy and key; no broken-image frame — also when the photo failed before the page was hydrated, which
+React's onError never reports: `pictureFailed` checks the photo once on mount) · offline (the shell's banner; the chips still filter — the data
+is on the page; card pictures show the kit's failed-image state) · demo (the shell's strip + «سعر تجريبي» beside the
+hero price) · reduced motion (no bubbles, no hover lift, still intro).
 
-- The product page, once on screen, calls `recordProductView(id, { signedIn })` (`personal.ts`): a guest's view goes to
-  the device list, a customer's to `POST /api/recently-viewed` — exactly one store per view, so nothing is counted twice.
-  Prefetching a card's link never counts (no loader writes).
-- After signing in, the first product page, home visit or account overview hands this device's guest list to the
-  account once (`handDeviceListToAccount` → `mergeDeviceRecentlyViewed`: published products only, the newest time wins,
-  a product on both lists stays one row) and removes those entries from the device — so a shared device keeps nothing of
-  a customer after they sign out.
-- "امسح القائمة" clears the list that is shown (device or account). "Stop and delete" (this page) and withdrawing
-  personalization in the account settings clear the device list, the account's list and the recommendation signals.
-- The cart-token guest rows of `recently_viewed` (account service) are still read and merged at sign-in for old data,
-  but nothing writes them any more.
+## Exports others may use
 
-## The intro (`Intro.tsx`)
+`personal.ts` (cookie names, `readConsent`, `recordProductView`, `parsePlatformList`, …) and the two API routes. The
+components and `view.ts` are this page's own.
 
-A client-only modal overlay over the server-rendered page, only when: no `tt_intro`, the shopper landed on this page
-(`history.state.idx === 0`), has not scrolled, and the lazily loaded `isbot` does not match. Sequence and exit per
-DESIGN §7.2 (logo layers inflate 60 ms apart with 6 px parallax and lift; four platform lights with their lead device in
-the corners 80 ms apart; the line, the toggling keys, "ابدأ" last; a tap jumps to the end). Start/Skip: state first,
-then the corners lean in 8 px and are pulled out along their diagonals (no fade), the logo travels to the header's, the
-floor fades over the already relit page. Reduced motion: still composition, 120 ms fade. Lite: no staggered inflate.
-Escape / Android back = Skip; focus trapped; page inert until it leaves.
+## Verified (2026-11-12)
 
-## States (brief §12)
+`npx vitest run tests/home.test.ts` (36 pass; 38 after the review below) · `node scripts/lint-design.mjs --strict app/routes/storefront/home`
+(0) · no type errors in these files · browser flows (scratch `work/pages-P1-home/tools/flow.mjs`, `hero-flow.mjs`,
+`states.mjs`): intro → choose → start → consent row → yes / no → reload → chips without a request → change → recently
+viewed (3 products) → stop and delete → replay, 30/30 in ar 390, en 1440 and ckb 390 dark + reduced motion; hero key →
+quick look → add, photo → product page, device hub, four tiles, «عرض الكل» 12–13/13; states 7/7 · probe: hero 436px at
+390 with the key, price and delivery line above the tab bar, first tile row at y 639; at 1440 the hero (420) and the four
+tiles inside 900px (bottom 885) · census (sizes on the scale, Kufi 700 + Plex 400/600 only, radii in the set, 2–3 shadow
+recipes, no image filter, no target under 44px, no Arabic run under 13px, 0 contrast fails except below) · focus walk
+(0 stops under a bar at 390/768/1440) · screenshots `…/scratchpad/ux/after/P1-home/`.
 
-Default · partial (a platform without a buyable console: unlit stage + hub link; empty shelves are not drawn) · empty
-catalogue (empty state with "تواصل معنا", the used/repairs panel, the personal panel) · API failure (loader → the
-route's ErrorBoundary inside the shell with a retry; recently viewed → inline ErrorState with a retry) · offline (shell
-banner; lighting a platform needs no network; adds roll back honestly) · success (toasts for answers) · validation
-("اختر منصّة واحدة على الأقل") · reduced motion · pending review / unauthorized: not applicable here.
+**Known gaps:** red share of the first screen 40.2% at 390 and 36.7% at 1440 (targets ≤ 40 / ≤ 35; A measured 46 / 39),
+whole page 6.8–7.5% (target 8–12: the page is longer than A's) — the band (≈ 31%) and the Nintendo tile (≈ 10% at 390)
+fill the first screen at the spec's own sizes, so the targets conflict with the hero geometry; at 768–1023 the
+PlayStation tile's name «PlayStation» lies on the tall white PS5 Slim cut-out (kit layout: hardware 58% wide, no
+text limit below 1024; p10 contrast 1.48 — in the intro too); a focused card in a phone rail stays partly off-screen
+(kit / motion rail: Chrome does not scroll a link with 28px visible); departments show glyphs (no category picture in
+the navigation data); Sorani copy unreviewed (the hero puts the verb first, «یاری بکە لەسەر …»); Chromium (Edge) only.
 
-## Demo, real, boundaries
+## Review (2026-11-12)
 
-- **Real:** products, names, photos, release dates, compatibility, used grades, counts. **Demo:** prices, previous
-  prices, stock (the shell's ribbon).
-- **Pre-orders cannot be ordered** (no pre-order flow in the commerce core): cards say "يصدر في …", no add key.
-- **The hero is not staff-selectable yet** (admin module 17 not built): when it is, read a `banners` row
-  (placement `home_hero`, accent = platform, link `/p/<slug>`) before the automatic rule in `pickHero`.
-
-## Integration (wired 2026-11-11)
-
-- ~~`RecommendationShelves` slot~~ — done: the loader streams `recommendationsFor(db, who, { context: "home",
-  platformSlugs, personalOnly: true })` (devices area); `Shelves.tsx → RecommendationShelves` draws it with the shared
-  `devices/components/RecommendationShelves` (cards inflate when they arrive; a failure is a retry panel).
-- ~~Two recently-viewed stores~~ — decided: one store per shopper (table above).
-- ~~Forget on withdrawal~~ — done: `POST /api/onboarding consent=0` → `forgetPersonalData` (also used by the account
-  settings).
-- Open: device hub links from the hero (the hero's product page has the hub link); a "replay the intro" entry in
-  account settings or Preferences can link to `/#personal`.
-
-## Verified / not verified
-
-`npx vitest run tests/home.test.ts` (30 pass) · no type errors in these files (`npx tsc -b`; the project typecheck is
-red from other areas' in-progress files) · `node scripts/lint-design.mjs app/routes/storefront/home` (0) · browser flow
-(scratch `flow.mjs`, 20 checks: intro → keys → Start → consent → reload remembered → bank without a request → recently
-viewed → stop and delete) passed in ar 390, en 1440, ckb 390 dark + reduced motion, console clean · screenshots in
-`.shots/home/` (360, 390, 768, 1440; light/dark; ar/en/ckb; intro frames; sheets; panel). Chromium only; no phone,
-Safari or Firefox; Core Web Vitals not measured. Sorani needs a native reader; Sorani dates show English month names
-(the shared formatter has no `ckb` month data).
+Found in the browser and fixed: (1) a hero photo that fails before hydration showed the blurred placeholder in a
+broken-image frame (onError never fires before hydration) — `pictureFailed` on mount; (2) the intro's Xbox tile showed
+the back of the console with its ports (the tile stepped away from the corner's picture to the next "angle") — the
+intro's tiles now use the page tiles' pictures (`tileArt`); (3) the bottom of the page doubled the section gap above
+the footer (144px at 1440: the page's own bottom padding + the shell footer's margin) — the page keeps only its top
+16px; (4) a platform with 1–2 new arrivals could become the chip the shelf starts on, and the shelf and every chip
+vanished — chips and focus now need `MIN_SHELF` items. Tests: `tests/home.test.ts` 38 (resolveFocus fixture moved to
+real shelf sizes on purpose; new: short shelves never focused, `pictureFailed`, `tileArt` never a console's back).
+Screens and scripts: `…/scratchpad/ux/after/P1-home-review/`, `…/scratchpad/work/pages-P1-home-review/tools/`.

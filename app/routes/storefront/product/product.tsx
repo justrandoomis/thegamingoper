@@ -1,69 +1,74 @@
 /**
- * /p/:slug — the product page (brief §3.7–3.8; DESIGN.md §8.4 phone, §8.10 desktop, §8.11 tablet, §9.6 gallery).
+ * /p/:slug — the product page (design v2 spec §6.7; brief §3.7–3.8).
  *
- *   phones (< 768)   the Lit Stage edge to edge under the header (back / cart orbs on it), then the info on the floor,
- *                    the buy bar pinned to the bottom edge in place of the tab bar (handle + <TaskBar>)
- *   768–1023         the same with the stage inside the page column
- *   ≥ 1024           7 + 5: the stage sticky at the inline end, the info column at the start with the buy controls in
- *                    it (no bottom bar); from 1200 the header's cart orb is the flight target
+ *   phones (< 768)   the stage full bleed and square (1:1) under the header, its thumbnails below it; then the buy box:
+ *                    platform and kind · h1 · one fact line · price + demo tag · stock and delivery · the payment
+ *                    sentence · the versions (each with its own price) · المفضلة · قارن · مشاركة · the facts card ·
+ *                    «قبل أن تطلب»; then the reading part. The BUY BAR replaces the tab bar at the bottom: price and
+ *                    version at the start, «أضف إلى السلة» at the end — «✓ في السلة» + «عرض السلة (n)» after an add.
+ *   768–1023         one column, the stage 4:3 with --r-xl, the buy bar.
+ *   ≥ 1024           7 + 5: the gallery sticky at the inline START, the buy box at the inline end with the buy controls
+ *                    (stepper + «أضف إلى السلة») after the versions; no bottom bar. The breadcrumbs above both.
  *
  * Data: getProductDetail (variants with stock STATES, release dates, pictures, specs, game facts, store-set contents,
- * related products, warranty and delivery facts) and getReviewSummary (approved verified-purchase reviews only).
- * The chosen variant is `?v=<sku>` (./useVariant). Unknown, unpublished or variant-less slugs answer 404 inside the
- * shell; a slug in other letter case redirects to the canonical one.
+ * warranty and delivery facts) and getReviewSummary (approved verified-purchase reviews only — nothing shows until
+ * real ones exist). The payment switches come from settings (the layout's shell data); the TamTam wallet is named only
+ * to a signed-in shopper. The chosen variant is `?v=<sku>` (./useVariant: without it the page opens on the default
+ * version, or on the first orderable one when the default is sold out). Unknown, unpublished or variant-less slugs
+ * answer 404 inside the shell; a slug in other letter case redirects to the canonical one.
  *
- * Cross-area pieces (integration pass, ./components/Slots): "يعمل مع" from the devices area's
- * getCompatibilityForProduct; the device hub row link for a product that IS a device; the devices area's
- * compatibility-checked recommendation shelves (streamed — they replace the raw editorial "related" links, which had no
- * compatibility or stock check); the heart's starting state from the account area's wishlist; the catalog's compare
+ * Cross-area pieces (./components/Slots): "يعمل مع" from the devices area's getCompatibilityForProduct; the device hub
+ * row link for a product that IS a device; the devices area's compatibility-checked recommendation shelves (streamed —
+ * «أكمل تجهيزك», alternatives); the heart's starting state from the account area's wishlist; the catalog's compare
  * key. Once the page is on screen, and only with consent, the "view" signal goes to /api/events and the view to the
- * shopper's ONE recently-viewed list (home/personal → recordProductView: the device for a guest, the account when
- * signed in).
+ * shopper's ONE recently-viewed list (home/personal → recordProductView).
  */
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { data, redirect, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/product";
 import { productShareImage } from "~/art";
 import { messagesFor } from "~/i18n/i18n.server";
-import { useLocale } from "~/i18n/react";
+import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import { makeT, type MessageTree } from "~/i18n/translate";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "~/lib/locales";
 import { formatMoney } from "~/lib/money";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { kindLabelOf } from "~/server/services/catalog/card-facts";
 import { getProductDetail } from "~/server/services/catalog/product.server";
-import { galleryFor } from "~/server/services/catalog/product-types";
+import { galleryFor, type ProductDetail } from "~/server/services/catalog/product-types";
 import { getCompatibilityForProduct } from "~/server/services/compatibility.server";
 import { getDeviceLink } from "~/server/services/devices.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { getReviewSummary } from "~/server/services/reviews.server";
 import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
-import { CompareToggle } from "~/routes/storefront/catalog/CompareToggle";
 import { sendRecommendationEvent } from "~/routes/storefront/devices/components/signals";
 import { readConsent, recordProductView } from "~/routes/storefront/home/personal";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
-import { TaskBar } from "~/routes/storefront/shell/TabBar";
-import type { ShellHandle } from "~/routes/storefront/shell/types";
-import { BuyControls } from "~/ui/AddToCartKey";
+import type { ShellData, ShellHandle } from "~/routes/storefront/shell/types";
+import { BuyBar, BuyControls } from "~/ui/AddToCartKey";
+import { BidiText } from "~/ui/BidiText";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
+import { cx } from "~/ui/cx";
 import { Gallery } from "~/ui/Gallery";
+import { useOnline } from "~/ui/OfflineBanner";
 import { PlatformLabel } from "~/ui/PlatformLed";
-import { BidiText } from "~/ui/ProductCard";
 import { Tag } from "~/ui/Tag";
-import { WishlistKey } from "~/ui/WishlistKey";
-import { Credits, GameFacts, Highlights, InTheBox, Notes, Section, Specs, VariantNote } from "./components/Details";
+import { TextLink } from "~/ui/TextLink";
+import { SecondaryActions } from "./components/Actions";
+import { About, BeforeYouOrder, boxPhoto, GameFacts, Highlights, InTheBox, Specs } from "./components/Details";
+import { FactsCard, PaymentLine, paymentMethods } from "./components/Facts";
 import { MixedText } from "./components/MixedText";
-import { SetContents } from "./components/SetContents";
-import { Facts } from "./components/Facts";
 import { PriceBlock } from "./components/PriceBlock";
 import { Reviews } from "./components/Reviews";
-import { CompatibilitySlot, DeviceHubSlot, RecommendationsSlot } from "./components/Slots";
-import { StageOrbs } from "./components/StageOrbs";
+import { SetContents } from "./components/SetContents";
+import { alternativesPath, CompatibilitySlot, DeviceHubSlot, RecommendationsSlot } from "./components/Slots";
 import { VariantPicker } from "./components/VariantPicker";
 import { useProductT } from "./i18n";
 import { jsonForScript, productJsonLd } from "./jsonld";
+import { factLine, factRow, proseWithoutPreorder, withoutPreorder } from "./text";
 import { onlyVariantChanged, useVariantInUrl } from "./useVariant";
 
 import "./product.css";
@@ -73,7 +78,9 @@ export async function loader({ params, context, request }: Route.LoaderArgs) {
   const db = getDb();
   // The related products come as the devices area's compatibility-checked shelves below, not as the raw links.
   const [product, session] = await Promise.all([getProductDetail(db, ctx.locale, params.slug, { now: ctx.now, related: false }), getCustomer(ctx, db)]);
-  if (!product) throw data({ error: "not_found" }, { status: 404 });
+  // A missing product (spec §6.16): the shell's 404 panel — `what` and `query` (the slug as words) let it say «هذا المنتج
+  // لم يعد متوفراً أو تغيّر رابطه» and prefill its search once it draws the product variant (requested of the shell).
+  if (!product) throw data({ error: "not_found", what: "product", query: params.slug.replace(/[-_]+/g, " ").trim().slice(0, 80) }, { status: 404 });
   if (product.slug !== params.slug) {
     // "/p/DualSense" → "/p/dualsense": one address per product (the chosen variant travels along).
     const v = new URL(request.url).searchParams.get("v");
@@ -100,7 +107,7 @@ export async function loader({ params, context, request }: Route.LoaderArgs) {
   };
 }
 
-/** The product page has its own bottom bar (the buy bar): the tab bar gives way (DESIGN.md §8 sticky rule). */
+/** The product page has its own bottom bar (the buy bar): the tab bar gives way (one bar per edge, spec §5.1). */
 export const handle = { shell: { tabBar: false } } satisfies ShellHandle;
 
 /** A change of `?v=` only is a choice on this page — every variant is already here, so the loader is not asked again. */
@@ -130,20 +137,52 @@ export const meta: Route.MetaFunction = (args) => {
   });
   return shellMeta(args, {
     title: product.seo.title ?? product.name,
-    description: product.seo.description ?? clip(product.description ?? product.short ?? fallback),
+    description: product.seo.description ?? clip(proseWithoutPreorder(product.description) ?? factLine(product.short) ?? fallback),
     image: productShareImage(product.slug)?.src ?? null,
     type: "product",
     noindex: product.seo.noindex,
   });
 };
 
-type OriginData = { shell?: { publicOrigin?: string } };
+type LayoutData = { shell?: Pick<ShellData, "publicOrigin" | "payments"> };
+
+/** A digital code (gift card, subscription): its own facts, no delivery fee (spec §6.7 states, §13 row 11). Pure. */
+export const isDigital = (product: Pick<ProductDetail, "kind" | "mediaFormat">) => product.kind === "digital" || product.mediaFormat === "digital";
+
+/**
+ * The buy bar's real height on :root as `--shell-taskbar-h` — the shell's task-bar contract (shell.css turns it into
+ * --shell-bottom: the page's bottom padding, the toasts' place and the global scroll padding). The bar grows from 72px
+ * to three lines after an add («✓ في السلة» over the price), and on tablets the larger price makes it taller: without
+ * this, a focused control could sit under it (WCAG 2.4.11). `host` wraps the bar; its first child is the bar itself
+ * (0px from 1024, where the bar is not drawn). A value another bar set meanwhile is left alone.
+ */
+function usePublishedBarHeight(host: RefObject<HTMLElement | null>) {
+  useLayoutEffect(() => {
+    const bar = host.current?.firstElementChild;
+    if (!(bar instanceof HTMLElement)) return;
+    const root = document.documentElement;
+    let published = "";
+    const publish = () => {
+      published = `${Math.round(bar.getBoundingClientRect().height)}px`;
+      root.style.setProperty("--shell-taskbar-h", published);
+    };
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(bar);
+    return () => {
+      observer.disconnect();
+      if (root.style.getPropertyValue("--shell-taskbar-h") === published) root.style.removeProperty("--shell-taskbar-h");
+    };
+  }, [host]);
+}
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { product, reviews, storeMode, compatibility, wished, device, recommendations } = loaderData;
   const t = useProductT();
+  const shop = useT("ui-shop");
   const locale = useLocale();
-  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as OriginData | undefined;
+  const online = useOnline();
+  const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as LayoutData | undefined;
   const root = useRouteLoaderData("root") as { origin?: string; customer?: { id: string } | null } | undefined;
   const origin = layout?.shell?.publicOrigin || root?.origin || "";
   const signedIn = Boolean(root?.customer);
@@ -162,9 +201,27 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { variant, choose } = useVariantInUrl(product);
   const gallery = galleryFor(product, variant);
   const stage = useRef<HTMLDivElement>(null);
+  const barHost = useRef<HTMLDivElement>(null);
+  usePublishedBarHeight(barHost);
   const reasonId = useId();
+  const offlineId = useId();
+  // a failed add from the buy bar: its sentence takes the bar's info line (the error toast carries «أعد المحاولة»)
+  const [barMessage, setBarMessage] = useState<string | null>(null);
+  useEffect(() => setBarMessage(null), [variant.id]);
 
-  // A new set of pictures (another colour) starts at its first one; the picture swaps with the stage's inflate.
+  // The gallery stays put while the language changes (docs/MOTION.md "anchors") — below 1024 only, where it is full
+  // width: from 1024 it sits at the inline start and would have to cross the page.
+  useEffect(() => {
+    const element = stage.current;
+    if (!element) return;
+    const narrow = window.matchMedia("(max-width: 63.99rem)");
+    const apply = () => element.toggleAttribute("data-motion-anchor", narrow.matches);
+    apply();
+    narrow.addEventListener("change", apply);
+    return () => narrow.removeEventListener("change", apply);
+  }, []);
+
+  // A new set of pictures (another colour) starts at its first one.
   const pictures = gallery.images.map((image) => image.artKey ?? image.mediaKey).join("|");
   const [index, setIndex] = useState(0);
   const [shown, setShown] = useState(pictures);
@@ -181,51 +238,60 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
     })),
     { label: product.name },
   ];
-  const backTo = product.categories.length > 0 ? `/c/${product.categories[product.categories.length - 1].slug}` : "/";
-  const platforms = product.platform ? [product.platform] : product.forPlatforms;
-  const comingSoon = variant.releaseAt !== null || product.releaseAt !== null;
+  const platforms = (product.platform ? [product.platform] : product.forPlatforms).slice(0, 2);
+  const soon = !variant.orderable && variant.releaseAt !== null;
+  const soldOut = !variant.orderable && !soon;
+  const digital = isDigital(product);
+  const facts = factRow(product.short);
+  // sold out: «شاهد بدائل» opens the product's own category, which lists what is in stock first (the page's shelves
+  // are mostly add-ons for it, or none at all)
+  const alternatives = alternativesPath(product);
+  const methods = paymentMethods(layout?.shell?.payments, signedIn);
   const share = productShareImage(product.slug);
+  // No connection: the add keys go flat and say why (spec §6.17); the server render always says online.
+  const offline = !online && variant.orderable;
+  const describedBy = offline ? offlineId : variant.orderable ? undefined : reasonId;
 
   const buy = {
     item: { variantId: variant.id },
     name: product.name,
-    stock: variant.orderable ? variant.stock : ("out_of_stock" as const),
+    stock: variant.orderable ? variant.stock : soon ? ("preorder" as const) : ("out_of_stock" as const),
     image: gallery.images[0] ?? null,
     optionsLabel: product.variants.length > 1 ? variant.label : null,
     source: () => stage.current?.querySelector(".stage__slot img") ?? stage.current,
-    "aria-describedby": variant.orderable ? undefined : reasonId,
+    disabled: offline,
+    "aria-describedby": describedBy,
   };
 
   return (
     <div className="pp" data-product={product.id} data-variant={variant.sku}>
-      <div className="page grid gap-x-10 gap-y-6 lg:grid-cols-12 lg:items-start lg:pt-6">
-        {/* The stage: the card's niche grown into it (shared element product-image:<id>), lit by the variant's platform. */}
-        <div ref={stage} className="pp-stage min-w-0 lg:sticky lg:col-span-7 lg:col-start-6 lg:row-start-1">
+      {/* Phones: tight steps between the head blocks, so the price, the demo tag and the stock-and-delivery line sit above
+          the buy bar on first load (spec §6.7 target, y ≤ 760 at 390×844) for names up to two lines. */}
+      <div className="page grid gap-x-8 gap-y-3 md:gap-y-5 lg:grid-cols-12 lg:items-start lg:gap-y-6 2xl:gap-x-12">
+        <Breadcrumbs items={crumbs} jsonLd={origin ? { origin } : undefined} className="lg:col-span-12" />
+
+        {/* The gallery: the card's well grows into this stage (shared element product-image:<id>). */}
+        <div ref={stage} className="pp-gallery min-w-0 lg:col-span-7">
           <Gallery
             name={product.name}
-            items={gallery.images.map((image) => ({ image }))}
-            gel={variant.gel}
+            // each view names itself by its own description (§7.8: «Nintendo Switch 2 من الأمام…»), not by a kind word
+            items={gallery.images.map((image) => ({ image, caption: image.alt || undefined }))}
             sharedName={`product-image:${product.id}`}
             index={index}
             onIndexChange={setIndex}
             priority
-            flush
-            top={<StageOrbs backTo={backTo} className="xl:hidden" />}
           />
           {gallery.borrowed ? (
-            <p className="gutter mt-2 type-caption text-ink-2 md:px-1" aria-live="polite">
-              {t("picker.borrowed", {
-                label: gallery.from?.label ?? product.name,
-              })}
+            <p className="mt-2 type-xs text-ink-2" aria-live="polite">
+              {t("picker.borrowed", { label: gallery.from?.label ?? product.name })}
             </p>
           ) : null}
         </div>
 
-        <div className="grid min-w-0 content-start gap-6 lg:col-span-5 lg:col-start-1 lg:row-start-1">
-          <Breadcrumbs items={crumbs} jsonLd={origin ? { origin } : undefined} />
-          <div className="grid gap-3">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              {comingSoon ? <Tag kind="preorder">{t("tagSoon")}</Tag> : <Tag kind="new" />}
+        <div className="pp-buy grid min-w-0 content-start gap-3 md:gap-5 lg:col-span-5">
+          <div className="grid gap-1 md:gap-2">
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs-strong text-ink-2" data-kind-line="">
+              {soon ? <Tag kind="soon" /> : product.isNew && variant.orderable ? <Tag kind="new" /> : null}
               {platforms.map((platform) =>
                 platform.gel ? (
                   <PlatformLabel key={platform.slug} platform={platform.gel} />
@@ -235,80 +301,106 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                   </span>
                 ),
               )}
-            </div>
-            <div className="flex items-start justify-between gap-3">
-              <h1 className="min-w-0 type-title text-ink">
-                <BidiText text={product.name} />
-              </h1>
-              {/* The heart starts as the account / guest list says (wishedAmong in the loader). */}
-              <WishlistKey key={product.id} productId={product.id} name={product.name} initial={wished} className="shrink-0" />
-            </div>
-            {product.short ? (
-              <p className="type-body text-ink-2">
-                <MixedText text={product.short} />
+              {platforms.length > 0 ? <span aria-hidden="true">·</span> : null}
+              <span>{kindLabelOf({ kind: product.kind, families: [] }, locale)}</span>
+            </p>
+            <h1 className="type-h1 text-ink">
+              <BidiText text={product.name} />
+            </h1>
+            {/* ONE fact line (§6.7 item 5): the second fact shows only when it fits beside the first (.pp-facts); a first
+                fact longer than a phone line is shown alone and wraps (text.ts factRow) */}
+            {facts.facts.length > 0 ? (
+              <p className={cx("pp-facts type-sm text-ink-2", facts.wrap && "pp-facts--wrap")} data-facts-line="">
+                {facts.facts.map((fact, index) => (
+                  <span key={index}>
+                    {index > 0 ? "· " : null}
+                    <MixedText text={fact} />
+                  </span>
+                ))}
               </p>
             ) : null}
           </div>
 
-          <PriceBlock
-            variant={variant}
-            variants={product.variants}
-            delivery={product.delivery}
-            lifecycle={product.lifecycle}
-            isDemo={product.isDemo}
-            reasonId={reasonId}
-          />
+          <div className="grid gap-3">
+            <PriceBlock
+              variant={variant}
+              variants={product.variants}
+              delivery={product.delivery}
+              lifecycle={product.lifecycle}
+              isDemo={product.isDemo}
+              digital={digital}
+              reasonId={reasonId}
+              offline={offline}
+              offlineId={offlineId}
+            />
+            <PaymentLine methods={methods} />
+          </div>
 
-          {product.variants.length > 1 ? (
-            <div className="grid gap-2">
-              <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={choose} />
-              <VariantNote note={variant.note} />
+          {product.variants.length > 1 ? <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={choose} /> : null}
+
+          {/* ≥ 1024: the buy controls in the buy box (phones and tablets: the buy bar). Coming soon: no key at all. */}
+          {soon ? null : (
+            <div className="hidden lg:grid lg:gap-2">
+              <BuyControls {...buy} />
+              {soldOut ? (
+                <TextLink as={LocaleLink} to={alternatives} className="justify-self-start">
+                  {shop("add.alternatives")}
+                </TextLink>
+              ) : null}
             </div>
-          ) : (
-            <VariantNote note={variant.note} />
           )}
 
-          {/* ≥ 1024: the buy controls live in the info column as a flat panel (DESIGN.md §8.10). */}
-          <div className="hidden lg:block">
-            <BuyControls {...buy} />
-          </div>
+          <SecondaryActions product={{ id: product.id, kind: product.kind, name: product.name }} wished={wished} />
 
-          {/* "Add to compare" (catalog area): this device's compare list; the link to /compare follows from two products. */}
-          <CompareToggle product={{ id: product.id, kind: product.kind, name: product.name }} />
-
-          <CompatibilitySlot rows={compatibility} />
-          <Highlights items={product.highlights} />
-          {product.game ? <GameFacts game={product.game} ageRating={product.ageRating} /> : null}
-          <Facts makerWarranty={product.makerWarranty} storeWarrantyMonths={product.storeWarrantyMonths} returnsWindowDays={product.returnsWindowDays} />
+          <FactsCard
+            delivery={product.delivery}
+            methods={methods}
+            returnsWindowDays={product.returnsWindowDays}
+            makerWarranty={product.makerWarranty}
+            storeWarrantyMonths={product.storeWarrantyMonths}
+            digital={digital}
+          />
+          <BeforeYouOrder text={proseWithoutPreorder(product.notes)} />
         </div>
       </div>
 
-      <div className="page mt-12 grid gap-12">
-        {product.description ? (
-          <Section title={t("about")}>
-            <p className="max-w-[70ch] type-body text-ink">
-              <MixedText text={product.description} />
-            </p>
-          </Section>
-        ) : null}
-        <div className="grid gap-12 lg:grid-cols-2">
-          <Specs specs={product.specs} variant={variant} />
-          <div className="grid content-start gap-12">
+      {/* Phones and tablets: the buy bar in place of the tab bar (one bar per edge). It is the shell's task bar
+          (`.shell-taskbar`: the tab bar gives way, and its measured height becomes --shell-bottom). Fixed on screen, it
+          sits here in the reading order — right after the buy box, before the long reading part — as a named region. */}
+      <div ref={barHost} role="region" aria-label={t("bar.label", { name: product.name })} className="lg:hidden">
+        <BuyBar
+          {...buy}
+          className="shell-taskbar p-0 lg:hidden"
+          priceIqd={variant.priceIqd}
+          releaseAt={soon ? variant.releaseAt : null}
+          alternativesHref={localePath(alternatives, locale)}
+          message="none"
+          onMessage={setBarMessage}
+          optionsLabel={offline ? t("status.offlineShort") : (barMessage ?? buy.optionsLabel)}
+        />
+      </div>
+
+      {/* The reading part: what it is, what it works with, what it is made of, what is in the box. */}
+      <div className="page mt-(--gap-section) grid gap-(--gap-section)">
+        <div className="pp-duo">
+          <div className="grid content-start gap-(--gap-row)">
+            <Highlights items={withoutPreorder(product.highlights)} />
+            <About text={proseWithoutPreorder(product.description)} />
+          </div>
+          <CompatibilitySlot rows={compatibility} />
+        </div>
+        {product.game ? <GameFacts game={product.game} ageRating={product.ageRating} className="max-w-[48rem]" /> : null}
+        <div className="pp-duo">
+          <Specs specs={product.specs} variant={variant} sources={product.sources} brand={product.brand} />
+          <div className="grid content-start gap-(--gap-row)">
             {variant.bundle ? <SetContents components={variant.bundle} /> : null}
-            <InTheBox items={product.inTheBox} />
-            <Notes text={product.notes} />
+            <InTheBox items={withoutPreorder(product.inTheBox)} image={boxPhoto(product.images)} />
           </div>
         </div>
-        <DeviceHubSlot device={device} />
+        <DeviceHubSlot device={device} className="max-w-[40rem]" />
         <RecommendationsSlot key={product.id} result={recommendations} />
         <Reviews summary={reviews} />
-        <Credits credits={product.credits} sources={product.sources} />
       </div>
-
-      {/* Phones and tablets: the buy bar in place of the tab bar (one bar per edge). */}
-      <TaskBar aria-label={t("buy.label")} className="lg:hidden">
-        <BuyControls {...buy} className="mx-auto max-w-[40rem]" />
-      </TaskBar>
 
       {origin ? (
         <script

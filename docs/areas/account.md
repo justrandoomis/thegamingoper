@@ -1,59 +1,133 @@
 # Account area
 
-Owner: account. Sign-in and sign-up, the customer's account pages, favourites (brief §3.10, §4, §6, §12, §14;
-DESIGN.md §8, §9.16, §9.19, §11). Files: `app/routes/storefront/account/**`, `app/routes/api/wishlist.ts` (+ its line in
-`app/routes/api/_routes.ts`), `app/server/services/account/**`, `app/server/services/wishlist.server.ts`,
-`app/i18n/messages/account.ts`, `tests/account.test.ts`, `tests/wishlist.test.ts`.
-Orders, payments and the wallet ledger are the commerce core's (CONTRACTS §1): read through it, never written here.
+Owner: account. Sign-in and sign-up, the customer's account pages, favourites (brief §3.10, §4, §6, §12, §14; Design
+System v2 spec §6.12, §6.11 for the order page, §6.17 states, §9 copy). Files: `app/routes/storefront/account/**`
+(routes, `components/`, `account.css`), `app/routes/api/wishlist.ts` (+ its line in `app/routes/api/_routes.ts`),
+`app/server/services/account/**`, `app/server/services/wishlist.server.ts`, `app/i18n/messages/account.ts`,
+`tests/account.test.ts`, `tests/wishlist.test.ts`. Orders, payments and the wallet ledger are the commerce core's
+(CONTRACTS §1): read through it, never written here.
+
+## Design System v2 (stage 3, 2026-11-12) — what changed
+
+The area was rebuilt on the v2 kit and shell (no retired kit names left: no `quiet`/`ink`/`commit` keys, no `shadow-e1`,
+`bg-well`, `font-medium`, `rounded-md`; lint 0 findings). Page CSS lives in `account.css` (components layer, tokens and
+logical properties only): the frame, the grouped section list, row lists, quick tiles, the first-steps checklist, the
+order rail and the sign-in card. Everything else is the kit (`.panel`, `.callout`, `.form-alert`, `.sechead`, `.cards`,
+`.empty`, `Band kind="wallet"`, `OrderSummary`, `ProofUploader`, `GovernoratePicker`, `Segmented`, `Chip`, `Switch` …).
+
+- **Sign in / sign up / reset** (`components/AuthCard.tsx`): one centred 480px paper card (h1, one line, the form, the
+  switch to the other page) and the guest note under it «يمكنك الطلب بدون حساب، وتتبّع طلبك برقمه ورقم موبايلك.» with
+  «تتبّع طلبك» · «تابع التسوق». The submit is the view's one red primary. Sign-up's offers box carries the checkout's
+  sentence «أرسل لي العروض على هذا الرقم» (unticked). Reset: the code flow shows only with a text-message provider
+  (`codeDelivery` = "provider"); today the page says reset codes cannot be sent yet («لا نرسل رموز الاستعادة بعد») and its
+  primary is «تحدّث مع موظف» (`/support/assistant?handoff=1#handoff`) — it promises no reset: no staff tool resets a
+  customer's password — in development too (no "development mode" text on customer pages, §9.5). A sign-up refusal names
+  every wrong field at once (the route adds the number's error, which the server core checks only after the others).
+- **Frame** (`layout.tsx`): from 1024 a 264px sticky side column with the grouped section list — «نظرة عامة», then
+  الطلبات والمرتجعات (طلباتي · الإرجاع · الضمان) · المال (المحفظة) · الحساب (العناوين · أجهزتي · المفضلة · الإشعارات ·
+  الملف الشخصي · الإعدادات) — each row with its fact («طلبان قيد التنفيذ», the balance, «عنوان واحد»), the current one
+  with `aria-current`, a niche fill and an ink bar; «سجّل الخروج» is a quiet link at the end (a POST form). Below 1024 the
+  overview is the list and every section page has a «حسابي» back link. `data-motion-persist="float"` keeps the column
+  still while sections push sideways.
+- **Overview** (`overview.tsx`): a header card (initial or user glyph on niche, h1 «أهلاً {name}», the masked number,
+  «معنا منذ …»); four quick tiles with red-tint icon tiles (طلباتي · المحفظة · العناوين · أجهزتي) and their counts; the
+  first-steps checklist «ابدأ من هنا» (add the first address, save your device; hidden once both are done — the
+  account's empty state); «آخر طلب» (one order row + «كل الطلبات»); on phones the grouped list + «سجّل الخروج»;
+  «شاهدتَ مؤخراً» as a kit rail only with consent and items (with «امسح السجل»). The number's verify chip shows only when
+  it is confirmed («رقم مؤكد») or a provider can confirm it («أكّد رقمك»); an unconfirmable "unverified" is not shown.
+- **Orders** (`orders.tsx`, `components/OrderBits.tsx`): one paper panel of rows — 56px well, the order number, the
+  product's name (option dropped) and «قطعتان», status (dot + words), date, total. The whole row rises into the order.
+  «اعرض طلبات أقدم» only when there are more. Empty: the mascot, «لا طلبات بعد», primary «تصفّح المتجر», «تتبّع طلبك».
+- **Order** (`order.tsx`, the §6.11 template): «رقم الطلب» + the code (type-code) + copy key + «طلب تجريبي»; «حالة الطلب»
+  with the five real states (استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم: done = ink + check, current = ink disc
+  with a paper core and `aria-current="step"`, upcoming = rings; a cancelled / returned order says so instead); the next
+  step by payment — COD «سنؤكد طلبك قبل تجهيزه. تدفع {total} نقداً عند الاستلام.», a transfer: the store's card / Zain
+  number (type-code, grouped, copy keys), the deadline and the ONE primary «ارفع صورة الحوالة» (→ checkout's
+  `/order/:ref`, which opens for the signed-in owner without a token), a photo under review / rejected / a missed
+  deadline in words; one `OrderSummary` with the lines (name + option value + pieces + warranty) and «الإجمالي» as the
+  one red figure, plus the demo line; payment and delivery cards side by side from 1024 (the preference note «وقت مفضّل
+  وليس موعداً مؤكداً.»); refunds; «سجلّ الطلب» as a disclosure; «سؤال عن طلبك؟» → «تحدّث مع موظف».
+- **Wallet** (`wallet.tsx`): `WalletBalance` on the wallet band (crimson; a cabinet in dark) with «اشحن الرصيد» (only
+  when a method is on), pending top-ups on their own line, the ledger rows; «طلبات الشحن» as rows (status in words,
+  amount, private proof link, «ألغِ الطلب» → confirm dialog). The top-up is its own step `?topup=1` (not a form under
+  the balance): three steps, method option cards, «حوّل إلى» with copy keys, the fraud callout, amount, reference, the
+  proof uploader, primary «أرسل طلب الشحن»; on success a toast and back to the wallet, the request «بانتظار التحقق».
+- **Addresses** (`addresses.tsx`): cards (label, «العنوان الافتراضي» tag, recipient · number, place, address, notes;
+  «عدّل» · «اجعله الافتراضي» · «احذف» → confirm dialog) + primary «أضف عنواناً». The form is its own step (`?new=1`,
+  `?edit=<id>`) in one card: the kit's `GovernoratePicker` (the flat fee on top, as in checkout) and the districts of
+  the chosen governorate, area, address, notes, default; an error summary linking to the fields on a refused save.
+  Saved → toast (the form submits with `replace`, so Back does not reopen it). Without script the picker is hidden and a
+  native governorate select inside `<noscript>` is the field, with every district listed under its governorate.
+- **Devices**: «أجهزتك» (rows linking to each hub) and «اختر أجهزتك» by platform (dot label), each device with the
+  «أملكه» chip (`aria-pressed`, saved at once, optimistic); without script, a plain form with a held toggle key per
+  device. **Returns / warranties / notifications**: rows and cards in the same panels; returns ask a person (no return
+  form exists; the policy is the link inside the lead sentence); warranty claims → `/support/repair`.
+- **Profile**: one card — the number (read-only), name, e-mail, the messages language as a `Segmented` control (native
+  radios without script); saved → toast. **Settings**: one card width — «الخصوصية والعروض» as switches that save on
+  their own with a toast (each consent recorded only when touched: intent `consent`; `consents` stays for the no-script
+  form; the viewing-history switch says it also shapes suggestions — the personal shelves read it); channels only for
+  configured providers (switches that save on their own, a `channels` form without script) and phone confirmation only
+  with a provider (none today: both hidden, no inert boxes); password (primary «غيّر كلمة المرور»); signed-in devices
+  (one / all others).
+- **No-script fallbacks** (`components/useHydrated.ts`): a kit control that needs script takes the field's `name` only
+  once script runs (`useHydrated`, false in the server HTML and during hydration); until then the same field is a native
+  control inside `<noscript>`, and the script control hides under `noscript:` (`@media (scripting: none)`). Never both:
+  the form sends one value per field. Everything that worked without script before v2 still does (sign in / up, address
+  add / edit, own a device, profile language, consents, favourites «أزل»).
+- **Focus after a control removes itself** (`rescueFocus` in `components/FormBits.tsx`): a cancelled top-up, a deleted
+  address, «اجعله الافتراضي», a removed favourite, «علّمه كمقروء» / «علّم الكل كمقروء», a signed-out device and «امسح
+  السجل» each move lost focus (never focus the shopper already moved) to the nearest stable thing — the request row, the
+  next card (else the title), the card's name, the notification, the card's heading, the cleared sentence — instead of
+  leaving it on `<body>` (WCAG 2.4.3).
+- **Favourites** (`/wishlist`): the catalogue's cards (`.cards--5`, the pinned foot keeps baselines aligned) with «أزل»
+  under each (optimistic, undo toast), the guest note «مفضلتك محفوظة على هذا الجهاز…» with sign-in, products no longer
+  sold counted.
 
 ## Routes
 
 | Path | What |
 |---|---|
-| `/account/login` | Phone + password (`signInCustomer`). One sentence for a wrong password or an unknown number; rate limits say how long to wait. `?next=` (safe, locale-less) comes back after sign-in; a signed-in visitor goes straight there — so checkout never asks twice. Panel: no account is needed to order (track an order, keep shopping) |
-| `/account/signup` | Name (optional), phone, password, an UNTICKED offers box (a consent row only when ticked), "your number stays unconfirmed: no SMS yet", terms/privacy links |
-| `/account/forgot` | Password reset by code — the SMS boundary: production says codes cannot be sent and links `/contact`; development creates the code, shows it labelled "وضع التطوير فقط", resets and signs every device out |
-| `POST /account/logout` | Ends this session, drops `tt_cart`/`tt_wish` (they point at the account's things now) → `/account/login?signedout=1`. GET only redirects |
-| `/account` | Greeting, wallet balance (+ top-ups under review), open orders, latest order, unconfirmed-number line, the section list (phones), recently viewed (consent-aware), sign out |
-| `/account/orders`, `/orders/:ref` | `listOrdersForCustomer` (10 at a time, "show more" appends) · `getOrderForCustomer` (another customer's ref = 404 in the account frame): statuses in words, payment and what to do now (transfer details, deadline, rejected-proof reason; upload happens on the checkout area's `/order/:ref`), lines with warranty as sold, `OrderSummary` of the server's totals, delivery with the preference disclaimer, shipments, refunds, help and "ask for a return" links to support |
-| `/account/wallet` | `WalletBalance` = ledger sum + ledger (paged) + pending top-ups; top-up REQUEST: method (only those switched on), the store's details from settings with copy keys, fraud note, amount (Arabic digits understood), reference, `ProofUploader` → private file → request `pending_verification`; list with status, the store's reject reason, private proof link, cancel (confirm dialog) |
-| `POST /account/wallet/proof`, `GET …/proof/:fileId` | Resource route: upload pipeline → private file `wallet_topup_proof` → `{ ok, fileId, previewUrl }`; the image is served to its uploader only (404 otherwise), `no-store` |
-| `/account/addresses` | Cards (default first) + form in the URL (`?new=1`, `?edit=<id>`): label, recipient, phone, governorate → districts of that governorate (the shipping service's lists; all, grouped, without script), area, address, notes, default; every field error at once. Delete asks first |
-| `/account/devices` | Published device models by platform (LED labels); each name links to its hub `/device/<slug>`; "أملكه" is a held toggle (announced; a refusal says why) |
-| `/account/returns` | General window (`returns.window_days`) + policy link, how to ask (support with the reference — no return form exists), delivered orders inside the window, RMAs staff opened (no staff notes) |
-| `/account/warranties` | Warranty rows started at delivery, state from the dates, claim → `/support/repair?order=` |
-| `/account/notifications` | In-account messages (paged), read one / all. Nothing produces them yet |
-| `/account/profile` | Name, e-mail, language of store messages (audited); phone shown masked with its state, not editable (needs a code) |
-| `/account/settings` | Order-message channels (stored; "no provider is connected" said plainly), offers + personalization consents (append-only, never pre-ticked; the device's `tt_consent` follows via home's `saveConsent`), phone confirmation (same boundary as reset), password change (other devices signed out), signed-in devices (one / all others). Since 2026-11-11 (server pass) a password change or a confirmed phone number moves THIS device to a new session token: the action's answer carries the new `tt_sid` (set by `changeCustomerPassword` / `confirmCustomerPhone` on `ctx`, no change at the call sites), the old cookie and any copy of it stop working; the device keeps its "since" date |
-| `/wishlist` | Cards from the catalogue read layer, "remove" under each card + undo toast, products no longer sold counted not shown, guest note with sign-in |
-| `/api/wishlist` | GET `{ ok, ids }` · POST `intent=toggle\|add\|remove, productId` → `{ ok, wished, count }`; 400 / 404 / 409 `wishlist_full` / 429; what `~/ui/WishlistKey` calls |
+| `/account/login` | Phone + password (`signInCustomer`). One sentence for a wrong password or an unknown number; rate limits say how long to wait. `?next=` (safe, locale-less) comes back after sign-in; a signed-in visitor goes straight there — so checkout never asks twice |
+| `/account/signup` | Name (optional), phone, password, an UNTICKED offers box (a consent row only when ticked), terms/privacy links |
+| `/account/forgot` | Password reset by code — the SMS boundary: without a provider (today, everywhere) the page hands over to a person |
+| `POST /account/logout` | Ends this session, drops `tt_cart`/`tt_wish` → `/account/login?signedout=1`. GET only redirects |
+| `/account` | Header card, quick tiles, first steps, latest order, section list (phones), recently viewed (consent) |
+| `/account/orders`, `/orders/:ref` | `listOrdersForCustomer` (10 at a time) · `getOrderForCustomer` (another customer's ref = 404 in the account frame) |
+| `/account/wallet`, `?topup=1` | `WalletBalance` = ledger sum + ledger + pending top-ups; top-up REQUEST step (methods switched on, store details from settings, fraud note, amount, reference, `ProofUploader` → private file → `pending_verification`); requests with status, reject reason, private proof link, cancel |
+| `POST /account/wallet/proof`, `GET …/proof/:fileId` | Resource route: upload pipeline → private file `wallet_topup_proof` → `{ ok, fileId, previewUrl }`; served to its uploader only |
+| `/account/addresses`, `?new=1`, `?edit=<id>` | Cards + the form step; every field error at once; delete asks first |
+| `/account/devices` | Published device models by platform; «أملكه» chips; each name links to its hub |
+| `/account/returns`, `/account/warranties`, `/account/notifications` | Read-only lists (returns window, RMAs; warranties from delivery; notifications read one / all) |
+| `/account/profile`, `/account/settings` | Profile (audited); consents, channels (providers only), phone confirmation (provider only), password, sessions |
+| `/wishlist` | Favourites for guests and customers; `private, no-store` |
+| `/api/wishlist` | GET `{ ok, ids }` · POST `intent=toggle\|add\|remove, productId` → `{ ok, wished, count }`; what `~/ui/WishlistKey` calls |
 
-Every page: shell meta with `noindex`, no `<main>` (h1 first), `/account/*` is `no-store` (security headers) and
-`/wishlist` sets `private, no-store`. Signed-in pages share a layout (side section list from 1024px, `data-motion-persist`
-so it stays while sections push sideways; back link on phones) and every loader/action calls `requireSignedIn` itself.
-Navigation grammar: sections are push siblings (`handle.order` = their order), order detail rises, the entry pages are a
-push group. Strings: the `account` namespace; account error keys live under `account:errors.*` (the only copy: since
-2026-11-11 the shared `errors` namespace adopts them by import, so a screen outside this area can say them — keep
-`account:errors.*` exactly in step with `ACCOUNT_ERROR_KEYS`; `tests/commerce-money.test.ts` checks it), the rest come from
-`errors` — actions translate on the server (`errorT` looks in both) and return sentences, so `errors` never ships.
+Every page: shell meta with `noindex` (titles per step: «اشحن رصيدك», «عنوان جديد», «تعديل العنوان»), no `<main>` (h1
+first), `/account/*` is `no-store`, `/wishlist` `private, no-store`. Every loader/action calls `requireSignedIn` itself.
+Navigation grammar: sections are push siblings (`handle.order`), the order rises, the entry pages are a push group.
 
-## States (brief §12)
+## States (§6.17)
 
-Default · loading (keys spin in place; "show more" appends, no skeletons) · partial (products no longer sold counted;
-unpublished saved devices left out) · empty (orders, wallet, addresses, devices, notifications, returns, warranties,
-favourites — one sentence, one key; "دورك." only there) · offline (submit keys go flat with the reason) · validation
-(field sentences, values kept, focus on the form sentence) · API failure (sentence + nothing changed; loader failures
-render inside the account frame or the shell's panel) · success (notices / toasts) · pending review (top-ups, transfer
-proofs) · unauthorized (redirect to sign-in with `next`) · reduced motion (engine).
+| State | How it shows |
+|---|---|
+| Loading | keys spin in place (width kept); «اعرض المزيد» appends; no skeletons |
+| Empty | the overview's first-steps checklist; per page the kit's empty state with the mascot and one way on (orders, addresses, notifications, warranties, favourites); short lines inside sections |
+| Validation | the field sentences (values kept) and an error summary above the form linking to each field, focus on the first |
+| API failure | a refusal is one sentence above the form (focus on it) or beside the control (a consent switch goes back with its reason); a chip / default refusal comes back with a toast; a refused top-up cancel or address delete keeps its sentence in the dialog and reads the list again (a refused answer does not revalidate by itself, and another tab or staff may have changed it); a page that fails to load says so in the account frame with «أعد المحاولة» (the kit's offline wording when the device is offline); a missing order is «لم نجد هذا في حسابك» with «طلباتي» |
+| Offline | the shell's banner; submit keys go flat with «لا يوجد اتصال. أعد المحاولة عند عودة الاتصال.»; switches, chips and row actions are disabled with the same sentence (a fetcher request that cannot leave would end on the error panel) |
+| Success | a toast (saved address, profile, choice, cancelled request, signed-out device …) |
+| Pending review | «قيد المراجعة {amount}» on the wallet band, «بانتظار التحقق» on the request; a transfer photo under review on the order |
+| Unauthorised | a redirect to sign-in with `next` (and back after it) |
 
 ## Real, demo, boundary
 
-- Real: accounts and sessions (server core), addresses, saved devices, consents history, notification preferences,
+- Real: accounts and sessions (server core), addresses, saved devices, consent history, notification preferences,
   favourites (guest + account + merge), top-up requests with private proofs, reads of orders / wallet / warranties / RMAs.
-- Demo: everything the shell marks (prices, stock); orders placed in demo mode say so.
-- Boundary: no SMS/WhatsApp/e-mail provider (codes unavailable in production; channel choices stored, not delivered);
-  phone numbers stay unconfirmed; no storefront return form or warranty claim service (support links); approving or
-  rejecting top-ups is an admin job not built yet; nothing writes notifications yet.
+- Demo: everything the shell marks (prices, stock); orders placed in demo mode carry «طلب تجريبي» (the tag on the order
+  page; on rows only once the store is live) and the summary's demo line.
+- Boundary: no SMS/WhatsApp/e-mail provider (codes unavailable; channel and phone screens hidden until one exists;
+  choices stored, not delivered); numbers stay unconfirmed; no storefront return form or warranty claim service (a person
+  and the repair request); approving or rejecting top-ups is an admin job; nothing writes notifications yet.
 
 ## Guest favourites and the cart cookie
 
@@ -63,51 +137,54 @@ call moves the rows to the cart token (`reconcileGuestWishlist`). Sign-in moves 
 the guest rows. `getWishlistIds(db, { customerId, cartToken })` (contract) works alone; `wishlistWho(ctx.cookie, id)`
 also passes `tt_wish` and sees moved rows at once.
 
-## For other areas (exports)
+## For other areas (exports — signatures unchanged)
 
 - `wishlist.server`: `getWishlistIds`, `toggleWishlist`, `setWished`, `isWished`, `wishedAmong`, `mergeGuestWishlist`,
-  `wishlistWho`, `rekeyGuestWishlist` (for the cart, should it ever re-key a guest cart in place).
-- `account/addresses.server`: `listAddresses`, `getDefaultAddress` (checkout prefill) · `account/saved-devices.server`:
-  `listSavedDeviceIds` (recommendations) · `account/recently-viewed.server`: `recordRecentlyViewed(db, who, productId,
-  now, { consent })`, `mergeDeviceRecentlyViewed(db, customerId, [{ id, at }], now, { consent })`, `listRecentlyViewed`,
-  `clearRecentlyViewed` · `account/notifications.server`: `notificationStatement` (put it in the batch
-  of the change it tells about) · `account/topups.server`: `getPendingTopupTotal` (WalletBalance `pendingIqd`),
-  `listWalletTopups` · `account/preferences.server`: `getConsent`, `recordConsent`.
+  `wishlistWho`, `rekeyGuestWishlist`.
+- `account/addresses.server`: `listAddresses`, `getDefaultAddress` · `account/saved-devices.server`: `listSavedDeviceIds`
+  · `account/recently-viewed.server`: `recordRecentlyViewed`, `mergeDeviceRecentlyViewed`, `listRecentlyViewed`,
+  `clearRecentlyViewed` · `account/notifications.server`: `notificationStatement` · `account/topups.server`:
+  `getPendingTopupTotal`, `listWalletTopups` · `account/preferences.server`: `getConsent`, `recordConsent`.
+- Route modules: `layout.tsx` `ACCOUNT_LAYOUT_ID`, `useAccountData()`; `components/AccountNav.tsx` `ACCOUNT_SECTIONS`,
+  `sectionOrder`; `components/OrderBits.tsx` `splitOption`, `railIndex` (pure, tested). No other area imports them.
 
-## Recently viewed — one store per shopper (integration pass, 2026-11-11)
+## Recently viewed — one store per shopper
 
 A signed-in customer's views are kept in the ACCOUNT only (`recently_viewed`, ≤ 30, with consent); a guest's on the
-device only (home's `tt:recent`, never sent to the server). The product page writes exactly one of them
-(`home/personal.ts → recordProductView`: signed in → `POST /api/recently-viewed` → `recordRecentlyViewed`). After
-signing in, the first product page, home visit or this overview hands the device's guest list to the account once
-(`mergeDeviceRecentlyViewed`: newest time wins, one row per product) and removes it from the device; the overview reads
-the list again when something joined. Withdrawing personalization in the settings (`forgetPersonalData`,
-home/personal.server) clears the account's list and the recommendation signals of the account and this device. The
-cart-token guest rows the service still supports are only merged at sign-in; nothing writes them now. Full table:
-docs/areas/home.md "Recently viewed".
+device only (home's `tt:recent`). After signing in, the first product page, home visit or the overview hands the
+device's guest list to the account once (`mergeDeviceRecentlyViewed`). Withdrawing personalization in the settings
+(`forgetPersonalData`) clears the account's list and the recommendation signals of the account and this device. Full
+table: docs/areas/home.md "Recently viewed".
 
-## Integration (wired 2026-11-11)
+## Verified (2026-11-12)
 
-- ~~Product page: `recordRecentlyViewed`~~ — done (above).
-- ~~Product hearts: `WishlistKey initial`~~ — done on the product page (`wishedAmong(db, wishlistWho(ctx.cookie,
-  customerId), [id])`); cards carry no heart (one walled key per card, docs/ui/commerce.md).
-- ~~Recommendations: saved devices~~ — the devices area's engine reads `saved_devices` for a consenting customer's
-  personal shelf (home, search); the devices page now says so ("devices.lead").
-- ~~Checkout: prefill from `getDefaultAddress`~~ — done (docs/areas/checkout.md). Open: the wallet option's pending
-  line from `getPendingTopupTotal` (not wired).
-- Admin (customers/finance): approve = `creditWallet(kind "topup", refType "wallet_topup", refId, idempotencyKey
-  "topup:<id>")` + the request's status/verifier/ledger id in the same step; reject with a reason the customer reads.
+- `npx vitest run tests/account.test.ts tests/wishlist.test.ts tests/i18n.test.ts` — all pass (account 30: + the v2
+  block — `splitOption`, `railIndex`, the copy rules in ar/en/ckb; no assertion changed); `npm run typecheck` clean for
+  these files; `node scripts/lint-design.mjs app/routes/storefront/account app/routes/api/wishlist.ts
+  app/i18n/messages/account.ts` — 0 findings.
+- Browser (headless Edge, dev server): sign up, sign in with `next` (→ wallet, → wishlist), sign out (notice), guest
+  favourite → `/wishlist` → sign-in merge, address add (error summary → focus on the first field; governorate picker) and
+  edit, devices chips (persist after reload), top-up with a photo → «بانتظار التحقق» → cancel dialog, consent switch →
+  toast → persists, a COD and a card-transfer order on the order page; offline, refused sign-in, empty submit and 404
+  states. Audit (`…/scratchpad/work/pages-P7-account/audit.mjs`): 15 pages × 360 / 390 / 768 / 1024 / 1440 × light /
+  dark (ar) and 390 / 1440 × en / ckb — no overflow, Kufi 700 + Plex 400/600 only, radii ⊆ {12, 20, full}, ≤ 2 shadow
+  recipes, 12px only on tags, no target under 44, ≤ 1 red primary per view, no banned copy, no focused control under a
+  bar. Screenshots: `…/scratchpad/ux/after/P7-account/`.
+- Not checked: Safari, Firefox, real phones; Sorani needs a native reader.
 
-## Verified
+## P7 review (2026-11-12)
 
-- `npx vitest run tests/account.test.ts tests/wishlist.test.ts` — 27 + 14 pass (services on a real local D1 with the
-  demo catalogue; a real order delivered by the commerce core for warranties and the return window; the sign-in,
-  sign-out and guard routes and `/api/wishlist` through the real root middleware, CSRF included).
-- `npx tsc -b` — nothing in these files; `node scripts/lint-design.mjs app/routes/storefront/account` — 0 findings.
-- Browser (headless Edge against the dev server): address add + field errors, top-up upload → request → private
-  preview (owner 200, guest 404) → cancel dialog, dev phone code, consents + `tt_consent`, wrong password → sign-in with
-  `next`, guest favourites → remove + undo → sign-in merge → sign-out. Screenshots in `.shots/account/` at 390, 768 and
-  1440, light and dark, ar / en / ckb; no overflow, one `<main>`, no console errors except the browser's own
-  "Failed to load resource" line for 4xx answers to form posts (validation is a 400 by design).
-- Not checked: the production "codes unavailable" screen in a browser (unit-tested; the dev server is development);
-  Safari, Firefox, real phones. The Sorani strings need a native reader.
+Fixed: (1) forms that worked without script before v2 did not — the address governorate (picker only), «أملكه» (chip
+only) and the messages language (segmented only) — now native fallbacks inside `<noscript>`; (2) focus fell to `<body>`
+after a control removed itself (top-up cancel, address delete / default, favourite «أزل», notifications, sessions, clear
+history) — `rescueFocus`; (3) a refused top-up cancel / address delete left a stale list behind the dialog —
+revalidated; (4) the reset page promised that staff reset the password («A staff member resets your password») — no
+such tool exists; now it says codes cannot be sent yet; (5) the favourites removal was announced twice; (6) sign-up
+named a wrong number only after the password was fixed; (7) copy: the viewing-history switch did not say it shapes
+suggestions, the language hint pointed at "the top of the page" (the switch is in the footer on phones), the returns
+lead named the policy twice, the reset page's «العودة إلى تسجيل الدخول» carried a forward arrow; (8) a saved address
+form came back on Back (now `replace`). Tests (`tests/account.test.ts`, +7): server HTML of the address form, devices and profile
+carries the no-script fields (exactly one `governorateId`, one form per device, three `locale` radios and no hidden
+value); sign-up returns both field errors; the honest-copy rules. Reviewer's checks: pixel contrast of every text run in
+`main` (none under 4.5 / 3 large) at 390 and 1440 light / dark; 320px reflow; no-script and keyboard flows; screenshots
+`…/scratchpad/ux/after/P7-account-review/`.

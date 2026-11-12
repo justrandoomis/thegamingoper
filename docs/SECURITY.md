@@ -113,7 +113,7 @@ Only `APP_ENV=development` (exactly) turns development mode on: no CSP, developm
 - Enrolment stores the secret encrypted with the context `employee:<id>:totp` and does not turn it on until a valid code proves the app has it. Enrolling signs every other device out, moves this device to a new token (see Sessions) and returns 10 recovery codes once.
 - Starting enrolment needs the password again unless the session was opened with it in the last 15 minutes, so a stolen cookie cannot enrol the attacker's phone and lock the employee out (a cookie younger than 15 minutes still can — accepted).
 - A recovery code works once. Two simultaneous uses are resolved with compare-and-swap.
-- An employee can turn it off with their password and a code; refused attempts are written to `auth_events`. An administrator with `security.mfa.manage` can reset it with a reason, for example after a lost phone; that signs the employee out everywhere.
+- An employee can turn it off with their password and a code; refused attempts are written to `auth_events`. An administrator with `security.mfa.manage` can reset it with a reason, for example after a lost phone; that signs the employee out everywhere. Only for an employee who holds nothing the administrator does not (the hierarchy rule, §7): with a known password, removing a stronger account's second factor is taking it over. `resetEmployeeMfa` refuses it itself (`target_more_privileged`, 403), for every caller.
 
 **Sessions**
 - The `tt_adm` cookie holds a random 256-bit token and is HttpOnly, SameSite=Strict and Secure on HTTPS. Only its SHA-256 is stored.
@@ -127,6 +127,7 @@ Only `APP_ENV=development` (exactly) turns development mode on: no CSP, developm
 **Disabling an employee**
 - Needs `staff.manage` and a reason.
 - Refused for yourself and for the last active owner.
+- Refused for an employee who holds a permission the actor does not (`target_more_privileged`, 403 — the hierarchy rule, §7): only an owner disables an owner. `disableEmployee` checks it inside its own batch, for every caller (module 15's screens and module 20's alike).
 - Revokes every session, and is audited.
 
 **Admin routes**
@@ -134,6 +135,7 @@ Only `APP_ENV=development` (exactly) turns development mode on: no CSP, developm
 - With no session, it sends a document redirect (`redirectDocument`) to `/admin/login?next=…`. The `next` value is limited to `/admin` paths by `safeNextPath`.
 - With a session but without the permission, it answers 403.
 - The admin layout's gate (`routes/admin/shell/gate.server.ts`) refuses, before any loader runs, a module whose permission group the employee holds nothing of, and every admin route outside `/admin/<module>/` that has no rule of its own. Such a refusal is rendered by the root error boundary (React Router renders the highest boundary with a loader when middleware throws before `next()`); `applySecurityHeaders` still marks it `no-store`.
+- One exception, by exact route pattern (`ALSO_OPENED_BY`): `staff.manage` also opens module 20's role editor (`/admin/security/roles`, `/admin/security/roles/:roleId`) and its frame's front page (`/admin/security`, whose figures are all hidden without a security permission) — the role services accept `staff.manage` (2026-11-11). Every other page of module 20 still needs a `security.*` / `audit.read` permission.
 
 **SameSite=Strict side effect:** a link from outside the site (an email, a chat) arrives without the cookie. The sign-in page forwards an employee who is already signed in to `next`, and a cross-site arrival without a visible cookie gets one same-site hop (the page reloads itself from its own origin, so the Strict cookie is sent).
 
@@ -179,6 +181,12 @@ Rules that hold for the defaults:
 Existing roles keep their edits when `seedRoles` runs again: a permission an owner removed is not granted back. The owner role always gets its wildcard back.
 
 Branch limits: `canAccessBranch` / `assertBranch` restrict an employee who has a `branchId` to that branch.
+
+**The hierarchy rule** (2026-11-11): no one weakens, takes over or locks out an account that holds more than they do. Acting on someone else's access needs EVERY permission that person holds (through any of their roles; the owner's `*` only by an owner; a stored string that is no permission any more grants nothing):
+- giving a permission to a role, or a role to an employee, needs that permission yourself — and so does TAKING one away (removing a permission from a role, a role from an employee: only an owner takes the owner role from an owner) — module 20's role services (`roles.server.ts`, `revoke_exceeds_own`);
+- putting a branch limit on someone, resetting their two-step verification, disabling their account: `target_more_privileged` (403). The two-step reset and disabling are enforced in the auth core itself (`resetEmployeeMfa`, `disableEmployee` in `auth/admin.server.ts`: a guard read inside the change's batch, so a role given a moment before counts), not only on module 20's screens; the branch limit in `roles.server.ts`;
+- nobody edits a role they hold or their own roles; the last active owner keeps the owner role.
+The system actor (jobs, setup) is not an employee and passes. Tests: `tests/server-core.test.ts` ("a two-step reset and disabling an account need everything the target holds"), `tests/admin-security-review.test.ts`.
 
 ## 8. Cryptography (`crypto.server.ts`)
 

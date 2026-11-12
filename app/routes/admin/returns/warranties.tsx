@@ -11,6 +11,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { returnsMeta } from "./meta";
 import { openReturns } from "./returns.server";
+import { CustomerName } from "../shell/CustomerName";
 import { Num, PhoneText, Ref, useReturnsT, When, WarrantyBadge } from "./ui";
 
 /**
@@ -51,7 +52,9 @@ export default function Warranties({ loaderData }: Route.ComponentProps) {
       header: t("warranties.col.customer"),
       cell: (row) => (
         <span className="grid whitespace-nowrap py-1">
-          <span>{row.customerName ?? "—"}</span>
+          <span>
+            <CustomerName profileId={row.customerProfileId}>{row.customerName ?? "—"}</CustomerName>
+          </span>
           <span className="type-caption text-ink-2">
             <PhoneText phone={row.phone} />
           </span>

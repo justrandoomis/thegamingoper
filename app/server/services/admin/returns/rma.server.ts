@@ -28,6 +28,7 @@ import { z } from "zod";
 import { newId, publicRef, sha256Hex } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
+import { customerProfileId } from "~/routes/admin/shell/access.server";
 import { assertCan, can, canAny, type Actor } from "~/server/actor";
 import type { Permission } from "~/server/permissions";
 import { auditStatement } from "~/server/audit.server";
@@ -237,6 +238,7 @@ export async function listReturns(db: Db, actor: Actor, filters: RmaFilters, loc
       requestedResolution: row.requestedResolution,
       resolution: row.resolution,
       customerName: order?.contactName ?? null,
+      customerProfileId: customerProfileId(actor, row.customerId ?? order?.customerId),
       phone: phoneView(actor, row.phoneE164 ?? order?.contactPhoneE164),
       units: mine.reduce((sum, item) => sum + item.qty, 0),
       valueIqd: mine.reduce((sum, item) => sum + (values.get(item.orderItemId) ?? 0) * item.qty, 0),
@@ -252,16 +254,21 @@ export async function listReturns(db: Db, actor: Actor, filters: RmaFilters, loc
   return { rows: out, total, page: filters.page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters };
 }
 
-/** What waits for this employee in the module (null where they cannot act). Never their own RMA to decide. */
+/**
+ * What waits for this employee in the module (null where they cannot act). Never their own RMA to decide. The RMAs to
+ * decide, receive and inspect are listed on /admin/returns, which shows every RMA only with returns.rma.read (without
+ * it, one's own at most): without it those three are null — no card counts rows its list cannot show (the bell's rule).
+ */
 export async function queueCounts(db: Db, actor: Actor, now: number): Promise<QueueCounts> {
   const me = actor.kind === "employee" ? actor.id : null;
   const count = async (query: Promise<{ n: number } | undefined>) => Number((await query)?.n ?? 0);
   const n = sql<number>`count(*)`;
   const sla = await slaTargets(db);
+  const reads = can(actor, "returns.rma.read");
   const [decide, receive, inspect, refund, refundApproval, quarantine, repairsLate, warrantiesEnding] = await Promise.all([
-    can(actor, "returns.rma.approve") ? count(db.select({ n }).from(returns).where(and(eq(returns.status, "requested"), me ? sql`NOT ${openedBy(me)}` : undefined)).get()) : null,
-    can(actor, "returns.rma.inspect") ? count(db.select({ n }).from(returns).where(inArray(returns.status, ["approved", "in_transit"])).get()) : null,
-    can(actor, "returns.rma.inspect") ? count(db.select({ n }).from(returns).where(eq(returns.status, "received")).get()) : null,
+    can(actor, "returns.rma.approve") && reads ? count(db.select({ n }).from(returns).where(and(eq(returns.status, "requested"), me ? sql`NOT ${openedBy(me)}` : undefined)).get()) : null,
+    can(actor, "returns.rma.inspect") && reads ? count(db.select({ n }).from(returns).where(inArray(returns.status, ["approved", "in_transit"])).get()) : null,
+    can(actor, "returns.rma.inspect") && reads ? count(db.select({ n }).from(returns).where(eq(returns.status, "received")).get()) : null,
     can(actor, "orders.refund.create") && can(actor, "returns.rma.read") ? count(db.select({ n }).from(returns).where(eq(returns.status, "inspected")).get()) : null,
     can(actor, "orders.refund.approve") && can(actor, "returns.rma.read")
       ? count(
@@ -844,7 +851,7 @@ export async function getReturnDetail(db: Db, actor: Actor, rma: string, locale:
     rma: ret.rma,
     status: ret.status,
     order: { id: order.id, ref: order.ref, status: order.status, deliveredAt: order.deliveredAt, paymentMethod: order.paymentMethod, totalIqd: order.totalIqd, paidIqd: order.paidIqd, refundedIqd: order.refundedIqd },
-    customer: { kind: order.customerId ? "customer" : "guest", id: order.customerId, name: order.contactName ?? customer?.name ?? null, phone: phoneView(actor, ret.phoneE164 ?? order.contactPhoneE164), hasWallet: order.customerId !== null },
+    customer: { kind: order.customerId ? "customer" : "guest", id: order.customerId, name: order.contactName ?? customer?.name ?? null, profileId: customerProfileId(actor, order.customerId), phone: phoneView(actor, ret.phoneE164 ?? order.contactPhoneE164), hasWallet: order.customerId !== null },
     reasonCode: ret.reasonCode,
     reason: ret.reason,
     requestedResolution: ret.requestedResolution,

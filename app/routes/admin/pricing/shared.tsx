@@ -13,7 +13,7 @@ import type { Locale } from "~/lib/locales";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { Tabs } from "~/ui/Tabs";
 import type { PricingPages } from "~/server/services/admin/pricing/overview.server";
-import { parseDecimal } from "~/server/services/admin/pricing/rules";
+import { DROP_APPROVAL_BPS, parseDecimal } from "~/server/services/admin/pricing/rules";
 import { adminMeta, ADMIN_LAYOUT_ID } from "../shell/meta";
 
 /**
@@ -25,7 +25,7 @@ export const typedIqd = (text: string): number | null => parseDecimal(text, 0);
 
 export const PRICING_LAYOUT_ID = "routes/admin/pricing/layout";
 
-export type PricingLayoutData = { pages: PricingPages; decidable: number; usedDecidable: number };
+export type PricingLayoutData = { pages: PricingPages; decidable: number; usedDecidable: number; dropLimitBps: number };
 
 type MetaArgs = { matches: readonly ({ id: string; loaderData?: unknown } | undefined)[] };
 
@@ -49,6 +49,15 @@ export function usePricingT() {
 
 export function usePricingLayout(): PricingLayoutData | null {
   return (useRouteLoaderData(PRICING_LAYOUT_ID) as PricingLayoutData | undefined) ?? null;
+}
+
+/**
+ * The variables of the words that name the cut limit (`reason.drop_over_limit`, `special.usedLead`: "{pct}%"): the
+ * setting in force, which the layout sends (DROP_APPROVAL_BPS, its default, until it arrives).
+ */
+export function useDropLimit(): { pct: string } {
+  const f = useFormat();
+  return { pct: f.number((usePricingLayout()?.dropLimitBps ?? DROP_APPROVAL_BPS) / 100) };
 }
 
 const NAV: { key: keyof PricingPages | "overview"; href: string }[] = [

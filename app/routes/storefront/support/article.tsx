@@ -1,16 +1,20 @@
 /**
  * /support/article/:slug — one approved public guide (services/support/kb.server getArticle; anything else is a 404 in
- * the shell's own panel). Rendered with <Blocks> (app/ui), safety callouts included; a guide that is not translated
- * yet is shown in Arabic and says so. Seeded guides say they are demo content not yet reviewed by a technician.
+ * the shell's own panel). Design System v2: the support sub-pages' four-segment navigation (§6.13), then a 720px reading
+ * column — breadcrumbs (from 768), what the guide is and for
+ * which device, the h1, its summary, when it was updated and whether a store technician reviewed it — rendered with
+ * <Blocks> (safety callouts included); a guide that is not translated yet is shown in Arabic and says so. Seeded guides
+ * say they are demo content.
  *
- * Under the guide: what to do when it did not help (the assistant for this device, a repair request — never "open
- * it yourself") and other guides for the same device or platform.
+ * Beside it (under it on phones): what to do when it did not help — the assistant for this device (the view's one
+ * primary) or a repair request, never "open it yourself" — and other guides for the same device or platform.
  */
 import { useId } from "react";
 import { data, useRouteLoaderData } from "react-router";
 
 import type { Route } from "./+types/article";
 import { productShareImage, parsePhotoKey } from "~/art";
+import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
@@ -19,11 +23,14 @@ import { getDb } from "~/server/db.server";
 import { getArticle, listRelatedArticles } from "~/server/services/support/kb.server";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import type { ShellData } from "~/routes/storefront/shell/types";
+import { BidiLabel } from "~/ui/BidiText";
 import { Blocks } from "~/ui/Blocks";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
 import { DemoNote } from "~/ui/DemoNote";
 import { Key } from "~/ui/Key";
-import { GuideList, PlatformName, UpdatedOn } from "./components/parts";
+import { isPlatform } from "~/ui/PlatformLed";
+import { GuideList, PlatformName, SupportNav, UpdatedOn } from "./components/parts";
+import "./support.css";
 
 export const handle = { nav: "rise" } satisfies MotionHandle;
 
@@ -50,53 +57,62 @@ export default function Article({ loaderData }: Route.ComponentProps) {
   const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined;
   const nextId = useId();
   const relatedId = useId();
-  const platformName = article.platform ? (["nintendo", "playstation", "xbox", "handheld"].includes(article.platform.slug) ? ui(`platform.${article.platform.slug}`) : article.platform.name) : null;
+  const platformName = article.platform ? (isPlatform(article.platform.slug) ? ui(`platform.${article.platform.slug}`) : article.platform.name) : null;
   const assistantHref = article.device ? `/support/assistant?device=${article.device.slug}` : article.platform ? `/support/assistant?platform=${article.platform.slug}` : "/support/assistant";
   const repairHref = article.device ? `/support/repair?device=${article.device.slug}` : "/support/repair";
   const crumbs = [
     { label: t("article.breadcrumb"), href: "/support" },
-    ...(article.device ? [{ label: article.device.name, href: `/support?device=${article.device.slug}` }] : platformName ? [{ label: platformName }] : []),
+    ...(article.device ? [{ label: article.device.name, href: `/support?device=${article.device.slug}#device-help` }] : platformName ? [{ label: platformName }] : []),
     { label: article.title },
   ];
 
   return (
-    <div className="page grid gap-section pb-12 pt-4 lg:grid-cols-12 lg:pt-6">
-      <article className="grid min-w-0 content-start gap-5 lg:col-span-8">
-        <Breadcrumbs items={crumbs} jsonLd={layout?.shell?.publicOrigin ? { origin: layout.shell.publicOrigin } : undefined} />
-        <header className="grid gap-2">
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-caption text-ink-2">
-            <span className="font-semibold text-ink">{t(`kind.${article.kind}`)}</span>
-            <span aria-hidden="true">·</span>
-            {article.device ? (
-              <bdi>{t("article.forDevice", { device: article.device.name })}</bdi>
-            ) : article.platform ? (
-              <span className="inline-flex items-center gap-1">
+    <div className="page sup sup-article">
+      <div className="sup-article__main">
+        {/* the support sub-pages' shared navigation (§6.13): on phones (no breadcrumbs) the way back to the other guides */}
+        <SupportNav current="help" />
+        <article className="sup-article__text">
+          <Breadcrumbs items={crumbs} jsonLd={layout?.shell?.publicOrigin ? { origin: layout.shell.publicOrigin } : undefined} />
+          <header className="grid gap-3">
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs text-ink-2">
+              <span className="type-xs-strong text-ink">{t(`kind.${article.kind}`)}</span>
+              <span aria-hidden="true">·</span>
+              {article.device ? (
+                <BidiLabel>{t("article.forDevice", { device: article.device.name })}</BidiLabel>
+              ) : article.platform ? (
                 <PlatformName slug={article.platform.slug} name={article.platform.name} />
-              </span>
-            ) : null}
-          </p>
-          <h1 className="type-title text-ink">{article.title}</h1>
-          {article.summary ? <p className="max-w-[65ch] type-body text-ink-2">{article.summary}</p> : null}
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <UpdatedOn at={article.updatedAt} />
-            {!article.reviewed ? <span className="type-caption text-ink-2">· {t("article.notReviewed")}</span> : null}
-          </p>
-        </header>
-        {article.fallback ? <p className="rounded-md bg-niche px-3 py-2 type-caption text-ink-2">{t("article.fallback")}</p> : null}
-        {article.isDemo ? <DemoNote>{t("help.demo")}</DemoNote> : null}
-        <div lang={article.fallback ? "ar" : undefined} dir={article.fallback ? "rtl" : undefined} className="max-w-[70ch]">
-          <Blocks blocks={article.blocks} headingLevel={2} />
-        </div>
-      </article>
+              ) : null}
+            </p>
+            <h1 className="type-h1 text-ink">
+              <BidiLabel>{article.title}</BidiLabel>
+            </h1>
+            {article.summary ? <p className="type-lead text-ink-2">{article.summary}</p> : null}
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <UpdatedOn at={article.updatedAt} />
+              {!article.reviewed ? <span className="type-xs text-ink-2">· {t("article.notReviewed")}</span> : null}
+            </p>
+          </header>
+          {article.fallback ? (
+            <p className="sup-note">
+              <Icon name="translate" size={20} />
+              <span>{t("article.fallback")}</span>
+            </p>
+          ) : null}
+          {article.isDemo ? <DemoNote variant="line">{t("help.demo")}</DemoNote> : null}
+          <div lang={article.fallback ? "ar" : undefined} dir={article.fallback ? "rtl" : undefined} className="sup-article__body">
+            <Blocks blocks={article.blocks} headingLevel={2} />
+          </div>
+        </article>
+      </div>
 
-      <aside className="grid content-start gap-section lg:col-span-4 lg:pt-12">
-        <section aria-labelledby={nextId} className="grid gap-3 rounded-panel bg-paper p-4 md:p-5 lg:sticky lg:top-[calc(var(--shell-header-h)+var(--s-4))]">
-          <h2 id={nextId} className="type-sub text-ink">
+      <aside className="sup-article__aside">
+        <section aria-labelledby={nextId} className="sup-card">
+          <h2 id={nextId} className="type-h3 text-ink">
             {t("article.next.title")}
           </h2>
-          <p className="type-body text-ink-2">{t("article.next.text")}</p>
+          <p className="type-sm text-ink-2">{t("article.next.text")}</p>
           <div className="flex flex-wrap gap-2">
-            <Key as={LocaleLink} to={assistantHref} variant="ink" size="sm" icon="lifebuoy">
+            <Key as={LocaleLink} to={assistantHref} variant="primary" size="sm" icon="lifebuoy">
               {t("article.next.assistant")}
             </Key>
             <Key as={LocaleLink} to={repairHref} size="sm" icon="wrench">
@@ -105,8 +121,8 @@ export default function Article({ loaderData }: Route.ComponentProps) {
           </div>
         </section>
         {related.length > 0 ? (
-          <section aria-labelledby={relatedId} className="grid gap-2">
-            <h2 id={relatedId} className="type-sub text-ink">
+          <section aria-labelledby={relatedId} className="grid gap-3">
+            <h2 id={relatedId} className="type-h3 text-ink">
               {t("article.related")}
             </h2>
             <GuideList articles={related} headingLevel={3} />

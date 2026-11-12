@@ -1,34 +1,38 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
-import { LocaleLink, useFormat, useT, type Formatters } from "~/i18n/react";
+import { useFormat, useT, type Formatters } from "~/i18n/react";
 import type { OrderLineView, OrderView } from "~/server/services/orders/types";
 import { cx } from "~/ui/cx";
-import { Niche } from "~/ui/Niche";
+import { Disclosure } from "~/ui/Disclosure";
 import { OrderSummary } from "~/ui/OrderSummary";
-import { PriceTag, fillNodes } from "~/ui/PriceTag";
-import { BidiText, ProductImage } from "~/ui/ProductCard";
+import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
+import { ORDER_STAGES, orderStage, splitLineName } from "../checkout-form";
 import { ProofSection, type JustSent } from "./ProofSection";
 import { TransferDetails } from "./TransferDetails";
 
 /**
- * One order as its shopper sees it (brief §4, DESIGN.md §9.16 "pending review", §9.18): what is happening now and
- * what to do next, the payment — for a transfer the instructions and the proof uploader — the steps so far, the
- * items and totals, the delivery details, shipments and refunds. Everything comes from the commerce core's OrderView
- * (statuses, amounts, instructions from settings); nothing is computed here.
+ * One order as its shopper sees it — the order status template of Design System v2 §6.11, shared by the order page
+ * and /track: "what happens next" (a rail of the five real stages: استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم —
+ * the current one an ink disc, the upcoming ones control-line rings), the next-step box by payment (cash on delivery:
+ * «سنؤكد طلبك قبل تجهيزه. تدفع … نقداً عند الاستلام.»; a transfer: where to send it, the deadline and the proof uploader,
+ * then «بانتظار التحقق» until a person approves it), the shipments, ONE summary card (the items, the totals with
+ * «الإجمالي» the one red figure, then the payment and the delivery side by side from 1024) and the dated history behind
+ * a disclosure. Everything comes from the commerce core's OrderView (statuses, amounts, instructions from settings);
+ * nothing is computed here but words.
  *
  * `mode`: "owner" — the confirmation link or the signed-in owner (a proof can be uploaded); "tracked" — found by
  * reference + phone on /track (read-only: uploading needs the confirmation link, the core's rule).
- * Payment words are precise: a transfer is "بانتظار التحقق" until a person approves it — never "paid" before.
+ * Payment words are precise: a transfer is «بانتظار التحقق» until a person approves it — never "paid" before.
  */
 export type OrderDetailsProps = {
   order: OrderView;
   mode: "owner" | "tracked";
   /** Owner mode: what the proof upload sends to prove access (the token, or nothing for a signed-in owner). */
   access?: { ref: string; token: string | null };
-  /** Heading level of the sections (the page's h1 is above them). */
+  /** Heading level of the sections (the page's own heading is above them). */
   headingLevel?: 2 | 3;
   className?: string;
 };
@@ -41,7 +45,7 @@ const STATUS_TONE: Record<OrderView["status"], StatusTone> = {
   preparing: "info",
   shipped: "info",
   delivered: "ok",
-  cancelled: "bad",
+  cancelled: "neutral",
   returned: "neutral",
 };
 
@@ -64,7 +68,7 @@ const TIMELINE_ICON: Partial<Record<string, IconName>> = {
 export function When({ at, f, kind = "dateTime" }: { at: number; f: Formatters; kind?: "dateTime" | "date" }) {
   return (
     <time dateTime={new Date(at).toISOString()} suppressHydrationWarning>
-      {kind === "date" ? f.date(at) : f.dateTime(at)}
+      {kind === "date" ? f.date(at, "long") : f.dateTime(at)}
     </time>
   );
 }
@@ -75,6 +79,8 @@ export function OrderDetails({ order, mode, access, headingLevel = 2, className 
   const t = useT("checkout");
   const f = useFormat();
   const H = `h${headingLevel}` as const;
+  /** The payment and the delivery sit inside the summary card: one level under its heading. */
+  const Sub = headingLevel === 2 ? "h3" : "h4";
   const [justSent, setJustSent] = useState<JustSent | null>(null);
   // A preview made from the shopper's own file lives until the page goes away.
   useEffect(() => () => (justSent ? URL.revokeObjectURL(justSent.previewUrl) : undefined), [justSent]);
@@ -82,89 +88,70 @@ export function OrderDetails({ order, mode, access, headingLevel = 2, className 
   const payment = order.payment;
   const transfer = isTransfer(payment.method);
   const iqd = (amount: number) => <bdi className="nums font-semibold">{f.iqd(amount)}</bdi>;
+  const stage = orderStage(order.status);
 
   return (
-    <div className={cx("grid gap-5", className)}>
-      <StatusPanel order={order} />
-
-      {/* ── payment ── */}
-      <section aria-labelledby="order-payment" className="grid gap-3">
-        <H id="order-payment" className="type-section text-ink">
-          {t("order.payment.heading")}
-        </H>
-        <div className="grid gap-2 rounded-lg bg-paper p-4">
-          <p className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-            <span className="type-label text-ink">{payment.method ? t(`order.payment.method.${payment.method}`) : t("order.payment.method.none")}</span>
-            <Status tone={paymentTone(order)}>{paymentStatusText(order, t)}</Status>
-          </p>
-          {payment.amountDueIqd > 0 && order.status !== "cancelled" ? (
-            <p className="type-caption text-ink-2">{fillNodes(t("order.payment.due"), { amount: iqd(payment.amountDueIqd) })}</p>
-          ) : null}
-          {payment.paidIqd > 0 ? <p className="type-caption text-ink-2">{fillNodes(t("order.payment.paid"), { amount: iqd(payment.paidIqd) })}</p> : null}
-          {payment.refundedIqd > 0 ? <p className="type-caption text-ink-2">{fillNodes(t("order.payment.refunded"), { amount: iqd(payment.refundedIqd) })}</p> : null}
-        </div>
-
-        {transfer && order.status === "awaiting_payment" && payment.instructions ? (
-          <div className="grid gap-3">
-            {payment.dueAt !== null && payment.canUploadProof ? (
-              <p className="flex items-start gap-2 type-body text-ink">
-                <Icon name="clock" size={18} className="mt-1 shrink-0 text-warn" />
-                <span>{fillNodes(t("order.payment.deadline"), { deadline: <b className="font-semibold"><When at={payment.dueAt} f={f} /></b> })}</span>
-              </p>
-            ) : null}
-            <TransferDetails destination={payment.instructions} amountIqd={payment.amountDueIqd} orderRef={order.ref} />
-            {payment.canUploadProof && mode === "owner" && access ? (
-              <ProofSection order={order} access={access} onSent={setJustSent} headingLevel={3} />
-            ) : payment.canUploadProof ? (
-              <p className="flex items-start gap-2 rounded-md bg-niche px-3 py-2.5 type-body text-ink">
-                <Icon name="link" size={18} className="mt-1 shrink-0 text-ink-2" />
-                {t("order.payment.trackedUpload")}
-              </p>
-            ) : null}
-          </div>
-        ) : null}
-
-        {transfer && order.status === "payment_review" ? <SubmittedProof order={order} justSent={justSent} /> : null}
-      </section>
-
-      {/* ── what happened so far ── */}
-      {order.timeline.length > 0 ? (
-        <section aria-labelledby="order-timeline" className="grid gap-3">
-          <H id="order-timeline" className="type-section text-ink">
-            {t("order.timeline.heading")}
+    <div className={cx("grid gap-8", className)}>
+      {/* ── what happens next: the five real stages ── */}
+      {stage !== null ? (
+        <section aria-labelledby={`${order.ref}-stages`} className="grid gap-4">
+          <H id={`${order.ref}-stages`} className="type-h3 text-ink">
+            {t("order.stages.label")}
           </H>
-          <ol className="grid gap-0 rounded-lg bg-paper px-4 py-1">
-            {order.timeline.map((event, index) => (
-              <li key={`${event.kind}:${event.at}:${index}`} className="flex items-center gap-3 border-b border-line py-3 last:border-b-0">
-                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-niche text-ink" aria-hidden="true">
-                  <Icon name={TIMELINE_ICON[event.kind] ?? "check"} size={16} />
-                </span>
-                <span className="grid min-w-0 gap-0.5">
-                  <span className="type-label text-ink">{t(`order.timeline.${event.kind}`)}</span>
-                  <span className="type-caption text-ink-2">
-                    <When at={event.at} f={f} />
+          <ol className="co-stages">
+            {ORDER_STAGES.map((name, index) => {
+              const state = index < stage ? "done" : index === stage ? "current" : "upcoming";
+              return (
+                <li key={name} className="co-stage" data-state={state} aria-current={state === "current" ? "step" : undefined}>
+                  <span className="co-stage__n" aria-hidden="true">
+                    {state === "done" ? <Icon name="check" size={16} /> : f.number(index + 1)}
                   </span>
-                </span>
-              </li>
-            ))}
+                  <span className="co-stage__label">{t(`order.stages.${name}`)}</span>
+                </li>
+              );
+            })}
           </ol>
         </section>
       ) : null}
 
+      {/* ── the next step, by payment ── */}
+      <section aria-labelledby={`${order.ref}-next`} className="grid gap-3">
+        <H id={`${order.ref}-next`} className="type-h3 text-ink">
+          {t("order.nextHeading")}
+        </H>
+        <NextStep order={order} />
+        {transfer && order.status === "awaiting_payment" && payment.instructions ? (
+          <>
+            <div className="co-card">
+              <TransferDetails destination={payment.instructions} amountIqd={payment.amountDueIqd} orderRef={order.ref} />
+            </div>
+            {payment.canUploadProof && mode === "owner" && access ? (
+              <ProofSection order={order} access={access} onSent={setJustSent} headingLevel={headingLevel === 2 ? 3 : 2} />
+            ) : payment.canUploadProof ? (
+              <p className="co-note">
+                <Icon name="link" size={16} className="shrink-0 text-ink-2" />
+                <span className="min-w-0 flex-1">{t("order.payment.trackedUpload")}</span>
+              </p>
+            ) : null}
+          </>
+        ) : null}
+        {transfer && order.status === "payment_review" ? <SubmittedProof order={order} justSent={justSent} /> : null}
+      </section>
+
       {/* ── shipments ── */}
       {order.shipments.length > 0 ? (
-        <section aria-labelledby="order-shipments" className="grid gap-3">
-          <H id="order-shipments" className="type-section text-ink">
+        <section aria-labelledby={`${order.ref}-shipments`} className="grid gap-3">
+          <H id={`${order.ref}-shipments`} className="type-h3 text-ink">
             {t("order.shipment.heading")}
           </H>
           {order.shipments.map((shipment, index) => (
-            <div key={`${shipment.trackingNo ?? "s"}:${index}`} className="grid gap-2 rounded-lg bg-paper p-4">
+            <div key={`${shipment.trackingNo ?? "s"}:${index}`} className="co-card grid gap-2">
               <p className="flex flex-wrap items-center justify-between gap-2">
-                <span className="type-label text-ink">{shipment.carrierName ?? t("order.shipment.carrierUnknown")}</span>
+                <span className="type-sm-strong text-ink">{shipment.carrierName ?? t("order.shipment.carrierUnknown")}</span>
                 <Status tone={shipment.status === "delivered" ? "ok" : shipment.status === "failed" || shipment.status === "returned" ? "bad" : "info"}>{t(`order.shipment.status.${shipment.status}`)}</Status>
               </p>
               {shipment.trackingNo ? (
-                <p className="flex flex-wrap items-center gap-x-2 type-caption text-ink-2">
+                <p className="flex flex-wrap items-center gap-x-2 type-xs text-ink-2">
                   {t("order.shipment.trackingNo")}{" "}
                   <bdi dir="ltr" className="nums text-ink">
                     {shipment.trackingNo}
@@ -181,76 +168,86 @@ export function OrderDetails({ order, mode, access, headingLevel = 2, className 
         </section>
       ) : null}
 
-      {/* ── items and totals ── */}
-      <section aria-labelledby="order-items" className="grid gap-3">
-        <H id="order-items" className="type-section text-ink">
-          {t("order.items.heading")}
-        </H>
-        <ul className="grid gap-2">
-          {order.lines.map((line) => (
-            <OrderLine key={line.id} line={line} />
-          ))}
-        </ul>
-        <OrderSummary
-          subtotalIqd={order.totals.subtotalIqd}
-          discountIqd={order.totals.discountIqd}
-          shippingIqd={order.totals.shippingIqd}
-          totalIqd={order.totals.totalIqd}
-          count={order.itemCount}
-          coupon={order.coupon ? { code: order.coupon.code, label: "" } : null}
-          shipping="governorate"
-          title={null}
-        />
-      </section>
-
-      {/* ── delivery ── */}
-      <section aria-labelledby="order-delivery" className="grid gap-3">
-        <H id="order-delivery" className="type-section text-ink">
-          {t("order.delivery.heading")}
-        </H>
-        <dl className="grid gap-0 rounded-lg bg-paper px-4 py-1">
-          {order.contact.name ? <Fact label={t("order.delivery.recipient")}>{order.contact.name}</Fact> : null}
-          <Fact label={t("order.delivery.phone")}>
-            <bdi dir="ltr" className="nums">
-              {order.contact.phoneMasked}
-            </bdi>
-          </Fact>
-          <Fact label={t("order.delivery.place")}>{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(" · ")}</Fact>
-          {order.delivery.address ? <Fact label={t("order.delivery.address")}>{order.delivery.address}</Fact> : null}
-          {order.delivery.notes ? <Fact label={t("order.delivery.notes")}>{order.delivery.notes}</Fact> : null}
-          {order.delivery.preferredDay || order.delivery.preferredWindow ? (
-            <Fact label={t("order.delivery.preference")}>
-              <span className="grid gap-0.5">
-                <span>
-                  {[
-                    order.delivery.preferredDay ? (
-                      // "YYYY-MM-DD" in Baghdad: midday UTC is the same day there.
-                      <time key="d" dateTime={order.delivery.preferredDay} suppressHydrationWarning>
-                        {f.date(Date.parse(`${order.delivery.preferredDay}T12:00:00Z`), "long")}
-                      </time>
-                    ) : null,
-                    order.delivery.preferredWindow ? <span key="w">{t(`windows.${order.delivery.preferredWindow}`)}</span> : null,
-                  ]
-                    .filter(Boolean)
-                    .flatMap((node, index) => (index === 0 ? [node] : [" · ", node]))}
-                </span>
-                <span className="type-caption text-ink-2">{t("address.timingHint")}</span>
-              </span>
-            </Fact>
-          ) : null}
-        </dl>
-      </section>
+      {/* ── one summary card: items and totals, then payment and delivery side by side from 1024 ── */}
+      <OrderSummary
+        title={t("order.summary.heading")}
+        headingLevel={headingLevel}
+        lines={order.lines.map((line) => {
+          // the name as sold is "<product> — <option>": the name, then the option value with the line's facts (§4.13)
+          const { name, option } = splitLineName(line.name);
+          const facts = lineFacts(line, t, f);
+          // (not isolated: the page's direction orders «Nintendo Switch 2 Edition (نسخة فيزيائية)» as the cart line does)
+          return { id: line.id, name, optionsLabel: option ? `${option} · ${facts}` : facts, lineTotalIqd: line.lineTotalIqd, image: line.image };
+        })}
+        subtotalIqd={order.totals.subtotalIqd}
+        discountIqd={order.totals.discountIqd}
+        shippingIqd={order.totals.shippingIqd}
+        totalIqd={order.totals.totalIqd}
+        count={order.itemCount}
+        coupon={order.coupon ? { code: order.coupon.code, label: "" } : null}
+        shipping="governorate"
+        approx="off"
+      >
+        <div className="co-pair">
+          <section aria-labelledby={`${order.ref}-payment`} className="grid content-start gap-2">
+            <Sub id={`${order.ref}-payment`} className="type-sm-strong text-ink">
+              {t("order.payment.heading")}
+            </Sub>
+            <p className="type-body text-ink">{payment.method ? t(`order.payment.method.${payment.method}`) : t("order.payment.method.none")}</p>
+            <Status tone={paymentTone(order)}>{paymentStatusText(order, t)}</Status>
+            {payment.amountDueIqd > 0 && order.status !== "cancelled" ? <p className="type-xs text-ink-2">{fillNodes(t("order.payment.due"), { amount: iqd(payment.amountDueIqd) })}</p> : null}
+            {payment.paidIqd > 0 ? <p className="type-xs text-ink-2">{fillNodes(t("order.payment.paid"), { amount: iqd(payment.paidIqd) })}</p> : null}
+            {payment.refundedIqd > 0 ? <p className="type-xs text-ink-2">{fillNodes(t("order.payment.refunded"), { amount: iqd(payment.refundedIqd) })}</p> : null}
+          </section>
+          <section aria-labelledby={`${order.ref}-delivery`} className="grid content-start gap-2">
+            <Sub id={`${order.ref}-delivery`} className="type-sm-strong text-ink">
+              {t("order.delivery.heading")}
+            </Sub>
+            <dl className="co-facts">
+              {order.contact.name ? <Fact label={t("order.delivery.recipient")}>{order.contact.name}</Fact> : null}
+              <Fact label={t("order.delivery.phone")}>
+                <bdi dir="ltr" className="nums">
+                  {order.contact.phoneMasked}
+                </bdi>
+              </Fact>
+              <Fact label={t("order.delivery.place")}>{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(" · ")}</Fact>
+              {order.delivery.address ? <Fact label={t("order.delivery.address")}>{order.delivery.address}</Fact> : null}
+              {order.delivery.notes ? <Fact label={t("order.delivery.notes")}>{order.delivery.notes}</Fact> : null}
+              {order.delivery.preferredDay || (order.delivery.preferredWindow && order.delivery.preferredWindow !== "any") ? (
+                <Fact label={t("order.delivery.preference")}>
+                  <span className="grid gap-0.5">
+                    <span>
+                      {[
+                        order.delivery.preferredDay ? (
+                          // "YYYY-MM-DD" in Baghdad: midday UTC is the same day there.
+                          <time key="d" dateTime={order.delivery.preferredDay} suppressHydrationWarning>
+                            {f.date(Date.parse(`${order.delivery.preferredDay}T12:00:00Z`), "long")}
+                          </time>
+                        ) : null,
+                        order.delivery.preferredWindow && order.delivery.preferredWindow !== "any" ? <span key="w">{t(`windows.${order.delivery.preferredWindow}`)}</span> : null,
+                      ]
+                        .filter(Boolean)
+                        .flatMap((node, index) => (index === 0 ? [node] : [" · ", node]))}
+                    </span>
+                    <span className="type-xs text-ink-2">{t("address.timingNote")}</span>
+                  </span>
+                </Fact>
+              ) : null}
+            </dl>
+          </section>
+        </div>
+      </OrderSummary>
 
       {/* ── refunds ── */}
       {order.refunds.length > 0 ? (
-        <section aria-labelledby="order-refunds" className="grid gap-3">
-          <H id="order-refunds" className="type-section text-ink">
+        <section aria-labelledby={`${order.ref}-refunds`} className="grid gap-3">
+          <H id={`${order.ref}-refunds`} className="type-h3 text-ink">
             {t("order.refunds.heading")}
           </H>
-          <ul className="grid gap-0 rounded-lg bg-paper px-4 py-1">
+          <ul className="co-card grid">
             {order.refunds.map((refund, index) => (
-              <li key={`${refund.at}:${index}`} className="flex flex-wrap items-center justify-between gap-2 border-b border-line py-3 last:border-b-0">
-                <span className="type-label text-ink">
+              <li key={`${refund.at}:${index}`} className="flex flex-wrap items-center justify-between gap-2 border-b border-line py-3 first:pt-0 last:border-b-0 last:pb-0">
+                <span className="type-sm-strong text-ink">
                   {iqd(refund.amountIqd)} · {t(`order.refunds.method.${refund.method}`)}
                 </span>
                 <Status tone={refund.status === "paid" ? "ok" : "warn"}>{t(`order.refunds.status.${refund.status}`)}</Status>
@@ -259,19 +256,40 @@ export function OrderDetails({ order, mode, access, headingLevel = 2, className 
           </ul>
         </section>
       ) : null}
+
+      {/* ── what happened so far, with dates (behind a disclosure: the stages above say where it is) ── */}
+      {order.timeline.length > 0 ? (
+        <Disclosure summary={t("order.timeline.heading")} icon="clock">
+          <ol className="grid">
+            {order.timeline.map((event, index) => (
+              <li key={`${event.kind}:${event.at}:${index}`} className="flex items-center gap-3 border-b border-line py-3 last:border-b-0">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-niche text-ink" aria-hidden="true">
+                  <Icon name={TIMELINE_ICON[event.kind] ?? "check"} size={16} />
+                </span>
+                <span className="grid min-w-0 gap-0.5">
+                  <span className="type-sm-strong text-ink">{t(`order.timeline.${event.kind}`)}</span>
+                  <span className="type-xs text-ink-2">
+                    <When at={event.at} f={f} />
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </Disclosure>
+      ) : null}
     </div>
   );
 }
 
-/** What is happening now and the next step, in words (never colour alone). */
-function StatusPanel({ order }: { order: OrderView }) {
+/** The order's state and the next step, in words (never colour alone) — the next-step box. */
+function NextStep({ order }: { order: OrderView }) {
   const t = useT("checkout");
   const f = useFormat();
   const payment = order.payment;
   const iqd = (amount: number) => <bdi className="nums font-semibold">{f.iqd(amount)}</bdi>;
   let next: ReactNode = null;
   if (order.status === "new" && payment.method === "cod") {
-    next = fillNodes(t("order.next.cod"), { phone: <bdi dir="ltr" className="nums">{order.contact.phoneMasked}</bdi>, total: iqd(payment.amountDueIqd || order.totals.totalIqd) });
+    next = fillNodes(t("order.next.cod"), { total: iqd(payment.amountDueIqd || order.totals.totalIqd) });
   } else if (order.status === "awaiting_payment") {
     if (payment.canUploadProof) {
       const key = payment.proof.status === "rejected" ? "order.next.rejected" : "order.next.transfer";
@@ -291,8 +309,8 @@ function StatusPanel({ order }: { order: OrderView }) {
     next = t(`order.next.${order.status}`);
   }
   return (
-    <div className="grid gap-2 rounded-lg bg-paper p-4" aria-live="polite">
-      <Status tone={STATUS_TONE[order.status]} className="type-strong">
+    <div className="co-card grid gap-2" aria-live="polite">
+      <Status tone={STATUS_TONE[order.status]} size="lg">
         {t(`order.status.${order.status}`)}
       </Status>
       <p className="type-body text-ink">{next}</p>
@@ -330,64 +348,45 @@ function SubmittedProof({ order, justSent }: { order: OrderView; justSent: JustS
     panel.current?.scrollIntoView({ block: "center" });
   }, [justSent]);
   return (
-    <div ref={panel} tabIndex={-1} className="grid gap-2 rounded-lg bg-paper p-4 outline-none" data-proof="submitted">
-      <Status tone="warn" className="font-semibold">
+    <div ref={panel} tabIndex={-1} className="co-card grid gap-2 outline-none" data-proof="submitted">
+      <Status tone="warn" size="lg">
         {t("proof.submitted.title")}
       </Status>
       <p className="type-body text-ink">{t("proof.submitted.text")}</p>
-      {proof.declaredAmountIqd !== null ? <p className="type-caption text-ink-2">{fillNodes(t("proof.submitted.amount"), { amount: <bdi className="nums">{f.iqd(proof.declaredAmountIqd)}</bdi> })}</p> : null}
+      {proof.declaredAmountIqd !== null ? <p className="type-xs text-ink-2">{fillNodes(t("proof.submitted.amount"), { amount: <bdi className="nums">{f.iqd(proof.declaredAmountIqd)}</bdi> })}</p> : null}
       {proof.submittedAt !== null ? (
-        <p className="type-caption text-ink-2">{fillNodes(t("proof.submitted.at"), { date: <When at={proof.submittedAt} f={f} /> })}</p>
+        <p className="type-xs text-ink-2">{fillNodes(t("proof.submitted.at"), { date: <When at={proof.submittedAt} f={f} /> })}</p>
       ) : null}
       {justSent ? (
         <span className="flex items-center gap-3">
-          <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-md bg-niche">
+          <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-sm bg-niche">
             <img src={justSent.previewUrl} width={64} height={64} alt={t("proof.submitted.preview")} className="size-full object-cover" />
           </span>
-          <bdi className="min-w-0 truncate type-caption text-ink-2">{justSent.name}</bdi>
+          <bdi className="min-w-0 truncate type-xs text-ink-2">{justSent.name}</bdi>
         </span>
       ) : null}
     </div>
   );
 }
 
-function OrderLine({ line }: { line: OrderLineView }) {
-  const t = useT("checkout");
-  const f = useFormat();
-  const facts = [
-    line.qty > 1 ? t("order.items.unit", { price: "⁦" + f.iqd(line.unitPriceIqd) + "⁩" }) : null,
+/** What a line of the order says under its name: quantity, unit price (more than one), grade, warranty, refunds. */
+function lineFacts(line: OrderLineView, t: (key: string, vars?: Record<string, string | number>) => string, f: Formatters): string {
+  return [
+    t("order.items.qty", { count: line.qty, n: f.number(line.qty) }),
+    line.qty > 1 ? t("order.items.unit", { price: "⁨" + iqdText(f, line.unitPriceIqd) + "⁩" }) : null,
     line.grade ? t("order.items.grade", { grade: line.grade }) : null,
     line.warranty ? ("months" in line.warranty ? t("order.items.warrantyMonths", { count: line.warranty.months, n: f.number(line.warranty.months) }) : t("order.items.warrantyDays", { count: line.warranty.days, n: f.number(line.warranty.days) })) : null,
     line.refundedQty > 0 ? t("order.items.refunded", { count: line.refundedQty, n: f.number(line.refundedQty) }) : null,
-  ].filter(Boolean);
-  return (
-    <li className="grid grid-cols-[4rem_minmax(0,1fr)_auto] items-start gap-3 rounded-lg bg-paper p-3">
-      <Niche as="span" ratio="1/1" tagZone={false} fill={Boolean(line.image.mediaKey) && !line.image.isIllustration} className="rounded-md">
-        <ProductImage image={line.image} alt="" sizes="64px" pose={0} shadow={false} fit="cover" />
-      </Niche>
-      <span className="grid min-w-0 gap-0.5">
-        {line.href ? (
-          <LocaleLink to={line.href} className="line-clamp-2 rounded-xs type-strong text-ink underline-offset-4 hover:underline">
-            <BidiText text={line.name} />
-          </LocaleLink>
-        ) : (
-          <span className="line-clamp-2 type-strong text-ink">
-            <BidiText text={line.name} />
-          </span>
-        )}
-        <span className="type-caption text-ink-2">{t("order.items.qty", { count: line.qty, n: f.number(line.qty) })}</span>
-        {facts.length > 0 ? <span className="type-caption text-ink-2">{facts.join(" · ")}</span> : null}
-      </span>
-      <PriceTag size="line" priceIqd={line.lineTotalIqd} approx="off" />
-    </li>
-  );
+  ]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="grid gap-0.5 border-b border-line py-3 last:border-b-0">
-      <dt className="type-caption text-ink-2">{label}</dt>
-      <dd className="min-w-0 break-words type-body text-ink">{children}</dd>
+    <div className="co-facts__row">
+      <dt className="type-xs text-ink-2">{label}</dt>
+      <dd className="min-w-0 break-words type-sm text-ink">{children}</dd>
     </div>
   );
 }

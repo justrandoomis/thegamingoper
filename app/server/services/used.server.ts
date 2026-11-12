@@ -31,9 +31,10 @@ import { getSetting } from "~/server/settings.server";
 export const USED_GRADE_ORDER: readonly UsedGrade[] = ["A+", "A", "B", "C"];
 export const USED_SORTS = ["newest", "price_asc", "price_desc"] as const;
 export type UsedSort = (typeof USED_SORTS)[number];
-/** Units per page of the list. */
+/** Units per page of the list («اعرض المزيد» adds this many). */
 export const USED_PAGE_SIZE = 24;
-export const MAX_USED_PAGE_SIZE = 48;
+/** The most units one read returns (the list shows at most 10 pages at once). */
+export const MAX_USED_PAGE_SIZE = 240;
 
 /** One used unit in a list: the card's data plus the facts the filters work on. */
 export type UsedUnitListItem = UsedUnitCardData & {

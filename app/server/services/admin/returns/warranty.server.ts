@@ -18,6 +18,7 @@ import { and, asc, desc, eq, gte, inArray, lt, lte, or, sql, type SQL } from "dr
 import { z } from "zod";
 import { pick, type L10n, type Locale } from "~/lib/locales";
 import { normalizeIraqPhone } from "~/lib/phone";
+import { customerProfileId } from "~/routes/admin/shell/access.server";
 import { assertCan, can, canAny, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import type { Db } from "~/server/db/drizzle.server";
@@ -82,6 +83,7 @@ export async function listWarranties(db: Db, actor: Actor, filters: WarrantyFilt
         name: orderItems.nameSnapshot,
         orderRef: orders.ref,
         contactName: orders.contactName,
+        customerId: sql<string | null>`coalesce(${warranties.customerId}, ${orders.customerId})`,
       })
       .from(warranties)
       .innerJoin(orderItems, eq(orderItems.id, warranties.orderItemId))
@@ -109,6 +111,7 @@ export async function listWarranties(db: Db, actor: Actor, filters: WarrantyFilt
       orderRef: row.orderRef,
       serial: row.serial ?? null,
       customerName: row.contactName ?? null,
+      customerProfileId: customerProfileId(actor, row.customerId),
       phone: phoneView(actor, row.phone),
       startsAt: row.startsAt,
       endsAt: row.endsAt,
@@ -153,6 +156,7 @@ export async function getWarranty(db: Db, actor: Actor, warrantyId: string, loca
       name: orderItems.nameSnapshot,
       orderRef: orders.ref,
       contactName: orders.contactName,
+      customerId: sql<string | null>`coalesce(${warranties.customerId}, ${orders.customerId})`,
       specs: products.specs,
     })
     .from(warranties)
@@ -193,6 +197,7 @@ export async function getWarranty(db: Db, actor: Actor, warrantyId: string, loca
     orderRef: row.orderRef,
     serial: row.serial ?? null,
     customerName: row.contactName ?? null,
+    customerProfileId: customerProfileId(actor, row.customerId),
     phone: phoneView(actor, row.phone),
     startsAt: row.startsAt,
     endsAt: row.endsAt,

@@ -1,207 +1,224 @@
 /*
- * Home page (app/routes/storefront/home) — DESIGN.md §2 the lit stage and the key bank, §7.2 intro, §8.1 mobile home,
- * §8.9 desktop home, §8.11 tablet. Components layer (utilities still win); tokens and logical properties only;
- * motion is transform and opacity only (the individual `translate` / `scale` properties), never longer than the
- * intro's 1.4 s; every animation is off under reduced motion and at the lite tier where DESIGN.md says so.
+ * Home page (app/routes/storefront/home) — Design System v2 §6.1 (home, intro, onboarding), §4.18 (the band), §4.19
+ * (tiles). Page layout only: every surface, colour, radius and shadow comes from the kit's classes and the tokens
+ * (docs/UI.md §2–§3); logical properties only; motion is transform and opacity only (the individual `translate` /
+ * `scale` properties), never longer than the intro's 1.4 s, and off under reduced motion and at the lite tier where
+ * DESIGN.md says so. Components layer, so utilities still win.
  */
 @layer components {
   /* ───────────────────────────── page ───────────────────────────── */
   .home {
-    display: grid;
-    gap: var(--gap-section);
-    padding-block-end: var(--s-10);
+    /* the band starts 16px under the header; the shell's footer keeps its own section gap above it */
+    padding-block-start: var(--s-4);
   }
 
-  /* ───────────────────────────── hero: copy · stage · bank ─────────────────────────────
-   * Phones: one column — headline, stage (tag and commit key hang off its rim), bank. From 768: the copy column at
-   * the inline start beside the stage (6 + 6), the bank under the copy; from 1200: 5 + 7 (§8.9). Grid columns follow
-   * the reading direction, so English mirrors by itself. */
-  .home-hero {
-    --home-hero-min: calc(22px * var(--ds));
-    --home-hero-max: calc(36px * var(--ds));
+  /* ───────────────────────────── hero: the crimson band ─────────────────────────────
+   * Phones (one column, ≤ 440px tall at 390): pill · headline · the product (168px) · price · key · delivery line.
+   * From 768: the copy at the inline start (7/12; 6/12 from 1280) and the product at the inline end across the band's
+   * height, the copy centred by the two flexible rows around it. Grid columns follow the reading direction, so English
+   * mirrors by itself. The headline's size per range comes from the page (./view heroTitleSizes → --hero-fs-*), and
+   * the copy-column widths below are its inputs (HERO_COPY_MIN): change both together. The band's one light sits
+   * behind the product (--light-x / --light-y are the band's own knobs). */
+  .home-hero.band--hero {
+    --light-y: 48%;
+  }
+  .home-hero__body {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "copy" "stage" "bank";
-    row-gap: var(--s-3);
-    padding-block-start: var(--s-2);
+    grid-template-areas: "pill" "title" "media" "price" "buy" "line";
+    justify-items: start;
+    padding: 20px;
   }
-  .home-hero__copy {
-    grid-area: copy;
-    container-type: inline-size;
-    display: grid;
-    gap: var(--s-1);
-    min-inline-size: 0;
+  .home-hero__pill {
+    grid-area: pill;
   }
-  .home-hero__stage {
-    grid-area: stage;
-    min-inline-size: 0;
-  }
-  .home-hero__bank {
-    grid-area: bank;
-    min-inline-size: 0;
-  }
-  .home-hero__eyebrow {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0 var(--s-1);
-    min-block-size: 24px;
-  }
-  /* One line wherever it fits (DESIGN.md §14): the size follows the column's width and the headline's length
-   * (--em: its width in em, estimated by the page), between a floor (22 / 26 / 34px) and the hero size; a headline too long for the floor
-   * wraps, balanced — on a desktop two lines read better than a small line. */
   .home-hero__title {
-    font: var(--type-hero);
-    font-size: clamp(var(--home-hero-min), calc(100cqi / var(--em, 12)), var(--home-hero-max));
+    grid-area: title;
+    margin-block-start: 6px;
+    font: var(--type-display);
+    font-size: var(--hero-fs-sm, var(--fs-display));
     text-wrap: balance;
   }
-  .home-hero__deck {
+  .home-hero__facts {
+    grid-area: facts;
     display: none;
   }
-  .home-hero__keys {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: var(--s-3);
+  .home-hero__media {
+    grid-area: media;
+    position: relative;
+    isolation: isolate;
+    justify-self: stretch;
+    block-size: 168px;
+    margin-block-start: 4px;
   }
-  /* the tag and the commit key on the rim: when a seven-digit price leaves no room for the whole key label on a
-   * narrow phone, the key moves under the tag (at the inline end) instead of being cut short */
-  .home-hero .stage__band {
-    flex-wrap: wrap;
-    row-gap: var(--s-2);
-  }
-  .home-hero .stage__band > .key {
-    flex: none;
-    margin-inline-start: auto;
-  }
-  /* the photo on the stage is a link into the product page; it fills the stage's slot */
   .home-hero__link {
-    display: grid;
-    place-items: end center;
+    display: block;
     inline-size: 100%;
     block-size: 100%;
+    margin-inline: auto;
     border-radius: var(--r-lg);
   }
   .home-hero__shared {
-    display: block;
-  }
-  .home-hero__empty {
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: var(--s-2);
+    inline-size: 100%;
     block-size: 100%;
-    padding: var(--s-4);
-    text-align: center;
   }
-  /* the stage's slot is absolutely placed: the empty message takes the whole stage */
-  .home-hero__stage .stage:has(.home-hero__empty) .stage__slot {
-    inset: 0;
+  /* an opaque photo keeps its own plate on the band: multiplied into crimson it would turn red */
+  .home-hero__media {
+    --opaque-blend: normal;
   }
-  @media (min-width: 48rem) {
-    .home-hero {
-      --home-hero-min: calc(26px * var(--ds));
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      grid-template-areas: "copy stage" "bank stage";
-      column-gap: var(--s-8);
-      row-gap: var(--s-5);
-      padding-block-start: var(--s-6);
-    }
-    .home-hero__copy {
-      align-self: end;
-      gap: var(--s-3);
-    }
-    .home-hero__stage {
-      align-self: center;
-    }
-    .home-hero__bank {
-      align-self: start;
-    }
-    .home-hero__deck {
-      display: grid;
-      gap: var(--s-4);
-      justify-items: start;
-    }
+  .home-hero__price {
+    grid-area: price;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+    margin-block-start: 4px;
   }
-  @media (min-width: 75rem) {
-    .home-hero {
-      --home-hero-min: calc(34px * var(--ds));
-      --home-hero-max: calc(68px * var(--ds));
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      column-gap: var(--s-12);
-      padding-block-start: var(--s-10);
-    }
+  .home-hero__buy {
+    grid-area: buy;
+    justify-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-5);
+    margin-block-start: var(--s-2);
   }
-
-  /* ───────────────────────────── used + support: a two-row flat panel (§8.1) ───────────────────────────── */
-  .home-services__list {
-    display: grid;
-    overflow: hidden;
-  }
-  .home-services__list > li + li {
-    border-block-start: 1px solid var(--line);
-  }
-  .home-row {
+  .home-hero__line {
+    grid-area: line;
     display: flex;
     align-items: center;
-    gap: var(--s-3);
-    min-block-size: 68px;
-    padding-block: var(--s-3);
-    padding-inline: var(--s-4);
-    color: var(--ink);
-    text-decoration: none;
+    gap: 6px;
+    margin-block-start: var(--s-2);
+    font: var(--type-xs-strong);
   }
-  .home-row__icon {
-    display: grid;
-    place-items: center;
+  .home-hero__line > svg {
     flex: none;
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--r-full);
-    background: var(--paper);
-  }
-  .home-row__text {
-    display: grid;
-    gap: 2px;
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .home-row__arrow {
-    flex: none;
-    color: var(--ink-2);
-  }
-  @media (hover: hover) {
-    .home-row:hover .home-row__text > :first-child {
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
   }
   @media (min-width: 48rem) {
-    .home-services__list {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    .home-hero.band--hero {
+      --light-x: calc(50% + 29% * var(--dir));
+      --light-y: 50%;
     }
-    .home-services__list > li + li {
-      border-block-start: 0;
-      border-inline-start: 1px solid var(--line);
+    .home-hero__body {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-rows: 1fr repeat(6, auto) 1fr;
+      grid-template-areas:
+        ". media"
+        "pill media"
+        "title media"
+        "facts media"
+        "price media"
+        "buy media"
+        "line media"
+        ". media";
+      column-gap: 24px;
+      min-block-size: 360px;
+      padding: 28px;
+    }
+    .home-hero__title {
+      margin-block-start: var(--s-2);
+      font-size: var(--hero-fs-md, var(--fs-display));
+    }
+    .home-hero__facts {
+      display: block;
+      margin-block-start: var(--s-2);
+      font: var(--type-lead);
+      color: var(--on-showcase-2);
+    }
+    /* the product takes the band's full height but for a little air (it reaches into the band's padding) */
+    .home-hero__media {
+      block-size: auto;
+      min-block-size: 280px;
+      margin-block: -16px -8px;
+    }
+    .home-hero__link {
+      max-inline-size: 410px;
+    }
+    .home-hero__price {
+      margin-block-start: var(--s-3);
+    }
+    .home-hero__buy {
+      justify-self: start;
+      margin-block-start: 14px;
+    }
+    .home-hero__line {
+      margin-block-start: var(--s-3);
+    }
+  }
+  @media (min-width: 64rem) {
+    .home-hero__body {
+      column-gap: 32px;
+      min-block-size: 400px;
+      padding: 32px 40px;
+    }
+    .home-hero__title {
+      font-size: var(--hero-fs-lg, var(--fs-display));
+    }
+    .home-hero__media {
+      min-block-size: 336px;
+    }
+  }
+  @media (min-width: 80rem) {
+    .home-hero.band--hero {
+      --light-x: calc(50% + 25% * var(--dir));
+    }
+    .home-hero__body {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      min-block-size: 420px;
+      padding: 32px 48px;
+    }
+    .home-hero__title {
+      font-size: var(--hero-fs-xl, var(--fs-display));
     }
   }
 
-  /* ───────────────────────────── shop by platform (§9.4: a flat niche, the label on the floor) ───────────────────────────── */
-  .home-tile {
+  /* ───────────────────────────── the consent row (after the intro; non-blocking) ───────────────────────────── */
+  .home-consent {
     display: grid;
-    align-content: start;
-    gap: var(--s-1);
-    inline-size: 100%;
-    color: var(--ink);
-    text-decoration: none;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--line);
     border-radius: var(--r-lg);
+    background: var(--paper);
   }
-  .home-tile__label {
-    display: flex;
-    padding-block-start: var(--s-1);
+  .home-consent__text {
+    display: grid;
+    gap: var(--s-1);
+    min-inline-size: 0;
   }
-  .home-tile .plat {
-    color: var(--ink);
+  .home-consent__question {
+    font: var(--type-h3);
+  }
+  .home-consent__detail {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .home-consent__keys {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); /* two equal keys */
+    gap: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .home-consent {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: var(--s-6);
+      padding: var(--s-5) var(--s-6);
+    }
+    .home-consent__keys {
+      grid-template-columns: repeat(2, minmax(9rem, 1fr));
+    }
+  }
+
+  /* ───────────────────────────── trade-in and support doors ───────────────────────────── */
+  .home-entries {
+    display: grid;
+    gap: var(--gap-card);
+  }
+  @media (min-width: 48rem) {
+    .home-entries {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   /* ───────────────────────────── personalisation panel ───────────────────────────── */
@@ -210,33 +227,24 @@
     gap: var(--s-2);
     padding: var(--s-5);
   }
-
-  /* platform keys in the onboarding sheet inflate out of their well when it opens (bubbles), first appearance only */
-  .home-bubbles > .key {
-    animation: home-inflate var(--t-reveal) var(--ease-squish) both;
+  .home-personal__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-5);
+    margin-block-start: var(--s-2);
   }
-  @supports (animation-timing-function: linear(0, 1)) {
-    .home-bubbles > .key {
-      animation-duration: var(--spring-inflate-t);
-      animation-timing-function: var(--spring-inflate);
+  @media (min-width: 64rem) {
+    .home-personal {
+      padding: var(--s-6);
     }
   }
-  .home-bubbles > .key:nth-child(2) {
-    animation-delay: 45ms;
-  }
-  .home-bubbles > .key:nth-child(3) {
-    animation-delay: 90ms;
-  }
-  .home-bubbles > .key:nth-child(4) {
-    animation-delay: 135ms;
-  }
 
-  /* ───────────────────────────── the intro (DESIGN.md §7.2 "the lights come on") ───────────────────────────── */
+  /* ───────────────────────────── the intro (v2 §6.1; DESIGN.md §7.2 "the lights come on") ───────────────────────────── */
   .intro {
     position: fixed;
     inset: 0;
     z-index: var(--z-intro);
-    display: grid;
     overflow: hidden;
     color: var(--ink);
     outline: none;
@@ -253,11 +261,9 @@
     inset: 0;
     pointer-events: none;
   }
-  /* one official cut-out per platform rests half out of frame in each corner, in its own light */
+  /* the four platforms' lead devices, half out of frame in the corners, straight (no tilt) */
   .intro__corner {
-    --size: clamp(132px, min(44vw, 27vh), 340px);
-    --halo-w: 118%;
-    --halo-h: 118%;
+    --size: clamp(104px, min(30vw, 20vh), 300px);
     --dx: -1;
     --dy: -1;
     position: absolute;
@@ -268,41 +274,31 @@
     animation: intro-corner 420ms var(--ease-settle) both;
     animation-delay: calc(300ms + var(--i, 0) * 80ms);
   }
-  .intro__corner > .stage__light {
-    animation: intro-fade 260ms ease-out both;
-    animation-delay: calc(300ms + var(--i, 0) * 80ms);
-  }
   .intro__corner[data-corner="0"] {
     --dx: calc(-1 * var(--dir));
-    --rot: -11deg;
-    inset-block-start: calc(var(--safe-top) + 44px);
-    inset-inline-start: calc(var(--size) * -0.46);
+    inset-block-start: calc(var(--safe-top) + 64px);
+    inset-inline-start: calc(var(--size) * -0.42);
   }
   .intro__corner[data-corner="1"] {
     --dx: var(--dir);
-    --rot: 11deg;
-    inset-block-start: calc(var(--safe-top) + 44px);
-    inset-inline-end: calc(var(--size) * -0.46);
+    inset-block-start: calc(var(--safe-top) + 64px);
+    inset-inline-end: calc(var(--size) * -0.42);
   }
   .intro__corner[data-corner="2"] {
     --dx: calc(-1 * var(--dir));
     --dy: 1;
-    --rot: 9deg;
-    inset-block-end: calc(var(--size) * -0.3);
-    inset-inline-start: calc(var(--size) * -0.4);
+    inset-block-end: calc(var(--size) * -0.34);
+    inset-inline-start: calc(var(--size) * -0.38);
   }
   .intro__corner[data-corner="3"] {
     --dx: var(--dir);
     --dy: 1;
-    --rot: -9deg;
-    inset-block-end: calc(var(--size) * -0.3);
-    inset-inline-end: calc(var(--size) * -0.4);
+    inset-block-end: calc(var(--size) * -0.34);
+    inset-inline-end: calc(var(--size) * -0.38);
   }
   .intro__object {
-    position: relative;
     display: block;
-    inline-size: 74%;
-    rotate: var(--rot, 0deg);
+    inline-size: 84%;
   }
   .intro__object img {
     display: block;
@@ -312,23 +308,25 @@
   .intro__skip {
     position: absolute;
     z-index: 2;
-    inset-block-start: calc(var(--safe-top) + var(--s-1));
+    inset-block-start: calc(var(--safe-top) + var(--s-3));
     inset-inline-end: max(var(--gutter), var(--safe-inline));
   }
   .intro__center {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     display: grid;
     justify-items: center;
-    align-content: center;
-    gap: var(--s-5);
-    min-block-size: 100%;
-    padding-block: calc(var(--safe-top) + 52px) calc(var(--safe-bottom) + var(--s-6));
+    align-content: safe center;
+    gap: var(--s-6);
+    padding-block: calc(var(--safe-top) + 72px) calc(var(--safe-bottom) + var(--s-6));
     padding-inline: max(var(--gutter), var(--safe-inline));
   }
   .intro__logo {
-    --lift: 12vh;
-    inline-size: clamp(120px, 34vw, 230px);
+    --lift: 8vh;
+    inline-size: clamp(112px, 30vw, 200px);
     animation: intro-lift var(--t-page) var(--ease-settle) both;
     animation-delay: 560ms;
   }
@@ -364,37 +362,68 @@
   }
   .intro__panel {
     display: grid;
-    gap: var(--s-3);
-    inline-size: min(100%, 26rem);
+    gap: var(--s-4);
+    inline-size: min(100%, 28rem);
   }
-  .intro__panel .bank__label {
+  .intro__line {
+    font: var(--type-h2);
+    text-align: center;
+    text-wrap: balance;
     animation: intro-rise 220ms var(--ease-settle) both;
     animation-delay: 640ms;
   }
-  .intro__keys {
-    animation: intro-fade 200ms ease-out both;
-    animation-delay: 660ms;
+  .intro__tiles {
+    margin: 0;
+    list-style: none;
   }
-  .intro__keys > .key {
+  .intro__tile {
+    display: grid;
     animation: intro-inflate var(--t-reveal) var(--ease-squish) both;
-    animation-delay: 700ms;
+    animation-delay: calc(700ms + var(--i, 0) * 45ms);
   }
   @supports (animation-timing-function: linear(0, 1)) {
-    .intro__keys > .key {
+    .intro__tile {
       animation-duration: var(--spring-inflate-t);
       animation-timing-function: var(--spring-inflate);
     }
   }
-  .intro__keys > .key:nth-child(2) {
-    animation-delay: 745ms;
+  /* a tile is a toggle here, not a door: no arrow; chosen = held on its wall, ringed inside, and checked. It is a
+   * <button>, so its words take the reading edge explicitly (a button centres its text by default) */
+  .intro__tiles .ptile {
+    text-align: start;
   }
-  .intro__keys > .key:nth-child(3) {
-    animation-delay: 790ms;
+  .intro .ptile__go {
+    display: none;
   }
-  .intro__keys > .key:nth-child(4) {
-    animation-delay: 835ms;
+  .intro__check {
+    position: absolute;
+    inset-block-start: 10px;
+    inset-inline-start: 10px;
+    display: grid;
+    place-items: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-full);
+    background: var(--on-color);
+    color: var(--on-white);
+    opacity: 0;
+    scale: 0.6;
+    transition:
+      opacity var(--t-micro) var(--ease-water),
+      scale var(--spring-inflate-t) var(--spring-inflate);
+  }
+  .intro .intro__tiles .ptile[aria-pressed="true"] > .ptile__cap {
+    transform: translateY(var(--wall));
+    outline: 3px solid currentColor;
+    outline-offset: -7px;
+  }
+  .intro__tiles .ptile[aria-pressed="true"] .intro__check {
+    opacity: 1;
+    scale: 1;
   }
   .intro__hint {
+    font: var(--type-sm);
+    color: var(--ink-2);
     text-align: center;
     animation: intro-rise 220ms var(--ease-settle) both;
     animation-delay: 880ms;
@@ -405,17 +434,42 @@
   }
   @media (min-width: 48rem) {
     .intro__corner {
-      --size: clamp(200px, min(30vw, 34vh), 340px);
+      --size: clamp(180px, min(26vw, 30vh), 300px);
     }
+    .intro__panel {
+      inline-size: min(100%, 44rem);
+    }
+    .intro__check {
+      inset-block: auto 16px;
+      inset-inline-start: 18px;
+    }
+    .intro__start {
+      justify-self: center;
+      inline-size: min(100%, 20rem);
+    }
+  }
+  @media (min-width: 64rem) {
     .intro__logo {
-      inline-size: 240px;
+      inline-size: 220px;
+    }
+    .intro__panel {
+      inline-size: min(100%, 1020px); /* four 240px tiles and their gaps */
+    }
+    .intro__check {
+      inset-block-end: 18px;
+      inset-inline-start: 22px;
+      inline-size: 40px;
+      block-size: 40px;
     }
   }
   /* any tap during the sequence jumps to the end; reduced motion shows the still composition; the lite tier has no
    * staggered inflate (DESIGN.md §6.5, §7.3) */
   .intro:is([data-settled], [data-tier="reduced"], [data-tier="lite"])
-    :is(.intro__logo, .intro__logo [data-part], .intro__corner, .intro__corner > .stage__light, .intro__panel .bank__label, .intro__keys, .intro__keys > .key, .intro__hint, .intro__start) {
+    :is(.intro__logo, .intro__logo [data-part], .intro__corner, .intro__line, .intro__tile, .intro__hint, .intro__start) {
     animation: none;
+  }
+  .intro:is([data-tier="reduced"], [data-tier="lite"]) .intro__check {
+    transition: none;
   }
   .intro[data-tier="reduced"] .intro__floor {
     animation-duration: 120ms;
@@ -423,12 +477,9 @@
   .intro[data-leaving] {
     pointer-events: none;
   }
-  :is(.fx-low, [data-motion="lite"], [data-motion="reduced"]) .home-bubbles > .key {
-    animation: none;
-  }
   @media (prefers-reduced-motion: reduce) {
-    .home-bubbles > .key {
-      animation: none;
+    .intro__check {
+      transition: none;
     }
   }
 
@@ -464,13 +515,7 @@
   @keyframes intro-inflate {
     from {
       opacity: 0;
-      scale: 0.86;
-    }
-  }
-  @keyframes home-inflate {
-    from {
-      opacity: 0;
-      scale: 0.86;
+      scale: 0.94;
     }
   }
 }

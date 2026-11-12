@@ -4,12 +4,29 @@
  * service can never disagree about which policies exist or in which order they are shown.
  *
  *   /policies/:slug   POLICY_SLUGS, in this order (the sideways push between policies follows it)
- *   PolicyView        what getPolicy() returns: title, blocks, the `approved` flag the draft notice reads, facts
+ *   PolicyView        what getPolicy() returns: title, blocks, the `approved` flag the status line reads, facts
  *   ContactView       what getContactDetails() returns: only what the owner filled in under `store.contact`
+ *   HANDOFF_PATH      the one "talk to a person" destination (Design System v2 §6.13): where every content page sends
+ *                     a shopper while the store has published no contact channel
  */
 import type { IconName } from "~/art/Icon";
 import type { Locale } from "~/lib/locales";
 import type { Block } from "~/ui/Blocks";
+import type { ContactChannels } from "~/ui/ContactCard";
+
+/** «تحدّث مع موظف»: the support area's hand-off form (one destination everywhere, v2 §6.13). */
+export const HANDOFF_PATH = "/support/assistant?handoff=1#handoff";
+
+/** A row of /about's «اعرف أكثر» list. */
+export type AboutLink = "policies" | "contact" | "accessibility";
+
+/**
+ * /about's «اعرف أكثر» rows, in order: /contact only once the store has published a channel. Until then the aside's
+ * «اكتب لموظف» card, right above the list, is the way to a person — the list does not offer the hand-off a second time.
+ */
+export function aboutLinks(hasContact: boolean): AboutLink[] {
+  return hasContact ? ["policies", "contact", "accessibility"] : ["policies", "accessibility"];
+}
 
 /** The store's policies, in the order the pages list them. The footer links the first five plus /policies/privacy and /policies/terms. */
 export const POLICY_SLUGS = ["shipping", "returns", "warranty", "payment", "privacy", "terms"] as const;
@@ -45,7 +62,13 @@ export const PAYMENT_METHOD_KEYS: readonly PaymentMethodKey[] = ["cod", "wallet"
  */
 export type PolicyFact =
   | { kind: "delivery_fee"; amountIqd: number; varies: boolean }
-  | { kind: "governorates"; count: number }
+  /**
+   * Delivery is paused somewhere (an inactive governorate): `all` when no governorate is served. Absent while every
+   * governorate is served — the fee line already says «لكل المحافظات», and the count is the owner's (v2 §13 #6).
+   */
+  | { kind: "coverage_paused"; all: boolean }
+  /** An order is followed with its number and the mobile number, without an account (/track). */
+  | { kind: "track" }
   | { kind: "return_window"; days: number }
   | { kind: "proof_window"; hours: number }
   | { kind: "payment_methods"; methods: PaymentMethodKey[] }
@@ -68,13 +91,18 @@ export type PolicyView = {
   /** Where the text came from: a published CMS page (`pages`, kind "policy"), or the draft written in code. */
   source: "cms" | "draft";
   /**
-   * The data flag the "draft — awaiting the store owner's review" notice reads: true only for a published,
-   * non-demo CMS page inside its schedule. Drafts are also kept out of search engines (noindex, no sitemap entry).
+   * The data flag the page's status line reads: true only for a published, non-demo CMS page inside its schedule.
+   * Otherwise the page says «نسخة أولى — قد تتغيّر قبل الإطلاق.» (v2 §6.15). Drafts are also kept out of search
+   * engines (noindex, no sitemap entry).
    */
   approved: boolean;
   /** Language of `title` and `blocks`: differs from the page's language when the CMS page lacks a translation. */
   textLocale: Locale;
-  /** When the approved page was published (or last changed); null for a draft. */
+  /**
+   * «آخر تحديث»: when the text the shopper reads last changed. An approved page: when it was published. A draft: the
+   * later of the drafts' last revision in code (POLICY_DRAFTS_REVISED_AT in the service) and the last change to a
+   * setting it quotes. Null only for data written before this field was filled.
+   */
   updatedAt: number | null;
   facts: PolicyFact[];
   /** Keep out of search engines: always for a draft; for an approved page when its SEO settings say so. */
@@ -98,7 +126,13 @@ export type ContactView = {
   channels: ContactChannel[];
   address: string | null;
   hours: string | null;
-  /** Nothing filled in yet: the page says "coming soon" and points to the help centre instead. */
+  /**
+   * The same details in the kit's <ContactCard> shape (WhatsApp, phone, address with its map link, the hours in the
+   * owner's words — no schedule is stored, so no open/closed state). Null when none of those is filled in: the card
+   * would render nothing, and the page leads with «اكتب لموظف» instead (v2 §4.25, §6.15).
+   */
+  card: ContactChannels | null;
+  /** Nothing filled in yet: the page leads with the hand-off («اكتب لموظف») instead. Never "coming soon". */
   isEmpty: boolean;
 };
 

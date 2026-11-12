@@ -19,6 +19,8 @@ import { RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { newId, randomToken } from "~/lib/ids";
 import { loader as homeLoader } from "~/routes/admin/pos/index";
+import { failure as posFailure } from "~/routes/admin/pos/pos.server";
+import { loader as sellLoader } from "~/routes/admin/pos/sell";
 import { loader as apiLoader } from "~/routes/admin/pos/till-api";
 import { systemActor, type EmployeeActor } from "~/server/actor";
 import { signInEmployee } from "~/server/auth/admin.server";
@@ -32,7 +34,8 @@ import { defaultRolePermissions, roleId, type DefaultRoleKey, type Permission } 
 import { listRegisters, saveRegister } from "~/server/services/admin/pos/registers.server";
 import { catalogSnapshot, createSale, findCustomer, getReceipt, listSales, lookupItem, recordReprint, searchItems, syncSales, type SaleRequestInput } from "~/server/services/admin/pos/sale.server";
 import { closeShift, countReviewable, listShifts, moveCash, myShift, openShift, reviewShift, shiftReport } from "~/server/services/admin/pos/shifts.server";
-import { parseShiftFilters, parseSaleFilters, parseWhole, parsePercentBps } from "~/server/services/admin/pos/types";
+import { CASHIER_DISCOUNT_LIMIT_BPS, parseShiftFilters, parseSaleFilters, parseWhole, parsePercentBps } from "~/server/services/admin/pos/types";
+import { setSetting, settingDefault } from "~/server/settings.server";
 import { receiveStock, reserveStatements } from "~/server/services/inventory/stock.server";
 import { creditWallet } from "~/server/services/wallet.server";
 import { runBatch } from "~/server/db/tx.server";
@@ -361,6 +364,73 @@ describe("the till", () => {
     expect(parseWhole("1,2,3")).toBeNaN();
     expect(parsePercentBps("٧٫٥%")).toBe(750);
     expect(parsePercentBps("120")).toBeNaN();
+  });
+});
+
+describe("the cashier's discount limit is the setting pos.discount_limit_bps (admin 22, 2026-11-11)", () => {
+  test("its default is the former constant; the sale's check, its audit trail and the till read the value in force", async () => {
+    expect(settingDefault("pos.discount_limit_bps")).toBe(CASHIER_DISCOUNT_LIMIT_BPS);
+    const shiftId = await shiftOf(as("cashier"));
+    const item = await stocked({ qty: 10, price: 100_000, landed: 60_000 });
+    const line = (discountIqd: number) => [{ variantId: item.variantId, qty: 1, unitPriceIqd: 100_000, discountIqd, serials: [] }];
+    const pay = (amount: number) => [{ method: "pos_cash" as const, amountIqd: amount }];
+    // 12 % is over the default 10 %
+    expect((await failureOf(createSale(t.db, as("cashier"), sale(shiftId, line(12_000), pay(88_000), { discountReason: "عرض" }), ctx, NOW))).code).toBe("discount_over_limit");
+
+    await setSetting(t.db, as("owner"), "pos.discount_limit_bps", 1500, "عروض الموسم", NOW, { expected: CASHIER_DISCOUNT_LIMIT_BPS });
+    try {
+      const made = await createSale(t.db, as("cashier"), sale(shiftId, line(12_000), pay(88_000), { discountReason: "عرض الموسم" }), ctx, NOW);
+      expect(made.totalIqd).toBe(88_000);
+      const orderId = (await t.db.select({ id: orders.id }).from(orders).where(eq(orders.ref, made.ref)).get())?.id ?? "";
+      const trail = await t.db.select({ after: auditEvents.after }).from(auditEvents).where(and(eq(auditEvents.action, "pos.sale.create"), eq(auditEvents.entityId, orderId))).get();
+      expect(JSON.stringify(trail?.after)).toContain('"discountLimitBps":1500');
+      // 16 % is over the new limit too
+      expect((await failureOf(createSale(t.db, as("cashier"), sale(shiftId, line(16_000), pay(84_000), { discountReason: "عرض" }), ctx, NOW))).code).toBe("discount_over_limit");
+
+      // The till checks the same number before it sends a sale.
+      const password = "pos-limit-password-1";
+      const hashed = await hashPassword(password, 1000);
+      const email = `${make.next("till")}@pos.test`;
+      const id = await make.employee({ email, passwordHash: hashed.hash, passwordIters: hashed.iterations });
+      await t.db.insert(employeeRoles).values({ employeeId: id, roleId: roleId("cashier") });
+      const req = request();
+      const result = await signInEmployee(req.ctx, t.db, { email, password });
+      if (result.status !== "signed_in") throw new Error("sign-in failed");
+      const page = new Request("http://localhost:5173/admin/pos/sell", { headers: { cookie: cookieOf(req.setCookies) } });
+      const context = new RouterContextProvider();
+      let till: unknown = null;
+      await requestContextMiddleware({ request: page, context, url: new URL(page.url), pattern: "/", params: {} }, async () => {
+        till = await sellLoader({ request: page, context, params: {}, url: new URL(page.url), pattern: "admin/pos/sell" } as never);
+        return new Response(null);
+      });
+      expect(till).toMatchObject({ limitBps: 1500 });
+    } finally {
+      await setSetting(t.db, as("owner"), "pos.discount_limit_bps", CASHIER_DISCOUNT_LIMIT_BPS, "إعادة الحد", NOW);
+    }
+  });
+
+  test("the refusal never names a limit other than the one in force: no fixed 10 % in any language (the till's hint shows the setting)", async () => {
+    const shiftId = await shiftOf(as("cashier"));
+    const item = await stocked({ qty: 4, price: 100_000, landed: 60_000 });
+    await setSetting(t.db, as("owner"), "pos.discount_limit_bps", 1500, "عروض الموسم", NOW, { expected: CASHIER_DISCOUNT_LIMIT_BPS });
+    try {
+      // 16 % against a 15 % limit: refused — and the words the cashier reads must not say the limit is 10 %
+      const refused = await failureOf(createSale(t.db, as("cashier"), sale(shiftId, [{ variantId: item.variantId, qty: 1, unitPriceIqd: 100_000, discountIqd: 16_000, serials: [] }], [{ method: "pos_cash", amountIqd: 84_000 }], { discountReason: "عرض" }), ctx, NOW));
+      expect(refused.code).toBe("discount_over_limit");
+      for (const locale of ["ar", "en", "ckb"] as const) {
+        // the till's banner and the line's field error, as the route glue translates them (posT: the module's strings)
+        const shown = posFailure(refused, locale, "sale");
+        const texts = [shown.message ?? "", ...Object.values(shown.fields ?? {})];
+        expect(texts.length, locale).toBeGreaterThan(1);
+        for (const text of texts) {
+          expect(text, locale).not.toBe("");
+          expect(text, locale).not.toMatch(/(^|[^0-9.,])10\s?%|١٠\s?[٪%]/);
+          expect(text, locale).not.toMatch(/\{\w+\}/);
+        }
+      }
+    } finally {
+      await setSetting(t.db, as("owner"), "pos.discount_limit_bps", CASHIER_DISCOUNT_LIMIT_BPS, "إعادة الحد", NOW);
+    }
   });
 });
 

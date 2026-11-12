@@ -6,6 +6,7 @@
  * product slug: the universe agrees with the cards the store shows; platform hubs use the RESEARCHED platforms
  * (multi-platform games and headsets have no platform_id); each filter, facet count, sort and the cursor behave.
  */
+import { RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { ProductCardData } from "~/lib/dto";
 import {
@@ -13,6 +14,7 @@ import {
   NO_FILTERS,
   PRICE_BANDS,
   activeGroups,
+  listChangeHref,
   listingSearch,
   parsePriceInput,
   readListingQuery,
@@ -21,10 +23,14 @@ import {
   type ListingFilters,
   type ListingSort,
 } from "~/routes/storefront/catalog/listing-model";
-import { addToCompare, clearCompare, compareHref, readCompare, removeFromCompare, syncCompare } from "~/routes/storefront/catalog/compare-client";
+import { loader as categoryLoader } from "~/routes/storefront/catalog/category";
+import { addToCompare, clearCompare, compareAfterAdd, compareHref, readCompare, readCompareThumbs, removeFromCompare, syncCompare } from "~/routes/storefront/catalog/compare-client";
+import { arrivalsShelf } from "~/routes/storefront/catalog/list.server";
+import { loader as searchLoader } from "~/routes/storefront/catalog/search";
+import { requestContextMiddleware } from "~/server/context.server";
 import { isAppError } from "~/server/errors";
 import { seedDemo } from "~/server/db/seed/demo";
-import { getCardsByIds, listCards } from "~/server/services/catalog/cards.server";
+import { getCardsByIds, getNewArrivals, listCards } from "~/server/services/catalog/cards.server";
 import { listProducts, loadListingRows, scopePicks, type ListingInput, type ListingScope } from "~/server/services/catalog/listing.server";
 import { createTestDb, type TestDb } from "./helpers/db";
 
@@ -52,6 +58,23 @@ async function allPages(input: Omit<ListingInput, "cursor">, limit = 7): Promise
 }
 
 const STOCK = { 0: "out_of_stock", 1: "low_stock", 2: "in_stock" } as const;
+
+let pageIp = 0;
+/** Runs a catalog page's loader the way React Router does: the request middleware (context, locale, cookies) first. */
+async function pageData<T>(path: string, loader: (args: never) => Promise<T>, params: Record<string, string> = {}): Promise<T> {
+  const request = new Request(`http://localhost:5173${path}`, { headers: { "CF-Connecting-IP": `198.51.100.${(pageIp++ % 200) + 1}` } });
+  const context = new RouterContextProvider();
+  const url = new URL(request.url);
+  let data: T | undefined;
+  await requestContextMiddleware({ request, context, url, pattern: path, params } as never, async () => {
+    data = await loader({ request, context, params, url, pattern: path } as never);
+    return new Response(null);
+  });
+  return data as T;
+}
+
+/** A card shows «جديد» when the read layer says so (badge "new" or isNew). */
+const saysNew = (card: Pick<ProductCardData, "badge" | "isNew">) => card.badge === "new" || card.isNew === true;
 
 beforeAll(async () => {
   t = await createTestDb();
@@ -385,6 +408,42 @@ describe("zero results and picks", () => {
   });
 });
 
+describe("«وصل حديثاً» shelves on the catalog pages (v2 §4.7: «جديد» never inside that shelf)", () => {
+  it("the shelf drops «جديد» from its cards and keeps every other badge", () => {
+    const base = (over: Partial<ProductCardData>) => ({ id: "prd_x", badge: null, isNew: false, ...over }) as ProductCardData;
+    expect(arrivalsShelf([base({ badge: "new", isNew: true })]).map(saysNew)).toEqual([false]);
+    expect(arrivalsShelf([base({ badge: null, isNew: true })]).map(saysNew)).toEqual([false]);
+    expect(arrivalsShelf([base({ badge: "deal", isNew: true })])[0].badge).toBe("deal");
+    expect(arrivalsShelf([base({ badge: "preorder" })])[0].badge).toBe("preorder");
+  });
+
+  it("a search that finds nothing offers new arrivals without «جديد», a shelf's worth of them", async () => {
+    // what the read layer hands over: arrivals that do say «جديد» (a shelf of them would repeat its own title)
+    const raw = await getNewArrivals(t.db, "ar", { limit: 8, now: Date.now() });
+    expect(raw.length).toBeGreaterThanOrEqual(5);
+    const page = (await pageData("/search?q=zzzzqqxx", searchLoader as never)) as { result: { total: number } | null; arrivals: ProductCardData[] };
+    expect(page.result?.total).toBe(0);
+    expect(page.arrivals.length).toBeGreaterThanOrEqual(5);
+    expect(page.arrivals.filter(saysNew)).toEqual([]);
+  });
+
+  it("an empty department offers new arrivals without «جديد»", async () => {
+    const departments = await rows<{ slug: string }>("SELECT slug FROM categories WHERE is_active = 1 AND kind <> 'used' ORDER BY slug");
+    let empty: string | null = null;
+    for (const { slug } of departments) {
+      const list = await listProducts(t.db, "ar", { scope: { kind: "category", slug }, limit: 1, now: t.now });
+      if (list && list.scopeTotal === 0) {
+        empty = slug;
+        break;
+      }
+    }
+    expect(empty, "the demo catalogue keeps a department without products").not.toBeNull();
+    const page = (await pageData(`/c/${empty}`, categoryLoader as never, { category: empty! })) as { arrivals: ProductCardData[] };
+    expect(page.arrivals.length).toBeGreaterThanOrEqual(3);
+    expect(page.arrivals.filter(saysNew)).toEqual([]);
+  });
+});
+
 describe("hub data", () => {
   it("a sub-category knows its trail and its one platform; a mixed category has none", async () => {
     const child = (await listProducts(t.db, "en", { scope: { kind: "category", slug: "nintendo-games" }, now: t.now }))!;
@@ -420,6 +479,32 @@ describe("compare store (compare-client.ts, exported for the product page and ca
     syncCompare({ kind: "headset", ids: ["prd_h", "prd_h", "prd_i"] });
     expect(readCompare()).toEqual({ kind: "headset", ids: ["prd_h", "prd_i"] });
     clearCompare();
+  });
+
+  it("remembers names and pictures for the tray, only for the products in the list", () => {
+    clearCompare();
+    expect(addToCompare({ id: "prd_t1", kind: "console", name: "PlayStation 5 Pro", image: { artKey: "playstation-5-pro--1", mediaKey: null } })).toBe("added");
+    expect(addToCompare({ id: "prd_t2", kind: "console" })).toBe("added");
+    expect(readCompareThumbs()).toEqual({ prd_t1: { name: "PlayStation 5 Pro", artKey: "playstation-5-pro--1", mediaKey: null } });
+    // the compare page knows every product's name and picture
+    syncCompare({ kind: "console", ids: ["prd_t1", "prd_t2"], items: [{ id: "prd_t2", name: "Nintendo Switch 2", image: { artKey: "nintendo-switch-2--1", mediaKey: null } }] });
+    expect(Object.keys(readCompareThumbs()).sort()).toEqual(["prd_t1", "prd_t2"]);
+    removeFromCompare("prd_t1");
+    expect(Object.keys(readCompareThumbs())).toEqual(["prd_t2"]);
+    // another kind starts a new list: the old pictures go with it
+    expect(addToCompare({ id: "prd_t3", kind: "game", name: "Mario Kart World", image: null })).toBe("replaced");
+    expect(readCompareThumbs()).toEqual({ prd_t3: { name: "Mario Kart World", artKey: null, mediaKey: null } });
+    clearCompare();
+    expect(readCompareThumbs()).toEqual({});
+  });
+
+  it("the link offered after an add opens the list that add made — another kind: the new list, never the old one", () => {
+    // the compare page compares the FIRST product's kind and makes this device's list equal to what it shows, so a
+    // link "old ids + the new one" would show the old list and undo the new one
+    expect(compareAfterAdd("added", ["prd_a"], "prd_b")).toBe("/compare?ids=prd_a&ids=prd_b");
+    expect(compareAfterAdd("replaced", ["prd_a", "prd_b"], "prd_g")).toBe("/compare?ids=prd_g");
+    expect(compareAfterAdd("full", ["prd_a", "prd_b", "prd_c", "prd_d"], "prd_e")).toBe("/compare?ids=prd_a&ids=prd_b&ids=prd_c&ids=prd_d");
+    expect(compareAfterAdd("present", ["prd_a", "prd_b"], "prd_b")).toBe("/compare?ids=prd_a&ids=prd_b");
   });
 });
 
@@ -459,6 +544,28 @@ describe("URL model (listing-model.ts)", () => {
     expect(parsePriceInput("-5")).toBe("invalid");
     expect(parsePriceInput("abc")).toBe("invalid");
     expect(parsePriceInput("99999999999")).toBe("invalid");
+  });
+
+  it("reads a price as the no-script form sends it — Arabic-Indic or Persian digits, separators, the currency — and writes it back in Western digits", () => {
+    expect(readListingQuery(new URLSearchParams("min=٥٠٬٠٠٠&max=١٠٠٠٠٠"))).toMatchObject({ priceMin: 50_000, priceMax: 100_000 });
+    expect(readListingQuery(new URLSearchParams("max=۲۵۰۰۰۰")).priceMax).toBe(250_000);
+    expect(readListingQuery(new URLSearchParams({ min: "250,000 د.ع" })).priceMin).toBe(250_000);
+    expect(listingSearch(readListingQuery(new URLSearchParams("max=١٠٠٠٠٠")))).toBe("?max=100000");
+    // still nothing for what is not a whole number of dinars
+    expect(readListingQuery(new URLSearchParams("min=99.5&max=abc"))).toMatchObject({ priceMin: null, priceMax: null });
+    expect(readListingQuery(new URLSearchParams("min=&max="))).toMatchObject({ priceMin: null, priceMax: null });
+  });
+
+  it("knows a link that changes this page's list (held while offline) from one that leaves the page", () => {
+    const here = "http://localhost:5173/platform/playstation?cat=games";
+    expect(listChangeHref("/platform/playstation?cat=games&stock=1", here)).toBe("/platform/playstation?cat=games&stock=1");
+    expect(listChangeHref("?cursor=abc", here)).toBe("/platform/playstation?cursor=abc");
+    expect(listChangeHref("/platform/playstation", here)).toBe("/platform/playstation");
+    expect(listChangeHref("/platform/playstation?cat=games", here)).toBeNull();
+    expect(listChangeHref("#catalog-devices", here)).toBeNull();
+    expect(listChangeHref("/p/playstation-5-pro", here)).toBeNull();
+    expect(listChangeHref("/en/platform/playstation?cat=games", here)).toBeNull();
+    expect(listChangeHref("https://example.com/platform/playstation?cat=consoles", here)).toBeNull();
   });
 
   it("knows which groups are active, removes one, compares sets", () => {

@@ -16,9 +16,10 @@ export const TILL_METHODS = ["pos_cash", "pos_card", "wallet"] as const;
 export type TillMethod = (typeof TILL_METHODS)[number];
 
 /**
- * A cashier's own discount limit (pos.discount.apply): at most this share of a line's price, and of the whole sale.
- * Beyond it — or under a SKU's margin floor — only pricing.discount.override. A module constant until settings (22)
- * has a key for it (requested).
+ * The default of a cashier's own discount limit (pos.discount.apply): at most this share of a line's price, and of
+ * the whole sale. Beyond it — or under a SKU's margin floor — only pricing.discount.override. The limit in force is
+ * the setting "pos.discount_limit_bps" (admin 22, since 2026-11-11), whose default this is: the sale's check and the
+ * till read the setting.
  */
 export const CASHIER_DISCOUNT_LIMIT_BPS = 1_000;
 /** A catalogue snapshot on a device is used for offline sales for at most this long. */

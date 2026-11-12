@@ -1,21 +1,27 @@
 /**
- * The reading part of the product page — flat, on the floor (DESIGN.md §0 law 5 "flat is for reading", §8.4):
- * highlights, game facts, what is in the box, the specification rows, the research notes, and where the photos and
- * facts come from. Every section renders nothing when its data is missing, so a product with partial data reads as a
- * shorter page, never as empty boxes.
+ * The reading part of the product page — design v2 spec §6.7 items 12–13: «قبل أن تطلب» (a warn callout), highlights,
+ * about the product, game facts, the specification rows (label 14/600 ink-2 + value 14 between hairlines; the store's
+ * product code last, in caption; one line on where the facts come from, the sources behind a disclosure) and what is in
+ * the box (the retail-box photo beside a checked list). Flat on the floor: no panels around reading text.
  *
- * Mixed-script SENTENCES (research text: "مجموعة Prism الشفافة (Flare Orange …)") are plain text in the page's
- * direction — the browser's bidi algorithm pairs their brackets and full stops correctly. Only short Latin NAMES that
- * sit alone (model numbers, publishers, PEGI ratings) are isolated with <bdi>.
+ * Every section renders nothing when its data is missing, so a product with partial data reads as a shorter page,
+ * never as empty boxes. No image-credit section (credits live in the footer line and the sources disclosure).
+ *
+ * Mixed-script research text goes through MixedText (each Latin run isolated, brackets and separators left to the
+ * sentence); short Latin NAMES that sit alone (model numbers, publishers, PEGI ratings) are isolated with <bdi>.
  */
 import { useId, type ReactNode } from "react";
 
+import { getArt, isPhoto } from "~/art";
 import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
-import type { GameFacts as GameFactsData, ImageCredit, SourceLink, SpecRow, VariantDetail } from "~/server/services/catalog/product-types";
+import type { ImageRef } from "~/lib/dto";
+import type { GameFacts as GameFactsData, SourceLink, SpecRow, VariantDetail } from "~/server/services/catalog/product-types";
+import { Blocks } from "~/ui/Blocks";
 import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
-import { fillNodes } from "~/ui/PriceTag";
+import { Niche } from "~/ui/Niche";
+import { ProductImage } from "~/ui/ProductCard";
 import { TextLink } from "~/ui/TextLink";
 import { useProductT } from "../i18n";
 import { MixedText } from "./MixedText";
@@ -23,13 +29,14 @@ import { MixedText } from "./MixedText";
 /** Spec keys under which the research already lists the maker's model number(s). */
 const MODEL_KEYS = new Set(["model", "model_number", "modelNumber"]);
 
-/** A titled section of the page (h2) — the title and the outline come from one place. */
-export function Section({ title, children, className, level = 2 }: { title: ReactNode; children: ReactNode; className?: string; level?: 2 | 3 }) {
-  const id = useId();
+/** A titled section of the page — the title and the outline come from one place (h2 = type-h2, h3 = type-h3). */
+export function Section({ title, children, className, level = 2, id }: { title: ReactNode; children: ReactNode; className?: string; level?: 2 | 3; id?: string }) {
+  const auto = useId();
+  const headingId = id ?? auto;
   const Heading = `h${level}` as const;
   return (
-    <section aria-labelledby={id} className={cx("grid min-w-0 content-start gap-3", className)}>
-      <Heading id={id} className={level === 2 ? "type-section text-ink" : "type-sub text-ink"}>
+    <section aria-labelledby={headingId} className={cx("grid min-w-0 content-start gap-4", className)}>
+      <Heading id={headingId} className={level === 2 ? "type-h2 text-ink" : "type-h3 text-ink"}>
         {title}
       </Heading>
       {children}
@@ -37,19 +44,11 @@ export function Section({ title, children, className, level = 2 }: { title: Reac
   );
 }
 
-function List({ items, icon, tone }: { items: readonly string[]; icon: "check" | "package"; tone: string }) {
-  return (
-    <ul className="grid gap-2">
-      {items.map((item, index) => (
-        <li key={index} className="flex items-start gap-2.5 type-body text-ink">
-          <Icon name={icon} size={18} className={cx("mt-1 shrink-0", tone)} />
-          <span className="min-w-0">
-            <MixedText text={item} />
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
+/** «قبل أن تطلب»: the product's buyer note as a warn callout (a 3px --warn bar), when it has one. */
+export function BeforeYouOrder({ text, className }: { text: string | null; className?: string }) {
+  const t = useProductT();
+  if (!text) return null;
+  return <Blocks blocks={[{ type: "callout", tone: "warning", title: t("notes"), text }]} className={className} />;
 }
 
 export function Highlights({ items, level = 2, className }: { items: readonly string[]; level?: 2 | 3; className?: string }) {
@@ -57,17 +56,62 @@ export function Highlights({ items, level = 2, className }: { items: readonly st
   if (items.length === 0) return null;
   return (
     <Section title={t("highlights")} level={level} className={className}>
-      <List items={items} icon="check" tone="text-ok" />
+      <ul className="grid list-disc gap-2 ps-5 type-body text-ink marker:text-ink-2">
+        {items.map((item, index) => (
+          <li key={index} className="ps-1">
+            <MixedText text={item} />
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 }
 
-export function InTheBox({ items, level = 2, className }: { items: readonly string[]; level?: 2 | 3; className?: string }) {
+export function About({ text, level = 2, className }: { text: string | null; level?: 2 | 3; className?: string }) {
+  const t = useProductT();
+  if (!text) return null;
+  return (
+    <Section title={t("about")} level={level} className={className}>
+      <p className="max-w-[70ch] type-body text-ink">
+        <MixedText text={text} />
+      </p>
+    </Section>
+  );
+}
+
+/** The retail-box photo of a product, when its gallery has one (the photo manifest's kind "in-box"). Pure. */
+export function boxPhoto(images: readonly ImageRef[]): ImageRef | null {
+  return (
+    images.find((image) => {
+      const art = image.artKey ? getArt(image.artKey) : undefined;
+      return isPhoto(art) && art.kind === "in-box";
+    }) ?? null
+  );
+}
+
+/** «في العلبة»: a checked list beside the retail-box photo (when there is one). */
+export function InTheBox({ items, image, level = 2, className }: { items: readonly string[]; image?: ImageRef | null; level?: 2 | 3; className?: string }) {
   const t = useProductT();
   if (items.length === 0) return null;
   return (
     <Section title={t("inBox")} level={level} className={className}>
-      <List items={items} icon="package" tone="text-ink-2" />
+      <div className={cx("grid items-start gap-4", image && "grid-cols-[minmax(0,1fr)_7rem] md:grid-cols-[minmax(0,1fr)_10rem]")}>
+        <ul className="grid gap-2">
+          {items.map((item, index) => (
+            <li key={index} className="flex items-start gap-2.5 type-body text-ink">
+              <Icon name="check" size={20} className="mt-0.5 shrink-0 text-ok" />
+              <span className="min-w-0">
+                <MixedText text={item} />
+              </span>
+            </li>
+          ))}
+        </ul>
+        {image ? (
+          <Niche>
+            <ProductImage image={image} sizes="(min-width: 768px) 160px, 112px" />
+          </Niche>
+        ) : null}
+      </div>
     </Section>
   );
 }
@@ -101,25 +145,22 @@ export function GameFacts({ game, ageRating, level = 2, className }: { game: Gam
   return (
     <Section title={t("game.title")} level={level} className={className}>
       {game.format === "game-key-card" || game.format === "code-in-box" ? (
-        <p className="flex items-start gap-2.5 rounded-lg bg-niche px-4 py-3 type-body text-ink" data-notice={game.format}>
-          <Icon name="download-simple" size={20} className="mt-0.5 shrink-0 text-warn" />
-          <span>{t(game.format === "game-key-card" ? "game.keyCard" : "game.codeInBox")}</span>
-        </p>
+        <Blocks blocks={[{ type: "callout", tone: "info", text: t(game.format === "game-key-card" ? "game.keyCard" : "game.codeInBox") }]} />
       ) : null}
       <Rows rows={rows} />
     </Section>
   );
 }
 
-/** Plain rows on the floor with hairlines: the label at the start, the value after it (DESIGN.md §8.4 "Specifications"). */
+/** Rows between hairlines: the label (14/600 ink-2) at the start, the value (14 ink) after it. */
 export function Rows({ rows, className }: { rows: { label: ReactNode; value: ReactNode }[]; className?: string }) {
   if (rows.length === 0) return null;
   return (
-    <dl className={cx("grid grid-cols-[minmax(6.5rem,auto)_1fr] gap-x-5 type-body", className)}>
+    <dl className={cx("grid grid-cols-[minmax(6.5rem,32%)_minmax(0,1fr)] gap-x-5 border-t border-line", className)}>
       {rows.map((row, index) => (
         <div key={index} className="contents">
-          <dt className="border-b border-line py-2.5 text-ink-2">{row.label}</dt>
-          <dd className="min-w-0 border-b border-line py-2.5 font-medium text-ink [overflow-wrap:anywhere]">{row.value}</dd>
+          <dt className="border-b border-line py-3 type-sm-strong text-ink-2">{row.label}</dt>
+          <dd className="min-w-0 border-b border-line py-3 type-sm text-ink [overflow-wrap:anywhere]">{row.value}</dd>
         </div>
       ))}
     </dl>
@@ -127,103 +168,73 @@ export function Rows({ rows, className }: { rows: { label: ReactNode; value: Rea
 }
 
 /**
- * The specification sheet as researched, after the store's product code and — when the research does not already
- * list the maker's model numbers — the chosen variant's model number.
+ * Where the facts come from, said exactly: all sources are the maker's own sites, some are, or none is. A source is
+ * the maker's when its publisher names the product's brand ("Nintendo of America" for Nintendo). Pure.
  */
-export function Specs({ specs, variant, level = 2, className }: { specs: readonly SpecRow[]; variant: VariantDetail; level?: 2 | 3; className?: string }) {
+export function sourceLine(sources: readonly Pick<SourceLink, "publisher">[], brand: string | null): "official" | "officialAndOthers" | "listed" {
+  const mark = brand?.trim().toLowerCase();
+  const official = mark ? sources.filter((source) => source.publisher?.toLowerCase().includes(mark)).length : 0;
+  if (official > 0 && official === sources.length) return "official";
+  return official > 0 ? "officialAndOthers" : "listed";
+}
+
+/**
+ * The specification sheet as researched, then — when the research does not already list the maker's model numbers —
+ * the chosen variant's model number; the store's product code last, in caption; then where the facts come from.
+ */
+export function Specs({
+  specs,
+  variant,
+  sources,
+  brand,
+  level = 2,
+  className,
+}: {
+  specs: readonly SpecRow[];
+  variant: VariantDetail;
+  sources: readonly SourceLink[];
+  brand: string | null;
+  level?: 2 | 3;
+  className?: string;
+}) {
   const t = useProductT();
-  const rows: { label: ReactNode; value: ReactNode }[] = [
-    {
-      label: t("specs.sku"),
-      value: (
-        <bdi dir="ltr" className="nums">
-          {variant.sku}
-        </bdi>
-      ),
-    },
-  ];
+  const f = useFormat();
+  const rows: { label: ReactNode; value: ReactNode }[] = specs.map((spec) => ({ label: <MixedText text={spec.label} />, value: <MixedText text={spec.value} /> }));
   if (variant.modelNumber && !specs.some((spec) => MODEL_KEYS.has(spec.key))) rows.push({ label: t("specs.model"), value: <bdi dir="ltr">{variant.modelNumber}</bdi> });
-  for (const spec of specs) rows.push({ label: <MixedText text={spec.label} />, value: <MixedText text={spec.value} /> });
   return (
     <Section title={t("specs.title")} level={level} className={className}>
+      {specs.length === 0 ? <p className="type-sm text-ink-2">{t("specs.none")}</p> : null}
       <Rows rows={rows} />
-      {specs.length === 0 ? <p className="type-caption text-ink-2">{t("specs.none")}</p> : null}
-    </Section>
-  );
-}
-
-export function Notes({ text, level = 2, className }: { text: string | null; level?: 2 | 3; className?: string }) {
-  const t = useProductT();
-  if (!text) return null;
-  return (
-    <Section title={t("notes")} level={level} className={className}>
-      <p className="flex items-start gap-2.5 rounded-lg bg-niche px-4 py-3 type-body text-ink">
-        <Icon name="info" size={20} className="mt-0.5 shrink-0 text-info" />
-        <span>
-          <MixedText text={text} />
-        </span>
-      </p>
-    </Section>
-  );
-}
-
-/** A research note about the chosen variant (shown right under the selector). */
-export function VariantNote({ note, className }: { note: string | null; className?: string }) {
-  const t = useProductT();
-  if (!note) return null;
-  return (
-    <p className={cx("flex items-start gap-2 type-caption text-ink-2", className)} aria-live="polite">
-      <Icon name="info" size={16} className="mt-0.5 shrink-0" />
-      <span>
-        <b className="font-semibold text-ink">{t("variantNote")}:</b> <MixedText text={note} />
-      </span>
-    </p>
-  );
-}
-
-/** Who owns the photos (official images, DESIGN.md §12) and the sources the facts were taken from. */
-export function Credits({ credits, sources, className }: { credits: readonly ImageCredit[]; sources: readonly SourceLink[]; className?: string }) {
-  const t = useProductT();
-  if (credits.length === 0 && sources.length === 0) return null;
-  const owners = credits.map((credit, index) => (
-    <span key={credit.owner}>
-      {index > 0 ? t("separator") : null}
-      {credit.page ? (
-        <TextLink href={credit.page} external inline>
-          <bdi>{credit.owner}</bdi>
-        </TextLink>
-      ) : (
-        <bdi>{credit.owner}</bdi>
-      )}
-    </span>
-  ));
-  return (
-    <Section title={t("credits.title")} className={className}>
-      {credits.length > 0 ? (
-        <div className="grid gap-1 type-caption text-ink-2">
-          <p>{fillNodes(t("credits.images"), { owners })}</p>
-          <p>{t("credits.imagesNote")}</p>
-        </div>
-      ) : null}
-      {sources.length > 0 ? (
-        <Disclosure summary={t("credits.sources")} icon="book-open" variant="panel">
-          <ul className="grid gap-1.5 pb-3 type-caption">
-            {sources.map((source) => (
-              <li key={source.url} className="min-w-0 [overflow-wrap:anywhere]">
-                <TextLink href={source.url} external inline>
-                  <bdi>{source.title ?? source.url}</bdi>
-                </TextLink>
-                {source.publisher ? (
-                  <span className="text-ink-2">
-                    {" · "}
-                    <bdi>{source.publisher}</bdi>
-                  </span>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </Disclosure>
-      ) : null}
+      <div className="grid gap-1">
+        <p className="type-xs text-ink-2">
+          {t("specs.sku")}{" "}
+          <bdi dir="ltr" className="nums">
+            {variant.sku}
+          </bdi>
+        </p>
+        {sources.length > 0 ? (
+          <>
+            <p className="type-xs text-ink-2">{t(`specs.${sourceLine(sources, brand)}`)}</p>
+            <Disclosure summary={t("specs.sources", { n: f.number(sources.length) })} icon="book-open">
+              <ul className="grid gap-1 type-sm">
+                {sources.map((source) => (
+                  <li key={source.url} className="min-w-0 [overflow-wrap:anywhere]">
+                    <TextLink href={source.url} external>
+                      <bdi>{source.title ?? source.url}</bdi>
+                    </TextLink>
+                    {source.publisher ? (
+                      <span className="type-xs text-ink-2">
+                        {" · "}
+                        <bdi>{source.publisher}</bdi>
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </Disclosure>
+          </>
+        ) : null}
+      </div>
     </Section>
   );
 }

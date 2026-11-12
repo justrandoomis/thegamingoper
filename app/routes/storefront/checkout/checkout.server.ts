@@ -9,13 +9,14 @@
  * core), and the signed-in customer's default address as the checkout's starting draft (account area).
  */
 import { sha256Hex } from "~/lib/ids";
-import { LOCALES, type Locale } from "~/lib/locales";
+import type { Locale } from "~/lib/locales";
 import { normalizeIraqPhone } from "~/lib/phone";
 import { serializeCookie, type RequestCtx } from "~/server/context.server";
 import type { Db } from "~/server/db/drizzle.server";
 import { AppError, toAppError } from "~/server/errors";
 import { getSetting } from "~/server/settings.server";
 import { CART_COOKIE } from "~/server/shell.server";
+import { saveAddress } from "~/server/services/account/addresses.server";
 import type { AddressView } from "~/server/services/account/types";
 import { isCartToken, type CartViewData } from "~/server/services/cart.server";
 import {
@@ -63,21 +64,19 @@ export type CheckoutPageData = {
   proofHours: number;
   /** Signed-in customers: their wallet balance (the ledger's sum). Guests: null. */
   walletBalanceIqd: number | null;
-  /** The days a delivery preference can name, in Baghdad time (placeOrder accepts today … +30 days). */
+  /**
+   * The days a delivery preference can name. EMPTY until the owner configures dispatch days in the admin (Design
+   * System v2 §4.9, §13 #5): until then the preference is the time of day alone, and no day or date is offered.
+   */
   days: DayChoice[];
 };
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-const BAGHDAD_OFFSET_MS = 3 * 60 * 60 * 1000;
-const baghdadDay = (at: number) => new Date(at + BAGHDAD_OFFSET_MS).toISOString().slice(0, 10);
+/** What the cart page states next to the total: the delivery fee rule and whether cash on delivery is on. Reads only. */
+export type CartFacts = { deliveryFeeIqd: number; overridesEnabled: boolean; cod: boolean };
 
-/** Today, tomorrow and the day after in Baghdad, each with its weekday in the shopper's language. */
-export function preferredDays(now: number, locale: Locale): DayChoice[] {
-  const weekday = new Intl.DateTimeFormat(`${LOCALES[locale].bcp47}-u-nu-latn`, { weekday: "long", timeZone: "UTC" });
-  return (["today", "tomorrow", "after"] as const).map((rel, index) => {
-    const value = baghdadDay(now + index * DAY_MS);
-    return { value, rel, weekday: weekday.format(new Date(`${value}T12:00:00Z`)) };
-  });
+export async function loadCartFacts(db: Db): Promise<CartFacts> {
+  const [policy, payment] = await Promise.all([getShippingPolicy(db), getPaymentInstructions(db)]);
+  return { deliveryFeeIqd: policy.flatFeeIqd, overridesEnabled: policy.overridesEnabled, cod: payment.cod.enabled };
 }
 
 /** Everything the checkout page shows besides the cart. Reads only. */
@@ -104,7 +103,8 @@ export async function loadCheckoutData(db: Db, input: { locale: Locale; now: num
     transfer: { accountNumber: payment.bankTransfer.accountNumber, recipientName: payment.bankTransfer.recipientName, zaincashNumber: payment.zaincash.number },
     proofHours,
     walletBalanceIqd,
-    days: preferredDays(input.now, input.locale),
+    // no dispatch days are configured (there is no such setting yet): the period alone
+    days: [],
   };
 }
 
@@ -124,6 +124,8 @@ export function checkoutInputFromForm(form: FormData): CheckoutInput {
   const total = text(form, "expectedTotalIqd").trim();
   const district = text(form, "districtId");
   const consent = text(form, "marketingConsent");
+  // "any time" is no preference (the time cells post it without script)
+  const timeOfDay = text(form, "preferredWindow");
   return {
     idempotencyKey: text(form, "idempotencyKey"),
     contactName: text(form, "contactName"),
@@ -134,7 +136,7 @@ export function checkoutInputFromForm(form: FormData): CheckoutInput {
     addressText: text(form, "addressText"),
     notes: text(form, "notes"),
     preferredDay: text(form, "preferredDay"),
-    preferredWindow: text(form, "preferredWindow") as CheckoutInput["preferredWindow"],
+    preferredWindow: (timeOfDay === "any" ? "" : timeOfDay) as CheckoutInput["preferredWindow"],
     marketingConsent: consent === "on" || consent === "true" || consent === "1",
     paymentMethod: text(form, "paymentMethod") as CheckoutInput["paymentMethod"],
     // A missing or malformed total is -1, which the core refuses as invalid (never a guessed number).
@@ -150,7 +152,7 @@ export type CheckoutFailure = { ok: false; code: string; status: number; fields?
 
 /** The draft fields of a posted checkout form, as strings (what a page needs to show the form again). */
 export function postedValues(form: FormData): Record<string, string> {
-  const names = ["contactName", "phone", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow", "paymentMethod", "marketingConsent"];
+  const names = ["contactName", "phone", "governorateId", "districtId", "areaText", "addressText", "notes", "preferredDay", "preferredWindow", "paymentMethod", "marketingConsent", "saveAddress"];
   return Object.fromEntries(names.map((name) => [name, text(form, name).slice(0, 600)]));
 }
 export type CheckoutSuccess = { ok: true; ref: string; accessToken: string; replayed: boolean };
@@ -217,33 +219,94 @@ export async function trackOrder(db: Db, form: FormData, ctx: { ip: string | nul
 
 // ───────────────────────────────────────────────────────────────── cross-area (integration pass)
 
+/** A shelf is worth a rail from three items (Design System v2 §4.22): fewer is never padded, it is left out. */
+const MIN_RAIL_ITEMS = 3;
+
+/** One rail at most, and only one with enough to show (§6.10 cart, §6.11 order): the engine's first such shelf. */
+export function oneRail(result: RecommendationResult): RecommendationResult {
+  if (!result.ok) return result;
+  const first = result.shelves.find((shelf) => shelf.items.length >= MIN_RAIL_ITEMS);
+  return { ok: true, shelves: first ? [first] : [] };
+}
+
 /**
- * The cart's recommendation shelves (devices area, context "cart"), for the loader to stream: anchored on every line —
- * a used unit through its catalogue variant. Never rejects (a failure is `ok: false`); an empty cart asks for nothing.
+ * The cart's recommendation rail (devices area, context "cart"), for the loader to stream: anchored on every line —
+ * a used unit through its catalogue variant; one rail («أكمل تجهيزك», verified add-ons, ≥3). Never rejects (a failure
+ * is `ok: false`); an empty cart asks for nothing.
  */
 export async function cartShelves(db: Db, ctx: Pick<RequestCtx, "cookie" | "locale" | "now">, customerId: string | null, cart: Pick<CartViewData, "lines">): Promise<RecommendationResult> {
   try {
     const used = cart.lines.flatMap((line) => (line.usedUnitId ? [line.usedUnitId] : []));
     const variantIds = [...cart.lines.flatMap((line) => (line.variantId ? [line.variantId] : [])), ...(used.length > 0 ? await usedUnitVariantIds(db, used) : [])];
     if (variantIds.length === 0) return { ok: true, shelves: [] };
-    return await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "cart", cartVariantIds: variantIds, now: ctx.now }, 8);
+    return oneRail(await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "cart", cartVariantIds: variantIds, now: ctx.now }, 8));
   } catch (error) {
     console.error("[checkout] cart shelves failed", error);
     return { ok: false, shelves: [] };
   }
 }
 
-/** The order page's shelves (context "post_purchase", anchored on what was bought). Never rejects. */
+/**
+ * Four in-stock products under the empty cart (§6.10): the store's own picks for the home page (the engine's honest
+ * reason line, its in-stock rule, the shopper's consent for anything personal). Never rejects.
+ */
+export async function emptyCartShelves(db: Db, ctx: Pick<RequestCtx, "cookie" | "locale" | "now">, customerId: string | null): Promise<RecommendationResult> {
+  try {
+    return oneRail(await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "home", now: ctx.now }, 4));
+  } catch (error) {
+    console.error("[checkout] empty-cart shelf failed", error);
+    return { ok: false, shelves: [] };
+  }
+}
+
+/** The order page's cross-sell (context "post_purchase", anchored on what was bought): at most one rail of four. Never rejects. */
 export async function orderShelves(db: Db, ctx: Pick<RequestCtx, "cookie" | "locale" | "now">, customerId: string | null, ref: string): Promise<RecommendationResult> {
   try {
     const { variantIds } = await orderItemsOf(db, ref);
     if (variantIds.length === 0) return { ok: true, shelves: [] };
-    return await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "post_purchase", cartVariantIds: variantIds, now: ctx.now }, 8);
+    return oneRail(await recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale: ctx.locale, context: "post_purchase", cartVariantIds: variantIds, now: ctx.now }, 4));
   } catch (error) {
     console.error("[checkout] order shelves failed", error);
     return { ok: false, shelves: [] };
   }
 }
+
+/**
+ * "Save this address for your next orders" (§6.10, signed-in customers, unticked by default): after placeOrder
+ * returned a NEW order, the posted delivery fields go to the account area's address book (saveAddress validates them
+ * again with its own limits). Best effort and never inside the commerce core: a refusal (the book is full, a field
+ * over the book's limits) is logged and reported as `false` — the order is already placed and is never touched.
+ */
+export async function saveCheckoutAddress(db: Db, customer: { id: string; ip: string | null }, form: FormData, now: number): Promise<boolean> {
+  const value = (name: string) => {
+    const item = form.get(name);
+    return typeof item === "string" ? item : "";
+  };
+  const district = value("districtId");
+  try {
+    await saveAddress(
+      db,
+      { kind: "customer", id: customer.id, ip: customer.ip },
+      {
+        recipientName: value("contactName"),
+        phone: value("phone"),
+        governorateId: value("governorateId"),
+        districtId: district === OTHER_DISTRICT ? "" : district,
+        areaText: value("areaText"),
+        addressText: value("addressText"),
+        notes: value("notes"),
+      },
+      now,
+    );
+    return true;
+  } catch (error) {
+    console.error("[checkout] address not saved", error);
+    return false;
+  }
+}
+
+/** The posted "save this address" box was ticked. */
+export const wantsAddressSaved = (form: FormData) => ["on", "true", "1"].includes(String(form.get("saveAddress") ?? ""));
 
 /**
  * The purchase signal (devices area) after a NEW order — server side only, here and never inside the commerce core:

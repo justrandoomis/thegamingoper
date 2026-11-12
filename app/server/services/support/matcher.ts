@@ -101,7 +101,11 @@ function compile(terms: readonly string[]): string[] {
   return [...new Set(terms.map(normalizeForMatch).filter(Boolean))];
 }
 
-function tokenMatches(token: string, term: string): boolean {
+/**
+ * Whether a word of the text (`token`) is the term, the term with an Arabic article or conjunction in front, or the
+ * term with a short ending. Both sides normalised (normalizeForMatch). Exported for the help-centre search.
+ */
+export function tokenMatches(token: string, term: string): boolean {
   if (token === term) return true;
   // Arabic words carry their article and conjunctions in front: "والعصا", "بالشاشه".
   if (!isLatin(term) && PREFIXES.some((prefix) => token === prefix + term)) return true;
@@ -175,3 +179,110 @@ export function interpretText(text: string, available: { symptoms: readonly stri
 }
 
 export const KNOWN_TOPICS = Object.keys(TOPIC_TERMS);
+
+/** Symptom keys the vocabulary knows (a key is only offered when an approved tree has it). */
+export const KNOWN_SYMPTOMS = Object.keys(SYMPTOM_TERMS);
+
+/** A danger sign in the text (smoke, burning, swelling, liquid …) — always checked before anything else. */
+export function hasDangerSign(text: string): boolean {
+  const normalized = normalizeForMatch(text);
+  return normalized !== "" && countMatches(normalized, normalized.split(" "), DANGER) > 0;
+}
+
+/** The text says what is wrong (a danger sign, an error code, a symptom or a topic), not only which device it is. */
+export function describesProblem(text: string): boolean {
+  return interpretText(text, { symptoms: KNOWN_SYMPTOMS }).kind !== "none";
+}
+
+// ───────────────────────────────────────────────────────────────── device and platform names
+
+/**
+ * How shoppers write device and platform names (Arabic as written in Iraq, Sorani), mapped to the catalogue's own
+ * Latin words. Routing data like the vocabulary above: it can only point at a device of the published directory.
+ */
+const NAME_ALIASES: ReadonlyArray<readonly [readonly string[], string]> = [
+  [["بلاي ستيشن", "بلايستيشن", "بلاستيشن", "بليستيشن", "بلي ستيشن", "بلستيشن", "پلەیستەیشن", "پلەی ستەیشن", "سوني", "بي اس", "ps"], "playstation"],
+  [["ps5", "بلي5"], "playstation 5"],
+  [["ps4"], "playstation 4"],
+  [["اكس بوكس", "اكسبوكس", "اكس بكس", "ئێکس بۆکس", "ئێکسبۆکس"], "xbox"],
+  [["نينتندو", "نينتيندو", "ننتندو", "نینتێندۆ"], "nintendo"],
+  [["سويتش", "سويچ", "سوتش", "سويج", "سويتج", "سوێچ"], "switch"],
+  [["ستيم ديك", "ستيم دك", "ستيمديك", "steamdeck", "ستیم دێک"], "steam deck"],
+  [["في ار 2", "في ار", "vr 2", "vr"], "vr2"],
+  [["بورتال", "بورتل", "پۆرتاڵ"], "portal"],
+  [["سيريس", "سيريز", "سيرس", "سریس", "سێریس"], "series"],
+  [["روغ", "روج"], "rog"],
+  [["الاي", "اللاي", "ئالای"], "ally"],
+  [["ليجن", "ليجين", "لجن"], "legion"],
+  [["كلو", "كلاو"], "claw"],
+  [["برو", "پرۆ"], "pro"],
+  [["سليم", "سلم", "سلیم"], "slim"],
+  [["لايت", "لایت"], "lite"],
+  [["اوليد", "او ليد", "ئۆلید"], "oled"],
+  [["ال سي دي"], "lcd"],
+  [["ديجيتال", "دجيتال", "ديجتال", "ديجيتل", "رقمي", "رقميه", "دیجیتاڵ"], "digital"],
+  [["اكس", "ئێکس"], "x"],
+  [["اس", "ئێس"], "s"],
+];
+
+/** Normalised alias → its words, longest first so "اكس بوكس" is read before "اكس". */
+const ALIASES: ReadonlyArray<readonly [string, string]> = NAME_ALIASES.flatMap(([spellings, words]) => spellings.map((spelling) => [normalizeForMatch(spelling), words] as const))
+  .filter(([spelling]) => spelling !== "")
+  .sort((a, b) => b[0].length - a[0].length);
+
+/** Words that may be left out of a device's name ("Nintendo Switch Lite" is "سويتش لايت"). */
+const OPTIONAL_NAME_WORDS = new Set(["nintendo", "lenovo", "msi", "edition", "model", "the", "console", "الطراز", "جهاز"]);
+
+/** Words that make a variant of a model: a name that only lacks these is not specific enough ("Switch" vs "Switch Lite"). */
+const VARIANT_WORDS = new Set(["digital", "slim", "lite", "oled", "lcd", "pro", "x", "s", "2", "plus", "ai", "ex", "8", "a8"]);
+
+/** The text's words with every known spelling of a name replaced by the catalogue's words. */
+function nameWords(text: string): string[] {
+  let out = ` ${normalizeForMatch(text)} `;
+  for (const [spelling, words] of ALIASES) out = out.split(` ${spelling} `).join(` ${words} `);
+  // "ps5" written with a space or glued to its digit: "playstation5" → "playstation 5"
+  return out.replace(/\b(playstation|switch|vr)(\d)/g, "$1 $2").trim().split(" ").filter(Boolean);
+}
+
+export type NamedDevice = { kind: "device"; slug: string } | { kind: "platform"; slug: string } | { kind: "none" };
+
+type DirectoryLike = ReadonlyArray<{ slug: string; devices: ReadonlyArray<{ slug: string; name: string }> }>;
+
+const PLATFORM_WORDS: ReadonlyArray<readonly [string, readonly string[]]> = [
+  ["handheld", ["steam", "deck", "rog", "ally", "legion", "claw", "msi"]],
+  ["playstation", ["playstation"]],
+  ["xbox", ["xbox"]],
+  ["nintendo", ["nintendo", "switch"]],
+];
+
+/**
+ * The device (or only the platform) a shopper's words name, from the published directory: a device whose every
+ * required name word is in the text; the most specific one wins. A name that another device's name extends ("PS5
+ * Slim" → "PS5 Slim Digital Edition", "Switch" → "Switch Lite") or a tie is not decided here: only its platform is,
+ * and the assistant asks for the model. Pure.
+ */
+export function matchDevice(text: string, directory: DirectoryLike): NamedDevice {
+  const words = new Set(nameWords(text));
+  if (words.size === 0) return { kind: "none" };
+  const devices = directory.flatMap((group) => group.devices.map((device) => ({ slug: device.slug, platform: group.slug, required: [...new Set(nameWords(device.name))].filter((word) => !OPTIONAL_NAME_WORDS.has(word)) })));
+  const candidates = devices.filter((device) => device.required.length > 0 && device.required.every((word) => words.has(word))).sort((a, b) => b.required.length - a.required.length);
+  const best = candidates[0];
+  if (best) {
+    const tie = candidates.filter((device) => device.required.length === best.required.length);
+    const extended = devices.some(
+      (device) =>
+        device.slug !== best.slug &&
+        device.required.length > best.required.length &&
+        best.required.every((word) => device.required.includes(word)) &&
+        device.required.every((word) => best.required.includes(word) || VARIANT_WORDS.has(word)),
+    );
+    if (tie.length === 1 && !extended) return { kind: "device", slug: best.slug };
+    const platforms = new Set(tie.map((device) => device.platform));
+    if (platforms.size === 1) return { kind: "platform", slug: best.platform };
+  }
+  for (const [platform, keys] of PLATFORM_WORDS) {
+    if (!directory.some((group) => group.slug === platform)) continue;
+    if (keys.some((key) => words.has(key))) return { kind: "platform", slug: platform };
+  }
+  return { kind: "none" };
+}

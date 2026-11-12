@@ -1,50 +1,78 @@
 /**
- * Recommendation shelves on any storefront page (the integration pass) — the devices area's engine
- * (services/recommendations.server → recommendationsFor → getRecommendations), streamed by the page's loader:
+ * Recommendation shelves on any storefront page — the devices area's engine (services/recommendations.server →
+ * recommendationsFor → getRecommendations), streamed by the page's loader and drawn here in the v2 look (Design System
+ * v2 §4.22, §2.11): the kit's shelf (`SectionHead` with the engine's honest reason line, then a native scroll-snap
+ * rail on phones and whole cards from 1024 — never a carousel with arrows), the kit's frameless cards with the
+ * neutral add button, the cards inflating in as they arrive (<Bubble>, from .94, 45 ms apart).
  *
  *   loader   recommendations: recommendationsFor(db, { cookie: ctx.cookie, customerId }, { locale, context: "product", productId }, 8)
  *            — NOT awaited: the page never waits for its suggestions (the promise never rejects; a failure is ok:false)
  *   page     <RecommendationShelves key={product.id} result={loaderData.recommendations} source="product" />
+ *            <RecommendationShelves … layout="column" />          a narrower column (cart, order): at most four cards
+ *            <RecommendationShelves … placeholder={{ title, reason, loading }} />   reserve the shelf while it streams
  *
  * Every shelf keeps the engine's honest title and reason line ("متوافقة مع Switch 2، وتحقّقنا من ذلك", "اختيارات
- * المتجر", "حسب ما تصفّحته… بموافقتك") and its hard compatibility filter; nothing is added or re-ranked here.
+ * المتجر", "حسب ما تصفّحته… بموافقتك") and its hard compatibility filter; nothing is added or re-ranked here. A shelf
+ * with fewer than three cards is not drawn (the kit's rule).
  *
- * States: nothing is drawn until the answer is here (no placeholder that could collapse into nothing — most pages may
- * get no shelf at all), then the cards inflate in (<Bubble>, DESIGN.md §7.2 — content that arrives). A newer answer
- * (other filters on a hub) replaces the shelves only once it has arrived, so a list being filtered never flickers;
- * give it a `key` when it stands for another thing (another product) so old shelves never show under the new page.
- * A failure is the kit's ErrorState in the shelves' place with a retry (revalidates the page); the rest of the page
- * stands. Reduced motion: the engine's rules (no inflate). Clicks on its cards are "click" signals with the shelf's
- * key as the source — only with consent (./signals.ts). No React Suspense here on purpose: a revealed boundary that
- * suspends again would hold the whole navigation (hub filters) until the suggestions arrive.
+ * States:
+ *   pending   nothing by default — most pages may get no shelf at all, and a placeholder that collapses into nothing
+ *             would move the page; pass `placeholder` when a shelf is expected: the same geometry with empty wells
+ *             (`aria-busy`, a status line for screen readers), never a grey skeleton
+ *   arrived   the cards inflate into place (reduced motion and the low tier: they appear); a newer answer (other filters
+ *             on a hub) replaces the shelves only once it has arrived, so a list being filtered never flickers — give
+ *             the component a `key` when it stands for another thing (another product) so old shelves never show
+ *   empty     nothing — no element at all (also when every shelf has fewer than three cards, which the kit does not draw)
+ *   failure   the kit's ErrorState in the shelves' place with a retry (revalidates the page; offline: the offline
+ *             sentence, and the retry waits for the connection instead of failing the page — ./retry.ts); the rest of
+ *             the page stands
+ * Clicks on its cards are "click" signals with the shelf's key as the source — only with consent (./signals.ts). No
+ * React Suspense here on purpose: a revealed boundary that suspends again would hold the whole navigation (hub
+ * filters) until the suggestions arrive.
  */
-import { useEffect, useId, useState, type MouseEvent } from "react";
-import { useRevalidator } from "react-router";
+import { useEffect, useId, useState, type FocusEvent, type MouseEvent } from "react";
 
 import type { ProductCardData, Shelf } from "~/lib/dto";
 import { Bubble, BubbleGroup } from "~/motion";
 import type { RecommendationResult } from "~/server/services/recommendations.server";
+import { readConsent } from "~/routes/storefront/home/personal";
 import { cx } from "~/ui/cx";
 import { ErrorState } from "~/ui/ErrorState";
-import { ProductCard } from "~/ui/ProductCard";
+import { ProductCard, ProductCardPlaceholder } from "~/ui/ProductCard";
 import { Rail } from "~/ui/Rail";
+import { SectionHead } from "~/ui/SectionHead";
 import { ShelfRail } from "~/ui/ShelfRail";
-import { readConsent } from "~/routes/storefront/home/personal";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
+import { drawableShelves } from "./format";
+import { revealInline } from "./reveal";
+import { useSafeRetry } from "./retry";
 import { sendRecommendationEvent } from "./signals";
 
 export type { RecommendationResult };
+
+export type ShelfLayout = "page" | "column";
+
+/** What a pending shelf shows while it streams in: the title and reason it will most likely carry. */
+export type ShelfPlaceholderProps = {
+  title: string;
+  reason?: string | null;
+  /** Said to screen readers while it loads ("نحضّر الإكسسوارات المتوافقة…"). */
+  loading?: string;
+};
 
 export type RecommendationShelvesProps = {
   /** The loader's streamed answer (or an answer already at hand). */
   result: Promise<RecommendationResult> | RecommendationResult | null | undefined;
   /** Signal source prefix, usually the context ("product", "cart", "home"…). */
   source: string;
-  /** Heading level of the shelf titles (default 2). */
+  /** Heading level of the shelf titles (default 2; the cards' names are one level below). */
   headingLevel?: 2 | 3;
   /** `sizes` of the card pictures. */
   sizes?: string;
   /** "page" (default): the kit's rail across the page · "column": a narrower column (cart, order) — four cards from 1024px. */
-  layout?: "page" | "column";
+  layout?: ShelfLayout;
+  /** Reserve the shelf's geometry while the answer streams in (default: nothing until it is here). */
+  placeholder?: ShelfPlaceholderProps;
   className?: string;
 };
 
@@ -79,14 +107,17 @@ function useArrived(result: RecommendationShelvesProps["result"]): Recommendatio
   return value;
 }
 
-export function RecommendationShelves({ result, source, headingLevel, sizes, layout = "page", className }: RecommendationShelvesProps) {
+export function RecommendationShelves({ result, source, headingLevel, sizes, layout = "page", placeholder, className }: RecommendationShelvesProps) {
   const value = useArrived(result);
-  const revalidator = useRevalidator();
-  if (!value) return null;
+  const { retry, retrying } = useSafeRetry();
+  if (!value) return result && placeholder ? <ShelfPlaceholder {...placeholder} headingLevel={headingLevel} layout={layout} className={className} /> : null;
   if (!value.ok) {
-    return <ErrorState className={className} onRetry={() => void revalidator.revalidate()} retrying={revalidator.state === "loading"} />;
+    return <ErrorState className={className} onRetry={retry} retrying={retrying} />;
   }
-  if (value.shelves.length === 0) return null;
+  // a shelf of fewer than three cards is not drawn (the kit's rule): with none left, no element at all — an empty box
+  // would still take a gap in the host page's layout
+  const shelves = drawableShelves(value.shelves);
+  if (shelves.length === 0) return null;
 
   /** A card opened from a shelf: the "click" signal of that shelf (this device's consent as it is now; the server checks again). */
   const onClick = (event: MouseEvent<HTMLDivElement>) => {
@@ -103,51 +134,93 @@ export function RecommendationShelves({ result, source, headingLevel, sizes, lay
   return (
     // listens to the links inside (a keyboard activation of a link is a click too); the div itself is not a control
     <div onClick={onClick} className={cx("grid min-w-0 gap-section", className)}>
-      {value.shelves.map((shelf: Shelf<ProductCardData>) => (
-        <BubbleGroup key={shelf.key} stagger>
+      <ShelfStack shelves={shelves} headingLevel={headingLevel} sizes={sizes} layout={layout} />
+    </div>
+  );
+}
+
+/* ───────────────────────────── the pieces (the device hub's streamed setup shelf draws with them too) ───────────────────────────── */
+
+/**
+ * A card of a phone rail that takes keyboard focus is brought fully into the rail (WCAG 2.4.11): browsers leave a
+ * partly shown card where it is. The rail scrolls, never the page; from 1024 the rail is a grid and nothing moves.
+ */
+function revealCard(event: FocusEvent<HTMLElement>) {
+  const target = event.target instanceof HTMLElement ? event.target : null;
+  const rail = target?.closest<HTMLElement>("ul");
+  const item = target?.closest<HTMLElement>("li");
+  if (rail && item && event.currentTarget.contains(rail)) revealInline(rail, item);
+}
+
+/** Cards in a narrower column (cart, order): at most four whole cards from 1024 (the kit's rail is five from 1280). */
+const COLUMN_RAIL = "2xl:grid-cols-4 2xl:[&>li:nth-child(5)]:hidden";
+const COLUMN_SIZES = "(min-width: 1024px) 200px, (min-width: 768px) 30vw, 46vw";
+
+/**
+ * Arrived shelves: each one the kit's shelf, its cards inflating in (a Bubble per card; a group per shelf staggers
+ * them 45 ms apart). Bubbles decide once, at mount: hydrated HTML is simply there, content that arrives later inflates.
+ * The bubble is a grid cell around the card — a flex box would collapse the card's inline-size container to nothing.
+ */
+export function ShelfStack({ shelves, headingLevel = 2, sizes, layout = "page" }: { shelves: readonly Shelf<ProductCardData>[]; headingLevel?: 2 | 3; sizes?: string; layout?: ShelfLayout }) {
+  const cardLevel = headingLevel === 3 ? 4 : 3;
+  return (
+    <>
+      {shelves.map((shelf) => (
+        <BubbleGroup key={shelf.key} stagger className="min-w-0" onFocus={revealCard}>
           {layout === "column" ? (
-            <ColumnShelf shelf={shelf} headingLevel={headingLevel} sizes={sizes ?? COLUMN_SIZES} />
+            <ColumnShelf shelf={shelf} headingLevel={headingLevel} sizes={sizes ?? COLUMN_SIZES} cardLevel={cardLevel} />
           ) : (
             <ShelfRail
               shelf={shelf}
               headingLevel={headingLevel}
               renderItem={(card, index) => (
-                <Bubble index={index} className="flex w-full">
-                  <ProductCard card={card} slot={shelf.key} sizes={sizes} />
+                <Bubble index={index} className="grid h-full">
+                  <ProductCard card={card} slot={shelf.key} sizes={sizes} headingLevel={cardLevel} />
                 </Bubble>
               )}
             />
           )}
         </BubbleGroup>
       ))}
-    </div>
+    </>
   );
 }
 
-/** A narrower column (cart, order) from 1024px: four cards across, so price and socket keep one row (~/ui/ProductCard). */
-const COLUMN_ITEM = "flex w-[43%] sm:w-[30%] md:w-[23%] lg:w-[23.5%]";
-const COLUMN_SIZES = "(min-width: 1024px) 200px, (min-width: 768px) 23vw, (min-width: 640px) 30vw, 43vw";
-
-/** The kit's shelf (title, honest reason, one rail) with column-sized cards — the same markup as ~/ui/ShelfRail. */
-function ColumnShelf({ shelf, headingLevel = 2, sizes }: { shelf: Shelf<ProductCardData>; headingLevel?: 2 | 3; sizes: string }) {
+/** The kit's shelf (SectionHead + Rail) with at most four cards across from 1024 — for a column narrower than the page. */
+function ColumnShelf({ shelf, headingLevel, sizes, cardLevel }: { shelf: Shelf<ProductCardData>; headingLevel: 2 | 3; sizes: string; cardLevel: 3 | 4 }) {
   const id = useId();
-  const Heading = `h${headingLevel}` as const;
-  if (shelf.items.length === 0) return null;
+  if (shelf.items.length < 3) return null;
   return (
-    <section aria-labelledby={id} className="grid min-w-0 gap-3" data-shelf={shelf.key}>
-      <div className="grid min-w-0 gap-0.5">
-        <Heading id={id} className="type-section text-ink">
-          {shelf.title}
-        </Heading>
-        {shelf.reason ? <p className="type-caption text-ink-2">{shelf.reason}</p> : null}
-      </div>
-      <Rail aria-labelledby={id} itemClassName={COLUMN_ITEM} railClassName="-mx-1 scroll-px-1 px-1 pt-1 pb-3">
+    <section aria-labelledby={id} className="min-w-0" data-shelf={shelf.key}>
+      <SectionHead id={id} title={shelf.title} reason={shelf.reason} headingLevel={headingLevel} />
+      <Rail aria-labelledby={id} railClassName={COLUMN_RAIL}>
         {shelf.items.map((card, index) => (
-          <Bubble key={card.id} index={index} className="flex w-full">
-            <ProductCard card={card} slot={shelf.key} sizes={sizes} />
+          <Bubble key={card.id} index={index} className="grid h-full">
+            <ProductCard card={card} slot={shelf.key} sizes={sizes} headingLevel={cardLevel} />
           </Bubble>
         ))}
       </Rail>
+    </section>
+  );
+}
+
+/**
+ * A shelf that is on its way: its head, then the rail's exact geometry with empty wells (the kit's
+ * ProductCardPlaceholder — the well colour, the reserved lines; no grey skeleton). Inert: nothing in it can be focused.
+ */
+export function ShelfPlaceholder({ title, reason, loading, headingLevel = 2, layout = "page", className }: ShelfPlaceholderProps & { headingLevel?: 2 | 3; layout?: ShelfLayout; className?: string }) {
+  const id = useId();
+  return (
+    <section aria-labelledby={id} aria-busy="true" className={cx("min-w-0", className)}>
+      <SectionHead id={id} title={title} reason={reason ?? undefined} headingLevel={headingLevel} />
+      {loading ? <VisuallyHidden role="status">{loading}</VisuallyHidden> : null}
+      <div aria-hidden="true" inert>
+        <Rail railClassName={layout === "column" ? COLUMN_RAIL : undefined}>
+          {Array.from({ length: 5 }, (_, index) => (
+            <ProductCardPlaceholder key={index} className="h-full" />
+          ))}
+        </Rail>
+      </div>
     </section>
   );
 }

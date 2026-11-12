@@ -1,70 +1,75 @@
 import { useEffect, useRef, useState } from "react";
 
 import { getMotionTier } from "~/motion";
-import { cx } from "~/ui/cx";
+import { Chip } from "~/ui/Chip";
+import { currentSection } from "./format";
+import { revealInline } from "./reveal";
 
 /**
- * The hub's section keys (DESIGN.md §8.7: "section keys: sticky anchor navigation"): one row of in-page links that
- * sticks under the header and scrolls sideways on a phone. Flat like tabs (they navigate, they do not commit): the
- * section on screen gets ink and the marker on the bottom edge (`aria-current="location"`); the row keeps it in view.
- * Plain `#fragment` links, so they work before JavaScript; the shell's scroll-padding and each section's
- * scroll-margin stop the jump below the header and this row. Opaque floor colour — never glass (the header and the
- * tab bar are the two live panes of a phone screen).
+ * The hub's sticky anchor nav — Design System v2 §6.6: one row of the kit's chips (40px, a 44px hit) under the header:
+ * الإصدارات · قارن · المواصفات · الإكسسوارات · الألعاب · الإعداد والصيانة · الأسئلة · المستعمل — only the sections
+ * this hub has. The section being read is the chosen chip (ink fill + check, `aria-current`) — none while the head is
+ * on screen, the last one at the very end of the page; the row keeps it in view and scrolls sideways when it does
+ * not fit. Plain `#fragment` links, so they work before JavaScript; the hub's stylesheet extends the page's scroll
+ * padding by this row (devices.css), so a jump — and a focused control — lands below the header and the row. Opaque
+ * floor colour, never glass (the header and the tab bar are the two live panes).
  */
 export type SectionLink = { id: string; label: string };
 
-const LINK =
-  "relative inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-3 type-label text-ink-2 outline-offset-[-3px] hover:text-ink aria-[current=location]:text-ink " +
-  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) aria-[current=location]:after:opacity-100";
+/** The reading line: a section is "being read" once its top has passed 35% of the viewport's height. */
+const READING_LINE = 0.35;
 
-export function SectionNav({ sections, label, className }: { sections: readonly SectionLink[]; label: string; className?: string }) {
+export function SectionNav({ sections, label }: { sections: readonly SectionLink[]; label: string }) {
   const [current, setCurrent] = useState<string | null>(null);
   const list = useRef<HTMLUListElement>(null);
   const ids = sections.map((section) => section.id).join(" ");
 
-  // the section crossing a band a little above the middle of the viewport is the one being read
+  // measured on scroll (one read per frame): above the first section nothing is chosen, so going back up to the head
+  // never leaves a stale chip behind
   useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return;
-    const elements = ids
-      .split(" ")
-      .map((id) => document.getElementById(id))
-      .filter((element): element is HTMLElement => element !== null);
-    if (elements.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) if (entry.isIntersecting) setCurrent(entry.target.id);
-      },
-      { rootMargin: "-35% 0px -60% 0px" },
-    );
-    for (const element of elements) observer.observe(element);
-    return () => observer.disconnect();
+    const order = ids.split(" ");
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const tops: { id: string; top: number }[] = [];
+      for (const id of order) {
+        const element = document.getElementById(id);
+        if (element) tops.push({ id, top: element.getBoundingClientRect().top });
+      }
+      const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      setCurrent(currentSection(tops, window.innerHeight * READING_LINE, atEnd));
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, [ids]);
 
-  // keep the current key inside the row (relative scroll: right in both reading directions)
+  // keep the current chip inside the row (the row scrolls, never the page) — unless the reader is on another chip
   useEffect(() => {
     const row = list.current;
-    if (!row || !current) return;
+    if (!row || !current || row.contains(document.activeElement)) return;
     const link = row.querySelector<HTMLElement>(`a[href="#${current}"]`);
-    if (!link) return;
-    const box = row.getBoundingClientRect();
-    const rect = link.getBoundingClientRect();
-    const behavior: ScrollBehavior = getMotionTier() === "full" ? "smooth" : "auto";
-    if (rect.left < box.left) row.scrollBy({ left: rect.left - box.left - 16, behavior });
-    else if (rect.right > box.right) row.scrollBy({ left: rect.right - box.right + 16, behavior });
+    if (link) revealInline(row, link, { behavior: getMotionTier() === "full" ? "smooth" : "auto" });
   }, [current]);
 
   if (sections.length < 2) return null;
   return (
-    <nav
-      aria-label={label}
-      className={cx("sticky top-[calc(var(--safe-top)+var(--shell-header-h))] z-(--z-sticky) -mx-(--gutter) border-b border-line bg-floor px-(--gutter)", className)}
-    >
-      <ul ref={list} role="list" className="flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <nav aria-label={label} className="devhub-nav">
+      {/* a chip that takes keyboard focus is brought fully into the row (browsers leave a half-shown one where it is) */}
+      <ul ref={list} role="list" className="devhub-nav__list" onFocus={(event) => list.current && event.target instanceof HTMLElement && revealInline(list.current, event.target)}>
         {sections.map((section) => (
-          <li key={section.id} className="flex">
-            <a href={`#${section.id}`} className={LINK} aria-current={current === section.id ? "location" : undefined} onClick={() => setCurrent(section.id)}>
+          <li key={section.id}>
+            <Chip as="a" href={`#${section.id}`} selected={current === section.id} onClick={() => setCurrent(section.id)}>
               {section.label}
-            </a>
+            </Chip>
           </li>
         ))}
       </ul>

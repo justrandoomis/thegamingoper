@@ -17,6 +17,7 @@ import { Glass } from "~/ui/Glass";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { ordersMeta } from "./meta";
+import { CustomerName } from "../shell/CustomerName";
 import { amountOf, failure, text, urls } from "./common.server";
 import { DemoNote, Facts, Money, PhoneText, Ref, useOrdersT, When } from "./ui";
 
@@ -83,7 +84,7 @@ export default function ProofReviewPage({ loaderData }: Route.ComponentProps) {
           <DemoNote show={review.order.isDemo} />
         </h1>
         <p className="type-body text-ink-2">
-          {t(`method.${review.method}`)} · <PhoneText phone={review.order.phone} /> · {review.order.contactName ?? t("list.noName")}
+          {t(`method.${review.method}`)} · <PhoneText phone={review.order.phone} /> · <CustomerName profileId={review.order.customerProfileId}>{review.order.contactName ?? t("list.noName")}</CustomerName>
         </p>
       </header>
 

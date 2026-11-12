@@ -1,0 +1,212 @@
+/*
+ * Admin module 15 (staff) — the few pieces the design system does not have. Tokens only, logical properties only,
+ * components layer (utilities still win). DESIGN.md §10: data has no material; raised clay only for what needs a
+ * decision; figures flat, high-contrast, tabular at the inline end; a negative is a minus sign in red-ink.
+ */
+@layer components {
+  /* ── outlined fact tags (demo, flags) ── */
+  .stf-flag {
+    display: inline-flex;
+    /* its own width when it sits directly in a card's grid */
+    justify-self: start;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    min-block-size: 22px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    color: var(--ink-2);
+    font: var(--type-caption);
+    white-space: nowrap;
+  }
+
+  /* ── KPI rows ── */
+  .stf-kpis {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  }
+  /* two figures side by side on a phone: the row stays scannable instead of a column of single cards */
+  @media (max-width: 37.49rem) {
+    .stf-kpis {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      --type-kpi: 700 20px / 1.2 var(--font-display);
+    }
+  }
+
+  /* ── a small ledger: label at the start, figure at the end ── */
+  .stf-ledger {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-body);
+  }
+  .stf-ledger > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding-block: 2px;
+  }
+  .stf-ledger > div > dd {
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+    white-space: nowrap;
+  }
+  .stf-ledger__total {
+    margin-block-start: var(--s-1);
+    padding-block-start: var(--s-2) !important;
+    border-block-start: 1px solid var(--line-strong);
+    font-weight: 600;
+  }
+
+  /* ── two columns from 1024px: the main column and an aside ── */
+  .stf-split {
+    display: grid;
+    gap: var(--s-5);
+  }
+  @media (min-width: 64rem) {
+    .stf-split {
+      grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+      align-items: start;
+    }
+  }
+
+  /* ── filters above a list: wrap on phones, a row from 768px ── */
+  .stf-filters {
+    display: grid;
+    gap: var(--s-3);
+    align-items: end;
+  }
+  @media (min-width: 48rem) {
+    .stf-filters {
+      grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    }
+  }
+
+  /* ── the week roster: a flat grid, people down the start, days across ── */
+  .stf-roster {
+    inline-size: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    font: var(--type-data);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .stf-roster th,
+  .stf-roster td {
+    padding: var(--s-2);
+    border-block-end: 1px solid var(--line);
+    vertical-align: top;
+    text-align: start;
+  }
+  .stf-roster thead th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-raised);
+    background: var(--niche);
+    color: var(--ink-2);
+    font-weight: 600;
+    border-block-end: 1px solid var(--line-strong);
+    white-space: nowrap;
+  }
+  .stf-roster th[data-today="true"] {
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--ink);
+  }
+  .stf-roster td[data-leave="true"] {
+    background: var(--niche);
+  }
+  .stf-shift {
+    display: grid;
+    gap: 2px;
+    margin-block-end: var(--s-1);
+    padding: 4px 6px;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    background: var(--paper);
+  }
+  .stf-shift[data-status="cancelled"] {
+    color: var(--ink-3);
+    text-decoration: line-through;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .stf-roster-wrap {
+    overflow-x: auto;
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* ── the clock on "my day": the one decision of the page ── */
+  .stf-clock {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  /* ── a sticky task bar at the bottom (mobile approvals), above the phone tab bar ── */
+  .stf-taskbar {
+    position: sticky;
+    inset-block-end: var(--adm-bottom, 0px);
+    z-index: var(--z-sticky);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    justify-content: flex-end;
+    margin-block-start: var(--s-4);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* ── payslips: one block per employee, printed on paper without the admin's chrome ── */
+  .stf-slips {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .stf-slip {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-xs);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    background: var(--paper);
+    break-inside: avoid;
+  }
+  .stf-print-only {
+    display: none;
+  }
+  @media print {
+    @page {
+      margin: 12mm;
+    }
+    body:has(.stf-print) .adm-rail,
+    body:has(.stf-print) .adm-top,
+    body:has(.stf-print) .adm-tabbar,
+    body:has(.stf-print) .adm-skip,
+    body:has(.stf-print) .stf-noprint {
+      display: none !important;
+    }
+    body:has(.stf-print) .adm,
+    body:has(.stf-print) .adm-main {
+      display: block;
+      padding: 0;
+      margin: 0;
+      max-inline-size: none;
+      background: none;
+    }
+    .stf-print {
+      color: var(--ink);
+      background: var(--paper);
+    }
+    .stf-print .adm-card,
+    .stf-print .stf-slip {
+      box-shadow: none;
+      border: 1px solid var(--line-strong);
+    }
+    .stf-print-only {
+      display: block;
+    }
+    .stf-slip + .stf-slip {
+      break-before: page;
+    }
+  }
+}

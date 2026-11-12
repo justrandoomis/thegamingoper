@@ -1,56 +1,59 @@
 /**
- * The intro — "the lights come on" (brief §2 "Intro"; DESIGN.md §7.2 intro, §7.3 reduced motion). A client-only
- * overlay above the home page, which is already rendered underneath (SSR is the home page; crawlers and returning
- * shoppers never get this). At most ~1.4 s, skippable from the first frame, shown once per device.
+ * The intro — "the lights come on" (brief §2 "Intro"; Design System v2 §6.1 "Intro and onboarding", §2.11; DESIGN.md
+ * §7.2 for the motion grammar). A client-only overlay above the home page, which is already rendered underneath (SSR is
+ * the home page; crawlers and returning shoppers never get this). At most ~1.4 s, skippable from the first frame,
+ * shown once per device.
  *
- *   0–300 ms     the floor; the logo's layers (mascot, Arabic lettering, TAM TAM, GAMES) float up and inflate,
- *                60 ms apart, 6 px of parallax between them
- *   300–620 ms   four platform lights come on, one after another — each with an official photo of the platform's
- *                lead device, resting half out of frame in its corner
- *   560 ms       the logo lifts; the line "دورك. اختر منصّاتك." rises, the platform keys inflate out of their well
- *                (they toggle: press one or several, they press and rebound), "ابدأ" rises last
- *   Start        state first (the page below relights at once) — then each corner object leans in 8 px and is
- *                pulled back out along its own diagonal past the edge (no fade), the logo travels to the header's,
- *                the floor fades: the lit home is already there
- *   Skip         the same exit, nothing chosen
+ *   0–300 ms     the floor; the logo's layers (mascot, Arabic lettering, TAM TAM, GAMES) float up and inflate, 60 ms
+ *                apart, 6 px of parallax between them
+ *   300–620 ms   the four platforms' lead devices come in at the corners, half out of frame, one after another
+ *   560 ms       the logo lifts; the one game-turn line of the store «دورك. اختر منصّتك.» rises; the four platform
+ *                tiles inflate (they toggle: press one or several — a chosen tile stays down on its wall, ringed and
+ *                checked); the hint and «ابدأ» rise last
+ *   Start        state first (the page below arranges itself at once) — then each corner object leans in 8 px and is
+ *                pulled back out along its own diagonal past the edge (no fade), the logo travels to the header's
+ *                lockup, the floor fades: the home page is already there
+ *   Skip         the same exit, nothing chosen. «تخطَّ» is a visible secondary key from the first frame.
  *
  * Any tap during the sequence jumps to the end state. Reduced motion: the still composition, then a 120 ms fade
  * out. Lite tier: no staggered inflate (content appears in place); the exit is unchanged (transforms only).
  * Modal layer from the kit (~/ui/Dialog): focus moves in and is trapped, Escape and Android's back skip, the page
  * behind is inert until the overlay starts to leave.
  */
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
 import { Art } from "~/art/Art";
+import { Icon } from "~/art/Icon";
 import { Logo } from "~/art/Logo";
 import { useT } from "~/i18n/react";
 import { easings, getMotionTier, springTiming, type MotionTier } from "~/motion";
 import { useModalLayer, useOverlayRoot } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
-import { PlatformBank } from "~/ui/PlatformBank";
 import type { Platform } from "~/ui/PlatformLed";
-import { TextLink } from "~/ui/TextLink";
+import { PlatformTile } from "~/ui/PlatformTile";
 
 export type IntroCorner = { platform: Platform; artKey: string };
+export type IntroTile = { platform: Platform; name: string; count: number | null; artKey: string | null };
 export type IntroResult = { started: boolean; chosen: Platform[] };
 
 export type IntroProps = {
-  /** One official cut-out per platform (its lead device), in bank order: start-top, end-top, start-bottom, end-bottom. */
+  /** One official cut-out per platform (its lead device), in store order: start-top, end-top, start-bottom, end-bottom. */
   corners: readonly IntroCorner[];
-  /** Platforms the keys offer, in bank order. */
-  platforms: readonly Platform[];
+  /** The platform tiles the shopper chooses from, in store order. */
+  tiles: readonly IntroTile[];
   /** Start or Skip was pressed — called at once, before any exit animation. */
   onLeave: (result: IntroResult) => void;
   /** The exit animation has finished: unmount. */
   onDone: () => void;
 };
 
-/** Long enough for the whole sequence (the last element, "ابدأ", settles at about 1.33 s). */
+/** Long enough for the whole sequence (the last element, «ابدأ», settles at about 1.33 s). */
 const SEQUENCE_MS = 1400;
 
-export function Intro({ corners, platforms, onLeave, onDone }: IntroProps) {
+export function Intro({ corners, tiles, onLeave, onDone }: IntroProps) {
   const t = useT("home");
+  const lineId = useId();
   const root = useOverlayRoot();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   const [chosen, setChosen] = useState<Platform[]>([]);
@@ -71,7 +74,7 @@ export function Intro({ corners, platforms, onLeave, onDone }: IntroProps) {
     if (leavingRef.current) return;
     leavingRef.current = true;
     const result: IntroResult = { started, chosen: started ? chosenRef.current : [] };
-    onLeave(result); // state first: cookies, the stage below relights
+    onLeave(result); // state first: cookies, the page below arranges itself
     const element = host;
     setLeaving(true);
     if (!element) {
@@ -90,7 +93,7 @@ export function Intro({ corners, platforms, onLeave, onDone }: IntroProps) {
   });
 
   if (!root) return null;
-  const toggle = (platform: Platform, on: boolean) => setChosen((list) => (on ? [...list.filter((slug) => slug !== platform), platform] : list.filter((slug) => slug !== platform)));
+  const toggle = (platform: Platform) => setChosen((list) => (list.includes(platform) ? list.filter((slug) => slug !== platform) : [...list, platform]));
 
   return createPortal(
     <div
@@ -109,21 +112,18 @@ export function Intro({ corners, platforms, onLeave, onDone }: IntroProps) {
       <div className="intro__floor" aria-hidden="true" />
       <div className="intro__corners" aria-hidden="true">
         {corners.slice(0, 4).map((corner, index) => (
-          <div key={corner.platform} className="intro__corner" data-corner={index} data-gel={corner.platform} style={{ "--i": index } as CSSProperties}>
-            <div className="stage__light">
-              <i className="stage__halo" />
-            </div>
+          <div key={corner.platform} className="intro__corner" data-corner={index} style={{ "--i": index } as CSSProperties}>
             <span className="intro__object">
-              <Art name={corner.artKey} alt="" sizes="(min-width: 768px) 320px, 44vw" />
+              <Art name={corner.artKey} alt="" sizes="(min-width: 768px) 260px, 34vw" fetchPriority="low" />
             </span>
           </div>
         ))}
       </div>
 
       <div className="intro__skip">
-        <TextLink as="button" type="button" arrow={false} onClick={() => leave(false)}>
+        <Key size="sm" onClick={() => leave(false)}>
           {t("intro.skip")}
-        </TextLink>
+        </Key>
       </div>
 
       <div className="intro__center">
@@ -131,9 +131,37 @@ export function Intro({ corners, platforms, onLeave, onDone }: IntroProps) {
           <Logo variant="stacked" />
         </div>
         <div className="intro__panel">
-          <PlatformBank multiple values={chosen} onToggle={toggle} platforms={platforms} className="intro__keys" />
-          <p className="intro__hint type-caption text-ink-2">{t("intro.hint")}</p>
-          <Key variant="commit" size="lg" block className="intro__start" onClick={() => leave(true)}>
+          <h2 id={lineId} className="intro__line">
+            {t("intro.line")}
+          </h2>
+          <ul className="ptiles intro__tiles" aria-labelledby={lineId}>
+            {tiles.map((tile, index) => {
+              const on = chosen.includes(tile.platform);
+              return (
+                <li key={tile.platform} className="intro__tile" style={{ "--i": index } as CSSProperties}>
+                  <PlatformTile
+                    as="button"
+                    type="button"
+                    platform={tile.platform}
+                    name={tile.name}
+                    count={tile.count}
+                    aria-pressed={on}
+                    onClick={() => toggle(tile.platform)}
+                    art={
+                      <>
+                        {tile.artKey ? <Art name={tile.artKey} alt="" sizes="(min-width: 1024px) 240px, (min-width: 768px) 20vw, 40vw" fetchPriority="low" className="ptile__img" /> : null}
+                        <span className="intro__check">
+                          <Icon name="check" size={20} />
+                        </span>
+                      </>
+                    }
+                  />
+                </li>
+              );
+            })}
+          </ul>
+          <p className="intro__hint">{t("intro.hint")}</p>
+          <Key variant="primary" block className="intro__start" onClick={() => leave(true)}>
             {t("intro.start")}
           </Key>
         </div>
@@ -174,16 +202,14 @@ async function playExit(host: HTMLElement, tier: MotionTier): Promise<void> {
         ),
       );
     });
-    // the panel leaves the way things leave
-    const panel = host.querySelector<HTMLElement>(".intro__panel");
-    const skip = host.querySelector<HTMLElement>(".intro__skip");
-    for (const element of [panel, skip]) {
-      if (element) animations.push(element.animate([{ opacity: 1 }, { opacity: 0, translate: "0 8px" }], { duration: 140, easing: easings.exit, fill }));
+    // the panel and the skip key leave the way things leave
+    for (const element of host.querySelectorAll<HTMLElement>(".intro__panel, .intro__skip")) {
+      animations.push(element.animate([{ opacity: 1 }, { opacity: 0, translate: "0 8px" }], { duration: 140, easing: easings.exit, fill }));
     }
-    // the logo travels to the header's (a shared element in spirit): the wordmark lands on the header's wordmark
+    // the logo travels to the header's lockup (a shared element in spirit): the wordmark lands on the header's wordmark
     const logo = host.querySelector<SVGSVGElement>(".intro__logo svg");
     const word = logo?.querySelector<SVGGraphicsElement>('[data-part="wordmark"]');
-    const target = visibleElement(".shell-logo__word") ?? visibleElement(".shell-logo__mark");
+    const target = visibleElement(".shell-lockup__word") ?? visibleElement(".shell-lockup__mark");
     if (logo && word && target) {
       const from = word.getBoundingClientRect();
       const to = target.getBoundingClientRect();
@@ -199,7 +225,7 @@ async function playExit(host: HTMLElement, tier: MotionTier): Promise<void> {
         animations.push(part.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: easings.exit, fill }));
       });
     }
-    // the floor fades: the home is already lit underneath
+    // the floor fades: the home page is already there underneath
     const floor = host.querySelector<HTMLElement>(".intro__floor");
     if (floor) animations.push(floor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, delay: 80, easing: easings.water, fill }));
   }

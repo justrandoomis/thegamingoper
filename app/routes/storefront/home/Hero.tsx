@@ -1,152 +1,165 @@
 /**
- * The home hero (DESIGN.md §2 "The Lit Stage and the key that stays down", §8.1 mobile, §8.9 desktop, §8.11 tablet):
- * a one-line headline (an Arabic verb + the product's own name), the lit stage with the product's official photo,
- * the glass price tag and the one red key on the rim, and the bank of four platform keys under it. Pressing a key
- * relights the stage for that platform at once (state first — the URL only remembers it, no request is made).
+ * The home hero — Design System v2 §6.1, §4.18 (the showcase band), §2.10c (light), G2/G15: the crimson band with the
+ * featured console (default: the Nintendo platform's lead device, Nintendo Switch 2, until staff pin one — §13 #13).
  *
- * Phones: headline → stage (+ tag and commit key on the rim) → bank. From 768 the copy column (headline, deck, the
- * device link and the commit key, the delivery fact, the bank) sits at the inline start beside the stage — 6 + 6,
- * then 5 + 7 from 1200 — so it mirrors in English. The stage's photo is a link into the product page (the card →
- * page zoom: <SharedElement name="product-image:<id>" slot="hero">).
+ *   phones   the platform pill · the headline in two lines («العب على» / «Nintendo Switch 2», the name isolated, one
+ *            edge) · the product on the brand light (168px, the page's LCP image) · the price (xl, white) and «سعر
+ *            تجريبي» · the on-band key «اشترِ Nintendo Switch 2», full width · «التوصيل 5,000 د.ع لكل المحافظات · الدفع
+ *            عند الاستلام». At most 440px tall at 390.
+ *   ≥ 768    the copy at the inline start (plus the fact line and «تفاصيل الجهاز» → the device hub), the product at
+ *            the inline end on its light (≤ 410px wide); 400px tall at 1024, 420 from 1280. English mirrors by itself.
+ *
+ * The key opens the product area's quick look on the version choice (the page keeps its URL and scroll; a real link to
+ * the product page underneath for a new tab or no script). The photo is a link into the product page with the
+ * card → page zoom (<SharedElement name="product-image:<id>" slot="hero">). Dark theme: the band is a lit cabinet and
+ * the same key renders as the red primary (CSS). If the photo fails, the band keeps its size, the copy and the key.
+ * The headline steps down the type scale until its longest line fits (./view heroTitleSizes) — never a fluid size.
  */
-import { useId, type CSSProperties } from "react";
-import { preload } from "react-dom";
+import { lazy, Suspense, useEffect, useId, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 
-import { artSrcSet, getArt } from "~/art";
-import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { Icon } from "~/art/Icon";
+import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { ProductCardData } from "~/lib/dto";
 import { MotionLink, SharedElement } from "~/motion";
-import type { HomePlatform } from "~/server/services/home.server";
-import { AddToCartKey } from "~/ui/AddToCartKey";
+import { Band } from "~/ui/Band";
+import { BidiText } from "~/ui/BidiText";
+import { DemoNote } from "~/ui/DemoNote";
 import { Key } from "~/ui/Key";
-import { PlatformBank } from "~/ui/PlatformBank";
-import { PlatformLabel, type Platform } from "~/ui/PlatformLed";
-import { DeliveryNote } from "~/ui/PriceTag";
-import { BidiText, ProductImage } from "~/ui/ProductCard";
-import { Stage, StageTag } from "~/ui/Stage";
+import { PlatformLed, type Platform } from "~/ui/PlatformLed";
+import { fillNodes, iqdText, isIqd, SafePrice } from "~/ui/PriceTag";
+import { ProductImage } from "~/ui/ProductCard";
 import { TextLink } from "~/ui/TextLink";
-import { baghdadDay, headlineEm, isolate } from "./view";
+import { heroTitleSizes, keepTogether, pictureFailed, splitHeadline } from "./view";
 
-/** How wide the hero photo is drawn (the stage column): phones ~80vw, tablets half the page, desktop 7/12 of 1280. */
-const HERO_SIZES = "(min-width: 1200px) 640px, (min-width: 768px) 46vw, 82vw";
+/** The product area's quick look — fetched only when a shopper reaches for the key. */
+const loadQuickPreview = () => import("~/routes/storefront/product/QuickPreview");
+const QuickPreview = lazy(() => loadQuickPreview().then((module) => ({ default: module.QuickPreview })));
+const warmQuickPreview = () => void loadQuickPreview().catch(() => undefined);
+
+/** How wide the photo is drawn: the 168px phone box (≈ 82vw wide), half the band from 768, ≤ 410px from 1024. */
+const HERO_SIZES = "(min-width: 1024px) 410px, (min-width: 768px) 40vw, 82vw";
 
 export type HeroProps = {
-  platforms: readonly HomePlatform[];
-  cards: Readonly<Record<string, ProductCardData>>;
-  focus: Platform | null;
-  onFocus: (platform: Platform) => void;
-  /** The platform the server rendered first: only its photo is the page's LCP image (priority). */
-  firstFocus: Platform | null;
+  /** The featured product (a buyable console with a photo). */
+  card: ProductCardData;
+  platform: Platform;
+  /** "new": released within the last 120 days («وصل …»); "lead": the platform's lead device («العب على …»). */
+  mode: "new" | "lead";
+  /** The device hub of the product's model ("/device/switch-2"); the product page when there is none. */
+  deviceHref: string | null;
+  /** The flat delivery fee from settings; null hides the delivery fact. */
   deliveryFeeIqd: number | null;
+  /** Cash on delivery is switched on in the settings. */
+  cod: boolean;
+  /** The price is a demo value («سعر تجريبي» beside it). */
+  demoPrice: boolean;
 };
 
-export function Hero({ platforms, cards, focus, onFocus, firstFocus, deliveryFeeIqd }: HeroProps) {
+export function Hero({ card, platform, mode, deviceHref, deliveryFeeIqd, cod, demoPrice }: HeroProps) {
   const t = useT("home");
+  const ui = useT("ui");
+  const shop = useT("ui-shop");
   const f = useFormat();
+  const locale = useLocale();
   const headingId = useId();
-  const platform = platforms.find((entry) => entry.slug === focus) ?? null;
-  const card = platform?.hero ? cards[platform.hero.productId] : undefined;
-  const phrase = focus ? isolate(t(`phrase.${focus}`)) : "";
-  const headline = card ? t(platform!.hero!.mode === "new" ? "hero.new" : "hero.lead", { name: card.name }) : t("hero.platformOnly", { platform: phrase });
-  const href = card ? `/p/${card.slug}` : focus ? `/platform/${focus}` : "/";
-  const released = platform?.hero?.mode === "new" ? baghdadDay(platform.hero.releasedOn) : null;
-  const stageImage = () => document.querySelector<HTMLElement>(".home-hero .stage__slot .render");
+  const [preview, setPreview] = useState({ mounted: false, open: false });
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const media = useRef<HTMLDivElement>(null);
+  // the server-rendered photo may have failed before the page came to life (no onError then): look once
+  useEffect(() => {
+    if (pictureFailed(media.current?.querySelector("img"))) setPhotoFailed(true);
+  }, []);
+  const href = `/p/${card.slug}`;
+  const name = keepTogether(card.name);
+  const headline = splitHeadline((value) => t(mode === "new" ? "hero.new" : "hero.lead", { name: value }), name);
+  const secondLine = headline.after ? `${name} ${headline.after}` : name;
+  // Sorani headings are set in Plex 600 until a native reader approves Kufi's letters (v2 §2.6)
+  const sizes = heroTitleSizes([headline.lead, secondLine], locale === "ckb" ? "plex" : "kufi");
+  const titleStyle = { "--hero-fs-sm": `${sizes.sm}px`, "--hero-fs-md": `${sizes.md}px`, "--hero-fs-lg": `${sizes.lg}px`, "--hero-fs-xl": `${sizes.xl}px` } as CSSProperties;
 
-  // Pointer-down on a platform key that is not lit yet: fetch its photo now (DESIGN.md §6.5 — never stacked in the DOM).
-  const prefetch = (next: Platform) => {
-    const other = platforms.find((entry) => entry.slug === next);
-    const key = other?.hero ? cards[other.hero.productId]?.image.artKey : null;
-    const art = key ? getArt(key) : undefined;
-    if (!art || art.variants.avif.length === 0) return;
-    const middle = art.variants.avif[Math.min(2, art.variants.avif.length - 1)];
-    preload(middle.src, { as: "image", type: "image/avif", imageSrcSet: artSrcSet(art.variants.avif), imageSizes: HERO_SIZES });
+  const openPreview = (event: MouseEvent<HTMLElement>) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    setPreview({ mounted: true, open: true });
   };
 
   return (
-    <section className="home-hero page" aria-labelledby={headingId}>
-      <div className="home-hero__copy">
-        {focus ? (
-          // phones show the platform on the held-down key; the eyebrow stays there only to date a "new" headline
-          <p className={released ? "home-hero__eyebrow" : "home-hero__eyebrow max-md:hidden"}>
-            <PlatformLabel platform={focus} />
-            {released ? (
-              <span className="type-caption text-ink-2">
-                {" · "}
-                {t("hero.releasedOn", { date: f.date(released, "long") })}
-              </span>
-            ) : null}
-          </p>
+    <Band kind="hero" aria-labelledby={headingId} className="home-hero" contentClassName="home-hero__body">
+      <p className="home-hero__pill pill" data-gel={platform}>
+        <PlatformLed platform={platform} />
+        {ui(`platform.${platform}`)}
+      </p>
+
+      <h2 id={headingId} className="home-hero__title" style={titleStyle}>
+        {headline.lead ? (
+          <>
+            {headline.lead}
+            <br />
+          </>
         ) : null}
-        <h1 id={headingId} className="home-hero__title text-ink" style={{ "--em": headlineEm(headline) } as CSSProperties}>
-          <BidiText text={headline} />
-        </h1>
-        <div className="home-hero__deck">
-          {card?.subtitle ? <p className="type-body text-ink-2">{card.subtitle}</p> : null}
-          {card ? (
-            <div className="home-hero__keys">
-              <Key as={MotionLink} nav="zoom" to={href} size="lg">
-                {t("hero.details")}
-              </Key>
-              <AddToCartKey
-                variant="key"
-                size="lg"
-                item={{ variantId: card.variantId }}
-                name={card.name}
-                stock={card.stock}
-                chooseHref={card.hasVariants ? href : null}
-                image={card.image}
-                source={stageImage}
-              />
-            </div>
-          ) : null}
-          {deliveryFeeIqd !== null ? <DeliveryNote feeIqd={deliveryFeeIqd} /> : null}
-        </div>
+        <BidiText text={name} />
+        {headline.after ? ` ${headline.after}` : null}
+      </h2>
+
+      {card.subtitle ? <p className="home-hero__facts">{card.subtitle}</p> : null}
+
+      {/* a photo that fails to load leaves its box empty (no broken-image frame): the band keeps its size */}
+      <div ref={media} className="home-hero__media" onErrorCapture={() => setPhotoFailed(true)}>
+        {photoFailed ? null : <span className="band__contact" aria-hidden="true" />}
+        <MotionLink nav="zoom" to={href} className="home-hero__link" aria-label={card.name}>
+          <SharedElement name={`product-image:${card.id}`} slot="hero" as="span" className="home-hero__shared render-slot">
+            {photoFailed ? null : <ProductImage image={card.image} alt="" sizes={HERO_SIZES} priority />}
+          </SharedElement>
+        </MotionLink>
       </div>
 
-      <div className="home-hero__stage">
-        {card ? (
-          <Stage
-            size="hero"
-            gel={focus}
-            tag={<StageTag name={<BidiText text={card.name} />} priceIqd={card.priceIqd} />}
-            action={
-              <AddToCartKey
-                variant="key"
-                item={{ variantId: card.variantId }}
-                name={card.name}
-                stock={card.stock}
-                chooseHref={card.hasVariants ? href : null}
-                image={card.image}
-                source={stageImage}
-                className="md:hidden"
-              />
-            }
-          >
-            <MotionLink nav="zoom" to={href} className="home-hero__link" aria-label={card.name}>
-              <SharedElement name={`product-image:${card.id}`} slot="hero" as="span" className="home-hero__shared">
-                <ProductImage image={card.image} alt="" sizes={HERO_SIZES} priority={focus === firstFocus} />
-              </SharedElement>
-            </MotionLink>
-          </Stage>
-        ) : (
-          <Stage size="hero" gel={null}>
-            <div className="home-hero__empty">
-              <p className="type-sub text-ink">{t("hero.empty", { platform: phrase })}</p>
-              {focus ? (
-                <TextLink as={LocaleLink} to={`/platform/${focus}`}>
-                  {t("hero.emptyAction", { platform: phrase })}
-                </TextLink>
-              ) : null}
-            </div>
-          </Stage>
-        )}
+      <div className="home-hero__price">
+        <SafePrice amountIqd={card.priceIqd} size="xl" tone="onColor" approx="off" as="span" />
+        {demoPrice ? <DemoNote variant="tag" what="price" onColor /> : null}
       </div>
 
-      {platforms.length > 0 ? (
-        <div className="home-hero__bank">
-          <PlatformBank value={focus} onChange={onFocus} onIntent={prefetch} platforms={platforms.map((entry) => entry.slug)} />
-        </div>
+      <div className="home-hero__buy">
+        <Key
+          as={LocaleLink}
+          to={href}
+          prefetch="none"
+          variant="onBand"
+          block
+          aria-haspopup="dialog"
+          className="md:w-fit"
+          onClick={openPreview}
+          onPointerEnter={warmQuickPreview}
+          onFocus={warmQuickPreview}
+          onTouchStart={warmQuickPreview}
+        >
+          {t("hero.buy", { name })}
+        </Key>
+        <TextLink as={LocaleLink} to={deviceHref ?? href} className="max-md:hidden">
+          {t("hero.details")}
+        </TextLink>
+      </div>
+
+      {isIqd(deliveryFeeIqd) ? (
+        <p className="home-hero__line">
+          <Icon name="truck" size={16} />
+          {/* each fact is one unit: a narrow phone breaks between them (inside one only when it alone is too long) */}
+          <span>
+            <span className="inline-block">{fillNodes(shop("price.delivery"), { price: <bdi className="nums">{iqdText(f, deliveryFeeIqd)}</bdi> })}</span>
+            {cod ? (
+              <>
+                {" · "}
+                <span className="inline-block">{shop("trust.cod")}</span>
+              </>
+            ) : null}
+          </span>
+        </p>
       ) : null}
-    </section>
+
+      {preview.mounted ? (
+        <Suspense fallback={null}>
+          <QuickPreview slug={card.slug} name={card.name} card={card} open={preview.open} onClose={() => setPreview((state) => ({ ...state, open: false }))} />
+        </Suspense>
+      ) : null}
+    </Band>
   );
 }

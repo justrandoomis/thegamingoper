@@ -12,8 +12,9 @@
  *   · the problem in the shopper's words (10–2,000 characters), up to MAX_SUPPORT_PHOTOS private photos;
  *   · a contact phone (required) and name (optional);
  *   · how they would like to hand the device over (drop it off / be picked up) and a preferred day and time window —
- *     PREFERENCES ONLY: nothing is booked, the store calls to arrange it. Stored in the "submitted" event's data
- *     (repair_tickets has no columns for them).
+ *     PREFERENCES ONLY: nothing is booked and the page promises no call (Design System v2 §9). Stored in the
+ *     "submitted" event's data (repair_tickets has no columns for them). The storefront form offers the period alone
+ *     (PreferencePicker rules: no day until the owner configures dispatch days); a day is still accepted.
  *
  * A diagnosis is only ever made by a technician who has the device; a quote must be approved by the shopper before
  * chargeable work starts (repair_tickets.quote_approved_at). The status view shows status changes and the quote —

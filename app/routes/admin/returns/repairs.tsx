@@ -12,6 +12,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { returnsMeta } from "./meta";
 import { failed, openReturns, text } from "./returns.server";
+import { CustomerName } from "../shell/CustomerName";
 import { DemoNote, Due, Failure, PhoneText, Ref, RepairStatusBadge, useReturnsT, When } from "./ui";
 
 /**
@@ -81,7 +82,9 @@ export default function Repairs({ loaderData }: Route.ComponentProps) {
       header: t("repairs.col.customer"),
       cell: (row) => (
         <span className="grid whitespace-nowrap py-1">
-          <span>{row.customerName ?? "—"}</span>
+          <span>
+            <CustomerName profileId={row.customerProfileId}>{row.customerName ?? "—"}</CustomerName>
+          </span>
           <span className="type-caption text-ink-2">
             <PhoneText phone={row.phone} />
           </span>

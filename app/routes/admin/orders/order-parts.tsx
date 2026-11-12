@@ -13,6 +13,7 @@ import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
+import { CustomerName } from "../shell/CustomerName";
 import type { OrderActionResult } from "./order.server";
 import { Facts, Failure, FlagExplanations, Money, newKey, PhoneText, Ref, Section, useOrdersT, When } from "./ui";
 
@@ -835,7 +836,7 @@ export function CustomerSection({ order }: { order: OrderDetail }) {
       <Facts
         className="!grid-cols-1"
         rows={[
-          { label: t("customer.name"), value: c.name ?? t("list.noName") },
+          { label: t("customer.name"), value: <CustomerName profileId={c.profileId}>{c.name ?? t("list.noName")}</CustomerName> },
           { label: t("customer.phone"), value: <PhoneText phone={c.phone} /> },
           { label: t("customer.kind"), value: c.kind === "customer" ? t("customer.registered") : t("customer.guest") },
           { label: t("customer.previous"), value: <bdi className="nums">{c.previousOrders}</bdi> },

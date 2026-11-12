@@ -7,8 +7,11 @@
  *   · exact-name-first ranking — searching a product's own name puts that product first ("xbox series x")
  *   · category-aware suggestions, zero-result help, autocomplete shape, anonymous query statistics
  */
+import { RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { L10n } from "~/lib/locales";
+import { loader as suggestLoader } from "~/routes/api/search-suggest";
+import { requestContextMiddleware } from "~/server/context.server";
 import { normalizeSearchText, searchProductIds } from "~/server/db/search.server";
 import { seedDemo } from "~/server/db/seed/demo";
 import {
@@ -318,6 +321,94 @@ describe("autocomplete (suggestSearch)", () => {
 
   it("asks for two characters", async () => {
     expect(await suggestSearch(t.db, "en", "p", { now: t.now })).toEqual([]);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── GET /api/search/suggest (the route)
+
+type SuggestRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string };
+let suggestIp = 0;
+
+/** Runs the route behind the real request middleware (locale, rate limit, headers). */
+async function suggestRoute(q: string, locale: "ar" | "en" | "ckb") {
+  const request = new Request(`http://localhost:5173/api/search/suggest?${new URLSearchParams({ q, locale })}`, { headers: { "CF-Connecting-IP": `198.51.100.${(suggestIp++ % 200) + 1}` } });
+  const context = new RouterContextProvider();
+  const url = new URL(request.url);
+  const response = (await requestContextMiddleware({ request, context, url, pattern: "/api/search/suggest", params: {} } as never, async () => {
+    return (await suggestLoader({ request, context, params: {}, url, pattern: "/api/search/suggest" } as never)) as Response;
+  })) as Response;
+  return { status: response.status, cache: response.headers.get("Cache-Control"), body: (await response.json()) as { suggestions: SuggestRow[]; total?: number } };
+}
+
+describe("GET /api/search/suggest (the header's suggestions)", () => {
+  it("keeps every row and field of the service, adds the products' picture, price and kind, and how many /search lists", async () => {
+    const { status, cache, body } = await suggestRoute("playstation", "en");
+    expect(status).toBe(200);
+    expect(cache).toBe("public, max-age=60");
+    // the same rows, in the same order, as the service (the route only adds to them)
+    const items = await suggestSearch(t.db, "en", "playstation", { now: Date.now() });
+    expect(body.suggestions.map((row) => row.href)).toEqual(items.map((item) => item.href));
+    for (const [index, row] of body.suggestions.entries()) {
+      expect(row.label.length).toBeGreaterThan(0);
+      expect(row.href.startsWith("/")).toBe(true);
+      if (items[index].hint) expect(row.hint).toBe(items[index].hint);
+    }
+    const productRows = body.suggestions.filter((row) => row.href.startsWith("/p/"));
+    expect(productRows.length).toBeGreaterThan(0);
+    for (const row of productRows) {
+      expect(row.image).toMatch(/^[a-z0-9-]+--\d+$/);
+      expect(row.kindLabel?.length).toBeGreaterThan(0);
+      if (row.priceIqd !== undefined) expect(Number.isSafeInteger(row.priceIqd) && row.priceIqd >= 0).toBe(true);
+    }
+    // «اعرض كل النتائج (42)»: exactly what the results page lists for the same words
+    const page = await searchProducts(t.db, "en", "playstation", { now: Date.now() });
+    expect(body.total).toBe(page.total);
+    // typed rows (platform, department, device) carry no product fields
+    for (const row of body.suggestions.filter((entry) => !entry.href.startsWith("/p/"))) expect(row.image ?? row.priceIqd ?? row.kindLabel).toBeUndefined();
+  });
+
+  it("a typo: the corrected spelling first, products and the total of the corrected search, in every language", async () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const { body } = await suggestRoute("playstaion", locale);
+      expect(body.suggestions[0]).toEqual(expect.objectContaining({ label: "playstation", href: "/search?q=playstation" }));
+      expect(body.suggestions[0].hint?.length).toBeGreaterThan(0);
+      expect(body.total).toBe((await searchProducts(t.db, locale, "playstaion", { now: Date.now() })).total);
+      expect(body.total).toBeGreaterThan(0);
+    }
+  });
+
+  it("a synonym in Arabic finds what the English name finds", async () => {
+    const arabic = await suggestRoute("بلايستيشن", "ar");
+    const english = await suggestRoute("playstation", "ar");
+    expect(arabic.body.total).toBe(english.body.total);
+    expect(arabic.body.suggestions.some((row) => row.href === "/platform/playstation")).toBe(true);
+  });
+
+  it("nothing found: no rows and a total of 0; too short to search: no rows and no total", async () => {
+    expect((await suggestRoute("zzzzqqxx", "en")).body).toEqual({ suggestions: [], total: 0 });
+    expect((await suggestRoute("p", "en")).body).toEqual({ suggestions: [] });
+  });
+
+  it("a sold-out product shows no price (it would read as an offer); in stock again, it does", async () => {
+    const slug = "playstation-portal";
+    const levels = await rows<{ variant_id: string; location_id: string; on_hand: number }>(
+      "SELECT s.variant_id, s.location_id, s.on_hand FROM stock_levels s JOIN variants v ON v.id = s.variant_id JOIN products p ON p.id = v.product_id WHERE p.slug = ?",
+      slug,
+    );
+    expect(levels.length).toBeGreaterThan(0);
+    const row = async () => (await suggestRoute("PlayStation Portal", "en")).body.suggestions.find((entry) => entry.href === `/p/${slug}`);
+    expect((await row())?.priceIqd).toBeGreaterThan(0);
+    const set = (level: { variant_id: string; location_id: string }, onHand: number) =>
+      t.d1.prepare("UPDATE stock_levels SET on_hand = ? WHERE variant_id = ? AND location_id = ?").bind(onHand, level.variant_id, level.location_id).run();
+    try {
+      for (const level of levels) await set(level, 0);
+      const soldOut = await row();
+      expect(soldOut).toBeDefined();
+      expect(soldOut?.priceIqd).toBeUndefined();
+      expect(soldOut?.image).toBeDefined();
+    } finally {
+      for (const level of levels) await set(level, level.on_hand);
+    }
   });
 });
 

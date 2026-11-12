@@ -57,12 +57,12 @@ export function ProofSection({ order, access, onSent, headingLevel = 3 }: { orde
   const showAmountError = amountTouched && amountIssue !== null;
 
   return (
-    <section aria-labelledby={headingId} className="grid gap-4 rounded-lg bg-paper p-4">
+    <section aria-labelledby={headingId} className="co-card grid gap-4">
       <div className="grid gap-1">
-        <H id={headingId} className="type-sub text-ink">
+        <H id={headingId} className="type-h3 text-ink">
           {rejected ? t("proof.headingAgain") : t("proof.heading")}
         </H>
-        <p className="type-caption text-ink-2">{t("proof.lead")}</p>
+        <p className="type-xs text-ink-2">{t("proof.lead")}</p>
       </div>
       <TextField
         id="proof-amount"
@@ -75,12 +75,12 @@ export function ProofSection({ order, access, onSent, headingLevel = 3 }: { orde
         value={amount}
         onChange={(event) => setAmount(event.currentTarget.value)}
         onBlur={() => setAmountTouched(true)}
-        end={<span className="type-caption text-ink-2">{t("proof.currency")}</span>}
+        end={<span className="type-xs text-ink-2">{t("proof.currency")}</span>}
         hint={fillNodes(t("proof.amountHint"), { due: <bdi className="nums font-semibold">{f.iqd(due)}</bdi> })}
         error={showAmountError ? t(`proof.amountErrors.${amountIssue}`) : undefined}
       />
       {parsed !== null && parsed !== due ? (
-        <p className="-mt-2 type-caption font-medium text-warn" aria-live="polite">
+        <p className="-mt-2 type-xs-strong text-warn" aria-live="polite">
           {fillNodes(t("proof.amountDiffers"), { due: <bdi className="nums">{f.iqd(due)}</bdi> })}
         </p>
       ) : null}
@@ -94,7 +94,7 @@ export function ProofSection({ order, access, onSent, headingLevel = 3 }: { orde
           onUploaded={() => void revalidator.revalidate()}
         />
         {amountIssue !== null ? (
-          <p id={reasonId} className="type-caption text-ink-2">
+          <p id={reasonId} className="type-xs text-ink-2">
             {t("proof.amountFirst")}
           </p>
         ) : null}

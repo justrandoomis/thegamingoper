@@ -1,0 +1,340 @@
+/*
+ * The used area (app/routes/storefront/used) — /used, /used/:slug, /trade-in, /trade-in/:ref. Design System v2 §6.8,
+ * §6.14, §4.12. Components layer (utilities still win), tokens only, logical properties only, motion only on transform
+ * and opacity. The kit draws the pieces (.pcard, .inspect, .choice, .proof__drop, .steps, .facts …); this file only
+ * places them and draws the area's own small layouts.
+ */
+@layer components {
+  /* Script on / off. The Motion Engine's head script sets <html data-motion> before the first paint
+     (app/motion/tier-script.ts): with script the no-script keys never show, without script they do. */
+  :root[data-motion] .used-nojs {
+    display: none;
+  }
+
+  /* ───────────────────────────── /used: filters ───────────────────────────── */
+  .used-filters {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .used-facet {
+    display: grid;
+    gap: var(--s-2);
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .used-facet__title {
+    margin-block-end: var(--s-1);
+    padding: 0;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  /* a checkbox row: the label grows, its count sits at the end */
+  .used-facet__row .choice__text {
+    flex: 1;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+    font: var(--type-sm);
+  }
+  .used-facet__row .field__error:empty {
+    display: none;
+  }
+  .used-facet__count {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  /* the sidebar from 1024: sticky under the header, scrolls by itself when it is taller than the window */
+  .used-sidebar {
+    position: sticky;
+    inset-block-start: calc(var(--shell-header-h) + var(--safe-top) + var(--s-4));
+    max-block-size: calc(100dvh - var(--shell-header-h) - var(--safe-top) - var(--s-8));
+    overflow-y: auto;
+    padding-inline-end: var(--s-1);
+    scrollbar-width: thin;
+  }
+
+  /* the toolbar: the count at the start, «الفلاتر» · «الترتيب» (phones) or the sort select (≥1024) at the end */
+  .used-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-3);
+    min-block-size: var(--target);
+  }
+
+  /* «الفلاتر | الترتيب» floating above the tab bar once the toolbar has scrolled away (below 1024, v2 §6.3). Solid
+     paper with the float shadow: the header and the tab bar are the page's two live glass panes (§2.10b). */
+  .used-dock {
+    position: fixed;
+    z-index: var(--z-sticky);
+    inset-inline: 0;
+    inset-block-end: calc(var(--shell-bottom) + var(--s-3));
+    display: flex;
+    justify-content: center;
+    padding-inline: max(var(--gutter), var(--safe-inline));
+    pointer-events: none;
+  }
+  .used-pill {
+    display: flex;
+    align-items: stretch;
+    block-size: var(--target);
+    border-radius: var(--r-full);
+    background: var(--paper);
+    box-shadow: var(--e-float);
+    overflow: hidden;
+    pointer-events: auto;
+  }
+  .used-pill__key {
+    display: flex;
+    align-items: center;
+    min-inline-size: var(--target);
+    padding-inline: var(--s-5);
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: var(--type-sm-strong);
+    cursor: pointer;
+  }
+  .used-pill__key + .used-pill__key {
+    border-inline-start: 1px solid var(--line);
+  }
+  /* the pill clips its children: the ring is drawn inside the key */
+  .used-pill__key:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -4px;
+  }
+  .used-pill__key:disabled {
+    color: var(--ink-3);
+    cursor: not-allowed;
+  }
+  @media (hover: hover) {
+    .used-pill__key:not(:disabled):hover {
+      background: var(--niche);
+    }
+  }
+  /* a control the keyboard reaches is never under the pill (WCAG 2.4.11) */
+  @media (max-width: 63.99rem) {
+    :root:has(.used-dock[data-pill]) {
+      scroll-padding-block-end: calc(var(--shell-bottom) + var(--s-3) + 56px);
+    }
+  }
+
+  /* ───────────────────────────── /used: the rows ───────────────────────────── */
+  /* one column of rows; two columns from 1024 beside the sidebar (v2 §4.12) */
+  .used-rows {
+    display: grid;
+    gap: var(--s-5) var(--gap-card);
+  }
+  @media (min-width: 64rem) {
+    .used-rows {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s-6) var(--s-8);
+    }
+  }
+  .used-rows > li + li {
+    padding-block-start: var(--s-5);
+    border-block-start: 1px solid var(--line);
+  }
+  @media (min-width: 64rem) {
+    .used-rows > li + li {
+      padding-block-start: 0;
+      border-block-start: 0;
+    }
+    .used-rows > li:nth-child(n + 3) {
+      padding-block-start: var(--s-6);
+      border-block-start: 1px solid var(--line);
+    }
+  }
+
+  /* ───────────────────────────── /trade-in: the wizard ───────────────────────────── */
+  /* one centred 720px column; from 1280 a 340px sticky aside beside it (v2 §6.14) */
+  .used-wizard {
+    display: grid;
+    grid-template-columns: minmax(0, 720px);
+    justify-content: center;
+    gap: var(--s-8);
+  }
+  @media (min-width: 80rem) {
+    .used-wizard--aside {
+      grid-template-columns: minmax(0, 720px) 340px;
+    }
+  }
+  .used-wizard__main {
+    display: grid;
+    align-content: start;
+    gap: var(--s-6);
+    min-inline-size: 0;
+  }
+  .used-wizard__aside {
+    display: none;
+  }
+  @media (min-width: 80rem) {
+    .used-wizard__aside {
+      position: sticky;
+      inset-block-start: calc(var(--shell-header-h) + var(--safe-top) + var(--s-4));
+      display: grid;
+      align-content: start;
+      gap: var(--s-4);
+    }
+  }
+
+  /* «قدّر السعر ← افحص الجهاز ← استلم رصيداً أو نقداً»: three steps in a row from 600, a column on narrow phones */
+  .used-journey {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  .used-journey__step {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .used-journey__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-full);
+    background: var(--red-tint);
+    color: var(--red-ink);
+  }
+  .used-journey__arrow {
+    display: none;
+  }
+  @media (min-width: 37.5rem) {
+    .used-journey {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--s-4);
+    }
+    .used-journey__step {
+      position: relative;
+      grid-template-columns: 40px minmax(0, 1fr) 16px;
+    }
+    .used-journey__arrow {
+      display: block;
+      color: var(--ink-3);
+    }
+  }
+
+  /* the device tiles: the photo on the product ground, the name (two lines), «حتى 350,000 د.ع · تقديري» */
+  .used-devices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) var(--gap-card);
+  }
+  @media (min-width: 37.5rem) {
+    .used-devices {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 48rem) {
+    .used-devices {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .used-device {
+    display: grid;
+    align-content: start;
+    gap: var(--s-1);
+    border-radius: var(--r-lg);
+    color: inherit;
+    text-decoration: none;
+  }
+  .used-device > .niche {
+    margin-block-end: var(--s-2);
+  }
+  .used-device[aria-current] > .niche {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .used-device__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  .used-device__up {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  @media (hover: hover) {
+    .used-device:hover .used-device__name {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+    .used-device:hover .niche .render {
+      scale: 1.03;
+    }
+  }
+
+  /* the photo drop area while a file is dragged over it */
+  .used-photos__drop[data-dragging] {
+    border-color: var(--ink);
+    background: var(--niche);
+  }
+}
+
+/*
+ * PLACEMENT ONLY (no look changes) — in a narrow column (phones; each of the two columns at 1024–1279) the kit's used
+ * row (<UsedUnitCard layout="row">) gives its end column to «اعرض تقرير الفحص», which leaves the name ~70px. Until the
+ * kit stacks a row's action under its text on narrow lists (requested from the kit owner), the link goes under the text
+ * column here. In the utilities layer because the row's own grid is set with utilities.
+ */
+@layer utilities {
+  @media (max-width: 47.99rem), (min-width: 64rem) and (max-width: 79.99rem) {
+    .used-rows .used-row {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--s-1);
+    }
+    .used-rows .used-row > .pcard__foot {
+      padding-inline-start: calc(96px + var(--s-4));
+    }
+  }
+
+  /*
+   * PLACEMENT ONLY — the wizard's five-step rail on phones. The kit shares the rail out in equal parts (each item
+   * `flex-1 min-w-0`), so the current step's words did not fit their part: on the last step in English («Inspection»)
+   * the page scrolled sideways at 360 and 390, and in Arabic and Sorani the last label was cut at 360. Until the kit's
+   * ProgressSteps fits five steps (requested), an item here is never narrower than what it holds, and the joins and gaps
+   * are smaller; every step keeps its 44px target and the current step its words.
+   */
+  @media (max-width: 47.99rem) {
+    .used-wizard .steps > li {
+      min-inline-size: min-content;
+    }
+    .used-wizard .steps,
+    .used-wizard .steps > li,
+    .used-wizard .step {
+      gap: var(--s-1);
+    }
+    .used-wizard .step__sep {
+      min-inline-size: 4px;
+    }
+  }
+  /* under 360 (320px reflow, 200% zoom on a small phone): the done and upcoming steps are drawn 32px wide; a done
+     step's link keeps a 44px hit area through its ::after, which only overlaps the joins */
+  @media (max-width: 22.49rem) {
+    .used-wizard .step {
+      position: relative;
+      min-inline-size: 32px;
+    }
+    .used-wizard .step::after {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline: -6px;
+    }
+  }
+}

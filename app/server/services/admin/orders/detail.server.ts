@@ -13,6 +13,7 @@
  */
 import { and, asc, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { pick, type Locale } from "~/lib/locales";
+import { customerProfileId } from "~/routes/admin/shell/access.server";
 import { assertCan, can, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db/drizzle.server";
 import {
@@ -378,6 +379,7 @@ export async function getOrderDetail(db: Db, actor: Actor, ref: string, locale: 
     customer: {
       kind: order.customerId ? "customer" : "guest",
       name: order.contactName ?? customer?.name ?? null,
+      profileId: customerProfileId(actor, order.customerId),
       phone: phoneFor(actor, order.contactPhoneE164),
       accountStatus: customer?.status ?? null,
       fraudFlag: customer?.fraudFlag ?? false,

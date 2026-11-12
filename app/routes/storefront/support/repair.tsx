@@ -1,44 +1,67 @@
 /**
- * /support/repair — the repair request form (brief §7; services/support/repairs.server createRepairTicket).
+ * /support/repair — the repair request (Design System v2 §6.13; services/support/repairs.server createRepairTicket). A
+ * task flow (`chrome: "task"`) in three steps — الجهاز والمشكلة → الصور → التواصل والتسليم (`?step=device|photos|
+ * contact`; Back moves between steps, the sideways push follows the order) — with the task bar «رجوع | تابع» below
+ * 1024 and the same keys at the end of the form from 1024.
  *
- * Device (ours, or "not in the list" with its name), an optional PRIVATE serial, the problem in the shopper's words,
- * up to three private photos, a phone (required) and name, and how and when they would like to hand the device over —
- * stated as a preference, never a booking. Coming from the assistant (?from=assistant&<conversation>), the problem is
+ * Device (ours, or "not in the list" with its name), an optional PRIVATE serial, the problem in the shopper's words, up
+ * to three private photos, a mobile number (required) and a name, how they would like to hand the device over and a
+ * preferred time — the period alone (PreferencePicker rules: no day until the owner configures dispatch days), never a
+ * booking and never a call promise. "What happens next" sits above the form (step 1 on phones, a sticky aside from
+ * 1024) with the facts that are true today. Coming from the assistant (?from=assistant&<conversation>), the problem is
  * prefilled with the conversation's summary, which the shopper may edit.
  *
- * On success the shopper lands on the status page with the request's reference and access token. Field errors come
- * back with the values typed (so the form also works without JavaScript); a request that never reached the store keeps
- * the form as it is (clientAction).
+ * One form holds the three steps (the fields stay mounted, so nothing typed is lost between steps); «تابع» checks the
+ * step's fields first. Without JavaScript every step shows and the key sends the form. On success the shopper lands on
+ * the status page with the request's reference and access token; field errors come back with the values typed and take
+ * the shopper to the step of the first one; a request that never reached the store keeps the form (clientAction).
  */
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { redirect, useNavigation, useSubmit } from "react-router";
+import { useEffect, useId, useRef, useState, type FormEvent, type MouseEvent } from "react";
+import { redirect, useLocation, useNavigate, useNavigation, useSubmit, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/repair";
 import { Icon } from "~/art/Icon";
-import { messagesFor, serverT } from "~/i18n/i18n.server";
-import { useT } from "~/i18n/react";
-import { LOCALES, localePath } from "~/lib/locales";
+import { messagesFor } from "~/i18n/i18n.server";
+import { useLocalePath, useT } from "~/i18n/react";
+import { localePath } from "~/lib/locales";
 import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { runAssistant } from "~/server/services/support/assistant.server";
-import { nextDays } from "~/server/services/support/common.server";
 import { findDevice, getSupportDirectory } from "~/server/services/support/kb.server";
 import { createRepairTicket } from "~/server/services/support/repairs.server";
 import { DEVICE_OTHER, parseAssistantState } from "~/server/services/support/state";
-import { PREFERRED_WINDOWS, type SupportPlatformGroup } from "~/server/services/support/types";
+import type { SupportPlatformGroup } from "~/server/services/support/types";
 import { shellMeta } from "~/routes/storefront/shell/meta";
-import { Chip } from "~/ui/Chip";
-import { FieldGroup, Radio, Select, TextArea, TextField } from "~/ui/Field";
+import { TaskBar } from "~/routes/storefront/shell/TabBar";
+import type { ShellHandle } from "~/routes/storefront/shell/types";
+import { cx } from "~/ui/cx";
+import { FieldGroup, FormErrorSummary, OptionCard, Select, TextArea, TextField, type FormError } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform } from "~/ui/PlatformLed";
-import { fieldMessage, formMessage, isFailure, keepFormOnFailure, phoneProblem } from "./client";
-import { SupportTabs } from "./components/parts";
+import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
+import { ProgressSteps } from "~/ui/ProgressSteps";
+import { fieldMessage, formMessage, isFailure, keepFormOnFailure, phoneProblem, revalidateAfter, stepBack } from "./client";
+import { SupportNav } from "./components/parts";
 import { PhotoPicker } from "./components/PhotoPicker";
 import { failed, formFiles, formKey, photoStore, readSupportForm, supportWho, textFields } from "./support.server";
+import "./support.css";
 
-export const handle = { nav: "push", order: 2, group: "support" } satisfies MotionHandle;
+const STEPS = ["device", "photos", "contact"] as const;
+type Step = (typeof STEPS)[number];
+const stepOf = (value: string | null | undefined): Step => (STEPS as readonly string[]).includes(value ?? "") ? (value as Step) : "device";
+
+/** The step each field lives on (a server-side field error takes the shopper there). */
+const FIELD_STEP: Record<string, Step> = { device: "device", deviceText: "device", serial: "device", issue: "device", photos: "photos", phone: "contact", contactName: "contact", handover: "contact", preferredDay: "contact", preferredWindow: "contact" };
+
+export const handle = {
+  shell: { chrome: "task" },
+  nav: "push",
+  // between the assistant (1) and the status page (3); the steps push sideways in their order
+  order: ({ search }) => 2 + STEPS.indexOf(stepOf(new URLSearchParams(search).get("step"))) / 10,
+  group: "support",
+} satisfies ShellHandle & MotionHandle;
 
 const FIELDS = ["idempotencyKey", "device", "deviceText", "serial", "issue", "phone", "contactName", "handover", "preferredDay", "preferredWindow", "source"] as const;
 
@@ -50,11 +73,22 @@ export async function loader({ context, url }: Route.LoaderArgs) {
   const device = asked === DEVICE_OTHER ? DEVICE_OTHER : (findDevice(directory, asked)?.slug ?? "");
   const fromAssistant = url.searchParams.get("from") === "assistant";
   const summary = fromAssistant ? (await runAssistant(db, ctx.locale, parseAssistantState(url.searchParams))).summary : "";
-  // Day choices are worded on the server (Baghdad calendar, the shopper's language), so the client renders the same text.
-  const t = serverT(ctx.locale, "support");
-  const weekday = new Intl.DateTimeFormat(`${LOCALES[ctx.locale].bcp47}-u-nu-latn`, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
-  const days = nextDays(ctx.now, 6).map((value, index) => ({ value, label: index === 0 ? t("days.today") : index === 1 ? t("days.tomorrow") : weekday.format(Date.parse(`${value}T12:00:00Z`)) }));
-  return { directory, device, summary, fromAssistant, days, contact: person.contact, formKey: formKey(), i18n: messagesFor(ctx.locale, "support", "errors") };
+  return { directory, device, summary, fromAssistant, contact: person.contact, formKey: formKey(), i18n: messagesFor(ctx.locale, "support", "errors") };
+}
+
+/**
+ * Moving between the steps changes only `?step=`: nothing to reload (the form and its idempotency key stay). A send
+ * that never reached the store reloads nothing either (client.ts revalidateAfter): the form stays with its sentence.
+ */
+export function shouldRevalidate({ currentUrl, nextUrl, formMethod, actionResult, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (formMethod && formMethod.toUpperCase() !== "GET") return revalidateAfter({ actionResult, defaultShouldRevalidate });
+  if (currentUrl.pathname !== nextUrl.pathname) return defaultShouldRevalidate;
+  const without = (url: URL) => {
+    const params = new URLSearchParams(url.search);
+    params.delete("step");
+    return params.toString();
+  };
+  return without(currentUrl) === without(nextUrl) ? false : defaultShouldRevalidate;
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
@@ -81,33 +115,88 @@ export async function clientAction({ serverAction }: Route.ClientActionArgs) {
 
 export const meta: Route.MetaFunction = (args) => {
   const tree = args.loaderData?.i18n.support as { meta?: { repair?: { title?: string; description?: string } } } | undefined;
-  return shellMeta(args, { title: tree?.meta?.repair?.title, description: tree?.meta?.repair?.description });
+  return shellMeta(args, { title: tree?.meta?.repair?.title, description: tree?.meta?.repair?.description, noindex: (args.location.search ?? "").length > 1 });
 };
 
 type Check = (value: string) => string | undefined;
 
 export default function Repair({ loaderData, actionData }: Route.ComponentProps) {
-  const { directory, days, contact, summary, fromAssistant } = loaderData;
+  const { directory, contact, summary, fromAssistant } = loaderData;
   const t = useT("support");
   const errorsT = useT("errors");
   const ui = useT("ui");
   const submit = useSubmit();
+  const navigate = useNavigate();
   const navigation = useNavigation();
+  const location = useLocation();
+  const localeHref = useLocalePath();
   const online = useOnline();
   const failure = isFailure(actionData) ? actionData : null;
   const values = failure?.values ?? {};
   const busy = navigation.state !== "idle" && navigation.formMethod?.toUpperCase() === "POST";
+  const step = stepOf(new URLSearchParams(location.search).get("step"));
+  const stepIndex = STEPS.indexOf(step);
   const [device, setDevice] = useState(values.device ?? loaderData.device);
   const [photos, setPhotos] = useState<File[]>([]);
   const [local, setLocal] = useState<Record<string, string | undefined>>({});
+  const [summaryFor, setSummaryFor] = useState<Step | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const ids = { form: useId(), next: useId(), status: useId() };
-  // The server refused a field the browser could not check (a device that left the catalogue…): go to it.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const alertRef = useRef<HTMLParagraphElement>(null);
+  const focusField = useRef<string | null>(null);
+  const uid = useId();
+  // A whole-form failure (the store unreachable, a limit): its sentence comes into view above the task bar.
   useEffect(() => {
-    const first = failure?.fields ? Object.keys(failure.fields)[0] : null;
-    const element = first ? formRef.current?.elements.namedItem(first) : null;
-    if (element instanceof HTMLElement) element.focus();
+    if (failure && !failure.fields) alertRef.current?.scrollIntoView({ block: "nearest" });
   }, [failure]);
+  const id = (name: string) => `${uid}-${name}`;
+  const ids = { form: id("form"), status: id("status"), how: id("how") };
+
+  /** The address of a step, with everything else of the address kept (device, the assistant's conversation). */
+  const stepHref = (target: Step) => {
+    const params = new URLSearchParams(location.search);
+    if (target === "device") params.delete("step");
+    else params.set("step", target);
+    const query = params.toString();
+    return `/support/repair${query ? `?${query}` : ""}`;
+  };
+  /** Every step change remembers the step it came from (history state), so «رجوع» can be the browser's own Back. */
+  const go = (target: Step, replace = false) => navigate(localeHref(stepHref(target)), { replace, preventScrollReset: false, state: { from: step } });
+
+  // A new step (not the page's first render): its heading takes focus, so screen readers announce where they are.
+  const shownStep = useRef(step);
+  useEffect(() => {
+    if (shownStep.current === step) return;
+    shownStep.current = step;
+    if (focusField.current) return;
+    headingRef.current?.focus({ preventScroll: true });
+  }, [step]);
+
+  // The server refused a field the browser could not check (a device that left the catalogue…): go to its step and
+  // focus it there.
+  useEffect(() => {
+    const fields = failure?.fields ? Object.keys(failure.fields) : [];
+    const first = fields[0];
+    if (!first) return;
+    // the server's word wins over an earlier client check of the same field
+    setLocal((prev) => Object.fromEntries(Object.entries(prev).filter(([name]) => !fields.includes(name))));
+    setSummaryFor(FIELD_STEP[first] ?? "device");
+    focusField.current = first;
+    const target = FIELD_STEP[first] ?? "device";
+    if (target !== step) go(target, true);
+    else focusPending();
+  }, [failure]);
+  useEffect(() => {
+    focusPending();
+  }, [step]);
+  function focusPending() {
+    const name = focusField.current;
+    if (!name) return;
+    focusField.current = null;
+    const element = formRef.current?.elements.namedItem(name);
+    if (element instanceof HTMLElement) element.focus();
+    else document.getElementById(id(name))?.focus();
+  }
 
   const checks: Record<string, Check> = {
     device: (value) => (value ? undefined : t("fieldErrors.device.required")),
@@ -116,6 +205,8 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
     issue: (value) => (!value.trim() ? t("fieldErrors.issue.required") : value.trim().length < 10 ? t("fieldErrors.issue.too_short") : value.trim().length > 2000 ? t("fieldErrors.issue.too_long") : undefined),
     phone: (value) => phoneProblem(value, t, errorsT),
   };
+  const STEP_FIELDS: Record<Step, string[]> = { device: ["device", "deviceText", "serial", "issue"], photos: [], contact: ["phone"] };
+  const LABELS: Record<string, string> = { device: t("repair.device"), deviceText: t("repair.deviceText"), serial: t("repair.serial"), issue: t("repair.issue"), photos: t("photos.label"), phone: t("repair.phone"), contactName: t("repair.name"), handover: t("repair.handover") };
   const serverField = (name: string) => fieldMessage(name, failure?.fields?.[name], t, errorsT);
   const error = (name: string) => (name in local ? local[name] : serverField(name));
   const validate = (name: string, value: string) => setLocal((prev) => ({ ...prev, [name]: checks[name]?.(value) }));
@@ -123,53 +214,101 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
   const onInput = (name: string) => (event: { currentTarget: { value: string } }) => {
     if (error(name)) validate(name, event.currentTarget.value);
   };
+  const read = (name: string) => ((formRef.current?.elements.namedItem(name) as HTMLInputElement | null)?.value ?? "");
+
+  /** Checks the fields of the given steps; on a problem shows the summary, focuses the first bad field, returns false. */
+  const checkSteps = (steps: readonly Step[]): boolean => {
+    const next: Record<string, string | undefined> = { ...local };
+    const names = steps.flatMap((s) => STEP_FIELDS[s]);
+    for (const name of names) next[name] = checks[name](read(name));
+    setLocal(next);
+    const firstBad = names.find((name) => next[name]) ?? (steps.includes("photos") && local.photos ? "photos" : undefined);
+    if (!firstBad) {
+      setSummaryFor(null);
+      return true;
+    }
+    const target = FIELD_STEP[firstBad] ?? "device";
+    setSummaryFor(target);
+    if (target !== step) {
+      focusField.current = firstBad;
+      go(target);
+    } else {
+      (formRef.current?.elements.namedItem(firstBad) as HTMLElement | null)?.focus();
+    }
+    return false;
+  };
+
+  const onNext = (event: MouseEvent<HTMLElement>) => {
+    if (step === "contact") return; // the submit of the form itself
+    event.preventDefault();
+    if (!checkSteps([step])) return;
+    go(STEPS[stepIndex + 1]);
+  };
+  // «رجوع»: when this step was reached from the previous one, it is history Back — the browser's Back and Forward then
+  // keep walking the steps in order (a pushed «رجوع» would make the browser's Back step forward again). Opened
+  // directly on a later step (a link, a server error), it moves to the previous step.
+  const onBack = () => {
+    setSummaryFor(null);
+    if (stepIndex === 0) return;
+    const previous = STEPS[stepIndex - 1];
+    if (stepBack(previous, location.state) === "history") navigate(-1);
+    else go(previous);
+  };
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const read = (name: string) => ((form.elements.namedItem(name) as HTMLInputElement | null)?.value ?? "");
-    const next: Record<string, string | undefined> = { ...local };
-    for (const name of Object.keys(checks)) next[name] = checks[name](read(name));
-    setLocal(next);
-    const firstBad = Object.keys(checks).find((name) => next[name]);
-    if (firstBad) {
-      (form.elements.namedItem(firstBad) as HTMLElement | null)?.focus();
-      return;
-    }
-    const data = new FormData(form);
+    if (!checkSteps(STEPS)) return;
+    const data = new FormData(event.currentTarget);
     data.delete("photos");
     for (const photo of photos) data.append("photos", photo);
     submit(data, { method: "post", encType: "multipart/form-data" });
   };
 
   const platformLabel = (group: SupportPlatformGroup) => (isPlatform(group.slug) ? ui(`platform.${group.slug}`) : group.name);
-  const dayValue = values.preferredDay ?? "";
-  const windowValue = values.preferredWindow ?? "";
   const handoverValue = values.handover ?? "";
+  const windowValue = (["any", "morning", "afternoon", "evening"] as const).find((p) => p === values.preferredWindow) ?? "any";
+  // every field of the summary's step that has an error (the client's checks and the server's refusals alike)
+  const summaryErrors: FormError[] = summaryFor ? Object.keys(LABELS).filter((name) => FIELD_STEP[name] === summaryFor && error(name)).map((name) => ({ id: id(name), label: LABELS[name] })) : [];
+  const stepTitle = t(`repair.steps.${step}`);
+  const railSteps = STEPS.map((s, index) => ({ label: t(`repair.steps.${s}`), href: index < stepIndex ? stepHref(s) : undefined }));
+
+  const actions = <RepairActions step={step} busy={busy} online={online} formId={ids.form} statusId={ids.status} onNext={onNext} onBack={onBack} />;
 
   return (
-    <div className="page grid gap-section pb-12 pt-4 lg:grid-cols-12 lg:gap-x-10 lg:pt-6">
-      <div className="grid min-w-0 content-start gap-5 lg:col-span-8">
-        <header className="grid gap-3">
-          <SupportTabs current="repair" />
-          <h1 className="type-title text-ink">{t("repair.title")}</h1>
-          <p className="max-w-[68ch] type-body text-ink-2">{t("repair.lede")}</p>
+    <div className="page sup sup-flow">
+      <div className="sup-flow__main">
+        <SupportNav current="repair" />
+        <header className="grid gap-2">
+          <h1 className="type-h1 text-ink">{t("repair.title")}</h1>
+          <p className="type-body text-ink-2">{t("repair.lede")}</p>
         </header>
 
+        {step === "device" ? <HowItGoes headingId={ids.how} className="lg:hidden" /> : null}
+
         {fromAssistant && summary ? (
-          <p className="flex items-start gap-2 rounded-md bg-niche px-3 py-2 type-caption text-ink-2">
-            <Icon name="info" size={16} className="mt-0.5 shrink-0" />
+          <p className="sup-note">
+            <Icon name="info" size={20} />
             <span>{t("repair.fromAssistant")}</span>
           </p>
         ) : null}
 
-        <form ref={formRef} id={ids.form} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="grid gap-8">
+        {/* the step rail: numbers and the current step's words below 768 (three long labels do not fit a phone; its done
+            discs are not links there — 24px is too small a target, and «رجوع» goes back) */}
+        <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={STEPS.map((s) => ({ label: t(`repair.steps.short.${s}`) }))} variant="compact" className="sup-js md:hidden" />
+        <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={railSteps} className="sup-js max-md:hidden" />
+
+        <form ref={formRef} id={ids.form} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="sup-form">
           <input type="hidden" name="idempotencyKey" value={values.idempotencyKey || loaderData.formKey} />
           <input type="hidden" name="source" value={fromAssistant ? "assistant" : "storefront"} />
+          <h2 ref={headingRef} tabIndex={-1} className="sup-js type-h2 text-ink">
+            {stepTitle}
+          </h2>
+          <FormErrorSummary errors={summaryErrors} />
 
-          <fieldset className="grid gap-4">
-            <legend className="mb-3 type-section text-ink">{t("repair.sections.device")}</legend>
+          <fieldset className="sup-step" data-current={step === "device" ? "" : undefined}>
+            <legend className="type-h3 text-ink">{t("repair.steps.device")}</legend>
             <Select
+              id={id("device")}
               label={t("repair.device")}
               name="device"
               required
@@ -194,9 +333,23 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
               <option value={DEVICE_OTHER}>{t("assistant.deviceOther")}</option>
             </Select>
             {device === DEVICE_OTHER ? (
-              <TextField label={t("repair.deviceText")} name="deviceText" required maxLength={120} hint={t("repair.deviceTextHint")} defaultValue={values.deviceText ?? ""} error={error("deviceText")} onBlur={onBlur("deviceText")} onInput={onInput("deviceText")} />
+              <TextField id={id("deviceText")} label={t("repair.deviceText")} name="deviceText" required maxLength={120} hint={t("repair.deviceTextHint")} defaultValue={values.deviceText ?? ""} error={error("deviceText")} onBlur={onBlur("deviceText")} onInput={onInput("deviceText")} />
             ) : null}
+            <TextArea
+              id={id("issue")}
+              label={t("repair.issue")}
+              name="issue"
+              required
+              rows={fromAssistant && summary ? 8 : 5}
+              maxLength={2000}
+              hint={t("repair.issueHint")}
+              defaultValue={values.issue ?? summary}
+              error={error("issue")}
+              onBlur={onBlur("issue")}
+              onInput={onInput("issue")}
+            />
             <TextField
+              id={id("serial")}
               label={t("repair.serial")}
               name="serial"
               optional
@@ -211,23 +364,15 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
               onBlur={onBlur("serial")}
               onInput={onInput("serial")}
             />
+            {/* phones: the fact strip after the first step's fields (from 1024 it sits in the aside) */}
+            <RepairFacts className="lg:hidden" />
           </fieldset>
 
-          <fieldset className="grid gap-4">
-            <legend className="mb-3 type-section text-ink">{t("repair.sections.problem")}</legend>
-            <TextArea
-              label={t("repair.issue")}
-              name="issue"
-              required
-              rows={fromAssistant && summary ? 8 : 5}
-              maxLength={2000}
-              hint={t("repair.issueHint")}
-              defaultValue={values.issue ?? summary}
-              error={error("issue")}
-              onBlur={onBlur("issue")}
-              onInput={onInput("issue")}
-            />
+          <fieldset className="sup-step" data-current={step === "photos" ? "" : undefined}>
+            <legend className="type-h3 text-ink">{t("repair.steps.photos")}</legend>
+            <p className="type-body text-ink-2">{t("repair.photosLede")}</p>
             <PhotoPicker
+              id={id("photos")}
               name="photos"
               files={photos}
               onChange={(files, problem) => {
@@ -241,10 +386,11 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
             />
           </fieldset>
 
-          <fieldset className="grid gap-4">
-            <legend className="mb-3 type-section text-ink">{t("repair.sections.contact")}</legend>
-            <div className="grid gap-4 md:grid-cols-2">
+          <fieldset className="sup-step" data-current={step === "contact" ? "" : undefined}>
+            <legend className="type-h3 text-ink">{t("repair.steps.contact")}</legend>
+            <div className="grid gap-5 md:grid-cols-2">
               <TextField
+                id={id("phone")}
                 label={t("repair.phone")}
                 name="phone"
                 type="tel"
@@ -257,80 +403,125 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
                 onBlur={onBlur("phone")}
                 onInput={onInput("phone")}
               />
-              <TextField label={t("repair.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
+              <TextField id={id("contactName")} label={t("repair.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
             </div>
-          </fieldset>
-
-          <fieldset className="grid gap-5">
-            <legend className="mb-3 type-section text-ink">{t("repair.sections.handover")}</legend>
             <FieldGroup legend={t("repair.handover")} optional error={serverField("handover")}>
-              <Radio row name="handover" value="drop_off" label={t("handover.drop_off")} hint={t("handover.drop_offHint")} defaultChecked={handoverValue === "drop_off"} />
-              <Radio row name="handover" value="pickup" label={t("handover.pickup")} hint={t("handover.pickupHint")} defaultChecked={handoverValue === "pickup"} />
-              <Radio row name="handover" value="" label={t("handover.none")} defaultChecked={handoverValue === ""} />
+              <OptionCard id={id("handover")} name="handover" value="drop_off" label={t("handover.drop_off")} defaultChecked={handoverValue === "drop_off"} />
+              <OptionCard name="handover" value="pickup" label={t("handover.pickup")} hint={t("handover.pickupHint")} defaultChecked={handoverValue === "pickup"} />
+              <OptionCard name="handover" value="" label={t("handover.none")} defaultChecked={handoverValue === ""} />
             </FieldGroup>
-            <FieldGroup legend={t("repair.day")} optional layout="row" error={serverField("preferredDay")}>
-              <Chip input="radio" name="preferredDay" value="" defaultChecked={dayValue === ""}>
-                {t("days.any")}
-              </Chip>
-              {days.map((day) => (
-                <Chip key={day.value} input="radio" name="preferredDay" value={day.value} defaultChecked={dayValue === day.value}>
-                  {day.label}
-                </Chip>
-              ))}
-            </FieldGroup>
-            <FieldGroup legend={t("repair.window")} optional layout="row" error={serverField("preferredWindow")}>
-              <Chip input="radio" name="preferredWindow" value="" defaultChecked={windowValue === ""}>
-                {t("windows.any")}
-              </Chip>
-              {PREFERRED_WINDOWS.filter((window) => window !== "any").map((window) => (
-                <Chip key={window} input="radio" name="preferredWindow" value={window} defaultChecked={windowValue === window}>
-                  {t(`windows.${window}`)}
-                </Chip>
-              ))}
-            </FieldGroup>
-            <p className="flex items-start gap-2 type-caption text-ink-2">
-              <Icon name="info" size={16} className="mt-0.5 shrink-0 text-info" />
-              <span>{t("repair.preference")}</span>
-            </p>
+            <PreferencePicker
+              name="preferredWindow"
+              defaultValue={windowValue as Period}
+              legend={
+                <>
+                  {t("repair.window")} <span className="field__mark">{ui("field.optional")}</span>
+                </>
+              }
+            />
+            <p className="type-xs text-ink-2">{t("repair.privacy")}</p>
           </fieldset>
 
-          <div className="grid gap-3 border-t border-line pt-5">
-            <p className="type-caption text-ink-2">{t("repair.privacy")}</p>
-            {failure && !failure.fields ? (
-              <p role="alert" className="flex items-start gap-2 type-body text-red-ink">
-                <Icon name="warning-circle" size={20} className="mt-0.5 shrink-0" />
-                <span>{formMessage(failure, t, errorsT)}</span>
-              </p>
-            ) : null}
-            <div className="flex flex-wrap items-center gap-3">
-              <Key type="submit" variant="commit" size="lg" icon="wrench" loading={busy} disabled={!online} aria-describedby={ids.status}>
-                {t("repair.submit")}
-              </Key>
-              <span id={ids.status} role="status" className="type-caption text-ink-2">
-                {busy ? (photos.length > 0 ? t("repair.sendingPhotos", { count: photos.length }) : t("repair.sending")) : !online ? t("form.offline") : ""}
-              </span>
-            </div>
-          </div>
+          {failure && !failure.fields ? (
+            <p ref={alertRef} role="alert" className="sup-alert">
+              <Icon name="warning-circle" size={20} />
+              <span>{formMessage(failure, t, errorsT)}</span>
+            </p>
+          ) : null}
+          <p id={ids.status} role="status" className="type-xs text-ink-2 empty:hidden">
+            {busy ? (photos.length > 0 ? t("repair.sendingPhotos", { count: photos.length }) : t("repair.sending")) : !online ? t("form.offline") : ""}
+          </p>
+          <div className="sup-actions">{actions}</div>
         </form>
       </div>
 
-      <aside aria-labelledby={ids.next} className="grid content-start gap-3 lg:col-span-4 lg:pt-14">
-        <div className="grid gap-3 rounded-panel bg-paper p-4 md:p-5 lg:sticky lg:top-[calc(var(--shell-header-h)+var(--s-4))]">
-          <h2 id={ids.next} className="type-sub text-ink">
-            {t("repair.next.title")}
-          </h2>
-          <ol className="grid gap-3">
-            {(["review", "call", "check", "approve"] as const).map((step, index) => (
-              <li key={step} className="flex gap-3">
-                <span className="grid size-7 shrink-0 place-items-center rounded-full border-[1.5px] border-ink text-[13px] font-semibold text-ink nums" aria-hidden="true">
-                  {index + 1}
-                </span>
-                <span className="pt-0.5 type-body text-ink">{t(`repair.next.${step}`)}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
+      <aside aria-labelledby={`${ids.how}-aside`} className="sup-flow__aside">
+        <HowItGoes headingId={`${ids.how}-aside`} facts />
       </aside>
+
+      <TaskBar aria-label={stepTitle} className="lg:hidden sup-bar">
+        {actions}
+      </TaskBar>
     </div>
+  );
+}
+
+/**
+ * «رجوع» (from the second step) and the step's primary — «تابع», or «أرسل طلب الصيانة» on the last step (and always
+ * without JavaScript, when every step shows and the key sends the form).
+ */
+function RepairActions({ step, busy, online, formId, statusId, onNext, onBack }: { step: Step; busy: boolean; online: boolean; formId: string; statusId: string; onNext: (event: MouseEvent<HTMLElement>) => void; onBack: () => void }) {
+  const t = useT("support");
+  const last = step === "contact";
+  return (
+    <div className="sup-actions__row">
+      {step !== "device" ? (
+        <Key onClick={onBack} icon="arrow-left" className="sup-js" disabled={busy}>
+          {t("repair.back")}
+        </Key>
+      ) : null}
+      <Key
+        type="submit"
+        form={formId}
+        variant="primary"
+        iconEnd={last ? undefined : "arrow-right"}
+        icon={last ? "wrench" : undefined}
+        loading={busy}
+        disabled={last && !online}
+        aria-describedby={statusId}
+        onClick={onNext}
+        className="sup-actions__go"
+      >
+        <span className="sup-js">{last ? t("repair.submit") : t("repair.next")}</span>
+        <span className="sup-nojs">{t("repair.submit")}</span>
+      </Key>
+    </div>
+  );
+}
+
+/** "What happens next" — four honest steps (no call promise); with `facts`, the fact strip under them (the aside). */
+function HowItGoes({ headingId, facts = false, className }: { headingId: string; facts?: boolean; className?: string }) {
+  const t = useT("support");
+  return (
+    <section aria-labelledby={headingId} className={cx("sup-card sup-how", className)}>
+      <h2 id={headingId} className="type-h3 text-ink">
+        {t("repair.how.title")}
+      </h2>
+      <ol className="sup-how__list">
+        {(["send", "review", "check", "approve"] as const).map((key, index) => (
+          <li key={key} className="sup-how__item">
+            <span className="sup-how__n nums" aria-hidden="true">
+              {index + 1}
+            </span>
+            <span>{t(`repair.how.${key}`)}</span>
+          </li>
+        ))}
+      </ol>
+      {facts ? <RepairFacts /> : null}
+    </section>
+  );
+}
+
+/**
+ * The fact strip: only the facts that are true today («الدفع: بعد موافقتك على عرض السعر», the private photos and
+ * serial). The owner has configured no inspection fee and no repair warranty, so those facts are not shown.
+ */
+function RepairFacts({ className }: { className?: string }) {
+  const t = useT("support");
+  const facts = [
+    { key: "pay", icon: "hand-coins" as const },
+    { key: "private", icon: "lock" as const },
+  ];
+  return (
+    <ul aria-label={t("repair.facts.label")} className={cx("sup-facts", className)}>
+      {facts.map((fact) => (
+        <li key={fact.key} className="sup-facts__item">
+          <Icon name={fact.icon} size={20} />
+          <span>
+            <b className="font-semibold text-ink">{t(`repair.facts.${fact.key}.title`)}:</b> {t(`repair.facts.${fact.key}.text`)}
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }

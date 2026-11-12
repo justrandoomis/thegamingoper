@@ -1,26 +1,28 @@
 import { data, Form, useNavigation } from "react-router";
 
 import type { Route } from "./+types/signup";
-import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
+import { normalizeIraqPhone } from "~/lib/phone";
 import type { MotionHandle } from "~/motion";
 import { getCustomer, signUpCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { invalid } from "~/server/errors";
 import { recordConsent } from "~/server/services/account/preferences.server";
 import { Checkbox, TextField } from "~/ui/Field";
 import { fillNodes } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
 import { accountFailure, completeSignIn, formFields, localeRedirect, nextFrom } from "./account.server";
-import { AuthShell, GuestPanel } from "./components/AuthShell";
-import { AnswerNotice, fieldError, PasswordField, SubmitKey, type ActionAnswer } from "./components/FormBits";
+import { AuthCard } from "./components/AuthCard";
+import { fieldError, FormFailure, PasswordField, SubmitKey, type ActionAnswer } from "./components/FormBits";
 import { accountMeta } from "./components/meta";
 import { PHONE_EXAMPLE } from "./components/text";
 
 /**
- * Create an account: phone + password (+ optional name). Marketing consent is its own unticked box, stored as a
- * consent record only when ticked. The number is NOT verified (no SMS provider) and the page says so.
+ * Create an account: phone + password (+ an optional name). The offers consent is its own unticked box with the
+ * checkout's sentence («أرسل لي العروض على هذا الرقم»), stored as a consent record only when ticked. The number is not
+ * confirmed by SMS (no provider); nothing on the page pretends it is.
  */
 export const handle = { nav: "push", order: 1, group: "account-entry" } satisfies MotionHandle;
 
@@ -45,7 +47,13 @@ export async function action({ request, context }: Route.ActionArgs) {
     await completeSignIn(ctx, db, session.customer.id);
     return localeRedirect(nextFrom(fields.next), ctx.locale);
   } catch (error) {
-    const failure = accountFailure(error, ctx.locale);
+    let failure = accountFailure(error, ctx.locale);
+    // The sign-up checks the number only after the other fields pass: say everything that is wrong in one answer, so
+    // a short password and a mistyped number do not take two rounds (§4.9: one summary of every field).
+    if (failure.code === "invalid" && failure.fields && !failure.fields.phone && fields.phone?.trim() && normalizeIraqPhone(fields.phone) === null) {
+      const phone = accountFailure(invalid({ phone: "phone_invalid" }), ctx.locale).fields?.phone;
+      if (phone) failure = { ...failure, fields: { ...failure.fields, phone } };
+    }
     return data({ ...failure, values: { phone: fields.phone ?? "", name: fields.name ?? "", marketing: fields.marketing === "1" } }, { status: failure.status });
   }
 }
@@ -61,35 +69,31 @@ export default function Signup({ loaderData, actionData }: Route.ComponentProps)
   const pending = navigation.state === "submitting";
   const signInHref = loaderData.asked ? `/account/login?next=${encodeURIComponent(loaderData.next)}` : "/account/login";
   return (
-    <AuthShell
-      aside={
+    <AuthCard
+      title={t("signup.title")}
+      lead={t("signup.lead")}
+      footer={
         <>
-          <section aria-labelledby="signup-why" className="panel--paper grid gap-3 rounded-lg p-4 sm:p-6">
-            <h2 id="signup-why" className="type-sub text-ink">
-              {t("signup.lead")}
-            </h2>
-            <ul className="grid gap-2">
-              {(["benefitOrders", "benefitAddresses", "benefitWallet"] as const).map((key) => (
-                <li key={key} className="flex items-start gap-2 type-body text-ink">
-                  <Icon name="check-circle" size={20} className="mt-0.5 text-ok" />
-                  <span>{t(`signup.${key}`)}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <GuestPanel />
+          <span>{t("signup.haveAccount")}</span>
+          <TextLink as={LocaleLink} to={signInHref}>
+            {t("signup.signIn")}
+          </TextLink>
         </>
       }
     >
-      <header className="grid gap-2">
-        <h1 className="type-title text-ink">{t("signup.title")}</h1>
-        <p className="type-body text-ink-2">{t("signup.lead")}</p>
-      </header>
-      {failed && failed.code !== "invalid" ? <AnswerNotice answer={failed} /> : null}
+      <FormFailure
+        answer={failed}
+        fields={[
+          { name: "name", id: "signup-name", label: t("signup.name") },
+          { name: "phone", id: "signup-phone", label: t("signup.phone") },
+          { name: "password", id: "signup-password", label: t("signup.password") },
+        ]}
+      />
       <Form method="post" className="grid gap-4" noValidate>
         <input type="hidden" name="next" value={loaderData.next} />
-        <TextField name="name" autoComplete="name" label={t("signup.name")} optional defaultValue={values?.name ?? ""} error={fieldError(failed, "name")} />
+        <TextField id="signup-name" name="name" autoComplete="name" label={t("signup.name")} optional defaultValue={values?.name ?? ""} error={fieldError(failed, "name")} />
         <TextField
+          id="signup-phone"
           name="phone"
           type="tel"
           inputMode="tel"
@@ -100,13 +104,10 @@ export default function Signup({ loaderData, actionData }: Route.ComponentProps)
           defaultValue={values?.phone ?? ""}
           error={fieldError(failed, "phone")}
         />
-        <PasswordField name="password" autoComplete="new-password" label={t("signup.password")} hint={t("signup.passwordHint")} required error={fieldError(failed, "password")} />
+        <PasswordField id="signup-password" name="password" autoComplete="new-password" label={t("signup.password")} hint={t("signup.passwordHint")} required error={fieldError(failed, "password")} />
+        {/* never ticked by default; the same sentence as the checkout's consent */}
         <Checkbox name="marketing" value="1" label={t("signup.marketing")} hint={t("signup.marketingHint")} defaultChecked={values?.marketing === true} />
-        <p className="flex items-start gap-2 rounded-md bg-niche p-3 type-caption text-ink-2">
-          <Icon name="info" size={18} className="mt-0.5 shrink-0 text-info" />
-          <span>{t("signup.unverified")}</span>
-        </p>
-        <p className="type-caption text-ink-2">
+        <p className="type-xs text-ink-2">
           {fillNodes(t("signup.terms"), {
             terms: (
               <TextLink key="terms" as={LocaleLink} to="/policies/terms" inline>
@@ -120,16 +121,10 @@ export default function Signup({ loaderData, actionData }: Route.ComponentProps)
             ),
           })}
         </p>
-        <SubmitKey pending={pending} icon="user">
+        <SubmitKey variant="primary" pending={pending} icon="user" className="pt-1">
           {t("signup.submit")}
         </SubmitKey>
       </Form>
-      <p className="flex flex-wrap items-center gap-x-2 border-t border-line pt-4 type-body text-ink-2">
-        {t("signup.haveAccount")}
-        <TextLink as={LocaleLink} to={signInHref}>
-          {t("signup.signIn")}
-        </TextLink>
-      </p>
-    </AuthShell>
+    </AuthCard>
   );
 }

@@ -1,6 +1,7 @@
 /*
- * Catalog pages (app/routes/storefront/catalog) — category and platform hubs, search, compare.
+ * Catalog pages (app/routes/storefront/catalog) — platform and category hubs, search, compare. Design System v2 §6.2–§6.5.
  * Components layer (utilities still win), tokens only, logical properties only, motion only on transform/opacity.
+ * Built from the kit's classes (docs/UI.md §2): .band, .chips, .key, .choice, .cats, .ptile, .pcard, .showmore.
  */
 @layer components {
   /* Script on / off. The Motion Engine's head script sets <html data-motion> before the first paint
@@ -10,75 +11,287 @@
     display: none !important;
   }
   :root[data-motion] .catalog-nojs {
-    display: none;
-  }
-  .catalog-nojs > summary {
-    min-block-size: var(--target);
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+    display: none !important;
   }
 
-  /* hub header: the compact stage, the title and count on its unlit inline-start half (the render is at the end) */
-  .catalog-hub {
-    position: relative;
+  /* ───────────────────────────── the page ───────────────────────────── */
+  .catalog-page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-3);
+    padding-block: var(--s-3) var(--s-12);
   }
-  .catalog-hub__text {
-    position: absolute;
-    z-index: 3;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 54%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--s-1);
-    padding-inline-start: var(--s-5);
+  /* sections after the list: a full section gap */
+  .catalog-after {
+    margin-block-start: calc(var(--gap-section) - var(--s-3));
   }
-  @media (min-width: 48rem) {
-    .catalog-hub__text {
-      padding-inline-start: var(--s-8);
+  @media (min-width: 64rem) {
+    .catalog-page {
+      gap: var(--s-4);
+      padding-block-start: var(--s-4);
+    }
+    .catalog-after {
+      margin-block-start: calc(var(--gap-section) - var(--s-4));
     }
   }
 
-  /* the sticky row under the header: count, sort, filters — solid floor, never a third live glass pane */
+  /* ───────────────────────────── the platform band (§6.2) ─────────────────────────────
+     The kit's .band--platform paints the surface, the light and the dark cabinet; this places the copy, the hardware
+     and the desktop model switcher. Phones: 104px (title, count, lead line); from 1024 the switcher row. */
+  .catalog-band {
+    min-block-size: 104px;
+  }
+  .catalog-band__media {
+    position: absolute;
+    inset-block: -14px 6px;
+    inset-inline-end: -1%;
+    inline-size: 33%;
+  }
+  .catalog-band__content {
+    display: grid;
+    align-content: center;
+    gap: 2px;
+    min-block-size: 104px;
+    max-inline-size: 70%;
+    padding: 14px var(--s-4);
+  }
+  .catalog-band__title {
+    text-wrap: balance;
+  }
+  .catalog-band__line {
+    font: var(--type-xs-strong);
+  }
+  @media (min-width: 48rem) {
+    .catalog-band__content {
+      max-inline-size: 64%;
+      padding: var(--s-5) var(--s-6);
+    }
+    .catalog-band__media {
+      inline-size: 34%;
+      inset-block: -22px 8px;
+      inset-inline-end: 1%;
+    }
+  }
+  /* from 1024: 160px with the model switcher inside (v2 §4.18) — title, line and the 56px tiles in 12px padding */
+  @media (min-width: 64rem) {
+    .catalog-band,
+    .catalog-band__content {
+      min-block-size: 160px;
+    }
+    .catalog-band__content {
+      gap: var(--s-1);
+      max-inline-size: 70%;
+      padding: var(--s-3) var(--s-8);
+    }
+    .catalog-band__media {
+      inline-size: 28%;
+      inset-block: -28px 10px;
+      inset-inline-end: 2%;
+    }
+  }
+
+  /* the model switcher inside the band (from 1024): paper tiles, never translucent white on the colour */
+  .catalog-switcher {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .catalog-switcher {
+      display: block;
+      margin-block-start: var(--s-1);
+    }
+  }
+  .catalog-switcher__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .catalog-model {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    inline-size: 212px;
+    min-block-size: 56px;
+    padding-block: var(--s-2);
+    padding-inline: var(--s-3) var(--s-2);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .catalog-model__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    font: var(--type-sm-strong);
+  }
+  .catalog-model__art {
+    position: relative;
+    flex: none;
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-xs);
+    background: var(--product-ground);
+    overflow: hidden;
+  }
+  .catalog-model--all {
+    inline-size: auto;
+    padding-inline: var(--s-4);
+  }
+  @media (hover: hover) {
+    .catalog-model:hover .catalog-model__name {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+  }
+
+  /* ───────────────────────────── the title row (category hubs, search) ───────────────────────────── */
+  .catalog-title {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-1);
+  }
+  .catalog-title > h1 {
+    text-wrap: balance;
+  }
+  .catalog-title__line {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+
+  /* the chip row: one row that scrolls sideways on phones (the kit's .chips--rail .chips--bleed); chips never shrink */
+  .catalog-chips > * {
+    flex: none;
+  }
+
+  /* ───────────────────────────── the list: sidebar + results (§6.3) ───────────────────────────── */
+  .catalog-list__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .catalog-side {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .catalog-list__layout {
+      grid-template-columns: 264px minmax(0, 1fr);
+      gap: var(--s-8);
+    }
+    /* the sticky sidebar: it scrolls on its own when it is taller than the window */
+    .catalog-side {
+      position: sticky;
+      inset-block-start: calc(var(--shell-top) + var(--s-4));
+      display: block;
+      max-block-size: calc(100dvh - var(--shell-top) - var(--s-8));
+      margin-inline: calc(-1 * var(--s-1));
+      padding: var(--s-1);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+  }
+  .catalog-results {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+
+  /* the toolbar: the count (and, from 1024, why the order is what it is), the sort; below 1024 the filters key */
   .catalog-toolbar {
-    position: sticky;
-    inset-block-start: calc(var(--shell-header-h) + var(--safe-top));
-    z-index: var(--z-sticky);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--s-2) var(--s-3);
-    margin-inline: calc(-1 * max(var(--gutter), var(--safe-inline)));
-    padding: var(--s-2) max(var(--gutter), var(--safe-inline));
-    background: var(--ground);
-    border-block-end: 1px solid var(--line);
+    min-block-size: var(--h-btn-sm);
+  }
+  .catalog-toolbar__count {
+    min-inline-size: 0;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .catalog-toolbar__why {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  @media (max-width: 63.99rem) {
+    .catalog-toolbar__why {
+      display: none;
+    }
+  }
+  .catalog-toolbar__keys {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
   }
   .catalog-toolbar__note {
     flex-basis: 100%;
+    font: var(--type-xs);
+    color: var(--ink-2);
   }
 
-  /* the product grid: 2 → 3 (600) → 4 (1024) → 5 (1200) columns */
+  /* no script on a phone: the filter form in a disclosure */
+  .catalog-nojs-panel {
+    padding: var(--s-2) var(--s-4) var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  .catalog-nojs-panel > summary {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--target);
+    font: var(--type-sm-strong);
+    cursor: pointer;
+  }
+
+  /* the active filters: removable chips, then «امسح الكل» */
+  .catalog-active {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+  }
+
+  /* the product grid: 2 → 3 (768) → 3 beside the sidebar (1024) → 4 (1280) */
   .catalog-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-6) var(--gap-card);
+    gap: var(--gap-row) var(--gap-card);
   }
-  @media (min-width: 37.5rem) {
+  @media (min-width: 48rem) {
     .catalog-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
-  @media (min-width: 64rem) {
+  @media (min-width: 80rem) {
     .catalog-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
-  @media (min-width: 75rem) {
-    .catalog-grid {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* a card fills its cell, so the cards of a row are equal height and their prices align */
+  .catalog-grid__item {
+    display: grid;
+    min-inline-size: 0;
+  }
+  /* phones: the device tiles after the first two rows (from 768 they follow the list) */
+  .catalog-grid__break {
+    grid-column: 1 / -1;
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .catalog-grid__break {
+      display: none;
     }
   }
   /* new results are on their way: the old ones stay usable, a little quieter */
@@ -87,87 +300,446 @@
     transition: opacity var(--t-micro) var(--ease-water);
   }
 
-  /* device shortcuts: a 1:1 niche with the device, its name on the floor beneath (category-card grammar, §9.4) */
-  .catalog-device {
+  /* ───────────────────────────── the filter form (sidebar, sheet, no script) ───────────────────────────── */
+  .catalog-filters {
     display: grid;
-    align-content: start;
-    gap: var(--s-2);
-    inline-size: 100%;
-    border-radius: var(--r-lg);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* a fieldset draws its legend above its top padding: the groups are spaced with margins */
+  .catalog-facet {
+    padding-block: 0 var(--s-4);
+    border-block-end: 1px solid var(--line);
+  }
+  .catalog-facet + .catalog-facet {
+    margin-block-start: var(--s-4);
+  }
+  /* rows of 44px, one after the other (the kit's option list leaves 8px between rows of option cards) */
+  .catalog-facet .field__options {
+    gap: 0;
+  }
+  .catalog-facet .choice {
+    font: var(--type-sm);
+  }
+  .catalog-facet .choice__text {
+    flex: 1 1 auto;
+  }
+  /* a value and its count at the row's end */
+  .catalog-opt {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-3);
+  }
+  .catalog-opt__label {
+    min-inline-size: 0;
+  }
+  .catalog-opt__count {
+    flex: none;
+    color: var(--ink-2);
+  }
+  .catalog-filters > .catalog-nojs {
+    padding-block-start: var(--s-4);
   }
 
-  /* the compare list's way back, floating above the bottom chrome */
-  .catalog-tray {
+  /* ───────────────────────────── the floating dock: the compare tray and the filter pill ───────────────────────────── */
+  .catalog-dock {
     position: fixed;
     z-index: var(--z-sticky);
+    inset-inline: 0;
     inset-block-end: calc(var(--shell-bottom) + var(--s-3));
-    inset-inline-end: max(var(--gutter), var(--safe-inline));
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: var(--s-2);
+    padding-inline: max(var(--gutter), var(--safe-inline));
+    pointer-events: none;
+  }
+  .catalog-dock > * {
+    pointer-events: auto;
+  }
+  @media (min-width: 64rem) {
+    .catalog-dock {
+      align-items: flex-end;
+      inset-block-end: calc(var(--shell-bottom) + var(--s-6));
+    }
+  }
+  /* «الفلاتر | الترتيب»: solid paper with the float shadow (the header and the tab bar are the two live glass panes) */
+  .catalog-pill {
+    display: flex;
+    align-items: stretch;
+    block-size: var(--target);
+    border-radius: var(--r-full);
+    background: var(--paper);
+    box-shadow: var(--e-float);
+    overflow: hidden;
+  }
+  @media (min-width: 64rem) {
+    .catalog-pill {
+      display: none;
+    }
+  }
+  .catalog-pill__key {
+    display: flex;
+    align-items: center;
+    min-inline-size: var(--target);
+    padding-inline: var(--s-5);
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: var(--type-sm-strong);
+    cursor: pointer;
+  }
+  .catalog-pill__key + .catalog-pill__key {
+    border-inline-start: 1px solid var(--line);
+  }
+  .catalog-pill__key:focus-visible {
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: calc(-1 * var(--focus-w) - 2px);
+  }
+  .catalog-pill__key:disabled {
+    color: var(--ink-3);
+    cursor: not-allowed;
+  }
+  @media (hover: hover) {
+    .catalog-pill__key:not(:disabled):hover {
+      background: var(--niche);
+    }
+  }
+  /* the compare tray: thumbnails, «قارن (2)», «قارن الآن», empty the list. The thumbnails overlap a little and the
+     count never gives way: where the words do not fit one line (English and Sorani on a phone), «قارن الآن» and the ×
+     take a second line instead of crushing «قارن (2)» under the key */
+  .catalog-tray {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+    inline-size: min(100%, 520px);
+    min-block-size: 56px;
+    padding-block: var(--s-2);
+    padding-inline: var(--s-3) var(--s-1);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    box-shadow: var(--e-float);
+  }
+  @media (min-width: 64rem) {
+    .catalog-tray {
+      inline-size: auto;
+    }
+  }
+  .catalog-tray__thumbs {
+    display: flex;
+    flex: none;
+  }
+  .catalog-tray__thumbs > li + li {
+    margin-inline-start: calc(-1 * var(--s-3));
+  }
+  .catalog-tray__well {
+    inline-size: 32px;
+    outline: 2px solid var(--paper);
+  }
+  .catalog-tray__count {
+    flex: 1 0 auto;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .catalog-tray__actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--s-2);
+    margin-inline-start: auto;
+  }
+  /* while the dock shows, a focused control scrolls clear of it too (the shell's scroll padding counts the bars; the
+     dock publishes its measured height as --catalog-dock — one line or two, tray and pill) */
+  :root:has(.catalog-dock) {
+    scroll-padding-block-end: calc(var(--shell-bottom) + var(--s-3) + var(--catalog-dock, 72px));
   }
 
-  /* compare: paper, hairlines, a sticky first column, sideways scroll (§8.7) */
-  .catalog-compare {
+  /* ───────────────────────────── device tiles ("everything about your device") ───────────────────────────── */
+  .catalog-devices {
+    min-inline-size: 0;
+  }
+  .catalog-grid__break > .catalog-devices {
+    padding-block: var(--s-2);
+  }
+  /* phones, inside the grid: one row that scrolls sideways, 2.6 tiles in view, the gutter kept */
+  .catalog-devices__rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 2 * var(--gap-card)) / 2.6);
+    gap: var(--gap-card);
+    margin-inline: calc(-1 * var(--gutter));
+    padding: var(--s-1) var(--gutter);
     overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-padding-inline: var(--gutter);
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: none;
+  }
+  .catalog-devices__rail::-webkit-scrollbar {
+    display: none;
+  }
+  .catalog-devices__rail > * {
+    scroll-snap-align: start;
+  }
+
+  /* ───────────────────────────── search ───────────────────────────── */
+  .catalog-search-field {
+    max-inline-size: 720px;
+  }
+  .catalog-recent {
+    display: grid;
+  }
+  .catalog-recent__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2);
+    border-block-end: 1px solid var(--line);
+  }
+  .catalog-recent__link {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: var(--target);
+    min-inline-size: 0;
+    color: var(--ink);
+    font: var(--type-body);
+    text-decoration: none;
+  }
+  @media (hover: hover) {
+    .catalog-recent__link:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+  .catalog-settings {
+    display: grid;
+    gap: var(--s-1);
+    max-inline-size: 560px;
+  }
+  /* «تسوّق حسب المنصّة» and «تسوّق حسب القسم» */
+  .catalog-browse {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-10);
+  }
+  /* the four platforms as compact tiles: 2 × 2, four in a row from 768 */
+  .catalog-ptiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .catalog-ptiles {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--s-4);
+    }
+  }
+  .catalog-jumps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--s-4);
+  }
+  .catalog-didyoumean {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-1);
+    text-align: center;
+  }
+
+  /* ───────────────────────────── zero results ───────────────────────────── */
+  .catalog-zero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+  .catalog-zero__nearest {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-1);
+    text-align: center;
+  }
+
+  /* ───────────────────────────── compare (§6.5) ─────────────────────────────
+     Paper, hairlines, product headers that stay under the header while the rows scroll. A clip (not a scroll box)
+     keeps the headers sticky; on phones a comparison of three or four scrolls sideways (two columns in view), and
+     then its headers scroll with it. */
+  .catalog-compare {
+    container-type: inline-size;
     border: 1px solid var(--line);
     border-radius: var(--r-lg);
     background: var(--paper);
+    overflow: clip;
   }
   .catalog-compare__table {
-    inline-size: max-content;
-    min-inline-size: 100%;
+    inline-size: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    table-layout: fixed;
   }
   .catalog-compare__table :is(th, td) {
     padding: var(--s-3);
     vertical-align: top;
     text-align: start;
     border-block-end: 1px solid var(--line);
-    font: var(--type-body);
+    font: var(--type-sm);
     color: var(--ink);
   }
-  .catalog-compare__table tbody tr:last-child > * {
+  .catalog-compare__table tbody:last-of-type tr:last-child > * {
     border-block-end: 0;
   }
-  .catalog-compare__table td {
-    inline-size: 11rem;
-    min-inline-size: 11rem;
-  }
-  .catalog-compare__table :is(.catalog-compare__label, .catalog-compare__corner) {
+  /* the product headers */
+  .catalog-compare__table thead :is(th, td) {
     position: sticky;
-    inset-inline-start: 0;
-    z-index: 1;
-    inline-size: 8.5rem;
-    min-inline-size: 8.5rem;
+    inset-block-start: var(--shell-top);
+    z-index: 2;
     background: var(--paper);
-    border-inline-end: 1px solid var(--line);
-    font: var(--type-label);
+  }
+  .catalog-compare__head {
+    display: grid;
+    gap: var(--s-2);
+  }
+  /* «أزل» right beside its own picture, and the add button right after its own price: in a wide column, pushed to the
+     far end, they sat next to the NEIGHBOURING product (a remove or an add that reads as the other product's) */
+  .catalog-compare__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--s-2);
+  }
+  .catalog-compare__well {
+    inline-size: 96px;
+    max-inline-size: 70%;
+  }
+  /* a product's name: two lines at most, a 44px target */
+  .catalog-compare__name {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--target);
+    color: var(--ink);
+    font: var(--type-card);
+    text-decoration: none;
+  }
+  .catalog-compare__name--sm {
+    font: var(--type-sm-strong);
+  }
+  .catalog-compare__name > span {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  @media (hover: hover) {
+    .catalog-compare__name:hover > span {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+  .catalog-compare__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--s-1) var(--s-4);
+  }
+  /* phones: each spec's name is a full-width row above its values; the name column and the corner go */
+  .catalog-compare__labelrow > th {
+    padding-block: var(--s-3) 0;
+    border-block-end: 0;
+    font: var(--type-xs-strong);
     color: var(--ink-2);
   }
-  .catalog-compare__table .catalog-compare__product {
-    inline-size: 11rem;
-    min-inline-size: 11rem;
+  .catalog-compare__labelrow > th > span {
+    position: sticky;
+    inset-inline-start: var(--s-3);
+    display: inline-block;
+  }
+  .catalog-compare__label,
+  .catalog-compare__corner {
+    display: none;
+  }
+  @media (max-width: 47.99rem) {
+    .catalog-compare--wide {
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+    }
+    .catalog-compare--wide .catalog-compare__table {
+      inline-size: calc(var(--n, 2) * 50cqi);
+    }
+    .catalog-compare__table tbody tr:not(.catalog-compare__labelrow) > td {
+      padding-block-start: var(--s-1);
+    }
+  }
+  /* from 768: the names are a sticky first column */
+  @media (min-width: 48rem) {
+    .catalog-compare__labelrow {
+      display: none;
+    }
+    .catalog-compare__label,
+    .catalog-compare__corner {
+      display: table-cell;
+      inline-size: 168px;
+    }
+    .catalog-compare__label {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: var(--paper);
+      border-inline-end: 1px solid var(--line);
+      font: var(--type-sm-strong);
+      color: var(--ink-2);
+    }
+    .catalog-compare__table thead .catalog-compare__corner {
+      inset-inline-start: 0;
+      z-index: 3;
+      vertical-align: bottom;
+      border-inline-end: 1px solid var(--line);
+    }
   }
   @media (min-width: 64rem) {
-    .catalog-compare__table td,
-    .catalog-compare__table .catalog-compare__product {
-      inline-size: 14rem;
-      min-inline-size: 14rem;
+    .catalog-compare__label,
+    .catalog-compare__corner {
+      inline-size: 208px;
     }
-    .catalog-compare__table :is(.catalog-compare__label, .catalog-compare__corner) {
-      inline-size: 12rem;
-      min-inline-size: 12rem;
-    }
+  }
+  .catalog-compare__switch {
+    max-inline-size: 420px;
+  }
+  /* a switch on its own («اعرض الفروق فقط», the search history): beside its label, not across the row (§6.4, §6.5) */
+  :is(.catalog-compare__switch, .catalog-settings) .choice--switch {
+    align-self: flex-start;
+    max-inline-size: 100%;
   }
   .catalog-compare__more {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--s-3);
   }
   @media (min-width: 48rem) {
     .catalog-compare__more {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+  /* a candidate: picture, name and price, «قارن» — the key drops to its own line when the row is too narrow (320px) */
+  .catalog-compare__candidate {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+  }
+  .catalog-compare__info {
+    display: grid;
+    flex: 1 1 7rem;
+    gap: var(--s-1);
+    min-inline-size: 0;
   }
 }

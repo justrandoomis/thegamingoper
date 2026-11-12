@@ -7,6 +7,7 @@ import { financeOverview } from "~/server/services/admin/finance/overview.server
 import { Key } from "~/ui/Key";
 import { ModuleFunctions } from "../blueprint-status";
 import { blueprintModule } from "../shell/blueprint-catalog";
+import { queueHref } from "../shell/queues.server";
 import { openFinance } from "./finance.server";
 import { financeMeta } from "./meta";
 import { Kpi, Money, Note, PeriodName, Section, useFinT } from "./ui";
@@ -18,7 +19,9 @@ import { Kpi, Money, Note, PeriodName, Section, useFinT } from "./ui";
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const { db, actor, now } = await openFinance(context);
-  return { overview: await financeOverview(db, actor, now), now };
+  // The expenses card opens what it counts — drafts of any month, demo ones too — like the bell's link (the list alone
+  // opens on this month's real expenses).
+  return { overview: await financeOverview(db, actor, now), now, expensesHref: queueHref("expenses", now) };
 }
 
 export const meta: Route.MetaFunction = (args) => financeMeta(args, null);
@@ -29,14 +32,14 @@ export default function FinanceHome({ loaderData }: Route.ComponentProps) {
   const t = useFinT();
   const f = useFormat();
   const locale = useLocale();
-  const { overview } = loaderData;
+  const { overview, expensesHref } = loaderData;
   const { access, waiting } = overview;
   const blueprint = blueprintModule("10");
 
   const candidates: (Card | null)[] = [
     waiting.topups !== null ? { id: "topups", count: waiting.topups, to: "/admin/finance/wallets?tab=topups", icon: "wallet" } : null,
     waiting.adjustments !== null ? { id: "adjustments", count: waiting.adjustments, to: "/admin/finance/wallets?tab=adjustments", icon: "hand-coins" } : null,
-    waiting.expenses !== null ? { id: "expenses", count: waiting.expenses, to: "/admin/finance/expenses?status=draft", icon: "receipt" } : null,
+    waiting.expenses !== null ? { id: "expenses", count: waiting.expenses, to: expensesHref, icon: "receipt" } : null,
     waiting.statements !== null ? { id: "statements", count: waiting.statements, to: "/admin/finance/settlements?status=unmatched", icon: "bank" } : null,
     waiting.critical !== null ? { id: "critical", count: waiting.critical, to: "/admin/finance/anomalies", icon: "warning" } : null,
   ];

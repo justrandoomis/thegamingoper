@@ -1,6 +1,10 @@
 /**
- * The chosen variant of the product page lives in the URL: `?v=<sku>` (none = the default variant), so a link, a
- * reload, Back/Forward and the language switch (which keeps the query) all show the same version.
+ * The chosen variant of the product page lives in the URL: `?v=<sku>` (none = the version the page opens on), so a
+ * link, a reload, Back/Forward and the language switch (which keeps the query) all show the same version.
+ *
+ * The version the page opens on (design v2 spec §6.7 "sold out: default to an orderable variant when one exists") is
+ * the default variant — or, when the default cannot be ordered right now, the first variant that can (`shownDefault`).
+ * Only a choice of another version writes `?v=`, so a plain product link always opens on something the shopper can buy.
  *
  * Choosing is instant: the choice is held in state at once and the URL follows with a `replace` navigation (Back
  * leaves the product instead of walking through colours; the scroll stays). The route's shouldRevalidate skips the
@@ -13,10 +17,26 @@ import { selectVariant, type VariantDetail } from "~/server/services/catalog/pro
 
 type Selectable = { variants: VariantDetail[]; defaultVariantId: string };
 
-/** The search string for a variant: the default needs none, any other is `?v=<sku>` (other parameters are kept). */
+/** The version a page without `?v=` shows: the default one, unless it cannot be ordered and another can. Pure. */
+export function shownDefault(product: Selectable): VariantDetail {
+  const fallback = selectVariant(product, null);
+  if (fallback.orderable) return fallback;
+  return product.variants.find((entry) => entry.orderable) ?? fallback;
+}
+
+/** The version `?v=<sku>` names (any letter case); anything else — none, unknown, malformed — is `shownDefault`. Pure. */
+export function variantFor(product: Selectable, sku: string | null | undefined): VariantDetail {
+  if (typeof sku === "string" && sku.trim() !== "") {
+    const picked = selectVariant(product, sku);
+    if (picked.sku.toUpperCase() === sku.trim().toUpperCase()) return picked;
+  }
+  return shownDefault(product);
+}
+
+/** The search string for a variant: the version the page opens on needs none, any other is `?v=<sku>` (other parameters are kept). */
 export function searchFor(search: string, product: Selectable, variant: VariantDetail): string {
   const params = new URLSearchParams(search);
-  if (variant.id === product.defaultVariantId) params.delete("v");
+  if (variant.id === shownDefault(product).id) params.delete("v");
   else params.set("v", variant.sku);
   const next = params.toString();
   return next ? `?${next}` : "";
@@ -39,7 +59,7 @@ export function useVariantInUrl(product: Selectable): {
 } {
   const location = useLocation();
   const navigate = useNavigate();
-  const fromUrl = selectVariant(product, new URLSearchParams(location.search).get("v"));
+  const fromUrl = variantFor(product, new URLSearchParams(location.search).get("v"));
 
   // The URL wins whenever it changes (a link, Back/Forward, the language switch); a choice wins until the URL catches up.
   const [chosen, setChosen] = useState(fromUrl.id);

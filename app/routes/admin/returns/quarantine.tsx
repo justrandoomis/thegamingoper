@@ -5,7 +5,8 @@ import type { Route } from "./+types/quarantine";
 import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { listQuarantine, resolveQuarantine } from "~/server/services/admin/returns/inspect.server";
-import { SLA, type QuarantineRow } from "~/server/services/admin/returns/types";
+import { slaTargets } from "~/server/services/admin/returns/shared.server";
+import type { QuarantineRow } from "~/server/services/admin/returns/types";
 import { ConfirmDialog, type ImpactRow } from "~/ui/Dialog";
 import { EmptyState } from "~/ui/EmptyState";
 import { Select } from "~/ui/Field";
@@ -17,14 +18,16 @@ import { Due, Failure, Ref, useIntent, useReturnsT, When } from "./ui";
 
 /**
  * /admin/returns/quarantine — returned units kept where nothing is sold from (12.07): waiting to be refurbished or to go
- * back to their supplier, with the days they waited against SLA.quarantineDays. Each leaves through the commerce core
+ * back to their supplier, with the days they waited against the quarantine target in force (setting "returns.sla",
+ * admin 22 — slaTargets, the same the list's "late" uses). Each leaves through the commerce core
  * (returns/receive.server exitQuarantine): back on sale at its cost, written off (a loss in the books; needs
  * inventory.stock.adjust too), or to its supplier (a return claim, the supplier owes its cost).
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const { db, actor, locale, now } = await openReturns(context, ["returns.rma.inspect", "returns.supplier_return.manage"]);
   try {
-    return { ...(await listQuarantine(db, actor, locale, now)), now };
+    const [list, sla] = await Promise.all([listQuarantine(db, actor, locale, now), slaTargets(db)]);
+    return { ...list, now, sla };
   } catch (error) {
     throwAsResponse(error);
   }
@@ -46,12 +49,12 @@ export const meta: Route.MetaFunction = (args) => returnsMeta(args, "quarantine.
 
 export default function Quarantine({ loaderData }: Route.ComponentProps) {
   const t = useReturnsT();
-  const { rows } = loaderData;
+  const { rows, sla } = loaderData;
   return (
     <>
       <header className="adm-page-head">
         <h1 className="adm-title">{t("quarantine.title")}</h1>
-        <p className="max-w-[70ch] type-body text-ink-2">{t("quarantine.lead", { days: SLA.quarantineDays })}</p>
+        <p className="max-w-[70ch] type-body text-ink-2">{t("quarantine.lead", { days: sla.quarantineDays })}</p>
       </header>
       {rows.length === 0 ? (
         <EmptyState title={t("quarantine.empty")} text={t("quarantine.emptyHint")} icon="package" />

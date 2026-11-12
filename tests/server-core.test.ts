@@ -1210,6 +1210,68 @@ describe("admin authentication", () => {
     expect(await failure(() => resetEmployeeMfa(t.db, roleActor("owner"), { employeeId: "emp_missing", reason: "اختبار" }, start + HOUR))).toMatchObject({ code: "not_found" });
   });
 
+  test("a two-step reset and disabling an account need everything the target holds — in the core, for every caller (SECURITY.md §6–7)", async () => {
+    const start = NOW + 80 * HOUR;
+    /** An employee with two-step on whose one role grants exactly these permissions (a role made in the editor). */
+    const holding = async (permissions: readonly string[]) => {
+      const id = await make.employee({ email: `${make.next("held")}@tamtam.test`, totpEnabled: true, totpSecretEnc: "v1.test-secret", recoveryCodes: ["code-hash-1", "code-hash-2"] });
+      const role = `rol_${make.next("held").replace(/-/g, "_")}`;
+      await t.db.insert(roles).values({ id: role, key: role, name: { ar: "دور للاختبار", en: "Test role" }, createdAt: start });
+      await t.db.insert(rolePermissions).values(permissions.map((permission) => ({ roleId: role, permission })));
+      await t.db.insert(employeeRoles).values({ employeeId: id, roleId: role });
+      return { id, role };
+    };
+    const state = async (id: string) => t.db.select({ status: employees.status, totpEnabled: employees.totpEnabled }).from(employees).where(eq(employees.id, id)).get();
+    const auditedOn = async (id: string) => Number(await scalar("SELECT count(*) FROM audit_events WHERE entity_type = 'employee' AND entity_id = ? AND action IN ('security.mfa.reset', 'staff.employee.disable')", id));
+    const refused = { code: "target_more_privileged", status: 403 };
+    // `target_more_privileged` is module 20's code (its texts are in admin-security) until the shared errors list takes
+    // it (asked of the errors owner), so it is read here without failure(), which feeds the CORE_ERROR_KEYS check.
+    const failure = async (run: () => Promise<unknown>) => toAppError(await thrown(run));
+
+    // Someone in charge of staff who may reset two-step — through ANY caller, not only module 20's screens.
+    const hr = employeeActor(["staff.manage", "security.mfa.manage"]);
+    const peer = await holding(["staff.manage"]);
+    // a stored string that is no permission (any more) grants nothing, so it never makes anyone "stronger"
+    const legacy = await holding(["staff.manage", "legacy.permission.removed"]);
+    const packer = await holding(["orders.fulfillment.pack", "shipping.shipment.read"]);
+    const owner = ownerId;
+
+    for (const target of [owner, packer.id]) {
+      expect(await failure(() => resetEmployeeMfa(t.db, hr, { employeeId: target, reason: "فقد هاتفه" }, start)), target).toMatchObject(refused);
+      expect(await failure(() => disableEmployee(t.db, hr, { employeeId: target, reason: "انتهت خدمته" }, start)), target).toMatchObject(refused);
+      expect(await auditedOn(target), target).toBe(0);
+    }
+    expect(await state(owner)).toMatchObject({ status: "active" });
+    expect(await state(packer.id)).toEqual({ status: "active", totpEnabled: true });
+
+    // Within what they hold, both work as before.
+    await resetEmployeeMfa(t.db, hr, { employeeId: peer.id, reason: "فقد هاتفه" }, start);
+    await resetEmployeeMfa(t.db, hr, { employeeId: legacy.id, reason: "فقد هاتفه" }, start);
+    expect(await state(peer.id)).toEqual({ status: "active", totpEnabled: false });
+    expect(await state(legacy.id)).toEqual({ status: "active", totpEnabled: false });
+    await disableEmployee(t.db, hr, { employeeId: peer.id, reason: "انتهت خدمته" }, start + MINUTE);
+    expect(await state(peer.id)).toMatchObject({ status: "disabled" });
+
+    // The target's permissions are read inside the change's batch: one granted a moment before is counted.
+    const climbing = await holding(["staff.manage"]);
+    await t.db.insert(rolePermissions).values({ roleId: climbing.role, permission: "orders.refund.approve" });
+    expect(await failure(() => disableEmployee(t.db, hr, { employeeId: climbing.id, reason: "اختبار" }, start))).toMatchObject(refused);
+    expect(await failure(() => resetEmployeeMfa(t.db, hr, { employeeId: climbing.id, reason: "اختبار" }, start))).toMatchObject(refused);
+    // …and so is a second role.
+    const twoRoles = await holding(["staff.manage"]);
+    await t.db.insert(employeeRoles).values({ employeeId: twoRoles.id, roleId: roleId("cashier") });
+    expect(await failure(() => disableEmployee(t.db, hr, { employeeId: twoRoles.id, reason: "اختبار" }, start))).toMatchObject(refused);
+
+    // The owner holds everything (the wildcard), and so does the system: their changes are never refused for this.
+    await disableEmployee(t.db, roleActor("owner"), { employeeId: packer.id, reason: "انتهت خدمته" }, start + 2 * MINUTE);
+    await resetEmployeeMfa(t.db, systemActor("test"), { employeeId: climbing.id, reason: "اختبار" }, start + 2 * MINUTE);
+    expect(await state(packer.id)).toMatchObject({ status: "disabled" });
+    expect(await state(climbing.id)).toMatchObject({ totpEnabled: false });
+    // A missing employee is still "not found", a self-disable still "cannot_disable_self".
+    expect(await failure(() => resetEmployeeMfa(t.db, hr, { employeeId: "emp_missing", reason: "اختبار" }, start))).toMatchObject({ code: "not_found" });
+    expect(await failure(() => disableEmployee(t.db, { ...hr, id: twoRoles.id }, { employeeId: twoRoles.id, reason: "اختبار" }, start))).toMatchObject({ code: "cannot_disable_self" });
+  });
+
   test("safe redirect targets", () => {
     expect(safeNextPath("/admin/orders?x=1#top", "/admin", "/admin")).toBe("/admin/orders?x=1#top");
     expect(safeNextPath("/admin", "/fallback", "/admin")).toBe("/admin");
@@ -1753,7 +1815,7 @@ describe("settings", () => {
     // Keys beyond §10 are internal controls: never shown to shoppers, and they work without a seeded row.
     const extra = SETTING_KEYS.filter((key) => !seeded.includes(key as (typeof seeded)[number]));
     // + the limits the admin modules asked for (settings module 22, 2026-11-11): their defaults are the modules' constants
-    expect(extra).toEqual(["refunds.approval_threshold_iqd", "pricing.drop_approval_bps", "purchasing.po_approval_limit_iqd", "finance.topup_second_approval_iqd", "finance.expense_second_approval_iqd", "returns.sla"]);
+    expect(extra).toEqual(["refunds.approval_threshold_iqd", "pricing.drop_approval_bps", "purchasing.po_approval_limit_iqd", "finance.topup_second_approval_iqd", "finance.expense_second_approval_iqd", "returns.sla", "pos.discount_limit_bps"]);
     expect([...PUBLIC_SETTING_KEYS].sort()).toEqual([...seeded].sort());
     for (const key of SETTING_KEYS) {
       expect(isPermission(SETTINGS[key].permission), key).toBe(true);

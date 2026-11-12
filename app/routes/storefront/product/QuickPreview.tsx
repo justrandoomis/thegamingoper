@@ -1,46 +1,48 @@
 /**
- * The quick-preview sheet (brief §3.8 "fast preview sheet"; DESIGN.md §9.5 "products with required options open the
- * quick-preview sheet instead of adding", §9.14 sheets). The integration pass opens it from product cards — this
- * area does not edit ~/ui/ProductCard:
+ * The quick look — design v2 spec §6.9: a sheet (bottom on phones, side from 768). Its header strip holds the title,
+ * the text link «التفاصيل الكاملة» and close; then a 4:3 stage, the price with the demo tag, the stock-and-delivery
+ * line and the version cards (swatches for photographed colours); the PINNED FOOT holds [price | «أضف إلى السلة»].
+ * Adding closes nothing: the foot then says «✓ في السلة» and offers «عرض السلة (n)». Opened from cards of products
+ * with options (~/ui/ProductCard — this area does not edit the kit), from the home hero, and from store-set rows:
  *
  *   import { QuickPreview } from "~/routes/storefront/product/QuickPreview";
  *   const [preview, setPreview] = useState<ProductCardData | null>(null);
  *   <QuickPreview slug={preview?.slug ?? ""} name={preview?.name ?? ""} card={preview} open={preview !== null} onClose={() => setPreview(null)} />
  *
- * It shows the essentials of the product page — picture, platform, name, price with the delivery fee, stock or
- * release date, the variant choice, the buy controls with fly-to-cart, three highlights — and "التفاصيل الكاملة" to
- * /p/<slug>?v=<the chosen sku>. Data comes from GET /api/product-preview/:slug (./preview.ts) with its own strings,
- * so the sheet works on any page.
+ * Data comes from GET /api/product-preview/:slug (./preview.ts) with its own strings, so the sheet works on any page.
+ * The version choice is local to the sheet (the page behind keeps its URL); «التفاصيل الكاملة» opens /p/<slug> on the
+ * chosen version (`?v=`). A version that cannot be ordered says why: sold out («نفد حالياً», no key), or not out yet
+ * («يصدر … · الطلب يفتح عند وصوله», no key — the store takes no pre-orders).
  *
- * States: loading (the card's picture, name and price at once; the rest of the space reserved, no grey skeleton),
- * ready, gone (the product is no longer shown — 404), failed / offline (what failed and a retry; never endless
- * motion), and every state of the add key itself (sold out, not out yet, network failure — ~/ui/AddToCartKey).
- * The choice of variant is local to the sheet (the page behind keeps its URL).
+ * States: loading (the opener's picture and price at once; the rest of the space reserved, no grey skeleton), ready,
+ * gone (the product is no longer shown — 404), failed / offline (what failed and a retry; it retries by itself when the
+ * connection is back; never endless motion), offline while ready (the add key goes flat with its reason), and every
+ * state of the add key itself (~/ui/AddToCartKey: the failure sentence and «أعد المحاولة» beside it).
  */
 import { useEffect, useId, useRef, useState } from "react";
+import { useLocation } from "react-router";
 
 import { Icon } from "~/art/Icon";
-import { useLocale, useT } from "~/i18n/react";
+import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { MessageTree } from "~/i18n/translate";
 import type { ImageRef, ProductCardData } from "~/lib/dto";
 import { MotionLink } from "~/motion";
-import { galleryFor, selectVariant, type ProductPreview, type VariantDetail } from "~/server/services/catalog/product-types";
-import { BuyControls } from "~/ui/AddToCartKey";
+import { galleryFor, type ProductPreview, type VariantDetail } from "~/server/services/catalog/product-types";
+import { AddToCartKey } from "~/ui/AddToCartKey";
+import { BidiText } from "~/ui/BidiText";
+import { useCartCount } from "~/ui/cart-client";
 import { ErrorState } from "~/ui/ErrorState";
 import { Key } from "~/ui/Key";
-import { Niche } from "~/ui/Niche";
 import { useOnline } from "~/ui/OfflineBanner";
-import { PlatformLabel } from "~/ui/PlatformLed";
-import { BidiText, ProductImage } from "~/ui/ProductCard";
-import { PriceTag } from "~/ui/PriceTag";
+import { ProductImage } from "~/ui/ProductCard";
+import { PriceTag, SafePrice } from "~/ui/PriceTag";
 import { Sheet } from "~/ui/Sheet";
-import { Tag } from "~/ui/Tag";
-import { VariantNote } from "./components/Details";
-import { MixedText } from "./components/MixedText";
-import { PriceBlock } from "./components/PriceBlock";
+import { Stage } from "~/ui/Stage";
+import { TextLink } from "~/ui/TextLink";
+import { PriceBlock, struckPrice, useDemoStore } from "./components/PriceBlock";
 import { VariantPicker } from "./components/VariantPicker";
 import { ProductMessages, useProductT } from "./i18n";
-import { searchFor } from "./useVariant";
+import { searchFor, shownDefault } from "./useVariant";
 
 export type QuickPreviewProps = {
   /** The product to preview ("dualsense"). */
@@ -92,16 +94,17 @@ export async function fetchPreview(
   }
 }
 
+/** A digital code: no delivery fee is stated (the owner has not decided one for codes, spec §13 row 11). Pure. */
+const isDigital = (product: Pick<ProductPreview, "kind">) => product.kind === "digital";
+
 export function QuickPreview({ slug, name, open, onClose, card, image }: QuickPreviewProps) {
   const locale = useLocale();
+  const location = useLocation();
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [goneMessages, setGoneMessages] = useState<MessageTree | null>(null);
   const [status, setStatus] = useState<Status>("loading");
   const [attempt, setAttempt] = useState(0);
-  const [chosen, setChosen] = useState<{
-    slug: string;
-    variantId: string;
-  } | null>(null);
+  const [chosen, setChosen] = useState<{ slug: string; variantId: string } | null>(null);
   const online = useOnline();
 
   // (Re)load whenever it opens, for this product and language — the last answer stays on screen meanwhile.
@@ -124,25 +127,37 @@ export function QuickPreview({ slug, name, open, onClose, card, image }: QuickPr
     if (open && online && status === "offline") setAttempt((n) => n + 1);
   }, [open, online, status]);
 
+  // A navigation (the «التفاصيل الكاملة» link, Back) leaves the sheet behind.
+  const opened = useRef(location.key);
+  useEffect(() => {
+    if (open && location.key !== opened.current) onClose();
+    opened.current = location.key;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reacts to a navigation only
+  }, [location.key]);
+
   const product = loaded?.slug === slug ? loaded.product : null;
   const messages = product ? loaded!.messages : goneMessages;
-  // The sheet keeps its own choice of variant (the page behind keeps its URL); a new product starts at its default.
-  const variant = product
-    ? (product.variants.find((entry) => entry.id === (chosen?.slug === slug ? chosen.variantId : null)) ?? selectVariant(product, null))
-    : null;
+  // The sheet keeps its own choice of version (the page behind keeps its URL); a new product starts where its page would.
+  const variant = product ? (product.variants.find((entry) => entry.id === (chosen?.slug === slug ? chosen.variantId : null)) ?? shownDefault(product)) : null;
   const choose = (variantId: string) => setChosen({ slug, variantId });
+  const ready = product !== null && variant !== null && (status === "ready" || status === "loading");
+  // one pair of ids for the body's reason sentences and the foot's key that points at them
+  const base = useId();
+  const ids = { reason: `ql-reason-${base}`, offline: `ql-offline-${base}` };
+
   return (
     <ProductMessages messages={messages}>
       <Sheet
         open={open}
         onClose={onClose}
         title={<BidiText text={product?.name ?? name} />}
+        description={ready ? <DetailsLink product={product} variant={variant} /> : null}
         presentation="side"
         sideFrom={768}
-        footer={product && variant ? <DetailsLink product={product} variant={variant} /> : null}
+        footer={ready ? <QuickFoot product={product} variant={variant} offline={!online} ids={ids} /> : null}
       >
-        {product && variant && (status === "ready" || status === "loading") ? (
-          <PreviewBody product={product} variant={variant} onChoose={choose} />
+        {ready ? (
+          <PreviewBody product={product} variant={variant} onChoose={choose} offline={!online} ids={ids} />
         ) : status === "gone" ? (
           <Gone />
         ) : status === "failed" || status === "offline" ? (
@@ -158,13 +173,23 @@ export function QuickPreview({ slug, name, open, onClose, card, image }: QuickPr
   );
 }
 
+/** The 4:3 stage of the quick look (spec §4.14: 4:3 with --r-xl "in the quick look"). */
+function QuickStage({ picture, priority = false }: { picture: ImageRef | null; priority?: boolean }) {
+  return (
+    <Stage size="pdp" className="aspect-[4/3] rounded-xl">
+      {picture ? <ProductImage key={picture.artKey ?? picture.mediaKey ?? ""} image={picture} sizes="(min-width: 768px) 388px, 92vw" priority={priority} /> : null}
+    </Stage>
+  );
+}
+
 /** What the opener already knows, while the rest loads — the same geometry as the loaded body's top. */
 function Known({ card, image }: { card: ProductCardData | null; image: ImageRef | null }) {
+  const demoStore = useDemoStore();
   const picture = card?.image ?? image;
   return (
-    <div className="grid gap-3">
-      <Niche ratio="3/2">{picture ? <ProductImage image={picture} alt="" sizes="(min-width: 768px) 380px, 90vw" /> : null}</Niche>
-      {card ? <PriceTag priceIqd={card.priceIqd} compareAtIqd={card.compareAtIqd} /> : null}
+    <div className="grid gap-4">
+      <QuickStage picture={picture} />
+      {card ? <PriceTag size="page" priceIqd={card.priceIqd} compareAtIqd={struckPrice({ priceIqd: card.priceIqd, compareAtIqd: card.compareAtIqd, compareAtDemo: card.compareAtDemo }, demoStore)} showSaving={!card.compareAtDemo} /> : null}
     </div>
   );
 }
@@ -174,18 +199,18 @@ function Loading({ card, image }: { card: ProductCardData | null; image: ImageRe
   return (
     <div className="grid gap-4" aria-busy="true">
       <Known card={card} image={image} />
-      <p className="type-caption text-ink-2" role="status">
+      <p className="type-xs text-ink-2" role="status">
         {ui("loading")}
       </p>
-      {/* the space the price, the choice and the keys will take — reserved, empty, never a grey skeleton */}
-      <div className="min-h-48" aria-hidden="true" />
+      {/* the space the stock line and the versions will take — reserved, empty, never a grey skeleton */}
+      <div className="min-h-40" aria-hidden="true" />
     </div>
   );
 }
 
 function PreviewError({ offline, onRetry }: { offline: boolean; onRetry: () => void }) {
   const overlays = useT("ui-overlays");
-  return <ErrorState alert title={overlays("error.title")} text={offline ? overlays("offline.generic") : overlays("error.text")} onRetry={onRetry} />;
+  return <ErrorState alert offline={offline} title={overlays("error.title")} text={offline ? overlays("offline.generic") : overlays("error.text")} onRetry={onRetry} />;
 }
 
 function Gone() {
@@ -193,7 +218,7 @@ function Gone() {
   const overlays = useT("ui-overlays");
   const title = t("preview.gone");
   return (
-    <p className="flex items-start gap-2 rounded-lg bg-niche px-4 py-3 type-body text-ink" role="status">
+    <p className="flex items-start gap-2 py-2 type-body text-ink" role="status">
       <Icon name="info" size={20} className="mt-0.5 shrink-0 text-info" />
       {/* the strings came with the 404 answer; without them (an odd answer) the generic failure sentence is said */}
       <span>{title === "preview.gone" ? overlays("error.title") : title}</span>
@@ -201,89 +226,98 @@ function Gone() {
   );
 }
 
+/** «التفاصيل الكاملة ←» — the product page, on the chosen version. In the sheet's header strip. */
 function DetailsLink({ product, variant }: { product: ProductPreview; variant: VariantDetail }) {
   const t = useProductT();
   return (
-    <Key as={MotionLink} to={`/p/${product.slug}${searchFor("", product, variant)}`} nav="zoom" iconEnd="arrow-right" block>
+    <TextLink as={MotionLink} to={`/p/${product.slug}${searchFor("", product, variant)}`} nav="zoom">
       {t("preview.details")}
-    </Key>
+    </TextLink>
   );
 }
 
-function PreviewBody({ product, variant, onChoose }: { product: ProductPreview; variant: VariantDetail; onChoose: (variantId: string) => void }) {
+type Ids = { reason: string; offline: string };
+
+function PreviewBody({ product, variant, onChoose, offline, ids }: { product: ProductPreview; variant: VariantDetail; onChoose: (variantId: string) => void; offline: boolean; ids: Ids }) {
   const t = useProductT();
-  const reasonId = useId();
-  const picture = useRef<HTMLDivElement>(null);
   const gallery = galleryFor(product, variant);
-  const image = gallery.images[0] ?? null;
-  const platforms = product.platform ? [product.platform] : product.forPlatforms;
-  const comingSoon = variant.releaseAt !== null || product.releaseAt !== null;
 
   return (
-    <div className="grid gap-4">
-      <div ref={picture}>
-        <Niche ratio="3/2" tag={comingSoon ? <Tag kind="preorder">{t("tagSoon")}</Tag> : <Tag kind="new" />}>
-          {image ? <ProductImage key={image.artKey ?? image.mediaKey ?? ""} image={image} alt={image.alt} sizes="(min-width: 768px) 380px, 90vw" /> : null}
-        </Niche>
+    <div className="grid gap-4 pb-2" data-quick-look="">
+      <div data-quick-stage="">
+        <QuickStage picture={gallery.images[0] ?? null} />
       </div>
-      {gallery.borrowed ? <p className="type-caption text-ink-2">{t("picker.borrowed", { label: gallery.from?.label ?? product.name })}</p> : null}
-      <div className="grid gap-1.5">
-        {platforms.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            {platforms.map((platform) =>
-              platform.gel ? (
-                <PlatformLabel key={platform.slug} platform={platform.gel} />
-              ) : (
-                <span key={platform.slug} className="plat">
-                  <bdi>{platform.name}</bdi>
-                </span>
-              ),
-            )}
-          </div>
-        ) : null}
-        {product.short ? (
-          <p className="type-caption text-ink-2">
-            <MixedText text={product.short} />
-          </p>
-        ) : null}
-      </div>
+      {gallery.borrowed ? <p className="type-xs text-ink-2">{t("picker.borrowed", { label: gallery.from?.label ?? product.name })}</p> : null}
       <PriceBlock
         variant={variant}
         variants={product.variants}
         delivery={product.delivery}
         lifecycle={product.lifecycle}
         isDemo={product.isDemo}
-        reasonId={reasonId}
+        digital={isDigital(product)}
+        reasonId={ids.reason}
+        offline={offline && variant.orderable}
+        offlineId={ids.offline}
       />
-      {product.variants.length > 1 ? (
-        <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={onChoose} form={false} />
-      ) : null}
-      <VariantNote note={variant.note} />
-      <BuyControls
-        item={{ variantId: variant.id }}
-        name={product.name}
-        stock={variant.orderable ? variant.stock : "out_of_stock"}
-        image={image}
-        optionsLabel={product.variants.length > 1 ? variant.label : null}
-        source={() => picture.current?.querySelector("img") ?? picture.current}
-        aria-describedby={variant.orderable ? undefined : reasonId}
-      />
-      {product.highlights.length > 0 ? (
-        <ul className="grid gap-1.5">
-          {product.highlights.map((item, index) => (
-            <li key={index} className="flex items-start gap-2 type-caption text-ink">
-              <Icon name="check" size={16} className="mt-0.5 shrink-0 text-ok" />
-              <span className="min-w-0">
-                <MixedText text={item} />
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      <p className="flex items-start gap-2 type-caption text-ink-2">
-        <Icon name="truck" size={16} className="mt-0.5 shrink-0" />
-        <span>{t("facts.deliveryTime")}</span>
-      </p>
+      {product.variants.length > 1 ? <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={onChoose} form={false} /> : null}
+    </div>
+  );
+}
+
+/**
+ * The pinned foot (spec §6.9): the chosen version's price at the start and the primary «أضف إلى السلة» at the end.
+ * After an add of this version: «✓ في السلة» over the price and «عرض السلة (n)» (another version restores the add key).
+ * Sold out: «نفد حالياً», no key. Not out yet: «يصدر … · الطلب يفتح عند وصوله», no key. Offline: the key is flat.
+ */
+function QuickFoot({ product, variant, offline, ids }: { product: ProductPreview; variant: VariantDetail; offline: boolean; ids: Ids }) {
+  const shop = useT("ui-shop");
+  const f = useFormat();
+  const { count } = useCartCount();
+  const [addedFor, setAddedFor] = useState<string | null>(null);
+  const added = addedFor === variant.id;
+  const soon = !variant.orderable && variant.releaseAt !== null;
+  const soldOut = !variant.orderable && !soon;
+  const picture = galleryFor(product, variant).images[0] ?? null;
+
+  return (
+    <div className="flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2" data-quick-foot="">
+      <div className="grid min-w-0 gap-0.5">
+        {added ? (
+          <span className="flex items-center gap-1 type-xs-strong text-ok">
+            <Icon name="check" size={16} />
+            {shop("add.inCart")}
+          </span>
+        ) : null}
+        {soon ? (
+          <span className="type-xs-strong text-ink">
+            {shop("add.soonOn", { date: f.date(variant.releaseAt as number, "long") })}
+            <span className="font-normal text-ink-2"> · {shop("add.soonNote")}</span>
+          </span>
+        ) : soldOut ? (
+          <span className="type-sm-strong text-ink-2">{shop("add.soldOut")}</span>
+        ) : (
+          <SafePrice amountIqd={variant.priceIqd} size="lg" approx="off" as="span" />
+        )}
+      </div>
+      {soon || soldOut ? null : added ? (
+        <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right" className="min-w-[168px]">
+          {shop("add.viewCartCount", { n: f.number(count) })}
+        </Key>
+      ) : (
+        <AddToCartKey
+          variant="key"
+          item={{ variantId: variant.id }}
+          name={product.name}
+          stock={variant.stock}
+          image={picture}
+          optionsLabel={product.variants.length > 1 ? variant.label : null}
+          source={() => document.querySelector("[data-quick-stage] img")}
+          disabled={offline}
+          aria-describedby={offline ? ids.offline : undefined}
+          className="min-w-[168px]"
+          onAdded={() => setAddedFor(variant.id)}
+        />
+      )}
     </div>
   );
 }

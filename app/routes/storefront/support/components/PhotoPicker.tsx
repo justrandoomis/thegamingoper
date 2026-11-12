@@ -3,6 +3,8 @@
  * of up to 8 MB each — the server's own limits (~/server/uploads.server, which also removes metadata such as the GPS
  * position and decides the type from the bytes).
  *
+ * Looks like the kit's proof uploader (Design System v2 §4.24): a paper area with a 1.5px dashed control line, the
+ * chosen photos as 96px thumbnails (--r-sm, a hairline) with a 32px remove key on each, and the keys to add more.
  * Without JavaScript the "choose" key is a <label> for a real file input, so the files are submitted by the form
  * itself. With JavaScript the chosen files are checked at once, previewed, and can be removed; the form's submit
  * handler sends `files` (the native inputs are emptied after each choice). Nothing is uploaded before the form is
@@ -44,11 +46,14 @@ type Props = {
   hint: string;
   error?: string;
   disabled?: boolean;
+  /** The fieldset's id (an error summary links to it). */
+  id?: string;
 };
 
-export function PhotoPicker({ name, files, onChange, label, hint, error, disabled = false }: Props) {
+export function PhotoPicker({ name, files, onChange, label, hint, error, disabled = false, id: givenId }: Props) {
   const t = useT("support");
-  const id = useId();
+  const autoId = useId();
+  const id = givenId ?? autoId;
   const chooseRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const previews = useMemo(() => files.map((file) => ({ file, url: typeof URL !== "undefined" && "createObjectURL" in URL ? URL.createObjectURL(file) : "" })), [files]);
@@ -65,61 +70,64 @@ export function PhotoPicker({ name, files, onChange, label, hint, error, disable
 
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
-  const keyFocus = "peer-focus-visible:outline-[2.5px] peer-focus-visible:outline-ink peer-focus-visible:outline-offset-[3px] peer-focus-visible:[outline-style:solid]";
+  // the label-as-key gets the focus ring of the (visually hidden) file input it opens
+  const keyFocus = "peer-focus-visible:outline-2 peer-focus-visible:outline-(--focus) peer-focus-visible:outline-offset-2 peer-focus-visible:[outline-style:solid]";
   return (
-    <fieldset className="field field--group" data-invalid={error ? "" : undefined} aria-describedby={cx(hintId, error && errorId)}>
+    <fieldset id={id} tabIndex={-1} className="field field--group" data-invalid={error ? "" : undefined} aria-describedby={cx(hintId, error && errorId)}>
       <legend className="field__label">
         {label} <span className="field__mark">{t("photos.count", { count: files.length })}</span>
       </legend>
       <p className="field__hint" id={hintId}>
         {hint}
       </p>
-      {previews.length > 0 ? (
-        <ul role="list" className="flex flex-wrap gap-3">
-          {previews.map((preview, index) => (
-            <li key={`${preview.file.name}:${index}`} className="relative">
-              <span className="block size-24 overflow-hidden rounded-md border border-line bg-niche">
-                {preview.url ? <img src={preview.url} alt={preview.file.name} width={96} height={96} className="size-full object-cover" /> : null}
-              </span>
-              <IconKey icon="x" size="sm" label={t("photos.remove", { name: preview.file.name })} onClick={() => remove(index)} className="absolute -top-2 -end-2" disabled={disabled} />
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="relative inline-flex">
-          <input
-            ref={chooseRef}
-            id={`${id}-choose`}
-            type="file"
-            name={name}
-            accept={PHOTO_TYPES.join(",")}
-            multiple
-            disabled={disabled || full}
-            onChange={(event) => take(event.currentTarget)}
-            className="peer sr-only"
-          />
-          <Key as="label" htmlFor={`${id}-choose`} size="sm" icon="image" disabled={disabled || full} className={keyFocus}>
-            {t("photos.choose")}
-          </Key>
-        </span>
-        <span className="relative hidden pointer-coarse:inline-flex">
-          <input
-            ref={cameraRef}
-            id={`${id}-camera`}
-            type="file"
-            name={name}
-            accept={PHOTO_TYPES.join(",")}
-            capture="environment"
-            disabled={disabled || full}
-            onChange={(event) => take(event.currentTarget)}
-            className="peer sr-only"
-          />
-          <Key as="label" htmlFor={`${id}-camera`} size="sm" icon="camera" disabled={disabled || full} className={keyFocus}>
-            {t("photos.camera")}
-          </Key>
-        </span>
-        {full ? <span className="type-caption text-ink-2">{t("photos.full")}</span> : null}
+      <div className={cx("sup-drop", error && "sup-drop--invalid")}>
+        {previews.length > 0 ? (
+          <ul role="list" className="flex flex-wrap gap-3">
+            {previews.map((preview, index) => (
+              <li key={`${preview.file.name}:${index}`} className="sup-thumb">
+                {preview.url ? <img src={preview.url} alt={t("photos.preview", { n: index + 1 })} width={96} height={96} className="size-full object-cover" /> : null}
+                <IconKey icon="x" size="xs" variant="onImage" label={t("photos.remove", { name: preview.file.name })} onClick={() => remove(index)} className="sup-thumb__remove" disabled={disabled} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Icon name="camera" size={24} className="text-ink-2" />
+        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="relative inline-flex">
+            <input
+              ref={chooseRef}
+              id={`${id}-choose`}
+              type="file"
+              name={name}
+              accept={PHOTO_TYPES.join(",")}
+              multiple
+              disabled={disabled || full}
+              onChange={(event) => take(event.currentTarget)}
+              className="peer sr-only"
+            />
+            <Key as="label" htmlFor={`${id}-choose`} size="sm" icon="image" disabled={disabled || full} className={keyFocus}>
+              {t("photos.choose")}
+            </Key>
+          </span>
+          <span className="relative hidden pointer-coarse:inline-flex">
+            <input
+              ref={cameraRef}
+              id={`${id}-camera`}
+              type="file"
+              name={name}
+              accept={PHOTO_TYPES.join(",")}
+              capture="environment"
+              disabled={disabled || full}
+              onChange={(event) => take(event.currentTarget)}
+              className="peer sr-only"
+            />
+            <Key as="label" htmlFor={`${id}-camera`} size="sm" icon="camera" disabled={disabled || full} className={keyFocus}>
+              {t("photos.camera")}
+            </Key>
+          </span>
+          {full ? <span className="type-xs text-ink-2">{t("photos.full")}</span> : null}
+        </div>
       </div>
       <p className="field__error" id={errorId} aria-live="polite">
         {error ? (

@@ -4,10 +4,10 @@ import { MotionLink, type MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { listWarranties } from "~/server/services/account/aftersales.server";
+import { BidiText } from "~/ui/BidiText";
 import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
 import { fillNodes } from "~/ui/PriceTag";
-import { BidiText } from "~/ui/ProductCard";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { requireSignedIn } from "./account.server";
@@ -17,7 +17,7 @@ import { accountMeta } from "./components/meta";
 
 /**
  * Warranties the store recorded at delivery (commerce core). Read-only; a claim goes to the repair request of the
- * support area with the order reference.
+ * support area.
  */
 export const handle = { nav: "push", order: sectionOrder("warranties") } satisfies MotionHandle;
 
@@ -47,42 +47,41 @@ export default function Warranties({ loaderData }: Route.ComponentProps) {
         }
       />
       {loaderData.warranties.length === 0 ? (
-        <EmptyState layout="stack" icon="shield-check" title={t("warranties.emptyTitle")} text={t("warranties.emptyText")} />
+        <EmptyState layout="stack" title={t("warranties.emptyTitle")} text={t("warranties.emptyText")} />
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid gap-card md:grid-cols-2">
           {loaderData.warranties.map((warranty) => (
-            <li key={warranty.id} className="grid content-start gap-2 rounded-lg bg-paper p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <h2 className="type-strong text-ink">
-                  <BidiText text={warranty.itemName} />
-                </h2>
-                <Status tone={warranty.state === "active" ? "ok" : warranty.state === "void" ? "bad" : "neutral"}>{t(`warranties.state.${warranty.state}`)}</Status>
-              </div>
-              <p className="type-caption text-ink-2">{t("warranties.period", { from: f.date(warranty.startsAt), to: f.date(warranty.endsAt) })}</p>
-              {warranty.orderRef ? (
-                <MotionLink to={`/account/orders/${warranty.orderRef}`} nav="rise" className="justify-self-start type-caption text-ink underline-offset-4 hover:underline">
-                  {fillNodes(t("warranties.order"), {
-                    ref: (
-                      <bdi key="ref" dir="ltr" className="nums">
-                        {warranty.orderRef}
-                      </bdi>
-                    ),
-                  })}
-                </MotionLink>
-              ) : null}
-              {warranty.terms ? <p className="type-caption text-ink-2">{warranty.terms}</p> : null}
-              {warranty.state === "active" ? (
-                <Key
-                  as={LocaleLink}
-                  to={`/support/repair${warranty.orderRef ? `?order=${encodeURIComponent(warranty.orderRef)}` : ""}`}
-                  size="sm"
-                  icon="wrench"
-                  className="justify-self-start"
-                  aria-label={t("warranties.claimNamed", { name: warranty.itemName })}
-                >
-                  {t("warranties.claim")}
-                </Key>
-              ) : null}
+            <li key={warranty.id} className="grid">
+              <article className="acct-card flex flex-col">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <h2 className="acct-card__title">
+                    <BidiText text={warranty.itemName} />
+                  </h2>
+                  <Status tone={warranty.state === "active" ? "ok" : warranty.state === "void" ? "bad" : "neutral"}>{t(`warranties.state.${warranty.state}`)}</Status>
+                </div>
+                <div className="grid gap-1">
+                  <p className="type-sm text-ink">{t("warranties.period", { from: f.date(warranty.startsAt, "long"), to: f.date(warranty.endsAt, "long") })}</p>
+                  {warranty.orderRef ? (
+                    <MotionLink to={`/account/orders/${warranty.orderRef}`} nav="rise" className="inline-flex min-h-11 items-center justify-self-start type-sm text-ink-2 underline underline-offset-4">
+                      <span>
+                        {fillNodes(t("warranties.order"), {
+                          ref: (
+                            <bdi key="ref" dir="ltr" className="nums">
+                              {warranty.orderRef}
+                            </bdi>
+                          ),
+                        })}
+                      </span>
+                    </MotionLink>
+                  ) : null}
+                  {warranty.terms ? <p className="type-xs text-ink-2">{warranty.terms}</p> : null}
+                </div>
+                {warranty.state === "active" ? (
+                  <Key as={LocaleLink} to="/support/repair" size="sm" icon="wrench" className="mt-auto justify-self-start self-start" aria-label={t("warranties.claimNamed", { name: warranty.itemName })}>
+                    {t("warranties.claim")}
+                  </Key>
+                ) : null}
+              </article>
             </li>
           ))}
         </ul>

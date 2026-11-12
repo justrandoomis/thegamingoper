@@ -1,94 +1,124 @@
 # Catalog area — hubs, search, compare
 
-Owner: catalog area. Brief §3.3, §3.5, §3.6; DESIGN.md §8.2 hub, §8.3 list, §9.7 filter drawer, §9.8 chips.
-Files: `app/routes/storefront/catalog/**`, `app/server/services/catalog/listing.server.ts`, `app/server/services/search.server.ts`,
-`app/routes/api/search-suggest.ts`, `app/i18n/messages/catalog.ts`, `tests/catalog-listing.test.ts`, `tests/search.test.ts`.
+Owner: catalog area. Design System v2 (`design-v2-spec.md`) §6.2 platform hub, §6.3 category hub and listing behaviour,
+§6.4 search, §6.5 compare; brief §3.3, §3.5, §3.6.
+Files: `app/routes/storefront/catalog/**`, `app/routes/api/search-suggest.ts`, `app/i18n/messages/catalog.ts`,
+`tests/catalog-listing.test.ts`, `tests/search.test.ts`. The read layer (`app/server/services/catalog/**`,
+`app/server/services/search.server.ts`) belongs to the data owner: changes there are requests.
 
 ## Routes
 
 | Path | What |
 |---|---|
-| `/c/:category` | category hub: compact stage (lit when the department has one platform, or by the one platform filtered), chip rail (sub-categories; for a leaf the platforms, else the devices), the list, device shortcuts. Unknown/inactive → 404; the `used` kind → 302 `/used` |
-| `/platform/:platform` | platform hub: stage in the platform's light + LED, department chips, "everything about your device" (→ `/device/<model>`), the list, used shelf (`getUsedSpotlight`). Inactive (`pc`) → 404. Siblings: sideways push in platform order (`handle`) |
-| `/search?q=` | results (relevance default), "did you mean" notice, category-aware jumps, results by department (chips), zero-result recovery; empty `q` → recent searches + browse |
-| `/compare?ids=a&ids=b` | ≤ 4 products of one kind (ids or slugs; `ids=a,b` accepted), spec rows aligned by key, "only differences", add/remove links, same-kind suggestions |
-| `GET /api/search/suggest?q=&locale=` | `{ suggestions: { label, href, hint? }[] }` ≤ 8 (correction, platform/department/device jumps, products). 120/min per IP → 429; `Cache-Control: public, max-age=60` |
+| `/platform/:platform` | the platform's colour band (`Band kind="platform"`, 104px on phones, 160px from 1024 with the switcher: h1, «42 منتجاً · التوصيل 5,000 د.ع لكل المحافظات، والدفع عند الاستلام», the hardware off the inline end; from 1024 a model switcher of paper tiles → `/device/<model>`, at most 3 + «كل الأجهزة (n)»), the departments as link chips with counts, the list, "everything about the device" (phones: a sideways row inside the grid after its first two rows, its title an h3 so the cards after it stay under the list's h2; from 768 a grid after the list, `#catalog-devices`), the platform's used units (≥ 3). Unknown or inactive → 404. Sibling hubs push sideways in platform order (`handle`) |
+| `/c/:category` | title row (breadcrumbs from 768, h1, count · delivery line), one chip row (platforms with dots when the list has ≥ 2; else sub-departments; else devices), the list, then the hubs of the devices its products fit. Empty department → EmptyState «لا منتجات في هذا القسم بعد» + «ابحث في المتجر» + «وصل حديثاً». The `used` kind → 302 `/used` |
+| `/search` | start: the field in the page (focused from 1024 only), «اقتراحات» chips (the platforms' device models — names, never "most searched"), recent searches (this device, consent-aware) and the «إعدادات البحث» row, the four compact platform tiles and the department tiles with the hubs' counts, the devices area's shelves |
+| `/search?q=` | the listing template, h1 «نتائج «q»»; a corrected spelling shows its results under the corrected words with «بحثت عن «q»، ولم نجد شيئاً بهذه الكتابة…»; «اذهب مباشرة إلى» jumps; department chips. Nothing matches → EmptyState «لم نجد نتائج لـ «q»» + «هل تقصد:» (the shorter queries that find something) + platform and department tiles + «وصل حديثاً» (8 arrivals, no «جديد») — no sort, no filters |
+| `/compare?ids=a&ids=b` | ≤ 4 of one kind. Product headers stay under the header while the rows scroll (96px well with the 44×44 «أزل» right beside it, name, price with the neutral `CardAddButton` right after it — never pushed to the column's far end, where they sat next to the neighbouring product); the corner offers «أضف منتجاً (حتى 4)» (→ the same-kind suggestions, whose «قارن» key wraps under them at 320px); «اعرض الفروق فقط» beside its label, from two products; «غير موثّق» where the research says nothing. Phones: two product columns, each spec's name a full-width row above its values (three or four products scroll sideways); from 768 a sticky first column. `/compare` without ids reopens the list this device keeps |
+| `GET /api/search/suggest?q=&locale=` | `{ suggestions: { label, href, hint?, image?, priceIqd?, kindLabel? }[], total? }` ≤ 8 rows — the service's rows unchanged, product rows add the art key, the price (left out while sold out) and the kind label; `total` = what `/search?q=` lists for the same words, whenever the query is long enough to search. 120/min per IP → 429; `Cache-Control: public, max-age=60` |
 
-List URL grammar (one URL per state, shareable, Back-safe): `platform` (repeatable) `cat` `device` `min` `max` `stock=1` `deals=1`
-`arabic=interface|subtitles|voice` `format` (repeatable) `sort` `cursor` (+ `q`). Unknown values are dropped, never an error; a stale
-cursor redirects to the first page. Model and helpers: `catalog/listing-model.ts` (client-safe; the services import it).
+## The list (`components/ListingView.tsx`)
 
-## How it works
+- From 1024: a sticky 264px filter sidebar at the inline start (it scrolls on its own when taller than the window)
+  beside the results; the grid is 2 → 3 (768) → 3 beside the sidebar → 4 (1280). Below 1024 the filters are the kit's
+  `Sheet` (bottom on phones, side from 768) with «امسح الكل» (ghost) and the primary «اعرض 24 منتجاً» (live count).
+- Toolbar: the count; from 1024 also «المتوفر أولاً، ثم «قريباً»، ثم ما نفد» while the sort is «المقترَح»; the sort
+  menu («الترتيب: المقترَح» from 1024, «الترتيب» below, the explanation in its caption); below 1024 «الفلاتر (2)».
+  Once the toolbar has scrolled away (below 1024) a pill «الفلاتر | الترتيب» floats above the tab bar — solid paper
+  with the float shadow, because the header and the tab bar are the viewport's two live glass panes. While it (or the
+  compare tray) shows, the page's bottom scroll padding grows by the dock's measured height (`--catalog-dock` on the
+  root, set by `CatalogDock`), so focus never lands under it. The tray keeps «قارن (3)» whole: overlapping
+  thumbnails, and where the words do not fit one line (English and Sorani on phones) «قارن الآن» and its × take a
+  second line together.
+- The filter form shows a group of six or fewer short values (≤ 20 characters) as chips holding native checkboxes or
+  radios — in the sheet and the no-script panel, as in prototype A's sheet; the 264px sidebar keeps rows, where two
+  chips with a dot and a count do not fit side by side.
+- Filters (`components/FilterPanel.tsx`) are ONE native GET form used three ways (sidebar, sheet, no script):
+  التوفر (switch «المتوفر الآن», «تخفيض حقيقي»), المنصة (dots), القسم, يعمل مع, السعر (two fields + ready ranges),
+  دعم العربية, نوع النسخة — 44px rows, each value with how many products choosing it gives; a group with one option and
+  nothing chosen is hidden, and the group the page's chip row offers is not repeated (its value rides along as a hidden
+  field). With script every change navigates at once; without it the form submits (sort included).
+- Active filters are removable link chips above the grid; «اعرض المزيد» is the kit's `ShowMore` («عرضنا 24 من 42
+  منتجاً», a bar, «اعرض 18 منتجاً آخر», «لا يوجد المزيد لعرضه»).
+- Zero results with filters (`components/ZeroResults.tsx`): «لا منتجات بهذه الفلاتر», the primary «امسح الفلاتر», the
+  filter whose removal alone shows products (with its count), then products of the scope in stock.
+- Cards are the kit's `ProductCard` (hearts on: the loader reads which of the page's products are in the shopper's
+  wishlist, `wishedOf` in `list.server.ts`; null → no hearts rather than wrong ones). The first card of a list is the
+  page's one priority picture (it is the largest paint, measured on the hubs too); the band's hardware is decorative
+  and never preloaded.
+- Every «وصل حديثاً» shelf (empty department, search with no match, search filters with no match) passes its cards
+  through `arrivalsShelf` (`list.server.ts`): no card repeats «جديد» inside a shelf that says it (v2 §4.7).
+- Prices in the URL are read as a shopper types them (`readListingQuery` → `parsePriceInput`): the no-script form sends
+  «١٠٠٬٠٠٠» as typed, and it filters; links write Western digits back.
+- Offline, a tap that changes the list (a chip, «اعرض المزيد», a removable filter, the zero-result recovery) is held
+  (`useOfflineHold` in `components/use-listing-nav.ts`, a click-capture handler on each list page): the list stays,
+  the toolbar says «لا يوجد اتصال. نحدّث النتائج حين يعود.», and the last held tap is followed when the connection
+  is back. Links to other pages navigate as usual.
 
-- **Researched platforms** (`listing.server.ts`): own `platform_id`, else the platforms of `attributes.game.platforms`, else of the
-  product's verified/partial compatibility rules — exactly the import's `platformsOf`. `listCards` (platform_id only) misses the
-  multi-platform games and headsets; the hubs include them (tested).
-- **One universe statement** per request (linear CTE chain + correlated subqueries; D1-safe): card price, stock state 0/1/2,
-  pre-order, platforms, device fits (listCards' "most specific rule wins"), game facts. Filters, disjunctive facet counts (each
-  group counted with the other filters), sorts and the keyset cursor run in memory; the page's cards come from `getCardsByIds`.
-  Tested equal to the cards service for every product and to `listCards`' device filter for every model. Fine for hundreds of
-  products per scope; thousands would want facets in SQL.
-- **"Show more" is cumulative**: `?cursor=X` returns the list from the start through the page after X (≤ 240, then a page alone
-  with "back to the start"), so reload and Back keep what was shown, and the same link works without script.
-- **Search** (`search.server.ts`): normalise → synonym concepts (sets sharing a spelling merged across ar/en/ckb; greedy longest
-  phrase) → one FTS5 trigram statement per group (AND across groups; < 3 chars match word starts) → typo correction only when
-  nothing matched (trigram candidates + Damerau–Levenshtein ≤ 1–2) → rank: exact name › starts with › contains, then name word
-  coverage (each name word serves one group), then bm25, then availability. "xbox series x" → Series X first; "playstaion" →
-  "playstation". Vocabulary cached per isolate for 5 min (`invalidateSearchCaches`).
-- **Query stats**: `search_query_stats` (Baghdad day, locale, normalised query → searches, zero_results, last_at), first page of a
-  plain search only, never bots, never queries with `@` or 7+ digits. No IP, account or session.
-- **Recent searches**: this device only (localStorage), shopper's own switch on `/search`; without a choice they follow
-  `personalizationConsent` (on only when true); switching off deletes them; 8 entries, 30 days.
+## How it works (unchanged from 1.0)
 
-## States (brief §12)
+- **Researched platforms** (`listing.server.ts`): own `platform_id`, else `attributes.game.platforms`, else verified /
+  partial compatibility — the multi-platform games and headsets are on every hub they are researched for.
+- **One universe statement** per request; filters, disjunctive facet counts, sorts and the keyset cursor run in memory.
+- **«اعرض المزيد» is cumulative**: `?cursor=X` returns the list from the start through the page after X (≤ 240), so
+  reload and Back keep what was shown, and the same link works without script.
+- **Sort «المقترَح»** (`featured`): can be bought now › coming soon (soonest first) › sold out; on platform hubs the
+  platform's own consoles lead (data owner, stage 2).
+- **Search** (`search.server.ts`): synonym concepts across ar/en/ckb, trigram typo correction when nothing matched,
+  exact-name-first ranking; anonymous `search_query_stats` (first page of a plain search, never bots).
+- **Recent searches**: this device only, the shopper's own switch; without a choice they follow the personalisation
+  consent; switching off deletes them. `useRecentSearches` is also used by the shell's search field.
 
-Default · loading (results stay usable, `aria-busy`, dimmed; chips switch at once from the pending URL; new cards inflate, kept
-ones slide — `use-flip.ts`, full motion tier only) · partial data (used shelf failure → ErrorState, page stands) · empty
-department · zero results (nearest filter to remove with its count, clear all, 3 picks: in-stock products of the section / new
-arrivals; search adds the corrected spelling and the shorter queries) · offline (sort/filter keys go flat + reason) · validation
-(price fields: digits, any numerals, min ≤ max, sentence on the field) · API failure (suggest → no list; loader → shell panel) ·
-no script (GET form with filters + sort in `<details>`, chips and paging are links) · reduced motion (no FLIP, in place).
+## States (spec §6.17)
 
-## Real, demo, boundary
+| State | Hubs / search results | Search start / zero | Compare |
+|---|---|---|---|
+| Loading | results stay usable, `aria-busy`, dimmed; chips and inputs show the new state at once; cards that stayed slide, new ones grow in from the engine's bubble scale (.94, `use-flip.ts`, full motion tier only) | SSR | SSR |
+| Empty | department without products: EmptyState + «وصل حديثاً» | zero: EmptyState, «هل تقصد:», tiles, «وصل حديثاً» | EmptyState «لا شيء للمقارنة بعد» (never beside a saved list) |
+| Zero with filters | «لا منتجات بهذه الفلاتر» + «امسح الفلاتر» + nearest filter + picks | — | «لا فروق…» with differences only |
+| API failure | the loader → the shell's error panel; the used shelf alone → ErrorState in place, the page stands | suggest endpoint → no list | — |
+| Offline | the shell's banner; the filter controls rest with «لا يوجد اتصال. نحدّث النتائج حين يعود.»; chips, «اعرض المزيد» and filter chips are held and followed on reconnect (the list never gives way to the error page) | banner; suggestion chips held the same way | banner |
+| Sold out / soon | the card states (kit) | — | «نفد حالياً» / «قريباً» under the price, no add button |
+| Demo | the cards' and the strip's own marking | — | — |
+| No script | GET form (details on phones, the sidebar from 1024), link chips, link «اعرض المزيد» | the field is a GET form | the empty state; the table works |
 
-Real: every filter, count, sort and match is computed from the database. Demo: prices and stock (seed). Not built here: device
-hubs (`/device/*`, devices area — the shortcuts link there), used marketplace (`/used`), product page.
+## Exports other areas use (signatures kept)
 
-Bidi: chip labels go through `ChipText` (label isolated in the page's direction, then " · count"), device names and compare
-cells are plain text in the page's direction — an auto isolate (`<bdi>`, the kit's `BidiText`) splits "PlayStation 5 (الطراز
-الأصلي 2020)" at its brackets. Compare links use one `ids=` per product (`?ids=a&ids=b`), search links encode spaces as `+`:
-both stay byte-identical when the server re-encodes the query (see Known gaps).
-
-## Cross-area pieces (integration pass, 2026-11-11)
-
-- `CompareToggle` (`catalog/CompareToggle.tsx`) is on the product page (its loader adds `"catalog"` to `messagesFor`).
-  Hook/store: `useCompare`, `compareHref`, `addToCompare` (`catalog/compare-client.ts`).
-- Cards carry NO compare key — decided: one walled key per card (DESIGN §9.5; the socket is the card's one key, and a
-  card with options already opens the quick look there). Comparing starts from a product page or `/compare`'s own
-  same-kind suggestions; the tray (`CompareTray`) brings a saved list back.
-- `searchProducts(db, locale, q, opts)` → `Paged<ProductCardData> & { suggestions, zeroResultHelp }` (+ facets) for other areas.
-- Recommendation shelves (devices area, `recommendationsFor(context: "search")`, streamed, drawn by the shared
-  `devices/components/RecommendationShelves` at the bottom): platform and category hubs and search results show only
-  the shopper's personal shelf, with consent (the store's picks would repeat the list); search without a query shows
-  the personal shelf and the store's picks (for the shopper's platforms when they consented), each with its reason.
-  Zero-result searches keep their own picks and get no shelf. A hub's filters never wait for the shelves, and the
-  shelves never flicker: a newer answer replaces the old one only once it has arrived.
-- Device tiles (`components/Hub.tsx → DeviceShortcuts`) are zoom links whose picture is the shared element
-  `device-image:<slug>` — it grows into the device hub's stage.
+- `CompareToggle` (`catalog/CompareToggle.tsx`): `product: { id, kind, name, image? }` (image new, optional — it feeds
+  the compare tray's thumbnail), `size`, `showLink`, `className`. v2: a 44px ghost text button «قارن» / «في المقارنة».
+- `useCompare`, `compareHref`, `addToCompare` (now also `{ name?, image? }`), `syncCompare` (`items?`),
+  `rememberCompareThumbs`, `useCompareThumbs`, `readCompareThumbs` (`catalog/compare-client.ts`), and
+  `compareAfterAdd(outcome, before, id)` — where «افتح المقارنة» goes after an add (another kind: the new list alone;
+  `/compare` compares the first product's kind, so "old ids + new" showed the old list and undid the new one).
+- `useRecentSearches` (`components/recent-searches.ts`) — the shell's search field.
+- `searchProducts(db, locale, q, opts)` and `suggestSearch` stay the data owner's.
 
 ## Verify
 
-`npx vitest run tests/catalog-listing.test.ts tests/search.test.ts` · `node scripts/lint-design.mjs app/routes/storefront/catalog`
-· flows: `node <scratch>/work/catalog/flow.mjs` — 49 checks: chip tap, filter sheet, show more + reload, header suggestions,
-no-script form, recent searches (opt-in, delete), compare (differences, remove, tray, reopen), console and overflow on 9 URLs
-· screenshots `.shots/catalog/` (390 / 768 / 1440, light / dark, ar / en / ckb, reduced motion).
+`npx vitest run tests/catalog-listing.test.ts tests/search.test.ts` (64) · `node scripts/lint-design.mjs --strict
+app/routes/storefront/catalog app/routes/api/search-suggest.ts` (0) · flows: `node <scratch>/work/pages-P2-catalog/flow.mjs`
+(chips, sheet, filter at once, Back, show more + reload + Back, every sort, zero results and the way out, sidebar
+row, no-script form, the floating pill) · census / focus walk: `<scratch>/work/pages-P2-catalog/tools/` · screenshots
+`<scratch>/ux/after/P2-catalog/` (`<page>-<width>-<theme>-<lang>.png`). Review (2026-11-12): its own tools and
+screens in `<scratch>/work/pages-P2-catalog-review/` (matrix, flows with and without script, offline, compare,
+focus walk, rendered contrast, reflow at 320 and 200%) and `<scratch>/ux/after/P2-catalog-review/`.
 
 ## Known gaps
 
-- Price filter: two fields + quick ranges, no slider (DESIGN §9.7 asks for one).
-- Shell (not ours): the footer's language links are built from the raw `location.search`, while the server re-encodes the
-  query (`%20` → `+`, `,` → `%2C`), so a hand-typed URL with either hydrates with a mismatch warning — on every page.
-- The shell's per-platform `productCount` leaves out multi-platform products (the hubs count them).
-- The kit's `BidiText` (product cards) splits names with Arabic in brackets ("PlayStation 5 Slim (نسخة الأقراص) – 1TB").
-- Spec keys differ between researched products of one kind; compare folds only true synonyms per kind (listing.server.ts).
+- Cards carry no compare toggle yet: the kit's `ProductCard` has no slot for it (requested). Comparing starts on the
+  product page, from `/compare`'s same-kind suggestions, and the tray brings a saved list back.
+- The desktop model switcher shows the database's full model names (no short names in the data yet).
+- «ابحث عنها كما كتبتها» (spec §6.4) is not offered: the search corrects a spelling only when it found nothing, so the
+  link would lead to the same corrected page. It needs an "as typed" option in the search service.
+- Facets the spec lists but the data does not have yet: condition (new / used + grade), storage. Price: fields + ready
+  ranges, no slider.
+- On phones a comparison of three or four scrolls sideways (`overflow-x: auto` with `overflow-y: clip`); the product
+  headers stay sticky in Chromium (checked in Edge 157). A browser that does not allow clip beside a scrolling axis
+  scrolls the headers away with the rows — not checked on Safari.
+- Long lists are not virtualised (spec §6.3 "about 40 cards"): «اعرض المزيد» grows the list to at most 240 cards, then
+  shows a page on its own; the store lists about a hundred products today.
+- The kit's sideways chip rows do not bring a chip focused with Tab fully into view in RTL; the catalog's rows do it
+  themselves (`keepInView` in `components/Hub.tsx`; on the snapping device-tile row it aligns the tile to the row's
+  start, or the snap pulled it back half off-screen) until the kit does (requested). The kit's `ShelfRail` (the
+  «وصل حديثاً» shelves on phones) still leaves a focused card off-screen — the kit's to fix.
 - Sorani copy needs a native reader. Chromium only.

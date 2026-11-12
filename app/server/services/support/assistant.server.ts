@@ -7,7 +7,8 @@
  *   const ticket = await handOffToStaff(db, who, locale, state, { idempotencyKey, phone, contactName, note, consent }, ctx.now, { store, photos });
  *
  * How a conversation runs (its state is the URL, see ./state.ts):
- *   device      platform → model, or "not in the list"
+ *   device      platform → model, or "not in the list" — or typed: a danger sign stops at once, a device's name
+ *               (./matcher matchDevice) chooses it, a platform's name asks for the model, a problem waits for the device
  *   problem     an approved tree's symptom, or the shopper's own words (`q`): the keyword matcher (./matcher.ts) routes
  *               them to a danger stop, an error code, a tree or a topic — or says plainly that it found nothing
  *   steps       the tree is replayed from its start with the answers given; each node is a question, a safe step (its
@@ -40,7 +41,7 @@ import { cleanLine } from "~/server/text.server";
 import type { UploadSource } from "~/server/uploads.server";
 import { accessTokenHash, actorOf, discardPhotos, isIdempotencyKey, photoSources, preparePhotos, storePhotos, supportAccessToken, type SupportWho } from "./common.server";
 import { findArticlesMentioning, findDevice, findPlatform, getSupportDirectory, listArticlesByTag, listArticlesForDevice, listArticlesForPlatform, listHelpArticles } from "./kb.server";
-import { interpretText, KNOWN_TOPICS, type Interpretation } from "./matcher";
+import { describesProblem, hasDangerSign, interpretText, KNOWN_TOPICS, matchDevice, type Interpretation } from "./matcher";
 import { DEVICE_OTHER, assistantSearch, type AssistantState } from "./state";
 import { summarizeConversation } from "./summary";
 import { enforceSupportLimits, existingTicket, fileRowStatements, newTicketIdentity, optionalText, phoneOf, planSupportTicket, ticketGuard } from "./tickets.server";
@@ -183,12 +184,38 @@ class Transcript {
 export async function runAssistant(db: Db, locale: Locale, state: AssistantState, options: { model?: AssistantModel | null } = {}): Promise<AssistantView> {
   const model = options.model === undefined ? configuredAssistantModel() : options.model;
   const directory = await getSupportDirectory(db, locale);
-  const device = state.device && state.device !== DEVICE_OTHER ? findDevice(directory, state.device) : null;
   const deviceOther = state.device === DEVICE_OTHER;
-  const group = device ? findPlatform(directory, device.platform.slug) : findPlatform(directory, state.platform);
+  let device = state.device && !deviceOther ? findDevice(directory, state.device) : null;
+  let group = device ? findPlatform(directory, device.platform.slug) : findPlatform(directory, state.platform);
+  // Words typed before a device was chosen (the composer invites "your device's name or the problem"): a danger sign
+  // stops the conversation at once; a device's name chooses that device; a name that only points at a platform ("PS5
+  // Slim" is also the Slim Digital Edition, "Xbox") chooses that platform — even when another one was picked from the
+  // list — and the model is asked. Words that only name the device are never read again as the problem: they leave
+  // the links (`nameOnly`), so choosing the model asks what is wrong instead of "I couldn't match your words".
+  let q = state.q;
+  const typedFirst = q !== null && !device && !deviceOther;
+  const danger = typedFirst && hasDangerSign(q as string);
+  let typedPlatform = false;
+  let nameOnly = false;
+  if (typedFirst && !danger) {
+    const named = matchDevice(q as string, directory);
+    const found = named.kind === "device" ? findDevice(directory, named.slug) : null;
+    if (found) {
+      device = found;
+      group = findPlatform(directory, found.platform.slug);
+      if (!describesProblem(q as string)) q = null;
+    } else if (named.kind === "platform") {
+      const namedGroup = findPlatform(directory, named.slug);
+      if (namedGroup) {
+        group = namedGroup;
+        typedPlatform = true;
+        nameOnly = !describesProblem(q as string);
+      }
+    }
+  }
   const platform: SupportPlatform | null = device?.platform ?? (group ? { id: group.id, slug: group.slug, name: group.name, accent: group.accent } : null);
   // What the URL asked for, cleaned: an unknown device or platform is dropped (the conversation asks again).
-  const clean: AssistantState = { ...state, device: device ? device.slug : deviceOther ? DEVICE_OTHER : null, platform: device ? null : (platform?.slug ?? null) };
+  const clean: AssistantState = { ...state, q, device: device ? device.slug : deviceOther ? DEVICE_OTHER : null, platform: device ? null : (platform?.slug ?? null) };
   const t = new Transcript();
   let isDemo = false;
 
@@ -215,8 +242,17 @@ export async function runAssistant(db: Db, locale: Locale, state: AssistantState
 
   // ── device
   t.bot({ kind: "ask_device" });
+  if (danger) {
+    // Safety before anything else, even before the device is known.
+    t.user(state.q as string, { typed: true });
+    t.bot({ kind: "danger", warningKey: "assistant.danger.warning" });
+    return done({ stage: "done", outcome: { type: "repair", article: null, productSlug: null } }, { ...clean, symptom: null, answers: [] });
+  }
   if (!device && !deviceOther) {
+    // A problem typed first stays in the links below (`q`) and is answered once the device is known.
+    if (clean.q) t.user(clean.q, { typed: true });
     if (!group) {
+      if (clean.q) t.bot({ kind: "need_device" });
       const prompt: AssistantPrompt = {
         kind: "platforms",
         platforms: directory.map((entry) => ({ id: entry.id, slug: entry.slug, name: entry.name, accent: entry.accent, href: linkTo({ ...clean, platform: entry.slug, device: null }) })),
@@ -224,14 +260,20 @@ export async function runAssistant(db: Db, locale: Locale, state: AssistantState
       };
       return done({ stage: "device", prompt }, clean);
     }
-    t.user(group.name, { platform: group.slug });
+    if (!typedPlatform) {
+      if (clean.q) t.bot({ kind: "need_device" });
+      t.user(group.name, { platform: group.slug });
+    }
     t.bot({ kind: "ask_model", params: { platform: group.name, platformSlug: group.slug } });
+    // the words travel with the choice only when they describe a problem
+    const carried: AssistantState = { ...clean, q: nameOnly ? null : clean.q };
     const prompt: AssistantPrompt = {
       kind: "models",
       platform: { id: group.id, slug: group.slug, name: group.name, accent: group.accent },
-      devices: group.devices.map((entry) => ({ ...entry, href: linkTo({ ...clean, platform: null, device: entry.slug }) })),
-      otherHref: linkTo({ ...clean, platform: null, device: DEVICE_OTHER }),
-      backHref: linkTo({ ...clean, platform: null, device: null }),
+      devices: group.devices.map((entry) => ({ ...entry, href: linkTo({ ...carried, platform: null, device: entry.slug }) })),
+      otherHref: linkTo({ ...carried, platform: null, device: DEVICE_OTHER }),
+      // A platform read from the words would be read again: "another platform" starts the device question over.
+      backHref: linkTo({ ...clean, platform: null, device: null, q: typedPlatform ? null : clean.q }),
     };
     return done({ stage: "device", prompt }, clean);
   }

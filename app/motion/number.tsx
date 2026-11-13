@@ -111,7 +111,20 @@ export type CountUpProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
   format?: (value: number) => string;
   /** Length of the count in ms. Default 640 (eased out; never longer than 900). */
   duration?: number;
+  /**
+   * The page's ONE focus figure (a trade-in offer, the rewards balance): it counts on a direct open too. The server
+   * keeps the final value; once the page is live, with full motion and the figure on screen, it counts from 70% of
+   * the way to the value in about half a second — never down to zero, no layout shift. Off: a server-rendered figure
+   * on the first screen keeps its value (no flash), as every other CountUp.
+   */
+  playOnLoad?: boolean;
 };
+
+/** Where a count starts (pure; exported for tests): `from`, or — for a server-rendered `playOnLoad` figure — 70% of the
+ *  way to the value (the shopper saw the final value first; it never drops to zero). */
+export function countUpStart({ value, from, serverRendered, playOnLoad }: { value: number; from: number; serverRendered: boolean; playOnLoad: boolean }): number {
+  return serverRendered && playOnLoad ? Math.round(from + (value - from) * 0.7) : from;
+}
 
 /** The eased value at time `t` (0…1) of a count from `from` to `to`, rounded to an integer (pure, for tests). */
 export function countAt(from: number, to: number, t: number): number {
@@ -126,10 +139,10 @@ export function countAt(from: number, to: number, t: number): number {
  * server-rendered number already on screen keeps its final value; a client mount on screen counts at once; without
  * full motion it is simply the final value.
  */
-export function countUpPlan(env: { serverRendered: boolean; visible: boolean; full: boolean }): { show: "final" | "from"; count: "never" | "now" | "on-view" } {
+export function countUpPlan(env: { serverRendered: boolean; visible: boolean; full: boolean; playOnLoad?: boolean }): { show: "final" | "from"; count: "never" | "now" | "on-view" } {
   if (!env.full) return { show: "final", count: "never" };
   if (!env.visible) return { show: "from", count: "on-view" };
-  return env.serverRendered ? { show: "final", count: "never" } : { show: "from", count: "now" };
+  return env.serverRendered && !env.playOnLoad ? { show: "final", count: "never" } : { show: "from", count: "now" };
 }
 
 /**
@@ -144,7 +157,7 @@ export function countUpPlan(env: { serverRendered: boolean; visible: boolean; fu
  *   on a client navigation, or one that is scrolled into view later, counts up.
  * - Reduced motion (OS or the store's switch) and the lite tier: the final value, no count.
  */
-export function CountUp({ value, from = 0, format, duration = 640, className, style, ...rest }: CountUpProps) {
+export function CountUp({ value, from = 0, format, duration = 640, playOnLoad = false, className, style, ...rest }: CountUpProps) {
   const text = (n: number) => (format ? format(n) : String(n));
   const hydrating = useHydrating();
   const element = useRef<HTMLSpanElement>(null);
@@ -161,20 +174,23 @@ export function CountUp({ value, from = 0, format, duration = 640, className, st
       serverRendered: startsCounted,
       visible: box.top < window.innerHeight && box.bottom > 0,
       full: getMotionTier() === "full" && typeof IntersectionObserver === "function",
+      playOnLoad,
     });
     if (plan.count === "never") {
       played.current = true;
       setShown(value);
       return;
     }
+    // a server-rendered focus figure counts the last 30% of the way (it was shown final first: never down to zero)
+    const origin = countUpStart({ value, from, serverRendered: startsCounted, playOnLoad });
     let frame = 0;
     const run = () => {
       played.current = true;
       const start = performance.now();
-      const length = Math.min(900, Math.max(200, duration));
+      const length = playOnLoad && startsCounted ? 520 : Math.min(900, Math.max(200, duration));
       const step = (now: number) => {
         const t = (now - start) / length;
-        setShown(countAt(from, value, t));
+        setShown(countAt(origin, value, t));
         if (t < 1) frame = requestAnimationFrame(step);
       };
       frame = requestAnimationFrame(step);
@@ -183,7 +199,7 @@ export function CountUp({ value, from = 0, format, duration = 640, className, st
     // count once 40% of it is in view; a client mount on screen ("now") is in view at the observer's first report. The
     // count always starts from the observer (never inside this effect), so the value effect below cannot cut it short
     // and a development double mount starts it again.
-    setShown(from);
+    setShown(origin);
     const io = new IntersectionObserver(
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
@@ -197,7 +213,7 @@ export function CountUp({ value, from = 0, format, duration = 640, className, st
       io.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [value, from, duration, startsCounted]);
+  }, [value, from, duration, startsCounted, playOnLoad]);
 
   // a new value after the count has played lands at once (a changing number belongs to <NumberMorph>)
   useEffect(() => {

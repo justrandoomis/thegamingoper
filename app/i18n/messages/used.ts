@@ -10,13 +10,14 @@ import { defineMessages } from "../translate";
  * Copy voice (Design System v2 §9): plain, specific, active; numbers with their unit; no exclamation marks. An estimate
  * is always called an estimate, a preferred time a preference, and nothing promises what the store cannot guarantee —
  * no call promises: the inspection time is set by the store and shows on the request's page. The intro's game-turn
- * line is never used here (the intro is its one place). Glossary: «رقم الموبايل», «تحدّث مع موظف», «مستعمل ومفحوص» (titles) /
- * «المستعمل» (navigation). Latin product names stay Latin. The Sorani column needs a native reader.
+ * line is never used here (the intro is its one place). Glossary (docs/DESIGN.md): «رقم الموبايل», «تحدّث مع موظف»,
+ * «المستعمل والمفحوص» (titles — the menus, /about and the missing-product page write it so) / «المستعمل» (navigation).
+ * Latin product names stay Latin. The Sorani column needs a native reader.
  */
 export default defineMessages({
   ar: {
     list: {
-      title: "مستعمل ومفحوص",
+      title: "المستعمل والمفحوص",
       lead: "كل جهاز مفحوص، وله درجة حالة وتقرير فحص",
       metaTitle: "أجهزة ألعاب مستعملة مفحوصة",
       metaDescription: "أجهزة ألعاب مستعملة فحصناها قطعةً قطعة، مع درجة الحالة وتقرير الفحص وضمان المتجر. التوصيل لكل محافظات العراق.",
@@ -83,6 +84,8 @@ export default defineMessages({
       metaTitle: "{name} مستعمل",
       metaDescription: "{name} مستعمل بحالة «{grade}»، فحصناه بأنفسنا: تقرير الفحص، وضمان المتجر {warranty}.",
       crumbs: { home: "الرئيسية", used: "المستعمل" },
+      // the round keys over the unit's stage below 1024 (as the product page's stage card)
+      stage: { back: "رجوع", share: "شارك {name}", copied: "نسخنا رابط الجهاز.", failed: "لم ننسخ الرابط. انسخه من شريط العنوان." },
       oneUnit: "قطعة واحدة",
       warranty: "ضمان {days}",
       noWarranty: "بلا ضمان من المتجر",
@@ -170,9 +173,11 @@ export default defineMessages({
         noMatch: "لا جهاز باسم «{query}»",
         noMatchText: "جرّب اسماً أقصر، أو امسح البحث وتصفّح القائمة.",
         clearSearch: "امسح البحث",
-        // v2.1: three tiles a row on phones (~104px): the amount stays one run (the page binds it) and the word that says
-        // it is an estimate may take the next line — no «·» left to start a line
-        upTo: "حتى {price} تقديرياً",
+        // round-1 fixes: three tiles a row on phones (~110px) — «حتى 365,000 د.ع» on one line under each device; the
+        // section's line says once that the amounts are estimates (upToNote), and each tile says it to screen readers
+        upTo: "حتى {price}",
+        estimated: "تقديرياً",
+        upToNote: "المبالغ تحت الأجهزة تقديرية: أعلى تقدير لجهاز يعمل، كالجديد، ومعه ملحقاته.",
         afterInspection: "السعر بعد الفحص",
       },
       // the start page's other sections (v2.1, client note 10 "add some features"): every sentence is one of the
@@ -585,6 +590,7 @@ export default defineMessages({
       metaTitle: "Used {name}",
       metaDescription: "A used {name} in “{grade}” condition, inspected by us: the inspection report and a store warranty of {warranty}.",
       crumbs: { home: "Home", used: "Used" },
+      stage: { back: "Back", share: "Share {name}", copied: "We copied the device's link.", failed: "The link was not copied. Copy it from the address bar." },
       oneUnit: "One unit",
       warranty: "{days} of warranty",
       noWarranty: "No store warranty",
@@ -671,7 +677,9 @@ export default defineMessages({
         noMatch: "No device called “{query}”",
         noMatchText: "Try a shorter name, or clear the search and browse the list.",
         clearSearch: "Clear the search",
-        upTo: "Up to {price} (estimate)",
+        upTo: "Up to {price}",
+        estimated: "(estimate)",
+        upToNote: "The amounts under the devices are estimates: the most for a device that works, like new, with its accessories.",
         afterInspection: "Price after inspection",
       },
       start: {
@@ -1080,6 +1088,7 @@ export default defineMessages({
       metaTitle: "{name}ی بەکارهاتوو",
       metaDescription: "{name}ی بەکارهاتوو بە دۆخی «{grade}»، خۆمان پشکنیومانە: ڕاپۆرتی پشکنین و گەرەنتیی فرۆشگا {warranty}.",
       crumbs: { home: "سەرەکی", used: "بەکارهاتوو" },
+      stage: { back: "گەڕانەوە", share: "{name} هاوبەش بکە", copied: "بەستەری ئامێرەکەمان کۆپی کرد.", failed: "بەستەرەکە کۆپی نەکرا. لە شریتی ناونیشانەوە کۆپی بکە." },
       oneUnit: "یەک دانە",
       warranty: "گەرەنتی {days}",
       noWarranty: "بێ گەرەنتیی فرۆشگا",
@@ -1166,7 +1175,9 @@ export default defineMessages({
         noMatch: "هیچ ئامێرێک بە ناوی «{query}» نییە",
         noMatchText: "ناوێکی کورتتر تاقی بکەرەوە، یان گەڕانەکە بسڕەوە و سەیری لیستەکە بکە.",
         clearSearch: "گەڕانەکە بسڕەوە",
-        upTo: "تا {price}، خەمڵێنراو",
+        upTo: "تا {price}",
+        estimated: "خەمڵێنراو",
+        upToNote: "بڕەکانی ژێر ئامێرەکان خەمڵێنراون: بەرزترین خەمڵاندن بۆ ئامێرێک کە کار دەکات، وەک نوێ، و لەگەڵ پاشکۆکانی.",
         afterInspection: "نرخ دوای پشکنین",
       },
       start: {

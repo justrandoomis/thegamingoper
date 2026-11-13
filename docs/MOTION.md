@@ -240,6 +240,34 @@ gets the final text immediately. Reduced motion: the number replaces the number.
   Chromium (…/scratchpad/fb1/work/foundation-review/carousel-probe.mjs). `.carousel__parallax` is a scroll-driven
   drift (`animation-timeline: view(inline)`). No `requestAnimationFrame` loop anywhere but CountUp's one short count.
 
+**Fix round (2026-11-13, DESIGN.md §15.10):**
+
+- **Carousel moves** — `carouselMove(from, to, tier)`: ±1 slides (smooth `scrollBy`); further — the autoplay wrap, «next»
+  on the last slide, a dot two away, Home / End — is `"fade"`: the track fades out (Web Animations, `durations.exit`
+  on `easings.exit`), jumps, and fades in (`durations.base` on `easings.settle`); a later move cancels a fade in flight.
+  The slides keep `scroll-snap-stop: always` (one slide per fling) and the jump sets `scroll-snap-type: none` for its
+  one instant scroll — Chromium stops even an INSTANT programmatic scroll at a `always` slide (measured: four slides
+  asked, one moved). Reduced motion and lite: `"jump"` (instant, snapping suspended the same way). `CarouselApi`
+  gains `running` (the slides move on by themselves right now) and `autoplay`; `<CarouselDots progress>` animates the
+  current dot's fill (`carousel-dot-fill`, the interval, linear). Keys whose target is outside the carousel's own
+  markup (a dialog it opened: React bubbles portal events) are ignored. The pause key renders once the page is live.
+  Checked in Edge: `…/fb1/work/C-fix-design/carousel.mjs` (home 1440 / 390 with `always`, /design-system: 11/11, 12/12,
+  11/11 — the wrap is one fade of ~270 ms, the track at only two positions).
+- **`<CountUp playOnLoad>`** — the page's ONE focus figure (a trade-in offer, the rewards balance) counts on a direct
+  open too: `countUpPlan({ …, playOnLoad })` says "now" for a server-rendered figure on screen, and `countUpStart()`
+  starts it 70% of the way to the value (it was shown final first: never down to zero), in 520 ms. `<Price countUp>` /
+  `countUp="load"` wraps it for money.
+- **Reveal, late arrivals** — children added to a stagger row that was already seen (show more, a filter change) arrive
+  as a batch: on screen at once, 60 ms apart (six steps); below the fold when they scroll in, staggered within the
+  observer's batch; while the row itself still waits, they wait with it (`lateArrivals()` is the pure selection).
+- **View-transition aborts** — `normalizeTransitionAborts(document)` (installed by `<MotionRoot>`) wraps
+  `document.startViewTransition`: when Edge/Chromium aborts a transition because the viewport changed (a phone's URL
+  bar) its `ready` rejects with "Transition was aborted because of invalid state. Viewport size changed" — a wording
+  React 19.3's benign list lacks, so React reported it as an uncaught error on every such card → product tap. React now
+  reads a `ready` with the wording it ignores; other errors pass unchanged; `updateCallbackDone` is observed. Checked:
+  `…/fb1/work/C-fix-design/vt.mjs` — 21 taps at 390 (mobile emulation, half with a viewport change mid-transition) and
+  11 under reduced motion, 0 console errors (was 10 in 12 taps).
+
 ### `flyToCart(source, options?) → FlyHandle` (DESIGN.md "Fly to cart")
 
 ```tsx

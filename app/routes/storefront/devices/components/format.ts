@@ -94,6 +94,22 @@ export function isolateName(text: string): string {
 }
 
 /**
+ * The language and direction of a research source's title or publisher, read from its letters — the research records
+ * none (QA 2026-11-13: «شركة Valve تعلن…» on an English or Sorani page was read with the page's voice, its direction
+ * left to chance). Arabic letters: Arabic, or Sorani when a letter only Sorani uses is there (ڕ ڵ ۆ ێ ە); kana:
+ * Japanese; hangul: Korean; Latin letters: English (every Latin source of the research is). Nothing it can tell (Han
+ * characters alone, digits): no claim. Pure.
+ */
+export function sourceLang(text: string | null | undefined): { lang: string; dir?: "rtl" | "ltr" } | null {
+  if (!text) return null;
+  if (/[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/u.test(text)) return { lang: /[ڕڵۆێە]/u.test(text) ? "ckb" : "ar", dir: "rtl" };
+  if (/[぀-ヿ]/u.test(text)) return { lang: "ja" };
+  if (/[가-힯ᄀ-ᇿ]/u.test(text)) return { lang: "ko" };
+  if (/[A-Za-z]/.test(text)) return { lang: "en", dir: "ltr" };
+  return null;
+}
+
+/**
  * A device name whose short last word never wraps alone (v2 §4.18: "Switch 2", "PS5 Pro", "Go 2" never break): the
  * space before a final token of 1–3 characters becomes a no-break space. "PlayStation 5 Slim" keeps its spaces.
  */

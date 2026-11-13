@@ -224,7 +224,14 @@ export default function TrackPage({ loaderData, actionData }: Route.ComponentPro
         <div className="co-track-result">
           <div className="co-ref">
             <h2 id="track-result" ref={resultRef} tabIndex={-1} className="type-h2 text-ink outline-none">
-              {t("track.result", { ref: "⁦" + found.ref + "⁩" })}
+              {/* the number in the text face, as on the order's card: Kufam's Latin V reads as Ʋ (QA 2026-11-13) */}
+              {fillNodes(t("track.result"), {
+                ref: (
+                  <bdi dir="ltr" className="font-plex nums">
+                    {found.ref}
+                  </bdi>
+                ),
+              })}
             </h2>
             {/* a demo order stays marked as one wherever it is shown (§9.7), as on the order page */}
             {found.isDemo ? <DemoNote variant="tag" what="order" className="justify-self-start" /> : null}

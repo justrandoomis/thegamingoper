@@ -17,6 +17,9 @@
  *     key), the rules' stacking as the core decides it, a refund's share of redeemed points, the coupon try's regular
  *     price, the «not built yet» lines that read as one sentence, and a rule's dry run that weighs an order's whole
  *     discount (its words said «coupon»)
+ *   · fix 2026-11-13 (wave C): the blueprint rows the overview shows right under its table («هذا القسم في المخطط»,
+ *     blueprint-status.ts 08.01–08.08) say what this registry says — their «Missing» parts said the core applied no
+ *     rules, the cart no flash price and the checkout no referral code, and asked for a liability account that exists
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
@@ -26,7 +29,9 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import messages from "~/i18n/messages/admin-promotions";
 import { translate, type MessageTree } from "~/i18n/translate";
 import { newId } from "~/lib/ids";
-import { CHANNEL_STATES, CHECKOUT_STATE, SALE_CHANNELS, STATE_SECTIONS } from "~/routes/admin/promotions/checkout-state";
+import { BLUEPRINT_STATUS } from "~/routes/admin/blueprint-status";
+import { CHANNEL_STATES, CHECKOUT_STATE, SALE_CHANNELS, STATE_SECTIONS, type StateSection } from "~/routes/admin/promotions/checkout-state";
+import { BLUEPRINT_FUNCTION_IDS, type BlueprintFunctionId } from "~/routes/admin/shell/blueprint-catalog";
 import { systemActor } from "~/server/actor";
 import { coupons, loyaltyLedger, memberships, membershipTiers, promotions } from "~/server/db/schema";
 import { dryRun } from "~/server/services/admin/promotions/discounts.server";
@@ -318,6 +323,114 @@ describe("review 2026-11-13: the module's words match what the core does", () =>
       // SectionState writes «لم يُبنَ بعد:» before these: a second colon read as a label inside a label
       for (const key of ["gift.boundary", "referrals.signup"]) expect(say(locale, key), `${locale}: ${key}`).not.toMatch(/:/);
       expect(say(locale, "points.emptyHint"), `${locale}: points.emptyHint`).toContain(nightly[locale]);
+    }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── fix 2026-11-13: the blueprint rows under the table
+
+/** Module 08's blueprint functions (blueprint-status.ts, shown under the overview's table) and the section of each. */
+const ROW_SECTION = {
+  "08.01": "coupons",
+  "08.02": "rules",
+  "08.03": "flash",
+  "08.04": "points",
+  "08.05": "referrals",
+  "08.06": "vip",
+  "08.07": "giftCards",
+  "08.08": "experiments",
+} as const satisfies Partial<Record<BlueprintFunctionId, StateSection>>;
+const ROWS = Object.keys(ROW_SECTION) as (keyof typeof ROW_SECTION)[];
+const NOTE_LANGUAGES = ["ar", "en"] as const; // the blueprint's notes are written in the admin's two languages
+type NoteLanguage = (typeof NOTE_LANGUAGES)[number];
+const MISSING_LABEL: Record<NoteLanguage, string> = { ar: "الناقص:", en: "Missing:" };
+/** A partial row's «what is missing» part (everything after its label, which it carries exactly once). */
+function missingPart(id: keyof typeof ROW_SECTION, language: NoteLanguage): string {
+  const parts = (BLUEPRINT_STATUS[id].note?.[language] ?? "").split(MISSING_LABEL[language]);
+  expect(parts, `${id} (${language}) says once what is missing`).toHaveLength(2);
+  return (parts[1] ?? "").trim();
+}
+/** The point of sale named in a sentence. */
+const NAMES_TILL: Record<NoteLanguage, RegExp> = { ar: /نقطة البيع/, en: /\bpoint of sale\b|\bPOS\b|\btill\b/ };
+/** The online checkout named in a sentence (the cart, the checkout, the commerce core). */
+const NAMES_WEB: Record<NoteLanguage, RegExp> = { ar: /الدفع|السلة|في الموقع|نواة التجارة/, en: /\b(?:checkout|cart|online)\b|commerce core/i };
+/** What neither channel has yet — the section's own «not built yet» line (referrals.signup, gift.boundary). */
+const NOT_BUILT: Partial<Record<StateSection, Record<NoteLanguage, RegExp>>> = {
+  referrals: { ar: /إنشاء الحساب/, en: /sign-up/ },
+  giftCards: { ar: /بيع البطاقات/, en: /selling cards/ },
+};
+/** A step of the online checkout named as still to be built: the commerce core, or one of its functions. */
+const CORE_TODO: Record<NoteLanguage, RegExp> = { ar: /نواة التجارة|priceCart|placeOrder|applyDiscounts/, en: /commerce core|\b(?:priceCart|placeOrder|applyDiscounts)\b/i };
+/** «the checkout / the cart does not (cannot) …», either way round, inside one clause. */
+const WEB_DENIED: Record<NoteLanguage, RegExp> = {
+  ar: /لا\s+[يت]\S*[^.؛—]*(?:الدفع|السلة)|(?:الدفع|السلة)[^.؛—]*\sلا\s+[يت]/,
+  en: /\b(?:cannot|can't|does not|doesn't|do not|don't)\b[^.;—]*\b(?:checkout|cart)\b|\b(?:checkout|cart)\b[^.;—]*\b(?:cannot|can't|does not|doesn't|do not|don't)\b/i,
+};
+/** What the online checkout still misses where it applies a section in part — the gap its own sentence names. */
+const WEB_GAP: Partial<Record<StateSection, Record<NoteLanguage, RegExp>>> = {
+  flash: { ar: /صفحات المنتجات/, en: /product pages/ },
+  vip: { ar: /الوصول المبكر/, en: /early access/ },
+  experiments: { ar: /الزوار/, en: /visitors/ },
+};
+
+describe("fix 2026-11-13: the blueprint rows under the table say what checkout-state.ts says", () => {
+  test("every function of module 08 is about one section of the registry, and every section has its row", () => {
+    expect(ROWS).toEqual(BLUEPRINT_FUNCTION_IDS.filter((id) => id.startsWith("08.")));
+    expect([...new Set(Object.values(ROW_SECTION))].sort()).toEqual([...STATE_SECTIONS].sort());
+  });
+
+  test("no «Missing» part says the online checkout lacks what it applies (the commerce core, the cart, the checkout)", () => {
+    for (const id of ROWS) {
+      const section = ROW_SECTION[id];
+      const web = CHECKOUT_STATE[section].web;
+      if (BLUEPRINT_STATUS[id].status !== "partial" || web === "missing") continue;
+      for (const language of NOTE_LANGUAGES) {
+        const missing = missingPart(id, language);
+        expect(missing, `${id} (${language}): the checkout applies ${section} — no step of the core is missing`).not.toMatch(CORE_TODO[language]);
+        expect(missing, `${id} (${language}): the checkout applies ${section}`).not.toMatch(WEB_DENIED[language]);
+        // applied completely: the checkout is named only by what neither channel has (cards are not sold for money)
+        if (web === "applied" && NAMES_WEB[language].test(missing)) expect(missing, `${id} (${language}): the checkout applies ${section}`).toMatch(NOT_BUILT[section]?.[language] ?? /^$/);
+        // applied in part: the gap its own sentence names, nothing more of the checkout
+        const gap = WEB_GAP[section];
+        if (web === "partial") expect(gap, `${section}: name the gap of its web sentence in WEB_GAP`).toBeDefined();
+        if (web === "partial" && gap) expect(missing, `${id} (${language}): names what the checkout's sentence says is missing`).toMatch(gap[language]);
+      }
+    }
+  });
+
+  test("the till: a row whose section it lacks names it among what is missing, and one it applies does not", () => {
+    for (const id of ROWS) {
+      const section = ROW_SECTION[id];
+      if (BLUEPRINT_STATUS[id].status !== "partial") continue;
+      for (const language of NOTE_LANGUAGES) {
+        const missing = missingPart(id, language);
+        if (CHECKOUT_STATE[section].pos !== "applied") expect(missing, `${id} (${language})`).toMatch(NAMES_TILL[language]);
+        // the till applies it (gift cards: the wallet pays there): named only by what neither channel has
+        else if (NAMES_TILL[language].test(missing)) expect(missing, `${id} (${language}): the till applies ${section}`).toMatch(NOT_BUILT[section]?.[language] ?? /^$/);
+      }
+    }
+  });
+
+  test("what neither channel has is said as the section's own «not built yet» line says it: sign-up referrals, cards sold for money (the liability account exists)", () => {
+    for (const language of NOTE_LANGUAGES) {
+      for (const id of ROWS) {
+        const notBuilt = NOT_BUILT[ROW_SECTION[id]];
+        if (notBuilt) expect(missingPart(id, language), `${id} (${language})`).toMatch(notBuilt[language]);
+      }
+      // gift.boundary: the account «Gift cards outstanding» (gift_card_liability, 2150) is in the chart; no sale line
+      expect(missingPart("08.07", language), `08.07 (${language})`).toContain("2150");
+    }
+    for (const locale of LOCALES) expect(say(locale, "gift.boundary"), locale).not.toBe("");
+  });
+
+  test("the retired claims are gone from the rows", () => {
+    const retired: Record<NoteLanguage, string[]> = {
+      ar: ["نواة التجارة لا تطبّقها", "السلة لا تستخدم سعر العرض", "لا يكتب المتسوق رمز الإحالة عند التسجيل أو الدفع", "حساب التزام بطاقات في الدليل"],
+      en: ["the commerce core does not apply them", "the cart does not use the sale price", "cannot enter a referral code at sign-up or checkout", "a gift-card liability account in the chart"],
+    };
+    for (const language of NOTE_LANGUAGES) {
+      const all = ROWS.map((id) => BLUEPRINT_STATUS[id].note?.[language] ?? "").join("\n");
+      for (const phrase of retired[language]) expect(all, `${language}: «${phrase}»`).not.toContain(phrase);
     }
   });
 });

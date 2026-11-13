@@ -27,11 +27,12 @@
  * now is refused when the sale is submitted and approved, and the page shows what the sale can still sell
  * (min(allowance left, available)).
  *
- * HONEST BOUNDARY: the cart does not read flash prices yet — `priceCart` (cart.server.ts, where a line's unit price
- * is set) must use the running sale's price, and `placeOrder` must claim the allowance in its batch
- * (`UPDATE flash_sale_items SET qty_sold = qty_sold + ? WHERE id = ? AND (qty_limit IS NULL OR qty_sold + ? <= qty_limit)`
- * + expectChanged, and the per-customer limit). A sale counts as running while its status is "scheduled" and
- * starts_at ≤ now < ends_at.
+ * Where a sale applies (since 2026-11-12): the online cart and checkout sell at the running sale's price while its
+ * allowance and the shopper's per-customer limit cover the line (orders/promotions.ts flashLineCap), placeOrder claims
+ * the units in its batch (orders/promotions.server.ts flashClaimStatements: the same price, qty_sold within
+ * qty_limit) and a cancellation gives them back. HONEST BOUNDARY: product pages, lists and search still show the
+ * regular price (the sale price shows from the cart on); the point of sale sells at its own prices. A sale counts as
+ * running while its status is "scheduled" and starts_at ≤ now < ends_at.
  */
 import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { z } from "zod";

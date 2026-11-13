@@ -3,8 +3,8 @@
  *
  *   CategoryStrip      the icon strip right under the hero (the client's reference): glass icon tiles with the kinds'
  *                      line icons — consoles, games, controllers, headsets, accessories, gift cards, used, repair — only
- *                      departments that exist, each to its real listing (one scrolling row on phones, eight across
- *                      from 768)
+ *                      departments that exist, each to its real listing (one scrolling row of tiles below 1024, one
+ *                      row of compact clay pills from 1024 — lead decision 2)
  *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts,
  *                      on the ambient light
  *   TrustFacts         the trust strip: only facts that are true in the settings (delivery fee, COD, transfers, guest)
@@ -22,7 +22,7 @@
  * before JavaScript, none under reduced motion). Every shelf says the rule it follows, never "trending" or "customers
  * also bought": the store has no such data. An empty shelf is not drawn.
  */
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 import type { IconName } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
@@ -73,7 +73,9 @@ export function ViewAll({ to, children }: { to: string; children?: ReactNode }) 
 /**
  * The departments as the client's reference draws them under the hero: glass icon tiles (the shell's `IconTile`, the
  * categories sheet's own tile — one look for the same doors) with the kinds' red line icons, no counts. One scrolling
- * row on phones (the fifth tile peeks), eight across from 768.
+ * row below 1024 (the fifth tile peeks on phones); from 1024 the same tiles drawn as one row of 48px clay pills, the
+ * icon beside the name (home.css), so the platform tiles show on a laptop's first screen. Dark: glass, with the hero's
+ * banner colour spilling under it (Hero.tsx `.home-hero__spill`).
  */
 export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
   const t = useT("home");
@@ -82,7 +84,7 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
     <nav aria-label={t("strip.label")} className="home-strip">
       {/* a tile that takes the keyboard focus scrolls fully into the row (the row only, never the page): the browser's
           own scroll left the fourth tile half out of a 390px row */}
-      <ul className="home-strip__list" style={{ "--count": items.length } as CSSProperties} onFocus={revealFocusedItem}>
+      <ul className="home-strip__list" onFocus={revealFocusedItem}>
         {items.map((item, index) => (
           <IconTile key={item.key} to={item.href} icon={item.icon} label={t(`strip.${item.key}`)} order={index} />
         ))}

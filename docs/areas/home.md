@@ -41,8 +41,8 @@ Unchanged in v2 and v2.1: `personal.ts`, `personal.server.ts` and both API files
      the lightest 2% of the pixels behind them, every banner, light and dark, 360–1440; from 768 to 1279 the copy column
      is wider, so the ribbons sit nearer the product and the deeper side reaches past the words — `--ribbon-at`,
      `--deep-reach`), the kit's specular top band and rim; the product on a glossy floor (a pale ellipse with
-     the contact shadow in the colour's deep shade) with the kit's scroll-driven parallax (`.carousel__parallax`) as the
-     banners move; the ambient light of the banner in view on the floor behind it (`.glow-layer` per banner, crossfading
+     the contact shadow in the colour's deep shade) with a parallax as the banners move (the words fade with the move
+     and drift slower than the banner, the product faster — written from the track's scroll, fix-browse below); the ambient light of the banner in view on the floor behind it (`.glow-layer` per banner, crossfading
      on opacity; it fades out inside its own box, which reaches a third of the banner below it — no hard line under the
      dots). Dark (client note 3): the kit's deep platform-colour glass (58% of the colour on the cabinet, a rim
      light brighter on top) over that light. The white clay key says its words in the colour's deep shade
@@ -97,8 +97,9 @@ Unchanged in v2 and v2.1: `personal.ts`, `personal.server.ts` and both API files
    repair** — only departments that exist (`view.ts stripItems`: a catalogue category of that kind with products → its
    own listing; used while units are listed; the repair booking always), in the catalogue's words shortened where long
    («بطاقات الشحن»). One scrolling row below 1024 (96px tiles, 104 from 768: the longest one-word names fit; a tile
-   that takes the keyboard focus scrolls fully into the row — the kit's `revealFocusedItem`), one row of as many
-   columns as doors from 1024.
+   that takes the keyboard focus scrolls fully into the row — the kit's `revealFocusedItem`); from 1024 one row of
+   48px clay pills, the kind icon beside the name, with «تسوّق حسب المنصّة» 32px under it (lead decision 2: the top of
+   the platform tiles on a 1440 × 900 first screen). Dark: glass tiles with the banner's colour spilling under them.
 2. **«تسوّق حسب المنصّة»** (`PlatformDoors`): the four `PlatformTile`s (2×2 → 4-up; the kit's vivid glossy tiles in both
    themes) with the real product counts and hubs, on the brand's ambient light (`.glow glow--wide`, sized by the page so
    it fades out inside its box — the kit's wide light left a hard line under the tiles in dark). A tile never
@@ -360,3 +361,30 @@ photo eager with high priority (ar and en). Kit requests from this review:
   programmatic moves are fixed in the hook, the hero can go back to `always`.
 - kit (CarouselPlay / CarouselDots): the pause key is server-rendered although nothing plays without JavaScript; the
   focused dot's ring (`outline-offset: -8px`) draws a thin 8 × 28 box beside the current pill.
+
+### Fix-browse (wave C, 2026-11-13)
+
+The auditors' defects for the page, fixed (tools `<scratch>/fb1/work/C-fix-browse/`, screens `<scratch>/fb1/shots/C-fix-browse/`):
+
+| Defect | Fix | After |
+|---|---|---|
+| Lead decision 2 not built: the 116px icon-tile row and a 72px gap put the platform tiles at 917–919px on every laptop — only «تسوّق حسب المنصّة» at the fold of 1440 × 900 | from 1024 the strip is one row of 48px clay pills (`--key-face`, `--e-disc`), the kind icon (20px) beside the name, sharing the row (a little less air at 1024–1279 so eight still fit in ar, en, ckb); 12px under the hero's bar; «تسوّق حسب المنصّة» 32px under the strip (`.home-top + .home-platforms`) | tiles at 813–815px at 1024–1440 (`layout.mjs`): 85px of the tiles on the 1440 × 900 first screen in light and dark; at 768-tall laptops the heading is on screen and the tiles start under the fold — the banners' own copy needs 371–400px (`bannerfit.mjs`), so a shorter banner was not an option |
+| Note 3 at the first dark screen: the strip's tiles were flat grey cards (the 13% / 9% floor light, nothing showing through) | dark: the strip's own glass — the card veil 10% → 4% white, a rim 18% on top (the theme's composite tokens declared again on `.home-strip`) — and a faint red light behind each icon; the banner's colour spills wide and low under the strip (`.home-hero__spill`, one per banner, crossfading with the slide; the ellipse ends inside its box on every side) | `z-home-dark-strip.png`: the pills take the banner's colour, rim-lit; phones' tiles too |
+| The incoming banner crossed the screen as an empty band of colour; its words came after it landed | the words follow the move, as much as their column is on screen (`view.ts inView()`, `wordsShown()`: whole once the column is in, none at half of it or less, a fade between). A banner comes in words first in Arabic (its copy at its start, it enters from the end; English mirrors), so a fade tied to its distance — the auditor's "last 40%" — left the part on screen blank for most of the move; now its words arrive with it and the leaving banner's fade as they slide off, and the phone's peeking banner (a quarter of its column on screen) shows none. `Hero.tsx` writes inline opacity and translate on the words (60px a banner slower, `bannerAway()`: the distance from the resting place, the end of a phone's track counted) and the product (9% faster) as the track scrolls, once a frame; no drift unless motion is full | `midmove.mjs`: at 30% of a move the incoming words are fading in at the screen's edge, at 60% they are whole and the leaving banner shows its product (`shots/C-fix-browse/hero/mid-*.png`, 1440 dark ar, 390 ar, 1440 en). CSS `view()` timelines were tried first: Chromium measures a right-to-left scroller's view timeline from the wrong edge (the banner in view read -200% in Arabic, 50% in English) — the kit's `carousel__parallax` is wrong in Arabic for the same reason (requested) |
+| Each move re-rendered the whole hero two or three times (6 banners; `arrived` set in an effect) — 3 long tasks of 74–164ms per move at 4× CPU | `HeroCarousel`, `ProductSlide`, `ServiceSlide` memoised with stable props (`slides` memoised in `home.tsx`, one `onChoose`); `arrived` derived in the render (set once, the first move); the kit's and the mirror's "swipe" heard only under a finger (they re-rendered the hero on every scroll event of a move, ~30 renders) | `perf.mjs` (16 s of autoplay, 4× CPU): one long task per move at 390 (152, 94ms), one or two at 1440; what remains is a whole-page style recalc: one dot's `aria-current` costs 134ms at 4× (1,500 elements) through the shell's `:has()` rules (requested) |
+| Phones: the trade-in and used banners' picture sat 70px wide in the top corner, the lower 40% of the banner empty | the title in the top row, the key along the bottom, the console standing over everything above the key's row at the far end of its column (it stops at the key's row: the used banner's white key covered the Xbox's white controller when the console took the whole height) | `service.mjs`: no key-console overlap at 360 / 390 in ar, en, ckb; the console 126–144px tall (it was ~70 wide) |
+
+Tests: `tests/home.test.ts` (53): `bannerAway`, `inView` and `wordsShown` (written failing first: right to left, a
+phone's scroll padding, the last banner at the track's end, a snapped banner a pixel off, the peeking banner's quarter
+column), and the stylesheet's contracts (the pills from 1024 and the gap above the tiles, the dark glass and the
+spill's ellipse inside its box, the phones' service banners).
+
+Requests from this round:
+- shell (shell.css): `.shell-cobar__steps .steps > li:has(> .step[aria-current="step"])` puts `[aria-current]` inside a
+  `:has()` argument while `.shell` and `:root` are `:has()` subjects with descendant parts (`.shell:has(.shell-taskbar)
+  .shell-tabbar`, `:root:has(.shell …)`): every `aria-current` change anywhere in a page — each hero move's dots, chips,
+  the nav — re-styles the whole page (134ms at 4× CPU on the home). Mark the current step's `<li>` (a class or
+  attribute) and the shell's chrome on `<html>` / `.shell` with attributes instead of `:has()`.
+- kit (pieces.css `.carousel__parallax`): `animation-timeline: view(inline)` is wrong in a right-to-left track in
+  Chromium (the slide in view at -200%): in Arabic every parallax element sits at its `from` keyframe. The hero no
+  longer uses the class; drive it from the track's scroll (as the hero does) or only in `[dir="ltr"]`.

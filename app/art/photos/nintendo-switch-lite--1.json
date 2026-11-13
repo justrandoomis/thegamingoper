@@ -1,62 +1,62 @@
 {
   "key": "nintendo-switch-lite--1",
   "view": "hero",
-  "width": 1200,
-  "height": 675,
-  "aspect": 1.7778,
+  "width": 1343,
+  "height": 669,
+  "aspect": 2.0075,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/nintendo-switch-lite/1-240.b0a970b6.avif"
+        "src": "/products/nintendo-switch-lite/1-240.d12e997d.avif"
       },
       {
         "w": 480,
-        "src": "/products/nintendo-switch-lite/1-480.4535dfce.avif"
+        "src": "/products/nintendo-switch-lite/1-480.bc605aa3.avif"
       },
       {
         "w": 720,
-        "src": "/products/nintendo-switch-lite/1-720.dcf6e13f.avif"
+        "src": "/products/nintendo-switch-lite/1-720.0bdc1c7c.avif"
       },
       {
         "w": 960,
-        "src": "/products/nintendo-switch-lite/1-960.4c93d2e4.avif"
+        "src": "/products/nintendo-switch-lite/1-960.dd414cac.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/nintendo-switch-lite/1-240.8429a2e5.webp"
+        "src": "/products/nintendo-switch-lite/1-240.bb9d3fde.webp"
       },
       {
         "w": 480,
-        "src": "/products/nintendo-switch-lite/1-480.b720b242.webp"
+        "src": "/products/nintendo-switch-lite/1-480.87c02799.webp"
       },
       {
         "w": 720,
-        "src": "/products/nintendo-switch-lite/1-720.66d2c5db.webp"
+        "src": "/products/nintendo-switch-lite/1-720.7507ed51.webp"
       },
       {
         "w": 960,
-        "src": "/products/nintendo-switch-lite/1-960.6adff8be.webp"
+        "src": "/products/nintendo-switch-lite/1-960.45c89053.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/nintendo-switch-lite/1-1200.8296e590.jpg",
+    "src": "/products/nintendo-switch-lite/1-1200.879d36ed.png",
     "width": 1200,
-    "height": 675,
-    "type": "image/jpeg"
+    "height": 598,
+    "type": "image/png"
   },
-  "placeholder": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABwBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoMluIpz/4DxuggtsR/u7AD+lPrD3nTUfgxclrBLzlICWmMJ1X6rKilHcVLHtLP+RL86fJHEKT7/bR8tRgSF728AOHUNPlny6vFzLiJmFTtNXVHg2XuHqZ++lw9Q4USD/AA=",
-  "dominant": "#ffffff",
-  "transparent": false,
-  "background": "#ffffff",
+  "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSD0AAAARN6CojRRonxf4RSZG0ICNiAh87w2hKJKk5vIfDTgIAqIAJOBfR3YQ0f8JgMPZt5bdVsLO/8o7GSkum8IhAFZQOCCAAAAAEAQAnQEqFAAKAD8RcLBQLCYkorAIAYAiCWoAnTKAA06ZLoMeUc27IAAA/lhXTk1lKoCzRLp56Rgxscnlb87aJGp/cXbGGuylAzlGlOwxUfj/fQ05t2e1sHWbWsJaw7wejH8sLGqbxLngjG/0S/GnH4GSgFcUJgvsgtOVMy/kAAA=",
+  "dominant": "#00a6a8",
+  "transparent": true,
+  "background": null,
   "kind": "hero",
   "credit": "Nintendo",
   "source": {
     "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/hardware/nintendo-switch-lite-turquoise/110663-nintendo-switch-lite-turquoise-front-screen-on-1200x675",
     "page": "https://www.nintendo.com/us/store/products/nintendo-switch-lite-turquoise/"
   },
-  "input": "b159505882fc51f7"
+  "input": "9dc4c6da2b778cbf"
 }

@@ -7,7 +7,7 @@
  *   isNewProduct({ releasedOn: "2026-10-29", listedAt, isDemo: true, now })   released ≤ 30 days ago → true
  *   shoppingTier({ preorder: false, st: 1 })                                     2 in stock · 1 coming soon · 0 sold out
  *   kindLabelOf({ kind: "console", families, ownPlatform: "playstation" }, "ar") «جهاز PS5»
- *   opaqueOf("playstation-5--1")                                                 { background: "#ffffff", tone: "light" }
+ *   opaqueOf("pulse-3d--2")                                                      { background: "#ffffff", tone: "light" }
  *   shortModelName("ps5-slim-digital", "PlayStation 5 Slim Digital Edition")      "PS5 Slim Digital"
  *
  * HONESTY (spec §9, §13 row 8):

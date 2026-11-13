@@ -16,8 +16,10 @@
  * window. The reward is REFERRAL.rewardPoints posted to the referrer's points (key "referral:<id>:reward", once);
  * whoever recorded a referral by hand cannot reward it.
  *
- * HONEST BOUNDARY: shoppers cannot type a referral code yet — sign-up and checkout (storefront / commerce core) would
- * record the `referral_redemptions` row; until then staff record them here.
+ * Where codes come from (since 2026-11-12): shoppers type a friend's code at the online checkout — the core checks it
+ * as `recordReferral` does (orders/promotions.server.ts checkReferralCode, with this module's normalizeReferralCode)
+ * and placeOrder records the `referral_redemptions` row "pending" (referralStatements); a cancelled order gives the use
+ * back. HONEST BOUNDARY: sign-up and the point of sale record no code — staff record those here.
  */
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";

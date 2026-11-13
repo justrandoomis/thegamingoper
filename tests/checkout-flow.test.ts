@@ -959,3 +959,127 @@ describe("client feedback round 1: review fixes", () => {
     for (const typed of ["علي", "شارع 62، قرب جامع الكرادة، دار 14", "الطابق الثاني"]) expect(review, typed).toContain(`<span dir="auto" class="co-typed">${typed}</span>`);
   });
 });
+
+// ───────────────────────────────────────────────────────────────── client feedback round 1 (wave C): the QA's findings
+
+/** The whole `<section aria-labelledby="…">` of a page (nested sections counted), or "". */
+function sectionOf(html: string, labelledBy: string): string {
+  const at = html.search(new RegExp(`<section\\b[^>]*aria-labelledby="${labelledBy}"`));
+  if (at < 0) return "";
+  const tags = /<section\b|<\/section>/g;
+  tags.lastIndex = at;
+  let depth = 0;
+  for (let match = tags.exec(html); match; match = tags.exec(html)) {
+    depth += match[0] === "</section>" ? -1 : 1;
+    if (depth === 0) return html.slice(at, match.index + match[0].length);
+  }
+  return html.slice(at);
+}
+/** An amount as the pages write its figure (Latin digits, comma groups). */
+const figure = (amount: number) => amount.toLocaleString("en-US");
+
+describe("client feedback round 1: the QA's transaction findings (wave C)", () => {
+  test("an order that cannot be opened keeps its two ways out on the screen: their words wrap inside the keys, across the card on phones", () => {
+    // Found by QA: /ckb/order/<ref> without access scrolled sideways (scrollWidth 421 at 360 and 390): the kit's key keeps
+    // its label on one line, and «بەدوای داواکارییەکەتدا بگەڕێ» is wider than its card.
+    const html = renderPage(OrderPage, { path: "order/:ref", url: "/order/TT-ZZZZ9999", loaderData: { found: null, ref: "TT-ZZZZ9999", signedIn: false, recommendations: null, proofUrl: null, codesSignIn: false, i18n: pageStrings("ckb") }, locale: "ckb" });
+    expect(html).toMatch(/<div class="note co-missing">/);
+    // both keys let their words wrap (the kit's <Key wrap>: a balanced second line instead of a wider key)
+    const keys = [...html.matchAll(/<a\b[^>]*\bclass="(key\b[^"]*)"/g)].map((match) => match[1]);
+    expect(keys).toHaveLength(2);
+    for (const name of keys) expect(name).toMatch(/\bkey--wrap\b/);
+    const css = checkoutCss();
+    // the note's action column may shrink to the card (a grid item keeps its content's width otherwise); on phones the
+    // keys run across the card
+    expect(cssRule(css, ".co-missing .note__action")).toMatch(/min-inline-size:\s*0/);
+    expect(css).toMatch(/@media \(max-width: 47\.99rem\) \{\s*\.co-missing \.note__action \{\s*grid-column: 1 \/ -1;/);
+  });
+
+  test("a split payment's review says what the wallet pays and what is left, and how; the figures by «أكّد الطلب» say what is left", async () => {
+    // Found by QA: with «ادفع 209,250 د.ع من رصيد محفظتك، والباقي…» ticked, the review's payment card said only «الدفع عند
+    // الاستلام — تدفع نقداً للمندوب عند استلام الطلب.» and the task bar «الإجمالي 262,000 د.ع» beside «أكّد الطلب»: that
+    // 209,250 came from the wallet and only 52,750 was paid at the door showed only in the summary at the page's foot.
+    const cart = await cartWith({ priceIqd: 250_000 });
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "ar" }, NOW);
+    const base = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const walletIqd = 100_000;
+    const restIqd = view.totalIqd - walletIqd;
+    const page = { ...base, methods: { ...base.methods, wallet: true }, walletBalanceIqd: walletIqd };
+    const customer = { name: "", phone: "0770 123 4567", phoneMasked: "0770 ••• ••67" };
+    const draft = { ...EMPTY_DRAFT, phone: "0770 123 4567", governorateId: governorateId("baghdad"), districtId: districtId("baghdad", "karrada"), areaText: "الكرادة داخل", addressText: "شارع 62", paymentMethod: "cod", useWallet: true };
+    const review = (paymentMethod: string, useWallet = true) =>
+      renderPage(CheckoutPage, {
+        path: "checkout",
+        url: "/checkout?step=review",
+        loaderData: { cart: view, page, customer, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings() },
+        actionData: { ok: false, code: "network", status: 0, values: { ...draftToForm({ ...draft, paymentMethod, useWallet }, { idempotencyKey: newAttemptKey(), expectedTotalIqd: view.totalIqd, walletIqd }), useWallet: useWallet ? "on" : "" } },
+      });
+    const html = review("cod");
+    // the payment card: from the wallet, and what is left — its amount and how it is paid
+    const payment = sectionOf(html, "co-review-payment");
+    expect(payment).toContain("من محفظة طمطم");
+    expect(payment).toContain(figure(walletIqd));
+    expect(payment).toContain("الباقي للدفع");
+    expect(payment).toContain(figure(restIqd));
+    expect(payment).toContain("تدفع الباقي نقداً للمندوب عند استلام الطلب.");
+    expect(payment).not.toContain("تدفع نقداً للمندوب عند استلام الطلب.");
+    // the phone task bar: the total, and under it what is left to pay («الباقي …», short, so the key keeps its width)
+    const bar = html.slice(html.indexOf('class="co-taskbar"'));
+    expect(bar).toMatch(new RegExp(`<span class="co-taskbar__rest">الباقي <bdi[^>]*>${figure(restIqd)}`));
+    // the summary card's key (from 1024): «أكّد الطلب · الباقي …», never the whole total beside «الباقي للدفع»
+    /** A key's words without the isolates around its amount. */
+    const words = (label: string) => label.replace(/[⁦-⁩]/g, "");
+    const keys = primaryKeys(html).map((key) => words(key.label));
+    expect(keys.some((label) => label.includes("أكّد الطلب ·") && label.includes(`الباقي ${figure(restIqd)}`))).toBe(true);
+    expect(keys.some((label) => label.includes(figure(view.totalIqd)))).toBe(false);
+    // a transfer of the rest says so; without the wallet the card and the bar are as before
+    expect(sectionOf(review("bank_transfer"), "co-review-payment")).toContain("تحوّل الباقي إلى المتجر");
+    const whole = review("cod", false);
+    expect(sectionOf(whole, "co-review-payment")).not.toContain("الباقي للدفع");
+    expect(whole.slice(whole.indexOf('class="co-taskbar"'))).not.toContain("co-taskbar__rest");
+    expect(primaryKeys(whole).some((key) => words(key.label).includes(`أكّد الطلب · ${figure(view.totalIqd)}`))).toBe(true);
+  });
+
+  test("the order number inside a heading is set in the text face, as on its own card (the closed order's title, the /track result)", async () => {
+    // Found by QA: Kufam's Latin V draws like Ʋ — «TT-VBYBYQ9Q» read «TT-ƲBYBYQ9Q» in the cancelled order's h1 and the
+    // /track result's h2, unlike the Plex code card just under them.
+    const order = await placed("cod");
+    const found = await findOrderForShopper(t.db, { ref: order.ref, token: order.accessToken, customerId: null, locale: "ar", now: NOW });
+    expect(found).not.toBeNull();
+    const closed = found ? { ...found, order: { ...found.order, status: "cancelled" as const } } : null;
+    const html = renderPage(OrderPage, { path: "order/:ref", url: `/order/${order.ref}?t=${order.accessToken}`, loaderData: { found: closed, ref: order.ref, signedIn: false, recommendations: null, proofUrl: null, codesSignIn: false, i18n: pageStrings() } });
+    expect(html).toMatch(new RegExp(`<h1[^>]*>الطلب <bdi dir="ltr" class="font-plex nums">${order.ref}</bdi></h1>`));
+    const lookup = new FormData();
+    lookup.set("ref", order.ref);
+    lookup.set("phone", order.phone);
+    const result = await trackOrder(t.db, lookup, { ip: "198.51.100.77", locale: "en" }, NOW);
+    expect(result).toMatchObject({ ok: true });
+    const track = renderPage(TrackPage, { path: "track", url: "/track", loaderData: { ref: "", i18n: pageStrings("en") }, actionData: result, locale: "en" });
+    expect(track).toMatch(new RegExp(`<h2[^>]*>Order <bdi dir="ltr" class="font-plex nums">${order.ref}</bdi></h2>`));
+  });
+
+  test("the area's side notes read at the reading size (G7: 16px, line height 1.75), the order's demo note among them", () => {
+    // Found by QA: the order page's «طلب تجريبي: المتجر يعمل في الوضع التجريبي…» (a line note) was 14px with a 1.6 line
+    // height at 390. The kit's line note now reads at --type-read (foundation, wave C); the area adds nothing smaller.
+    const pieces = readFileSync(new URL("../app/styles/pieces.css", import.meta.url), "utf8");
+    expect(cssRule(pieces, ".note--line .note__text") ?? "").toMatch(/font:\s*var\(--type-read\)/);
+    expect(checkoutCss()).not.toMatch(/\.note--line\s+\.note__text\s*\{[^}]*(?:type-sm|type-xs|line-height:\s*1\.[0-6])/);
+  });
+
+  test("a signed-in shopper's cart never offers «اطلب بدون حساب», and their empty cart points to their orders, not the guest lookup", async () => {
+    // Found by QA: the summary's trust line told a signed-in customer «اطلب بدون حساب», and their empty cart offered
+    // «طلبت من قبل؟ تتبّع طلبك» → /track (the lookup by number and phone) instead of their own orders.
+    const shopperId = await make.customer();
+    const cart = await cartWith({ customerId: shopperId });
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: shopperId, locale: "ar" }, NOW);
+    const empty = await getCartView(t.db, { cartToken: null, customerId: null, locale: "ar" }, NOW);
+    const facts = await loadCartFacts(t.db);
+    const page = (cartView: typeof view, signedIn: boolean) => renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: cartView, facts, demo: true, recommendations: null, couponShortfall: null, signedIn, i18n: pageStrings() } });
+    expect(page(view, false)).toContain("اطلب بدون حساب");
+    expect(page(view, true)).not.toContain("اطلب بدون حساب");
+    expect(page(empty, false)).toMatch(/href="\/track"[^>]*>[\s\S]*?طلبت من قبل؟ تتبّع طلبك/);
+    const signed = page(empty, true);
+    expect(signed).not.toContain('href="/track"');
+    expect(signed).toMatch(/href="\/account\/orders"[^>]*>[\s\S]*?طلبت من قبل؟ طلباتك في حسابك/);
+  });
+});

@@ -228,6 +228,10 @@ const NAME_ALIASES: ReadonlyArray<readonly [readonly string[], string]> = [
   [["نينتندو", "نينتيندو", "ننتندو", "نینتێندۆ"], "nintendo"],
   [["سويتش", "سويچ", "سوتش", "سويج", "سويتج", "سوێچ"], "switch"],
   [["ستيم ديك", "ستيم دك", "ستيمديك", "steamdeck", "ستیم دێک"], "steam deck"],
+  // «ستيم» alone, as people shorten it (round-1 fixes: the trade-in search found nothing for it)
+  [["ستيم", "ستیم"], "steam"],
+  // the Switch's controllers, the way they are written in Arabic and Sorani (the Latin "joycon" / "joy-con" as typed)
+  [["جويكون", "جوي كون", "جۆی کۆن", "جۆیکۆن"], "joycon"],
   [["في ار 2", "في ار", "vr 2", "vr"], "vr2"],
   [["بورتال", "بورتل", "پۆرتاڵ"], "portal"],
   [["سيريس", "سيريز", "سيرس", "سریس", "سێریس"], "series"],
@@ -283,6 +287,76 @@ export function aliasWords(text: string): string[] {
     out.add(match[1]);
   }
   return [...out];
+}
+
+// ───────────────────────────────────────────────────────────────── a search over names (the trade-in device search)
+
+/**
+ * One thing a name search was given: the word (or the words of one spelling) as typed — normalised, hyphens as spaces
+ * — and the catalogue's names it may stand for: alternatives, each a list of words that must all be in a name. No
+ * alternatives: a word that is no known spelling (it is looked for as typed).
+ */
+export type NameTerm = { typed: string; names: string[][] };
+
+/** The aliases word by word, longest spelling first (as ALIASES). */
+const ALIAS_TOKENS = ALIASES.map(([spelling, words]) => ({ spelling, tokens: spelling.split(" "), words: words.split(" ") }));
+
+/** A name's words without an Arabic article or conjunction in front («البلايستيشن» → «بلايستيشن»). */
+const bareName = (token: string) => token.replace(NAME_PREFIX, "");
+
+/** The catalogue's names every spelling that begins with `typed` (and is longer) stands for, each once. */
+function namesBegunBy(typed: string): string[][] {
+  if (typed.replace(/ /g, "") === "") return [];
+  const out = new Map<string, string[]>();
+  for (const alias of ALIAS_TOKENS) if (alias.spelling.length > typed.length && alias.spelling.startsWith(typed)) out.set(alias.words.join(" "), alias.words);
+  return [...out.values()];
+}
+
+/**
+ * A name search's words with the spellings shoppers use read as the catalogue's words (pure; the trade-in wizard's
+ * device search — ~/routes/storefront/used/wizard filterGroups): «بلايستيشن ٥» → [playstation] [5], «إكس بوكس» →
+ * [xbox], «البلايستيشن» → [playstation], "ps5" → [playstation 5] — alef, hamza and ya folded, Arabic-Indic digits
+ * Latin, Sorani's letters read (normalizeForMatch). The search runs as the shopper types, so the LAST word may be a
+ * spelling still being typed: «بلايست» stands for every name it can begin ([playstation]), «اكس ب» for «اكس بوكس»
+ * ([xbox]), «اكس» for X and for Xbox. Routing data: it can only point at names that exist.
+ */
+export function nameTerms(text: string): NameTerm[] {
+  const tokens = normalizeForMatch(text).replace(/-/g, " ").split(" ").filter(Boolean);
+  const terms: Array<NameTerm & { span: number }> = [];
+  for (let at = 0; at < tokens.length; ) {
+    const alias = ALIAS_TOKENS.find(
+      (entry) => at + entry.tokens.length <= tokens.length && entry.tokens.every((token, index) => token === tokens[at + index] || (index === 0 && bareName(tokens[at]) === token)),
+    );
+    if (alias) {
+      terms.push({ typed: tokens.slice(at, at + alias.tokens.length).join(" "), names: [alias.words], span: alias.tokens.length });
+      at += alias.tokens.length;
+      continue;
+    }
+    // "ps5" / "playstation5" / "switch2" glued to its digit
+    const glued = /^(ps|playstation|switch)(\d)$/.exec(tokens[at]);
+    terms.push({ typed: tokens[at], names: glued ? [[glued[1] === "switch" ? "switch" : "playstation", glued[2]]] : [], span: 1 });
+    at += 1;
+  }
+  // the last word still being typed: two words that begin a spelling of two («اكس ب»), else one that begins a spelling
+  const last = terms.at(-1);
+  const before = terms.at(-2);
+  if (last && last.span === 1) {
+    const pair = before && before.span === 1 ? union(namesBegunBy(`${before.typed} ${last.typed}`), namesBegunBy(`${bareName(before.typed)} ${last.typed}`)) : [];
+    if (before && pair.length > 0) {
+      terms.splice(-2, 2, { typed: `${before.typed} ${last.typed}`, names: pair, span: 2 });
+    } else {
+      // as typed, and without an article in front («البلاي»); «بلايست» keeps its «ب», which is no preposition there
+      last.names = union(last.names, namesBegunBy(last.typed), namesBegunBy(bareName(last.typed)));
+    }
+  }
+  return terms.map(({ typed, names }) => ({ typed, names }));
+}
+
+/** Lists of names, each once. */
+function union(...lists: string[][][]): string[][] {
+  const out = new Map<string, string[]>();
+  for (const list of lists) for (const name of list) if (!out.has(name.join(" "))) out.set(name.join(" "), name);
+  return [...out.values()];
 }
 
 /** The text's words with every known spelling of a name replaced by the catalogue's words. */

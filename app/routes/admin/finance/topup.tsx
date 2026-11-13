@@ -158,7 +158,7 @@ export default function TopupReviewPage({ loaderData }: Route.ComponentProps) {
 
       {review.canDecide && (decidable || finishing) ? (
         // lint-design: allow glass-in-list — the sticky task bar follows the facts; it is not inside a list's map()
-        <Glass className="fin-taskbar" edge="bottom">
+        <Glass className="fin-taskbar" edge="bottom" data-adm-sticky-end>
           {decidable ? (
             review.firstApproval && !firstByMe ? (
               <Key icon="arrow-counter-clockwise" onClick={() => setMode("return")}>

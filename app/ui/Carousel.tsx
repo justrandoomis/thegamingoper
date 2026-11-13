@@ -17,7 +17,7 @@ import {
 
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
-import { getMotionTier, useMotionTier } from "~/motion";
+import { durations, easings, getMotionTier, useMotionTier, type MotionTier } from "~/motion";
 import { cx } from "./cx";
 import { IconKey } from "./IconKey";
 
@@ -46,8 +46,17 @@ import { IconKey } from "./IconKey";
  *   take-over. The pause / play key (<CarouselPlay>) is always there while autoplay can run (WCAG 2.2.2); pressing play
  *   starts it even while focus or the pointer is inside (the APG rotation control). The rules are the pure
  *   `carouselHold()` / `autoplayWaits()` below.
+ * - Moves (`carouselMove()` below): the next or the previous slide slides in (a smooth scroll); anything further — the
+ *   autoplay wrap from the last slide to the first, «next» on the last, a dot two slides away, Home / End — fades the
+ *   track out (140ms), jumps and fades it in (220ms), so the slides in between never rush past (client notes 1–2:
+ *   "switches with smooth animation"; the wrap used to scroll back across every banner). The slides keep
+ *   `scroll-snap-stop: always`, so a hard fling still stops at the next slide; the jump suspends snapping for its one
+ *   instant scroll (Chromium stops even an instant programmatic scroll at such a slide).
  * - Reduced motion (the OS or the store's switch) and the lite tier: no autoplay, and moves are instant.
  * - Keyboard: ← → move in the reading direction (in Arabic → is "previous"), Home / End; on the track or a control.
+ *   Keys pressed in a dialog the carousel opened (a React portal bubbles through it) are left alone.
+ * - The pause / play key appears once the page is live (nothing plays without JavaScript). `running` says whether the
+ *   slides are moving on by themselves right now; <CarouselDots progress> fills the current dot with the time left.
  * - Semantics: a region with aria-roledescription «عرض شرائح» and your label; each slide a group «2 من 3»; the
  *   track is a polite live region only while autoplay is off.
  * - The slide's shape is one custom property: `aspect` (→ --carousel-aspect). The first slide's image should be eager
@@ -68,10 +77,15 @@ export type CarouselOptions = {
 export type CarouselApi = {
   index: number;
   count: number;
-  /** Autoplay can run here (an interval was given, motion is full). */
+  /** Autoplay can run here (an interval was given, motion is full, the page is live). */
   canPlay: boolean;
   /** The shopper's choice: autoplay on (not paused or stopped by the pause key or a touch). */
   playing: boolean;
+  /** The slides are moving on by themselves right now: playing, and nothing holds it (pointer, focus, a finger, a
+   *  hidden tab, off screen). What a progress look follows. */
+  running: boolean;
+  /** The autoplay interval in milliseconds (0: none). */
+  autoplay: number;
   goTo: (index: number, options?: { instant?: boolean }) => void;
   next: () => void;
   previous: () => void;
@@ -117,6 +131,17 @@ export function stepIndex(index: number, delta: number, count: number, loop: boo
   const next = index + delta;
   if (loop) return ((next % count) + count) % count;
   return Math.min(count - 1, Math.max(0, next));
+}
+
+/**
+ * How a move from the slide in view to another is drawn (pure; exported for tests). "smooth": the next or previous
+ * slide slides in (and a half-swiped track re-aligns). "fade": anything further — the autoplay wrap, «next» on the last
+ * slide, a dot two away, Home / End — fades the track out, jumps and fades it in, so the slides in between never rush
+ * past. "jump": reduced motion and the lite tier, every move at once.
+ */
+export function carouselMove(from: number, to: number, tier: MotionTier): "smooth" | "fade" | "jump" {
+  if (tier !== "full") return "jump";
+  return Math.abs(to - from) > 1 ? "fade" : "smooth";
 }
 
 /** Arrow keys in the reading direction: in a right-to-left page ArrowLeft is "next" (pure; exported for tests). */
@@ -172,6 +197,34 @@ export function autoplayWaits(state: CarouselHold & { canPlay: boolean; hidden: 
 
 const STILL: CarouselHold = { playing: true, hovered: false, focused: false, touching: false };
 
+/** How far the track scrolls to bring slide `target` to its start edge (the scroll padding kept; both directions);
+ *  null when there is no such slide. */
+function slideOffset(element: HTMLElement, target: number): number | null {
+  const slide = element.querySelector<HTMLElement>(`[data-carousel-slide="${target}"]`);
+  if (!slide) return null;
+  const style = getComputedStyle(element);
+  const box = element.getBoundingClientRect();
+  const item = slide.getBoundingClientRect();
+  return style.direction === "rtl"
+    ? item.right - box.right + (parseFloat(style.scrollPaddingRight) || 0)
+    : item.left - box.left - (parseFloat(style.scrollPaddingLeft) || 0);
+}
+
+/**
+ * Brings slide `target` in at once. The slides keep `scroll-snap-stop: always` (a fling stops at the next slide), and
+ * Chromium applies it to programmatic scrolls too — even an instant one stopped at the next slide (measured 2026-11-13:
+ * a jump four slides away landed one away) — so snapping is suspended for this one scroll and restored at once; the
+ * track then sits exactly on the target's snap position and stays there.
+ */
+function jumpTo(element: HTMLElement, target: number) {
+  const delta = slideOffset(element, target);
+  if (delta === null) return;
+  const snap = element.style.scrollSnapType;
+  element.style.scrollSnapType = "none";
+  element.scrollBy({ left: delta, behavior: "instant" });
+  element.style.scrollSnapType = snap;
+}
+
 export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: CarouselOptions): CarouselApi {
   const t = useT("ui");
   const fmt = useFormat();
@@ -180,7 +233,10 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
   const track = useRef<HTMLDivElement | null>(null);
   const tier = useMotionTier();
   const wraps = loop ?? autoplay > 0;
-  const canPlay = autoplay > 0 && count > 1 && tier === "full";
+  // the page is live: nothing plays before (or without) JavaScript, so the pause key and the progress wait for it
+  const [live, setLive] = useState(false);
+  useEffect(() => setLive(true), []);
+  const canPlay = autoplay > 0 && count > 1 && tier === "full" && live;
   const [index, setIndex] = useState(0);
   // the shopper's choice and what holds it while it lasts (pointer, focus, a finger): carouselHold() above
   const [hold, dispatch] = useReducer(carouselHold, STILL);
@@ -232,20 +288,38 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
     };
   }, []);
 
+  // the fade of a move further than one slide (carouselMove "fade"): a later move takes over from it
+  const fading = useRef<Animation | null>(null);
   const goTo = useCallback((target: number, options?: { instant?: boolean }) => {
     const element = track.current;
-    if (!element) return;
-    const slide = element.querySelector<HTMLElement>(`[data-carousel-slide="${target}"]`);
-    if (!slide) return;
-    const style = getComputedStyle(element);
-    const rtl = style.direction === "rtl";
-    const box = element.getBoundingClientRect();
-    const item = slide.getBoundingClientRect();
-    // the slide's start edge to the track's start edge (scroll padding kept): works in both directions
-    const delta = rtl ? item.right - box.right + (parseFloat(style.scrollPaddingRight) || 0) : item.left - box.left - (parseFloat(style.scrollPaddingLeft) || 0);
-    const instant = options?.instant || getMotionTier() !== "full";
-    element.scrollBy({ left: delta, behavior: instant ? "instant" : "smooth" });
+    if (!element || slideOffset(element, target) === null) return;
+    fading.current?.cancel();
+    fading.current = null;
+    const kind = carouselMove(indexRef.current, target, options?.instant ? "reduced" : getMotionTier());
+    if (kind === "smooth") {
+      element.scrollBy({ left: slideOffset(element, target) ?? 0, behavior: "smooth" });
+      return;
+    }
+    if (kind === "jump" || typeof element.animate !== "function") {
+      jumpTo(element, target);
+      return;
+    }
+    // fade out (from wherever an earlier fade left it), jump, fade in: one switch, never a rewind across every slide
+    const out = element.animate({ opacity: 0 }, { duration: durations.exit, easing: easings.exit, fill: "forwards" });
+    fading.current = out;
+    out.finished.then(
+      () => {
+        if (fading.current !== out) return;
+        fading.current = null;
+        jumpTo(element, target);
+        element.animate([{ opacity: 0 }, { opacity: 1 }], { duration: durations.base, easing: easings.settle });
+        out.cancel();
+      },
+      // cancelled by a later move: that move draws itself
+      () => undefined,
+    );
   }, []);
+  useEffect(() => () => fading.current?.cancel(), []);
 
   const move = useCallback((delta: number) => goTo(stepIndex(indexRef.current, delta, count, wraps)), [goTo, count, wraps]);
   const stop = useCallback(() => dispatch({ type: "stop" }), []);
@@ -263,6 +337,8 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
     count,
     canPlay,
     playing: canPlay && playing,
+    running: !waiting,
+    autoplay: canPlay ? autoplay : 0,
     goTo,
     next: () => move(1),
     previous: () => move(-1),
@@ -282,6 +358,9 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) dispatch({ type: "focus", on: false });
       },
       onKeyDown: (event) => {
+        // a key pressed in a dialog this carousel opened is the dialog's: React bubbles a portal's events through the
+        // carousel, so ← → Home End on the dialog's keys moved the slides behind it (home review 2026-11-13)
+        if (!event.currentTarget.contains(event.target as Node)) return;
         const target = event.target as HTMLElement;
         if (target.closest("input, textarea, select, [contenteditable]")) return;
         const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
@@ -325,13 +404,22 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
 
 }
 
-/** The dots: one button per slide («اعرض الشريحة 2 من 3»), the current one a wider red pill (aria-current). */
-export function CarouselDots({ api, className }: { api: CarouselApi; className?: string }) {
+/**
+ * The dots: one 44px button per slide («اعرض الشريحة 2 من 3»), the current one a wider red pill (aria-current).
+ * `progress`: while the slides move on by themselves (`api.running`), the current dot's pill is a grey track that fills
+ * in red over the interval; held, paused or stopped it is the full pill again (none under reduced motion: no autoplay).
+ */
+export function CarouselDots({ api, progress = false, className }: { api: CarouselApi; progress?: boolean; className?: string }) {
   const t = useT("ui");
   const fmt = useFormat();
   if (api.count < 2) return null;
+  const run = progress && api.running && api.autoplay > 0;
   return (
-    <div className={cx("carousel__dots", className)}>
+    <div
+      className={cx("carousel__dots", className)}
+      data-run={run ? "" : undefined}
+      style={run ? ({ "--carousel-autoplay": `${api.autoplay}ms` } as CSSProperties) : undefined}
+    >
       {Array.from({ length: api.count }, (_, i) => (
         <button
           key={i}
@@ -349,8 +437,9 @@ export function CarouselDots({ api, className }: { api: CarouselApi; className?:
   );
 }
 
-/** Previous / next: clay icon keys (frosted discs with `over`). */
-export function CarouselArrows({ api, over = false, className }: { api: CarouselApi; over?: boolean; className?: string }) {
+/** Previous / next: 44px clay circles (G2; frosted discs with `over`). `size="sm"` (36px, the hit area still 44) for a
+ *  dense rail. */
+export function CarouselArrows({ api, over = false, size = "md", className }: { api: CarouselApi; over?: boolean; size?: "md" | "sm"; className?: string }) {
   const t = useT("ui");
   if (api.count < 2) return null;
   const variant = over ? "onImage" : "outline";
@@ -359,7 +448,7 @@ export function CarouselArrows({ api, over = false, className }: { api: Carousel
       <IconKey
         icon="caret-left"
         variant={variant}
-        size="sm"
+        size={size}
         label={t("carousel.previous")}
         onClick={() => {
           api.stop();
@@ -369,7 +458,7 @@ export function CarouselArrows({ api, over = false, className }: { api: Carousel
       <IconKey
         icon="caret-right"
         variant={variant}
-        size="sm"
+        size={size}
         label={t("carousel.next")}
         onClick={() => {
           api.stop();
@@ -380,15 +469,16 @@ export function CarouselArrows({ api, over = false, className }: { api: Carousel
   );
 }
 
-/** The pause / play key (WCAG 2.2.2) — rendered only while autoplay can run. */
-export function CarouselPlay({ api, over = false, className }: { api: CarouselApi; over?: boolean; className?: string }) {
+/** The pause / play key (WCAG 2.2.2) — rendered only while autoplay can run (once the page is live). A 44px clay
+ *  circle like the arrows; `size="sm"` for a dense rail. */
+export function CarouselPlay({ api, over = false, size = "md", className }: { api: CarouselApi; over?: boolean; size?: "md" | "sm"; className?: string }) {
   const t = useT("ui");
   if (!api.canPlay) return null;
   return (
     <IconKey
-      icon={<Icon name={api.playing ? "media-pause" : "media-play"} size={18} />}
+      icon={<Icon name={api.playing ? "media-pause" : "media-play"} size={size === "md" ? 20 : 18} />}
       variant={over ? "onImage" : "outline"}
-      size="sm"
+      size={size}
       label={api.playing ? t("carousel.pause") : t("carousel.play")}
       onClick={api.toggle}
       className={className}
@@ -411,13 +501,15 @@ export type CarouselProps = {
   controls?: "below" | "over" | "none";
   /** Show the arrows (default true from the stylesheet's point of view: they are keys, not hover-only). */
   arrows?: boolean;
+  /** The current dot fills with the time left while autoplay runs (default true; CarouselDots `progress`). */
+  progress?: boolean;
   onIndexChange?: (index: number) => void;
   className?: string;
   slideClassName?: string;
   style?: CSSProperties;
 };
 
-export function Carousel({ label, slides, autoplay, loop, aspect, peek = false, controls = "below", arrows = true, onIndexChange, className, slideClassName, style }: CarouselProps) {
+export function Carousel({ label, slides, autoplay, loop, aspect, peek = false, controls = "below", arrows = true, progress = true, onIndexChange, className, slideClassName, style }: CarouselProps) {
   const items = Children.toArray(slides);
   const api = useCarousel({ count: items.length, autoplay, loop, onIndexChange });
   const over = controls === "over";
@@ -442,14 +534,14 @@ export function Carousel({ label, slides, autoplay, loop, aspect, peek = false, 
         </div>
       ) : (
         <div className="carousel__bar">
-          <CarouselDots api={api} />
+          <CarouselDots api={api} progress={progress} />
           <CarouselPlay api={api} />
           {arrows ? <CarouselArrows api={api} className="max-md:hidden" /> : null}
         </div>
       )}
       {over && items.length > 1 ? (
         <div className="carousel__bar">
-          <CarouselDots api={api} />
+          <CarouselDots api={api} progress={progress} />
         </div>
       ) : null}
     </section>

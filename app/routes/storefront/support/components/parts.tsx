@@ -32,8 +32,8 @@ export function Name({ children, className }: { children: string; className?: st
 }
 
 /**
- * The support pages' shared navigation — the before's underline tabs (client note 9): «مركز المساعدة · مساعد الصيانة ·
- * احجز صيانة · تابع طلب», the kit's link Tabs (one ink underline slides from tab to tab; a row too long for a phone
+ * The support pages' shared navigation — the before's underline tabs (client note 9): «مركز الدعم · مساعد الصيانة ·
+ * احجز صيانة · تابع طلب» (the place's one name, as the header and the document title say it), the kit's link Tabs (one ink underline slides from tab to tab; a row too long for a phone
  * scrolls sideways with the current tab kept in view). The route handles give the sideways push between them.
  * `section`: the page belongs to that tab's part of the site but is not the tab's own page (a guide, a message to
  * staff). The kit's link Tabs say `aria-current="page"` for every chosen tab; "true" for such a page waits for the kit
@@ -46,6 +46,10 @@ export function SupportNav({ current, className }: { current: SupportSection; se
       aria-label={t("nav.label")}
       value={current}
       className={cx("sup-nav", className)}
+      // phones: the four tabs whole on a 390 screen in every language (the place's one name «مركز الدعم» / "Support
+      // centre" is longer in English than the before's "Help centre"), Arabic from 360 — 7px a side instead of the
+      // kit's 10 (the row still scrolls, the current tab kept in view, where it cannot fit)
+      listClassName="max-[419px]:[&>li>a]:px-[7px]"
       items={[
         { value: "help", label: t("nav.help"), href: "/support" },
         { value: "assistant", label: t("nav.assistant"), href: "/support/assistant" },

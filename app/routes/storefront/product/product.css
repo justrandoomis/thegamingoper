@@ -366,6 +366,19 @@
     gap: var(--gap-section);
     margin-block-start: var(--gap-section);
   }
+  /* the facts of the reading part (v2.1 G7): the specification and game-fact values, the line on where they come from
+     and the sources' titles read at 16px / 1.75 on phones and tablets (QA 2026-11-13: 14 / 1.5 and 13 / 1.5 there) —
+     the titles in the regular weight: a list of citations, underlined, never a column of bold lines; v2's 14px from
+     1024, where they sit in half the page */
+  .pp-fact {
+    font: var(--type-sm);
+  }
+  @media (max-width: 63.99rem) {
+    .pp-fact,
+    .pp-sources .link {
+      font: var(--type-read);
+    }
+  }
   /* two columns from 1024; a pair with one member keeps a reading width */
   .pp-duo {
     display: grid;
@@ -417,7 +430,8 @@
  *   · phones and the 1024–1279 column (375–450px wide): the breadcrumb bar runs up to the product's category — the
  *     current page is the name right under it, and with it the line no longer fits (395px for 328–358 at 360–390; at
  *     1024 it broke onto a second line of its own, «‹ Nintendo Switch 2»); 768–1023 (the page's width) and from 1280 the
- *     trail shows it, and its JSON-LD always lists it (the crumb items carry `flex`);
+ *     trail shows it on the same line, a long name cut at its end with an ellipsis, and its JSON-LD always lists it
+ *     (the crumb items carry `flex`, the current one `inline-flex`);
  *   · the stage's picture floats in the middle of its zone (the gallery's picture button carries `items-end`);
  *   · from 1024 the offline sentence under the price gives way to the kit's line under the column's add key, which
  *     describes that key (product.tsx) — the same words twice, three times with the shell's banner (it carries `flex`). */
@@ -425,6 +439,27 @@
   @media (max-width: 47.99rem), (min-width: 64rem) and (max-width: 79.99rem) {
     .pp-crumbs .crumbs__list > li:last-child:not(:first-child) {
       display: none;
+    }
+  }
+  /* where the trail names the product (768–1023 and from 1280) it stays ONE line: a name longer than the room left ends
+     with an ellipsis at the end of its own run — the isolate's direction: «The Legend of Zelda: Ocar…», never «…Ocarina
+     of Time» — instead of a line of its own that starts with the chevron (QA 2026-11-13, 1440: «‹ The Legend of Zelda:
+     Ocarina of Time» alone under the trail); the categories before it keep their words */
+  @media (min-width: 48rem) and (max-width: 63.99rem), (min-width: 80rem) {
+    .pp-crumbs .crumbs__list {
+      flex-wrap: nowrap;
+    }
+    /* the bar itself too: a grid item's automatic minimum is its content's, and the one line would widen the column */
+    .pp-crumbs,
+    .pp-crumbs .crumbs__list > li:last-child,
+    .pp-crumbs .crumbs__current {
+      min-inline-size: 0;
+    }
+    .pp-crumbs .crumbs__current > * {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   .pp-stage .stage__slot > button {

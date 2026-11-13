@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import { useRouteLoaderData } from "react-router";
 
 import { Icon } from "~/art/Icon";
-import { useFormat, useT } from "~/i18n/react";
+import { useDir, useFormat, useT } from "~/i18n/react";
 import type { OrderStatus, PaymentStatus } from "~/lib/dto";
 import { MotionLink } from "~/motion";
 import type { OrderSummary as OrderSummaryRow } from "~/server/services/orders/types";
-import { BidiText } from "~/ui/BidiText";
+import { BidiText, latinName } from "~/ui/BidiText";
 import { cx } from "~/ui/cx";
 import { DemoNote } from "~/ui/DemoNote";
 import { Niche } from "~/ui/Niche";
@@ -105,8 +105,14 @@ export function splitOption(snapshot: string): { name: string; option: string | 
 export function OrderRow({ order }: { order: OrderSummaryRow }) {
   const t = useT("account");
   const f = useFormat();
+  const dir = useDir();
   const root = useRouteLoaderData("root") as RootStore | undefined;
   const demoMark = order.isDemo && root?.storeMode !== "demo";
+  // What was bought: the name clamped in its own direction (a Latin name left to right, so its ellipsis cuts its end —
+  // «Xbox Rechargeable Battery + USB-C…», never «…Xbox Rechargeable Battery +», QA 2026-11-13), the pieces outside the
+  // clamp so they always show.
+  const name = splitOption(order.firstItemName).name;
+  const latin = latinName(name, dir);
   return (
     <MotionLink to={`/account/orders/${order.ref}`} nav="rise" className="surface lift acct-order" data-press="soft">
       <Niche as="span" size="sm" aria-hidden="true">
@@ -119,9 +125,11 @@ export function OrderRow({ order }: { order: OrderSummaryRow }) {
           </span>
           <OrderStatusLine status={order.status} pill />
         </span>
-        <span className="acct-order__what line-clamp-1">
-          <BidiText text={splitOption(order.firstItemName).name} />
-          {order.itemCount > 1 ? <> · {t("orders.pieces", { count: order.itemCount })}</> : null}
+        <span className="acct-order__what">
+          <span dir={latin.dir} className={cx("acct-order__name", latin.className)}>
+            <BidiText text={name} />
+          </span>
+          {order.itemCount > 1 ? <span className="acct-order__count">· {t("orders.pieces", { count: order.itemCount })}</span> : null}
         </span>
         <span className="acct-order__meta">
           <time dateTime={new Date(order.placedAt).toISOString()}>{f.date(order.placedAt)}</time>
@@ -137,7 +145,7 @@ export function OrderRow({ order }: { order: OrderSummaryRow }) {
 
 /**
  * The five real states of an order, in the order a shopper lives them (Design System v2 §6.11) — the order page draws
- * them with the kit's status rail (ProgressSteps variant="status"; a delivered order is done throughout).
+ * them with the checkout area's status rail (`OrderStages`, the same as /order/<ref>; QA 2026-11-13), at `railIndex`.
  */
 export const ORDER_RAIL = ["received", "confirmed", "preparing", "shipped", "delivered"] as const;
 

@@ -10,8 +10,9 @@
  *   expiredUnconsumed(credits, debits, at) points that expired unused, first in first out
  *   experimentDecision(results, rule)      whether the predefined decision rule can be read yet (08.08)
  *
- * Nothing here changes a checkout total: the commerce core applies coupons today, and the rest only once its cart
- * totals call into rules like these (docs/areas/admin-promotions.md "Requests").
+ * Nothing here changes a checkout total by itself: the commerce core's pricing calls `evaluateRule` for the live rules
+ * (orders/promotions.ts applyDiscounts), so the dry run and the checkout read a rule the same way; where each promotion
+ * applies today is app/routes/admin/promotions/checkout-state.ts (docs/areas/admin-promotions.md).
  */
 import {
   DISCOUNT_LIMITS,

@@ -1,40 +1,48 @@
 {
   "key": "playstation-5--3",
   "view": "hero",
-  "width": 468,
-  "height": 910,
-  "aspect": 0.5143,
+  "width": 905,
+  "height": 1071,
+  "aspect": 0.845,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-5/3-240.804f4c94.avif"
+        "src": "/products/playstation-5/3-240.31563643.avif"
       },
       {
-        "w": 468,
-        "src": "/products/playstation-5/3-468.b7b82641.avif"
+        "w": 480,
+        "src": "/products/playstation-5/3-480.041db01a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5/3-720.53241663.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-5/3-240.cfea5515.webp"
+        "src": "/products/playstation-5/3-240.8f36dd69.webp"
       },
       {
-        "w": 468,
-        "src": "/products/playstation-5/3-468.04c9e685.webp"
+        "w": 480,
+        "src": "/products/playstation-5/3-480.fdf7799c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/playstation-5/3-720.61076dd8.webp"
       }
     ]
   },
-  "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACwAwCdASoKABQAPxF0sVAsJySisAgBgCIJZwDImBujgNV02Dee8AD+7V/hvji9GRv/ukwLEj72Of0p9o/P4P382qDuYNTNFG7ZgIj3FOiTPwAA",
-  "dominant": "#d8dce4",
-  "transparent": false,
-  "background": "#ffffff",
+  "placeholder": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4WAoAAAAQAAAAEAAAEwAAQUxQSGoAAAART6CobSM2VhTj1d6IiAA3L/oGTmvbVqMX8pFJAegYxo2iAtAxOSY3RYRuvfnQQkT/J4AkQ8Nk1eWbcQN+jAq48Fa8qUwNDGQaIGC0Qjaj65mzmdMBFg2BC+MKpkX/Imm73lqj7e44UkkQVlA4IHYAAADwBACdASoRABQAPxFyslAsJySisBgMAYAiCWcAy+AQqHggvq7+ZHwkQ8DTKxUosKAA/u/DQpfp/iswmKSZ5zAw+THJJbnG/j+VEPuPibbw2fq6FZF7HXqKMMwJiO0dvZU/tNkkh1bUQl0HUFudR+RfBdO2toAA",
+  "dominant": "#d9dce4",
+  "transparent": true,
+  "background": null,
   "kind": "angle",
   "credit": "Sony Interactive Entertainment",
   "source": {
-    "url": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-side-recert?wid=2000",
-    "page": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console"
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$native--t$&fmt=png-alpha&bfc=off",
+    "page": "https://www.playstation.com/en-us/ps5/"
   },
-  "input": "396c74150b44a196"
+  "input": "5bed6547f5d98ccf"
 }

@@ -34,13 +34,13 @@
  * on-band add key. The photo links into the product page with the card → page zoom (<SharedElement
  * name="product-image:<id>" slot="hero">). A photo that fails leaves its box empty; the banner keeps its size.
  */
-import { lazy, Suspense, useEffect, useId, useReducer, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, type WheelEvent } from "react";
+import { lazy, memo, Suspense, useCallback, useEffect, useId, useReducer, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, type WheelEvent } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import type { ProductCardData } from "~/lib/dto";
 import { LOCALES, type Locale } from "~/lib/locales";
-import { MotionLink, SharedElement } from "~/motion";
+import { getMotionTier, MotionLink, SharedElement } from "~/motion";
 import { AddToCartKey } from "~/ui/AddToCartKey";
 import { Band } from "~/ui/Band";
 import { BidiText } from "~/ui/BidiText";
@@ -53,7 +53,7 @@ import { SafePrice } from "~/ui/PriceTag";
 import { ProductImage } from "~/ui/ProductCard";
 import { Render } from "~/ui/Stage";
 import { TextLink } from "~/ui/TextLink";
-import { HERO_AUTOPLAY_MS, heroTitleSizes, keepLastWord, photoToWarm, pictureFailed, plainFinalYeh, splitHeadline } from "./view";
+import { bannerAway, HERO_AUTOPLAY_MS, heroTitleSizes, inView, keepLastWord, photoToWarm, pictureFailed, plainFinalYeh, splitHeadline, wordsShown } from "./view";
 
 /** The product area's quick look — fetched only when a shopper reaches for a key. */
 const loadQuickPreview = () => import("~/routes/storefront/product/QuickPreview");
@@ -93,6 +93,9 @@ export type ServiceHeroSlide = {
 
 export type HeroSlide = ProductHeroSlide | ServiceHeroSlide;
 
+/** A banner's words: they fade with its move (HeroCarousel). */
+const BANNER_WORDS = ".home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy";
+
 /** The shopper's side of autoplay, mirrored from the same events the kit's hook reads (./Carousel carouselHold). */
 const STILL: CarouselHold = { playing: true, hovered: false, focused: false, touching: false };
 
@@ -101,7 +104,13 @@ const isTouch = (event: PointerEvent) => event.pointerType === "touch" || event.
 /** The shopper asked the browser to save data (Save-Data, Chromium): no photo is fetched ahead. */
 const saveData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
-export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
+/**
+ * The carousel. A move re-renders this frame only — the wrapper of each banner (inert, data-current, data-arrived), the
+ * lights, the dots and the controls; the banners' bodies are memoised with stable props (`slides` from the page's
+ * memo, one `onChoose`), so a move is one light render, never six banners over again (cross-check 2026-11-13: three
+ * long tasks of 74–164ms per move at 4× CPU, a stutter on slow phones).
+ */
+export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
   const t = useT("home");
   const api = useCarousel({ count: slides.length, autoplay: HERO_AUTOPLAY_MS });
   // what holds autoplay, mirrored from the same events (the kit's hook keeps its own copy and does not expose it): the
@@ -111,17 +120,18 @@ export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
   const [offscreen, setOffscreen] = useState(false);
   // the page is live: before that, every banner stays usable (no inert), and nothing pretends to count down
   const [live, setLive] = useState(false);
-  // the banner that arrived by a move (its words rise in once); none on the first paint
-  const [arrived, setArrived] = useState<number | null>(null);
-  const shown = useRef(api.index);
+  // the banner that arrived by a move (its product settles once): once the banners have moved, the one in view — none on
+  // the first paint. Derived in the same render (React's adjust-state-while-rendering pattern, once per page): an
+  // effect that set it after each move rendered the hero a second time.
+  const [moved, setMoved] = useState(false);
+  if (!moved && api.index !== 0) setMoved(true);
+  const arrived = moved ? api.index : null;
   const [preview, setPreview] = useState<{ card: ProductCardData; open: boolean } | null>(null);
+  const choose = useCallback((card: ProductCardData) => setPreview({ card, open: true }), []);
+  // a finger (or a pen) is on the track right now — known at once, before any render (the track's scroll asks it)
+  const fingerDown = useRef(false);
 
   useEffect(() => setLive(true), []);
-  useEffect(() => {
-    if (api.index === shown.current) return;
-    shown.current = api.index;
-    setArrived(api.index);
-  }, [api.index]);
   useEffect(() => {
     const onVisibility = () => setHidden(document.visibilityState === "hidden");
     onVisibility();
@@ -154,6 +164,107 @@ export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
     window.addEventListener("load", warm, { once: true });
     return () => window.removeEventListener("load", warm);
   }, [live, api.index, slides.length, trackRef]);
+
+  // every banner's words and product follow its move (client note 1, "smooth switching"), written as the track
+  // scrolls, once a frame: the words show as much as their column is on screen (./view inView, wordsShown — a banner
+  // comes in words first in Arabic, so they arrive with it, and the leaving banner's fade as they slide off: no banner
+  // crosses the screen as an empty band of colour; they used to appear only after it landed) and drift 60px a banner
+  // slower than it, its product 9% of its width faster (./view bannerAway: its distance from its resting place). Inline
+  // opacity and translate on those few elements: a custom property on the banner restyled all of it, 8–10ms a frame at
+  // 4× CPU against ~2. No drift unless motion is full (reduced motion, the lite tier). CSS scroll-driven timelines would
+  // do it without script, but Chromium measures a right-to-left scroller's view() timeline from the wrong edge (the
+  // banner in view read -200% in Arabic, 50% in English — Edge 157, 2026-11-13).
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let frame = 0;
+    // the track's direction, scroll padding and gap: read again only when the window changes size
+    let edges: { rtl: boolean; pad: number; gap: number } | null = null;
+    // each banner's moving parts (its title stands for the words' column); what it was last given: a banner is written
+    // only when its values change (in a move between two banners the other four stay as they were)
+    type Parts = { words: HTMLElement[]; column: HTMLElement | null; product: HTMLElement | null };
+    const parts = new Map<HTMLElement, Parts>();
+    const partsOf = (banner: HTMLElement): Parts => {
+      let own = parts.get(banner);
+      if (!own) {
+        own = { words: [...banner.querySelectorAll<HTMLElement>(BANNER_WORDS)], column: banner.querySelector<HTMLElement>(".home-slide__title"), product: banner.querySelector<HTMLElement>(".home-slide__link") };
+        parts.set(banner, own);
+      }
+      return own;
+    };
+    // the drift the words carry now, read from the element (an earlier run of this effect — React's strict mode runs it
+    // twice in development — may have written it)
+    const shiftOf = (element: HTMLElement | null) => parseFloat(element?.style.translate ?? "") || 0;
+    const written = new Map<HTMLElement, string>();
+    const paint = () => {
+      frame = 0;
+      if (!edges) {
+        const style = getComputedStyle(track);
+        edges = { rtl: style.direction === "rtl", pad: parseFloat(style.scrollPaddingInlineStart) || 0, gap: parseFloat(style.columnGap) || 0 };
+      }
+      const drift = getMotionTier() === "full";
+      // the inline end, on screen (+1: the right)
+      const end = edges.rtl ? -1 : 1;
+      // the scroll from the track's start (negative to the left in a right-to-left track) and how far it can go: the
+      // last banner of a phone's track rests at the track's end
+      const scroll = { scroll: Math.abs(track.scrollLeft), maxScroll: Math.max(0, track.scrollWidth - track.clientWidth) };
+      const box = track.getBoundingClientRect();
+      const banners = [...track.querySelectorAll<HTMLElement>("[data-carousel-slide]")];
+      // every box is read before any banner is written (no layout in between); a column's box without the drift its
+      // words carry
+      const boxes = banners.map((banner) => banner.getBoundingClientRect());
+      const columns = banners.map((banner) => {
+        const column = partsOf(banner).column;
+        if (!column) return null;
+        const rect = column.getBoundingClientRect();
+        const shift = shiftOf(column);
+        return { left: rect.left - shift, right: rect.right - shift };
+      });
+      banners.forEach((banner, index) => {
+        const own = partsOf(banner);
+        const away = bannerAway({ ...edges!, ...scroll, trackLeft: box.left, trackRight: box.right, left: boxes[index].left, right: boxes[index].right });
+        const column = columns[index];
+        const show = column ? wordsShown(inView({ ...column, trackLeft: box.left, trackRight: box.right })) : 1;
+        const key = `${away.toFixed(3)}|${show.toFixed(3)}|${drift}`;
+        if (written.get(banner) === key) return;
+        written.set(banner, key);
+        const moving = drift && away !== 0;
+        for (const word of own.words) {
+          word.style.opacity = show === 1 ? "" : show.toFixed(3);
+          word.style.translate = moving ? `${(-60 * away * end).toFixed(1)}px 0` : "";
+        }
+        if (own.product) own.product.style.translate = moving ? `${(9 * away * end).toFixed(2)}% 0` : "";
+      });
+    };
+    const onMove = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+    const onResize = () => {
+      edges = null;
+      onMove();
+    };
+    paint();
+    track.addEventListener("scroll", onMove, { passive: true });
+    window.addEventListener("resize", onResize);
+    // the page settling (its fonts, its pictures) may move a column without a scroll
+    window.addEventListener("load", onMove, { once: true });
+    void document.fonts?.ready.then(onMove);
+    return () => {
+      cancelAnimationFrame(frame);
+      frame = -1; // a late font or load event paints nothing
+      track.removeEventListener("scroll", onMove);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("load", onMove);
+      // the words and products as the markup has them (an effect that runs again starts from the page as rendered)
+      for (const own of parts.values()) {
+        for (const word of own.words) {
+          word.style.removeProperty("opacity");
+          word.style.removeProperty("translate");
+        }
+        own.product?.style.removeProperty("translate");
+      }
+    };
+  }, [trackRef, slides.length]);
 
   const running = live && !autoplayWaits({ ...hold, playing: api.playing, canPlay: api.canPlay, hidden, offscreen });
 
@@ -196,21 +307,32 @@ export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
     ...track,
     onPointerDown: (event: PointerEvent<HTMLDivElement>) => {
       track.onPointerDown(event);
-      if (isTouch(event)) mirror({ type: "touch", on: true });
+      if (isTouch(event)) {
+        fingerDown.current = true;
+        mirror({ type: "touch", on: true });
+      }
     },
     onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
       track.onPointerUp(event);
-      if (isTouch(event)) mirror({ type: "touch", on: false });
+      if (isTouch(event)) {
+        fingerDown.current = false;
+        mirror({ type: "touch", on: false });
+      }
     },
     onTouchEnd: () => {
       track.onTouchEnd();
+      fingerDown.current = false;
       mirror({ type: "touch", on: false });
     },
     onTouchCancel: () => {
       track.onTouchCancel();
+      fingerDown.current = false;
       mirror({ type: "touch", on: false });
     },
+    // a scroll is a take-over only under a finger (./Carousel carouselHold): the kit's hook and the mirror hear it only
+    // then — on every scroll event of a move they each re-rendered the hero, ~30 renders a move (profiled at 4× CPU)
     onScroll: () => {
+      if (!fingerDown.current) return;
       track.onScroll();
       mirror({ type: "swipe" });
     },
@@ -242,10 +364,15 @@ export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
       data-run={running ? "" : undefined}
       style={{ "--home-autoplay": `${HERO_AUTOPLAY_MS}ms` } as CSSProperties}
     >
-      {/* the ambient light on the floor behind the banner, in the colour of the banner in view (crossfades) */}
+      {/* the ambient light on the floor behind the banner, in the colour of the banner in view (crossfades); in the dark
+          theme a wider, lower light spills under the icon strip below, so its glass tiles have that colour to show
+          (client note 3: on the plain dark floor they read as flat grey cards) */}
       <div className="home-hero__ambient" aria-hidden="true">
         {slides.map((slide, index) => (
           <span key={slide.key} className="glow-layer home-hero__light" data-gel={gelOf(slide)} data-on={index === api.index ? "" : undefined} />
+        ))}
+        {slides.map((slide, index) => (
+          <span key={`spill-${slide.key}`} className="glow-layer home-hero__spill" data-gel={gelOf(slide)} data-on={index === api.index ? "" : undefined} />
         ))}
       </div>
       <div {...trackProps} className="carousel__track home-hero__track">
@@ -258,11 +385,7 @@ export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
             data-current={index === api.index ? "" : undefined}
             data-arrived={arrived === index ? "" : undefined}
           >
-            {slide.kind === "product" ? (
-              <ProductSlide slide={slide} first={index === 0} onChoose={(card) => setPreview({ card, open: true })} />
-            ) : (
-              <ServiceSlide slide={slide} />
-            )}
+            {slide.kind === "product" ? <ProductSlide slide={slide} first={index === 0} onChoose={choose} /> : <ServiceSlide slide={slide} />}
           </div>
         ))}
       </div>
@@ -282,7 +405,7 @@ export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
       ) : null}
     </section>
   );
-}
+});
 
 /** The colour of a banner's light: its platform, the brand crimson (trade-in), none (used: the brand's, low). */
 function gelOf(slide: HeroSlide): string {
@@ -295,7 +418,8 @@ function titleStyle(sizes: Record<"sm" | "md" | "lg" | "xl", number>): CSSProper
   return { "--hero-fs-sm": `${sizes.sm}px`, "--hero-fs-md": `${sizes.md}px`, "--hero-fs-lg": `${sizes.lg}px`, "--hero-fs-xl": `${sizes.xl}px` } as CSSProperties;
 }
 
-function ProductSlide({ slide, first, onChoose }: { slide: ProductHeroSlide; first: boolean; onChoose: (card: ProductCardData) => void }) {
+/** A platform banner's body. Memoised: a move of the carousel changes only its wrapper's attributes, never these props. */
+const ProductSlide = memo(function ProductSlide({ slide, first, onChoose }: { slide: ProductHeroSlide; first: boolean; onChoose: (card: ProductCardData) => void }) {
   const t = useT("home");
   const ui = useT("ui");
   const shop = useT("ui-shop");
@@ -434,7 +558,7 @@ function ProductSlide({ slide, first, onChoose }: { slide: ProductHeroSlide; fir
       {/* a photo that fails to load leaves its box empty (no broken-image frame): the banner keeps its size */}
       <div ref={media} className="home-slide__media" onErrorCapture={() => setPhotoFailed(true)}>
         {photoFailed ? null : <span className="home-slide__floor" aria-hidden="true" />}
-        <MotionLink nav="zoom" to={href} className="home-slide__link carousel__parallax" aria-label={card.name}>
+        <MotionLink nav="zoom" to={href} className="home-slide__link" aria-label={card.name}>
           <SharedElement name={`product-image:${card.id}`} slot="hero" as="span" className="home-slide__shared render-slot">
             {photoFailed ? null : <ProductImage image={card.image} alt="" sizes={HERO_SIZES} priority={first} />}
           </SharedElement>
@@ -442,7 +566,7 @@ function ProductSlide({ slide, first, onChoose }: { slide: ProductHeroSlide; fir
       </div>
     </Band>
   );
-}
+});
 
 const SERVICE: Record<ServiceHeroSlide["kind"], { to: string; icon: IconName }> = {
   tradeIn: { to: "/trade-in", icon: "recycle" },
@@ -451,9 +575,9 @@ const SERVICE: Record<ServiceHeroSlide["kind"], { to: string; icon: IconName }> 
 
 /**
  * The trade-in and used banners: their pill, a two-word title, the honest line (from 768), one white clay key and a
- * console no platform banner shows (decorative: the key is the way in).
+ * console no platform banner shows (decorative: the key is the way in). Memoised like the platform banners.
  */
-function ServiceSlide({ slide }: { slide: ServiceHeroSlide }) {
+const ServiceSlide = memo(function ServiceSlide({ slide }: { slide: ServiceHeroSlide }) {
   const t = useT("home");
   const { to, icon } = SERVICE[slide.kind];
   const title = t(`hero.${slide.kind}.title`);
@@ -488,7 +612,7 @@ function ServiceSlide({ slide }: { slide: ServiceHeroSlide }) {
         {slide.art ? (
           <>
             <span className="home-slide__floor" />
-            <span className="home-slide__link carousel__parallax">
+            <span className="home-slide__link">
               <span className="home-slide__shared render-slot">
                 <Render name={slide.art} alt="" sizes={HERO_SIZES} />
               </span>
@@ -502,4 +626,4 @@ function ServiceSlide({ slide }: { slide: ServiceHeroSlide }) {
       </div>
     </Band>
   );
-}
+});

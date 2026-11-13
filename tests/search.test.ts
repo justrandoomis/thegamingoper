@@ -354,7 +354,7 @@ describe("«ابحث عنها كما كتبتها»: the words as typed (asTyped
 
 // ───────────────────────────────────────────────────────────────── GET /api/search/suggest (the route)
 
-type SuggestRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string; qualifier?: string };
+type SuggestRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; soldOut?: true; kindLabel?: string; qualifier?: string };
 let suggestIp = 0;
 
 /** Runs the route behind the real request middleware (locale, rate limit, headers). */
@@ -411,10 +411,14 @@ describe("GET /api/search/suggest (the header's suggestions)", () => {
   it("a typo: the corrected spelling first, products and the total of the corrected search, in every language", async () => {
     for (const locale of ["ar", "en", "ckb"] as const) {
       const { body } = await suggestRoute("playstaion", locale);
-      expect(body.suggestions[0]).toEqual(expect.objectContaining({ label: "playstation", href: "/search?q=playstation" }));
+      // said as the catalogue writes it («هل تقصد PlayStation؟», never the index's folded «playstation» — fix-browse
+      // 2026-11-13); the link keeps the folded words
+      expect(body.suggestions[0]).toEqual(expect.objectContaining({ label: "PlayStation", href: "/search?q=playstation" }));
       expect(body.suggestions[0].hint?.length).toBeGreaterThan(0);
       expect(body.total).toBe((await searchProducts(t.db, locale, "playstaion", { now: Date.now() })).total);
       expect(body.total).toBeGreaterThan(0);
+      const nintendo = (await suggestRoute("nintndo", locale)).body.suggestions[0];
+      expect(nintendo).toEqual(expect.objectContaining({ label: "Nintendo", href: "/search?q=nintendo" }));
     }
   });
 
@@ -439,6 +443,7 @@ describe("GET /api/search/suggest (the header's suggestions)", () => {
     expect(levels.length).toBeGreaterThan(0);
     const row = async () => (await suggestRoute("PlayStation Portal", "en")).body.suggestions.find((entry) => entry.href === `/p/${slug}`);
     expect((await row())?.priceIqd).toBeGreaterThan(0);
+    expect((await row())?.soldOut).toBeUndefined();
     const set = (level: { variant_id: string; location_id: string }, onHand: number) =>
       t.d1.prepare("UPDATE stock_levels SET on_hand = ? WHERE variant_id = ? AND location_id = ?").bind(onHand, level.variant_id, level.location_id).run();
     try {
@@ -447,6 +452,8 @@ describe("GET /api/search/suggest (the header's suggestions)", () => {
       expect(soldOut).toBeDefined();
       expect(soldOut?.priceIqd).toBeUndefined();
       expect(soldOut?.image).toBeDefined();
+      // …and says why there is no price, as the cards do («نفد حالياً» where the price goes — fix-browse 2026-11-13)
+      expect(soldOut?.soldOut).toBe(true);
     } finally {
       for (const level of levels) await set(level, level.on_hand);
     }

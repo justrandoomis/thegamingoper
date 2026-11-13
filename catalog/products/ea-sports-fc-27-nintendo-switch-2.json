@@ -45,7 +45,7 @@
   "variants": [
     {
       "sku": "NS2G-EA-FC27",
-      "title": { "ar": "نسخة Game-Key Card", "en": "Game-Key Card edition", "ckb": "وەشانی Game-Key Card" },
+      "title": { "ar": "نسخة Game‑Key Card", "en": "Game‑Key Card edition", "ckb": "وەشانی Game‑Key Card" },
       "options": { "edition": "Standard", "format": "Game-Key Card", "platform": "Nintendo Switch 2" },
       "barcodes": ["014633385878"],
       "isDefault": true,

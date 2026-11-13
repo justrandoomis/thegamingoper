@@ -92,6 +92,33 @@ Found with the reviewer's own screenshots and probes (`…/fb1/shots/account-rev
   the first steps' descriptions are 16px (G7), a fact's bold title is never smaller than its text (15/16px), the
   overview tiles' facts 14px.
 
+### QA wave C fixes (2026-11-13, fix-transaction)
+
+Found by the wave C auditors; each has a test in `tests/account.test.ts` "the QA's account findings (wave C)" (+5,
+written failing first). Scripts `…/fb1/work/C-fix-transaction/`, shots `…/fb1/shots/C-fix-transaction/`.
+
+- **«Last used» in Sorani** (`settings.tsx`): /ckb/account/settings read «دوایین بەکارهێنان 46 minutes ago» (shown as
+  "minutes ago 46") — Intl has no Sorani data: Chromium fell back to English, the server's ICU to «-46 min» (a hydration
+  mismatch too). `components/text.ts` `ago(t, f, at, now)` writes Sorani from the account's words (`settings.ago.now /
+  minutes / hours / days`, plural-aware, the kit's thresholds); Arabic and English keep Intl's words. The phrase sits in
+  its own `<bdi>`.
+- **«سجّل خروج الأجهزة الأخرى» asks first**: one tap signed every other session out (the QA's probe ended 26 sessions of
+  the shared demo customer). The key (`aria-haspopup="dialog"`) opens the kit's `ConfirmDialog` (destructive tone; focus
+  on «ارجع») — «سجّل الخروج من كل الأجهزة الأخرى؟», how many devices it signs out (plural), «سجّل خروجها»; confirming
+  posts `intent=revokeOthers`; cancel changes nothing. Without script the key's own form still posts. Checked in Edge on a
+  throwaway demo customer with three sessions: cancel kept both others, confirm ended both, «سجّلنا خروج جهازين.».
+  (Demo record made through the real sign-up for it: «زبون تجريبي للفحص», 0770 551 5485, one address «البيت».)
+- **One status rail for one order**: the order page draws the checkout area's `OrderStages` (the stage icons in clay
+  discs, the line that fills) instead of the kit's hollow circles; its words are the checkout's `order.stages.*` (the
+  account's `order.rail.*` are no longer read). `ORDER_RAIL` and `railIndex` stay exported.
+- **What was bought, on an order card** (`OrderBits` `OrderRow`, also the overview's latest order): the name is clamped
+  on one line in its own direction (`latinName`: a Latin name left to right — «Xbox Rechargeable Battery + U…», never
+  «…Xbox Rechargeable Battery +») and «· قطعتان» stays outside the clamp (`.acct-order__name`, `.acct-order__count`).
+- **What the customer typed reads in its own direction** on /en: the order page's delivery block (the name, the place
+  line, the address, the notes) and the address book's cards (the label, the recipient, the place line, the address, the
+  notes) are `<bdi dir="auto">` isolates — «شارع تجريبي، بناية 3 — طلب اختبار QA» no longer starts with "QA". The address
+  book's place line joins with ", " on /en (as the order page).
+
 ## Design System v2 (stage 3, 2026-11-12) — what changed
 
 The area was rebuilt on the v2 kit and shell (no retired kit names left: no `quiet`/`ink`/`commit` keys, no `shadow-e1`,

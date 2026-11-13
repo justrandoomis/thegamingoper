@@ -18,13 +18,19 @@
  *   · a focused field is moved out from under a bar; the task header's title is cut between words; the exchange
  *     rate keeps «figure, then currency» in every language; the Sorani strings spell the brand «طمطم».
  */
+import { readFileSync } from "node:fs";
+import { createElement, type ComponentType } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import errorMessages from "~/i18n/messages/errors";
 import shellMessages from "~/i18n/messages/shell";
 import uiMessages from "~/i18n/messages/ui";
 import { makeT } from "~/i18n/translate";
-import { LOCALE_CODES, switchLocalePath } from "~/lib/locales";
+import { LOCALE_CODES, LOCALES, switchLocalePath } from "~/lib/locales";
 import { POLICY_SLUGS } from "~/routes/storefront/content/content-model";
+import { DemoStrip } from "~/routes/storefront/shell/Banners";
 import {
   backFallback,
   canonicalSearch,
@@ -46,6 +52,7 @@ import {
   shellChrome,
   suggestionKind,
   suggestionMeta,
+  suggestionState,
   tabOf,
   TASK_FOOTER_LABELS,
   TASK_FOOTER_LINKS,
@@ -142,6 +149,26 @@ describe("shellChrome — the shell a page asks for", () => {
 
   it("task flows: the store header (task header after scroll), no tab bar", () => {
     expect(shellChrome([root, layout, tradeIn], { path: "/trade-in" })).toEqual({ chrome: "task", tabBar: false, task: true, back: null, offline: "form" });
+  });
+
+  it("a handle's chrome may depend on the address: the trade-in start page is a store page with the tab bar, its steps a task flow (QA 2026-11-13)", () => {
+    const seen: { path: string; search: string }[] = [];
+    const byStep = (at: { path: string; search: string }) => {
+      seen.push(at);
+      return new URLSearchParams(at.search).has("step") ? ("task" as const) : ("store" as const);
+    };
+    const wizard = { id: "routes/storefront/used/trade-in", handle: { shell: { chrome: byStep }, nav: "push" } };
+    expect(shellChrome([root, layout, wizard], { path: "/trade-in", search: "" })).toEqual(store);
+    expect(shellChrome([root, layout, wizard], { path: "/trade-in", search: "?device=ps5-slim" })).toEqual(store);
+    expect(shellChrome([root, layout, wizard], { path: "/trade-in", search: "?step=condition&device=ps5-slim" })).toEqual({ chrome: "task", tabBar: false, task: true, back: null, offline: "form" });
+    // the query as the server spells it, so server and client decide alike (hydration)
+    expect(seen.at(-1)).toEqual({ path: "/trade-in", search: "?step=condition&device=ps5-slim" });
+    shellChrome([root, layout, wizard], { path: "/trade-in", search: "?q=ps5 slim&_routes=x" });
+    expect(seen.at(-1)).toEqual({ path: "/trade-in", search: "?q=ps5+slim" });
+    // a function's answer that is not a shell counts as no wish; the error page ignores it like any page handle
+    expect(shellChrome([root, layout, { id: "x", handle: { shell: { chrome: () => "sideways" } } }], { path: "/x" })).toEqual(store);
+    expect(shellChrome([root, layout, { id: "x", handle: { shell: { chrome: () => null } } }], { path: "/checkout" }).chrome).toBe("checkout");
+    expect(shellChrome([root, layout, wizard], { errored: true, path: "/trade-in", search: "?step=photos" })).toEqual(store);
   });
 
   it("the offline banner keeps its word to forms: checkout, task flows and /account say what was typed stays; elsewhere the cart", () => {
@@ -441,6 +468,24 @@ describe("suggestionMeta — a product suggestion's meta line", () => {
   });
 });
 
+describe("suggestionState — what the suggestion list shows for typed words", () => {
+  it("says so when the store has nothing for exactly these words, instead of staying shut (QA 2026-11-13: «ثلاجة»)", () => {
+    expect(suggestionState({ q: "ثلاجة", rows: 0, total: 0 }, "ثلاجة")).toBe("none");
+    expect(suggestionState({ q: "ثلاجة", rows: 0, total: 0 }, " ثلاجة ")).toBe("none");
+  });
+
+  it("shows the rows (kept while newer words are on their way), or the count alone when only /search has products", () => {
+    expect(suggestionState({ q: "بلاي", rows: 6, total: 42 }, "بلايستيشن")).toBe("rows");
+    expect(suggestionState({ q: "ps5", rows: 0, total: 7 }, "ps5")).toBe("count");
+  });
+
+  it("waits: no answer yet, an answer for other words, no endpoint or a failure (no total) — never «nothing matched» on a guess", () => {
+    expect(suggestionState({ q: null, rows: 0, total: null }, "ثلاجة")).toBe("wait");
+    expect(suggestionState({ q: "ثلاج", rows: 0, total: 0 }, "ثلاجة")).toBe("wait");
+    expect(suggestionState({ q: "ثلاجة", rows: 0, total: null }, "ثلاجة")).toBe("wait");
+  });
+});
+
 describe("searchMode — the header's search field, or only the round search key (v2.1 §2.7, client note 9)", () => {
   it("keeps the field on the pages for finding products", () => {
     for (const path of ["/", "/platform/playstation", "/c/controllers", "/search", "/compare", "/p/nintendo-switch-2", "/device/ps5-pro", "/used", "/used/ps5-slim-a12", "/pages/eid"]) {
@@ -474,11 +519,21 @@ describe("searchMode — the header's search field, or only the round search key
     }
   });
 
-  it("matches whole path segments only, and every error page keeps the field (the 404's one search field is the header's)", () => {
+  it("matches whole path segments only", () => {
     expect(searchMode("/cartography")).toBe("field");
     expect(searchMode("/supporters")).toBe("field");
-    expect(searchMode("/cart", { errored: true })).toBe("field");
-    expect(searchMode("/support/nothing-here", { errored: true })).toBe("field");
+  });
+
+  // changed on purpose 2026-11-13 (QA): every error page used to keep the header's FIELD — the 404 then had two fields
+  // named «ابحث في المتجر» (its own and the header's), and an offline /support showed the field it never has
+  it("an error panel keeps its address's search; the not-found view has its own field, so the header shows the key", () => {
+    expect(searchMode("/support", { errored: true })).toBe("key");
+    expect(searchMode("/cart", { errored: true })).toBe("key");
+    expect(searchMode("/p/nintendo-switch-2", { errored: true })).toBe("field");
+    expect(searchMode("/", { errored: true })).toBe("field");
+    for (const path of ["/nothing-here", "/p/no-such-thing", "/support/nothing-here", "/"]) {
+      expect(searchMode(path, { errored: true, notFound: true }), path).toBe("key");
+    }
   });
 });
 
@@ -614,9 +669,16 @@ describe("footer", () => {
     expect([...TASK_FOOTER_LINKS]).toEqual(["/policies/returns", "/policies/privacy", "/policies/terms", "/support"]);
   });
 
-  it("names the support link with the navigation term «الدعم» / Support — «مركز الدعم» is the page's title (§5.8, §9)", () => {
+  // changed on purpose 2026-11-13: the lead's glossary ruling — «مركز الدعم» is the place's one name (header, footers,
+  // the categories sheet, the checkout bar's help key); it used to be the navigation term «الدعم» beside «افتح مركز
+  // الدعم» on the same home page
+  it("names the support centre «مركز الدعم» / Support centre everywhere the shell links it — one term (§9, lead 2026-11-13)", () => {
     const words = Object.fromEntries(LOCALE_CODES.map((locale) => [locale, makeT(shellMessages[locale], locale, "shell")(TASK_FOOTER_LABELS["/support"])]));
-    expect(words).toEqual({ ar: "الدعم", en: "Support", ckb: "پشتگیری" });
+    expect(words).toEqual({ ar: "مركز الدعم", en: "Support centre", ckb: "ناوەندی پشتگیری" });
+    for (const locale of LOCALE_CODES) {
+      const t = makeT(shellMessages[locale], locale, "shell");
+      for (const key of ["nav.support", "footer.support", "checkout.help", "error.help"]) expect(t(key), `${locale} ${key}`).toBe(words[locale]);
+    }
     for (const to of TASK_FOOTER_LINKS) expect(makeT(shellMessages.ar, "ar", "shell")(TASK_FOOTER_LABELS[to]), to).not.toBe(TASK_FOOTER_LABELS[to]);
   });
 });
@@ -703,5 +765,83 @@ describe("rateText — the exchange rate keeps «figure, then currency» (§2.6)
     const ltr = text.slice(text.indexOf("⁦"), text.indexOf("⁩") + 1);
     expect(ltr).not.toContain("د.ع");
     expect(text.indexOf("1,310")).toBeLessThan(text.indexOf("د.ع"));
+  });
+});
+
+describe("the demo strip keeps the address (QA 2026-11-13)", () => {
+  /** The strip as the server renders it at `address` (a router stub with the kit's strings). */
+  const render = (address: string) => {
+    const Page: ComponentType = () => createElement(DemoStrip);
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: Page }] }]);
+    return renderToStaticMarkup(createElement(Stub, { initialEntries: [address], hydrationData: { loaderData: { root: { locale: "ar", dir: LOCALES.ar.dir, fx: null, i18n: messagesFor("ar", "ui", "ui-shop") } } } }));
+  };
+
+  it("links to the footer's statement in the page itself — a guest's order link keeps its token, a filter its query", () => {
+    for (const address of ["/order/TT-EFJCN3V2?t=secret-token", "/account/rewards?show=earned", "/search?q=ps5"]) {
+      const html = render(address);
+      // a bare fragment the browser resolves against the WHOLE address; a router link to "#shell-demo" was resolved
+      // against the path alone («/order/TT-…#shell-demo»: the order without its token, «تعذّر فتح هذا الطلب»)
+      expect(html, address).toMatch(/<a href="#shell-demo" class="shell-strip lg:hidden">/);
+      expect(html, address).toContain('data-demo="strip"');
+    }
+  });
+});
+
+describe("the shell's stylesheet (QA 2026-11-13)", () => {
+  const css = readFileSync(new URL("../app/routes/storefront/shell/shell.css", import.meta.url), "utf8");
+  /** The declarations of the first rule written exactly `selector {`. */
+  const rule = (selector: string): string => {
+    const at = css.indexOf(`${selector} {`);
+    expect(at, selector).toBeGreaterThan(-1);
+    return css.slice(at, css.indexOf("}", at));
+  };
+  /** The body of the first `@media <query> { … }` block (brace-matched). */
+  const media = (query: string): string => {
+    const start = css.indexOf(`@media ${query} {`);
+    expect(start, query).toBeGreaterThan(-1);
+    let depth = 0;
+    for (let i = css.indexOf("{", start); i < css.length; i++) {
+      if (css[i] === "{") depth++;
+      else if (css[i] === "}" && --depth === 0) return css.slice(start, i);
+    }
+    return "";
+  };
+
+  it("never clips an icon tile's name — no clamp, no overflow (the dots under a final «ي» went missing: «أيدى التحكم»)", () => {
+    const name = rule(".shell-itile__name");
+    // (overflow-wrap is fine: it breaks a long word inside the tile, it clips nothing)
+    expect(name).not.toMatch(/\boverflow(-x|-y)?\s*:|line-clamp|-webkit-box/);
+    expect(name).toMatch(/line-height:\s*1\.45/);
+  });
+
+  it("keeps focus in the sticky bars from scrolling the page (Shift+Tab through the header scrolled ~420px a step)", () => {
+    expect(rule(":is(.shell-header, .shell-cobar) :is(a[href], button, input, [tabindex])")).toMatch(
+      /scroll-margin-block:\s*calc\(-1 \* \(var\(--shell-top\) \+ 12px\)\) calc\(var\(--shell-top\) \+ 12px\)/,
+    );
+  });
+
+  it("prints the page, not the screen's chrome (the tab bar and the skip link printed over every sheet)", () => {
+    const print = media("print");
+    for (const selector of [".shell-skip", ".shell-tabbar", ".shell-taskbar", ".shell-offline", ".shell-utility", ".shell-navrow", ".shell-tools", ".shell-pill", ".shell-footer__cols", ".shell-footer__prefs", ".shell-tfoot__link"]) {
+      const listed = [`${selector},`, `${selector} {`].some((form) => print.includes(form));
+      expect(listed, selector).toBe(true);
+    }
+    expect(print).toMatch(/display: none !important/);
+    expect(print).toMatch(/\.shell-header,\s*\.shell-cobar \{\s*position: static;/);
+  });
+
+  it("gives the demo strip and the utility strip's links 44px targets", () => {
+    expect(rule(".shell-strip > .demo-strip")).toMatch(/min-block-size: var\(--target\)/);
+    expect(rule(".shell-utility__link,\n  .shell-langs__link,\n  .shell-theme")).toMatch(/min-inline-size: var\(--target\)/);
+    // the hit area reaches down into the lead: the strip is the top of the page
+    expect(rule(":is(.shell-utility__link, .shell-langs__link, .shell-theme)::after")).toMatch(/inset-block: -1px -11px/);
+  });
+
+  it("labels every checkout step under its disc on phones (360–599), the current one in 600", () => {
+    const phones = media("(min-width: 22.5rem) and (max-width: 37.49rem)");
+    expect(phones).toMatch(/\.shell-cobar__steps \.step \{\s*flex-direction: column;/);
+    expect(phones).toMatch(/\.shell-cobar__steps \.step\[aria-current="step"\] \.step__label \{\s*font-weight: 600;/);
+    // only English and Sorani hide the other steps' words, and only below 390
+    expect(media("(max-width: 24.37rem)")).toContain('.shell-cobar__steps:not(:lang(ar)) .step:not([aria-current="step"]) .step__label');
   });
 });

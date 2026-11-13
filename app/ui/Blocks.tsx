@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 
-import { Icon, type IconName } from "~/art/Icon";
+import type { IconName } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { cx } from "./cx";
 import { Niche } from "./Niche";
+import { Note } from "./Note";
 import { Render } from "./Stage";
+import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
  * Blocks — renders structured content (knowledge articles, policies, device guides). Staff-authored content is
@@ -25,9 +27,11 @@ import { Render } from "./Stage";
  *   { type: "table",   head: string[], rows: string[][] }
  *   { type: "art",     name, alt }                                          an <Art> key (product photo or render)
  *
- * Callouts are flat panels, never dismissible (DESIGN.md §9.22): info = an info icon in --info; warning = a warning
- * icon and --warn heading; danger = a warning icon and --red-ink heading (danger is words, an icon and red ink —
- * never brand red). The tone is named for screen readers too, so it never rests on colour alone.
+ * Callouts are the kit's ONE pattern for side information (v2.1 G5, fix round 2026-11-13: no more tinted panels with a
+ * coloured side bar): a <Note> — a neutral soft card, the tone's icon in a circle (info blue, warning amber, danger red,
+ * whose title is red too), a short bold title, the text. Never dismissible (DESIGN.md §9.22); the tone is named for
+ * screen readers too («تنبيه: …»), so it never rests on colour alone. A device hub's «قبل أن تشتري», a policy's «ما لم
+ * نحدده بعد», a guide's «توقف فوراً في هذه الحالات» all render this way.
  */
 export type CalloutTone = "info" | "warning" | "danger";
 
@@ -180,27 +184,37 @@ function Steps({ items }: { items: Array<{ title: string; text?: string }> }) {
   );
 }
 
-const CALLOUT: Record<CalloutTone, { icon: IconName; tone: string; className?: string }> = {
-  info: { icon: "info", tone: "text-info" },
-  warning: { icon: "warning", tone: "text-warn", className: "callout--warn" },
-  danger: { icon: "warning", tone: "text-danger", className: "callout--danger" },
-};
+const CALLOUT_ICON: Record<CalloutTone, IconName> = { info: "info", warning: "warning", danger: "warning-circle" };
 
 /**
- * A callout (v2 §4.1): a paper panel with a 3px inline-start bar in the tone colour; the icon is named (role="img")
- * with the tone's word, so the tone is never colour alone.
+ * A callout: the kit's Note in the block's tone (G5). The Note's circle is decorative, so the tone's word is said first
+ * to assistive technology («تنبيه: قبل أن تشتري») — never colour alone. A <div>, not an unnamed <aside> landmark.
  */
 function Callout({ tone, title, text }: { tone: CalloutTone; title?: string; text: string }) {
   const t = useT("ui-overlays");
-  const look = CALLOUT[tone];
+  const said = <VisuallyHidden>{`${t(`blocks.${tone}`)}: `}</VisuallyHidden>;
   return (
-    <aside className={cx("callout", look.className)}>
-      <Icon name={look.icon} size={20} title={t(`blocks.${tone}`)} className="mt-0.5" />
-      <div className="grid min-w-0 gap-1">
-        {title ? <p className={cx("callout__title", look.tone)}>{title}</p> : null}
-        <p className="text-ink">{text}</p>
-      </div>
-    </aside>
+    <Note
+      tone={tone}
+      icon={CALLOUT_ICON[tone]}
+      title={
+        title ? (
+          <>
+            {said}
+            {title}
+          </>
+        ) : undefined
+      }
+    >
+      {title ? (
+        text
+      ) : (
+        <>
+          {said}
+          {text}
+        </>
+      )}
+    </Note>
   );
 }
 

@@ -65,7 +65,8 @@ export function CompatibilitySlot({ rows, className }: { rows: readonly ProductC
         <h2 id={id} className="type-h2 text-ink">
           {t("compat.title")}
         </h2>
-        <p className="type-sm text-ink-2">{t("compat.reason")}</p>
+        {/* the rule on what the states mean is reading text: 16 / 1.75 below 1024 (product.css .pp-fact, G7) */}
+        <p className="pp-fact text-ink-2">{t("compat.reason")}</p>
       </div>
       <CompatList rows={listRows(shown)} />
       {rest.length > 0 ? (

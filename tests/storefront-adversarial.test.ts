@@ -751,7 +751,10 @@ describe("GET /api/files/:fileId — a shopper's own proof only", () => {
       ["another order's token", {}],
       ["token with the right shape, wrong value", {}],
     ];
-    const queries = ["", "", "", `?t=${randomToken()}`, `?t=${otherOrder.accessToken}`, `?t=${order.accessToken.slice(0, -2)}AA`];
+    // the right shape, a wrong value: the real token with its last two characters changed, whatever they are
+    const nearToken = `${order.accessToken.slice(0, -2)}${order.accessToken.endsWith("AA") ? "BB" : "AA"}`;
+    expect(nearToken).not.toBe(order.accessToken);
+    const queries = ["", "", "", `?t=${randomToken()}`, `?t=${otherOrder.accessToken}`, `?t=${nearToken}`];
     for (const [index, [label, init]] of attempts.entries()) {
       const answer = await hit(`/api/files/${fileId}${queries[index]}`, filesLoader as Handler, { ...init, params: { fileId } });
       expect(answer.status, label).toBe(404);

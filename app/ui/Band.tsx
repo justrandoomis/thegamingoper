@@ -16,6 +16,7 @@ import type { Gel } from "./PlatformLed";
  *   <Band kind="platform" platform="playstation" as={LocaleLink} to="/platform/playstation" media={<img …/>}>…</Band>
  *   <Band kind="device" platform="nintendo" media={…}>…</Band>          the device-hub head
  *   <Band kind="wallet">…</Band>                                        crimson, no light (light) · cabinet (dark)
+ *   <Band kind="wallet" gloss>…</Band>                                  the reference's glossy «محفظتي» card (v2.1)
  *
  * Anatomy: the base, a pre-painted light layer (pointer-events: none; only its opacity ever moves: .86 → 1 under the
  * pointer, dark only), a hardware layer clipped at the sides and the bottom only — so the hardware can stand above the
@@ -36,6 +37,8 @@ export type BandOwnProps = {
   contentClassName?: string;
   /** The contact ellipse under the hero product. */
   contact?: boolean;
+  /** wallet: the reference's glossy «محفظتي» card — the specular top band, a sheen at the inline end, the tiles' rim. */
+  gloss?: boolean;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
@@ -70,10 +73,10 @@ const CLIP: Record<BandKind, string> = {
   wallet: "",
 };
 
-export function Band<C extends ElementType = "section">({ as, kind, platform, media, mediaClassName, contentClassName, contact = false, className, style, children, ...rest }: BandProps<C>) {
+export function Band<C extends ElementType = "section">({ as, kind, platform, media, mediaClassName, contentClassName, contact = false, gloss = false, className, style, children, ...rest }: BandProps<C>) {
   const Tag: ElementType = as ?? "section";
   return (
-    <Tag {...rest} className={cx("band", KIND_CLASS[kind], className)} data-gel={platform} data-band={kind} style={style}>
+    <Tag {...rest} className={cx("band", KIND_CLASS[kind], gloss && "band--gloss", className)} data-gel={platform} data-band={kind} style={style}>
       <span className="band__light" aria-hidden="true" />
       {media ? (
         <span className={cx("pointer-events-none z-0", CLIP[kind], mediaClassName ?? MEDIA_CLASS[kind])}>

@@ -67,7 +67,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   const recommendations = cart.lines.length > 0 ? cartShelves(db, ctx, customerId, cart) : await emptyCartShelves(db, ctx, customerId);
   // a stored code under its minimum says how much more is needed (client round 1, QA)
   const shortfall = cart.couponIssue?.reason === "min_subtotal" ? await couponShortfall(db, request, cart.couponIssue.code, ctx.now, cart) : null;
-  return data({ cart, facts, demo: ctx.storeMode === "demo", recommendations, couponShortfall: shortfall, i18n: messagesFor(ctx.locale, "checkout", "errors") }, { headers: NO_STORE });
+  return data({ cart, facts, demo: ctx.storeMode === "demo", recommendations, couponShortfall: shortfall, signedIn: session !== null, i18n: messagesFor(ctx.locale, "checkout", "errors") }, { headers: NO_STORE });
 }
 
 /**
@@ -126,6 +126,8 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
   const locale = useLocale();
   const online = useOnline();
   const { facts, demo } = loaderData;
+  /** A signed-in shopper is never told «اطلب بدون حساب», and finds their orders in their account. */
+  const signedIn = loaderData.signedIn === true;
   // A coupon answer replaces the editor's starting view (a newer loader view does the same).
   const [override, setOverride] = useState<{ base: CartWithIssue; cart: CartWithIssue } | null>(null);
   const base = override && override.base === loaderData.cart ? override.cart : (loaderData.cart as CartWithIssue);
@@ -153,10 +155,11 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
             </Key>
           }
         />
-        {/* the before's line under the card (client note 7) */}
+        {/* the before's line under the card (client note 7): a guest looks an order up by its number and phone; a
+            signed-in shopper's orders are in their account (QA 2026-11-13) */}
         <p className="co-empty__track">
-          <TextLink as={LocaleLink} to="/track" icon="package" arrow={false}>
-            {t("cart.trackAsk")}
+          <TextLink as={LocaleLink} to={signedIn ? "/account/orders" : "/track"} icon="package" arrow={false}>
+            {t(signedIn ? "cart.ordersAsk" : "cart.trackAsk")}
           </TextLink>
         </p>
         {emptiedHere ? null : <RecommendationsSlot context="cart" result={loaderData.recommendations} className="co-empty__shelf" />}
@@ -241,7 +244,7 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
                 {why(reasonId)}
               </div>
             }
-            trust={<TrustStrip variant="line" cod={facts.cod} guest returnsTo="/policies/returns" />}
+            trust={<TrustStrip variant="line" cod={facts.cod} guest={!signedIn} returnsTo="/policies/returns" />}
           >
             <Adjustments discounts={view.discounts ?? []} waiver={view.shippingWaiver ?? null} />
           </OrderSummary>

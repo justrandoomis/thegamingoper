@@ -3,7 +3,7 @@
  *
  *   <DemoStrip />       while STORE_MODE is "demo": the kit's amber strip (<DemoNote variant="strip">) above the phone
  *                       header — never inverted, never sticky, gone from 1024 (the nav row's demo chip takes over). The
- *                       whole strip is one link to the footer's full statement (#shell-demo).
+ *                       whole strip is one in-page link to the footer's full statement (#shell-demo), 44px tall.
  *   <ShellOffline />    the kit's offline banner, pinned right under the sticky header for the whole page (sticky in the
  *                       shell's column, so it never scrolls away while the shell counts it): on pages the shopper fills
  *                       in (checkout, task flows, /account — ./chrome shellChrome `offline`) «ما كتبته باقٍ في الصفحة»;
@@ -23,8 +23,18 @@ import type { OfflineWords } from "./chrome";
 /** Where the full demo statement lives: the footer's legal row (both footers render it in demo mode). */
 export const DEMO_NOTE_ID = "shell-demo";
 
+/**
+ * A plain in-page link, as the skip link: the browser keeps the whole address — a guest's order link (`?t=`), a filter
+ * — and only scrolls. The kit's strip link is a router link, and a router link to "#shell-demo" is resolved against
+ * the PATH alone: on /order/<ref>?t=<token> a tap opened the order without its token («تعذّر فتح هذا الطلب»), and
+ * focusing it prefetched that token-less page (a 404 in the console). The kit's strip (a <p> without `to`) is the face.
+ */
 export function DemoStrip() {
-  return <DemoNote variant="strip" to={`#${DEMO_NOTE_ID}`} className="shell-strip lg:hidden" />;
+  return (
+    <a href={`#${DEMO_NOTE_ID}`} className="shell-strip lg:hidden">
+      <DemoNote variant="strip" />
+    </a>
+  );
 }
 
 export function ShellOffline({ words }: { words: OfflineWords }) {

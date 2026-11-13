@@ -11,8 +11,9 @@ where it and the v2 text further down disagree, v2.1 wins).
 |---|---|
 | `app/routes/storefront/product/product.tsx` | the page: loader, meta (`shellMeta`, `og:image` = `productShareImage`), `handle.shell.tabBar = false`, `shouldRevalidate` (a change of `?v=` only skips the loader), the v2.1 layout (stage card, information column at the inline start from 1024, the brand line `BrandLine`, the fact line), the phone buy bar inside the shell's `<TaskBar>`, JSON-LD |
 | `…/components/StageCard.tsx` | v2.1: the kit's `Gallery` as a soft stage card — the round clay keys over it (back: real history Back, else the category; share), the sliding ring of the chosen thumbnail (kit `useSlidingIndicator` on the tray), the step direction of a picture change; pure `stageStep`, `stageGel` (the light's colour), `stageBack` |
-| `…/components/BuyStrip.tsx` | v2.1: the phone / tablet bar — the kit's `BuyControls` (clay tray + glossy red «أضف إلى السلة»), «✓ في السلة» + «عرض السلة (n)» after an add, the kit's `BuyBar bare` words for sold out / coming soon, a failure or offline line above; pure `stripState` |
-| `…/product/QuickPreview.tsx` | `<QuickPreview slug name card? image? open onClose />` and `fetchPreview(slug, locale, signal?)` — the quick look (export signature unchanged) |
+| `…/components/BuyStrip.tsx` | v2.1: the phone / tablet bar — the kit's `BuyControls` (clay tray + glossy red «أضف إلى السلة»), «✓ في السلة» + «عرض السلة (n)» after an add (it takes the focus the swapped key had: `handoff.ts`), the kit's `BuyBar bare` words for sold out / coming soon, a failure or offline line above; pure `stripState` |
+| `…/product/handoff.ts` | QA wave C: `useFocusHandoff(swapped)` → `{ area, arm }` — when a confirmed add swaps «أضف إلى السلة» for «عرض السلة (n)» (the bar, the quick look's foot), the new key (`data-focus-target`) takes the focus the old one had, without scrolling; never when focus had moved on. Pure core `focusHandoff()`, `FOCUS_TARGET` |
+| `…/product/QuickPreview.tsx` | `<QuickPreview slug name card? image? open onClose />` and `fetchPreview(slug, locale, signal?)` — the quick look (export signature unchanged); its foot hands focus to «عرض السلة (n)» after an add, so it stays inside the modal sheet |
 | `…/product/preview.ts` | `GET /api/product-preview/:slug?locale=` → `{ ok, product: ProductPreview, i18n }` (404 `{ ok:false, code:"not_found", i18n }`) |
 | `…/product/useVariant.ts` | `?v=` handling: `shownDefault`, `variantFor`, `searchFor`, `onlyVariantChanged`, `useVariantInUrl` |
 | `…/product/text.ts` | the researched text as the page shows it: `factParts` / `factLine` / `factRow` (+ `FactRow`), `claimsPreorder`, `withoutPreorder`, `proseWithoutPreorder`, `keepTokens` (a name's protected tokens never break — a short token with a digit, a capital or «+», or a unit after a number; the small words of a sentence stay breakable), `isLongName` / `LONG_NAME_CHARS` (the h1 one step down on phones) |
@@ -22,12 +23,12 @@ where it and the v2 text further down disagree, v2.1 wins).
 | `…/components/Facts.tsx` | v2.1: `SideNotes` — the side information as the kit's `<Note>`s under «التوصيل والدفع والإرجاع» (payment + transfer rule, delivery + guest checkout or the code fact, returns, warranty); `paymentMethods`, `offersTransfer`, `methodsList`, `sentenceStart`, `ASK_HREF` |
 | `…/components/VariantPicker.tsx` | option cards with prices (figure and «د.ع» never split) · swatches · chips (`pickerLook`); no-script GET form — for swatches a `<noscript>` group of native radio chips (the swatches hide under `noscript:`) |
 | `…/components/Actions.tsx` | `SecondaryActions` (WishlistKey · CompareToggle · `ShareKey`, a ghost key; `shareFrom="lg"`: the stage carries share below 1024), `useShare` |
-| `…/components/Details.tsx` | `Section`, `BeforeYouOrder` (v2.1: the kit's warning `Note`), `Highlights` (v2.1: a checked list, `type-read`), `About` (65ch, `type-read`), `GameFacts` (the key-card / code sentence as an info `Note`), `Rows`, `Specs` (+ `sourceLine`), `InTheBox` (+ `boxPhoto`) |
+| `…/components/Details.tsx` | `Section`, `BeforeYouOrder` (v2.1: the kit's warning `Note`), `Highlights` (v2.1: a checked list, `type-read`), `About` (65ch, `type-read`), `GameFacts` (the key-card / code sentence as an info `Note`), `Rows` (the values are facts: `.pp-fact`, 16 / 1.75 below 1024, 14 from 1024), `Specs` (+ `sourceLine` — that line a `.pp-fact` too; the sources as citations: the title link over its publisher, each in its own language and direction through the devices area's `SourceText`), `InTheBox` (+ `boxPhoto`) |
 | `…/components/Slots.tsx` | cross-area pieces: `CompatibilitySlot` (+ `compatRows`), `DeviceHubSlot`, `RecommendationsSlot`; `alternativesPath` (where «شاهد بدائل» leads) |
 | `…/components/SetContents.tsx`, `MixedText.tsx`, `Reviews.tsx` | store-set rows (each opens the quick look); bracket-safe Latin isolation (comma thousands are one run; a name goes on across a spaced joiner, «32GB / 1TB»; protected tokens kept together); reviews only when real |
 | `app/server/services/catalog/product.server.ts`, `product-types.ts` | read layer (owner: data, D) — `getProductDetail`, `ProductDetail`, `VariantDetail`, `ProductPreview`, `galleryFor`, `selectVariant` |
 | `app/i18n/messages/product.ts` | the "product" namespace (ar source, en, ckb) |
-| `tests/product.test.ts` | 65 tests on the demo catalogue + a test world (server renders of the version picker, the box list, the hub row, the price block, the notes, «قبل أن تطلب», highlights and the phone bar inside a `createRoutesStub` router; `keepTokens` over every catalogue text — and the longest run it makes; the price block's own stylesheet; the tray's geometry at 360; the offline sentence said once) |
+| `tests/product.test.ts` | 69 tests on the demo catalogue + a test world (server renders of the version picker, the box list, the hub row, the price block, the notes, «قبل أن تطلب», highlights, the specs and the phone bar inside a `createRoutesStub` router; `keepTokens` over every catalogue text — and the longest run it makes; the price block's own stylesheet; the tray's geometry at 360; the offline sentence said once; the focus handoff and its wiring; the specs' reading size; the sources' languages; the one-line breadcrumb bar) |
 
 v2's removal of the before's `StageOrbs.tsx` stands; v2.1 puts round clay keys back on the stage below 1024 (back and
 share, `StageCard`), while the header's cart stays the fly-to-cart target at every width and the shell's task header
@@ -58,7 +59,8 @@ after an add, quick look, JSON-LD, every state, the used-unit link through the s
   السلة (n)» after an add; it slides in with the page.
 - **768–1023.** The same, the stage card inside the page column with every corner round (16:11), 16px under the header.
 - **From 1024.** The before's 5 + 7: the information column at the inline START (breadcrumbs — up to the category at
-  1024–1279, where the 375–450px column cannot hold the current page on the same line; the whole trail from 1280 —, brand line, name, facts,
+  1024–1279, where the 375–450px column cannot hold the current page on the same line; the whole trail from 1280, ONE
+  line: a long name ends with an ellipsis at the end of its own run, «The Legend of Zelda: Ocar…» —, brand line, name, facts,
   price block, versions, the tray + «أضف إلى السلة», المفضلة · قارن · مشاركة, the notes, highlights) and the gallery
   at the inline END, sticky; below: about + «يعمل مع», game facts, specs | set + box, the hub row, reviews (real only)
   and the shelves, each fading up as it arrives (`Reveal`).
@@ -66,8 +68,8 @@ after an add, quick look, JSON-LD, every state, the used-unit link through the s
   colour's set inflates in place — the kit's entrance); the chosen thumbnail's ring slides along the tray; the bar
   slides up with the page; the add key presses and the bead flies (kit). All instant under reduced motion (OS or the
   store's switch) and the lite tier.
-- **Readable.** Facts, notes, the fee note and highlights ≥ 16px with line height ≥ 1.7 on phones (measured); name >
-  price > versions > notes.
+- **Readable.** Facts, notes, the fee note, highlights, the specification and game-fact values and the line on their
+  sources ≥ 16px with line height ≥ 1.7 on phones and tablets (measured); name > price > versions > notes.
 
 ## The page in v2 (spec §6.7) — kept for the rules; the arrangement is now v2.1's (above)
 
@@ -240,6 +242,40 @@ states. Shots and scripts: `…/scratchpad/fb1/shots/product-review/`, `…/scra
 Outside the area (reported): a card → product zoom on a phone aborts its view transition with an uncaught
 `InvalidStateError: … Viewport size changed` (Chromium mobile emulation, from listings and the home; not from the
 product page — it stays with the page hidden; a plain router navigation is clean).
+
+## QA fixes (wave C, 2026-11-13)
+
+Five auditors checked the store against the client's notes; the product area's findings, all fixed (tests first):
+
+- **Focus lost after «أضف إلى السلة»** (WCAG 2.4.3). The phone / tablet bar and the quick look's pinned foot replace
+  the focused key with «✓ في السلة» + «عرض السلة (n)»; removing it dropped focus to `<body>` — in the quick look, out
+  of the modal sheet (the next Tab started again at «التفاصيل الكاملة»). → `handoff.ts`: on the confirmed add, while the
+  old key is still there, the bar / foot notes whether focus is inside it; after the swap «عرض السلة (n)»
+  (`data-focus-target`) takes it, without scrolling. Never when focus had moved on; a tap or click moves it too, with no
+  ring (`:focus-visible` stays false); the live region still says the add. The kit's own `BuyBar` (used unit page) has
+  the same swap — asked of the kit owner.
+- **Specification values 14 / 1.5 and the source line 13 on phones** (G7). → `.pp-fact`: the values of `Rows` (specs and
+  game facts), the line on where they come from and «لا توجد مواصفات…» read at 16 / 1.75 below 1024; 14 from 1024 (half
+  the page). The sources' titles read at 16 regular there too, each title over its publisher (a stacked citation: a
+  wrapping title no longer splits «Nintendo of / America» across lines).
+- **Sources in another language** («شركة Valve تعلن…», «機能・仕様 | Nintendo Switch 2») had no `lang`: an English or
+  Sorani screen reader read them with the page's voice. → every title and publisher is a `<bdi>` with the language and
+  direction its letters say (`SourceText`, devices area: Arabic, Sorani, Japanese, Korean, English; no claim otherwise).
+- **The breadcrumb bar at ≥ 1280**: a long name («‹ The Legend of Zelda: Ocarina of Time») sat alone on a second line,
+  chevron first. → where the trail names the product (768–1023, from 1280) it is ONE line: the name shrinks and ends
+  with an ellipsis at the end of its own run (the isolate's direction: «The Legend of Zelda: Ocar…»). The bar itself
+  has `min-inline-size: 0` — a grid item's automatic minimum is its content's, and the one line widened the column's
+  implicit track (the price line was cut under the gallery at 1280 in the first try).
+
+Verified: `tests/product.test.ts` 69 pass (4 new, red first; no earlier assertion changed) · flows (puppeteer, Edge):
+Enter on the bar's key → focus on «عرض السلة (1)» with its ring at 390 / 768 in ar, en, ckb, light and dark; the quick
+look from `/c/controllers`, `/platform/playstation` and the home hero at 390 and 1440 → focus on «عرض السلة (1)»
+inside the dialog, every next Tab inside it · census at 390 (every `<details>` open): the specs' small runs 10 → 0
+(left: the kit's section-head reason, the shell's footer and preference notes, a version card label; «يعمل مع»'s line
+on what the states mean is a `.pp-fact` too) · breadcrumbs: every product in ar/en/ckb (315 pages per width) one line
+inside the column — at 1280 83 long names cut at their end (at least 107px of the name shown), at 768 9 (at least
+407px) · language scan 0 leaks · `lint-design --strict` 0. Shots and scripts:
+`…/scratchpad/fb1/shots/C-fix-product/`, `…/scratchpad/fb1/work/C-fix-product/`.
 
 ## Not done / limits
 

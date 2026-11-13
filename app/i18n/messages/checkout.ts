@@ -40,6 +40,7 @@ export default defineMessages({
       browse: "تسوّق الأجهزة",
       trackLink: "تتبّع طلبك",
       trackAsk: "طلبت من قبل؟ تتبّع طلبك",
+      ordersAsk: "طلبت من قبل؟ طلباتك في حسابك",
       blockedNotice: "بعض المنتجات في سلتك لم تعد متاحة للشراء. أزلها لتتمكن من إتمام الطلب.",
       blocked: "أزل المنتجات غير المتاحة أولاً.",
       offline: "لا يوجد اتصال. سلتك محفوظة على هذا الجهاز.",
@@ -95,6 +96,9 @@ export default defineMessages({
       rest: "الباقي للدفع",
       label: "ادفع {balance} من رصيد محفظتك، والباقي بالطريقة التي تختارها",
       hint: "الباقي {rest}. رصيد الاستبدال جزء من رصيد محفظتك.",
+      restShort: "الباقي {rest}",
+      restCod: "تدفع الباقي نقداً للمندوب عند استلام الطلب.",
+      restTransfer: "تحوّل الباقي إلى المتجر، ثم ترفع صورة الحوالة من صفحة الطلب.",
       none: "رصيدك {balance} يكفي للطلب كله: اختر «محفظة طمطم».",
     },
     points: {
@@ -151,6 +155,7 @@ export default defineMessages({
       termsLink: "الشروط",
       returnsLink: "سياسة الإرجاع",
       placeTotal: "أكّد الطلب · {total}",
+      placeRest: "أكّد الطلب · الباقي {rest}",
     },
     steps: {
       label: "خطوات إتمام الطلب",
@@ -622,6 +627,7 @@ export default defineMessages({
       browse: "Shop devices",
       trackLink: "Track your order",
       trackAsk: "Ordered before? Track your order",
+      ordersAsk: "Ordered before? Your orders are in your account",
       blockedNotice: "Some items in your cart can no longer be bought. Remove them to check out.",
       blocked: "Remove the unavailable items first.",
       offline: "No connection. Your cart is saved on this device.",
@@ -677,6 +683,9 @@ export default defineMessages({
       rest: "Left to pay",
       label: "Pay {balance} from your wallet balance, and the rest by the method you choose",
       hint: "The rest is {rest}. Trade-in credit is part of your wallet balance.",
+      restShort: "{rest} left",
+      restCod: "You pay the rest to the courier in cash when the order arrives.",
+      restTransfer: "You transfer the rest to the store, then upload a photo of the transfer on the order page.",
       none: "Your balance of {balance} covers the whole order: choose TamTam wallet.",
     },
     points: {
@@ -733,6 +742,7 @@ export default defineMessages({
       termsLink: "terms",
       returnsLink: "returns policy",
       placeTotal: "Confirm order · {total}",
+      placeRest: "Confirm order · {rest} left",
     },
     steps: {
       label: "Checkout steps",
@@ -1192,6 +1202,7 @@ export default defineMessages({
       browse: "ئامێرەکان بکڕە",
       trackLink: "بەدواداچوونی داواکاری",
       trackAsk: "پێشتر داواکاریت کردووە؟ بەدوایدا بچۆ",
+      ordersAsk: "پێشتر داواکاریت کردووە؟ داواکارییەکانت لە هەژمارەکەتدان",
       blockedNotice: "هەندێک بەرهەمی ناو سەبەتەکەت چیتر ناکڕدرێن. لایان ببە بۆ ئەوەی داواکارییەکە تەواو بکەیت.",
       blocked: "سەرەتا بەرهەمە بەردەست نەبووەکان لاببە.",
       offline: "هێڵی ئینتەرنێت نییە. سەبەتەکەت لەسەر ئەم ئامێرە پاشەکەوت کراوە.",
@@ -1247,6 +1258,9 @@ export default defineMessages({
       rest: "ماوە بۆ پارەدان",
       label: "{balance} لە باڵانسی جزدانەکەت بدە، و ئەوەی ماوە بەو ڕێگایەی هەڵیدەبژێریت",
       hint: "ئەوەی ماوە {rest}. باڵانسی گۆڕینەوە بەشێکە لە باڵانسی جزدانەکەت.",
+      restShort: "ماوە {rest}",
+      restCod: "لە کاتی گەیشتنی داواکارییەکەدا ئەوەی ماوە بە نەختی دەدەیت بە گەیەنەر.",
+      restTransfer: "ئەوەی ماوە حەواڵە دەکەیت بۆ فرۆشگاکە، پاشان لە پەڕەی داواکارییەکەدا وێنەی حەواڵەکە بار دەکەیت.",
       none: "باڵانسەکەت ({balance}) بەشی هەموو داواکارییەکە دەکات: «جزدانی طمطم» هەڵبژێرە.",
     },
     points: {
@@ -1303,6 +1317,7 @@ export default defineMessages({
       termsLink: "مەرجەکان",
       returnsLink: "سیاسەتی گەڕاندنەوە",
       placeTotal: "داواکارییەکە پشتڕاست بکەرەوە · {total}",
+      placeRest: "داواکارییەکە پشتڕاست بکەرەوە · ماوە {rest}",
     },
     steps: {
       label: "هەنگاوەکانی تەواوکردنی داواکاری",

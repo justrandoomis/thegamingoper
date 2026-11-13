@@ -8,6 +8,7 @@ import { Disclosure } from "~/ui/Disclosure";
 import { SectionHead } from "~/ui/SectionHead";
 import { TextLink } from "~/ui/TextLink";
 import { deviceIn } from "./format";
+import { SourceText } from "./SourceText";
 
 const GROUP_ICON: Record<SpecGroupId, IconName> = {
   performance: "cpu",
@@ -23,8 +24,10 @@ const GROUP_ICON: Record<SpecGroupId, IconName> = {
 /**
  * The researched spec sheet (device_models.specs), grouped — performance, screen, storage and expansion, battery,
  * connectivity, design, system and language — as paper panels of rows between hairlines: the label 14/600 in ink-2,
- * the value 14 in ink (v2 §6.6, the PDP's spec rows). Labels and values are the research's own words in the page's
- * language; where they come from is one tap away (a disclosure with the sources). No sheet → no section.
+ * the value in ink — a fact in reading size on phones and tablets (16 / 1.75, v2.1 G7), 14 from 1024 (v2 §6.6, the
+ * PDP's spec rows). Labels and values are the research's own words in the page's language; where they come from is
+ * one tap away (a disclosure with the sources, each publisher and title in its own language and direction: an Arabic
+ * title on an English page is read as Arabic). No sheet → no section.
  */
 export function SpecSection({ hub }: { hub: DeviceHub }) {
   const t = useT("devices");
@@ -41,12 +44,13 @@ export function SpecSection({ hub }: { hub: DeviceHub }) {
       </div>
       {hub.sources.length > 0 ? (
         <Disclosure summary={t("specs.sources")} icon="book-open" variant="panel" className="mt-(--gap-card)">
-          <p className="type-sm text-ink-2">{t("specs.sourcesNote")}</p>
-          <ul role="list" className="mt-2 grid">
+          <p className="devhub-read text-ink-2">{t("specs.sourcesNote")}</p>
+          <ul role="list" className="devhub-sources mt-2 grid">
             {hub.sources.map((source) => (
               <li key={source.url}>
                 <TextLink href={source.url} external>
-                  <bdi>{[source.publisher, source.title].filter(Boolean).join(" — ") || hostOf(source.url)}</bdi>
+                  {/* «publisher — title» as one run in the title's language (the publisher an isolate inside it) */}
+                  <SourceText text={source.title ?? source.publisher ?? hostOf(source.url)} lead={source.title ? source.publisher : null} />
                 </TextLink>
               </li>
             ))}

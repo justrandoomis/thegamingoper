@@ -7,6 +7,7 @@ import { redirect } from "react-router";
 import type { ProductCardData } from "~/lib/dto";
 import { pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db.server";
+import { normalizeSearchText } from "~/server/db/search.server";
 import { isAppError } from "~/server/errors";
 import { getListingFilterOrder } from "~/server/services/admin/cms/navigation.server";
 import { LISTING_FILTER_GROUPS } from "~/server/services/admin/cms/rules";
@@ -93,6 +94,28 @@ export async function wishedOf(db: Db, ctx: { cookie: (name: string) => string |
  */
 export function arrivalsShelf(cards: readonly ProductCardData[]): ProductCardData[] {
   return cards.map((card) => (card.badge === "new" || card.isNew ? { ...card, badge: card.badge === "new" ? null : card.badge, isNew: false } : card));
+}
+
+/**
+ * A corrected spelling as the catalogue writes it. The search service corrects to its index's words, folded and in
+ * lower case («nintendo»); the page's title and the header's «هل تقصد» say them as the names do («Nintendo»,
+ * «PlayStation» — the platform names of the glossary): each word as the first of `names` (the platforms' names, the
+ * hubs offered, the products found) that has it, else as corrected. Links keep the folded words.
+ */
+export function displaySpelling(corrected: string, names: readonly string[]): string {
+  const forms = new Map<string, string>();
+  for (const name of names) {
+    for (const raw of name.split(/\s+/)) {
+      // the word without the punctuation around it («(2020)», «Pro,»)
+      const word = raw.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+      const key = normalizeSearchText(word).trim();
+      if (word && key && !key.includes(" ") && !forms.has(key)) forms.set(key, word);
+    }
+  }
+  return corrected
+    .split(" ")
+    .map((word) => forms.get(word) ?? word)
+    .join(" ");
 }
 
 /** A category or platform slug as the URL may carry it (anything else is a 404 without touching the database). */

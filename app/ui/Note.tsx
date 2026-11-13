@@ -14,8 +14,9 @@ import { cx } from "./cx";
  *   </Note>
  *   <Note tone="info" icon="info" title={t("transferTitle")}>{t("transferRule")}</Note>
  *   <Note tone="warning" title={t("beforeYouOrder")}>{t("checkCompat")}</Note>
+ *   <Note tone="danger" title={t("stopNow")}>{t("unplugIt")}</Note>             a safety warning: the circle and the title red
  *   <Note tone="demo">{t("demoOrder")}</Note>                                   «طلب تجريبي…» in the demo pair
- *   <Note variant="line" icon="credit-card">{t("payLine")}</Note>               a quiet line with an icon, no card
+ *   <Note variant="line" icon="credit-card">{t("payLine")}</Note>               a quiet line with an icon, no card (16px)
  *   <Note variant="flat" …>                                                     inside another card or a sheet
  *
  * Replaces bold side paragraphs and tinted callouts with inline links (the v2 product page's payment sentence, the
@@ -23,7 +24,7 @@ import { cx } from "./cx";
  * does («سجّل الدخول»). Never for errors that block a form (use the field error and the form summary) and never for
  * the demo marking's strip or chip (DemoNote).
  */
-export type NoteTone = "neutral" | "info" | "success" | "warning" | "demo";
+export type NoteTone = "neutral" | "info" | "success" | "warning" | "danger" | "demo";
 
 export type NoteProps = {
   /** The short bold line. Optional: a note can be one sentence. */
@@ -33,7 +34,7 @@ export type NoteProps = {
   /** An action on its own line (a <TextLink> with its arrow, or a small <Key>). */
   action?: ReactNode;
   /** The icon in the circle. Default per tone: neutral info · info info · success check-circle · warning warning ·
-   *  demo info. */
+   *  danger warning-circle · demo info. */
   icon?: IconName;
   tone?: NoteTone;
   /** card (default): the soft raised card · flat: no raise (inside another card) · line: a quiet line, no card. */
@@ -54,6 +55,7 @@ const TONE_ICON: Record<NoteTone, IconName> = {
   info: "info",
   success: "check-circle",
   warning: "warning",
+  danger: "warning-circle",
   demo: "info",
 };
 

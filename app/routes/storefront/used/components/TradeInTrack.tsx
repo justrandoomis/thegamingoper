@@ -78,7 +78,7 @@ export function TradeInTrack({ id, className }: { id: string; className?: string
           <h2 id={headingId} className="type-h3 text-ink">
             {t("tradein.start.track.title")}
           </h2>
-          <p className="type-sm text-ink-2">{t("tradein.start.track.text")}</p>
+          <p className="used-read text-ink-2">{t("tradein.start.track.text")}</p>
         </div>
       </div>
       <Form method="post" action={action} noValidate onSubmit={onSubmit} className="grid gap-4">
@@ -133,8 +133,8 @@ export function TradeInTrack({ id, className }: { id: string; className?: string
           </Key>
         </div>
       </Form>
-      <p className="flex items-start gap-2 type-xs text-ink-2">
-        <Icon name="lock" size={16} className="mt-0.5 shrink-0" />
+      <p className="used-read flex items-start gap-2 text-ink-2">
+        <Icon name="lock" size={16} className="mt-1.5 shrink-0" />
         {t("track.lookup.why")}
       </p>
     </section>

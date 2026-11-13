@@ -95,6 +95,11 @@
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* Arabic marks reach past the 20px line box — the tanween over a tall letter («عنواناً», «شكراً»), the two kasras of
+     «جارٍ», the kasra of «اشترِ» — and the clip cut them off, so a red primary key read like a misspelling (fix round
+     2026-11-13). The clip box is taller than the line by the padding; the negative margins keep the key's layout */
+  padding-block: 0.45em;
+  margin-block: -0.45em;
 }
 
 /* ── sizes: 48 (default) and 40, nothing else ── */
@@ -115,6 +120,24 @@
 .key--block {
   display: flex;
   inline-size: 100%;
+}
+/* <Key wrap>: a long label takes a second line, balanced, and the key grows from its 48px (8px above and below the
+   words) instead of cutting them — Sorani labels on home, support, used, account and content (fix round 2026-11-13) */
+.key--wrap {
+  white-space: normal;
+}
+.key--wrap > .key__cap {
+  padding-block: 8px;
+}
+.key--wrap .key__label {
+  overflow: visible;
+  text-overflow: clip;
+  text-wrap: balance;
+}
+/* <Key fit="compact">: a task bar's key on a 320–375 phone (two keys side by side): 44px tall, 12px sides */
+.key--compact {
+  --h: var(--target);
+  --px: 12px;
 }
 
 /* ── variants: only custom properties ── */
@@ -141,6 +164,11 @@
   --on: var(--on-band-label);
   --cap-shadow: var(--key-lip), var(--key-belly);
   --cast: var(--key-cast);
+}
+/* on a platform's band ([data-gel]) the white key says its words in the band's deep colour (≥ 7.6:1 on the white face;
+   fix round 2026-11-13 — the home hero set it locally): crimson stays the crimson bands' */
+:where([data-gel]) .key--on-band {
+  --on: var(--plat-deep, var(--on-band-label));
 }
 /* secondary (the default): clay. 1.0's "ink" key renders as secondary — ink never means action. */
 .key--secondary,
@@ -244,6 +272,16 @@
 }
 .key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__mark {
   display: grid;
+}
+/* a chip's kind or device icon (<Chip icon>): 18px at the start; the check takes its place when the chip is chosen */
+.key__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+}
+.key:is([aria-checked="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .key__icon {
+  display: none;
 }
 /* a count beside the label ("الألعاب 18"): ink-2; on a selected chip, the label colour at 72% */
 .key__count {
@@ -667,7 +705,9 @@ html:not([data-motion-ready]) .key:active > .key__cap {
  *   style={{ "--glow-x": "30%", "--glow-y": "40%" }}         where the light sits (default the centre)
  *   class="glow glow--strong" · "glow glow--wide"            a stronger light · a wider one
  *   <span class="glow-layer" aria-hidden="true" />           the same light as an element, inside a positioned box
- * The element keeps its own background transparent where the light should show. */
+ * The element keeps its own background transparent where the light should show. By default the light reaches above
+ * and below its box, never past its inline edges (fix round 2026-11-13: the earlier −6% sideways scrolled phones near
+ * the screen's edges); a page that sets --glow-inset wider than its box clips it itself (the home's overflow-x: clip). */
 .glow {
   position: relative;
   isolation: isolate;
@@ -676,7 +716,7 @@ html:not([data-motion-ready]) .key:active > .key__cap {
 .glow-layer {
   content: "";
   position: absolute;
-  inset: var(--glow-inset, -12% -6%);
+  inset: var(--glow-inset, -12% 0);
   z-index: -1;
   background: radial-gradient(var(--glow-size, 55% 60%) at var(--glow-x, 50%) var(--glow-y, 50%), rgb(var(--glow-rgb, var(--gel, var(--gel-brand))) / var(--glow-alpha, var(--glow-a))), transparent 72%);
   pointer-events: none;
@@ -776,6 +816,16 @@ html:not([data-motion-ready]) .key:active > .key__cap {
 }
 .band--wallet > .band__light {
   background: radial-gradient(70% 90% at calc(50% + 40% * var(--dir)) 100%, var(--wallet-light), transparent 72%);
+}
+/* <Band kind="wallet" gloss>: the reference's glossy «محفظتي» card (fix round 2026-11-13; the account drew it locally):
+   the tiles' specular band on the top edge, a sheen at the inline end (never behind the words at the start), a
+   deepening toward the bottom, the tiles' rim and the red key's soft cast */
+.band--wallet.band--gloss {
+  background-image:
+    var(--tile-specular),
+    radial-gradient(42% 90% at calc(50% + 50% * var(--dir)) 30%, var(--tile-sheen), transparent 72%),
+    linear-gradient(to bottom, transparent 42%, color-mix(in oklab, var(--red-deep) 42%, transparent) 100%);
+  box-shadow: var(--tile-rim), var(--band-rim), var(--key-red-cast);
 }
 /* on a band, prices and quiet text take the band's ink */
 .band :is(.price, .price__cur, .price__was) {
@@ -1005,6 +1055,15 @@ html:not([data-motion-ready]) .ptile:active > .ptile__cap {
 }
 .ptile--compact .ptile__text {
   max-inline-size: 48%;
+}
+/* the compact face's words reach further across it, into the sheen behind the hardware: white «PlayStation» measured
+   4.40:1 at the 5th percentile of the pixels behind it (fix round 2026-11-13). The sheen draws behind the hardware
+   only, and the words' side is a shade deeper (≥ the flat colour's 4.95:1) */
+.ptile--compact .ptile__light {
+  background:
+    radial-gradient(28% 60% at calc(50% + 34% * var(--dir)) 58%, var(--tile-sheen), transparent 70%),
+    radial-gradient(80% 95% at calc(50% + 50% * var(--dir)) 100%, rgb(var(--gel, var(--gel-brand)) / var(--tile-gel-a)), transparent 72%),
+    linear-gradient(calc(90deg * var(--dir)), var(--tile-words-shade) 0%, var(--tile-words-shade-mid) 45%, transparent 68%);
 }
 .ptile--compact .ptile__go {
   display: none;

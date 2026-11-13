@@ -5,10 +5,12 @@
  *   TRADE_IN_PATH, WIZARD_STEPS, QUESTION_ORDER     the wizard's path and its steps, in order
  *   wizardOrder(search)                             the sideways-push order of a wizard URL (steps and questions)
  *   answeredQuestionSearch(entries, question)       a question's URL with its answer (what Back returns to)
- *   filterGroups(groups, query)                     the device search: every word in the device's or platform's name
+ *   filterGroups(groups, query)                     the device search: every word in the device's or platform's name —
+ *                                                   Arabic and Sorani spellings read as the catalogue's names
  *   tradeInRefFromInput(" ti-7k4m 2q9x ")           a typed request number → "TI-7K4M2Q9X", or null (the start page's
  *                                                   track card; the same shape as tradein.server normalizeTradeInRef)
  */
+import { nameTerms, normalizeForMatch } from "~/server/services/support/matcher";
 import type { TradeInDevice, TradeInQuestion } from "~/server/services/tradein.server";
 
 /** The wizard's path (locale-less). */
@@ -59,23 +61,31 @@ export function tradeInRefFromInput(value: unknown): string | null {
   return /^[2-9A-HJ-NP-Z]{8}$/.test(body) ? `TI-${body}` : null;
 }
 
-/** Lower-case words of a name for the device search (Latin names stay Latin; dashes and spaces collapse). Pure. */
+/**
+ * The words of a name for the device search: lower case, Arabic letter variants folded, diacritics gone, digits Latin
+ * (the support matcher's normalizeForMatch — the help centre reads names the same way), dashes and brackets as spaces.
+ * Pure.
+ */
 export function searchText(value: string): string {
-  return value
-    .toLocaleLowerCase("en")
-    .replace(/[\s\-–—_()]+/g, " ")
-    .trim();
+  return normalizeForMatch(value).replace(/-/g, " ").replace(/\s+/g, " ").trim();
 }
 
-/** The device groups narrowed to `query`: every word must appear in the device's name, slug or platform. Pure. */
+/**
+ * The device groups narrowed to `query` (the start page's device search; the server renders the same for a `?q=` sent
+ * without script). Every word typed must be found in the device's name, slug or platform — as typed, or, for a name
+ * spelled the shoppers' way («بلايستيشن», «اكس بوكس», «سويتش 2», «ستيم ديك», «روغ», Sorani), as the catalogue's words
+ * it stands for (~/server/services/support/matcher nameTerms: the help centre's own spellings; a word still being
+ * typed stands for every name it can begin). Pure.
+ */
 export function filterGroups(groups: readonly DeviceGroup[], query: string): DeviceGroup[] {
-  const words = searchText(query).split(" ").filter(Boolean);
-  if (words.length === 0) return [...groups];
+  const terms = nameTerms(query);
+  if (terms.length === 0) return [...groups];
   const out: DeviceGroup[] = [];
   for (const group of groups) {
     const devices = group.devices.filter((device) => {
-      const haystack = searchText(`${device.name} ${device.slug} ${group.platformName} ${group.platformSlug}`);
-      return words.every((word) => haystack.includes(word));
+      const text = searchText(`${device.name} ${device.slug} ${group.platformName} ${group.platformSlug}`);
+      const words = new Set(text.split(" "));
+      return terms.every((term) => text.includes(term.typed) || term.names.some((name) => name.every((word) => words.has(word))));
     });
     if (devices.length > 0) out.push({ ...group, devices });
   }

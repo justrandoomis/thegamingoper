@@ -361,10 +361,12 @@ export function PlatformName({ slug, fallback }: { slug: string; fallback: strin
 /**
  * "Everything about your device" — the before's row of soft device tiles (client note 4), each a link to its device
  * hub (/device/<model>, the devices area): the kit's raised category tile with the device's picture on the warm well
- * and its name under it. One row at every width that scrolls sideways (snapping, the gutter kept on phones); from 1024,
- * where it holds more tiles than fit, two 44px clay arrows in its head move it a tile at a time (and ← → work on the
- * row, the engine's useRail). `names="short"` (a platform hub, its name in the band): "PS5 Pro", the full name as the
- * tile's title. Each tile's picture is the shared element `device-image:<slug>`: it grows into the device hub's stage.
+ * and its name under it. One row at every width that scrolls sideways (snapping, the gutter kept on phones). From 1024
+ * the row is compact (lead decision 3, catalog.css): the title and its note on one line, the tiles 56px clay pills with
+ * the picture beside the name, and — where it holds more than fit — two 44px clay arrows at its end move it a tile at a
+ * time (and ← → work on the row, the engine's useRail). `names="short"` (a platform hub, its name in the band): "PS5
+ * Pro", the full name as the tile's title. Each tile's picture is the shared element `device-image:<slug>`: it grows
+ * into the device hub's stage.
  */
 export function DeviceRow({
   devices,
@@ -447,7 +449,7 @@ export function DeviceRow({
                 label={<span className="catalog-device__name">{shown}</span>}
                 art={
                   <SharedElement name={`device-image:${device.slug}`} slot={slot} as="span" className="render-slot absolute inset-[12%]">
-                    {device.artKey ? <Render name={device.artKey} alt="" sizes="(min-width: 1024px) 124px, (min-width: 768px) 18vw, 30vw" /> : null}
+                    {device.artKey ? <Render name={device.artKey} alt="" sizes="(min-width: 1024px) 48px, (min-width: 768px) 18vw, 30vw" /> : null}
                   </SharedElement>
                 }
               />

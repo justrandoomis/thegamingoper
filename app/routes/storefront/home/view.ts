@@ -297,6 +297,42 @@ export function photoToWarm(index: number, count: number, saveData = false): num
   return next === 0 ? null : next;
 }
 
+/**
+ * How far a banner is from its resting place in the track, in banners: 0 in view, 1 the next one (toward the reading
+ * direction's end — the left in Arabic), -1 the previous one; clamped to ±1. The boxes are the screen's (left and right
+ * edges); `pad` is the track's scroll padding at its start (the phones' gutter), `gap` the room between two banners.
+ * With the track's scroll (`scroll`, from its start, and `maxScroll`), a banner's resting place is where the scroll can
+ * bring it: the last banner of a phone's track rests at the track's end, short of the start's padding. The hero's words
+ * and its product's parallax follow it as the banners move (Hero.tsx).
+ */
+export function bannerAway(box: { rtl: boolean; trackLeft: number; trackRight: number; pad: number; gap: number; left: number; right: number; scroll?: number; maxScroll?: number }): number {
+  const step = box.right - box.left + box.gap;
+  if (!(step > 0)) return 0;
+  // the scroll that would bring the banner's start edge to the track's start (its padding kept), from here
+  let offset = box.rtl ? box.trackRight - box.pad - box.right : box.left - box.trackLeft - box.pad;
+  if (box.scroll !== undefined && box.maxScroll !== undefined) offset = Math.max(0, Math.min(box.maxScroll, box.scroll + offset)) - box.scroll;
+  // a snapped track rests on whole pixels, the boxes on fractions: within a pixel and a half, the banner is at rest
+  if (Math.abs(offset) < 1.5) return 0;
+  return Math.max(-1, Math.min(1, offset / step));
+}
+
+/** The share of a box (its left and right edges on screen) inside the track's: 0 to 1; a box with no width shows nothing. */
+export function inView(box: { left: number; right: number; trackLeft: number; trackRight: number }): number {
+  const width = box.right - box.left;
+  if (!(width > 0)) return 0;
+  return Math.max(0, Math.min(box.right, box.trackRight) - Math.max(box.left, box.trackLeft)) / width;
+}
+
+/**
+ * How much of a banner's words show, from the share of their column on screen (./inView): whole words once the
+ * column is in, none while half of it or less is, a fade between. A banner moves words first in Arabic (its copy at
+ * its start, it comes in from the end; English mirrors it), so its words arrive with it and the leaving banner's fade
+ * as they slide off — the phone's peeking banner (a quarter of its column on screen) shows none: no cut line of text.
+ */
+export function wordsShown(columnInView: number): number {
+  return Math.max(0, Math.min(1, (columnInView - 0.5) / 0.5));
+}
+
 /** A platform's banner: its hero (a staff pin, else the lead device), in the platform's colour. */
 export type PlatformSlidePlan<P> = { kind: "platform"; key: string; platform: P };
 /** The store's two service banners: trade-in (always) and used (only while used units are listed). */

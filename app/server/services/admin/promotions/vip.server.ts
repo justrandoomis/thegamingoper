@@ -14,10 +14,10 @@
  * beside each name followed the setting. This module turns an eligible customer into a member of a tier, by a person,
  * with a reason.
  *
- * What a benefit does today: the points multiplier is applied when points are posted (08.04, this module). The
- * member discount, free shipping and early access are written terms the commerce core does not read yet: `priceCart`
- * (a discount line for an active membership's `discountBps`) and the shipping fee in `priceCart` / `placeOrder` (0
- * for `freeShipping`; the stored flat fee itself never changes) — requested.
+ * What a benefit does today: at the online checkout the commerce core gives the member discount (at most the discount
+ * limits in force) and free delivery (orders/promotions.ts applyDiscounts, steps 4 and 6; the stored flat fee itself
+ * never changes); the points multiplier is applied when points are posted (08.04, this module), sales at the till
+ * included. HONEST BOUNDARY: early access is written on a tier and read by nothing; the till gives no member discount.
  */
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";

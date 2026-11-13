@@ -37,7 +37,9 @@
  *   · The coupon code is stored on the cart and evaluated again on every read. When it no longer
  *     applies the view drops it (discount 0, `coupon: null`) and says why in `couponIssue`; the code
  *     stays stored, so it comes back if the cart qualifies again — unless the coupon is gone for good
- *     (not found, expired, used up), in which case the next change removes it.
+ *     (not found, expired, used up), in which case the next change removes it. Below its minimum the
+ *     issue (and a typed code's refusal, CouponRefusalError) carries `minimumIqd` and `moreIqd`: how
+ *     much more the cart needs, as evaluateCoupon counts it (client round 1, wave C).
  *   · Shipping: the fee of the chosen governorate, or — before one is chosen — the flat fee as an
  *     estimate. Null for an empty cart or a governorate that is not served.
  *
@@ -114,8 +116,43 @@ export type CartOwner = { cartToken: string | null; customerId: string | null };
  */
 export type CartRequest = CartOwner & { locale?: Locale; governorateId?: string | null; redeemPoints?: number | null; referralCode?: string | null; phoneE164?: string | null };
 
-/** Why a stored coupon is not applied right now. "not_combinable": a better automatic rule does not combine with it. */
-export type CartCouponIssue = { code: string; reason: CouponRejection | "not_combinable"; rule?: string };
+/**
+ * Why a stored coupon is not applied right now. "not_combinable": a better automatic rule does not combine with it.
+ * Below its minimum ("min_subtotal", client round 1 wave C): `minimumIqd` and `moreIqd` — the minimum and how much more the
+ * cart needs (the core's own count: evaluateCoupon's refusal), so the page says «أضف منتجات بقيمة …» without a second read.
+ */
+export type CartCouponIssue = { code: string; reason: CouponRejection | "not_combinable"; rule?: string; minimumIqd?: number; moreIqd?: number };
+
+/** How far a cart is from a coupon's minimum, in whole dinars: the minimum, and what is still missing (> 0). */
+export type CouponMinimumGap = { minimumIqd: number; moreIqd: number };
+
+/**
+ * The refusal of a typed coupon (changeCoupon / applyCoupon): AppError("coupon_<reason>", 409, { fields: { code } })
+ * exactly as before — and, below its minimum, the minimum and how much more the cart needs beside it (client round 1,
+ * wave C), which POST /api/cart adds to its 409 answer (`minimumIqd`, `moreIqd`). Read them with couponMinimumGapOf.
+ */
+export class CouponRefusalError extends AppError {
+  readonly minimumIqd?: number;
+  readonly moreIqd?: number;
+
+  constructor(reason: CouponRejection | "not_combinable", code: string, gap?: CouponMinimumGap | null) {
+    super(`coupon_${reason}`, 409, { fields: { code: `coupon_${reason}` }, detail: code });
+    if (gap) {
+      this.minimumIqd = gap.minimumIqd;
+      this.moreIqd = gap.moreIqd;
+    }
+  }
+}
+
+/** The minimum and what is still missing of a coupon refused below its minimum (a CouponRefusalError), else null. */
+export function couponMinimumGapOf(error: unknown): CouponMinimumGap | null {
+  if (!(error instanceof CouponRefusalError) || error.minimumIqd === undefined || error.moreIqd === undefined) return null;
+  return { minimumIqd: error.minimumIqd, moreIqd: error.moreIqd };
+}
+
+/** The gap a coupon issue carries (a stored or typed code below its minimum), or null. */
+const gapOf = (issue: Pick<CartCouponIssue, "minimumIqd" | "moreIqd"> | null | undefined): CouponMinimumGap | null =>
+  issue && issue.minimumIqd !== undefined && issue.moreIqd !== undefined ? { minimumIqd: issue.minimumIqd, moreIqd: issue.moreIqd } : null;
 
 /** A cart line plus what the cart page needs beyond the kit's CartLine (kept assignable to it). */
 export type CartLineData = CartLine & {
@@ -550,7 +587,7 @@ async function priceCart(db: Db, cart: Pick<Cart, "id" | "couponCode"> | null, o
   if (code) {
     const result = await evaluateCoupon(db, { code, subtotalIqd: subtotal, lines: couponLines, customerId: options.customerId, phoneE164: phone }, now);
     if (result.ok) couponOffer = { couponId: result.couponId, code: result.code, label: result.label, discountIqd: result.discountIqd };
-    else couponIssue = { code: normalizeCouponCode(code) ?? code, reason: result.reason };
+    else couponIssue = { code: normalizeCouponCode(code) ?? code, reason: result.reason, ...(result.reason === "min_subtotal" ? { minimumIqd: result.minimumIqd, moreIqd: result.moreIqd } : {}) };
   }
 
   let shippingFee: number | null = null;
@@ -880,8 +917,8 @@ export async function changeCoupon(db: Db, request: CartRequest, code: string | 
     // A valid code that a better automatic offer beats right now is kept (the cart says why it does not apply).
     if (!priced.coupon && issue?.reason === "not_combinable") stored = issue.code;
     else if (!priced.coupon) {
-      const reason = issue?.reason ?? "not_applicable";
-      throw new AppError(`coupon_${reason}`, 409, { fields: { code: `coupon_${reason}` }, detail: wanted });
+      // below its minimum the refusal also says how far the cart is (the issue's figures)
+      throw new CouponRefusalError(issue?.reason ?? "not_applicable", wanted, gapOf(issue));
     } else stored = priced.coupon.code;
   }
   return finish(db, target, [...target.statements, db.update(carts).set({ couponCode: stored }).where(eq(carts.id, target.cartId))], request, now);
@@ -904,7 +941,8 @@ export async function removeLine(db: Db, request: CartRequest, lineId: string, n
 /**
  * Applies a coupon code to the cart (null or "" removes it). The code is checked against the cart as
  * it is now; a refusal is AppError(`coupon_<reason>`, 409, { fields: { code } }) and leaves the cart
- * as it was.
+ * as it was — a CouponRefusalError, which below the code's minimum also carries `minimumIqd` and
+ * `moreIqd` (couponMinimumGapOf).
  */
 export async function applyCoupon(db: Db, request: CartRequest, code: string | null, now: number): Promise<CartViewData> {
   return (await changeCoupon(db, request, code, now)).view;

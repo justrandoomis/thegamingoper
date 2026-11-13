@@ -13,6 +13,9 @@
  *     (or its children), so React hydrating a streamed boundary later finds exactly the markup it rendered.
  *   - A held element arrives the first time it enters the viewport (IntersectionObserver), on the `settle` curve.
  *   - Elements added later (client navigation, streamed content) are picked up by a MutationObserver.
+ *   - Cards that join a stagger row later — «show more», a filter change — arrive as a batch with the same 60ms stagger
+ *     (the six-step cap: 300ms at most), those below the fold when they scroll in (fix round 2026-11-13: they all
+ *     appeared at once; the stagger ran on the first reveal only).
  *   - Reduced motion (OS or the store's switch), the lite tier, a hidden tab and automation (navigator.webdriver:
  *     screenshots, tests) skip it: everything is simply there; turning motion down while reading releases every hold.
  */
@@ -39,6 +42,23 @@ export function initialRevealState(top: number, viewportHeight: number): "pendin
 /** The arrival delay of the i-th staggered child (pure, exported for tests): 60ms steps, the sixth and later together. */
 export function revealDelay(index: number): number {
   return Math.min(Math.max(0, index), MAX_STEPS) * STEP_MS;
+}
+
+/**
+ * Children added to a stagger row after it was first seen (pure, exported for tests): each new element of a row that
+ * was already known — never the row's first content, never an element that is itself marked data-reveal (that one is
+ * revealed on its own).
+ */
+export function lateArrivals(records: ReadonlyArray<{ target: unknown; addedNodes: ArrayLike<unknown> }>, isKnownRow: (row: unknown) => boolean, isElement: (node: unknown) => boolean, isMarked: (node: unknown) => boolean): unknown[] {
+  const out: unknown[] = [];
+  for (const record of records) {
+    if (!isKnownRow(record.target)) continue;
+    for (let i = 0; i < record.addedNodes.length; i++) {
+      const node = record.addedNodes[i];
+      if (isElement(node) && !isMarked(node) && !out.includes(node)) out.push(node);
+    }
+  }
+  return out;
 }
 
 export function installReveal(): () => void {
@@ -69,28 +89,61 @@ export function installReveal(): () => void {
     for (const animation of holds.get(element) ?? []) animation.cancel();
     holds.delete(element);
   };
-  const arrive = (element: HTMLElement) => {
+  const arrive = (element: HTMLElement, offset = 0) => {
     const waiting = holds.get(element) ?? [];
     targetsOf(element).forEach((target, index) => {
-      target.animate([FROM, TO], { duration: DURATION_MS, delay: revealDelay(index), easing: easings.settle, fill: "backwards" });
+      target.animate([FROM, TO], { duration: DURATION_MS, delay: revealDelay(offset + index), easing: easings.settle, fill: "backwards" });
     });
     // the arrivals hold their own first frame through their delay (fill: backwards), so the holds can go at once
     for (const animation of waiting) animation.cancel();
     holds.delete(element);
   };
 
+  /** Elements that joined a stagger row after it was first seen (they arrive staggered among themselves). */
+  const late = new WeakSet<Element>();
+
   const io = new IntersectionObserver(
     (entries) => {
+      // late cards that come into view together are one batch: 60ms apart, 300ms at most
+      let batch = 0;
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         const element = entry.target as HTMLElement;
         io.unobserve(element);
-        if (getMotionTier() === "full") arrive(element);
+        if (getMotionTier() === "full") arrive(element, late.has(element) ? batch++ : 0);
         else release(element);
       }
     },
     { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
   );
+
+  /** New children of known stagger rows: on screen they arrive now, staggered; below the fold they wait for the view. */
+  const adoptLate = (records: MutationRecord[]) => {
+    if (getMotionTier() !== "full") return;
+    const fresh = lateArrivals(
+      records,
+      (row) => row instanceof HTMLElement && row.getAttribute("data-reveal") === "stagger" && seen.has(row),
+      (node) => node instanceof HTMLElement,
+      (node) => node instanceof HTMLElement && node.matches(SELECTOR),
+    ) as HTMLElement[];
+    let now = 0;
+    for (const child of fresh) {
+      if (!child.isConnected || late.has(child)) continue;
+      late.add(child);
+      const row = child.parentElement;
+      if (row && holds.has(row)) {
+        // the row itself still waits below the fold: the newcomer waits with it and arrives with it
+        holds.get(row)?.push(child.animate([FROM, FROM], { duration: 1, fill: "both" }));
+        continue;
+      }
+      if (initialRevealState(child.getBoundingClientRect().top, window.innerHeight) === "pending") {
+        holds.set(child, [child.animate([FROM, FROM], { duration: 1, fill: "both" })]);
+        io.observe(child);
+      } else {
+        child.animate([FROM, TO], { duration: DURATION_MS, delay: revealDelay(now++), easing: easings.settle, fill: "backwards" });
+      }
+    }
+  };
 
   const adopt = (element: HTMLElement) => {
     if (seen.has(element)) return;
@@ -108,6 +161,8 @@ export function installReveal(): () => void {
   const mo =
     typeof MutationObserver === "function"
       ? new MutationObserver((records) => {
+          // rows known BEFORE this batch first (their newcomers stagger), then whatever new marked elements arrived
+          adoptLate(records);
           for (const record of records) for (const node of record.addedNodes) if (node instanceof HTMLElement) scan(node);
         })
       : null;

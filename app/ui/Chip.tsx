@@ -1,6 +1,6 @@
 import { useId, type ChangeEvent, type ComponentPropsWithRef, type CSSProperties, type ElementType, type MouseEvent, type ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { BidiLabel, textOf } from "./BidiText";
 import { cx } from "./cx";
@@ -15,6 +15,7 @@ import { useControllable, useRovingRadio } from "./roving";
  *
  *   Toggle (multi-choice, aria-pressed)   <Chip selected={on} onClick={toggle} count={18}>الألعاب</Chip>
  *   With a platform dot                   <Chip platform="playstation">PlayStation</Chip>
+ *   With a kind / device icon             <Chip icon="kind-controller" count={12}>أذرع التحكم</Chip>   (the check takes its place when chosen)
  *   Link (a filter that is a URL)         <Chip as={LocaleLink} to="?storage=1tb" selected={active}>1 TB</Chip>
  *   Native checkbox / radio (no script)   <Chip input="checkbox" name="storage" value="1tb" defaultChecked>1 TB</Chip>
  *   Removable active filter               <Chip onRemove={() => drop("1tb")}>1 TB</Chip>          ×, "أزل 1 TB"
@@ -28,6 +29,8 @@ type ChipCommon = {
   count?: number | string;
   /** An 8px platform dot after the label. */
   platform?: Gel;
+  /** A kind or device icon before the label (v2.1: «أجهزة» with its console glyph); it gives way to the check when chosen. */
+  icon?: IconName;
   className?: string;
   style?: CSSProperties;
   disabled?: boolean;
@@ -56,11 +59,16 @@ export type ChipButtonProps<C extends ElementType = "button"> = ChipCommon & {
 
 export type ChipProps<C extends ElementType = "button"> = ChipInputProps | ChipButtonProps<C>;
 
-function ChipBody({ children, count, platform, lead }: { children: ReactNode; count?: number | string; platform?: Gel; lead: ReactNode }) {
+function ChipBody({ children, count, platform, icon, lead }: { children: ReactNode; count?: number | string; platform?: Gel; icon?: IconName; lead: ReactNode }) {
   const f = useFormat();
   return (
     <span className="key__cap">
       {lead}
+      {icon ? (
+        <span className="key__icon" aria-hidden="true">
+          <Icon name={icon} size={18} />
+        </span>
+      ) : null}
       <BidiLabel className="key__label">{children}</BidiLabel>
       {count !== undefined && count !== null && count !== "" ? <span className="key__count nums">{typeof count === "number" ? f.number(count) : count}</span> : null}
       {platform ? <PlatformLed platform={platform} /> : null}
@@ -71,7 +79,7 @@ function ChipBody({ children, count, platform, lead }: { children: ReactNode; co
 export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
   const t = useT("ui");
   if (props.input) {
-    const { input, name, value, checked, defaultChecked, onChange, disabled, children, count, platform, className, style, "aria-label": ariaLabel } = props;
+    const { input, name, value, checked, defaultChecked, onChange, disabled, children, count, platform, icon, className, style, "aria-label": ariaLabel } = props;
     return (
       <label className={cx("key key--chip", className)} style={style} data-press="soft">
         <input
@@ -85,14 +93,14 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
           disabled={disabled}
           aria-label={ariaLabel}
         />
-        <ChipBody count={count} platform={platform} lead={<ChipMark />}>
+        <ChipBody count={count} platform={platform} icon={icon} lead={<ChipMark />}>
           {children}
         </ChipBody>
       </label>
     );
   }
 
-  const { as, selected, onRemove, disabled = false, children, count, platform, className, ...rest } = props as ChipButtonProps<ElementType>;
+  const { as, selected, onRemove, disabled = false, children, count, platform, icon, className, ...rest } = props as ChipButtonProps<ElementType>;
   const Tag: ElementType = as ?? "button";
   const isButton = Tag === "button";
   const removable = typeof onRemove === "function";
@@ -118,7 +126,7 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
         if (removable && !event.defaultPrevented) onRemove();
       }}
     >
-      <ChipBody count={count} platform={platform} lead={removable ? <Icon name="x" size={16} /> : <ChipMark />}>
+      <ChipBody count={count} platform={platform} icon={icon} lead={removable ? <Icon name="x" size={16} /> : <ChipMark />}>
         {children}
       </ChipBody>
     </Tag>
@@ -136,7 +144,7 @@ function ChipMark() {
 
 /* ───────────────────────────── ChipGroup: one choice, roving focus ───────────────────────────── */
 
-export type ChipOption = { value: string; label: ReactNode; disabled?: boolean; count?: number | string; platform?: Gel };
+export type ChipOption = { value: string; label: ReactNode; disabled?: boolean; count?: number | string; platform?: Gel; icon?: IconName };
 
 export type ChipGroupProps = {
   options: readonly ChipOption[];
@@ -175,7 +183,7 @@ export function ChipGroup({ options, value, defaultValue = null, onChange, "aria
     >
       {options.map((option, index) => (
         <button key={option.value} type="button" className="key key--chip" data-press="soft" disabled={option.disabled} {...itemProps(index)}>
-          <ChipBody count={option.count} platform={option.platform} lead={<ChipMark />}>
+          <ChipBody count={option.count} platform={option.platform} icon={option.icon} lead={<ChipMark />}>
             {option.label}
           </ChipBody>
         </button>

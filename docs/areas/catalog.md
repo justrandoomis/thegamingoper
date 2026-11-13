@@ -209,11 +209,30 @@ the phone rise ≤ the page's 12px top padding; the 320 rule). Products on the f
 Tools and screens: `<scratch>/fb1/work/catalog-review/`, `<scratch>/fb1/shots/catalog-review/`.
 
 Known after the review:
-- From 1024 the device row sits above the list as on the before, so laptops show no product on the first screen
+- ~~From 1024 the device row sits above the list as on the before, so laptops show no product on the first screen
   (first card top: 797px at 1024 × 768, 787px at 1280 × 720 and 1366 × 768, 787px at 1440 × 900 — v2's band switcher put
   them at about 470px). A compact device strip from 1024 (photo beside the short name, one row) would lift the list by
-  about 110px — a layout decision for the lead.
+  about 110px — a layout decision for the lead.~~ — the lead decided (decision 3); done in fix-browse, below.
 - From a scrolled list at 390 (mobile emulation), opening a card throws an uncaught `InvalidStateError: Transition was
   aborted because of invalid state. Viewport size changed` — the same on `/used`, also under reduced motion, never
   without mobile emulation, and not from a device hub scrolled 1,200px; the view transition's promise is not caught
   (motion engine / React), not the catalog's.
+
+### Fix-browse (wave C, 2026-11-13)
+
+The auditors' defects for the area, fixed (tools `<scratch>/fb1/work/C-fix-browse/`, screens `<scratch>/fb1/shots/C-fix-browse/`):
+
+| Defect | Fix | After |
+|---|---|---|
+| Lead decision 3 not built: the restored device row (126px photo tiles under a two-line head) put the first product at ~790px on every laptop — none on a 1024 × 768 or 1366 × 768 first screen | from 1024 the row is compact (`catalog.css`): the title and its note on one line (the head's box is `display: contents`, so its text and arrows take their places in the row's grid), 56px clay pills (`--key-face`, `--e-disc`) with the device's picture in a 40px warm circle beside the short name, the two arrows at the row's end; the band is 112px (it was 136: it holds the name and the count from 1024) | first card top 622px at 1024 × 768, 1280 × 720, 1366 × 768 and 1440 × 900 on PlayStation and Xbox; 574px on Nintendo and the handhelds (chips on one row); 500px on category hubs (`layout.mjs`); phones unchanged (tiles) |
+| Compare on phones: three or four products showed as two columns that filled the card (the others only by an unannounced sideways scroll); the head did not say how many | the head says «تقارن 3 منتجات من أجهزة الألعاب» (`compare.comparing`, the intro keeps the rule only); 44% columns that snap (`scroll-snap-type: inline mandatory`), so the next one peeks 39–43px; above the table a navigator «تعرض 1–2 من 3» with two clay arrows that move it a column at a time (`CompareNavigator`; hidden from 768) | `cmpnav.mjs` 29/29 in ar 390 (3), en 360 (4), ckb 390 (4) and ar 768 (no navigator) |
+| Zero results: «جرّب أحد هذه» was a sideways rail inside the centred card — the second chip cut by the card's edge | `.chips.catalog-chips--panel` wraps, centred, at every width; four chips on phones (a device name is a chip per line there) | no clipped chip at 360 / 390 in ar, en, ckb |
+| A sold-out product's suggestion row had no price and no reason | `GET /api/search/suggest` adds `soldOut: true` (no price) to such rows | the shell renders «نفد حالياً» in the price's place — requested |
+| A corrected search said the index's folded word: «نتائج «nintendo»», «هل تقصد nintendo» | `list.server.ts displaySpelling()`: each corrected word as the first of the platforms' names, the hubs offered and the products found writes it; the page (`corrected` in the loader data) and the suggestion row use it; links keep the folded words | «نتائج «Nintendo»», «هل تقصد PlayStation» in ar, en, ckb |
+| The hubs' phone notes at 14px / 1.5 (G7) | below 768 `.catalog-title__line` and `.catalog-devices__note` take `--type-read` (16px / 1.75) | — |
+
+Tests (written failing first where they guard behaviour): `tests/search.test.ts` — the typo row says «PlayStation» /
+«Nintendo» with folded hrefs (the assertion `label: "playstation"` changed on purpose: the label is now the catalogue's
+spelling), a sold-out row carries `soldOut: true`; `tests/catalog-listing.test.ts` — the corrected search's `corrected`
+in three languages, compare's head and navigator in the server's markup (ar, en, ckb; none for two products), and the
+stylesheet's contracts (the compact row and band from 1024, the phone notes, the panel chips, compare's columns).

@@ -23,6 +23,8 @@ import { deviceIn } from "./format";
  *                only (verified, or with a condition)
  * Cards come in whole rows, two rows at first (CardGrid); one item is a row card. Nothing recorded → no section.
  * The card groups are `[data-shelf]` regions, so opening a card is a click-through signal of that group (signals.ts).
+ * The rule's notes and the reasons are reading text: 16 / 1.75 on phones and tablets (v2.1 G7, devices.css
+ * `.devhub-read`, `.devhub-note`), 14 (the notes 13) from 1024.
  */
 export function CompatSection({
   id,
@@ -71,7 +73,7 @@ export function CompatSection({
             <h3 id={partialId} className="type-h3 text-ink">
               {t("compat.group.partial")}
             </h3>
-            <p className="type-sm text-ink-2">{t("compat.reason.partial")}</p>
+            <p className="devhub-read text-ink-2">{t("compat.reason.partial")}</p>
           </div>
           <CardGrid
             items={partial.map((item) => ({ card: item.card, note: <CompatBadge status="partial" note={item.note} /> }))}
@@ -102,7 +104,7 @@ function CompatRows({ group, title, reason }: { group: CompatGroup; title: strin
       summary={
         <span className="grid gap-0.5">
           <span className="type-card text-ink">{title}</span>
-          <span className="type-sm font-normal text-ink-2">{reason}</span>
+          <span className="devhub-read text-ink-2">{reason}</span>
         </span>
       }
     >
@@ -121,7 +123,7 @@ function CompatRow({ item }: { item: CompatItem }) {
       <Niche as="span" size="sm" kind={wellKind(item.card)} className="w-14 shrink-0" aria-hidden="true">
         <ProductImage image={item.card.image} alt="" sizes="56px" />
       </Niche>
-      <span className="grid min-w-0 gap-1">
+      <span className="devhub-note grid min-w-0 gap-1">
         <LocaleLink to={`/p/${item.card.slug}`} className="inline-flex min-h-11 items-center type-sm-strong text-ink underline decoration-line-2 underline-offset-4 hover:decoration-ink">
           {/* one inline run: as flex items, the Arabic word and the isolated Latin name would lose the space between them */}
           <span>

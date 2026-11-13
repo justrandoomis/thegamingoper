@@ -7,7 +7,7 @@
   "family": "joy-con-2-charging-grip",
   "status": "available",
   "releaseDate": "2025-06-05",
-  "name": { "ar": "Joy-Con 2 Charging Grip", "en": "Joy-Con 2 Charging Grip", "ckb": "Joy-Con 2 Charging Grip" },
+  "name": { "ar": "Joy‑Con 2 Charging Grip", "en": "Joy‑Con 2 Charging Grip", "ckb": "Joy‑Con 2 Charging Grip" },
   "short": {
     "ar": "مقبض يشحن يدي Joy-Con 2 أثناء اللعب · زرّا GL/GR",
     "en": "Charges Joy-Con 2 while you play · GL/GR buttons",
@@ -74,7 +74,7 @@
   "variants": [
     {
       "sku": "JC2-CHARGING-GRIP",
-      "title": { "ar": "Joy-Con 2 Charging Grip", "en": "Joy-Con 2 Charging Grip", "ckb": "Joy-Con 2 Charging Grip" },
+      "title": { "ar": "Joy‑Con 2 Charging Grip", "en": "Joy‑Con 2 Charging Grip", "ckb": "Joy‑Con 2 Charging Grip" },
       "options": { "color": "Black" },
       "barcodes": ["0045496886028"],
       "isDefault": true,

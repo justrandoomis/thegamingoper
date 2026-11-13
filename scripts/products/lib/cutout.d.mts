@@ -35,8 +35,11 @@ export interface TreatOptions {
   kind?: PhotoKind;
   /** false: never cut out — the photo stays opaque, trimmed on its own background. */
   cutout?: boolean;
-  /** true: closed windows of pure background colour (inside a headband arch) are cut out too. */
-  holes?: boolean;
+  /**
+   * true: closed windows of pure background colour (inside a headband arch) are cut out too. [[x, y], …]: only the
+   * windows at these points (shares of the picture) — white print elsewhere on the object stays.
+   */
+  holes?: boolean | ReadonlyArray<readonly [number, number]>;
   /** Padding around a trimmed object, as a share of its longer side (default PAD). */
   pad?: number;
   /** false: an opaque photo keeps its whole frame. */

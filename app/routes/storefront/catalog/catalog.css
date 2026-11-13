@@ -146,14 +146,15 @@
     }
   }
   /* from 1024: the name and the count — the delivery line is the shell's strip's from here (it stands at the top of
-     every page); 136px, so the device row and the first products follow on the first screen */
+     every page); 112px (it was 136: with the compact device row under it, the first products start on the first laptop
+     screen — lead decision 3) */
   @media (min-width: 64rem) {
     .catalog-band {
       --light-x: calc(50% + 32% * var(--dir));
     }
     .catalog-band,
     .catalog-band__content {
-      min-block-size: 136px;
+      min-block-size: 112px;
     }
     .catalog-band__glyph {
       --disc: 48px;
@@ -166,8 +167,8 @@
       display: none;
     }
     .catalog-band__media {
-      inline-size: 26%;
-      inset-block: -40px 10px;
+      inline-size: 24%;
+      inset-block: -40px 8px;
       inset-inline-end: 5%;
     }
   }
@@ -227,6 +228,14 @@
   .catalog-title__line {
     font: var(--type-sm);
     color: var(--ink-2);
+  }
+  /* phones: the count and the delivery line, and the device row's note, are reading text (v2.1 G7: 16px / 1.75 — at
+     14 / 1.5 they were the smallest Arabic on the hubs) */
+  @media (max-width: 47.99rem) {
+    .catalog-title__line,
+    .catalog-devices__note {
+      font: var(--type-read);
+    }
   }
   /* the department's photo: from 768 (on a phone the icon tile and the name have the card to themselves) */
   .catalog-title__art {
@@ -608,9 +617,9 @@
 
   /* ───────────────────────────── the device row ("everything about your device", client note 4) ─────────────────────────────
      The before's soft device tiles (the kit's raised category tile: the picture on the warm well, the name under it),
-     one row at every width that scrolls sideways with the gutter kept: 3.3 tiles in view on phones (the fourth's edge
-     says there are more), 5.4 from 768, 116px tiles from 1024 (124 from 1280) — where a row that does not fit gets two clay arrows in
-     its head. The padding gives the tiles' raised shadows room inside the scroller (it clips); the margin hands it
+     one row that scrolls sideways with the gutter kept: 3.3 tiles in view on phones (the fourth's edge says there are
+     more), 5.4 from 768; from 1024 compact clay pills (below) — where a row that does not fit gets two clay arrows at
+     its end. The padding gives the tiles' raised shadows room inside the scroller (it clips); the margin hands it
      back. */
   .catalog-devices {
     display: grid;
@@ -634,7 +643,7 @@
     color: var(--ink);
     text-wrap: balance;
   }
-  /* the kit's section-head reason size at every width (13px Arabic was the smallest text on the page, G7) */
+  /* the kit's section-head reason size (13px Arabic was the smallest text on the page, G7); reading text on phones */
   .catalog-devices__note {
     font: var(--type-sm);
     color: var(--ink-2);
@@ -678,24 +687,84 @@
       grid-auto-columns: calc((100% - 5 * var(--gap-card)) / 5.4);
     }
   }
+  /* laptops (lead decision 3): the row is compact, so the first products start on the first laptop screen (they started
+     at ~790px under a 231px row of 124px tiles): the title and its note on one line; the tiles become 56px clay pills —
+     the device's picture on its warm well (a 40px circle) beside the short name — in one row that scrolls, with the two
+     clay arrows at its end (while it holds more than fits). The head's own box steps aside (display: contents) so its
+     text and arrows take their places in the row's grid. */
   @media (min-width: 64rem) {
     .catalog-devices {
-      gap: var(--s-3);
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "text text"
+        "rail keys";
+      align-items: center;
+      gap: var(--s-2) var(--s-3);
     }
-    .catalog-devices__title {
-      font: var(--type-h2);
+    .catalog-devices__head {
+      display: contents;
+    }
+    .catalog-devices__text {
+      grid-area: text;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 var(--s-3);
     }
     .catalog-devices__keys {
+      grid-area: keys;
       display: flex;
     }
-    /* seven tiles (a platform's usual count) fit in a row from 1024 */
     .catalog-devices__rail {
-      grid-auto-columns: 116px;
+      grid-area: rail;
+      grid-auto-columns: max-content;
+      gap: var(--s-3);
+      margin: -4px 0 -10px;
+      padding: 4px 4px 10px;
+      scroll-padding-inline: 4px;
+    }
+    .catalog-device.cat {
+      grid-template-columns: 40px auto;
+      align-items: center;
+      justify-items: start;
+      gap: 10px;
+      min-block-size: 56px;
+      padding-block: 8px;
+      padding-inline: 8px 20px;
+      border-radius: var(--r-full);
+      background: var(--key-face);
+      box-shadow: var(--e-disc);
+      text-align: start;
+      transition: translate var(--t-reveal) var(--ease-settle);
+    }
+    .catalog-device > .cat__art {
+      inline-size: 40px;
+      border-radius: var(--r-full);
+      box-shadow: none;
+    }
+    .catalog-device__name {
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      white-space: nowrap;
+    }
+    /* the whole pill lifts under a fine pointer (its little well no longer rises inside it) */
+    @media (hover: hover) and (pointer: fine) {
+      .catalog-device.cat:hover {
+        translate: 0 -2px;
+      }
+      .catalog-device.cat:hover > .cat__art {
+        translate: none;
+      }
     }
   }
-  @media (min-width: 80rem) {
-    .catalog-devices__rail {
-      grid-auto-columns: 124px;
+  @media (min-width: 64rem) and (prefers-reduced-motion: reduce) {
+    .catalog-device.cat {
+      transition: none;
+    }
+  }
+  @media (min-width: 64rem) {
+    [data-motion="reduced"] .catalog-device.cat {
+      transition: none;
     }
   }
 
@@ -720,23 +789,23 @@
     font: var(--type-sm-strong);
     color: var(--ink-2);
   }
-  /* inside the zero-result card: a centred title; on phones one row that scrolls sideways to the card's edges (its
-     20px padding), from 768 the chips wrap, centred */
+  /* inside the zero-result card: a centred title, and the two or three chips wrap, centred, at every width — as a
+     sideways row on phones the second chip was cut by the card's edge («Station 5 Pro» at 360) and read as clipped,
+     not as a scroller (browse audit 2026-11-13) */
   .catalog-suggest--panel {
     justify-items: center;
     text-align: center;
   }
-  .catalog-chips--panel {
+  .chips.catalog-chips--panel {
     justify-self: stretch;
-    margin-inline: calc(-1 * var(--s-5));
-    padding-inline: var(--s-5);
-    scroll-padding-inline: var(--s-5);
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible;
   }
-  @media (min-width: 48rem) {
-    .catalog-chips--panel {
-      justify-content: center;
-      margin-inline: 0;
-      padding-inline: 0;
+  /* a phone shows four of them: a device name is a chip per line there, and six pushed the way home off the screen */
+  @media (max-width: 47.99rem) {
+    .chips.catalog-chips--panel > :nth-child(n + 5) {
+      display: none;
     }
   }
   .catalog-recent {
@@ -1000,16 +1069,42 @@
   .catalog-compare__corner {
     display: none;
   }
+  /* phones comparing three or four: 44% columns, so the third peeks at the end (two columns that filled the card hid
+     the others — browse audit 2026-11-13), snapping to a column's start; the navigator above says which are in view */
   @media (max-width: 47.99rem) {
     .catalog-compare--wide {
       overflow-x: auto;
       overscroll-behavior-inline: contain;
+      scroll-snap-type: inline mandatory;
     }
     .catalog-compare--wide .catalog-compare__table {
-      inline-size: calc(var(--n, 2) * 50cqi);
+      inline-size: calc(var(--n, 2) * 44cqi);
+    }
+    .catalog-compare--wide .catalog-compare__product {
+      scroll-snap-align: start;
     }
     .catalog-compare__table tbody tr:not(.catalog-compare__labelrow) > td {
       padding-block-start: var(--s-1);
+    }
+  }
+  .catalog-compare__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+  }
+  .catalog-compare__shown {
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  .catalog-compare__keys {
+    display: flex;
+    flex: none;
+    gap: var(--s-2);
+  }
+  @media (min-width: 48rem) {
+    .catalog-compare__nav {
+      display: none;
     }
   }
   /* from 768: the names are a sticky first column */

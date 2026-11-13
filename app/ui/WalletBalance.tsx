@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { CURRENCIES } from "~/lib/money";
 import { Band } from "./Band";
@@ -175,14 +175,39 @@ export function WalletBalance({ balanceIqd, pendingIqd = null, entries = null, p
   );
 }
 
+/**
+ * Each kind's disc (fix round 2026-11-13: the same look as the account's history — the checkout's wallet rows and the
+ * account's differed): money in green, spent in red, given back in blue, the store's own neutral. Pure.
+ */
+export function ledgerLook(entry: Pick<WalletEntry, "kind" | "amountIqd">): { icon: IconName; tone: "ok" | "red" | "info" | "neutral" } {
+  switch (entry.kind) {
+    case "topup":
+      return { icon: "plus", tone: "ok" };
+    case "purchase":
+      return { icon: "shopping-cart-simple", tone: "red" };
+    case "refund":
+      return { icon: "arrow-counter-clockwise", tone: "info" };
+    case "trade_in_credit":
+      return { icon: "recycle", tone: "ok" };
+    case "gift_card":
+      return { icon: "gift", tone: "ok" };
+    default:
+      return { icon: "storefront", tone: entry.amountIqd < 0 ? "red" : "ok" };
+  }
+}
+
 function LedgerRow({ entry }: { entry: WalletEntry }) {
   const t = useT("ui-shop");
   const f = useFormat();
   const signed = signedAmount(entry.amountIqd);
   const what = t(`wallet.kinds.${entry.kind}`);
   const status = entry.status ?? "posted";
+  const look = ledgerLook(entry);
   return (
     <li className="ledger__row">
+      <span className="ledger__disc" data-tone={look.tone} aria-hidden="true">
+        <Icon name={look.icon} size={20} />
+      </span>
       <div className="grid min-w-0 gap-0.5">
         <span className="text-ink">
           {what}

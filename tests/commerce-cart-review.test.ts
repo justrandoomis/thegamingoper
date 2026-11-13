@@ -10,6 +10,15 @@
  *     per-address budget of its own (the answer says what a number has used), while a referral code's status is still
  *     said without the typed number (security review 2026-11-12: numbers are not tested against a public code for free).
  *
+ * Client feedback round 1, wave C (fix-core): checkout's request — a code below its minimum must say how much more the
+ * cart needs («أضف منتجات بقيمة 20,000 د.ع لتستخدمه»), and the checkout counted that with a second coupon read and its own
+ * copy of the demo-goods rule:
+ *   · evaluateCoupon's `min_subtotal` refusal carries the minimum, what counts toward it and what is missing
+ *     (`minimumIqd`, `countedIqd`, `moreIqd` — for a demo coupon its demo goods alone);
+ *   · the cart's `couponIssue` carries `minimumIqd` and `moreIqd` for a stored code below its minimum;
+ *   · `POST /api/cart intent=coupon` answers a code below its minimum with `minimumIqd` and `moreIqd` beside the 409's
+ *     code — no second request (other refusals carry neither).
+ *
  * Each test failed on the code before the fix. Real local D1 (tests/helpers/db.ts); the route tests run through the real
  * root middleware (CSRF check, request context) into routes/api/cart.ts.
  */
@@ -24,7 +33,8 @@ import { requestContextMiddleware } from "~/server/context.server";
 import { carts, coupons, customers, products, stockLevels, type NewCoupon } from "~/server/db/schema";
 import { DEFAULT_LOCATION_ID, districtId, governorateId } from "~/server/db/seed/reference";
 import { issueReferralCode } from "~/server/services/admin/promotions/referrals.server";
-import { PHONE_PRICING_PER_IP, addToCart, applyCoupon, getCartView, getCheckoutCart } from "~/server/services/cart.server";
+import { PHONE_PRICING_PER_IP, addToCart, applyCoupon, getCartView, getCheckoutCart, removeLine } from "~/server/services/cart.server";
+import { evaluateCoupon } from "~/server/services/coupons.server";
 import { placeOrder, type CheckoutInput } from "~/server/services/orders/place.server";
 import { CART_COOKIE } from "~/server/shell.server";
 import { createTestDb, type TestDb } from "./helpers/db";
@@ -271,5 +281,65 @@ describe("POST /api/cart — the number typed at checkout rides in the body", ()
     expect(blind).toMatchObject({ ok: true, cart: { coupon: { code }, couponIssue: null, totalIqd: 94_775 } });
     // another address is answered for the number
     expect((await price({ phone: used }, freshIp())).body).toMatchObject({ ok: true, cart: { couponIssue: { code, reason: "customer_limit" } } });
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── 4. a code below its minimum says how far (round 1, wave C)
+
+describe("a code below its minimum says the minimum and how much more the cart needs — counted once, by the core", () => {
+  test("evaluateCoupon's min_subtotal refusal carries the minimum, what counts toward it and what is missing; a demo coupon counts its demo goods alone", async () => {
+    const real = await make.product({ priceIqd: 80_000, stock: 5 });
+    const demo = await make.product({ priceIqd: 30_000, stock: 5, isDemo: true });
+    const { code } = await coupon({ minSubtotalIqd: 100_000 });
+    const lines = [{ variantId: real.variantId, qty: 1, unitPriceIqd: 80_000 }];
+    expect(await evaluateCoupon(t.db, { code, subtotalIqd: 80_000, lines }, NOW)).toEqual({ ok: false, reason: "min_subtotal", minimumIqd: 100_000, countedIqd: 80_000, moreIqd: 20_000 });
+    // a demo coupon's minimum is reached with demo goods alone: the real headset counts for nothing
+    const demoCode = (await coupon({ minSubtotalIqd: 50_000, isDemo: true })).code;
+    const mixed = [...lines, { variantId: demo.variantId, qty: 1, unitPriceIqd: 30_000 }];
+    expect(await evaluateCoupon(t.db, { code: demoCode, subtotalIqd: 110_000, lines: mixed }, NOW)).toEqual({ ok: false, reason: "min_subtotal", minimumIqd: 50_000, countedIqd: 30_000, moreIqd: 20_000 });
+    // every other refusal is as it was
+    expect(await evaluateCoupon(t.db, { code: "NOPE-NOPE", subtotalIqd: 80_000, lines }, NOW)).toEqual({ ok: false, reason: "not_found" });
+    expect(await evaluateCoupon(t.db, { code: demoCode, subtotalIqd: 80_000, lines }, NOW)).toEqual({ ok: false, reason: "not_applicable" });
+    // reached: applied
+    expect(await evaluateCoupon(t.db, { code, subtotalIqd: 100_000, lines: [{ ...lines[0]!, unitPriceIqd: 100_000 }] }, NOW)).toMatchObject({ ok: true, discountIqd: 10_000 });
+  });
+
+  test("the cart's couponIssue for a stored code below its minimum carries the minimum and what is missing — on GET /api/cart too", async () => {
+    const pricey = await make.product({ priceIqd: 80_000, stock: 5 });
+    const cheap = await make.product({ priceIqd: 30_000, stock: 5 });
+    const { code } = await coupon({ minSubtotalIqd: 100_000 });
+    const first = await addToCart(t.db, guest(), { variantId: pricey.variantId, qty: 1 }, NOW);
+    const both = await addToCart(t.db, guest(first.cartToken), { variantId: cheap.variantId, qty: 1 }, NOW);
+    expect(await applyCoupon(t.db, guest(both.cartToken), code, NOW)).toMatchObject({ coupon: { code }, couponIssue: null });
+    const cheapLine = both.view.lines.find((line) => line.variantId === cheap.variantId)!.id;
+    const dropped = await removeLine(t.db, guest(both.cartToken), cheapLine, NOW);
+    expect(dropped).toMatchObject({ coupon: null, discountIqd: 0, subtotalIqd: 80_000 });
+    expect(dropped.couponIssue).toEqual({ code, reason: "min_subtotal", minimumIqd: 100_000, moreIqd: 20_000 });
+    const get = await hit("/api/cart", cartLoader, { cookies: { [CART_COOKIE]: both.cartToken } });
+    expect(get.body).toMatchObject({ ok: true, cart: { couponIssue: { code, reason: "min_subtotal", minimumIqd: 100_000, moreIqd: 20_000 } } });
+    // any other reason carries no figures
+    await t.db.update(coupons).set({ endsAt: NOW }).where(eq(coupons.code, code));
+    expect((await getCartView(t.db, guest(both.cartToken), NOW + DAY)).couponIssue).toEqual({ code, reason: "expired" });
+  });
+
+  test("POST /api/cart intent=coupon: a code typed below its minimum is refused (409) with the minimum and how much more — no second request; other refusals carry neither", async () => {
+    const game = await make.product({ priceIqd: 80_000, stock: 5 });
+    const { code } = await coupon({ minSubtotalIqd: 100_000 });
+    const { cartToken } = await addToCart(t.db, guest(), { variantId: game.variantId, qty: 1 }, NOW);
+    const cookies = { [CART_COOKIE]: cartToken };
+    const typed = await hit("/api/cart", cartAction, { form: { intent: "coupon", code: code.toLowerCase() }, cookies });
+    expect(typed.status).toBe(409);
+    expect(typed.body).toEqual({ ok: false, code: "coupon_min_subtotal", fields: { code: "coupon_min_subtotal" }, minimumIqd: 100_000, moreIqd: 20_000 });
+    // the cart is as it was: no code stored
+    expect((await t.db.select({ code: carts.couponCode }).from(carts).where(eq(carts.id, (await getCartView(t.db, guest(cartToken), NOW)).id as string)).get())?.code).toBeNull();
+    const unknown = await hit("/api/cart", cartAction, { form: { intent: "coupon", code: "NOPE-NOPE" }, cookies });
+    expect(unknown.status).toBe(409);
+    expect(unknown.body).toEqual({ ok: false, code: "coupon_not_found", fields: { code: "coupon_not_found" } });
+    // the service's refusal is the AppError it always was (code, status, fields), with the figures beside
+    const refused = await applyCoupon(t.db, guest(cartToken), code, NOW).then(
+      () => null,
+      (error: unknown) => error,
+    );
+    expect(refused).toMatchObject({ code: "coupon_min_subtotal", status: 409, fields: { code: "coupon_min_subtotal" }, minimumIqd: 100_000, moreIqd: 20_000 });
   });
 });

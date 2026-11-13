@@ -12,17 +12,35 @@ import { readFileSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { createElement } from "react";
+import { createElement, type ComponentType, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { describe, expect, it } from "vitest";
 
 import { GLYPH_GROUPS, GLYPH_NAMES, Icon, isGlyph } from "~/art/Icon";
+import { messagesFor } from "~/i18n/i18n.server";
 import ui from "~/i18n/messages/ui";
-import { countAt, countUpPlan, initialRevealState, revealDelay, revealEnabled } from "~/motion";
-import { autoplayWaits, carouselHold, keyDelta, stepIndex, type CarouselHold } from "~/ui/Carousel";
+import { LOCALES, localePath, type Locale } from "~/lib/locales";
+import { countAt, countUpPlan, countUpStart, initialRevealState, lateArrivals, revealDelay, revealEnabled } from "~/motion";
+import { Band } from "~/ui/Band";
+import { Blocks } from "~/ui/Blocks";
+import { autoplayWaits, carouselHold, carouselMove, keyDelta, stepIndex, type CarouselHold } from "~/ui/Carousel";
+import { CategoryTiles } from "~/ui/CategoryTile";
+import { Chip } from "~/ui/Chip";
+import { EmptyState } from "~/ui/EmptyState";
+import { Checkbox, OptionCard } from "~/ui/Field";
 import { indicatorBox } from "~/ui/indicator";
+import { Key } from "~/ui/Key";
 import { Note } from "~/ui/Note";
+import { discountRows, OrderSummary } from "~/ui/OrderSummary";
+import { PlatformTiles } from "~/ui/PlatformTile";
+import { Price } from "~/ui/Price";
+import { ProgressSteps } from "~/ui/ProgressSteps";
+import { Rail } from "~/ui/Rail";
 import { revealProps } from "~/ui/reveal";
+import { Status } from "~/ui/Tag";
+import { Tabs } from "~/ui/Tabs";
+import { ledgerLook } from "~/ui/WalletBalance";
 import { criticalFonts, FONT_FILES } from "~/styles/fonts";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -86,16 +104,22 @@ describe("G1 · the before's fonts (Kufam + IBM Plex Sans Arabic)", () => {
   });
 
   it("key labels are Kufam at 16px (the 40px key keeps Plex 600 14px, under Kufam's 15px floor); prices are Kufam 700", () => {
-    expect(tokens).toMatch(/--type-button:\s*600 var\(--fs-button\) \/ 1\.25 var\(--font-display\)/);
+    // fix round 2026-11-13: through --font-key (Kufam; Plex in Sorani, below)
+    expect(tokens).toMatch(/--type-button:\s*600 var\(--fs-button\) \/ 1\.25 var\(--font-key\)/);
+    expect(tokens).toMatch(/--font-key:\s*var\(--font-display\)/);
     expect(tokens).toMatch(/--type-button-sm:\s*600 var\(--fs-button-sm\) \/ 1\.25 var\(--font-text\)/);
     expect(tokens).toMatch(/--fs-button:\s*16px/);
     expect(tokens).toMatch(/--w-figure:\s*700/);
   });
 
-  it("Sorani headings use Kufam (it has every Sorani letter) — no fallback to the text face", () => {
+  it("Sorani headings and key labels are Plex 600 until a native reader approves Kufam's ە (changed on purpose 2026-11-13)", () => {
+    // Kufam's cmap has every Sorani letter (next test), but it draws the final ە as a small detached stroke
+    // («یارمـ~تی»): brief G1's default — Plex 600 for ckb headings — stands until a Sorani reader says otherwise
     const ckb = block(tokens, ":lang(ckb)");
-    expect(ckb).toMatch(/--font-head:\s*var\(--font-display\)/);
-    expect(ckb).not.toMatch(/--font-text/);
+    expect(ckb).toMatch(/--font-head:\s*var\(--font-text\)/);
+    expect(ckb).toMatch(/--font-key:\s*var\(--font-text\)/);
+    // figures stay Kufam in every language (digits only)
+    expect(tokens).toMatch(/--type-price:\s*var\(--w-figure\) var\(--price-md\) \/ 1\.2 var\(--font-display\)/);
   });
 
   it("Kufam's Arabic file draws every Sorani letter (cmap) and shapes Sorani words without a missing glyph", async () => {
@@ -328,6 +352,50 @@ describe("review fixes", () => {
     expect(autoplayWaits({ ...onScreen, ...s, canPlay: false })).toBe(true);
   });
 
+  it("carousel moves (fix round 2026-11-13): only the next or previous slide slides; anything further fades and jumps", () => {
+    // the autoplay wrap from the 6th banner to the 1st scrolled back past all six (−6400 → 0 over 1.5 s at 1440)
+    expect(carouselMove(5, 0, "full")).toBe("fade");
+    expect(carouselMove(0, 5, "full")).toBe("fade");
+    // a dot two slides away, Home / End
+    expect(carouselMove(1, 3, "full")).toBe("fade");
+    // the neighbours still slide
+    expect(carouselMove(2, 3, "full")).toBe("smooth");
+    expect(carouselMove(3, 2, "full")).toBe("smooth");
+    // two slides: the wrap IS the neighbour
+    expect(carouselMove(1, 0, "full")).toBe("smooth");
+    // re-aligning on the slide in view after a half swipe
+    expect(carouselMove(2, 2, "full")).toBe("smooth");
+    // reduced motion and the lite tier: every move is an instant jump
+    expect(carouselMove(5, 0, "reduced")).toBe("jump");
+    expect(carouselMove(2, 3, "reduced")).toBe("jump");
+    expect(carouselMove(2, 3, "lite")).toBe("jump");
+  });
+
+  it("carousel: a key pressed in a dialog the carousel opened (a React portal) does not move the slides", () => {
+    const source = read("app/ui/Carousel.tsx");
+    expect(source).toMatch(/onKeyDown: \(event\) => \{\s*\/\/[^\n]*\n(?:\s*\/\/[^\n]*\n)*\s*if \(!event\.currentTarget\.contains\(event\.target as Node\)\) return;/);
+  });
+
+  it("carousel: the jump past snap points suspends snapping (Chromium stops even an instant scroll at a snap-stop: always slide)", () => {
+    const source = read("app/ui/Carousel.tsx");
+    expect(source).toMatch(/scrollSnapType = "none"/);
+    // a user's fling still stops at the next slide: the kit keeps `always`
+    expect(decls(pieces, ".carousel__slide")).toMatch(/scroll-snap-stop:\s*always/);
+  });
+
+  it("carousel controls: 44px clay circles (G2), the pause key only once the page is live, the dots' hit area 44px", () => {
+    const source = read("app/ui/Carousel.tsx");
+    expect(source).toMatch(/size = "md"/);
+    expect(tokens).toMatch(/--target:\s*44px/);
+    expect(decls(pieces, ".carousel__dot")).toMatch(/inline-size:\s*var\(--target\)/);
+    expect(decls(pieces, ".carousel__dot")).toMatch(/block-size:\s*var\(--target\)/);
+    // the focus ring is drawn on the visible shape (the dot or the pill), not a thin box through the pill
+    expect(decls(pieces, ".carousel__dot:focus-visible")).toMatch(/outline:\s*none/);
+    expect(decls(pieces, ".carousel__dot:focus-visible::before, .carousel__dot:focus-visible::after")).toMatch(/outline:\s*var\(--focus-w\) solid var\(--focus\)/);
+    // the progress look of the current dot while autoplay runs (CarouselDots progress)
+    expect(pieces).toMatch(/\.carousel__dots\[data-run\] > \.carousel__dot\[aria-current="true"\]::after\s*\{[^}]*animation:\s*carousel-dot-fill/);
+  });
+
   it("carousel dots: the current dot is a true pill (its own layer), not a circle stretched into an ellipse", () => {
     expect(pieces).not.toMatch(/scale:\s*2\.75 1/);
     expect(decls(pieces, ".carousel__dot::after")).toMatch(/inline-size:\s*22px/);
@@ -339,6 +407,16 @@ describe("review fixes", () => {
     expect(countUpPlan({ serverRendered: true, visible: true, full: true })).toEqual({ show: "final", count: "never" });
     expect(countUpPlan({ serverRendered: false, visible: true, full: true })).toEqual({ show: "from", count: "now" });
     expect(countUpPlan({ serverRendered: false, visible: false, full: false })).toEqual({ show: "final", count: "never" });
+  });
+
+  it("count-up playOnLoad (fix round 2026-11-13, note 12): the page's one focus figure counts on a direct open too, from 70%", () => {
+    // the offer on /trade-in/:ref and the rewards balance opened from a link never counted (server-rendered + on screen)
+    expect(countUpPlan({ serverRendered: true, visible: true, full: true, playOnLoad: true })).toEqual({ show: "from", count: "now" });
+    expect(countUpPlan({ serverRendered: true, visible: true, full: false, playOnLoad: true })).toEqual({ show: "final", count: "never" });
+    expect(countUpStart({ value: 350_000, from: 0, serverRendered: true, playOnLoad: true })).toBe(245_000);
+    // never down to 0 on a server-rendered page; a client mount still counts from `from`
+    expect(countUpStart({ value: 350_000, from: 0, serverRendered: false, playOnLoad: true })).toBe(0);
+    expect(countUpStart({ value: 2_000, from: 0, serverRendered: true, playOnLoad: false })).toBe(0);
   });
 
   it("the on-band key stands on the band's own deep colour (a red wall showed under it on the blue PlayStation band)", () => {
@@ -381,5 +459,267 @@ describe("review fixes", () => {
     expect(layer).toMatch(/pointer-events:\s*none/);
     // more contrast: no light on the floor, opaque cards
     expect(base).toMatch(/@media \(prefers-contrast: more\)\s*\{\s*body::before\s*\{\s*display:\s*none/);
+  });
+});
+
+/*
+ * The fix round (2026-11-13): five auditors checked the store against the client's notes; the kit's defects, fixed.
+ * Pure rules first, then the server's markup of the pieces (a router stub gives them the store's words), then the
+ * stylesheet rules that carry the visual fixes. The carousel's moves are above ("review fixes").
+ */
+describe("fix round 2026-11-13", () => {
+  const renderKit = (element: ReactElement, locale: Locale = "ar") => {
+    const Page: ComponentType = () => element;
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: Page }] }]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [localePath("/kit", locale)],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop", "ui-card", "ui-overlays") } } },
+      }),
+    );
+  };
+
+  it("tabs: 15px labels (16px on the lg row), the before's 3px underline; a page inside a tab's section says aria-current=true", () => {
+    expect(tokens).toMatch(/--type-tab-label:\s*500 15px \/ 1\.4 var\(--font-text\)/);
+    expect(tokens).toMatch(/--type-tab-label-lg:\s*500 16px \/ 1\.4 var\(--font-text\)/);
+    // the phone tab bar's small label under its icons keeps its own role
+    expect(tokens).toMatch(/--type-tab:\s*400 var\(--fs-xs\)/);
+    const items = [
+      { value: "help", label: "مركز المساعدة", href: "/support" },
+      { value: "repair", label: "احجز صيانة", href: "/support/repair" },
+    ];
+    const page = renderKit(createElement(Tabs, { "aria-label": "الدعم", value: "help", items }));
+    expect(page).toMatch(/aria-current="page"[^>]*>|aria-current="page"/);
+    expect(page).toContain("[font:var(--type-tab-label)]");
+    expect(page).toContain("min-h-11");
+    const section = renderKit(createElement(Tabs, { "aria-label": "الدعم", value: "help", items, section: true, size: "lg" }));
+    expect(section).toContain('aria-current="true"');
+    expect(section).not.toContain('aria-current="page"');
+    expect(section).toContain("[font:var(--type-tab-label-lg)]");
+    expect(section).toContain("min-h-12");
+    expect(decls(pieces, ".tabs__ind")).toMatch(/block-size:\s*var\(--tab-ind, 2px\)/);
+  });
+
+  it("order summary: the discount's parts sit in its place (before delivery and the total), never twice, nothing after the total but how it is paid", () => {
+    const parts = [
+      { key: "coupon", icon: "ticket" as const, label: "رمز الخصم DEMO10", amountIqd: 25_000 },
+      { key: "points", icon: "star" as const, label: "1,000 نقطة مستبدلة", amountIqd: 10_000 },
+    ];
+    expect(discountRows(35_000, parts)).toBe(parts);
+    // parts that do not add up to the server's discount are not shown: the one «الخصم» row is
+    expect(discountRows(30_000, parts)).toBeNull();
+    expect(discountRows(0, [])).toBeNull();
+    expect(discountRows(5, [{ key: "x", label: "x", amountIqd: 5.5 }])).toBeNull();
+
+    const html = renderKit(
+      createElement(
+        OrderSummary,
+        { subtotalIqd: 140_000, discountIqd: 35_000, shippingIqd: 5_000, totalIqd: 110_000, discountParts: parts, couponField: createElement("input", { "aria-label": "code" }) },
+        createElement("p", { className: "split" }, "من المحفظة"),
+      ),
+    );
+    const at = (needle: string) => {
+      const i = html.indexOf(needle);
+      expect(i, needle).toBeGreaterThanOrEqual(0);
+      return i;
+    };
+    // subtotal · DEMO10 · points · delivery · total · the split · the coupon question
+    const order = [at("المجموع الفرعي"), at("DEMO10"), at("نقطة مستبدلة"), at("التوصيل"), at("الإجمالي"), at('class="split"'), at("لديك رمز خصم؟")];
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    // the parts replace the single row: «الخصم» is not drawn, and nothing with a minus sign follows the total
+    expect(html).not.toContain(">الخصم<");
+    expect(html.slice(at("الإجمالي")).includes("−")).toBe(false);
+    expect(html.match(/summary__row summary__row--saving/g)).toHaveLength(2);
+    // the coupon question has a caret
+    expect(html).toMatch(/<summary><span>لديك رمز خصم؟<\/span><svg[^>]*summary__caret/);
+    // one discount, no parts: one «الخصم» row in the saving colour with its icon
+    const single = renderKit(createElement(OrderSummary, { subtotalIqd: 100_000, discountIqd: 10_000, shippingIqd: 5_000, totalIqd: 95_000 }));
+    expect(single.match(/summary__row--saving/g)).toHaveLength(1);
+    expect(single).toContain("الخصم");
+    expect(decls(components, ".summary__row--saving, .summary__row--saving .price")).toMatch(/color:\s*var\(--ok\)/);
+  });
+
+  it("key labels keep Arabic marks: the clip box is taller than the line (the tanween of «عنواناً», the kasras of «جارٍ»)", () => {
+    // measured in Edge (work/C-fix-design/keymarks.mjs): every mark of 9 labels × 3 key sizes inside the clip box
+    const label = decls(materials, ".key__label");
+    expect(label).toMatch(/overflow:\s*hidden/);
+    expect(label).toMatch(/padding-block:\s*0\.45em/);
+    expect(label).toMatch(/margin-block:\s*-0\.45em/);
+    const html = renderKit(createElement(Key, { variant: "primary" }, "أضف عنواناً"));
+    expect(html).toContain('<span class="bidi key__label">أضف عنواناً</span>');
+  });
+
+  it("a confirmation's two keys share the row by their own widths on phones (a long label is never cut to «احذف العن…»)", () => {
+    const dialog = read("app/ui/Dialog.tsx");
+    expect(dialog.match(/className="flex-auto sm:flex-none"/g)).toHaveLength(2);
+    expect(dialog).not.toMatch(/className="flex-1 sm:flex-none"/);
+  });
+
+  it("the ambient light never widens the page: by default it reaches above and below its box, not past its sides", () => {
+    expect(decls(materials, ".glow::before, .glow-layer")).toMatch(/inset:\s*var\(--glow-inset, -12% 0\)/);
+  });
+
+  it("phone breadcrumbs keep each crumb on one line (base.css's li text-wrap: pretty set it back to wrap)", () => {
+    expect(base).toMatch(/li,\s*dd,\s*blockquote\s*\{[^}]*text-wrap:\s*pretty/);
+    expect(decls(pieces, ".crumbs--phone .crumbs__list > li")).toMatch(/white-space:\s*nowrap/);
+    expect(pieces).toMatch(/animation-timeline:\s*scroll\(self inline\)/);
+  });
+
+  it("notes: the line variant at the reading size (16px, line height 1.75) with its icon on the first line; a danger tone", () => {
+    expect(decls(pieces, ".note--line .note__text")).toMatch(/font:\s*var\(--type-read\)/);
+    expect(decls(pieces, ".note--line .note__icon")).toMatch(/block-size:\s*calc\(var\(--fs-read\) \* var\(--lh-read\)\)/);
+    const danger = renderToStaticMarkup(createElement(Note, { tone: "danger", title: "توقف فوراً" }, "افصل الجهاز."));
+    expect(danger).toMatch(/^<div class="note note--danger">/);
+    expect(danger).toContain('data-icon="warning-circle"');
+    expect(decls(pieces, ".note--danger")).toMatch(/--note-ink:\s*var\(--danger\)/);
+    expect(decls(pieces, ".note--danger .note__title")).toMatch(/color:\s*var\(--danger\)/);
+  });
+
+  it("content callouts render as the one Note pattern (G5): tinted circle, the tone said first to screen readers, no landmark", () => {
+    const html = renderKit(createElement(Blocks, { blocks: [{ type: "callout", tone: "warning", title: "قبل أن تشتري", text: "لا تبيع Valve الجهاز في العراق." }] }));
+    expect(html).toContain('class="note note--warning"');
+    expect(html).toMatch(/<p class="note__title"><span class="sr-only">تنبيه: <\/span>قبل أن تشتري<\/p>/);
+    expect(html).not.toContain("<aside");
+    expect(html).not.toContain('class="callout');
+    const plain = renderKit(createElement(Blocks, { blocks: [{ type: "callout", tone: "danger", text: "افصل الجهاز." }] }));
+    expect(plain).toContain('class="note note--danger"');
+    expect(plain).toMatch(/<div class="note__text"><span class="sr-only">خطر: <\/span>افصل الجهاز\.<\/div>/);
+  });
+
+  it("support rows: the title at the before's 16–17px (one line at 390), the 44px disc on phones", () => {
+    expect(components).toMatch(/\.entry--row \.entry__title\s*\{\s*font:\s*var\(--w-head\) 17px \/ 1\.4 var\(--font-head\);\s*text-wrap:\s*balance;/);
+    expect(components).toMatch(/@media \(max-width: 47\.99rem\)\s*\{[\s\S]*?\.entry--row \.entry__disc\s*\{\s*--disc:\s*44px;[\s\S]*?\.entry--row \.entry__title\s*\{\s*font-size:\s*16px;/);
+  });
+
+  it("reading text on phones (G7): the release band's lead, the inspection report, the grade legend; and the utility exists", () => {
+    // wave A documented `type-read` and wave B used it on 29 elements, but the utility class itself was missing
+    expect(uncommented(read("app/styles/theme.css"))).toMatch(/@utility type-read\s*\{\s*font:\s*var\(--type-read\);/);
+    expect(decls(components, ".release__lead")).toMatch(/font:\s*var\(--type-read\)/);
+    expect(decls(components, ".inspect__row")).toMatch(/font:\s*var\(--type-read\)/);
+    expect(read("app/ui/InspectionCard.tsx").match(/type-read[^"]*lg:type-sm/g)?.length).toBeGreaterThanOrEqual(5);
+    expect(read("app/ui/GradeBadge.tsx")).toMatch(/<dd className="type-read text-ink-2 lg:type-sm">/);
+  });
+
+  it("the grade legend keeps clear of the shell's fixed bars (it ran over «أضف إلى السلة» at 390)", () => {
+    const badge = read("app/ui/GradeBadge.tsx");
+    expect(badge).toMatch(/measure\("--shell-top"\)/);
+    expect(badge).toMatch(/measure\("--shell-bottom"\)/);
+  });
+
+  it("one-line option cards sit in the middle of their 64px card; one picture has no «1 من 1» counter", () => {
+    expect(decls(components, ".choice--row:not(:has(.choice__hint))")).toMatch(/align-items:\s*center/);
+    expect(read("app/ui/Gallery.tsx")).toMatch(/total > 1 \? \(/);
+  });
+
+  it("«صورة توضيحية» never runs past a narrow well: it wraps, and under a /used row's 96px well it sits beneath the photo", () => {
+    const photo = decls(components, ".tag--photo");
+    expect(photo).toMatch(/white-space:\s*normal/);
+    expect(photo).toMatch(/max-inline-size:\s*100%/);
+    expect(read("app/ui/UsedUnitCard.tsx")).toMatch(/row && !real \? <Tag kind="photo" className="tag--under justify-self-start" \/>/);
+  });
+
+  it("segmented options: a real 44px target (the ::after counts from the padding box: 1px border + the track's 2px)", () => {
+    expect(decls(components, ".seg__opt::after")).toMatch(/inset:\s*-3px 0/);
+  });
+
+  it("the compact platform tile keeps its sheen behind the hardware and deepens the words' side (white «PlayStation» ≥ 4.5)", () => {
+    const light = decls(materials, ".ptile--compact .ptile__light");
+    expect(light).toMatch(/radial-gradient\(28% 60% at calc\(50% \+ 34% \* var\(--dir\)\) 58%, var\(--tile-sheen\)/);
+    expect(light).toMatch(/linear-gradient\(calc\(90deg \* var\(--dir\)\), var\(--tile-words-shade\) 0%, var\(--tile-words-shade-mid\) 45%/);
+    expect(light).toBeTruthy();
+    expect(tokens).toMatch(/--tile-words-shade:\s*rgb\(0 0 0 \/ 0\.12\)/);
+  });
+
+  it("the white on-band key says its words in the band's deep colour on a platform band", () => {
+    expect(decls(materials, ":where([data-gel]) .key--on-band")).toMatch(/--on:\s*var\(--plat-deep, var\(--on-band-label\)\)/);
+  });
+
+  it("step rails: the before's labelled rail (32px discs, Kufam numerals, the word under each); a status rail with stage icons", () => {
+    const steps = [{ label: "الجهاز", href: "/trade-in" }, { label: "الحالة" }, { label: "الصور" }, { label: "التقدير" }, { label: "الفحص" }];
+    const under = renderKit(createElement(ProgressSteps, { steps, current: 1, labels: "under" }));
+    expect(under).toContain('class="steps-under"');
+    expect(under.match(/class="steps-under__item"/g)).toHaveLength(5);
+    expect(under).toMatch(/<a[^>]*class="step"[^>]*data-state="done"/);
+    expect(under).toContain('aria-current="step"');
+    for (const label of ["الجهاز", "الحالة", "الصور", "التقدير", "الفحص"]) expect(under).toContain(label);
+    expect(under).not.toContain("sr-only\">الحالة");
+    expect(decls(components, ".steps-under .step__n")).toMatch(/inline-size:\s*32px/);
+    expect(decls(components, ".steps-under .step__n")).toMatch(/font:\s*var\(--w-figure\) 16px \/ 1 var\(--font-display\)/);
+    const status = renderKit(createElement(ProgressSteps, { variant: "status", current: 2, steps: [{ label: "استلمنا", icon: "receipt" }, { label: "تأكيد", icon: "seal-check" }, { label: "تجهيز", icon: "package" }, { label: "في الطريق", icon: "truck" }, { label: "تم التسليم", icon: "house" }] }));
+    expect(status).toContain('class="steps-status"');
+    expect(status.match(/class="steps-status__disc"/g)).toHaveLength(5);
+    expect(status).toMatch(/data-state="current" aria-current="step"/);
+  });
+
+  it("chips take a kind icon (the check takes its place when chosen); keys can wrap or be compact; a state can be a pill", () => {
+    const chip = renderKit(createElement(Chip, { icon: "kind-controller", count: 12, children: "أذرع التحكم" }));
+    expect(chip).toContain('class="key__icon"');
+    expect(chip).toContain('data-glyph="kind-controller"');
+    expect(materials).toMatch(/\.key:is\(\[aria-checked="true"\], \[aria-pressed="true"\], \[data-held\], :has\(> input:checked\)\) \.key__icon\s*\{\s*display:\s*none/);
+    expect(renderKit(createElement(Key, { wrap: true }, "لەگەڵ کارمەندێک قسە بکە"))).toMatch(/class="key key--secondary key--wrap"/);
+    expect(renderKit(createElement(Key, { fit: "compact" }, "قبوڵ"))).toMatch(/key--compact/);
+    expect(decls(materials, ".key--wrap .key__label")).toMatch(/text-wrap:\s*balance/);
+    expect(renderToStaticMarkup(createElement(Status, { tone: "warn", pill: true, children: "بانتظار الدفع" }))).toBe('<span class="status status--warn status--pill">بانتظار الدفع</span>');
+  });
+
+  it("empty states: the stack icon at 44px in its disc; a panel that spans its column", () => {
+    const html = renderKit(createElement(EmptyState, { layout: "stack", panel: true, wide: true, icon: "magnifying-glass", title: "لا نتائج" }));
+    expect(html).toContain('class="empty empty--panel empty--wide"');
+    expect(html).toMatch(/width="44" height="44"/);
+    expect(decls(pieces, ".empty--panel.empty--wide")).toMatch(/max-inline-size:\s*none/);
+  });
+
+  it("option cards: a clay face and an icon disc; a checkbox row with its hint inside", () => {
+    const card = renderKit(createElement(OptionCard, { clay: true, icon: "wallet", name: "payout", value: "wallet", label: "إلى المحفظة", hint: "فوراً بعد الفحص" }));
+    expect(card).toMatch(/class="choice choice--radio choice--row choice--clay"/);
+    expect(card).toContain('class="choice__icon"');
+    const check = renderKit(createElement(Checkbox, { row: true, name: "works", label: "الجهاز يعمل", hint: "يُفحص عند الاستلام" }));
+    expect(check).toMatch(/class="choice choice--row choice--check"/);
+    expect(check).toMatch(/<span class="choice__hint"[^>]*>يُفحص عند الاستلام<\/span>/);
+    expect(check).not.toContain('class="field__hint"');
+  });
+
+  it("the glossy wallet band; the ledger rows' kind discs and coloured signs (as the account's history)", () => {
+    expect(renderKit(createElement(Band, { kind: "wallet", gloss: true }, "x"))).toMatch(/class="band band--wallet band--gloss"/);
+    expect(ledgerLook({ kind: "topup", amountIqd: 5_000 })).toEqual({ icon: "plus", tone: "ok" });
+    expect(ledgerLook({ kind: "purchase", amountIqd: -5_000 })).toEqual({ icon: "shopping-cart-simple", tone: "red" });
+    expect(ledgerLook({ kind: "adjustment", amountIqd: -1 })).toEqual({ icon: "storefront", tone: "red" });
+    expect(decls(components, '.ledger__amount[data-sign="credit"]')).toMatch(/color:\s*var\(--ok\)/);
+  });
+
+  it("a toast's kind icon is drawn inline (an offline toast's sprite icon came out blank)", () => {
+    const toast = read("app/ui/Toast.tsx");
+    for (const name of ["status-info", "status-ok", "status-warning", "status-error"]) {
+      expect(toast).toContain(`"${name}"`);
+      expect(GLYPH_NAMES).toContain(name);
+    }
+    expect(renderToStaticMarkup(createElement(Icon, { name: "status-warning" }))).toMatch(/data-glyph="status-warning"/);
+  });
+
+  it("a price can count up once (the offer): the server renders the final figure", () => {
+    const html = renderKit(createElement(Price, { amountIqd: 350_000, size: "xl", countUp: "load", approx: "off" }));
+    expect(html).toMatch(/class="price__num"><span class="count">/);
+    expect(html).toContain('<span class="count__final" aria-hidden="true">350,000</span>');
+    expect(html).toContain('<span class="count__live" aria-hidden="true">350,000</span>');
+  });
+
+  it("rails and tile grids can reveal their items one after another; late cards of a stagger row arrive as a batch", () => {
+    const card = createElement("a", { href: "/p/a" }, "a");
+    expect(renderKit(createElement(Rail, { reveal: true, "aria-label": "x", children: card }))).toContain('data-reveal="stagger"');
+    expect(renderKit(createElement(PlatformTiles, { reveal: true, children: "x" }))).toContain('data-reveal="stagger"');
+    expect(renderKit(createElement(CategoryTiles, { reveal: true, children: "x" }))).toContain('data-reveal="stagger"');
+    expect(renderKit(createElement(Rail, { "aria-label": "x", children: card }))).not.toContain("data-reveal");
+    const row = { id: "row" };
+    const other = { id: "other" };
+    const a = { el: "a" };
+    const b = { el: "b" };
+    const marked = { el: "marked" };
+    const records = [
+      { target: row, addedNodes: [a, "text", b] },
+      { target: other, addedNodes: [{ el: "c" }] },
+      { target: row, addedNodes: [marked, a] },
+    ];
+    const isEl = (n: unknown) => typeof n === "object" && n !== null && "el" in n;
+    expect(lateArrivals(records, (r) => r === row, isEl, (n) => n === marked)).toEqual([a, b]);
   });
 });

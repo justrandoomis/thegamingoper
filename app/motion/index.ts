@@ -35,7 +35,7 @@ export { SharedElement } from "./shared";
 export type { SharedElementProps } from "./shared";
 export { Bubble, BubbleGroup, useHydrating } from "./bubble";
 export type { BubbleGroupProps, BubbleProps } from "./bubble";
-export { CountUp, countAt, countUpPlan, NumberMorph } from "./number";
+export { CountUp, countAt, countUpPlan, countUpStart, NumberMorph } from "./number";
 export type { CountUpProps, NumberMorphProps } from "./number";
 
 // Imperative pieces (implementation loads on demand; each call is instant either way).
@@ -53,4 +53,4 @@ export type { RailHandle, RailOptions } from "./rail-hook";
 export { useAmbient } from "./ambient";
 
 // v2.1: section reveal (started by <MotionRoot>; mark elements with data-reveal or use <Reveal> from ~/ui/reveal).
-export { initialRevealState, revealDelay, revealEnabled } from "./reveal";
+export { initialRevealState, lateArrivals, revealDelay, revealEnabled } from "./reveal";

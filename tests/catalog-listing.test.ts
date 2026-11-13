@@ -449,6 +449,22 @@ describe("«وصل حديثاً» shelves on the catalog pages (v2 §4.7: «جد
     expect(await statsOf()).toBe(counted);
   });
 
+  it("a corrected search says the corrected words as the catalogue writes them («نتائج «Nintendo»»), never the index's folded spelling (fix-browse 2026-11-13)", async () => {
+    type SearchPage = { result: { correctedQuery: string | null } | null; corrected: string | null };
+    for (const [path, folded, shown] of [
+      ["/search?q=nintndo", "nintendo", "Nintendo"],
+      ["/en/search?q=nintndo", "nintendo", "Nintendo"],
+      ["/ckb/search?q=playstaion", "playstation", "PlayStation"],
+    ] as const) {
+      const page = (await pageData(path, searchLoader as never)) as SearchPage;
+      // the service's words (and the page's links) stay folded; the page says them as the names do
+      expect(page.result?.correctedQuery, path).toBe(folded);
+      expect(page.corrected, path).toBe(shown);
+    }
+    // nothing corrected: nothing to say
+    expect(((await pageData("/search?q=nintendo", searchLoader as never)) as SearchPage).corrected).toBeNull();
+  });
+
   it("an empty department offers new arrivals without «جديد»", async () => {
     const departments = await rows<{ slug: string }>("SELECT slug FROM categories WHERE is_active = 1 AND kind <> 'used' ORDER BY slug");
     let empty: string | null = null;
@@ -722,5 +738,71 @@ describe("the platform band on phones (v2.1 client note 4, catalog review)", () 
 
   it("at 320 (400% zoom) the name keeps its words whole: the glyph disc gives its room", () => {
     expect(block("@media (max-width: 22.49rem)", ".catalog-band__glyph")).toMatch(/display:\s*none/);
+  });
+
+  // lead decision 3 (fix-browse 2026-11-13): the first products start on the first laptop screen — they started at
+  // ~790px under a 231px row of 124px device tiles and a 136px band (measured: 622px at 1024–1440 now)
+  it("from 1024 the device row is compact: its title and note on one line, 56px clay pills with the picture beside the name; the band 112px", () => {
+    const laptop = "@media (min-width: 64rem)";
+    expect(block(laptop, ".catalog-devices__head")).toMatch(/display:\s*contents/);
+    expect(block(laptop, ".catalog-devices__text")).toMatch(/display:\s*flex/);
+    const pill = block(laptop, ".catalog-device.cat");
+    expect(pill).toMatch(/min-block-size:\s*56px/);
+    expect(pill).toMatch(/grid-template-columns:\s*40px auto/);
+    expect(pill).toMatch(/border-radius:\s*var\(--r-full\)/);
+    expect(block(laptop, ".catalog-device > .cat__art")).toMatch(/inline-size:\s*40px/);
+    expect(block(laptop, ".catalog-band__content")).toMatch(/min-block-size:\s*112px/);
+    // phones keep their tiles: nothing of the pill outside the laptop range
+    expect(css.indexOf(".catalog-device.cat {")).toBeGreaterThan(css.indexOf(laptop));
+  });
+
+  it("phones: the hubs' side notes are reading text (v2.1 G7: 16px / 1.75, they were 14 / 1.5)", () => {
+    expect(block("@media (max-width: 47.99rem)", ".catalog-devices__note")).toMatch(/font:\s*var\(--type-read\)/);
+  });
+
+  it("the zero-result card's chips wrap, centred, at every width — never a sideways row cut by the card's edge", () => {
+    const chips = block("", ".chips.catalog-chips--panel");
+    expect(chips).toMatch(/flex-wrap:\s*wrap/);
+    expect(chips).toMatch(/justify-content:\s*center/);
+    expect(chips).toMatch(/overflow:\s*visible/);
+    expect(chips).not.toMatch(/margin-inline:\s*calc\(-/);
+  });
+
+  it("compare on phones: 44% product columns that snap, so a third product peeks at the end (two columns filled the card)", () => {
+    const phone = "@media (max-width: 47.99rem)";
+    expect(block(phone, ".catalog-compare--wide .catalog-compare__table")).toMatch(/inline-size:\s*calc\(var\(--n, 2\) \* 44cqi\)/);
+    expect(block(phone, ".catalog-compare--wide")).toMatch(/scroll-snap-type:\s*inline mandatory/);
+    expect(block(phone, ".catalog-compare--wide .catalog-compare__product")).toMatch(/scroll-snap-align:\s*start/);
+    expect(block("@media (min-width: 48rem)", ".catalog-compare__nav")).toMatch(/display:\s*none/);
+  });
+});
+
+describe("compare: how many are compared, and which are in view on a phone (fix-browse 2026-11-13)", () => {
+  const render = async (locale: Locale, ids: string[]) => {
+    const { loader, default: ComparePage } = await import("~/routes/storefront/catalog/compare");
+    const query = ids.map((id) => `ids=${id}`).join("&");
+    const data = await pageData(`${localePath("/compare", locale)}?${query}`, loader as never);
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: () => createElement(ComparePage as never, { loaderData: data }) }] }]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [`${localePath("/compare", locale)}?${query}`],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop") }, page: data } },
+      }),
+    );
+  };
+  it("the head says how many products are compared, in every language; three or four get the navigator «تعرض 1–2 من 3», two do not", async () => {
+    // three consoles of the demo catalogue (the slugs the store's own compare links use)
+    const three = ["playstation-5-pro", "playstation-5-slim", "xbox-series-x"];
+    const listed = await rows<{ slug: string }>("SELECT slug FROM products WHERE status = 'published' AND slug IN (?, ?, ?)", ...three);
+    expect(listed).toHaveLength(3);
+    const ar = await render("ar", three);
+    expect(ar).toContain("تقارن 3 منتجات من أجهزة الألعاب");
+    expect(ar).toContain("تعرض ⁦1–2⁩ من 3");
+    expect(ar).toMatch(/aria-label="المنتجات التالية"/);
+    expect((await render("en", three)).replaceAll("&#x27;", "'")).toContain("Comparing 3 products: consoles");
+    expect(await render("ckb", three)).toContain("3 بەرهەم بەراورد دەکەیت");
+    const two = await render("ar", three.slice(0, 2));
+    expect(two).toContain("تقارن منتجين من أجهزة الألعاب");
+    expect(two).not.toContain("catalog-compare__nav");
   });
 });

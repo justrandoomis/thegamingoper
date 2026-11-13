@@ -6,6 +6,7 @@ import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { BidiLabel } from "./BidiText";
 import { cx } from "./cx";
 import type { Platform } from "./PlatformLed";
+import { revealProps } from "./reveal";
 
 /**
  * The platform tile — Design System v2 §4.19; v2.1 (DESIGN.md §15.3, client note 3): one of the four doors of the
@@ -132,10 +133,11 @@ export function PlatformTile<C extends ElementType = typeof LocaleLink>({ platfo
   );
 }
 
-/** The grid: 2×2 on phones (room above the second row for the hardware), four in a row from 768. */
-export function PlatformTiles({ children, className, label }: { children: ReactNode; className?: string; label?: string }) {
+/** The grid: 2×2 on phones (room above the second row for the hardware), four in a row from 768. `reveal`: the tiles
+ *  fade up one after another as the grid first enters the view (G6; off by default). */
+export function PlatformTiles({ children, className, label, reveal = false }: { children: ReactNode; className?: string; label?: string; reveal?: boolean }) {
   return (
-    <nav className={cx("ptiles", className)} aria-label={label}>
+    <nav className={cx("ptiles", className)} aria-label={label} {...(reveal ? revealProps({ stagger: true }) : null)}>
       {children}
     </nav>
   );

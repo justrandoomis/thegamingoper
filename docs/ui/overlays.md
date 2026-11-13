@@ -8,6 +8,19 @@
 - **Glass** — `panel` prop for frosted panels; the live-pane budget is four per viewport (`LIVE_GLASS_BUDGET`).
 - **Note** (`~/ui/Note`) replaces tinted callouts with inline links: `<Note title icon tone action variant>`.
 
+## Fix round (2026-11-13) — DESIGN.md §15.10
+
+- **Note** — `tone="danger"` (the circle and the title in `--danger`); `variant="line"` is reading text (16px / 1.75) with
+  the icon on the first line. **Blocks** — `callout` blocks render as `<Note>` in their tone, the tone's word said first
+  to screen readers; no `<aside>`, no side bar.
+- **ConfirmDialog** — on phones the two keys share the row by their own widths (`flex: 1 1 auto`), the second wrapping
+  under the first, full width, when both labels do not fit: a label is never cut.
+- **Toast** — the kinds' icons are inline glyphs (`status-info | status-ok | status-warning | status-error`, and
+  `status-offline`): a toast raised while offline drew a blank square from the unreachable sprite.
+- **ProgressSteps** — `labels="under"`: the before's labelled rail (32px discs, Kufam 16px numerals, every word under
+  its disc at 15px, a 2px join; done steps are links back). `variant="status"` with an `icon` on every step: 40px clay
+  discs with the stage's icon, reached ones ink, the current one ringed, a 3px join.
+
 ## Polish round (2026-11-12)
 
 - **Rail** — keyboard focus on a card that is partly hidden brings it to the rail's start (a snap point; pointer focus

@@ -3,6 +3,7 @@ import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { cx } from "./cx";
+import { revealProps } from "./reveal";
 import { Render } from "./Stage";
 
 /**
@@ -52,9 +53,10 @@ export function CategoryTile<C extends ElementType = typeof LocaleLink>({ label,
   );
 }
 
-export function CategoryTiles({ children, className, label }: { children: ReactNode; className?: string; label?: string }) {
+/** The tiles' grid. `reveal`: the tiles fade up one after another as the grid first enters the view (G6; off by default). */
+export function CategoryTiles({ children, className, label, reveal = false }: { children: ReactNode; className?: string; label?: string; reveal?: boolean }) {
   return (
-    <nav className={cx("cats", className)} aria-label={label}>
+    <nav className={cx("cats", className)} aria-label={label} {...(reveal ? revealProps({ stagger: true }) : null)}>
       {children}
     </nav>
   );

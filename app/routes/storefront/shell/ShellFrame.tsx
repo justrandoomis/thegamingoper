@@ -48,6 +48,11 @@ export type ShellFrameProps = {
   messages: MessageTree | undefined;
   /** The layout's ErrorBoundary is rendering: the pages' handles (tabBar: false, chrome) no longer apply. */
   errored?: boolean;
+  /**
+   * The error is a 404: the page is the not-found view, which has its own search field — the header shows only the
+   * round search key then (./chrome searchMode), so the page has one field.
+   */
+  notFound?: boolean;
   /** Words the search fields start with (the header's and the phone sheet's): a missing product's slug words. */
   searchQuery?: string;
   children: ReactNode;
@@ -55,24 +60,24 @@ export type ShellFrameProps = {
 
 type RootShellData = { storeMode?: "demo" | "live" };
 
-export function ShellFrame({ shell, messages, errored = false, searchQuery, children }: ShellFrameProps) {
+export function ShellFrame({ shell, messages, errored = false, notFound = false, searchQuery, children }: ShellFrameProps) {
   return (
     <ShellMessages messages={messages}>
-      <Frame shell={shell} errored={errored} searchQuery={searchQuery}>
+      <Frame shell={shell} errored={errored} notFound={notFound} searchQuery={searchQuery}>
         {children}
       </Frame>
     </ShellMessages>
   );
 }
 
-function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | null; errored: boolean; searchQuery?: string; children: ReactNode }) {
+function Frame({ shell, errored, notFound, searchQuery, children }: { shell: ShellData | null; errored: boolean; notFound: boolean; searchQuery?: string; children: ReactNode }) {
   const t = useShellT();
   const root = useRouteLoaderData("root") as RootShellData | undefined;
   const demo = root?.storeMode !== "live";
   const matches = useMatches();
   const location = useLocation();
   const path = splitLocale(location.pathname).path;
-  const { chrome, tabBar, task, back, offline } = shellChrome(matches, { errored, path });
+  const { chrome, tabBar, task, back, offline } = shellChrome(matches, { errored, path, search: location.search });
   const online = useOnline();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -85,6 +90,7 @@ function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | n
   }, [location.pathname]);
 
   useFocusClearOfBars();
+  useErrorPanelInView(errored, `${location.pathname}${location.search}`);
 
   return (
     <div className="shell" data-chrome={chrome} data-offline={online ? undefined : ""}>
@@ -104,8 +110,9 @@ function Frame({ shell, errored, searchQuery, children }: { shell: ShellData | n
               task={task ? { back: back ?? backFallback(path) } : null}
               onSearch={() => setSearchOpen(true)}
               searchQuery={searchQuery}
-              // the field on pages for finding products, the round key elsewhere (v2.1 §2.7) — decided here, by path
-              search={searchMode(path, { errored })}
+              // the field on pages for finding products, the round key elsewhere (v2.1 §2.7) — decided here, by path;
+              // the not-found view brings its own field, so there only the key
+              search={searchMode(path, { errored, notFound })}
             />
           </MegaHostContext>
           <div ref={setMegaHost} className="contents" />
@@ -176,4 +183,19 @@ function useFocusClearOfBars() {
       cancelAnimationFrame(frame);
     };
   }, []);
+}
+
+/**
+ * An error panel that takes a page's place after a client navigation — offline, or a GET form the store could not
+ * answer (the support page's problem search keeps its scroll) — opened where the old page was scrolled to, its title
+ * above the screen. When the top of <main> (the panel's title) is above the bars' bottom edge, the window goes to the
+ * top: the panel and the whole header are in view. Keyed by the address without its hash, so a jump to the footer's
+ * demo statement on the same error page stays where it lands.
+ */
+function useErrorPanelInView(errored: boolean, address: string) {
+  useEffect(() => {
+    if (!errored) return;
+    const main = document.getElementById("main");
+    if (main && main.getBoundingClientRect().top < focusEdges().top - 1) window.scrollTo({ top: 0, behavior: "instant" });
+  }, [errored, address]);
 }

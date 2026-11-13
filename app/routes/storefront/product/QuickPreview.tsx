@@ -41,6 +41,7 @@ import { Stage } from "~/ui/Stage";
 import { TextLink } from "~/ui/TextLink";
 import { PriceBlock, struckPrice, useDemoStore } from "./components/PriceBlock";
 import { VariantPicker } from "./components/VariantPicker";
+import { useFocusHandoff } from "./handoff";
 import { ProductMessages, useProductT } from "./i18n";
 import { keepTokens } from "./text";
 import { searchFor, shownDefault } from "./useVariant";
@@ -269,7 +270,9 @@ function PreviewBody({ product, variant, onChoose, ids }: { product: ProductPrev
 
 /**
  * The pinned foot (spec §6.9): the chosen version's price at the start and the primary «أضف إلى السلة» at the end.
- * After an add of this version: «✓ في السلة» over the price and «عرض السلة (n)» (another version restores the add key).
+ * After an add of this version: «✓ في السلة» over the price and «عرض السلة (n)» (another version restores the add key);
+ * when the add came from the focused key, «عرض السلة (n)» takes its focus — it stays inside the modal sheet instead of
+ * falling to <body> (./handoff.ts, QA 2026-11-13).
  * Sold out: «نفد حالياً», no key. Not out yet: «يصدر … · الطلب يفتح عند وصوله», no key. Offline: the key is flat.
  */
 function QuickFoot({ product, variant, offline }: { product: ProductPreview; variant: VariantDetail; offline: boolean }) {
@@ -278,12 +281,13 @@ function QuickFoot({ product, variant, offline }: { product: ProductPreview; var
   const { count } = useCartCount();
   const [addedFor, setAddedFor] = useState<string | null>(null);
   const added = addedFor === variant.id;
+  const handoff = useFocusHandoff(added);
   const soon = !variant.orderable && variant.releaseAt !== null;
   const soldOut = !variant.orderable && !soon;
   const picture = galleryFor(product, variant).images[0] ?? null;
 
   return (
-    <div className="flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2" data-quick-foot="">
+    <div ref={handoff.area} className="flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2" data-quick-foot="">
       <div className="grid min-w-0 gap-0.5">
         {added ? (
           <span className="flex items-center gap-1 type-xs-strong text-ok">
@@ -303,7 +307,7 @@ function QuickFoot({ product, variant, offline }: { product: ProductPreview; var
         )}
       </div>
       {soon || soldOut ? null : added ? (
-        <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right" className="min-w-[168px]">
+        <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right" className="min-w-[168px]" data-focus-target="">
           {shop("add.viewCartCount", { n: f.number(count) })}
         </Key>
       ) : (
@@ -318,7 +322,10 @@ function QuickFoot({ product, variant, offline }: { product: ProductPreview; var
           // offline: flat, and the kit's own line after it says why (and describes it)
           disabled={offline}
           className="min-w-[168px]"
-          onAdded={() => setAddedFor(variant.id)}
+          onAdded={() => {
+            handoff.arm();
+            setAddedFor(variant.id);
+          }}
         />
       )}
     </div>

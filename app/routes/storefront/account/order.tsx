@@ -15,15 +15,15 @@ import { Key } from "~/ui/Key";
 import { OrderSummary, type SummaryLine } from "~/ui/OrderSummary";
 import { Price } from "~/ui/Price";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
-import { ProgressSteps } from "~/ui/ProgressSteps";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { revealCodeForShopper } from "../checkout/checkout.server";
 import { Adjustments, summaryCoupon, withFlash } from "../checkout/components/Adjustments";
 import { DigitalCodes } from "../checkout/components/DigitalCodes";
+import { OrderStages } from "../checkout/components/OrderStages";
 import { requireSignedIn } from "./account.server";
 import { CopyKey, Notice } from "./components/FormBits";
-import { ORDER_RAIL, OrderStatusLine, PaymentStatusLine, railIndex, splitOption } from "./components/OrderBits";
+import { OrderStatusLine, PaymentStatusLine, railIndex, splitOption } from "./components/OrderBits";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
 import { amount, grouped, HANDOFF } from "./components/text";
@@ -73,6 +73,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
   const f = useFormat();
   const { order } = loaderData;
   const checkoutT = useT("checkout");
+  const stage = railIndex(order.status);
   const lines: SummaryLine[] = order.lines.map((line) => {
     const { name, option } = splitOption(line.name);
     return withFlash({ id: line.id, name, optionsLabel: lineFacts(line, option), lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], checkoutT, f);
@@ -116,15 +117,10 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           <p className="type-body text-ink-2">{t("order.cancelledOn", { date: f.date(order.cancelledAt ?? order.placedAt, "long") })}</p>
         ) : order.status === "returned" ? (
           <p className="type-body text-ink-2">{t("order.returnedNote")}</p>
-        ) : railIndex(order.status) !== null ? (
-          // the kit's status rail (v2 polish, ProgressSteps variant="status"): where the order IS, the current step in ink
-          <ProgressSteps
-            variant="status"
-            className="pt-2"
-            aria-label={t("order.statusTitle")}
-            current={order.status === "delivered" ? ORDER_RAIL.length : (railIndex(order.status) ?? 0)}
-            steps={ORDER_RAIL.map((step) => ({ label: t(`order.rail.${step}`) }))}
-          />
+        ) : stage !== null ? (
+          // the order page's status rail (the checkout area's OrderStages): the stage icons in their discs and the line
+          // that fills up to where the order is — one look for one order (QA 2026-11-13: this page drew hollow circles)
+          <OrderStages stage={stage} className="pt-2" aria-label={t("order.statusTitle")} />
         ) : null}
       </section>
 
@@ -250,10 +246,14 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
                 <span className="clay-disc" aria-hidden="true">
                   <Icon name="user" size={20} />
                 </span>
-                {/* who receives it: the name over the number — or, ordered without a name, the number itself */}
+                {/* who receives it: the name over the number — or, ordered without a name, the number itself. What the
+                    shopper typed is laid out in its own direction (`<bdi dir="auto">`, as the checkout's Typed): an Arabic
+                    address on /en keeps its words in order — QA 2026-11-13 read "QA" at the start of «… طلب اختبار QA» */}
                 {order.contact.name?.trim() ? (
                   <>
-                    <span className="acct-fact__title">{order.contact.name}</span>
+                    <span className="acct-fact__title">
+                      <bdi dir="auto">{order.contact.name}</bdi>
+                    </span>
                     <span className="acct-fact__text">
                       <bdi dir="ltr" className="nums">
                         {order.contact.phoneMasked}
@@ -272,11 +272,17 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
                 <span className="clay-disc" aria-hidden="true">
                   <Icon name="map-pin" size={20} />
                 </span>
-                <span className="acct-fact__title">{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(f.locale === "en" ? ", " : "، ")}</span>
+                <span className="acct-fact__title">
+                  <bdi dir="auto">{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(f.locale === "en" ? ", " : "، ")}</bdi>
+                </span>
                 {order.delivery.address || order.delivery.notes ? (
                   <span className="acct-fact__text">
-                    {order.delivery.address}
-                    {order.delivery.notes ? <span className="block type-xs">{order.delivery.notes}</span> : null}
+                    {order.delivery.address ? <bdi dir="auto">{order.delivery.address}</bdi> : null}
+                    {order.delivery.notes ? (
+                      <span className="block type-xs">
+                        <bdi dir="auto">{order.delivery.notes}</bdi>
+                      </span>
+                    ) : null}
                   </span>
                 ) : null}
               </li>

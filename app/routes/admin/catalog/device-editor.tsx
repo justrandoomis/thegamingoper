@@ -112,7 +112,7 @@ export default function DeviceEditor({ loaderData, actionData }: Route.Component
         {actionData && !actionData.ok && !actionData.fields ? <FailureNotice result={actionData} /> : null}
         {actionData?.ok ? <p className="adm-notice adm-notice--ok">{t("devices.saved")}</p> : null}
         {canManage ? (
-          <div className="sticky z-(--z-sticky) flex items-center gap-3 rounded-sm bg-paper px-3 py-2 shadow-[0_-1px_0_var(--line)]" style={{ insetBlockEnd: "var(--adm-bottom)" }}>
+          <div className="sticky z-(--z-sticky) flex items-center gap-3 rounded-sm bg-paper px-3 py-2 shadow-[0_-1px_0_var(--line)]" style={{ insetBlockEnd: "var(--adm-bottom)" }} data-adm-sticky-end>
             <Key type="submit" variant="ink" icon="floppy-disk" loading={busy}>
               {t("common.save")}
             </Key>

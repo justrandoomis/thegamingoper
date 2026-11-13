@@ -10,6 +10,17 @@
 - **CategoryTile** `icon` — the reference's icon tile (a clay square with a red line icon, e.g. `kind-controller`).
 - **Ambient light** — `className="glow"` (brand red, or the platform's colour inside `data-gel`) behind heroes and tiles.
 
+## Fix round (2026-11-13) — DESIGN.md §15.10
+
+- **Ambient light** — by default it reaches above and below its box, never past its sides (`--glow-inset: -12% 0`): the
+  earlier −6% sideways scrolled phones near the screen's edges. A page that sets a wider inset clips it itself.
+- **PlatformTile** compact — the sheen keeps behind the hardware and the words' side is a shade deeper
+  (`--tile-words-shade`): white «PlayStation» measured 4.40 at the 5th percentile in the browser, now ≥ 4.67.
+- **Band** `kind="wallet" gloss` — the reference's glossy «محفظتي» card (specular top band, a sheen at the inline end,
+  the tiles' rim, the red key's soft cast).
+- **ReleaseBand** — the lead is reading text on phones (16px), 14px from 768.
+- **Status** `pill` — the dot and words in a tinted pill (AA on every tint in both themes, `npm run contrast`).
+
 Owner: the kit (`app/ui/*` below), strings in `app/i18n/messages/ui-shop.ts` (`tile`, `trust`, `release`, `contact`
 groups) and `ui.ts`. Spec: Design System v2 §4.18–§4.27; CSS classes: `docs/UI.md` §2 (`.band`, `.ptile`, `.trust`,
 `.facts`, `.release`, `.sechead`, `.entry`, `.cats`, `.contact`, `.compat`). Live, every state, ar/en/ckb × light/dark:

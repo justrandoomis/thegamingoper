@@ -34,6 +34,9 @@
  * 404 `not_found` (a line or item that does not exist), 409 with a business code (`out_of_stock`,
  * `insufficient_stock`, `unavailable`, `max_qty_reached`, `cart_full`, `coupon_<reason>`), 429
  * `rate_limited` with Retry-After. Codes are error KEYS (`errors.<code>`), translated by the client.
+ * A code below its minimum (409 `coupon_min_subtotal`, client round 1 wave C) also carries `minimumIqd` and `moreIqd`
+ * — the minimum and how much more the cart needs, whole dinars, as the core counts them — so the page can say
+ * «أضف منتجات بقيمة …» without asking again; a stored code below its minimum says the same in `cart.couponIssue`.
  *
  * The body may be form data (what fetchers send) or JSON. Nothing the client sends is trusted for
  * money: prices, totals and the discount are computed on the server on every request. The cart
@@ -52,7 +55,7 @@ import { getDb, type Db } from "~/server/db.server";
 import { actionError } from "~/server/errors";
 import { enforceRateLimit, limitKey, rateLimit, type RateLimitRule } from "~/server/ratelimit.server";
 import { CART_COOKIE } from "~/server/shell.server";
-import { CART_COOKIE_MAX_AGE_SEC, MAX_LINE_QTY, PHONE_PRICING_PER_IP, addToCart, changeCoupon, changeLineQty, deleteLine, getCartView, isCartToken, type CartChangeResult, type CartRequest } from "~/server/services/cart.server";
+import { CART_COOKIE_MAX_AGE_SEC, MAX_LINE_QTY, PHONE_PRICING_PER_IP, addToCart, changeCoupon, changeLineQty, couponMinimumGapOf, deleteLine, getCartView, isCartToken, type CartChangeResult, type CartRequest } from "~/server/services/cart.server";
 
 /** Cart changes allowed per IP, and per cart, per minute. Generous for people, tight for scripts. */
 const CART_CHANGES: RateLimitRule = { limit: 60, windowSec: 60 };
@@ -206,6 +209,8 @@ export async function action({ request, context }: Route.ActionArgs) {
     const { status, retryAfterSec, ...failure } = actionError(error);
     const headers = new Headers(NO_STORE);
     if (retryAfterSec !== undefined) headers.set("Retry-After", String(retryAfterSec));
-    return data({ ...failure, ...(retryAfterSec === undefined ? {} : { retryAfterSec }) }, { status, headers });
+    // a code below its minimum: the minimum and how much more the cart needs, beside the code (no second request)
+    const gap = couponMinimumGapOf(error);
+    return data({ ...failure, ...(gap ?? {}), ...(retryAfterSec === undefined ? {} : { retryAfterSec }) }, { status, headers });
   }
 }

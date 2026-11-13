@@ -794,9 +794,25 @@
     font: var(--type-card);
     font-variant-numeric: tabular-nums lining-nums;
   }
+  /* what was bought: the name on one line, clamped in its own direction (a Latin name left to right, so the ellipsis cuts
+     its end — QA 2026-11-13 read «…Xbox Rechargeable Battery +» on phones), and «· قطعتان» whole beside it */
   .acct-order__what {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-1);
+    min-inline-size: 0;
     font: var(--type-sm);
     color: var(--ink);
+  }
+  .acct-order__name {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .acct-order__count {
+    flex: none;
+    white-space: nowrap;
   }
   .acct-order__meta {
     display: flex;

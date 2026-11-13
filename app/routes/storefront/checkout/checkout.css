@@ -109,6 +109,40 @@
     align-items: center;
     gap: var(--s-3) var(--s-5);
   }
+  /* one centred column of 640 (the page that cannot open an order): a child of the page — the `page` utility outranks a
+     column class on the page element itself */
+  .co-lone {
+    display: grid;
+    gap: var(--s-6);
+    inline-size: 100%;
+    max-inline-size: 640px;
+    margin-inline: auto;
+  }
+  /* The order that cannot be opened (QA 2026-11-13: /ckb scrolled sideways, 421px at 360 — the Sorani «بەدوای
+     داواکارییەکەتدا بگەڕێ» was wider than its card): its ways out (the note's action) may shrink to the card — a grid item
+     keeps its content's width otherwise — and their words wrap inside the keys (the kit's <Key wrap>); on phones they run
+     across the card under the sentence, one per line, where the thumb is, with 16px sides. */
+  .co-missing .note__action {
+    justify-self: stretch;
+    min-inline-size: 0;
+  }
+  .co-missing .key {
+    --px: var(--s-4);
+  }
+  /* a label on two lines: the Sorani marks (ێ ڕ) need more room between them than the key's 1.25 */
+  .co-missing .key__label {
+    line-height: 1.45;
+  }
+  @media (max-width: 47.99rem) {
+    .co-missing .note__action {
+      grid-column: 1 / -1;
+      margin-block-start: var(--s-3);
+    }
+    .co-missing .co-actions {
+      display: grid;
+      gap: var(--s-3);
+    }
+  }
   /* a refusal's alert: focused by script to bring it into view; the note inside draws everything */
   .co-alert {
     outline: none;
@@ -399,6 +433,12 @@
     display: grid;
     flex: none;
     gap: 2px;
+  }
+  /* a split payment: «الباقي 52,750 د.ع» under the total — what is actually owed, beside the key */
+  .co-taskbar__rest {
+    font: var(--type-xs-strong);
+    color: var(--ink);
+    white-space: nowrap;
   }
 
   /* ───────────────────────────── the commit key's words (<CommitKey>, QA 2026-11-12) ─────────────────────────────

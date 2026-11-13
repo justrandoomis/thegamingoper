@@ -383,4 +383,19 @@ describe("the list's states (rendered)", () => {
     expect(html).toMatch(new RegExp(`<a[^>]*class="key key--primary[^"]*"[^>]*>(?:(?!</a>)[\\s\\S])*${tUsed("list.clearFilters")}`));
     expect(html).toContain(tUsed("list.shopNew"));
   });
+
+  // Round-1 fixes: the h1 said «مستعمل ومفحوص» while the glossary (docs/DESIGN.md), /about, the menus and the missing-
+  // product page say «المستعمل والمفحوص» — one term, one form.
+  test("the list's title is the glossary's title in every language, as the shell's menus write it", async () => {
+    const facets = (await getUsedFacets(t.db, "ar"))!;
+    const filters = parseUsedFilters(new URLSearchParams(""));
+    const list = await listUsedUnits(t.db, "ar", { ...filters, page: 1, limit: 24 });
+    const html = renderListPage({ list, facets, filters, pages: 1, maxPages: 10, pageSize: 24, activeCount: 0, meta: { title: "", description: "" }, i18n: messagesFor("ar", "used", "errors") });
+    expect(html).toMatch(/<h1[^>]*>المستعمل والمفحوص<\/h1>/);
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const title = makeT(usedMessages[locale], locale, "used")("list.title");
+      expect(title, locale).toBe({ ar: "المستعمل والمفحوص", en: "Used & inspected", ckb: "بەکارهاتوو و پشکنراو" }[locale]);
+    }
+    expect(JSON.stringify(usedMessages.ar)).not.toContain("مستعمل ومفحوص");
+  });
 });

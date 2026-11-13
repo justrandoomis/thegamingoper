@@ -120,13 +120,13 @@
   "images": [
     {
       "key": "pulse-3d--1",
-      "file": ".cache/product-images/pulse-3d/1.webp",
-      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-screenshot-01-en-16aug21?$native--t$",
+      "file": ".cache/product-images/pulse-3d/1.png",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/3d-pulse-headset-product-thumbnail-01-en-14sep21?$native--t$&fmt=png-alpha&bfc=off",
       "sourcePage": "https://www.playstation.com/en-us/accessories/pulse-3d-wireless-headset/",
       "kind": "hero",
       "alt": { "ar": "سماعة PULSE 3D البيضاء من الأمام", "en": "White PULSE 3D headset from the front", "ckb": "هێدسێتی PULSE 3Dی سپی لە پێشەوە" },
       "credit": "Sony Interactive Entertainment",
-      "width": 3600, "height": 2400, "transparent": false
+      "width": 1920, "height": 1080, "transparent": true
     },
     {
       "key": "pulse-3d--2",

@@ -189,7 +189,7 @@
       "sku": "NS2-STD-RB",
       "title": {
         "ar": "نسخة البطارية القابلة للاستبدال (أوروبا والخليج)",
-        "en": "User-replaceable battery version (Europe & Gulf)",
+        "en": "User‑replaceable battery version (Europe & Gulf)",
         "ckb": "وەشانی پاتریی گۆڕاو (ئەوروپا و کەنداو)"
       },
       "options": { "edition": "Standard", "storage": "256GB", "battery": "User-replaceable" },

@@ -662,8 +662,11 @@ export function ConfirmDialog({
       scrimDismiss={!pending && !dirty}
       onSubmit={submit}
       footer={
+        // phones: the two keys share the row by their own widths (flex 1 1 auto, never an equal half that cuts a long
+        // label: «احذف العنوان» was «احذف العن…» at 360 — fix round 2026-11-13); when both labels do not fit side by
+        // side the second wraps under the first, full width. From sm they sit at the end at their own widths.
         <>
-          <Key ref={cancelRef} onClick={onClose} disabled={pending} className="flex-1 sm:flex-none">
+          <Key ref={cancelRef} onClick={onClose} disabled={pending} className="flex-auto sm:flex-none">
             {cancelLabel ?? t("dialog.cancel")}
           </Key>
           <Key
@@ -671,7 +674,7 @@ export function ConfirmDialog({
             type="submit"
             variant={tone === "commit" ? "primary" : tone === "destructive" ? "danger" : "secondary"}
             loading={pending}
-            className="flex-1 sm:flex-none"
+            className="flex-auto sm:flex-none"
           >
             {confirmLabel}
           </Key>

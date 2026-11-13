@@ -33,6 +33,12 @@ import { useControllable } from "./roving";
  *
  * Long rows scroll sideways, and the current tab is kept in view — on the first paint (a link tab opened from far down
  * the row) and whenever the choice or the focus moves. Labels keep their width when they turn bold, so nothing shifts.
+ *
+ * v2.1 fix round (client note 9: the before's section tabs read larger and firmer): labels are 15px Plex 500, the chosen
+ * one 600, on a 44px row with the before's 3px underline; `size="lg"` — a page's own section tabs (the support pages) —
+ * 16px on a 48px row. The admin keeps its dense 12px rows (tokens.css, [data-density="admin"]).
+ *
+ *   <Tabs size="lg" section aria-label=… value="help" items=[…] />   a guide inside «مركز المساعدة»: aria-current="true"
  */
 export type TabItem = {
   value: string;
@@ -58,21 +64,28 @@ export type TabsProps = {
   activation?: "auto" | "manual";
   /** Panel tabs: keep every panel mounted (hidden) instead of only the selected one. */
   keepMounted?: boolean;
+  /** "md" (default): 15px labels on a 44px row. "lg": a page's own section tabs — 16px on a 48px row. */
+  size?: "md" | "lg";
+  /** Link tabs: the page belongs to the chosen tab's part of the site but is not the tab's own page (a guide inside
+   *  «مركز المساعدة»): the chosen tab says aria-current="true" instead of "page". */
+  section?: boolean;
   className?: string;
   listClassName?: string;
   panelClassName?: string;
 };
 
-const LIST = "group/tabs relative flex min-w-0 gap-1 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+const LIST = "group/tabs relative flex min-w-0 gap-1 not-admin:max-md:gap-0 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 const TAB =
-  "group relative inline-flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap px-3 type-tab text-ink-2 outline-offset-[-3px] hover:text-ink " +
+  "group relative inline-flex min-w-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap px-3 not-admin:px-2.5 text-ink-2 outline-offset-[-3px] hover:text-ink " +
   "data-[selected]:text-ink aria-disabled:cursor-default aria-disabled:text-ink-3 " +
-  // the marker (v2 §4.6): a 2px ink underline on the bottom edge, faded in (opacity only)
-  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100 " +
+  // the marker (v2 §4.6; v2.1: the before's 3px): an ink underline on the bottom edge, faded in (opacity only)
+  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-(--tab-ind) after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100 " +
   // v2.1: once the list's sliding underline is measured, the tab's own marker steps aside
   "group-data-[ind]/tabs:after:hidden";
-/** The sliding underline sits inside the tab's 12px padding, like the tab's own marker. */
-const IND = { selector: "[data-selected]", attribute: "data-ind", x: "--ind-x", w: "--ind-w", inset: 12 } as const;
+/** The label's role and the row's height per size (tokens.css --type-tab-label*: the admin keeps its dense rows). */
+const TAB_SIZE = { md: "min-h-11 [font:var(--type-tab-label)]", lg: "min-h-12 [font:var(--type-tab-label-lg)]" } as const;
+/** The sliding underline sits inside the tab's padding (10px in the storefront, 12 in the admin), like its own marker. */
+const IND = { selector: "[data-selected]", attribute: "data-ind", x: "--ind-x", w: "--ind-w", inset: 10 } as const;
 
 export function Tabs({
   items,
@@ -81,11 +94,14 @@ export function Tabs({
   onChange,
   activation = "auto",
   keepMounted = false,
+  size = "md",
+  section = false,
   className,
   listClassName,
   panelClassName,
   ...aria
 }: TabsProps) {
+  const tab = cx(TAB, TAB_SIZE[size]);
   const firstEnabled = items.find((item) => !item.disabled)?.value ?? "";
   const [current, setCurrent] = useControllable<string>(value, defaultValue ?? firstEnabled, onChange);
   const linkTabs = items.length > 0 && items.every((item) => typeof item.href === "string");
@@ -104,9 +120,9 @@ export function Tabs({
               <li key={item.value} className="flex">
                 <HrefLink
                   to={item.href as string}
-                  className={TAB}
+                  className={tab}
                   data-selected={selected ? "" : undefined}
-                  aria-current={selected ? "page" : undefined}
+                  aria-current={selected ? (section ? "true" : "page") : undefined}
                   aria-disabled={item.disabled || undefined}
                   onClick={(event) => {
                     if (item.disabled) event.preventDefault();
@@ -128,6 +144,7 @@ export function Tabs({
       choose={setCurrent}
       activation={activation}
       keepMounted={keepMounted}
+      tabClassName={tab}
       className={className}
       listClassName={listClassName}
       panelClassName={panelClassName}
@@ -142,6 +159,7 @@ function PanelTabs({
   choose,
   activation,
   keepMounted,
+  tabClassName,
   className,
   listClassName,
   panelClassName,
@@ -152,6 +170,7 @@ function PanelTabs({
   choose: (value: string) => void;
   activation: "auto" | "manual";
   keepMounted: boolean;
+  tabClassName: string;
   className?: string;
   listClassName?: string;
   panelClassName?: string;
@@ -239,7 +258,7 @@ function PanelTabs({
               aria-disabled={item.disabled || undefined}
               tabIndex={index === stop ? 0 : -1}
               data-selected={isSelected ? "" : undefined}
-              className={TAB}
+              className={tabClassName}
               onKeyDown={onKeyDown(index)}
               onFocus={() => setFocused(index)}
               onClick={() => {

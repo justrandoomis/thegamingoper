@@ -75,9 +75,11 @@ export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
   const messages = loaderData?.i18n.shell ?? thrown?.i18n?.shell;
   const shell = loaderData?.shell ?? thrown?.shell ?? null;
   // `errored`: the failed page's handle (e.g. a product's tabBar: false) no longer applies — its task bar is gone.
+  // `notFound`: the 404 view has its own search field, so the header keeps only its search key (one field per page).
   // A missing product's slug words start the search fields (v2 §6.16 "search prefilled from the slug").
+  const notFound = isRouteErrorResponse(error) && error.status === 404;
   return (
-    <ShellFrame shell={shell} messages={messages} errored searchQuery={missingProduct(error) || undefined}>
+    <ShellFrame shell={shell} messages={messages} errored notFound={notFound} searchQuery={missingProduct(error) || undefined}>
       <ShellError error={error} platforms={shell?.nav.platforms ?? []} />
     </ShellFrame>
   );

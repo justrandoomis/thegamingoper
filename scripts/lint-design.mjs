@@ -39,7 +39,7 @@
  *   v2 legacy-token     a Lens & Clay 1.0 material token (--clay-*, --red-face …, --sel-*, --well, --well-shadow,
  *                       --glass-bg/-static/-rim, --on-glass-2, --e-1…--e-5, --shade …) or its utility (bg-well,
  *                       shadow-e1…e5, bg-sel, text-on-sel, text-on-glass-2) outside the admin
- *   v2 type             a non-integer font size; Kufam (--font-display / --font-head) under 15px. (v2.1 brought Plex
+ *   v2 type             a non-integer font size; Kufam (--font-display / --font-head / --font-key) under 15px. (v2.1 brought Plex
  *                       500 back: weight 500 and `font-medium` are allowed again.)
  *   v2 radius           a border-radius that is not a --r-* token (the checkbox's 6px is --r-check)
  *   v2 shadow           a box-shadow written with lengths instead of an elevation token (the vocabulary is
@@ -255,7 +255,7 @@ function lintCss(file, raw) {
         // type: sizes are integers (v2.1 brought Plex 500 back, so weight 500 is allowed again); Kufam (the display
         // face) never under its 15px floor
         if ((prop === "font" || prop === "font-size") && /(^|[\s/(])\d+\.\d+px/.test(withoutVars(value))) report("type", line, `${prop}: ${value.slice(0, 40)} — integer font sizes only (DESIGN.md §5.5)`);
-        if (prop === "font" && /var\(--font-(display|head)\)/.test(value)) {
+        if (prop === "font" && /var\(--font-(display|head|key)\)/.test(value)) {
           const size = /(?:^|\s)(\d+)px\s*\//.exec(withoutVars(value));
           if (size && Number(size[1]) < 15) report("type", line, `${prop}: ${value.slice(0, 40)} — Kufam is never under 15px (DESIGN.md §5.5)`);
         }

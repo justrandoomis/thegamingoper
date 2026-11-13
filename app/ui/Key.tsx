@@ -59,6 +59,11 @@ export type KeyOwnProps = {
   held?: boolean;
   /** Fill the inline size of the container (sheets, task bars, the phone hero only). */
   block?: boolean;
+  /** A long label (Sorani's «لەگەڵ کارمەندێک قسە بکە») may take a second line, balanced: the key grows from its 48px
+   *  instead of cutting the words (v2.1 fix round). */
+  wrap?: boolean;
+  /** "compact": a task bar's key on a 320–375 phone — 44px tall, 12px sides (the hit area is the key itself). */
+  fit?: "compact";
   /** Buttons get the `disabled` attribute; links get `aria-disabled` and do not navigate. */
   disabled?: boolean;
   className?: string;
@@ -108,7 +113,7 @@ export function keyIcon(icon: IconName | ReactNode, size: number): ReactNode {
 }
 
 export function Key<C extends ElementType = "button">(props: KeyProps<C>) {
-  const { as, variant = "secondary", size = "md", icon, iconEnd, loading = false, held, block = false, disabled = false, className, children, ...rest } = props;
+  const { as, variant = "secondary", size = "md", icon, iconEnd, loading = false, held, block = false, wrap = false, fit, disabled = false, className, children, ...rest } = props;
   const t = useT("ui");
   const Tag: ElementType = as ?? "button";
   const isButton = Tag === "button";
@@ -131,7 +136,7 @@ export function Key<C extends ElementType = "button">(props: KeyProps<C>) {
     <Tag
       {...rest}
       {...state}
-      className={cx("key", VARIANT_CLASS[variant] ?? "key--secondary", SIZE_CLASS[size], block && "key--block", className)}
+      className={cx("key", VARIANT_CLASS[variant] ?? "key--secondary", SIZE_CLASS[size], block && "key--block", wrap && "key--wrap", fit === "compact" && "key--compact", className)}
       data-press={(own["data-press"] as string | undefined) ?? keyPress(look)}
       data-haptic={look === "primary" ? "tap" : undefined}
       data-loading={loading ? "" : undefined}

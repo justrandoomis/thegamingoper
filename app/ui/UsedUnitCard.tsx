@@ -91,18 +91,23 @@ export function UsedUnitCard({
         aria-labelledby={titleId}
         data-press="soft"
       >
-        <SharedElement name={sharedName ?? `used-image:${unit.id}`} slot={slot} as="span" className="block">
-          <Niche
-            as="span"
-            kind={real ? "hardware" : "used"}
-            fill={real && Boolean(unit.image.mediaKey)}
-            size={row ? "sm" : "md"}
-            tag={row ? undefined : <GradeBadge grade={unit.grade} />}
-            note={real ? undefined : <Tag kind="photo" />}
-          >
-            <ProductImage image={unit.image} alt="" sizes={row ? "96px" : sizes} priority={priority} fit="cover" />
-          </Niche>
-        </SharedElement>
+        {/* a row's 96px well is too narrow for «صورة توضيحية» on the photo (Sorani's «وێنەی ڕوونکردنەوە» is 112px: cut,
+            or wrapped over half the photo — fix round 2026-11-13): there the words sit under the well, in full */}
+        <span className={cx(row ? "grid min-w-0 content-start gap-1.5" : "contents")}>
+          <SharedElement name={sharedName ?? `used-image:${unit.id}`} slot={slot} as="span" className="block">
+            <Niche
+              as="span"
+              kind={real ? "hardware" : "used"}
+              fill={real && Boolean(unit.image.mediaKey)}
+              size={row ? "sm" : "md"}
+              tag={row ? undefined : <GradeBadge grade={unit.grade} />}
+              note={real || row ? undefined : <Tag kind="photo" />}
+            >
+              <ProductImage image={unit.image} alt="" sizes={row ? "96px" : sizes} priority={priority} fit="cover" />
+            </Niche>
+          </SharedElement>
+          {row && !real ? <Tag kind="photo" className="tag--under justify-self-start" /> : null}
+        </span>
         <span className={cx("pcard__body", row && "py-0")}>
           <Name id={titleId} dir={title.dir} className={cx("pcard__title [unicode-bidi:isolate]", title.className)}>
             <BidiText text={unit.name} />

@@ -59,7 +59,7 @@ export function TradeInLookup({ refText }: { refText: string }) {
         <h1 id="ti-lookup" className="type-h1 text-ink">
           {t("track.lookup.title")}
         </h1>
-        <p className="type-read text-ink-2">{t("track.lookup.text", { ref: `${LRI}${unbroken(refText)}${PDI}` })}</p>
+        <p className="used-read text-ink-2">{t("track.lookup.text", { ref: `${LRI}${unbroken(refText)}${PDI}` })}</p>
       </header>
       <Form method="post" className="grid gap-4" noValidate onSubmit={(event) => (navigator.onLine ? undefined : event.preventDefault())}>
         <input type="hidden" name="intent" value="lookup" />
@@ -91,8 +91,8 @@ export function TradeInLookup({ refText }: { refText: string }) {
           {t("track.lookup.submit")}
         </Key>
       </Form>
-      <p className="flex items-start gap-2 type-sm text-ink-2">
-        <Icon name="lock" size={16} className="mt-0.5 shrink-0" />
+      <p className="used-read flex items-start gap-2 text-ink-2">
+        <Icon name="lock" size={16} className="mt-1.5 shrink-0" />
         {t("track.lookup.why")}
       </p>
       <div className="flex flex-wrap gap-x-6 border-t border-line pt-4">

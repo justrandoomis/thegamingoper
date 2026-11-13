@@ -122,7 +122,7 @@
     },
     {
       "sku": "HX-CLOUD3S-WL-BLKRED",
-      "title": { "ar": "أسود وأحمر", "en": "Black-Red", "ckb": "ڕەش و سوور" },
+      "title": { "ar": "أسود وأحمر", "en": "Black‑Red", "ckb": "ڕەش و سوور" },
       "options": { "color": "Black-Red" },
       "modelNumber": "A59Z0AA",
       "barcodes": ["198415435569"],
@@ -149,7 +149,7 @@
     },
     {
       "sku": "HX-CLOUD3S-WL-BLKBLU",
-      "title": { "ar": "أسود وأزرق", "en": "Black-Blue", "ckb": "ڕەش و شین" },
+      "title": { "ar": "أسود وأزرق", "en": "Black‑Blue", "ckb": "ڕەش و شین" },
       "options": { "color": "Black-Blue" },
       "modelNumber": "DF7E9AA",
       "barcodes": ["826581029533"],
@@ -158,7 +158,7 @@
     },
     {
       "sku": "HX-CLOUD3S-WL-WHTPNK",
-      "title": { "ar": "أبيض ووردي", "en": "White-Pink", "ckb": "سپی و پەمەیی" },
+      "title": { "ar": "أبيض ووردي", "en": "White‑Pink", "ckb": "سپی و پەمەیی" },
       "options": { "color": "White-Pink" },
       "modelNumber": "DG0R2AA",
       "barcodes": ["826581045021"],

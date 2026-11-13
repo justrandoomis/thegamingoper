@@ -23,6 +23,7 @@ import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
+import type { ShellHandle } from "~/routes/storefront/shell/types";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { actionError, isAppError } from "~/server/errors";
@@ -40,8 +41,11 @@ import { CopyKey, SupportNav } from "./components/parts";
 import { failed, LOOKUP_PAGE_HEADERS, supportWho, textFields, ticketPageHeaders } from "./support.server";
 import "./support.css";
 
-/** Part of «تتبّع» (the support navigation's fourth segment), between the repair status and nothing else. */
-export const handle = { nav: "push", order: 3, group: "support" } satisfies MotionHandle;
+/**
+ * Part of «تتبّع» (the support navigation's fourth segment), between the repair status and nothing else. A lookup and a
+ * rating form: offline, the shell's banner says what was typed stays, never «سلتك محفوظة…».
+ */
+export const handle = { shell: { offline: "form" }, nav: "push", order: 3, group: "support" } satisfies ShellHandle & MotionHandle;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
   const ctx = getCtx(context);

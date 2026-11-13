@@ -38,6 +38,7 @@ import { MAX_QUERY_LENGTH, recordSearchQuery, searchProducts } from "~/server/se
 import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
 import { Note } from "~/ui/Note";
+import { PLATFORMS } from "~/ui/PlatformLed";
 import { ShelfRail } from "~/ui/ShelfRail";
 import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
@@ -48,7 +49,7 @@ import { BrowseStore, DidYouMean, SearchJumps, SearchStart, SuggestionChips } fr
 import { useRecentSearches } from "./components/recent-searches";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
 import { SEARCH_SORTS, TYPED_KEY, activeGroups, filtersOf, readListingQuery, typedSearchPath } from "./listing-model";
-import { arrivalsShelf, filterOrderOf, listOf, storeBrowse, wishedOf, withCursorFallback } from "./list.server";
+import { arrivalsShelf, displaySpelling, filterOrderOf, listOf, storeBrowse, wishedOf, withCursorFallback } from "./list.server";
 import "./catalog.css";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -67,7 +68,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const platformSlugs = consent ? parsePlatformList(ctx.cookie(PLATFORMS_COOKIE)) : [];
     const recommendations = recommendationsFor(db, who, { locale: ctx.locale, context: "search", platformSlugs, now: ctx.now }, 8);
     const browse = await storeBrowse(db, ctx.locale, ctx.now);
-    return { q: "", result: null, browse, arrivals: [], wished: null, filterOrder: null, recommendations, meta: { title: t("meta.searchStart"), description: t("meta.search") }, i18n };
+    return { q: "", result: null, corrected: null, browse, arrivals: [], wished: null, filterOrder: null, recommendations, meta: { title: t("meta.searchStart"), description: t("meta.search") }, i18n };
   }
 
   const query = readListingQuery(url.searchParams, SEARCH_SORTS);
@@ -96,9 +97,16 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   // nothing matched the words: a shelf's worth of arrivals (the service's three picks fill a third of a desktop row)
   const arrivals = noMatch ? arrivalsShelf(await getNewArrivals(db, ctx.locale, { limit: 8, now: ctx.now })) : [];
   const shown = [...result.items, ...(help?.picks ?? []), ...arrivals].map((card) => card.id);
+  // the corrected words as the catalogue writes them («Nintendo», never the index's «nintendo»): the platforms' names,
+  // then the hubs the words name, then the products found
+  const ui = serverT(ctx.locale, "ui");
+  const corrected = result.correctedQuery
+    ? displaySpelling(result.correctedQuery, [...PLATFORMS.map((slug) => ui(`platform.${slug}`)), ...result.suggestions.map((jump) => jump.label), ...result.items.map((card) => card.name)])
+    : null;
   return {
     q,
     result: { ...listOf(result), zeroResultHelp: help },
+    corrected,
     // the zero-result page offers the platforms (with the hubs' counts) and what arrived lately
     browse: noMatch ? await storeBrowse(db, ctx.locale, ctx.now) : null,
     arrivals,
@@ -180,7 +188,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
 
   const zero = { title: t("zero.title"), text: t("zero.text") };
   const chips = result.facets.categories.length > 1 || nav.query.category !== null;
-  const shownQuery = result.correctedQuery ?? q;
+  const shownQuery = loaderData.corrected ?? result.correctedQuery ?? q;
 
   return (
     <div className="page catalog-page" onClickCapture={hold}>

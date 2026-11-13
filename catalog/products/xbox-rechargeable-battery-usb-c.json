@@ -8,9 +8,9 @@
   "status": "available",
   "releaseDate": "2020-11-10",
   "name": {
-    "ar": "Xbox Rechargeable Battery + USB-C Cable",
-    "en": "Xbox Rechargeable Battery + USB-C Cable",
-    "ckb": "Xbox Rechargeable Battery + USB-C Cable"
+    "ar": "Xbox Rechargeable Battery + USB‑C Cable",
+    "en": "Xbox Rechargeable Battery + USB‑C Cable",
+    "ckb": "Xbox Rechargeable Battery + USB‑C Cable"
   },
   "short": {
     "ar": "حتى 30 ساعة للشحنة · شحن كامل بأقل من 4 ساعات · كابل USB-C ‏2.7 م",
@@ -78,9 +78,9 @@
     {
       "sku": "XRB-USBC",
       "title": {
-        "ar": "Xbox Rechargeable Battery + USB-C Cable",
-        "en": "Xbox Rechargeable Battery + USB-C Cable",
-        "ckb": "Xbox Rechargeable Battery + USB-C Cable"
+        "ar": "Xbox Rechargeable Battery + USB‑C Cable",
+        "en": "Xbox Rechargeable Battery + USB‑C Cable",
+        "ckb": "Xbox Rechargeable Battery + USB‑C Cable"
       },
       "options": { "color": "Black" },
       "isDefault": true,

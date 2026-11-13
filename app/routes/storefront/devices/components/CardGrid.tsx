@@ -62,7 +62,7 @@ export function CardGrid({
     return (
       <div className={cx("grid max-w-[40rem] gap-2", className)}>
         <ProductCard card={only.card} slot={slot} layout="row" headingLevel={headingLevel} />
-        {only.note ? <div className="min-w-0 ps-[112px]">{only.note}</div> : null}
+        {only.note ? <div className="devhub-note min-w-0 ps-[112px]">{only.note}</div> : null}
       </div>
     );
   }
@@ -84,8 +84,9 @@ export function CardGrid({
         {items.map((item) => (
           <li key={item.card.id}>
             <ProductCard card={item.card} slot={slot} headingLevel={headingLevel} />
-            {/* the second row of the item's subgrid: its note, or nothing that takes space */}
-            {item.note ? <div className="min-w-0">{item.note}</div> : <span aria-hidden="true" />}
+            {/* the second row of the item's subgrid: its note (reading size on phones and tablets, devices.css
+                .devhub-note), or nothing that takes space */}
+            {item.note ? <div className="devhub-note min-w-0">{item.note}</div> : <span aria-hidden="true" />}
           </li>
         ))}
       </ul>

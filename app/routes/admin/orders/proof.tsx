@@ -171,7 +171,7 @@ export default function ProofReviewPage({ loaderData }: Route.ComponentProps) {
           ) : null}
 
           {/* lint-design: allow glass-in-list — the sticky task bar follows the earlier-proofs list; it is not inside its .map() */}
-          <Glass className="ord-taskbar" edge="bottom">
+          <Glass className="ord-taskbar" edge="bottom" data-adm-sticky-end>
             <Key icon="x" className="enabled:[--on:var(--red-ink)]" onClick={() => setMode("reject")}>
               {t("proof.reject")}
             </Key>

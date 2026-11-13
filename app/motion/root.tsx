@@ -6,7 +6,9 @@
  *                       removed on release, cancel, or when the pointer leaves it; motion.css does the rest.
  *                       data-haptic[="tap|select|success|warning|error"] adds a vibration where supported.
  *   interruption        any touch, key press or wheel while a view transition is animating ends that transition,
- *                       so the page is live at once and React is not left waiting for an animation.
+ *                       so the page is live at once and React is not left waiting for an animation. A transition the
+ *                       browser aborts because the viewport changed (a phone's URL bar) is not reported as an error
+ *                       (./vt normalizeTransitionAborts).
  *   shared elements     a press inside a link/button claims the <SharedElement>s it contains.
  *   tier                <html data-motion="full|lite|reduced"> and, for the low-end tier, class fx-low (DESIGN.md
  *                       §6.5), kept in sync with the OS setting, device signals, measured jank and the override.
@@ -24,7 +26,7 @@ import { notePointer, setMotionLive } from "./pointer";
 import { installReveal } from "./reveal";
 import { claimWithin, rememberArmed } from "./share-registry";
 import { haptics, type HapticKind } from "./tokens";
-import { endActiveTransition, isTransitionActive } from "./vt";
+import { endActiveTransition, isTransitionActive, normalizeTransitionAborts } from "./vt";
 import "./motion.css";
 
 const PRESS = "[data-press]";
@@ -196,6 +198,9 @@ function install(): () => void {
   window.addEventListener("popstate", onPop, { capture: true, signal });
   window.addEventListener("blur", endPress, { signal });
 
+  // a view transition aborted because a phone's URL bar moved is not an error (./vt normalizeTransitionAborts)
+  const restoreTransitions = normalizeTransitionAborts(document);
+
   setMotionLive(true);
   root.setAttribute("data-motion-ready", "");
 
@@ -213,6 +218,7 @@ function install(): () => void {
 
   return () => {
     controller.abort();
+    restoreTransitions();
     uninstallReveal();
     document.removeEventListener("pointermove", onPointerMove, true);
     unsubscribe();

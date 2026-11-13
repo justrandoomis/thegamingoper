@@ -21,7 +21,7 @@ export function UsedSection({ hub }: { hub: DeviceHub }) {
   if (hub.used.length === 0) {
     return (
       <div className="panel flex flex-wrap items-center gap-x-6 gap-y-1 px-5 py-3">
-        <p className="flex min-w-[min(100%,16rem)] flex-1 items-center gap-2 type-sm text-ink-2">
+        <p className="devhub-read flex min-w-[min(100%,16rem)] flex-1 items-center gap-2 text-ink-2">
           <Icon name="recycle" size={20} />
           <span>{t("used.none", { device })}</span>
         </p>

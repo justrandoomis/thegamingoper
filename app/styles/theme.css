@@ -168,6 +168,11 @@
 @utility type-body {
   font: var(--type-body);
 }
+/* v2.1 G7: reading text — facts, notes, descriptions — 16px / 1.75 (1.6 in English). Wave A documented the class and
+   wave B used it on 29 elements, but the utility itself was missing, so they silently inherited (fix round 2026-11-13) */
+@utility type-read {
+  font: var(--type-read);
+}
 @utility type-card {
   font: var(--type-card);
 }

@@ -15,13 +15,28 @@
  * Variables the shell publishes (module pages may read them):
  *   --adm-top-h      height of the sticky tool bar
  *   --adm-bottom     what fixed chrome covers at the bottom (the phone tab bar, 0 elsewhere): sticky page bars sit
- *                    at inset-block-end: var(--adm-bottom)
+ *                    at inset-block-end: var(--adm-bottom) and carry data-adm-sticky-end, so the root's scroll padding
+ *                    keeps a control reached by Tab clear of them (tests/admin-shell-focus.test.ts)
  */
 @layer components {
   /* on :root so portals (toasts, menus) can read them */
   :root:has(.adm) {
     --adm-top-h: 56px;
     scroll-padding-block-start: calc(var(--adm-top-h) + var(--s-2));
+    /* a control reached by Tab scrolls clear of what is pinned at the bottom (WCAG 2.4.11; base.css pads the root's
+       end by the storefront's --shell-bottom, 0 here): the phone tab bar and, while one is on the page, a sticky bar */
+    scroll-padding-block-end: calc(var(--adm-fixed-end, 0px) + var(--adm-sticky-end, 0px) + var(--s-3));
+  }
+  /* phones: the tab bar (.adm --adm-tab-h, repeated — :root cannot read a value set on .adm) */
+  @media (max-width: 47.99rem) {
+    :root:has(.adm) {
+      --adm-fixed-end: calc(60px + var(--safe-bottom));
+    }
+  }
+  /* a sticky bar at the bottom of a page (a save bar, a task bar, the till's pay bar — sticky at inset-block-end:
+     var(--adm-bottom)) carries data-adm-sticky-end: one row of keys, 12px of padding around a 44px key on touch */
+  :root:has(.adm [data-adm-sticky-end]) {
+    --adm-sticky-end: 72px;
   }
 
   .adm {
@@ -713,6 +728,20 @@
   @media (min-width: 48rem) {
     .adm-fn__state {
       grid-column: 3;
+    }
+    /* a note (what exists, what is still missing) reads under the function's name, in a line of text, instead of
+       down the 12rem state column (module 08's notes ran 25 lines there); the status and «open» keep the column */
+    .adm-fn__state:has(> p) {
+      display: contents;
+    }
+    .adm-fn__state:has(> p) > :not(p) {
+      grid-column: 3;
+      justify-self: start;
+    }
+    .adm-fn__state:has(> p) > p {
+      grid-column: 2;
+      grid-row: 2;
+      max-inline-size: 75ch;
     }
   }
   .adm-progress {

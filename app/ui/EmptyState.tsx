@@ -43,17 +43,20 @@ export type EmptyStateProps = {
   layout?: "row" | "stack";
   /** stack: set the picture, the words and the key on the soft raised card (the shelf stays outside it). */
   panel?: boolean;
+  /** stack + panel: the card spans its column (the empty cart's card across the page column), not the 560px measure;
+   *  the words keep their own measure inside it. */
+  wide?: boolean;
   /** Render the title as a heading of this level (default: a paragraph in a row, an h2 in a stack). */
   headingLevel?: 2 | 3 | 4;
   className?: string;
 };
 
-export function EmptyState({ title, text, action, recovery, icon, art, shelf, layout = "row", panel = false, headingLevel, className }: EmptyStateProps) {
+export function EmptyState({ title, text, action, recovery, icon, art, shelf, layout = "row", panel = false, wide = false, headingLevel, className }: EmptyStateProps) {
   if (layout === "stack") {
     const Title = `h${headingLevel ?? 2}` as const;
     const well = typeof art === "string";
     const column = (
-      <div className={cx("empty", panel && "empty--panel", !shelf && className)}>
+      <div className={cx("empty", panel && "empty--panel", panel && wide && "empty--wide", !shelf && className)}>
         <span className={cx("empty__art", well && "empty__art--well")} aria-hidden="true">
           {well ? (
             <span className="render-slot relative size-full p-[12%]">
@@ -62,7 +65,8 @@ export function EmptyState({ title, text, action, recovery, icon, art, shelf, la
           ) : art ? (
             art
           ) : icon ? (
-            <Icon name={icon} size={24} className="text-red-ink" />
+            // the before's icon circle: a bold 44px glyph in the 112px disc (it was a 24px icon lost in it)
+            <Icon name={icon} size={44} className="text-red-ink" />
           ) : (
             <span className="text-logo">
               <Logo variant="mark" height={60} />

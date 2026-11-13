@@ -53,8 +53,32 @@ export function meantTag(query: string): string | null {
 
 // ───────────────────────────────────────────────────────────────── ranking guides
 
-/** What a guide is searched by. Texts may hold every language at once (the index joins them). */
-export type HelpEntryText = { title: string; summary: string; names: string; tags: readonly string[]; body?: string };
+/**
+ * What a guide is searched by. Texts may hold every language at once (the index joins them). `platform`: the platform
+ * the guide is written for (null: every device); absent, the guide is never ranked by the platform a query names.
+ */
+export type HelpEntryText = { title: string; summary: string; names: string; tags: readonly string[]; body?: string; platform?: string | null };
+
+/** Words that name one platform's hardware (normalised: the catalogue's words, after ./matcher aliasWords). */
+const PLATFORM_NAMES: ReadonlyArray<readonly [string, readonly string[]]> = [
+  ["handheld", ["steam", "deck", "steamdeck", "rog", "ally", "legion", "claw", "msi"]],
+  ["playstation", ["playstation", "ps4", "ps5", "dualsense", "portal"]],
+  ["xbox", ["xbox"]],
+  ["nintendo", ["nintendo", "switch", "joycon", "joy-con"]],
+];
+
+/**
+ * The platforms a query names — a device's or a platform's name in any of the shoppers' spellings («سويتش يسخن»,
+ * «اكس بوكس», "PS5", «جويكون»): the guides are ranked with that platform's first. "xbox" names the Xbox only without a
+ * handheld's words («ROG Xbox Ally» is a handheld PC); "switch on / off" names nothing. Pure.
+ */
+export function namedPlatforms(query: string): string[] {
+  const normalized = normalizeForMatch(query);
+  const words = new Set([...normalized.split(" "), ...aliasWords(query)]);
+  if (/\bswitch(?:es|ed|ing)? (?:on|off)\b/.test(normalized)) words.delete("switch");
+  const handheld = PLATFORM_NAMES[0][1].some((word) => words.has(word));
+  return PLATFORM_NAMES.filter(([slug, names]) => !(slug === "xbox" && handheld) && names.some((word) => words.has(word))).map(([slug]) => slug);
+}
 
 type Tokens = { title: string[]; names: string[]; summary: string[]; tags: string[]; body: string[] };
 const tokenCache = new WeakMap<object, Tokens>();
@@ -86,19 +110,35 @@ export function scoreEntry(entry: HelpEntryText, words: readonly string[], meant
 /**
  * Guides ranked for a query, best first (staff order — the entries' order — breaks ties). When some guides match by
  * their title, summary, tags or meaning (3 and more), a guide that only matched a word in its body is left out.
+ *
+ * A query that names a device or a platform (namedPlatforms: «سويتش يسخن», «جويكون») ranks in three tiers: that
+ * platform's guides, then the guides about every device, then the other platforms' guides — kept, never hidden — and
+ * when the words also describe a problem (a symptom or topic other than setup), the named platform's troubleshooting
+ * guide leads its tier (round-1 fixes: «سويتش يسخن» suggested the handheld PCs' guide first, then the Switch's setup
+ * guide). A query that names nothing ranks as before.
  */
 export function rankEntries<T extends HelpEntryText>(entries: readonly T[], query: string): T[] {
   const words = queryWords(query);
   const meant = meantTag(query);
   if (words.length === 0 && !meant) return [];
-  const scored: Array<{ entry: T; order: number; score: number }> = [];
+  const named = namedPlatforms(query);
+  const problem = meant !== null && meant !== "setup";
+  const tierOf = (entry: T) => (named.length === 0 || entry.platform === undefined ? 0 : entry.platform !== null && named.includes(entry.platform) ? 0 : entry.platform === null ? 1 : 2);
+  const scored: Array<{ entry: T; order: number; score: number; tier: number; rank: number }> = [];
   entries.forEach((entry, order) => {
     const score = scoreEntry(entry, words, meant);
-    if (score > 0) scored.push({ entry, order, score });
+    if (score <= 0) return;
+    const tier = tierOf(entry);
+    // the lead is an order inside the tier only: it never lifts a guide over the floor below
+    const lead = named.length > 0 && tier === 0 && problem && entry.tags.includes("troubleshooting") ? 1 : 0;
+    scored.push({ entry, order, score, tier, rank: score + lead });
   });
-  scored.sort((a, b) => b.score - a.score || a.order - b.order);
-  const floor = (scored[0]?.score ?? 0) >= 3 ? 2 : 1;
-  return scored.filter((item) => item.score >= floor).map((item) => item.entry);
+  const best = scored.reduce((max, item) => Math.max(max, item.score), 0);
+  const floor = best >= 3 ? 2 : 1;
+  return scored
+    .filter((item) => item.score >= floor)
+    .sort((a, b) => a.tier - b.tier || b.rank - a.rank || a.order - b.order)
+    .map((item) => item.entry);
 }
 
 // ───────────────────────────────────────────────────────────────── the page's index and suggestions

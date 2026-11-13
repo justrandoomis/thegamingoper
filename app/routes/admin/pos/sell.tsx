@@ -561,7 +561,7 @@ function Till({ data, shift }: { data: Data; shift: NonNullable<Data["shift"]> }
       </div>
 
       {lines.length ? (
-        <div className="pos-paybar pos-noprint">
+        <div className="pos-paybar pos-noprint" data-adm-sticky-end>
           <span className="type-strong">
             {t("sell.total")} <Money iqd={totals.totalIqd} />
           </span>

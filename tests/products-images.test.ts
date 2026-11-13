@@ -219,6 +219,11 @@ describe.skipIf(manifests.length === 0)("photo manifests", () => {
       // "opaque": the opaque-photo gate accepts this photo after looking (a gift card's printed face, …)
       expect(Object.keys(entry).filter((name) => !["why", "cutout", "holes", "extend", "clean", "pad", "trim", "crop", "opaque"].includes(name))).toEqual([]);
       if ("opaque" in entry) expect(entry.opaque, `${key}: "opaque" is true or absent`).toBe(true);
+      // "holes": true, or the places of the windows to open as [x, y] shares of the picture
+      if ("holes" in entry && entry.holes !== true) {
+        expect(Array.isArray(entry.holes) && (entry.holes as unknown[]).length > 0, `${key}: "holes" is true or a list of points`).toBe(true);
+        for (const point of entry.holes as unknown[]) expect(Array.isArray(point) && point.length === 2 && point.every((s) => typeof s === "number" && s >= 0 && s <= 1), `${key}: ${JSON.stringify(point)}`).toBe(true);
+      }
     }
   });
 });
@@ -543,6 +548,35 @@ describe("per-image options of the treatment", () => {
       const a = out.data[i + 3];
       if (a > 20 && a < 235) expect(Math.max(out.data[i], out.data[i + 1], out.data[i + 2])).toBeLessThan(90);
     }
+  });
+
+  it("holes at points opens only the closed windows there: white print elsewhere on the object stays (a kickstand beside a screen logo)", () => {
+    // a dark ring (its window: background seen through a kickstand) joined to a dark body with a small pure-white logo
+    const dark: RGB = [40, 42, 46];
+    const picture = () =>
+      paint(320, 200, WHITE, [
+        { shape: minus(circle(90, 100, 60), circle(90, 100, 44)), colour: dark },
+        { shape: roundedRect(215, 100, 150, 120, 14), colour: dark },
+        { shape: circle(215, 100, 12), colour: WHITE },
+      ]);
+    // the trimmed output is centred on the object's box (x 30–290, y 40–160): a point of the input, in the output
+    const at = (out: RawImage, x: number, y: number) => rgbaAt(out, Math.round(x - 160.5 + out.width / 2), Math.round(y - 100.5 + out.height / 2));
+    expect(treat(picture()).transparent).toBe(false); // the ring's window keeps the photo opaque by default
+    const every = treat(picture(), { holes: true });
+    expect(every.method).toBe("cutout");
+    expect(at(every, 215, 100)[3], "holes true opens the logo too").toBeLessThan(10);
+    const chosen = treat(picture(), { holes: [[90 / 320, 100 / 200]] });
+    expect(chosen.method).toBe("cutout");
+    expect(at(chosen, 90, 100)[3], "the window at the point is see-through").toBeLessThan(10);
+    const logo = at(chosen, 215, 100);
+    expect(logo[3], "the logo stays").toBe(255);
+    expect(Math.min(logo[0], logo[1], logo[2])).toBeGreaterThan(245);
+    expect(at(chosen, 180, 70)[3], "the body stays").toBe(255);
+    // a point that is not on a closed region of the background colour (here: on the dark body) keeps the photo opaque
+    const missed = treat(picture(), { holes: [[160 / 320, 60 / 200]] });
+    expect(missed.transparent).toBe(false);
+    expect(missed.reason).toMatch(/no closed window/);
+    expect(() => treat(picture(), { holes: [[1.2, 0.5]] })).toThrow();
   });
 
   it("holes true never opens a light part that is not the background colour", () => {

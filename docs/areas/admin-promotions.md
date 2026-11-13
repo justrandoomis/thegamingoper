@@ -123,7 +123,15 @@ says «يُطبَّق حتى …%» and the discount field says the limits. Prog
   once), IDOR on the coupon and points pages, redemption replay / demo card / merged customer, the redemption check,
   the referral race, Arabic qty in "try", 100 coupons off, gift-card and VIP counts.
 - `tests/admin-promotions-routes.test.ts` (1): every loader and intent for six roles answers 200 / 400 / 403 / 404.
-- `tests/admin-promotions-state.test.ts` (19, wave B 2026-11-12/13): the state texts in ar/en/ckb and the retired
+- `tests/admin-promotions-state.test.ts` (24; 19 from wave B 2026-11-12/13 and +5 in wave C, 4 of them failing on the
+  stale rows first): the blueprint rows the overview shows right under its table («هذا القسم في المخطط», 08.01–08.08) say
+  what `checkout-state.ts` says — no «Missing» part names a step of the core or says the checkout / cart lacks what it
+  applies; a section applied in part names its gap (product pages, early access, visitors); a row the till lacks names
+  the point of sale, one it applies does not; sign-up referrals and cards sold for money (the account 2150 exists) are
+  said as the sections' «not built yet» lines say them; the retired claims are gone. Wave C rewrote 08.02, 08.03, 08.05
+  and 08.07 (the lead's reviewed wording) and added the till to 08.08; the stale headers of `discounts.server.ts`,
+  `flash.server.ts`, `referrals.server.ts`, `rules.ts`, `vip.server.ts` and `giftcards.server.ts` now say what the core
+  applies (comments only). Wave B's 19: the state texts in ar/en/ckb and the retired
   sentences gone; the claims against the core's `applyDiscounts` / `flashLineCap` / `evaluateRule` / `evaluateCoupon`, the
   till's source (no promotion call, the wallet), the readers of early access, flash sales, A/B visitors and sign-up
   referrals, and a till sale to a VIP customer earning × the multiplier. Review 2026-11-13 (+6, each failed first):

@@ -186,6 +186,9 @@ Everything is priced by the core (`getCartView` / `placeOrder`, CONTRACTS §1) �
   answer `POST intent=coupon-minimum code=…` (`{ ok, shortfall }`; 30 a minute per address); the coupon field of both
   pages posts it to the CART route, whose `clientAction` turns a failed request into `{ ok: false, code: "network" }`
   (review 2026-11-13: a fetcher's failed action showed the error boundary in place of the page).
+- QA wave C (2026-11-13, additive): `components/OrderStages.tsx` `OrderStages({ stage, className?, "aria-label"? })` and
+  `STAGE_ICON` — the order status rail, drawn by `OrderDetails` and the account's order page; `ReviewStep` takes
+  `split?: { walletIqd, restIqd } | null`; the cart loader's data has `signedIn`.
 
 ## Real, demo, boundary
 
@@ -378,3 +381,33 @@ wrong and right, the order without its token, the lost answer («اعرض طلب
 no-script checkout (refused, then placed), Back / reload on the steps, offline and busy keys, 200% zoom (720×450) and
 320 without overflow, reduced motion. The matrix (13 templates × 14 variants, 172 shots): no overflow, one h1, at most
 one red primary, console clean.
+
+### QA wave C fixes (2026-11-13, fix-transaction; scripts `…/fb1/work/C-fix-transaction/`, shots `…/fb1/shots/C-fix-transaction/`)
+
+Each with a test written first and seen failing (`tests/checkout-flow.test.ts`, "the QA's transaction findings (wave C)", +5):
+
+1. **/ckb/order/<ref> without access scrolled sideways** (scrollWidth 421 at 360 and 390): the kit's key keeps its label
+   on one line and «بەدوای داواکارییەکەتدا بگەڕێ» was wider than its card. The keys are the kit's `<Key wrap>` (their
+   words take a second, balanced line inside the key) and the note is `.co-missing` (its action column may shrink; on
+   phones the ways out run across the card, one per line, with 16px sides; a two-line label at line height 1.45 for the
+   Sorani marks). The page is one centred column of 640 from 768 (`.co-lone`, a child: the `page` utility outranks a
+   column class on the page element — the sentence ran ~140 characters long at 1440). Measured ar/en/ckb ×
+   320/360/390/768/1440, guest and signed in: scrollWidth = clientWidth in all 30 views.
+2. **A split payment's review misstated the cash** (wallet balance below the total, «ادفع … من رصيد محفظتك، والباقي…»
+   ticked): the payment card now says «من محفظة طمطم 209,250 د.ع» and «الباقي للدفع 52,750 د.ع · الدفع عند الاستلام» with
+   «تدفع الباقي نقداً للمندوب عند استلام الطلب.» (a transfer: «تحوّل الباقي إلى المتجر، ثم ترفع صورة الحوالة من صفحة
+   الطلب.»); the phone task bar says «الباقي 52,750 د.ع» under «الإجمالي» (the short form keeps the Sorani key on two
+   lines); the summary card's key from 1024 says «أكّد الطلب · الباقي 52,750 د.ع» (never the whole total under «الباقي
+   للدفع»). `ReviewStep` takes `split?` (optional); words `split.restShort`, `split.restCod`, `split.restTransfer`,
+   `checkout.placeRest`. Totals and `placeOrder` unchanged.
+3. **The order number in a heading was Kufam** («TT-ƲBYBYQ9Q»: Kufam's Latin V): the closed order's h1 and the /track
+   result's h2 set it in `<bdi dir="ltr" class="font-plex nums">` — Plex 600 at the heading's size, as on the code card.
+4. **A signed-in shopper was told «اطلب بدون حساب»** in the cart summary's trust line, and their empty cart offered the
+   guest lookup: the cart loader returns `signedIn`; `TrustStrip guest={!signedIn}`; the empty cart's line is «طلبت من
+   قبل؟ طلباتك في حسابك» → /account/orders when signed in (`cart.ordersAsk`), «… تتبّع طلبك» → /track for a guest.
+5. **The order's demo note was 14px / 1.6 on phones**: the kit's line note now reads at `--type-read` (16 / 1.75) at every
+   width (foundation, wave C); the area adds no smaller size (the test reads the kit's rule).
+
+Also: the status rail moved into its own component, `components/OrderStages.tsx` (`OrderStages({ stage, className?,
+aria-label? })`, `STAGE_ICON`; it imports `checkout.css`), so the account's order page draws the same rail (account,
+wave C). `OrderDetails` uses it; nothing else changed there.

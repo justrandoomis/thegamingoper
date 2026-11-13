@@ -18,7 +18,14 @@
  *                   sub-categories —, products, product kinds, customer segments, channel, first order
  *                   only, minimum quantity), or the cart is empty. A DEMO coupon (is_demo) counts demo
  *                   goods only: it never discounts a real product (review 2026-11-12)
- *   min_subtotal    the cart subtotal is below min_subtotal_iqd
+ *   min_subtotal    the cart subtotal is below min_subtotal_iqd (a DEMO coupon: its demo goods' subtotal).
+ *                   This refusal also says how far the cart is (client round 1, wave C — «أضف منتجات بقيمة …»):
+ *                   `minimumIqd` (min_subtotal_iqd), `countedIqd` (what counts toward it) and `moreIqd`
+ *                   (what is still missing, > 0), so no page counts it a second time with its own copy of the rules
+ *
+ * `label` is the coupon's own words (`coupons.description`, else the code). The description is ONE text, written once by
+ * the admin in the store's language (Arabic) — not an L10n: the pages show it on Arabic pages only and never in a
+ * summary row (checkout review, round 1). Descriptions in every language are a module 08 feature for later.
  *
  * Who the shopper is may not be known yet (a guest in the cart has given no phone). Then the
  * per-customer limit and "first order only" cannot be checked and the coupon applies provisionally;
@@ -53,7 +60,15 @@ export type EvaluateCouponInput = {
   channel?: "web" | "pos";
 };
 
-export type CouponEvaluation = { ok: true; couponId: string; code: string; label: string; discountIqd: number } | { ok: false; reason: CouponRejection };
+/**
+ * A refused coupon and why. Below its minimum (`min_subtotal`) it also says the minimum, what counts toward it (the
+ * cart's subtotal — a DEMO coupon: its demo goods alone) and what is still missing, in whole dinars (moreIqd > 0).
+ */
+export type CouponRefusal =
+  | { ok: false; reason: Exclude<CouponRejection, "min_subtotal"> }
+  | { ok: false; reason: "min_subtotal"; minimumIqd: number; countedIqd: number; moreIqd: number };
+
+export type CouponEvaluation = { ok: true; couponId: string; code: string; label: string; discountIqd: number } | CouponRefusal;
 
 const MAX_CODE_LENGTH = 64;
 
@@ -69,7 +84,7 @@ function assertMoney(value: number, what: string): void {
   if (!Number.isSafeInteger(value) || value < 0) throw new RangeError(`evaluateCoupon: ${what} must be a whole number of dinars ≥ 0, got ${String(value)}`);
 }
 
-const refuse = (reason: CouponRejection): CouponEvaluation => ({ ok: false, reason });
+const refuse = (reason: Exclude<CouponRejection, "min_subtotal">): CouponEvaluation => ({ ok: false, reason });
 
 const hasAny = (list: readonly string[] | undefined): list is readonly string[] => Array.isArray(list) && list.length > 0;
 
@@ -191,8 +206,11 @@ export async function evaluateCoupon(db: Db, input: EvaluateCouponInput, now: nu
     base += line.unitPriceIqd * line.qty;
     if (!Number.isSafeInteger(base)) throw new RangeError("evaluateCoupon: eligible subtotal is too large");
   }
-  // a demo coupon's minimum is reached with demo goods alone (real goods never help it along)
-  if (coupon.minSubtotalIqd !== null && (coupon.isDemo ? base : input.subtotalIqd) < coupon.minSubtotalIqd) return refuse("min_subtotal");
+  // a demo coupon's minimum is reached with demo goods alone (real goods never help it along); a refusal says how far
+  if (coupon.minSubtotalIqd !== null) {
+    const counted = coupon.isDemo ? base : input.subtotalIqd;
+    if (counted < coupon.minSubtotalIqd) return { ok: false, reason: "min_subtotal", minimumIqd: coupon.minSubtotalIqd, countedIqd: counted, moreIqd: coupon.minSubtotalIqd - counted };
+  }
   let discount = coupon.kind === "fixed" ? coupon.value : bpsOf(base, coupon.value);
   if (coupon.maxDiscountIqd !== null) discount = Math.min(discount, coupon.maxDiscountIqd);
   discount = Math.max(0, Math.min(discount, base, input.subtotalIqd));

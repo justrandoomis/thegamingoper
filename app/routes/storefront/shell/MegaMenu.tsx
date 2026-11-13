@@ -143,6 +143,8 @@ export function PlatformNav({ platforms, current = null, children }: PlatformNav
   const panelId = useId();
   const openRef = useRef<OpenState>(null);
   openRef.current = open;
+  /** The row's item under the mouse right now (null once the mouse has left the row). */
+  const hovered = useRef<HTMLElement | null>(null);
   const moveInk = useNavInk(navRef, inkRef);
 
   // what the panel shows: it stays on screen while it leaves
@@ -165,12 +167,17 @@ export function PlatformNav({ platforms, current = null, children }: PlatformNav
   useEffect(() => close(), [location.key, close]);
   useEffect(() => clearTimers, []);
 
-  /** Where the indicator rests: under the open menu's platform, else the current page's item, else nowhere. */
+  /**
+   * Where the indicator rests: under the item the mouse is on, else the open menu's platform, else the current page's
+   * item, else nowhere. The hovered item comes first: a menu that closes 200ms after the mouse moved from its platform
+   * to «المستعمل» left the mouse there — the ink jumped back to the page's platform under it (QA 2026-11-13).
+   */
   const restInk = useCallback(() => {
     const nav = navRef.current;
     if (!nav) return;
     const openButton = openRef.current ? (buttons.current.get(openRef.current.slug) ?? null) : null;
-    moveInk(openButton ?? nav.querySelector<HTMLElement>(".shell-navitem[aria-current]"));
+    const pointed = hovered.current && nav.contains(hovered.current) ? hovered.current : null;
+    moveInk(pointed ?? openButton ?? nav.querySelector<HTMLElement>(".shell-navitem[aria-current]"));
   }, [moveInk]);
 
   // the indicator takes over from the per-item underlines once the page is live; it rests again after every
@@ -318,10 +325,14 @@ export function PlatformNav({ platforms, current = null, children }: PlatformNav
         className="shell-nav"
         aria-label={t("nav.main")}
         onPointerOver={(event) => {
-          if (event.pointerType === "mouse") moveInk(itemOf(event.target) ?? null);
+          if (event.pointerType !== "mouse") return;
+          hovered.current = itemOf(event.target);
+          moveInk(hovered.current);
         }}
         onPointerLeave={(event) => {
-          if (event.pointerType === "mouse") restInk();
+          if (event.pointerType !== "mouse") return;
+          hovered.current = null;
+          restInk();
         }}
         onFocus={(event) => {
           const item = itemOf(event.target);
@@ -453,7 +464,8 @@ function MegaContent({ platform, name }: { platform: NavPlatform; name: string }
           <span className="shell-mega__platform">{name}</span>
           <span className="shell-mega__total">{t("nav.count", { count: platform.productCount })}</span>
         </p>
-        <Key as={LocaleLink} to={platform.href} size="sm" iconEnd="arrow-right" className="shell-mega__all">
+        {/* the full 44px key (the small one was 40) */}
+        <Key as={LocaleLink} to={platform.href} iconEnd="arrow-right" className="shell-mega__all">
           {t("nav.all", { name })}
         </Key>
       </div>

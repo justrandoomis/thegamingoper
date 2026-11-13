@@ -14,14 +14,15 @@
  * an add that fails (the kit rolls back and says why beside the key) · offline (the shell's banner; the add key goes
  * flat with the reason beside it, v2 §6.17).
  */
-import { useRef, useState } from "react";
-import { data, useRouteLoaderData } from "react-router";
+import { useRef, useState, type MouseEvent } from "react";
+import { data, useNavigate, useRouteLoaderData } from "react-router";
 
 import type { Route } from "./+types/used-unit";
 import { productShareImage } from "~/art";
 import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { MotionLink } from "~/motion";
 import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
 import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
@@ -39,6 +40,7 @@ import { ErrorState } from "~/ui/ErrorState";
 import { FactList, type Fact } from "~/ui/FactList";
 import { Gallery } from "~/ui/Gallery";
 import { GradeBadge, gradeKey } from "~/ui/GradeBadge";
+import { IconKey } from "~/ui/IconKey";
 import { InspectionCard } from "~/ui/InspectionCard";
 import { Key } from "~/ui/Key";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
@@ -47,6 +49,7 @@ import { BidiText } from "~/ui/ProductCard";
 import { revealProps } from "~/ui/reveal";
 import { ShelfRail } from "~/ui/ShelfRail";
 import { TextLink } from "~/ui/TextLink";
+import { toast } from "~/ui/toast-store";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { USED_PATH } from "./components/UsedFilters";
 import { useUsedT } from "./i18n";
@@ -135,18 +138,19 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="page grid grid-cols-[minmax(0,1fr)] gap-section pt-0 pb-6 md:pt-4 lg:pt-6">
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6">
-        {/* v2.1: the before's bar above the product block, on phones too (client note 5, as the product page) */}
-        <Breadcrumbs phone items={[{ label: t("unit.crumbs.home"), href: "/" }, { label: t("unit.crumbs.used"), href: USED_PATH }, { label: unit.name }]} />
-
         <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:gap-6 lg:grid-cols-12 lg:gap-10">
-          {/* Phones: the stage runs edge to edge (v2 §4.14); the line under it and the thumbnails keep the gutter. From
-              1024 the platform's ambient light sits behind the stage (v2.1 G3; kept inside the page's gutter). */}
+          {/* The stage as the product page's soft card (round-1 fixes: a flat, full-width grey well here, the soft
+              StageCard there — two pages of one kind): edge to edge under the header on phones with its lower corners
+              round, the platform's ambient light in its own ground, the round back and share keys over it below 1024
+              (used.css .used-stage). The line under it and the thumbnails keep the gutter. From 1024 the platform's
+              light also sits behind the stage (v2.1 G3; kept inside the page's gutter). */}
           <div
             ref={stage}
-            data-gel={unit.platform && isPlatform(unit.platform.slug) ? unit.platform.slug : undefined}
-            className="min-w-0 max-md:-mx-(--gutter) lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))] lg:col-span-7 lg:self-start"
+            data-gel={unit.platform && isPlatform(unit.platform.slug) ? unit.platform.slug : "brand"}
+            className="used-stage min-w-0 max-md:-mx-(--gutter) lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))] lg:col-span-7 lg:self-start"
           >
             <span className="glow-layer used-stage-light max-lg:hidden" aria-hidden="true" />
+            <StageKeys name={unit.name} />
             <Gallery
               name={unit.name}
               items={unit.photos.map((image) => ({ image }))}
@@ -158,6 +162,8 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
           </div>
 
           <div className="grid min-w-0 content-start gap-4 lg:col-span-5">
+            {/* the before's bar above the name (client note 5) — after the stage on phones, as on the product page */}
+            <Breadcrumbs phone items={[{ label: t("unit.crumbs.home"), href: "/" }, { label: t("unit.crumbs.used"), href: USED_PATH }, { label: unit.name }]} />
             <div className="grid gap-2">
               {/* the before's brand line: the platform's colour line and its name, right above the name */}
               {unit.platform ? isPlatform(unit.platform.slug) ? <PlatformLabel platform={unit.platform.slug} bar /> : <span className="type-sm-strong text-ink-2">{unit.platform.name}</span> : null}
@@ -316,6 +322,50 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
           </div>
         )}
       </TaskBar>
+    </div>
+  );
+}
+
+/**
+ * The round clay keys over the unit's stage below 1024, as the product page's stage card: back at the start — real
+ * history Back when an earlier page of this site is in the tab (it restores that page and plays the reverse zoom into
+ * the card), on a deep link the used list — and share at the end, beside the kit's full-screen key: the system share
+ * sheet where there is one, else the page's link is copied and a toast says so (nothing is sent anywhere).
+ */
+function StageKeys({ name }: { name: string }) {
+  const t = useUsedT();
+  const navigate = useNavigate();
+  const back = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    // React Router numbers the entries it created in this tab; idx 0 = the page the shopper arrived on
+    const state = window.history.state as { idx?: number } | null;
+    if (typeof state?.idx === "number" && state.idx > 0) {
+      event.preventDefault();
+      void navigate(-1);
+    }
+  };
+  const share = async () => {
+    const url = window.location.href;
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: name, url });
+        return;
+      } catch (error) {
+        // the shopper closed the sheet: nothing to say
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success(t("unit.stage.copied"));
+    } catch {
+      toast.error(t("unit.stage.failed"));
+    }
+  };
+  return (
+    <div className="used-stage__keys lg:hidden">
+      <IconKey as={MotionLink} to={USED_PATH} nav="zoom" back icon="arrow-left" label={t("unit.stage.back")} onClick={back} />
+      <IconKey icon="share-network" label={t("unit.stage.share", { name })} onClick={() => void share()} className="used-stage__share" />
     </div>
   );
 }

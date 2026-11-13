@@ -199,7 +199,7 @@ export function InspectionCard({
 
       <Part title={t("inspection.defects")} Sub={Sub}>
         {defects.length === 0 ? (
-          <p className="type-sm text-ink-2">{t("inspection.noDefects")}</p>
+          <p className="type-read text-ink-2 lg:type-sm">{t("inspection.noDefects")}</p>
         ) : (
           <ul className="grid gap-3">
             {defects.map((defect, index) => (
@@ -211,7 +211,7 @@ export function InspectionCard({
                     </span>
                   </span>
                 ) : null}
-                <span className="min-w-0 pt-0.5 type-sm text-ink">{defect.text}</span>
+                <span className="min-w-0 pt-0.5 type-read text-ink lg:type-sm">{defect.text}</span>
               </li>
             ))}
           </ul>
@@ -220,15 +220,15 @@ export function InspectionCard({
 
       <Part title={t("inspection.included")} Sub={Sub}>
         {included.length === 0 ? (
-          <p className="type-sm text-ink-2">{t("inspection.nothingIncluded")}</p>
+          <p className="type-read text-ink-2 lg:type-sm">{t("inspection.nothingIncluded")}</p>
         ) : (
-          <ul className="grid list-inside list-disc gap-1 type-sm text-ink marker:text-ink-2">
+          <ul className="grid list-inside list-disc gap-1 type-read text-ink marker:text-ink-2 lg:type-sm">
             {included.map((thing, index) => (
               <li key={index}>{thing}</li>
             ))}
           </ul>
         )}
-        <div className="mt-2 grid gap-1 border-t border-line pt-3 type-sm text-ink">
+        <div className="mt-2 grid gap-1 border-t border-line pt-3 type-read text-ink lg:type-sm">
           <p>{warrantyDays > 0 ? t("inspection.warranty", { days: days(warrantyDays) }) : t("inspection.noWarranty")}</p>
           {returnDays && returnDays > 0 ? <p>{t("inspection.returns", { days: days(returnDays) })}</p> : null}
           {isIqd(newPriceIqd) ? (
@@ -259,7 +259,7 @@ function CheckRow({ ok, label, note }: { ok: boolean; label: string; note?: stri
           {label}
           <span className="sr-only"> — {t(ok ? "inspection.ok" : "inspection.issue")}</span>
         </span>
-        {note ? <span className="type-xs text-ink-2">{note}</span> : null}
+        {note ? <span className="type-sm text-ink-2 lg:type-xs">{note}</span> : null}
       </span>
     </li>
   );

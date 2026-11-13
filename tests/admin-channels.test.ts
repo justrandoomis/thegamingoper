@@ -347,7 +347,12 @@ describe("API keys and the read API (21.03)", () => {
     const { key: secret, keyId } = await createApiKey(t.db, people.owner.actor, { name: "Shop sync", scopes: ["catalog.product.read", "orders.order.read"], reason: "مزامنة", idempotencyKey: key() }, NOW);
 
     expect((await call("/api/v1/products", "products")).status).toBe(401);
-    expect((await call("/api/v1/products", "products", { key: `${secret!.slice(0, -1)}A` })).status).toBe(401);
+    // a wrong key: the real one with its last character changed, whatever it is — the 43rd base64url character of 32
+    // random bytes is one of 16, so a key ends in «A» one time in 16, and the wrong key `${secret}…A` was then the key
+    // itself: the API rightly answered 200 (the "flaky" 401 of 2026-11-12/13)
+    const wrongKey = `${secret!.slice(0, -1)}${secret!.endsWith("A") ? "B" : "A"}`;
+    expect(wrongKey).not.toBe(secret);
+    expect((await call("/api/v1/products", "products", { key: wrongKey })).status).toBe(401);
     expect((await call(`/api/v1/products?key=${secret}`, "products", { key: secret })).status).toBe(400);
     expect((await call("/api/v1/products", "products", { key: secret, method: "POST" })).status).toBe(405);
     const stock = await call("/api/v1/stock", "stock", { key: secret });

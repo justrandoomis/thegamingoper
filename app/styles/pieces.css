@@ -84,14 +84,24 @@
   --note-tint: var(--demo-bg);
   --note-ink: var(--demo-ink);
 }
-.note:is(.note--info, .note--success, .note--warning, .note--demo) .note__icon {
+/* danger (a safety warning: «توقف فوراً في هذه الحالات»): the circle and the title in the error red, the card neutral */
+.note--danger {
+  --note-tint: var(--danger-tint);
+  --note-ink: var(--danger);
+}
+.note--danger .note__title {
+  color: var(--danger);
+}
+.note:is(.note--info, .note--success, .note--warning, .note--danger, .note--demo) .note__icon {
   box-shadow: none;
 }
 /* flat: inside another card or a sheet — no raise of its own */
 .note--flat {
   box-shadow: var(--e-surface-quiet);
 }
-/* line: a quiet line with an icon (under a price, under a key) — no card at all */
+/* line: a quiet line with an icon (under a price, under a key) — no card at all. Reading size (G7: 16px / 1.75 on
+   phones; fix round 2026-11-13 — it was 14px, so the product page used cards instead); the icon sits on the first line
+   (its box is one line tall), whatever the number of lines */
 .note--line {
   grid-template-columns: auto minmax(0, 1fr);
   gap: 2px var(--s-2);
@@ -102,20 +112,25 @@
 .note--line .note__icon {
   --disc: 24px;
   grid-row: span 2;
+  align-self: start;
+  block-size: calc(var(--fs-read) * var(--lh-read));
   background: none;
   box-shadow: none;
   color: var(--note-ink);
 }
-.note--line:not(:is(.note--info, .note--success, .note--warning, .note--demo)) .note__icon {
+.note--line:not(:is(.note--info, .note--success, .note--warning, .note--danger, .note--demo)) .note__icon {
   color: var(--ink-2);
 }
 .note--line .note__title {
+  align-self: start;
   min-block-size: 0;
-  font: var(--type-sm-strong);
+  font: 600 var(--fs-read) / var(--lh-read) var(--font-text);
 }
 .note--line .note__text {
-  font: var(--type-sm);
-  line-height: 1.6;
+  font: var(--type-read);
+}
+.note--line:not(:has(.note__title)) .note__text {
+  align-self: start;
 }
 @media (min-width: 64rem) {
   .note:not(.note--line) {
@@ -202,13 +217,14 @@
 .carousel__dots {
   display: flex;
   align-items: center;
-  gap: 2px;
 }
+/* each dot is a 44 × 44 target (the brief's minimum; on phones the dots are the only keys besides a swipe): the
+   cells touch, the 8px dots sit 44px apart (six dots: 264px, inside a 360 phone's column) */
 .carousel__dot {
   position: relative;
   display: grid;
   place-items: center;
-  inline-size: 24px;
+  inline-size: var(--target);
   block-size: var(--target);
   padding: 0;
   border: 0;
@@ -245,8 +261,34 @@
   opacity: 1;
   scale: 1;
 }
+/* the focus ring goes round the shape you see — the dot, or the current dot's pill — never a thin box through the
+   pill (fix round 2026-11-13). The hidden layer is transparent, and so is its ring */
 .carousel__dot:focus-visible {
-  outline-offset: -8px;
+  outline: none;
+}
+.carousel__dot:focus-visible::before,
+.carousel__dot:focus-visible::after {
+  outline: var(--focus-w) solid var(--focus);
+  outline-offset: 3px;
+}
+/* progress (<CarouselDots progress>): while the slides move on by themselves the current dot's pill is a grey track (at
+   once) and the red fill grows from the start edge over the interval; held, paused or stopped: the full pill again.
+   Focus inside the carousel holds autoplay, so a ring never meets the growing fill */
+.carousel__dots[data-run] > .carousel__dot[aria-current="true"]::before {
+  inline-size: 22px;
+  opacity: 1;
+}
+.carousel__dots[data-run] > .carousel__dot[aria-current="true"]::after {
+  transform-origin: calc(50% - 50% * var(--dir)) 50%;
+  animation: carousel-dot-fill var(--carousel-autoplay, 6000ms) linear both;
+}
+@keyframes carousel-dot-fill {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
 }
 .carousel__tools {
   display: flex;
@@ -273,6 +315,12 @@
   .carousel__dot::after {
     transition: none;
   }
+  .carousel__dots[data-run] > .carousel__dot[aria-current="true"]::after {
+    animation: none;
+  }
+}
+[data-motion="reduced"] .carousel__dots[data-run] > .carousel__dot[aria-current="true"]::after {
+  animation: none;
 }
 [data-motion="reduced"] .carousel__track {
   scroll-behavior: auto;
@@ -395,13 +443,13 @@
 .seg:not([data-thumb]) > .seg__thumb {
   display: none;
 }
-/* Tabs: one ink underline that slides under the current tab */
+/* Tabs: one ink underline that slides under the current tab (the before's 3px; the admin's 2px, tokens.css) */
 .tabs__ind {
   position: absolute;
   inset-block-end: 0;
   inset-inline-start: 0;
   inline-size: var(--ind-w, 0px);
-  block-size: 2px;
+  block-size: var(--tab-ind, 2px);
   border-radius: var(--r-full);
   background: var(--ink);
   translate: var(--ind-x, 0px) 0;
@@ -465,6 +513,48 @@
 .crumbs--phone .crumbs__list::-webkit-scrollbar {
   display: none;
 }
+/* each crumb keeps its words on one line: base.css gives every li `text-wrap: pretty`, which set the list's nowrap
+   back to wrap, so phone crumbs shrank and broke (fix round 2026-11-13; product and support patched it locally) */
+.crumbs--phone .crumbs__list > li {
+  flex: none;
+  white-space: nowrap;
+}
+/* a trail longer than the phone fades at the edge that has more to scroll to (a scroll-driven mask: no fade at all
+   while the trail fits — the timeline is inactive then) */
+@property --crumbs-fade-start {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --crumbs-fade-end {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@supports (animation-timeline: scroll()) {
+  .crumbs--phone .crumbs__list {
+    /* a mask reads only the alpha: any opaque colour draws the row, transparent fades it */
+    -webkit-mask-image: linear-gradient(calc(90deg * var(--dir)), transparent 0, var(--ink) var(--crumbs-fade-start), var(--ink) calc(100% - var(--crumbs-fade-end)), transparent 100%);
+    mask-image: linear-gradient(calc(90deg * var(--dir)), transparent 0, var(--ink) var(--crumbs-fade-start), var(--ink) calc(100% - var(--crumbs-fade-end)), transparent 100%);
+    animation: crumbs-edges linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+/* driven by the row's own scroll position, not by time: no motion of its own (the edges' fade follows the finger) */
+@keyframes crumbs-edges {
+  from {
+    /* lint-design: allow animated-property — a scroll-driven mask edge (no time, no layout) */
+    --crumbs-fade-start: 0px;
+    /* lint-design: allow animated-property — a scroll-driven mask edge (no time, no layout) */
+    --crumbs-fade-end: 24px;
+  }
+  to {
+    /* lint-design: allow animated-property — a scroll-driven mask edge (no time, no layout) */
+    --crumbs-fade-start: 24px;
+    /* lint-design: allow animated-property — a scroll-driven mask edge (no time, no layout) */
+    --crumbs-fade-end: 0px;
+  }
+}
 
 /* ───────────────────────────── empty state: the before's arrangement (client note 7) ─────────────────────────────
  * The words, then the one key, then the recovery link on its own line under it — not side by side. */
@@ -487,4 +577,10 @@
   .empty--panel {
     padding: var(--s-10) var(--s-8);
   }
+}
+/* <EmptyState panel wide>: the card spans its column (the empty cart), the words keep their own measure */
+.empty--panel.empty--wide {
+  inline-size: 100%;
+  max-inline-size: none;
+  margin-block: 0;
 }

@@ -9,9 +9,11 @@
  *   decideRule(db, actor, { approvalId, decision, note }, now) · withdrawRuleRequest(db, actor, { approvalId }, now)
  *   dryRun(db, actor, ruleId, { days, includeDemo }, now)   the recent orders the rule would have changed, and by how much
  *
- * HONEST BOUNDARY: the commerce core's cart totals do not read `promotions` yet — a rule switched on here changes no
- * checkout until `priceCart` (cart.server.ts, after the subtotal) and `placeOrder` apply it (requested; the pure
- * evaluator is `evaluateRule` in ./rules.ts). The dry run is how staff see a rule's effect today.
+ * Where a rule applies (since 2026-11-12): the commerce core reads the live rules for the online cart and checkout
+ * (orders/promotions.server.ts loadPromotionFacts → orders/promotions.ts applyDiscounts, which calls `evaluateRule`
+ * from ./rules.ts — the dry run's own evaluator) and placeOrder records each in the order's "promotions" event. HONEST
+ * BOUNDARY: the point of sale applies no rule, so a rule limited to the channel "pos" applies nowhere
+ * (app/routes/admin/promotions/checkout-state.ts says so to staff).
  *
  * Switching a rule on when its terms go beyond DISCOUNT_LIMITS needs a second person (approvals kind
  * "promotion_rule", promotions.rule.manage + pricing.discount.override, never the requester); an edit of a live rule

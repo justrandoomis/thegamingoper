@@ -1,9 +1,10 @@
 /**
  * The reading part of the product page — design v2 spec §6.7 items 12–13, v2.1 (client note 5, G5, G7): «قبل أن تطلب»
  * (the kit's calm Note in the warning tone), highlights (the before's checked list, reading size), about the product,
- * game facts, the specification rows (label 14/600 ink-2 + value 14 between hairlines; the store's product code last,
- * in caption; one line on where the facts come from, the sources behind a disclosure) and what is in the box (the
- * retail-box photo beside a checked list). Flat on the floor: no panels around reading text.
+ * game facts, the specification rows (label 14/600 ink-2 + the value between hairlines — a fact: 16 / 1.75 on phones
+ * and tablets, 14 from 1024, product.css `.pp-fact`; the store's product code last, in caption; one line on where the
+ * facts come from, the sources behind a disclosure, each title in its own language and direction) and what is in the
+ * box (the retail-box photo beside a checked list). Flat on the floor: no panels around reading text.
  *
  * Every section renders nothing when its data is missing, so a product with partial data reads as a shorter page,
  * never as empty boxes. No image-credit section (credits live in the footer line and the sources disclosure).
@@ -17,6 +18,7 @@ import { getArt, isPhoto } from "~/art";
 import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
+import { SourceText } from "~/routes/storefront/devices/components/SourceText";
 import type { GameFacts as GameFactsData, SourceLink, SpecRow, VariantDetail } from "~/server/services/catalog/product-types";
 import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
@@ -163,7 +165,10 @@ export function GameFacts({ game, ageRating, level = 2, className }: { game: Gam
   );
 }
 
-/** Rows between hairlines: the label (14/600 ink-2) at the start, the value (14 ink) after it. */
+/**
+ * Rows between hairlines: the label (14/600 ink-2) at the start, the value after it — a fact in reading size on phones
+ * and tablets (16 / 1.75, G7), 14 from 1024 (product.css `.pp-fact`).
+ */
 export function Rows({ rows, className }: { rows: { label: ReactNode; value: ReactNode }[]; className?: string }) {
   if (rows.length === 0) return null;
   return (
@@ -171,7 +176,7 @@ export function Rows({ rows, className }: { rows: { label: ReactNode; value: Rea
       {rows.map((row, index) => (
         <div key={index} className="contents">
           <dt className="border-b border-line py-3 type-sm-strong text-ink-2">{row.label}</dt>
-          <dd className="min-w-0 border-b border-line py-3 type-sm text-ink [overflow-wrap:anywhere]">{row.value}</dd>
+          <dd className="pp-fact min-w-0 border-b border-line py-3 text-ink [overflow-wrap:anywhere]">{row.value}</dd>
         </div>
       ))}
     </dl>
@@ -214,7 +219,7 @@ export function Specs({
   if (variant.modelNumber && !specs.some((spec) => MODEL_KEYS.has(spec.key))) rows.push({ label: t("specs.model"), value: <bdi dir="ltr">{variant.modelNumber}</bdi> });
   return (
     <Section title={t("specs.title")} level={level} className={className}>
-      {specs.length === 0 ? <p className="type-sm text-ink-2">{t("specs.none")}</p> : null}
+      {specs.length === 0 ? <p className="pp-fact text-ink-2">{t("specs.none")}</p> : null}
       <Rows rows={rows} />
       <div className="grid gap-1">
         <p className="type-xs text-ink-2">
@@ -225,18 +230,20 @@ export function Specs({
         </p>
         {sources.length > 0 ? (
           <>
-            <p className="type-xs text-ink-2">{t(`specs.${sourceLine(sources, brand)}`)}</p>
+            <p className="pp-fact text-ink-2">{t(`specs.${sourceLine(sources, brand)}`)}</p>
             <Disclosure summary={t("specs.sources", { n: f.number(sources.length) })} icon="book-open">
-              <ul className="grid gap-1 type-sm">
+              {/* each title and publisher in its own language and direction: an Arabic or Japanese source on an English
+                  page is read with its own voice (QA 2026-11-13); the publisher on its own caption line under the
+                  title, so a wrapping title never splits it across two lines */}
+              <ul className="pp-sources grid gap-2">
                 {sources.map((source) => (
-                  <li key={source.url} className="min-w-0 [overflow-wrap:anywhere]">
+                  <li key={source.url} className="grid min-w-0 justify-items-start [overflow-wrap:anywhere]">
                     <TextLink href={source.url} external>
-                      <bdi>{source.title ?? source.url}</bdi>
+                      <SourceText text={source.title ?? source.url} />
                     </TextLink>
                     {source.publisher ? (
                       <span className="type-xs text-ink-2">
-                        {" · "}
-                        <bdi>{source.publisher}</bdi>
+                        <SourceText text={source.publisher} />
                       </span>
                     ) : null}
                   </li>

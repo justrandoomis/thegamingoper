@@ -18,6 +18,24 @@
 - **New:** `Note` (side information), `Reveal` / `revealProps` (`~/ui/reveal`), `Carousel` / `useCarousel`,
   `SuccessMark`, `CountUp` (`~/motion`) — docs/UI.md §0 has the table.
 
+## Fix round (2026-11-13) — DESIGN.md §15.10
+
+- **Key** — the label's clip box reaches 0.45em above and below its line (Arabic marks are never cut: «أضف عنواناً»,
+  «جارٍ»). New: `wrap` (a long label takes a balanced second line; the key grows) and `fit="compact"` (44px, 12px sides:
+  a task bar's key on a 320–375 phone). Inside `[data-gel]` an `onBand` key says its words in `--plat-deep`.
+- **Chip** `icon` (also `ChipGroup` options): a kind or device glyph before the label; the check takes its place when
+  chosen.
+- **Tabs** — labels 15px Plex 500 (chosen 600), a 44px row, the before's 3px underline; phones: 10px sides, no gap.
+  `size="lg"` (16px, 48px row); `section` → `aria-current="true"` on the chosen tab. The admin keeps 12px / 2px.
+- **Segmented** — the options' hit area is a true 44px (the `::after` inset counts the 1px border and the track's 2px).
+- **Breadcrumbs** `phone` — each crumb stays on one line (base.css's `li { text-wrap: pretty }` undid the list's nowrap);
+  a trail longer than the phone fades the edge that has more to scroll to (scroll-driven; no fade when it fits).
+- **Carousel** — moves further than one slide fade and jump (`carouselMove()`); `running`, `autoplay`; `CarouselDots
+  progress`; `CarouselArrows` / `CarouselPlay` `size` ("md" 44 default); 44px dots; keys from a portal ignored; the pause
+  key after hydration. The slides keep `scroll-snap-stop: always`.
+- **EntryCard** (row form) — the title 17px Kufam (16 on phones, 44px disc, 20px arrow): one line at 390.
+- **Rail** / `PlatformTiles` / `CategoryTiles` `reveal` — their items fade up one after another (off by default).
+
 ## Polish round and stage 4 (2026-11-12)
 
 - **Stage 4 (spec §4.2, §12):** `Socket`, `PlatformBank`, `StageTag` and `PlatformGlyph` are **deleted** — nothing

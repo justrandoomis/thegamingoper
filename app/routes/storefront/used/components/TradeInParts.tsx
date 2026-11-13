@@ -27,6 +27,7 @@ import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { useUsedT } from "../i18n";
+import { keepLatinHyphens } from "../names";
 
 /** Left-to-right isolate and its end: grade letters and amounts keep their order inside Arabic and Sorani. */
 const LRI = String.fromCharCode(0x2066);
@@ -34,10 +35,13 @@ const PDI = String.fromCharCode(0x2069);
 
 const ACCESSORY_KEYS = new Set(["controller", "power_cable", "hdmi_cable", "dock", "joy_con", "charger", "case"]);
 
-/** Words for an accessory key of a price guide ("missing_controller" → "controller" → "يد التحكم"). */
+/**
+ * Words for an accessory key of a price guide ("missing_controller" → "controller" → "يد التحكم"). A Latin name in
+ * them never breaks at its hyphen («يدا Joy‑Con»: ../names keepLatinHyphens — round-1 fixes).
+ */
 export function useAccessoryLabel(): (key: string) => string {
   const t = useUsedT();
-  return (key) => t(`tradein.accessories.${ACCESSORY_KEYS.has(key) ? key : "extra"}`);
+  return (key) => keepLatinHyphens(t(`tradein.accessories.${ACCESSORY_KEYS.has(key) ? key : "extra"}`));
 }
 
 /** «جيد جداً (B)» — a grade in words with its letter isolated left to right. */
@@ -87,7 +91,7 @@ export function EstimatePanel({ range, low, high, missing = [], deductionsIqd = 
           {pending}
         </div>
         {reason ? <p className="type-body text-ink">{t(`tradein.estimate.inspection.${reason}`)}</p> : null}
-        <p className="type-sm text-ink-2">{t("tradein.estimate.inspection.text")}</p>
+        <p className="used-read text-ink-2">{t("tradein.estimate.inspection.text")}</p>
         {payout ? <PayoutOptions /> : null}
       </section>
     );
@@ -119,13 +123,14 @@ export function EstimatePanel({ range, low, high, missing = [], deductionsIqd = 
           </p>
         ) : null}
         {awaiting ? (
-          <Note variant="line" icon="info">
+          // the kit's quiet line, its words at the reading size (G7: 16px on phones — the line's 14 read small here)
+          <Note variant="line" icon="info" className="used-line-note">
             {t("tradein.estimate.note")}
           </Note>
         ) : null}
-        {low && high ? <p className="type-read text-ink-2">{t("tradein.estimate.grades", { low: words(low), high: words(high) })}</p> : null}
+        {low && high ? <p className="used-read text-ink-2">{t("tradein.estimate.grades", { low: words(low), high: words(high) })}</p> : null}
         {missing.length > 0 && deductionsIqd > 0 ? (
-          <p className="type-read text-ink-2">
+          <p className="used-read text-ink-2">
             {fillNodes(t("tradein.estimate.deduction"), {
               amount: <bdi className="nums">{iqdText(f, deductionsIqd)}</bdi>,
               items: missing.map(accessory).join(t("tradein.listJoin")),
@@ -143,9 +148,10 @@ function PayoutOptions() {
   const t = useUsedT();
   return (
     <div className="mt-1 grid gap-1 border-t border-line pt-4">
-      <h3 className="type-sm-strong text-ink">{t("tradein.estimate.payoutTitle")}</h3>
+      <h3 className="used-title text-ink">{t("tradein.estimate.payoutTitle")}</h3>
       <FactList
         plain
+        className="used-facts"
         facts={[
           { id: "credit", icon: "wallet", title: t("tradein.estimate.payoutCredit"), text: t("tradein.estimate.payoutCreditText") },
           { id: "cash", icon: "money", title: t("tradein.estimate.payoutCash"), text: t("tradein.estimate.payoutCashText") },
@@ -182,7 +188,7 @@ export function AnswerList({ questions, answers, edit, className }: AnswerListPr
         return (
           <div key={question} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-b border-line py-2 last:border-b-0">
             <dt className="type-xs text-ink-2">{t(`tradein.q.${question}.short`)}</dt>
-            <dd className="col-start-1 row-start-2 min-w-0 type-sm-strong text-ink">{answer ?? <span className="font-normal text-ink-2">{t("tradein.notAnswered")}</span>}</dd>
+            <dd className="used-title col-start-1 row-start-2 min-w-0 text-ink">{answer ?? <span className="font-normal text-ink-2">{t("tradein.notAnswered")}</span>}</dd>
             {answer && edit?.[question] ? (
               <dd className="col-start-2 row-span-2 row-start-1">
                 <TextLink as={LocaleLink} to={edit[question]!} arrow={false} className="type-xs min-w-11 justify-end" aria-label={t("tradein.estimate.editQuestion", { question: t(`tradein.q.${question}.short`) })}>
@@ -259,16 +265,17 @@ export function WhatNext({ className, headingLevel = 2 }: { className?: string; 
   const steps = ["schedule", "inspect", "offer", "decide"] as const;
   return (
     <section className={cx("grid gap-3", className)} aria-labelledby={headingId}>
-      <Heading id={headingId} className="type-sm-strong text-ink">
+      <Heading id={headingId} className="used-title text-ink">
         {t("tradein.next.title")}
       </Heading>
+      {/* reading text (G7: 16 / 1.75); the number sits on the first line */}
       <ol className="grid gap-3">
         {steps.map((step, index) => (
           <li key={step} className="grid grid-cols-[24px_minmax(0,1fr)] items-start gap-3">
-            <span className="step__n" aria-hidden="true">
+            <span className="step__n mt-0.5" aria-hidden="true">
               {f.number(index + 1)}
             </span>
-            <span className="type-sm text-ink">{t(`tradein.next.${step}`)}</span>
+            <span className="used-read text-ink">{t(`tradein.next.${step}`)}</span>
           </li>
         ))}
       </ol>

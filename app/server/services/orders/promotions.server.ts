@@ -35,7 +35,9 @@
  *     to collect and everything paid gone back) — decided in SQL inside the refund's batch, so two refunds at once
  *     neither give the same points twice nor both miss being the last; never more than were redeemed. The row is kind
  *     "reversal" with ref_type "redeem" (module 08's earn reversals use ref_type "order", which this never touches) and
- *     expires like any credit (`LOYALTY.expiryDays`);
+ *     expires like any credit (`LOYALTY.expiryDays`). Every row's `reason` is a CODE (./loyalty-reasons: "order",
+ *     "cancelled", "returned", "refund" with the order's reference), never a sentence: the admin's ledger says it in
+ *     its own language (client round 1, wave C);
  *   · referral (security review 2026-11-12): a cancelled order's — or a parcel returned undelivered's — referral is
  *     closed as rejected and its use goes back to the code (module 08's rejectReferral rule: uses − 1, once), in the
  *     same batch; abandoned orders can no longer use up a public code. The number stays referred (UNIQUE).
@@ -58,6 +60,7 @@ import { ruleTerms } from "~/server/services/admin/promotions/discounts.server";
 import { programRules } from "~/server/services/admin/promotions/program.server";
 import { normalizeReferralCode } from "~/server/services/admin/promotions/referrals.server";
 import type { DiscountLimits } from "~/server/services/admin/promotions/types";
+import { loyaltyReasonText } from "./loyalty-reasons";
 import type { FlashOffer, MemberOffer, RuleOffer } from "./promotions";
 import type { DiscountLineView, FlashPriceView, OrderAdjustmentsView, ShippingWaiverView } from "./types";
 
@@ -360,10 +363,14 @@ export function flashLimitGuards(db: Db, claims: readonly FlashClaim[], who: { c
   return claims.filter((claim) => claim.perCustomerLimit !== null).map((claim) => expectThat(db, sql`${claimedSql(claim.itemId, who)} <= ${claim.perCustomerLimit}`, { code: "FLASH_LIMIT", detail: claim.itemId }));
 }
 
-/** The redemption of `points` for an order, in its batch (the overdraft trigger refuses more than the balance: TT:LOYALTY_OVERDRAFT). */
+/**
+ * The redemption of `points` for an order, in its batch (the overdraft trigger refuses more than the balance:
+ * TT:LOYALTY_OVERDRAFT). Its reason is the code "order" (./loyalty-reasons: the order's reference — a screen says it
+ * in its own language).
+ */
 export function pointsRedeemStatement(db: Db, input: { orderId: string; ref: string; customerId: string; points: number; actor: Actor; now: number }): BatchStatement {
   const { actorKind, actorId } = actorRef(input.actor);
-  return db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: input.customerId, points: -input.points, kind: "redeem", refType: "order", refId: input.orderId, reason: input.ref, expiresAt: null, actorKind, actorId, idempotencyKey: pointsRedeemKey(input.orderId), at: input.now });
+  return db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: input.customerId, points: -input.points, kind: "redeem", refType: "order", refId: input.orderId, reason: loyaltyReasonText({ code: "order", ref: input.ref }), expiresAt: null, actorKind, actorId, idempotencyKey: pointsRedeemKey(input.orderId), at: input.now });
 }
 
 /** The order's "promotions" record in force (the latest — an order edit appends a re-priced one), or null. */
@@ -434,7 +441,8 @@ export async function releasePromotionsStatements(db: Db, input: { orderId: stri
   const record = await promotionsRecordOf(db, input.orderId);
   if (!record) return [];
   const statements: BatchStatement[] = [];
-  const reason = `${input.ref} · ${input.why ?? "cancelled"}`;
+  // a code, not a sentence (./loyalty-reasons): "<ref> · cancelled" / "<ref> · returned" — the admin says it in its language
+  const reason = loyaltyReasonText({ code: input.why ?? "cancelled", ref: input.ref });
   for (const claim of record.flash) {
     statements.push(batchSql(db, sql`UPDATE flash_sale_items SET qty_sold = qty_sold - min(qty_sold, ${claim.units}) WHERE id = ${claim.itemId}`));
   }
@@ -481,7 +489,7 @@ export async function refundPointsStatements(
   const redeem = await db.select({ customerId: loyaltyLedger.customerId, points: loyaltyLedger.points }).from(loyaltyLedger).where(eq(loyaltyLedger.idempotencyKey, pointsRedeemKey(input.orderId))).get();
   if (!redeem || redeem.points >= 0 || !(input.amountIqd > 0)) return [];
   const program = await programRules(db);
-  return [pointsReturnStatement(db, { orderId: input.orderId, customerId: redeem.customerId, give: { refundIqd: input.amountIqd }, key: pointsReturnKey(input.refundId), reason: `${input.ref} · refund ${input.refundId}`, expiryDays: program.loyalty.expiryDays, actor: input.actor, now: input.now })];
+  return [pointsReturnStatement(db, { orderId: input.orderId, customerId: redeem.customerId, give: { refundIqd: input.amountIqd }, key: pointsReturnKey(input.refundId), reason: loyaltyReasonText({ code: "refund", ref: input.ref, refundId: input.refundId }), expiryDays: program.loyalty.expiryDays, actor: input.actor, now: input.now })];
 }
 
 // ───────────────────────────────────────────────────────────────── the views

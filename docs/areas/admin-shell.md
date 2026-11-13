@@ -49,7 +49,9 @@ device), sign out, sign out on every device. `data-density="admin"` on the whole
 3. **Page skeleton:** no `<main>` of your own (the shell's is the landmark); start with
    `<h1 className="adm-title">`; section heads `adm-h2` / `adm-h3` (Kufam only for page titles and KPI figures, §10);
    `export const meta = (args) => adminMeta(args, (t) => t("modules.orders"))` from `shell/meta` (keeps noindex and the
-   admin suffix). A sticky bottom bar sits at `inset-block-end: var(--adm-bottom)`.
+   admin suffix). A sticky bottom bar sits at `inset-block-end: var(--adm-bottom)` and carries `data-adm-sticky-end`:
+   the shell then pads the root's end by one row of keys (72px) on top of the phone tab bar, so a control reached by
+   Tab never lands under either (WCAG 2.4.11; `tests/admin-shell-focus.test.ts` finds every such bar by its CSS).
 4. **Links:** react-router `<Link to="/admin/…">` — never `LocaleLink` (the admin's language is a cookie, not a URL
    prefix). Since 2026-11-11 `localePath` never prefixes `/admin` or `/api`, so `LocaleLink` and `Menu` items of
    `kind: "link"` keep admin paths as they are too — plain `<Link>` is still the clearer choice in admin code.
@@ -207,8 +209,23 @@ npx vitest run tests/admin-integration.test.ts # what the modules take from each
                                               # returns' targets and queues, pricing's limit words, every setting's help text,
                                               # finance's expenses and home link, customer names → profile
 npx vitest run tests/i18n.test.ts             # admin and admin-auth namespaces complete in ar, en, ckb
+npx vitest run tests/admin-shell-focus.test.ts # 3 tests (2026-11-13): the root's end padding = the tab bar (below 48rem) +
+                                              # a sticky page bar while one is on the page; every sticky bottom bar is marked
 node scripts/lint-design.mjs app/routes/admin # 0 findings
 ```
+
+**Focus under the bottom chrome (fix 2026-11-13, wave C).** base.css pads the root's end by the storefront's
+`--shell-bottom` (0 here), so at 390 Tab stops landed under the phone tab bar (/admin/promotions 1, /admin 3 + 4 partly,
+/admin/orders 4 + 13 partly), and on the role editor under its sticky save bar at every width (48 hidden at 390, 12 at
+1440). `:root:has(.adm)` now sets `scroll-padding-block-end: calc(var(--adm-fixed-end, 0px) + var(--adm-sticky-end, 0px)
++ var(--s-3))` — the tab bar below 48rem, a marked sticky bar (`data-adm-sticky-end`, nine bars in catalog, finance,
+orders, pos, security, shipping and staff). Focus walks after it: 1,391 stops on 14 page × width × theme × language
+runs (390 and 1440, light and dark, ar and en, the role editor and the catalogue's device list included), 0 hidden,
+0 partly covered, every stop with a ring (`fb1/work/C-fix-admin/final-*.json`).
+
+**Blueprint notes (same day).** From 768px a function's note reads under its name (≤ 75ch) instead of down the 12rem
+state column — module 08's notes ran 25 lines there; the status and «افتحها» keep the column (`.adm-fn__state:has(> p)`
+is `display: contents`; without `:has` the old layout stays). Module pages and /admin/blueprint share it.
 
 Browser checks (puppeteer, Chromium): setup once then 404; sign-in; enrolment with QR and recovery codes; sign-in with
 the app code and with a recovery code; a link from another site reaching its page through the hop; palette (Enter,

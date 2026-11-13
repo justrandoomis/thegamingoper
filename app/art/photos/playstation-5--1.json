@@ -1,54 +1,62 @@
 {
   "key": "playstation-5--1",
   "view": "hero",
-  "width": 761,
-  "height": 927,
-  "aspect": 0.8209,
+  "width": 1279,
+  "height": 1600,
+  "aspect": 0.7994,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-5/1-240.d64335ce.avif"
+        "src": "/products/playstation-5/1-240.c929ef7c.avif"
       },
       {
         "w": 480,
-        "src": "/products/playstation-5/1-480.146e114e.avif"
+        "src": "/products/playstation-5/1-480.4e9fdbda.avif"
       },
       {
         "w": 720,
-        "src": "/products/playstation-5/1-720.6550dd56.avif"
+        "src": "/products/playstation-5/1-720.3c703e98.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5/1-960.2b4d44ff.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-5/1-240.f241ce14.webp"
+        "src": "/products/playstation-5/1-240.f693a9b4.webp"
       },
       {
         "w": 480,
-        "src": "/products/playstation-5/1-480.d61e09df.webp"
+        "src": "/products/playstation-5/1-480.270ad0b6.webp"
       },
       {
         "w": 720,
-        "src": "/products/playstation-5/1-720.4e63f751.webp"
+        "src": "/products/playstation-5/1-720.235641e6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5/1-960.d977bf87.webp"
       }
     ]
   },
   "share": {
-    "src": "/products/playstation-5/1-761.6851b597.jpg",
-    "width": 761,
-    "height": 927,
-    "type": "image/jpeg"
+    "src": "/products/playstation-5/1-1200.6dc8f2a1.png",
+    "width": 1200,
+    "height": 1501,
+    "type": "image/png"
   },
-  "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAABQAwCdASoQABQALtGIxGIkLCwsDADQSzgABip/EP+ZbzenAAD+7mYC3kXwHxoZI9C3pkDEgOrWFt6qzqoHfVem1FaKxJBTXboqc6HZxa59z+LlH/F2SSNwGgq7NB78Tvkr7Vo80AAAAA==",
-  "dominant": "#1c2025",
-  "transparent": false,
-  "background": "#ffffff",
+  "placeholder": "data:image/webp;base64,UklGRh4BAABXRUJQVlA4WAoAAAAQAAAADwAAEwAAQUxQSGUAAAART6CmbSQ2dhzaT238iAj01U74DTa1tTf50zOGDQE46CMSOChAAhbYkpHOpzc0CRH9nwB6znN2c4a742EP9GH7gd2s4A/iQd5sUA/6wbg8Z9EISNphJsB0QDpnvR28b1pykiihGABWUDggkgAAAPADAJ0BKhAAFAA/EXKwUCwmpKKwCAGAIglnAMKBiw6UTyr647+oYAAAy0rrY95XlhBe/WOhpOiHqCnn2AgN4/wxzYBNfCATFec2+Gsm/7paEtm2QybNUNEMkCjQvZ3Yc535vAbBax6pA8TbSinPr8Vt5tF738wXQsIHDPwhVk9X16yhBx3FhlUjfi8EhUPY6cwA",
+  "dominant": "#141b22",
+  "transparent": true,
+  "background": null,
   "kind": "hero",
   "credit": "Sony Interactive Entertainment",
   "source": {
-    "url": "https://media.direct.playstation.com/is/image/sierialto/v2-PS5-Console-Disc-hero-recert?wid=2000",
-    "page": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-console"
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/playstation-5-with-dualsense-front-product-shot-01-ps5-en-30jul20?$native--t$&fmt=png-alpha&bfc=off",
+    "page": "https://web.archive.org/web/20201202010308/https://www.playstation.com/en-us/ps5/"
   },
-  "input": "40fceb8b02550cfc"
+  "input": "6745b0e54e7ebdbb"
 }

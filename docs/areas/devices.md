@@ -3,7 +3,7 @@
 Owner: storefront area "devices". Brief §3.4 and §6, Design System v2 §6.6 (the hub template) and §6.17 (states),
 CONTRACTS.md §3 (devices row). Files: `app/routes/storefront/devices/**`, `app/routes/api/events.ts`,
 `app/server/services/{devices,compatibility,recommendations}.server.ts`, `app/i18n/messages/devices.ts`,
-`tests/devices.test.ts` (30), `tests/recommendations.test.ts` (17).
+`tests/devices.test.ts` (35), `tests/recommendations.test.ts` (17).
 
 ## Routes
 
@@ -35,7 +35,7 @@ follows with a `replace`. `shouldRevalidate` skips the loader for a change of `a
 | Cards grid | `components/CardGrid.tsx` | whole rows 2 → 3 → 4 → 5; each card's compatibility note on one shared line under it (a two-row subgrid per item — prices align on the pinned foot); two rows at first, «اعرض كل الإكسسوارات (18)» (a link, `aria-expanded`, URL state above) opens the rest in place, shown only when more exist at the current width; folding keeps the key in view |
 | Complete your setup | `components/SetupShelf.tsx` | streamed; each state is ONE element of the page's track or none: loading = the kit shelf's head + the rail's geometry with empty wells (aria-busy, a status line); arrived = the kit's `ShelfRail`, cards inflate in when they arrive after the page; failure (or the stream's 5 s timeout) = the head stays, an `ErrorState` with retry in the rail's place; empty, or only shelves of fewer than three cards (`drawableShelves`) = no element (no double section gap) |
 | Comparison | `components/CompareSection.tsx` | paper table, hairlines, sticky first column, focusable region that scrolls sideways (a focused sibling link is scrolled clear of the sticky column); the current device's column has an ink line and «هذا الجهاز»; names and cells through `BidiText` («Joy-Con» keeps its order when a line breaks inside it); a missing fact reads «غير موثّق»; siblings push sideways in model order |
-| Specs | `components/SpecSection.tsx` | grouped panels: label 14/600 ink-2 + value 14 (`BidiText`); sources behind a disclosure |
+| Specs | `components/SpecSection.tsx` | grouped panels: label 14/600 ink-2 + value (`BidiText`; 16 / 1.75 below 1024, 14 from 1024); sources behind a disclosure, «publisher — title» as one run in the title's language and direction (`components/SourceText.tsx`, `format.ts` `sourceLang`) |
 | Accessories | `components/CompatSection.tsx` + `format.ts` `accessoryGroups` | §6.6 "compatible accessories (verified only)": verified = the section's cards, every one with its state word («متوافق») and the rule's note when it adds something; «تعمل بشرط» = cards with their condition. Accessories nobody has checked, or recorded as not working, are not listed here (their product pages name every device) |
 | Games | `components/CompatSection.tsx` | as accessories, plus unverified / incompatible as folded paper rows (small well, name, state word + note), no add button — a disc that does not fit a digital console is worth knowing |
 | Setup and repair | `components/HelpSection.tsx` | §6.6 order: guides as disclosure rows (summary + «اقرأ الدليل»), then the row links «شيء لا يعمل؟ اسأل مساعد الصيانة» (→ assistant) and «اطلب صيانة لـ …» (→ repair), diagnosis trees as rows into the assistant, spare parts (cards), the warranty as a `FactList` fact — or, unset, the question «اسألنا عن شروط الضمان» (→ the hand-off) |
@@ -145,6 +145,35 @@ Not done: Safari/Firefox/real phones; the Sorani strings (and month names) need 
 - `components/reveal.ts` is gone: the section chips use the kit's `revealInRow` / `revealFocusedItem` (`~/ui/reveal`), the
   comparison table the same with its sticky column as the row's start padding, and the recommendation rails rely on the kit's
   Rail (a keyboard-focused card goes to the rail's start).
+
+## Reading text and sources (QA wave C, 2026-11-13)
+
+The hub was not rebuilt in the v2.1 round, and its reading text kept v2's sizes against G7 (Arabic reading text ≥ 16px
+with a line height ≥ 1.7 on phones): on `/device/steam-deck-oled` at 390, 328 runs were 14px and 93 13px against 8 at
+16px; the census found 26–47 small reading runs per hub (ar, ckb).
+
+- **Reading sizes** (`devices.css`, the end of the components layer): below 1024 the facts, notes and descriptions read
+  at 16 / 1.75 — the highlights, the notes of editions and versions (`.devhub-read`, titles `.devhub-read-strong`
+  16/600), the spec values (`.devhub-specs dd`), the tables' cells and version links, the reasons of the rule groups,
+  guide summaries and the trees' hint, the lines under the row links (`.devhub-hint`), the used closing line, the
+  sources and their note (`.devhub-sources .link`, regular weight) and the rule's note under a card or a folded row
+  (the kit's `CompatBadge` note, `.devhub-note`, in the utilities layer because it carries `type-xs`). From 1024 the
+  desktop columns keep v2's 14 (13 for the hints and notes). Labels and meta stay small: spec names, the tables'
+  heads, counts, kickers, «هذا الجهاز».
+- **Research prose through `MixedText`** (the product page's): the notes and highlights isolate their Latin runs and
+  leave brackets and separators to the sentence — «(Notebookcheck، 6 نوفمبر 2026)», «BEE-001(-01)», «PEGI 7 وUSK 6»
+  were scrambled by the plain bidi algorithm. Version titles stay one text (the joiner rule above).
+- **Sources' languages**: «IGN Middle East — شركة Valve تعلن…» and «Saudi Gamer — اللغة العربية قادمة…» showed on the
+  English and Sorani hubs with no `lang`, read with the page's voice. `sourceLang` reads the language from the letters
+  (Arabic, or Sorani with ڕ ڵ ۆ ێ ە; Japanese kana; Korean; Latin = English — every Latin source of the research is;
+  otherwise no claim); `SourceText` draws «publisher — title» as ONE isolate in the title's language and direction,
+  the publisher an isolate of its own inside it, so an English line stays one left-to-right run on an Arabic page and
+  an Arabic one reads publisher first in its own direction on an English page. The product page uses it too.
+
+Measured (census at 390 with every `<details>` open, `…/scratchpad/fb1/work/C-fix-product/`): the hubs' small reading
+runs 26–47 → 10–15, all outside the area (the kit's section-head reason, card meta and `FactList` link; the shell's
+footer and preference notes); language leaks on the en / ckb hubs 0 (the auditor's `langscan.mjs`: every page ok).
+Tests: `tests/devices.test.ts` «the hub, QA fixes (wave C)» (2).
 
 ## Head height (QA fix, 2026-11-12)
 

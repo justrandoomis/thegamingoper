@@ -1,48 +1,56 @@
 {
   "key": "playstation-5--2",
   "view": "hero",
-  "width": 767,
-  "height": 930,
-  "aspect": 0.8247,
+  "width": 1275,
+  "height": 1600,
+  "aspect": 0.7969,
   "variants": {
     "avif": [
       {
         "w": 240,
-        "src": "/products/playstation-5/2-240.046bf011.avif"
+        "src": "/products/playstation-5/2-240.44a66868.avif"
       },
       {
         "w": 480,
-        "src": "/products/playstation-5/2-480.c43f176f.avif"
+        "src": "/products/playstation-5/2-480.3c987c79.avif"
       },
       {
         "w": 720,
-        "src": "/products/playstation-5/2-720.c72d281e.avif"
+        "src": "/products/playstation-5/2-720.f6bf2be6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5/2-960.727e4db7.avif"
       }
     ],
     "webp": [
       {
         "w": 240,
-        "src": "/products/playstation-5/2-240.b03ca16e.webp"
+        "src": "/products/playstation-5/2-240.35f6c3e3.webp"
       },
       {
         "w": 480,
-        "src": "/products/playstation-5/2-480.b80a625d.webp"
+        "src": "/products/playstation-5/2-480.4c22cb5b.webp"
       },
       {
         "w": 720,
-        "src": "/products/playstation-5/2-720.f412a2ce.webp"
+        "src": "/products/playstation-5/2-720.a0c84f21.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/playstation-5/2-960.a9912301.webp"
       }
     ]
   },
-  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoQABQAPxF6tFAsKCUisAgBgCIJZwABJP+REyx3yv7XIAAA/vm7LqR8y2fVPiv1g5DAGNCzz/UZhvT6cZ40VR3VGszEGeK8Oop69mlbjAgCFvDG2lmtf30Dwr2tHz4VhWfa7ZuRejgxto0beDKgAAAA",
-  "dominant": "#1c2025",
-  "transparent": false,
-  "background": "#ffffff",
+  "placeholder": "data:image/webp;base64,UklGRiABAABXRUJQVlA4WAoAAAAQAAAADwAAEwAAQUxQSGUAAAART6AmkiQ1eA4uYnwKPyIC1PM1fhowrbVtyYvXLxL/hDRLf0MSkcgINEZw2YD/mxffIKL/E4DHIk0vIm4uBFcvSMlX4QXujt9UCEpTjVSIjNkhJdExu6feK8OaWz3TYU77buFMAABWUDgglAAAAFAEAJ0BKhAAFAA/EXKwUKwmpKKwCAGAIgllAMDdi4XY4RLfrPfDRfkHdgAA/dFm8VHMleG6lkINn9A4+f1WYXvpY3WsPLoQ4SvBUsFGGqc8kZVPSvUCSldQVbd854161FuBJLjW9SZVgmhIfzyraejzbNAsHrTfy/Eg6vFo1Yv8FP9JT+n34QlOw5ssi9fLF7wGQAA=",
+  "dominant": "#141b22",
+  "transparent": true,
+  "background": null,
   "kind": "angle",
   "credit": "Sony Interactive Entertainment",
   "source": {
-    "url": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-front-recert?wid=2000",
-    "page": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console"
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/playstation-5-digital-edition-with-dualsense-front-product-shot-01-ps5-en-30jul20?$native--t$&fmt=png-alpha&bfc=off",
+    "page": "https://web.archive.org/web/20201202010308/https://www.playstation.com/en-us/ps5/"
   },
-  "input": "63f633d1d3fef7c3"
+  "input": "cd03c24a6209a1dc"
 }

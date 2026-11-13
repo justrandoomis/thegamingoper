@@ -38,7 +38,8 @@
  *
  * Per-image options, decided by looking at the result, live in scripts/products/image-options.json
  * (key → options plus a "why"): cutout false (keep the photo opaque), holes true (cut out closed
- * windows of pure background colour — the inside of a headband), extend true (the object touches
+ * windows of pure background colour — the inside of a headband; or [[x, y], …], shares of the picture:
+ * only the windows at those points — a kickstand's triangle beside white print), extend true (the object touches
  * the frame of a plain canvas: extend the canvas, then cut out), clean true (a transparent source:
  * drop a baked shadow or glow and stray specks), pad (padding share instead of 6%), trim false (an
  * opaque photo keeps its full frame), crop [left, top, right, bottom] (shares of the original cut
@@ -179,7 +180,8 @@ const KEY = /^([a-z0-9]+(?:-[a-z0-9]+)*)--(\d+)$/;
 
 const OPTION_CHECKS = {
   cutout: (v) => v === false,
-  holes: (v) => v === true,
+  // true, or the places of the windows to open: [[x, y], …] as shares of the picture
+  holes: (v) => v === true || (Array.isArray(v) && v.length > 0 && v.every((point) => Array.isArray(point) && point.length === 2 && point.every((s) => typeof s === 'number' && s >= 0 && s <= 1))),
   extend: (v) => v === true,
   clean: (v) => v === true,
   trim: (v) => v === false,
@@ -531,7 +533,8 @@ async function tryFiles(files, kind) {
   await fs.mkdir(out, { recursive: true });
   const options = {};
   if (flags.cutout === 'false') options.cutout = false;
-  if (flags.holes) options.holes = true;
+  // --holes (every closed window) or --holes=x,y;x,y (only the windows at these shares of the picture)
+  if (flags.holes) options.holes = flags.holes === true ? true : String(flags.holes).split(';').map((point) => point.split(',').map(Number));
   if (flags.extend) options.extend = true;
   if (flags.clean) options.clean = true;
   if (flags.trim === 'false') options.trim = false;

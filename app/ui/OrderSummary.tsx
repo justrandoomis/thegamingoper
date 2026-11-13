@@ -1,6 +1,6 @@
 import { useId, useRef, type ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
 import { CURRENCIES } from "~/lib/money";
@@ -37,6 +37,17 @@ import { Status } from "./Tag";
  * Delivery: a known fee before a governorate is chosen is the flat fee ("لكل المحافظات", brief §4: 5,000 IQD to every
  * governorate); `shipping="governorate"` once one is chosen; `"pending"` when no fee is known yet; `"unserved"` when
  * the chosen governorate is not delivered to (the cart service returns `shippingIqd: null` then).
+ *
+ * The arrangement (fix round 2026-11-13, client notes 8 and 12 "more arrangement"): subtotal · the discount · delivery
+ * · «الإجمالي» — nothing with a minus sign after the total. The discount is ONE row «الخصم» in the saving colour with
+ * its icon, or, with `discountParts` (the automatic offer, the coupon, the membership, the redeemed points — the server's
+ * figures), one such row per part in its place: each part's icon, its words and «−amount», never the same money twice.
+ * Parts that do not add up to `discountIqd` are not shown (the single row is). `shippingNote` replaces the line under
+ * «التوصيل» (a waived fee: «مجاني بعضوية ذهبي — كان 5,000 د.ع»). Under the total: `children` (a split payment's parts:
+ * from the wallet, the rest), then the coupon question «لديك رمز خصم؟ ›» (a caret says it opens), then the action.
+ *
+ *   <OrderSummary {...cart} discountParts={[{ key: "coupon", icon: "ticket", label: "رمز الخصم DEMO10", amountIqd: 8250 }]}
+ *                 shippingNote={waiver}> <SplitParts … /> </OrderSummary>
  */
 export type OrderSummaryProps = {
   subtotalIqd: number;
@@ -65,12 +76,30 @@ export type OrderSummaryProps = {
   trust?: ReactNode;
   /** Demo mode: «طلب تجريبي: لن يُشحن الطلب ولن يُحصَّل أي مبلغ.» */
   demo?: boolean;
-  /** Under the rows, before the action. */
+  /** The discount's parts, each a row in the discount's place (before the delivery and the total), in the saving
+   *  colour with its icon. They must add up to `discountIqd`, else the single «الخصم» row is shown. */
+  discountParts?: readonly SummaryDiscountPart[] | null;
+  /** Under «التوصيل», instead of the default line (a fee waived by a membership or an offer, said in words). */
+  shippingNote?: ReactNode;
+  /** Directly under the total, before the coupon question and the action: a split payment's parts. */
   children?: ReactNode;
   className?: string;
 };
 
+/** One part of the discount: its words («رمز الخصم DEMO10», «1,000 نقطة مستبدلة»), its icon, the server's amount. */
+export type SummaryDiscountPart = { key: string; label: ReactNode; amountIqd: number; icon?: IconName };
+
 export type SummaryLine = { id: string; name: string; optionsLabel?: string | null; lineTotalIqd: number; image?: ImageRef | null };
+
+/**
+ * The discount rows to draw (pure; exported for tests): the parts when there are some and they add up to the discount
+ * (whole dinars), else the one «الخصم» row (null) — never both, so no amount is shown twice.
+ */
+export function discountRows(discountIqd: number, parts: readonly SummaryDiscountPart[] | null | undefined): readonly SummaryDiscountPart[] | null {
+  if (!parts || parts.length === 0) return null;
+  if (!parts.every((part) => isIqd(part.amountIqd) && part.amountIqd > 0)) return null;
+  return parts.reduce((sum, part) => sum + part.amountIqd, 0) === discountIqd ? parts : null;
+}
 
 export type SummaryFigures = Pick<OrderSummaryProps, "subtotalIqd" | "discountIqd" | "shippingIqd" | "totalIqd">;
 
@@ -102,6 +131,8 @@ export function OrderSummary({
   action,
   trust,
   demo = false,
+  discountParts,
+  shippingNote,
   children,
   className,
 }: OrderSummaryProps) {
@@ -113,8 +144,19 @@ export function OrderSummary({
   const mode = shipping ?? (shippingIqd === null ? "pending" : "flat");
   const items = typeof count === "number" && Number.isSafeInteger(count) && count > 0 ? t("summary.items", { count, n: f.number(count) }) : null;
   const currency = CURRENCIES.IQD.symbol[f.locale];
+  const parts = discountRows(discountIqd, discountParts);
 
   const amount = (value: number) => (isIqd(value) ? <Price amountIqd={value} size="sm" approx="off" as="span" /> : <Broken />);
+  // a saving: «−8,250 د.ع», the figure first, in the summary's tabular type
+  const minus = (value: number) =>
+    isIqd(value) ? (
+      <span className="price price--sm">
+        <span className="price__num" dir="ltr">−{f.number(value)}</span>
+        <span className="price__cur">{currency}</span>
+      </span>
+    ) : (
+      <Broken />
+    );
 
   return (
     <section aria-labelledby={title === null ? undefined : headingId} aria-busy={pending || undefined} className={cx("summary", className)} data-reconciled={ok ? undefined : "false"}>
@@ -143,19 +185,19 @@ export function OrderSummary({
       ) : null}
       <dl className="summary__rows">
         <Row label={<>{t("summary.subtotal")} {items ? <span className="text-ink-2">{items}</span> : null}</>}>{amount(subtotalIqd)}</Row>
-        {discountIqd !== 0 || coupon ? (
-          <Row label={coupon ? t("summary.coupon", { code: "⁦" + coupon.code + "⁩" }) : t("summary.discount")} note={coupon?.label}>
-            {isIqd(discountIqd) ? (
-              <span className="price price--sm">
-                <span className="price__num" dir="ltr">−{f.number(discountIqd)}</span>
-                <span className="price__cur">{currency}</span>
-              </span>
-            ) : (
-              <Broken />
-            )}
-          </Row>
-        ) : null}
-        <Row label={t("summary.shipping")} note={mode === "flat" ? t("summary.shippingFlat") : mode === "pending" ? t("summary.shippingPending") : null}>
+        {parts
+          ? // each part of the discount in its place, before the delivery and the total (client notes 8 and 12)
+            parts.map((part) => (
+              <Row key={part.key} saving icon={part.icon ?? "tag"} label={part.label}>
+                {minus(part.amountIqd)}
+              </Row>
+            ))
+          : discountIqd !== 0 || coupon ? (
+              <Row saving icon={coupon ? "ticket" : "tag"} label={coupon ? t("summary.coupon", { code: "⁦" + coupon.code + "⁩" }) : t("summary.discount")} note={coupon?.label}>
+                {minus(discountIqd)}
+              </Row>
+            ) : null}
+        <Row label={t("summary.shipping")} note={shippingNote ?? (mode === "flat" ? t("summary.shippingFlat") : mode === "pending" ? t("summary.shippingPending") : null)}>
           {mode === "unserved" ? (
             <Status tone="bad">{t("summary.shippingUnavailable")}</Status>
           ) : shippingIqd === null ? (
@@ -185,13 +227,18 @@ export function OrderSummary({
           {t("summary.updating")}
         </p>
       ) : null}
+      {/* under the total: how it is paid (a split payment's parts), then the coupon question, then the action */}
+      {children}
       {couponField ? (
         <details className="summary__coupon">
-          <summary>{t("buy.couponQ")}</summary>
+          <summary>
+            <span>{t("buy.couponQ")}</span>
+            {/* says it opens (the client's reference: «كود خصم ›»); turns when open */}
+            <Icon name="caret-down" size={18} className="summary__caret" />
+          </summary>
           <div className="pt-1">{couponField}</div>
         </details>
       ) : null}
-      {children}
       {action ? <div className="grid">{action}</div> : null}
       {trust}
       {demo ? <DemoNote variant="line">{t("demo.orderLine")}</DemoNote> : null}
@@ -199,14 +246,21 @@ export function OrderSummary({
   );
 }
 
-function Row({ label, note, children }: { label: ReactNode; note?: ReactNode; children: ReactNode }) {
+function Row({ label, note, saving = false, icon, children }: { label: ReactNode; note?: ReactNode; saving?: boolean; icon?: IconName; children: ReactNode }) {
   return (
-    <div className="summary__row">
+    <div className={cx("summary__row", saving && "summary__row--saving")}>
       <dt className="min-w-0">
-        {label}
+        {icon ? (
+          <span className="summary__label">
+            <Icon name={icon} size={16} className="summary__icon" />
+            <span className="min-w-0">{label}</span>
+          </span>
+        ) : (
+          label
+        )}
         {note ? <span className="block type-xs text-ink-2">{note}</span> : null}
       </dt>
-      <dd className="shrink-0 text-end text-ink">{children}</dd>
+      <dd className={cx("shrink-0 text-end", !saving && "text-ink")}>{children}</dd>
     </div>
   );
 }

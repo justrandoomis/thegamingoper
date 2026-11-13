@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT, type Formatters } from "~/i18n/react";
@@ -10,19 +10,20 @@ import { OrderSummary } from "~/ui/OrderSummary";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
-import { ORDER_STAGES, orderStage, splitLineName } from "../checkout-form";
+import { orderStage, splitLineName } from "../checkout-form";
 import { Adjustments, summaryCoupon, withFlash } from "./Adjustments";
 import { Fact, Typed } from "./Fact";
 import { DigitalCodes } from "./DigitalCodes";
+import { OrderStages } from "./OrderStages";
 import { ProofSection, type JustSent } from "./ProofSection";
 import { TransferDetails } from "./TransferDetails";
 
 /**
  * One order as its shopper sees it — the order status template of Design System v2 §6.11 (v2.1, client round 1: the
  * new order screen), shared by the order page and /track:
- *   · the status rail — the five real stages (استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم), each with its icon in a
- *     circle (reached ones ink, the next ones raised clay), joined by a line that fills up to where the order is (it
- *     draws itself once under full motion; reduced motion: drawn);
+ *   · the status rail (./OrderStages, which the account's order page draws too) — the five real stages (استلمنا · تأكيد
+ *     · تجهيز · في الطريق · تم التسليم), each with its icon in a circle (reached ones ink, the next ones raised clay),
+ *     joined by a line that fills up to where the order is (it draws itself once under full motion; reduced motion: drawn);
  *   · the next step as the kit's Note, its tone by the order's state (cash on delivery: «سنؤكد طلبك قبل تجهيزه. تدفع …
  *     نقداً عند الاستلام.»; a transfer: where to send it, the deadline and the proof uploader, then «بانتظار التحقق»
  *     until a person approves it);
@@ -74,9 +75,6 @@ const NEXT_LOOK: Record<OrderView["status"], { tone: NoteTone; icon: IconName }>
   cancelled: { tone: "neutral", icon: "x-circle" },
   returned: { tone: "neutral", icon: "arrow-counter-clockwise" },
 };
-
-/** Each stage's icon on the status rail. */
-const STAGE_ICON: Record<(typeof ORDER_STAGES)[number], IconName> = { received: "receipt", confirmed: "seal-check", preparing: "package", shipped: "truck", delivered: "house" };
 
 const TIMELINE_ICON: Partial<Record<string, IconName>> = {
   placed: "receipt",
@@ -130,24 +128,7 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
           <H id={`${order.ref}-stages`} className="type-h3 text-ink">
             {t("order.stages.label")}
           </H>
-          <div className="co-progress" style={{ "--progress": stage / (ORDER_STAGES.length - 1) } as CSSProperties}>
-            <span className="co-progress__track" aria-hidden="true">
-              <span className="co-progress__fill" />
-            </span>
-            <ol className="co-stages">
-              {ORDER_STAGES.map((name, index) => {
-                const state = index < stage ? "done" : index === stage ? "current" : "upcoming";
-                return (
-                  <li key={name} className="co-stage" data-state={state} aria-current={state === "current" ? "step" : undefined}>
-                    <span className="co-stage__disc" aria-hidden="true">
-                      <Icon name={STAGE_ICON[name]} size={20} />
-                    </span>
-                    <span className="co-stage__label">{t(`order.stages.${name}`)}</span>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
+          <OrderStages stage={stage} />
         </section>
       ) : null}
 

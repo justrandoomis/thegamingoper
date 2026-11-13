@@ -30,7 +30,8 @@
      Arabic on Android): they stand in while the web fonts load, so the swap does not move layout. */
   --font-display: "Kufam Variable", "Kufam Fallback", "Kufam Fallback Noto", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-text: "IBM Plex Sans Arabic", "Plex Fallback", "Plex Fallback Noto", "Noto Sans Arabic", system-ui, sans-serif;
-  --font-head: var(--font-display); /* the headline face: Kufam in every language (it has every Sorani letter) */
+  --font-head: var(--font-display); /* the headline face: Kufam in Arabic and English; Plex 600 in Sorani (below) */
+  --font-key: var(--font-display); /* key labels: Kufam; Plex 600 in Sorani (below) */
   --w-head: 600; /* the headline weight: Kufam 600, the before's */
   --w-figure: 700; /* prices, release days, KPI numerals: Kufam 700 */
   --ds: 1; /* deprecated: the 1.0 display scale. Constant 1 — v2 never scales sizes per language */
@@ -249,7 +250,7 @@
   --type-xs: 400 var(--fs-xs) / 1.5 var(--font-text);
   --type-xs-strong: 600 var(--fs-xs) / 1.5 var(--font-text);
   --type-tag: 600 var(--fs-tag) / 1.25 var(--font-text);
-  --type-button: 600 var(--fs-button) / 1.25 var(--font-display); /* v2.1: key labels in Kufam (16px ≥ its 15px floor) */
+  --type-button: 600 var(--fs-button) / 1.25 var(--font-key); /* v2.1: key labels in Kufam (16px ≥ its 15px floor); Plex in Sorani */
   --type-button-sm: 600 var(--fs-button-sm) / 1.25 var(--font-text); /* 14px: Plex, under Kufam's floor */
   --type-price: var(--w-figure) var(--price-md) / 1.2 var(--font-display); /* figures only: Kufam in every language */
 
@@ -262,6 +263,12 @@
   --type-label: var(--type-sm-strong);
   --type-caption: var(--type-xs);
   --type-tab: 400 var(--fs-xs) / 1.25 var(--font-text);
+  /* the kit's <Tabs> labels (fix round 2026-11-13, client note 9: the before's section tabs read larger and firmer than
+     v2's 13px 400): 15px Plex 500, the chosen tab 600; size="lg" 16px on a 48px row. --type-tab stays the phone tab
+     bar's small label under its icons */
+  --type-tab-label: 500 15px / 1.4 var(--font-text);
+  --type-tab-label-lg: 500 16px / 1.4 var(--font-text);
+  --tab-ind: 3px;
   /* utility roles (admin, order numbers, ledgers): always with tabular-nums lining-nums */
   --type-data: 400 13px / 1.5 var(--font-text);
   --type-data-sm: 400 13px / 1.5 var(--font-text);
@@ -283,11 +290,14 @@
   --lh-body: 1.55;
   --lh-read: 1.6;
 }
-/* Kurdish Sorani: the same faces as Arabic. Kufam draws every Sorani letter (ڕ ڵ ۆ ێ ە ھ ڤ پ چ ژ گ — its cmap and a
-   shaping run, checked 2026-11-12), so v2's Plex headings for Sorani are not needed; a native reader still reviews the
-   ckb strings before launch (DESIGN.md §14). */
+/* Kurdish Sorani: headings and key labels in Plex 600 (brief G1's default) until a native Sorani reader approves the
+   display face. Kufam's cmap has every Sorani letter (ڕ ڵ ۆ ێ ە ھ ڤ پ چ ژ گ, checked 2026-11-12), but its shapes do not
+   settle it: it draws the final ە — one of the most frequent Sorani letters — as a small detached stroke («یارمـ~تی»,
+   «کێشـ~ لـ~ ئامێرەکـ~تدا», fix round 2026-11-13), where Arabic ه is a clear loop. Figures (prices, day and KPI
+   numerals) stay Kufam: digits only. DESIGN.md §5.5. */
 :lang(ckb) {
-  --font-head: var(--font-display);
+  --font-head: var(--font-text);
+  --font-key: var(--font-text);
 }
 
 /* ───────────────────────────── light theme ───────────────────────────── */
@@ -383,6 +393,9 @@
   --hero-contact: rgb(70 0 10 / 0.35); /* the contact ellipse under the hero product */
   --hero-pool: transparent; /* the cabinet's floor pool (dark only) */
   --tile-sheen: rgb(255 255 255 / 0.14); /* the radial behind a tile's hardware (never behind its text) */
+  /* the compact tile's words' side, a shade deeper (fix round 2026-11-13: white «PlayStation» ≥ 4.5 in the browser) */
+  --tile-words-shade: rgb(0 0 0 / 0.12);
+  --tile-words-shade-mid: rgb(0 0 0 / 0.07);
   --tile-gel-a: 0; /* alpha of a cabinet's platform light (dark only) */
   --tile-cap: var(--clay-cap); /* the tile face: a clay cap in light, the cabinet rim in dark */
   --tile-cast: var(--clay-cast);
@@ -614,6 +627,8 @@
   --hero-contact: rgb(0 0 0 / 0.45);
   --hero-pool: rgb(var(--gel-brand) / 0.36);
   --tile-sheen: rgb(255 255 255 / 0.1);
+  --tile-words-shade: rgb(0 0 0 / 0.12);
+  --tile-words-shade-mid: rgb(0 0 0 / 0.07);
   --tile-gel-a: 0;
   --tile-cap: var(--rim);
   --tile-cast: none;
@@ -772,6 +787,10 @@
   --type-label: 600 12.5px / 1.5 var(--font-text);
   --type-caption: 400 12px / 1.5 var(--font-text);
   --type-tab: 400 12px / 1.4 var(--font-text);
+  /* the admin's tab rows keep their dense look */
+  --type-tab-label: 400 12px / 1.4 var(--font-text);
+  --type-tab-label-lg: 400 13px / 1.4 var(--font-text);
+  --tab-ind: 2px;
   --type-data: 400 13px / 1.5 var(--font-text);
   --type-data-sm: 400 12px / 1.5 var(--font-text);
 }

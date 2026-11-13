@@ -22,12 +22,25 @@
     gap: var(--s-3);
     min-inline-size: 0;
   }
+  /* positioned: the strip paints over the hero's light that spills under it (the hero is its own stacking context) */
   .home-strip {
+    position: relative;
     min-inline-size: 0;
   }
   @media (min-width: 48rem) {
     .home-top {
       gap: var(--s-5);
+    }
+  }
+  /* laptops (lead decision 2): the compact strip sits 12px under the hero's bar, and «تسوّق حسب المنصّة» follows it
+     32px down instead of a full section gap — the top of the platform tiles shows on a 1440 × 900 first screen (they
+     started at 919px, under the fold, behind the 116px tile row and a 72px gap) */
+  @media (min-width: 64rem) {
+    .home-top {
+      gap: var(--s-3);
+    }
+    .home-top + .home-platforms {
+      margin-block-start: calc(var(--s-8) - var(--gap-section));
     }
   }
 
@@ -61,6 +74,26 @@
     transition: opacity 640ms var(--ease-settle);
   }
   .home-hero__light[data-on] {
+    opacity: 1;
+  }
+  /* dark theme (client note 3): the banner's colour spills, wide and low, under the icon strip below the hero, so the
+     strip's glass tiles have that colour to show through (on the plain dark floor they read as flat grey cards). The
+     box starts halfway down the banner, reaches 168px under the bar (the strip: 12px under the bar on laptops, 104 or
+     48px tall) and 12% past the sides; the ellipse ends inside it on every side (68% × 30% at 76%, transparent at 72%
+     of that: no hard line, no edge at the strip's ends). Same crossfade as the banner's light. */
+  .home-hero__spill {
+    display: none;
+  }
+  [data-theme="dark"] .home-hero__spill {
+    --glow-inset: 50% -12% -168px;
+    --glow-size: 68% 30%;
+    --glow-y: 76%;
+    --glow-alpha: var(--glow-a-strong);
+    display: block;
+    opacity: 0;
+    transition: opacity 640ms var(--ease-settle);
+  }
+  [data-theme="dark"] .home-hero__spill[data-on] {
     opacity: 1;
   }
   .home-hero__track {
@@ -311,9 +344,36 @@
     block-size: 100%;
   }
   @media (max-width: 47.99rem) {
-    /* a service banner has no price: its picture stays above the key's row (the white key never covers a white console) */
+    /* a service banner (trade-in, used) fills its banner like the product banners: the title in the top row, the key
+       along the bottom, and the console standing over everything above the key's row at the end — its picture sat 70px
+       wide in the top corner with the lower 40% of the banner empty (browse audit 2026-11-13). The console stops at the
+       key's row: its white key reaches far into the console's column (the used banner's «تصفّح المستعمل» covered the
+       Xbox's white controller when the console took the whole height) */
+    .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__body {
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+    .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__title {
+      grid-row: 1;
+      align-self: start;
+      margin-block-start: 4px;
+    }
+    .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__buy {
+      grid-row: 3;
+      align-self: end;
+      margin-block-start: 6px;
+    }
     .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__media {
-      grid-row: 1 / 4;
+      grid-row: 1 / 3;
+      align-self: stretch;
+      margin-block: -6px 0;
+    }
+    /* the console at the far end of its column, on its floor */
+    .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__shared {
+      place-items: end end;
+    }
+    .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__floor {
+      inset-inline: 18% -6%;
+      inset-block-end: -6%;
     }
   }
   /* the glossy floor under the product: a pale ellipse of the colour's light (the plinth's lit top) with the contact
@@ -343,39 +403,16 @@
     box-shadow: var(--e-disc);
     color: var(--red-ink);
   }
-  /* once the page is live, a banner that is not the one in view shows its colour and its product, not its words — the
-     next banner peeks on phones without a cut line of text — and its words fade in as it becomes the one in view (before
-     JavaScript every banner keeps its words: swiping works without it) */
-  .home-slide :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
-    transition: opacity var(--t-reveal) var(--ease-settle);
-  }
-  .home-hero[data-live] .home-hero__slide:not([data-current]) :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
-    opacity: 0;
-  }
-  /* a banner that arrives (a move, not the first paint): its words rise in one after another, the product settles */
-  .home-hero__slide[data-arrived] :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
-    animation: home-rise var(--t-page) var(--ease-settle) backwards;
-  }
-  .home-hero__slide[data-arrived] .home-slide__title {
-    animation-delay: 40ms;
-  }
-  .home-hero__slide[data-arrived] .home-slide__facts {
-    animation-delay: 80ms;
-  }
-  .home-hero__slide[data-arrived] .home-slide__price {
-    animation-delay: 120ms;
-  }
-  .home-hero__slide[data-arrived] .home-slide__buy {
-    animation-delay: 160ms;
-  }
+  /* The words follow the banner's move, written inline by Hero.tsx as the track scrolls (./view bannerAway,
+     wordsShown): they fade in over the last half of the banner's way in, drifting 60px a banner slower than it (a
+     little parallax against the product's, which drifts 9% of its width faster), while the leaving banner's fade out
+     over the first half of its way out — one crossfade. A banner that is not in view shows its colour and its product
+     (the next one peeks on phones without a cut line of text) and none crosses the screen as an empty band of colour
+     (notes audit 2026-11-13: ~300ms of a blank banner mid-switch). Before JavaScript every banner keeps its words:
+     swiping works without it. No drift under reduced motion or on the lite tier. */
+  /* a banner that arrives (a move, not the first paint): the product settles once it is in view */
   .home-hero__slide[data-arrived] .home-slide__shared {
     animation: home-settle 520ms var(--ease-settle) backwards;
-  }
-  @keyframes home-rise {
-    from {
-      opacity: 0;
-      translate: 0 10px;
-    }
   }
   @keyframes home-settle {
     from {
@@ -383,22 +420,22 @@
       scale: 0.95;
     }
   }
-  /* reduced motion (the OS or the store's switch): the light changes at once, nothing rises or settles (and the hook
-     never plays, so no dot fills) */
+  /* reduced motion (the OS or the store's switch): the moves are instant (the kit's), the light changes at once, the
+     product never settles (the words and the product never drift: Hero.tsx; the hook never plays, so no dot fills) */
   @media (prefers-reduced-motion: reduce) {
     .home-hero__light,
-    .home-slide :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+    .home-hero__spill {
       transition: none;
     }
-    .home-hero__slide[data-arrived] :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy, .home-slide__shared) {
+    .home-hero__slide[data-arrived] .home-slide__shared {
       animation: none;
     }
   }
   [data-motion="reduced"] .home-hero__light,
-  [data-motion="reduced"] .home-slide :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+  [data-motion="reduced"] .home-hero__spill {
     transition: none;
   }
-  [data-motion="reduced"] .home-hero__slide[data-arrived] :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy, .home-slide__shared) {
+  [data-motion="reduced"] .home-hero__slide[data-arrived] .home-slide__shared {
     animation: none;
   }
 
@@ -534,7 +571,11 @@
   /* ───────────────────────────── the icon strip under the hero ─────────────────────────────
    * The shell's glass icon tiles (the categories sheet's own: .shell-itile) in one row: scrolling below 1024 (96px
    * tiles — the longest one-word names, "Controllers", «هێدسێتەکان», «الإكسسوارات», fit on a line of their own; the
-   * next tile peeks at the end), as many columns as there are doors from 1024 (110px and wider). */
+   * next tile peeks at the end). From 1024 (lead decision 2) the same doors are one row of compact clay pills — the
+   * kind icon (20px) beside the name, 48px tall — sharing the row; a language whose names do not fit scrolls it like
+   * the phones' row rather than wrap. Dark theme (client note 3): the tiles and pills are glass — a brighter veil and rim
+   * than the page's cards, the banner's colour spilling under them (.home-hero__spill) and a faint red light behind
+   * each icon. */
   .home-strip__list {
     display: grid;
     grid-auto-flow: column;
@@ -562,12 +603,72 @@
   }
   @media (min-width: 64rem) {
     .home-strip__list {
-      grid-auto-flow: row;
-      grid-template-columns: repeat(var(--count, 8), minmax(0, 1fr));
-      margin-inline: 0;
-      padding: 4px 0 8px;
-      overflow: visible;
+      display: flex;
+      gap: var(--s-2);
+      padding-block: 4px 8px;
     }
+    .home-strip__list > li {
+      flex: 1 0 auto;
+    }
+    .home-strip .shell-itile {
+      flex-direction: row;
+      justify-content: center;
+      gap: var(--s-2);
+      min-block-size: 48px;
+      padding: 0 var(--s-4);
+      border-radius: var(--r-full);
+      background: var(--key-face);
+      box-shadow: var(--e-disc);
+    }
+    .home-strip .shell-itile__ico {
+      block-size: 20px;
+    }
+    .home-strip .shell-itile__ico > svg {
+      inline-size: 20px;
+      block-size: 20px;
+    }
+    .home-strip .shell-itile__name {
+      -webkit-line-clamp: 1;
+      white-space: nowrap;
+    }
+  }
+  /* 1024–1279: a little less air in and between the pills, so the eight still share one row (they ran 29–83px past
+     the row at 1024 in ar / en / ckb) */
+  @media (min-width: 64rem) and (max-width: 79.99rem) {
+    .home-strip__list {
+      gap: 6px;
+    }
+    .home-strip .shell-itile {
+      gap: 6px;
+      padding: 0 var(--s-3);
+    }
+  }
+  /* dark: glass, not the page's flatter cards — the veil 10% → 4% white over the see-through tint, a rim light 18% on
+     top (the theme's composite tokens are declared again here so they read these values); the pills too */
+  [data-theme="dark"] .home-strip {
+    --card-veil: color-mix(in oklab, var(--on-color) 10%, transparent);
+    --card-veil-low: color-mix(in oklab, var(--on-color) 4%, transparent);
+    --card-rim: inset 0 1px 0 color-mix(in oklab, var(--on-color) 18%, transparent), inset 0 0 0 1px color-mix(in oklab, var(--on-color) 6%, transparent);
+    --card-face: linear-gradient(180deg, var(--card-veil) 0%, var(--card-veil-low) 100%), var(--card-tint);
+    --e-surface: var(--card-rim), 0 0 0 1px var(--card-line), var(--e-card);
+  }
+  [data-theme="dark"] .home-strip .shell-itile {
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
+  }
+  /* a faint red light behind each icon, fading out inside its circle */
+  [data-theme="dark"] .home-strip .shell-itile__ico {
+    position: relative;
+    isolation: isolate;
+  }
+  [data-theme="dark"] .home-strip .shell-itile__ico::before {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    z-index: -1;
+    border-radius: var(--r-full);
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--red-ink) 32%, transparent), transparent);
+    pointer-events: none;
   }
 
   /* ───────────────────────────── sections ───────────────────────────── */

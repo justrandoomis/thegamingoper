@@ -102,6 +102,12 @@ npx vitest run tests/admin-channels.test.ts tests/admin-channels-routes.test.ts 
 node scripts/lint-design.mjs app/routes/admin/channels                                                                # 0 findings
 ```
 
+The API test's "wrong key" (fix 2026-11-13): it replaced the key's last character with «A», but the 43rd base64url
+character of 32 random bytes is one of 16, so one key in 16 already ended in «A» and the "wrong" key was the key
+itself — the API rightly answered 200 ("expected 401, got 200" in full runs, never an order or load effect; 6.22 % of
+200,000 sampled keys). The wrong key now changes the last character whatever it is (and the test asserts it differs);
+the 401 check is unchanged. 24 repeated runs: 24 passed.
+
 Browser (Chromium, puppeteer): every page at 390 and 1440, light and dark, ar and en; empty / filled / validation /
 confirm dialog / 403 states — scripts and shots in the module's scratch folder (`work/admin-channels/`, the review's in
 `work/admin-channels/review/`: the branch-limited and suspended-key states, the provider address refusal, the printed

@@ -223,6 +223,21 @@ const pairs = [
     ]),
   ]),
   ...PLATFORMS.map((p) => ["dark", "--on-color", `--plat-${p}`, TEXT, `tile words on ${p} (flat) — dark, v2.1: tiles stay vivid`]),
+  // <Status pill> (fix round 2026-11-13): the state's words on its tint, the tint over a card (paper) in both themes
+  ...["light", "dark"].flatMap((theme) =>
+    [
+      ["--ok", "--ok-tint"],
+      ["--warn", "--warn-tint"],
+      ["--info", "--info-tint"],
+      ["--danger", "--danger-tint"],
+      ["--ink-2", "--niche"],
+    ].map(([fg, tint]) => [theme, fg, { over: tint, on: "--paper" }, TEXT, "a state in a tinted pill (Status pill)"]),
+  ),
+  // the white on-band key on a platform's band says its words in the band's deep colour (fix round 2026-11-13)
+  ...["light", "dark"].flatMap((theme) => PLATFORMS.map((p) => [theme, `--plat-${p}-deep`, "--on-band-face", TEXT, `the on-band key's label on a ${p} band`])),
+  // the compact tile (404, a missing product): its words' side is a shade deeper and the sheen keeps to the hardware
+  // (fix round 2026-11-13: white «PlayStation» was 4.40 at the 5th percentile in the browser) — the words' side, both themes
+  ...["light", "dark"].flatMap((theme) => PLATFORMS.map((p) => [theme, "--on-color", { over: "--tile-words-shade-mid", on: `--plat-${p}` }, TEXT, `compact tile words on ${p} (the deepened words' side)`])),
   // frosted panels (menus, sheets): the worst backdrop
   ["light", "--ink", { over: "--glass-panel", on: black }, TEXT, "ink on a light glass panel over black (worst case)"],
   ["light", "--ink-2", { over: "--glass-panel", on: black }, TEXT, "ink-2 on a light glass panel over black (worst case)"],

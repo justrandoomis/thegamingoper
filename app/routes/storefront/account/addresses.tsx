@@ -215,14 +215,16 @@ function AddressCard({ address, onDelete }: { address: AddressView; onDelete: ()
     <article className="acct-card flex flex-col" aria-busy={busy || undefined}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <h2 id={`address-${address.id}-title`} tabIndex={-1} className="acct-card__title">
-          {label}
+          {address.label ? <bdi dir="auto">{address.label}</bdi> : label}
         </h2>
         {address.isDefault ? <Tag kind="ok">{t("addresses.isDefault")}</Tag> : null}
       </div>
+      {/* what the customer typed in its own direction (`<bdi dir="auto">`): an Arabic address on /en keeps its words and
+          punctuation in order (QA 2026-11-13, as the checkout's Typed) */}
       <div className="grid gap-1">
         {address.recipientName || address.phoneE164 ? (
           <p className="type-sm-strong text-ink">
-            {address.recipientName}
+            {address.recipientName ? <bdi dir="auto">{address.recipientName}</bdi> : null}
             {address.recipientName && address.phoneE164 ? " · " : null}
             {address.phoneE164 ? (
               <bdi dir="ltr" className="nums">
@@ -231,9 +233,17 @@ function AddressCard({ address, onDelete }: { address: AddressView; onDelete: ()
             ) : null}
           </p>
         ) : null}
-        <p className="type-sm text-ink-2">{[address.governorateName, address.districtName, address.areaText].filter(Boolean).join("، ")}</p>
-        <p className="type-sm text-ink-2">{address.addressText}</p>
-        {address.notes ? <p className="type-xs text-ink-2">{address.notes}</p> : null}
+        <p className="type-sm text-ink-2">
+          <bdi dir="auto">{[address.governorateName, address.districtName, address.areaText].filter(Boolean).join(f.locale === "en" ? ", " : "، ")}</bdi>
+        </p>
+        <p className="type-sm text-ink-2">
+          <bdi dir="auto">{address.addressText}</bdi>
+        </p>
+        {address.notes ? (
+          <p className="type-xs text-ink-2">
+            <bdi dir="auto">{address.notes}</bdi>
+          </p>
+        ) : null}
       </div>
       <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-line pt-3">
         <Key as={LocaleLink} to={`/account/addresses?edit=${address.id}`} size="sm" icon="pencil-simple" aria-label={t("addresses.editNamed", { label })}>

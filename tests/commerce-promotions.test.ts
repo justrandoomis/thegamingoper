@@ -50,6 +50,7 @@ import { addToCart, getCartView, optionValueOf } from "~/server/services/cart.se
 import { releaseSoldSerialStatements } from "~/server/services/inventory/stock.server";
 import { revealOrderCode } from "~/server/services/orders/digital.server";
 import { getOrderByAccessToken, transitionOrder } from "~/server/services/orders/manage.server";
+import { LOYALTY_REASON_CODES, loyaltyReasonText, readLoyaltyReason, type LoyaltyReason } from "~/server/services/orders/loyalty-reasons";
 import { CheckoutError, placeOrder, type CheckoutInput, type CheckoutWho } from "~/server/services/orders/place.server";
 import { applyDiscounts, flashLineCap, restoredPointsFor } from "~/server/services/orders/promotions";
 import { submitPaymentProof, verifyPayment } from "~/server/services/payments/payments.server";
@@ -661,5 +662,55 @@ describe("core odds and ends", () => {
     await setSetting(t.db, systemActor("test"), "checkout.reservation_minutes", 30, "test: back to the default", NOW);
     await setSetting(t.db, systemActor("test"), "checkout.transfer_proof_hours", 24, "test: back to the default", NOW);
     void stockLevels;
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── the points ledger's reasons (client round 1, wave C)
+
+describe("the points ledger's reasons — codes the admin says in its own language, never an English word on an Arabic page", () => {
+  test("every reason the store writes itself reads back as a code with its values; history written since 2026-11-12 reads the same; a person's words stay as typed", () => {
+    const written: LoyaltyReason[] = [
+      { code: "order", ref: "TT-5TQZ9GXP" },
+      { code: "cancelled", ref: "TT-5TQZ9GXP" },
+      { code: "returned", ref: "TT-XK9DHM64" },
+      { code: "refund", ref: "TT-3XSWR55E", refundId: "rfd_01JD3M8Z6Q4V7T2K9R5X0BWCEA" },
+      { code: "expired", date: "2026-11-12" },
+      { code: "referral", referralCode: "LAYLA7Q2" },
+    ];
+    for (const reason of written) expect(readLoyaltyReason(loyaltyReasonText(reason)), reason.code).toEqual(reason);
+    // rows already in the ledger (the stored text is the same format — nothing is rewritten)
+    expect(readLoyaltyReason("TT-5TQZ9GXP · cancelled")).toEqual({ code: "cancelled", ref: "TT-5TQZ9GXP" });
+    expect(readLoyaltyReason("TT-5TQZ9GXP · returned")).toEqual({ code: "returned", ref: "TT-5TQZ9GXP" });
+    expect(readLoyaltyReason("TT-3XSWR55E · refund rfd_01JD3M8Z6Q4V7T2K9R5X0BWCEA")).toEqual({ code: "refund", ref: "TT-3XSWR55E", refundId: "rfd_01JD3M8Z6Q4V7T2K9R5X0BWCEA" });
+    expect(readLoyaltyReason("TT-XK9DHM64")).toEqual({ code: "order", ref: "TT-XK9DHM64" });
+    expect(readLoyaltyReason("expired by 2026-11-12")).toEqual({ code: "expired", date: "2026-11-12" });
+    expect(readLoyaltyReason("referral LAYLA7Q2")).toEqual({ code: "referral", referralCode: "LAYLA7Q2" });
+    // the words of a person (a manual adjustment, a test row) are not the store's: shown as typed
+    for (const typed of ["منحة نقاط تجريبية لعرض الصفحة", "test", "compensation for TT-5TQZ9GXP", "TT-5TQZ9GXP cancelled by phone", "", null, undefined]) expect(readLoyaltyReason(typed), String(typed)).toBeNull();
+    // every code the reader returns has its sentence key in the admin (points.reason.<code>)
+    expect([...LOYALTY_REASON_CODES].sort()).toEqual(["cancelled", "expired", "order", "referral", "refund", "returned"]);
+  });
+
+  test("the rows the checkout writes — a redemption, the points a cancellation gives back, a refund's share — read back as their codes", async () => {
+    const product = await make.product({ priceIqd: 100_000, stock: 5 });
+    const customerId = await make.customer();
+    await earnPoints(customerId, 1_000);
+    await creditWallet(t.db, staff(), { customerId, amountIqd: 400_000, kind: "adjustment", reason: "اختبار", idempotencyKey: `test:${randomToken()}` }, NOW);
+    const reasonOf = async (key: string) => readLoyaltyReason((await t.db.select({ reason: loyaltyLedger.reason }).from(loyaltyLedger).where(eq(loyaltyLedger.idempotencyKey, key)).get())?.reason);
+
+    // redeemed, then cancelled: the points come back with the reason "cancelled"
+    const first = await cartWith([{ variantId: product.variantId, qty: 1 }], customerId);
+    const cancelled = await placeOrder(t.db, who(first, customerId), await input(first, { redeemPoints: 500 }, customerId), NOW);
+    expect(await reasonOf(`loyalty:redeem:${cancelled.orderId}`)).toEqual({ code: "order", ref: cancelled.ref });
+    await transitionOrder(t.db, staff(), cancelled.orderId, "cancelled", { reason: "طلب الزبون" }, NOW + HOUR);
+    expect(await reasonOf(`loyalty:redeem-return:${cancelled.orderId}`)).toEqual({ code: "cancelled", ref: cancelled.ref });
+
+    // redeemed on a wallet-paid order, half refunded: the refund's share comes back with the reason "refund"
+    const second = await cartWith([{ variantId: product.variantId, qty: 1 }], customerId);
+    const refunded = await placeOrder(t.db, who(second, customerId), await input(second, { redeemPoints: 1_000, paymentMethod: "wallet" }, customerId), NOW);
+    const payment = await t.db.select().from(payments).where(eq(payments.orderId, refunded.orderId)).get();
+    const half = await createRefund(t.db, staff(), { orderId: refunded.orderId, paymentId: payment!.id, amountIqd: 47_500, method: "wallet", reason: "نصف الطلب" }, NOW);
+    await approveRefund(t.db, staff(otherStaffId), half.refundId, { approve: true }, NOW);
+    expect(await reasonOf(`loyalty:redeem-return:${half.refundId}`)).toEqual({ code: "refund", ref: refunded.ref, refundId: half.refundId });
   });
 });

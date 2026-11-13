@@ -486,12 +486,14 @@ export type ReviewStepProps = StepProps & {
   /** «تحقق» on the referral code: the page asks the server about it (priced again with the code). */
   onReferralCheck?: () => void;
   referralPending?: boolean;
+  /** A split payment (the wallet balance, below the total, pays first): what the wallet pays and what is left. */
+  split?: { walletIqd: number; restIqd: number } | null;
 };
 
 /** Each payment method's icon (its words come from the page; never a brand logo). */
 const METHOD_ICON: Record<string, IconName> = { cod: "money", wallet: "wallet", bank_transfer: "credit-card", zaincash: "device-mobile" };
 
-export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice, editor, foot, onReferralCheck, referralPending, headingLevel = 2 }: ReviewStepProps) {
+export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice, editor, foot, onReferralCheck, referralPending, split = null, headingLevel = 2 }: ReviewStepProps) {
   const t = useT("checkout");
   const f = useFormat();
   const governorate = data.governorates.find((g) => g.id === draft.governorateId)?.name ?? "";
@@ -542,14 +544,32 @@ export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice
       </ReviewBlock>
 
       <ReviewBlock id="co-review-payment" icon="wallet" title={t("review.payment")} editTo="/checkout?step=payment" editLabel={t("review.editPayment")} level={headingLevel} className="co-js">
-        <dl className="co-facts">
-          <Fact icon={METHOD_ICON[method] ?? "wallet"} label={t("payment.legend")}>
-            <span className="grid gap-0.5">
-              <span className="font-semibold">{method ? t(`payment.${methodKey(method)}`) : "—"}</span>
-              {method === "cod" ? <span className="type-sm text-ink-2">{t("payment.codHint")}</span> : null}
-            </span>
-          </Fact>
-        </dl>
+        {split ? (
+          // a split payment (QA 2026-11-13: the card said only «الدفع عند الاستلام» over a total the wallet mostly paid):
+          // what the wallet pays, then what is left — its amount, the method and how it is paid
+          <dl className="co-facts">
+            <Fact icon="wallet" label={t("split.fromWallet")}>
+              <bdi className="nums font-semibold">{f.iqd(split.walletIqd)}</bdi>
+            </Fact>
+            <Fact icon={METHOD_ICON[method] ?? "wallet"} label={t("split.rest")}>
+              <span className="grid gap-0.5">
+                <span>
+                  <bdi className="nums font-semibold">{f.iqd(split.restIqd)}</bdi> · <span className="font-semibold">{method ? t(`payment.${methodKey(method)}`) : "—"}</span>
+                </span>
+                {method === "cod" ? <span className="type-sm text-ink-2">{t("split.restCod")}</span> : isTransferMethod(method) ? <span className="type-sm text-ink-2">{t("split.restTransfer")}</span> : null}
+              </span>
+            </Fact>
+          </dl>
+        ) : (
+          <dl className="co-facts">
+            <Fact icon={METHOD_ICON[method] ?? "wallet"} label={t("payment.legend")}>
+              <span className="grid gap-0.5">
+                <span className="font-semibold">{method ? t(`payment.${methodKey(method)}`) : "—"}</span>
+                {method === "cod" ? <span className="type-sm text-ink-2">{t("payment.codHint")}</span> : null}
+              </span>
+            </Fact>
+          </dl>
+        )}
         {isTransferMethod(method) ? (
           <Note variant="flat" tone="info" icon="hourglass" title={t("payment.transferRule")}>
             {t("payment.transferHold", { hours: f.number(data.proofHours) })}

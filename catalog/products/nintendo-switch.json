@@ -119,7 +119,7 @@
   "variants": [
     {
       "sku": "NSW-NEON",
-      "title": { "ar": "يدا Joy-Con أزرق نيون / أحمر نيون", "en": "Neon Blue / Neon Red Joy-Con", "ckb": "Joy-Con ی شینی نیۆن / سووری نیۆن" },
+      "title": { "ar": "يدا Joy‑Con أزرق نيون / أحمر نيون", "en": "Neon Blue / Neon Red Joy‑Con", "ckb": "Joy‑Con ی شینی نیۆن / سووری نیۆن" },
       "options": { "edition": "Standard", "storage": "32GB", "color": "Neon Blue / Neon Red" },
       "modelNumber": "HAC-001(-01)",
       "barcodes": ["0045496883775"],
@@ -129,7 +129,7 @@
     },
     {
       "sku": "NSW-GRAY",
-      "title": { "ar": "يدا Joy-Con رمادي", "en": "Gray Joy-Con", "ckb": "Joy-Con ی خۆڵەمێشی" },
+      "title": { "ar": "يدا Joy‑Con رمادي", "en": "Gray Joy‑Con", "ckb": "Joy‑Con ی خۆڵەمێشی" },
       "options": { "edition": "Standard", "storage": "32GB", "color": "Gray" },
       "modelNumber": "HAC-001(-01)",
       "barcodes": ["0045496882167"],

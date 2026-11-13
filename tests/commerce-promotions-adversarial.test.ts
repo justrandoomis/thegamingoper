@@ -23,7 +23,10 @@
  *   · an order paid entirely by points and free delivery (total 0) by cash on delivery stayed "cash due" for ever —
  *     nothing could ever be collected, its digital code never came                    orders/place.server.ts
  *
- * Real local D1 (tests/helpers/db.ts).
+ * Real local D1 (tests/helpers/db.ts). Every test walks whole orders through the database (cart → order → delivery,
+ * refunds), so it takes seconds alone and several times that on a busy machine (the full suite beside other work): the
+ * suites run with a budget of BUDGET per test and "28 seeded carts" with its own (client round 1, wave C — they timed out
+ * at the 30-second default while the machine was busy). A timeout here is never a finding; the assertions are.
  */
 import { and, eq, sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, describe, expect, test } from "vitest";
@@ -55,7 +58,7 @@ import {
   walletLedger,
 } from "~/server/db/schema";
 import { districtId, governorateId } from "~/server/db/seed/reference";
-import { runBatch } from "~/server/db/tx.server";
+import { runBatch, type BatchStatement } from "~/server/db/tx.server";
 import { toAppError, type AppError } from "~/server/errors";
 import type { Permission } from "~/server/permissions";
 import { setSetting } from "~/server/settings.server";
@@ -76,6 +79,10 @@ const NOW = TEST_NOW;
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
 const BAGHDAD = governorateId("baghdad");
+/** Per-test budget of every suite here (file header): about 3–5× what a test takes on a busy machine. */
+const BUDGET = { timeout: 90_000 } as const;
+/** "28 seeded carts": 28 orders, a quarter of them delivered and posted — ~15 s alone. */
+const SEEDED_CARTS_BUDGET = { timeout: 180_000 } as const;
 
 let t: TestDb;
 let make: Fixtures;
@@ -161,6 +168,11 @@ function who(cartToken: string | null, customerId: string | null = null): Checko
 
 async function input(cartToken: string, overrides: Partial<CheckoutInput> = {}, customerId: string | null = null): Promise<CheckoutInput> {
   const view = await getCartView(t.db, { cartToken, customerId, locale: "en", governorateId: BAGHDAD, redeemPoints: overrides.redeemPoints ?? 0, referralCode: overrides.referralCode ?? null }, NOW);
+  return checkoutInput(view.totalIqd, overrides);
+}
+
+/** The checkout's form for the total the review showed (a test that has just read that review passes its total). */
+function checkoutInput(expectedTotalIqd: number, overrides: Partial<CheckoutInput> = {}): CheckoutInput {
   return {
     idempotencyKey: randomToken(),
     phone: make.phone(),
@@ -170,7 +182,7 @@ async function input(cartToken: string, overrides: Partial<CheckoutInput> = {}, 
     addressText: "شارع 62، قرب الجسر المعلق، عمارة 4",
     marketingConsent: false,
     paymentMethod: "cod",
-    expectedTotalIqd: view.totalIqd,
+    expectedTotalIqd,
     ...overrides,
   };
 }
@@ -236,7 +248,7 @@ async function refundAndApprove(orderId: string, paymentId: string, amountIqd: n
 
 // ───────────────────────────────────────────────────────────────── totals: every discount adds up
 
-describe("totals — every discount, the points, the flash price and the delivery waiver add up to what is charged and posted", () => {
+describe("totals — every discount, the points, the flash price and the delivery waiver add up to what is charged and posted", BUDGET, () => {
   afterEach(async () => {
     await t.db.update(promotions).set({ isActive: false });
   });
@@ -294,7 +306,7 @@ describe("totals — every discount, the points, the flash price and the deliver
 
 // ───────────────────────────────────────────────────────────────── refunds after a redemption
 
-describe("refunds after points — never more back than the share, the last one gives back the rest, exactly once", () => {
+describe("refunds after points — never more back than the share, the last one gives back the rest, exactly once", BUDGET, () => {
   test("a refund of the wallet part of a split order while its cash is still to collect gives back only that refund's share of the points, and the cash can still be recorded", async () => {
     const customerId = await make.customer();
     await earnPoints(customerId, 1_000);
@@ -409,7 +421,7 @@ describe("refunds after points — never more back than the share, the last one 
 
 // ───────────────────────────────────────────────────────────────── order edits after a discount
 
-describe("order edits after a discount — never a discount the goods left do not earn, and the order page adds up", () => {
+describe("order edits after a discount — never a discount the goods left do not earn, and the order page adds up", BUDGET, () => {
   afterEach(async () => {
     await t.db.update(promotions).set({ isActive: false });
   });
@@ -481,7 +493,7 @@ describe("order edits after a discount — never a discount the goods left do no
 
 // ───────────────────────────────────────────────────────────────── races just before the write
 
-describe("races just before the write batch — a second request between a service's read and its write", () => {
+describe("races just before the write batch — a second request between a service's read and its write", BUDGET, () => {
   test("one referral code typed for the same number in two tabs at once: one order records it, the other is refused (referral_phone_used); the code counts one use", async () => {
     const referrer = await make.customer();
     const code = await issueReferralCode(t.db, { kind: "customer", id: referrer }, { customerId: referrer }, NOW);
@@ -539,12 +551,12 @@ describe("races just before the write batch — a second request between a servi
 
 // ───────────────────────────────────────────────────────────────── totals, at random
 
-describe("totals at random — whatever the mix of offers, the order, its record and its postings agree", () => {
+describe("totals at random — whatever the mix of offers, the order, its record and its postings agree", BUDGET, () => {
   afterEach(async () => {
     await t.db.update(promotions).set({ isActive: false });
   });
 
-  test("28 seeded carts with flash prices, stackable and single offers, free delivery with caps, coupons, members, points", async () => {
+  test("28 seeded carts with flash prices, stackable and single offers, free delivery with caps, coupons, members, points", SEEDED_CARTS_BUDGET, async () => {
     // mulberry32: the same carts on every run
     let seed = 0x7a3c_91d5;
     const rand = () => {
@@ -556,15 +568,17 @@ describe("totals at random — whatever the mix of offers, the order, its record
     const between = (low: number, high: number) => low + Math.floor(rand() * (high - low + 1));
     const sum = (list: { amountIqd: number }[]) => list.reduce((total, entry) => total + entry.amountIqd, 0);
     for (let round = 0; round < 28; round++) {
-      await t.db.update(promotions).set({ isActive: false });
       const lines = await Promise.all(Array.from({ length: between(1, 3) }, async () => ({ product: await make.product({ kind: "headset", priceIqd: between(7_350, 487_650), stock: 20 }), qty: between(1, 3) })));
       const first = lines[0]!;
       const sale = rand() < 0.5 ? await flashSale(first.product.variantId, { salePriceIqd: first.product.priceIqd - between(1, Math.floor(first.product.priceIqd / 3)), qtyLimit: rand() < 0.5 ? null : between(1, 5) }) : null;
+      // the last round's offers off and this round's on, in ONE batch (the same draws, in the same order, as one write each)
+      const offers: BatchStatement[] = [t.db.update(promotions).set({ isActive: false })];
       const offer = (values: Partial<typeof promotions.$inferInsert> & Pick<typeof promotions.$inferInsert, "kind">) =>
-        t.db.insert(promotions).values({ id: newId("prm"), name: { ar: "عرض", en: "Offer" }, isActive: true, createdAt: NOW - DAY, updatedAt: NOW - DAY, priority: between(0, 5), stackable: true, scope: { productKinds: ["headset"] }, ...values });
-      if (rand() < 0.6) await offer({ kind: "percent", value: between(100, 1_500), stackable: true });
-      if (rand() < 0.4) await offer({ kind: "fixed", value: between(1_000, 60_000), stackable: false });
-      if (rand() < 0.3) await offer({ kind: "free_shipping", value: null, maxDiscountIqd: rand() < 0.5 ? null : between(1_000, 5_000) });
+        offers.push(t.db.insert(promotions).values({ id: newId("prm"), name: { ar: "عرض", en: "Offer" }, isActive: true, createdAt: NOW - DAY, updatedAt: NOW - DAY, priority: between(0, 5), stackable: true, scope: { productKinds: ["headset"] }, ...values }));
+      if (rand() < 0.6) offer({ kind: "percent", value: between(100, 1_500), stackable: true });
+      if (rand() < 0.4) offer({ kind: "fixed", value: between(1_000, 60_000), stackable: false });
+      if (rand() < 0.3) offer({ kind: "free_shipping", value: null, maxDiscountIqd: rand() < 0.5 ? null : between(1_000, 5_000) });
+      await runBatch(t.db, offers);
       const customerId = await make.customer();
       if (rand() < 0.5) await member(customerId, { discountBps: between(100, 3_000), freeShipping: rand() < 0.5 });
       const balance = rand() < 0.6 ? between(1, 6_000) : 0;
@@ -587,12 +601,21 @@ describe("totals at random — whatever the mix of offers, the order, its record
       expect(view.discounts.every((entry) => entry.amountIqd > 0), label).toBe(true);
       expect(view.discountIqd, label).toBeLessThanOrEqual(view.subtotalIqd);
 
-      const placed = await placeOrder(t.db, who(token, customerId), await input(token, { redeemPoints: redeem }, customerId), NOW);
-      const order = await orderOf(placed.orderId);
+      // ordered for the total the review above showed (that read IS the review: the same cart, points and governorate)
+      const placed = await placeOrder(t.db, who(token, customerId), checkoutInput(view.totalIqd, { redeemPoints: redeem }), NOW);
+      // everything the order wrote, read at once
+      const [order, items, recordRow, sold, redeemRow, balanceAfter, redemption] = await Promise.all([
+        orderOf(placed.orderId),
+        t.db.select().from(orderItems).where(eq(orderItems.orderId, placed.orderId)),
+        t.db.select().from(orderEvents).where(and(eq(orderEvents.orderId, placed.orderId), eq(orderEvents.kind, "promotions"))).get(),
+        sale ? qtySold(sale.itemId) : Promise.resolve(undefined),
+        t.db.select().from(loyaltyLedger).where(eq(loyaltyLedger.idempotencyKey, `loyalty:redeem:${placed.orderId}`)).get(),
+        points(customerId),
+        t.db.select().from(couponRedemptions).where(eq(couponRedemptions.orderId, placed.orderId)).get(),
+      ]);
       expect(order, label).toMatchObject({ subtotalIqd: view.subtotalIqd, discountIqd: view.discountIqd, shippingIqd: view.shippingIqd ?? 0, totalIqd: view.totalIqd });
-      const items = await t.db.select().from(orderItems).where(eq(orderItems.orderId, placed.orderId));
       expect(items.reduce((total, item) => total + item.totalIqd, 0), label).toBe(order.subtotalIqd);
-      const record = (await t.db.select().from(orderEvents).where(and(eq(orderEvents.orderId, placed.orderId), eq(orderEvents.kind, "promotions"))).get())?.data as
+      const record = recordRow?.data as
         | { discounts: { kind: string; amountIqd: number; points?: number }[]; shipping: { feeIqd: number; waivedIqd: number } | null; flash: { units: number; salePriceIqd: number; orderItemId: string }[] }
         | undefined;
       expect(sum(record?.discounts ?? []), label).toBe(order.discountIqd);
@@ -601,13 +624,12 @@ describe("totals at random — whatever the mix of offers, the order, its record
         const item = items.find((entry) => entry.id === claim.orderItemId);
         expect(item && [item.qty, item.unitPriceIqd], label).toEqual([claim.units, claim.salePriceIqd]);
       }
-      if (sale) expect(await qtySold(sale.itemId), label).toBe((record?.flash ?? []).reduce((total, claim) => total + claim.units, 0));
+      if (sale) expect(sold, label).toBe((record?.flash ?? []).reduce((total, claim) => total + claim.units, 0));
       const pointsLine = record?.discounts.find((entry) => entry.kind === "points");
-      const redeemRow = await t.db.select().from(loyaltyLedger).where(eq(loyaltyLedger.idempotencyKey, `loyalty:redeem:${placed.orderId}`)).get();
       expect(redeemRow?.points ?? 0, label).toBe(pointsLine?.points ? -pointsLine.points : 0);
-      expect(await points(customerId), label).toBe(balance - (pointsLine?.points ?? 0));
+      expect(balanceAfter, label).toBe(balance - (pointsLine?.points ?? 0));
       const couponLine = record?.discounts.find((entry) => entry.kind === "coupon");
-      expect((await t.db.select().from(couponRedemptions).where(eq(couponRedemptions.orderId, placed.orderId)).get())?.amountIqd ?? 0, label).toBe(couponLine?.amountIqd ?? 0);
+      expect(redemption?.amountIqd ?? 0, label).toBe(couponLine?.amountIqd ?? 0);
 
       if (round % 4 === 0 && order.totalIqd > 0) {
         // delivered and collected: the books carry the same numbers, balanced
@@ -627,7 +649,7 @@ describe("totals at random — whatever the mix of offers, the order, its record
 
 // ───────────────────────────────────────────────────────────────── digital codes
 
-describe("digital codes — shown only for what stays paid, revoked for what is refunded, never the wrong one", () => {
+describe("digital codes — shown only for what stays paid, revoked for what is refunded, never the wrong one", BUDGET, () => {
   test("a cancelled order's codes are not revealed while its refund waits", async () => {
     const customerId = await make.customer();
     await topUp(customerId, 100_000);
@@ -687,7 +709,7 @@ describe("digital codes — shown only for what stays paid, revoked for what is 
 
 // ───────────────────────────────────────────────────────────────── demo rows and real money
 
-describe("demo rows never touch real money", () => {
+describe("demo rows never touch real money", BUDGET, () => {
   test("a demo coupon never discounts real goods (demo goods still take it)", async () => {
     const code = `DEMOX${randomToken(5).toUpperCase().replace(/[^A-Z0-9]/g, "X")}`;
     await t.db.insert(coupons).values({ id: newId("cpn"), code, kind: "percent", value: 1_000, isActive: true, isDemo: true, createdAt: NOW - DAY });
@@ -724,7 +746,7 @@ describe("demo rows never touch real money", () => {
 
 // ───────────────────────────────────────────────────────────────── the wallet ledger
 
-describe("the wallet ledger — money goes only to a wallet that can hold it", () => {
+describe("the wallet ledger — money goes only to a wallet that can hold it", BUDGET, () => {
   test("a refund is never issued into the wallet of an erased customer (staff refund in cash instead)", async () => {
     const customerId = await make.customer();
     // exactly the order's 75,000: the wallet is empty afterwards (module 07 erases no account holding money)
@@ -752,7 +774,7 @@ describe("the wallet ledger — money goes only to a wallet that can hold it", (
 
 // ───────────────────────────────────────────────────────────────── a total of zero
 
-describe("an order paid entirely by points and free delivery", () => {
+describe("an order paid entirely by points and free delivery", BUDGET, () => {
   test("cash on delivery with nothing to pay: the order is paid when placed (nothing to collect) and its digital code is delivered", async () => {
     const customerId = await make.customer();
     await member(customerId, { freeShipping: true });

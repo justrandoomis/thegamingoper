@@ -6,11 +6,12 @@ import { defineMessages } from "../translate";
  *
  * Voice (DESIGN.md §11, Design System v2 §9): plain, specific, active; no promises the store cannot keep — no call or
  * contact promise anywhere (a preferred time is a preference, a description is never a diagnosis, nothing is "sent" by
- * SMS: no provider). One term per concept: «مركز الدعم» (the document title — what the header, the footer and the home
- * call the page), «الدعم» (navigation), «تحدّث مع موظف» / "Talk to a person", «رقم الموبايل». Client feedback round 1
- * (note 9: the before's support page wins) brought back the before's words ON the support pages: the section tabs
- * «مركز المساعدة · مساعد الصيانة · احجز صيانة · تابع طلب» and the h1 «الدعم والمساعدة» (the glossary row in
- * docs/DESIGN.md is the lead's to settle). The guides are «أدلة طمطم» / "TamTam's guides" — never «المعتمدة» /
+ * SMS: no provider). One term per concept: «مركز الدعم» / "Support centre" / «ناوەندی پشتگیری» is the place's name
+ * everywhere — the document title, the first section tab, the header, the footer and the home; «الدعم» (navigation),
+ * «تحدّث مع موظف» / "Talk to a person", «رقم الموبايل». Client feedback round 1 (note 9: the before's support page wins)
+ * brought back the before's tabs «مركز الدعم · مساعد الصيانة · احجز صيانة · تابع طلب» and the before's h1
+ * «الدعم والمساعدة» — the one place «المساعدة» stays (the lead's decision; docs/DESIGN.md's glossary records the
+ * exception). The guides are «أدلة طمطم» / "TamTam's guides" — never «المعتمدة» /
  * "approved" / "verified" while no store technician has reviewed them (each page says so once: help.demo,
  * assistant.demo, article.notReviewed). Service error codes are worded by the "errors" namespace;
  * `fieldErrors.<field>.<code>` are this area's more specific sentences for its own fields.
@@ -20,7 +21,7 @@ export default defineMessages({
   ar: {
     nav: {
       label: "أقسام الدعم",
-      help: "مركز المساعدة",
+      help: "مركز الدعم",
       assistant: "مساعد الصيانة",
       repair: "احجز صيانة",
       status: "تابع طلب",
@@ -64,7 +65,8 @@ export default defineMessages({
         filter: "أدلة أي جهاز؟",
         filterAll: "كل الأجهزة",
         allDevices: "ابحث في كل الأجهزة",
-        offline: "لا يوجد اتصال. ما كتبته باقٍ هنا؛ ابحث أو افتح الدليل عند عودة الاتصال.",
+        // the reason beside the flat key only — the shell's banner already says what was typed stays (round-1 fixes)
+        offline: "تبحث وتفتح الأدلة حين يعود الاتصال.",
       },
       common: {
         title: "مشكلات شائعة",
@@ -401,7 +403,7 @@ export default defineMessages({
   en: {
     nav: {
       label: "Support sections",
-      help: "Help centre",
+      help: "Support centre",
       assistant: "Assistant",
       repair: "Book a repair",
       status: "Track",
@@ -445,7 +447,7 @@ export default defineMessages({
         filter: "Guides for which device?",
         filterAll: "All devices",
         allDevices: "Search all devices",
-        offline: "No connection. What you typed stays here; search or open the guide when the connection is back.",
+        offline: "You can search and open the guides when the connection is back.",
       },
       common: {
         title: "Common problems",
@@ -782,7 +784,7 @@ export default defineMessages({
   ckb: {
     nav: {
       label: "بەشەکانی پشتگیری",
-      help: "ناوەندی یارمەتی",
+      help: "ناوەندی پشتگیری",
       assistant: "یاریدەدەر",
       repair: "چاککردنەوە",
       status: "بەدواداچوون",
@@ -826,7 +828,7 @@ export default defineMessages({
         filter: "ڕێنمایی بۆ کام ئامێر؟",
         filterAll: "هەموو ئامێرەکان",
         allDevices: "لە هەموو ئامێرەکاندا بگەڕێ",
-        offline: "هێڵی ئینتەرنێت نییە. ئەوەی نووسیوتە لێرە دەمێنێت؛ کاتێک هێڵەکە گەڕایەوە بگەڕێ یان ڕێنماییەکە بکەرەوە.",
+        offline: "کاتێک هێڵەکە گەڕایەوە دەتوانیت بگەڕێیت و ڕێنماییەکان بکەیتەوە.",
       },
       common: {
         title: "کێشە باوەکان",

@@ -39,7 +39,7 @@ import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { HrefLink } from "~/ui/Pagination";
 import { isPlatform } from "~/ui/PlatformLed";
-import { useKeepInView } from "~/ui/reveal";
+import { revealFocusedItem, useKeepInView } from "~/ui/reveal";
 import { TextLink } from "~/ui/TextLink";
 import { GuideList, guideIcon, Highlighted, SafetyNote } from "./parts";
 
@@ -368,7 +368,9 @@ export function HelpSearchForm({ query, platform: urlPlatform, platforms, index,
       {platforms.length > 1 ? (
         <fieldset className="sup-search__filter">
           <legend className="sup-search__legend">{t("help.search.filter")}</legend>
-          <div ref={platformRail} className="chips chips--rail chips--bleed">
+          {/* a phone rail: the chip that takes the keyboard's focus (Tab, the arrows) comes fully into view — it was left
+              a quarter cut at the card's edge (round-1 fixes; home's strip and the account's chips do the same) */}
+          <div ref={platformRail} className="chips chips--rail chips--bleed" onFocus={revealFocusedItem}>
             <Chip input="radio" name="platform" value="" checked={platform === ""} onChange={() => onPlatform("")}>
               {t("help.search.filterAll")}
             </Chip>
@@ -386,7 +388,7 @@ export function HelpSearchForm({ query, platform: urlPlatform, platforms, index,
           <p id={`${uid}-common`} className="sup-search__legend">
             {t("help.common.title")}
           </p>
-          <ul ref={commonRail} role="list" className="chips chips--rail chips--bleed">
+          <ul ref={commonRail} role="list" className="chips chips--rail chips--bleed" onFocus={revealFocusedItem}>
             {offered.map((problem) => {
               const words = t(`help.common.items.${problem.key}`);
               return (

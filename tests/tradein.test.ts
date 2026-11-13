@@ -20,6 +20,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub, RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
+import usedMessages from "~/i18n/messages/used";
+import { makeT } from "~/i18n/translate";
 import { newId, randomToken } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { splitQualifier } from "~/routes/storefront/used/names";
@@ -205,6 +207,51 @@ describe("devices the store buys", () => {
     expect(wizardOrder("?step=condition&q=body")).toBe(11);
     expect(wizardOrder("?step=condition&at=power")).toBe(11);
     expect(wizardOrder("?step=estimate")).toBe(30);
+  });
+
+  // Round-1 fixes (client note 10 keeps v2's device search): Iraqi shoppers type device names in Arabic — «بلايستيشن»,
+  // «اكس بوكس», «سويتش 2» found nothing, while the help centre's search already read the same spellings (the support
+  // matcher's aliases: alef / hamza / ya folding, an article in front, Sorani). Without script the `?q=` page renders
+  // the same filter on the server.
+  test("the wizard's device search reads names the way shoppers spell them: Arabic, Sorani, an article, a word still being typed", async () => {
+    for (const locale of ["ar", "ckb", "en"] as const) {
+      const devices = await listTradeInDevices(t.db, locale);
+      const groups = [...new Set(devices.map((device) => device.platformSlug))].map((slug) => ({ platformSlug: slug, platformName: devices.find((device) => device.platformSlug === slug)!.platformName, devices: devices.filter((device) => device.platformSlug === slug) }));
+      const found = (query: string) => filterGroups(groups, query).flatMap((group) => group.devices.map((device) => device.name));
+      const named = (pattern: RegExp) => devices.filter((device) => pattern.test(device.name)).map((device) => device.name);
+      const same = (query: string, pattern: RegExp) => expect(found(query).sort(), `${locale} «${query}»`).toEqual(named(pattern).sort());
+      same("بلايستيشن", /playstation/i);
+      same("بلي ستيشن", /playstation/i);
+      same("البلايستيشن", /playstation/i);
+      same("بلايستيشن ٥", /playstation 5/i);
+      same("اكس بوكس", /xbox/i);
+      same("إكس بوكس", /xbox/i);
+      same("اكس بوكس سيريس اس", /xbox series s$/i);
+      same("سويتش", /switch/i);
+      same("سويتش 2", /switch 2/i);
+      same("نينتندو", /nintendo/i);
+      same("ستيم ديك", /steam deck/i);
+      same("ستيم", /steam/i);
+      same("روغ", /rog/i);
+      same("پلەیستەیشن", /playstation/i);
+      same("ئێکس بۆکس", /xbox/i);
+      // the Latin names keep working, and two words still narrow
+      same("PS5", /playstation 5/i);
+      same("xbox", /xbox/i);
+      same("steam deck", /steam deck/i);
+      // a spelling still being typed already narrows to the names it can begin
+      expect(found("بلايست").length, locale).toBeGreaterThan(0);
+      expect(found("بلايست").every((name) => /playstation/i.test(name)), locale).toBe(true);
+      expect(found("اكس ب").every((name) => /xbox/i.test(name)), locale).toBe(true);
+      expect(found("اكس ب").length, locale).toBe(named(/xbox/i).length);
+      // nothing that is not a name
+      expect(found("زبس"), locale).toEqual([]);
+      expect(found("لا شيء هنا"), locale).toEqual([]);
+    }
+    // the page without script renders the same filter on the server
+    const html = await wizardPage(`?q=${encodeURIComponent("بلايستيشن")}`);
+    const tiles = html.match(/class="used-device /g)?.length ?? 0;
+    expect(tiles).toBe((await listTradeInDevices(t.db, "ar")).filter((device) => /playstation/i.test(device.name)).length);
   });
 
   test("answers travel in the query string and back; unknown values and inapplicable questions are dropped", () => {
@@ -667,7 +714,10 @@ describe("the wizard's pages (rendered)", () => {
   // v2.1 (changed on purpose): the tiles are three to a row on phones (~104px), where «365,000 د.ع · تقديري» bound in
   // one run could not fit; the amount stays one unbreakable run and the word that says it is an estimate follows it
   // with an ordinary space (Sorani: its comma) — it may take the next line, and there is no «·» left to start one.
-  test("device tiles: a qualifier on its own line under the name; the amount never splits, the estimate word follows it", async () => {
+  // Round-1 fixes (changed on purpose again): next to the before's tidy tiles that word made every tile ragged (13px
+  // over two lines). The tile says «حتى 365,000 د.ع» on one line, the amount an isolated run that never splits; the
+  // section's line says once that the amounts are estimates, and each tile still says it to screen readers.
+  test("device tiles: a qualifier on its own line under the name; «up to» and the amount on one line, «estimate» said once", async () => {
     expect(splitQualifier("PlayStation 5 Digital Edition (الطراز الأصلي 2020)")).toEqual({ base: "PlayStation 5 Digital Edition", qualifier: "الطراز الأصلي 2020" });
     expect(splitQualifier("PlayStation 5 (original 2020 model)")).toEqual({ base: "PlayStation 5", qualifier: "original 2020 model" });
     expect(splitQualifier("Nintendo Switch – OLED Model")).toEqual({ base: "Nintendo Switch – OLED Model", qualifier: null });
@@ -680,14 +730,22 @@ describe("the wizard's pages (rendered)", () => {
       expect(names.length, locale).toBe(devices.length);
       for (const name of names) expect(name, locale).not.toMatch(/[()]/);
       expect(html.match(/class="used-device__meta"/g)?.length ?? 0, locale).toBe(devices.filter((device) => splitQualifier(device.name).qualifier !== null).length);
-      // «حتى 300,000 د.ع تقديرياً»: the amount is one unbreakable run; the estimate word follows it
-      const amounts = [...html.matchAll(/class="used-device__up">(.*?)<\/span>/g)].map((match) => match[1]).filter((text) => text.includes("⁨"));
+      // «حتى 300,000 د.ع»: the amount is one isolated run that never splits; the estimate word is not on the tile's line
+      // (screen readers hear it at its end) — the section's line says it once
+      const tm = makeT(usedMessages[locale], locale, "used");
+      const estimated = tm("tradein.device.estimated");
+      const amounts = [...html.matchAll(/class="used-device__up">([\s\S]*?)<\/a>/g)].map((match) => match[1]).filter((text) => text.includes("used-device__iqd"));
       expect(amounts.length, locale).toBe(devices.filter((device) => device.upToIqd !== null).length);
       for (const text of amounts) {
-        expect(text.match(/⁨([^⁩]*)⁩/)?.[1], locale).not.toContain(" ");
-        expect(text, locale).toMatch(/⁩،? \S/);
+        const amount = text.match(/<bdi class="used-device__iqd">([^<]*)<\/bdi>/)?.[1] ?? "";
+        expect(amount, locale).toMatch(/\d/);
+        expect(amount, locale).not.toContain(" ");
+        const shown = text.replace(/<span class="sr-only">[\s\S]*?<\/span>/g, "");
+        expect(shown, locale).not.toContain(estimated);
+        expect(text, locale).toContain(`<span class="sr-only"> ${estimated}</span>`);
         expect(text, locale).not.toContain("·");
       }
+      expect(html.split(tm("tradein.device.upToNote")).length - 1, locale).toBe(1);
     }
   });
 
@@ -852,5 +910,60 @@ describe("the wizard's pages (rendered)", () => {
     const states = [...html.matchAll(/class="used-timeline__row" data-state="(\w+)"/g)].map((match) => match[1]);
     expect(states).toEqual(["done", "done", "done", "done", "current", "upcoming"]);
     expect(html).toContain('aria-current="step"');
+  });
+
+  /** An offered request with what admin module 13 writes (the inspection and the "offered" snapshot). */
+  async function offeredRequest(included: string[]) {
+    const made = await createTradeIn(t.db, who(), input(withScreen), NOW);
+    await t.db
+      .update(tradeIns)
+      .set({ status: "offered", finalOfferIqd: 310_000, offeredBy: "emp_TEST", offeredAt: NOW, offerExpiresAt: NOW + 7 * 86_400_000, inspection: { checklist: { templateId: null, completedAt: NOW, completedBy: "emp_TEST", items: [] }, grade: "B", inspectedAt: NOW } as never })
+      .where(eq(tradeIns.id, made.tradeInId));
+    await t.db.insert(tradeInEvents).values({ id: newId("tie"), tradeInId: made.tradeInId, kind: "offered", data: { amountIqd: 310_000, grade: "B", passed: 0, failed: 0, included }, actorKind: "employee", actorId: "emp_TEST", at: NOW + 2 });
+    return made;
+  }
+  /** The request's page opened with its link — or, `link` false, found by the lookup (reference + phone). */
+  const statusPage = async (made: { ref: string; accessToken: string }, locale: Locale, link = true) => {
+    const view = (await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, locale, NOW + 1000))!;
+    const withQuestions = { ...view, questions: questionsFor(view.device) };
+    const loaderData = { ref: made.ref, view: link ? withQuestions : null, created: false, meta: { title: "" }, i18n: messagesFor(locale, "used", "errors") };
+    const path = `${locale === "ar" ? "" : `/${locale}`}/trade-in/${made.ref}${link ? `?t=${made.accessToken}` : ""}`;
+    return renderPage(TradeInStatus, ":locale?/trade-in/:ref", path, loaderData, locale, link ? undefined : { intent: "lookup", ok: true, view: withQuestions });
+  };
+
+  // Round-1 fixes: at 1440×900 (and 1024) «اقبل العرض» sat at y≈1276, under the inspection's eleven lines — nothing on
+  // the client's offer screen could be done without scrolling. From 1024 the answer (the payout cards and the keys) is
+  // the request column's first card, beside the offer band; on phones it still follows what the inspection found, with
+  // the keys in the task bar.
+  test("the answer to an open offer heads the request's column (beside the offer from 1024), after what the inspection found", async () => {
+    const made = await offeredRequest(["dock"]);
+    const html = await statusPage(made, "ar");
+    const at = (needle: string) => {
+      const index = html.indexOf(needle);
+      expect(index, needle).toBeGreaterThanOrEqual(0);
+      return index;
+    };
+    const column = at('data-column="request"');
+    expect(at("data-inspection-result")).toBeLessThan(column);
+    expect(column).toBeLessThan(at('id="ti-answer"'));
+    expect(at('id="ti-answer"')).toBeLessThan(at('id="ti-timeline"'));
+    // still one primary drawn twice (the column from 1024, the task bar below it)
+    expect(html.match(/key--primary/g)?.length).toBe(2);
+    // without the link there is no answer form: the column starts with the timeline
+    const lookedUp = await statusPage(made, "ar", false);
+    expect(lookedUp).toContain('id="ti-timeline"');
+    expect(lookedUp).not.toContain('id="ti-answer"');
+  });
+
+  // Round-1 fixes: in Sorani «… جووتە -Joy / Con، بارگاویکەر» — "Joy-Con" broke at its hyphen, drawn on the wrong side.
+  // A hyphen inside a Latin name in an accessory's words is the non-breaking hyphen (U+2011), as the product page's names.
+  test("an accessory's Latin name never breaks at its hyphen («Joy‑Con»)", async () => {
+    const made = await offeredRequest(["dock", "joy_con", "charger"]);
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const html = await statusPage(made, locale);
+      const handedOver = html.slice(html.indexOf("data-included"));
+      expect(handedOver, locale).toContain("Joy‑Con");
+      expect(handedOver.slice(0, handedOver.indexOf("</p>")), locale).not.toContain("Joy-Con");
+    }
   });
 });

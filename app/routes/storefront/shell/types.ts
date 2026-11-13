@@ -47,8 +47,14 @@ export type ShellChromeKind = "store" | "checkout" | "task";
 /** A route's wishes for the shell, from its `handle` (read on the server too, so SSR is right). */
 export type ShellHandle = {
   shell?: {
-    /** The shell this page lives in (above). Default "store". */
-    chrome?: Exclude<ShellChromeKind, "store">;
+    /**
+     * The shell this page lives in (above). Default "store". Or a function of the address (locale-less `path`, the
+     * query as the server spells it) when one route is two kinds of page — the trade-in start page is a store page,
+     * its wizard steps a task flow:
+     *   chrome: ({ search }) => (new URLSearchParams(search).has("step") ? "task" : "store")
+     * Read on the server too (no hydration difference); anything else than the three kinds counts as no wish.
+     */
+    chrome?: Exclude<ShellChromeKind, "store"> | ((at: { path: string; search: string }) => ShellChromeKind | null | undefined);
     /**
      * false: the page shows its own bottom task bar (buy bar, cart bar) through <TaskBar> from ./TabBar. The tab bar
      * gives way to it by itself (CSS: never two bars at one edge) — and comes back when the page draws no task bar

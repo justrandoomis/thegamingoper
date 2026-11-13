@@ -9,9 +9,9 @@ import { defineMessages } from "../translate";
  *
  * Copy voice: docs/DESIGN.md §11 with v2 §9 — plain, specific, active; no exclamation marks; no call promises; no
  * builder's voice; nothing the shop cannot promise. Glossary terms (v2 §9): «الإجمالي», «رقم الموبايل», «تحدّث مع موظف»,
- * «الدعم» (navigation) / «مركز الدعم» (page), «المستعمل» (navigation) / «المستعمل والمفحوص» (titles), the canonical
- * payment-method names. Latin product and platform names stay Latin. The Sorani column must be reviewed by a native
- * reader before launch.
+ * «مركز الدعم» (the support centre's one name in every link and title — lead 2026-11-13), «المستعمل» (navigation) /
+ * «المستعمل والمفحوص» (titles), the canonical payment-method names. Latin product and platform names stay Latin. The
+ * Sorani column must be reviewed by a native reader before launch.
  */
 export default defineMessages({
   ar: {
@@ -60,7 +60,8 @@ export default defineMessages({
       games: "الألعاب",
       accessories: "الإكسسوارات",
       used: "المستعمل",
-      support: "الدعم",
+      // the place's one name everywhere (lead 2026-11-13): header, footers, the categories sheet
+      support: "مركز الدعم",
       repair: "الصيانة",
       // the mega menu's featured product: the clay key inside its card
       view: "عرض المنتج",
@@ -111,6 +112,11 @@ export default defineMessages({
       clearLabel: "امسح عمليات البحث الأخيرة",
       shortcut: "اضغط / للبحث",
       browse: "تسوّق حسب المنصّة",
+      // a query the suggestions have nothing for: the one row of the list, which searches the whole store
+      none: "لا اقتراحات لـ «{q}»",
+      noneHint: "ابحث في كل المتجر",
+      // demo mode: the list's prices are the demo catalogue's (the sheet covers the demo strip)
+      demoPrices: "الأسعار تجريبية",
       kind: {
         product: "منتج",
         platform: "منصة",
@@ -146,7 +152,7 @@ export default defineMessages({
     checkout: {
       back: "رجوع إلى السلة",
       home: "طمطم للألعاب، الصفحة الرئيسية",
-      help: "الدعم",
+      help: "مركز الدعم",
       steps: {
         label: "خطوات الطلب",
         address: "التوصيل",
@@ -169,7 +175,7 @@ export default defineMessages({
         many: "{count} جهازاً",
         other: "{count} جهاز",
       },
-      supportTitle: "الدعم",
+      supportTitle: "مركز الدعم",
       supportText: "أدلة آمنة، ومساعد خطوة بخطوة، وحجز صيانة",
       departments: "الأقسام",
       services: "خدمات",
@@ -178,7 +184,7 @@ export default defineMessages({
     footer: {
       line: "متجر ألعاب في العراق: أجهزة وألعاب وإكسسوارات، جديدة ومستعملة. التوصيل {fee} لكل المحافظات.",
       shop: "تسوّق",
-      support: "الدعم",
+      support: "مركز الدعم",
       about: "عن طمطم",
       payments: "طرق الدفع",
       used: "المستعمل والمفحوص",
@@ -279,7 +285,7 @@ export default defineMessages({
       games: "Games",
       accessories: "Accessories",
       used: "Used",
-      support: "Support",
+      support: "Support centre",
       repair: "Repair",
       view: "View product",
       menuFor: "{name} menu",
@@ -323,6 +329,9 @@ export default defineMessages({
       clearLabel: "Clear recent searches",
       shortcut: "Press / to search",
       browse: "Shop by platform",
+      none: "No suggestions for “{q}”",
+      noneHint: "Search the whole store",
+      demoPrices: "Demo prices",
       kind: {
         product: "Product",
         platform: "Platform",
@@ -354,7 +363,7 @@ export default defineMessages({
     checkout: {
       back: "Back to the cart",
       home: "TamTam Games, home",
-      help: "Support",
+      help: "Support centre",
       steps: {
         label: "Checkout steps",
         address: "Delivery",
@@ -373,7 +382,7 @@ export default defineMessages({
         one: "{count} unit",
         other: "{count} units",
       },
-      supportTitle: "Support",
+      supportTitle: "Support centre",
       supportText: "Safe guides, a step-by-step assistant and repair booking",
       departments: "Departments",
       services: "Services",
@@ -382,7 +391,7 @@ export default defineMessages({
     footer: {
       line: "A games store in Iraq: consoles, games and accessories, new and used. Delivery is {fee} to every governorate.",
       shop: "Shop",
-      support: "Support",
+      support: "Support centre",
       about: "About TamTam",
       payments: "Payment methods",
       used: "Used & inspected",
@@ -483,7 +492,7 @@ export default defineMessages({
       games: "یارییەکان",
       accessories: "پاشکۆکان",
       used: "بەکارهاتوو",
-      support: "پشتگیری",
+      support: "ناوەندی پشتگیری",
       repair: "چاککردنەوە",
       view: "بینینی بەرهەم",
       menuFor: "لیستی {name}",
@@ -527,6 +536,9 @@ export default defineMessages({
       clearLabel: "دوایین گەڕانەکان بسڕەوە",
       shortcut: "/ دابگرە بۆ گەڕان",
       browse: "بە پێی پلاتفۆرم بازاڕ بکە",
+      none: "هیچ پێشنیارێک نییە بۆ «{q}»",
+      noneHint: "لە هەموو فرۆشگاکەدا بگەڕێ",
+      demoPrices: "نرخەکان تاقیکارین",
       kind: {
         product: "بەرهەم",
         platform: "پلاتفۆرم",
@@ -558,7 +570,7 @@ export default defineMessages({
     checkout: {
       back: "گەڕانەوە بۆ سەبەتە",
       home: "طمطم، پەڕەی سەرەکی",
-      help: "پشتگیری",
+      help: "ناوەندی پشتگیری",
       steps: {
         label: "هەنگاوەکانی داواکاری",
         address: "گەیاندن",
@@ -577,7 +589,7 @@ export default defineMessages({
         one: "{count} ئامێر",
         other: "{count} ئامێر",
       },
-      supportTitle: "پشتگیری",
+      supportTitle: "ناوەندی پشتگیری",
       supportText: "ڕێنمایی سەلامەت، یاریدەدەری هەنگاو بە هەنگاو، و داوای چاککردنەوە",
       departments: "بەشەکان",
       services: "خزمەتگوزارییەکان",
@@ -586,7 +598,7 @@ export default defineMessages({
     footer: {
       line: "فرۆشگای یاری لە عێراق: ئامێر و یاری و پاشکۆ، نوێ و بەکارهاتوو. گەیاندن {fee} بۆ هەموو پارێزگاکان.",
       shop: "بازاڕکردن",
-      support: "پشتگیری",
+      support: "ناوەندی پشتگیری",
       about: "دەربارەی طمطم",
       payments: "ڕێگاکانی پارەدان",
       used: "بەکارهاتوو و پشکنراو",

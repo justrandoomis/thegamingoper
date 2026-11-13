@@ -53,6 +53,8 @@ import * as accountLayout from "~/routes/storefront/account/layout";
 import { getOrderForCustomer } from "~/server/services/orders/manage.server";
 import type { OrderView } from "~/server/services/orders/types";
 import AddressesPage from "~/routes/storefront/account/addresses";
+import SettingsPage from "~/routes/storefront/account/settings";
+import { ago } from "~/routes/storefront/account/components/text";
 import DevicesPage from "~/routes/storefront/account/devices";
 import ProfilePage from "~/routes/storefront/account/profile";
 import { action as signupAction } from "~/routes/storefront/account/signup";
@@ -1226,5 +1228,117 @@ describe("Design v2.1 review: what the reviewer found (client round 1)", () => {
     expect(frame("/account/rewards?show=used", "/account/rewards?show=used")).toBe(true);
     expect(frame("/account/rewards", "/account/wallet")).toBe(true);
     expect(frame("/account/orders", "/account/orders/TT-AAAA1111")).toBe(true);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── client round 1, wave C (the transaction QA's findings)
+
+describe("client feedback round 1: the QA's account findings (wave C)", () => {
+  /** The settings loader's answer for a customer: this device, one used 46 minutes ago, one 3 days ago. */
+  const settingsData = async (id: string) => ({
+    preferences: await getPreferences(t.db, id),
+    sessions: [
+      { id: "ses_here", current: true, createdAt: NOW - 3 * DAY, lastSeenAt: NOW, browser: "Edge", os: "Windows" },
+      { id: "ses_phone", current: false, createdAt: NOW - 2 * DAY, lastSeenAt: NOW - 46 * MINUTE, browser: "Chrome", os: "Android" },
+      { id: "ses_old", current: false, createdAt: NOW - 9 * DAY, lastSeenAt: NOW - 3 * DAY, browser: "Safari", os: "iPhone" },
+    ],
+    phone: { masked: "0770 ••• ••67", verified: false },
+    phoneCodes: false,
+    maxRecent: MAX_RECENTLY_VIEWED,
+    now: NOW,
+  });
+
+  test("«last used» is written in the page's language, Sorani included, and kept whole in its own isolate", async () => {
+    // Found by QA: /ckb/account/settings read «دوایین بەکارهێنان 46 minutes ago» (shown as "minutes ago 46"): Intl has no
+    // Sorani data — the browser fell back to English, the server's ICU to «-46 min» (a hydration mismatch as well).
+    const { id } = await customer();
+    const data = await settingsData(id);
+    const ckb = plain(renderAccountPage(SettingsPage, "/account/settings", data, "ckb"));
+    expect(ckb).toContain("دوایین بەکارهێنان <bdi>46 خولەک لەمەوبەر</bdi>");
+    expect(ckb).toContain("دوایین بەکارهێنان <bdi>3 ڕۆژ لەمەوبەر</bdi>");
+    expect(ckb).toContain("دوایین بەکارهێنان <bdi>ئێستا</bdi>");
+    expect(ckb).not.toMatch(/دوایین بەکارهێنان <bdi>[^<]*[A-Za-z]/);
+    // Arabic and English keep Intl's own words (it has their data)
+    expect(plain(renderAccountPage(SettingsPage, "/account/settings", data, "ar"))).toContain("آخر استخدام <bdi>قبل 46 دقيقة</bdi>");
+    expect(plain(renderAccountPage(SettingsPage, "/account/settings", data, "en"))).toContain("Last used <bdi>46 minutes ago</bdi>");
+    // the Sorani words at the same thresholds as the kit's f.relative (minutes under an hour, hours under a day, days)
+    const sorani = { locale: "ckb" as const, number: (value: number) => String(value), relative: () => "Intl" };
+    const t = (key: string, vars?: Record<string, string | number>) => `${key}:${vars?.n ?? ""}`;
+    expect(ago(t, sorani, NOW - 30_000, NOW)).toBe("settings.ago.now:");
+    expect(ago(t, sorani, NOW - 59 * MINUTE, NOW)).toBe("settings.ago.minutes:59");
+    expect(ago(t, sorani, NOW - 5 * 60 * MINUTE, NOW)).toBe("settings.ago.hours:5");
+    expect(ago(t, sorani, NOW - 2 * DAY, NOW)).toBe("settings.ago.days:2");
+    expect(ago(t, { ...sorani, locale: "ar" }, NOW - 2 * DAY, NOW)).toBe("Intl");
+  });
+
+  test("«sign out the other devices» asks first, saying how many devices it signs out", async () => {
+    // Found by QA: one tap posted intent=revokeOthers at once — the QA's probe signed the shared demo customer out of 26
+    // other sessions with no question and no undo.
+    const { id } = await customer();
+    const html = renderAccountPage(SettingsPage, "/account/settings", await settingsData(id));
+    // the key opens a dialog (with script); without script its form still posts
+    expect(html).toMatch(/<button\b[^>]*aria-haspopup="dialog"[^>]*>(?:(?!<\/button>)[\s\S])*سجّل خروج الأجهزة الأخرى/);
+    expect(html).toMatch(/name="intent" value="revokeOthers"/);
+    const source = readFileSync(new URL("../app/routes/storefront/account/settings.tsx", import.meta.url), "utf8");
+    // the submit is held for the dialog, which posts the intent itself once confirmed
+    expect(source).toMatch(/onSubmit=\{\(event\) => \{\s*event\.preventDefault\(\);\s*setConfirming\(true\);/);
+    expect(source).toMatch(/<ConfirmDialog[\s\S]*?onConfirm=\{\(\) => others\.fetcher\.submit\(\{ intent: "revokeOthers" \}/);
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const settings = accountMessages[locale].settings as Record<string, unknown>;
+      expect(typeof settings.signOutOthersQ, locale).toBe("string");
+      expect(settings.signOutOthersWhat, locale).toBeTruthy();
+    }
+    expect(plain(renderAccountPage(SettingsPage, "/account/settings", await settingsData(id), "en"))).toContain("Sign out the other devices");
+  });
+
+  test("the account's order page draws the order page's status rail: the stage icons in their discs and the line that fills", async () => {
+    // Found by QA: /account/orders/<ref> drew plain hollow circles; /order/<ref> clay discs with stage icons and a line.
+    const { id } = await customer();
+    const item = await make.product({ stock: 20 });
+    const placed = await make.order([{ ...item, qty: 1 }], { customerId: id, status: "preparing", placedAt: NOW });
+    const order = await getOrderForCustomer(t.db, id, placed.ref, "ar", NOW);
+    expect(order).not.toBeNull();
+    const html = renderOrderPage(order as OrderView);
+    expect(html).toMatch(/<div class="co-progress[^"]*" style="--progress:0\.5"/);
+    const stages = [...html.matchAll(/<li class="co-stage" data-state="(\w+)"[^>]*><span class="co-stage__disc" aria-hidden="true"><svg[^>]*data-icon="([\w-]+)"/g)].map((match) => [match[1], match[2]]);
+    expect(stages).toEqual([
+      ["done", "receipt"],
+      ["done", "seal-check"],
+      ["current", "package"],
+      ["upcoming", "truck"],
+      ["upcoming", "house"],
+    ]);
+    expect(html).not.toMatch(/class="steps-status|<ol aria-label="حالة الطلب" class="grid/);
+  });
+
+  test("an order's product line keeps a Latin name whole in its own direction; the pieces stay outside its clamp", async () => {
+    // Found by QA at 360/390: «…Xbox Rechargeable Battery +» — the clamp cut the right-to-left line, the ellipsis at the
+    // line's end (the left) and the cut «+» at the reading start.
+    const { id } = await customer();
+    const item = await make.product({ stock: 20 });
+    await make.order([{ ...item, qty: 2 }], { customerId: id, status: "confirmed", placedAt: NOW });
+    const listed = await listOwnOrders(t.db, id, "ar", {});
+    const latin = { ...listed, items: listed.items.map((row) => ({ ...row, firstItemName: "Xbox Rechargeable Battery + USB-C Cable", itemCount: 2 })) };
+    const html = plain(renderAccountPage(OrdersPage, "/account/orders", { orders: latin }));
+    expect(html).toMatch(/<span class="acct-order__what"><span dir="ltr" class="acct-order__name text-end"><bdi[^>]*>Xbox Rechargeable Battery \+ USB-C Cable<\/bdi><\/span><span class="acct-order__count">· قطعتان<\/span><\/span>/);
+    // an Arabic name keeps the page's direction
+    const arabic = plain(renderAccountPage(OrdersPage, "/account/orders", { orders: listed }));
+    expect(arabic).toMatch(/<span class="acct-order__what"><span class="acct-order__name">جهاز للاختبار<\/span><span class="acct-order__count">· قطعتان<\/span><\/span>/);
+  });
+
+  test("what the shopper typed (an Arabic address on /en) reads in its own direction on the order page and the address book", async () => {
+    // Found by QA: /en/account/orders/<ref> showed «شارع تجريبي، بناية 3 — طلب اختبار QA» with "QA" at the reading start.
+    const { id, actor } = await customer();
+    const item = await make.product({ stock: 20 });
+    const placed = await make.order([{ ...item, qty: 1 }], { customerId: id, status: "confirmed", placedAt: NOW, contactName: "علي", areaText: "الكرادة داخل", addressText: "شارع 62، قرب الجسر — بناية 3 QA", notes: "الطابق الثاني" });
+    const order = await getOrderForCustomer(t.db, id, placed.ref, "en", NOW);
+    const html = renderOrderPage(order as OrderView, "en");
+    for (const typed of ["علي", "شارع 62، قرب الجسر — بناية 3 QA", "الطابق الثاني"]) expect(html, typed).toContain(`<bdi dir="auto">${typed}</bdi>`);
+    expect(html).toMatch(/<bdi dir="auto">[^<]*الكرادة داخل<\/bdi>/);
+    // the address book's cards
+    await saveAddress(t.db, actor, { governorateId: governorateId("baghdad"), areaText: "الكرادة داخل", addressText: "شارع 62، قرب الجسر — بناية 3 QA", label: "البيت", recipientName: "علي", notes: "الطابق الثاني" }, NOW);
+    const book = renderAccountPage(AddressesPage, "/account/addresses", { addresses: await listAddresses(t.db, id, "en"), geography: await listGeography(t.db, "en"), max: MAX_ADDRESSES }, "en");
+    for (const typed of ["البيت", "علي", "شارع 62، قرب الجسر — بناية 3 QA", "الطابق الثاني"]) expect(book, typed).toContain(`<bdi dir="auto">${typed}</bdi>`);
+    expect(book).toMatch(/<bdi dir="auto">[^<]*الكرادة داخل<\/bdi>/);
   });
 });

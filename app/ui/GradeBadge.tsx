@@ -69,16 +69,19 @@ export function GradeBadge({ grade, legend = false, className }: GradeBadgeProps
     const anchor = trigger.current.getBoundingClientRect();
     const rtl = getComputedStyle(trigger.current).direction === "rtl";
     const viewW = document.documentElement.clientWidth;
-    const viewH = window.innerHeight;
     el.style.margin = "0";
     el.style.inset = "auto";
+    el.style.maxBlockSize = "";
+    el.style.overflowY = "";
     const { offsetWidth: width, offsetHeight: height } = el;
-    // Start edge under the key's start edge, kept 8px inside the viewport; below it, or above when there is no room.
+    // Start edge under the key's start edge, kept 8px inside the viewport. The free band is the viewport minus what the
+    // shell fixes at the top (the header) and at the bottom (the tab bar or a page's buy bar — fix round 2026-11-13: the
+    // legend ran over «أضف إلى السلة» at 390): below the key, or above it, or — when neither side holds it — the larger
+    // side, scrolling inside.
     const fromStart = rtl ? viewW - anchor.right : anchor.left;
     const inlineStart = Math.max(8, Math.min(fromStart, viewW - width - 8));
-    const below = anchor.bottom + 8;
-    const top = below + height > viewH - 8 ? Math.max(8, anchor.top - 8 - height) : below;
-    el.style.insetBlockStart = `${Math.round(top)}px`;
+    const band = popoverBand(window.innerHeight);
+    el.style.insetBlockStart = `${Math.round(placeBlock(anchor, height, band, el))}px`;
     el.style.insetInlineStart = `${Math.round(inlineStart)}px`;
   };
 
@@ -98,20 +101,49 @@ export function GradeBadge({ grade, legend = false, className }: GradeBadgeProps
         className="max-w-[min(22rem,calc(100vw-1rem))] rounded-lg bg-paper p-4 text-ink shadow-overlay"
       >
         <p className="type-sm-strong">{t("grade.legendTitle")}</p>
+        {/* G7: what each grade means is reading text — 16px on phones, 14px from 1024 (fix round 2026-11-13) */}
         <dl className="mt-3 grid gap-3">
           {GRADES.map((g) => (
             <div key={g} className="grid justify-items-start gap-1">
               <dt>
                 <GradeTag grade={g} />
               </dt>
-              <dd className="type-xs text-ink-2">{t(`grade.hints.${gradeKey(g)}`)}</dd>
+              <dd className="type-read text-ink-2 lg:type-sm">{t(`grade.hints.${gradeKey(g)}`)}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-3 border-t border-line pt-3 type-xs text-ink-2">{t("grade.legendNote")}</p>
+        <p className="mt-3 border-t border-line pt-3 type-sm text-ink-2">{t("grade.legendNote")}</p>
       </div>
     </span>
   );
+}
+
+/** The viewport's free band for a floating panel: under the shell's fixed top (--shell-top) and above its fixed bottom
+ *  (--shell-bottom: the tab bar or a page's buy bar), 8px inside each. Both read through a probe, so calc() and the
+ *  safe areas resolve; a page without the shell gets the whole viewport. */
+function popoverBand(viewH: number): { top: number; bottom: number } {
+  const measure = (property: string) => {
+    const probe = document.createElement("div");
+    probe.style.cssText = `position:fixed;inset-inline:0;top:0;block-size:var(${property}, 0px);visibility:hidden;pointer-events:none`;
+    document.body.appendChild(probe);
+    const size = probe.getBoundingClientRect().height;
+    probe.remove();
+    return Number.isFinite(size) ? size : 0;
+  };
+  return { top: measure("--shell-top") + 8, bottom: viewH - measure("--shell-bottom") - 8 };
+}
+
+/** Where the panel's top goes (pure but for the overflow it may set): below the key, or above, or the roomier side. */
+function placeBlock(anchor: DOMRect, height: number, band: { top: number; bottom: number }, el: HTMLElement): number {
+  const below = anchor.bottom + 8;
+  const roomBelow = band.bottom - below;
+  const roomAbove = anchor.top - 8 - band.top;
+  if (height <= roomBelow) return below;
+  if (height <= roomAbove) return anchor.top - 8 - height;
+  const room = Math.max(160, Math.max(roomBelow, roomAbove));
+  el.style.maxBlockSize = `${Math.round(room)}px`;
+  el.style.overflowY = "auto";
+  return roomBelow >= roomAbove ? below : Math.max(band.top, anchor.top - 8 - room);
 }
 
 /** The outlined pill alone: «A+ · كالجديد» (the grade first, isolated left-to-right; its word after it). */

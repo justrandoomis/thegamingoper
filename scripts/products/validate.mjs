@@ -61,6 +61,21 @@ function checkName(name, errs) {
   }
 }
 
+/**
+ * Design v2 spec §4.18: a name's Latin tokens never break across lines. Carts, checkout and order lines print the stored
+ * name and variant title as they are, so a hyphen inside a token («USB-C», «Joy-Con», «Z-A») is the non-breaking hyphen
+ * U+2011 there (QA 2026-11-13: «…Battery + USB-» / «C Cable» on a 390 px cart line). Search folds it like "-".
+ */
+const TOKEN_HYPHEN = /(?<=[\p{Script=Latin}\d])-(?=[\p{Script=Latin}\d])/u;
+function checkTokenHyphens(text, where, errs) {
+  for (const lang of ["ar", "en", "ckb"]) {
+    const value = text?.[lang];
+    if (typeof value === "string" && TOKEN_HYPHEN.test(value)) {
+      errs.push(`${where}.${lang} "${value}" has a plain hyphen inside a Latin token: write the non-breaking hyphen U+2011 («USB‑C») so the token never breaks across lines`);
+    }
+  }
+}
+
 /** `qualifier`: optional; the words a Latin title leaves out, per language ("" where the name already says it). */
 function checkQualifier(qualifier, errs) {
   if (qualifier === undefined) return;
@@ -121,6 +136,7 @@ for (const [slug, p] of all) {
     if (!p.brand) errs.push("brand missing");
     l10n(p.name, "name", errs);
     checkName(p.name, errs);
+    checkTokenHyphens(p.name, "name", errs);
     checkQualifier(p.qualifier, errs);
     l10n(p.short, "short", errs);
     l10n(p.description, "description", errs);
@@ -140,6 +156,7 @@ for (const [slug, p] of all) {
       else skus.set(v.sku, slug);
       l10n(v.title, `variants[${i}].title`, errs);
       checkVariantTitle(p, v, i, errs);
+      checkTokenHyphens(v.title, `variants[${i}].title`, errs);
       if (v.isDefault) defaults++;
       for (const k of v.images || []) if (!(p.images || []).some((im) => im.key === k)) errs.push(`variants[${i}].images references unknown image "${k}"`);
       if (v.priceIqd !== undefined && v.priceIqd !== null) warns.push(`variants[${i}].priceIqd is set — prices are not researched`);

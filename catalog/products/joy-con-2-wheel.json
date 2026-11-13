@@ -7,7 +7,7 @@
   "family": "joy-con-2-wheel",
   "status": "available",
   "releaseDate": "2025-06-05",
-  "name": { "ar": "Joy-Con 2 Wheel (set of 2)", "en": "Joy-Con 2 Wheel (set of 2)", "ckb": "Joy-Con 2 Wheel (set of 2)" },
+  "name": { "ar": "Joy‑Con 2 Wheel (set of 2)", "en": "Joy‑Con 2 Wheel (set of 2)", "ckb": "Joy‑Con 2 Wheel (set of 2)" },
   "short": {
     "ar": "مقودان ليدي Joy-Con 2 لألعاب السباق · أزرق فاتح وأحمر فاتح",
     "en": "Two steering wheels for Joy-Con 2 racing · light blue and light red",
@@ -54,7 +54,7 @@
   "variants": [
     {
       "sku": "JC2-WHEEL-2PK",
-      "title": { "ar": "Joy-Con 2 Wheel (set of 2)", "en": "Joy-Con 2 Wheel (set of 2)", "ckb": "Joy-Con 2 Wheel (set of 2)" },
+      "title": { "ar": "Joy‑Con 2 Wheel (set of 2)", "en": "Joy‑Con 2 Wheel (set of 2)", "ckb": "Joy‑Con 2 Wheel (set of 2)" },
       "options": { "color": "Light Blue / Light Red", "quantity": "2" },
       "barcodes": ["0045496884802"],
       "isDefault": true,

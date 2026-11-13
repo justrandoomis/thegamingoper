@@ -12,6 +12,9 @@
  * A failed add says why on one short line above the controls (the kit's error toast carries «أعد المحاولة»); offline
  * the key goes flat and that line says «لا يوجد اتصال» (the full sentence is under the price, named by the key's
  * aria-describedby). The bar never shows a stock number.
+ *
+ * Focus survives the swap (../handoff.ts, QA 2026-11-13): when the add came from the focused key (or the tray), the
+ * new «عرض السلة (n)» takes focus — the removed key no longer drops it to <body>.
  */
 import { useState } from "react";
 
@@ -23,6 +26,7 @@ import { cx } from "~/ui/cx";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
 import { SafePrice } from "~/ui/PriceTag";
+import { useFocusHandoff } from "../handoff";
 
 export type BuyStripProps = Omit<BuyControlsProps, "onAdded" | "message" | "onMessage"> & {
   /** The chosen version's price (shown with «✓ في السلة» after an add). */
@@ -47,12 +51,14 @@ export function BuyStrip({ priceIqd, releaseAt, alternativesHref, ...buy }: BuyS
   const [added, setAdded] = useState(false);
   const [said, setSaid] = useState<{ text: string; tone: "error" | "warn" } | null>(null);
   const state = stripState(buy.stock, added);
+  // one ref on the box of either state: «عرض السلة (n)» takes the focus the swapped key had
+  const handoff = useFocusHandoff(state === "added");
 
   if (state === "kit") return <BuyBar {...buy} bare priceIqd={priceIqd} releaseAt={releaseAt} alternativesHref={alternativesHref} />;
 
   if (state === "added") {
     return (
-      <div className="buybar min-h-0 p-0" data-bar-state="added">
+      <div ref={handoff.area} className="buybar min-h-0 p-0" data-bar-state="added">
         <div className="buybar__info">
           <span className="buybar__added flex items-center gap-1">
             <Icon name="check" size={16} />
@@ -60,7 +66,7 @@ export function BuyStrip({ priceIqd, releaseAt, alternativesHref, ...buy }: BuyS
           </span>
           <SafePrice amountIqd={priceIqd} size="lg" approx="off" as="span" />
         </div>
-        <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right" className="min-w-[168px]">
+        <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right" className="min-w-[168px]" data-focus-target="">
           {t("add.viewCartCount", { n: f.number(count) })}
         </Key>
       </div>
@@ -69,7 +75,7 @@ export function BuyStrip({ priceIqd, releaseAt, alternativesHref, ...buy }: BuyS
 
   const line = !online ? { text: t("add.offlineShort"), tone: "warn" as const } : said;
   return (
-    <div className="grid gap-1.5" data-bar-state="ready">
+    <div ref={handoff.area} className="grid gap-1.5" data-bar-state="ready">
       {line ? (
         // said aloud already (the add key announces a failure; the offline banner the connection)
         <p className={cx("pp-bar__line", line.tone === "error" ? "text-danger" : "text-warn")}>
@@ -81,7 +87,10 @@ export function BuyStrip({ priceIqd, releaseAt, alternativesHref, ...buy }: BuyS
         {...buy}
         message="none"
         onMessage={(text, tone) => setSaid(text ? { text, tone: tone ?? "error" } : null)}
-        onAdded={() => setAdded(true)}
+        onAdded={() => {
+          handoff.arm();
+          setAdded(true);
+        }}
         className="pp-bar__controls"
       />
     </div>

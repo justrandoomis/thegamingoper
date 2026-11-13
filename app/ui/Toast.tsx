@@ -87,11 +87,13 @@ export function Toaster({ offset = "calc(var(--safe-top) + var(--s-2))", fallbac
   return active ? <ToasterView offset={offset} className={className} /> : null;
 }
 
+/* The kinds' icons are inline glyphs (app/art/icons/glyphs status-*), never the sprite: a toast raised while offline
+   («أنت غير متصل…») drew a blank square, the sprite file not being reachable (fix round 2026-11-13). */
 const KIND: Record<Exclude<ToastKind, "cart">, { icon: IconName; tone: string }> = {
-  info: { icon: "info", tone: "text-info" },
-  success: { icon: "check-circle", tone: "text-ok" },
-  warning: { icon: "warning", tone: "text-warn" },
-  error: { icon: "warning-circle", tone: "text-danger" },
+  info: { icon: "status-info", tone: "text-info" },
+  success: { icon: "status-ok", tone: "text-ok" },
+  warning: { icon: "status-warning", tone: "text-warn" },
+  error: { icon: "status-error", tone: "text-danger" },
 };
 
 function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset">> & Pick<ToasterProps, "className">) {
@@ -397,7 +399,7 @@ function ToastCard({ toast, leaving, onGone, onFocusLost }: CardProps) {
       ) : null}
       <div className="toast__text">
         <p className="toast__title">
-          {cart ? <Icon name="check-circle" size={16} filled /> : null}
+          {cart ? <Icon name="status-ok" size={16} /> : null}
           <span className="min-w-0">{cart ? (toast.title ?? t("toast.added")) : toast.title}</span>
         </p>
         {cart && toast.name ? (

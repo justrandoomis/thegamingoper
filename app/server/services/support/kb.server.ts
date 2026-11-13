@@ -329,7 +329,8 @@ export async function searchHelp(db: Db, locale: Locale, raw: unknown, options: 
   const entries = rows
     .map((row) => {
       const body = (row.body ?? {}) as LocalizedBlocks;
-      return { ...entryText(row), body: `${blockText(body[locale])} ${locale === "ar" ? "" : blockText(body.ar)}`, article: toSummary(row as ArticleRow, locale, row.deviceId ? "device" : "platform") };
+      // its platform ranks it when the words name a device or a platform (./helpsearch rankEntries), as the box does
+      return { ...entryText(row), platform: row.platformSlug ?? null, body: `${blockText(body[locale])} ${locale === "ar" ? "" : blockText(body.ar)}`, article: toSummary(row as ArticleRow, locale, row.deviceId ? "device" : "platform") };
     })
     // ranked within the chosen platform (a body-only match is weighed against that platform's best, not another's)
     .filter((entry) => inScope(entry.article));

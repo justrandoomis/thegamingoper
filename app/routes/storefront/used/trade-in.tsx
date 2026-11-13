@@ -63,17 +63,18 @@ import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
 import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
-import { iqdText } from "~/ui/PriceTag";
+import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { BidiText, ProductImage } from "~/ui/ProductCard";
 import { ProgressSteps } from "~/ui/ProgressSteps";
 import { revealProps } from "~/ui/reveal";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { AnswerList, DeviceSummary, EstimatePanel, useAccessoryLabel, WhatNext } from "./components/TradeInParts";
 import { TradeInPhotos } from "./components/TradeInPhotos";
 import { TradeInTrack } from "./components/TradeInTrack";
 import { combinedErrorT, useErrorText, useUsedT } from "./i18n";
-import { bindDashes, splitQualifier } from "./names";
+import { bindDashes, bindNameTokens, splitQualifier } from "./names";
 import { loadWizard, type WizardView } from "./trade-in.server";
 import { answeredQuestionSearch, filterGroups, TRADE_IN_PATH, tradeInRefFromInput, WIZARD_STEPS, wizardOrder } from "./wizard";
 import "./used.css";
@@ -86,12 +87,7 @@ const HANDOFF = "/support/assistant?handoff=1#handoff";
 const FORM_ID = "ti-form";
 /** Each step's h1: where focus goes after a move between steps (TradeIn). */
 const STEP_HEADING = { tabIndex: -1, "data-step-heading": "" } as const;
-/**
- * First-strong isolate (U+2068) and its end (U+2069) around an amount inside a sentence: «350,000 د.ع» keeps the
- * figure first in Arabic and Sorani (a left-to-right isolate would put the currency first there).
- */
-const FSI = String.fromCharCode(0x2068);
-const PDI = String.fromCharCode(0x2069);
+/** A no-break space: «350,000 د.ع» never splits (the tile's amount, a first-strong isolate: <bdi> keeps the figure first). */
 const NBSP = String.fromCharCode(0xa0);
 /** The start page's track card (the line under the intro links to it). */
 const TRACK_ID = "ti-track";
@@ -373,7 +369,7 @@ function DeviceStep({ view, rail, validDays }: { view: ViewOf<"device">; rail: R
     <div className="used-start">
       <header className="grid gap-2">
         {title}
-        <p className="max-w-[62ch] type-lead text-ink-2">{t("tradein.intro")}</p>
+        <p className="used-lead max-w-[62ch] text-ink-2">{t("tradein.intro")}</p>
         <p className="type-sm text-ink-2">
           {t("tradein.start.trackAsk")}{" "}
           <TextLink as="a" href={`#${TRACK_ID}`} inline>
@@ -393,7 +389,9 @@ function DeviceStep({ view, rail, validDays }: { view: ViewOf<"device">; rail: R
           <h2 id="ti-device" className="type-h2 text-ink">
             {t("tradein.device.title")}
           </h2>
-          <p className="type-read text-ink-2">{t("tradein.device.text")}</p>
+          <p className="used-read text-ink-2">{t("tradein.device.text")}</p>
+          {/* the tiles' «حتى …» are estimates: said once, here (round-1 fixes) */}
+          {view.groups.some((group) => group.devices.some((device) => device.upToIqd !== null)) ? <p className="used-read text-ink-2">{t("tradein.device.upToNote")}</p> : null}
         </div>
         <Form method="get" action={localePath(TRADE_IN_PATH)} role="search" onSubmit={(event) => event.preventDefault()}>
           <TextField
@@ -515,7 +513,7 @@ function PriceFactors() {
         <h2 id="ti-price" className="type-h2 text-ink">
           {t("tradein.start.price.title")}
         </h2>
-        <p className="max-w-[62ch] type-read text-ink-2">{t("tradein.start.price.text")}</p>
+        <p className="used-read max-w-[62ch] text-ink-2">{t("tradein.start.price.text")}</p>
       </div>
       <FactList
         className="used-factors"
@@ -542,23 +540,25 @@ function TradeInFaq({ validDays }: { validDays: number | null }) {
   const items = FAQ.filter((key) => key !== "estimate" || days !== null).map((key) => ({
     id: key,
     summary: t(`tradein.start.faq.${key}.q`),
-    content: <p className="max-w-[62ch] type-read text-ink-2">{t(`tradein.start.faq.${key}.a`, { days: days ?? "" })}</p>,
+    content: <p className="used-read max-w-[62ch] text-ink-2">{t(`tradein.start.faq.${key}.a`, { days: days ?? "" })}</p>,
   }));
   return (
     <section aria-labelledby="ti-faq" className="grid gap-3" {...revealProps()}>
       <h2 id="ti-faq" className="type-h2 text-ink">
         {t("tradein.start.faq.title")}
       </h2>
-      <Accordion exclusive items={items} />
+      {/* the questions at 16px (used.css .used-faq), the answers at the reading size */}
+      <Accordion exclusive items={items} className="used-faq" />
     </section>
   );
 }
 
 /**
- * A device the store buys, the before's picture tile (three to a row on phones): its photo on the product ground, the
- * name (three lines at most), the qualifier that tells two models apart on a meta line of its own («الطراز الأصلي
- * 2020» — v2 §4.11), and «حتى 350,000 د.ع تقديرياً»: the amount one unbreakable run (no-break spaces inside an
- * isolate), the word that says it is an estimate free to take the next line in a narrow tile.
+ * A device the store buys, the before's picture tile (three to a row on phones from 375): its photo on the product
+ * ground, the name (balanced, two lines), the qualifier that tells two models apart on a meta line of its own
+ * («الطراز الأصلي 2020» — v2 §4.11), and «حتى 350,000 د.ع» on one line at the tile's foot: the amount one isolated run
+ * that never splits (figure first in Arabic and Sorani), in its weight. That the amounts are estimates is said once,
+ * in the section's line (round-1 fixes: «تقديرياً» on every tile made them ragged), and to screen readers on each tile.
  */
 function DeviceTile({ device, current }: { device: TradeInDevice; current: boolean }) {
   const t = useUsedT();
@@ -574,14 +574,23 @@ function DeviceTile({ device, current }: { device: TradeInDevice; current: boole
     >
       <Niche as="span">{device.image ? <ProductImage image={device.image} alt="" sizes="(min-width: 768px) 160px, 30vw" /> : null}</Niche>
       <span className="used-device__name">
-        <BidiText text={bindDashes(name.base)} />
+        <BidiText text={bindNameTokens(bindDashes(name.base))} />
       </span>
       {name.qualifier ? (
         <span className="used-device__meta">
           <BidiText text={name.qualifier} />
         </span>
       ) : null}
-      <span className="used-device__up">{amount !== null ? t("tradein.device.upTo", { price: `${FSI}${amount}${PDI}` }) : t("tradein.device.afterInspection")}</span>
+      <span className="used-device__up">
+        {amount !== null ? (
+          <>
+            {fillNodes(t("tradein.device.upTo"), { price: <bdi className="used-device__iqd">{amount}</bdi> })}
+            <VisuallyHidden> {t("tradein.device.estimated")}</VisuallyHidden>
+          </>
+        ) : (
+          t("tradein.device.afterInspection")
+        )}
+      </span>
     </LocaleLink>
   );
 }
@@ -618,7 +627,7 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
       <h1 {...STEP_HEADING} className="type-h1 text-ink outline-none">
         {t(`tradein.q.${question}.title`)}
       </h1>
-      <span className="block pt-2 pb-2 type-sm font-normal text-ink-2">{t(`tradein.q.${question}.hint`)}</span>
+      <span className="used-read block pt-2 pb-2 text-ink-2">{t(`tradein.q.${question}.hint`)}</span>
     </>
   );
   return (
@@ -674,8 +683,8 @@ function PhotosStep({ view }: { view: ViewOf<"photos"> }) {
           {t("tradein.photos.title")} <span className="type-body text-ink-2">{t("tradein.photos.optional")}</span>
         </h1>
         <p className="type-body text-ink-2">{t("tradein.photos.text")}</p>
-        <p className="flex items-center gap-1.5 type-sm text-ink-2">
-          <Icon name="lock" size={16} className="shrink-0" />
+        <p className="used-read flex items-start gap-1.5 text-ink-2">
+          <Icon name="lock" size={16} className="mt-1.5 shrink-0" />
           {t("tradein.photos.private")}
         </p>
       </header>
@@ -722,7 +731,7 @@ function EstimateStep({ view }: { view: ViewOf<"estimate"> }) {
         <EstimatePanel range={null} reason={estimate.reason} payout headingLevel={2} />
       )}
       <section aria-labelledby="ti-summary" className="panel grid gap-2 p-5 2xl:hidden">
-        <h2 id="ti-summary" className="type-sm-strong text-ink">
+        <h2 id="ti-summary" className="used-title text-ink">
           {t("tradein.estimate.summary")}
         </h2>
         <AnswerList questions={view.questions} answers={view.answers} edit={view.edit} />
@@ -809,8 +818,8 @@ function InspectionStep({ view }: { view: ViewOf<"inspection"> }) {
         </h1>
         <p className="type-body text-ink-2">{t("tradein.contact.text")}</p>
         {address ? (
-          <p className="flex items-start gap-1.5 type-sm text-ink">
-            <Icon name="map-pin" size={16} className="mt-0.5 shrink-0" />
+          <p className="used-read flex items-start gap-1.5 text-ink">
+            <Icon name="map-pin" size={16} className="mt-1.5 shrink-0" />
             <span>
               <b className="font-semibold">{t("tradein.contact.where")}</b> {address}
             </span>

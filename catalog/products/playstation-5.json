@@ -199,9 +199,9 @@
   "images": [
     {
       "key": "playstation-5--1",
-      "file": ".cache/product-images/playstation-5/1.webp",
-      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/v2-PS5-Console-Disc-hero-recert?wid=2000",
-      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-console",
+      "file": ".cache/product-images/playstation-5/1.png",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/playstation-5-with-dualsense-front-product-shot-01-ps5-en-30jul20?$native--t$&fmt=png-alpha&bfc=off",
+      "sourcePage": "https://web.archive.org/web/20201202010308/https://www.playstation.com/en-us/ps5/",
       "kind": "hero",
       "alt": {
         "ar": "جهاز PS5 الأصلي بقارئ أقراص واقفاً على قاعدته بجانب يد DualSense",
@@ -209,13 +209,13 @@
         "ckb": "PS5ی ڕەسەن بە دڕایڤی دیسکەوە لەسەر بنکەکەی لە تەنیشت DualSense"
       },
       "credit": "Sony Interactive Entertainment",
-      "width": 2000, "height": 900, "transparent": false
+      "width": 1596, "height": 2000, "transparent": true
     },
     {
       "key": "playstation-5--2",
-      "file": ".cache/product-images/playstation-5/2.webp",
-      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-front-recert?wid=2000",
-      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console",
+      "file": ".cache/product-images/playstation-5/2.png",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/playstation-5-digital-edition-with-dualsense-front-product-shot-01-ps5-en-30jul20?$native--t$&fmt=png-alpha&bfc=off",
+      "sourcePage": "https://web.archive.org/web/20201202010308/https://www.playstation.com/en-us/ps5/",
       "kind": "angle",
       "alt": {
         "ar": "PS5 Digital Edition الأصلي من الأمام مع يد DualSense",
@@ -223,21 +223,21 @@
         "ckb": "PS5 Digital Editionی ڕەسەن لە پێشەوە لەگەڵ DualSense"
       },
       "credit": "Sony Interactive Entertainment",
-      "width": 2000, "height": 900, "transparent": false
+      "width": 1596, "height": 2000, "transparent": true
     },
     {
       "key": "playstation-5--3",
-      "file": ".cache/product-images/playstation-5/3.webp",
-      "sourceUrl": "https://media.direct.playstation.com/is/image/sierialto/V2-PS5-digital-edition-console-side-recert?wid=2000",
-      "sourcePage": "https://direct.playstation.com/en-us/buy-consoles/certified-refurbished-playstation5-digital-edition-console",
+      "file": ".cache/product-images/playstation-5/3.png",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$native--t$&fmt=png-alpha&bfc=off",
+      "sourcePage": "https://www.playstation.com/en-us/ps5/",
       "kind": "angle",
       "alt": {
-        "ar": "PS5 Digital Edition الأصلي من الجانب",
-        "en": "Original PS5 Digital Edition from the side",
-        "ckb": "PS5 Digital Editionی ڕەسەن لە لاوە"
+        "ar": "PS5 Digital Edition الأصلي بزاوية مائلة مع يد DualSense",
+        "en": "Original PS5 Digital Edition at an angle with a DualSense",
+        "ckb": "PS5 Digital Editionی ڕەسەن بە گۆشەیەکی لار لەگەڵ DualSense"
       },
       "credit": "Sony Interactive Entertainment",
-      "width": 2000, "height": 900, "transparent": false
+      "width": 1920, "height": 1080, "transparent": true
     },
     {
       "key": "playstation-5--4",

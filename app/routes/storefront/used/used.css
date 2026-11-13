@@ -11,6 +11,44 @@
     display: none;
   }
 
+  /* ───────────────────────────── reading text (v2.1 G7) ─────────────────────────────
+     Facts, notes, descriptions, a step's details: 16px with a 1.75 line on every width (the kit's --type-read role —
+     the kit has no utility class for it yet: docs/areas/used.md "Requests"). A short bold title over such text is 16 /
+     600, a note title's size. Only times and meta lines stay smaller. */
+  .used-read {
+    font: var(--type-read);
+  }
+  /* (a timeline step's title is a sentence that may take two lines: the reading line height, G7's 1.7 at least) */
+  .used-title {
+    font: 600 var(--fs-read) / var(--lh-body) var(--font-text);
+  }
+  /* the page's lead line (the kit's lead role) with the reading line height: G7 asks 1.7 at least on phones, the
+     role's is 1.65 */
+  .used-lead {
+    font: var(--type-lead);
+    line-height: var(--lh-read);
+  }
+  /* the kit's quiet note line, its words at the reading size (the estimate's «هذا سعر تقديري…») */
+  .used-line-note .note__text {
+    font: var(--type-read);
+  }
+  /* what the inspection checked, at the reading size (the kit's rows are 14px); the icon on the first line */
+  .used-checklist > .inspect__row {
+    font: var(--type-read);
+  }
+  .used-checklist > .inspect__row > svg {
+    margin-block-start: 4px;
+  }
+  /* this area's fact rows: the title at a note title's size over the kit's reading text */
+  :is(.used-facts, .used-factors) .fact__title {
+    font: 600 var(--fs-read) / 1.5 var(--font-text);
+  }
+  /* the questions people ask and «كل بنود الفحص (11)»: 16px rows (the kit's disclosure row is 15 / 1.45 on phones —
+     set on the summary by a utility, so the words' own span takes the size) */
+  :is(.used-faq, .used-disclosure) summary > span {
+    font: 600 var(--fs-read) / 1.5 var(--font-text);
+  }
+
   /* ───────────────────────────── /used: filters ───────────────────────────── */
   .used-filters {
     display: grid;
@@ -150,6 +188,51 @@
   .used-stage-light {
     --glow-inset: -8% -3%;
     --glow-size: 72% 70%;
+  }
+  /* The unit's stage as the product page's soft stage card (client note 5; round-1 fixes — the kit's <Gallery> stays
+     the kit's): the card's soft raise, the platform's ambient light painted into the stage's own ground (a low pool
+     under the device and a wide glow behind it), every corner round from 768; on phones it runs edge to edge under the
+     header and only its lower corners round off. The round clay keys sit over its top below 1024 (used-unit.tsx
+     StageKeys): back at the start, share at the end beside the kit's full-screen key. */
+  .used-stage {
+    position: relative;
+  }
+  .used-stage .stage--pdp {
+    border-radius: var(--r-xl);
+    box-shadow: var(--e-surface);
+  }
+  .used-stage[data-gel] .stage--pdp {
+    background:
+      radial-gradient(40% 14% at 50% 89%, rgb(var(--gel) / var(--glow-a-strong)), transparent 72%),
+      radial-gradient(70% 58% at 50% 48%, rgb(var(--gel) / var(--glow-a)), transparent 76%),
+      var(--product-ground);
+  }
+  @media (max-width: 47.99rem) {
+    .used-stage .stage--pdp {
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
+    }
+  }
+  .used-stage__keys {
+    position: absolute;
+    z-index: 3;
+    inset-block-start: 12px;
+    inset-inline: 12px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .used-stage__keys > * {
+    pointer-events: auto;
+  }
+  .used-stage__share {
+    margin-inline-end: calc(var(--target) + var(--s-2));
+  }
+  /* more contrast: the light goes (the kit hides every ambient light there) */
+  @media (prefers-contrast: more) {
+    .used-stage[data-gel] .stage--pdp {
+      background: var(--product-ground);
+    }
   }
 
   /* ───────────────────────────── /trade-in: the wizard ───────────────────────────── */
@@ -315,8 +398,40 @@
   }
   .used-how__text {
     max-inline-size: 26ch;
-    font: var(--type-sm);
+    font: var(--type-read);
     color: var(--ink-2);
+  }
+  /* phones (G7: the words at 16px did not fit a third of the screen): one step a row — the disc at the start, the title
+     and its words beside it, a line down to the next disc */
+  @media (max-width: 37.49rem) {
+    .used-how {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-4);
+    }
+    .used-how__step {
+      grid-template-columns: auto minmax(0, 1fr);
+      justify-items: start;
+      align-items: start;
+      column-gap: var(--s-4);
+      row-gap: 0;
+      text-align: start;
+    }
+    .used-how__mark {
+      grid-row: span 2;
+      margin-block-end: 0;
+    }
+    .used-how__title {
+      padding-block-start: var(--s-1);
+    }
+    .used-how__text {
+      max-inline-size: none;
+    }
+    .used-how__step:not(:last-child)::after {
+      inset-block-start: 60px;
+      inset-inline-start: 27px;
+      inline-size: 2px;
+      block-size: calc(100% + var(--s-4) - 64px);
+    }
   }
   @media (min-width: 37.5rem) {
     .used-how {
@@ -325,24 +440,30 @@
     .used-how__step:not(:last-child)::after {
       inline-size: calc(100% + var(--s-6) - 72px);
     }
-    .used-how__text {
-      font: var(--type-read);
-    }
   }
 
-  /* the device tiles — the before's picture tiles: three to a row on phones, four from 768 (the 720px column); the
-     photo on the product ground, the name (three lines at most), a qualifier line when the name has one, the estimate's
-     best case */
+  /* the device tiles — the before's picture tiles: three to a row on phones from 375 (two below it: a third of a 360
+     screen could not hold «حتى 365,000 د.ع» on one line), four from 768 (the 720px column); the photo on the product
+     ground, the name (balanced, two lines), a qualifier line when the name has one, and the estimate's best case on ONE
+     line at the tile's foot — the feet of a row align, whatever the names take (round-1 fixes: ragged tiles) */
   .used-devices {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--s-5) var(--s-3);
+  }
+  @media (min-width: 23.4375rem) {
+    .used-devices {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   @media (min-width: 48rem) {
     .used-devices {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: var(--s-6) var(--gap-card);
     }
+  }
+  .used-devices > li {
+    display: grid;
   }
   /* the platform's name beside its colour line (the before's group head) */
   .used-group {
@@ -351,9 +472,10 @@
     min-block-size: 24px;
   }
   .used-device {
-    display: grid;
-    align-content: start;
+    display: flex;
+    flex-direction: column;
     gap: var(--s-1);
+    min-inline-size: 0;
     border-radius: var(--r-lg);
     color: inherit;
     text-decoration: none;
@@ -365,23 +487,39 @@
     outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
+  /* the whole name, balanced: 13/600 in a third of a phone (every model's name in two lines at 390 — the 15px of the
+     card role took three), the card role where a tile is wider */
   .used-device__name {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    overflow: hidden;
     font: var(--type-card);
     color: var(--ink);
+    text-wrap: balance;
+    /* a model's short tokens are bound to the word before them (names.ts bindNameTokens): a run wider than the tile
+       still breaks rather than spill over its neighbour */
+    overflow-wrap: anywhere;
   }
-  /* the qualifier that tells two models apart («الطراز الأصلي 2020»): its own line, never cut by the name's clamp */
+  @media (min-width: 23.4375rem) and (max-width: 47.99rem) {
+    .used-device__name {
+      font: var(--type-xs-strong);
+    }
+  }
+  /* the qualifier that tells two models apart («الطراز الأصلي 2020»): its own line */
   .used-device__meta {
     font: var(--type-xs);
     color: var(--ink-2);
   }
+  /* «حتى 365,000 د.ع»: one 14px line at the tile's foot, the amount in its weight and ink (the section's line says once
+     that these are estimates); a longer amount wraps after «حتى», never inside the figure */
   .used-device__up {
-    font: var(--type-xs);
+    margin-block-start: auto;
+    padding-block-start: var(--s-1);
+    font: var(--type-sm);
     color: var(--ink-2);
+  }
+  .used-device__iqd {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--ink);
+    white-space: nowrap;
   }
   /* the photo's 1.03 growth on hover is the kit's own (`a:hover .niche .render`, fine pointers only) */
   @media (hover: hover) and (pointer: fine) {
@@ -444,7 +582,8 @@
     padding-inline: var(--s-3);
     border-radius: var(--r-full);
     background: color-mix(in oklab, currentColor 12%, transparent);
-    font: var(--type-sm-strong);
+    /* the validity is a fact to notice, at the reading size (G7; «انتهت صلاحية هذا العرض في …» is a sentence) */
+    font: 600 var(--fs-read) / 1.5 var(--font-text);
   }
   /* an estimate past its date: the warning's ink (never colour alone — the hourglass and the words say it) */
   .used-date--warn {

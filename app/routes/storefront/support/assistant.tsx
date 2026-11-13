@@ -39,8 +39,10 @@ import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
 import { Chip } from "~/ui/Chip";
+import { cx } from "~/ui/cx";
 import { DemoNote } from "~/ui/DemoNote";
 import { Disclosure } from "~/ui/Disclosure";
+import { EntryCard } from "~/ui/EntryCard";
 import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Note } from "~/ui/Note";
@@ -50,7 +52,7 @@ import { TextLink } from "~/ui/TextLink";
 import { isFailure, keepFormOnFailure, revalidateAfter } from "./client";
 import { Conversation } from "./components/Conversation";
 import { HandoffForm, HandoffReceiptCard } from "./components/HandoffPanel";
-import { DeviceArt, GuideList, Name, PlatformName, SupportNav } from "./components/parts";
+import { DeviceArt, GuideList, Name, PlatformName, SafetyNote, SupportNav } from "./components/parts";
 import { failed, formFiles, formKey, photoStore, PRIVATE_PAGE_HEADERS, readSupportForm, supportWho, textFields } from "./support.server";
 import "./support.css";
 
@@ -139,6 +141,11 @@ export default function Assistant({ loaderData, actionData }: Route.ComponentPro
   const talking = !receipt && !view.handoff;
   const safety = safetyTopic(view);
   const showAside = view.device !== null;
+  // Before a device is chosen the side column (from 1024) holds the ways to a person and a repair, and the safety note
+  // open — the first desktop screen was half blank (round-1 fixes). The main column's own staff key and its collapsed
+  // safety line give way to them there; below 1024 nothing changes.
+  const sideStart = talking && view.device === null;
+  const restart = view.turns.length > 1;
 
   return (
     <div className="page sup">
@@ -179,7 +186,7 @@ export default function Assistant({ loaderData, actionData }: Route.ComponentPro
             key={safety ? "safety-open" : "safety"}
             defaultOpen={safety}
             variant="panel"
-            className="sup-safety"
+            className={cx("sup-safety", sideStart && "lg:hidden")}
             summary={
               <span className="sup-safety__summary">
                 <span className="sup-tone-disc" aria-hidden="true">
@@ -203,13 +210,13 @@ export default function Assistant({ loaderData, actionData }: Route.ComponentPro
           ) : null}
 
           {talking ? (
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <div className={cx("flex flex-wrap items-center gap-x-6 gap-y-2", sideStart && !restart && "lg:hidden")}>
               {view.stage !== "done" ? (
-                <Key as={HrefLink} to={staffHref} icon="chat-circle">
+                <Key as={HrefLink} to={staffHref} icon="chat-circle" className={sideStart ? "lg:hidden" : undefined}>
                   {t("assistant.done.staff")}
                 </Key>
               ) : null}
-              {view.turns.length > 1 ? (
+              {restart ? (
                 <TextLink as={LocaleLink} to="/support/assistant" arrow={false} icon="arrow-counter-clockwise">
                   {t("assistant.done.restart")}
                 </TextLink>
@@ -252,6 +259,15 @@ export default function Assistant({ loaderData, actionData }: Route.ComponentPro
                 </div>
               ) : null}
             </div>
+          </aside>
+        ) : sideStart ? (
+          // from 1024, before a device: the before's row cards to a person and to a repair, and the safety note open
+          <aside aria-label={t("help.paths.label")} className="sup-assist__aside max-lg:hidden">
+            <div className="sup-paths__list">
+              <EntryCard as={HrefLink} to={staffHref} icon="chat-circle" title={t("help.paths.staff.title")} text={t("help.paths.staff.text")} />
+              <EntryCard to="/support/repair" icon="wrench" title={t("help.paths.repair.title")} text={t("help.paths.repair.text")} />
+            </div>
+            <SafetyNote title={t("assistant.safety.title")}>{t("assistant.safety.text")}</SafetyNote>
           </aside>
         ) : null}
 

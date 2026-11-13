@@ -1,5 +1,5 @@
 /**
- * /used — «مستعمل ومفحوص», the used marketplace (Design System v2 §6.8, §4.12; listing behaviour §6.3). Every row is
+ * /used — «المستعمل والمفحوص», the used marketplace (Design System v2 §6.8, §4.12; listing behaviour §6.3). Every row is
  * one inspected unit: its grade, its battery when measurable, its store warranty and — always — what its picture is
  * (the unit's own photo once staff published one, else «صورة توضيحية»). No add to cart from the list: the unit's page
  * shows the inspection first.

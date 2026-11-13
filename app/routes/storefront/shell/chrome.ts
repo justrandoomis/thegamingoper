@@ -1,17 +1,19 @@
 /**
  * Pure decisions behind the shell's chrome (client-safe, unit-tested in tests/shell.test.ts):
  *
- *   shellChrome(matches, { errored, path })  which shell a page gets (store · checkout · task), its bars and the
- *                                             offline banner's words
+ *   shellChrome(matches, { errored, path, search })  which shell a page gets (store · checkout · task), its bars and
+ *                                             the offline banner's words (a handle's `chrome` may depend on the URL)
  *   backFallback(path)                        where the task header's back key leads when there is no page to go back to
  *   canonicalSearch(search)                   a query string exactly as the server renders it (hydration-safe hrefs)
  *   tabOf(path)                               which tab of the tab bar a page belongs to
  *   checkoutRail(search)                      the checkout bar's step rail from `?step=`
- *   searchMode(path, { errored })             the header's search FIELD, or only the round search KEY (v2.1 §2.7)
+ *   searchMode(path, { notFound })            the header's search FIELD, or only the round search KEY (v2.1 §2.7)
  *   megaPlan(platform) / megaFeature(platform)  what a platform's mega menu lists, and the product it features
  *   megaWords(t, slug, name)                  the menu's «كل أجهزة …» / «… المستعملة» words, one string per platform
  *   suggestionKind(href)                      what a search suggestion points at (its row's icon and words)
  *   suggestionMeta(item)                      a product suggestion's meta line: its qualifier, then its kind
+ *   suggestionState(answer, typed)            what the suggestion list shows for typed words (rows, a count, «لا
+ *                                             اقتراحات لـ …», or nothing yet)
  *   sheetCategories(categories)               the departments of the categories sheet, in order
  *   errorKind(error, online)                  which error panel a failure gets (offline is never a 500)
  *   missingProduct(error)                     the words of a product address that led nowhere (the product 404)
@@ -34,7 +36,7 @@ import type { NavCategory, NavLink, NavPlatform, ShellChromeKind, ShellHandle } 
 export type OfflineWords = "form" | "store";
 
 /**
- * The policy pages the footer links (`/policies/<slug>`, content area), by column (Design System v2 §5.9): الدعم —
+ * The policy pages the footer links (`/policies/<slug>`, content area), by column (Design System v2 §5.9): مركز الدعم —
  * shipping, returns, warranty; عن طمطم — privacy, terms; طرق الدفع — payment. Every slug of the content area's
  * POLICY_SLUGS is here exactly once (tests/shell.test.ts). Each label is `footer.<slug>` in the shell's strings.
  */
@@ -44,12 +46,13 @@ export const FOOTER_POLICIES = {
   payments: ["payment"],
 } as const satisfies Record<"support" | "about" | "payments", readonly PolicySlug[]>;
 
-/** The one-line footer of checkout and task flows (§5.8): الإرجاع · الخصوصية · الشروط · الدعم. */
+/** The one-line footer of checkout and task flows (§5.8): الإرجاع · الخصوصية · الشروط · مركز الدعم. */
 export const TASK_FOOTER_LINKS = ["/policies/returns", "/policies/privacy", "/policies/terms", "/support"] as const;
 
 /**
- * Each one-line footer link's words (keys of the shell's strings). Support is named with the NAVIGATION term «الدعم»
- * / "Support" (v2 §9 glossary): «مركز الدعم» is the title of the page it opens, not a link's name.
+ * Each one-line footer link's words (keys of the shell's strings). Support is «مركز الدعم» / "Support centre", the
+ * place's one name everywhere — header, footers, the categories sheet, the checkout bar's help key (lead decision
+ * 2026-11-13; only the support page's own h1 reads «الدعم والمساعدة»).
  */
 export const TASK_FOOTER_LABELS = {
   "/policies/returns": "footer.returns",
@@ -89,17 +92,19 @@ const SITE_PATH = /^\/(?!\/)/;
  * The chrome the matched routes ask for. `errored`: the storefront layout's ErrorBoundary is rendering (a page below it
  * threw, or the layout's own loader did) — the pages' handles no longer apply, because their components (and their
  * task bars) are not on screen: an unknown product URL gets the store shell with its tab bar. `path` (locale-less):
- * `/checkout` is the checkout shell even before its route declares `chrome: "checkout"`.
+ * `/checkout` is the checkout shell even before its route declares `chrome: "checkout"`. A handle's `chrome` may be a
+ * function of the address (`path`, `search`): the trade-in start page is a store page, its wizard steps a task flow.
  */
-export function shellChrome(matches: readonly ShellMatch[], options: { errored?: boolean; path?: string } = {}): ShellChrome {
+export function shellChrome(matches: readonly ShellMatch[], options: { errored?: boolean; path?: string; search?: string } = {}): ShellChrome {
   const considered = options.errored ? matches.slice(0, matches.findIndex((match) => match.id === LAYOUT_ROUTE_ID) + 1) : matches;
-  let declared: Exclude<ShellChromeKind, "store"> | null = null;
+  let declared: ShellChromeKind | null = null;
   let ownBar = false;
   let back: string | null = null;
   let offline: OfflineWords | null = null;
   for (const match of considered) {
     const shell = (match.handle as ShellHandle | null | undefined)?.shell;
-    if (shell?.chrome === "checkout" || shell?.chrome === "task") declared = shell.chrome;
+    const asked = declaredChrome(shell?.chrome, options.path ?? "", options.search ?? "");
+    if (asked) declared = asked;
     if (shell?.tabBar === false) ownBar = true;
     if (typeof shell?.back === "string" && SITE_PATH.test(shell.back)) back = shell.back;
     if (shell?.offline === "form" || shell?.offline === "store") offline = shell.offline;
@@ -107,6 +112,12 @@ export function shellChrome(matches: readonly ShellMatch[], options: { errored?:
   const chrome: ShellChromeKind = declared ?? (!options.errored && options.path !== undefined && CHECKOUT_PATH.test(options.path) ? "checkout" : "store");
   const forms = chrome !== "store" || (!options.errored && options.path !== undefined && ACCOUNT_PATH.test(options.path));
   return { chrome, tabBar: chrome === "store", task: chrome === "task" || (chrome === "store" && ownBar), back, offline: offline ?? (forms ? "form" : "store") };
+}
+
+/** A handle's `chrome` as a shell kind: the word itself, or what its function answers for this address (else none). */
+function declaredChrome(chrome: NonNullable<ShellHandle["shell"]>["chrome"], path: string, search: string): ShellChromeKind | null {
+  const kind = typeof chrome === "function" ? chrome({ path, search: canonicalSearch(search) }) : chrome;
+  return kind === "store" || kind === "checkout" || kind === "task" ? kind : null;
 }
 
 /**
@@ -148,11 +159,13 @@ const SEARCH_KEY_PATH = /^\/(cart|checkout|order|track|support|trade-in|account|
 /**
  * Which search the header shows on a page (locale-less path), decided here for every width: the FIELD on pages for
  * finding products — home, platform / category / search listings, compare, products, device hubs, the used list and its
- * units, landing pages — and on every error page (`errored`: the 404's one search field is the header's); only the
- * round search KEY on the pages above (SEARCH_KEY_PATH), which opens the same search, so it stays one tap away.
+ * units, landing pages; only the round search KEY on the pages above (SEARCH_KEY_PATH), which opens the same search, so
+ * it stays one tap away. An error panel keeps its address's search (`errored` changes nothing: an offline /support
+ * keeps the key, a product that failed keeps the field) — except the not-found view (`notFound`), which has its own
+ * search field: the header shows the key there, so the page has ONE field, not two named «ابحث في المتجر».
  */
-export function searchMode(path: string, options: { errored?: boolean } = {}): SearchMode {
-  if (options.errored) return "field";
+export function searchMode(path: string, options: { errored?: boolean; notFound?: boolean } = {}): SearchMode {
+  if (options.notFound) return "key";
   return SEARCH_KEY_PATH.test(path) ? "key" : "field";
 }
 
@@ -429,6 +442,21 @@ export function suggestionKind(href: string): SuggestionKind {
 export function suggestionMeta(item: { qualifier?: string; kindLabel?: string; hint?: string }): string {
   const kind = item.kindLabel?.trim() || item.hint?.trim() || "";
   return [item.qualifier?.trim() ?? "", kind].filter((part) => part !== "").join(" · ");
+}
+
+/**
+ * What the suggestion list shows for typed words (`typed`, two characters or more), from the endpoint's last answer
+ * (`q`: the words it answered, trimmed; `rows`: how many rows it sent; `total`: how many products /search lists):
+ *   rows    the rows (then «اعرض كل النتائج») — kept while newer words are on their way
+ *   count   no rows, but /search lists products for these words: «اعرض كل النتائج (N)» alone
+ *   none    the store has nothing for exactly these words (`total: 0`): «لا اقتراحات لـ «…»» · «ابحث في كل المتجر»
+ *           — the list used to stay shut, and the shopper got no answer at all (QA 2026-11-13)
+ *   wait    no answer for these words yet (or none will come: no endpoint, a failure): nothing
+ */
+export function suggestionState(answer: { q: string | null; rows: number; total: number | null }, typed: string): "rows" | "count" | "none" | "wait" {
+  if (answer.rows > 0) return "rows";
+  if (answer.q === null || answer.q !== typed.trim() || answer.total === null) return "wait";
+  return answer.total > 0 ? "count" : "none";
 }
 
 /** The room a focused control must stay in, in viewport pixels: under the sticky top, above the fixed bottom bar. */

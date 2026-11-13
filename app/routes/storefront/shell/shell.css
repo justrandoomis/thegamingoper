@@ -104,8 +104,17 @@
   }
 
   /* ───────────────────────────── the demo strip: amber, scrolls away, gone from 1024 (the chip takes over) ───────────────────────────── */
+  /* a plain in-page link around the kit's strip (./Banners), the safe area above it amber too. 44px tall: the kit's 28px
+     strip was the one target of the store under 44px (QA 2026-11-13) */
   .shell-strip {
+    display: block;
     padding-block-start: var(--safe-top);
+    background: var(--demo-bg);
+    color: var(--demo-ink);
+    text-decoration: none;
+  }
+  .shell-strip > .demo-strip {
+    min-block-size: var(--target);
   }
   .shell-strip:focus-visible {
     outline-offset: -3px;
@@ -156,6 +165,15 @@
       gap: var(--s-6);
       margin-block-start: var(--shell-lead);
     }
+  }
+  /* Focus inside the sticky bars never scrolls the page. The root's scroll padding (base.css) keeps --shell-top + 12px
+     clear for the PAGE's controls; the bars' own keys sit inside that band, so the browser took each of them for a
+     hidden control and centred it — Shift+Tab from the content up through the header scrolled the page ~420px a step
+     (QA 2026-11-13; it never even showed the key, the bar moving with the page). Their scroll boxes are moved down by
+     that band: always "in view". A strip link half above the screen (the page scrolled 1–47px) still brings the top
+     back. */
+  :is(.shell-header, .shell-cobar) :is(a[href], button, input, [tabindex]) {
+    scroll-margin-block: calc(-1 * (var(--shell-top) + 12px)) calc(var(--shell-top) + 12px);
   }
 
   /* ── the utility strip (from 1024): the before's quiet row of facts and service links, back (client note 1) ── */
@@ -236,14 +254,18 @@
     align-items: center;
     gap: var(--s-5);
   }
-  /* 32px links in the 35px row, each with a 44px hit area over the row's edges (the main row's lead keeps them clear) */
+  /* 32px links in the 35px row, at least 44px wide, each with a 44px hit area that reaches DOWN into the main row's
+     12px lead: the strip is the top of the page, so a hit area above it was off the screen (38px were left; QA
+     2026-11-13) */
   .shell-utility__link,
   .shell-langs__link,
   .shell-theme {
     position: relative;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    min-inline-size: var(--target);
     min-block-size: 32px;
     color: var(--ink-2);
     font: var(--type-xs);
@@ -253,7 +275,8 @@
   :is(.shell-utility__link, .shell-langs__link, .shell-theme)::after {
     content: "";
     position: absolute;
-    inset: -6px -4px;
+    inset-block: -1px -11px;
+    inset-inline: -4px;
   }
   .shell-utility__link > svg {
     flex: none;
@@ -267,18 +290,14 @@
       color: var(--ink);
     }
   }
-  /* the languages: each in its own script, the current one in ink; at least 36px wide, so even «کوردی» (29px of
-     words) keeps a 44 × 44 hit area, and the hit areas meet without overlapping */
+  /* the languages: each in its own script, the current one in ink; 44px wide at least (even «کوردی», 29px of words),
+     and with the 8px gap their hit areas meet without overlapping */
   .shell-langs {
     display: inline-flex;
     align-items: center;
     gap: var(--s-2);
     padding-inline-start: var(--s-5);
     border-inline-start: 1px solid var(--line-2);
-  }
-  .shell-langs__link {
-    justify-content: center;
-    min-inline-size: 36px;
   }
   .shell-langs__link[aria-current] {
     color: var(--ink);
@@ -1314,11 +1333,14 @@
       display: block;
     }
   }
-  /* the kit's step rail (<ProgressSteps>), in the bar: centred and at most 480 wide. All the labels from 600 (they do
-     not fit beside the keys and the tag below that); below 600 the numbers and the current step's label (§4.22, §5.8)
-     — from 360 up in every language: only the current step gives way (the utilities block at the end of this file),
-     its words cut at their logical end in the rare case they still do not fit, so nothing ever runs under the demo
-     tag; below 360 (320 reflow, 200% zoom) the numbers alone (the page's <h1> names the step). */
+  /* the kit's step rail (<ProgressSteps>), in the bar: centred and at most 480 wide. From 600 every step's words beside
+     its disc. Below 600 every step's words UNDER its disc, 13px (the before's labelled rail — client note 8 asked for
+     more arrangement; the phone rail named only the current step and cut Sorani's «پێداچوونـ…»): from 390 in every
+     language, from 360 in Arabic. Below 390 English's and Sorani's longer words do not all fit beside "Demo order" /
+     «داواکاریی تاقیکاری»: there only the current step keeps its words (under its disc). Below 360 (320 reflow, 200%
+     zoom) the numbers alone, on one line (the page's <h1> names the step). Only the current step gives way when there
+     is still not enough room (the utilities block at the end of this file): its words are cut at their logical end,
+     never run under the demo tag. Hidden labels stay readable for assistive technology. */
   .shell-cobar__steps {
     display: flex;
     flex: 1 1 auto;
@@ -1340,9 +1362,8 @@
       gap: var(--s-2);
     }
   }
-  /* Hidden labels stay readable for assistive technology. */
-  @media (max-width: 37.49rem) {
-    .shell-cobar__steps .step:not([aria-current="step"]) .step__label {
+  @media (max-width: 24.37rem) {
+    .shell-cobar__steps:not(:lang(ar)) .step:not([aria-current="step"]) .step__label {
       position: absolute;
       inline-size: 1px;
       block-size: 1px;
@@ -1598,6 +1619,11 @@
     align-content: start;
     gap: var(--s-3);
   }
+  /* the lockup link is as wide as the logo (a grid item stretched it across the column: a tap anywhere on the row
+     went home) */
+  .shell-footer__brand .shell-lockup {
+    justify-self: start;
+  }
   .shell-footer__brand .shell-lockup__mark {
     display: block;
     block-size: 32px;
@@ -1761,6 +1787,17 @@
   .shell-footer__demo {
     flex: 1 1 32ch;
   }
+  /* phones: the footer's sentences are reading text (v2.1 G7, 16px / 1.75) — the brand line, the payment and currency
+     notes and the demo statement were 13–14px / 1.5 (QA 2026-11-13); the categories sheet's currency notes too. The
+     links, the © and the photo credit stay small. */
+  @media (max-width: 47.99rem) {
+    .shell-footer__line,
+    .shell-footer__note,
+    .shell-pref__note,
+    :is(.shell-footer__demo, .shell-tfoot) .demo-line {
+      font: var(--type-read);
+    }
+  }
   .shell-mega__well > picture,
   .shell-mega__thumb > picture,
   .shell-suggest__thumb > picture {
@@ -1869,17 +1906,24 @@
     place-items: center;
     block-size: 32px;
     color: var(--red-ink);
+    transition: scale var(--t-micro) var(--ease-settle);
+  }
+  /* under a fine pointer the tile lifts (the kit's .lift on the tile, as every card) and its icon swells a little
+     (v2.1 G6: keys and cards answer the pointer; the tiles were the one card that did not) */
+  @media (hover: hover) and (pointer: fine) {
+    .shell-itile:hover .shell-itile__ico {
+      scale: 1.08;
+    }
   }
   /* the name inside its tile, whatever the language: a word longer than the tile breaks (hyphenated where the browser
-     can) rather than run out of it */
+     can) rather than run out of it. NEVER clipped: a 3-line clamp clipped at its box, and Arabic ink reaches past the
+     line box — the dots under a final «ي» went missing at every width («أيدى التحكم», «الواقع الافتراضى»; QA
+     2026-11-13), and a 4th line's marks leaked over the 3rd. The names are short; a long one takes another line. */
   .shell-itile__name {
-    display: -webkit-box;
+    display: block;
     max-inline-size: 100%;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
     font: var(--type-sm-strong);
-    line-height: 1.3;
+    line-height: 1.45;
     overflow-wrap: anywhere;
     hyphens: auto;
   }
@@ -1996,6 +2040,7 @@
     .shell-mega__arrow,
     .shell-tab__ico,
     .shell-tabbar__pill,
+    .shell-itile__ico,
     .shell-progress {
       transition: none;
     }
@@ -2023,7 +2068,8 @@
   [data-motion="reduced"] .shell-fcol__toggle > svg,
   [data-motion="reduced"] .shell-mega__arrow,
   [data-motion="reduced"] .shell-tab__ico,
-  [data-motion="reduced"] .shell-tabbar__pill {
+  [data-motion="reduced"] .shell-tabbar__pill,
+  [data-motion="reduced"] .shell-itile__ico {
     transition: none;
   }
   [data-motion="reduced"] .shell-progress[data-state] > span {
@@ -2067,6 +2113,55 @@
     .shell-cobar {
       margin-block-end: -1px;
       border-block-end: 1px solid CanvasText;
+    }
+  }
+
+  /* ───────────────────────────── print (QA 2026-11-13) ─────────────────────────────
+   * A printed page is the page: the logo (and the demo strip in demo mode), the content, the footer's contact row, the
+   * © and the demo statement. Left out: what only works on a screen and what stays on it — the tab bar, a page's task
+   * bar and the skip link (fixed: Chrome printed them on every sheet, over the content), the offline banner, the
+   * utility strip, the nav row, the menus, the header's keys and search, the footer's link columns and switches, the
+   * checkout bar's back and help keys, the one-line footer's links. The header and the checkout bar flow with the page
+   * (sticky repeated them), without glass. An order receipt printed on 3 sheets, a product on 6. */
+  @media print {
+    :root:has(.shell) {
+      --shell-bottom: 0px;
+    }
+    .shell-skip,
+    .shell-tabbar,
+    .shell-taskbar,
+    .shell-offline,
+    .shell-utility,
+    .shell-navrow,
+    .shell-tools,
+    .shell-pill,
+    .shell-search[data-variant="header"],
+    .shell-task,
+    .shell-header__glass,
+    .shell-progress,
+    .shell-scrim,
+    .shell-mega,
+    .shell-cobar__back,
+    .shell-cobar__help,
+    .shell-footer__cols,
+    .shell-footer__prefs,
+    .shell-tfoot__link {
+      display: none !important;
+    }
+    .shell-header,
+    .shell-cobar {
+      position: static;
+    }
+    .shell-cobar {
+      background: none;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    /* the task header may have put the page's title in the lockup's place: the logo prints */
+    .shell-header .shell-bar > .shell-lockup {
+      display: inline-flex !important;
+      scale: none;
     }
   }
 }
@@ -2131,6 +2226,29 @@
       position: absolute;
       inset-block: 0;
       inset-inline: -10px;
+    }
+  }
+  /* 360–599: each step's words under its disc (13px; the current one 600), the joins on the discs' centre line; a step
+     is 46px tall (2 + 24 + 2 + 16 + 2) in the 56px bar, a done step's link a 44px target */
+  @media (min-width: 22.5rem) and (max-width: 37.49rem) {
+    .shell-cobar__steps .steps > li {
+      align-items: flex-start;
+    }
+    .shell-cobar__steps .step {
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding-block: 2px;
+    }
+    .shell-cobar__steps .step__label {
+      font: var(--type-xs);
+      line-height: 16px;
+    }
+    .shell-cobar__steps .step[aria-current="step"] .step__label {
+      font-weight: 600;
+    }
+    .shell-cobar__steps .step__sep {
+      margin-block-start: 13.5px;
     }
   }
 }

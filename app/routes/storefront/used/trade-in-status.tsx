@@ -215,14 +215,17 @@ function Tracking({ view, created, viaLink }: { view: StatusView; created: boole
       {created ? <Created phoneMasked={view.phoneMasked} /> : null}
 
       {/* Phones: one column in the order that matters (the wrappers step aside: `contents` + `order`); from 1024 the
-          decision's column (7: the offer or the estimate) and the request's column (5: the timeline, the device, the
-          inspection's time). */}
+          decision's column (7: the offer or the estimate, what the inspection found) and the request's column (5: the
+          answer to an open offer first — beside the offer band, on the first screen at 1024 and 1440 (round-1 fixes:
+          «اقبل العرض» sat at y≈1276 under the inspection's lines) — then the timeline, the device, the inspection's
+          time). The reading order stays: the offer, what the inspection found, the answer. */}
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-12 lg:items-start lg:gap-10">
         <div className="grid min-w-0 content-start gap-6 max-lg:order-1 lg:col-span-7">
           {view.offer ? <Offer view={view} viaLink={viaLink} /> : <EstimatePanel range={view.estimate} reason={view.inspectionReason} pending={beforeInspection} headingLevel={2} />}
         </div>
 
-        <div className="grid min-w-0 content-start gap-6 max-lg:contents lg:col-span-5">
+        <div className="grid min-w-0 content-start gap-6 max-lg:contents lg:col-span-5" data-column="request">
+          {view.offer && answering(view, viaLink) ? <OfferAnswer view={view} className="max-lg:order-1" /> : null}
           <Timeline view={view} className="max-lg:order-2" />
           <DeviceCard view={view} className="max-lg:order-3" />
           <VisitCard view={view} className="max-lg:order-4" />
@@ -267,8 +270,8 @@ function Created({ phoneMasked }: { phoneMasked: string }) {
         {t("track.created.title")}
       </h2>
       <div className="grid gap-3 max-sm:col-span-2">
-        <p className="type-read text-ink">{t("track.created.text", { phone: `${LRI}${phoneMasked}${PDI}` })}</p>
-        <p className="type-sm text-ink-2">{t("track.created.save")}</p>
+        <p className="used-read text-ink">{t("track.created.text", { phone: `${LRI}${phoneMasked}${PDI}` })}</p>
+        <p className="used-read text-ink-2">{t("track.created.save")}</p>
         <div className="flex flex-wrap items-center gap-3">
           <Key size="sm" icon={copied === "done" ? "check" : "copy"} onClick={() => void copy()}>
             {t("track.created.copy")}
@@ -328,8 +331,8 @@ function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
             <Icon name="hand-coins" size={28} />
           </span>
         </div>
-        <p className="type-read">{t("track.offer.text")}</p>
-        {view.estimate ? <p className="type-sm">{t("track.offer.firstEstimate", { range: rangeText(view.estimate, t, f) })}</p> : null}
+        <p className="used-read">{t("track.offer.text")}</p>
+        {view.estimate ? <p className="used-read">{t("track.offer.firstEstimate", { range: rangeText(view.estimate, t, f) })}</p> : null}
         {showDate && offer.expiresAt !== null ? (
           <p className="used-date">
             <Icon name={offer.expired ? "hourglass" : "calendar"} size={18} />
@@ -345,7 +348,7 @@ function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
           <SuccessMark size={56} className="sm:row-span-2 sm:self-start" />
           <p className="type-h3 text-ink">{t("track.offer.acceptedTitle")}</p>
           <div className="grid gap-1 max-sm:col-span-2">
-            <p className="type-read text-ink">{t("track.offer.acceptedNext")}</p>
+            <p className="used-read text-ink">{t("track.offer.acceptedNext")}</p>
             {view.payoutMethod ? <p className="type-sm-strong text-ink">{t("track.offer.payoutChosen", { method: t(`track.payout.${view.payoutMethod}`) })}</p> : null}
           </div>
         </div>
@@ -355,9 +358,8 @@ function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
 
       {view.inspection ? <InspectionResult inspection={view.inspection} /> : null}
 
-      {view.status === "accepted" || view.status === "paid" || view.status === "declined" ? null : view.canRespond && viaLink ? (
-        <OfferAnswer view={view} />
-      ) : view.status === "offered" && !offer.expired ? (
+      {/* the answer itself heads the request's column (Tracking) */}
+      {view.status === "accepted" || view.status === "paid" || view.status === "declined" || answering(view, viaLink) ? null : view.status === "offered" && !offer.expired ? (
         <Note
           icon="link"
           action={
@@ -386,11 +388,17 @@ function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
   );
 }
 
+/** The shopper answers here: an open offer, and the page opened with the link or by its account. */
+function answering(view: StatusView, viaLink: boolean): boolean {
+  return view.status !== "accepted" && view.status !== "paid" && view.status !== "declined" && view.canRespond && viaLink;
+}
+
 /**
  * The answer: how to be paid (raised option cards, each with its icon) and «اقبل العرض» / «ارفض العرض». The keys are
- * ONE component drawn in two places — under the cards from 1024, in the task bar below it — never both on screen.
+ * ONE component drawn in two places — under the cards from 1024, in the task bar below it — never both on screen. From
+ * 1024 the card heads the request's column, beside the offer band; on phones it follows what the inspection found.
  */
-function OfferAnswer({ view }: { view: StatusView }) {
+function OfferAnswer({ view, className }: { view: StatusView; className?: string }) {
   const t = useUsedT();
   const errorText = useErrorText();
   const submit = useSubmit();
@@ -423,7 +431,7 @@ function OfferAnswer({ view }: { view: StatusView }) {
   const keys = (compact: boolean) => <OfferKeys compact={compact} accepting={pending && navigation.formData?.get("decision") === "accept"} onDecline={() => setDeclining(true)} />;
   return (
     <>
-      <Form id={ANSWER_FORM} ref={form} method="post" className="panel grid gap-5 p-5 lg:p-6" onSubmit={onSubmit} onChange={() => setMissing(false)}>
+      <Form id={ANSWER_FORM} ref={form} method="post" className={cx("panel grid gap-5 p-5 lg:p-6", className)} onSubmit={onSubmit} onChange={() => setMissing(false)}>
         <input type="hidden" name="intent" value="respond" />
         <FieldGroup legend={t("track.offer.payout")} required error={payoutError}>
           <OptionCard
@@ -480,6 +488,16 @@ function OfferKeys({ compact, accepting, onDecline }: { compact: boolean; accept
   const reasonId = useId();
   // Offline the answer cannot leave the device (it would end on the error page): both keys go flat, with the reason.
   const offline = { disabled: !online, "aria-describedby": online ? undefined : reasonId };
+  const decline = (
+    <Key type="button" onClick={onDecline} className={compact ? "shrink-0" : "w-full"} {...offline}>
+      {t(compact ? "track.offer.declineShort" : "track.offer.decline")}
+    </Key>
+  );
+  const accept = (
+    <Key type="submit" form={ANSWER_FORM} name="decision" value="accept" variant="primary" iconEnd="check" loading={accepting} className={compact ? "min-w-0 flex-1" : "w-full"} {...offline}>
+      {t(compact ? "track.offer.acceptShort" : "track.offer.accept")}
+    </Key>
+  );
   return (
     // the column is the bar's width, never the keys' (at 320 in Sorani the accept key ran 43px off the screen — review
     // 2026-11-13; `.used-keys` in used.css tightens the keys there)
@@ -490,14 +508,19 @@ function OfferKeys({ compact, accepting, onDecline }: { compact: boolean; accept
           {t("track.offer.offline")}
         </p>
       )}
-      <div className="used-keys flex items-center gap-2 min-[22.5rem]:gap-3">
-        <Key type="button" onClick={onDecline} className="shrink-0" {...offline}>
-          {t(compact ? "track.offer.declineShort" : "track.offer.decline")}
-        </Key>
-        <Key type="submit" form={ANSWER_FORM} name="decision" value="accept" variant="primary" iconEnd="check" loading={accepting} className={compact ? "min-w-0 flex-1" : undefined} {...offline}>
-          {t(compact ? "track.offer.acceptShort" : "track.offer.accept")}
-        </Key>
-      </div>
+      {compact ? (
+        <div className="used-keys flex items-center gap-2 min-[22.5rem]:gap-3">
+          {decline}
+          {accept}
+        </div>
+      ) : (
+        // the request's column from 1024 (round-1 fixes): the primary on top, both whole-width — side by side the
+        // column's 312px cut the primary's words to «اقبل العر…» at 1024
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
+          {accept}
+          {decline}
+        </div>
+      )}
     </div>
   );
 }
@@ -516,8 +539,9 @@ function InspectionResult({ inspection }: { inspection: NonNullable<StatusView["
   const ordered = [...failedChecks, ...inspection.checks.filter((check) => check.ok)];
   const counted = inspection.passed !== null && inspection.failed !== null ? inspection.passed + inspection.failed : null;
   const allChecks = t("track.inspection.allChecks", { count: ordered.length, n: f.number(ordered.length) });
+  // the lines at the reading size (G7: 16 / 1.75 — the kit's rows are 14px), used.css .used-checklist
   const checklist = (
-    <ul className="inspect__rows used-checks" aria-label={allChecks} {...revealProps({ stagger: true })}>
+    <ul className="inspect__rows used-checks used-checklist" aria-label={allChecks} {...revealProps({ stagger: true })}>
       {ordered.map((check) => (
         <CheckRow key={check.key} ok={check.ok} label={check.label} />
       ))}
@@ -532,14 +556,14 @@ function InspectionResult({ inspection }: { inspection: NonNullable<StatusView["
         {inspection.grade ? <GradeBadge grade={inspection.grade} legend /> : null}
       </div>
       {inspection.grade ? (
-        <p className="type-read text-ink-2">
+        <p className="used-read text-ink-2">
           <span className="sr-only">{t("track.inspection.grade")} </span>
           {shop(`grade.hints.${gradeKey(inspection.grade)}`)}
         </p>
       ) : null}
       {counted !== null && counted > 0 ? (
-        <p className="flex items-start gap-2 type-card text-ink">
-          <Icon name={inspection.failed ? "warning" : "check-circle"} size={22} filled={!inspection.failed} className={cx("shrink-0", inspection.failed ? "text-warn" : "text-ok")} />
+        <p className="used-title flex items-start gap-2 text-ink">
+          <Icon name={inspection.failed ? "warning" : "check-circle"} size={22} filled={!inspection.failed} className={cx("mt-0.5 shrink-0", inspection.failed ? "text-warn" : "text-ok")} />
           <span>
             {inspection.failed
               ? t("track.inspection.someFailed", { passed: f.number(inspection.passed ?? 0), total: f.number(counted), count: inspection.failed, n: f.number(inspection.failed) })
@@ -556,13 +580,13 @@ function InspectionResult({ inspection }: { inspection: NonNullable<StatusView["
           <div className="grid md:hidden">
             {failedChecks.length > 0 ? (
               // the sentence above announces them («وجد الفحص ملاحظة على:»)
-              <ul className="inspect__rows">
+              <ul className="inspect__rows used-checklist">
                 {failedChecks.map((check) => (
                   <CheckRow key={check.key} ok={false} label={check.label} />
                 ))}
               </ul>
             ) : null}
-            <Disclosure summary={allChecks} icon="clipboard-text">
+            <Disclosure summary={allChecks} icon="clipboard-text" className="used-disclosure">
               {checklist}
             </Disclosure>
           </div>
@@ -570,8 +594,8 @@ function InspectionResult({ inspection }: { inspection: NonNullable<StatusView["
         </>
       ) : null}
       {/* the checklist's last line already parts it from what was handed over (its own top line drew a second rule) */}
-      <p className={cx("flex items-start gap-2 type-sm text-ink", ordered.length === 0 && "border-t border-line pt-4")} data-included="">
-        <Icon name="package" size={20} className="mt-0.5 shrink-0 text-ink-2" />
+      <p className={cx("used-read flex items-start gap-2 text-ink", ordered.length === 0 && "border-t border-line pt-4")} data-included="">
+        <Icon name="package" size={20} className="mt-1 shrink-0 text-ink-2" />
         <span>
           <b className="font-semibold">{t("track.inspection.included")}</b> {inspection.included.length > 0 ? inspection.included.map(accessory).join(t("tradein.listJoin")) : t("tradein.q.included.none")}
         </span>
@@ -710,9 +734,10 @@ function Timeline({ view, className }: { view: StatusView; className?: string })
             <span className="used-timeline__dot" aria-hidden="true">
               <Icon name={row.state === "done" ? "check" : row.icon} size={row.state === "done" ? 18 : 20} />
             </span>
+            {/* the step's short bold title and what it brought at the reading size (G7); its time is the meta line */}
             <span className="used-timeline__body">
-              <span className={cx("type-sm-strong", row.state === "upcoming" ? "text-ink-2" : "text-ink")}>{row.title}</span>
-              {row.detail ? <span className="type-sm text-ink">{row.detail}</span> : null}
+              <span className={cx("used-title", row.state === "upcoming" ? "text-ink-2" : "text-ink")}>{row.title}</span>
+              {row.detail ? <span className="used-read text-ink">{row.detail}</span> : null}
               <span className="type-xs text-ink-2 nums">
                 {row.at !== null && (row.state === "done" || row.state === "ended") ? (
                   <>
@@ -732,7 +757,7 @@ function Timeline({ view, className }: { view: StatusView; className?: string })
           </li>
         ))}
       </ol>
-      {open ? <p className="border-t border-line pt-3 type-sm text-ink-2">{t("track.next.staff")}</p> : null}
+      {open ? <p className="used-read border-t border-line pt-3 text-ink-2">{t("track.next.staff")}</p> : null}
     </section>
   );
 }
@@ -749,11 +774,11 @@ function DeviceCard({ view, className }: { view: StatusView; className?: string 
       </h2>
       <DeviceSummary name={view.device.name} image={view.device.image} />
       <div className="grid gap-1">
-        <h3 className="type-sm-strong text-ink">{t("track.answers")}</h3>
+        <h3 className="used-title text-ink">{t("track.answers")}</h3>
         <AnswerList questions={view.questions} answers={view.answers} />
       </div>
-      <p className="flex items-start gap-2 border-t border-line pt-3 type-sm text-ink-2">
-        <Icon name="camera" size={16} className="mt-0.5 shrink-0" />
+      <p className="used-read flex items-start gap-2 border-t border-line pt-3 text-ink-2">
+        <Icon name="camera" size={16} className="mt-1.5 shrink-0" />
         <span>
           {t("track.photos", { count: view.photoCount, n: f.number(view.photoCount) })} {view.photoCount > 0 ? t("track.photosPrivate") : null}
         </span>
@@ -773,7 +798,7 @@ function VisitCard({ view, className }: { view: StatusView; className?: string }
       </h2>
       {view.inspectionAt !== null ? (
         <VisitRow icon="calendar" label={t("track.inspectionTitle")}>
-          <p className="type-card text-ink">
+          <p className="used-title text-ink">
             <time dateTime={new Date(view.inspectionAt).toISOString()}>{f.dateTime(view.inspectionAt)}</time>
           </p>
         </VisitRow>
@@ -791,8 +816,9 @@ function VisitRow({ icon, label, children }: { icon: IconName; label: string; ch
       <span className="clay-disc used-disc" aria-hidden="true">
         <Icon name={icon} size={20} />
       </span>
+      {/* what it is, then the fact — both at the reading size (G7), the fact in its weight */}
       <div className="grid min-w-0 gap-0.5 pt-0.5">
-        <h3 className="type-sm text-ink-2">{label}</h3>
+        <h3 className="used-read text-ink-2">{label}</h3>
         {children}
       </div>
     </div>
@@ -803,12 +829,12 @@ function Preferred({ view }: { view: StatusView }) {
   const t = useUsedT();
   const f = useFormat();
   const preferred = view.preferred;
-  if (!preferred || (!preferred.day && (!preferred.window || preferred.window === "any"))) return <p className="type-read text-ink-2">{t("track.noPreference")}</p>;
+  if (!preferred || (!preferred.day && (!preferred.window || preferred.window === "any"))) return <p className="used-read text-ink-2">{t("track.noPreference")}</p>;
   const parts = [preferred.day ? f.date(Date.parse(`${preferred.day}T12:00:00Z`), "long") : null, preferred.window ? t(`tradein.contact.windows.${preferred.window}`) : null].filter(Boolean);
   return (
     <>
-      <p className="type-card text-ink">{parts.join(" · ")}</p>
-      <p className="type-sm text-ink-2">{t("track.preferenceNote")}</p>
+      <p className="used-title text-ink">{parts.join(" · ")}</p>
+      <p className="used-read text-ink-2">{t("track.preferenceNote")}</p>
     </>
   );
 }

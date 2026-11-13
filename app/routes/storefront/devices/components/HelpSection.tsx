@@ -74,7 +74,7 @@ export function HelpSection({ hub, platformName }: { hub: DeviceHub; platformNam
                 ),
                 content: (
                   <div className="grid justify-items-start gap-2">
-                    {article.summary ? <p className="type-sm text-ink-2">{article.summary}</p> : null}
+                    {article.summary ? <p className="devhub-read text-ink-2">{article.summary}</p> : null}
                     <TextLink as={MotionLink} to={`/support/article/${article.slug}`}>
                       {t("help.read")}
                     </TextLink>
@@ -101,7 +101,7 @@ export function HelpSection({ hub, platformName }: { hub: DeviceHub; platformNam
               <h3 id={treesId} className="type-h3 text-ink">
                 {t("help.trees")}
               </h3>
-              <p className="mb-3 type-sm text-ink-2">{t("help.treesHint")}</p>
+              <p className="mb-3 devhub-read text-ink-2">{t("help.treesHint")}</p>
               <ul role="list" className="panel devhub-rows grid px-4">
                 {hub.trees.map((tree) => {
                   const scope = tree.scope === "all" ? t("help.treeAll") : tree.scope === "platform" ? t("help.treePlatform", { platform: isolateName(platformName) }) : null;
@@ -138,9 +138,10 @@ export function HelpSection({ hub, platformName }: { hub: DeviceHub; platformNam
 }
 
 /**
- * One row link of the section (§6.6 "a row link"): a 20px icon, the title (14/600) with an optional line above it
- * (who it is for) or under it (what happens), and the arrow toward the reading end. 56px at least; the whole row is
- * the link.
+ * One row link of the section (§6.6 "a row link"): a 20px icon, the title with an optional line above it (who it is
+ * for: meta, 13) or under it (what happens), and the arrow toward the reading end. 56px at least; the whole row is the
+ * link. The title and the line under it read at 16px on phones and tablets (v2.1 G7: 16/600 and 16 / 1.75); from 1024
+ * the title is 14/600 and the line 13.
  */
 function HelpRow({ to, icon, title, text, kicker }: { to: string; icon: IconName; title: ReactNode; text?: ReactNode; kicker?: ReactNode }) {
   return (
@@ -148,8 +149,8 @@ function HelpRow({ to, icon, title, text, kicker }: { to: string; icon: IconName
       <Icon name={icon} size={20} className="shrink-0 text-ink-2" />
       <span className="grid min-w-0 flex-1 gap-0.5">
         {kicker ? <span className="type-xs text-ink-2">{kicker}</span> : null}
-        <span className="type-sm-strong group-hover:underline group-hover:underline-offset-4">{title}</span>
-        {text ? <span className="type-xs text-ink-2">{text}</span> : null}
+        <span className="devhub-read-strong group-hover:underline group-hover:underline-offset-4">{title}</span>
+        {text ? <span className="devhub-hint text-ink-2">{text}</span> : null}
       </span>
       <Icon name="arrow-right" size={20} className="shrink-0 text-ink-2" />
     </MotionLink>

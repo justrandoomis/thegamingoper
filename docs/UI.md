@@ -44,7 +44,25 @@ cards, bolder icons, calmer notes, glass that looks like glass, and some motion.
 | The platform colour line (above a product's name, a card's kind line) | `<PlatformLed bar />`, `<PlatformLabel platform bar />` | the card's kind line draws it already |
 | Breadcrumbs on phones too (the product page's bar) | `<Breadcrumbs items phone />` | one scrolling line |
 | The before's empty cart arrangement | `<EmptyState layout="stack" panel …>` | words, then the key, then the recovery link under it (the stack does that by itself now) |
-| Reading text (facts, notes, descriptions) | `type-read` (16px / 1.75 Arabic, 1.6 English) | `.fact__text`, `.entry__text`, `.note__text` use it |
+| Reading text (facts, notes, descriptions) | `type-read` (16px / 1.75 Arabic, 1.6 English) | `.fact__text`, `.entry__text`, `.note__text` use it. The utility class exists since the fix round (2026-11-13); before, `className="type-read"` silently did nothing |
+
+**Fix round (2026-11-13, DESIGN.md §15.10) — new props and what they replace:**
+
+| Need | Use | Replaces |
+|---|---|---|
+| The carousel's own progress look and state | `useCarousel()` → `running`, `autoplay`; `<CarouselDots api progress />`; `CarouselArrows` / `CarouselPlay` `size="md"` (default 44px) · `"sm"` | the home hero's mirror of `carouselHold` and its local dot fill; its `scroll-snap-stop: normal` override (moves further than one slide now fade and jump) |
+| Section tabs at the before's size; a page inside a tab's part of the site | `<Tabs size="lg" />` (16px, 48px row) · `<Tabs section />` (`aria-current="true"`) | support's local padding and its "page" for guides and tickets |
+| A discount's parts in its place; a waived delivery said under «التوصيل» | `<OrderSummary discountParts={[{ key, icon, label, amountIqd }]} shippingNote={…}>{split parts}</OrderSummary>` | the discount lines that `<Adjustments>` drew after the total |
+| A long key label; a task bar's compact key | `<Key wrap>` · `<Key fit="compact">` | content's local wrapping; used's `.used-keys` |
+| A danger note | `<Note tone="danger" title>` | support's `.sup-safety-note--danger` |
+| A chip with a kind or device icon | `<Chip icon="kind-controller">` (also `ChipGroup` options' `icon`) | catalog's hand-drawn chip icons |
+| The empty card across its column; a bold stack icon | `<EmptyState layout="stack" panel wide icon>` (44px icon) | checkout's `.co-empty > .empty--panel` widening |
+| The before's labelled step rail; an order's stages with icons | `<ProgressSteps labels="under" />` · `<ProgressSteps variant="status" steps={[{ label, icon }]} />` | used's `.used-rail`; the order pages' `.co-progress` / `.co-stages` |
+| A state in a tinted pill | `<Status tone pill>` | account's `.acct-pill` |
+| The glossy wallet card | `<Band kind="wallet" gloss>` | account's `.band--wallet.acct-money` gloss |
+| An option card with a clay face and an icon; a checkbox row | `<OptionCard clay icon="wallet" …>` · `<Checkbox row hint …>` | used's `surface` + `PayIcon`, `.used-check` |
+| A figure that counts once — also on a direct open | `<Price countUp>` / `countUp="load"`; `<CountUp playOnLoad>` | used's hand-composed `.price__num` count; the offer and the rewards balance that never counted when opened from a link |
+| Items that stagger in | `<Rail reveal>`, `<PlatformTiles reveal>`, `<CategoryTiles reveal>`; late cards of any `data-reveal="stagger"` row (show more, a filter change) arrive as a batch by themselves | — |
 
 **Automatic (no page work):** Kufam headings, prices and key labels; clay keys, chips, icon circles and the tray;
 soft cards (ProductCard, UsedUnitCard, EntryCard, CategoryTile, TrustStrip, FactList, OrderSummary, InspectionCard,

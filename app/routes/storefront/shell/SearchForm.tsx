@@ -16,9 +16,13 @@
  * the name (two lines at most, isolated), ONE meta line under it — the qualifier the Latin title leaves out («نسخة
  * الأقراص»), then the kind label («جهاز PS5»), else the department (./chrome suggestionMeta) — and the price; typed rows
  * with icons for a platform (its dot), a department, «كل شيء عن الجهاز» and the used list; «هل تقصد …؟» for a typo;
- * the last row «اعرض كل النتائج». With an empty field: the shopper's recent searches (kept on this device, only with
- * consent — catalog area's recent-searches) with «امسح». Keyboard: ↑ ↓ move (the active row has a --niche fill and an
- * ink start bar), Enter opens it (or searches), Escape closes the list.
+ * the last row «اعرض كل النتائج». Words the store has nothing for (the endpoint answers `total: 0`): one row «لا
+ * اقتراحات لـ «…»» · «ابحث في كل المتجر», which searches anyway — the list never just stays shut. In demo mode a list
+ * with prices says «الأسعار تجريبية» on its head (the phone sheet covers the demo strip). With an empty field: the
+ * shopper's recent searches (kept on this device, only with consent — catalog area's recent-searches) with «امسح»
+ * (`openOnFocus={false}`: only once the shopper types or presses ↓ — a field focused for them, as on the 404).
+ * Keyboard: ↑ ↓ move (the active row has a --niche fill and an ink start bar), Enter opens it (or searches), Escape
+ * closes the list. The form is a search landmark named «ابحث في المتجر» (`aria-label` names a page's own field).
  *
  * SUGGESTIONS CONTRACT (catalog area, CONTRACTS.md §2 `GET /api/search/suggest`):
  *   GET /api/search/suggest?q=<text>&locale=<ar|en|ckb>
@@ -31,7 +35,7 @@
  *   debounced (160 ms) and a newer request aborts the older one.
  */
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode, type Ref } from "react";
-import { Form, useLocation, useNavigate, useSearchParams } from "react-router";
+import { Form, useLocation, useNavigate, useRouteLoaderData, useSearchParams } from "react-router";
 
 import { Art } from "~/art/Art";
 import { Icon, type IconName } from "~/art/Icon";
@@ -39,11 +43,12 @@ import { LocaleLink, useLocale, useLocalePath } from "~/i18n/react";
 import { splitLocale } from "~/lib/locales";
 import { useRecentSearches } from "~/routes/storefront/catalog/components/recent-searches";
 import { cx } from "~/ui/cx";
+import { DemoNote } from "~/ui/DemoNote";
 import { Glass } from "~/ui/Glass";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
 import { Price } from "~/ui/Price";
 import { Sheet } from "~/ui/Sheet";
-import { suggestionKind, suggestionMeta, type SuggestionKind } from "./chrome";
+import { suggestionKind, suggestionMeta, suggestionState, type SuggestionKind } from "./chrome";
 import { useShellT } from "./i18n";
 import { DeviceGlyph, usePlatformName } from "./MegaMenu";
 import type { NavPlatform } from "./types";
@@ -85,8 +90,9 @@ function isSuggestion(value: unknown): value is SearchSuggestion {
   );
 }
 
-type SuggestResult = { items: SearchSuggestion[]; total: number | null };
-const NONE: SuggestResult = { items: [], total: null };
+/** The endpoint's answer, and the words (trimmed) it answers — null until one came for them. */
+type SuggestResult = { items: SearchSuggestion[]; total: number | null; q: string | null };
+const NONE: SuggestResult = { items: [], total: null, q: null };
 
 function useSuggestions(query: string, enabled: boolean): SuggestResult {
   const locale = useLocale();
@@ -110,7 +116,7 @@ function useSuggestions(query: string, enabled: boolean): SuggestResult {
         const body = (await response.json()) as { suggestions?: unknown; total?: unknown };
         const items = Array.isArray(body.suggestions) ? body.suggestions.filter(isSuggestion).slice(0, MAX_ROWS) : [];
         const total = typeof body.total === "number" && Number.isSafeInteger(body.total) && body.total >= 0 ? body.total : null;
-        setResult({ items, total });
+        setResult({ items, total, q });
       } catch {
         if (!controller.signal.aborted) setResult(NONE);
       }
@@ -123,8 +129,14 @@ function useSuggestions(query: string, enabled: boolean): SuggestResult {
   return result;
 }
 
-/** One option of the list, in the order the arrows walk them. */
-type Option = { kind: "suggestion"; item: SearchSuggestion } | { kind: "all" } | { kind: "recent"; q: string };
+/** One option of the list, in the order the arrows walk them. `none`: nothing for these words — it searches anyway. */
+type Option = { kind: "suggestion"; item: SearchSuggestion } | { kind: "all" } | { kind: "none" } | { kind: "recent"; q: string };
+
+/** First-strong isolate and its end around the shopper's words inside a sentence («لا اقتراحات لـ «fridge»»). */
+const FSI = "⁨";
+const PDI = "⁩";
+
+type RootStoreData = { storeMode?: "demo" | "live" };
 
 const KIND_ICON: Record<Exclude<SuggestionKind, "product" | "platform">, IconName> = {
   category: "squares-four",
@@ -145,15 +157,28 @@ export type SearchFormProps = {
   inputRef?: Ref<HTMLInputElement>;
   /** A search or a suggestion is leaving for its page (the sheet closes). */
   onDone?: () => void;
+  /**
+   * Whether focusing the empty field opens the recent searches (default true). false for a field focused FOR the
+   * shopper (the 404's): the list then waits for typing or ↓, and never opens over the page's keys by itself.
+   */
+  openOnFocus?: boolean;
+  /**
+   * The search landmark's name. Default «ابحث في المتجر» for the header's field and the sheet's; a page's own field
+   * (`panel`) has none unless given — on /search the header's field is there too, and two landmarks with one name are
+   * one too many.
+   */
+  "aria-label"?: string;
 };
 
-export function SearchForm({ variant = "panel", query: initial, className, autoFocus = false, inputRef, onDone }: SearchFormProps) {
+export function SearchForm({ variant = "panel", query: initial, className, autoFocus = false, inputRef, onDone, openOnFocus = true, "aria-label": label }: SearchFormProps) {
   const t = useShellT();
   const href = useLocalePath();
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
   const recent = useRecentSearches();
+  const root = useRouteLoaderData("root") as RootStoreData | undefined;
+  const demo = root?.storeMode !== "live";
   const onSearchPage = splitLocale(location.pathname).path === "/search";
   const current = onSearchPage ? (params.get("q") ?? "") : (initial ?? "");
 
@@ -165,16 +190,25 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   // the sheet keeps its list while the keyboard is down (a scroll blurs the field); elsewhere only while focused
-  const { items, total } = useSuggestions(query, focused || variant === "sheet");
+  const answer = useSuggestions(query, focused || variant === "sheet");
+  const { items, total } = answer;
   const typing = query.trim().length >= MIN_CHARS;
+  const state = typing ? suggestionState({ q: answer.q, rows: items.length, total }, query) : "wait";
 
   const options: Option[] = typing
-    ? items.length > 0
+    ? state === "rows"
       ? [...items.map((item) => ({ kind: "suggestion" as const, item })), { kind: "all" as const }]
-      : []
+      : state === "count"
+        ? [{ kind: "all" as const }]
+        : state === "none"
+          ? [{ kind: "none" as const }]
+          : []
     : recent.items.map((entry) => ({ kind: "recent" as const, q: entry.q }));
   // the sheet shows its list whenever there is one; the header and the panel while the field has focus
   const showList = options.length > 0 && (variant === "sheet" || (open && focused));
+  // demo mode: the prices in the list are the demo catalogue's — said on the list's head (the phone sheet covers the
+  // demo strip; the store's demo marking is a strip, a chip and the footer, never every price)
+  const demoPrices = demo && state === "rows" && items.some((item) => item.priceIqd !== undefined && suggestionKind(item.href) === "product");
 
   // the field follows the URL (a new search, Back) unless the shopper is typing in it
   const [lastCurrent, setLastCurrent] = useState(current);
@@ -183,6 +217,11 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
     if (!focused) setQuery(current);
   }
   useEffect(() => setActive(-1), [items, typing]);
+
+  // the header's field keeps the page still when it takes focus (holdScroll)
+  useEffect(() => {
+    if (variant === "header") trackScroll();
+  }, [variant]);
 
   // "/" anywhere outside a field focuses the desktop header's field
   useEffect(() => {
@@ -194,7 +233,8 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
       const field = input.current;
       if (!field || field.offsetParent === null) return;
       event.preventDefault();
-      field.focus();
+      // the field is in the sticky header, always in view: the page stays where it is
+      field.focus({ preventScroll: true });
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -210,6 +250,7 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
   const choose = (option: Option) => {
     if (option.kind === "suggestion") leave(option.item.href);
     else if (option.kind === "recent") searchFor(option.q);
+    // «اعرض كل النتائج» and «لا اقتراحات … ابحث في كل المتجر»: the search page for the words
     else searchFor(query.trim());
   };
 
@@ -253,6 +294,7 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
       method="get"
       action={href("/search")}
       role="search"
+      aria-label={label ?? (variant === "panel" ? undefined : t("search.label"))}
       className={cx("shell-search", className)}
       data-variant={variant}
       onSubmit={() => {
@@ -285,7 +327,8 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
           }}
           onFocus={() => {
             setFocused(true);
-            setOpen(true);
+            setOpen(openOnFocus);
+            if (variant === "header") holdScroll();
           }}
           onBlur={() => setFocused(false)}
           onKeyDown={onKeyDown}
@@ -302,9 +345,12 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
         ) : null}
       </div>
       <SuggestPanel glass={variant === "header"} hidden={!showList}>
-        {showList ? (
+        {/* the head: «اقتراحات» (and «الأسعار تجريبية» in demo mode) or the recent searches with «امسح»; none over the
+            one row that says nothing matched */}
+        {showList && state !== "none" ? (
           <p className="shell-suggest__head">
             <span>{typing ? t("search.head") : t("search.recent")}</span>
+            {demoPrices ? <DemoNote variant="tag">{t("search.demoPrices")}</DemoNote> : null}
             {!typing ? (
               <button
                 type="button"
@@ -325,7 +371,7 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
           {showList
             ? options.map((option, index) => (
                 <li
-                  key={option.kind === "suggestion" ? `s:${option.item.href}:${index}` : option.kind === "recent" ? `r:${option.q}` : "all"}
+                  key={option.kind === "suggestion" ? `s:${option.item.href}:${index}` : option.kind === "recent" ? `r:${option.q}` : option.kind}
                   id={`${listId}-${index}`}
                   role="option"
                   aria-selected={index === active}
@@ -334,7 +380,7 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
                   onPointerDown={(event) => event.preventDefault()}
                   onClick={() => choose(option)}
                 >
-                  <OptionBody option={option} total={total} />
+                  <OptionBody option={option} total={total} query={query} />
                 </li>
               ))
             : null}
@@ -342,6 +388,33 @@ export function SearchForm({ variant = "panel", query: initial, className, autoF
       </SuggestPanel>
     </Form>
   );
+}
+
+/**
+ * The header's field sits in the sticky header, in view whatever the scroll, so focusing it never moves the page. Its
+ * scroll box is kept clear by shell.css (scroll-margin), but a text field's focus ALSO reveals its caret, and that
+ * reveal counts the root's scroll padding and not the field's margin: Shift+Tab from the content reaching the field
+ * scrolled the page ~470px up (QA 2026-11-13) — before the focus event even fires. So the page's position as of its
+ * last scroll event is kept (`settledY`), and on focus the page goes back there, before the next paint: it never shows.
+ */
+let settledY = 0;
+let trackingScroll = false;
+function trackScroll() {
+  if (trackingScroll) return;
+  trackingScroll = true;
+  settledY = window.scrollY;
+  window.addEventListener("scroll", () => (settledY = window.scrollY), { passive: true });
+}
+function holdScroll() {
+  if (!trackingScroll) return;
+  const y = settledY;
+  // only ever undoes that reveal: an UPWARD jump (a field in the top band is revealed by scrolling up)
+  const back = () => {
+    if (y - window.scrollY >= 1) window.scrollTo({ top: y, behavior: "instant" });
+  };
+  back();
+  // a reveal that comes after the focus event: undone in the same frame
+  requestAnimationFrame(back);
 }
 
 /**
@@ -365,8 +438,23 @@ function isProductRow(option: Option): boolean {
   return option.kind === "suggestion" && suggestionKind(option.item.href) === "product";
 }
 
-function OptionBody({ option, total }: { option: Option; total: number | null }) {
+function OptionBody({ option, total, query }: { option: Option; total: number | null; query: string }) {
   const t = useShellT();
+  if (option.kind === "none") {
+    // nothing for these words: say so, and search the whole store anyway (Enter, a tap)
+    return (
+      <>
+        <Icon name="magnifying-glass" size={20} className="text-ink-2" />
+        <span className="shell-suggest__text">
+          <span className="shell-suggest__name">
+            <span className="shell-suggest__label">{t("search.none", { q: `${FSI}${query.trim()}${PDI}` })}</span>
+          </span>
+          <span className="shell-suggest__hint">{t("search.noneHint")}</span>
+        </span>
+        <Icon name="arrow-right" size={16} className="shell-suggest__end" />
+      </>
+    );
+  }
   if (option.kind === "all") {
     return (
       <>

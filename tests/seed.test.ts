@@ -440,6 +440,25 @@ describe("imported catalogue", () => {
     expect(qualified).toBeGreaterThanOrEqual(2);
   });
 
+  it("keeps a name's Latin tokens whole: the hyphen inside «USB‑C», «Joy‑Con», «Z‑A» is the non-breaking U+2011 (v2 §4.18)", async () => {
+    // Cart, checkout and order lines print the stored name as it is; with a plain hyphen a narrow line broke inside the
+    // token («…Battery + USB-» / «C Cable» at 360–390, QA 2026-11-13). The product page's keepTokens() does the same at
+    // display time, so both agree; search folds U+2011 like "-" (normalizeSearchText, NFKD).
+    const BREAKABLE = /(?<=[\p{Script=Latin}\d])-(?=[\p{Script=Latin}\d])/u;
+    const texts: Array<[string, string]> = [];
+    for (const row of await rows<{ slug: string; name: string }>("SELECT slug, name FROM products")) {
+      for (const [locale, text] of Object.entries(parse<L10nValue>(row.name))) texts.push([`${row.slug} name.${locale}`, String(text)]);
+    }
+    for (const row of await rows<{ sku: string; title: string | null }>("SELECT sku, title FROM variants")) {
+      if (row.title === null) continue;
+      for (const [locale, text] of Object.entries(parse<L10nValue>(row.title))) texts.push([`${row.sku} title.${locale}`, String(text)]);
+    }
+    expect(texts.length).toBeGreaterThan(catalog.products.length * 3);
+    for (const [where, text] of texts) expect(BREAKABLE.test(text), `${where}: «${text}»`).toBe(false);
+    const battery = parse<L10nValue>(products.get("xbox-rechargeable-battery-usb-c")!.name);
+    expect(battery.en).toBe("Xbox Rechargeable Battery + USB‑C Cable");
+  });
+
   it("rates games PEGI first, and records the region where all variants share one", () => {
     for (const product of catalog.products) {
       const row = products.get(product.slug)!;
@@ -852,6 +871,11 @@ describe("seeded search", () => {
     expect(await find("هێدسێت")).toContain(product("xbox-wireless-headset"));
     expect(await find("steam deck")).toContain(product("steam-deck-oled"));
     expect(await find("spider-man")).toContain(product("marvels-spider-man-2"));
+    // names keep their tokens whole with U+2011 («USB‑C», «Joy‑Con»); shoppers type a plain hyphen, or none
+    expect(await find("USB-C")).toContain(product("xbox-rechargeable-battery-usb-c"));
+    expect(await find("usb c")).toContain(product("xbox-rechargeable-battery-usb-c"));
+    expect(await find("Joy-Con")).toEqual(expect.arrayContaining([product("joy-con-2"), product("joy-con-2-charging-grip")]));
+    expect(await find("Z-A")).toContain(product("pokemon-legends-z-a"));
     expect(await find("CFI-ZCT2W")).toContain(product("dualsense"));
     expect(await find("zzz-no-such-thing")).toEqual([]);
     // Spellings that once found nothing: they lived only in search_synonyms, which this search does not expand.

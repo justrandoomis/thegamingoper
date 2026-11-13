@@ -2,8 +2,8 @@
  * /support — the support centre, in the before's arrangement (client feedback round 1, note 9: "the before is look
  * better … the feature of search about problems is good to notice — add improvement and more features"):
  *
- *   1. the support pages' underline tabs (مركز المساعدة · مساعد الصيانة · احجز صيانة · تابع طلب; a sliding underline)
- *   2. h1 «الدعم والمساعدة» and its line
+ *   1. the support pages' underline tabs (مركز الدعم · مساعد الصيانة · احجز صيانة · تابع طلب; a sliding underline)
+ *   2. h1 «الدعم والمساعدة» (the before's heading — the glossary's one exception) and its line
  *   3. the problem search (./components/HelpSearch): suggestions while typing, device chips, common problems — a GET
  *      form, so it works without script; `?q=` shows the grouped results under it (danger · error code · guides ·
  *      policies, the searched words marked), `?platform=` keeps them to one platform
@@ -19,7 +19,7 @@
  * (content area, import only). Nothing is invented: a device without guides says so; a chip is offered only while a
  * guide answers it; the contact card shows only configured channels. One red primary: the search key.
  */
-import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react";
+import { useEffect, useId, useRef, type FocusEvent, type ReactNode, type RefObject } from "react";
 import { useLocation, useRouteLoaderData } from "react-router";
 
 import type { Route } from "./+types/help-center";
@@ -34,7 +34,7 @@ import { commonProblemsFor, matchPolicies, type PolicyEntry } from "~/server/ser
 import { findDevice, getHelpIndex, getSupportDirectory, listArticlesForDevice, listHelpArticles, searchHelp } from "~/server/services/support/kb.server";
 import type { ArticleSummary, SupportDevice, SupportPlatformGroup } from "~/server/services/support/types";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
-import type { ShellData } from "~/routes/storefront/shell/types";
+import type { ShellData, ShellHandle } from "~/routes/storefront/shell/types";
 import { BidiLabel } from "~/ui/BidiText";
 import { ContactCard } from "~/ui/ContactCard";
 import { DemoNote } from "~/ui/DemoNote";
@@ -42,7 +42,7 @@ import { EmptyState } from "~/ui/EmptyState";
 import { EntryCard } from "~/ui/EntryCard";
 import { Key } from "~/ui/Key";
 import { isPlatform, PlatformLed } from "~/ui/PlatformLed";
-import { revealProps } from "~/ui/reveal";
+import { revealInRow, revealProps } from "~/ui/reveal";
 import { SectionHead } from "~/ui/SectionHead";
 import { TextLink } from "~/ui/TextLink";
 import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
@@ -50,7 +50,9 @@ import { HelpResults, HelpSearchForm, keepsFocus } from "./components/HelpSearch
 import { DeviceArt, DeviceTile, GuideList, PlatformName, SupportNav } from "./components/parts";
 import "./support.css";
 
-export const handle = { nav: "push", order: 0, group: "support" } satisfies MotionHandle;
+// A page built around its search: offline, the shell's banner says what was typed stays (the search's own line says
+// why the key is flat), never «سلتك محفوظة…» (round-1 fixes).
+export const handle = { shell: { offline: "form" }, nav: "push", order: 0, group: "support" } satisfies ShellHandle & MotionHandle;
 
 /** Suggested guides on the first view; ?guides=all lists every approved guide. */
 const SUGGESTED = 6;
@@ -215,6 +217,17 @@ function PathGroup({ title, children }: { title: string; children: ReactNode }) 
 }
 
 /**
+ * The phone rail of device tiles snaps to the tiles' starts: the tile that takes the KEYBOARD focus comes fully into view
+ * at the rail's start edge (a snap point — a "nearest" scroll would be pulled back with the tile cut). Tabbing left it a
+ * quarter cut at the screen's edge before (round-1 fixes). Pointer focus never scrolls the rail.
+ */
+function revealFocusedTile(event: FocusEvent<HTMLElement>) {
+  const target = event.target;
+  if (!(target instanceof Element) || target === event.currentTarget || !target.matches(":focus-visible")) return;
+  revealInRow(event.currentTarget, target.closest("li") ?? target, "start");
+}
+
+/**
  * One platform's devices, as the before grouped them: the platform's colour line and name over its tiles (a rail
  * with 2.5 tiles on phones, a wrapping grid from 768). Whole model names, never clamped.
  */
@@ -228,7 +241,7 @@ function PlatformDevices({ group, name, current }: { group: SupportPlatformGroup
         <BidiLabel className="sup-platform__name">{name}</BidiLabel>
         <span className="sup-platform__count">{t("help.devices.count", { count: group.devices.length })}</span>
       </h3>
-      <ul role="list" aria-label={t("help.devices.list", { platform: name })} className="sup-devices">
+      <ul role="list" aria-label={t("help.devices.list", { platform: name })} className="sup-devices" onFocus={revealFocusedTile}>
         {group.devices.map((entry) => (
           <li key={entry.id}>
             <DeviceTile name={entry.name} artKey={entry.artKey} kind={entry.kind} href={`/support?device=${entry.slug}#device-help`} current={entry.slug === current?.slug} />

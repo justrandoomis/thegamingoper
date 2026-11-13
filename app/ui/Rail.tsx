@@ -2,7 +2,7 @@ import { Children, isValidElement, useRef, type FocusEvent, type ReactNode } fro
 
 import { useRail } from "~/motion";
 import { cx } from "./cx";
-import { revealInRow } from "./reveal";
+import { revealInRow, revealProps } from "./reveal";
 
 /**
  * Rail — Design System v2 §4.22: one row of cards that scrolls sideways on phones with native scroll-snap (the
@@ -37,9 +37,12 @@ export type RailProps = {
   className?: string;
   /** On the list. */
   railClassName?: string;
+  /** The cards fade up one after another as the rail first enters the view, and cards added later arrive the same way
+   *  (G6; off by default — never for a rail on the first screen). */
+  reveal?: boolean;
 };
 
-export function Rail({ children, itemClassName, className, railClassName, ...aria }: RailProps) {
+export function Rail({ children, itemClassName, className, railClassName, reveal = false, ...aria }: RailProps) {
   const rail = useRail<HTMLUListElement>();
   const pointer = useRef(0);
   const items = Children.toArray(children); // drops null, undefined and booleans; keys each child
@@ -61,6 +64,7 @@ export function Rail({ children, itemClassName, className, railClassName, ...ari
         aria-label={aria["aria-label"]}
         aria-labelledby={aria["aria-labelledby"]}
         className={cx(legacy ? cx(rail.props.className, "gap-card") : "rail", "focus-visible:-outline-offset-2", railClassName)}
+        {...(reveal ? revealProps({ stagger: true }) : null)}
         onFocus={onFocus}
         onPointerDown={() => {
           pointer.current = performance.now();

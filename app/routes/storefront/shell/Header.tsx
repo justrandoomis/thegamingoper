@@ -10,7 +10,8 @@
  *                (./Banners) sits above it and scrolls away.
  *   FROM 1024    three rows:
  *                  the utility strip (36px): the delivery fee fact (and cash on delivery when the store takes it) ·
- *                    تتبّع طلبك · استبدل جهازك · الدعم · the three languages · the light / dark switch;
+ *                    تتبّع طلبك · استبدل جهازك · مركز الدعم · the three languages · the light / dark switch (inert
+ *                    once scrolled away);
  *                  the main row (64px, after a 12px lead): the lockup, larger · the wide search well with its «/» hint
  *                    (search pages) or the round search key with the other keys (the rest) · round clay keys:
  *                    favourites, account, the cart with its count;
@@ -194,8 +195,11 @@ function SearchKey({ onOpen }: { onOpen: () => void }) {
  * The desktop utility strip (from 1024 — the before's strip, client note 1): 36px over the main row, scrolling away
  * with the page. The delivery fee fact from the settings (and «الدفع عند الاستلام» while the store takes cash) · the
  * service links · the languages · the light / dark switch. Its links keep a 44px hit area over the strip's edges.
+ * `away`: the page has scrolled the strip out of sight (the header is compact) — it is inert then, so Tab and
+ * Shift+Tab never land on a link above the screen (WCAG 2.4.7, 2.4.11): the strip comes back, for the pointer and the
+ * keyboard alike, with the top of the page (tracking, trade-in, the languages and the theme are in the footer too).
  */
-function UtilityStrip({ shell }: { shell: ShellData | null }) {
+function UtilityStrip({ shell, away }: { shell: ShellData | null; away: boolean }) {
   const t = useShellT();
   const f = useFormat();
   const location = useLocation();
@@ -203,7 +207,7 @@ function UtilityStrip({ shell }: { shell: ShellData | null }) {
   const fee = shell ? "⁨" + formatMoney(shell.deliveryFeeIqd, "IQD", f.locale, f.numbering) + "⁩" : null;
   const here = (href: string) => (path === href || path.startsWith(`${href}/`) ? ("page" as const) : undefined);
   return (
-    <div className="shell-utility">
+    <div className="shell-utility" inert={away || undefined}>
       <div className="page shell-utility__row">
         {fee ? (
           <p className="shell-utility__fact">
@@ -268,7 +272,7 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery, search
       >
         {/* the frost: a layer behind the rows that fades in once the page has scrolled (opacity only) */}
         <Glass className="shell-header__glass" aria-hidden="true" />
-        <UtilityStrip shell={shell} />
+        <UtilityStrip shell={shell} away={scrolled} />
         <div className="page shell-bar">
           {task ? <TaskBack to={task.back} /> : null}
           <Lockup />

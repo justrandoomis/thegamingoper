@@ -19,6 +19,7 @@ import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
+import type { ShellHandle } from "~/routes/storefront/shell/types";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { normalizeSupportRef, TICKET_REF_PREFIX } from "~/server/services/support/common.server";
@@ -37,7 +38,8 @@ import { CopyKey, CopyLinkKey, DeviceArt, Name, SupportNav } from "./components/
 import { failed, LOOKUP_PAGE_HEADERS, repairStatusHeaders, textFields } from "./support.server";
 import "./support.css";
 
-export const handle = { nav: "push", order: 3, group: "support" } satisfies MotionHandle;
+// A lookup page (reference + phone): offline, the shell's banner says what was typed stays, never «سلتك محفوظة…».
+export const handle = { shell: { offline: "form" }, nav: "push", order: 3, group: "support" } satisfies ShellHandle & MotionHandle;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
   const ctx = getCtx(context);

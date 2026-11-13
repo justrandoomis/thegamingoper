@@ -7,7 +7,8 @@
  *      count (controllers, headsets, storage, VR, gift cards, accessories, games — consoles and handheld PCs live inside
  *      their platforms: the handheld platform is «الأجهزة المحمولة», its category «حواسيب الألعاب المحمولة» is shown
  *      inside it);
- *   3. «خدمات»: the same tiles for المستعمل (with how many units are listed), استبدل جهازك, تتبّع طلبك, الدعم, الصيانة;
+ *   3. «خدمات»: the same tiles for المستعمل (with how many units are listed), استبدل جهازك, تتبّع طلبك, مركز الدعم,
+ *      الصيانة;
  *   4. language, theme and the display currency.
  * The tiles arrive 30ms apart as the sheet rises (CSS; none under reduced motion). Every link closes the sheet as it
  * navigates. Client only (a <Sheet> renders nothing on the server); without script the tab leads to the footer's shop
@@ -106,9 +107,10 @@ export function CategoriesSheet({ open, onClose, shell }: CategoriesSheetProps) 
 }
 
 /**
- * A glass icon tile (the client's reference): the kit's raised card (.surface — faux glass in dark) with a red line
- * kind icon, the name (three lines at most) and, when the data has one, the count in --ink-2 («18»; «18 منتجاً» for
- * assistive technology). One link.
+ * A glass icon tile (the client's reference): the kit's raised card (.surface — faux glass in dark) that lifts under a
+ * fine pointer (.lift, its icon swelling a little), with a red line kind icon, the name (whole, never clipped: Arabic
+ * dots reach below the line) and, when the data has one, the count in --ink-2 («18»; «18 منتجاً» for assistive
+ * technology). One link.
  */
 export function IconTile({
   to,
@@ -134,7 +136,7 @@ export function IconTile({
   const counted = typeof count === "number" && Number.isSafeInteger(count) && count >= 0;
   return (
     <li className="grid" style={{ "--i": order } as CSSProperties}>
-      <LocaleLink to={to} className="surface shell-itile" data-press="soft" onClick={onPick}>
+      <LocaleLink to={to} className="surface lift shell-itile" data-press="soft" onClick={onPick}>
         <span className="shell-itile__ico" aria-hidden="true">
           <Icon name={icon} size={28} />
         </span>

@@ -189,7 +189,9 @@
 .seg__opt::after {
   content: "";
   position: absolute;
-  inset: -2px 0; /* 40 → 44 */
+  /* 40 → 44: the inset counts from the padding box, so 1px of border + the track's 2px padding (it stays inside the
+     track's padding box, where a scrolling track does not clip it). It was -2px: a 42px target (fix round 2026-11-13) */
+  inset: -3px 0;
 }
 .seg__opt:is([aria-checked="true"], [aria-pressed="true"], [aria-current="true"], [aria-current="page"]) {
   border-color: var(--line);
@@ -335,11 +337,25 @@
   background: var(--demo-bg);
   color: var(--demo-ink);
 }
-/* «صورة توضيحية» on a used unit's photo, bottom-start */
+/* «صورة توضيحية» on a used unit's photo, bottom-start. In a narrow well (the /used rows' 96px) the words wrap onto a
+   second line inside the photo instead of running past it (Sorani «وێنەی ڕوونکردنەوە» is 112px — fix round
+   2026-11-13); one line is still the 24px pill (radius 12 = half its height) */
 .tag--photo {
+  max-inline-size: 100%;
+  block-size: auto;
+  min-block-size: 24px;
+  padding-block: 2px;
   border-color: transparent;
+  border-radius: var(--r-sm);
   background: var(--on-image);
   color: var(--ink-2);
+  line-height: 1.25;
+  white-space: normal;
+  text-wrap: balance;
+}
+/* under a row's 96px well instead of on the photo: on the card's face, in the well's ground */
+.tag--photo.tag--under {
+  background: var(--niche);
 }
 /* on crimson (light theme): transparent, a 1px white border at 60%, white text */
 .tag--on-color {
@@ -383,6 +399,29 @@
 }
 .status--soon {
   color: var(--ink);
+}
+/* <Status pill>: the dot and words in a tinted pill (fix round 2026-11-13: the account drew its own .acct-pill) */
+.status--pill {
+  min-block-size: 26px;
+  padding-inline: var(--s-3);
+  border-radius: var(--r-full);
+  background: var(--niche);
+}
+.status--pill.status--lg {
+  min-block-size: 32px;
+  padding-inline: var(--s-4);
+}
+.status--pill.status--ok {
+  background: var(--ok-tint);
+}
+.status--pill.status--warn {
+  background: var(--warn-tint);
+}
+.status--pill.status--info {
+  background: var(--info-tint);
+}
+.status--pill.status--bad {
+  background: var(--danger-tint);
 }
 /* the cart bead: a 20px red disc, 12/600 white, a 2px ring in the surface colour; the fly-to-cart target */
 .bead {
@@ -708,6 +747,35 @@ select.field__input {
   border: 1px solid var(--line-strong);
   border-radius: var(--r-sm);
   background: var(--paper);
+}
+/* a one-line option (no hint under its name) sits in the middle of its 64px card, as the before's did — not in the
+   top 24px with 20px empty under it, beside balanced two-line cards (fix round 2026-11-13) */
+.choice--row:not(:has(.choice__hint)) {
+  align-items: center;
+}
+/* an option's icon (<Radio row icon> / <OptionCard icon>): a 40px clay disc after the radio */
+.choice__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  margin-block: -2px;
+  border-radius: var(--r-full);
+  background: var(--key-face);
+  box-shadow: var(--e-disc);
+  color: var(--ink);
+}
+/* <OptionCard clay>: the soft raised card in place of the paper row and its hairline (v2.1, the before's option cards);
+   chosen keeps the 2px ink border of every option row */
+.choice--clay {
+  border-color: transparent;
+  background: var(--card-face);
+  box-shadow: var(--e-surface);
+}
+/* <Checkbox row>: the option row's look for a checkbox — the box, a 16/600 title and the hint inside the row */
+.choice--check > .choice__box {
+  margin-block-start: 2px;
 }
 .choice--row > .choice__text {
   font: var(--type-card);
@@ -1373,16 +1441,26 @@ select.field__input {
 .inspect__rows {
   display: grid;
 }
+/* the checklist is reading text on phones (G7: 16px / 1.75 — fix round 2026-11-13), 14px from 1024; the icon sits on
+   the first line */
 .inspect__row {
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr);
   gap: var(--s-3);
   padding-block: 10px;
   border-block-end: 1px solid var(--line);
-  font: var(--type-sm);
+  font: var(--type-read);
 }
 .inspect__row > svg {
-  margin-block-start: 2px;
+  margin-block-start: 4px;
+}
+@media (min-width: 64rem) {
+  .inspect__row {
+    font: var(--type-sm);
+  }
+  .inspect__row > svg {
+    margin-block-start: 2px;
+  }
 }
 .battery {
   display: flex;
@@ -1507,9 +1585,26 @@ select.field__input {
   font: var(--type-sm-strong);
   color: var(--ink);
 }
+/* a saving (the discount, or each of its parts in its place — fix round 2026-11-13, client notes 8 and 12): the words,
+   the icon and the «−amount» in the saving colour (the total stays the summary's one red figure) */
+.summary__row--saving,
+.summary__row--saving .price {
+  color: var(--ok);
+}
+.summary__label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.summary__icon {
+  flex: none;
+  margin-block-start: 0.2em;
+}
 .summary__coupon > summary {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
   min-block-size: var(--target);
   font: var(--type-sm-strong);
   list-style: none;
@@ -1517,6 +1612,23 @@ select.field__input {
 }
 .summary__coupon > summary::-webkit-details-marker {
   display: none;
+}
+/* the caret says the line opens (the client's reference «كود خصم ›»); it turns when open */
+.summary__caret {
+  flex: none;
+  color: var(--ink-2);
+  transition: rotate var(--t-micro) var(--ease-settle);
+}
+.summary__coupon[open] .summary__caret {
+  rotate: 180deg;
+}
+@media (prefers-reduced-motion: reduce) {
+  .summary__caret {
+    transition: none;
+  }
+}
+[data-motion="reduced"] .summary__caret {
+  transition: none;
 }
 
 /* ───────────────────────────── gallery, stage chrome, buy bar (§9.6, §9.14) ───────────────────────────── */
@@ -1813,9 +1925,15 @@ select.field__input {
   box-shadow: var(--rim);
   color: var(--on-band);
 }
+/* the band's explanation is reading text on phones (G7: 16px — fix round 2026-11-13), 14px from 768 */
 .release__lead {
-  font: var(--type-sm);
+  font: var(--type-read);
   color: var(--on-band-2);
+}
+@media (min-width: 48rem) {
+  .release__lead {
+    font: var(--type-sm);
+  }
 }
 .release__list {
   display: grid;
@@ -2080,6 +2198,31 @@ select.field__input {
 .entry__text {
   font: var(--type-read);
   color: var(--ink-2);
+}
+/* the row form's title at the before's compact size (fix round 2026-11-13, client note 9: «شخّص المشكلة خطوة بخطوة»
+   wrapped onto two lines at 390, a 114px card among 88px ones): 17px Kufam from 768; on phones 16px with a 44px disc,
+   12px to the words, 8px and a 20px arrow at the end — the 239px title fits a 390 phone's 242px column on one line;
+   balanced when it truly must wrap (a 360 phone) */
+.entry--row .entry__title {
+  font: var(--w-head) 17px / 1.4 var(--font-head);
+  text-wrap: balance;
+}
+@media (max-width: 47.99rem) {
+  .entry.entry--row {
+    gap: var(--s-3);
+    padding-inline: var(--s-4);
+  }
+  .entry--row .entry__disc {
+    --disc: 44px;
+  }
+  .entry--row .entry__title {
+    font-size: 16px;
+  }
+  .entry--row .entry__go {
+    inline-size: 20px;
+    block-size: 20px;
+    margin-inline-start: -4px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .entry,
@@ -2552,6 +2695,136 @@ select.field__input {
   block-size: 1px;
   background: var(--line-2);
 }
+/* the before's labelled rail (<ProgressSteps labels="under">, client note 10 — fix round 2026-11-13): a column per
+   step, a 32px disc with its Kufam numeral, the word under it at 15px, a 2px join between the discs' edges at their
+   middle (ink up to the current step) */
+.steps-under {
+  display: grid;
+  align-items: start;
+  min-inline-size: 0;
+}
+.steps-under__item {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  min-inline-size: 0;
+}
+.steps-under__item + .steps-under__item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 15px;
+  inset-inline-start: calc(-50% + 22px);
+  inline-size: calc(100% - 44px);
+  block-size: 2px;
+  border-radius: var(--r-full);
+  background: var(--line-2);
+}
+.steps-under__item + .steps-under__item:not([data-state="upcoming"])::before {
+  background: var(--ink);
+}
+.steps-under .step {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 6px;
+  min-inline-size: var(--target);
+  max-inline-size: 100%;
+  min-block-size: var(--target);
+  font: 500 15px / 1.35 var(--font-text);
+  text-align: center;
+  text-decoration: none;
+}
+.steps-under .step__n {
+  inline-size: 32px;
+  block-size: 32px;
+  font: var(--w-figure) 16px / 1 var(--font-display);
+}
+.steps-under .step__label {
+  max-inline-size: 100%;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+.steps-under .step[aria-current="step"] .step__label {
+  font-weight: 600;
+}
+.steps-under .step[data-state="done"] {
+  color: var(--ink);
+}
+@media (hover: hover) {
+  .steps-under a.step:hover .step__label {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+/* the status rail with a stage icon in every disc (an order's stages): 40px clay discs; reached ones ink, the current
+   one ringed; the word under each at 14px (13px under 360) */
+.steps-status {
+  display: grid;
+  align-items: start;
+  min-inline-size: 0;
+}
+.steps-status__item {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--s-2);
+  min-inline-size: 0;
+  font: var(--type-sm);
+  color: var(--ink-2);
+  text-align: center;
+}
+.steps-status__item + .steps-status__item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 19px;
+  inset-inline-start: calc(-50% + 26px);
+  inline-size: calc(100% - 52px);
+  block-size: 3px;
+  border-radius: var(--r-full);
+  background: var(--line-2);
+}
+.steps-status__item + .steps-status__item:not([data-state="upcoming"])::before {
+  background: var(--ink);
+}
+.steps-status__disc {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--r-full);
+  background: var(--key-face);
+  box-shadow: var(--e-disc);
+  color: var(--ink-2);
+}
+.steps-status__item:not([data-state="upcoming"]) .steps-status__disc {
+  background: var(--ink);
+  box-shadow: none;
+  color: var(--paper);
+}
+.steps-status__item[data-state="current"] .steps-status__disc {
+  outline: 3px solid var(--line-2);
+  outline-offset: 2px;
+}
+.steps-status__item:not([data-state="upcoming"]) {
+  color: var(--ink);
+}
+.steps-status__item[data-state="current"] {
+  font-weight: 600;
+}
+.steps-status__label {
+  max-inline-size: 100%;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+@media (max-width: 22.49rem) {
+  .steps-status__item {
+    font: var(--type-xs);
+  }
+  .steps-status__item[data-state="current"] {
+    font-weight: 600;
+  }
+}
 /* compact (inside the checkout bar): numbers; the current label too, except below 430px where only its number is
    joined by the label */
 .steps--compact .step:not([aria-current="step"]) .step__label {
@@ -2697,8 +2970,10 @@ select.field__input {
   font: var(--type-h2);
   text-wrap: balance;
 }
+/* the measure in em, not ch: a `ch` is the width of «0» in whatever face is drawing at that moment, so the box itself
+   changed width when the web font replaced the fallback (fix round 2026-11-13). 25.2em = Plex's 42ch */
 .empty__text {
-  max-inline-size: 42ch;
+  max-inline-size: 25.2em;
   font: var(--type-body);
   color: var(--ink-2);
 }
@@ -2793,18 +3068,49 @@ select.field__input {
 .ledger {
   display: grid;
 }
+/* a ledger row (fix round 2026-11-13: the account's history look): the kind's 40px disc tinted by what it did, the
+   words and the date, the signed amount — + green for money in, − red for money spent */
 .ledger__row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
   gap: 2px var(--s-3);
   padding-block: var(--s-3);
   border-block-end: 1px solid var(--line);
   font: var(--type-sm);
 }
+.ledger__disc {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--r-full);
+  background: var(--key-face);
+  box-shadow: var(--e-disc);
+  color: var(--ink-2);
+}
+.ledger__disc[data-tone="ok"] {
+  background: var(--ok-tint);
+  box-shadow: none;
+  color: var(--ok);
+}
+.ledger__disc[data-tone="red"] {
+  background: var(--red-tint);
+  box-shadow: none;
+  color: var(--red-ink);
+}
+.ledger__disc[data-tone="info"] {
+  background: var(--info-tint);
+  box-shadow: none;
+  color: var(--info);
+}
 .ledger__amount {
   font-variant-numeric: tabular-nums lining-nums;
   font-weight: 600;
   text-align: end;
+}
+.ledger__amount[data-sign="credit"] {
+  color: var(--ok);
 }
 .ledger__amount[data-sign="debit"] {
   color: var(--red-ink);

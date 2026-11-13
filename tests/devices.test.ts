@@ -8,6 +8,10 @@
  *     answers are written down here — model › generation › platform precedence, variant over product, versions that
  *     disagree, explicit "unverified" fillers, the inactive platform, drafts, articles, used units.
  */
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { CompatibilityStatus, ProductCardData, StockState } from "~/lib/dto";
 import { pick, type L10n } from "~/lib/locales";
@@ -30,8 +34,10 @@ import {
   hubSections,
   keepTogether,
   onlyGridsChanged,
+  sourceLang,
   toggleGrid,
 } from "~/routes/storefront/devices/components/format";
+import { SourceText } from "~/routes/storefront/devices/components/SourceText";
 import { fromPriceOf } from "~/routes/storefront/devices/hub.server";
 import devicesMessages from "~/i18n/messages/devices";
 import { makeT, type MessageTree } from "~/i18n/translate";
@@ -626,5 +632,54 @@ describe("pure helpers", () => {
     const shelf = (key: string, n: number) => ({ key, title: key, reason: null, items: Array.from({ length: n }, (_, i) => ({ id: `${key}${i}` })) });
     expect(drawableShelves([shelf("a", 2), shelf("b", 3), shelf("c", 0)]).map((s) => s.key)).toEqual(["b"]);
     expect(drawableShelves([shelf("a", 1)])).toEqual([]);
+  });
+});
+
+describe("the hub, QA fixes (wave C, 2026-11-13)", () => {
+  const area = (path: string) => readFileSync(fileURLToPath(new URL(`../app/routes/storefront/devices/${path}`, import.meta.url)), "utf8");
+
+  it("reads its facts, notes and descriptions at 16 / 1.75 on phones and tablets (v2.1 G7); labels and meta stay small", () => {
+    // QA 2026-11-13: highlights, spec values, edition and version notes, the rule's notes and the sources were 14 / 1.5
+    // (13 / 1.5) on a phone — 328 runs of 14px and 93 of 13px against 8 of 16px on /device/steam-deck-oled at 390
+    const css = area("devices.css");
+    const components = css.slice(0, css.indexOf("@layer utilities"));
+    const phone = components.slice(components.lastIndexOf("@media (max-width: 63.99rem) {"));
+    const reading = phone.slice(0, phone.indexOf("}"));
+    for (const selector of [".devhub-read", ".devhub-hint", ".devhub-specs dd", ".devhub-table td", ".devhub-sources .link"]) expect(reading, selector).toContain(selector);
+    expect(reading).toMatch(/font: var\(--type-read\);/);
+    expect(phone).toMatch(/\.devhub-read-strong,\s*\.devhub-table__link \{\s*font: var\(--type-read\);\s*font-weight: 600;/);
+    // desktop columns keep v2's sizes
+    expect(components).toMatch(/\.devhub-read \{\s*font: var\(--type-sm\);/);
+    expect(components).toMatch(/\.devhub-hint \{\s*font: var\(--type-xs\);/);
+    // the kit's compatibility note carries a type utility: its reading size lives in the utilities layer
+    expect(css.slice(css.indexOf("@layer utilities"))).toMatch(/\.devhub-note \[data-compat\] > span \+ span \{\s*font: var\(--type-read\);/);
+    // the reading runs use the reading classes, not v2's small type utilities
+    const versions = area("components/VersionsSection.tsx");
+    expect(versions).not.toMatch(/className="[^"]*\btype-sm\b[^"]*"/);
+    expect(versions.match(/devhub-read text-ink-2/g)).toHaveLength(2);
+    expect(versions).toContain('className="flex items-start gap-2 devhub-read text-ink"');
+    const help = area("components/HelpSection.tsx");
+    expect(help).not.toMatch(/\btype-sm\b/);
+    expect(help).toContain('className="devhub-hint text-ink-2"');
+    expect(area("components/SpecSection.tsx")).toContain('<p className="devhub-read text-ink-2">');
+    expect(area("components/CompatSection.tsx")).not.toMatch(/\btype-sm text-ink-2\b|\btype-sm font-normal\b/);
+    expect(area("components/UsedSection.tsx")).not.toMatch(/\btype-sm\b/);
+    expect(area("components/CardGrid.tsx").match(/className="devhub-note /g)).toHaveLength(2);
+  });
+
+  it("names the language and direction of a source from its letters, and draws «publisher — title» as one run in the title's", () => {
+    // QA 2026-11-13: «IGN Middle East — شركة Valve تعلن…» on /en and /ckb hubs had no lang, so it was read with the page's
+    // voice and its direction was left to chance
+    expect(sourceLang("شركة Valve تعلن عن رفع سعر جهاز Steam Deck")).toEqual({ lang: "ar", dir: "rtl" });
+    expect(sourceLang("هەموو شتێک دەربارەی Steam Deck")).toEqual({ lang: "ckb", dir: "rtl" });
+    expect(sourceLang("機能・仕様 | Nintendo Switch 2")).toEqual({ lang: "ja" });
+    expect(sourceLang("PlayStation Portal 플레이어 - 미드나이트 블랙")).toEqual({ lang: "ko" });
+    expect(sourceLang("Steam Deck :: Tech Specs (OLED)")).toEqual({ lang: "en", dir: "ltr" });
+    expect(sourceLang("2026")).toBeNull();
+    expect(sourceLang(null)).toBeNull();
+    const html = renderToStaticMarkup(createElement(SourceText, { text: "شركة Valve تعلن عن رفع سعر جهاز Steam Deck", lead: "IGN Middle East" }));
+    expect(html).toBe('<bdi lang="ar" dir="rtl"><bdi lang="en" dir="ltr">IGN Middle East</bdi> — شركة Valve تعلن عن رفع سعر جهاز Steam Deck</bdi>');
+    expect(renderToStaticMarkup(createElement(SourceText, { text: "Steam Deck :: Tech Specs (OLED)" }))).toBe('<bdi lang="en" dir="ltr">Steam Deck :: Tech Specs (OLED)</bdi>');
+    expect(area("components/SpecSection.tsx")).toContain("<SourceText text={source.title ?? source.publisher ?? hostOf(source.url)} lead={source.title ? source.publisher : null} />");
   });
 });

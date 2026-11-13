@@ -219,7 +219,7 @@ export default function PayrollRunPage({ loaderData }: Route.ComponentProps) {
       <RunFacts detail={detail} />
 
       {detail.can.edit || detail.can.approve || detail.can.pay || detail.can.void ? (
-        <div className="stf-taskbar stf-noprint">
+        <div className="stf-taskbar stf-noprint" data-adm-sticky-end>
           {detail.can.void ? (
             <Key variant="ghost" icon="x-circle" onClick={() => setDialog({ kind: "void" })}>
               {t("run.void")}

@@ -14,9 +14,11 @@ import { enforceRateLimit, limitKey } from "~/server/ratelimit.server";
 import { CONSENT_CHANGES_PER_CUSTOMER, getPreferences, recordConsent, setNotificationChannels } from "~/server/services/account/preferences.server";
 import { MAX_RECENTLY_VIEWED } from "~/server/services/account/recently-viewed.server";
 import { NOTIFICATION_CHANNELS, type NotificationChannel } from "~/server/services/account/types";
+import { ConfirmDialog } from "~/ui/Dialog";
 import { Switch, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
+import { fillNodes } from "~/ui/PriceTag";
 import { Tag } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import { saveConsent } from "../home/personal";
@@ -27,7 +29,7 @@ import { describeUserAgent } from "./components/device-name";
 import { fieldError, FormFailure, Notice, OfflineNote, PasswordField, rescueFocus, SubmitKey, type ActionAnswer } from "./components/FormBits";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
-import { ltr } from "./components/text";
+import { ago, ltr } from "./components/text";
 
 /**
  * Settings — one card width (Design System v2 §6.12): the offers and viewing-history consents as switches that save on
@@ -348,9 +350,16 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
   const t = useT("account");
   const online = useOnline();
   const f = useFormat();
+  /**
+   * «سجّل خروج الأجهزة الأخرى» asks first (QA 2026-11-13: one tap signed the shared demo customer out of 26 sessions,
+   * with no question and no undo): the key opens the kit's confirmation, which says how many devices it signs out and
+   * posts the intent once confirmed. Without script the key's own form posts it.
+   */
+  const [confirming, setConfirming] = useState(false);
   // Both keys go with what they signed out (the row, or every other row): focus lands on the card's title, not <body>.
   const others = useCardFetcher((answer) => {
     if (!answer.ok) return;
+    setConfirming(false);
     toast.success(t("settings.signedOutOthers", { count: answer.count ?? 0 }));
     rescueFocus("sessions-title");
   });
@@ -361,7 +370,8 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
     rescueFocus("sessions-title");
   });
   const revoking = one.pending ? String(one.fetcher.formData?.get("sessionId") ?? "") : null;
-  const hasOthers = sessions.some((session) => !session.current);
+  const otherCount = sessions.filter((session) => !session.current).length;
+  const hasOthers = otherCount > 0;
   return (
     <section id="sessions" aria-labelledby="sessions-title" className="acct-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -372,15 +382,33 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
           <p className="type-sm text-ink-2">{t("settings.sessionsLead")}</p>
         </div>
         {hasOthers ? (
-          <others.fetcher.Form method="post">
+          <others.fetcher.Form
+            method="post"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setConfirming(true);
+            }}
+          >
             <input type="hidden" name="intent" value="revokeOthers" />
-            <Key type="submit" size="sm" icon="sign-out" loading={others.pending} disabled={!online}>
+            <Key type="submit" size="sm" icon="sign-out" aria-haspopup="dialog" loading={others.pending} disabled={!online}>
               {t("settings.signOutOthers")}
             </Key>
           </others.fetcher.Form>
         ) : null}
       </div>
-      <FormFailure answer={others.failed ?? one.failed} />
+      <ConfirmDialog
+        open={confirming}
+        onClose={() => setConfirming(false)}
+        tone="destructive"
+        title={t("settings.signOutOthersQ")}
+        consequence={t("settings.signOutOthersWhat", { count: otherCount })}
+        confirmLabel={t("settings.signOutOthersConfirm")}
+        cancelLabel={t("common.cancel")}
+        pending={others.pending}
+        error={others.failed?.message}
+        onConfirm={() => others.fetcher.submit({ intent: "revokeOthers" }, { method: "post" })}
+      />
+      <FormFailure answer={confirming ? null : (others.failed ?? one.failed)} />
       <OfflineNote />
       <ul className="grid">
         {sessions.map((session) => {
@@ -395,7 +423,9 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
                     {session.current ? <Tag kind="ok">{t("settings.thisDevice")}</Tag> : null}
                   </p>
                   <p className="type-xs text-ink-2">
-                    {t("settings.lastSeen", { when: f.relative(session.lastSeenAt, now) })} · {t("settings.since", { date: f.date(session.createdAt, "long") })}
+                    {/* «46 minutes ago» in the page's language (Sorani from the account's words: Intl has none) and kept
+                        whole in its own isolate — QA 2026-11-13 read «دوایین بەکارهێنان 46 minutes ago» as "minutes ago 46" */}
+                    {fillNodes(t("settings.lastSeen"), { when: <bdi>{ago(t, f, session.lastSeenAt, now)}</bdi> })} · {t("settings.since", { date: f.date(session.createdAt, "long") })}
                   </p>
                 </div>
               </div>

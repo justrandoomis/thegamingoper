@@ -189,7 +189,7 @@ export default function ProductDetails({ loaderData }: Route.ComponentProps) {
           </fieldset>
 
           {readOnly ? null : (
-            <div className="sticky z-(--z-sticky) -mx-2 flex flex-wrap items-center gap-3 rounded-sm bg-paper px-2 py-3 shadow-[0_-1px_0_var(--line)]" style={{ insetBlockEnd: "var(--adm-bottom)" }}>
+            <div className="sticky z-(--z-sticky) -mx-2 flex flex-wrap items-center gap-3 rounded-sm bg-paper px-2 py-3 shadow-[0_-1px_0_var(--line)]" style={{ insetBlockEnd: "var(--adm-bottom)" }} data-adm-sticky-end>
               <Key type="submit" variant="ink" icon="floppy-disk" loading={busy}>
                 {t("common.save")}
               </Key>

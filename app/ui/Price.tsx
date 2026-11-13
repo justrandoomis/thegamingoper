@@ -4,7 +4,7 @@ import { useRouteLoaderData } from "react-router";
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { assertIqd, CURRENCIES, type CurrencyCode, type FxSnapshot } from "~/lib/money";
-import { NumberMorph } from "~/motion";
+import { CountUp, NumberMorph } from "~/motion";
 import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
@@ -43,6 +43,12 @@ export type PriceProps = {
   rateDetails?: boolean;
   /** Element for the price line. Use "span" inside running text (no block line is added then). */
   as?: "p" | "span" | "div";
+  /**
+   * v2.1 (G6, client note 12): a figure that is the page's news — a trade-in offer — counts up ONCE (CountUp): the
+   * server renders the final figure, the count runs when it first comes into view; "load" also counts on a direct open
+   * (from 70%, never from zero). Instant under reduced motion. Never for a price that is merely shown.
+   */
+  countUp?: boolean | "load";
   className?: string;
 };
 
@@ -56,7 +62,7 @@ const TONE_CLASS: Record<PriceTone, string | undefined> = {
   muted: "price--muted",
 };
 
-export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, approx = "auto", rateDetails, as = "p", className }: PriceProps) {
+export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, approx = "auto", rateDetails, as = "p", countUp = false, className }: PriceProps) {
   assertIqd(amountIqd);
   const f = useFormat();
   const t = useT("ui");
@@ -74,7 +80,7 @@ export function Price({ amountIqd, size = "md", tone, compareAtIqd = null, appro
       {was !== null && inline ? <Was amountIqd={was} inline /> : null}
       {/* the figure and «د.ع» are one unbreakable unit (§2.6, §4.8): at 320px they wrapped apart («667,750» / «د.ع») */}
       <span className="price__amount" aria-hidden="true">
-        <span className="price__num">{figure}</span>
+        <span className="price__num">{countUp ? <CountUp value={amountIqd} format={f.number} playOnLoad={countUp === "load"} /> : figure}</span>
         <span className="price__cur">{CURRENCIES.IQD.symbol[f.locale]}</span>
       </span>
       <VisuallyHidden>{t("price.aria", { amount: figure })}</VisuallyHidden>

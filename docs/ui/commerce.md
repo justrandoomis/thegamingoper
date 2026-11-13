@@ -10,6 +10,23 @@
   **FactList** (16px reading text) are soft raised cards.
 - **EmptyState** stacks the key and the recovery link (the before's arrangement); `panel` sets it on the soft card.
 
+## Fix round (2026-11-13) — DESIGN.md §15.10
+
+- **OrderSummary** — the arrangement is subtotal · the discount · delivery · «الإجمالي»; nothing with a minus sign after
+  the total. New: `discountParts={[{ key, icon?, label, amountIqd }]}` — each part of the discount a row in the discount's
+  place (`--ok`, its icon), never with the single «الخصم» row (parts that do not add up to `discountIqd` fall back to
+  it; `discountRows()` is the pure rule); `shippingNote` replaces the line under «التوصيل»; `children` now render
+  directly under the total (a split payment's parts), before the coupon question, which has a caret that turns.
+- **Price** `countUp` (`true`: once on first view; `"load"`: also on a direct open, from 70%) — the page's news figure.
+- **WalletBalance** — ledger rows: the kind's 40px disc (`ledgerLook()`: in green, spent red, given back blue) and the
+  signed amount, + in `--ok`, − in `--red-ink` (the account's history look).
+- **UsedUnitCard** row — «صورة توضيحية» sits under the 96px well (Sorani's words did not fit on it); on the grid card it
+  wraps inside the well. **InspectionCard** / **GradeBadge** — reading text on phones (16px), 14px from 1024; the
+  legend keeps clear of the shell's fixed bars. **Gallery** — no counter for a single picture.
+- **EmptyState** `wide` (with `panel`): the card spans its column; a stack `icon` is drawn at 44px.
+- **Field** — `OptionCard clay icon` (a clay face, the option's icon in a 40px clay disc); `Radio row icon`;
+  `Checkbox row` (the option row's look, the hint inside); a one-line option row is centred in its 64px.
+
 ## QA fixes (2026-11-12, after the full matrix)
 
 - **ProductCard / KindLine:** the kind line and the meta line are `<FactLine>`s (docs/ui/core.md): «جهاز محمول · ROG

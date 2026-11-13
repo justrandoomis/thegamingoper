@@ -46,7 +46,8 @@ import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
 import productMessages from "~/i18n/messages/product";
 import { BuyStrip, stripState } from "~/routes/storefront/product/components/BuyStrip";
-import { BeforeYouOrder, Highlights, InTheBox, sourceLine } from "~/routes/storefront/product/components/Details";
+import { BeforeYouOrder, Highlights, InTheBox, sourceLine, Specs } from "~/routes/storefront/product/components/Details";
+import { FOCUS_TARGET, focusHandoff } from "~/routes/storefront/product/handoff";
 import { methodsList, offersTransfer, paymentMethods, sentenceStart, SideNotes } from "~/routes/storefront/product/components/Facts";
 import { MixedText, splitMixed } from "~/routes/storefront/product/components/MixedText";
 import { PriceBlock, priceLook, priceSide, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
@@ -800,6 +801,82 @@ describe("product page v2.1 review (client note 5)", () => {
     const quick = area("QuickPreview.tsx");
     expect(quick).not.toMatch(/offlineId=/);
     expect(quick).not.toMatch(/aria-describedby=\{offline/);
+  });
+});
+
+describe("product page QA fixes (wave C, 2026-11-13)", () => {
+  const area = (path: string) => readFileSync(fileURLToPath(new URL(`../app/routes/storefront/product/${path}`, import.meta.url)), "utf8");
+  const now = { id: "a", sku: "NS2-STD", label: "النسخة الدولية", title: "النسخة الدولية", priceIqd: 667_750, compareAtIqd: null, orderable: true, stock: "in_stock", releaseAt: null, images: [], options: {}, modelNumber: null, bundle: null } as unknown as VariantDetail;
+
+  it("focus survives the swap of «أضف إلى السلة» for «عرض السلة (n)»: it lands on the new key when it was on the old one", () => {
+    // QA 2026-11-13: after Enter on «أضف إلى السلة» the bar (phones, tablets) and the quick look's foot replaced the
+    // focused key with «✓ في السلة» + «عرض السلة (n)», so focus fell to <body> — and out of the quick look's modal
+    // dialog, whose next Tab started again at its top (WCAG 2.4.3).
+    const landed: (FocusOptions | undefined)[] = [];
+    const next = { focus: (options?: FocusOptions) => void landed.push(options) };
+    const key = { id: "add" };
+    const bar = { contains: (node: unknown) => node === key };
+    const swap = focusHandoff();
+    swap.arm(bar, key);
+    expect(swap.land(next)).toBe(true);
+    expect(landed).toEqual([{ preventScroll: true }]);
+    expect(swap.land(next), "once").toBe(false);
+    swap.arm(bar, { id: "elsewhere" }); // the shopper moved on while the add was on its way: never pulled back
+    expect(swap.land(next)).toBe(false);
+    swap.arm(bar, null);
+    expect(swap.land(next)).toBe(false);
+    swap.arm(bar, key);
+    expect(swap.land(null), "nothing to land on").toBe(false);
+    expect(landed).toHaveLength(1);
+    // the bar and the quick look's foot arm it on a confirmed add — before the state that swaps the key — and mark
+    // their «عرض السلة (n)» key as the place where focus lands
+    for (const file of ["components/BuyStrip.tsx", "QuickPreview.tsx"]) {
+      const source = area(file);
+      expect(source, file).toMatch(/useFocusHandoff\(/);
+      expect(source, file).toMatch(/onAdded=\{\(\) => \{\s*handoff\.arm\(\);/);
+      expect(source, file).toContain("ref={handoff.area}");
+      expect(source.match(new RegExp(`${FOCUS_TARGET}=""`, "g")), file).toHaveLength(1);
+    }
+  });
+
+  it("specification values and the line on their sources are facts in reading size on phones and tablets (G7)", () => {
+    // QA 2026-11-13: «شاشة LCD لمسية 7.9 بوصة، 1920×1080، تدعم HDR10…» was 14px / 1.5 and the source line 13px on a phone
+    const css = area("product.css");
+    expect(css).toMatch(/\.pp-fact \{\s*font: var\(--type-sm\);/);
+    expect(css).toMatch(/@media \(max-width: 63\.99rem\) \{\s*\.pp-fact[,\s][^{]*\{\s*font: var\(--type-read\);/);
+    const sources = [{ url: "https://www.nintendo.com/us/gaming-systems/switch-2/specs/", title: "Nintendo Switch 2 – Tech specs", publisher: "Nintendo of America" }];
+    const html = renderOnPage(createElement(Specs, { specs: [{ key: "display", label: "الشاشة", value: "شاشة LCD لمسية 7.9 بوصة، 1920×1080، تدعم HDR10" }], variant: now, sources, brand: "Nintendo" }));
+    expect(html).toMatch(/<dd class="pp-fact /);
+    expect(html).not.toMatch(/<dd[^>]*type-sm/);
+    expect(html).toMatch(/<p class="pp-fact text-ink-2">/); // «المواصفات من الموقع الرسمي للشركة المصنّعة»
+    // and «يعمل مع»'s line on what the states mean («من سجلّ التوافق الذي تحقّقنا منه. «لم نتحقق» لا تعني…»)
+    expect(area("components/Slots.tsx")).toContain('<p className="pp-fact text-ink-2">{t("compat.reason")}</p>');
+  });
+
+  it("a source in another language than the page says so: its title carries its own lang and direction", () => {
+    // QA 2026-11-13: «IGN Middle East — شركة Valve تعلن…» and «機能・仕様» were read with the page's English or Sorani voice
+    const sources = [
+      { url: "https://me.ign.com/ar/steam-deck/1", title: "شركة Valve تعلن عن رفع سعر جهاز Steam Deck", publisher: "IGN Middle East" },
+      { url: "https://www.nintendo.co.jp/hardware/switch2/specs/", title: "機能・仕様 | Nintendo Switch 2", publisher: "Nintendo Co., Ltd. (Japan)" },
+    ];
+    const html = renderOnPage(createElement(Specs, { specs: [], variant: now, sources, brand: "Nintendo" }), "en");
+    expect(html).toContain('<bdi lang="ar" dir="rtl">شركة Valve تعلن عن رفع سعر جهاز Steam Deck</bdi>');
+    expect(html).toContain('<bdi lang="ja">機能・仕様 | Nintendo Switch 2</bdi>');
+    expect(html).toContain('<bdi lang="en" dir="ltr">IGN Middle East</bdi>');
+  });
+
+  it("the breadcrumb bar is ONE line wherever it names the product: a long name ends with an ellipsis, never alone on a line", () => {
+    // QA 2026-11-13: at 1440 «‹ The Legend of Zelda: Ocarina of Time» sat alone on a second line, chevron first
+    const css = area("product.css");
+    const utilities = css.slice(css.indexOf("@layer utilities"));
+    const at = utilities.indexOf("@media (min-width: 48rem) and (max-width: 63.99rem), (min-width: 80rem) {");
+    expect(at).toBeGreaterThan(-1);
+    const block = utilities.slice(at, utilities.indexOf("\n  }\n", at));
+    expect(block).toMatch(/\.pp-crumbs \.crumbs__list \{\s*flex-wrap: nowrap;/);
+    expect(block).toMatch(/\.pp-crumbs \.crumbs__list > li:last-child[^{]*\{[^}]*min-inline-size: 0;/);
+    expect(block).toMatch(/text-overflow: ellipsis;/);
+    // the run is cut at its own end: an isolated Latin name keeps its start («The Legend of Zelda: Ocar…»)
+    expect(block).toMatch(/\.pp-crumbs \.crumbs__current > \* \{[^}]*overflow: hidden;/);
   });
 });
 

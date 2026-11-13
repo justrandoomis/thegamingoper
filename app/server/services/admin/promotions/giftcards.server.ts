@@ -28,9 +28,9 @@
  * GIFT_CARD.soloDayIqd, waits for a second person (promotions.gift_card.manage, not the requester); the window is
  * re-checked inside the issuing batch.
  *
- * HONEST BOUNDARY: SELLING a card for money (at the counter or online) is not built — it needs a gift-card liability
- * account in the chart (schema owner) and a sale line in the POS / checkout (commerce core). Cards here are the store's
- * own (compensation, prizes, promotions).
+ * HONEST BOUNDARY: SELLING a card for money (at the counter or online) is not built — the liability account
+ * (gift_card_liability, 2150 «بطاقات هدايا لم تُستخدم بعد») is in the chart, but there is no sale line in the POS or
+ * the checkout (commerce core). Cards here are the store's own (compensation, prizes, promotions).
  */
 import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";

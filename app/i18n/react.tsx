@@ -106,6 +106,32 @@ export function formatPercent(ratio: number, numbering: NumberingSystem): string
   return `${text.replace(/[0-9]/g, (digit) => ARABIC_INDIC_DIGITS[Number(digit)]).replace(".", "٫")}٪`;
 }
 
+/**
+ * "5 minutes ago" / "in 2 hours" in Sorani, built by hand for the same reason as formatPercent: with no Sorani data,
+ * Intl.RelativeTimeFormat answers in English in the browser and with a bare unit on the server ("-46 min") — wrong
+ * words and a hydration failure (QA 2026-11-13). Less than a minute reads «ئێستا», one day «دوێنێ» / «سبەینێ».
+ */
+export function soraniRelative(diffMs: number, numbering: NumberingSystem): string {
+  const abs = Math.abs(diffMs);
+  if (abs < 60_000) return "ئێستا";
+  const past = diffMs < 0;
+  const digits = (n: number) => (numbering === "arab" ? String(n).replace(/[0-9]/g, (digit) => ARABIC_INDIC_DIGITS[Number(digit)]) : String(n));
+  let count: number;
+  let unit: string;
+  if (abs < 3_600_000) {
+    count = Math.round(abs / 60_000);
+    unit = "خولەک";
+  } else if (abs < 86_400_000) {
+    count = Math.round(abs / 3_600_000);
+    unit = "کاتژمێر";
+  } else {
+    count = Math.round(abs / 86_400_000);
+    if (count === 1) return past ? "دوێنێ" : "سبەینێ";
+    unit = "ڕۆژ";
+  }
+  return past ? `${digits(count)} ${unit} لەمەوبەر` : `دوای ${digits(count)} ${unit}`;
+}
+
 export type Formatters = {
   locale: Locale;
   currency: CurrencyCode;
@@ -150,6 +176,7 @@ export function useFormat(): Formatters {
       date: (ms, style = "medium") => formatDate(ms, style, locale, numbering),
       dateTime: (ms) => formatDateTime(ms, locale, numbering),
       relative: (ms, nowMs = Date.now()) => {
+        if (locale === "ckb") return soraniRelative(ms - nowMs, numbering);
         const rtf = new Intl.RelativeTimeFormat(tag, { numeric: "auto" });
         const diff = ms - nowMs;
         const abs = Math.abs(diff);

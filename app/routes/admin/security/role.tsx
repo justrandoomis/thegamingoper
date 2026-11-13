@@ -200,7 +200,7 @@ function Permissions({ detail }: { detail: Detail }) {
               ))}
           </div>
           {editable ? (
-            <div className="sec-actions sec-taskbar">
+            <div className="sec-actions sec-taskbar" data-adm-sticky-end>
               <Key type="submit" size="sm" variant="ink" disabled={!added.length && !removed.length}>
                 {t("role.save", { added: added.length, removed: removed.length })}
               </Key>

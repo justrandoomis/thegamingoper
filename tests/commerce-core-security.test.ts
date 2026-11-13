@@ -114,6 +114,20 @@ const freshIp = () => {
   return `203.0.${113 + Math.floor(counter / 250) % 10}.${(counter % 250) + 1}`;
 };
 
+/**
+ * Budgets count in fixed windows aligned to the clock (ratelimit.server: ⌊now ⁄ window⌋). A burst that crosses a
+ * window's end splits its count over two windows, and the request past the budget is not refused — on a busy machine
+ * the 21 referral checks of a minute's budget took seconds and now and then did (client round 1, wave C: a flake, not a
+ * hole). A burst starts in a window with room for it: when less than `needMs` of this one is left, wait for the next.
+ */
+async function windowWithRoom(windowSec: number, needMs = 30_000): Promise<void> {
+  const ms = windowSec * 1000;
+  const left = ms - (Date.now() % ms);
+  if (left < needMs) await new Promise((resolve) => setTimeout(resolve, left + 50));
+}
+/** A test that may wait for a fresh minute before its burst (windowWithRoom). */
+const BURST_BUDGET = { timeout: 120_000 } as const;
+
 function context(options: { cookies?: Record<string, string>; ip?: string | null } = {}): { ctx: RequestCtx; setCookies: string[] } {
   const jar = new Map(Object.entries(options.cookies ?? {}));
   const setCookies: string[] = [];
@@ -412,8 +426,9 @@ describe("digital codes — only to the buyer, only after payment, never in page
     expect((await codesOf(order.orderId))[0]?.revealCount).toBe(0);
   });
 
-  test("a buyer's reveals are counted per order: the one after the limit within the hour is 429 and shows nothing", async () => {
+  test("a buyer's reveals are counted per order: the one after the limit within the hour is 429 and shows nothing", BURST_BUDGET, async () => {
     const order = await paidGuestDigitalOrder("PSN-SEC-LIMIT-0006");
+    await windowWithRoom(REVEAL_LIMIT.windowSec);
     for (let i = 0; i < REVEAL_LIMIT.limit; i++) {
       const shown = await hit(`/order/${order.ref}`, orderAction, { form: revealForm(order.codeId, order.accessToken), params: { ref: order.ref } });
       expect(shown.status).toBe(200);
@@ -520,18 +535,20 @@ describe("referral codes — guessing is budgeted at every door, and an order th
     return { code: issued.code, referrerId, codeId: issued.codeId };
   }
 
-  test("codes asked about through POST /api/cart count against the same per-address budget as the GET: 20 a minute, whichever the door", async () => {
+  test("codes asked about through POST /api/cart count against the same per-address budget as the GET: 20 a minute, whichever the door", BURST_BUDGET, async () => {
     const product = await make.product({ stock: 5, priceIqd: 40_000 });
     const { cartToken } = await addToCart(t.db, { cartToken: null, customerId: null, locale: "ar" }, { variantId: product.variantId, qty: 1 }, NOW);
     const cookies = { [CART_COOKIE]: cartToken };
     // the POST alone: the 21st code checked from one address in a minute is refused, whatever the intent
     const ip = freshIp();
+    await windowWithRoom(60);
     const answers: number[] = [];
     for (let i = 0; i < 21; i++) answers.push((await hit("/api/cart", cartAction, { form: { intent: "coupon", code: "", referral: `TTGUESS${String(i).padStart(2, "0")}` }, cookies, ip })).status);
     expect(answers.slice(0, 20).every((status) => status === 200)).toBe(true);
     expect(answers[20]).toBe(429);
     // and the two doors share the budget: twenty GETs, then a POST from the same address is refused
     const shared = freshIp();
+    await windowWithRoom(60);
     for (let i = 0; i < 20; i++) expect((await hit(`/api/cart?referral=TTSHARE${i}`, cartLoader, { cookies, ip: shared })).status).toBe(200);
     const post = await hit("/api/cart", cartAction, { form: { intent: "coupon", code: "", referral: "TTSHAREXX" }, cookies, ip: shared });
     expect(post.status).toBe(429);
@@ -540,13 +557,14 @@ describe("referral codes — guessing is budgeted at every door, and an order th
     expect((await hit("/api/cart", cartAction, { form: { intent: "coupon", code: "" }, cookies, ip: shared })).status).toBe(200);
   });
 
-  test("a code the checkout asks about travels in a body, never in a URL: POST intent=price answers the priced cart, changes nothing and counts as a check", async () => {
+  test("a code the checkout asks about travels in a body, never in a URL: POST intent=price answers the priced cart, changes nothing and counts as a check", BURST_BUDGET, async () => {
     const { code } = await referralCode(5);
     const product = await make.product({ stock: 5, priceIqd: 35_000 });
     const { cartToken } = await addToCart(t.db, { cartToken: null, customerId: null, locale: "ar" }, { variantId: product.variantId, qty: 2 }, NOW);
     const cookies = { [CART_COOKIE]: cartToken };
     const before = await getCartView(t.db, { cartToken, customerId: null, locale: "ar", governorateId: BAGHDAD }, NOW);
     const ip = freshIp();
+    await windowWithRoom(60);
     const priced = await hit("/api/cart", cartAction, { form: { intent: "price", governorateId: BAGHDAD, referral: code }, cookies, ip });
     expect(priced.status).toBe(200);
     expect(priced.body).toMatchObject({ ok: true, cart: { totalIqd: before.totalIqd, referral: { code, status: "ok" } } });
@@ -682,10 +700,11 @@ describe("the account's new pages — only one's own points, codes, wallet and r
     expect(await t.db.select().from(referralCodes).where(eq(referralCodes.customerId, customer.id))).toHaveLength(0);
   });
 
-  test("gift-card guesses share one budget per address: a second (free) account on the same line gets no fresh tries", async () => {
+  test("gift-card guesses share one budget per address: a second (free) account on the same line gets no fresh tries", BURST_BUDGET, async () => {
     const ip = freshIp();
     const first = await customerWithSession();
     const second = await customerWithSession();
+    await windowWithRoom(10 * 60);
     const guess = (jar: Record<string, string>) => hit("/account/wallet", walletAction, { form: { intent: "gift_check", code: `ABCD-EFGH-${randomToken(8).toUpperCase().replace(/[^A-Z2-9]/g, "Q").slice(0, 4)}-2345` }, cookies: jar, ip });
     for (let i = 0; i < 10; i++) expect((await guess(first.jar)).status).toBe(404);
     const refused = await guess(second.jar);

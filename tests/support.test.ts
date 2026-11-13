@@ -11,7 +11,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub } from "react-router";
 import { messagesFor } from "~/i18n/i18n.server";
-import RepairStatusPage from "~/routes/storefront/support/repair-status";
+import RepairStatusPage, { handle as repairStatusHandle } from "~/routes/storefront/support/repair-status";
 import { randomToken } from "~/lib/ids";
 import { seedDemo } from "~/server/db/seed/demo";
 import {
@@ -39,7 +39,11 @@ import { checkTree, handOffToStaff, runAssistant, type AssistantModel } from "~/
 import { findArticlesMentioning, getArticle, getHelpIndex, getSupportDirectory, listArticlesForDevice, listHelpArticles, listRelatedArticles, searchHelp } from "~/server/services/support/kb.server";
 import { aliasWords, describesProblem, findErrorCode, findErrorCodes, hasDangerSign, interpretText, matchDevice, normalizeForMatch } from "~/server/services/support/matcher";
 import { COMMON_PROBLEMS, commonProblemsFor, highlightParts, matchPolicies, suggestHelp } from "~/server/services/support/helpsearch";
-import HelpCenter from "~/routes/storefront/support/help-center";
+import HelpCenter, { handle as helpCenterHandle } from "~/routes/storefront/support/help-center";
+import { handle as assistantHandle } from "~/routes/storefront/support/assistant";
+import { handle as repairHandle } from "~/routes/storefront/support/repair";
+import { handle as ticketHandle } from "~/routes/storefront/support/ticket";
+import { shellChrome } from "~/routes/storefront/shell/chrome";
 import { KEEP_FOCUS, keepsFocus } from "~/routes/storefront/support/components/HelpSearch";
 import { createRepairTicket, getRepairByAccessToken, lookupRepair, normalizeSerial } from "~/server/services/support/repairs.server";
 import { EMPTY_ASSISTANT_STATE, assistantSearch, cleanQuestion, parseAssistantState, type AssistantState } from "~/server/services/support/state";
@@ -448,8 +452,10 @@ describe("help-centre search: suggestions, codes, filters, chips and marks", () 
         hydrationData: { loaderData: { root: { locale: "ar", dir: "rtl", fx: null, storeMode: "demo", i18n: messagesFor("ar", "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: page as never } },
       }),
     );
-    // the before's underline tabs, the help centre current; the before's title
-    expect(html).toMatch(/aria-current="page"[^>]*>(?:(?!<\/a>).)*مركز المساعدة/);
+    // the before's underline tabs, the support centre current (the place's one name, «مركز الدعم» — lead's glossary
+    // decision, round 1 fixes); the before's title
+    expect(html).toMatch(/aria-current="page"[^>]*>(?:(?!<\/a>).)*مركز الدعم/);
+    expect(html).not.toContain("مركز المساعدة");
     for (const label of ["مساعد الصيانة", "احجز صيانة", "تابع طلب"]) expect(html).toContain(label);
     expect(html).toMatch(/<h1[^>]*>الدعم والمساعدة<\/h1>/);
     // a search that works without script: a GET form, the words as q, the device chips as native radios, the common
@@ -531,9 +537,67 @@ describe("help-centre search: suggestions, codes, filters, chips and marks", () 
     }
   });
 
+  // Round-1 fixes: «سويتش يسخن» suggested the handheld PCs' guide first, then the Switch's setup guide, then its
+  // troubleshooting guide; «جويكون» listed the handheld guide beside the Switch's. A device or a platform named in the
+  // words (the shoppers' spellings too) puts that platform's guides first — its troubleshooting guide first when the
+  // words describe a problem — then the guides about every device, then the other platforms' (kept, never hidden).
+  test("a named device's guides come first, its troubleshooting guide first for a problem, other platforms' after", async () => {
+    const index = await getHelpIndex(t.db);
+    const platformOf = (slug: string) => index.find((entry) => entry.slug === slug)?.platform ?? null;
+    const troubleshooting = (platform: string) => index.find((entry) => entry.platform === platform && entry.tags.includes("troubleshooting"))!.slug;
+    const tierOf = (slug: string, platform: string) => (platformOf(slug) === platform ? 0 : platformOf(slug) === null ? 1 : 2);
+    const cases: Array<[string, string]> = [
+      ["سويتش يسخن", "nintendo"],
+      ["switch overheating", "nintendo"],
+      ["اكس بوكس يسخن", "xbox"],
+      ["إكس بوكس لا يشتغل", "xbox"],
+      ["جويكون", "nintendo"],
+      ["الجويكون", "nintendo"],
+      ["PS5 لا يشتغل", "playstation"],
+      ["ستيم ديك يسخن", "handheld"],
+      ["ROG Xbox Ally overheating", "handheld"],
+    ];
+    for (const [words, platform] of cases) {
+      const guides = suggestHelp(index, [], words)!.guides;
+      expect(guides.length, words).toBeGreaterThan(0);
+      const tiers = guides.map((slug) => tierOf(slug, platform));
+      expect(tiers, words).toEqual([...tiers].sort());
+      expect(tiers[0], words).toBe(0);
+      // the results page ranks alike (its bodies may only reorder guides of one tier)
+      const server = await searchHelp(t.db, "ar", words);
+      const serverTiers = server!.articles.map((article) => tierOf(article.slug, platform));
+      expect(serverTiers, words).toEqual([...serverTiers].sort());
+      expect(server!.articles[0].slug, words).toBe(guides[0]);
+    }
+    // a problem with a named device: that device's troubleshooting guide leads (not its setup guide)
+    expect(suggestHelp(index, [], "سويتش يسخن")!.guides[0]).toBe(troubleshooting("nintendo"));
+    expect(suggestHelp(index, [], "اكس بوكس يسخن")!.guides[0]).toBe(troubleshooting("xbox"));
+    expect(suggestHelp(index, [], "جويكون")!.guides[0]).toBe(troubleshooting("nintendo"));
+    // other platforms' guides are kept, after: a named device never hides an answer
+    expect(suggestHelp(index, [], "سويتش يسخن")!.guides.some((slug) => tierOf(slug, "nintendo") === 2)).toBe(true);
+    // words that name nothing rank as before: no tiers
+    const plain = suggestHelp(index, [], "الجهاز لا يشتغل")!.guides;
+    expect(plain.length).toBeGreaterThan(1);
+    expect(new Set(plain.map((slug) => platformOf(slug))).size).toBeGreaterThan(1);
+  });
+
   test("a device chip re-runs a search and leaves the focus on the chips; any other search moves it to the results", () => {
     expect(keepsFocus(KEEP_FOCUS)).toBe(true);
     for (const state of [null, undefined, {}, { keepFocus: "yes" }, "keepFocus"]) expect(keepsFocus(state)).toBe(false);
+  });
+
+  // Round 1 fixes: offline, the shell's banner on the search and lookup pages said «سلتك محفوظة…» (the cart is kept) —
+  // beside the search's own «ما كتبته باقٍ هنا…». These pages are built around what the shopper types: the form words.
+  test("offline, the search and the lookups say what was typed stays — never that the cart is kept", () => {
+    for (const [path, handle] of [
+      ["/support", helpCenterHandle],
+      ["/support/repair/status", repairStatusHandle],
+      ["/support/ticket", ticketHandle],
+      ["/support/assistant", assistantHandle],
+      ["/support/repair", repairHandle],
+    ] as const) {
+      expect(shellChrome([{ id: "page", handle }], { path }).offline, path).toBe("form");
+    }
   });
 });
 
@@ -900,9 +964,18 @@ describe("support copy", () => {
     expect(JSON.stringify(supportMessages.ckb)).not.toMatch(/پەیوەندیت پێوە دەکەین|پەیوەندی پێوە دەکەین/);
     expect(all).not.toMatch(/تحدّث مع شخص|رقم الهاتف/);
     expect(tAr("meta.help.title")).toBe("مركز الدعم");
-    // client feedback round 1, note 9 (the before's support page wins): the before's tabs and title are back
+    // client feedback round 1, note 9 (the before's support page wins): the before's tabs and title are back — but the
+    // place keeps its one name: the first tab says «مركز الدعم» as the document title, the header, the footer and the
+    // home do (changed on purpose, lead's glossary decision in the round-1 fixes); only the h1 keeps the before's
+    // «الدعم والمساعدة» (the glossary's recorded exception)
     expect(tAr("help.title")).toBe("الدعم والمساعدة");
-    expect(["help", "assistant", "repair", "status"].map((key) => tAr(`nav.${key}`))).toEqual(["مركز المساعدة", "مساعد الصيانة", "احجز صيانة", "تابع طلب"]);
+    expect(["help", "assistant", "repair", "status"].map((key) => tAr(`nav.${key}`))).toEqual(["مركز الدعم", "مساعد الصيانة", "احجز صيانة", "تابع طلب"]);
+    const tCkb = makeT(supportMessages.ckb, "ckb", "support");
+    for (const t of [tAr, tEn, tCkb]) expect(t("nav.help")).toBe(t("meta.help.title"));
+    expect(tEn("nav.help")).toBe("Support centre");
+    expect(JSON.stringify(supportMessages.ar)).not.toContain("مركز المساعدة");
+    expect(JSON.stringify(supportMessages.en)).not.toContain("Help centre");
+    expect(JSON.stringify(supportMessages.ckb)).not.toContain("ناوەندی یارمەتی");
     expect(tAr("handoff.title")).toBe("تحدّث مع موظف");
     expect(tEn("handoff.title")).toBe("Talk to a person");
     expect(tAr("handoff.text")).toBe("نرسل محادثتك إلى موظف مع رقم طلب تتابع به ردّه.");

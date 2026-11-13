@@ -9,11 +9,60 @@
  *    so we only ever end a transition that is already animating.
  */
 
-type ViewTransitionLike = { finished: Promise<unknown>; ready: Promise<unknown>; skipTransition(): void };
+type ViewTransitionLike = { finished: Promise<unknown>; ready: Promise<unknown>; updateCallbackDone?: Promise<unknown>; skipTransition(): void };
 type TransitionDocument = Document & {
   startViewTransition?: (callback?: () => void | Promise<void>) => ViewTransitionLike;
   activeViewTransition?: ViewTransitionLike | null;
 };
+/** The document's own function, held loosely: it is wrapped and restored, never called with a type of ours. */
+type TransitionHolder = { startViewTransition?: unknown };
+
+/** The wording of a benign "invalid state" abort that React 19.3 recognises (and ignores). */
+const BENIGN_ABORT = "Transition was aborted because of invalid state";
+
+/**
+ * A phone's URL bar moving during a navigation changes the viewport, and the browser aborts the view transition.
+ * Chromium/Edge now word it "Transition was aborted because of invalid state. Viewport size changed"; React 19.3's
+ * list of benign aborts has only the shorter wording, so React reported the abort as an uncaught error on every such
+ * card → product tap (catalog review, fix round 2026-11-13: also on /used and under reduced motion). The page itself
+ * was fine — React swaps it without the animation. The engine wraps `document.startViewTransition` so the `ready` React
+ * reads rejects with the wording it knows; every other error passes unchanged, and `updateCallbackDone` is observed so
+ * a failed update is never an unhandled rejection either. Returns the uninstaller; installing twice is a no-op.
+ */
+const PATCHED = Symbol.for("tt.normalizeTransitionAborts");
+export function normalizeTransitionAborts(doc: Document): () => void {
+  const target = doc as unknown as TransitionHolder;
+  const original = target.startViewTransition;
+  if (typeof original !== "function" || (original as unknown as Record<symbol, boolean>)[PATCHED]) return () => {};
+  const start = original as (...args: unknown[]) => ViewTransitionLike;
+  const patched = function (this: Document, ...args: unknown[]) {
+    const transition = start.apply(this, args);
+    try {
+      const ready = transition.ready.catch((error: unknown) => {
+        throw benignAbort(error);
+      });
+      Object.defineProperty(transition, "ready", { configurable: true, get: () => ready });
+      transition.updateCallbackDone?.catch(() => undefined);
+    } catch {
+      // a transition object that does not allow shadowing: React keeps the browser's own promise
+    }
+    return transition;
+  };
+  (patched as unknown as Record<symbol, boolean>)[PATCHED] = true;
+  target.startViewTransition = patched;
+  return () => {
+    if (target.startViewTransition === patched) target.startViewTransition = original;
+  };
+}
+
+/** A viewport-size abort in the wording React treats as benign; anything else unchanged (exported for tests). */
+export function benignAbort(error: unknown): unknown {
+  const named = error as { name?: unknown; message?: unknown } | null;
+  if (named && named.name === "InvalidStateError" && typeof named.message === "string" && named.message !== BENIGN_ABORT && named.message.startsWith(BENIGN_ABORT)) {
+    return typeof DOMException === "function" ? new DOMException(BENIGN_ABORT, "InvalidStateError") : Object.assign(new Error(BENIGN_ABORT), { name: "InvalidStateError" });
+  }
+  return error;
+}
 
 export function supportsViewTransitions(): boolean {
   return typeof document !== "undefined" && typeof (document as TransitionDocument).startViewTransition === "function";
@@ -175,8 +224,9 @@ export function runTransition(update: () => void, onReady?: () => void, onStart?
   onStart?.(transition);
   transition.ready.then(
     () => onReady?.(),
-    () => {}, // skipped (hidden tab, interrupted): the update still ran
+    () => {}, // skipped (hidden tab, interrupted, the viewport changed): the update still ran
   );
+  transition.updateCallbackDone?.catch(() => undefined);
   return transition.finished.then(
     () => {},
     () => {},

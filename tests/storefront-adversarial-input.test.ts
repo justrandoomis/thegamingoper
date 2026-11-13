@@ -612,7 +612,12 @@ describe("IDOR — every id that reaches the server is checked against its owner
       .update(tradeIns)
       .set({ status: "offered", finalOfferIqd: 100_000, offeredBy: "emp_TEST", offeredAt: NOW, offerExpiresAt: Date.now() + 86_400_000, inspection: { checklist: { templateId: null, completedAt: NOW, completedBy: "emp_TEST", items: [] }, grade: "B", inspectedAt: NOW } })
       .where(eq(tradeIns.ref, made.ref));
-    for (const query of ["", `?t=${randomToken()}`, `?t=${made.accessToken.slice(0, -1)}A`]) {
+    // The near miss changes the token's last character for ANOTHER one: the token is a SHA-256 digest in base64url, whose
+    // last character carries 4 bits (one of 16 letters, «A» among them) — «…A» was the real token one run in sixteen and
+    // answered 200 (round-1 fixes; tests/commerce-core-security.test.ts tampers the same way).
+    const near = `${made.accessToken.slice(0, -1)}${made.accessToken.endsWith("A") ? "B" : "A"}`;
+    expect(near).not.toBe(made.accessToken);
+    for (const query of ["", `?t=${randomToken()}`, `?t=${near}`]) {
       const answer = await hit(`/trade-in/${made.ref}${query}`, tradeInStatusAction as Handler, { form: { intent: "respond", decision: "accept", payout: "cash" }, params: { ref: made.ref } });
       expect(answer.status, query).toBe(404);
     }

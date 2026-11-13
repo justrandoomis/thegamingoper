@@ -22,6 +22,7 @@ import { staggerStep } from "~/motion/stagger";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
 import { bubble, durations, easings, fly, SPRING_NAMES, springs, travel, type Spring } from "~/motion/tokens";
 import { canonicalSpring, renderTokenCss, replaceTokenBlock } from "~/motion/tokens-css";
+import { normalizeTransitionAborts } from "~/motion/vt";
 
 const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), "utf8");
 const motionCss = read("../app/motion/motion.css");
@@ -678,6 +679,56 @@ describe("bubble — when content inflates (hydration-safe)", () => {
     const html = renderToStaticMarkup(createElement(BubbleGroup, null, createElement(Bubble, { className: "card" }, "x")));
     expect(html).not.toContain("tt-bubble-in");
     expect(html).toContain('class="card"');
+  });
+});
+
+describe("view-transition aborts (fix round 2026-11-13)", () => {
+  // Edge/Chromium now words a viewport-resize abort "Transition was aborted because of invalid state. Viewport size
+  // changed"; React 19.3 only knows the shorter wording, so it reported every phone card → product tap whose URL bar
+  // moved as an uncaught error. The engine hands React a `ready` that carries the wording React treats as benign.
+  type Ready = { ready: Promise<unknown>; finished: Promise<unknown>; updateCallbackDone: Promise<unknown>; skipTransition(): void };
+  const fakeDocument = (error: unknown) => {
+    const started: Ready[] = [];
+    const doc = {
+      startViewTransition() {
+        const transition: Ready = { ready: Promise.reject(error), finished: Promise.resolve(), updateCallbackDone: Promise.resolve(), skipTransition() {} };
+        transition.ready.catch(() => undefined);
+        started.push(transition);
+        return transition;
+      },
+    };
+    return { doc: doc as unknown as Document, started };
+  };
+
+  it("a viewport-size abort reaches React in the wording React ignores; other errors pass unchanged", async () => {
+    const viewport = new DOMException("Transition was aborted because of invalid state. Viewport size changed", "InvalidStateError");
+    const { doc } = fakeDocument(viewport);
+    const uninstall = normalizeTransitionAborts(doc);
+    const transition = doc.startViewTransition!(() => {}) as unknown as Ready;
+    await expect(transition.ready).rejects.toMatchObject({ name: "InvalidStateError", message: "Transition was aborted because of invalid state" });
+    uninstall();
+
+    const other = new DOMException("A real problem", "InvalidStateError");
+    const second = fakeDocument(other);
+    normalizeTransitionAborts(second.doc);
+    await expect((second.doc.startViewTransition!(() => {}) as unknown as Ready).ready).rejects.toBe(other);
+  });
+
+  it("installs once, and uninstalling restores the browser's own function", () => {
+    const { doc } = fakeDocument(new Error("x"));
+    const own = doc.startViewTransition;
+    const off = normalizeTransitionAborts(doc);
+    const patched = doc.startViewTransition;
+    expect(patched).not.toBe(own);
+    const again = normalizeTransitionAborts(doc);
+    expect(doc.startViewTransition).toBe(patched);
+    again();
+    off();
+    expect(doc.startViewTransition).toBe(own);
+  });
+
+  it("MotionRoot installs it with the rest of the engine", () => {
+    expect(readFileSync(fileURLToPath(new URL("../app/motion/root.tsx", import.meta.url)), "utf8")).toMatch(/normalizeTransitionAborts\(document\)/);
   });
 });
 

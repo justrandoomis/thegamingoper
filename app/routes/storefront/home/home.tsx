@@ -29,7 +29,7 @@
  * afterwards (`tt_consent`, ./personal.ts). The panel at the bottom shows what is remembered and lets them change or
  * delete it, or watch the intro again.
  */
-import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { data, isRouteErrorResponse, useRevalidator, useRouteLoaderData, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/home";
@@ -65,6 +65,9 @@ import "./home.css";
 
 /** The one "talk to a person" destination (v2 §6.13). */
 const HANDOFF = "/support/assistant?handoff=1#handoff";
+
+/** No navigation data: one empty list, the same on every render (the hero's banners are memoised on it). */
+const NO_PLATFORMS: ShellData["nav"]["platforms"] = [];
 
 /**
  * What the page draws, and nothing else: each platform's hero, its lead device (the console the trade-in door and the
@@ -252,7 +255,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   };
 
   // ── what the page shows
-  const navPlatforms = shell?.nav.platforms ?? [];
+  const navPlatforms = shell?.nav.platforms ?? NO_PLATFORMS;
   const shelves = home.platforms.flatMap((platform) => {
     if (!isPlatform(platform.slug)) return [];
     const cards = platform.newArrivals.map((id) => home.cards[id]).filter((card): card is ProductCardData => card !== undefined);
@@ -265,17 +268,21 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const playstationLead = leadArt(playstation, home.cards);
   const playstationTile = navPlatforms.find((platform) => platform.slug === "playstation")?.artKey ?? null;
   const tradeInArt = playstationLead ?? playstationTile;
-  // the hero carousel: every platform's hero, the featured one first, then the trade-in and used banners (./view)
-  const heroCardOf = (platform: (typeof home.platforms)[number]) => (platform.hero ? home.cards[platform.hero.productId] : undefined);
-  const plan = heroSlides(home.platforms, (platform) => heroCardOf(platform)?.image.artKey, { usedArt: home.used.map((unit) => unit.image.artKey), fallbackArt: tradeInArt });
-  const slides: HeroSlide[] = plan.flatMap((entry): HeroSlide[] => {
-    if (entry.kind !== "platform") return [entry];
-    const { platform } = entry;
-    const card = heroCardOf(platform);
-    if (!card || !platform.hero || !isPlatform(platform.slug)) return [];
-    const devices = navPlatforms.find((nav) => nav.slug === platform.slug)?.devices ?? [];
-    return [{ kind: "product", key: platform.slug, card, platform: platform.slug, mode: platform.hero.mode, pin: platform.hero.pin ?? null, deviceHref: deviceHubFor(card.name, devices), demoPrice: card.isDemo || demoMode }];
-  });
+  // the hero carousel: every platform's hero, the featured one first, then the trade-in and used banners (./view).
+  // Memoised on the page's data: the banners are memoised too (./Hero), so a re-render of this page (a new-arrivals
+  // chip, the consent row) leaves the carousel alone
+  const slides = useMemo((): HeroSlide[] => {
+    const heroCardOf = (platform: (typeof home.platforms)[number]) => (platform.hero ? home.cards[platform.hero.productId] : undefined);
+    const plan = heroSlides(home.platforms, (platform) => heroCardOf(platform)?.image.artKey, { usedArt: home.used.map((unit) => unit.image.artKey), fallbackArt: tradeInArt });
+    return plan.flatMap((entry): HeroSlide[] => {
+      if (entry.kind !== "platform") return [entry];
+      const { platform } = entry;
+      const card = heroCardOf(platform);
+      if (!card || !platform.hero || !isPlatform(platform.slug)) return [];
+      const devices = navPlatforms.find((nav) => nav.slug === platform.slug)?.devices ?? [];
+      return [{ kind: "product", key: platform.slug, card, platform: platform.slug, mode: platform.hero.mode, pin: platform.hero.pin ?? null, deviceHref: deviceHubFor(card.name, devices), demoPrice: card.isDemo || demoMode }];
+    });
+  }, [home, navPlatforms, tradeInArt, demoMode]);
   // the first banner's picture: a platform tile shows another view of it (v2 §7.6), on the page and in the intro
   const heroArt = slides[0]?.kind === "product" ? slides[0].card.image.artKey : null;
   const strip = stripItems(shell?.nav.categories ?? [], shell?.nav.usedCount ?? 0);

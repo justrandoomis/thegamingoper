@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { cx } from "./cx";
 import { VisuallyHidden } from "./VisuallyHidden";
@@ -260,10 +260,13 @@ export type CheckboxProps = ChoiceProps & {
   count?: number;
   /** Anything else at the row's end. */
   end?: ReactNode;
+  /** v2.1: a checkbox ROW like the option cards — a bordered 64px row (a 2px ink border when checked), the label in
+   *  16/600 and the hint inside the row under it («الجهاز يعمل · يُفحص عند الاستلام»). */
+  row?: boolean;
 };
 
 /** A paper box with a real border; checked = ink with a check. The whole row (≥ 44px) is the target. */
-export function Checkbox({ label, hint, error, className, id, indeterminate = false, count, end, ...input }: CheckboxProps) {
+export function Checkbox({ label, hint, error, className, id, indeterminate = false, count, end, row = false, ...input }: CheckboxProps) {
   const ids = useFieldIds(id, hint, error);
   const f = useFormat();
   const ref = useRef<HTMLInputElement | null>(null);
@@ -272,7 +275,7 @@ export function Checkbox({ label, hint, error, className, id, indeterminate = fa
   }, [indeterminate]);
   return (
     <div className={cx("field", className)} data-invalid={error ? "" : undefined}>
-      <label className="choice" data-invalid={error ? "" : undefined}>
+      <label className={cx("choice", row && "choice--row choice--check")} data-invalid={error ? "" : undefined}>
         <input
           {...input}
           ref={(element) => {
@@ -290,7 +293,18 @@ export function Checkbox({ label, hint, error, className, id, indeterminate = fa
         <span className={cx("choice__box", CHECKED_DISABLED_BOX)} aria-hidden="true">
           <Icon name={indeterminate ? "minus" : "check"} size={16} />
         </span>
-        <span className="choice__text">{label}</span>
+        {row ? (
+          <span className="choice__text">
+            <span>{label}</span>
+            {hint ? (
+              <span className="choice__hint" id={ids.hintId}>
+                {hint}
+              </span>
+            ) : null}
+          </span>
+        ) : (
+          <span className="choice__text">{label}</span>
+        )}
         {typeof count === "number" && Number.isFinite(count) ? (
           <span className="choice__end type-xs text-ink-2 nums">
             <bdi>{f.number(count)}</bdi>
@@ -299,7 +313,7 @@ export function Checkbox({ label, hint, error, className, id, indeterminate = fa
           <span className="choice__end">{end}</span>
         ) : null}
       </label>
-      <FieldMessages hintId={ids.hintId} hint={hint} errorId={ids.errorId} error={error} />
+      <FieldMessages hintId={ids.hintId} hint={row ? undefined : hint} errorId={ids.errorId} error={error} />
     </div>
   );
 }
@@ -309,10 +323,12 @@ export type RadioProps = ChoiceProps & {
   row?: boolean;
   /** Something at the inline end of an option row (a fee, a balance). */
   end?: ReactNode;
+  /** An option row: the option's icon in a 40px clay disc after the radio (a payout method, a payment method). */
+  icon?: IconName;
 };
 
 /** One radio. Group them in a <FieldGroup> with the same `name`; arrow keys are native. */
-export function Radio({ label, hint, error, className, id, row = false, end, ...input }: RadioProps) {
+export function Radio({ label, hint, error, className, id, row = false, end, icon, ...input }: RadioProps) {
   const ids = useFieldIds(id, hint, error);
   return (
     <label className={cx("choice choice--radio", row && "choice--row", className)} data-invalid={error ? "" : undefined}>
@@ -324,6 +340,11 @@ export function Radio({ label, hint, error, className, id, row = false, end, ...
         aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
       />
       <span className={cx("choice__box", CHECKED_DISABLED_RING)} aria-hidden="true" />
+      {icon ? (
+        <span className="choice__icon" aria-hidden="true">
+          <Icon name={icon} size={22} />
+        </span>
+      ) : null}
       <span className="choice__text">
         <span>{label}</span>
         {hint ? (
@@ -370,6 +391,9 @@ export type OptionCardProps = Omit<RadioProps, "row"> & {
   pay?: boolean;
   /** Words in the 40×28 mark area at the end (a payment method's name — no unlicensed logos). */
   mark?: string;
+  /** v2.1: the clay face — the soft raised card instead of the paper row with a hairline (the trade-in payout, the
+   *  payment methods); chosen: the 2px ink border as ever. Use with `icon` for the before's look. */
+  clay?: boolean;
 };
 
 /**
@@ -379,9 +403,10 @@ export type OptionCardProps = Omit<RadioProps, "row"> & {
  *
  *   <OptionCard name="version" value="intl" label={t("intl")} hint={t("intlHint")} end={<Price amountIqd={667750} size="sm" as="span" approx="off" />} />
  *   <OptionCard pay name="pay" value="cod" label={t("cod")} hint={t("codHint")} mark={t("cash")} />
+ *   <OptionCard clay icon="wallet" name="payout" value="wallet" label={t("toWallet")} hint={t("toWalletHint")} />
  */
-export function OptionCard({ pay = false, mark, end, className, ...radio }: OptionCardProps) {
-  return <Radio {...radio} row className={cx(pay && "choice--pay", className)} end={end ?? (mark ? <span className="choice__mark">{mark}</span> : undefined)} />;
+export function OptionCard({ pay = false, mark, end, clay = false, className, ...radio }: OptionCardProps) {
+  return <Radio {...radio} row className={cx(pay && "choice--pay", clay && "choice--clay", className)} end={end ?? (mark ? <span className="choice__mark">{mark}</span> : undefined)} />;
 }
 
 /* ───────────────────────────── FormErrorSummary ───────────────────────────── */

@@ -116,25 +116,32 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
   if (!found) {
     const trackTo = loaderData.ref ? `/track?ref=${encodeURIComponent(loaderData.ref)}` : "/track";
     return (
-      <div className="page co-page co-narrow">
-        <h1 className="type-h1 text-ink">{t("order.missing.title")}</h1>
-        <Note
-          icon="lock"
-          action={
-            <span className="co-actions">
-              <Key as={LocaleLink} to={trackTo} variant="primary" icon="magnifying-glass">
-                {t("order.missing.track")}
-              </Key>
-              {!loaderData.signedIn ? (
-                <Key as={LocaleLink} to={`/account/login?next=${encodeURIComponent(loaderData.ref ? `/order/${loaderData.ref}` : "/account")}`} icon="sign-in">
-                  {t("order.missing.signIn")}
+      <div className="page co-page">
+        {/* one centred column of 640 from 768, as the checkout's (a sentence across the whole desktop page was ~140
+            characters long); the `page` utility outranks a column class on the page element, so the column is a child */}
+        <div className="co-lone">
+          <h1 className="type-h1 text-ink">{t("order.missing.title")}</h1>
+          {/* the two ways out sit under the sentence — across the card on phones — and a long label (Sorani «بەدوای
+              داواکارییەکەتدا بگەڕێ») wraps inside its key instead of pushing the page sideways (QA 2026-11-13: 421px at 360) */}
+          <Note
+            icon="lock"
+            className="co-missing"
+            action={
+              <span className="co-actions">
+                <Key as={LocaleLink} to={trackTo} variant="primary" icon="magnifying-glass" wrap>
+                  {t("order.missing.track")}
                 </Key>
-              ) : null}
-            </span>
-          }
-        >
-          {t("order.missing.text")}
-        </Note>
+                {!loaderData.signedIn ? (
+                  <Key as={LocaleLink} to={`/account/login?next=${encodeURIComponent(loaderData.ref ? `/order/${loaderData.ref}` : "/account")}`} icon="sign-in" wrap>
+                    {t("order.missing.signIn")}
+                  </Key>
+                ) : null}
+              </span>
+            }
+          >
+            {t("order.missing.text")}
+          </Note>
+        </div>
       </div>
     );
   }
@@ -143,7 +150,13 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
   const token = access === "token" ? params.get("t") : null;
   const link = token && root?.origin ? `${root.origin}${localePath(`/order/${order.ref}?t=${encodeURIComponent(token)}`, locale)}` : null;
   const received = orderStage(order.status) !== null;
-  const ref = "⁦" + order.ref + "⁩";
+  // The number in the heading is in the text face, as on its card: Kufam's Latin V draws like Ʋ («TT-ƲBYBYQ9Q», QA
+  // 2026-11-13) — a shopper copies it into /track or a message.
+  const ref = (
+    <bdi dir="ltr" className="font-plex nums">
+      {order.ref}
+    </bdi>
+  );
   // Nothing left for the shopper to do here (no proof to send): «تابع التسوّق» is the page's one primary.
   const proofDue = order.payment.canUploadProof && order.status === "awaiting_payment";
 
@@ -153,7 +166,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
         <header className="co-thanks">
           {/* the success draws itself once (the kit: an inflating disc, a stroked check; finished under reduced motion) */}
           {received ? <SuccessMark size={72} className="co-thanks__mark" /> : null}
-          <h1 className="type-h1 text-ink">{received ? t("order.thanks") : t("order.closedTitle", { ref })}</h1>
+          <h1 className="type-h1 text-ink">{received ? t("order.thanks") : fillNodes(t("order.closedTitle"), { ref })}</h1>
           <div className="co-ref">
             <div className="co-ref__top">
               <p className="type-sm text-ink-2">{t("order.number")}</p>

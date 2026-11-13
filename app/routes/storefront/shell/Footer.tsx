@@ -5,7 +5,7 @@
  *   1. the store's contact channels in one row, only those the owner configured (otherwise nothing);
  *   2. the lockup and one factual line (the delivery fee from settings);
  *   3. four columns, each a <nav> named by its heading: تسوّق (the four platforms, الألعاب, الإكسسوارات, المستعمل
- *      والمفحوص, استبدل جهازك — id="shell-categories", where the tab bar's «التصنيفات» leads without script) · الدعم
+ *      والمفحوص, استبدل جهازك — id="shell-categories", where the tab bar's «التصنيفات» leads without script) · مركز الدعم
  *      (تتبّع طلبك, the shipping / returns / warranty policies, الصيانة, تحدّث مع موظف) · عن طمطم (من نحن, privacy, terms,
  *      إمكانية الوصول, and تواصل معنا once channels exist) · طرق الدفع (the methods the store switched on, as text pills,
  *      the manual-check sentence and the payment policy). Below 768 the columns are accordions of 56px rows, closed
@@ -15,7 +15,7 @@
  *      photo credit line.
  *
  * <TaskFooter> — checkout and task flows: one line of 13px links with 44px hit areas (الإرجاع · الخصوصية · الشروط ·
- * الدعم), the © and, in demo mode, the demo statement.
+ * مركز الدعم), the © and, in demo mode, the demo statement.
  *
  * Policy pages are /policies/<slug> (content area): every slug of its POLICY_SLUGS, in the columns ./chrome
  * FOOTER_POLICIES sets (tests/shell.test.ts).

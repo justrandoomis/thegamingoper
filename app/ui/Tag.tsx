@@ -76,9 +76,12 @@ export function Tag({ kind, children, detail, onColor = false, className }: TagP
 /** ok · warn · info · bad (danger red) · out (sold out, ink-2) · soon (ink) · neutral (ink-2). */
 export type StatusTone = "ok" | "warn" | "info" | "bad" | "out" | "soon" | "neutral";
 
-/** An 8px dot and words, AA in both themes. Never colour alone. */
-export function Status({ tone, size = "md", children, className }: { tone: StatusTone; size?: "md" | "lg"; children: ReactNode; className?: string }) {
-  return <span className={cx("status", `status--${tone}`, size === "lg" && "status--lg", className)}>{children}</span>;
+/**
+ * An 8px dot and words, AA in both themes. Never colour alone. `pill`: the same dot and words in a tinted pill (an
+ * order's state in a list: «بانتظار الدفع» on the warn tint) — AA on each tint in both themes (scripts/contrast.mjs).
+ */
+export function Status({ tone, size = "md", pill = false, children, className }: { tone: StatusTone; size?: "md" | "lg"; pill?: boolean; children: ReactNode; className?: string }) {
+  return <span className={cx("status", `status--${tone}`, size === "lg" && "status--lg", pill && "status--pill", className)}>{children}</span>;
 }
 
 export type StockStatusProps = {

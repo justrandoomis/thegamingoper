@@ -2,7 +2,8 @@
  * Device hub (/device/:model) — Design System v2 §6.6. Components layer (utilities still win); tokens and the kit's
  * classes only; logical properties only; motion only on transform and opacity. The kit draws every component (Band,
  * ProductCard, Chip, SectionHead, EntryCard, …); this file only places them and draws the hub's own pieces: the head's
- * layout inside its band, the sticky section chips, the card grid with its compatibility notes, the tables.
+ * layout inside its band, the sticky section chips, the card grid with its compatibility notes, the tables, and the
+ * reading sizes of its text on phones and tablets (v2.1 G7, at the end).
  */
 @layer components {
   /* ───────────────────────────── scroll padding: the section chips stick under the header ─────────────────────────────
@@ -291,7 +292,7 @@
     border-block-start-color: var(--ink);
   }
 
-  /* ───────────────────────────── spec groups: label 14/600 ink-2 + value 14, hairlines ───────────────────────────── */
+  /* ───────────────────────────── spec groups: label 14/600 ink-2 + value 14 (16 / 1.75 below 1024), hairlines ───────────────────────────── */
   .devhub-specs > div {
     display: grid;
     gap: 2px;
@@ -318,5 +319,48 @@
   /* ───────────────────────────── rows: a small well or an icon, the words, the state or the arrow ───────────────────────────── */
   .devhub-rows > li + li {
     border-block-start: 1px solid var(--line);
+  }
+
+  /* ───────────────────────────── reading text (v2.1 G7) ─────────────────────────────
+     Facts, notes and descriptions — the highlights, the notes of editions and versions, the spec values, the table
+     cells, the rule's reasons, guide summaries, the lines under the row links, the sources and their note — read at 16px
+     with a line height of 1.75 on phones and tablets (QA 2026-11-13: the hub kept v2's 14 / 1.5 and 13 / 1.5 there,
+     against G7). From 1024, in the desktop columns, v2's sizes. Labels and meta stay small: spec names, the tables'
+     heads, counts, kickers, «هذا الجهاز». Last in the layer, so these win over the rules above.
+       .devhub-read          the text (14 from 1024)
+       .devhub-read-strong   a short bold title over it (14/600 from 1024)
+       .devhub-hint          the line under a row link's title (13 from 1024) */
+  .devhub-read {
+    font: var(--type-sm);
+  }
+  .devhub-read-strong {
+    font: var(--type-sm-strong);
+  }
+  .devhub-hint {
+    font: var(--type-xs);
+  }
+  @media (max-width: 63.99rem) {
+    .devhub-read,
+    .devhub-hint,
+    .devhub-specs dd,
+    .devhub-table td,
+    .devhub-sources .link {
+      font: var(--type-read);
+    }
+    .devhub-read-strong,
+    .devhub-table__link {
+      font: var(--type-read);
+      font-weight: 600;
+    }
+  }
+}
+
+/* The utilities layer, because the kit's compatibility note carries a type utility (CompatBadge: `type-xs`): under a
+   card or in a folded row, the rule's note («يعمل بشرط …») is reading text — 16 / 1.75 on phones and tablets (G7). */
+@layer utilities {
+  @media (max-width: 63.99rem) {
+    .devhub-note [data-compat] > span + span {
+      font: var(--type-read);
+    }
   }
 }

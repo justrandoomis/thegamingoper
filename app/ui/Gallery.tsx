@@ -160,10 +160,13 @@ export function Gallery({ name, items, sharedName, evidence = "product", priorit
   const stage = (
     <Stage
       size="pdp"
+      // the counter only when there is more than one picture («1 من 1» said nothing — fix round 2026-11-13)
       count={
-        <bdi className="nums" aria-live={changed.current ? "polite" : undefined}>
-          {count}
-        </bdi>
+        total > 1 ? (
+          <bdi className="nums" aria-live={changed.current ? "polite" : undefined}>
+            {count}
+          </bdi>
+        ) : undefined
       }
       tools={<IconKey icon="corners-out" variant="onImage" label={t("buy.fullscreen")} aria-haspopup="dialog" onClick={() => setViewerOpen(true)} />}
     >
@@ -320,7 +323,7 @@ function ViewerLayer({ onClose, name, items, index, onIndex, captionOf, leaving,
     >
       <div className="viewer__bar flex min-w-0 items-center justify-between gap-3 pt-[max(8px,var(--safe-top))] pb-2">
         <p className="min-w-0 truncate type-sm-strong text-ink-2">
-          <bdi className="nums">{t("gallery.count", { n: f.number(index + 1), total: f.number(items.length) })}</bdi>
+          {items.length > 1 ? <bdi className="nums">{t("gallery.count", { n: f.number(index + 1), total: f.number(items.length) })}</bdi> : null}
         </p>
         <div className="flex shrink-0 items-center gap-2">
           <IconKey icon="magnifying-glass" label={t(zoomed ? "gallery.zoomOut" : "gallery.zoomIn")} held={zoomed} onClick={() => toggleZoom()} />

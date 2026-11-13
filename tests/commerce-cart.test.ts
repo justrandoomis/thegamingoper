@@ -373,7 +373,8 @@ describe("coupon evaluation", () => {
   test("minimum subtotal and empty carts", async () => {
     const p = await make.product();
     const min = await coupon({ minSubtotalIqd: 100_000 });
-    expect(await evaluateCoupon(t.db, { code: min.code, subtotalIqd: 99_999, lines: [line(p.variantId, 99_999)] }, NOW)).toEqual({ ok: false, reason: "min_subtotal" });
+    // the refusal says how far (client round 1, wave C): the minimum, what counts toward it and what is still missing
+    expect(await evaluateCoupon(t.db, { code: min.code, subtotalIqd: 99_999, lines: [line(p.variantId, 99_999)] }, NOW)).toEqual({ ok: false, reason: "min_subtotal", minimumIqd: 100_000, countedIqd: 99_999, moreIqd: 1 });
     expect((await evaluateCoupon(t.db, { code: min.code, subtotalIqd: 100_000, lines: [line(p.variantId, 100_000)] }, NOW)).ok).toBe(true);
     expect(await evaluateCoupon(t.db, { code: min.code, subtotalIqd: 0, lines: [] }, NOW)).toEqual({ ok: false, reason: "not_applicable" });
   });

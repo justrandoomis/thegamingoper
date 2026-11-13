@@ -10,14 +10,16 @@ with the form that needs them.
 | Path | Shell | What | States |
 |---|---|---|---|
 | `/support` | store | the before's arrangement: the support tabs; h1 «الدعم والمساعدة» and its line (document title «مركز الدعم»); **the problem search** on the soft raised card over a soft ambient light (`./components/HelpSearch.tsx`, below); the before's list cards (the kit's `EntryCard` rows: clay icon disc, title, one line, arrow) in two short groups — «مشكلة في جهازك؟» (شخّص المشكلة خطوة بخطوة → the assistant · احجز صيانة · تابع طلب صيانة) and «طلبك وأسئلتك» (تتبّع طلبك → `/track` · الإرجاع والضمان → `/policies/returns` · تحدّث مع موظف → the hand-off), one column on phones, two from 768; «اختر جهازك»: every platform's devices under its colour line (`PlatformLed bar`), name and count — a rail with 2.5 tiles below 768, a wrapping `auto-fill minmax(150px)` grid from 768, whole model names, no script needed; `?device=<slug>` opens the device's panel (photo, assistant / repair keys, the devices area's hub link, its guides); six suggested guides in staff order (`?guides=all`); the store's `ContactCard` («تواصل مع المتجر») only when the owner configured channels (the hand-off is already a list card). From 1024 the store's mascot (it wears a headset) sits on a disc of real glass at the end of the head, the ambient light behind it | search: danger · code with / without a guide · guides · policies · nothing found · a platform filter; device chosen · device without guides; no guides at all; demo line |
-| `/support/article/:slug` | store | the tabs (مركز المساعدة marked), then one approved public guide in the reading column (`<Blocks>`, ≤ 70ch; breadcrumbs from 768) + "still not solved?" (primary «ابدأ المساعد», secondary «احجز صيانة») + related guides in the aside | Arabic fallback (an info `Note`) · "not yet reviewed by a store technician" · demo line · 404 |
-| `/support/assistant` | task | compact head (title, demo tag, «ليس تشخيصاً» — the kit's clay `Chip` as the summary of a disclosure that opens how the assistant works on a calm `Note`), the safety note collapsed to «للسلامة: لا تفتح الجهاز» (the kit's `Disclosure` panel, the warning on its tinted disc; opens by itself on a danger stop, battery, the power tree or any warning), the conversation (shopper bubbles on `--niche` at the inline end, assistant bubbles on the soft card at the start; warnings as the calm safety note), replies as clay chips (platform chips with dots, 88×88 device image chips), «تحدّث مع موظف» (secondary) + «ابدأ من جديد» (quiet link); the composer in the glass task bar below 1024, at the end of the chat column from 1024 with the device card and its guides in a sticky aside; `?handoff=1#handoff` = the hand-off form; `?ticket=SP-…&tk=…` = its receipt (the check that draws itself, «انسخ رابط الصفحة») | device · model · problem · steps · done (resolved / guide / part / repair / staff) · danger stop (typed before or after the device) · error code with / without a guide · unmatched words · a problem typed before the device (`need_device`) · a name that only points at a platform · hand-off form (validation summary, offline, network failure kept in place) · receipt (status, staff replies or «لا ردّ بعد.», copy link) |
+| `/support/article/:slug` | store | the tabs («مركز الدعم» marked), then one approved public guide in the reading column (`<Blocks>`, ≤ 70ch; breadcrumbs from 768) + "still not solved?" (primary «ابدأ المساعد», secondary «احجز صيانة») + related guides in the aside | Arabic fallback (an info `Note`) · "not yet reviewed by a store technician" · demo line · 404 |
+| `/support/assistant` | task | compact head (title, demo tag, «ليس تشخيصاً» — the kit's clay `Chip` as the summary of a disclosure that opens how the assistant works on a calm `Note`), the safety note collapsed to «للسلامة: لا تفتح الجهاز» (the kit's `Disclosure` panel, the warning on its tinted disc; opens by itself on a danger stop, battery, the power tree or any warning), the conversation (shopper bubbles on `--niche` at the inline end, assistant bubbles on the soft card at the start; warnings as the calm safety note), replies as clay chips (platform chips with dots, 88×88 device image chips), «تحدّث مع موظف» (secondary) + «ابدأ من جديد» (quiet link); the composer in the glass task bar below 1024, at the end of the chat column from 1024 with the device card and its guides in a sticky aside — before a device is chosen that aside holds the row cards «تحدّث مع موظف» and «احجز صيانة» and the safety note open (the main column's own staff key and collapsed safety line give way to them from 1024; round-1 fixes: the first desktop screen was half blank); `?handoff=1#handoff` = the hand-off form; `?ticket=SP-…&tk=…` = its receipt (the check that draws itself, «انسخ رابط الصفحة») | device · model · problem · steps · done (resolved / guide / part / repair / staff) · danger stop (typed before or after the device) · error code with / without a guide · unmatched words · a problem typed before the device (`need_device`) · a name that only points at a platform · hand-off form (validation summary, offline, network failure kept in place) · receipt (status, staff replies or «لا ردّ بعد.», copy link) |
 | `/support/repair` | task | three steps `?step=device|photos|contact`, one form (fields stay mounted between steps; `shouldRevalidate` skips the loader for step changes); step rail (compact below 768); "what happens next" (4 steps on clay number discs) and the facts that are true today as quiet note lines (`Note variant="line"`: الدفع · صورك والرقم التسلسلي) above the form on step 1 below 1024, in a sticky aside from 1024; from the assistant, an info `Note`; the task bar «رجوع \| تابع» below 1024, the same keys at the end of the form from 1024 (`stepBack`); hand-over as OptionCards; the preferred time as `PreferencePicker` | per-step validation with the error summary; server field errors take the shopper to the step of the first one; uploading photos; offline; network failure (form kept); rate limited; without JavaScript every step shows and the key sends the form |
 | `/support/repair/status` | store | a 560px lookup card, then the request card: reference (type-code, LTR, copy key), status in words on an inset well, quote, device, sent, photos, hand-over, preferred time, the shopper's description, the status timeline on clay discs (a check for a stage passed, an ink dot for the current one); just created: the check that draws itself, «استلمنا طلب الصيانة» (an h2 that takes focus) and «انسخ رابط الصفحة». Headers (`repairStatusHeaders`): the private card `no-referrer`; the lookup form `same-origin` | lookup · not found (same answer for a wrong reference or phone) · rate limited · created · replayed · every repair status, quote pending / approved · the lookup without script |
 
-Every support page starts with the same tabs across the page (`SupportNav`: the kit's link `Tabs` — «مركز المساعدة ·
-مساعد الصيانة · احجز صيانة · تابع طلب», en "Help centre · Assistant · Book a repair · Track", one ink underline that
-slides between them; they sit at the same place on every page, so they never jump), then the page: on the task pages a
+Every support page starts with the same tabs across the page (`SupportNav`: the kit's link `Tabs` — «مركز الدعم ·
+مساعد الصيانة · احجز صيانة · تابع طلب», en "Support centre · Assistant · Book a repair · Track", ckb «ناوەندی پشتگیری · …»
+— the place's one name, as the header, the footer and the document title say it (the lead's glossary decision, round-1
+fixes); 7px a side below 420px instead of the kit's 10, so the four tabs are whole at 390 in every language and at 360
+in Arabic (en / ckb scroll 28 / 23px at 360, the current tab kept in view); one ink underline that slides between them; they sit at the same place on every page, so they never jump), then the page: on the task pages a
 main column from the page's start edge and a sticky 380px aside at the end from 1024 (the before's proportions). The
 route handles (`nav: "push"`, `order` 0 · 1 · 2 (+ step/10) · 3, `group: "support"`) give the sideways push between
 them and between the repair steps. One "talk to a person" destination everywhere: `/support/assistant?handoff=1#handoff`,
@@ -35,21 +37,30 @@ primary.
   the row is active, so Enter opens the guide — or «لا يذكره أي دليل بعد» → a person), else guides and store policies
   (the content area's `listPolicies`, matched by their titles and the words people use: «استرجاع», "refund"…), the typed
   words marked (`<mark class="sup-hit">`), the last row «اعرض كل النتائج». Device names the shopper's way find their
-  Latin titles («تجهيز البلايستيشن» → "تجهيز PlayStation 5 لأول مرة"; `matcher.aliasWords`). A frosted glass panel;
-  on phones the field rises to the top of the screen when the list opens.
+  Latin titles («تجهيز البلايستيشن» → "تجهيز PlayStation 5 لأول مرة"; `matcher.aliasWords`). Words that name a device or
+  a platform (`helpsearch.namedPlatforms`: «سويتش يسخن», «اكس بوكس», "PS5", «جويكون», «ستيم») rank in three tiers —
+  that platform's guides, then the guides about every device, then the other platforms' (kept, never hidden) — and with
+  a problem in the words (a symptom or topic other than setup) its troubleshooting guide leads (round-1 fixes: «سويتش
+  يسخن» suggested the handheld PCs' guide first). The results page ranks alike (`searchHelp` passes each guide's
+  platform). A frosted glass panel; on phones the field rises to the top of the screen when the list opens.
 - **Keyboard:** combobox + listbox with groups; ↓ ↑ walk the rows (field → first … last → field), Enter opens the active
   row or searches, Escape closes; the rows keep the focus in the field; a polite status says how many rows there are.
 - **Device chips** «كل الأجهزة · Nintendo · PlayStation · Xbox · المحمولة»: native radios in the form (`platform`): they
   keep suggestions and results to one platform's guides and the guides about every device (`searchHelp(…, { platform })`);
   with script a change re-runs a search already on screen and leaves the focus on the chips (`KEEP_FOCUS` navigation
   state — the arrow keys walk on; the results' status line says the outcome). The chosen chip stays in view in the rail
-  (`useKeepInView`), after a reload too.
+  (`useKeepInView`), after a reload too, and a chip that takes the keyboard's focus comes fully into view (the kit's
+  `revealFocusedItem`, as home's strip and the account's chips — the common-problem rail too; round-1 fixes: a focused
+  chip or device tile stayed a quarter cut at the rail's edge). The device rail snaps, so its focused tile comes to the
+  rail's start edge (`revealInRow(…, "start")`).
 - **Common problems** («مشكلات شائعة»): link chips `?q=<their words>` (with the chosen `platform`); each one's words (in
   ar, en and ckb) lead to the guides of one tag (tested); offered only while such a guide exists — for the chosen
   platform, its guides and the guides about every device (`commonProblemsFor(index, platform)`, tested per platform).
   Never called "popular": the store has no search statistics.
-- **Offline:** the suggestions still come (computed in the page); the search key goes flat with the reason under the
-  field («لا يوجد اتصال. ما كتبته باقٍ هنا…», the composer's way) and nothing navigates — no swap to the offline panel.
+- **Offline:** the suggestions still come (computed in the page); the search key goes flat with its reason under the
+  field («تبحث وتفتح الأدلة حين يعود الاتصال.») and nothing navigates — no swap to the offline panel. The shell's banner
+  says the form words («ما كتبته باقٍ في الصفحة…»: `handle.shell.offline: "form"` on `/support`, `/support/repair/status`
+  and `/support/ticket` too — it said «سلتك محفوظة…» there, beside the search's own sentence; round-1 fixes).
 - **Results** grouped — a danger stop (the calm safety note in --danger with «احجز صيانة» and «تحدّث مع موظف»), an error
   code (the guides that name it, or an honest note with «تحدّث مع موظف» and the assistant), «الأدلة» (two columns from
   1024) and «سياسات المتجر», the searched words marked — then «لم تجد ما تبحث عنه؟» (the assistant, a repair, a person). Nothing
@@ -98,11 +109,11 @@ on the devices and guides sections; shell: TaskBar, `chrome: "task"`. No retired
 | Module | Exports |
 |---|---|
 | `kb.server.ts` | `getSupportDirectory`, `listArticlesForDevice(db, locale, deviceModelId, { related? })` (contract), `listArticlesForPlatform`, `listArticlesByTag`, `listHelpArticles`, `findArticlesMentioning`, `getArticle`, `listRelatedArticles`, `findDevice`, `findPlatform`; `searchHelp(db, locale, q, { platform? })` → `HelpSearch \| null` (round 1: the optional platform, ranked by `helpsearch.rankEntries`); **new** `getHelpIndex(db)` → `HelpIndexEntry[]` (no bodies) |
-| `helpsearch.ts` (new, client-safe) | `rankEntries`, `scoreEntry`, `queryWords`, `meantTag`, `suggestHelp`, `forPlatform`, `matchPolicies`, `highlightParts`, `COMMON_PROBLEMS`, `commonProblemsFor`, `SYMPTOM_TAGS`, `NOISE`, `MIN_SUGGEST_CHARS`; types `HelpIndexEntry`, `PolicyEntry`, `HelpSuggestions`, `HelpEntryText`, `TextPart` |
+| `helpsearch.ts` (new, client-safe) | `rankEntries` (round-1 fixes: tiers by the platform the words name), `namedPlatforms(query)`, `scoreEntry`, `queryWords`, `meantTag`, `suggestHelp`, `forPlatform`, `matchPolicies`, `highlightParts`, `COMMON_PROBLEMS`, `commonProblemsFor`, `SYMPTOM_TAGS`, `NOISE`, `MIN_SUGGEST_CHARS`; types `HelpIndexEntry`, `PolicyEntry`, `HelpSuggestions`, `HelpEntryText`, `TextPart` |
 | `assistant.server.ts` | `runAssistant(db, locale, state, { model? })` → `AssistantView` — now also reads words typed before a device: a danger sign stops at once, a device's name chooses it (its words are dropped when they only name it), a platform's name asks for the model, a problem waits for the device (turn kind `need_device`); `handOffToStaff`; `AssistantModel` + `configuredAssistantModel()` (null); `checkTree` |
 | `tickets.server.ts` | `createSupportTicket` (contract); `getTicketByAccessToken` → `TicketReceipt` now with `replies` (staff, non-internal, oldest first); `planSupportTicket`; `SUPPORT_ERROR_KEYS` |
 | `repairs.server.ts` | `createRepairTicket` (contract); `getRepairByAccessToken`; `lookupRepair` |
-| `matcher.ts` | `interpretText`, `findErrorCode`, `normalizeForMatch`, `matchDevice(text, directory)`, `hasDangerSign`, `describesProblem`, `tokenMatches`, `KNOWN_SYMPTOMS`; **new** `findErrorCodes(text)` (every code a text names) and `aliasWords(text)` (the catalogue's words for device names spelled the shopper's way, «البلايستيشن» included) |
+| `matcher.ts` | `interpretText`, `findErrorCode`, `normalizeForMatch`, `matchDevice(text, directory)`, `hasDangerSign`, `describesProblem`, `tokenMatches`, `KNOWN_SYMPTOMS`; **new** `findErrorCodes(text)` (every code a text names) and `aliasWords(text)` (the catalogue's words for device names spelled the shopper's way, «البلايستيشن» included); round-1 fixes: `nameTerms(text)` (a name search's words read as the catalogue's names, the last word still being typed standing for every name it can begin — the trade-in wizard's device search uses it), aliases «ستيم» → steam and «جويكون» / «جوي كون» → joycon |
 | `state.ts`, `summary.ts`, `types.ts` | client-safe: URL state, the conversation summary, view models (+ `HelpSearch` with the optional `platform`, turn kind `need_device`) |
 | `common.server.ts` | `SupportWho`, refs, idempotency → access token, preferred day (Baghdad, today … +30), rate limits, private photos |
 
@@ -227,6 +238,21 @@ pictures in `…/scratchpad/ux/after/P8-support/`):
 
 Chromium only; no phone; Sorani strings need a native reader.
 
+## Round-1 fixes (2026-11-13, fix-service; pictures `…/a312dfb7-…/scratchpad/fb1/shots/C-fix-service/`, probes `…/fb1/work/C-fix-service/`)
+
+- **One name for the place:** the first tab says «مركز الدعم» / "Support centre" / «ناوەندی پشتگیری» (it said «مركز
+  المساعدة» / "Help centre"); the h1 keeps «الدعم والمساعدة». Tests changed on purpose: the support-centre render and the
+  glossary test now expect «مركز الدعم» as the first tab, equal to the document title in ar/en/ckb, and «مركز المساعدة»
+  nowhere in the support messages.
+- **Offline words:** `/support`, `/support/repair/status` and `/support/ticket` declare `shell.offline: "form"`; the
+  search's own line is the flat key's reason only (new test: every support page's banner is the form's).
+- **A named device first:** `namedPlatforms` + tiers in `rankEntries` (new test, failing first: «سويتش يسخن», «اكس بوكس
+  يسخن», «جويكون», "PS5 …", «ستيم ديك يسخن», "ROG Xbox Ally …" — the named platform first, its troubleshooting guide
+  first for a problem, others kept after; the results page ranks alike).
+- **The rails:** a focused chip or device tile comes fully into view (focus walk at 390 light and dark: 79 stops, 0 partly
+  hidden; it was 10).
+- **The assistant from 1024:** before a device, the aside holds «تحدّث مع موظف», «احجز صيانة» and the safety note.
+
 ## Not done / open
 
 - The receipt page is how a shopper follows a hand-off; there is no lookup of an `SP-` reference by number + phone (the
@@ -235,9 +261,9 @@ Chromium only; no phone; Sorani strings need a native reader.
 - Error codes: no guide mentions one yet, so the search and the assistant say so and offer a person. The search index
   already lists every code a guide names (`getHelpIndex` → `codes`): the day staff publish a guide that names
   "CE-108255-1", typing the code suggests that guide (the active row — Enter opens it) and the results list it.
-- Round 1 (v2.1): the support pages' words are the before's — tabs «مركز المساعدة · مساعد الصيانة · احجز صيانة ·
-  تابع طلب», h1 «الدعم والمساعدة» — as the task asked; DESIGN.md's glossary row ("not: المساعدة") and the store's other
-  links («مركز الدعم» in the header, footer and home) are the lead's to settle; the document title stays «مركز الدعم».
+- Round 1, settled by the lead (round-1 fixes): «مركز الدعم» / "Support centre" / «ناوەندی پشتگیری» is the place's name
+  everywhere — the first tab, the document title, the header, the footer; only the h1 keeps the before's «الدعم
+  والمساعدة». DESIGN.md's glossary row is to record that exception (asked of its owner).
 - Round 1 (v2.1), waiting for the kit: link `Tabs` mark the chosen tab `aria-current="page"` — a guide and the ticket
   page should say "true" (v2's Segmented could); `Breadcrumbs phone` wraps its crumbs inside the one line on phones, so
   the guide page keeps the trail from 768; no `Note tone="danger"` (the safety stop sets the note's disc and title to

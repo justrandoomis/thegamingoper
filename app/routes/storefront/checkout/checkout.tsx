@@ -644,9 +644,11 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   /**
    * «أكّد الطلب · 1,594,000 د.ع» in the summary card: the action and the total each stay whole, so where the two do not
    * fit on one line (Sorani at 1024) the total takes the second line — never «…پشتڕاست / بکەرەوە · …» (QA 2026-11-12).
+   * A split payment says what is left to pay there, «أكّد الطلب · الباقي 52,750 د.ع» — under «الباقي للدفع» in the same
+   * card, the whole total beside the key read as the amount owed (QA 2026-11-13).
    */
   const placeTotal = (total: string): ReactNode => {
-    const text = t("checkout.placeTotal", { total });
+    const text = split ? t("checkout.placeRest", { rest: "⁨" + iqdText(f, split.restIqd) + "⁩" }) : t("checkout.placeTotal", { total });
     const at = text.lastIndexOf(" · ");
     if (at <= 0) return text;
     return (
@@ -842,6 +844,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                       editor={editor}
                       onReferralCheck={() => setReferralAsked(draft.referralCode.trim())}
                       referralPending={pricing === "pending" && referral !== ""}
+                      split={split}
                       foot={
                         // below 1024 the totals sit here too (the summary bar is folded away), then the terms (without
                         // script the terms are said once, by the plain-post key at the end of the form)
@@ -905,6 +908,9 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
           <div className="co-taskbar__total">
             <span className="type-xs text-ink-2">{t("checkout.total")}</span>
             {isIqd(cart.totalIqd) ? <Price amountIqd={cart.totalIqd} size="lg" tone="total" approx="off" as="span" /> : null}
+            {/* a split payment: what is left to pay, under the total, beside the step's key (QA 2026-11-13) — the short
+                form («الباقي 52,750 د.ع», as on the summary card's key), so the key keeps its width */}
+            {split ? <span className="co-taskbar__rest">{fillNodes(t("split.restShort"), { rest: <bdi className="nums">{f.iqd(split.restIqd)}</bdi> })}</span> : null}
           </div>
           <div className="co-js min-w-0 flex-1">{commit("co-reason-bar")}</div>
         </div>

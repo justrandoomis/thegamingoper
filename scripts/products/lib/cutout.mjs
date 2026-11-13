@@ -9,6 +9,10 @@
  *   cutout false  never cut out: the photo stays opaque, trimmed on its own background
  *   holes  true   closed windows of pure background colour (the inside of a headband arch) are cut out
  *                 too, instead of keeping the photo opaque — only after looking at the result
+ *          [[x, y], …]  only the closed windows of pure background colour at these points (shares of the
+ *                 picture as it comes in, after `crop`) are cut out; every other enclosed region stays —
+ *                 a kickstand's triangle beside white print on a screen, which `true` would open too. A
+ *                 point that is not on such a window keeps the photo opaque.
  *   pad    0.06   padding around a trimmed object, as a share of its longer side
  *   trim   false  an opaque photo keeps its whole frame
  *   extend true   the object touches the frame of a plain canvas (a cover on a square canvas): the
@@ -92,7 +96,7 @@ const clamp255 = (v) => (v < 0 ? 0 : v > 255 ? 255 : Math.round(v));
 
 /**
  * @param {{ data: Uint8Array, width: number, height: number }} image  RGBA, 8-bit sRGB, straight alpha
- * @param {{ kind?: string, cutout?: boolean, holes?: boolean, pad?: number, trim?: boolean, extend?: boolean, clean?: boolean }} [options]
+ * @param {{ kind?: string, cutout?: boolean, holes?: boolean | Array<[number, number]>, pad?: number, trim?: boolean, extend?: boolean, clean?: boolean }} [options]
  */
 export function treat(image, { kind = 'hero', cutout: mayCut = true, holes = false, pad = PAD, trim = true, extend = false, clean = false } = {}) {
   let { width: w, height: h } = image;
@@ -101,6 +105,11 @@ export function treat(image, { kind = 'hero', cutout: mayCut = true, holes = fal
   if (data.length !== n * 4) throw new Error(`expected ${n * 4} bytes of RGBA, got ${data.length}`);
   if (!PHOTO_KINDS.includes(kind)) throw new Error(`unknown image kind "${kind}"`);
   if (!(pad >= 0 && pad <= 0.4)) throw new Error(`pad ${pad} must be between 0 and 0.4`);
+  const points = Array.isArray(holes) ? holes : null;
+  if (points && (points.length === 0 || !points.every((point) => Array.isArray(point) && point.length === 2 && point.every((s) => typeof s === 'number' && s >= 0 && s <= 1)))) {
+    throw new Error(`holes ${JSON.stringify(holes)} must be true or a list of [x, y] shares of the picture`);
+  }
+  const [w0, h0] = [w, h];
 
   let see = 0;
   for (let i = 3; i < data.length; i += 4) if (data[i] < 250) see++;
@@ -140,7 +149,9 @@ export function treat(image, { kind = 'hero', cutout: mayCut = true, holes = fal
   if (!light) return FLAT_KINDS.has(kind) ? untouched(null) : kept('the background is dark');
   if (!mayCut) return kept('kept opaque by its image option');
 
-  const cut = cutout(rgba, w, h, border, holes);
+  // the points of `holes` as pixels of the (extended) canvas the cut-out works on
+  const holesAt = points ? points.map(([x, y]) => (extended + Math.round(y * (h0 - 1))) * w + extended + Math.round(x * (w0 - 1))) : Boolean(holes);
+  const cut = cutout(rgba, w, h, border, holesAt);
   Object.assign(stats, cut.stats);
   if (!cut.ok) return kept(cut.reason);
   const trimmed = trimToAlpha(cut.data, w, h, pad);
@@ -351,6 +362,7 @@ function components(mask, value, w, h, eight, score) {
 
 /* ── the cut-out ───────────────────────────────────────────────────────────── */
 
+/** `holes`: false, true (every closed window opens) or pixel indices of the windows to open. */
 function cutout(rgba, w, h, border, holes = false) {
   const n = w * h;
   const long = Math.max(w, h);
@@ -441,7 +453,19 @@ function cutout(rgba, w, h, border, holes = false) {
     // Opted in per image, after looking (the product has nothing of the background's colour): every
     // closed region of pure background colour is background seen through the object — the windows
     // above, and the small pockets the gap guard put back (behind a cable, inside a strap loop).
-    const opened = openWindows(isBg, q, qt, w, h, closedWindows(isBg, q, qMin, w, h, wall, 24, fgArea, true));
+    const every = closedWindows(isBg, q, qMin, w, h, wall, 24, fgArea, true);
+    if (Array.isArray(holes)) {
+      // Opted in with the windows' places (pixels of this canvas): only the regions under them open; the rest
+      // stays as it is — white print on the object, which `true` would open too.
+      const chosen = new Set();
+      for (const p of holes) {
+        const id = every.labels[p];
+        if (!id || !every.counted[id]) return fail(`no closed window of the background colour at (${p % w}, ${Math.floor(p / w)})`);
+        chosen.add(id);
+      }
+      for (let id = 1; id < every.counted.length; id++) every.counted[id] = chosen.has(id) ? 1 : 0;
+    }
+    const opened = openWindows(isBg, q, qt, w, h, every);
     stats.holes = round(opened / n);
     fgArea -= opened;
     stats.foreground = round(fgArea / n);

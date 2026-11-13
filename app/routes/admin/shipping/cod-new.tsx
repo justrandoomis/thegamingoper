@@ -146,7 +146,7 @@ export default function NewSettlement({ loaderData }: Route.ComponentProps) {
               </dl>
               <Note>{t("codNew.draftNote")}</Note>
               <FormError message={result && !result.ok ? failureText(t, result) : null} />
-              <div className="shp-sticky">
+              <div className="shp-sticky" data-adm-sticky-end>
                 <span className="me-auto self-center type-label nums">{t("codNew.selected", { count: f.number(chosen.length) })}</span>
                 <Key type="submit" variant="ink" icon="clipboard-text" disabled={chosen.length === 0} loading={navigation.state === "submitting"}>
                   {t("codNew.create")}

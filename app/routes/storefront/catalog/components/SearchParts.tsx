@@ -42,8 +42,9 @@ function suggestionsOf(platforms: readonly NavPlatform[]): Suggestion[] {
 }
 
 /**
- * A titled chip row: one row that scrolls sideways on phones and wraps from 768 — bleeding to the page's gutter
- * ("rail") or to the zero-result card's edges, centred ("panel").
+ * A titled chip row: "rail" — one row that scrolls sideways on phones, bleeding to the page's gutter, and wraps from
+ * 768; "panel" (inside the zero-result card) — the chips wrap, centred, at every width, four of them on phones (a
+ * sideways row there was cut by the card's edge and read as clipped).
  */
 type ChipLayout = "rail" | "panel";
 const chipRow = (layout: ChipLayout) => cx("chips chips--rail catalog-chips", layout === "rail" ? "chips--bleed" : "catalog-chips--panel");

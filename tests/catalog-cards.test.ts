@@ -1147,7 +1147,7 @@ describe("opaque photos (design v2 spec §7.5)", () => {
       expect(card.image.opaque).toEqual(opaqueOf(card.image.artKey));
       if (isPhoto(art)) expect(card.image.opaque.background).toBe(art.background);
     }
-    expect(flagged).toBeGreaterThan(0); // PS5 (2020), Switch Lite, PULSE 3D, the Razer BlackShark… until they are re-cut
+    expect(flagged).toBeGreaterThan(0); // the Razer BlackShark, the Game Pass tiles, PS Plus… until they are re-cut (--opaque-report)
     expect(opaqueOf(null)).toBeNull();
     expect(opaqueOf("zz-no-such-photo--1")).toBeNull();
   });

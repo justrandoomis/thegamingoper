@@ -583,7 +583,11 @@ describe("crypto", () => {
     const [body, signature] = token.split(".");
     const forgedBody = toBase64Url(new TextEncoder().encode(JSON.stringify({ p: "upload", e: NOW + DAY, d: { orderId: "ord_2" } })));
     expect(await verifyToken(`${forgedBody}.${signature}`, SESSION_SECRET, { purpose: "upload", now: NOW })).toBeNull();
-    expect(await verifyToken(`${body}.${signature.slice(0, -2)}AA`, SESSION_SECRET, { purpose: "upload", now: NOW })).toBeNull();
+    // a forged signature: the real one with its last two characters changed, whatever they are (a fixed «AA» was the
+    // signature itself whenever it already ended in «AA», and the check then failed at random)
+    const forgedSignature = `${signature.slice(0, -2)}${signature.endsWith("AA") ? "BB" : "AA"}`;
+    expect(forgedSignature).not.toBe(signature);
+    expect(await verifyToken(`${body}.${forgedSignature}`, SESSION_SECRET, { purpose: "upload", now: NOW })).toBeNull();
     for (const junk of [null, undefined, "", "abc", "a.b.c", ".", "x".repeat(5000)]) {
       expect(await verifyToken(junk, SESSION_SECRET, { purpose: "upload", now: NOW })).toBeNull();
     }

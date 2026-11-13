@@ -7,16 +7,18 @@
  * name, the price, the add button and a 44×44 «أزل»); the corner cell offers «أضف منتجاً (حتى 4)». Rows: what the
  * research says (platforms; for games Arabic support and genre), then every spec key any of the products states,
  * aligned by key — «غير موثّق» where a product's research does not say. «اعرض الفروق فقط» hides the rows where all
- * agree. Phones: two product columns, each spec's name a full-width row above its values (more products scroll
- * sideways); from 768 the names are a sticky first column.
+ * agree. The head says how many products are compared. Phones: two product columns, each spec's name a full-width row
+ * above its values; three or four scroll sideways — the next column peeks, the columns snap, and a bar above the table
+ * says which are in view with two arrows (CompareNavigator); from 768 the names are a sticky first column.
  */
-import { useEffect, useId, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { useNavigate } from "react-router";
 
 import type { Route } from "./+types/compare";
 import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useDir, useFormat, useLocalePath, useT } from "~/i18n/react";
+import { getMotionTier } from "~/motion";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
@@ -74,6 +76,68 @@ function CompareName({ name }: { name: string }) {
     <span dir={title.dir} className={cx("[unicode-bidi:isolate]", title.className)}>
       <BidiText text={name} />
     </span>
+  );
+}
+
+/**
+ * Phones (< 768) comparing three or four products: the table scrolls sideways (44% columns that snap, so the next one
+ * peeks at the end — catalog.css), and this bar above it says which products are in view («تعرض 1–2 من 3») with two clay
+ * arrows that move it a column at a time. A shopper who chose three or four saw two columns that filled the card and
+ * took the others for dropped (browse audit 2026-11-13). Hidden from 768, where every column fits; the arrows need
+ * script, the words do not.
+ */
+function CompareNavigator({ region, regionId, count }: { region: RefObject<HTMLDivElement | null>; regionId: string; count: number }) {
+  const t = useT("catalog");
+  const f = useFormat();
+  const [shown, setShown] = useState({ from: 1, to: Math.min(2, count) });
+
+  useEffect(() => {
+    const element = region.current;
+    if (!element) return;
+    let frame = 0;
+    // the product columns wholly inside the scroller (their own boxes: the same in both directions of text)
+    const measure = () => {
+      frame = 0;
+      const box = element.getBoundingClientRect();
+      const inView = [...element.querySelectorAll<HTMLElement>("thead .catalog-compare__product")].flatMap((column, index) => {
+        const edges = column.getBoundingClientRect();
+        return edges.left >= box.left - 2 && edges.right <= box.right + 2 ? [index] : [];
+      });
+      if (inView.length === 0) return;
+      const next = { from: inView[0] + 1, to: inView[inView.length - 1] + 1 };
+      setShown((current) => (current.from === next.from && current.to === next.to ? current : next));
+    };
+    const onChange = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
+    element.addEventListener("scroll", onChange, { passive: true });
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(onChange);
+    observer?.observe(element);
+    return () => {
+      cancelAnimationFrame(frame);
+      element.removeEventListener("scroll", onChange);
+      observer?.disconnect();
+    };
+  }, [region, count]);
+
+  // a column at a time, toward the reading direction's end (forward) or its start; the columns snap
+  const move = (forward: boolean) => {
+    const element = region.current;
+    const column = element?.querySelector<HTMLElement>("thead .catalog-compare__product");
+    if (!element || !column) return;
+    const rtl = getComputedStyle(element).direction === "rtl";
+    element.scrollBy({ left: column.getBoundingClientRect().width * (forward === rtl ? -1 : 1), behavior: getMotionTier() === "full" ? "smooth" : "instant" });
+  };
+
+  return (
+    <div className="catalog-compare__nav">
+      <p className="catalog-compare__shown nums">{t("compare.showing", { from: f.number(shown.from), to: f.number(shown.to), total: f.number(count) })}</p>
+      <div className="catalog-compare__keys catalog-js-only">
+        <IconKey icon="caret-left" label={t("compare.prev")} aria-controls={regionId} onClick={() => move(false)} disabled={shown.from <= 1} />
+        <IconKey icon="caret-right" label={t("compare.next")} aria-controls={regionId} onClick={() => move(true)} disabled={shown.to >= count} />
+      </div>
+    </div>
   );
 }
 
@@ -146,6 +210,8 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
   const f = useFormat();
   const [differences, setDifferences] = useState(false);
   const captionId = useId();
+  const regionId = useId();
+  const region = useRef<HTMLDivElement>(null);
 
   const products = comparison?.products ?? [];
   const ids = products.map((product) => product.card.id);
@@ -201,8 +267,13 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="page catalog-page">
-      <TitleRow title={t("compare.title")} icon="scales">
-        <p className="type-read text-ink-2">{t("compare.intro", { kind: t(`compare.kind.${comparison!.kind}`), max: f.number(MAX_COMPARE) })}</p>
+      {/* how many are compared, in the head (a shopper who chose three must find three: «تقارن 3 منتجات من أجهزة الألعاب») */}
+      <TitleRow
+        title={t("compare.title")}
+        icon="scales"
+        count={t("compare.comparing", { count: products.length, n: f.number(products.length), kind: t(`compare.kind.${comparison!.kind}`) })}
+      >
+        <p className="type-read text-ink-2">{t("compare.intro", { max: f.number(MAX_COMPARE) })}</p>
       </TitleRow>
 
       {comparison!.missing > 0 ? <p className="type-sm text-ink-2">{t("compare.missing", { count: comparison!.missing, n: f.number(comparison!.missing) })}</p> : null}
@@ -215,7 +286,15 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
         </div>
       ) : null}
 
-      <div className={cx("catalog-compare", products.length > 2 && "catalog-compare--wide")} role="region" aria-labelledby={captionId} tabIndex={products.length > 2 ? 0 : undefined}>
+      {products.length > 2 ? <CompareNavigator region={region} regionId={regionId} count={products.length} /> : null}
+      <div
+        ref={region}
+        id={regionId}
+        className={cx("catalog-compare", products.length > 2 && "catalog-compare--wide")}
+        role="region"
+        aria-labelledby={captionId}
+        tabIndex={products.length > 2 ? 0 : undefined}
+      >
         <table className="catalog-compare__table" style={{ "--n": products.length } as CSSProperties}>
           <caption id={captionId} className="sr-only">
             {t("compare.table", { kind: t(`compare.kind.${comparison!.kind}`) })}

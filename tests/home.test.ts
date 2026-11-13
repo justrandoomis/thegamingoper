@@ -3,6 +3,7 @@
  * against a real, throw-away D1 with the demo catalogue. Expectations are derived from the database (platform order,
  * device-model order, stock states, release dates), not from product slugs, so they hold when the catalogue changes.
  */
+import { readFileSync } from "node:fs";
 import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub } from "react-router";
@@ -39,6 +40,8 @@ import {
   HERO_COPY_MIN,
   MIN_SHELF,
   baghdadDay,
+  bannerAway,
+  inView,
   deviceHubFor,
   featuredHero,
   focusAfterIntro,
@@ -59,6 +62,7 @@ import {
   stripItems,
   tileArt,
   twoLineEm,
+  wordsShown,
   type HeroBreakpoint,
 } from "~/routes/storefront/home/view";
 import { productPhotos } from "~/art";
@@ -778,6 +782,54 @@ describe("client rules", () => {
     expect(photoToWarm(0, 0)).toBeNull();
   });
 
+  it("shows a banner's words while it moves, as much as their column is on screen — in both directions of text (fix-browse 2026-11-13)", () => {
+    // the words used to appear only after the banner landed (the slide in view is decided at 55% of the move, then a
+    // fade): mid-switch frames showed an empty band of colour. A banner's distance from its resting place, in banners —
+    // positive toward the reading direction's end, in both directions of text
+    // (the boxes are the screen's: left and right edges in px)
+    const track = { trackLeft: 0, trackRight: 1280, pad: 0, gap: 0 };
+    expect(bannerAway({ ...track, rtl: false, left: 0, right: 1280 })).toBe(0);
+    expect(bannerAway({ ...track, rtl: false, left: 640, right: 1920 })).toBe(0.5);
+    expect(bannerAway({ ...track, rtl: false, left: -1280, right: 0 })).toBe(-1);
+    expect(bannerAway({ ...track, rtl: false, left: 3840, right: 5120 }), "clamped to one banner").toBe(1);
+    // right to left: the next banner waits at the LEFT (the end) — never mirrored the wrong way round
+    expect(bannerAway({ ...track, rtl: true, left: 0, right: 1280 })).toBe(0);
+    expect(bannerAway({ ...track, rtl: true, left: -640, right: 640 })).toBe(0.5);
+    expect(bannerAway({ ...track, rtl: true, left: 1280, right: 2560 })).toBe(-1);
+    // a phone: 315px banners, 12px apart, resting 16px in from the track's start (its scroll padding); the next one peeks
+    const phone = { trackLeft: 0, trackRight: 390, pad: 16, gap: 12 };
+    expect(bannerAway({ ...phone, rtl: true, left: 59, right: 374 })).toBe(0);
+    expect(bannerAway({ ...phone, rtl: true, left: -268, right: 47 })).toBe(1);
+    expect(bannerAway({ ...phone, rtl: false, left: 343, right: 658 })).toBe(1);
+    // the LAST banner of a phone's track rests at the track's end (the track scrolls no further): in view there, words
+    // and all — measured from where the scroll can bring it, never from the start's padding (its words showed at 73%)
+    const end = { ...phone, scroll: 1635, maxScroll: 1635 };
+    expect(bannerAway({ ...end, rtl: true, left: 16, right: 331 })).toBe(0);
+    expect(bannerAway({ ...end, rtl: false, left: 59, right: 374 })).toBe(0);
+    // …and the one before it, on the start side: as far as the last scroll step really is (284px of a 327px step)
+    expect(bannerAway({ ...end, rtl: true, left: 343, right: 658 })).toBeCloseTo(-284 / 327);
+    // on its way there (scrolled 100px short of the end) it is 100px — of a 327px step — from its rest
+    expect(bannerAway({ ...end, scroll: 1535, rtl: true, left: -84, right: 231 })).toBeCloseTo(100 / 327);
+    // a snapped track rests on whole pixels, the boxes on fractions: a banner a pixel off is at rest (no drift)
+    expect(bannerAway({ ...phone, rtl: true, left: 58.6, right: 373.4 })).toBe(0);
+    expect(bannerAway({ ...track, rtl: false, left: 1.2, right: 1281.2 })).toBe(0);
+    // how much of the words show follows how much of their column is on screen: a banner enters words first in Arabic
+    // (its copy is at its start, it comes in from the end), so a fade tied to its distance left the part on screen
+    // blank for most of the move — whole words once the column is in, none while half of it or less is (the phone's
+    // peeking banner: 47 of its 173px), a fade between
+    expect(wordsShown(1)).toBe(1);
+    expect(wordsShown(0.75)).toBeCloseTo(0.5);
+    expect(wordsShown(0.5)).toBe(0);
+    expect(wordsShown(47 / 173)).toBe(0);
+    expect(wordsShown(0)).toBe(0);
+    // the column's share on screen (screen boxes: left and right edges)
+    expect(inView({ left: 100, right: 300, trackLeft: 0, trackRight: 1280 })).toBe(1);
+    expect(inView({ left: -100, right: 100, trackLeft: 0, trackRight: 1280 })).toBe(0.5);
+    expect(inView({ left: 1230, right: 1430, trackLeft: 0, trackRight: 1280 })).toBe(0.25);
+    expect(inView({ left: 1300, right: 1500, trackLeft: 0, trackRight: 1280 })).toBe(0);
+    expect(inView({ left: 10, right: 10, trackLeft: 0, trackRight: 1280 }), "no width: nothing to show").toBe(0);
+  });
+
   it("offers in the icon strip only the departments that exist, each to its real listing", () => {
     const categories = [
       { kind: "consoles", href: "/c/consoles", count: 18 },
@@ -946,5 +998,75 @@ describe("the hero carousel in the server's markup (client note 1; brief §5: CL
         expect(img, locale).not.toMatch(/fetchpriority="high"/i);
       }
     }
+  });
+});
+
+describe("the home page's stylesheet: laptops' first screen, dark glass, the phone's service banners (fix-browse 2026-11-13)", () => {
+  const css = readFileSync(new URL("../app/routes/storefront/home/home.css", import.meta.url), "utf8");
+  /** Every rule for `selector` inside the `@media <media> { … }` blocks (brace-matched), joined; "" — the file's rules outside them too. */
+  const block = (media: string, selector: string): string => {
+    const found: string[] = [];
+    const scan = (body: string) => {
+      for (let at = body.indexOf(`${selector} {`); at !== -1; at = body.indexOf(`${selector} {`, at + 1)) found.push(body.slice(at, body.indexOf("}", at)));
+    };
+    if (!media) scan(css);
+    else
+      for (let start = css.indexOf(`${media} {`); start !== -1; start = css.indexOf(`${media} {`, start + 1)) {
+        let depth = 0;
+        let end = css.indexOf("{", start);
+        for (let i = end; i < css.length; i++) {
+          if (css[i] === "{") depth++;
+          else if (css[i] === "}" && --depth === 0) {
+            end = i;
+            break;
+          }
+        }
+        scan(css.slice(start, end));
+      }
+    expect(found.length, `${media} ${selector}`).toBeGreaterThan(0);
+    return found.join("\n");
+  };
+
+  // lead decision 2: the top of the platform tiles shows on a 1440 × 900 first screen (they started at 919px behind a
+  // 116px row of tiles and a 72px gap; measured 815px now)
+  it("from 1024 the icon strip is one row of 48px clay pills, the kind icon beside the name, and the platform tiles follow it closely", () => {
+    const laptop = "@media (min-width: 64rem)";
+    const pill = block(laptop, ".home-strip .shell-itile");
+    expect(pill).toMatch(/flex-direction:\s*row/);
+    expect(pill).toMatch(/min-block-size:\s*48px/);
+    expect(pill).toMatch(/border-radius:\s*var\(--r-full\)/);
+    expect(block(laptop, ".home-strip .shell-itile__ico > svg")).toMatch(/inline-size:\s*20px/);
+    expect(block(laptop, ".home-strip .shell-itile__name")).toMatch(/white-space:\s*nowrap/);
+    expect(block(laptop, ".home-top + .home-platforms")).toMatch(/margin-block-start:\s*calc\(var\(--s-8\) - var\(--gap-section\)\)/);
+    // the phones' strip keeps its tiles
+    expect(block("", ".home-strip__list")).toMatch(/grid-auto-columns:\s*96px/);
+  });
+
+  // client note 3: on the plain dark floor the strip's tiles read as flat grey cards
+  it("dark: the strip's tiles are glass — a brighter veil and rim, the banner's light spilling under them, a red light behind each icon", () => {
+    const glass = block("", '[data-theme="dark"] .home-strip');
+    expect(glass).toMatch(/--card-veil:\s*color-mix\(in oklab, var\(--on-color\) 10%, transparent\)/);
+    expect(glass).toMatch(/--card-face:/);
+    expect(block("", '[data-theme="dark"] .home-strip .shell-itile__ico::before')).toMatch(/radial-gradient/);
+    // the spill is the dark theme's only (display none elsewhere), crossfades with the banner, and fades out inside its box
+    expect(block("", ".home-hero__spill")).toMatch(/display:\s*none/);
+    const spill = block("", '[data-theme="dark"] .home-hero__spill');
+    expect(spill).toMatch(/display:\s*block/);
+    const [rx, ry] = (/--glow-size:\s*(\d+)% (\d+)%/.exec(spill) ?? []).slice(1).map(Number);
+    const y = Number(/--glow-y:\s*(\d+)%/.exec(spill)?.[1]);
+    expect(rx * 0.72, "the ellipse ends inside its box's sides").toBeLessThanOrEqual(50);
+    expect(y + ry * 0.72, "and above its foot").toBeLessThanOrEqual(100);
+    // the strip paints over the light (the hero is a stacking context of its own)
+    expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
+  });
+
+  // the service banners' picture sat 70px wide in the top corner, the lower 40% of the banner empty
+  it("phones: a service banner's console stands over everything above the key's row, at the far end — never under its white key", () => {
+    const phone = "@media (max-width: 47.99rem)";
+    const service = '.home-slide:is([data-kind="tradeIn"], [data-kind="used"])';
+    expect(block(phone, `${service} .home-slide__body`)).toMatch(/grid-template-rows:\s*auto minmax\(0, 1fr\) auto/);
+    expect(block(phone, `${service} .home-slide__media`)).toMatch(/grid-row:\s*1 \/ 3/);
+    expect(block(phone, `${service} .home-slide__buy`)).toMatch(/grid-row:\s*3/);
+    expect(block(phone, `${service} .home-slide__shared`)).toMatch(/place-items:\s*end end/);
   });
 });

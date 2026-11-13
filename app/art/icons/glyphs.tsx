@@ -10,6 +10,8 @@ import type { ReactNode } from "react";
  *   kind-*     catalogue kinds: console, game, controller, headset, storage, charging, top-up card, accessory, used,
  *              repair — for category tiles, filters, the categories sheet
  *   media-*    play / pause for a carousel's autoplay key (filled)
+ *   status-*   a toast's kind (info, ok, warning, error) and offline — inline, so they draw with no network (v2.1 fix
+ *              round: the offline toast's sprite icon came out blank)
  */
 export const GLYPHS = {
   "device-nintendo": (
@@ -108,6 +110,41 @@ export const GLYPHS = {
       <rect x="13.9" y="5" width="3.6" height="14" rx="1" fill="currentColor" stroke="none" />
     </>
   ),
+  // a toast's kind, drawn inline so it shows offline too (the sprite may never have been fetched — fix round 2026-11-13)
+  "status-info": (
+    <>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 11v5.5" />
+      <circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  "status-ok": (
+    <>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="m7.8 12.3 2.8 2.8 5.6-5.8" />
+    </>
+  ),
+  "status-warning": (
+    <>
+      <path d="M10.3 4.2a2 2 0 0 1 3.4 0l7.6 13.2A2 2 0 0 1 19.6 20.4H4.4a2 2 0 0 1-1.7-3l7.6-13.2Z" />
+      <path d="M12 9.5v4.5" />
+      <circle cx="12" cy="17" r="1.1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  "status-error": (
+    <>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 7.5V13" />
+      <circle cx="12" cy="16.4" r="1.1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  "status-offline": (
+    <>
+      <path d="M3 3.5 21 20.5" />
+      <path d="M8.6 15.4a5 5 0 0 1 6 .4M5.2 12a9.5 9.5 0 0 1 4-2.4M18.8 12a9.5 9.5 0 0 0-3.7-2.3M2 8.6a14.5 14.5 0 0 1 5-2.9M22 8.6a14.5 14.5 0 0 0-10.5-4" />
+      <circle cx="12" cy="19.2" r="1.1" fill="currentColor" stroke="none" />
+    </>
+  ),
 } satisfies Record<string, ReactNode>;
 
 export type GlyphName = keyof typeof GLYPHS;
@@ -119,6 +156,7 @@ export const GLYPH_GROUPS = {
   devices: ["device-nintendo", "device-playstation", "device-xbox", "device-handheld"],
   kinds: ["kind-console", "kind-game", "kind-controller", "kind-headset", "kind-storage", "kind-charging", "kind-topup", "kind-accessory", "kind-used", "kind-repair"],
   media: ["media-play", "media-pause"],
+  status: ["status-info", "status-ok", "status-warning", "status-error", "status-offline"],
 } as const satisfies Record<string, readonly GlyphName[]>;
 
 export function isGlyph(name: string): name is GlyphName {

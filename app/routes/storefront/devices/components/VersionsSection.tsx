@@ -2,6 +2,7 @@ import { useId } from "react";
 
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { MixedText } from "~/routes/storefront/product/components/MixedText";
 import type { DeviceHub } from "~/server/services/devices.server";
 import { Blocks } from "~/ui/Blocks";
 import { Disclosure } from "~/ui/Disclosure";
@@ -14,12 +15,15 @@ import { deviceIn, researchDate } from "./format";
  * Editions of the device — v2 §6.6 "versions (cards)": the products that ARE this device as the kit's cards (prices
  * and stock are demo placeholders under the shell's demo marking; one edition → a row card), then the versions with
  * the maker's model numbers and later release dates (a paper table), the research note a buyer should read first as
- * a «قبل أن تشتري» callout (a 3px warn bar), and, folded, the notes of the other editions and the device's highlights.
+ * a «قبل أن تشتري» callout (a 3px warn bar), and, folded, the notes of the other editions and the device's highlights —
+ * reading text: 16 / 1.75 on phones and tablets (v2.1 G7, devices.css `.devhub-read`), 14 from 1024.
  * A device the store does not sell new keeps the table and the note; with none of these the section is not drawn.
  *
  * Version titles mix Arabic and Latin ("حزمة 2026: Switch 2 + Mario Kart World + …"): they are left to the Unicode
  * bidi algorithm as one text, which keeps "Switch 2 + Mario Kart World" in order (isolating each Latin run would
- * leave the "+" between two isolates and swap them in RTL).
+ * leave the "+" between two isolates and swap them in RTL). The notes and highlights are research prose: the product
+ * page's MixedText isolates their Latin runs and leaves brackets and separators to the sentence, so «(Notebookcheck، 6
+ * نوفمبر 2026)», «BEE-001(-01)» and «PEGI 7 وUSK 6» read in order (left alone, the bidi algorithm scrambled them).
  */
 export function VersionsSection({ hub }: { hub: DeviceHub }) {
   const t = useT("devices");
@@ -102,14 +106,18 @@ export function VersionsSection({ hub }: { hub: DeviceHub }) {
               <ul role="list" className="devhub-rows grid">
                 {otherNotes.map((note) => (
                   <li key={note.productSlug} className="grid gap-0.5 py-3">
-                    <span className="type-sm-strong text-ink">{note.productName}</span>
-                    <span className="type-sm text-ink-2">{note.text}</span>
+                    <span className="devhub-read-strong text-ink">{note.productName}</span>
+                    <span className="devhub-read text-ink-2">
+                      <MixedText text={note.text} />
+                    </span>
                   </li>
                 ))}
                 {versionNotes.map((version) => (
                   <li key={version.variantId} className="grid gap-0.5 py-3">
-                    <span className="type-sm-strong text-ink">{version.title}</span>
-                    <span className="type-sm text-ink-2">{version.note}</span>
+                    <span className="devhub-read-strong text-ink">{version.title}</span>
+                    <span className="devhub-read text-ink-2">
+                      <MixedText text={version.note ?? ""} />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -119,9 +127,12 @@ export function VersionsSection({ hub }: { hub: DeviceHub }) {
             <Disclosure summary={t("versions.highlights")} icon="sparkle" variant="panel">
               <ul role="list" className="grid gap-2">
                 {hub.highlights.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2 type-sm text-ink">
-                    <Icon name="check" size={16} className="mt-0.5 text-ok" />
-                    <span>{item}</span>
+                  <li key={index} className="flex items-start gap-2 devhub-read text-ink">
+                    {/* on the first line's middle: 28px lines (16 / 1.75) below 1024, 21px (14 / 1.5) from 1024 */}
+                    <Icon name="check" size={16} className="mt-1.5 shrink-0 text-ok lg:mt-0.5" />
+                    <span className="min-w-0">
+                      <MixedText text={item} />
+                    </span>
                   </li>
                 ))}
               </ul>

@@ -2,15 +2,17 @@
  * GET /api/search/suggest?q=<text>&locale=<ar|en|ckb> — the header search field's suggestions (catalog area;
  * contract in app/routes/storefront/shell/SearchForm.tsx and docs/CONTRACTS.md §2).
  *
- *   200 { suggestions: { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string;
- *         qualifier?: string }[], total?: number }
- *        at most 8 rows; href is locale-less: a corrected spelling first ("هل تقصد"), then the platform / department /
- *        device hub the words name (hint: what it is), then products (hint: their department; image: the art key of
- *        their picture; priceIqd: integer IQD, left out while sold out; kindLabel: «جهاز PS5»; qualifier: the words
- *        the Latin title leaves out, «نسخة الأقراص» — the service's own, printed by the shell on the row's meta line,
- *        never glued into the label). `total` is how many products /search?q= lists for the same words — the count
- *        of «اعرض كل النتائج (42)» — present whenever the query was long enough to search. Fewer than two characters
- *        → an empty list and no total.
+ *   200 { suggestions: { label: string; href: string; hint?: string; image?: string; priceIqd?: number; soldOut?: true;
+ *         kindLabel?: string; qualifier?: string }[], total?: number }
+ *        at most 8 rows; href is locale-less: a corrected spelling first ("هل تقصد" — its label as the catalogue writes
+ *        the words, «Nintendo»; its href keeps the index's folded words, /search?q=nintendo), then the platform /
+ *        department / device hub the words name (hint: what it is), then products (hint: their department; image: the
+ *        art key of their picture; priceIqd: integer IQD, left out while sold out — and then soldOut: true, so the row
+ *        says «نفد حالياً» where the price goes, as the cards do; kindLabel: «جهاز PS5»; qualifier: the words the
+ *        Latin title leaves out, «نسخة الأقراص» — the service's own, printed by the shell on the row's meta line, never
+ *        glued into the label). `total` is how many products /search?q= lists for the same words — the count of
+ *        «اعرض كل النتائج (42)» — present whenever the query was long enough to search. Fewer than two characters → an
+ *        empty list and no total.
  *   429 { suggestions: [], error: "rate_limited" } with Retry-After   (per IP)
  *   405 for anything but GET / HEAD (no action is exported)
  *
@@ -21,18 +23,19 @@ import type { Route } from "./+types/search-suggest";
 import { serverT } from "~/i18n/i18n.server";
 import type { ProductCardData } from "~/lib/dto";
 import { isLocale } from "~/lib/locales";
+import { displaySpelling } from "~/routes/storefront/catalog/list.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { isAppError } from "~/server/errors";
 import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
 import { getCardsByIds } from "~/server/services/catalog/cards.server";
 import { MAX_QUERY_LENGTH, suggestSearchWithTotal } from "~/server/services/search.server";
-import { isPlatform } from "~/ui/PlatformLed";
+import { isPlatform, PLATFORMS } from "~/ui/PlatformLed";
 
 /** Keystrokes are debounced (160 ms) by the field; a person typing fast stays far below this. */
 const SUGGEST_LIMIT: RateLimitRule = { limit: 120, windowSec: 60 };
 
-export type SuggestionRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string; qualifier?: string };
+export type SuggestionRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; soldOut?: true; kindLabel?: string; qualifier?: string };
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -75,11 +78,19 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const card = item.kind === "product" ? cards.get(item.href) : undefined;
     if (card) {
       if (card.image.artKey) row.image = card.image.artKey;
-      // a sold-out product's price would read as an offer: the row shows what it is, the page says it is sold out
-      if (card.stock !== "out_of_stock" && Number.isSafeInteger(card.priceIqd) && card.priceIqd >= 0) row.priceIqd = card.priceIqd;
+      // a sold-out product's price would read as an offer: the row says it is sold out in its place (a row with no
+      // price and no reason read as a gap)
+      if (card.stock === "out_of_stock") row.soldOut = true;
+      else if (Number.isSafeInteger(card.priceIqd) && card.priceIqd >= 0) row.priceIqd = card.priceIqd;
       if (card.kindLabel) row.kindLabel = card.kindLabel;
     }
     return row;
   });
+  // the corrected spelling as the catalogue writes it («هل تقصد Nintendo؟»): the platforms' names, then the other rows'
+  const correction = items.findIndex((item) => item.kind === "correction");
+  if (correction !== -1) {
+    const names = [...PLATFORMS.map((slug) => ui(`platform.${slug}`)), ...suggestions.filter((_, index) => index !== correction).map((row) => row.label)];
+    suggestions[correction] = { ...suggestions[correction], label: displaySpelling(suggestions[correction].label, names) };
+  }
   return Response.json(total === undefined ? { suggestions } : { suggestions, total }, { headers: { "Cache-Control": "public, max-age=60" } });
 }
